@@ -2,145 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75F92C3659
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538442C365E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgKYBsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 20:48:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
+        id S1726623AbgKYBwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 20:52:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgKYBsL (ORCPT
+        with ESMTP id S1726524AbgKYBw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 20:48:11 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91906C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 17:48:11 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id ba3so643946plb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 17:48:11 -0800 (PST)
+        Tue, 24 Nov 2020 20:52:29 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8FFC061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 17:52:29 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id k9so714294ejc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 17:52:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=F1xIHDPPY9Oqfb0ME3dD9RN5PQwJBw9tHgqdKwHf13o=;
-        b=PIgJY+A9qCBNhFb3ERl6vp852CHoWAZqv4T5FujzNlnx5ZI3UsOib/WeWQTyIdr0Pm
-         aF9kzgoOLdLxbb+3/G12qJ7dGYArB5SeY+kd459KGlCmnxAJXYgxXoms5P5343nZzqY9
-         2C6pxk3JNWzYoncmic+HGiHAmPV4AwRv61HmJNlEHwO2HdNCl2Rm14K/nWuPPdjYgK5O
-         +rc7T6UDvIOn2VOuFG8+2qbejL3ITV2sa9GClu7bXS4jjiFSWvGJHIauvmcCt9nqtp5o
-         CwI8VEG0HpVuf4roYgVdRiiedWJRL7vbhktnmk1XyYV5x8d3R1PnHcgQwH4bJrqNw6nt
-         86og==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WrgS6CV4x3UltwJI2DnW1OzuHdog2ZsVn68ZxLeKHHU=;
+        b=S4w78aWhQBYjTBwAY7d5gbt+PtP/y46iHMJppknBZWw58tkWSFAI6xaAPgM/6eBm9O
+         N4Xgn+YMtJYIAiCQkH6TQhZnGm5nON8Q+WvOEzqQKP+/YTQMqy1oKULToO0pgY03LNg6
+         n7HtEFeHwJ0+va8ynSQsHpx9s1PHD17ALbIMF5KnA1ikcX4wAG6LMrfW2jZEL93DAy3e
+         f44ViUPd8G7cGzVwQVZ9YI6Shv6UwBJpOBoJkGle9al4+Llkc0vcwf4irsoCEgzeV6Gb
+         /WtWVQk4b97Ne3qcoZB2s7tOyS8fvcV4vlEqJSwk4LusdWDygADzSnIVkAEGjpy68tvA
+         kbtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=F1xIHDPPY9Oqfb0ME3dD9RN5PQwJBw9tHgqdKwHf13o=;
-        b=kQ3ZiOkBNQoiz3cY3ZSGSHLSUhK3WkbBUYe/MVIbOXvBl08zhUZMOZ5t78+/CAqiSA
-         jNpdG/cbuwUxbl3+ialYPgSMg38mDebzpecGMYwyr+6si94NuYL6QmwJn4n2tq+J7E2h
-         T6SyGUUwblqGhbY9pWN8zZpMZFdinbIhiYm0HpFX04zRSyDG5POKNbbaQ35YoRnoorh8
-         adKWheWxbSDACOsrJVLgr3dofdFv8XOX0VSP03A6zWKPHMXW/jiJiuGJr3ciduUtCDtq
-         byx+4sbSSROg2sZkRS1mVjvZjOKWNROS+MY+9ifoFUuHnNNoS1LU9A8+RcBTf03P27xS
-         6zDw==
-X-Gm-Message-State: AOAM531U1NQOsyE6J7dONpf9kRc6s7F7iF4LWV7jFf9g298bZtaCZ0Xz
-        TRiIfQ8UNcoNZrWLh3FptiEg9gEs858=
-X-Google-Smtp-Source: ABdhPJzAqON/tEhZRrX41VDmvLvotzmx38c++6/KV7X5+o67hx6Ch0wT4pK/wGSrH/XL8ppciig7LoZOTP0=
-Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a63:3fcb:: with SMTP id m194mr1105818pga.58.1606268891004;
- Tue, 24 Nov 2020 17:48:11 -0800 (PST)
-Date:   Tue, 24 Nov 2020 17:48:04 -0800
-Message-Id: <20201125014804.1596719-1-badhri@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH] usb: typec: tcpm: Stay in SNK_TRY_WAIT_DEBOUNCE_CHECK_VBUS
- till Rp is seen
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WrgS6CV4x3UltwJI2DnW1OzuHdog2ZsVn68ZxLeKHHU=;
+        b=desDP6xDFG0TCX9d2yN2XTGhYKqin0fSAyx9D1muVLt7FZwr1g/jdmj3jUW/Ae37cD
+         Jgdc3CnJ3fRfplXwgugPlNljTn40Zqd1ZoqhXlb3NXx8fPsKfN3AE8ieLVMjiDU7xaX4
+         D8to1+zgpP10XRf92/d2ZPJAw3nxUfotOudoVe5/2zfW6goFc7DfVU2bv1vHfqQuCpUw
+         mf2VW5EG21k7P9lTmw+SYoWC2lYx6PCttycYLM1rJ+WEX7cjU/dD/iDu+TtVyr7BQqUf
+         7KS2XPD0V4jSMGIZ0rlhhXTqZaBbTb5z6HlWiRIit1AjGWX4JImOkt3scnqhVfxNa+J0
+         bhwg==
+X-Gm-Message-State: AOAM532aZ12Iz8N+1uBWgeDg2unvIpIhvppApEfG951j+6qHN9lxrwD1
+        cVgIBvhClSKDWPgNxQ0cJcRQ4TSSIcDCzGzdmfn1
+X-Google-Smtp-Source: ABdhPJy5QqTI/AmFehlIzbR5PA4citzw5aGePHpuJGKPI7XqWUoaYAYA5Mj9jqBoqrVHRoi3kpCcjDOXx5MKAZts+mc=
+X-Received: by 2002:a17:906:c096:: with SMTP id f22mr1130856ejz.488.1606269147585;
+ Tue, 24 Nov 2020 17:52:27 -0800 (PST)
+MIME-Version: 1.0
+References: <20201106155626.3395468-1-lokeshgidra@google.com>
+ <20201106155626.3395468-4-lokeshgidra@google.com> <CAHC9VhRsaE5vhcSMr5nYzrHrM6Pc5-JUErNfntsRrPjKQNALxw@mail.gmail.com>
+ <CA+EESO7LuRM_MH9z=BhLbWJrxMvnepq-NSTu_UJsPXxc0QkEag@mail.gmail.com>
+ <CAHC9VhQJvTp4Xx2jCDK1zMbOmXLAAm_+ZnexydgAeWz1eGKfUg@mail.gmail.com>
+ <CA+EESO79Yx6gMBYX+QkU9f7TKo-L+_COomCoAqwFQYwg8xy=gg@mail.gmail.com>
+ <CAHC9VhSjVE6tC04h7k09LgTBrR-XW274ypvhcabkoyYLcDszHw@mail.gmail.com>
+ <CA+EESO7vqNMXeyk7GZ7syXrTFG54oaf1PUsC7+2ndEBEQeBpdw@mail.gmail.com>
+ <CAHC9VhQn-E+kTzzwwAiSLLQVtm5u=m5bOz2n-q+oA+8quT2noQ@mail.gmail.com>
+ <CA+EESO6qfCCZ5K1sWWrcBm6VM0w3LWkiOfAh3dhM-eVigVYYWA@mail.gmail.com>
+ <CAHC9VhTtLj9QPqEqO5hHPDmMnWzUaD-2PwGw=bQ=SBxvV78Sxg@mail.gmail.com> <CA+EESO465UY7v5W4k6cqWHTDq6e6pb_NBnZZRMjawHPvfEOOLw@mail.gmail.com>
+In-Reply-To: <CA+EESO465UY7v5W4k6cqWHTDq6e6pb_NBnZZRMjawHPvfEOOLw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 24 Nov 2020 20:52:15 -0500
+Message-ID: <CAHC9VhRRuc+Vxj5waVkVaJ5DN6XpTZnU8eub_Z0BFUMa5yJz0g@mail.gmail.com>
+Subject: Re: [PATCH v12 3/4] selinux: teach SELinux about anonymous inodes
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org,
+        Ondrej Mosnacek <omosnace@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TD.4.7.3. Try SNK DRP Connect Try.SRC DRP fails. The compliance
-tester mimics being a Try.SRC USB-C port.
-The failure is due to TCPM exiting SNK_TRY_WAIT_DEBOUNCE_CHECK_VBUS
-when VBUS is not present eventhough when SNK.Rp is seen. Exit to
-SRC_TRYWAIT from SNK_TRY_WAIT_DEBOUNCE_CHECK_VBUS only when SNK.Rp
-is not seen for PD_T_TRY_CC_DEBOUNCE.
+On Tue, Nov 24, 2020 at 3:44 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+> On Mon, Nov 23, 2020 at 2:43 PM Paul Moore <paul@paul-moore.com> wrote:
+> > On Mon, Nov 23, 2020 at 2:21 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+> > > On Sun, Nov 22, 2020 at 3:14 PM Paul Moore <paul@paul-moore.com> wrote:
+> > > > On Wed, Nov 18, 2020 at 5:39 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+> > > > > I have created a cuttlefish build and have tested with the attached
+> > > > > userfaultfd program:
+> > > >
+> > > > Thanks, that's a good place to start, a few comments:
+> > > >
+> > > > - While we support Android as a distribution, it isn't a platform that
+> > > > we common use for development and testing.  At the moment, Fedora is
+> > > > probably your best choice for that.
+> > > >
+> > > I tried setting up a debian/ubuntu system for testing using the
+> > > instructions on the selinux-testsuite page, but the system kept
+> > > freezing after 'setenforce 1'. I'll try with fedora now.
+> >
+> > I would expect you to have much better luck with Fedora.
+>
+> Yes. It worked!
 
-From the spec:
-The port shall then transition to Attached.SNK when the SNK.Rp state
-is detected on exactly one of the CC1 or CC2 pins for at least
-tTryCCDebounce and VBUS is detected. Alternatively, the port shall
-transition to TryWait.SRC if SNK.Rp state is not detected for
-tTryCCDebounce.
+Excellent :)
 
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 18 +++++++++++++-----
- include/linux/usb/pd.h        |  1 +
- 2 files changed, 14 insertions(+), 5 deletions(-)
+> > > > - Your test program should be written in vanilla C for the
+> > > > selinux-testsuite.  Looking at the userfaultfdSimple.cc code that
+> > > > should be a trivial conversion.
+> > > >
+> > > > - I think you have a good start on a test for the selinux-testsuite,
+> > > > please take a look at the test suite and submit a patch against that
+> > > > repo.  Ondrej (CC'd) currently maintains the test suite and he may
+> > > > have some additional thoughts.
+> > > >
+> > > > * https://github.com/SELinuxProject/selinux-testsuite
+> > >
+> > > Thanks a lot for the inputs. I'll start working on this.
+> >
+> > Great, let us know if you hit any problems.  I think we would all like
+> > to see this upstream :)
+>
+> I have the patch ready. I couldn't find any instructions on the
+> testsuite site about patch submission. Can you please tell me how to
+> proceed.
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 4aac0efdb720..b2cffa00d737 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -3124,15 +3124,13 @@ static void run_state_machine(struct tcpm_port *port)
- 		break;
- 	case SNK_TRY_WAIT_DEBOUNCE:
- 		tcpm_set_state(port, SNK_TRY_WAIT_DEBOUNCE_CHECK_VBUS,
--			       PD_T_PD_DEBOUNCE);
-+			       PD_T_TRY_CC_DEBOUNCE);
- 		break;
- 	case SNK_TRY_WAIT_DEBOUNCE_CHECK_VBUS:
--		if (port->vbus_present && tcpm_port_is_sink(port)) {
-+		if (port->vbus_present && tcpm_port_is_sink(port))
- 			tcpm_set_state(port, SNK_ATTACHED, 0);
--		} else {
--			tcpm_set_state(port, SRC_TRYWAIT, 0);
-+		else
- 			port->max_wait = 0;
--		}
- 		break;
- 	case SRC_TRYWAIT:
- 		tcpm_set_cc(port, tcpm_rp_cc(port));
-@@ -4053,6 +4051,12 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
- 		if (!tcpm_port_is_sink(port))
- 			tcpm_set_state(port, SNK_TRYWAIT_DEBOUNCE, 0);
- 		break;
-+	case SNK_TRY_WAIT_DEBOUNCE_CHECK_VBUS:
-+		if (!tcpm_port_is_sink(port))
-+			tcpm_set_state(port, SRC_TRYWAIT, PD_T_TRY_CC_DEBOUNCE);
-+		else
-+			tcpm_set_state(port, SNK_TRY_WAIT_DEBOUNCE_CHECK_VBUS, 0);
-+		break;
- 	case SNK_TRYWAIT:
- 		/* Do nothing, waiting for tCCDebounce */
- 		break;
-@@ -4139,6 +4143,10 @@ static void _tcpm_pd_vbus_on(struct tcpm_port *port)
- 	case SNK_TRYWAIT_DEBOUNCE:
- 		/* Do nothing, waiting for Rp */
- 		break;
-+	case SNK_TRY_WAIT_DEBOUNCE_CHECK_VBUS:
-+		if (port->vbus_present && tcpm_port_is_sink(port))
-+			tcpm_set_state(port, SNK_ATTACHED, 0);
-+		break;
- 	case SRC_TRY_WAIT:
- 	case SRC_TRY_DEBOUNCE:
- 		/* Do nothing, waiting for sink detection */
-diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
-index 3a805e2ecbc9..63a66dd5d832 100644
---- a/include/linux/usb/pd.h
-+++ b/include/linux/usb/pd.h
-@@ -484,6 +484,7 @@ static inline unsigned int rdo_max_power(u32 rdo)
- 
- #define PD_T_CC_DEBOUNCE	200	/* 100 - 200 ms */
- #define PD_T_PD_DEBOUNCE	20	/* 10 - 20 ms */
-+#define PD_T_TRY_CC_DEBOUNCE	15	/* 10 - 20 ms */
- 
- #define PD_N_CAPS_COUNT		(PD_T_NO_RESPONSE / PD_T_SEND_SOURCE_CAP)
- #define PD_N_HARD_RESET_COUNT	2
+You can post it to the SELinux mailing list, much like you would do a
+SELinux kernel patch.  I'll take a look and I'll make sure Ondrej
+looks at it too.
+
+Thanks!
+
 -- 
-2.29.2.454.gaff20da3a2-goog
-
+paul moore
+www.paul-moore.com
