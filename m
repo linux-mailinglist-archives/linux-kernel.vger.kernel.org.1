@@ -2,160 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30AA2C3921
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 07:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A782C3926
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 07:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgKYGgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 01:36:55 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:50942 "EHLO pegase1.c-s.fr"
+        id S1726421AbgKYGib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 01:38:31 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:36419 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbgKYGgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 01:36:55 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CgrlQ4mv8z9v4Wm;
-        Wed, 25 Nov 2020 07:36:50 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 9WOu8jrGC870; Wed, 25 Nov 2020 07:36:50 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CgrlQ2P6pz9v1VN;
-        Wed, 25 Nov 2020 07:36:50 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0A3DF8B7C1;
-        Wed, 25 Nov 2020 07:36:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id NyjcLbCJ2q3z; Wed, 25 Nov 2020 07:36:50 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 710BA8B7B7;
-        Wed, 25 Nov 2020 07:36:48 +0100 (CET)
-Subject: Re: [PATCH 0/2] powerpc: Remove support for ppc405/440 Xilinx
- platforms
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Kate Stewart <kstewart@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Richard Fontana <rfontana@redhat.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Leonardo Bras <leonardo@linux.ibm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Mark Brown <broonie@kernel.org>, git@xilinx.com,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Allison Randal <allison@lohutok.net>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michal Simek <monstr@monstr.eu>, Wei Hu <weh@microsoft.com>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Armijn Hemel <armijn@tjaldur.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Enrico Weigelt <info@metux.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>
-References: <cover.1585311091.git.michal.simek@xilinx.com>
- <CAK8P3a2mKPRFbRE3MWScr9GSiL4cpLg0wqv1Q28XDCZVPWgHfg@mail.gmail.com>
- <20200327131026.GT1922688@smile.fi.intel.com>
- <20200327131531.GU1922688@smile.fi.intel.com>
- <CAK8P3a1Z+ZPTDzgAjdz0a7d85R62BhUqkdEWgrwXh-OnYe6rog@mail.gmail.com>
- <20200327141434.GA1922688@smile.fi.intel.com>
- <b5adcc7a-9d10-d75f-50e3-9c150a7b4989@c-s.fr>
- <87mu7xum41.fsf@mpe.ellerman.id.au>
- <bac9af641140cf6df04e3532589a11c2f3bccd2f.camel@kernel.crashing.org>
- <87pncprwp9.fsf@mpe.ellerman.id.au>
- <5782f9a42ad8acd8b234fa9c15a09db93552dc6b.camel@kernel.crashing.org>
- <871roykwu6.fsf@mpe.ellerman.id.au>
- <CAK8P3a1XmeeP7FKfNwXZO8cXyJ_U_Jr0kjOaGZ6F=7OcoZ+0nw@mail.gmail.com>
- <87zha17otl.fsf@mpe.ellerman.id.au>
- <33b873a8-ded2-4866-fb70-c336fb325923@csgroup.eu>
-Message-ID: <02a27887-55ce-2101-efce-b1236e164f15@csgroup.eu>
-Date:   Wed, 25 Nov 2020 07:36:49 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1725848AbgKYGia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 01:38:30 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CgrnG3ynvz9sSf;
+        Wed, 25 Nov 2020 17:38:26 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606286308;
+        bh=cTPEJS09EHhWMwCmle3xYTW+xJkeXBNxP/JaqwEO6Jw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=apph+BCREdTIXyGW8Ei6n1dIDAuQH9a5UovBJI9T/31g549amhZFZ7+0EuewrlQkw
+         DkpXuoCBaTSbocuwbmku/4roXkq694+zHx9a5higPF2bt3lj646Cyxj5O6fHjmknT6
+         erpMlJdkaXOMoqDDNDvEIrCUniD+YkiWc/NrDMDL78GfLBBFA41XsPRRuqQkSp9DZb
+         0pNoJj37rnLkA9ICxWJdEAebBOqHgwkrbW5r9VXcTGyD3vC1s0OpYes6uv3cAY2sb2
+         2Splp4glm8r+IfDERXWdhs7jfycCsiQaLBNfkPZebiH+HkvhsXcYbThaFVVdAUUhyd
+         v2rWA4Iv2aQLQ==
+Date:   Wed, 25 Nov 2020 17:38:24 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kees Cook <keescook@chromium.org>, Guo Ren <ren_guo@c-sky.com>
+Cc:     Guo Ren <guoren@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+Subject: linux-next: manual merge of the seccomp tree with the csky tree
+Message-ID: <20201125173824.0e3dbcd7@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <33b873a8-ded2-4866-fb70-c336fb325923@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/xt.V3T5AihCa0pLxffcwI3h";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/xt.V3T5AihCa0pLxffcwI3h
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-Le 21/05/2020 à 12:38, Christophe Leroy a écrit :
-> 
-> 
-> Le 21/05/2020 à 09:02, Michael Ellerman a écrit :
->> Arnd Bergmann <arnd@arndb.de> writes:
->>> +On Wed, Apr 8, 2020 at 2:04 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
->>>> Benjamin Herrenschmidt <benh@kernel.crashing.org> writes:
->>>>> On Fri, 2020-04-03 at 15:59 +1100, Michael Ellerman wrote:
->>>>>> Benjamin Herrenschmidt <benh@kernel.crashing.org> writes:
->>>>> IBM still put 40x cores inside POWER chips no ?
->>>>
->>>> Oh yeah that's true. I guess most folks don't know that, or that they
->>>> run RHEL on them.
->>>
->>> Is there a reason for not having those dts files in mainline then?
->>> If nothing else, it would document what machines are still being
->>> used with future kernels.
->>
->> Sorry that part was a joke :D  Those chips don't run Linux.
->>
-> 
-> Nice to know :)
-> 
-> What's the plan then, do we still want to keep 40x in the kernel ?
-> 
-> If yes, is it ok to drop the oldies anyway as done in my series 
-> https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=172630 ?
-> 
-> (Note that this series will conflict with my series on hugepages on 8xx due to the 
-> PTE_ATOMIC_UPDATES stuff. I can rebase the 40x modernisation series on top of the 8xx hugepages 
-> series if it is worth it)
-> 
+Today's linux-next merge of the seccomp tree got a conflict in:
 
-Do we still want to keep 40x in the kernel ? We don't even have a running 40x QEMU machine as far as 
-I know.
+  arch/csky/include/asm/Kbuild
 
-I'm asking because I'd like to drop the non CONFIG_VMAP_STACK code to simplify and ease stuff (code 
-that works with vmalloc'ed stacks also works with stacks in linear memory), but I can't do it 
-because 40x doesn't have VMAP_STACK and should I implement it for 40x, I have to means to test it.
+between commit:
 
-So it would ease things if we could drop 40x completely, unless someone there has a 40x platform to 
-test stuff.
+  fed76f8679a6 ("csky: Add QUEUED_SPINLOCKS supported")
 
-Thanks
-Christophe
+from the csky tree and commit:
+
+  6e9ae6f98809 ("csky: Enable seccomp architecture tracking")
+
+from the seccomp tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/csky/include/asm/Kbuild
+index f814d46d347f,93372255984d..000000000000
+--- a/arch/csky/include/asm/Kbuild
++++ b/arch/csky/include/asm/Kbuild
+@@@ -3,9 -3,6 +3,8 @@@ generic-y +=3D asm-offsets.
+  generic-y +=3D gpio.h
+  generic-y +=3D kvm_para.h
+  generic-y +=3D local64.h
+ +generic-y +=3D mcs_spinlock.h
+  generic-y +=3D qrwlock.h
+ +generic-y +=3D qspinlock.h
+- generic-y +=3D seccomp.h
+  generic-y +=3D user.h
+  generic-y +=3D vmlinux.lds.h
+
+--Sig_/xt.V3T5AihCa0pLxffcwI3h
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+9++AACgkQAVBC80lX
+0Gx8pAgAm2WZ0wRCD7OxzawfY1FAQRDTKch3X8tnhF283L9KOID3N4Y8Vt9WM6/b
++eBD552vIYZUQhm1EixH/KiKkS+Mp2d9CnXDX3zyAVxvuCMawWbDAgz9j+0xn9me
+Vn5ElL0pTgy3jK10vTb7+my1whvVtZF1JrmcOog969Uzjx7EN2qm/TK78lqJ++Lu
+HONQNAUvG604iClYf5Q4M//GZnrPsCl8XXVWpvurfHgK48lIyYIwUZORaiIFpT1Q
+GdzfB7c1OCmnPhBxUxUdL1/vBsQv4QNRLLf/ly6nmYLqcraUkMFFl8ZRWhE/ySDt
+0kLaAX4l6Vw6z9XwL0GAaBd9UVn8Hw==
+=yD2O
+-----END PGP SIGNATURE-----
+
+--Sig_/xt.V3T5AihCa0pLxffcwI3h--
