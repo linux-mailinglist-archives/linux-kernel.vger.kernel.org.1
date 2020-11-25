@@ -2,96 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A631C2C412F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDF92C4130
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729093AbgKYNdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:33:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55878 "EHLO mail.kernel.org"
+        id S1729327AbgKYNdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:33:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52768 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgKYNdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:33:25 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5497C206E5;
-        Wed, 25 Nov 2020 13:33:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606311204;
-        bh=qMR4WaI/ekNVGzswOam38uhrE/iZ8ZA6U592n3HBsvA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QT9LtFymLx8QxE54gU6H9wvWBf3Zmp2NL62G/yRo5IKH1uA1RS5ZMlF9xlm4NUh8n
-         KKoc2BajuiVZdWaWJgwSsSGyR3SvLPOooBFuUMJFByB62z3+8WM4xF2p2zkARFkQnT
-         DALFOGDQb1xluXHCpLujP+PjetHuUrGfCRAtlt2g=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1khuvC-00DXJl-9S; Wed, 25 Nov 2020 13:33:22 +0000
+        id S1725838AbgKYNdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 08:33:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2EAF8AC23;
+        Wed, 25 Nov 2020 13:33:49 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 13:33:46 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <20201125133346.GN3306@suse.de>
+References: <X73s8fxDKPRD6wET@redhat.com>
+ <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
+ <20201125103933.GM3306@suse.de>
+ <5f01bde6-fe31-9b0e-f288-06b82598a8b3@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 25 Nov 2020 13:33:22 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Andrew Scull <ascull@google.com>,
-        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v2 04/24] arm64: Move MAIR_EL1_SET to asm/memory.h
-In-Reply-To: <20201125132617.qf6vd752dtfasyi7@google.com>
-References: <20201116204318.63987-1-dbrazdil@google.com>
- <20201116204318.63987-5-dbrazdil@google.com> <87mtz85geh.wl-maz@kernel.org>
- <20201125103137.iml7mqpzhylldvqy@google.com>
- <e6c9184c6ee986d134625932b4fa8e89@kernel.org>
- <20201125132617.qf6vd752dtfasyi7@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <a37ac792b61d4931d0b4d1356e96415e@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <5f01bde6-fe31-9b0e-f288-06b82598a8b3@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-25 13:26, David Brazdil wrote:
-
->> I came up with the following patch on top of this series that seems to
->> compile without issue.
+On Wed, Nov 25, 2020 at 12:04:15PM +0100, David Hildenbrand wrote:
+> On 25.11.20 11:39, Mel Gorman wrote:
+> > On Wed, Nov 25, 2020 at 07:45:30AM +0100, David Hildenbrand wrote:
+> >>> Something must have changed more recently than v5.1 that caused the
+> >>> zoneid of reserved pages to be wrong, a possible candidate for the
+> >>> real would be this change below:
+> >>>
+> >>> +               __init_single_page(pfn_to_page(pfn), pfn, 0, 0);
+> >>>
+> >>
+> >> Before that change, the memmap of memory holes were only zeroed out. So the zones/nid was 0, however, pages were not reserved and had a refcount of zero - resulting in other issues.
+> >>
+> >> Most pfn walkers shouldn???t mess with reserved pages and simply skip them. That would be the right fix here.
+> >>
+> > 
+> > Ordinarily yes, pfn walkers should not care about reserved pages but it's
+> > still surprising that the node/zone linkages would be wrong for memory
+> > holes. If they are in the middle of a zone, it means that a hole with
+> > valid struct pages could be mistaken for overlapping nodes (if the hole
+> > was in node 1 for example) or overlapping zones which is just broken.
 > 
-> That seems to have an implicit dependency of sysreg.h on memory.h, 
-> doesn't it?
-> I had it the other way round initially. I also tried including memory.h 
-> in
-> sysreg.h. That creates a circular dependency mmdebug.h -> bug.h -> ... 
-> ->
-> sysreg.h -> memory.h -> mmdebug.h. Pretty annoying. I could try to fix 
-> that,
-> or create a new header file... :(
+> I agree within zones - but AFAIU, the issue is reserved memory between
+> zones, right?
+> 
 
-I don't think we need this. Any low-level source using MAIR_ELx_SET is 
-bound
-to require memory.h as well, one way or another. As this is all 
-#defines,
-it won't break anything unless actively used.
+It can also occur in the middle of the zone.
 
-And given that this is used in exactly *two* places, I don't believe 
-there
-is a need for over-engineering this.
+> Assume your end of memory falls within a section - what would be the
+> right node/zone for such a memory hole at the end of the section?
 
-Thanks,
+Assuming a hole is not MAX_ORDER-aligned but there is real memory within
+the page block, then the node/zone for the struct pages backing the hole
+should match the real memorys node and zone.
 
-         M.
+As it stands, with the uninitialised node/zone, certain checks like
+page_is_buddy(): page_zone_id(page) != page_zone_id(buddy) may only
+work by co-incidence. page_is_buddy() happens to work anyway because
+PageBuddy(buddy) would never be true for a PageReserved page.
+
+> With
+> memory hotplug after such a hole, we can easily have multiple
+> nodes/zones spanning such a hole, unknown before hotplug.
+> 
+
+When hotplugged, the same logic would apply. Where the hole is not aligned,
+the struct page linkages should match the "real" memory".
+
+> > It would partially paper over the issue that setting the pageblock type
+> > based on a reserved page. I agree that compaction should not be returning
+> > pfns that are outside of the zone range because that is buggy in itself
+> > but valid struct pages should have valid information. I don't think we
+> > want to paper over that with unnecessary PageReserved checks.
+> 
+> Agreed as long as we can handle that issue using range checks.
+> 
+
+I think it'll be ok as long as the struct pages within a 1<<(MAX_ORDER-1)
+range have proper linkages.
+
 -- 
-Jazz is not dead. It just smells funny...
+Mel Gorman
+SUSE Labs
