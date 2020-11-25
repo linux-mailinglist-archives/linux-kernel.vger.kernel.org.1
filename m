@@ -2,166 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1282F2C4909
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26D82C4910
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729826AbgKYU1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 15:27:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44831 "EHLO
+        id S1729906AbgKYU1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 15:27:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47012 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729608AbgKYU1V (ORCPT
+        by vger.kernel.org with ESMTP id S1729608AbgKYU1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 15:27:21 -0500
+        Wed, 25 Nov 2020 15:27:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606336039;
+        s=mimecast20190719; t=1606336056;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mHKnvKojNg07maTXpdLc7opl7LeH8NxJHEW+j33de5M=;
-        b=CB56MnrnevGHNYbgCF7FzdCvuMe7yXFArMIo6e9TaAElTHnDG+UYOFVEMNsfpw/ePoKsLD
-        edYaOFbWDdxLr1IMUlDLReO2vbVXgQqhj3nzwp/FswBvj4fOcRnE8dD06bVPApzs0DDVXq
-        Q37Q26Rug1CKL/H7WXaI+D5/pxvN2i8=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-mLlJSEeLPzKiRA9ca0TV8A-1; Wed, 25 Nov 2020 15:27:16 -0500
-X-MC-Unique: mLlJSEeLPzKiRA9ca0TV8A-1
-Received: by mail-qv1-f72.google.com with SMTP id y21so3236329qve.7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 12:27:16 -0800 (PST)
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=4HJ2v8f9kS+7OevKdt8lnBxNs8lmIy/EbT4vGg0ZhGU=;
+        b=ZvjYhLBe7ippnV+dQX0AJNnuS5N6QQK6AXLt8ifievYmCMCK890QzQJqX3ROPYoAJt1RVK
+        eyNCZnxO/sPpQyFLv6GPnVIKvE12UfBE/2L54d76YssPkHMXefcaaHDtFYOWh6ricHPNMn
+        d4jKQoE+1rVKwBLX6upkpwm8qf9NPKQ=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-3_sm1ccTOFC4YJzjQAXouA-1; Wed, 25 Nov 2020 15:27:34 -0500
+X-MC-Unique: 3_sm1ccTOFC4YJzjQAXouA-1
+Received: by mail-qv1-f71.google.com with SMTP id s8so3213305qvr.20
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 12:27:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mHKnvKojNg07maTXpdLc7opl7LeH8NxJHEW+j33de5M=;
-        b=Y4k57B7aQB6/R6QK4R6AO4SRNV0E6LvNJ+eEY5dJUMDq8+xTlJE7J8cxCfhcMPvHl7
-         v2X4QjgoZcpy2jFfBibGH/FADA3B8U78lYB613izHrnsmCm02jlYhGGNyb1lYmAhXa+M
-         xRUV+uHGTQ86VnpT1Bf1gLprEdz8NmuMJ0TkoBHA+Lo7SM67fNVHiMYWNA3TPh87PjIm
-         /64Gcgn72QUkIbAG+tdkM2XYIfErDUtMGp1P9rWMsLXRV7tRBzgaxaMvPzrc8Pl9Dt6A
-         U8SunolCtQxWog5EFhtAmhCCmYuKbF8DXwaoWUF+eoVQLmZY4NEjAgvHNRj24bBM5XUa
-         Nl2w==
-X-Gm-Message-State: AOAM532Vv73qJQZo0Cu1HtSJOceF3t78T7b4qjfWiGSATejbf2yP1EaY
-        fpymQRaAlZRQyR2IiY9aJT6obNN+9p8Ulx0iussFW7qKkAFsZJJHhysAd0KrHw9/StrsybKltJJ
-        iWfZ35QNU6o5Gbqy4Y+bKFO2B
-X-Received: by 2002:a37:6f07:: with SMTP id k7mr645809qkc.423.1606336036382;
-        Wed, 25 Nov 2020 12:27:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxIW7/SCjK5C7le3XLJ7c7SswM/9Tbl2wvjAUiYOJaHFKIGoPwGq/hxgNfwbsf46D2m+6cudA==
-X-Received: by 2002:a37:6f07:: with SMTP id k7mr645781qkc.423.1606336036152;
-        Wed, 25 Nov 2020 12:27:16 -0800 (PST)
-Received: from dev.jcline.org ([2605:a601:a638:b301:9966:d978:493:6a3d])
-        by smtp.gmail.com with ESMTPSA id o187sm431772qkb.120.2020.11.25.12.27.15
+        h=x-gm-message-state:user-agent:from:to:subject:date:message-id
+         :mime-version;
+        bh=4HJ2v8f9kS+7OevKdt8lnBxNs8lmIy/EbT4vGg0ZhGU=;
+        b=MLZl7k22bNExbm1ra29aA0tDnncmtbtlV/z2k1ttFZCZiNf1JScckz3DctatRCtKJm
+         j7rQHUT4SN3GcYVB1G4Azzb42oRpzxJpLMAtjpbtWFlpYXNBPndSta12jHTKPPS2uOg4
+         e8z/lovr2Na5GhMj4PF5wk2nu0m4PSSGMV91CY2+LHiRnni91p2k3AHnNdgi8w3w5bIx
+         Jz4gmG3UzZsJf80vdiA9NCx1SCFRrQI75T4oX9dg86r//n/zsiwFRF8XREcYdjww5/OT
+         mwaEJLmF1aaGWN+2Eqs4scjLfNW8aNs7oFwjP9AQrPp3dOZIuSv+GsZkbNZ45rYXRt/n
+         UmWQ==
+X-Gm-Message-State: AOAM5327+QhrHikqR5P5XOA0ymIkYv5c/q2Oq2Fw/ruBAfqh86OYsZzg
+        44UNG/rUfNJn+JkPcfu4PB9M9dmVGgxJ4dcDGp0E1KQk/dkVCFrEUHGWIu5MFsskpWckgYAe3hj
+        2sA4Xcn6fDkGNB4KMmkOIr1hz
+X-Received: by 2002:ac8:4e84:: with SMTP id 4mr685414qtp.296.1606336053899;
+        Wed, 25 Nov 2020 12:27:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxWFbZOwl0Conrxed5+2lAywJNEc3k82+XLXf8ktBVme0EYoDWjdb8pXB2rkats9/OyDEivzQ==
+X-Received: by 2002:ac8:4e84:: with SMTP id 4mr685378qtp.296.1606336053632;
+        Wed, 25 Nov 2020 12:27:33 -0800 (PST)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id b64sm447921qkg.19.2020.11.25.12.27.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 12:27:15 -0800 (PST)
-From:   Jeremy Cline <jcline@redhat.com>
-To:     Ben Skeggs <bskeggs@redhat.com>
-Cc:     Lyude Paul <lyude@redhat.com>, Karol Herbst <kherbst@redhat.com>,
-        David Airlie <airlied@linux.ie>, nouveau@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jeremy Cline <jcline@redhat.com>, stable@vger.kernel.org
-Subject: [PATCH v2 3/3] drm/nouveau: clean up all clients on device removal
-Date:   Wed, 25 Nov 2020 15:26:48 -0500
-Message-Id: <20201125202648.5220-4-jcline@redhat.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201125202648.5220-1-jcline@redhat.com>
-References: <20201103194912.184413-1-jcline@redhat.com>
- <20201125202648.5220-1-jcline@redhat.com>
+        Wed, 25 Nov 2020 12:27:32 -0800 (PST)
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        stable@kernel.vger.org
+Subject: Question about domain_init (v5.3-v5.7)
+Date:   Wed, 25 Nov 2020 13:27:31 -0700
+Message-ID: <87h7pd6v2k.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The postclose handler can run after the device has been removed (or the
-driver has been unbound) since userspace clients are free to hold the
-file open as long as they want. Because the device removal callback
-frees the entire nouveau_drm structure, any reference to it in the
-postclose handler will result in a use-after-free.
 
-To reproduce this, one must simply open the device file, unbind the
-driver (or physically remove the device), and then close the device
-file. This was found and can be reproduced easily with the IGT
-core_hotunplug tests.
+Is there a reason we check the requested guest address width against the
+iommu's mgaw, instead of the agaw that we already know for the iommu?
+I've run into a case with a new system where the mgaw reported is 57,
+but if they set PAE to 46 instead of 52 in the bios, then sagaw reports
+the highest supported agaw is 48 and the domain_init code fails here. In
+other places like prepare_domain_attach_device, the dmar domain agaw
+gets adjusted down to the iommu agaw. The agaw of the iommu gets
+determined based off what is reported for sagaw. I'm wondering if it
+can't instead do:
 
-To avoid this, all clients are cleaned up in the device finalization
-rather than deferring it to the postclose handler, and the postclose
-handler is protected by a critical section which ensures the
-drm_dev_unplug() and the postclose handler won't race.
-
-This is not an ideal fix, since as I understand the proposed plan for
-the kernel<->userspace interface for hotplug support, destroying the
-client before the file is closed will cause problems. However, I believe
-to properly fix this issue, the lifetime of the nouveau_drm structure
-needs to be extended to match the drm_device, and this proved to be a
-rather invasive change. Thus, I've broken this out so the fix can be
-easily backported.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Jeremy Cline <jcline@redhat.com>
 ---
- drivers/gpu/drm/nouveau/nouveau_drm.c | 30 +++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ drivers/iommu/intel-iommu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_drm.c b/drivers/gpu/drm/nouveau/nouveau_drm.c
-index 6ee1adc9bd40..afaf1774ee35 100644
---- a/drivers/gpu/drm/nouveau/nouveau_drm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
-@@ -628,6 +628,7 @@ nouveau_drm_device_init(struct drm_device *dev)
- static void
- nouveau_drm_device_fini(struct drm_device *dev)
- {
-+	struct nouveau_cli *cli, *temp_cli;
- 	struct nouveau_drm *drm = nouveau_drm(dev);
- 
- 	if (nouveau_pmops_runtime()) {
-@@ -652,6 +653,24 @@ nouveau_drm_device_fini(struct drm_device *dev)
- 	nouveau_ttm_fini(drm);
- 	nouveau_vga_fini(drm);
- 
-+	/*
-+	 * There may be existing clients from as-yet unclosed files. For now,
-+	 * clean them up here rather than deferring until the file is closed,
-+	 * but this likely not correct if we want to support hot-unplugging
-+	 * properly.
-+	 */
-+	mutex_lock(&drm->clients_lock);
-+	list_for_each_entry_safe(cli, temp_cli, &drm->clients, head) {
-+		list_del(&cli->head);
-+		mutex_lock(&cli->mutex);
-+		if (cli->abi16)
-+			nouveau_abi16_fini(cli->abi16);
-+		mutex_unlock(&cli->mutex);
-+		nouveau_cli_fini(cli);
-+		kfree(cli);
-+	}
-+	mutex_unlock(&drm->clients_lock);
-+
- 	nouveau_cli_fini(&drm->client);
- 	nouveau_cli_fini(&drm->master);
- 	nvif_parent_dtor(&drm->parent);
-@@ -1111,6 +1130,16 @@ nouveau_drm_postclose(struct drm_device *dev, struct drm_file *fpriv)
- {
- 	struct nouveau_cli *cli = nouveau_cli(fpriv);
- 	struct nouveau_drm *drm = nouveau_drm(dev);
-+	int dev_index;
-+
-+	/*
-+	 * The device is gone, and as it currently stands all clients are
-+	 * cleaned up in the removal codepath. In the future this may change
-+	 * so that we can support hot-unplugging, but for now we immediately
-+	 * return to avoid a double-free situation.
-+	 */
-+	if (!drm_dev_enter(dev, &dev_index))
-+		return;
- 
- 	pm_runtime_get_sync(dev->dev);
- 
-@@ -1127,6 +1156,7 @@ nouveau_drm_postclose(struct drm_device *dev, struct drm_file *fpriv)
- 	kfree(cli);
- 	pm_runtime_mark_last_busy(dev->dev);
- 	pm_runtime_put_autosuspend(dev->dev);
-+	drm_dev_exit(dev_index);
- }
- 
- static const struct drm_ioctl_desc
--- 
-2.28.0
+diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+index 6ca5c92ef2e5..a8e41ec36d9e 100644
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -1862,8 +1862,8 @@ static int domain_init(struct dmar_domain *domain, struct intel_iommu *iommu,
+ 	domain_reserve_special_ranges(domain);
+
+ 	/* calculate AGAW */
+-	if (guest_width > cap_mgaw(iommu->cap))
+-	        guest_width = cap_mgaw(iommu->cap);
++	if (guest_width > agaw_to_width(iommu->agaw))
++	        guest_width = agaw_to_width(iommu->agaw);
+ 	domain->gaw = guest_width;
+ 	adjust_width = guestwidth_to_adjustwidth(guest_width);
+ 	agaw = width_to_agaw(adjust_width);
+--
+2.27.0
+
+
+Thoughts? With the former code the ehci device for the ilo fails when
+trying to get a private domain.
+
+Thanks,
+Jerry
 
