@@ -2,146 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225E52C4B23
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B64A2C4B2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 00:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728663AbgKYW5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 17:57:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
+        id S1729002AbgKYXCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 18:02:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728467AbgKYW5t (ORCPT
+        with ESMTP id S1728675AbgKYXCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 17:57:49 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FB4C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 14:57:37 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id k5so151647plt.6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 14:57:37 -0800 (PST)
+        Wed, 25 Nov 2020 18:02:46 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E42C0617A7;
+        Wed, 25 Nov 2020 15:02:45 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id t4so68357wrr.12;
+        Wed, 25 Nov 2020 15:02:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g64g7U4GAHaKj7z3gZ4urzrJeg/GRUrDZaN3e2rg/7I=;
-        b=gX0UGA3R4cMOytViDwEKeKS6Zu+WrrqtPOgPrEI7lBwKoywrWQcz6qxseyyuWERJgH
-         u7upTWQTpNQ+MsE34RjsOo+DQhbGgQznlOLyU8DO0A5SYx9QSotFT6QxpQ6sjcF4WUgR
-         eGwSPMgFrABuoFZCy0+ekxc3S+FbmJt4NdNfkDq8dXoxc8gEq7oXbyGRwmzv3he4Z56j
-         wTy5FGPTZVqVR76MtEABh24iKjko5FtGL4Jsfj0Rr6B1PoFWPDOaebroaoWRdURUVS26
-         zRCCXrpoG0QCEUYnFMvSnLariZZWTwdV+w0PCwppNAdbsU+wbfr8gd1S4n4S97IunAHF
-         tmnw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ha42UWMtlXOL8kfvC1XpFKttY73p7G2gxviD5bIo2Ac=;
+        b=cK16XuXEr1UlZZi/GgHF7dItPstb+7yZ2QUTp5Dxvdc6OIX52ygirnUAKuRVBOH+dK
+         A20pmgUIw2HuGZFFAXCmBSAdjpUAnHlbQW6vzVJQphFFEbO8NHcI7pY1E1IYv6o5k0Qf
+         jXWsM0ddqTXTn/1nZTXycpkYVMfbhxZxJ9mV7kOEU+Tec/es0pgNM20lzmzFkZBYIURn
+         HK2FiFuW7CXMZxeXIL3yJ5bCH/J8M2hkcorgk3PecLezXYs+oTw3zVRlNq6FEGJfSXMe
+         e5NpXkmlA2dB6AmhViUGWqJQAiQop1G/7Q0C0bZUhlLDOGEFt9XX9+Dv47nZ0Rj6T1x/
+         IsxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g64g7U4GAHaKj7z3gZ4urzrJeg/GRUrDZaN3e2rg/7I=;
-        b=TjuyyFQiVOEH3ydSNvSIk2QGIJTeIRcMxQFnvaxrS9dcgjuplneE8Nr2ibhzi/aets
-         3PQA8Y3D8Dqiy/WAMf9bTdlrRwgIE4kR+R0E52RLs8f4yrrDmiBTPkJ1Dt384i3eh/8o
-         uEWk3rvONdjms5LrfkL4DaGx66S/rPDZ2EWIzd41q0eQ00iz+Sg20W6eNN3Mgav5T089
-         SclkMKhCyJX/wA1rieKDpuDNpT/eCz208cUW34w0P5KbpvgI6t1M0olZlrfsuHAokqBT
-         8ZNLqM/2nsPH628caMTD0OMqZLvoibRnKjCVOd3o8O9kQmiwbEv9z0prILfWr/B9CRCq
-         Rc0g==
-X-Gm-Message-State: AOAM530sv+d1k2KmgE+mWrajPETHa/OQ4TJrRayEM19aaqEunKNeZGW5
-        JJFh8dawcnDWcPFag+OEF8o=
-X-Google-Smtp-Source: ABdhPJyvVkFLfZfnQm6y0RC2JYXootTiNM952kgugDZiZ/VHS20QQiAInBN/TbFOdEmfMbzXHA9kJQ==
-X-Received: by 2002:a17:902:7206:b029:d7:e6db:38c6 with SMTP id ba6-20020a1709027206b02900d7e6db38c6mr119974plb.6.1606345056679;
-        Wed, 25 Nov 2020 14:57:36 -0800 (PST)
-Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
-        by smtp.gmail.com with ESMTPSA id u4sm3425319pjg.55.2020.11.25.14.57.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 14:57:35 -0800 (PST)
-Date:   Thu, 26 Nov 2020 09:57:31 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 14/32] sched: migration changes for core scheduling
-Message-ID: <20201125225731.GB163610@balbir-desktop>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-15-joel@joelfernandes.org>
- <20201122235456.GF110669@balbir-desktop>
- <0b2514ef-6cc3-c1a3-280b-5d9062c80a31@linux.intel.com>
- <20201124154237.GZ3021@hirez.programming.kicks-ass.net>
- <d541b70c-c65f-5bf6-5e71-0b9b35457fae@linux.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ha42UWMtlXOL8kfvC1XpFKttY73p7G2gxviD5bIo2Ac=;
+        b=EZ1sHP5y4bIz8FH5XVXgjLQgnG2x4dnCIhnFjQy6jE+sBV6j86jIwkXefElTPsZxaw
+         06goq9L4iUkfAjC/GGVDi+S/Pgc7hn8xuBmODBNwg7L5lOmcLZ7a2jIIC417rpG01Ssg
+         UrNQk7jirFNv14EEbVAErekh5WppRQHpvv+aNsNvBNI3yaUPizY8zc1McQzsA3znhm2H
+         jh7KxBxt8M1UMteAyRveMlRMtjHxe8ABarEeWIOPidvUi4J/bR1XEQhZhy2gixUnQaEO
+         oGns+E1NugO8MH5pzvlxgJh68thcslWBMA0Yn/7LGgxO394on0HPrlngMTYFcTC/pTBp
+         zJ8Q==
+X-Gm-Message-State: AOAM530/M0//wDJBX2OxhveroGx0YIaMktzcLNS1ao3aUQEg5uLeGwuw
+        oaUcFQbayeP9J7Q/0RR/Hrc=
+X-Google-Smtp-Source: ABdhPJzir63ZhkohioP0Ktx42tkGcEWW5m4eKxg+CUjAscHddZDwqHZSdjbm/E0JNHFBggGwkKFODQ==
+X-Received: by 2002:a5d:474b:: with SMTP id o11mr180470wrs.235.1606345364309;
+        Wed, 25 Nov 2020 15:02:44 -0800 (PST)
+Received: from [192.168.1.122] (cpc92720-cmbg20-2-0-cust364.5-4.cable.virginm.net. [82.21.83.109])
+        by smtp.gmail.com with ESMTPSA id u129sm5552667wme.9.2020.11.25.15.02.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Nov 2020 15:02:43 -0800 (PST)
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To:     Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
+        cluster-devel@redhat.com, coreteam@netfilter.org,
+        devel@driverdev.osuosl.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
+        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook>
+ <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook>
+ <CAKwvOdntVfXj2WRR5n6Kw7BfG7FdKpTeHeh5nPu5AzwVMhOHTg@mail.gmail.com>
+ <202011241324.B3439A2@keescook>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <99a9ffd7-6356-b81d-6e08-7ed74b6fb82c@gmail.com>
+Date:   Wed, 25 Nov 2020 23:02:40 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d541b70c-c65f-5bf6-5e71-0b9b35457fae@linux.intel.com>
+In-Reply-To: <202011241324.B3439A2@keescook>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 11:12:53AM +0800, Li, Aubrey wrote:
-> On 2020/11/24 23:42, Peter Zijlstra wrote:
-> > On Mon, Nov 23, 2020 at 12:36:10PM +0800, Li, Aubrey wrote:
-> >>>> +#ifdef CONFIG_SCHED_CORE
-> >>>> +		/*
-> >>>> +		 * Skip this cpu if source task's cookie does not match
-> >>>> +		 * with CPU's core cookie.
-> >>>> +		 */
-> >>>> +		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
-> >>>> +			continue;
-> >>>> +#endif
-> >>>> +
-> >>>
-> >>> Any reason this is under an #ifdef? In sched_core_cookie_match() won't
-> >>> the check for sched_core_enabled() do the right thing even when
-> >>> CONFIG_SCHED_CORE is not enabed?> 
-> >> Yes, sched_core_enabled works properly when CONFIG_SCHED_CORE is not
-> >> enabled. But when CONFIG_SCHED_CORE is not enabled, it does not make
-> >> sense to leave a core scheduler specific function here even at compile
-> >> time. Also, for the cases in hot path, this saves CPU cycles to avoid
-> >> a judgment.
-> > 
-> > No, that's nonsense. If it works, remove the #ifdef. Less (#ifdef) is
-> > more.
-> > 
-> 
-> Okay, I pasted the refined patch here.
-> @Joel, please let me know if you want me to send it in a separated thread.
->
+On 24/11/2020 21:25, Kees Cook wrote:
+> I still think this isn't right -- it's a case statement that runs off
+> the end without an explicit flow control determination.
 
-You still have a bunch of #ifdefs, can't we just do
+Proves too much — for instance
+    case foo:
+    case bar:
+        thing;
+        break;
+ doesn't require a fallthrough; after case foo:, and afaik
+ no-one is suggesting it should.  Yet it, too, is "a case
+ statement that runs off the end without an explicit flow
+ control determination".
 
-#ifndef CONFIG_SCHED_CORE
-static inline bool sched_core_enabled(struct rq *rq)
-{
-        return false;
-}
-#endif
-
-and frankly I think even that is not needed because there is a jump
-label __sched_core_enabled that tells us if sched_core is enabled or
-not.
-
-Balbir
-
+-ed
