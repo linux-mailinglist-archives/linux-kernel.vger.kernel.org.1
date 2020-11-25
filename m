@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13E42C49CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4F02C49CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731861AbgKYVRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:17:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51674 "EHLO mail.kernel.org"
+        id S1731877AbgKYVSM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Nov 2020 16:18:12 -0500
+Received: from mga05.intel.com ([192.55.52.43]:38284 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731796AbgKYVRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:17:10 -0500
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8BA52083E;
-        Wed, 25 Nov 2020 21:17:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606339029;
-        bh=58337+gs43iP+cFDxloCX/PrwkDLWOuPYltM2JNApwc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZRRjETqAJR47pcyuqxnSuqvNCs2wh1ZDuFvp/uMjJ3UwnmfsbDC9VPx89WbkUJww2
-         s+YUXJIPU+174mRAbEaDi1XKTP0HLR4Ufb8M6bUubvE7J6ZuYK+ia31bmXh/qaJoAI
-         kq0inx9G5xv318ShlNc2SGMBB/YSgZSyLvlhf5oo=
-Received: by mail-oi1-f169.google.com with SMTP id f11so4405165oij.6;
-        Wed, 25 Nov 2020 13:17:09 -0800 (PST)
-X-Gm-Message-State: AOAM532zmpcekmyJl5dIvnolhIoqB41KiQfx8opLUkpX9gj5LHdI42DQ
-        AdZjcScgGNQHqvIpYn/23IRB4GFd1yqjpDy7qdM=
-X-Google-Smtp-Source: ABdhPJxJBVmNIOvtJujpgR3VJApzRuQTSlu+F6vP6jX1mMfwH0XWfyKUvBrlni2i6l267ZnZRFSxuEvkOczTLR6PN4Y=
-X-Received: by 2002:aca:c657:: with SMTP id w84mr5748oif.47.1606339029021;
- Wed, 25 Nov 2020 13:17:09 -0800 (PST)
+        id S1730457AbgKYVSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 16:18:11 -0500
+IronPort-SDR: ceNgzn/C/aLEiujR1OjKKT0PYCR8V5KQmNeSGI4e0X/ecUiv1hFM1UNTtbxQjhhqMxDa46wBt4
+ uuL3P6fYFHzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="256910827"
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="256910827"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 13:18:11 -0800
+IronPort-SDR: XvNnUUZ7cV5LVdmcE96fR6Y0baljMYMvE3vFkskYGCNjtsGLOZbFBQP1W5iN69XUpbU4CzSDj2
+ W/wk5Qg5ZleQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="333144215"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga006.jf.intel.com with ESMTP; 25 Nov 2020 13:18:11 -0800
+Received: from shsmsx603.ccr.corp.intel.com (10.109.6.143) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 25 Nov 2020 13:18:10 -0800
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ SHSMSX603.ccr.corp.intel.com (10.109.6.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 26 Nov 2020 05:18:07 +0800
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
+ Wed, 25 Nov 2020 23:18:04 +0200
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Usyskin, Alexander" <alexander.usyskin@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wang, Yu1" <yu1.wang@intel.com>,
+        "Liu, Shuo A" <shuo.a.liu@intel.com>,
+        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>
+Subject: RE: [char-misc-next 13/13] mei: virtio: virtualization frontend
+ driver
+Thread-Topic: [char-misc-next 13/13] mei: virtio: virtualization frontend
+ driver
+Thread-Index: AQHWw28j9RGT1SK8L0Gh4X46OdrLTqnZWXgg
+Date:   Wed, 25 Nov 2020 21:18:04 +0000
+Message-ID: <7f6181d8e80d4efb9464e9ec436800b7@intel.com>
+References: <20200818115147.2567012-1-tomas.winkler@intel.com>
+ <20200818115147.2567012-14-tomas.winkler@intel.com>
+ <20201125160326-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20201125160326-mutt-send-email-mst@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20201125211311.2179-1-iuliana.prodan@oss.nxp.com>
-In-Reply-To: <20201125211311.2179-1-iuliana.prodan@oss.nxp.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 25 Nov 2020 22:16:57 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH=gyCz7NQXaAoNC4cf37t9E8znngyLFVPv+dO79=Z9oQ@mail.gmail.com>
-Message-ID: <CAMj1kXH=gyCz7NQXaAoNC4cf37t9E8znngyLFVPv+dO79=Z9oQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] crypto: add CRYPTO_TFM_REQ_DMA flag
-To:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-imx <linux-imx@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 at 22:14, Iuliana Prodan (OSS)
-<iuliana.prodan@oss.nxp.com> wrote:
->
-> From: Iuliana Prodan <iuliana.prodan@nxp.com>
->
-> Add the option to allocate the crypto request object plus any extra space
-> needed by the driver into a DMA-able memory.
->
-> Add CRYPTO_TFM_REQ_DMA flag to be used by backend implementations to
-> indicate to crypto API the need to allocate GFP_DMA memory
-> for private contexts of the crypto requests.
->
+> 
+> On Tue, Aug 18, 2020 at 02:51:47PM +0300, Tomas Winkler wrote:
+> > +#ifndef VIRTIO_ID_MEI
+> > +#define VIRTIO_ID_MEI 0xFFFE /* virtio mei */ #endif
+> 
+> Just noticed now that this driver landed upstream.  Can I ask that you guys
+> please register IDs with the virtio TC and not just pick a number at random?
+> In particular this is way outside allowed range.
+> 
+> IDs should also be listed in include/uapi/linux/virtio_ids.h
+> 
+> If people just pick random numbers like this collistions are unavoidable.
+> 
+> List of IDs is part of virtio spec, chapter "Device Types".
+> 
+> Please do this change now before this goes out to production!
+Okay,  this was assigned by ACRN, my impression was it's already registered.
+Will take care of.
+Thanks
+Tomas
 
-These are always directional DMA mappings, right? So why can't we use
-bounce buffering here?
-
-> For IPsec use cases, CRYPTO_TFM_REQ_DMA flag is also checked in
-> esp_alloc_tmp() function for IPv4 and IPv6.
->
-> This series includes an example of how a driver can use
-> CRYPTO_TFM_REQ_DMA flag while setting reqsize to a larger value
-> to avoid allocating memory at crypto request runtime.
-> The extra size needed by the driver is added to the reqsize field
-> that indicates how much memory could be needed per request.
->
-> Iuliana Prodan (4):
->   crypto: add CRYPTO_TFM_REQ_DMA flag
->   net: esp: check CRYPTO_TFM_REQ_DMA flag when allocating crypto request
->   crypto: caam - avoid allocating memory at crypto request runtime for
->     skcipher
->   crypto: caam - avoid allocating memory at crypto request runtime for
->     aead
->
->  drivers/crypto/caam/caamalg.c | 130 +++++++++++++++++++++++++---------
->  include/crypto/aead.h         |   4 ++
->  include/crypto/akcipher.h     |  21 ++++++
->  include/crypto/hash.h         |   4 ++
->  include/crypto/skcipher.h     |   4 ++
->  include/linux/crypto.h        |   1 +
->  net/ipv4/esp4.c               |   7 +-
->  net/ipv6/esp6.c               |   7 +-
->  8 files changed, 144 insertions(+), 34 deletions(-)
->
-> --
-> 2.17.1
->
