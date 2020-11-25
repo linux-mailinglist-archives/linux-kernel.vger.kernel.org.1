@@ -2,166 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FF82C4662
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 037782C4664
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732578AbgKYREe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:04:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731273AbgKYRE1 (ORCPT
+        id S1732581AbgKYRFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:05:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55463 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730293AbgKYRFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:04:27 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425FFC061A4F;
-        Wed, 25 Nov 2020 09:04:27 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id t33so377302ybd.0;
-        Wed, 25 Nov 2020 09:04:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U7yONu+GErpj3wVA3mUEvd1gZrZu1iMtuB4J5cc4iYs=;
-        b=bn+pL/HmrYW2tlvsO08UsmlB+e0sDsIo/gBe6lZBPy5Ml0r7IepVRmwL3Z1msCDTmB
-         4Fj8yYJnSSwKpycrMD6jc9mJYcLEOxyjBt+mj/swgeJwfcTqBWFSYbINT99XJh8MBLLG
-         BhdJX4URpdAlU1PS41QCV8cX0uycEbKi5uankHMmLYXfRheyb1dBSnJ2lYbkM9jPzYRg
-         +YL1Fiv4xli6A/G5oR00+c/fqffNKJdLOgNLmafCTxGe8sUqpvTjraMjrzXLQkd2Vyg7
-         6NJIAQ3gm8Ro9XvzXTxxo6aHXEqSB5bdv5UB5bHkEX37ZUG4NR8CwSl4aaovOFcf7q/J
-         MTKg==
+        Wed, 25 Nov 2020 12:05:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606323915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S2YiWAjtkV6W/819w3VvfpBkbVrqf/nUdJ8hJ0IQwHg=;
+        b=RpNoNYpDmgvCOj79s7VTLZbZky0rx6PvZddtx8NqPzg385n2V+hf5cGufGTpTFSHuInvS+
+        4OkOvJKCMWwnxmONv3rv9AqTaHmRziczGzhvZIDr7Fpz9XMqfxaober/CeI8hmD/pIojzs
+        dItabOqffuAV0cexqaGgMKGo/hQsmWM=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-88-RR1mMt7qNX2Sg8fpj58L0g-1; Wed, 25 Nov 2020 12:05:11 -0500
+X-MC-Unique: RR1mMt7qNX2Sg8fpj58L0g-1
+Received: by mail-ej1-f70.google.com with SMTP id gr9so974187ejb.19
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 09:05:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U7yONu+GErpj3wVA3mUEvd1gZrZu1iMtuB4J5cc4iYs=;
-        b=Qpmh2GhI2WFs2qzp7Yn0fsgZaW8qKZK7HSbi+NCT0Jsrn+O5TTnjfpO9+adg1ygVEg
-         He2LQK3eRrPr4xLBwGPGrkPHhKCZ6HNIFcBvOjEKxDQ993YxbqYTay1DZxWZjjkBSFtp
-         M0hx760u7VARoHEO5ak8GSqWZwst+zM/sXvn6sP7otDrBGFamZd7Uz7ks+exNWem11Bz
-         TJSh2xoh5NFtzMA6eC7gJcnDdrPFmcPP0fZxsrUGVnTidS1mOEmaHSUvIO3cuqBKc9Xy
-         7ZuVaVdr95Q26yooscZkYKo0LK7NYIKVwJvh5HlNeqPgtTp5RkDNNpfGJhliNkKNrQ8k
-         0r7Q==
-X-Gm-Message-State: AOAM533+U9pipnNe4G+sfWPHuOqXn+o+A4RGhehQmfihcqsqUhS5WoXN
-        z5/CDlpRDEKMyKWOtPsW01afemh/jiL5NVUaOAk=
-X-Google-Smtp-Source: ABdhPJwRDTWwRnnt/vVfXeVU3lUNCXdaAf9CCrzUJdkBRbFdtXrCpJBbeymEiGhAam+E5oqqQjDTbAdkVQMGwErIDPw=
-X-Received: by 2002:a25:aac5:: with SMTP id t63mr6307293ybi.22.1606323866493;
- Wed, 25 Nov 2020 09:04:26 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S2YiWAjtkV6W/819w3VvfpBkbVrqf/nUdJ8hJ0IQwHg=;
+        b=bOn62wowrk/ywbdn2fUSvIdRztfbAcbkDFv07feiayYhcOhLSYuCTGROGJk4hW7lvE
+         nzeQdITQJ+cj5rCZDCU3c7CUc5RI7HNOl+A2j5kLvhAlwX9ImsflL6135LfvGkGEbydl
+         /GjhIMEsC4V6TSvtwTRwREtbGtxA+eJT+6p6xDMUjL6zYB7jBd/84lZLFcsQkb2qIIPB
+         XSTyWQJtFMHsowGD6cSD8m+WUS/IKuyeatpyiC/lQMSHE6anJ6RR89S78ngjsA9njLIs
+         W6k05ieJMYB2XcNUSL4agMUG9Wyze1XsvJ3B/KXFLc7r/u+8JXGPaBt8BRGWsInVznCu
+         IuUg==
+X-Gm-Message-State: AOAM530zmMs7GgvMhJ5MbX+uTvSs979zHR6prN/7bm/OlMONEzP2UZyU
+        FK4XJgG3m93b0Fp2frHg17XE93/cbrDT2BeGV+MDmyvpoW+lpX7UGftoW1SELM7ZiNe+2XtN+6v
+        68vloRLhXi47x8eb1+QEQpZeu127SWqLdk8wqPyUbgiAXJGha4u559C5YWB8WkciYf5ubPE1Eu/
+        N7
+X-Received: by 2002:a05:6402:b35:: with SMTP id bo21mr4424010edb.52.1606323910048;
+        Wed, 25 Nov 2020 09:05:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw/TsKMgYWbhR/wlSWjoHAwLH+WNXGsilWP/PO44bdE4caZvjScUkuVuIRvjD9nSFt32NBaYw==
+X-Received: by 2002:a05:6402:b35:: with SMTP id bo21mr4423974edb.52.1606323909766;
+        Wed, 25 Nov 2020 09:05:09 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id gf6sm1602911ejb.80.2020.11.25.09.05.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Nov 2020 09:05:08 -0800 (PST)
+Subject: Re: [PATCH] platform/x86: dell-smbios-base: Fix error return code in
+ dell_smbios_init
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "Limonciello, Mario" <Mario.Limonciello@dell.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201125065032.154125-1-miaoqinglang@huawei.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <9f86ac03-1c90-e6b6-4f7d-e9584a19e46d@redhat.com>
+Date:   Wed, 25 Nov 2020 18:05:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
- <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
- <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
- <20201123130348.GA3119@embeddedor> <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
- <202011241327.BB28F12F6@keescook> <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com>
- <CAKwvOdkGBn7nuWTAqrORMeN1G+w3YwBfCqqaRD2nwvoAXKi=Aw@mail.gmail.com> <20201125082405.1d8c23dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201125082405.1d8c23dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 25 Nov 2020 18:04:15 +0100
-Message-ID: <CANiq72=RuekXf1O6Fxrz2Eend0GtS6=E72P4T2=48SDqVcTChA@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for Clang
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
-        linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
-        bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org,
-        linux-input <linux-input@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        tipc-discussion@lists.sourceforge.net,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org, selinux@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hwmon@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
-        netfilter-devel@vger.kernel.org,
-        =?UTF-8?Q?open_list=3AHARDWARE_RANDOM_NUMBER_GENERATOR_CORE_=3Clinux=2Dcrypt?=
-         =?UTF-8?Q?o=40vger=2Ekernel=2Eorg=3E=2C_patches=40opensource=2Ecirrus=2Ecom=2C_linux=2Dint?=
-         =?UTF-8?Q?egrity=40vger=2Ekernel=2Eorg=2C_target=2Ddevel=40vger=2Ekernel=2Eorg=2C_linux=2D?=
-         =?UTF-8?Q?hardening=40vger=2Ekernel=2Eorg=2C_Jonathan_Cameron_=3CJonathan=2ECamero?=
-         =?UTF-8?Q?n=40huawei=2Ecom=3E=2C_Greg_KH?= 
-        <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201125065032.154125-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 5:24 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> And just to spell it out,
->
-> case ENUM_VALUE1:
->         bla();
->         break;
-> case ENUM_VALUE2:
->         bla();
-> default:
->         break;
->
-> is a fairly idiomatic way of indicating that not all values of the enum
-> are expected to be handled by the switch statement.
+Hi,
 
-It looks like a benign typo to me -- `ENUM_VALUE2` does not follow the
-same pattern like `ENUM_VALUE1`. To me, the presence of the `default`
-is what indicates (explicitly) that not everything is handled.
++Cc Mario
 
-> Applying a real patch set and then getting a few follow ups the next day
-> for trivial coding things like fallthrough missing or static missing,
-> just because I didn't have the full range of compilers to check with
-> before applying makes me feel pretty shitty, like I'm not doing a good
-> job. YMMV.
+On 11/25/20 7:50 AM, Qinglang Miao wrote:
+> Fix to return the error code -ENODEV when fails to init wmi and
+> smm.
+> 
+> Fixes: 41e36f2f85af ("platform/x86: dell-smbios: Link all dell-smbios-* modules together")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 
-The number of compilers, checkers, static analyzers, tests, etc. we
-use keeps going up. That, indeed, means maintainers will miss more
-things (unless maintainers do more work than before). But catching
-bugs before they happen is *not* a bad thing.
+Mario, this seems like a trivial fix to me, but I'm not 100% sure, any comments on this?
 
-Perhaps we could encourage more rebasing in -next (while still giving
-credit to bots and testers) to avoid having many fixing commits
-afterwards, but that is orthogonal.
+Regards,
 
-I really don't think we should encourage the feeling that a maintainer
-is doing a bad job if they don't catch everything on their reviews.
-Any review is worth it. Maintainers, in the end, are just the
-"guaranteed" reviewers that decide when the code looks reasonable
-enough. They should definitely not feel pressured to be perfect.
+Hans
 
-Cheers,
-Miguel
+
+> ---
+>  drivers/platform/x86/dell-smbios-base.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/platform/x86/dell-smbios-base.c b/drivers/platform/x86/dell-smbios-base.c
+> index 2e2cd5659..3a1dbf199 100644
+> --- a/drivers/platform/x86/dell-smbios-base.c
+> +++ b/drivers/platform/x86/dell-smbios-base.c
+> @@ -594,6 +594,7 @@ static int __init dell_smbios_init(void)
+>  	if (wmi && smm) {
+>  		pr_err("No SMBIOS backends available (wmi: %d, smm: %d)\n",
+>  			wmi, smm);
+> +		ret = -ENODEV;
+>  		goto fail_create_group;
+>  	}
+>  
+> 
+
