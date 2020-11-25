@@ -2,83 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464822C37F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3356B2C37F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgKYENw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 23:13:52 -0500
-Received: from mga01.intel.com ([192.55.52.88]:11761 "EHLO mga01.intel.com"
+        id S1727209AbgKYESH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 23:18:07 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:19520 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbgKYENw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 23:13:52 -0500
-IronPort-SDR: Vzx/2VIthfBLn7U0hXNTflnipNJXgUd0fRBLyvSY6n2a8SZt6DjXi6n23GEyqbud2ekAVdRZyA
- 3kL67hKpCGIg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="190197757"
-X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
-   d="scan'208";a="190197757"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 20:13:52 -0800
-IronPort-SDR: 7RWNUNsw3OWCgMhVvjYE95BN2rhV8aUOIcuXCoo8xXcO/6EmmNUPF86MrCjrUnlzFuozMSo2+E
- 9oAALJJPBYOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
-   d="scan'208";a="362175730"
-Received: from ipu5-build.bj.intel.com (HELO [10.238.232.196]) ([10.238.232.196])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Nov 2020 20:13:50 -0800
-Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Ben Kao <ben.kao@intel.com>
-References: <20201116155008.118124-1-robert.foss@linaro.org>
- <cf0b935d-3ccd-8360-1b52-89fab0b181eb@linux.intel.com>
- <CAG3jFyssMMHpi4WgWmeDjuVYKz12UwJoBT0WoOsdB4PZxnuqSw@mail.gmail.com>
-From:   Bingbu Cao <bingbu.cao@linux.intel.com>
-Message-ID: <e132769f-cfb5-141a-6cd1-603d82a92b9e@linux.intel.com>
-Date:   Wed, 25 Nov 2020 12:11:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726330AbgKYESH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 23:18:07 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606277886; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=sXXeHQcnq6lCeXEsk4jZuctTNRCfX/sdc8ME9NH6fks=;
+ b=iRG9t8f06tPeMkVrVVV5vClEOGv5a28tXaMvYcyYNzk3iQPS7gbP1EQtUOjbDSDQ/X+7oDhy
+ 7ifFcs0sk1V38AIAgpfa4iszemXwOyOTRrYT8wWlC4YcP3PrspsUaItpJ8Cpe+4mst/34eFV
+ l3SZ2ADnJDV0RUTVeCmu5A4Qbs4=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fbddaf922377520eea23332 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 04:18:01
+ GMT
+Sender: nguyenb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB302C43467; Wed, 25 Nov 2020 04:18:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: nguyenb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1678DC433ED;
+        Wed, 25 Nov 2020 04:17:59 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <CAG3jFyssMMHpi4WgWmeDjuVYKz12UwJoBT0WoOsdB4PZxnuqSw@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 24 Nov 2020 20:17:59 -0800
+From:   nguyenb@codeaurora.org
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] scsi: ufs: Print host regs in IRQ handler when AH8
+ error happens
+In-Reply-To: <1605596660-2987-4-git-send-email-cang@codeaurora.org>
+References: <1605596660-2987-1-git-send-email-cang@codeaurora.org>
+ <1605596660-2987-4-git-send-email-cang@codeaurora.org>
+Message-ID: <c6ef8b22f151668037fb31c8163d588e@codeaurora.org>
+X-Sender: nguyenb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/24/20 6:20 PM, Robert Foss wrote:
-> On Tue, 24 Nov 2020 at 10:42, Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
->>
->> Hi, Robert
->>
->> I remember that the full size of ov8856 image sensor is 3296x2480 and we can get the 3280x2464
->> frames based on current settings.
->>
->> Do you have any issues with this mode?
+On 2020-11-16 23:04, Can Guo wrote:
+> When AH8 error happens, all the regs and states are dumped in err 
+> handler.
+> Sometime we need to look into host regs right after AH8 error happens,
+> which is before leaving the IRQ handler.
 > 
-> As far as I can tell using the 3280x2464 mode actually yields an
-> output resolution that is 3264x2448.
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> What does your hardware setup look like? And which revision of the
-> sensor are you using?
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index cd7394e..a7857f6 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6057,7 +6057,8 @@ static irqreturn_t ufshcd_check_errors(struct
+> ufs_hba *hba)
+>  		hba->saved_uic_err |= hba->uic_error;
 > 
+>  		/* dump controller state before resetting */
+> -		if ((hba->saved_err & (INT_FATAL_ERRORS)) ||
+> +		if ((hba->saved_err &
+> +		     (INT_FATAL_ERRORS | UFSHCD_UIC_HIBERN8_MASK)) ||
+>  		    (hba->saved_uic_err &&
+>  		     (hba->saved_uic_err != UFSHCD_UIC_PA_GENERIC_ERROR))) {
+>  			dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
 
-Robert, the sensor revision I am using is v1.1. I just checked the actual output pixels on our
-hardware, the output resolution with 2464 mode is 3280x2464, no black pixels.
-
-As Tomasz said, some ISP has the requirement of extra pixel padding, From the ov8856 datasheet,
-the central 3264x2448 pixels are *suggested* to be output from the pixel array and the boundary
-pixels can be used for additional processing. In my understanding, the 32 dummy lines are not
-black lines.
-
--- 
-Best regards,
-Bingbu Cao
+Reviewed-by: Bao D. Nguyen <nguyenb@codeaurora.org>
