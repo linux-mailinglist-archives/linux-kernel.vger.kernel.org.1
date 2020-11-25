@@ -2,163 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5052C42AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA892C42B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730057AbgKYPKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:10:10 -0500
-Received: from mail-dm6nam10on2048.outbound.protection.outlook.com ([40.107.93.48]:37281
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726295AbgKYPKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:10:08 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gr+7N/fxS/yvcxTrkKic3kJDqPCmWzQAtqLvXg5nOcCVXf7YdrkAZnI64p9KNNWD0MMpqf2z95nq0d9cuxxgsIg9INMQxI+nRobnZffikbZGE7ji4xrGOEx/aVRIB1hjzafKGvKuVVC1p6EcWyf+nLiOceXp1/w24dZ9udv3C9haKPU2zaPEr34gGHuTi78zFXZKFb3YXpr2VFdqXg42+A8aCWIIamfNOr2/9BGJF8Au5KTdIO7hONzeKYUCcY6+dg5PVAvfvNQGG/wUhd/SgMJxFQkvypZk55j42sugr1cpkxjZZoAel5Wkl2s1j7Dquj8ZxmRUyjYP+eFwxQ7fiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9WFVwIFFBmyMIWVF4pGMcbvGYm3/LoCSaElpvwte1/E=;
- b=avkKD2ViFl3L4am44P7sanQFV7D7LTonjkD6jsmhYdkog9P9mbVde9CYOf0EP6aCZqiB0XG1w2RDNuVU+rQ+6+FTiAit1HG2zYRnZYOud8DekQZweFLimStl+0YM+6568ysKHxd3zuDZA4An1kcxRhBL5DFLCM9gh8c8jqYLEm8gjMJE9VyJIDWhb7CktD6ZTE9lCNeQBmPUYoQbEGeKThDnPu1fbnhUMBRxilVX6+AeRGoSSBwQR1mKxuIs7cqz22E/TBzVcQfLEsscY7nDKz+oS4kwuMcgS6Ot8Sj93mGOl4ot7ZG7xqcIGK/4ZJI9t8rBHphbJbqATxYFWnT8xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1730152AbgKYPLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:11:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729640AbgKYPLl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:11:41 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B99C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 07:11:31 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id t143so3130964oif.10
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 07:11:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9WFVwIFFBmyMIWVF4pGMcbvGYm3/LoCSaElpvwte1/E=;
- b=BVazK6IwnigNme/Akk6zBUL6ERFJGu1R4jPxDFeQd8kvm6MkFLjHjoMHTNiQzAuCvhiNIhjt4GUsgfEyLMbOnaHliJ2uH70kR5DgkCDFZAGzMkXM7jQpALqhHWH6phnrPWz5jTJGgy+rIfH6+7DGpb9nLWrHpfqpXU5Vhz1h7C8=
-Received: from CY4PR12MB1287.namprd12.prod.outlook.com (2603:10b6:903:40::8)
- by CY4PR1201MB0118.namprd12.prod.outlook.com (2603:10b6:910:20::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.30; Wed, 25 Nov
- 2020 15:10:03 +0000
-Received: from CY4PR12MB1287.namprd12.prod.outlook.com
- ([fe80::ad96:acee:5c1c:d92c]) by CY4PR12MB1287.namprd12.prod.outlook.com
- ([fe80::ad96:acee:5c1c:d92c%4]) with mapi id 15.20.3589.030; Wed, 25 Nov 2020
- 15:10:03 +0000
-From:   "Chen, Guchun" <Guchun.Chen@amd.com>
-To:     Colin King <colin.king@canonical.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Zhou1, Tao" <Tao.Zhou1@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH][next] drm/amdgpu: Fix sizeof() mismatch in bps_bo
- kmalloc_array creation
-Thread-Topic: [PATCH][next] drm/amdgpu: Fix sizeof() mismatch in bps_bo
- kmalloc_array creation
-Thread-Index: AQHWwzXNElH2swxXSkStHSh1azb5iqnY85KQ
-Date:   Wed, 25 Nov 2020 15:10:03 +0000
-Message-ID: <CY4PR12MB128722A6BE94EFC4739FB964F1FA0@CY4PR12MB1287.namprd12.prod.outlook.com>
-References: <20201125141806.1881036-1-colin.king@canonical.com>
-In-Reply-To: <20201125141806.1881036-1-colin.king@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2020-11-25T15:09:50Z;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=567aad7a-49ee-4de5-aae1-000055e066cf;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_enabled: true
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_setdate: 2020-11-25T15:09:59Z
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_method: Privileged
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_name: Public_0
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_siteid: 3dd8961f-e488-4e60-8e11-a82d994e183d
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_actionid: a6aa367b-0fe9-4e69-a512-0000f6767ea3
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_contentbits: 0
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [180.158.166.36]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 781b5a1a-f263-46fa-0390-08d891542f9d
-x-ms-traffictypediagnostic: CY4PR1201MB0118:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR1201MB01184DE8054FAF00564AAF79F1FA0@CY4PR1201MB0118.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: t+cYq76mipxytphBp7mRTx/SwGKfuxfW+H9rrkxXUSHPm3vgMr/njy6Nk/uKGps1Z6zpYZ/zd87rhbs0ib8vGnGSEqVi1BbkldYKBN5kEEHMd832WDZA9TA+sWq7CaCJycEppohnEBkEhM7xGYnbhnncdEYhuIgdz+wDDQohuPTtKjxG+qw4TkXy8mPkpYnSd/F1zE3OIN3QYSeewK5FlhT+FxEfUMGobJxxMO3lF65i7IRpW6fvF/pWLQNMspqzStjDEJIGkhvvUhCW9fmb6xUNhESq1HdgOWokPVmkPLacIBgtDYTUlvnkNv+ajeK7PTNdFnX6JqSgUHgP3/UDMIi8aEgnhH5FnexJ0RO/amo=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1287.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(39860400002)(396003)(9686003)(4326008)(2906002)(64756008)(316002)(53546011)(8676002)(71200400001)(6506007)(8936002)(54906003)(5660300002)(186003)(110136005)(7696005)(52536014)(26005)(76116006)(66476007)(66446008)(478600001)(83380400001)(66946007)(33656002)(66556008)(55016002)(921005)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?QklQUDd1Mk9GQ0h1OTI1VERlS2JlZFNUNEtPVmJvTHQ1QXdTUlpzcFRLWC82?=
- =?utf-8?B?b3ZXQmhMejNOMENlUC8vNHJKUitxUWJVVXd6dXpjMWRzbTNCSWdRU0VDREc3?=
- =?utf-8?B?aVpsY3FxYmxhS00zYTFCUXhWbEVQZ3RVdi81TkFaTG9uNi9hRHlaMHh0d0Zs?=
- =?utf-8?B?cmM0S25hQzhzZEFEQnZVYXc1ZXZYRUNMRU1BRVVNaGVQVFRobU10Vm10QUJa?=
- =?utf-8?B?Nmw5dE9Pb1E1NEZKMG5Sd2ZiWXBDeHdieERtOVNkVStsOW01U1FqTE9FZDJI?=
- =?utf-8?B?bFp4RUZiSVlKbk5CNTEweXNTNDZpWW05bE9ESE9YU3NQMDJad0VISzJFWGQz?=
- =?utf-8?B?VENLMURSbm01ZGJKVjljd25KSEV5OTVPWS9LOEt0c05CK2Nrd1g3QitRTWtW?=
- =?utf-8?B?ZVVDQkhKZkpMKzRHeFp5UkRpbHl2RWIwK0NZakx5V3pLMEZqby8vWUdqTk5v?=
- =?utf-8?B?dEhVQW02Z0R3ZjREODZKWmlPc2JNeVlNYmNSd081Mjg4akVnblBvTk8vOUlo?=
- =?utf-8?B?ZnYvNWhKT0pPSUUwYW5FUzdrSkUzYngzMTU3dW03bU40aWFOOWRCNVN0UnZJ?=
- =?utf-8?B?UE5EMWNaY2d1Q2JqQ3ozYzNpdk5oemZWNWZNd2N0WXNGVHVwYjdodkZjNlFV?=
- =?utf-8?B?NXpoV1pDcENrbXUwRFkwK0Fteko1aVd4eDdvVHg2MlBCQ0RHcG1lSmQ1b2ZU?=
- =?utf-8?B?UFcxd1NSdjhZejlJOUNEbitqTjNPZ0diZ1h1ZUVCYTFQd0h0QWFnbjdPU3ZM?=
- =?utf-8?B?a1RVY0xMb0dVZEU3aWgzSUpCNjF5TnVhNzZRNm5LR1BWMmF0dktwWmFHbmJK?=
- =?utf-8?B?RVE3aFJxV3hubmJjSXhDdWZmYy9DamlUQS9SeEtkN29BRVh0R0lwVktFVXlP?=
- =?utf-8?B?OE9YUFdoY2xhMEdWdGF4dlVmL0JkVlQvaGlobEliYmU2VHhneGZKbGJ1b0ll?=
- =?utf-8?B?Z2FQTktMb0xIZmRobzFZT2wyaUM2MzdNRzhOdFNEM3NycXhTWkh1STBmOXJ2?=
- =?utf-8?B?Q0l2TkdzbDZYTTl2U2gweVRrSmR2ZldURFdvQmRVWlRlZk9rMVN0THFycjMx?=
- =?utf-8?B?b2J1ekpxRnhCeVdNYXlrZUo5WHAxTnpiYTZIL2ZNbjV5OWFiVEs1UFpWVFo5?=
- =?utf-8?B?TVVIckVGRzhjemR1MVorMkIvUlIybk1JRTRORkg3SWxvc0NyajVyK05GM0or?=
- =?utf-8?B?Qi9xcm9pZnVmd3dRQXkrMWNDOVpTS2hxcDNwVElPeWswQStDNW4wS1JpczRt?=
- =?utf-8?B?ampyYng4cExZUHBSSVQ2MytEdVFoaXg3aE94Y2VCRUsrZWwvak5hNVIwOGZN?=
- =?utf-8?Q?r2j73Ko21NzFY=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KhouDFsqki7Gy7e25xqYBbfXim5cXw795bT1eo81Xzs=;
+        b=DhKi5OC8Ur4Zm2+OE+tFBLFuXfc8do+T1RzzHNu+Yog3JYYT2iwU28JYwWKu/qP8uz
+         plmqJV23D3qj1oFDX56KAJP9TsfE17RFe+hi4MQpRFAvIOWK1zxDGkykUkIDA71H/Ve+
+         Rsk6IS74+XnrhOWM9cGTKJzylovB0TXD4nI7inJjlCGKQCYfB2TIt88o3Ha8RJrCEUni
+         LUObNG0RGxeBKniI7QDu7Rh8j+Ye11zOPLJmXLUXXzc6kVpQyUYXVsUg7iWGyzx/DhOa
+         /Fo9AejZsd79AKZzl6JifI+9yJoozeEMTE00D2p44b7n6Ir2GhMlC49hdAgxjgsMga02
+         SzKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KhouDFsqki7Gy7e25xqYBbfXim5cXw795bT1eo81Xzs=;
+        b=M5P5xmQ5OodCWSxd2mPkwlpdSVifEvCsub7UPFvJYfR8JMn/CQnH3mTgY/qSfoWltQ
+         jYgAID3Lcso+NYYodKgiX2h+POxoYd2QqoX6GShckrFsTaBceT5fk5Rc/RBvBnYmQxPk
+         XiV1Vv5ar22Vsc/8hPrdwu3iAYGFZtD1fZGqVwmrp8HHz5gT6F9sAq6keoKUeZfFqgap
+         15/iamojYpVjpzktT8Dts9m1UJD5cwF/TUNOSoRu9OxsHWG9WSxEH/LjWoShYOekbZJO
+         2cOSe2ppG39w3oj5dBrE/SuzzIO6bIEGMz5rXRYiuEpG1iWDxlP3KyqWmQt+vAyyYbOT
+         Ebwg==
+X-Gm-Message-State: AOAM5324rY/j8Aq1RuvIgAVE6jtXVGJdf0UijbD04ckD9g0o7kNNVfhZ
+        V8C04lDWYftTnBnP8ssoj6GktS4CsKfIufCuEVjcnw==
+X-Google-Smtp-Source: ABdhPJx1C0mlZ1qHr6cS5D413otFJ7/k79MvTeKPZdG1JtfzZ4qqY9mjd3ubV4DYwBYgm4SdocaDNnM002LY6xZXrFo=
+X-Received: by 2002:aca:1110:: with SMTP id 16mr2489983oir.12.1606317089916;
+ Wed, 25 Nov 2020 07:11:29 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1287.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 781b5a1a-f263-46fa-0390-08d891542f9d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2020 15:10:03.3885
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: p/HsmKmXmh8TpjT4D9wtUh53QYTONtI0wTuugTrxV2k0QYoJmtHnSUO+BWvOLEsD+iwEO+0uWqBuvaRvVmKDQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0118
+References: <CAEGmHFFjV2UKm3L1G5JF6Ve47L1-aKBAGrCxN3pPX1HO9R-aUg@mail.gmail.com>
+In-Reply-To: <CAEGmHFFjV2UKm3L1G5JF6Ve47L1-aKBAGrCxN3pPX1HO9R-aUg@mail.gmail.com>
+From:   Furquan Shaikh <furquan@google.com>
+Date:   Wed, 25 Nov 2020 07:11:13 -0800
+Message-ID: <CAEGmHFHmYujYMRLxoyF8Vj4-HAWAqLwu9zCw2FJhJdgh1SKL0g@mail.gmail.com>
+Subject: Re: [RFC] ACPI PM during kernel poweroff/reboot
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pm@vger.kernel.org, Aaron Durbin <adurbin@google.com>,
+        Duncan Laurie <dlaurie@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W0FNRCBQdWJsaWMgVXNlXQ0KDQpSZXZpZXdlZC1ieTogR3VjaHVuIENoZW4gPGd1Y2h1bi5jaGVu
-QGFtZC5jb20+DQoNClJlZ2FyZHMsDQpHdWNodW4NCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
-LS0NCkZyb206IENvbGluIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4gDQpTZW50OiBX
-ZWRuZXNkYXksIE5vdmVtYmVyIDI1LCAyMDIwIDEwOjE4IFBNDQpUbzogRGV1Y2hlciwgQWxleGFu
-ZGVyIDxBbGV4YW5kZXIuRGV1Y2hlckBhbWQuY29tPjsgS29lbmlnLCBDaHJpc3RpYW4gPENocmlz
-dGlhbi5Lb2VuaWdAYW1kLmNvbT47IERhdmlkIEFpcmxpZSA8YWlybGllZEBsaW51eC5pZT47IERh
-bmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5jaD47IFpob3UxLCBUYW8gPFRhby5aaG91MUBhbWQu
-Y29tPjsgQ2hlbiwgR3VjaHVuIDxHdWNodW4uQ2hlbkBhbWQuY29tPjsgYW1kLWdmeEBsaXN0cy5m
-cmVlZGVza3RvcC5vcmc7IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcNCkNjOiBrZXJu
-ZWwtamFuaXRvcnNAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-DQpTdWJqZWN0OiBbUEFUQ0hdW25leHRdIGRybS9hbWRncHU6IEZpeCBzaXplb2YoKSBtaXNtYXRj
-aCBpbiBicHNfYm8ga21hbGxvY19hcnJheSBjcmVhdGlvbg0KDQpGcm9tOiBDb2xpbiBJYW4gS2lu
-ZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0KDQpBbiBpbmNvcnJlY3Qgc2l6ZW9mKCkgaXMg
-YmVpbmcgdXNlZCwgc2l6ZW9mKCgqZGF0YSktPmJwc19ibykgaXMgbm90IGNvcnJlY3QsIGl0IHNo
-b3VsZCBiZSBzaXplb2YoKigqZGF0YSktPmJwc19ibykuICBJdCBqdXN0IHNvIGhhcHBlbnMgdG8g
-d29yayBiZWNhdXNlIHRoZSBzaXplcyBhcmUgdGhlIHNhbWUuICBGaXggaXQuDQoNCkFkZHJlc3Nl
-cy1Db3Zlcml0eTogKCJTaXplb2Ygbm90IHBvcnRhYmxlIChTSVpFT0ZfTUlTTUFUQ0gpIikNCkZp
-eGVzOiA1Mjc4YTE1OWNmMzUgKCJkcm0vYW1kZ3B1OiBzdXBwb3J0IHJlc2VydmUgYmFkIHBhZ2Ug
-Zm9yIHZpcnQgKHYzKSIpDQpTaWduZWQtb2ZmLWJ5OiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2lu
-Z0BjYW5vbmljYWwuY29tPg0KLS0tDQogZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1
-X3ZpcnQuYyB8IDIgKy0NCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRp
-b24oLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV92
-aXJ0LmMgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfdmlydC5jDQppbmRleCAy
-ZDUxYjc2OTRkMWYuLmRmMTVkMzNlM2M1YyAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvZ3B1L2RybS9h
-bWQvYW1kZ3B1L2FtZGdwdV92aXJ0LmMNCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1
-L2FtZGdwdV92aXJ0LmMNCkBAIC0yODMsNyArMjgzLDcgQEAgc3RhdGljIGludCBhbWRncHVfdmly
-dF9pbml0X3Jhc19lcnJfaGFuZGxlcl9kYXRhKHN0cnVjdCBhbWRncHVfZGV2aWNlICphZGV2KQ0K
-IAkJcmV0dXJuIC1FTk9NRU07DQogDQogCWJwcyA9IGttYWxsb2NfYXJyYXkoYWxpZ25fc3BhY2Us
-IHNpemVvZigoKmRhdGEpLT5icHMpLCBHRlBfS0VSTkVMKTsNCi0JYnBzX2JvID0ga21hbGxvY19h
-cnJheShhbGlnbl9zcGFjZSwgc2l6ZW9mKCgqZGF0YSktPmJwc19ibyksIEdGUF9LRVJORUwpOw0K
-KwlicHNfYm8gPSBrbWFsbG9jX2FycmF5KGFsaWduX3NwYWNlLCBzaXplb2YoKigqZGF0YSktPmJw
-c19ibyksIA0KK0dGUF9LRVJORUwpOw0KIA0KIAlpZiAoIWJwcyB8fCAhYnBzX2JvKSB7DQogCQlr
-ZnJlZShicHMpOw0KLS0NCjIuMjkuMg0K
+On Thu, Nov 12, 2020 at 11:19 AM Furquan Shaikh <furquan@google.com> wrote:
+>
+> On x86 Chromebooks, we have observed this issue for a long time now -
+> when the system is powered off or rebooted, ACPI PM is not invoked and
+> this results in PowerResource _OFF methods not being invoked for any
+> of the devices. The _OFF methods are invoked correctly in case of
+> suspend-to-idle (S0ix) and suspend-to-memory(S3). However, they do not
+> get invoked when `poweroff` or `reboot` are triggered.
+>
+> One of the differences between suspend, hibernate and shutdown paths
+> in Linux kernel is that the shutdown path does not use the typical
+> device PM phases (prepare, freeze/suspend, poweroff) as used by
+> suspend/hibernate. Instead the shutdown path makes use of
+> .shutdown_pre() and .shutdown() callbacks.
+>
+> If I understand correctly, .shutdown() has been around for a long time
+> and existed even before the PM callbacks were added. Thus,
+> pm->poweroff() and .shutdown() are supposed to be analogous and
+> consistent in the behavior. This is why runtime PM is disallowed by
+> device_shutdown() before it calls .shutdown() (i.e. to keep behavior
+> consistent for both paths). However, in practice, there are
+> differences in behavior for the pm->poweroff() and .shutdown() paths
+> since the shutdown path does not execute any PM domain operations.
+>
+> Because of this difference in behavior, shutdown path never invokes
+> ACPI PM and thus the ACPI PowerResources are not turned off when the
+> system is rebooted or powered off (sleep S5). On Chromebooks, it is
+> critical to run the _OFF methods for poweroff/reboot in order to
+> ensure that the device power off sequencing requirements are met.
+> Currently, these requirements are violated which impact the
+> reliability of devices over the lifetime of the platform.
+>
+> There are a few ways in which this can be addressed:
+>
+> 1. Similar to the case of hibernation, a new
+> PMSG_POWEROFF/PM_EVENT_POWEROFF can be introduced to invoke device
+> power management phases using `dpm_suspend_start(PMSG_POWEROFF)` and
+> `dpm_suspend_end(PMSG_POWEROFF)`. However, as the shutdown path uses
+> the class/bus/driver .shutdown() callbacks, adding dpm phases for
+> poweroff complicates the order of operations. If the dpm phases are
+> run before .shutdown() callbacks, then it will result in the callbacks
+> accessing devices after they are powered off. If the .shutdown()
+> callbacks are run before dpm phases, then the pm->poweroff() calls are
+> made after the device shutdown is done. Since .shutdown() and
+> pm->poweroff() are supposed to be analogous, having both calls in the
+> shutdown path is not only redundant but also results in incorrect
+> behavior.
+>
+> 2. Another option is to update device_shutdown() to make
+> pm_domain.poweroff calls after the class/bus/driver .shutdown() is
+> done. However, this suffers from the same problem as #1 above i.e. it
+> is redundant and creates conflicting order of operations.
+>
+> 3. Third possible solution is to detach the device from the PM domain
+> after it is shutdown. Currently, device drivers perform a detach
+> operation only when the device is removed. However, in case of
+> poweroff/reboot as the device is already shutdown, detaching PM domain
+> will give it the opportunity to ensure that any power resources are
+> correctly turned off before the system shuts down.
+>
+> Out of these, I think #3 makes the most sense as it does not introduce
+> any conflicting operations. I verified that the following diff results
+> in _OFF methods getting invoked in both poweroff and reboot cases:
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 94df2ba1bbed..e55d65fbb4a9 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/genhd.h>
+>  #include <linux/mutex.h>
+> +#include <linux/pm_domain.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/netdevice.h>
+>  #include <linux/sched/signal.h>
+> @@ -3230,6 +3231,8 @@ void device_shutdown(void)
+>                         dev->driver->shutdown(dev);
+>                 }
+>
+> +               dev_pm_domain_detach(dev, true);
+> +
+>                 device_unlock(dev);
+>                 if (parent)
+>                         device_unlock(parent);
+>
+> This was discussed on the mailing list some time back[1] in the
+> context of a different use case. However, the idea of detaching
+> devices (on any bus) from the PM domain during shutdown is important
+> to ensure correct power sequencing for the devices.
+>
+> One of the concerns that was raised on the above thread was slowing
+> down the shutdown process when not needed. I think this can be handled
+> by adding a sysfs attribute to allow platforms to decide if they need
+> the ability to power off PM domains on shutdown/reboot path.
+>
+> Questions that I am looking to get feedback/comments are:
+>
+> 1. Is my assessment of the problem and understanding of the
+> .shutdown() and pm.poweroff() correct?
+> 2. Does the solution #3 i.e. detaching PM domain after shutting down
+> device on shutdown path makes sense?
+> 3. Are there other possible approaches to solve this problem that can
+> be explored?
+> 4. Do we still have the performance concern about the shutdown path? I
+> don=E2=80=99t think anything has changed since that thread, so this is
+> probably still true.
+> 5. Does the use of sysfs attribute make sense to let platform control
+> if it wants to detach PM domains on shutdown path?
+>
+> Sorry about the long thread and thank you so much for your time!
+>
+> Thanks,
+> Furquan
+>
+> [1] https://lore.kernel.org/linux-pm/HE1PR04MB30046668C9F4FFAB5C07E693886=
+D0@HE1PR04MB3004.eurprd04.prod.outlook.com/T/#mbd80804857f38c66aa5e825cdd4b=
+61ba6b12317d
+
+Hello,
+
+Gentle ping. Just wanted to check if there are any
+comments/suggestions on the proposal above or how this problem can be
+addressed. This has been one of the long standing problems impacting
+all ACPI-based Chrome OS devices.
+
+Thanks,
+Furquan
