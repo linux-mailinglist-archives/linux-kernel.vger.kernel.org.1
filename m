@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DDB2C45E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1123F2C45E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732040AbgKYQuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:50:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731040AbgKYQuV (ORCPT
+        id S1732211AbgKYQuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:50:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44979 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732082AbgKYQuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:50:21 -0500
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6954C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 08:50:20 -0800 (PST)
-Received: by mail-oo1-xc43.google.com with SMTP id l10so629812oom.6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 08:50:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p662Zo0RSLqTb4JLT4U6CfzJ6WskRZQe87qZSsniz3Y=;
-        b=Q1q8s6c7mPSgsqr9ZxLJnLxUTKY8WbDixyuY1zp7z8hOjmRbn344GdPvs6E7vkAm2B
-         4rnaReWG8dOs1WeNaMRBz1eASwe+R9q63Kj/eCTaSgrqtE0U32xG/3u9GzxIhQYrxNL8
-         SukEVfnUCeXhuklHzLUyTSlZa+9cF5rUACr61MAtGIJVYBxvjLHICbPPR5uYgGcnh70V
-         LETxHFzcvuvgCD8f3Vi1NuXkkUIUS1+ewXRwtXLrMqKGCnlfOmSQqvK2hoq4jqCa0W+c
-         6rf8a4cco6Ct0S3aLp/TVta1px1tV4NYehITIedGinEFo6B68ClOUPSI+ks7/5L9207y
-         7cBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p662Zo0RSLqTb4JLT4U6CfzJ6WskRZQe87qZSsniz3Y=;
-        b=GsuEZbd9VMYj1Pi5WNyTCM5r8VW3ngyUiyL2f4ShxjA0VcD2zUpSqqIdtGrafKVtNW
-         qg+wsFWkN2kV5gDJyTKYxhw/YT79IK2x7IDO8RRS3oAqgOpLQP2FbXIRsO94Z79+z97r
-         lzmaPQTr+vEL4AQNTv7ImiClv+qPFdjbrBtCzCKGxstfLrax0u7rAXxt3y9qZhlu3GKw
-         r2taY/L/7+8WQF1OVkBvSCumrXQ/MGkvPRHMxSDShEvwhJIoUVwwdyAzaV9rhlHe3kUY
-         k6imVdpkW+3ZUlaBegZ7JTuM7dblSbseXnUvkS0/dJv0Ne2wGsQAeT59UB2EHlKn3E7N
-         R/1Q==
-X-Gm-Message-State: AOAM530twbvSDemqp7zh0q6SYR7E05SRmi+bV3itX1c422/ZGD76WDDC
-        +8weQz8hp92zPGhu6cVGXO5zN8mCcNQ5esL+vP8AGw==
-X-Google-Smtp-Source: ABdhPJxSjwkKhjeg0CEcALBAHH7Z05iUcUDLsRgKoqtUK8YtmRixw5G4ILz8dNdARnAvKdimCqAxl7Sy5pZh9Jwe9LU=
-X-Received: by 2002:a4a:b28b:: with SMTP id k11mr3368563ooo.54.1606323019928;
- Wed, 25 Nov 2020 08:50:19 -0800 (PST)
+        Wed, 25 Nov 2020 11:50:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606323022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XZc3CPeOm1ZOxeaYmzK65nkw+8TNuZ7nhsmtRqGrSEo=;
+        b=XWf3M3ZHGIWzSymrVwUA2CAOTh/FqhKon3J0/unajrGRjuYMgrgH4zDX+u8QKJ0APoNvKH
+        I1fRiUhJZB0An0JupCQoqk669hX3Dr5o8FVychduv8ooN496RrVvUzl01SLZj7dvGTWw54
+        R+HAODw02C/frTWN1W6tsTPPYA94+7I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596-bEjfIDKOOqarG3JXigFZCQ-1; Wed, 25 Nov 2020 11:50:20 -0500
+X-MC-Unique: bEjfIDKOOqarG3JXigFZCQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76FDD185E48A;
+        Wed, 25 Nov 2020 16:50:19 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D604510021B3;
+        Wed, 25 Nov 2020 16:50:14 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>
+cc:     dhowells@redhat.com, sandeen@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: UAPI value collision: STATX_ATTR_MOUNT_ROOT vs STATX_ATTR_DAX
 MIME-Version: 1.0
-References: <20201125162455.1690502-1-elver@google.com> <20201125084504.1030ffe4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201125084504.1030ffe4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 25 Nov 2020 17:50:08 +0100
-Message-ID: <CANpmjNOpu5GN6xyYmAFuYWEPb3C6a_vwTV76pPU_8Vtw9BnF_g@mail.gmail.com>
-Subject: Re: [PATCH v6 0/3] net, mac80211, kernel: enable KCOV remote coverage
- collection for 802.11 frame handling
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Aleksandr Nogikh <a.nogikh@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org,
-        Ido Schimmel <idosch@idosch.org>,
-        Florian Westphal <fw@strlen.de>,
-        Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1927369.1606323014.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 25 Nov 2020 16:50:14 +0000
+Message-ID: <1927370.1606323014@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 at 17:45, Jakub Kicinski <kuba@kernel.org> wrote:
-> On Wed, 25 Nov 2020 17:24:52 +0100 Marco Elver wrote:
-> > This patch series enables remote KCOV coverage collection during 802.11
-> > frames processing. These changes make it possible to perform
-> > coverage-guided fuzzing in search of remotely triggerable bugs.
->
-> Hi Marco, this stuff is only present in net-next, and were not reverted.
->
-> You need to rebase and replace the existing implementation.
+Hi Linus, Miklos, Ira,
 
-Ah, that's fine then. I wasn't sure if you can drop and replace things
-in -net. I'll send a revert and change the implementation.
+It seems that two patches that got merged in the 5.8 merge window collided=
+ and
+no one noticed until now:
+
+80340fe3605c0 (Miklos Szeredi     2020-05-14 184) #define STATX_ATTR_MOUNT=
+_ROOT		0x00002000 /* Root of a mount */
+...
+712b2698e4c02 (Ira Weiny          2020-04-30 186) #define STATX_ATTR_DAX		=
+	0x00002000 /* [I] File is DAX */
+
+The question is, what do we do about it?  Renumber one or both of the
+constants?
+
+David
+
