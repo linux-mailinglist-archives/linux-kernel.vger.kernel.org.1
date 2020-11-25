@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01C02C4502
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:27:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 567712C450C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731238AbgKYQZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:25:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
+        id S1731503AbgKYQZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:25:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731176AbgKYQZc (ORCPT
+        with ESMTP id S1730835AbgKYQZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:25:32 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C249C0613D4;
-        Wed, 25 Nov 2020 08:25:32 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id t6so3902468lfl.13;
-        Wed, 25 Nov 2020 08:25:32 -0800 (PST)
+        Wed, 25 Nov 2020 11:25:39 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811D6C061A4F
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 08:25:39 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 10so2505513wml.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 08:25:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jmlCoHVPOl8J4Y5Va4Rv3QYqyzVFu+EFS+LGEEWl1j8=;
-        b=jmtMDxB+HIV04Z/eDaAousylAEXuv8AkDRNVx4h2NfWcRn38W3aOQWqxjKUSGjXwlH
-         eaMSh4+8F9MK/lMpmRmJMRlPQq7urOs0czKUQmf75F/jG27lQGO7UUyThcEtleAMZ5e9
-         H34MnSYtX8wotXu6fNnWYIOanrYhQiZDX8QMl2Ecu8JXyeSZrRKL1EODhRIlg8h29BD3
-         0qNnusifor5Nv1TItqEj7Scsfkd9GjqZuWffyUZrUzj7+lJOQ7nhVqsOooCX39a77+oz
-         pxovhmaXW4SEAJoSdKBVQgcSon6TTeglxIAcB6iHEV83j3L1XYQUtCSDZeEGaGNntMg4
-         0yiA==
+        d=ffwll.ch; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uUxbRrS9MFqXGOvk/ieUK3bhzkS/VSko486/NfxYD1w=;
+        b=gwqmqFySnTT8wFc9pyNO08a05EtFio6skO3VOfMb8mdBj6W1qBPu6+VRr2k1XCh6kl
+         Q/nUJzrA1+98qaJuJmEx9Yj8Xp0Qz4KncxaIhz/aDBFojKu7G5YnfJs/2YEnSNGH2lKf
+         sVR6MQzcank3A6sMNUPe9nWSpOoUBv2+cAY+I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jmlCoHVPOl8J4Y5Va4Rv3QYqyzVFu+EFS+LGEEWl1j8=;
-        b=Y7+kd9XBaRfHSr4CC118ALk9VbfGSFLY46PM0HtdkzOMfxmf//6M6M3NRYLjRqXnXi
-         1T/5/zhK6EGmEVPdUUPNC3m0VhGG7F3qHIx13QD3R+szu2pX2QlfBYUgfSexFrqNX6yn
-         jlYQRzh3DN82h2k9omVDhvsOO6XJ6NrGA6VY1t3diPUub4twG+wPXAkvaow3M1J5elpX
-         jnjhErkz5iDeNnrBWvJs8R9JdJHuBTKSUXhgIkE/c4y4tPGruN7/wgUiZ6yjybKjX2Av
-         lh/HUaaskcHvvdlziLEzJytf7Jm75ABNv78yoO63DEZOB9z+jUP0ScsRCDSMJtEkG/9d
-         ImmA==
-X-Gm-Message-State: AOAM530LW2Hj8DsI2zbJMgBYpfFP7ouDqac6eBFETpDVIXSVUXOnliaw
-        mBZJBEue0jbZIjFea6pCWXw=
-X-Google-Smtp-Source: ABdhPJwObpVG0MMxG1e/+9lWVrL2YTgEGvMaGH4lrX1Vq3qPqqMYofnTMhpCVK0DY80t7ug9Imawug==
-X-Received: by 2002:a19:c605:: with SMTP id w5mr1594297lff.58.1606321530638;
-        Wed, 25 Nov 2020 08:25:30 -0800 (PST)
-Received: from localhost.localdomain (h-158-174-22-6.NA.cust.bahnhof.se. [158.174.22.6])
-        by smtp.gmail.com with ESMTPSA id z131sm313881lfc.56.2020.11.25.08.25.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uUxbRrS9MFqXGOvk/ieUK3bhzkS/VSko486/NfxYD1w=;
+        b=OUdPiR8mAt/ylKm5hpHMNLzubjUH0RasOLYTTNAyfhVfz4IA/H8D868qnIQIXXnV1T
+         VVZT839SJt2Vq6BZ0hMHGVZIVJJCK9/srRTmqTMABx3wv0qJWFvpQEDxjUa+1xNhvAWz
+         UEwd15vA3SVkplAL1dOK96rgC8fTNo4mMH2Bsw58GkESg72bCEl1OhSLlYibgNuPXmqt
+         +rd5iHd9zDuyhirJQfSEDsErTypEfrQwaPV4hv7vZ/4sKzv+rDLZz9v4n9iPfDzD452m
+         B7mJAEWKFch2/lS70kehD1pILgwN9hCFsvOlDOW72Jx/VaGR0Jcz0rCECECRTKn/zCFJ
+         ujvg==
+X-Gm-Message-State: AOAM533nXbWrZZO3gMPvdO5mMcYQUPmfOC4CnEgshijTjyavQHqZn5qR
+        IY7NNNCWmKd9lIEu0cu9CDtSnQ==
+X-Google-Smtp-Source: ABdhPJwU55boKQUargCwj7uABbDFGkLI6m5Shju4RIwPqnobg7pzset1RPYMkQXjIR0a2azRJHembg==
+X-Received: by 2002:a1c:1b06:: with SMTP id b6mr3649998wmb.101.1606321538289;
+        Wed, 25 Nov 2020 08:25:38 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id a21sm4855187wmb.38.2020.11.25.08.25.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 08:25:29 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: [PATCH 3/3] usb: common: ulpi: Constify static attribute_group struct
-Date:   Wed, 25 Nov 2020 17:25:00 +0100
-Message-Id: <20201125162500.37228-4-rikard.falkeborn@gmail.com>
+        Wed, 25 Nov 2020 08:25:37 -0800 (PST)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     DRI Development <dri-devel@lists.freedesktop.org>
+Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH v4 0/3] mmu_notifier vs fs_reclaim lockdep annotations
+Date:   Wed, 25 Nov 2020 17:25:28 +0100
+Message-Id: <20201125162532.1299794-1-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201125162500.37228-1-rikard.falkeborn@gmail.com>
-References: <20201125162500.37228-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is never modified, so make them const to allow the compiler to
-put it in read-only memory. Done with the help of coccinelle.
+Hi all,
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/usb/common/ulpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Just resending with the polish applied, no functional changes at all.
 
-diff --git a/drivers/usb/common/ulpi.c b/drivers/usb/common/ulpi.c
-index a18d7c4222dd..ce5e6f6711f7 100644
---- a/drivers/usb/common/ulpi.c
-+++ b/drivers/usb/common/ulpi.c
-@@ -118,7 +118,7 @@ static struct attribute *ulpi_dev_attrs[] = {
- 	NULL
- };
- 
--static struct attribute_group ulpi_dev_attr_group = {
-+static const struct attribute_group ulpi_dev_attr_group = {
- 	.attrs = ulpi_dev_attrs,
- };
- 
+Previous versions.
+
+v3: https://lore.kernel.org/dri-devel/20201120095445.1195585-1-daniel.vetter@ffwll.ch/
+v2: https://lore.kernel.org/dri-devel/20200610194101.1668038-1-daniel.vetter@ffwll.ch/
+
+Changes since v3:
+- more acks/r-b
+- typos in the kerneldoc fixed
+
+Changes since v2:
+- Now hopefully the bug that bombed xfs fixed.
+- With unit-tests (that's the part I really wanted and never got to)
+- might_alloc() helper thrown in for good.
+
+I think if we have an ack/review from fs-devel this should be good to
+land. Last version that landed in -mm (v2) broke xfs pretty badly.
+
+Unfortuantely I don't have a working email from Qian anymore, who reported
+the xfs issue. Maybe Dave Chinner instead?
+
+Cheers, Daniel
+
+Daniel Vetter (3):
+  mm: Track mmu notifiers in fs_reclaim_acquire/release
+  mm: Extract might_alloc() debug check
+  locking/selftests: Add testcases for fs_reclaim
+
+ include/linux/sched/mm.h | 16 ++++++++++++++
+ lib/locking-selftest.c   | 47 ++++++++++++++++++++++++++++++++++++++++
+ mm/mmu_notifier.c        |  7 ------
+ mm/page_alloc.c          | 31 ++++++++++++++++----------
+ mm/slab.h                |  5 +----
+ mm/slob.c                |  6 ++---
+ 6 files changed, 86 insertions(+), 26 deletions(-)
+
 -- 
 2.29.2
 
