@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A142C3E5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB0E2C3E65
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729232AbgKYKqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:46:34 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:36148 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728006AbgKYKqc (ORCPT
+        id S1729260AbgKYKrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:47:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728938AbgKYKrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:46:32 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1B8B51C0B7D; Wed, 25 Nov 2020 11:46:30 +0100 (CET)
-Date:   Wed, 25 Nov 2020 11:46:29 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        dmurphy@ti.com, jacek.anaszewski@gmail.com,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] leds: lp50xx: Fix an error handling path in
- 'lp50xx_probe_dt()'
-Message-ID: <20201125104629.GE25562@amd>
-References: <20200922210515.385099-1-christophe.jaillet@wanadoo.fr>
- <20200923133510.GJ4282@kadam>
- <faa49efc-5ba5-b6bd-b486-2f7c4611219b@wanadoo.fr>
- <20200924064932.GP18329@kadam>
- <20200928115301.GB3987353@kuha.fi.intel.com>
+        Wed, 25 Nov 2020 05:47:01 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81C7C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 02:47:00 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id lv15so2297733ejb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 02:47:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P/Dda3TrMKEh7mM1NZG1uzUobwUSnHHig1HhvVYDq8U=;
+        b=DyIqeQ5L0Z0W/MMEDCh24Pnn/PTz1MbqZUOgZTiZU8ADygSMrudEQFaAd1iwyFj166
+         1Mr6svWeJ8QRYyJ50npzy8jyoJPZNH2ljPaXYv5cNrAwRu9gAgROpD6INJfQqLTbXDJq
+         SB34GcsyBzI1hOIOSC5vLn0bM81JyfugHKG8qil3/hMwZiOwkCxZsaaN9JlroCK7AgYf
+         pA35nzY5hCZNMKCCmBPfD5KfolEvfyBZyJ6RCZBB0xT5FlNi2SfPG0ncfrkUzLxEQG5B
+         Vl4+YftnhQqDBCEzKImePx5A+wLAdlBZ8elcpbvnhHxC/iyR7596RSoSPpwp+wrjhEUw
+         9LTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P/Dda3TrMKEh7mM1NZG1uzUobwUSnHHig1HhvVYDq8U=;
+        b=ZWZXImluVi0/vdbpxHl3KM19tVpPpGiM+9CN4SGsMSF90G9pj0PmyV/+9du2rEqG8/
+         tft2gdjm4pU/fQyQKpUg4NGwut1BRNyo3rMQkbnSPqmgK07WcjfpWEhYjBAoV63kB3L9
+         Kv1/36mbeLMPEK/++cw338ULiPN2ETFb8YJR55CHp8H5pTHQaj9L75AVOp0ljDFLk64K
+         BgyQjzwsKVuBGV9Ap4N5X/nFEGVnxJ5DMpzK16bpJ68JX+9Nqx/WCh2rnN3wrbAIhOaz
+         70ukYW0Y5tu3OV5Oy74MWJiRTqdujlJ2NIPaHGkTSBoz2nlRcW7hc/ujHPHj69GgpQKI
+         fvDw==
+X-Gm-Message-State: AOAM533NH2URvq71c7bP77NA7SlJJztENXpQTgJlDcF/n287NW1azUkN
+        4k7oEhIU+GbcPjLI4tKCdyAo38n4v1gM2JXLIThZAQ==
+X-Google-Smtp-Source: ABdhPJzAcgJVFbuDO5LNnao/kQNEW1iI4KhOcKIrr/S4M2HKWm9d60VUyamw/dXs7ig9EvlOTHwigcfk1fkF9PP5pPA=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr2584819eju.375.1606301219451;
+ Wed, 25 Nov 2020 02:46:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="idY8LE8SD6/8DnRI"
-Content-Disposition: inline
-In-Reply-To: <20200928115301.GB3987353@kuha.fi.intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <CA+G9fYuKZGaHVvAv=ZwOL_p6UM3YhOHy0DcJRRM_DOLGYXg1Dw@mail.gmail.com>
+ <20201124171628.dk6tle5lh3sx2jxg@linutronix.de> <20201125004632.GG4327@casper.infradead.org>
+In-Reply-To: <20201125004632.GG4327@casper.infradead.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 25 Nov 2020 16:16:47 +0530
+Message-ID: <CA+G9fYt+P1=efG+Ciq6Pak-NvPARx_GoqOw8FLnw4eb-LjRKrw@mail.gmail.com>
+Subject: Re: kernel BUG at mm/highmem.c:417! invalid opcode: 0000 EIP: zero_user_segments
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        LTP List <ltp@lists.linux.it>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        torvalds@linuxfoundation.org, Yang Shi <shy828301@gmail.com>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@suse.de>, Song Liu <songliubraving@fb.com>,
+        Zi Yan <ziy@nvidia.com>, vtolkm@googlemail.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 25 Nov 2020 at 06:16, Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Nov 24, 2020 at 06:16:28PM +0100, Sebastian Andrzej Siewior wrote:
+> > On 2020-11-24 18:52:44 [+0530], Naresh Kamboju wrote:
+> > > While running LTP test case access01 the following kernel BUG
+> > > noticed on linux next 20201124 tag kernel on i386.
+> > >
+> > > git short log:
+> > > ----------------
+> > > git log --oneline next-20201120..next-20201124 -- mm/highmem.c
+> > > d9927d46febf Merge branch 'akpm-current/current'
+> > > 72d22a0d0e86 mm: support THPs in zero_user_segments
+> > > 2a656cad337e mm/highmem: Take kmap_high_get() properly into account
+> > >
+> > > Please find these easy steps to reproduce the kernel build and boot.
+> >
+> > This BUG_ON() is in zero_user_segments() which ash been added in commit
+> >    72d22a0d0e86 mm: support THPs in zero_user_segments
+> >
+> > > [   50.852189] kernel BUG at mm/highmem.c:417!
+> >
+> > I managed to capture one invocation with:
+> > zero_user_segments(0xd4367a90,
+> >                  0x1000, 0x1000,
+> >                  0x0, 0x50)
+> > page_compound() -> 1
+> > page_size() -> 4096
+>
+> Thanks for debugging this!  I didn't realise start1 was allowed to be
+> less than start2.  Try this ... (systemd is sabotaging my efforts to
+> test an i386 kernel)
 
---idY8LE8SD6/8DnRI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch tested on i386, x86_64 and arm and the reported problem got fixed.
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-Hi!
-
-> > > > I have been trying to teach Smatch to understand reference counting=
- so
-> > > > it can discover these kinds of bugs automatically.
-> > > >=20
-> > > > I don't know how software_node_get_next_child() can work when it do=
-esn't
-> > > > call kobject_get().  This sort of bug would have been caught in tes=
-ting
-> > > > because it affects the success path so I must be reading the code w=
-rong.
-> > > >=20
-> > >=20
-> > > I had the same reading of the code and thought that I was missing som=
-ething
-> > > somewhere.
-> > >=20
-> > > There is the same question about 'acpi_get_next_subnode' which is als=
-o a
-> > > '.get_next_child_node' function, without any ref counting, if I'm cor=
-rect.
-> > >=20
-> >=20
-> > Yeah, but there aren't any ->get/put() ops for the acpi_get_next_subnod=
-e()
-> > stuff so it's not a problem.  (Presumably there is some other sort of
-> > refcounting policy there).
->=20
-> OK, so I guess we need to make software_node_get_next_child()
-> mimic the behaviour of of_get_next_available_child(), and not
-> acpi_get_next_subnode(). Does the attached patch work?
-
-Does not sound unreasonable. Did it get solved, somehow?
-
-Best regards,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---idY8LE8SD6/8DnRI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl++NgUACgkQMOfwapXb+vIHzwCgworQ7zr2uP1ShsLQgTp5zabE
-BLcAnjZC4LxmDlCixRQv6XHtwCEAST/3
-=iaU9
------END PGP SIGNATURE-----
-
---idY8LE8SD6/8DnRI--
+- Naresh
