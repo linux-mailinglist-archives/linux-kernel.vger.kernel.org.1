@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C84B2C45C0
+	by mail.lfdr.de (Postfix) with ESMTP id C997B2C45C1
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732226AbgKYQqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:46:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57230 "EHLO mail.kernel.org"
+        id S1732239AbgKYQqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:46:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732181AbgKYQqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:46:08 -0500
+        id S1732181AbgKYQqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:46:12 -0500
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CAC02083E;
-        Wed, 25 Nov 2020 16:46:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66BE021734;
+        Wed, 25 Nov 2020 16:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606322768;
-        bh=Ju113eZ9V9u7c87HH77J8+nB2ndVCZR+9BZ4I7nAeXw=;
+        s=default; t=1606322772;
+        bh=0HugLJZa8zS4Le6aM6WdEG5ldLVgwL6aMNqW9XESAyY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=WAkP+/pwlBjnuNLv/rDQVLWUufs2kpqEVzZNFgXH7fCkShOVgQXt0lJKmXqCEMwGa
-         jaoLrqZP1MrTghK4oK4JHMrVxJMrhOHt8FnocGmOn8tirtBJ3msYKAaI7+cmLLcu2w
-         uZwW3/96o66N+KeIYn8b0/Cv9vuwN/TcZab3amtY=
+        b=rqkENPgbXoOKMgot+Dm0OoYJBa0IaaBVqyoNFF42d2n4g/yiR9J+GqkJGcJ/e8HX+
+         Ae6SiVtKuirhuvDUJ4ktVXErrTp4aPUUtHiRE4F+SooyywYsPX0G7qNxPlGIUZWvPf
+         Mq2UAkTOpDRxkADPNrr088Md1ZQAr2DuXiFRjx/k=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -45,9 +45,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org,
         linux-rockchip@lists.infradead.org
-Subject: [PATCH v2 13/39] ASoC: uniphier: mark OF related data as maybe unused
-Date:   Wed, 25 Nov 2020 17:44:26 +0100
-Message-Id: <20201125164452.89239-14-krzk@kernel.org>
+Subject: [PATCH v2 14/39] ASoC: ak4118: skip of_device_id table when !CONFIG_OF
+Date:   Wed, 25 Nov 2020 17:44:27 +0100
+Message-Id: <20201125164452.89239-15-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201125164452.89239-1-krzk@kernel.org>
 References: <20201125164452.89239-1-krzk@kernel.org>
@@ -58,58 +58,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver can be compile tested with !CONFIG_OF making certain data
-unused:
+The driver can match by multiple methods.  Its of_device_id table is
+referenced via of_match_ptr() so it will be unused for !CONFIG_OF
+builds:
 
-  sound/soc/uniphier/aio-ld11.c:375:34: warning: ‘uniphier_aio_of_match’ defined but not used [-Wunused-const-variable=]
-  sound/soc/uniphier/evea.c:554:34: warning: ‘evea_of_match’ defined but not used [-Wunused-const-variable=]
+  sound/soc/codecs/ak4118.c:407:34: warning: ‘ak4118_of_match’ defined but not used [-Wunused-const-variable=]
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/uniphier/aio-ld11.c | 2 +-
- sound/soc/uniphier/aio-pxs2.c | 2 +-
- sound/soc/uniphier/evea.c     | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/ak4118.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/uniphier/aio-ld11.c b/sound/soc/uniphier/aio-ld11.c
-index 8b44f8dc4970..7b3cf5d751f6 100644
---- a/sound/soc/uniphier/aio-ld11.c
-+++ b/sound/soc/uniphier/aio-ld11.c
-@@ -372,7 +372,7 @@ static const struct uniphier_aio_chip_spec uniphier_aio_ld20_spec = {
- 	.addr_ext  = 1,
- };
- 
--static const struct of_device_id uniphier_aio_of_match[] = {
-+static const struct of_device_id uniphier_aio_of_match[] __maybe_unused = {
- 	{
- 		.compatible = "socionext,uniphier-ld11-aio",
- 		.data = &uniphier_aio_ld11_spec,
-diff --git a/sound/soc/uniphier/aio-pxs2.c b/sound/soc/uniphier/aio-pxs2.c
-index a1d05fe9d3c2..899904f7ffd6 100644
---- a/sound/soc/uniphier/aio-pxs2.c
-+++ b/sound/soc/uniphier/aio-pxs2.c
-@@ -282,7 +282,7 @@ static const struct uniphier_aio_chip_spec uniphier_aio_pxs2_spec = {
- 	.addr_ext  = 0,
- };
- 
--static const struct of_device_id uniphier_aio_of_match[] = {
-+static const struct of_device_id uniphier_aio_of_match[] __maybe_unused = {
- 	{
- 		.compatible = "socionext,uniphier-pxs2-aio",
- 		.data = &uniphier_aio_pxs2_spec,
-diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
-index d27e9ca07856..96343d19a1e0 100644
---- a/sound/soc/uniphier/evea.c
-+++ b/sound/soc/uniphier/evea.c
-@@ -551,7 +551,7 @@ static int evea_remove(struct platform_device *pdev)
- 	return 0;
+diff --git a/sound/soc/codecs/ak4118.c b/sound/soc/codecs/ak4118.c
+index f44d9a4a8507..5d46ae85566c 100644
+--- a/sound/soc/codecs/ak4118.c
++++ b/sound/soc/codecs/ak4118.c
+@@ -404,11 +404,13 @@ static int ak4118_i2c_probe(struct i2c_client *i2c,
+ 				&soc_component_drv_ak4118, &ak4118_dai, 1);
  }
  
--static const struct of_device_id evea_of_match[] = {
-+static const struct of_device_id evea_of_match[] __maybe_unused = {
- 	{ .compatible = "socionext,uniphier-evea", },
++#ifdef CONFIG_OF
+ static const struct of_device_id ak4118_of_match[] = {
+ 	{ .compatible = "asahi-kasei,ak4118", },
  	{}
  };
+ MODULE_DEVICE_TABLE(of, ak4118_of_match);
++#endif
+ 
+ static const struct i2c_device_id ak4118_id_table[] = {
+ 	{ "ak4118", 0 },
 -- 
 2.25.1
 
