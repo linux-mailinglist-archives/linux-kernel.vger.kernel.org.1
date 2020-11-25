@@ -2,122 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C5E2C4A40
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732582C4A43
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732952AbgKYVt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:49:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732851AbgKYVt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:49:27 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACE602083E;
-        Wed, 25 Nov 2020 21:49:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606340967;
-        bh=kwlAvwQ9x4w4c8oPPCfGpynB2t32g0wSKIXIqjXmwR0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PGGCjppsUSg6q4yK+aIE7KQ6BZ9kyOUsHKRuYbcXLJDZGDAiKEpBmcb3HjyiyyBZU
-         eCitBdLNVcCUyna8/Orrjfup3rjcaA/Uvyw30grsZzBBVPulXev50u1Eeleh1oSVNC
-         ji3JZFhFt5YHwE8STfvw6Y4jUKFTmD92pmSFwIwM=
-Date:   Wed, 25 Nov 2020 13:49:25 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     andrew.hendry@gmail.com, davem@davemloft.net,
-        xie.he.0141@gmail.com, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6 2/5] net/lapb: support netdev events
-Message-ID: <20201125134925.26d851f7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201124093938.22012-3-ms@dev.tdt.de>
-References: <20201124093938.22012-1-ms@dev.tdt.de>
-        <20201124093938.22012-3-ms@dev.tdt.de>
+        id S1733025AbgKYVwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:52:22 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:45674 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730523AbgKYVwW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 16:52:22 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ki2hi-00FDMB-8u; Wed, 25 Nov 2020 14:51:58 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ki2hh-009hO3-1p; Wed, 25 Nov 2020 14:51:57 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Geoff Levand <geoff@infradead.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <87r1on1v62.fsf@x220.int.ebiederm.org>
+        <20201120231441.29911-2-ebiederm@xmission.com>
+        <20201123175052.GA20279@redhat.com>
+        <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com>
+        <87im9vx08i.fsf@x220.int.ebiederm.org>
+        <87pn42r0n7.fsf@x220.int.ebiederm.org>
+        <CAHk-=wi-h8y5MK83DA6Vz2TDSQf4eEadddhWLTT_94bP996=Ug@mail.gmail.com>
+        <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com>
+        <ed83033f-80af-5be0-ecbe-f2bf5c2075e9@infradead.org>
+Date:   Wed, 25 Nov 2020 15:51:32 -0600
+In-Reply-To: <ed83033f-80af-5be0-ecbe-f2bf5c2075e9@infradead.org> (Geoff
+        Levand's message of "Tue, 24 Nov 2020 15:44:50 -0800")
+Message-ID: <87h7pdnlzv.fsf_-_@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1ki2hh-009hO3-1p;;;mid=<87h7pdnlzv.fsf_-_@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19XfRweRSAi6EyZ571wGpCRuKmbgK3HI3A=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: ***
+X-Spam-Status: No, score=3.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_XMDrugObfuBody_08,XMSubLong,
+        XM_B_SpammyWords autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Geoff Levand <geoff@infradead.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 415 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 10 (2.4%), b_tie_ro: 9 (2.1%), parse: 0.93 (0.2%),
+         extract_message_metadata: 16 (3.9%), get_uri_detail_list: 2.4 (0.6%),
+        tests_pri_-1000: 14 (3.3%), tests_pri_-950: 1.24 (0.3%),
+        tests_pri_-900: 1.05 (0.3%), tests_pri_-90: 69 (16.7%), check_bayes:
+        68 (16.4%), b_tokenize: 8 (2.0%), b_tok_get_all: 9 (2.3%),
+        b_comp_prob: 3.3 (0.8%), b_tok_touch_all: 43 (10.4%), b_finish: 0.91
+        (0.2%), tests_pri_0: 288 (69.5%), check_dkim_signature: 0.56 (0.1%),
+        check_dkim_adsp: 2.2 (0.5%), poll_dns_idle: 0.75 (0.2%), tests_pri_10:
+        2.3 (0.6%), tests_pri_500: 9 (2.1%), rewrite_mail: 0.00 (0.0%)
+Subject: [RFC][PATCH] coredump: Document coredump code exclusively used by cell spufs
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 10:39:35 +0100 Martin Schiller wrote:
-> This patch allows layer2 (LAPB) to react to netdev events itself and
-> avoids the detour via layer3 (X.25).
-> 
-> 1. Establish layer2 on NETDEV_UP events, if the carrier is already up.
-> 
-> 2. Call lapb_disconnect_request() on NETDEV_GOING_DOWN events to signal
->    the peer that the connection will go down.
->    (Only when the carrier is up.)
-> 
-> 3. When a NETDEV_DOWN event occur, clear all queues, enter state
->    LAPB_STATE_0 and stop all timers.
-> 
-> 4. The NETDEV_CHANGE event makes it possible to handle carrier loss and
->    detection.
-> 
->    In case of Carrier Loss, clear all queues, enter state LAPB_STATE_0
->    and stop all timers.
-> 
->    In case of Carrier Detection, we start timer t1 on a DCE interface,
->    and on a DTE interface we change to state LAPB_STATE_1 and start
->    sending SABM(E).
-> 
-> Signed-off-by: Martin Schiller <ms@dev.tdt.de>
 
-> +/* Handle device status changes. */
-> +static int lapb_device_event(struct notifier_block *this, unsigned long event,
-> +			     void *ptr)
-> +{
-> +	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
-> +	struct lapb_cb *lapb;
-> +
-> +	if (!net_eq(dev_net(dev), &init_net))
-> +		return NOTIFY_DONE;
-> +
-> +	if (dev->type == ARPHRD_X25) {
+Oleg Nesterov recently asked[1] why is there an unshare_files in
+do_coredump.  After digging through all of the callers of lookup_fd it
+turns out that it is
+arch/powerpc/platforms/cell/spufs/coredump.c:coredump_next_context
+that needs the unshare_files in do_coredump.
 
-Flip condition, save indentation.
+Looking at the history[2] this code was also the only piece of coredump code
+that required the unshare_files when the unshare_files was added.
 
-	if (dev->type != ARPHRD_X25)
-		return NOTIFY_DONE;
+Looking at that code it turns out that cell is also the only
+architecture that implements elf_coredump_extra_notes_size and
+elf_coredump_extra_notes_write.
 
-You can also pull out of all the cases:
+I looked at the gdb repo[3] support for cell has been removed[4] in binutils
+2.34.  Geoff Levand reports he is still getting questions on how to
+run modern kernels on the PS3, from people using 3rd party firmware so
+this code is not dead.  According to Wikipedia the last PS3 shipped in
+Japan sometime in 2017.  So it will probably be a little while before
+everyone's hardware dies.
 
-	lapb = lapb_devtostruct(dev);
-	if (!lapb)
-		return NOTIFY_DONE;
+Add some comments briefly documenting the coredump code that exists
+only to support cell spufs to make it easier to understand the
+coredump code.  Eventually the hardware will be dead, or their won't
+be userspace tools, or the coredump code will be refactored and it
+will be too difficult to update a dead architecture and these comments
+make it easy to tell where to pull to remove cell spufs support.
 
-right?
+[1] https://lkml.kernel.org/r/20201123175052.GA20279@redhat.com
+[2] 179e037fc137 ("do_coredump(): make sure that descriptor table isn't shared")
+[3] git://sourceware.org/git/binutils-gdb.git
+[4] abf516c6931a ("Remove Cell Broadband Engine debugging support").
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+---
 
-> +		switch (event) {
-> +		case NETDEV_UP:
-> +			lapb_dbg(0, "(%p) Interface up: %s\n", dev,
-> +				 dev->name);
-> +
-> +			if (netif_carrier_ok(dev)) {
-> +				lapb = lapb_devtostruct(dev);
-> +				if (!lapb)
-> +					break;
+Does this change look good to people?  I think it captures this state of
+things and makes things clearer without breaking anything or removing
+functionality for anyone.
 
->  static int __init lapb_init(void)
->  {
-> +	register_netdevice_notifier(&lapb_dev_notifier);
+ fs/binfmt_elf.c | 2 ++
+ fs/coredump.c   | 1 +
+ 2 files changed, 3 insertions(+)
 
-This can fail, so:
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index b6b3d052ca86..c1996f0aeaed 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -2198,6 +2198,7 @@ static int elf_core_dump(struct coredump_params *cprm)
+ 	{
+ 		size_t sz = get_note_info_size(&info);
+ 
++		/* For cell spufs */
+ 		sz += elf_coredump_extra_notes_size();
+ 
+ 		phdr4note = kmalloc(sizeof(*phdr4note), GFP_KERNEL);
+@@ -2261,6 +2262,7 @@ static int elf_core_dump(struct coredump_params *cprm)
+ 	if (!write_note_info(&info, cprm))
+ 		goto end_coredump;
+ 
++	/* For cell spufs */
+ 	if (elf_coredump_extra_notes_write(cprm))
+ 		goto end_coredump;
+ 
+diff --git a/fs/coredump.c b/fs/coredump.c
+index abf807235262..3ff17eea812e 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -790,6 +790,7 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+ 	}
+ 
+ 	/* get us an unshared descriptor table; almost always a no-op */
++	/* The cell spufs coredump code reads the file descriptor tables */
+ 	retval = unshare_files();
+ 	if (retval)
+ 		goto close_fail;
+-- 
+2.25.0
 
-	return register_netdevice_notifier(&lapb_dev_notifier);
-
->  	return 0;
->  }
->  
->  static void __exit lapb_exit(void)
->  {
->  	WARN_ON(!list_empty(&lapb_list));
-> +
-> +	unregister_netdevice_notifier(&lapb_dev_notifier);
->  }
->  
->  MODULE_AUTHOR("Jonathan Naylor <g4klx@g4klx.demon.co.uk>");
-
+Eric
