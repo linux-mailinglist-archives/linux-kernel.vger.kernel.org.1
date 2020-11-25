@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F5B2C36BD
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8D02C36BE
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgKYCYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 21:24:05 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8581 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725952AbgKYCYE (ORCPT
+        id S1726648AbgKYCYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 21:24:13 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:45950 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725287AbgKYCYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 21:24:04 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cgl7D1rmzzLtp7;
-        Wed, 25 Nov 2020 10:23:36 +0800 (CST)
-Received: from [10.57.101.250] (10.57.101.250) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 25 Nov 2020 10:23:59 +0800
-Subject: Re: [PATCH v2 16/18] arm64: dts: hi3660: Harmonize DWC USB3 DT nodes
- name
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
- <20201111091552.15593-17-Sergey.Semin@baikalelectronics.ru>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Tue, 24 Nov 2020 21:24:13 -0500
+X-UUID: 33427ef041924e9da7fc4557534255af-20201125
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=WL55vboZZ3dXagtqBYzxQcXVcZpJORx9ydPC+NvFj5k=;
+        b=NCA0F+algkuaRNJd7Fkwdgw4rplW6l5UI7bv4703xoMuEOiKgrkM+AwGbxk4aBoaGydjlmPfHti0OUjT0HB+Q/rlHf8gJ3m2eLViNi/Rq0Xi0AA9p7IOM1ZHhUDB0IwRXhnMzQikLhm3eAYqaXjMjs4ObduEceJkwJ07sWBtMQs=;
+X-UUID: 33427ef041924e9da7fc4557534255af-20201125
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 895069048; Wed, 25 Nov 2020 10:24:08 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N2.mediatek.inc
+ (172.27.4.72) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 25 Nov
+ 2020 10:24:04 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 25 Nov 2020 10:24:04 +0800
+Message-ID: <1606271044.32484.20.camel@mhfsdcap03>
+Subject: Re: [PATCH] phy/mediatek: Make PHY_MTK_XSPHY depend on HAS_IOMEM
+ and OF_ADDRESS to fix build errors
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   Wei Xu <xuwei5@hisilicon.com>
-Message-ID: <5FBDC03E.8070305@hisilicon.com>
-Date:   Wed, 25 Nov 2020 10:23:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.2.0
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Date:   Wed, 25 Nov 2020 10:24:04 +0800
+In-Reply-To: <1606211233-7425-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1606211233-7425-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20201111091552.15593-17-Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.57.101.250]
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: 9FB0A06CCF3590F0103C7A554F82C24ADD8313A5CDDE3B0898BB4E8F8795A64D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Serge,
+SGkgVGllemh1LA0KDQpPbiBUdWUsIDIwMjAtMTEtMjQgYXQgMTc6NDcgKzA4MDAsIFRpZXpodSBZ
+YW5nIHdyb3RlOg0KPiBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoKSB3aWxsIGJlIG5vdCBidWlsdCBp
+biBsaWIvZGV2cmVzLmMgaWYNCj4gQ09ORklHX0hBU19JT01FTSBpcyBub3Qgc2V0LCBvZl9hZGRy
+ZXNzX3RvX3Jlc291cmNlKCkgd2lsbCBiZQ0KPiBub3QgYnVpbHQgaW4gZHJpdmVycy9vZi9hZGRy
+ZXNzLmMgaWYgQ09ORklHX09GX0FERFJFU1MgaXMgbm90DQo+IHNldCwgYW5kIHRoZW4gdGhlcmUg
+ZXhpc3RzIHR3byBidWlsZCBlcnJvcnMgYWJvdXQgdW5kZWZpbmVkDQo+IHJlZmVyZW5jZSB0byAi
+ZGV2bV9pb3JlbWFwX3Jlc291cmNlIiBhbmQgIm9mX2FkZHJlc3NfdG9fcmVzb3VyY2UiDQo+IGlu
+IHBoeS1tdGsteHNwaHkuYyB1bmRlciBDT01QSUxFX1RFU1QgYW5kIENPTkZJR19QSFlfTVRLX1hT
+UEhZLA0KPiBtYWtlIFBIWV9NVEtfWFNQSFkgZGVwZW5kIG9uIEhBU19JT01FTSBhbmQgT0ZfQURE
+UkVTUyB0byBmaXggaXQuDQo+IA0KPiBSZXBvcnRlZC1ieToga2VybmVsIHRlc3Qgcm9ib3QgPGxr
+cEBpbnRlbC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFRpZXpodSBZYW5nIDx5YW5ndGllemh1QGxv
+b25nc29uLmNuPg0KPiAtLS0NCj4gIGRyaXZlcnMvcGh5L21lZGlhdGVrL0tjb25maWcgfCAyICsr
+DQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9waHkvbWVkaWF0ZWsvS2NvbmZpZyBiL2RyaXZlcnMvcGh5L21lZGlhdGVrL0tjb25m
+aWcNCj4gaW5kZXggNTBjNWU5My4uNjZkZjA0NSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9waHkv
+bWVkaWF0ZWsvS2NvbmZpZw0KPiArKysgYi9kcml2ZXJzL3BoeS9tZWRpYXRlay9LY29uZmlnDQo+
+IEBAIC0zMCw2ICszMCw4IEBAIGNvbmZpZyBQSFlfTVRLX1hTUEhZDQo+ICAJdHJpc3RhdGUgIk1l
+ZGlhVGVrIFhTLVBIWSBEcml2ZXIiDQo+ICAJZGVwZW5kcyBvbiBBUkNIX01FRElBVEVLIHx8IENP
+TVBJTEVfVEVTVA0KPiAgCWRlcGVuZHMgb24gT0YNCj4gKwlkZXBlbmRzIG9uIEhBU19JT01FTQ0K
+PiArCWRlcGVuZHMgb24gT0ZfQUREUkVTUw0KV2h5IG5vdCBhZGQgdGhlbSBpbnRvIGRlY29uZmln
+IGJ1dCBoZXJlPyBJbiBmYWN0IEkgZG9uJ3Qga25vdyB3aGljaCB3YXkNCmlzIGJldHRlciBhbmQg
+Zm9sbG93IHRoZSBrZXJuZWwgcnVsZS4NCg0KVmlub2QgYW5kIEtpc2hvbiwgZG8geW91IGhhdmUg
+YW55IHN1Z2dlc3Rpb24gYWJvdXQgdGhpcz8NCg0KPiAgCXNlbGVjdCBHRU5FUklDX1BIWQ0KPiAg
+CWhlbHANCj4gIAkgIEVuYWJsZSB0aGlzIHRvIHN1cHBvcnQgdGhlIFN1cGVyU3BlZWRQbHVzIFhT
+LVBIWSB0cmFuc2NlaXZlciBmb3INCg0K
 
-On 2020/11/11 17:15, Serge Semin wrote:
-> In accordance with the DWC USB3 bindings the corresponding node
-> name is suppose to comply with the Generic USB HCD DT schema, which
-> requires the USB nodes to have the name acceptable by the regexp:
-> "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> named.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> index d25aac5e0bf8..aea3800029b5 100644
-> --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> @@ -1166,7 +1166,7 @@ usb_phy: usb-phy {
->  			};
->  		};
->  
-> -		dwc3: dwc3@ff100000 {
-> +		dwc3: usb@ff100000 {
->  			compatible = "snps,dwc3";
->  			reg = <0x0 0xff100000 0x0 0x100000>;
->  
-> 
-
-Thanks!
-Applied to the hisilicon arm64 dt tree.
-
-Best Regards,
-Wei
