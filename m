@@ -2,99 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACA42C3A39
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 08:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 891E02C3A3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 08:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728120AbgKYHiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 02:38:02 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:57744 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725308AbgKYHiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 02:38:02 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxytHJCb5fJnAWAA--.50625S2;
-        Wed, 25 Nov 2020 15:37:46 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v2] phy: mediatek: Make PHY_MTK_{XSPHY,TPHY} depend on HAS_IOMEM and OF_ADDRESS to fix build errors
-Date:   Wed, 25 Nov 2020 15:37:45 +0800
-Message-Id: <1606289865-692-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxytHJCb5fJnAWAA--.50625S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ArWfXryfGF1DJrWrAr1xAFb_yoW8ZF48p3
-        93Ka10kry8XFyDCw4xXFy7GFs8CFZrZ3y5GrsxWw13Xa15A3y7AwsYy34agFWUArWv93y7
-        t34rWayUGaykJFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4x
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUYgAwDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1727352AbgKYHlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 02:41:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgKYHle (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 02:41:34 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD902C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 23:41:30 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id t18so708308plo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 23:41:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BrOTfOZo+kNH35NxykU10KI2hPofKGrX6CmWUUasXso=;
+        b=Lg4i3gs5es/hIt/HiwYI5mtohKTh0zHDbwJ2ChOm42ExGTQjsaiK/+ybG3tl/kd6kH
+         csBVZn06S3vJff/6CtdaYGGH0jdBAU+Dh2k2T+E4HtBZzkYzO7nJQv9XtnQZWW4Xs9t0
+         6ndr3CwVqakd43IOifMJafClbXcqczML6an9Jl+9zfs+nYqlAwFJ0uwOG4Xbh8Rk7vBl
+         mmiAKbw4n5z9f/dlHzRcF95QBUEphJfXRZBhWZrZMefcnbJwIAAJIFnUAbZGwswPUZMG
+         8dztO75ry4bVvvJ39ZvoQe7d/R2wV7cdeojnWN18wwPfR8FjHuh3DKlDzgmrdpiGZ5R1
+         CPYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=BrOTfOZo+kNH35NxykU10KI2hPofKGrX6CmWUUasXso=;
+        b=StVKhx59WtgTBtw4qQN+wGJAd7xlkpnkZQAV6YEIQ8brCob7pmD1VhDuA7A/HAViGt
+         ljAqqW+ke6YoZnvHDNoTM5dUWxzTcWeFR225lRIXIDh5fPz0V53hHI3HAnIWZcA3lRSs
+         OlPMD2Ph+L0yRVWAXU8EEci00XzehqfqhbWCbu1sLNEbmKxXRiK9vzXa5fpfhniNEUdV
+         FWrFawhH2a8k5A8iIfKfu33RkzHX+DHnrOAzpBCJ2PHLiqY8HIVbt/lBUasjrLeUujbF
+         x7zDIk8L8JtQ4iEPFwbNWOk/56Pu/TkJl/h8lDAaLC0OrDIe0Q0nsm6ofXlVkp6dzH4l
+         sh1g==
+X-Gm-Message-State: AOAM533jMQgtmg5egFZfHIWQ8S7WTXtwzK2Roulam3xcAaXDATZFkq3T
+        6HbHSDchsqnZjFUEwi96LAqXUd0iTi7mPQ==
+X-Google-Smtp-Source: ABdhPJwOXyaF7C0+0mR3ahm5v7d4F6GimBYlivFDbeDNyD0TYwQTpI+HPA5yxvu/SDES3e76+gHc8Q==
+X-Received: by 2002:a17:902:860c:b029:da:1d7d:7320 with SMTP id f12-20020a170902860cb02900da1d7d7320mr2024199plo.56.1606290090055;
+        Tue, 24 Nov 2020 23:41:30 -0800 (PST)
+Received: from laputa (p784a5642.tkyea130.ap.so-net.ne.jp. [120.74.86.66])
+        by smtp.gmail.com with ESMTPSA id k4sm1148272pfa.103.2020.11.24.23.41.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 23:41:29 -0800 (PST)
+Date:   Wed, 25 Nov 2020 16:41:25 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+Subject: Re: [RFC PATCH v3.1 00/27] Add support UHS-II for GL9755
+Message-ID: <20201125074125.GC62993@laputa>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106022726.19831-1-takahiro.akashi@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_ioremap_resource() will be not built in lib/devres.c if
-CONFIG_HAS_IOMEM is not set, of_address_to_resource() will be
-not built in drivers/of/address.c if CONFIG_OF_ADDRESS is not
-set, and then there exists two build errors about undefined
-reference to "devm_ioremap_resource" and "of_address_to_resource"
-in phy-mtk-xsphy.c under COMPILE_TEST and CONFIG_PHY_MTK_XSPHY,
-make PHY_MTK_XSPHY depend on HAS_IOMEM and OF_ADDRESS to fix it.
+Gentle ping;
 
-The above issue is reported by kernel test robot <lkp@intel.com>,
-through the discussion in the v1 patch, as Chunfeng said we need
-also do this for config PHY_MTK_TPHY:
+On Fri, Nov 06, 2020 at 11:26:59AM +0900, AKASHI Takahiro wrote:
+> This is an interim snapshot of our next version, v4, for enabling
+> UHS-II on MMC/SD.
+> 
+> It is focused on 'sdhci' side to address Adrian's comments regarding
+> "modularising" sdhci-uhs2.c.
+> The whole aim of this version is to get early feedback from Adrian (and
+> others) on this issue. Without any consensus about the code structure,
 
-drivers/phy/mediatek/phy-mtk-tphy.c:1157:		retval = of_address_to_resource(child_np, 0, &res);
-drivers/phy/mediatek/phy-mtk-tphy.c:1123:		tphy->sif_base = devm_ioremap_resource(dev, sif_res);
-drivers/phy/mediatek/phy-mtk-tphy.c:1164:		instance->port_base = devm_ioremap_resource(&phy->dev, &res);
+Any comments so far?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
----
- drivers/phy/mediatek/Kconfig | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+-Takahiro Akashi
 
-diff --git a/drivers/phy/mediatek/Kconfig b/drivers/phy/mediatek/Kconfig
-index 50c5e93..f44800b 100644
---- a/drivers/phy/mediatek/Kconfig
-+++ b/drivers/phy/mediatek/Kconfig
-@@ -5,7 +5,8 @@
- config PHY_MTK_TPHY
- 	tristate "MediaTek T-PHY Driver"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
--	depends on OF
-+	depends on OF && OF_ADDRESS
-+	depends on HAS_IOMEM
- 	select GENERIC_PHY
- 	help
- 	  Say 'Y' here to add support for MediaTek T-PHY driver,
-@@ -29,7 +30,8 @@ config PHY_MTK_UFS
- config PHY_MTK_XSPHY
- 	tristate "MediaTek XS-PHY Driver"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
--	depends on OF
-+	depends on OF && OF_ADDRESS
-+	depends on HAS_IOMEM
- 	select GENERIC_PHY
- 	help
- 	  Enable this to support the SuperSpeedPlus XS-PHY transceiver for
--- 
-2.1.0
-
+> it would make little sense to go further ahead on sdhci side.
+> (Actually, Adrian has made no comments other than "modularising" so far.)
+> 
+> I heavily reworked/refactored sdhci-uhs2.c and re-organised the patch
+> set to meet what I believe Adrian expects; no UHS-II related code in
+> Legacy (UHS-I) code or sdhci.c.
+> 
+> Nevertheless, almost of all changes I made are trivial and straightforward
+> in this direction, and I believe that there is no logic changed since v3
+> except sdhci_uhs2_irq(), as ops->irq hook, where we must deal with UHS-II
+> command sequences in addition to UHS-II errors. So I added extra handlings.
+> 
+> I admit that there is plenty of room for improvements (for example,
+> handling host->flags), but again the focal point here is how sdhci-uhs2.c
+> should be built as a module.
+> 
+> Please review this series (particularly Patch#8-#26 and #27) from this
+> viewpoint in the first place.
+> (Ben is working on 'host' side but there is no change on 'host' side
+> in this submission except a minor tweak.)
+> 
+> Thanks,
+> -Takahiro Akashi
+> 
+> ------ original cover letter from v3 ------
+> Summary
+> =======
+> These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
+> 
+> About UHS-II, roughly deal with the following three parts:
+> 1) A UHS-II detection and initialization:
+> - Host setup to support UHS-II (Section 3.13.1 Host Controller Setup Sequence
+>   [2]).
+> - Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence[2]).
+> - In step(9) of Section 3.13.2 in [2], UHS-II initialization is include Section
+>   3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II Setting Register
+>   Setup Sequence.
+> 
+> 2) Send Legacy SD command through SD-TRAN
+> - Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy SD
+>   compatibility and preserve Legacy SD infrastructures (Section 7.1.1 Packet
+>   Types and Format Overview[3]).
+> - Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+>   CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
+> 
+> 3) UHS-II Interrupt
+> - Except for UHS-II error interrupts, most interrupts share the original
+>   interrupt registers.
+> 
+> Patch structure
+> ===============
+> patch#1-#7: for core
+> patch#8-#17: for sdhci
+> patch#18-#21: for GL9755
+> 
+> Tests
+> =====
+> Ran 'dd' command to evaluate the performance:
+> (SanDisk UHS-II card on GL9755 controller)
+>                              Read    Write
+> UHS-II disabled (UHS-I): 88.3MB/s 60.7MB/s
+> UHS-II enabled         :  206MB/s   80MB/s
+> 
+> TODO
+> ====
+> - replace some define with BIT macro
+> 
+> Reference
+> =========
+> [1] https://gitlab.com/ben.chuang/linux-uhs2-gl9755.git
+> [2] SD Host Controller Simplified Specification 4.20
+> [3] UHS-II Simplified Addendum 1.02
+> 
+> Changes in v3 (Jul. 10, 2020)
+> * rebased to v5.8-rc4
+> * add copyright notice
+> * reorganize the patch set and split some commits into smaller ones
+> * separate uhs-2 headers from others
+> * correct wrong spellings
+> * fix most of checkpatch warnings/errors
+> * remove all k[cz]alloc() from the code
+> * guard sdhci-uhs2 specific code with
+>       'if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2))'
+> * make sdhci-uhs2.c as a module
+> * trivial changes, including
+>   - rename back sdhci-core.c to sdhci.c
+>   - allow vendor code to disable uhs2 if v4_mode == 0
+>       in __sdhci_add_host()
+>   - merge uhs2_power_up() into mmc_power_up()
+>   - remove flag_uhs2 from mmc_attach_sd()
+>   - add function descriptions to EXPORT'ed functions
+>   - other minor code optimization
+> 
+> Changes in v2 (Jan. 9, 2020)
+> * rebased to v5.5-rc5
+> 
+> AKASHI Takahiro (23):
+>   mmc: core: UHS-II support, modify power-up sequence
+>   mmc: core: UHS-II support, skip set_chip_select()
+>   mmc: core: UHS-II support, skip TMODE setup in some cases
+>   mmc: core: UHS-II support, generate UHS-II SD command packet
+>   mmc: core: UHS-II support, set APP_CMD bit if necessary
+>   mmc: sdhci: add a kernel configuration for enabling UHS-II support
+>   mmc: sdhci: add UHS-II related definitions in headers
+>   mmc: sdhci: add UHS-II module
+>   mmc: sdhci-uhs2: dump UHS-II registers
+>   mmc: sdhci-uhs2: add reset function
+>   mmc: sdhci-uhs2: add set_power() to support vdd2
+>   mmc: sdhci-uhs2: skip signal_voltage_switch()
+>   mmc: sdhci-uhs2: add set_timeout()
+>   mmc: sdhci-uhs2: add set_ios()
+>   mmc: sdhci-uhs2: add detect_init() to detect the interface
+>   mmc: sdhci-uhs2: add clock operations
+>   mmc: sdhci-uhs2: add set_reg() to initialise the interface
+>   mmc: sdhci-uhs2: add request() and others
+>   mmc: sdhci-uhs2: add irq() and others
+>   mmc: sdhci-uhs2: add add_host() and others to set up the driver
+>   mmc: core: add post-mmc_attach_sd hook
+>   mmc: sdhci-pci: add UHS-II support framework
+>   mmc: sdhci-pci-gli: enable UHS-II mode for GL9755
+> 
+> Ben Chuang (4):
+>   mmc: add UHS-II related definitions in public headers
+>   mmc: core: UHS-II support, try to select UHS-II interface
+>   mmc: sdhci-uhs2: add pre-detect_init hook
+>   mmc: sdhci-uhs2: add post-mmc_attach_sd hook
+> 
+>  drivers/mmc/core/Makefile         |    2 +-
+>  drivers/mmc/core/block.c          |    7 +-
+>  drivers/mmc/core/bus.c            |    5 +-
+>  drivers/mmc/core/core.c           |  118 +-
+>  drivers/mmc/core/regulator.c      |   14 +
+>  drivers/mmc/core/sd.c             |   32 +
+>  drivers/mmc/core/sd_ops.c         |   12 +
+>  drivers/mmc/core/uhs2.c           |  883 +++++++++++++++
+>  drivers/mmc/core/uhs2.h           |   21 +
+>  drivers/mmc/host/Kconfig          |   10 +
+>  drivers/mmc/host/Makefile         |    1 +
+>  drivers/mmc/host/sdhci-pci-core.c |   16 +-
+>  drivers/mmc/host/sdhci-pci-gli.c  |  318 +++++-
+>  drivers/mmc/host/sdhci-pci.h      |    3 +
+>  drivers/mmc/host/sdhci-uhs2.c     | 1697 +++++++++++++++++++++++++++++
+>  drivers/mmc/host/sdhci-uhs2.h     |  224 ++++
+>  drivers/mmc/host/sdhci.c          |  333 +++---
+>  drivers/mmc/host/sdhci.h          |  117 +-
+>  include/linux/mmc/card.h          |    1 +
+>  include/linux/mmc/core.h          |    6 +
+>  include/linux/mmc/host.h          |   31 +
+>  include/linux/mmc/uhs2.h          |  268 +++++
+>  22 files changed, 3961 insertions(+), 158 deletions(-)
+>  create mode 100644 drivers/mmc/core/uhs2.c
+>  create mode 100644 drivers/mmc/core/uhs2.h
+>  create mode 100644 drivers/mmc/host/sdhci-uhs2.c
+>  create mode 100644 drivers/mmc/host/sdhci-uhs2.h
+>  create mode 100644 include/linux/mmc/uhs2.h
+> 
+> -- 
+> 2.28.0
+> 
