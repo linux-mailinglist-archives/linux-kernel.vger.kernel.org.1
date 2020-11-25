@@ -2,165 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E252D2C37D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4532C37D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbgKYDvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 22:51:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgKYDvf (ORCPT
+        id S1727777AbgKYDvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 22:51:51 -0500
+Received: from smtprelay0230.hostedemail.com ([216.40.44.230]:45732 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727724AbgKYDvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 22:51:35 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ABDC0613D4;
-        Tue, 24 Nov 2020 19:51:34 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id p12so307923uam.1;
-        Tue, 24 Nov 2020 19:51:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uS51WQ1NTmDfltGGpsC+YpnUZyidpZ3ywNerFc5c8l4=;
-        b=oS5QeUhMkPyWIrkOfy7q2mWqx9X1PRD/XVc5dmvIBzLHH/tJLaI3Yd9o5KROY0JgI1
-         umeTFvC9ERHNRpy6fskkTK8c0oEnjl/iu8zB4mHPgWxYNlovOoD/IeMjRhO8Jf2tRRxY
-         M8r3sph4FgB1yU0M8Y/95nu7VjzA9SHdKu76YQF6JdnDOV2wCuqyHaASEPD4bctNAg9h
-         K0T1Fj8zapasTNFkKsVpPt9/31oX8OaBmf8KiVSdtZfmr6nimJeDYiHLxsv4XYRiUMjs
-         UBjYgO3mttAYuqYFsFs8OkNpIlyWjtqEo7hT5PKgmUoSWv3GqfG6lDXxlDIY6IYhvABF
-         yEWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uS51WQ1NTmDfltGGpsC+YpnUZyidpZ3ywNerFc5c8l4=;
-        b=EWCuwZhVOcPCukput6flU/iarmJsQ39vcvLZFq2TIHSMZ67kDPc/1MwwEd/DEJ0XNP
-         pRYK6cE/3acFoHHo4vUAGV7pk7H1XjzqaKs985ZQnPFbPmZR2IkdOfagbWGaekf6k4B1
-         gtWp4Bif0f0Ol91qQv8UPcnxZyB/xglxeadiB+GdcZDT6bfp9A/7y90+kKVmGzDdE++r
-         qi2cP/KQrH4bec29Xi5W5j/STQE/s/GW7s3/dufXopkNEOgW4sEGns70FGoafRlsgnE/
-         El1lzngAFtqoAmrnlpfes56YlGyZje9i4g91dnKTtxuqlT82k+6u7R9yqlUblUlHhHf1
-         OmDA==
-X-Gm-Message-State: AOAM533KPuTU4vLsdPNNpFPBgaGqceBdp82HnhcFO7QifaYbpWU8Xx4c
-        4VRaGbC4IkuXCypd08f6wuDWxGZzdCfdUgbcicU=
-X-Google-Smtp-Source: ABdhPJy8W3emCMDnxU1mDz/AaTKlXhVfA7P7ZlLhM+xtIsI8KQUhkJIe5NuHuGktvhVQiewWwylVdrWq5gAL+3AHZNM=
-X-Received: by 2002:ab0:1d83:: with SMTP id l3mr973832uak.41.1606276294038;
- Tue, 24 Nov 2020 19:51:34 -0800 (PST)
+        Tue, 24 Nov 2020 22:51:51 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 803531730878;
+        Wed, 25 Nov 2020 03:51:50 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 57,3.5,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3150:3350:3622:3865:3867:3871:3872:3873:4250:4321:5007:6119:7903:10013:10400:10471:10848:11232:11658:11914:12043:12297:12438:12740:12760:12895:13069:13255:13311:13357:13439:14659:21080:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: back08_1203d1127373
+X-Filterd-Recvd-Size: 1469
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 25 Nov 2020 03:51:49 +0000 (UTC)
+Message-ID: <dddb87a6ffb94b6b8046eb2eca1480a7ca37f962.camel@perches.com>
+Subject: Re: [PATCH RESEND] checkpatch: Do not check git commit description
+ style when backport the upstream commit
+From:   Joe Perches <joe@perches.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Date:   Tue, 24 Nov 2020 19:51:48 -0800
+In-Reply-To: <1606275347-19297-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1606275347-19297-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-References: <20201124181013.162176-1-clemens.gruber@pqgruber.com> <20201124181013.162176-3-clemens.gruber@pqgruber.com>
-In-Reply-To: <20201124181013.162176-3-clemens.gruber@pqgruber.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 24 Nov 2020 22:51:23 -0500
-Message-ID: <CAGngYiXtabaC9j+D081be0+FEVae+jBCBDH=S59f1o-JOn+Gzg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] pwm: pca9685: Support staggered output ON times
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 1:10 PM Clemens Gruber
-<clemens.gruber@pqgruber.com> wrote:
->
-> The PCA9685 supports staggered LED output ON times to minimize current
-> surges and reduce EMI.
-> When this new option is enabled, the ON times of each channel are
-> delayed by channel number x counter range / 16, which avoids asserting
-> all enabled outputs at the same counter value while still maintaining
-> the configured duty cycle of each output.
->
-> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> ---
->
-> Changes since v1:
-> - Rebased
->
->  drivers/pwm/pwm-pca9685.c | 35 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 34 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> index 2b82b35ff0de..37c80bc8edcf 100644
-> --- a/drivers/pwm/pwm-pca9685.c
-> +++ b/drivers/pwm/pwm-pca9685.c
-> @@ -75,6 +75,7 @@ struct pca9685 {
->         struct pwm_chip chip;
->         struct regmap *regmap;
->         int prescale;
-> +       bool staggered_outputs;
->  #if IS_ENABLED(CONFIG_GPIOLIB)
->         struct mutex lock;
->         struct gpio_chip gpio;
-> @@ -329,7 +330,7 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
->  {
->         struct pca9685 *pca = to_pca(chip);
->         unsigned long long duty, prescale;
-> -       unsigned int reg;
-> +       unsigned int on, off, reg;
->
->         if (state->polarity != PWM_POLARITY_NORMAL)
->                 return -EOPNOTSUPP;
-> @@ -375,6 +376,32 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
->         duty = (PCA9685_COUNTER_RANGE - 1) * state->duty_cycle;
->         duty = DIV_ROUND_UP_ULL(duty, state->period);
->
-> +       if (pca->staggered_outputs) {
-> +               if (pwm->hwpwm < PCA9685_MAXCHAN) {
-> +                       /*
-> +                        * To reduce EMI, the ON times of each channel are
-> +                        * spread out evenly within the counter range, while
-> +                        * still maintaining the configured duty cycle
-> +                        */
-> +                       on = pwm->hwpwm * PCA9685_COUNTER_RANGE /
-> +                               PCA9685_MAXCHAN;
-> +                       off = (on + duty) % PCA9685_COUNTER_RANGE;
+On Wed, 2020-11-25 at 11:35 +0800, Tiezhu Yang wrote:
+> When backport the upstream commit to the internal LTS kernel version,
+> we usually use the following description [1] [2]:
+> 
+> [ Upstream commit cc6528bc9a0c901c83b8220a2e2617f3354d6dd9 ]
+> or
+> commit c51f8f88d705e06bd696d7510aff22b33eb8e638 upstream.
 
-Will pwm_get_state() still return the correct duty cycle in case
-of staggered outputs?
+Internal to what?
 
-> +                       regmap_write(pca->regmap, LED_N_ON_L(pwm->hwpwm),
-> +                                    on & 0xff);
-> +                       regmap_write(pca->regmap, LED_N_ON_H(pwm->hwpwm),
-> +                                    (on >> 8) & 0xf);
-> +                       regmap_write(pca->regmap, LED_N_OFF_L(pwm->hwpwm),
-> +                                    off & 0xff);
-> +                       regmap_write(pca->regmap, LED_N_OFF_H(pwm->hwpwm),
-> +                                    (off >> 8) & 0xf);
-> +                       return 0;
-> +               }
-> +
-> +               /* No staggering possible if "all LEDs" channel is used */
-> +               regmap_write(pca->regmap, PCA9685_ALL_LED_ON_L, 0);
-> +               regmap_write(pca->regmap, PCA9685_ALL_LED_ON_H, 0);
-> +       }
-> +
->         if (pwm->hwpwm >= PCA9685_MAXCHAN)
->                 reg = PCA9685_ALL_LED_OFF_L;
->         else
-> @@ -470,6 +497,9 @@ static int pca9685_pwm_probe(struct i2c_client *client,
->
->         regmap_write(pca->regmap, PCA9685_MODE2, reg);
->
-> +       pca->staggered_outputs = device_property_read_bool(
-> +               &client->dev, "staggered-outputs");
-> +
->         /* Disable all LED ALLCALL and SUBx addresses to avoid bus collisions */
->         regmap_read(pca->regmap, PCA9685_MODE1, &reg);
->         reg &= ~(MODE1_ALLCALL | MODE1_SUB1 | MODE1_SUB2 | MODE1_SUB3);
-> @@ -478,6 +508,9 @@ static int pca9685_pwm_probe(struct i2c_client *client,
->         /* Reset OFF registers to HW default (only full OFF bit is set) */
->         regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, 0);
->         regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, LED_FULL);
-> +       /* Reset ON registers to HW default */
-> +       regmap_write(pca->regmap, PCA9685_ALL_LED_ON_L, 0);
-> +       regmap_write(pca->regmap, PCA9685_ALL_LED_ON_H, 0);
->
->         pca->chip.ops = &pca9685_pwm_ops;
->         /* Add an extra channel for ALL_LED */
-> --
-> 2.29.2
->
+If it's your own internal build system, I think you should
+keep your own local patch to checkpatch.
+
+I don't see why the kernel version should accept it.
+
+Is this style used by anyone else?
+
