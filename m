@@ -2,147 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5E92C48BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 701032C48C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729258AbgKYTwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:52:00 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6588 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729228AbgKYTv7 (ORCPT
+        id S1729885AbgKYTy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729811AbgKYTy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:51:59 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbeb5df0000>; Wed, 25 Nov 2020 11:51:59 -0800
-Received: from [10.40.102.42] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 25 Nov
- 2020 19:51:49 +0000
-Subject: Re: [PATCH V4 0/6] Enhancements to Tegra194 PCIe driver
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "amanharitsh123@gmail.com" <amanharitsh123@gmail.com>,
-        "dinghao.liu@zju.edu.cn" <dinghao.liu@zju.edu.cn>,
-        "kw@linux.com" <kw@linux.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Krishna Thota <kthota@nvidia.com>,
-        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
-        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
-References: <20201109171937.28326-1-vidyas@nvidia.com>
- <20201125175709.GA1274379@ulmo>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <9291ac83-0f14-88df-8c1d-81f57b0340ee@nvidia.com>
-Date:   Thu, 26 Nov 2020 01:21:44 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Wed, 25 Nov 2020 14:54:58 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FADC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:54:48 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id f17so3340249pge.6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:54:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=Ckr23nQHY31Kq8p9ufQAXHGQbVrixMKzTDQRBuH9ApM=;
+        b=kWRrWXdFoHsSoOpcSRxkQLSnGun9Aq+XPwC1CQ9uqitCGtnYNspRos7IMI2gJMuLge
+         jzRobg9pdrHC81nEt+SNe0qFJealICniylrtfRWfSnrDjTyKcI+ygOlHJhBmkNFCQzMW
+         mS6H7S9YkWl3QnAutRWfhYKOFcPYTz/akKuhURGn42Ky192YF1Bt0BXDJCXYnQ50T19W
+         hR+Xv44/OmAkylM+34jdIcuttl3XZee+Ntwh+rURbFpqLe0JYgtz+zfG5vr3f61NYHrz
+         GuItRotSi5e+H/g/JfK66JuWEDHpTGAoNP823yyLNV4bVBzmaYjU+HOQm6QG9QAJ1fxf
+         /iFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=Ckr23nQHY31Kq8p9ufQAXHGQbVrixMKzTDQRBuH9ApM=;
+        b=KY26yMvK35TXTH0ZC6gJ2gosydzz9TR4gzpsfWy5upep1hhWpUs8WokZ/ZoYvIRpBK
+         YaMk1Vv6aEMAsf+ntPftVsHIoGovNtoZGsaNqHc8ppi8MdbpG70LgfQ+PinPz5ZOmhZZ
+         s8Yaz0MrBhGAHfJvQ9EakhdXqRfl2yFpi7KrlxJ+W+0YCy71oSTG+LOir0Wu+gDiru0+
+         KHX3UFhi7j1XBV52xF1d+7yyaKr8jDKiATCtILAj7o7GYMKNeCOkljd2EL5AAbcMMRnL
+         FPzArGxgb3fM+Dj7Q1p5+tVeD3MVRgCyjFcc4hkAyt17R1GVWnhQBSKYm472ZWmwXcLG
+         C+CQ==
+X-Gm-Message-State: AOAM530IsTnqYdMutiLB+ydH7h69N0f2KQClLgWiWc2Pz4PNd2bcctZM
+        LbGIthco6R1eq3w7e6wxeJRKi3Wi9GGW5SC7
+X-Google-Smtp-Source: ABdhPJwASZarixa4Q31DYLjJHsv79WkCj0X9lMH+WVDIi3yMghi6OUyMz13QZOmvj8dJsZ1O3eCtlw==
+X-Received: by 2002:a62:8448:0:b029:197:9ab7:9fdb with SMTP id k69-20020a6284480000b02901979ab79fdbmr4542017pfd.49.1606334087840;
+        Wed, 25 Nov 2020 11:54:47 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id c134sm130552pfc.200.2020.11.25.11.54.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 11:54:47 -0800 (PST)
+Subject: [PATCH] MAINTAINERS: Add myself to the Goldfish RTC entry
+Date:   Wed, 25 Nov 2020 11:53:42 -0800
+Message-Id: <20201125195342.3778744-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-In-Reply-To: <20201125175709.GA1274379@ulmo>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606333919; bh=ixWL4EOpRfrPXrl40i6mo64j5n1lhFO+bCWPBDJNeeU=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=pmEC6EgDjCofHhpuGtafbXCwe6Ss2k4V/ttvQToLcL3wk980NxI624heshHU4xMAp
-         5gaptxmoscfZ5zd+IvLdXzDX5vkbTLH7qVqKmw+NayvPSjrpn9Cu67OMHgd7CO7vpc
-         popvRMQQQofZ9MTKrYNJmbuvCUY1syQuH9Dr6aN+CftRgncL3sJ+OXSALk/N2YClCq
-         YtveQ5R5aNpR8aHC8RQvWgGgdSCKP215DDcfGgpJjbS+FnZdOaVY28LRuxGn87/DNf
-         fksCCQtrzI0HAfUrC8/AgqRW2VFoegNNnMSlKy/KzI5JUKUPTxQt1gXaxdlsTVl/9d
-         fXMuM3ZV9LG2A==
+Content-Transfer-Encoding: 8bit
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     miodrag.dinic@mips.com, daniel.lezcano@linaro.org,
+        tglx@linutronix.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
+This is used by the RISC-V virt board in QEMU, which is currently the only
+widely available Linux system.  Removing it right now would cause us some
+headaches in the short term, so I'd like to keep it around.
 
-> -----Original Message-----
-> From: Thierry Reding <thierry.reding@gmail.com>
-> Sent: Wednesday, November 25, 2020 11:27 PM
-> To: Vidya Sagar <vidyas@nvidia.com>
-> Cc: lorenzo.pieralisi@arm.com; robh+dt@kernel.org; bhelgaas@google.com;
-> Jonathan Hunter <jonathanh@nvidia.com>; amanharitsh123@gmail.com;
-> dinghao.liu@zju.edu.cn; kw@linux.com; linux-pci@vger.kernel.org; linux-
-> tegra@vger.kernel.org; linux-kernel@vger.kernel.org; Krishna Thota
-> <kthota@nvidia.com>; Manikanta Maddireddy <mmaddireddy@nvidia.com>;
-> sagar.tv@gmail.com
-> Subject: Re: [PATCH V4 0/6] Enhancements to Tegra194 PCIe driver
-> 
-> On Mon, Nov 09, 2020 at 10:49:31PM +0530, Vidya Sagar wrote:
-> > This series of patches do some enhancements and some bug fixes to the
-> > Tegra194 PCIe platform driver like
-> > - Fix Vendor-ID corruption
-> > - Map DBI space correctly
-> > - Update DWC IP version
-> > - Continue with uninitialization sequence even if parts fail
-> > - Check return value of tegra_pcie_init_controller()
-> >
-> > V4:
-> > * Added a new patch to address link-up issues with some of the cards
-> >
-> > V3:
-> > * Addressed Bjorn's review comments
-> > * Split earlier patch-4 into two
-> >   - Continue with the uninitialization sequence even if some parts fail
-> >   - Check return value of tegra_pcie_init_controller() and exit
-> > accordingly
-> >
-> > V2:
-> > * Addressed Rob's comments. Changed 'Strongly Ordered' to 'nGnRnE'
-> >
-> > Vidya Sagar (6):
-> >   PCI: tegra: Fix ASPM-L1SS advertisement disable code
-> >   PCI: tegra: Map configuration space as nGnRnE
-> >   PCI: tegra: Set DesignWare IP version
-> >   PCI: tegra: Continue unconfig sequence even if parts fail
-> >   PCI: tegra: Check return value of tegra_pcie_init_controller()
-> >   PCI: tegra: Disable LTSSM during L2 entry
-> >
-> >  drivers/pci/controller/dwc/pcie-tegra194.c | 78
-> > +++++++++++-----------
-> >  1 file changed, 39 insertions(+), 39 deletions(-)
-> 
-> I was going to test this series, but then I noticed that PCI is causing a crash on
-> linux-next (as of fairly recently).
-I root caused the crash issue to the following commit
-a0fd361db8e5 ("PCI: dwc: Move "dbi", "dbi2", and "addr_space" resource 
-setup into common code")
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-I also pushed the following two patches to fix this issue for review
+---
 
-http://patchwork.ozlabs.org/project/linux-pci/patch/20201125192234.2270-1-vidyas@nvidia.com/
-http://patchwork.ozlabs.org/project/linux-pci/patch/20201125192554.5401-1-vidyas@nvidia.com/
+I lost the thread here, so if someone else has signed up to maintain this then
+I'm happy to leave things alone.  I don't see anything in Linus' tree as of
+right about now, though, so I figured I'd send something along just in case the
+plan was still to leave it otherwise unmaintained.
 
+IIRC we picked this in QEMU just because it was simple and had a driver we
+didn't need to maintain, so maintaining it does somewhat defeat that decision.
+There isn't a whole lot here so it shouldn't be prohibitive for me to maintain
+the driver, but I will start a discussion in QEMU about whether moving the
+boards that use it over to something else would be appropriate.  Anything like
+that would be a long time away, though, so I'd anticipate keeping this around
+for the foreseeable future.
 
-> So I tried applying this on top of v5.10-rc1, but
-> that gives me the following:
-> 
-> 	[    3.595161] ahci 0001:01:00.0: version 3.0
-> 	[    3.595726] ahci 0001:01:00.0: SSS flag set, parallel bus scan disabled
-> 	[    4.609923] ahci 0001:01:00.0: controller reset failed (0xffffffff)
-> 	[    4.610343] ahci: probe of 0001:01:00.0 failed with error -5
-> 
-> So the device enumerates fine, but it's not able to reset the SATA controller.
-> That said, this seems to happen regardless of this patch series, so plain v5.10-rc1
-> also shows the above.
-This was also a known issue and we need the following commit to make 
-things work (FWIW, it is already accepted)
-9fff3256f93d PCI: dwc: Restore ATU memory resource setup to use last entry
+I definitely don't want this going away right now, though, as that would break
+the only RISC-V setup I actually have :)
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Otherwise, v5.10-rc3 can be used which has working state of PCIe on 
-Tegra194.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a008b70f3c16..21f7cdfc89dc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1169,6 +1169,7 @@ F:	drivers/irqchip/irq-goldfish-pic.c
+ 
+ ANDROID GOLDFISH RTC DRIVER
+ M:	Miodrag Dinic <miodrag.dinic@mips.com>
++M:	Palmer Dabbelt <palmer@dabbelt.com>
+ S:	Supported
+ F:	Documentation/devicetree/bindings/rtc/google,goldfish-rtc.txt
+ F:	drivers/rtc/rtc-goldfish.c
+-- 
+2.29.2.454.gaff20da3a2-goog
 
-> 
-> Given the above, I think we should hold off on applying this series until we've
-> fixed PCI on linux-next and made sure that SATA also works properly, otherwise
-> we don't have a known good baseline to test this against.
-> 
-> Thierry
