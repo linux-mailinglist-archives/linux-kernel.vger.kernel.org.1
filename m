@@ -2,143 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB772C3D6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D040F2C3D4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbgKYKL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728953AbgKYKLz (ORCPT
+        id S1728509AbgKYKKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:10:23 -0500
+Received: from vulcan.natalenko.name ([104.207.131.136]:57084 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgKYKKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:11:55 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBE2C0613D6;
-        Wed, 25 Nov 2020 02:11:55 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id l1so878134pld.5;
-        Wed, 25 Nov 2020 02:11:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=HoasHv3y6th/yvEKkLA5l4WpDaFfWmVWvaf3/EksU3s=;
-        b=EvMPkn9iIXJjwCLoEKVFo7ymURGwzfJq3//6UucjvYZMhdT94vVL3PaXw5KMgtH2HG
-         uagBLZTSmlFHKunUzHtH9QcFYVUU05ey9owWvW1hvNv7fkBImHGzgaSSwbWy0yLtMxfc
-         N2+uhaUtRnvdgY2GqZ+hBHbezztseKyK+1ovIHrdUBPxS73skE92iEQyekAVXkC5+7gV
-         OvwhIyFE6b6LL15TZxIXwgxpy0Qeg5b52qzI2jvUKTfCxK8iVBwtPQcQjsvy2p08YLzT
-         GDxTbOFGldJO1Z8z/6VX//56QIOWV1vY56ZPlRHbDUyNXvUJ1kwLeOG8HxBiSErd08E7
-         XRuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=HoasHv3y6th/yvEKkLA5l4WpDaFfWmVWvaf3/EksU3s=;
-        b=Q8/5yNjuwVa3J3FuadsidkOt9nhi9ac7FoSEYvpqEwKCSXHB/46HPZpaj/A+znWnvx
-         YJeYS1sELVQvaWoaQ+VdtOkxDXz9G7BWKn4k8NkaXd8Sd6FdYpwIMg/NRh0WpbO80jTG
-         DF3+d0fT194WwVEVrvH2gdhwoOL7ny7dcYpIGA2ApBWmjaNVDVTWAEG4xXWWGsD6YjKT
-         wiyZWXplj+B6P3ni95e1HgZQAzWh8MZh1oSTeDZJLK7fyFRzdcbMbYaMWDDSN9DjaIrz
-         N72kX/hiDsPZ5XMpaOe1zMdy+ptLaOjiEjxXfWTlsRMmaYXm0fxr4THN4S1jDgRYRg6p
-         V5aw==
-X-Gm-Message-State: AOAM530scYzrVoNuSz4fSWZNN9M4B7bdrNzJGAUMYYWOVEo2DRn/yw+M
-        DMrmxbMUWA0wlhqH7xQj0a4=
-X-Google-Smtp-Source: ABdhPJz3PNXjHZ4o8ksVTnfDjJM/nPQ95qM+ZuFYmYMwrcd6Ee1kfFaIhnNoAxNsf4nZTOLdl69xOw==
-X-Received: by 2002:a17:902:26a:b029:d6:caca:620a with SMTP id 97-20020a170902026ab02900d6caca620amr2527900plc.46.1606299115271;
-        Wed, 25 Nov 2020 02:11:55 -0800 (PST)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id r130sm1599496pfc.41.2020.11.25.02.11.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 02:11:54 -0800 (PST)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     will@kernel.org
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-tegra@vger.kernel.org, jonathanh@nvidia.com,
-        vdumpa@nvidia.com, thierry.reding@gmail.com, joro@8bytes.org
-Subject: [PATCH RESEND v2 5/5] iommu/tegra-smmu: Add PCI support
-Date:   Wed, 25 Nov 2020 02:10:13 -0800
-Message-Id: <20201125101013.14953-6-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201125101013.14953-1-nicoleotsuka@gmail.com>
-References: <20201125101013.14953-1-nicoleotsuka@gmail.com>
+        Wed, 25 Nov 2020 05:10:23 -0500
+Received: from mail.natalenko.name (vulcan.natalenko.name [IPv6:fe80::5400:ff:fe0c:dfa0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id A42818AB5FC;
+        Wed, 25 Nov 2020 11:10:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1606299018;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vr7kbkvJWj+ymD60j5y+9DhJLqtnSyDODxQOSh6KZPE=;
+        b=GIAYy4xnW4qw/YSkY+woRcIVDkFspmWJp8MMujKEsDBDwB/y1rBVoGSxwe3DhGUeXkdRYP
+        VX3XBGmsQRBeQdjaZwvVGltpwcoQJhM4XALo8sk1XNWMpW8hXLbuBxekT7q5Ew64WEupOC
+        bL5Re7o9eDhY46FRTo+07r27oraitfY=
+MIME-Version: 1.0
+Date:   Wed, 25 Nov 2020 11:10:18 +0100
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        matthew.garrett@nebula.com, jk@ozlabs.org
+Subject: Re: Oops (probably) unmounting /oldroot/firmware/efi/efivars.
+In-Reply-To: <X74WuTEjLXzAziwJ@kroah.com>
+References: <5f31cde519b941308412b3849197ee7c@AcuMS.aculab.com>
+ <CAMj1kXHhetomAx4Kd5McnvZQev9j1d-C1Og7h+J7V009WTiwxA@mail.gmail.com>
+ <c4c57a4b65d57bb7b2e87870a92558a5@natalenko.name>
+ <X74WuTEjLXzAziwJ@kroah.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <31d944b52416dd3fb82902566bc3b23b@natalenko.name>
+X-Sender: oleksandr@natalenko.name
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch simply adds support for PCI devices.
+Hello.
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- drivers/iommu/tegra-smmu.c | 35 +++++++++++++++++++++++++----------
- 1 file changed, 25 insertions(+), 10 deletions(-)
+On 25.11.2020 09:32, Greg Kroah-Hartman wrote:
+> On Tue, Nov 24, 2020 at 10:24:27PM +0100, Oleksandr Natalenko wrote:
+>> Hi.
+>> 
+>> On 24.11.2020 15:23, Ard Biesheuvel wrote:
+>> > Surely caused by
+>> >
+>> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/fs/efivarfs?id=fe5186cf12e30facfe261e9be6c7904a170bd822
+>> 
+>> This also soaked through the stable queue into v5.9.11, and now the 
+>> same BUG
+>> is triggered in the latest stable kernel.
+>> 
+>> /cc Greg
+> 
+>  cc: me for what?
+> 
+> /me has no context as to what to do here...
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index f45ed43cf8db..4a3f095a1c26 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -10,6 +10,7 @@
- #include <linux/kernel.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
-@@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
- 	group->smmu = smmu;
- 	group->soc = soc;
- 
--	group->group = iommu_group_alloc();
-+	if (dev_is_pci(dev))
-+		group->group = pci_device_group(dev);
-+	else
-+		group->group = generic_device_group(dev);
-+
- 	if (IS_ERR(group->group)) {
- 		devm_kfree(smmu->dev, group);
- 		mutex_unlock(&smmu->lock);
-@@ -1075,22 +1080,32 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
- 	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
- 
- 	err = iommu_device_register(&smmu->iommu);
--	if (err) {
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err)
-+		goto remove_sysfs;
- 
- 	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
--	if (err < 0) {
--		iommu_device_unregister(&smmu->iommu);
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err < 0)
-+		goto unregister;
-+
-+#ifdef CONFIG_PCI
-+	err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
-+	if (err < 0)
-+		goto unset_platform_bus;
-+#endif
- 
- 	if (IS_ENABLED(CONFIG_DEBUG_FS))
- 		tegra_smmu_debugfs_init(smmu);
- 
- 	return smmu;
-+
-+unset_platform_bus: __maybe_unused;
-+	bus_set_iommu(&platform_bus_type, NULL);
-+unregister:
-+	iommu_device_unregister(&smmu->iommu);
-+remove_sysfs:
-+	iommu_device_sysfs_remove(&smmu->iommu);
-+
-+	return ERR_PTR(err);
- }
- 
- void tegra_smmu_remove(struct tegra_smmu *smmu)
+This was a precursor to 
+https://lore.kernel.org/stable/X74VBej49SCPVisA@kroah.com/ and you 
+already jumped in there.
+
+Thanks.
+
 -- 
-2.17.1
-
+   Oleksandr Natalenko (post-factum)
