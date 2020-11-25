@@ -2,192 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509EA2C35B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 01:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 120092C35B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 01:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgKYAhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 19:37:12 -0500
-Received: from mga04.intel.com ([192.55.52.120]:50538 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727084AbgKYAhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 19:37:11 -0500
-IronPort-SDR: gThsw3jzQC3PX4qOqnDDbuckapf4HfQ5G0BG8Z0RShQLZu/RDYC/A9VKAIwz3WIxI1guoJK+tW
- AfAAqEZMgX9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="169479343"
-X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
-   d="scan'208";a="169479343"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 16:37:11 -0800
-IronPort-SDR: h5LwL00i1OznLSXEEgkTx0MG5wmzeXtTaZ86ZrPFF4vZkGdQwPGDXM60ItNMhsN+vEjEmgc5f5
- aAdMrljThBDQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
-   d="scan'208";a="313447489"
-Received: from lkp-server01.sh.intel.com (HELO 6cfd01e9568c) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 24 Nov 2020 16:37:10 -0800
-Received: from kbuild by 6cfd01e9568c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1khio1-0000Bf-Cm; Wed, 25 Nov 2020 00:37:09 +0000
-Date:   Wed, 25 Nov 2020 08:36:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 758999246965eeb8b253d47e72f7bfe508804b16
-Message-ID: <5fbda713.qsqz2Jno892HARUR%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727853AbgKYAo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 19:44:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727621AbgKYAoz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 19:44:55 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B5EC0613D4;
+        Tue, 24 Nov 2020 16:44:55 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id j23so437113iog.6;
+        Tue, 24 Nov 2020 16:44:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UEbPZRA+qbA9GxCy4DMkd08K0DrmAEkt9ORyM62O+P4=;
+        b=NvNt69SwBMRCvVvcbLgi5zG5qsxloFTWGZtgABixeCvsD83mcKPoUNNb3P/YG19I0d
+         zFlxHQjnG8M93znWM0HLEm15LFoQDlmPW0ZRfpkZFpgNpbsn0rCrg8ggRM4R/FWhZpc8
+         18FmOtl9JAPsCo6ITc5pdLuk9cUxXF0HW9gLsKKY5Pzx9KgZysFmQhiVXFkwehqsB+yP
+         iOGuJZcjWpd3PwvEA2tz64z/rW9ea/SwwqHw0/NO5Lke0TD+ShlMlarSBkxtHUH7Rfv3
+         xGh9AQZHTvwJjMTI00v1V71hfrnXf9GjKxJN9Dfz56qOjvd9ckxSV5XA2xPBH2ejzsI1
+         OxGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UEbPZRA+qbA9GxCy4DMkd08K0DrmAEkt9ORyM62O+P4=;
+        b=lADZmeFokLMgkHoFJa4DSvdE1sF17yTdstvVduCvs0eUJ9b1G8hfm4mN2UrtafKsKB
+         vnnH/FmstHxdiFqG9CGz2DOap4dW4JPJu/PyNuTXM32qXG7rCSH+qFlvTvvLgkZo+5r0
+         tvlN9iEm2dOogqOiIS10q5OvQwB66xmsdCqsXKCYCk97AnOgP1I1Z+3sR4x5TICEkG3V
+         +Jg+ulERu/wj8nUjhvVh4YDr8fK6WvSxn0jfNYR+GLoV9RO0dwRWcDd955wCHLgFlWbh
+         dAldYx23S2OwKSpYttyhTBiHbt/mpJUnZaCqAeIRpYnOvWPNYyxiN1dXW3LkNHkaf74E
+         ptsQ==
+X-Gm-Message-State: AOAM531o4rZ0ovMwRWX0BSruG7fzTB07VrCZZi+s36NL+eKnMa8tOh3a
+        wZIMzO20Q9uBUVIvQ0pBU0r4YU7lOaX7a1Qc0nw=
+X-Google-Smtp-Source: ABdhPJzFSlV7OFBoJCCTpLJPhe96AEXVxmiJ1nXHUmbNH/Q7+3fPr10Cne6Y2te6J9EGKeTSubokyntzby4OcXfXLCE=
+X-Received: by 2002:a02:6c09:: with SMTP id w9mr1092614jab.135.1606265094163;
+ Tue, 24 Nov 2020 16:44:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201124015949.29262-1-alice.guo@nxp.com> <20201124015949.29262-4-alice.guo@nxp.com>
+In-Reply-To: <20201124015949.29262-4-alice.guo@nxp.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Tue, 24 Nov 2020 18:44:42 -0600
+Message-ID: <CAHCN7x+xRNZAEU0Y_nRSsKE5UtSvHT4E5WLx_NvLncbQMndnbw@mail.gmail.com>
+Subject: Re: [PATCH v6 4/4] soc: imx8m: change to use platform driver
+To:     Alice Guo <alice.guo@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
-branch HEAD: 758999246965eeb8b253d47e72f7bfe508804b16  x86/resctrl: Add necessary kernfs_put() calls to prevent refcount leak
+On Mon, Nov 23, 2020 at 8:04 PM Alice Guo <alice.guo@nxp.com> wrote:
+>
+> Directly reading ocotp register depends on that bootloader enables ocotp
+> clk, which is not always effective, so change to use nvmem API. Using
+> nvmem API requires to support driver defer probe and thus change
+> soc-imx8m.c to use platform driver.
+>
+> The other reason is that directly reading ocotp register causes kexec
+> kernel hang because the 1st kernel running will disable unused clks
+> after kernel boots up, and then ocotp clk will be disabled even if
+> bootloader enables it. When kexec kernel, ocotp clk needs to be enabled
+> before reading ocotp registers, and nvmem API with platform driver
+> supported can accomplish this.
+>
+> Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> ---
+>
+The patch reads V6, but the change log only shows V2.  Can you
+elaborate on what has changed between V2 and V6?
 
-elapsed time: 730m
+adam
 
-configs tested: 128
-configs skipped: 79
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      walnut_defconfig
-powerpc                      katmai_defconfig
-mips                         mpc30x_defconfig
-arm                         assabet_defconfig
-m68k                            q40_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                        spear6xx_defconfig
-powerpc                    mvme5100_defconfig
-parisc                generic-32bit_defconfig
-c6x                        evmc6472_defconfig
-arm                       multi_v4t_defconfig
-m68k                       m5249evb_defconfig
-sparc                            alldefconfig
-arm                  colibri_pxa270_defconfig
-arm                          ixp4xx_defconfig
-sh                                  defconfig
-arm                          gemini_defconfig
-csky                             alldefconfig
-arm                          tango4_defconfig
-xtensa                       common_defconfig
-m68k                           sun3_defconfig
-mips                         bigsur_defconfig
-mips                           jazz_defconfig
-powerpc                      pmac32_defconfig
-mips                       lemote2f_defconfig
-mips                      maltasmvp_defconfig
-powerpc                      ppc44x_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                      ep88xc_defconfig
-parisc                              defconfig
-powerpc                     rainier_defconfig
-powerpc                      acadia_defconfig
-ia64                             alldefconfig
-alpha                            alldefconfig
-sh                         microdev_defconfig
-mips                         tb0287_defconfig
-powerpc                   bluestone_defconfig
-mips                         tb0219_defconfig
-arm                             rpc_defconfig
-arm                        trizeps4_defconfig
-sh                               alldefconfig
-m68k                        m5407c3_defconfig
-arm                        cerfcube_defconfig
-arm                        neponset_defconfig
-powerpc                     kmeter1_defconfig
-arm                         s3c6400_defconfig
-arm                          pcm027_defconfig
-arm                          ep93xx_defconfig
-mips                            e55_defconfig
-arm                        multi_v7_defconfig
-sh                          rsk7203_defconfig
-mips                  decstation_64_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                        sh7757lcr_defconfig
-m68k                          multi_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-i386                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20201124
-x86_64               randconfig-a003-20201124
-x86_64               randconfig-a004-20201124
-x86_64               randconfig-a005-20201124
-x86_64               randconfig-a001-20201124
-x86_64               randconfig-a002-20201124
-i386                 randconfig-a004-20201124
-i386                 randconfig-a003-20201124
-i386                 randconfig-a002-20201124
-i386                 randconfig-a005-20201124
-i386                 randconfig-a001-20201124
-i386                 randconfig-a006-20201124
-i386                 randconfig-a012-20201124
-i386                 randconfig-a013-20201124
-i386                 randconfig-a011-20201124
-i386                 randconfig-a016-20201124
-i386                 randconfig-a014-20201124
-i386                 randconfig-a015-20201124
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20201124
-x86_64               randconfig-a011-20201124
-x86_64               randconfig-a014-20201124
-x86_64               randconfig-a016-20201124
-x86_64               randconfig-a012-20201124
-x86_64               randconfig-a013-20201124
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> v2: remove the subject prefix "LF-2571-4"
+> v3: Keep the original way which uses device_initcall to read soc unique
+>     ID, and add the other way which uses module_platform_driver and
+>     nvmem API, so that it will not break the old version DTBs.
+> v4: delete "__maybe_unused"
+>     delete MODULE_DEVICE_TABLE(of, imx8m_soc_match);
+>     rename match table, "fsl,imx8mm/n/q/p" is actually a machine
+> compabile and "fsl,imx8mm/n/q/p-soc" is a compabile of soc@0
+>     delete "flag" and change to determine whether the pointer is NULL
+>     ues of_find_matching_node_and_match()
+>     delete of_match_ptr()
+> v5: add cleanup part "of_node_put"
+>     add note to explain that why device_initcall still exists
+> v6: none
+>
+>  drivers/soc/imx/soc-imx8m.c | 87 ++++++++++++++++++++++++++++++++-----
+>  1 file changed, 75 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
+> index cc57a384d74d..250530177920 100644
+> --- a/drivers/soc/imx/soc-imx8m.c
+> +++ b/drivers/soc/imx/soc-imx8m.c
+> @@ -5,6 +5,8 @@
+>
+>  #include <linux/init.h>
+>  #include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/nvmem-consumer.h>
+>  #include <linux/of_address.h>
+>  #include <linux/slab.h>
+>  #include <linux/sys_soc.h>
+> @@ -29,7 +31,7 @@
+>
+>  struct imx8_soc_data {
+>         char *name;
+> -       u32 (*soc_revision)(void);
+> +       u32 (*soc_revision)(struct device *dev);
+>  };
+>
+>  static u64 soc_uid;
+> @@ -50,7 +52,7 @@ static u32 imx8mq_soc_revision_from_atf(void)
+>  static inline u32 imx8mq_soc_revision_from_atf(void) { return 0; };
+>  #endif
+>
+> -static u32 __init imx8mq_soc_revision(void)
+> +static u32 __init imx8mq_soc_revision(struct device *dev)
+>  {
+>         struct device_node *np;
+>         void __iomem *ocotp_base;
+> @@ -75,9 +77,20 @@ static u32 __init imx8mq_soc_revision(void)
+>                         rev = REV_B1;
+>         }
+>
+> -       soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
+> -       soc_uid <<= 32;
+> -       soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
+> +       if (dev) {
+> +               int ret = 0;
+> +
+> +               ret = nvmem_cell_read_u64(dev, "soc_unique_id", &soc_uid);
+> +               if (ret) {
+> +                       iounmap(ocotp_base);
+> +                       of_node_put(np);
+> +                       return ret;
+> +               }
+> +       } else {
+> +               soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
+> +               soc_uid <<= 32;
+> +               soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
+> +       }
+>
+>         iounmap(ocotp_base);
+>         of_node_put(np);
+> @@ -107,7 +120,7 @@ static void __init imx8mm_soc_uid(void)
+>         of_node_put(np);
+>  }
+>
+> -static u32 __init imx8mm_soc_revision(void)
+> +static u32 __init imx8mm_soc_revision(struct device *dev)
+>  {
+>         struct device_node *np;
+>         void __iomem *anatop_base;
+> @@ -125,7 +138,15 @@ static u32 __init imx8mm_soc_revision(void)
+>         iounmap(anatop_base);
+>         of_node_put(np);
+>
+> -       imx8mm_soc_uid();
+> +       if (dev) {
+> +               int ret = 0;
+> +
+> +               ret = nvmem_cell_read_u64(dev, "soc_unique_id", &soc_uid);
+> +               if (ret)
+> +                       return ret;
+> +       } else {
+> +               imx8mm_soc_uid();
+> +       }
+>
+>         return rev;
+>  }
+> @@ -150,7 +171,7 @@ static const struct imx8_soc_data imx8mp_soc_data = {
+>         .soc_revision = imx8mm_soc_revision,
+>  };
+>
+> -static __maybe_unused const struct of_device_id imx8_soc_match[] = {
+> +static const struct of_device_id imx8_machine_match[] = {
+>         { .compatible = "fsl,imx8mq", .data = &imx8mq_soc_data, },
+>         { .compatible = "fsl,imx8mm", .data = &imx8mm_soc_data, },
+>         { .compatible = "fsl,imx8mn", .data = &imx8mn_soc_data, },
+> @@ -158,12 +179,20 @@ static __maybe_unused const struct of_device_id imx8_soc_match[] = {
+>         { }
+>  };
+>
+> +static const struct of_device_id imx8_soc_match[] = {
+> +       { .compatible = "fsl,imx8mq-soc", .data = &imx8mq_soc_data, },
+> +       { .compatible = "fsl,imx8mm-soc", .data = &imx8mm_soc_data, },
+> +       { .compatible = "fsl,imx8mn-soc", .data = &imx8mn_soc_data, },
+> +       { .compatible = "fsl,imx8mp-soc", .data = &imx8mp_soc_data, },
+> +       { }
+> +};
+> +
+>  #define imx8_revision(soc_rev) \
+>         soc_rev ? \
+>         kasprintf(GFP_KERNEL, "%d.%d", (soc_rev >> 4) & 0xf,  soc_rev & 0xf) : \
+>         "unknown"
+>
+> -static int __init imx8_soc_init(void)
+> +static int imx8_soc_info(struct platform_device *pdev)
+>  {
+>         struct soc_device_attribute *soc_dev_attr;
+>         struct soc_device *soc_dev;
+> @@ -182,7 +211,10 @@ static int __init imx8_soc_init(void)
+>         if (ret)
+>                 goto free_soc;
+>
+> -       id = of_match_node(imx8_soc_match, of_root);
+> +       if (pdev)
+> +               id = of_match_node(imx8_soc_match, pdev->dev.of_node);
+> +       else
+> +               id = of_match_node(imx8_machine_match, of_root);
+>         if (!id) {
+>                 ret = -ENODEV;
+>                 goto free_soc;
+> @@ -191,8 +223,16 @@ static int __init imx8_soc_init(void)
+>         data = id->data;
+>         if (data) {
+>                 soc_dev_attr->soc_id = data->name;
+> -               if (data->soc_revision)
+> -                       soc_rev = data->soc_revision();
+> +               if (data->soc_revision) {
+> +                       if (pdev) {
+> +                               soc_rev = data->soc_revision(&pdev->dev);
+> +                               ret = soc_rev;
+> +                               if (ret < 0)
+> +                                       goto free_soc;
+> +                       } else {
+> +                               soc_rev = data->soc_revision(NULL);
+> +                       }
+> +               }
+>         }
+>
+>         soc_dev_attr->revision = imx8_revision(soc_rev);
+> @@ -230,4 +270,27 @@ static int __init imx8_soc_init(void)
+>         kfree(soc_dev_attr);
+>         return ret;
+>  }
+> +
+> +/* Retain device_initcall is for backward compatibility with DTS. */
+> +static int __init imx8_soc_init(void)
+> +{
+> +       int ret = 0;
+> +
+> +       if (of_find_matching_node_and_match(NULL, imx8_soc_match, NULL))
+> +               return 0;
+> +
+> +       ret = imx8_soc_info(NULL);
+> +       return ret;
+> +}
+>  device_initcall(imx8_soc_init);
+> +
+> +static struct platform_driver imx8_soc_info_driver = {
+> +       .probe = imx8_soc_info,
+> +       .driver = {
+> +               .name = "imx8_soc_info",
+> +               .of_match_table = imx8_soc_match,
+> +       },
+> +};
+> +
+> +module_platform_driver(imx8_soc_info_driver);
+> +MODULE_LICENSE("GPL v2");
+> --
+> 2.17.1
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
