@@ -2,89 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98A42C3ED4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 954E32C3ED7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727718AbgKYLMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:12:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgKYLMT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:12:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADBCC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:12:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lO4k/CGhZfcT1F78pZ3lGhR7CfCqcve9WGTO2lQ4rOc=; b=PpDTJ2aknMbJsTKSmi3s7a1iGO
-        XotqXUYOlv6Hbc490md9TLVvRR8lQlmmBSJG8WtLZz9EXDL2DeZdg04WmL4gpmR3ptQ4NpCR2LKwv
-        oH56h2LqDU7i/VgBw9OEEG8gWadRFpajK+TK23qNMaKyxlqJTAWUpUw/6w4xGZb9e2UayYl3zAXRG
-        Sz5+9e5m5IfY8Ykag/Vq0qZAtDQOmB6w7B8G7XnGD10bzAa7rSNEGlUc2lAzLEJDbYsLU5AxwSjwU
-        qM79hbM52oZOep6ZZIRE5U6GnWk+LHPKZtB13AILzcyi3ITpZZBFlHXrf8MMfPT4S14L9d9ecVe4C
-        ItuEJYWw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khsht-0007Hg-Iw; Wed, 25 Nov 2020 11:11:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1728579AbgKYLNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:13:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726411AbgKYLNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 06:13:08 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 16E7A306E0D;
-        Wed, 25 Nov 2020 12:11:28 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D6E5320D6FE77; Wed, 25 Nov 2020 12:11:28 +0100 (CET)
-Date:   Wed, 25 Nov 2020 12:11:28 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
- cookie on fork
-Message-ID: <20201125111128.GT2414@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-23-joel@joelfernandes.org>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FECF206B7;
+        Wed, 25 Nov 2020 11:13:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606302788;
+        bh=rbevIJAsSB/iRPD2vJR1nkW2xROzISyxEwaJMCSnkso=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uahWelgQafXjRsuI496JVdUNxkEZm3JksQ9wJ1cwLh6puVI2ye4SNLrtruQL4fU4V
+         UwWTo+hCjkW7fqNmMG4Qi6yOj6GcqoKnuediWkLgQ0DfOEXU/BVkN87icfKT45+m8X
+         l9QM/ksIyV6ERAwsQpKuBYGIddyhVWQ4oOhKWgaA=
+Date:   Wed, 25 Nov 2020 11:13:02 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     youlin.pei@mediatek.com, anan.sun@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream@mediatek.com, chao.hao@mediatek.com,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        iommu@lists.linux-foundation.org,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] iommu: Improve the performance for direct_mapping
+Message-ID: <20201125111301.GB15239@willie-the-truck>
+References: <20201120090628.6566-1-yong.wu@mediatek.com>
+ <20201123123258.GC10233@willie-the-truck>
+ <1606209884.26323.132.camel@mhfsdcap03>
+ <20201124110520.GA12980@willie-the-truck>
+ <1606302214.26323.141.camel@mhfsdcap03>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117232003.3580179-23-joel@joelfernandes.org>
+In-Reply-To: <1606302214.26323.141.camel@mhfsdcap03>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
+On Wed, Nov 25, 2020 at 07:03:34PM +0800, Yong Wu wrote:
+> On Tue, 2020-11-24 at 11:05 +0000, Will Deacon wrote:
+> > On Tue, Nov 24, 2020 at 05:24:44PM +0800, Yong Wu wrote:
+> > > On Mon, 2020-11-23 at 12:32 +0000, Will Deacon wrote:
+> > That said, maybe we could simplify this further by changing the loop bounds
+> > to be:
+> > 
+> > 	for (addr = start; addr <= end; addr += pg_size)
+> > 
+> > and checking:
+> > 
+> > 	if (!phys_addr && addr != end) {
+> > 		map_size += pg_size;
+> > 		continue;
+> > 	}
+> > 
+> > does that work?
+> 
+> It works but I think we can not check iommu_iova_to_phys(domain, end).
+> We should add a "if", like:
+> 
+> for (addr = start; addr <= end; addr += pg_size) {
+> ...
+> 	if (addr < end) {
+> 		phys_addr = iommu_iova_to_phys(domain, addr);
+> 		if (!phys_addr) {
+> 			map_size += pg_size;
+> 			continue;
+> 		}
+> 	}
+> ...
+> 
 
-> + * sched_core_tag_requeue - Common helper for all interfaces to set a cookie.
+Oh yes, you're right.
 
-sched_core_set_cookie() would be a saner name, given that description,
-don't you think?
+> If you don't like this "if (addr < end)", then we have to add a "goto".
+> like this:
+> 
+> 
+> for (addr = start; addr <= end; addr += pg_size) {
+>  	phys_addr_t phys_addr;
+>  
+> 	if (addr == end)
+> 		goto map_last;
+> 
+> 	phys_addr = iommu_iova_to_phys(domain, addr);
+> 	if (!phys_addr) {
+> 		map_size += pg_size;
+> 		continue;
+> 	}
+> 
+> map_last:
+> 	if (!map_size)
+> 		continue;
+> 	ret = iommu_map(domain, addr - map_size,
+> 			addr - map_size, map_size, entry->prot);
+
+I think it's cleared to invert this as you had before:
+
+	if (map_size)
+		ret = iommu_map(...);
+
+> Which one is better?
+
+The second one is easier to read. I'll stop making suggestions now, thanks.
+
+Will
