@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701032C48C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD5F2C48C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729885AbgKYTy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:54:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
+        id S1729856AbgKYTyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:54:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729811AbgKYTy6 (ORCPT
+        with ESMTP id S1729811AbgKYTyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:54:58 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FADC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:54:48 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id f17so3340249pge.6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:54:48 -0800 (PST)
+        Wed, 25 Nov 2020 14:54:54 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B9EC0617A7;
+        Wed, 25 Nov 2020 11:54:54 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id u7so1827074vsq.11;
+        Wed, 25 Nov 2020 11:54:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=Ckr23nQHY31Kq8p9ufQAXHGQbVrixMKzTDQRBuH9ApM=;
-        b=kWRrWXdFoHsSoOpcSRxkQLSnGun9Aq+XPwC1CQ9uqitCGtnYNspRos7IMI2gJMuLge
-         jzRobg9pdrHC81nEt+SNe0qFJealICniylrtfRWfSnrDjTyKcI+ygOlHJhBmkNFCQzMW
-         mS6H7S9YkWl3QnAutRWfhYKOFcPYTz/akKuhURGn42Ky192YF1Bt0BXDJCXYnQ50T19W
-         hR+Xv44/OmAkylM+34jdIcuttl3XZee+Ntwh+rURbFpqLe0JYgtz+zfG5vr3f61NYHrz
-         GuItRotSi5e+H/g/JfK66JuWEDHpTGAoNP823yyLNV4bVBzmaYjU+HOQm6QG9QAJ1fxf
-         /iFg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=quQXC001ckf6FPC2C4/1w3Sse9lO9A5NO+66y8j62lo=;
+        b=OkCOBbNS9OlJjOgP0sPulOSrllZcljcP6yh0uZxSiJj6PgHM/LRpid+kB02nkJNXJU
+         V03kaTDfEpiQHjm2NI8FxqgF04eqnOnbDgBNnf7UJpcIjLfTpggSimyYxx/h9HHsudLE
+         SqbetPDSEvwwpxQG9exRooLi6mk9fZeFZ/IDmQoQd+3NYcYxuJhGAayV34tabr6pT83F
+         qzpGzC6UWonumhW0+GGgat+WgwvxDfp7dCl8D6DY/XcINF0IQwBUykAtKbPrMe9E80EW
+         sPZt6z2ql1FLLN55+pdf4vO88h57gP4Kqb5Pmj/DaL2asZbLZtNqyu7isztoJjVkjHXP
+         Fwsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=Ckr23nQHY31Kq8p9ufQAXHGQbVrixMKzTDQRBuH9ApM=;
-        b=KY26yMvK35TXTH0ZC6gJ2gosydzz9TR4gzpsfWy5upep1hhWpUs8WokZ/ZoYvIRpBK
-         YaMk1Vv6aEMAsf+ntPftVsHIoGovNtoZGsaNqHc8ppi8MdbpG70LgfQ+PinPz5ZOmhZZ
-         s8Yaz0MrBhGAHfJvQ9EakhdXqRfl2yFpi7KrlxJ+W+0YCy71oSTG+LOir0Wu+gDiru0+
-         KHX3UFhi7j1XBV52xF1d+7yyaKr8jDKiATCtILAj7o7GYMKNeCOkljd2EL5AAbcMMRnL
-         FPzArGxgb3fM+Dj7Q1p5+tVeD3MVRgCyjFcc4hkAyt17R1GVWnhQBSKYm472ZWmwXcLG
-         C+CQ==
-X-Gm-Message-State: AOAM530IsTnqYdMutiLB+ydH7h69N0f2KQClLgWiWc2Pz4PNd2bcctZM
-        LbGIthco6R1eq3w7e6wxeJRKi3Wi9GGW5SC7
-X-Google-Smtp-Source: ABdhPJwASZarixa4Q31DYLjJHsv79WkCj0X9lMH+WVDIi3yMghi6OUyMz13QZOmvj8dJsZ1O3eCtlw==
-X-Received: by 2002:a62:8448:0:b029:197:9ab7:9fdb with SMTP id k69-20020a6284480000b02901979ab79fdbmr4542017pfd.49.1606334087840;
-        Wed, 25 Nov 2020 11:54:47 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id c134sm130552pfc.200.2020.11.25.11.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 11:54:47 -0800 (PST)
-Subject: [PATCH] MAINTAINERS: Add myself to the Goldfish RTC entry
-Date:   Wed, 25 Nov 2020 11:53:42 -0800
-Message-Id: <20201125195342.3778744-1-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=quQXC001ckf6FPC2C4/1w3Sse9lO9A5NO+66y8j62lo=;
+        b=IvkX6TrrJx2vUHv1sqanTw4DboK9pvptxjGx+7CKPIvKICIiqtsYQgt+ZoejZwuGgb
+         qKsphWDRfvS+ORnxNH/tUYPYGCPxPOXUQpiJ4WyafRYO67ZeJF9DBTTRuH0ISgjMF21K
+         8+K2Vb4I3oxY8arpAnT0KldsPyYVwNuQPYA9ymsEIBpOHj3l/xlyFg3FEtBsdmAbJW7I
+         lXsilIHV9pTZ4/kPneOcm6dPZwvHIuwIkiD0nBq/KgzFY57lNqJAUlg6ZAjiz9CGN9J2
+         T5t9yC/rrAhfvbnOeMIj34e6uN/HA6lr82lZnOq3izsFgTsSB8VZI5dpmrZ+Va0fZSaC
+         CfdA==
+X-Gm-Message-State: AOAM532ry9SwJVekSsfxKMOuaLSDez2wScKx2exnqWhXQkgnz87ypThy
+        gn3VuVTzpC64Ty+LwWRv8f45BZav9y0cPu59gS95ntHH
+X-Google-Smtp-Source: ABdhPJx9Qnj66mEDQsfRqNZZHqnMinb7zge2C+8+aNYpUrk/kzU0PbeajTpFQ16HodTZXaQsFjs2N9lBZQmrW/KmL1M=
+X-Received: by 2002:a67:3115:: with SMTP id x21mr3572812vsx.12.1606334093402;
+ Wed, 25 Nov 2020 11:54:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     miodrag.dinic@mips.com, daniel.lezcano@linaro.org,
-        tglx@linutronix.de
+References: <20201124181013.162176-1-clemens.gruber@pqgruber.com>
+ <CAGngYiX8KOTQCScWo_o1BRa8CGHBQzWZGz1FmzkwGEmyNgPaxQ@mail.gmail.com>
+ <X74XPAy+SJRmQUSH@workstation.tuxnet> <X75kXv7l9RbTOS7S@workstation.tuxnet>
+ <CAGngYiViOMO6uM7UeYO5fNMdc+QEjLt+L1TdTii+smTvsmV=aQ@mail.gmail.com>
+ <X76ULTpaWHLkkz/u@workstation.tuxnet> <CAGngYiWVYy=U0bkK7w321Qc7eu9+bEC7asvJAuX7t+OLfimOAQ@mail.gmail.com>
+In-Reply-To: <CAGngYiWVYy=U0bkK7w321Qc7eu9+bEC7asvJAuX7t+OLfimOAQ@mail.gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Wed, 25 Nov 2020 14:54:42 -0500
+Message-ID: <CAGngYiW9MPzvA=KEa8czDrXFhx1BQGdJv+99xJQOVgvySaZfhw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] pwm: pca9685: Switch to atomic API
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+On Wed, Nov 25, 2020 at 2:46 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+>
+> Then if you have time && motivation left, enable regmap cache.
 
-This is used by the RISC-V virt board in QEMU, which is currently the only
-widely available Linux system.  Removing it right now would cause us some
-headaches in the short term, so I'd like to keep it around.
-
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-
----
-
-I lost the thread here, so if someone else has signed up to maintain this then
-I'm happy to leave things alone.  I don't see anything in Linus' tree as of
-right about now, though, so I figured I'd send something along just in case the
-plan was still to leave it otherwise unmaintained.
-
-IIRC we picked this in QEMU just because it was simple and had a driver we
-didn't need to maintain, so maintaining it does somewhat defeat that decision.
-There isn't a whole lot here so it shouldn't be prohibitive for me to maintain
-the driver, but I will start a discussion in QEMU about whether moving the
-boards that use it over to something else would be appropriate.  Anything like
-that would be a long time away, though, so I'd anticipate keeping this around
-for the foreseeable future.
-
-I definitely don't want this going away right now, though, as that would break
-the only RISC-V setup I actually have :)
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a008b70f3c16..21f7cdfc89dc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1169,6 +1169,7 @@ F:	drivers/irqchip/irq-goldfish-pic.c
- 
- ANDROID GOLDFISH RTC DRIVER
- M:	Miodrag Dinic <miodrag.dinic@mips.com>
-+M:	Palmer Dabbelt <palmer@dabbelt.com>
- S:	Supported
- F:	Documentation/devicetree/bindings/rtc/google,goldfish-rtc.txt
- F:	drivers/rtc/rtc-goldfish.c
--- 
-2.29.2.454.gaff20da3a2-goog
-
+In a follow-up patch, after we arrived at a correctly working driver.
