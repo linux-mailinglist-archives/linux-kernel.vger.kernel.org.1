@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2D12C4271
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 645952C4274
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730099AbgKYOt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:49:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730012AbgKYOtZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:49:25 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A27C0613D4;
-        Wed, 25 Nov 2020 06:49:25 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id b23so1208213pls.11;
-        Wed, 25 Nov 2020 06:49:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zftXlCMDlUv3M6vYJwCp4nHdd8CdLRlT8N27SkFN6/4=;
-        b=oAcj5kFn+GXNeuFnTvWWt/1y57oIZmm6b8sZRxT66t7+Z6TRw0kFySi1R0dKDqpREE
-         QPh0BdX6S6mSaWP28wfeCdid03A1yFBiTG5rfft6MEwb3qOrS5XckvF+4JtFuvadtipf
-         MTtZ6MdDATbQXsu67k0raOwycnef4cGsjx2yyoyBo8IWjmlpOS5gsnIUXsOzMqds7YJR
-         EW0C7PmLUi188Y7OyglJNON6jzC7jhRUviQc2ENap4HfiqgpQH0CiXge4Ile+LvRCwqJ
-         rZJzSSkBomRycNZg2LOR/81eDuprr5X9h4gQTMP50CxD/mgcQLA/N9WxWSRfVOqt9IYG
-         ojFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zftXlCMDlUv3M6vYJwCp4nHdd8CdLRlT8N27SkFN6/4=;
-        b=LCyzc0DJp1wWuqK+QuZBJXyygMwr191sCzecowyqTzm7ybhTCutp4/jUdD067QotX/
-         v/qt/d6DdORUcD4ZX0XMey+2Y/FGNdIMjEeRdG+w4B3rtKYkUKUF+WM/cKIbCpg/u2LZ
-         hi25US6HsRJ2myI0K4UFN6QUFIKP5ku4MmWhGUguJCQAgPgLQegSpDTCEmO22ek3IM23
-         3uGECYSfISTw0EgJgnXceBf85U5ozlVx6Hxbi62sV0SvAluIgWg4e2sg15sJwc3LLm2z
-         vdle0kUDp+qjCBpRNoZy/hUNC1H/oVCmbdqrTg56yYz8fxzbaqvPGCG26Z2xrncioV8J
-         bSug==
-X-Gm-Message-State: AOAM533vg+er7zpQ4SFcp/5P/Cpw4XbanxDVPkDbsCJTZ9w/MsYUgnpK
-        +ufpWk0FNNhWW0Xd566r7Cs=
-X-Google-Smtp-Source: ABdhPJwgGop2hVzbU3cBE0dD+oz2HBIhBsnVKLAmmb2QwR8CJylr2aJsYf5Apz5eWU2MVTNgGU161g==
-X-Received: by 2002:a17:902:9b85:b029:da:1684:cc82 with SMTP id y5-20020a1709029b85b02900da1684cc82mr3487168plp.41.1606315765405;
-        Wed, 25 Nov 2020 06:49:25 -0800 (PST)
-Received: from localhost ([2405:6580:31a1:500:1ac0:4dff:fe39:5426])
-        by smtp.gmail.com with ESMTPSA id i29sm2412718pgb.10.2020.11.25.06.49.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 06:49:24 -0800 (PST)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     rjw@rjwysocki.net
-Cc:     Punit Agrawal <punitagrawal@gmail.com>, wei.huang2@amd.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        bp@alien8.de, x86@kernel.org
-Subject: [RFC PATCH 4/4] cpufreq: acpi-cpufreq: Use identifiers for AMD processor family
-Date:   Wed, 25 Nov 2020 23:48:47 +0900
-Message-Id: <20201125144847.3920-5-punitagrawal@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201125144847.3920-1-punitagrawal@gmail.com>
-References: <20201125144847.3920-1-punitagrawal@gmail.com>
+        id S1730013AbgKYOv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:51:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726139AbgKYOv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 09:51:28 -0500
+Received: from linux-8ccs (p57a232c3.dip0.t-ipconnect.de [87.162.50.195])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F88F206B5;
+        Wed, 25 Nov 2020 14:51:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606315887;
+        bh=N/IosfIbGitpjFvIvBGjanWy43jAdZYMsZ1O1iGVCqs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VuobexrSYNEaJHUs9u8B/SEUrsMEqYnTPlfO+3DgAS7ih1zUglusNmcgifq8bDMyV
+         QBlrqLdOO3ztt3E3e0qdvNNZSRe3EVocsttsim8BK4KBLlRz+Zr/oWXp0D169urNyg
+         mGDDK+JjsM7HTSxR2N98YJK6Mx0A1w8OV/wAYlL8=
+Date:   Wed, 25 Nov 2020 15:51:20 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
+Message-ID: <20201125145118.GA32446@linux-8ccs>
+References: <20201103175711.10731-1-johan@kernel.org>
+ <20201106160344.GA12184@linux-8ccs.fritz.box>
+ <20201106164537.GD4085@localhost>
+ <20201111154716.GB5304@linux-8ccs>
+ <X66VvI/M4GRDbiWM@localhost>
+ <X7uRZUY+2L9Yg9wt@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <X7uRZUY+2L9Yg9wt@localhost>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the raw values for AMD processor family with recently
-introduced identifier macros to improve code readability and
-maintainability.
++++ Johan Hovold [23/11/20 11:39 +0100]:
+>On Fri, Nov 13, 2020 at 03:18:36PM +0100, Johan Hovold wrote:
+>> On Wed, Nov 11, 2020 at 04:47:16PM +0100, Jessica Yu wrote:
+>>
+>> > Thanks for providing the links and references. Your explanation and
+>> > this reply from Jakub [1] clarified things for me. I was not aware of
+>> > the distinction gcc made between aligned attributes on types vs. on
+>> > variables. So from what I understand now, gcc suppresses the
+>> > optimization when the alignment is specified in the variable
+>> > declaration, but not necessarily when the aligned attribute is just on
+>> > the type.
+>> >
+>> > Even though it's been in use for a long time, I think it would be
+>> > really helpful if this gcc quirk was explained just a bit more in the
+>> > patch changelogs, especially since this is undocumented behavior.
+>> > I found the explanation in [1] (as well as in your cover letter) to be
+>> > sufficient. Maybe something like "GCC suppresses any optimizations
+>> > increasing alignment when the alignment is specified in the variable
+>> > declaration, as opposed to just on the type definition. Therefore,
+>> > explicitly specify type alignment when declaring entries to prevent
+>> > gcc from increasing alignment."
+>>
+>> Sure, I can try to expand the commit messages a bit.
+>
+>I've amended the commit messages of the relevant patches to make it more
+>clear that the optimisation can be suppressed by specifying alignment
+>when declaring variables, but without making additional claims about the
+>type attribute. I hope the result is acceptable to you.
+>
+>Perhaps you can include a lore link to the patches when applying so that
+>this thread can be found easily if needed.
 
-Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
----
- drivers/cpufreq/acpi-cpufreq.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hi Johan,
 
-diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-index 29f1cd93541e..d8b8300ae9e0 100644
---- a/drivers/cpufreq/acpi-cpufreq.c
-+++ b/drivers/cpufreq/acpi-cpufreq.c
-@@ -202,8 +202,8 @@ static int override_acpi_psd(unsigned int cpu_id)
- 		 * CPU's before Zen3 (except some Zen2) need the
- 		 * override.
- 		 */
--		return (c->x86 < 0x19) &&
--			!(c->x86 == 0x17 && c->x86_model == 0x60 &&
-+		return (c->x86 < AMD_FAM_ZEN3) &&
-+			!(c->x86 == AMD_FAM_ZEN && c->x86_model == 0x60 &&
- 			  c->x86_stepping == 0x1);
- 	}
- 
-@@ -735,7 +735,7 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	switch (perf->control_register.space_id) {
- 	case ACPI_ADR_SPACE_SYSTEM_IO:
- 		if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
--		    boot_cpu_data.x86 == 0xf) {
-+		    boot_cpu_data.x86 == AMD_FAM_K8) {
- 			pr_debug("AMD K8 systems must use native drivers.\n");
- 			result = -ENODEV;
- 			goto err_unreg;
--- 
-2.29.2
+Good idea, I've included a link to this thread for each patch.
+I've queued up patches 3, 4, 6, 7, 8 for testing before pushing them
+out to modules-next.
 
+Thanks!
+
+Jessica
