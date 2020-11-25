@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5467A2C4B56
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 00:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB7C2C4B59
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 00:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730041AbgKYXKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 18:10:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32920 "EHLO mail.kernel.org"
+        id S1730477AbgKYXMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 18:12:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729957AbgKYXKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 18:10:06 -0500
-Content-Type: text/plain; charset="utf-8"
+        id S1730060AbgKYXMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 18:12:02 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66B042083E;
+        Wed, 25 Nov 2020 23:12:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606345806;
-        bh=HmVmboHLRT2akidt/sMRFZU4ZFKJPHRy8BwngDIlhaE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=TXZCC+XbFncZEn9e3rtlcupVHAocud+59jV7KtujgInwazrWkpMy9WDosMSkGoZBr
-         DpWGtPPr6UXZaMQ3uCKs5QBTsqAo8wkSEdOavP9b32gavQlG+XSuNV8C5pFShybl84
-         LKFOkpmo1MshZnSI+ATwQgyWqZllP6KOys/6ycBw=
+        s=default; t=1606345921;
+        bh=7epGg0rx1YzbAsegltrvV6e2Wg9WVWnPf6SHCciMmNQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lqrk0sxae49CsQ+n0cf099ZVuWnxrK9BJu+ru8YJZ5uJKmzpDVcDEBvFgVhLzSBi3
+         z9ymSTwpXQa+EwH5BGihg1tb/Mvl3PkWbRoE0KMUBpIJ7i5M+FqzERkZbc/ARuDfk6
+         gOkQBw95Jdzg9LLBpZYyPnFpx7JhgT8wiQ6UD48E=
+Date:   Wed, 25 Nov 2020 15:11:59 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     <peterz@infradead.org>, <mingo@redhat.com>, <will@kernel.org>,
+        <viro@zeniv.linux.org.uk>, <kyk.segfault@gmail.com>,
+        <davem@davemloft.net>, <linmiaohe@huawei.com>,
+        <martin.varghese@nokia.com>, <pabeni@redhat.com>,
+        <pshelar@ovn.org>, <fw@strlen.de>, <gnault@redhat.com>,
+        <steffen.klassert@secunet.com>, <vladimir.oltean@nxp.com>,
+        <edumazet@google.com>, <saeed@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: Re: [PATCH net-next v3 1/2] lockdep: Introduce in_softirq lockdep
+ assert
+Message-ID: <20201125151159.0de99e85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1606214969-97849-2-git-send-email-linyunsheng@huawei.com>
+References: <1606214969-97849-1-git-send-email-linyunsheng@huawei.com>
+        <1606214969-97849-2-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 0/3] Implement bpf_ima_inode_hash
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160634580589.11847.11072899001096362522.git-patchwork-notify@kernel.org>
-Date:   Wed, 25 Nov 2020 23:10:05 +0000
-References: <20201124151210.1081188-1-kpsingh@chromium.org>
-In-Reply-To: <20201124151210.1081188-1-kpsingh@chromium.org>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     jmorris@namei.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, revest@chromium.org,
-        jackmanb@chromium.org, zohar@linux.ibm.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Tue, 24 Nov 2020 15:12:07 +0000 you wrote:
-> From: KP Singh <kpsingh@google.com>
+On Tue, 24 Nov 2020 18:49:28 +0800 Yunsheng Lin wrote:
+> The current semantic for napi_consume_skb() is that caller need
+> to provide non-zero budget when calling from NAPI context, and
+> breaking this semantic will cause hard to debug problem, because
+> _kfree_skb_defer() need to run in atomic context in order to push
+> the skb to the particular cpu' napi_alloc_cache atomically.
 > 
-> # v2 -> v3
+> So add the lockdep_assert_in_softirq() to assert when the running
+> context is not in_softirq, in_softirq means softirq is serving or
+> BH is disabled, which has a ambiguous semantics due to the BH
+> disabled confusion, so add a comment to emphasize that.
 > 
-> - Fixed an issue pointed out by Alexei, the helper should only be
->   exposed to sleepable hooks.
-> - Update the selftests to constrain the IMA policy udpate to a loopback
->   filesystem specifically created for the test. Also, split this out
->   from the LSM test. I dropped the Ack from this last patch since this
->   is a re-write.
+> And the softirq context can be interrupted by hard IRQ or NMI
+> context, lockdep_assert_in_softirq() need to assert about hard
+> IRQ or NMI context too.
 > 
-> [...]
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+> V3: add comment to emphasize the ambiguous semantics.
+> ---
+>  include/linux/lockdep.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index f559487..8d60f46 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -594,6 +594,13 @@ do {									\
+>  		      this_cpu_read(hardirqs_enabled)));		\
+>  } while (0)
+>  
+> +/* Much like in_softirq() - semantics are ambiguous, use carefully. */
 
-Here is the summary with links:
-  - [bpf-next,v3,1/3] ima: Implement ima_inode_hash
-    https://git.kernel.org/bpf/bpf-next/c/403319be5de5
-  - [bpf-next,v3,2/3] bpf: Add a BPF helper for getting the IMA hash of an inode
-    https://git.kernel.org/bpf/bpf-next/c/27672f0d280a
-  - [bpf-next,v3,3/3] bpf: Add a selftest for bpf_ima_inode_hash
-    https://git.kernel.org/bpf/bpf-next/c/898eeb122e8a
+I've added both of the comments I suggested in the reply to Peter here
+and applied to net-next.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks for working on this.
 
+> +#define lockdep_assert_in_softirq()					\
+> +do {									\
+> +	WARN_ON_ONCE(__lockdep_enabled			&&		\
+> +		     (!in_softirq() || in_irq() || in_nmi()));		\
+> +} while (0)
 
