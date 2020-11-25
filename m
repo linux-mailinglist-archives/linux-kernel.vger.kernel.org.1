@@ -2,138 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51E82C3F0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8982C3F0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728955AbgKYLYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
+        id S1727780AbgKYLZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbgKYLYu (ORCPT
+        with ESMTP id S1725792AbgKYLZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:24:50 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A858C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:24:50 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id l2so3784285qkf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:24:50 -0800 (PST)
+        Wed, 25 Nov 2020 06:25:34 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F24C0613D4;
+        Wed, 25 Nov 2020 03:25:34 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id b8so1756596ila.13;
+        Wed, 25 Nov 2020 03:25:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=agmpj2HBmWrLN3MVuSVDvn8VNwMgC/NxRRqXNQElq+c=;
-        b=Xek41XwpQigUAOEeTJBGHWL790+lASvVIv15zxh3iAJ1zijkjfVfs9eVex27OfCuXA
-         kJdW59wrQn1P9fA1QwhwcZG8R3hzDh9VApTT6RicMbfuwQCmYi2DVJmFpe27824jWafL
-         Z+HcAq9jhCmUjGVHK+2nF2Y/jqCEFBtWVYC3vbbXALj0NjPLbNx1snXzCd9TOUOPyQPa
-         TsvhSX5+VzpEoHmFpb834YUk/5gmOhFG8ZSqrIOfyJ2NHQ/nf0TtsQsaTxmrSe24nIZS
-         OyTVn5zFIQ+IEXvHDeNaqtrmH18lXKQrB6Xafri4msJHpPoeH8lbmXm1OqF8yFBOBMB+
-         hrlw==
+        bh=HSXJBXOn2CprTr1b4CdrQNESxRfY5tGLBjEWHEIp7AA=;
+        b=TLwvf1bDpvNY7DEsxrKhBgSD5ogLDEYtiKwZFEbSXz+GmFIXoikYTG6PrB53ugif2y
+         itMtFmQLzmM+qT5OEGXitfQTVTLruOlyddypNFnix5WhxHGeN0Bso+DL3+Qf6LzL/sPr
+         FMJwscmjsWbZAvbzBxgZXgsz9z6Icl3tQ9j/8RLX2B2Mrx3R3dO8z8ZZ+pwg3MgYDDQN
+         3vRrn+3FqSAom2YaglvBeBG0z5poxswZJCc9Hgsp6iAD4rB1ZG4EYPTNln4KxbtMUuLA
+         56i5z6oXMyQS5/AORxroZLYapDx4WLD8DtyUaR2mWqJGLCgFNdQeqSjBs03RiQEUGUcZ
+         iEUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=agmpj2HBmWrLN3MVuSVDvn8VNwMgC/NxRRqXNQElq+c=;
-        b=maE2Evx/NZsfsThghIE0ZL8ewz61U9ZJoMoJEkTOp2X9x59Ze4i+YGFgbGh9Sj9bAk
-         hLY1FY/2DuMTjtoTdABKIxXA1IYKiQZFVpRAHY4NkaSnsk+/LygSzF3xmsRT7atGakDX
-         cu4TnE0QR1mHmOQ1Tlhu6fNZxsQp8YaJliMFTlZd2ckkugVuSuiFgAOfC4ZqUYqJ7gdo
-         bKX2PpYQ1Eq7h3v+ub2r0aA0GfUm28XL9aQKQrtZdMsBLrqCAWkGaIg+U6BGlFiEw343
-         BLxrTpptso9ZwImPnGSmoTZIO0bErdGSPdh8VolMw0W1Ma3A+zW4jNCAv9cm8NGz1MZo
-         vG+w==
-X-Gm-Message-State: AOAM530cUyRD083f5jRhjwoPYxbDpSKOwexR+pmh/LTIBaoBFAP1ziAh
-        LZBl6QCXxAOMAgitxH84igFioRi16zV/We4n/f9Zig==
-X-Google-Smtp-Source: ABdhPJwWhnzD0lDZFoqtnfER27VsEtm05heWcR/zUGhYgUn6H9hWU74Sr5XzjkLVg9dn0GVTJoyr0OxmFzYOq0n5cUA=
-X-Received: by 2002:a25:7481:: with SMTP id p123mr3005268ybc.167.1606303489272;
- Wed, 25 Nov 2020 03:24:49 -0800 (PST)
+        bh=HSXJBXOn2CprTr1b4CdrQNESxRfY5tGLBjEWHEIp7AA=;
+        b=D6V1nbGTb1LHPKtowNuObqpPtgso4AyqpXmB98t2LwN7Ln2iJwLu6iu0Etgad7Ga6p
+         VXbLgcVxtm9f12zoX8Qq7KnYrXQBUd9pemW+Vlr4ucYaqQW8tDkYVc0gsdgxyiOjskC5
+         NFI/URW67xWATTsWOD/E+Uv+DYuCofRqutFFuftXra2yBG6zi1unM+IPRH62tVCnAb+N
+         Kmu1t4K1Ao8cKCBLtjsVBBeBOQLAWcsdpiqrgvVzeTrKciNCikK1YSpQQH8YiFx0UvA9
+         EKFXZbLJdgbhVVh2TIpDLR8gjOZa++MtimkxHGTYXVzB0dS8HyuHLGJWzIhkmYJ0ABwW
+         8lfQ==
+X-Gm-Message-State: AOAM533KFcYXhPEsEb/zyBu4XbgCq6uPXwr5GR+Cyhki643B+MgzdAbQ
+        3zczo+rvB3B6hSTJSion04vbpWWHixE7J7RrJMg=
+X-Google-Smtp-Source: ABdhPJx6AV9+1feAbOuTnsij/5XCN70Bvf5Lti2lURe5/n/z6RQVALcpfa8e44LKxbcKze4C7mFOGkXxJEC6tkrtlbc=
+X-Received: by 2002:a92:155b:: with SMTP id v88mr2415194ilk.303.1606303533838;
+ Wed, 25 Nov 2020 03:25:33 -0800 (PST)
 MIME-Version: 1.0
-References: <1606298560-3003-1-git-send-email-kalyan_t@codeaurora.org>
-In-Reply-To: <1606298560-3003-1-git-send-email-kalyan_t@codeaurora.org>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Wed, 25 Nov 2020 16:54:13 +0530
-Message-ID: <CAMi1Hd3fjrJXJ1puZ6SCn0FXPNZdoJh19GALcVr_R93tZnxW_w@mail.gmail.com>
-Subject: Re: [v1] drm/msm/dpu: consider vertical front porch in the prefill bw calculation
-To:     Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     y@qualcomm.com, dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        nganji@codeaurora.org, Stephen Boyd <swboyd@chromium.org>,
-        abhinavk@codeaurora.org, ddavenport@chromium.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
+References: <00000000000054aea005b4d59e71@google.com> <CAA5enKZ=6=AoknavW4RJ+T+aiPBFSf8uEjJ+ODcc+nMTD2k5kQ@mail.gmail.com>
+ <bda71012-f2e2-9a4c-5dcb-7ad14655c2f5@linux.alibaba.com>
+In-Reply-To: <bda71012-f2e2-9a4c-5dcb-7ad14655c2f5@linux.alibaba.com>
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+Date:   Wed, 25 Nov 2020 11:25:22 +0000
+Message-ID: <CAA5enKZyE6mP2fWdooC4Lx7d2V9aSkxmgT-ihx0Z9HPjfq77NQ@mail.gmail.com>
+Subject: Re: linux-next boot error: WARNING in prepare_kswapd_sleep
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     syzbot <syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Hui Su <sh_def@163.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 at 15:33, Kalyan Thota <kalyan_t@codeaurora.org> wrote:
->
-> In case of panels with low vertical back porch, the prefill bw
-> requirement will be high as we will have less time(vbp+pw) to
-> fetch and fill the hw latency buffers before start of first line
-> in active period.
->
-> For ex:
-> Say hw_latency_line_buffers = 24, and if blanking vbp+pw = 10
-> Here we need to fetch 24 lines of data in 10 line times.
-> This will increase the bw to the ratio of linebuffers to blanking.
->
-> DPU hw can also fetch data during vertical front porch provided
-> interface prefetch is enabled. Use vfp in the prefill calculation
-> as dpu driver enables prefetch if the blanking is not sufficient
-> to fill the latency lines.
+On Wed, 25 Nov 2020 at 06:25, Alex Shi <alex.shi@linux.alibaba.com> wrote:
+> Acked.
 
-Tested on Xiaomi Poco F1 (sdm845).
+Thanks. I submitted as an actual patch, refactored it slightly to
+avoid duplication of page_memcg().
 
-Tested-by: Amit Pundir <amit.pundir@linaro.org>
+> and further more, could you like try another patch?
 
->
-> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> index 7ea90d2..315b999 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> @@ -151,7 +151,7 @@ static void _dpu_plane_calc_bw(struct drm_plane *plane,
->         u64 plane_bw;
->         u32 hw_latency_lines;
->         u64 scale_factor;
-> -       int vbp, vpw;
-> +       int vbp, vpw, vfp;
->
->         pstate = to_dpu_plane_state(plane->state);
->         mode = &plane->state->crtc->mode;
-> @@ -164,6 +164,7 @@ static void _dpu_plane_calc_bw(struct drm_plane *plane,
->         fps = drm_mode_vrefresh(mode);
->         vbp = mode->vtotal - mode->vsync_end;
->         vpw = mode->vsync_end - mode->vsync_start;
-> +       vfp = mode->vsync_start - mode->vdisplay;
->         hw_latency_lines =  dpu_kms->catalog->perf.min_prefill_lines;
->         scale_factor = src_height > dst_height ?
->                 mult_frac(src_height, 1, dst_height) : 1;
-> @@ -176,7 +177,13 @@ static void _dpu_plane_calc_bw(struct drm_plane *plane,
->                 src_width * hw_latency_lines * fps * fmt->bpp *
->                 scale_factor * mode->vtotal;
->
-> -       do_div(plane_prefill_bw, (vbp+vpw));
-> +       if ((vbp+vpw) > hw_latency_lines)
-> +               do_div(plane_prefill_bw, (vbp+vpw));
-> +       else if ((vbp+vpw+vfp) < hw_latency_lines)
-> +               do_div(plane_prefill_bw, (vbp+vpw+vfp));
-> +       else
-> +               do_div(plane_prefill_bw, hw_latency_lines);
-> +
->
->         pstate->plane_fetch_bw = max(plane_bw, plane_prefill_bw);
->  }
-> --
-> 2.7.4
->
+I tried that patch against the syzkaller failure case and it worked fine!
+
+Cheers, Lorenzo
