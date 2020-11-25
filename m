@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197D12C4A1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC66D2C4A26
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732504AbgKYVeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:34:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59380 "EHLO mail.kernel.org"
+        id S1732417AbgKYViv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:38:51 -0500
+Received: from mga02.intel.com ([134.134.136.20]:15611 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731950AbgKYVeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:34:46 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FA06206E0;
-        Wed, 25 Nov 2020 21:34:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606340086;
-        bh=3lVrLTTsCdkal7E8HZY0NZKVZlVawWDZoX8smDNr+OU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=itRkywL78OBNGH52rhDRkPoFkhM3SRjKqcUj37jk1l+Ecdj83u88Pt4/wAxr0+wq6
-         hu4Ps/mY1fYVxNvdzw8GiZgYjq4BngFEhtGk9scnsLM7qmAfjQ6Je3pNpYd8RrAaVz
-         es3lIG3e/2qvKxpWP7vEm848nIIQvEGFFMCZM5LM=
-Date:   Wed, 25 Nov 2020 13:34:44 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     <nikolay@nvidia.com>, <roopa@nvidia.com>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH net-next v2] bridge: mrp: Implement LC mode for MRP
-Message-ID: <20201125133444.22f09660@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201124082525.273820-1-horatiu.vultur@microchip.com>
-References: <20201124082525.273820-1-horatiu.vultur@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1731952AbgKYViu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 16:38:50 -0500
+IronPort-SDR: iPgQ0isC+LaaZVMbvPMji93wwFRPnYfO6mwTCqGxc24n7uzxXjQBRlV1ARxfon5NgWPlzyDyq6
+ GI+3Cm7+iP9g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="159250090"
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="159250090"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 13:38:50 -0800
+IronPort-SDR: pfDaB0yPYSPUxFXcE4H46Og9zdfbzURSUZ7l7RlH+Ri8nM6zQdb6mDUIENwDy6eUWKKKY9FrK1
+ S5vyezWe636w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="365579842"
+Received: from unknown (HELO labuser-Ice-Lake-Client-Platform.jf.intel.com) ([10.54.55.65])
+  by fmsmga002.fm.intel.com with ESMTP; 25 Nov 2020 13:38:49 -0800
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, stable@vger.kernel.org
+Subject: [PATCH 1/2] perf/x86/intel: Fix rtm_abort_event encoding on Ice Lake
+Date:   Wed, 25 Nov 2020 13:37:19 -0800
+Message-Id: <20201125213720.15692-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 09:25:25 +0100 Horatiu Vultur wrote:
-> Extend MRP to support LC mode(link check) for the interconnect port.
-> This applies only to the interconnect ring.
-> 
-> Opposite to RC mode(ring check) the LC mode is using CFM frames to
-> detect when the link goes up or down and based on that the userspace
-> will need to react.
-> One advantage of the LC mode over RC mode is that there will be fewer
-> frames in the normal rings. Because RC mode generates InTest on all
-> ports while LC mode sends CFM frame only on the interconnect port.
-> 
-> All 4 nodes part of the interconnect ring needs to have the same mode.
-> And it is not possible to have running LC and RC mode at the same time
-> on a node.
-> 
-> Whenever the MIM starts it needs to detect the status of the other 3
-> nodes in the interconnect ring so it would send a frame called
-> InLinkStatus, on which the clients needs to reply with their link
-> status.
-> 
-> This patch adds InLinkStatus frame type and extends existing rules on
-> how to forward this frame.
-> 
-> Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Applied, thanks!
+According to the event list from icelake_core_v1.09.json, the encoding
+of the RTM_RETIRED.ABORTED event on Ice Lake should be,
+    "EventCode": "0xc9",
+    "UMask": "0x04",
+    "EventName": "RTM_RETIRED.ABORTED",
+
+Correct the wrong encoding.
+
+Fixes: 6017608936c1 ("perf/x86/intel: Add Icelake support")
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/events/intel/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index ec503399c5df..c5aca399a46a 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -5321,7 +5321,7 @@ __init int intel_pmu_init(void)
+ 		mem_attr = icl_events_attrs;
+ 		td_attr = icl_td_events_attrs;
+ 		tsx_attr = icl_tsx_events_attrs;
+-		x86_pmu.rtm_abort_event = X86_CONFIG(.event=0xca, .umask=0x02);
++		x86_pmu.rtm_abort_event = X86_CONFIG(.event=0xc9, .umask=0x04);
+ 		x86_pmu.lbr_pt_coexist = true;
+ 		intel_pmu_pebs_data_source_skl(pmem);
+ 		x86_pmu.update_topdown_event = icl_update_topdown_event;
+-- 
+2.17.1
+
