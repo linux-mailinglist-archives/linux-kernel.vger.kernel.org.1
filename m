@@ -2,129 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEA02C4AB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4845D2C4AB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732838AbgKYWNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 17:13:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732090AbgKYWNC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 17:13:02 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD5CC061A4F
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 14:13:02 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id k14so27345wrn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 14:13:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=nyuZB6pe2aVr8Jr1Y0KmQ//+PGX3XaEKFQv1Cw25khI=;
-        b=KDGJAoW+H5ZOeq3z7CcJdvNkJSc9GX6I7RdvmhuBWTw34HLRNRqS/WAYwPmds/JP4N
-         9BLely5o4sAXLMB7L8M1yhWb1MjNq6zTgILIJBVHFHg3M9BevtvpmitbJH3M9en5WWN2
-         Dxow2NQRG7WLRIp/g5SJJZyvTO3E+0SMJ2SamBaT8Mgk9N35C15onCF6kaaH8Xbw/zan
-         2lH4/ScO4ViS6mtMHBsiwch/PMhANeH2EeLFFynb2dB20kfg4PCVjuu+mGnOgBBCeamo
-         Rhtieayez7zymmo3yLCIBvskn2lYAYHaUfbqT4nQaCk1femzAI/vmyIv+oDNMXLpReWw
-         ymLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nyuZB6pe2aVr8Jr1Y0KmQ//+PGX3XaEKFQv1Cw25khI=;
-        b=ppm3bxSEAaQuNK4b+LPyc3oOyHmFJC2a0mBFYqhMMaPvOmDdZCgy4c3e8ZBYpQ1JlF
-         M4Ml1cXNZ0IrH+j3T4tJcYNRrmftHyjHS2jl/d8JF3+V51TNGW2L007VZ+wfmfMqy54I
-         +r0b9kZrKlPWCV0dOUeW5fL0DFgVPXdmLT1OSyNaHX9EuI16fqoA3qb7FhstgkbYK+Un
-         Rsw+nJ+mDped6jENNlFQV4bZZ2v4+QMqz6+Ll4EcGnhYH7Z9G2hRpR1Zh/6ZfhWVziFF
-         Yqo1t28cjsWzxK2eMocjVEvgr4tX1rLNDxiqZUxKSssGtdbfuHdyXSBQGLhrImV1SVTB
-         GS/w==
-X-Gm-Message-State: AOAM53350kL+zkgGnjkEBWV+9XrtxMUgrwIaXPu7Y2mzyfYXCBzWxMrR
-        kxrHWehgdtpDwXi6JwX0ENvmXt35U9Azyg==
-X-Google-Smtp-Source: ABdhPJwYYULUn86F9g4PzkbFNiPxMnLmOm0+6lcdwnFM4qThLCzo2lAaMWCogymQ+JgprSNFNd1CDg==
-X-Received: by 2002:adf:ebcb:: with SMTP id v11mr38927wrn.408.1606342380540;
-        Wed, 25 Nov 2020 14:13:00 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c023:e75f:e8c4:d86? ([2a01:e34:ed2f:f020:c023:e75f:e8c4:d86])
-        by smtp.googlemail.com with ESMTPSA id a131sm6423875wmh.30.2020.11.25.14.12.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 14:12:59 -0800 (PST)
-Subject: Re: [PATCH] thermal: amlogic_thermal: Add hwmon support
-To:     Dongjin Kim <tobetter@gmail.com>,
-        Guillaume La Roque <glaroque@baylibre.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20201125162405.GA1263100@paju>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <c9e48840-2a96-4d90-38aa-27f95a31eef3@linaro.org>
-Date:   Wed, 25 Nov 2020 23:12:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732926AbgKYWPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 17:15:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730465AbgKYWPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 17:15:06 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 676AD206D9;
+        Wed, 25 Nov 2020 22:15:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606342505;
+        bh=//mTbDz2JjRGYIh1GwXxXW8kmqk4YvkDaY1/++XJIn0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VY5RPIIyvrFY4c/vetEDGaxUA9jOSaakmSVQw0Q1OasRAiZUBJ/F7aSPHVJNJV4i6
+         t408rVBospirzyiG4A0Bz0x10gjsY8A9wASMrrtC8rHc++m/VZ5sLatmlHd/f6CjyS
+         /z2CHKSoNg4dCcDvPeFPMis8mAMTCtEVPIDia/1Q=
+Date:   Wed, 25 Nov 2020 14:15:03 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v7 1/8] block: ensure bios are not split in middle of
+ crypto data unit
+Message-ID: <X77XZ/WVIuw9aCHb@sol.localdomain>
+References: <20201117140708.1068688-1-satyat@google.com>
+ <20201117140708.1068688-2-satyat@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201125162405.GA1263100@paju>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117140708.1068688-2-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-Thanks for your patch but exactly the same patch was submitted and
-merged [1]
-
-  -- Daniel
-
-[1]
-https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/commit/?h=thermal/next&id=cb68a8580e2086fad38597af4c60d39de8df0cde
-
-On 25/11/2020 17:24, Dongjin Kim wrote:
-> Expose Amlogic thermal as HWMON devices.
-> 
-> 	$ sensors
-> 	cpu_thermal-virtual-0
-> 	Adapter: Virtual device
-> 	temp1:        +32.2 C  (crit = +110.0 C)
-> 
-> 	ddr_thermal-virtual-0
-> 	Adapter: Virtual device
-> 	temp1:        +33.4 C  (crit = +110.0 C)
-> 
-> Signed-off-by: Dongjin Kim <tobetter@gmail.com>
-> ---
->  drivers/thermal/amlogic_thermal.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/thermal/amlogic_thermal.c b/drivers/thermal/amlogic_thermal.c
-> index ccb1fe18e993..2fce96c32586 100644
-> --- a/drivers/thermal/amlogic_thermal.c
-> +++ b/drivers/thermal/amlogic_thermal.c
-> @@ -29,6 +29,7 @@
->  #include <linux/thermal.h>
+On Tue, Nov 17, 2020 at 02:07:01PM +0000, Satya Tangirala wrote:
+> @@ -275,11 +331,24 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
+>  		bvprvp = &bvprv;
+>  	}
 >  
->  #include "thermal_core.h"
-> +#include "thermal_hwmon.h"
+> +	/*
+> +	 * The input bio's number of sectors is assumed to be aligned to
+> +	 * bio_sectors_alignment. If that's the case, then this function should
+> +	 * ensure that aligned_segs == nsegs and aligned_sectors == sectors if
+> +	 * the bio is not going to be split.
+> +	 */
+> +	WARN_ON(aligned_segs != nsegs || aligned_sectors != sectors);
+>  	*segs = nsegs;
+>  	return NULL;
+>  split:
+> -	*segs = nsegs;
+> -	return bio_split(bio, sectors, GFP_NOIO, bs);
+> +	*segs = aligned_segs;
+> +	if (WARN_ON(aligned_sectors == 0))
+> +		goto err;
+> +	return bio_split(bio, aligned_sectors, GFP_NOIO, bs);
+> +err:
+> +	bio->bi_status = BLK_STS_IOERR;
+> +	bio_endio(bio);
+> +	return bio;
+>  }
+[...]
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 55bcee5dc032..de5c97ab8e5a 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -2161,6 +2161,9 @@ blk_qc_t blk_mq_submit_bio(struct bio *bio)
+>  	blk_queue_bounce(q, &bio);
+>  	__blk_queue_split(&bio, &nr_segs);
 >  
->  #define TSENSOR_CFG_REG1			0x4
->  	#define TSENSOR_CFG_REG1_RSET_VBG	BIT(12)
-> @@ -291,6 +292,9 @@ static int amlogic_thermal_probe(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
->  
-> +	if (devm_thermal_add_hwmon_sysfs(pdata->tzd))
-> +		dev_warn(&pdev->dev, "failed to add hwmon sysfs attributes\n");
+> +	if (bio->bi_status != BLK_STS_OK)
+> +		goto queue_exit;
 > +
->  	ret = amlogic_thermal_enable(pdata);
->  
->  	return ret;
-> 
 
+Note that as soon as bio_endio() is called, the bio may be freed.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+So accessing the bio after that is not correct.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+- Eric
