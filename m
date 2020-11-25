@@ -2,238 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865F32C4755
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 098032C4756
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733008AbgKYSMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 13:12:44 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:36663 "EHLO m42-4.mailgun.net"
+        id S1733014AbgKYSNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 13:13:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:36040 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731561AbgKYSMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 13:12:44 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606327963; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=RCvQAZfNFC3o6OpRHOzuKPsZ4pdtP2IrwZthHV8sIuA=;
- b=rBVnXN5KMdugI1bUGYRM/aPkg+Q4+4X4zuOGfQ5gC4lFZAjXWChDN/whOjHsohEcv6+XRYpW
- Jr0xqMemTxcYSnsgauPJDp2WpIwsz3k/+4njI3bxVU/NwQP0QKzp/jyrjj6aSvvhQkektjzX
- 1vj9J9XF5dUYsfHgD5amc1c5pqM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fbe9e97b9b39088ed09d084 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 18:12:39
- GMT
-Sender: rishabhb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 906FBC43462; Wed, 25 Nov 2020 18:12:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 07221C43460;
-        Wed, 25 Nov 2020 18:12:36 +0000 (UTC)
+        id S1730643AbgKYSNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 13:13:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3860C31B;
+        Wed, 25 Nov 2020 10:13:11 -0800 (PST)
+Received: from [172.16.1.114] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD4F33F23F;
+        Wed, 25 Nov 2020 10:13:08 -0800 (PST)
+Subject: Re: [PATCH v4 2/2] arm64: kvm: Introduce MTE VCPU feature
+To:     Steven Price <steven.price@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20201026155727.36685-1-steven.price@arm.com>
+ <20201026155727.36685-3-steven.price@arm.com> <X7P1VLZhBh045tsr@trantor>
+ <f34b3d16-8bc7-af9d-c0e0-fb114d2465aa@arm.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <4212c864-805a-cef4-7138-0f8995cadf5e@arm.com>
+Date:   Wed, 25 Nov 2020 18:13:02 +0000
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 25 Nov 2020 10:12:36 -0800
-From:   rishabhb@codeaurora.org
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] remoteproc: Add a rproc_set_firmware() API
-In-Reply-To: <20201121032042.6195-1-s-anna@ti.com>
-References: <20201121032042.6195-1-s-anna@ti.com>
-Message-ID: <601ce27500c0747a0c0d6d226c7de863@codeaurora.org>
-X-Sender: rishabhb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <f34b3d16-8bc7-af9d-c0e0-fb114d2465aa@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-20 19:20, Suman Anna wrote:
-> A new API, rproc_set_firmware() is added to allow the remoteproc 
-> platform
-> drivers and remoteproc client drivers to be able to configure a custom
-> firmware name that is different from the default name used during
-> remoteproc registration. This function is being introduced to provide
-> a kernel-level equivalent of the current sysfs interface to remoteproc
-> client drivers, and can only change firmwares when the remoteproc is
-> offline. This allows some remoteproc drivers to choose different 
-> firmwares
-> at runtime based on the functionality the remote processor is 
-> providing.
-> The TI PRU Ethernet driver will be an example of such usage as it
-> requires to use different firmwares for different supported protocols.
-> 
-> Also, update the firmware_store() function used by the sysfs interface
-> to reuse this function to avoid code duplication.
-> 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
->  drivers/remoteproc/remoteproc_core.c  | 63 +++++++++++++++++++++++++++
->  drivers/remoteproc/remoteproc_sysfs.c | 33 +-------------
->  include/linux/remoteproc.h            |  1 +
->  3 files changed, 66 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c
-> b/drivers/remoteproc/remoteproc_core.c
-> index dab2c0f5caf0..46c2937ebea9 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -1934,6 +1934,69 @@ struct rproc *rproc_get_by_phandle(phandle 
-> phandle)
->  #endif
->  EXPORT_SYMBOL(rproc_get_by_phandle);
-> 
-> +/**
-> + * rproc_set_firmware() - assign a new firmware
-> + * @rproc: rproc handle to which the new firmware is being assigned
-> + * @fw_name: new firmware name to be assigned
-> + *
-> + * This function allows remoteproc drivers or clients to configure a 
-> custom
-> + * firmware name that is different from the default name used during 
-> remoteproc
-> + * registration. The function does not trigger a remote processor 
-> boot,
-> + * only sets the firmware name used for a subsequent boot. This 
-> function
-> + * should also be called only when the remote processor is offline.
-> + *
-> + * This allows either the userspace to configure a different name 
-> through
-> + * sysfs or a kernel-level remoteproc or a remoteproc client driver to 
-> set
-> + * a specific firmware when it is controlling the boot and shutdown of 
-> the
-> + * remote processor.
-> + *
-> + * Return: 0 on success or a negative value upon failure
-> + */
-> +int rproc_set_firmware(struct rproc *rproc, const char *fw_name)
-> +{
-> +	struct device *dev;
-> +	int ret, len;
-> +	char *p;
-> +
-> +	if (!rproc || !fw_name)
-> +		return -EINVAL;
-> +
-> +	dev = rproc->dev.parent;
-> +
-> +	ret = mutex_lock_interruptible(&rproc->lock);
-> +	if (ret) {
-> +		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, ret);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (rproc->state != RPROC_OFFLINE) {
-> +		dev_err(dev, "can't change firmware while running\n");
-> +		ret = -EBUSY;
-> +		goto out;
-> +	}
-> +
-> +	len = strcspn(fw_name, "\n");
-> +	if (!len) {
-> +		dev_err(dev, "can't provide empty string for firmware name\n");
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	p = kstrndup(fw_name, len, GFP_KERNEL);
-> +	if (!p) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	kfree(rproc->firmware);
-> +	rproc->firmware = p;
-> +
-> +out:
-> +	mutex_unlock(&rproc->lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(rproc_set_firmware);
-> +
->  static int rproc_validate(struct rproc *rproc)
->  {
->  	switch (rproc->state) {
-> diff --git a/drivers/remoteproc/remoteproc_sysfs.c
-> b/drivers/remoteproc/remoteproc_sysfs.c
-> index 3fd18a71c188..cf846caf2e1a 100644
-> --- a/drivers/remoteproc/remoteproc_sysfs.c
-> +++ b/drivers/remoteproc/remoteproc_sysfs.c
-> @@ -159,42 +159,13 @@ static ssize_t firmware_store(struct device *dev,
->  			      const char *buf, size_t count)
->  {
->  	struct rproc *rproc = to_rproc(dev);
-> -	char *p;
-> -	int err, len = count;
-> +	int err;
-> 
->  	/* restrict sysfs operations if not allowed by remoteproc drivers */
->  	if (rproc->deny_sysfs_ops)
->  		return -EPERM;
-> 
-> -	err = mutex_lock_interruptible(&rproc->lock);
-> -	if (err) {
-> -		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, err);
-> -		return -EINVAL;
-> -	}
-> -
-> -	if (rproc->state != RPROC_OFFLINE) {
-> -		dev_err(dev, "can't change firmware while running\n");
-> -		err = -EBUSY;
-> -		goto out;
-> -	}
-> -
-> -	len = strcspn(buf, "\n");
-> -	if (!len) {
-> -		dev_err(dev, "can't provide a NULL firmware\n");
-> -		err = -EINVAL;
-> -		goto out;
-> -	}
-> -
-> -	p = kstrndup(buf, len, GFP_KERNEL);
-> -	if (!p) {
-> -		err = -ENOMEM;
-> -		goto out;
-> -	}
-> -
-> -	kfree(rproc->firmware);
-> -	rproc->firmware = p;
-> -out:
-> -	mutex_unlock(&rproc->lock);
-> +	err = rproc_set_firmware(rproc, buf);
-> 
->  	return err ? err : count;
->  }
-> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> index dbc3767f7d0e..6e04b99413f8 100644
-> --- a/include/linux/remoteproc.h
-> +++ b/include/linux/remoteproc.h
-> @@ -655,6 +655,7 @@ rproc_of_resm_mem_entry_init(struct device *dev,
-> u32 of_resm_idx, size_t len,
-> 
->  int rproc_boot(struct rproc *rproc);
->  void rproc_shutdown(struct rproc *rproc);
-> +int rproc_set_firmware(struct rproc *rproc, const char *fw_name);
->  void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type 
-> type);
->  int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da,
-> size_t size);
->  int rproc_coredump_add_custom_segment(struct rproc *rproc,
+Hi Steven, Catalin,
 
-Reviewed-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+On 18/11/2020 16:01, Steven Price wrote:
+> On 17/11/2020 16:07, Catalin Marinas wrote:
+>> On Mon, Oct 26, 2020 at 03:57:27PM +0000, Steven Price wrote:
+>>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>>> index 19aacc7d64de..38fe25310ca1 100644
+>>> --- a/arch/arm64/kvm/mmu.c
+>>> +++ b/arch/arm64/kvm/mmu.c
+>>> @@ -862,6 +862,26 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t
+>>> fault_ipa,
+>>>       if (vma_pagesize == PAGE_SIZE && !force_pte)
+>>>           vma_pagesize = transparent_hugepage_adjust(memslot, hva,
+>>>                                  &pfn, &fault_ipa);
+>>> +
+>>> +    /*
+>>> +     * The otherwise redundant test for system_supports_mte() allows the
+>>> +     * code to be compiled out when CONFIG_ARM64_MTE is not present.
+>>> +     */
+>>> +    if (system_supports_mte() && kvm->arch.mte_enabled && pfn_valid(pfn)) {
+>>> +        /*
+>>> +         * VM will be able to see the page's tags, so we must ensure
+>>> +         * they have been initialised.
+>>> +         */
+>>> +        struct page *page = pfn_to_page(pfn);
+>>> +        long i, nr_pages = compound_nr(page);
+>>> +
+>>> +        /* if PG_mte_tagged is set, tags have already been initialised */
+>>> +        for (i = 0; i < nr_pages; i++, page++) {
+>>> +            if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+>>> +                mte_clear_page_tags(page_address(page));
+>>> +        }
+>>> +    }
+>>
+>> If this page was swapped out and mapped back in, where does the
+>> restoring from swap happen?
+> 
+> Restoring from swap happens above this in the call to gfn_to_pfn_prot()
+> 
+>> I may have asked in the past, is user_mem_abort() the only path for
+>> mapping Normal pages into stage 2?
+>>
+> 
+> That is my understanding (and yes you asked before) and no one has corrected me! ;)
+
+A recent discovery: Copy on write will cause kvm_set_spte_handler() to fixup the mapping
+(instead of just invalidating it) on the assumption the guest is going to read whatever
+was written.
+
+Its possible user_mem_abort() will go and stomp on that mapping a second time, but if the
+VMM triggers this at stage1, you won't have a vcpu for the update.
+
+
+Thanks,
+
+James
