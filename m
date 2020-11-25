@@ -2,165 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A8F2C3958
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 07:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 051FB2C395E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 07:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgKYGxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 01:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbgKYGxL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 01:53:11 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on0612.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::612])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83929C0613D4;
-        Tue, 24 Nov 2020 22:53:10 -0800 (PST)
+        id S1726463AbgKYG4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 01:56:06 -0500
+Received: from mail-eopbgr20078.outbound.protection.outlook.com ([40.107.2.78]:19317
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725836AbgKYG4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 01:56:06 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eilqg5k1pkn9JXTllaXKdfrivhbxEwKmaHqAx6awP92nr/KvSoIcoqHVaYypp4uU64Gk2WRj7jJ6blXx4n4ukvWF+mpnzabCzJ6RU6L4w+Fdse8dUuYHP3PErdGkkHWzxlobyMqDphXQxTMKfZ0HeNC91AgYN7DR7lQM3TrDM/31EvhMHU/2OJl0n/mxj9IKLEvkO+Wev/kPwxtswJXSxh0/KpUYI5l0xL0eiRYzG6/EtZrK9GDgi1kpFYY8lyVOlxQ1jFlgMe2iDbIrtZztIu/zruMnPfXFkJBceyEbDTSQfR9fKykAPI+wiGOfUDJ8bK7MIH61oaOB/+a69viwqQ==
+ b=FceQIQnWEODtRIZpWTcmQEjQ8ABa7afL776qSGwthvfP02GskNVPhIEAvQcX+C1feqisoEiHKuaNUysWMgnMlK8Pc8MJXk8HJ3fG3LCoWeorswHwggtxulcT34zevaUirrYWraGrUxdW+tPqLtxjk37HrWKL2RG25ltIsU7209eH0u3JrksYgr8WAx+dOamPvOz2CVBbWGCYPKZx/RlBCGqR6Biun4B6/aODMfk/4GZ7dDIKTJnBH09mv08TSgalq1MZneXOgTfaApRvO8ueL0JYt+/YU+9YRsnKDfNrNIVUIaTA8LDxzQPDrv/S7RWNgS90K03NS0Zi7mlp834N6w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rmsz45l8fbec0ut6owUWZ04y2CO7/rDU1JqHNqxvm0k=;
- b=AaxPnt20oURpqunnHw5uMXNdKB6BkjdnwcmB1e/dLN4nG1a6vMHN+dsZh5jWj6bPv1kXyQjYoUvcOegcA+YXY9dOE6Ir3B62T9Z7TmKUdYBQojdHD87wv2V38cxUAQBNYu0zmoKnMf0m3DvYDETZeH6c6tLF7FRTUXh4aIPDvw2eOenQeEYSWJx+IyHVr09U9TU2y6j8mPLKBKk1iHHZWeU2QgZxJ+Dl2rDdh8azZ/5JCk7xd6Pje5Xw46t3IJFjB7OD8z7MelY6l5WbXZ3OFWR46W+BuisWXmGmbpc1IyzbcGqDxpdMZXLxcc0mhE5wm5RipEJfgAesqm5P52vN/A==
+ bh=MseMAGZT4T6Fqxyf2w3x609VhB8PNzryjkZfyfhK6FI=;
+ b=EuwikqNVpC2Mh18HHaiUGJcOUoZBETew2zC97hlGJzpizckrNo220hFn272EVbIpkqX6oKmJCMGZKUGSEpsIo2LJqhkbaj/ojSI/ZTTTe0Qo868a+n1MFfaUsvbXIONjugzL0N9DVSAiXGEo7TY4lCTkzXPWpHwZx6EGTu8FQNwtOpjK5igFEekYWmrNFV9Fl04ERQ8aeGXFQSmq8nmCl0ViazaYEUtF+ro4VLTEJnJAQR3I23jzyeHqU1dqPR8AGHpOJ+64R60SHnHPw9tr3cWU3GGvjBOhmuuJrO5lIX3dZVJ3KsXlNVXreo5ctLmZilsj690pVjxmpy3Wd6Iq7Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rmsz45l8fbec0ut6owUWZ04y2CO7/rDU1JqHNqxvm0k=;
- b=FIVXyaI1Je5MAL1VLDcsxfnR9/u78F4iKeMBc+H2rQswgc+/2XtvJW+U8IluPFywe5DsoUrUrnlRl7pmzHKzpCovTq29bxD7EG5tkcPZog3t6MhuMqLV9cDU9DTe5Xb/3cldpCEnZhfwvI98TSTr+gsPPN5fOem9ISgdLTTw04Q=
-Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
- by DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Wed, 25 Nov
- 2020 06:53:06 +0000
-Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
- ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
- ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3589.030; Wed, 25 Nov 2020
- 06:53:06 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     Pawel Laszczak <pawell@cadence.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        "rogerq@ti.com" <rogerq@ti.com>, Rahul Kumar <kurahul@cadence.com>,
-        "nsekhar@ti.com" <nsekhar@ti.com>
-Subject: RE: [PATCH v3 00/10] Introduced new Cadence USBSSP DRD Driver.
-Thread-Topic: [PATCH v3 00/10] Introduced new Cadence USBSSP DRD Driver.
-Thread-Index: AQHWvn5dJMNE6+//dE+JAvEKZI/EXanW7/CAgAAZfwCAAVwpgIAADG9w
-Date:   Wed, 25 Nov 2020 06:53:06 +0000
-Message-ID: <DBBPR04MB7979BE93D8A7A28D3AE24FDF8BFA0@DBBPR04MB7979.eurprd04.prod.outlook.com>
-References: <20201119141307.8342-1-pawell@cadence.com>
- <20201124075023.GC32310@b29397-desktop>
- <DM6PR07MB55299F262CEA81216999CB05DDFB0@DM6PR07MB5529.namprd07.prod.outlook.com>
- <DM6PR07MB55294D86FE79E85F41838918DDFA0@DM6PR07MB5529.namprd07.prod.outlook.com>
-In-Reply-To: <DM6PR07MB55294D86FE79E85F41838918DDFA0@DM6PR07MB5529.namprd07.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: cadence.com; dkim=none (message not signed)
- header.d=none;cadence.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 337d93cd-0f50-49ab-943c-08d8910ec384
-x-ms-traffictypediagnostic: DB3PR0402MB3916:
-x-microsoft-antispam-prvs: <DB3PR0402MB391628793CB2CA2D0D18E6EB8BFA0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PVHC6t0xesigRSxbv5Vf5UHhpqOj2VahT4bV+YF7XheS+SEBu7Ub+9rLqVUm39OnZv6wSX/2Z1aqVv78pXP1JqQTvtQ2rFNW9cA0j5q4X/YvivUKKg2Kx6JghiBi7q9WG0PrSwwxP06ihDFmxYaoyHQTQEz07e6eiLKnNWM+WrMzhY536FwBO7TldPRNo94KyFX9LieHCgWL3MAeWljoAXWPgm0r5RBht3V/efn3BqpGiakiKd19uIzIHaGvIxUr5GIPB7tEzPezmEecy34GgT1O4L4AnxuQUy49PZ9xrXIyRcXKEGciunVzdQh3Yd5uglnha5oFfd5xyugncdkSTA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(366004)(346002)(39860400002)(76116006)(66446008)(52536014)(9686003)(478600001)(64756008)(33656002)(86362001)(6916009)(55016002)(66476007)(83380400001)(66946007)(66556008)(54906003)(316002)(186003)(6506007)(8676002)(8936002)(26005)(71200400001)(7696005)(2906002)(5660300002)(4326008)(44832011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: vjqqA8buQfH+0f9D0MEAEVFUWyaZ4o7gTFAf2jjzfQ7toZDGtiCw0AsvGfn5yjsAYG5SVUXWM2aDFk/qvTXWfJyrX6hm9xk8rZonCO9ioLsgijoYkjUdc6UocO5+CXi4BaoTxsb11x+jKvLgS4xwaFHerRjF2JvGzsE7AXt8TfykCXP8pxiCGoFJxzfkaMmXyPlZPrFRwTh6ZE3/3miAmS3g9oh8jfxvBCnfCoYF1/JNf1x5iGtQ0H+iB8JWnRFahfRCoClFoN+C4mX4djpyYUxtZ8BMs+ANkRR4orTKQpix43Y2DL0GCXszHCYO8wyah1+65qz5Zhz5Xybs1c3QoIVBqBd8oEoMnX7BaExYslOY8BSpwp3/qnA8iQ9x5mbpqrifosPqFdvpZyj32Ptkut7QU7krpn7oZU5xkTJm34FA9VTnw2ZUuJIYHRINBoo54zkzNihQ4rD6BTdiQPldfk/JQ/q+REfHpC93naDlocgcPZ0ZSji8Bzpr3k9s4s6KdEQakWkXgxIdmAT8sbUJ5SccnyvNtGfevW1JbRoJsorXuiKVI820eVjVaHjmxQXyw1L2qZfXhtI/2gpWBtwgsGj/bu506fUXSWDX/f2Eqz1EuBvILirRoHkDbVuwdSt/V/t9lpjlk2mO/1tEBQKpLtg9wchO0s/W/sHGfx4UYMXafo3nFtF4aqWia2q5tcnF2GA6XXNwn1p+/0o+szMC9udzIzGu4o1drxQXi51Vs4d6l7qj/CWHe/JoTrKC4xPUcwsM27pLBce27lH2koXbcU0h7m6NeBvfPulu3biXXS2QXqs2qv3TyEY10YVOaRkSxLhA+pHIWb+REORqDL06n90YgxYClwEnSCSBDjwmC/v5KelNcO5z9UZxUuFDjwQ2FrDbIjhw42iVwJYtTnjCkg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=MseMAGZT4T6Fqxyf2w3x609VhB8PNzryjkZfyfhK6FI=;
+ b=PBmKBy4DNzb7S55hqBp4whQLZf7vzu/QlEeFWA9DDIDp1oY+b+42f1mag3V/vxf1DUA+ypdy44wfpslRPJvfvYtKmMJJUJLYQEzWK1rwo3i756FTx/85G41Vw+yx2mptEviYxLKpwv1vKuC4mVTIREO5tEXVW+sLOoTj+Ntr59Y=
+Authentication-Results: mntre.com; dkim=none (message not signed)
+ header.d=none;mntre.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
+ (2603:10a6:803:22::27) by VI1PR04MB4399.eurprd04.prod.outlook.com
+ (2603:10a6:803:6e::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.25; Wed, 25 Nov
+ 2020 06:55:54 +0000
+Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
+ ([fe80::41ff:37e2:c7f5:56a1]) by VI1PR0402MB3902.eurprd04.prod.outlook.com
+ ([fe80::41ff:37e2:c7f5:56a1%5]) with mapi id 15.20.3589.030; Wed, 25 Nov 2020
+ 06:55:54 +0000
+Date:   Wed, 25 Nov 2020 08:55:49 +0200
+From:   Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+To:     "Lukas F. Hartmann" <lukas@mntre.com>
+Cc:     agx@sigxcpu.org, laurentiu.palcu@nxp.com,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] dcss: fix attaching to sn56dsi86 bridge
+Message-ID: <20201125065549.t36mg4nzyoug72yu@fsr-ub1864-141>
+References: <20201124171956.981307-1-lukas@mntre.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124171956.981307-1-lukas@mntre.com>
+User-Agent: NeoMutt/20171215
+X-Originating-IP: [83.217.231.2]
+X-ClientProxiedBy: AM0PR03CA0019.eurprd03.prod.outlook.com
+ (2603:10a6:208:14::32) To VI1PR0402MB3902.eurprd04.prod.outlook.com
+ (2603:10a6:803:22::27)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1864-141 (83.217.231.2) by AM0PR03CA0019.eurprd03.prod.outlook.com (2603:10a6:208:14::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Wed, 25 Nov 2020 06:55:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a5437484-3a62-4c97-d63e-08d8910f26ed
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4399:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4399F29E44BADE67F46954A1BEFA0@VI1PR04MB4399.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QiBM2jzX5W+RiSaUlItQVOLt5vYCxvIM/tW4AkiMfN36nDZhdsshHNIyYS0oysI96kbhMflcor0Ko+OJSegVZ1S0cJQuMTkr/akbwCl1og4MoWH6e71+Izf71mLDh7H4K1zSDdgWjiOdzxJyfMbTnExBlwhIiKz7/2iI4RfcXrBUYgZYK2PbQK/7lQb0TxMTpx7QSy7nV4azNJU9dTSRsrwxrnMCcDVloURUttE3/pUxIuHzLhK3tpcDFHJL9ZKSckV/hzx3oS1T3vtUDqh+sS5QbQ65rWjA1R552gmLsmRTEzgMFOolwY/gcdDIy+Adngb9bkxk9fLGLEpWZJHrzw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3902.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(346002)(376002)(396003)(66556008)(66946007)(55016002)(478600001)(956004)(52116002)(9686003)(83380400001)(4326008)(6496006)(5660300002)(2906002)(8936002)(1076003)(66476007)(44832011)(6916009)(8676002)(86362001)(7416002)(186003)(26005)(316002)(16526019)(54906003)(33716001)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?NBDQzQOomI6l75AhbNIeIgG06YnaeFmq5iC8aAdRGWjlQQPQpa4haoEMf6kY?=
+ =?us-ascii?Q?3LMgayfY/tmoUhQzwq2YgUtMRdI9pkPCErqL6TAQR1CVSzodukPCHhzd8mob?=
+ =?us-ascii?Q?z+evgN/dam4nPD7/E2MDKsFa8V2VQH2EzAvdi/wjKqjyjdClGaBrYdwyBCkq?=
+ =?us-ascii?Q?vygVANq2GatIQSgVSoio2cAR9qqVD9M+YGGz/7hojHjwqY8kwM8NbFLQoBmH?=
+ =?us-ascii?Q?CV75dbZ7pBIkf46mEvPojsBoitqdZ2SqCx+1qOQ8eVTsmkuDJNkG669jKaZ/?=
+ =?us-ascii?Q?KsAmy78Ap8o+4+B8xIuIIXQ5cCpHIIsJJgnKIIjZkm9n38u9+hs1zQ7lgY30?=
+ =?us-ascii?Q?rQvE+gUDXZuT32CENAecf+f7EXvhjauz4EQk/Yis9WaoJ6eQ/vYVdHl4Fb7Y?=
+ =?us-ascii?Q?IQrvmT13+5+E6HBmvaWop6myOwPAskHKdspCCI+XNZPfUKA2hysm/S9gllr6?=
+ =?us-ascii?Q?4Xpc64mK+gBQjOaa6Ucfchj2wAb667PqQRPIlas0z0Yvm0+RY/QclDANDAHY?=
+ =?us-ascii?Q?Y6uIY1lrEn1qRD7p3/aXWB6tXYDcNXDjhzzwWVJQTjKxFuMzLTk90y3HdxLG?=
+ =?us-ascii?Q?XSlHoLn2hQI3PUcs//oEaAZ7hVHc3SXUy+LWBdPRZHNimshS/IYVKJTjMmBR?=
+ =?us-ascii?Q?67YYceOldSMAE4US9WxiNlMzFzA7CEkD1j4u8AaegsxRI9fmdpP61Mm1Z3P6?=
+ =?us-ascii?Q?56V1vttRYOyOOu2q3IaoHwkdh8OuXGV8PIkhMIFKqYHdjGLkje+K8UjLX/bU?=
+ =?us-ascii?Q?o8vg0svtFqE+uc/izC4Jd8JAUlqn/NWG+v7pVA21H+bHxaGIJ5OJGG4hKxn+?=
+ =?us-ascii?Q?cO7cJXbBc+iOon+WY80RC2FHtLktBgZYzFKbn0PpSBtGRQXl6ApjftJzooaZ?=
+ =?us-ascii?Q?B4jjvUjVDY8j7q45vAv7s/Hc7i9Fd/bZQHCnZJBa1laD4st9VePjbsP12a1J?=
+ =?us-ascii?Q?cANvwZUQhh35dU6SeBx+oNjYWfvd3YwgA070lDknHiAX9uTs6VIsp3Z9UfFe?=
+ =?us-ascii?Q?l55F?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5437484-3a62-4c97-d63e-08d8910f26ed
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3902.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 337d93cd-0f50-49ab-943c-08d8910ec384
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2020 06:53:06.7545
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 06:55:54.0231
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: R5U7msT6j5siCbMmh6pAYjGv3i/+h2F7tR0fTtN+4miim4DPj5rtorNw2Wj6xUpv6sY2rhZVf7tk/58XzY94yQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3916
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YG8YaxpWQKd4i2VxoqsluNvQHjwYhlZAEpJpsP7JW8/fzbK6O/G8Z0l1dnvrGiOsR3Uqbyfuei8a4sUmLu6vUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4399
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Lukas,
 
-> >>>
-> >>> The device side of USBSS DRD controller is compliant with XHCI.
-> >>> The architecture for device side is almost the same as for host
-> >>> side, and most of the XHCI specification can be used to understand
-> >>> how this controller operates.
-> >>>
-> >>> This controller and driver support Full Speed, Hight Speed, Supper
-> >>> Speed and Supper Speed Plus USB protocol.
-> >>>
-> >>> The prefix cdnsp used in driver has chosen by analogy to cdn3 driver.
-> >>> The last letter of this acronym means PLUS. The formal name of
-> >>> controller is USBSSP but it's to generic so I've decided to use CDNSP=
-.
-> >>>
-> >>> The patch 1: adds support for DRD CDNSP.
-> >>> The patch 2: separates common code that can be reusable by cdnsp driv=
-er.
-> >>> The patch 3: moves reusable code to separate module.
-> >>> The patch 4: changes prefixes in reusable code from cdns3 to common
-> cdns.
-> >>> The patch 5: adopts gadget_dev pointer in cdns structure to make poss=
-ible
-> >>>              use it in both drivers.
-> >>> The patches 6-8: add the main part of driver and has been intentional=
-ly
-> >>>              split into 3 part. In my opinion such division should no=
-t
-> >>>              affect understanding and reviewing the driver, and cause
-> that
-> >>>              main patch (7/8) is little smaller. Patch 6 introduces m=
-ain
-> >>>              header file for driver, 7 is the main part that implemen=
-ts
-> all
-> >>>              functionality of driver and 8 introduces tracepoints.
-> >>> The patch 9: Adds cdns3 prefixes to files related with USBSS driver.
-> >>> the patch 10: Adds USBSSP DRD IP driver entry to MAINTAINERS file.
-> >>>
-> >>> Changlog from v2:
-> >>> - removed not used pdev parameter from cdnsp_read/wite_64 functions
-> >>> - fixed incorrect value assigned to CDNSP_ENDPOINTS_NUM (32 -> 31)
-> >>> - replaced some constant value with CDNSP_ENDPOINTS_NUM macro
-> >>> - replaced 'true' with '1' in bits description in cdnsp-gadget.h
-> >>> file
-> >>> - fixed some typos
-> >>> - some other less important changes suggested by Peter Chen
-> >>
-> >>Hi Pawel,
-> >>
-> >>I have updated my -next tree as the latest usb-next tree which
-> >>v5.10-rc4 is included, would you please rebase my tree and send again,
-> >>I could apply your patches and test, if test could pass, I will apply i=
-t to my
-> -next tree.
-> >>You don't need to rebase again since it is a huge patch set, will take
-> >>some efforts for rebase.
-> >>
-> >
-> >I'll try to post it tomorrow.
->=20
-> Can I send the new version CDNSP or I should wait for completion
-> 'Re: [PATCH] Revert "usb: cdns3: core: quit if it uses role switch class"=
-' and
-> applying the appropriate fix to your repo ?
->=20
-=20
-Please wait that fix, thanks.
+On Tue, Nov 24, 2020 at 06:19:57PM +0100, Lukas F. Hartmann wrote:
+> The sn56dsi86 DSI to eDP bridge driver does not support attaching
+> without a drm connector.
 
-Peter
+I think the SN65DSI86 driver is exactly what you should focus on, so
+that it works when connector is optional. The ADV7511/ADV7533/ADV7535
+driver provides the best example on how it should be done.
+
+Thanks,
+laurentiu
+
+> This patch makes the attachment work. Required for the display chain
+> in MNT Reform 2.0 (DCSS->NWL DSI->SN56DSI86->EDP).
+> 
+> Signed-off-by: Lukas F. Hartmann <lukas@mntre.com>
+> ---
+>  drivers/gpu/drm/imx/dcss/dcss-kms.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-kms.c b/drivers/gpu/drm/imx/dcss/dcss-kms.c
+> index 135a62366..4967f828b 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-kms.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-kms.c
+> @@ -82,6 +82,7 @@ static int dcss_kms_bridge_connector_init(struct dcss_kms_dev *kms)
+>  	struct drm_crtc *crtc = (struct drm_crtc *)&kms->crtc;
+>  	struct drm_panel *panel;
+>  	struct drm_bridge *bridge;
+> +	struct drm_connector_list_iter iter;
+>  	int ret;
+> 
+>  	ret = drm_of_find_panel_or_bridge(ddev->dev->of_node, 0, 0,
+> @@ -104,19 +105,19 @@ static int dcss_kms_bridge_connector_init(struct dcss_kms_dev *kms)
+>  		return ret;
+>  	}
+> 
+> -	ret = drm_bridge_attach(encoder, bridge, NULL,
+> -				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+> +	ret = drm_bridge_attach(encoder, bridge, NULL, 0);
+>  	if (ret < 0) {
+>  		dev_err(ddev->dev, "Unable to attach bridge %pOF\n",
+>  			bridge->of_node);
+>  		return ret;
+>  	}
+> 
+> -	kms->connector = drm_bridge_connector_init(ddev, encoder);
+> -	if (IS_ERR(kms->connector)) {
+> -		dev_err(ddev->dev, "Unable to create bridge connector.\n");
+> -		return PTR_ERR(kms->connector);
+> -	}
+> +	/*
+> +	 * This hack to look up the connector is copied from mxsfb.
+> +	 */
+> +	drm_connector_list_iter_begin(ddev, &iter);
+> +	kms->connector = drm_connector_list_iter_next(&iter);
+> +	drm_connector_list_iter_end(&iter);
+> 
+>  	drm_connector_attach_encoder(kms->connector, encoder);
+> 
+> --
+> 2.28.0
