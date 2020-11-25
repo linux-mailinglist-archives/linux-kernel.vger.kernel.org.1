@@ -2,154 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59142C4153
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F93A2C4157
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729575AbgKYNnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:43:20 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:47041 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729526AbgKYNnU (ORCPT
+        id S1729637AbgKYNnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727858AbgKYNnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:43:20 -0500
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 0APDh6pQ004097;
-        Wed, 25 Nov 2020 22:43:06 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0APDh6pQ004097
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606311786;
-        bh=Xr9kKa1yy2aEd8Z8mSK6Pod0JXKPYiwqr/gCQAQT6Lk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HcmLiYlqEqyEO+xcSDxfv2S2tGX4N3ptJppIcINadM4hs6TWzL+2nFiXeCPCK0wXt
-         E2WL0ffgr0n+uUypn1M3CWCHCMISFl1Q5PPxg0MjUlG3CuhjoncZA+xgeODYVg/5Wp
-         c///hqN9AmHr5SvZbq4DT3HIWI2vSi1Jtle7zz+pUfl5kQVszJOSxsGlOThBg/48M5
-         1GoJgHcZT8aCJezsLe1JunAhZ5BUR2/2oWzIelNcnTQSnUmvIINEBpYNyly/TaTBZC
-         qO8Ue6V70SkNOID/Nx3OrCdKaXE7km8AHVBADIZuQmMEgmbjZNJsjitT55JfOUNNPp
-         uNJLd/QINT7TA==
-X-Nifty-SrcIP: [209.85.210.181]
-Received: by mail-pf1-f181.google.com with SMTP id w187so2366902pfd.5;
-        Wed, 25 Nov 2020 05:43:06 -0800 (PST)
-X-Gm-Message-State: AOAM532pU9v07HAGvN9+/870L8gnZPfqXLLejGZsjedYsv4jLTZ+VWc4
-        QH7xDnS16NRuZa5UNdx2QYQKuwfITXKw5K8XldA=
-X-Google-Smtp-Source: ABdhPJwU0PSewhXq0VykOVGsOJ7FU08lEC/5fD477srKgaQTsRsFk7QzUdiWYG8B+QmRUCoNJUDWTiodYEMQG5TblpM=
-X-Received: by 2002:a62:e519:0:b029:197:bcec:7c0c with SMTP id
- n25-20020a62e5190000b0290197bcec7c0cmr3229396pff.63.1606311785520; Wed, 25
- Nov 2020 05:43:05 -0800 (PST)
+        Wed, 25 Nov 2020 08:43:42 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644C8C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 05:43:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CXjJBBQ509MLNGRCW6YegSHGZPRzXtIgnFrJbQeTLDg=; b=n+767GOpL38zFly8/odSqqLSuc
+        WKrZ63sg+Iz63A3vJoVwiJ8sfA3EgoUSVs/35q5sPyoIdYYU16sX+R+n3VZxv/JsrQNDF3JtWz5Pa
+        5s3fVTy+t+TiVZKpRPx/px/3q+L+1jPJsDwcunHIzNHq0tzqUWpeXaJADyJ5ptO1RxO3OnH3SZ25S
+        QZtmI95KW8Fc9QEkxx8MIy0jJMsbivDnrmZ/rZQ5s9Y/XIfb3e7H5YGFb2mkezyiNXlcAAXiEqBjk
+        nqRWp7qarVDmOHPRxYHqDXjWVAxIFuLf2A68K5RWmfOKSfzk2qHZiZ4VPJ5UkgDBCcteHVXchmCnI
+        t2FnXaaA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khv4C-0007xr-2H; Wed, 25 Nov 2020 13:42:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3178B3012DF;
+        Wed, 25 Nov 2020 14:42:38 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E0EDC200DF1C9; Wed, 25 Nov 2020 14:42:37 +0100 (CET)
+Date:   Wed, 25 Nov 2020 14:42:37 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 26/32] sched: Add a second-level tag for nested
+ CGroup usecase
+Message-ID: <20201125134237.GZ2414@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-27-joel@joelfernandes.org>
 MIME-Version: 1.0
-References: <20201103054425.59251-1-chao.wang@ucloud.cn> <CAK7LNARnmJRy1NPBDkgNsoe_TqpD=HJhmri4YHjXjscGZ-neWw@mail.gmail.com>
- <20201123150452.GA68187@MacBook-Pro-2>
-In-Reply-To: <20201123150452.GA68187@MacBook-Pro-2>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 25 Nov 2020 22:42:28 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASH7Pj9eUdxF-sp1_Ap+uA9jEtsXa--pUDDw_pNVLtviA@mail.gmail.com>
-Message-ID: <CAK7LNASH7Pj9eUdxF-sp1_Ap+uA9jEtsXa--pUDDw_pNVLtviA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: add extra-y to targets-for-modules
-To:     WANG Chao <chao.wang@ucloud.cn>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117232003.3580179-27-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 12:05 AM WANG Chao <chao.wang@ucloud.cn> wrote:
->
-> On 11/23/20 at 02:23P, Masahiro Yamada wrote:
-> > On Tue, Nov 3, 2020 at 3:23 PM WANG Chao <chao.wang@ucloud.cn> wrote:
-> > >
-> > > extra-y target doesn't build for 'make M=...' since commit 6212804f2d78
-> > > ("kbuild: do not create built-in objects for external module builds").
-> > >
-> > > This especially breaks kpatch, which is using 'extra-y := kpatch.lds'
-> > > and 'make M=...' to build livepatch patch module.
-> > >
-> > > Add extra-y to targets-for-modules so that such kind of build works
-> > > properly.
-> > >
-> > > Signed-off-by: WANG Chao <chao.wang@ucloud.cn>
-> > > ---
-> > >  scripts/Makefile.build | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> > > index ae647379b579..0113a042d643 100644
-> > > --- a/scripts/Makefile.build
-> > > +++ b/scripts/Makefile.build
-> > > @@ -86,7 +86,7 @@ ifdef need-builtin
-> > >  targets-for-builtin += $(obj)/built-in.a
-> > >  endif
-> > >
-> > > -targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> > > +targets-for-modules := $(extra-y) $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> > >
-> > >  ifdef need-modorder
-> > >  targets-for-modules += $(obj)/modules.order
-> > > --
-> > > 2.29.1
-> > >
-> >
-> > NACK.
-> >
-> > Please fix your Makefile.
-> >
-> > Hint:
-> > https://patchwork.kernel.org/project/linux-kbuild/patch/20201123045403.63402-6-masahiroy@kernel.org/
-> >
-> >
-> > Probably what you should use is 'targets'.
->
-> I tried with 'targets' and 'always-y'. Both doesn't work for me.
->
-> I narraw it down to the following example:
->
-> cat > Makefile << _EOF_
-> obj-m += foo.o
->
-> ldflags-y += -T $(src)/kpatch.lds
-> always-y += kpatch.lds
->
-> foo-objs += bar.o
->
-> all:
->         make -C /lib/modules/$(shell uname -r)/build M=$(PWD)
-> clean:
->         make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
-> _EOF_
->
-> Take a look into scripts/Makefile.build:488:
->
-> __build: $(if $(KBUILD_BUILTIN), $(targets-for-builtin)) \
->          $(if $(KBUILD_MODULES), $(targets-for-modules)) \
->          $(subdir-ym) $(always-y)
->         @:
->
-> 'always-y' is built after 'targets-for-modules'. This makes
-> 'targets-for-modules' fails because kpatch.lds isn't there.
+On Tue, Nov 17, 2020 at 06:19:56PM -0500, Joel Fernandes (Google) wrote:
+> From: Josh Don <joshdon@google.com>
+> 
+> Google has a usecase where the first level tag to tag a CGroup is not
+> sufficient. So, a patch is carried for years where a second tag is added which
+> is writeable by unprivileged users.
+> 
+> Google uses DAC controls to make the 'tag' possible to set only by root while
+> the second-level 'color' can be changed by anyone. The actual names that
+> Google uses is different, but the concept is the same.
+> 
+> The hierarchy looks like:
+> 
+> Root group
+>    / \
+>   A   B    (These are created by the root daemon - borglet).
+>  / \   \
+> C   D   E  (These are created by AppEngine within the container).
+> 
+> The reason why Google has two parts is that AppEngine wants to allow a subset of
+> subcgroups within a parent tagged cgroup sharing execution. Think of these
+> subcgroups belong to the same customer or project. Because these subcgroups are
+> created by AppEngine, they are not tracked by borglet (the root daemon),
+> therefore borglet won't have a chance to set a color for them. That's where
+> 'color' file comes from. Color could be set by AppEngine, and once set, the
+> normal tasks within the subcgroup would not be able to overwrite it. This is
+> enforced by promoting the permission of the color file in cgroupfs.
 
+Why can't the above work by setting 'tag' (that's a terrible name, why
+does that still live) in CDE? Have the most specific tag live. Same with
+that thread stuff.
 
-Heh, you rely on the targets built from left to right,
-and you have never thought Make supports the parallel option -j.
+All this API stuff here is a complete and utter trainwreck. Please just
+delete the patches and start over. Hint: if you use stop_machine(),
+you're doing it wrong.
 
-
-You need to specify the dependency if you expect objects
-are built in the particular order.
-
-However, in this case, using ldflags-y looks wrong
-in the first place.
-
-The linker script is used when combining the object
-as well as the final link of *.ko
-
-
-> For 'targets', in case of OOT, does not seem to be useful.
->
-> What change do you suggest to make to fix this kind of Makefile?
->
-> Thanks,
-> WANG Chao
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+At best you now have the requirements sorted.
