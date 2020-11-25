@@ -2,142 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325EC2C4ACF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F5F2C4AD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387486AbgKYW1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 17:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
+        id S1726591AbgKYWfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 17:35:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387474AbgKYW1O (ORCPT
+        with ESMTP id S1725836AbgKYWfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 17:27:14 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77069C0617A7;
-        Wed, 25 Nov 2020 14:27:14 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ChFqw0tYCz9s1l;
-        Thu, 26 Nov 2020 09:27:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606343231;
-        bh=GUGR5Jb8Ps+88ArLoeZmH1zDG+KVi5x+k26h13IPYMk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=g1pirN09gNiwxEEWXFWtM6XXCfRSEZodmwmj2GpiJ+myjXn/YMmB9k3cyILlamCLi
-         bmY9C83SDEGFCl+Pb272tI+frmHayU6vskvaqloRwr5MimnqTf36bNs+AmtPcQFG22
-         ZQr1VzNH8Rl5la+yj9rlqK202fH8M8aWhiCpSmL7my2bUDfz/c2ae5b2UIVpE+m9Ol
-         CI5V165pB8HM3pDnT9lWZ2RKTNsYXJ6e4ci4GDlpKRF0Kys8GxCmCYFvsgOaB10HLF
-         YXCTXDXlaYaPGcV3uBfMMR7KWH1dIR4GXium2UYixGcCoyWaJLeVkFD4a+BI7kKkkt
-         TuLGVImotOImw==
-Date:   Thu, 26 Nov 2020 09:27:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, Hui Su <sh_def@163.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        syzbot <syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mm/memcg: warn on missing memcg on
- mem_cgroup_page_lruvec()
-Message-ID: <20201126092706.1e06aa08@canb.auug.org.au>
-In-Reply-To: <0918d6f5-8459-7b5e-82a3-6c9792d17433@linux.alibaba.com>
-References: <00000000000054aea005b4d59e71@google.com>
-        <20201125112202.387009-1-lstoakes@gmail.com>
-        <0918d6f5-8459-7b5e-82a3-6c9792d17433@linux.alibaba.com>
+        Wed, 25 Nov 2020 17:35:21 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DE9C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 14:35:21 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id e8so3718467pfh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 14:35:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z/shZxNcr/eh0s1FuPq4mg6XiplTCtJuhBAv+UXex+8=;
+        b=bpzMW+GynMFKqUkOYAjiijs9fsMAcvOedHf3RUCzT9X4/7+hRRR7vjMjDgWSFfInAZ
+         eIbmX2h8CA1OicjN9wpICFqkcuc3HLlqPJ2t/LKeqsm9/WWM/r3FwxIUpopYOa7kuxav
+         3I6wnaZhD+tZBKP9b+9GwGOj5VuCJOWgSeQRiFFNFG6YsJMUPRGAMY5mp/QQ3T56prxu
+         NqulMwBtIDzVnUSDCL+wLuOGJBabIwkW/qpvab9oA7jM+GLOri08v3DGSoQm4DGkz6jK
+         SIj6bQX0sd0PHjiQig465r3TScoVucN5C8H1X8WRfJdOiOd68tVXISUyNfJQnpdNjsp3
+         7x9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z/shZxNcr/eh0s1FuPq4mg6XiplTCtJuhBAv+UXex+8=;
+        b=U495YBAI6wRcnA9xwMXl7o6oMEdoBgkKwThgcPdy+s9avc6ThyN7v1Hc4wzM558toc
+         PFB02i0x5Be2cCC9utJfuwfX4L2e81KBBOBwy1GlCaxKc1+9eQwporEypgd0j5RtGhFs
+         0PQ6YQ7jkv5NkkqR3Omgl5xKipdR5vZKrPE4dZhucWWCvUkajG5ygWmMfZvW+GfdlYen
+         zeHdKUsLyj911sxAopyAdlGdKUUHTxNiJ5HfD/pR8kK7FAM+WDF90dfzwX8h2pHinqSk
+         bpQrWZHIOPMl+xsSFfZx/5EgXIqNCzYdLTBWqcizeGavIjTi4MhZtoMOb6jfD9Hsr3zn
+         C9vQ==
+X-Gm-Message-State: AOAM530SzseXbaWZSqMiYmRFmJ51v6XcHsVJnTet0bEK0K+L2KIkMCWQ
+        l5YPdGYb0GTAZewIb3ICKIfbyA==
+X-Google-Smtp-Source: ABdhPJySg7H6dcqT/0/aaGtTbkmNgT1BvtM/9DLDr5iEtrmCXLEQ5ca7T5YwqL7c1B3dNglcF6CYDA==
+X-Received: by 2002:a17:90a:f406:: with SMTP id ch6mr6917481pjb.88.1606343721031;
+        Wed, 25 Nov 2020 14:35:21 -0800 (PST)
+Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id w18sm54577pgf.30.2020.11.25.14.35.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 14:35:20 -0800 (PST)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     gregkh@linuxfoundation.org, suzuki.poulose@arm.com,
+        leo.yan@linaro.org
+Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] MAINTAINERS: Adding help for coresight subsystem
+Date:   Wed, 25 Nov 2020 15:35:19 -0700
+Message-Id: <20201125223519.734388-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/S1QJfwUbyxzDCF4y6WxxMQm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/S1QJfwUbyxzDCF4y6WxxMQm
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+With the steady stream of new features coming into the subsystem
+it has been clear for some time now that help is needed.
 
-Hi all,
+Suzuki and Leo have worked extensively on various parts of the
+project and have agreed to help.
 
-On Wed, 25 Nov 2020 20:15:11 +0800 Alex Shi <alex.shi@linux.alibaba.com> wr=
-ote:
->
-> Acked-by: Alex Shi <alex.shi@linux.alibaba.com>
->=20
->=20
-> =E5=9C=A8 2020/11/25 =E4=B8=8B=E5=8D=887:22, Lorenzo Stoakes =E5=86=99=E9=
-=81=93:
-> > Move memcg check to mem_cgroup_page_lruvec() as there are callers which
-> > may invoke this with !memcg in mem_cgroup_lruvec(), whereas they should
-> > not in mem_cgroup_page_lruvec().
-> >=20
-> > We expect that we have always charged a page to the memcg before
-> > mem_cgroup_page_lruvec() is invoked, so add a warning to assert that th=
-is
-> > is the case.
-> >=20
-> > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> > Reported-by: syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com
-> > ---
-> >  include/linux/memcontrol.h | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 87ed56dc75f9..3e6a1df3bdb9 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -618,7 +618,6 @@ static inline struct lruvec *mem_cgroup_lruvec(stru=
-ct mem_cgroup *memcg,
-> >  		goto out;
-> >  	}
-> > =20
-> > -	VM_WARN_ON_ONCE(!memcg);
-> >  	if (!memcg)
-> >  		memcg =3D root_mem_cgroup;
-> > =20
-> > @@ -645,7 +644,10 @@ static inline struct lruvec *mem_cgroup_lruvec(str=
-uct mem_cgroup *memcg,
-> >  static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-> >  						struct pglist_data *pgdat)
-> >  {
-> > -	return mem_cgroup_lruvec(page_memcg(page), pgdat);
-> > +	struct mem_cgroup *memcg =3D page_memcg(page);
-> > +
-> > +	VM_WARN_ON_ONCE_PAGE(!memcg, page);
-> > +	return mem_cgroup_lruvec(memcg, pgdat);
-> >  }
-> > =20
-> >  static inline bool lruvec_holds_page_lru_lock(struct page *page,
-> >  =20
+While at it add the new location for the coresight git tree.
 
-I have added that patch to the akpm tree in linux-next today as a fix
-for "mm/memcg: add missed warning in mem_cgroup_lruvec".
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+---
+ MAINTAINERS | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Andrew: the original patch is here:
-https://lore.kernel.org/lkml/20201125112202.387009-1-lstoakes@gmail.com/
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e73636b75f29..8d0b008c7781 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1723,11 +1723,13 @@ F:	arch/arm/mach-ep93xx/micro9.c
+ 
+ ARM/CORESIGHT FRAMEWORK AND DRIVERS
+ M:	Mathieu Poirier <mathieu.poirier@linaro.org>
+-R:	Suzuki K Poulose <suzuki.poulose@arm.com>
++M:	Suzuki K Poulose <suzuki.poulose@arm.com>
+ R:	Mike Leach <mike.leach@linaro.org>
++R:	Leo Yan <leo.yan@linaro.org>
+ L:	coresight@lists.linaro.org (moderated for non-subscribers)
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
++T:	git git://git.kernel.org/pub/scm/linux/kernel/git/coresight/linux.git
+ F:	Documentation/ABI/testing/sysfs-bus-coresight-devices-*
+ F:	Documentation/devicetree/bindings/arm/coresight-cpu-debug.txt
+ F:	Documentation/devicetree/bindings/arm/coresight-cti.yaml
+-- 
+2.25.1
 
---Sig_/S1QJfwUbyxzDCF4y6WxxMQm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl++2joACgkQAVBC80lX
-0GwWMQf/Q2aM02yswn7APiVTNxVOArueh6QNTpAd64O6C4UYV/xVXE610PTdiN4B
-78pvnV2eMWZNH/UAPxP8/DeVS2ScDF5CGdlHEbWxBmQNyzpsIJzodLvZBJPiC5xp
-DItXhuE6su028Mpdm+SElzk6OOhWwhVP+2ktPVKeUFJSfmxJcjgf3uO7y370Ywit
-Zs6BKxGMLzrqfGGfR4p7s0yGbUpOydXP8gFkp1gg8KcgvxjtFzm6eIF8KWBp5MxM
-Fr2R5Y+2mIhu8fW1NTuOwPgIf/+FTm5g3YZI1b4vqCEyzcn6Xs2nuWlaRZqUHq4B
-auVlC1NCh5E/S6bB30xlDxiKSgNK/A==
-=Ltrr
------END PGP SIGNATURE-----
-
---Sig_/S1QJfwUbyxzDCF4y6WxxMQm--
