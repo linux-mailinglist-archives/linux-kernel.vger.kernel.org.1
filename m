@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38392C41F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D76F72C41F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729767AbgKYOPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:15:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51317 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729109AbgKYOPm (ORCPT
+        id S1729888AbgKYOPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:15:51 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:45643 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729109AbgKYOPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:15:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606313741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Td/8Ow1h2VVzvZfHFudQxWhJpRZ2ytrBuToX3K1/lQk=;
-        b=BIdKt48HpKac8LgixvG59JN6A33mSw/Snh6jMwpCv6ZO0j659CjLsZDUFX/9LhqWOLuKo8
-        /enOqD5iZreiZQjI9b4ccF5whhyR9j04YKzaKJKiKxmMWPrLkIU6VNLECduHmm4J2bUJN1
-        YnpAGYMN3Vz9ebzSMkFEEigd6piDQEU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-ibup7d3cMViW2mgFm_Tuvg-1; Wed, 25 Nov 2020 09:15:37 -0500
-X-MC-Unique: ibup7d3cMViW2mgFm_Tuvg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F71B190A7B0;
-        Wed, 25 Nov 2020 14:15:35 +0000 (UTC)
-Received: from krava (unknown [10.40.192.200])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 42DBB1899A;
-        Wed, 25 Nov 2020 14:15:32 +0000 (UTC)
-Date:   Wed, 25 Nov 2020 15:15:31 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 13/25] perf tools: Store build id from mmap2 events
-Message-ID: <20201125141531.GE2164284@krava>
-References: <20201123230512.2097312-1-jolsa@kernel.org>
- <20201123230512.2097312-14-jolsa@kernel.org>
- <CAM9d7ciq_D2F_bPoq7S5aw+0jPZ0EokCNDadEcO2KF_rYsL8VQ@mail.gmail.com>
+        Wed, 25 Nov 2020 09:15:51 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UGWQ0Kg_1606313739;
+Received: from 30.0.173.120(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UGWQ0Kg_1606313739)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 25 Nov 2020 22:15:39 +0800
+Subject: Re: [PATCH 4/7] blk-iocost: Add a flag to indicate if need update hwi
+To:     Tejun Heo <tj@kernel.org>
+Cc:     axboe@kernel.dk, baolin.wang7@gmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1606186717.git.baolin.wang@linux.alibaba.com>
+ <beb9ab5875427431b58e1001e481b7a43e9188eb.1606186717.git.baolin.wang@linux.alibaba.com>
+ <X75KuGR1MTovojZp@mtj.duckdns.org>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+Message-ID: <d0488a26-bff3-bd92-b5c7-74131161d55e@linux.alibaba.com>
+Date:   Wed, 25 Nov 2020 22:15:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7ciq_D2F_bPoq7S5aw+0jPZ0EokCNDadEcO2KF_rYsL8VQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <X75KuGR1MTovojZp@mtj.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 09:56:31PM +0900, Namhyung Kim wrote:
-> On Tue, Nov 24, 2020 at 8:06 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > When processing mmap2 event, check on the build id
-> > misc bit: PERF_RECORD_MISC_MMAP_BUILD_ID and if it
-> > is set, store the build id in mmap's dso object.
-> >
-> > Also adding the build id data arts to struct
-> 
-> s/arts/args/ ?
 
-right, perhaps also s/arts// 
+> Hello,
+> 
+> On Tue, Nov 24, 2020 at 11:33:33AM +0800, Baolin Wang wrote:
+>> @@ -1445,7 +1447,8 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, bool pay_debt,
+>>   	 * after the above debt payment.
+>>   	 */
+>>   	ctx.vbudget = vbudget;
+>> -	current_hweight(iocg, NULL, &ctx.hw_inuse);
+>> +	if (need_update_hwi)
+>> +		current_hweight(iocg, NULL, &ctx.hw_inuse);
+> 
+> So, if you look at the implementation of current_hweight(), it's
+> 
+> 1. If nothing has changed, read out the cached values.
+> 2. If something has changed, recalculate.
 
-thanks,
-jirka
+Yes, correct.
 
 > 
-> Thanks,
-> Namhyung
-> 
-> 
-> > perf_record_mmap2 event definition.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> 
+> and the "something changed" test is single memory read (most likely L1 hot
+> at this point) and testing for equality. IOW, the change you're suggesting
+> isn't much of an optimization. Maybe the compiler can do a somewhat better
+> job of arranging the code and it's a register load than memory load but
+> given that it's already a relatively cold wait path, this is unlikely to
+> make any actual difference. And that's how current_hweight() is meant to be
+> used.
 
+What I want to avoid is the 'atomic_read(&ioc->hweight_gen)' in 
+current_hweight(), cause this is not a register load and is always a 
+memory load. But introducing a flag can be cached and more light than a 
+memory load.
+
+But after thinking more, I think we can just move the 
+"current_hweight(iocg, NULL, &ctx.hw_inuse);" to the correct place 
+without introducing new flag to optimize the code. How do you think the 
+below code?
+
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index bbe86d1..db29200 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1413,7 +1413,7 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, 
+bool pay_debt,
+
+         lockdep_assert_held(&iocg->waitq.lock);
+
+-       current_hweight(iocg, &hwa, NULL);
++       current_hweight(iocg, &hwa, &ctx.hw_inuse);
+         vbudget = now->vnow - atomic64_read(&iocg->vtime);
+
+         /* pay off debt */
+@@ -1428,6 +1428,11 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, 
+bool pay_debt,
+                 atomic64_add(vpay, &iocg->done_vtime);
+                 iocg_pay_debt(iocg, abs_vpay, now);
+                 vbudget -= vpay;
++               /*
++                * As paying off debt restores hw_inuse, it must be read 
+after
++                * the above debt payment.
++                */
++               current_hweight(iocg, NULL, &ctx.hw_inuse);
+         }
+
+         if (iocg->abs_vdebt || iocg->delay)
+@@ -1446,11 +1451,9 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, 
+bool pay_debt,
+
+         /*
+          * Wake up the ones which are due and see how much vtime we'll 
+need for
+-        * the next one. As paying off debt restores hw_inuse, it must 
+be read
+-        * after the above debt payment.
++        * the next one.
+          */
+         ctx.vbudget = vbudget;
+-       current_hweight(iocg, NULL, &ctx.hw_inuse);
+
+         __wake_up_locked_key(&iocg->waitq, TASK_NORMAL, &ctx);
+
+> 
+> So, I'm not sure this is an improvement. It increases complication without
+> actually gaining anything.
+> 
+> Thanks.
+> 
