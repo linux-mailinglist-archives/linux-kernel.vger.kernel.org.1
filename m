@@ -2,118 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9E02C3D9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5212C3DA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727661AbgKYK3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:29:04 -0500
-Received: from foss.arm.com ([217.140.110.172]:38578 "EHLO foss.arm.com"
+        id S1728477AbgKYKa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:30:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56660 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgKYK3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:29:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AE40106F;
-        Wed, 25 Nov 2020 02:29:02 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BDFA93F70D;
-        Wed, 25 Nov 2020 02:28:59 -0800 (PST)
-Date:   Wed, 25 Nov 2020 10:28:49 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, boqun.feng@gmail.com,
-        tglx@linutronix.de
-Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
- kfence: Avoid stalling...)
-Message-ID: <20201125102849.GB70906@C02TD0UTHF1T.local>
-References: <20201119184854.GY1437@paulmck-ThinkPad-P72>
- <20201119193819.GA2601289@elver.google.com>
- <20201119213512.GB1437@paulmck-ThinkPad-P72>
- <20201119225352.GA5251@willie-the-truck>
- <20201120103031.GB2328@C02TD0UTHF1T.local>
- <20201120140332.GA3120165@elver.google.com>
- <20201123193241.GA45639@C02TD0UTHF1T.local>
- <20201124140310.GA811510@elver.google.com>
- <20201124193034.GB8957@C02TD0UTHF1T.local>
- <20201125094517.GA1359135@elver.google.com>
+        id S1727982AbgKYKa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 05:30:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5C54CAC6A;
+        Wed, 25 Nov 2020 10:30:56 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 10:30:53 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <20201125103053.GL3306@suse.de>
+References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
+ <20201121194506.13464-1-aarcange@redhat.com>
+ <20201121194506.13464-2-aarcange@redhat.com>
+ <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
+ <20201124133205.GK3306@suse.de>
+ <X71zdnZd61r429aO@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20201125094517.GA1359135@elver.google.com>
+In-Reply-To: <X71zdnZd61r429aO@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 10:45:17AM +0100, Marco Elver wrote:
-> On Tue, Nov 24, 2020 at 07:30PM +0000, Mark Rutland wrote:
-
-[...]
-
-> > > I noticed there are a bunch of warnings in the log
-> > > that might be relevant (see attached).
-> > 
-> > > [   91.184432] =============================
-> > > [   91.188301] WARNING: suspicious RCU usage
-> > > [   91.192316] 5.10.0-rc4-next-20201119-00002-g51c2bf0ac853 #25 Tainted: G        W        
-> > > [   91.197536] -----------------------------
-> > > [   91.201431] kernel/trace/trace_preemptirq.c:78 RCU not watching trace_hardirqs_off()!
-> > > [   91.206546] 
-> > > [   91.206546] other info that might help us debug this:
-> > > [   91.206546] 
-> > > [   91.211790] 
-> > > [   91.211790] rcu_scheduler_active = 2, debug_locks = 0
-> > > [   91.216454] RCU used illegally from extended quiescent state!
-> > > [   91.220890] no locks held by swapper/0/0.
-> > > [   91.224712] 
-> > > [   91.224712] stack backtrace:
-> > > [   91.228794] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.10.0-rc4-next-20201119-00002-g51c2bf0ac853 #25
-> > > [   91.234877] Hardware name: linux,dummy-virt (DT)
-> > > [   91.239032] Call trace:
-> > > [   91.242587]  dump_backtrace+0x0/0x240
-> > > [   91.246500]  show_stack+0x34/0x88
-> > > [   91.250295]  dump_stack+0x140/0x1bc
-> > > [   91.254159]  lockdep_rcu_suspicious+0xe4/0xf8
-> > > [   91.258332]  trace_hardirqs_off+0x214/0x330
-> > > [   91.262462]  trace_graph_return+0x1ac/0x1d8
-> > > [   91.266564]  ftrace_return_to_handler+0xa4/0x170
-> > > [   91.270809]  return_to_handler+0x1c/0x38
-> > > [   91.274826]  default_idle_call+0x94/0x38c
-> > > [   91.278869]  do_idle+0x240/0x290
-> > > [   91.282633]  rest_init+0x1e8/0x2dc
-> > > [   91.286529]  arch_call_rest_init+0x1c/0x28
-> > > [   91.290585]  start_kernel+0x638/0x670
-> > 
-> > Hmm... I suspect that arch_cpu_idle() is being traced here, and I reckon
-> > we have to mark that and its callees as noinstr, since it doesn't seem
-> > sane to have ftrace check whether RCU is watching for every function
-> > call. Maybe Paul or Steve can correct me. ;)
+On Tue, Nov 24, 2020 at 03:56:22PM -0500, Andrea Arcangeli wrote:
+> Hello,
 > 
-> Yes, it's arch_cpu_idle().
+> On Tue, Nov 24, 2020 at 01:32:05PM +0000, Mel Gorman wrote:
+> > I would hope that is not the case because they are not meant to overlap.
+> > However, if the beginning of the pageblock was not the start of a zone
+> > then the pages would be valid but the pfn would still be outside the
+> > zone boundary. If it was reserved, the struct page is valid but not
+> > suitable for set_pfnblock_flags_mask. However, it is a concern in
+> > general because the potential is there that pages are isolated from the
+> > wrong zone.
 > 
-> > If you still have the binary lying around, can you check whether
-> > default_idle_call+0x94/0x38c is just after the call to arch_cpu_idle()?
-> > If you could dump the asm around that, along with whatever faddr2line
-> > tells you, that'd be a great help. 
+> I guess we have more than one issue to correct in that function
+> because the same BUG_ON reproduced again even with the tentative patch
+> I posted earlier.
 > 
-> I reran to be sure, with similar results. I've attached a
-> syz-symbolize'd version of the warnings.
+> So my guess is that the problematic reserved page isn't pointed by the
+> min_pfn, but it must have been pointed by the "highest" variable
+> calculated below?
+> 
+> 			if (pfn >= highest)
+> 				highest = pageblock_start_pfn(pfn);
+> 
+> When I looked at where "highest" comes from, it lacks
+> pageblock_pfn_to_page check (which was added around v5.7 to min_pfn).
+> 
+> Is that the real bug, which may be fixed by something like this? (untested)
+> 
 
-Thanks for confirming, and for the symbolized report.
+It's plausible as it is a potential source of leaking but as you note
+in another mail, it's surprising to me that valid struct pages, even if
+within memory holes and reserved would have broken node/zone information
+in the page flags.
 
-I'll see about getting this fixed ASAP.
-
-Thanks,
-Mark.
+-- 
+Mel Gorman
+SUSE Labs
