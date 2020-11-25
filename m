@@ -2,154 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A2A2C497F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BBF2C4990
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731318AbgKYVEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:04:32 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65406 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728622AbgKYVEc (ORCPT
+        id S1730708AbgKYVIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:08:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35550 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729981AbgKYVIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:04:32 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0APL2TNo003301;
-        Wed, 25 Nov 2020 16:04:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=sy/ZQzr8x3n93eziZ9EheOK1LOAyh8IWJnZiQJqqAs8=;
- b=CBHDZYZ3/EDiMWKoW6nta7993XgKZtfXMJ3hJLXXmj8aEPWTpQ7C+1zD2FKaSGfo/ZJc
- Vha7knirueFs4QLFfYaI2BAsbMn8vhQ5e3kRXNKb8tKlW3D97dRM6Bt2mLuArdNXVXAu
- MSB0AAzIvBe1fAPJg4R9Ya52Nl4k4NA1sCu8IP/fIa0mY+B4Cp5x/dPjx+T6FjuLPtiq
- SsU1KYonswiD+ksPgZWMyTVD/u0GgkZfGvMNKNaBDX0PsnZB+rVWLXPUo/StgWlySAll
- 3CKJuDZmiXdof/XNQ7tluPxyK81Hi7SCVQCNXKbcmiltjh5mkrIXqBD5IcGrAxevhp4W pA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 351ry9u7xw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Nov 2020 16:04:24 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0APL3W0i009246;
-        Wed, 25 Nov 2020 16:04:23 -0500
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 351ry9u7x7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Nov 2020 16:04:23 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0APL3NSc023891;
-        Wed, 25 Nov 2020 21:04:22 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 351pca077n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Nov 2020 21:04:21 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0APL4JZN9175800
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Nov 2020 21:04:19 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9344C42047;
-        Wed, 25 Nov 2020 21:04:19 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AF7264204B;
-        Wed, 25 Nov 2020 21:04:17 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.183.229])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 25 Nov 2020 21:04:17 +0000 (GMT)
-Date:   Wed, 25 Nov 2020 23:04:14 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-Message-ID: <20201125210414.GO123287@linux.ibm.com>
-References: <X73s8fxDKPRD6wET@redhat.com>
- <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
- <X76iatgBErQH5El4@redhat.com>
- <a4cc62ba-8066-3e9c-cead-98cd74d313dd@redhat.com>
+        Wed, 25 Nov 2020 16:08:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606338510;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=psNc8LzBcxw8kUam3kKQdVItytHGI1GRkmJuwrDi98U=;
+        b=YLLaq3eiXVjVNwf01LpZZPP2rE7VpEO9sQACaCRRk/aBt+a/crb08JOv1HpoHWoyIkZlZc
+        9ynKSYX88JdYpVw/W2acQ00RYRrB0Q65DzK79zrE3GlQsrHz3JRQ9lwSttMq3rKN3HcYiQ
+        HpD2nbKV32QgaKeK+H1A2B+Xo99npL0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-prrUQzLKOIW5f4c6EILLSg-1; Wed, 25 Nov 2020 16:08:28 -0500
+X-MC-Unique: prrUQzLKOIW5f4c6EILLSg-1
+Received: by mail-wr1-f70.google.com with SMTP id h13so1222725wrr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:08:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=psNc8LzBcxw8kUam3kKQdVItytHGI1GRkmJuwrDi98U=;
+        b=l81zN5rFOFP8oMPCDS0ho0XmOJ77NzRQltMqU7XoNunGfMviYFoSlgiMAMYUxDexks
+         oaBx2WKTqkzpHPar7922+6e6uMGV3xGdprEIHnuZz9eDTSB114i0ZPEOSFRA3upmNQb6
+         4v6Fk1i3GQtebxXRTEpqaN9LgEuyEeYSl45XDtolrztGkIG6YalpN7cNmyBDPM++DMB6
+         12/vF5aBnqAnEUPybNhzD0dM8Id1CKRa/j/IG+km8fEvpv8wH4EAA706DoH5Da4r9+fr
+         VQ2tSQdPvsfvVHpPLvOikZDIFF3DAoJ1ynb+F2qiRYBWyGnHe+S2q7gYCKFGV7VsXxP+
+         nHlw==
+X-Gm-Message-State: AOAM530ZYp5gGxQ0yj9W9qTJZsxnEgjDpz80zc0ZZtLIC+QVs+lk1zi6
+        nVbXPj2EfR1gv3GjTyQUzWZOk7X3Bj1OJ8m9PpRYBuJBb1BDU/50fAvyszIYmRnOEN0LBvQ1QSx
+        JQCplBVlCg1i3zXxaxFRWk2nX
+X-Received: by 2002:a05:600c:4153:: with SMTP id h19mr6081619wmm.8.1606338507767;
+        Wed, 25 Nov 2020 13:08:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyJJV4yT5PMAKTeWWZqlzp3GeCHFDP+pqbxlJx5ZIsbRlvWhLEYqihrea4dY+OqIZkl+1a5Ew==
+X-Received: by 2002:a05:600c:4153:: with SMTP id h19mr6081603wmm.8.1606338507561;
+        Wed, 25 Nov 2020 13:08:27 -0800 (PST)
+Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
+        by smtp.gmail.com with ESMTPSA id h2sm6215789wrv.76.2020.11.25.13.08.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 13:08:26 -0800 (PST)
+Date:   Wed, 25 Nov 2020 16:08:23 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Tomas Winkler <tomas.winkler@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        linux-kernel@vger.kernel.org, Wang Yu <yu1.wang@intel.com>,
+        Liu Shuo <shuo.a.liu@intel.com>,
+        virtio-dev@lists.oasis-open.org
+Subject: Re: [char-misc-next 13/13] mei: virtio: virtualization frontend
+ driver
+Message-ID: <20201125160326-mutt-send-email-mst@kernel.org>
+References: <20200818115147.2567012-1-tomas.winkler@intel.com>
+ <20200818115147.2567012-14-tomas.winkler@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a4cc62ba-8066-3e9c-cead-98cd74d313dd@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-25_12:2020-11-25,2020-11-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 malwarescore=0 adultscore=0
- impostorscore=0 mlxlogscore=999 priorityscore=1501 bulkscore=0
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011250127
+In-Reply-To: <20200818115147.2567012-14-tomas.winkler@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 08:27:21PM +0100, David Hildenbrand wrote:
-> On 25.11.20 19:28, Andrea Arcangeli wrote:
-> > On Wed, Nov 25, 2020 at 07:45:30AM +0100, David Hildenbrand wrote:
-> >
-> > What would need to call pfn_zone in between first and second stage?
-> > 
-> > If something calls pfn_zone in between first and second stage isn't it
-> > a feature if it crashes the kernel at boot?
-> > 
-> > Note: I suggested 0xff kernel crashing "until the second stage comes
-> > around" during meminit at boot, not permanently.
-> 
-> Yes, then it makes sense - if we're able to come up with a way to
-> initialize any memmap we might have - including actual memory holes that
-> have a memmap.
-> 
-> > 
-> > 		/*
-> > 		 * Use a fake node/zone (0) for now. Some of these pages
-> > 		 * (in memblock.reserved but not in memblock.memory) will
-> > 		 * get re-initialized via reserve_bootmem_region() later.
-> > 		 */
-> > 
-> > Specifically I relied on the comment "get re-initialized via
-> > reserve_bootmem_region() later".
-> 
-> Yes, but there is a "Some of these" :)
-> 
-> Boot a VM with "-M 4000" and observe the memmap in the last section -
-> they won't get initialized a second time.
-> 
-> > 
-> > I assumed the second stage overwrites the 0,0 to the real zoneid/nid
-> > value, which is clearly not happening, hence it'd be preferable to get
-> > a crash at boot reliably.
-> > 
-> > Now I have CONFIG_DEFERRED_STRUCT_PAGE_INIT=n so the second stage
-> > calling init_reserved_page(start_pfn) won't do much with
-> > CONFIG_DEFERRED_STRUCT_PAGE_INIT=n but I already tried to enable
-> > CONFIG_DEFERRED_STRUCT_PAGE_INIT=y yesterday and it didn't help, the
-> > page->flags were still wrong for reserved pages in the "Unknown E820
-> > type" region.
+On Tue, Aug 18, 2020 at 02:51:47PM +0300, Tomas Winkler wrote:
+> +#ifndef VIRTIO_ID_MEI
+> +#define VIRTIO_ID_MEI 0xFFFE /* virtio mei */
+> +#endif
 
-I think the very root cause is how e820__memblock_setup() registers
-memory with memblock:
+Just noticed now that this driver landed upstream.  Can I ask that you
+guys please register IDs with the virtio TC and not just pick a number
+at random? In particular this is way outside allowed range.
 
-		if (entry->type == E820_TYPE_SOFT_RESERVED)
-			memblock_reserve(entry->addr, entry->size);
+IDs should also be listed in include/uapi/linux/virtio_ids.h
 
-		if (entry->type != E820_TYPE_RAM && entry->type != E820_TYPE_RESERVED_KERN)
-			continue;
+If people just pick random numbers like this collistions are unavoidable.
 
-		memblock_add(entry->addr, entry->size);
+List of IDs is part of virtio spec, chapter "Device Types".
 
-From that point the system has inconsistent view of RAM in both
-memblock.memory and memblock.reserved and, which is then translated to
-memmap etc.
+Please do this change now before this goes out to production!
 
-Unfortunately, simply adding all RAM to memblock is not possible as
-there are systems that for them "the addresses listed in the reserved
-range must never be accessed, or (as we discovered) even be reachable by
-an active page table entry" [1].
-
-[1] https://lore.kernel.org/lkml/20200528151510.GA6154@raspberrypi/
+Thanks!
 
 -- 
-Sincerely yours,
-Mike.
+MST
+
