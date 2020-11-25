@@ -2,105 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828D32C39C6
+	by mail.lfdr.de (Postfix) with ESMTP id F0CD82C39C7
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 08:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727671AbgKYHKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 02:10:50 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:47919 "EHLO pegase1.c-s.fr"
+        id S1727827AbgKYHKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 02:10:51 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:45345 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726827AbgKYHKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 02:10:49 -0500
+        id S1726463AbgKYHKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 02:10:50 -0500
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CgsVY5L4Kz9tyTR;
-        Wed, 25 Nov 2020 08:10:45 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4CgsVZ5rqWz9tyTS;
+        Wed, 25 Nov 2020 08:10:46 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 2D5r1qhoXvQi; Wed, 25 Nov 2020 08:10:45 +0100 (CET)
+        with ESMTP id fTd3LyOUb1yf; Wed, 25 Nov 2020 08:10:46 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CgsVY4SmQz9tyTJ;
-        Wed, 25 Nov 2020 08:10:45 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 82EB18B7C2;
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CgsVZ493Sz9tyTJ;
         Wed, 25 Nov 2020 08:10:46 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 799208B7C2;
+        Wed, 25 Nov 2020 08:10:47 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Mxo7yPnDQRmT; Wed, 25 Nov 2020 08:10:46 +0100 (CET)
+        with ESMTP id AMr85lhAaESG; Wed, 25 Nov 2020 08:10:47 +0100 (CET)
 Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 374D08B7B7;
-        Wed, 25 Nov 2020 08:10:46 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2E3E88B7B7;
+        Wed, 25 Nov 2020 08:10:47 +0100 (CET)
 Received: by localhost.localdomain (Postfix, from userid 0)
-        id 0AAD1668BA; Wed, 25 Nov 2020 07:10:46 +0000 (UTC)
-Message-Id: <da51f7ec632825a4ce43290a904aad61648408c0.1606285013.git.christophe.leroy@csgroup.eu>
+        id 0FAE9668BA; Wed, 25 Nov 2020 07:10:47 +0000 (UTC)
+Message-Id: <0a0bab7fadd89aa829e33420fbc10d60c59040a7.1606285014.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <da51f7ec632825a4ce43290a904aad61648408c0.1606285013.git.christophe.leroy@csgroup.eu>
+References: <da51f7ec632825a4ce43290a904aad61648408c0.1606285013.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 1/8] powerpc/32s: Always map kernel text and rodata with
- BATs
+Subject: [PATCH v1 2/8] powerpc/32s: Don't hash_preload() kernel text
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 25 Nov 2020 07:10:46 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 07:10:47 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 2b279c0348af ("powerpc/32s: Allow mapping with BATs with
-DEBUG_PAGEALLOC"), there is no real situation where mapping without
-BATs is required.
+We now always map kernel text with BATs. Neither need to preload
+hash with kernel text addresses nor ensure they are never evicted.
 
-In order to simplify memory handling, always map kernel text
-and rodata with BATs even when "nobats" kernel parameter is set.
-
-Also fix the 603 TLB miss exceptions that don't require anymore
-kernel page table if DEBUG_PAGEALLOC.
+This is more or less a revert of commit ee4f2ea48674 ("[POWERPC] Fix
+32-bit mm operations when not using BATs")
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/kernel/head_book3s_32.S | 4 ++--
- arch/powerpc/mm/book3s32/mmu.c       | 8 +++-----
- 2 files changed, 5 insertions(+), 7 deletions(-)
+ arch/powerpc/mm/book3s32/hash_low.S | 18 +-----------------
+ arch/powerpc/mm/book3s32/mmu.c      |  2 +-
+ arch/powerpc/mm/mmu_decl.h          |  2 --
+ arch/powerpc/mm/pgtable_32.c        |  4 ----
+ 4 files changed, 2 insertions(+), 24 deletions(-)
 
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index a0dda2a1f2df..27767f3e7ec1 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -453,13 +453,13 @@ InstructionTLBMiss:
-  */
- 	/* Get PTE (linux-style) and check access */
- 	mfspr	r3,SPRN_IMISS
--#if defined(CONFIG_MODULES) || defined(CONFIG_DEBUG_PAGEALLOC)
-+#ifdef CONFIG_MODULES
- 	lis	r1, TASK_SIZE@h		/* check if kernel address */
- 	cmplw	0,r1,r3
- #endif
- 	mfspr	r2, SPRN_SPRG_PGDIR
- 	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
--#if defined(CONFIG_MODULES) || defined(CONFIG_DEBUG_PAGEALLOC)
-+#ifdef CONFIG_MODULES
- 	bgt-	112f
- 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
- 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+diff --git a/arch/powerpc/mm/book3s32/hash_low.S b/arch/powerpc/mm/book3s32/hash_low.S
+index b2c912e517b9..48415c857d80 100644
+--- a/arch/powerpc/mm/book3s32/hash_low.S
++++ b/arch/powerpc/mm/book3s32/hash_low.S
+@@ -411,30 +411,14 @@ END_FTR_SECTION_IFCLR(CPU_FTR_NEED_COHERENT)
+ 	 * and we know there is a definite (although small) speed
+ 	 * advantage to putting the PTE in the primary PTEG, we always
+ 	 * put the PTE in the primary PTEG.
+-	 *
+-	 * In addition, we skip any slot that is mapping kernel text in
+-	 * order to avoid a deadlock when not using BAT mappings if
+-	 * trying to hash in the kernel hash code itself after it has
+-	 * already taken the hash table lock. This works in conjunction
+-	 * with pre-faulting of the kernel text.
+-	 *
+-	 * If the hash table bucket is full of kernel text entries, we'll
+-	 * lockup here but that shouldn't happen
+ 	 */
+ 
+-1:	lis	r4, (next_slot - PAGE_OFFSET)@ha	/* get next evict slot */
++	lis	r4, (next_slot - PAGE_OFFSET)@ha	/* get next evict slot */
+ 	lwz	r6, (next_slot - PAGE_OFFSET)@l(r4)
+ 	addi	r6,r6,HPTE_SIZE			/* search for candidate */
+ 	andi.	r6,r6,7*HPTE_SIZE
+ 	stw	r6,next_slot@l(r4)
+ 	add	r4,r3,r6
+-	LDPTE	r0,HPTE_SIZE/2(r4)		/* get PTE second word */
+-	clrrwi	r0,r0,12
+-	lis	r6,etext@h
+-	ori	r6,r6,etext@l			/* get etext */
+-	tophys(r6,r6)
+-	cmpl	cr0,r0,r6			/* compare and try again */
+-	blt	1b
+ 
+ #ifndef CONFIG_SMP
+ 	/* Store PTE in PTEG */
 diff --git a/arch/powerpc/mm/book3s32/mmu.c b/arch/powerpc/mm/book3s32/mmu.c
-index a59e7ec98180..5c60dcade90a 100644
+index 5c60dcade90a..23f60e97196e 100644
 --- a/arch/powerpc/mm/book3s32/mmu.c
 +++ b/arch/powerpc/mm/book3s32/mmu.c
-@@ -157,11 +157,9 @@ unsigned long __init mmu_mapin_ram(unsigned long base, unsigned long top)
- 	unsigned long done;
- 	unsigned long border = (unsigned long)__init_begin - PAGE_OFFSET;
+@@ -302,7 +302,7 @@ void __init setbat(int index, unsigned long virt, phys_addr_t phys,
+ /*
+  * Preload a translation in the hash table
+  */
+-void hash_preload(struct mm_struct *mm, unsigned long ea)
++static void hash_preload(struct mm_struct *mm, unsigned long ea)
+ {
+ 	pmd_t *pmd;
  
--	if (__map_without_bats) {
--		pr_debug("RAM mapped without BATs\n");
--		return base;
--	}
--	if (debug_pagealloc_enabled()) {
-+
-+	if (debug_pagealloc_enabled() || __map_without_bats) {
-+		pr_debug_once("Read-Write memory mapped without BATs\n");
- 		if (base >= border)
- 			return base;
- 		if (top >= border)
+diff --git a/arch/powerpc/mm/mmu_decl.h b/arch/powerpc/mm/mmu_decl.h
+index 1b6d39e9baed..0ad6d476d01d 100644
+--- a/arch/powerpc/mm/mmu_decl.h
++++ b/arch/powerpc/mm/mmu_decl.h
+@@ -91,8 +91,6 @@ void print_system_hash_info(void);
+ 
+ #ifdef CONFIG_PPC32
+ 
+-void hash_preload(struct mm_struct *mm, unsigned long ea);
+-
+ extern void mapin_ram(void);
+ extern void setbat(int index, unsigned long virt, phys_addr_t phys,
+ 		   unsigned int size, pgprot_t prot);
+diff --git a/arch/powerpc/mm/pgtable_32.c b/arch/powerpc/mm/pgtable_32.c
+index 079159e97bca..6e0083e7f008 100644
+--- a/arch/powerpc/mm/pgtable_32.c
++++ b/arch/powerpc/mm/pgtable_32.c
+@@ -112,10 +112,6 @@ static void __init __mapin_ram_chunk(unsigned long offset, unsigned long top)
+ 		ktext = ((char *)v >= _stext && (char *)v < etext) ||
+ 			((char *)v >= _sinittext && (char *)v < _einittext);
+ 		map_kernel_page(v, p, ktext ? PAGE_KERNEL_TEXT : PAGE_KERNEL);
+-#ifdef CONFIG_PPC_BOOK3S_32
+-		if (ktext)
+-			hash_preload(&init_mm, v);
+-#endif
+ 		v += PAGE_SIZE;
+ 		p += PAGE_SIZE;
+ 	}
 -- 
 2.25.0
 
