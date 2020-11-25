@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B51F2C3D9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9E02C3D9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgKYKZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728560AbgKYKZX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:25:23 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC366C0613D4;
-        Wed, 25 Nov 2020 02:25:23 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id 81so2087474pgf.0;
-        Wed, 25 Nov 2020 02:25:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l8KWwZXjo+ebfysMFihw4Nq0NqQCdpcD4ow0OUA1KW4=;
-        b=DpGjTGcbKs/0CQJBWrroVcD6FjXCf2LxZJTLiE/33p3a1xJtylQsUi/ijQKyYoSMyR
-         CX48GAFaeIUTvp+IJUMMCyiryasym19bIX8w4Q2pkkTLCAA3ej2YLz/PVdHZ4t8TSLSL
-         fXTxX4V0rnqDe0fqEDn9+2oCcCIkk0ZlhGSgxLgCO+vVWAVke8yRmsLAWgY1ZqYaTTGL
-         jV9lOIoj7DBROZZU2My468qUuPfJkCmtHS9yAv+CzuWVtlV66JLUDEnBwclu+63sRldb
-         7k7yvllj1Ie7NAtGZScSoP3eomQOAOj6h9y9LRrLe3d2BU9l5UQAxLyTHjO72m2UFE+H
-         YYfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l8KWwZXjo+ebfysMFihw4Nq0NqQCdpcD4ow0OUA1KW4=;
-        b=K+ICHjZ3liWXIwCxFfQPaaTUG2x1Pi78+1hU8iHi8O0c205GzKnkEfcrwODkQ8PcFg
-         DqzywWxA6ISNwFbf2PlQ3jsqa6npPbpn7PloCVF6736KbT6oF0eVo1vlBfMZRCuIeU/W
-         PMrtmjTHwsxjH9NZx2rGc8RM26ZGI6IHrvEWAhUOpc6KfgwqOj1B6kg56ydYqroqF6/4
-         UtnOwXkZYq6Cwv2lki0wHcPxterCqkdiLv6OsF+OCllvB7fRtM6wMC6bH5dNW9kCyHTh
-         dRmbK36QMwTqRUpQGrO4tDiu28e/iu+eStgAIb47JCrLvuS7UK0kjjJF2hFeAcb1abmd
-         1Hxg==
-X-Gm-Message-State: AOAM533fu45svd9LS/NERui6rdf4D1fdj82Fx+R/dzu1fP5IT3oRyZiF
-        v3iOd8mbmWMGD2zBpzkLmw4pIlIf/936OmMFOQg=
-X-Google-Smtp-Source: ABdhPJztDYKFeiNJoCZRoJswecvAifKS4CNRAYgSUYCvFDnZC10zVxlGuKWwFPpkps/QTlATHUXrZ2BwVgZlAtQ9LZI=
-X-Received: by 2002:a17:90a:d90a:: with SMTP id c10mr3350899pjv.129.1606299923331;
- Wed, 25 Nov 2020 02:25:23 -0800 (PST)
+        id S1727661AbgKYK3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:29:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:38578 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725838AbgKYK3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 05:29:03 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AE40106F;
+        Wed, 25 Nov 2020 02:29:02 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BDFA93F70D;
+        Wed, 25 Nov 2020 02:28:59 -0800 (PST)
+Date:   Wed, 25 Nov 2020 10:28:49 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, boqun.feng@gmail.com,
+        tglx@linutronix.de
+Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
+ kfence: Avoid stalling...)
+Message-ID: <20201125102849.GB70906@C02TD0UTHF1T.local>
+References: <20201119184854.GY1437@paulmck-ThinkPad-P72>
+ <20201119193819.GA2601289@elver.google.com>
+ <20201119213512.GB1437@paulmck-ThinkPad-P72>
+ <20201119225352.GA5251@willie-the-truck>
+ <20201120103031.GB2328@C02TD0UTHF1T.local>
+ <20201120140332.GA3120165@elver.google.com>
+ <20201123193241.GA45639@C02TD0UTHF1T.local>
+ <20201124140310.GA811510@elver.google.com>
+ <20201124193034.GB8957@C02TD0UTHF1T.local>
+ <20201125094517.GA1359135@elver.google.com>
 MIME-Version: 1.0
-References: <20201124170744.112180-1-wei.liu@kernel.org> <20201124170744.112180-17-wei.liu@kernel.org>
-In-Reply-To: <20201124170744.112180-17-wei.liu@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 25 Nov 2020 12:26:12 +0200
-Message-ID: <CAHp75Vew+yjUkcfSx33KjhPLriH6wrYWixAtn9mASRFqe4+c+Q@mail.gmail.com>
-Subject: Re: [PATCH v3 16/17] x86/ioapic: export a few functions and data
- structures via io_apic.h
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125094517.GA1359135@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 1:46 AM Wei Liu <wei.liu@kernel.org> wrote:
->
-> We are about to implement an irqchip for IO-APIC when Linux runs as root
-> on Microsoft Hypervisor. At the same time we would like to reuse
-> existing code as much as possible.
->
-> Move mp_chip_data to io_apic.h and make a few helper functions
-> non-static.
+On Wed, Nov 25, 2020 at 10:45:17AM +0100, Marco Elver wrote:
+> On Tue, Nov 24, 2020 at 07:30PM +0000, Mark Rutland wrote:
 
-> +struct mp_chip_data {
-> +       struct list_head irq_2_pin;
-> +       struct IO_APIC_route_entry entry;
-> +       int trigger;
-> +       int polarity;
-> +       u32 count;
-> +       bool isa_irq;
-> +};
+[...]
 
-Since I see only this patch I am puzzled why you need to have this in
-the header?
-Maybe a couple of words in the commit message to elaborate?
+> > > I noticed there are a bunch of warnings in the log
+> > > that might be relevant (see attached).
+> > 
+> > > [   91.184432] =============================
+> > > [   91.188301] WARNING: suspicious RCU usage
+> > > [   91.192316] 5.10.0-rc4-next-20201119-00002-g51c2bf0ac853 #25 Tainted: G        W        
+> > > [   91.197536] -----------------------------
+> > > [   91.201431] kernel/trace/trace_preemptirq.c:78 RCU not watching trace_hardirqs_off()!
+> > > [   91.206546] 
+> > > [   91.206546] other info that might help us debug this:
+> > > [   91.206546] 
+> > > [   91.211790] 
+> > > [   91.211790] rcu_scheduler_active = 2, debug_locks = 0
+> > > [   91.216454] RCU used illegally from extended quiescent state!
+> > > [   91.220890] no locks held by swapper/0/0.
+> > > [   91.224712] 
+> > > [   91.224712] stack backtrace:
+> > > [   91.228794] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.10.0-rc4-next-20201119-00002-g51c2bf0ac853 #25
+> > > [   91.234877] Hardware name: linux,dummy-virt (DT)
+> > > [   91.239032] Call trace:
+> > > [   91.242587]  dump_backtrace+0x0/0x240
+> > > [   91.246500]  show_stack+0x34/0x88
+> > > [   91.250295]  dump_stack+0x140/0x1bc
+> > > [   91.254159]  lockdep_rcu_suspicious+0xe4/0xf8
+> > > [   91.258332]  trace_hardirqs_off+0x214/0x330
+> > > [   91.262462]  trace_graph_return+0x1ac/0x1d8
+> > > [   91.266564]  ftrace_return_to_handler+0xa4/0x170
+> > > [   91.270809]  return_to_handler+0x1c/0x38
+> > > [   91.274826]  default_idle_call+0x94/0x38c
+> > > [   91.278869]  do_idle+0x240/0x290
+> > > [   91.282633]  rest_init+0x1e8/0x2dc
+> > > [   91.286529]  arch_call_rest_init+0x1c/0x28
+> > > [   91.290585]  start_kernel+0x638/0x670
+> > 
+> > Hmm... I suspect that arch_cpu_idle() is being traced here, and I reckon
+> > we have to mark that and its callees as noinstr, since it doesn't seem
+> > sane to have ftrace check whether RCU is watching for every function
+> > call. Maybe Paul or Steve can correct me. ;)
+> 
+> Yes, it's arch_cpu_idle().
+> 
+> > If you still have the binary lying around, can you check whether
+> > default_idle_call+0x94/0x38c is just after the call to arch_cpu_idle()?
+> > If you could dump the asm around that, along with whatever faddr2line
+> > tells you, that'd be a great help. 
+> 
+> I reran to be sure, with similar results. I've attached a
+> syz-symbolize'd version of the warnings.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks for confirming, and for the symbolized report.
+
+I'll see about getting this fixed ASAP.
+
+Thanks,
+Mark.
