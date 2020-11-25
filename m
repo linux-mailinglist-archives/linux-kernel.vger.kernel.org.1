@@ -2,100 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB8F2C4527
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F01792C452E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:29:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731897AbgKYQ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:27:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730560AbgKYQ1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:27:33 -0500
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B54312083E;
-        Wed, 25 Nov 2020 16:27:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606321652;
-        bh=4guIsYJBgPRIiLG0nUPKOsb5v+5v6jxyqDmQ3XzlsVc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qJWrozM0HOM7o+cMlJ+yVBzByAtoJL+roDOJZnRLqh8HcLMP5YELlNr/2nN0o3uhw
-         N77RY+w8wAA7RBLJqJ+smz+9TP/WhQQJcYebo/MhJnINKyTV67VieRQdSj/Rtp+g8V
-         HLEWfJvzXE+Hghem18pj3DE9CE3o3rh75blxEytU=
-Date:   Thu, 26 Nov 2020 01:27:26 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/insn: Fix vector instructions decoding on big
- endian
-Message-Id: <20201126012726.38f23d18069ec54792fc6276@kernel.org>
-In-Reply-To: <your-ad-here.call-01606224790-ext-4442@work.hours>
-References: <cover.thread-1e2854.your-ad-here.call-01605220128-ext-6070@work.hours>
-        <patch.git-a153abbe9170.your-ad-here.call-01605283379-ext-7358@work.hours>
-        <20201113173052.vdy72pytmv6ztnbj@treble>
-        <your-ad-here.call-01606224790-ext-4442@work.hours>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1731902AbgKYQ2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:28:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731054AbgKYQ2o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:28:44 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9032FC061A51
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 08:28:44 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id o25so3448402oie.5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 08:28:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dRACjaFJh4AZpkepxixl78ErKCZI3elRJ+hcGP1uvRc=;
+        b=K4nmwFzet4CmWQbz4zwRTZ6CI5hxzbxZ25gbBnhWnCJH8Q8rKXsL79Ql5rlCpu29Lr
+         bPggFh1VtIOTIpQaTQqFAtXfwAgUPiNMU07nzL7WEAwSqk0xgspIBThT1z03Zvfxcs3b
+         aqQEsY9KeNryZDXQ07y5HihJ9KhEL6DoeL6A8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dRACjaFJh4AZpkepxixl78ErKCZI3elRJ+hcGP1uvRc=;
+        b=RdgBnVmm8iRTCN+aLQ6FGggzK6e7hvfv7m/z0wD+HMW1McGXiFotTxzH9EGPy3Ly6w
+         2Bqjeet2AqDTZDPq4kx1xbgcmqOmQ4sOHuwpWkm+2TVjKb54nE8YIxt7aloJ3O7z+7Qk
+         oZitrjKY4SYY5bIrX4rmWXugsfL5m9Vn4rQ79BUjrWITuI+oWdiWeeQCDxqhP1/itfV0
+         sgqHL34qUVMpR1+y6nE9sxf7831IlE1hhmoXAsX1BGnH1WT7w/SjGNhXiAL4wvTsdPqI
+         Yz7RkX1jK42aOKuX7bV7smMLBYoUT+lNDShFSU8Iikj5OkMJo2rXcA9HUIYRyhFewYYR
+         +kNA==
+X-Gm-Message-State: AOAM531JNCXRG+TYHtXgD14ivMvUdNzDWdlXuzflLzgC9zIkKfUNhUPP
+        qwZ30fGfQ/gb+GSmBfa3w3POBE+2drRF5ZoY3JLqgA==
+X-Google-Smtp-Source: ABdhPJxFp4HuSi30fm1PHbzKdfrYvQxr8zUWpRKb+OichQq/lnbRaStrtSKPxiYo68cqfG34JDlvPm/6dqfZjcK5iGw=
+X-Received: by 2002:aca:7506:: with SMTP id q6mr2814868oic.128.1606321723817;
+ Wed, 25 Nov 2020 08:28:43 -0800 (PST)
+MIME-Version: 1.0
+References: <20201125162532.1299794-1-daniel.vetter@ffwll.ch> <20201125162532.1299794-5-daniel.vetter@ffwll.ch>
+In-Reply-To: <20201125162532.1299794-5-daniel.vetter@ffwll.ch>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 25 Nov 2020 17:28:32 +0100
+Message-ID: <CAKMK7uGXfqaPUtnX=VgA3tFn3S+Gt9GV+kPguakZ6FF_n8LKuA@mail.gmail.com>
+Subject: Re: [PATCH] drm/ttm: don't set page->mapping
+To:     DRI Development <dri-devel@lists.freedesktop.org>
+Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Linux MM <linux-mm@kvack.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Brian Paul <brianp@vmware.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 14:33:10 +0100
-Vasily Gorbik <gor@linux.ibm.com> wrote:
+On Wed, Nov 25, 2020 at 5:25 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+>
+> Random observation while trying to review Christian's patch series to
+> stop looking at struct page for dma-buf imports.
+>
+> This was originally added in
+>
+> commit 58aa6622d32af7d2c08d45085f44c54554a16ed7
+> Author: Thomas Hellstrom <thellstrom@vmware.com>
+> Date:   Fri Jan 3 11:47:23 2014 +0100
+>
+>     drm/ttm: Correctly set page mapping and -index members
+>
+>     Needed for some vm operations; most notably unmap_mapping_range() with
+>     even_cows = 0.
+>
+>     Signed-off-by: Thomas Hellstrom <thellstrom@vmware.com>
+>     Reviewed-by: Brian Paul <brianp@vmware.com>
+>
+> but we do not have a single caller of unmap_mapping_range with
+> even_cows == 0. And all the gem drivers don't do this, so another
+> small thing we could standardize between drm and ttm drivers.
+>
+> Plus I don't really see a need for unamp_mapping_range where we don't
+> want to indiscriminately shoot down all ptes.
+>
+> Cc: Thomas Hellstrom <thellstrom@vmware.com>
+> Cc: Brian Paul <brianp@vmware.com>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Huang Rui <ray.huang@amd.com>
 
-> On Fri, Nov 13, 2020 at 11:30:52AM -0600, Josh Poimboeuf wrote:
-> > On Fri, Nov 13, 2020 at 05:09:54PM +0100, Vasily Gorbik wrote:
-> > > Running instruction decoder posttest on s390 with allyesconfig shows
-> > > errors. Instructions used in couple of kernel objects could not be
-> > > correctly decoded on big endian system.
-> > > 
-> > > insn_decoder_test: warning: objdump says 6 bytes, but insn_get_length() says 5
-> > > insn_decoder_test: warning: Found an x86 instruction decoder bug, please report this.
-> > > insn_decoder_test: warning: ffffffff831eb4e1:    62 d1 fd 48 7f 04 24    vmovdqa64 %zmm0,(%r12)
-> > > insn_decoder_test: warning: objdump says 7 bytes, but insn_get_length() says 6
-> > > insn_decoder_test: warning: Found an x86 instruction decoder bug, please report this.
-> > > insn_decoder_test: warning: ffffffff831eb4e8:    62 51 fd 48 7f 44 24 01         vmovdqa64 %zmm8,0x40(%r12)
-> > > insn_decoder_test: warning: objdump says 8 bytes, but insn_get_length() says 6
-> > > 
-> > > This is because in few places instruction field bytes are set directly
-> > > with further usage of "value". To address that introduce and use
-> > > insn_set_byte() helper, which correctly updates "value" on big endian
-> > > systems.
-> > > 
-> > > Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-> > > ---
-> > >  Please let me know if this patch is good as it is or I should squash it
-> > >  into the patch 2 of my patch series and resend it again.
-> > 
-> > It all looks good to me, thanks!
-> > 
-> > Masami, does this patch look good, and also patches 1-2 of the series?
-> > (I think you previously ACKed patch 2).
-> > 
-> 
-> Friendly ping...
+Apologies again, this shouldn't have been included. But at least I
+have an idea now why this patch somehow was included in the git
+send-email. Lovely interface :-/
+-Daniel
 
-Sorry for replying late.
-Yes, I think this series and the last patch look good to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-for this series.
-
-Thank you!
+> ---
+>  drivers/gpu/drm/ttm/ttm_tt.c | 12 ------------
+>  1 file changed, 12 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
+> index da9eeffe0c6d..5b2eb6d58bb7 100644
+> --- a/drivers/gpu/drm/ttm/ttm_tt.c
+> +++ b/drivers/gpu/drm/ttm/ttm_tt.c
+> @@ -284,17 +284,6 @@ int ttm_tt_swapout(struct ttm_bo_device *bdev, struct ttm_tt *ttm)
+>         return ret;
+>  }
+>
+> -static void ttm_tt_add_mapping(struct ttm_bo_device *bdev, struct ttm_tt *ttm)
+> -{
+> -       pgoff_t i;
+> -
+> -       if (ttm->page_flags & TTM_PAGE_FLAG_SG)
+> -               return;
+> -
+> -       for (i = 0; i < ttm->num_pages; ++i)
+> -               ttm->pages[i]->mapping = bdev->dev_mapping;
+> -}
+> -
+>  int ttm_tt_populate(struct ttm_bo_device *bdev,
+>                     struct ttm_tt *ttm, struct ttm_operation_ctx *ctx)
+>  {
+> @@ -313,7 +302,6 @@ int ttm_tt_populate(struct ttm_bo_device *bdev,
+>         if (ret)
+>                 return ret;
+>
+> -       ttm_tt_add_mapping(bdev, ttm);
+>         ttm->page_flags |= TTM_PAGE_FLAG_PRIV_POPULATED;
+>         if (unlikely(ttm->page_flags & TTM_PAGE_FLAG_SWAPPED)) {
+>                 ret = ttm_tt_swapin(ttm);
+> --
+> 2.29.2
+>
 
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
