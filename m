@@ -2,184 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118372C40C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467632C40D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgKYNBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:01:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729293AbgKYNBE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:01:04 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F4FC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 05:01:04 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a186so1937853wme.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 05:01:04 -0800 (PST)
+        id S1729086AbgKYNCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:02:43 -0500
+Received: from mail-co1nam11on2084.outbound.protection.outlook.com ([40.107.220.84]:47841
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725875AbgKYNCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 08:02:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OIae5iSPcNst1y+4H+QwqDD4V7wW7juKvJHWLCyp7/I4RKRVTezqwagXRuNBgRMWuTxWaHg76WEhIJsP5JbGEixuUMnLeRvyOW3I6NwPBKA0BlWDImlQit47b3lD0IIMyc5bO0K0NGKw60P9Uj/QUnb6UvHGui0daaDbrON17KNLq7aLXPtrtZRbhg8+gT4IMd1vBNo8ZwPKTTL1J9vZMOgRxLXKdbYjtM54IEzSarNjRX2/7ZAQr+9fbPFGVpsSDoVJTFBju+tXxttL2n5afuritx6XTXKLVlvK/pHH6iIpWR4rkLqy9Es1GIma1q8TTL1C3jPwBDCv4imxgwbSZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yb0GRQbCEqJDo2sz3keuBy2IOyovdrCGE3Of1n9IpAQ=;
+ b=RF8/ZCQx049gp30PzkxSq2pf4XcHKiaLSaqsnGnLC1vbiz1d95aKHTRILQgij3aKI7pMF0gJUiXzdj9dEdlffO9vsIqjQvpuoKQxWeRB2LzWMiH+AttqOVguC2JJ69l4Q50kP5sBz5g5TCAoOMcDlCjGodIwSyj8XpBpc/b8olYcFeDL7HVYH5pyyqMcldQPs9EXcoQCW9+ChNUrnbBgfLV5498yAJilo8XbQ95lGFZc9hAU+ZOOYumELHAnwbqHuxiYnDYS6cY6EL+F7DYY+POh0WN9dw4Vh4m2DAWn6ryOqlqog6wvUKhx50nSCuSKqv+DX/+lnnH3LbdmQSs/6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=suse.cz smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=irbsSXjHImcSLHJ6uxXDu2MKDqhSUoJJSkeWgL8xBoA=;
-        b=AJCg3v4STEBBRZaHLAE53XA3KcnbyMQzjsoXOCVgOtQnPzop3nkbwp553x5xqFIMQd
-         wAz6sVvPFfpFQnS3UWtT5pbzYJCp/iLZQgo93d3RPzIX1uKyhzGCLaW1XPj8H5JMzljf
-         bTLjMOMhE6N3+93TUjcobXv7XZUMubFPnW//4CSD1mYMfIzl852OCu6bhFaZHCmpxv8n
-         3eEDa5Sq/XkMZi4ZwK5/K94LmZte8lZ20pq4CHr2JpYBO42voDoKFnglO/RopT3FFhox
-         la4/k7bEVHKdgIhEanahTj2Ms05JzrU+pv8jgMPxy2ZKKTJ6uOGdD/Iq+UY7g0vrXJk0
-         DV2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=irbsSXjHImcSLHJ6uxXDu2MKDqhSUoJJSkeWgL8xBoA=;
-        b=g0chBDBuN2ux9BwrCOMQxwvmRWyB8KYf+BK+fP3lqmByJ+cY9hseNf2NSIZahQk1lz
-         YXnNoa18DlIyGEKlb+ai1K2cCHKS3mhaWH+dWbG9U2yi4XqhyTiquj4wuTV2Ab8V5dlB
-         /y4piIDk1ZWSZ3YKfD9vtbnooGOkUFIIxl/Ux6ykLhT4YpHEMydEztIeXYWF65ahUPP5
-         9ItZfCHB0fRoJT+Y09puRUjOnSvrFa4llNjuANyEdPbx3QANYiLSW1thE7f4oIl1S6Ta
-         SZRNbpqz+3nltS1U2vIWijwXJvomdr19bhpMORGojB8e5ZGPBfFmTQpFUX82K0btFSkC
-         y5RQ==
-X-Gm-Message-State: AOAM532go+bzA+V367bIFUKVdesXXwjB1+zmULeFjTUH1ZWsPCxnLt94
-        YZ2VHRaC+/F2mqCIJOgGNs1fsg==
-X-Google-Smtp-Source: ABdhPJxBT007KlVzudG3ay9wbN5BHrb/bBbDAzKTJNgH+sjzEYq3ALv1ftOsxPP19AsfdL/U339OQQ==
-X-Received: by 2002:a1c:e1c5:: with SMTP id y188mr3853828wmg.81.1606309263056;
-        Wed, 25 Nov 2020 05:01:03 -0800 (PST)
-Received: from [192.168.0.3] (hst-221-27.medicom.bg. [84.238.221.27])
-        by smtp.googlemail.com with ESMTPSA id f18sm4686733wru.42.2020.11.25.05.01.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 05:01:02 -0800 (PST)
-Subject: Re: [PATCH 2/3] venus: Limit HFI sessions to the maximum supported
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Mansur Alisha Shaik <mansur@codeaurora.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-References: <20201120001037.10032-1-stanimir.varbanov@linaro.org>
- <20201120001037.10032-3-stanimir.varbanov@linaro.org>
- <CAPBb6MUnXmtSKy9NwikYXjafgB+WM9TKEFjkYK16T2V7KRx=JQ@mail.gmail.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <8c6231b2-61c2-d432-aa47-ddc29de8da19@linaro.org>
-Date:   Wed, 25 Nov 2020 15:01:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yb0GRQbCEqJDo2sz3keuBy2IOyovdrCGE3Of1n9IpAQ=;
+ b=LHOZqRiKmfJrFdraL256k0ZEXXBH2Qa2mUZuIa57PuxHXEHPDdaak6HtjuvicEGhdFKrKhUZ/8avqY2ejuDgaWQgmlUfW/EosDIItSDv52aamVn++Uei5SJ7aiTdtrQt+p/vEdZtxr0rPANIGcuIRtfuHfMKJH03vBD8iPX/XMA=
+Received: from CY4PR13CA0024.namprd13.prod.outlook.com (2603:10b6:903:32::34)
+ by SN1PR02MB3855.namprd02.prod.outlook.com (2603:10b6:802:31::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.29; Wed, 25 Nov
+ 2020 13:02:38 +0000
+Received: from CY1NAM02FT051.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:32:cafe::ef) by CY4PR13CA0024.outlook.office365.com
+ (2603:10b6:903:32::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.6 via Frontend
+ Transport; Wed, 25 Nov 2020 13:02:38 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT051.mail.protection.outlook.com (10.152.74.148) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3589.20 via Frontend Transport; Wed, 25 Nov 2020 13:02:38 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Wed, 25 Nov 2020 05:01:24 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Wed, 25 Nov 2020 05:01:24 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ stefan.asserhall@xilinx.com,
+ vbabka@suse.cz,
+ rostedt@goodmis.org,
+ shorne@gmail.com,
+ bigeasy@linutronix.de,
+ robin.murphy@arm.com,
+ robh@kernel.org,
+ rdunlap@infradead.org,
+ peterz@infradead.org,
+ penberg@kernel.org,
+ oleg@redhat.com,
+ keescook@chromium.org,
+ joe@perches.com,
+ axboe@kernel.dk,
+ ira.weiny@intel.com,
+ herbert@gondor.apana.org.au,
+ gustavoars@kernel.org,
+ geert@linux-m68k.org,
+ ebiggers@google.com,
+ 0x7f454c46@gmail.com,
+ christian.brauner@ubuntu.com,
+ bhe@redhat.com,
+ nivedita@alum.mit.edu,
+ anshuman.khandual@arm.com,
+ akpm@linux-foundation.org,
+ arnd@arndb.de,
+ monstr@monstr.eu,
+ linux-kernel@vger.kernel.org,
+ rppt@kernel.org,
+ arnd@kernel.org
+Received: from [172.30.17.109] (port=45816)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1khuQF-0007Iv-JE; Wed, 25 Nov 2020 05:01:23 -0800
+Subject: Re: [PATCH] microblaze: Remove noMMU code
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>
+CC:     Mike Rapoport <rppt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Baoquan He <bhe@redhat.com>,
+        "Christian Brauner" <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ira Weiny <ira.weiny@intel.com>, Jens Axboe <axboe@kernel.dk>,
+        Joe Perches <joe@perches.com>,
+        Kees Cook <keescook@chromium.org>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        Rob Herring <robh@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Asserhall <stefan.asserhall@xilinx.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+References: <caa5c3cbe6253d67fed83c4351d85224f8cf226c.1606303816.git.michal.simek@xilinx.com>
+ <20201125120739.GO8537@kernel.org>
+ <7217421a-c4de-0bd1-3231-17563e51e3c9@xilinx.com>
+ <CAK8P3a3QkWTCDg+v9qtW0aG7ndhmSukuZG-znS_NzRHyoZLQhw@mail.gmail.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <5947a4da-a08f-049b-9162-628e42980b33@xilinx.com>
+Date:   Wed, 25 Nov 2020 14:01:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <CAPBb6MUnXmtSKy9NwikYXjafgB+WM9TKEFjkYK16T2V7KRx=JQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAK8P3a3QkWTCDg+v9qtW0aG7ndhmSukuZG-znS_NzRHyoZLQhw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 969e41e9-bfd9-4d15-88b8-08d8914262d4
+X-MS-TrafficTypeDiagnostic: SN1PR02MB3855:
+X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+X-Microsoft-Antispam-PRVS: <SN1PR02MB3855B78E30F446CFE0347615C6FA0@SN1PR02MB3855.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dGFyLhCrl3fpigCDKhYGrR3aJQ1ge5k6E4RUIyqe0tBj7799MrFjAi4X7oP1+FPszIDNdzRdWY+8L6tUVuicnR2J8V3f8YKSNkjffSAyvtgUtXemkDGUL7ySqhiBvsD1N+3x7XHuw35ZFwv8C1i96VKwJD3zCHdurJl386sZpCfFutBQwcYpGKYYIOcCx3oAZjo6tj7Ly2U8IRY1cuua6gV4+cfYRWHPSBpty1dMHe9RX/RJ+QktOd+zvyl230xWfcSRcLP26G4Ft7tOnpIvZwEXowE2wMzB1ZeGwKA3v5XXQUyJ/R3N+ex3f2Zwkr9gHDKYZziwX4lUqw/pkYnCZFO/4Q3bdAd4bOAhpvUkZg9a7gK9bzTrmkogZ6JaGzn9iisjgxa6BCn4287BMwc7TqmgLPCCOQ/H4EZT0duvHwxF03ogad2FBfZFlstL9CuHadohv7mvUpw22TvaKcI9qw==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(39860400002)(136003)(46966005)(82310400003)(7416002)(82740400003)(336012)(31696002)(6666004)(4326008)(7636003)(70586007)(70206006)(47076004)(8676002)(186003)(110136005)(53546011)(8936002)(316002)(26005)(54906003)(356005)(36906005)(36756003)(426003)(5660300002)(2616005)(9786002)(31686004)(2906002)(478600001)(44832011)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 13:02:38.3930
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 969e41e9-bfd9-4d15-88b8-08d8914262d4
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT051.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR02MB3855
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/25/20 5:46 AM, Alexandre Courbot wrote:
-> On Fri, Nov 20, 2020 at 9:12 AM Stanimir Varbanov
-> <stanimir.varbanov@linaro.org> wrote:
+On 25. 11. 20 13:57, Arnd Bergmann wrote:
+> On Wed, Nov 25, 2020 at 1:14 PM Michal Simek <michal.simek@xilinx.com> wrote:
 >>
->> Currently we rely on firmware to return error when we reach the maximum
->> supported number of sessions. But this errors are happened at reqbuf
->> time which is a bit later. The more reasonable way looks like is to
->> return the error on driver open.
->>
->> To achieve that modify hfi_session_create to return error when we reach
->> maximum count of sessions and thus refuse open.
->>
->> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->> ---
->>  drivers/media/platform/qcom/venus/core.h      |  1 +
->>  drivers/media/platform/qcom/venus/hfi.c       | 19 +++++++++++++++----
->>  .../media/platform/qcom/venus/hfi_parser.c    |  3 +++
->>  3 files changed, 19 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
->> index db0e6738281e..3a477fcdd3a8 100644
->> --- a/drivers/media/platform/qcom/venus/core.h
->> +++ b/drivers/media/platform/qcom/venus/core.h
->> @@ -96,6 +96,7 @@ struct venus_format {
->>  #define MAX_CAP_ENTRIES                32
->>  #define MAX_ALLOC_MODE_ENTRIES 16
->>  #define MAX_CODEC_NUM          32
->> +#define MAX_SESSIONS           16
->>
->>  struct raw_formats {
->>         u32 buftype;
->> diff --git a/drivers/media/platform/qcom/venus/hfi.c b/drivers/media/platform/qcom/venus/hfi.c
->> index 638ed5cfe05e..8420be6d3991 100644
->> --- a/drivers/media/platform/qcom/venus/hfi.c
->> +++ b/drivers/media/platform/qcom/venus/hfi.c
->> @@ -175,6 +175,7 @@ static int wait_session_msg(struct venus_inst *inst)
->>  int hfi_session_create(struct venus_inst *inst, const struct hfi_inst_ops *ops)
->>  {
->>         struct venus_core *core = inst->core;
->> +       int ret;
->>
->>         if (!ops)
->>                 return -EINVAL;
->> @@ -183,12 +184,22 @@ int hfi_session_create(struct venus_inst *inst, const struct hfi_inst_ops *ops)
->>         init_completion(&inst->done);
->>         inst->ops = ops;
->>
->> -       mutex_lock(&core->lock);
->> -       list_add_tail(&inst->list, &core->instances);
->> -       atomic_inc(&core->insts_count);
->> +       ret = mutex_lock_interruptible(&core->lock);
->> +       if (ret)
->> +               return ret;
+>> And second part. I know I removed that Kconfig macros for it but maybe
+>> good to talk about what needs to change to support different page size
+>> for systems with MMU.
 > 
-> Why do we change to mutex_lock_interruptible() here? This makes this
-
-Because mutex_lock_interruptible is preferable in kernel docs, but I
-agree that changing mutex_lock with mutex_lock_interruptible should be
-subject of another lock related patches. I will drop this in next patch
-version.
-
-> function return an error even though we could obtain the lock just by
-> trying a bit harder.
-
-I didn't get that. The behavior of mutex_lock_interruptible is that same
-as mutex_lock, i.e. the it will sleep to acquire the lock. The
-difference is that the sleep could be interrupted by a signal. You might
-think about mutex_trylock?
-
+> I would recommend just leaving it hardwired to 4K. The benefits of larger
+> pages are rather questionable, especially on systems without tons of
+> RAM, and it's an endless source of problems.
 > 
->> +
->> +       ret = atomic_read(&core->insts_count);
->> +       if (ret + 1 > core->max_sessions_supported) {
->> +               ret = -EAGAIN;
->> +       } else {
->> +               atomic_inc(&core->insts_count);
->> +               list_add_tail(&inst->list, &core->instances);
->> +               ret = 0;
->> +       }
->> +
->>         mutex_unlock(&core->lock);
->>
->> -       return 0;
->> +       return ret;
->>  }
->>  EXPORT_SYMBOL_GPL(hfi_session_create);
->>
->> diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c b/drivers/media/platform/qcom/venus/hfi_parser.c
->> index 363ee2a65453..52898633a8e6 100644
->> --- a/drivers/media/platform/qcom/venus/hfi_parser.c
->> +++ b/drivers/media/platform/qcom/venus/hfi_parser.c
->> @@ -276,6 +276,9 @@ u32 hfi_parser(struct venus_core *core, struct venus_inst *inst, void *buf,
->>                 words_count--;
->>         }
->>
->> +       if (!core->max_sessions_supported)
->> +               core->max_sessions_supported = MAX_SESSIONS;
->> +
->>         parser_fini(inst, codecs, domain);
->>
->>         return HFI_ERR_NONE;
->> --
->> 2.17.1
->>
+> The commit that added the option, ba9c4f88d747 ("microblaze: Allow
+> PAGE_SIZE configuration"), was rather nebulous with "can improve
+> performance on some workloads".
+> 
+> On PowerPC, the benefits of larger pages are mainly for the hashed
+> page table code, which I don't think exists anywhere else.
 
--- 
-regards,
-Stan
+Is there any standard benchmark to see if there is really any benefit?
+Exchanging tbl is quite expensive operation that's why there could be
+good improvement.
+
+But not a problem to remove it for now and get it back when this is
+properly tested.
+
+Thanks,
+Michal
