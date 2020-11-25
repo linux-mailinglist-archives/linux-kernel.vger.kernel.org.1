@@ -2,95 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9852C46AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D22D92C46C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732747AbgKYR0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:26:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730868AbgKYR0A (ORCPT
+        id S1732776AbgKYR1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:27:15 -0500
+Received: from out28-219.mail.aliyun.com ([115.124.28.219]:51401 "EHLO
+        out28-219.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732763AbgKYR1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:26:00 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6E2C0613D4;
-        Wed, 25 Nov 2020 09:26:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=wNUJaMYaw9Om5kTEvwoI8y+Hyo8Am2Dmz8bzn7pzxLY=; b=17Rwd0MsOskJ/cUSJdfuW9XsMn
-        KsT2OnSBtt6xsVSE4FN1zlczDLTGkm75/HO/znDkmdV5ZxFrQhhdB+QWxn+fhra/ajZzfxX8wkpQP
-        oerOaUupdUhFFfEjoR639m/PocGb6XnkAVfPH70WdsZSJEuS202kYhK1NL9EWPN0AkCsgjFTi1drD
-        31xEciB0h4/scEdoSW1rV4Tn2VrwQMUdjPjaSVN2Krj6CtXBPdHDKkrTaM2gYE4bT7k1+lyfYqIv1
-        b9QjARNV4J9h/SoVc0Rf09Ou8qvMmTHgYkiJvl289M2D9tqM7YAf0ufRTJovU8nBLiQW0T4HryhX9
-        cbOWWn2w==;
-Received: from [2601:1c0:6280:3f0::cc1f]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khyYG-0004SP-5q; Wed, 25 Nov 2020 17:25:56 +0000
-Subject: Re: [PATCH 4/4] Documentation/admin-guide/module-signing.rst: add
- openssl command option example for CodeSign EKU
-To:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ben Boeckel <me@benboeckel.net>,
-        Malte Gell <malte.gell@gmx.de>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>
-References: <20201125072653.15657-1-jlee@suse.com>
- <20201125072653.15657-5-jlee@suse.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <aa6e405c-ef6a-e9eb-4431-cb5629fcfc73@infradead.org>
-Date:   Wed, 25 Nov 2020 09:25:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 25 Nov 2020 12:27:15 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1100795|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00509026-0.00170274-0.993207;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.J.BPrxs_1606325224;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J.BPrxs_1606325224)
+          by smtp.aliyun-inc.com(10.147.41.137);
+          Thu, 26 Nov 2020 01:27:11 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     sboyd@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com,
+        paul@crapouillou.net
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Subject: [PATCH 0/4] Add new clocks for Ingenic SoCs.
+Date:   Thu, 26 Nov 2020 01:26:14 +0800
+Message-Id: <20201125172618.112707-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-In-Reply-To: <20201125072653.15657-5-jlee@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+1.Add "jz4780_core1_disable()" for disable the second core of JZ4780,
+  prepare for later commits.
+2.Add CIM, AIC, DMIC clocks for the X1000 SoC, and CIM, AIC, DMIC, I2S
+  clocks for the X1830 SoC from Ingenic.
+3.Fill unused bits in parents in jz4780-cgu.c, x1000-cgu.c, and
+  x1830-cgu.c, these bits should be filled with -1.
+4.Reformat code, add missing blank lines, remove unnecessary tabs,
+  and align code.
 
-On 11/24/20 11:26 PM, Lee, Chun-Yi wrote:
-> Add an openssl command option example for generating CodeSign extended
-> key usage in X.509 when CONFIG_CHECK_CODESIGN_EKU be enabled.
+周琰杰 (Zhou Yanjie) (4):
+  clk: JZ4780: Add function for disable the second core.
+  dt-bindings: clock: Add missing clocks for Ingenic SoCs.
+  clk: Ingenic: Add missing clocks for Ingenic SoCs.
+  clk: Ingenic: Fill unused bits in parents and reformat code.
 
-                                                    is enabled.
-
-> 
-> Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
-> ---
->  Documentation/admin-guide/module-signing.rst | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-> index f8b584179cff..bc184124d646 100644
-> --- a/Documentation/admin-guide/module-signing.rst
-> +++ b/Documentation/admin-guide/module-signing.rst
-> @@ -170,6 +170,12 @@ generate the public/private key files::
->  	   -config x509.genkey -outform PEM -out kernel_key.pem \
->  	   -keyout kernel_key.pem
->  
-> +When ``CONFIG_CHECK_CODESIGN_EKU`` option be enabled, the following openssl
-
-                                             is enabled,
-
-> +command option should be added for generating CodeSign extended key usage in
-> +X.509::
-> +
-> +        -addext "extendedKeyUsage=codeSigning"
-> +
->  The full pathname for the resulting kernel_key.pem file can then be specified
->  in the ``CONFIG_MODULE_SIG_KEY`` option, and the certificate and key therein will
->  be used instead of an autogenerated keypair.
-> 
-
+ drivers/clk/ingenic/jz4780-cgu.c      |  33 ++++-
+ drivers/clk/ingenic/x1000-cgu.c       |  39 +++--
+ drivers/clk/ingenic/x1830-cgu.c       | 266 +++++++++++++++++++++++++++++-----
+ include/dt-bindings/clock/x1000-cgu.h |   3 +
+ include/dt-bindings/clock/x1830-cgu.h |   4 +
+ 5 files changed, 292 insertions(+), 53 deletions(-)
 
 -- 
-~Randy
+2.7.4
 
