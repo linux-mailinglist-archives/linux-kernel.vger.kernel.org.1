@@ -2,65 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B3A2C4037
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D291E2C4041
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbgKYMaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:30:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
+        id S1729302AbgKYMdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:33:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgKYMaz (ORCPT
+        with ESMTP id S1725616AbgKYMdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:30:55 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C71C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:30:55 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id v202so2615705oia.9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:30:55 -0800 (PST)
+        Wed, 25 Nov 2020 07:33:19 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD2AC0613D4;
+        Wed, 25 Nov 2020 04:33:12 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id f93so1404627qtb.10;
+        Wed, 25 Nov 2020 04:33:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=JwtgkNm+dGBQgEs8Cle5HTtNXBMFxysNtJ4wgY6V4x4=;
-        b=T08yzX4XIEQqIKCwawdqSaRaPSOA40rRVeB6ioQa1aUeWRl6/alIgMkaKzxi45vC+Q
-         7Uui0OKHWKeI2/W0XwnfBwBtrB7mWGAPXlI9g+mzNYc3cEQGGnnyMd23zeAUWewga5Qs
-         EvnBwXV3PASltklNk7MBz3akil8F/RudGbaZQRxufTDuSAXdrqYmzBWdDFR/tjjEzHAg
-         64OqG5SFFQC7AbFagq61hNFjUGtzFrlcrvteEBC5SP1x0sCuF5kl3ZBPZFo2mEPGDJ5D
-         j7MQXI8BYq09Ejm4H2mW62hX6HC9WDNcjvw+00rJolwMzguI/sJTUh6i/CJl7cWmYYjX
-         RsLQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H3aqrBY6oYhCd62SVodU601+HB4mzl3pG4lUcfT04Cg=;
+        b=m8eiXGIffxTQcl9qWmpoUZgBsSzJBJL+g8a+25Jt5FKxrq5reTIQJIvOqHam06ytUT
+         +AVBi6gElJoegN0PJweNe4OCeUoDzFODyFHPyIln49wZ5mShP7YmWW3JcvzSHisvU3RY
+         HvY920z0TDVKvZHVGUl0hW04u6KPVUTYgkRsiSfEQ5wXOQlIapC1e1DPv6ahx8onYMVI
+         RK3uA/nnhPE9+aELC01Cnp4okGEgdmF1asc72P2GBtujVywjnmfE22z+BSjYMM6mL8Q6
+         c9LsElOYkPJODDqa7BlptGqmUGWMtnSAY3T7eNQCvLF8h3PLrE397W3APYrR+NuKSx2g
+         3d/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=JwtgkNm+dGBQgEs8Cle5HTtNXBMFxysNtJ4wgY6V4x4=;
-        b=AQEBCoKlBMhau65eoube2VQFShGxHYCsqWK3dcUYk5i70pOfsC1SeFqy1LbTD+Hrnb
-         iZuptN47hd2AXlgjweaUQCZ16YCSeVKB5s3s4pwMYD6fVtGLbARdUBTnLPM9JBlPhBkY
-         KxnJVvoJ14h1fSxsd4DgmJnN/mk4aPSv5BnlsldJ5F5aKMveLv9P6QDssvwRxG6WvTZB
-         BG/eniR8/QrpFLJ4D8g1nQHrsim/8g1fAXF/ujVXk3QgSnhBjU8eGuVOVA3MGRrkwhWc
-         se7/2r65TF1cHVnyH3ZP+NxaVWTKc/cpNPVkbfLzsmCk1cqfLPLNqMcGA1E/1PawhvNg
-         nFAA==
-X-Gm-Message-State: AOAM531aZNWX2j6ReXmWoP1Dl6LTp8QGkjgtf9rK47xxpQW3nMXdobmC
-        SgJ3fiqrdWCwHUzcHn1thzPSeRl4v59EbDxbOrg=
-X-Google-Smtp-Source: ABdhPJzwHbg+/lt3/xq1cPN0sArp2t/StZ7kKweCPGiojr4vO6AtkYtTbBXjj63U8g8X9IZyGcXg7A1XWwKvNTelafg=
-X-Received: by 2002:aca:ac8c:: with SMTP id v134mr2081444oie.128.1606307454676;
- Wed, 25 Nov 2020 04:30:54 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=H3aqrBY6oYhCd62SVodU601+HB4mzl3pG4lUcfT04Cg=;
+        b=BI6cbfed42i6bo1We2KRaaxHDJcLlfR+Kq+bl+Zi/Cv78i/NipGuewMcSUpFM/LQNL
+         VDd2JOybOQCYBCBmvBet2vzdL9GOpZZZyR10oTWfdBBi/7RH+74xqxg8MZnDncShXrlv
+         W2tDXjBYLey79nFLZFyVl+iX6Eb9pfkglT4AwDSi6hfUbyIKJ/lioK+p6fY1yEDKIMEf
+         xCFFfItOywsDbxaQ4mypXJtcaHvNX7D/tQlROXorXffDEo92P+cu/Cpj8Vax+YrwBKpq
+         tzpsG538/GEVcvwvi7eT74l/GInS/UITBVLJGievB+giAhSMHewABpRLNT7uoG/FO+nG
+         8I6w==
+X-Gm-Message-State: AOAM53125sVVZcShwwr2oMioNmWX8beh4eFXVaA763HLqqUZ2lkfmNEd
+        whV9Ko0GcDBZU9jedmW9A84=
+X-Google-Smtp-Source: ABdhPJzocuRXVD+bPmrqSjVXD61c/mr1QuassCJZAWcu3BRdBXPc1L3HjKV+b5/kdsWDa9hsVQr+qg==
+X-Received: by 2002:ac8:7a87:: with SMTP id x7mr2792856qtr.253.1606307591437;
+        Wed, 25 Nov 2020 04:33:11 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id a123sm2264134qkc.52.2020.11.25.04.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 04:33:10 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 25 Nov 2020 07:32:48 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, zhangxiaoxu5@huawei.com, houtao1@huawei.com
+Subject: Re: [RFC PATCH] blk-cgroup: prevent rcu_sched detected stalls
+ warnings in blkg_destroy_all()
+Message-ID: <X75O8BNVSX3ZE86w@mtj.duckdns.org>
+References: <20201121083420.3857433-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6838:f7f3:0:0:0:0 with HTTP; Wed, 25 Nov 2020 04:30:54
- -0800 (PST)
-From:   bokossa ludovic <bokossaludovic@gmail.com>
-Date:   Wed, 25 Nov 2020 13:30:54 +0100
-Message-ID: <CALU0XG6ECcK3QtdTdqk+zeaLWyHEFFzVYfnrH9czQnU3XJoBuQ@mail.gmail.com>
-Subject: =?UTF-8?Q?F=C3=9CR_IHRE_KREDITANWENDUNGEN?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201121083420.3857433-1-yukuai3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo
-Wir bieten individuelle Kredite und Investitionen mit einer
-R=C3=BCckzahlungsrate von 2% an. Kontaktieren Sie uns f=C3=BCr Kreditanfrag=
-en.
+Hello,
 
-Financialintercreditficsarl@gmail.com
+Thanks for the fix. A couple comments below.
+
+On Sat, Nov 21, 2020 at 04:34:20PM +0800, Yu Kuai wrote:
+> +#define BLKG_DESTROY_BATH 4096
+
+I think you meant BLKG_DESTROY_BATCH.
+
+>  static void blkg_destroy_all(struct request_queue *q)
+>  {
+>  	struct blkcg_gq *blkg, *n;
+> +	int count = BLKG_DESTROY_BATH;
+
+But might as well just write 4096 here.
+
+>  	spin_lock_irq(&q->queue_lock);
+>  	list_for_each_entry_safe(blkg, n, &q->blkg_list, q_node) {
+>  		struct blkcg *blkcg = blkg->blkcg;
+>  
+> +		/*
+> +		 * If the list is too long, the loop can took a long time,
+> +		 * thus relese the lock for a while when a batch of blkcg
+> +		 * were destroyed.
+> +		 */
+> +		if (!(--count)) {
+> +			count = BLKG_DESTROY_BATH;
+> +			spin_unlock_irq(&q->queue_lock);
+> +			cond_resched();
+> +			spin_lock_irq(&q->queue_lock);
+
+You can't continue iteration after dropping both locks. You'd have to jump
+out of loop and start list_for_each_entry_safe() again.
+
+> +		}
+>  		spin_lock(&blkcg->lock);
+>  		blkg_destroy(blkg);
+>  		spin_unlock(&blkcg->lock);
+
+Thanks.
+
+-- 
+tejun
