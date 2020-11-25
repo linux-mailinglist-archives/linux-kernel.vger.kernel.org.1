@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBE02C40A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DD92C40AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgKYM45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:56:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725875AbgKYM44 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:56:56 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7785BC0613D4;
-        Wed, 25 Nov 2020 04:56:56 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id y18so4110220qki.11;
-        Wed, 25 Nov 2020 04:56:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nNpoxskH44KK9KKuJ0pwAXxPc7WlonO/AVDvFJYaTko=;
-        b=kyfFznwFpssDqWqK1A5JgwNdKa6yVAJ+mBMjofSKBvAU6ZKKWBZuSJ0jfcPOPmtq84
-         bbVFCNJFKwgSFr4M2mOFguiLUh8MU2O2p/9mzOXo/tV/eNITnU3Pi1IgDicVfurnklB5
-         rzY7zCceW9oaxIyptlaB0JUYsVjtokvbXWtVmXI655as7UOlm/JDxTDSGHLSuwyNZpsK
-         y999e+tUAx20Xyu0x87WO6lBSlCXyTJ9duWU+MIxytl5ieQNkEljo5fHxQoS3JGPKABG
-         Z0ddyatzmmp6zwty6MFjaGnIEoJT64QuOxadPHVr1nrH3bAgQAUJE4uqbViTlJxhqDG/
-         Ievg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=nNpoxskH44KK9KKuJ0pwAXxPc7WlonO/AVDvFJYaTko=;
-        b=VKRNgz3TDQ2NnaCu18OlqcuO2/tgdKU7BlLHaJNyNIeMTE8LeNz7Rw/byhFcQklp4V
-         AW39hhN8vQMp3lYkqsI7lNC+7btqf2kTLoqL/sxwIDgO1R8ORO5L/y5rl0U8u4UPfkuN
-         WezejggZhZDz63uRSZXNAxAAQI1M5VcZxo6VUwoYf0q4YDub+hFhBVHt+DnZcmXlO+67
-         K/sO6LhJcWi7vYqjMKcJqqKMCyRDXZMdVq/EeflAiGr8ViOIk/SHABcpxni2nj7/I/QN
-         NvFobw9CTkx9WIukuiIxAhfZojK9+GlW8ImLnVls43CSkRFqSpqtqoRSvRZ2d8EWaZh3
-         ttRQ==
-X-Gm-Message-State: AOAM531UpvG+4IwyJ2qP/eurchnFKqOzqrW3yYa3V9wYF0fBIcLx1/eW
-        Irv4zHWJXtdAstz4MTrJ0nw=
-X-Google-Smtp-Source: ABdhPJxRCQXHNQOoJssE+ci+cutD9wtDvvPGp6Y2V8zgIIt9kEvbmCBIhvzEWNU3Yd15VxFc6500LQ==
-X-Received: by 2002:a05:620a:710:: with SMTP id 16mr3219043qkc.202.1606309015653;
-        Wed, 25 Nov 2020 04:56:55 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id j63sm2229529qke.67.2020.11.25.04.56.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 04:56:54 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 25 Nov 2020 07:56:32 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     lizefan@huawei.com, hannes@cmpxchg.org, christian@brauner.io,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] kernel: cgroup: Mundane spelling fixes throughout the
- file
-Message-ID: <X75UgCWXJjplQ8Kw@mtj.duckdns.org>
-References: <20201109103111.10078-1-unixbhaskar@gmail.com>
+        id S1729312AbgKYM5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:57:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726316AbgKYM5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:57:22 -0500
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BE97206E5;
+        Wed, 25 Nov 2020 12:57:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606309041;
+        bh=pNjDI+ni4PDHllmLPf9AZXrBAM9gk/RybMSX8i/GbMM=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=gK1ypnpU7g7t4wC/BNSYZeGlf4LFYNjER8BV45o1/bkQThmYFRMfMEe7x3t7R/MUo
+         K9dLE6w4gXg4desZRRGO2T87NjkJmZK+lLzlPVH2OmUeJ61ehROy739/ypI6RIQvtL
+         qmzys0dghXfxcWvpmQQBRXvllbV2YxXNkqlHDOk8=
+Date:   Wed, 25 Nov 2020 13:57:18 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+cc:     srinivas.pandruvada@linux.intel.com, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: intel-ish-hid: Remove unnecessary assignment to
+ variable rv
+In-Reply-To: <20201110032049.187404-1-jingxiangfeng@huawei.com>
+Message-ID: <nycvar.YFH.7.76.2011251356520.3441@cbobk.fhfr.pm>
+References: <20201110032049.187404-1-jingxiangfeng@huawei.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109103111.10078-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 04:01:11PM +0530, Bhaskar Chowdhury wrote:
-> Few spelling fixes throughout the file.
+On Tue, 10 Nov 2020, Jing Xiangfeng wrote:
+
+> This assignment to rv is unused in an error path. So remove it.
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> ---
+>  drivers/hid/intel-ish-hid/ishtp-hid.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/hid/intel-ish-hid/ishtp-hid.c b/drivers/hid/intel-ish-hid/ishtp-hid.c
+> index b8aae69ad15d..393bed0abee9 100644
+> --- a/drivers/hid/intel-ish-hid/ishtp-hid.c
+> +++ b/drivers/hid/intel-ish-hid/ishtp-hid.c
+> @@ -211,10 +211,8 @@ int ishtp_hid_probe(unsigned int cur_hid_dev,
+>  	struct ishtp_hid_data *hid_data;
+>  
+>  	hid = hid_allocate_device();
+> -	if (IS_ERR(hid)) {
+> -		rv = PTR_ERR(hid);
+> -		return	-ENOMEM;
+> -	}
+> +	if (IS_ERR(hid))
+> +		return PTR_ERR(hid);
+>  
 
-Applied to cgroup/for-5.10-fixes.
-
-Thanks.
+Applied, thank you.
 
 -- 
-tejun
+Jiri Kosina
+SUSE Labs
+
