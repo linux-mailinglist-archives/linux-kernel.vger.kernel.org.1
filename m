@@ -2,208 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6032C3D09
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 10:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FF82C3D06
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 10:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgKYJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 04:52:46 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:46826 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgKYJwq (ORCPT
+        id S1727338AbgKYJwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 04:52:40 -0500
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:58501 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725837AbgKYJwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 04:52:46 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AP9qYHN087573;
-        Wed, 25 Nov 2020 03:52:34 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606297954;
-        bh=EjBkaQQ8hkiOiGdh37NIn7xwhbnpm215Dhm11H1f0CU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=LNdK4daC1sgiMHF3dzYhUSmL2/ZYxpKasYzK+KSGmBg3wW7z26MUPsZOn3C7tL2X9
-         XWx8JOxJ60ZFrMtpvdih9rxHq66/GNvHmaEyTxqhBrg73hzYMZiWevwr0xTvT6EXly
-         jTZCV19fk0I4uhEIhpjMmZo6euv69jLnkdziSF74=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AP9qYSR039198
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 25 Nov 2020 03:52:34 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 25
- Nov 2020 03:52:33 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 25 Nov 2020 03:52:33 -0600
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AP9qVwx112639;
-        Wed, 25 Nov 2020 03:52:32 -0600
-Subject: Re: [PATCH] Revert "usb: cdns3: core: quit if it uses role switch
- class"
-To:     Peter Chen <peter.chen@nxp.com>,
-        "pawell@cadence.com" <pawell@cadence.com>
-CC:     "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201123115051.30047-1-rogerq@ti.com>
- <20201124064242.GA32310@b29397-desktop>
- <89067b6a-5b94-d7d2-b07a-f434c9e5e2bd@ti.com>
- <DBBPR04MB797982E6E190F0C0E0980F258BFB0@DBBPR04MB7979.eurprd04.prod.outlook.com>
- <bdb2b4cb-686e-9283-bc66-78808b92c349@ti.com>
- <20201124114641.GA9929@b29397-desktop>
- <1c4fb95a-97b7-9022-7062-8fafcfe42c3d@ti.com>
- <20201125003550.GB9929@b29397-desktop>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <f74b3c57-a9f1-2f5f-119c-a52ce9ba2f70@ti.com>
-Date:   Wed, 25 Nov 2020 11:52:31 +0200
+        Wed, 25 Nov 2020 04:52:40 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id hrTUkId71N7XghrTXkVfKr; Wed, 25 Nov 2020 10:52:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1606297956; bh=rkinYp2aPlLDRuZB8efPy+co5I1trOJ7w1SXgznaBNA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=NNs8H3XKTdKdCJa3Bp1xjb6HEWrNep42snEMOl33GBz/rz2A+7axAcHmJmoilX3ua
+         PHbbtSDkIWsq19ozcxdCCZnw7hDv1PrNGLuib56i4gPVhN22wxzToqAuOZV8op4TS+
+         i3ecl/0oS9DBnfj20XHZYcq9WVPkX3bDajBntg0KUyrYWUAYgNh5scakCQND5IYgKt
+         7nmsoP8Hd3mkc0C78dzAsZXPy9i3JabASCl6DMrxTsVFT17Wy6ulGSisi2jlgj5qpo
+         TaTGTuQ0A1MprTVOID0mGqXUoKQWX9CoslonSrhooBG5gyqD+vUNcQ1I9yFJinoaX0
+         96FHeb2wIEzWA==
+Subject: Re: [PATCH v4 07/13] media: controls: Validate H264 stateless
+ controls
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <20201123144000.81310-1-ezequiel@collabora.com>
+ <20201123144000.81310-8-ezequiel@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <b072a392-d127-21fe-6357-5e7ed82a2aaa@xs4all.nl>
+Date:   Wed, 25 Nov 2020 10:52:32 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201125003550.GB9929@b29397-desktop>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20201123144000.81310-8-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-CMAE-Envelope: MS4xfAIByOm52jy1evmJ1TjUW1Bqv/IMbqHoPK0K0OHVef0DviU8Y9EWfkfu2diBn55JzpyrHZ5O3+g2FSy0D0VuHhDKsAc92ZU9n3VRsMLAe1ql2tvgcim3
+ CJUNV7RR0c3MlwHkSDvhRv876qXKbzD0g6koW0IKr0VFG27cUSThokWbafmikcPPK23a3vfyeWywDaovFAud9uB3w2RlBTzK6Wmjy3szqQfiU1AWgUikG5Hy
+ 7LVNtcHLglYJF+03kxc3ssT9HiKXqNACnheFYg7iW/EpcMll85cHUERqSihaj0ulbxKN7xncT9ICOYMz9uyOVzAZ2T650Tp1Yx4aq/yYeJtJv7EzaKlSv+Bc
+ Fk4hCatMT+zRibHc/pY/puyzYHjPt2bDlRThMhmWPaZowh2tPiTLS+hPPa4LRIffl7FTkGGdmx3ANHzUS+ctdib4qQOUVvCCGc7+lhywa648HdhtLM4vYhCb
+ /SrnF7RPe3GgCyUYFO5jIknaXSw+LMq//7LoH1jY9gXqI1XxPBuAfxNBU3M=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 25/11/2020 02:36, Peter Chen wrote:
-> On 20-11-24 14:22:25, Roger Quadros wrote:
->> Peter,
->>
->> On 24/11/2020 13:47, Peter Chen wrote:
->>> On 20-11-24 12:33:34, Roger Quadros wrote:
->>>>>>>
->>>>>>> I am sorry about that. Do you use role switch /sys entry, if you have
->>>>>>> used, I prefer using "usb-role-switch" property at dts to judge if SoC
->>>>>>> OTG signals or external signals for role switch. If you have not used
->>>>>>> it, I prefer only setting cdns->role_sw for role switch use cases.
->>>>>>>
->>>>>>
->>>>>> We use both hardware role switch and /sys entries for manually forcing a
->>>>>> certain role.
->>>>>>
->>>>>> We do not set any "usb-role-switch" property at DTS.
->>>>>>
->>>>>> Currently cdns->role_sw is being always set by driver irrespective of any DT
->>>>>> property, so this patch is clearly wrong and needs to be reverted.
->>>>>>
->>>>>> What do you think?
->>>>>>
->>>>>
->>>>> Could you accept below fix?
->>>>>
->>>>> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
->>>>> index 2e469139769f..fdd52e87a7b2 100644
->>>>> --- a/drivers/usb/cdns3/core.c
->>>>> +++ b/drivers/usb/cdns3/core.c
->>>>> @@ -280,8 +280,8 @@ int cdns3_hw_role_switch(struct cdns3 *cdns)
->>>>>            enum usb_role real_role, current_role;
->>>>>            int ret = 0;
->>>>>
->>>>> -       /* Depends on role switch class */
->>>>> -       if (cdns->role_sw)
->>>>> +       /* quit if switch role through external signals */
->>>>> +       if (device_property_read_bool(cdns->dev, "usb-role-switch"))
->>>>>                    return 0;
->>>>>
->>>>>            pm_runtime_get_sync(cdns->dev);
->>>>
->>>> Although this will fix the issue I don't think this is making the driver to behave
->>>> as expected with usb-role-switch property.
->>>>
->>>> Now, even if usb-role-switch property is not present the driver will still register
->>>> the role switch driver.
->>>>
->>>> I think we need to register the role switch driver only if usb-role-switch property
->>>> is present. We would also need to set the default role if role-switch-default-mode is present.
->>>>
->>>> How about the following? It still doesn't handle role-switch-default-mode property though.
->>>>
->>>
->>> Roger, you said you also use /sys entries (I suppose it means through role
->>> switch class) to do role switch, with your change, there will be no /sys
->>> entry for role switch.
->>
->> Sorry for the confusion. Although we do need both features (SW role switch + HW role switch)
->> I don't think it is required to operate simultaneously. If users need SW control they can set the DT flag.
->>
+On 23/11/2020 15:39, Ezequiel Garcia wrote:
+> Check that all the fields that correspond or are related
+> to a H264 specification syntax element have legal values.
 > 
-> I see. I prefer embracing all things related to role switch under the
-> firmware entry condition. Besides, I find another issue that devm_request_irq
-> for wakeup_irq does not call usb_role_switch_unregister if it has
-> failed. So, probably, two patches are needed. I am OK you send the
-> patches to fix both.
-
-Pawel, can you please confirm that if you are ok with either h/w role switching
-or s/w role switching but not both working at the same time?
-
-It would have been nice by user to to know the current role even for h/w based
-swithcing but it looks like now that won't be possible.
-
-cheers,
--roger
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-ctrls.c | 128 +++++++++++++++++++++++++++
+>  include/media/h264-ctrls.h           |   9 ++
+>  2 files changed, 137 insertions(+)
 > 
-> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-> index 2e469139769f..fc6a8152406c 100644
-> --- a/drivers/usb/cdns3/core.c
-> +++ b/drivers/usb/cdns3/core.c
-> @@ -427,7 +427,6 @@ static irqreturn_t cdns3_wakeup_irq(int irq, void *data)
->    */
->   static int cdns3_probe(struct platform_device *pdev)
->   {
-> -	struct usb_role_switch_desc sw_desc = { };
->   	struct device *dev = &pdev->dev;
->   	struct resource	*res;
->   	struct cdns3 *cdns;
-> @@ -529,18 +528,21 @@ static int cdns3_probe(struct platform_device *pdev)
->   	if (ret)
->   		goto err2;
->   
-> -	sw_desc.set = cdns3_role_set;
-> -	sw_desc.get = cdns3_role_get;
-> -	sw_desc.allow_userspace_control = true;
-> -	sw_desc.driver_data = cdns;
-> -	if (device_property_read_bool(dev, "usb-role-switch"))
-> +	if (device_property_read_bool(dev, "usb-role-switch")) {
-> +		struct usb_role_switch_desc sw_desc = { };
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index 88ad475bd716..7b4f5ca91b86 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -1775,6 +1775,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  {
+>  	struct v4l2_ctrl_mpeg2_slice_params *p_mpeg2_slice_params;
+>  	struct v4l2_ctrl_vp8_frame_header *p_vp8_frame_header;
+> +	struct v4l2_ctrl_h264_sps *p_h264_sps;
+> +	struct v4l2_ctrl_h264_pps *p_h264_pps;
+> +	struct v4l2_ctrl_h264_pred_weights *p_h264_pred_weights;
+>  	struct v4l2_ctrl_h264_slice_params *p_h264_slice_params;
+>  	struct v4l2_ctrl_h264_decode_params *p_h264_dec_params;
+>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+> @@ -1834,20 +1837,145 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  		break;
+>  
+>  	case V4L2_CTRL_TYPE_H264_SPS:
+> +		p_h264_sps = p;
 > +
-> +		sw_desc.set = cdns3_role_set;
-> +		sw_desc.get = cdns3_role_get;
-> +		sw_desc.allow_userspace_control = true;
-> +		sw_desc.driver_data = cdns;
->   		sw_desc.fwnode = dev->fwnode;
->   
-> -	cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
-> -	if (IS_ERR(cdns->role_sw)) {
-> -		ret = PTR_ERR(cdns->role_sw);
-> -		dev_warn(dev, "Unable to register Role Switch\n");
-> -		goto err3;
-> +		cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
-> +		if (IS_ERR(cdns->role_sw)) {
-> +			ret = PTR_ERR(cdns->role_sw);
-> +			dev_warn(dev, "Unable to register Role Switch\n");
-> +			goto err3;
+> +		/* Some syntax elements are only conditionally valid */
+> +		if (p_h264_sps->pic_order_cnt_type != 0) {
+> +			p_h264_sps->log2_max_pic_order_cnt_lsb_minus4 = 0;
+> +		} else if (p_h264_sps->pic_order_cnt_type != 1) {
+> +			p_h264_sps->num_ref_frames_in_pic_order_cnt_cycle = 0;
+> +			p_h264_sps->offset_for_non_ref_pic = 0;
+> +			p_h264_sps->offset_for_top_to_bottom_field = 0;
+> +			memset(&p_h264_sps->offset_for_ref_frame, 0,
+> +			       sizeof(p_h264_sps->offset_for_ref_frame));
 > +		}
->   	}
->   
->   	if (cdns->wakeup_irq) {
-> @@ -583,7 +585,8 @@ static int cdns3_probe(struct platform_device *pdev)
->   	return 0;
->   err4:
->   	cdns3_drd_exit(cdns);
-> -	usb_role_switch_unregister(cdns->role_sw);
-> +	if (cdns->role_sw)
-> +		usb_role_switch_unregister(cdns->role_sw);
->   err3:
->   	set_phy_power_off(cdns);
->   err2:
+> +
+> +		if (!V4L2_H264_SPS_HAS_CHROMA_FORMAT(p_h264_sps)) {
+> +			p_h264_sps->chroma_format_idc = 1;
+> +			p_h264_sps->bit_depth_luma_minus8 = 0;
+> +			p_h264_sps->bit_depth_chroma_minus8 = 0;
+> +
+> +			p_h264_sps->flags &=
+> +				~V4L2_H264_SPS_FLAG_QPPRIME_Y_ZERO_TRANSFORM_BYPASS;
+> +
+> +			if (p_h264_sps->chroma_format_idc < 3)
+> +				p_h264_sps->flags &=
+> +					~V4L2_H264_SPS_FLAG_SEPARATE_COLOUR_PLANE;
+> +		}
+> +
+> +		if (p_h264_sps->flags & V4L2_H264_SPS_FLAG_FRAME_MBS_ONLY)
+> +			p_h264_sps->flags &=
+> +				~V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD;
+> +
+> +		/* Only monochrome and 4:2:0 allowed for these profiles */
+> +		if (p_h264_sps->profile_idc < V4L2_H264_PROFILE_IDC_HIGH_422 &&
+> +		    p_h264_sps->chroma_format_idc > 1)
+> +			return -EINVAL;
+> +		/* 4:2:2 allowed */
+> +		if (p_h264_sps->profile_idc < V4L2_H264_PROFILE_IDC_HIGH_444 &&
+> +		    p_h264_sps->chroma_format_idc > 2)
+> +			return -EINVAL;
+> +		if (p_h264_sps->chroma_format_idc > 3)
+> +			return -EINVAL;
+> +
+> +		if (p_h264_sps->bit_depth_luma_minus8 > 6)
+> +			return -EINVAL;
+> +		if (p_h264_sps->bit_depth_chroma_minus8 > 6)
+> +			return -EINVAL;
+> +		if (p_h264_sps->log2_max_frame_num_minus4 > 12)
+> +			return -EINVAL;
+> +		if (p_h264_sps->pic_order_cnt_type > 2)
+> +			return -EINVAL;
+> +		if (p_h264_sps->log2_max_pic_order_cnt_lsb_minus4 > 12)
+> +			return -EINVAL;
+> +		if (p_h264_sps->max_num_ref_frames > V4L2_H264_REF_LIST_LEN)
+> +			return -EINVAL;
+> +		break;
+> +
+>  	case V4L2_CTRL_TYPE_H264_PPS:
+> +		p_h264_pps = p;
+> +
+> +		if (p_h264_pps->num_slice_groups_minus1 > 7)
+> +			return -EINVAL;
+> +		if (p_h264_pps->num_ref_idx_l0_default_active_minus1 >
+> +		    (V4L2_H264_REF_LIST_LEN - 1))
+> +			return -EINVAL;
+> +		if (p_h264_pps->num_ref_idx_l1_default_active_minus1 >
+> +		    (V4L2_H264_REF_LIST_LEN - 1))
+> +			return -EINVAL;
+> +		if (p_h264_pps->weighted_bipred_idc > 2)
+> +			return -EINVAL;
+> +		/*
+> +		 * pic_init_qp_minus26 shall be in the range of
+> +		 * -(26 + QpBdOffset_y) to +25, inclusive,
+> +		 *  where QpBdOffset_y is 6 * bit_depth_luma_minus8
+> +		 */
+> +		if (p_h264_pps->pic_init_qp_minus26 < -62 ||
+> +		    p_h264_pps->pic_init_qp_minus26 > 25)
+> +			return -EINVAL;
+> +		if (p_h264_pps->pic_init_qs_minus26 < -26 ||
+> +		    p_h264_pps->pic_init_qs_minus26 > 25)
+> +			return -EINVAL;
+> +		if (p_h264_pps->chroma_qp_index_offset < -12 ||
+> +		    p_h264_pps->chroma_qp_index_offset > 12)
+> +			return -EINVAL;
+> +		if (p_h264_pps->second_chroma_qp_index_offset < -12 ||
+> +		    p_h264_pps->second_chroma_qp_index_offset > 12)
+> +			return -EINVAL;
+> +		break;
+> +
+>  	case V4L2_CTRL_TYPE_H264_SCALING_MATRIX:
+> +		break;
+> +
+>  	case V4L2_CTRL_TYPE_H264_PRED_WEIGHTS:
+> +		p_h264_pred_weights = p;
+> +
+> +		if (p_h264_pred_weights->luma_log2_weight_denom > 7)
+> +			return -EINVAL;
+> +		if (p_h264_pred_weights->chroma_log2_weight_denom > 7)
+> +			return -EINVAL;
+>  		break;
+>  
+>  	case V4L2_CTRL_TYPE_H264_SLICE_PARAMS:
+>  		p_h264_slice_params = p;
+>  
+> +		if (p_h264_slice_params->slice_type != V4L2_H264_SLICE_TYPE_B)
+> +			p_h264_slice_params->flags &=
+> +				~V4L2_H264_SLICE_FLAG_DIRECT_SPATIAL_MV_PRED;
+> +
+> +		if (p_h264_slice_params->colour_plane_id > 2)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->cabac_init_idc > 2)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->disable_deblocking_filter_idc > 2)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->slice_alpha_c0_offset_div2 < -6 ||
+> +		    p_h264_slice_params->slice_alpha_c0_offset_div2 > 6)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->slice_beta_offset_div2 < -6 ||
+> +		    p_h264_slice_params->slice_beta_offset_div2 > 6)
+> +			return -EINVAL;
+> +
+> +		if (p_h264_slice_params->slice_type == V4L2_H264_SLICE_TYPE_I ||
+> +		    p_h264_slice_params->slice_type == V4L2_H264_SLICE_TYPE_SI)
+> +			p_h264_slice_params->num_ref_idx_l0_active_minus1 = 0;
+> +		if (p_h264_slice_params->slice_type != V4L2_H264_SLICE_TYPE_B)
+> +			p_h264_slice_params->num_ref_idx_l1_active_minus1 = 0;
+> +
+> +		if (p_h264_slice_params->num_ref_idx_l0_active_minus1 >
+> +		    (V4L2_H264_REF_LIST_LEN - 1))
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->num_ref_idx_l1_active_minus1 >
+> +		    (V4L2_H264_REF_LIST_LEN - 1))
+> +			return -EINVAL;
+>  		zero_reserved(*p_h264_slice_params);
+>  		break;
+>  
+>  	case V4L2_CTRL_TYPE_H264_DECODE_PARAMS:
+>  		p_h264_dec_params = p;
+>  
+> +		if (p_h264_dec_params->nal_ref_idc > 3)
+> +			return -EINVAL;
+>  		for (i = 0; i < V4L2_H264_NUM_DPB_ENTRIES; i++) {
+>  			struct v4l2_h264_dpb_entry *dpb_entry =
+>  				&p_h264_dec_params->dpb[i];
+> diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> index e14307f1a77c..0bd253031ab5 100644
+> --- a/include/media/h264-ctrls.h
+> +++ b/include/media/h264-ctrls.h
+> @@ -105,6 +105,15 @@ enum v4l2_mpeg_video_h264_start_code {
+>  #define V4L2_H264_PROFILE_IDC_HIGH_422                          122
+>  #define V4L2_H264_PROFILE_IDC_HIGH_444                          244
+>  
+> +#define V4L2_H264_SPS_HAS_CHROMA_FORMAT(sps) \
+> +	((sps)->profile_idc == 100 || (sps)->profile_idc == 110 || \
+> +	 (sps)->profile_idc == 122 || (sps)->profile_idc == 244 || \
+> +	 (sps)->profile_idc == 44  || (sps)->profile_idc == 83  || \
+> +	 (sps)->profile_idc == 86  || (sps)->profile_idc == 118 || \
+> +	 (sps)->profile_idc == 128 || (sps)->profile_idc == 138 || \
+> +	 (sps)->profile_idc == 139 || (sps)->profile_idc == 134 || \
+> +	 (sps)->profile_idc == 135)
+
+In the previous patch you added V4L2_H264_PROFILE_IDC_ defines, but they
+are not used in this define. It's a bit odd.
+
+Regards,
+
+	Hans
+
+> +
+>  /**
+>   * struct v4l2_ctrl_h264_sps - H264 sequence parameter set
+>   *
 > 
 
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
