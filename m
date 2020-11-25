@@ -2,76 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F342C3F01
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E51E82C3F0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728548AbgKYLXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39148 "EHLO
+        id S1728955AbgKYLYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:24:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgKYLXF (ORCPT
+        with ESMTP id S1726202AbgKYLYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:23:05 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F0FC0613D4;
-        Wed, 25 Nov 2020 03:23:05 -0800 (PST)
-Date:   Wed, 25 Nov 2020 12:23:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606303383;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zddgu1xg92Bn0MiOfefrMFIbOQ+hQRLk2ZCm304FhdM=;
-        b=acGIuGJbU7UREvLEeYq30k4lzUJv9UeKuL6qFGncJg4C/V0RZp2uVBBRmIcK+bKofALZv1
-        E/i+KY42+zjgGgWIhugsxh4pK0+KzhaSx7krPIqWVaI4tBzuG1b0YjzcTWivmnnVgWxTbx
-        su45/uFa1s4kTrwltU9qXYpO2UxbVEVDVku3b9N93c58X1QU5q3xnxSKl++4RbkNi2h2wv
-        2AzDyIO6MIXYLHTI5ThxytVN4lNv+CMzJeBA55R781I0K/LFybudsUFdcO7SCJ1/O6VI+w
-        wA3laoEwlfSFF4yg44bDycmmLFdclEUeYbHB58QerS0Zt2srzq/8EL336DEcbw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606303383;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zddgu1xg92Bn0MiOfefrMFIbOQ+hQRLk2ZCm304FhdM=;
-        b=DLTtjNS3WiGZoyYE4Mj9Ou1emwbzJ/YRBd8P5jF9pfr7kPbZotaSxP0mB8Yozgu/iZNwBs
-        fq/R9KQKzyCNkKAw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
-        LTP List <ltp@lists.linux.it>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        torvalds@linuxfoundation.org, Yang Shi <shy828301@gmail.com>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@suse.de>, Song Liu <songliubraving@fb.com>,
-        Zi Yan <ziy@nvidia.com>, vtolkm@googlemail.com,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: kernel BUG at mm/highmem.c:417! invalid opcode: 0000 EIP:
- zero_user_segments
-Message-ID: <20201125112302.zh6x3hq7wyzqoz66@linutronix.de>
-References: <CA+G9fYuKZGaHVvAv=ZwOL_p6UM3YhOHy0DcJRRM_DOLGYXg1Dw@mail.gmail.com>
- <20201124171628.dk6tle5lh3sx2jxg@linutronix.de>
- <20201125004632.GG4327@casper.infradead.org>
+        Wed, 25 Nov 2020 06:24:50 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A858C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:24:50 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id l2so3784285qkf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:24:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=agmpj2HBmWrLN3MVuSVDvn8VNwMgC/NxRRqXNQElq+c=;
+        b=Xek41XwpQigUAOEeTJBGHWL790+lASvVIv15zxh3iAJ1zijkjfVfs9eVex27OfCuXA
+         kJdW59wrQn1P9fA1QwhwcZG8R3hzDh9VApTT6RicMbfuwQCmYi2DVJmFpe27824jWafL
+         Z+HcAq9jhCmUjGVHK+2nF2Y/jqCEFBtWVYC3vbbXALj0NjPLbNx1snXzCd9TOUOPyQPa
+         TsvhSX5+VzpEoHmFpb834YUk/5gmOhFG8ZSqrIOfyJ2NHQ/nf0TtsQsaTxmrSe24nIZS
+         OyTVn5zFIQ+IEXvHDeNaqtrmH18lXKQrB6Xafri4msJHpPoeH8lbmXm1OqF8yFBOBMB+
+         hrlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=agmpj2HBmWrLN3MVuSVDvn8VNwMgC/NxRRqXNQElq+c=;
+        b=maE2Evx/NZsfsThghIE0ZL8ewz61U9ZJoMoJEkTOp2X9x59Ze4i+YGFgbGh9Sj9bAk
+         hLY1FY/2DuMTjtoTdABKIxXA1IYKiQZFVpRAHY4NkaSnsk+/LygSzF3xmsRT7atGakDX
+         cu4TnE0QR1mHmOQ1Tlhu6fNZxsQp8YaJliMFTlZd2ckkugVuSuiFgAOfC4ZqUYqJ7gdo
+         bKX2PpYQ1Eq7h3v+ub2r0aA0GfUm28XL9aQKQrtZdMsBLrqCAWkGaIg+U6BGlFiEw343
+         BLxrTpptso9ZwImPnGSmoTZIO0bErdGSPdh8VolMw0W1Ma3A+zW4jNCAv9cm8NGz1MZo
+         vG+w==
+X-Gm-Message-State: AOAM530cUyRD083f5jRhjwoPYxbDpSKOwexR+pmh/LTIBaoBFAP1ziAh
+        LZBl6QCXxAOMAgitxH84igFioRi16zV/We4n/f9Zig==
+X-Google-Smtp-Source: ABdhPJwWhnzD0lDZFoqtnfER27VsEtm05heWcR/zUGhYgUn6H9hWU74Sr5XzjkLVg9dn0GVTJoyr0OxmFzYOq0n5cUA=
+X-Received: by 2002:a25:7481:: with SMTP id p123mr3005268ybc.167.1606303489272;
+ Wed, 25 Nov 2020 03:24:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201125004632.GG4327@casper.infradead.org>
+References: <1606298560-3003-1-git-send-email-kalyan_t@codeaurora.org>
+In-Reply-To: <1606298560-3003-1-git-send-email-kalyan_t@codeaurora.org>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Wed, 25 Nov 2020 16:54:13 +0530
+Message-ID: <CAMi1Hd3fjrJXJ1puZ6SCn0FXPNZdoJh19GALcVr_R93tZnxW_w@mail.gmail.com>
+Subject: Re: [v1] drm/msm/dpu: consider vertical front porch in the prefill bw calculation
+To:     Kalyan Thota <kalyan_t@codeaurora.org>
+Cc:     y@qualcomm.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Raviteja Tamatam <travitej@codeaurora.org>,
+        nganji@codeaurora.org, Stephen Boyd <swboyd@chromium.org>,
+        abhinavk@codeaurora.org, ddavenport@chromium.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-25 00:46:32 [+0000], Matthew Wilcox wrote:
-> 
-> Thanks for debugging this!  I didn't realise start1 was allowed to be
-> less than start2.  Try this ... (systemd is sabotaging my efforts to
-> test an i386 kernel)
+On Wed, 25 Nov 2020 at 15:33, Kalyan Thota <kalyan_t@codeaurora.org> wrote:
+>
+> In case of panels with low vertical back porch, the prefill bw
+> requirement will be high as we will have less time(vbp+pw) to
+> fetch and fill the hw latency buffers before start of first line
+> in active period.
+>
+> For ex:
+> Say hw_latency_line_buffers = 24, and if blanking vbp+pw = 10
+> Here we need to fetch 24 lines of data in 10 line times.
+> This will increase the bw to the ratio of linebuffers to blanking.
+>
+> DPU hw can also fetch data during vertical front porch provided
+> interface prefetch is enabled. Use vfp in the prefill calculation
+> as dpu driver enables prefetch if the blanking is not sufficient
+> to fill the latency lines.
 
-You are welcome.
+Tested on Xiaomi Poco F1 (sdm845).
 
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Tested-by: Amit Pundir <amit.pundir@linaro.org>
 
-Sebastian
+>
+> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> index 7ea90d2..315b999 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> @@ -151,7 +151,7 @@ static void _dpu_plane_calc_bw(struct drm_plane *plane,
+>         u64 plane_bw;
+>         u32 hw_latency_lines;
+>         u64 scale_factor;
+> -       int vbp, vpw;
+> +       int vbp, vpw, vfp;
+>
+>         pstate = to_dpu_plane_state(plane->state);
+>         mode = &plane->state->crtc->mode;
+> @@ -164,6 +164,7 @@ static void _dpu_plane_calc_bw(struct drm_plane *plane,
+>         fps = drm_mode_vrefresh(mode);
+>         vbp = mode->vtotal - mode->vsync_end;
+>         vpw = mode->vsync_end - mode->vsync_start;
+> +       vfp = mode->vsync_start - mode->vdisplay;
+>         hw_latency_lines =  dpu_kms->catalog->perf.min_prefill_lines;
+>         scale_factor = src_height > dst_height ?
+>                 mult_frac(src_height, 1, dst_height) : 1;
+> @@ -176,7 +177,13 @@ static void _dpu_plane_calc_bw(struct drm_plane *plane,
+>                 src_width * hw_latency_lines * fps * fmt->bpp *
+>                 scale_factor * mode->vtotal;
+>
+> -       do_div(plane_prefill_bw, (vbp+vpw));
+> +       if ((vbp+vpw) > hw_latency_lines)
+> +               do_div(plane_prefill_bw, (vbp+vpw));
+> +       else if ((vbp+vpw+vfp) < hw_latency_lines)
+> +               do_div(plane_prefill_bw, (vbp+vpw+vfp));
+> +       else
+> +               do_div(plane_prefill_bw, hw_latency_lines);
+> +
+>
+>         pstate->plane_fetch_bw = max(plane_bw, plane_prefill_bw);
+>  }
+> --
+> 2.7.4
+>
