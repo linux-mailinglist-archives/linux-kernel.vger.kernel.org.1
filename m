@@ -2,105 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39BA2C44E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B652C44F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730903AbgKYQYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:24:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730747AbgKYQYL (ORCPT
+        id S1730955AbgKYQZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:25:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34116 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729690AbgKYQZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:24:11 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE55C0613D4;
-        Wed, 25 Nov 2020 08:24:11 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id x24so2805177pfn.6;
-        Wed, 25 Nov 2020 08:24:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=3+3gfHD91/328qfooN+OsmJ9PHiYPgpjIR8tzOiYBHo=;
-        b=YavSxQY4iVhrdX0h9CXAQtfQY3M/lSfjiujDt3l6QkRWufd91bgIX9sSzVy/CJPQrq
-         O5CBFNRz30U5BB2MtV0PC7AlA7DIr1/WCYNY6O5N3bDGVQzIb2auyr/opkOZ/7bHa9CW
-         LQ4zKVgVpfc30Ou7esFAYnagn3CYfwnMQKlvKuJ+QFnmEaluVp/REQeVECsmrJnWeaYC
-         iKC4so2wF9PdUkTGZrRwc7unrzLxFU3jCjfaiaHM0J99PfhqD/vuk5pUuRTxtySIVsMI
-         cPUwyixg1xr3OpqZ8pW6FqcXtNq3aKrjc6ySOfwHdPX7pwyikvv8a7p1OwmraJD0fF0a
-         8frQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=3+3gfHD91/328qfooN+OsmJ9PHiYPgpjIR8tzOiYBHo=;
-        b=X294hHSYw+JW2o2oKavxnMqe6lfRAjGrwJIfFpPuUoH7FdR+bnGCOq/QMuVsc3FEXZ
-         wJbl0eZvo8FylYm37g7K17T4SRNy+F86EZAfXpu5ACSvlk21mixgsupu4AFHOB6sk76o
-         hp9cW4XdSar6GB+BHed8Z7jmtXjn4E99/GQydwe2MwTrb4O311KT0iedTfp/52wvO49J
-         NgkubN9s/zJoNUiSCCZ+5UDJhGhz5VF3+6I7aP4/wIV2powN3jR4LpGMuOAj0nH4j+mX
-         VhZPtD4ctfVbAjL04ofTlb4II0620ECFAUWOFMbb02bn/zW0GRwFYklqBDg4fW54foNh
-         HPwQ==
-X-Gm-Message-State: AOAM531QkS1+D6I9g8rnTQrZvGXFQsBKLaEfDgmTD7yRZOz4Ps0ixIIO
-        AMBv6cypowGdCYZ37YK0Z3U=
-X-Google-Smtp-Source: ABdhPJxClJOLijc/qN4Y2TsUHFrwBBO/dNGfLQT1DiaRCkxu34lVJljgWO/JNiNtq4Nwes8TWw/gNw==
-X-Received: by 2002:a62:61c2:0:b029:197:f5ee:6ffa with SMTP id v185-20020a6261c20000b0290197f5ee6ffamr3134826pfb.18.1606321451401;
-        Wed, 25 Nov 2020 08:24:11 -0800 (PST)
-Received: from paju ([116.124.119.85])
-        by smtp.gmail.com with ESMTPSA id e4sm2613862pfh.90.2020.11.25.08.24.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 08:24:10 -0800 (PST)
-Date:   Thu, 26 Nov 2020 01:24:05 +0900
-From:   Dongjin Kim <tobetter@gmail.com>
-To:     Guillaume La Roque <glaroque@baylibre.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal: amlogic_thermal: Add hwmon support
-Message-ID: <20201125162405.GA1263100@paju>
+        Wed, 25 Nov 2020 11:25:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606321500;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o/Y0frm+n6+KcF0/nn/2XkdcdJw5e1jlF8WzBJfpXEs=;
+        b=jHIozx692+mLqaUHgzoxrVz3lzgEOPHhA5Fj3S/DzwvO7lLAW9f+Lgqo0gR1LA8pY06vHt
+        DDfP7o388GZp7RINfk1LuZmnGyq5JV69PXCjwuwCXIc6QsEhVUs0WqW1ukDmrRmQknCAqE
+        9/qKNeDAx/DgMGEAR/PKmb8/AV3v6PI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-578-JMyfGYw_NGS3vgQc4F4nCg-1; Wed, 25 Nov 2020 11:24:58 -0500
+X-MC-Unique: JMyfGYw_NGS3vgQc4F4nCg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA308101AFA7;
+        Wed, 25 Nov 2020 16:24:55 +0000 (UTC)
+Received: from [10.36.113.83] (ovpn-113-83.ams2.redhat.com [10.36.113.83])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D09E10016F4;
+        Wed, 25 Nov 2020 16:24:47 +0000 (UTC)
+Subject: Re: [PATCH v3 2/2] powerpc/pseries: pass MSI affinity to
+ irq_create_mapping()
+To:     Denis Kirjanov <kda@linux-powerpc.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Paul Mackerras <paulus@samba.org>, Greg Kurz <groug@kaod.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-block@vger.kernel.org,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Marc Zyngier <maz@kernel.org>
+References: <20201125150932.1150619-1-lvivier@redhat.com>
+ <20201125150932.1150619-3-lvivier@redhat.com>
+ <CAOJe8K1Q7sGf67bdj-2Mthkj4XNR4fOSskV1dyh62AdzefhpAQ@mail.gmail.com>
+From:   Laurent Vivier <lvivier@redhat.com>
+Message-ID: <7184880b-0351-ae18-d2e1-fab7b79fc864@redhat.com>
+Date:   Wed, 25 Nov 2020 17:24:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <CAOJe8K1Q7sGf67bdj-2Mthkj4XNR4fOSskV1dyh62AdzefhpAQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expose Amlogic thermal as HWMON devices.
+On 25/11/2020 17:05, Denis Kirjanov wrote:
+> On 11/25/20, Laurent Vivier <lvivier@redhat.com> wrote:
+>> With virtio multiqueue, normally each queue IRQ is mapped to a CPU.
+>>
+>> But since commit 0d9f0a52c8b9f ("virtio_scsi: use virtio IRQ affinity")
+>> this is broken on pseries.
+> 
+> Please add "Fixes" tag.
 
-	$ sensors
-	cpu_thermal-virtual-0
-	Adapter: Virtual device
-	temp1:        +32.2 C  (crit = +110.0 C)
+In fact, the code in commit 0d9f0a52c8b9f is correct.
 
-	ddr_thermal-virtual-0
-	Adapter: Virtual device
-	temp1:        +33.4 C  (crit = +110.0 C)
+The problem is with MSI/X irq affinity and pseries. So this patch fixes more than
+virtio_scsi. I put this information because this commit allows to clearly show the
+problem. Perhaps I should remove this line in fact?
 
-Signed-off-by: Dongjin Kim <tobetter@gmail.com>
----
- drivers/thermal/amlogic_thermal.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Thanks,
+Laurent
 
-diff --git a/drivers/thermal/amlogic_thermal.c b/drivers/thermal/amlogic_thermal.c
-index ccb1fe18e993..2fce96c32586 100644
---- a/drivers/thermal/amlogic_thermal.c
-+++ b/drivers/thermal/amlogic_thermal.c
-@@ -29,6 +29,7 @@
- #include <linux/thermal.h>
- 
- #include "thermal_core.h"
-+#include "thermal_hwmon.h"
- 
- #define TSENSOR_CFG_REG1			0x4
- 	#define TSENSOR_CFG_REG1_RSET_VBG	BIT(12)
-@@ -291,6 +292,9 @@ static int amlogic_thermal_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	if (devm_thermal_add_hwmon_sysfs(pdata->tzd))
-+		dev_warn(&pdev->dev, "failed to add hwmon sysfs attributes\n");
-+
- 	ret = amlogic_thermal_enable(pdata);
- 
- 	return ret;
--- 
-2.25.1
+> 
+> Thanks!
+> 
+>>
+>> The affinity is correctly computed in msi_desc but this is not applied
+>> to the system IRQs.
+>>
+>> It appears the affinity is correctly passed to rtas_setup_msi_irqs() but
+>> lost at this point and never passed to irq_domain_alloc_descs()
+>> (see commit 06ee6d571f0e ("genirq: Add affinity hint to irq allocation"))
+>> because irq_create_mapping() doesn't take an affinity parameter.
+>>
+>> As the previous patch has added the affinity parameter to
+>> irq_create_mapping() we can forward the affinity from rtas_setup_msi_irqs()
+>> to irq_domain_alloc_descs().
+>>
+>> With this change, the virtqueues are correctly dispatched between the CPUs
+>> on pseries.
+>>
+>> BugId: https://bugzilla.redhat.com/show_bug.cgi?id=1702939
+>> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+>> Reviewed-by: Greg Kurz <groug@kaod.org>
+>> ---
+>>  arch/powerpc/platforms/pseries/msi.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/powerpc/platforms/pseries/msi.c
+>> b/arch/powerpc/platforms/pseries/msi.c
+>> index 133f6adcb39c..b3ac2455faad 100644
+>> --- a/arch/powerpc/platforms/pseries/msi.c
+>> +++ b/arch/powerpc/platforms/pseries/msi.c
+>> @@ -458,7 +458,8 @@ static int rtas_setup_msi_irqs(struct pci_dev *pdev, int
+>> nvec_in, int type)
+>>  			return hwirq;
+>>  		}
+>>
+>> -		virq = irq_create_mapping(NULL, hwirq);
+>> +		virq = irq_create_mapping_affinity(NULL, hwirq,
+>> +						   entry->affinity);
+>>
+>>  		if (!virq) {
+>>  			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
+>> --
+>> 2.28.0
+>>
+>>
+> 
 
