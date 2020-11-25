@@ -2,114 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562EF2C40A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D414E2C40A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729436AbgKYMyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:54:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728937AbgKYMyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:54:54 -0500
-Received: from kernel.org (unknown [77.125.7.142])
+        id S1728082AbgKYMzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:55:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgKYMzz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:55:55 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12342C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:55:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=18VVEZybOg8OLREr7667XcO7XQNbRsfPgXlmxcjHmRc=; b=QyOK4sZjHZtjFbvfkzrjXSKwom
+        KNpOBu42hwbXNqxFWskRas2LF6TPHMscxS+zEar8QpqDeEbz4h3aBBis91csKZAS890maSMIvGjGl
+        C72yIs7qGXlj45nu5vVD37YyTyIqFxUKd/pDmgAVe8lhWP6IF10VuT9NVCrrRf79ftd9eGFrgoKaq
+        DloyhKOv9dEskowfzYrAXlhQtxk2FHB4Hw4b1pWHKnh62drnYIBWy9gM9UBCb29FDaUFrTJQOsgbi
+        IPFqGpgHnZCQj8hBmyQK+o6t/fPQon+1AJ4V+cc4RnAunk4QDhEA6a9SIMUXuRNtY50piExiUtdWm
+        KvXxqG4g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khuJv-0004Yu-Uu; Wed, 25 Nov 2020 12:54:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71666206E5;
-        Wed, 25 Nov 2020 12:54:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606308893;
-        bh=NcE3+dgsaNxNTH+nxSaJa3qEfL3YRFoQ6AH2Z6VFQHU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a7gjzeaQw8gqaRBaUyZOy5sUR2J1ue2BgtT8wiWE7vpNVO1bp6IDwU1JTPZRkI5fs
-         twyAOO0XzXM1sucrjL22kkzADF4AGdwR5y6k6C5eXgzZ/XyZYqkR2l4h5+EmFr3WSF
-         yiadG3vU7vSo8WZwowyoPcQDIgOs6udvyYjH4zqE=
-Date:   Wed, 25 Nov 2020 14:54:40 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Baoquan He <bhe@redhat.com>,
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 51427300DAE;
+        Wed, 25 Nov 2020 13:54:47 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 27DDB20D6FE65; Wed, 25 Nov 2020 13:54:47 +0100 (CET)
+Date:   Wed, 25 Nov 2020 13:54:47 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
         Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Ira Weiny <ira.weiny@intel.com>, Jens Axboe <axboe@kernel.dk>,
-        Joe Perches <joe@perches.com>,
-        Kees Cook <keescook@chromium.org>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rob Herring <robh@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Asserhall <stefan.asserhall@xilinx.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] microblaze: Remove noMMU code
-Message-ID: <20201125125440.GP8537@kernel.org>
-References: <caa5c3cbe6253d67fed83c4351d85224f8cf226c.1606303816.git.michal.simek@xilinx.com>
- <20201125120739.GO8537@kernel.org>
- <7217421a-c4de-0bd1-3231-17563e51e3c9@xilinx.com>
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
+ cookie on fork
+Message-ID: <20201125125447.GV2414@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-23-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7217421a-c4de-0bd1-3231-17563e51e3c9@xilinx.com>
+In-Reply-To: <20201117232003.3580179-23-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
+> +/* Per-task interface */
+> +static unsigned long sched_core_alloc_task_cookie(void)
+> +{
+> +	struct sched_core_cookie *ptr =
+> +		kmalloc(sizeof(struct sched_core_cookie), GFP_KERNEL);
+> +
+> +	if (!ptr)
+> +		return 0;
+> +	refcount_set(&ptr->refcnt, 1);
+> +
+> +	/*
+> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
+> +	 * is done after the stopper runs.
+> +	 */
+> +	sched_core_get();
+> +	return (unsigned long)ptr;
+> +}
+> +
+> +static bool sched_core_get_task_cookie(unsigned long cookie)
+> +{
+> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
+> +
+> +	/*
+> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
+> +	 * is done after the stopper runs.
+> +	 */
+> +	sched_core_get();
+> +	return refcount_inc_not_zero(&ptr->refcnt);
+> +}
+> +
+> +static void sched_core_put_task_cookie(unsigned long cookie)
+> +{
+> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
+> +
+> +	if (refcount_dec_and_test(&ptr->refcnt))
+> +		kfree(ptr);
+> +}
 
-On Wed, Nov 25, 2020 at 01:14:49PM +0100, Michal Simek wrote:
-> Hi Mike,
-> 
-> On 25. 11. 20 13:07, Mike Rapoport wrote:
-> > On Wed, Nov 25, 2020 at 12:30:32PM +0100, Michal Simek wrote:
-> >> This configuration is obsolete and likely none is really using it. That's
-> >> why remove it to simplify code.
-> >>
-> >> Cc: Arnd Bergmann <arnd@arndb.de>
-> >> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> >> ---
-> > 
-> > Looks ok to me except several leftovers:
-> > 
-> > $ git grep CONFIG_MMU arch/microblaze/
-> > arch/microblaze/kernel/hw_exception_handler.S: * STACK FRAME STRUCTURE (for CONFIG_MMU=n)
-> > 
-> > $ git grep -E 'MICROBLAZE_(64|16)K_PAGES'
-> > arch/microblaze/include/asm/page.h:#if defined(CONFIG_MICROBLAZE_64K_PAGES)
-> > arch/microblaze/include/asm/page.h:#elif defined(CONFIG_MICROBLAZE_16K_PAGES)
-> > arch/microblaze/kernel/hw_exception_handler.S:#ifdef CONFIG_MICROBLAZE_64K_PAGES
-> > arch/microblaze/kernel/hw_exception_handler.S:#elif CONFIG_MICROBLAZE_16K_PAGES
-> > drivers/net/Kconfig:                 IA64_PAGE_SIZE_64KB || MICROBLAZE_64K_PAGES || \
-> > 
-> > 
-> 
-> I left it there intentionally. First one because there is description in
-> that comment which references noMMU. If this should be removed the whole
-> comment should be tuned to make sense. It is better to do it in separate
-> patch.
+> +	/*
+> +	 * NOTE: sched_core_get() is done by sched_core_alloc_task_cookie() or
+> +	 *       sched_core_put_task_cookie(). However, sched_core_put() is done
+> +	 *       by this function *after* the stopper removes the tasks from the
+> +	 *       core queue, and not before. This is just to play it safe.
+> +	 */
 
-Makes sense, I just grepped without actually opening the files :)
-
-> And second part. I know I removed that Kconfig macros for it but maybe
-> good to talk about what needs to change to support different page size
-> for systems with MMU.
-
-I'd add a sentence about it to the changelog.
-
-> Thanks,
-> Michal
-
--- 
-Sincerely yours,
-Mike.
+So for no reason what so ever you've made the code more difficult?
