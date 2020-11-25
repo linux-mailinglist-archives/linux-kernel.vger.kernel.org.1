@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9152C4814
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF322C4815
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgKYTNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:13:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726171AbgKYTNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:13:30 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BBBE204EF;
-        Wed, 25 Nov 2020 19:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606331609;
-        bh=FC8/17vFVWvuI6Z/lTpx8ksjxC5pw0ZG4iAAR2bBv1Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=NZ0H1DV1ZhzRzS1BkpUsELQk4Xd+ASsUXZQdBCesQ8WU5ySsTAWzqZlfKGxBV/iza
-         IxfO5pctTNk8Twx81Rag/NSZSNahU4thguMEVwLe2lKXGzROYvtdjOu3IH6mHslmun
-         EKvtu69SnQwEgGW4q7SCLF6JaO5Zn/sSAYff01xw=
-Date:   Wed, 25 Nov 2020 13:13:27 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH] x86/PCI: Convert force_disable_hpet() to standard quirk
-Message-ID: <20201125191327.GA653914@bjorn-Precision-5520>
+        id S1726819AbgKYTNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgKYTNx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 14:13:53 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0063C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:13:52 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id t15so1052993ual.6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:13:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+IN/5/YoLL4+4EFo1Ef1ozkW+zjATL5fFl70LvBvqLs=;
+        b=qxUyE9LuSmA4t0F1YBoruhkPhTnOrZBtZbvb4JzPea8g4wxNPXLBQy2J+UfSJYg4/6
+         7wds6OT5CogUOubCMsqJwIvo4FNwEOBlOm71xH9se7Y9c8M1jk5AbocSpK6r0w+J8Deg
+         AcGSXDcZApCRiikoQ7gFV5ZnEunlgutYWIDN/EgmdxlN071UG35jDX8C2GpIvw4fr4hq
+         /sMRNrWDw4GpAi7U7HG4i9UJGf/CRmHcwUfnhGpaCNhwjE5jVFJX85WrO5wRbLdVP1Yr
+         7xuz+3mDyutIoQavAsgmVXE/ZeEMusnzoSaUrowayxT55cLLH6hV6zWRvFBbd0D8Q8/j
+         dG+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+IN/5/YoLL4+4EFo1Ef1ozkW+zjATL5fFl70LvBvqLs=;
+        b=P9hR+oKKWZFZAB50o0XvXlQl90H8X3LZ4qUFMTo7aMdnkIhLvNZ8MRhF9YBKxy61or
+         amsNUnjH/EhPZOOsACnI2sqlU1xfuYoUsPBddqTZ8D5gRW6o76cM0+mhKyYkoQ0G777x
+         oP2QLV2uEGXR3U4KoDTYSu5o0SPpzbB/Wl+NC/pssQ+Mf4tOOkqVC2u0cyvZ146AlMMI
+         XtLUXRwcvoQBCs6kP6zGvcXc/M/wp0bEeAgP02HzFoW5GFJmp0Sm5bYncfaRA5cTNn7E
+         KY/ugf2NSoNUGjJ0indm1Ixt3uU+tbnEe1iTPp2IrhrOVWJsT1XBvE0WIrKLKzBWkq8Z
+         iPcw==
+X-Gm-Message-State: AOAM5323B1yLStSlagitWvUYeckAoaio6v/XefpcRn8KZae971uYh8Wz
+        +pfsLLpj/2YWL4IKl7ZV4kEeBCIifdE5p2hsa4WAp02JjSO6CA==
+X-Google-Smtp-Source: ABdhPJwix6VtcxlXC6zudY+mZKXAaO15iHZ1FBtSxZi91Mg2qwPtT+PAqqctpt+1QFc+hzbVK7FxUdS7kfOxelLqtsc=
+X-Received: by 2002:ab0:6cb6:: with SMTP id j22mr3713552uaa.82.1606331632174;
+ Wed, 25 Nov 2020 11:13:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v9dtk3j4.fsf@nanos.tec.linutronix.de>
+References: <202011241521.8ozmsGaX-lkp@intel.com>
+In-Reply-To: <202011241521.8ozmsGaX-lkp@intel.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Thu, 26 Nov 2020 00:43:39 +0530
+Message-ID: <CAFqt6zYiKP+jK_=_wmcMPYQyCxhroKkdMVy7qXhksh-V6HM=EQ@mail.gmail.com>
+Subject: Re: arch/powerpc/platforms/pseries/reconfig.c:394:30: error:
+ 'ofdt_proc_ops' defined but not used
+To:     kernel test robot <lkp@intel.com>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 01:46:23PM +0100, Thomas Gleixner wrote:
-> On Thu, Nov 19 2020 at 12:19, Bjorn Helgaas wrote:
-> > 62187910b0fc ("x86/intel: Add quirk to disable HPET for the Baytrail
-> > platform") implemented force_disable_hpet() as a special early quirk.
-> > These run before the PCI core is initialized and depend on the
-> > x86/pci/early.c accessors that use I/O ports 0xcf8 and 0xcfc.
-> >
-> > But force_disable_hpet() doesn't need to be one of these special early
-> > quirks.  It merely sets "boot_hpet_disable", which is tested by
-> > is_hpet_capable(), which is only used by hpet_enable() and hpet_disable().
-> > hpet_enable() is an fs_initcall(), so it runs after the PCI core is
-> > initialized.
-> 
-> hpet_enable() is not an fs_initcall(). hpet_late_init() is and that
-> invokes hpet_enable() only for the case that ACPI did not advertise it
-> and the force_hpet quirk provided a base address.
-> 
-> But hpet_enable() is also invoked via:
-> 
->  start_kernel()
->    late_time_init()
->      x86_late_time_init()
->        hpet_time_init()
-> 
-> which is way before the PCI core is available and we really don't want
-> to set it up there if it's known to be broken :)
+On Tue, Nov 24, 2020 at 12:40 PM kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   d5beb3140f91b1c8a3d41b14d729aefa4dcc58bc
+> commit: 97a32539b9568bb653683349e5a76d02ff3c3e2c proc: convert everything to "struct proc_ops"
+> date:   10 months ago
+> config: powerpc-randconfig-r002-20201124 (attached as .config)
+> compiler: powerpc64le-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=97a32539b9568bb653683349e5a76d02ff3c3e2c
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 97a32539b9568bb653683349e5a76d02ff3c3e2c
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+> >> arch/powerpc/platforms/pseries/reconfig.c:394:30: error: 'ofdt_proc_ops' defined but not used [-Werror=unused-const-variable=]
+>      394 | static const struct proc_ops ofdt_proc_ops = {
+>          |                              ^~~~~~~~~~~~~
+>    cc1: all warnings being treated as errors
+> --
+> >> arch/powerpc/platforms/pseries/lparcfg.c:701:30: error: 'lparcfg_proc_ops' defined but not used [-Werror=unused-const-variable=]
+>      701 | static const struct proc_ops lparcfg_proc_ops = {
+>          |                              ^~~~~~~~~~~~~~~~
+>    cc1: all warnings being treated as errors
 
-Wow, I really blew that, don't know how I missed that path.  Thanks
-for catching this!  I'll drop this patch.
+Both ofdt_proc_ops & lparcfg_proc_ops are used by proc_create().
+Not sure why it is throwing warnings.
 
-> Now the more interesting question is why this needs to be a PCI quirk in
-> the first place. Can't we just disable the HPET based on family/model
-> quirks?
-
-You mean like a CPUID check or something?  I'm all in favor of doing
-something that doesn't depend on PCI.
-
-> e0748539e3d5 ("x86/intel: Disable HPET on Intel Ice Lake platforms")
-> f8edbde885bb ("x86/intel: Disable HPET on Intel Coffee Lake H platforms")
-> fc5db58539b4 ("x86/quirks: Disable HPET on Intel Coffe Lake platforms")
-> 62187910b0fc ("x86/intel: Add quirk to disable HPET for the Baytrail platform")
-> 
-> I might be missing something here, but in general on anything modern
-> HPET is mostly useless.
-> 
-> Thanks,
-> 
->         tglx
-> 
+>
+> vim +/ofdt_proc_ops +394 arch/powerpc/platforms/pseries/reconfig.c
+>
+>    393
+>  > 394  static const struct proc_ops ofdt_proc_ops = {
+>    395          .proc_write     = ofdt_write,
+>    396          .proc_lseek     = noop_llseek,
+>    397  };
+>    398
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
