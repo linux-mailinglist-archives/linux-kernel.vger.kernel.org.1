@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D8D2C45A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053772C45A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732144AbgKYQpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:45:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56406 "EHLO mail.kernel.org"
+        id S1732158AbgKYQpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:45:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732124AbgKYQph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:45:37 -0500
+        id S1731816AbgKYQpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:45:42 -0500
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82ACF2173E;
-        Wed, 25 Nov 2020 16:45:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A70221973;
+        Wed, 25 Nov 2020 16:45:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606322736;
-        bh=TXQx40RTKozYTanc+uLUYGiaUWZozYnNj4thZ9HnSds=;
+        s=default; t=1606322741;
+        bh=1EoeOU1HdN3bYTNow0bWtkQGItTZBUyVz0dyrz8aCbY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=wiG+6MnsMrj7Zpl5ab28mXvsB36oLpLzT9cPGJT6FRPRaVzYnRcheQXJzKIIVPEkY
-         0gDf0k2T5IU7BiG0SD7LZJYeqYNnDnq6S3NXFzKziJ0TV0SwDQQRqwZOZ9+MfvmNnI
-         0rHiXHKYkqmYHcnbnL59PBfyo8df/yykInWaXOvM=
+        b=dBUnr1cADQ7AtUpsu8Sixmgan9lv5nsS3af2svJgeQ/q4XlrIQ9TCNndwGMAbn5II
+         iltp+YDRQQKKQnul+GxBknQRNQWSm88TJWGCYa3XdFjz5OsyHQxlbmN5fe23aGbjQ0
+         WtL3FsYIjgvHZWLRKI6u0HzjgQQlPu1Whqr7IPQU=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -45,9 +45,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org,
         linux-rockchip@lists.infradead.org
-Subject: [PATCH v2 06/39] ASoC: tas571x: mark OF related data as maybe unused
-Date:   Wed, 25 Nov 2020 17:44:19 +0100
-Message-Id: <20201125164452.89239-7-krzk@kernel.org>
+Subject: [PATCH v2 07/39] ASoC: kirkwood: armada-370-db: mark OF related data as maybe unused
+Date:   Wed, 25 Nov 2020 17:44:20 +0100
+Message-Id: <20201125164452.89239-8-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201125164452.89239-1-krzk@kernel.org>
 References: <20201125164452.89239-1-krzk@kernel.org>
@@ -61,35 +61,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 The driver can be compile tested with !CONFIG_OF making certain data
 unused:
 
-  sound/soc/codecs/tas571x.c:892:34: warning: ‘tas571x_of_match’ defined but not used [-Wunused-const-variable=]
+  sound/soc/kirkwood/armada-370-db.c:137:34: warning: ‘a370db_dt_ids’ defined but not used [-Wunused-const-variable=]
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/codecs/tas571x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/kirkwood/armada-370-db.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index 835a723ce5bc..a3e682376946 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -773,7 +773,7 @@ static struct snd_soc_dai_driver tas571x_dai = {
- 	.ops = &tas571x_dai_ops,
- };
- 
--static const struct of_device_id tas571x_of_match[];
-+static const struct of_device_id tas571x_of_match[] __maybe_unused;
- 
- static int tas571x_i2c_probe(struct i2c_client *client,
- 			     const struct i2c_device_id *id)
-@@ -889,7 +889,7 @@ static int tas571x_i2c_remove(struct i2c_client *client)
- 	return 0;
+diff --git a/sound/soc/kirkwood/armada-370-db.c b/sound/soc/kirkwood/armada-370-db.c
+index 8e44ae37ad1e..81326426da33 100644
+--- a/sound/soc/kirkwood/armada-370-db.c
++++ b/sound/soc/kirkwood/armada-370-db.c
+@@ -134,7 +134,7 @@ static int a370db_probe(struct platform_device *pdev)
+ 	return devm_snd_soc_register_card(card->dev, card);
  }
  
--static const struct of_device_id tas571x_of_match[] = {
-+static const struct of_device_id tas571x_of_match[] __maybe_unused = {
- 	{ .compatible = "ti,tas5707", .data = &tas5707_chip, },
- 	{ .compatible = "ti,tas5711", .data = &tas5711_chip, },
- 	{ .compatible = "ti,tas5717", .data = &tas5717_chip, },
+-static const struct of_device_id a370db_dt_ids[] = {
++static const struct of_device_id a370db_dt_ids[] __maybe_unused = {
+ 	{ .compatible = "marvell,a370db-audio" },
+ 	{ },
+ };
 -- 
 2.25.1
 
