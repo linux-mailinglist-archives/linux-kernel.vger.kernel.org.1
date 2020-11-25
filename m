@@ -2,143 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C0A2C42C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 265372C42C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730093AbgKYPUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:20:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33066 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729482AbgKYPUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:20:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 89670AC22;
-        Wed, 25 Nov 2020 15:20:17 +0000 (UTC)
-Subject: Re: [PATCH] [RFC] init/main: fix broken buffer_init when
- DEFERRED_STRUCT_PAGE_INIT set
-To:     Lin Feng <linf@wangsu.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net
-References: <20201123110500.103523-1-linf@wangsu.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <06a3d903-1f27-16c5-b45b-92ec56a47e96@suse.cz>
-Date:   Wed, 25 Nov 2020 16:20:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1730120AbgKYPUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:20:50 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:42098 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729738AbgKYPUt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:20:49 -0500
+Received: from mail-wr1-f72.google.com ([209.85.221.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <andrea.righi@canonical.com>)
+        id 1khwb9-0007Kr-PN
+        for linux-kernel@vger.kernel.org; Wed, 25 Nov 2020 15:20:47 +0000
+Received: by mail-wr1-f72.google.com with SMTP id w17so878520wrp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 07:20:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1MLMHISOaIgeTutRvpuwhXxO602bfmP5K9rHz4FiRbk=;
+        b=XRRt2UhNydJn0rv9RdSeZa4k382fX5ghit41uJDCyY1J8J2UWq/FH6F6LqsRra0XrS
+         91I6z1wRYAnscV0Ler4mm8aQUX6q2ND7fe/SOIrrYkTw025cmA7trSQLkAIsuyd7Uztx
+         qtWP4hoQSUc8cLliPk2DWLUg1z2tyk4B26DSkaYxgHWagm0GrpmC7UAXTefQ2I2NgeIb
+         Ne8/v58Yq7ex96ycMpHFEFF4T7OUd+wOb0g/+ieH5TVz3SGe1AdnBxnhhhiVtP9xvoKZ
+         23HrVRVEsYYW+ds835hNzUOCfwNZoMUjDlfJZf3z62fOYLV3/TLZrTZgLfcP1QumCYQv
+         r5Jg==
+X-Gm-Message-State: AOAM5308ov8s+Gw9d+bE0BFUa3QMUWjmF3JyYHcWshW1pQIqMsqypBZN
+        x9NEPOcSzIBsgvxExxs1CwpX2v2cCIKj3B3vbgbb4MTnNvgHJw/8l6ILet0w0y/oQryt9d/av0C
+        PSCjTBYQC3X12NaHOZBNZRes3Kh83tJb17IhyBqsJMg==
+X-Received: by 2002:a1c:21c1:: with SMTP id h184mr4622244wmh.106.1606317644471;
+        Wed, 25 Nov 2020 07:20:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxNl3QW6kYs2TIKJGqJ7Hpd3zDYSdJfygEszsCEVOuPl+mFLvTEXyKWiO90gc5dVPV8CMfqbQ==
+X-Received: by 2002:a1c:21c1:: with SMTP id h184mr4622220wmh.106.1606317644221;
+        Wed, 25 Nov 2020 07:20:44 -0800 (PST)
+Received: from localhost (host-79-35-122-236.retail.telecomitalia.it. [79.35.122.236])
+        by smtp.gmail.com with ESMTPSA id i11sm5262891wrm.1.2020.11.25.07.20.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 07:20:43 -0800 (PST)
+Date:   Wed, 25 Nov 2020 16:20:42 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] leds: trigger: fix potential deadlock with libata
+Message-ID: <20201125152042.GC73489@xps-13-7390>
+References: <20201102104152.GG9930@xps-13-7390>
+ <20201125124648.GJ29328@amd>
+ <20201125141517.GA73489@xps-13-7390>
 MIME-Version: 1.0
-In-Reply-To: <20201123110500.103523-1-linf@wangsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125141517.GA73489@xps-13-7390>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/20 12:05 PM, Lin Feng wrote:
-> In the booting phase if CONFIG_DEFERRED_STRUCT_PAGE_INIT is set,
-> we have following callchain:
+On Wed, Nov 25, 2020 at 03:15:18PM +0100, Andrea Righi wrote:
+...
+> > I'd hate to see this in stable 3 days after Linus merges it...
+> > 
+> > Do these need _irqsave, too?
+> > 
+> > drivers/leds/led-triggers.c:   read_lock(&trig->leddev_list_lock);
+> > drivers/leds/led-triggers.c:   read_unlock(&trig->leddev_list_lock);
+> > drivers/leds/led-triggers.c:   read_lock(&trig->leddev_list_lock);
+> > drivers/leds/led-triggers.c:   read_unlock(&trig->leddev_list_lock);
+> > 
+> > Best regards,
 > 
-> start_kernel
-> ...
->    mm_init
->      mem_init
->       memblock_free_all
->         reset_all_zones_managed_pages
->         free_low_memory_core_early
-> ...
->    buffer_init
->      nr_free_buffer_pages
->        zone->managed_pages
-> ...
->    rest_init
->      kernel_init
->        kernel_init_freeable
->          page_alloc_init_late
->            kthread_run(deferred_init_memmap, NODE_DATA(nid), "pgdatinit%d", nid);
->            wait_for_completion(&pgdat_init_all_done_comp);
->            ...
->            files_maxfiles_init
+> I think also led_trigger_blink_setup() needs to use irqsave/irqrestore,
+> in fact:
 > 
-> It's clear that buffer_init depends on zone->managed_pages, but it's reset
-> in reset_all_zones_managed_pages after that pages are readded into
->   zone->managed_pages, but when buffer_init runs this process is half done
->   and most of them will finally be added till deferred_init_memmap done.
-> In large memory couting of nr_free_buffer_pages drifts too much, also
-> drifting from kernels to kernels on same hardware.
+> $ git grep "led_trigger_blink("
+> drivers/leds/led-triggers.c:void led_trigger_blink(struct led_trigger *trig,
+> drivers/power/supply/power_supply_leds.c:               led_trigger_blink(psy->charging_blink_full_solid_trig,
+> include/linux/leds.h:void led_trigger_blink(struct led_trigger *trigger, unsigned long *delay_on,
+> include/linux/leds.h:static inline void led_trigger_blink(struct led_trigger *trigger,
 > 
-> Fix is simple, it delays buffer_init run till deferred_init_memmap all done.
-
-Hmm nobody should need bh_cachep to allocate buffer heads until then, right.
-
-> But as corrected by this patch, max_buffer_heads becomes very large,
-> the value is roughly as many as 4 times of totalram_pages, formula:
-> max_buffer_heads = nrpages * (10%) * (PAGE_SIZE / sizeof(struct buffer_head));
+> power_supply_leds.c is using led_trigger_blink() from a workqueue
+> context, so potentially the same deadlock condition can also happen.
 > 
-> Say in a 64GB memory box we have 16777216 pages, then max_buffer_heads
-> turns out to be roughly 67,108,864.
-> In common cases, should a buffer_head be mapped to one page/block(4KB)?
-> So max_buffer_heads never exceeds totalram_pages.
-> IMO it's likely to make buffer_heads_over_limit bool value alwasy false,
-> then make codes 'if (buffer_heads_over_limit)' test in vmscan unnecessary.
-> Correct me if it's not true.
+> Let me know if you want me to send a new patch to include also this
+> case.
 
-Maybe we could compile that out with CONFIG_HIGHMEM then?
+Just sent (and tested) a v2 of this patch that changes also
+led_trigger_blink_setup().
 
-> So this patch will change the original behavior related to
-> buffer_heads_over_limit in vmscan since we used a half done value
-> of zone->managed_pages before, or should we use a smaller factor(<10%) in
-> previous formula.
-> 
-> Signed-off-by: Lin Feng <linf@wangsu.com>
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
->   init/main.c     | 2 --
->   mm/page_alloc.c | 3 +++
->   2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/init/main.c b/init/main.c
-> index 20baced721ad..a3f7c3416286 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -58,7 +58,6 @@
->   #include <linux/rmap.h>
->   #include <linux/mempolicy.h>
->   #include <linux/key.h>
-> -#include <linux/buffer_head.h>
->   #include <linux/page_ext.h>
->   #include <linux/debug_locks.h>
->   #include <linux/debugobjects.h>
-> @@ -1034,7 +1033,6 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
->   	fork_init();
->   	proc_caches_init();
->   	uts_ns_init();
-> -	buffer_init();
->   	key_init();
->   	security_init();
->   	dbg_late_init();
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index eaa227a479e4..2931d706fb52 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -70,6 +70,7 @@
->   #include <linux/psi.h>
->   #include <linux/padata.h>
->   #include <linux/khugepaged.h>
-> +#include <linux/buffer_head.h>
->   
->   #include <asm/sections.h>
->   #include <asm/tlbflush.h>
-> @@ -2103,6 +2104,8 @@ void __init page_alloc_init_late(void)
->   	files_maxfiles_init();
->   #endif
->   
-> +	buffer_init();
-> +
->   	/* Discard memblock private memory */
->   	memblock_discard();
->   
-> 
-
+-Andrea
