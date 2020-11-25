@@ -2,105 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1D52C3776
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 04:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D192C3779
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 04:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727136AbgKYDIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 22:08:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbgKYDIs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 22:08:48 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF0DC0613D4;
-        Tue, 24 Nov 2020 19:08:40 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id y7so706316lji.8;
-        Tue, 24 Nov 2020 19:08:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=t9WCWsnnCS0HjAluEuyOs6Y1ik0naTnbcxAT6lOfnCY=;
-        b=RKdLKWUXVadiG3r0jVpgelQMtYmcS4CpN7wGwAsslONQm/+dnWL59MJE26B7Nqu/X6
-         kLYhV8r/IsarKuOzVCN4yakN48MPYpjL55xW0F4JLbSknShhZTPoNqUMLvBh7K1Oc9pS
-         8T2HohUt8JYB3LORZX6qIinOw4GhKbjD0Gqk7PYzsERF01eVT3y2Y9JnuXNZ5Rt167N2
-         qwV7GPmdpF84bv/ugQOgBMi4tgAoxbDiRofKNoK2t1F7DXryMOXJt5YTJcMYrgsSUrne
-         bmhNxZRoz6fzcj1Bz2ICAIVsk2n81WqnP0kTWBJPUywmeJJen6W1CuDB9sLvbr0poe0l
-         9oDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=t9WCWsnnCS0HjAluEuyOs6Y1ik0naTnbcxAT6lOfnCY=;
-        b=KdyHugCcxC3Qmcx9iCtTi9D+C7q6hLG6jbD8a+yz9+23FJJKRnT+XVSo3lGRo7ds9W
-         3bBiJmEM+kp7NlaQ/aHHQma3bJHsQkeQYPlieb4HSi2TcMSWnQaYp3WSE8UqLPzHtruD
-         uE+UETwTDo4fass3z7uU5Yf33PwAOmF7UHBPqrHY706ClX85hWz/+ezsHcIGJNQIhn0X
-         KHB9rbEjEolDp2LWqzTmyxFIeBtNRJ5STzthjhmw7zj9P9nfRuwrW3EVQmQ90JOYgpRx
-         TFWiv3JxljDoV04qY9Sn1fl+b1dKIpATS5rMwRHI3zdPB/+X5LejeJj95dRrNkZrWcSK
-         RoGA==
-X-Gm-Message-State: AOAM533uuF9SBZefb4T+uxcfWr0IfdKj9cA1OJvEh5sVfv/aCw874ZNj
-        EBesXApm6peX5cuzCFZoGxgtZQ2B1cVCXgg84b4=
-X-Google-Smtp-Source: ABdhPJzDuHVIB4O6tYV9XeAPbHQQL17O9nVMT5QcLVzySXs8keyrLAsFVuhLOVhoGalmy5Iy1RUKIrrFmCKFu70R+AQ=
-X-Received: by 2002:a2e:7c08:: with SMTP id x8mr493125ljc.8.1606273719116;
- Tue, 24 Nov 2020 19:08:39 -0800 (PST)
+        id S1727193AbgKYDK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 22:10:28 -0500
+Received: from mga14.intel.com ([192.55.52.115]:37909 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726128AbgKYDK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 22:10:28 -0500
+IronPort-SDR: s+Oncp23OsvcOy2BgAVTYzEJVjF/RogSuTWIlHxgRw9r3Hp08JyXLfoLQ/hwaUerbENh2O+wYo
+ esyjEBuYMu/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="171276832"
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="171276832"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 19:10:27 -0800
+IronPort-SDR: n9J3WZtbAGfOBWIcDm+8JfbAZIPHzlwYHDJ6oD73p8grnF3uQo7WRgjgptFTQ+qlvichtinH7r
+ hwUjoYepRTNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="312803757"
+Received: from lkp-server01.sh.intel.com (HELO 6cfd01e9568c) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Nov 2020 19:10:26 -0800
+Received: from kbuild by 6cfd01e9568c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1khlCM-0000Fw-7t; Wed, 25 Nov 2020 03:10:26 +0000
+Date:   Wed, 25 Nov 2020 11:09:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ bb8c662823b2ebd2182bcf03c21d49c09169747d
+Message-ID: <5fbdcb07.sv8SDjIVw1E1EAcQ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Received: by 2002:a9a:999:0:b029:97:eac4:b89e with HTTP; Tue, 24 Nov 2020
- 19:08:38 -0800 (PST)
-In-Reply-To: <20201124114151.GA32873@kozik-lap>
-References: <CGME20201123075526epcms2p59410a8ba942f8942f53a593d9df764d0@epcms2p5>
- <20201123075526epcms2p59410a8ba942f8942f53a593d9df764d0@epcms2p5>
- <20201123080123.GA5656@kozik-lap> <CACwDmQBh77pqivk=bBv3SJ14HLucY42jZyEaKAX+n=yS3TSqFw@mail.gmail.com>
- <20201124114151.GA32873@kozik-lap>
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-Date:   Wed, 25 Nov 2020 12:08:38 +0900
-Message-ID: <CACwDmQDWtfa8tXkG8W+EQxjdYJ6rkVgN9PjOVQdK8CwUXAURMg@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] dt-bindings: net: nfc: s3fwrn5: Support a
- UART interface
-To:     "krzk@kernel.org" <krzk@kernel.org>
-Cc:     Bongsu Jeon <bongsu.jeon@samsung.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/20, krzk@kernel.org <krzk@kernel.org> wrote:
-> On Tue, Nov 24, 2020 at 08:39:40PM +0900, Bongsu Jeon wrote:
->> On Mon, Nov 23, 2020 at 5:02 PM krzk@kernel.org <krzk@kernel.org> wrote:
->> >
->> > On Mon, Nov 23, 2020 at 04:55:26PM +0900, Bongsu Jeon wrote:
->  > >  examples:
->> > >    - |
->> > >      #include <dt-bindings/gpio/gpio.h>
->> > > @@ -71,3 +81,17 @@ examples:
->> > >              wake-gpios = <&gpj0 2 GPIO_ACTIVE_HIGH>;
->> > >          };
->> > >      };
->> > > +  # UART example on Raspberry Pi
->> > > +  - |
->> > > +    &uart0 {
->> > > +        status = "okay";
->> > > +
->> > > +        s3fwrn82_uart {
->> >
->> > Just "bluetooth" to follow Devicetree specification.
->> Sorry. I don't understand this comment.
->> Could you explain it?
->> Does it mean i need to refer to the net/broadcom-bluetooth.txt?
->
-> The node name should be "bluetooth", not "s3fwrn82_uart", because of
-> Devicetree naming convention - node names should represent generic class
-> of a device.
->
-Actually, RN82 is the nfc device.
-So, is it okay to use the name as nfc instead of Bluetooth?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: bb8c662823b2ebd2182bcf03c21d49c09169747d  torture: Make kvm.sh return failure upon build failure
 
-> Best regards,
-> Krzysztof
->
->
+elapsed time: 724m
+
+configs tested: 99
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                       m5249evb_defconfig
+sparc                            alldefconfig
+arm                  colibri_pxa270_defconfig
+arm                          ixp4xx_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                      ep88xc_defconfig
+parisc                              defconfig
+powerpc                     rainier_defconfig
+powerpc                      acadia_defconfig
+ia64                             alldefconfig
+arm                        shmobile_defconfig
+powerpc                    socrates_defconfig
+arm                           h3600_defconfig
+arm                        magician_defconfig
+sh                          rsk7201_defconfig
+arm                          gemini_defconfig
+sh                               alldefconfig
+m68k                        m5407c3_defconfig
+arm                        cerfcube_defconfig
+arm                        neponset_defconfig
+powerpc                     kmeter1_defconfig
+sh                          rsk7203_defconfig
+mips                  decstation_64_defconfig
+sh                   rts7751r2dplus_defconfig
+sh                        sh7757lcr_defconfig
+m68k                          multi_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20201124
+x86_64               randconfig-a003-20201124
+x86_64               randconfig-a004-20201124
+x86_64               randconfig-a005-20201124
+x86_64               randconfig-a001-20201124
+x86_64               randconfig-a002-20201124
+i386                 randconfig-a004-20201124
+i386                 randconfig-a003-20201124
+i386                 randconfig-a002-20201124
+i386                 randconfig-a005-20201124
+i386                 randconfig-a001-20201124
+i386                 randconfig-a006-20201124
+i386                 randconfig-a012-20201124
+i386                 randconfig-a013-20201124
+i386                 randconfig-a011-20201124
+i386                 randconfig-a016-20201124
+i386                 randconfig-a014-20201124
+i386                 randconfig-a015-20201124
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20201124
+x86_64               randconfig-a011-20201124
+x86_64               randconfig-a014-20201124
+x86_64               randconfig-a016-20201124
+x86_64               randconfig-a012-20201124
+x86_64               randconfig-a013-20201124
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
