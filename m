@@ -2,136 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AE32C46F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B202C46FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730433AbgKYRm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:42:27 -0500
-Received: from mail-mw2nam12on2122.outbound.protection.outlook.com ([40.107.244.122]:9760
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730196AbgKYRm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:42:27 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BVdfPOYoEZtlO7PcXcaCy2YerbRvWatkcNSWsig3oxmXl1SbtsF7qC1nkHA9Yrd7aW7copx4aKtTKnNEpnlqvMzMQA9eCgJhRxvzx09Ts1cQiJZxl7GQRfPCEdMuKMJUliupqIYzaoMLT3VjxOmGdkGXMrhdrCxJBqnjaJwbdQuc3G1soDo6r7/znrPolb0GDW4dzWAOXtDMd8+H6AHPEo8JwyjoKhcpaVl0IU2XoMhww4kD5YBWiBsRNnHmmYz/kVuA/7W3Jlo1blxE7W7M8HiVpsjdetBa7tNB5S4gXmNToB0dLXwJLfop4JfJUiCc2Ka+uLmD0uigdgLni5Hb8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ONxaqtigXp+TZ871g2w0Es7PU68d7q1L3VmNAd7WYAs=;
- b=SMQ3vWx6LCo/p555exf6VZ8lKEUMMU0SrOiWEzO4cfLg5krqaJ7znnPr5bZSNqAGv1EUvjqL1UzauJISGN/6CYlYVPm0OVTWIO6LgTSMWHzD64g5msj6l2f8t3n9u9D07c7YL3GGdTYypOjfkUFcIme/gwEfBLZC4497TJCZefQvEI/NNg3rGtqKs+NnCVU8IlJ0RiG7zvuvt9HcYB/PNEda04VB5zbTgAp9o9ntOpLALI26/YzmIaiu7L5cSUk2EVYrg/Is1RpC8ytcCuHFYja5xKNfwlYfRIx6+1MAzTvMEspCESCN61Sc4Xe0FWvngmq2VYWrmsYRo4G1BlPS6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=amperemail.onmicrosoft.com; dkim=pass
- header.d=amperemail.onmicrosoft.com; arc=none
+        id S1730743AbgKYRn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:43:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730347AbgKYRn4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 12:43:56 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD050C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 09:43:56 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id h39so1285828otb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 09:43:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ONxaqtigXp+TZ871g2w0Es7PU68d7q1L3VmNAd7WYAs=;
- b=GSwPn0juK8RozTn4LVRm48gyEEDypw9SjkRPgntejKEiBbqnYJf1c2YETk2LVIxXrTweslbKT1BuW7WC3zYqEEO5JktHv1RHWXYo0go8NVKjEvHnDQKWC9piwlOll27l7kyvdT5+maVL++gxRWOLAVUL1fasKCWrELcXGGJToMw=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=amperemail.onmicrosoft.com;
-Received: from BYAPR01MB4598.prod.exchangelabs.com (2603:10b6:a03:8a::18) by
- BYAPR01MB4744.prod.exchangelabs.com (2603:10b6:a03:85::30) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3589.22; Wed, 25 Nov 2020 17:42:21 +0000
-Received: from BYAPR01MB4598.prod.exchangelabs.com
- ([fe80::e87e:9b58:fa97:a4f2]) by BYAPR01MB4598.prod.exchangelabs.com
- ([fe80::e87e:9b58:fa97:a4f2%6]) with mapi id 15.20.3589.025; Wed, 25 Nov 2020
- 17:42:21 +0000
-Content-Type: text/plain;
-        charset=us-ascii
-Subject: Re: [PATCH v6] driver/perf: Add PMU driver for the ARM DMC-620 memory
- controller
-From:   Tuan Phan <tuanphan@amperemail.onmicrosoft.com>
-In-Reply-To: <160631588213.1506382.10150338922271278043.b4-ty@kernel.org>
-Date:   Wed, 25 Nov 2020 09:42:18 -0800
-Cc:     Tuan Phan <tuanphan@os.amperecomputing.com>,
-        catalin.marinas@arm.com, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        patches@amperecomputing.com, robin.murphy@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EF41E2C0-C118-4FA7-80D4-554785F9505F@amperemail.onmicrosoft.com>
-References: <1604518246-6198-1-git-send-email-tuanphan@os.amperecomputing.com>
- <160631588213.1506382.10150338922271278043.b4-ty@kernel.org>
-To:     Will Deacon <will@kernel.org>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
-X-Originating-IP: [73.151.56.145]
-X-ClientProxiedBy: CY4PR1701CA0003.namprd17.prod.outlook.com
- (2603:10b6:910:5e::13) To BYAPR01MB4598.prod.exchangelabs.com
- (2603:10b6:a03:8a::18)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=u+YTLyj4ie3IN86jCfx4Roc0oN5l1ohxrxg0M+ICyFc=;
+        b=v+0TaqJIZ6xBdedY8c/QAOafuOnHFYHa0PpHixm3maGaH8aKnKdTG8lEVFj2AOtKSg
+         5Y6y8wRQMdmnXkprxxEmZ5PyKQMJQPCNfln2+GqIgjUx/a9vuUmuJbSjHJo3Uf5plH8K
+         7s9fdnHhHt10Bkeaup2izshGDkztf5zU1N3zyRSwioZ122xrSKawBoBwPVRCt+rLsi50
+         R9lS/LMZ1uV+O0clhb6z1ggLdriAe+QKlYa4nKartNHuXHzhIXIW3UvFNc6dsQV4+/Jg
+         hEbQBOUMtP/XLz3REBvWq63wcDk9htj0qdiUtGbajghqbtu581e221Y7F32K70vD7+Co
+         jGlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=u+YTLyj4ie3IN86jCfx4Roc0oN5l1ohxrxg0M+ICyFc=;
+        b=FjvmbNwL1Dqpuy0qpdqclt/DgHIKCMS/NExK1Fogfsyqh8y0SQc3+T75vjQG+ZOFeH
+         vk5WbQE4POz9+qKfxyjG+Fif21QT2RN9GhHqH+fNn/MU9gJiGKcn5Sfy1/m9LOkUL1li
+         fgXUX/Ubf9v4zTT13xgxdGzu771nnQFdmvBPS9slJsGQonFQZzTJuZ8MRXusRnLFkmJS
+         noqoY9ufLtnrkrQeHo3byxfFE3VrYGtp9aziA9elOHs1d2iM6IVVcJMFtPMmzbdWiQdO
+         DuNebZCUfOJ4sw0QCzIJzKLutzFVOQTtYUmmw7hx4fATGSaW09SbjMkifL0pMFfAUyJo
+         ellA==
+X-Gm-Message-State: AOAM531mBCEsrAefMo3iEZTNoE17YxW6Ao3kd/WnPiEQeDJfyk0ZHJcg
+        vC/2PMPriq0vYesEc5Asjyp0zZqZa+j/CldL7zAHwWsMEkA=
+X-Google-Smtp-Source: ABdhPJyip73KKye5lZJcDseEDLuJUEZv7hv+XO9IpoBbBlSGjUiSUzpged/8GPgX+LQZgHaZLxDge9g4x9YwpNNB944=
+X-Received: by 2002:a05:6830:18f8:: with SMTP id d24mr3682744otf.44.1606326235683;
+ Wed, 25 Nov 2020 09:43:55 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.148] (73.151.56.145) by CY4PR1701CA0003.namprd17.prod.outlook.com (2603:10b6:910:5e::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Wed, 25 Nov 2020 17:42:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f4724014-44a5-4ad8-79b9-08d8916975d6
-X-MS-TrafficTypeDiagnostic: BYAPR01MB4744:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR01MB474470E6A5FEDDFBFAB7D530E0FA0@BYAPR01MB4744.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: beDUaKQZbLuHyxqxmhSidt1H/w63Ax0I/IeuqGwHse9urcUoNz020cUFAGSuhIiGWcO85cQjz8hxdbMI/X3GHlqUNnlcXvfRMb9PiSdLD2eTBXAK/b8IVmpJJsguf8Ytaz/8+UJyTyRfrUb+XJsgLM0YHPdufxMy80BoL0EQYKdO9CPokDgyRnlCOQwI6eJ28eG55NPOaC4kqC4XK6flthMwlWs6JKPQMhs34zO+LA+SktqR5N2mEEF/C6qDCm1slZSdnwgOCcV5tq3txsX3JQzXX5dyOxAu/b2xw9s+JIl+MO+d19G0t8GD2gJfxh92UViV7SxdyaCMQ44TjORdTDVesrcOeCeV1bqYARcXfA76mY2KkSfW/MaOsetY+bwSoyh9hSCiJT+6a6JY9s0saQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4598.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(346002)(396003)(366004)(376002)(136003)(956004)(966005)(52116002)(2906002)(2616005)(316002)(478600001)(8936002)(16526019)(8676002)(4326008)(6486002)(42882007)(16576012)(53546011)(186003)(6916009)(26005)(54906003)(33656002)(83170400001)(66946007)(66556008)(5660300002)(66476007)(4744005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?NyXvtrNfxTD/16Ei0RBiOj3sBO+Iqmj/QkzxMAJ15f9BlTKMniCp0BfMG3lv?=
- =?us-ascii?Q?gS/7geMjwkSmfvcC2UH2+EAIoLfQdUtMvgHwgjegisY2bdxlKiJbBeyP8yo7?=
- =?us-ascii?Q?PSs2k2GVs2YnFWbjoJQqB1XHmgB033jQfZfTqX0MlIS6kl3BPLutMgRAUBpx?=
- =?us-ascii?Q?ihxADNNxfJ5ttsKNy26CAhfUHPNdr4vFElSGRIzBYyZdbzz5sTxSDrqHcJ6v?=
- =?us-ascii?Q?8/GcTMVGk2Mkpjnj/Y6R4c6K7kEDqHZhS1oBb9yZJCpaL9G4PAxUH8jjwkg5?=
- =?us-ascii?Q?kMpFGxuHhoGPqmTNcZI8l66zNOMBOpOMN1sxGolNNecSyClGltzb1dsWoGAk?=
- =?us-ascii?Q?fXBQat8YlalCmO5ASZQSzc8vsbtxyyir19sQ3/bH7fXc5tJX0uK+3QHdT1VR?=
- =?us-ascii?Q?eGaQeGREcPW8cO3Z/AMZQlVGbWvnsgF6spgIVxUTgrAhyrpSMOv/vb1eXbSe?=
- =?us-ascii?Q?Eokl5TBs5SWrDeFh/glmvrEUzoseMY0hhenYwQenGSsJFrSSoYY64VY3pgfB?=
- =?us-ascii?Q?3/7DgP58uYqlcacT/HEk+w4vyu3xOq8bhvW4cyrMxYyTTxrHIkr8pTq9XvkV?=
- =?us-ascii?Q?8swqukxOr2qXnLkkmos6CXwULLukJPpQ65YVEGJDNhaHLvUuS/9X5V9AcZQ1?=
- =?us-ascii?Q?v+Mdc5mgEd3dhDsZNXnba6Zt7EoVIUi9wIZ6OOcC9j+vNu2Xe1IFkuYKOEkx?=
- =?us-ascii?Q?22ivszNsJ69WTRxKRmGx4+zobnoPbJHpQMafM6NJ/jqukBgfXIl8Di7U0i1d?=
- =?us-ascii?Q?wtAbgBjXW0L/SpzBboME82wZDQKQ8tzSQ/6kq2OxY8EiSVFumNYz7GBa6wuq?=
- =?us-ascii?Q?Vw5xAvms43GRLFc/GqaxQ2um2YY3tTBfJaJqfGlUZNw83NGdQxLZEWE15JKc?=
- =?us-ascii?Q?eR0ZWZhhV7Jd00gQUo8KJ6NQA/yHPfKNuDVF5LVrIYubOYxg9IyFyjiOITk9?=
- =?us-ascii?Q?p448za0F+k7BIeTjamxHRS7z51DU67ycRh4xvMEjqLx3wb26p1lScW+JHWrP?=
- =?us-ascii?Q?TMCz?=
-X-OriginatorOrg: amperemail.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4724014-44a5-4ad8-79b9-08d8916975d6
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB4598.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 17:42:21.1146
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pdDodXGWQILc6sWs6KAgvZSJLWZMH7L0r07QHW9/1hqXk2gI7WTJoQlWEHYiY8orHkezDpCXvzBsyc3xKL8vKkQYFDDphEw1h1yJnsROJ/so4pgGe4iXcVGMRpfB+mwr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB4744
+References: <CAEGmHFFjV2UKm3L1G5JF6Ve47L1-aKBAGrCxN3pPX1HO9R-aUg@mail.gmail.com>
+ <CAJZ5v0hqU-qiM8ddYUT_u0Lm3RNM19gNcXye_s5v3DeCHr7mZQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hqU-qiM8ddYUT_u0Lm3RNM19gNcXye_s5v3DeCHr7mZQ@mail.gmail.com>
+From:   Furquan Shaikh <furquan@google.com>
+Date:   Wed, 25 Nov 2020 09:43:39 -0800
+Message-ID: <CAEGmHFFxxOxNBjut68azQ5eMh71J+ysJeX9SOak6WwNetuJnwA@mail.gmail.com>
+Subject: Re: [RFC] ACPI PM during kernel poweroff/reboot
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Aaron Durbin <adurbin@google.com>,
+        Duncan Laurie <dlaurie@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Will,
+On Wed, Nov 25, 2020 at 8:39 AM Rafael J. Wysocki <rafael@kernel.org> wrote=
+:
+>
+> On Thu, Nov 12, 2020 at 8:19 PM Furquan Shaikh <furquan@google.com> wrote=
+:
+> >
+> > On x86 Chromebooks, we have observed this issue for a long time now -
+> > when the system is powered off or rebooted, ACPI PM is not invoked and
+> > this results in PowerResource _OFF methods not being invoked for any
+> > of the devices. The _OFF methods are invoked correctly in case of
+> > suspend-to-idle (S0ix) and suspend-to-memory(S3). However, they do not
+> > get invoked when `poweroff` or `reboot` are triggered.
+> >
+> > One of the differences between suspend, hibernate and shutdown paths
+> > in Linux kernel is that the shutdown path does not use the typical
+> > device PM phases (prepare, freeze/suspend, poweroff) as used by
+> > suspend/hibernate. Instead the shutdown path makes use of
+> > .shutdown_pre() and .shutdown() callbacks.
+> >
+> > If I understand correctly, .shutdown() has been around for a long time
+> > and existed even before the PM callbacks were added. Thus,
+> > pm->poweroff() and .shutdown() are supposed to be analogous and
+> > consistent in the behavior.
+>
+> Well, not quite.
+>
+> ->shutdown() is expected to be a lightweight operation also suitable
+> for kexec() and similar situations where ->poweroff() may not work.
+>
+> > This is why runtime PM is disallowed by
+> > device_shutdown() before it calls .shutdown() (i.e. to keep behavior
+> > consistent for both paths). However, in practice, there are
+> > differences in behavior for the pm->poweroff() and .shutdown() paths
+> > since the shutdown path does not execute any PM domain operations.
+>
+> That's correct.
+>
+> > Because of this difference in behavior, shutdown path never invokes
+> > ACPI PM and thus the ACPI PowerResources are not turned off when the
+> > system is rebooted or powered off (sleep S5). On Chromebooks, it is
+> > critical to run the _OFF methods for poweroff/reboot in order to
+> > ensure that the device power off sequencing requirements are met.
+> > Currently, these requirements are violated which impact the
+> > reliability of devices over the lifetime of the platform.
+> >
+> > There are a few ways in which this can be addressed:
+> >
+> > 1. Similar to the case of hibernation, a new
+> > PMSG_POWEROFF/PM_EVENT_POWEROFF can be introduced to invoke device
+> > power management phases using `dpm_suspend_start(PMSG_POWEROFF)` and
+> > `dpm_suspend_end(PMSG_POWEROFF)`. However, as the shutdown path uses
+> > the class/bus/driver .shutdown() callbacks, adding dpm phases for
+> > poweroff complicates the order of operations. If the dpm phases are
+> > run before .shutdown() callbacks, then it will result in the callbacks
+> > accessing devices after they are powered off. If the .shutdown()
+> > callbacks are run before dpm phases, then the pm->poweroff() calls are
+> > made after the device shutdown is done. Since .shutdown() and
+> > pm->poweroff() are supposed to be analogous, having both calls in the
+> > shutdown path is not only redundant but also results in incorrect
+> > behavior.
+> >
+> > 2. Another option is to update device_shutdown() to make
+> > pm_domain.poweroff calls after the class/bus/driver .shutdown() is
+> > done. However, this suffers from the same problem as #1 above i.e. it
+> > is redundant and creates conflicting order of operations.
+> >
+> > 3. Third possible solution is to detach the device from the PM domain
+> > after it is shutdown. Currently, device drivers perform a detach
+> > operation only when the device is removed. However, in case of
+> > poweroff/reboot as the device is already shutdown, detaching PM domain
+> > will give it the opportunity to ensure that any power resources are
+> > correctly turned off before the system shuts down.
+>
+> 4. Make Chromebooks call something like hibernation_platform_enter()
+> on S5 entries (including reboot).
 
-> On Nov 25, 2020, at 7:44 AM, Will Deacon <will@kernel.org> wrote:
->=20
-> On Wed, 4 Nov 2020 11:30:43 -0800, Tuan Phan wrote:
->> DMC-620 PMU supports total 10 counters which each is
->> independently programmable to different events and can
->> be started and stopped individually.
->>=20
->> Currently, it only supports ACPI. Other platforms feel free to test and =
-add
->> support for device tree.
->>=20
->> [...]
->=20
-> Applied to will (for-next/perf), thanks!
->=20
-> [1/1] driver/perf: Add PMU driver for the ARM DMC-620 memory controller
->      https://git.kernel.org/will/c/53c218da220c
->=20
-> Cheers,
-> --=20
-> Will
->=20
-> https://fixes.arm64.dev
-> https://next.arm64.dev
-> https://will.arm64.dev
+Actually, Chromebooks do not support S4 and hence CONFIG_HIBERNATION.
+This is done for a number of reasons including security. Hence, I
+don't think using hibernation_platform_enter() would be an option.
 
+>
+> > Out of these, I think #3 makes the most sense as it does not introduce
+> > any conflicting operations. I verified that the following diff results
+> > in _OFF methods getting invoked in both poweroff and reboot cases:
+>
+> This won't work for PCI devices though, only for devices in the ACPI
+> PM domain, so it is not sufficient in general.
+
+That is true. The proposed solution only handles detaching of PM
+domains. I understand your point about this not working for any
+devices not part of the PM domain. The issues that we have observed in
+shutdown/reboot paths have been specific to ACPI power resources
+controlling the sequencing to external devices.
+
+>
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index 94df2ba1bbed..e55d65fbb4a9 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -23,6 +23,7 @@
+> >  #include <linux/of_device.h>
+> >  #include <linux/genhd.h>
+> >  #include <linux/mutex.h>
+> > +#include <linux/pm_domain.h>
+> >  #include <linux/pm_runtime.h>
+> >  #include <linux/netdevice.h>
+> >  #include <linux/sched/signal.h>
+> > @@ -3230,6 +3231,8 @@ void device_shutdown(void)
+> >                         dev->driver->shutdown(dev);
+> >                 }
+> >
+> > +               dev_pm_domain_detach(dev, true);
+> > +
+>
+> It generally makes sense to do this, because ->shutdown() is sort of
+> analogous to ->remove() from the driver model perspective, so if it is
+> sufficient for you, please feel free to send a formal patch with that
+> change.
+
+I will work on creating a formal patch and send it for review.
+
+>
+> >                 device_unlock(dev);
+> >                 if (parent)
+> >                         device_unlock(parent);
+> >
+> > This was discussed on the mailing list some time back[1] in the
+> > context of a different use case. However, the idea of detaching
+> > devices (on any bus) from the PM domain during shutdown is important
+> > to ensure correct power sequencing for the devices.
+> >
+> > One of the concerns that was raised on the above thread was slowing
+> > down the shutdown process when not needed. I think this can be handled
+> > by adding a sysfs attribute to allow platforms to decide if they need
+> > the ability to power off PM domains on shutdown/reboot path.
+>
+> If you need to do that on a per-platform basis, I would go for option
+> 4 above instead.
+
+For Chromebooks, I don't see a reason to do this on a per-platform
+basis. But, I wanted to make sure that the proposed change does not
+have any side-effect on any other user upstream.
+
+>
+> > Questions that I am looking to get feedback/comments are:
+> >
+> > 1. Is my assessment of the problem and understanding of the
+> > .shutdown() and pm.poweroff() correct?
+>
+> Not exactly.
+>
+> > 2. Does the solution #3 i.e. detaching PM domain after shutting down
+> > device on shutdown path makes sense?
+>
+> Yes, it does (to me), but no, it is not sufficient to address the
+> problem at hand.
+>
+> > 3. Are there other possible approaches to solve this problem that can
+> > be explored?
+>
+> Yes, there are.  See option 4 above.
+>
+> > 4. Do we still have the performance concern about the shutdown path? I
+> > don=E2=80=99t think anything has changed since that thread, so this is
+> > probably still true.
+>
+> I think that it is the case.  Whoever had had any performance concerns
+> regarding this before is still going to have them.
+>
+> > 5. Does the use of sysfs attribute make sense to let platform control
+> > if it wants to detach PM domains on shutdown path?
+>
+> That would be clunky IMV.
+
+I can start with the diff I pasted above as a formal patch to see if
+it makes sense. If more changes are required to it, I can work on
+them.
+
+>
+> > Sorry about the long thread and thank you so much for your time!
+>
+> No worries.
+
+Thanks again for your time. I really appreciate the insight and comments.
+
+- Furquan
+
+>
+> Thanks!
