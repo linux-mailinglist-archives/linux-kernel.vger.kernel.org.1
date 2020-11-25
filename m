@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8703C2C410E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EF42C4118
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729104AbgKYNXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:23:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgKYNXc (ORCPT
+        id S1729492AbgKYNYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:24:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40611 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726284AbgKYNYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:23:32 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCF4C0613D4;
-        Wed, 25 Nov 2020 05:23:32 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id k5so1105474plt.6;
-        Wed, 25 Nov 2020 05:23:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YwQYvfQDUoa13fsKbpmwHso8WgufFTOG+Z6qNLGXK04=;
-        b=l4J2S1JXLDkshzyJl7lW3Zqnvx/CGNGDqiRw4F3kuW8QmjyRIeIOeeKJEdmYcBxPn8
-         j+P0q8JTjJYXZOOzWRXcWqYHaKW2j/jrtV6jCWceCH7CdMd9+ySrqStXBA/Z3Z7afucA
-         HgxeEWwSZPxOT7LjQALXSvRtnbHXST8WpxYQkHxSwuyyi7Hky2IWbD7UpTItmgFFcMt+
-         InuT7lspu9Q2rPD2w6mBXR5mrB3BVl5fR/kJ2Vu8aH7ZA/H7Ilrtxl2vojUYZmU0szep
-         lLbrSELWDRvhUd5GMEvUNPb4Nnqx6M1kTGPKXxa7HWMDTK7PsloT6l9VmhoLRnzvf3ez
-         jivQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YwQYvfQDUoa13fsKbpmwHso8WgufFTOG+Z6qNLGXK04=;
-        b=m6dQ5Rkw2SZfG3b+ii5DumJNlwCf4XkkHATzFtnbgHwef3N49zuPYk8F41CDa6wl05
-         bT8PfuKEv+tufmaxO2E0Xv2xwRkPoL6bsQWIdFEpWLy0EJIrW87GWQl8cLWNtg3sQRW5
-         aNpvT9gwfQIxQz8UeuupWv30g0YZLDQJ24h//zQlM1Xgq0igLZbWIpLQ9A6+Pct0Am9i
-         2SaslNKVpZ96jC8sqEe/pBFTIwEZmS9fDDcmPRZ2XyZgendOgLKaLO9G5HyYsGVFXObt
-         im4qqki6u72BuBxgVdpx+r4fHkapfhNJPCqu32A2MqlovqKU7EhCvuYWc1oakjQTsl3+
-         7oUQ==
-X-Gm-Message-State: AOAM5335/hocjufEkE0AYT/KylCxJbRUdTmal7i/2RUqkGAcQ2AN04LL
-        EW//L1cjmzaP7K/iR0SiXK/739yzBxh+4mYhXWU=
-X-Google-Smtp-Source: ABdhPJwZEeAeqN3pyyyDA41u7zVejFuXVqY7LtXH3SIm/z+F1pLntuMm3BdR0lbLzih2Fwz5QB+E9wzydP6OTQ6Ri64=
-X-Received: by 2002:a17:902:ac93:b029:d8:d2c5:e5b1 with SMTP id
- h19-20020a170902ac93b02900d8d2c5e5b1mr2999337plr.17.1606310611989; Wed, 25
- Nov 2020 05:23:31 -0800 (PST)
+        Wed, 25 Nov 2020 08:24:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606310676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yfYwxxCydXD+/2AZjU2DkkyQyPi22Qxb5NijBr+uWj0=;
+        b=buaKMa9LH2B/JAFH3DvwrODNEmKuzJTAeLfIPNzJxmkZZ7D6wFD4MHAygFrKduTPk20MXR
+        OLiNvAgKWudKQ8zM1h1NCPTdRU8pt2UqOeytyePltQCNnoeoO+0iZYRa1bQygMN00In81r
+        n+kU2141a5qUN4xBcX2GKhkh4U14Jbk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-I-oSW_vvNE2vnVfTOlFbYw-1; Wed, 25 Nov 2020 08:24:33 -0500
+X-MC-Unique: I-oSW_vvNE2vnVfTOlFbYw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94DC080EDA9;
+        Wed, 25 Nov 2020 13:24:31 +0000 (UTC)
+Received: from [10.36.112.131] (ovpn-112-131.ams2.redhat.com [10.36.112.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 210F15D6AC;
+        Wed, 25 Nov 2020 13:24:29 +0000 (UTC)
+Subject: Re: [PATCH 1/2] sparc: Fix handling of page table constructor failure
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, davem@davemloft.net, rppt@kernel.org,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20201125034655.27687-1-willy@infradead.org>
+ <b761abc9-12de-f003-b8c4-26e7e506700e@redhat.com>
+ <20201125121037.GJ4327@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5b574e0d-107a-3ebc-d631-b59e88de7174@redhat.com>
+Date:   Wed, 25 Nov 2020 14:24:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201125130320.311059-1-coiby.xu@gmail.com>
-In-Reply-To: <20201125130320.311059-1-coiby.xu@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 25 Nov 2020 15:24:20 +0200
-Message-ID: <CAHp75VfdGH2LmiNUGzy+BcYpCmSGBE6DxVhDDYSnhfu68HGTUA@mail.gmail.com>
-Subject: Re: [PATCH v4] pinctrl: amd: remove debounce filter setting in IRQ
- type setting
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Baq Domalaq <domalak@gmail.com>,
-        Pedro Ribeiro <pedrib@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201125121037.GJ4327@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 3:03 PM Coiby Xu <coiby.xu@gmail.com> wrote:
->
-> Debounce filter setting should be independent from IRQ type setting
-> because according to the ACPI specs, there are separate arguments for
-> specifying debounce timeout and IRQ type in GpioIo() and GpioInt().
->
-> Together with commit 06abe8291bc31839950f7d0362d9979edc88a666
-> ("pinctrl: amd: fix incorrect way to disable debounce filter") and
-> Andy's patch "gpiolib: acpi: Take into account debounce settings" [1],
-> this will fix broken touchpads for laptops whose BIOS set the
-> debounce timeout to a relatively large value. For example, the BIOS
-> of Lenovo AMD gaming laptops including Legion-5 15ARH05 (R7000),
-> Legion-5P (R7000P) and IdeaPad Gaming 3 15ARH05, set the debounce
-> timeout to 124.8ms. This led to the kernel receiving only ~7 HID
-> reports per second from the Synaptics touchpad
-> (MSFT0001:00 06CB:7F28).
->
-> Existing touchpads like [2][3] are not troubled by this bug because
-> the debounce timeout has been set to 0 by the BIOS before enabling
-> the debounce filter in setting IRQ type.
->
-> [1] https://lore.kernel.org/linux-gpio/20201111222008.39993-11-andriy.shevchenko@linux.intel.com/
+On 25.11.20 13:10, Matthew Wilcox wrote:
+> On Wed, Nov 25, 2020 at 09:43:15AM +0100, David Hildenbrand wrote:
+>> On 25.11.20 04:46, Matthew Wilcox (Oracle) wrote:
+>>> The page has just been allocated, so its refcount is 1.  free_unref_page()
+>>> is for use on pages which have a zero refcount.  Use __free_page()
+>>> like the other implementations of pte_alloc_one().
+>>>
+>>> Fixes: 1ae9ae5f7df7 ("sparc: handle pgtable_page_ctor() fail")
+>>> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+>>> ---
+>>>  arch/sparc/mm/init_64.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+>>> index 96edf64d4fb3..182bb7bdaa0a 100644
+>>> --- a/arch/sparc/mm/init_64.c
+>>> +++ b/arch/sparc/mm/init_64.c
+>>> @@ -2894,7 +2894,7 @@ pgtable_t pte_alloc_one(struct mm_struct *mm)
+>>>  	if (!page)
+>>>  		return NULL;
+>>>  	if (!pgtable_pte_page_ctor(page)) {
+>>> -		free_unref_page(page);
+>>> +		__free_page(page);
+>>>  		return NULL;
+>>>  	}
+>>>  	return (pte_t *) page_address(page);
+>>>
+>>
+>> I wonder if reusing __pte_alloc_one() - e.g., internally - would be even
+>> cleaner.
+> 
+> It's really awkward to do because pgtable_t is defined differently.
+> The clean thing to do would be:
+> 
+> --- arch/sparc/include/asm/page_64.h
+> -typedef pte_t *pgtable_t;
+> +typedef struct page *pgtable_t;
+> 
+> and then do all the other changes that would require.
+> 
+> But that feels like a lot more work than appropriate to fix this
+> unlikely bug.
 
-JFYI: this is nowadays
-8dcb7a15a585 ("gpiolib: acpi: Take into account debounce settings")
-
-(No need to recend, just an information that can be applied maybe by Linus)
-
-> [2] https://github.com/Syniurge/i2c-amd-mp2/issues/11#issuecomment-721331582
-> [3] https://forum.manjaro.org/t/random-short-touchpad-freezes/30832/28
+Yeah, cleanups would have to come on top of the fix of course. But I can
+understand that you have plenty of better things to do :) ... maybe
+sparc people want to work on that at one point.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+
+David / dhildenb
+
