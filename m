@@ -2,185 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579DB2C3D79
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2316F2C3D93
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728862AbgKYKND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:13:03 -0500
-Received: from mga07.intel.com ([134.134.136.100]:2621 "EHLO mga07.intel.com"
+        id S1726595AbgKYKXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:23:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:38276 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726357AbgKYKNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:13:02 -0500
-IronPort-SDR: /2JYM1SHZUm9qH7KQMd2NZ/mKEOOEDOfwyVtDV7TEENJWZP8JPOhY/uq9PmtJzz2oQ6dB1bRyz
- IE+DUT9PSh6Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="236240193"
-X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
-   d="scan'208";a="236240193"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 02:13:01 -0800
-IronPort-SDR: xZn2TKBeYx4B0eFw7r1mDWU87WQsNebzT6iwf0nY6fQw94McAIJpMLR5BqHIVTskeaM7QxION9
- MKiifc8AJzPA==
-X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
-   d="scan'208";a="478866270"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 02:12:59 -0800
-Date:   Wed, 25 Nov 2020 18:15:36 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        intel-wired-lan@lists.osuosl.org
-Subject: Re: [Intel-wired-lan] [PATCH] e1000e: Assign DPM_FLAG_SMART_SUSPEND
- and DPM_FLAG_MAY_SKIP_RESUME to speed up s2ram
-Message-ID: <20201125101534.GA17181@chenyu-office.sh.intel.com>
-References: <20201124153221.11265-1-yu.c.chen@intel.com>
- <a8058c17-141d-986e-903d-462dc72999f1@molgen.mpg.de>
+        id S1725838AbgKYKXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 05:23:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F25C2106F;
+        Wed, 25 Nov 2020 02:23:35 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B4FC3F70D;
+        Wed, 25 Nov 2020 02:23:34 -0800 (PST)
+Date:   Wed, 25 Nov 2020 10:23:28 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <mhiramat@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v8 3/3] PCI: uniphier: Add misc interrupt handler to
+ invoke PME and AER
+Message-ID: <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
+References: <1603848703-21099-4-git-send-email-hayashi.kunihiko@socionext.com>
+ <20201124232037.GA595463@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a8058c17-141d-986e-903d-462dc72999f1@molgen.mpg.de>
+In-Reply-To: <20201124232037.GA595463@bjorn-Precision-5520>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-On Tue, Nov 24, 2020 at 04:47:30PM +0100, Paul Menzel wrote:
-> Dear Chen,
-> 
-> 
-> Thank you for the patch.
-> 
-Thanks for reviewing this change.
-> Am 24.11.20 um 16:32 schrieb Chen Yu:
-> > The NIC is put in runtime suspend status when there is no wire connected.
-> > As a result, it is safe to keep this NIC in runtime suspended during s2ram
-> > because the system does not rely on the NIC plug event nor WOL to wake up
-> > the system. Unlike the s2idle, s2ram does not need to manipulate S0ix settings
-> > during suspend.
-> 
-> what happens, when I plug in a cable, when the suspend is in ACPI S3 state?
-> I guess it’s ignored?
-> 
-I think it depends on the platform(or BIOS implementation).
-On my platform it is ignored. When the system is running,
-the plug event would generate a SCI, but if it is in S3,
-whether to generate wake up event or not depends on the BIOS and
-the sysfs whether the device is device_may_wakeup().
-In summary, whether the NIC is in runtime_suspend() or system_suspended
-does not impact the wake up from S3 by plug event.
-> > This patch assigns DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME
-> > to the e1000e driver so that the s2ram could skip the .suspend_late(),
-> > .suspend_noirq() and .resume_noirq() .resume_early() when possible.
-> > Also skip .suspend() and .resume() if dev_pm_skip_suspend() and
-> > dev_pm_skip_resume() return true, so as to speed up the s2ram.
-> 
-> What is sped up? Suspend or resume?
->
-Both suspend and resume.
-> Please also document, what system you tested this on, and what the numbers
-> before and after are.
-The platform I'm testing on a laptop with i5-8300H CPU and I219-LM NIC.
-
-Before this change:
-[  203.391465] e1000e 0000:00:1f.6: pci_pm_suspend+0x0/0x170 returned 0 after 323186 usecs
-[  203.598307] e1000e 0000:00:1f.6: pci_pm_suspend_late+0x0/0x40 returned 0 after 4 usecs
-[  203.654026] e1000e 0000:00:1f.6: pci_pm_suspend_noirq+0x0/0x290 returned 0 after 20915 usecs
-[  203.714464] e1000e 0000:00:1f.6: pci_pm_resume_noirq+0x0/0x120 returned 0 after 19952 usecs
-[  203.716208] e1000e 0000:00:1f.6: pci_pm_resume_early+0x0/0x30 returned 0 after 0 usecs
-[  203.934399] e1000e 0000:00:1f.6: pci_pm_resume+0x0/0x90 returned 0 after 211437 usecs
-
-After this change:
-[  150.455612] e1000e 0000:00:1f.6: pci_pm_suspend+0x0/0x170 returned 0 after 14 usecs
-[  150.987627] e1000e 0000:00:1f.6: pci_pm_suspend_late+0x0/0x40 returned 0 after 3 usecs
-[  151.021659] e1000e 0000:00:1f.6: pci_pm_suspend_noirq+0x0/0x290 returned 0 after 1 usecs
-[  151.087303] e1000e 0000:00:1f.6: pci_pm_resume_noirq+0x0/0x120 returned 0 after 0 usecs
-[  151.112056] e1000e 0000:00:1f.6: pci_pm_resume_early+0x0/0x30 returned 0 after 0 usecs
-[  151.136508] e1000e 0000:00:1f.6: pci_pm_resume+0x0/0x90 returned 0 after 3030 usecs
-> 
-> If there is a bug report, please note it too.
-> 
-This is an optimization for scenario when cable is unpluged, so there's
-no dedicated bug report on this.
-> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> > ---
-> >   drivers/base/power/main.c                  |  2 ++
-> >   drivers/net/ethernet/intel/e1000e/netdev.c | 14 +++++++++++++-
-> >   2 files changed, 15 insertions(+), 1 deletion(-)
+On Tue, Nov 24, 2020 at 05:20:37PM -0600, Bjorn Helgaas wrote:
+> On Wed, Oct 28, 2020 at 10:31:43AM +0900, Kunihiko Hayashi wrote:
+> > This patch adds misc interrupt handler to detect and invoke PME/AER event.
 > > 
-> > diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> > index c7ac49042cee..9cd8abba8612 100644
-> > --- a/drivers/base/power/main.c
-> > +++ b/drivers/base/power/main.c
-> > @@ -580,6 +580,7 @@ bool dev_pm_skip_resume(struct device *dev)
-> >   	return !dev->power.must_resume;
-> >   }
-> > +EXPORT_SYMBOL_GPL(dev_pm_skip_resume);
-> >   /**
-> >    * device_resume_noirq - Execute a "noirq resume" callback for given device.
-> > @@ -2010,3 +2011,4 @@ bool dev_pm_skip_suspend(struct device *dev)
-> >   	return dev_pm_test_driver_flags(dev, DPM_FLAG_SMART_SUSPEND) &&
-> >   		pm_runtime_status_suspended(dev);
-> >   }
-> > +EXPORT_SYMBOL_GPL(dev_pm_skip_suspend);
-> > diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-> > index b30f00891c03..d79fddabc553 100644
-> > --- a/drivers/net/ethernet/intel/e1000e/netdev.c
-> > +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-> > @@ -6965,6 +6965,14 @@ static __maybe_unused int e1000e_pm_suspend(struct device *dev)
-> >   	struct e1000_hw *hw = &adapter->hw;
-> >   	int rc;
-> > +	/* Runtime suspended means that there is no wired connection
+> > In UniPhier PCIe controller, PME/AER signals are assigned to the same
+> > signal as MSI by the internal logic. These signals should be detected by
+> > the internal register, however, DWC MSI handler can't handle these signals.
 > 
-> Maybe explicitly use *cable* in here to avoid confusion?
-> 
-Okay.
-> > +	 * and it has nothing to do with WOL that, we don't need to
-> 
-> Move the comma before *that*?
-> 
-Okay.
-> > +	 * adjust the WOL settings. So it is safe to put NIC in
-> > +	 * runtime suspend while doing system suspend.
-> 
-> I understood, that the NIC is already in runtime suspend? Could you please
-> clarify the comment?
-> 
-Yes, it is already runtime suspended, I'll revise the comment.
+> I don't know what "PME/AER signals are assigned to the same signal as
+> MSI" means.  
 
-Thanks,
-Chenyu
-> > +	 */
-> > +	if (dev_pm_skip_suspend(dev))
-> > +		return 0;
+The host controller embeds an interrupt-controller whose IRQ wire output
+is cascaded into the main interrupt controller.
+
+The host-bridge embedded controller receives MSI writes from devices
+and it turns them into an edge IRQ into the main interrupt controller.
+
+To ack/mask the MSIs at host contoller interrupt controller level, there
+is a control register in the host controller that needs handling upon
+IRQ reception.
+
+The *RP* (and AFAIU the RP *only*) signals the PME/AER MSI using the
+same wire to the main interrupt controller but its ack/mask is handled
+by a different bit in the host bridge control register above, therefore
+the cascaded IRQ isr needs to know which virq it is actually handling
+to ack/mask accordingly.
+
+IMO this should be modelled with a separate IRQ domain and chip for
+the root port (yes this implies describing the root port in the dts
+file with a separate msi-parent).
+
+This series as it stands is a kludge.
+
+Lorenzo
+
+> I'm trying to figure out if this is talking about PME/AER MSI vector
+> numbers (probably not) or some internal wire that's not
+> architecturally visible or what.
+> 
+> Probably also not related to the fact that PME, hotplug, and bandwidth
+> notifications share the same MSI/MSI-X vector.
+> 
+> Is this something that's going to be applicable to all the DWC-based
+> drivers?
+> 
+> > DWC MSI handler calls .msi_host_isr() callback function, that detects
+> > PME/AER signals with the internal register and invokes the interrupt
+> > with PME/AER vIRQ numbers.
+> > 
+> > These vIRQ numbers is obtained from portdrv in uniphier_add_pcie_port()
+> > function.
+> > 
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Jingoo Han <jingoohan1@gmail.com>
+> > Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  drivers/pci/controller/dwc/pcie-uniphier.c | 77 +++++++++++++++++++++++++-----
+> >  1 file changed, 66 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
+> > index 4817626..237537a 100644
+> > --- a/drivers/pci/controller/dwc/pcie-uniphier.c
+> > +++ b/drivers/pci/controller/dwc/pcie-uniphier.c
+> > @@ -21,6 +21,7 @@
+> >  #include <linux/reset.h>
+> >  
+> >  #include "pcie-designware.h"
+> > +#include "../../pcie/portdrv.h"
+> >  
+> >  #define PCL_PINCTRL0			0x002c
+> >  #define PCL_PERST_PLDN_REGEN		BIT(12)
+> > @@ -44,7 +45,9 @@
+> >  #define PCL_SYS_AUX_PWR_DET		BIT(8)
+> >  
+> >  #define PCL_RCV_INT			0x8108
+> > +#define PCL_RCV_INT_ALL_INT_MASK	GENMASK(28, 25)
+> >  #define PCL_RCV_INT_ALL_ENABLE		GENMASK(20, 17)
+> > +#define PCL_RCV_INT_ALL_MSI_MASK	GENMASK(12, 9)
+> >  #define PCL_CFG_BW_MGT_STATUS		BIT(4)
+> >  #define PCL_CFG_LINK_AUTO_BW_STATUS	BIT(3)
+> >  #define PCL_CFG_AER_RC_ERR_MSI_STATUS	BIT(2)
+> > @@ -68,6 +71,8 @@ struct uniphier_pcie_priv {
+> >  	struct reset_control *rst;
+> >  	struct phy *phy;
+> >  	struct irq_domain *legacy_irq_domain;
+> > +	int aer_irq;
+> > +	int pme_irq;
+> >  };
+> >  
+> >  #define to_uniphier_pcie(x)	dev_get_drvdata((x)->dev)
+> > @@ -167,7 +172,15 @@ static void uniphier_pcie_stop_link(struct dw_pcie *pci)
+> >  
+> >  static void uniphier_pcie_irq_enable(struct uniphier_pcie_priv *priv)
+> >  {
+> > -	writel(PCL_RCV_INT_ALL_ENABLE, priv->base + PCL_RCV_INT);
+> > +	u32 val;
 > > +
-> >   	e1000e_flush_lpic(pdev);
-> >   	e1000e_pm_freeze(dev);
-> > @@ -6989,6 +6997,9 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
-> >   	struct e1000_hw *hw = &adapter->hw;
-> >   	int rc;
-> > +	if (dev_pm_skip_resume(dev))
-> > +		return 0;
+> > +	val = PCL_RCV_INT_ALL_ENABLE;
+> > +	if (pci_msi_enabled())
+> > +		val |= PCL_RCV_INT_ALL_INT_MASK;
+> > +	else
+> > +		val |= PCL_RCV_INT_ALL_MSI_MASK;
+> 
+> I'm confused about how this works.  Root Ports can signal AER errors
+> with either INTx or MSI.  This is controlled by the architected
+> Interrupt Disable bit and the MSI/MSI-X enable bits (I'm looking at
+> PCIe r5.0, sec 6.2.4.1.2).
+> 
+> The code here doesn't look related to those bits.  Does this code mean
+> that if pci_msi_enabled(), the Root Port will always signal with MSI
+> (if MSI Enable is set) and will *never* signal with INTx?
+> 
+> > +	writel(val, priv->base + PCL_RCV_INT);
+> >  	writel(PCL_RCV_INTX_ALL_ENABLE, priv->base + PCL_RCV_INTX);
+> >  }
+> >  
+> > @@ -231,28 +244,52 @@ static const struct irq_domain_ops uniphier_intx_domain_ops = {
+> >  	.map = uniphier_pcie_intx_map,
+> >  };
+> >  
+> > -static void uniphier_pcie_irq_handler(struct irq_desc *desc)
+> > +static void uniphier_pcie_misc_isr(struct pcie_port *pp, bool is_msi)
+> >  {
+> > -	struct pcie_port *pp = irq_desc_get_handler_data(desc);
+> >  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> >  	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
+> > -	struct irq_chip *chip = irq_desc_get_chip(desc);
+> > -	unsigned long reg;
+> > -	u32 val, bit, virq;
+> > +	u32 val;
+> >  
+> > -	/* INT for debug */
+> >  	val = readl(priv->base + PCL_RCV_INT);
+> >  
+> >  	if (val & PCL_CFG_BW_MGT_STATUS)
+> >  		dev_dbg(pci->dev, "Link Bandwidth Management Event\n");
 > > +
-> >   	/* Introduce S0ix implementation */
-> >   	if (hw->mac.type >= e1000_pch_cnp &&
-> >   	    !e1000e_check_me(hw->adapter->pdev->device))
-> > @@ -7665,7 +7676,8 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >   	e1000_print_device_info(adapter);
-> > -	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
-> > +	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE |
-> > +				DPM_FLAG_SMART_SUSPEND | DPM_FLAG_MAY_SKIP_RESUME);
-> >   	if (pci_dev_run_wake(pdev) && hw->mac.type < e1000_pch_cnp)
-> >   		pm_runtime_put_noidle(&pdev->dev);
 > 
+> Looks like a spurious whitespace change?
 > 
-> Kind regards,
+> >  	if (val & PCL_CFG_LINK_AUTO_BW_STATUS)
+> >  		dev_dbg(pci->dev, "Link Autonomous Bandwidth Event\n");
+> > -	if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS)
+> > -		dev_dbg(pci->dev, "Root Error\n");
+> > -	if (val & PCL_CFG_PME_MSI_STATUS)
+> > -		dev_dbg(pci->dev, "PME Interrupt\n");
+> > +
+> > +	if (is_msi) {
+> > +		if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS) {
+> > +			dev_dbg(pci->dev, "Root Error Status\n");
+> > +			if (priv->aer_irq)
+> > +				generic_handle_irq(priv->aer_irq);
+> > +		}
+> > +
+> > +		if (val & PCL_CFG_PME_MSI_STATUS) {
+> > +			dev_dbg(pci->dev, "PME Interrupt\n");
+> > +			if (priv->pme_irq)
+> > +				generic_handle_irq(priv->pme_irq);
+> > +		}
+> > +	}
+> >  
+> >  	writel(val, priv->base + PCL_RCV_INT);
+> > +}
+> > +
+> > +static void uniphier_pcie_msi_host_isr(struct pcie_port *pp)
+> > +{
+> > +	uniphier_pcie_misc_isr(pp, true);
+> > +}
+> > +
+> > +static void uniphier_pcie_irq_handler(struct irq_desc *desc)
+> > +{
+> > +	struct pcie_port *pp = irq_desc_get_handler_data(desc);
+> > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > +	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
+> > +	struct irq_chip *chip = irq_desc_get_chip(desc);
+> > +	unsigned long reg;
+> > +	u32 val, bit, virq;
+> > +
+> > +	uniphier_pcie_misc_isr(pp, false);
+> >  
+> >  	/* INTx */
+> >  	chained_irq_enter(chip, desc);
+> > @@ -329,6 +366,7 @@ static int uniphier_pcie_host_init(struct pcie_port *pp)
+> >  
+> >  static const struct dw_pcie_host_ops uniphier_pcie_host_ops = {
+> >  	.host_init = uniphier_pcie_host_init,
+> > +	.msi_host_isr = uniphier_pcie_msi_host_isr,
+> >  };
+> >  
+> >  static int uniphier_add_pcie_port(struct uniphier_pcie_priv *priv,
+> > @@ -337,6 +375,7 @@ static int uniphier_add_pcie_port(struct uniphier_pcie_priv *priv,
+> >  	struct dw_pcie *pci = &priv->pci;
+> >  	struct pcie_port *pp = &pci->pp;
+> >  	struct device *dev = &pdev->dev;
+> > +	struct pci_dev *pcidev;
+> >  	int ret;
+> >  
+> >  	pp->ops = &uniphier_pcie_host_ops;
+> > @@ -353,6 +392,22 @@ static int uniphier_add_pcie_port(struct uniphier_pcie_priv *priv,
+> >  		return ret;
+> >  	}
+> >  
+> > +	/* irq for PME */
+> > +	list_for_each_entry(pcidev, &pp->bridge->bus->devices, bus_list) {
+> > +		priv->pme_irq =
+> > +			pcie_port_service_get_irq(pcidev, PCIE_PORT_SERVICE_PME);
+> > +		if (priv->pme_irq)
+> > +			break;
 > 
-> Paul
+> Does this mean that all Root Ports must use the same MSI vector?  I
+> don't think that's a PCIe spec requirement, though of course DWC may
+> have its own restrictions.
+> 
+> I don't think this depends on CONFIG_PCIEPORTBUS, so it looks like
+> it's possible to have
+> 
+>   # CONFIG_PCIEPORTBUS is not set
+>   PCIE_UNIPHIER=y
+> 
+> in which case I think you'll have a link error.
+> 
+> > +	}
+> > +
+> > +	/* irq for AER */
+> > +	list_for_each_entry(pcidev, &pp->bridge->bus->devices, bus_list) {
+> > +		priv->aer_irq =
+> > +			pcie_port_service_get_irq(pcidev, PCIE_PORT_SERVICE_AER);
+> > +		if (priv->aer_irq)
+> > +			break;
+> > +	}
+> > +
+> >  	return 0;
+> >  }
+> >  
+> > -- 
+> > 2.7.4
+> > 
+> > 
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
