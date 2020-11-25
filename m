@@ -2,157 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538442C365E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AA22C3664
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgKYBwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 20:52:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbgKYBw3 (ORCPT
+        id S1726731AbgKYByw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 20:54:52 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7730 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbgKYByw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 20:52:29 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8FFC061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 17:52:29 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id k9so714294ejc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 17:52:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WrgS6CV4x3UltwJI2DnW1OzuHdog2ZsVn68ZxLeKHHU=;
-        b=S4w78aWhQBYjTBwAY7d5gbt+PtP/y46iHMJppknBZWw58tkWSFAI6xaAPgM/6eBm9O
-         N4Xgn+YMtJYIAiCQkH6TQhZnGm5nON8Q+WvOEzqQKP+/YTQMqy1oKULToO0pgY03LNg6
-         n7HtEFeHwJ0+va8ynSQsHpx9s1PHD17ALbIMF5KnA1ikcX4wAG6LMrfW2jZEL93DAy3e
-         f44ViUPd8G7cGzVwQVZ9YI6Shv6UwBJpOBoJkGle9al4+Llkc0vcwf4irsoCEgzeV6Gb
-         /WtWVQk4b97Ne3qcoZB2s7tOyS8fvcV4vlEqJSwk4LusdWDygADzSnIVkAEGjpy68tvA
-         kbtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WrgS6CV4x3UltwJI2DnW1OzuHdog2ZsVn68ZxLeKHHU=;
-        b=desDP6xDFG0TCX9d2yN2XTGhYKqin0fSAyx9D1muVLt7FZwr1g/jdmj3jUW/Ae37cD
-         Jgdc3CnJ3fRfplXwgugPlNljTn40Zqd1ZoqhXlb3NXx8fPsKfN3AE8ieLVMjiDU7xaX4
-         D8to1+zgpP10XRf92/d2ZPJAw3nxUfotOudoVe5/2zfW6goFc7DfVU2bv1vHfqQuCpUw
-         mf2VW5EG21k7P9lTmw+SYoWC2lYx6PCttycYLM1rJ+WEX7cjU/dD/iDu+TtVyr7BQqUf
-         7KS2XPD0V4jSMGIZ0rlhhXTqZaBbTb5z6HlWiRIit1AjGWX4JImOkt3scnqhVfxNa+J0
-         bhwg==
-X-Gm-Message-State: AOAM532aZ12Iz8N+1uBWgeDg2unvIpIhvppApEfG951j+6qHN9lxrwD1
-        cVgIBvhClSKDWPgNxQ0cJcRQ4TSSIcDCzGzdmfn1
-X-Google-Smtp-Source: ABdhPJy5QqTI/AmFehlIzbR5PA4citzw5aGePHpuJGKPI7XqWUoaYAYA5Mj9jqBoqrVHRoi3kpCcjDOXx5MKAZts+mc=
-X-Received: by 2002:a17:906:c096:: with SMTP id f22mr1130856ejz.488.1606269147585;
- Tue, 24 Nov 2020 17:52:27 -0800 (PST)
+        Tue, 24 Nov 2020 20:54:52 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CgkTL0NZBzkfXG;
+        Wed, 25 Nov 2020 09:54:14 +0800 (CST)
+Received: from [10.174.178.174] (10.174.178.174) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 25 Nov 2020 09:54:35 +0800
+Subject: Re: [PATCH] iommu: fix return error code in iommu_probe_device()
+To:     Will Deacon <will@kernel.org>
+CC:     Lu Baolu <baolu.lu@linux.intel.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>
+References: <20201117025238.3425422-1-yangyingliang@huawei.com>
+ <835ab066-b6b8-a211-4941-c01781031de8@linux.intel.com>
+ <454f5e3e-c380-e8a5-9283-3f7578eb601e@huawei.com>
+ <20201117224102.GD524@willie-the-truck>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <78bee047-ab33-4d81-6f77-af4c5b6e8aaa@huawei.com>
+Date:   Wed, 25 Nov 2020 09:54:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20201106155626.3395468-1-lokeshgidra@google.com>
- <20201106155626.3395468-4-lokeshgidra@google.com> <CAHC9VhRsaE5vhcSMr5nYzrHrM6Pc5-JUErNfntsRrPjKQNALxw@mail.gmail.com>
- <CA+EESO7LuRM_MH9z=BhLbWJrxMvnepq-NSTu_UJsPXxc0QkEag@mail.gmail.com>
- <CAHC9VhQJvTp4Xx2jCDK1zMbOmXLAAm_+ZnexydgAeWz1eGKfUg@mail.gmail.com>
- <CA+EESO79Yx6gMBYX+QkU9f7TKo-L+_COomCoAqwFQYwg8xy=gg@mail.gmail.com>
- <CAHC9VhSjVE6tC04h7k09LgTBrR-XW274ypvhcabkoyYLcDszHw@mail.gmail.com>
- <CA+EESO7vqNMXeyk7GZ7syXrTFG54oaf1PUsC7+2ndEBEQeBpdw@mail.gmail.com>
- <CAHC9VhQn-E+kTzzwwAiSLLQVtm5u=m5bOz2n-q+oA+8quT2noQ@mail.gmail.com>
- <CA+EESO6qfCCZ5K1sWWrcBm6VM0w3LWkiOfAh3dhM-eVigVYYWA@mail.gmail.com>
- <CAHC9VhTtLj9QPqEqO5hHPDmMnWzUaD-2PwGw=bQ=SBxvV78Sxg@mail.gmail.com> <CA+EESO465UY7v5W4k6cqWHTDq6e6pb_NBnZZRMjawHPvfEOOLw@mail.gmail.com>
-In-Reply-To: <CA+EESO465UY7v5W4k6cqWHTDq6e6pb_NBnZZRMjawHPvfEOOLw@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 24 Nov 2020 20:52:15 -0500
-Message-ID: <CAHC9VhRRuc+Vxj5waVkVaJ5DN6XpTZnU8eub_Z0BFUMa5yJz0g@mail.gmail.com>
-Subject: Re: [PATCH v12 3/4] selinux: teach SELinux about anonymous inodes
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201117224102.GD524@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 3:44 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> On Mon, Nov 23, 2020 at 2:43 PM Paul Moore <paul@paul-moore.com> wrote:
-> > On Mon, Nov 23, 2020 at 2:21 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> > > On Sun, Nov 22, 2020 at 3:14 PM Paul Moore <paul@paul-moore.com> wrote:
-> > > > On Wed, Nov 18, 2020 at 5:39 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> > > > > I have created a cuttlefish build and have tested with the attached
-> > > > > userfaultfd program:
-> > > >
-> > > > Thanks, that's a good place to start, a few comments:
-> > > >
-> > > > - While we support Android as a distribution, it isn't a platform that
-> > > > we common use for development and testing.  At the moment, Fedora is
-> > > > probably your best choice for that.
-> > > >
-> > > I tried setting up a debian/ubuntu system for testing using the
-> > > instructions on the selinux-testsuite page, but the system kept
-> > > freezing after 'setenforce 1'. I'll try with fedora now.
-> >
-> > I would expect you to have much better luck with Fedora.
+
+On 2020/11/18 6:41, Will Deacon wrote:
+> On Tue, Nov 17, 2020 at 07:11:28PM +0800, Yang Yingliang wrote:
+>> On 2020/11/17 17:40, Lu Baolu wrote:
+>>> On 2020/11/17 10:52, Yang Yingliang wrote:
+>>>> If iommu_group_get() failed, it need return error code
+>>>> in iommu_probe_device().
+>>>>
+>>>> Fixes: cf193888bfbd ("iommu: Move new probe_device path...")
+>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>>>> ---
+>>>>    drivers/iommu/iommu.c | 4 +++-
+>>>>    1 file changed, 3 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>>>> index b53446bb8c6b..6f4a32df90f6 100644
+>>>> --- a/drivers/iommu/iommu.c
+>>>> +++ b/drivers/iommu/iommu.c
+>>>> @@ -253,8 +253,10 @@ int iommu_probe_device(struct device *dev)
+>>>>            goto err_out;
+>>>>          group = iommu_group_get(dev);
+>>>> -    if (!group)
+>>>> +    if (!group) {
+>>>> +        ret = -ENODEV;
+>>> Can you please explain why you use -ENODEV here?
+>> Before 79659190ee97 ("iommu: Don't take group reference in
+>> iommu_alloc_default_domain()"), in
+>>
+>> iommu_alloc_default_domain(), if group is NULL, it will return -ENODEV.
+> Hmm. While I think the patch is ok, I'm not sure it qualifies as a fix.
+> Has iommu_probe_device() ever propagated this error? The commit you
+> identify in the 'Fixes:' tag doesn't seem to change this afaict.
+
+I think after this commit 439945e74a4b ("iommu: Move default domain 
+allocation to iommu_probe_device()"),
+
+iommu_probe_device() won't return error code if group is NULL. I can add 
+this fix tag in v2.
+
+
 >
-> Yes. It worked!
-
-Excellent :)
-
-> > > > - Your test program should be written in vanilla C for the
-> > > > selinux-testsuite.  Looking at the userfaultfdSimple.cc code that
-> > > > should be a trivial conversion.
-> > > >
-> > > > - I think you have a good start on a test for the selinux-testsuite,
-> > > > please take a look at the test suite and submit a patch against that
-> > > > repo.  Ondrej (CC'd) currently maintains the test suite and he may
-> > > > have some additional thoughts.
-> > > >
-> > > > * https://github.com/SELinuxProject/selinux-testsuite
-> > >
-> > > Thanks a lot for the inputs. I'll start working on this.
-> >
-> > Great, let us know if you hit any problems.  I think we would all like
-> > to see this upstream :)
->
-> I have the patch ready. I couldn't find any instructions on the
-> testsuite site about patch submission. Can you please tell me how to
-> proceed.
-
-You can post it to the SELinux mailing list, much like you would do a
-SELinux kernel patch.  I'll take a look and I'll make sure Ondrej
-looks at it too.
-
-Thanks!
-
--- 
-paul moore
-www.paul-moore.com
+> Will
+> .
