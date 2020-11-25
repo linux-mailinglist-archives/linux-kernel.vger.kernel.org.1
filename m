@@ -2,80 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B4A2C495C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD092C495F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731164AbgKYUwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 15:52:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
+        id S1731228AbgKYUxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 15:53:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730178AbgKYUwz (ORCPT
+        with ESMTP id S1730178AbgKYUxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 15:52:55 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1832C0613D4;
-        Wed, 25 Nov 2020 12:52:54 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ChCl720DLz9sRR;
-        Thu, 26 Nov 2020 07:52:51 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606337571;
-        bh=4Qm+vRgNkmq9CpW5qw9fjsP0f8xaia43H2fH/EqR+BY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DTUAsWE8+kz/fXxof6omKYREOLVgF/8FFPACdymK9ttb0/lLoppmU2nftq4O5GSfX
-         de1+LwHMWnBiwkI4qOMiOzuO5MDy0rbpy3SIALPuXSjiB+1lxjvwMVbSVWW3/mRbkR
-         g0L4FhyKyfLvaSQMTf7kXEl8++GtG3yC6wYcGA9yAr0zpjNfAN+44EgWuC6TbM6KCQ
-         D2uqVRTIGYD1vU7FStn5vZItSqftp72WetXPt7Ymsf19u6thoLAEL4M2K3S/xj/YjC
-         7WQjzI6XjP0q6GCh/sZBraHy4OCpbyeIiB5coyJFHWl3MqG/PTCkwZwLyr3nBgy6GL
-         BstVD0TwFS4CA==
-Date:   Thu, 26 Nov 2020 07:52:50 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the cgroup tree
-Message-ID: <20201126075250.7686fc8a@canb.auug.org.au>
+        Wed, 25 Nov 2020 15:53:33 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1181C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 12:53:32 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1ki1n9-0001YC-FF; Wed, 25 Nov 2020 21:53:31 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1ki1n8-0006l7-PP; Wed, 25 Nov 2020 21:53:30 +0100
+Date:   Wed, 25 Nov 2020 21:53:28 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v1] drivers: make struct device_driver::remove return void
+Message-ID: <20201125205328.q6zjoq4k5u4xvipw@pengutronix.de>
+References: <20201110150723.1592682-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//2dLdylUKkuWH=j_zTDyalw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lzeclta7trytqhqz"
+Content-Disposition: inline
+In-Reply-To: <20201110150723.1592682-1-u.kleine-koenig@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//2dLdylUKkuWH=j_zTDyalw
-Content-Type: text/plain; charset=US-ASCII
+
+--lzeclta7trytqhqz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Hello Julia,
 
-Commit
+On Tue, Nov 10, 2020 at 04:07:23PM +0100, Uwe Kleine-K=F6nig wrote:
+> diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
+> index ecc304149067..ed79a5c657e5 100644
+> --- a/drivers/amba/bus.c
+> +++ b/drivers/amba/bus.c
+> @@ -295,7 +295,7 @@ static int amba_probe(struct device *dev)
+>  	return ret;
+>  }
+> =20
+> -static int amba_remove(struct device *dev)
+> +static void amba_remove(struct device *dev)
+>  {
+>  	struct amba_device *pcdev =3D to_amba_device(dev);
+>  	struct amba_driver *drv =3D to_amba_driver(dev->driver);
+> @@ -303,6 +303,9 @@ static int amba_remove(struct device *dev)
+> =20
+>  	pm_runtime_get_sync(dev);
+>  	ret =3D drv->remove(pcdev);
+> +	if (ret)
+> +		dev_info(dev, "Failed to remove (%pe), ignoring\n",
+> +			 ERR_PTR(ret));
+>  	pm_runtime_put_noidle(dev);
+> =20
+>  	/* Undo the runtime PM settings in amba_probe() */
+> @@ -312,8 +315,6 @@ static int amba_remove(struct device *dev)
+> =20
+>  	amba_put_disable_pclk(pcdev);
+>  	dev_pm_domain_detach(dev, true);
+> -
+> -	return ret;
+>  }
+> =20
+>  static void amba_shutdown(struct device *dev)
+> [...]
+> diff --git a/include/linux/device/driver.h b/include/linux/device/driver.h
+> index ee7ba5b5417e..6a3058d4476a 100644
+> --- a/include/linux/device/driver.h
+> +++ b/include/linux/device/driver.h
+> @@ -107,7 +107,7 @@ struct device_driver {
+> =20
+>  	int (*probe) (struct device *dev);
+>  	void (*sync_state)(struct device *dev);
+> -	int (*remove) (struct device *dev);
+> +	void (*remove) (struct device *dev);
+>  	void (*shutdown) (struct device *dev);
+>  	int (*suspend) (struct device *dev, pm_message_t state);
+>  	int (*resume) (struct device *dev);
 
-  73bdc818634e ("kernel: cgroup: Mundane spelling fixes throughout the file=
-")
+I tried to let coccinelle help me finding functions I need to adapt for
+this change, but I failed. (That is, functions that currently return an
+int and are used to set (or initialize) the remove callback for a struct
+device_driver.) Can you help me here?
 
-is missing a Signed-off-by from its committer.
+Best regards
+Uwe
 
 --=20
-Cheers,
-Stephen Rothwell
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---Sig_//2dLdylUKkuWH=j_zTDyalw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--lzeclta7trytqhqz
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl++xCIACgkQAVBC80lX
-0GyJoAgAlHFQ3NDC6KBiTHNdUPz1+swupViarFxZNJekoXtFkhDPOA6FXEN6oJ6d
-vkpoxaZhXsoHO23iSkkC6YyWUx3PLAuss0Y4QSwIVdPvtsOHk7CA1iTuu63fdJMU
-t9e5976OeATwd39+K0uRKE+bLbskg3ToSUA29Mrhea+3cUcxi+wLwtAnCcAtB2iH
-ojcQ7xjv3heA7YXFTzA/4No/4zTt8uq+AweAE6PYVuZ9M0FadeLfbjEuqCY6eQQ/
-V088PJmLPxF2E1XvxCT1opH4vUHVSS+5F2KIg44FLIQrrCyiie+cTHgdEKzHSpoC
-6MYgzQ0MXYcMyA0a9hNquBH+9pkv8A==
-=Hvte
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl++xEUACgkQwfwUeK3K
+7Al8Xwf+KodT9uZV8Zd6148pzVHIMn9kO0fAHsxtVQ+wdDDoEQV5qfpO6JNrWeKy
+Wv04MrvBRwZ7Chx4VIDjfVYOF4bCJWksPQYF/fYx33gPbCvqFs7Pb8xZyVP+yK9y
+rhf9ZIBUh/+TljQQV2+dkl4V1RZl4G4MfWqygV0g0rMhRFJ4CxdUj1A6gUYzyhkY
+tGuGF7Q7Wz9mGYkSd0C2Sl+tATWTTHRIqQe+9hBugv+F64D+EotXX2eVau3scft6
+YzNgIZGy1QxuKEn4OH9a7B+qiKubZHnDx7yIrmKxE03UE+tJ8sFXnZdwmX79dNIn
+fFIW8dOWgec/2DqEFwslpFZ69nltLQ==
+=gCyg
 -----END PGP SIGNATURE-----
 
---Sig_//2dLdylUKkuWH=j_zTDyalw--
+--lzeclta7trytqhqz--
