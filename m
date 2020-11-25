@@ -2,87 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57E52C4872
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B14642C4874
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728714AbgKYTcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:32:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32087 "EHLO
+        id S1728741AbgKYTdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:33:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33275 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728639AbgKYTcv (ORCPT
+        by vger.kernel.org with ESMTP id S1728639AbgKYTdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:32:51 -0500
+        Wed, 25 Nov 2020 14:33:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606332770;
+        s=mimecast20190719; t=1606332788;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2OmJMqccrYipc5YlyjAqjjjE2k4YgF45uxCd/ALBWJw=;
-        b=bT0M/uyqT+JKPaprAt71aewN7cPZWUQbXRDc3Yr9oqkMjj+pALtkKvieaB9PzAssFCzh9b
-        Ua2XopKTDTWBmU9X+oB2tBb+ufAVGWxn/Uav6fkYutK9WJ+FH+c2yL+NnhwAMf7qptFttE
-        0qXCnj8BSsocqc2i14acCURc5K/kHuw=
+        bh=DCzZEjGV2+6wxo4yercQuWLJShcOU76TLNb98oZ3taM=;
+        b=Yp4EfdcdW22hAqjJuUyqf2sP0FWIwngWC4inBmeTTHMCoJUS46B2agk4baj4clcbEpTjz+
+        fjEGDFdCs8gIvXodxAGjqNlBUmJ+S1pCcwMJSnEVODyCKhjxKeSK2lcy4f56Heac/weVmq
+        S5x9W1pTVxSx1YDVXnsUw7aPnRXpXMw=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-521-gbp_SDrxMeiC9AYr7l2ygw-1; Wed, 25 Nov 2020 14:32:48 -0500
-X-MC-Unique: gbp_SDrxMeiC9AYr7l2ygw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-157-m972k9RhMCax67Q8beC-Ww-1; Wed, 25 Nov 2020 14:33:06 -0500
+X-MC-Unique: m972k9RhMCax67Q8beC-Ww-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7BD956C60;
-        Wed, 25 Nov 2020 19:32:46 +0000 (UTC)
-Received: from liberator.sandeen.net (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 02C455D6AC;
-        Wed, 25 Nov 2020 19:32:45 +0000 (UTC)
-Subject: Re: UAPI value collision: STATX_ATTR_MOUNT_ROOT vs STATX_ATTR_DAX
-To:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1927370.1606323014@warthog.procyon.org.uk>
-From:   Eric Sandeen <sandeen@redhat.com>
-Message-ID: <fdf89cef-1350-e387-4d59-e6951255dbf0@redhat.com>
-Date:   Wed, 25 Nov 2020 13:32:45 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13EDA1084C80;
+        Wed, 25 Nov 2020 19:33:05 +0000 (UTC)
+Received: from [10.36.112.131] (ovpn-112-131.ams2.redhat.com [10.36.112.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 239A75D9C6;
+        Wed, 25 Nov 2020 19:33:02 +0000 (UTC)
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+To:     Andrea Arcangeli <aarcange@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>
+References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
+ <20201121194506.13464-1-aarcange@redhat.com>
+ <20201121194506.13464-2-aarcange@redhat.com>
+ <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz> <X73s8fxDKPRD6wET@redhat.com>
+ <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz> <X76qJCg0Pa8diO59@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <424bba1c-d9af-e2a9-0b5a-3a71d525bf30@redhat.com>
+Date:   Wed, 25 Nov 2020 20:33:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <1927370.1606323014@warthog.procyon.org.uk>
+In-Reply-To: <X76qJCg0Pa8diO59@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/20 10:50 AM, David Howells wrote:
-> Hi Linus, Miklos, Ira,
+On 25.11.20 20:01, Andrea Arcangeli wrote:
+> On Wed, Nov 25, 2020 at 01:08:54PM +0100, Vlastimil Babka wrote:
+>> Yeah I guess it would be simpler if zoneid/nid was correct for 
+>> pfn_valid() pfns within a zone's range, even if they are reserved due 
+>> not not being really usable memory.
+>>
+>> I don't think we want to introduce CONFIG_HOLES_IN_ZONE to x86. If the 
+>> chosen solution is to make this to a real hole, the hole should be 
+>> extended to MAX_ORDER_NR_PAGES aligned boundaries.
 > 
-> It seems that two patches that got merged in the 5.8 merge window collided and
-> no one noticed until now:
+> The way pfn_valid works it's not possible to render all non-RAM pfn as
+> !pfn_valid, CONFIG_HOLES_IN_ZONE would not achieve it 100% either. So
+
+Well, we could do it the arm64 way and provide a custom pfn_valid() and
+check memblock for RAM - please don't! :D
+
+> I don't think we can rely on that to eliminate all non-RAM reserved
+> pages from the mem_map and avoid having to initialize them in the
+> first place. Some could remain as in this case since in the same
+> pageblock there's non-RAM followed by RAM and all pfn are valid.
 > 
-> 80340fe3605c0 (Miklos Szeredi     2020-05-14 184) #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
-> ...
-> 712b2698e4c02 (Ira Weiny          2020-04-30 186) #define STATX_ATTR_DAX			0x00002000 /* [I] File is DAX */
+>> In any case, compaction code can't fix this with better range checks.
 > 
-> The question is, what do we do about it?  Renumber one or both of the
-> constants?
+> David's correct that it can, by adding enough PageReserved (I'm
+> running all systems reproducing this with plenty of PageReserved
+> checks in all places to work around it until we do a proper fix).
 > 
-> David
+> My problem with that is that 1) it's simply non enforceable at runtime
+> that there is not missing PageReserved check and 2) what benefit it
+> would provide to leave a wrong zoneid in reserved pages and having to
+> add extra PageReserved checks?
 
-Related to this, nothing sets STATX_ATTR_DAX into statx->attributes_mask,
-anywhere in the kernel.
+See my other mail. If we have a clean way to set *any* memmap (non-RAM,
+memory holes at any place) to a proper nid/zid, then we won't need
+reserved checks. I raised some cases that need more thought than a
+simple "hole in zone".
 
-The flag is set into statx->attributes in vfs_getattr_nosec(), but that
-does not know whether the particular filesystem under query supports dax
-or not.
 
-This is related to my other email about exactly what attributes_mask
-means, so should STATX_ATTR_DAX be set in statx->attributes_mask only
-in the filesystems that support dax?
+-- 
+Thanks,
 
-(And should that be done only if CONFIG_DAX is turned on, etc?)
-
--Eric
+David / dhildenb
 
