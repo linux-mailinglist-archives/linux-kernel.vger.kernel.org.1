@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591F32C422E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D842C4234
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729740AbgKYObf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:31:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729344AbgKYObf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:31:35 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20CE8206F9;
-        Wed, 25 Nov 2020 14:31:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606314694;
-        bh=wKP1QfRaO0pncarWwIy2eBfABvq24Ar8n3NiWBXx3OU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MioyNkE3mbyp3ub95NlYgl3ZcvcJcJyYbY2ao46SMGhg61vQsfvJFKVqQF4hU8uSV
-         G95Y/uxJXhZEOxB9C4rqXTJWjrsZKhSKOLgdCF09sfzMd02EcsUndBN7qbCLoTH4b1
-         OL/HEyB5iCiB2DJUH7PLKA3peeYaa4Gm0QOnHNdA=
-Date:   Wed, 25 Nov 2020 14:31:28 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Michael Clark <michaeljclark@mac.com>
-Subject: Re: [PATCH 2/5] riscv: Add QUEUED_SPINLOCKS & QUEUED_RWLOCKS
- supported
-Message-ID: <20201125143128.GC16159@willie-the-truck>
-References: <1606225437-22948-1-git-send-email-guoren@kernel.org>
- <1606225437-22948-2-git-send-email-guoren@kernel.org>
- <20201124143931.GI2414@hirez.programming.kicks-ass.net>
- <CAK8P3a1ykYmpXtjVbeAjLPY0AtfQTpL9jJ8e6SokiTb=J9UhnQ@mail.gmail.com>
- <20201125141645.GB2414@hirez.programming.kicks-ass.net>
+        id S1729755AbgKYOdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:33:35 -0500
+Received: from v133-130-127-43.a05a.g.tyo1.static.cnode.io ([133.130.127.43]:41902
+        "EHLO mail.hard-wi.red" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbgKYOde (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 09:33:34 -0500
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by mail.hard-wi.red (Postfix) with ESMTPA id EC3CE200016;
+        Wed, 25 Nov 2020 14:33:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hard-wi.red; s=dkim;
+        t=1606314807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hUMWTjwqHC5FWh3WEilIQ+lmDqLu8Utx5UHnZa/S/Z8=;
+        b=LzGFY41BjU0AyqvcP02VnIghlvE9IWj4sYKvR4kvshWli3NzFUep9GGv2J+E3L7+Or/jsJ
+        89nIEuHi1psd05QCIhb8VdUwaEORfiu8KpDuj8Jf7yuxv7dxkCOphoMgDjj2eNqvfcdS92
+        KT1e/gH7vwwooAn6OMrom4qbKq5gB3c=
+Subject: Re: [PATCH 1/2] HID: elecom: rewrite report based on model specific
+ parameters
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201121205438.4092-1-lo48576@hard-wi.red>
+ <nycvar.YFH.7.76.2011251428240.3441@cbobk.fhfr.pm>
+From:   Takuma YOSHIOKA <lo48576@hard-wi.red>
+Message-ID: <5d9b0f87-aa61-81af-5274-eaab8b73123f@hard-wi.red>
+Date:   Wed, 25 Nov 2020 23:33:25 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125141645.GB2414@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <nycvar.YFH.7.76.2011251428240.3441@cbobk.fhfr.pm>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=hard-wi.red;
+        s=dkim; t=1606314807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hUMWTjwqHC5FWh3WEilIQ+lmDqLu8Utx5UHnZa/S/Z8=;
+        b=gimtRH217GPutXETS40LClk+YYMYlY4IIRiBXmCzBwyE0V8QPf8jTK2WVf/HMgC1DWTDxH
+        U3dKP+3xJ9LpWH719loVtHRW7896aennGreBwdmpK3Cl6sAdhkuYSPWaS9oHEdNQCSixp9
+        lwftvQItmTs2FVZTUxcYupl1ANRvorM=
+ARC-Seal: i=1; s=dkim; d=hard-wi.red; t=1606314807; a=rsa-sha256; cv=none;
+        b=WkIV+SkaemXBAhFYUrQAVj4K8x4cnTIgq41pi1fG38CTOOdEDB77pP8HLD34ifkySxr/u/
+        h3rTLmg5UTdyDSENNo45BHqxpgUF9NNijS++fM5wfgLvJOTV6HZzPrMEsqvS3Cyc5v720x
+        LeRuZyZM4VGyHu1M5kqY6Alf19UHO1o=
+ARC-Authentication-Results: i=1;
+        mail.hard-wi.red;
+        auth=pass smtp.auth=lo48576@hard-wi.red smtp.mailfrom=lo48576@hard-wi.red
+Authentication-Results: mail.hard-wi.red;
+        auth=pass smtp.auth=lo48576@hard-wi.red smtp.mailfrom=lo48576@hard-wi.red
+X-Spamd-Bar: /
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 03:16:45PM +0100, Peter Zijlstra wrote:
-> @@ -207,6 +187,32 @@ static __always_inline void clear_pending_set_locked(struct qspinlock *lock)
->  	atomic_add(-_Q_PENDING_VAL + _Q_LOCKED_VAL, &lock->val);
->  }
->  
-> +#endif /* _Q_PENDING_BITS == 8 */
-> +
-> +#if _Q_PENDING_BITS == 8 && ARCH_HAS_XCHG16
-> +
-> +/*
-> + * xchg_tail - Put in the new queue tail code word & retrieve previous one
-> + * @lock : Pointer to queued spinlock structure
-> + * @tail : The new queue tail code word
-> + * Return: The previous queue tail code word
-> + *
-> + * xchg(lock, tail), which heads an address dependency
-> + *
-> + * p,*,* -> n,*,* ; prev = xchg(lock, node)
-> + */
-> +static __always_inline u32 xchg_tail(struct qspinlock *lock, u32 tail)
-> +{
-> +	/*
-> +	 * We can use relaxed semantics since the caller ensures that the
-> +	 * MCS node is properly initialized before updating the tail.
-> +	 */
-> +	return (u32)xchg_relaxed(&lock->tail,
-> +				 tail >> _Q_TAIL_OFFSET) << _Q_TAIL_OFFSET;
-> +}
-> +
-> +#else /* !(_Q_PENDING_BITS == 8 && ARCH_HAS_XCHG16) */
+On 2020/11/22 5:54, YOSHIOKA Takuma wrote:
+>  	case USB_DEVICE_ID_ELECOM_M_DT1URBK:
+>  	case USB_DEVICE_ID_ELECOM_M_DT1DRBK:
+>  	case USB_DEVICE_ID_ELECOM_M_HT1URBK:
+>  	case USB_DEVICE_ID_ELECOM_M_HT1DRBK:
+> -		mouse_button_fixup(hdev, rdesc, *rsize, 8);
+> +		/*mouse_button_fixup(hdev, rdesc, *rsize, 13, 15, 21, 31, 8);*/
 
-Why can't architectures just implement this with a 32-bit xchg instruction
-if they don't have one that operates on 16 bits? Sure, they'll store more
-data, but it's atomic so you shouldn't be able to tell... (ignoring parisc
-crazy).
-
-Also, I'm surprised qspinlock benefits riscv. On arm64, there's nothing in
-it over tickets for <= 16 CPUs.
-
-Will
+I'm very very sorry, I noticed that I've forgotten to remove this commented-out line...
+This "13, 15, 21, 31" line should be removed completely.
