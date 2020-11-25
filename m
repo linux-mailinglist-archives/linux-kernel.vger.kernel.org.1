@@ -2,154 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4182C40D2
+	by mail.lfdr.de (Postfix) with ESMTP id EA1012C40D3
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729563AbgKYNCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:02:03 -0500
-Received: from relmlor2.renesas.com ([210.160.252.172]:48489 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729535AbgKYNCB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:02:01 -0500
-X-IronPort-AV: E=Sophos;i="5.78,368,1599490800"; 
-   d="scan'208";a="63639443"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 25 Nov 2020 22:02:00 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 05D1A4338022;
-        Wed, 25 Nov 2020 22:01:58 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 2/2] ARM: dts: r8a7742-iwg21d-q7-dbcm-ca: Add support for 8-bit ov7725 sensors
-Date:   Wed, 25 Nov 2020 13:01:48 +0000
-Message-Id: <20201125130148.28724-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201125130148.28724-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20201125130148.28724-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1729583AbgKYNCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:02:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726330AbgKYNCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 08:02:32 -0500
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D639206F7;
+        Wed, 25 Nov 2020 13:02:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606309351;
+        bh=1dsC4XLRXty+/paLvrXuZ/JoBwtNz/7R74sR7uRpKhM=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=a/SVPQmbH1lIk9RjxNbBWknHi8jxdx05HgB9hw028JsGVd2sGUF7Hw0sD58FiPtNw
+         ZeE67iP8UFPo5/aocd4ZzESs5TOLQBOGA15WWDMdk/adFyjqEuqlQZ2DtE3caExVe0
+         JsMCSDZw8GKErJcg29q4Fyy4/3no8Ffg0JbRcX6s=
+Date:   Wed, 25 Nov 2020 14:02:28 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 062/141] HID: usbhid: Fix fall-through warnings for
+ Clang
+In-Reply-To: <2ca011901b6a1313f71f3a3775078224c941a908.1605896059.git.gustavoars@kernel.org>
+Message-ID: <nycvar.YFH.7.76.2011251402200.3441@cbobk.fhfr.pm>
+References: <cover.1605896059.git.gustavoars@kernel.org> <2ca011901b6a1313f71f3a3775078224c941a908.1605896059.git.gustavoars@kernel.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 8-bit ov7725 sensors can also be connected to the camera daughter
-board.
+On Fri, 20 Nov 2020, Gustavo A. R. Silva wrote:
 
-This patch creates a separate dtsi file for ov7725 sensors and is included
-in r8a7742-iwg21d-q7-dbcm-ca.dts (which is commented out as by default
-ov5640 is enabled)
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a couple
+> of warnings by explicitly adding a couple of break statements instead
+> of letting the code fall through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/hid/usbhid/hid-core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
+> index 17a29ee0ac6c..86257ce6d619 100644
+> --- a/drivers/hid/usbhid/hid-core.c
+> +++ b/drivers/hid/usbhid/hid-core.c
+> @@ -438,6 +438,7 @@ static void hid_irq_out(struct urb *urb)
+>  		break;
+>  	case -ESHUTDOWN:	/* unplug */
+>  		unplug = 1;
+> +		break;
+>  	case -EILSEQ:		/* protocol error or unplug */
+>  	case -EPROTO:		/* protocol error or unplug */
+>  	case -ECONNRESET:	/* unlink */
+> @@ -489,6 +490,7 @@ static void hid_ctrl(struct urb *urb)
+>  		break;
+>  	case -ESHUTDOWN:	/* unplug */
+>  		unplug = 1;
+> +		break;
+>  	case -EILSEQ:		/* protocol error or unplug */
+>  	case -EPROTO:		/* protocol error or unplug */
+>  	case -ECONNRESET:	/* unlink */
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- .../boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts    |  2 +
- .../dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi    | 77 +++++++++++++++++++
- 2 files changed, 79 insertions(+)
- create mode 100644 arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi
+Applied, thanks.
 
-diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
-index a632b08a8dbb..6216a6b0f927 100644
---- a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
-+++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
-@@ -29,7 +29,9 @@
- #define MCLK_CAM4		mclk_cam4
- #define VIN3_EP			vin3ep
- 
-+/* Comment the below according to connected cameras */
- #include "r8a7742-iwg21d-q7-dbcm-ov5640.dtsi"
-+/* #include "r8a7742-iwg21d-q7-dbcm-ov7725.dtsi" */
- 
- / {
- 	model = "iWave Systems RZ/G1H Qseven development platform with camera add-on";
-diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi
-new file mode 100644
-index 000000000000..28b509942702
---- /dev/null
-+++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi
-@@ -0,0 +1,77 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This include file ties VIN interfaces with ov7725 sensors on
-+ * iWave-RZ/G1H Qseven board development platform connected with
-+ * camera daughter board.
-+ *
-+ * Copyright (C) 2020 Renesas Electronics Corp.
-+ */
-+
-+#define VIN0_REMOTE_EP		ov7725_0
-+#define VIN1_REMOTE_EP		ov7725_1
-+#define VIN2_REMOTE_EP		ov7725_2
-+#define VIN3_REMOTE_EP		ov7725_3
-+
-+&CAM1_PARENT_I2C {
-+	ov7725@21 {
-+		compatible = "ovti,ov7725";
-+		reg = <0x21>;
-+		clocks = <&MCLK_CAM1>;
-+
-+		port {
-+			ov7725_0: endpoint {
-+				bus-width = <8>;
-+				bus-type = <6>;
-+				remote-endpoint = <&VIN0_EP>;
-+			};
-+		};
-+	};
-+};
-+
-+&CAM2_PARENT_I2C {
-+	ov7725@21 {
-+		compatible = "ovti,ov7725";
-+		reg = <0x21>;
-+		clocks = <&MCLK_CAM2>;
-+
-+		port {
-+			ov7725_1: endpoint {
-+				bus-width = <8>;
-+				bus-type = <6>;
-+				remote-endpoint = <&VIN1_EP>;
-+			};
-+		};
-+	};
-+};
-+
-+&CAM3_PARENT_I2C {
-+	ov7725@21 {
-+		compatible = "ovti,ov7725";
-+		reg = <0x21>;
-+		clocks = <&MCLK_CAM3>;
-+
-+		port {
-+			ov7725_2: endpoint {
-+				bus-width = <8>;
-+				bus-type = <6>;
-+				remote-endpoint = <&VIN2_EP>;
-+			};
-+		};
-+	};
-+};
-+
-+&CAM4_PARENT_I2C {
-+	ov7725@21 {
-+		compatible = "ovti,ov7725";
-+		reg = <0x21>;
-+		clocks = <&MCLK_CAM4>;
-+
-+		port {
-+			ov7725_3: endpoint {
-+				bus-width = <8>;
-+				bus-type = <6>;
-+				remote-endpoint = <&VIN3_EP>;
-+			};
-+		};
-+	};
-+};
 -- 
-2.17.1
+Jiri Kosina
+SUSE Labs
 
