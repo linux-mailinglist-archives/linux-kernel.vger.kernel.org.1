@@ -2,110 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9242C4133
+	by mail.lfdr.de (Postfix) with ESMTP id E63812C4135
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729488AbgKYNe7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Nov 2020 08:34:59 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:51475 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729399AbgKYNe6 (ORCPT
+        id S1729542AbgKYNfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:35:25 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:38668 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729399AbgKYNfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:34:58 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-230-16Z1kSBhOmOGKjtenUFg5Q-1; Wed, 25 Nov 2020 13:34:54 +0000
-X-MC-Unique: 16Z1kSBhOmOGKjtenUFg5Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 25 Nov 2020 13:34:53 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 25 Nov 2020 13:34:53 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jiri Kosina' <jikos@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-CC:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: RE: [PATCH 063/141] HID: input: Fix fall-through warnings for Clang
-Thread-Topic: [PATCH 063/141] HID: input: Fix fall-through warnings for Clang
-Thread-Index: AQHWwyu7krTTi6wp3EytPBUHLpnbG6nY2HbA
-Date:   Wed, 25 Nov 2020 13:34:53 +0000
-Message-ID: <93bac7a8ac704a248b4f9877391e4a4f@AcuMS.aculab.com>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <18a24381b4461ec8174211c78eac549808b15e6f.1605896059.git.gustavoars@kernel.org>
- <nycvar.YFH.7.76.2011251403390.3441@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2011251403390.3441@cbobk.fhfr.pm>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 25 Nov 2020 08:35:24 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UGW7mH6_1606311317;
+Received: from 30.0.173.120(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UGW7mH6_1606311317)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 25 Nov 2020 21:35:18 +0800
+Subject: Re: [PATCH 3/7] blk-iocost: Just open code the q_name()
+To:     Tejun Heo <tj@kernel.org>
+Cc:     axboe@kernel.dk, baolin.wang7@gmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1606186717.git.baolin.wang@linux.alibaba.com>
+ <3bdc9526ac839a6952db8cd50cf0e75280614b1d.1606186717.git.baolin.wang@linux.alibaba.com>
+ <X75BGjo8B1fgKwui@mtj.duckdns.org>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+Message-ID: <2bc32abe-1328-1d01-cbd3-68286808ab21@linux.alibaba.com>
+Date:   Wed, 25 Nov 2020 21:35:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <X75BGjo8B1fgKwui@mtj.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jikos@kernel.org>
-> Sent: 25 November 2020 13:04
-> On Fri, 20 Nov 2020, Gustavo A. R. Silva wrote:
+
+
+> On Tue, Nov 24, 2020 at 11:33:32AM +0800, Baolin Wang wrote:
+>> The simple q_name() function is only called from ioc_name(),
+>> just open code it to make code more readable.
+>>
+>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 > 
-> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> > by explicitly adding a goto statement instead of letting the code fall
-> > through to the next case.
-> >
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > ---
-> >  drivers/hid/hid-input.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-> > index 9770db624bfa..37601b800a2e 100644
-> > --- a/drivers/hid/hid-input.c
-> > +++ b/drivers/hid/hid-input.c
-> > @@ -743,6 +743,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
-> >  				field->flags |= HID_MAIN_ITEM_RELATIVE;
-> >  				break;
-> >  			}
-> > +			goto unknown;
-> >
-> >  		default: goto unknown;
-> 
-> This makes my eyes hurt :) But adding the annotation would be ugly as
-> well, so let me just take it as-is.
+> I'm not sure this is an improvement. Either way seems fine to me. So, why
+> change?
 
-                case HID_GD_RFKILL_BTN:
-                        /* MS wireless radio ctl extension, also check CA */
-                        if (field->application == HID_GD_WIRELESS_RADIO_CTLS) {
-                                map_key_clear(KEY_RFKILL);
-                                /* We need to simulate the btn release */
-                                field->flags |= HID_MAIN_ITEM_RELATIVE;
-                                break;
-                        }
-
-It might be best to invert the condition and de-indent the code.
-                case HID_GD_RFKILL_BTN:
-                        /* MS wireless radio ctl extension, also check CA */
-                        if (field->application != HID_GD_WIRELESS_RADIO_CTLS)
-                                goto unknown;
-                        map_key_clear(KEY_RFKILL);
-                        /* We need to simulate the btn release */
-                        field->flags |= HID_MAIN_ITEM_RELATIVE;
-                        break;
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Yes, this may be not called an 'improvement'. Just from my taste of 
+reading code, there is no need to factor out a separate function only 
+including 4 lines code and called by only one place. Anyway I can drop
+this patch if you think this is unnecessary. Thanks.
