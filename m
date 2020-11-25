@@ -2,138 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8122C35C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 01:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC452C35CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 01:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgKYAwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 19:52:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41580 "EHLO mail.kernel.org"
+        id S1726505AbgKYAxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 19:53:02 -0500
+Received: from mga17.intel.com ([192.55.52.151]:41650 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbgKYAwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 19:52:37 -0500
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88F5421741;
-        Wed, 25 Nov 2020 00:52:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606265556;
-        bh=CyLRVh8JtmFuJs0UzEiC19JLYFq/L1Q+qkZ2v4YFjYo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Uq66iisQgQ3PIjtDoE4msOhqb5OHJ3lFF57H0J9pOfOI7izqnpVv7JWsMXjv0WP6+
-         Zdt4rAhfJf64SNHy3loP5/dMi5t4SugO1tTpQ4+NM4pqEyQ0Wnj+KgD0sbYyjfKfBg
-         66yXHsIfGBf8VrGfRTF8+lDdnuqak9ZLIlSVa1a0=
-Received: by mail-lj1-f182.google.com with SMTP id b17so436551ljf.12;
-        Tue, 24 Nov 2020 16:52:36 -0800 (PST)
-X-Gm-Message-State: AOAM533zUPshGroIo8BOKSpAuuwie3HaahsHt0Nr/K1jZxzK56kiyP/Z
-        VQO8X/jxm0fyfny350Vjw0MHjNQ402GCNg1Iyqg=
-X-Google-Smtp-Source: ABdhPJxXNypMXNrwvl404YxnwDVGzaYXnO59TiupDEKcpkPWd6NZwPa2V/R/J4KGCf3GcXUkVvM9vFT0gdbbTku0XNk=
-X-Received: by 2002:a05:651c:213:: with SMTP id y19mr325504ljn.250.1606265554826;
- Tue, 24 Nov 2020 16:52:34 -0800 (PST)
+        id S1725930AbgKYAxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 19:53:02 -0500
+IronPort-SDR: O32Z7CXL2XhF4PCm2XBHrdJIPn24qZHp4ifVlJe8g6cP8EQPCNwnPlw8HasQtdY8u2UfthMD7e
+ CRn0JFngkdVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="151881525"
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="151881525"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 16:53:01 -0800
+IronPort-SDR: tEuKFr65FPTIhA9P+8K0hGO91Y9a3lraO39G3XtcUIcDYhzaebvNJEW3rWHMll1wCPQNVeU4iW
+ DT4zwS5uL+wA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="536673896"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Nov 2020 16:52:59 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     huang ying <huang.ying.caritas@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 2/2] mm/vmalloc: rework the drain logic
+References: <20201116220033.1837-2-urezki@gmail.com>
+        <CAC=cRTN77LAn-9-6rGukc2aUZQzx7oP9eKt_hJeb=wbnhGqObQ@mail.gmail.com>
+        <20201117130434.GA10769@pc636>
+        <CAC=cRTN-JyZKyFkRgC0BrBjnu4mMTJ_hXBYszJ9HLXaLqeMfgQ@mail.gmail.com>
+        <20201118161623.GA21171@pc636> <87mtzeunsi.fsf@yhuang-dev.intel.com>
+        <20201119173604.GA991@pc636> <87zh3cu578.fsf@yhuang-dev.intel.com>
+        <20201123135919.GA12236@pc636> <875z5vtrsc.fsf@yhuang-dev.intel.com>
+        <20201124164053.GA23686@pc636>
+Date:   Wed, 25 Nov 2020 08:52:58 +0800
+In-Reply-To: <20201124164053.GA23686@pc636> (Uladzislau Rezki's message of
+        "Tue, 24 Nov 2020 17:40:53 +0100")
+Message-ID: <87o8jms1ed.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <1606225437-22948-1-git-send-email-guoren@kernel.org>
- <1606225437-22948-2-git-send-email-guoren@kernel.org> <20201124143931.GI2414@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201124143931.GI2414@hirez.programming.kicks-ass.net>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 25 Nov 2020 08:52:23 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTBbjOhvvLTd6d5zgb0kskoSJhPW7nmg==4w2wV+OaUgg@mail.gmail.com>
-Message-ID: <CAJF2gTTBbjOhvvLTd6d5zgb0kskoSJhPW7nmg==4w2wV+OaUgg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] riscv: Add QUEUED_SPINLOCKS & QUEUED_RWLOCKS supported
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Michael Clark <michaeljclark@mac.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx Peter,
+Uladzislau Rezki <urezki@gmail.com> writes:
+>> >> > - lazy_max_pages() can slightly be decreased. If there are existing
+>> >> > workloads which suffer from such long value. It would be good to get
+>> >> > real complains and evidence.
+>> >> >
+>> >> >> > Apart of it and in regard to CONFIG_KASAN_VMALLOC, it seems that we are not
+>> >> >> > allowed to drop the free_vmap_area_lock at all. Because any simultaneous
+>> >> >> > allocations are not allowed within a drain region, so it should occur in
+>> >> >> > disjoint regions. But i need to double check it.
+>> >> >> >
+>> >> >> >>
+>> >> >> >> And, can we reduce lazy_max_pages() to control the length of the
+>> >> >> >> purging list?  It could be > 8K if the vmalloc/vfree size is small.
+>> >> >> >>
+>> >> >> > We can adjust it for sure. But it will influence on number of global
+>> >> >> > TLB flushes that must be performed.
+>> >> >> 
+>> >> >> Em...  For example, if we set it to 100, then the number of the TLB
+>> >> >> flushes can be reduced to 1% of the un-optimized implementation
+>> >> >> already.  Do you think so?
+>> >> >> 
+>> >> > If we set lazy_max_pages() to vague value such as 100, the performance
+>> >> > will be just destroyed.
+>> >> 
+>> >> Sorry, my original words weren't clear enough.  What I really want to
+>> >> suggest is to control the length of the purging list instead of reduce
+>> >> lazy_max_pages() directly.  That is, we can have a "atomic_t
+>> >> nr_purge_item" to record the length of the purging list and start
+>> >> purging if (vmap_lazy_nr > lazy_max_pages && nr_purge_item >
+>> >> max_purge_item).  vmap_lazy_nr is to control the virtual address space,
+>> >> nr_purge_item is to control the batching purging latency.  "100" is just
+>> >> an example, the real value should be determined according to the test
+>> >> results.
+>> >> 
+>> > OK. Now i see what you meant. Please note, the merging is in place, so
+>> > the list size gets reduced.
+>> 
+>> Yes.  In theory, even with merging, the length of the purging list may
+>> become too long in some cases.  And the code/algorithm changes that are
+>> needed by controlling the length of the purging list is much less than
+>> that are needed by merging.  So I suggest to do length controlling
+>> firstly, then merging.  Again, just my 2 cents.
+>> 
+> All such kind of tuning parameters work for one case and does not for
+> others. Therefore i prefer to have something more generic that tends
+> to improve the things, instead of thinking how to tune parameters to
+> cover all test cases and workloads.
 
-On Tue, Nov 24, 2020 at 10:39 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Nov 24, 2020 at 01:43:54PM +0000, guoren@kernel.org wrote:
-> > diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
-> > index 59dd7be..6f5f438 100644
-> > --- a/arch/riscv/include/asm/Kbuild
-> > +++ b/arch/riscv/include/asm/Kbuild
-> > @@ -6,3 +6,6 @@ generic-y += kvm_para.h
-> >  generic-y += local64.h
-> >  generic-y += user.h
-> >  generic-y += vmlinux.lds.h
-> > +generic-y += mcs_spinlock.h
-> > +generic-y += qrwlock.h
-> > +generic-y += qspinlock.h
-> > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-> > index 5609185..e178700 100644
-> > --- a/arch/riscv/include/asm/cmpxchg.h
-> > +++ b/arch/riscv/include/asm/cmpxchg.h
-> > @@ -16,7 +16,43 @@
-> >       __typeof__(ptr) __ptr = (ptr);                                  \
-> >       __typeof__(new) __new = (new);                                  \
-> >       __typeof__(*(ptr)) __ret;                                       \
-> > +     register unsigned long __rc, tmp, align, addr;                  \
-> >       switch (size) {                                                 \
-> > +     case 2:                                                         \
-> > +             align = ((unsigned long) __ptr & 0x3);                  \
-> > +             addr = ((unsigned long) __ptr & ~0x3);                  \
-> > +             if (align) {                                            \
-> > +             __asm__ __volatile__ (                                  \
-> > +                     "0:     lr.w %0, 0(%z4)\n"                      \
-> > +                     "       move %1, %0\n"                          \
-> > +                     "       slli %1, %1, 16\n"                      \
-> > +                     "       srli %1, %1, 16\n"                      \
-> > +                     "       move %2, %z3\n"                         \
-> > +                     "       slli %2, %2, 16\n"                      \
-> > +                     "       or   %1, %2, %1\n"                      \
-> > +                     "       sc.w %2, %1, 0(%z4)\n"                  \
-> > +                     "       bnez %2, 0b\n"                          \
-> > +                     "       srli %0, %0, 16\n"                      \
-> > +                     : "=&r" (__ret), "=&r" (tmp), "=&r" (__rc)      \
-> > +                     : "rJ" (__new), "rJ"(addr)                      \
-> > +                     : "memory");                                    \
-> > +             } else {                                                \
-> > +             __asm__ __volatile__ (                                  \
-> > +                     "0:     lr.w %0, (%z4)\n"                       \
-> > +                     "       move %1, %0\n"                          \
-> > +                     "       srli %1, %1, 16\n"                      \
-> > +                     "       slli %1, %1, 16\n"                      \
-> > +                     "       move %2, %z3\n"                         \
-> > +                     "       or   %1, %2, %1\n"                      \
-> > +                     "       sc.w %2, %1, 0(%z4)\n"                  \
-> > +                     "       bnez %2, 0b\n"                          \
-> > +                     "       slli %0, %0, 16\n"                      \
-> > +                     "       srli %0, %0, 16\n"                      \
-> > +                     : "=&r" (__ret), "=&r" (tmp), "=&r" (__rc)      \
-> > +                     : "rJ" (__new), "rJ"(addr)                      \
-> > +                     : "memory");                                    \
-> > +             }                                                       \
-> > +             break;                                                  \
-> >       case 4:                                                         \
-> >               __asm__ __volatile__ (                                  \
-> >                       "       amoswap.w %0, %2, %1\n"                 \
->
-> I'm pretty sure there's a handfull of implementations like this out
-> there... if only we could share.
-Michael has sent qspinlock before, ref to Link below. He reused mips' code.
+It's a new mechanism to control the length of the purging list directly.
+So, I don't think that's just parameter tuning.  It's just a simple and
+direct method.  It can work together with merging method to control the
+purging latency even if the vmap areas cannot be merged in some cases.
+But these cases may not exist in practice, so I will not insist to use
+this method.
 
-Link: https://lore.kernel.org/linux-riscv/20190211043829.30096-1-michaeljclark@mac.com/
-
-Which short xchg implementation do you prefer (Mine or his)?
-
->
-> Anyway, this too should be an independent patch.
-Ok, I'll separate it into two patches,
-1. implement short xchg
-2. qspinlock enabled based on Michael's patch
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+Best Regards,
+Huang, Ying
