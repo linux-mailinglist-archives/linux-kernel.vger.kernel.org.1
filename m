@@ -2,119 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5507F2C4B96
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 00:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A37EF2C4B9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 00:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731288AbgKYXYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 18:24:04 -0500
-Received: from foss.arm.com ([217.140.110.172]:51270 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730041AbgKYXYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 18:24:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDED931B;
-        Wed, 25 Nov 2020 15:24:03 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 98A8E3F70D;
-        Wed, 25 Nov 2020 15:24:02 -0800 (PST)
-References: <20201123022433.17905-1-valentin.schneider@arm.com> <87be8915-21b0-5214-9742-ccc7515c298b@intel.com> <jhjpn41v5tv.mognet@arm.com> <19860f42-132d-82db-648f-d47b49af350b@intel.com> <jhjim9tuvpq.mognet@arm.com> <22537adf-9280-ea1f-bac5-6c9a7a589ae9@intel.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, James Morse <James.Morse@arm.com>
-Subject: Re: [PATCH v2 0/3] x86/intel_rdt: task_work vs task_struct rmid/closid write race
-In-reply-to: <22537adf-9280-ea1f-bac5-6c9a7a589ae9@intel.com>
-Date:   Wed, 25 Nov 2020 23:23:57 +0000
-Message-ID: <jhjh7pduik2.mognet@arm.com>
+        id S1731525AbgKYXZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 18:25:49 -0500
+Received: from mail-out.m-online.net ([212.18.0.9]:42333 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730073AbgKYXZs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 18:25:48 -0500
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4ChH7Y5bCHz1qs0h;
+        Thu, 26 Nov 2020 00:25:43 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4ChH7W1c7Vz1vdfr;
+        Thu, 26 Nov 2020 00:25:43 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id 7UTtCUP6cI3U; Thu, 26 Nov 2020 00:25:40 +0100 (CET)
+X-Auth-Info: NXtzVqb2rHz/6wd9Y0nb/ZjeT3ip+hxOijmDOWKGRM0=
+Received: from localhost.localdomain (89-64-5-98.dynamic.chello.pl [89.64.5.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu, 26 Nov 2020 00:25:40 +0100 (CET)
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Fugang Duan <fugang.duan@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Fabio Estevam <festevam@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>, stefan.agner@toradex.com,
+        krzk@kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Lukasz Majewski <lukma@denx.de>
+Subject: [RFC 0/4] net: l2switch: Provide support for L2 switch on i.MX28 SoC
+Date:   Thu, 26 Nov 2020 00:24:55 +0100
+Message-Id: <20201125232459.378-1-lukma@denx.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the first attempt to add support for L2 switch available on some NXP
+devices - i.e. iMX287 or VF610. This patch set uses common FEC and DSA code.
 
-On 25/11/20 19:06, Reinette Chatre wrote:
-> Hi Valentin,
->
-> On 11/25/2020 10:39 AM, Valentin Schneider wrote:
->> The (default) TWA_RESUME ensures the targeted (userspace) task gets kicked
->> if it is currently running, and doesn't perturb any CPU otherwise;
->> see set_notify_resume() + exit_to_user_mode_loop() (or do_notify_resume()
->> on arm64)
->
-> I missed that, thanks. The first issue is thus not a problem. Thank you
-> very much for clearing this up. Queueing work for tasks that are not
-> running remains unnecessary and simplifying this with a targeted
-> smp_call_function addresses that (while also taking care of the other
-> issues with using the queued work).
->
+This code provides _very_ basic switch functionality (packets are passed
+between lan1 and lan2 ports and it is possible to send packets via eth0),
+at its main purpose is to establish the way of reusing the FEC driver. When
+this is done, one can add more advanced features to the switch (like vlan or
+port separation).
 
-Right.
+I also do have a request for testing on e.g. VF610 if this driver works on
+it too.
+The L2 switch documentation is very scant on NXP's User Manual [0] and most
+understanding of how it really works comes from old (2.6.35) NXP driver [1].
+The aforementioned old driver [1] was monolitic and now this patch set tries
+to mix FEC and DSA.
 
->>> In the new solution, after updating closid/rmid in the task_struct, the
->>> CPU register is updated via smp_call_function_single() on a CPU the task
->>> is running. Nothing is done for tasks not running, next time they are
->>> scheduled in the CPU's register will be updated to reflect the task's
->>> closid/rmid. Moving to the smp_call_function_xxx() API would also bring
->>> this update in line with how other register updates are already done in
->>> resctrl.
->>>
->>>> Kernel threads however are a prickly matter because they quite explicitly
->>>> don't have this return to userspace - they only run their task_work
->>>> callbacks on exit. So we currently have to wait for those kthreads to go
->>>> through a context switch to update the relevant register, but I don't
->>>> see any other alternative that wouldn't involve interrupting every other
->>>> CPU (the kthread could move between us triggering some remote work and its
->>>> previous CPU receiving the IPI).
->>>
->>> This seems ok? In the new solution the closid/rmid would be updated in
->>> task_struct and a smp_call_function_single() attempted on the CPU where
->>> the kthread is running. If the kthread is no longer running at the time
->>> the function is called the CPU register will not be changed.
->>
->> Right, if the update happens before triggering the remote work then that
->> should all work. I was stuck thinking about keeping the update contained
->> within the remote work itself to prevent any other races (i.e. patch 3).
->
-> Are you saying that the task_struct update as well as register update
-> should both be done in the remote work? I think I may be
-> misunderstanding though.
+Open issues:
+- I do have a hard time on understanding how to "disable" ENET-MAC{01} ports
+in DSA (via port_disable callback in dsa_switch_ops).
+When I disable L2 switch port1,2 or the ENET-MAC{01} in control register, I
+cannot simply re-enable it with enabling this bit again. The old driver reset
+(and setup again) the whole switch.
 
-It would simplify the concurrency aspect - if the {closid, rmid} update is
-always done on the targeted task' context, then there can be no races
-between an update (write) and a context switch (read). Sadly I don't see a
-nice way to do this for kthreads, so I think it'll have to be update +
-smp_call.
+- The L2 switch is part of the SoC silicon, so we cannot follow the "normal" DSA
+pattern with "attaching" it via mdio device. The switch reuses already well
+defined ENET-MAC{01}. For that reason the MoreThanIP switch driver is
+registered as platform device
+
+- The question regarding power management - at least for my use case there
+is no need for runtime power management. The L2 switch shall work always at
+it connects other devices. 
+
+- The FEC clock is also used for L2 switch management and configuration (as
+the L2 switch is just in the same, large IP block). For now I just keep it
+enabled so DSA code can use it. It looks a bit problematic to export 
+fec_enet_clk_enable() to be reused on DSA code.
+
+Links:
+[0] - "i.MX28 Applications Processor Reference Manual, Rev. 2, 08/2013"
+[1] - https://github.com/lmajewski/linux-imx28-l2switch/commit/e3c7a6eab73401e021aef0070e1935a0dba84fb5
+
+Dependencies:
+This patch set depends on one, which adds DTS for XEA board. However, it shall
+be also possible to work on any board by adding L2 switch specific description.
+
+https://marc.info/?l=devicetree&m=160632122703785&w=2
+https://marc.info/?l=devicetree&m=160632122303783&w=2
+https://marc.info/?l=devicetree&m=160632123203787&w=2
+
+Those patches has been tested (applied) on 4.9.130-cip and v5.9 (vanila
+mainline kernel)
 
 
-> Currently, with your entire series applied, the
-> update to task_struct is done before the remote work is queued that only
-> changes the register. The new solution would also first update the
-> task_struct and then the remote work (this time with smp_call_function)
-> will just update the register.
->
->  From what I understand your work in patch 3 would continue to be
-> welcome with the new solution that will also update the task_struct and
-> then trigger the remote work to just update the register.
->
+Lukasz Majewski (4):
+  net: fec: Move some defines to ./drivers/net/ethernet/freescale/fec.h
+    header
+  net: dsa: Provide DSA driver for NXP's More Than IP L2 switch
+  net: imx: l2switch: Adjust fec_main.c to provide support for L2 switch
+  ARM: dts: imx28: Add description for L2 switch on XEA board
 
-That's how I see it as well ATM.
+ arch/arm/boot/dts/imx28-xea.dts           |  55 +++
+ drivers/net/dsa/Kconfig                   |  11 +
+ drivers/net/dsa/Makefile                  |   1 +
+ drivers/net/dsa/mtip-l2switch.c           | 399 ++++++++++++++++++++++
+ drivers/net/dsa/mtip-l2switch.h           | 239 +++++++++++++
+ drivers/net/ethernet/freescale/fec.h      |  42 +++
+ drivers/net/ethernet/freescale/fec_main.c | 148 ++++++--
+ 7 files changed, 874 insertions(+), 21 deletions(-)
+ create mode 100644 drivers/net/dsa/mtip-l2switch.c
+ create mode 100644 drivers/net/dsa/mtip-l2switch.h
 
->> Anywho, that's enough speculation from me, I'll just sit tight and see what
->> comes next!
->>
->
-> Reinette
->
->>> I assume
->>> the kthread move would include a context switch that would result in the
->>> register change (__switch_to()->resctrl_sched_in()) for the kthread to
->>> run with its new closid/rmid after the move.
->>>
->
->
-> Reinette
+-- 
+2.20.1
+
