@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF102C3A72
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DA02C3A7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727268AbgKYIDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 03:03:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54706 "EHLO mail.kernel.org"
+        id S1727374AbgKYIHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 03:07:09 -0500
+Received: from mga09.intel.com ([134.134.136.24]:65092 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726317AbgKYIDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 03:03:14 -0500
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4305206E0;
-        Wed, 25 Nov 2020 08:03:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606291393;
-        bh=C9d5xGXDNAU59dVlYWlP0XCIr6e+igQvLHL4OJJstVg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=I5QBlGwAG+yZ7qvbfCkl/XZCBYUiG3qX5OLJ/csghtw3uRS0L5wWDqfqt5iufOgHO
-         OxNaXiUA3Ke562BQIlYJEi/26JvCG6PrkI+mBR66MOYc7Y3cAI3Yl2XEE4NNPaQNfA
-         3lO2CHbD7Atoj2dMaeUJ5Fr1XLSJgveqDiPTYIPM=
-Date:   Wed, 25 Nov 2020 17:03:10 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v0 00/19] x86/insn: Add an insn_decode() API
-Message-Id: <20201125170310.aa4cd1722b05288612fd9c84@kernel.org>
-In-Reply-To: <20201124174647.GI4009@zn.tnic>
-References: <20201124101952.7909-1-bp@alien8.de>
-        <20201124174647.GI4009@zn.tnic>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726325AbgKYIHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 03:07:08 -0500
+IronPort-SDR: 0LxcttN07aAYUtUiTtigLEC5/gAp+Rnp2NTYdQl4Vw+7WFFTURcle6pL7aauFFPoS89Ve8/vtA
+ 6Tl569TnMDyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="172244065"
+X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
+   d="scan'208";a="172244065"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 00:07:05 -0800
+IronPort-SDR: i8smOXMHi2IWQtJp5vzRd/iYtOun9bTO172CUBgV17TJhR9iQnXIDS5/Zc/5MhBzDdn62x/UR4
+ j3oauEfYsRoQ==
+X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
+   d="scan'208";a="332892300"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 00:07:02 -0800
+Received: by lahna (sSMTP sendmail emulation); Wed, 25 Nov 2020 10:06:59 +0200
+Date:   Wed, 25 Nov 2020 10:06:59 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v1 1/2] PM: ACPI: PCI: Drop acpi_pm_set_bridge_wakeup()
+Message-ID: <20201125080659.GB2532@lahna.fi.intel.com>
+References: <27714988.CF3CpBaniU@kreacher>
+ <2261308.G18gbxz5ee@kreacher>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2261308.G18gbxz5ee@kreacher>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 18:46:47 +0100
-Borislav Petkov <bp@alien8.de> wrote:
+On Tue, Nov 24, 2020 at 08:44:00PM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> The idea behind acpi_pm_set_bridge_wakeup() was to allow bridges to
+> be reference counted for wakeup enabling, because they may be enabled
+> to signal wakeup on behalf of their subordinate devices and that
+> may happen for multiple times in a row, whereas for the other devices
+> it only makes sense to enable wakeup signaling once.
+> 
+> However, this becomes problematic if the bridge itself is suspended,
+> because it is treated as a "regular" device in that case and the
+> reference counting doesn't work.
+> 
+> For instance, suppose that there are two devices below a bridge and
+> they both can signal wakeup.  Every time one of them is suspended,
+> wakeup signaling is enabled for the bridge, so when they both have
+> been suspended, the bridge's wakeup reference counter value is 2.
+> 
+> Say that the bridge is suspended subsequently and acpi_pci_wakeup()
+> is called for it.  Because the bridge can signal wakeup, that
+> function will invoke acpi_pm_set_device_wakeup() to configure it
+> and __acpi_pm_set_device_wakeup() will be called with the last
+> argument equal to 1.  This causes __acpi_device_wakeup_enable()
+> invoked by it to omit the reference counting, because the reference
+> counter of the target device (the bridge) is 2 at that time.
+> 
+> Now say that the bridge resumes and one of the device below it
+> resumes too, so the bridge's reference counter becomes 0 and
+> wakeup signaling is disabled for it, but there is still the other
+> suspended device which may need the bridge to signal wakeup on its
+> behalf and that is not going to work.
+> 
+> To address this scenario, use wakeup enable reference counting for
+> all devices, not just for bridges, so drop the last argument from
+> __acpi_device_wakeup_enable() and __acpi_pm_set_device_wakeup(),
+> which causes acpi_pm_set_device_wakeup() and
+> acpi_pm_set_bridge_wakeup() to become identical, so drop the latter
+> and use the former instead of it everywhere.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> On Tue, Nov 24, 2020 at 11:19:33AM +0100, Borislav Petkov wrote:
-> > In any case, at least the case where I give it
-> > 
-> > 0x48 0xcf 0x48 0x83
-> > 
-> > and say that buf size is 4, should return an error because the second
-> > insn is incomplete. So I need to go look at that now.
-> 
-> Ok, got it:
-> 
-> ./arch/x86/tools/insn_sanity: Success: decoded and checked 10000 random instructions with 0 errors (seed:0x826fdf9c)
-> insn buffer:
-> 0x48 0xcf 0x48 0x83 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 
-> supplied buf size: 15, ret 0
-> supplied buf size: 2, ret 0
-> supplied buf size: 3, ret 0
-> supplied buf size: 4, ret 0
-> supplied buf size: 1, ret -22
-> 
-> the current decoder simply decodes the *first* insn in the buffer it
-> encounters and that's it.
-
-Yes, currently the buf_size is only for checking the maximum length of
-the buffer, because we expect the user doesn't know the actual length of
-the instruction before calling insn_get_length().
-But yes, for the insn_sanity.c, the return length should be compared.
-
-Thank you,
-
-> 
-> When you give it a buffer of size smaller than the first instruction:
-> 
-> supplied buf size: 1, ret -22
-> 
-> while the first insn is 2 bytes long:
-> 
-> 0x48 0xcf (IRETQ)
-> 
-> then it signals an error.
-> 
-> Andy, does that work for your use cases?
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
