@@ -2,128 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23D72C4383
+	by mail.lfdr.de (Postfix) with ESMTP id 757CB2C4382
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731438AbgKYPia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:38:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56982 "EHLO mail.kernel.org"
+        id S1731453AbgKYPid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:38:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58618 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731407AbgKYPiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:38:21 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23DE6221F7;
-        Wed, 25 Nov 2020 15:38:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606318700;
-        bh=Nx3+TXzhYx9GxR8pYOwTKrw7pbA6HDeUtK44cL5CG5c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aYWPuWS4oCtFJ4qFyk0SqN8AXfchWxQrBNmJPcgWz4HTSSHmXVV9Sk/GP0suPtwj1
-         Vj6sZluvdMAGspLmzqyESIsGxuRbNlbv3vwehoGisZFR8uWuhYcSsxtEoPyD8H9lj+
-         ZnboFvLrI1gcYZxhNQtHYXO6a4YWGgxJbOJU2VW8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Christie <michael.christie@oracle.com>,
-        Maurizio Lombardi <mlombard@redhat.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 8/8] scsi: target: iscsi: Fix cmd abort fabric stop race
-Date:   Wed, 25 Nov 2020 10:38:08 -0500
-Message-Id: <20201125153808.811104-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201125153808.811104-1-sashal@kernel.org>
-References: <20201125153808.811104-1-sashal@kernel.org>
+        id S1731403AbgKYPiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:38:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E5C3FAC22;
+        Wed, 25 Nov 2020 15:38:18 +0000 (UTC)
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Yu Zhao <yuzhao@google.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1605860847-47445-1-git-send-email-alex.shi@linux.alibaba.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH next] mm/swap.c: reduce lock contention in lru_cache_add
+Message-ID: <b92a1a50-b7cd-0b33-de2e-52d74c91925c@suse.cz>
+Date:   Wed, 25 Nov 2020 16:38:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <1605860847-47445-1-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+On 11/20/20 9:27 AM, Alex Shi wrote:
+> The current relock logical will change lru_lock when found a new
+> lruvec, so if 2 memcgs are reading file or alloc page at same time,
+> they could hold the lru_lock alternately, and wait for each other for
+> fairness attribute of ticket spin lock.
+> 
+> This patch will sort that all lru_locks and only hold them once in
+> above scenario. That could reduce fairness waiting for lock reget.
+> Than, vm-scalability/case-lru-file-readtwice could get ~5% performance
+> gain on my 2P*20core*HT machine.
 
-[ Upstream commit f36199355c64a39fe82cfddc7623d827c7e050da ]
+Hm, once you sort the pages like this, it's a shame not to splice them 
+instead of more list_del() + list_add() iterations. update_lru_size() 
+could be also called once?
 
-Maurizio found a race where the abort and cmd stop paths can race as
-follows:
-
- 1. thread1 runs iscsit_release_commands_from_conn and sets
-    CMD_T_FABRIC_STOP.
-
- 2. thread2 runs iscsit_aborted_task and then does __iscsit_free_cmd. It
-    then returns from the aborted_task callout and we finish
-    target_handle_abort and do:
-
-    target_handle_abort -> transport_cmd_check_stop_to_fabric ->
-	lio_check_stop_free -> target_put_sess_cmd
-
-    The cmd is now freed.
-
- 3. thread1 now finishes iscsit_release_commands_from_conn and runs
-    iscsit_free_cmd while accessing a command we just released.
-
-In __target_check_io_state we check for CMD_T_FABRIC_STOP and set the
-CMD_T_ABORTED if the driver is not cleaning up the cmd because of a session
-shutdown. However, iscsit_release_commands_from_conn only sets the
-CMD_T_FABRIC_STOP and does not check to see if the abort path has claimed
-completion ownership of the command.
-
-This adds a check in iscsit_release_commands_from_conn so only the abort or
-fabric stop path cleanup the command.
-
-Link: https://lore.kernel.org/r/1605318378-9269-1-git-send-email-michael.christie@oracle.com
-Reported-by: Maurizio Lombardi <mlombard@redhat.com>
-Reviewed-by: Maurizio Lombardi <mlombard@redhat.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/target/iscsi/iscsi_target.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
-index cbb4414edd71b..c48aca1360c89 100644
---- a/drivers/target/iscsi/iscsi_target.c
-+++ b/drivers/target/iscsi/iscsi_target.c
-@@ -493,8 +493,7 @@ static void iscsit_aborted_task(struct iscsi_conn *conn, struct iscsi_cmd *cmd)
- 	bool scsi_cmd = (cmd->iscsi_opcode == ISCSI_OP_SCSI_CMD);
- 
- 	spin_lock_bh(&conn->cmd_lock);
--	if (!list_empty(&cmd->i_conn_node) &&
--	    !(cmd->se_cmd.transport_state & CMD_T_FABRIC_STOP))
-+	if (!list_empty(&cmd->i_conn_node))
- 		list_del_init(&cmd->i_conn_node);
- 	spin_unlock_bh(&conn->cmd_lock);
- 
-@@ -4228,12 +4227,22 @@ static void iscsit_release_commands_from_conn(struct iscsi_conn *conn)
- 	spin_lock_bh(&conn->cmd_lock);
- 	list_splice_init(&conn->conn_cmd_list, &tmp_list);
- 
--	list_for_each_entry(cmd, &tmp_list, i_conn_node) {
-+	list_for_each_entry_safe(cmd, cmd_tmp, &tmp_list, i_conn_node) {
- 		struct se_cmd *se_cmd = &cmd->se_cmd;
- 
- 		if (se_cmd->se_tfo != NULL) {
- 			spin_lock_irq(&se_cmd->t_state_lock);
--			se_cmd->transport_state |= CMD_T_FABRIC_STOP;
-+			if (se_cmd->transport_state & CMD_T_ABORTED) {
-+				/*
-+				 * LIO's abort path owns the cleanup for this,
-+				 * so put it back on the list and let
-+				 * aborted_task handle it.
-+				 */
-+				list_move_tail(&cmd->i_conn_node,
-+					       &conn->conn_cmd_list);
-+			} else {
-+				se_cmd->transport_state |= CMD_T_FABRIC_STOP;
-+			}
- 			spin_unlock_irq(&se_cmd->t_state_lock);
- 		}
- 	}
--- 
-2.27.0
+> Suggested-by: Konstantin Khlebnikov <koct9i@gmail.com>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Konstantin Khlebnikov <koct9i@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>   mm/swap.c | 57 +++++++++++++++++++++++++++++++++++++++++++++++--------
+>   1 file changed, 49 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/swap.c b/mm/swap.c
+> index 490553f3f9ef..c787b38bf9c0 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -1009,24 +1009,65 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
+>   	trace_mm_lru_insertion(page, lru);
+>   }
+>   
+> +struct lruvecs {
+> +	struct list_head lists[PAGEVEC_SIZE];
+> +	struct lruvec *vecs[PAGEVEC_SIZE];
+> +};
+> +
+> +/* Sort pvec pages on their lruvec */
+> +int sort_page_lruvec(struct lruvecs *lruvecs, struct pagevec *pvec)
+> +{
+> +	int i, j, nr_lruvec;
+> +	struct page *page;
+> +	struct lruvec *lruvec = NULL;
+> +
+> +	lruvecs->vecs[0] = NULL;
+> +	for (i = nr_lruvec = 0; i < pagevec_count(pvec); i++) {
+> +		page = pvec->pages[i];
+> +		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+> +
+> +		/* Try to find a same lruvec */
+> +		for (j = 0; j <= nr_lruvec; j++)
+> +			if (lruvec == lruvecs->vecs[j])
+> +				break;
+> +
+> +		/* A new lruvec */
+> +		if (j > nr_lruvec) {
+> +			INIT_LIST_HEAD(&lruvecs->lists[nr_lruvec]);
+> +			lruvecs->vecs[nr_lruvec] = lruvec;
+> +			j = nr_lruvec++;
+> +			lruvecs->vecs[nr_lruvec] = 0;
+> +		}
+> +
+> +		list_add_tail(&page->lru, &lruvecs->lists[j]);
+> +	}
+> +
+> +	return nr_lruvec;
+> +}
+> +
+>   /*
+>    * Add the passed pages to the LRU, then drop the caller's refcount
+>    * on them.  Reinitialises the caller's pagevec.
+>    */
+>   void __pagevec_lru_add(struct pagevec *pvec)
+>   {
+> -	int i;
+> -	struct lruvec *lruvec = NULL;
+> +	int i, nr_lruvec;
+>   	unsigned long flags = 0;
+> +	struct page *page;
+> +	struct lruvecs lruvecs;
+>   
+> -	for (i = 0; i < pagevec_count(pvec); i++) {
+> -		struct page *page = pvec->pages[i];
+> +	nr_lruvec = sort_page_lruvec(&lruvecs, pvec);
+>   
+> -		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
+> -		__pagevec_lru_add_fn(page, lruvec);
+> +	for (i = 0; i < nr_lruvec; i++) {
+> +		spin_lock_irqsave(&lruvecs.vecs[i]->lru_lock, flags);
+> +		while (!list_empty(&lruvecs.lists[i])) {
+> +			page = lru_to_page(&lruvecs.lists[i]);
+> +			list_del(&page->lru);
+> +			__pagevec_lru_add_fn(page, lruvecs.vecs[i]);
+> +		}
+> +		spin_unlock_irqrestore(&lruvecs.vecs[i]->lru_lock, flags);
+>   	}
+> -	if (lruvec)
+> -		unlock_page_lruvec_irqrestore(lruvec, flags);
+> +
+>   	release_pages(pvec->pages, pvec->nr);
+>   	pagevec_reinit(pvec);
+>   }
+> 
 
