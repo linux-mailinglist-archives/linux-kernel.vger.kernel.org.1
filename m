@@ -2,99 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11CF2C4159
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A115E2C415B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgKYNq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:46:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgKYNq1 (ORCPT
+        id S1729530AbgKYNrU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Nov 2020 08:47:20 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:59644 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbgKYNrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:46:27 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A77C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 05:46:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2wKI8RYv0bVfSPNfFQE9o0e5gpFpVXfZLwEElJH4yO0=; b=tOpKgRX3Vxp9G/ml5rHjQ5pniU
-        q304QasuZq2zb2+PG4L3X3CdcQNXTuMY10iqXHweVl+FUFRUe58JN9CvlIvd0JpjOWyXiWD8axe85
-        2pDO/Syn1kseWbz2EyBdvOcPP38npCidwSoaicG49XbFXp0++iSl5ScFvp2vhPOa1ruVW8B49nNv2
-        jC4tZdCdPrPC5hSJheMQu4QWapOlW5DwY18npU0jukd6Aoegc2EGFrG1AQEKno66yxmthH1LUPfSc
-        KU0ucBdqboha+4Qnj5taQ5F2MIO/LncW6HPXQN/RCBn+Wj7lCRamEx4FkXSmhop7bYgOFkodzLMGs
-        YbBHCn1g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khv74-00089Q-TE; Wed, 25 Nov 2020 13:45:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B5282300DAE;
-        Wed, 25 Nov 2020 14:45:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9836A200DF1C9; Wed, 25 Nov 2020 14:45:37 +0100 (CET)
-Date:   Wed, 25 Nov 2020 14:45:37 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 31/32] sched: Add a coresched command line option
-Message-ID: <20201125134537.GA2414@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-32-joel@joelfernandes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117232003.3580179-32-joel@joelfernandes.org>
+        Wed, 25 Nov 2020 08:47:20 -0500
+Received: from marcel-macbook.holtmann.net (unknown [37.83.193.87])
+        by mail.holtmann.org (Postfix) with ESMTPSA id B42A0CED07;
+        Wed, 25 Nov 2020 14:54:29 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH 0/3] Bluetooth: Power down controller when suspending
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <CANFp7mVSGNbwCkWCj=bVzbE8L38nwu0+UMR9jkOYcYQmGBaAEw@mail.gmail.com>
+Date:   Wed, 25 Nov 2020 14:47:16 +0100
+Cc:     crlo@marvell.com, akarwar@marvell.com,
+        BlueZ development <linux-bluetooth@vger.kernel.org>,
+        ChromeOS Bluetooth Upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Daniel Winkler <danielwinkler@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <F681A79B-D4BC-465B-9102-C0322FF8D01F@holtmann.org>
+References: <20201118234352.2138694-1-abhishekpandit@chromium.org>
+ <7235CD4E-963C-4BCB-B891-62494AD7F10D@holtmann.org>
+ <CANFp7mVSGNbwCkWCj=bVzbE8L38nwu0+UMR9jkOYcYQmGBaAEw@mail.gmail.com>
+To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:20:01PM -0500, Joel Fernandes (Google) wrote:
-> Some hardware such as certain AMD variants don't have cross-HT MDS/L1TF
-> issues. Detect this and don't enable core scheduling as it can
-> needlessly slow those device down.
+Hi Abhishek,
+
+>>> This patch series adds support for a quirk that will power down the
+>>> Bluetooth controller when suspending and power it back up when resuming.
+>>> 
+>>> On Marvell SDIO Bluetooth controllers (SD8897 and SD8997), we are seeing
+>>> a large number of suspend failures with the following log messages:
+>>> 
+>>> [ 4764.773873] Bluetooth: hci_cmd_timeout() hci0 command 0x0c14 tx timeout
+>>> [ 4767.777897] Bluetooth: btmrvl_enable_hs() Host sleep enable command failed
+>>> [ 4767.777920] Bluetooth: btmrvl_sdio_suspend() HS not actived, suspend failed!
+>>> [ 4767.777946] dpm_run_callback(): pm_generic_suspend+0x0/0x48 returns -16
+>>> [ 4767.777963] call mmc2:0001:2+ returned -16 after 4882288 usecs
+>>> 
+>>> The daily failure rate with this signature is quite significant and
+>>> users are likely facing this at least once a day (and some unlucky users
+>>> are likely facing it multiple times a day).
+>>> 
+>>> Given the severity, we'd like to power off the controller during suspend
+>>> so the driver doesn't need to take any action (or block in any way) when
+>>> suspending and power on during resume. This will break wake-on-bt for
+>>> users but should improve the reliability of suspend.
+>>> 
+>>> We don't want to force all users of MVL8897 and MVL8997 to encounter
+>>> this behavior if they're not affected (especially users that depend on
+>>> Bluetooth for keyboard/mouse input) so the new behavior is enabled via
+>>> module param. We are limiting this quirk to only Chromebooks (i.e.
+>>> laptop). Chromeboxes will continue to have the old behavior since users
+>>> may depend on BT HID to wake and use the system.
+>> 
+>> I don’t have a super great feeling with this change.
+>> 
+>> So historically only hciconfig hci0 up/down was doing a power cycle of the controller and when adding the mgmt interface we moved that to the mgmt interface. In addition we added a special case of power up via hdev->setup. We never had an intention that the kernel otherwise can power up/down the controller as it pleases.
 > 
-> However, some users may want core scheduling even if the hardware is
-> secure. To support them, add a coresched= option which defaults to
-> 'secure' and can be overridden to 'on' if the user wants to enable
-> coresched even if the HW is not vulnerable. 'off' would disable
-> core scheduling in any case.
+> Aside from the powered setting, the stack is resilient to the
+> controller crashing (which would be akin to a power off and power on).
+> From the view of bluez, adapter lost and power down should be almost
+> equivalent right? ChromeOS has several platforms where Bluetooth has
+> been reset after suspend, usually due USB being powered off in S3, and
+> the stack is still well-behaving when that occurs.
 
-This is all sorts of wrong, and the reason is because you hard-coded
-that stupid policy.
+it gets multitudes more complicated if you look at HCI User Channel and other pieces that utilize the core HCI infrastructure.
 
-Core scheduling should always be available on SMT (provided you did that
-CONFIG_ thing). Even on AMD systems RT tasks might want to claim the
-core exclusively.
+HCI interface lost, because of USB disconnect is different. That is a clean path. Similar to RFKILL that just only does a power down.
+
+>> Can we ask Marvell first to investigate why this is fundamentally broken with their hardware?
+> 
+> +Chin-Ran Lo and +Amitkumar Karwar (added based on changes to
+> drivers/bluetooth/btmrvl_main.c)
+> 
+> Could you please take a look at the original cover letter and comment
+> (or add others at Marvell who may be able to)? Is this a known issue
+> or a fix?
+
+I wonder if sending a HCI Reset at before entering suspend would be enough. Meaning clear all controller states first and then suspend. This will still disable any kind of remote wakeup support, but might avoid having to fully power down and power up again.
+
+>> Since what you are proposing is a pretty heavy change that might has side affects. For example the state machine for the mgmt interface has no concept of a power down/up from the kernel. It is all triggered by bluetoothd.
+>> 
+>> I am careful here since the whole power up/down path is already complicated enough.
+>> 
+> 
+> That sounds reasonable. I have landed this within ChromeOS so we can
+> test whether a) this improves stability enough and b) whether the
+> power off/on in the kernel has significant side effects. This will go
+> through our automated testing and dogfooding over the next few weeks
+> and hopefully identify those side-effects. I will re-raise this topic
+> with updates once we have more data.
+> 
+> Also, in case it wasn't very clear, I put this behind a module param
+> that defaults to False because this is so heavy handed. We're only
+> using it on specific Chromebooks that are exhibiting the worst
+> behavior and not disabling it wholesale for all btmrvl controllers.
+
+We really need a conformance hci-tester that checks if a controller is behaving correctly as promised.
+
+Regards
+
+Marcel
+
