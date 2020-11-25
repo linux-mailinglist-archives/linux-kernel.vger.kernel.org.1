@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF322C4815
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3952C4817
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgKYTNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:13:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgKYTNx (ORCPT
+        id S1726985AbgKYTPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:15:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42736 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725776AbgKYTO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:13:53 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0063C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:13:52 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id t15so1052993ual.6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:13:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+IN/5/YoLL4+4EFo1Ef1ozkW+zjATL5fFl70LvBvqLs=;
-        b=qxUyE9LuSmA4t0F1YBoruhkPhTnOrZBtZbvb4JzPea8g4wxNPXLBQy2J+UfSJYg4/6
-         7wds6OT5CogUOubCMsqJwIvo4FNwEOBlOm71xH9se7Y9c8M1jk5AbocSpK6r0w+J8Deg
-         AcGSXDcZApCRiikoQ7gFV5ZnEunlgutYWIDN/EgmdxlN071UG35jDX8C2GpIvw4fr4hq
-         /sMRNrWDw4GpAi7U7HG4i9UJGf/CRmHcwUfnhGpaCNhwjE5jVFJX85WrO5wRbLdVP1Yr
-         7xuz+3mDyutIoQavAsgmVXE/ZeEMusnzoSaUrowayxT55cLLH6hV6zWRvFBbd0D8Q8/j
-         dG+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+IN/5/YoLL4+4EFo1Ef1ozkW+zjATL5fFl70LvBvqLs=;
-        b=P9hR+oKKWZFZAB50o0XvXlQl90H8X3LZ4qUFMTo7aMdnkIhLvNZ8MRhF9YBKxy61or
-         amsNUnjH/EhPZOOsACnI2sqlU1xfuYoUsPBddqTZ8D5gRW6o76cM0+mhKyYkoQ0G777x
-         oP2QLV2uEGXR3U4KoDTYSu5o0SPpzbB/Wl+NC/pssQ+Mf4tOOkqVC2u0cyvZ146AlMMI
-         XtLUXRwcvoQBCs6kP6zGvcXc/M/wp0bEeAgP02HzFoW5GFJmp0Sm5bYncfaRA5cTNn7E
-         KY/ugf2NSoNUGjJ0indm1Ixt3uU+tbnEe1iTPp2IrhrOVWJsT1XBvE0WIrKLKzBWkq8Z
-         iPcw==
-X-Gm-Message-State: AOAM5323B1yLStSlagitWvUYeckAoaio6v/XefpcRn8KZae971uYh8Wz
-        +pfsLLpj/2YWL4IKl7ZV4kEeBCIifdE5p2hsa4WAp02JjSO6CA==
-X-Google-Smtp-Source: ABdhPJwix6VtcxlXC6zudY+mZKXAaO15iHZ1FBtSxZi91Mg2qwPtT+PAqqctpt+1QFc+hzbVK7FxUdS7kfOxelLqtsc=
-X-Received: by 2002:ab0:6cb6:: with SMTP id j22mr3713552uaa.82.1606331632174;
- Wed, 25 Nov 2020 11:13:52 -0800 (PST)
+        Wed, 25 Nov 2020 14:14:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606331698;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iaAgfQKT5g1bR2ENPqlxB2R/c5CFFmnrxcG/cpXyVp0=;
+        b=gbrD2DS3199d6L8MvGAeV1fYaQpTqsD0D1+lZPtg06OkxQ0Tr5guwr52yOmcJ/DhqvUDQz
+        7o5i1hSojOqrLuudD5jHypHMKw5piA2R5sWE4qjKyKMzQtAmeU9FaH1calJ9bOqAIrDa7V
+        6pCNqRXPA0aI2I3Dc+JfxDkvc/llsk0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-oDp0gM0yP0W4h5iMGBIhbQ-1; Wed, 25 Nov 2020 14:14:54 -0500
+X-MC-Unique: oDp0gM0yP0W4h5iMGBIhbQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C388100F345;
+        Wed, 25 Nov 2020 19:14:52 +0000 (UTC)
+Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3DAB560854;
+        Wed, 25 Nov 2020 19:14:49 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 14:14:48 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <X76tKLSpxKqwrmin@redhat.com>
+References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
+ <20201121194506.13464-1-aarcange@redhat.com>
+ <20201121194506.13464-2-aarcange@redhat.com>
+ <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
+ <X73s8fxDKPRD6wET@redhat.com>
+ <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz>
+ <cd9f0b9f-c4f6-b80c-03cd-12697324bfca@redhat.com>
+ <20201125141325.GK123287@linux.ibm.com>
 MIME-Version: 1.0
-References: <202011241521.8ozmsGaX-lkp@intel.com>
-In-Reply-To: <202011241521.8ozmsGaX-lkp@intel.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Thu, 26 Nov 2020 00:43:39 +0530
-Message-ID: <CAFqt6zYiKP+jK_=_wmcMPYQyCxhroKkdMVy7qXhksh-V6HM=EQ@mail.gmail.com>
-Subject: Re: arch/powerpc/platforms/pseries/reconfig.c:394:30: error:
- 'ofdt_proc_ops' defined but not used
-To:     kernel test robot <lkp@intel.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125141325.GK123287@linux.ibm.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 12:40 PM kernel test robot <lkp@intel.com> wrote:
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   d5beb3140f91b1c8a3d41b14d729aefa4dcc58bc
-> commit: 97a32539b9568bb653683349e5a76d02ff3c3e2c proc: convert everything to "struct proc_ops"
-> date:   10 months ago
-> config: powerpc-randconfig-r002-20201124 (attached as .config)
-> compiler: powerpc64le-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=97a32539b9568bb653683349e5a76d02ff3c3e2c
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 97a32539b9568bb653683349e5a76d02ff3c3e2c
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
-> >> arch/powerpc/platforms/pseries/reconfig.c:394:30: error: 'ofdt_proc_ops' defined but not used [-Werror=unused-const-variable=]
->      394 | static const struct proc_ops ofdt_proc_ops = {
->          |                              ^~~~~~~~~~~~~
->    cc1: all warnings being treated as errors
-> --
-> >> arch/powerpc/platforms/pseries/lparcfg.c:701:30: error: 'lparcfg_proc_ops' defined but not used [-Werror=unused-const-variable=]
->      701 | static const struct proc_ops lparcfg_proc_ops = {
->          |                              ^~~~~~~~~~~~~~~~
->    cc1: all warnings being treated as errors
+On Wed, Nov 25, 2020 at 04:13:25PM +0200, Mike Rapoport wrote:
+> I suspect that memmap for the reserved pages is not properly initialized
+> after recent changes in free_area_init(). They are cleared at
+> init_unavailable_mem() to have zone=0 and node=0, but they seem to be
 
-Both ofdt_proc_ops & lparcfg_proc_ops are used by proc_create().
-Not sure why it is throwing warnings.
+I'd really like if we would not leave those to 0,0 and if we set the
+whole struct page at 0xff, if we miss the second stage that corrects
+the uninitialized value. The hope is that it'll crash faster and more
+reproducible that way.
 
->
-> vim +/ofdt_proc_ops +394 arch/powerpc/platforms/pseries/reconfig.c
->
->    393
->  > 394  static const struct proc_ops ofdt_proc_ops = {
->    395          .proc_write     = ofdt_write,
->    396          .proc_lseek     = noop_llseek,
->    397  };
->    398
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> never re-initialized with proper zone and node links which was not the
+> case before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock
+> regions rather that check each PFN").
+
+What's strange is that 73a6e474cb37 was suggested as fix for this
+bug...
+
+	https://lkml.kernel.org/r/20200505124314.GA5029@MiWiFi-R3L-srv
+
+The addition of "pageblock_pfn_to_page" to validate min_pfn was added
+in commit 73a6e474cb37, so I assumed that the first report below
+didn't have commit 73a6e474cb37 already applied.
+
+	https://lkml.kernel.org/r/8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw
+
+However if you're correct perhaps the patch was already applied in
+5.7.0-rc2-next-20200423+, it landed upstream in v5.8 after all.
+
+> Back then, memmap_init_zone() looped from zone_start_pfn till
+> zone_end_pfn and struct page for reserved pages with pfns inside the
+> zone would be initialized.
+> 
+> Now the loop is for interesection of [zone_start_pfn, zone_end_pfn] with
+> memblock.memory and for x86 reserved ranges are not in memblock.memory,
+> so the memmap for them remains semi-initialized.
+
+That would matches the symptoms. I'll test it as first thing after
+confirming older kernels had the right zoneid/nid on the reserved
+pages.
+
+Thanks,
+Andrea
+
