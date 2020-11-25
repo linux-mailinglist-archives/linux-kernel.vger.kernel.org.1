@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DAA2C3FAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6922C3FB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgKYMOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKYMOy (ORCPT
+        id S1728046AbgKYMPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:15:19 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:50561 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727219AbgKYMPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:14:54 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09A5C0613D4;
-        Wed, 25 Nov 2020 04:14:53 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id i17so2057915ljd.3;
-        Wed, 25 Nov 2020 04:14:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gc4qMJXhyMRQIhW7uEhJjTGAKZr58S2+Yff/bL5CKfw=;
-        b=aQKjaBEpeAeb6ZLZ17pm9DV8Yu0vy67SxJ+5DD1ssG9wouS3ZRkXMX3EpDGWBHQADp
-         pJNr2c7o2gTNKwfG+3a4PliR36t49LMWvq1PTsmUMU4zVmumc4nGxnBes50fCH6ItjFm
-         1nDsqevMKyyaZ1ms5f2beyvnZr8SsltvkDte21eB2VPvEq+dr9PqrCmUWQk87Ril29Aq
-         n59xXxhH26E5j+m4w8EGnYWQS3tY4NlJYLceABykfG17vWKLSXAomeHu34FrKT2jVZXO
-         QraytfXvW5a5UxpbQvjLlJAI3vVG7C9tBX/KYZT5OhkHcJ5xvb7ThkeLx807WlCBwojx
-         2zyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gc4qMJXhyMRQIhW7uEhJjTGAKZr58S2+Yff/bL5CKfw=;
-        b=W3ca2JaiOZmHRsn8nSZjLPfeUesUFyQ12x02BVRIu53hGfmJbtycCICxIF+c4Q20IK
-         zbnpOzj49NjK75kmSov12dX2U8fQMXEn6NRzOJyfpPR9hJHAW+0rCn0alBOUTnUu1Fju
-         l4avD1PXm/tc898JOYzK1/i3sPDKhmaljw3RVBh3hIW7mOKSE5jNmMGmkiRD4kFoLN78
-         cGoc0SLnXg8pOtAA4c3B/Get3BRYVJTW7On9589l0RH0Z+OEMHdfZlk4Kj7h09HV1pjY
-         tp1u8C6KpLOfs0EKAwdzEDyt4prRtUUULsDppdoirCJkZAO2O126UCXrIZzUqomndrRx
-         9gsw==
-X-Gm-Message-State: AOAM5331WryQXSuzZMr4BZJ4cl4qlNviS3LTWzRW6LjlPqmkut06jWl3
-        Jo33TCnESzcX1RjV3mWJ6KaNf4sBm9Q=
-X-Google-Smtp-Source: ABdhPJxfIWnpCCWCpWtrUH6h++e+Sk8TU4Cd/XwdW8ZZ04C0PJQKGJ+oe+/Y18R2BWeP9ZTxK0ZblA==
-X-Received: by 2002:a2e:7005:: with SMTP id l5mr1213755ljc.175.1606306492472;
-        Wed, 25 Nov 2020 04:14:52 -0800 (PST)
-Received: from mobilestation ([95.79.141.114])
-        by smtp.gmail.com with ESMTPSA id w3sm224227ljm.37.2020.11.25.04.14.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 04:14:51 -0800 (PST)
-Date:   Wed, 25 Nov 2020 15:14:49 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     broonie@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: dw: fixed missing resource_size
-Message-ID: <20201125121449.zo2njliv4typz4ca@mobilestation>
-References: <1606114975-31362-1-git-send-email-tiantao6@hisilicon.com>
+        Wed, 25 Nov 2020 07:15:17 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UGVZDcx_1606306511;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGVZDcx_1606306511)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 25 Nov 2020 20:15:11 +0800
+Subject: Re: [PATCH] mm/memcg: warn on missing memcg on
+ mem_cgroup_page_lruvec()
+To:     Lorenzo Stoakes <lstoakes@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, Hui Su <sh_def@163.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>
+Cc:     syzbot <syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <00000000000054aea005b4d59e71@google.com>
+ <20201125112202.387009-1-lstoakes@gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <0918d6f5-8459-7b5e-82a3-6c9792d17433@linux.alibaba.com>
+Date:   Wed, 25 Nov 2020 20:15:11 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1606114975-31362-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <20201125112202.387009-1-lstoakes@gmail.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 03:02:55PM +0800, Tian Tao wrote:
-> fixed the coccicheck:
-> drivers/spi/spi-dw-bt1.c:220:27-30: ERROR: Missing
-> resource_size with mem.
+Acked-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-Thanks, Tian!
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
 
+ÔÚ 2020/11/25 ÏÂÎç7:22, Lorenzo Stoakes Ð´µÀ:
+> Move memcg check to mem_cgroup_page_lruvec() as there are callers which
+> may invoke this with !memcg in mem_cgroup_lruvec(), whereas they should
+> not in mem_cgroup_page_lruvec().
 > 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> We expect that we have always charged a page to the memcg before
+> mem_cgroup_page_lruvec() is invoked, so add a warning to assert that this
+> is the case.
+> 
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> Reported-by: syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com
 > ---
->  drivers/spi/spi-dw-bt1.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  include/linux/memcontrol.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
-> index f382dfad..da4f4d8 100644
-> --- a/drivers/spi/spi-dw-bt1.c
-> +++ b/drivers/spi/spi-dw-bt1.c
-> @@ -217,7 +217,7 @@ static int dw_spi_bt1_sys_init(struct platform_device *pdev,
->  	if (mem) {
->  		dwsbt1->map = devm_ioremap_resource(&pdev->dev, mem);
->  		if (!IS_ERR(dwsbt1->map)) {
-> -			dwsbt1->map_len = (mem->end - mem->start + 1);
-> +			dwsbt1->map_len = resource_size(mem);
->  			dws->mem_ops.dirmap_create = dw_spi_bt1_dirmap_create;
->  			dws->mem_ops.dirmap_read = dw_spi_bt1_dirmap_read;
->  		} else {
-> -- 
-> 2.7.4
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 87ed56dc75f9..3e6a1df3bdb9 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -618,7 +618,6 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+>  		goto out;
+>  	}
+>  
+> -	VM_WARN_ON_ONCE(!memcg);
+>  	if (!memcg)
+>  		memcg = root_mem_cgroup;
+>  
+> @@ -645,7 +644,10 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+>  static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
+>  						struct pglist_data *pgdat)
+>  {
+> -	return mem_cgroup_lruvec(page_memcg(page), pgdat);
+> +	struct mem_cgroup *memcg = page_memcg(page);
+> +
+> +	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+> +	return mem_cgroup_lruvec(memcg, pgdat);
+>  }
+>  
+>  static inline bool lruvec_holds_page_lru_lock(struct page *page,
 > 
