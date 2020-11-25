@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F2E2C3F9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F072C3FA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgKYMKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:10:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        id S1729098AbgKYMKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:10:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgKYMKL (ORCPT
+        with ESMTP id S1725876AbgKYMKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:10:11 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3390CC0613D4;
-        Wed, 25 Nov 2020 04:10:11 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id 142so2008307ljj.10;
-        Wed, 25 Nov 2020 04:10:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JtvEqlP2kM/xfhneQTjDnybMpz+ouPY74TpkVqPdwg0=;
-        b=PQYAAtJkKjaS1TxwaJUvBf/VGyfTHk3L5ew5pftTrsgtOGavvV448+bwwpv8yl+0MU
-         BTaPjAoOuFQlwyBfi6iTs5r1Blf+nfH3fX/MnZA0t63K95TzqmcB+HRVdyvexvVaEZTF
-         ep+/QZ1wnNn8yCgZKM3oSVSFpslH6u3UQPxnGc5M4bkntdgbkVO/tdk7NrI6DugToY/j
-         WWuAeKjfDXrcorjq6UEisv04A1NIi0cPDDaF9o9qRWlaHY//saDCL1AIxFaxFCFvaYSE
-         HtmDxj5QHDulrziTy+XFRUhq/lKVRpNJXISDsgGzTPDjnb+34mgNlMZ7gRP36KhLmPYS
-         /kbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JtvEqlP2kM/xfhneQTjDnybMpz+ouPY74TpkVqPdwg0=;
-        b=WUJMnIJj6Du8MJCycZBx+9+X2piAvv0ccxuSNkmWmdwk3bHtJZL1u4956hW411H+zi
-         kvcabaF/872ZC3rFY0uZ9NGhjCrJn3HpapRr0utbriRUK4MlhwNRmIwUe5Yj8wt3vMY7
-         LHhB2HafIrs/dHlL91MXPMJ5zBJsB6XkqTPQJ4AyKn+npkO5DeUo5eUq920G5t1mQIIw
-         UNyxX/+K2tQUbQwTqqqvJTgGEs5S6OsGqDDT1LaOiiP5suQYxWuxQC+4+y30asOxgLks
-         3qQnyqdhT5601GkGwqbOrCIhjQ+FdQY4Y9RyYyWS5xWsI0anSHoAhvi+TAN2xoua6Rw1
-         xKKg==
-X-Gm-Message-State: AOAM531f+Y75WmZpExAwBOZNrSd9LOQo0WSvVVDgi5dtDvYKJ4+QN14m
-        5ypi+XrYiicE2TUhZwA85BCXrRS5NjcGCg==
-X-Google-Smtp-Source: ABdhPJwYanW0E/yCz9bOI5/61jyGaYAqt/+JNu83mKX9tmwY8RcYWlfbtt+BYSpJRKCYNiq0bzuxBg==
-X-Received: by 2002:a2e:8011:: with SMTP id j17mr910111ljg.325.1606306209421;
-        Wed, 25 Nov 2020 04:10:09 -0800 (PST)
-Received: from ?IPv6:2a00:1fa0:46d0:9159:e29e:dcff:ec45:a8c0? ([2a00:1fa0:46d0:9159:e29e:dcff:ec45:a8c0])
-        by smtp.gmail.com with ESMTPSA id p19sm208403lfh.82.2020.11.25.04.10.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 04:10:08 -0800 (PST)
-Subject: Re: [PATCH 5/5] memory: renesas-rpc-if: Fix a reference leak in
- rpcif_probe()
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>, stable@vger.kernel.org
-References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201124112552.26377-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <27229829-5a21-e0e6-86a7-0bfc6ed646e5@gmail.com>
-Date:   Wed, 25 Nov 2020 15:10:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 25 Nov 2020 07:10:46 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6E7C0613D4;
+        Wed, 25 Nov 2020 04:10:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WgqdCZm44c4zo7nXGiTkfBH6DwmKe/+NVffeMr88V+8=; b=sZbXrNtIa0haszcLNmr0AoIUJn
+        oS+IvO1F5SwhlFfESoeo7W2DAlT2zmdEHCerEVYyA3kxmiu5rIW2wqGvuAc+c7NRWRLELW9VouSfZ
+        s7Vr6aHjh26gvZgnbGo6MOyklx67G1lAE1HxSgOJSfSxc3BJmyWkfZPEMlt9qb0RRLrsjMAjofFAZ
+        WpTmnsnRgweW3PKcbMkSZXODd5GPbvqMk65YkfW5GGo6Qkg6XvoEcz4bYyrGwPiwB9n0+7Cw1NOzH
+        rWzToFQhshj4Lua8nxrW65ocsUYqEgwCxI7Q4Wq0PBV6qGfGQhPD/aOrNzMp9t9tNXDGNyWG/WaOt
+        vSDTSXPQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khtd8-0002VN-0C; Wed, 25 Nov 2020 12:10:38 +0000
+Date:   Wed, 25 Nov 2020 12:10:37 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, davem@davemloft.net, rppt@kernel.org,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 1/2] sparc: Fix handling of page table constructor failure
+Message-ID: <20201125121037.GJ4327@casper.infradead.org>
+References: <20201125034655.27687-1-willy@infradead.org>
+ <b761abc9-12de-f003-b8c4-26e7e506700e@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201124112552.26377-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b761abc9-12de-f003-b8c4-26e7e506700e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/20 2:25 PM, Lad Prabhakar wrote:
+On Wed, Nov 25, 2020 at 09:43:15AM +0100, David Hildenbrand wrote:
+> On 25.11.20 04:46, Matthew Wilcox (Oracle) wrote:
+> > The page has just been allocated, so its refcount is 1.  free_unref_page()
+> > is for use on pages which have a zero refcount.  Use __free_page()
+> > like the other implementations of pte_alloc_one().
+> > 
+> > Fixes: 1ae9ae5f7df7 ("sparc: handle pgtable_page_ctor() fail")
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > ---
+> >  arch/sparc/mm/init_64.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+> > index 96edf64d4fb3..182bb7bdaa0a 100644
+> > --- a/arch/sparc/mm/init_64.c
+> > +++ b/arch/sparc/mm/init_64.c
+> > @@ -2894,7 +2894,7 @@ pgtable_t pte_alloc_one(struct mm_struct *mm)
+> >  	if (!page)
+> >  		return NULL;
+> >  	if (!pgtable_pte_page_ctor(page)) {
+> > -		free_unref_page(page);
+> > +		__free_page(page);
+> >  		return NULL;
+> >  	}
+> >  	return (pte_t *) page_address(page);
+> > 
+> 
+> I wonder if reusing __pte_alloc_one() - e.g., internally - would be even
+> cleaner.
 
-> Release the node reference by calling of_node_put(flash) in the probe.
+It's really awkward to do because pgtable_t is defined differently.
+The clean thing to do would be:
 
-   Sorry about missing this...
+--- arch/sparc/include/asm/page_64.h
+-typedef pte_t *pgtable_t;
++typedef struct page *pgtable_t;
 
-> Fixes: ca7d8b980b67f ("memory: add Renesas RPC-IF driver")
-> Reported-by: Pavel Machek <pavel@denx.de>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Cc: stable@vger.kernel.org
+and then do all the other changes that would require.
 
-Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-
-[...]
-
-MBR, Sergei
+But that feels like a lot more work than appropriate to fix this
+unlikely bug.
