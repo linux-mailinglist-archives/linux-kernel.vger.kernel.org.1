@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E72D2C45CD
+	by mail.lfdr.de (Postfix) with ESMTP id DB39B2C45CE
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732380AbgKYQrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:47:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58322 "EHLO mail.kernel.org"
+        id S1732391AbgKYQrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:47:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732323AbgKYQrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:47:05 -0500
+        id S1732323AbgKYQrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:47:10 -0500
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2139721527;
-        Wed, 25 Nov 2020 16:47:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7536221D46;
+        Wed, 25 Nov 2020 16:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606322825;
-        bh=zDxcfDBYmjuuUTiiRpHLHOCTf/WPUkT0pv5HqP59xZI=;
+        s=default; t=1606322829;
+        bh=JZdCvslmdZjGvWjDcbc1iXckf5mLTjz/4L3axX6TOLs=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=LiSK+XYcJNugW0STLE/0t1V2G0ik6mZcH64EBcZOv82CKd7CcmslEyqG4E0RfpKPG
-         u46Ewl1lIwHGpMJgBGVhiBXCtjjCv++nVaT2/tyyzlZpa0szNn8Y3DijoxPVvpCbzb
-         DZybrRVHSn0ZIwymN+F1DR5jUtXvuJXjZXOm/1TU=
+        b=ug0/QbQyRM1ka9n42auQ0YfCecwYYqzw9VOOGvSqPDYU8eUYpFiYG1vimW0jrWbuw
+         DF3DyKZz3h8QisHSbkDhjMs1RMVKDa6YBQqHY6jtpmeoU4iqStCicwpSKRnmCdeWet
+         3foTgpDt0wUxoa+GcKZOTkGQDhiBRycNDop+kQj4=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -45,9 +45,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org,
         linux-rockchip@lists.infradead.org
-Subject: [PATCH v2 26/39] ASoC: max98926: skip of_device_id table when !CONFIG_OF
-Date:   Wed, 25 Nov 2020 17:44:39 +0100
-Message-Id: <20201125164452.89239-27-krzk@kernel.org>
+Subject: [PATCH v2 27/39] ASoC: pcm1789: skip of_device_id table when !CONFIG_OF
+Date:   Wed, 25 Nov 2020 17:44:40 +0100
+Message-Id: <20201125164452.89239-28-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201125164452.89239-1-krzk@kernel.org>
 References: <20201125164452.89239-1-krzk@kernel.org>
@@ -62,31 +62,31 @@ The driver can match by multiple methods.  Its of_device_id table is
 referenced via of_match_ptr() so it will be unused for !CONFIG_OF
 builds:
 
-  sound/soc/codecs/max98926.c:574:34: warning: ‘max98926_of_match’ defined but not used [-Wunused-const-variable=]
+  sound/soc/codecs/pcm1789-i2c.c:36:34: warning: ‘pcm1789_of_match’ defined but not used [-Wunused-const-variable=]
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/codecs/max98926.c | 2 ++
+ sound/soc/codecs/pcm1789-i2c.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
-index c4dfa8ab1d49..0977e541326d 100644
---- a/sound/soc/codecs/max98926.c
-+++ b/sound/soc/codecs/max98926.c
-@@ -571,11 +571,13 @@ static const struct i2c_device_id max98926_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, max98926_i2c_id);
+diff --git a/sound/soc/codecs/pcm1789-i2c.c b/sound/soc/codecs/pcm1789-i2c.c
+index 327ec584f240..7a6be45f8149 100644
+--- a/sound/soc/codecs/pcm1789-i2c.c
++++ b/sound/soc/codecs/pcm1789-i2c.c
+@@ -33,11 +33,13 @@ static int pcm1789_i2c_remove(struct i2c_client *client)
+ 	return pcm1789_common_exit(&client->dev);
+ }
  
 +#ifdef CONFIG_OF
- static const struct of_device_id max98926_of_match[] = {
- 	{ .compatible = "maxim,max98926", },
+ static const struct of_device_id pcm1789_of_match[] = {
+ 	{ .compatible = "ti,pcm1789", },
  	{ }
  };
- MODULE_DEVICE_TABLE(of, max98926_of_match);
+ MODULE_DEVICE_TABLE(of, pcm1789_of_match);
 +#endif
  
- static struct i2c_driver max98926_i2c_driver = {
- 	.driver = {
+ static const struct i2c_device_id pcm1789_i2c_ids[] = {
+ 	{ "pcm1789", 0 },
 -- 
 2.25.1
 
