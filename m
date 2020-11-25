@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D6B2C3DB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A0C2C3DB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729051AbgKYKcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:32:32 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:56139 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728945AbgKYKca (ORCPT
+        id S1729068AbgKYKdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:33:03 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35010 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728945AbgKYKdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:32:30 -0500
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 7541310001A;
-        Wed, 25 Nov 2020 10:32:27 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Wed, 25 Nov 2020 05:33:02 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 9DFDF1C0B7D; Wed, 25 Nov 2020 11:32:59 +0100 (CET)
+Date:   Wed, 25 Nov 2020 11:32:58 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Cc:     linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        <Steen.Hegelund@microchip.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v5 6/6] irqchip: ocelot: Add support for Jaguar2 platforms
-Date:   Wed, 25 Nov 2020 11:32:06 +0100
-Message-Id: <20201125103206.136498-7-gregory.clement@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201125103206.136498-1-gregory.clement@bootlin.com>
-References: <20201125103206.136498-1-gregory.clement@bootlin.com>
+Subject: Re: [PATCH leds + devicetree v2 1/2] leds: trigger: add trigger
+ sources validating method and helper functions
+Message-ID: <20201125103258.GB25562@amd>
+References: <20200915152616.20591-1-marek.behun@nic.cz>
+ <20200915152616.20591-2-marek.behun@nic.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="8P1HSweYDcXXzwPJ"
+Content-Disposition: inline
+In-Reply-To: <20200915152616.20591-2-marek.behun@nic.cz>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends irqchip driver for ocelot to be used with an other
-vcoreiii base platform: Jaguar2.
 
-Based on a larger patch from Lars Povlsen <lars.povlsen@microchip.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
----
- drivers/irqchip/irq-mscc-ocelot.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+--8P1HSweYDcXXzwPJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/irqchip/irq-mscc-ocelot.c b/drivers/irqchip/irq-mscc-ocelot.c
-index da5a0ad991a1..8235d98650c1 100644
---- a/drivers/irqchip/irq-mscc-ocelot.c
-+++ b/drivers/irqchip/irq-mscc-ocelot.c
-@@ -63,6 +63,17 @@ static struct chip_props luton_props = {
- 	.n_irq			= 28,
- };
- 
-+static struct chip_props jaguar2_props = {
-+	.flags			= FLAGS_HAS_TRIGGER,
-+	.reg_off_sticky		= 0x10,
-+	.reg_off_ena		= 0x18,
-+	.reg_off_ena_clr	= 0x1c,
-+	.reg_off_ena_set	= 0x20,
-+	.reg_off_ident		= 0x38,
-+	.reg_off_trigger	= 0x5c,
-+	.n_irq			= 29,
-+};
-+
- static void ocelot_irq_unmask(struct irq_data *data)
- {
- 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(data);
-@@ -197,3 +208,11 @@ static int __init luton_irq_init(struct device_node *node,
- }
- 
- IRQCHIP_DECLARE(luton_icpu, "mscc,luton-icpu-intr", luton_irq_init);
-+
-+static int __init jaguar2_irq_init(struct device_node *node,
-+				   struct device_node *parent)
-+{
-+	return vcoreiii_irq_init(node, parent, &jaguar2_props);
-+}
-+
-+IRQCHIP_DECLARE(jaguar2_icpu, "mscc,jaguar2-icpu-intr", jaguar2_irq_init);
--- 
-2.29.2
+Hi!
 
+> Currently we use the `linux,default-trigger` device tree property of a
+> LED to define the default trigger which should be activated for a LED.
+>=20
+> But the LED device tree binding also documents the `trigger-sources`
+> property, which specifies the source device which should be triggering
+> the LED.
+>=20
+> The `trigger-sources` property is currently implemented only in
+> drivers/usb/core/ledtrig-usbport.c.
+>=20
+> Lets add a method to struct led_trigger which, if implemented, can check
+> whether this trigger should be enabled as default. This check shall be
+> done by checking whether the specified `trigger-sources` refers to a
+> device compatible with the trigger. For this two new helper functions,
+> of_led_count_trigger_sources and of_led_get_trigger_source, are
+> implemented.
+
+> +int of_led_count_trigger_sources(struct led_classdev *led_cdev)
+> +{
+> +	struct device_node *np;
+> +	int count;
+> +
+> +	np =3D dev_of_node(led_cdev->dev);
+> +	if (!np)
+> +		return 0;
+> +
+> +	count =3D of_count_phandle_with_args(np, "trigger-sources",
+> +					   "#trigger-source-cells");
+> +	if (count =3D=3D -ENOENT)
+> +		return 0;
+> +	else if (count < 0)
+> +		dev_warn(led_cdev->dev,
+> +			 "Failed parsing trigger sources for %pOF!\n", np);
+> +
+> +	return count;
+> +}
+
+Will this need of_node_put() somewhere?
+
+Best regards,
+									Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--8P1HSweYDcXXzwPJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl++MtoACgkQMOfwapXb+vIf0gCaAz1JcbXMTpGsZfPcDBiZj+Ng
+QsAAnjWVVG0ktkq/hSXVmdfBw8aHOHfJ
+=YaAm
+-----END PGP SIGNATURE-----
+
+--8P1HSweYDcXXzwPJ--
