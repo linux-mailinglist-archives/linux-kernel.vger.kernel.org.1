@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D3B2C3F42
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EEB2C3F43
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729016AbgKYLnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:43:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
+        id S1728338AbgKYLov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:44:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727019AbgKYLnj (ORCPT
+        with ESMTP id S1727378AbgKYLov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:43:39 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA9BC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:43:39 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id a16so2576170ejj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:43:38 -0800 (PST)
+        Wed, 25 Nov 2020 06:44:51 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD05C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:44:51 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id lv15so2529024ejb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:44:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uYW3ZyaJyuAmKuXf5dlEGYJicsrMLw0K8nGNNOQ9xuA=;
-        b=RhMw1e6bw5aXjInrXmMzy1SvrHNIAZmVJyKYltyb49y6t3syp0WXKC92YEJC3FMI0e
-         jo9j8R7TdPmJulBBVXhFgPHvK3/mj89KZ9/WzMYS7Ax5RZQAIFmKCFokqDv6Zgy4f2eU
-         iRf0akmv00Svesj0EwgCq6ySy6KsP5LkWTjT3fUr4J9rudfsmCAU+zPVlbAvsQWBz5+A
-         Lujg8R46m3wkfH+IZ75aywdYZQ63Q9r1GqzpWDAWE1e1m8t+jn0lRTUCUE/J3GVUimvC
-         mz+GYqSm5QYlchuZLxSq5AomEqaAZo90eI/bFRc9MgH1ifHajELGbXxnhhVv29JWETHC
-         aOzg==
+        bh=nq1Er3msl49mJFdzRnxuARFtox4IjOQ0vErNwAGxOjk=;
+        b=hP2iLgGgS45K/IP5xASWgc1NdJJYB0XPFcZtFzu3sTYVEROy58bqiz+mtAgTqC9Q6I
+         p3qjnEGeZdCxPpNditaI4MCcexzixwxyCDm7qDpYCgAu7eHKxvbqmtptb0cruqyBDfLQ
+         ZqW+046t1ht9rdjaEv0xBGUYFDymC42O+1d5TPkq4CGjUvKD7/vCMtgS8VPitQc8UGwk
+         pa71gt8LV6oJ9KboMRmOSsKS6DDExxOlDJUjgLhRbZZNMwHapucJlgZumNMgnNL17vZS
+         Di5lHougAoPUSEgfKbkKwjHKcacUGbvpAftSJ+CIqOU2GI9/Pbzu7lu/y774yrrtWOtc
+         Im4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :mime-version:content-transfer-encoding;
-        bh=uYW3ZyaJyuAmKuXf5dlEGYJicsrMLw0K8nGNNOQ9xuA=;
-        b=IFYr52ZDvV/Pot04aErplNzCtMzZW33ehPa+0WZc+tOyu4Q0ni0u13+QxKHMBnHomk
-         k5equwuabAD+Js5vniw91HsPXpwMQ6a1IATUlpt/j+z0iJ0ptzy0XR3JH+FEaxCApdT+
-         n0QGeIEHBVTu1TkCPqbXZWHYhdnFR45juimTe1ASCVmNScB0xOH3XVV6lIV49Iso3I9/
-         vlKGu5Flqii5xhx7yFyZsdjlF2Tvia26nPmFplQa1L+GMISjmFsOLM32EtMPCwrjGysy
-         1c0W6aRDgeJ1C5dnskFLVebEmMiHgIYCCnW8ftTfZgIohzutRv7MVLAjyWTBpWn5RPxm
-         KJYw==
-X-Gm-Message-State: AOAM531cNNa04yRHzhQTLEWumDutKQjZjgT+D1LIxG5TTaKG1w8ZQviu
-        EjDx+2eN0ZBVL4YMdRNYIge2RmmiB98OSHsQ
-X-Google-Smtp-Source: ABdhPJzC8A6yN0rI4+FgU/srqVe/JRg/miHmwUKtEUaHwtmM5LT24danwHSxHE4gq1/yCPvqrqidZg==
-X-Received: by 2002:a17:906:3bd6:: with SMTP id v22mr2788314ejf.160.1606304617511;
-        Wed, 25 Nov 2020 03:43:37 -0800 (PST)
+        bh=nq1Er3msl49mJFdzRnxuARFtox4IjOQ0vErNwAGxOjk=;
+        b=H9st9Ccb040d7FQTMiSSHQoU/iMBnxdBzzOCLyppGhLM7urYiF2GwZ8SN97P9SAFlc
+         4Bd6juyT+G6ylgmZVNabxDRi4tmq5VjZuy24D8u00uDrp82IR/+5nwwhn0B3Ly3mXi0L
+         lZfSLG/BbzEU7Li9ti+jTuDXgvyVa00t2rFvDuyv9hcdXy2vh/qwnAKujoJrkI/kxV0l
+         NVdQ7Ev7tNTNN3BaPAPbBth65M3IsrhrVA8eGR+FO2UeJTBld6fzMUGpE5WPkYdsd+H+
+         68aQdV+WAKnFxTk8iUD0LqQcgh6tfePmNdUjEKQCQnFxTzYr3uuU+syqwdkF1W7D56Bw
+         ZJew==
+X-Gm-Message-State: AOAM532f5U05n9hQrLGXc6VvoIsDSGLlSSAu3ET8vDwLjciwBVF+w3fH
+        4I50eJ6FpjT99imrE2kSVYNmkW/5B1FGFh/U
+X-Google-Smtp-Source: ABdhPJxz22M7+IqxvDFZpFTEAJC5z8E4FRO2wwZ2dwELY3J0ia4ULfC7jSzhJEbo9NfAS6wewgqIKA==
+X-Received: by 2002:a17:906:ae88:: with SMTP id md8mr2812176ejb.323.1606304689537;
+        Wed, 25 Nov 2020 03:44:49 -0800 (PST)
 Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id a12sm1081117edu.89.2020.11.25.03.43.36
+        by smtp.gmail.com with ESMTPSA id nd5sm1093940ejb.37.2020.11.25.03.44.48
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 25 Nov 2020 03:43:36 -0800 (PST)
+        Wed, 25 Nov 2020 03:44:48 -0800 (PST)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com
-Cc:     Arnd Bergmann <arnd@arndb.de>,
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Stefan Asserhall <stefan.asserhall@xilinx.com>
-Subject: [PATCH] microblaze: Change TLB mapping and free space allocation
-Date:   Wed, 25 Nov 2020 12:43:35 +0100
-Message-Id: <af2fd524563dc374d3ecc7ac75af1b23f64cb739.1606304612.git.michal.simek@xilinx.com>
+Subject: [PATCH] microblaze: Swap location of bss and INIT_RAM_FS
+Date:   Wed, 25 Nov 2020 12:44:47 +0100
+Message-Id: <60bfb194e0b9c2f80b21cf5e4b9548039c0c6eec.1606304684.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,70 +70,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Microblaze is doing initial TLB mapping (max 32MB) which has to include
-BSS section but also some space for early page allocation which are used
-for lowmem page mapping done by mapin_ram()->map_page()->early_get_page().
-Max size is 768MB in current setup. For mapping this size there is a need
-for 768M / 4K / 1024 = 192 PTE pages (size 0xc0000). There could be also
-need for other pages to be mapped that's why 1MB space is added behind
-_end. (Pad was 0xC0000 but it is not enough for big initramfs).
+Microblaze is doing early mapping with two TLBs with 16MB each. It means
+machine_early_init() with MMU ON can work just with 32MB memory max. If
+kernel includes initramfs which increase kernel footprint above 32MB bss
+section can't be clear and HW exception happens because memory is not
+mapped.
+Swapping bss section with INIT_RAM_FS ensures that bss section stays in
+mapped region and bss can be cleared by machine_early_init() code.
 
-Linux kernel maps TLBs between _text and _end_tlb_mapping. And also reserve
-memory between _text and _end for kernel itself. Initrd or initramfs is
-mapped below. That's why there is all the time gap between _end and
-__initramfs_start covered by TLB which can be used for early page
-allocation.
+The patch is causing hole in binary and extend binary with bss size but it
+is better to apply this patch and support bigger initramfs size then 32MB
+in total with kernel.
+
+Also there is need to allocate initramfs because origin mapping is done
+only to the _end symbol which stayed at the same location. The follow up
+patch will explain reasons behind it.
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
- arch/microblaze/include/asm/sections.h | 1 +
- arch/microblaze/kernel/head.S          | 3 +--
- arch/microblaze/kernel/vmlinux.lds.S   | 4 ++++
- 3 files changed, 6 insertions(+), 2 deletions(-)
+ arch/microblaze/include/asm/sections.h |  2 ++
+ arch/microblaze/kernel/vmlinux.lds.S   | 11 +++++------
+ arch/microblaze/mm/init.c              |  7 ++++++-
+ 3 files changed, 13 insertions(+), 7 deletions(-)
 
 diff --git a/arch/microblaze/include/asm/sections.h b/arch/microblaze/include/asm/sections.h
-index b5bef96cdcd5..9da44d048522 100644
+index a9311ad84a67..b5bef96cdcd5 100644
 --- a/arch/microblaze/include/asm/sections.h
 +++ b/arch/microblaze/include/asm/sections.h
-@@ -15,6 +15,7 @@ extern char _ssbss[], _esbss[];
+@@ -14,6 +14,8 @@
+ extern char _ssbss[], _esbss[];
  extern unsigned long __ivt_start[], __ivt_end[];
  
- extern char __initramfs_end[];
-+extern char _end_tlb_mapping[];
- 
++extern char __initramfs_end[];
++
  extern u32 _fdt_start[], _fdt_end[];
  
-diff --git a/arch/microblaze/kernel/head.S b/arch/microblaze/kernel/head.S
-index ec2fcb545e64..a2502f78dceb 100644
---- a/arch/microblaze/kernel/head.S
-+++ b/arch/microblaze/kernel/head.S
-@@ -173,9 +173,8 @@ _invalidate:
- 	tophys(r4,r3)			/* Load the kernel physical address */
- 
- 	/* start to do TLB calculation */
--	addik	r12, r0, _end
-+	addik	r12, r0, _end_tlb_mapping
- 	rsub	r12, r3, r12
--	addik	r12, r12, CONFIG_LOWMEM_SIZE >> PTE_SHIFT /* that's the pad */
- 
- 	or r9, r0, r0 /* TLB0 = 0 */
- 	or r10, r0, r0 /* TLB1 = 0 */
+ # endif /* !__ASSEMBLY__ */
 diff --git a/arch/microblaze/kernel/vmlinux.lds.S b/arch/microblaze/kernel/vmlinux.lds.S
-index 77a5e71af22f..8a446c257094 100644
+index df07b3d06cd6..77a5e71af22f 100644
 --- a/arch/microblaze/kernel/vmlinux.lds.S
 +++ b/arch/microblaze/kernel/vmlinux.lds.S
-@@ -132,6 +132,10 @@ SECTIONS {
+@@ -120,12 +120,6 @@ SECTIONS {
+ 		CON_INITCALL
  	}
+ 
+-	__init_end_before_initramfs = .;
+-
+-	.init.ramfs : AT(ADDR(.init.ramfs) - LOAD_OFFSET) {
+-		INIT_RAM_FS
+-	}
+-
+ 	__init_end = .;
+ 
+ 	.bss ALIGN (PAGE_SIZE) : AT(ADDR(.bss) - LOAD_OFFSET) {
+@@ -139,5 +133,10 @@ SECTIONS {
  	. = ALIGN(PAGE_SIZE);
  	_end = .;
-+	/* Add space in TLB mapping for early free pages mapping */
-+	. = . + 0x100000; /* CONFIG_LOWMEM_SIZE >> PTE_SHIFT + space */
-+
-+	_end_tlb_mapping = . ;
  
- 	.init.ramfs : AT(ADDR(.init.ramfs) - LOAD_OFFSET) {
- 		INIT_RAM_FS
++	.init.ramfs : AT(ADDR(.init.ramfs) - LOAD_OFFSET) {
++		INIT_RAM_FS
++	}
++	__initramfs_end = . ;
++
+ 	DISCARDS
+ }
+diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
+index 7129a20881ea..85daa77ff061 100644
+--- a/arch/microblaze/mm/init.c
++++ b/arch/microblaze/mm/init.c
+@@ -197,6 +197,7 @@ static void __init mmu_init_hw(void)
+ asmlinkage void __init mmu_init(void)
+ {
+ 	unsigned int kstart, ksize;
++	phys_addr_t __maybe_unused size;
+ 
+ 	if (!memblock.reserved.cnt) {
+ 		pr_emerg("Error memory count\n");
+@@ -238,10 +239,14 @@ asmlinkage void __init mmu_init(void)
+ #if defined(CONFIG_BLK_DEV_INITRD)
+ 	/* Remove the init RAM disk from the available memory. */
+ 	if (initrd_start) {
+-		unsigned long size;
+ 		size = initrd_end - initrd_start;
+ 		memblock_reserve(__virt_to_phys(initrd_start), size);
+ 	}
++
++	size = __initramfs_end - __initramfs_start;
++	if (size)
++		memblock_reserve((phys_addr_t)__virt_to_phys(__initramfs_start),
++				 size);
+ #endif /* CONFIG_BLK_DEV_INITRD */
+ 
+ 	/* Initialize the MMU hardware */
 -- 
 2.29.2
 
