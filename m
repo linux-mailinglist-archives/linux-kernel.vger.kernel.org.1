@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C59A2C3916
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 07:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086EE2C3919
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 07:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgKYGY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 01:24:57 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:46548 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726027AbgKYGY5 (ORCPT
+        id S1726567AbgKYG1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 01:27:14 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:42479 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725838AbgKYG1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 01:24:57 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UGTbpu3_1606285491;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGTbpu3_1606285491)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 25 Nov 2020 14:24:51 +0800
-Subject: Re: linux-next boot error: WARNING in prepare_kswapd_sleep
-To:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        syzbot <syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hui Su <sh_def@163.com>
-References: <00000000000054aea005b4d59e71@google.com>
- <CAA5enKZ=6=AoknavW4RJ+T+aiPBFSf8uEjJ+ODcc+nMTD2k5kQ@mail.gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <bda71012-f2e2-9a4c-5dcb-7ad14655c2f5@linux.alibaba.com>
-Date:   Wed, 25 Nov 2020 14:24:51 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Wed, 25 Nov 2020 01:27:14 -0500
+X-UUID: 312509b55e38466197825c0f67b8aea0-20201125
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=4wT0sL2p4bYjUtORLYx8X9YW4UaRtS4zF13rlFd4m3U=;
+        b=npVbsbVBTp/WKl7ZKsAq2Vb5DWaKBbf3ey98EcKsQMJzpZOo37pKOp2YyF6gQWMog0yXnnK3ajbOEFYbbwSlGP16kYRhkAdqBVjVGjUbYIwEXNhnbpoaN6ryko/kTmwZKhGpkvovfx13IkECLAqzg1U01ZXHEvADGVqF+6fDLNA=;
+X-UUID: 312509b55e38466197825c0f67b8aea0-20201125
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1930205681; Wed, 25 Nov 2020 14:27:04 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 25 Nov
+ 2020 14:27:02 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 25 Nov 2020 14:27:01 +0800
+Message-ID: <1606285623.7284.8.camel@mhfsdcap03>
+Subject: Re: [PATCH] phy/mediatek: Make PHY_MTK_XSPHY depend on HAS_IOMEM
+ and OF_ADDRESS to fix build errors
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+CC:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Date:   Wed, 25 Nov 2020 14:27:03 +0800
+In-Reply-To: <d3cee8b0-b699-a51a-ff33-568e10cb2df7@infradead.org>
+References: <1606211233-7425-1-git-send-email-yangtiezhu@loongson.cn>
+         <1606271044.32484.20.camel@mhfsdcap03>
+         <d3cee8b0-b699-a51a-ff33-568e10cb2df7@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <CAA5enKZ=6=AoknavW4RJ+T+aiPBFSf8uEjJ+ODcc+nMTD2k5kQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: 0B25F89E42C9C88A9D286BF25D5F4853EA184271D894796D64149F03AEBE79732000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2020/11/25 上午1:59, Lorenzo Stoakes 写道:
-> On Tue, 24 Nov 2020 at 07:54, syzbot
-> <syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com> wrote:
->> syzbot found the following issue on:
->>
->> HEAD commit:    d9137320 Add linux-next specific files for 20201124
-> 
-> This appears to be a product of 4b2904f3 ("mm/memcg: add missed
-> warning in mem_cgroup_lruvec") adding a VM_WARN_ON_ONCE() to
-> mem_cgroup_lruvec, which when invoked from a function other than
-> mem_cgroup_page_lruvec() can in fact be called with the condition
-> false.
-> If we move the check back into mem_cgroup_page_lruvec() it resolves
-> the issue. I enclose a simple version of this below, happy to submit
-> as a proper patch if this is the right approach:
-> 
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 87ed56dc75f9..27cc40a490b2 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -618,7 +618,6 @@ static inline struct lruvec
-> *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->                 goto out;
->         }
-> 
-> -       VM_WARN_ON_ONCE(!memcg);
->         if (!memcg)
->                 memcg = root_mem_cgroup;
-> 
-> @@ -645,6 +644,7 @@ static inline struct lruvec
-> *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
->                                                 struct pglist_data *pgdat)
->  {
-> +       VM_WARN_ON_ONCE_PAGE(!page_memcg(page), page);
->         return mem_cgroup_lruvec(page_memcg(page), pgdat);
->  }
-> 
-
-Acked.
-
-Right. Would you like to remove the bad commit 4b2904f3 ("mm/memcg: add missed
- warning in mem_cgroup_lruvec") and replace yours.
-
-and further more, could you like try another patch?
-
-Thanks
-Alex
-
-From 073b222bd06a96c39656b0460c705e48c7eedafc Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Wed, 25 Nov 2020 14:06:33 +0800
-Subject: [PATCH] mm/memcg: bail out early when !memcg in mem_cgroup_lruvec
-
-In some scenarios, we call NULL memcg in mem_cgroup_lruvec(NULL, pgdat)
-so we could get out early to skip unnecessary check.
-
-Also warning if both parameter are NULL.
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
----
- include/linux/memcontrol.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 3a995bb3157f..5e4da83eb9ce 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -613,7 +613,9 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
- 	struct mem_cgroup_per_node *mz;
- 	struct lruvec *lruvec;
- 
--	if (mem_cgroup_disabled()) {
-+	VM_WARN_ON_ONCE(!memcg && !pgdat);
-+
-+	if (mem_cgroup_disabled() || !memcg) {
- 		lruvec = &pgdat->__lruvec;
- 		goto out;
- 	}
--- 
-2.29.GIT
+T24gVHVlLCAyMDIwLTExLTI0IGF0IDE5OjMxIC0wODAwLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+
+IE9uIDExLzI0LzIwIDY6MjQgUE0sIENodW5mZW5nIFl1biB3cm90ZToNCj4gPiBIaSBUaWV6aHUs
+DQo+ID4gDQo+ID4gT24gVHVlLCAyMDIwLTExLTI0IGF0IDE3OjQ3ICswODAwLCBUaWV6aHUgWWFu
+ZyB3cm90ZToNCj4gPj4gZGV2bV9pb3JlbWFwX3Jlc291cmNlKCkgd2lsbCBiZSBub3QgYnVpbHQg
+aW4gbGliL2RldnJlcy5jIGlmDQo+ID4+IENPTkZJR19IQVNfSU9NRU0gaXMgbm90IHNldCwgb2Zf
+YWRkcmVzc190b19yZXNvdXJjZSgpIHdpbGwgYmUNCj4gPj4gbm90IGJ1aWx0IGluIGRyaXZlcnMv
+b2YvYWRkcmVzcy5jIGlmIENPTkZJR19PRl9BRERSRVNTIGlzIG5vdA0KPiA+PiBzZXQsIGFuZCB0
+aGVuIHRoZXJlIGV4aXN0cyB0d28gYnVpbGQgZXJyb3JzIGFib3V0IHVuZGVmaW5lZA0KPiA+PiBy
+ZWZlcmVuY2UgdG8gImRldm1faW9yZW1hcF9yZXNvdXJjZSIgYW5kICJvZl9hZGRyZXNzX3RvX3Jl
+c291cmNlIg0KPiA+PiBpbiBwaHktbXRrLXhzcGh5LmMgdW5kZXIgQ09NUElMRV9URVNUIGFuZCBD
+T05GSUdfUEhZX01US19YU1BIWSwNCj4gPj4gbWFrZSBQSFlfTVRLX1hTUEhZIGRlcGVuZCBvbiBI
+QVNfSU9NRU0gYW5kIE9GX0FERFJFU1MgdG8gZml4IGl0Lg0KPiA+Pg0KPiA+PiBSZXBvcnRlZC1i
+eToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQo+ID4+IFNpZ25lZC1vZmYtYnk6
+IFRpZXpodSBZYW5nIDx5YW5ndGllemh1QGxvb25nc29uLmNuPg0KPiA+PiAtLS0NCj4gPj4gIGRy
+aXZlcnMvcGh5L21lZGlhdGVrL0tjb25maWcgfCAyICsrDQo+ID4+ICAxIGZpbGUgY2hhbmdlZCwg
+MiBpbnNlcnRpb25zKCspDQo+ID4+DQo+ID4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BoeS9tZWRp
+YXRlay9LY29uZmlnIGIvZHJpdmVycy9waHkvbWVkaWF0ZWsvS2NvbmZpZw0KPiA+PiBpbmRleCA1
+MGM1ZTkzLi42NmRmMDQ1IDEwMDY0NA0KPiA+PiAtLS0gYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9L
+Y29uZmlnDQo+ID4+ICsrKyBiL2RyaXZlcnMvcGh5L21lZGlhdGVrL0tjb25maWcNCj4gPj4gQEAg
+LTMwLDYgKzMwLDggQEAgY29uZmlnIFBIWV9NVEtfWFNQSFkNCj4gPj4gIAl0cmlzdGF0ZSAiTWVk
+aWFUZWsgWFMtUEhZIERyaXZlciINCj4gPj4gIAlkZXBlbmRzIG9uIEFSQ0hfTUVESUFURUsgfHwg
+Q09NUElMRV9URVNUDQo+ID4+ICAJZGVwZW5kcyBvbiBPRg0KSGkgVGllemh1LA0KDQpXb3VsZCB5
+b3UgcGxlYXNlIGhlbHAgdG8gcHV0IE9GIGFuZCBPRl9BRERSRVNTIGludG8gb25lIGxpbmUgYXMN
+CmZvbGxvd2luZzoNCmRlcGVuZHMgb24gT0YgJiYgT0ZfQUREUkVTUy4NCg0KQWxzbyBwbGVhc2Ug
+aGVscCB0byBhZGQgdGhlbSBmb3IgUEhZX01US19UUEhZLg0KQW5kIGNoYW5nZSB0aGUgdGlsZSAn
+cGh5L21lZGlhdGVrOiAuLi4nIGFzICdwaHk6IG1lZGlhdGVrOiAuLi4nDQoNClRoYW5rIHlvdQ0K
+DQoNCj4gPj4gKwlkZXBlbmRzIG9uIEhBU19JT01FTQ0KPiA+PiArCWRlcGVuZHMgb24gT0ZfQURE
+UkVTUw0KPiA+IFdoeSBub3QgYWRkIHRoZW0gaW50byBkZWNvbmZpZyBidXQgaGVyZT8gSW4gZmFj
+dCBJIGRvbid0IGtub3cgd2hpY2ggd2F5DQo+ID4gaXMgYmV0dGVyIGFuZCBmb2xsb3cgdGhlIGtl
+cm5lbCBydWxlLg0KPiA+IA0KPiA+IFZpbm9kIGFuZCBLaXNob24sIGRvIHlvdSBoYXZlIGFueSBz
+dWdnZXN0aW9uIGFib3V0IHRoaXM/DQo+IA0KPiBQdXR0aW5nIHRoZW0gaW50byBhIGRlZmNvbmZp
+ZyB3b24ndCBwcmV2ZW50IHJhbmRvbSBidWlsZCBlcnJvcnMNCj4gd2hpbGUgcHV0dGluZyB0aGVt
+IGhlcmUgd2lsbCAob3IgYXQgbGVhc3Qgc2hvdWxkKS4NCmhpIFJhbmR5LA0KDQpHb3QgaXQsIHRo
+YW5rIHlvdQ0KDQo+IA0KPiA+PiAgCXNlbGVjdCBHRU5FUklDX1BIWQ0KPiA+PiAgCWhlbHANCj4g
+Pj4gIAkgIEVuYWJsZSB0aGlzIHRvIHN1cHBvcnQgdGhlIFN1cGVyU3BlZWRQbHVzIFhTLVBIWSB0
+cmFuc2NlaXZlciBmb3INCj4gPiANCj4gDQo+IFRoZSBwYXRjaCBMR1RNLg0KPiANCj4gQWNrZWQt
+Ynk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPg0KPiANCj4gdGhhbmtzLg0K
+DQo=
 
