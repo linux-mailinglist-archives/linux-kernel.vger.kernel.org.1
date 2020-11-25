@@ -2,173 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B272C4254
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8F82C425A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729922AbgKYOn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:43:27 -0500
-Received: from gproxy5-pub.mail.unifiedlayer.com ([67.222.38.55]:39538 "EHLO
-        gproxy5-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729153AbgKYOnY (ORCPT
+        id S1729971AbgKYOpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:45:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727611AbgKYOpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:43:24 -0500
-Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
-        by gproxy5.mail.unifiedlayer.com (Postfix) with ESMTP id 9C70C140531
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 07:43:23 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id hw0xkbtUch41lhw0xkfjGn; Wed, 25 Nov 2020 07:43:23 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=QrRwI26d c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=nNwsprhYR40A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=pGLkceISAAAA:8
- a=_jlGtV7tAAAA:8 a=jtbBNqsHAAAA:8 a=wDQFPEhNYyAw1ElLWhAA:9
- a=CjuIK1q_8ugA:10:nop_charset_2 a=nlm17XC03S6CtCLSeiRr:22
- a=RWaeYqt-Cn-VcsFsiLGo:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UJRSog9lmDY1zKtsy7ZZF4ejMAXYqU0EhOMjDDdQg2E=; b=G8dZ4rBWC3O5ELN1IUrzQ36j8C
-        XbwEyKYh42djUFKXaMVETcs2WWkLlcK/SaDdmFyL7PTLZRl04ITbppWZ1CZLpE8fHyYCTZ3+11E4f
-        937Wkpo1YUcJ70noNb97hP/NZQ/f3rmHcXS6FpgliyJZvsMaEhx0UajUu120oUroluy6h001OMQiG
-        HGz+edXstiTq410SZaUGoWF37HE0B9cNzbES0xrOIkrnBonnDQTicj10UAj8TJht0PrkhduAGpK/1
-        IkuUx3DnTXzhvQhRnhFgygL3b6sblbUAHJ+FonmHT5U65XVq/0IPY8stylW47agfAmePALIzEWYsC
-        KQRfK6GA==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:34496 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1khw0w-002VVB-Gg; Wed, 25 Nov 2020 14:43:22 +0000
-Date:   Wed, 25 Nov 2020 06:43:22 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     rentao.bupt@gmail.com
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        taoren@fb.com, mikechoi@fb.com
-Subject: Re: [PATCH v5 2/2] docs: hwmon: Document max127 driver
-Message-ID: <20201125144322.GA98562@roeck-us.net>
-References: <20201123185658.7632-1-rentao.bupt@gmail.com>
- <20201123185658.7632-3-rentao.bupt@gmail.com>
+        Wed, 25 Nov 2020 09:45:15 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC662C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 06:45:14 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id w8so2317745ilg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 06:45:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=D4eQ8Jn3Hz9cSPZ/yR1FstpfWl6MeviStWOV4DS4PzE=;
+        b=rncwyiYC3LDsijH0n9eccKCbmzMoK6e1LHFqDU0MTa9E/30nU/QSBoNjpWFbScMa8y
+         jJQdlLUvBq906wNA7yMUIE/Dx5xpMqgDlM0R9hu+yDWlCAhhHj50Eyt0ijfB8DU3Z/On
+         50v4wY1wbWo/JSwfT8A8pm413fzq7PgffZgmmAallNrPSRa7XaYycFS72OTtKMcL5isa
+         TY5E48y3FfazIZp7YfgQ+xh721AHurknL/M3OlGDJEngu+ETHpONISQDS0J+MduqNobE
+         GEwwwCIKXD1K6qGHiipS0vC0gTloaEqr25MX4n4qiDAYeMWGN35oivF43JzPkLHM/JhP
+         gUiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=D4eQ8Jn3Hz9cSPZ/yR1FstpfWl6MeviStWOV4DS4PzE=;
+        b=nIJBFz+a/vAvEkQhLIsQf2bl2dYeGvodx5kgunqVJ8cGl3xXq920XtUG2UVjVSZbxg
+         UORfzzomXuQIickIgCl6z8NL9EWboGRIeE762riEeLRyoAMH8UxYGIsakGtSR4qdYvfW
+         Uc5dITD0LcqjEBGTvFkWWM3ro3/ANp86WLIrrghEFB+isg8QFjlrwHcqiEaqB1Z1FYLS
+         3Ma702oDPWIwmmp8/IEiYjN6vXkSjrZGZQKXvJIkDB3+JC5ted53Ilzv+1sZB7F8eKz+
+         qbiTmP1+cakS22Pu0xXtIsH2n9/HXlRn+skblX12Pn1zYPrLadjD2whicbNEc1Y/UjFQ
+         N75g==
+X-Gm-Message-State: AOAM531zenqid9X66tEb0Eq9h9V8LuB/rxuf4AcLzoPdP3aFSYaiXE2S
+        jnx//FzpcvV83NHy8ZhTWWzmVQ==
+X-Google-Smtp-Source: ABdhPJyKa7RJMnezvEwCtVEwQrk3DUDGx8BYzxuZbJm9ENz+QcvG54TGsRXy5LAfxJcRZSeRjo1Nzw==
+X-Received: by 2002:a92:5e9a:: with SMTP id f26mr3254609ilg.129.1606315514120;
+        Wed, 25 Nov 2020 06:45:14 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id s17sm1496988ilj.25.2020.11.25.06.45.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Nov 2020 06:45:13 -0800 (PST)
+Subject: Re: [PATCH] soc: qcom: Introduce debugfs interface to smem
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>
+References: <20201123052119.157551-1-bjorn.andersson@linaro.org>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <f975978a-3dba-6e64-68e5-2b263ab4ea2f@linaro.org>
+Date:   Wed, 25 Nov 2020 08:45:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123185658.7632-3-rentao.bupt@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1khw0w-002VVB-Gg
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:34496
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 57
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+In-Reply-To: <20201123052119.157551-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:56:58AM -0800, rentao.bupt@gmail.com wrote:
-> From: Tao Ren <rentao.bupt@gmail.com>
-> 
-> Add documentation for the max127 hardware monitoring driver.
-> 
-> Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+On 11/22/20 11:21 PM, Bjorn Andersson wrote:
+> Every now and then it's convenient to be able to inspect the content of
+> SMEM items. Rather than carrying some hack locally let's upstream a
+> driver that when inserted exposes a debugfs interface for dumping
+> available items.
 
-Applied.
+I have a number of comments.  I think only two are things
+you really need to act on, the rest are just some suggestions
+to consider.
 
-Thanks,
-Guenter
+					-Alex
 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  Changes in v5:
->    - None.
->  Changes in v4:
->    - None.
->  Changes in v3:
->    - no code change. xdp maintainers were removed from to/cc list.
->  Changes in v2:
->    - add more description for min/max sysfs nodes.
->    - convert values from volt to millivolt in the document.
+>   drivers/soc/qcom/Kconfig        |   7 +++
+>   drivers/soc/qcom/Makefile       |   1 +
+>   drivers/soc/qcom/smem_debugfs.c | 102 ++++++++++++++++++++++++++++++++
+>   3 files changed, 110 insertions(+)
+>   create mode 100644 drivers/soc/qcom/smem_debugfs.c
 > 
->  Documentation/hwmon/index.rst  |  1 +
->  Documentation/hwmon/max127.rst | 45 ++++++++++++++++++++++++++++++++++
->  2 files changed, 46 insertions(+)
->  create mode 100644 Documentation/hwmon/max127.rst
-> 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index 408760d13813..0a07b6000c20 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -111,6 +111,7 @@ Hardware Monitoring Kernel Drivers
->     ltc4245
->     ltc4260
->     ltc4261
-> +   max127
->     max16064
->     max16065
->     max1619
-> diff --git a/Documentation/hwmon/max127.rst b/Documentation/hwmon/max127.rst
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index 3dc3e3d61ea3..7e1dd6b3f33a 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -128,6 +128,13 @@ config QCOM_SMEM
+>   	  The driver provides an interface to items in a heap shared among all
+>   	  processors in a Qualcomm platform.
+>   
+> +config QCOM_SMEM_DEBUGFS
+> +	tristate "Qualcomm Shared Memory Manager (SMEM) DebugFS interface"
+> +	depends on QCOM_SMEM
+> +	depends on DEBUG_FS
+> +	help
+> +	  Provides a debugfs interface for inspecting SMEM.
+> +
+>   config QCOM_SMD_RPM
+>   	tristate "Qualcomm Resource Power Manager (RPM) over SMD"
+>   	depends on ARCH_QCOM || COMPILE_TEST
+> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> index 93392d9dc7f7..632eefc5a897 100644
+> --- a/drivers/soc/qcom/Makefile
+> +++ b/drivers/soc/qcom/Makefile
+> @@ -15,6 +15,7 @@ qcom_rpmh-y			+= rpmh-rsc.o
+>   qcom_rpmh-y			+= rpmh.o
+>   obj-$(CONFIG_QCOM_SMD_RPM)	+= smd-rpm.o
+>   obj-$(CONFIG_QCOM_SMEM) +=	smem.o
+> +obj-$(CONFIG_QCOM_SMEM_DEBUGFS) += smem_debugfs.o
+>   obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+>   obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+>   obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+> diff --git a/drivers/soc/qcom/smem_debugfs.c b/drivers/soc/qcom/smem_debugfs.c
 > new file mode 100644
-> index 000000000000..dc192dd9c37c
+> index 000000000000..11ef29a0cada
 > --- /dev/null
-> +++ b/Documentation/hwmon/max127.rst
-> @@ -0,0 +1,45 @@
-> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +++ b/drivers/soc/qcom/smem_debugfs.c
+> @@ -0,0 +1,102 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2020, Linaro Ltd.
+> + */
 > +
-> +Kernel driver max127
-> +====================
+> +#include <linux/debugfs.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/soc/qcom/smem.h>
 > +
-> +Author:
+> +struct smem_debugfs {
+> +	struct dentry *root;
+> +};
+
+This type is never used, so get rid of it.
+
 > +
-> +  * Tao Ren <rentao.bupt@gmail.com>
+> +static int smem_debugfs_item_show(struct seq_file *seq, void *p)
+> +{
+> +	unsigned long data = (unsigned long)seq->private;
+> +	unsigned long item = data & 0xffff;
+> +	unsigned long host = data >> 16;
+
+You extract the item and host from the data pointer here,
+and encode it below.  Maybe you could encapsulate those
+two operations into a pair of trivial helper functions.
+When I see something like this I wonder about why 16 bits
+is the right number, and having little functions like that
+provides a place to explain it.
+
+Also, as I will say again below, I prefer not to see raw
+numbers in the code without explanation, i.e., go symbolic:
+
+	unsigned long host = data >> ITEM_SHIFT & HOST_MASK;
+	unsigned long item = data & ITEM_MASK;
+
+> +	size_t len;
+> +	void *ptr;
 > +
-> +Supported chips:
+> +	ptr = qcom_smem_get(host, item, &len);
+> +	if (IS_ERR(ptr))
+> +		return PTR_ERR(ptr);
 > +
-> +  * Maxim MAX127
+> +	seq_hex_dump(seq, "", DUMP_PREFIX_OFFSET, 16, 1, ptr, len, true);
 > +
-> +    Prefix: 'max127'
+> +	return 0;
+> +}
 > +
-> +    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX127-MAX128.pdf
+> +static int smem_debugfs_item_open(struct inode *inode, struct file *file)
+> +{
+> +	return single_open(file, smem_debugfs_item_show, inode->i_private);
+> +}
 > +
-> +Description
-> +-----------
+> +static const struct file_operations smem_debugfs_item_ops = {
+> +	.open = smem_debugfs_item_open,
+> +	.read = seq_read,
+> +	.llseek = seq_lseek,
+> +	.release = single_release,
+> +};
 > +
-> +The MAX127 is a multirange, 12-bit data acquisition system (DAS) providing
-> +8 analog input channels that are independently software programmable for
-> +a variety of ranges. The available ranges are {0,5V}, {0,10V}, {-5,5V}
-> +and {-10,10V}.
+
+You could mention that SMEM entries never go away, and
+that you intentionally ignore the EEXIST error that comes
+back from failed attempts to re-create existing entries
+I hope you aren't spewing errors for these (look at
+start_creating() in "fs/debugfs/inode.c").  I agree
+with your effort to avoid tracking all item files.
+
+> +static int smem_debugfs_rescan(struct seq_file *seq, void *p)
+> +{
+> +	struct dentry *root = seq->private;
+> +	unsigned long item;
+> +	unsigned long host;
+> +	unsigned long data;
+> +	char name[10];
+> +	char *ptr;
 > +
-> +The MAX127 features a 2-wire, I2C-compatible serial interface that allows
-> +communication among multiple devices using SDA and SCL lines.
+> +	for (host = 0; host < 10; host++) {
+
+It would be nice if SMEM_HOST_COUNT were exposed so you could
+use it here.  I prefer something symbolic anyway.
+
+> +		for (item = 0; item < 512; item++) {
+
+Same comment, about SMEM_ITEM_COUNT.
+
+> +			ptr = qcom_smem_get(host, item, NULL);
+> +			if (IS_ERR(ptr))
+> +				continue;
 > +
-> +Sysfs interface
-> +---------------
+> +			sprintf(name, "%ld-%ld", host, item);
+
+Use %lu for unsigned.
+
+Is there any way you can think of that you can indicate which
+items are fixed, and which are dynamically allocated?  (There
+are only 8, so it's not that important.)
+
+What about items in the global partition?  (I'm forgetting
+some of the details about this right now, I'm just scanning
+through the SMEM code as I review this.  So maybe this
+comment doesn't make sense.)
+
 > +
-> +  ============== ==============================================================
-> +  in[0-7]_input  The input voltage (in mV) of the corresponding channel.
-> +		 RO
+> +			data = host << 16 | item > +			debugfs_create_file(name, 0400, root,
+> +					    (void *)data, &smem_debugfs_item_ops);
+> +		}
+> +	}
 > +
-> +  in[0-7]_min    The lower input limit (in mV) for the corresponding channel.
-> +		 ADC range and LSB will be updated when the limit is changed.
-> +		 For the MAX127, it will be adjusted to -10000, -5000, or 0.
-> +		 RW
+> +	return 0;
+> +}
 > +
-> +  in[0-7]_max    The higher input limit (in mV) for the corresponding channel.
-> +		 ADC range and LSB will be updated when the limit is changed.
-> +		 For the MAX127, it will be adjusted to 0, 5000, or 10000.
-> +		 RW
-> +  ============== ==============================================================
+> +static int smem_debugfs_rescan_open(struct inode *inode, struct file *file)
+> +{
+> +	return single_open(file, smem_debugfs_rescan, inode->i_private);
+> +}
+> +
+> +static const struct file_operations smem_debugfs_rescan_ops = {
+> +	.open = smem_debugfs_rescan_open,
+> +	.read = seq_read,
+> +	.llseek = seq_lseek,
+> +	.release = single_release,
+> +};
+> +
+> +static struct dentry *smem_debugfs_root;
+> +
+> +static int __init qcom_smem_debugfs_init(void)
+> +{
+> +	smem_debugfs_root = debugfs_create_dir("qcom_smem", NULL);
+> +	debugfs_create_file("rescan", 0400, smem_debugfs_root,
+> +			    smem_debugfs_root, &smem_debugfs_rescan_ops);
+> +
+> +	return 0;
+> +}
+> +
+> +static void __exit qcom_smem_debugfs_exit(void)
+> +{
+> +	debugfs_remove_recursive(smem_debugfs_root);
+> +}
+> +
+> +module_init(qcom_smem_debugfs_init);
+> +module_exit(qcom_smem_debugfs_exit);
+> +
+> +MODULE_DESCRIPTION("Qualcomm SMEM debugfs driver");
+> +MODULE_LICENSE("GPL v2");
+> 
+
