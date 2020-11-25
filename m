@@ -2,145 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FF32C49DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 501C32C4A29
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732157AbgKYV2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:28:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
+        id S1732663AbgKYVix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:38:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732060AbgKYV2e (ORCPT
+        with ESMTP id S1731952AbgKYVix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:28:34 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21933C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:28:34 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id k11so879130pgq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:28:34 -0800 (PST)
+        Wed, 25 Nov 2020 16:38:53 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A27C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:38:39 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id m16so21159edr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:38:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TEKekla+RKDZzxcpwcoco3ZCfku7RtHZxgTQ+E5cu/c=;
-        b=ExcUbg65EY3y8gWSVHVqTaSz+Lpco8rTUp4reA9wkWRgUfxeEoqfhUp+yFfSlI27pj
-         wV6DdK9Fk1cwLcPh6G/FtigrtG/fYlWEvkXxCxsWvuoHIhRculNe4WrEtfsQZzSvIKfB
-         Ee27Qlf73/iJd7Qpl8o8wR3ME4YPsTHwZEY4w2zTpSDz4U0pSM8rUiNm2XHp3vH40bv2
-         s1sI948fDe1bELAFTeTrgQ8mhR65eWc8J7Mux4b9IvGgRBl2olx5NLJRz4jL+VvAaPx+
-         E+eal8O9Hh7L6earr9Mdf3u3oX5QTaVdCBTaJmRDjn8SF1pEFF6sNKzYUkSJ/V3W1YpQ
-         gaoQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tOPQoHjgvYUvh+HHnKxiG8jONSzsA15qJMnLlNlgP0M=;
+        b=g9y81DNQmmhmWGTiGwiN1BpWJR901eSsmOaWRaDAPAF045hxvt7onry/8Zvu9QMIoO
+         Mj7cMnjDGxU6hMF6tVoIt4bsojN6gPJ4SXLznmP+jMHmyniwn5WHjj2vQ6xOOO0OJlr6
+         V8poGWCE2wHSk99omymX/xHLo/xmK1pAoTF0c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TEKekla+RKDZzxcpwcoco3ZCfku7RtHZxgTQ+E5cu/c=;
-        b=H+oKQ/mkoY8fS0jOpsLKJGCXGFchld1tcfjsslHcXAYOwdnWQ+4m3ufN5r5g++8HSI
-         JhfPRX0IwTr6V79mEwcqVMhuyTjItSWogZ/opKbSUuWSp6geXXI7EQQEu/XViMv3FJcq
-         U2vueExpq7rarNRbD5SQnFJlBEw5qkijigJDk9Ipk0RNWLTQzYeGwPLGQ93X8ieq9g9O
-         LSguPjy5oadKH6x0v3Tc4LAqyTbmkdkw+3pyHxJHt4HnvnTisIOj4TPXZHFHun2E+0I5
-         NwjfqKTyUrd5p8kaqZ87WWb72ZZiGYfrWWg72SWi+9YVDpiFCy86zAMrYh0hi+4peQuJ
-         2nwA==
-X-Gm-Message-State: AOAM533BFsMYf4YqifUzbmmGMDcpLaTpQj9nlDKM4y1mkvgjfF8kwhvS
-        g5Zj+hO8lubqLPNShhgwRDY=
-X-Google-Smtp-Source: ABdhPJxwZKFU0snSRdC6E+i9U80yIL7Tp/g26zas6rd/Pi1EDR2u8Vod6qRubnR9DTVQOQAo9tg/1w==
-X-Received: by 2002:a63:5322:: with SMTP id h34mr4431634pgb.95.1606339713513;
-        Wed, 25 Nov 2020 13:28:33 -0800 (PST)
-Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
-        by smtp.gmail.com with ESMTPSA id s5sm2860628pgc.15.2020.11.25.13.28.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 13:28:31 -0800 (PST)
-Date:   Thu, 26 Nov 2020 08:28:28 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 13/32] sched: Trivial forced-newidle balancer
-Message-ID: <20201125212828.GA163610@balbir-desktop>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-14-joel@joelfernandes.org>
- <20201123043836.GG110669@balbir-desktop>
- <1de89fd3-fb5f-5aaa-8ea6-7a12d3307fa4@linux.intel.com>
- <20201123233508.GC8893@balbir-desktop>
- <2277bfa9-7f67-6b66-b2db-a2130993de53@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tOPQoHjgvYUvh+HHnKxiG8jONSzsA15qJMnLlNlgP0M=;
+        b=mizGedVPQgQNAWcojNqfUyiaohGY1dM8QZnsnQMJoNMKjwbGZ0CKnHJXWzqLKkARCb
+         7s+nlwJ+UaAuQVSrIC06EejDPNF2WkJtoI3Xvb+pKP5KXPaUQQszb7LKBRNOscPOCM3s
+         xaMwYwWXwyZoM0UmeFe9yXmW7Ore8M9X32/+ok433Cfyk8wgs15k4zhxmuVbA1FoYl+W
+         ZXyL7aHTpOZV4DQWuIYsfFeD5XKwLs6gawDPQTXsMLOwQoNASydn2l9v8TpRmyusiiKw
+         pdhah3Lq1tkVIx9BkhYNjsMCGjsK09xy4mswHFix5ywdW4HJ/NyPTf5scBpq1o7Wbrfw
+         44fA==
+X-Gm-Message-State: AOAM530Ng95yyI2kyVcq3kHmPvU/7GpVzmlm9bG3BkQ65YOlz563Kl82
+        Et+0Yj7+iC/e8+hqKER6ZIswsxhnb7Iw4g==
+X-Google-Smtp-Source: ABdhPJxPFFtIK+As/xltbFn6S1Q1AmAb/4cBTfmK0GN8FJqC8qXKIzq1rh3/Ce9PoLPtCHEzB/vMyA==
+X-Received: by 2002:aa7:cfc7:: with SMTP id r7mr3163072edy.93.1606340318399;
+        Wed, 25 Nov 2020 13:38:38 -0800 (PST)
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
+        by smtp.gmail.com with ESMTPSA id z2sm2001151edr.47.2020.11.25.13.38.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Nov 2020 13:38:38 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a16so5089575ejj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:38:38 -0800 (PST)
+X-Received: by 2002:a05:651c:339:: with SMTP id b25mr15104ljp.285.1606339837289;
+ Wed, 25 Nov 2020 13:30:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2277bfa9-7f67-6b66-b2db-a2130993de53@linux.intel.com>
+References: <000000000000d3a33205add2f7b2@google.com> <20200828100755.GG7072@quack2.suse.cz>
+ <20200831100340.GA26519@quack2.suse.cz> <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
+ <alpine.LSU.2.11.2011231928140.4305@eggly.anvils> <20201124121912.GZ4327@casper.infradead.org>
+ <alpine.LSU.2.11.2011240810470.1029@eggly.anvils> <20201124183351.GD4327@casper.infradead.org>
+ <CAHk-=wjtGAUP5fydxR8iWbzB65p2XvM0BrHE=PkPLQcJ=kq_8A@mail.gmail.com>
+ <20201124201552.GE4327@casper.infradead.org> <CAHk-=wj9n5y7pu=SVVGwd5-FbjMGS6uoFU4RpzVLbuOfwBifUA@mail.gmail.com>
+ <alpine.LSU.2.11.2011241322540.1777@eggly.anvils> <CAHk-=wjiVtroOvNkuptH0GofVUvOMw4wmmaXdnGPPT8y8+MbyQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wjiVtroOvNkuptH0GofVUvOMw4wmmaXdnGPPT8y8+MbyQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 25 Nov 2020 13:30:20 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wix0YNq1U8iroRLpx+fCUGE8RG3asY8Zm4vyH-g4UhbPg@mail.gmail.com>
+Message-ID: <CAHk-=wix0YNq1U8iroRLpx+fCUGE8RG3asY8Zm4vyH-g4UhbPg@mail.gmail.com>
+Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 08:32:01AM +0800, Li, Aubrey wrote:
-> On 2020/11/24 7:35, Balbir Singh wrote:
-> > On Mon, Nov 23, 2020 at 11:07:27PM +0800, Li, Aubrey wrote:
-> >> On 2020/11/23 12:38, Balbir Singh wrote:
-> >>> On Tue, Nov 17, 2020 at 06:19:43PM -0500, Joel Fernandes (Google) wrote:
-> >>>> From: Peter Zijlstra <peterz@infradead.org>
-> >>>>
-> >>>> When a sibling is forced-idle to match the core-cookie; search for
-> >>>> matching tasks to fill the core.
-> >>>>
-> >>>> rcu_read_unlock() can incur an infrequent deadlock in
-> >>>> sched_core_balance(). Fix this by using the RCU-sched flavor instead.
-> >>>>
-> >>> ...
-> >>>> +
-> >>>> +		if (p->core_occupation > dst->idle->core_occupation)
-> >>>> +			goto next;
-> >>>> +
-> >>>
-> >>> I am unable to understand this check, a comment or clarification in the
-> >>> changelog will help. I presume we are looking at either one or two cpus
-> >>> to define the core_occupation and we expect to match it against the
-> >>> destination CPU.
-> >>
-> >> IIUC, this check prevents a task from keeping jumping among the cores forever.
-> >>
-> >> For example, on a SMT2 platform:
-> >> - core0 runs taskA and taskB, core_occupation is 2
-> >> - core1 runs taskC, core_occupation is 1
-> >>
-> >> Without this check, taskB could ping-pong between core0 and core1 by core load
-> >> balance.
-> > 
-> > But the comparison is p->core_occuption (as in tasks core occuptation,
-> > not sure what that means, can a task have a core_occupation of > 1?)
-> >
-> 
-> p->core_occupation is assigned to the core occupation in the last pick_next_task.
-> (so yes, it can have a > 1 core_occupation).
+On Tue, Nov 24, 2020 at 3:24 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
+> I've applied your second patch (the smaller one that just takes a ref
+> around the critical section). If somebody comes up with some great
+> alternative, we can always revisit this.
 
-Hmm.. I find that hard to interpret that. But I am happy to re-read the
-code again.
+Hmm.
 
-Balbir Singh.
+I'm not sure about "great alternative", but it strikes me that we
+*could* move the clearing of the PG_writeback bit _into_
+wake_up_page_bit(), under the page waitqueue lock.
+
+IOW, we could make the rule be that the bit isn't actually cleared
+before calling wake_up_page() at all, and we'd clear it with something
+like
+
+    unsigned long flags = READ_ONCE(page->flags);
+
+    // We can clear PG_writeback directly if PG_waiters isn't set
+    while (!(flags & (1ul << PG_waiters))) {
+        unsigned long new = flags & ~(1ul << PG_writeback);
+        // PG_writeback was already clear??!!?
+        if (WARN_ON_ONCE(new == flags))
+            return;
+        new = cmpxchg(&page->flags, flags, new);
+        if (likely(flags == new))
+            return;
+        flags = new;
+    }
+
+    // Otherwise, clear the bit at the end - but under the
+    // page waitqueue lock - inside wake_up_page_bit()
+    return wake_up_page_bit(..);
+
+instead.
+
+That would basically make the bit clearing atomic wrt the PG_waiters
+flags - either using that atomic cmpxchg, or by doing it under the
+page queue lock so that it's atomic wrt any new waiters.
+
+This seems conceptually like the right thing to do - and if would also
+make the (fair) exclusive lock hand-off case atomic too, because the
+bit we're waking up on would never be cleared if it gets handed off
+directly.
+
+The above is entirely untested crap written in my MUA, and obviously
+requires that all callers of wake_up_page() be moved to that new world
+order, but I think we only have two cases: unlock_page() and
+end_page_writeback().
+
+And unlock_page() already has that
+"clear_bit_unlock_is_negative_byte()" special case that is an ugly
+special case of PG_waiters atomicity. So we'd get rid of that, because
+the cmpxchg loop would be the better model.
+
+I'm not sure I'm willing to write and test the real patch, but it
+doesn't look _too_ nasty from just looking at the code. The bookmark
+thing makes it important to only actually clear the bit at the end (as
+does the handoff case anyway), but the way wake_up_page_bit() is
+written, that's actually very straightforward - just after the
+while-loop. That's when we've woken up everybody.
+
+So I'm sending this idea out to see if somebody can shoot it down, or
+even wants to possibly even try to do it..
+
+                Linus
