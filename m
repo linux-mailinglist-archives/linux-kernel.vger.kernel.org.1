@@ -2,131 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0280D2C3D2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E1E2C3D33
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgKYKFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:05:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgKYKFq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:05:46 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBE8C0613D4;
-        Wed, 25 Nov 2020 02:05:45 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CgxNP5HyXz9s0b;
-        Wed, 25 Nov 2020 21:05:41 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606298742;
-        bh=EVH3mvODQBqZq0M7jN0aoZNwnA4Y1ST/tLME2rUzbjY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cgFO6ucHhD7LpJE2rXWCrP9vnTxyQteYukTYmHRYh4E89eXYsAx0zUMXnwK8VBxGs
-         8V1irPhpnAuwIsB95NeUFxuaVe9s+JC9HHvzorMsKq+d8CLKcpMogyIg8GllKPL5jE
-         zISzeXjc85cT8F6H93Qxjf/PSm77KRv9cQg/3k+J3lgtlcBHFmq4CcIQOs0V6D3J9v
-         knolAfjqHF9NO/s2JXFhQ6BL+dLSgABG/shYE4MMGnZ0P/xyoes635ABxIfHQiCMe/
-         RihKR8S44erf9hllnQcsiuyDrTSGVb6EMnyaJmR8BKO6BjI90F+D3fSW26yWHX7TYS
-         CrTRe8nTrauVA==
-Date:   Wed, 25 Nov 2020 21:05:38 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: linux-next: manual merge of the akpm-current tree with the kspp
- tree
-Message-ID: <20201125210538.03e789ff@canb.auug.org.au>
+        id S1728354AbgKYKGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:06:21 -0500
+Received: from mga04.intel.com ([192.55.52.120]:31097 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726192AbgKYKGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 05:06:20 -0500
+IronPort-SDR: ZNtvEjo9tOomJlVVHZKysFCOiIPgV/spZt653PN9BTWNG/BTQhNduJ/x1dkg0SmVQt8Svf0xMR
+ oUeC3QLj7xRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="169543505"
+X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
+   d="scan'208";a="169543505"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 02:06:19 -0800
+IronPort-SDR: GheNTKL25l/fUDdau6XuMD22VQz/1wGPF2TtB6rDS7D+EZP51yZam17yFnpX27YCUZZaoXEKlk
+ /BjCnfxy08aQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
+   d="scan'208";a="332923768"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga006.jf.intel.com with ESMTP; 25 Nov 2020 02:06:19 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 25 Nov 2020 02:06:18 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 25 Nov 2020 02:06:18 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 25 Nov 2020 02:06:18 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.42) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 25 Nov 2020 02:06:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IBE66OZSEBfIljWAuZxP02lsRpET89+h/1lcsIdyy54gNx228zvwHjxdONzp2I36W7u3AFxyrx3qqhZkwwXEy9FnwOAQ/8tKw1tHSWElDvLVm1ElTS1KNBQnLuys+NgPrZ3Dobh5vk99NLth5gJ/zOX0GGsZqNiKn3HkUdeg9epUauh73YX+2E5z5qNaSgEVDL/QnxDtsJG5SzrXusetKfWrcq0ytf28LpEaSylNdqNKY2nTm4hK+kYU7K5gtZZXYzQ6oKHUIrLb4YEjIAjkNrflWuE3YXRa8nj5GcaXfa7NPjEpmsH7h/fVOd/JEJlp4UlEjKER9vp/MvxbEXks1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SAciUtTetKSnoQdVv8onhaCbTKNN9sKj48gZggjAmMA=;
+ b=ed0AJ+QMm1J90AnFfjWuLX2jXJh8RsDQvPgHWXPFYgEBMg/ChW89KUoyV7EoRXi8n7ezzV6WupikoVnAzJJ25H45l1TuLC8Frp3gYaO4F73r5UY1aD4dsZ96hLOFJKJrybFiZVdHkyMgdQ2x+zsCKJOGJh/BP6qkSVlKwd0IUmYEPHGfaH3yxpNPCEdcdz3Wg/iRpdE0GvZQFCp7K8pD2+qvZE2/gPUD39r2/8T11BW52WTSXE8TjKoqljUSTevibsY1MzMPce5UAhXG4XBVpH/3l71IpDOkH0YqEcNO7z3/A6ipkhM3og5/7rm3d1BlGiO+5m4IpGjq8ItJMX+5fA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SAciUtTetKSnoQdVv8onhaCbTKNN9sKj48gZggjAmMA=;
+ b=QgrQvpxXtfjtVleTXc45SLFtx21N0VHT8ve9MkjyJK4VmS7RzlcF/TBBJgn+LqmYTELdEn91i8sckaO3COfR01z+4yuKvA23tjv3n21Q6id3lSjcxJjbgtUFkZk6/YnmVJnE1iSb7r17odQDuXzdHPNXumZcAiXNNihSzmP8t8M=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM5PR1101MB2073.namprd11.prod.outlook.com (2603:10b6:4:52::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.28; Wed, 25 Nov
+ 2020 10:06:16 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::a52f:f4c:3a9d:28a5]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::a52f:f4c:3a9d:28a5%4]) with mapi id 15.20.3589.029; Wed, 25 Nov 2020
+ 10:06:10 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     Qinglang Miao <miaoqinglang@huawei.com>, Tom Rix <trix@redhat.com>,
+        "Moritz Fischer" <mdf@kernel.org>
+CC:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] fpga: dfl: add missing platform_device_put in
+ build_info_create_dev
+Thread-Topic: [PATCH] fpga: dfl: add missing platform_device_put in
+ build_info_create_dev
+Thread-Index: AQHWwvbIXBL/p8/Zj0+C9gs0iUUR8KnYnV3Q
+Date:   Wed, 25 Nov 2020 10:06:10 +0000
+Message-ID: <DM6PR11MB381903C990E8D7C76EF04E5F85FA0@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <20201125065030.154074-1-miaoqinglang@huawei.com>
+In-Reply-To: <20201125065030.154074-1-miaoqinglang@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.55.46.46]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c51cd6b3-2e19-49f3-7eef-08d89129bc27
+x-ms-traffictypediagnostic: DM5PR1101MB2073:
+x-microsoft-antispam-prvs: <DM5PR1101MB2073533A276B8A4FA2CA548D85FA0@DM5PR1101MB2073.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Ok9U9h/F3Wq0dwzMuIdAJKBaiOhU0bzSBAn3EsBUx2WaqR6Bo6uxo+zQ2+WVk9nC49NSWZnZSc+z3eoXQ+kjhxcxNnM46a5iuwe4MkFKg5GjzPPMY4HBpw5JTKBpUUsTvZTsXZ/f/olo9zLTzDrFaY+hdCBEou8uuvE/F0W8pLpKKihKHDAfLAo/o8osByHq4ZYC0WupjTfajOduEg+gZ+kKCApA6i2merC9SJLf26ck7+dcUgjxpDMFhqUXuzIRivMyvaftxBqFaK8lEbgM5V68k288zTWd131kF1OGaYQTPvL01+u8j4X/8DZyXNtHIKv+38CScfexSWkKooDotQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(376002)(39860400002)(66476007)(8676002)(66946007)(54906003)(76116006)(8936002)(64756008)(66446008)(478600001)(9686003)(26005)(7696005)(4326008)(55016002)(316002)(66556008)(186003)(52536014)(2906002)(83380400001)(5660300002)(6506007)(86362001)(33656002)(71200400001)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: drJObiVcIyrpMpUN9XG4xv+4iPfex3DltE/rQmPsXQ1GD41rTJ0gi/6tnZiQql7pcCy7NtBM9gjUta5cCIzZsptw8BLD3mWigms3eDNNyatyLqE9Wyst3oE+tXUKXuLavt+eULqbV5EmMukCzQSssVO+vbdIf+JEL1mUp05gK5+3B9Dl3kwmadiWJCIOuG7MKPPRZNIXA6anp7U/vrsWJqaH86E1lNyWrmh1/gy97Z4g9Syzlb9e6y8KKr9HtT3pN/rGueF0Zot+I4PfFdooWyKkNrV2y6xTEQ3/2pgOR7czt7sNhbseHHkXNnGWxSxLo6dt0Hi/6MWRVl6qZFK9cp7BOpfZEpvoTn37g5UOSqmszFsOvy0hyklPtCO2uJUtiuczJujX9yKpMGe4tXgz3cK1Adrr9noZ0UWc1n1xFYA+tMGtGL5pjswXQeHygf2FcjbrM6lZxOsfuCTUHcjQGHA3sk9ns3cQ7OnkIiA0FNhL+zLfO5ucgQXU8KimHYfxZokMlJYFqoS1txiFF0fGR0ZXYVTRQJvHN11czAvuwY+/9OWoQ68meKYfxonQPMXkccb/hEtg/nkIZhTE3TUhEB0wfU8S0guJ25h6T7V20h+vok5GIbv2/rzVu5HXwsLEuUxXAItylJUlGydKGTHUtyOt5FcOKPZm7mCAl3XgFzXBHEmpzgnBL5rCiNpQ6Cs3d4btg+l2WOmmWcK/7JUOsyjr9G3+ItChQCopIkdG6ho5ZP9gcMuthzaFH7Laojc9egFxzvNlpP5KmeDXql4sJcWS5SQiauZkdF6ADtVMONz8oIe/nwvQ5EY79pN2SbUFS9PNkz59U2YsBbqE2MZVjiNE8fcBjgcF3Tr1qA+s1T7o7j5yY529PNMOT2Lyov76PLOcdxmNL/UfDEPM2xIzBw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/IsZIQ40k0k86dmu.cJPSN2c";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c51cd6b3-2e19-49f3-7eef-08d89129bc27
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2020 10:06:10.8147
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qt5brIdmlpoJ8hQGjX0y9vnnsCSEaPezfBoQsMVa+Zgwd6XeMdd37boG8/0V3sk0kE2/hxJKixbgZl+kXSrQTA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2073
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/IsZIQ40k0k86dmu.cJPSN2c
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+> Subject: [PATCH] fpga: dfl: add missing platform_device_put in
+> build_info_create_dev
+>=20
+> platform_device_put is missing when it fails to set fdev->id. Set
+> a temp value to do sanity check.
 
-Hi all,
+will this case be covered already by build_info_free()?
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Hao
 
-  arch/Kconfig
+>=20
+> Fixes: 543be3d8c999 ("fpga: add device feature list support")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  drivers/fpga/dfl.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+> index b450870b7..8958f0860 100644
+> --- a/drivers/fpga/dfl.c
+> +++ b/drivers/fpga/dfl.c
+> @@ -877,10 +877,13 @@ build_info_create_dev(struct
+> build_feature_devs_info *binfo,
+>=20
+>  	INIT_LIST_HEAD(&binfo->sub_features);
+>=20
+> -	fdev->id =3D dfl_id_alloc(type, &fdev->dev);
+> -	if (fdev->id < 0)
+> -		return fdev->id;
+> +	int tmp_id =3D dfl_id_alloc(type, &fdev->dev);
+> +	if (tmp_id < 0) {
+> +		platform_device_put(fdev);
+> +		return tmp_id;
+> +	}
+>=20
+> +	fdev->id =3D tmp_id;
+>  	fdev->dev.parent =3D &binfo->cdev->region->dev;
+>  	fdev->dev.devt =3D dfl_get_devt(dfl_devs[type].devt_type, fdev->id);
+>=20
+> --
+> 2.23.0
 
-between commit:
-
-  5a3a47bf8367 ("orphans: Hoist '--orphan-handling' into Kconfig")
-
-from the kspp tree and commits:
-
-  84d8b3661cc9 ("arm, arm64: move free_unused_memmap() to generic mm")
-  46b9b00649f6 ("arch, mm: restore dependency of __kernel_map_pages() on DE=
-BUG_PAGEALLOC")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/Kconfig
-index 313b2bc0c475,9ebdab3d0ca2..000000000000
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@@ -1062,15 -1035,12 +1069,21 @@@ config HAVE_STATIC_CALL_INLIN
-  	bool
-  	depends on HAVE_STATIC_CALL
- =20
- +config ARCH_WANT_LD_ORPHAN_WARN
- +	bool
- +	help
- +	  An arch should select this symbol once all linker sections are explici=
-tly
- +	  included, size-asserted, or discarded in the linker scripts. This is
- +	  important because we never want expected sections to be placed heurist=
-ically
- +	  by the linker, since the locations of such sections can change between=
- linker
- +	  versions.
- +
-+ config HAVE_ARCH_PFN_VALID
-+ 	bool
-+=20
-+ config ARCH_SUPPORTS_DEBUG_PAGEALLOC
-+ 	bool
-+=20
-  source "kernel/gcov/Kconfig"
- =20
-  source "scripts/gcc-plugins/Kconfig"
-
---Sig_/IsZIQ40k0k86dmu.cJPSN2c
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl++LHIACgkQAVBC80lX
-0GzOjAf/YApd6y7QuCyD0ivXjmyVqGgAJUNoFg7qjtxPEmfVfFC1bTjnt5g2wlyQ
-bHHSZ48gRrooMYhHldbfJh1GNZuPtGcRYgTELmnn5KBw40wIDWCi0XHy9WoC5R17
-PdpxcyzLKHjRX39Z+K+oJV7xdn/k7m6EvJ6AyBnlQBjHI3dAxqsk+w2Vo3NWMWzo
-H/1oTBPUYlTr2jBl6Sp/UO09kWQeZlFKFGvNzE3e3pJhqvhcA+TFPZyPUmaje2YS
-SyfIDxloduDsdQGY2Hh4oz2WKe/sAoFOJ+MPOnQ7foYb1rfOJs49Chi/5o12QtF/
-93jpLRQ469u28Mjsrdwt+T4dXBiEog==
-=6aOT
------END PGP SIGNATURE-----
-
---Sig_/IsZIQ40k0k86dmu.cJPSN2c--
