@@ -2,325 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FE72C46BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF862C46C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732805AbgKYR10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:27:26 -0500
-Received: from out28-97.mail.aliyun.com ([115.124.28.97]:45942 "EHLO
-        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731336AbgKYR1T (ORCPT
+        id S1732809AbgKYR1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:27:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44958 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732699AbgKYR1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:27:19 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436293|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0180627-0.000172114-0.981765;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.J.BPrxs_1606325224;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J.BPrxs_1606325224)
-          by smtp.aliyun-inc.com(10.147.41.137);
-          Thu, 26 Nov 2020 01:27:15 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     sboyd@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com,
-        paul@crapouillou.net
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Subject: [PATCH 4/4] clk: Ingenic: Fill unused bits in parents and reformat code.
-Date:   Thu, 26 Nov 2020 01:26:18 +0800
-Message-Id: <20201125172618.112707-5-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201125172618.112707-1-zhouyanjie@wanyeetech.com>
-References: <20201125172618.112707-1-zhouyanjie@wanyeetech.com>
+        Wed, 25 Nov 2020 12:27:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606325271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=128QzWN5ZV6H8TGg9AgMhcOfUvIwMfuRP45rtKXIJzc=;
+        b=C/rfx35TPpcDoJluYx/Vum16I9SvlixEQo/v5RUfH4t/35amHcjJ33irxhhMG++GyTIrT6
+        FbQJWg32lbZHGEuLSUo6lySRkj6Kl9w3RTOE4t6KIFcSl0GKGKN4QAfyYBdFzlkZ7V+QAF
+        U62SWtyp+Doc1doejQubrj4fJoM38R0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-303-VZlW4DNdMHaUwzfL9ixwkA-1; Wed, 25 Nov 2020 12:27:24 -0500
+X-MC-Unique: VZlW4DNdMHaUwzfL9ixwkA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95D7D1087D6C;
+        Wed, 25 Nov 2020 17:27:20 +0000 (UTC)
+Received: from [10.36.112.131] (ovpn-112-131.ams2.redhat.com [10.36.112.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 18B3260BE5;
+        Wed, 25 Nov 2020 17:27:18 +0000 (UTC)
+Subject: Re: [RFC 3/3] s390/mm: Define arch_get_addressable_range()
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1606098529-7907-1-git-send-email-anshuman.khandual@arm.com>
+ <1606098529-7907-4-git-send-email-anshuman.khandual@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <fc5ebaf9-ce6a-95fd-a2fe-84bfdf73512a@redhat.com>
+Date:   Wed, 25 Nov 2020 18:27:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1606098529-7907-4-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Fill unused bits in parents in jz4780-cgu.c, x1000-cgu.c,
-  and x1830-cgu.c, these bits should be filled with -1.
-2.Reformat code, add missing blank lines, remove unnecessary
-  tabs, and align code.
+On 23.11.20 03:28, Anshuman Khandual wrote:
+> This overrides arch_get_addressable_range() on s390 platform and drops
+> now redudant similar check in vmem_add_mapping().
+> 
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/s390/include/asm/mmu.h |  2 ++
+>  arch/s390/mm/vmem.c         | 16 ++++++++++++----
+>  2 files changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/mmu.h b/arch/s390/include/asm/mmu.h
+> index e12ff0f29d1a..f92d3926b188 100644
+> --- a/arch/s390/include/asm/mmu.h
+> +++ b/arch/s390/include/asm/mmu.h
+> @@ -55,4 +55,6 @@ static inline int tprot(unsigned long addr)
+>  	return rc;
+>  }
+>  
+> +#define arch_get_addressable_range arch_get_addressable_range
+> +struct range arch_get_addressable_range(bool need_mapping);
+>  #endif
+> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
+> index b239f2ba93b0..e03ad0ed13a7 100644
+> --- a/arch/s390/mm/vmem.c
+> +++ b/arch/s390/mm/vmem.c
+> @@ -532,14 +532,22 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
+>  	mutex_unlock(&vmem_mutex);
+>  }
+>  
+> +struct range arch_get_addressable_range(bool need_mapping)
+> +{
+> +	struct range memhp_range;
+> +
+> +	memhp_range.start = 0;
+> +	if (need_mapping)
+> +		memhp_range.end =  VMEM_MAX_PHYS;
+> +	else
+> +		memhp_range.end = (1ULL << (MAX_PHYSMEM_BITS + 1)) - 1;
+> +	return memhp_range;
+> +}
+> +
+>  int vmem_add_mapping(unsigned long start, unsigned long size)
+>  {
+>  	int ret;
+>  
+> -	if (start + size > VMEM_MAX_PHYS ||
+> -	    start + size < start)
+> -		return -ERANGE;
+> -
+>  	mutex_lock(&vmem_mutex);
+>  	ret = vmem_add_range(start, size);
+>  	if (ret)
+> 
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- drivers/clk/ingenic/jz4780-cgu.c | 12 +++---
- drivers/clk/ingenic/x1000-cgu.c  | 20 +++++-----
- drivers/clk/ingenic/x1830-cgu.c  | 83 ++++++++++++++++++++--------------------
- 3 files changed, 60 insertions(+), 55 deletions(-)
+Note that vmem_add_mapping() is also called from extmem
+(arch/s390/mm/extmem.c).
 
-diff --git a/drivers/clk/ingenic/jz4780-cgu.c b/drivers/clk/ingenic/jz4780-cgu.c
-index dcca74e..1b61eaa 100644
---- a/drivers/clk/ingenic/jz4780-cgu.c
-+++ b/drivers/clk/ingenic/jz4780-cgu.c
-@@ -178,6 +178,7 @@ static int jz4780_otg_phy_set_rate(struct clk_hw *hw, unsigned long req_rate,
- 	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
- 
- 	spin_unlock_irqrestore(&cgu->lock, flags);
-+
- 	return 0;
- }
- 
-@@ -188,6 +189,7 @@ static int jz4780_otg_phy_enable(struct clk_hw *hw)
- 
- 	writel(readl(reg_opcr) | OPCR_SPENDN0, reg_opcr);
- 	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, reg_usbpcr);
-+
- 	return 0;
- }
- 
-@@ -215,9 +217,9 @@ static const struct clk_ops jz4780_otg_phy_ops = {
- 	.round_rate = jz4780_otg_phy_round_rate,
- 	.set_rate = jz4780_otg_phy_set_rate,
- 
--	.enable		= jz4780_otg_phy_enable,
--	.disable	= jz4780_otg_phy_disable,
--	.is_enabled	= jz4780_otg_phy_is_enabled,
-+	.enable = jz4780_otg_phy_enable,
-+	.disable = jz4780_otg_phy_disable,
-+	.is_enabled = jz4780_otg_phy_is_enabled,
- };
- 
- static int jz4780_core1_enable(struct clk_hw *hw)
-@@ -544,13 +546,13 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_EXCLK_DIV512] = {
- 		"exclk_div512", CGU_CLK_FIXDIV,
--		.parents = { JZ4780_CLK_EXCLK },
-+		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
- 		.fixdiv = { 512 },
- 	},
- 
- 	[JZ4780_CLK_RTC] = {
- 		"rtc_ercs", CGU_CLK_MUX | CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK_DIV512, JZ4780_CLK_RTCLK },
-+		.parents = { JZ4780_CLK_EXCLK_DIV512, JZ4780_CLK_RTCLK, -1, -1 },
- 		.mux = { CGU_REG_OPCR, 2, 1},
- 	},
- 
-diff --git a/drivers/clk/ingenic/x1000-cgu.c b/drivers/clk/ingenic/x1000-cgu.c
-index d340bcd..fe2e274 100644
---- a/drivers/clk/ingenic/x1000-cgu.c
-+++ b/drivers/clk/ingenic/x1000-cgu.c
-@@ -126,6 +126,7 @@ static int x1000_otg_phy_set_rate(struct clk_hw *hw, unsigned long req_rate,
- 	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
- 
- 	spin_unlock_irqrestore(&cgu->lock, flags);
-+
- 	return 0;
- }
- 
-@@ -136,6 +137,7 @@ static int x1000_usb_phy_enable(struct clk_hw *hw)
- 
- 	writel(readl(reg_opcr) | OPCR_SPENDN0, reg_opcr);
- 	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, reg_usbpcr);
-+
- 	return 0;
- }
- 
-@@ -163,9 +165,9 @@ static const struct clk_ops x1000_otg_phy_ops = {
- 	.round_rate = x1000_otg_phy_round_rate,
- 	.set_rate = x1000_otg_phy_set_rate,
- 
--	.enable		= x1000_usb_phy_enable,
--	.disable	= x1000_usb_phy_disable,
--	.is_enabled	= x1000_usb_phy_is_enabled,
-+	.enable = x1000_usb_phy_enable,
-+	.disable = x1000_usb_phy_disable,
-+	.is_enabled = x1000_usb_phy_is_enabled,
- };
- 
- static const s8 pll_od_encoding[8] = {
-@@ -298,7 +300,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_MAC] = {
- 		"mac", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
- 		.mux = { CGU_REG_MACCDR, 31, 1 },
- 		.div = { CGU_REG_MACCDR, 0, 1, 8, 29, 28, 27 },
- 		.gate = { CGU_REG_CLKGR, 25 },
-@@ -306,7 +308,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_LCD] = {
- 		"lcd", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
- 		.mux = { CGU_REG_LPCDR, 31, 1 },
- 		.div = { CGU_REG_LPCDR, 0, 1, 8, 28, 27, 26 },
- 		.gate = { CGU_REG_CLKGR, 23 },
-@@ -314,7 +316,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_MSCMUX] = {
- 		"msc_mux", CGU_CLK_MUX,
--		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL},
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
- 		.mux = { CGU_REG_MSC0CDR, 31, 1 },
- 	},
- 
-@@ -350,7 +352,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_SSIPLL_DIV2] = {
- 		"ssi_pll_div2", CGU_CLK_FIXDIV,
--		.parents = { X1000_CLK_SSIPLL },
-+		.parents = { X1000_CLK_SSIPLL, -1, -1, -1 },
- 		.fixdiv = { 2 },
- 	},
- 
-@@ -369,13 +371,13 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_EXCLK_DIV512] = {
- 		"exclk_div512", CGU_CLK_FIXDIV,
--		.parents = { X1000_CLK_EXCLK },
-+		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
- 		.fixdiv = { 512 },
- 	},
- 
- 	[X1000_CLK_RTC] = {
- 		"rtc_ercs", CGU_CLK_MUX | CGU_CLK_GATE,
--		.parents = { X1000_CLK_EXCLK_DIV512, X1000_CLK_RTCLK },
-+		.parents = { X1000_CLK_EXCLK_DIV512, X1000_CLK_RTCLK, -1, -1 },
- 		.mux = { CGU_REG_OPCR, 2, 1},
- 		.gate = { CGU_REG_CLKGR, 27 },
- 	},
-diff --git a/drivers/clk/ingenic/x1830-cgu.c b/drivers/clk/ingenic/x1830-cgu.c
-index e76e82c..4d6cca5 100644
---- a/drivers/clk/ingenic/x1830-cgu.c
-+++ b/drivers/clk/ingenic/x1830-cgu.c
-@@ -15,51 +15,51 @@
- #include "pm.h"
- 
- /* CGU register offsets */
--#define CGU_REG_CPCCR		0x00
--#define CGU_REG_CPPCR		0x0c
--#define CGU_REG_APLL		0x10
--#define CGU_REG_MPLL		0x14
--#define CGU_REG_CLKGR0		0x20
--#define CGU_REG_OPCR		0x24
--#define CGU_REG_CLKGR1		0x28
--#define CGU_REG_DDRCDR		0x2c
--#define CGU_REG_USBPCR		0x3c
--#define CGU_REG_USBRDT		0x40
--#define CGU_REG_USBVBFIL	0x44
--#define CGU_REG_USBPCR1		0x48
--#define CGU_REG_MACCDR		0x54
--#define CGU_REG_EPLL		0x58
--#define CGU_REG_I2SCDR		0x60
--#define CGU_REG_LPCDR		0x64
--#define CGU_REG_MSC0CDR		0x68
--#define CGU_REG_I2SCDR1		0x70
--#define CGU_REG_SSICDR		0x74
--#define CGU_REG_CIMCDR		0x7c
--#define CGU_REG_MSC1CDR		0xa4
--#define CGU_REG_CMP_INTR	0xb0
--#define CGU_REG_CMP_INTRE	0xb4
--#define CGU_REG_DRCG		0xd0
--#define CGU_REG_CPCSR		0xd4
--#define CGU_REG_VPLL		0xe0
--#define CGU_REG_MACPHYC		0xe8
-+#define CGU_REG_CPCCR			0x00
-+#define CGU_REG_CPPCR			0x0c
-+#define CGU_REG_APLL			0x10
-+#define CGU_REG_MPLL			0x14
-+#define CGU_REG_CLKGR0			0x20
-+#define CGU_REG_OPCR			0x24
-+#define CGU_REG_CLKGR1			0x28
-+#define CGU_REG_DDRCDR			0x2c
-+#define CGU_REG_USBPCR			0x3c
-+#define CGU_REG_USBRDT			0x40
-+#define CGU_REG_USBVBFIL		0x44
-+#define CGU_REG_USBPCR1			0x48
-+#define CGU_REG_MACCDR			0x54
-+#define CGU_REG_EPLL			0x58
-+#define CGU_REG_I2SCDR			0x60
-+#define CGU_REG_LPCDR			0x64
-+#define CGU_REG_MSC0CDR			0x68
-+#define CGU_REG_I2SCDR1			0x70
-+#define CGU_REG_SSICDR			0x74
-+#define CGU_REG_CIMCDR			0x7c
-+#define CGU_REG_MSC1CDR			0xa4
-+#define CGU_REG_CMP_INTR		0xb0
-+#define CGU_REG_CMP_INTRE		0xb4
-+#define CGU_REG_DRCG			0xd0
-+#define CGU_REG_CPCSR			0xd4
-+#define CGU_REG_VPLL			0xe0
-+#define CGU_REG_MACPHYC			0xe8
- 
- /* bits within the OPCR register */
--#define OPCR_GATE_USBPHYCLK	BIT(23)
--#define OPCR_SPENDN0		BIT(7)
--#define OPCR_SPENDN1		BIT(6)
-+#define OPCR_GATE_USBPHYCLK		BIT(23)
-+#define OPCR_SPENDN0			BIT(7)
-+#define OPCR_SPENDN1			BIT(6)
- 
- /* bits within the USBPCR register */
--#define USBPCR_SIDDQ		BIT(21)
--#define USBPCR_OTG_DISABLE	BIT(20)
-+#define USBPCR_SIDDQ			BIT(21)
-+#define USBPCR_OTG_DISABLE		BIT(20)
- 
- /* bits within the I2SCDR register */
--#define I2SCDR_I2PCS_SHIFT	30
--#define I2SCDR_I2PCS_MASK	(0x3 << I2SCDR_I2PCS_SHIFT)
-+#define I2SCDR_I2PCS_SHIFT		30
-+#define I2SCDR_I2PCS_MASK		(0x3 << I2SCDR_I2PCS_SHIFT)
- #define I2SCDR_I2SDIV_M_SHIFT	20
- #define I2SCDR_I2SDIV_M_MASK	(0x1ff << I2SCDR_I2SDIV_M_SHIFT)
- #define I2SCDR_I2SDIV_N_SHIFT	0
- #define I2SCDR_I2SDIV_N_MASK	(0xfffff << I2SCDR_I2SDIV_N_SHIFT)
--#define I2SCDR_CE_I2S		BIT(29)
-+#define I2SCDR_CE_I2S			BIT(29)
- 
- static struct ingenic_cgu *cgu;
- 
-@@ -70,6 +70,7 @@ static int x1830_usb_phy_enable(struct clk_hw *hw)
- 
- 	writel((readl(reg_opcr) | OPCR_SPENDN0) & ~OPCR_GATE_USBPHYCLK, reg_opcr);
- 	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, reg_usbpcr);
-+
- 	return 0;
- }
- 
-@@ -93,9 +94,9 @@ static int x1830_usb_phy_is_enabled(struct clk_hw *hw)
- }
- 
- static const struct clk_ops x1830_otg_phy_ops = {
--	.enable		= x1830_usb_phy_enable,
--	.disable	= x1830_usb_phy_disable,
--	.is_enabled	= x1830_usb_phy_is_enabled,
-+	.enable = x1830_usb_phy_enable,
-+	.disable = x1830_usb_phy_disable,
-+	.is_enabled = x1830_usb_phy_is_enabled,
- };
- 
- static u8 x1830_i2s_get_parent(struct clk_hw *hw)
-@@ -486,7 +487,7 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_SSIPLL_DIV2] = {
- 		"ssi_pll_div2", CGU_CLK_FIXDIV,
--		.parents = { X1830_CLK_SSIPLL },
-+		.parents = { X1830_CLK_SSIPLL, -1, -1, -1 },
- 		.fixdiv = { 2 },
- 	},
- 
-@@ -506,13 +507,13 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_EXCLK_DIV512] = {
- 		"exclk_div512", CGU_CLK_FIXDIV,
--		.parents = { X1830_CLK_EXCLK },
-+		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
- 		.fixdiv = { 512 },
- 	},
- 
- 	[X1830_CLK_RTC] = {
- 		"rtc_ercs", CGU_CLK_MUX | CGU_CLK_GATE,
--		.parents = { X1830_CLK_EXCLK_DIV512, X1830_CLK_RTCLK },
-+		.parents = { X1830_CLK_EXCLK_DIV512, X1830_CLK_RTCLK, -1, -1 },
- 		.mux = { CGU_REG_OPCR, 2, 1},
- 		.gate = { CGU_REG_CLKGR0, 29 },
- 	},
 -- 
-2.7.4
+Thanks,
+
+David / dhildenb
 
