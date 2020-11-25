@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FA62C3671
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CCF2C3676
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgKYB6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 20:58:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35420 "EHLO mail.kernel.org"
+        id S1726885AbgKYCCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 21:02:07 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:34772 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgKYB6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 20:58:05 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726325AbgKYCCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 21:02:06 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606269726; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=S6E44d3995g7vEC1l0zAsDxmqGgmEe2drvRJsKeYYSA=;
+ b=Yur+7ih2yQb+9zsrNORLYMTjov5XNC30glgEaucTs1UbW9RrdjFHtNMiYAiEOFUOLvnDcdax
+ g5eYv/Zv3r5XF7hFjtQKCjPhtbwb7TjDwzYuzRmgbOV/6klidZd04862ObfNhm45gNAp4E8d
+ FSioxvpRvCLiHUCgGp4WKxFTt34=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5fbdbae31dba509aaea3fe49 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 02:01:07
+ GMT
+Sender: hongwus=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6BCDFC43468; Wed, 25 Nov 2020 02:01:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A2342151B;
-        Wed, 25 Nov 2020 01:58:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606269485;
-        bh=+eY/t4plJPFK4LaRS5VCwtbTGBHfPxZg0tnUHZlt4DE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c9Dqp2i5S3xC43y1/nkS782NObVUvAP8bDkwLcPi22DUFvosVLGz+0eR2WQngOXt2
-         s/nfZXZJaklNrU0ahRQIMoFKgWfMOAMNuHf3TKNYUpFRTH5wgYrN+/L3Ev8tPQtg1I
-         8A7944Gy1g5W21Fz0HDcBW2XEyoVljTn7AyXCa6c=
-Date:   Tue, 24 Nov 2020 17:58:03 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Andrea Mayer <andrea.mayer@uniroma2.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shrijeet Mukherjee <shrijeet@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-Subject: Re: [net-next v3 0/8] seg6: add support for SRv6 End.DT4/DT6
- behavior
-Message-ID: <20201124175803.1e09e19e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <3dd23494-d6ae-1c09-acb3-c6c2b2ef93d8@gmail.com>
-References: <20201123182857.4640-1-andrea.mayer@uniroma2.it>
-        <20201124154904.0699f4c1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <3dd23494-d6ae-1c09-acb3-c6c2b2ef93d8@gmail.com>
+        (Authenticated sender: hongwus)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6A80BC433C6;
+        Wed, 25 Nov 2020 02:01:05 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 25 Nov 2020 10:01:05 +0800
+From:   hongwus@codeaurora.org
+To:     Can Guo <cang@codeaurora.org>
+Cc:     Bean Huo <huobean@gmail.com>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        cang=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
+ remove skip_ref_clk
+In-Reply-To: <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
+References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
+ <1606202906-14485-2-git-send-email-cang@codeaurora.org>
+ <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
+ <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
+Message-ID: <2bdcfeaa104a380425faa68a0479534d@codeaurora.org>
+X-Sender: hongwus@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 18:24:37 -0700 David Ahern wrote:
-> On 11/24/20 4:49 PM, Jakub Kicinski wrote:
-> > 
-> > LGTM! Please address the nit and repost without the iproute2 patch.
-> > Mixing the iproute2 patch in has confused patchwork:
-> > 
-> > https://patchwork.kernel.org/project/netdevbpf/list/?series=389667&state=*
-> > 
-> > Note how it thinks that the iproute2 patch is part of the kernel
-> > series. This build bot-y thing is pretty new. I'll add a suggestion 
-> > to our process documentation not to mix patches.  
+On 2020-11-25 08:53, Can Guo wrote:
+> On 2020-11-25 05:09, Bean Huo wrote:
+>> On Mon, 2020-11-23 at 23:28 -0800, Can Guo wrote:
+>>> +++ b/drivers/scsi/ufs/ufshcd.h
+>>> @@ -229,6 +229,8 @@ struct ufs_dev_cmd {
+>>>   * @max_freq: maximum frequency supported by the clock
+>>>   * @min_freq: min frequency that can be used for clock scaling
+>>>   * @curr_freq: indicates the current frequency that it is set to
+>>> + * @always_on_while_link_active: indicate that the clk should not be
+>>> disabled if
+>>> +                                link is still active
+>>>   * @enabled: variable to check against multiple enable/disable
+>>>   */
+>>>  struct ufs_clk_info {
+>>> @@ -238,6 +240,7 @@ struct ufs_clk_info {
+>>>         u32 max_freq;
+>>>         u32 min_freq;
+>>>         u32 curr_freq;
+>>> +       bool always_on_while_link_active;
+>> 
+>> Can,
+>> using a sentence as a parameter name looks a little bit clumsy to me.
+>> The meaning has been explained in the comments section. How about
+>> simplify it and in line with other parameters in the structure?
+>> 
 > 
-> That was me - I suggested doing that. I have done that in the past as
-> has several other people. I don't recall DaveM having a problem, so
-> maybe it is the new patchworks that is not liking it?
-
-Right, I'm not sure, it's a coin toss whether pw will get the iproute
-patch first or not (or maybe since 'i' < 'n' we're likely to get the
-iproute patch first most of the time?)
-
-But it's generally not a huge issue for applying the patch. I just like
-to see the build bot result, to make sure we're not adding W=1 C=1
-warnings.
-
-> >> I would like to thank David Ahern for his support during the development of
-> >> this patchset.  
-> > 
-> > Should I take this to mean that David has review the code off-list?
+> Do you have a better name in mind?
 > 
-> reviews and general guidance.
+> Thanks,
+> 
+> Can Guo.
+> 
+>> Thanks,
+>> Bean
+>> 
+>>>         bool enabled;
+>>>  };
+>>> 
 
-Great! (I wasn't sure if I should wait for your review tags, hence the
-poke.)
+Looks good to me. The variable name is not a problem.
+
+Reviewed-by: Hongwu Su<hongwus@codeaurora.org>
