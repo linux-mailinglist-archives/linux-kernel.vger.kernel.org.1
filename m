@@ -2,147 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10A42C49D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EE12C49D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731994AbgKYVXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:23:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730091AbgKYVXa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:23:30 -0500
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60983C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:23:30 -0800 (PST)
-Received: by mail-vk1-xa43.google.com with SMTP id r9so17148vkf.10
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:23:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h73/dF5vj6XnalyFbnJK6Lk3IaseF5CBAIr/8CD0T6Y=;
-        b=fvqjHiQg70A9wBJ0T7oWmWhf6TgIPDGs1VO9bRjXmtLErOjTu0trejaPaK20zbUlM+
-         OvD/z3HfmvbBF+gyhd3kBX/Vgnl31bBL3YOkCItuVYWYcijXcgiyojOdvL/ec0VMdoaX
-         7mb2xzGRsydJxRtQL3Q/hZIogR/AQVAueIj3f40Fvyze4KOdW+sQpl6BnHgXMpqJuiuf
-         eliSiImRVXm8nQLbYiFPU/6QZA3RNu45UdlJFRJQTMLMTtSszgdYpR1DwGzX2323i5V8
-         wDPvf6nNgc41lohPRXFAMOEjdDkEUFB/aVBFgbqwh6JD6y8Lm3fkYunIpRCj9OfM5V0n
-         7MNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h73/dF5vj6XnalyFbnJK6Lk3IaseF5CBAIr/8CD0T6Y=;
-        b=PSMDKvMNmteQj4Kqkq9ldpmPNZ2CxiLKMcdzcgPA4mD+c2LDekI2ravebxtUEpg4MJ
-         ZjnEjtvxU0QdHO8StUQw9c1vXtfIRq+9ppzFpIAAY8s2EP467D9ENA4Kh3Egsh2N4X02
-         FKgkjX+JO8v6/koZBuYX328392Iji/idtc+mD9aRWEa8tdndB9uanksxzzwbOWT9HfLE
-         gXCh3tUExmG0uFB1E6mwvuNDpB/d/nStAp/+ir0Fds+2KY/JMOV1r9VbZ11BYCBb0Gqm
-         lLvmc6ghMzmyPQUhHgtIGSOzKG5T+8jmxG+o5ndpnAjuwkeIgJdsDyNibaeo3G7rZWMV
-         5FIA==
-X-Gm-Message-State: AOAM533VzxwZIysc4MJ4l3Ax3xQ3WjYMiM8y1AzVF+8OXOxyu7CFBBnQ
-        FgkpIKVMYkAFuRkq/v789dZGYyz0hTzDtPur6fQ=
-X-Google-Smtp-Source: ABdhPJzSQ5m/nAStvigIkwpdO7RkLx+pfpB55Lc6GkFvRq9dG0ceJ9F4xVTT44vLSzMqIPfM07pYycYVrfL3Dq1TJoM=
-X-Received: by 2002:a1f:3658:: with SMTP id d85mr50774vka.10.1606339409256;
- Wed, 25 Nov 2020 13:23:29 -0800 (PST)
+        id S1732047AbgKYV0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:26:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731413AbgKYV0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 16:26:24 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 028FD206E0;
+        Wed, 25 Nov 2020 21:26:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606339583;
+        bh=xlVmgI/1tuUDmjoHsU+bOocWXs+9aWQwye1zxmYacjk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NyoD/7pacUiN/UOWdzqe1A3IRmDDGJIE48q22IVgs3ZeI+St4evp56IeLhFGJuYiR
+         eqElZ2a+vQZRRL9aUJWvy10WHK4HW8Pta1O8t+f+V1dyudQSNOHiUig0/jaWYG6UgN
+         Ys72PSONPAFk3EXitvS01IHUWm0ICZ+8Vt8833tU=
+Date:   Wed, 25 Nov 2020 13:26:21 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     =?UTF-8?B?xYF1a2Fzeg==?= Stelmach <l.stelmach@samsung.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        =?UTF-8?B?QmFydMWCb21pZWogxbtvbG5pZXJr?= =?UTF-8?B?aWV3aWN6?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v7 3/3] net: ax88796c: ASIX AX88796C SPI Ethernet
+ Adapter Driver
+Message-ID: <20201125132621.628ac98b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201124120330.32445-4-l.stelmach@samsung.com>
+References: <20201124120330.32445-1-l.stelmach@samsung.com>
+        <CGME20201124120337eucas1p268c7e3147ea36e62d40d252278c5dcb7@eucas1p2.samsung.com>
+        <20201124120330.32445-4-l.stelmach@samsung.com>
 MIME-Version: 1.0
-References: <20201125193626.2266995-1-jim.cromie@gmail.com>
- <20201125193626.2266995-8-jim.cromie@gmail.com> <d57d4f39-b9d3-99f0-6fd0-b3f072895edd@akamai.com>
-In-Reply-To: <d57d4f39-b9d3-99f0-6fd0-b3f072895edd@akamai.com>
-From:   jim.cromie@gmail.com
-Date:   Wed, 25 Nov 2020 14:23:00 -0700
-Message-ID: <CAJfuBxyE2De7gjoiv9Dnh4XK7+WjLMA+_x9h9-wOiN7NL6bWiA@mail.gmail.com>
-Subject: Re: [PATCH 7/7] dyndbg: enable 'cache' of active pr_debug callsites
-To:     Jason Baron <jbaron@akamai.com>
-Cc:     linux-mm@kvack.org, Greg KH <gregkh@linuxfoundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 1:54 PM Jason Baron <jbaron@akamai.com> wrote:
->
->
->
-> On 11/25/20 2:36 PM, Jim Cromie wrote:
-> > In ddebug_putsite(), dont zs_unmap the callsite if it is enabled for
-> > printing.  This means that the next time this pr_debug callsite is
-> > executed, the _getsite() will succeed quickly without remapping the
-> > zrec.
-> >
-> > Once the callsite is disabled via >control, a following _putsite()
-> > will see the flag cleared, and zs_unmap it.
-> >
-> > This changes the lifetime of our zs_mappings from brief (only for the
-> > single printk) to as long as uptime (if a prdebug is enabled til
-> > poweroff).  This appears to be triggering the ensuing mayhem.
-> >
-> > I am able to get through init, to root console, by disabling all
-> > dynamic-debugs, including the ones that are enabled at compile.
-> >
-> > $ kruna --kopt \*.dyndbg=-p --kopt debug_locks_proceed=1
-> >
-> > but enabling any pr-debug crashes.
-> > Plain old boot also panics, as pasted below.
-> >
->
->
-> Hi Jim,
->
-> Looks like you've made a lot of progress with this series...but if I
-> understand correctly there are still some unresolved issues (panic).
-> So I think this series is more 'RFC' at this point?
->
+On Tue, 24 Nov 2020 13:03:30 +0100 =C5=81ukasz Stelmach wrote:
+> +static int
+> +ax88796c_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+> +{
+> +	struct ax88796c_device *ax_local =3D to_ax88796c_device(ndev);
+> +
+> +	skb_queue_tail(&ax_local->tx_wait_q, skb);
+> +	if (skb_queue_len(&ax_local->tx_wait_q) > TX_QUEUE_HIGH_WATER) {
+> +		netif_err(ax_local, tx_queued, ndev,
+> +			  "Too many TX packets in queue %d\n",
+> +			  skb_queue_len(&ax_local->tx_wait_q));
 
-yes, RFC.  WIP suggests I know whats needed next.
+This will probably happen under heavy traffic. No need to print errors,
+it's normal to back pressure.
 
-certainly Ive seen a variety of sleeping while atomic ... BUGs,
+> +		netif_stop_queue(ndev);
+> +	}
+> +
+> +	set_bit(EVENT_TX, &ax_local->flags);
+> +	schedule_work(&ax_local->ax_work);
+> +
+> +	return NETDEV_TX_OK;
+> +}
+> +
+> +static void
+> +ax88796c_skb_return(struct ax88796c_device *ax_local, struct sk_buff *sk=
+b,
+> +		    struct rx_header *rxhdr)
+> +{
+> +	struct net_device *ndev =3D ax_local->ndev;
+> +	int status;
+> +
+> +	do {
+> +		if (!(ndev->features & NETIF_F_RXCSUM))
+> +			break;
+> +
+> +		/* checksum error bit is set */
+> +		if ((rxhdr->flags & RX_HDR3_L3_ERR) ||
+> +		    (rxhdr->flags & RX_HDR3_L4_ERR))
+> +			break;
+> +
+> +		/* Other types may be indicated by more than one bit. */
+> +		if ((rxhdr->flags & RX_HDR3_L4_TYPE_TCP) ||
+> +		    (rxhdr->flags & RX_HDR3_L4_TYPE_UDP))
+> +			skb->ip_summed =3D CHECKSUM_UNNECESSARY;
+> +	} while (0);
+> +
+> +	ax_local->stats.rx_packets++;
+> +	ax_local->stats.rx_bytes +=3D skb->len;
+> +	skb->dev =3D ndev;
+> +
+> +	skb->truesize =3D skb->len + sizeof(struct sk_buff);
+> +	skb->protocol =3D eth_type_trans(skb, ax_local->ndev);
+> +
+> +	netif_info(ax_local, rx_status, ndev, "< rx, len %zu, type 0x%x\n",
+> +		   skb->len + sizeof(struct ethhdr), skb->protocol);
+> +
+> +	status =3D netif_rx(skb);
 
+If I'm reading things right this is in process context, so netif_rx_ni()
 
+> +	if (status !=3D NET_RX_SUCCESS)
+> +		netif_info(ax_local, rx_err, ndev,
+> +			   "netif_rx status %d\n", status);
 
-> I was also expecting to see updates to the actual printing functions
-> to now use dp->site. But perhaps I missed those bits?
-
-those bits were changed in patch 5
-basically changes are ~ s/dp/dc/g, and in ddebug_getsite / _putsite
-
->
-> Thanks,
->
-> -Jason
->
-> > $ kruna --kopt debug_locks_proceed=1
-> >
-
-
-
-
- [    1.915768]  ? rest_init+0x24d/0x24d
-> > [    1.916417]  kernel_init+0xaf/0x103
-> > [    1.917038]  ret_from_fork+0x22/0x30
-> > [    1.917726] Kernel Offset: disabled
-> > [    1.918324] ---[ end Kernel panic - not syncing: Requested init /bin/sh failed (error -14). ]---
-> > QEMU 5.1.0 monitor - type 'help' for more information
-> >
-> > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> > ---
-> >  lib/dynamic_debug.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> > index 534d73e45844..0c69aa52395d 100644
-> > --- a/lib/dynamic_debug.c
-> > +++ b/lib/dynamic_debug.c
-> > @@ -165,7 +165,9 @@ static void ddebug_putsite(struct _ddebug *dp)
-> >               /* need to keep site until zmap backing exists */
-> >               return;
-> >
-> > -     /* always unmap for now. if !pr-debug has locking issues */
-> > +     if (dp->flags & _DPRINTK_FLAGS_PRINT)
-> > +             return; /* keep maps of enabled pr_debugs */
-> > +
-> >       zs_unmap_object(dd_callsite_zpool, dp->zhandle);
-> >       dp->site = NULL;
-> >  }
-> >
+Again, it's inadvisable to put per packet prints without any rate
+limiting in the data path.
