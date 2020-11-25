@@ -2,90 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA442C467A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1872C467E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732664AbgKYRHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:07:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730653AbgKYRHk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:07:40 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14065C0613D4;
-        Wed, 25 Nov 2020 09:07:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=OMSN3bVHjMv7vKaV6DqN9uaT7htqeGYHppfGfEgyak4=; b=izvc4kvl+GJKxr/C9b6YCgPhV
-        pxPKNfUO8V15Qjyg/0liNvzNU5/Bcjvxyi1WjyNakY8aUvr2jv6xQU3YCCfAQq2GeEQ6W2rY65k7C
-        MNavth1EFSDaom2OjMlrEE069IKqKCbK/FzJ3odo5VKuSvNBLtP+vYpK595RET6YnB1KR7PKb/95N
-        MAEvqYolGIn3JXYEt8JSkGdAoE+dWLapiyzZrr4US9xr3Lp3XH0in5oIYb9WvKDhtoxzpAFYHdWFa
-        O802Mun5Lo+3R20ZX5ek/l0z9B90ZKLERMvsl5v+7oVVDQ5UltSUBnmJ2bkp8zZypV9RsOErIIjus
-        6QzTKg5Jw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35984)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1khyGN-0000rp-9v; Wed, 25 Nov 2020 17:07:27 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1khyGA-00004x-D7; Wed, 25 Nov 2020 17:07:14 +0000
-Date:   Wed, 25 Nov 2020 17:07:14 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Yonglong Liu <liuyonglong@huawei.com>
-Cc:     Antonio Borneo <antonio.borneo@st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Willy Liu <willy.liu@realtek.com>,
-        linux-kernel@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        linuxarm@huawei.com, linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v3 net-next] net: phy: realtek: read actual speed on
- rtl8211f to detect downshift
-Message-ID: <20201125170714.GK1551@shell.armlinux.org.uk>
-References: <20201124143848.874894-1-antonio.borneo@st.com>
- <20201124230756.887925-1-antonio.borneo@st.com>
- <d62710c3-7813-7506-f209-fcfa65931778@huawei.com>
- <f24476cc-39f0-ea5f-d6af-faad481e3235@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f24476cc-39f0-ea5f-d6af-faad481e3235@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+        id S1731661AbgKYRKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:10:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730960AbgKYRKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 12:10:02 -0500
+Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17A8E2063A;
+        Wed, 25 Nov 2020 17:10:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606324202;
+        bh=t4hyEv72MSpH4VzJG715WX9vUsQfaAHFeZRQ0uZD95Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jcq5tIUCaN6sMl97IvBdrsQ4DL8m4CXU6srAjERQVZpksTiaI6vbYshDYyLgxoe3C
+         IPMaMefpitXYy1lLSoZ7+8nkLhvdVWURBshPuiYEcvZ/ZU3oIw/EcIdSftRuuaz1/k
+         y794G8LHW9GZZZXsyDPQzqYNQ96kBPg6uAOy1lHQ=
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     SW_Drivers@habana.ai
+Subject: [PATCH] habanalabs: add missing counter update
+Date:   Wed, 25 Nov 2020 19:09:54 +0200
+Message-Id: <20201125170957.30494-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 12:57:37AM +0800, Yonglong Liu wrote:
-> Hi, Antonio:
-> 
->     Could you help to provide a downshift warning message when this happen?
-> 
->     It's a little strange that the adv and the lpa support 1000M, but
-> finally the link speed is 100M.
+The global CS drop-on-reset counter wasn't updated together with
+the context counter.
 
-That is an identifying feature of downshift.
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/hw_queue.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Downshift can happen at either end of the link, and since we must not
-change the "Advertised link modes" since this is what userspace
-configured, if a downshift occurs at the local end, then you will get
-the ethtool output you provide, where the speed does not agree with
-the reported advertisements.
-
-You should already be getting a warning in the kernel log when this
-happens; phy_check_downshift() which is part of the phylib core code
-will check this every time the link comes up. You should already
-have a message "Downshift occurred ..." in your kernel log. Please
-check.
-
+diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
+index d1d30fb36410..7caf868d1585 100644
+--- a/drivers/misc/habanalabs/common/hw_queue.c
++++ b/drivers/misc/habanalabs/common/hw_queue.c
+@@ -529,6 +529,7 @@ int hl_hw_queue_schedule_cs(struct hl_cs *cs)
+ 	hdev->asic_funcs->hw_queues_lock(hdev);
+ 
+ 	if (!hl_device_operational(hdev, &status)) {
++		atomic64_inc(&cntr->device_in_reset_drop_cnt);
+ 		atomic64_inc(&ctx->cs_counters.device_in_reset_drop_cnt);
+ 		dev_err(hdev->dev,
+ 			"device is %s, CS rejected!\n", hdev->status[status]);
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.17.1
+
