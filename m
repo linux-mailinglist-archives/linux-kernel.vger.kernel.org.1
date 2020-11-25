@@ -2,158 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C37A2C38AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 06:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B582C38BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 06:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727242AbgKYF32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 00:29:28 -0500
-Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:4792 "EHLO
-        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725835AbgKYF31 (ORCPT
+        id S1727352AbgKYFex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 00:34:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55215 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725838AbgKYFew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 00:29:27 -0500
-Received: from pps.filterd (m0167091.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AP5KB61031058;
-        Wed, 25 Nov 2020 00:29:14 -0500
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2042.outbound.protection.outlook.com [104.47.66.42])
-        by mx0b-00128a01.pphosted.com with ESMTP id 34y0fha404-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Nov 2020 00:29:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YwYQJ8rCRQbeXe5WG180WpIRHgN5C0x7j3vIW5gIaJs6G57fBlUN6cSRNCI90XO2em9LLvXvqK4o0YwHnMq/R/jc8YV950t44LKKELtTmTwqn1mRIHtvUlPsSCTqqxQOnbJYE79Wz3dKtCqL6H47Vlj9KnQ07FzsRB8YESRqL30ZWo+XlxlOE/NbqMvUyOglnHuK1x7bBt/t6w4vR783Jd+LgsAEIQeQtWPxwO0hD7uKEhJwy5cbg4NAaPxjsXrIT/4fOp9IUy2fDIbJMXGIPdRW1XHIswahwvCisCdX2KcgGMgp6yZO68GItaou0MSvYNlvZpzB6LdzhmPKTIxrsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vx6qlA20VddG0nuEtI6xDDuYNyb7Rq+rjFTnvXxplnQ=;
- b=P9erDktQGmlONSdKL9bd/s9u3aDyegN9poVF3k45IdEH8z4HIow8w4vbS2FD7Qr9AesEh1bJ3McxmA1EteT28MgZ1lorOWWsXzcf88zcNWLekUOW3ySI1JXnax9EVC8QpOsjcO/kzwXnB8A9KOjkfGPFMtihn4SQaAUF6BltB07Ticn8JAXhZKvmDhj4IYcNqyDJcXidWM1IRZNqDgZCbbvPwxAF5K94PSecFapX5o2PBc1rWC40SlEz25nYVg/zJO+xML47s3fKz8/aC+8uWhgs3CxiUhniJqSlPOb9bC1EgoT7UoQYJwJ8lOTmfcX0Lep6owLbWocyt96Dn90OpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vx6qlA20VddG0nuEtI6xDDuYNyb7Rq+rjFTnvXxplnQ=;
- b=rEtbOBguwJil9rwvRnFg5Dr9bR34liXYKDIhPywP88ef4fVN+ORGreJF6A3GinCJuUhsCE6kr7Ys3iSToN1Mfly75wU1ErvpGkbZhDNMbPncxbIicFgJ3/wsuVi8HUHn68RdepElNkRetlQf7B90iAEtXQ58sjUSyTU2zmtArM0=
-Received: from BYAPR03MB4407.namprd03.prod.outlook.com (2603:10b6:a03:c5::24)
- by BYAPR03MB4342.namprd03.prod.outlook.com (2603:10b6:a03:cb::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.25; Wed, 25 Nov
- 2020 05:29:11 +0000
-Received: from BYAPR03MB4407.namprd03.prod.outlook.com
- ([fe80::50d3:f695:143d:f7e]) by BYAPR03MB4407.namprd03.prod.outlook.com
- ([fe80::50d3:f695:143d:f7e%3]) with mapi id 15.20.3589.030; Wed, 25 Nov 2020
- 05:29:11 +0000
-From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
-To:     Lars-Peter Clausen <lars@metafoo.de>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>
-Subject: RE: [PATCH v2 3/3] Input: adp5589-keys - add basic devicetree support
-Thread-Topic: [PATCH v2 3/3] Input: adp5589-keys - add basic devicetree
- support
-Thread-Index: AQHWwjxG8JNO1CUuEUqS0Ip5j5vMIKnW9y6AgAFcC6A=
-Date:   Wed, 25 Nov 2020 05:29:10 +0000
-Message-ID: <BYAPR03MB4407F1A7F8558054DA37255BF9FA0@BYAPR03MB4407.namprd03.prod.outlook.com>
-References: <20201124082255.13427-1-alexandru.ardelean@analog.com>
- <20201124082255.13427-3-alexandru.ardelean@analog.com>
- <d8265d12-0269-a7ed-1f02-ee5679ee1db2@metafoo.de>
-In-Reply-To: <d8265d12-0269-a7ed-1f02-ee5679ee1db2@metafoo.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
- =?utf-8?B?bk5jWVdGeVpHVnNaV0ZjWVhCd1pHRjBZVnh5YjJGdGFXNW5YREE1WkRnME9X?=
- =?utf-8?B?STJMVE15WkRNdE5HRTBNQzA0TldWbExUWmlPRFJpWVRJNVpUTTFZbHh0YzJk?=
- =?utf-8?B?elhHMXpaeTB5TXpNeVlqZ3hNeTB5WldSbUxURXhaV0l0WVRWalpTMDBNVFUy?=
- =?utf-8?B?TkRVd01EQXdNekJjWVcxbExYUmxjM1JjTWpNek1tSTRNVFV0TW1Wa1ppMHhN?=
- =?utf-8?B?V1ZpTFdFMVkyVXROREUxTmpRMU1EQXdNRE13WW05a2VTNTBlSFFpSUhONlBT?=
- =?utf-8?B?SXhNamMzSWlCMFBTSXhNekkxTURjMU5UYzBOemd4T1RrMU1UY2lJR2c5SW1o?=
- =?utf-8?B?cU5YSkRiakY1T0dwVVJtTmpRV1pQUlZoRVZWSkRLMm94WnowaUlHbGtQU0lp?=
- =?utf-8?B?SUdKc1BTSXdJaUJpYnowaU1TSWdZMms5SW1OQlFVRkJSVkpJVlRGU1UxSlZS?=
- =?utf-8?B?azVEWjFWQlFVVnZRMEZCUkdRNFNYSnNOamhNVjBGVFRUbDFUMEpzWW5GM1VF?=
- =?utf-8?B?bDZNalEwUjFaMWNrRTRSRUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRklRVUZCUVVSaFFWRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGRlFVRlJRVUpCUVVGQlozTldNRFJSUVVGQlFVRkJRVUZCUVVGQlFVRkJT?=
- =?utf-8?B?alJCUVVGQ2FFRkhVVUZoVVVKbVFVaE5RVnBSUW1wQlNGVkJZMmRDYkVGR09F?=
- =?utf-8?B?RmpRVUo1UVVjNFFXRm5RbXhCUjAxQlpFRkNla0ZHT0VGYVowSm9RVWQzUVdO?=
- =?utf-8?B?M1FteEJSamhCV21kQ2RrRklUVUZoVVVJd1FVZHJRV1JuUW14QlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVWQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlowRkJRVUZCUVc1blFVRkJSMFZCV2tGQ2NFRkdPRUZqZDBKc1FVZE5RV1JS?=
- =?utf-8?B?UW5sQlIxVkJXSGRDZDBGSVNVRmlkMEp4UVVkVlFWbDNRakJCU0UxQldIZENN?=
- =?utf-8?B?RUZIYTBGYVVVSjVRVVJGUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRlJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRMEZCUVVGQlFVTmxRVUZCUVZsUlFtdEJSMnRCV0hkQ2Vr?=
- =?utf-8?B?RkhWVUZaZDBJeFFVaEpRVnBSUW1aQlNFRkJZMmRDZGtGSGIwRmFVVUpxUVVo?=
- =?utf-8?B?UlFXTjNRbVpCU0ZGQllWRkNiRUZJU1VGTlowRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZDUVVGQlFVRkJRVUZCUVVsQlFVRkJRVUZCUFQwaUx6NDhMMjFs?=
- =?utf-8?Q?dGE+?=
-x-dg-rorf: true
-authentication-results: metafoo.de; dkim=none (message not signed)
- header.d=none;metafoo.de; dmarc=none action=none header.from=analog.com;
-x-originating-ip: [188.27.128.26]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c8bdd22b-1e30-4f2e-62db-08d891030a04
-x-ms-traffictypediagnostic: BYAPR03MB4342:
-x-microsoft-antispam-prvs: <BYAPR03MB434286C97DE4CAE0D227AB16F9FA0@BYAPR03MB4342.namprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2657;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: adSFun8b6LlL9rj3yVVvFF7QP1KyLiiv+//qjr7TGv0pRDQQNgt1mb3KxMX7gNiCDkZ6MunFsg2S3HMPU3ef42RGWLcNt2dlwPBbn/NdbxjMij8ygMmArCWEED2j57A2wQUOohx/odmt1VkY/O+ytwW9BOC3j3eGg2qLiqOCaixf54u0tIQwoBhB/s5IxF+A3YqfvDaZmyXLr8hBgCwODPC2Oze/TSSdmJA+lP1c3QPDt1CSt2GiZnS/dB8dRtIqn+IQlxwRgciPY7+MeZrKk0dbqp9uQRy6WiVDcRpza5bFcaZNT16jLRk6xL9RHQHRd+rxBvTDaIDNAYMP/YFA4g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB4407.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(39860400002)(396003)(136003)(4326008)(83380400001)(66446008)(2906002)(55016002)(478600001)(76116006)(66946007)(7696005)(8676002)(64756008)(66476007)(186003)(86362001)(5660300002)(71200400001)(26005)(66556008)(8936002)(9686003)(110136005)(33656002)(316002)(52536014)(6506007)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: /OvtRd23hWTyU1hRki00VbIBKxrYAApqN/7fo2mbeE9PYBbTgybflqa+tf8+TAZqliBaFePNCFaS9LRv8q/qdVMsFvrkwqwwX4LQy1h3fQspyeGbhM11LYO0UCnM4hotZ63pXwVXF3OrO7+RQbwHRy4F16fKbkwQV/2zEdj4Kf6aIk+5QeOgd9Wh7791SMIbBqFqtwhlZZ0BN1xMesidRvJe/zsnluxmniCj7Xfw+a7oyGea6sAJp5EfoKlwJPPS/V7Ph19WDKkmLX3veZfxncFJyc3AAtfPGdWhgII/SF2a8BHznAPgMJZ/nAzlpHs9hi3AWRhc4crFbZj1ATD2B70zrKJa9qGCaUt7aOvvDyty3N2P8RLrvQrjDZdRxAmy+zhbdvYFRPAiNu6zG/ipKXYpjyyOGhWtdLWKtHuoVou5VOwld+eBcjoHgdKIowbBYDjt9RPLF9uY/jkvD71mbNGv3zRsaYYzU0UBzC+IreJBGRzA5SJI2McAKFR+IzCWgMl3yLdBEaBdu0crv814eBDHUMyhVrsbLPy9YkVw7oXruGUEExCwCKKfhb8SvQQ7Htxc3k69WOgWBra+9C5myy/hWoJWkF/E7GaYBsYhmO+ObOCAL8ouJTWysmit8FedwiPKeAzeu7zwiTaetTv4ZKfw2vnUFAl0kZCO/oqw1ABbUC01K0VjRjeLxDSS8hnR90bPZdKRytGW4NWhBoJ5ugI4cmQ/SW0qYZjnZXe/N/rQ7NAZ2FUjPNgf0PA5S6eENTE+embKx9IJu4gC/opN7+XlyL9lYc+xmszv8o8GsTlcivnhdmMO3/MKmqVFMaSTtbpUjEfqj0s/Kl3g9ecEDq+tOtOOQ/5O7KImTyUihey+bXHMU4RpD2cHNSwdlnJgEpPaHxjYQCWn64JJZDlO9A==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 25 Nov 2020 00:34:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606282490;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GNqLq5IgMWxaEWp8OZVqcpNyoWNMeYbZubfDbWjaeAE=;
+        b=SGaaVSxhn6FQ2qiURYr/Q6tE9y+SI/qV1TmDo+SyQE/quBDnSpoKWWHyXgtYrYweVHaFW2
+        JXrWfovRNifjO1mdyA9FeASY8oV1WODNUd3sGG+8VzIjp1rSRKm7ab+W+xNZCGY2z/sAk9
+        lBTbxIJVN0+8UkAlqoa/2bVC3GumiyQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-PcmZFbNHPPi7CxE0Pj9NPQ-1; Wed, 25 Nov 2020 00:34:48 -0500
+X-MC-Unique: PcmZFbNHPPi7CxE0Pj9NPQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63D4E180E46E;
+        Wed, 25 Nov 2020 05:34:46 +0000 (UTC)
+Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EEDC060BE5;
+        Wed, 25 Nov 2020 05:34:41 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 00:34:41 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <X73s8fxDKPRD6wET@redhat.com>
+References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
+ <20201121194506.13464-1-aarcange@redhat.com>
+ <20201121194506.13464-2-aarcange@redhat.com>
+ <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB4407.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8bdd22b-1e30-4f2e-62db-08d891030a04
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2020 05:29:11.0844
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hkV12TkFfY2zN2sBPUikCDlvJp9+VEYH1miN032lz9655ljdx/aVnC0DXFrRmkJ3quvhEKjc9igdEVrlqCxmqvgI7U/m6kS1s04LnYoegB8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4342
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-25_02:2020-11-25,2020-11-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 impostorscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 clxscore=1011 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011250032
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
+User-Agent: Mutt/2.0.2 (2020-11-20)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGFycy1QZXRlciBDbGF1
-c2VuIDxsYXJzQG1ldGFmb28uZGU+DQo+IFNlbnQ6IFR1ZXNkYXksIE5vdmVtYmVyIDI0LCAyMDIw
-IDEwOjQzIEFNDQo+IFRvOiBBcmRlbGVhbiwgQWxleGFuZHJ1IDxhbGV4YW5kcnUuQXJkZWxlYW5A
-YW5hbG9nLmNvbT47IGxpbnV4LQ0KPiBpbnB1dEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5l
-bEB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRtaXRyeS50b3Jva2hvdkBnbWFpbC5jb20NCj4gU3Vi
-amVjdDogUmU6IFtQQVRDSCB2MiAzLzNdIElucHV0OiBhZHA1NTg5LWtleXMgLSBhZGQgYmFzaWMg
-ZGV2aWNldHJlZSBzdXBwb3J0DQo+IA0KPiBbRXh0ZXJuYWxdDQo+IA0KPiBPbiAxMS8yNC8yMCA5
-OjIyIEFNLCBBbGV4YW5kcnUgQXJkZWxlYW4gd3JvdGU6DQo+ID4gICAJZXJyb3IgPSBkZXZtX2Fk
-ZF9hY3Rpb25fb3JfcmVzZXQoJmNsaWVudC0+ZGV2LA0KPiA+IGFkcDU1ODlfY2xlYXJfY29uZmln
-LCBAQCAtMTA3OCw2ICsxMDk4LDEzIEBAIHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQNCj4gPiBh
-ZHA1NTg5X3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4NCj4gPiAgIHN0YXRpYyBTSU1Q
-TEVfREVWX1BNX09QUyhhZHA1NTg5X2Rldl9wbV9vcHMsIGFkcDU1ODlfc3VzcGVuZCwNCj4gPiBh
-ZHA1NTg5X3Jlc3VtZSk7DQo+ID4NCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2Vf
-aWQgYWRwNTU4OV9vZl9tYXRjaFtdID0gew0KPiA+ICsJeyAuY29tcGF0aWJsZSA9ICJhZGksYWRw
-NTU4NSIsIC5kYXRhID0NCj4gJmFkcDU1ODlfY2hpcF9pbmZvX3RibFtBRFA1NTg1XzAxXSB9LA0K
-PiA+ICsJeyAuY29tcGF0aWJsZSA9ICJhZGksYWRwNTU4NS0wMiIsIC5kYXRhID0NCj4gJmFkcDU1
-ODlfY2hpcF9pbmZvX3RibFtBRFA1NTg1XzAyXSB9LA0KPiA+ICsJeyAuY29tcGF0aWJsZSA9ICJh
-ZGksYWRwNTU4OSIsIC5kYXRhID0NCj4gPiArJmFkcDU1ODlfY2hpcF9pbmZvX3RibFtBRFA1NTg5
-XSB9LA0KPiANCj4gSSB0aGluayB3ZSBuZWVkIHRvIGFkZCB0aGVzZSB0bw0KPiBEb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdHJpdmlhbC1kZXZpY2VzLnlhbWwNCj4gDQoNCkFjaw0K
-V2lsbCBzZW5kIGEgVjMgaW4gdGhlIG5leHQgZmV3IGRheXMuDQo=
+Hello,
+
+On Mon, Nov 23, 2020 at 02:01:16PM +0100, Vlastimil Babka wrote:
+> On 11/21/20 8:45 PM, Andrea Arcangeli wrote:
+> > A corollary issue was fixed in
+> > 39639000-39814fff : Unknown E820 type
+> > 
+> > pfn 0x7a200 -> 0x7a200000 min_pfn hit non-RAM:
+> > 
+> > 7a17b000-7a216fff : Unknown E820 type
+> 
+> It would be nice to also provide a /proc/zoneinfo and how exactly the 
+> "zone_spans_pfn" was violated. I assume we end up below zone's 
+> start_pfn, but is it true?
+
+Agreed, I was about to grab that info along with all page struct
+around the pfn 0x7a200 and phys address 0x7a216fff.
+
+# grep -A1 E820 /proc/iomem
+7a17b000-7a216fff : Unknown E820 type
+7a217000-7bffffff : System RAM
+
+DMA      zone_start_pfn 1            zone_end_pfn() 4096         contiguous 1     
+DMA32    zone_start_pfn 4096         zone_end_pfn() 1048576      contiguous 0     
+Normal   zone_start_pfn 1048576      zone_end_pfn() 4715392      contiguous 1     
+Movable  zone_start_pfn 0            zone_end_pfn() 0            contiguous 0     
+
+500222 0x7a1fe000 0x1fff000000001000 reserved True
+500223 0x7a1ff000 0x1fff000000001000 reserved True
+
+# I suspect "highest pfn" was somewhere in the RAM range
+# 0x7a217000-0x7a400000 and the pageblock_start_pfn(pfn)
+# made highest point to pfn 0x7a200 physaddr 0x7a200000
+# below, which is reserved indeed since it's non-RAM
+# first number is pfn hex(500224) == 0x7a200
+
+pfn    physaddr   page->flags
+500224 0x7a200000 0x1fff000000001000 reserved True
+500225 0x7a201000 0x1fff000000001000 reserved True
+*snip*
+500245 0x7a215000 0x1fff000000001000 reserved True
+500246 0x7a216000 0x1fff000000001000 reserved True
+500247 0x7a217000 0x3fff000000000000 reserved False
+500248 0x7a218000 0x3fff000000000000 reserved False
+
+All RAM pages non-reserved are starting at 0x7a217000 as expected.
+
+The non-RAM page_zonenum(pfn_to_page(0x7a200)) points to ZONE_DMA and 
+page_zone(page) below was the DMA zone despite the pfn of 0x7a200 is
+in DMA32.
+
+	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+
+So the patch I sent earlier should prevent the above BUG_ON by not
+setting highest to 0x7a200 when pfn is in the phys RAM range
+0x7a217000-0x7a400000, because pageblock_pfn_to_page will notice that
+the zone is the wrong one.
+
+	if (page_zone(start_page) != zone)
+		return NULL;
+
+However the real bug seems that reserved pages have a zero zone_id in
+the page->flags when it should have the real zone id/nid. The patch I
+sent earlier to validate highest would only be needed to deal with
+pfn_valid.
+
+Something must have changed more recently than v5.1 that caused the
+zoneid of reserved pages to be wrong, a possible candidate for the
+real would be this change below:
+
++               __init_single_page(pfn_to_page(pfn), pfn, 0, 0);
+
+Even if it may not be it, at the light of how the reserved page
+zoneid/nid initialized went wrong, the above line like it's too flakey
+to stay.
+
+It'd be preferable if the pfn_valid fails and the
+pfn_to_section_nr(pfn) returns an invalid section for the intermediate
+step. Even better memset 0xff over the whole page struct until the
+second stage comes around.
+
+Whenever pfn_valid is true, it's better that the zoneid/nid is correct
+all times, otherwise if the second stage fails we end up in a bug with
+weird side effects.
+
+Maybe it's not the above that left a zero zoneid though, I haven't
+tried to bisect it yet to look how the page->flags looked like on a
+older kernel that didn't seem to reproduce this crash, I'm just
+guessing.
+
+Thanks,
+Andrea
+
