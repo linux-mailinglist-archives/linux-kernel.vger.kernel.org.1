@@ -2,109 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71D82C367A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C0A2C367B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgKYCDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 21:03:12 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:34772 "EHLO z5.mailgun.us"
+        id S1726988AbgKYCDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 21:03:25 -0500
+Received: from mga14.intel.com ([192.55.52.115]:33141 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgKYCDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 21:03:12 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606269791; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=DT2VV0QdqZenIkzRRGGu7GK5OFXsOFdMYtbDob6PZ60=;
- b=e7lDpzYxShsTeTgR+NUd7wfHCNtC4cyeHdKp4rE3cvHbIV4+yROPcdu76gwuYWK1KvBk6H8R
- oRHgrKFO92I6V77lyhb2xPvu7j26co5ERTUPMmCTBKmtGYW9UttMVaHijFTGa6U5+EBOFuqa
- +L2/2+J8hXdmg9zgwgikk7eshD4=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5fbdbb3deb04c00160615dd7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 02:02:37
- GMT
-Sender: hongwus=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BBC87C43460; Wed, 25 Nov 2020 02:02:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: hongwus)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 042DFC433C6;
-        Wed, 25 Nov 2020 02:02:36 +0000 (UTC)
+        id S1726155AbgKYCDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 21:03:24 -0500
+IronPort-SDR: u6czvQjYJaoUHuipwkO3/Aa0Iaiom0n8SpTxwc0Qu1EysZ+oeAFLN3C3kQRtvgfQRm52NZ+dql
+ 7XvNqQX+s+wQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="171269848"
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="171269848"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 18:03:23 -0800
+IronPort-SDR: BoRpXCo1nHwaP5uwsbDAPnzS8guo28F9CNIL9QyInZiLgCDGlqm603/41A8RNEjITQRO9Rtq5X
+ 5ODikvBqNfHg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="370660461"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by FMSMGA003.fm.intel.com with ESMTP; 24 Nov 2020 18:03:19 -0800
+Subject: Re: [RFC PATCH v5] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
+References: <20201118043113.53128-1-aubrey.li@linux.intel.com>
+ <CAKfTPtBZU-QKqzsTL9Y0+wuUdGayyfuC8hKu2wcHZAAAmNJyfw@mail.gmail.com>
+ <262397dc-b783-2040-6214-b8de5abf5617@linux.intel.com>
+ <20201124170136.GA26613@vingu-book>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <67a14568-4fa5-d9b4-d2fc-72a22c226189@linux.intel.com>
+Date:   Wed, 25 Nov 2020 10:03:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 25 Nov 2020 10:02:36 +0800
-From:   hongwus@codeaurora.org
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        ziqichen@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] scsi: ufs-qcom: Keep core_clk_unipro ON while link
- is active
-In-Reply-To: <1606202906-14485-3-git-send-email-cang@codeaurora.org>
-References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
- <1606202906-14485-3-git-send-email-cang@codeaurora.org>
-Message-ID: <cb6f75c6cbced8a0cc33587141bb6ea7@codeaurora.org>
-X-Sender: hongwus@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20201124170136.GA26613@vingu-book>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-24 15:28, Can Guo wrote:
-> If we want to disable clocks to save power but still keep the link 
-> active,
-> core_clk_unipro, as same as ref_clk, should not be the one being 
-> disabled.
+On 2020/11/25 1:01, Vincent Guittot wrote:
+> Hi Aubrey,
 > 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufs-qcom.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> Le mardi 24 nov. 2020 à 15:01:38 (+0800), Li, Aubrey a écrit :
+>> Hi Vincent,
+>>
+>> On 2020/11/23 17:27, Vincent Guittot wrote:
+>>> Hi Aubrey,
+>>>
+>>> On Thu, 19 Nov 2020 at 13:15, Aubrey Li <aubrey.li@linux.intel.com> wrote:
+>>>>
+>>>> Add idle cpumask to track idle cpus in sched domain. When a CPU
+>>>> enters idle, if the idle driver indicates to stop tick, this CPU
+>>>> is set in the idle cpumask to be a wakeup target. And if the CPU
+>>>> is not in idle, the CPU is cleared in idle cpumask during scheduler
+>>>> tick to ratelimit idle cpumask update.
+>>>>
+>>>> When a task wakes up to select an idle cpu, scanning idle cpumask
+>>>> has low cost than scanning all the cpus in last level cache domain,
+>>>> especially when the system is heavily loaded.
+>>>>
+>>>> Benchmarks were tested on a x86 4 socket system with 24 cores per
+>>>> socket and 2 hyperthreads per core, total 192 CPUs. Hackbench and
+>>>> schbench have no notable change, uperf has:
+>>>>
+>>>> uperf throughput: netperf workload, tcp_nodelay, r/w size = 90
+>>>>
+>>>>   threads       baseline-avg    %std    patch-avg       %std
+>>>>   96            1               0.83    1.23            3.27
+>>>>   144           1               1.03    1.67            2.67
+>>>>   192           1               0.69    1.81            3.59
+>>>>   240           1               2.84    1.51            2.67
+>>>>
+>>>> v4->v5:
+>>>> - add update_idle_cpumask for s2idle case
+>>>> - keep the same ordering of tick_nohz_idle_stop_tick() and update_
+>>>>   idle_cpumask() everywhere
+>>>>
+>>>> v3->v4:
+>>>> - change setting idle cpumask from every idle entry to tickless idle
+>>>>   if cpu driver is available.
+>>>
+>>> Could you remind me why you did this change ? Clearing the cpumask is
+>>> done during the tick to rate limit the number of updates of the
+>>> cpumask but It's not clear for me why you have associated the set with
+>>> the tick stop condition too.
+>>
+>> I found the current implementation has better performance at a more 
+>> suitable load range.
+>>
+>> The two kinds of implementions(v4 and v5) have the same rate(scheduler
+>> tick) to shrink idle cpumask when the system is busy, but
 > 
-> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-> index f9d6ef3..70df357 100644
-> --- a/drivers/scsi/ufs/ufs-qcom.c
-> +++ b/drivers/scsi/ufs/ufs-qcom.c
-> @@ -977,6 +977,7 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->  	struct platform_device *pdev = to_platform_device(dev);
->  	struct ufs_qcom_host *host;
->  	struct resource *res;
-> +	struct ufs_clk_info *clki;
+> I'm ok with the part above
 > 
->  	if (strlen(android_boot_dev) && strcmp(android_boot_dev, 
-> dev_name(dev)))
->  		return -ENODEV;
-> @@ -1075,6 +1076,11 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->  		}
->  	}
+>>
+>> - Setting the idle mask everytime the cpu enters idle requires a much
+>> heavier load level to preserve the idle cpumask(not call into idle),
+>> otherwise the bits cleared in scheduler tick will be restored when the
+>> cpu enters idle. That is, idle cpumask is almost equal to the domain
+>> cpumask during task wakeup if the system load is not heavy enough.
 > 
-> +	list_for_each_entry(clki, &hba->clk_list_head, list) {
-> +		if (!strcmp(clki->name, "core_clk_unipro"))
-> +			clki->always_on_while_link_active = true;
-> +	}
-> +
->  	err = ufs_qcom_init_lane_clks(host);
->  	if (err)
->  		goto out_variant_clear;
+> But setting the idle cpumask is useful because it helps to select an idle
+> cpu at wake up instead of waiting ifor ILB to fill the empty CPU. IMO,
+> the idle cpu mask is useful in heavy cases because a system, which is
+> already fully busy with work, doesn't want to waste time looking for an
+> idle cpu that doesn't exist. 
 
-Reviewed-by: Hongwu Su<hongwus@codeaurora.org>
+Yes, this is what v3 does.
+
+> But if there is an idle cpu, we should still looks for it.
+
+IMHO, this is a potential opportunity can be improved. The idle cpu could be
+in different idle state, the idle duration could be long or could be very short.
+For example, if there are two idle cpus:
+
+- CPU1 is very busy, the pattern is 50us idle and 950us work. 
+- CPU2 is in idle for a tick length and wake up to do the regular work
+
+If both added to the idle cpumask, we want the latter one, or we can just add
+the later one into the idle cpumask. That's why I want to associate tick stop
+signal with it.
+
+> 
+>>
+>>
+>> - Associating with tick stop tolerates idle to preserve the idle cpumask
+>> but only short idle, which causes tick retains. This is more fitable for
+>> the real workload.
+> 
+> I don't agree with this and real use cases with interaction will probably
+> not agree as well as they want to run on an idle cpu if any but not wait
+> on an already busy one.
+
+The problem is scan overhead, scanning idle cpu need time. If an idle cpu
+is in the short idle mode, it's very likely that when it's picked up for a
+wakeup task, it goes back to work again, and the wakeup task has to wait too,
+maybe longer because the running task just starts. 
+
+One benefit of waiting on the previous one is warm cache.
+
+> Also keep in mind that a tick can be up to 10ms long
+
+Right, but the point here is, if this 10ms tick retains, the CPU should be
+in the short idle mode.
+
+> 
+>>
+>>>
+>>> This change means that a cpu will not be part of the idle mask if the
+>>> tick is not stopped. On some arm/arm64 platforms, the tick stops only
+>>> if the idle duration is expected to be higher than 1-2ms which starts
+>>> to be significantly long. Also, the cpuidle governor can easily
+>>> mis-predict a short idle duration whereas it will be finally a long
+>>> idle duration; In this case, the next tick will correct the situation
+>>> and select a deeper state, but this can happen up to 4ms later on
+>>> arm/arm64.
+>>
+>> Yes this is intented. If the tick is not stopped, that indicates the
+>> CPU is very busy, cpu idle governor selected the polling idle state, and/or 
+>> the expected idle duration is shorter than the tick period length. For
+> 
+> As mentioned above a tick can be up to 10ms long which is not a short idle
+> duration.
+
+Usually when the tick retains, the CPU is in the short idle mode or even polling
+instead of idle.
+
+> 
+> Then the governor also mispredicts the idle duration and this is one
+> reason that the tick is not stopped because it will give the opportunity
+> to reevaluate the idle state in case of misprediction.
+>
+We always predict the next state based on the past states, so misprediction
+does happen. This is not what this patch is trying to solve. I'm certainly
+open if there is a better signal instead of stop_tick from idle governor.
+
+ 
+>> example, uperf enters and exits 80 times between two ticks when utilizes
+>> 100% CPU, and the average idle residency < 50us.
+> 
+> But scheduler looks for idle state of prev cpu before looping the idle cpu
+> mask so i'm not sure that uperf is impacted in this case because scheduler
+> will select prev cpu before loop idle cpu mask.
+> 
+>>
+>> If this CPU is added to idle cpumask, the wakeup task likely needs to 
+>> wait in the runqueue as this CPU will run its current task very soon.
+>>
+>>>
+>>> So I would prefer to keep trying to set the idle mask everytime the
+>>> cpu enters idle. If a tick has not happened between 2 idle phases, the
+>>> cpumask will not be updated and the overhead will be mostly testing if
+>>> (rq->last_idle_state == idle_state).
+>>
+>> Not sure if I addressed your concern, did you see any workloads any cases
+>> v4 performs better than v5?
+> 
+> Yes, I see some perf regression on my octo arm64 system for hackbench with
+> only 1 group (and for few ther ones but it's less obvious). There is no 
+> perf impact with more groups most probably because the cpus are no more idle.
+> 
+> The regression happens even if the shallowest idle state is the only one to
+> be enabled.
+
+Thanks for the data.
+
+> 
+> - 2 x 4 cores arm64 system
+> 
+> 12 iterations of hackbench -l (256000/#grp) -g #grp
+> 
+> Only the shallowest state enabled
+
+> (as a sidenote, we don't have polling mode on arm64)
+Okay, this might be the cause of the difference between yours and mine. So do you
+think if it makes sense to let idle governor to return a polling flag and associate
+it with idle cpumask update instead of stop_tick? A CPU is idle but actually polling
+may not be suitable for the wake up target.
+
+> 
+> grp    tip/sched/core        + your patchset v5          + the change below
+> 1      1.296(+/- 2.06 %)     1.890(+/-35,10 %) -45%      1.311(+/- 2.63%) -1.19%
+> 4      1.249(+/- 2.67 %)     1.255(+/- 3.10 %) - 0.46 %  1.235(+/- 4.77%) -0.28%
+> 8      1.175(+/- 1.20 %)     1.180(+/- 2.33 %) - 0.47 %  1.179(+/- 1.60%) -0.38%
+> 16     1.213(+/- 1.10 %)     1.218(+/- 0.68 %) - 0.41 %  1.219(+/- 2.15%) -0.52%
+> 
+> All idle states enabled (3 states)
+> 
+> grp    tip/sched/core        + your patchset v5          + the change below
+> 1      1.429(+/-19.36 %)     1.678(+/-34.29 %) -17%      1.426(+/-17.18%) +0.21%
+> 4      1.244(+/- 3.04 %)     1.261(+/- 3.21 %) - 1.39 %  1.260(+/- 2.55%) -1.29%
+> 8      1.169(+/- 1.43 %)     1.183(+/- 2.09 %) - 1.23 %  1.198(+/- 2.49%) -2.51%
+> 16     1.219(+/- 1.23 %)     1.218(+/- 0.68 %) - 0.59 %  1.225(+/- 1.43%) -0.49%
+> 
+> The change below is a bit different from your v3 because I wanted to check if
+> the root cause was the set of cpuilde mask only when tick is stopped.
+
+Okay, I see your point.
+
+Thanks,
+-Aubrey
