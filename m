@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDF92C4130
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9242C4133
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729327AbgKYNdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:33:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52768 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgKYNdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:33:50 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2EAF8AC23;
-        Wed, 25 Nov 2020 13:33:49 +0000 (UTC)
-Date:   Wed, 25 Nov 2020 13:33:46 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-Message-ID: <20201125133346.GN3306@suse.de>
-References: <X73s8fxDKPRD6wET@redhat.com>
- <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
- <20201125103933.GM3306@suse.de>
- <5f01bde6-fe31-9b0e-f288-06b82598a8b3@redhat.com>
+        id S1729488AbgKYNe7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Nov 2020 08:34:59 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:51475 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729399AbgKYNe6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 08:34:58 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-230-16Z1kSBhOmOGKjtenUFg5Q-1; Wed, 25 Nov 2020 13:34:54 +0000
+X-MC-Unique: 16Z1kSBhOmOGKjtenUFg5Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 25 Nov 2020 13:34:53 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 25 Nov 2020 13:34:53 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jiri Kosina' <jikos@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+CC:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [PATCH 063/141] HID: input: Fix fall-through warnings for Clang
+Thread-Topic: [PATCH 063/141] HID: input: Fix fall-through warnings for Clang
+Thread-Index: AQHWwyu7krTTi6wp3EytPBUHLpnbG6nY2HbA
+Date:   Wed, 25 Nov 2020 13:34:53 +0000
+Message-ID: <93bac7a8ac704a248b4f9877391e4a4f@AcuMS.aculab.com>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <18a24381b4461ec8174211c78eac549808b15e6f.1605896059.git.gustavoars@kernel.org>
+ <nycvar.YFH.7.76.2011251403390.3441@cbobk.fhfr.pm>
+In-Reply-To: <nycvar.YFH.7.76.2011251403390.3441@cbobk.fhfr.pm>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <5f01bde6-fe31-9b0e-f288-06b82598a8b3@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 12:04:15PM +0100, David Hildenbrand wrote:
-> On 25.11.20 11:39, Mel Gorman wrote:
-> > On Wed, Nov 25, 2020 at 07:45:30AM +0100, David Hildenbrand wrote:
-> >>> Something must have changed more recently than v5.1 that caused the
-> >>> zoneid of reserved pages to be wrong, a possible candidate for the
-> >>> real would be this change below:
-> >>>
-> >>> +               __init_single_page(pfn_to_page(pfn), pfn, 0, 0);
-> >>>
-> >>
-> >> Before that change, the memmap of memory holes were only zeroed out. So the zones/nid was 0, however, pages were not reserved and had a refcount of zero - resulting in other issues.
-> >>
-> >> Most pfn walkers shouldn???t mess with reserved pages and simply skip them. That would be the right fix here.
-> >>
-> > 
-> > Ordinarily yes, pfn walkers should not care about reserved pages but it's
-> > still surprising that the node/zone linkages would be wrong for memory
-> > holes. If they are in the middle of a zone, it means that a hole with
-> > valid struct pages could be mistaken for overlapping nodes (if the hole
-> > was in node 1 for example) or overlapping zones which is just broken.
+From: Jiri Kosina <jikos@kernel.org>
+> Sent: 25 November 2020 13:04
+> On Fri, 20 Nov 2020, Gustavo A. R. Silva wrote:
 > 
-> I agree within zones - but AFAIU, the issue is reserved memory between
-> zones, right?
+> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> > by explicitly adding a goto statement instead of letting the code fall
+> > through to the next case.
+> >
+> > Link: https://github.com/KSPP/linux/issues/115
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> >  drivers/hid/hid-input.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> > index 9770db624bfa..37601b800a2e 100644
+> > --- a/drivers/hid/hid-input.c
+> > +++ b/drivers/hid/hid-input.c
+> > @@ -743,6 +743,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+> >  				field->flags |= HID_MAIN_ITEM_RELATIVE;
+> >  				break;
+> >  			}
+> > +			goto unknown;
+> >
+> >  		default: goto unknown;
 > 
+> This makes my eyes hurt :) But adding the annotation would be ugly as
+> well, so let me just take it as-is.
 
-It can also occur in the middle of the zone.
+                case HID_GD_RFKILL_BTN:
+                        /* MS wireless radio ctl extension, also check CA */
+                        if (field->application == HID_GD_WIRELESS_RADIO_CTLS) {
+                                map_key_clear(KEY_RFKILL);
+                                /* We need to simulate the btn release */
+                                field->flags |= HID_MAIN_ITEM_RELATIVE;
+                                break;
+                        }
 
-> Assume your end of memory falls within a section - what would be the
-> right node/zone for such a memory hole at the end of the section?
+It might be best to invert the condition and de-indent the code.
+                case HID_GD_RFKILL_BTN:
+                        /* MS wireless radio ctl extension, also check CA */
+                        if (field->application != HID_GD_WIRELESS_RADIO_CTLS)
+                                goto unknown;
+                        map_key_clear(KEY_RFKILL);
+                        /* We need to simulate the btn release */
+                        field->flags |= HID_MAIN_ITEM_RELATIVE;
+                        break;
 
-Assuming a hole is not MAX_ORDER-aligned but there is real memory within
-the page block, then the node/zone for the struct pages backing the hole
-should match the real memorys node and zone.
+	David
 
-As it stands, with the uninitialised node/zone, certain checks like
-page_is_buddy(): page_zone_id(page) != page_zone_id(buddy) may only
-work by co-incidence. page_is_buddy() happens to work anyway because
-PageBuddy(buddy) would never be true for a PageReserved page.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-> With
-> memory hotplug after such a hole, we can easily have multiple
-> nodes/zones spanning such a hole, unknown before hotplug.
-> 
-
-When hotplugged, the same logic would apply. Where the hole is not aligned,
-the struct page linkages should match the "real" memory".
-
-> > It would partially paper over the issue that setting the pageblock type
-> > based on a reserved page. I agree that compaction should not be returning
-> > pfns that are outside of the zone range because that is buggy in itself
-> > but valid struct pages should have valid information. I don't think we
-> > want to paper over that with unnecessary PageReserved checks.
-> 
-> Agreed as long as we can handle that issue using range checks.
-> 
-
-I think it'll be ok as long as the struct pages within a 1<<(MAX_ORDER-1)
-range have proper linkages.
-
--- 
-Mel Gorman
-SUSE Labs
