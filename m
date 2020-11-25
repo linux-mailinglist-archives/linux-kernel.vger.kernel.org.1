@@ -2,123 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA672C4697
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06962C46AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732575AbgKYRXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730695AbgKYRXl (ORCPT
+        id S1732733AbgKYRZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:25:49 -0500
+Received: from mail-pf1-f173.google.com ([209.85.210.173]:42089 "EHLO
+        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730868AbgKYRZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:23:41 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69282C0613D4;
-        Wed, 25 Nov 2020 09:23:41 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id o144so432412ybg.7;
-        Wed, 25 Nov 2020 09:23:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xZV9+j2Fz0qufkKJrAOkz5+JLHtjo8L5rHWDGquTLcM=;
-        b=eRcROy/69g3Xqx5IEAOienCCL4wA9c4r4VW24UnEl49nZGhLWIOFQdfP1kuGsuJKxv
-         OcHkqlR/2mkXuJiIW/hlI4Jzp5gtfXgeoR6Co/4tZI5YL0dPGZn9GreyB2Y9zHjo675z
-         yQy9komEWr8d6OTAkZW7Xeh1J1+7kWJlMg5hrln+4XpT6WL4YmXYuZ5UQfQz/4q58KPz
-         2F6M0rl9kLKDj8V4w9Nr67NuVN8kYl5qHUKw3xYuvZrgKzZqzp5OqObg3bIbxDKt4BR9
-         3HmkzpMiA7HCT7DCNbJu2a8ZzSoqj4ToCt+xq0OFw5lM6dGNWDK+RvJTujvqAz3KlkVi
-         uHrw==
+        Wed, 25 Nov 2020 12:25:47 -0500
+Received: by mail-pf1-f173.google.com with SMTP id 131so2956500pfb.9;
+        Wed, 25 Nov 2020 09:25:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xZV9+j2Fz0qufkKJrAOkz5+JLHtjo8L5rHWDGquTLcM=;
-        b=p70NIXwPvDgtCGhJg+Rr04brd1jOFJssmuXP2hGSVEV56UDoVrJVkMJ1lYArn+8PAP
-         ryRuWirnU+e7zQzBTksIpK/31OA06vZ4rKtfK+QCAhnfaakuZCjGPtv2NJPbKLC9tSxT
-         4lNlg2k9V+X74eGbsDapdHMpPdgSipUbBwgbXAnaBmnT6tDEGvv4V74lu7yYnGaaAKbV
-         jnn1vS1AvuokMzqbLDcCu1dd8jcJeYZA1LoyZ3nVCzMJ5RQcYOdc9IHvAEEWE9Kqh5Ux
-         5CyC/xf/yVHHghEAK+z7O05Fxon1DdzAX2sl+YWLu5rsdLfD6jSOqYnt8B2FEpo/ww+h
-         aPRw==
-X-Gm-Message-State: AOAM5332nzVaPXV3TZ7RaFNPdouo3oReb3AOLpRMjCHuyzZWe6NFnKgL
-        g3wYpONQsG+qe+mU2z4CqLtGHtr0fd8m5BBSutCMs7zt0zswSQ==
-X-Google-Smtp-Source: ABdhPJw6hNT6UUNkOq0XdmIWXdolS1DJJdpm/q+dUjJB/51hdmbKlTvkCe+FCMK03zdyRUd35gMkKTDJtiSalO+tFxQ=
-X-Received: by 2002:a25:e00b:: with SMTP id x11mr5466249ybg.518.1606325020731;
- Wed, 25 Nov 2020 09:23:40 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=ZtEYBsO/jWtvOI2uD72pD23zazAk+CjJf4X/hzlzzfY=;
+        b=ZhDyHc3urPNbhVrmyKYskkb5An/aOvsJs03ma5Se6LNKg0c80fyCKHhFzcghomgn37
+         gVagD87bhMbFN7p+mdnWeE+WWqPmzWsLuanzFDg0mw4x4uAt2Df5T4xb6lDw5sEgQH5F
+         F8ta/Mq6SzPGJpcdjVNzmbYUKDm+N+1O5mc5aSbBjwquYQYa8YDjQ3pxjZdiezGFl5Ca
+         CSKOOoOSeWrKiphh+XmqqaOKQhiRaM33bz1N81O7/gLNGIZoJcleAPj0S0xUBjyNq5ef
+         ZGigeNbviXteF+iAdEbmET6QLnpkweNUog2iCv8A7iyWgdMdUjokGSLpIXCaL4oju7lf
+         i59Q==
+X-Gm-Message-State: AOAM5316RdNupWjRSPBj2xNg7hSbw+QdFt5xWziipwm8hVwQ4JGVIEVq
+        dbQSR8BAkmstJhU0VA0HLrA=
+X-Google-Smtp-Source: ABdhPJymBrhRlw6b7Aqg8g6wlitHRcfDjy90sqIw03eMp6C6hX2QOe7EDOeR21mf/8UF5vHGwICB0g==
+X-Received: by 2002:a17:90a:6393:: with SMTP id f19mr4430415pjj.227.1606325146836;
+        Wed, 25 Nov 2020 09:25:46 -0800 (PST)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id u3sm2523618pfu.47.2020.11.25.09.25.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 09:25:45 -0800 (PST)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 7065D40317; Wed, 25 Nov 2020 17:25:44 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 17:25:44 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Boris Kolpackov <boris@codesynthesis.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Felix Fietkau <nbd@openwrt.org>,
+        Patrick Franz <patfra71@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Junio C Hamano <gitster@pobox.com>,
+        linux-kernel@vger.kernel.org, mcgrof@kernel.org
+Subject: kconfig as a git subtree on Linux
+Message-ID: <20201125172544.GJ4332@42.do-not-panic.com>
 MIME-Version: 1.0
-References: <20201125130148.28724-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdX+FZjAfbWWw53EToHP6c4JFmQX9wogAyW3OcOxHgMd0w@mail.gmail.com>
- <OSBPR01MB504858A417137ED7AC31F925AAFA0@OSBPR01MB5048.jpnprd01.prod.outlook.com>
- <CAMuHMdXGqv9aKra7Ncg4mRoc2caO5iOw+ydrNmo9UcHeDTgVGw@mail.gmail.com>
-In-Reply-To: <CAMuHMdXGqv9aKra7Ncg4mRoc2caO5iOw+ydrNmo9UcHeDTgVGw@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 25 Nov 2020 17:23:14 +0000
-Message-ID: <CA+V-a8sEQJhBF-MSj5o7Pf5KbkycQ2NpLnLmnCmHmN+tANO5Vg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] r8a7742-iwg21d-q7-dbcm: Add support for ov7725 sensors
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+I'd like to propose we discuss the possibility of taking kconfig and
+making it a git subtree under the Linux kernel. This would allow
+other projects outside of the Linux kernel to be able to update their
+own copy / fork of kconfig in a jiffie *very* easily.
 
-On Wed, Nov 25, 2020 at 4:32 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Wed, Nov 25, 2020 at 5:26 PM Prabhakar Mahadev Lad
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > -----Original Message-----
-> > > From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > Sent: 25 November 2020 16:21
-> > > To: Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > Cc: Magnus Damm <magnus.damm@gmail.com>; Rob Herring <robh+dt@kernel.org>; Linux-Renesas <linux-
-> > > renesas-soc@vger.kernel.org>; open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
-> > > <devicetree@vger.kernel.org>; Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Biju Das
-> > > <biju.das.jz@bp.renesas.com>; Prabhakar <prabhakar.csengg@gmail.com>
-> > > Subject: Re: [PATCH v2 0/2] r8a7742-iwg21d-q7-dbcm: Add support for ov7725 sensors
-> > >
-> > > Hi Prabhakar,
-> > >
-> > > On Wed, Nov 25, 2020 at 2:02 PM Lad Prabhakar
-> > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > > This patch set enables to connect ov7725 sensors on iWave-RZ/G1H Qseven
-> > > > board.
-> > >
-> > > Thanks for your series!
-> > >
-> > > Do you think it's a valid use case to mix and match ov5640 and ov7725
-> > > cameras? E.g. connect two of each?
-> > >
-> > Yes that is valid case to mix and match. Do you want me to make it configurable too ?
->
-> If this is a valid use case, then please do so.
->
-In that case do we still want to keep the ov7725/ov5640 nodes in
-separate dtsi  ?
+Why? kconfig has far outlived its own purpose as a modeling variablity
+language hack on the Linux kernel, and *is* forked and *used* by *many*
+projects, to the point I think ignoring its use outside of the Linux
+kernel is doing a disservice to its own growth. Counting just personal
+projects I have 3 projects which use kconfig alone. Last time I counted
+about 30 or so external projects. I'm confident this is a shy number
+of today's reality.
 
-Cheers,
-Prabhakar
+Yes this does beg the question, that if this is done, can / should
+this be considered elsewhere. And yes, I'd like to hear the rants
+about why this would be a completely unacceptable practice *at all*.
 
-> Thanks!
->
-> > > Or should all four cameras be of the same type?
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+I've been using git subtrees now for another project and I'm *very*
+happy with it so far. It lets me keep a project with some code on
+its own git tree, and then multiple third party trees can embrace
+it, and decide to update later whenever they want. An example is the
+update_ssh_config [0] python script which I use on kdevops [1] for
+vagrant, but since it is also used for terraform and terraform uses
+modules I ended up sharing the code for terraform for its own
+terrarorm module [2] [3]. I do most development and unit testing
+on the main update_ssh_config git tree, and when I want to integrate
+its changes into kdevops I just run:
+
+make refresh
+
+This is because on kdevops I have:
+
+$ cat Makefile.subtrees
+# If you need to use a git subtree, please add it here.
+add-remotes:
+	git remote add update_ssh_config https://github.com/mcgrof/update_ssh_config.git
+
+add-commits:
+	git subtree add --prefix=playbooks/roles/update_ssh_config_vagrant/update_ssh_config update_ssh_config master
+
+refresh:
+	git fetch update_ssh_config git subtree pull --prefix=playbooks/roles/update_ssh_config_vagrant/update_ssh_config update_ssh_config master
+
+Likewise for my terraform module, however there I just have these
+targets on my make Makefile. A person who first git cloned either the
+kdevops tree of the terraform module tree would first have to run the
+targets:
+
+   * make add-remotes
+   * make add-commits
+
+Today's process for updating kconfig on external projects requires
+substrantial manual oversight.
+
+[0] https://github.com/mcgrof/update_ssh_config
+[1] https://github.com/mcgrof/kdevops/
+[2] https://github.com/mcgrof/terraform-kdevops-add-host-ssh-config
+[3] https://registry.terraform.io/modules/mcgrof/add-host-ssh-config/kdevops/latest
+
+  Luis
