@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7882C365B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C431C2C3651
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgKYBsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 20:48:55 -0500
-Received: from mga05.intel.com ([192.55.52.43]:2112 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgKYBsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 20:48:54 -0500
-IronPort-SDR: anhyO9rGCMTUmEgAPkSrTfHIZYqJTOSDkekdu4/6Na6Xk53hBI8I1oOf7fNW3Q5EiKjqieI0aG
- y6hShEYYxKkQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="256756524"
-X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
-   d="scan'208";a="256756524"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 17:48:53 -0800
-IronPort-SDR: lLsI0hy9SsZX2QlnfXuv70HYqqiD3wE1AuChYo9GDZOlaJotK29qLJ3gTU5hLWAIPRKVFLktWB
- TimRb0p8obLw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
-   d="scan'208";a="536689747"
-Received: from allen-box.sh.intel.com ([10.239.159.28])
-  by fmsmga005.fm.intel.com with ESMTP; 24 Nov 2020 17:48:51 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Ning Sun <ning.sun@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>
-Cc:     Ashok Raj <ashok.raj@intel.com>, x86@kernel.org,
-        tboot-devel@lists.sourceforge.net,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Adrian Huang <ahuang12@lenovo.com>
-Subject: [PATCH 1/1] x86/tboot: Don't disable swiotlb when iommu is forced on
-Date:   Wed, 25 Nov 2020 09:41:24 +0800
-Message-Id: <20201125014124.4070776-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726298AbgKYBnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 20:43:25 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8028 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgKYBnZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 20:43:25 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CgkDQ3QskzhckV;
+        Wed, 25 Nov 2020 09:43:02 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 25 Nov 2020 09:43:13 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <maximlevitsky@gmail.com>, <oakad@yahoo.com>,
+        <ulf.hansson@linaro.org>, <akpm@linux-foundation.org>
+CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jingxiangfeng@huawei.com>
+Subject: [PATCH]  memstick: r592: Fix error return in r592_probe()
+Date:   Wed, 25 Nov 2020 09:47:18 +0800
+Message-ID: <20201125014718.153563-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 327d5b2fee91c ("iommu/vt-d: Allow 32bit devices to uses DMA
-domain"), swiotbl could also be used for direct memory access if IOMMU
-is enabled but a device is configured to pass through the DMA translation.
-Keep swiotlb when IOMMU is forced on, otherwise, some devices won't work
-if "iommu=pt" kernel parameter is used.
+Fix to return a error code from the error handling case instead of 0.
 
-Fixes: 327d5b2fee91c ("iommu/vt-d: Allow 32bit devices to uses DMA domain")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=210237
-Reported-and-tested-by: Adrian Huang <ahuang12@lenovo.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Fixes: 926341250102 ("memstick: add driver for Ricoh R5C592 card reader")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 ---
- arch/x86/kernel/tboot.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/memstick/host/r592.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
-index 420be871d9d4..ae64f98ec2ab 100644
---- a/arch/x86/kernel/tboot.c
-+++ b/arch/x86/kernel/tboot.c
-@@ -514,13 +514,10 @@ int tboot_force_iommu(void)
- 	if (!tboot_enabled())
- 		return 0;
+diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
+index dd3a1f3dcc19..d2ef46337191 100644
+--- a/drivers/memstick/host/r592.c
++++ b/drivers/memstick/host/r592.c
+@@ -759,8 +759,10 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto error3;
  
--	if (no_iommu || swiotlb || dmar_disabled)
-+	if (no_iommu || dmar_disabled)
- 		pr_warn("Forcing Intel-IOMMU to enabled\n");
+ 	dev->mmio = pci_ioremap_bar(pdev, 0);
+-	if (!dev->mmio)
++	if (!dev->mmio) {
++		error = -ENOMEM;
+ 		goto error4;
++	}
  
- 	dmar_disabled = 0;
--#ifdef CONFIG_SWIOTLB
--	swiotlb = 0;
--#endif
- 	no_iommu = 0;
+ 	dev->irq = pdev->irq;
+ 	spin_lock_init(&dev->irq_lock);
+@@ -786,12 +788,14 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		&dev->dummy_dma_page_physical_address, GFP_KERNEL);
+ 	r592_stop_dma(dev , 0);
  
- 	return 1;
+-	if (request_irq(dev->irq, &r592_irq, IRQF_SHARED,
+-			  DRV_NAME, dev))
++	error = request_irq(dev->irq, &r592_irq, IRQF_SHARED,
++			  DRV_NAME, dev);
++	if (error)
+ 		goto error6;
+ 
+ 	r592_update_card_detect(dev);
+-	if (memstick_add_host(host))
++	error = memstick_add_host(host);
++	if (error)
+ 		goto error7;
+ 
+ 	message("driver successfully loaded");
 -- 
-2.25.1
+2.22.0
 
