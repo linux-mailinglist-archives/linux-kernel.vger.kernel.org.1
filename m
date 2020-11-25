@@ -2,76 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01BE2C3DCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0482C3DF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbgKYKgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:36:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:39022 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728722AbgKYKgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:36:41 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39361106F;
-        Wed, 25 Nov 2020 02:36:41 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D4A923F70D;
-        Wed, 25 Nov 2020 02:36:39 -0800 (PST)
-Date:   Wed, 25 Nov 2020 10:36:37 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        catalin.marinas@arm.com, will@kernel.org, matthias.bgg@gmail.com,
-        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com
-Subject: Re: [PATCH] arm64: Kconfig: Add SYS_SUPPORTS_APM_EMULATION
-Message-ID: <20201125103637.GC70906@C02TD0UTHF1T.local>
-References: <20201124090131.27257-1-lecopzer.chen@mediatek.com>
+        id S1729145AbgKYKiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:38:00 -0500
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:49257 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728444AbgKYKh7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 05:37:59 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id hsBNkIplAN7XghsBRkVmy6; Wed, 25 Nov 2020 11:37:57 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1606300677; bh=FjvmaPG3JrLfHAjmM74MB5cGyWQ6qFtt8VMNnEdUX4U=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=G2A2Jo/U9waxPKZY7p228yYDqlXXIS8errOsyZYRCU5qMOTeFfH/u82nQzYE2mhVV
+         1M6+xFJdRiagmWLYgQ7Th2Ly9ZScrKq2eAqDzWfUT0Ml0Gjw9amZOxeF3ophh8Prap
+         ZTkQ9g7WHr+Ab1MN15fUxigaqW1NUNzLEuDF4MkzE1ChS0RJPHZIfdENCrGHWfrd5r
+         8GdJffq716RcxaDWK/di0G0c6dYaXgR6B241000OqVy8YlgYSVd0oKQ2XJbi2FiZx5
+         p1TmXwnlD0dieExln3a7/ort8AdCx1ym2ELjvqew3LBYa3Q+qmsLoJ103VXJBLP50k
+         kuQmHaGAa9NnA==
+Subject: Re: [PATCH v4 13/13] media: docs: Move the H264 stateless codec uAPI
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <20201123144000.81310-1-ezequiel@collabora.com>
+ <20201123144000.81310-14-ezequiel@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <8cea43ca-eab2-8b57-477c-20fa4d270657@xs4all.nl>
+Date:   Wed, 25 Nov 2020 11:37:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124090131.27257-1-lecopzer.chen@mediatek.com>
+In-Reply-To: <20201123144000.81310-14-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfLQAaQyACzwTFhjY0fw0C29sgmllMhOejA+FZRNNh8vgfTC1Nj9z2wvCyWAu8gkUl3ZwWDNoP612INmdaLDMeLjNBpBrVJL2Swzru5hC9QLCTyb2oro7
+ XUNlOuRwb0y3t8zYMoI+5boSKHK8RM+JzM4gzXr46QeKXvdHLNiaEmNc8KdEXIipn+znggkQcZmaigwnQskN5tam1/xrjDJbY9BeehC36Nux6JalENyjl21N
+ WZmyQpogHkN+OirYKtA0RxeFOsXGPwMe14FB561kHJP6YXgPm+eHreVhPEavhC9WMPkKkBxeXNg5MIWlIErq38OlIIoP22qfRfkQLnEQCSjCQFFxNA4lt8y0
+ MYXm4jIJ41p4qv0sdBEFWm5Tm8FnflU7VGXGkc9sDks8lrOH3ame/5t8MN1gsA04PTMQ+aP7kN/OuNU/OKdoYrFL8/FH+NootYtmziwR46BgAd6WppMXdwX9
+ QWmxZkhaF8EGIt3AZJxycRJY9WwIAiPYOvbYAdq4Woxko9B9NCjDYno7FLE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 05:01:31PM +0800, Lecopzer Chen wrote:
-> From: "Lecopzer Chen" <lecopzer.chen@mediatek.com>
+On 23/11/2020 15:40, Ezequiel Garcia wrote:
+> Now that we've destaged the H264 stateless codec controls,
+> and with all the pieces in place, update the documentation
+> and move it to its own section.
 > 
-> Although most of modern devices use ACPI, there still has combination
-> of APM + ARM64.
-> 
-> In order to select CONFIG_APM_EMULATION, make SYS_SUPPORTS_APM_EMULATION
-> default is y if ACPI isn't configured.
-
-I'm a bit confused why this should be enabled for !ACPI. Which DT
-platforms need this, and how do they use it? Why should this only be
-enabled for kernels without ACPI support, and not for kernels that
-support both ACPI and DT?
-
-Thanks,
-Mark.
-
-> 
-> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> Suggested-by: YJ Chiang <yj.chiang@mediatek.com>
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
 > ---
->  arch/arm64/Kconfig | 3 +++
->  1 file changed, 3 insertions(+)
+>  .../userspace-api/media/v4l/common.rst        |   1 +
+>  .../media/v4l/ext-ctrls-codec-stateless.rst   | 674 +++++++++++++++++
+>  .../media/v4l/ext-ctrls-codec.rst             | 692 ------------------
+>  .../media/v4l/extended-controls.rst           |   3 +-
+>  .../media/v4l/pixfmt-compressed.rst           |  21 +-
+>  5 files changed, 685 insertions(+), 706 deletions(-)
+>  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
 > 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 1515f6f153a0..5e9e3694015a 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -260,6 +260,9 @@ config NO_IOPORT_MAP
->  config STACKTRACE_SUPPORT
->  	def_bool y
+
+<snip>
+
+> diff --git a/Documentation/userspace-api/media/v4l/extended-controls.rst b/Documentation/userspace-api/media/v4l/extended-controls.rst
+> index 44fcd67f20bf..866bd787eef0 100644
+> --- a/Documentation/userspace-api/media/v4l/extended-controls.rst
+> +++ b/Documentation/userspace-api/media/v4l/extended-controls.rst
+> @@ -56,7 +56,8 @@ group similar controls into a single class. For example, control class
+>  ``V4L2_CTRL_CLASS_USER`` contains all user controls (i. e. all controls
+>  that can also be set using the old :ref:`VIDIOC_S_CTRL <VIDIOC_G_CTRL>`
+>  ioctl). Control class ``V4L2_CTRL_CLASS_CODEC`` contains controls
+> -relating to codecs.
+> +relating to codecs. See :ref:`codec-stateless-controls` for controls
+> +specific to stateless codecs.
+
+Drop this change. This text just gives an example about how control classes
+work, it's not codec documentation as such.
+
+Regards,
+
+	Hans
+
 >  
-> +config SYS_SUPPORTS_APM_EMULATION
-> +	def_bool y if !ACPI
-> +
->  config ILLEGAL_POINTER_VALUE
->  	hex
->  	default 0xdead000000000000
-> -- 
-> 2.18.0
+>  All controls in the control array must belong to the specified control
+>  class. An error is returned if this is not the case.
+> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst b/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst
+> index d585909bc4e2..e28749ebf8d8 100644
+> --- a/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst
+> +++ b/Documentation/userspace-api/media/v4l/pixfmt-compressed.rst
+> @@ -57,16 +57,16 @@ Compressed Formats
+>        - H264 parsed slice data, including slice headers, either with or
+>  	without the start code, as extracted from the H264 bitstream.
+>  	This format is adapted for stateless video decoders that implement an
+> -	H264 pipeline (using the :ref:`mem2mem` and :ref:`media-request-api`).
+> +	H264 pipeline with the :ref:`stateless_decoder`.
+>  	This pixelformat has two modifiers that must be set at least once
+> -	through the ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE``
+> -        and ``V4L2_CID_MPEG_VIDEO_H264_START_CODE`` controls.
+> +	through the ``V4L2_CID_STATELESS_H264_DECODE_MODE``
+> +        and ``V4L2_CID_STATELESS_H264_START_CODE`` controls.
+>  	In addition, metadata associated with the frame to decode are
+> -	required to be passed through the ``V4L2_CID_MPEG_VIDEO_H264_SPS``,
+> -	``V4L2_CID_MPEG_VIDEO_H264_PPS``,
+> -	``V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX``,
+> -	``V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS`` and
+> -	``V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS`` controls.  See the
+> +	required to be passed through the ``V4L2_CID_STATELESS_H264_SPS``,
+> +	``V4L2_CID_STATELESS_H264_PPS``,
+> +	``V4L2_CID_STATELESS_H264_SCALING_MATRIX``,
+> +	``V4L2_CID_STATELESS_H264_SLICE_PARAMS`` and
+> +	``V4L2_CID_STATELESS_H264_DECODE_PARAMS`` controls.  See the
+>  	:ref:`associated Codec Control IDs <v4l2-mpeg-h264>`.  Exactly
+>  	one output and one capture buffer must be provided for use
+>  	with this pixel format. The output buffer must contain the
+> @@ -77,11 +77,6 @@ Compressed Formats
+>  	7.3.2.8 "Slice layer without partitioning RBSP syntax" and the following
+>  	sections.
+>  
+> -	.. note::
+> -
+> -	   This format is not yet part of the public kernel API and it
+> -	   is expected to change.
+> -
+>      * .. _V4L2-PIX-FMT-H263:
+>  
+>        - ``V4L2_PIX_FMT_H263``
 > 
+
