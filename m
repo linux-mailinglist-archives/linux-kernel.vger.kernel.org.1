@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D122C40E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17C22C40DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729637AbgKYNFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729619AbgKYNFD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:05:03 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9229FC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 05:05:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZHgc2pWFlRKIo3GgAn47PzCYzIT9MLVKg5ne7N02cwE=; b=cpIerSnLuILHY54dZ+2SZiKSJo
-        4MUhfRXl+TZN2jMAcWScWeIxbi57lztmVMrnyIX77hxjYiK07ihIbYPelYR/FNoF1vukWU+I9pi4j
-        aRrXIt1nn7JCL7snKSabN2WjAr4arvT3vPGgtrvQCBvVfesh5AviUjBmd8YE2h4wXEmRj+U+I5gNz
-        8KNJKPwNU2/uKx7+yZ0VY3x9WRH1XSFb+ylq0DtAAgA7m2z4pJt/3S44oWJ860coqnFkAlDkWdk6Q
-        1VjEvJog80YQWZaHvCliBQiWRfEZEasuV9ttkxAVEaUPvZIAqJ7sH504BDp5vUVtbZQcEaN0eyZG+
-        KQ3cfC6g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khuSe-0005m1-1j; Wed, 25 Nov 2020 13:03:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1729610AbgKYNEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:04:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729225AbgKYNEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 08:04:23 -0500
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4D6DD30280E;
-        Wed, 25 Nov 2020 14:03:50 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3DA2A22B9CF3D; Wed, 25 Nov 2020 14:03:50 +0100 (CET)
-Date:   Wed, 25 Nov 2020 14:03:50 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 24/32] sched: Release references to the per-task
- cookie on exit
-Message-ID: <20201125130350.GX2414@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-25-joel@joelfernandes.org>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA00B206F7;
+        Wed, 25 Nov 2020 13:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606309462;
+        bh=v87+vT1vbzQNQF9sfSdi43D0NAAsysrN49fRtGjXIbM=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=GDBaU2DO2N8KjcEE1C6v8jYjBeKF18FBn7EJmnl6DZVTXn3xjk0dtPnOEIgLVrLMg
+         TmQ/GgDWDqEYxkrGv6bKDq28xP2GB/zcp08TR6UGJUQWWjPuAkYAW+0B52gjgsCwoK
+         5GhWMQPg13pGiBHIt2TiycAT6MUPI0Y5uFzBU22w=
+Date:   Wed, 25 Nov 2020 14:04:19 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 063/141] HID: input: Fix fall-through warnings for
+ Clang
+In-Reply-To: <18a24381b4461ec8174211c78eac549808b15e6f.1605896059.git.gustavoars@kernel.org>
+Message-ID: <nycvar.YFH.7.76.2011251403390.3441@cbobk.fhfr.pm>
+References: <cover.1605896059.git.gustavoars@kernel.org> <18a24381b4461ec8174211c78eac549808b15e6f.1605896059.git.gustavoars@kernel.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117232003.3580179-25-joel@joelfernandes.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:19:54PM -0500, Joel Fernandes (Google) wrote:
-> During exit, we have to free the references to a cookie that might be shared by
-> many tasks. This commit therefore ensures when the task_struct is released, any
-> references to cookies that it holds are also released.
+On Fri, 20 Nov 2020, Gustavo A. R. Silva wrote:
 
-This is one of those patches that just shouldn't exist. Squash it into
-whatever patch that introduces this nonsense.
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a goto statement instead of letting the code fall
+> through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/hid/hid-input.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> index 9770db624bfa..37601b800a2e 100644
+> --- a/drivers/hid/hid-input.c
+> +++ b/drivers/hid/hid-input.c
+> @@ -743,6 +743,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+>  				field->flags |= HID_MAIN_ITEM_RELATIVE;
+>  				break;
+>  			}
+> +			goto unknown;
+>  
+>  		default: goto unknown;
+
+This makes my eyes hurt :) But adding the annotation would be ugly as 
+well, so let me just take it as-is.
+
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
+
