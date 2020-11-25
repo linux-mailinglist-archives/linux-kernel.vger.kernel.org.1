@@ -2,109 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F692C4296
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB6E2C4299
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbgKYPDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:03:55 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2504 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729901AbgKYPDy (ORCPT
+        id S1730013AbgKYPEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:04:22 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40604 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727614AbgKYPEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:03:54 -0500
-Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Ch4014WkYzQksm;
-        Wed, 25 Nov 2020 23:03:29 +0800 (CST)
-Received: from [127.0.0.1] (10.57.36.170) by dggeme760-chm.china.huawei.com
- (10.3.19.106) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Wed, 25
- Nov 2020 23:03:47 +0800
-Subject: Re: [PATCH v3 net-next] net: phy: realtek: read actual speed on
- rtl8211f to detect downshift
-To:     Antonio Borneo <antonio.borneo@st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        Willy Liu <willy.liu@realtek.com>
-CC:     <linuxarm@huawei.com>, Salil Mehta <salil.mehta@huawei.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20201124143848.874894-1-antonio.borneo@st.com>
- <20201124230756.887925-1-antonio.borneo@st.com>
-From:   Yonglong Liu <liuyonglong@huawei.com>
-Message-ID: <d62710c3-7813-7506-f209-fcfa65931778@huawei.com>
-Date:   Wed, 25 Nov 2020 23:03:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Wed, 25 Nov 2020 10:04:21 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0APF45fd102151;
+        Wed, 25 Nov 2020 09:04:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606316645;
+        bh=abbitnCOhB4/7GZNMu7oESPWpbhlDGq3AlXmkk73T8Q=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=OBCvNGYTxI/LJ0xY2UMJmIAqfBPQEUfZe2MPpgXUo9rTlNcqRQPnLnwogr5dcoj7C
+         HHQxu4p7DFTUYRMyhxJIROpCg9Rl64OntdIZz8lh724Y8phlPfFH5l5FDknT2j5mFG
+         3Lo+Gfg+ppUd/dHEYYHbVkilQbEHzkTkDORX0tEY=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0APF45X9031923
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 25 Nov 2020 09:04:05 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 25
+ Nov 2020 09:04:05 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 25 Nov 2020 09:04:05 -0600
+Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0APF3tXj058491;
+        Wed, 25 Nov 2020 09:03:58 -0600
+Subject: Re: [PATCH v3 00/10] Introduced new Cadence USBSSP DRD Driver.
+To:     Pawel Laszczak <pawell@cadence.com>,
+        Peter Chen <peter.chen@nxp.com>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "rogerq@ti.com" <rogerq@ti.com>, Rahul Kumar <kurahul@cadence.com>,
+        "Govindraju, Aswath" <a-govindraju@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+References: <20201119141307.8342-1-pawell@cadence.com>
+ <20201124075023.GC32310@b29397-desktop>
+ <DM6PR07MB55299F262CEA81216999CB05DDFB0@DM6PR07MB5529.namprd07.prod.outlook.com>
+ <45ffc5f8-f9de-e14d-3d03-9ef1f1c848d9@ti.com>
+ <DM6PR07MB5529316FE42279C77BB43317DDFB0@DM6PR07MB5529.namprd07.prod.outlook.com>
+From:   Sekhar Nori <nsekhar@ti.com>
+Message-ID: <24639633-919c-7082-fbde-dc613a7a71d0@ti.com>
+Date:   Wed, 25 Nov 2020 20:33:54 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20201124230756.887925-1-antonio.borneo@st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <DM6PR07MB5529316FE42279C77BB43317DDFB0@DM6PR07MB5529.namprd07.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-X-Originating-IP: [10.57.36.170]
-X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
- dggeme760-chm.china.huawei.com (10.3.19.106)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested-by: Yonglong Liu <liuyonglong@huawei.com>
+On 24/11/20 3:22 PM, Pawel Laszczak wrote:
+> Sekhar,
+> 
+>>
+>>
+>> On 24/11/20 2:51 PM, Pawel Laszczak wrote:
+>>> Peter,
+>>>
+>>>> On 20-11-19 15:12:57, Pawel Laszczak wrote:
+>>>>> This patch introduce new Cadence USBSS DRD driver to linux kernel.
+>>>>>
+>>>>> The Cadence USBSS DRD Controller is a highly configurable IP Core which
+>>>>> can be instantiated as Dual-Role Device (DRD), Peripheral Only and
+>>>>> Host Only (XHCI)configurations.
+>>>>>
+>>>>> The current driver has been validated with FPGA burned. We have support
+>>>>> for PCIe bus, which is used on FPGA prototyping.
+>>>>>
+>>>>> The host side of USBSS-DRD controller is compliance with XHCI
+>>>>> specification, so it works with standard XHCI Linux driver.
+>>>>>
+>>>>> The device side of USBSS DRD controller is compliant with XHCI.
+>>>>> The architecture for device side is almost the same as for host side,
+>>>>> and most of the XHCI specification can be used to understand how
+>>>>> this controller operates.
+>>>>>
+>>>>> This controller and driver support Full Speed, Hight Speed, Supper Speed
+>>>>> and Supper Speed Plus USB protocol.
+>>>>>
+>>>>> The prefix cdnsp used in driver has chosen by analogy to cdn3 driver.
+>>>>> The last letter of this acronym means PLUS. The formal name of controller
+>>>>> is USBSSP but it's to generic so I've decided to use CDNSP.
+>>>>>
+>>>>> The patch 1: adds support for DRD CDNSP.
+>>>>> The patch 2: separates common code that can be reusable by cdnsp driver.
+>>>>> The patch 3: moves reusable code to separate module.
+>>>>> The patch 4: changes prefixes in reusable code from cdns3 to common cdns.
+>>>>> The patch 5: adopts gadget_dev pointer in cdns structure to make possible
+>>>>>              use it in both drivers.
+>>>>> The patches 6-8: add the main part of driver and has been intentionally
+>>>>>              split into 3 part. In my opinion such division should not
+>>>>>              affect understanding and reviewing the driver, and cause that
+>>>>>              main patch (7/8) is little smaller. Patch 6 introduces main
+>>>>>              header file for driver, 7 is the main part that implements all
+>>>>>              functionality of driver and 8 introduces tracepoints.
+>>>>> The patch 9: Adds cdns3 prefixes to files related with USBSS driver.
+>>>>> the patch 10: Adds USBSSP DRD IP driver entry to MAINTAINERS file.
+>>>>>
+>>>>> Changlog from v2:
+>>>>> - removed not used pdev parameter from cdnsp_read/wite_64 functions
+>>>>> - fixed incorrect value assigned to CDNSP_ENDPOINTS_NUM (32 -> 31)
+>>>>> - replaced some constant value with CDNSP_ENDPOINTS_NUM macro
+>>>>> - replaced 'true' with '1' in bits description in cdnsp-gadget.h file
+>>>>> - fixed some typos
+>>>>> - some other less important changes suggested by Peter Chen
+>>>>
+>>>> Hi Pawel,
+>>>>
+>>>> I have updated my -next tree as the latest usb-next tree which v5.10-rc4
+>>>> is included, would you please rebase my tree and send again, I could apply your
+>>>> patches and test, if test could pass, I will apply it to my -next tree.
+>>>> You don't need to rebase again since it is a huge patch set, will take some
+>>>> efforts for rebase.
+>>>>
+>>>
+>>> I'll try to post it tomorrow.
+>>
+>> Pawel, have you tested TI J7 for regressions after this series? After
+>> your latest changes, can you post a tree which someone in TI can test?
+> 
+> No I haven't test it on J7.  For testing I'm using PCIe based platform for
+> both cnds3 and cdnsp driver. 
 
-On 2020/11/25 7:07, Antonio Borneo wrote:
-> The rtl8211f supports downshift and before commit 5502b218e001
-> ("net: phy: use phy_resolve_aneg_linkmode in genphy_read_status")
-> the read-back of register MII_CTRL1000 was used to detect the
-> negotiated link speed.
-> The code added in commit d445dff2df60 ("net: phy: realtek: read
-> actual speed to detect downshift") is working fine also for this
-> phy and it's trivial re-using it to restore the downshift
-> detection on rtl8211f.
->
-> Add the phy specific read_status() pointing to the existing
-> function rtlgen_read_status().
->
-> Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
-> Link: https://lore.kernel.org/r/478f871a-583d-01f1-9cc5-2eea56d8c2a7@huawei.com
-> ---
-> To: Andrew Lunn <andrew@lunn.ch>
-> To: Heiner Kallweit <hkallweit1@gmail.com>
-> To: Russell King <linux@armlinux.org.uk>
-> To: "David S. Miller" <davem@davemloft.net>
-> To: Jakub Kicinski <kuba@kernel.org>
-> To: netdev@vger.kernel.org
-> To: Yonglong Liu <liuyonglong@huawei.com>
-> To: Willy Liu <willy.liu@realtek.com>
-> Cc: linuxarm@huawei.com
-> Cc: Salil Mehta <salil.mehta@huawei.com>
-> Cc: linux-stm32@st-md-mailman.stormreply.com
-> Cc: linux-kernel@vger.kernel.org
-> In-Reply-To: <20201124143848.874894-1-antonio.borneo@st.com>
->
-> V1 => V2
-> 	move from a generic implementation affecting every phy
-> 	to a rtl8211f specific implementation
-> V2 => V3
-> 	rebase on netdev-next, resolving minor conflict after
-> 	merge of 8b43357fff61
-> ---
->   drivers/net/phy/realtek.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
-> index f71eda945c6a..99ecd6c4c15a 100644
-> --- a/drivers/net/phy/realtek.c
-> +++ b/drivers/net/phy/realtek.c
-> @@ -729,6 +729,7 @@ static struct phy_driver realtek_drvs[] = {
->   		PHY_ID_MATCH_EXACT(0x001cc916),
->   		.name		= "RTL8211F Gigabit Ethernet",
->   		.config_init	= &rtl8211f_config_init,
-> +		.read_status	= rtlgen_read_status,
->   		.config_intr	= &rtl8211f_config_intr,
->   		.handle_interrupt = rtl8211f_handle_interrupt,
->   		.suspend	= genphy_suspend,
->
-> base-commit: 1d155dfdf50efc2b0793bce93c06d1a5b23d0877
+Do you have access to J7 EVM? Are you willing to test it there to make
+sure nothing broke?
 
+> 
+> Why you can't use the latest kernel version and current series ? 
+
+Sure. Let me try that. Looking at some other traffic on this thread, I
+was not sure where this applies. So, this applies to latest of Linus's
+tree? I re-read the cover letter but cannot find this information.
+
+Thanks,
+Sekhar
