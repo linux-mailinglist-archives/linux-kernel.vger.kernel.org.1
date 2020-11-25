@@ -2,207 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCF12C46C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C913D2C46D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732825AbgKYR2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:28:18 -0500
-Received: from mail.pqgruber.com ([52.59.78.55]:37450 "EHLO mail.pqgruber.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732469AbgKYR2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:28:17 -0500
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 84804C81EED;
-        Wed, 25 Nov 2020 18:28:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1606325294;
-        bh=5Jb6iatCRPIVZK7/khB6ZO3GMcwJebtuMG5SMJqkQoQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VPzd6edkUMCHs23d1821Sw4aiJJfQKOF0J4390OrXFl7/r34ZAfRnKujUkGdgcT7J
-         I2j/P8RhaFy6j8i9sde0fu2CAiBqePoVqnSxaVZZ9aAoLEoD0ZoW8BE6nfwii8N8eS
-         tLjs17iGN/8GYDyD9IiDedwc9spBE3gmVG6mgja0=
-Date:   Wed, 25 Nov 2020 18:28:13 +0100
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v3 1/4] pwm: pca9685: Switch to atomic API
-Message-ID: <X76ULTpaWHLkkz/u@workstation.tuxnet>
-References: <20201124181013.162176-1-clemens.gruber@pqgruber.com>
- <CAGngYiX8KOTQCScWo_o1BRa8CGHBQzWZGz1FmzkwGEmyNgPaxQ@mail.gmail.com>
- <X74XPAy+SJRmQUSH@workstation.tuxnet>
- <X75kXv7l9RbTOS7S@workstation.tuxnet>
- <CAGngYiViOMO6uM7UeYO5fNMdc+QEjLt+L1TdTii+smTvsmV=aQ@mail.gmail.com>
+        id S1732841AbgKYR37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:29:59 -0500
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:39614 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731392AbgKYR37 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 12:29:59 -0500
+Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0APHNFFI011180;
+        Wed, 25 Nov 2020 17:29:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=vMFsukLmPFGOSpxBc3MkWPR8cKi5TEO9P3KVrbjJmgk=;
+ b=P+0RVlyb7WFCfosip5U8robFihi3Q3co5/Hju0M2kwXicBlEV54y7qpNF0Vugy7Xvilx
+ 27gCQ8BrnJGFpXttZrTpeHYDoPZXKMS77Izl3HR3jMWg1XnuQPENwfIbJKXpJLARMvWu
+ V47qy6Xp3Ptzf3L1KpMkkYwBigKXNAu5VEX7PLPp5x5KR+GdRkT6kCVCGRoKqMpDuLeN
+ e1tEW9vG6Zh55H9FjatBIin2e3Wtyzcb9BgBST+HF6xkjd9NjrsH/MripmiZ0nbYavGJ
+ GUP8EmOq1LMTW3X5V+s+SUIm3xrYQ5lEnMhrCSrvGZdEXbQUegLNJGo2jC1bLbK5eixg 7A== 
+Received: from g2t2352.austin.hpe.com (g2t2352.austin.hpe.com [15.233.44.25])
+        by mx0a-002e3701.pphosted.com with ESMTP id 351kdb48j0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Nov 2020 17:29:29 +0000
+Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
+        by g2t2352.austin.hpe.com (Postfix) with ESMTP id 3FFD4A3;
+        Wed, 25 Nov 2020 17:29:28 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
+        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 951B137;
+        Wed, 25 Nov 2020 17:29:26 +0000 (UTC)
+From:   Mike Travis <mike.travis@hpe.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>
+Cc:     Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH 0/5] x86/platform/uv: Move UV procfs leaves to sysfs
+Date:   Wed, 25 Nov 2020 11:29:02 -0600
+Message-Id: <20201125172907.240996-1-mike.travis@hpe.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGngYiViOMO6uM7UeYO5fNMdc+QEjLt+L1TdTii+smTvsmV=aQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-25_10:2020-11-25,2020-11-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=784 spamscore=0 priorityscore=1501
+ bulkscore=0 mlxscore=0 impostorscore=0 malwarescore=0 adultscore=0
+ suspectscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011250109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sven,
 
-On Wed, Nov 25, 2020 at 10:04:32AM -0500, Sven Van Asbroeck wrote:
-> On Wed, Nov 25, 2020 at 3:35 AM Clemens Gruber
-> <clemens.gruber@pqgruber.com> wrote:
-> >
-> > >
-> > > The datasheet I found for this chip indicates that every ALL_LED_XXX register
-> > > is write-only. Those registers cannot be read back from the chip.
-> > >
-> > > Datasheet "Rev. 4 - 16 April 2015"
-> >
-> > Thanks, good catch! Would you agree that we should just return 0 duty
-> > cycle and disabled state if the "all LEDs" channel is used?
-> 
-> I think get_state() for the all led channel should just return -ENOTSUPP,
-> if the pwm core will allow that.
-> 
-> Because it's the truth, the chip does not support reading from the all led
-> channel.
+Duplicate the current UV procfs leaves to the uv_sysfs driver so they show
+up under /sys/firmware/sgi_uv.  Show a 'deprecated' warning message if
+any of the old /proc/sgi_uv leaves are used.
 
-I thought about that too, but get_state is a void function and there is
-no error/errno variable in pwm_state that could signal a problem.
+These patches depend on the prior set sent by Justin Ernst <justin.ernst@hpe.com>
+	x86/platform/uv: Remove existing /sys/firmware/sgi_uv/ interface
+	x86/platform/uv: Add and export uv_bios_* functions
+	x86/platform/uv: Add new uv_sysfs platform driver
+	x86/platform/uv: Update ABI documentation of /sys/firmware/sgi_uv/
+	x86/platform/uv: Update MAINTAINERS for uv_sysfs driver
 
-> 
-> When we start buffering the all led state, we make the code much
-> more complex, and again we'll run into all sorts of subtle corner cases.
+Mike Travis (5):
+  x86/platform/uv: Add kernel interfaces for obtaining system info.
+  x86/platform/uv: Add sysfs leaves to replace those in procfs
+  x86/platform/uv: Add sysfs hubless leaves
+  x86/platform/uv: Add deprecated messages to /proc info leaves
+  x86/platform/uv: Update sysfs document file
 
-What's the lesser evil in your opinion, always returning 0 duty and
-disabled for the ALL channel or caching it?
+ .../ABI/testing/sysfs-firmware-sgi_uv         | 16 +++++
+ arch/x86/include/asm/uv/bios.h                |  2 +
+ arch/x86/kernel/apic/x2apic_uv_x.c            | 38 +++++++++-
+ drivers/platform/x86/uv_sysfs.c               | 70 ++++++++++++++++++-
+ 4 files changed, 123 insertions(+), 3 deletions(-)
 
-> 
-> > > > +
-> > > > +       if (duty < PCA9685_COUNTER_RANGE) {
-> > >
-> > > How can duty >= 4096 ?
-> > >
-> > > > +               duty *= state->period;
-> > > > +               state->duty_cycle = duty / (PCA9685_COUNTER_RANGE - 1);
-> > >
-> > > is this calculation correct?
-> > > imagine led_on = 0 (default), and led_off = 4095
-> > > then the led is off for one single tick per cycle
-> > > but the above formula would calculate it as full on (period == duty_cycle)?
-> 
-> I just wanted to make sure you hadn't overlooked the two comments above.
+-- 
+2.21.0
 
-Yes I saw them, thanks. You are suggesting that we change the scaling of
-the relative duty cycle from 0..4095 to 0..4096 and in .apply_state we
-do full OFF if 0 and full ON if 4096, so we still have a 4095 duty state
-with a single tick off?
-Then in .get_state: duty_cycle = (duty * period) / COUNTER_RANGE
-
-Please let me know if I misunderstood you.
-
-> 
-> --
-> 
-> Each time I read the code, my thoughts get interrupted by all this
-> if hwpwm >= MAXCHAN then { one macro } else { another macro } business
-> which is spread around in the code !
-> 
-> Same thing with the splitting of the value between H and L registers.
-> Same thing with the LED_FULL bit.
-
-Yes, this is indeed confusing.
-
-> 
-> Maybe the code will be much more readable if we do the following?
-> 
-> - keep pca9685_pwm_full_off/full_on but rename to pca9685_pwm_set_full_off/on
-> - create pca9685_pwm_is_full_off/on
-> - create pca9685_pwm_set_on_time/set_off_time
-> 
-> Then LED_FULL, >= MAXCHAN, and register splits are fully confined to
-> these functions, and we can call them freely in the rest of the code,
-> without getting confused by these details.
-
-Great idea!
-
-> 
-> --
-> 
-> > I noticed something else that does not look great:
-> > Let's say you set up pwm channel 0 with a period of 5000000 and after
-> > that you set up pwm channel 1 with a period of 40000000.
-> > So far so good. But if you now set pwm channel 0's period to 5000000
-> > again, the period stays at 40000000. (Tested with /sys/class/pwm)
-> >
-> 
-> If the driver isn't buggy, this should work ok. Changing the period on one
-> channel changes the global prescale, which in turn changes the period on
-> every other channel. But that's ok, because the ON/OFF times are relative
-> to a 4096-tick counter, so all duty cycles are preserved.
-> 
-> Example:
-> 1. SET channel 0 : duty  50_000 period 100_000 (real duty cycle = 0.5)
-> 2. SET channel 1 : duty  50_000 period 200_000 (real duty cycle = 0.25)
-> 3. GET channel 0 : duty 100_000 period 200_000 (real duty cycle STILL 0.5)
-> 
-> I think this is acceptable behaviour.
-
-Yes the effect of a global period change to the duty cycles of other
-channels is acceptable but that was not what I meant.
-
-I meant that with sysfs, the period does not change if the new value is
-the same as the last time that channel's period was set.
-See my example above.
-
-But we probably can't do anything about that.
-
-> 
-> --
-> 
-> I have been thinking about how this patch caches the global prescaler.
-> There is a possible synchronization issue. Sysfs will always work ok, because
-> it uses a mutex to protect accesses to pwm_set_state(), which means set_state()
-> will never be called concurrently.
-> 
-> But I do not think there's any protection when the driver is used as a client
-> in the devicetree, like so:
-> 
-> &i2c1 {
->         my_pca: pwm@0 {
->                 compatible = "nxp,pca9685-pwm";
->                 reg = <0>;
->         };
-> };
-> 
-> acme_device@0 {
->         pwms = <&my_pca 2 10000000>;
-> };
-> 
-> acme_device@1 {
->         pwms = <&my_pca 1 20000000>;
-> };
-> 
-> For most pwm drivers, this is fine, because their registers are strictly
-> separated: writes to channel 0 and 1 do not touch the same registers.
-> 
-> But in our case, because of the cached prescale, things can go very wrong.
-> 
-> I think this can be solved by simply not caching prescale. Everything then
-> stays on the stack, and the last thread to set the prescaler wins.
-
-OK, regmap accesses are protected with locks but what about the SLEEP
-bit that needs to be set/cleared + sleep. Shouldn't we only allow one
-thread at one time to change the prescaler of a chip? Otherwise, there
-could be synchronization issues there too. (Possible writing to the
-prescale register with the SLEEP bit unset by another thread)
-
-If we drop the cache we would have to read the prescale register
-whenever we need it (for every channel) but with the upcoming regmap
-cache feature, this would probably be OK.
-
-Do you think this should be solved in the same patch as the atomic API
-conversion or can we do this in a follow-up patch?
-
-Thanks,
-Clemens
