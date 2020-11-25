@@ -2,119 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77F02C4804
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 326D52C480D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731579AbgKYTC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:02:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730650AbgKYTC4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:02:56 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A0AC0613D4;
-        Wed, 25 Nov 2020 11:02:55 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id o9so4550447ejg.1;
-        Wed, 25 Nov 2020 11:02:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z/DMutLBZGxo9NPXVt+YC6BHVS50FEMIayBNNBBTrxg=;
-        b=I/hFdSZ61wW4zv+ApmY7lxUsaIp8/Ht/WLIjx4mGzVGJkA07n2VIuxhY3jEvUXPQvv
-         ZNjIjH6KgoPIfMWoSjoaxhaQNNkUwhwCeuxTKLhQZfX3QuMcY/ttJ50cXsMHM+ii0nir
-         aE9+flY3yltw4sgY2OEoHQaAAyG3WiqH64Hwxl/PRH/K9QIg7kFD93Ackwr7eAhKS/nv
-         NUhd+259EsOF7v1Kvy2uj1afCr02O28+Hy+GjeO4MBqZtON/cHP4noWjjn92vDSTKtkO
-         /kmNA/brbx92McZ2es0qIxUEbsBZlcwfNnS/PgUWni1yEw4/6DMtBFjI8mnEk16di+P9
-         B12w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z/DMutLBZGxo9NPXVt+YC6BHVS50FEMIayBNNBBTrxg=;
-        b=a5NG2kI3INyvdrxCc+Z9aB4T/9NPzM+C9bB2wxhzwrP8YDtE/xj7bVFe44+HX4QZlA
-         cVwxTrFHSG9XqILyhEWDeT8HqCvOfvbAMUve4qCgsAuYWGnQRDB/+h/S3Qg9oTGRW/Bh
-         Vx4KyiFvqd4E+zv8OL8wWV3HgPnZRK9Xy9O4DkB/8LG/hHlrT7EQNaHcO2BSaZzVpxQ6
-         pFFo5bFfh1jn8DpI7LOQ16gWYHJHmJMfM2yvEVapwPIBI7mr0QtikjiKkXezyCeEz84b
-         nuWTeUYNhTO+z5dL3qlkjNB5QewNUazJ/PNHi+32EvCm+2sKAqlb78+Wfdt8O1OIec/a
-         80ug==
-X-Gm-Message-State: AOAM5330yOfoKDRH87M8AdmjA8I1ilTqe52X1IUvg+4S2NezXbA7rEsu
-        BaQl7E2tm+nAuBNDnsk4K+E=
-X-Google-Smtp-Source: ABdhPJxkgZy0zQvvllzF/7233lrCrSWXzA0K5vAOZZHx4EYh2eVjg1/FdLcZ0he5sbY8SpK7RzLMig==
-X-Received: by 2002:a17:906:35da:: with SMTP id p26mr4512672ejb.256.1606330974561;
-        Wed, 25 Nov 2020 11:02:54 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee2a.dynamic.kabel-deutschland.de. [95.91.238.42])
-        by smtp.googlemail.com with ESMTPSA id s19sm1271788ejz.69.2020.11.25.11.02.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 25 Nov 2020 11:02:53 -0800 (PST)
-Message-ID: <4e84df2ecb17dfb1fc8070953d8690b29615f409.camel@gmail.com>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
- remove skip_ref_clk
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 25 Nov 2020 20:02:52 +0100
-In-Reply-To: <9484cba7b95c6c6fcbafd96bc35c1dee@codeaurora.org>
-References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
-         <1606202906-14485-2-git-send-email-cang@codeaurora.org>
-         <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
-         <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
-         <0b0c545d80f9a0e8106a634063c23a8f0ba895fc.camel@gmail.com>
-         <9484cba7b95c6c6fcbafd96bc35c1dee@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        id S1726970AbgKYTGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:06:37 -0500
+Received: from mga07.intel.com ([134.134.136.100]:52097 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726760AbgKYTGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 14:06:37 -0500
+IronPort-SDR: j+VeYPRdkJK8ViIVJmIIunEkO9OUvw440VROWi5zdTTGasLF4uwrjtjRhnB3jtByren9g2nlFl
+ Hm3DDG9ZZQFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="236319420"
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="236319420"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 11:06:36 -0800
+IronPort-SDR: wv7Wircfq2RBt/aQJavKoNzUozwGxPGSPELhTtpcmsd0mKwZAwdebCyPrRy53U5qUjy1PwGa2v
+ a1zNJS+Gm8Ag==
+X-IronPort-AV: E=Sophos;i="5.78,369,1599548400"; 
+   d="scan'208";a="313758603"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.85.48]) ([10.212.85.48])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 11:06:36 -0800
+Subject: Re: [PATCH v2 0/3] x86/intel_rdt: task_work vs task_struct
+ rmid/closid write race
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, James Morse <James.Morse@arm.com>
+References: <20201123022433.17905-1-valentin.schneider@arm.com>
+ <87be8915-21b0-5214-9742-ccc7515c298b@intel.com> <jhjpn41v5tv.mognet@arm.com>
+ <19860f42-132d-82db-648f-d47b49af350b@intel.com> <jhjim9tuvpq.mognet@arm.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <22537adf-9280-ea1f-bac5-6c9a7a589ae9@intel.com>
+Date:   Wed, 25 Nov 2020 11:06:35 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <jhjim9tuvpq.mognet@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-25 at 20:28 +0800, Can Guo wrote:
-> > On Wed, 2020-11-25 at 08:53 +0800, Can Guo wrote:
-> > > > > +       bool always_on_while_link_active;
-> > > > 
-> > > > Can,
-> > > > using a sentence as a parameter name looks a little bit clumsy
-> > > > to
-> > > > me.
-> > > > The meaning has been explained in the comments section. How
-> > > > about
-> > > > simplify it and in line with other parameters in the structure?
-> > > > 
-> > > 
-> > > Do you have a better name in mind?
-> > > 
-> > 
-> > no specail input in mind, maybe just "bool eternal_on"
+Hi Valentin,
+
+On 11/25/2020 10:39 AM, Valentin Schneider wrote:
+> On 25/11/20 17:20, Reinette Chatre wrote:
+>>>> Until the queued work is run, the moved task runs with old (and even
+>>>> invalid in the case when its original resource group has been removed)
+>>>> closid and rmid.
+>>>>
+>>>
+>>> For a userspace task, that queued work should be run as soon as possible
+>>> (& relevant). If said task is currently running, then task_work_add() will
+>>> lead to an IPI;
+>>> the other cases (task moving itself or not currently
+>>> running) are covered by the return to userspace path.
+>>
+>> At this time the work is added with the TWA_RESUME flag so the running
+>> task does not get a signal. I tried to follow the task_work_add() path
+>> if there is a change to use TWA_SIGNAL instead and (I may have
+>> misunderstanding) it seems to me that a sleeping task will be woken (if
+>> it is TASK_INTERRUPTIBLE)? That is unnecessary. The goal of this work is
+>> only to change the CPU register to indicate the active closid/rmid so it
+>> is unnecessary to wake a process to do that, it only needs to be done
+>> next time the task is scheduled in (which is already done with the
+>> resctrl_sched_in() call in __switch_to()). If a task is not running all
+>> that is needed is to change the closid/rmid in its task_struct to be
+>> used next time it is scheduled in.
+>>
 > 
-> It is like plain "always_on", but it cannot tell the whole story.
-> If it is not something crutial, let's just let it go first so long
-> as it does not break the original functionality. What do you say?
+> The (default) TWA_RESUME ensures the targeted (userspace) task gets kicked
+> if it is currently running, and doesn't perturb any CPU otherwise;
+> see set_notify_resume() + exit_to_user_mode_loop() (or do_notify_resume()
+> on arm64)
+
+I missed that, thanks. The first issue is thus not a problem. Thank you 
+very much for clearing this up. Queueing work for tasks that are not 
+running remains unnecessary and simplifying this with a targeted 
+smp_call_function addresses that (while also taking care of the other 
+issues with using the queued work).
+
+>> In the new solution, after updating closid/rmid in the task_struct, the
+>> CPU register is updated via smp_call_function_single() on a CPU the task
+>> is running. Nothing is done for tasks not running, next time they are
+>> scheduled in the CPU's register will be updated to reflect the task's
+>> closid/rmid. Moving to the smp_call_function_xxx() API would also bring
+>> this update in line with how other register updates are already done in
+>> resctrl.
+>>
+>>> Kernel threads however are a prickly matter because they quite explicitly
+>>> don't have this return to userspace - they only run their task_work
+>>> callbacks on exit. So we currently have to wait for those kthreads to go
+>>> through a context switch to update the relevant register, but I don't
+>>> see any other alternative that wouldn't involve interrupting every other
+>>> CPU (the kthread could move between us triggering some remote work and its
+>>> previous CPU receiving the IPI).
+>>
+>> This seems ok? In the new solution the closid/rmid would be updated in
+>> task_struct and a smp_call_function_single() attempted on the CPU where
+>> the kthread is running. If the kthread is no longer running at the time
+>> the function is called the CPU register will not be changed.
 > 
-> Thanks,
+> Right, if the update happens before triggering the remote work then that
+> should all work. I was stuck thinking about keeping the update contained
+> within the remote work itself to prevent any other races (i.e. patch 3).
+
+Are you saying that the task_struct update as well as register update 
+should both be done in the remote work? I think I may be 
+misunderstanding though. Currently, with your entire series applied, the 
+update to task_struct is done before the remote work is queued that only 
+changes the register. The new solution would also first update the 
+task_struct and then the remote work (this time with smp_call_function) 
+will just update the register.
+
+ From what I understand your work in patch 3 would continue to be 
+welcome with the new solution that will also update the task_struct and 
+then trigger the remote work to just update the register.
+
+> Anywho, that's enough speculation from me, I'll just sit tight and see what
+> comes next!
 > 
-> Can Guo.
 
-Can, 
+Reinette
 
-yes, it is not functional change, but always_on_while_link_active is
-too fat, and not non-productive way.
-anyway, 
+>> I assume
+>> the kthread move would include a context switch that would result in the
+>> register change (__switch_to()->resctrl_sched_in()) for the kthread to
+>> run with its new closid/rmid after the move.
+>>
 
-Reviewed-by: Bean Huo <beanhuo@micron.com>
 
-
+Reinette
