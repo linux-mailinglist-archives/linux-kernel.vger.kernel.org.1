@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFF52C3F55
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30CD2C3F5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgKYLvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:51:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43444 "EHLO
+        id S1727409AbgKYLya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:54:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgKYLvN (ORCPT
+        with ESMTP id S1725838AbgKYLya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:51:13 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8B8C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:50:54 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id m65so1325807qte.11
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:50:54 -0800 (PST)
+        Wed, 25 Nov 2020 06:54:30 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A55C0613D4;
+        Wed, 25 Nov 2020 03:54:29 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id k27so2585287ejs.10;
+        Wed, 25 Nov 2020 03:54:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yWHXtnJL034sJMBqF5IThyvUi6rUF8wK25sO02Hq/Os=;
-        b=rNs4PcJMRniaGD1WnzKPfAGaoXgGxgKO20ODWcgst/UCbSgFSSRMGD/ugUXJaVQ5uh
-         GNv5e7GzUF4XJY+7KWFFy86b/uY4iV4MFuRfPAAcpnr32XA3tpeDnTOkLTa8OGQT7jeW
-         k/3GG060WaNR+ef5MXv4M1eZY1+Adx+6f7gnKY0FBwFNgLM5Pv61nc+VfsUjq+NF6NG4
-         4tWYoItmkOH6rSe18r13V7sDlc1CoS44m0dNNeJ8GuUrzEZkvSXe5QdYxf8SnVsDSTDy
-         gxQaTyefQi4rVz4obkU6RwsLDjB/B99/c8Vlr+9oEYMShQM6BCyggAz8pBqjeAddp2ul
-         pYLQ==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jXMWiO/nEgseQJ61zPcw7m8Ch8R9S9P35c2iOp2Qd5w=;
+        b=mLvG7P2Mj8TjNFSVleSDlAq0KXuIfNqRw2cNWsq3kdLASmS1XD2UMD4hck9cDuT+V+
+         bMeNHEofsL5IyX9RU3Ja+3Ai2lEFUXy+Rn6TU8fmVWW+BDeL1m1p4qVu9b9H/vwOv+au
+         MpaLi+Euod+ZF8pNMfo4YLMnQes6FRF7n68YIX5OXj+2fKv4Vp3cdbIbU8pt5MsCTFN2
+         7A5p46KpxsqJPVod3qXKd7B/YQekKXwAO2tcHj/fni/XEv1NAwauB9xOdgHIA86wG2cr
+         XDFMI5lR+Khz8iKPqDPwV3nxY+G8fq5lgR/+XMZEauPhTkcm0QTNd0aAz489G/VDBBU9
+         S1IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yWHXtnJL034sJMBqF5IThyvUi6rUF8wK25sO02Hq/Os=;
-        b=Dd+vY9ZP7I5Ba7RT35Gcggz0kY5m/8x9hbI/dVtA9dXXjfr8nGwAnbdjJ+kR4jZXzr
-         ztsTDrmp0s8uC3mdPZwJqeh0XOS6Jpp/hxNHIibu7ZPlpAR13FWkBTpmIOZNkIb1DvHF
-         wsuN7mog3DHjtwIAN12Gm/d2oZpZrCx68grmN+R0+rrXbE6wJtsKbPzwc6N9KKp7V6uF
-         N+z2w8UEKST65P61XwQ7XrYIIAFXt/rFJyYyqF/iahxVeR1hGDH/SlVRorflXO178iN5
-         nS8n7nl4ZkFxvM/BOZWURfyJqGg5ztAabeiv6pzYGFsWk8MdtDIpBBxcr9oMcaowB1vi
-         jNtA==
-X-Gm-Message-State: AOAM5305hoy4sMVwhfRLo7sItFe0kJNlHSusjjEwlkhxQ1013LH/SQLZ
-        sUPXvrV/Jte+oeQfhYlj1FBznr8HeTYr4e9Qvl1gEg==
-X-Google-Smtp-Source: ABdhPJzNJepk0uWGJye3IAxT9og+sVbEj2x2nX+/VOosx8KV4Vb1t2g/cNpHgU/+qLvXQhbCJtLkNdHY7Znhdxo7SrY=
-X-Received: by 2002:a05:622a:18d:: with SMTP id s13mr2654424qtw.306.1606305054002;
- Wed, 25 Nov 2020 03:50:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20201120032639.24386-1-mw@semihalf.com> <20201120032639.24386-4-mw@semihalf.com>
- <CAPDyKFoXX_uOkes6JW5thTe5rqjCCrB_pYvLkTzHncfcxvMD_w@mail.gmail.com>
-In-Reply-To: <CAPDyKFoXX_uOkes6JW5thTe5rqjCCrB_pYvLkTzHncfcxvMD_w@mail.gmail.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Wed, 25 Nov 2020 12:50:43 +0100
-Message-ID: <CAPv3WKcF9ZihAtzO3UekaP76UFhPvbHTtg0S+Eu=UbKtb4+ocw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] mmc: sdhci-xenon: use clk only with DT
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Ziji Hu <huziji@marvell.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Tomasz Nowicki <tn@semihalf.com>,
-        Ard Biesheuvel <ard.biesheuvel@arm.com>,
-        Kostya Porotchkin <kostap@marvell.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jXMWiO/nEgseQJ61zPcw7m8Ch8R9S9P35c2iOp2Qd5w=;
+        b=mVAwxDnjB3dQdh1zBpanEzK5yMORS0eE+OcjaguzO0XZxkhdegLmxdfNvWghde1aaf
+         hi9WiFbNm4Ko+DbsX/L9xznoIBQqOiPg53I+yCpTmaNRpUzjKtggRG38ay7NM2S/jsCC
+         EBhX4fS7fNHSPAzD1++fkVd/JLjb2FS4gT+FkwSkVHr2KgblVhgySCLFKmpL7JqDqH6B
+         9t4LjLxgz+T/WGUOu4ewjG+EyJIjVo5wfUiqL9NduWV722OVcQIwWn3KWXViiPNmnDIs
+         uqbTew2+h0yvNEyOB58qhZt/90H396VgSjybNupMFqV3WQjaloUEDhGdrcQUzHEjcG/J
+         3asA==
+X-Gm-Message-State: AOAM533zMea3YERrq9sYNkgpM4vYB/ulHYI9ozQzhU6kyLpsQqJ30RDp
+        /0hGr0ey3ZX1MxTz07HvYGQ=
+X-Google-Smtp-Source: ABdhPJxvE9NZQVCbYriE8I+PhN6gwTtCU5dYOye7RCXdPwxpmCZTJEkbKgKdMZiYuGLcfgIv4cls7w==
+X-Received: by 2002:a17:906:a448:: with SMTP id cb8mr414518ejb.365.1606305268260;
+        Wed, 25 Nov 2020 03:54:28 -0800 (PST)
+Received: from ubuntu-laptop ([2a01:598:b885:70fc:e10d:51e4:644:a1be])
+        by smtp.googlemail.com with ESMTPSA id j34sm612091edd.57.2020.11.25.03.54.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 25 Nov 2020 03:54:27 -0800 (PST)
+Message-ID: <0b0c545d80f9a0e8106a634063c23a8f0ba895fc.camel@gmail.com>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
+ remove skip_ref_clk
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 25 Nov 2020 12:54:19 +0100
+In-Reply-To: <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
+References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
+         <1606202906-14485-2-git-send-email-cang@codeaurora.org>
+         <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
+         <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf
+On Wed, 2020-11-25 at 08:53 +0800, Can Guo wrote:
+> > > +       bool always_on_while_link_active;
+> > 
+> > Can,
+> > using a sentence as a parameter name looks a little bit clumsy to
+> > me.
+> > The meaning has been explained in the comments section. How about
+> > simplify it and in line with other parameters in the structure?
+> > 
+> 
+> Do you have a better name in mind?
+> 
+no specail input in mind, maybe just "bool eternal_on"
 
+> Thanks,
+> 
+> Can Guo.
 
-wt., 24 lis 2020 o 12:31 Ulf Hansson <ulf.hansson@linaro.org> napisa=C5=82(=
-a):
->
-> On Fri, 20 Nov 2020 at 04:27, Marcin Wojtas <mw@semihalf.com> wrote:
-> >
-> > As a preparation for supporting ACPI, modify the driver
-> > to use the clk framework only when booting with DT -
-> > otherwise rely on the configuration done by firmware.
-> > For that purpose introduce also a custom SDHCI get_max_clock
-> > callback.
-> >
-> > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
->
-> [...]
->
-> > @@ -561,9 +574,11 @@ static int xenon_probe(struct platform_device *pde=
-v)
-> >         pm_runtime_put_noidle(&pdev->dev);
-> >         xenon_sdhc_unprepare(host);
-> >  err_clk_axi:
-> > -       clk_disable_unprepare(priv->axi_clk);
-> > +       if (dev->of_node)
-> > +               clk_disable_unprepare(priv->axi_clk);
-> >  err_clk:
-> > -       clk_disable_unprepare(pltfm_host->clk);
-> > +       if (dev->of_node)
-> > +               clk_disable_unprepare(pltfm_host->clk);
->
-> There's no need to check the dev->of_node, I believe. The
-> clk_disable_unprepare() is capable of managing a NULL pointer as
-> in-parameter.
->
-
-Indeed, clk_disable_unprepare() can handle the NULL pointers. I will
-wait a couple of days for other comments/remarks and will update this
-patch in v3.
-
-Best regards,
-Marcin
