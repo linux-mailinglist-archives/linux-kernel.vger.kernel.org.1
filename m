@@ -2,138 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B152C36C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AB62C36C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgKYC1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 21:27:18 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7675 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgKYC1R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 21:27:17 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CglC242Ynz15Pdc;
-        Wed, 25 Nov 2020 10:26:54 +0800 (CST)
-Received: from [10.57.101.250] (10.57.101.250) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 25 Nov 2020 10:27:11 +0800
-Subject: Re: [PATCH v2 06/18] arm64: dts: hisi: Harmonize EHCI/OHCI DT nodes
- name
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
- <20201111091552.15593-7-Sergey.Semin@baikalelectronics.ru>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   Wei Xu <xuwei5@hisilicon.com>
-Message-ID: <5FBDC0FE.5060409@hisilicon.com>
-Date:   Wed, 25 Nov 2020 10:27:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.2.0
+        id S1726852AbgKYC1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 21:27:25 -0500
+Received: from mga12.intel.com ([192.55.52.136]:52412 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726819AbgKYC1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 21:27:24 -0500
+IronPort-SDR: SpLcjNXQ/HvI7SGVMvZlBJYS/uv8tTwL5i+htTjbDPyETNhpPsVJYPbOTVH4w+iJIQjEE30fW/
+ fZwJOuGuM0xA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="151310286"
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="151310286"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 18:27:24 -0800
+IronPort-SDR: dn43/80W+0gm1i9oAWiqZYjphtHCMHTrAOqCo3p2vOGNf5XilEtdv6xo5239EvUa9/WQblNJX7
+ 6RDHMbL4fk5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="547090088"
+Received: from lkp-server01.sh.intel.com (HELO 6cfd01e9568c) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 24 Nov 2020 18:27:23 -0800
+Received: from kbuild by 6cfd01e9568c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1khkWg-0000Ev-DR; Wed, 25 Nov 2020 02:27:22 +0000
+Date:   Wed, 25 Nov 2020 10:27:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:core/mm] BUILD SUCCESS
+ 7e015a279853e747f5d4f957855ec5310848c501
+Message-ID: <5fbdc107.RM5h4Y1AjdvxT6gv%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20201111091552.15593-7-Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.57.101.250]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Serge,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/mm
+branch HEAD: 7e015a279853e747f5d4f957855ec5310848c501  x86/crashdump/32: Simplify copy_oldmem_page()
 
-On 2020/11/11 17:15, Serge Semin wrote:
-> In accordance with the Generic EHCI/OHCI bindings the corresponding node
-> name is suppose to comply with the Generic USB HCD DT schema, which
-> requires the USB nodes to have the name acceptable by the regexp:
-> "^usb(@.*)?" . Make sure the "generic-ehci" and "generic-ohci"-compatible
-> nodes are correctly named.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 4 ++--
->  arch/arm64/boot/dts/hisilicon/hip06.dtsi       | 4 ++--
->  arch/arm64/boot/dts/hisilicon/hip07.dtsi       | 4 ++--
->  3 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi b/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-> index 12bc1d3ed424..a4acecb75c89 100644
-> --- a/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-> +++ b/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-> @@ -585,7 +585,7 @@ pcie: pcie@9860000 {
->  			status = "disabled";
->  		};
->  
-> -		ohci: ohci@9880000 {
-> +		ohci: usb@9880000 {
->  			compatible = "generic-ohci";
->  			reg = <0x9880000 0x10000>;
->  			interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -600,7 +600,7 @@ ohci: ohci@9880000 {
->  			status = "disabled";
->  		};
->  
-> -		ehci: ehci@9890000 {
-> +		ehci: usb@9890000 {
->  			compatible = "generic-ehci";
->  			reg = <0x9890000 0x10000>;
->  			interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/hisilicon/hip06.dtsi b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-> index 50ceaa959bdc..1226440d54ad 100644
-> --- a/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-> +++ b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-> @@ -373,7 +373,7 @@ refclk: refclk {
->  			#clock-cells = <0>;
->  		};
->  
-> -		usb_ohci: ohci@a7030000 {
-> +		usb_ohci: usb@a7030000 {
->  			compatible = "generic-ohci";
->  			reg = <0x0 0xa7030000 0x0 0x10000>;
->  			interrupt-parent = <&mbigen_usb>;
-> @@ -382,7 +382,7 @@ usb_ohci: ohci@a7030000 {
->  			status = "disabled";
->  		};
->  
-> -		usb_ehci: ehci@a7020000 {
-> +		usb_ehci: usb@a7020000 {
->  			compatible = "generic-ehci";
->  			reg = <0x0 0xa7020000 0x0 0x10000>;
->  			interrupt-parent = <&mbigen_usb>;
-> diff --git a/arch/arm64/boot/dts/hisilicon/hip07.dtsi b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-> index 4773a533fce5..93f99a5255ac 100644
-> --- a/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-> +++ b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-> @@ -1253,7 +1253,7 @@ uart0: uart@602b0000 {
->  			status = "disabled";
->  		};
->  
-> -		usb_ohci: ohci@a7030000 {
-> +		usb_ohci: usb@a7030000 {
->  			compatible = "generic-ohci";
->  			reg = <0x0 0xa7030000 0x0 0x10000>;
->  			interrupt-parent = <&mbigen_usb>;
-> @@ -1262,7 +1262,7 @@ usb_ohci: ohci@a7030000 {
->  			status = "disabled";
->  		};
->  
-> -		usb_ehci: ehci@a7020000 {
-> +		usb_ehci: usb@a7020000 {
->  			compatible = "generic-ehci";
->  			reg = <0x0 0xa7020000 0x0 0x10000>;
->  			interrupt-parent = <&mbigen_usb>;
-> 
+elapsed time: 724m
 
-Thanks!
-But a similar patch has been sent out earlier:
-https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201012131739.1655-8-thunder.leizhen@huawei.com/
+configs tested: 140
+configs skipped: 2
 
-Best Regards,
-Wei
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc8540_ads_defconfig
+arm                        spear6xx_defconfig
+powerpc                    mvme5100_defconfig
+parisc                generic-32bit_defconfig
+c6x                        evmc6472_defconfig
+arm                       multi_v4t_defconfig
+m68k                       m5249evb_defconfig
+sparc                            alldefconfig
+arm                  colibri_pxa270_defconfig
+arm                          ixp4xx_defconfig
+arc                     haps_hs_smp_defconfig
+mips                           jazz_defconfig
+mips                            ar7_defconfig
+arm                         lubbock_defconfig
+parisc                           allyesconfig
+sh                        sh7757lcr_defconfig
+arm                       aspeed_g4_defconfig
+powerpc                    ge_imp3a_defconfig
+mips                           ip27_defconfig
+powerpc                    socrates_defconfig
+arm                        shmobile_defconfig
+arm                           h3600_defconfig
+arm                        magician_defconfig
+sh                          rsk7201_defconfig
+arm                             pxa_defconfig
+mips                          rb532_defconfig
+mips                       bmips_be_defconfig
+sh                         ecovec24_defconfig
+mips                   sb1250_swarm_defconfig
+arm                            pleb_defconfig
+x86_64                           alldefconfig
+arm                        neponset_defconfig
+sh                            migor_defconfig
+mips                      maltaaprp_defconfig
+parisc                           alldefconfig
+c6x                                 defconfig
+sh                          sdk7786_defconfig
+arm                     am200epdkit_defconfig
+powerpc                      ppc44x_defconfig
+arm                      jornada720_defconfig
+mips                         tb0287_defconfig
+powerpc                   bluestone_defconfig
+mips                         tb0219_defconfig
+m68k                            q40_defconfig
+arm                             rpc_defconfig
+arm                        trizeps4_defconfig
+arm                          gemini_defconfig
+sh                               alldefconfig
+m68k                        m5407c3_defconfig
+arm                        cerfcube_defconfig
+powerpc                     kmeter1_defconfig
+sh                          rsk7203_defconfig
+mips                  decstation_64_defconfig
+sh                   rts7751r2dplus_defconfig
+m68k                          multi_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20201124
+x86_64               randconfig-a003-20201124
+x86_64               randconfig-a004-20201124
+x86_64               randconfig-a005-20201124
+x86_64               randconfig-a001-20201124
+x86_64               randconfig-a002-20201124
+i386                 randconfig-a004-20201124
+i386                 randconfig-a003-20201124
+i386                 randconfig-a002-20201124
+i386                 randconfig-a005-20201124
+i386                 randconfig-a001-20201124
+i386                 randconfig-a006-20201124
+x86_64               randconfig-a015-20201125
+x86_64               randconfig-a011-20201125
+x86_64               randconfig-a014-20201125
+x86_64               randconfig-a016-20201125
+x86_64               randconfig-a012-20201125
+x86_64               randconfig-a013-20201125
+i386                 randconfig-a012-20201124
+i386                 randconfig-a013-20201124
+i386                 randconfig-a011-20201124
+i386                 randconfig-a016-20201124
+i386                 randconfig-a014-20201124
+i386                 randconfig-a015-20201124
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20201124
+x86_64               randconfig-a011-20201124
+x86_64               randconfig-a014-20201124
+x86_64               randconfig-a016-20201124
+x86_64               randconfig-a012-20201124
+x86_64               randconfig-a013-20201124
+x86_64               randconfig-a006-20201125
+x86_64               randconfig-a003-20201125
+x86_64               randconfig-a004-20201125
+x86_64               randconfig-a005-20201125
+x86_64               randconfig-a002-20201125
+x86_64               randconfig-a001-20201125
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
