@@ -2,80 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587C32C3F25
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE672C3F24
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgKYLeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:34:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726871AbgKYLeJ (ORCPT
+        id S1729009AbgKYLeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:34:12 -0500
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:14188 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726871AbgKYLeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:34:09 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D7DC0613D4;
-        Wed, 25 Nov 2020 03:34:09 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id u21so1771662iol.12;
-        Wed, 25 Nov 2020 03:34:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XEVAGgc1H8aZ7MF4cFynboZTtpjAI/xfJxofgXBhcV8=;
-        b=fVy3/Lj5IgzYjeT1ItrRJNcDqXCJk6601IRAVCG4oegjDGExpYR5ot6zRK2swOtHAJ
-         J0490qm5feyprosfJJrxvUNwYCj3xLh1ffPrUqRMw/8OncDgweIfix6uhNzlOMGY9/JO
-         AyXP8mYP5jwAk9BeFFlXcWGK/wRyc3KlSSK1vl06u7rDt+QEGamRjGIsHEq+JI+ZZ0Fr
-         NDBJSPheIG1YidJN0sUKaREUZ9yhqNFC4cm66H5prR+NX7LZDRGw95jD69EokbZjseQA
-         7XVmFLy+75jY+ZDawNZHsjnJQQkX1FkbfWTvpBWKAT74uOW13bfD0yQG5tSEwzvC+Ipx
-         WYYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=XEVAGgc1H8aZ7MF4cFynboZTtpjAI/xfJxofgXBhcV8=;
-        b=MDRHGL8eggfsR6o9tjaJRnxK0r73f+QNt2upk6siIuegluce5RcdJHWpJIr9yR4WpO
-         R6RzHY0nnNRO4V+NgIsbScm7Kks7JaVCGQ+cl70JPpXOvZYdQDfBVU6plN0A1M3hH6s5
-         /SO7CvM2DhCwWwXnmfmDmIaLWvkjiV7FBZFSS/WHP79U2GhspUVNFNSugbDLlOJ+3rY7
-         Dt1Lbw5JcUstExdH1GCUmSzWSsLJ1M1TT1mjkcKJ/kwy5CHCKeDD5+2pg3HL6Uu6DgyV
-         eFjefdFRDC9rgXwcyHMcTvdBor8PoHuXffTtUke/cgtUKlYUYcBocucF5B5rRTXp9y+W
-         gjZA==
-X-Gm-Message-State: AOAM531FtFdH2KV7dTo2r/a0utY8hZ15CMg4ep61Sbm/qwbbEXu/ZgJH
-        RNhvH8o/6gPvJhUUG6XJQ1k=
-X-Google-Smtp-Source: ABdhPJxHStYcrgcSEqgjYtKsRYxaUG5a7oJDHGMz456/mXbmfm/zrrwvIg/mILkVbXSATM3M/SDb+A==
-X-Received: by 2002:a5d:858b:: with SMTP id f11mr2220240ioj.0.1606304048946;
-        Wed, 25 Nov 2020 03:34:08 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id n10sm1026771ioh.22.2020.11.25.03.34.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 03:34:08 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 25 Nov 2020 06:33:46 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     axboe@kernel.dk, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] blk-iocost: Just open code the q_name()
-Message-ID: <X75BGjo8B1fgKwui@mtj.duckdns.org>
-References: <cover.1606186717.git.baolin.wang@linux.alibaba.com>
- <3bdc9526ac839a6952db8cd50cf0e75280614b1d.1606186717.git.baolin.wang@linux.alibaba.com>
+        Wed, 25 Nov 2020 06:34:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1606304051; x=1637840051;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=AdPJ+J5keoI7FMAiLdNj/CT8Rb6ZvE+73VJf1DkHPS0=;
+  b=yMBiQoIdhWW2ESCstZcWJmSc3su05HbjXbmMNvTbgvfAr5u2FQXHPpS/
+   pd36wU37nPx4BL0UCUqthjOTCeoDiZuz74q/X8WNEcr/xS0lKSURtPuY5
+   ctKIptwfLFsuoC3royWQWIF4dBgTIe0rj0v0i7BBqTikIHSZgs5MB5W/2
+   caXD/r4jXwPY/zKaF9GF2UmDSJXKXRnMDGc9uR4ZNJwowQSGWq+ne3vcz
+   /0yONYAWIew8lUXV6c0JjCNAvBlDlfbYOGONoMY9+IqGuSg+IpPDMgFzk
+   5NZOFjNVbmjm84c1tL/7X7oHS0gYlEwNJtYjzKnr6oLbm4fWa9I30AAT2
+   Q==;
+IronPort-SDR: t0kRFXRMypynMr+qGpu31740TObzazSqwB5ln8Aqz1+xQqtaxyt9N3FoO3JJg9pNwE7yPQHUpc
+ 52PboiMEsQ13jzZ1E1K2/gqV6hMs7NAgd3bCEcTAc/vgCjVSF5VMMwYacQeOYcWd6uZHgEtgLZ
+ N6Canrpuz+IouHMklAF3jerQwsIUtMjpBxipySusVNQKUF7P2vDy/p3vwMVYljgDZCyFu0NFs4
+ GjmpnQUrVXD7H+yznLKC81mUAets7Tp7zhUVJH1kz4q3kkgY2PZTNaEXwvH7rQTPLKrrsPX9IN
+ HPE=
+X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
+   d="scan'208";a="104994999"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Nov 2020 04:34:10 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 25 Nov 2020 04:34:10 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 25 Nov 2020 04:34:06 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <jonathanh@nvidia.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] regulator: core: return zero for selectors lower than linear_min_sel
+Date:   Wed, 25 Nov 2020 13:34:03 +0200
+Message-ID: <1606304043-3227-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <20201124141136.GD4933@sirena.org.uk>
+References: <20201124141136.GD4933@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3bdc9526ac839a6952db8cd50cf0e75280614b1d.1606186717.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:33:32AM +0800, Baolin Wang wrote:
-> The simple q_name() function is only called from ioc_name(),
-> just open code it to make code more readable.
-> 
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Selectors lower than linear_min_sel should not be considered invalid.
+Thus return zero in case _regulator_list_voltage(),
+regulator_list_hardware_vsel() or regulator_list_voltage_table()
+receives such selectors as argument.
 
-I'm not sure this is an improvement. Either way seems fine to me. So, why
-change?
+Fixes: bdcd1177578c ("regulator: core: validate selector against linear_min_sel")
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ drivers/regulator/core.c    | 10 ++++++----
+ drivers/regulator/helpers.c |  5 +++--
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-Thanks.
-
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 216b0cbce199..ca03d8e70bd1 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -2956,9 +2956,10 @@ static int _regulator_list_voltage(struct regulator_dev *rdev,
+ 		return rdev->desc->fixed_uV;
+ 
+ 	if (ops->list_voltage) {
+-		if (selector >= rdev->desc->n_voltages ||
+-		    selector < rdev->desc->linear_min_sel)
++		if (selector >= rdev->desc->n_voltages)
+ 			return -EINVAL;
++		if (selector < rdev->desc->linear_min_sel)
++			return 0;
+ 		if (lock)
+ 			regulator_lock(rdev);
+ 		ret = ops->list_voltage(rdev, selector);
+@@ -3108,9 +3109,10 @@ int regulator_list_hardware_vsel(struct regulator *regulator,
+ 	struct regulator_dev *rdev = regulator->rdev;
+ 	const struct regulator_ops *ops = rdev->desc->ops;
+ 
+-	if (selector >= rdev->desc->n_voltages ||
+-	    selector < rdev->desc->linear_min_sel)
++	if (selector >= rdev->desc->n_voltages)
+ 		return -EINVAL;
++	if (selector < rdev->desc->linear_min_sel)
++		return 0;
+ 	if (ops->set_voltage_sel != regulator_set_voltage_sel_regmap)
+ 		return -EOPNOTSUPP;
+ 
+diff --git a/drivers/regulator/helpers.c b/drivers/regulator/helpers.c
+index 974f1a63993d..f42b394a0c46 100644
+--- a/drivers/regulator/helpers.c
++++ b/drivers/regulator/helpers.c
+@@ -647,9 +647,10 @@ int regulator_list_voltage_table(struct regulator_dev *rdev,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (selector >= rdev->desc->n_voltages ||
+-	    selector < rdev->desc->linear_min_sel)
++	if (selector >= rdev->desc->n_voltages)
+ 		return -EINVAL;
++	if (selector < rdev->desc->linear_min_sel)
++		return 0;
+ 
+ 	return rdev->desc->volt_table[selector];
+ }
 -- 
-tejun
+2.7.4
+
