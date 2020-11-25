@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E792C37A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 04:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8A12C37A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 04:41:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgKYD0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 22:26:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:45562 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbgKYD0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 22:26:45 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E0AF106F;
-        Tue, 24 Nov 2020 19:26:44 -0800 (PST)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 302DB3F718;
-        Tue, 24 Nov 2020 19:26:44 -0800 (PST)
-Subject: Re: [PATCH] mmc: sdhci: Update firmware interface API
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201120233831.447365-1-jeremy.linton@arm.com>
- <CAPDyKFq-pMKAJdS8qPpkR_QZ_QLW70Y7PPGxA=d_HOBRd-Su=A@mail.gmail.com>
- <be00e2df-572b-2bdb-85c2-675ca16e5d01@intel.com>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <6383172b-912f-39f9-f446-1f600d1262b5@arm.com>
-Date:   Tue, 24 Nov 2020 21:26:35 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1727057AbgKYD1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 22:27:41 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8400 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgKYD1k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 22:27:40 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CgmXj4Fxsz6vSK;
+        Wed, 25 Nov 2020 11:27:17 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 25 Nov
+ 2020 11:27:35 +0800
+Subject: Re: [PATCH 09/17] fs/f2fs: Remove f2fs_copy_page()
+To:     <ira.weiny@intel.com>, Andrew Morton <akpm@linux-foundation.org>
+CC:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Steve French <sfrench@samba.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Brian King" <brking@us.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+References: <20201124060755.1405602-1-ira.weiny@intel.com>
+ <20201124060755.1405602-10-ira.weiny@intel.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <31cd27dc-71af-2a55-f9d6-ce11ff3dc19b@huawei.com>
+Date:   Wed, 25 Nov 2020 11:27:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <be00e2df-572b-2bdb-85c2-675ca16e5d01@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201124060755.1405602-10-ira.weiny@intel.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/24/20 8:51 AM, Adrian Hunter wrote:
-> On 24/11/20 4:25 pm, Ulf Hansson wrote:
->> On Sat, 21 Nov 2020 at 00:39, Jeremy Linton <jeremy.linton@arm.com> wrote:
->>>
->>> The device_* calls were added a few years ago to abstract
->>> DT/ACPI/fwnode firmware interfaces. Lets convert the two
->>> sdhci caps fields to use the generic calls rather than the OF
->>> specific ones. This has the side effect of allowing
->>> ACPI based devices to quirk themselves when the caps field
->>> is broken.
->>>
->>> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->>
->> Applied for next, thanks!
->>
->> Kind regards
->> Uffe
->>
->>
->>> ---
->>>   drivers/mmc/host/sdhci.c | 8 ++++----
->>>   1 file changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
->>> index 592a55a34b58..feba64fbde16 100644
->>> --- a/drivers/mmc/host/sdhci.c
->>> +++ b/drivers/mmc/host/sdhci.c
->>> @@ -3992,10 +3992,10 @@ void __sdhci_read_caps(struct sdhci_host *host, const u16 *ver,
->>>          if (host->v4_mode)
->>>                  sdhci_do_enable_v4_mode(host);
->>>
->>> -       of_property_read_u64(mmc_dev(host->mmc)->of_node,
->>> -                            "sdhci-caps-mask", &dt_caps_mask);
->>> -       of_property_read_u64(mmc_dev(host->mmc)->of_node,
->>> -                            "sdhci-caps", &dt_caps);
->>> +       device_property_read_u64_array(mmc_dev(host->mmc),
->>> +                                      "sdhci-caps-mask", &dt_caps_mask, 1);
->>> +       device_property_read_u64_array(mmc_dev(host->mmc),
->>> +                                      "sdhci-caps", &dt_caps, 1);
+On 2020/11/24 14:07, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> But why not use device_property_read_u64()?
+> The new common function memcpy_page() provides this exactly
+> functionality.  Remove the local f2fs_copy_page() and call memcpy_page()
+> instead.
+> 
+> Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+> Cc: Chao Yu <yuchao0@huawei.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-That would be more concise in this case.
-
-I will post and update.
+Acked-by: Chao Yu <yuchao0@huawei.com>
 
 Thanks,
