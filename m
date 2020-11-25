@@ -2,100 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30CD2C3F5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD932C3F5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727409AbgKYLya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgKYLya (ORCPT
+        id S1728077AbgKYLyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:54:44 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:49652 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgKYLyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:54:30 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A55C0613D4;
-        Wed, 25 Nov 2020 03:54:29 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id k27so2585287ejs.10;
-        Wed, 25 Nov 2020 03:54:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jXMWiO/nEgseQJ61zPcw7m8Ch8R9S9P35c2iOp2Qd5w=;
-        b=mLvG7P2Mj8TjNFSVleSDlAq0KXuIfNqRw2cNWsq3kdLASmS1XD2UMD4hck9cDuT+V+
-         bMeNHEofsL5IyX9RU3Ja+3Ai2lEFUXy+Rn6TU8fmVWW+BDeL1m1p4qVu9b9H/vwOv+au
-         MpaLi+Euod+ZF8pNMfo4YLMnQes6FRF7n68YIX5OXj+2fKv4Vp3cdbIbU8pt5MsCTFN2
-         7A5p46KpxsqJPVod3qXKd7B/YQekKXwAO2tcHj/fni/XEv1NAwauB9xOdgHIA86wG2cr
-         XDFMI5lR+Khz8iKPqDPwV3nxY+G8fq5lgR/+XMZEauPhTkcm0QTNd0aAz489G/VDBBU9
-         S1IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jXMWiO/nEgseQJ61zPcw7m8Ch8R9S9P35c2iOp2Qd5w=;
-        b=mVAwxDnjB3dQdh1zBpanEzK5yMORS0eE+OcjaguzO0XZxkhdegLmxdfNvWghde1aaf
-         hi9WiFbNm4Ko+DbsX/L9xznoIBQqOiPg53I+yCpTmaNRpUzjKtggRG38ay7NM2S/jsCC
-         EBhX4fS7fNHSPAzD1++fkVd/JLjb2FS4gT+FkwSkVHr2KgblVhgySCLFKmpL7JqDqH6B
-         9t4LjLxgz+T/WGUOu4ewjG+EyJIjVo5wfUiqL9NduWV722OVcQIwWn3KWXViiPNmnDIs
-         uqbTew2+h0yvNEyOB58qhZt/90H396VgSjybNupMFqV3WQjaloUEDhGdrcQUzHEjcG/J
-         3asA==
-X-Gm-Message-State: AOAM533zMea3YERrq9sYNkgpM4vYB/ulHYI9ozQzhU6kyLpsQqJ30RDp
-        /0hGr0ey3ZX1MxTz07HvYGQ=
-X-Google-Smtp-Source: ABdhPJxvE9NZQVCbYriE8I+PhN6gwTtCU5dYOye7RCXdPwxpmCZTJEkbKgKdMZiYuGLcfgIv4cls7w==
-X-Received: by 2002:a17:906:a448:: with SMTP id cb8mr414518ejb.365.1606305268260;
-        Wed, 25 Nov 2020 03:54:28 -0800 (PST)
-Received: from ubuntu-laptop ([2a01:598:b885:70fc:e10d:51e4:644:a1be])
-        by smtp.googlemail.com with ESMTPSA id j34sm612091edd.57.2020.11.25.03.54.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 25 Nov 2020 03:54:27 -0800 (PST)
-Message-ID: <0b0c545d80f9a0e8106a634063c23a8f0ba895fc.camel@gmail.com>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
- remove skip_ref_clk
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 25 Nov 2020 12:54:19 +0100
-In-Reply-To: <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
-References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
-         <1606202906-14485-2-git-send-email-cang@codeaurora.org>
-         <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
-         <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Wed, 25 Nov 2020 06:54:44 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606305281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r4HNcEhYd2VgvyfBGtCMGm1chw2/6OizpvW8l9Q1z+M=;
+        b=ywQ8QxOvwDbvJE9c9JPJzdHwfBCFRH3928DMITp+dq6S9GRoV/xjLwkQeLiEne8RKqkllG
+        iKVa1fAyiQhkE2K7EL2ZNXg5qcjEmYm4NNClmpSikNsbWuCiNyB7kThBL538GP24uhK34p
+        QLNAWIcOQX73qxCvPL3M6lrU4JZWg+HY4PluhL+athGxq2jX1pMZjDobYjGsk4N6lh7QCk
+        IxdDzTsWYNI32jzPQhMjuO8WcLU/ZQGWEWO4eGfvD9Q1iMHcmUc2+NbbedEoH3fn7wqymB
+        HN09hyC9SnRqW+yBncQcahkJ+xgGcPQH17GwsQge1MhyUAAW3rxRYCuGLaAkYQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606305281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r4HNcEhYd2VgvyfBGtCMGm1chw2/6OizpvW8l9Q1z+M=;
+        b=f+/u2xvQDCOr/gl/tvrYOTM09dSlbIXP+gm/q5P2/5ke+AusnJMy2GxaO+M4gwP2xdULK6
+        Mv04xdkGQIaP7zCQ==
+To:     Stefan =?utf-8?Q?B=C3=BChler?= 
+        <stefan.buehler@tik.uni-stuttgart.de>,
+        sean.v.kelley@linux.intel.com
+Cc:     bhelgaas@google.com, bp@alien8.de, corbet@lwn.net,
+        kar.hin.ong@ni.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        mingo@redhat.com, sassmann@kpanic.de, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: boot interrupt quirk (also in 4.19.y) breaks serial ports (was: [PATCH v2 0/2] pci: Add boot interrupt quirk mechanism for Xeon chipsets)
+In-Reply-To: <b2da25c8-121a-b241-c028-68e49bab0081@tik.uni-stuttgart.de>
+References: <20200220192930.64820-1-sean.v.kelley@linux.intel.com> <b2da25c8-121a-b241-c028-68e49bab0081@tik.uni-stuttgart.de>
+Date:   Wed, 25 Nov 2020 12:54:41 +0100
+Message-ID: <87zh35k5xa.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-25 at 08:53 +0800, Can Guo wrote:
-> > > +       bool always_on_while_link_active;
-> > 
-> > Can,
-> > using a sentence as a parameter name looks a little bit clumsy to
-> > me.
-> > The meaning has been explained in the comments section. How about
-> > simplify it and in line with other parameters in the structure?
-> > 
-> 
-> Do you have a better name in mind?
-> 
-no specail input in mind, maybe just "bool eternal_on"
+Stefan,
 
-> Thanks,
-> 
-> Can Guo.
+On Wed, Sep 16 2020 at 12:12, Stefan B=C3=BChler wrote:
 
+sorry for the delay. This fell through the cracks.
+
+> this quirk breaks our serial ports PCIe card (i.e. we don't see any=20
+> output from the connected devices; no idea whether anything we send=20
+> reaches them):
+>
+> 05:00.0 PCI bridge: PLX Technology, Inc. PEX8112 x1 Lane PCI Express-to-P=
+CI Bridge (rev aa)
+> 06:00.0 Serial controller: Oxford Semiconductor Ltd OX16PCI954 (Quad 1695=
+0 UART) function 0 (Uart)
+> 06:00.1 Bridge: Oxford Semiconductor Ltd OX16PCI954 (Quad 16950 UART) fun=
+ction 0 (Disabled)
+> 06:01.0 Serial controller: Oxford Semiconductor Ltd OX16PCI954 (Quad 1695=
+0 UART) function 0 (Uart)
+> 06:01.1 Bridge: Oxford Semiconductor Ltd OX16PCI954 (Quad 16950 UART)
+> function 0 (Disabled)
+
+Can you please provide the output of:
+
+ for ID in 05:00.0 06:00.0 06:00.1 06:01.0 06:01.1; do lspci -s $ID -vvv; d=
+one
+
+Thanks,
+
+        tglx
