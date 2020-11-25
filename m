@@ -2,112 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECD42C482C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:25:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C292C482E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727458AbgKYTYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        id S1727527AbgKYTYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727339AbgKYTYd (ORCPT
+        with ESMTP id S1725989AbgKYTYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:24:33 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5535C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:24:33 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id p6so1597590plr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:24:33 -0800 (PST)
+        Wed, 25 Nov 2020 14:24:36 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D313CC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:24:36 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 81so3309111pgf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:24:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=7VfALifkpBqQQ97YIRqJPsh6KDMRHR6fB6WBCjPtnsU=;
-        b=h6NUvy/yg7CEs3n2/8qiPXUo1HaPIkhNDb1V2f0vQqemsRJsmAsOk5QY6R4cZ7NuT7
-         vJ6X23GK1Xdw5R6DlNCRlvHhnT4oICpuoz5kYfv18Z0HJPjcQmt6VnNZRf/ZnVp4vw07
-         oDWD5KVAH2OmWRHEksw9iF6aDciDahzGhANVY=
+        bh=y7ndIeR1NUOUYYXQBcY9J5lvUU5rOgBYurIuVCh3u3U=;
+        b=M2dxA/cH+RVXfOHRZxT8KpR/KWp2IExF/RUh+qhpd4R4H7s8+oTtCBdw4vnKF96iry
+         K9HBuYyyTf7wkgLXvvK/HYWOIMgnjielI+HiMNAcXNuXBUYl6q/u8wuA4Gu0Hn8vrjIJ
+         UVjYMzOhcRHWbdIXR6lHcit4ycQ4pNY61Usm4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=7VfALifkpBqQQ97YIRqJPsh6KDMRHR6fB6WBCjPtnsU=;
-        b=TdsVe1czMgBPnRKY+VCf6IK5wif/U/6BEwQ/MyeRQIN/7tAQVM7Lvb3e3ZMPWKqAQy
-         OY1YYDfRWpvL0Bopi2MAIwP+GBDKh008qoTG3jXhPgcfzqAupE4KbUB7ZhOCb4hjs41n
-         q56FhJxTcqb1IG4eYmB//ApuA0dgFKC1FLqEwYb4FNdzKNuR2dvKZF406BP1ZenomNUq
-         7oS8rpu3VV4K/DIf6bnYnvjBC5BjpX35XF2d2v5+1YgQDCQF3z8QYZyX2rzQnQ44IP68
-         B3/HkkaULz7q/YnxCIT6bypHYj8cT6vyPFuR/m8/NwBzhDgjVVH+6DPlwlQpm4vq0QfM
-         JwGg==
-X-Gm-Message-State: AOAM530UTpnYqXoKcSBqQk6vBdqOSmh4KqDmIrE8qMbQqj9zo6ek4hfj
-        VNI1sFVuzTe7lxawxw9OkZqBxg==
-X-Google-Smtp-Source: ABdhPJxPLxZb3s/ES5uemueP4EenbHb5P3Owo/n9t/o0K7PrsAAD+FMxSpKgJJODQecG/h9GSI7t7Q==
-X-Received: by 2002:a17:902:a608:b029:d6:a1fc:ab75 with SMTP id u8-20020a170902a608b02900d6a1fcab75mr4249463plq.18.1606332273173;
-        Wed, 25 Nov 2020 11:24:33 -0800 (PST)
+        bh=y7ndIeR1NUOUYYXQBcY9J5lvUU5rOgBYurIuVCh3u3U=;
+        b=eAlCdX43vmScDJt3YTRkWOk4GYXOY1b0EsePo3w+6qeXHOslJQl1VbquRQIGF8pFux
+         rFd9FOCJEfROH37Ez9t24/LPbirtD/zYMKXC+Ar+K3loxI5Aky5nBi7kMLMgdWQEF1t9
+         b5ez0XFQrfNATQV2gfN8/BbVm/SPpzn2fRB3VTwFE61zLAv6etbYQjl0UF4HcuG02EVl
+         7Ysu9VCvOfB23P36NlnWlITTyj+NX2oX9vaQ0P5T+Ntxg7/L6F07QKB3FZpPlcnng+GI
+         ntkZt6nPpVt0tVCaoUB0ysrLYbZC8urUPAspdgdBmbeTv6RrOj0RC3OoivxQ712MyM20
+         /owQ==
+X-Gm-Message-State: AOAM532GkGz4uJ2e9M5NoBlQIy81uiLL7zX1iuxkpzmOc0IhgV7OFOdi
+        JjkgnFMGaWcMh6jwmrjEluAsyA==
+X-Google-Smtp-Source: ABdhPJz6vVcoWrR8yqtqLYtufwlOsd1CczIE/cfJgEho7SPEEGDIbysVzY9piHcqK/7KbaAapHOebg==
+X-Received: by 2002:aa7:9e88:0:b029:18b:c1b7:a8cd with SMTP id p8-20020aa79e880000b029018bc1b7a8cdmr4480957pfq.21.1606332276224;
+        Wed, 25 Nov 2020 11:24:36 -0800 (PST)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id j69sm2574885pfd.37.2020.11.25.11.24.30
+        by smtp.gmail.com with ESMTPSA id j69sm2574885pfd.37.2020.11.25.11.24.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 11:24:32 -0800 (PST)
+        Wed, 25 Nov 2020 11:24:35 -0800 (PST)
 From:   Jim Quinlan <james.quinlan@broadcom.com>
 To:     linux-pci@vger.kernel.org,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
         bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
         BCM2711/BCM2835 ARM ARCHITECTURE),
         linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
         BCM2711/BCM2835 ARM ARCHITECTURE),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v1 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP voltage regulators
-Date:   Wed, 25 Nov 2020 14:24:18 -0500
-Message-Id: <20201125192424.14440-2-james.quinlan@broadcom.com>
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v1 2/6] PCI: brcmstb: Add control of EP voltage regulator(s)
+Date:   Wed, 25 Nov 2020 14:24:19 -0500
+Message-Id: <20201125192424.14440-3-james.quinlan@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201125192424.14440-1-james.quinlan@broadcom.com>
 References: <20201125192424.14440-1-james.quinlan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000008e1f6b05b4f36015"
+        boundary="000000000000bd83c005b4f360a4"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000008e1f6b05b4f36015
+--000000000000bd83c005b4f360a4
 
-Quite similar to the regulator bindings found in "rockchip-pcie-host.txt",
-this allows optional regulators to be attached and controlled by the
-PCIe RC driver.
+Control of EP regulators by the RC is needed because of the chicken-and-egg
+situation: although the regulator is "owned" by the EP and would be best
+handled on its driver, the EP cannot be discovered and probed unless its
+regulator is already turned on.
 
 Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
 ---
- .../devicetree/bindings/pci/brcm,stb-pcie.yaml       | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/pci/controller/pcie-brcmstb.c | 66 +++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-index 807694b4f41f..baacc3d7ec87 100644
---- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-+++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-@@ -85,6 +85,18 @@ properties:
-       minItems: 1
-       maxItems: 3
+diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+index bea86899bd5d..34d6bad07b66 100644
+--- a/drivers/pci/controller/pcie-brcmstb.c
++++ b/drivers/pci/controller/pcie-brcmstb.c
+@@ -23,6 +23,7 @@
+ #include <linux/of_platform.h>
+ #include <linux/pci.h>
+ #include <linux/printk.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/reset.h>
+ #include <linux/sizes.h>
+ #include <linux/slab.h>
+@@ -210,6 +211,18 @@ enum pcie_type {
+ 	BCM2711,
+ };
  
-+  vpcie12v-supply:
-+    description: 12v regulator phandle for the endpoint device
++enum pcie_regulators {
++	VPCIE12V,
++	VPCIE3V3,
++	VPCIE1V8,
++	VPCIE0V9,
++	PCIE_REGULATORS_MAX,
++};
 +
-+  vpcie3v3-supply:
-+    description: 3.3v regulator phandle for the endpoint device
++static const char *ep_regulator_names[PCIE_REGULATORS_MAX] = {
++	"vpcie12v", "vpcie3v3", "vpcie1v8", "vpcie0v9",
++};
 +
-+  vpcie1v8-supply:
-+    description: 1.8v regulator phandle for the endpoint device
+ struct pcie_cfg_data {
+ 	const int *offsets;
+ 	const enum pcie_type type;
+@@ -287,8 +300,53 @@ struct brcm_pcie {
+ 	u32			hw_rev;
+ 	void			(*perst_set)(struct brcm_pcie *pcie, u32 val);
+ 	void			(*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
++	struct regulator	*regulators[PCIE_REGULATORS_MAX];
++	int			num_regulators;
+ };
+ 
++static int brcm_parse_regulators(struct brcm_pcie *pcie)
++{
++	struct device *dev = pcie->dev;
++	struct regulator *ep_reg;
++	int i;
 +
-+  vpcie0v9-supply:
-+    description: 0.9v regulator phandle for the endpoint device
++	for (i = 0; i < PCIE_REGULATORS_MAX; i++) {
++		ep_reg = devm_regulator_get_optional(dev, ep_regulator_names[i]);
++		if (IS_ERR(ep_reg)) {
++			if (PTR_ERR(ep_reg) == -ENODEV)
++				continue;
++			dev_err(dev, "failed to get regulator %s\n", ep_regulator_names[i]);
++			return PTR_ERR(ep_reg);
++		}
++		pcie->regulators[i] = ep_reg;
++		pcie->num_regulators++;
++	}
++	return 0;
++}
 +
- required:
-   - reg
-   - ranges
++static void brcm_set_regulators(struct brcm_pcie *pcie, bool on)
++{
++	struct device *dev = pcie->dev;
++	int ret, i;
++
++	if (pcie->num_regulators == 0)
++		return;
++
++	for (i = 0; i < PCIE_REGULATORS_MAX; i++) {
++		if (!pcie->regulators[i])
++			continue;
++		if (on) {
++			ret = regulator_enable(pcie->regulators[i]);
++			dev_dbg(dev, "enable regulator %s (%s)\n",
++				ep_regulator_names[i], ret ? "fail" : "pass");
++		} else {
++			ret = regulator_disable(pcie->regulators[i]);
++			dev_dbg(dev, "disable regulator %s (%s)\n",
++				ep_regulator_names[i], ret ? "fail" : "pass");
++		}
++	}
++}
++
+ /*
+  * This is to convert the size of the inbound "BAR" region to the
+  * non-linear values of PCIE_X_MISC_RC_BAR[123]_CONFIG_LO.SIZE
+@@ -1139,6 +1197,7 @@ static int brcm_pcie_suspend(struct device *dev)
+ 	brcm_pcie_turn_off(pcie);
+ 	ret = brcm_phy_stop(pcie);
+ 	clk_disable_unprepare(pcie->clk);
++	brcm_set_regulators(pcie, false);
+ 
+ 	return ret;
+ }
+@@ -1151,6 +1210,7 @@ static int brcm_pcie_resume(struct device *dev)
+ 	int ret;
+ 
+ 	base = pcie->base;
++	brcm_set_regulators(pcie, true);
+ 	clk_prepare_enable(pcie->clk);
+ 
+ 	ret = brcm_phy_start(pcie);
+@@ -1189,6 +1249,7 @@ static void __brcm_pcie_remove(struct brcm_pcie *pcie)
+ 	brcm_phy_stop(pcie);
+ 	reset_control_assert(pcie->rescal);
+ 	clk_disable_unprepare(pcie->clk);
++	brcm_set_regulators(pcie, false);
+ }
+ 
+ static int brcm_pcie_remove(struct platform_device *pdev)
+@@ -1238,6 +1299,10 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+ 	pcie->perst_set = data->perst_set;
+ 	pcie->bridge_sw_init_set = data->bridge_sw_init_set;
+ 
++	ret = brcm_parse_regulators(pcie);
++	if (ret)
++		return ret;
++
+ 	pcie->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(pcie->base))
+ 		return PTR_ERR(pcie->base);
+@@ -1273,6 +1338,7 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	brcm_set_regulators(pcie, true);
+ 	ret = brcm_pcie_setup(pcie);
+ 	if (ret)
+ 		goto fail;
 -- 
 2.17.1
 
 
---0000000000008e1f6b05b4f36015
+--000000000000bd83c005b4f360a4
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -177,14 +285,14 @@ V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
 lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
 5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
 di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHZ682fwVMlJ
-Jlzxa97Bd4tt+xrNv/m/eieyNuutpUQNMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMTEyNTE5MjQzM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPJSaSjVos6D
+VF93O715wZI/1Dv2+prLaufCJIuAJyiAMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMTEyNTE5MjQzNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDnOVi28sdaULeyLYfUhKdVHuLffnXD
-gJ+PeN2MLTlKIYShMX+/Jn6CqcgII473RsH0FSYCFSvFSMfTNfByLb9N7v9VaurIhjBDCeKKZVvX
-jxFG8KUAlSwIB/g1MKOpcXZNGthMqkhFDdzfQNHrP0mYffWeVuWU/Do1hznnIgnqHXBsD9GKvzyY
-pdE1yp9ljRdW1j37yDVXzknbQJGAIJ5ecVxxkX/7jAR7Tl50/hMw51BAm0VfR9oFFaEFlurhK3Kj
-ae8CDjSLqNrRbzh+w1EMZsxLOeAb4Mzp5NKOCuA90IDJ4qP+uJRvOI6dALzzGM1kDpx3WLF5wzLJ
-9sbv/a7z
---0000000000008e1f6b05b4f36015--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAx3zxDuGFQO05Ds4LeA9IXdz8tyS5r
+GsLQ0GXu/XdawJyWP14g78UAqWRuJI0wY2LnyTqhMN+Oahenvfwch1g4bkkSBqnUrj3E9Ybti6W3
+wIL0XIkKJIrd4CbGUsZLO2dxTNg9CwpbWh3xds5fGiqhmtXwE/8B/kV0lHjxoX27J94ALlYrt5ui
+QlnCkFeb+/HAuNbZSqhHAruqpDCWTa1Il3R2IiFWnzlF5tqecj/Lgw4yNPN5m0QDFTsONiWzPWzI
+zKWHk3R6oliWHn/a2xy1xMg+U7TCBt6Cio/mu591bwxh6q1LXqCU6g2qWquvPpM0NA6YpZdFeXxE
+Uy5unH6r
+--000000000000bd83c005b4f360a4--
