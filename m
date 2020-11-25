@@ -2,198 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DFB2C4926
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7C22C4933
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730214AbgKYUiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 15:38:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59682 "EHLO
+        id S1729826AbgKYUlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 15:41:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27106 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729947AbgKYUiB (ORCPT
+        by vger.kernel.org with ESMTP id S1729111AbgKYUls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 15:38:01 -0500
+        Wed, 25 Nov 2020 15:41:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606336679;
+        s=mimecast20190719; t=1606336907;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IJcBHUa5q245able4He9GSxvMxFj8YT9oIgh1BWou6g=;
-        b=bXyQWcOz7PdS4CtNOX7zMa+vXFBaiotl45FUFbJD58sgpEO9mi/P/it9i+TAaAQ7zqdzpq
-        lKATtBt7ePlOsnhQK+Ow5TJMaHO/bTzBoUU3TnRC4YU9Ht/djesqX2CQjCBWwUob1cZDqV
-        TNpA0b5rFBYicq2toBbaYYUI2w4xk5E=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-28-8K4lb5UgNNyNj9lletKbzw-1; Wed, 25 Nov 2020 15:37:57 -0500
-X-MC-Unique: 8K4lb5UgNNyNj9lletKbzw-1
-Received: by mail-qk1-f197.google.com with SMTP id o25so3360882qkj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 12:37:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=IJcBHUa5q245able4He9GSxvMxFj8YT9oIgh1BWou6g=;
-        b=Z78UD8CZHRT1i/bwVWMZJW6t+NlRtuE/q8aUPVWEYJJ2+5J8beoqrJ1Hgq/XtALZI/
-         xVNQ2nqwFK0vgzWojMbnkiUhPr7n0tou64gdLGudnwD/976FTayWMymSa3CWv8rWAOhg
-         xojTsGeyFyuE1IK+Mo+/25t/BFqYz7afELxtRUwRH4VwKvurCWpnqyxBuPs0vhdBg9II
-         XhpAQ7HIAKS4ZAMd+Cgi6plI1q8zNFggWRVp4nxPbAoUVPj/JhPwkzwVWXFlyHcaID59
-         cPZ1Yv8DGxYc/UZto8T5I5sFXx/GnUoeKI7/mLo8EFsiKEpIQalBTZ2cgYuSwDBAvYMC
-         xVXg==
-X-Gm-Message-State: AOAM530vNGj20OhfU3rr8coD1GznJMybBZ2lE9d2zWcPd1HRcj9hYdcC
-        gM2S3i6GveaWrG1VzAH/Gn1dDSiPLNP3QKYTeteHAeeLi3gVVhBGemJD5mCiKqZElmTvAp/6EzN
-        Magr2+C33XaIroiWDN1tFDoWq
-X-Received: by 2002:a05:620a:632:: with SMTP id 18mr726705qkv.173.1606336677400;
-        Wed, 25 Nov 2020 12:37:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzPfz+fhdZGh/lgK1kAs5zgS5US+ZNzvHwy9bybWAsRBZme/uyVy4vkWuJx2sq5cLUKbWfhRQ==
-X-Received: by 2002:a05:620a:632:: with SMTP id 18mr726690qkv.173.1606336677144;
-        Wed, 25 Nov 2020 12:37:57 -0800 (PST)
-Received: from [192.168.1.16] (198-84-214-74.cpe.teksavvy.com. [198.84.214.74])
-        by smtp.gmail.com with ESMTPSA id i7sm427129qkl.94.2020.11.25.12.37.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 12:37:56 -0800 (PST)
-Subject: Re: [Y2038][time namespaces] Question regarding CLOCK_REALTIME
- support plans in Linux time namespaces
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Zack Weinberg <zackw@panix.com>, Cyril Hrubis <chrubis@suse.cz>
-Cc:     Dmitry Safonov <dima@arista.com>, Andrei Vagin <avagin@gmail.com>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?UGV0ciDFoHBhxI1law==?= <petr.spacek@nic.cz>
-References: <20201030110229.43f0773b@jawa> <20201030135816.GA1790@yuki.lan>
- <CAKCAbMgemuaG61seKMvhjOHdPCEQJRQBiQgzcf_eO=xm2t+KBw@mail.gmail.com>
- <87sg9vn40t.fsf@nanos.tec.linutronix.de>
- <72bbb207-b041-7710-98ad-b08579fe17e4@redhat.com>
- <87h7qbmqc3.fsf@nanos.tec.linutronix.de>
- <7bb5837f-1ff6-2b2c-089e-e2441d31ddb2@redhat.com>
- <87k0v7kwdc.fsf@nanos.tec.linutronix.de>
- <7a4d7b14-1f0b-4c40-2bd1-2582d8b71868@redhat.com>
- <87y2jej8mp.fsf@nanos.tec.linutronix.de>
- <d88ede3f-5f50-24a2-5009-6418f3cfaf4c@redhat.com>
- <87wnygopen.fsf@nanos.tec.linutronix.de>
-From:   Carlos O'Donell <carlos@redhat.com>
-Organization: Red Hat
-Message-ID: <5c382ef4-c505-5629-a85c-abae67c05c7c@redhat.com>
-Date:   Wed, 25 Nov 2020 15:37:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        bh=0CRTYprAwnP1Pf7kS4WliF9f7U9/vzjMIzF4x+KPal4=;
+        b=C+kbxwGX/ZwtY2zG90+XC+6P1VmAkpwsQGDhxiXEX/ysEXWrYFnmo/lz8wy1TfsI3ZgqF+
+        wsdARKFWwxXjw7PDFNIhLs5Pkjj81M+FmqzpmnX+IM8Sy5gqBxReelkRH3yvuTy6+eA3KY
+        niMyOBzSrzB7gPOLCSHrlJx/yBS277k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-547-xXKBOtb3P22oePjW5IIrIw-1; Wed, 25 Nov 2020 15:41:43 -0500
+X-MC-Unique: xXKBOtb3P22oePjW5IIrIw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F904185E489;
+        Wed, 25 Nov 2020 20:41:41 +0000 (UTC)
+Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 600AE5D9C6;
+        Wed, 25 Nov 2020 20:41:37 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 15:41:36 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <X77BgHiTR3R7biho@redhat.com>
+References: <X73s8fxDKPRD6wET@redhat.com>
+ <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
+ <X76iatgBErQH5El4@redhat.com>
+ <a4cc62ba-8066-3e9c-cead-98cd74d313dd@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <87wnygopen.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a4cc62ba-8066-3e9c-cead-98cd74d313dd@redhat.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/20 7:14 PM, Thomas Gleixner wrote:
-> I hope you are aware that the time namespace offsets have to be set
-> _before_ the process starts and can't be changed afterwards,
-> i.e. settime() is not an option.
-
-I not interested in settime(). I saw Petr's request and forwarded it on
-here to further the educational conversation about CLOCK_REALTIME and
-cement a consensus around this issue. I'm happy to evangelize that we
-won't support settime() for the specific reasons you call out and that
-way I can give architectural guidance to setup systems in a particular
-way to use CRIU or VM+container if needed.
- 
-> That might limit the usability for your use case and this can't be
-> changed at all because there might be armed timers and other time
-> related things which would start to go into full confusion mode.
-
-The use of time in these cases, from first principles, seems to
-degenerate into:
-
-* Verify a time-dependent action is correct.
-
-In glibc's case:
-
-* Verify various APIs after y2038.
-
-In Petr's case he could split the test into two such tests
-but he would have to reproduce the system state for the second
-test and I expect he wants to avoid that.
-
-In that case I think Petr has to use CRIU to start the container,
-stop it, advance time, and restart. That should work perfectly
-in that use case and solve all the problems by relying on the work
-done by CRIU.
- 
-> The supported use case is container life migration and that _is_ very
-> careful about restoring time and armed timers and if their user space
-> tools screw it up then they can keep the bits and pieces.
-
-Agreed.
- 
-> So in order to utilize that you'd have to checkpoint the container,
-> manipulate the offsets and restore it.
-
-Or use the same mechanisms CRIU uses.
-
-I can't rely on CRIU because I have to bootstrap a toolchain and userspace.
-We should be able to write a thin veneer into our own testing wrapper and
-emulate whatever CRIU does. We know apriori that our test framework starts
-the test without anything having been executed yet. So we have that benefit.
-Currently we unshare() for NEWUSER/NEWPID/NEWNS, but I expect that will
-get a little more advanced. Already having these namespaces helps immensely
-when adding fs-related tests.
-
-> Aside of this, there are other things, e.g. file times, packet
-> timestamps etc. which are based on CLOCK_REALTIME. What to do about
-> them? Translate these to/from name space time or not? There is a long
-> list of other horrors which are related to that.
-
-We haven't even started testing for the upcoming negative leap second ;-)
- 
-> So _you_ might say, that you don't care about file times, RTC, timers
-> expiring at the wrong time, packet timestamps and whatever.
-
-I do care about them, but only given certain contexts.
- 
-> But then the next test dude comes around and want's to test exactly
-> these interfaces and we have to slap the time namespace conversions for
-> REALTIME and TAI all over the place because we already support the
-> minimal thing.
-
-That's a decision you need to make when asked those questions.
- 
-> Can you see why this is a slippery slope and why I'm extremly reluctant
-> to even provide the minimal 'distort realtime when the namespace starts'
-> support?
-
-I would argue this is a slippery slope fallacy. If and when we get better
-vm+container support we just tear all this code out and tell people to
-start using those frameworks. The vm+container frameworks have independent
-reasons to exist and so will continue to improve for security isolation
-purposes and end up solving time testing issues by allowing us complete
-control over the VMs time.
-
->> Hopefully this ilustrates that real time name space is not "request for
->> ponny" :-)
+On Wed, Nov 25, 2020 at 08:27:21PM +0100, David Hildenbrand wrote:
+> On 25.11.20 19:28, Andrea Arcangeli wrote:
+> > On Wed, Nov 25, 2020 at 07:45:30AM +0100, David Hildenbrand wrote:
+> >> Before that change, the memmap of memory holes were only zeroed
+> >> out. So the zones/nid was 0, however, pages were not reserved and
+> >> had a refcount of zero - resulting in other issues.
+> > 
+> > So maybe that "0,0" zoneid/nid was not actually the thing that
+> > introduced the regression? Note: I didn't bisect anything yet, it was
+> > just a guess.
 > 
-> I can understand your pain and why you want to distort time, but please
-> understand that timekeeping is complex. The primary focus must be
-> correctness, scalability and maintainability which is already hard
-> enough to achieve. Just for the perspective: It took us only 8 years to
-> get the kernel halfways 2038 ready (filesystems still outstanding).
+> I guess 0/0 is the issue, but that existed before when we had a simple
+> memmset(0). The root issue should be what Mike said:
 
-I agree. The upstream glibc community has been working on y2038 since 2018;
-not as long as the kernel.
- 
-> So from my point of view asking for distorted time still _is_ a request
-> for ponies.
+Yes, the second stage must have stopped running somehow.
 
-I'm happy if you say it's more work than the value it provides.
+Is there anything we can do to induce a deterministically reproducible
+kernel crashing behavior if the second stage doesn't run?
 
-> The fixed offsets for clock MONOTONIC/BOOTTIME are straight forward,
-> absolutely make sense and they have a limited scope of exposure. clock
-> REALTIME/TAI are very different beasts which entail a slew of horrors.
-> Adding settime() to the mix makes it exponentially harder.
- 
-Right.
+Why did we start doing a more graceful initialization in the first
+stage, instead of making a less graceful by setting it to 0xff instead
+of 0x00?
 
--- 
-Cheers,
-Carlos.
+> 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather
+> that check each PFN")
+
+So if that's not intentional, are you suggesting nodeid/nid was a bug
+if it was set to 0,0 for a non-RAM valid pfn?
+
+> "correct" is problematic. If you have an actual memory hole, there is
+> not always a right answer - unless I am missing something important.
+> 
+> 
+> Assume you have a layout like this
+> 
+> [  zone X ] [ hole ] [ zone Y ]
+> 
+> If either X and or Y starts within a memory section, you have a valid
+> memmap for X - but what would be the right node/zone?
+> 
+> 
+> Assume you have a layout like this
+> 
+> [ zone X ]
+> 
+> whereby X ends inside a memory section. The you hotplug memory. Assume
+> it goes to X
+> 
+> [ zone X ][ hole in X ][ zone X]
+> 
+> or it goes to y
+> 
+> [ zone X ][ hole ][ zone Y ]
+> 
+> This can easily be reproduced by starting a VM in qemu with a memory
+> size not aligned to 128 MB (e.g., -M 4000) and hotplugging memory.
+
+I don't get what the problem is sorry.
+
+You have a pfn, if pfn_valid() is true, pfn_to_page returns a page
+deterministically.
+
+It's up to the kernel to decide which page structure blongs to any pfn
+in the pfn_to_page function.
+
+Now if the pfn_to_page(pfn) function returns a page whose nid/zone_id
+in page->flags points to a node->zone whose zone_start_pfn -
+end_zone_pfn range doesn't contain "pfn" that is a bug in
+page_alloc.c.
+
+I don't see how is it not possible to deterministically enforce the
+above never happens. Only then it would be true that there's not
+always a right answer.
+
+zone can overlap, but it can't be that you do pfn_to_page of a
+pfn_valid and you obtain a page whose zone doesn't contain that
+pfn. Which is what is currently crashing compaction.
+
+I don't see how this is an unsolvable problem and why we should accept
+to live with a bogus page->flags for reserved pages.
+
+> We can't. The general rule is (as I was once told by Michal IIRC) that
+
+The fact we can't kernel crash reliably when somebody uses the wrong
+0,0 uninitialized value by not adding an explicit PageReserved check,
+is my primary concern in keeping those nodeid/nid uninitialized, but
+non-kernel-crashing, since it already created this unreproducible bug.
+
+> I'm not rooting for "keep this at 0/0" - I'm saying that I think there
+> are corner cases where it might not be that easy.
+
+I'm not saying it's easy. What I don't see is how you don't always
+have the right answer and why it would be an unsolvable problem.
+
+It is certainly problematic and difficult to solve in the mem_map
+iniitalization logic, but to me having pfn_valid() &&
+page_zone(pfn_to_page(pfn)) randomly returning the DMA zone on first
+node also looks problematic and difficult to handle across all VM
+code, so overall it looks preferable to keep the complexity of the
+mem_map initialization self contained and not spilling over the rest
+of the VM.
+
+> Yes, but there is a "Some of these" :)
+> 
+> Boot a VM with "-M 4000" and observe the memmap in the last section -
+> they won't get initialized a second time.
+
+Is the beyond the end of the zone yet another case? I guess that's
+less likely to give us problems because it's beyond the end of the
+zone. Would pfn_valid return true for those pfn? If pfn_valid is not
+true it's not really a concern but the again I'd rather prefer if
+those struct pages beyond the end of the zone were kernel crashing set
+to 0xff.
+
+In other words I just don't see why we should ever prefer to leave
+some pages at a graceful and erroneous nid 0 nodeid 0 that wouldn't
+easily induce a crash if used.
+
+> AFAIK, the mem_map array might have multiple NIDs - and it's set when
+> initializing the zones.
+
+Well because there's no mem_map array with SPARSEMEM, but it's not
+conceptually too different than if there was one. Even with flatmem
+there could be multiple page struct for each pfn, the disambiguation
+has to be handled by pfn_to_page regardless of SPARSEMEM or not.
+
+The point is that if zone_page(pfn_to_page(pfn)) points to DMA zone of
+first node, and the pfn isn't part of the DMA of first node that looks
+a bug and it can be enforced it doesn't happen.
+
+> Well, "reserved" is not a good indication "what" something actually is.
+> 
+> I documented that a while ago in include/linux/page-flags.h
+> 
+> "PG_reserved is set for special pages. The "struct page" of such a page
+>  should in general not be touched (e.g. set dirty) except by its owner.
+>  Pages marked as PG_reserved include:."
+> 
+> I suggest looking at that.
+> 
+> AFAIR, we have been setting *most* memmap in memory holes/non-ram
+> reserved for a long time - long before I added the __init_single_page -
+> see init_reserved_page() for example.
+
+Sure, non-RAM with valid page struct always has been marked
+PG_reserved. I wasn't suggesting that it shouldn't be PG_reserved.
+
+I was pointing out that RAM can also be marked PG_reserved later by
+the kernel, long after boot, as you mentioned for all other cases of
+PG_reserved, the most notable are drivers doing PG_reserved after
+allocating RAM either vmalloc or GART swapping RAM around at other
+alias physical address.
+
+That is all born as RAM at boot, it gets page->flags done right, with
+the right zoneid, and it becomes PG_reserved later.
+
+So I was suggesting physical ranges "pfn" of non-RAM (be those holes
+withtin zones, or in between zones doesn't matter) with a pfn_valid
+returning true and a pfn_to_page pointing deterministically to one and
+only one struct page, should have such struct page initialized exactly
+the same as if it was RAM.
+
+Either that or we can define a new NO_ZONE NO_ID id and crash in
+page_zonenum or page_to_nid if it is ever called on such a page
+struct.
+
+Thanks,
+Andrea
 
