@@ -2,90 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5772C483D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394662C4840
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgKYT0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:26:05 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4389 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727886AbgKYT0E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:26:04 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbeafcc0003>; Wed, 25 Nov 2020 11:26:04 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 25 Nov
- 2020 19:26:02 +0000
-Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Wed, 25 Nov 2020 19:25:58 +0000
-From:   Vidya Sagar <vidyas@nvidia.com>
-To:     <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <jingoohan1@gmail.com>, <kw@linux.com>,
-        <amanharitsh123@gmail.com>, <gregkh@linuxfoundation.org>
-CC:     <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
-        <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
-Subject: [PATCH] PCI: tegra: Read "dbi" base address to program in application logic
-Date:   Thu, 26 Nov 2020 00:55:54 +0530
-Message-ID: <20201125192554.5401-1-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-X-NVConfidentiality: public
+        id S1728047AbgKYT0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:26:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727848AbgKYT03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 14:26:29 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EA07206D9;
+        Wed, 25 Nov 2020 19:26:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606332389;
+        bh=y5G7G9tqQU0nNNYbyoVzJ6yqFdXX1xV0mpcHxeV68Ac=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qnwv5kbxfR1G+CdcN52GwSplgjaPdm0fTc0l/8FM7uScdg4VvXnX4IWjOwV62BfVq
+         NmbOGw0+P4rP+f+KtS7LX7YaJ5ikwX06YLbUF/9KTpjdhs4WftBY0yOJbXRHF4KVCY
+         uw3BxXCNOSLzcEzAkzGMYELJkR7cypSjjVLbWGTM=
+Date:   Wed, 25 Nov 2020 11:26:27 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Antonio Borneo <antonio.borneo@st.com>
+Cc:     Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>, <stable@vger.kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: stmmac: fix incorrect merge of patch upstream
+Message-ID: <20201125112627.113c3c0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201124223729.886992-1-antonio.borneo@st.com>
+References: <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
+        <20201124223729.886992-1-antonio.borneo@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606332364; bh=JWEIVMl/77bu7Q+BVjyybEbxe5MdS6MrC/6uj772QPg=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
-         MIME-Version:Content-Type;
-        b=hdVkoaKOWf2K3iNdsk4GNjg9JAXIX8mjLhwUl9zs/cy3Ikza4uqq6GGvDckE8MqL4
-         YT466FnFMNDfAZL0b4vD/hEX7hTlcgcuU5Cv6na9guprzE7sLjE8tJtlFuLtVopIs2
-         azKxk7e0K3nHjYqtcG/4DaEjjNCtKEBKbVpRV8ltNrDIMmKtwU56l4fjRB6Eo1W287
-         Qhg3gOdyFEOyl3aq8WR/PK+HAvT6moyikB1xoCCNJK2Bpl7zaNbKRGRAGn54tYZQKb
-         qIGyIbZt2LTZQ71wypNaX2s42xyGzSiVBjvvOEWOzfezWakLnQAOGvR67KfgxySl7Y
-         kXEi27jy74+WA==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCIe controller in Tegra194 requires the "dbi" region base address to be
-programmed in one of the application logic registers to enable CPU access
-to the "dbi" region. But, commit a0fd361db8e5 ("PCI: dwc: Move "dbi",
-"dbi2", and "addr_space" resource setup into common code") moved the code
-that reads the whereabouts of "dbi" region to the common code causing the
-existing code in pcie-tegra194.c file to program NULL in the application
-logic registers. This is causing null pointer dereference when the "dbi"
-registers are accessed. This issue is fixed by explicitly reading the
-"dbi" base address from DT node.
+On Tue, 24 Nov 2020 23:37:29 +0100 Antonio Borneo wrote:
+> Commit 757926247836 ("net: stmmac: add flexible PPS to dwmac
+> 4.10a") was intended to modify the struct dwmac410_ops, but it got
+> somehow badly merged and modified the struct dwmac4_ops.
+> 
+> Revert the modification in struct dwmac4_ops and re-apply it
+> properly in struct dwmac410_ops.
+> 
+> Fixes: 757926247836 ("net: stmmac: add flexible PPS to dwmac 4.10a")
+> Cc: stable@vger.kernel.org # v5.6+
+> Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+> Reported-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-Fixes: a0fd361db8e5 ("PCI: dwc: Move "dbi", "dbi2", and "addr_space" resource setup into common code")
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
----
- drivers/pci/controller/dwc/pcie-tegra194.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Applied, and queued for 5.9 (all other 5.5+ branches are EOL by now).
 
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index fa54d9aaa430..ac2225175087 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -1053,9 +1053,16 @@ static int tegra_pcie_enable_phy(struct tegra_pcie_dw *pcie)
- 
- static int tegra_pcie_dw_parse_dt(struct tegra_pcie_dw *pcie)
- {
-+	struct platform_device *pdev = to_platform_device(pcie->dev);
- 	struct device_node *np = pcie->dev->of_node;
- 	int ret;
- 
-+	pcie->dbi_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi");
-+	if (!pcie->dbi_res) {
-+		dev_err(pcie->dev, "Failed to find \"dbi\" region\n");
-+		return -ENODEV;
-+	}
-+
- 	ret = of_property_read_u32(np, "nvidia,aspm-cmrt-us", &pcie->aspm_cmrt);
- 	if (ret < 0) {
- 		dev_info(pcie->dev, "Failed to read ASPM T_cmrt: %d\n", ret);
--- 
-2.17.1
-
+Thanks!
