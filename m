@@ -2,201 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3516F2C471E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B532C4723
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732606AbgKYRzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:55:54 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:44896 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731310AbgKYRzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:55:53 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 0BEF7FB02;
-        Wed, 25 Nov 2020 18:55:51 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Zj3mMRwPQSRm; Wed, 25 Nov 2020 18:55:48 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id C83144026B; Wed, 25 Nov 2020 18:55:46 +0100 (CET)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/1] usb: typec: tps6598x: Export some power supply properties
-Date:   Wed, 25 Nov 2020 18:55:46 +0100
-Message-Id: <b28b09937f3ade9355fcbfa2833dd98fab8fe2bc.1606326871.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1606326871.git.agx@sigxcpu.org>
-References: <cover.1606326871.git.agx@sigxcpu.org>
+        id S1731579AbgKYR5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:57:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729631AbgKYR5O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 12:57:14 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004BAC0613D4;
+        Wed, 25 Nov 2020 09:57:13 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id l1so2758638wrb.9;
+        Wed, 25 Nov 2020 09:57:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=q76sCAQCkbjrxEHa/bTijZbpnPeUzggOKoo+w3D3/HM=;
+        b=n5OYgJGV8H6PWOguZUEL23o87v2w0KJvjoG+jc6amL3kRcDtzk7+LbgjCFg1o/F6fk
+         HoDsjw3QlIZgPqSgRLIFMZT/fZj2ZeZ1kHmrCDJZaBzMyVQs1oceX+nE2qOE0BFGlDlJ
+         SEm/EbxKf+NwYil3vkaegA6yob0vnH5DHRgr9SCKvYyKPZ9bPE2BVb7PeeZgRgxxumY1
+         ++cVG5nhbtkE8Ci9uDNH8Zi/cqUgQ3/0/RnWc5uLtWLK8SAYbrRiZVSQp1jcixmYqYZ6
+         xSRqJAcQDdLWUVn6mOcCJ9+DIJ10ntsKBLGvvJxS09K/w5L8wfp5YKg0/KnBkoM1tyUB
+         W0lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=q76sCAQCkbjrxEHa/bTijZbpnPeUzggOKoo+w3D3/HM=;
+        b=h5iPK+T6s7Kh3jFMnxzfrBNDRYAfHELhj0QPbvBcWgdsghabnnlTbXMXz0itdClU74
+         C7VD1ihAIjkO31f5SBmeuiuY9kKm+zwnHVPg8Mk9x9u0XaS1zB+ur8B1TxG+c9fXLrN6
+         5MSM75meptcBwrePjIEG5tQ0oKPKqEAWDmsKmgY848s1tF93pPOM8hRT/gxeVE6E8nl5
+         ahCFyIuB89MxK8fdXHsDFhEoYGegLuA1kAPPrGNBYq9gpj2Br9ty1Vrk1oNGVGHOFFr2
+         nNsXLlvWa5KYEVvMZR6H8djI/dThoLBV8sZ9BlV/DHlB6hIsYciFSzxfiuhJuse6wQqk
+         e6OQ==
+X-Gm-Message-State: AOAM531VoTxKj9yERQ9vm9ddGimQFjH67yAYweQaQKZfCJQXsL/j9pma
+        w8ByiDDIiobjXnjsk9dwKZ4=
+X-Google-Smtp-Source: ABdhPJwa7NIE+RcUsUdPvZObLxpIFG/9Y9a3ASL99KFq/0C/ef7BT+f2k2yWIftSiz0/aTmv6RRD9A==
+X-Received: by 2002:a5d:474d:: with SMTP id o13mr5468292wrs.178.1606327032727;
+        Wed, 25 Nov 2020 09:57:12 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id 6sm7363753wrn.72.2020.11.25.09.57.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 09:57:11 -0800 (PST)
+Date:   Wed, 25 Nov 2020 18:57:09 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     lorenzo.pieralisi@arm.com, robh+dt@kernel.org, bhelgaas@google.com,
+        jonathanh@nvidia.com, amanharitsh123@gmail.com,
+        dinghao.liu@zju.edu.cn, kw@linux.com, linux-pci@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V4 0/6] Enhancements to Tegra194 PCIe driver
+Message-ID: <20201125175709.GA1274379@ulmo>
+References: <20201109171937.28326-1-vidyas@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="n8g4imXOkfNTN/H1"
+Content-Disposition: inline
+In-Reply-To: <20201109171937.28326-1-vidyas@nvidia.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows downstream supplies and userspace to detect
-whether external power is supplied.
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- drivers/usb/typec/tps6598x.c | 97 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 97 insertions(+)
+--n8g4imXOkfNTN/H1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
-index 3db33bb622c3..ea72957602d8 100644
---- a/drivers/usb/typec/tps6598x.c
-+++ b/drivers/usb/typec/tps6598x.c
-@@ -9,6 +9,7 @@
- #include <linux/i2c.h>
- #include <linux/acpi.h>
- #include <linux/module.h>
-+#include <linux/power_supply.h>
- #include <linux/regmap.h>
- #include <linux/interrupt.h>
- #include <linux/usb/typec.h>
-@@ -55,6 +56,7 @@ enum {
- };
- 
- /* TPS_REG_POWER_STATUS bits */
-+#define TPS_POWER_STATUS_CONNECTION	BIT(0)
- #define TPS_POWER_STATUS_SOURCESINK	BIT(1)
- #define TPS_POWER_STATUS_PWROPMODE(p)	(((p) & GENMASK(3, 2)) >> 2)
- 
-@@ -96,8 +98,24 @@ struct tps6598x {
- 	struct typec_partner *partner;
- 	struct usb_pd_identity partner_identity;
- 	struct usb_role_switch *role_sw;
-+	struct typec_capability typec_cap;
-+
-+	struct power_supply *psy;
-+	struct power_supply_desc psy_desc;
-+	enum power_supply_usb_type usb_type;
-+};
-+
-+static enum power_supply_property tps6598x_psy_props[] = {
-+	POWER_SUPPLY_PROP_USB_TYPE,
-+	POWER_SUPPLY_PROP_ONLINE,
-+};
-+
-+static enum power_supply_usb_type tps6598x_psy_usb_types[] = {
-+	POWER_SUPPLY_USB_TYPE_C,
- };
- 
-+static const char *tps6598x_psy_name_prefix = "tps6598x-source-psy-";
-+
- /*
-  * Max data bytes for Data1, Data2, and other registers. See ch 1.3.2:
-  * https://www.ti.com/lit/ug/slvuan1a/slvuan1a.pdf
-@@ -248,6 +266,8 @@ static int tps6598x_connect(struct tps6598x *tps, u32 status)
- 	if (desc.identity)
- 		typec_partner_set_identity(tps->partner);
- 
-+	power_supply_changed(tps->psy);
-+
- 	return 0;
- }
- 
-@@ -260,6 +280,7 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
- 	typec_set_pwr_role(tps->port, TPS_STATUS_PORTROLE(status));
- 	typec_set_vconn_role(tps->port, TPS_STATUS_VCONN(status));
- 	tps6598x_set_data_role(tps, TPS_STATUS_DATAROLE(status), false);
-+	power_supply_changed(tps->psy);
- }
- 
- static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
-@@ -467,6 +488,78 @@ static const struct regmap_config tps6598x_regmap_config = {
- 	.max_register = 0x7F,
- };
- 
-+static int tps6598x_psy_get_online(struct tps6598x *tps,
-+				   union power_supply_propval *val)
-+{
-+	int ret;
-+	u16 pwr_status;
-+
-+	ret = tps6598x_read16(tps, TPS_REG_POWER_STATUS, &pwr_status);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!(pwr_status & TPS_POWER_STATUS_CONNECTION) ||
-+	    !(pwr_status & TPS_POWER_STATUS_SOURCESINK)) {
-+		val->intval = 0;
-+	} else {
-+		val->intval = 1;
-+	}
-+	return 0;
-+}
-+
-+static int tps6598x_psy_get_prop(struct power_supply *psy,
-+				 enum power_supply_property psp,
-+				 union power_supply_propval *val)
-+{
-+	struct tps6598x *tps = power_supply_get_drvdata(psy);
-+	int ret = 0;
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_USB_TYPE:
-+		val->intval = POWER_SUPPLY_USB_TYPE_C;
-+		break;
-+	case POWER_SUPPLY_PROP_ONLINE:
-+		ret = tps6598x_psy_get_online(tps, val);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int devm_tps6598_psy_register(struct tps6598x *tps)
-+{
-+	struct power_supply_config psy_cfg = {};
-+	const char *port_dev_name = dev_name(tps->dev);
-+	size_t psy_name_len = strlen(tps6598x_psy_name_prefix) +
-+				     strlen(port_dev_name) + 1;
-+	char *psy_name;
-+
-+	psy_cfg.drv_data = tps;
-+	psy_cfg.fwnode = dev_fwnode(tps->dev);
-+	psy_name = devm_kzalloc(tps->dev, psy_name_len, GFP_KERNEL);
-+	if (!psy_name)
-+		return -ENOMEM;
-+
-+	snprintf(psy_name, psy_name_len, "%s%s", tps6598x_psy_name_prefix,
-+		 port_dev_name);
-+	tps->psy_desc.name = psy_name;
-+	tps->psy_desc.type = POWER_SUPPLY_TYPE_USB;
-+	tps->psy_desc.usb_types = tps6598x_psy_usb_types;
-+	tps->psy_desc.num_usb_types = ARRAY_SIZE(tps6598x_psy_usb_types);
-+	tps->psy_desc.properties = tps6598x_psy_props;
-+	tps->psy_desc.num_properties = ARRAY_SIZE(tps6598x_psy_props);
-+	tps->psy_desc.get_property = tps6598x_psy_get_prop;
-+
-+	tps->usb_type = POWER_SUPPLY_USB_TYPE_C;
-+
-+	tps->psy = devm_power_supply_register(tps->dev, &tps->psy_desc,
-+					       &psy_cfg);
-+	return PTR_ERR_OR_ZERO(tps->psy);
-+}
-+
- static int tps6598x_probe(struct i2c_client *client)
- {
- 	struct typec_capability typec_cap = { };
-@@ -560,6 +653,10 @@ static int tps6598x_probe(struct i2c_client *client)
- 		goto err_role_put;
- 	}
- 
-+	ret = devm_tps6598_psy_register(tps);
-+	if (ret)
-+		return ret;
-+
- 	tps->port = typec_register_port(&client->dev, &typec_cap);
- 	if (IS_ERR(tps->port)) {
- 		ret = PTR_ERR(tps->port);
--- 
-2.29.2
+On Mon, Nov 09, 2020 at 10:49:31PM +0530, Vidya Sagar wrote:
+> This series of patches do some enhancements and some bug fixes to the
+> Tegra194 PCIe platform driver like
+> - Fix Vendor-ID corruption
+> - Map DBI space correctly
+> - Update DWC IP version
+> - Continue with uninitialization sequence even if parts fail
+> - Check return value of tegra_pcie_init_controller()
+>=20
+> V4:
+> * Added a new patch to address link-up issues with some of the cards
+>=20
+> V3:
+> * Addressed Bjorn's review comments
+> * Split earlier patch-4 into two
+>   - Continue with the uninitialization sequence even if some parts fail
+>   - Check return value of tegra_pcie_init_controller() and exit according=
+ly
+>=20
+> V2:
+> * Addressed Rob's comments. Changed 'Strongly Ordered' to 'nGnRnE'
+>=20
+> Vidya Sagar (6):
+>   PCI: tegra: Fix ASPM-L1SS advertisement disable code
+>   PCI: tegra: Map configuration space as nGnRnE
+>   PCI: tegra: Set DesignWare IP version
+>   PCI: tegra: Continue unconfig sequence even if parts fail
+>   PCI: tegra: Check return value of tegra_pcie_init_controller()
+>   PCI: tegra: Disable LTSSM during L2 entry
+>=20
+>  drivers/pci/controller/dwc/pcie-tegra194.c | 78 +++++++++++-----------
+>  1 file changed, 39 insertions(+), 39 deletions(-)
 
+I was going to test this series, but then I noticed that PCI is causing
+a crash on linux-next (as of fairly recently). So I tried applying this
+on top of v5.10-rc1, but that gives me the following:
+
+	[    3.595161] ahci 0001:01:00.0: version 3.0
+	[    3.595726] ahci 0001:01:00.0: SSS flag set, parallel bus scan disabled
+	[    4.609923] ahci 0001:01:00.0: controller reset failed (0xffffffff)
+	[    4.610343] ahci: probe of 0001:01:00.0 failed with error -5
+
+So the device enumerates fine, but it's not able to reset the SATA
+controller. That said, this seems to happen regardless of this patch
+series, so plain v5.10-rc1 also shows the above.
+
+Given the above, I think we should hold off on applying this series
+until we've fixed PCI on linux-next and made sure that SATA also works
+properly, otherwise we don't have a known good baseline to test this
+against.
+
+Thierry
+
+--n8g4imXOkfNTN/H1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl++mvIACgkQ3SOs138+
+s6EVyA//ZYXqrHEduwNS64esp1K3n48t+o8TCFlc26DLQCic8L/f8Ee8RbhoEbBn
+lOliWwSmJZQYKU23LH061nTmJu/cWfoGOAPaWLegGwd+fKo+EZgw9IA0ofbWBYDd
+Mbty8mDQ4+SXw/QwatP3LES9riqBqNoeJAQ7ZaT1HpdK1DNR75kHMs5DZnayLO55
+re/aTEX5kV+qIW/+E5PKAwoU27r/3kf+GwuKkSHGjIWtOUhYCqmLWolCpielF1Br
+2TelZqoQz+BBVAHmW9Z1ecdOfPtUZuubx0pGcboW7uNUEi5P++a2TZg7WiMPYjX6
+WJboe62zo12+46le9alchetsgfN4Nlo5VuOlM/EqCJ7+wCcsifFoTIK+EvuNLX2a
+nd6TlJPLFsdzv4jFoRfgdRiBASjMFTXSmBqSYFd741jF5XZaIkL8dVWVN92k7BZf
+b7BZAkDP+qiCizwsBQF0klJb/qzeZS4IYn5zEZj25mQ+mgqEDy85bk2puvlPqeXM
+l+Koqd4YpqPo53HFxGUdF4nSVlfjDzIfVEyordGskZcB/a8KXaJdCGEcRngRPGqQ
+h176Hzgo+uG8YGod4bwkQE992XEhkSl8oB/nvXCatFRq/inZOjP1Ni5juGfyhsTI
+USuJLwSc75rq8zX0vHdr2ZrazFx0i3nVxLF370nxBFoBFUs/okU=
+=ddHn
+-----END PGP SIGNATURE-----
+
+--n8g4imXOkfNTN/H1--
