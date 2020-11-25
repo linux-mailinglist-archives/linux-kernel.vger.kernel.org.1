@@ -2,257 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDC62C3610
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240362C3602
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 02:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgKYBGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 20:06:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
+        id S1728081AbgKYBGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 20:06:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728143AbgKYBGg (ORCPT
+        with ESMTP id S1727789AbgKYBGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 20:06:36 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEA6C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 17:06:36 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id y8so698560qvu.22
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 17:06:36 -0800 (PST)
+        Tue, 24 Nov 2020 20:06:01 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402E8C0613D6;
+        Tue, 24 Nov 2020 17:06:01 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id q5so1433321qkc.12;
+        Tue, 24 Nov 2020 17:06:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=YbWKCne8oiSwCs+LETaaQuxj6nssPvd/ENx+h/xhUkQ=;
-        b=VD95qJ50YfNhlAIzTqXB7bWZqflUREpGXlZ1v14Zqf7QbyEW+1fSYZQFDYq0wZCUPq
-         rAGEUyIpaWJhNW7WYPua7SowPdY10PFtu23ICx45YcPyZN6CAChZIygSwekQjZc9hITx
-         b921pHjRJc0DQeFHlQ7DmdXXkNGcQurJJ1u5b48tAydxKYJlniAmQMO26PzygE5BjMCS
-         pbWDBeq5hPvR+M2TxrOohzEd4nAego3Zzt5WFie+KkF5uMivByps5K8U+lSh7SWLLLQm
-         UYjfotcdqleoiDUby/Ebbetey+OkDgt8YEosMsDr6GZ2juZ0yX2jfKNEvX2tI7j5pVNB
-         bu2w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=44pFzPZOXy9WMyxuVZ4PJwmHwfPvC91GWhNSdpkVBXk=;
+        b=PLHqMkuVQ6uE1aGa3jPkk7oL0rd2+0aQGjbXwXCM1BqpOEf5R6gUmrb1tTrj75nDjD
+         aG6VHTDP2JdODJ/e29C1vfEMjWhTPlycM3mNfL2JW5BhFtstP0di/Kwb3XYGnsRoKRp5
+         7FVJzAE2cPEDrpLIYX3jwoIfPno8H9ArdOwpkc9HelZA+M7Eq52S4RmPBHauFrK9tfW3
+         8wrBLWN/Mq7Fl9GTodmgwwudDuqrVUSiSILvkeQCl7qFs3/IjbI7/AG3m5iLRdEEw+2H
+         RzsA5+EdKfz0DIt5iJKomdRqiV67cH8ZcnWPF2PnARf/ANxCrT7QZJCkY0VU2DrQ9d/L
+         oW2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=YbWKCne8oiSwCs+LETaaQuxj6nssPvd/ENx+h/xhUkQ=;
-        b=SxPehXP8rsjqnQzvQ4iqlhiLhOsSAMKKwzz8BauoH01FlYsQKRAlI7ItF6BU+YJPOi
-         FLjj0kFnAfsYfoXwTYkjxbZB/xjmFDT10EWsNID//ifxBZwpNxT70v0bWeqk5TiqakCn
-         pFnLQdfJyVNY85ZoBNaPuZXspSaNMn5dGqQPQ90zsun1qs8Fd4AGNgUtZ6QcS+T+cKGd
-         vvHda+KFYWi/yXsNEv+EfEHFNl492T1//zIOVlk8m7IBbA83j/PMs6S/IurNu13CbkvI
-         eR05EVgGb8RSMVLqWDpPf3IVSnR7vqDBOhLfPamuEtU2FkTxxJwpPp7YDDo9791nZ1jn
-         wOHQ==
-X-Gm-Message-State: AOAM533vxcrcNn5lKgAQ26UL7S6vNqjSptc4iP6bR0zHYoBLJroHFzX9
-        ITKSxJttxN1w8OpgxvCdTYf9Rm/aWHCw8zDz6T0=
-X-Google-Smtp-Source: ABdhPJyiDeumgvZEcdU+MPnyD9qSO5ehrwZUtIoneyR5tx090S7hUOPBhUznUsNQpdC8NZ5a0FyxFRnByzqgPiusOKE=
-Sender: "willmcvicker via sendgmr" <willmcvicker@willmcvicker.c.googlers.com>
-X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:2dd0])
- (user=willmcvicker job=sendgmr) by 2002:a0c:9e20:: with SMTP id
- p32mr1307270qve.44.1606266395772; Tue, 24 Nov 2020 17:06:35 -0800 (PST)
-Date:   Wed, 25 Nov 2020 01:05:41 +0000
-In-Reply-To: <20201125010541.309848-1-willmcvicker@google.com>
-Message-Id: <20201125010541.309848-3-willmcvicker@google.com>
-Mime-Version: 1.0
-References: <CAGETcx8unBFUHxM67VdOoaWRENGXYoc4qWq2Oir=2rUyJ7F5nA@mail.gmail.com>
- <20201125010541.309848-1-willmcvicker@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v2 2/2] modules: add scmversion field
-From:   Will McVicker <willmcvicker@google.com>
-To:     Jessica Yu <jeyu@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        kernel-team@android.com, Will McVicker <willmcvicker@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=44pFzPZOXy9WMyxuVZ4PJwmHwfPvC91GWhNSdpkVBXk=;
+        b=SP1p0mv6tcasA0zjctwklRPuqCucLzpbUEoeQuQCE403Vw1wJTOPenb/wB6UzHrH8V
+         CEbDrvJHOMLkjUXMv7x5f9d9EHCKeZkhnj/wqmh3M1e50j4BhlGw6c7I8JJPA0109e/d
+         vfnCZxaNcIXUjMdU/MMen6CpRA8fenGalTBDz4LguBNbZkiHJCemof4ebdpdoAek8wac
+         lj1DqcsebfpC1b5u7uV2IfcXIhm9qvUbNNRSTDX6SkbjRAZMWj9TDrYZWq+GNROX+xdb
+         vNBFoaqkps142vfQF8ENhHQJbj3IMSLO+BWQamS8FMFTWRfk1aG5nJzC5oXJ/NYESCd0
+         LWOg==
+X-Gm-Message-State: AOAM53315a5CQglNJi6muaFhDfWMEm+HjvKkK02zci4+0RKe4Cgw0n+l
+        lUmVUCbrWBL7dwzg9uJUS+Yz0m6xY+JSD8teb/Q=
+X-Google-Smtp-Source: ABdhPJxG2tW9FM1fAqThCcvqKAPI/OeE1R4V2//A8ePZuSketjr0yKUxoxj6t2hcKlYt9sKRSewQcSyhG/w+5cGdzqU=
+X-Received: by 2002:a25:aac5:: with SMTP id t63mr1046305ybi.22.1606266360499;
+ Tue, 24 Nov 2020 17:06:00 -0800 (PST)
+MIME-Version: 1.0
+References: <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+ <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
+ <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
+ <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
+ <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
+ <20201123130348.GA3119@embeddedor> <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
+ <202011241327.BB28F12F6@keescook> <alpine.LNX.2.23.453.2011250859290.15@nippy.intranet>
+ <CANiq72nUt57u5DG9rH=DB0DzQH7U6-QbG-2Ou+PyCY=p=_Ggag@mail.gmail.com> <alpine.LNX.2.23.453.2011251022550.14@nippy.intranet>
+In-Reply-To: <alpine.LNX.2.23.453.2011251022550.14@nippy.intranet>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 25 Nov 2020 02:05:49 +0100
+Message-ID: <CANiq72m2kGxSy2E9jgYE4_xRV6h9rFqiJP25KXs_5ObYnH_nmA@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for Clang
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Kees Cook <keescook@chromium.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
+        linux-atm-general@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-ide@vger.kernel.org, dm-devel@redhat.com,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
+        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org,
+        linux-input <linux-input@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        tipc-discussion@lists.sourceforge.net,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org, selinux@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-geode@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-gpio@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org,
+        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
+        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-hwmon@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
+        Linux-MM <linux-mm@kvack.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-usb@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the modinfo field `scmversion` to include the SCM version of kernel
-modules, e.g. git sha1. This allows one to identify the exact source
-code version of a given kernel module.
+On Wed, Nov 25, 2020 at 12:53 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+>
+> I'm saying that supporting the official language spec makes more sense
+> than attempting to support a multitude of divergent interpretations of the
+> spec (i.e. gcc, clang, coverity etc.)
 
-You can retrieve it in two ways,
+Making the kernel strictly conforming is a ship that sailed long ago,
+for several reasons. Anyway, supporting several compilers and other
+tools, regardless of extensions, is valuable.
 
-1) By using modinfo
-    > modinfo -F scmversion <module_name>
-2) By module sysfs node
-    > cat /sys/module/<module_name>/scmversion
+> I'm also saying that the reason why we use -std=gnu89 is that existing
+> code was written in that language, not in ad hoc languages comprised of
+> collections of extensions that change with every release.
 
-Signed-off-by: Will McVicker <willmcvicker@google.com>
----
- Documentation/ABI/stable/sysfs-module | 17 +++++++++++++++++
- include/linux/module.h                |  1 +
- kernel/module.c                       |  2 ++
- scripts/Makefile.modpost              | 20 ++++++++++++++++++++
- scripts/mod/modpost.c                 | 24 +++++++++++++++++++++++-
- 5 files changed, 63 insertions(+), 1 deletion(-)
+No, we aren't particularly tied to `gnu89` or anything like that. We
+could actually go for `gnu11` already, since the minimum GCC and Clang
+support it. Even if a bit of code needs fixing, that shouldn't be a
+problem if someone puts the work.
 
-diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
-index 6272ae5fb366..46c99ec927ab 100644
---- a/Documentation/ABI/stable/sysfs-module
-+++ b/Documentation/ABI/stable/sysfs-module
-@@ -32,3 +32,20 @@ Description:
- 		Note: If the module is built into the kernel, or if the
- 		CONFIG_MODULE_UNLOAD kernel configuration value is not enabled,
- 		this file will not be present.
-+
-+What:		/sys/module/MODULENAME/scmversion
-+Date:		November 2020
-+KernelVersion:	5.10
-+Contact:	Will McVicker <willmcvicker@google.com>
-+Description:	This read-only file will appear if modpost was supplied with an
-+		SCM version for the module. The SCM version is retrieved by
-+		scripts/setlocalversion, which means that the presence of this
-+		file depends on CONFIG_LOCALVERSION_AUTO=y or LOCALVERSION=.
-+		When read, the SCM version that the module was compiled with is
-+		returned. The SCM version is returned in the following format::
-+
-+		===
-+		Git:		g[a-f0-9]\+(-dirty)\?
-+		Mercurial:	hg[a-f0-9]\+(-dirty)\?
-+		Subversion:	svn[0-9]\+
-+		===
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 6264617bab4d..63137ca5147b 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -372,6 +372,7 @@ struct module {
- 	struct module_attribute *modinfo_attrs;
- 	const char *version;
- 	const char *srcversion;
-+	const char *scmversion;
- 	struct kobject *holders_dir;
- 
- 	/* Exported symbols */
-diff --git a/kernel/module.c b/kernel/module.c
-index a4fa44a652a7..a203dab4a03b 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -807,6 +807,7 @@ static struct module_attribute modinfo_##field = {                    \
- 
- MODINFO_ATTR(version);
- MODINFO_ATTR(srcversion);
-+MODINFO_ATTR(scmversion);
- 
- static char last_unloaded_module[MODULE_NAME_LEN+1];
- 
-@@ -1269,6 +1270,7 @@ static struct module_attribute *modinfo_attrs[] = {
- 	&module_uevent,
- 	&modinfo_version,
- 	&modinfo_srcversion,
-+	&modinfo_scmversion,
- 	&modinfo_initstate,
- 	&modinfo_coresize,
- 	&modinfo_initsize,
-diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-index f54b6ac37ac2..fb4ddf2bf794 100644
---- a/scripts/Makefile.modpost
-+++ b/scripts/Makefile.modpost
-@@ -66,6 +66,7 @@ ifeq ($(KBUILD_EXTMOD),)
- 
- input-symdump := vmlinux.symvers
- output-symdump := Module.symvers
-+module_srcpath := $(srctree)
- 
- else
- 
-@@ -77,6 +78,17 @@ src := $(obj)
- include $(if $(wildcard $(KBUILD_EXTMOD)/Kbuild), \
-              $(KBUILD_EXTMOD)/Kbuild, $(KBUILD_EXTMOD)/Makefile)
- 
-+# Get the external module's source path. KBUILD_EXTMOD could either be an
-+# absolute path or relative path from $(srctree). This makes sure that we
-+# aren't using a relative path from a separate working directory (O= or
-+# KBUILD_OUTPUT) since that may not be the actual module's SCM project path. So
-+# check the path relative to $(srctree) first.
-+ifneq ($(realpath $(srctree)/$(KBUILD_EXTMOD) 2>/dev/null),)
-+	module_srcpath := $(srctree)/$(KBUILD_EXTMOD)
-+else
-+	module_srcpath := $(KBUILD_EXTMOD)
-+endif
-+
- # modpost option for external modules
- MODPOST += -e
- 
-@@ -85,6 +97,14 @@ output-symdump := $(KBUILD_EXTMOD)/Module.symvers
- 
- endif
- 
-+# Get the SCM version of the module. Sed verifies setlocalversion returns
-+# a proper revision based on the SCM type, e.g. git, mercurial, or svn.
-+module_scmversion := $(shell $(srctree)/scripts/setlocalversion $(module_srcpath) | \
-+	sed -n 's/.*-\(\(g\|hg\)[a-fA-F0-9]\+\(-dirty\)\?\|svn[0-9]\+\).*/\1/p')
-+ifneq ($(module_scmversion),)
-+MODPOST += -v$(module_scmversion)
-+endif
-+
- # modpost options for modules (both in-kernel and external)
- MODPOST += \
- 	$(addprefix -i ,$(wildcard $(input-symdump))) \
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index f882ce0d9327..db71e0c9ab20 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -30,6 +30,8 @@ static int have_vmlinux = 0;
- static int all_versions = 0;
- /* If we are modposting external module set to 1 */
- static int external_module = 0;
-+#define MODULE_SCMVERSION_SIZE 64
-+static char module_scmversion[MODULE_SCMVERSION_SIZE];
- /* Only warn about unresolved symbols */
- static int warn_unresolved = 0;
- /* How a symbol is exported */
-@@ -2272,6 +2274,20 @@ static void add_intree_flag(struct buffer *b, int is_intree)
- 		buf_printf(b, "\nMODULE_INFO(intree, \"Y\");\n");
- }
- 
-+/**
-+ * add_scmversion() - Adds the MODULE_INFO macro for the scmversion.
-+ * @b: Buffer to append to.
-+ *
-+ * This function fills in the module attribute `scmversion` for the kernel
-+ * module. This is useful for determining a given module's SCM version on
-+ * device via /sys/modules/<module>/scmversion and/or using the modinfo tool.
-+ */
-+static void add_scmversion(struct buffer *b)
-+{
-+	if (module_scmversion[0] != '\0')
-+		buf_printf(b, "\nMODULE_INFO(scmversion, \"%s\");\n", module_scmversion);
-+}
-+
- /* Cannot check for assembler */
- static void add_retpoline(struct buffer *b)
- {
-@@ -2559,7 +2575,7 @@ int main(int argc, char **argv)
- 	struct dump_list *dump_read_start = NULL;
- 	struct dump_list **dump_read_iter = &dump_read_start;
- 
--	while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:")) != -1) {
-+	while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:v:")) != -1) {
- 		switch (opt) {
- 		case 'e':
- 			external_module = 1;
-@@ -2597,6 +2613,11 @@ int main(int argc, char **argv)
- 		case 'd':
- 			missing_namespace_deps = optarg;
- 			break;
-+		case 'v':
-+			if (!optarg)
-+				fatal("'-v' requires an argument defining the SCM version.");
-+			strncpy(module_scmversion, optarg, sizeof(module_scmversion) - 1);
-+			break;
- 		default:
- 			exit(1);
- 		}
-@@ -2645,6 +2666,7 @@ int main(int argc, char **argv)
- 		add_depends(&buf, mod);
- 		add_moddevtable(&buf, mod);
- 		add_srcversion(&buf, mod);
-+		add_scmversion(&buf);
- 
- 		sprintf(fname, "%s.mod.c", mod->name);
- 		write_if_changed(&buf, fname);
--- 
-2.29.2.454.gaff20da3a2-goog
+In other words, the kernel code is not frozen, nor are the features it
+uses from compilers. They do, in fact, change from time to time.
 
+> Thank you for checking. I found a free version that's only 6 weeks old:
+
+You're welcome! There are quite a few new attributes coming, mostly
+following C++ ones.
+
+> It will be interesting to see whether 6.7.11.5 changes once the various
+> implementations reach agreement.
+
+Not sure what you mean. The standard does not evolve through
+implementations' agreement (although standardizing existing practice
+is one of the best arguments to back a change).
+
+Cheers,
+Miguel
