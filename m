@@ -2,125 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76F72C41F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6D82C41FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729888AbgKYOPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:15:51 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:45643 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729109AbgKYOPv (ORCPT
+        id S1729918AbgKYOQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:16:07 -0500
+Received: from gproxy4-pub.mail.unifiedlayer.com ([69.89.23.142]:57261 "EHLO
+        gproxy4-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729891AbgKYOQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:15:51 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UGWQ0Kg_1606313739;
-Received: from 30.0.173.120(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UGWQ0Kg_1606313739)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 25 Nov 2020 22:15:39 +0800
-Subject: Re: [PATCH 4/7] blk-iocost: Add a flag to indicate if need update hwi
-To:     Tejun Heo <tj@kernel.org>
-Cc:     axboe@kernel.dk, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1606186717.git.baolin.wang@linux.alibaba.com>
- <beb9ab5875427431b58e1001e481b7a43e9188eb.1606186717.git.baolin.wang@linux.alibaba.com>
- <X75KuGR1MTovojZp@mtj.duckdns.org>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <d0488a26-bff3-bd92-b5c7-74131161d55e@linux.alibaba.com>
-Date:   Wed, 25 Nov 2020 22:15:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 25 Nov 2020 09:16:07 -0500
+Received: from cmgw11.unifiedlayer.com (unknown [10.9.0.11])
+        by gproxy4.mail.unifiedlayer.com (Postfix) with ESMTP id 45669175B2E
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 07:16:06 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id hvaXk4QlgdCH5hvaYk9bzL; Wed, 25 Nov 2020 07:16:06 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=CKwEoyjD c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=nNwsprhYR40A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=1XWaLZrsAAAA:8
+ a=_jlGtV7tAAAA:8 a=txeGkxVLtmbwJ2GW8KkA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=nlm17XC03S6CtCLSeiRr:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HpvN089oDJuv87eGkCkmLlvGEAAHAH1QAjy9aTSr5GE=; b=JqS3TsiHSZc1Zu/x7Muu+0ihW+
+        ZwKLRglXyW0DUuSlAIPUgFmuQR38ZFLc9t/q5fYQ6h0ph+FopQuoKz3ygl4KAMsByDOoKbD14agbT
+        vBZKxawHVrsSsPWuxWF8IqM68NqN1f3X21U+MNJGj2ov7RmMViuqmTxwzuk5fTh7dMHYu+N1rD/Lk
+        G6VHrHZ/BQ0jYV6MNhgw1B40Gs3Kxz+sX+hUTBbBVMa/7wshgAjNHtUrgAQ7HLgLUC/pOhLx0jyLU
+        WpuSwBVvF32i3s4ztXYETIKM8bw7Hi+etJEsCBjnQoVEV3uzD1cQPGinB5/vyowgG31YtUhgr3+2I
+        7N2YazSw==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:34404 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1khvaX-002IiQ-AV; Wed, 25 Nov 2020 14:16:05 +0000
+Date:   Wed, 25 Nov 2020 06:16:04 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpm: Disregard vbus off while in
+ PR_SWAP_SNK_SRC_SOURCE_ON
+Message-ID: <20201125141604.GB97010@roeck-us.net>
+References: <20201125020703.1604979-1-badhri@google.com>
 MIME-Version: 1.0
-In-Reply-To: <X75KuGR1MTovojZp@mtj.duckdns.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125020703.1604979-1-badhri@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1khvaX-002IiQ-AV
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:34404
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 31
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> Hello,
+On Tue, Nov 24, 2020 at 06:07:03PM -0800, Badhri Jagan Sridharan wrote:
+> During PR_SWAP sequence, when TCPM is waiting in PR_SWAP_SNK_SRC_SOURCE_ON
+> for the vbus source to ramp up, TCPM would prematurely exit
+> PR_SWAP_SNK_SRC_SOURCE_ON and transition to SNK_UNATTACHED state when a
+> vbus off notification is received. This should not be the case as vbus
+> can still be off while in PR_SWAP_SNK_SRC_SOURCE_ON and the vbus source
+> has PD_T_NEWSRC to ramp up.
 > 
-> On Tue, Nov 24, 2020 at 11:33:33AM +0800, Baolin Wang wrote:
->> @@ -1445,7 +1447,8 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, bool pay_debt,
->>   	 * after the above debt payment.
->>   	 */
->>   	ctx.vbudget = vbudget;
->> -	current_hweight(iocg, NULL, &ctx.hw_inuse);
->> +	if (need_update_hwi)
->> +		current_hweight(iocg, NULL, &ctx.hw_inuse);
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> So, if you look at the implementation of current_hweight(), it's
-> 
-> 1. If nothing has changed, read out the cached values.
-> 2. If something has changed, recalculate.
-
-Yes, correct.
-
-> 
-> and the "something changed" test is single memory read (most likely L1 hot
-> at this point) and testing for equality. IOW, the change you're suggesting
-> isn't much of an optimization. Maybe the compiler can do a somewhat better
-> job of arranging the code and it's a register load than memory load but
-> given that it's already a relatively cold wait path, this is unlikely to
-> make any actual difference. And that's how current_hweight() is meant to be
-> used.
-
-What I want to avoid is the 'atomic_read(&ioc->hweight_gen)' in 
-current_hweight(), cause this is not a register load and is always a 
-memory load. But introducing a flag can be cached and more light than a 
-memory load.
-
-But after thinking more, I think we can just move the 
-"current_hweight(iocg, NULL, &ctx.hw_inuse);" to the correct place 
-without introducing new flag to optimize the code. How do you think the 
-below code?
-
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index bbe86d1..db29200 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -1413,7 +1413,7 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, 
-bool pay_debt,
-
-         lockdep_assert_held(&iocg->waitq.lock);
-
--       current_hweight(iocg, &hwa, NULL);
-+       current_hweight(iocg, &hwa, &ctx.hw_inuse);
-         vbudget = now->vnow - atomic64_read(&iocg->vtime);
-
-         /* pay off debt */
-@@ -1428,6 +1428,11 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, 
-bool pay_debt,
-                 atomic64_add(vpay, &iocg->done_vtime);
-                 iocg_pay_debt(iocg, abs_vpay, now);
-                 vbudget -= vpay;
-+               /*
-+                * As paying off debt restores hw_inuse, it must be read 
-after
-+                * the above debt payment.
-+                */
-+               current_hweight(iocg, NULL, &ctx.hw_inuse);
-         }
-
-         if (iocg->abs_vdebt || iocg->delay)
-@@ -1446,11 +1451,9 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, 
-bool pay_debt,
-
-         /*
-          * Wake up the ones which are due and see how much vtime we'll 
-need for
--        * the next one. As paying off debt restores hw_inuse, it must 
-be read
--        * after the above debt payment.
-+        * the next one.
-          */
-         ctx.vbudget = vbudget;
--       current_hweight(iocg, NULL, &ctx.hw_inuse);
-
-         __wake_up_locked_key(&iocg->waitq, TASK_NORMAL, &ctx);
-
-> 
-> So, I'm not sure this is an improvement. It increases complication without
-> actually gaining anything.
-> 
-> Thanks.
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 4aac0efdb720..277b9d4d9c84 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -4218,6 +4218,14 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
+>  		/* Do nothing, expected */
+>  		break;
+>  
+> +	case PR_SWAP_SNK_SRC_SOURCE_ON:
+> +		/*
+> +		 * Do nothing when vbus off notification is received.
+> +		 * TCPM can wait for PD_T_NEWSRC in PR_SWAP_SNK_SRC_SOURCE_ON
+> +		 * for the vbus source to ramp up.
+> +		 */
+> +		break;
+> +
+>  	case PORT_RESET_WAIT_OFF:
+>  		tcpm_set_state(port, tcpm_default_state(port), 0);
+>  		break;
+> -- 
+> 2.29.2.454.gaff20da3a2-goog
 > 
