@@ -2,100 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3356B2C37F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFE92C37FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727209AbgKYESH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 23:18:07 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:19520 "EHLO z5.mailgun.us"
+        id S1727353AbgKYETP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 23:19:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726330AbgKYESH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 23:18:07 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606277886; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=sXXeHQcnq6lCeXEsk4jZuctTNRCfX/sdc8ME9NH6fks=;
- b=iRG9t8f06tPeMkVrVVV5vClEOGv5a28tXaMvYcyYNzk3iQPS7gbP1EQtUOjbDSDQ/X+7oDhy
- 7ifFcs0sk1V38AIAgpfa4iszemXwOyOTRrYT8wWlC4YcP3PrspsUaItpJ8Cpe+4mst/34eFV
- l3SZ2ADnJDV0RUTVeCmu5A4Qbs4=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fbddaf922377520eea23332 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 04:18:01
- GMT
-Sender: nguyenb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EB302C43467; Wed, 25 Nov 2020 04:18:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1726345AbgKYETP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 23:19:15 -0500
+Received: from localhost (unknown [122.179.120.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: nguyenb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1678DC433ED;
-        Wed, 25 Nov 2020 04:17:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95EBD20872;
+        Wed, 25 Nov 2020 04:19:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606277954;
+        bh=eQVNhQ0UAEYFl/DUM5l/IxLjQMOsbadOvstLoA9OzlA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xEsPm6I5DzMQYXfHRZZHiNUNPvGBGuqlh2hZ1Ambo60f8mvPL+/pmCl2Zsan93anB
+         6mVyTu/l0jbAK4KJn3WCEsvY9V4eybonJDkPQnoYP9mcBjH3rWBqlg0aKV6Lx9C3u/
+         7TNiIxrQolRtsQ1QIFUEmMA2q6Y9h9fcnHieqgeM=
+Date:   Wed, 25 Nov 2020 09:49:09 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] arm64: defconfig: Enable Qualcomm PON driver
+Message-ID: <20201125041909.GA8403@vkoul-mobl>
+References: <20201125023831.99774-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 24 Nov 2020 20:17:59 -0800
-From:   nguyenb@codeaurora.org
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] scsi: ufs: Print host regs in IRQ handler when AH8
- error happens
-In-Reply-To: <1605596660-2987-4-git-send-email-cang@codeaurora.org>
-References: <1605596660-2987-1-git-send-email-cang@codeaurora.org>
- <1605596660-2987-4-git-send-email-cang@codeaurora.org>
-Message-ID: <c6ef8b22f151668037fb31c8163d588e@codeaurora.org>
-X-Sender: nguyenb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125023831.99774-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-16 23:04, Can Guo wrote:
-> When AH8 error happens, all the regs and states are dumped in err 
-> handler.
-> Sometime we need to look into host regs right after AH8 error happens,
-> which is before leaving the IRQ handler.
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index cd7394e..a7857f6 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6057,7 +6057,8 @@ static irqreturn_t ufshcd_check_errors(struct
-> ufs_hba *hba)
->  		hba->saved_uic_err |= hba->uic_error;
-> 
->  		/* dump controller state before resetting */
-> -		if ((hba->saved_err & (INT_FATAL_ERRORS)) ||
-> +		if ((hba->saved_err &
-> +		     (INT_FATAL_ERRORS | UFSHCD_UIC_HIBERN8_MASK)) ||
->  		    (hba->saved_uic_err &&
->  		     (hba->saved_uic_err != UFSHCD_UIC_PA_GENERIC_ERROR))) {
->  			dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
+On 24-11-20, 20:38, Bjorn Andersson wrote:
+> The PON block in the PMIC provides, among other things, support for
+> "reboot reason", power key and reset "key" handling. Let's enable the
+> driver for this block.
 
-Reviewed-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+
+-- 
+~Vinod
