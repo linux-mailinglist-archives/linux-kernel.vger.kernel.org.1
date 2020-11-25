@@ -2,141 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B64A2C4B2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 00:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1719B2C4B51
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 00:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729002AbgKYXCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 18:02:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
+        id S1729592AbgKYXFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 18:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728675AbgKYXCq (ORCPT
+        with ESMTP id S1729156AbgKYXFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 18:02:46 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E42C0617A7;
-        Wed, 25 Nov 2020 15:02:45 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id t4so68357wrr.12;
-        Wed, 25 Nov 2020 15:02:45 -0800 (PST)
+        Wed, 25 Nov 2020 18:05:23 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37A6C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 15:05:23 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id e8so3780503pfh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 15:05:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ha42UWMtlXOL8kfvC1XpFKttY73p7G2gxviD5bIo2Ac=;
-        b=cK16XuXEr1UlZZi/GgHF7dItPstb+7yZ2QUTp5Dxvdc6OIX52ygirnUAKuRVBOH+dK
-         A20pmgUIw2HuGZFFAXCmBSAdjpUAnHlbQW6vzVJQphFFEbO8NHcI7pY1E1IYv6o5k0Qf
-         jXWsM0ddqTXTn/1nZTXycpkYVMfbhxZxJ9mV7kOEU+Tec/es0pgNM20lzmzFkZBYIURn
-         HK2FiFuW7CXMZxeXIL3yJ5bCH/J8M2hkcorgk3PecLezXYs+oTw3zVRlNq6FEGJfSXMe
-         e5NpXkmlA2dB6AmhViUGWqJQAiQop1G/7Q0C0bZUhlLDOGEFt9XX9+Dv47nZ0Rj6T1x/
-         IsxA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oaJWr2YGXviCe89v0RSfWFZYaQdQ0/Bq2xZyRaBFk2E=;
+        b=B0xC15rNitSDcQjIVpWzgdx70TE744eHe0l/IPV70amVx7E5qPVTOuHnx+sFXSI8Vn
+         WruuN5coCeb3qV7w3tHCOyfr9+Nf3wLIqmm2vdAPi0SqzLtmK8X6wlMPejLDzvn+hDEo
+         HY3Au9xke9kDpBPGCs8QFPSami97mnD/qZn/xFZ7Rf1y7tX4XRdq4co6Cvhs3pcosGxl
+         G0k6UObRwaYC3KtFYs4o0H6sGzi/1aMsH6infav6/2JkJ0D+dqd+b2T9VU1g99jzChFj
+         SGLIOS9sQR8a+Pof3NFVVLfpn+ur0VWud6fzjZMSfSwJ6amtURBGQjEbG52TJoPISn7y
+         IjLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ha42UWMtlXOL8kfvC1XpFKttY73p7G2gxviD5bIo2Ac=;
-        b=EZ1sHP5y4bIz8FH5XVXgjLQgnG2x4dnCIhnFjQy6jE+sBV6j86jIwkXefElTPsZxaw
-         06goq9L4iUkfAjC/GGVDi+S/Pgc7hn8xuBmODBNwg7L5lOmcLZ7a2jIIC417rpG01Ssg
-         UrNQk7jirFNv14EEbVAErekh5WppRQHpvv+aNsNvBNI3yaUPizY8zc1McQzsA3znhm2H
-         jh7KxBxt8M1UMteAyRveMlRMtjHxe8ABarEeWIOPidvUi4J/bR1XEQhZhy2gixUnQaEO
-         oGns+E1NugO8MH5pzvlxgJh68thcslWBMA0Yn/7LGgxO394on0HPrlngMTYFcTC/pTBp
-         zJ8Q==
-X-Gm-Message-State: AOAM530/M0//wDJBX2OxhveroGx0YIaMktzcLNS1ao3aUQEg5uLeGwuw
-        oaUcFQbayeP9J7Q/0RR/Hrc=
-X-Google-Smtp-Source: ABdhPJzir63ZhkohioP0Ktx42tkGcEWW5m4eKxg+CUjAscHddZDwqHZSdjbm/E0JNHFBggGwkKFODQ==
-X-Received: by 2002:a5d:474b:: with SMTP id o11mr180470wrs.235.1606345364309;
-        Wed, 25 Nov 2020 15:02:44 -0800 (PST)
-Received: from [192.168.1.122] (cpc92720-cmbg20-2-0-cust364.5-4.cable.virginm.net. [82.21.83.109])
-        by smtp.gmail.com with ESMTPSA id u129sm5552667wme.9.2020.11.25.15.02.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 15:02:43 -0800 (PST)
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To:     Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
-        cluster-devel@redhat.com, coreteam@netfilter.org,
-        devel@driverdev.osuosl.org, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
-        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
-        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-atm-general@lists.sourceforge.net,
-        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
-        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
-        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
-        selinux@vger.kernel.org, target-devel@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        usb-storage@lists.one-eyed-alien.net,
-        virtualization@lists.linux-foundation.org,
-        wcn36xx@lists.infradead.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
- <CAKwvOdntVfXj2WRR5n6Kw7BfG7FdKpTeHeh5nPu5AzwVMhOHTg@mail.gmail.com>
- <202011241324.B3439A2@keescook>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <99a9ffd7-6356-b81d-6e08-7ed74b6fb82c@gmail.com>
-Date:   Wed, 25 Nov 2020 23:02:40 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oaJWr2YGXviCe89v0RSfWFZYaQdQ0/Bq2xZyRaBFk2E=;
+        b=emGCeUHZyEAv82UgAtQcdkXq7nXp8vR3S5DZZ1lE6+t6N595pJkqszMg6UDmp8b6VA
+         JXxMmCM+te1hHr+zkbNtAhl7M7SxEp8arJCULrBR3N7oxN7NKK2xsoA+aF+1R53et1UW
+         SK7FJ/LPebopwfmTAdbJqKiLCIlKhIv2vH3VxiKo3F85lwaOapjjGs7JtPXKTKOdyHQu
+         F60qccVLAuTq6e1CkMWLGmwOWhjibA5BB4w8m89Bq8PrZAZq9LlyOpMuPyMYK5vX4wNG
+         m2Y45vEGZ3GcyW0kyd92L4w61UYC8ipDGKEQEeKRped7WuDHXfNvPA8/SpTJ2MGeurFS
+         KPMw==
+X-Gm-Message-State: AOAM533eYdva5paVjVJ0pS7lf1gFjPNB7NRWD0yNJ7XCaYjdqo310tpM
+        BAvo+Xs+r5962VSWAJJiqy8=
+X-Google-Smtp-Source: ABdhPJw6rG5pyTHpPF8MQ9foRYJRh5AqxW5Kfun2yMBx4tjl94e4B7caBMWVquZMeKZ7r1Qtx7CXyA==
+X-Received: by 2002:a65:6a13:: with SMTP id m19mr156714pgu.260.1606345523065;
+        Wed, 25 Nov 2020 15:05:23 -0800 (PST)
+Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
+        by smtp.gmail.com with ESMTPSA id y3sm4268206pjb.18.2020.11.25.15.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 15:05:21 -0800 (PST)
+Date:   Thu, 26 Nov 2020 10:05:19 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 10/32] sched: Fix priority inversion of cookied task
+ with sibling
+Message-ID: <20201125230519.GC163610@balbir-desktop>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-11-joel@joelfernandes.org>
+ <20201122224123.GE110669@balbir-desktop>
+ <20201124183038.GG1021337@google.com>
 MIME-Version: 1.0
-In-Reply-To: <202011241324.B3439A2@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124183038.GG1021337@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2020 21:25, Kees Cook wrote:
-> I still think this isn't right -- it's a case statement that runs off
-> the end without an explicit flow control determination.
+On Tue, Nov 24, 2020 at 01:30:38PM -0500, Joel Fernandes wrote:
+> On Mon, Nov 23, 2020 at 09:41:23AM +1100, Balbir Singh wrote:
+> > On Tue, Nov 17, 2020 at 06:19:40PM -0500, Joel Fernandes (Google) wrote:
+> > > From: Peter Zijlstra <peterz@infradead.org>
+> > > 
+> > > The rationale is as follows. In the core-wide pick logic, even if
+> > > need_sync == false, we need to go look at other CPUs (non-local CPUs) to
+> > > see if they could be running RT.
+> > > 
+> > > Say the RQs in a particular core look like this:
+> > > Let CFS1 and CFS2 be 2 tagged CFS tags. Let RT1 be an untagged RT task.
+> > > 
+> > > rq0            rq1
+> > > CFS1 (tagged)  RT1 (not tag)
+> > > CFS2 (tagged)
+> > > 
+> > > Say schedule() runs on rq0. Now, it will enter the above loop and
+> > > pick_task(RT) will return NULL for 'p'. It will enter the above if() block
+> > > and see that need_sync == false and will skip RT entirely.
+> > > 
+> > > The end result of the selection will be (say prio(CFS1) > prio(CFS2)):
+> > > rq0             rq1
+> > > CFS1            IDLE
+> > > 
+> > > When it should have selected:
+> > > rq0             r1
+> > > IDLE            RT
+> > > 
+> > > Joel saw this issue on real-world usecases in ChromeOS where an RT task
+> > > gets constantly force-idled and breaks RT. Lets cure it.
+> > > 
+> > > NOTE: This problem will be fixed differently in a later patch. It just
+> > >       kept here for reference purposes about this issue, and to make
+> > >       applying later patches easier.
+> > >
+> > 
+> > The changelog is hard to read, it refers to above if(), whereas there
+> > is no code snippet in the changelog.
+> 
+> Yeah sorry, it comes from this email where I described the issue:
+> http://lore.kernel.org/r/20201023175724.GA3563800@google.com
+> 
+> I corrected the changelog and appended the patch below. Also pushed it to:
+> https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/log/?h=coresched
+> 
+> > Also, from what I can see following
+> > the series, p->core_cookie is not yet set anywhere (unless I missed it),
+> > so fixing it in here did not make sense just reading the series.
+> 
+> The interface patches for core_cookie are added later, that's how it is. The
+> infrastructure comes first here. It would also not make sense to add
+> interface first as well so I think the current ordering is fine.
+>
 
-Proves too much — for instance
-    case foo:
-    case bar:
-        thing;
-        break;
- doesn't require a fallthrough; after case foo:, and afaik
- no-one is suggesting it should.  Yet it, too, is "a case
- statement that runs off the end without an explicit flow
- control determination".
+Some comments below to help make the code easier to understand
 
--ed
+> ---8<-----------------------
+> 
+> From: Peter Zijlstra <peterz@infradead.org>
+> Subject: [PATCH] sched: Fix priority inversion of cookied task with sibling
+> 
+> The rationale is as follows. In the core-wide pick logic, even if
+> need_sync == false, we need to go look at other CPUs (non-local CPUs) to
+> see if they could be running RT.
+> 
+> Say the RQs in a particular core look like this:
+> Let CFS1 and CFS2 be 2 tagged CFS tags. Let RT1 be an untagged RT task.
+> 
+> rq0            rq1
+> CFS1 (tagged)  RT1 (not tag)
+> CFS2 (tagged)
+> 
+> The end result of the selection will be (say prio(CFS1) > prio(CFS2)):
+> rq0             rq1
+> CFS1            IDLE
+> 
+> When it should have selected:
+> rq0             r1
+> IDLE            RT
+> 
+> Fix this issue by forcing need_sync and restarting the search if a
+> cookied task was discovered. This will avoid this optimization from
+> making incorrect picks.
+> 
+> Joel saw this issue on real-world usecases in ChromeOS where an RT task
+> gets constantly force-idled and breaks RT. Lets cure it.
+> 
+> NOTE: This problem will be fixed differently in a later patch. It just
+>       kept here for reference purposes about this issue, and to make
+>       applying later patches easier.
+> 
+> Reported-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/sched/core.c | 25 ++++++++++++++++---------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 4ee4902c2cf5..53af817740c0 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -5195,6 +5195,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  	need_sync = !!rq->core->core_cookie;
+>  
+>  	/* reset state */
+> +reset:
+>  	rq->core->core_cookie = 0UL;
+>  	if (rq->core->core_forceidle) {
+>  		need_sync = true;
+> @@ -5242,14 +5243,8 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  				/*
+>  				 * If there weren't no cookies; we don't need to
+>  				 * bother with the other siblings.
+> -				 * If the rest of the core is not running a tagged
+> -				 * task, i.e.  need_sync == 0, and the current CPU
+> -				 * which called into the schedule() loop does not
+> -				 * have any tasks for this class, skip selecting for
+> -				 * other siblings since there's no point. We don't skip
+> -				 * for RT/DL because that could make CFS force-idle RT.
+>  				 */
+> -				if (i == cpu && !need_sync && class == &fair_sched_class)
+> +				if (i == cpu && !need_sync)
+>  					goto next_class;
+>  
+>  				continue;
+> @@ -5259,7 +5254,20 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  			 * Optimize the 'normal' case where there aren't any
+>  			 * cookies and we don't need to sync up.
+>  			 */
+> -			if (i == cpu && !need_sync && !p->core_cookie) {
+> +			if (i == cpu && !need_sync) {
+> +				if (p->core_cookie) {
+> +					/*
+> +					 * This optimization is only valid as
+> +					 * long as there are no cookies
+
+This is not entirely true, need_sync is a function of core cookies, so I
+think this needs more clarification, it sounds like we enter this when
+the core has no cookies, but the task has a core_cookie? The term cookie
+is quite overloaded when used in the context of core vs task.
+
+Effectively from what I understand this means that p wants to be
+coscheduled, but the core itself is not coscheduling anything at the
+moment, so we need to see if we should do a sync and that sync might
+cause p to get kicked out and a higher priority class to come in?
+
+Balbir Singh.
