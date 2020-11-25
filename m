@@ -2,166 +2,450 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED812C36D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF79B2C36D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgKYCcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 21:32:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42290 "EHLO
+        id S1726819AbgKYCcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 21:32:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgKYCcc (ORCPT
+        with ESMTP id S1725952AbgKYCcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 21:32:32 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FBEC0613D4;
-        Tue, 24 Nov 2020 18:32:32 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id l2so1876413qkf.0;
-        Tue, 24 Nov 2020 18:32:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=JEPiuMrPJZvgNKBeeTCRwyAYWsEFmPf+TK0tbHJS5mc=;
-        b=LpIxvNuUq244Agb5jF2Kbw6O6BipshY1kd31EcrgzUTDZuopG5Qmfw5YW9vgOmXlyv
-         /Fzbp3cZNd3o0GKVjLfTdgaSu55hjdmmaYbZvChF0pV9guEzT4eJGJez6l4Kxmz2c5c4
-         5qHXXnZpooSGfR8GjdxpKVxnTNYctXYjj+yxknF1YXlmTwtHFH2AdhgcWtznjjrcX7Id
-         k3edVwZYzU6cqt6232ybCJ4D06LDCRHHY5Kctn/1pMdmkNWzcGjMjWvvXs2ZcJD/b+pH
-         XgepNSANuLJxAEXFv18Y30JrmVmgrvgFSOfxLyIqh7H6xDm1po+vU+Xy4VbSGLdpzOIN
-         TQTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=JEPiuMrPJZvgNKBeeTCRwyAYWsEFmPf+TK0tbHJS5mc=;
-        b=nsR+XBY5WMbt01xIo5wBn6K8BP42rKuZLM/fYoWfZA1mFzGQh5BNtn2m06Y/hK6Osf
-         VDdp1xLhJvnvupaV39kBPtekD1kGiquPPqES2KRzVuHaACuE8IXqp/wsalOfsyR/ZfzN
-         wN0dR90HZ+FMEMl5yKf5E02YIvG1gWOJzGOuXh0fOG6XeTTPjSfbUIvFarBHH0yk9lnt
-         ALmHlFw5WTq2G1/4sJIJCvZpMe1q+5tPhWjKT1k6JXoZWuZSg2TxCOhFaGw/DL3fFjxm
-         UN/JIVrCsWNL8h0UZVTJRMMLXGzKfTsNiMnjDxtp3YsVbwOXKkc0bwpm867BZM4VF541
-         utuA==
-X-Gm-Message-State: AOAM5304MiOA465wUNjb+BfvpS7kQOKkZ0m126VxRQv49o6wvILqzV3D
-        iiDnY+kvfED9pY2VHKuwamiARYE+2Q9psK4gUWklqE0joARQlBqv
-X-Google-Smtp-Source: ABdhPJwrC+gTvIE+cHBs+bQWe1ZwkF1RRREjYyVcJ1UyoKit2TnCr9wy2NcDoO0IEDO65XIn8MFU1GsVUe7n0f8Y1E4=
-X-Received: by 2002:a25:2e0d:: with SMTP id u13mr1310032ybu.247.1606271551478;
- Tue, 24 Nov 2020 18:32:31 -0800 (PST)
+        Tue, 24 Nov 2020 21:32:45 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41618C0613D4;
+        Tue, 24 Nov 2020 18:32:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P2TSdtkfgK7WesR1VipqV2PSDW2NVNCUIStDCNxcMGE=; b=g0HDyhdaQ2GWERfKQYYtUgfneH
+        8IYnjCKMGGYjFG7vjJY/SC1JqP8PuKyTR8Bsa9p4TmZEiX2oRQgAAutLavqzW0N3DVXzSc3mg1YUC
+        JTvxN367R27Sv2azAr3S6dYJQoUc1P2mRtcAX3JiNT/60aTFIYPGyBvHz92Af+QAADxUrTdxgcUqX
+        3jNNTUY+efnqSe1l8U2sF+YrSgPPS4MmM+2Nr4Zpmbggm83EdMTwJjrVtT6QwPCRzUT/YzYKg40Ip
+        zUbdrJ+MUBVx+yWT6EHz2IJiBLTnv02xKbT4cpcA1iDmiHqC357AQRqghJgPXwqJp7ZotPtDp3f65
+        N8rS9VDg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khkbi-0003Z5-N9; Wed, 25 Nov 2020 02:32:34 +0000
+Date:   Wed, 25 Nov 2020 02:32:34 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hch@lst.de,
+        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
+        dchinner@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
+Message-ID: <20201125023234.GH4327@casper.infradead.org>
+References: <20201112212641.27837-1-willy@infradead.org>
+ <alpine.LSU.2.11.2011160128001.1206@eggly.anvils>
+ <20201117153947.GL29991@casper.infradead.org>
+ <alpine.LSU.2.11.2011170820030.1014@eggly.anvils>
+ <20201117191513.GV29991@casper.infradead.org>
+ <20201117234302.GC29991@casper.infradead.org>
 MIME-Version: 1.0
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Wed, 25 Nov 2020 10:32:05 +0800
-Message-ID: <CAD-N9QVE_eYTrdp0c6q+c_kHUXk+i54BKhHR_0=qwr5xEu_k=w@mail.gmail.com>
-Subject: Re: general protection fault in reiserfs_security_init
-To:     baolin.wang7@gmail.com, gregkh@linuxfoundation.org,
-        linhua.xu@unisoc.com, linus.walleij@linaro.org,
-        linux-kernel <linux-kernel@vger.kernel.org>, rafael@kernel.org,
-        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117234302.GC29991@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, September 21, 2020 at 5:32:22 PM UTC+8 syzbot wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit: 325d0eab Merge branch 'akpm' (patches from Andrew)
-> git tree: upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1671c0e3900000
-> kernel config: https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=690cb1e51970435f9775
-> compiler: gcc (GCC) 10.1.0-syz 20200507
-> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=15705a3d900000
-> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=117b3281900000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+690cb1...@syzkaller.appspotmail.com
->
-> REISERFS (device loop0): journal params: device loop0, size 15748, journal first block 18, max trans len 256, max batch 225, max commit age 30, max trans age 30
-> REISERFS (device loop0): checking transaction log (loop0)
-> REISERFS (device loop0): Using tea hash to sort names
-> REISERFS (device loop0): using 3.5.x disk format
-> general protection fault, probably for non-canonical address 0xdffffc000000000d: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000068-0x000000000000006f]
-> CPU: 0 PID: 6874 Comm: syz-executor834 Not tainted 5.9.0-rc5-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:d_really_is_negative include/linux/dcache.h:472 [inline]
-> RIP: 0010:reiserfs_xattr_jcreate_nblocks fs/reiserfs/xattr.h:78 [inline]
-> RIP: 0010:reiserfs_security_init+0x285/0x4d0 fs/reiserfs/xattr_security.c:70
-> Code: 48 c1 ea 03 80 3c 02 00 0f 85 2b 02 00 00 4d 8b ad a0 05 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d 7d 68 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 23 02 00 00 49 83 7d 68 00 0f 84 62 01 00 00 48
-> RSP: 0018:ffffc90005827980 EFLAGS: 00010202
-> RAX: dffffc0000000000 RBX: 0000000000000036 RCX: 000000000000006c
-> RDX: 000000000000000d RSI: ffffffff82009dd3 RDI: 0000000000000068
-> RBP: ffff88807d8441d0 R08: ffffc90005827a10 R09: ffffc90005827a18
-> R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000005fa
-> R13: 0000000000000000 R14: ffff888094e60000 R15: 0000000000000000
-> FS: 0000000001036880(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f5a6fb90ab4 CR3: 000000009a1ab000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
-> reiserfs_mkdir+0x2c9/0x980 fs/reiserfs/namei.c:821
-> create_privroot fs/reiserfs/xattr.c:882 [inline]
-> reiserfs_xattr_init+0x4de/0xb52 fs/reiserfs/xattr.c:1004
+On Tue, Nov 17, 2020 at 11:43:02PM +0000, Matthew Wilcox wrote:
+> On Tue, Nov 17, 2020 at 07:15:13PM +0000, Matthew Wilcox wrote:
+> > I find both of these functions exceptionally confusing.  Does this
+> > make it easier to understand?
+> 
+> Never mind, this is buggy.  I'll send something better tomorrow.
 
+That took a week, not a day.  *sigh*.  At least this is shorter.
 
-int reiserfs_xattr_init(struct super_block *s, int mount_flags)
-{
-        int err = 0;
-        struct dentry *privroot = REISERFS_SB(s)->priv_root;
+commit 1a02863ce04fd325922d6c3db6d01e18d55f966b
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Tue Nov 17 10:45:18 2020 -0500
 
-        err = xattr_mount_check(s);
-        if (err)
-                goto error;
+    fix mm-truncateshmem-handle-truncates-that-split-thps.patch
 
-        if (d_really_is_negative(privroot) && !(mount_flags & SB_RDONLY)) {
-                inode_lock(d_inode(s->s_root));
-                err = create_privroot(REISERFS_SB(s)->priv_root);
-                inode_unlock(d_inode(s->s_root));
-        }
-
-        if (d_really_is_positive(privroot)) {
-                inode_lock(d_inode(privroot));
-                if (!REISERFS_SB(s)->xattr_root) {
-                        struct dentry *dentry;
-
-                        dentry = lookup_one_len(XAROOT_NAME, privroot,
-                                                strlen(XAROOT_NAME));
-                        if (!IS_ERR(dentry)) {
-                                pr_alert("assign xattr_root with
-dentry = 0x%lx", dentry);
-                                REISERFS_SB(s)->xattr_root = dentry;
-                        }else
-                                err = PTR_ERR(dentry);
-                }
-                inode_unlock(d_inode(privroot));
-        }
-        ......
-}
-From the implementation of reiserfs_xattr_init, only when
-d_really_is_positive(privroot) is true, xattr_root could be assigned
-with a dentry obtained from lookup_one_len. In other words,
-create_privroot is executed with REISERFS_SB(s)->xattr_root as NULL
-pointer. With improper implementation of mkdir operation in reiserfs
-filesystem or accessing the xattr_root in reiserfs_mkdir , it can lead
-to NULL pointer dereference. If you remove the red code in
-reiserfs_xattr_jcreate_nblocks, the crash never occurs, but it may
-affect nblocks calculation in the reiserfs filesystem.
-
-static inline size_t reiserfs_xattr_jcreate_nblocks(struct inode *inode)
-{
-        size_t nblocks = JOURNAL_BLOCKS_PER_OBJECT(inode->i_sb);
-
-        pr_alert("5: inode = 0x%lx", inode);
-        if ((REISERFS_I(inode)->i_flags & i_has_xattr_dir) == 0) {
-                nblocks += JOURNAL_BLOCKS_PER_OBJECT(inode->i_sb);
-                if (d_really_is_negative(REISERFS_SB(inode->i_sb)->xattr_root))
-                      nblocks += JOURNAL_BLOCKS_PER_OBJECT(inode->i_sb);
-        }
-
-        return nblocks;
-}
-
---
-My best regards to you.
-
-     No System Is Safe!
-     Dongliang Mu
+diff --git a/mm/internal.h b/mm/internal.h
+index 75ae680d0a2c..4ac239e8c42c 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -622,5 +622,6 @@ struct migration_target_control {
+ 	gfp_t gfp_mask;
+ };
+ 
+-bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end);
++pgoff_t truncate_inode_partial_page(struct address_space *mapping,
++		struct page *page, loff_t start, loff_t end);
+ #endif	/* __MM_INTERNAL_H */
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 5da4f1a3e663..6fd00948e592 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -866,26 +866,33 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+ {
+ 	struct address_space *mapping = inode->i_mapping;
+ 	struct shmem_inode_info *info = SHMEM_I(inode);
+-	pgoff_t start = (lstart + PAGE_SIZE - 1) >> PAGE_SHIFT;
+-	pgoff_t end = (lend + 1) >> PAGE_SHIFT;
++	pgoff_t start, end;
+ 	struct pagevec pvec;
+ 	pgoff_t indices[PAGEVEC_SIZE];
+ 	struct page *page;
+ 	long nr_swaps_freed = 0;
+ 	pgoff_t index;
+ 	int i;
+-	bool partial_end;
+ 
+-	if (lend == -1)
+-		end = -1;	/* unsigned, so actually very big */
++	page = NULL;
++	start = lstart >> PAGE_SHIFT;
++	shmem_getpage(inode, start, &page, SGP_READ);
++	if (page) {
++		page = thp_head(page);
++		set_page_dirty(page);
++		start = truncate_inode_partial_page(mapping, page, lstart,
++							lend);
++	}
++
++	/* 'end' includes a partial page */
++	end = lend / PAGE_SIZE;
+ 
+ 	pagevec_init(&pvec);
+ 	index = start;
+ 	while (index < end && find_lock_entries(mapping, index, end - 1,
+-			&pvec, indices)) {
++							&pvec, indices)) {
+ 		for (i = 0; i < pagevec_count(&pvec); i++) {
+ 			page = pvec.pages[i];
+-
+ 			index = indices[i];
+ 
+ 			if (xa_is_value(page)) {
+@@ -895,8 +902,6 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+ 								index, page);
+ 				continue;
+ 			}
+-			index += thp_nr_pages(page) - 1;
+-
+ 			if (!unfalloc || !PageUptodate(page))
+ 				truncate_inode_page(mapping, page);
+ 			unlock_page(page);
+@@ -907,85 +912,60 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+ 		index++;
+ 	}
+ 
+-	partial_end = ((lend + 1) % PAGE_SIZE) > 0;
+-	page = NULL;
+-	shmem_getpage(inode, lstart >> PAGE_SHIFT, &page, SGP_READ);
+-	if (page) {
+-		bool same_page;
+-
+-		page = thp_head(page);
+-		same_page = lend < page_offset(page) + thp_size(page);
+-		if (same_page)
+-			partial_end = false;
+-		set_page_dirty(page);
+-		if (!truncate_inode_partial_page(page, lstart, lend)) {
+-			start = page->index + thp_nr_pages(page);
+-			if (same_page)
+-				end = page->index;
+-		}
+-		unlock_page(page);
+-		put_page(page);
+-		page = NULL;
+-	}
+-
+-	if (partial_end)
+-		shmem_getpage(inode, end, &page, SGP_READ);
+-	if (page) {
+-		page = thp_head(page);
+-		set_page_dirty(page);
+-		if (!truncate_inode_partial_page(page, lstart, lend))
+-			end = page->index;
+-		unlock_page(page);
+-		put_page(page);
+-	}
+-
+ 	index = start;
+-	while (index < end) {
++	while (index <= end) {
+ 		cond_resched();
+ 
+-		if (!find_get_entries(mapping, index, end - 1, &pvec,
+-				indices)) {
++		if (!find_get_entries(mapping, index, end, &pvec, indices)) {
+ 			/* If all gone or hole-punch or unfalloc, we're done */
+-			if (index == start || end != -1)
++			if (index == start || lend != (loff_t)-1)
+ 				break;
+ 			/* But if truncating, restart to make sure all gone */
+ 			index = start;
+ 			continue;
+ 		}
++
+ 		for (i = 0; i < pagevec_count(&pvec); i++) {
+ 			page = pvec.pages[i];
+ 
+-			index = indices[i];
+ 			if (xa_is_value(page)) {
+ 				if (unfalloc)
+ 					continue;
+-				if (shmem_free_swap(mapping, index, page)) {
+-					/* Swap was replaced by page: retry */
+-					index--;
+-					break;
++				index = indices[i];
++				if (index == end) {
++					/* Partial page swapped out? */
++					shmem_getpage(inode, end, &page,
++								SGP_READ);
++				} else {
++					if (shmem_free_swap(mapping, index,
++								page)) {
++						/* Swap replaced: retry */
++						break;
++					}
++					nr_swaps_freed++;
++					continue;
+ 				}
+-				nr_swaps_freed++;
+-				continue;
++			} else {
++				lock_page(page);
+ 			}
+ 
+-			lock_page(page);
+-
+ 			if (!unfalloc || !PageUptodate(page)) {
+ 				if (page_mapping(page) != mapping) {
+ 					/* Page was replaced by swap: retry */
+ 					unlock_page(page);
+-					index--;
++					put_page(page);
+ 					break;
+ 				}
+ 				VM_BUG_ON_PAGE(PageWriteback(page), page);
+-				truncate_inode_page(mapping, page);
++				index = truncate_inode_partial_page(mapping,
++						page, lstart, lend);
++				if (index > end)
++					end = indices[i] - 1;
+ 			}
+-			index = page->index + thp_nr_pages(page) - 1;
+-			unlock_page(page);
+ 		}
++		index = indices[i - 1] + 1;
+ 		pagevec_remove_exceptionals(&pvec);
+-		pagevec_release(&pvec);
+-		index++;
++		pagevec_reinit(&pvec);
+ 	}
+ 
+ 	spin_lock_irq(&info->lock);
+diff --git a/mm/truncate.c b/mm/truncate.c
+index ddb94fc0bc9e..e9fb4f1db837 100644
+--- a/mm/truncate.c
++++ b/mm/truncate.c
+@@ -225,19 +225,20 @@ int truncate_inode_page(struct address_space *mapping, struct page *page)
+ }
+ 
+ /*
+- * Handle partial (transparent) pages.  The page may be entirely within the
+- * range if a split has raced with us.  If not, we zero the part of the
+- * page that's within the [start, end] range, and then split the page if
+- * it's a THP.  split_page_range() will discard pages which now lie beyond
+- * i_size, and we rely on the caller to discard pages which lie within a
++ * Handle partial (transparent) pages.  If the page is entirely within
++ * the range, we discard it.  If not, we split the page if it's a THP
++ * and zero the part of the page that's within the [start, end] range.
++ * split_page_range() will discard any of the subpages which now lie
++ * beyond i_size, and the caller will discard pages which lie within a
+  * newly created hole.
+  *
+- * Returns false if THP splitting failed so the caller can avoid
+- * discarding the entire page which is stubbornly unsplit.
++ * Return: The index after the current page.
+  */
+-bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end)
++pgoff_t truncate_inode_partial_page(struct address_space *mapping,
++		struct page *page, loff_t start, loff_t end)
+ {
+ 	loff_t pos = page_offset(page);
++	pgoff_t next_index = page->index + thp_nr_pages(page);
+ 	unsigned int offset, length;
+ 
+ 	if (pos < start)
+@@ -251,24 +252,33 @@ bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end)
+ 		length = end + 1 - pos - offset;
+ 
+ 	wait_on_page_writeback(page);
+-	if (length == thp_size(page)) {
+-		truncate_inode_page(page->mapping, page);
+-		return true;
+-	}
+-
+-	/*
+-	 * We may be zeroing pages we're about to discard, but it avoids
+-	 * doing a complex calculation here, and then doing the zeroing
+-	 * anyway if the page split fails.
+-	 */
+-	zero_user(page, offset, length);
++	if (length == thp_size(page))
++		goto truncate;
+ 
+ 	cleancache_invalidate_page(page->mapping, page);
+ 	if (page_has_private(page))
+ 		do_invalidatepage(page, offset, length);
+ 	if (!PageTransHuge(page))
+-		return true;
+-	return split_huge_page(page) == 0;
++		goto zero;
++	page += offset / PAGE_SIZE;
++	if (split_huge_page(page) < 0) {
++		page -= offset / PAGE_SIZE;
++		goto zero;
++	}
++	next_index = page->index + 1;
++	offset %= PAGE_SIZE;
++	if (offset == 0 && length >= PAGE_SIZE)
++		goto truncate;
++	length = PAGE_SIZE - offset;
++zero:
++	zero_user(page, offset, length);
++	goto out;
++truncate:
++	truncate_inode_page(mapping, page);
++out:
++	unlock_page(page);
++	put_page(page);
++	return next_index;
+ }
+ 
+ /*
+@@ -322,10 +332,6 @@ int invalidate_inode_page(struct page *page)
+  * The first pass will remove most pages, so the search cost of the second pass
+  * is low.
+  *
+- * We pass down the cache-hot hint to the page freeing code.  Even if the
+- * mapping is large, it is probably the case that the final pages are the most
+- * recently touched, and freeing happens in ascending file offset order.
+- *
+  * Note that since ->invalidatepage() accepts range to invalidate
+  * truncate_inode_pages_range is able to handle cases where lend + 1 is not
+  * page aligned properly.
+@@ -333,34 +339,24 @@ int invalidate_inode_page(struct page *page)
+ void truncate_inode_pages_range(struct address_space *mapping,
+ 				loff_t lstart, loff_t lend)
+ {
+-	pgoff_t		start;		/* inclusive */
+-	pgoff_t		end;		/* exclusive */
++	pgoff_t start, end;
+ 	struct pagevec	pvec;
+ 	pgoff_t		indices[PAGEVEC_SIZE];
+ 	pgoff_t		index;
+ 	int		i;
+ 	struct page *	page;
+-	bool partial_end;
+ 
+ 	if (mapping->nrpages == 0 && mapping->nrexceptional == 0)
+ 		goto out;
+ 
+-	/*
+-	 * 'start' and 'end' always covers the range of pages to be fully
+-	 * truncated. Partial pages are covered with 'partial_start' at the
+-	 * start of the range and 'partial_end' at the end of the range.
+-	 * Note that 'end' is exclusive while 'lend' is inclusive.
+-	 */
+-	start = (lstart + PAGE_SIZE - 1) >> PAGE_SHIFT;
+-	if (lend == -1)
+-		/*
+-		 * lend == -1 indicates end-of-file so we have to set 'end'
+-		 * to the highest possible pgoff_t and since the type is
+-		 * unsigned we're using -1.
+-		 */
+-		end = -1;
+-	else
+-		end = (lend + 1) >> PAGE_SHIFT;
++	start = lstart >> PAGE_SHIFT;
++	page = find_lock_head(mapping, start);
++	if (page)
++		start = truncate_inode_partial_page(mapping, page, lstart,
++							lend);
++
++	/* 'end' includes a partial page */
++	end = lend / PAGE_SIZE;
+ 
+ 	pagevec_init(&pvec);
+ 	index = start;
+@@ -377,37 +373,11 @@ void truncate_inode_pages_range(struct address_space *mapping,
+ 		cond_resched();
+ 	}
+ 
+-	partial_end = ((lend + 1) % PAGE_SIZE) > 0;
+-	page = find_lock_head(mapping, lstart >> PAGE_SHIFT);
+-	if (page) {
+-		bool same_page = lend < page_offset(page) + thp_size(page);
+-		if (same_page)
+-			partial_end = false;
+-		if (!truncate_inode_partial_page(page, lstart, lend)) {
+-			start = page->index + thp_nr_pages(page);
+-			if (same_page)
+-				end = page->index;
+-		}
+-		unlock_page(page);
+-		put_page(page);
+-		page = NULL;
+-	}
+-
+-	if (partial_end)
+-		page = find_lock_head(mapping, end);
+-	if (page) {
+-		if (!truncate_inode_partial_page(page, lstart, lend))
+-			end = page->index;
+-		unlock_page(page);
+-		put_page(page);
+-	}
+-
+ 	index = start;
+-	while (index < end) {
++	while (index <= end) {
+ 		cond_resched();
+ 
+-		if (!find_get_entries(mapping, index, end - 1, &pvec,
+-				indices)) {
++		if (!find_get_entries(mapping, index, end, &pvec, indices)) {
+ 			/* If all gone from start onwards, we're done */
+ 			if (index == start)
+ 				break;
+@@ -418,22 +388,19 @@ void truncate_inode_pages_range(struct address_space *mapping,
+ 
+ 		for (i = 0; i < pagevec_count(&pvec); i++) {
+ 			page = pvec.pages[i];
+-
+-			/* We rely upon deletion not changing page->index */
+-			index = indices[i];
+-
+ 			if (xa_is_value(page))
+ 				continue;
+ 
+ 			lock_page(page);
+-			index = page->index + thp_nr_pages(page) - 1;
+-			wait_on_page_writeback(page);
+-			truncate_inode_page(mapping, page);
+-			unlock_page(page);
++			index = truncate_inode_partial_page(mapping, page,
++							lstart, lend);
++			/* Couldn't split a THP? */
++			if (index > end)
++				end = indices[i] - 1;
+ 		}
++		index = indices[i - 1] + 1;
+ 		truncate_exceptional_pvec_entries(mapping, &pvec, indices);
+-		pagevec_release(&pvec);
+-		index++;
++		pagevec_reinit(&pvec);
+ 	}
+ 
+ out:
