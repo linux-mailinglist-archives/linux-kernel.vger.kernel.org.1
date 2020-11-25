@@ -2,107 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0252C45F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D912C45F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732426AbgKYQw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:52:29 -0500
-Received: from smtp.asem.it ([151.1.184.197]:55961 "EHLO smtp.asem.it"
+        id S1732417AbgKYQxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:53:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731918AbgKYQw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:52:29 -0500
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000631152.MSG 
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 17:52:26 +0100
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 25
- Nov 2020 17:52:23 +0100
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 25 Nov 2020 17:52:23 +0100
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Jonathan Corbet <corbet@lwn.net>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH v1] docs/vm: hwpoison: fix spelling mistakes
-Date:   Wed, 25 Nov 2020 17:52:22 +0100
-Message-ID: <20201125165222.788910-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A090210.5FBE8BC8.0058,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+        id S1730115AbgKYQxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:53:37 -0500
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0EC02083E;
+        Wed, 25 Nov 2020 16:53:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606323216;
+        bh=te8Oy9XLGYOL27YFUlNQH28c35Qek0dhlpTDNhOkAI0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wpqKDL4PEYoRUDxXLHygQ5Cgkvb/VIvxlkhIcsy/yDCWMNzf/L3nhfgeQKZDxggjY
+         cI3PAVcBmlJk2aqLZ1LSx9KQR+JOdGAcmHbrZ6w868/bIdK/+UlXQmfbfrAUiqMYxv
+         wfIwFMjOb3acWQpSx1Qxb1wx0qFYxZ/N7NPE3m4U=
+Date:   Thu, 26 Nov 2020 01:53:33 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v0 03/19] x86/insn: Add an insn_decode() API
+Message-Id: <20201126015333.fb0fb2b548013073ce72f19f@kernel.org>
+In-Reply-To: <20201124101952.7909-4-bp@alien8.de>
+References: <20201124101952.7909-1-bp@alien8.de>
+        <20201124101952.7909-4-bp@alien8.de>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Actions:
+Hi Borislav,
 
-- fix spelling mistake
-- reduce some double spaces to a single one
-- substitute spaces with tab
+On Tue, 24 Nov 2020 11:19:36 +0100
+Borislav Petkov <bp@alien8.de> wrote:
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
----
- Documentation/vm/hwpoison.rst | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> From: Borislav Petkov <bp@suse.de>
+> 
+> Users of the instruction decoder should use this to decode instruction
+> bytes. For that, have insn*() helpers return an int value to denote
+> success/failure.
+> 
+> While at it, make insn_get_opcode() more stricter as to whether what has
+> seen so far is a valid insn and if not.
 
-diff --git a/Documentation/vm/hwpoison.rst b/Documentation/vm/hwpoison.rst
-index a5c884293dac..88ba2df198d1 100644
---- a/Documentation/vm/hwpoison.rst
-+++ b/Documentation/vm/hwpoison.rst
-@@ -50,7 +50,7 @@ of applications. KVM support requires a recent qemu-kvm release.
- For the KVM use there was need for a new signal type so that
- KVM can inject the machine check into the guest with the proper
- address. This in theory allows other applications to handle
--memory failures too. The expection is that near all applications
-+memory failures too. The expectation is that near all applications
- won't do that, but some very specialized ones might.
- 
- Failure recovery modes
-@@ -121,7 +121,7 @@ Testing
- 
-   unpoison-pfn
- 	Software-unpoison page at PFN echoed into this file. This way
--	a page can be reused again.  This only works for Linux
-+	a page can be reused again. This only works for Linux
- 	injected failures, not for real memory failures.
- 
-   Note these injection interfaces are not stable and might change between
-@@ -129,8 +129,8 @@ Testing
- 
-   corrupt-filter-dev-major, corrupt-filter-dev-minor
- 	Only handle memory failures to pages associated with the file
--	system defined by block device major/minor.  -1U is the
--	wildcard value.  This should be only used for testing with
-+	system defined by block device major/minor. -1U is the
-+	wildcard value. This should be only used for testing with
- 	artificial injection.
- 
-   corrupt-filter-memcg
-@@ -141,7 +141,7 @@ Testing
- 
- 		mkdir /sys/fs/cgroup/mem/hwpoison
- 
--	        usemem -m 100 -s 1000 &
-+		usemem -m 100 -s 1000 &
- 		echo `jobs -p` > /sys/fs/cgroup/mem/hwpoison/tasks
- 
- 		memcg_ino=$(ls -id /sys/fs/cgroup/mem/hwpoison | cut -f1 -d' ')
-@@ -152,7 +152,7 @@ Testing
- 
-   corrupt-filter-flags-mask, corrupt-filter-flags-value
- 	When specified, only poison pages if ((page_flags & mask) ==
--	value).  This allows stress testing of many kinds of
-+	value). This allows stress testing of many kinds of
- 	pages. The page_flags are the same as in /proc/kpageflags. The
- 	flag bits are defined in include/linux/kernel-page-flags.h and
- 	documented in Documentation/admin-guide/mm/pagemap.rst
+(only from the viewpoint of VEX coding, a bit stricter, but not perfect.)
+
+
+> Copy linux/kconfig.h for the tools-version of the decoder so that it can
+> use IS_ENABLED().
+> 
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  arch/x86/include/asm/insn.h       |  24 ++--
+>  arch/x86/lib/insn.c               | 182 +++++++++++++++++++++++-------
+>  tools/arch/x86/include/asm/insn.h |  24 ++--
+>  tools/arch/x86/lib/insn.c         | 182 +++++++++++++++++++++++-------
+>  tools/include/linux/kconfig.h     |  73 ++++++++++++
+>  5 files changed, 391 insertions(+), 94 deletions(-)
+>  create mode 100644 tools/include/linux/kconfig.h
+> 
+> diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
+> index 5c1ae3eff9d4..e80ddfe86255 100644
+> --- a/arch/x86/include/asm/insn.h
+> +++ b/arch/x86/include/asm/insn.h
+> @@ -87,13 +87,23 @@ struct insn {
+>  #define X86_VEX_M_MAX	0x1f			/* VEX3.M Maximum value */
+>  
+>  extern void insn_init(struct insn *insn, const void *kaddr, int buf_len, int x86_64);
+> -extern void insn_get_prefixes(struct insn *insn);
+> -extern void insn_get_opcode(struct insn *insn);
+> -extern void insn_get_modrm(struct insn *insn);
+> -extern void insn_get_sib(struct insn *insn);
+> -extern void insn_get_displacement(struct insn *insn);
+> -extern void insn_get_immediate(struct insn *insn);
+> -extern void insn_get_length(struct insn *insn);
+> +extern int insn_get_prefixes(struct insn *insn);
+> +extern int insn_get_opcode(struct insn *insn);
+> +extern int insn_get_modrm(struct insn *insn);
+> +extern int insn_get_sib(struct insn *insn);
+> +extern int insn_get_displacement(struct insn *insn);
+> +extern int insn_get_immediate(struct insn *insn);
+> +extern int insn_get_length(struct insn *insn);
+> +
+> +enum insn_mode {
+> +	INSN_MODE_32,
+> +	INSN_MODE_64,
+> +	/* Mode is determined by the current kernel build. */
+> +	INSN_MODE_KERN,
+> +	INSN_NUM_MODES,
+> +};
+> +
+> +extern int insn_decode(struct insn *insn, const void *kaddr, int buf_len, enum insn_mode m);
+>  
+>  /* Attribute will be determined after getting ModRM (for opcode groups) */
+>  static inline void insn_get_attribute(struct insn *insn)
+> diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+> index 1ba994862b56..1f749e3b4a25 100644
+> --- a/arch/x86/lib/insn.c
+> +++ b/arch/x86/lib/insn.c
+> @@ -13,6 +13,9 @@
+>  #include <asm/inat.h>
+>  #include <asm/insn.h>
+>  
+> +#include <linux/errno.h>
+> +#include <linux/kconfig.h>
+> +
+>  #include <asm/emulate_prefix.h>
+>  
+>  /* Verify next sizeof(t) bytes can be on the same instruction */
+> @@ -98,8 +101,12 @@ static void insn_get_emulate_prefix(struct insn *insn)
+>   * Populates the @insn->prefixes bitmap, and updates @insn->next_byte
+>   * to point to the (first) opcode.  No effect if @insn->prefixes.got
+>   * is already set.
+> + *
+> + * * Returns:
+> + * 0:  on success
+> + * !0: on error
+>   */
+
+So this is different from...
+
+[..]
+> +
+> +/**
+> + * insn_decode() - Decode an x86 instruction
+> + * @insn:	&struct insn to be initialized
+> + * @kaddr:	address (in kernel memory) of instruction (or copy thereof)
+> + * @buf_len:	length of the insn buffer at @kaddr
+> + * @m:		insn mode, see enum insn_mode
+> + *
+> + * Returns:
+> + * 0: if decoding succeeded
+> + * < 0: otherwise.
+
+this return value.
+
+Even for the insn_get_*(), I would like to see them returning -EINVAL
+as same as insn_decode(). Same API group has different return value is
+confusing.
+
+Thank you,
+
 -- 
-2.25.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
