@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEDA2C3850
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 06:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 554CE2C3859
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 06:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726034AbgKYFFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 00:05:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725835AbgKYFFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 00:05:35 -0500
-Received: from localhost (unknown [122.179.120.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0C312075A;
-        Wed, 25 Nov 2020 05:05:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606280734;
-        bh=OQivpyeKMz4JHTOLZeqk0jAOobpDhVdKkjY2Gy+r8VA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kaxDI2pcNpXJ643EHknXHl3rHCWh49qRo2CtOIUkY+YIkwvvhfmrLku1NdEHYpb9n
-         yk4Y++tty12lSbOPHuEarrh/sg2q92xfp2YMU1LbVH9OyqcvgGIBQ5AYDJcVkaNTX5
-         OyY+he6dFIiKj0vzpCYgaEnbAYwOQbO4PrbNbfiM=
-Date:   Wed, 25 Nov 2020 10:35:28 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH] soundwire: master: use pm_runtime_set_active() on add
-Message-ID: <20201125050528.GC8403@vkoul-mobl>
-References: <20201124130742.10986-1-yung-chuan.liao@linux.intel.com>
+        id S1725985AbgKYFMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 00:12:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgKYFMW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 00:12:22 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67248C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 21:12:22 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id x24so1215825pfn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 21:12:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X6k1IOsQDjGvUYpOQL8+dKZam2GpJjbx2h3F0tfq99Q=;
+        b=lm5wloISPmPIpsMkmVsXeb9y1sX+o8SnV5tVZ1Sli/jgcrDpczXPSa9ZEcFtUXA8Af
+         fHn0hzPuzLnZq+t8wRdcjEYGxJrcw00B0VfXcuG5qHiZt/TFqtKqvNws/N1+xjkrIzFg
+         T74wOOSZSvMgnVH8Mz4cbWrcyBsIB7deqbVmo1iVhPejKf480JsNpsrrQzcrKIO3jbyx
+         4Q8XpaOiAIY4MFmP6hvzyzCWh9/lEC58uJ+ThDjGEL19HdzpXz5tNQxNmBYkJofjjoJz
+         pNknomy/0SVSTVLBKGmtXwUZ+kDeS1WzA3JWSLKeEc0UOCfxiVAI+CCkaNiltIbjjybd
+         Z2GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X6k1IOsQDjGvUYpOQL8+dKZam2GpJjbx2h3F0tfq99Q=;
+        b=nSmoT1gri8EHPW3fm/005QP+uQH2pmPAsy7ytsMVwpmHKWED3XdZhNzcK9okZX6B65
+         ne7WJwwzHyaMMtHtOlniLfQsojCO2wtvfvE6UAAjl+tqITXlmEkq0rP0twmujFC+RvTo
+         m1br29OuIYsJf5btR1e8JW3HFyD5J44v7+dn9Jev8e06LzHOYwsH7nBfo+Iz52Npp2yo
+         kHTZWIEp51JwcY+9MvfRPWU/ndhPUSoVECx6V+T2vCrRuD8sYdMU64sIq2c0iQmIQCSr
+         vZVNa6Ig+PEXEgJvRoD/JpMsoZix4urufLIyVPwjB1fTVOHyz7kSfBxPioIJ6MpgQCkg
+         YgTw==
+X-Gm-Message-State: AOAM532jcelOXi6gXsAPeQbfqiryJr9NjTVzidBsWeCvfS3cTPhDib1X
+        74fj8V/ZZwIcQG5aJUx23I+K
+X-Google-Smtp-Source: ABdhPJxSmftf9qmgHx/LwTeuK7k8MhqnLoDp/5fru9cO8O+Wipj7JnSA7Yh6WIiXASkM7GfndP0Lbg==
+X-Received: by 2002:a17:90a:de89:: with SMTP id n9mr2093594pjv.224.1606281141935;
+        Tue, 24 Nov 2020 21:12:21 -0800 (PST)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id x30sm763612pgc.86.2020.11.24.21.12.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 21:12:21 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     vkoul@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 0/2] Add devicetree support for SDX55 Modem and MTP
+Date:   Wed, 25 Nov 2020 10:42:09 +0530
+Message-Id: <20201125051211.8089-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124130742.10986-1-yung-chuan.liao@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-11-20, 21:07, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> The 'master' device acts as a glue layer used during bus
-> initialization only, and it needs to be 'transparent' for pm_runtime
-> management. Its behavior should be that it becomes active when one of
-> its children becomes active, and suspends when all of its children are
-> suspended.
-> 
-> In our tests on Intel platforms, we routinely see these sort of
-> warnings on the initial boot:
-> 
-> [ 21.447345] rt715 sdw:3:25d:715:0: runtime PM trying to activate
-> child device sdw:3:25d:715:0 but parent (sdw-master-3) is not active
-> 
-> This is root-caused to a missing setup to make the device 'active' on
-> probe. Since we don't want the device to remain active forever after
-> the probe, the autosuspend configuration is also enabled at the end of
-> the probe - the device will actually autosuspend only in the case
-> where there are no devices physically attached. In practice, the
-> master device will suspend when all its children are no longer active.
-> 
-> Fixes: bd84256e86ecf ('soundwire: master: enable pm runtime')
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> ---
->  drivers/soundwire/master.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
-> index 3488bb824e84..9b05c9e25ebe 100644
-> --- a/drivers/soundwire/master.c
-> +++ b/drivers/soundwire/master.c
-> @@ -8,6 +8,15 @@
->  #include <linux/soundwire/sdw_type.h>
->  #include "bus.h"
->  
-> +/*
-> + * The 3s value for autosuspend will only be used if there are no
-> + * devices physically attached on a bus segment. In practice enabling
-> + * the bus operation will result in children devices become active and
-> + * the master device will only suspend when all its children are no
-> + * longer active.
-> + */
-> +#define SDW_MASTER_SUSPEND_DELAY_MS 3000
-> +
->  /*
->   * The sysfs for properties reflects the MIPI description as given
->   * in the MIPI DisCo spec
-> @@ -154,7 +163,12 @@ int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
->  	bus->dev = &md->dev;
->  	bus->md = md;
->  
-> +	pm_runtime_set_autosuspend_delay(&bus->md->dev, SDW_MASTER_SUSPEND_DELAY_MS);
-> +	pm_runtime_use_autosuspend(&bus->md->dev);
-> +	pm_runtime_mark_last_busy(&bus->md->dev);
-> +	pm_runtime_set_active(&bus->md->dev);
->  	pm_runtime_enable(&bus->md->dev);
-> +	pm_runtime_idle(&bus->md->dev);
+Hello,
 
-I understand that this needs to be done somewhere but is the core the
-right place. In intel case it maybe a dummy device but other controllers
-are real devices and may not support pm.
+This series adds devicetree support for Qualcomm SDX55 platform and MTP
+board. This series functionally depends on Clock support series [1]
+which is under review.
 
-I think better idea would be to do this in respective driver.. that way
-it would be an opt-in for device supporting pm.
+With the current devicetree support, the MTP can boot into initramfs
+shell.
 
-Thanks
+Thanks,
+Mani
+
+[1] https://lore.kernel.org/linux-arm-msm/20201119072714.14460-1-manivannan.sadhasivam@linaro.org/
+
+Changes in v2:
+
+* Incorporated review comments from Bjorn. Mostly minor changes.
+
+Manivannan Sadhasivam (1):
+  ARM: dts: qcom: Add SDX55 platform and MTP board support
+
+Vinod Koul (1):
+  dt-bindings: arm: qcom: Document SDX55 platform and boards
+
+ .../devicetree/bindings/arm/qcom.yaml         |   6 +
+ arch/arm/boot/dts/Makefile                    |   3 +-
+ arch/arm/boot/dts/qcom-sdx55-mtp.dts          |  27 +++
+ arch/arm/boot/dts/qcom-sdx55.dtsi             | 201 ++++++++++++++++++
+ 4 files changed, 236 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/qcom-sdx55-mtp.dts
+ create mode 100644 arch/arm/boot/dts/qcom-sdx55.dtsi
+
 -- 
-~Vinod
+2.25.1
+
