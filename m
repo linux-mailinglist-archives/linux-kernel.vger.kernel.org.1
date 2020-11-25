@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CA82C380B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABBA2C380C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgKYEVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 23:21:38 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:49281 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgKYEVh (ORCPT
+        id S1727985AbgKYEW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 23:22:28 -0500
+Received: from smtprelay0203.hostedemail.com ([216.40.44.203]:51700 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727957AbgKYEW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 23:21:37 -0500
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 0AP4LGLe023838;
-        Wed, 25 Nov 2020 13:21:17 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 0AP4LGLe023838
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606278077;
-        bh=ooRzKz+xea3vITaQ6iu7qbgvOHqjZFJJkld/4o49MH4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HiiUZCzMQznWUyqeypBgzCNTUOQtn5kRBrDQR4ZREFrlK2e+wtOmdPOFosym7+w8/
-         mSLF7GoiwwfQNatfCOZJ5CNwG5HRLikhvJ2KB3rZZvFa6aRisSLr3zFsKcShVFAn3+
-         PDqRg1CgT09F8ZGAbjp2LK5Jq+dDYnD7Oy5HJsFxykPDe1aUuBQ5QThZd9y5N+I9o3
-         DyZ4brprbkZra3EeNZLJ4EnVWTeBQPYmLoFWX45x3shrGYxXDdNFeToSAWp0RHqIwr
-         lFfq2wBUAVyTCkYS3205VqlfAR2sk0cuNHz2W16bFvWPN5hjCmXG3IXlcJwYQ6Nsw9
-         jM2KYUmmaXmnw==
-X-Nifty-SrcIP: [209.85.215.169]
-Received: by mail-pg1-f169.google.com with SMTP id f17so1217562pge.6;
-        Tue, 24 Nov 2020 20:21:16 -0800 (PST)
-X-Gm-Message-State: AOAM531SONrYFmErmaV4PLf6Z43XcjyRigePRJJKEGQnMWXgpBFYCmxS
-        yu9fE89koIj2fJkMh4niY/wInvSKSAVezMyxD5Y=
-X-Google-Smtp-Source: ABdhPJyq8N9UqhJ4ipccgxI03Bq0Yt5jiNDdSTa642fCRyckZtA/iY1YmWWkbRb8ZbXqPD94QZTkf/XJh0UnazY1L7g=
-X-Received: by 2002:a63:3205:: with SMTP id y5mr1533249pgy.47.1606278076158;
- Tue, 24 Nov 2020 20:21:16 -0800 (PST)
+        Tue, 24 Nov 2020 23:22:28 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 1456A18009120;
+        Wed, 25 Nov 2020 04:22:27 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 57,3.5,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3150:3352:3622:3865:3867:3870:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6119:7903:9025:10013:10400:10471:10848:11232:11657:11658:11914:12043:12048:12297:12438:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21347:21365:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: suit87_350b63c27373
+X-Filterd-Recvd-Size: 2027
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 25 Nov 2020 04:22:25 +0000 (UTC)
+Message-ID: <a60a7b08ce9dde0452577e4bc556cd6217bbc916.camel@perches.com>
+Subject: Re: [PATCH RESEND] checkpatch: Do not check git commit description
+ style when backport the upstream commit
+From:   Joe Perches <joe@perches.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Date:   Tue, 24 Nov 2020 20:22:24 -0800
+In-Reply-To: <995e0acb-c219-ea00-f078-7582516e25de@loongson.cn>
+References: <1606275347-19297-1-git-send-email-yangtiezhu@loongson.cn>
+         <dddb87a6ffb94b6b8046eb2eca1480a7ca37f962.camel@perches.com>
+         <995e0acb-c219-ea00-f078-7582516e25de@loongson.cn>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-References: <20201124154339.173752-1-arnd@kernel.org>
-In-Reply-To: <20201124154339.173752-1-arnd@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 25 Nov 2020 13:20:39 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASsVeKzRp2cevv8RvPWvH_X9_FW4kp4C76BynTLSHJuRA@mail.gmail.com>
-Message-ID: <CAK7LNASsVeKzRp2cevv8RvPWvH_X9_FW4kp4C76BynTLSHJuRA@mail.gmail.com>
-Subject: Re: [PATCH] Makefile.extrawarn: remove -Wnested-externs warning
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 12:43 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The -Wnested-externs warning has become useless with gcc, since
-> this warns every time that BUILD_BUG_ON() or similar macros
-> are used.
->
-> With clang, the warning option does nothing to start with, so
-> just remove it entirely.
->
-> Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-
-Applied to linux-kbuild.
-Thanks.
-
-
->  scripts/Makefile.extrawarn | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-> index 6baee1200615..d53825503874 100644
-> --- a/scripts/Makefile.extrawarn
-> +++ b/scripts/Makefile.extrawarn
-> @@ -61,7 +61,6 @@ endif
->  ifneq ($(findstring 2, $(KBUILD_EXTRA_WARN)),)
->
->  KBUILD_CFLAGS += -Wdisabled-optimization
-> -KBUILD_CFLAGS += -Wnested-externs
->  KBUILD_CFLAGS += -Wshadow
->  KBUILD_CFLAGS += $(call cc-option, -Wlogical-op)
->  KBUILD_CFLAGS += -Wmissing-field-initializers
-> --
-> 2.27.0
->
+On Wed, 2020-11-25 at 12:08 +0800, Tiezhu Yang wrote:
+> On 11/25/2020 11:51 AM, Joe Perches wrote:
+> > On Wed, 2020-11-25 at 11:35 +0800, Tiezhu Yang wrote:
+> > > When backport the upstream commit to the internal LTS kernel version,
+> > > we usually use the following description [1] [2]:
+> > > 
+> > > [ Upstream commit cc6528bc9a0c901c83b8220a2e2617f3354d6dd9 ]
+> > > or
+> > > commit c51f8f88d705e06bd696d7510aff22b33eb8e638 upstream.
+> > Internal to what?
+> > 
+> > If it's your own internal build system, I think you should
+> > keep your own local patch to checkpatch.
+> > 
+> > I don't see why the kernel version should accept it.
+> > 
+> > Is this style used by anyone else?
+> 
+> AFAIK, this style is only used in the stable tree, for example:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.9.y&id=c68a9ca7ca33f1020cca97e4e935c2154bec37c7
+> 
 
 
--- 
-Best Regards
-Masahiro Yamada
