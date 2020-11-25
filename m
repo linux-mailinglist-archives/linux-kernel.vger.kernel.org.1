@@ -2,95 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25452C42F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C942C42F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730316AbgKYPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:32:42 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:42361 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730308AbgKYPcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:32:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606318361; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=1+TC3IYLJcqS2Bupzdlu7MVB2ra419DrH4Nlfpu0yk8=; b=O9qD/1kqWiNOSDgGZdVy+tckrHL2Uiae8bHQA3JeYtNs5i205PHm01be+Ey7Rj3tgHfN1PjZ
- qjOJAbZsThbiYPd6Rmhky4vTodeSVEBzFoc2+fZ8x1A3++5H3pns0nDu0Gpnx8IYjC09/bnv
- Uh6KxOPGnihkHHaWwbpfXxzCTqI=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fbe79117e9d874dfc03d270 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 15:32:33
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6D74EC43461; Wed, 25 Nov 2020 15:32:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93090C43460;
-        Wed, 25 Nov 2020 15:32:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 93090C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
-        linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, vinmenon@codeaurora.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH] mm: cma: improve pr_debug log in cma_release()
-Date:   Wed, 25 Nov 2020 21:02:21 +0530
-Message-Id: <1606318341-29521-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1730329AbgKYPc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:32:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730308AbgKYPc7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:32:59 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05E7C0613D4;
+        Wed, 25 Nov 2020 07:32:58 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id e81so111478ybc.1;
+        Wed, 25 Nov 2020 07:32:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eAuXwpBdS/JjUO7qcexKMImXRzelfRnoZ0qNW4H1WMU=;
+        b=ACEdiyJ3cqIrtVHqzdxs4l1WSVZrfWwchaiEt11W/TCuygiIfdX4xPQnZnWzYcJjzK
+         kOWpEw4J1ATkaKN+TKG/VsFDHpqHkf86VOZGgqfYieK+8cXX5EFqfGWPzLu6UIIUQMR5
+         51DjnwRwsIIykw5QynNfOdbEeoDuq7oipZjiNHH+6hhlyXGBQW2rWX15DR9j0R37ueY0
+         04aKxerOjP1lWJ/aD0Fqva/5h3Oj7bD6DS8jn2rucG5QDncstsoofxqVZNINe9GhJ3dc
+         sZkMboxQq+z4gaeuSTHdd6CdqW0P6LXVPaVyfEPo5GdSve7nBp+M5Efd5lQ8X7wDBzo+
+         2dvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eAuXwpBdS/JjUO7qcexKMImXRzelfRnoZ0qNW4H1WMU=;
+        b=MZpkQM5OxkbnVqMLO5L5dg+BD+0KKdtrpMl7PH1KlCORemfYLhX72q3Svh4hRcw56M
+         TAnkpbcnI8olXLDr1zFlbgQU9sIxRtx2GmY8cPy5NPyI0fzn/xfZ+rZcKwqmFxIUe5Vx
+         n7A6nsq23FYUTQg/6foLeDdBkKp8rV37Ab9EpHjMVVrYCyuPqNFJOz496MvlbA3AzX1e
+         wDfheIptDXqus+94sEzrXpOrYGnWUTWYrwh6+VC/7lZ0rJMFRG82YqkK/yx76uROlOf8
+         FEOyiC9FjTkXhwb/XdHvb+1rHzMMD0RysFpUzrfi7wSIFWyvNuL2uTTwZRMUaZ35dFM1
+         kb6w==
+X-Gm-Message-State: AOAM531vHhtDgF6hypUXNSL9CFQewxLl5Rt4RIoRhq6M0kIZ/FC/Z634
+        hLswWLlnxxASdIponYsdvIJwP4qWjIXTCWQQe3A=
+X-Google-Smtp-Source: ABdhPJyq+SmzDTDK0sQ3+oM+n2t5BqLyprPZNbfTyRthNwymIYmu4klbqVyo00JJseeiE+9X8KpMKt2xh4EafgzFFHU=
+X-Received: by 2002:a25:aa6b:: with SMTP id s98mr4568353ybi.214.1606318377703;
+ Wed, 25 Nov 2020 07:32:57 -0800 (PST)
+MIME-Version: 1.0
+References: <20201124112552.26377-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201124112552.26377-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVkbMbKdY76XGDGxGwCsY_oHZfF=v9XMLZSjLMN+jKe_Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdVkbMbKdY76XGDGxGwCsY_oHZfF=v9XMLZSjLMN+jKe_Q@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 25 Nov 2020 15:32:31 +0000
+Message-ID: <CA+V-a8s2MCB=_dX+V7_hARyJybKwnTgZyVWgPb3B0tmvLZaSzw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] memory: renesas-rpc-if: Make rpcif_enable/disable_rpm()
+ as static inline
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jiri Kosina <trivial@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is required to print 'count' of pages, along with the pages, passed
-to cma_release to debug the cases of mismatched count value passed
-between cma_alloc() and cma_release() from a code path.
+Hi Geert,
 
-As an example, consider the below scenario:
-1) CMA pool size is 4MB and
-2) User doing the erroneous step of allocating 2 pages but freeing 1
-page in a loop from this CMA pool.
-The step 2 causes cma_alloc() to return NULL at one point of time
-because of -ENOMEM condition.
+Thank you for the review.
 
-And the current pr_debug logs is not giving the info about these types
-of allocation patterns because of count value not being printed in
-cma_release().
+On Tue, Nov 24, 2020 at 3:43 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Tue, Nov 24, 2020 at 12:27 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Define rpcif_enable_rpm() and rpcif_disable_rpm() as static
+> > inline in the header instead of exporting it.
+> >
+> > Suggested-by: Pavel Machek <pavel@denx.de>
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Thanks for your patch, which is an improvement.
+>
+> > --- a/include/memory/renesas-rpc-if.h
+> > +++ b/include/memory/renesas-rpc-if.h
+> > @@ -10,6 +10,7 @@
+> >  #ifndef __RENESAS_RPC_IF_H
+> >  #define __RENESAS_RPC_IF_H
+> >
+> > +#include <linux/pm_runtime.h>
+> >  #include <linux/types.h>
+> >
+> >  enum rpcif_data_dir {
+> > @@ -77,11 +78,19 @@ struct      rpcif {
+> >
+> >  int  rpcif_sw_init(struct rpcif *rpc, struct device *dev);
+> >  void rpcif_hw_init(struct rpcif *rpc, bool hyperflash);
+> > -void rpcif_enable_rpm(struct rpcif *rpc);
+> > -void rpcif_disable_rpm(struct rpcif *rpc);
+> >  void rpcif_prepare(struct rpcif *rpc, const struct rpcif_op *op, u64 *offs,
+> >                    size_t *len);
+> >  int rpcif_manual_xfer(struct rpcif *rpc);
+> >  ssize_t rpcif_dirmap_read(struct rpcif *rpc, u64 offs, size_t len, void *buf);
+> >
+> > +static inline void rpcif_enable_rpm(struct rpcif *rpc)
+> > +{
+> > +       pm_runtime_enable(rpc->dev);
+> > +}
+> > +
+> > +static inline void rpcif_disable_rpm(struct rpcif *rpc)
+> > +{
+> > +       pm_runtime_put_sync(rpc->dev);
+>
+> Looking at how this is used, this should call pm_runtime_disable()
+> instead.
+>
+> And probably this should be moved inside the core RPC-IF driver:
+>   1. pm_runtime_enable() could be called from rpcif_sw_init(),
+>   2. pm_runtime_put_sync() can be called from a new rpc_sw_deinit()
+>      function, to be called by the SPI and MTD drivers on probe failure
+>      and on remove.
+>
+Totally agree.
 
-We are printing the count value in the trace logs, just extend the same
-to pr_debug logs too.
+Sergei are you OK with the above suggestions ?
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
- mm/cma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/cma.c b/mm/cma.c
-index 7f415d7..07c904b 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -512,7 +512,7 @@ bool cma_release(struct cma *cma, const struct page *pages, unsigned int count)
- 	if (!cma || !pages)
- 		return false;
- 
--	pr_debug("%s(page %p)\n", __func__, (void *)pages);
-+	pr_debug("%s(page %p, count %zu)\n", __func__, (void *)pages, count);
- 
- 	pfn = page_to_pfn(pages);
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
-
+Cheers,
+Prabhakar
