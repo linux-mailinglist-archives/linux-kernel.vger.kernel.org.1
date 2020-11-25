@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8982C3F0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1101A2C3F13
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgKYLZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:25:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgKYLZe (ORCPT
+        id S1728972AbgKYL0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:26:02 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:39604 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727718AbgKYL0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:25:34 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F24C0613D4;
-        Wed, 25 Nov 2020 03:25:34 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id b8so1756596ila.13;
-        Wed, 25 Nov 2020 03:25:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HSXJBXOn2CprTr1b4CdrQNESxRfY5tGLBjEWHEIp7AA=;
-        b=TLwvf1bDpvNY7DEsxrKhBgSD5ogLDEYtiKwZFEbSXz+GmFIXoikYTG6PrB53ugif2y
-         itMtFmQLzmM+qT5OEGXitfQTVTLruOlyddypNFnix5WhxHGeN0Bso+DL3+Qf6LzL/sPr
-         FMJwscmjsWbZAvbzBxgZXgsz9z6Icl3tQ9j/8RLX2B2Mrx3R3dO8z8ZZ+pwg3MgYDDQN
-         3vRrn+3FqSAom2YaglvBeBG0z5poxswZJCc9Hgsp6iAD4rB1ZG4EYPTNln4KxbtMUuLA
-         56i5z6oXMyQS5/AORxroZLYapDx4WLD8DtyUaR2mWqJGLCgFNdQeqSjBs03RiQEUGUcZ
-         iEUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HSXJBXOn2CprTr1b4CdrQNESxRfY5tGLBjEWHEIp7AA=;
-        b=D6V1nbGTb1LHPKtowNuObqpPtgso4AyqpXmB98t2LwN7Ln2iJwLu6iu0Etgad7Ga6p
-         VXbLgcVxtm9f12zoX8Qq7KnYrXQBUd9pemW+Vlr4ucYaqQW8tDkYVc0gsdgxyiOjskC5
-         NFI/URW67xWATTsWOD/E+Uv+DYuCofRqutFFuftXra2yBG6zi1unM+IPRH62tVCnAb+N
-         Kmu1t4K1Ao8cKCBLtjsVBBeBOQLAWcsdpiqrgvVzeTrKciNCikK1YSpQQH8YiFx0UvA9
-         EKFXZbLJdgbhVVh2TIpDLR8gjOZa++MtimkxHGTYXVzB0dS8HyuHLGJWzIhkmYJ0ABwW
-         8lfQ==
-X-Gm-Message-State: AOAM533KFcYXhPEsEb/zyBu4XbgCq6uPXwr5GR+Cyhki643B+MgzdAbQ
-        3zczo+rvB3B6hSTJSion04vbpWWHixE7J7RrJMg=
-X-Google-Smtp-Source: ABdhPJx6AV9+1feAbOuTnsij/5XCN70Bvf5Lti2lURe5/n/z6RQVALcpfa8e44LKxbcKze4C7mFOGkXxJEC6tkrtlbc=
-X-Received: by 2002:a92:155b:: with SMTP id v88mr2415194ilk.303.1606303533838;
- Wed, 25 Nov 2020 03:25:33 -0800 (PST)
+        Wed, 25 Nov 2020 06:26:02 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 4720C1C0B7D; Wed, 25 Nov 2020 12:26:00 +0100 (CET)
+Date:   Wed, 25 Nov 2020 12:25:59 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     Marek Behun <kabel@blackhole.sk>,
+        Gabriel David <ultracoolguy4@protonmail.com>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] leds: lm3697: Rename struct into more appropriate name
+Message-ID: <20201125112559.GD29328@amd>
+References: <nH0fAuRxkhh0jdtlck5LucnuXiEY2wfpLF8C8spK8hebUUZ75xQOe-PjBtR7F8jEZ84l-o9rVJ3z9xvatOAJMjvbH5qCQIO5MuSOmpWr0ZQ=@protonmail.com>
+ <20201010185700.GA8218@amd>
+ <20201010235045.4ba8cf51@blackhole.sk>
+ <3f83953a-57ba-1fdc-f3ae-d3679e05474d@ti.com>
 MIME-Version: 1.0
-References: <00000000000054aea005b4d59e71@google.com> <CAA5enKZ=6=AoknavW4RJ+T+aiPBFSf8uEjJ+ODcc+nMTD2k5kQ@mail.gmail.com>
- <bda71012-f2e2-9a4c-5dcb-7ad14655c2f5@linux.alibaba.com>
-In-Reply-To: <bda71012-f2e2-9a4c-5dcb-7ad14655c2f5@linux.alibaba.com>
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-Date:   Wed, 25 Nov 2020 11:25:22 +0000
-Message-ID: <CAA5enKZyE6mP2fWdooC4Lx7d2V9aSkxmgT-ihx0Z9HPjfq77NQ@mail.gmail.com>
-Subject: Re: linux-next boot error: WARNING in prepare_kswapd_sleep
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     syzbot <syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hui Su <sh_def@163.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="NtwzykIc2mflq5ck"
+Content-Disposition: inline
+In-Reply-To: <3f83953a-57ba-1fdc-f3ae-d3679e05474d@ti.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 at 06:25, Alex Shi <alex.shi@linux.alibaba.com> wrote:
-> Acked.
 
-Thanks. I submitted as an actual patch, refactored it slightly to
-avoid duplication of page_memcg().
+--NtwzykIc2mflq5ck
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> and further more, could you like try another patch?
+Hi!
 
-I tried that patch against the syzkaller failure case and it worked fine!
+> > From the perspective of Linux you see the two control banks as 2 LED
+> >class devices (because you are setting brightness for control banks,
+> >not for the LED strips).
+>=20
+> The way Marek explains it is correct and the way I wrote the driver
+> intially.=A0 There is no direct control of the LEDs only controlling the 2
+> banks.
+>=20
+> As an example a device can put LED string 1 and 2 on a single bank to
+> control the backlight for a display and put LED string 3 on a different b=
+ank
+> to control the backlight of a keyboard. Like in the Droid and Droid 4
+> devices.=A0 2 strings illuminate the display backlight and 1 string
+> illuminates the keyboard the display backlight can have a independent
+> brightness then the keyboard.
+>=20
+> To me the name of the structure does not impose any functional changes ju=
+st
+> semantic changes.=A0 And it just makes it a bit more difficult to back po=
+rt
+> functional fixes as this patch would be made mandatory for cherry picking=
+=2E=A0
+> But I do not get many requests to back port this driver so it maybe be a
+> moot point.
 
-Cheers, Lorenzo
+Ok, sorry for the confusion, and .. I believe the code can stay as-is.
+
+Bank is single entity Linux controls, and it does not need to know how
+many pins are really controlled on the hardware level.
+
+It will be confusing one way or another.
+
+Best regards,
+									Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--NtwzykIc2mflq5ck
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl++P0cACgkQMOfwapXb+vIj6QCgjpcej4tuXeZEJMnlnQMtFLGp
+xlgAoICqo8Vtn7a0gLImixk0DD3GMSyW
+=/agp
+-----END PGP SIGNATURE-----
+
+--NtwzykIc2mflq5ck--
