@@ -2,125 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03032C429D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8762C42A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729961AbgKYPHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:07:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726295AbgKYPHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:07:31 -0500
-Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729957AbgKYPJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:09:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729747AbgKYPJq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:09:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606316984;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KjQv5P7PRIrY0L8Xs58Fh8UAYQad1MiPuDtp8tpbsOc=;
+        b=Bnk7sNRw/sU3ACWUFwHa5aBFum9RYKOyribRUDHGJ4xbaY3N92sqxm9Zpv2naTsZR/phni
+        ioyK35Fg88xkig3f32S61pwcl8Rtpd1mVrPyJ14sXgz04//RdYABx2QUr6+K/hvylyJVYo
+        OgHfONFuLXs5GeGreQIM4o8DhhwAIEU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-q316MsHQNwq40zLS7Z4FTQ-1; Wed, 25 Nov 2020 10:09:40 -0500
+X-MC-Unique: q316MsHQNwq40zLS7Z4FTQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0434420679;
-        Wed, 25 Nov 2020 15:07:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606316850;
-        bh=XUXkH2P+Dj+LfdkoHygf4L5x2gUdd3NfXUBkon3pM9A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Em17VZvWWVlY5BRMnMYZzW3hq0R6dbkbJqGZlomaIrDWJejvK9KSDxJVZgK03ItrZ
-         lms3lto2jKNlaqS9UlSLYVt+gOs2it0Zzbgx5BMKym5lFi8FfGwMvDn3s7+e5Xwc15
-         5C1KPBQGN9O0Z8NIrVjf3IYc04YgAgitcpcqYU/4=
-Date:   Wed, 25 Nov 2020 16:07:27 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     linux-input@vger.kernel.org,
-        Helmut Stult <helmut.stult@schinfo.de>,
-        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
-        Baq Domalaq <domalak@gmail.com>,
-        Pedro Ribeiro <pedrib@gmail.com>, stable@vger.kernel.org,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] HID: i2c-hid: add polling mode based on connected
- GPIO chip's pin status
-Message-ID: <X75zL12q+FF6KBHi@kroah.com>
-References: <20201125141022.321643-1-coiby.xu@gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14AA3107AFA9;
+        Wed, 25 Nov 2020 15:09:39 +0000 (UTC)
+Received: from thinkpad.redhat.com (ovpn-113-83.ams2.redhat.com [10.36.113.83])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 099ED5C1B4;
+        Wed, 25 Nov 2020 15:09:32 +0000 (UTC)
+From:   Laurent Vivier <lvivier@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Paul Mackerras <paulus@samba.org>, Greg Kurz <groug@kaod.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-block@vger.kernel.org,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Laurent Vivier <lvivier@redhat.com>
+Subject: [PATCH v3 0/2] powerpc/pseries: fix MSI/X IRQ affinity on pseries
+Date:   Wed, 25 Nov 2020 16:09:30 +0100
+Message-Id: <20201125150932.1150619-1-lvivier@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201125141022.321643-1-coiby.xu@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 10:10:22PM +0800, Coiby Xu wrote:
-> For a broken touchpad, it may take several months or longer to be fixed.
-> Polling mode could be a fallback solution for enthusiastic Linux users
-> when they have a new laptop. It also acts like a debugging feature. If
-> polling mode works for a broken touchpad, we can almost be certain
-> the root cause is related to the interrupt or power setting.
-> 
-> This patch could fix touchpads of Lenovo AMD gaming laptops including
-> Legion-5 15ARH05 (R7000), Legion-5P (R7000P) and IdeaPad Gaming 3
-> 15ARH05.
-> 
-> When polling mode is enabled, an I2C device can't wake up the suspended
-> system since enable/disable_irq_wake is invalid for polling mode.
-> 
-> Three module parameters are added to i2c-hid,
->     - polling_mode: by default set to 0, i.e., polling is disabled
->     - polling_interval_idle_ms: the polling internal when the touchpad
->       is idle, default to 10ms
->     - polling_interval_active_us: the polling internal when the touchpad
->       is active, default to 4000us
-> 
-> User can change the last two runtime polling parameter by writing to
-> /sys/module/i2c_hid/parameters/polling_interval_{idle_ms,active_us}.
-> 
-> Note xf86-input-synaptics doesn't work well with this polling mode
-> for the Synaptics touchpad. The Synaptics touchpad would often locks
-> into scroll mode when using multitouch gestures [1]. One remedy is to
-> decrease the polling interval.
-> 
-> Thanks to Barnabás's thorough review of this patch and the useful
-> feedback!
-> 
-> [1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190/comments/235
-> 
-> Cc: <stable@vger.kernel.org>
-> Cc: Barnabás Pőcze <pobrn@protonmail.com>
-> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-> ---
->  drivers/hid/i2c-hid/i2c-hid-core.c | 152 +++++++++++++++++++++++++++--
->  1 file changed, 142 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-> index aeff1ffb0c8b..f25503f31ccf 100644
-> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> @@ -36,6 +36,8 @@
->  #include <linux/hid.h>
->  #include <linux/mutex.h>
->  #include <linux/acpi.h>
-> +#include <linux/kthread.h>
-> +#include <linux/gpio/driver.h>
->  #include <linux/of.h>
->  #include <linux/regulator/consumer.h>
->  
-> @@ -60,6 +62,25 @@
->  #define I2C_HID_PWR_ON		0x00
->  #define I2C_HID_PWR_SLEEP	0x01
->  
-> +/* polling mode */
-> +#define I2C_HID_POLLING_DISABLED 0
-> +#define I2C_HID_POLLING_GPIO_PIN 1
-> +#define I2C_HID_POLLING_INTERVAL_ACTIVE_US 4000
-> +#define I2C_HID_POLLING_INTERVAL_IDLE_MS 10
-> +
-> +static u8 polling_mode;
-> +module_param(polling_mode, byte, 0444);
-> +MODULE_PARM_DESC(polling_mode, "How to poll (default=0) - 0 disabled; 1 based on GPIO pin's status");
+With virtio, in multiqueue case, each queue IRQ is normally=0D
+bound to a different CPU using the affinity mask.=0D
+=0D
+This works fine on x86_64 but totally ignored on pseries.=0D
+=0D
+This is not obvious at first look because irqbalance is doing=0D
+some balancing to improve that.=0D
+=0D
+It appears that the "managed" flag set in the MSI entry=0D
+is never copied to the system IRQ entry.=0D
+=0D
+This series passes the affinity mask from rtas_setup_msi_irqs()=0D
+to irq_domain_alloc_descs() by adding an affinity parameter to=0D
+irq_create_mapping().=0D
+=0D
+The first patch adds the parameter (no functional change), the=0D
+second patch passes the actual affinity mask to irq_create_mapping()=0D
+in rtas_setup_msi_irqs().=0D
+=0D
+For instance, with 32 CPUs VM and 32 queues virtio-scsi interface:=0D
+=0D
+... -smp 32 -device virtio-scsi-pci,id=3Dvirtio_scsi_pci0,num_queues=3D32=0D
+=0D
+for IRQ in $(grep virtio2-request /proc/interrupts |cut -d: -f1); do=0D
+    for file in /proc/irq/$IRQ/ ; do=0D
+        echo -n "IRQ: $(basename $file) CPU: " ; cat $file/smp_affinity_lis=
+t=0D
+    done=0D
+done=0D
+=0D
+Without the patch (and without irqbalanced)=0D
+=0D
+IRQ: 268 CPU: 0-31=0D
+IRQ: 269 CPU: 0-31=0D
+IRQ: 270 CPU: 0-31=0D
+IRQ: 271 CPU: 0-31=0D
+IRQ: 272 CPU: 0-31=0D
+IRQ: 273 CPU: 0-31=0D
+IRQ: 274 CPU: 0-31=0D
+IRQ: 275 CPU: 0-31=0D
+IRQ: 276 CPU: 0-31=0D
+IRQ: 277 CPU: 0-31=0D
+IRQ: 278 CPU: 0-31=0D
+IRQ: 279 CPU: 0-31=0D
+IRQ: 280 CPU: 0-31=0D
+IRQ: 281 CPU: 0-31=0D
+IRQ: 282 CPU: 0-31=0D
+IRQ: 283 CPU: 0-31=0D
+IRQ: 284 CPU: 0-31=0D
+IRQ: 285 CPU: 0-31=0D
+IRQ: 286 CPU: 0-31=0D
+IRQ: 287 CPU: 0-31=0D
+IRQ: 288 CPU: 0-31=0D
+IRQ: 289 CPU: 0-31=0D
+IRQ: 290 CPU: 0-31=0D
+IRQ: 291 CPU: 0-31=0D
+IRQ: 292 CPU: 0-31=0D
+IRQ: 293 CPU: 0-31=0D
+IRQ: 294 CPU: 0-31=0D
+IRQ: 295 CPU: 0-31=0D
+IRQ: 296 CPU: 0-31=0D
+IRQ: 297 CPU: 0-31=0D
+IRQ: 298 CPU: 0-31=0D
+IRQ: 299 CPU: 0-31=0D
+=0D
+With the patch:=0D
+=0D
+IRQ: 265 CPU: 0=0D
+IRQ: 266 CPU: 1=0D
+IRQ: 267 CPU: 2=0D
+IRQ: 268 CPU: 3=0D
+IRQ: 269 CPU: 4=0D
+IRQ: 270 CPU: 5=0D
+IRQ: 271 CPU: 6=0D
+IRQ: 272 CPU: 7=0D
+IRQ: 273 CPU: 8=0D
+IRQ: 274 CPU: 9=0D
+IRQ: 275 CPU: 10=0D
+IRQ: 276 CPU: 11=0D
+IRQ: 277 CPU: 12=0D
+IRQ: 278 CPU: 13=0D
+IRQ: 279 CPU: 14=0D
+IRQ: 280 CPU: 15=0D
+IRQ: 281 CPU: 16=0D
+IRQ: 282 CPU: 17=0D
+IRQ: 283 CPU: 18=0D
+IRQ: 284 CPU: 19=0D
+IRQ: 285 CPU: 20=0D
+IRQ: 286 CPU: 21=0D
+IRQ: 287 CPU: 22=0D
+IRQ: 288 CPU: 23=0D
+IRQ: 289 CPU: 24=0D
+IRQ: 290 CPU: 25=0D
+IRQ: 291 CPU: 26=0D
+IRQ: 292 CPU: 27=0D
+IRQ: 293 CPU: 28=0D
+IRQ: 294 CPU: 29=0D
+IRQ: 295 CPU: 30=0D
+IRQ: 299 CPU: 31=0D
+=0D
+This matches what we have on an x86_64 system.=0D
+=0D
+v3: update changelog of PATCH 1 with comments from Thomas Gleixner and=0D
+    Marc Zyngier.=0D
+v2: add a wrapper around original irq_create_mapping() with the=0D
+    affinity parameter. Update comments=0D
+=0D
+Laurent Vivier (2):=0D
+  genirq/irqdomain: Add an irq_create_mapping_affinity() function=0D
+  powerpc/pseries: pass MSI affinity to irq_create_mapping()=0D
+=0D
+ arch/powerpc/platforms/pseries/msi.c |  3 ++-=0D
+ include/linux/irqdomain.h            | 12 ++++++++++--=0D
+ kernel/irq/irqdomain.c               | 13 ++++++++-----=0D
+ 3 files changed, 20 insertions(+), 8 deletions(-)=0D
+=0D
+-- =0D
+2.28.0=0D
+=0D
 
-Module parameters are for the 1990's, they are global and horrible to
-try to work with.  You should provide something on a per-device basis,
-as what happens if your system requires different things here for
-different devices?  You set this for all devices :(
-
-thanks,
-
-greg k-h
