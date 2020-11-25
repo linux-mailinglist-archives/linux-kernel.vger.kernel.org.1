@@ -2,80 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385352C4499
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50AC2C44AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730600AbgKYQBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:01:07 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:11956 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727980AbgKYQBG (ORCPT
+        id S1730667AbgKYQJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:09:54 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:23788 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730443AbgKYQJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:01:06 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0APFvrHw009224
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 17:01:03 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=jmBFAv6Tv7d8FaSTgr0Txnnnmh/kmI8qNlpogUQf63A=;
- b=j6k2iMNwkTR4IcOPbfVXjT+S2Wgx/dca0/UNmMctUlSmlzM+4BLc37Wx7kR5Y+8PwUg6
- u+Tt09QTs6rgCXJ31LPfyAu6JLvotmPABEy1x8im4pzBdls25DsqN3x2P81mb4yo+iAG
- sVjKG9coNmtrulgkMz6qIiWTjag2QCp1bglM65zOGEhjitdWeMO5CLIFBHVGZjsAUTM3
- YxB8Mvd4QC+rIlLY6Kt4hruPF1fGDLJeJHDGn0jqwRkfGwG9QIaYCG//bj4aihaAc4rY
- yhKFEltUSakMvfCNZ00HmJ82/C46wHnUaVYnNGYEqxsKdcAXF/0v3eWQLMJ1il/A9CxI /w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34y0hjhpbs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 17:01:03 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 307FD100038
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 17:01:00 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6B5F92AD2A8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 17:01:00 +0100 (CET)
-Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 25 Nov 2020 17:00:59
- +0100
-From:   <patrice.chotard@foss.st.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Patrice Chotard <patrice.chotard@foss.st.com>
-Subject: MAINTAINERS: Update ARM/STI Arch maintainer
-Date:   Wed, 25 Nov 2020 17:00:49 +0100
-Message-ID: <20201125160049.22260-1-patrice.chotard@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 25 Nov 2020 11:09:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606320589;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=In-Reply-To:Date:Message-ID:From:References:To:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=LjnFeCgpj60B5cvTEJDsWgPSYIro4/2CufStGHdmH4k=;
+        b=UYwpqHYHYLxWj3O+xEdcpa4jcY7ruU8RYtEiJnGq/ZS+Ut/U428b1Kk7csmxWxVtsj
+        38JiQHfIlZ9lhymDJ54mdhPbhuTROPX8Z+35+xvnocNfg8yaBhLzSiZIkdVcAfkX3eqx
+        oPsDahPURxiwMH4fEZVHPSEwXqDSb8vng52VJMUIFFa3nQdI+qYZOsLq3qesUS2lz0oG
+        TXi0YlK094I25FgAfkl8fxwg34Ctt+1aw8Z6UbU9bt5HQhKU4dEuHp2R2sQzJNpRw4PM
+        Hp5g7rN18BpJq2TMv4x2mGmW590RAg/ObyweFiIbUUL2svOUpx4UKQZ1lGmrB3hDPqor
+        3ENg==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR+J8xrzF0="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.10.137]
+        by smtp.strato.de (RZmta 47.3.4 SBL|AUTH)
+        with ESMTPSA id n07f3bwAPG3mq4W
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Wed, 25 Nov 2020 17:03:48 +0100 (CET)
+Subject: Re: BUG: receive list entry not found for dev vxcan1, id 002, mask
+ C00007FF
+To:     syzbot <syzbot+381d06e0c8eaacb8706f@syzkaller.appspotmail.com>,
+        davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <00000000000041019205b4c4e9ad@google.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <b134c098-2f34-15ee-cfec-2103a12da326@hartkopp.net>
+Date:   Wed, 25 Nov 2020 17:03:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-25_09:2020-11-25,2020-11-25 signatures=0
+In-Reply-To: <00000000000041019205b4c4e9ad@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrice Chotard <patrice.chotard@foss.st.com>
+Hello all,
 
-Update my email address with the one dedicated to upstream activities.
+AFAICS the problems are caused by the WARN() statement here:
 
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+https://elixir.bootlin.com/linux/v5.10-rc4/source/net/can/af_can.c#L546
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a008b70f3c16..e9bdd7f6e1d6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2488,7 +2488,7 @@ N:	sc27xx
- N:	sc2731
- 
- ARM/STI ARCHITECTURE
--M:	Patrice Chotard <patrice.chotard@st.com>
-+M:	Patrice Chotard <patrice.chotard@foss.st.com>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
- W:	http://www.stlinux.com
--- 
-2.17.1
+The idea was to check whether CAN protocol implementations work 
+correctly on their filter lists.
 
+With the fault injection it seem like we're getting a race between 
+closing the socket and removing the netdevice.
+
+This seems to be very seldom but it does not break anything.
+
+Would removing the WARN(1) or replacing it with pr_warn() be ok to close 
+this issue?
+
+Best regards,
+Oliver
+
+On 23.11.20 12:58, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    c2e7554e Merge tag 'gfs2-v5.10-rc4-fixes' of git://git.ker..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=117f03ba500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=75292221eb79ace2
+> dashboard link: https://syzkaller.appspot.com/bug?extid=381d06e0c8eaacb8706f
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+381d06e0c8eaacb8706f@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> BUG: receive list entry not found for dev vxcan1, id 002, mask C00007FF
+> WARNING: CPU: 1 PID: 12946 at net/can/af_can.c:546 can_rx_unregister+0x5a4/0x700 net/can/af_can.c:546
+> Modules linked in:
+> CPU: 1 PID: 12946 Comm: syz-executor.1 Not tainted 5.10.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:can_rx_unregister+0x5a4/0x700 net/can/af_can.c:546
+> Code: 8b 7c 24 78 44 8b 64 24 68 49 c7 c5 20 ac 56 8a e8 01 6c 97 f9 44 89 f9 44 89 e2 4c 89 ee 48 c7 c7 60 ac 56 8a e8 66 af d3 00 <0f> 0b 48 8b 7c 24 28 e8 b0 25 0f 01 e9 54 fb ff ff e8 26 e0 d8 f9
+> RSP: 0018:ffffc90017e2fb38 EFLAGS: 00010286
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff8880147a8000 RSI: ffffffff8158f3c5 RDI: fffff52002fc5f59
+> RBP: 0000000000000118 R08: 0000000000000001 R09: ffff8880b9f2011b
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
+> R13: ffff8880254c0000 R14: 1ffff92002fc5f6e R15: 00000000c00007ff
+> FS:  0000000001ddc940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b2f121000 CR3: 00000000152c0000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   isotp_notifier+0x2a7/0x540 net/can/isotp.c:1303
+>   call_netdevice_notifier net/core/dev.c:1735 [inline]
+>   call_netdevice_unregister_notifiers+0x156/0x1c0 net/core/dev.c:1763
+>   call_netdevice_unregister_net_notifiers net/core/dev.c:1791 [inline]
+>   unregister_netdevice_notifier+0xcd/0x170 net/core/dev.c:1870
+>   isotp_release+0x136/0x600 net/can/isotp.c:1011
+>   __sock_release+0xcd/0x280 net/socket.c:596
+>   sock_close+0x18/0x20 net/socket.c:1277
+>   __fput+0x285/0x920 fs/file_table.c:281
+>   task_work_run+0xdd/0x190 kernel/task_work.c:151
+>   tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>   exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+>   exit_to_user_mode_prepare+0x17e/0x1a0 kernel/entry/common.c:191
+>   syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:266
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x417811
+> Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 a4 1a 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+> RSP: 002b:000000000169fbf0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+> RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000417811
+> RDX: 0000000000000000 RSI: 00000000000013b7 RDI: 0000000000000003
+> RBP: 0000000000000001 R08: 00000000acabb3b7 R09: 00000000acabb3bb
+> R10: 000000000169fcd0 R11: 0000000000000293 R12: 000000000118c9a0
+> R13: 000000000118c9a0 R14: 00000000000003e8 R15: 000000000118bf2c
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
