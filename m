@@ -2,70 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602662C36AD
+	by mail.lfdr.de (Postfix) with ESMTP id D238D2C36AE
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgKYCRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 21:17:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38490 "EHLO mail.kernel.org"
+        id S1726330AbgKYCS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 21:18:28 -0500
+Received: from mga01.intel.com ([192.55.52.88]:3710 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725792AbgKYCRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 21:17:06 -0500
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63E79206FB;
-        Wed, 25 Nov 2020 02:17:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606270626;
-        bh=tGU/wT5iJJXeOlK1y2/fj98GoCCTid9H7r1dMuS5neA=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=xrWmL/rNmiOQV7Gy/XkRJ6Fyhs1tuOdT76acQy2APHM2dersfKs1DTxBRC/yPY3fG
-         vqhJKYnqIeiHNA+l0ZE4dpUnmcxbWnVQflJHR0ngQ95Rlnm36gitaBkW/BqSEeuJLG
-         2QeGaHbzmjuI3VNRWIjCFJW4uLzdQUf/RinHjX2w=
-Content-Type: text/plain; charset="utf-8"
+        id S1725616AbgKYCS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 21:18:28 -0500
+IronPort-SDR: mE2EYBsCJ8aWVvveXOTun/vK0rYq/ifdV/q4BxW5GGP62gFWwFREKDR10QcesjQyoVnezk6kUZ
+ JWCS4Ae2l65g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="190186325"
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="190186325"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 18:18:27 -0800
+IronPort-SDR: PxDT7wIK6vg4ude8q+gVTZm2n/bqdKFL/4Kk0K22bSnazJY6R5cpC6pUfv2wGkpL2iXAVQBULd
+ sgzRD+N6EvGQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
+   d="scan'208";a="536696759"
+Received: from unknown (HELO coxu-arch-shz.sh.intel.com) ([10.239.160.22])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Nov 2020 18:18:26 -0800
+From:   Colin Xu <colin.xu@intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     colin.xu@intel.com, swee.yee.fonn@intel.com
+Subject: [RFC PATCH] vfio/pci: Allow force needs_pm_restore as specified by device:vendor
+Date:   Wed, 25 Nov 2020 10:18:24 +0800
+Message-Id: <20201125021824.27411-1-colin.xu@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201113145310.8274-1-a.fatoum@pengutronix.de>
-References: <20201113145310.8274-1-a.fatoum@pengutronix.de>
-Subject: Re: [PATCH] clk: imx6q: demote warning about pre-boot ldb_di_clk reparenting
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Date:   Tue, 24 Nov 2020 18:17:05 -0800
-Message-ID: <160627062508.2717324.2756565276373452151@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Ahmad Fatoum (2020-11-13 06:53:09)
-> diff --git a/drivers/clk/imx/clk-imx6q.c b/drivers/clk/imx/clk-imx6q.c
-> index ba33c79158de..b2e4b6234ac0 100644
-> --- a/drivers/clk/imx/clk-imx6q.c
-> +++ b/drivers/clk/imx/clk-imx6q.c
-> @@ -337,10 +337,10 @@ static void init_ldb_clks(struct device_node *np, v=
-oid __iomem *ccm_base)
->         of_assigned_ldb_sels(np, &sel[0][3], &sel[1][3]);
-> =20
->         for (i =3D 0; i < 2; i++) {
-> -               /* Warn if a glitch might have been introduced already */
-> +               /* Print a notice if a glitch might have been introduced =
-already */
->                 if (sel[i][0] !=3D 3) {
-> -                       pr_warn("ccm: ldb_di%d_sel already changed from r=
-eset value: %d\n",
-> -                               i, sel[i][0]);
-> +                       pr_notice("ccm: ldb_di%d_sel already changed from=
- reset value: %d\n",
+Force specific device listed in params pm_restore_ids to follow
+device state save/restore as needs_pm_restore.
+Some device has NoSoftRst so will skip current state save/restore enabled
+by needs_pm_restore. However once the device experienced power state
+D3<->D0 transition, either by idle_d3 or the guest driver changes PM_CTL,
+the guest driver won't get correct devie state although the configure
+space doesn't change.
 
-Maybe the print should also say "Possible glitch"?
+Cc: Swee Yee Fonn <swee.yee.fonn@intel.com>
+Signed-off-by: Colin Xu <colin.xu@intel.com>
+---
+ drivers/vfio/pci/vfio_pci.c | 66 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 65 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index e6190173482c..50a4141c9e1d 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -34,6 +34,15 @@
+ #define DRIVER_AUTHOR   "Alex Williamson <alex.williamson@redhat.com>"
+ #define DRIVER_DESC     "VFIO PCI - User Level meta-driver"
+ 
++#define VFIO_MAX_PM_DEV 32
++struct vfio_pm_devs {
++	struct {
++		unsigned short  vendor;
++		unsigned short  device;
++	} ids[VFIO_MAX_PM_DEV];
++	u32 count;
++};
++
+ static char ids[1024] __initdata;
+ module_param_string(ids, ids, sizeof(ids), 0);
+ MODULE_PARM_DESC(ids, "Initial PCI IDs to add to the vfio driver, format is \"vendor:device[:subvendor[:subdevice[:class[:class_mask]]]]\" and multiple comma separated entries can be specified");
+@@ -64,6 +73,10 @@ static bool disable_denylist;
+ module_param(disable_denylist, bool, 0444);
+ MODULE_PARM_DESC(disable_denylist, "Disable use of device denylist. Disabling the denylist allows binding to devices with known errata that may lead to exploitable stability or security issues when accessed by untrusted users.");
+ 
++static char pm_restore_ids[1024] __initdata;
++module_param_string(pm_restore_ids, pm_restore_ids, sizeof(pm_restore_ids), 0);
++MODULE_PARM_DESC(pm_restore_ids, "comma separated device in format of \"vendor:device\"");
++
+ static inline bool vfio_vga_disabled(void)
+ {
+ #ifdef CONFIG_VFIO_PCI_VGA
+@@ -260,10 +273,50 @@ static bool vfio_pci_nointx(struct pci_dev *pdev)
+ 	return false;
+ }
+ 
++static struct vfio_pm_devs pm_devs = {0};
++static void __init vfio_pci_fill_pm_ids(void)
++{
++	char *p, *id;
++	int idx = 0;
++
++	/* no ids passed actually */
++	if (pm_restore_ids[0] == '\0')
++		return;
++
++	/* add ids specified in the module parameter */
++	p = pm_restore_ids;
++	while ((id = strsep(&p, ","))) {
++		unsigned int vendor, device = PCI_ANY_ID;
++		int fields;
++
++		if (!strlen(id))
++			continue;
++
++		fields = sscanf(id, "%x:%x", &vendor, &device);
++
++		if (fields != 2) {
++			pr_warn("invalid vendor:device string \"%s\"\n", id);
++			continue;
++		}
++
++		if (idx < VFIO_MAX_PM_DEV) {
++			pm_devs.ids[idx].vendor = vendor;
++			pm_devs.ids[idx].device = device;
++			pm_devs.count++;
++			idx++;
++			pr_info("add [%04x:%04x] for needs_pm_restore\n",
++				vendor, device);
++		} else {
++			pr_warn("Exceed maximum %d, skip adding [%04x:%04x] for needs_pm_restore\n",
++				VFIO_MAX_PM_DEV, vendor, device);
++		}
++	}
++}
++
+ static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
+ {
+ 	struct pci_dev *pdev = vdev->pdev;
+-	u16 pmcsr;
++	u16 pmcsr, idx;
+ 
+ 	if (!pdev->pm_cap)
+ 		return;
+@@ -271,6 +324,16 @@ static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
+ 	pci_read_config_word(pdev, pdev->pm_cap + PCI_PM_CTRL, &pmcsr);
+ 
+ 	vdev->needs_pm_restore = !(pmcsr & PCI_PM_CTRL_NO_SOFT_RESET);
++
++	for (idx = 0; idx < pm_devs.count; idx++) {
++		if (vdev->pdev->vendor == pm_devs.ids[idx].vendor &&
++		    vdev->pdev->device == pm_devs.ids[idx].device) {
++			vdev->needs_pm_restore = true;
++			pr_info("force [%04x:%04x] to needs_pm_restore\n",
++				vdev->pdev->vendor, vdev->pdev->device);
++			break;
++		}
++	}
+ }
+ 
+ /*
+@@ -2423,6 +2486,7 @@ static int __init vfio_pci_init(void)
+ 		goto out_driver;
+ 
+ 	vfio_pci_fill_ids();
++	vfio_pci_fill_pm_ids();
+ 
+ 	if (disable_denylist)
+ 		pr_warn("device denylist disabled.\n");
+-- 
+2.29.2
+
