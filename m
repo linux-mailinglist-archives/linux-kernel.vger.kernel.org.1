@@ -2,156 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5332A2C48B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC602C48B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729040AbgKYTrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:47:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729007AbgKYTrL (ORCPT
+        id S1729059AbgKYTsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:48:22 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:49554 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729007AbgKYTsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:47:11 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E8AC0613D4;
-        Wed, 25 Nov 2020 11:47:07 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id m16so1823312vsl.8;
-        Wed, 25 Nov 2020 11:47:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j6gDMqBpdDHnbrFTSNes0LPiehq/y1BzrpPL6GqPF2w=;
-        b=nWMQ7Om6JUXtAgWIh33a3d0HB/Ox7ft2RKbwI6AHYz7bIbJypjR5UKJGiNZl2eoj8+
-         CRsvhm5F+VtgUvY6ka8FDHqfnQ0+ujjBz39o4xRhPOJnS7DIo54xkX+gGjp1PdztgObW
-         1oJxNMWoyQQ4JJ1sgRCxb2Ze4MiGhh0g15aHsYoBYGWUj8QNzefFGABPPaaWQ4Ym0Z+I
-         Ixn5b2YpwXUPHwCvUpmszUpxMmYhOe08ss3gXQV1nqfd87/oaf6zBvHyOpZnKggQ4txZ
-         Kho3YUBx1PxOa9pnwEeZIzAgssN7cD6gw8+wRvvEqbwZyQ3eWWYZvTP4irQF4bVbJi2r
-         wPzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j6gDMqBpdDHnbrFTSNes0LPiehq/y1BzrpPL6GqPF2w=;
-        b=DY3iEpwxluGJ+aVyqToa4VCAsG4FTs8RTeKnpoAXN4BG0xTTY4DAtzbvcfWHpJc2Ox
-         oJZ/Lvx1extWt74n261UVKc4W6s+XaJvIZW30bAJHtgyz+pPJuDVtR0ZKOc2EqD9Hm0c
-         FQjDzFbYSRrZaZvpbeaL8EuegpZLDoxXSB4Tw0ouzOA7NEpraTh8RcQL+qcpvRfJJAAX
-         DkHv2kA6FAPBFWtIX5mUUqykBdZBh+6OhuKlhUWmDsLMSFZSmpgiJ7QM+PU0P80oklyq
-         VqABeeIrBbkRyg3Gs5IVHWJwyIyQcaLb51IlIXdLPeao6J0MgVXp77UIx5E+ycly3+Qx
-         yUqQ==
-X-Gm-Message-State: AOAM531hPPHDr1a8sF85I4U3OrUllKQEq9xkWd27HLqsv0vnGxW2HrWi
-        +CsXELOn6wb1SsjL1hh6jV8aY64o1vOveA/9wxg=
-X-Google-Smtp-Source: ABdhPJykjE3DUNCC98xQG/ZidWev84crgp1EFM6B/1Q5kvNhMkYSl2U1qbJ5TUWoZVCmT3IvcPIoDKt89SlDs+/C5pc=
-X-Received: by 2002:a67:2ac1:: with SMTP id q184mr3536286vsq.57.1606333626786;
- Wed, 25 Nov 2020 11:47:06 -0800 (PST)
+        Wed, 25 Nov 2020 14:48:22 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0APJitnU054929;
+        Wed, 25 Nov 2020 19:48:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ from : mime-version : to : cc : subject : references : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=epiqMBJ5lLDXN1oZKLWUGI5EBe3pcqP2c/wa0GUUOfc=;
+ b=V8tCVBB9OAlZVOSR18OalnrluszF+sEyOdESr+ierhQ8blCu3jGg2JFJBRU0sfGJrdgb
+ u6ovEIV876lB64+8W1lQiKL6isw/nEGry7mUewNbHHkTTRQPyh56MuBgOhnhJBTWGRB1
+ QD9lYBFz8nB9EzKqnlV4EU5lw58Z+drV0shOyHV8C857VdvnTqmng5AAjz7w4AEfM3j6
+ xXIdFixV0EmTvIvHQuC6hgcAkWK4OI7XccXCZ9BeEO/UaokGi2dtJyTiJWg2uY+J+J9J
+ OUD7EK8ZbPYBR4DxaY3/0HWhnfecFR9ONPXnK3fG+x3MOAx6zz+n41cIZichiC/GLpWR rA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 351kwhb57c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 25 Nov 2020 19:48:14 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0APJixPw018399;
+        Wed, 25 Nov 2020 19:48:14 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 351kwetgkx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Nov 2020 19:48:13 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0APJmChZ024738;
+        Wed, 25 Nov 2020 19:48:13 GMT
+Received: from [10.159.138.187] (/10.159.138.187)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 25 Nov 2020 11:48:11 -0800
+Message-ID: <5FBEB4F9.3060008@oracle.com>
+Date:   Wed, 25 Nov 2020 11:48:09 -0800
+From:   si-wei liu <si-wei.liu@oracle.com>
+Organization: Oracle Corporation
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 MIME-Version: 1.0
-References: <20201124181013.162176-1-clemens.gruber@pqgruber.com>
- <CAGngYiX8KOTQCScWo_o1BRa8CGHBQzWZGz1FmzkwGEmyNgPaxQ@mail.gmail.com>
- <X74XPAy+SJRmQUSH@workstation.tuxnet> <X75kXv7l9RbTOS7S@workstation.tuxnet>
- <CAGngYiViOMO6uM7UeYO5fNMdc+QEjLt+L1TdTii+smTvsmV=aQ@mail.gmail.com> <X76ULTpaWHLkkz/u@workstation.tuxnet>
-In-Reply-To: <X76ULTpaWHLkkz/u@workstation.tuxnet>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Wed, 25 Nov 2020 14:46:55 -0500
-Message-ID: <CAGngYiWVYy=U0bkK7w321Qc7eu9+bEC7asvJAuX7t+OLfimOAQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] pwm: pca9685: Switch to atomic API
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     jasowang@redhat.com, lingshan.zhu@intel.com,
+        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v3] vhost-vdpa: fix page pinning leakage in error path
+ (rework)
+References: <1604618793-4681-1-git-send-email-si-wei.liu@oracle.com> <20201125042834-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20201125042834-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9816 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 suspectscore=2 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011250123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9816 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 suspectscore=2 adultscore=0 impostorscore=0 mlxscore=0
+ spamscore=0 phishscore=0 malwarescore=0 clxscore=1015 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011250123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 12:28 PM Clemens Gruber
-<clemens.gruber@pqgruber.com> wrote:
+
+On 11/25/2020 1:30 AM, Michael S. Tsirkin wrote:
+> On Thu, Nov 05, 2020 at 06:26:33PM -0500, Si-Wei Liu wrote:
+>> Pinned pages are not properly accounted particularly when
+>> mapping error occurs on IOTLB update. Clean up dangling
+>> pinned pages for the error path.
+>>
+>> The memory usage for bookkeeping pinned pages is reverted
+>> to what it was before: only one single free page is needed.
+>> This helps reduce the host memory demand for VM with a large
+>> amount of memory, or in the situation where host is running
+>> short of free memory.
+>>
+>> Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
+>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
 >
-> What's the lesser evil in your opinion, always returning 0 duty and
-> disabled for the ALL channel or caching it?
->
+> Not sure which tree this is against, I had to apply this with
+> minor tweaks. Pls take a look at the vhost tree and
+> let me know whether it looks ok to you.
+Thanks Michael, the commit ad89653f79f1882d55d9df76c9b2b94f008c4e27 in 
+the vhost tree looks good. Sorry, I don't think I ever attempted to 
+merge with linux-next when v3 was posted, although I did it for the 
+first two submissions. I will pay attention to it next time.
 
-I would definitely suggest returning a pwm_state consisting of all zeroes
-for the "all led" channel, instead of caching stuff.
-
-And I don't think it's in any way evil: from a user point of view, reading
-back the "all led" channel state makes no sense. Why? Because setting
-that channel is just a write to all 16 channels at once. And those channels
-may change over time.
-
-For example:
-1. set all leds channel = enabled, 50% duty cycle
-   => all 16 leds are enabled at 50% duty cycle
-2. set led 0 = disabled
-3. set led 1 = enabled, 70% duty cycle
-4. imagine we now read back the "all leds" state, what should it return?
-   it makes no sense, because not all leds are in the same state !
-
->
-> Please let me know if I misunderstood you.
->
-
-All good, thanks !
+Thanks,
+-Siwei
 
 >
-> I meant that with sysfs, the period does not change if the new value is
-> the same as the last time that channel's period was set.
-> See my example above.
->
-> But we probably can't do anything about that.
->
+>> ---
+>> Changes in v3:
+>> - Turn explicit last_pfn check to a WARN_ON() (Jason)
+>>
+>> Changes in v2:
+>> - Drop the reversion patch
+>> - Fix unhandled page leak towards the end of page_list
+>>
+>>   drivers/vhost/vdpa.c | 80 ++++++++++++++++++++++++++++++++++++++++------------
+>>   1 file changed, 62 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+>> index b6d9016..5b13dfd 100644
+>> --- a/drivers/vhost/vdpa.c
+>> +++ b/drivers/vhost/vdpa.c
+>> @@ -560,6 +560,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
+>>   
+>>   	if (r)
+>>   		vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
+>> +	else
+>> +		atomic64_add(size >> PAGE_SHIFT, &dev->mm->pinned_vm);
+>>   
+>>   	return r;
+>>   }
+>> @@ -591,14 +593,16 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+>>   	unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
+>>   	unsigned int gup_flags = FOLL_LONGTERM;
+>>   	unsigned long npages, cur_base, map_pfn, last_pfn = 0;
+>> -	unsigned long locked, lock_limit, pinned, i;
+>> +	unsigned long lock_limit, sz2pin, nchunks, i;
+>>   	u64 iova = msg->iova;
+>> +	long pinned;
+>>   	int ret = 0;
+>>   
+>>   	if (vhost_iotlb_itree_first(iotlb, msg->iova,
+>>   				    msg->iova + msg->size - 1))
+>>   		return -EEXIST;
+>>   
+>> +	/* Limit the use of memory for bookkeeping */
+>>   	page_list = (struct page **) __get_free_page(GFP_KERNEL);
+>>   	if (!page_list)
+>>   		return -ENOMEM;
+>> @@ -607,52 +611,75 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+>>   		gup_flags |= FOLL_WRITE;
+>>   
+>>   	npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> PAGE_SHIFT;
+>> -	if (!npages)
+>> -		return -EINVAL;
+>> +	if (!npages) {
+>> +		ret = -EINVAL;
+>> +		goto free;
+>> +	}
+>>   
+>>   	mmap_read_lock(dev->mm);
+>>   
+>> -	locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
+>>   	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+>> -
+>> -	if (locked > lock_limit) {
+>> +	if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
+>>   		ret = -ENOMEM;
+>> -		goto out;
+>> +		goto unlock;
+>>   	}
+>>   
+>>   	cur_base = msg->uaddr & PAGE_MASK;
+>>   	iova &= PAGE_MASK;
+>> +	nchunks = 0;
+>>   
+>>   	while (npages) {
+>> -		pinned = min_t(unsigned long, npages, list_size);
+>> -		ret = pin_user_pages(cur_base, pinned,
+>> -				     gup_flags, page_list, NULL);
+>> -		if (ret != pinned)
+>> +		sz2pin = min_t(unsigned long, npages, list_size);
+>> +		pinned = pin_user_pages(cur_base, sz2pin,
+>> +					gup_flags, page_list, NULL);
+>> +		if (sz2pin != pinned) {
+>> +			if (pinned < 0) {
+>> +				ret = pinned;
+>> +			} else {
+>> +				unpin_user_pages(page_list, pinned);
+>> +				ret = -ENOMEM;
+>> +			}
+>>   			goto out;
+>> +		}
+>> +		nchunks++;
+>>   
+>>   		if (!last_pfn)
+>>   			map_pfn = page_to_pfn(page_list[0]);
+>>   
+>> -		for (i = 0; i < ret; i++) {
+>> +		for (i = 0; i < pinned; i++) {
+>>   			unsigned long this_pfn = page_to_pfn(page_list[i]);
+>>   			u64 csize;
+>>   
+>>   			if (last_pfn && (this_pfn != last_pfn + 1)) {
+>>   				/* Pin a contiguous chunk of memory */
+>>   				csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
+>> -				if (vhost_vdpa_map(v, iova, csize,
+>> -						   map_pfn << PAGE_SHIFT,
+>> -						   msg->perm))
+>> +				ret = vhost_vdpa_map(v, iova, csize,
+>> +						     map_pfn << PAGE_SHIFT,
+>> +						     msg->perm);
+>> +				if (ret) {
+>> +					/*
+>> +					 * Unpin the pages that are left unmapped
+>> +					 * from this point on in the current
+>> +					 * page_list. The remaining outstanding
+>> +					 * ones which may stride across several
+>> +					 * chunks will be covered in the common
+>> +					 * error path subsequently.
+>> +					 */
+>> +					unpin_user_pages(&page_list[i],
+>> +							 pinned - i);
+>>   					goto out;
+>> +				}
+>> +
+>>   				map_pfn = this_pfn;
+>>   				iova += csize;
+>> +				nchunks = 0;
+>>   			}
+>>   
+>>   			last_pfn = this_pfn;
+>>   		}
+>>   
+>> -		cur_base += ret << PAGE_SHIFT;
+>> -		npages -= ret;
+>> +		cur_base += pinned << PAGE_SHIFT;
+>> +		npages -= pinned;
+>>   	}
+>>   
+>>   	/* Pin the rest chunk */
+>> @@ -660,10 +687,27 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+>>   			     map_pfn << PAGE_SHIFT, msg->perm);
+>>   out:
+>>   	if (ret) {
+>> +		if (nchunks) {
+>> +			unsigned long pfn;
+>> +
+>> +			/*
+>> +			 * Unpin the outstanding pages which are yet to be
+>> +			 * mapped but haven't due to vdpa_map() or
+>> +			 * pin_user_pages() failure.
+>> +			 *
+>> +			 * Mapped pages are accounted in vdpa_map(), hence
+>> +			 * the corresponding unpinning will be handled by
+>> +			 * vdpa_unmap().
+>> +			 */
+>> +			WARN_ON(!last_pfn);
+>> +			for (pfn = map_pfn; pfn <= last_pfn; pfn++)
+>> +				unpin_user_page(pfn_to_page(pfn));
+>> +		}
+>>   		vhost_vdpa_unmap(v, msg->iova, msg->size);
+>> -		atomic64_sub(npages, &dev->mm->pinned_vm);
+>>   	}
+>> +unlock:
+>>   	mmap_read_unlock(dev->mm);
+>> +free:
+>>   	free_page((unsigned long)page_list);
+>>   	return ret;
+>>   }
+>> -- 
+>> 1.8.3.1
 
-Oh I see what you mean. This is because the pwm core makes certain basic
-assumptions about pwm devices. It assumes that channels are completely
-independent, ie. setting channel X state won't influence channel Y.
-And that's not the case for this chip.
-
-I think the current pwm core behaviour is not ideal for us, but acceptable.
-Let's get our own house in order before worrying about the core's behaviour.
-
->
-> OK, regmap accesses are protected with locks but what about the SLEEP
-> bit that needs to be set/cleared + sleep. Shouldn't we only allow one
-> thread at one time to change the prescaler of a chip? Otherwise, there
-> could be synchronization issues there too. (Possible writing to the
-> prescale register with the SLEEP bit unset by another thread)
-
-Good point. Luckily, the runtime_pm code is completely thread-safe.
-It's quite common for drivers to use that code from multiple threads.
-That's the cool thing about re-using existing kernel infrastructure,
-you get all of that for free, and tested too.
-
-You only reach the danger zone if you're doing things that the core
-is completely not expecting. In this case, the core doesn't expect
-that a pwm_apply() on one channel modifies any unprotected shared state.
-
->
-> If we drop the cache we would have to read the prescale register
-> whenever we need it (for every channel) but with the upcoming regmap
-> cache feature, this would probably be OK.
-
-We only need to read the prescale register during pwm_get_state() and
-pwm_apply(), correct? I count many regmap_read()s in those functions.
-
-One extra regmap_read() to retrieve the prescale, won't make much difference,
-even when regmap cache is off.
-
->
-> Do you think this should be solved in the same patch as the atomic API
-> conversion or can we do this in a follow-up patch?
->
-
-Suggestion: in the atomic API patch, do not cache prescale, just read it
-out as needed. This is slightly slower, but I suspect that the code
-will become shorter and simpler.
-
-Then if you have time && motivation left, enable regmap cache.
-But watch out... you'll probably have to invalidate the cache
-each time the driver writes to an ALL_LED register. Because that
-implies a write to 16 other registers.
-
-But the efficiency saving is probably very limited, and may not be
-worth the added complexity.
