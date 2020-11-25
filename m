@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D291E2C4041
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8CB2C4044
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729302AbgKYMdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:33:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgKYMdT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:33:19 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD2AC0613D4;
-        Wed, 25 Nov 2020 04:33:12 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id f93so1404627qtb.10;
-        Wed, 25 Nov 2020 04:33:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H3aqrBY6oYhCd62SVodU601+HB4mzl3pG4lUcfT04Cg=;
-        b=m8eiXGIffxTQcl9qWmpoUZgBsSzJBJL+g8a+25Jt5FKxrq5reTIQJIvOqHam06ytUT
-         +AVBi6gElJoegN0PJweNe4OCeUoDzFODyFHPyIln49wZ5mShP7YmWW3JcvzSHisvU3RY
-         HvY920z0TDVKvZHVGUl0hW04u6KPVUTYgkRsiSfEQ5wXOQlIapC1e1DPv6ahx8onYMVI
-         RK3uA/nnhPE9+aELC01Cnp4okGEgdmF1asc72P2GBtujVywjnmfE22z+BSjYMM6mL8Q6
-         c9LsElOYkPJODDqa7BlptGqmUGWMtnSAY3T7eNQCvLF8h3PLrE397W3APYrR+NuKSx2g
-         3d/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=H3aqrBY6oYhCd62SVodU601+HB4mzl3pG4lUcfT04Cg=;
-        b=BI6cbfed42i6bo1We2KRaaxHDJcLlfR+Kq+bl+Zi/Cv78i/NipGuewMcSUpFM/LQNL
-         VDd2JOybOQCYBCBmvBet2vzdL9GOpZZZyR10oTWfdBBi/7RH+74xqxg8MZnDncShXrlv
-         W2tDXjBYLey79nFLZFyVl+iX6Eb9pfkglT4AwDSi6hfUbyIKJ/lioK+p6fY1yEDKIMEf
-         xCFFfItOywsDbxaQ4mypXJtcaHvNX7D/tQlROXorXffDEo92P+cu/Cpj8Vax+YrwBKpq
-         tzpsG538/GEVcvwvi7eT74l/GInS/UITBVLJGievB+giAhSMHewABpRLNT7uoG/FO+nG
-         8I6w==
-X-Gm-Message-State: AOAM53125sVVZcShwwr2oMioNmWX8beh4eFXVaA763HLqqUZ2lkfmNEd
-        whV9Ko0GcDBZU9jedmW9A84=
-X-Google-Smtp-Source: ABdhPJzocuRXVD+bPmrqSjVXD61c/mr1QuassCJZAWcu3BRdBXPc1L3HjKV+b5/kdsWDa9hsVQr+qg==
-X-Received: by 2002:ac8:7a87:: with SMTP id x7mr2792856qtr.253.1606307591437;
-        Wed, 25 Nov 2020 04:33:11 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id a123sm2264134qkc.52.2020.11.25.04.33.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 04:33:10 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 25 Nov 2020 07:32:48 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, zhangxiaoxu5@huawei.com, houtao1@huawei.com
-Subject: Re: [RFC PATCH] blk-cgroup: prevent rcu_sched detected stalls
- warnings in blkg_destroy_all()
-Message-ID: <X75O8BNVSX3ZE86w@mtj.duckdns.org>
-References: <20201121083420.3857433-1-yukuai3@huawei.com>
+        id S1729397AbgKYMeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:34:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37282 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727520AbgKYMeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:34:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6266BACB5;
+        Wed, 25 Nov 2020 12:34:04 +0000 (UTC)
+Subject: Re: [PATCH 2/2] mm: Move free_unref_page to mm/internal.h
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org
+Cc:     davem@davemloft.net, rppt@kernel.org, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20201125034655.27687-1-willy@infradead.org>
+ <20201125034655.27687-2-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <6418f355-ae69-a0bc-3006-b89a4e1cc09c@suse.cz>
+Date:   Wed, 25 Nov 2020 13:34:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121083420.3857433-1-yukuai3@huawei.com>
+In-Reply-To: <20201125034655.27687-2-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/25/20 4:46 AM, Matthew Wilcox (Oracle) wrote:
+> Code outside mm/ should not be calling free_unref_page().  Also
+> move free_unref_page_list().
 
-Thanks for the fix. A couple comments below.
+Good idea.
 
-On Sat, Nov 21, 2020 at 04:34:20PM +0800, Yu Kuai wrote:
-> +#define BLKG_DESTROY_BATH 4096
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-I think you meant BLKG_DESTROY_BATCH.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
->  static void blkg_destroy_all(struct request_queue *q)
->  {
->  	struct blkcg_gq *blkg, *n;
-> +	int count = BLKG_DESTROY_BATH;
+There seems to be some effort to remove "extern" from function 
+declarations from headers. Do we want to do that, at once, or piecemeal? 
+If the latter, this is a chance for these functions at least :)
 
-But might as well just write 4096 here.
+> ---
+>   include/linux/gfp.h | 2 --
+>   mm/internal.h       | 3 +++
+>   2 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index c603237e006c..6e479e9c48ce 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -580,8 +580,6 @@ void * __meminit alloc_pages_exact_nid(int nid, size_t size, gfp_t gfp_mask);
+>   
+>   extern void __free_pages(struct page *page, unsigned int order);
+>   extern void free_pages(unsigned long addr, unsigned int order);
+> -extern void free_unref_page(struct page *page);
+> -extern void free_unref_page_list(struct list_head *list);
+>   
+>   struct page_frag_cache;
+>   extern void __page_frag_cache_drain(struct page *page, unsigned int count);
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 75ae680d0a2c..5864815947fe 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -201,6 +201,9 @@ extern void post_alloc_hook(struct page *page, unsigned int order,
+>   					gfp_t gfp_flags);
+>   extern int user_min_free_kbytes;
+>   
+> +extern void free_unref_page(struct page *page);
+> +extern void free_unref_page_list(struct list_head *list);
+> +
+>   extern void zone_pcp_update(struct zone *zone);
+>   extern void zone_pcp_reset(struct zone *zone);
+>   extern void zone_pcp_disable(struct zone *zone);
+> 
 
->  	spin_lock_irq(&q->queue_lock);
->  	list_for_each_entry_safe(blkg, n, &q->blkg_list, q_node) {
->  		struct blkcg *blkcg = blkg->blkcg;
->  
-> +		/*
-> +		 * If the list is too long, the loop can took a long time,
-> +		 * thus relese the lock for a while when a batch of blkcg
-> +		 * were destroyed.
-> +		 */
-> +		if (!(--count)) {
-> +			count = BLKG_DESTROY_BATH;
-> +			spin_unlock_irq(&q->queue_lock);
-> +			cond_resched();
-> +			spin_lock_irq(&q->queue_lock);
-
-You can't continue iteration after dropping both locks. You'd have to jump
-out of loop and start list_for_each_entry_safe() again.
-
-> +		}
->  		spin_lock(&blkcg->lock);
->  		blkg_destroy(blkg);
->  		spin_unlock(&blkcg->lock);
-
-Thanks.
-
--- 
-tejun
