@@ -2,173 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8622C40DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64ED82C40D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729617AbgKYNEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:04:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
+        id S1729370AbgKYNDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:03:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729309AbgKYNEa (ORCPT
+        with ESMTP id S1725616AbgKYNDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:04:30 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE33AC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 05:04:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ChnPSnYSrpAjn5eTsO0Dj+lGuaPW578KWibnvzMSe1s=; b=Y6M+MFFBNdQVG+SaBH+zvFK7yT
-        cx9WLVC+PvDZNVj7/xYuMaPImYxELOZp9nWHbG5C5COTigQSXSNTgpH3pkQzJHr0RB1izGsuk25R4
-        THCA1GMBTjjZ/SJu1G8rmAp4p2QnChJhikMX4KwYVu29QePA1eNe7ICqRdAGrsvvvWZUOivr/92tM
-        8g98wJO6m9uRaL6m2wbczzgu/iSGj1ysJ+Xu/3SgjM3TyFGJpCkmM2LcGRAgDQvqz4Xg3sBKdR8LD
-        LuNA4YsFeO2D2Q/DxCi4tfarongVszLj9HvCYJU3FCdHkSJPlJP0dGv86fpooOa8S0oa/Xl1QtxT7
-        0xdWYZBQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khuSE-0005Lk-Jb; Wed, 25 Nov 2020 13:03:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A89643012DF;
-        Wed, 25 Nov 2020 14:03:22 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9135920D6FE65; Wed, 25 Nov 2020 14:03:22 +0100 (CET)
-Date:   Wed, 25 Nov 2020 14:03:22 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
- cookie on fork
-Message-ID: <20201125130322.GW2414@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-23-joel@joelfernandes.org>
+        Wed, 25 Nov 2020 08:03:50 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D6FC061A4E
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 05:03:50 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id m6so1834792wrg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 05:03:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BXaJmG+wTXtQ1LIgHLXOdZkWb3psJr3hG12v2PvvxlE=;
+        b=Tb1NODJpg8kwIwdN7oQj+EV58bHxyDFPIYQMJPF4FNz9of+yAPa2kYA92zKU+hq3Uy
+         zPV1ZmyDxYUqI5ymigRmZgnaFgok6chy6EymiPCZ5nzYcd5iQweT957e+FRN2j46+XR8
+         Po9Sl4pv+m1+8H9OwgBkx97tM4iOOmWHOlW9yYMtWte6kMOG3RMQxDxIoI4yuYbvv/OV
+         yGvNeg3TlqNi/bMSi4/Odx3euErYZww+yHDozaDO63ijUqjMKeP0ij1aygvjiW4odH+G
+         StSjnOnjf0KKV/Ir4BdTibLgYDocoeZFpmChDi33FrIFnyPazBstgFrUgprJktbqS52D
+         7UwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BXaJmG+wTXtQ1LIgHLXOdZkWb3psJr3hG12v2PvvxlE=;
+        b=nnVmIcL4HhH0feaLYwN3rx/mOh34HpMtrFtuXMf849/pldE+JD9mKaG2lQnVX173Vp
+         mf88qQibXkscxiYtME0f7oW6XyE1a/SZtk6qQID6ZTuAg6ebAvzglEpK+npWJdJYF7a8
+         O2B5KifFTBpINH7oanmF7k+SL8313Ppr2dC3tBpyK835PLpA8lwixgRrGK+hwIslHQH/
+         ZJgAhi5Z46osTS9yhVsOk0310wn/q9jpBi9zAnNYtyxL78Nk6D1GeUOVoWztK6c0slsU
+         0EGgue+FrIlqGbll+gSUtr5yys0PTbzceTBETNFLS+OhUYJUbAMYA87htEBEukCsrjQL
+         4DZw==
+X-Gm-Message-State: AOAM532yLbBTfD0A3KSGrWwXyPd1leeh4uKFXJR/JYhUzjJZHTGCBMia
+        ZlRcsq3Hm9CfJmd4yCc/ZYioQg==
+X-Google-Smtp-Source: ABdhPJxyygtdb4BfwuO8knoOC+REpXaIwuegyRa3gkpJ6Ld63hatAPSPzBPzrzXpMPFH7Ub8N0lgHg==
+X-Received: by 2002:adf:c702:: with SMTP id k2mr4175742wrg.156.1606309428614;
+        Wed, 25 Nov 2020 05:03:48 -0800 (PST)
+Received: from [192.168.0.3] (hst-221-112.medicom.bg. [84.238.221.112])
+        by smtp.googlemail.com with ESMTPSA id z6sm4628966wmi.1.2020.11.25.05.03.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Nov 2020 05:03:48 -0800 (PST)
+Subject: Re: [PATCH 3/3] media: hfi_venus: Request interrupt for sync cmds
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+References: <20201120001037.10032-1-stanimir.varbanov@linaro.org>
+ <20201120001037.10032-4-stanimir.varbanov@linaro.org>
+ <CAPBb6MWsaHQtQYh8tQnGjwPCrCXeCnf08jL+yxM9ZkCBFNW5mg@mail.gmail.com>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <595f8e22-0616-ff8f-78f3-991ef94ebf65@linaro.org>
+Date:   Wed, 25 Nov 2020 15:03:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117232003.3580179-23-joel@joelfernandes.org>
+In-Reply-To: <CAPBb6MWsaHQtQYh8tQnGjwPCrCXeCnf08jL+yxM9ZkCBFNW5mg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
-> +static bool sched_core_get_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> +
-> +	/*
-> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> +	 * is done after the stopper runs.
-> +	 */
-> +	sched_core_get();
-> +	return refcount_inc_not_zero(&ptr->refcnt);
 
-See below, but afaict this should be refcount_inc().
 
-> +}
+On 11/25/20 10:08 AM, Alexandre Courbot wrote:
+> On Fri, Nov 20, 2020 at 9:12 AM Stanimir Varbanov
+> <stanimir.varbanov@linaro.org> wrote:
+>>
+>> From: Vikash Garodia <vgarodia@codeaurora.org>
+>>
+>> For synchronous commands, update the message queue variable.
+>> This would inform video firmware to raise interrupt on host
+>> CPU whenever there is a response for such commands.
+>>
+>> Signed-off-by: Vikash Garodia <vgarodia@codeaurora.org>
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  drivers/media/platform/qcom/venus/hfi_venus.c | 74 ++++++++++---------
+>>  1 file changed, 41 insertions(+), 33 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/venus/hfi_venus.c
+>> index 4be4a75ddcb6..b8fdb464ba9c 100644
+>> --- a/drivers/media/platform/qcom/venus/hfi_venus.c
+>> +++ b/drivers/media/platform/qcom/venus/hfi_venus.c
+>> @@ -372,7 +372,7 @@ static void venus_soft_int(struct venus_hfi_device *hdev)
+>>  }
+>>
+>>  static int venus_iface_cmdq_write_nolock(struct venus_hfi_device *hdev,
+>> -                                        void *pkt)
+>> +                                        void *pkt, bool sync)
+>>  {
+>>         struct device *dev = hdev->core->dev;
+>>         struct hfi_pkt_hdr *cmd_packet;
+>> @@ -397,15 +397,23 @@ static int venus_iface_cmdq_write_nolock(struct venus_hfi_device *hdev,
+>>         if (rx_req)
+>>                 venus_soft_int(hdev);
+>>
+>> +       /* Inform video firmware to raise interrupt for synchronous commands */
+>> +       queue = &hdev->queues[IFACEQ_MSG_IDX];
+>> +       if (sync) {
+>> +               queue->qhdr->rx_req = 1;
+>> +               /* ensure rx_req is updated in memory */
+>> +               wmb();
+>> +       }
+> 
+> Wouldn't it be safer to do this before calling venus_soft_int()? I
+> don't know what the firmware is supposed to do with rx_req but
+> intuitively it looks like it should be set before we signal it.
+> 
 
-> +	/*
-> +	 * 		t1		joining		t2
-> +	 * CASE 1:
-> +	 * before	0				0
-> +	 * after	new cookie			new cookie
-> +	 *
-> +	 * CASE 2:
-> +	 * before	X (non-zero)			0
-> +	 * after	0				0
-> +	 *
-> +	 * CASE 3:
-> +	 * before	0				X (non-zero)
-> +	 * after	X				X
-> +	 *
-> +	 * CASE 4:
-> +	 * before	Y (non-zero)			X (non-zero)
-> +	 * after	X				X
-> +	 */
-> +	if (!t1->core_task_cookie && !t2->core_task_cookie) {
-> +		/* CASE 1. */
-> +		cookie = sched_core_alloc_task_cookie();
-> +		if (!cookie)
-> +			goto out_unlock;
-> +
-> +		/* Add another reference for the other task. */
-> +		if (!sched_core_get_task_cookie(cookie)) {
+I'll leave Vikash to comment. IMO this is a good suggestion.
 
-afaict this should be refcount_inc(), as this can never fail and if it
-does, it's an error.
+<cut>
 
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.tasks[1] = t2;
-> +		wr.cookies[0] = wr.cookies[1] = cookie;
-> +
-> +	} else if (t1->core_task_cookie && !t2->core_task_cookie) {
-> +		/* CASE 2. */
-> +		sched_core_put_task_cookie(t1->core_task_cookie);
-> +		sched_core_put_after_stopper = true;
-> +
-> +		wr.tasks[0] = t1; /* Reset cookie for t1. */
-> +
-> +	} else if (!t1->core_task_cookie && t2->core_task_cookie) {
-> +		/* CASE 3. */
-> +		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-
-afaict this can never fail either, because you're calling in here with a
-reference on t2
-
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = t2->core_task_cookie;
-> +
-> +	} else {
-> +		/* CASE 4. */
-> +		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-
-Same.
-
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +		sched_core_put_task_cookie(t1->core_task_cookie);
-> +		sched_core_put_after_stopper = true;
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = t2->core_task_cookie;
-> +	}
+-- 
+regards,
+Stan
