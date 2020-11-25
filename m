@@ -2,80 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10022C4086
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F81E2C4089
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729334AbgKYMtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728404AbgKYMtr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:49:47 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC08C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:49:47 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id f93so1437007qtb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:49:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZwS1O1QRPESovvA5etFTf/pcxDHt/UhBIA5zL8tN+Pg=;
-        b=vbK93vvrZhpXDwAcJRtdLaMnCfc/uZ+KT800wAHHYdFjGi6Bt7DFYqn/3nUo5hLCHI
-         EIBBEurVt9bYxKbJrOceBP3Tg2X2cLyR77OVChBZl7BnaEE5ityesyXui5gfeT7Ut5GC
-         pYAyVrGVEUC5uRswEQnkLcLmw8wv7NGGsY6JxO5r6bl1P4vCCc71P4qICm6EO0u6ch8l
-         7YGPb4iY0XyZaMd6q0jMXlgoUh005SpSVttoxhJqiA1Ec/wEKQDxwDdNkadcJSRYGRaI
-         z+rZKt/oFuAKUaihQ5Xl4kvAYZ9ehNj1To8D7c4kigdrVfZ05u0HFBC2CO8GXO6/BUSg
-         sNjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ZwS1O1QRPESovvA5etFTf/pcxDHt/UhBIA5zL8tN+Pg=;
-        b=p3FJ5fIeSWXfZUPuvBBOg3nlrjxTMOByD+Q2OQo6j/GDYlK1w3MJ60/CxHcyd4UGX3
-         FZbGIf9jOK2Ma3uq0Ey+25OLDp1bsvOYg+CGFLf9tHaVBoITsadAW5ScCPBTUeSrCNnh
-         2wUFRMe1zgQr3S/NeA9fxin4uAGUGJP8IMvzs4uDFex/tAg+vIcOJkZ7xV1dhPjAcevQ
-         mjv6s7Ex9y+mAZqwya/JGzjAgZ4+PS7U80FV/CVihbtw60kEDmoP/EyVhzb4pNdHQQK2
-         MTxzH3sVVxZPrgnKv0ZZTXICizP9HKeS/usVvtqk4P6qpbLW17Js08iAY4arLqgAFppM
-         Cs6Q==
-X-Gm-Message-State: AOAM531ut1PKKu87oj5GV0rdJ1n9J0EH94rC+ArUXARKuyyYKv34kRaf
-        ZxP7fBjOP+rx2EW9BL1ggIg=
-X-Google-Smtp-Source: ABdhPJxoE+YoHwb2IuVeBB2WxiPq0EqTXK1jaU3bircQxX9xvToZ8JK+7El9iIK01iOR96LGEOQi/w==
-X-Received: by 2002:ac8:6a16:: with SMTP id t22mr2863001qtr.304.1606308586313;
-        Wed, 25 Nov 2020 04:49:46 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id r127sm2448216qke.64.2020.11.25.04.49.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 04:49:45 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 25 Nov 2020 07:49:23 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Hui Su <sh_def@163.com>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/kernfs: remove the double check of dentry->inode
-Message-ID: <X75S00hif93gcd/q@mtj.duckdns.org>
-References: <20201113132143.GA119541@rlk>
+        id S1729365AbgKYMtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:49:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728237AbgKYMty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:49:54 -0500
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B894206E5;
+        Wed, 25 Nov 2020 12:49:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606308593;
+        bh=TG3UpeiHbWC57NXnHtKT6Q7HjbmbKGepoMAsuPbYhgg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qA6Yjnk0W6zCUTsY9ibqshuDQiyuMajOgBuOizLAck5E9ZE5L+x+V2bYY6fA0yzhP
+         xrJyA9k5kSg27ql/IPPknP/v+4uxJ4vosi4p2FhH49/Imm/qZUyNXz/o2apsCdUSEv
+         3nynnNaoFfMST3otOGu54i2pO5tWIalKvxy47vR8=
+Date:   Wed, 25 Nov 2020 12:49:28 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     xuyuqing <xuyuqing@huaqin.corp-partner.google.com>
+Cc:     linux-kernel@vger.kernel.org, Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>, dianders@chromium.org,
+        dgreid@chromium.org, tzungbi@chromium.org, cychiang@chromium.org,
+        judyhsiao@chromium.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        zhouguohui@huaqin.corp-partner.google.com
+Subject: Re: [PATCH v1 0/1] Fix 32 bit format for adau7002
+Message-ID: <20201125124928.GA4489@sirena.org.uk>
+References: <20201118005858.123013-1-xuyuqing@huaqin.corp-partner.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
 Content-Disposition: inline
-In-Reply-To: <20201113132143.GA119541@rlk>
+In-Reply-To: <20201118005858.123013-1-xuyuqing@huaqin.corp-partner.google.com>
+X-Cookie: No foreign coins.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 09:21:43PM +0800, Hui Su wrote:
-> In both kernfs_node_from_dentry() and in
-> kernfs_dentry_node(), we will check the dentry->inode
-> is NULL or not, which is superfluous.
-> 
-> So remove the check in kernfs_node_from_dentry().
-> 
-> Signed-off-by: Hui Su <sh_def@163.com>
 
-Acked-by: Tejun Heo <tj@kernel.org>
+--gKMricLos+KVdGMg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+On Wed, Nov 18, 2020 at 08:58:57AM +0800, xuyuqing wrote:
+> the microphone is attached to external codec(adau7002)
+> instead of rt5682.We need to always use 32 bit format on sc7180
+> to meet the clock requirement of adau7002:
+> The ADAU7002 requires a BCLK rate=20
+> that is a minimum of 64=D7 the LRCLK sample rate
 
--- 
-tejun
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
+
+--gKMricLos+KVdGMg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl++UtcACgkQJNaLcl1U
+h9BXsAf+JbAuQvpTNdjb5/LUqRdyuTd2UQmI4XFbgJUpmVe1dh0IbCc5pqQg/DXU
+/Wl7kSPW1BB1dgiEpbf54AcEQedhpzJggccsH9tWbLyLvC6yVksQc+PU3dxf8FbC
+d+O/GzA4WlIomYE7szH8rvTLcBG8FE37F5qT7zADGhDFA4yjXNhmEOBFQQQsIzRR
+gemWP64PSv4ekoI7Kc9k8VXFutE67I7cPaL0uHEnaDzUcbgkompnweXA8AApxTTq
+PkxAlknTOCQQlkUQH+TgFi00oJlyriAJ9y1ua9le7GoFNRva07aIo9cehika7qTT
+CxonbnDUtgpR5DZnZ5cUXTBJkby3EA==
+=3C6x
+-----END PGP SIGNATURE-----
+
+--gKMricLos+KVdGMg--
