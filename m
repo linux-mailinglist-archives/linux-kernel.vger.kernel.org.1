@@ -2,253 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DDC2C49C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA732C49BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731783AbgKYVOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:14:47 -0500
-Received: from mail-eopbgr130044.outbound.protection.outlook.com ([40.107.13.44]:31734
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725876AbgKYVOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:14:46 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TO9LbiqeTnhpUmzUKoXwecOspHR/B8z8Ll7WSVOFXIP8SUFdJTCNuoofHcIj+Z0Z9d28eu5sCH4Z9fKnaEoExcrxx59XM5nshFp/lFkOtmyC0B98homztqc9j3mr0W1qOqdGlJ1TqpW0S0f+B8kUhO5iqDUspRNlPeBegnbQcSZQmRqehJZtSxJHVNn64dfIW6mOf6n+E8vtFmhm/t7pb47aOA0GAboXd533BnJlSdl+NIpvC4rJmzDqEABKyfol0jRA84/BQu/Duh4Hj6fB3WVMpuShe1CwptJ/6txATQohIhHPrliLTXACLmcG2jATu2XYLBrluyXVK0XgwuGrJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MoXCUSAbOcQtUb6iu9lsGGwGNm04q75pyhMxu+EfSPQ=;
- b=KML7+zO+UqKpWETtn38kG73t+6+jSMBSraqVyrOBBbU6SgNezSs9EHUM65Wwa2yp8byB1lLfROUOPP774fRvGuWxK2ylPCzCEZjH57lKsWBKWVvmH4WwM+8jnyznH0Jp9t9QnXHgNEMevPAz2tTEPYD7b+uYCPJYCGWuoa4DpQKv97GGwic7zRHzQO9Fh11jaDyYcGfDQCNpRI0C4+x08VLauM5J2g9FxZc8CWv/ziX9DP0ZkbomH0VjzbbaFKD73JJbKTMIXiOjic7EtCWdATjPsdVYnEsYkHSeuthfk6YevNrbg3Gg8eYlICUPMX8HQYSMaXfGvOW7alsoR0/KDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MoXCUSAbOcQtUb6iu9lsGGwGNm04q75pyhMxu+EfSPQ=;
- b=mpEPL8j7W1g8AS9xDJgSOS3btxnqJS8Zz00jy1WT3w/Rp0syMG+gzPhM4ZZ71E/0APhxBKO3j0z2Dwgxd933JABjvd1O+x612yO8CdD9viR/3NBYbB+KHO2O9P9SYoflSMlMewCFPQqzVaTK7Y8vJtTtvWjpNTcMlWsKGzx0zXs=
-Authentication-Results: gondor.apana.org.au; dkim=none (message not signed)
- header.d=none;gondor.apana.org.au; dmarc=none action=none
- header.from=oss.nxp.com;
-Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
- (2603:10a6:803:1c::25) by VI1PR04MB6941.eurprd04.prod.outlook.com
- (2603:10a6:803:12e::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22; Wed, 25 Nov
- 2020 21:14:42 +0000
-Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
- ([fe80::ade4:e169:1f4a:28c]) by VI1PR0402MB3712.eurprd04.prod.outlook.com
- ([fe80::ade4:e169:1f4a:28c%4]) with mapi id 15.20.3589.025; Wed, 25 Nov 2020
- 21:14:42 +0000
-From:   "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Horia Geanta <horia.geanta@nxp.com>
-Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx <linux-imx@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>
-Subject: [RFC PATCH 4/4] crypto: caam - avoid allocating memory at crypto request runtime for aead
-Date:   Wed, 25 Nov 2020 23:13:11 +0200
-Message-Id: <20201125211311.2179-5-iuliana.prodan@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201125211311.2179-1-iuliana.prodan@oss.nxp.com>
-References: <20201125211311.2179-1-iuliana.prodan@oss.nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [83.217.231.2]
-X-ClientProxiedBy: AM0PR10CA0117.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:e6::34) To VI1PR0402MB3712.eurprd04.prod.outlook.com
- (2603:10a6:803:1c::25)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv15040.swis.ro-buh01.nxp.com (83.217.231.2) by AM0PR10CA0117.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:e6::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22 via Frontend Transport; Wed, 25 Nov 2020 21:14:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 7d89a639-e455-4cf5-01ad-08d891872004
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6941:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB69414743DCD563BB2A116E4BCDFA0@VI1PR04MB6941.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dMzXqXK6Jvsk7avWIPwG+b5mk+AJSRh3/kFk6VqKbiqRHG/ejxghOLTvqtXQ2kWgm1W/ZEK65nTlIvP2r/uBGl8YqmKVNJDtMdfhkJc8154RQm9R3/fnOROt0pbiwVQHSXx6Z4KIZbImsk5VT5g61LgnEfEbTYv01biJrR2gp0ig4CIKWnCf9WeOa6PC0WJPzS+tgnRLYwtbTE6tuT/yM8TB8+lwy28HBm0wFqnc3iAlOj0cgJvOgbYFMg1jjvmaifpJg3kJyC550kjq/9wbtKwDFGBknHcEZIVMhzrhwhX26RwzG8qH8z1/hLNTSXPC8qCWso/YwB6kwLwb0wAeVQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3712.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(396003)(366004)(136003)(316002)(86362001)(5660300002)(66476007)(66556008)(186003)(52116002)(6512007)(66946007)(26005)(110136005)(54906003)(2906002)(8676002)(6486002)(16526019)(4326008)(83380400001)(8936002)(478600001)(1076003)(6506007)(956004)(2616005)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PlOJ4+2qZ1kPsj4UK4P0MYf9C5Vws4/HbPtEpKbgJREXLFwHMvQc6iOSiYkq?=
- =?us-ascii?Q?q9zGLW1ccOgNA5elLLIB6e8v0nKS+ocFEDkSiz5mrIoWwCrmjMQgX9DRI4sZ?=
- =?us-ascii?Q?NhlQp+6GHMA8Pi02se33X58A8QcR9DuhoVDCpbiBba3WclSh1AyRvECxW1XW?=
- =?us-ascii?Q?/4iC+kyKlnPUubFJpbr0Zk2m7rnQb0mDU/W3p3wfSeuvIkEwiy0T50iEJOa+?=
- =?us-ascii?Q?ZmjTihTDLNE8/IA0a0/q540podI3CO7fGI8FtaXN1c56Jh4qrGFmoty3FGfA?=
- =?us-ascii?Q?aAZmb9tfttwEHOFJanmC7U3/gQ1tjaCJzOKq+vBL1xECKtxVzkAyO/m2iLw+?=
- =?us-ascii?Q?OVSP3J/g1rnafvsvwz8mJ6r4d9BpZ4hnTs0U7sbAGqnPKQGa33STLAGqurJE?=
- =?us-ascii?Q?vKf9LG27dT8HmL3mu1hrbCpDCfHgTk/pnpkmyY0TJ7QDs76Cj5tQflww7oOo?=
- =?us-ascii?Q?boa5h+lzpsLhnYRaW5Y2MOjYaYwKD9R1TTi12YsUvfxZPATAxHgIemPL9to+?=
- =?us-ascii?Q?fLHTsgOhiqh3IbrhULxW2546qsDcFiAvJ2n6vmEZ3iROHrVAmh/cllFfDnhC?=
- =?us-ascii?Q?HekkMejpLFNpmyXSPSLnxVvbm+JfAmxkKyuBu2lOyCt0VG2VrCYQfnEd4keA?=
- =?us-ascii?Q?wuHEmflZFyKvchh3ZqjNb82RK+yB14TzAvrrHhVz/ynrylqr6+rcprUXpQ/S?=
- =?us-ascii?Q?AnyQkh6/cYxJ43BWhIrkd8CoMd+qjA/gRe/AyzFBZ0TL79FZJu37qpD9B9ms?=
- =?us-ascii?Q?q1nMOQeLAXWZFpsITbm9xsxrVYifdpo2ZVjvLb7LooXo7d8mksaTLEeB3VL/?=
- =?us-ascii?Q?apjVOvGdMN/kGTu3YPOrJuRcj9vqNNzuNt97VS7ekzpaueTey5m/qWP7fvMP?=
- =?us-ascii?Q?m8iqdAVerU5ID9x6e1vrp4Neenq/8cHVPm0Rz3PVZpCfGNzsOfVOBeHS/HI1?=
- =?us-ascii?Q?uCsAy1pV1fQiNYx7hLme+pejgz3HJlmP6Swl+/ijnY8=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d89a639-e455-4cf5-01ad-08d891872004
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3712.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 21:14:41.8580
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iCUbruIuBjeQ55QBzqLWD13FePKU6kCm++xaYsANxbG0rihsmqdqSH/Dmp6B1gYHXex3xiwnFkmKVF1ZVNuEiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6941
+        id S1731645AbgKYVNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:13:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59297 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731620AbgKYVNy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 16:13:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606338831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2kFA8/66bJPsERy/zq7DBLLovoqQJHvXB9h63g9+0iU=;
+        b=brzNpd3wbZe0WzpUktXDNBdGMTuHg9vcfeV2v1xZ7A9rCm3mnfdPtzZJ44UK3fcONfaFX6
+        GiEgBsc/ZMxVuhezUiEnVqp/QD0v4Bi+Kp3KEu5aESgEp4C6UNEK8AQ4UD5xOKC3Twx02L
+        zC9Rmrn8O2ssZlBd8tVUgwkM19xqHJI=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-ROdVFXD5Pa26IsxUk-9CAQ-1; Wed, 25 Nov 2020 16:13:50 -0500
+X-MC-Unique: ROdVFXD5Pa26IsxUk-9CAQ-1
+Received: by mail-ej1-f69.google.com with SMTP id e22so1204292ejx.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:13:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=2kFA8/66bJPsERy/zq7DBLLovoqQJHvXB9h63g9+0iU=;
+        b=shnHpQ0WpHZhM5FUgtdI/pS8TAjMYzmkRkW+ZgLHJOZHBIu3R4KPeQa0iWShqwft7P
+         PnQI3tfV2825jIWE37aLN8P8zgdzlQQm0GyBiCaTpphp+bpbJA9oagjUuV6E+cM7cFDr
+         EFuPP/T84aSyamuvHstFKH6olwlq3u5uyXbtV1tA5TNzjXx417Jdrms9G3faD1gd8rBn
+         GJogkB8TrgWK4hHCN43EfBgVuQS3r4lBgUf27j1py+MxsecsHfd+K4DgyEMjcOOMKBbB
+         y/jcKQN4Lb1RHwbHAfrNPVwYRzJ2YzT91TCqPfXHouHuoSJDqyPhswRkIJpVViePB8Vd
+         QJkQ==
+X-Gm-Message-State: AOAM5320H8Cqa7m+3HMr5XL4Y1ynaQfmong1BdQZD0EccPsCdTQLkNA6
+        9WRpJGD9Oqj8yy7UdQuiJGw/jAtzhp2BVjXcXl+XOOppgOgHIY4CTkK57IufP+NDZZjK1nf0Wex
+        kPM6nn6zUo1cy7l8MhkQjBqne
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr4832959eju.375.1606338828544;
+        Wed, 25 Nov 2020 13:13:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwRMtDPt3uHZsbY3GNb7mUe4SPAyQtG7gBsGY6mxc2aX/XDRWyyXUgNMBOsjZOYuYaWreJHQw==
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr4832941eju.375.1606338828273;
+        Wed, 25 Nov 2020 13:13:48 -0800 (PST)
+Received: from [192.168.3.114] (p5b0c686a.dip0.t-ipconnect.de. [91.12.104.106])
+        by smtp.gmail.com with ESMTPSA id op24sm1907291ejb.56.2020.11.25.13.13.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Nov 2020 13:13:47 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set pageblock_skip on reserved pages
+Date:   Wed, 25 Nov 2020 22:13:46 +0100
+Message-Id: <89B17C54-671B-4363-B425-CCFE17DD8FDD@redhat.com>
+References: <X77BgHiTR3R7biho@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>
+In-Reply-To: <X77BgHiTR3R7biho@redhat.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+X-Mailer: iPhone Mail (18B92)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Iuliana Prodan <iuliana.prodan@nxp.com>
 
-Remove CRYPTO_ALG_ALLOCATES_MEMORY flag and allocate the memory
-needed by the driver, to fulfil a request, within the crypto
-request object.
-The extra size needed for base extended descriptor, hw
-descriptor commands and link tables is computed in frontend
-driver (caamalg) initialization and saved in reqsize field
-that indicates how much memory could be needed per request.
+> Am 25.11.2020 um 21:41 schrieb Andrea Arcangeli <aarcange@redhat.com>:
+>=20
+> =EF=BB=BFOn Wed, Nov 25, 2020 at 08:27:21PM +0100, David Hildenbrand wrote=
+:
+>>> On 25.11.20 19:28, Andrea Arcangeli wrote:
+>>> On Wed, Nov 25, 2020 at 07:45:30AM +0100, David Hildenbrand wrote:
+>>>> Before that change, the memmap of memory holes were only zeroed
+>>>> out. So the zones/nid was 0, however, pages were not reserved and
+>>>> had a refcount of zero - resulting in other issues.
+>>>=20
+>>> So maybe that "0,0" zoneid/nid was not actually the thing that
+>>> introduced the regression? Note: I didn't bisect anything yet, it was
+>>> just a guess.
+>>=20
+>> I guess 0/0 is the issue, but that existed before when we had a simple
+>> memmset(0). The root issue should be what Mike said:
+>=20
+> Yes, the second stage must have stopped running somehow.
+>=20
+> Is there anything we can do to induce a deterministically reproducible
+> kernel crashing behavior if the second stage doesn't run?
+>=20
+> Why did we start doing a more graceful initialization in the first
+> stage, instead of making a less graceful by setting it to 0xff instead
+> of 0x00?
 
-CRYPTO_ALG_ALLOCATES_MEMORY flag is limited only to
-dm-crypt use-cases, which seems to be 4 entries maximum.
-Therefore in reqsize we allocate memory for maximum 4 entries
-for src and 4 for dst, aligned.
-If the driver needs more than the 4 entries maximum, the memory
-is dynamically allocated, at runtime.
+I guess because we weren=E2=80=98t aware of the issues we have :)
 
-Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
----
- drivers/crypto/caam/caamalg.c | 59 +++++++++++++++++++++++++++--------
- 1 file changed, 46 insertions(+), 13 deletions(-)
+>=20
+>> 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather
+>> that check each PFN")
+>=20
+> So if that's not intentional, are you suggesting nodeid/nid was a bug
+> if it was set to 0,0 for a non-RAM valid pfn?
+>=20
 
-diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
-index 6ace8545faec..7038394c41c0 100644
---- a/drivers/crypto/caam/caamalg.c
-+++ b/drivers/crypto/caam/caamalg.c
-@@ -880,6 +880,7 @@ static int xts_skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
-  * @mapped_dst_nents: number of segments in output h/w link table
-  * @sec4_sg_bytes: length of dma mapped sec4_sg space
-  * @bklog: stored to determine if the request needs backlog
-+ * @free: stored to determine if aead_edesc needs to be freed
-  * @sec4_sg_dma: bus physical mapped address of h/w link table
-  * @sec4_sg: pointer to h/w link table
-  * @hw_desc: the h/w job descriptor followed by any referenced link tables
-@@ -891,6 +892,7 @@ struct aead_edesc {
- 	int mapped_dst_nents;
- 	int sec4_sg_bytes;
- 	bool bklog;
-+	bool free;
- 	dma_addr_t sec4_sg_dma;
- 	struct sec4_sg_entry *sec4_sg;
- 	u32 hw_desc[];
-@@ -987,8 +989,8 @@ static void aead_crypt_done(struct device *jrdev, u32 *desc, u32 err,
- 		ecode = caam_jr_strstatus(jrdev, err);
- 
- 	aead_unmap(jrdev, edesc, req);
--
--	kfree(edesc);
-+	if (edesc->free)
-+		kfree(edesc);
- 
- 	/*
- 	 * If no backlog flag, the completion of the request is done
-@@ -1301,7 +1303,7 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 	int src_nents, mapped_src_nents, dst_nents = 0, mapped_dst_nents = 0;
- 	int src_len, dst_len = 0;
- 	struct aead_edesc *edesc;
--	int sec4_sg_index, sec4_sg_len, sec4_sg_bytes;
-+	int sec4_sg_index, sec4_sg_len, sec4_sg_bytes, edesc_size = 0;
- 	unsigned int authsize = ctx->authsize;
- 
- 	if (unlikely(req->dst != req->src)) {
-@@ -1381,13 +1383,30 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
- 
- 	sec4_sg_bytes = sec4_sg_len * sizeof(struct sec4_sg_entry);
- 
--	/* allocate space for base edesc and hw desc commands, link tables */
--	edesc = kzalloc(sizeof(*edesc) + desc_bytes + sec4_sg_bytes,
--			GFP_DMA | flags);
--	if (!edesc) {
--		caam_unmap(jrdev, req->src, req->dst, src_nents, dst_nents, 0,
--			   0, 0, 0);
--		return ERR_PTR(-ENOMEM);
-+	 /* Check if there's enough space for edesc saved in req */
-+	edesc_size = sizeof(*edesc) + desc_bytes + sec4_sg_bytes;
-+	if (edesc_size > (crypto_aead_reqsize(aead) -
-+			  sizeof(struct caam_aead_req_ctx))) {
-+		/*
-+		 * allocate space for base edesc and
-+		 * hw desc commands, link tables
-+		 */
-+		edesc = kzalloc(edesc_size, GFP_DMA | flags);
-+		if (!edesc) {
-+			caam_unmap(jrdev, req->src, req->dst, src_nents,
-+				   dst_nents, 0, 0, 0, 0);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+		edesc->free = true;
-+	} else {
-+		/*
-+		 * get address for base edesc and
-+		 * hw desc commands, link tables
-+		 */
-+		edesc = (struct aead_edesc *)((u8 *)rctx +
-+			sizeof(struct caam_aead_req_ctx));
-+		/* clear memory */
-+		memset(edesc, 0, sizeof(*edesc));
- 	}
- 
- 	edesc->src_nents = src_nents;
-@@ -1538,7 +1557,8 @@ static int aead_do_one_req(struct crypto_engine *engine, void *areq)
- 
- 	if (ret != -EINPROGRESS) {
- 		aead_unmap(ctx->jrdev, rctx->edesc, req);
--		kfree(rctx->edesc);
-+		if (rctx->edesc->free)
-+			kfree(rctx->edesc);
- 	} else {
- 		ret = 0;
- 	}
-@@ -3463,6 +3483,20 @@ static int caam_aead_init(struct crypto_aead *tfm)
- 	struct caam_aead_alg *caam_alg =
- 		 container_of(alg, struct caam_aead_alg, aead);
- 	struct caam_ctx *ctx = crypto_aead_ctx(tfm);
-+	int extra_reqsize = 0;
-+
-+	/*
-+	 * Compute extra space needed for base edesc and
-+	 * hw desc commands, link tables, IV
-+	 */
-+	extra_reqsize = sizeof(struct aead_edesc) +
-+			 /* max size for hw desc commands */
-+			(AEAD_DESC_JOB_IO_LEN + CAAM_CMD_SZ * 6) +
-+			/* link tables for src and dst, 4 entries max, aligned */
-+			(8 * sizeof(struct sec4_sg_entry));
-+
-+	/* Need GFP_DMA for extra request size */
-+	crypto_aead_set_flags(tfm, CRYPTO_TFM_REQ_DMA);
- 
- 	crypto_aead_set_reqsize(tfm, sizeof(struct caam_aead_req_ctx));
- 
-@@ -3533,8 +3567,7 @@ static void caam_aead_alg_init(struct caam_aead_alg *t_alg)
- 	alg->base.cra_module = THIS_MODULE;
- 	alg->base.cra_priority = CAAM_CRA_PRIORITY;
- 	alg->base.cra_ctxsize = sizeof(struct caam_ctx);
--	alg->base.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_ALLOCATES_MEMORY |
--			      CRYPTO_ALG_KERN_DRIVER_ONLY;
-+	alg->base.cra_flags = CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY;
- 
- 	alg->init = caam_aead_init;
- 	alg->exit = caam_aead_exit;
--- 
-2.17.1
+Depends on how we think checks for reserved pages should be performed. I am m=
+ore of a friend of indicating =E2=80=9Ethis memmap is just garbage, skip it=E2=
+=80=9C. If the reserved flag is not good enough, then via a special node/zon=
+e - as you also suggest below.
+
+>> "correct" is problematic. If you have an actual memory hole, there is
+>> not always a right answer - unless I am missing something important.
+>>=20
+>>=20
+>> Assume you have a layout like this
+>>=20
+>> [  zone X ] [ hole ] [ zone Y ]
+>>=20
+>> If either X and or Y starts within a memory section, you have a valid
+>> memmap for X - but what would be the right node/zone?
+>>=20
+>>=20
+>> Assume you have a layout like this
+>>=20
+>> [ zone X ]
+>>=20
+>> whereby X ends inside a memory section. The you hotplug memory. Assume
+>> it goes to X
+>>=20
+>> [ zone X ][ hole in X ][ zone X]
+>>=20
+>> or it goes to y
+>>=20
+>> [ zone X ][ hole ][ zone Y ]
+>>=20
+>> This can easily be reproduced by starting a VM in qemu with a memory
+>> size not aligned to 128 MB (e.g., -M 4000) and hotplugging memory.
+>=20
+> I don't get what the problem is sorry.
+>=20
+> You have a pfn, if pfn_valid() is true, pfn_to_page returns a page
+> deterministically.
+>=20
+> It's up to the kernel to decide which page structure blongs to any pfn
+> in the pfn_to_page function.
+>=20
+> Now if the pfn_to_page(pfn) function returns a page whose nid/zone_id
+> in page->flags points to a node->zone whose zone_start_pfn -
+> end_zone_pfn range doesn't contain "pfn" that is a bug in
+> page_alloc.c.
+>=20
+> I don't see how is it not possible to deterministically enforce the
+> above never happens. Only then it would be true that there's not
+> always a right answer.
+>=20
+> zone can overlap, but it can't be that you do pfn_to_page of a
+> pfn_valid and you obtain a page whose zone doesn't contain that
+> pfn. Which is what is currently crashing compaction.
+>=20
+> I don't see how this is an unsolvable problem and why we should accept
+> to live with a bogus page->flags for reserved pages.
+>=20
+
+I said it=E2=80=98s problematic, not unsolvable. Using a special zone/node i=
+s certainly easier - but might reveal some issues we have to fix - I guess? =
+Fair enough.
+
+>> We can't. The general rule is (as I was once told by Michal IIRC) that
+>=20
+> The fact we can't kernel crash reliably when somebody uses the wrong
+> 0,0 uninitialized value by not adding an explicit PageReserved check,
+> is my primary concern in keeping those nodeid/nid uninitialized, but
+> non-kernel-crashing, since it already created this unreproducible bug.
+
+Agreed.
+
+>=20
+>> I'm not rooting for "keep this at 0/0" - I'm saying that I think there
+>> are corner cases where it might not be that easy.
+>=20
+> I'm not saying it's easy. What I don't see is how you don't always
+> have the right answer and why it would be an unsolvable problem.
+
+=E2=80=9EProblematic=E2=80=9C does not imply unsolvable.
+
+>=20
+> It is certainly problematic and difficult to solve in the mem_map
+> iniitalization logic, but to me having pfn_valid() &&
+> page_zone(pfn_to_page(pfn)) randomly returning the DMA zone on first
+> node also looks problematic and difficult to handle across all VM
+> code, so overall it looks preferable to keep the complexity of the
+> mem_map initialization self contained and not spilling over the rest
+> of the VM.
+>=20
+>> Yes, but there is a "Some of these" :)
+>>=20
+>> Boot a VM with "-M 4000" and observe the memmap in the last section -
+>> they won't get initialized a second time.
+>=20
+> Is the beyond the end of the zone yet another case? I guess that's
+> less likely to give us problems because it's beyond the end of the
+> zone. Would pfn_valid return true for those pfn? If pfn_valid is not
+
+Yes. Especially, exposed after memory hotplug when zone/nid span changes.
+
+> true it's not really a concern but the again I'd rather prefer if
+> those struct pages beyond the end of the zone were kernel crashing set
+> to 0xff.
+>=20
+> In other words I just don't see why we should ever prefer to leave
+> some pages at a graceful and erroneous nid 0 nodeid 0 that wouldn't
+> easily induce a crash if used.
+
+I agree.
+
+>=20
+>> AFAIK, the mem_map array might have multiple NIDs - and it's set when
+>> initializing the zones.
+>=20
+> Well because there's no mem_map array with SPARSEMEM, but it's not
+> conceptually too different than if there was one. Even with flatmem
+> there could be multiple page struct for each pfn, the disambiguation
+> has to be handled by pfn_to_page regardless of SPARSEMEM or not.
+>=20
+> The point is that if zone_page(pfn_to_page(pfn)) points to DMA zone of
+> first node, and the pfn isn't part of the DMA of first node that looks
+> a bug and it can be enforced it doesn't happen.
+>=20
+>> Well, "reserved" is not a good indication "what" something actually is.
+>>=20
+>> I documented that a while ago in include/linux/page-flags.h
+>>=20
+>> "PG_reserved is set for special pages. The "struct page" of such a page
+>> should in general not be touched (e.g. set dirty) except by its owner.
+>> Pages marked as PG_reserved include:."
+>>=20
+>> I suggest looking at that.
+>>=20
+>> AFAIR, we have been setting *most* memmap in memory holes/non-ram
+>> reserved for a long time - long before I added the __init_single_page -
+>> see init_reserved_page() for example.
+>=20
+> Sure, non-RAM with valid page struct always has been marked
+> PG_reserved. I wasn't suggesting that it shouldn't be PG_reserved.
+>=20
+> I was pointing out that RAM can also be marked PG_reserved later by
+> the kernel, long after boot, as you mentioned for all other cases of
+> PG_reserved, the most notable are drivers doing PG_reserved after
+> allocating RAM either vmalloc or GART swapping RAM around at other
+> alias physical address.
+>=20
+> That is all born as RAM at boot, it gets page->flags done right, with
+> the right zoneid, and it becomes PG_reserved later.
+>=20
+> So I was suggesting physical ranges "pfn" of non-RAM (be those holes
+> withtin zones, or in between zones doesn't matter) with a pfn_valid
+> returning true and a pfn_to_page pointing deterministically to one and
+> only one struct page, should have such struct page initialized exactly
+> the same as if it was RAM.
+>=20
+> Either that or we can define a new NO_ZONE NO_ID id and crash in
+> page_zonenum or page_to_nid if it is ever called on such a page
+> struct.
+
+I feel like that is easier and maybe cleaner. Mark memmaps that exist but sh=
+ould be completely ignored. Could even check that in pfn_valid() and return =E2=
+=80=9Efalse=E2=80=9C - might be expensive, though.
+
+Anyhow, I do agree that properly catching these problematic pages, bailing o=
+ut and fixing them (however we decide) is the right approach.
+
+>=20
+> Thanks,
+> Andrea
 
