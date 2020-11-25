@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8872C45DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B032C45DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732519AbgKYQr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:47:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59394 "EHLO mail.kernel.org"
+        id S1732528AbgKYQsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:48:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732512AbgKYQr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:47:58 -0500
+        id S1732512AbgKYQsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:48:02 -0500
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97C1F21534;
-        Wed, 25 Nov 2020 16:47:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E76822145D;
+        Wed, 25 Nov 2020 16:47:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606322877;
-        bh=1fhDXmO08NfkJQ4t+guUAX1qFIWAvOwnwGfYMJfpCc4=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=UdcJYlbGXiWnAPhUZVp2zFrfDsH4wYkNaHZ8xo/+hDAjGCI/35yb77546bg5fyx6O
-         QdzC+HH6ndDBzmvob9ht8o77OLKaQBjcTVhFLjxE70YQ9ytwHNPy6knTXsCFLTZUN+
-         8/G8uXx9LMlmDuCYvRPfTCgK5+WWvyOaPAjXLEuQ=
+        s=default; t=1606322882;
+        bh=rHhaaDvCI3oNFGE1+QHFB0i3vECs+/DgQ7hv/ctlhEo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TzW8twxNCk4GeJkwWlA0WbI44EVFTsn9/JGdItKXKkSISPUy9hwSZkj7od1gd+tqn
+         5nnfDAmhOPCpjp4ThF+MqZebT+Yf4AF+V3FVtA5rXo4RuDw1aIRUVYGbgCSva491+n
+         +P7xU1JYWVt1eS99Ln1PmVJssVsW/RwxqDHLlUQ4=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -45,9 +45,10 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org,
         linux-rockchip@lists.infradead.org
-Subject: [PATCH v2 38/39] ASoC: max98926: drop driver pm=NULL assignment
-Date:   Wed, 25 Nov 2020 17:44:51 +0100
-Message-Id: <20201125164452.89239-39-krzk@kernel.org>
+Cc:     Sylwester Nawrocki <snawrocki@kernel.org>
+Subject: [PATCH v2 39/39] ASoC: samsung: smdk_wm8994: remove redundant of_match_ptr()
+Date:   Wed, 25 Nov 2020 17:44:52 +0100
+Message-Id: <20201125164452.89239-40-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201125164452.89239-1-krzk@kernel.org>
 References: <20201125164452.89239-1-krzk@kernel.org>
@@ -57,25 +58,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no point to explicitly set driver .pm field to NULL.
+of_match_device() already handles properly !CONFIG_OF case, so passing
+the argument via of_match_ptr() is not needed.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Sylwester Nawrocki <snawrocki@kernel.org>
 ---
- sound/soc/codecs/max98926.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/samsung/smdk_wm8994.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
-index 0977e541326d..f286e572263e 100644
---- a/sound/soc/codecs/max98926.c
-+++ b/sound/soc/codecs/max98926.c
-@@ -583,7 +583,6 @@ static struct i2c_driver max98926_i2c_driver = {
- 	.driver = {
- 		.name = "max98926",
- 		.of_match_table = of_match_ptr(max98926_of_match),
--		.pm = NULL,
- 	},
- 	.probe	= max98926_i2c_probe,
- 	.id_table = max98926_i2c_id,
+diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
+index 28d6eb14d7db..681b244d5312 100644
+--- a/sound/soc/samsung/smdk_wm8994.c
++++ b/sound/soc/samsung/smdk_wm8994.c
+@@ -170,7 +170,7 @@ static int smdk_audio_probe(struct platform_device *pdev)
+ 		smdk_dai[0].platforms->of_node = smdk_dai[0].cpus->of_node;
+ 	}
+ 
+-	id = of_match_device(of_match_ptr(samsung_wm8994_of_match), &pdev->dev);
++	id = of_match_device(samsung_wm8994_of_match, &pdev->dev);
+ 	if (id)
+ 		*board = *((struct smdk_wm8994_data *)id->data);
+ 
 -- 
 2.25.1
 
