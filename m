@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0962C36A6
+	by mail.lfdr.de (Postfix) with ESMTP id 8721E2C36A7
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgKYCPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 21:15:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38112 "EHLO mail.kernel.org"
+        id S1726533AbgKYCP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 21:15:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725287AbgKYCPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 21:15:55 -0500
+        id S1725287AbgKYCP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 21:15:58 -0500
 Received: from localhost.localdomain (unknown [94.238.200.242])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A48452145D;
-        Wed, 25 Nov 2020 02:15:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99D3B21527;
+        Wed, 25 Nov 2020 02:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606270554;
-        bh=jEcj9QHX5ILbnXjHCnBLLGq1vfVSqRT5ME/uAmXyd3k=;
+        s=default; t=1606270557;
+        bh=ph4IbPvf2coEQHlSOyuonx8by8tMRVHWubJ5wkpQb/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y8lA/VDNyKjtrXtp/linJer1XDBzrINr2vU+6juS0GnrFYnsvbBpaaWwtq5W1KqM3
-         2M0ue90SVl3b7mkPQqkl5L2F3UAjmIEi3RCmP9jgFnrxyGXzABhTdOjN0UEQhZy7xX
-         Adz0/UfzsbAw9RLMwpxd9kK2dQ5p2KiJLK7GYHyY=
+        b=dU9vlBJKxbgxaC2ANx9rTP2tG5XtIHHEKv/HaEfN5SprztEEjeX00/n3vTklMBQep
+         Hw3Z+0Z8qjJZ803q68PUUKbntT7yhsauNz1PTIcCQG5qwioqqcTtiuGBR88ZrMHWaT
+         8edsewuHASaZurxd62FFkJdozXvvcYxLl29LRi6Q=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -36,9 +36,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
         Fenghua Yu <fenghua.yu@intel.com>,
         Heiko Carstens <hca@linux.ibm.com>
-Subject: [RFC PATCH 2/4] s390/vtime: Convert to consolidated IRQ time accounting
-Date:   Wed, 25 Nov 2020 03:15:40 +0100
-Message-Id: <20201125021542.30237-3-frederic@kernel.org>
+Subject: [RFC PATCH 3/4] sched/irqtime: Move irqtime entry accounting after irq offset incrementation
+Date:   Wed, 25 Nov 2020 03:15:41 +0100
+Message-Id: <20201125021542.30237-4-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201125021542.30237-1-frederic@kernel.org>
 References: <20201125021542.30237-1-frederic@kernel.org>
@@ -48,17 +48,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s390 has its own version of IRQ time accounting because it doesn't
-account the idle time the same way the other architectures do. Only
-the actual idle sleep time is accounted as idle time, the rest of the
-idle task execution is accounted as system time.
+IRQ time entry is currently accounted before HARDIRQ_OFFSET or
+SOFTIRQ_OFFSET are incremented. This is convenient to decide to which
+index the cputime to account is dispatched.
 
-However converting it to the consolidated IRQ time accounting is easy:
-just keep the current behaviour and redirect generic idle time
-accounting to system time accounting.
+Unfortunately it prevents tick_irq_enter() from being called under
+HARDIRQ_OFFSET because tick_irq_enter() has to be called before the IRQ
+entry accounting due to the necessary clock catch up. As a result we
+don't benefit from appropriate lockdep coverage on tick_irq_enter().
 
-This removes the need to maintain an ad-hoc implementation of cputime
-dispatch decision.
+To prepare for fixing this, move the IRQ entry cputime accounting after
+the preempt offset is incremented. This requires the cputime dispatch
+code to handle the extra offset.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
@@ -71,123 +72,163 @@ Cc: Heiko Carstens <hca@linux.ibm.com>
 Cc: Vasily Gorbik <gor@linux.ibm.com>
 Cc: Christian Borntraeger <borntraeger@de.ibm.com>
 ---
- arch/s390/include/asm/vtime.h |  1 -
- arch/s390/kernel/vtime.c      | 57 ++++++++++++++++++++++-------------
- kernel/sched/cputime.c        |  2 --
- 3 files changed, 36 insertions(+), 24 deletions(-)
+ include/linux/hardirq.h |  4 +--
+ include/linux/vtime.h   | 10 +++++---
+ kernel/sched/cputime.c  | 56 ++++++++++++++++++++++++++++++-----------
+ kernel/softirq.c        |  2 +-
+ 4 files changed, 51 insertions(+), 21 deletions(-)
 
-diff --git a/arch/s390/include/asm/vtime.h b/arch/s390/include/asm/vtime.h
-index 3622d4ebc73a..fac6a67988eb 100644
---- a/arch/s390/include/asm/vtime.h
-+++ b/arch/s390/include/asm/vtime.h
-@@ -2,7 +2,6 @@
- #ifndef _S390_VTIME_H
- #define _S390_VTIME_H
+diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
+index 754f67ac4326..02499c10fbf7 100644
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -32,9 +32,9 @@ static __always_inline void rcu_irq_enter_check_tick(void)
+  */
+ #define __irq_enter()					\
+ 	do {						\
++		preempt_count_add(HARDIRQ_OFFSET);	\
++		lockdep_hardirq_enter();		\
+ 		account_irq_enter_time(current);	\
+-		preempt_count_add(HARDIRQ_OFFSET);	\
+-		lockdep_hardirq_enter();		\
+ 	} while (0)
  
--#define __ARCH_HAS_VTIME_ACCOUNT
- #define __ARCH_HAS_VTIME_TASK_SWITCH
+ /*
+diff --git a/include/linux/vtime.h b/include/linux/vtime.h
+index f827b38c3bb7..cad8ff530273 100644
+--- a/include/linux/vtime.h
++++ b/include/linux/vtime.h
+@@ -96,21 +96,23 @@ static inline void vtime_flush(struct task_struct *tsk) { }
  
- #endif /* _S390_VTIME_H */
-diff --git a/arch/s390/kernel/vtime.c b/arch/s390/kernel/vtime.c
-index 9fce2ca1b448..09328baeb61d 100644
---- a/arch/s390/kernel/vtime.c
-+++ b/arch/s390/kernel/vtime.c
-@@ -222,39 +222,54 @@ void vtime_flush(struct task_struct *tsk)
- 	S390_lowcore.avg_steal_timer = avg_steal;
+ 
+ #ifdef CONFIG_IRQ_TIME_ACCOUNTING
+-extern void irqtime_account_irq(struct task_struct *tsk);
++extern void irqtime_account_enter(struct task_struct *tsk);
++extern void irqtime_account_exit(struct task_struct *tsk);
+ #else
+-static inline void irqtime_account_irq(struct task_struct *tsk) { }
++static inline void irqtime_account_enter(struct task_struct *tsk) { }
++static inline void irqtime_account_exit(struct task_struct *tsk) { }
+ #endif
+ 
+ static inline void account_irq_enter_time(struct task_struct *tsk)
+ {
+ 	vtime_account_irq_enter(tsk);
+-	irqtime_account_irq(tsk);
++	irqtime_account_enter(tsk);
+ }
+ 
+ static inline void account_irq_exit_time(struct task_struct *tsk)
+ {
+ 	vtime_account_irq_exit(tsk);
+-	irqtime_account_irq(tsk);
++	irqtime_account_exit(tsk);
+ }
+ 
+ #endif /* _LINUX_KERNEL_VTIME_H */
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index 6fa81cc33fec..82623d97667c 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -43,23 +43,49 @@ static void irqtime_account_delta(struct irqtime *irqtime, u64 delta,
+ 	u64_stats_update_end(&irqtime->sync);
  }
  
 -/*
-- * Update process times based on virtual cpu times stored by entry.S
-- * to the lowcore fields user_timer, system_timer & steal_clock.
+- * Called before incrementing preempt_count on {soft,}irq_enter
+- * and before decrementing preempt_count on {soft,}irq_exit.
 - */
--void vtime_account_kernel(struct task_struct *tsk)
-+static u64 vtime_delta(void)
+-void irqtime_account_irq(struct task_struct *curr)
++static s64 irqtime_get_delta(struct irqtime *irqtime)
  {
--	u64 timer;
-+	u64 timer = S390_lowcore.last_update_timer;
+-	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
++	int cpu = smp_processor_id();
+ 	s64 delta;
+-	int cpu;
  
--	timer = S390_lowcore.last_update_timer;
- 	S390_lowcore.last_update_timer = get_vtimer();
--	timer -= S390_lowcore.last_update_timer;
+-	if (!sched_clock_irqtime)
+-		return;
+-
+-	cpu = smp_processor_id();
+ 	delta = sched_clock_cpu(cpu) - irqtime->irq_start_time;
+ 	irqtime->irq_start_time += delta;
  
--	if ((tsk->flags & PF_VCPU) && (irq_count() == 0))
--		S390_lowcore.guest_timer += timer;
--	else if (hardirq_count())
--		S390_lowcore.hardirq_timer += timer;
--	else if (in_serving_softirq())
--		S390_lowcore.softirq_timer += timer;
-+	return timer - S390_lowcore.last_update_timer;
++	return delta;
 +}
 +
-+/*
-+ * Update process times based on virtual cpu times stored by entry.S
-+ * to the lowcore fields user_timer, system_timer & steal_clock.
-+ */
-+void vtime_account_kernel(struct task_struct *tsk)
++/* Called after incrementing preempt_count on {soft,}irq_enter */
++void irqtime_account_enter(struct task_struct *curr)
 +{
-+	u64 delta = vtime_delta();
++	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
++	u64 delta;
 +
-+	if (tsk->flags & PF_VCPU)
-+		S390_lowcore.guest_timer += delta;
- 	else
--		S390_lowcore.system_timer += timer;
-+		S390_lowcore.system_timer += delta;
- 
--	virt_timer_forward(timer);
-+	virt_timer_forward(delta);
++	if (!sched_clock_irqtime)
++		return;
++
++	delta = irqtime_get_delta(irqtime);
++	/*
++	 * We do not account for softirq time from ksoftirqd here.
++	 * We want to continue accounting softirq time to ksoftirqd thread
++	 * in that case, so as not to confuse scheduler with a special task
++	 * that do not consume any time, but still wants to run.
++	 */
++	if ((irq_count() == (SOFTIRQ_OFFSET | HARDIRQ_OFFSET)) &&
++	    curr != this_cpu_ksoftirqd())
++		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
++}
++EXPORT_SYMBOL_GPL(irqtime_account_enter);
++
++/* Called before decrementing preempt_count on {soft,}irq_exit */
++void irqtime_account_exit(struct task_struct *curr)
++{
++	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
++	u64 delta;
++
++	if (!sched_clock_irqtime)
++		return;
++
++	delta = irqtime_get_delta(irqtime);
+ 	/*
+ 	 * We do not account for softirq time from ksoftirqd here.
+ 	 * We want to continue accounting softirq time to ksoftirqd thread
+@@ -71,7 +97,7 @@ void irqtime_account_irq(struct task_struct *curr)
+ 	else if (in_serving_softirq() && curr != this_cpu_ksoftirqd())
+ 		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
  }
- EXPORT_SYMBOL_GPL(vtime_account_kernel);
+-EXPORT_SYMBOL_GPL(irqtime_account_irq);
++EXPORT_SYMBOL_GPL(irqtime_account_exit);
  
--void vtime_account_irq_enter(struct task_struct *tsk)
-+void vtime_account_idle(struct task_struct *tsk)
- __attribute__((alias("vtime_account_kernel")));
--EXPORT_SYMBOL_GPL(vtime_account_irq_enter);
- 
--void vtime_account_irq_exit(struct task_struct *tsk)
--__attribute__((alias("vtime_account_kernel")));
--EXPORT_SYMBOL_GPL(vtime_account_irq_exit);
-+void vtime_account_softirq(struct task_struct *tsk)
-+{
-+	u64 delta = vtime_delta();
-+
-+	S390_lowcore.softirq_timer += delta;
-+
-+	virt_timer_forward(delta);
-+}
-+EXPORT_SYMBOL_GPL(vtime_account_softirq);
-+
-+void vtime_account_hardirq(struct task_struct *tsk)
-+{
-+	u64 delta = vtime_delta();
-+
-+	S390_lowcore.hardirq_timer += delta;
- 
-+	virt_timer_forward(delta);
-+}
-+EXPORT_SYMBOL_GPL(vtime_account_hardirq);
- 
- /*
-  * Sorted add to a list. List is linear searched until first bigger
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index a042250ecbfe..6fa81cc33fec 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -426,7 +426,6 @@ void vtime_task_switch(struct task_struct *prev)
-  * time spent by the CPU when it's in low power mode) must override
-  * vtime_account().
+ static u64 irqtime_tick_accounted(u64 maxtime)
+ {
+@@ -428,9 +454,11 @@ void vtime_task_switch(struct task_struct *prev)
   */
--#ifndef __ARCH_HAS_VTIME_ACCOUNT
  void vtime_account_irq_enter(struct task_struct *tsk)
  {
- 	if (hardirq_count()) {
-@@ -452,7 +451,6 @@ void vtime_account_irq_exit(struct task_struct *tsk)
- 	}
- }
- EXPORT_SYMBOL_GPL(vtime_account_irq_exit);
--#endif /* __ARCH_HAS_VTIME_ACCOUNT */
+-	if (hardirq_count()) {
++	WARN_ON_ONCE(in_task());
++
++	if (hardirq_count() > HARDIRQ_OFFSET) {
+ 		vtime_account_hardirq(tsk);
+-	} else if (in_serving_softirq()) {
++	} else if (hardirq_count() && in_serving_softirq()) {
+ 		vtime_account_softirq(tsk);
+ 	} else if (is_idle_task(tsk)) {
+ 		vtime_account_idle(tsk);
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 617009ccd82c..24254c41bb7c 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -315,9 +315,9 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+ 	current->flags &= ~PF_MEMALLOC;
  
- void cputime_adjust(struct task_cputime *curr, struct prev_cputime *prev,
- 		    u64 *ut, u64 *st)
+ 	pending = local_softirq_pending();
+-	account_irq_enter_time(current);
+ 
+ 	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
++	account_irq_enter_time(current);
+ 	in_hardirq = lockdep_softirq_start();
+ 
+ restart:
 -- 
 2.25.1
 
