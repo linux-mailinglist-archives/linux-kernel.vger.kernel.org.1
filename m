@@ -2,146 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5092C4689
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531662C469A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731223AbgKYRTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:19:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729631AbgKYRTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:19:23 -0500
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F59E2064B;
-        Wed, 25 Nov 2020 17:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606324762;
-        bh=7250Ty5ORa8tN05ZttUM65BiJBw+Rs1+3H/VHisV7T8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Adl6AbjmXBjrLMIeQEPfbLNZipqiJ0Wnp748mP4roLYBRnmBB7woCoFG3lRpPetdg
-         +FZzhMyXKuDaS1FKL5A2fOYAzrX/Ls3sSztUB3vYiYbIHlHppNC8z+5JSq+bqQp5tn
-         mINjBsdMu4vdHyUEkUbNUO/cQpy/5IRn2j5P2j8k=
-Date:   Thu, 26 Nov 2020 02:19:18 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v0 10/19] x86/kprobes: Convert to insn_decode()
-Message-Id: <20201126021918.4401f987cf94a884511dd46e@kernel.org>
-In-Reply-To: <20201124101952.7909-11-bp@alien8.de>
-References: <20201124101952.7909-1-bp@alien8.de>
-        <20201124101952.7909-11-bp@alien8.de>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1732671AbgKYRYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:24:51 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8038 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730293AbgKYRYv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 12:24:51 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ch76f5PP0zhcqL;
+        Thu, 26 Nov 2020 01:24:26 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 26 Nov 2020 01:24:37 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <lenb@kernel.org>, <rjw@rjwysocki.net>,
+        <gregkh@linuxfoundation.org>, <tglx@linutronix.de>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <linux-acpi@vger.kernel.org>,
+        <maz@kernel.org>, "John Garry" <john.garry@huawei.com>
+Subject: [PATCH v3 0/5] Support managed interrupts for platform devices
+Date:   Thu, 26 Nov 2020 01:20:36 +0800
+Message-ID: <1606324841-217570-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 11:19:43 +0100
-Borislav Petkov <bp@alien8.de> wrote:
+So far, managed interrupts are only used for PCI MSIs. This series adds
+platform device support for managed interrupts. Initially this topic was
+discussed at [0].
 
-> From: Borislav Petkov <bp@suse.de>
-> 
-> Simplify code, no functional changes.
+The method to enable managed interrupts is to allocate a group of IRQs for
+the device, and then switch the interrupts to managed - this is done
+through new function irq_update_affinity_desc().
 
-You've made a functional change. Improve decoding error check :)
-Anyway, this looks good to me.
+Function devm_platform_get_irqs_affinity() is added as a helper to manage
+this work, such that we don't need to export irq_update_affinity_desc() or
+irq_create_affinity_masks().
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+In the devm_platform_get_irqs_affinity() release call a new platform
+method is used to "put" an irq. The reason for this is that per-irq
+mapping (and irq_desc) needs to be recreated anew for re-probing the LLDD,
+such that we don't attempt to reconfigure the managed or any other flag
+for an irq_desc.
 
-Thank you!
+For now, the HiSilicon SAS v2 hw driver is switched over. This is used
+in the D05 dev board.
 
-> 
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> ---
->  arch/x86/kernel/kprobes/core.c | 17 +++++++++++------
->  arch/x86/kernel/kprobes/opt.c  |  9 +++++++--
->  2 files changed, 18 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-> index 547c7abb39f5..43d4a3056d21 100644
-> --- a/arch/x86/kernel/kprobes/core.c
-> +++ b/arch/x86/kernel/kprobes/core.c
-> @@ -285,6 +285,8 @@ static int can_probe(unsigned long paddr)
->  	/* Decode instructions */
->  	addr = paddr - offset;
->  	while (addr < paddr) {
-> +		int ret;
-> +
->  		/*
->  		 * Check if the instruction has been modified by another
->  		 * kprobe, in which case we replace the breakpoint by the
-> @@ -296,8 +298,10 @@ static int can_probe(unsigned long paddr)
->  		__addr = recover_probed_instruction(buf, addr);
->  		if (!__addr)
->  			return 0;
-> -		kernel_insn_init(&insn, (void *)__addr, MAX_INSN_SIZE);
-> -		insn_get_length(&insn);
-> +
-> +		ret = insn_decode(&insn, (void *)__addr, MAX_INSN_SIZE, INSN_MODE_KERN);
-> +		if (ret < 0)
-> +			return 0;
->  
->  		/*
->  		 * Another debugging subsystem might insert this breakpoint.
-> @@ -340,8 +344,8 @@ static int is_IF_modifier(kprobe_opcode_t *insn)
->  int __copy_instruction(u8 *dest, u8 *src, u8 *real, struct insn *insn)
->  {
->  	kprobe_opcode_t buf[MAX_INSN_SIZE];
-> -	unsigned long recovered_insn =
-> -		recover_probed_instruction(buf, (unsigned long)src);
-> +	unsigned long recovered_insn = recover_probed_instruction(buf, (unsigned long)src);
-> +	int ret;
->  
->  	if (!recovered_insn || !insn)
->  		return 0;
-> @@ -351,8 +355,9 @@ int __copy_instruction(u8 *dest, u8 *src, u8 *real, struct insn *insn)
->  			MAX_INSN_SIZE))
->  		return 0;
->  
-> -	kernel_insn_init(insn, dest, MAX_INSN_SIZE);
-> -	insn_get_length(insn);
-> +	ret = insn_decode(insn, dest, MAX_INSN_SIZE, INSN_MODE_KERN);
-> +	if (ret < 0)
-> +		return 0;
->  
->  	/* We can not probe force emulate prefixed instruction */
->  	if (insn_has_emulate_prefix(insn))
-> diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
-> index 041f0b50bc27..4d67571249e1 100644
-> --- a/arch/x86/kernel/kprobes/opt.c
-> +++ b/arch/x86/kernel/kprobes/opt.c
-> @@ -299,6 +299,8 @@ static int can_optimize(unsigned long paddr)
->  	addr = paddr - offset;
->  	while (addr < paddr - offset + size) { /* Decode until function end */
->  		unsigned long recovered_insn;
-> +		int ret;
-> +
->  		if (search_exception_tables(addr))
->  			/*
->  			 * Since some fixup code will jumps into this function,
-> @@ -308,8 +310,11 @@ static int can_optimize(unsigned long paddr)
->  		recovered_insn = recover_probed_instruction(buf, addr);
->  		if (!recovered_insn)
->  			return 0;
-> -		kernel_insn_init(&insn, (void *)recovered_insn, MAX_INSN_SIZE);
-> -		insn_get_length(&insn);
-> +
-> +		ret = insn_decode(&insn, (void *)recovered_insn, MAX_INSN_SIZE, INSN_MODE_KERN);
-> +		if (ret < 0)
-> +			return 0;
-> +
->  		/* Another subsystem puts a breakpoint */
->  		if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
->  			return 0;
-> -- 
-> 2.21.0
-> 
+Performance gain observed for 6x SAS SSDs is ~357K -> 420K IOPs for fio read.
 
+[0] https://lore.kernel.org/lkml/84a9411b-4ae3-1928-3d35-1666f2687ec8@huawei.com/
+
+Changes since v2:
+- Update genirq change as follows:
+ - Handle when the irq is started, active, or already managed
+ - Reject update when CONFIG_GENERIC_IRQ_RESERVATION_MODE is set
+- Revamp platform.c API as follows:
+ - Make it devm type
+ - Add platform_put_irq() and associated change in ACPI code to allow irq
+   resource to be reset
+ - Unmap irqs for driver removal
+ - Change API to accept min and max vectors
+
+John Garry (5):
+  genirq/affinity: Add irq_update_affinity_desc()
+  ACPI: Make acpi_dev_irqresource_disabled() public
+  driver core: platform: Add platform_put_irq()
+  Driver core: platform: Add devm_platform_get_irqs_affinity()
+  scsi: hisi_sas: Expose HW queues for v2 hw
+
+ drivers/acpi/resource.c                |   2 +-
+ drivers/base/platform.c                | 126 +++++++++++++++++++++++++
+ drivers/scsi/hisi_sas/hisi_sas.h       |   4 +
+ drivers/scsi/hisi_sas/hisi_sas_main.c  |  11 +++
+ drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |  68 ++++++++++---
+ include/linux/acpi.h                   |   5 +
+ include/linux/interrupt.h              |   8 ++
+ include/linux/platform_device.h        |   6 ++
+ kernel/irq/manage.c                    |  63 +++++++++++++
+ 9 files changed, 279 insertions(+), 14 deletions(-)
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.26.2
+
