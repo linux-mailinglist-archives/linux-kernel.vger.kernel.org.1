@@ -2,172 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6332C47E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:48:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C56672C47E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732559AbgKYSsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 13:48:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731016AbgKYSsM (ORCPT
+        id S1731126AbgKYStW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 13:49:22 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:47928 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730416AbgKYStV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 13:48:12 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B0CC061A51
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 10:48:12 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id d9so5641181qke.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 10:48:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ry8PSGCSfmuMoqDc/F+BQpmRt+JWuXMWpfH2F4VC6vI=;
-        b=Z2pVQJJvie3+Zppe6BMy7zZEWYSGPOkmWzQu4j7iWApXVYJemfZ9qEAn502TivEh0l
-         QDorChwhbgtJz6/quAdhiDL7QfN50PNHT/Y4kSP0Mv8kTfVqFLyTYfxQPtYQK1qfC+30
-         hCljrKvmdn3N1Eq+sphsiv6lnCWm1WAI1xVvAAw831rngQvjYSr9qcnuk2EbTFFWkK13
-         nhtcUqOter1nWXMjxt6fnXG0MjkvISIfLikN77bK3/05oCnWH9FIoSNlZS0h37aoh7Oj
-         akQkHFD58ynTLn2OGPl3qhk44iBu86YqVv4gw3p1m2k87+XDsu/jBEHh2n6+rxmKgWUA
-         34Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ry8PSGCSfmuMoqDc/F+BQpmRt+JWuXMWpfH2F4VC6vI=;
-        b=eTNiZMc6aD96D9mtPhFVX4DuWELudv5IKzN1JH11Nx+dr+oizFU7IInuQcl2A1cpPe
-         IxaSU96tztPNMr5MXu5Aec+F6uo39NM9yBFYaI5vbYQ0Ujrg1nUFJ+DVCBiWRUR9KhD7
-         FH8x3kMyhDtjFRNqWgADbXWud0p0+8BS6ccMGdFK1TDhntCChNmQFYJofSEqAIo3BbM2
-         8KhX/GEMemE3ID15K7mSUbFjWgGmSA8ngN/J6mttf/A9CaptiwTzUKMWueqzQXlI/et/
-         6n4vBcPYrnJBmbCXTear5gj3DHJa8yCQvyh/SkPQrNtQBDojorSLFKexSM+kPAgCgkeh
-         /AWg==
-X-Gm-Message-State: AOAM530LZfyJfdFghZt9z5Drk4yPENrO2r/gL2OtTCf4JTBQad83QZ03
-        54161OiCk667YGnI7mgr5KdXl6uVHb+5EgByUxmcRg==
-X-Google-Smtp-Source: ABdhPJwYA+tsyCDUh48RpqbN0YTdmhHLCkvA1vhatub9+hran8ZOWDL0Hc0poQEstLRqpeQeDkWdK+v8evLCHiByMOw=
-X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr238776qkm.231.1606330091334;
- Wed, 25 Nov 2020 10:48:11 -0800 (PST)
+        Wed, 25 Nov 2020 13:49:21 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1khzqx-00058N-FB; Wed, 25 Nov 2020 18:49:19 +0000
+Subject: Re: [PATCH] dma-mapping: Fix sizeof() mismatch on tsk allocation
+To:     Christoph Hellwig <hch@lst.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201125140523.1880669-1-colin.king@canonical.com>
+ <a6c5e5ed9a66485da301c1e91b56ccc7@hisilicon.com>
+ <20201125182941.GB10377@lst.de>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <cf79f1ba-aeba-6237-81c8-ca7efc1425e2@canonical.com>
+Date:   Wed, 25 Nov 2020 18:49:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <00000000000041019205b4c4e9ad@google.com> <b134c098-2f34-15ee-cfec-2103a12da326@hartkopp.net>
-In-Reply-To: <b134c098-2f34-15ee-cfec-2103a12da326@hartkopp.net>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 25 Nov 2020 19:48:00 +0100
-Message-ID: <CACT4Y+aAtWO5r+VCxqN0UFn-S1OEvDe5QS3r44kXSeA7mfhUMw@mail.gmail.com>
-Subject: Re: BUG: receive list entry not found for dev vxcan1, id 002, mask C00007FF
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     syzbot <syzbot+381d06e0c8eaacb8706f@syzkaller.appspotmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201125182941.GB10377@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 5:04 PM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->
-> Hello all,
->
-> AFAICS the problems are caused by the WARN() statement here:
->
-> https://elixir.bootlin.com/linux/v5.10-rc4/source/net/can/af_can.c#L546
->
-> The idea was to check whether CAN protocol implementations work
-> correctly on their filter lists.
->
-> With the fault injection it seem like we're getting a race between
-> closing the socket and removing the netdevice.
->
-> This seems to be very seldom but it does not break anything.
->
-> Would removing the WARN(1) or replacing it with pr_warn() be ok to close
-> this issue?
+On 25/11/2020 18:29, Christoph Hellwig wrote:
+> I'll fold this one in as well.
+> 
+OK, so two SoB's disappear?
 
-Hi Oliver,
-
-Yes, this is the intended way to deal with this:
-https://elixir.bootlin.com/linux/v5.10-rc5/source/include/asm-generic/bug.h#L75
-
-Maybe a good opportunity to add some explanatory comment as well
-regarding how it should not happen but can.
-
-Thanks for looking into this.
-
-
-
-
-> On 23.11.20 12:58, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    c2e7554e Merge tag 'gfs2-v5.10-rc4-fixes' of git://git.ker..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=117f03ba500000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=75292221eb79ace2
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=381d06e0c8eaacb8706f
-> > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+381d06e0c8eaacb8706f@syzkaller.appspotmail.com
-> >
-> > ------------[ cut here ]------------
-> > BUG: receive list entry not found for dev vxcan1, id 002, mask C00007FF
-> > WARNING: CPU: 1 PID: 12946 at net/can/af_can.c:546 can_rx_unregister+0x5a4/0x700 net/can/af_can.c:546
-> > Modules linked in:
-> > CPU: 1 PID: 12946 Comm: syz-executor.1 Not tainted 5.10.0-rc4-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > RIP: 0010:can_rx_unregister+0x5a4/0x700 net/can/af_can.c:546
-> > Code: 8b 7c 24 78 44 8b 64 24 68 49 c7 c5 20 ac 56 8a e8 01 6c 97 f9 44 89 f9 44 89 e2 4c 89 ee 48 c7 c7 60 ac 56 8a e8 66 af d3 00 <0f> 0b 48 8b 7c 24 28 e8 b0 25 0f 01 e9 54 fb ff ff e8 26 e0 d8 f9
-> > RSP: 0018:ffffc90017e2fb38 EFLAGS: 00010286
-> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> > RDX: ffff8880147a8000 RSI: ffffffff8158f3c5 RDI: fffff52002fc5f59
-> > RBP: 0000000000000118 R08: 0000000000000001 R09: ffff8880b9f2011b
-> > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
-> > R13: ffff8880254c0000 R14: 1ffff92002fc5f6e R15: 00000000c00007ff
-> > FS:  0000000001ddc940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000001b2f121000 CR3: 00000000152c0000 CR4: 00000000001506e0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >   isotp_notifier+0x2a7/0x540 net/can/isotp.c:1303
-> >   call_netdevice_notifier net/core/dev.c:1735 [inline]
-> >   call_netdevice_unregister_notifiers+0x156/0x1c0 net/core/dev.c:1763
-> >   call_netdevice_unregister_net_notifiers net/core/dev.c:1791 [inline]
-> >   unregister_netdevice_notifier+0xcd/0x170 net/core/dev.c:1870
-> >   isotp_release+0x136/0x600 net/can/isotp.c:1011
-> >   __sock_release+0xcd/0x280 net/socket.c:596
-> >   sock_close+0x18/0x20 net/socket.c:1277
-> >   __fput+0x285/0x920 fs/file_table.c:281
-> >   task_work_run+0xdd/0x190 kernel/task_work.c:151
-> >   tracehook_notify_resume include/linux/tracehook.h:188 [inline]
-> >   exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
-> >   exit_to_user_mode_prepare+0x17e/0x1a0 kernel/entry/common.c:191
-> >   syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:266
-> >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > RIP: 0033:0x417811
-> > Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 a4 1a 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-> > RSP: 002b:000000000169fbf0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-> > RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000417811
-> > RDX: 0000000000000000 RSI: 00000000000013b7 RDI: 0000000000000003
-> > RBP: 0000000000000001 R08: 00000000acabb3b7 R09: 00000000acabb3bb
-> > R10: 000000000169fcd0 R11: 0000000000000293 R12: 000000000118c9a0
-> > R13: 000000000118c9a0 R14: 00000000000003e8 R15: 000000000118bf2c
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/b134c098-2f34-15ee-cfec-2103a12da326%40hartkopp.net.
