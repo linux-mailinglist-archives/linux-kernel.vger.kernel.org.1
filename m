@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BBF2C4990
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 369D72C4993
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730708AbgKYVIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:08:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35550 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729981AbgKYVIb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:08:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606338510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=psNc8LzBcxw8kUam3kKQdVItytHGI1GRkmJuwrDi98U=;
-        b=YLLaq3eiXVjVNwf01LpZZPP2rE7VpEO9sQACaCRRk/aBt+a/crb08JOv1HpoHWoyIkZlZc
-        9ynKSYX88JdYpVw/W2acQ00RYRrB0Q65DzK79zrE3GlQsrHz3JRQ9lwSttMq3rKN3HcYiQ
-        HpD2nbKV32QgaKeK+H1A2B+Xo99npL0=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-prrUQzLKOIW5f4c6EILLSg-1; Wed, 25 Nov 2020 16:08:28 -0500
-X-MC-Unique: prrUQzLKOIW5f4c6EILLSg-1
-Received: by mail-wr1-f70.google.com with SMTP id h13so1222725wrr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:08:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=psNc8LzBcxw8kUam3kKQdVItytHGI1GRkmJuwrDi98U=;
-        b=l81zN5rFOFP8oMPCDS0ho0XmOJ77NzRQltMqU7XoNunGfMviYFoSlgiMAMYUxDexks
-         oaBx2WKTqkzpHPar7922+6e6uMGV3xGdprEIHnuZz9eDTSB114i0ZPEOSFRA3upmNQb6
-         4v6Fk1i3GQtebxXRTEpqaN9LgEuyEeYSl45XDtolrztGkIG6YalpN7cNmyBDPM++DMB6
-         12/vF5aBnqAnEUPybNhzD0dM8Id1CKRa/j/IG+km8fEvpv8wH4EAA706DoH5Da4r9+fr
-         VQ2tSQdPvsfvVHpPLvOikZDIFF3DAoJ1ynb+F2qiRYBWyGnHe+S2q7gYCKFGV7VsXxP+
-         nHlw==
-X-Gm-Message-State: AOAM530ZYp5gGxQ0yj9W9qTJZsxnEgjDpz80zc0ZZtLIC+QVs+lk1zi6
-        nVbXPj2EfR1gv3GjTyQUzWZOk7X3Bj1OJ8m9PpRYBuJBb1BDU/50fAvyszIYmRnOEN0LBvQ1QSx
-        JQCplBVlCg1i3zXxaxFRWk2nX
-X-Received: by 2002:a05:600c:4153:: with SMTP id h19mr6081619wmm.8.1606338507767;
-        Wed, 25 Nov 2020 13:08:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyJJV4yT5PMAKTeWWZqlzp3GeCHFDP+pqbxlJx5ZIsbRlvWhLEYqihrea4dY+OqIZkl+1a5Ew==
-X-Received: by 2002:a05:600c:4153:: with SMTP id h19mr6081603wmm.8.1606338507561;
-        Wed, 25 Nov 2020 13:08:27 -0800 (PST)
-Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
-        by smtp.gmail.com with ESMTPSA id h2sm6215789wrv.76.2020.11.25.13.08.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 13:08:26 -0800 (PST)
-Date:   Wed, 25 Nov 2020 16:08:23 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Tomas Winkler <tomas.winkler@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org, Wang Yu <yu1.wang@intel.com>,
-        Liu Shuo <shuo.a.liu@intel.com>,
-        virtio-dev@lists.oasis-open.org
-Subject: Re: [char-misc-next 13/13] mei: virtio: virtualization frontend
- driver
-Message-ID: <20201125160326-mutt-send-email-mst@kernel.org>
-References: <20200818115147.2567012-1-tomas.winkler@intel.com>
- <20200818115147.2567012-14-tomas.winkler@intel.com>
+        id S1730963AbgKYVKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:10:00 -0500
+Received: from mailout07.rmx.de ([94.199.90.95]:47693 "EHLO mailout07.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729981AbgKYVJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 16:09:59 -0500
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout07.rmx.de (Postfix) with ESMTPS id 4ChD6q59sWzBvCq;
+        Wed, 25 Nov 2020 22:09:55 +0100 (CET)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4ChD6Z68Y1z2xFb;
+        Wed, 25 Nov 2020 22:09:42 +0100 (CET)
+Received: from n95hx1g2.localnet (192.168.54.19) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 25 Nov
+ 2020 22:08:41 +0100
+From:   Christian Eggers <ceggers@arri.de>
+To:     <Tristram.Ha@microchip.com>
+CC:     <olteanv@gmail.com>, <kuba@kernel.org>, <andrew@lunn.ch>,
+        <richardcochran@gmail.com>, <robh+dt@kernel.org>,
+        <vivien.didelot@gmail.com>, <davem@davemloft.net>,
+        <kurt.kanzenbach@linutronix.de>, <george.mccollister@gmail.com>,
+        <marex@denx.de>, <helmut.grohne@intenta.de>,
+        <pbarker@konsulko.com>, <Codrin.Ciubotariu@microchip.com>,
+        <Woojung.Huh@microchip.com>, <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 00/12] net: dsa: microchip: PTP support for KSZ956x
+Date:   Wed, 25 Nov 2020 22:08:39 +0100
+Message-ID: <3569829.EPWo3g8d0Q@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <BYAPR11MB35582F880B533EB2EE0CDD1DECE00@BYAPR11MB3558.namprd11.prod.outlook.com>
+References: <20201118203013.5077-1-ceggers@arri.de> <2452899.Bt8PnbAPR0@n95hx1g2> <BYAPR11MB35582F880B533EB2EE0CDD1DECE00@BYAPR11MB3558.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200818115147.2567012-14-tomas.winkler@intel.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.19]
+X-RMX-ID: 20201125-220942-4ChD6Z68Y1z2xFb-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 02:51:47PM +0300, Tomas Winkler wrote:
-> +#ifndef VIRTIO_ID_MEI
-> +#define VIRTIO_ID_MEI 0xFFFE /* virtio mei */
-> +#endif
+I need some help from Microchip, please read below.
 
-Just noticed now that this driver landed upstream.  Can I ask that you
-guys please register IDs with the virtio TC and not just pick a number
-at random? In particular this is way outside allowed range.
+On Thursday, 19 November 2020, 19:51:15 CET, Tristram.Ha@microchip.com wrote:
+> There is one more requirement that is a little difficult to do.  The calculated peer delay
+> needs to be programmed in hardware register, but the regular PTP stack has no way to
+> send that command.  I think the driver has to do its own calculation by snooping on the
+> Pdelay_Req/Pdelay_Resp/Pdelay_Resp_Follow_Up messages.
 
-IDs should also be listed in include/uapi/linux/virtio_ids.h
+In an (offline) discussion with Vladimir we discovered, that the KSZ switch
+behaves different as ptp4l expects: 
 
-If people just pick random numbers like this collistions are unavoidable.
+The KSZ switch forwards PTP (e.g. SYNC) messages in hardware (with updating
+the correction field). For this, the peer delays need be configured for each
+port.
 
-List of IDs is part of virtio spec, chapter "Device Types".
+ptp4l in turn expects to do the forwarding in software (for the P2P_TC clock
+configuration). For this, no hardware configuration of the peer delay is
+necessary. But due to limitations of currently available hardware, this TC
+forwarding is currently only supported for 2 step clocks, as a one-step clock
+would probably fully replace the originTimestamp field (similar as a BC, but
+not as a TC).
 
-Please do this change now before this goes out to production!
+Vladimir suggested to configure an ACL in the KSZ switch to block forwarding
+of PTP messages between the user ports and to run ptp4l as BC. My idea is to
+simply block forwarding of UDP messages with destination ports 319+320 and
+L2 messages with the PTP Ether-Type.
 
-Thanks!
+I installed the following ACL (for UDP) in the Port ACL Access registers 0-F:
+|_0__1__2__3__4__5__6__7__8__9__A__B__C__D__E__F
+| 00 39 01 40 01 3F 42 22 00 00 00 60 00 00 00 01
+ACL index: 0
 
--- 
-MST
+Match: 
+- MD=11 (L4)
+- ENB=10 (UDP ports)
+- S/D=0 (dst)
+- EQ=1 (equal)
+- MAX_PORT=320
+- MIN_PORT=319
+- PC=01 (min or max)
+- PRO=17 (UDP, don't care?)
+- FME=0 (disabled)
+
+Action:
+- PM=0 (disabled)
+- P=0 (don't care)
+- RPE=0 (disabled)
+- RP=0 (don't care)
+- MM=11 (replace)
+- PORT_FWD_MAP: all ports to 0
+
+Processing entry:
+- Ruleset=0x0001
+- FRN=0
+
+Unfortunately, with this configuration PTP messages are still forwarded from
+port 1 to port 2. Although I was successful in blocking other communication
+(e.g. by MAC address), the matching rules above seem not to work. Is there an
+error in the ACL, or is forwarding of PTP traffic independent of configured
+ACLs?
+
+regards
+Christian
+
+
 
