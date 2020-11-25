@@ -2,143 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50AC2C44AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC84C2C44A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730667AbgKYQJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:09:54 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:23788 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730443AbgKYQJy (ORCPT
+        id S1730641AbgKYQGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:06:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730449AbgKYQGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:09:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606320589;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:From:References:To:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=LjnFeCgpj60B5cvTEJDsWgPSYIro4/2CufStGHdmH4k=;
-        b=UYwpqHYHYLxWj3O+xEdcpa4jcY7ruU8RYtEiJnGq/ZS+Ut/U428b1Kk7csmxWxVtsj
-        38JiQHfIlZ9lhymDJ54mdhPbhuTROPX8Z+35+xvnocNfg8yaBhLzSiZIkdVcAfkX3eqx
-        oPsDahPURxiwMH4fEZVHPSEwXqDSb8vng52VJMUIFFa3nQdI+qYZOsLq3qesUS2lz0oG
-        TXi0YlK094I25FgAfkl8fxwg34Ctt+1aw8Z6UbU9bt5HQhKU4dEuHp2R2sQzJNpRw4PM
-        Hp5g7rN18BpJq2TMv4x2mGmW590RAg/ObyweFiIbUUL2svOUpx4UKQZ1lGmrB3hDPqor
-        3ENg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR+J8xrzF0="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.10.137]
-        by smtp.strato.de (RZmta 47.3.4 SBL|AUTH)
-        with ESMTPSA id n07f3bwAPG3mq4W
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Wed, 25 Nov 2020 17:03:48 +0100 (CET)
-Subject: Re: BUG: receive list entry not found for dev vxcan1, id 002, mask
- C00007FF
-To:     syzbot <syzbot+381d06e0c8eaacb8706f@syzkaller.appspotmail.com>,
-        davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000041019205b4c4e9ad@google.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <b134c098-2f34-15ee-cfec-2103a12da326@hartkopp.net>
-Date:   Wed, 25 Nov 2020 17:03:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 25 Nov 2020 11:06:11 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07A5C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 08:05:58 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id k4so3129311edl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 08:05:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=sFDVHTtkdm3pyH75COND6ic4pQck9okc86/RtBFvaVI=;
+        b=hMOkWMlqnjT5T3KheRXSvbIdWc0NiEKFzBE+kepT432F8AjcasejaLcbsYL3gRcK6J
+         ktpTpW0CXLElE2ZL7r4kx+Sf/JXLCyemIYnO5j9/Gtw70XK0s4XXnBiaQW1OpYZgcm0q
+         dGisF1IsRKDGTQLvcv56O+lvXfQSSNi1VCt5gnxq2iutLJThlpEoZzYNE2JMcFjo9gJ1
+         qon852mKOuNW3HCJUF3xnnG6FWaC8o5Tn4RA6g/rPsz7N8e/gK1ml4P2l5sPsFQaq5Rt
+         a9Tkd8knovVbgYgj9lrrk9Cc7sHyCadeUeHiOh3wMvr2n8O1sX2mb1g3YhHY5xXTyHGc
+         RdQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=sFDVHTtkdm3pyH75COND6ic4pQck9okc86/RtBFvaVI=;
+        b=MxrFdRgXGG+0KhskHUuWI7XrtJ9N129LxtSbbP7bwMAsCUskQmTAD1ZtLl1DEKAyWI
+         MQmTbNM1J6N9bYU5TRF7loVfPcPfU2WJifW1fCEEXIL6Ne/gMzDEYu2iuW2Na/6UHX2V
+         Zj4DTdttnfzW++9uUp/uUrU3CbWwc4rHXqLb/smhQdWLsmKTFcGKBlF+4dim7NDFprbk
+         rthe65lCLe5+5bB2jQiUj5odPo2RA43Gx1e0vVveKLtPvHnLzj01FDzSKncXFkqMCdKM
+         P0CA60uuUaonS/gmZ9SzIph2A81YZSwPCSnP3EVB+p6uPrQV++vJp1GQ6sXTBiibCzou
+         x+Xw==
+X-Gm-Message-State: AOAM531HMjS+jq1TWYuBEQmH+CQHQEffRsIPw+W2u81VBRhXKnnfqXi1
+        pt73aOs6E0p81nh2vt6ZxsD/62gfdeSuk5zZLSOhJA==
+X-Google-Smtp-Source: ABdhPJy6ob6fmz+u3HhkWotLkhYtQfkABfyx5NZ0czbNVWC4DVmL/HNnVx5U7U6w0UNe2yt5Khw04Spvyi6e7OSzN8E=
+X-Received: by 2002:a05:6402:22e3:: with SMTP id dn3mr4377399edb.136.1606320357550;
+ Wed, 25 Nov 2020 08:05:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <00000000000041019205b4c4e9ad@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a54:3cc7:0:0:0:0:0 with HTTP; Wed, 25 Nov 2020 08:05:56
+ -0800 (PST)
+X-Originating-IP: [5.35.99.104]
+In-Reply-To: <20201125150932.1150619-3-lvivier@redhat.com>
+References: <20201125150932.1150619-1-lvivier@redhat.com> <20201125150932.1150619-3-lvivier@redhat.com>
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+Date:   Wed, 25 Nov 2020 19:05:56 +0300
+Message-ID: <CAOJe8K1Q7sGf67bdj-2Mthkj4XNR4fOSskV1dyh62AdzefhpAQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] powerpc/pseries: pass MSI affinity to irq_create_mapping()
+To:     Laurent Vivier <lvivier@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Paul Mackerras <paulus@samba.org>, Greg Kurz <groug@kaod.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-block@vger.kernel.org,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all,
+On 11/25/20, Laurent Vivier <lvivier@redhat.com> wrote:
+> With virtio multiqueue, normally each queue IRQ is mapped to a CPU.
+>
+> But since commit 0d9f0a52c8b9f ("virtio_scsi: use virtio IRQ affinity")
+> this is broken on pseries.
 
-AFAICS the problems are caused by the WARN() statement here:
+Please add "Fixes" tag.
 
-https://elixir.bootlin.com/linux/v5.10-rc4/source/net/can/af_can.c#L546
+Thanks!
 
-The idea was to check whether CAN protocol implementations work 
-correctly on their filter lists.
-
-With the fault injection it seem like we're getting a race between 
-closing the socket and removing the netdevice.
-
-This seems to be very seldom but it does not break anything.
-
-Would removing the WARN(1) or replacing it with pr_warn() be ok to close 
-this issue?
-
-Best regards,
-Oliver
-
-On 23.11.20 12:58, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    c2e7554e Merge tag 'gfs2-v5.10-rc4-fixes' of git://git.ker..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=117f03ba500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=75292221eb79ace2
-> dashboard link: https://syzkaller.appspot.com/bug?extid=381d06e0c8eaacb8706f
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+381d06e0c8eaacb8706f@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> BUG: receive list entry not found for dev vxcan1, id 002, mask C00007FF
-> WARNING: CPU: 1 PID: 12946 at net/can/af_can.c:546 can_rx_unregister+0x5a4/0x700 net/can/af_can.c:546
-> Modules linked in:
-> CPU: 1 PID: 12946 Comm: syz-executor.1 Not tainted 5.10.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:can_rx_unregister+0x5a4/0x700 net/can/af_can.c:546
-> Code: 8b 7c 24 78 44 8b 64 24 68 49 c7 c5 20 ac 56 8a e8 01 6c 97 f9 44 89 f9 44 89 e2 4c 89 ee 48 c7 c7 60 ac 56 8a e8 66 af d3 00 <0f> 0b 48 8b 7c 24 28 e8 b0 25 0f 01 e9 54 fb ff ff e8 26 e0 d8 f9
-> RSP: 0018:ffffc90017e2fb38 EFLAGS: 00010286
-> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: ffff8880147a8000 RSI: ffffffff8158f3c5 RDI: fffff52002fc5f59
-> RBP: 0000000000000118 R08: 0000000000000001 R09: ffff8880b9f2011b
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
-> R13: ffff8880254c0000 R14: 1ffff92002fc5f6e R15: 00000000c00007ff
-> FS:  0000000001ddc940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000001b2f121000 CR3: 00000000152c0000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   isotp_notifier+0x2a7/0x540 net/can/isotp.c:1303
->   call_netdevice_notifier net/core/dev.c:1735 [inline]
->   call_netdevice_unregister_notifiers+0x156/0x1c0 net/core/dev.c:1763
->   call_netdevice_unregister_net_notifiers net/core/dev.c:1791 [inline]
->   unregister_netdevice_notifier+0xcd/0x170 net/core/dev.c:1870
->   isotp_release+0x136/0x600 net/can/isotp.c:1011
->   __sock_release+0xcd/0x280 net/socket.c:596
->   sock_close+0x18/0x20 net/socket.c:1277
->   __fput+0x285/0x920 fs/file_table.c:281
->   task_work_run+0xdd/0x190 kernel/task_work.c:151
->   tracehook_notify_resume include/linux/tracehook.h:188 [inline]
->   exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
->   exit_to_user_mode_prepare+0x17e/0x1a0 kernel/entry/common.c:191
->   syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:266
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x417811
-> Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 a4 1a 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-> RSP: 002b:000000000169fbf0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-> RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000417811
-> RDX: 0000000000000000 RSI: 00000000000013b7 RDI: 0000000000000003
-> RBP: 0000000000000001 R08: 00000000acabb3b7 R09: 00000000acabb3bb
-> R10: 000000000169fcd0 R11: 0000000000000293 R12: 000000000118c9a0
-> R13: 000000000118c9a0 R14: 00000000000003e8 R15: 000000000118bf2c
-> 
-> 
+>
+> The affinity is correctly computed in msi_desc but this is not applied
+> to the system IRQs.
+>
+> It appears the affinity is correctly passed to rtas_setup_msi_irqs() but
+> lost at this point and never passed to irq_domain_alloc_descs()
+> (see commit 06ee6d571f0e ("genirq: Add affinity hint to irq allocation"))
+> because irq_create_mapping() doesn't take an affinity parameter.
+>
+> As the previous patch has added the affinity parameter to
+> irq_create_mapping() we can forward the affinity from rtas_setup_msi_irqs()
+> to irq_domain_alloc_descs().
+>
+> With this change, the virtqueues are correctly dispatched between the CPUs
+> on pseries.
+>
+> BugId: https://bugzilla.redhat.com/show_bug.cgi?id=1702939
+> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+> Reviewed-by: Greg Kurz <groug@kaod.org>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
+>  arch/powerpc/platforms/pseries/msi.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/platforms/pseries/msi.c
+> b/arch/powerpc/platforms/pseries/msi.c
+> index 133f6adcb39c..b3ac2455faad 100644
+> --- a/arch/powerpc/platforms/pseries/msi.c
+> +++ b/arch/powerpc/platforms/pseries/msi.c
+> @@ -458,7 +458,8 @@ static int rtas_setup_msi_irqs(struct pci_dev *pdev, int
+> nvec_in, int type)
+>  			return hwirq;
+>  		}
+>
+> -		virq = irq_create_mapping(NULL, hwirq);
+> +		virq = irq_create_mapping_affinity(NULL, hwirq,
+> +						   entry->affinity);
+>
+>  		if (!virq) {
+>  			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
+> --
+> 2.28.0
+>
+>
