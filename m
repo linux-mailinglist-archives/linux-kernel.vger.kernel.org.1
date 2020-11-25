@@ -2,98 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E052C4674
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B00562C4676
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 18:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732628AbgKYRGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 12:06:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730608AbgKYRGr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 12:06:47 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312D2C0613D4;
-        Wed, 25 Nov 2020 09:06:47 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id w202so2903861pff.10;
-        Wed, 25 Nov 2020 09:06:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rMzUdsLk/Baa1uIcljWMbCJT5T6vm33MNxpq93tgE5w=;
-        b=hCc1qr0lSPWOLc3Y+4oWrRH2TXCVQTYUkX1h+KVwsoGsg9ENaw8awNSU94fnQ4Fbpi
-         73IJdLXv94KLahXpYGZSdTNhwkfu+Umru7nWiUkXkpH4yUzWxLlR+rFdtkw9+rkrnc0c
-         NIsHLsVvpsHTxc1ye4lYM+0e8cwM26CLOef9YIluiLpsrUuQwVFbRW8taLHWwHNfElOs
-         uT4H7+JsIlGSVr5Mb0R0O4uRc+h4xjFf4css7WnzqA3/Suf+kl5gof0liDt3YQ+zaa5d
-         kkSHA96EanrhQRBZehtC4dDAcAFir5yICnNeTiHXSQSeuccO129OUijqRc8iuxNHS0WQ
-         iD6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rMzUdsLk/Baa1uIcljWMbCJT5T6vm33MNxpq93tgE5w=;
-        b=erUl1vR/1Oz8QXoEvCNCZhiZycGNalLwML/HE6XrngyEUvzcyvCInDZzdtFZniSGFZ
-         pgJWxxTI1D85+VI8SqUmy0v26Qka8E/ezLWbgydWYr45eEn8UtHP8oHj6KJWhKdUzvbD
-         VCHHwbs5HXIccWcZnnuWuBy9lmgNmdAjnkn/4pD9xOJiS0yHt4W2x44WuIKn4QpuDXjJ
-         jZAUBPDDO35EZzMquSN4tQ+V2H4i6Hm/PPk73tW5z2RhFNoEU7XBXJiOWtv7dfMs2jYf
-         RBU6/1nhVWFh7nFJBZVI0inLP7tnY+crPDSFO7IpGxF1M8kMOc7PizdlmFnxHOeTbZXj
-         9EoQ==
-X-Gm-Message-State: AOAM531FCM9dhGPaoH1c9pjgYM5V+jZmext2lST/FPgnP/ZJILtonqMu
-        aH39LGFxF5OH1b9PT3Dcg5XrtM6MsN8=
-X-Google-Smtp-Source: ABdhPJyuixgOHHOmbVpj9oxoPoOJiLrDW4uE0K4ChZhpsglAfQuaDkbXVLClAt7jNqomJ+bqkHVduw==
-X-Received: by 2002:aa7:8812:0:b029:199:25e7:4ab7 with SMTP id c18-20020aa788120000b029019925e74ab7mr3479526pfo.30.1606324006683;
-        Wed, 25 Nov 2020 09:06:46 -0800 (PST)
-Received: from [10.230.28.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id q23sm2460183pfg.192.2020.11.25.09.06.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 09:06:45 -0800 (PST)
-Subject: Re: [PATCH] MIPS: No need to check CPU 0 in
- {loongson3,bmips,octeon}_cpu_disable()
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-References: <1606299090-14013-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <31318f42-5b38-215e-bddc-cc77a8a1bc03@gmail.com>
-Date:   Wed, 25 Nov 2020 09:06:43 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.0
+        id S1732641AbgKYRGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 12:06:52 -0500
+Received: from mail.nic.cz ([217.31.204.67]:43224 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732631AbgKYRGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 12:06:51 -0500
+Received: from pc-cznic19.fit.vutbr.cz (unknown [IPv6:2a02:8308:a18b:5500:c82b:1453:c29d:e435])
+        by mail.nic.cz (Postfix) with ESMTPSA id 61C1D142076;
+        Wed, 25 Nov 2020 18:06:48 +0100 (CET)
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Carlos O'Donell <carlos@redhat.com>,
+        Zack Weinberg <zackw@panix.com>, Cyril Hrubis <chrubis@suse.cz>
+Cc:     Dmitry Safonov <dima@arista.com>, Andrei Vagin <avagin@gmail.com>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201030110229.43f0773b@jawa> <20201030135816.GA1790@yuki.lan>
+ <CAKCAbMgemuaG61seKMvhjOHdPCEQJRQBiQgzcf_eO=xm2t+KBw@mail.gmail.com>
+ <87sg9vn40t.fsf@nanos.tec.linutronix.de>
+ <72bbb207-b041-7710-98ad-b08579fe17e4@redhat.com>
+ <87h7qbmqc3.fsf@nanos.tec.linutronix.de>
+ <7bb5837f-1ff6-2b2c-089e-e2441d31ddb2@redhat.com>
+ <87k0v7kwdc.fsf@nanos.tec.linutronix.de>
+ <7a4d7b14-1f0b-4c40-2bd1-2582d8b71868@redhat.com>
+ <87y2jej8mp.fsf@nanos.tec.linutronix.de>
+ <d88ede3f-5f50-24a2-5009-6418f3cfaf4c@redhat.com>
+ <87wnygopen.fsf@nanos.tec.linutronix.de>
+From:   =?UTF-8?B?UGV0ciDFoHBhxI1law==?= <petr.spacek@nic.cz>
+Organization: CZ.NIC
+Subject: Re: [Y2038][time namespaces] Question regarding CLOCK_REALTIME
+ support plans in Linux time namespaces
+Message-ID: <a8f068ff-9512-5530-2f10-d2741495c4a9@nic.cz>
+Date:   Wed, 25 Nov 2020 18:06:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <1606299090-14013-1-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <87wnygopen.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US-large
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/25/2020 2:11 AM, Tiezhu Yang wrote:
-> After commit 9cce844abf07 ("MIPS: CPU#0 is not hotpluggable"),
-> c->hotpluggable is 0 for CPU 0 and it will not generate a control
-> file in sysfs for this CPU:
+On 20. 11. 20 1:14, Thomas Gleixner wrote:
+> On Thu, Nov 19 2020 at 13:37, Carlos O'Donell wrote:
+>> On 11/6/20 7:47 PM, Thomas Gleixner wrote:
+>>> Would CONFIG_DEBUG_DISTORTED_CLOCK_REALTIME be a way to go? IOW,
+>>> something which is clearly in the debug section of the kernel which wont
+>>> get turned on by distros (*cough*) and comes with a description that any
+>>> bug reports against it vs. time correctness are going to be ignored.
+>>
+>> Yes. I would be requiring CONFIG_DEBUG_DISTORTED_CLOCK_REALTIME.
+>>
+>> Let me be clear though, the distros have *+debug kernels for which this
+>> CONFIG_DEBUG_* could get turned on? In Fedora *+debug kernels we enable all
+>> sorts of things like CONFIG_DEBUG_OBJECTS_* and CONFIG_DEBUG_SPINLOCK etc.
+>> etc. etc.
 > 
-> [root@linux loongson]# cat /sys/devices/system/cpu/cpu0/online
-> cat: /sys/devices/system/cpu/cpu0/online: No such file or directory
-> [root@linux loongson]# echo 0 > /sys/devices/system/cpu/cpu0/online
-> bash: /sys/devices/system/cpu/cpu0/online: Permission denied
+> That's why I wrote '(*cough*)'. It's entirely clear to me that this
+> would be enabled for whatever raisins.
 > 
-> So no need to check CPU 0 in {loongson3,bmips,octeon}_cpu_disable(),
-> just remove them.
+>> I would push Fedora/RHEL to ship this in the *+debug kernels. That way I can have
+>> this on for local test/build cycle. Would you be OK with that?
 > 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/cavium-octeon/smp.c | 3 ---
->  arch/mips/kernel/smp-bmips.c  | 3 ---
+> Distros ship a lot of weird things. Though that config would be probably
+> saner than some of the horrors shipped in enterprise production kernels.
+> 
+>> We could have it disabled by default but enabled via proc like
+>> unprivileged_userns_clone was at one point?
+> 
+> Yes, that'd be mandatory. But see below.
+> 
+>> I want to avoid accidental use in Fedora *+debug kernels unless the
+>> developer is actively going to run tests that require time
+>> manipulation e.g. thousands of DNSSEC tests with timeouts [1].
+> 
+> ...
+> 
+>> In case of DNSSEC protocol conversations have real time values in them
+>> which cause "expiration", thus packet captures are useful only if real
+>> time clock reflects values during the original conversation. In our case
+>> packet captures come from real Internet, i.e. we do not have private
+>> keys used to sign the packets, so we cannot change time values.
+>>
+>> This use-case also implies support for settime(): During the course of a
+>> test we shorten time windows where "nothing happens" and server and
+>> client are waiting for an event, e.g. for cache expiration on
+>> client. This window can be hours long so it really _does_ make a
+>> difference. Oh yes, and for these time jumps we need to move monotonic
+>> time as well.
+> 
+> I hope you are aware that the time namespace offsets have to be set
+> _before_ the process starts and can't be changed afterwards,
+> i.e. settime() is not an option.
+> 
+> That might limit the usability for your use case and this can't be
+> changed at all because there might be armed timers and other time
+> related things which would start to go into full confusion mode.
+> 
+> The supported use case is container life migration and that _is_ very
+> careful about restoring time and armed timers and if their user space
+> tools screw it up then they can keep the bits and pieces.
+> 
+> So in order to utilize that you'd have to checkpoint the container,
+> manipulate the offsets and restore it.
+> 
+> The point is that on changing the time offset after the fact the kernel
+> would have to chase _all_ armed timers which belong to that namespace
+> and are related to the affected clock and readjust them to the new
+> distortion of namespace time. Otherwise they might expire way too late
+> (which is kinda ok from a correctness POV, but not what you expect) or
+> too early, which is clearly a NONO. Finding them is not trivial because
+> some of them are part of a syscall and on stack.
+> 
+> What's worse is that if the host's CLOCK_REALTIME is set, then it'd have
+> to go through _all_ time namespaces, adjust the offsets, find all timers
+> of all tasks in each namespace.
+> 
+> Contrary to that the real clock_settime(CLOCK_REALTIME) is not a big
+> problem, simply because all it takes is to change the time and then kick
+> all CPUs to reevaluate their first expiring timer. If the clock jumped
+> backward then they rearm their hardware and are done, if it jumped
+> forward they expire the ones which are affected and all is good.
+> 
+> The original posix timer implementation did not have seperate time bases
+> and on clock_settime() _all_ armed CLOCK_REALTIME timers in the system
+> had to be chased down, reevaluated and readjusted. Guess how well that
+> worked and what kind of limitation that implied.
+> 
+> Aside of this, there are other things, e.g. file times, packet
+> timestamps etc. which are based on CLOCK_REALTIME. What to do about
+> them? Translate these to/from name space time or not? There is a long
+> list of other horrors which are related to that.
+> 
+> So _you_ might say, that you don't care about file times, RTC, timers
+> expiring at the wrong time, packet timestamps and whatever.
+> 
+> But then the next test dude comes around and want's to test exactly
+> these interfaces and we have to slap the time namespace conversions for
+> REALTIME and TAI all over the place because we already support the
+> minimal thing.
+> 
+> Can you see why this is a slippery slope and why I'm extremly reluctant
+> to even provide the minimal 'distort realtime when the namespace starts'
+> support?
+> 
+>> Hopefully this ilustrates that real time name space is not "request for
+>> ponny" :-)
+> 
+> I can understand your pain and why you want to distort time, but please
+> understand that timekeeping is complex. The primary focus must be
+> correctness, scalability and maintainability which is already hard
+> enough to achieve. Just for the perspective: It took us only 8 years to
+> get the kernel halfways 2038 ready (filesystems still outstanding).
+> 
+> So from my point of view asking for distorted time still _is_ a request
+> for ponies.
+> 
+> The fixed offsets for clock MONOTONIC/BOOTTIME are straight forward,
+> absolutely make sense and they have a limited scope of exposure. clock
+> REALTIME/TAI are very different beasts which entail a slew of horrors.
+> Adding settime() to the mix makes it exponentially harder.
 
-For smp-bmips.c:
+Point taken, I can see it is complex as hell. Maybe settime() would not be necessary if checkpoint+restore operation is cheap enough, assuming time jumps can be achieved by manipulating images. I will eventually explore criu.org to find out.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Thank you for your time!
+
 -- 
-Florian
+Petr Špaček  @  CZ.NIC
