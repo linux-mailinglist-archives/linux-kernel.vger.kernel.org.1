@@ -2,244 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 891E02C3A3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 08:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D93212C3A44
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 08:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727352AbgKYHlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 02:41:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgKYHle (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 02:41:34 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD902C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 23:41:30 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id t18so708308plo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 23:41:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BrOTfOZo+kNH35NxykU10KI2hPofKGrX6CmWUUasXso=;
-        b=Lg4i3gs5es/hIt/HiwYI5mtohKTh0zHDbwJ2ChOm42ExGTQjsaiK/+ybG3tl/kd6kH
-         csBVZn06S3vJff/6CtdaYGGH0jdBAU+Dh2k2T+E4HtBZzkYzO7nJQv9XtnQZWW4Xs9t0
-         6ndr3CwVqakd43IOifMJafClbXcqczML6an9Jl+9zfs+nYqlAwFJ0uwOG4Xbh8Rk7vBl
-         mmiAKbw4n5z9f/dlHzRcF95QBUEphJfXRZBhWZrZMefcnbJwIAAJIFnUAbZGwswPUZMG
-         8dztO75ry4bVvvJ39ZvoQe7d/R2wV7cdeojnWN18wwPfR8FjHuh3DKlDzgmrdpiGZ5R1
-         CPYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=BrOTfOZo+kNH35NxykU10KI2hPofKGrX6CmWUUasXso=;
-        b=StVKhx59WtgTBtw4qQN+wGJAd7xlkpnkZQAV6YEIQ8brCob7pmD1VhDuA7A/HAViGt
-         ljAqqW+ke6YoZnvHDNoTM5dUWxzTcWeFR225lRIXIDh5fPz0V53hHI3HAnIWZcA3lRSs
-         OlPMD2Ph+L0yRVWAXU8EEci00XzehqfqhbWCbu1sLNEbmKxXRiK9vzXa5fpfhniNEUdV
-         FWrFawhH2a8k5A8iIfKfu33RkzHX+DHnrOAzpBCJ2PHLiqY8HIVbt/lBUasjrLeUujbF
-         x7zDIk8L8JtQ4iEPFwbNWOk/56Pu/TkJl/h8lDAaLC0OrDIe0Q0nsm6ofXlVkp6dzH4l
-         sh1g==
-X-Gm-Message-State: AOAM533jMQgtmg5egFZfHIWQ8S7WTXtwzK2Roulam3xcAaXDATZFkq3T
-        6HbHSDchsqnZjFUEwi96LAqXUd0iTi7mPQ==
-X-Google-Smtp-Source: ABdhPJwOXyaF7C0+0mR3ahm5v7d4F6GimBYlivFDbeDNyD0TYwQTpI+HPA5yxvu/SDES3e76+gHc8Q==
-X-Received: by 2002:a17:902:860c:b029:da:1d7d:7320 with SMTP id f12-20020a170902860cb02900da1d7d7320mr2024199plo.56.1606290090055;
-        Tue, 24 Nov 2020 23:41:30 -0800 (PST)
-Received: from laputa (p784a5642.tkyea130.ap.so-net.ne.jp. [120.74.86.66])
-        by smtp.gmail.com with ESMTPSA id k4sm1148272pfa.103.2020.11.24.23.41.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 23:41:29 -0800 (PST)
-Date:   Wed, 25 Nov 2020 16:41:25 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH v3.1 00/27] Add support UHS-II for GL9755
-Message-ID: <20201125074125.GC62993@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+        id S1727130AbgKYHph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 02:45:37 -0500
+Received: from mga14.intel.com ([192.55.52.115]:58122 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725838AbgKYHph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 02:45:37 -0500
+IronPort-SDR: byyNUOpN/8aAfES35q8yHNRrp/Kn8dGoJM2Uz5ywwpyjVq+cv8RRk4rH1wAdxynUInYpJVmkHX
+ TJu395fzrEIQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="171305581"
+X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
+   d="scan'208";a="171305581"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 23:45:35 -0800
+IronPort-SDR: GOnnSgJj5pOLFC7ZsqL3+QtVUWlBfFw9aojYALUvdTI+JM3wW+aK+qvgJJyjhiYlsUa80F2bp3
+ 3ADwFVeZt+aQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,368,1599548400"; 
+   d="scan'208";a="535192566"
+Received: from lkp-server01.sh.intel.com (HELO 9276051a5e67) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 24 Nov 2020 23:45:34 -0800
+Received: from kbuild by 9276051a5e67 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1khpUc-00001W-5W; Wed, 25 Nov 2020 07:45:34 +0000
+Date:   Wed, 25 Nov 2020 15:45:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:for-mingo] BUILD SUCCESS
+ 50df51d12c3175573de9c94968639bdd625ec549
+Message-ID: <5fbe0b84.SzORHxvKFelI5vyu%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle ping;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  for-mingo
+branch HEAD: 50df51d12c3175573de9c94968639bdd625ec549  Merge branch 'lkmm.2020.11.06a' into HEAD
 
-On Fri, Nov 06, 2020 at 11:26:59AM +0900, AKASHI Takahiro wrote:
-> This is an interim snapshot of our next version, v4, for enabling
-> UHS-II on MMC/SD.
-> 
-> It is focused on 'sdhci' side to address Adrian's comments regarding
-> "modularising" sdhci-uhs2.c.
-> The whole aim of this version is to get early feedback from Adrian (and
-> others) on this issue. Without any consensus about the code structure,
+elapsed time: 727m
 
-Any comments so far?
+configs tested: 154
+configs skipped: 4
 
--Takahiro Akashi
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> it would make little sense to go further ahead on sdhci side.
-> (Actually, Adrian has made no comments other than "modularising" so far.)
-> 
-> I heavily reworked/refactored sdhci-uhs2.c and re-organised the patch
-> set to meet what I believe Adrian expects; no UHS-II related code in
-> Legacy (UHS-I) code or sdhci.c.
-> 
-> Nevertheless, almost of all changes I made are trivial and straightforward
-> in this direction, and I believe that there is no logic changed since v3
-> except sdhci_uhs2_irq(), as ops->irq hook, where we must deal with UHS-II
-> command sequences in addition to UHS-II errors. So I added extra handlings.
-> 
-> I admit that there is plenty of room for improvements (for example,
-> handling host->flags), but again the focal point here is how sdhci-uhs2.c
-> should be built as a module.
-> 
-> Please review this series (particularly Patch#8-#26 and #27) from this
-> viewpoint in the first place.
-> (Ben is working on 'host' side but there is no change on 'host' side
-> in this submission except a minor tweak.)
-> 
-> Thanks,
-> -Takahiro Akashi
-> 
-> ------ original cover letter from v3 ------
-> Summary
-> =======
-> These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
-> 
-> About UHS-II, roughly deal with the following three parts:
-> 1) A UHS-II detection and initialization:
-> - Host setup to support UHS-II (Section 3.13.1 Host Controller Setup Sequence
->   [2]).
-> - Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence[2]).
-> - In step(9) of Section 3.13.2 in [2], UHS-II initialization is include Section
->   3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II Setting Register
->   Setup Sequence.
-> 
-> 2) Send Legacy SD command through SD-TRAN
-> - Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy SD
->   compatibility and preserve Legacy SD infrastructures (Section 7.1.1 Packet
->   Types and Format Overview[3]).
-> - Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
->   CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
-> 
-> 3) UHS-II Interrupt
-> - Except for UHS-II error interrupts, most interrupts share the original
->   interrupt registers.
-> 
-> Patch structure
-> ===============
-> patch#1-#7: for core
-> patch#8-#17: for sdhci
-> patch#18-#21: for GL9755
-> 
-> Tests
-> =====
-> Ran 'dd' command to evaluate the performance:
-> (SanDisk UHS-II card on GL9755 controller)
->                              Read    Write
-> UHS-II disabled (UHS-I): 88.3MB/s 60.7MB/s
-> UHS-II enabled         :  206MB/s   80MB/s
-> 
-> TODO
-> ====
-> - replace some define with BIT macro
-> 
-> Reference
-> =========
-> [1] https://gitlab.com/ben.chuang/linux-uhs2-gl9755.git
-> [2] SD Host Controller Simplified Specification 4.20
-> [3] UHS-II Simplified Addendum 1.02
-> 
-> Changes in v3 (Jul. 10, 2020)
-> * rebased to v5.8-rc4
-> * add copyright notice
-> * reorganize the patch set and split some commits into smaller ones
-> * separate uhs-2 headers from others
-> * correct wrong spellings
-> * fix most of checkpatch warnings/errors
-> * remove all k[cz]alloc() from the code
-> * guard sdhci-uhs2 specific code with
->       'if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2))'
-> * make sdhci-uhs2.c as a module
-> * trivial changes, including
->   - rename back sdhci-core.c to sdhci.c
->   - allow vendor code to disable uhs2 if v4_mode == 0
->       in __sdhci_add_host()
->   - merge uhs2_power_up() into mmc_power_up()
->   - remove flag_uhs2 from mmc_attach_sd()
->   - add function descriptions to EXPORT'ed functions
->   - other minor code optimization
-> 
-> Changes in v2 (Jan. 9, 2020)
-> * rebased to v5.5-rc5
-> 
-> AKASHI Takahiro (23):
->   mmc: core: UHS-II support, modify power-up sequence
->   mmc: core: UHS-II support, skip set_chip_select()
->   mmc: core: UHS-II support, skip TMODE setup in some cases
->   mmc: core: UHS-II support, generate UHS-II SD command packet
->   mmc: core: UHS-II support, set APP_CMD bit if necessary
->   mmc: sdhci: add a kernel configuration for enabling UHS-II support
->   mmc: sdhci: add UHS-II related definitions in headers
->   mmc: sdhci: add UHS-II module
->   mmc: sdhci-uhs2: dump UHS-II registers
->   mmc: sdhci-uhs2: add reset function
->   mmc: sdhci-uhs2: add set_power() to support vdd2
->   mmc: sdhci-uhs2: skip signal_voltage_switch()
->   mmc: sdhci-uhs2: add set_timeout()
->   mmc: sdhci-uhs2: add set_ios()
->   mmc: sdhci-uhs2: add detect_init() to detect the interface
->   mmc: sdhci-uhs2: add clock operations
->   mmc: sdhci-uhs2: add set_reg() to initialise the interface
->   mmc: sdhci-uhs2: add request() and others
->   mmc: sdhci-uhs2: add irq() and others
->   mmc: sdhci-uhs2: add add_host() and others to set up the driver
->   mmc: core: add post-mmc_attach_sd hook
->   mmc: sdhci-pci: add UHS-II support framework
->   mmc: sdhci-pci-gli: enable UHS-II mode for GL9755
-> 
-> Ben Chuang (4):
->   mmc: add UHS-II related definitions in public headers
->   mmc: core: UHS-II support, try to select UHS-II interface
->   mmc: sdhci-uhs2: add pre-detect_init hook
->   mmc: sdhci-uhs2: add post-mmc_attach_sd hook
-> 
->  drivers/mmc/core/Makefile         |    2 +-
->  drivers/mmc/core/block.c          |    7 +-
->  drivers/mmc/core/bus.c            |    5 +-
->  drivers/mmc/core/core.c           |  118 +-
->  drivers/mmc/core/regulator.c      |   14 +
->  drivers/mmc/core/sd.c             |   32 +
->  drivers/mmc/core/sd_ops.c         |   12 +
->  drivers/mmc/core/uhs2.c           |  883 +++++++++++++++
->  drivers/mmc/core/uhs2.h           |   21 +
->  drivers/mmc/host/Kconfig          |   10 +
->  drivers/mmc/host/Makefile         |    1 +
->  drivers/mmc/host/sdhci-pci-core.c |   16 +-
->  drivers/mmc/host/sdhci-pci-gli.c  |  318 +++++-
->  drivers/mmc/host/sdhci-pci.h      |    3 +
->  drivers/mmc/host/sdhci-uhs2.c     | 1697 +++++++++++++++++++++++++++++
->  drivers/mmc/host/sdhci-uhs2.h     |  224 ++++
->  drivers/mmc/host/sdhci.c          |  333 +++---
->  drivers/mmc/host/sdhci.h          |  117 +-
->  include/linux/mmc/card.h          |    1 +
->  include/linux/mmc/core.h          |    6 +
->  include/linux/mmc/host.h          |   31 +
->  include/linux/mmc/uhs2.h          |  268 +++++
->  22 files changed, 3961 insertions(+), 158 deletions(-)
->  create mode 100644 drivers/mmc/core/uhs2.c
->  create mode 100644 drivers/mmc/core/uhs2.h
->  create mode 100644 drivers/mmc/host/sdhci-uhs2.c
->  create mode 100644 drivers/mmc/host/sdhci-uhs2.h
->  create mode 100644 include/linux/mmc/uhs2.h
-> 
-> -- 
-> 2.28.0
-> 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      tqm8xx_defconfig
+m68k                       m5475evb_defconfig
+mips                           jazz_defconfig
+c6x                        evmc6474_defconfig
+powerpc                      makalu_defconfig
+sh                         ap325rxa_defconfig
+arm                         at91_dt_defconfig
+m68k                        mvme147_defconfig
+sh                        dreamcast_defconfig
+powerpc                     kmeter1_defconfig
+m68k                       m5249evb_defconfig
+sparc                            alldefconfig
+arm                  colibri_pxa270_defconfig
+arm                          ixp4xx_defconfig
+arc                     haps_hs_smp_defconfig
+mips                            ar7_defconfig
+arm                         lubbock_defconfig
+parisc                           allyesconfig
+sh                        sh7757lcr_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                      pasemi_defconfig
+mips                         db1xxx_defconfig
+arm                          prima2_defconfig
+powerpc                  storcenter_defconfig
+arm                             ezx_defconfig
+arm                       aspeed_g4_defconfig
+powerpc                    ge_imp3a_defconfig
+mips                           ip27_defconfig
+powerpc                    socrates_defconfig
+sh                           se7724_defconfig
+powerpc                 mpc8313_rdb_defconfig
+s390                             alldefconfig
+sh                     sh7710voipgw_defconfig
+arm                            pleb_defconfig
+x86_64                           alldefconfig
+arm                        neponset_defconfig
+sh                            migor_defconfig
+s390                                defconfig
+mips                      maltaaprp_defconfig
+parisc                           alldefconfig
+mips                          rm200_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                    gamecube_defconfig
+arm                        trizeps4_defconfig
+powerpc                 mpc836x_mds_defconfig
+arm                       imx_v4_v5_defconfig
+arm                         ebsa110_defconfig
+powerpc                        fsp2_defconfig
+mips                malta_kvm_guest_defconfig
+powerpc                      ep88xc_defconfig
+mips                          ath25_defconfig
+microblaze                          defconfig
+powerpc                 mpc834x_mds_defconfig
+arc                        nsimosci_defconfig
+powerpc                      walnut_defconfig
+powerpc                     sbc8548_defconfig
+sh                          rsk7203_defconfig
+mips                     cu1000-neo_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                        shmobile_defconfig
+sh                               j2_defconfig
+parisc                generic-64bit_defconfig
+ia64                            zx1_defconfig
+sh                              ul2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201124
+i386                 randconfig-a003-20201124
+i386                 randconfig-a002-20201124
+i386                 randconfig-a005-20201124
+i386                 randconfig-a001-20201124
+i386                 randconfig-a006-20201124
+i386                 randconfig-a004-20201125
+i386                 randconfig-a003-20201125
+i386                 randconfig-a002-20201125
+i386                 randconfig-a005-20201125
+i386                 randconfig-a001-20201125
+i386                 randconfig-a006-20201125
+x86_64               randconfig-a015-20201125
+x86_64               randconfig-a011-20201125
+x86_64               randconfig-a014-20201125
+x86_64               randconfig-a016-20201125
+x86_64               randconfig-a012-20201125
+x86_64               randconfig-a013-20201125
+i386                 randconfig-a012-20201124
+i386                 randconfig-a013-20201124
+i386                 randconfig-a011-20201124
+i386                 randconfig-a016-20201124
+i386                 randconfig-a014-20201124
+i386                 randconfig-a015-20201124
+i386                 randconfig-a012-20201125
+i386                 randconfig-a013-20201125
+i386                 randconfig-a011-20201125
+i386                 randconfig-a016-20201125
+i386                 randconfig-a014-20201125
+i386                 randconfig-a015-20201125
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20201125
+x86_64               randconfig-a003-20201125
+x86_64               randconfig-a004-20201125
+x86_64               randconfig-a005-20201125
+x86_64               randconfig-a002-20201125
+x86_64               randconfig-a001-20201125
+x86_64               randconfig-a015-20201124
+x86_64               randconfig-a011-20201124
+x86_64               randconfig-a014-20201124
+x86_64               randconfig-a016-20201124
+x86_64               randconfig-a012-20201124
+x86_64               randconfig-a013-20201124
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
