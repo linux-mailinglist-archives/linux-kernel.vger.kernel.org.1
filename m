@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687352C37E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEF62C37E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgKYEFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 23:05:06 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:41756 "EHLO loongson.cn"
+        id S1726954AbgKYEIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 23:08:12 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:42430 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726039AbgKYEFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 23:05:05 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxitHq171fW1wWAA--.43984S2;
-        Wed, 25 Nov 2020 12:04:58 +0800 (CST)
-From:   Xingxing Su <suxingxing@loongson.cn>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH] rseq/selftests: Fix MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ build error under other arch.
-Date:   Wed, 25 Nov 2020 12:04:57 +0800
-Message-Id: <1606277097-5853-1-git-send-email-suxingxing@loongson.cn>
-X-Mailer: git-send-email 2.1.0
+        id S1726533AbgKYEIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 23:08:12 -0500
+Received: from [10.130.0.80] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutCk2L1foFwWAA--.36614S3;
+        Wed, 25 Nov 2020 12:08:05 +0800 (CST)
+Subject: Re: [PATCH RESEND] checkpatch: Do not check git commit description
+ style when backport the upstream commit
+To:     Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>
+References: <1606275347-19297-1-git-send-email-yangtiezhu@loongson.cn>
+ <dddb87a6ffb94b6b8046eb2eca1480a7ca37f962.camel@perches.com>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <995e0acb-c219-ea00-f078-7582516e25de@loongson.cn>
+Date:   Wed, 25 Nov 2020 12:08:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxitHq171fW1wWAA--.43984S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr1fuw48Ar18AFWfCrW7urg_yoW8ur4xpa
-        9xZrWq9FW8XFnYqa17ta1UZF1IkFWkAF45Ca95Jw4UZ34Dta4xJFn2yFyUKa4fWrZYqF4Y
-        y34Sga1ag3WUtFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvmb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0EF7xvrVAajcxG14v26r1j6r4UMcIj6xIIjxv20xvE14v26r
-        126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij
-        64vIr41lc2xSY4AK67AK6r45MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
-        UI43ZEXa7IUY8wIDUUUUU==
-X-CM-SenderInfo: pvx0x0xj0l0wo6or00hjvr0hdfq/1tbiAQALC13QvMrfWgABs+
+In-Reply-To: <dddb87a6ffb94b6b8046eb2eca1480a7ca37f962.camel@perches.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9AxutCk2L1foFwWAA--.36614S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF47GrW3GF48uFyrWrWrGrg_yoW3ZFgEqr
+        4kWrWkC3ykZr1qy3ZYqr4Y9FyUKayDt3W8Jr4fA3y7Ar98XFZ8JFZ3WasYvas7Ars5uFyv
+        kF4jv3s3Kr4avjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbfkFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VAC
+        jcxG62k0Y48FwI0_Jr0_Gr1lYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r
+        4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_Gryl42xK82IYc2Ij64vIr4
+        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAv
+        wI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTRRYL9UUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Except arch x86, the function rseq_offset_deref_addv is not defined.
-The function test_membarrier_manager_thread call rseq_offset_deref_addv
-produces a build error.
+On 11/25/2020 11:51 AM, Joe Perches wrote:
+> On Wed, 2020-11-25 at 11:35 +0800, Tiezhu Yang wrote:
+>> When backport the upstream commit to the internal LTS kernel version,
+>> we usually use the following description [1] [2]:
+>>
+>> [ Upstream commit cc6528bc9a0c901c83b8220a2e2617f3354d6dd9 ]
+>> or
+>> commit c51f8f88d705e06bd696d7510aff22b33eb8e638 upstream.
+> Internal to what?
+>
+> If it's your own internal build system, I think you should
+> keep your own local patch to checkpatch.
+>
+> I don't see why the kernel version should accept it.
+>
+> Is this style used by anyone else?
 
-The RSEQ_ARCH_HAS_OFFSET_DEREF_ADD should contain all the code
-for the MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ.
-If the other Arch implements this feature,
-defined RSEQ_ARCH_HAS_OFFSET_DEREF_ADD in the header file
-to ensure that this feature is available.
+AFAIK, this style is only used in the stable tree, for example:
 
-Following build errors:
-
-param_test.c: In function ‘test_membarrier_worker_thread’:
-param_test.c:1164:10: warning: implicit declaration of function ‘rseq_offset_deref_addv’
-    ret = rseq_offset_deref_addv(&args->percpu_list_ptr,
-          ^~~~~~~~~~~~~~~~~~~~~~
-/tmp/ccMj9yHJ.o: In function `test_membarrier_worker_thread':
-param_test.c:1164: undefined reference to `rseq_offset_deref_addv'
-param_test.c:1164: undefined reference to `rseq_offset_deref_addv'
-collect2: error: ld returned 1 exit status
-make: *** [/selftests/rseq/param_test_benchmark] Error 1
-
-Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
----
- tools/testing/selftests/rseq/param_test.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/rseq/param_test.c b/tools/testing/selftests/rseq/param_test.c
-index 3845890..699ad5f 100644
---- a/tools/testing/selftests/rseq/param_test.c
-+++ b/tools/testing/selftests/rseq/param_test.c
-@@ -1133,6 +1133,8 @@ static int set_signal_handler(void)
- 	return ret;
- }
- 
-+/* Test MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU membarrier command. */
-+#ifdef RSEQ_ARCH_HAS_OFFSET_DEREF_ADDV
- struct test_membarrier_thread_args {
- 	int stop;
- 	intptr_t percpu_list_ptr;
-@@ -1286,8 +1288,6 @@ void *test_membarrier_manager_thread(void *arg)
- 	return NULL;
- }
- 
--/* Test MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU membarrier command. */
--#ifdef RSEQ_ARCH_HAS_OFFSET_DEREF_ADDV
- void test_membarrier(void)
- {
- 	const int num_threads = opt_threads;
--- 
-1.8.3.1
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.9.y&id=c68a9ca7ca33f1020cca97e4e935c2154bec37c7
 
