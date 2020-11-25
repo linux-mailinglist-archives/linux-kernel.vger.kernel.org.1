@@ -2,114 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D05E2C3EFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16342C3F04
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728889AbgKYLWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:22:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgKYLWL (ORCPT
+        id S1728937AbgKYLXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:23:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39957 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728612AbgKYLXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:22:11 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07026C0613D4;
-        Wed, 25 Nov 2020 03:22:11 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id x22so1664668wmc.5;
-        Wed, 25 Nov 2020 03:22:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fkeU+R8hqLO6M6EoSSQ3Z29F32RAQfX44gbdUvYuYKk=;
-        b=E8EB971JHAm+5d5XLDQX6YbXCuqVqPuLgJ1Hz/bldINFx2P2ms9DadykgPwgXwrGez
-         n6jOMRdIehPlp1KETAoMMKWh98ua8fThgESdlBnfaR1wa7rL+Xx9CHCUiUWKryhZ4anl
-         kSbdcLGUGcf5/0oFw0S4p9gz7zJOa733BapxXQ9CyBBxq5NQpd2FC2yXckJZN8ha1pAy
-         0CCr/igSBRaA1KG8/Ths79oGhK4k+IGFBq6MlvlwXskbvhTDZZ83hfPWQKIP2PdOMzEG
-         G7LEFCmVvG24nc0t17bK+/gyIyzx9y/OqEfFb8v5u8EbxAnL6dJvNFrgCKE7dh/IojW+
-         37CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fkeU+R8hqLO6M6EoSSQ3Z29F32RAQfX44gbdUvYuYKk=;
-        b=iXg7gDMJI5HyNN8wLaT3gSTsFNp0uBRji6h4aqDk7Rr1eIS88QnjUMwew+o4RCYNfU
-         6GESgL9qcfG8WHtWgsRFa5PsvLsUh4auDaxAmyFf5cRiKI65EjZcf9QdHAp1CGDeZ9qI
-         Awkg2pEudII72Hoas6ec+zhi4of+IG9BjIp/GnQxczh1uJx3Ml2LbQEQ+efomFEilJ4z
-         EYaAi8K/iTQwLknmWsozPtjbd1WDVC63rHxWKbp0mgmAdGer9nCsdddwjGf93L3gSdhC
-         8qifqMPQt9H8XJSH9MezyXMngj/Eqnq857eaVG/kBszbVAaqGfLuiGnPispungrbDDPq
-         ldvQ==
-X-Gm-Message-State: AOAM531QPpZRjqEbRGrO8+9ShCtbcfRckyY7NixaSmWGTY4sIYx1OpJL
-        flF0El1UiPh1MyjPc4oY9eY=
-X-Google-Smtp-Source: ABdhPJxPtFUEP3o1/V4ITcxbabd0jUN6MY3lbmBnmAFzZ4At5rGyoSPRDyoiSzCvocglqxVj8mNKmg==
-X-Received: by 2002:a1c:5a08:: with SMTP id o8mr2821605wmb.142.1606303329695;
-        Wed, 25 Nov 2020 03:22:09 -0800 (PST)
-Received: from localhost.localdomain (host86-145-187-174.range86-145.btcentralplus.com. [86.145.187.174])
-        by smtp.gmail.com with ESMTPSA id 34sm3971188wrh.78.2020.11.25.03.22.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 03:22:08 -0800 (PST)
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, Hui Su <sh_def@163.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>
-Cc:     syzbot <syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>
-Subject: [PATCH] mm/memcg: warn on missing memcg on mem_cgroup_page_lruvec()
-Date:   Wed, 25 Nov 2020 11:22:02 +0000
-Message-Id: <20201125112202.387009-1-lstoakes@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <00000000000054aea005b4d59e71@google.com>
-References: <00000000000054aea005b4d59e71@google.com>
+        Wed, 25 Nov 2020 06:23:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606303390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+4cXXjeuoPZcpjvnWwh0t5Ptb6TD0O+4x7YlTnGAxsM=;
+        b=Ewexuk4pjLRQ+tcAJY0bkgaBb7WgufZfy3mrXpCPIMamqBsHbBRLK+A8OnHuJhrmLWBo3+
+        yon3T/MokKiYGWRxgvkTXoxUmLsdslEvReUIdPt7/vUGRkBEhE3BD3lf1P4WdgkmCodp8B
+        JpERShwOsKdlSVmGz/EfUnRt+KDDDM0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-bjy8ViIZMmO_i9Bjy86LLg-1; Wed, 25 Nov 2020 06:23:05 -0500
+X-MC-Unique: bjy8ViIZMmO_i9Bjy86LLg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 439F01E7C3;
+        Wed, 25 Nov 2020 11:23:01 +0000 (UTC)
+Received: from [10.36.112.131] (ovpn-112-131.ams2.redhat.com [10.36.112.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 48E4A18996;
+        Wed, 25 Nov 2020 11:22:53 +0000 (UTC)
+Subject: Re: [PATCH v12 04/10] set_memory: allow querying whether
+ set_direct_map_*() is actually enabled
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20201125092208.12544-1-rppt@kernel.org>
+ <20201125092208.12544-5-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5ea6eacd-79e8-0645-da39-d3461f60e627@redhat.com>
+Date:   Wed, 25 Nov 2020 12:22:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201125092208.12544-5-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move memcg check to mem_cgroup_page_lruvec() as there are callers which
-may invoke this with !memcg in mem_cgroup_lruvec(), whereas they should
-not in mem_cgroup_page_lruvec().
+>  #include <asm-generic/cacheflush.h>
+>  
+>  #endif /* __ASM_CACHEFLUSH_H */
+> diff --git a/arch/arm64/include/asm/set_memory.h b/arch/arm64/include/asm/set_memory.h
+> new file mode 100644
+> index 000000000000..ecb6b0f449ab
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/set_memory.h
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +
+> +#ifndef _ASM_ARM64_SET_MEMORY_H
+> +#define _ASM_ARM64_SET_MEMORY_H
+> +
+> +#include <asm-generic/set_memory.h>
+> +
+> +bool can_set_direct_map(void);
+> +#define can_set_direct_map can_set_direct_map
 
-We expect that we have always charged a page to the memcg before
-mem_cgroup_page_lruvec() is invoked, so add a warning to assert that this
-is the case.
+Well, that looks weird.
+[...]
 
-Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-Reported-by: syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com
----
- include/linux/memcontrol.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+>  }
+> +#else /* CONFIG_ARCH_HAS_SET_DIRECT_MAP */
+> +/*
+> + * Some architectures, e.g. ARM64 can disable direct map modifications at
+> + * boot time. Let them overrive this query.
+> + */
+> +#ifndef can_set_direct_map
+> +static inline bool can_set_direct_map(void)
+> +{
+> +	return true;
+> +}
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 87ed56dc75f9..3e6a1df3bdb9 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -618,7 +618,6 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
- 		goto out;
- 	}
- 
--	VM_WARN_ON_ONCE(!memcg);
- 	if (!memcg)
- 		memcg = root_mem_cgroup;
- 
-@@ -645,7 +644,10 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
- static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
- 						struct pglist_data *pgdat)
- {
--	return mem_cgroup_lruvec(page_memcg(page), pgdat);
-+	struct mem_cgroup *memcg = page_memcg(page);
-+
-+	VM_WARN_ON_ONCE_PAGE(!memcg, page);
-+	return mem_cgroup_lruvec(memcg, pgdat);
- }
- 
- static inline bool lruvec_holds_page_lru_lock(struct page *page,
+I think we prefer __weak functions for something like that, avoids the
+ifdefery.
+
+Apart from that, LGTM.
+
 -- 
-2.29.2
+Thanks,
+
+David / dhildenb
 
