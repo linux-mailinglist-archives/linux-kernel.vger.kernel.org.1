@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD0D2C4204
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 273552C420B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbgKYOR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:17:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729957AbgKYOR7 (ORCPT
+        id S1730008AbgKYOSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:18:14 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:40072 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729847AbgKYOSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:17:59 -0500
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C628BC0613D4;
-        Wed, 25 Nov 2020 06:17:58 -0800 (PST)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 1666C6EA1; Wed, 25 Nov 2020 09:17:58 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 1666C6EA1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1606313878;
-        bh=iy/sIbVpWsRX3k7zz1qB2mwaZ2KsN5gOAK8vwzKr12s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c+Jbd6rodlgRhcYu5Xb1UsLp4qUs/omS+Zg+f1HPJ/4RY9TQJ9NK9Vib1Ow79Hm4B
-         EkYDvMq9ZQMU6i/MmQgARGwpMogmu5bkJDBEivEXqi17JgY2ydeAt+A6JMoM92RI/A
-         7SH4Z6CitC5/rzfjzKgDrsJZ1OOTAoLBaV9oGvgU=
-Date:   Wed, 25 Nov 2020 09:17:58 -0500
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Huang Guobin <huangguobin4@huawei.com>
-Cc:     chuck.lever@oracle.com, trond.myklebust@primarydata.com,
-        richard.sharpe@primarydata.com, dros@primarydata.com,
-        jeff.layton@primarydata.com, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nfsd: Fix error return code in nfsd_file_cache_init()
-Message-ID: <20201125141758.GB2811@fieldses.org>
-References: <20201125083933.2386059-1-huangguobin4@huawei.com>
+        Wed, 25 Nov 2020 09:18:13 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1khvcU-0001hB-PX; Wed, 25 Nov 2020 14:18:06 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Tao Zhou <tao.zhou1@amd.com>,
+        Guchun Chen <guchun.chen@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/amdgpu: Fix sizeof() mismatch in bps_bo kmalloc_array creation
+Date:   Wed, 25 Nov 2020 14:18:06 +0000
+Message-Id: <20201125141806.1881036-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125083933.2386059-1-huangguobin4@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 03:39:33AM -0500, Huang Guobin wrote:
-> Fix to return PTR_ERR() error code from the error handling case instead of
-> 0 in function nfsd_file_cache_init(), as done elsewhere in this function.
-> 
-> Fixes: 65294c1f2c5e7("nfsd: add a new struct file caching facility to nfsd")
-> Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
-> ---
->  fs/nfsd/filecache.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/nfsd/filecache.c b/fs/nfsd/filecache.c
-> index c8b9d2667ee6..a8a5b555f08b 100644
-> --- a/fs/nfsd/filecache.c
-> +++ b/fs/nfsd/filecache.c
-> @@ -686,6 +686,7 @@ nfsd_file_cache_init(void)
->  		pr_err("nfsd: unable to create fsnotify group: %ld\n",
->  			PTR_ERR(nfsd_file_fsnotify_group));
->  		nfsd_file_fsnotify_group = NULL;
-> +		ret = PTR_ERR(nfsd_file_fsnotify_group);
+From: Colin Ian King <colin.king@canonical.com>
 
-I think you meant to add that one line earlier.
+An incorrect sizeof() is being used, sizeof((*data)->bps_bo) is not
+correct, it should be sizeof(*(*data)->bps_bo).  It just so happens
+to work because the sizes are the same.  Fix it.
 
-Otherwise fine, but it looks like an unlikely case so can probably wait
-for the merge window.
+Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
+Fixes: 5278a159cf35 ("drm/amdgpu: support reserve bad page for virt (v3)")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---b.
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
+index 2d51b7694d1f..df15d33e3c5c 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
+@@ -283,7 +283,7 @@ static int amdgpu_virt_init_ras_err_handler_data(struct amdgpu_device *adev)
+ 		return -ENOMEM;
+ 
+ 	bps = kmalloc_array(align_space, sizeof((*data)->bps), GFP_KERNEL);
+-	bps_bo = kmalloc_array(align_space, sizeof((*data)->bps_bo), GFP_KERNEL);
++	bps_bo = kmalloc_array(align_space, sizeof(*(*data)->bps_bo), GFP_KERNEL);
+ 
+ 	if (!bps || !bps_bo) {
+ 		kfree(bps);
+-- 
+2.29.2
 
->  		goto out_notifier;
->  	}
->  
-> -- 
-> 2.22.0
