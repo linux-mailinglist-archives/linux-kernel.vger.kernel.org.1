@@ -2,96 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCD92C3F40
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D3B2C3F42
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729059AbgKYLmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:42:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41504 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728515AbgKYLmF (ORCPT
+        id S1729016AbgKYLnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:43:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727019AbgKYLnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:42:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606304524;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kcga+3U3k+ggBjhVVfMJediaLV/QYUipju37iPGkLXg=;
-        b=eCAuAmVOS+FlPRhGnNgpX9dTLG81YJPGF80vwQYZT1Z+ZFOW1JY5RZodUk6OWzTCa2Zcxh
-        QKLm/5b18Xowjjf2KvCft4+rafp0pTBw27utLieodlf/2r/9dfBXA7fcOYChaV0dZy2V/e
-        kTBFRDc+e8UYTP1zjYp7q2EgzW7vgnU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-499-UaTaFx1OOpiQPcHNG11D1g-1; Wed, 25 Nov 2020 06:42:00 -0500
-X-MC-Unique: UaTaFx1OOpiQPcHNG11D1g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9AB0A1E7CE;
-        Wed, 25 Nov 2020 11:41:58 +0000 (UTC)
-Received: from [10.36.112.131] (ovpn-112-131.ams2.redhat.com [10.36.112.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B9F415D9C2;
-        Wed, 25 Nov 2020 11:41:56 +0000 (UTC)
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-From:   David Hildenbrand <david@redhat.com>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>
-References: <X73s8fxDKPRD6wET@redhat.com>
- <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
- <20201125103933.GM3306@suse.de>
- <5f01bde6-fe31-9b0e-f288-06b82598a8b3@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <33612969-92a1-6c49-a2e0-3a95715b1e7f@redhat.com>
-Date:   Wed, 25 Nov 2020 12:41:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 25 Nov 2020 06:43:39 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA9BC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:43:39 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id a16so2576170ejj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uYW3ZyaJyuAmKuXf5dlEGYJicsrMLw0K8nGNNOQ9xuA=;
+        b=RhMw1e6bw5aXjInrXmMzy1SvrHNIAZmVJyKYltyb49y6t3syp0WXKC92YEJC3FMI0e
+         jo9j8R7TdPmJulBBVXhFgPHvK3/mj89KZ9/WzMYS7Ax5RZQAIFmKCFokqDv6Zgy4f2eU
+         iRf0akmv00Svesj0EwgCq6ySy6KsP5LkWTjT3fUr4J9rudfsmCAU+zPVlbAvsQWBz5+A
+         Lujg8R46m3wkfH+IZ75aywdYZQ63Q9r1GqzpWDAWE1e1m8t+jn0lRTUCUE/J3GVUimvC
+         mz+GYqSm5QYlchuZLxSq5AomEqaAZo90eI/bFRc9MgH1ifHajELGbXxnhhVv29JWETHC
+         aOzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=uYW3ZyaJyuAmKuXf5dlEGYJicsrMLw0K8nGNNOQ9xuA=;
+        b=IFYr52ZDvV/Pot04aErplNzCtMzZW33ehPa+0WZc+tOyu4Q0ni0u13+QxKHMBnHomk
+         k5equwuabAD+Js5vniw91HsPXpwMQ6a1IATUlpt/j+z0iJ0ptzy0XR3JH+FEaxCApdT+
+         n0QGeIEHBVTu1TkCPqbXZWHYhdnFR45juimTe1ASCVmNScB0xOH3XVV6lIV49Iso3I9/
+         vlKGu5Flqii5xhx7yFyZsdjlF2Tvia26nPmFplQa1L+GMISjmFsOLM32EtMPCwrjGysy
+         1c0W6aRDgeJ1C5dnskFLVebEmMiHgIYCCnW8ftTfZgIohzutRv7MVLAjyWTBpWn5RPxm
+         KJYw==
+X-Gm-Message-State: AOAM531cNNa04yRHzhQTLEWumDutKQjZjgT+D1LIxG5TTaKG1w8ZQviu
+        EjDx+2eN0ZBVL4YMdRNYIge2RmmiB98OSHsQ
+X-Google-Smtp-Source: ABdhPJzC8A6yN0rI4+FgU/srqVe/JRg/miHmwUKtEUaHwtmM5LT24danwHSxHE4gq1/yCPvqrqidZg==
+X-Received: by 2002:a17:906:3bd6:: with SMTP id v22mr2788314ejf.160.1606304617511;
+        Wed, 25 Nov 2020 03:43:37 -0800 (PST)
+Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id a12sm1081117edu.89.2020.11.25.03.43.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 25 Nov 2020 03:43:36 -0800 (PST)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Stefan Asserhall <stefan.asserhall@xilinx.com>
+Subject: [PATCH] microblaze: Change TLB mapping and free space allocation
+Date:   Wed, 25 Nov 2020 12:43:35 +0100
+Message-Id: <af2fd524563dc374d3ecc7ac75af1b23f64cb739.1606304612.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <5f01bde6-fe31-9b0e-f288-06b82598a8b3@redhat.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.11.20 12:04, David Hildenbrand wrote:
-> On 25.11.20 11:39, Mel Gorman wrote:
->> On Wed, Nov 25, 2020 at 07:45:30AM +0100, David Hildenbrand wrote:
->>>> Something must have changed more recently than v5.1 that caused the
->>>> zoneid of reserved pages to be wrong, a possible candidate for the
->>>> real would be this change below:
->>>>
->>>> +               __init_single_page(pfn_to_page(pfn), pfn, 0, 0);
->>>>
->>>
->>> Before that change, the memmap of memory holes were only zeroed out. So the zones/nid was 0, however, pages were not reserved and had a refcount of zero - resulting in other issues.
->>>
->>> Most pfn walkers shouldn???t mess with reserved pages and simply skip them. That would be the right fix here.
->>>
->>
->> Ordinarily yes, pfn walkers should not care about reserved pages but it's
->> still surprising that the node/zone linkages would be wrong for memory
->> holes. If they are in the middle of a zone, it means that a hole with
->> valid struct pages could be mistaken for overlapping nodes (if the hole
->> was in node 1 for example) or overlapping zones which is just broken.
-> 
-> I agree within zones - but AFAIU, the issue is reserved memory between
-> zones, right?
+Microblaze is doing initial TLB mapping (max 32MB) which has to include
+BSS section but also some space for early page allocation which are used
+for lowmem page mapping done by mapin_ram()->map_page()->early_get_page().
+Max size is 768MB in current setup. For mapping this size there is a need
+for 768M / 4K / 1024 = 192 PTE pages (size 0xc0000). There could be also
+need for other pages to be mapped that's why 1MB space is added behind
+_end. (Pad was 0xC0000 but it is not enough for big initramfs).
 
-Double checking, I was confused. This applies also to memory holes
-within zones in x86.
+Linux kernel maps TLBs between _text and _end_tlb_mapping. And also reserve
+memory between _text and _end for kernel itself. Initrd or initramfs is
+mapped below. That's why there is all the time gap between _end and
+__initramfs_start covered by TLB which can be used for early page
+allocation.
 
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
+
+ arch/microblaze/include/asm/sections.h | 1 +
+ arch/microblaze/kernel/head.S          | 3 +--
+ arch/microblaze/kernel/vmlinux.lds.S   | 4 ++++
+ 3 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/arch/microblaze/include/asm/sections.h b/arch/microblaze/include/asm/sections.h
+index b5bef96cdcd5..9da44d048522 100644
+--- a/arch/microblaze/include/asm/sections.h
++++ b/arch/microblaze/include/asm/sections.h
+@@ -15,6 +15,7 @@ extern char _ssbss[], _esbss[];
+ extern unsigned long __ivt_start[], __ivt_end[];
+ 
+ extern char __initramfs_end[];
++extern char _end_tlb_mapping[];
+ 
+ extern u32 _fdt_start[], _fdt_end[];
+ 
+diff --git a/arch/microblaze/kernel/head.S b/arch/microblaze/kernel/head.S
+index ec2fcb545e64..a2502f78dceb 100644
+--- a/arch/microblaze/kernel/head.S
++++ b/arch/microblaze/kernel/head.S
+@@ -173,9 +173,8 @@ _invalidate:
+ 	tophys(r4,r3)			/* Load the kernel physical address */
+ 
+ 	/* start to do TLB calculation */
+-	addik	r12, r0, _end
++	addik	r12, r0, _end_tlb_mapping
+ 	rsub	r12, r3, r12
+-	addik	r12, r12, CONFIG_LOWMEM_SIZE >> PTE_SHIFT /* that's the pad */
+ 
+ 	or r9, r0, r0 /* TLB0 = 0 */
+ 	or r10, r0, r0 /* TLB1 = 0 */
+diff --git a/arch/microblaze/kernel/vmlinux.lds.S b/arch/microblaze/kernel/vmlinux.lds.S
+index 77a5e71af22f..8a446c257094 100644
+--- a/arch/microblaze/kernel/vmlinux.lds.S
++++ b/arch/microblaze/kernel/vmlinux.lds.S
+@@ -132,6 +132,10 @@ SECTIONS {
+ 	}
+ 	. = ALIGN(PAGE_SIZE);
+ 	_end = .;
++	/* Add space in TLB mapping for early free pages mapping */
++	. = . + 0x100000; /* CONFIG_LOWMEM_SIZE >> PTE_SHIFT + space */
++
++	_end_tlb_mapping = . ;
+ 
+ 	.init.ramfs : AT(ADDR(.init.ramfs) - LOAD_OFFSET) {
+ 		INIT_RAM_FS
 -- 
-Thanks,
-
-David / dhildenb
+2.29.2
 
