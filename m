@@ -2,249 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29ABC2C42CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7535F2C42D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730183AbgKYPX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:23:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729153AbgKYPX4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:23:56 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC98C061A52
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 07:23:43 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id p19so1781220wmg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 07:23:42 -0800 (PST)
+        id S1730214AbgKYPZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:25:14 -0500
+Received: from mail-bn8nam11on2077.outbound.protection.outlook.com ([40.107.236.77]:1665
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730192AbgKYPZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:25:13 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VhGUqgVa3IHgDNBgiouvoOPyni5yoVc6reL+RZxMMXDGQxj9IVlIGe0zOrztPlq1q9oYdxoapg9XmoRiH8PZMUSyGOp6MMrb9yJcc3E9pE5Y31+t4qJAU69gpNRBadhxOKX2eOH8cck8g4VIlQ1jal4RyxPKC76iJq8xeQGhZ53gduUmai/rTvYLYndwjW5OFELwQj5rQpoME4YqqvP2Ped5rPbu+if4hAMCQ98wyALaizt+iq9INKjYhBc/wf9qWm7ST/g2f3MydVH9krQir8yK02W46h9gZ+4YWq1Kjxj8J0okttNlLxCn1N/ZwPbsNt+X9lsPOc0fa1cEfnWJbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8gKGoWngIpQuh4YjNBrCeGymXoL3Seo8lOACWInA+ao=;
+ b=ZyCaHITeUaaHIrDssL2X5MY3Ra8DZp9c7iiKOltRexK+AH/JC6ZxnWFw1NOsLoSkB18kTtsifm2oKHQHodyQHiSX0RHg/tEqvXqsvzHwn70T/iB5OilIi7V2AFFIi1zc6OpJY5V09/AzNp5QtmV2vBER2tWGibSMr+cIFAkPR5/ajoYFZQRrePa9BC6FC/8fZ5XjaScH2/MZVCSYsRiZuH8u92YtWXVfDCDCRqllO+qb9edNNp+NSNMLEy/zgcEJ7XjvPf+IgoEuwd4huYbMszIaep+PZRzuXE0BZHELsE65KM8T6dkdmj0SYy0ybdAjaYH6Pwf6jhTeT6Rj6N/wzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7x7Rp0TwyGU3wHG6Q9tLIeUVomrTHpb9n0dn8AEf4Jc=;
-        b=0Md9cfM0MOxKSUkUQxsFMHYf7S6ICmMbXjUYhUWMppj5M8qEHrSsr/4rrSFfnTXOYn
-         8idXIFA0sgWL4OFj74pKEmUsdBhXQBdSmSFY1A3dRXST9/LW/rNXYxLX4xg54vasQj6L
-         SBJpg47h18HjqeKx5QBuyyYJmOs4E3VBZ8dOkYtdNKCFmOKQqLfC9rnQz3h/6wejc0uv
-         9AMh1pYotUZYGWdhfaDfeVYt+7nrObG7p574GvPwsjEjpPt9ibU/mtIigWw1gyJw4GF9
-         EU/yj097+vfZs3v9tciVtvsiah0NNVX7uwKnwml/ijgnQwN7PJDkkspffYqQn+/52Nrg
-         UpAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7x7Rp0TwyGU3wHG6Q9tLIeUVomrTHpb9n0dn8AEf4Jc=;
-        b=S9n30b7PVkD2G5EIc4leJaXc2GfYUyzhdXGAYh55tRBPar5wNhhEk4hN5f0YK/R0h8
-         bWjvXGyYKwmpyNipeHy0MzYYIIKINZc7BAouZeTsqWa3TBBdGLysqM3YIhnpMRRbSoUm
-         0oeiXyrXvI0fHO7JylJHULPYgy80hYNKNMaztr+IcrkUoNPba9H+4IYoonx7PjuMi88a
-         IFW/hJPl/g6cjb+2fozFokc87hnmO2eJ36SIaY3aTLNTQx7OxNJQ7TCDmrowGfOBOGQX
-         YL5T4sYUZBa7HT7P3I4eCOJ13tLNOy1mxadei47TrEfh3D4cK77t5lx+HupWjWtelGNV
-         UKLg==
-X-Gm-Message-State: AOAM532u9sunzp7EEaBi3aQYOsIOzPJjSMTl4ln3jehHrS3JKQnCvw1k
-        4Flth7ixe+KZIUFVRrvu4XWcQA==
-X-Google-Smtp-Source: ABdhPJxwoVEoidRcsj+NcShfPadYw58Zn8vRO9HcR3GNXYQzOqfwhsMQhQrK3P1vIIDCsT88EjdOmQ==
-X-Received: by 2002:a1c:5605:: with SMTP id k5mr4401421wmb.99.1606317821723;
-        Wed, 25 Nov 2020 07:23:41 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id 9sm4896731wmo.34.2020.11.25.07.23.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 07:23:40 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 4/4] samples: configfs: add a committable group
-Date:   Wed, 25 Nov 2020 16:22:47 +0100
-Message-Id: <20201125152247.30809-5-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201125152247.30809-1-brgl@bgdev.pl>
-References: <20201125152247.30809-1-brgl@bgdev.pl>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8gKGoWngIpQuh4YjNBrCeGymXoL3Seo8lOACWInA+ao=;
+ b=HG0E5Z2lXlYWmvgQ+C3+wjAWV81jyj7+H/yc1wYiDZtq2voxyxDh9AnR0WObRBYl8DVWEdit19wjdkV0cAzztmM0eg1ySz9oqk3dxC0bVRKGZWP62W6Vf67MC9gucIjgEj487DbQ4X7YfW+q64hX1NPrSDPFqNo3Te6G2Qj8qns=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB4092.namprd12.prod.outlook.com (2603:10b6:5:214::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3611.20; Wed, 25 Nov 2020 15:25:07 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::d95e:b9d:1d6a:e845]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::d95e:b9d:1d6a:e845%12]) with mapi id 15.20.3589.030; Wed, 25 Nov 2020
+ 15:25:07 +0000
+Subject: Re: [PATCH v4 00/34] SEV-ES hypervisor support
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <cover.1605632857.git.thomas.lendacky@amd.com>
+ <347c5571-2141-44e5-4650-f63d93fd394f@amd.com>
+ <20201124185216.GA235281@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <3c59e558-98ed-f3ce-bddf-929149796708@amd.com>
+Date:   Wed, 25 Nov 2020 09:25:05 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201124185216.GA235281@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [67.79.209.213]
+X-ClientProxiedBy: SA0PR11CA0025.namprd11.prod.outlook.com
+ (2603:10b6:806:d3::30) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SA0PR11CA0025.namprd11.prod.outlook.com (2603:10b6:806:d3::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22 via Frontend Transport; Wed, 25 Nov 2020 15:25:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 5ce07a60-5824-4b8b-fe4f-08d891564a4a
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4092:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4092E78BCE8D863763E2D374ECFA0@DM6PR12MB4092.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Gp0PIam6ZR0hioYf8JUF1FLqaRITrS9uwqwIAw5/U61M/c+1QdLASU40XII1T/I6q7reCyUMqkVted15dGZM/2ChTP4k9r7dGlvTabb2W1Oe23OM6g67lZ/VwQRFlqNzyaejMzGSUHpLti8TkTnrPPjpXInHaXelyUVjJr3ZgHYO/k7hJhFDjjXcUJkusqfX0JM9DTMwMwpIh/+zX7ksyNNVxFoyELHp0Fz8eGbCWQ1fuINNxTikw2QwcWdcxdohgvh9sS8TQzexlMb2sCtSh2zlyEvskY7SXViZDXelkMHi9uRywZQOMPiERwKWJloxGOcnI6KqWHlt7IWysXeoY8FO0GqSSLtDrqa6kRKMSusqzBAuiFWCWGIR1b/neiIY
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(136003)(366004)(376002)(66476007)(5660300002)(4326008)(4744005)(2616005)(6486002)(66556008)(6916009)(956004)(478600001)(36756003)(7416002)(66946007)(8676002)(52116002)(2906002)(6512007)(316002)(54906003)(8936002)(86362001)(6506007)(186003)(16526019)(31686004)(31696002)(26005)(53546011)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: nZAC8dcxCBEC0rsnMr9U2ZoFzouFQapTLQfZv1WyYyV+kzp2wWQxw7Dh5KS0lKfcs1iKDlhqitAQmkufdZ0P+OlOI4csSFgxWKbdbm8Y0u2TofDmYloze7kPY4XYShfv9z+53dAOESgj/35HLHN2UyuQDso0AijJM9Mf5QItiOW2Cc2mm1p29/G5YezezX4R3JmdsZkrdu6p2jDNyvWGYaRZW/dQk5s+a+K3NPpqLTR6krbDNPerEB1dzqfvChHSKKiXfldm/yh94mHTePjuYmPOZXk6GiIG9d++W/7IgB00bsFrV5w/yA8RCOMdbpQMQLnahuf21JuC8Ncu7KYIMHl1waQF1XhlaST1CEuu7qacktgJgqFWiK9FxvAtGMBiU/IxGpvc9G9QEUo95G/LDImJP5OJN6FTOqo6e5fkb9AQ1NsnzSe0O2P9F7PynUxv8eN0Z1Ng+zc4RCjHt6AlmRC2VePHm9YhZuEDSwWOfQAqMFsHLQYo6yXmyS2J4Ntxw2GAmOlW1BGAbP92xSasRP5lFOkoCvBBEmZdvRUzXC4WupPXyOcFCJUsM5vxGl7aUBW9rPH6q5KANgs3n4lZQnz0NvairyCnZH4JAsk7HeH+N1KbXoku0FyFQHuXvzBKLGMmiG8gXE3SKc/OrK710UGDaX6SDkCneXa9Jk/rwvLSdjUCbGKafzgv7kpwAzgFY3Cq5j7srF1OSvwBTUWXAMIB87jjPMkoZ4EEweyf00IGSaYIIwBvYq1RjoQSOx6dR1t6ZD7X7aEO/ta/t8CCQuc4hvU/YVO2TC4keKOQUIOsQKLphS6yzjVETwTU4zprs+yBLx5/QG4nBscFz5ZVJa4A3C9jhk9WoT1tYCyY/GxJ7knDPWZyGRXUR89a78rZgLJxtY49cIBgkx6BLN0Q5w==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ce07a60-5824-4b8b-fe4f-08d891564a4a
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 15:25:07.6127
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PRaZGLtUCJvFSyQJAAI0NI0WR4TvdGB8E96XYkXoL3Ql9nY9UONOoXxcGZF23K9C2XcF7pkFH0A4VsoOn5f4Lw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On 11/24/20 12:52 PM, Sean Christopherson wrote:
+> On Mon, Nov 23, 2020, Tom Lendacky wrote:
+>> On 11/17/20 11:07 AM, Tom Lendacky wrote:
+>>> From: Tom Lendacky <thomas.lendacky@amd.com>
+>>>
+>>> This patch series provides support for running SEV-ES guests under KVM.
+>>
+>> Any comments on this series?
+> 
+> I'm planning on doing a thorough review, but it'll probably take me a few more
+> weeks to get to it.
 
-Add an example of using committable items to configfs samples. Each
-config item has two attributes: read-write 'storeme' which works
-similarly to other examples in this file and a read-only 'committed'
-attribute which changes its value between false and true depending on
-whether it's committed or not at the moment.
+Thanks, Sean.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- samples/configfs/configfs_sample.c | 150 +++++++++++++++++++++++++++++
- 1 file changed, 150 insertions(+)
+I was hoping to have the hypervisor support one kernel version after the 
+guest support and make it into 5.11. It's a tough time of the year for 
+that, though. If anyone else has comments, I would appreciate it so they 
+can be investigated quickly and resolved in time for targeting 5.12 if 
+5.11 won't happen.
 
-diff --git a/samples/configfs/configfs_sample.c b/samples/configfs/configfs_sample.c
-index f9008be7a8a1..08fc22c7aa55 100644
---- a/samples/configfs/configfs_sample.c
-+++ b/samples/configfs/configfs_sample.c
-@@ -315,6 +315,155 @@ static struct configfs_subsystem group_children_subsys = {
- 
- /* ----------------------------------------------------------------- */
- 
-+/*
-+ * 04-committable-children
-+ *
-+ * This is an example of a committable group.  It's similar to the simple
-+ * children example but each config_item has an additional 'committed'
-+ * attribute which is read-only and is only modified when the config_item
-+ * is moved from the 'pending' to the 'live' directory.
-+ */
-+
-+struct committable_child {
-+	struct config_item item;
-+	int storeme;
-+	bool committed;
-+};
-+
-+static inline struct committable_child *
-+to_committable_child(struct config_item *item)
-+{
-+	return container_of(item, struct committable_child, item);
-+}
-+
-+static ssize_t
-+committable_child_storeme_show(struct config_item *item, char *page)
-+{
-+	return sprintf(page, "%d\n", to_committable_child(item)->storeme);
-+}
-+
-+static ssize_t committable_child_storeme_store(struct config_item *item,
-+					       const char *page, size_t count)
-+{
-+	struct committable_child *child = to_committable_child(item);
-+	int ret;
-+
-+	ret = kstrtoint(page, 10, &child->storeme);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
-+CONFIGFS_ATTR(committable_child_, storeme);
-+
-+static ssize_t
-+committable_child_committed_show(struct config_item *item, char *page)
-+{
-+	return sprintf(page, "%s\n",
-+		to_committable_child(item)->committed ? "true" : "false");
-+}
-+
-+CONFIGFS_ATTR_RO(committable_child_, committed);
-+
-+static struct configfs_attribute *committable_child_attrs[] = {
-+	&committable_child_attr_storeme,
-+	&committable_child_attr_committed,
-+	NULL,
-+};
-+
-+static void committable_child_release(struct config_item *item)
-+{
-+	kfree(to_committable_child(item));
-+}
-+
-+static struct configfs_item_operations committable_child_item_ops = {
-+	.release	= committable_child_release,
-+};
-+
-+static const struct config_item_type committable_child_type = {
-+	.ct_item_ops	= &committable_child_item_ops,
-+	.ct_attrs	= committable_child_attrs,
-+	.ct_owner	= THIS_MODULE,
-+};
-+
-+struct committable_children {
-+	struct config_group group;
-+};
-+
-+static struct config_item *
-+committable_children_make_item(struct config_group *group, const char *name)
-+{
-+	struct committable_child *child;
-+
-+	child = kzalloc(sizeof(*child), GFP_KERNEL);
-+	if (!child)
-+		return ERR_PTR(-ENOMEM);
-+
-+	config_item_init_type_name(&child->item, name, &committable_child_type);
-+
-+	return &child->item;
-+}
-+
-+static ssize_t
-+committable_children_description_show(struct config_item *item, char *page)
-+{
-+	return sprintf(page,
-+"[04-committable-children]\n"
-+"\n"
-+"This subsystem allows creation of committable config_items.  The subsystem\n"
-+"has two subdirectories: pending and live.  New config_items can only be\n"
-+"created in pending/ and they have one writable and readable attribute as\n"
-+"well as a single read-only attribute.  The latter is only changed once the\n"
-+"item is 'committed'.  This is done by moving the config_item (using\n"
-+"rename()) to the live/ directory.  At that point even the read-write\n"
-+"attributes can no longer be written to.\n");
-+}
-+
-+CONFIGFS_ATTR_RO(committable_children_, description);
-+
-+static struct configfs_attribute *committable_children_attrs[] = {
-+	&committable_children_attr_description,
-+	NULL,
-+};
-+
-+static int committable_children_commit_item(struct config_item *item)
-+{
-+	to_committable_child(item)->committed = true;
-+
-+	return 0;
-+}
-+
-+static int committable_children_uncommit_item(struct config_item *item)
-+{
-+	to_committable_child(item)->committed = false;
-+
-+	return 0;
-+}
-+
-+static struct configfs_group_operations committable_children_group_ops = {
-+	.make_item	= committable_children_make_item,
-+	.commit_item	= committable_children_commit_item,
-+	.uncommit_item	= committable_children_uncommit_item,
-+};
-+
-+static const struct config_item_type committable_children_type = {
-+	.ct_group_ops	= &committable_children_group_ops,
-+	.ct_attrs	= committable_children_attrs,
-+	.ct_owner	= THIS_MODULE,
-+};
-+
-+static struct configfs_subsystem committable_children_subsys = {
-+	.su_group = {
-+		.cg_item = {
-+			.ci_namebuf = "04-committable-children",
-+			.ci_type = &committable_children_type,
-+		},
-+	},
-+};
-+
-+/* ----------------------------------------------------------------- */
-+
- /*
-  * We're now done with our subsystem definitions.
-  * For convenience in this module, here's a list of them all.  It
-@@ -326,6 +475,7 @@ static struct configfs_subsystem *example_subsys[] = {
- 	&childless_subsys.subsys,
- 	&simple_children_subsys,
- 	&group_children_subsys,
-+	&committable_children_subsys,
- 	NULL,
- };
- 
--- 
-2.29.1
+Thanks,
+Tom
 
+> 
