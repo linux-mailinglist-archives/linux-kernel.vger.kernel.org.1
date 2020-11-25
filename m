@@ -2,238 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7D52C48DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 797002C48E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728561AbgKYUMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 15:12:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgKYUMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 15:12:19 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 129A8206C0;
-        Wed, 25 Nov 2020 20:12:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606335137;
-        bh=j2R/4pA5Knalus7Wh9g9NQPdMfZrK8tI1rIKeV34iSk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=EQsIYrs90gV2m/wHMkLGsvYx/AzLrY8fdKGkfvlSfKq4pGSmygdUHW/QfBudrbR73
-         nKqBSsk8E7kd3Mkzv8ykBYes/i1dz/6348tDez8YcxNjl+IZ3K7l6LtY+BVb4vdJjV
-         ED6dfW1GPFM/pRKp8az1nhouQJdXynIlM8qluCZM=
-Date:   Wed, 25 Nov 2020 14:12:15 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        knsathya@kernel.org
-Subject: Re: [PATCH v11 2/5] ACPI/PCI: Ignore _OSC negotiation result if
- pcie_ports_native is set.
-Message-ID: <20201125201215.GA673882@bjorn-Precision-5520>
+        id S1728968AbgKYUNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 15:13:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgKYUNP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 15:13:15 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063FAC0613D4;
+        Wed, 25 Nov 2020 12:13:03 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id p6so1660222plr.7;
+        Wed, 25 Nov 2020 12:13:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9lk+L55lL/3KZyFGZIwmqHn6eyXNJ+lt4qLdjWihiL8=;
+        b=hnRw8sZUJJSg+Xd2/m+PFicMYa8F1NuF/MUXLzaPBphiw3rCsrk25M8hHQui7lfkDF
+         8GQvKUFgk1udp3zIdl1bbCdDlm2s9nLyGUUuk1P4FM87NuLy6aW441eg83ELZjqlhGeR
+         8lrUSqlGY/B6ZrAP9OSqJ94YtvRrE+QzCWmncb3AE6e9gwuHB4HIVw/SlXCwgTaj0R+9
+         tlH79nfFDHqXtdYfS0Dpe9lp/1Lo3dB16DNazbGdV+AB88K8P5ckNYIbg1tqzxsvWJ89
+         HrbYU4/cHDM4jFYzh8pkc5tuPA8MIOmFDsEWoRsa9j5U+WYzl6QTXm4wX++pzk9xwXIh
+         ANxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=9lk+L55lL/3KZyFGZIwmqHn6eyXNJ+lt4qLdjWihiL8=;
+        b=cmYKb15EfaqkQvf0iEXrVuJIDsE7P/uY8zq8NlgC0nmpwdT/C54rKzkmSKvijTehUa
+         KbdHsx3fY4OugZ7j2GPUHw2RDeRsSOguLzAnfFhrQOriCUCrJZ0w3h6rFdooXBFHjsbk
+         P71VgN7Rggi8f4AALQ6k4LpEtDxbKDHuRIK+Jkbuq+x2HXuh5vCOcx7ZqxdqtDvJl4VG
+         tDsfB//I7jFdwrSP4DlpSCfGB6kBcI5wF+HnwlCgO5wDila2f2Yjn6aufWqb1ltkWSur
+         y9t7aa+kKHsf7dwTvZ6fPwdn1WwrVoHuum+fwdhCjO+tFe9C7Z16kWU54PSGmaixh6HR
+         7huw==
+X-Gm-Message-State: AOAM530JG4aNW4cBMO6iRe3RAVbODTG0RGZNnsH8XQHu/zRH3dejWQ8I
+        d+3I+Anprxs4E75Z/aSE1+Q=
+X-Google-Smtp-Source: ABdhPJyejbkIE9UgjoncUatp/3TCX3EO5lg7lcxvO96U/PGVSieQ0PJmyUyzFT1pQqNBo0hKlHCGFw==
+X-Received: by 2002:a17:902:c214:b029:d7:d5f3:88c3 with SMTP id 20-20020a170902c214b02900d7d5f388c3mr1109723pll.33.1606335182465;
+        Wed, 25 Nov 2020 12:13:02 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id 12sm3808280pjn.19.2020.11.25.12.12.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 12:13:00 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 25 Nov 2020 12:12:58 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
+        willy@infradead.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
+        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
+        hridya@google.com, sumit.semwal@linaro.org, john.stultz@linaro.org,
+        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, robh@kernel.org,
+        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH 1/4] mm: introduce cma_alloc_bulk API
+Message-ID: <20201125201258.GB1484898@google.com>
+References: <20201117181935.3613581-1-minchan@kernel.org>
+ <20201117181935.3613581-2-minchan@kernel.org>
+ <a2c33b8f-e4fb-1f1c-7ed0-496a1256ea09@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bc87c9e675118960949043a832bed86bc22becbd.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <a2c33b8f-e4fb-1f1c-7ed0-496a1256ea09@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 07:57:05PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> pcie_ports_native is set only if user requests native handling
-> of PCIe capabilities via pcie_port_setup command line option.
-> User input takes precedence over _OSC based control negotiation
-> result. So consider the _OSC negotiated result only if
-> pcie_ports_native is unset.
+On Mon, Nov 23, 2020 at 03:15:37PM +0100, David Hildenbrand wrote:
+> On 17.11.20 19:19, Minchan Kim wrote:
+> > There is a need for special HW to require bulk allocation of
+> > high-order pages. For example, 4800 * order-4 pages, which
+> > would be minimum, sometimes, it requires more.
+> > 
+> > To meet the requirement, a option reserves 300M CMA area and
+> > requests the whole 300M contiguous memory. However, it doesn't
+> > work if even one of those pages in the range is long-term pinned
+> > directly or indirectly. The other option is to ask higher-order
+> > size (e.g., 2M) than requested order(64K) repeatedly until driver
+> > could gather necessary amount of memory. Basically, this approach
+> > makes the allocation very slow due to cma_alloc's function
+> > slowness and it could be stuck on one of the pageblocks if it
+> > encounters unmigratable page.
+> > 
+> > To solve the issue, this patch introduces cma_alloc_bulk.
+> > 
+> > 	int cma_alloc_bulk(struct cma *cma, unsigned int align,
+> > 		gfp_t gfp_mask, unsigned int order, size_t nr_requests,
+> > 		struct page **page_array, size_t *nr_allocated);
+> > 
+> > Most parameters are same with cma_alloc but it additionally passes
+> > vector array to store allocated memory. What's different with cma_alloc
+> > is it will skip pageblocks without waiting/stopping if it has unmovable
+> > page so that API continues to scan other pageblocks to find requested
+> > order page.
+> > 
+> > cma_alloc_bulk is best effort approach in that it skips some pageblocks
+> > if they have unmovable pages unlike cma_alloc. It doesn't need to be
+> > perfect from the beginning at the cost of performance. Thus, the API
+> > takes gfp_t to support __GFP_NORETRY which is propagated into
+> > alloc_contig_page to avoid significat overhead functions to inrecase
+> > CMA allocation success ratio(e.g., migration retrial, PCP, LRU draining
+> > per pageblock) at the cost of less allocation success ratio.
+> > If the caller couldn't allocate enough pages with __GFP_NORETRY, they
+> > could call it without __GFP_NORETRY to increase success ratio this time
+> > if they are okay to expense the overhead for the success ratio.
 > 
-> Also, since struct pci_host_bridge ->native_* members caches the
-> ownership status of various PCIe capabilities, use them instead
-> of distributed checks for pcie_ports_native.
+> I'm not a friend of connecting __GFP_NORETRY  to PCP and LRU draining.
+
+I was also not a fan of the gfp flags in the cma funcions since it could
+cause misunderstanding easily but saw taling about brining back gfp_t
+into cma_alloc. Since It seems to be dropped, let's use other term.
+
+diff --git a/mm/cma.c b/mm/cma.c
+index 7c11ec2dc04c..806280050307 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -505,7 +505,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+  *
+  * @cma:       contiguous memory region for which the allocation is performed.
+  * @align:     requested alignment of pages (in PAGE_SIZE order).
+- * @gfp_mask:  memory allocation flags
++ * @fast:      will skip costly opeartions if it's true.
+  * @order:     requested page order
+  * @nr_requests: the number of 2^order pages requested to be allocated as input,
+  * @page_array:        page_array pointer to store allocated pages (must have space
+@@ -513,10 +513,10 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+  * @nr_allocated: the number of 2^order pages allocated as output
+  *
+  * This function tries to allocate up to @nr_requests @order pages on specific
+- * contiguous memory area. If @gfp_mask has __GFP_NORETRY, it will avoid costly
+- * functions to increase allocation success ratio so it will be fast but might
+- * return less than requested number of pages. User could retry with
+- * !__GFP_NORETRY if it is needed.
++ * contiguous memory area. If @fast has true, it will avoid costly functions
++ * to increase allocation success ratio so it will be faster but might return
++ * less than requested number of pages. User could retry it with true if it is
++ * needed.
+  *
+  * Return: it will return 0 only if all pages requested by @nr_requestsed are
+  * allocated. Otherwise, it returns negative error code.
+@@ -525,7 +525,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+  * how many @order pages are allocated and free those pages when they are not
+  * needed.
+  */
+-int cma_alloc_bulk(struct cma *cma, unsigned int align, gfp_t gfp_mask,
++int cma_alloc_bulk(struct cma *cma, unsigned int align, bool fast,
+                        unsigned int order, size_t nr_requests,
+                        struct page **page_array, size_t *nr_allocated)
+ {
+@@ -538,8 +538,8 @@ int cma_alloc_bulk(struct cma *cma, unsigned int align, gfp_t gfp_mask,
+        unsigned long start = 0;
+        unsigned long bitmap_maxno, bitmap_no, bitmap_count;
+        struct page *page = NULL;
+-       gfp_t gfp = GFP_KERNEL|__GFP_NOWARN|gfp_mask;
+-
++       enum alloc_contig_mode mode = fast ? ALLOC_CONTIG_FAST :
++                                               ALLOC_CONTIG_NORMAL;
+        *nr_allocated = 0;
+        if (!cma || !cma->count || !cma->bitmap || !page_array)
+                return -EINVAL;
+@@ -576,7 +576,8 @@ int cma_alloc_bulk(struct cma *cma, unsigned int align, gfp_t gfp_mask,
+                mutex_unlock(&cma->lock);
+
+                pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
+-               ret = alloc_contig_range(pfn, pfn + nr_pages, MIGRATE_CMA, gfp);
++               ret = alloc_contig_range(pfn, pfn + nr_pages, MIGRATE_CMA,
++                                               GFP_KERNEL|__GFP_NOWARN, mode);
+                if (ret) {
+                        cma_clear_bitmap(cma, pfn, nr_pages);
+                        if (ret != -EBUSY)
+
+
+
+> Also, gfp flags apply mostly to compaction (e.g., how to allocate free
+> pages for migration), so this seems a little wrong.
 > 
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
->  drivers/acpi/pci_root.c           | 35 ++++++++++++++++++++++---------
->  drivers/pci/hotplug/pciehp_core.c |  2 +-
->  drivers/pci/pci-acpi.c            |  3 ---
->  drivers/pci/pcie/aer.c            |  2 +-
->  drivers/pci/pcie/portdrv_core.c   |  9 +++-----
->  include/linux/acpi.h              |  2 ++
->  6 files changed, 32 insertions(+), 21 deletions(-)
+> Can we instead introduce
 > 
-> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-> index c12b5fb3e8fb..a9e6b782622d 100644
-> --- a/drivers/acpi/pci_root.c
-> +++ b/drivers/acpi/pci_root.c
-> @@ -41,6 +41,12 @@ static int acpi_pci_root_scan_dependent(struct acpi_device *adev)
->  				| OSC_PCI_CLOCK_PM_SUPPORT \
->  				| OSC_PCI_MSI_SUPPORT)
->  
-> +#define OSC_OWNER(ctrl, bit, flag) \
-> +	do { \
-> +		if (!(ctrl & bit)) \
-> +			flag = 0;  \
-> +	} while (0)
-> +
->  static const struct acpi_device_id root_device_ids[] = {
->  	{"PNP0A03", 0},
->  	{"", 0},
-> @@ -887,6 +893,7 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
->  	struct pci_bus *bus;
->  	struct pci_host_bridge *host_bridge;
->  	union acpi_object *obj;
-> +	u32 ctrl;
->  
->  	info->root = root;
->  	info->bridge = device;
-> @@ -912,18 +919,26 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
->  		goto out_release_info;
->  
->  	host_bridge = to_pci_host_bridge(bus->bridge);
-> -	if (!(root->osc_control_set & OSC_PCI_EXPRESS_NATIVE_HP_CONTROL))
-> -		host_bridge->native_pcie_hotplug = 0;
-> +
-> +	if (pcie_ports_native) {
-> +		decode_osc_control(root, "OS forcibly taking over",
-> +				   OSC_PCI_EXPRESS_CONTROL_MASKS);
+> enum alloc_contig_mode {
+> 	/*
+> 	 * Normal mode:
+> 	 *
+> 	 * Retry page migration 5 times, ... TBD
+> 	 *
+> 	 */
+> 	ALLOC_CONTIG_NORMAL = 0,
+> 	/*
+> 	 * Fast mode: e.g., used for bulk allocations.
+>          *
+> 	 * Don't retry page migration if it fails, don't drain PCP
+>          * lists, don't drain LRU.
+> 	 */
+> 	ALLOC_CONTIG_FAST,
+> };
 
-The only place OSC_PCI_EXPRESS_CONTROL_MASKS is used is right here, so
-it's kind of pointless.
-
-I think I'd rather have this:
-
-  dev_info(&root->device->dev, "Ignoring PCIe-related _OSC results because \"pcie_ports=native\" specified\n");
-
-> +	} else {
-> +		ctrl = root->osc_control_set;
-> +		OSC_OWNER(ctrl, OSC_PCI_EXPRESS_NATIVE_HP_CONTROL,
-> +			  host_bridge->native_pcie_hotplug);
-> +		OSC_OWNER(ctrl, OSC_PCI_EXPRESS_AER_CONTROL,
-> +			  host_bridge->native_aer);
-> +		OSC_OWNER(ctrl, OSC_PCI_EXPRESS_PME_CONTROL,
-> +			  host_bridge->native_pme);
-> +		OSC_OWNER(ctrl, OSC_PCI_EXPRESS_LTR_CONTROL,
-> +			  host_bridge->native_ltr);
-> +		OSC_OWNER(ctrl, OSC_PCI_EXPRESS_DPC_CONTROL,
-> +			  host_bridge->native_dpc);
-> +	}
-> +
->  	if (!(root->osc_control_set & OSC_PCI_SHPC_NATIVE_HP_CONTROL))
->  		host_bridge->native_shpc_hotplug = 0;
-> -	if (!(root->osc_control_set & OSC_PCI_EXPRESS_AER_CONTROL))
-> -		host_bridge->native_aer = 0;
-> -	if (!(root->osc_control_set & OSC_PCI_EXPRESS_PME_CONTROL))
-> -		host_bridge->native_pme = 0;
-> -	if (!(root->osc_control_set & OSC_PCI_EXPRESS_LTR_CONTROL))
-> -		host_bridge->native_ltr = 0;
-> -	if (!(root->osc_control_set & OSC_PCI_EXPRESS_DPC_CONTROL))
-> -		host_bridge->native_dpc = 0;
-
-followed by something like this after we're done fiddling with all the
-host_bridge->native* bits:
-
-  #define FLAG(x) ((x) ? '+' : '-')
-
-  dev_info(&root->device->dev, "OS native features: SHPCHotplug%c PCIeCapability%c PCIeHotplug%c PME%c AER%c DPC%c LTR%c\n",
-           FLAG(host_bridge->native_shpc_hotplug),
-	   ?,
-           FLAG(host_bridge->native_pcie_hotplug),
-	   ...);
-
-But I don't know how to handle OSC_PCI_EXPRESS_CAPABILITY_CONTROL
-since we don't track it the same way.  Maybe we'd have to omit it from
-this message for now?
-
->  	/*
->  	 * Evaluate the "PCI Boot Configuration" _DSM Function.  If it
-> diff --git a/drivers/pci/hotplug/pciehp_core.c b/drivers/pci/hotplug/pciehp_core.c
-> index ad3393930ecb..d1831e6bf60a 100644
-> --- a/drivers/pci/hotplug/pciehp_core.c
-> +++ b/drivers/pci/hotplug/pciehp_core.c
-> @@ -256,7 +256,7 @@ static bool pme_is_native(struct pcie_device *dev)
->  	const struct pci_host_bridge *host;
->  
->  	host = pci_find_host_bridge(dev->port->bus);
-> -	return pcie_ports_native || host->native_pme;
-> +	return host->native_pme;
->  }
->  
->  static void pciehp_disable_interrupt(struct pcie_device *dev)
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index bf03648c2072..a84f75ec6df8 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -800,9 +800,6 @@ bool pciehp_is_native(struct pci_dev *bridge)
->  	if (!(slot_cap & PCI_EXP_SLTCAP_HPC))
->  		return false;
->  
-> -	if (pcie_ports_native)
-> -		return true;
-> -
->  	host = pci_find_host_bridge(bridge->bus);
->  	return host->native_pcie_hotplug;
->  }
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 65dff5f3457a..79bb441139c2 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -219,7 +219,7 @@ int pcie_aer_is_native(struct pci_dev *dev)
->  	if (!dev->aer_cap)
->  		return 0;
->  
-> -	return pcie_ports_native || host->native_aer;
-> +	return host->native_aer;
->  }
->  
->  int pci_enable_pcie_error_reporting(struct pci_dev *dev)
-> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-> index 50a9522ab07d..ccd5e0ce5605 100644
-> --- a/drivers/pci/pcie/portdrv_core.c
-> +++ b/drivers/pci/pcie/portdrv_core.c
-> @@ -208,8 +208,7 @@ static int get_port_device_capability(struct pci_dev *dev)
->  	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
->  	int services = 0;
->  
-> -	if (dev->is_hotplug_bridge &&
-> -	    (pcie_ports_native || host->native_pcie_hotplug)) {
-> +	if (dev->is_hotplug_bridge && host->native_pcie_hotplug) {
->  		services |= PCIE_PORT_SERVICE_HP;
->  
->  		/*
-> @@ -221,8 +220,7 @@ static int get_port_device_capability(struct pci_dev *dev)
->  	}
->  
->  #ifdef CONFIG_PCIEAER
-> -	if (dev->aer_cap && pci_aer_available() &&
-> -	    (pcie_ports_native || host->native_aer)) {
-> +	if (dev->aer_cap && pci_aer_available() && host->native_aer) {
->  		services |= PCIE_PORT_SERVICE_AER;
->  
->  		/*
-> @@ -238,8 +236,7 @@ static int get_port_device_capability(struct pci_dev *dev)
->  	 * Event Collectors can also generate PMEs, but we don't handle
->  	 * those yet.
->  	 */
-> -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT &&
-> -	    (pcie_ports_native || host->native_pme)) {
-> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT && host->native_pme) {
->  		services |= PCIE_PORT_SERVICE_PME;
->  
->  		/*
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 39263c6b52e1..35689f4e8e1f 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -569,6 +569,8 @@ extern bool osc_pc_lpi_support_confirmed;
->  #define OSC_PCI_EXPRESS_LTR_CONTROL		0x00000020
->  #define OSC_PCI_EXPRESS_DPC_CONTROL		0x00000080
->  #define OSC_PCI_CONTROL_MASKS			0x000000bf
-> +/* Masks specific to PCIe Capabilities */
-> +#define OSC_PCI_EXPRESS_CONTROL_MASKS		0x000000bd
->  
->  #define ACPI_GSB_ACCESS_ATTRIB_QUICK		0x00000002
->  #define ACPI_GSB_ACCESS_ATTRIB_SEND_RCV         0x00000004
-> -- 
-> 2.17.1
-> 
+Yeah, the mode is better. Let's have it as preparation patch.
