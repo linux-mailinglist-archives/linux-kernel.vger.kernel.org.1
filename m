@@ -2,109 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F512C3B5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E43B2C3B58
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 09:50:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbgKYIuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 03:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
+        id S1726935AbgKYItV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 03:49:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgKYIuN (ORCPT
+        with ESMTP id S1726730AbgKYItV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 03:50:13 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3839CC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 00:50:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=03txFcJNBslvd+BNPT41sjaiOCJak/ukhem/Aa3k44s=; b=NVSFu2c4nKDCwGDr4/NGC2ACGz
-        L84kIAdaNGXUW5AEvKiDHUZ8cBNV3oMk6zQvlJyJQiKXlq+f42+4yqSyVEZ2evwXwxrVImkU0tK4H
-        NF7F6Q/ahTZ45tS61OXfjp9/ppLJk/RpHi2HNvWRr+cJ1qOAzPcJWZ3ob0MKXUn5gQQZU44YNZ8mI
-        T8R+0pidXXkcCXdEsYszNzUbtGxhGkesgjDny5dWdEYI5SxDGQTYnIYWNCxG1UWdmXs3DqW7q11nA
-        HTeRgstxZ7J5njStFp5MBt4XNMaf/veRc4Q0r+cIbE6Ui8DxQU8v7hbjRkCnhwhq1lxDwALUSA/dB
-        vPbPPbqA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khqUA-0006h9-LH; Wed, 25 Nov 2020 08:49:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DA5A0301124;
-        Wed, 25 Nov 2020 09:49:08 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C4DE2209BAB21; Wed, 25 Nov 2020 09:49:08 +0100 (CET)
-Date:   Wed, 25 Nov 2020 09:49:08 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 19/32] entry/idle: Enter and exit kernel protection
- during idle entry and exit
-Message-ID: <20201125084908.GO2414@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-20-joel@joelfernandes.org>
- <20201124161335.GB3021@hirez.programming.kicks-ass.net>
- <20201124180343.GF1021337@google.com>
+        Wed, 25 Nov 2020 03:49:21 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B562FC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 00:49:19 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w6so1690495pfu.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 00:49:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nFwhSlS+Pvo/ma1TQw3B7yiFr0R2qAwmXx/iKMM6vms=;
+        b=frWQrn9pB0jVThrEPqb3eSmYoAF/DmAkevYHE/b7Kb/MtEMwg1wEoyUVPvDzVdkC7S
+         awjLFmy08lOwdUKcSB+RSaSRR3V1etU592zZ2lQlCCMiwE8qRBnv8yXfdWi121+Dn8Uo
+         UK5w1RYog3/O+B/byNkYgyltobyOUOKSijY0o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nFwhSlS+Pvo/ma1TQw3B7yiFr0R2qAwmXx/iKMM6vms=;
+        b=r3CQn8Lka9fALRvz8wSgWciHf+s0j9uBgfPfRkEoqKQzovLhh8mK4dzCsqHrAo6GJN
+         8dgNXT8iz7M1TjGMhbKOINmWOZ/eXw/0GU4RdgBSoGZc5ryizjIQCS/jmqErYcy4E3jI
+         t090cWyMotRuHcNaEpzZBlO+6ZsQ6b8y+IC+eOGu1XBVqxDtgKqrqa+XJfAUqI9x4doI
+         cdygHQSPxj+bRlAheW58HnE3Yc2TfGl0XDM0kGmnFMS2My8BIjgKwGg2CJ7uhwKEW54O
+         AKKbVd8dvq/OkEt99tKu/78CmcG48i2OFEUU3fMzWCf+jIwiZTjhouAGAl3uBKConEoi
+         QtrA==
+X-Gm-Message-State: AOAM532VWEgwz9G8JrYIMTieafF12VireWpvLyuLd7+RBdV/I31bVTXR
+        fHQY7OPHYU7jmiexiMErikG7dYYkuV4T2Q==
+X-Google-Smtp-Source: ABdhPJx+iqGZOhgaw4SyQsTcTvCYlAyqdoKyfeekSxIq7yqnD+XM7aGa51oCMv9CwhVXGSCgT3rE7A==
+X-Received: by 2002:a63:575a:: with SMTP id h26mr2270634pgm.228.1606294158950;
+        Wed, 25 Nov 2020 00:49:18 -0800 (PST)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id x30sm1554565pgc.86.2020.11.25.00.49.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 00:49:18 -0800 (PST)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org, heikki.krogerus@linux.intel.com
+Cc:     bleung@chromium.org, Prashant Malani <pmalani@chromium.org>
+Subject: [PATCH v5 1/2] usb: typec: Consolidate sysfs ABI documentation
+Date:   Wed, 25 Nov 2020 00:49:09 -0800
+Message-Id: <20201125084911.1077462-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124180343.GF1021337@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 01:03:43PM -0500, Joel Fernandes wrote:
-> On Tue, Nov 24, 2020 at 05:13:35PM +0100, Peter Zijlstra wrote:
-> > On Tue, Nov 17, 2020 at 06:19:49PM -0500, Joel Fernandes (Google) wrote:
+Both partner and cable have identity VDOs. These are listed separately
+in the Documentation/ABI/testing/sysfs-class-typec. Factor these out
+into a common location to avoid the duplication.
 
-> > > +static inline void generic_idle_enter(void)
-> > > +static inline void generic_idle_exit(void)
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
 
-> > That naming is terrible..
-> 
-> Yeah sorry :-\. The naming I chose was to be aligned with the
-> CONFIG_GENERIC_ENTRY naming. I am open to ideas on that.
+Changes in v5:
+- Corrected the email address in the Acked-by tag.
 
-entry_idle_{enter,exit}() ?
+Changes in v4:
+- Rebased on top of the usb-next tree.
+- Added Acked-by tag from pevious version's review.
+- Corrected a typo ('syfs' -> 'sysfs') in the subject line.
 
-> > I'm confused.. arch_cpu_idle_{enter,exit}() weren't conveniently placed
-> > for you?
-> 
-> The way this patch series works, it does not depend on arch code as much as
-> possible. Since there are other arch that may need this patchset such as ARM,
-> it may be better to keep it in the generic entry code.  Thoughts?
+Patch first introduced in v3.
 
-I didn't necessarily mean using those hooks, even placing your new hooks
-right next to them would've covered the exact same code with less lines
-modified.
+ Documentation/ABI/testing/sysfs-class-typec | 59 ++++++---------------
+ 1 file changed, 17 insertions(+), 42 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-class-typec b/Documentation/ABI/testing/sysfs-class-typec
+index 4eccb343fc7b..88ffc14d4cd2 100644
+--- a/Documentation/ABI/testing/sysfs-class-typec
++++ b/Documentation/ABI/testing/sysfs-class-typec
+@@ -147,42 +147,6 @@ Description:
+ 		during Power Delivery discovery. This file remains hidden until a value
+ 		greater than or equal to 0 is set by Type C port driver.
+ 
+-What:		/sys/class/typec/<port>-partner>/identity/
+-Date:		April 2017
+-Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+-Description:
+-		This directory appears only if the port device driver is capable
+-		of showing the result of Discover Identity USB power delivery
+-		command. That will not always be possible even when USB power
+-		delivery is supported, for example when USB power delivery
+-		communication for the port is mostly handled in firmware. If the
+-		directory exists, it will have an attribute file for every VDO
+-		in Discover Identity command result.
+-
+-What:		/sys/class/typec/<port>-partner/identity/id_header
+-Date:		April 2017
+-Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+-Description:
+-		ID Header VDO part of Discover Identity command result. The
+-		value will show 0 until Discover Identity command result becomes
+-		available. The value can be polled.
+-
+-What:		/sys/class/typec/<port>-partner/identity/cert_stat
+-Date:		April 2017
+-Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+-Description:
+-		Cert Stat VDO part of Discover Identity command result. The
+-		value will show 0 until Discover Identity command result becomes
+-		available. The value can be polled.
+-
+-What:		/sys/class/typec/<port>-partner/identity/product
+-Date:		April 2017
+-Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+-Description:
+-		Product VDO part of Discover Identity command result. The value
+-		will show 0 until Discover Identity command result becomes
+-		available. The value can be polled.
+-
+ 
+ USB Type-C cable devices (eg. /sys/class/typec/port0-cable/)
+ 
+@@ -219,17 +183,28 @@ Description:
+ 		This file remains hidden until a value greater than or equal to 0
+ 		is set by Type C port driver.
+ 
+-What:		/sys/class/typec/<port>-cable/identity/
++
++USB Type-C partner/cable Power Delivery Identity objects
++
++NOTE: The following attributes will be applicable to both
++partner (e.g /sys/class/typec/port0-partner/) and
++cable (e.g /sys/class/typec/port0-cable/) devices. Consequently, the example file
++paths below are prefixed with "/sys/class/typec/<port>-{partner|cable}/" to
++reflect this.
++
++What:		/sys/class/typec/<port>-{partner|cable}/identity/
+ Date:		April 2017
+ Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+ Description:
+ 		This directory appears only if the port device driver is capable
+ 		of showing the result of Discover Identity USB power delivery
+ 		command. That will not always be possible even when USB power
+-		delivery is supported. If the directory exists, it will have an
+-		attribute for every VDO returned by Discover Identity command.
++		delivery is supported, for example when USB power delivery
++		communication for the port is mostly handled in firmware. If the
++		directory exists, it will have an attribute file for every VDO
++		in Discover Identity command result.
+ 
+-What:		/sys/class/typec/<port>-cable/identity/id_header
++What:		/sys/class/typec/<port>-{partner|cable}/identity/id_header
+ Date:		April 2017
+ Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+ Description:
+@@ -237,7 +212,7 @@ Description:
+ 		value will show 0 until Discover Identity command result becomes
+ 		available. The value can be polled.
+ 
+-What:		/sys/class/typec/<port>-cable/identity/cert_stat
++What:		/sys/class/typec/<port>-{partner|cable}/identity/cert_stat
+ Date:		April 2017
+ Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+ Description:
+@@ -245,7 +220,7 @@ Description:
+ 		value will show 0 until Discover Identity command result becomes
+ 		available. The value can be polled.
+ 
+-What:		/sys/class/typec/<port>-cable/identity/product
++What:		/sys/class/typec/<port>-{partner|cable}/identity/product
+ Date:		April 2017
+ Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+ Description:
+-- 
+2.29.2.454.gaff20da3a2-goog
+
