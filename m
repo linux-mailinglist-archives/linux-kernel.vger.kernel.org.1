@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468832C3EB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BF42C3EC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727327AbgKYLEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 06:04:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44320 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725792AbgKYLEZ (ORCPT
+        id S1726908AbgKYLIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 06:08:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbgKYLIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 06:04:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606302263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ko+UcIV0NRJ5DII8yo9h6rReKOOqZlMAZOJv2cY0hjc=;
-        b=fON0q246baRA6v8+w3wgH9a0o0ip7byK4RYx4UyD+ooNuSOn1Nosp78eEg6D2rr/twNWFG
-        APxJk/0fd2xkGl848yvi8uFPMPvnxp6MZJnMxtir5P76ldTGPL4MGehweYXSy93yna5th8
-        26hhG//Q3m/pQgfGe5nUaRfa05PeRl0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-sUaslyR0N2SMilzQfgdObA-1; Wed, 25 Nov 2020 06:04:19 -0500
-X-MC-Unique: sUaslyR0N2SMilzQfgdObA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 537001006C90;
-        Wed, 25 Nov 2020 11:04:18 +0000 (UTC)
-Received: from [10.36.112.131] (ovpn-112-131.ams2.redhat.com [10.36.112.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 18B745C1A3;
-        Wed, 25 Nov 2020 11:04:15 +0000 (UTC)
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>
-References: <X73s8fxDKPRD6wET@redhat.com>
- <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
- <20201125103933.GM3306@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <5f01bde6-fe31-9b0e-f288-06b82598a8b3@redhat.com>
-Date:   Wed, 25 Nov 2020 12:04:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 25 Nov 2020 06:08:23 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DFDC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 03:08:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gAbPhRE5NmWykLnN7qEqkHtVQT17OqOEfTcOqr5l+bk=; b=AfaAg3JbEPdTQujrCHinuZGkTD
+        tuDeRxyDhVtf9WhZNocmI3rVLmobKfzBN/VI6Da/vmHbmFcCpI0/z+Rz8z+a4X0qv/0wXikr40Vs9
+        4jZBg9Hsziw7rJ0S2ZsNZtlTcD+jCuhqUwE/O+P49iuuAc/3TKEPC2qpfVao3XdFyAlRCxuHSt9V+
+        zW7wCOza5d43jnovsi3I2RYEOQ9FdIoQTE+4NMpEw1PfSVkN0l0ZUXHZAdUVgj3xg3B/AZH1FKcFj
+        pG+hDjPdBamf3OLjxG852wdBWM4SrU097AC1H54ZcXfrH09pNaesBui6PGVkgarAQd6o1GFyICNuT
+        SieeHgXQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khsdm-00070r-Gw; Wed, 25 Nov 2020 11:07:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F2FE300DAE;
+        Wed, 25 Nov 2020 12:07:09 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D6BBA20D6FE70; Wed, 25 Nov 2020 12:07:09 +0100 (CET)
+Date:   Wed, 25 Nov 2020 12:07:09 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
+ cookie on fork
+Message-ID: <20201125110709.GR2414@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-23-joel@joelfernandes.org>
 MIME-Version: 1.0
-In-Reply-To: <20201125103933.GM3306@suse.de>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117232003.3580179-23-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.11.20 11:39, Mel Gorman wrote:
-> On Wed, Nov 25, 2020 at 07:45:30AM +0100, David Hildenbrand wrote:
->>> Something must have changed more recently than v5.1 that caused the
->>> zoneid of reserved pages to be wrong, a possible candidate for the
->>> real would be this change below:
->>>
->>> +               __init_single_page(pfn_to_page(pfn), pfn, 0, 0);
->>>
->>
->> Before that change, the memmap of memory holes were only zeroed out. So the zones/nid was 0, however, pages were not reserved and had a refcount of zero - resulting in other issues.
->>
->> Most pfn walkers shouldn???t mess with reserved pages and simply skip them. That would be the right fix here.
->>
-> 
-> Ordinarily yes, pfn walkers should not care about reserved pages but it's
-> still surprising that the node/zone linkages would be wrong for memory
-> holes. If they are in the middle of a zone, it means that a hole with
-> valid struct pages could be mistaken for overlapping nodes (if the hole
-> was in node 1 for example) or overlapping zones which is just broken.
+On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
+> Also, for the per-task cookie, it will get weird if we use pointers of any
+> emphemeral objects. For this reason, introduce a refcounted object who's sole
+> purpose is to assign unique cookie value by way of the object's pointer.
 
-I agree within zones - but AFAIU, the issue is reserved memory between
-zones, right?
-
-Assume your end of memory falls within a section - what would be the
-right node/zone for such a memory hole at the end of the section? With
-memory hotplug after such a hole, we can easily have multiple
-nodes/zones spanning such a hole, unknown before hotplug.
-
-IMHO, marking memory holes properly (as discussed) would be the cleanest
-approach. For now, we use node/zone 0 + PageReserved - because memory
-hotunplug (zone shrinking etc.) doesn't really care about ZONE_DMA.
-
-> 
->>>
->>> Whenever pfn_valid is true, it's better that the zoneid/nid is correct
->>> all times, otherwise if the second stage fails we end up in a bug with
->>> weird side effects.
->>
->> Memory holes with a valid memmap might not have a zone/nid. For now, skipping reserved pages should be good enough, no?
->>
-> 
-> It would partially paper over the issue that setting the pageblock type
-> based on a reserved page. I agree that compaction should not be returning
-> pfns that are outside of the zone range because that is buggy in itself
-> but valid struct pages should have valid information. I don't think we
-> want to paper over that with unnecessary PageReserved checks.
-
-Agreed as long as we can handle that issue using range checks.
-
--- 
-Thanks,
-
-David / dhildenb
-
+Might be useful to explain why exactly none of the many pid_t's are
+good enough.
