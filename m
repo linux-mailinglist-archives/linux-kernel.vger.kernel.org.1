@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0151A2C45CC
+	by mail.lfdr.de (Postfix) with ESMTP id 6E72D2C45CD
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732371AbgKYQrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:47:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58260 "EHLO mail.kernel.org"
+        id S1732380AbgKYQrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:47:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732323AbgKYQrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:47:01 -0500
+        id S1732323AbgKYQrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:47:05 -0500
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCB5121734;
-        Wed, 25 Nov 2020 16:46:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2139721527;
+        Wed, 25 Nov 2020 16:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606322820;
-        bh=LwuY+QphNSlol8EMRcR5P6MUxE335Jn/IU89vq73g8k=;
+        s=default; t=1606322825;
+        bh=zDxcfDBYmjuuUTiiRpHLHOCTf/WPUkT0pv5HqP59xZI=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=UEQiXGO1LiQRcZNYqqDzMMgbzYEaLvYuCvXYsllzOG4f5VpFTE0Q0rr3KaJUo5Qo2
-         sJ/wEguzbUUZTyekvFqCmhaGzWJIXFxT5VQs5hNGxVrRPqVr0PALNx3483fb8Yl4E0
-         HGsM5q/nn/W8M74o9RROCGHdvGickDon6rBNR6yY=
+        b=LiSK+XYcJNugW0STLE/0t1V2G0ik6mZcH64EBcZOv82CKd7CcmslEyqG4E0RfpKPG
+         u46Ewl1lIwHGpMJgBGVhiBXCtjjCv++nVaT2/tyyzlZpa0szNn8Y3DijoxPVvpCbzb
+         DZybrRVHSn0ZIwymN+F1DR5jUtXvuJXjZXOm/1TU=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -45,9 +45,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org,
         linux-rockchip@lists.infradead.org
-Subject: [PATCH v2 25/39] ASoC: max98925: skip of_device_id table when !CONFIG_OF
-Date:   Wed, 25 Nov 2020 17:44:38 +0100
-Message-Id: <20201125164452.89239-26-krzk@kernel.org>
+Subject: [PATCH v2 26/39] ASoC: max98926: skip of_device_id table when !CONFIG_OF
+Date:   Wed, 25 Nov 2020 17:44:39 +0100
+Message-Id: <20201125164452.89239-27-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201125164452.89239-1-krzk@kernel.org>
 References: <20201125164452.89239-1-krzk@kernel.org>
@@ -62,30 +62,30 @@ The driver can match by multiple methods.  Its of_device_id table is
 referenced via of_match_ptr() so it will be unused for !CONFIG_OF
 builds:
 
-  sound/soc/codecs/max98925.c:630:34: warning: ‘max98925_of_match’ defined but not used [-Wunused-const-variable=]
+  sound/soc/codecs/max98926.c:574:34: warning: ‘max98926_of_match’ defined but not used [-Wunused-const-variable=]
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/codecs/max98925.c | 2 ++
+ sound/soc/codecs/max98926.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/max98925.c b/sound/soc/codecs/max98925.c
-index b3e1a54fff88..e18d0022c3f4 100644
---- a/sound/soc/codecs/max98925.c
-+++ b/sound/soc/codecs/max98925.c
-@@ -627,11 +627,13 @@ static const struct i2c_device_id max98925_i2c_id[] = {
+diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
+index c4dfa8ab1d49..0977e541326d 100644
+--- a/sound/soc/codecs/max98926.c
++++ b/sound/soc/codecs/max98926.c
+@@ -571,11 +571,13 @@ static const struct i2c_device_id max98926_i2c_id[] = {
  };
- MODULE_DEVICE_TABLE(i2c, max98925_i2c_id);
+ MODULE_DEVICE_TABLE(i2c, max98926_i2c_id);
  
 +#ifdef CONFIG_OF
- static const struct of_device_id max98925_of_match[] = {
- 	{ .compatible = "maxim,max98925", },
+ static const struct of_device_id max98926_of_match[] = {
+ 	{ .compatible = "maxim,max98926", },
  	{ }
  };
- MODULE_DEVICE_TABLE(of, max98925_of_match);
+ MODULE_DEVICE_TABLE(of, max98926_of_match);
 +#endif
  
- static struct i2c_driver max98925_i2c_driver = {
+ static struct i2c_driver max98926_i2c_driver = {
  	.driver = {
 -- 
 2.25.1
