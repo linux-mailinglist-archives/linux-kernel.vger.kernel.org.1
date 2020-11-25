@@ -2,80 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD5D2C48BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5E92C48BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbgKYTu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:50:28 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:38274 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728552AbgKYTu2 (ORCPT
+        id S1729258AbgKYTwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:52:00 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6588 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729228AbgKYTv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:50:28 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 937791C0B7A; Wed, 25 Nov 2020 20:50:25 +0100 (CET)
-Date:   Wed, 25 Nov 2020 20:50:24 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] leds: lp50xx: add missing fwnode_handle_put in error
- handling case
-Message-ID: <20201125195024.GD9791@amd>
-References: <20201119070841.712-1-miaoqinglang@huawei.com>
+        Wed, 25 Nov 2020 14:51:59 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbeb5df0000>; Wed, 25 Nov 2020 11:51:59 -0800
+Received: from [10.40.102.42] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 25 Nov
+ 2020 19:51:49 +0000
+Subject: Re: [PATCH V4 0/6] Enhancements to Tegra194 PCIe driver
+To:     Thierry Reding <thierry.reding@gmail.com>
+CC:     "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "amanharitsh123@gmail.com" <amanharitsh123@gmail.com>,
+        "dinghao.liu@zju.edu.cn" <dinghao.liu@zju.edu.cn>,
+        "kw@linux.com" <kw@linux.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Krishna Thota <kthota@nvidia.com>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
+References: <20201109171937.28326-1-vidyas@nvidia.com>
+ <20201125175709.GA1274379@ulmo>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <9291ac83-0f14-88df-8c1d-81f57b0340ee@nvidia.com>
+Date:   Thu, 26 Nov 2020 01:21:44 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="+KJYzRxRHjYqLGl5"
-Content-Disposition: inline
-In-Reply-To: <20201119070841.712-1-miaoqinglang@huawei.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201125175709.GA1274379@ulmo>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606333919; bh=ixWL4EOpRfrPXrl40i6mo64j5n1lhFO+bCWPBDJNeeU=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=pmEC6EgDjCofHhpuGtafbXCwe6Ss2k4V/ttvQToLcL3wk980NxI624heshHU4xMAp
+         5gaptxmoscfZ5zd+IvLdXzDX5vkbTLH7qVqKmw+NayvPSjrpn9Cu67OMHgd7CO7vpc
+         popvRMQQQofZ9MTKrYNJmbuvCUY1syQuH9Dr6aN+CftRgncL3sJ+OXSALk/N2YClCq
+         YtveQ5R5aNpR8aHC8RQvWgGgdSCKP215DDcfGgpJjbS+FnZdOaVY28LRuxGn87/DNf
+         fksCCQtrzI0HAfUrC8/AgqRW2VFoegNNnMSlKy/KzI5JUKUPTxQt1gXaxdlsTVl/9d
+         fXMuM3ZV9LG2A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---+KJYzRxRHjYqLGl5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu 2020-11-19 15:08:41, Qinglang Miao wrote:
-> Fix to set ret and goto child_out for fwnode_handle_put(child)
-> in the error handling case rather than simply return, as done
-> elsewhere in this function.
->=20
-> Fixes: 242b81170fb8 ("leds: lp50xx: Add the LP50XX family of the RGB LED =
-driver")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Suggested-by: Pavel Machek <pavel@ucw.cz>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> -----Original Message-----
+> From: Thierry Reding <thierry.reding@gmail.com>
+> Sent: Wednesday, November 25, 2020 11:27 PM
+> To: Vidya Sagar <vidyas@nvidia.com>
+> Cc: lorenzo.pieralisi@arm.com; robh+dt@kernel.org; bhelgaas@google.com;
+> Jonathan Hunter <jonathanh@nvidia.com>; amanharitsh123@gmail.com;
+> dinghao.liu@zju.edu.cn; kw@linux.com; linux-pci@vger.kernel.org; linux-
+> tegra@vger.kernel.org; linux-kernel@vger.kernel.org; Krishna Thota
+> <kthota@nvidia.com>; Manikanta Maddireddy <mmaddireddy@nvidia.com>;
+> sagar.tv@gmail.com
+> Subject: Re: [PATCH V4 0/6] Enhancements to Tegra194 PCIe driver
+> 
+> On Mon, Nov 09, 2020 at 10:49:31PM +0530, Vidya Sagar wrote:
+> > This series of patches do some enhancements and some bug fixes to the
+> > Tegra194 PCIe platform driver like
+> > - Fix Vendor-ID corruption
+> > - Map DBI space correctly
+> > - Update DWC IP version
+> > - Continue with uninitialization sequence even if parts fail
+> > - Check return value of tegra_pcie_init_controller()
+> >
+> > V4:
+> > * Added a new patch to address link-up issues with some of the cards
+> >
+> > V3:
+> > * Addressed Bjorn's review comments
+> > * Split earlier patch-4 into two
+> >   - Continue with the uninitialization sequence even if some parts fail
+> >   - Check return value of tegra_pcie_init_controller() and exit
+> > accordingly
+> >
+> > V2:
+> > * Addressed Rob's comments. Changed 'Strongly Ordered' to 'nGnRnE'
+> >
+> > Vidya Sagar (6):
+> >   PCI: tegra: Fix ASPM-L1SS advertisement disable code
+> >   PCI: tegra: Map configuration space as nGnRnE
+> >   PCI: tegra: Set DesignWare IP version
+> >   PCI: tegra: Continue unconfig sequence even if parts fail
+> >   PCI: tegra: Check return value of tegra_pcie_init_controller()
+> >   PCI: tegra: Disable LTSSM during L2 entry
+> >
+> >  drivers/pci/controller/dwc/pcie-tegra194.c | 78
+> > +++++++++++-----------
+> >  1 file changed, 39 insertions(+), 39 deletions(-)
+> 
+> I was going to test this series, but then I noticed that PCI is causing a crash on
+> linux-next (as of fairly recently).
+I root caused the crash issue to the following commit
+a0fd361db8e5 ("PCI: dwc: Move "dbi", "dbi2", and "addr_space" resource 
+setup into common code")
 
-Sorry, spoke too fast. We already had equivalent patch in by
+I also pushed the following two patches to fix this issue for review
 
-    Fixes: 242b81170fb8 ("leds: lp50xx: Add the LP50XX family of the
-    RGB LED driver")
-        Signed-off-by: Christophe JAILLET
-    <christophe.jaillet@wanadoo.fr>
+http://patchwork.ozlabs.org/project/linux-pci/patch/20201125192234.2270-1-vidyas@nvidia.com/
+http://patchwork.ozlabs.org/project/linux-pci/patch/20201125192554.5401-1-vidyas@nvidia.com/
 
-Let me push that out in few minutes.. so you can double-check.
 
-Sorry for confusion,
+> So I tried applying this on top of v5.10-rc1, but
+> that gives me the following:
+> 
+> 	[    3.595161] ahci 0001:01:00.0: version 3.0
+> 	[    3.595726] ahci 0001:01:00.0: SSS flag set, parallel bus scan disabled
+> 	[    4.609923] ahci 0001:01:00.0: controller reset failed (0xffffffff)
+> 	[    4.610343] ahci: probe of 0001:01:00.0 failed with error -5
+> 
+> So the device enumerates fine, but it's not able to reset the SATA controller.
+> That said, this seems to happen regardless of this patch series, so plain v5.10-rc1
+> also shows the above.
+This was also a known issue and we need the following commit to make 
+things work (FWIW, it is already accepted)
+9fff3256f93d PCI: dwc: Restore ATU memory resource setup to use last entry
 
-								Pavel
+Otherwise, v5.10-rc3 can be used which has working state of PCIe on 
+Tegra194.
 
---=20
-http://www.livejournal.com/~pavelmachek
-
---+KJYzRxRHjYqLGl5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl++tYAACgkQMOfwapXb+vLd2ACbBWbO0idpuWB6UwZ2t6VBJjqE
-yl8AoJmjVq45nB0tbbqMtP8K3Xjwihbc
-=Ht2Z
------END PGP SIGNATURE-----
-
---+KJYzRxRHjYqLGl5--
+> 
+> Given the above, I think we should hold off on applying this series until we've
+> fixed PCI on linux-next and made sure that SATA also works properly, otherwise
+> we don't have a known good baseline to test this against.
+> 
+> Thierry
