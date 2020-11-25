@@ -2,120 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC172C428B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 373372C428F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729153AbgKYPAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:00:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41346 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725985AbgKYPAX (ORCPT
+        id S1729777AbgKYPB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:01:58 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:43386 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729505AbgKYPB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:00:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606316421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+CXMNoli6SWbemBse5ozpvpLatWo5IkE/EXXw6CqrOI=;
-        b=cLSX/4AdkVKja0n2iuQum+YO5VlhCX54CB/0Bikt+e1NDKJTrnp65unQRc7He2ni6dpmv4
-        PUa9ejDVU2H+Uq5FDdH1i9nw91j/iq4eJV1eiGypyY0yLJsi/fyw4wiMPKe2awzloxiHz4
-        DP0eC8H4OaVhggmOZ8arLNZWThhlzIs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-kdgw0Nc4PcC7oVvvUUP0EQ-1; Wed, 25 Nov 2020 10:00:17 -0500
-X-MC-Unique: kdgw0Nc4PcC7oVvvUUP0EQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 633E71E7CF;
-        Wed, 25 Nov 2020 15:00:15 +0000 (UTC)
-Received: from [10.36.113.83] (ovpn-113-83.ams2.redhat.com [10.36.113.83])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 822A019D61;
-        Wed, 25 Nov 2020 15:00:04 +0000 (UTC)
-Subject: Re: [PATCH v2 1/2] genirq: add an irq_create_mapping_affinity()
- function
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>, Greg Kurz <groug@kaod.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20201125111657.1141295-1-lvivier@redhat.com>
- <20201125111657.1141295-2-lvivier@redhat.com>
- <87sg8xk1yi.fsf@nanos.tec.linutronix.de>
- <e32641f7-0993-8923-7d74-5ac57a60f10d@redhat.com>
- <5100171ff6d4c3efffe008e1e0bf3707@kernel.org>
-From:   Laurent Vivier <lvivier@redhat.com>
-Message-ID: <84cdd8d0-8b8f-cc8e-9672-2661f6377114@redhat.com>
-Date:   Wed, 25 Nov 2020 16:00:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <5100171ff6d4c3efffe008e1e0bf3707@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Wed, 25 Nov 2020 10:01:58 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0APEsZGI083184;
+        Wed, 25 Nov 2020 15:01:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=QCA3n8x3xxs5+syQvLQrX1DWZySaUGuBt/E8NAnp1hQ=;
+ b=fWFIyzeVi8q8q3LkRvoLxHyGk8bms1qDlT8v0yI7BmJb9nxTD0YIbTIP7B4wVgmRzGvm
+ jObfVEqqfJuDlrYTlo7C513yEZQYHQVGKC2zzadNCnP7pGM81bLK3rY6GwU/jbD8abng
+ HYL5adN2g39s5iEbd04f1INqWJXrrF/JgdAilh4rMmZL41Gm/M2Jor3oSz/WTaWi5Q4P
+ CwyXSzLyCFQQUWCsAoL5qCGZbooP0c/QfUMQoy7Uc63ega7mkSnUaUMm0a9pfp/yndnl
+ kpsA2bWdJB0pZD7i5faV8NEtHc9plwBT6d4KHdXlteCb+YDQOtBuh1wEXFKWmI5PZGWk fw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 351kwh9s6j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 25 Nov 2020 15:01:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0APEtvt2081626;
+        Wed, 25 Nov 2020 14:59:42 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 351kwf6uhs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Nov 2020 14:59:42 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0APExdK5024913;
+        Wed, 25 Nov 2020 14:59:39 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 25 Nov 2020 06:59:39 -0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] nfsd: Fix error return code in nfsd_file_cache_init()
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20201125141758.GB2811@fieldses.org>
+Date:   Wed, 25 Nov 2020 09:59:37 -0500
+Cc:     Trond Myklebust <trond.myklebust@primarydata.com>,
+        richard.sharpe@primarydata.com,
+        Dros Adamson <dros@primarydata.com>,
+        Jeff Layton <jeff.layton@primarydata.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <BFFAE931-5403-4790-8A2C-0E669FAEE292@oracle.com>
+References: <20201125083933.2386059-1-huangguobin4@huawei.com>
+ <20201125141758.GB2811@fieldses.org>
+To:     Bruce Fields <bfields@fieldses.org>,
+        Huang Guobin <huangguobin4@huawei.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9815 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011250095
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9815 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 suspectscore=0 adultscore=0 impostorscore=0 mlxscore=0
+ spamscore=0 phishscore=0 malwarescore=0 clxscore=1011 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011250095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/11/2020 15:54, Marc Zyngier wrote:
-> On 2020-11-25 14:09, Laurent Vivier wrote:
->> On 25/11/2020 14:20, Thomas Gleixner wrote:
->>> Laurent,
->>>
->>> On Wed, Nov 25 2020 at 12:16, Laurent Vivier wrote:
->>>
->>> The proper subsystem prefix is: 'genirq/irqdomain:' and the first letter
->>> after the colon wants to be uppercase.
->>
->> Ok.
->>
->>>> This function adds an affinity parameter to irq_create_mapping().
->>>> This parameter is needed to pass it to irq_domain_alloc_descs().
->>>
->>> A changelog has to explain the WHY. 'The parameter is needed' is not
->>> really useful information.
->>>
->>
->> The reason of this change is explained in PATCH 2.
->>
->> I have two patches, one to change the interface with no functional
->> change (PATCH 1) and
->> one to fix the problem (PATCH 2). Moreover they don't cover the same subsystems.
->>
->> I can either:
->> - merge the two patches
->> - or make a reference in the changelog of PATCH 1 to PATCH 2
->>   (something like "(see folowing patch "powerpc/pseries: pass MSI affinity to
->>    irq_create_mapping()")")
->> - or copy some information from PATCH 2
->>   (something like "this parameter is needed by rtas_setup_msi_irqs()
->> to pass the affinity
->>    to irq_domain_alloc_descs() to fix multiqueue affinity")
->>
->> What do you prefer?
-> 
-> How about something like this for the first patch:
-> 
-> "There is currently no way to convey the affinity of an interrupt
->  via irq_create_mapping(), which creates issues for devices that
->  expect that affinity to be managed by the kernel.
-> 
->  In order to sort this out, rename irq_create_mapping() to
->  irq_create_mapping_affinity() with an additional affinity parameter
->  that can conveniently passed down to irq_domain_alloc_descs().
-> 
->  irq_create_mapping() is then re-implemented as a wrapper around
->  irq_create_mapping_affinity()."
 
-It looks perfect. I update the changelog with that.
 
-Thanks,
-Laurent
+> On Nov 25, 2020, at 9:17 AM, J. Bruce Fields <bfields@fieldses.org> =
+wrote:
+>=20
+> On Wed, Nov 25, 2020 at 03:39:33AM -0500, Huang Guobin wrote:
+>> Fix to return PTR_ERR() error code from the error handling case =
+instead of
+>> 0 in function nfsd_file_cache_init(), as done elsewhere in this =
+function.
+>>=20
+>> Fixes: 65294c1f2c5e7("nfsd: add a new struct file caching facility to =
+nfsd")
+>> Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
+>> ---
+>> fs/nfsd/filecache.c | 1 +
+>> 1 file changed, 1 insertion(+)
+>>=20
+>> diff --git a/fs/nfsd/filecache.c b/fs/nfsd/filecache.c
+>> index c8b9d2667ee6..a8a5b555f08b 100644
+>> --- a/fs/nfsd/filecache.c
+>> +++ b/fs/nfsd/filecache.c
+>> @@ -686,6 +686,7 @@ nfsd_file_cache_init(void)
+>> 		pr_err("nfsd: unable to create fsnotify group: %ld\n",
+>> 			PTR_ERR(nfsd_file_fsnotify_group));
+>> 		nfsd_file_fsnotify_group =3D NULL;
+>> +		ret =3D PTR_ERR(nfsd_file_fsnotify_group);
+>=20
+> I think you meant to add that one line earlier.
+>=20
+> Otherwise fine, but it looks like an unlikely case so can probably =
+wait
+> for the merge window.
+
+Applied for the v5.11 merge window with Bruce's suggested change,
+and pushed to the cel-next branch in
+
+  git://git.linux-nfs.org/projects/cel/cel-2.6.git
+
+or
+
+  https://git.linux-nfs.org/?p=3Dcel/cel-2.6.git;a=3Dsummary
+
+
+>> 		goto out_notifier;
+>> 	}
+>>=20
+>> --=20
+>> 2.22.0
+
+--
+Chuck Lever
+
+
 
