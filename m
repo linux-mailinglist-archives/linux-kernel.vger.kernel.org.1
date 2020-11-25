@@ -2,127 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524C82C4A39
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C5E2C4A40
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732531AbgKYVpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:45:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728706AbgKYVpI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:45:08 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2415C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:45:07 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id v3so6245ilo.5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:45:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=no1bO+ckW6W8DUgsFvzWdRgxxx68msjiEzdWapddJA0=;
-        b=Al+QYKrQ6R3a2rHiS3QhZy+tjQg/wBZqF4aZzmCD3toqI0qi1e2VVmB3WYcGH3kzbw
-         KXA3svqCRG8xaDiFNo86hCT5IqL4BOvHHmiM73XdhNJ+c50LIKz2wIxmY0BYgr4sfHDm
-         gdQGGUQtaOvObJ3YwZT6xws0TUpZ2CTFSFUig=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=no1bO+ckW6W8DUgsFvzWdRgxxx68msjiEzdWapddJA0=;
-        b=e2JR992MWdIL77xgtEIWl/qvpmEGlhvssvQFm26QqckxB0p68Hw+i5/QHuI6kfcBDV
-         bMdKg8JJ+9hCt97gbcWgPhjF0FFFH4M26cZfqfxBnBGveewsuzsRAKF6cnyz3DgNztiH
-         H4+hdyjCrZnzFGLo+9TWSB9zRzDhO//DOzm4X1wixDwRlAM8HVR9qdflPv08Jlk8B2cN
-         G/aNB/yIvgqlh2sc6MyWAxdIL4Byez6tFBpqxH6D7j8Nv1CHLQc3LEiG2SN53oODj0OO
-         9gkCwhHcXbU60zODC2k+SwKD15oq6+nWNsinkPir8oCxT6xhjvQ/1brwRszn97GFXHvO
-         kw2A==
-X-Gm-Message-State: AOAM531uklkWuZlD6+8xlP8wHUYNi2Co9lSYQZYu+hLZW/7MNZNIWq5d
-        682nuP2gEJc6k8dhfispxC8hGw==
-X-Google-Smtp-Source: ABdhPJxe6T5zgXwtV3mF6ttSWU6Njun4e63eXCdaro0fB9Jk6jCGEiAvqo1VkX2iFXUEJIiRGuNRlw==
-X-Received: by 2002:a05:6e02:1204:: with SMTP id a4mr4840785ilq.135.1606340707301;
-        Wed, 25 Nov 2020 13:45:07 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id m6sm1469909ioq.33.2020.11.25.13.45.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 13:45:06 -0800 (PST)
-Subject: Re: [PATCH net-next 1/2] soc: qcom: ipa: Constify static qmi structs
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Alex Elder <elder@kernel.org>, Kalle Valo <kvalo@codeaurora.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-References: <20201122234031.33432-1-rikard.falkeborn@gmail.com>
- <20201122234031.33432-2-rikard.falkeborn@gmail.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <ee9dfc18-092e-6a5c-d310-d4ce52db6042@ieee.org>
-Date:   Wed, 25 Nov 2020 15:45:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1732952AbgKYVt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:49:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732851AbgKYVt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 16:49:27 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACE602083E;
+        Wed, 25 Nov 2020 21:49:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606340967;
+        bh=kwlAvwQ9x4w4c8oPPCfGpynB2t32g0wSKIXIqjXmwR0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PGGCjppsUSg6q4yK+aIE7KQ6BZ9kyOUsHKRuYbcXLJDZGDAiKEpBmcb3HjyiyyBZU
+         eCitBdLNVcCUyna8/Orrjfup3rjcaA/Uvyw30grsZzBBVPulXev50u1Eeleh1oSVNC
+         ji3JZFhFt5YHwE8STfvw6Y4jUKFTmD92pmSFwIwM=
+Date:   Wed, 25 Nov 2020 13:49:25 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     andrew.hendry@gmail.com, davem@davemloft.net,
+        xie.he.0141@gmail.com, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v6 2/5] net/lapb: support netdev events
+Message-ID: <20201125134925.26d851f7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201124093938.22012-3-ms@dev.tdt.de>
+References: <20201124093938.22012-1-ms@dev.tdt.de>
+        <20201124093938.22012-3-ms@dev.tdt.de>
 MIME-Version: 1.0
-In-Reply-To: <20201122234031.33432-2-rikard.falkeborn@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/20 5:40 PM, Rikard Falkeborn wrote:
-> These are only used as input arguments to qmi_handle_init() which
-> accepts const pointers to both qmi_ops and qmi_msg_handler. Make them
-> const to allow the compiler to put them in read-only memory.
+On Tue, 24 Nov 2020 10:39:35 +0100 Martin Schiller wrote:
+> This patch allows layer2 (LAPB) to react to netdev events itself and
+> avoids the detour via layer3 (X.25).
 > 
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-
-Good idea.  Thanks a lot.
-
-Acked-by: Alex Elder <elder@linaro.org>
-
-> ---
->   drivers/net/ipa/ipa_qmi.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
+> 1. Establish layer2 on NETDEV_UP events, if the carrier is already up.
 > 
-> diff --git a/drivers/net/ipa/ipa_qmi.c b/drivers/net/ipa/ipa_qmi.c
-> index 5090f0f923ad..d2c3f273c233 100644
-> --- a/drivers/net/ipa/ipa_qmi.c
-> +++ b/drivers/net/ipa/ipa_qmi.c
-> @@ -168,7 +168,7 @@ static void ipa_server_bye(struct qmi_handle *qmi, unsigned int node)
->   	ipa_qmi->indication_sent = false;
->   }
->   
-> -static struct qmi_ops ipa_server_ops = {
-> +static const struct qmi_ops ipa_server_ops = {
->   	.bye		= ipa_server_bye,
->   };
->   
-> @@ -234,7 +234,7 @@ static void ipa_server_driver_init_complete(struct qmi_handle *qmi,
->   }
->   
->   /* The server handles two request message types sent by the modem. */
-> -static struct qmi_msg_handler ipa_server_msg_handlers[] = {
-> +static const struct qmi_msg_handler ipa_server_msg_handlers[] = {
->   	{
->   		.type		= QMI_REQUEST,
->   		.msg_id		= IPA_QMI_INDICATION_REGISTER,
-> @@ -261,7 +261,7 @@ static void ipa_client_init_driver(struct qmi_handle *qmi,
->   }
->   
->   /* The client handles one response message type sent by the modem. */
-> -static struct qmi_msg_handler ipa_client_msg_handlers[] = {
-> +static const struct qmi_msg_handler ipa_client_msg_handlers[] = {
->   	{
->   		.type		= QMI_RESPONSE,
->   		.msg_id		= IPA_QMI_INIT_DRIVER,
-> @@ -463,7 +463,7 @@ ipa_client_new_server(struct qmi_handle *qmi, struct qmi_service *svc)
->   	return 0;
->   }
->   
-> -static struct qmi_ops ipa_client_ops = {
-> +static const struct qmi_ops ipa_client_ops = {
->   	.new_server	= ipa_client_new_server,
->   };
->   
+> 2. Call lapb_disconnect_request() on NETDEV_GOING_DOWN events to signal
+>    the peer that the connection will go down.
+>    (Only when the carrier is up.)
 > 
+> 3. When a NETDEV_DOWN event occur, clear all queues, enter state
+>    LAPB_STATE_0 and stop all timers.
+> 
+> 4. The NETDEV_CHANGE event makes it possible to handle carrier loss and
+>    detection.
+> 
+>    In case of Carrier Loss, clear all queues, enter state LAPB_STATE_0
+>    and stop all timers.
+> 
+>    In case of Carrier Detection, we start timer t1 on a DCE interface,
+>    and on a DTE interface we change to state LAPB_STATE_1 and start
+>    sending SABM(E).
+> 
+> Signed-off-by: Martin Schiller <ms@dev.tdt.de>
+
+> +/* Handle device status changes. */
+> +static int lapb_device_event(struct notifier_block *this, unsigned long event,
+> +			     void *ptr)
+> +{
+> +	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+> +	struct lapb_cb *lapb;
+> +
+> +	if (!net_eq(dev_net(dev), &init_net))
+> +		return NOTIFY_DONE;
+> +
+> +	if (dev->type == ARPHRD_X25) {
+
+Flip condition, save indentation.
+
+	if (dev->type != ARPHRD_X25)
+		return NOTIFY_DONE;
+
+You can also pull out of all the cases:
+
+	lapb = lapb_devtostruct(dev);
+	if (!lapb)
+		return NOTIFY_DONE;
+
+right?
+
+> +		switch (event) {
+> +		case NETDEV_UP:
+> +			lapb_dbg(0, "(%p) Interface up: %s\n", dev,
+> +				 dev->name);
+> +
+> +			if (netif_carrier_ok(dev)) {
+> +				lapb = lapb_devtostruct(dev);
+> +				if (!lapb)
+> +					break;
+
+>  static int __init lapb_init(void)
+>  {
+> +	register_netdevice_notifier(&lapb_dev_notifier);
+
+This can fail, so:
+
+	return register_netdevice_notifier(&lapb_dev_notifier);
+
+>  	return 0;
+>  }
+>  
+>  static void __exit lapb_exit(void)
+>  {
+>  	WARN_ON(!list_empty(&lapb_list));
+> +
+> +	unregister_netdevice_notifier(&lapb_dev_notifier);
+>  }
+>  
+>  MODULE_AUTHOR("Jonathan Naylor <g4klx@g4klx.demon.co.uk>");
 
