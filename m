@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BA32C4547
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D5D2C4546
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731264AbgKYQcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:32:52 -0500
-Received: from mail-eopbgr150088.outbound.protection.outlook.com ([40.107.15.88]:41262
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        id S1731080AbgKYQcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:32:50 -0500
+Received: from mail-eopbgr00067.outbound.protection.outlook.com ([40.107.0.67]:3140
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730719AbgKYQct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729690AbgKYQct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 25 Nov 2020 11:32:49 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h4EZOxNTnoHwjpp575V9vEucuJcudCrHhdtjL2RAanRsn2/DWUHsrYxZ21QSxh4TIciNGgB7gtWFfzwkT0VewBvHk/U5IShkwNdmmqmvpLSruGrlimfdERHIgEOlecZgBsLlNUOFPa+DQrduZ9hLtvK7mnChBIB//s8XmwdG0CxVdGGLXyTWvdzctSgx5JQbL0mZLvZtwfBb2tvIT2OpWGAG7g8YJE4rbgVWqDrY9u7mxxic8uinEFN9u3qQ8UqOXGaw/EEtl1QzCdw5cmk/R7y1q1zA2fzqjlMrPUQf9VgBXwJhuhUcvhQXyGIf7aJB8qqy8cFLcZ0swjvg2jAnOg==
+ b=F5VABY5wwsibAo56kEj8pKAlcnnUCgBLKu55T7O2l1VAb7AM0T2D33+oT5gog6fxfocRaLD9GLJVQOjkkmhqc1SGHgf5bNyetiEnvtSs64Iz+URvm/gvWSdORlb7qpzCDKwVxfP4lbWuCMs5YrOCY85jB8vzjrs3BufRkEMEcyENwZn1/PMfaUZmoAXgbJOZQguJOIcFN2tdaI54aIKXYNly31tmrWV5fnj85X5BBLyD5C98DjGu9VpIUudhvSLuNrtgslHhIrkvXMm3oXKh15QixGI5FnHpKYduA6007VwHERJUU2fIk0H4SChDEHgSKUJPM3iE9+tDIIGriQQfHg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4G2FdFDAa6W0BAQEl5iQZWQwDci3Hvk2LlQn4bMxxEo=;
- b=GFHAlnBlZZw9D01uitcONciPdbbkCn0BMt0Ifj4U4Foj2YhLoPgowKzYbtNqO9FfRFlBQMGxIHpwxJoB1eHGrg807B+DXfYxiv6iluokinf8akrpnPpMMnl60ZjrLVrgJeKK61ZuLnAgu1AFHxSmUpa8k3Hp/VeBzN/S/OPtDY/xdK+uCv8CfBJja5vN7L102+NDm73Q7YYqDD3BF1Jn7jBS/vkgCjRJBOO7bgs9KJ87bnOsEIkW5mC4SXtGeVc+v/2wKzgLTbXIjQ3LziI+LIjo9TWvIIX4Oea3pBu8K7j0ZrVTZX0cVf5F2pp1Dod/YgHVAI2lCTjtOG/iJ+oe8A==
+ bh=d2ZgXstmf+OwCOrjWc5lr1Zv8Kg9quRSlbjoz0/YS78=;
+ b=W/EUH7QtE9ldSlHXXfAjsTL1AyKFrrARWxkts673HphSNeOvC+Mday2porU8H+zWPcUw/5+d5jbU6d0UG8D7ltfoqxFTVjxWl/86cTb9C9a8wviSB5prALf9Gn4y74+6dHJyukLn72G34rmV6DNXH2AN3n6V38IIzaOsMnY5PkBE7Zy+aD6+AmuoSBBs0cFRTmF4ctCkaJiblHJgSq/yVQwFKah1hRf4ckVDo1YSI2zrn+JkSZzlQxlK99XOvqcv0WNgJkrs6MRY6C2v6GH65GP7ft4Z3RPm4V2V8SbERJ1A0y4z2RNUw3AwDsGf5KzyafsdUoyoFDWpbk7iRKm6tg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 193.240.239.45) smtp.rcpttodomain=kernel.org smtp.mailfrom=diasemi.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
- dkim=none (message not signed); arc=none
+ is 193.240.239.45) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=diasemi.com; dmarc=fail (p=none sp=none pct=100) action=none
+ header.from=diasemi.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=dialogsemiconductor.onmicrosoft.com;
  s=selector1-dialogsemiconductor-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4G2FdFDAa6W0BAQEl5iQZWQwDci3Hvk2LlQn4bMxxEo=;
- b=BVfUSxZzBd1vFD+ydYMsMcA1J8SBzaLMVRwItY/iFjQYY/zFbLD/HbUutHip60vUqqiKonVRNzhyQ5UoBcOIO2eX6KajOCnnxdFChLSnMD/1TBPO7dfkmiQIxq9uzRCCgaVajq8veaxLC+cs/8xw00Wny2Ow6Sg9NchXbMs4uQA=
-Received: from AM4PR0202CA0021.eurprd02.prod.outlook.com
- (2603:10a6:200:89::31) by DB8PR10MB2874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:e9::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Wed, 25 Nov
- 2020 16:32:46 +0000
+ bh=d2ZgXstmf+OwCOrjWc5lr1Zv8Kg9quRSlbjoz0/YS78=;
+ b=dZC0Gh/+lMdi3QDbLbTipH6qxXtYZaKu2t6weU5vXfwSqxiZS404blWzWn3QGPQkGCzmmtWR57Ms/GrDcDnbvL2b9vPjD9s9ZX+K+UA/A5lmizGyLDQWMNiRoYo55BcfZ9aD5OM5L5bIKTRqO8JLZXyKRgAq6+WTlYxQZycFbos=
+Received: from AM4PR0202CA0011.eurprd02.prod.outlook.com
+ (2603:10a6:200:89::21) by DB6PR1001MB1094.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:4:61::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.29; Wed, 25 Nov
+ 2020 16:32:45 +0000
 Received: from AM5EUR02FT028.eop-EUR02.prod.protection.outlook.com
- (2603:10a6:200:89:cafe::7b) by AM4PR0202CA0021.outlook.office365.com
- (2603:10a6:200:89::31) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:10a6:200:89:cafe::b1) by AM4PR0202CA0011.outlook.office365.com
+ (2603:10a6:200:89::21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend
- Transport; Wed, 25 Nov 2020 16:32:46 +0000
+ Transport; Wed, 25 Nov 2020 16:32:45 +0000
 X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
- 193.240.239.45) smtp.mailfrom=diasemi.com; kernel.org; dkim=none (message not
- signed) header.d=none;kernel.org; dmarc=fail action=none
- header.from=diasemi.com;
+ 193.240.239.45) smtp.mailfrom=diasemi.com; linuxfoundation.org; dkim=none
+ (message not signed) header.d=none;linuxfoundation.org; dmarc=fail
+ action=none header.from=diasemi.com;
 Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
  diasemi.com discourages use of 193.240.239.45 as permitted sender)
 Received: from mailrelay1.diasemi.com (193.240.239.45) by
@@ -53,97 +53,78 @@ Received: from krsrvapps-03.diasemi.com (10.93.17.2) by
  NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
  14.3.468.0; Wed, 25 Nov 2020 17:32:44 +0100
 Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
- 2997213F672; Thu, 26 Nov 2020 01:32:43 +0900 (KST)
-Message-ID: <e2a01173699486519f8da85b9283c6af8481fbdb.1606320459.git.Roy.Im@diasemi.com>
-In-Reply-To: <cover.1606320459.git.Roy.Im@diasemi.com>
-References: <cover.1606320459.git.Roy.Im@diasemi.com>
+ 27F9613F671; Thu, 26 Nov 2020 01:32:43 +0900 (KST)
+Message-ID: <cover.1606320459.git.Roy.Im@diasemi.com>
 From:   Roy Im <roy.im.opensource@diasemi.com>
 Date:   Thu, 26 Nov 2020 01:07:39 +0900
-Subject: [RESEND PATCH V20 1/3] MAINTAINERS: da7280 updates to the Dialog
- Semiconductor search terms
+Subject: [RESEND PATCH V20 0/3]  da7280: haptic driver submission
 To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Greg KH <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Support Opensource <support.opensource@diasemi.com>
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     Support Opensource <support.opensource@diasemi.com>,
+        <devicetree@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: da6639ba-d093-4ae8-9e03-08d8915fbda1
-X-MS-TrafficTypeDiagnostic: DB8PR10MB2874:
-X-Microsoft-Antispam-PRVS: <DB8PR10MB2874832ADA96B719CE8DFE37A2FA0@DB8PR10MB2874.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Office365-Filtering-Correlation-Id: 55efb5dd-be79-4b73-dfde-08d8915fbd3d
+X-MS-TrafficTypeDiagnostic: DB6PR1001MB1094:
+X-Microsoft-Antispam-PRVS: <DB6PR1001MB10940CB37231F29481B9371DA2FA0@DB6PR1001MB1094.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ikZVox/kq3QjAAZ2PbxO47+6SxAglD39j5gsy2mPVQAM8XZ4yaq45D50xHpBww3wz/i2pG0iIl4pM0m+T739+w+4lS0DhnIBO4F6qveRCuxh2ZBWmErY/dgwm98y/RiKG8vhaJl421jZpZzXDXbXKuEI0X0QThHnNGANim/1WPgin4fAhgOgeQjuzoysiR3YrY7fiAhW+3LlhI3kL7W6LoouzRcWiYCoAefE5xeGL3jffpJE2uU9EC1LBLKlwAZwneB78hFF/Nn69BeuZYwQlqgGsTjKUpk+KK2lZFEtUAHCNKVHDJ3X/dRe8dCljqr7v+SDIQJQ2HMasFR+RQ8XbI3sUz02X6z8mWC6liUhMC3OgflF+cWdSqgJez3gg4DHZmhKpjL58zpJXxaRqeE4ovSsDidfO6KVjLi/ObQDHBshLsDsIjslcxTOmM4GABb0IPQzquqLFWEoQ6TMha8tnIc/N/6QtYo/BXkQ9ClEZf9MBo/AxOlX5ptC1ISSf/mZ
-X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(396003)(136003)(46966005)(2906002)(8936002)(86362001)(8676002)(336012)(70206006)(426003)(5660300002)(70586007)(6666004)(36906005)(6266002)(42186006)(81166007)(82740400003)(356005)(36756003)(26005)(316002)(186003)(110136005)(82310400003)(2616005)(966005)(47076004)(478600001)(107886003)(33310700002)(83380400001)(4326008);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: VAoN10bh6V84HHyNvq9hX/WTCMCrFSvwPN34SPbGwwz+Y4E6exVQ7K4mCo66NDOmzIZDmeCd4Lx0zaFiuXnFEYJ9sncnqXieVmLSZBGmBwYStRhsyDD0i5Kmo/dDeVPZ+5qR09EJ6gGtI6RWrh7+9cqQzwthf+/GKWwf0Ishf3r+gcAbCL1KLKH1D1MPQL7r/bJWwO31O7GEyfJj6ed4JywcMQJKizCANkl2/X74V3fUqVtDqy6sWSXCfLhhNqfcx89hvNN+GxLjZ5zpoAWZo5rbkxfhrH0iEWBrg+FsZH36ShzE9Jcrte4s+eABrhaVQQQRusrQOqLtkl/5Umr1jQSsEy6bJFtSZmTp402+C8lD3LdQGfBG5hgphleICrWK81iOkWV5j8EqRxBARrNnkM0/7SmL8XJy2lnvGiEMYCNmsItcGnz/Cgw/QvDLfY8N
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(376002)(346002)(46966005)(5660300002)(6266002)(478600001)(4744005)(47076004)(7416002)(70206006)(42186006)(36906005)(70586007)(4326008)(110136005)(316002)(54906003)(921005)(6666004)(33310700002)(8936002)(336012)(26005)(82740400003)(86362001)(8676002)(82310400003)(36756003)(81166007)(426003)(2616005)(356005)(186003)(2906002)(83380400001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 16:32:45.9842
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 16:32:45.3345
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: da6639ba-d093-4ae8-9e03-08d8915fbda1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55efb5dd-be79-4b73-dfde-08d8915fbd3d
 X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
 X-MS-Exchange-CrossTenant-AuthSource: AM5EUR02FT028.eop-EUR02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB2874
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR1001MB1094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the da7280 bindings doc and driver to the Dialog
-Semiconductor support list.
+This patch adds support for the Dialog DA7280 Haptic driver IC.
 
-Signed-off-by: Roy Im <roy.im.opensource@diasemi.com>
+In this patch set the following is provided:
 
----
-v20: No changes.
-v19: No changes.
-v18: No changes.
-v17: No changes.
-v16: No changes.
-v15: No changes.
-v14: No changes.
-v13: No changes.
-v12: Corrected file list order.
-v11: No changes.
-v10: No changes.
-v9: No changes.
-v8: No changes.
-v7: No changes.
-v6: No changes.
-v5: No changes.
-v4: No changes.
-v3: No changes.
-v2: No changes.
+[PATCH v20 1/3] MAINTAINERS file update for DA7280
+[PATCH v20 2/3] DA7280 DT Binding
+[PATCH v20 3/3] DA7280 Driver
 
+This patch applies against linux-mainline and v5.10-rc5
 
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+Thank you,
+Roy Im, Dialog Semiconductor Ltd.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a008b70..389d6e0b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5107,6 +5107,7 @@ M:	Support Opensource <support.opensource@diasemi.com>
- S:	Supported
- W:	http://www.dialog-semiconductor.com/products
- F:	Documentation/devicetree/bindings/input/da90??-onkey.txt
-+F:	Documentation/devicetree/bindings/input/dlg,da72??.txt
- F:	Documentation/devicetree/bindings/mfd/da90*.txt
- F:	Documentation/devicetree/bindings/regulator/da92*.txt
- F:	Documentation/devicetree/bindings/regulator/slg51000.txt
-@@ -5117,6 +5118,7 @@ F:	Documentation/hwmon/da90??.rst
- F:	drivers/gpio/gpio-da90??.c
- F:	drivers/hwmon/da90??-hwmon.c
- F:	drivers/iio/adc/da91??-*.c
-+F:	drivers/input/misc/da72??.[ch]
- F:	drivers/input/misc/da90??_onkey.c
- F:	drivers/input/touchscreen/da9052_tsi.c
- F:	drivers/leds/leds-da90??.c
+Roy Im (3):
+  MAINTAINERS: da7280 updates to the Dialog Semiconductor search terms
+  dt-bindings: input: Add document bindings for DA7280
+  Input: new da7280 haptic driver
+
+ .../devicetree/bindings/input/dlg,da7280.txt       |  109 ++
+ MAINTAINERS                                        |    2 +
+ drivers/input/misc/Kconfig                         |   12 +
+ drivers/input/misc/Makefile                        |    1 +
+ drivers/input/misc/da7280.c                        | 1375 ++++++++++++++++++++
+ 5 files changed, 1499 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/dlg,da7280.txt
+ create mode 100644 drivers/input/misc/da7280.c
+
 -- 
 end-of-patch for RESEND PATCH V20
 
