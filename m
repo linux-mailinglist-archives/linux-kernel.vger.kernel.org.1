@@ -2,117 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9D42C3E8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B95A2C3E92
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbgKYK4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:56:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
+        id S1727265AbgKYK4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:56:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgKYK4B (ORCPT
+        with ESMTP id S1726654AbgKYK4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:56:01 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB55AC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 02:56:00 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1khsSt-0004DY-GD; Wed, 25 Nov 2020 11:55:59 +0100
-Subject: Re: [PATCH] net: stmmac: fix incorrect merge of patch upstream
-To:     Antonio Borneo <antonio.borneo@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     stable@vger.kernel.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
- <20201124223729.886992-1-antonio.borneo@st.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <3ba1c4b3-18a0-5448-2188-aa6e2802c57e@pengutronix.de>
-Date:   Wed, 25 Nov 2020 11:55:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Wed, 25 Nov 2020 05:56:04 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6AEC0613D4;
+        Wed, 25 Nov 2020 02:56:04 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id b144so3512474qkc.13;
+        Wed, 25 Nov 2020 02:56:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZUhSViKlrS32eRO6QaltTNHwNv4ukAnMlkVxhlaISUE=;
+        b=d32flcIto9seFSM+1Dcn2JN1g+Re5k5tTBcEYSygiwVNxMP8UGbw0fdYUc5bYliGmj
+         Aa8uALs7u+ilR2uWlA5Q0w5l71qGVHLUCDZUZXWoA53kyhkFdgbIQa/EM3HnumVRUxm6
+         u16LZdcDbhbgB/KPN7GfdH4lXrkdlwLbxXML+2+ZBVQQbhpE+wg50/Du48IjliQCFGdF
+         xDGvvieIeN8Qz3d4FqZztjoxlRC/liteSf6j6YKn0hd2r/44s1CHYn8ztZ+xHzPXYq+y
+         i6xp/3vSPSrapk9h9cKsfXcisWR8R+1o1uH9XjCTqLC7rG/A3Em0L882BywDpoReadDn
+         HD4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZUhSViKlrS32eRO6QaltTNHwNv4ukAnMlkVxhlaISUE=;
+        b=IlrSibUUFWUDLCNyEzLvEmB7dZbJH5PrRY6itxfbc0PC+1M9wN5598c5frpGiKVLfA
+         /cBCkVL4d+pxqFbyDLap3Vm79M9K2bYaraIp/CotQngdj69lfqCeTvER+cysIXlRskVI
+         X0Frg2BxXcsQ9vZeGsZhIp2uhx7S7HVaAgMzix8fyNj++bhFkYyfrTR1e8B0Fbzo7Y8C
+         c9LveYway5UhRG8BBWagB6iyi/NwpHoFUWOoUFRoqLWaw0loSL+PTwmSr0h9KwoBQEWS
+         DwpOdJyAnMrpDejmTYS2WgajHSf14xmioevE1ka1pdm9oIBk41cEg1Ur19psKQy5mfw0
+         QVHw==
+X-Gm-Message-State: AOAM531mRFRxo2yiYLBUuH6Fj2w3Zr7lqm21exn+7Z0npppJ7FHyKzo5
+        rEaV9r3LJJZvudsomnZggDz6aT6UX+vWJF52eCM=
+X-Google-Smtp-Source: ABdhPJzeJHvtr4DndqVnbtPYEEKZD7HEwW06DISDj+k+M0Dhu20GlTFvTk0+RsBdaYrNrgeDMABf4s+UiCu+gcJwTJs=
+X-Received: by 2002:a5b:cd1:: with SMTP id e17mr3316511ybr.177.1606301763947;
+ Wed, 25 Nov 2020 02:56:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201124223729.886992-1-antonio.borneo@st.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201125100004.1288-1-benchuanggli@gmail.com> <CAPDyKFp_3Vpq6ZRm5Qm1Zningz9tDqQLS_E78a8ChYHVbofB9g@mail.gmail.com>
+ <CACT4zj_rrV+MFXwsnXpLD=CNjApUKozMWJMnhS6z2q5d6-dY-g@mail.gmail.com> <CAPDyKFq=r8Fwt1j7S1F5fCsMjGp6mxfWWPjppA0CVjx17MVRVQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFq=r8Fwt1j7S1F5fCsMjGp6mxfWWPjppA0CVjx17MVRVQ@mail.gmail.com>
+From:   Ben Chuang <benchuanggli@gmail.com>
+Date:   Wed, 25 Nov 2020 18:55:53 +0800
+Message-ID: <CACT4zj9qLmwZn14OV3yfs1kXS1b_7hCbtezejEVRTcW83CsZzQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: Disable slow mode in HS400 mode for GL9763E
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Ulf,
 
-On 24.11.20 23:37, Antonio Borneo wrote:
-> Commit 757926247836 ("net: stmmac: add flexible PPS to dwmac
-> 4.10a") was intended to modify the struct dwmac410_ops, but it got
-> somehow badly merged and modified the struct dwmac4_ops.
-> 
-> Revert the modification in struct dwmac4_ops and re-apply it
-> properly in struct dwmac410_ops.
-> 
-> Fixes: 757926247836 ("net: stmmac: add flexible PPS to dwmac 4.10a")
-> Cc: stable@vger.kernel.org # v5.6+
+On Wed, Nov 25, 2020 at 6:49 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Wed, 25 Nov 2020 at 11:43, Ben Chuang <benchuanggli@gmail.com> wrote:
+> >
+> > Hi Ulf,
+> >
+> > On Wed, Nov 25, 2020 at 6:04 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > On Wed, 25 Nov 2020 at 10:59, Ben Chuang <benchuanggli@gmail.com> wrote:
+> > > >
+> > > > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > > >
+> > > > The GL9763E uses 150Mhz (slow mode) by default in HS400 mode. In order
+> > > > to make HS400 mode run at 200Mhz, the slow mode needs to be turned off.
+> > > >
+> > > > Fixes: 1ae1d2d6e555 ("mmc: sdhci-pci-gli: Add Genesys Logic GL9763E support")
+> > >
+> > > Why a fixes tag? This patch looks like an improvement and not a fix, right?
+> > >
+> >
+> > Since the specification defines that the HS400 mode must run at 200Mhz,
+> > this patch fixes the HS400 mode to 200Mhz.
+>
+> The spec states that in HS400 mode the clock can be *up to 200MHz* -
+> not that it must run at 200MHz. At least at those places I have looked
+> at in the spec.
+>
 
-I don't think extension of dwmac410_ops should be backported to stable.
-It's a new feature and should go into net-next like any other.
-The fix that could be backported is reverting the unintentional change
-of dwmac4.
+You are right. I will resend v2.
 
-Cheers,
-Ahmad
+Best regards,
+Ben
 
-> Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
-> Reported-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> ---
-> To: Alexandre Torgue <alexandre.torgue@st.com>
-> To: Jose Abreu <joabreu@synopsys.com>
-> To: "David S. Miller" <davem@davemloft.net>
-> To: Jakub Kicinski <kuba@kernel.org>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: netdev@vger.kernel.org
-> Cc: linux-stm32@st-md-mailman.stormreply.com
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> In-Reply-To: <42960ede-9355-1277-9a6f-4eac3c22365c@pengutronix.de>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-> index 002791b77356..ced6d76a0d85 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-> @@ -1171,7 +1171,6 @@ const struct stmmac_ops dwmac4_ops = {
->  	.pcs_get_adv_lp = dwmac4_get_adv_lp,
->  	.debug = dwmac4_debug,
->  	.set_filter = dwmac4_set_filter,
-> -	.flex_pps_config = dwmac5_flex_pps_config,
->  	.set_mac_loopback = dwmac4_set_mac_loopback,
->  	.update_vlan_hash = dwmac4_update_vlan_hash,
->  	.sarc_configure = dwmac4_sarc_configure,
-> @@ -1213,6 +1212,7 @@ const struct stmmac_ops dwmac410_ops = {
->  	.pcs_get_adv_lp = dwmac4_get_adv_lp,
->  	.debug = dwmac4_debug,
->  	.set_filter = dwmac4_set_filter,
-> +	.flex_pps_config = dwmac5_flex_pps_config,
->  	.set_mac_loopback = dwmac4_set_mac_loopback,
->  	.update_vlan_hash = dwmac4_update_vlan_hash,
->  	.sarc_configure = dwmac4_sarc_configure,
-> 
-> base-commit: 9bd2702d292cb7b565b09e949d30288ab7a26d51
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> [...]
+>
+> Kind regards
+> Uffe
