@@ -2,126 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE282C4ACB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 325EC2C4ACF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387448AbgKYWZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 17:25:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729679AbgKYWZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 17:25:11 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2387486AbgKYW1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 17:27:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387474AbgKYW1O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 17:27:14 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77069C0617A7;
+        Wed, 25 Nov 2020 14:27:14 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64E53206D9;
-        Wed, 25 Nov 2020 22:25:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606343110;
-        bh=JwS4iiMBvy8UW7/9BoV0RzEM7NAj3eXIL8p5M9E0NIQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=JQ3C52Y7tC2y7YEfgP2nznaWEvKCQ8L/hB33FB7ermqbMhBMBkfEVDVayl0ahmc+Y
-         Aabemp+fQZQV9l+UvTQ8EIFoYSqLoyHgBlEBKb/+zoU2FLqVNOgC8leMaBI6LbfyFk
-         buLS/5nkw8+i5urxek6HzMNewYFxLKYM13J9YnQQ=
-Date:   Wed, 25 Nov 2020 16:25:09 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        knsathya@kernel.org
-Subject: Re: [PATCH v11 2/5] ACPI/PCI: Ignore _OSC negotiation result if
- pcie_ports_native is set.
-Message-ID: <20201125222509.GA688516@bjorn-Precision-5520>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ChFqw0tYCz9s1l;
+        Thu, 26 Nov 2020 09:27:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606343231;
+        bh=GUGR5Jb8Ps+88ArLoeZmH1zDG+KVi5x+k26h13IPYMk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g1pirN09gNiwxEEWXFWtM6XXCfRSEZodmwmj2GpiJ+myjXn/YMmB9k3cyILlamCLi
+         bmY9C83SDEGFCl+Pb272tI+frmHayU6vskvaqloRwr5MimnqTf36bNs+AmtPcQFG22
+         ZQr1VzNH8Rl5la+yj9rlqK202fH8M8aWhiCpSmL7my2bUDfz/c2ae5b2UIVpE+m9Ol
+         CI5V165pB8HM3pDnT9lWZ2RKTNsYXJ6e4ci4GDlpKRF0Kys8GxCmCYFvsgOaB10HLF
+         YXCTXDXlaYaPGcV3uBfMMR7KWH1dIR4GXium2UYixGcCoyWaJLeVkFD4a+BI7kKkkt
+         TuLGVImotOImw==
+Date:   Thu, 26 Nov 2020 09:27:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, Hui Su <sh_def@163.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        syzbot <syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mm/memcg: warn on missing memcg on
+ mem_cgroup_page_lruvec()
+Message-ID: <20201126092706.1e06aa08@canb.auug.org.au>
+In-Reply-To: <0918d6f5-8459-7b5e-82a3-6c9792d17433@linux.alibaba.com>
+References: <00000000000054aea005b4d59e71@google.com>
+        <20201125112202.387009-1-lstoakes@gmail.com>
+        <0918d6f5-8459-7b5e-82a3-6c9792d17433@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad9cd8ca-4c22-f691-b344-699d82a75872@linux.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/S1QJfwUbyxzDCF4y6WxxMQm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 02:21:49PM -0800, Kuppuswamy, Sathyanarayanan wrote:
-> Hi Bjorn,
-> 
-> Thanks for the review.
-> 
-> On 11/25/20 12:12 PM, Bjorn Helgaas wrote:
-> > On Mon, Oct 26, 2020 at 07:57:05PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> > > pcie_ports_native is set only if user requests native handling
-> > > of PCIe capabilities via pcie_port_setup command line option.
-> > > User input takes precedence over _OSC based control negotiation
-> > > result. So consider the _OSC negotiated result only if
-> > > pcie_ports_native is unset.
-> > > 
-> > > Also, since struct pci_host_bridge ->native_* members caches the
-> > > ownership status of various PCIe capabilities, use them instead
-> > > of distributed checks for pcie_ports_native.
-> > > 
-> > > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> > > ---
-> > >   drivers/acpi/pci_root.c           | 35 ++++++++++++++++++++++---------
-> > >   drivers/pci/hotplug/pciehp_core.c |  2 +-
-> > >   drivers/pci/pci-acpi.c            |  3 ---
-> > >   drivers/pci/pcie/aer.c            |  2 +-
-> > >   drivers/pci/pcie/portdrv_core.c   |  9 +++-----
-> > >   include/linux/acpi.h              |  2 ++
-> > >   6 files changed, 32 insertions(+), 21 deletions(-)
-> > > 
-> > > diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-> > > index c12b5fb3e8fb..a9e6b782622d 100644
-> > > --- a/drivers/acpi/pci_root.c
-> > > +++ b/drivers/acpi/pci_root.c
-> > > @@ -41,6 +41,12 @@ static int acpi_pci_root_scan_dependent(struct acpi_device *adev)
-> > >   				| OSC_PCI_CLOCK_PM_SUPPORT \
-> > >   				| OSC_PCI_MSI_SUPPORT)
-> 
-> > > +
-> > > +	if (pcie_ports_native) {
-> > > +		decode_osc_control(root, "OS forcibly taking over",
-> > > +				   OSC_PCI_EXPRESS_CONTROL_MASKS);
-> > 
-> > The only place OSC_PCI_EXPRESS_CONTROL_MASKS is used is right here, so
-> > it's kind of pointless.
-> > 
-> > I think I'd rather have this:
-> > 
-> >    dev_info(&root->device->dev, "Ignoring PCIe-related _OSC results because \"pcie_ports=native\" specified\n");
-> I was trying to keep the same print format. In pci_root.c,
-> decode_os_control() is repeatedly used to print info related to
-> PCIe capability ownership.
-> 
-> But either way is fine with me. I can use the format you mentioned.
-> > 
-> > 
-> > followed by something like this after we're done fiddling with all the
-> > host_bridge->native* bits:
-> > 
-> 
-> >    #define FLAG(x) ((x) ? '+' : '-')
-> > 
-> >    dev_info(&root->device->dev, "OS native features: SHPCHotplug%c PCIeCapability%c PCIeHotplug%c PME%c AER%c DPC%c LTR%c\n",
-> >             FLAG(host_bridge->native_shpc_hotplug),
-> > 	   ?,
-> >             FLAG(host_bridge->native_pcie_hotplug),
-> > 	   ...);
-> > 
-> > But I don't know how to handle OSC_PCI_EXPRESS_CAPABILITY_CONTROL
-> > since we don't track it the same way.  Maybe we'd have to omit it from
-> > this message for now?
-> I will add it in next version. But for now, its not worry about
-> OSC_PCI_EXPRESS_CAPABILITY_CONTROL.
+--Sig_/S1QJfwUbyxzDCF4y6WxxMQm
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I've been fiddling with this, so let me post a v12 tonight and you can
-see what you think.
+Hi all,
 
-> > >   	/*
-> > >   	 * Evaluate the "PCI Boot Configuration" _DSM Function.  If it
-> 
-> > > -- 
-> > > 2.17.1
-> > > 
-> 
-> -- 
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
+On Wed, 25 Nov 2020 20:15:11 +0800 Alex Shi <alex.shi@linux.alibaba.com> wr=
+ote:
+>
+> Acked-by: Alex Shi <alex.shi@linux.alibaba.com>
+>=20
+>=20
+> =E5=9C=A8 2020/11/25 =E4=B8=8B=E5=8D=887:22, Lorenzo Stoakes =E5=86=99=E9=
+=81=93:
+> > Move memcg check to mem_cgroup_page_lruvec() as there are callers which
+> > may invoke this with !memcg in mem_cgroup_lruvec(), whereas they should
+> > not in mem_cgroup_page_lruvec().
+> >=20
+> > We expect that we have always charged a page to the memcg before
+> > mem_cgroup_page_lruvec() is invoked, so add a warning to assert that th=
+is
+> > is the case.
+> >=20
+> > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> > Reported-by: syzbot+ce635500093181f39c1c@syzkaller.appspotmail.com
+> > ---
+> >  include/linux/memcontrol.h | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 87ed56dc75f9..3e6a1df3bdb9 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -618,7 +618,6 @@ static inline struct lruvec *mem_cgroup_lruvec(stru=
+ct mem_cgroup *memcg,
+> >  		goto out;
+> >  	}
+> > =20
+> > -	VM_WARN_ON_ONCE(!memcg);
+> >  	if (!memcg)
+> >  		memcg =3D root_mem_cgroup;
+> > =20
+> > @@ -645,7 +644,10 @@ static inline struct lruvec *mem_cgroup_lruvec(str=
+uct mem_cgroup *memcg,
+> >  static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
+> >  						struct pglist_data *pgdat)
+> >  {
+> > -	return mem_cgroup_lruvec(page_memcg(page), pgdat);
+> > +	struct mem_cgroup *memcg =3D page_memcg(page);
+> > +
+> > +	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+> > +	return mem_cgroup_lruvec(memcg, pgdat);
+> >  }
+> > =20
+> >  static inline bool lruvec_holds_page_lru_lock(struct page *page,
+> >  =20
+
+I have added that patch to the akpm tree in linux-next today as a fix
+for "mm/memcg: add missed warning in mem_cgroup_lruvec".
+
+Andrew: the original patch is here:
+https://lore.kernel.org/lkml/20201125112202.387009-1-lstoakes@gmail.com/
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/S1QJfwUbyxzDCF4y6WxxMQm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl++2joACgkQAVBC80lX
+0GwWMQf/Q2aM02yswn7APiVTNxVOArueh6QNTpAd64O6C4UYV/xVXE610PTdiN4B
+78pvnV2eMWZNH/UAPxP8/DeVS2ScDF5CGdlHEbWxBmQNyzpsIJzodLvZBJPiC5xp
+DItXhuE6su028Mpdm+SElzk6OOhWwhVP+2ktPVKeUFJSfmxJcjgf3uO7y370Ywit
+Zs6BKxGMLzrqfGGfR4p7s0yGbUpOydXP8gFkp1gg8KcgvxjtFzm6eIF8KWBp5MxM
+Fr2R5Y+2mIhu8fW1NTuOwPgIf/+FTm5g3YZI1b4vqCEyzcn6Xs2nuWlaRZqUHq4B
+auVlC1NCh5E/S6bB30xlDxiKSgNK/A==
+=Ltrr
+-----END PGP SIGNATURE-----
+
+--Sig_/S1QJfwUbyxzDCF4y6WxxMQm--
