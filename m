@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0B12C4862
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 460C42C486B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 20:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728633AbgKYTaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 14:30:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727251AbgKYTaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:30:06 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606332606;
-        bh=VCtMEMbk2zq8crYPfPMyi3OOuFrdjug2j3sNnw3urSM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=EkMn8QGd5yaAwHYcdxbvqz3RMVMMa2SGN9Qb22a6x4kpGSClrek9E/80DEyfY8MtN
-         yT7wA7Bon3BWhx06GYLheetQHM+yQClRY5F3UGqmVN0V9CH+FcFhSWr1zH2m70szf3
-         pO5IghDr5OIHM8UwTkjiIr5UyIMcNhnAIvI6ZfiM=
+        id S1728158AbgKYTbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 14:31:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgKYTbo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 14:31:44 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FADC061A4F
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:31:43 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id 7so4674768ejm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 11:31:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NbGEEdyiGb6W/O88ADJQK8rzA0fmkfkXXMTB0VeQSp4=;
+        b=aHiB780fX4O+H26PT704iIHKBv1W1Bk2L0OefcT5JXt8+Hv5F6hBhZBHqgeWAi5FFL
+         w5TU/JpalJlMySQzGAD5ia6tyPhqLGSzb2GfL89UK+fZrlt0gzw+T2bZ0f63mN2vPE5B
+         JYLqbnx22vTYxiNzMFLbCfTSLiU8yKX4coYdjlDP31Kv0jkrInUlO+RcUAitNtNG7F7x
+         BytLrRhfLBT2TmskEkFnQNBAqMiy2BtpAmcS28mgq9tWn+2obHxDdVYTLFjIvitqttBB
+         N80Ynt1vLBvPzPzs3o4+ASsrnZHMPqGFom6Kfk9gULq/KG1n84V0DtbOg/2BrEUQdein
+         X/WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NbGEEdyiGb6W/O88ADJQK8rzA0fmkfkXXMTB0VeQSp4=;
+        b=iFji4KFFyH1DtSRm2cjx1KOEV2TXmNmz7FZ5/VDLv+GTr/H5++q8fzs6Aw2B7LrUsG
+         7P7ZDybSvj4Q8Ym0Z3dfQzbb01KOP4OPiQ2j9wL3IbmjljXO4PlOq6jj/hxwxVhByYRW
+         gHwYbookhKsQMk1nqflJ+x0ZsG8wCTTgIKkg7E4fvlGfYLSabBl+10r/zApl6h6EE331
+         /tpuCBiRd7UOnNYkDXvaEzg5T10n210PZOwkeGboWY9FNwYxVznleGgWtru5y98I4sIC
+         RNujhs24fGnNLfLmFu8xRHAnNJDO87vuCozmw4nN+tkfs2BMVo3dEsJBNc3vms4IL7fx
+         +uGA==
+X-Gm-Message-State: AOAM533vKv9e2CePnT+T8t9cNr4mRz6eEZtOL0t399fdOEXoWLm92m1s
+        APyLMUo8vLVJw5BSqsMoL41SC9MO0+3aoNJvbBe7nw==
+X-Google-Smtp-Source: ABdhPJxMCv1rZBl4mt1S2ByNOVSyjZUYE/JO5kBoma6Gb2FbY/xaMAVlp+6u+8OAc7U55YryrQkhwTzE7KvD+K7/GZA=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr4514377eju.375.1606332702253;
+ Wed, 25 Nov 2020 11:31:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] ipv6: addrlabel: fix possible memory leak in
- ip6addrlbl_net_init
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160633260596.3402.9642901681926921497.git-patchwork-notify@kernel.org>
-Date:   Wed, 25 Nov 2020 19:30:05 +0000
-References: <20201124071728.8385-1-wanghai38@huawei.com>
-In-Reply-To: <20201124071728.8385-1-wanghai38@huawei.com>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20201101212738.GA16924@gmail.com> <20201102122638.GB23988@quack2.suse.cz>
+ <20201103211747.GA3688@gmail.com> <20201123164622.GJ27294@quack2.suse.cz>
+ <20201123224651.GA27809@gmail.com> <20201124084507.GA4009@zn.tnic> <20201124102033.GA19336@quack2.suse.cz>
+In-Reply-To: <20201124102033.GA19336@quack2.suse.cz>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 26 Nov 2020 01:01:30 +0530
+Message-ID: <CA+G9fYtKKmoYUJpPFLBtFVB6MRJwJTsVjtYtRcXmJxc5PbHAZA@mail.gmail.com>
+Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
+To:     Jan Kara <jack@suse.cz>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        =?UTF-8?Q?Pawe=C5=82_Jasiak?= <pawel@jasiak.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, X86 ML <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Tue, 24 Nov 2020 at 15:50, Jan Kara <jack@suse.cz> wrote:
+>
+> On Tue 24-11-20 09:45:07, Borislav Petkov wrote:
+> > On Mon, Nov 23, 2020 at 11:46:51PM +0100, Pawe=C5=82 Jasiak wrote:
+> > > On 23/11/20, Jan Kara wrote:
+> > > > OK, with a help of Boris Petkov I think I have a fix that looks cor=
+rect
+> > > > (attach). Can you please try whether it works for you? Thanks!
+> > >
+<trim>
+>
+> Thanks for checking! I didn't realize I needed to change the ifdefs as we=
+ll
+> (I missed that bit in 121b32a58a3a). So do I understand correctly that
+> whenever the kernel is 64-bit, 64-bit syscall args (e.g. defined as u64) =
+are
+> passed just fine regardless of whether the userspace is 32-bit or not?
+>
+> Also how about other 32-bit archs? Because I now realized that
+> CONFIG_COMPAT as well as the COMPAT_SYSCALL_DEFINE6() is also utilized by
+> other 32-bit archs (I can see a reference to compat_sys_fanotify_mark e.g=
+.
+> in sparc, powerpc, and other args). So I probably need to actually keep
+> that for other archs but do the modification only for x86, don't I?
+>
+> So something like attached patch?
 
-This patch was applied to netdev/net.git (refs/heads/master):
+I have tested the attached patch on i386 and qemu_i386 and the reported pro=
+blem
+got fixed.
 
-On Tue, 24 Nov 2020 15:17:28 +0800 you wrote:
-> kmemleak report a memory leak as follows:
-> 
-> unreferenced object 0xffff8880059c6a00 (size 64):
->   comm "ip", pid 23696, jiffies 4296590183 (age 1755.384s)
->   hex dump (first 32 bytes):
->     20 01 00 10 00 00 00 00 00 00 00 00 00 00 00 00   ...............
->     1c 00 00 00 00 00 00 00 00 00 00 00 07 00 00 00  ................
->   backtrace:
->     [<00000000aa4e7a87>] ip6addrlbl_add+0x90/0xbb0
->     [<0000000070b8d7f1>] ip6addrlbl_net_init+0x109/0x170
->     [<000000006a9ca9d4>] ops_init+0xa8/0x3c0
->     [<000000002da57bf2>] setup_net+0x2de/0x7e0
->     [<000000004e52d573>] copy_net_ns+0x27d/0x530
->     [<00000000b07ae2b4>] create_new_namespaces+0x382/0xa30
->     [<000000003b76d36f>] unshare_nsproxy_namespaces+0xa1/0x1d0
->     [<0000000030653721>] ksys_unshare+0x3a4/0x780
->     [<0000000007e82e40>] __x64_sys_unshare+0x2d/0x40
->     [<0000000031a10c08>] do_syscall_64+0x33/0x40
->     [<0000000099df30e7>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> [...]
-
-Here is the summary with links:
-  - [net,v2] ipv6: addrlabel: fix possible memory leak in ip6addrlbl_net_init
-    https://git.kernel.org/netdev/net/c/e255e11e66da
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Test links,
+https://lkft.validation.linaro.org/scheduler/job/1985236#L1176
+https://lkft.validation.linaro.org/scheduler/job/1985238#L801
 
 
+--=20
+Linaro LKFT
+https://lkft.linaro.org
