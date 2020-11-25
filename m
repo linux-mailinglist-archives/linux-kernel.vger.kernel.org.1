@@ -2,183 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809FB2C3BD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 10:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 593F32C3BDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 10:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727724AbgKYJTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 04:19:35 -0500
-Received: from mail-vi1eur05on2042.outbound.protection.outlook.com ([40.107.21.42]:34785
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726392AbgKYJTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 04:19:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TXHMHxqy/Gk4+9EJVZHCSjEmvwUx9ZejVbYp40eC8w0=;
- b=nLal1YvJpMLpD7iWoo7YRhQX41BF9mLEKtc3bBKNPFCRl4SUIyrXs1cmmETlWXiFFPgUP3LaY3RjX6Hz5Xz5O8Ow6PFRZ6eb4skEEsaK/180K4F2iqwrfya+1EfPyPjtg1kiG8T7EFFm2su9sHqS1hXhgmuZyuNwrvLn9Ua+oGA=
-Received: from DB6P192CA0001.EURP192.PROD.OUTLOOK.COM (2603:10a6:4:b8::11) by
- AM6PR08MB4151.eurprd08.prod.outlook.com (2603:10a6:20b:a2::26) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3589.20; Wed, 25 Nov 2020 09:19:29 +0000
-Received: from DB5EUR03FT055.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:4:b8:cafe::50) by DB6P192CA0001.outlook.office365.com
- (2603:10a6:4:b8::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend
- Transport; Wed, 25 Nov 2020 09:19:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
- header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- DB5EUR03FT055.mail.protection.outlook.com (10.152.21.30) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3589.20 via Frontend Transport; Wed, 25 Nov 2020 09:19:28 +0000
-Received: ("Tessian outbound 797fb8e1da56:v71"); Wed, 25 Nov 2020 09:19:27 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: 2e923c577d0e0cad
-X-CR-MTA-TID: 64aa7808
-Received: from ef1eaa489464.1
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 442E1BBD-1ED0-4578-819B-604375FB78E5.1;
-        Wed, 25 Nov 2020 09:19:22 +0000
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id ef1eaa489464.1
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Wed, 25 Nov 2020 09:19:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HJE/Q1s7ssnWNbalQ9a4r+fTUwYRKhKOsjyUvUEC3aT5yvDzgtJs8LsEjtP05ZchPEE/BT6bI9DANgSEDg2PGZIQJEQWVxAMV9ss0M+aseJIAAtNM8Heu4TLdTwOTNRuVYLwoyifSIYXodOqMkS6uOyEfJ7H3zjNamrLp8eyBCTIKCfh0fG1CenB/AamMqNyvjkfsME5jzWPQvPd6mWaqTJyxvjJE803a0cdL3719WD+fIhhkqHc84CetA2jyFaL5PtTVkfFszoTI0JF08ryxDgTPsuXxMDqfE/kM9UcMI7MAzh4lLl5WU57dZWdUyAhRlTPp5kvlHHYOASM1bOQSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TXHMHxqy/Gk4+9EJVZHCSjEmvwUx9ZejVbYp40eC8w0=;
- b=cMlFh45eUJ6szOz7URjjjIAznmTlxwednhFDl/wG4GupxMHj2QT0HMDjInJwdfCCyfck7w1g5WwEKDVUUdrpaNeYRRYrKkOeoLanHvLdbPlOjvek/Tk2CECR2E2gB1+mIJk2KoTlZBHj0BglscMxXFO93S8u6+Qtaf39s/mKsueAUhfwM3RDxGpLIZUsrMyQgyX8112idDL0h0Ul4ECO3UMo0GpQndRIozp3wCpzrAj+A6qhnnd4q1PpRsZxVX8C6M4pCQabckXXOO32xD7AcLpN2pCuOZPI78TM1fQEvCmXwTmR5Whn46XFfQKF9TJq+6wwj7rQKL8eGQt8UUidZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TXHMHxqy/Gk4+9EJVZHCSjEmvwUx9ZejVbYp40eC8w0=;
- b=nLal1YvJpMLpD7iWoo7YRhQX41BF9mLEKtc3bBKNPFCRl4SUIyrXs1cmmETlWXiFFPgUP3LaY3RjX6Hz5Xz5O8Ow6PFRZ6eb4skEEsaK/180K4F2iqwrfya+1EfPyPjtg1kiG8T7EFFm2su9sHqS1hXhgmuZyuNwrvLn9Ua+oGA=
-Authentication-Results-Original: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=arm.com;
-Received: from DB8PR08MB4010.eurprd08.prod.outlook.com (2603:10a6:10:ab::15)
- by DBAPR08MB5606.eurprd08.prod.outlook.com (2603:10a6:10:1a7::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Wed, 25 Nov
- 2020 09:19:19 +0000
-Received: from DB8PR08MB4010.eurprd08.prod.outlook.com
- ([fe80::a998:af0e:17cb:9389]) by DB8PR08MB4010.eurprd08.prod.outlook.com
- ([fe80::a998:af0e:17cb:9389%7]) with mapi id 15.20.3589.021; Wed, 25 Nov 2020
- 09:19:19 +0000
-Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO
- descriptors
-To:     Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Simon Han <z.han@kunbus.com>, Lukas Wunner <lukas@wunner.de>,
-        linux-spi <linux-spi@vger.kernel.org>,
+        id S1727822AbgKYJUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 04:20:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43090 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725938AbgKYJUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 04:20:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7E1A2AE42;
+        Wed, 25 Nov 2020 09:20:08 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 96F841E130F; Wed, 25 Nov 2020 10:20:07 +0100 (CET)
+Date:   Wed, 25 Nov 2020 10:20:07 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3622cea378100f45d59f@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        nd <nd@arm.com>
-References: <20201106150706.29089-1-TheSven73@gmail.com>
- <CAHp75VfP1R7bXV6nWWnovWB5BMFcNNEmwBQXheBCUVDbr=xXGA@mail.gmail.com>
- <CAGngYiVu3cXtzb5PaoDOoyqjuuohLQ+em6Keg-qgDFFn2tdp=Q@mail.gmail.com>
- <CACRpkdagAK1X6FT=sug5FGA1iipXnOT_ujtMBh9cVnep_DpWyA@mail.gmail.com>
- <20201111123327.GB4847@sirena.org.uk>
- <CACRpkdZW3G48Yj3yGMTKZGwVEQOSs1VeVTTGLgyoJViM3=Yedg@mail.gmail.com>
- <20201116210632.GJ4739@sirena.org.uk>
- <CACRpkdayWzWKHv69cg_GL2O=NWozqi_ZLnH1WdMOHzEb1bU-xA@mail.gmail.com>
- <20201118114049.GA4827@sirena.org.uk>
-From:   Grant Likely <grant.likely@arm.com>
-Message-ID: <9c7aee21-0d08-9092-acdd-93477ed17dba@arm.com>
-Date:   Wed, 25 Nov 2020 09:19:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-In-Reply-To: <20201118114049.GA4827@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [94.196.85.203]
-X-ClientProxiedBy: LNXP265CA0090.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:76::30) To DB8PR08MB4010.eurprd08.prod.outlook.com
- (2603:10a6:10:ab::15)
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>, Qian Cai <cai@lca.pw>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: kernel BUG at fs/ext4/inode.c:LINE!
+Message-ID: <20201125092007.GA16944@quack2.suse.cz>
+References: <000000000000d3a33205add2f7b2@google.com>
+ <20200828100755.GG7072@quack2.suse.cz>
+ <20200831100340.GA26519@quack2.suse.cz>
+ <CAHk-=wivRS_1uy326sLqKuwerbL0APyKYKwa+vWVGsQg8sxhLw@mail.gmail.com>
+ <alpine.LSU.2.11.2011231928140.4305@eggly.anvils>
+ <20201124121912.GZ4327@casper.infradead.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.16.178] (94.196.85.203) by LNXP265CA0090.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:76::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Wed, 25 Nov 2020 09:19:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c4ec06fe-09ff-4312-e63b-08d891233620
-X-MS-TrafficTypeDiagnostic: DBAPR08MB5606:|AM6PR08MB4151:
-X-Microsoft-Antispam-PRVS: <AM6PR08MB41510E0543D219C43E1FF93195FA0@AM6PR08MB4151.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: QJQ6mOEgzEVDDD9IuWgkz+nlvgROFdHW485a+ROL9u4uewmyQwbnsW4A69FPNL5jB22PXEUb9USlZ3OMHDi6jL0+jUF6tIf77Oqh3CrbHp4dYcftElTBGFn6tcD3wxQCGtf3Lk1O5eBJPKlv5v1Gq9zs4aLc6oOtWNKTyJqAg/05qcSYStVDKp2sTlnb9dnKg8MYejsNSH0q7syjrQjfGTLSWZWFvtupy0V8Iq5W/mb6kzyxctFnHWVv4ntmPtK9CAKHRvx2Dtw1/iEBlRybFFKaxrd2+hDRjnOhueCwO9nHqRcJxAXBwvioTcdFiz+8aUOLVQxPV9l9iWu3wmFL7G+lSwRFRDP5ghbh32ZjKxT0N4QNvutqVqizjOJFQRDbDUj41tXmg+vBkTAsVpicODyD5a/6c0Hi1WrBTKSkp/pW6woEoeZ1RZVQJbmnHT6H5hw11soTRxM9YeJzRMPLzA==
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR08MB4010.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39850400004)(396003)(366004)(186003)(52116002)(44832011)(86362001)(54906003)(2616005)(4326008)(956004)(16526019)(26005)(31686004)(316002)(110136005)(2906002)(55236004)(16576012)(6486002)(66476007)(478600001)(8676002)(5660300002)(53546011)(36756003)(66946007)(966005)(8936002)(31696002)(66556008)(7416002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: sirBLjUcYQCIy0RLX6ehCyoIKMpCPZEBN1Ogy4JNbIYitNZ+NbPU2Q1N3Hl7hn6WElrE0kQeTy+NEqgOMGT1x83XVnCAyvr7Y2YTxB5P1DYRhBIaDOexwnrzU3l1xiEzGkhoF6G7h1HlHgIbaKgBZpDL75XhW+iRHBcsn3EIwuvjCF45kFHiS6XCKokH+jwedWmwW6EtvF5gzIEdCWqyvBpfycQZPusRevvbe6K003As6b8bMOpj7fLCHknidHChQsAW6h3jFHTuoy8Y8lob1jVcVfEK9OKy044G3JYUcngkNpAt6k8KGU5GokTwv/h04f7kcppcOp6kTfInqEBDmmWKwvTt1K6H3Mc3f+9qQSVhwAR7veNrmwsCklsmi5KnN1rU3ZSFLgSWdRt8S/Slzsn78qGYS9WuZws7zbTwrozqAXwLHXHDWhjzAPjNWn373NBGrfdJd3wcUjZIXP6nvqUTikUJB3mhO0CbUw6JcAG749X8zk6KpN9rz4YpA/cSvEb1ODSptTPydsmNb7a9RQ5+5sdhBJiLgVaMwxrGYFrMFhbzVXxCgVWkaiTzsmgRDYKgFA5+y8CxwQaiRqRk93YhXhHgeNNYa8RU7KZavvaEz/oYuCF/VZffCqJldwvwRTyp9MRcMp0wHjOOiy6K+c7eofK2N4adWQxQi3Z6F8J/chrMon2vRwY4ZZBRaRClrm0iXPRkGtbL44Y7j21HnuFhRvb9MEQokB/0jZAnEZp4QezmScNEnqdjw4/vSHqnNWDLbhpF8EbF+DZNt7LMj3bK7IjK/qiuTdpSpZIjh2z6SB2NpQYpT8DO4cnH5oE0NcUwRxDOdydSMfWUQ2Fwz3ewQRs4woRqWZV+85Os66bSObZ1c3ZebWoPChKDp3OV42+ZVdw8DML1ESWIn99cZQ==
-X-MS-Exchange-Transport-Forked: True
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR08MB5606
-Original-Authentication-Results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: DB5EUR03FT055.eop-EUR03.prod.protection.outlook.com
-X-MS-Office365-Filtering-Correlation-Id-Prvs: dd8376d4-a914-4d8c-f2f5-08d891232ff9
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qIF01MD3gjJ4R4oCiNsLIBaeUyVWG2MR2dJis5lK8W+hpGkxZt8ZEJTGD8GI1oy3+nc7J6/O/lO08WfWcIc9E00catlbnZwpu8M1NC70HY2FbYtun2mlealGeReKg+9eszZjWJ/3Q9w8vieaAW2kndi+UrT25mTJeDqMCWC58cJl/ShxWf5cbRkYMGiuBPymUn9t7L8Bqka/LaWFrxDKx7zS3/7+oS+382S1vrdAp/Y6gDi194jFxygn9LBeJRVTVvTUcGKsS5GGDjLmwaCZJPnmUobKLdxEY+TBqpkTGSLxFO8gcpLNEocSVtwRDP1U/cXA55qjkErC6xVl4YMLed1ffMwUwSWM4oCZDGUNNfC6gMpQ7dvt5/hNIvwIbrK204K0hnySanxx8DXaDmoQV70BdHtw8DmUmoY8ATzAo1NUUVzEfr4+BwZICkPVTmxU/DJBaGk4LCHQpiPSqsCHsVzq707dNj5ELNFb1fJ/fnYT3xxnTwbP3AwDSknQ+wL3
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(346002)(396003)(46966005)(110136005)(70206006)(16576012)(966005)(336012)(356005)(36756003)(53546011)(55236004)(54906003)(70586007)(82740400003)(16526019)(2906002)(81166007)(47076004)(186003)(8676002)(8936002)(4326008)(956004)(26005)(44832011)(2616005)(478600001)(450100002)(5660300002)(6486002)(31686004)(86362001)(316002)(31696002)(82310400003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 09:19:28.9924
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4ec06fe-09ff-4312-e63b-08d891233620
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: DB5EUR03FT055.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB4151
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124121912.GZ4327@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 24-11-20 12:19:12, Matthew Wilcox wrote:
+> On Mon, Nov 23, 2020 at 08:07:24PM -0800, Hugh Dickins wrote:
+> > Twice now, when exercising ext4 looped on shmem huge pages, I have crashed
+> > on the PF_ONLY_HEAD check inside PageWaiters(): ext4_finish_bio() calling
+> > end_page_writeback() calling wake_up_page() on tail of a shmem huge page,
+> > no longer an ext4 page at all.
+> > 
+> > The problem is that PageWriteback is not accompanied by a page reference
+> > (as the NOTE at the end of test_clear_page_writeback() acknowledges): as
+> > soon as TestClearPageWriteback has been done, that page could be removed
+> > from page cache, freed, and reused for something else by the time that
+> > wake_up_page() is reached.
+> > 
+> > https://lore.kernel.org/linux-mm/20200827122019.GC14765@casper.infradead.org/
+> > Matthew Wilcox suggested avoiding or weakening the PageWaiters() tail
+> > check; but I'm paranoid about even looking at an unreferenced struct page,
+> > lest its memory might itself have already been reused or hotremoved (and
+> > wake_up_page_bit() may modify that memory with its ClearPageWaiters()).
+> > 
+> > Then on crashing a second time, realized there's a stronger reason against
+> > that approach.  If my testing just occasionally crashes on that check,
+> > when the page is reused for part of a compound page, wouldn't it be much
+> > more common for the page to get reused as an order-0 page before reaching
+> > wake_up_page()?  And on rare occasions, might that reused page already be
+> > marked PageWriteback by its new user, and already be waited upon?  What
+> > would that look like?
+> > 
+> > It would look like BUG_ON(PageWriteback) after wait_on_page_writeback()
+> > in write_cache_pages() (though I have never seen that crash myself).
+> 
+> I don't think this is it.  write_cache_pages() holds a reference to the
+> page -- indeed, it holds the page lock!  So this particular race cannot
+> cause the page to get recycled.  I still have no good ideas what this
+> is :-(
 
+But does it really matter what write_cache_pages() does? I mean we start
+page writeback. I mean struct bio holds no reference to the page it writes.
+The only thing that prevents the page from being freed under bio's hands is
+PageWriteback bit. So when the bio is completing we do (e.g. in
+ext4_end_bio()), we usually walk all pages in a bio
+bio_for_each_segment_all() and for each page call end_page_writeback(), now
+once end_page_writeback() calls test_clear_page_writeback() which clears
+PageWriteback(), the page can get freed. And that can happen before the
+wake_up_page() call in end_page_writeback(). So a race will be like:
 
-On 18/11/2020 11:40, Mark Brown wrote:
-> On Wed, Nov 18, 2020 at 02:03:41AM +0100, Linus Walleij wrote:
->> On Mon, Nov 16, 2020 at 10:06 PM Mark Brown <broonie@kernel.org> wrote:
-> 
->>> I think the main push in the other direction has always been people who
->>> want to not have to write a driver at all and put absolutely everything
->>> into DT which has scaling issues :/
-> 
->> What I can't understand is what gave them that idea.
-> 
->> This thing looks like a dream to these people for example:
->> https://gist.github.com/Minecrell/56c2b20118ba00a9723f0785301bc5ec#file-dsi_panel_s6e88a0_ams452ef01_qhd_octa_video-dtsi
->> And it looks like a nightmare to me.
-> 
->> (There is even a tool to convert this description into a proper display
->> driver now.)
-> 
->> It just seems to be one of those golden hammer things: everything
->> start to look like nails.
-> 
-> What people think they were sold was the idea that they shouldn't have
-> to write driver code or upstream things, something with more AML like
-> capabilities (not realising that AML works partly because ACPI hugely
-> constrains system design).
+CPU1					CPU2
+ext4_end_bio()
+  ...
+  end_page_writeback(page)
+    test_clear_page_writeback(page)
+					free page
+					reallocate page for something else
+					we can even dirty & start to
+					  writeback 'page'
+    wake_up_page(page)
 
-And is also untrue. AML only provides an API abstraction for a specific 
-power management model. All the actual driving of the device still 
-requires driver code and requires reading devices-specific properties 
-out of the ACPI node.
+and we have a "spurious" wake up on 'page'.
 
-g.
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
