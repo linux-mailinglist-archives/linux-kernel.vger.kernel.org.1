@@ -2,200 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66B82C4743
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FA32C4746
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732380AbgKYSJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 13:09:20 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:61337 "EHLO z5.mailgun.us"
+        id S1732952AbgKYSKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 13:10:25 -0500
+Received: from foss.arm.com ([217.140.110.172]:35886 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732551AbgKYSJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 13:09:19 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606327759; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=TxzY5+TastQJ0o5m73NMH0KhCIllUkTh0uuclpIl/n4=;
- b=dIbY+m+rlJmSlEBNU6XEgrhCH8zu4ZoIxTHANJl5ZCUFrPwxSAbSvGOVtWUCKoFG+aewLaA2
- JDX0PKdP0OwA0hJwsjgQXNTexIbp4dcab3DtWzg24gJibstcWZiw602PrZwROnTqTwpErtTL
- vgFCV6FqGtgPYRKQ1EzaGw6xGJ8=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fbe9dc91dba509aaefb68e8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 18:09:13
- GMT
-Sender: rishabhb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C50ECC43461; Wed, 25 Nov 2020 18:09:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D76AFC433C6;
-        Wed, 25 Nov 2020 18:09:11 +0000 (UTC)
+        id S1731956AbgKYSKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 13:10:25 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2DEE31B;
+        Wed, 25 Nov 2020 10:10:23 -0800 (PST)
+Received: from [10.57.59.159] (unknown [10.57.59.159])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABD533F23F;
+        Wed, 25 Nov 2020 10:10:22 -0800 (PST)
+Subject: Re: [PATCH] iommu: arm-smmu-impl: add NXP hook to preserve
+ bootmappings
+To:     laurentiu.tudor@nxp.com, will@kernel.org, joro@8bytes.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc:     diana.craciun@nxp.com
+References: <20201125155009.18453-1-laurentiu.tudor@nxp.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <30296756-9b8d-4851-87f0-8c4bd41110e9@arm.com>
+Date:   Wed, 25 Nov 2020 18:10:21 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201125155009.18453-1-laurentiu.tudor@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 25 Nov 2020 10:09:11 -0800
-From:   rishabhb@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] remoteproc: sysmon: Ensure remote notification
- ordering
-In-Reply-To: <20201122054135.802935-2-bjorn.andersson@linaro.org>
-References: <20201122054135.802935-1-bjorn.andersson@linaro.org>
- <20201122054135.802935-2-bjorn.andersson@linaro.org>
-Message-ID: <4a5b9e45d7f763fe73b02ca543012b25@codeaurora.org>
-X-Sender: rishabhb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-21 21:41, Bjorn Andersson wrote:
-> The reliance on the remoteproc's state for determining when to send
-> sysmon notifications to a remote processor is racy with regard to
-> concurrent remoteproc operations.
+On 2020-11-25 15:50, laurentiu.tudor@nxp.com wrote:
+> From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 > 
-> Further more the advertisement of the state of other remote processor 
-> to
-> a newly started remote processor might not only send the wrong state,
-> but might result in a stream of state changes that are out of order.
+> Add a NXP specific hook to preserve SMMU mappings present at
+> boot time (created by the boot loader). These are needed for
+> MC firmware present on some NXP chips to continue working
+> across kernel boot and SMMU initialization.
 > 
-> Address this by introducing state tracking within the sysmon instances
-> themselves and extend the locking to ensure that the notifications are
-> consistent with this state.
-> 
-> Fixes: 1f36ab3f6e3b ("remoteproc: sysmon: Inform current rproc about
-> all active rprocs")
-> Fixes: 1877f54f75ad ("remoteproc: sysmon: Add notifications for 
-> events")
-> Fixes: 1fb82ee806d1 ("remoteproc: qcom: Introduce sysmon")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 > ---
+>   drivers/iommu/arm/arm-smmu/arm-smmu-impl.c | 33 ++++++++++++++++++++++
+>   1 file changed, 33 insertions(+)
 > 
-> Changes since v2:
-> - Hold sysmon_lock during traversal of sysmons in sysmon_start()
-> 
->  drivers/remoteproc/qcom_sysmon.c | 25 +++++++++++++++++++++----
->  1 file changed, 21 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_sysmon.c 
-> b/drivers/remoteproc/qcom_sysmon.c
-> index 9eb2f6bccea6..b37b111b15b3 100644
-> --- a/drivers/remoteproc/qcom_sysmon.c
-> +++ b/drivers/remoteproc/qcom_sysmon.c
-> @@ -22,6 +22,9 @@ struct qcom_sysmon {
->  	struct rproc_subdev subdev;
->  	struct rproc *rproc;
-> 
-> +	int state;
-> +	struct mutex state_lock;
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+> index 7fed89c9d18a..ca07d9d4be69 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+> @@ -187,6 +187,36 @@ static const struct arm_smmu_impl mrvl_mmu500_impl = {
+>   	.reset = arm_mmu500_reset,
+>   };
+>   
+> +static int nxp_cfg_probe(struct arm_smmu_device *smmu)
+> +{
+> +	int i, cnt = 0;
+> +	u32 smr;
 > +
->  	struct list_head node;
-> 
->  	const char *name;
-> @@ -448,7 +451,10 @@ static int sysmon_prepare(struct rproc_subdev 
-> *subdev)
->  		.ssr_event = SSCTL_SSR_EVENT_BEFORE_POWERUP
->  	};
-> 
-> +	mutex_lock(&sysmon->state_lock);
-> +	sysmon->state = SSCTL_SSR_EVENT_BEFORE_POWERUP;
->  	blocking_notifier_call_chain(&sysmon_notifiers, 0, (void *)&event);
-> +	mutex_unlock(&sysmon->state_lock);
-> 
->  	return 0;
->  }
-> @@ -472,20 +478,25 @@ static int sysmon_start(struct rproc_subdev 
-> *subdev)
->  		.ssr_event = SSCTL_SSR_EVENT_AFTER_POWERUP
->  	};
-> 
-> +	mutex_lock(&sysmon->state_lock);
-> +	sysmon->state = SSCTL_SSR_EVENT_AFTER_POWERUP;
->  	blocking_notifier_call_chain(&sysmon_notifiers, 0, (void *)&event);
-> +	mutex_unlock(&sysmon->state_lock);
-> 
->  	mutex_lock(&sysmon_lock);
->  	list_for_each_entry(target, &sysmon_list, node) {
-> -		if (target == sysmon ||
-> -		    target->rproc->state != RPROC_RUNNING)
-> +		if (target == sysmon)
->  			continue;
-> 
-> +		mutex_lock(&target->state_lock);
->  		event.subsys_name = target->name;
-> +		event.ssr_event = target->state;
-> 
->  		if (sysmon->ssctl_version == 2)
->  			ssctl_send_event(sysmon, &event);
->  		else if (sysmon->ept)
->  			sysmon_send_event(sysmon, &event);
-> +		mutex_unlock(&target->state_lock);
->  	}
->  	mutex_unlock(&sysmon_lock);
-> 
-> @@ -500,7 +511,10 @@ static void sysmon_stop(struct rproc_subdev
-> *subdev, bool crashed)
->  		.ssr_event = SSCTL_SSR_EVENT_BEFORE_SHUTDOWN
->  	};
-> 
-> +	mutex_lock(&sysmon->state_lock);
-> +	sysmon->state = SSCTL_SSR_EVENT_BEFORE_SHUTDOWN;
->  	blocking_notifier_call_chain(&sysmon_notifiers, 0, (void *)&event);
-> +	mutex_unlock(&sysmon->state_lock);
-> 
->  	/* Don't request graceful shutdown if we've crashed */
->  	if (crashed)
-> @@ -521,7 +535,10 @@ static void sysmon_unprepare(struct rproc_subdev 
-> *subdev)
->  		.ssr_event = SSCTL_SSR_EVENT_AFTER_SHUTDOWN
->  	};
-> 
-> +	mutex_lock(&sysmon->state_lock);
-> +	sysmon->state = SSCTL_SSR_EVENT_AFTER_SHUTDOWN;
->  	blocking_notifier_call_chain(&sysmon_notifiers, 0, (void *)&event);
-> +	mutex_unlock(&sysmon->state_lock);
->  }
-> 
->  /**
-> @@ -534,11 +551,10 @@ static int sysmon_notify(struct notifier_block
-> *nb, unsigned long event,
->  			 void *data)
->  {
->  	struct qcom_sysmon *sysmon = container_of(nb, struct qcom_sysmon, 
-> nb);
-> -	struct rproc *rproc = sysmon->rproc;
->  	struct sysmon_event *sysmon_event = data;
-> 
->  	/* Skip non-running rprocs and the originating instance */
-> -	if (rproc->state != RPROC_RUNNING ||
-> +	if (sysmon->state != SSCTL_SSR_EVENT_AFTER_POWERUP ||
->  	    !strcmp(sysmon_event->subsys_name, sysmon->name)) {
->  		dev_dbg(sysmon->dev, "not notifying %s\n", sysmon->name);
->  		return NOTIFY_DONE;
-> @@ -591,6 +607,7 @@ struct qcom_sysmon *qcom_add_sysmon_subdev(struct
-> rproc *rproc,
->  	init_completion(&sysmon->ind_comp);
->  	init_completion(&sysmon->shutdown_comp);
->  	mutex_init(&sysmon->lock);
-> +	mutex_init(&sysmon->state_lock);
-> 
->  	sysmon->shutdown_irq = of_irq_get_byname(sysmon->dev->of_node,
->  						 "shutdown-ack");
+> +	for (i = 0; i < smmu->num_mapping_groups; i++) {
+> +		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
+> +
+> +		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
 
-Reviewed-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+I bet this is fun over kexec...
+
+Note that the Qualcomm special case got a bit of a free pass since it 
+involves working around a totally broken hypervisor, plus gets to play 
+the "nobody sane will run an enterprise distro on their phone" card to 
+an extent; I don't think the likes of Layerscape kit get it quite so easy ;)
+
+> +			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
+> +			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
+> +			smmu->smrs[i].valid = true;
+> +
+> +			smmu->s2crs[i].type = S2CR_TYPE_BYPASS;
+> +			smmu->s2crs[i].privcfg = S2CR_PRIVCFG_DEFAULT;
+> +			smmu->s2crs[i].cbndx = 0xff;
+> +
+> +			cnt++;
+> +		}
+> +	}
+> +
+> +	dev_notice(smmu->dev, "\tpreserved %d boot mapping%s\n", cnt,
+> +		   cnt == 1 ? "" : "s");
+
+That gets you around the initial SMMU reset, but what happens for the 
+arbitrarily long period of time between the MC device getting attached 
+to a default domain and the MC driver actually probing and (presumably) 
+being able to map and reinitialise its firmware?
+
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct arm_smmu_impl nxp_impl = {
+> +	.cfg_probe = nxp_cfg_probe,
+> +};
+
+I believe you're mostly using MMU-500, so you probably don't want to 
+simply throw out the relevant errata workarounds.
+
+>   struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+>   {
+> @@ -226,5 +256,8 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+>   	if (of_device_is_compatible(np, "marvell,ap806-smmu-500"))
+>   		smmu->impl = &mrvl_mmu500_impl;
+>   
+> +	if (of_property_read_bool(np, "nxp,keep-boot-mappings"))
+> +		smmu->impl = &nxp_impl;
+
+Normally you'd get a "what about ACPI?" here, but given the number of 
+calls and email threads we've had specifically about trying to make ACPI 
+support for these platforms work, that gets upgraded to at least a "WHAT 
+ABOUT ACPI!?" :P
+
+But seriously, the case of device firmware in memory being active before 
+handover to Linux is *literally* the original reason behind IORT RMRs. 
+We already know we need a way to specify the equivalent thing for DT 
+systems, such that both can be handled commonly. I really don't want to 
+have to support a vendor-specific mechanism for not-even-fully-solving a 
+completely generic issue, sorry.
+
+Robin.
+
+> +
+>   	return smmu;
+>   }
+> 
