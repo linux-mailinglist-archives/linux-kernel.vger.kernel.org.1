@@ -2,132 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FC92C40E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03D52C40F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 14:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729109AbgKYNJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 08:09:01 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:12852 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbgKYNJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 08:09:01 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606309740; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=wCJRRp0K1xVBYnPLLsaAQKWw98Ye4+26A8piSTi3UeA=; b=D1/ppKeY5KxGCHNSMqTC1DJMtiAm/6JpjIkcIRbiTdcaC14aKAEwrg7BVNRHx2rs6YyKKWtl
- Lr5FgQr5iuBt8jvZi7nDrolZihEodJSKT/PHRHgJU0Qzmuz3JD88kh3melorcrbDE+hOxdUJ
- b8y4qykeyjyKg4SoPIEfN3vhxDE=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fbe576a1b731a5d9caef5e3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 13:08:58
- GMT
-Sender: stummala=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A16A6C43463; Wed, 25 Nov 2020 13:08:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: stummala)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0CE36C433ED;
-        Wed, 25 Nov 2020 13:08:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0CE36C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=stummala@codeaurora.org
-Date:   Wed, 25 Nov 2020 18:38:51 +0530
-From:   Sahitya Tummala <stummala@codeaurora.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Chao Yu' <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] f2fs: change to use rwsem for cp_mutex
-Message-ID: <20201125130851.GA22157@codeaurora.org>
-References: <1606109312-1944-1-git-send-email-stummala@codeaurora.org>
- <7f5213fb9b334d1290f019ab8ed6ee71@AcuMS.aculab.com>
- <a1b9a134-97a8-6fb7-2fdc-d4de91dff849@huawei.com>
- <effbe4f5edaf4d45a64d12c65e0dc6b0@AcuMS.aculab.com>
+        id S1727700AbgKYNO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 08:14:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725875AbgKYNO1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 08:14:27 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD345C0613D4;
+        Wed, 25 Nov 2020 05:14:26 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id h20so4304720qkk.4;
+        Wed, 25 Nov 2020 05:14:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kOEITRpnYakfcSLbFccn0O0+ahuDFsX14pnUV2GB37k=;
+        b=k6aAs+LcWnsNYwcoC5zoKECpknCaYxxTOQSXGadxLHypBtH9p9phyWFDmgG/GhD8Sv
+         Nl7p3+4BIeb4O/4G5Ne+k5A9Fbq03GMYJWYqaJUimY4Ll5HlzvyfGxD3ElGrpBUeF0PK
+         /vy45nCx+fUsPkVR7dsol/tbuUFJnUqUdAvoWQt/6Owf6g1AucADpEtY5M9anmDXScrW
+         5OHsblxzGCC/cV/miusbQ9uGE/20TLLFLJQFEBp+k4AofuT793Q7JFK1Owmx0RWGbAif
+         T3537iKJ3AOI0N0sELq0T9Ty6TocU2GD4qkgXneMwFmFNN0rmhLkEEe9277OXIZWcGTL
+         qw/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=kOEITRpnYakfcSLbFccn0O0+ahuDFsX14pnUV2GB37k=;
+        b=sQ0DGISWCcnS6ylie9VGHV8pdydFD9Ht8kpWYzhiFrkjzePtZBuUCDdsUKFJQH1HIQ
+         FpaYELD8rBlskjIwcbpo184o6QV8vRs40494EayYlw4bFVKSTkjmRy3ytSy4r+Z2k8on
+         jKGDljtKQ1L1HVWFsIXnaIgt4jIeZBWtEZQtHnUNowHfr8pPIkflk1kKtUB4VRG3Su7z
+         4ycSKsKYoVUaOSx7SW10GD5ZdJl2AjDPMvcMqXHgCgqiX9cm/9ZDkWtDbIcSRvd1yYGp
+         kxwL4GNgMDt9kMj+EWs+zXlw1ZuMJqvNm4bYqiGAOUhV8/V4poHRsRQb/+8MMvKhq7S0
+         D8wA==
+X-Gm-Message-State: AOAM530XHHz4tgHjQdlKLTBIfGn9/GavV2yIqenCY9aBitc+Ank9lHFT
+        lmlhe4XlsHB80j/1ntIhmvoDeHewV5Szrw==
+X-Google-Smtp-Source: ABdhPJywuho9H+JFOlMKEP6BR+7QwVe13ZNZiT7YzlL2J8RhpOo9HnJYl82wP312bZt/I348Rx/G8A==
+X-Received: by 2002:ae9:dec3:: with SMTP id s186mr3274213qkf.210.1606310065815;
+        Wed, 25 Nov 2020 05:14:25 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id t2sm2202631qtr.24.2020.11.25.05.14.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 05:14:25 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 25 Nov 2020 08:14:02 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Tariq Toukan <tariqt@nvidia.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH] workqueue: Add support for exposing singlethread
+ workqueues in sysfs
+Message-ID: <X75Ymvo1AhSLAKNP@mtj.duckdns.org>
+References: <20201006120607.20310-1-tariqt@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <effbe4f5edaf4d45a64d12c65e0dc6b0@AcuMS.aculab.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201006120607.20310-1-tariqt@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Hello,
 
-On Tue, Nov 24, 2020 at 09:12:12AM +0000, David Laight wrote:
-> From: Chao Yu
-> > Sent: 24 November 2020 03:12
-> > 
-> > On 2020/11/24 1:05, David Laight wrote:
-> > > From: Sahitya Tummala
-> > >> Sent: 23 November 2020 05:29
-> > >>
-> > >> Use rwsem to ensure serialization of the callers and to avoid
-> > >> starvation of high priority tasks, when the system is under
-> > >> heavy IO workload.
-> > >
-> > > I can't see any read lock requests.
-> > >
-> > > So why the change?
-> > 
-> > Hi David,
-> > 
-> > You can check the context of this patch in below link:
-> > 
-> > https://lore.kernel.org/linux-f2fs-devel/8e094021b958f9fe01df1183a2677882@codeaurora.org/T/#t
-> > 
-> > BTW, the root cause here is that mutex lock won't serialize callers, so there
-> > could be potential starvation problem when this lock is always grabbed by high
-> > priority tasks.
-> 
-> That doesn't seem right.
-> 
-> If I read the above correctly it was high priority tasks that were
-> being 'starved' precisely because mutex lock serializes wakers.
+This generally looks fine to me. Some nits below.
 
-Actually it can happen for any random task irrespective of the priority.
-In my case, I was observing that the thread that went to sleep first is
-not able to acquire the lock first and other new threads that came in
-just around the mutex unlock time were acquiring the lock.
+On Tue, Oct 06, 2020 at 03:06:07PM +0300, Tariq Toukan wrote:
+> @@ -432,6 +433,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+>  			WQ_MEM_RECLAIM, 1, (name))
+>  #define create_singlethread_workqueue(name)				\
+>  	alloc_ordered_workqueue("%s", __WQ_LEGACY | WQ_MEM_RECLAIM, name)
+> +#define create_singlethread_sysfs_workqueue(name)			\
+> +	alloc_ordered_workqueue("%s", __WQ_MAX_ACTIVE_RO |		\
+> +				__WQ_LEGACY | WQ_MEM_RECLAIM, name)
 
-> 
-> If you have a lock that is contended so much that it is held 100%
-> of the time you need a different locking strategy.
-> 
-> IIRC mutex locks are 'ticket' locks so that only one thread is woken
-> each time the mutex is released, and they are woken in the order
-> they went to sleep.
+Please don't add a new wrapper. Just convert the user to call
+alloc_ordered_workqueue() directly. I don't think we need __WQ_MAX_ACTIVE_RO
+as a separate flag. The behavior can be implied in __WQ_ORDERED_EXPLICIT,
+and __WQ_LEGACY is there just to disable dependency check because users of
+older interace aren't marking MEM_RECLAIM correctly.
 
-AFAIK mutex locks doesn't *strictly* enforce FIFO order. The lock is released
-before waking the first waiting task. The waiting task has to run to claim
-the lock. So the lock is available for other tasks in this *short* window.
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index c41c3c17b86a..a80d34726e68 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -4258,6 +4258,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+>  	if ((flags & WQ_POWER_EFFICIENT) && wq_power_efficient)
+>  		flags |= WQ_UNBOUND;
+>  
+> +	if (flags & __WQ_MAX_ACTIVE_RO)
+> +		flags |= WQ_SYSFS;
 
-Thanks,
+Just let the user set WQ_SYSFS like other users?
 
-> 
-> While this behaviour might not be the one you want, relying on
-> rwsem (which might happen currently to work differently) doesn't
-> seem the correct long term fix.
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+Thanks.
 
 -- 
---
-Sent by a consultant of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+tejun
