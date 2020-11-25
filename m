@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1123F2C45E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0252C45F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732211AbgKYQuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:50:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44979 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732082AbgKYQuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:50:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606323022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XZc3CPeOm1ZOxeaYmzK65nkw+8TNuZ7nhsmtRqGrSEo=;
-        b=XWf3M3ZHGIWzSymrVwUA2CAOTh/FqhKon3J0/unajrGRjuYMgrgH4zDX+u8QKJ0APoNvKH
-        I1fRiUhJZB0An0JupCQoqk669hX3Dr5o8FVychduv8ooN496RrVvUzl01SLZj7dvGTWw54
-        R+HAODw02C/frTWN1W6tsTPPYA94+7I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-bEjfIDKOOqarG3JXigFZCQ-1; Wed, 25 Nov 2020 11:50:20 -0500
-X-MC-Unique: bEjfIDKOOqarG3JXigFZCQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76FDD185E48A;
-        Wed, 25 Nov 2020 16:50:19 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D604510021B3;
-        Wed, 25 Nov 2020 16:50:14 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>
-cc:     dhowells@redhat.com, sandeen@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: UAPI value collision: STATX_ATTR_MOUNT_ROOT vs STATX_ATTR_DAX
+        id S1732426AbgKYQw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:52:29 -0500
+Received: from smtp.asem.it ([151.1.184.197]:55961 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731918AbgKYQw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:52:29 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000631152.MSG 
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 17:52:26 +0100
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 25
+ Nov 2020 17:52:23 +0100
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 25 Nov 2020 17:52:23 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Jonathan Corbet <corbet@lwn.net>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v1] docs/vm: hwpoison: fix spelling mistakes
+Date:   Wed, 25 Nov 2020 17:52:22 +0100
+Message-ID: <20201125165222.788910-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1927369.1606323014.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 25 Nov 2020 16:50:14 +0000
-Message-ID: <1927370.1606323014@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A090210.5FBE8BC8.0058,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus, Miklos, Ira,
+Actions:
 
-It seems that two patches that got merged in the 5.8 merge window collided=
- and
-no one noticed until now:
+- fix spelling mistake
+- reduce some double spaces to a single one
+- substitute spaces with tab
 
-80340fe3605c0 (Miklos Szeredi     2020-05-14 184) #define STATX_ATTR_MOUNT=
-_ROOT		0x00002000 /* Root of a mount */
-...
-712b2698e4c02 (Ira Weiny          2020-04-30 186) #define STATX_ATTR_DAX		=
-	0x00002000 /* [I] File is DAX */
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
+ Documentation/vm/hwpoison.rst | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-The question is, what do we do about it?  Renumber one or both of the
-constants?
-
-David
+diff --git a/Documentation/vm/hwpoison.rst b/Documentation/vm/hwpoison.rst
+index a5c884293dac..88ba2df198d1 100644
+--- a/Documentation/vm/hwpoison.rst
++++ b/Documentation/vm/hwpoison.rst
+@@ -50,7 +50,7 @@ of applications. KVM support requires a recent qemu-kvm release.
+ For the KVM use there was need for a new signal type so that
+ KVM can inject the machine check into the guest with the proper
+ address. This in theory allows other applications to handle
+-memory failures too. The expection is that near all applications
++memory failures too. The expectation is that near all applications
+ won't do that, but some very specialized ones might.
+ 
+ Failure recovery modes
+@@ -121,7 +121,7 @@ Testing
+ 
+   unpoison-pfn
+ 	Software-unpoison page at PFN echoed into this file. This way
+-	a page can be reused again.  This only works for Linux
++	a page can be reused again. This only works for Linux
+ 	injected failures, not for real memory failures.
+ 
+   Note these injection interfaces are not stable and might change between
+@@ -129,8 +129,8 @@ Testing
+ 
+   corrupt-filter-dev-major, corrupt-filter-dev-minor
+ 	Only handle memory failures to pages associated with the file
+-	system defined by block device major/minor.  -1U is the
+-	wildcard value.  This should be only used for testing with
++	system defined by block device major/minor. -1U is the
++	wildcard value. This should be only used for testing with
+ 	artificial injection.
+ 
+   corrupt-filter-memcg
+@@ -141,7 +141,7 @@ Testing
+ 
+ 		mkdir /sys/fs/cgroup/mem/hwpoison
+ 
+-	        usemem -m 100 -s 1000 &
++		usemem -m 100 -s 1000 &
+ 		echo `jobs -p` > /sys/fs/cgroup/mem/hwpoison/tasks
+ 
+ 		memcg_ino=$(ls -id /sys/fs/cgroup/mem/hwpoison | cut -f1 -d' ')
+@@ -152,7 +152,7 @@ Testing
+ 
+   corrupt-filter-flags-mask, corrupt-filter-flags-value
+ 	When specified, only poison pages if ((page_flags & mask) ==
+-	value).  This allows stress testing of many kinds of
++	value). This allows stress testing of many kinds of
+ 	pages. The page_flags are the same as in /proc/kpageflags. The
+ 	flag bits are defined in include/linux/kernel-page-flags.h and
+ 	documented in Documentation/admin-guide/mm/pagemap.rst
+-- 
+2.25.1
 
