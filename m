@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C23702C456F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357A62C4572
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732025AbgKYQjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:39:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47505 "EHLO
+        id S1730521AbgKYQkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:40:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55461 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730247AbgKYQjq (ORCPT
+        by vger.kernel.org with ESMTP id S1730247AbgKYQky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:39:46 -0500
+        Wed, 25 Nov 2020 11:40:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606322385;
+        s=mimecast20190719; t=1606322453;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+ScC2iD5+F6+dcEymW2ZVsRHtouJI90gVvqKnZPqZNY=;
-        b=UaFwPiR3ZWkiCktkWjvkqIyH+W7ltc+pdZ+3Iz7rg5giXkD/yYERLNsXJkgR5/QM9lTlRY
-        46rnyxhwZjun3WqoymNVA4FhG+afVDsTcEQ4rEEN7ti9WwApFTcfh+RP6W4K2NrZveE8/F
-        OqI2E3Mc2+c/J5Jb4oeIhXMwKVuTBCo=
+        bh=r/zQ1cKIShwHABz182npq17vBHXZMt6hAGrjSiY6wq4=;
+        b=cTvMEnDCGVan/xFdUckkdBEYtjxs5WzBNisA6TTdW6PNMSEXPgYXTPJM/Qf1iaTaXjKFa8
+        TSVPGnRdOYhmXZNLebXG71hY2onAAIZN6XGtFlhUqlRarh0vd05aopF9JM2eO9fJ5XzhTO
+        b0iMmEhHvuMIHA3uGWf5BvoUsh8GskI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-72-Gfuy4hdzNBSVKthwn4r-AQ-1; Wed, 25 Nov 2020 11:39:41 -0500
-X-MC-Unique: Gfuy4hdzNBSVKthwn4r-AQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-563-MYYcJmb1Moaj6yuDWwhSkg-1; Wed, 25 Nov 2020 11:40:49 -0500
+X-MC-Unique: MYYcJmb1Moaj6yuDWwhSkg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA52A911E2;
-        Wed, 25 Nov 2020 16:39:39 +0000 (UTC)
-Received: from [10.36.112.131] (ovpn-112-131.ams2.redhat.com [10.36.112.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 408535D71F;
-        Wed, 25 Nov 2020 16:39:38 +0000 (UTC)
-Subject: Re: [PATCH] mm: cma: improve pr_debug log in cma_release()
-To:     Charan Teja Reddy <charante@codeaurora.org>,
-        akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
-        linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, vinmenon@codeaurora.org
-References: <1606318341-29521-1-git-send-email-charante@codeaurora.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <9bde4b9a-58e4-b756-af45-1559fc06dcd4@redhat.com>
-Date:   Wed, 25 Nov 2020 17:39:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FCA48145E0;
+        Wed, 25 Nov 2020 16:40:47 +0000 (UTC)
+Received: from krava (unknown [10.40.192.200])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4C3A3100AE2D;
+        Wed, 25 Nov 2020 16:40:45 +0000 (UTC)
+Date:   Wed, 25 Nov 2020 17:40:44 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>
+Subject: Re: [RFC 1/2] perf: support build BPF skeletons with perf
+Message-ID: <20201125164044.GL2164284@krava>
+References: <20201119045046.1491106-1-songliubraving@fb.com>
+ <20201119045046.1491106-2-songliubraving@fb.com>
+ <20201122233521.GD1902740@krava>
+ <F035411D-BC52-4A65-97FE-D53120E06689@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <1606318341-29521-1-git-send-email-charante@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <F035411D-BC52-4A65-97FE-D53120E06689@fb.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.11.20 16:32, Charan Teja Reddy wrote:
-> It is required to print 'count' of pages, along with the pages, passed
-> to cma_release to debug the cases of mismatched count value passed
-> between cma_alloc() and cma_release() from a code path.
+On Tue, Nov 24, 2020 at 11:52:43PM +0000, Song Liu wrote:
 > 
-> As an example, consider the below scenario:
-> 1) CMA pool size is 4MB and
-> 2) User doing the erroneous step of allocating 2 pages but freeing 1
-> page in a loop from this CMA pool.
-> The step 2 causes cma_alloc() to return NULL at one point of time
-> because of -ENOMEM condition.
 > 
-> And the current pr_debug logs is not giving the info about these types
-> of allocation patterns because of count value not being printed in
-> cma_release().
+> > On Nov 22, 2020, at 3:35 PM, Jiri Olsa <jolsa@redhat.com> wrote:
+> > 
+> > On Wed, Nov 18, 2020 at 08:50:45PM -0800, Song Liu wrote:
+> >> BPF programs are useful in perf to profile BPF programs. BPF skeleton is
+> >> by far the easiest way to write BPF tools. Enable building BPF skeletons
+> >> in util/bpf_skel. A dummy bpf skeleton is added. More bpf skeletons will
+> >> be added for different use cases.
+> > 
+> > I was just in a place adding bpf program to perf as well,
+> > so this will save me some time ;-) thanks!
 > 
-> We are printing the count value in the trace logs, just extend the same
-> to pr_debug logs too.
-> 
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> ---
->  mm/cma.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 7f415d7..07c904b 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -512,7 +512,7 @@ bool cma_release(struct cma *cma, const struct page *pages, unsigned int count)
->  	if (!cma || !pages)
->  		return false;
->  
-> -	pr_debug("%s(page %p)\n", __func__, (void *)pages);
-> +	pr_debug("%s(page %p, count %zu)\n", __func__, (void *)pages, count);
->  
->  	pfn = page_to_pfn(pages);
->  
-> 
+> I'd love to learn about your plan. Maybe we have some similar ideas, 
+> and could collaborate on them. 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+the plan was to use skeleton as you did, because I agree it's the best
+way to include bpf program in perf
 
--- 
-Thanks,
+I'm now using your patch and adding my bpf program on top of that ;-)
 
-David / dhildenb
+thanks,
+jirka
 
