@@ -2,69 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810042C4A33
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 524C82C4A39
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732209AbgKYVle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:41:34 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:34553 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731928AbgKYVld (ORCPT
+        id S1732531AbgKYVpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:45:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728706AbgKYVpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:41:33 -0500
-X-Originating-IP: 62.210.143.248
-Received: from weirdfishes.localdomain (62-210-143-248.rev.poneytelecom.eu [62.210.143.248])
-        (Authenticated sender: m@thi.eu.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 7327F60003;
-        Wed, 25 Nov 2020 21:41:30 +0000 (UTC)
-Received: by weirdfishes.localdomain (Postfix, from userid 1000)
-        id 12A0B720488C4; Wed, 25 Nov 2020 22:41:30 +0100 (CET)
-Date:   Wed, 25 Nov 2020 22:41:30 +0100
-From:   Mathieu Chouquet-Stringer <me@mathieu.digital>
-To:     Borislav Petkov <bp@alien8.de>, Matthew Garrett <mjg59@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        sean.j.christopherson@intel.com, tony.luck@intel.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        the arch/x86 maintainers <x86@kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH] x86/msr: Filter MSR writes
-Message-ID: <20201125214130.GA54301@weirdfishes>
-Mail-Followup-To: Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Borislav Petkov <bp@alien8.de>, Matthew Garrett <mjg59@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        sean.j.christopherson@intel.com, tony.luck@intel.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        the arch/x86 maintainers <x86@kernel.org>, kernel-team@fb.com
-References: <20200714154728.GA3101@nazgul.tnic>
- <20200714160448.GC2080@chrisdown.name>
- <CACdnJuvfhjMNQUYNYWpPMfwTE3xHi7UNPm7HEwUMv_1F3KT4gA@mail.gmail.com>
- <20201117210018.GA4247@weirdfishes>
- <20201117212016.GQ5719@zn.tnic>
- <20201118090929.GC189743@weirdfishes>
- <20201118115027.GF7472@zn.tnic>
- <20201118140427.GA213447@weirdfishes>
- <20201118175048.GK7472@zn.tnic>
- <20201119105344.GA434279@weirdfishes>
+        Wed, 25 Nov 2020 16:45:08 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2415C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:45:07 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id v3so6245ilo.5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 13:45:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=no1bO+ckW6W8DUgsFvzWdRgxxx68msjiEzdWapddJA0=;
+        b=Al+QYKrQ6R3a2rHiS3QhZy+tjQg/wBZqF4aZzmCD3toqI0qi1e2VVmB3WYcGH3kzbw
+         KXA3svqCRG8xaDiFNo86hCT5IqL4BOvHHmiM73XdhNJ+c50LIKz2wIxmY0BYgr4sfHDm
+         gdQGGUQtaOvObJ3YwZT6xws0TUpZ2CTFSFUig=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=no1bO+ckW6W8DUgsFvzWdRgxxx68msjiEzdWapddJA0=;
+        b=e2JR992MWdIL77xgtEIWl/qvpmEGlhvssvQFm26QqckxB0p68Hw+i5/QHuI6kfcBDV
+         bMdKg8JJ+9hCt97gbcWgPhjF0FFFH4M26cZfqfxBnBGveewsuzsRAKF6cnyz3DgNztiH
+         H4+hdyjCrZnzFGLo+9TWSB9zRzDhO//DOzm4X1wixDwRlAM8HVR9qdflPv08Jlk8B2cN
+         G/aNB/yIvgqlh2sc6MyWAxdIL4Byez6tFBpqxH6D7j8Nv1CHLQc3LEiG2SN53oODj0OO
+         9gkCwhHcXbU60zODC2k+SwKD15oq6+nWNsinkPir8oCxT6xhjvQ/1brwRszn97GFXHvO
+         kw2A==
+X-Gm-Message-State: AOAM531uklkWuZlD6+8xlP8wHUYNi2Co9lSYQZYu+hLZW/7MNZNIWq5d
+        682nuP2gEJc6k8dhfispxC8hGw==
+X-Google-Smtp-Source: ABdhPJxe6T5zgXwtV3mF6ttSWU6Njun4e63eXCdaro0fB9Jk6jCGEiAvqo1VkX2iFXUEJIiRGuNRlw==
+X-Received: by 2002:a05:6e02:1204:: with SMTP id a4mr4840785ilq.135.1606340707301;
+        Wed, 25 Nov 2020 13:45:07 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id m6sm1469909ioq.33.2020.11.25.13.45.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Nov 2020 13:45:06 -0800 (PST)
+Subject: Re: [PATCH net-next 1/2] soc: qcom: ipa: Constify static qmi structs
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alex Elder <elder@kernel.org>, Kalle Valo <kvalo@codeaurora.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+References: <20201122234031.33432-1-rikard.falkeborn@gmail.com>
+ <20201122234031.33432-2-rikard.falkeborn@gmail.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <ee9dfc18-092e-6a5c-d310-d4ce52db6042@ieee.org>
+Date:   Wed, 25 Nov 2020 15:45:05 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119105344.GA434279@weirdfishes>
+In-Reply-To: <20201122234031.33432-2-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Hey Borislav,
-
-On Thu, Nov 19, 2020 at 11:53:44AM +0100, Mathieu Chouquet-Stringer wrote:
-> On Wed, Nov 18, 2020 at 06:50:48PM +0100, Borislav Petkov wrote:
-> > Please fix the text in Documentation/admin-guide/sysctl/kernel.rst also.
+On 11/22/20 5:40 PM, Rikard Falkeborn wrote:
+> These are only used as input arguments to qmi_handle_init() which
+> accepts const pointers to both qmi_ops and qmi_msg_handler. Make them
+> const to allow the compiler to put them in read-only memory.
 > 
-> Done.
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-I haven't heard from you, what did you think of my last patch?
+Good idea.  Thanks a lot.
 
--- 
-Mathieu Chouquet-Stringer                             me@mathieu.digital
-            The sun itself sees not till heaven clears.
-	             -- William Shakespeare --
+Acked-by: Alex Elder <elder@linaro.org>
+
+> ---
+>   drivers/net/ipa/ipa_qmi.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ipa/ipa_qmi.c b/drivers/net/ipa/ipa_qmi.c
+> index 5090f0f923ad..d2c3f273c233 100644
+> --- a/drivers/net/ipa/ipa_qmi.c
+> +++ b/drivers/net/ipa/ipa_qmi.c
+> @@ -168,7 +168,7 @@ static void ipa_server_bye(struct qmi_handle *qmi, unsigned int node)
+>   	ipa_qmi->indication_sent = false;
+>   }
+>   
+> -static struct qmi_ops ipa_server_ops = {
+> +static const struct qmi_ops ipa_server_ops = {
+>   	.bye		= ipa_server_bye,
+>   };
+>   
+> @@ -234,7 +234,7 @@ static void ipa_server_driver_init_complete(struct qmi_handle *qmi,
+>   }
+>   
+>   /* The server handles two request message types sent by the modem. */
+> -static struct qmi_msg_handler ipa_server_msg_handlers[] = {
+> +static const struct qmi_msg_handler ipa_server_msg_handlers[] = {
+>   	{
+>   		.type		= QMI_REQUEST,
+>   		.msg_id		= IPA_QMI_INDICATION_REGISTER,
+> @@ -261,7 +261,7 @@ static void ipa_client_init_driver(struct qmi_handle *qmi,
+>   }
+>   
+>   /* The client handles one response message type sent by the modem. */
+> -static struct qmi_msg_handler ipa_client_msg_handlers[] = {
+> +static const struct qmi_msg_handler ipa_client_msg_handlers[] = {
+>   	{
+>   		.type		= QMI_RESPONSE,
+>   		.msg_id		= IPA_QMI_INIT_DRIVER,
+> @@ -463,7 +463,7 @@ ipa_client_new_server(struct qmi_handle *qmi, struct qmi_service *svc)
+>   	return 0;
+>   }
+>   
+> -static struct qmi_ops ipa_client_ops = {
+> +static const struct qmi_ops ipa_client_ops = {
+>   	.new_server	= ipa_client_new_server,
+>   };
+>   
+> 
+
