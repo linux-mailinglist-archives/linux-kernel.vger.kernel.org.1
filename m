@@ -2,121 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7002C4565
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2805A2C4566
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 17:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731849AbgKYQiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 11:38:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:58446 "EHLO foss.arm.com"
+        id S1731969AbgKYQiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 11:38:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39218 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730362AbgKYQiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:38:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B928F31B;
-        Wed, 25 Nov 2020 08:38:11 -0800 (PST)
-Received: from [10.57.59.159] (unknown [10.57.59.159])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 46E283F7BB;
-        Wed, 25 Nov 2020 08:38:09 -0800 (PST)
-Subject: Re: [PATCH v2 2/6] iommu: Add iova and size as parameters in
- iommu_iotlb_map
-To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com, jun.wen@mediatek.com
-References: <20201119061836.15238-1-yong.wu@mediatek.com>
- <20201119061836.15238-3-yong.wu@mediatek.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <a8ae45e0-d384-c87e-946a-1c36bf889f84@arm.com>
-Date:   Wed, 25 Nov 2020 16:38:08 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+        id S1731365AbgKYQiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 11:38:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 36C47AC22;
+        Wed, 25 Nov 2020 16:38:12 +0000 (UTC)
+Subject: Re: [PATCH v5 4/4] mm,hwpoison: drop unneeded pcplist draining
+To:     Oscar Salvador <osalvador@suse.de>, n-horiguchi@ah.jp.nec.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20201013144447.6706-1-osalvador@suse.de>
+ <20201013144447.6706-5-osalvador@suse.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <75488d50-02e5-c766-2c27-16b776c5c9c1@suse.cz>
+Date:   Wed, 25 Nov 2020 17:38:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201119061836.15238-3-yong.wu@mediatek.com>
+In-Reply-To: <20201013144447.6706-5-osalvador@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-19 06:18, Yong Wu wrote:
-> iotlb_sync_map allow IOMMU drivers tlb sync after completing the whole
-> mapping. This patch adds iova and size as the parameters in it. then the
-> IOMMU driver could flush tlb with the whole range once after iova mapping
-> to improve performance.
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->   drivers/iommu/iommu.c      | 6 +++---
->   drivers/iommu/tegra-gart.c | 3 ++-
->   include/linux/iommu.h      | 3 ++-
->   3 files changed, 7 insertions(+), 5 deletions(-)
+On 10/13/20 4:44 PM, Oscar Salvador wrote:
+> memory_failure and soft_offline_path paths now drain pcplists by calling
+> get_hwpoison_page.
 > 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index decef851fa3a..df87c8e825f7 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -2425,7 +2425,7 @@ int iommu_map(struct iommu_domain *domain, unsigned long iova,
->   	might_sleep();
->   	ret = __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
->   	if (ret == 0 && ops->iotlb_sync_map)
-> -		ops->iotlb_sync_map(domain);
-> +		ops->iotlb_sync_map(domain, iova, size);
+> memory_failure flags the page as HWPoison before, so that page cannot
+> longer go into a pcplist, and soft_offline_page only flags a page as
+> HWPoison if 1) we took the page off a buddy freelist 2) the page was
+> in-use and we migrated it 3) was a clean pagecache.
+> 
+> Because of that, a page cannot longer be poisoned and be in a pcplist.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+>   mm/madvise.c | 5 -----
+>   1 file changed, 5 deletions(-)
+> 
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index 416a56b8e757..c6b5524add58 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -877,7 +877,6 @@ static long madvise_remove(struct vm_area_struct *vma,
+>   static int madvise_inject_error(int behavior,
+>   		unsigned long start, unsigned long end)
+>   {
+> -	struct zone *zone;
+>   	unsigned long size;
 >   
->   	return ret;
->   }
-> @@ -2439,7 +2439,7 @@ int iommu_map_atomic(struct iommu_domain *domain, unsigned long iova,
->   
->   	ret = __iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC);
->   	if (ret == 0 && ops->iotlb_sync_map)
-> -		ops->iotlb_sync_map(domain);
-> +		ops->iotlb_sync_map(domain, iova, size);
->   
->   	return ret;
->   }
-> @@ -2557,7 +2557,7 @@ static size_t __iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
+>   	if (!capable(CAP_SYS_ADMIN))
+> @@ -922,10 +921,6 @@ static int madvise_inject_error(int behavior,
+>   			return ret;
 >   	}
 >   
->   	if (ops->iotlb_sync_map)
-> -		ops->iotlb_sync_map(domain);
-> +		ops->iotlb_sync_map(domain, iova, mapped);
->   	return mapped;
->   
->   out_err:
-> diff --git a/drivers/iommu/tegra-gart.c b/drivers/iommu/tegra-gart.c
-> index fac720273889..d15d13a98ed1 100644
-> --- a/drivers/iommu/tegra-gart.c
-> +++ b/drivers/iommu/tegra-gart.c
-> @@ -261,7 +261,8 @@ static int gart_iommu_of_xlate(struct device *dev,
+> -	/* Ensure that all poisoned pages are removed from per-cpu lists */
+> -	for_each_populated_zone(zone)
+> -		drain_all_pages(zone);
+> -
 >   	return 0;
 >   }
->   
-> -static void gart_iommu_sync_map(struct iommu_domain *domain)
-> +static void gart_iommu_sync_map(struct iommu_domain *domain, unsigned long iova,
-> +				size_t size)
->   {
->   	FLUSH_GART_REGS(gart_handle);
->   }
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index b95a6f8db6ff..794d4085edd3 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -244,7 +244,8 @@ struct iommu_ops {
->   	size_t (*unmap)(struct iommu_domain *domain, unsigned long iova,
->   		     size_t size, struct iommu_iotlb_gather *iotlb_gather);
->   	void (*flush_iotlb_all)(struct iommu_domain *domain);
-> -	void (*iotlb_sync_map)(struct iommu_domain *domain);
-> +	void (*iotlb_sync_map)(struct iommu_domain *domain, unsigned long iova,
-> +			       size_t size);
->   	void (*iotlb_sync)(struct iommu_domain *domain,
->   			   struct iommu_iotlb_gather *iotlb_gather);
->   	phys_addr_t (*iova_to_phys)(struct iommu_domain *domain, dma_addr_t iova);
+>   #endif
 > 
+
