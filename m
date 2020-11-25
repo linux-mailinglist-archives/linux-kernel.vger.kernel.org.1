@@ -2,141 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE172C37A6
+	by mail.lfdr.de (Postfix) with ESMTP id CA4712C37A7
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 04:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727635AbgKYDaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 22:30:46 -0500
-Received: from gateway21.websitewelcome.com ([192.185.45.95]:23431 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726192AbgKYDap (ORCPT
+        id S1727678AbgKYDbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 22:31:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbgKYDbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 22:30:45 -0500
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id ABFC0400C3BFB
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 21:30:44 -0600 (CST)
-Received: from br164.hostgator.com.br ([192.185.176.180])
-        by cmsmtp with SMTP
-        id hlW0kDd38uDoAhlW0kqDcl; Tue, 24 Nov 2020 21:30:44 -0600
-X-Authority-Reason: nr=8
+        Tue, 24 Nov 2020 22:31:19 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AE4C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 19:31:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=yYO8qL33jBwoQYbeaYVOoflNZM3NfoUNGeqnAr79P0o=; b=qh5s3HRp3cT+JMgfQAFBxyRYd9
-        C3B38EarTvjWlcSpq3BIgt89Z9uoxum21Loe7Hkf5kX2+uA1jhTxusLKYC3XUfkxbByG7Ol4g1nTD
-        bsOA6eWqFFBZfaOx6tGHP/2mlzVxztnl9na3FmGYJnGfMDUWZ6o5Is4LWKdJciYQewUssyHMlpwQT
-        BE15ValGLi+oejac9zircQL6ohbyuDO5xacUIKiPEHfGnd9EvOh/krSI3HJbwY4I4ZB3HZl13dnjj
-        PoqTZAmDhwKInk0fkNiKcFTNqQnYcJwtE8CYzo8KnmdlbKc9qT5UgYcIHMKETHvhRGrlpkkbI06wh
-        Pb7gj9mQ==;
-Received: from 179-197-124-241.ultrabandalargafibra.com.br ([179.197.124.241]:50102 helo=DESKTOP-TKDJ6MU.localdomain)
-        by br164.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <matheus@castello.eng.br>)
-        id 1khlW0-0034pq-4W; Wed, 25 Nov 2020 00:30:44 -0300
-From:   Matheus Castello <matheus@castello.eng.br>
-To:     mikelley@microsoft.com, wei.liu@kernel.org, joe@perches.com
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        sashal@kernel.org, Tianyu.Lan@microsoft.com, decui@microsoft.com,
-        sunilmut@microsoft.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Matheus Castello <matheus@castello.eng.br>
-Subject: [PATCH v3 4/6] drivers: hv: vmbus: Fix checkpatch SPLIT_STRING
-Date:   Wed, 25 Nov 2020 00:29:26 -0300
-Message-Id: <20201125032926.17002-1-matheus@castello.eng.br>
-X-Mailer: git-send-email 2.29.2
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Q+qJl/9t8h7AnV78msTDTm5ihOt81igPQbotI3Sr0s4=; b=UyFZx+mOElChhPnb3tSSDkRtrf
+        NE0Yck57d6YkQrcaDFnJejtJwR+6JSaMRGxEMJQzkqMtNc0U1I0bG4L8TRj00ZQdXf5cfUG7/tGha
+        ALfhL7+dxSA2aZCJyRO8uRmiADC8ytLPaITUSsbDYJQIIJsYzuKNvZJmSs3m261h3i7OniEvJGG0o
+        a2MUXzbp198/6EZBAhgbEgI1HJDmsGpFlAneXLqIjRPOQFvA/qS75VBBwTimYSRPKl+uDU0U134Y1
+        dhr71dr8E7iWyIe1/whQwghWcBbBU/jk7Ox2ghpB3XVMeV4ixjfpFL2/5QebXBR+YifQ12MOYUWn4
+        BxuqdKKA==;
+Received: from [2601:1c0:6280:3f0::cc1f]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1khlWU-00006x-ET; Wed, 25 Nov 2020 03:31:14 +0000
+Subject: Re: [PATCH] phy/mediatek: Make PHY_MTK_XSPHY depend on HAS_IOMEM and
+ OF_ADDRESS to fix build errors
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+References: <1606211233-7425-1-git-send-email-yangtiezhu@loongson.cn>
+ <1606271044.32484.20.camel@mhfsdcap03>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d3cee8b0-b699-a51a-ff33-568e10cb2df7@infradead.org>
+Date:   Tue, 24 Nov 2020 19:31:08 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - castello.eng.br
-X-BWhitelist: no
-X-Source-IP: 179.197.124.241
-X-Source-L: No
-X-Exim-ID: 1khlW0-0034pq-4W
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 179-197-124-241.ultrabandalargafibra.com.br (DESKTOP-TKDJ6MU.localdomain) [179.197.124.241]:50102
-X-Source-Auth: matheus@castello.eng.br
-X-Email-Count: 14
-X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+In-Reply-To: <1606271044.32484.20.camel@mhfsdcap03>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checkpatch emits WARNING: quoted string split across lines.
-To keep the code clean and with the 80 column length indentation the
-check and registration code for kmsg_dump_register has been transferred
-to a new function hv_kmsg_dump_register.
+On 11/24/20 6:24 PM, Chunfeng Yun wrote:
+> Hi Tiezhu,
+> 
+> On Tue, 2020-11-24 at 17:47 +0800, Tiezhu Yang wrote:
+>> devm_ioremap_resource() will be not built in lib/devres.c if
+>> CONFIG_HAS_IOMEM is not set, of_address_to_resource() will be
+>> not built in drivers/of/address.c if CONFIG_OF_ADDRESS is not
+>> set, and then there exists two build errors about undefined
+>> reference to "devm_ioremap_resource" and "of_address_to_resource"
+>> in phy-mtk-xsphy.c under COMPILE_TEST and CONFIG_PHY_MTK_XSPHY,
+>> make PHY_MTK_XSPHY depend on HAS_IOMEM and OF_ADDRESS to fix it.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>  drivers/phy/mediatek/Kconfig | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/phy/mediatek/Kconfig b/drivers/phy/mediatek/Kconfig
+>> index 50c5e93..66df045 100644
+>> --- a/drivers/phy/mediatek/Kconfig
+>> +++ b/drivers/phy/mediatek/Kconfig
+>> @@ -30,6 +30,8 @@ config PHY_MTK_XSPHY
+>>  	tristate "MediaTek XS-PHY Driver"
+>>  	depends on ARCH_MEDIATEK || COMPILE_TEST
+>>  	depends on OF
+>> +	depends on HAS_IOMEM
+>> +	depends on OF_ADDRESS
+> Why not add them into deconfig but here? In fact I don't know which way
+> is better and follow the kernel rule.
+> 
+> Vinod and Kishon, do you have any suggestion about this?
 
-Signed-off-by: Matheus Castello <matheus@castello.eng.br>
----
-This is the V3 of patch 4 of the series "Add improvements suggested by
-checkpatch for vmbus_drv" with the changes suggested by Michael Kelley and
-Joe Perches. Thanks!
----
- drivers/hv/vmbus_drv.c | 35 ++++++++++++++++++++---------------
- 1 file changed, 20 insertions(+), 15 deletions(-)
+Putting them into a defconfig won't prevent random build errors
+while putting them here will (or at least should).
 
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 61d28c743263..edcc419ba328 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -1387,6 +1387,24 @@ static struct kmsg_dumper hv_kmsg_dumper = {
- 	.dump = hv_kmsg_dump,
- };
+>>  	select GENERIC_PHY
+>>  	help
+>>  	  Enable this to support the SuperSpeedPlus XS-PHY transceiver for
+> 
 
-+static void hv_kmsg_dump_register(void)
-+{
-+	int ret;
-+
-+	hv_panic_page = (void *)hv_alloc_hyperv_zeroed_page();
-+	if (!hv_panic_page) {
-+		pr_err("Hyper-V: panic message page memory allocation failed\n");
-+		return;
-+	}
-+
-+	ret = kmsg_dump_register(&hv_kmsg_dumper);
-+	if (ret) {
-+		pr_err("Hyper-V: kmsg dump register error 0x%x\n", ret);
-+		hv_free_hyperv_page((unsigned long)hv_panic_page);
-+		hv_panic_page = NULL;
-+	}
-+}
-+
- static struct ctl_table_header *hv_ctl_table_hdr;
+The patch LGTM.
 
- /*
-@@ -1477,21 +1495,8 @@ static int vmbus_bus_init(void)
- 		 * capability is supported by the hypervisor.
- 		 */
- 		hv_get_crash_ctl(hyperv_crash_ctl);
--		if (hyperv_crash_ctl & HV_CRASH_CTL_CRASH_NOTIFY_MSG) {
--			hv_panic_page = (void *)hv_alloc_hyperv_zeroed_page();
--			if (hv_panic_page) {
--				ret = kmsg_dump_register(&hv_kmsg_dumper);
--				if (ret) {
--					pr_err("Hyper-V: kmsg dump register "
--						"error 0x%x\n", ret);
--					hv_free_hyperv_page(
--					    (unsigned long)hv_panic_page);
--					hv_panic_page = NULL;
--				}
--			} else
--				pr_err("Hyper-V: panic message page memory "
--					"allocation failed");
--		}
-+		if (hyperv_crash_ctl & HV_CRASH_CTL_CRASH_NOTIFY_MSG)
-+			hv_kmsg_dump_register();
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
- 		register_die_notifier(&hyperv_die_block);
- 	}
---
-2.29.2
+thanks.
+-- 
+~Randy
 
