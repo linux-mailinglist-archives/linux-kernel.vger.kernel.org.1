@@ -2,187 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBBF2C4944
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 559572C4957
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 21:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730411AbgKYUph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 15:45:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730564AbgKYUpg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 15:45:36 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160ACC061A55
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 12:45:36 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id f5so3342099ilj.9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 12:45:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/upjsjCvyzOg9GBdsHQFUu14Ofl+KQlS4nrUSr/KaPg=;
-        b=E+i7WsXm6Y7oURsktvENeeZaTN4Ztia3P6CWNkL6EakTOis82LfETd3aOphBHLPmRR
-         gIMAp8PRpCVrxxZi7WRQPeFdx7CDAbyAoNdMnh1ZwIIohok0OVh4q7Ugq0ROJVDvxaBG
-         fn4mhBGs8rMaHey2HCywjLks6IvJvvBsbEeJ7PbJav7B069LvoBeQtguiHa4w+h0vUcf
-         rwM7EXQV8+PsIJiB/4vNVZTaazetpsUaVrVkkOBDvIftp5qWF210KuUpTcAgy0UkgI2y
-         ElHoNreosnqIhFsh0k+lU71O22011xUm6YaBDkrF89Zu/Gxkb0M9S3P0Ppo0TkZzER8j
-         RaeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/upjsjCvyzOg9GBdsHQFUu14Ofl+KQlS4nrUSr/KaPg=;
-        b=gxQztCo0UlTo5Nl6uZLhi4GhuSPqQhELb8RpamB0xT58nMLGGqBBtJjO9KWhH4JOGi
-         CpGaYpoV8RhT5BdrE6zw7WU3OqdYIhL+Y18Sov2y1o9pQKt4luAm2tDBUa0fRhekHc+l
-         zTdI0KYihMIG/VOgKc7pbwgP2rb8AY3tMkwgemJc2ekbxsX11gfRtOa9alJmd9gYZWyK
-         gFYRu6tsaLvNlCrRYmE8SLXOR6ohMq06JFAv2Li1b8Q9809bBsWEkGeOLnvqaEwToXwV
-         8GSA5tD9xLisCS38D/EBMym4tl2TcN4exPApGYufb/r0RUQa7VX6nF46/Snj6Szd2BtJ
-         gJLA==
-X-Gm-Message-State: AOAM531xLIXkzf6QKkLuZV1cIYhHcAg72aAQHmmNglt/LlHZEta3t6Ul
-        BhX+kxcMlg610/bN2JfItHh0vA==
-X-Google-Smtp-Source: ABdhPJwJiAwYxtZqgooyC9k8yliQumd46KdUHgTeWyOp+1jwNlcFoW1rvj5AzQfW+8vUi6e6tjr1ZQ==
-X-Received: by 2002:a92:cc90:: with SMTP id x16mr1650255ilo.153.1606337135398;
-        Wed, 25 Nov 2020 12:45:35 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id n10sm1462225iom.36.2020.11.25.12.45.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 12:45:34 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 6/6] net: ipa: adjust GSI register addresses
-Date:   Wed, 25 Nov 2020 14:45:22 -0600
-Message-Id: <20201125204522.5884-7-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201125204522.5884-1-elder@linaro.org>
-References: <20201125204522.5884-1-elder@linaro.org>
+        id S1730699AbgKYUuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 15:50:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729826AbgKYUua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 15:50:30 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BABE206F9;
+        Wed, 25 Nov 2020 20:50:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606337430;
+        bh=5l1FeLkZJdwH1QPiZKXdyCL7G2w+EaBDfxGPhOyo+0s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HoGgaYgz1Ikf+/S41EjmERZvhGw+gImaPliYdSMlGcvzIfFSaePa8og9hhicv58pT
+         6Ks33/EwQ27IkqSYLNiBGBldEzbRaEghhGr2grzeDjCHjPobOZI2P9pTu1RPjvkG53
+         JlKL7mglLxLGK74Nou3cwFbvHi0u0ZEsk8al739Y=
+Date:   Wed, 25 Nov 2020 14:50:28 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        knsathya@kernel.org
+Subject: Re: [PATCH v11 3/5] ACPI/PCI: Ignore _OSC DPC negotiation result if
+ pcie_ports_dpc_native is set.
+Message-ID: <20201125205028.GA677519@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0ec11f2b7470070768886a138f2a755620725a06.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The offsets for almost all GSI registers we use have different
-offsets starting at IPA version 4.5.  Only two registers remain
-in their original location.
+On Mon, Oct 26, 2020 at 07:57:06PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> pcie_ports_dpc_native is set only if user requests native handling
+> of PCIe DPC capability via pcie_port_setup command line option.
+> User input takes precedence over _OSC based control negotiation
+> result. So consider the _OSC negotiated result for DPC ownership
+> only if pcie_ports_dpc_native is unset.
+> 
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+>  drivers/acpi/pci_root.c         | 8 ++++++--
+>  drivers/pci/pcie/dpc.c          | 3 ++-
+>  drivers/pci/pcie/portdrv.h      | 2 --
+>  drivers/pci/pcie/portdrv_core.c | 2 +-
+>  include/linux/pci.h             | 2 ++
+>  5 files changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+> index a9e6b782622d..2e2bc80c42fe 100644
+> --- a/drivers/acpi/pci_root.c
+> +++ b/drivers/acpi/pci_root.c
+> @@ -933,8 +933,12 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+>  			  host_bridge->native_pme);
+>  		OSC_OWNER(ctrl, OSC_PCI_EXPRESS_LTR_CONTROL,
+>  			  host_bridge->native_ltr);
+> -		OSC_OWNER(ctrl, OSC_PCI_EXPRESS_DPC_CONTROL,
+> -			  host_bridge->native_dpc);
+> +		if (pcie_ports_dpc_native)
+> +			dev_warn(&bus->dev, "OS forcibly taking over DPC\n");
+> +		else
+> +			OSC_OWNER(ctrl, OSC_PCI_EXPRESS_DPC_CONTROL,
+> +				  host_bridge->native_dpc);
+> +
+>  	}
+>  
+>  	if (!(root->osc_control_set & OSC_PCI_SHPC_NATIVE_HP_CONTROL))
+> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> index e05aba86a317..21f77420632b 100644
+> --- a/drivers/pci/pcie/dpc.c
+> +++ b/drivers/pci/pcie/dpc.c
+> @@ -283,11 +283,12 @@ void pci_dpc_init(struct pci_dev *pdev)
+>  static int dpc_probe(struct pcie_device *dev)
+>  {
+>  	struct pci_dev *pdev = dev->port;
+> +	struct pci_host_bridge *host = pci_find_host_bridge(pdev->bus);
+>  	struct device *device = &dev->device;
+>  	int status;
+>  	u16 ctl, cap;
+>  
+> -	if (!pcie_aer_is_native(pdev) && !pcie_ports_dpc_native)
+> +	if (!pcie_aer_is_native(pdev) && !host->native_dpc)
+>  		return -ENOTSUPP;
 
-In a way though, the new register locations are not *that*
-different.  The entire group of affected registers has simply
-been shifted down in memory by a fixed amount (0xd000).  So for
-example, the channel context 0 register that has a base offset of
-0x0001c000 for "older" hardware now has a base offset of 0x0000f000.
+Wow, I don't even know what those negations mean and I don't want to
+take ten minutes to figure it out.  Not your fault, obviously; it was
+that way before.
 
-This patch aims to add support for IPA v4.5 registers at their new
-offets in a way that minimizes the amount of code that needs to
-change.  It is not ideal, but it avoids the need to maintain
-a nearly complete set of additional register offset definitions.
+"If AER is not native and DPC is not native, return -ENOTSUPP"?
+In other words, "if not (AER is native OR DPC is native), return
+-ENOTSUPP"?  Or "if (AER is native OR DPC is native), keep going"?
 
-The approach takes advantage of the fact that when accessing GSI
-registers we do not access any of memory at lower end of the "gsi"
-memory range (with two exceptions already noted).  In particular,
-we do not access anything within the bottom 0xd000 bytes of the
-GSI memory range.
+I guess this is tied up with 35a0b2378c19 ("PCI/DPC: Add
+"pcie_ports=dpc-native" to allow DPC without AER control")
 
-For IPA version 4.5, after we map the GSI memory, we adjust the
-virtual memory pointer downward by the fixed amount (0xd000).
-That way, register accesses using the offsets defined by the
-existing GSI_REG_*() macros will resolve to the proper locations
-for IPA version 4.5.
+But we still ought to be able to consolidate some of this testing in
+acpi_pci_root_create() so we only have to look at host->native_dpc
+here (and maybe dev->aer_cap).
 
-The two registers *not* affected by this offset are accessed only
-in gsi_irq_setup().  There, for IPA version 4.5, we undo the general
-register adjustment by adding the fixed amount back to the virtual
-address to access these registers.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/gsi.c     | 21 +++++++++++++++++++--
- drivers/net/ipa/gsi_reg.h | 11 +++++++++++
- 2 files changed, 30 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 67e9eb8fe3293..c4795249719d4 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -195,6 +195,8 @@ static void gsi_irq_type_disable(struct gsi *gsi, enum gsi_irq_type_id type_id)
- /* Turn off all GSI interrupts initially */
- static void gsi_irq_setup(struct gsi *gsi)
- {
-+	u32 adjust;
-+
- 	/* Disable all interrupt types */
- 	gsi_irq_type_update(gsi, 0);
- 
-@@ -203,8 +205,12 @@ static void gsi_irq_setup(struct gsi *gsi)
- 	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_EV_CH_IRQ_MSK_OFFSET);
- 	iowrite32(0, gsi->virt + GSI_CNTXT_GLOB_IRQ_EN_OFFSET);
- 	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_MSK_OFFSET);
--	iowrite32(0, gsi->virt + GSI_INTER_EE_SRC_CH_IRQ_OFFSET);
--	iowrite32(0, gsi->virt + GSI_INTER_EE_SRC_EV_CH_IRQ_OFFSET);
-+
-+	/* Reverse the offset adjustment for inter-EE register offsets */
-+	adjust = gsi->version < IPA_VERSION_4_5 ? 0 : GSI_EE_REG_ADJUST;
-+	iowrite32(0, gsi->virt + adjust + GSI_INTER_EE_SRC_CH_IRQ_OFFSET);
-+	iowrite32(0, gsi->virt + adjust + GSI_INTER_EE_SRC_EV_CH_IRQ_OFFSET);
-+
- 	iowrite32(0, gsi->virt + GSI_CNTXT_GSI_IRQ_EN_OFFSET);
- }
- 
-@@ -2089,6 +2095,7 @@ int gsi_init(struct gsi *gsi, struct platform_device *pdev,
- 	struct device *dev = &pdev->dev;
- 	struct resource *res;
- 	resource_size_t size;
-+	u32 adjust;
- 	int ret;
- 
- 	gsi_validate_build();
-@@ -2115,11 +2122,21 @@ int gsi_init(struct gsi *gsi, struct platform_device *pdev,
- 		return -EINVAL;
- 	}
- 
-+	/* Make sure we can make our pointer adjustment if necessary */
-+	adjust = gsi->version < IPA_VERSION_4_5 ? 0 : GSI_EE_REG_ADJUST;
-+	if (res->start < adjust) {
-+		dev_err(dev, "DT memory resource \"gsi\" too low (< %u)\n",
-+			adjust);
-+		return -EINVAL;
-+	}
-+
- 	gsi->virt = ioremap(res->start, size);
- 	if (!gsi->virt) {
- 		dev_err(dev, "unable to remap \"gsi\" memory\n");
- 		return -ENOMEM;
- 	}
-+	/* Adjust register range pointer downward for newer IPA versions */
-+	gsi->virt -= adjust;
- 
- 	init_completion(&gsi->completion);
- 
-diff --git a/drivers/net/ipa/gsi_reg.h b/drivers/net/ipa/gsi_reg.h
-index 2aea17f8f5c4e..0e138bbd82053 100644
---- a/drivers/net/ipa/gsi_reg.h
-+++ b/drivers/net/ipa/gsi_reg.h
-@@ -38,6 +38,17 @@
-  * (though the actual limit is hardware-dependent).
-  */
- 
-+/* GSI EE registers as a group are shifted downward by a fixed
-+ * constant amount for IPA versions 4.5 and beyond.  This applies
-+ * to all GSI registers we use *except* the ones that disable
-+ * inter-EE interrupts for channels and event channels.
-+ *
-+ * We handle this by adjusting the pointer to the mapped GSI memory
-+ * region downward.  Then in the one place we use them (gsi_irq_setup())
-+ * we undo that adjustment for the inter-EE interrupt registers.
-+ */
-+#define GSI_EE_REG_ADJUST			0x0000d000	/* IPA v4.5+ */
-+
- #define GSI_INTER_EE_SRC_CH_IRQ_OFFSET \
- 			GSI_INTER_EE_N_SRC_CH_IRQ_OFFSET(GSI_EE_AP)
- #define GSI_INTER_EE_N_SRC_CH_IRQ_OFFSET(ee) \
--- 
-2.20.1
-
+>  	status = devm_request_threaded_irq(device, dev->irq, dpc_irq,
+> diff --git a/drivers/pci/pcie/portdrv.h b/drivers/pci/pcie/portdrv.h
+> index af7cf237432a..0ac20feef24e 100644
+> --- a/drivers/pci/pcie/portdrv.h
+> +++ b/drivers/pci/pcie/portdrv.h
+> @@ -25,8 +25,6 @@
+>  
+>  #define PCIE_PORT_DEVICE_MAXSERVICES   5
+>  
+> -extern bool pcie_ports_dpc_native;
+> -
+>  #ifdef CONFIG_PCIEAER
+>  int pcie_aer_init(void);
+>  int pcie_aer_is_native(struct pci_dev *dev);
+> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+> index ccd5e0ce5605..2c0278f0fdcc 100644
+> --- a/drivers/pci/pcie/portdrv_core.c
+> +++ b/drivers/pci/pcie/portdrv_core.c
+> @@ -253,7 +253,7 @@ static int get_port_device_capability(struct pci_dev *dev)
+>  	 */
+>  	if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+>  	    pci_aer_available() &&
+> -	    (pcie_ports_dpc_native || (services & PCIE_PORT_SERVICE_AER)))
+> +	    (host->native_dpc || (services & PCIE_PORT_SERVICE_AER)))
+>  		services |= PCIE_PORT_SERVICE_DPC;
+>  
+>  	if (pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM ||
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 22207a79762c..388121ec88b5 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -1559,9 +1559,11 @@ static inline int pci_irqd_intx_xlate(struct irq_domain *d,
+>  #ifdef CONFIG_PCIEPORTBUS
+>  extern bool pcie_ports_disabled;
+>  extern bool pcie_ports_native;
+> +extern bool pcie_ports_dpc_native;
+>  #else
+>  #define pcie_ports_disabled	true
+>  #define pcie_ports_native	false
+> +#define pcie_ports_dpc_native	false
+>  #endif
+>  
+>  #define PCIE_LINK_STATE_L0S		BIT(0)
+> -- 
+> 2.17.1
+> 
