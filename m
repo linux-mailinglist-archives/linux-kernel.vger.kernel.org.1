@@ -2,84 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2309D2C37C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F822C37D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727764AbgKYDrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 22:47:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727685AbgKYDrF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 22:47:05 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1697FC0613D4;
-        Tue, 24 Nov 2020 19:47:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=B1PQC6WJEM7TGPBmASC/1k4P2JlH4NZxClv0snmsy5s=; b=RwKPNYEq5QLhIR2aZMYoq+cj5G
-        voHrlRyVacNfgkKFhT6XqCOVKiTAWYG7brDli+xT9QfZ4AHDRcZkG3IHXdNAT0shPCK8XFTy2dX5Q
-        OCs+M2aWNCwW4AZoNtrRTUs6vZ9aRQ1MufP/y7EMrkmmN2hyBXpNWNFXMS0wsJZjdi/ASxeTHotSn
-        ngzvjva2JB1E0w2VSZg5gUtcuBcdAAStV0zLJkMKxWu1EDl1E3fdoZxvihZj7VRf2X3jY905vWqt9
-        s8UA99h3LCmXF6SYcb5d0JUYti5KHBT6Kj90N5AlYidbKALhBhSAT+qacsFcWCcr6wv8Cwc183PKO
-        QMBooKUA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khlli-0007EP-7o; Wed, 25 Nov 2020 03:46:58 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     akpm@linux-foundation.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        davem@davemloft.net, rppt@kernel.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 2/2] mm: Move free_unref_page to mm/internal.h
-Date:   Wed, 25 Nov 2020 03:46:55 +0000
-Message-Id: <20201125034655.27687-2-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20201125034655.27687-1-willy@infradead.org>
-References: <20201125034655.27687-1-willy@infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727434AbgKYDyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 22:54:44 -0500
+Received: from comms.puri.sm ([159.203.221.185]:46202 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726039AbgKYDyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 22:54:43 -0500
+X-Greylist: delayed 390 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 22:54:43 EST
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 681F6E0399;
+        Tue, 24 Nov 2020 19:48:12 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3WQTGRfBA7KT; Tue, 24 Nov 2020 19:48:11 -0800 (PST)
+From:   Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+To:     Sebastian Reichel <sre@kernel.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm
+Subject: [PATCH] power: bq25890: Use the correct range for IILIM register
+Date:   Wed, 25 Nov 2020 04:48:05 +0100
+Message-ID: <1780852.554hdvx4Kp@pliszka>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Code outside mm/ should not be calling free_unref_page().  Also
-move free_unref_page_list().
+I've checked bq25890, bq25892, bq25895 and bq25896 datasheets and
+they all define IILIM to be between 100mA-3.25A with 50mA steps.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Fixes: 478efc79ee32 ("power: bq25890: implement INPUT_CURRENT_LIMIT property")
+
+Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
 ---
- include/linux/gfp.h | 2 --
- mm/internal.h       | 3 +++
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/power/supply/bq25890_charger.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index c603237e006c..6e479e9c48ce 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -580,8 +580,6 @@ void * __meminit alloc_pages_exact_nid(int nid, size_t size, gfp_t gfp_mask);
- 
- extern void __free_pages(struct page *page, unsigned int order);
- extern void free_pages(unsigned long addr, unsigned int order);
--extern void free_unref_page(struct page *page);
--extern void free_unref_page_list(struct list_head *list);
- 
- struct page_frag_cache;
- extern void __page_frag_cache_drain(struct page *page, unsigned int count);
-diff --git a/mm/internal.h b/mm/internal.h
-index 75ae680d0a2c..5864815947fe 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -201,6 +201,9 @@ extern void post_alloc_hook(struct page *page, unsigned int order,
- 					gfp_t gfp_flags);
- extern int user_min_free_kbytes;
- 
-+extern void free_unref_page(struct page *page);
-+extern void free_unref_page_list(struct list_head *list);
-+
- extern void zone_pcp_update(struct zone *zone);
- extern void zone_pcp_reset(struct zone *zone);
- extern void zone_pcp_disable(struct zone *zone);
+diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
+index 5ab7d2c5549c..e95557e46a6d 100644
+--- a/drivers/power/supply/bq25890_charger.c
++++ b/drivers/power/supply/bq25890_charger.c
+@@ -303,7 +303,7 @@ static const union {
+ 	/* TODO: BQ25896 has max ICHG 3008 mA */
+ 	[TBL_ICHG] =	{ .rt = {0,	  5056000, 64000} },	 /* uA */
+ 	[TBL_ITERM] =	{ .rt = {64000,   1024000, 64000} },	 /* uA */
+-	[TBL_IILIM] =   { .rt = {50000,   3200000, 50000} },	 /* uA */
++	[TBL_IILIM] =   { .rt = {100000,  3250000, 50000} },	 /* uA */
+ 	[TBL_VREG] =	{ .rt = {3840000, 4608000, 16000} },	 /* uV */
+ 	[TBL_BOOSTV] =	{ .rt = {4550000, 5510000, 64000} },	 /* uV */
+ 	[TBL_SYSVMIN] = { .rt = {3000000, 3700000, 100000} },	 /* uV */
 -- 
 2.29.2
+
 
