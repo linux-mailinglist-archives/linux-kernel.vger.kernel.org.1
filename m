@@ -2,137 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272182C4B0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7683A2C4B1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 23:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728595AbgKYWv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 17:51:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728549AbgKYWv3 (ORCPT
+        id S1729009AbgKYWxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 17:53:22 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:40109 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728862AbgKYWxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 17:51:29 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC07C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 14:51:28 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id t21so30853pgl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 14:51:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IdH7TWjWbi5QdZ7NXo5aR6u+Q2zXh+GO9Yj+ORgSPoY=;
-        b=MQ5Xh/PGhwHXhRhZhdNCxder7xSTQ9c8XILgpk60HKNuW8sNh+UTaqxTpHppOOlVWQ
-         LEk5KNshPoI19tYCSjMMkpYh8IxFwqlRSbF7uG4tFoHUCZlILjLHH19JlRqcqVt5U9to
-         r3YgaI2G9fvEGBj5D/6hKThlXZkWyM6HcpyA3AUVHPdvfDzIUdIuwfg5m6VeF8BrXap4
-         IFiwRQHhgLeiZYuT9Em307w5xlOGeCQMhJarZRfB/PCHv/iE3IPgZov+7Vuo8j8644GA
-         NSKx8d2/AHLcc/Qq6HqYA+TLffx7tlNMv6uaxXZLTLnQW5EzYbUrUHqyi842+5cJ3aRr
-         0n1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=IdH7TWjWbi5QdZ7NXo5aR6u+Q2zXh+GO9Yj+ORgSPoY=;
-        b=GPziDF1d1LXUuagpWq8a7iA/+r7JlX2s0kIPFMff0qHyF6GKgw7X2oijYR83l0O25G
-         o5Gv+JJPiFjhCLvT50qXWyVDup36jhQQOMYCVAF7UR/2naA+TLxSJZ9dHmZ2eY7wCSxK
-         ydPX08+slg+JaFcmA9/WjmmjQc3NEpW+SNDTVuo+Y7UoNIxWM9mGi3QqHtPncYC859VZ
-         ujhxrJUufyCORP6ZciU+31riOoYit0Zy9zfy9d+RbOywN2pYUolf+VbZQMuzn/1kt5sb
-         OIj6xs8PuJGOh+Xv+eqmoYnPURG4RBx2BFfj5xx9P9noWoDHlDxyqg4Dnd1MP8i6TEba
-         htmQ==
-X-Gm-Message-State: AOAM533kMISc7E4qDdQ6RDkNP0Grb29Q0Q+OYGM3d0PDFVIT+9NH/fEL
-        KYhGmBkMSxxfYDoWHj+biwQ=
-X-Google-Smtp-Source: ABdhPJxsXWrFiRFquDGdwhYbPpoLwY1x6gikdnoflq4amxZ0nT7ZkLwmnkYhG2jA5kMJdJ0EZF4WkQ==
-X-Received: by 2002:a17:90a:f0cd:: with SMTP id fa13mr14046pjb.118.1606344688500;
-        Wed, 25 Nov 2020 14:51:28 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id v3sm2759284pfn.215.2020.11.25.14.51.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 14:51:27 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 25 Nov 2020 14:51:25 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/6] mm: proc: Invalidate TLB after clearing soft-dirty
- page state
-Message-ID: <20201125225125.GE1484898@google.com>
-References: <20201120143557.6715-1-will@kernel.org>
- <20201120143557.6715-5-will@kernel.org>
- <20201120150023.GH3040@hirez.programming.kicks-ass.net>
- <20201120155514.GA3377168@google.com>
- <20201123184113.GD11688@willie-the-truck>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123184113.GD11688@willie-the-truck>
+        Wed, 25 Nov 2020 17:53:21 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6B88F5C00BD;
+        Wed, 25 Nov 2020 17:53:20 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Wed, 25 Nov 2020 17:53:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=rDCqF/6BWwTlGiTI6jgr+wyA4epS+Rk
+        y7smBnS5oX7k=; b=Cwi0ax+gMfy1aXoVZafGL82507AbgSb3+cxI6jILb9FYs6d
+        0LnPlWpQnCbnGIHJUEeNtjipXrvLb4QSjHvTw7iWupsn+eNIO6f6TMdpLsxNi8NV
+        VPDo/ZLmkYIwcAEzuwWv4nmbGdG3adIv6McuBQVeCsCmUPB9WcqFwBCHfYvitbD1
+        Kjs+lWR+iViXoGvQjJt+oBoa17gllsnqZg4P1xnMIrDWwZqYRAqUgYUHAiOAkFsb
+        xBG1YDAvXnqhUNgKiGikHuZg+JJbkFFyOojvSnyu8kKirbZBqgOrSjzr/QKCcvHr
+        WpaAX+fLvw6iKGINZW9xU/hGJhAu2V94maTcmbQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=rDCqF/
+        6BWwTlGiTI6jgr+wyA4epS+Rky7smBnS5oX7k=; b=LH4ic9yCPOiT+CLtiR5FGG
+        oFBEI7YCcxcdzEZTuuc2g6S9AGv7tPO7ddhjHie7VJb3q+9yMvHJbBVHeeB4aK2g
+        MzctSTYlgsGpvvQJGYttfrnIEveZ5jQn/yHhG5OCMfJvuNTDhYj29q4Hy0yy0PEe
+        JM52ecBrbeYpYM2UTerf74SklKf6BNYqi97YbbQeBwgo4DKuGFlJJk5rzIKkvgB5
+        1CvTmNymmXxW6/n5hYyD8+99yUrHkGXHSIPe0dC/CqvBtVMSfKQeZZXqu0KcuBuf
+        SbLgqhl1h3GYmVl7XSYE5ihd0IU+yefVRuhF5w10NWeW+amMBG56R4m0Bqpngdrg
+        ==
+X-ME-Sender: <xms:X-C-X3dCYLAQkzRklE-5AtPYnWjzxqm8PIlQ34JK56W6scvpqYjfdw>
+    <xme:X-C-X9NSXVQ-3PnVzOHmX0dnHE4xcJwHUeRAnBAXevS39g8W0zkMSz2tI1BNj6XIn
+    _F6Gtb2RgJ4uaKM-g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudehuddgtdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:X-C-XwguChDjSAPpxwpyAO9qgzWWwlq44qX_tHv9QMiRkQISINzMKQ>
+    <xmx:X-C-X4819J0g8oIthXbDMuMponYkU9acyNIhbtBZD2uIWZCfHODAjw>
+    <xmx:X-C-XzsMMUeYU816bdmd6MjIfgUl39U9ZPKDY3ledBh2NXgLJxgmJQ>
+    <xmx:YOC-X883XcAHt3lJUpzFJwdMuNjbuTUoocr8GOl9dP2YQSK8vrgaPA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 676D1E00B3; Wed, 25 Nov 2020 17:53:17 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-622-g4a97c0b-fm-20201115.001-g4a97c0b3
+Mime-Version: 1.0
+Message-Id: <e3c4f1a8-4fa0-4e2a-be7c-763f733f0cdb@www.fastmail.com>
+In-Reply-To: <CAPDyKFrC9vp5gtpFC5L1K17uN059GsJ2zF4f7-_=sFEQ5BBRpw@mail.gmail.com>
+References: <20201123063004.337345-1-andrew@aj.id.au>
+ <20201123063004.337345-2-andrew@aj.id.au>
+ <CAPDyKFrC9vp5gtpFC5L1K17uN059GsJ2zF4f7-_=sFEQ5BBRpw@mail.gmail.com>
+Date:   Thu, 26 Nov 2020 09:22:58 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Ulf Hansson" <ulf.hansson@linaro.org>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>
+Subject: Re: [PATCH v3 1/3] mmc: sdhci-of-aspeed: Expose phase delay tuning
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 06:41:14PM +0000, Will Deacon wrote:
-> On Fri, Nov 20, 2020 at 07:55:14AM -0800, Minchan Kim wrote:
-> > On Fri, Nov 20, 2020 at 04:00:23PM +0100, Peter Zijlstra wrote:
-> > > On Fri, Nov 20, 2020 at 02:35:55PM +0000, Will Deacon wrote:
-> > > > Since commit 0758cd830494 ("asm-generic/tlb: avoid potential double flush"),
-> > > > TLB invalidation is elided in tlb_finish_mmu() if no entries were batched
-> > > > via the tlb_remove_*() functions. Consequently, the page-table modifications
-> > > > performed by clear_refs_write() in response to a write to
-> > > > /proc/<pid>/clear_refs do not perform TLB invalidation. Although this is
-> > > > fine when simply aging the ptes, in the case of clearing the "soft-dirty"
-> > > > state we can end up with entries where pte_write() is false, yet a
-> > > > writable mapping remains in the TLB.
-> > > > 
-> > > > Fix this by calling tlb_remove_tlb_entry() for each entry being
-> > > > write-protected when cleating soft-dirty.
-> > > > 
-> > > 
-> > > > @@ -1053,6 +1054,7 @@ static inline void clear_soft_dirty(struct vm_area_struct *vma,
-> > > >  		ptent = pte_wrprotect(old_pte);
-> > > >  		ptent = pte_clear_soft_dirty(ptent);
-> > > >  		ptep_modify_prot_commit(vma, addr, pte, old_pte, ptent);
-> > > > +		tlb_remove_tlb_entry(tlb, pte, addr);
-> > > >  	} else if (is_swap_pte(ptent)) {
-> > > >  		ptent = pte_swp_clear_soft_dirty(ptent);
-> > > >  		set_pte_at(vma->vm_mm, addr, pte, ptent);
-> > > 
-> > > Oh!
-> > > 
-> > > Yesterday when you had me look at this code; I figured the sane thing
-> > > to do was to make it look more like mprotect().
-> > > 
-> > > Why did you chose to make it work with mmu_gather instead? I'll grant
-> > > you that it's probably the smaller patch, but I still think it's weird
-> > > to use mmu_gather here.
-> > 
-> > I agree. The reason why clear_refs_write used the gather API was [1] and
-> > seems like to overkill to me.
-> 
-> I don't see why it's overkill. Prior to that commit, it called
-> flush_tlb_mm() directly.
 
-The TLB gather was added for increasing tlb flush pending count for
-stability bug, not for performance optimiataion(The commit never had
-any number to support it and didn't have the logic to handle each pte
-with tlb gather) and then it introduced a bug now so I take it as overkill
-since it made complication from the beginning *unnecessary*.
+
+On Wed, 25 Nov 2020, at 00:42, Ulf Hansson wrote:
+> On Mon, 23 Nov 2020 at 07:30, Andrew Jeffery <andrew@aj.id.au> wrote:
+> >
+> > The Aspeed SD/eMMC controllers feature up to two SDHCIs alongside a
+> > a set of "global" configuration registers. The global configuration
+> > registers house controller-specific settings that aren't exposed by the
+> > SDHCI, one example being a register for phase tuning.
+> >
+> > The phase tuning feature is new in the AST2600 design. It's exposed as a
+> > single register in the global register set and controls both the input
+> > and output phase adjustment for each slot. As the settings are
+> > slot-specific, the values to program are extracted from properties in
+> > the SDHCI devicetree nodes.
+> >
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> 
+> [...]
+> 
+> >
+> > +static void
+> > +aspeed_sdhci_of_parse_phase(struct device_node *np, const char *prop,
+> > +                           struct aspeed_sdhci_phase_param *phase)
+> > +{
+> > +       int degrees[2] = {0};
+> > +       int rc;
+> > +
+> > +       rc = of_property_read_variable_u32_array(np, prop, degrees, 2, 0);
+> > +       phase->set = rc == 2;
+> > +       if (phase->set) {
+> > +               phase->in_deg = degrees[0];
+> > +               phase->out_deg = degrees[1];
+> > +       }
+> > +}
+> > +
+> > +static int aspeed_sdhci_of_parse(struct platform_device *pdev,
+> > +                                struct aspeed_sdhci *sdhci)
+> > +{
+> > +       struct device_node *np;
+> > +       struct device *dev;
+> > +
+> > +       if (!sdhci->phase_desc)
+> > +               return 0;
+> > +
+> > +       dev = &pdev->dev;
+> > +       np = dev->of_node;
+> > +
+> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-legacy",
+> > +                                   &sdhci->phase_param[MMC_TIMING_LEGACY]);
+> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-mmc-hs",
+> > +                                   &sdhci->phase_param[MMC_TIMING_MMC_HS]);
+> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-sd-hs",
+> > +                                   &sdhci->phase_param[MMC_TIMING_SD_HS]);
+> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-uhs-sdr12",
+> > +                                   &sdhci->phase_param[MMC_TIMING_UHS_SDR12]);
+> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-uhs-sdr25",
+> > +                                   &sdhci->phase_param[MMC_TIMING_UHS_SDR25]);
+> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-uhs-sdr50",
+> > +                                   &sdhci->phase_param[MMC_TIMING_UHS_SDR50]);
+> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-uhs-sdr104",
+> > +                                   &sdhci->phase_param[MMC_TIMING_UHS_SDR104]);
+> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-uhs-ddr50",
+> > +                                   &sdhci->phase_param[MMC_TIMING_UHS_DDR50]);
+> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-mmc-ddr52",
+> > +                                   &sdhci->phase_param[MMC_TIMING_MMC_DDR52]);
+> > +       aspeed_sdhci_of_parse_phase(np, "clk-phase-mmc-hs200",
+> > +                                   &sdhci->phase_param[MMC_TIMING_MMC_HS200]);
+> > +
+> > +       return 0;
+> > +}
+> 
+> If it's not too much to ask, would you mind adding a helper function
+> to the mmc core, as to let us avoid open coding? Then we should be
+> able to move the sdhci-of-arasan driver to use this as well.
+
+Yes, I can look at it and send a v4.
 
 > 
-> > We could just do like [inc|dec]_tlb_flush_pending with flush_tlb_mm at
-> > right before dec_tlb_flush_pending instead of gather.
-> > 
-> > thought?
+> Perhaps the definition of the helper could look something like this:
+> int mmc_of_parse_clk_phase(struct mmc_host *host, struct mmc_clk_phase
+> *phases) (or something along those lines)
 > 
-> I'm not sure why this is better; it's different to the madvise() path, and
-> will need special logic to avoid the flush in the case where we're just
-> doing aging.
+> I think the struct mmc_clk_phase could be something that is stored in
+> the host specific struct, rather than in the common struct mmc_host
+> (to avoid sprinkle it with unnecessary data).
+> 
+> Moreover, we should probably use the device_property_* APIs instead of
+> the DT specific of_property_*.
 
-I thought it's better to fix the bug first as *simple* patch and then
-do optimization based on it.
-Anyway, following to Yu's comment, we don't need gather API and 
-even the flush if we give up the accuarcy(but I want to have it).
+Yep, thanks for the pointers.
+
+Andrew
