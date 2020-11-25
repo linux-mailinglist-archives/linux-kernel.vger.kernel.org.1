@@ -2,175 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FAF2C429B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03032C429D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730047AbgKYPEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:04:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727611AbgKYPEo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:04:44 -0500
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447E7C0613D4;
-        Wed, 25 Nov 2020 07:04:44 -0800 (PST)
-Received: by mail-vs1-xe44.google.com with SMTP id y78so1352882vsy.6;
-        Wed, 25 Nov 2020 07:04:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rpVYQAqnvy4rHeUw87Uisf5E4OSMaWyqznDJ4TU5XYI=;
-        b=ZPCbtWaDTQJhHDLjtg3Kn0VDf3V9qpZoM1TEgAR3mCp10uupQhZtKJcqv47q8CN0pJ
-         ku4wnHzGt8fdGI0Z6e3SxYH8yYPIn9bZufy17ecdwDlx8XOGyRub5B3tD3BXJm30V8XJ
-         cO5+jMPjBMwyw1FcTgVZi8lCGTZ9CIxMkEy/v+AkhsUF1NGWN7nzvosVdDJNZBYOUqNh
-         AOHtxkloUX2MUcGtHkqY6ZvK7joJkEn6BhxtqQ+MIHbL1ANxnfzo89Dz6ZGsKL8rKorO
-         oxQBHzuvPEcD4Iu5Z90PakGacZkwHoxdDqGxIEgzyKxXoMlwKwPHfKoeimYW0EMhOC93
-         8fgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rpVYQAqnvy4rHeUw87Uisf5E4OSMaWyqznDJ4TU5XYI=;
-        b=iTvf+ACxd4eP4CAaKQiAvTVG1Boq25NIffTgdzPv1QVkYTola/cAjPGBppBBB296rE
-         xhKbvWY7DbKz/T/NvfwY2x5l8I10hScV54js+5CalvLbn2WLjUFyf0m0lwUQuUGjahfW
-         H96jwc40Y7XoPew2AcGSctqh4DlyX0FnQFYvwuGNf7TSYQ+4RUVi8kptJQvOS4tvc55m
-         1sZe55UlvCE/HSr0EZhwF6/lnP5WsPxKDA+LDOrLmw2B7pi10BUmImOd0aMnZtaKb9x1
-         tR1MGorkMOaeb2UrTXF40qhz6B2NCaV3iV3LhXHcZs/rDbvTw37NLns/cpo2xy6h5rD6
-         yLmg==
-X-Gm-Message-State: AOAM5313fPNdKUPI6njEDSfBjo2ZQBxMYZrwEO5Mp7rgWDIgBKe9LnNz
-        8SklJB00UUcYZuN3JcszZSMKBKAvkDScvn5dFD4=
-X-Google-Smtp-Source: ABdhPJysKbLV0+lnEyHZOdjaKI59dxmhvB/wRyV0ulqq8xAIt0LW3DjTrRRJgb4gVQ0QCBZa/cyKDpXLoI2PzZ0AhfY=
-X-Received: by 2002:a67:b347:: with SMTP id b7mr2257166vsm.15.1606316683254;
- Wed, 25 Nov 2020 07:04:43 -0800 (PST)
+        id S1729961AbgKYPHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:07:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726295AbgKYPHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:07:31 -0500
+Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0434420679;
+        Wed, 25 Nov 2020 15:07:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606316850;
+        bh=XUXkH2P+Dj+LfdkoHygf4L5x2gUdd3NfXUBkon3pM9A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Em17VZvWWVlY5BRMnMYZzW3hq0R6dbkbJqGZlomaIrDWJejvK9KSDxJVZgK03ItrZ
+         lms3lto2jKNlaqS9UlSLYVt+gOs2it0Zzbgx5BMKym5lFi8FfGwMvDn3s7+e5Xwc15
+         5C1KPBQGN9O0Z8NIrVjf3IYc04YgAgitcpcqYU/4=
+Date:   Wed, 25 Nov 2020 16:07:27 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     linux-input@vger.kernel.org,
+        Helmut Stult <helmut.stult@schinfo.de>,
+        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Baq Domalaq <domalak@gmail.com>,
+        Pedro Ribeiro <pedrib@gmail.com>, stable@vger.kernel.org,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] HID: i2c-hid: add polling mode based on connected
+ GPIO chip's pin status
+Message-ID: <X75zL12q+FF6KBHi@kroah.com>
+References: <20201125141022.321643-1-coiby.xu@gmail.com>
 MIME-Version: 1.0
-References: <20201124181013.162176-1-clemens.gruber@pqgruber.com>
- <CAGngYiX8KOTQCScWo_o1BRa8CGHBQzWZGz1FmzkwGEmyNgPaxQ@mail.gmail.com>
- <X74XPAy+SJRmQUSH@workstation.tuxnet> <X75kXv7l9RbTOS7S@workstation.tuxnet>
-In-Reply-To: <X75kXv7l9RbTOS7S@workstation.tuxnet>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Wed, 25 Nov 2020 10:04:32 -0500
-Message-ID: <CAGngYiViOMO6uM7UeYO5fNMdc+QEjLt+L1TdTii+smTvsmV=aQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] pwm: pca9685: Switch to atomic API
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201125141022.321643-1-coiby.xu@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 3:35 AM Clemens Gruber
-<clemens.gruber@pqgruber.com> wrote:
->
-> >
-> > The datasheet I found for this chip indicates that every ALL_LED_XXX register
-> > is write-only. Those registers cannot be read back from the chip.
-> >
-> > Datasheet "Rev. 4 - 16 April 2015"
->
-> Thanks, good catch! Would you agree that we should just return 0 duty
-> cycle and disabled state if the "all LEDs" channel is used?
+On Wed, Nov 25, 2020 at 10:10:22PM +0800, Coiby Xu wrote:
+> For a broken touchpad, it may take several months or longer to be fixed.
+> Polling mode could be a fallback solution for enthusiastic Linux users
+> when they have a new laptop. It also acts like a debugging feature. If
+> polling mode works for a broken touchpad, we can almost be certain
+> the root cause is related to the interrupt or power setting.
+> 
+> This patch could fix touchpads of Lenovo AMD gaming laptops including
+> Legion-5 15ARH05 (R7000), Legion-5P (R7000P) and IdeaPad Gaming 3
+> 15ARH05.
+> 
+> When polling mode is enabled, an I2C device can't wake up the suspended
+> system since enable/disable_irq_wake is invalid for polling mode.
+> 
+> Three module parameters are added to i2c-hid,
+>     - polling_mode: by default set to 0, i.e., polling is disabled
+>     - polling_interval_idle_ms: the polling internal when the touchpad
+>       is idle, default to 10ms
+>     - polling_interval_active_us: the polling internal when the touchpad
+>       is active, default to 4000us
+> 
+> User can change the last two runtime polling parameter by writing to
+> /sys/module/i2c_hid/parameters/polling_interval_{idle_ms,active_us}.
+> 
+> Note xf86-input-synaptics doesn't work well with this polling mode
+> for the Synaptics touchpad. The Synaptics touchpad would often locks
+> into scroll mode when using multitouch gestures [1]. One remedy is to
+> decrease the polling interval.
+> 
+> Thanks to Barnabás's thorough review of this patch and the useful
+> feedback!
+> 
+> [1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190/comments/235
+> 
+> Cc: <stable@vger.kernel.org>
+> Cc: Barnabás Pőcze <pobrn@protonmail.com>
+> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> ---
+>  drivers/hid/i2c-hid/i2c-hid-core.c | 152 +++++++++++++++++++++++++++--
+>  1 file changed, 142 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> index aeff1ffb0c8b..f25503f31ccf 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> @@ -36,6 +36,8 @@
+>  #include <linux/hid.h>
+>  #include <linux/mutex.h>
+>  #include <linux/acpi.h>
+> +#include <linux/kthread.h>
+> +#include <linux/gpio/driver.h>
+>  #include <linux/of.h>
+>  #include <linux/regulator/consumer.h>
+>  
+> @@ -60,6 +62,25 @@
+>  #define I2C_HID_PWR_ON		0x00
+>  #define I2C_HID_PWR_SLEEP	0x01
+>  
+> +/* polling mode */
+> +#define I2C_HID_POLLING_DISABLED 0
+> +#define I2C_HID_POLLING_GPIO_PIN 1
+> +#define I2C_HID_POLLING_INTERVAL_ACTIVE_US 4000
+> +#define I2C_HID_POLLING_INTERVAL_IDLE_MS 10
+> +
+> +static u8 polling_mode;
+> +module_param(polling_mode, byte, 0444);
+> +MODULE_PARM_DESC(polling_mode, "How to poll (default=0) - 0 disabled; 1 based on GPIO pin's status");
 
-I think get_state() for the all led channel should just return -ENOTSUPP,
-if the pwm core will allow that.
+Module parameters are for the 1990's, they are global and horrible to
+try to work with.  You should provide something on a per-device basis,
+as what happens if your system requires different things here for
+different devices?  You set this for all devices :(
 
-Because it's the truth, the chip does not support reading from the all led
-channel.
+thanks,
 
-When we start buffering the all led state, we make the code much
-more complex, and again we'll run into all sorts of subtle corner cases.
-
-> > > +
-> > > +       if (duty < PCA9685_COUNTER_RANGE) {
-> >
-> > How can duty >= 4096 ?
-> >
-> > > +               duty *= state->period;
-> > > +               state->duty_cycle = duty / (PCA9685_COUNTER_RANGE - 1);
-> >
-> > is this calculation correct?
-> > imagine led_on = 0 (default), and led_off = 4095
-> > then the led is off for one single tick per cycle
-> > but the above formula would calculate it as full on (period == duty_cycle)?
-
-I just wanted to make sure you hadn't overlooked the two comments above.
-
---
-
-Each time I read the code, my thoughts get interrupted by all this
-if hwpwm >= MAXCHAN then { one macro } else { another macro } business
-which is spread around in the code !
-
-Same thing with the splitting of the value between H and L registers.
-Same thing with the LED_FULL bit.
-
-Maybe the code will be much more readable if we do the following?
-
-- keep pca9685_pwm_full_off/full_on but rename to pca9685_pwm_set_full_off/on
-- create pca9685_pwm_is_full_off/on
-- create pca9685_pwm_set_on_time/set_off_time
-
-Then LED_FULL, >= MAXCHAN, and register splits are fully confined to
-these functions, and we can call them freely in the rest of the code,
-without getting confused by these details.
-
---
-
-> I noticed something else that does not look great:
-> Let's say you set up pwm channel 0 with a period of 5000000 and after
-> that you set up pwm channel 1 with a period of 40000000.
-> So far so good. But if you now set pwm channel 0's period to 5000000
-> again, the period stays at 40000000. (Tested with /sys/class/pwm)
->
-
-If the driver isn't buggy, this should work ok. Changing the period on one
-channel changes the global prescale, which in turn changes the period on
-every other channel. But that's ok, because the ON/OFF times are relative
-to a 4096-tick counter, so all duty cycles are preserved.
-
-Example:
-1. SET channel 0 : duty  50_000 period 100_000 (real duty cycle = 0.5)
-2. SET channel 1 : duty  50_000 period 200_000 (real duty cycle = 0.25)
-3. GET channel 0 : duty 100_000 period 200_000 (real duty cycle STILL 0.5)
-
-I think this is acceptable behaviour.
-
---
-
-I have been thinking about how this patch caches the global prescaler.
-There is a possible synchronization issue. Sysfs will always work ok, because
-it uses a mutex to protect accesses to pwm_set_state(), which means set_state()
-will never be called concurrently.
-
-But I do not think there's any protection when the driver is used as a client
-in the devicetree, like so:
-
-&i2c1 {
-        my_pca: pwm@0 {
-                compatible = "nxp,pca9685-pwm";
-                reg = <0>;
-        };
-};
-
-acme_device@0 {
-        pwms = <&my_pca 2 10000000>;
-};
-
-acme_device@1 {
-        pwms = <&my_pca 1 20000000>;
-};
-
-For most pwm drivers, this is fine, because their registers are strictly
-separated: writes to channel 0 and 1 do not touch the same registers.
-
-But in our case, because of the cached prescale, things can go very wrong.
-
-I think this can be solved by simply not caching prescale. Everything then
-stays on the stack, and the last thread to set the prescaler wins.
+greg k-h
