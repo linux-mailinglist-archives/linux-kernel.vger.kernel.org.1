@@ -2,350 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C682C4343
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7050A2C4420
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 16:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730816AbgKYPgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 10:36:52 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:39156 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730762AbgKYPgr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:36:47 -0500
-Received: by mail-ot1-f65.google.com with SMTP id z24so2571073oto.6;
-        Wed, 25 Nov 2020 07:36:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QdWYEG6bO7REfLvFs+b2+Rv03aviCzC1Gj+Qcf4HxmE=;
-        b=qYNLxFGRnGAx4WbBMZdqKcO1yCxZonB7nYWCVSY/SZ/7oBL1/ZCyNJwhIbmOhibdHS
-         3RyIWbeWoytdECw+OQD0vmxCopzBsUg3voAjuMStnSWJnIaS5MJL8+rHKkEtAF85BZNv
-         EETC+ZkQ32Ymz6ayNm4rVO+EPeTWcvnM8U+Wb6tSv6pSJcSCmylrBKmJr5xwPxHjBoOO
-         NlXSqtAG2hZIzg1hZp0c0GwVWS7fn9BO6p683tjKusyNdUF2hgX/vA2F3EY4b/UIfolN
-         i4Uk1iFnTo50Odk756LGTcI+4aV6ExcI9gkDAATPVkgiayzqtuNO0Lp/mQQYYJgLwTF2
-         bi6w==
-X-Gm-Message-State: AOAM532ZPl9/p7NwKrZCFjAtFs0awjIwW656OAcWQBvVDpYgctAMmlOw
-        dmvB//3Z9symo6qndpCF0gUKkAzBhsmkrOVC2hk=
-X-Google-Smtp-Source: ABdhPJyFB8kcatLquZaRhm57RGkEio8a614ZZVcLM/xICN9Gau/Ge2wE3BIM0QhhOECIKeEBVh8tBfavTF8YISvOEy0=
-X-Received: by 2002:a05:6830:2385:: with SMTP id l5mr3177933ots.321.1606318605731;
- Wed, 25 Nov 2020 07:36:45 -0800 (PST)
+        id S1731607AbgKYPlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 10:41:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730924AbgKYPhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:37:06 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85E5B21D91;
+        Wed, 25 Nov 2020 15:37:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606318625;
+        bh=vHbmGitfmFmde25Z8F1SEwm+xaWJLn3EOMGlBjZYEDQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=0Bv/uOmrX0YVei28NV6uKMVNLirR/ao+7PEQrqGU8JL6JErIRUyJuUZIOCB0kM1g8
+         mkCuHMO5g7D9EM8Ol+6MgfpVzIRupunz7O46xCHHrxs17UDEe2f/LODPDkTHiIcXM/
+         ayqIghvvz9MvCHs3Mbe/BYLOY0jFe3yysQK5LryY=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Lee Duncan <lduncan@suse.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, open-iscsi@googlegroups.com,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 19/23] scsi: libiscsi: Fix NOP race condition
+Date:   Wed, 25 Nov 2020 10:36:34 -0500
+Message-Id: <20201125153638.810419-19-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201125153638.810419-1-sashal@kernel.org>
+References: <20201125153638.810419-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <cover.1606198885.git.viresh.kumar@linaro.org> <f2eeee144a2e50540bff77d7bbe7351f154e2742.1606198885.git.viresh.kumar@linaro.org>
-In-Reply-To: <f2eeee144a2e50540bff77d7bbe7351f154e2742.1606198885.git.viresh.kumar@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 25 Nov 2020 16:36:34 +0100
-Message-ID: <CAJZ5v0g=2EHGMFUWQ_4+SA6gZN-3s0KTxT9VfY+Ah30e0NfhVw@mail.gmail.com>
-Subject: Re: [PATCH V4 1/3] sched/core: Move schedutil_cpu_util() to core.c
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 7:26 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> There is nothing schedutil specific in schedutil_cpu_util(), move it to
-> core.c and define it only for CONFIG_SMP.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+From: Lee Duncan <lduncan@suse.com>
 
-For the schedutil part:
+[ Upstream commit fe0a8a95e7134d0b44cd407bc0085b9ba8d8fe31 ]
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+iSCSI NOPs are sometimes "lost", mistakenly sent to the user-land iscsid
+daemon instead of handled in the kernel, as they should be, resulting in a
+message from the daemon like:
 
-> ---
->  kernel/sched/core.c              | 108 +++++++++++++++++++++++++++++++
->  kernel/sched/cpufreq_schedutil.c | 106 ------------------------------
->  kernel/sched/sched.h             |  12 +---
->  3 files changed, 109 insertions(+), 117 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index d2003a7d5ab5..b81265aec4a0 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5117,6 +5117,114 @@ struct task_struct *idle_task(int cpu)
->         return cpu_rq(cpu)->idle;
->  }
->
-> +#ifdef CONFIG_SMP
-> +/*
-> + * This function computes an effective utilization for the given CPU, to be
-> + * used for frequency selection given the linear relation: f = u * f_max.
-> + *
-> + * The scheduler tracks the following metrics:
-> + *
-> + *   cpu_util_{cfs,rt,dl,irq}()
-> + *   cpu_bw_dl()
-> + *
-> + * Where the cfs,rt and dl util numbers are tracked with the same metric and
-> + * synchronized windows and are thus directly comparable.
-> + *
-> + * The cfs,rt,dl utilization are the running times measured with rq->clock_task
-> + * which excludes things like IRQ and steal-time. These latter are then accrued
-> + * in the irq utilization.
-> + *
-> + * The DL bandwidth number otoh is not a measured metric but a value computed
-> + * based on the task model parameters and gives the minimal utilization
-> + * required to meet deadlines.
-> + */
-> +unsigned long schedutil_cpu_util(int cpu, unsigned long util_cfs,
-> +                                unsigned long max, enum schedutil_type type,
-> +                                struct task_struct *p)
-> +{
-> +       unsigned long dl_util, util, irq;
-> +       struct rq *rq = cpu_rq(cpu);
-> +
-> +       if (!uclamp_is_used() &&
-> +           type == FREQUENCY_UTIL && rt_rq_is_runnable(&rq->rt)) {
-> +               return max;
-> +       }
-> +
-> +       /*
-> +        * Early check to see if IRQ/steal time saturates the CPU, can be
-> +        * because of inaccuracies in how we track these -- see
-> +        * update_irq_load_avg().
-> +        */
-> +       irq = cpu_util_irq(rq);
-> +       if (unlikely(irq >= max))
-> +               return max;
-> +
-> +       /*
-> +        * Because the time spend on RT/DL tasks is visible as 'lost' time to
-> +        * CFS tasks and we use the same metric to track the effective
-> +        * utilization (PELT windows are synchronized) we can directly add them
-> +        * to obtain the CPU's actual utilization.
-> +        *
-> +        * CFS and RT utilization can be boosted or capped, depending on
-> +        * utilization clamp constraints requested by currently RUNNABLE
-> +        * tasks.
-> +        * When there are no CFS RUNNABLE tasks, clamps are released and
-> +        * frequency will be gracefully reduced with the utilization decay.
-> +        */
-> +       util = util_cfs + cpu_util_rt(rq);
-> +       if (type == FREQUENCY_UTIL)
-> +               util = uclamp_rq_util_with(rq, util, p);
-> +
-> +       dl_util = cpu_util_dl(rq);
-> +
-> +       /*
-> +        * For frequency selection we do not make cpu_util_dl() a permanent part
-> +        * of this sum because we want to use cpu_bw_dl() later on, but we need
-> +        * to check if the CFS+RT+DL sum is saturated (ie. no idle time) such
-> +        * that we select f_max when there is no idle time.
-> +        *
-> +        * NOTE: numerical errors or stop class might cause us to not quite hit
-> +        * saturation when we should -- something for later.
-> +        */
-> +       if (util + dl_util >= max)
-> +               return max;
-> +
-> +       /*
-> +        * OTOH, for energy computation we need the estimated running time, so
-> +        * include util_dl and ignore dl_bw.
-> +        */
-> +       if (type == ENERGY_UTIL)
-> +               util += dl_util;
-> +
-> +       /*
-> +        * There is still idle time; further improve the number by using the
-> +        * irq metric. Because IRQ/steal time is hidden from the task clock we
-> +        * need to scale the task numbers:
-> +        *
-> +        *              max - irq
-> +        *   U' = irq + --------- * U
-> +        *                 max
-> +        */
-> +       util = scale_irq_capacity(util, irq, max);
-> +       util += irq;
-> +
-> +       /*
-> +        * Bandwidth required by DEADLINE must always be granted while, for
-> +        * FAIR and RT, we use blocked utilization of IDLE CPUs as a mechanism
-> +        * to gracefully reduce the frequency when no tasks show up for longer
-> +        * periods of time.
-> +        *
-> +        * Ideally we would like to set bw_dl as min/guaranteed freq and util +
-> +        * bw_dl as requested freq. However, cpufreq is not yet ready for such
-> +        * an interface. So, we only do the latter for now.
-> +        */
-> +       if (type == FREQUENCY_UTIL)
-> +               util += cpu_bw_dl(rq);
-> +
-> +       return min(max, util);
-> +}
-> +#endif /* CONFIG_SMP */
-> +
->  /**
->   * find_process_by_pid - find a process with a matching PID value.
->   * @pid: the pid in question.
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index e254745a82cb..2d44befb322b 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -169,112 +169,6 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
->         return cpufreq_driver_resolve_freq(policy, freq);
->  }
->
-> -/*
-> - * This function computes an effective utilization for the given CPU, to be
-> - * used for frequency selection given the linear relation: f = u * f_max.
-> - *
-> - * The scheduler tracks the following metrics:
-> - *
-> - *   cpu_util_{cfs,rt,dl,irq}()
-> - *   cpu_bw_dl()
-> - *
-> - * Where the cfs,rt and dl util numbers are tracked with the same metric and
-> - * synchronized windows and are thus directly comparable.
-> - *
-> - * The cfs,rt,dl utilization are the running times measured with rq->clock_task
-> - * which excludes things like IRQ and steal-time. These latter are then accrued
-> - * in the irq utilization.
-> - *
-> - * The DL bandwidth number otoh is not a measured metric but a value computed
-> - * based on the task model parameters and gives the minimal utilization
-> - * required to meet deadlines.
-> - */
-> -unsigned long schedutil_cpu_util(int cpu, unsigned long util_cfs,
-> -                                unsigned long max, enum schedutil_type type,
-> -                                struct task_struct *p)
-> -{
-> -       unsigned long dl_util, util, irq;
-> -       struct rq *rq = cpu_rq(cpu);
-> -
-> -       if (!uclamp_is_used() &&
-> -           type == FREQUENCY_UTIL && rt_rq_is_runnable(&rq->rt)) {
-> -               return max;
-> -       }
-> -
-> -       /*
-> -        * Early check to see if IRQ/steal time saturates the CPU, can be
-> -        * because of inaccuracies in how we track these -- see
-> -        * update_irq_load_avg().
-> -        */
-> -       irq = cpu_util_irq(rq);
-> -       if (unlikely(irq >= max))
-> -               return max;
-> -
-> -       /*
-> -        * Because the time spend on RT/DL tasks is visible as 'lost' time to
-> -        * CFS tasks and we use the same metric to track the effective
-> -        * utilization (PELT windows are synchronized) we can directly add them
-> -        * to obtain the CPU's actual utilization.
-> -        *
-> -        * CFS and RT utilization can be boosted or capped, depending on
-> -        * utilization clamp constraints requested by currently RUNNABLE
-> -        * tasks.
-> -        * When there are no CFS RUNNABLE tasks, clamps are released and
-> -        * frequency will be gracefully reduced with the utilization decay.
-> -        */
-> -       util = util_cfs + cpu_util_rt(rq);
-> -       if (type == FREQUENCY_UTIL)
-> -               util = uclamp_rq_util_with(rq, util, p);
-> -
-> -       dl_util = cpu_util_dl(rq);
-> -
-> -       /*
-> -        * For frequency selection we do not make cpu_util_dl() a permanent part
-> -        * of this sum because we want to use cpu_bw_dl() later on, but we need
-> -        * to check if the CFS+RT+DL sum is saturated (ie. no idle time) such
-> -        * that we select f_max when there is no idle time.
-> -        *
-> -        * NOTE: numerical errors or stop class might cause us to not quite hit
-> -        * saturation when we should -- something for later.
-> -        */
-> -       if (util + dl_util >= max)
-> -               return max;
-> -
-> -       /*
-> -        * OTOH, for energy computation we need the estimated running time, so
-> -        * include util_dl and ignore dl_bw.
-> -        */
-> -       if (type == ENERGY_UTIL)
-> -               util += dl_util;
-> -
-> -       /*
-> -        * There is still idle time; further improve the number by using the
-> -        * irq metric. Because IRQ/steal time is hidden from the task clock we
-> -        * need to scale the task numbers:
-> -        *
-> -        *              max - irq
-> -        *   U' = irq + --------- * U
-> -        *                 max
-> -        */
-> -       util = scale_irq_capacity(util, irq, max);
-> -       util += irq;
-> -
-> -       /*
-> -        * Bandwidth required by DEADLINE must always be granted while, for
-> -        * FAIR and RT, we use blocked utilization of IDLE CPUs as a mechanism
-> -        * to gracefully reduce the frequency when no tasks show up for longer
-> -        * periods of time.
-> -        *
-> -        * Ideally we would like to set bw_dl as min/guaranteed freq and util +
-> -        * bw_dl as requested freq. However, cpufreq is not yet ready for such
-> -        * an interface. So, we only do the latter for now.
-> -        */
-> -       if (type == FREQUENCY_UTIL)
-> -               util += cpu_bw_dl(rq);
-> -
-> -       return min(max, util);
-> -}
-> -
->  static unsigned long sugov_get_util(struct sugov_cpu *sg_cpu)
->  {
->         struct rq *rq = cpu_rq(sg_cpu->cpu);
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index df80bfcea92e..0db6bcf0881f 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -2484,7 +2484,6 @@ static inline unsigned long capacity_orig_of(int cpu)
->  {
->         return cpu_rq(cpu)->cpu_capacity_orig;
->  }
-> -#endif
->
->  /**
->   * enum schedutil_type - CPU utilization type
-> @@ -2501,8 +2500,6 @@ enum schedutil_type {
->         ENERGY_UTIL,
->  };
->
-> -#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
-> -
->  unsigned long schedutil_cpu_util(int cpu, unsigned long util_cfs,
->                                  unsigned long max, enum schedutil_type type,
->                                  struct task_struct *p);
-> @@ -2533,14 +2530,7 @@ static inline unsigned long cpu_util_rt(struct rq *rq)
->  {
->         return READ_ONCE(rq->avg_rt.util_avg);
->  }
-> -#else /* CONFIG_CPU_FREQ_GOV_SCHEDUTIL */
-> -static inline unsigned long schedutil_cpu_util(int cpu, unsigned long util_cfs,
-> -                                unsigned long max, enum schedutil_type type,
-> -                                struct task_struct *p)
-> -{
-> -       return 0;
-> -}
-> -#endif /* CONFIG_CPU_FREQ_GOV_SCHEDUTIL */
-> +#endif
->
->  #ifdef CONFIG_HAVE_SCHED_AVG_IRQ
->  static inline unsigned long cpu_util_irq(struct rq *rq)
-> --
-> 2.25.0.rc1.19.g042ed3e048af
->
+  iscsid: Got nop in, but kernel supports nop handling.
+
+This can occur because of the new forward- and back-locks, and the fact
+that an iSCSI NOP response can occur before processing of the NOP send is
+complete. This can result in "conn->ping_task" being NULL in
+iscsi_nop_out_rsp(), when the pointer is actually in the process of being
+set.
+
+To work around this, we add a new state to the "ping_task" pointer. In
+addition to NULL (not assigned) and a pointer (assigned), we add the state
+"being set", which is signaled with an INVALID pointer (using "-1").
+
+Link: https://lore.kernel.org/r/20201106193317.16993-1-leeman.duncan@gmail.com
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/scsi/libiscsi.c | 23 +++++++++++++++--------
+ include/scsi/libiscsi.h |  3 +++
+ 2 files changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
+index 70b99c0e2e678..f954be3d5ee22 100644
+--- a/drivers/scsi/libiscsi.c
++++ b/drivers/scsi/libiscsi.c
+@@ -533,8 +533,8 @@ static void iscsi_complete_task(struct iscsi_task *task, int state)
+ 	if (conn->task == task)
+ 		conn->task = NULL;
+ 
+-	if (conn->ping_task == task)
+-		conn->ping_task = NULL;
++	if (READ_ONCE(conn->ping_task) == task)
++		WRITE_ONCE(conn->ping_task, NULL);
+ 
+ 	/* release get from queueing */
+ 	__iscsi_put_task(task);
+@@ -738,6 +738,9 @@ __iscsi_conn_send_pdu(struct iscsi_conn *conn, struct iscsi_hdr *hdr,
+ 						   task->conn->session->age);
+ 	}
+ 
++	if (unlikely(READ_ONCE(conn->ping_task) == INVALID_SCSI_TASK))
++		WRITE_ONCE(conn->ping_task, task);
++
+ 	if (!ihost->workq) {
+ 		if (iscsi_prep_mgmt_task(conn, task))
+ 			goto free_task;
+@@ -941,8 +944,11 @@ static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
+         struct iscsi_nopout hdr;
+ 	struct iscsi_task *task;
+ 
+-	if (!rhdr && conn->ping_task)
+-		return -EINVAL;
++	if (!rhdr) {
++		if (READ_ONCE(conn->ping_task))
++			return -EINVAL;
++		WRITE_ONCE(conn->ping_task, INVALID_SCSI_TASK);
++	}
+ 
+ 	memset(&hdr, 0, sizeof(struct iscsi_nopout));
+ 	hdr.opcode = ISCSI_OP_NOOP_OUT | ISCSI_OP_IMMEDIATE;
+@@ -957,11 +963,12 @@ static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
+ 
+ 	task = __iscsi_conn_send_pdu(conn, (struct iscsi_hdr *)&hdr, NULL, 0);
+ 	if (!task) {
++		if (!rhdr)
++			WRITE_ONCE(conn->ping_task, NULL);
+ 		iscsi_conn_printk(KERN_ERR, conn, "Could not send nopout\n");
+ 		return -EIO;
+ 	} else if (!rhdr) {
+ 		/* only track our nops */
+-		conn->ping_task = task;
+ 		conn->last_ping = jiffies;
+ 	}
+ 
+@@ -984,7 +991,7 @@ static int iscsi_nop_out_rsp(struct iscsi_task *task,
+ 	struct iscsi_conn *conn = task->conn;
+ 	int rc = 0;
+ 
+-	if (conn->ping_task != task) {
++	if (READ_ONCE(conn->ping_task) != task) {
+ 		/*
+ 		 * If this is not in response to one of our
+ 		 * nops then it must be from userspace.
+@@ -1923,7 +1930,7 @@ static void iscsi_start_tx(struct iscsi_conn *conn)
+  */
+ static int iscsi_has_ping_timed_out(struct iscsi_conn *conn)
+ {
+-	if (conn->ping_task &&
++	if (READ_ONCE(conn->ping_task) &&
+ 	    time_before_eq(conn->last_recv + (conn->recv_timeout * HZ) +
+ 			   (conn->ping_timeout * HZ), jiffies))
+ 		return 1;
+@@ -2058,7 +2065,7 @@ enum blk_eh_timer_return iscsi_eh_cmd_timed_out(struct scsi_cmnd *sc)
+ 	 * Checking the transport already or nop from a cmd timeout still
+ 	 * running
+ 	 */
+-	if (conn->ping_task) {
++	if (READ_ONCE(conn->ping_task)) {
+ 		task->have_checked_conn = true;
+ 		rc = BLK_EH_RESET_TIMER;
+ 		goto done;
+diff --git a/include/scsi/libiscsi.h b/include/scsi/libiscsi.h
+index c25fb86ffae95..b3bbd10eb3f07 100644
+--- a/include/scsi/libiscsi.h
++++ b/include/scsi/libiscsi.h
+@@ -132,6 +132,9 @@ struct iscsi_task {
+ 	void			*dd_data;	/* driver/transport data */
+ };
+ 
++/* invalid scsi_task pointer */
++#define	INVALID_SCSI_TASK	(struct iscsi_task *)-1l
++
+ static inline int iscsi_task_has_unsol_data(struct iscsi_task *task)
+ {
+ 	return task->unsol_r2t.data_length > task->unsol_r2t.sent;
+-- 
+2.27.0
+
