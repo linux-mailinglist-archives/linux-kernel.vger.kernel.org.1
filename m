@@ -2,162 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44412C3E9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E35662C3E98
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 12:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727376AbgKYK6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:58:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726190AbgKYK6Q (ORCPT
+        id S1726189AbgKYK5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:57:55 -0500
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:37897 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725836AbgKYK5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:58:16 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E3EC0613D4;
-        Wed, 25 Nov 2020 02:57:57 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id s63so2122240pgc.8;
-        Wed, 25 Nov 2020 02:57:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=R9jPt2NH0PK1K5G5eT5q3EFReOKpDq7B+jBKCFjohwc=;
-        b=kNfN86rUCgkHBYEGXYY3KxiFEGCkN9x2OrS7GJ5DMpZhvENrmY6hPmOyoCnIPLgsyc
-         UDeMXa2CCUbOzJzAN7uwGa1J6LObL4515ObltxkOsk9pTVHhAPsJboqC2wmCMrGmDRdA
-         6C6+48OE6hYSgqW9p29YrWc9+3+ciEv/QaJ7efQojK1j5tW+l1PWGPURb9LvtR+ouLzb
-         pFxwwKLMJ2AYnT1xQ3+3AVD1sERk27A93pUMIlrcKK3zM1lCwP3kygeK8ZNDgio6h82c
-         Tn7Gu6p05noyjfa5Rpe2ZGCo8izkVwWWw8HljimpnRLAYIFDKCcF/JXe397UQHvO3zP2
-         HdWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=R9jPt2NH0PK1K5G5eT5q3EFReOKpDq7B+jBKCFjohwc=;
-        b=EOqsHRfwBhjP/JuRfyTeTIjHlazwU2kDPiTntVVchapGKB7aZfZ9Iqq9EtiJnQyNCO
-         +g/YIduLYn9VjpxXZJmS1il6L2Yn7RkIVsT3jcmqAGI57KVcUJVAeqbBKVPOrU4Z285L
-         yQcOPAG47/n6fa/TzBHlyae7OS7DyohfSx34CCdDkhohFq6CT4f/v19k2PH5TZA6k5E+
-         IzwCg9xupsr+7u1GO0kvDYonz7Fattx0hRH8H7VCzDJzYEw24ddZ1S+wI6KfaTNwGW8c
-         B/NTFkbUQN9UwP99Cc0a/ElyAGu60zppM4muBg5gkh1LjcOmP6zTZDP2vp4HdaryGt2o
-         epqQ==
-X-Gm-Message-State: AOAM5325ALV5TYsy+nzs7SEHHYseCw73lkgo+N5aPX2JQ+8Eu8qq6Phr
-        BfhHmIGWWiDnabnJd6r3bArsShg0vK0QpFYn
-X-Google-Smtp-Source: ABdhPJzsuDYQ6UoK81C2ACET8sZYWgiFM+HazP3c2EQv5tebpQTo0+d1gQzAQwaOCpeMzvenX4/pZw==
-X-Received: by 2002:a17:90a:ec06:: with SMTP id l6mr3455086pjy.38.1606301877362;
-        Wed, 25 Nov 2020 02:57:57 -0800 (PST)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id t128sm1673438pfb.111.2020.11.25.02.57.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 02:57:56 -0800 (PST)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Wed, 25 Nov 2020 18:57:20 +0800
-To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Helmut Stult <helmut.stult@schinfo.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] HID: i2c-hid: add polling mode based on connected
- GPIO chip's pin status
-Message-ID: <20201125105720.xatyiva7psrfyzbi@Rk>
-References: <20201021134931.462560-1-coiby.xu@gmail.com>
- <qo0Y8DqV6mbQsSFabOaqRoxYhKdYCZPjqYuF811CTdPXRFFXpx7sNXYcW9OGI5PMyclgsTjI7Xj3Du3v4hYQVBWGJl3t0t8XSbTKE9uOJ2E=@protonmail.com>
- <20201122101525.j265hvj6lqgbtfi2@Rk>
- <xsbDy_74QEfC8byvpA0nIjI0onndA3wuiLm2Iattq-8TLPy28kMq7GKhkfrfzqdBAQfp_w5CTCCJ8XjFmegtZqP58xioheh7OHV7Bam33aQ=@protonmail.com>
- <20201123143613.zzrm3wgm4m6ngvrz@Rk>
- <1FeR4cJ-m2i5GGyb68drDocoWP-yJ47BeKKEi2IkYbkppLFRCQPTQT4D6xqVCQcmUIjIsoe9HXhwycxxt5XxtsESO6w4uVMzISa987s_T-U=@protonmail.com>
+        Wed, 25 Nov 2020 05:57:54 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id hsUekIvThN7XghsUhkVqgp; Wed, 25 Nov 2020 11:57:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1606301872; bh=y5z7/tFBmv+ZGDeU30eDwnxUg1FyFsmx3IxfaEZw6Ms=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=GBPqn/j4szPbWZv/BlPRZX3G/ZukbODfCSZ1reuLbxHGb1ZwErEOksuk5saI+RAsp
+         QBJ2L4+0DQvC3m05BLyPJdqy3TpNFt1xV+U6zvMbYqQEvCvhAqz8BIM+Iiv6u/czwg
+         Hie8hAe9lgbylbU6trQ2WX2N1AZhcx6hitXaLPQ4J45dh9B0Z7vFXVOGr9MouSPCws
+         zK8ipOkYWrD7jaI3Ez8W6x8hk92jybj5S/NTJ8yawozZr9kCJRUWeFczwwwAg11eYw
+         RG1ul55e3tTJNI2dDSDW/vxh4pS1Fru9CIqtbOjEDE2qNrFtxLoDGMwuGZ7WsYkRuk
+         1nUWl28LJYRmA==
+Subject: Re: [PATCH v4 13/13] media: docs: Move the H264 stateless codec uAPI
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <20201123144000.81310-1-ezequiel@collabora.com>
+ <20201123144000.81310-14-ezequiel@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <b43ae660-c32e-8e51-a101-da3cd032e546@xs4all.nl>
+Date:   Wed, 25 Nov 2020 11:57:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1FeR4cJ-m2i5GGyb68drDocoWP-yJ47BeKKEi2IkYbkppLFRCQPTQT4D6xqVCQcmUIjIsoe9HXhwycxxt5XxtsESO6w4uVMzISa987s_T-U=@protonmail.com>
+In-Reply-To: <20201123144000.81310-14-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfNlNWy0h3yC4n495xuBxxNrVRyEzcZXfzN3wQx3ApOzgLDEuoSFAdheUAPrEOPg1rOTIOKRcRvHKkJq842qomun+a69fvomm4CT+pZ11jkLft6BL27Wt
+ 9VI/hSmmCyXzj2lGkUIjCAsyALSRTft77osNo3dQ+FtalN2mySwcROSWlqKor8c5btfKD8qH5g3EeWwNRS3BQKRldnQ2U3droXkatKnUCSCWKT8XLyn6We6K
+ 6IzaAbCiBG7+arbWvZBfJqD4H1l/70UvXIOMGcavz4DkdCIpnqbfopF6F8Bx37E8ExXLNl0BwJIUiHAHFWoaJm9taTQ5xIut7MR4SyYLWQJ1sUql5RcMoe0o
+ GMdy9QOmoAXZPgoQ6gq+/M/jRdZeDL0V7PQMMnARfQvAoF9l0FLkaC+cXStXUkP0IKuTVBnsFK98rJ9PlSJFHWS0iwy3w6ct8woWLCgH0V9W9VcDifaDZWF7
+ FH+hXNGqsj1Vk/Ez1Y3HKX3sAYfMo9s/67z+BWmRsYi9F+mFlHC27DZThw4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 04:32:40PM +0000, Barnabás Pőcze wrote:
->> [...]
->> >> >> +static int get_gpio_pin_state(struct irq_desc *irq_desc)
->> >> >> +{
->> >> >> +	struct gpio_chip *gc = irq_data_get_irq_chip_data(&irq_desc->irq_data);
->> >> >> +
->> >> >> +	return gc->get(gc, irq_desc->irq_data.hwirq);
->> >> >> +}
->> >> [...]
->> >> >> +	ssize_t	status = get_gpio_pin_state(irq_desc);
->> >> >
->> >> >`get_gpio_pin_state()` returns an `int`, so I am not sure why `ssize_t` is used here.
->> >> >
->> >>
->> >> I used `ssize_t` because I found gpiolib-sysfs.c uses `ssize_t`
->> >>
->> >>      // drivers/gpio/gpiolib-sysfs.c
->> >>      static ssize_t value_show(struct device *dev,
->> >>      		struct device_attribute *attr, char *buf)
->> >>      {
->> >>      	struct gpiod_data *data = dev_get_drvdata(dev);
->> >>      	struct gpio_desc *desc = data->desc;
->> >>      	ssize_t			status;
->> >>
->> >>      	mutex_lock(&data->mutex);
->> >>
->> >>      	status = gpiod_get_value_cansleep(desc);
->> >>          ...
->> >>      	return status;
->> >>      }
->> >>
->> >> According to the book Advanced Programming in the UNIX Environment by
->> >> W. Richard Stevens,
->> >>      With the 1990 POSIX.1 standard, the primitive system data type
->> >>      ssize_t was introduced to provide the signed return value...
->> >>
->> >> So ssize_t is fairly common, for example, the read and write syscall
->> >> return a value of type ssize_t. But I haven't found out why ssize_t is
->> >> better int.
->> >> >
->> >
->> >Sorry if I wasn't clear, what prompted me to ask that question is the following:
->> >`gc->get()` returns `int`, `get_gpio_pin_state()` returns `int`, yet you still
->> >save the return value of `get_gpio_pin_state()` into a variable with type
->> >`ssize_t` for no apparent reason. In the example you cited, `ssize_t` is used
->> >because the show() callback of a sysfs attribute must return `ssize_t`, but here,
->> >`interrupt_line_active()` returns `bool`, so I don't see any advantage over a
->> >plain `int`. Anyways, I believe either one is fine, I just found it odd.
->> >
->> I don't understand why "the show() callback of a sysfs attribute
->> must return `ssize_t`" instead of int. Do you think the rationale
->> behind it is the same for this case? If yes, using "ssize_t" for
->> status could be justified.
->> [...]
->
->Because it was decided that way, `ssize_t` is a better choice for that purpose
->than plain `int`. You can see it in include/linux/device.h, that both the
->show() and store() methods must return `ssize_t`.
->
+On 23/11/2020 15:40, Ezequiel Garcia wrote:
+> Now that we've destaged the H264 stateless codec controls,
+> and with all the pieces in place, update the documentation
+> and move it to its own section.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  .../userspace-api/media/v4l/common.rst        |   1 +
+>  .../media/v4l/ext-ctrls-codec-stateless.rst   | 674 +++++++++++++++++
+>  .../media/v4l/ext-ctrls-codec.rst             | 692 ------------------
+>  .../media/v4l/extended-controls.rst           |   3 +-
+>  .../media/v4l/pixfmt-compressed.rst           |  21 +-
+>  5 files changed, 685 insertions(+), 706 deletions(-)
+>  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Documentation/userspace-api/media/v4l/common.rst
+> index d84aeb703165..8c263c5a85d8 100644
+> --- a/Documentation/userspace-api/media/v4l/common.rst
+> +++ b/Documentation/userspace-api/media/v4l/common.rst
+> @@ -44,6 +44,7 @@ applicable to all devices.
+>      ext-ctrls-image-source
+>      ext-ctrls-image-process
+>      ext-ctrls-codec
+> +    ext-ctrls-codec-stateless
+>      ext-ctrls-jpeg
+>      ext-ctrls-dv
+>      ext-ctrls-rf-tuner
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
+> new file mode 100644
+> index 000000000000..ab433afe625f
+> --- /dev/null
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
+> @@ -0,0 +1,674 @@
+> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> +
+> +.. _codec-stateless-controls:
+> +
+> +*********************************
+> +Stateless Codec Control Reference
+> +*********************************
+> +
+> +The Stateless Codec control class is intended to support
+> +stateless decoder and encoders (i.e. hardware accelerators).
+> +
+> +These drivers are typically supported by the :ref:`stateless_decoder`,
+> +and deal with parsed pixel formats such as V4L2_PIX_FMT_H264_SLICE.
+> +
+> +Stateless Codec Control ID
+> +==========================
+> +
+> +.. _codec-stateless-control-id:
+> +
+> +``V4L2_CID_CODEC_STATELESS_CLASS (class)``
+> +    The Codec class descriptor.
 
-Could you explain why `ssize_t` is a better choice? AFAIU, ssize_t
-is used because we can return negative value to indicate an error. If
-we use ssize_t here, it's a reminder that reading a GPIO pin's status
-could fail. And ssize_t reminds us it's a operation similar to read
-or write. So ssize_t is better than int here. And maybe it's the same
-reason why "it was decided that way".
+Codec ->  Stateless Codec
 
->What I'm arguing here, is that there is no reason to use `ssize_t` in this case.
->Because `get_gpio_pin_state()` returns `int`. So when you do
->```
->ssize_t status = get_gpio_pin_state(...);
->```
->then the return value of `get_gpio_pin_state()` (which is an `int`), will be
->converted to an `ssize_t`, and saved into `status`. I'm arguing that that is
->unnecessary and a plain `int` would work perfectly well in this case. Anyways,
->both work fine, I just found the unnecessary use of `ssize_t` here odd.
->
->
->Regards,
->Barnabás Pőcze
+Regards,
 
---
-Best regards,
-Coiby
+	Hans
