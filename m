@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD1A2C36FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 04:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C9A2C36FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 04:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgKYC4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 21:56:19 -0500
-Received: from smtprelay0107.hostedemail.com ([216.40.44.107]:40964 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726849AbgKYC4S (ORCPT
+        id S1727154AbgKYC4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 21:56:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgKYC4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 21:56:18 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id D91DD127F;
-        Wed, 25 Nov 2020 02:56:17 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3874:4321:4385:5007:6117:7903:10004:10400:10848:11026:11658:11914:12043:12295:12296:12297:12438:12740:12760:12895:13069:13095:13311:13357:13439:13972:14659:14721:21080:21433:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: spy30_0f0529627373
-X-Filterd-Recvd-Size: 2214
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 25 Nov 2020 02:56:15 +0000 (UTC)
-Message-ID: <60b60d026a0636090b1617c6fd9e7b3a88013a7f.camel@perches.com>
-Subject: Re: [PATCH 4/6] drivers: hv: vmbus: Fix checkpatch SPLIT_STRING
-From:   Joe Perches <joe@perches.com>
-To:     Matheus Castello <matheus@castello.eng.br>,
-        Michael Kelley <mikelley@microsoft.com>
-Cc:     "sashal@kernel.org" <sashal@kernel.org>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>
-Date:   Tue, 24 Nov 2020 18:56:14 -0800
-In-Reply-To: <ada0ef93-1443-49a0-914c-1ad03ffa024b@castello.eng.br>
-References: <20201115195734.8338-1-matheus@castello.eng.br>
-         <20201115195734.8338-5-matheus@castello.eng.br>
-         <MW2PR2101MB1052B329DFC5D54F4D7501E9D7E40@MW2PR2101MB1052.namprd21.prod.outlook.com>
-         <ada0ef93-1443-49a0-914c-1ad03ffa024b@castello.eng.br>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 24 Nov 2020 21:56:46 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4BFC0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 18:56:46 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id f16so902004otl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 18:56:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=+FWpHbem/CPK/Y2WEWVDIbPrtpce00d3aqKaeRn35jw=;
+        b=u3ik/jOXlZPtuxZsymmgfKUaDyjjoSfE2RNE/6etm2mObkDL0KcbpGpsN3W0qUdmtN
+         xxEiEPwiifMvSuQzP0luk3QNSRu99ftZMDeEsmLWWCSKYKWzrKqYM28K9URkcbKsQXEY
+         Z8xkRxhzfSFYmR0JpOar1wKSuCWytUXJX8dTjXkRcHVjvZf8xjGW5PY4d5I5EDfziCTe
+         JbSyEYifGpWuB2Qlux+LoD2IfjNipZpPKE4UuGRd6KVWK8/dP4neO1QXOp1h338gfh3g
+         o0SqbxmUI9NY0sxppH7O/cS8kTG4jbViat5ED8qweuXWlCvuZX0yyG0Tdg6OdW4v5iuD
+         swyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=+FWpHbem/CPK/Y2WEWVDIbPrtpce00d3aqKaeRn35jw=;
+        b=SkYttQ6FS8rhtbhB5ltXyX/86lb3Q/fAcZCtbuWegsuJ3DbenF71ZkH5z7XwYnsL5s
+         4vq2uWQ3dQyWNHr1WYTpSywxVE28WhC0Eus49GGAZA30t7Rd0a5SaSkUBkb2VZvos0AB
+         uTnmE+mECCFc7SLQ7L8FfTycArpgQLhC0R8kTqSsm2zTj7GnSv/XAwwbTmWH4HnRiJj7
+         +4HZMzkcWyi6uSo2tBUGkLJFAG6J/3PxxzjiHLdYb7ox3uHsqsTad2upb/yK5uHEuKPT
+         NY8S3N4Fjk6AvAxDtbK1xyEZu0nb5RcR0KRYQdPsgcoYodWwWVGtgP38n9yI5xwCaHSS
+         FUlw==
+X-Gm-Message-State: AOAM53311I3RzRUpjPI16/hIK7qksfgbkKKSuNdi7J5jspjeajyWAlIt
+        JsV0V7HKWG6MaPN0JYt/MHymXQ==
+X-Google-Smtp-Source: ABdhPJzxVX94z8ieBTDByVy3UTLQt9z+rZTaAlxMAHgu+ZCnxtIpuauUnDVwsmyVJDy60Q5m8gthsw==
+X-Received: by 2002:a9d:72dc:: with SMTP id d28mr1362880otk.110.1606273005462;
+        Tue, 24 Nov 2020 18:56:45 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 19sm531313oth.63.2020.11.24.18.56.43
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 24 Nov 2020 18:56:44 -0800 (PST)
+Date:   Tue, 24 Nov 2020 18:56:31 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hch@lst.de,
+        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
+        dchinner@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
+In-Reply-To: <alpine.LSU.2.11.2011241838400.3026@eggly.anvils>
+Message-ID: <alpine.LSU.2.11.2011241854140.3099@eggly.anvils>
+References: <20201112212641.27837-1-willy@infradead.org> <alpine.LSU.2.11.2011160128001.1206@eggly.anvils> <20201117153947.GL29991@casper.infradead.org> <alpine.LSU.2.11.2011170820030.1014@eggly.anvils> <20201117191513.GV29991@casper.infradead.org>
+ <20201117234302.GC29991@casper.infradead.org> <20201125023234.GH4327@casper.infradead.org> <alpine.LSU.2.11.2011241838400.3026@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-24 at 21:54 -0300, Matheus Castello wrote:
-> > > diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-[]
-> > The above would be marginally better if organized as follows so that the
-> > main execution path isn't in an "if" clause.  Also reduces indentation.
+On Tue, 24 Nov 2020, Hugh Dickins wrote:
+> On Wed, 25 Nov 2020, Matthew Wilcox wrote:
+> > On Tue, Nov 17, 2020 at 11:43:02PM +0000, Matthew Wilcox wrote:
+> > > On Tue, Nov 17, 2020 at 07:15:13PM +0000, Matthew Wilcox wrote:
+> > > > I find both of these functions exceptionally confusing.  Does this
+> > > > make it easier to understand?
+> > > 
+> > > Never mind, this is buggy.  I'll send something better tomorrow.
 > > 
-> > 	hv_panic_page = (void *)hv_alloc_hyperv_zeroed_page();
-> > 	if (!hv_panic_page) {
-> > 		pr_err("Hyper-V: panic message page memory allocation failed");
+> > That took a week, not a day.  *sigh*.  At least this is shorter.
+> 
+> Thanks, I'll give it a try (along with the other 4, on top of the 12:
 
-And nicer to add a terminating newline to the format like the pr_err below.
+s/12/16/
 
-> > 		return;
-> > 	}
-> > 	ret = kmsg_dump_register(&hv_kmsg_dumper);
-> > 	if (ret) {
-> > 		pr_err("Hyper-V: kmsg dump register error 0x%x\n", ret);
-> > 		hv_free_hyperv_page((unsigned long)hv_panic_page);
-> > 		hv_panic_page = NULL;
-> > 	}
-
-
+> maybe on -rc5, maybe on today's mmotm, I'll decide that later).
+> 
+> Shorter you say, that's good: I was disheartened by the way it got
+> more complicated, after your initial truncate_inode_partial_page()
+> neatness.  Any hints on what was wrong with my simple fixup to that?
+> (But I didn't spend any more time trying to prove or disprove it.)
+> 
+> Hugh
+> 
