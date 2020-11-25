@@ -2,110 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67272C404F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7A32C405D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729460AbgKYMgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:36:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728135AbgKYMgi (ORCPT
+        id S1728276AbgKYMjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:39:19 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:59584 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbgKYMjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:36:38 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EF5C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:36:38 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id y18so4006375qki.11
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:36:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KACiLRDVxG3h/sLMQ5dOaIvM1T2lG1rMqMZCn55vO8Y=;
-        b=AnWJWjKEUWg8YC83KOrcI1Z9ba7gj4AFoRn0qBjTEuxTcE1WiNCvsdHZmFilzcFHMz
-         JyUDUHvXthXTJmdu8ZVPPblOtntilq9CZfbysnjvoq7utw8AqeZaU58fIpSd/mtFe54d
-         k1pf9FM1j3XMIRbEJsp8unCNMH+7AVs37sh0ylcErtChJhHo1ZlrTWyIXt0u6hEwwARX
-         srgcDWeYbPR3P6yJyT2bQ5AAtC9ZedxfF5LP8q64nfsHkHMDcwQWW+yOW4CU61/SnP1/
-         mkAQ9uGXdJHWX48oYC4e5MX0lt0RV87HkMvZ1uA2w3wJVdOZJ3gRObO/y0cs7d34gZv8
-         2D5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=KACiLRDVxG3h/sLMQ5dOaIvM1T2lG1rMqMZCn55vO8Y=;
-        b=FFZY6WtZeitY01WZ2q4yGuXh+OsCrRfNUFEMzpMUXbycY/y249GLptcvJtdQOo258g
-         /oOXFuoB9xVmHmU5yy1j2cXYQIiCgR8OG4zfPFkwN3HAXbOKbNyKwQLHwENjfte9sQzf
-         PBEbpYvjJELe7nPbePs2WDtPYe6+1uI3kw6OtdixMnnsvq2clfeAvrMOBO6mPI0p6bDs
-         ooBdT5ip5Fxfns7MnDApdX2ioo/wyO6Jpc8CBBKYTiLGHAK6AqNXxjUL9rd4JQk7SuEd
-         pf46q0leooTV7SskSOBZttmMg5JAXFKL7Kth7YWrR4mF0VLrpenmMa7mauOSgO4kAkls
-         qJgg==
-X-Gm-Message-State: AOAM5336n99L/MOX8AznlBdyGFHSo47OCrw25T2C/2k2phd5efAzjCaW
-        wrWa9Lcnfa87mqC+4+cYRqc=
-X-Google-Smtp-Source: ABdhPJwMgTyXQyATF3eAmY8VpHYCXLVrVBqKKGvRYkFlPMKpvFpqPa3xZqaguD3zAvjjud+9PXgKMg==
-X-Received: by 2002:a37:a654:: with SMTP id p81mr2978588qke.404.1606307797779;
-        Wed, 25 Nov 2020 04:36:37 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id b197sm2337308qkg.65.2020.11.25.04.36.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 04:36:37 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 25 Nov 2020 07:36:14 -0500
-From:   "tj@kernel.org" <tj@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-        "mhocko@suse.com" <mhocko@suse.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        Wed, 25 Nov 2020 07:39:18 -0500
+Date:   Wed, 25 Nov 2020 12:39:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1606307952;
+        bh=lybJm4KNbspx+koo3raaZ40pyMf68YvNuqxbO9ZAm2w=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=gdUByJfulR0dPeAeA90XiXeYnYkBV2vfGUhhdAZtiUBwCyZxPEsCdhzGriIEWdQPu
+         lROlNIBLUT0zQS94HvzzJIGCYGBcSqq6JLRBpqFLtZQy0v7aY9JBNU7g7DUS8Jn7xa
+         O3hWfBTcTughYsfr5vOVTNhFQu7hZIyzsRWUGntg=
+To:     Coiby Xu <coiby.xu@gmail.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Helmut Stult <helmut.stult@schinfo.de>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rfc] workqueue: honour cond_resched() more effectively.
-Message-ID: <X75Pvp9q3XTckdwd@mtj.duckdns.org>
-References: <87v9efp7cs.fsf@notabene.neil.brown.name>
- <20201109080038.GY2594@hirez.programming.kicks-ass.net>
- <aec65c71c09e803285688d5974193a98b4422428.camel@hammerspace.com>
- <20201109140141.GE7496@mtj.duckdns.org>
- <d2c79d91e29134ef6184138de5fc856ca530d2a5.camel@hammerspace.com>
- <20201109161007.GF7496@mtj.duckdns.org>
- <87ft55nd6n.fsf@notabene.neil.brown.name>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v3] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
+Message-ID: <_1j4GSFZpZ-rAOrhM2TQwyID7K4XCCkKwLeIcFMxQ1vlFg6wr544L5Lcrp7BvpsMmkhMYsTUT3yTTM61J7aVTYmGMSddkrz244_uV0gg9mU=@protonmail.com>
+In-Reply-To: <20201125105720.xatyiva7psrfyzbi@Rk>
+References: <20201021134931.462560-1-coiby.xu@gmail.com> <qo0Y8DqV6mbQsSFabOaqRoxYhKdYCZPjqYuF811CTdPXRFFXpx7sNXYcW9OGI5PMyclgsTjI7Xj3Du3v4hYQVBWGJl3t0t8XSbTKE9uOJ2E=@protonmail.com> <20201122101525.j265hvj6lqgbtfi2@Rk> <xsbDy_74QEfC8byvpA0nIjI0onndA3wuiLm2Iattq-8TLPy28kMq7GKhkfrfzqdBAQfp_w5CTCCJ8XjFmegtZqP58xioheh7OHV7Bam33aQ=@protonmail.com> <20201123143613.zzrm3wgm4m6ngvrz@Rk> <1FeR4cJ-m2i5GGyb68drDocoWP-yJ47BeKKEi2IkYbkppLFRCQPTQT4D6xqVCQcmUIjIsoe9HXhwycxxt5XxtsESO6w4uVMzISa987s_T-U=@protonmail.com> <20201125105720.xatyiva7psrfyzbi@Rk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ft55nd6n.fsf@notabene.neil.brown.name>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+2020. november 25., szerda 11:57 keltez=C3=A9ssel, Coiby Xu =C3=ADrta:
 
-On Fri, Nov 20, 2020 at 10:23:44AM +1100, NeilBrown wrote:
-> On Mon, Nov 09 2020, tj@kernel.org wrote:
-> 
-> >                                                    Given that nothing on
-> > these types of workqueues can be latency sensitive
-> 
-> This caught my eye and it seems worth drilling in to.  There is no
-> mention of "latency" in workqueue.rst or workqueue.h.  But you seem to
-> be saying there is an undocumented assumption that latency-sensitive
-> work items much not be scheduled on CM-workqueues.
-> Is that correct?
+> On Mon, Nov 23, 2020 at 04:32:40PM +0000, Barnab=C3=A1s P=C5=91cze wrote:
+> >> [...]
+> >> >> >> +static int get_gpio_pin_state(struct irq_desc *irq_desc)
+> >> >> >> +{
+> >> >> >> +=09struct gpio_chip *gc =3D irq_data_get_irq_chip_data(&irq_des=
+c->irq_data);
+> >> >> >> +
+> >> >> >> +=09return gc->get(gc, irq_desc->irq_data.hwirq);
+> >> >> >> +}
+> >> >> [...]
+> >> >> >> +=09ssize_t=09status =3D get_gpio_pin_state(irq_desc);
+> >> >> >
+> >> >> >`get_gpio_pin_state()` returns an `int`, so I am not sure why `ssi=
+ze_t` is used here.
+> >> >> >
+> >> >>
+> >> >> I used `ssize_t` because I found gpiolib-sysfs.c uses `ssize_t`
+> >> >>
+> >> >>      // drivers/gpio/gpiolib-sysfs.c
+> >> >>      static ssize_t value_show(struct device *dev,
+> >> >>      =09=09struct device_attribute *attr, char *buf)
+> >> >>      {
+> >> >>      =09struct gpiod_data *data =3D dev_get_drvdata(dev);
+> >> >>      =09struct gpio_desc *desc =3D data->desc;
+> >> >>      =09ssize_t=09=09=09status;
+> >> >>
+> >> >>      =09mutex_lock(&data->mutex);
+> >> >>
+> >> >>      =09status =3D gpiod_get_value_cansleep(desc);
+> >> >>          ...
+> >> >>      =09return status;
+> >> >>      }
+> >> >>
+> >> >> According to the book Advanced Programming in the UNIX Environment =
+by
+> >> >> W. Richard Stevens,
+> >> >>      With the 1990 POSIX.1 standard, the primitive system data type
+> >> >>      ssize_t was introduced to provide the signed return value...
+> >> >>
+> >> >> So ssize_t is fairly common, for example, the read and write syscal=
+l
+> >> >> return a value of type ssize_t. But I haven't found out why ssize_t=
+ is
+> >> >> better int.
+> >> >> >
+> >> >
+> >> >Sorry if I wasn't clear, what prompted me to ask that question is the=
+ following:
+> >> >`gc->get()` returns `int`, `get_gpio_pin_state()` returns `int`, yet =
+you still
+> >> >save the return value of `get_gpio_pin_state()` into a variable with =
+type
+> >> >`ssize_t` for no apparent reason. In the example you cited, `ssize_t`=
+ is used
+> >> >because the show() callback of a sysfs attribute must return `ssize_t=
+`, but here,
+> >> >`interrupt_line_active()` returns `bool`, so I don't see any advantag=
+e over a
+> >> >plain `int`. Anyways, I believe either one is fine, I just found it o=
+dd.
+> >> >
+> >> I don't understand why "the show() callback of a sysfs attribute
+> >> must return `ssize_t`" instead of int. Do you think the rationale
+> >> behind it is the same for this case? If yes, using "ssize_t" for
+> >> status could be justified.
+> >> [...]
+> >
+> >Because it was decided that way, `ssize_t` is a better choice for that p=
+urpose
+> >than plain `int`. You can see it in include/linux/device.h, that both th=
+e
+> >show() and store() methods must return `ssize_t`.
+> >
+>
+> Could you explain why `ssize_t` is a better choice? AFAIU, ssize_t
+> is used because we can return negative value to indicate an error.
 
-Yeah, correct. Because they're all sharing execution concurrency, the
-latency consistency is likely a lot worse.
+ssize_t: "Signed integer type used for a count of bytes or an error indicat=
+ion."[1]
 
-> NFS writes are latency sensitive to a degree as increased latency per
-> request will hurt overall throughput.  Does this mean that handling
-> write-completion in a CM-wq is a poor choice?
-> Would it be better to us WQ_HIGHPRI??  Is there any rule-of-thumb that
-> can be used to determine when WQ_HIGHPRI is appropriate?
+And POSIX mandates that the return type of read() and write() be `ssize_t`,
+so it makes sense to keep a similar interface in the kernel since show() an=
+d store()
+are called as a direct result of the user using the read() and write() syst=
+em
+calls, respectively.
 
-I don't think it'd need HIGHPRI but UNBOUND or CPU_INTENSIVE would make
-sense. I think the rule of the thumb is along the line of if you're worried
-about cpu consumption or latency, let the scheduler take care of it (ie. use
-unbound workqueues).
 
-Thanks.
+> If
+> we use ssize_t here, it's a reminder that reading a GPIO pin's status
+> could fail. And ssize_t reminds us it's a operation similar to read
+> or write. So ssize_t is better than int here. And maybe it's the same
+> reason why "it was decided that way".
+> [...]
 
--- 
-tejun
+I believe it's more appropriate to use ssize_t when it's about a "count of =
+elements",
+but the GPIO pin state is a single boolean value (or an error indication), =
+which
+is returned as an `int`. Since it's returned as an `int` - I'm arguing that=
+ -
+there is no reason to use `ssize_t` here. Anyways, both `ssize_t` and `int`=
+ work fine
+in this case.
+
+
+[1]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.h=
+tml#tag_15_12
+
+
+Regards,
+Barnab=C3=A1s P=C5=91cze
