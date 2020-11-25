@@ -2,130 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D414E2C40A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F282C40A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728082AbgKYMzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:55:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgKYMzz (ORCPT
+        id S1729455AbgKYMzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:55:07 -0500
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:45204 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726295AbgKYMzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:55:55 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12342C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:55:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=18VVEZybOg8OLREr7667XcO7XQNbRsfPgXlmxcjHmRc=; b=QyOK4sZjHZtjFbvfkzrjXSKwom
-        KNpOBu42hwbXNqxFWskRas2LF6TPHMscxS+zEar8QpqDeEbz4h3aBBis91csKZAS890maSMIvGjGl
-        C72yIs7qGXlj45nu5vVD37YyTyIqFxUKd/pDmgAVe8lhWP6IF10VuT9NVCrrRf79ftd9eGFrgoKaq
-        DloyhKOv9dEskowfzYrAXlhQtxk2FHB4Hw4b1pWHKnh62drnYIBWy9gM9UBCb29FDaUFrTJQOsgbi
-        IPFqGpgHnZCQj8hBmyQK+o6t/fPQon+1AJ4V+cc4RnAunk4QDhEA6a9SIMUXuRNtY50piExiUtdWm
-        KvXxqG4g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1khuJv-0004Yu-Uu; Wed, 25 Nov 2020 12:54:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 51427300DAE;
-        Wed, 25 Nov 2020 13:54:47 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 27DDB20D6FE65; Wed, 25 Nov 2020 13:54:47 +0100 (CET)
-Date:   Wed, 25 Nov 2020 13:54:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
- cookie on fork
-Message-ID: <20201125125447.GV2414@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-23-joel@joelfernandes.org>
+        Wed, 25 Nov 2020 07:55:06 -0500
+Received: by mail-lj1-f178.google.com with SMTP id b17so2139274ljf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:55:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mLnRwfdcdOxY2dP+spMnSnPeaQC/00TlBcBbUyOD4Zg=;
+        b=cLckE2Zr1SJ03smryq8Nmav4gVTGgdfxGuv46CmvZjqd4ITSLVwLIDYNjju9nRvdvn
+         9OVipwCgGvuGgaT26b47agfvCSqh+a/kQYnE0QUJmKwL3cbE7aYqzDCIedthrEvWWWzi
+         aMR7QI/6DKIFh8jfsKsoqnSjrRCG68OqwZFjWDXMYAqUEldaYyukRUfVbyIm+fWn/1Vb
+         ++9xnrCbk3aHFmA7ghGjSxWs8KkmjRrFng2sHeUHuW1XJtx9JdVqkUDGgRaox0X2HXd6
+         217CVq/mlReZ2RU0JVYXl7umYx4kY6hlxs1MGt1qCnTLTnKjMc1xRC+vCjIWwzwVYvKC
+         JUnw==
+X-Gm-Message-State: AOAM531PKG3DlkhdkyzNbdmBnmo1SP6UgILOEDGRuqLVSu+3+I7Lw2WF
+        s5NuD2+BlQ9BTCCxG8U5/bapweuXwNuM1cyQkxI=
+X-Google-Smtp-Source: ABdhPJyRgNOs6G8/U8oIf2zSK2ZO5ncwh0MbnA51D7XUpFAVmE1PxAW8Caa0R4RA813U7vfE8mQFNYtGxb2co+DCeNE=
+X-Received: by 2002:a2e:9a59:: with SMTP id k25mr1387879ljj.48.1606308903831;
+ Wed, 25 Nov 2020 04:55:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117232003.3580179-23-joel@joelfernandes.org>
+References: <20201123230512.2097312-1-jolsa@kernel.org>
+In-Reply-To: <20201123230512.2097312-1-jolsa@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 25 Nov 2020 21:54:52 +0900
+Message-ID: <CAM9d7cgz=gMKe9YfmpBCQR7qCz56t4CwwC_p76Ouwre11Ax5mg@mail.gmail.com>
+Subject: Re: [PATCHv3 00/25] perf: Add mmap2 build id support
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "Frank Ch . Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
-> +/* Per-task interface */
-> +static unsigned long sched_core_alloc_task_cookie(void)
-> +{
-> +	struct sched_core_cookie *ptr =
-> +		kmalloc(sizeof(struct sched_core_cookie), GFP_KERNEL);
-> +
-> +	if (!ptr)
-> +		return 0;
-> +	refcount_set(&ptr->refcnt, 1);
-> +
-> +	/*
-> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> +	 * is done after the stopper runs.
-> +	 */
-> +	sched_core_get();
-> +	return (unsigned long)ptr;
-> +}
-> +
-> +static bool sched_core_get_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> +
-> +	/*
-> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> +	 * is done after the stopper runs.
-> +	 */
-> +	sched_core_get();
-> +	return refcount_inc_not_zero(&ptr->refcnt);
-> +}
-> +
-> +static void sched_core_put_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> +
-> +	if (refcount_dec_and_test(&ptr->refcnt))
-> +		kfree(ptr);
-> +}
+Hi Jiri,
 
-> +	/*
-> +	 * NOTE: sched_core_get() is done by sched_core_alloc_task_cookie() or
-> +	 *       sched_core_put_task_cookie(). However, sched_core_put() is done
-> +	 *       by this function *after* the stopper removes the tasks from the
-> +	 *       core queue, and not before. This is just to play it safe.
-> +	 */
+On Tue, Nov 24, 2020 at 8:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> hi,
+> adding the support to have buildid stored in mmap2 event,
+> so we can bypass the final perf record hunt on build ids.
+>
+> This patchset allows perf to record build ID in mmap2 event,
+> and adds perf tooling to store/download binaries to .debug
+> cache based on these build IDs.
+>
+> Note that the build id retrieval code is stolen from bpf
+> code, where it's been used (together with file offsets)
+> to replace IPs in user space stack traces. It's now added
+> under lib directory.
+>
+> v3 changes:
+>   - added acks
+>   - removed forgotten debug code [Arnaldo]
+>   - fixed readlink termination [Ian]
+>   - fixed doc for --debuginfod=URLs [Ian]
+>   - adopted kernel's memchr_inv function and used
+>     it in build_id__is_defined function [Arnaldo]
 
-So for no reason what so ever you've made the code more difficult?
+[SNIP]
+> ---
+> Jiri Olsa (25):
+>       bpf: Move stack_map_get_build_id into lib
+>       bpf: Add size arg to build_id_parse function
+>       perf: Add build id data in mmap2 event
+>       tools headers uapi: Sync tools/include/uapi/linux/perf_event.h
+>       tools lib: Adopt memchr_inv() from kernel
+>       perf tools: Do not swap mmap2 fields in case it contains build id
+>       perf tools: Add build_id__is_defined function
+>       perf tools: Add filename__decompress function
+>       perf tools: Add support to read build id from compressed elf
+>       perf tools: Add check for existing link in buildid dir
+>       perf tools: Use struct extra_kernel_map in machine__process_kernel_mmap_event
+>       perf tools: Try to load vmlinux from buildid database
+>       perf tools: Store build id from mmap2 events
+>       perf tools: Allow mmap2 event to synthesize kernel image
+>       perf tools: Allow mmap2 event to synthesize modules
+>       perf tools: Synthesize build id for kernel/modules/tasks
+>       perf tools: Add support to display build id for mmap2 events
+>       perf tools: Use machine__for_each_dso in perf_session__cache_build_ids
+>       perf tools: Add __perf_session__cache_build_ids function
+>       perf tools: Add is_perf_data function
+>       perf tools: Add build_id_cache__add function
+>       perf buildid-cache: Add support to add build ids from perf data
+>       perf buildid-cache: Add --debuginfod option
+>       perf buildid-list: Add support for mmap2's buildid events
+>       perf record: Add --buildid-mmap option to enable mmap's build id
+
+Mostly looks good!
+
+I only have some comments on the buildid-cache part.
+
+Thanks,
+Namhyung
+
+>
+>  include/linux/buildid.h                           |  12 +++++
+>  include/uapi/linux/perf_event.h                   |  42 +++++++++++++++---
+>  kernel/bpf/stackmap.c                             | 143 ++---------------------------------------------------------
+>  kernel/events/core.c                              |  32 ++++++++++++--
+>  lib/Makefile                                      |   3 +-
+>  lib/buildid.c                                     | 149 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tools/include/linux/string.h                      |   1 +
+>  tools/include/uapi/linux/perf_event.h             |  42 +++++++++++++++---
+>  tools/lib/perf/include/perf/event.h               |  18 ++++++--
+>  tools/lib/string.c                                |  58 ++++++++++++++++++++++++
+>  tools/perf/Documentation/perf-buildid-cache.txt   |  18 +++++++-
+>  tools/perf/Documentation/perf-config.txt          |  10 ++++-
+>  tools/perf/Documentation/perf-record.txt          |   3 ++
+>  tools/perf/builtin-buildid-cache.c                | 243 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+>  tools/perf/builtin-buildid-list.c                 |   3 ++
+>  tools/perf/builtin-record.c                       |  20 +++++++++
+>  tools/perf/tests/shell/trace+probe_vfs_getname.sh |   2 +-
+>  tools/perf/util/build-id.c                        | 127 ++++++++++++++++++++++++++++++++++-------------------
+>  tools/perf/util/build-id.h                        |   8 ++++
+>  tools/perf/util/data.c                            |  19 ++++++++
+>  tools/perf/util/data.h                            |   1 +
+>  tools/perf/util/dso.c                             |  31 ++++++++-----
+>  tools/perf/util/dso.h                             |   2 +
+>  tools/perf/util/event.c                           |  41 ++++++++++++-----
+>  tools/perf/util/evsel.c                           |  10 +++--
+>  tools/perf/util/machine.c                         |  80 ++++++++++++++++++++-------------
+>  tools/perf/util/map.c                             |   8 +++-
+>  tools/perf/util/map.h                             |   3 +-
+>  tools/perf/util/perf_api_probe.c                  |  10 +++++
+>  tools/perf/util/perf_api_probe.h                  |   1 +
+>  tools/perf/util/perf_event_attr_fprintf.c         |   2 +
+>  tools/perf/util/probe-event.c                     |   6 +--
+>  tools/perf/util/record.h                          |   1 +
+>  tools/perf/util/session.c                         |  11 +++--
+>  tools/perf/util/symbol-elf.c                      |  37 +++++++++++++++-
+>  tools/perf/util/symbol.c                          |  16 +++++++
+>  tools/perf/util/symbol_conf.h                     |   3 +-
+>  tools/perf/util/synthetic-events.c                | 121 +++++++++++++++++++++++++++++++++++++-------------
+>  38 files changed, 1026 insertions(+), 311 deletions(-)
+>  create mode 100644 include/linux/buildid.h
+>  create mode 100644 lib/buildid.c
+>
