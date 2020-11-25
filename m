@@ -2,119 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3260A2C41A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 320FC2C41B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 15:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729788AbgKYOC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 09:02:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729665AbgKYOC4 (ORCPT
+        id S1729851AbgKYOEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 09:04:23 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:46167 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbgKYOEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 09:02:56 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831EEC0613D4;
-        Wed, 25 Nov 2020 06:02:56 -0800 (PST)
-Date:   Wed, 25 Nov 2020 14:02:53 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606312974;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zik3pD3pAMcLo00rzi52xKR1J/P6MFCpraviybB5muo=;
-        b=gpE3Y6RrE/czAB70Ge7iw1xsLzWnCv3vXf9EfeO7cFERhvzHxjskgfWzwsHJyawp8/8ckW
-        PxZLguz1zaDyT1fD02QziUkOwFjxhCNmAfMGC5iPjblYny8icm12bvZgmj4InyMP7Z45rx
-        0XYstdl2H7yYL4h10vNVDwLxAV5GrtGQjw4/idqex79l75AMrt/b9rng96u/MbAs3uYnMc
-        qgG+ccAAqsBradER15ycIxlLlAZ/PXyrPfAyJwP5hxN5j7Wpfi9ZUL9jlQE0+P2R3hVpni
-        iFeNvY5aqeNZ5pta6eAlX0uKQT8Amy9K8GDOonwA7Wr8T2UWWKRO4a9it0qxHA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606312974;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zik3pD3pAMcLo00rzi52xKR1J/P6MFCpraviybB5muo=;
-        b=0UAwbGQtW4ZNO2gPAYjWjKGcGz8aBZpVH6rWgbnsVUtO+OzIWneyAxq05cTgcfPGK/Zhci
-        JJMhn0TV2QKrO6Dg==
-From:   "tip-bot2 for Mel Gorman" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/numa: Rename nr_running and break out the
- magic number
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201120090630.3286-2-mgorman@techsingularity.net>
-References: <20201120090630.3286-2-mgorman@techsingularity.net>
+        Wed, 25 Nov 2020 09:04:22 -0500
+Received: by mail-oi1-f196.google.com with SMTP id w15so2871518oie.13;
+        Wed, 25 Nov 2020 06:04:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Srn5wkrK3Lk3sOTwAki0HO4VQojxWNSuf+8xPW7iPso=;
+        b=atsA5Tq+4+TpClnOYO4wha+Zkv4kT2dbctrWRtrByeFR81u+Y2llytKvuN4s+zbGSI
+         HSMHH7ZpKt1zZW+4iUPWg46wk/un6Vnn4xc+0DLlxodRwK/MvO0sk57ZYNe1WkAqPhHJ
+         slH7tdPzRmDQFZk49WmBSg+hlaQALvcsR7/IXnB9vvP+Cd7UG8NdXsMNeu61vOTCmOM5
+         M8LJ8GopAGQvnYtQNRybhX/RT9+xUl0Ar2H2Ynpn254H7VOGycryN5C/U0/cKdk0ORZr
+         scAuaDHbunuzHJBczfVxNojaW2Irj7L/PFxfK4LBJNg2g3TGSXxOBD58ffAtSiIuEjHV
+         xosA==
+X-Gm-Message-State: AOAM533rIwsl422qyvegbqYVHPNz+2va3ENQwEkQpffHAIWRv8C9Zk8w
+        FbUk+jL32K/1B0LUcwUF2F6luqzAvK9wDe51ocA=
+X-Google-Smtp-Source: ABdhPJyPd2usae7HiK3dq+PtiMsygYPKMBEMqG9oGbpP/ptOAvdeDQpFFuuM9ZTWbEfboQROJ3+JEpjLKFwrILhFT1k=
+X-Received: by 2002:aca:5a42:: with SMTP id o63mr2216087oib.69.1606313060295;
+ Wed, 25 Nov 2020 06:04:20 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <160631297374.3364.8410979966998376995.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201124060202.776-1-ricky_wu@realtek.com> <20201124204915.GA585306@bjorn-Precision-5520>
+In-Reply-To: <20201124204915.GA585306@bjorn-Precision-5520>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 25 Nov 2020 15:04:07 +0100
+Message-ID: <CAJZ5v0gt4aeC5S6RY2W98vmcMSs9gb_SBA8-eoq1NU3wPptL8g@mail.gmail.com>
+Subject: Re: [PATCH] misc: rtsx: rts5249 support runtime PM
+To:     Bjorn Helgaas <helgaas@kernel.org>, ricky_wu@realtek.com
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, vaibhavgupta40@gmail.com,
+        kdlnx@doth.eu, Doug Anderson <dianders@chromium.org>,
+        rmfrfs@gmail.com, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Tue, Nov 24, 2020 at 9:49 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> [+cc Rafael, linux-pm for runtime PM question below]
+>
+> On Tue, Nov 24, 2020 at 02:02:02PM +0800, ricky_wu@realtek.com wrote:
+> > From: Ricky Wu <ricky_wu@realtek.com>
+> >
+> > rtsx_pci_sdmmc: add to support autosuspend when the rtd3_en is set
+> >
+> > rtsx_pcr: add callback functions about runtime PM
+> > add delay_work(rtd3_work) to decrease usage count to 0 when staying
+> > at idle over 10 sec
+> >
+> > rts5249: add extra flow at init function to support wakeup from d3
+> > and set rtd3_en from register setting
+>
+> This looks like several patches that should be split up.  The ASPM
+> changes should be unrelated to runtime PM.
+>
+> > Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+> > ---
+> >  drivers/misc/cardreader/rts5249.c  |  25 ++++--
+> >  drivers/misc/cardreader/rtsx_pcr.c | 122 +++++++++++++++++++++++++++--
+> >  drivers/misc/cardreader/rtsx_pcr.h |   1 +
+> >  drivers/mmc/host/rtsx_pci_sdmmc.c  |  18 ++++-
+> >  include/linux/rtsx_pci.h           |   1 +
+> >  5 files changed, 152 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/drivers/misc/cardreader/rts5249.c b/drivers/misc/cardreader/rts5249.c
+> > index b85279f1fc5e..1da3b1ca1121 100644
+> > --- a/drivers/misc/cardreader/rts5249.c
+> > +++ b/drivers/misc/cardreader/rts5249.c
+> > @@ -65,7 +65,6 @@ static void rtsx_base_fetch_vendor_settings(struct rtsx_pcr *pcr)
+> >               pcr_dbg(pcr, "skip fetch vendor setting\n");
+> >               return;
+> >       }
+> > -
+>
+> Doesn't look like an improvement to me.
 
-Commit-ID:     abeae76a47005aa3f07c9be12d8076365622e25c
-Gitweb:        https://git.kernel.org/tip/abeae76a47005aa3f07c9be12d8076365622e25c
-Author:        Mel Gorman <mgorman@techsingularity.net>
-AuthorDate:    Fri, 20 Nov 2020 09:06:27 
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 24 Nov 2020 16:47:47 +01:00
++1
 
-sched/numa: Rename nr_running and break out the magic number
+> >       pcr->aspm_en = rtsx_reg_to_aspm(reg);
+> >       pcr->sd30_drive_sel_1v8 = rtsx_reg_to_sd30_drive_sel_1v8(reg);
+> >       pcr->card_drive_sel &= 0x3F;
+> > @@ -73,6 +72,8 @@ static void rtsx_base_fetch_vendor_settings(struct rtsx_pcr *pcr)
+> >
+> >       pci_read_config_dword(pdev, PCR_SETTING_REG2, &reg);
+> >       pcr_dbg(pcr, "Cfg 0x%x: 0x%x\n", PCR_SETTING_REG2, reg);
+> > +
+> > +     pcr->rtd3_en = rtsx_reg_to_rtd3_uhsii(reg);
+> >       if (rtsx_check_mmc_support(reg))
+> >               pcr->extra_caps |= EXTRA_CAPS_NO_MMC;
+> >       pcr->sd30_drive_sel_3v3 = rtsx_reg_to_sd30_drive_sel_3v3(reg);
+> > @@ -278,13 +279,25 @@ static int rts5249_extra_init_hw(struct rtsx_pcr *pcr)
+> >
+> >       rtsx_pci_send_cmd(pcr, CMD_TIMEOUT_DEF);
+> >
+> > -     if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A)) {
+> > +     if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A))
+> >               rtsx_pci_write_register(pcr, REG_VREF, PWD_SUSPND_EN, PWD_SUSPND_EN);
+> > -             rtsx_pci_write_register(pcr, RTS524A_PM_CTRL3, 0x01, 0x00);
+> > -             rtsx_pci_write_register(pcr, RTS524A_PME_FORCE_CTL, 0x30, 0x20);
+> > +
+> > +     if (pcr->rtd3_en) {
+> > +             if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A)) {
+> > +                     rtsx_pci_write_register(pcr, RTS524A_PM_CTRL3, 0x01, 0x01);
+> > +                     rtsx_pci_write_register(pcr, RTS524A_PME_FORCE_CTL, 0x30, 0x30);
+> > +             } else {
+> > +                     rtsx_pci_write_register(pcr, PM_CTRL3, 0x01, 0x01);
+> > +                     rtsx_pci_write_register(pcr, PME_FORCE_CTL, 0xFF, 0x33);
+> > +             }
+> >       } else {
+> > -             rtsx_pci_write_register(pcr, PME_FORCE_CTL, 0xFF, 0x30);
+> > -             rtsx_pci_write_register(pcr, PM_CTRL3, 0x01, 0x00);
+> > +             if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A)) {
+> > +                     rtsx_pci_write_register(pcr, RTS524A_PM_CTRL3, 0x01, 0x00);
+> > +                     rtsx_pci_write_register(pcr, RTS524A_PME_FORCE_CTL, 0x30, 0x20);
+> > +             } else {
+> > +                     rtsx_pci_write_register(pcr, PME_FORCE_CTL, 0xFF, 0x30);
+> > +                     rtsx_pci_write_register(pcr, PM_CTRL3, 0x01, 0x00);
+> > +             }
+> >       }
+> >
+> >       /*
+> > diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+> > index 5d15607027e9..cb105563bde7 100644
+> > --- a/drivers/misc/cardreader/rtsx_pcr.c
+> > +++ b/drivers/misc/cardreader/rtsx_pcr.c
+> > @@ -20,6 +20,8 @@
+> >  #include <linux/rtsx_pci.h>
+> >  #include <linux/mmc/card.h>
+> >  #include <asm/unaligned.h>
+> > +#include <linux/pm.h>
+> > +#include <linux/pm_runtime.h>
+> >
+> >  #include "rtsx_pcr.h"
+> >  #include "rts5261.h"
+> > @@ -89,9 +91,16 @@ static void rtsx_comm_set_aspm(struct rtsx_pcr *pcr, bool enable)
+> >       if (pcr->aspm_enabled == enable)
+> >               return;
+> >
+> > -     pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL,
+> > -                                        PCI_EXP_LNKCTL_ASPMC,
+> > -                                        enable ? pcr->aspm_en : 0);
+> > +     if (pcr->aspm_en & 0x02)
+> > +             rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, FORCE_ASPM_CTL0 |
+> > +                     FORCE_ASPM_CTL1, enable ? 0 : FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1);
+> > +     else
+> > +             rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, FORCE_ASPM_CTL0 |
+> > +                     FORCE_ASPM_CTL1, FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1);
+> > +
+> > +     if (!enable && (pcr->aspm_en & 0x02))
+> > +             mdelay(10);
+>
+> This is a significant change that should be in its own patch and
+> explained.  Previously we did standard PCI config reads/writes to the
+> PCIe Link Control register.  After this change we'll use
+> rtsx_pci_write_register(), which looks like it writes to an MMIO
+> register in a BAR:
+>
+>   rtsx_pci_probe
+>     pcr->remap_addr = ioremap(base, len)
+>
+>   rtsx_pci_write_register
+>     rtsx_pci_writel(pcr, RTSX_HAIMR, val)
+>       iowrite32(val, pcr->remap_addr + reg)
+>
+> It's not clear that the MMIO register in the BAR is the same as the
+> one in config space.  And we still write the Link Control register in
+> config space below and other places.  How are these supposed to be
+> coordinated?
+>
+> Drivers should not change ASPM configuration directly.  Especially not
+> in obfuscated ways like this.
 
-This is simply a preparation patch to make the following patches easier
-to read. No functional change.
+Indeed.
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20201120090630.3286-2-mgorman@techsingularity.net
----
- kernel/sched/fair.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+> >       pcr->aspm_enabled = enable;
+> >  }
+> > @@ -143,6 +152,9 @@ void rtsx_pci_start_run(struct rtsx_pcr *pcr)
+> >       /* If pci device removed, don't queue idle work any more */
+> >       if (pcr->remove_pci)
+> >               return;
+> > +     if (pcr->rtd3_en)
+> > +             if (pcr->pci->dev.power.usage_count.counter == 0)
+> > +                     pm_runtime_get(&(pcr->pci->dev));
+> >
+> >       if (pcr->state != PDEV_STAT_RUN) {
+> >               pcr->state = PDEV_STAT_RUN;
+> > @@ -1075,6 +1087,19 @@ static void rtsx_pm_power_saving(struct rtsx_pcr *pcr)
+> >       rtsx_comm_pm_power_saving(pcr);
+> >  }
+> >
+> > +static void rtsx_pci_rtd3_work(struct work_struct *work)
+> > +{
+> > +     struct delayed_work *dwork = to_delayed_work(work);
+> > +     struct rtsx_pcr *pcr = container_of(dwork, struct rtsx_pcr, rtd3_work);
+> > +
+> > +     pcr_dbg(pcr, "--> %s\n", __func__);
+> > +
+> > +     while (pcr->pci->dev.power.usage_count.counter > 0) {
+> > +             if (pm_runtime_active(&(pcr->pci->dev)))
+> > +                     pm_runtime_put(&(pcr->pci->dev));
+>
+> I'm not a runtime PM expert, but this looks fishy.  AFAICT this is the
+> only driver in the tree that uses usage_count.counter this way, which
+> is a pretty big hint that this needs a closer look.  Cc'd Rafael.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6691e28..9d10abe 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1559,7 +1559,7 @@ struct task_numa_env {
- static unsigned long cpu_load(struct rq *rq);
- static unsigned long cpu_runnable(struct rq *rq);
- static unsigned long cpu_util(int cpu);
--static inline long adjust_numa_imbalance(int imbalance, int nr_running);
-+static inline long adjust_numa_imbalance(int imbalance, int dst_running);
- 
- static inline enum
- numa_type numa_classify(unsigned int imbalance_pct,
-@@ -8991,7 +8991,9 @@ next_group:
- 	}
- }
- 
--static inline long adjust_numa_imbalance(int imbalance, int nr_running)
-+#define NUMA_IMBALANCE_MIN 2
-+
-+static inline long adjust_numa_imbalance(int imbalance, int dst_running)
- {
- 	unsigned int imbalance_min;
- 
-@@ -8999,8 +9001,8 @@ static inline long adjust_numa_imbalance(int imbalance, int nr_running)
- 	 * Allow a small imbalance based on a simple pair of communicating
- 	 * tasks that remain local when the source domain is almost idle.
- 	 */
--	imbalance_min = 2;
--	if (nr_running <= imbalance_min)
-+	imbalance_min = NUMA_IMBALANCE_MIN;
-+	if (dst_running <= imbalance_min)
- 		return 0;
- 
- 	return imbalance;
+You are right, this is not correct from the PM-runtime POV.
+
+It looks like this attempts to force the PM-runtime usage counter down
+to 0 and it's kind of hard to say why this is done (and it shouldn't
+be done in the first place, because it destroys the usage counter
+balance).
+
+Ricky, is this an attempt to work around an issue of some sort?
