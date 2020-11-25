@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD762C36F0
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9BB2C36F1
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgKYCvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 21:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgKYCvB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 21:51:01 -0500
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F68FC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 18:50:48 -0800 (PST)
-Received: by mail-oo1-xc42.google.com with SMTP id t10so155063oon.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 18:50:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=pZ7yTwzr1UVwX/XHITOiHT7kma/jH9EnOU7ZqW6Z6RM=;
-        b=YNeYz6LI+AghX3JPBap3pd8R8Wf7R6RrNw+OuCNiN3m2v7471fhM7exG1z8l5JdDZ/
-         8+rsMtZGSKl2fFNdrgvHD4gOjGJUyJsuRrOudh6i1n3gUvyMRrXpvcyWiy9vIuQDRZEX
-         ewvy4j+tDRAv3H1CXZeToi1EmLi4/OKLrEf4Iq70Lqd8bpsWgntjXnByE8058UnRXadh
-         6Fdsy/f9CENebsk93jgPNyv6ygZ1/HR941IUBWEKpDrh3buU/jGVO4ZhZM9fWWw+D6rx
-         Yu7TW7AiuFf3KAbyEoND/GNS5mycj2rTkSnVOBa0YxKUqoFiIFwwyC3E73VvdwZnHKdw
-         UJvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=pZ7yTwzr1UVwX/XHITOiHT7kma/jH9EnOU7ZqW6Z6RM=;
-        b=GvKVTzpHvKFP/Scff8I2l3Al+g9P3+7wLue0xVZOifj+bXnQmt49dA49ghqkfhAYHo
-         eRiOnBs4Y3ojOpMimst3ln/aH80nieUl115mb8Jxxv/VXcxPbxmL1S0Vl7/I0LUTm5vb
-         xTWeY3aNEOwH2zXy5ZDuQzQEy0wIpCEaaaeuml96idpbxpgPn8B7bjxICa9X49QzJMfj
-         wQoL86bVXxQloewVGKG4lXfvnipS0PVEyQ6d8j4whV+tzh04TtyaHFW4mY8QFfQqVDja
-         x4vmNynMOqHs0FBN1IvoR1b0MDQgbMG71IOgBFTiHst4oiXtiCS+2Q83lgzqSdgL821L
-         th+g==
-X-Gm-Message-State: AOAM5327+Vrz5BoP2WiFnmLP7YMzfQXT1p/uTX025Puk2l93W1GhWRQu
-        PnX4l29tCSl4P3zcR5XzFuhOVA==
-X-Google-Smtp-Source: ABdhPJxw3Cv2mCf5NBEDJPNiP7e1tx/wj45SOuv55MJID8vu6pXCZY7IXdHyeknTPg8OEVnf9b95Pg==
-X-Received: by 2002:a4a:764e:: with SMTP id w14mr1208367ooe.56.1606272647591;
-        Tue, 24 Nov 2020 18:50:47 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id l7sm522243oth.73.2020.11.24.18.50.45
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 24 Nov 2020 18:50:46 -0800 (PST)
-Date:   Tue, 24 Nov 2020 18:50:32 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hch@lst.de,
-        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
-        dchinner@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
-In-Reply-To: <20201125023234.GH4327@casper.infradead.org>
-Message-ID: <alpine.LSU.2.11.2011241838400.3026@eggly.anvils>
-References: <20201112212641.27837-1-willy@infradead.org> <alpine.LSU.2.11.2011160128001.1206@eggly.anvils> <20201117153947.GL29991@casper.infradead.org> <alpine.LSU.2.11.2011170820030.1014@eggly.anvils> <20201117191513.GV29991@casper.infradead.org>
- <20201117234302.GC29991@casper.infradead.org> <20201125023234.GH4327@casper.infradead.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1727064AbgKYCvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 21:51:43 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:33161 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726721AbgKYCvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 21:51:43 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606272702; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=sFLwE4i7qr91FfwxeSgxMVVdUyIcwQaISzIConS8/58=;
+ b=j9Vuf8lBOcK8LmP7uOQKdWCb6KfAVD6YYIo0TiQtJ6yacdKQLhRWhKWGwarIv8JvIwikRb3v
+ VCt+gH5FI+QfRmh1WwesW+2CkMZKeAAYqgz3sh1hEhZdXqX8ySFT76i2YBHASQYK68e5J6MM
+ 7KAMV9VxxNCbQs+UDc+X2964was=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fbdc6b91dba509aaebb0900 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 02:51:37
+ GMT
+Sender: hongwus=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EE8D9C43460; Wed, 25 Nov 2020 02:51:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: hongwus)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1B3D3C433C6;
+        Wed, 25 Nov 2020 02:51:35 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 25 Nov 2020 10:51:35 +0800
+From:   hongwus@codeaurora.org
+To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Cc:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
+        ziqichen@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        asutoshd=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH v3 3/3] scsi: ufs: Print host regs in IRQ handler when AH8
+ error happens
+In-Reply-To: <1b2aacf0-ebc2-e541-2db5-2d595b4b392f@codeaurora.org>
+References: <1605596660-2987-1-git-send-email-cang@codeaurora.org>
+ <1605596660-2987-4-git-send-email-cang@codeaurora.org>
+ <1b2aacf0-ebc2-e541-2db5-2d595b4b392f@codeaurora.org>
+Message-ID: <ff38a5b8e55fe6b5a740c2d30c9c3f37@codeaurora.org>
+X-Sender: hongwus@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020, Matthew Wilcox wrote:
-> On Tue, Nov 17, 2020 at 11:43:02PM +0000, Matthew Wilcox wrote:
-> > On Tue, Nov 17, 2020 at 07:15:13PM +0000, Matthew Wilcox wrote:
-> > > I find both of these functions exceptionally confusing.  Does this
-> > > make it easier to understand?
-> > 
-> > Never mind, this is buggy.  I'll send something better tomorrow.
+On 2020-11-18 01:23, Asutosh Das (asd) wrote:
+> On 11/16/2020 11:04 PM, Can Guo wrote:
+>> When AH8 error happens, all the regs and states are dumped in err 
+>> handler.
+>> Sometime we need to look into host regs right after AH8 error happens,
+>> which is before leaving the IRQ handler.
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
 > 
-> That took a week, not a day.  *sigh*.  At least this is shorter.
+> Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+> 
+>>   drivers/scsi/ufs/ufshcd.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index cd7394e..a7857f6 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -6057,7 +6057,8 @@ static irqreturn_t ufshcd_check_errors(struct 
+>> ufs_hba *hba)
+>>   		hba->saved_uic_err |= hba->uic_error;
+>>     		/* dump controller state before resetting */
+>> -		if ((hba->saved_err & (INT_FATAL_ERRORS)) ||
+>> +		if ((hba->saved_err &
+>> +		     (INT_FATAL_ERRORS | UFSHCD_UIC_HIBERN8_MASK)) ||
+>>   		    (hba->saved_uic_err &&
+>>   		     (hba->saved_uic_err != UFSHCD_UIC_PA_GENERIC_ERROR))) {
+>>   			dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
+>> 
 
-Thanks, I'll give it a try (along with the other 4, on top of the 12:
-maybe on -rc5, maybe on today's mmotm, I'll decide that later).
-
-Shorter you say, that's good: I was disheartened by the way it got
-more complicated, after your initial truncate_inode_partial_page()
-neatness.  Any hints on what was wrong with my simple fixup to that?
-(But I didn't spend any more time trying to prove or disprove it.)
-
-Hugh
+Reviewed-by: Hongwu Su<hongwus@codeaurora.org>
