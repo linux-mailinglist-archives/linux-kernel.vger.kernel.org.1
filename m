@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2392C4013
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9A32C4016
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729293AbgKYMZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:25:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729009AbgKYMZy (ORCPT
+        id S1729318AbgKYM0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:26:00 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:59539 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729299AbgKYMZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:25:54 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3132CC0613D4;
-        Wed, 25 Nov 2020 04:25:54 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id f27so1408137qtv.6;
-        Wed, 25 Nov 2020 04:25:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AzMPFzJsIYAM/Ura8MDMvcJNVcf2nY/hliPxxmhHH8E=;
-        b=NI3hsJLo9ep6kUNCSc3HT9LB3wtoDh6y/+bb7SGCK9JFhUDcNjDyoJnAam9P0JArC+
-         MC1eOpifZCh336PLstRZWiSdKwSL9TZ3aMG9ok2baLd8zdlMfiiLks0JhD7cJSnPhqXs
-         oGzHvu6HnlkPkkGZz1+0eryde/cY/YAQg6G4mbcw+HGTHFiIGze0urQxCXfazwxw4ej8
-         M/Y5HryeaBPzmIcejhp/HOcLXRSDiKYM5XLvsl+VpKFVIYPSaYjhi8oYHHeyFcJG0HBx
-         EpQLIYEEXrtDNvuIByXG23b0WaLXSAdlPGYdsSnlwsHALlvHurynZMMQBGRJ9x5dGXov
-         7k3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=AzMPFzJsIYAM/Ura8MDMvcJNVcf2nY/hliPxxmhHH8E=;
-        b=luT+20Suk7AlqgRfIvTGEaEZ3TsSpeIjbpfD+dja/KMuf8TdwpEnrm0DclcgGR9QaT
-         UX2VEpio3yiXUQKYQezBM2Xv07okJwuMZVo4fx9anTTxHLcHdz/EyIGlkG5/ToOJQvLA
-         YIa+2ztG0Hsj6uB7S7zj8qtooO5w2d2cJFr1VqRdpD4oFCL/J8cpJFVAqqQBZeW7RQ8m
-         SZGQyUovD9yfYobG6TqcByQM+eEU62xqvw8zXD9g4TtYctoZ9BYDQicCaUHw2JO3xpWx
-         12SM03Jn8QV21GfkLq5fShIVh5Mh9mQr+ymbAQZsJ4NE9aUgaY5HhLtfavJXBlSz0+gu
-         BKWg==
-X-Gm-Message-State: AOAM532Xc7GHFhbBTwvzcjYY9c4FJmBqBHl+J+6Hhc7lp464WHp3LhTw
-        cGLK5e3N0wDdKlFH8v5oRBAgz2W7p4IxJA==
-X-Google-Smtp-Source: ABdhPJz6rkfqMXBD5RfnLcrxuJBxqoo6Y7ksjwMgc60r/aG5Zm4G96TGymWQnmMGdicRaIbHMje7eg==
-X-Received: by 2002:ac8:6642:: with SMTP id j2mr2708156qtp.323.1606307153347;
-        Wed, 25 Nov 2020 04:25:53 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id j13sm2333491qtc.81.2020.11.25.04.25.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 04:25:52 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 25 Nov 2020 07:25:29 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     axboe@kernel.dk, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] blk-iocost: Factor out the active iocgs' state check
- into a separate function
-Message-ID: <X75NOaW6AYyGZSF7@mtj.duckdns.org>
-References: <cover.1606186717.git.baolin.wang@linux.alibaba.com>
- <aa1f4c6e637974d7195bf4e019880e50acdd5ca5.1606186717.git.baolin.wang@linux.alibaba.com>
+        Wed, 25 Nov 2020 07:25:59 -0500
+Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0APCPaGY003175;
+        Wed, 25 Nov 2020 21:25:36 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
+ Wed, 25 Nov 2020 21:25:36 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0APCPa0Z003171
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 25 Nov 2020 21:25:36 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] tomoyo: Avoid potential null pointer access
+To:     Zheng Zengkai <zhengzengkai@huawei.com>
+Cc:     linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jmorris@namei.org, serge@hallyn.com
+References: <20201125121043.107662-1-zhengzengkai@huawei.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <cfc96d99-adff-6eb9-9685-422587830eb8@i-love.sakura.ne.jp>
+Date:   Wed, 25 Nov 2020 21:25:37 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa1f4c6e637974d7195bf4e019880e50acdd5ca5.1606186717.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <20201125121043.107662-1-zhengzengkai@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello, Zheng.
 
-On Tue, Nov 24, 2020 at 11:33:35AM +0800, Baolin Wang wrote:
-> -static void ioc_timer_fn(struct timer_list *timer)
-> +/*
-> + * Waiters determine the sleep durations based on the vrate they
-> + * saw at the time of sleep.  If vrate has increased, some waiters
-> + * could be sleeping for too long.  Wake up tardy waiters which
-> + * should have woken up in the last period and expire idle iocgs.
-> + */
+Thank you for a patch, but I won't apply this patch.
+Expected behavior is that tomoyo_warn_oom() is called
+if tomoyo_memory_ok() is called with entry == NULL.
 
-Please reflow the comment.
+Adding __GFP_NOWARN might be OK, but returning without tomoyo_warn_oom() is NG.
 
-...
-> +	nr_debtors = ioc_check_iocg_state(ioc, &now);
+On 2020/11/25 21:10, Zheng Zengkai wrote:
+> Calls to kzalloc() should be null-checked in order to avoid
+> any potential failures or unnecessary code execution.
+> Fix this by adding null checks for _entry_ right after allocation.
+> 
+> Fixes: 57c2590fb7fd ("TOMOYO: Update profile structure")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zheng Zengkai <zhengzengkai@huawei.com>
 
-How about ioc_check_iocgs()?
+Nacked-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-> +
->  	commit_weights(ioc);
+> ---
+>  security/tomoyo/common.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/security/tomoyo/common.c b/security/tomoyo/common.c
+> index 4bee32bfe16d..99b4fafcb100 100644
+> --- a/security/tomoyo/common.c
+> +++ b/security/tomoyo/common.c
+> @@ -499,6 +499,8 @@ static struct tomoyo_profile *tomoyo_assign_profile
+>  	if (ptr)
+>  		return ptr;
+>  	entry = kzalloc(sizeof(*entry), GFP_NOFS);
+> +	if (!entry)
+> +		return NULL;
+>  	if (mutex_lock_interruptible(&tomoyo_policy_lock))
+>  		goto out;
+>  	ptr = ns->profile_ptr[profile];
+> 
 
-I think it'd make more sense to move commit_weights() inside the new
-function.
-
-Thanks.
-
--- 
-tejun
