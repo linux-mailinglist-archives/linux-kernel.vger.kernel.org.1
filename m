@@ -2,141 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA282C36DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 441642C369D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 03:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgKYCic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 21:38:32 -0500
-Received: from gateway23.websitewelcome.com ([192.185.48.71]:20798 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725952AbgKYCib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 21:38:31 -0500
-X-Greylist: delayed 1437 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 21:38:30 EST
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id 9001D7EA9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 20:14:32 -0600 (CST)
-Received: from br164.hostgator.com.br ([192.185.176.180])
-        by cmsmtp with SMTP
-        id hkKGk5ZbdDT64hkKGkVBez; Tue, 24 Nov 2020 20:14:32 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=2wqcYIgsj+xhVUAMzlLmwMnVlrncB6FsZ9cyO+nhhGw=; b=0utgvdVQ8F/G48uxVZmxTOCij6
-        w3aEo2287fRxOmKq1IHVJ3/98pFzl7Q2sL2vWQZsUcGNENq2xu+tLnimixujklGfzuBcMKJ2eRdj2
-        NFYSRqfbvS2luPbBXZNwK5ABdcaGj31oJIHi/2VUbFF4BX5OI7Bk35NvwUUMp11lpaAgyJdgJTfjj
-        jJnE4DAlOtItmcYVj8Ah6fweGefY7f7lLqu4cOYs642RM31rffqmSgeX+TJ+G+SuaL8yOn+BC0O5e
-        mBVLvKxMnHsYs+2TNf6NEzYbaLhcmZNKL5EB01kbC1Ebi0w3TLLkdJFaS9tRMr1TOuZVI5OXmx61b
-        fPvhdxXA==;
-Received: from 179-197-124-241.ultrabandalargafibra.com.br ([179.197.124.241]:50086 helo=DESKTOP-TKDJ6MU.localdomain)
-        by br164.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <matheus@castello.eng.br>)
-        id 1khkKF-002mQO-WD; Tue, 24 Nov 2020 23:14:32 -0300
-From:   Matheus Castello <matheus@castello.eng.br>
-To:     mikelley@microsoft.com, wei.liu@kernel.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        sashal@kernel.org, Tianyu.Lan@microsoft.com, decui@microsoft.com,
-        sunilmut@microsoft.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Matheus Castello <matheus@castello.eng.br>
-Subject: [PATCH v2 4/6] drivers: hv: vmbus: Fix checkpatch SPLIT_STRING
-Date:   Tue, 24 Nov 2020 23:14:03 -0300
-Message-Id: <20201125021403.3621-1-matheus@castello.eng.br>
-X-Mailer: git-send-email 2.29.2
+        id S1725921AbgKYCOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 21:14:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725287AbgKYCOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 21:14:12 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF1452075A;
+        Wed, 25 Nov 2020 02:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606270451;
+        bh=uGc3hDzgE86z5ms9BsFahgf4jdHWbwk2TZn74OngWv4=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=TfFtoKwNoAGqN4IFV6vIfILCG4UTH8R7sIrgTCwp4fv9ZJtlds6gCT0lwSBS16sJR
+         AFYuQ12AUV3FTmFP/MMfU1N84u/zR70ofxlcSRwviw3U8x6qzE6oD6lcMV73KycQLY
+         LaD4486+AFwHlPkbQVbncnCmN7tNNzNLChQEt/9s=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - castello.eng.br
-X-BWhitelist: no
-X-Source-IP: 179.197.124.241
-X-Source-L: No
-X-Exim-ID: 1khkKF-002mQO-WD
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 179-197-124-241.ultrabandalargafibra.com.br (DESKTOP-TKDJ6MU.localdomain) [179.197.124.241]:50086
-X-Source-Auth: matheus@castello.eng.br
-X-Email-Count: 1
-X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201119072714.14460-2-manivannan.sadhasivam@linaro.org>
+References: <20201119072714.14460-1-manivannan.sadhasivam@linaro.org> <20201119072714.14460-2-manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH v3 1/4] dt-bindings: clock: Add SDX55 GCC clock bindings
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     bjorn.andersson@linaro.org, vkoul@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        mturquette@baylibre.com, robh+dt@kernel.org
+Date:   Tue, 24 Nov 2020 18:14:10 -0800
+Message-ID: <160627045053.2717324.16519747693186632490@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checkpatch emits WARNING: quoted string split across lines.
-To keep the code clean and with the 80 column length indentation the
-check and registration code for kmsg_dump_register has been transferred
-to a new function hv_kmsg_dump_register.
+Quoting Manivannan Sadhasivam (2020-11-18 23:27:11)
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml =
+b/Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml
+> new file mode 100644
+> index 000000000000..9d8981817ae3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml
+> @@ -0,0 +1,73 @@
+[...]
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,gcc-sdx55
+> +
+> +  clocks:
+> +    items:
+[...]
+> +      - description: PLL test clock source
+> +
+> +  clock-names:
+> +    items:
+[...]
+> +      - const: core_bi_pll_test_se
 
-Signed-off-by: Matheus Castello <matheus@castello.eng.br>
----
-This is the V2 of patch 4 of the series "Add improvements suggested by
-checkpatch for vmbus_drv" with the changes suggested by Michael Kelley
----
- drivers/hv/vmbus_drv.c | 35 ++++++++++++++++++++---------------
- 1 file changed, 20 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 61d28c743263..d70da8fee409 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -1387,6 +1387,24 @@ static struct kmsg_dumper hv_kmsg_dumper = {
- 	.dump = hv_kmsg_dump,
- };
-
-+static void hv_kmsg_dump_register(void)
-+{
-+	int ret;
-+
-+	hv_panic_page = (void *)hv_alloc_hyperv_zeroed_page();
-+	if (!hv_panic_page) {
-+		pr_err("Hyper-V: panic message page memory allocation failed");
-+		return;
-+	}
-+
-+	ret = kmsg_dump_register(&hv_kmsg_dumper);
-+	if (ret) {
-+		pr_err("Hyper-V: kmsg dump register error 0x%x\n", ret);
-+		hv_free_hyperv_page((unsigned long)hv_panic_page);
-+		hv_panic_page = NULL;
-+	}
-+}
-+
- static struct ctl_table_header *hv_ctl_table_hdr;
-
- /*
-@@ -1477,21 +1495,8 @@ static int vmbus_bus_init(void)
- 		 * capability is supported by the hypervisor.
- 		 */
- 		hv_get_crash_ctl(hyperv_crash_ctl);
--		if (hyperv_crash_ctl & HV_CRASH_CTL_CRASH_NOTIFY_MSG) {
--			hv_panic_page = (void *)hv_alloc_hyperv_zeroed_page();
--			if (hv_panic_page) {
--				ret = kmsg_dump_register(&hv_kmsg_dumper);
--				if (ret) {
--					pr_err("Hyper-V: kmsg dump register "
--						"error 0x%x\n", ret);
--					hv_free_hyperv_page(
--					    (unsigned long)hv_panic_page);
--					hv_panic_page = NULL;
--				}
--			} else
--				pr_err("Hyper-V: panic message page memory "
--					"allocation failed");
--		}
-+		if (hyperv_crash_ctl & HV_CRASH_CTL_CRASH_NOTIFY_MSG)
-+			hv_kmsg_dump_register();
-
- 		register_die_notifier(&hyperv_die_block);
- 	}
---
-2.29.2
-
+Is it optional? As far as I know this clk has never been implemented
+because it's a hardware validation thing and not used otherwise.
