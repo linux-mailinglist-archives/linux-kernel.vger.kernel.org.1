@@ -2,112 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8352C35CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 01:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C29962C35CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 01:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgKYAyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 19:54:11 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:61476 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726579AbgKYAyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 19:54:11 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606265650; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=HUsEpWpEk8fh+QW/RzVw1weMcorPYrNWedOn0ByEUqA=;
- b=xdosggZIAg4BF1Qd5XPSsYXcUh6CoBuXbW1wzb1NHWmvD2FW0TsE35zG6dKG80yejsTqdcW+
- u1brGzUa2YLE+JCcm9A46BZk3eOAHnLREvYX4g65hjcPl32c0sI3LXzIdZUvRA9oDL3iTKy5
- DbqVH9iloZPr+HnNqn4lKoEJ0Dw=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5fbdab13a5c560669c48b36c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Nov 2020 00:53:39
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1A30BC4346A; Wed, 25 Nov 2020 00:53:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 21CB5C433ED;
-        Wed, 25 Nov 2020 00:53:38 +0000 (UTC)
+        id S1727078AbgKYAzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 19:55:21 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:40618 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726983AbgKYAzU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 19:55:20 -0500
+Received: by mail-il1-f200.google.com with SMTP id b18so530103ilr.7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Nov 2020 16:55:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=yEpxpviWeJUabatQl1cltLq8Z8zQA4yZKvJug/Nr3PQ=;
+        b=dOvevXVVWbgdm6W5dgbNN1GgoHj79UhYZQzWnmArSvOXxfgWo7anvdYSVw1qx2Uk2Q
+         fPiOgiotGdeaIeiyzsn1+L9tFj5BscXiMF7qLRJaGVdsAMr8w4M2jUBFomCICyB5vO2m
+         xVULVBiNLO1dW7b9ix9mTWspejCcxtz4gPeLsS60C7+//5sWASNdGWA1o5g0iUiEf0wS
+         AnQ+zDH2l74pdKL1rI4CMFApuYRZPI6qGNYAdV7OToCkPu1qj5ZCuGUmDfx8pOTBBCJj
+         tnajcAhlMMaciUChfw9ljokVmSrdyYvamQo7Cm7bADZJfEyM/v/GfXttdhlcGeTkubOX
+         E+3g==
+X-Gm-Message-State: AOAM53342gufSLnmjqj8So7M89YEBM4GxvQa4Wzx+TZLzGr//7Iu7t7s
+        ioZMNSTjEVwg2Z0TNomdRxpc8Yy5lgQzGu4eyVKmq1W41kRE
+X-Google-Smtp-Source: ABdhPJzwHxFB2X3cZziB3Q1yf7/6XuH1EIuGUBo288a1Jap404mDaQMGI0obqcAEXo0PWuNF6ACbAIXzLjK2686AhnJ1t2LkYU8E
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 25 Nov 2020 08:53:37 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
- remove skip_ref_clk
-In-Reply-To: <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
-References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
- <1606202906-14485-2-git-send-email-cang@codeaurora.org>
- <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
-Message-ID: <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Received: by 2002:a6b:fd0c:: with SMTP id c12mr780328ioi.107.1606265718300;
+ Tue, 24 Nov 2020 16:55:18 -0800 (PST)
+Date:   Tue, 24 Nov 2020 16:55:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008de34305b4e3e146@google.com>
+Subject: INFO: task hung in addrconf_verify_work (4)
+From:   syzbot <syzbot+ba67b12b1ca729912834@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, xiyou.wangcong@gmail.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-25 05:09, Bean Huo wrote:
-> On Mon, 2020-11-23 at 23:28 -0800, Can Guo wrote:
->> +++ b/drivers/scsi/ufs/ufshcd.h
->> @@ -229,6 +229,8 @@ struct ufs_dev_cmd {
->>   * @max_freq: maximum frequency supported by the clock
->>   * @min_freq: min frequency that can be used for clock scaling
->>   * @curr_freq: indicates the current frequency that it is set to
->> + * @always_on_while_link_active: indicate that the clk should not be
->> disabled if
->> +                                link is still active
->>   * @enabled: variable to check against multiple enable/disable
->>   */
->>  struct ufs_clk_info {
->> @@ -238,6 +240,7 @@ struct ufs_clk_info {
->>         u32 max_freq;
->>         u32 min_freq;
->>         u32 curr_freq;
->> +       bool always_on_while_link_active;
-> 
-> Can,
-> using a sentence as a parameter name looks a little bit clumsy to me.
-> The meaning has been explained in the comments section. How about
-> simplify it and in line with other parameters in the structure?
-> 
+Hello,
 
-Do you have a better name in mind?
+syzbot found the following issue on:
 
-Thanks,
+HEAD commit:    4d02da97 Merge tag 'net-5.10-rc5' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17253696500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=330f3436df12fd44
+dashboard link: https://syzkaller.appspot.com/bug?extid=ba67b12b1ca729912834
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15577dc1500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1138574d500000
 
-Can Guo.
+The issue was bisected to:
 
-> Thanks,
-> Bean
-> 
->>         bool enabled;
->>  };
->> 
+commit 0fedc63fadf0404a729e73a35349481c8009c02f
+Author: Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed Sep 23 03:56:24 2020 +0000
+
+    net_sched: commit action insertions together
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f3c351500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=100bc351500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f3c351500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ba67b12b1ca729912834@syzkaller.appspotmail.com
+Fixes: 0fedc63fadf0 ("net_sched: commit action insertions together")
+
+INFO: task kworker/0:1:8444 blocked for more than 143 seconds.
+      Not tainted 5.10.0-rc4-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:1     state:D stack:29768 pid: 8444 ppid:     2 flags:0x00004000
+Workqueue: ipv6_addrconf addrconf_verify_work
+Call Trace:
+ context_switch kernel/sched/core.c:3774 [inline]
+ __schedule+0x893/0x2130 kernel/sched/core.c:4523
+ schedule+0xcf/0x270 kernel/sched/core.c:4601
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4660
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
+ addrconf_verify_work+0xa/0x20 net/ipv6/addrconf.c:4568
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/1655:
+ #0: ffffffff8b337820 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6252
+1 lock held by in:imklog/8146:
+ #0: ffff88801ef9aaf0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+3 locks held by kworker/0:1/8444:
+ #0: ffff888147a41538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888147a41538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888147a41538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888147a41538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888147a41538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888147a41538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc90000e9fda8 ((addr_chk_work).work){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffffffff8c928588 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_verify_work+0xa/0x20 net/ipv6/addrconf.c:4568
+2 locks held by syz-executor297/8473:
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 1655 Comm: khungtaskd Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+ watchdog+0xd43/0xfa0 kernel/hung_task.c:294
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 8473 Comm: syz-executor297 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:lock_is_held_type+0xc2/0x100 kernel/locking/lockdep.c:5479
+Code: 03 44 39 f0 41 0f 94 c4 48 c7 c7 c0 5e 4b 89 e8 d4 0b 00 00 b8 ff ff ff ff 65 0f c1 05 57 67 1c 77 83 f8 01 75 23 ff 34 24 9d <48> 83 c4 08 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 45 31 e4 eb
+RSP: 0018:ffffc900016beb50 EFLAGS: 00000202
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 1ffffffff19d9d4b
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffffff8b337760 R08: ffffffff87119fb8 R09: ffff888021809207
+R10: ffffed1004301240 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88801487a350 R14: 00000000ffffffff R15: ffff88801487a350
+FS:  0000000000000000(0000) GS:ffff8880b9f00000(0063) knlGS:000000000989d840
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00007f691c03f0f8 CR3: 00000000112cc000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ lock_is_held include/linux/lockdep.h:271 [inline]
+ ___might_sleep+0x236/0x2b0 kernel/sched/core.c:7264
+ __mutex_lock_common kernel/locking/mutex.c:935 [inline]
+ __mutex_lock+0xa9/0x10e0 kernel/locking/mutex.c:1103
+ tcf_idr_check_alloc+0x78/0x3b0 net/sched/act_api.c:501
+ tcf_police_init+0x347/0x13a0 net/sched/act_police.c:81
+ tcf_action_init_1+0x1a3/0x990 net/sched/act_api.c:993
+ tcf_exts_validate+0x138/0x420 net/sched/cls_api.c:3058
+ rsvp_change+0x291/0x27a0 net/sched/cls_rsvp.h:502
+ tc_new_tfilter+0x1398/0x2130 net/sched/cls_api.c:2129
+ rtnetlink_rcv_msg+0x80e/0xad0 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x331/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmmsg+0x292/0x470 net/socket.c:2490
+ __compat_sys_sendmmsg net/compat.c:361 [inline]
+ __do_compat_sys_sendmmsg net/compat.c:368 [inline]
+ __se_compat_sys_sendmmsg net/compat.c:365 [inline]
+ __ia32_compat_sys_sendmmsg+0x9b/0x100 net/compat.c:365
+ do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+ __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7ff3549
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000ff8a4b4c EFLAGS: 00000296 ORIG_RAX: 0000000000000159
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000200
+RDX: 00000000924926d3 RSI: 0000000000000000 RDI: 0000000000000010
+RBP: 0000000000080002 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.398 msecs
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
