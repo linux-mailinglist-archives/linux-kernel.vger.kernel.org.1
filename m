@@ -2,51 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFE92C37FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CA82C380B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 05:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727353AbgKYETP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Nov 2020 23:19:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726345AbgKYETP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Nov 2020 23:19:15 -0500
-Received: from localhost (unknown [122.179.120.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95EBD20872;
-        Wed, 25 Nov 2020 04:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606277954;
-        bh=eQVNhQ0UAEYFl/DUM5l/IxLjQMOsbadOvstLoA9OzlA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xEsPm6I5DzMQYXfHRZZHiNUNPvGBGuqlh2hZ1Ambo60f8mvPL+/pmCl2Zsan93anB
-         6mVyTu/l0jbAK4KJn3WCEsvY9V4eybonJDkPQnoYP9mcBjH3rWBqlg0aKV6Lx9C3u/
-         7TNiIxrQolRtsQ1QIFUEmMA2q6Y9h9fcnHieqgeM=
-Date:   Wed, 25 Nov 2020 09:49:09 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] arm64: defconfig: Enable Qualcomm PON driver
-Message-ID: <20201125041909.GA8403@vkoul-mobl>
-References: <20201125023831.99774-1-bjorn.andersson@linaro.org>
+        id S1727918AbgKYEVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Nov 2020 23:21:38 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:49281 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726330AbgKYEVh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Nov 2020 23:21:37 -0500
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 0AP4LGLe023838;
+        Wed, 25 Nov 2020 13:21:17 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 0AP4LGLe023838
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606278077;
+        bh=ooRzKz+xea3vITaQ6iu7qbgvOHqjZFJJkld/4o49MH4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HiiUZCzMQznWUyqeypBgzCNTUOQtn5kRBrDQR4ZREFrlK2e+wtOmdPOFosym7+w8/
+         mSLF7GoiwwfQNatfCOZJ5CNwG5HRLikhvJ2KB3rZZvFa6aRisSLr3zFsKcShVFAn3+
+         PDqRg1CgT09F8ZGAbjp2LK5Jq+dDYnD7Oy5HJsFxykPDe1aUuBQ5QThZd9y5N+I9o3
+         DyZ4brprbkZra3EeNZLJ4EnVWTeBQPYmLoFWX45x3shrGYxXDdNFeToSAWp0RHqIwr
+         lFfq2wBUAVyTCkYS3205VqlfAR2sk0cuNHz2W16bFvWPN5hjCmXG3IXlcJwYQ6Nsw9
+         jM2KYUmmaXmnw==
+X-Nifty-SrcIP: [209.85.215.169]
+Received: by mail-pg1-f169.google.com with SMTP id f17so1217562pge.6;
+        Tue, 24 Nov 2020 20:21:16 -0800 (PST)
+X-Gm-Message-State: AOAM531SONrYFmErmaV4PLf6Z43XcjyRigePRJJKEGQnMWXgpBFYCmxS
+        yu9fE89koIj2fJkMh4niY/wInvSKSAVezMyxD5Y=
+X-Google-Smtp-Source: ABdhPJyq8N9UqhJ4ipccgxI03Bq0Yt5jiNDdSTa642fCRyckZtA/iY1YmWWkbRb8ZbXqPD94QZTkf/XJh0UnazY1L7g=
+X-Received: by 2002:a63:3205:: with SMTP id y5mr1533249pgy.47.1606278076158;
+ Tue, 24 Nov 2020 20:21:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125023831.99774-1-bjorn.andersson@linaro.org>
+References: <20201124154339.173752-1-arnd@kernel.org>
+In-Reply-To: <20201124154339.173752-1-arnd@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 25 Nov 2020 13:20:39 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASsVeKzRp2cevv8RvPWvH_X9_FW4kp4C76BynTLSHJuRA@mail.gmail.com>
+Message-ID: <CAK7LNASsVeKzRp2cevv8RvPWvH_X9_FW4kp4C76BynTLSHJuRA@mail.gmail.com>
+Subject: Re: [PATCH] Makefile.extrawarn: remove -Wnested-externs warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-11-20, 20:38, Bjorn Andersson wrote:
-> The PON block in the PMIC provides, among other things, support for
-> "reboot reason", power key and reset "key" handling. Let's enable the
-> driver for this block.
+On Wed, Nov 25, 2020 at 12:43 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The -Wnested-externs warning has become useless with gcc, since
+> this warns every time that BUILD_BUG_ON() or similar macros
+> are used.
+>
+> With clang, the warning option does nothing to start with, so
+> just remove it entirely.
+>
+> Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Applied to linux-kbuild.
+Thanks.
+
+
+>  scripts/Makefile.extrawarn | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+> index 6baee1200615..d53825503874 100644
+> --- a/scripts/Makefile.extrawarn
+> +++ b/scripts/Makefile.extrawarn
+> @@ -61,7 +61,6 @@ endif
+>  ifneq ($(findstring 2, $(KBUILD_EXTRA_WARN)),)
+>
+>  KBUILD_CFLAGS += -Wdisabled-optimization
+> -KBUILD_CFLAGS += -Wnested-externs
+>  KBUILD_CFLAGS += -Wshadow
+>  KBUILD_CFLAGS += $(call cc-option, -Wlogical-op)
+>  KBUILD_CFLAGS += -Wmissing-field-initializers
+> --
+> 2.27.0
+>
+
 
 -- 
-~Vinod
+Best Regards
+Masahiro Yamada
