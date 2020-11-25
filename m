@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1402C3F7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8F52C3F83
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 13:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgKYMBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 07:01:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45094 "EHLO
+        id S1727019AbgKYMFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 07:05:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727019AbgKYMBx (ORCPT
+        with ESMTP id S1725876AbgKYMFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:01:53 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A41C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:01:38 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id p8so1655145wrx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:01:38 -0800 (PST)
+        Wed, 25 Nov 2020 07:05:02 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D14EC061A4E
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:05:01 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id s9so1984318ljo.11
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 04:05:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=3zKQZ7VBivnaM9jKVduh3uJv6aA9cicflV82nD39vUk=;
-        b=MG8XG7i4qZ2aAl0KJfacSV/mXUJm4RuaSstWRnLq+rjtfnlRsrJPmv9vZdhMpahPw5
-         gJYNCqr5udg3Tbc84wNKxWAGptNVmvhCpQ7Aw5oJZ6iljJVOTvgabXljxICB8Mpq7F3B
-         gjaVsqLXUDUdMx3NrBBOFyP23sMw6R7P8oZpWUmIi7DWGdSskr5lqUEhAxtY0xHNVJ/B
-         VFkW3h4t5iVlrCjLvOZt+K97K7h1kghq/ufGII6JQWpMIrccXrQIo2TeqEGUENvkVSe3
-         nkZvw59bfdrkmuLmlCwmhCgWSb/WKfERC2ZOjSohmYMMbR0RsZ0pARqlh/sGqSO/wuxZ
-         r7Jw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+5FUjWxpOQ9zrCued6q8VeN9WGm6VgBFm9lfLrKQbsk=;
+        b=R0rjGOpoCeLCagqI1sJ83TnqIgosI5MW9SQKWqklodjOkP6evlnIvgzzl4Or4JHdIC
+         ibygpDOJBwvnUP0hCqyfLx/pBm0AKminSD0QrcXq7U0wHG9ghmO21aNF/pizF0LkDBbc
+         biBzU/fnTR4ezxv16GJRfgs/RjTrW+M8lahOQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3zKQZ7VBivnaM9jKVduh3uJv6aA9cicflV82nD39vUk=;
-        b=UOsaUI98BF84XBWYQc4ifj51VHiHn2gVBMheJ2/AJaF+88aWVLDEpKX1eOHVM1yRQ6
-         MnW5BSzoky2biLkPjadLk+6mdpvl4j/GtQmK8fIzil1QGwlZ/hSYMDM1+ck5OG3g5xTv
-         clKlXnD/Csv26yfLbrqY73j07J2jvsm27Hn26EE9w2NKZjK9wLTgPsofM8mea3E19sQ4
-         i3FYoBbLZr3ZxLULDOWcVBlOu6iJGfOfOrgoCpVAJqFYCKDeDOgv/dEGVVp8Pr6SY0k+
-         sZ60vzcThgIXuXgqQnU0KEK3zEhX2SYudxdHR4czFO1pY3E7a+yhWyejoh1nlY6oaMcD
-         duRw==
-X-Gm-Message-State: AOAM532Y9pLXY+gIX7TCMtKdht39452wAJA+w4y6XQuX4jsKj9reaoPZ
-        iqV2pr6MG42gUwkdW+12pYTAendSv9owNmAT
-X-Google-Smtp-Source: ABdhPJzrCqLUpGNxv8G9Y12RnxZPuIc8lbx4JFE9WG0UPE1mFNyOkP4AgFKAq9W08gdTHbBWhv5iaw==
-X-Received: by 2002:adf:d082:: with SMTP id y2mr3805368wrh.301.1606305696769;
-        Wed, 25 Nov 2020 04:01:36 -0800 (PST)
-Received: from jade (81-236-179-152-no272.tbcn.telia.com. [81.236.179.152])
-        by smtp.gmail.com with ESMTPSA id j6sm4336173wrq.38.2020.11.25.04.01.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 04:01:36 -0800 (PST)
-Date:   Wed, 25 Nov 2020 13:01:34 +0100
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org,
-        Rui Miguel Silva <rui.silva@linaro.org>
-Subject: [GIT PULL] OP-TEE driver for v5.11
-Message-ID: <20201125120134.GA1642471@jade>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+5FUjWxpOQ9zrCued6q8VeN9WGm6VgBFm9lfLrKQbsk=;
+        b=Eo+yt5mbp9JAEi7hqN0XubYCHy8VJVD8+7WtpknXz7x+ZPpe6RwBS/n+EGrqAO87Xv
+         g9yQt3qQ6EOeLA8G+N0OEWkZ7ysqe6lq/y/7bQb55CWS+GEDIAwKW+ZUdbLMy9sf7pzG
+         JsCHwLfBp+aNdSHfAsnZAOArrYuUcuh380oroySd1QATna5XJiH+2ba3AHBxPHWu2m4a
+         dc0Ok9J8CKdickJ1rIoTLTAp8OEhK2STMG2Kpd2wRzgfHpS3UWN6y0JbidQPH9HULamd
+         +6rv7yhhmSIm7R8/UvovPXAW6serj94Lzwqa/MCKT7wn+iudhlvwcWG1NyhHqGRZ5XqA
+         kZ+A==
+X-Gm-Message-State: AOAM531sbNrdsq8s6zbTJqL9ni+0gtiS7BMEvbEvOBTm02UcDJY7mYWx
+        XnRunG4glL2BoYjPKp/x6MkCRnkcT2HImtrhjhCN3Q==
+X-Google-Smtp-Source: ABdhPJzxIAysOZN/U4xhG7czC43qYmFbb4hpHmlQUzaVX4IBNdWDCl1YNNVf4IVxAMSNt3qPOQvxZ6gTKifImFD4b/U=
+X-Received: by 2002:a05:651c:285:: with SMTP id b5mr1280770ljo.82.1606305899970;
+ Wed, 25 Nov 2020 04:04:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20201124151210.1081188-1-kpsingh@chromium.org>
+ <20201124151210.1081188-2-kpsingh@chromium.org> <3b6f7023-e1fe-b79b-fa06-b8edcce530de@fb.com>
+In-Reply-To: <3b6f7023-e1fe-b79b-fa06-b8edcce530de@fb.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Wed, 25 Nov 2020 13:04:48 +0100
+Message-ID: <CACYkzJ51imU+_iNR3zG2pzqvVoewSE+NCTJo_V5ZGYJOej-B-g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] ima: Implement ima_inode_hash
+To:     Yonghong Song <yhs@fb.com>
+Cc:     James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+On Tue, Nov 24, 2020 at 6:35 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 11/24/20 7:12 AM, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > This is in preparation to add a helper for BPF LSM programs to use
+> > IMA hashes when attached to LSM hooks. There are LSM hooks like
+> > inode_unlink which do not have a struct file * argument and cannot
+> > use the existing ima_file_hash API.
+> >
+> > An inode based API is, therefore, useful in LSM based detections like an
+> > executable trying to delete itself which rely on the inode_unlink LSM
+> > hook.
+> >
+> > Moreover, the ima_file_hash function does nothing with the struct file
+> > pointer apart from calling file_inode on it and converting it to an
+> > inode.
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+>
+> There is no change for this patch compared to previous version,
+> so you can carry my Ack.
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-Please pull this small patch which allows the OP-TEE driver to work with
-ARMv7 based single CPU systems.
+I am guessing:
 
-Thanks,
-Jens
-
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
-
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
-
-are available in the Git repository at:
-
-  git://git.linaro.org/people/jens.wiklander/linux-tee.git tags/optee-valid-memory-type-for-v5.11
-
-for you to fetch changes up to 853735e404244f5496cdb6188c5ed9a0f9627ee6:
-
-  optee: add writeback to valid memory type (2020-11-25 12:51:52 +0100)
-
-----------------------------------------------------------------
-Add writeback to valid OP-TEE shared memory types
-
-Allows OP-TEE to work with ARMv7 based single CPU systems by allowing
-writeback cache policy for shared memory.
-
-----------------------------------------------------------------
-Rui Miguel Silva (1):
-      optee: add writeback to valid memory type
-
- drivers/tee/optee/call.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+*  We need an Ack from Mimi/James.
+* As regards to which tree, I guess bpf-next would be better since the
+BPF helper and the selftest depends on it
