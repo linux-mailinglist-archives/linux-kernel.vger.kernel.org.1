@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E8D2C3D94
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315462C3D96
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgKYKXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:23:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgKYKXy (ORCPT
+        id S1728548AbgKYKYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:24:54 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56250 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgKYKYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:23:54 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85950C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 02:23:54 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id p8so1351823wrx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 02:23:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WGazmhq5Tx69dQOoXVy9h+Fs5IXXZtarGPYtiEE9Syw=;
-        b=lfEzw+N1FxozwzbTEUGmen6YP2qoCUX8/9b/bYB5tJdBoIjYSzUEdYrF2KawX6Far9
-         kP/AtlnioiLErEo/Q2yx7eLlqgy79sleK2wRt5cU/Hg3SwyWSHtlVP63GFelXGU+iCdj
-         Lh7QQg6441U9Y7w7cY3zmXok6ZTfTiZQluURFgt2aA/GoghcXWnST6ihjGbyQLb4caIf
-         zZl3j6RoIX33OCFQPOCNXcPDsqzJelrqoiXTtU4ZIO3LZi/lqaT2a80vZ4Zvr0QE59gD
-         Goi7w/YEkur+l/IEaOuLqSlqIqmk1MvOHk9wRLuV7J/QmkfbxlllHls6X1tiluldwQZA
-         Hjbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WGazmhq5Tx69dQOoXVy9h+Fs5IXXZtarGPYtiEE9Syw=;
-        b=s9uBvodq+MmMfg1tmyM1LmlxrOqF0NroFHQvOR2oySszmKI5iPsaCpTkhdtMNOeS8u
-         euBdMdMedjkkKt+cojYP2wxOSzgWmZtEM03Hpg99OOB0tmonyy5OqTc3opBJA58KH9EQ
-         Zj/I1afi8AHrz2F3uVw+01X4Ia/KlAz99Av2xMdzmfbtUx8DF+gPa8+55iD756fo1OvE
-         phhGKTb3ktcDR6qLfcM47kbZVWMgQVkaUKL5QfHXTmtOMjOVjuQBVyKsI1lcvVkkR/Xm
-         Qh+RdeLDsyt73eC3V0mtkUmAJHUqTMB/a61prd6Zk3b4Tc/NP3ICL3wF7G+vp4/N3Pst
-         yuuQ==
-X-Gm-Message-State: AOAM53308mwlU9Y0rjzc7m9E5KHUPwbLi66tvrBHqhcfD82TOlkb6ear
-        /dlOHkOr0vbhYrtmZCigrhOBIJgSVfOERA==
-X-Google-Smtp-Source: ABdhPJxM6AbjijXTDARlS+lg8AmV+SNOu7ro3lS7m+BqhYbCkbyd3Gq3E/L56aaL5K0p8TFPr/+7jg==
-X-Received: by 2002:a5d:514a:: with SMTP id u10mr3275647wrt.312.1606299833110;
-        Wed, 25 Nov 2020 02:23:53 -0800 (PST)
-Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:6510:7bd4:3caf:94b1])
-        by smtp.gmail.com with ESMTPSA id f5sm4306327wmj.17.2020.11.25.02.23.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 02:23:52 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, zhouyanjie@wanyeetech.com,
-        paul@crapouillou.net, paul@boddie.org.uk, hns@goldelico.com,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] clocksource/drivers/ingenic: Fix section mismatch
-Date:   Wed, 25 Nov 2020 11:23:45 +0100
-Message-Id: <20201125102346.1816310-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <202011251435.7F0RQBXw-lkp@intel.com>
-References: <202011251435.7F0RQBXw-lkp@intel.com>
+        Wed, 25 Nov 2020 05:24:54 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 199431F44D98
+Subject: Re: [PATCH] arm64: dts: mt8183: Add pwm and backlight node
+To:     Hsin-Yi Wang <hsinyi@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20201124041253.4181273-1-hsinyi@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <8484ec3b-14aa-f0de-28d6-f360c491515b@collabora.com>
+Date:   Wed, 25 Nov 2020 11:24:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201124041253.4181273-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function ingenic_tcu_get_clock() is annotated for the __init
-section but it is actually called from the online cpu callback.
+Hi Hsin-Yi,
 
-That will lead to a crash if a CPU is hotplugged after boot time.
+Thank you for your patch.
 
-Remove the __init annotatation for the ingenic_tcu_get_clock()
-function.
+On 24/11/20 5:12, Hsin-Yi Wang wrote:
+> Add pwm to mt8183 and backlight to mt8183-kukui.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
 
-Fixes: f19d838d08fc (clocksource/drivers/ingenic: Add high resolution timer support for SMP/SMT)
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/clocksource/ingenic-timer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Picked the patch and checked that pwm for the backlight is working as expected
+on my Lenovo Ideapad Duet.
 
-diff --git a/drivers/clocksource/ingenic-timer.c b/drivers/clocksource/ingenic-timer.c
-index 58fd9189fab7..905fd6b163a8 100644
---- a/drivers/clocksource/ingenic-timer.c
-+++ b/drivers/clocksource/ingenic-timer.c
-@@ -127,7 +127,7 @@ static irqreturn_t ingenic_tcu_cevt_cb(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
--static struct clk * __init ingenic_tcu_get_clock(struct device_node *np, int id)
-+static struct clk *ingenic_tcu_get_clock(struct device_node *np, int id)
- {
- 	struct of_phandle_args args;
- 
--- 
-2.25.1
+Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
+>  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 28 +++++++++++++++++++
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 10 +++++++
+>  2 files changed, 38 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> index 85f7c33ba4461..bf2ad1294dd30 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> @@ -19,6 +19,17 @@ chosen {
+>  		stdout-path = "serial0:115200n8";
+>  	};
+>  
+> +	backlight_lcd0: backlight_lcd0 {
+> +		compatible = "pwm-backlight";
+> +		pwms = <&pwm0 0 500000>;
+> +		power-supply = <&bl_pp5000>;
+> +		enable-gpios = <&pio 176 0>;
+> +		brightness-levels = <0 1023>;
+> +		num-interpolated-steps = <1023>;
+> +		default-brightness-level = <576>;
+> +		status = "okay";
+> +	};
+> +
+>  	memory@40000000 {
+>  		device_type = "memory";
+>  		reg = <0 0x40000000 0 0x80000000>;
+> @@ -536,6 +547,17 @@ pins_clk {
+>  		};
+>  	};
+>  
+> +	pwm0_pin_default: pwm0_pin_default {
+> +		pins1 {
+> +			pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
+> +			output-high;
+> +			bias-pull-up;
+> +		};
+> +		pins2 {
+> +			pinmux = <PINMUX_GPIO43__FUNC_DISP_PWM>;
+> +		};
+> +	};
+> +
+>  	scp_pins: scp {
+>  		pins_scp_uart {
+>  			pinmux = <PINMUX_GPIO110__FUNC_TP_URXD1_AO>,
+> @@ -670,6 +692,12 @@ pins_wifi_wakeup {
+>  	};
+>  };
+>  
+> +&pwm0 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pwm0_pin_default>;
+> +};
+> +
+>  &scp {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index 08a914d3a6435..a974bad899365 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -479,6 +479,16 @@ spi0: spi@1100a000 {
+>  			status = "disabled";
+>  		};
+>  
+> +		pwm0: pwm@1100e000 {
+> +			compatible = "mediatek,mt8183-disp-pwm";
+> +			reg = <0 0x1100e000 0 0x1000>;
+> +			interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_LOW>;
+> +			#pwm-cells = <2>;
+> +			clocks = <&topckgen CLK_TOP_MUX_DISP_PWM>,
+> +					<&infracfg CLK_INFRA_DISP_PWM>;
+> +			clock-names = "main", "mm";
+> +		};
+> +
+>  		i2c3: i2c@1100f000 {
+>  			compatible = "mediatek,mt8183-i2c";
+>  			reg = <0 0x1100f000 0 0x1000>,
+> 
