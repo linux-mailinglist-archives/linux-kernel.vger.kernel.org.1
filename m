@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A8C2C3E6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF25A2C3E76
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgKYKtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:49:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727724AbgKYKtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:49:22 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6802C2075A;
-        Wed, 25 Nov 2020 10:49:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606301361;
-        bh=k8JMumggIN1LUGGzTQSyZv3AZbIMuj0rpxQJfz5sL8I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=v6vPS9fDI5hnTJ8ThHNAiwCD6PcSrZAAmxL3Jclalq593Krfgz9aISvSIn+UJKxU2
-         KR5yjs019NW8WgI8ke2w2sp2+dJ8fu/SOTyL9K036/PMaH2UdpztAgikPjvoWYDsd+
-         uLV7LUNmH768ZbUFhs3uTuiw0YGcY2BgUgIWEQtY=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1khsMR-00DVTd-18; Wed, 25 Nov 2020 10:49:19 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 25 Nov 2020 10:49:18 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Andrew Scull <ascull@google.com>,
-        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v2 06/24] kvm: arm64: Move hyp-init params to a per-CPU
- struct
-In-Reply-To: <20201125103946.2unmclsdfqpr3eyk@google.com>
-References: <20201116204318.63987-1-dbrazdil@google.com>
- <20201116204318.63987-7-dbrazdil@google.com> <87lfes5f54.wl-maz@kernel.org>
- <20201125103946.2unmclsdfqpr3eyk@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <643459b9146c5cdf91c3316bb1cb096e@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1729062AbgKYKvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:51:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728006AbgKYKvY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 05:51:24 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E88CC0613D4;
+        Wed, 25 Nov 2020 02:51:24 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id e8so1959792pfh.2;
+        Wed, 25 Nov 2020 02:51:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=U/iwZD03hXqRuahzCXPW08p4leGFA6uirf6+jymbgcQ=;
+        b=OmbF/JUdzm0+Ntw0wBAL+5B3szxFZbwVTg+ROKZoFzldL24Vhw0tfnFFcTe1Rc+BMN
+         y0tqHB1m6nkYQ0SDjnwDiKm3ksLCWmFBJcoqP7lZYE1Tgj0OlYetc1fus0tXSYOfXxVv
+         HPSTCF8iQq2vQZLaDoWIeFZUyK8Z/8Ee42Ae6t2WbUyX4BRAsppF8j/7Yv1Xh5h4lM0H
+         U4r1MivMnmu1CYmciKJ5nULllnQhBp+3vgN0QUhBDWWj5nT7WcFZ1XcXooa4ZB6mSI2n
+         cEKRqEq1fzHxfmXGGl0vPEeMs8zVLrJ5wiR5SerYllqZM03uMmTEas0x8M5IZofK38on
+         v24A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=U/iwZD03hXqRuahzCXPW08p4leGFA6uirf6+jymbgcQ=;
+        b=O4g10nRUb1pT0rV4lTBeT4Pc3tWAWmPLFDVm2xosFE4+GhmBn8IXKwLqcLPyfSKwda
+         rfyiDERTqZ7/JaMNpykVSJcTpEturW/RGOlR0SJdiH9vc7FjCm7bEaXJpg63kTR7pOM2
+         oGyIqA7Pum4lgTJCpLjgHs6duzjuw6U/xo8nkLSjYQertuYDF1PW3hZZs/Gpwm4K+gic
+         /38u71n/PoPJPtg7VMszdItO3sSnnQM7gAvf6V6RzU3zXG5P85o1zzmeRkHg8zw5nUQN
+         ckomj9EUePRKn0RzvtHx1cW53oLjh5KT10LP/iGnAOWoO2GAbjSMzDx0f/W4v6HWKfS3
+         J4tA==
+X-Gm-Message-State: AOAM532T9NAoECMWuSrAf2/l7aZFM9qOAQM5co3A/iGbIm+r35CGIBwu
+        KIantyzgR5xHq4iYz8rvdDc=
+X-Google-Smtp-Source: ABdhPJy98VvQwRIYC9G1ew0v3JZ8r1JC9RxnrL1Mr+34Go7K8DlC6YK5rutFExMnX7fHYy2FmUgk+g==
+X-Received: by 2002:a63:d1b:: with SMTP id c27mr2625241pgl.25.1606301483890;
+        Wed, 25 Nov 2020 02:51:23 -0800 (PST)
+Received: from localhost.localdomain ([2402:7500:48b:4d7:7339:ae2d:114e:3859])
+        by smtp.gmail.com with ESMTPSA id j10sm2049520pgc.85.2020.11.25.02.51.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 25 Nov 2020 02:51:23 -0800 (PST)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: [PATCH v8 0/6] leds: mt6360: Add LED driver for MT6360
+Date:   Wed, 25 Nov 2020 18:51:09 +0800
+Message-Id: <1606301475-7030-1-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-25 10:39, David Brazdil wrote:
-> On Mon, Nov 23, 2020 at 02:20:07PM +0000, Marc Zyngier wrote:
+This patch series add MT6360 LED support contains driver and binding document
 
-[...]
+Gene Chen (6)
+ leds: flash: Add flash registration with undefined CONFIG_LEDS_CLASS_FLASH
+ leds: flash: Fix multicolor registration no-ops by return 0
+ dt-bindings: leds: Add LED_COLOR_ID_MOONLIGHT definitions
+ dt-bindings: leds: common: Increase LED_COLOR_ID_* maximum size
+ dt-bindings: leds: Add bindings for MT6360 LED
+ leds: mt6360: Add LED driver for MT6360
 
->> > +
->> > +	/*
->> > +	 * Flush the init params from the data cache because the struct will
->> > +	 * be read while the MMU is off.
->> > +	 */
->> > +	__flush_dcache_area(params, sizeof(*params));
->> 
->> nit: please use kvm_flush_dcache_to_poc(), as it clearly indicates to
->> which point we are flushing.
-> 
-> Will change, but out of curiosity - how is it different? AFAICT, it is 
-> just
-> an alias with a single use in __clean_dcache_guest_page:
-> 
->   #define kvm_flush_dcache_to_poc(a,l)	__flush_dcache_area((a), (l))
+ Documentation/devicetree/bindings/leds/common.yaml      |    2 
+ Documentation/devicetree/bindings/leds/leds-mt6360.yaml |  164 +++
+ drivers/leds/Kconfig                                    |   13 
+ drivers/leds/Makefile                                   |    1 
+ drivers/leds/leds-mt6360.c                              |  811 ++++++++++++++++
+ include/dt-bindings/leds/common.h                       |    1 
+ include/linux/led-class-flash.h                         |   36 
+ include/linux/led-class-multicolor.h                    |    6 
+ 8 files changed, 1030 insertions(+), 4 deletions(-)
 
-It is indeed the exact same thing, but it says clearly in the name that 
-we
-are cleaning to the "Point Of Coherency", as opposed to any other 
-architectural level (Unification or Persistence).
+changelogs between v1 & v2
+ - add led driver with mfd
 
-It makes it clear that we are cleaning all the way to the point where it 
-can
-be accessed reliably with an uncacheable mapping, and not leaving the 
-data
-dangling at a shallower cache level.
+changelogs between v2 & v3
+ - independent add led driver
+ - add dt-binding document
+ - refactor macros definition for easy to debug
+ - parse device tree by fwnode
+ - use devm*ext to register led class device
 
-Thanks,
+changelogs between v3 & v4
+ - fix binding document description
+ - use GENMASK and add unit postfix to definition
+ - isink register led class device
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+changelogs between v4 & v5
+ - change rgb isink to multicolor control
+ - add binding reference to mfd yaml
+
+changelogs between v5 & v6
+ - Use DT to decide RGB LED is multicolor device or indicator device only
+
+changelogs between v6 & v7
+ - Add binding multicolor device sample code
+ - Add flash ops mutex lock
+ - Remove V4L2 init with indicator device
+
+changelogs between v7 & v8
+ - Add mutex for led fault get ops
+ - Fix flash and multicolor no-ops return 0
+ - Add LED_FUNCTION_MOONLIGHT
+
