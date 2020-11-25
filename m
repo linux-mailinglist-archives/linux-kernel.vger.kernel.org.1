@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694D12C3E6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A8C2C3E6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 11:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729275AbgKYKtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 05:49:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgKYKtp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 05:49:45 -0500
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7956AC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 02:49:45 -0800 (PST)
-Received: by mail-ua1-x943.google.com with SMTP id x13so590228uar.4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 02:49:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=31ORbJvpr4ykU4u2xXAVnohJ/y8a5FqNZaGbZYVVFHo=;
-        b=cwNz1/lnfHNnk2Fo93Sc5IhaKrZvyN+IsXV0V0jam8rUGqC6wnalsUp4uENdUG4KEp
-         OgL3+5wXy3GZ99Ea2sfjhXp5j/I6qQ8IOGWWgoosN0YWfF0IK1cR9wZlhCQ4Wl0LqTZT
-         7hYxA8aZKWPxbR6VTQ/wipC5ACTuL0nCRFEkPFFLn2+24hNU433PifLpC2Z8pHzB9YaN
-         8JlEMBsmJ1aXYHggL7omDsCOaVDpxhp54RulLN26s/dzYRQmVv4vStGgY6IFkS4Y4iwL
-         iH4OKYCxI8ZZfxK5Rk2Ju1PYy+/wrbMweydt7YzdvxDF6f+CW//wZiY2+eQ3tA1GF5kf
-         j+Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=31ORbJvpr4ykU4u2xXAVnohJ/y8a5FqNZaGbZYVVFHo=;
-        b=e8uQQydA07S06HrUUaJOiII1Yauwdpid2oyOhK75hEjAQMXKG7D+O7qqO0LNdsM61n
-         QhbGJZ7SW5lGNFINw9KNd7WmJ/vUaOCJtszs8yOL2TZ08wdwcya8WS3GamlH/+SXymhg
-         W/IVRrWszxvqUvNT0D/98O7J/s4WVv0wgTIq5jr+DiP1qazIdZvFI8qf3HI9PAFjol4+
-         DWfRwJlDoPlV8rEXhEc5N6C2M5WQqboO8Np56ctXyOK5LrzYAPlw8y0wfVjDIf6tBpUo
-         fHXA3R8FTM78PNbpMVCcSMH88vF/MjTxw+uz3SE3FdwEe12Iyxq9OGx7SYo3T46yHJWf
-         FKMg==
-X-Gm-Message-State: AOAM532CzeLk5CLI4rsG/6vYC4zPX6afEUV5TmbhLiwCcHnYVi+mWawm
-        oTzaLHywZn3aFBf7Mn12V484CuIXOLsAOpyLTvsWbg==
-X-Google-Smtp-Source: ABdhPJxvKc4ULy6q7CJ7mO41iSeOCkXef+sQYC+c14MlX208nmd4//r9zeeD0FYl9GhROlbWoFtq0cyCnzRDavk6H6U=
-X-Received: by 2002:ab0:5859:: with SMTP id p25mr2162180uac.100.1606301384756;
- Wed, 25 Nov 2020 02:49:44 -0800 (PST)
+        id S1727126AbgKYKtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 05:49:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727724AbgKYKtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 05:49:22 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6802C2075A;
+        Wed, 25 Nov 2020 10:49:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606301361;
+        bh=k8JMumggIN1LUGGzTQSyZv3AZbIMuj0rpxQJfz5sL8I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=v6vPS9fDI5hnTJ8ThHNAiwCD6PcSrZAAmxL3Jclalq593Krfgz9aISvSIn+UJKxU2
+         KR5yjs019NW8WgI8ke2w2sp2+dJ8fu/SOTyL9K036/PMaH2UdpztAgikPjvoWYDsd+
+         uLV7LUNmH768ZbUFhs3uTuiw0YGcY2BgUgIWEQtY=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1khsMR-00DVTd-18; Wed, 25 Nov 2020 10:49:19 +0000
 MIME-Version: 1.0
-References: <20201125100004.1288-1-benchuanggli@gmail.com> <CAPDyKFp_3Vpq6ZRm5Qm1Zningz9tDqQLS_E78a8ChYHVbofB9g@mail.gmail.com>
- <CACT4zj_rrV+MFXwsnXpLD=CNjApUKozMWJMnhS6z2q5d6-dY-g@mail.gmail.com>
-In-Reply-To: <CACT4zj_rrV+MFXwsnXpLD=CNjApUKozMWJMnhS6z2q5d6-dY-g@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 25 Nov 2020 11:49:08 +0100
-Message-ID: <CAPDyKFq=r8Fwt1j7S1F5fCsMjGp6mxfWWPjppA0CVjx17MVRVQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-pci-gli: Disable slow mode in HS400 mode for GL9763E
-To:     Ben Chuang <benchuanggli@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 25 Nov 2020 10:49:18 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 06/24] kvm: arm64: Move hyp-init params to a per-CPU
+ struct
+In-Reply-To: <20201125103946.2unmclsdfqpr3eyk@google.com>
+References: <20201116204318.63987-1-dbrazdil@google.com>
+ <20201116204318.63987-7-dbrazdil@google.com> <87lfes5f54.wl-maz@kernel.org>
+ <20201125103946.2unmclsdfqpr3eyk@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <643459b9146c5cdf91c3316bb1cb096e@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 at 11:43, Ben Chuang <benchuanggli@gmail.com> wrote:
->
-> Hi Ulf,
->
-> On Wed, Nov 25, 2020 at 6:04 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Wed, 25 Nov 2020 at 10:59, Ben Chuang <benchuanggli@gmail.com> wrote:
-> > >
-> > > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > >
-> > > The GL9763E uses 150Mhz (slow mode) by default in HS400 mode. In order
-> > > to make HS400 mode run at 200Mhz, the slow mode needs to be turned off.
-> > >
-> > > Fixes: 1ae1d2d6e555 ("mmc: sdhci-pci-gli: Add Genesys Logic GL9763E support")
-> >
-> > Why a fixes tag? This patch looks like an improvement and not a fix, right?
-> >
->
-> Since the specification defines that the HS400 mode must run at 200Mhz,
-> this patch fixes the HS400 mode to 200Mhz.
-
-The spec states that in HS400 mode the clock can be *up to 200MHz* -
-not that it must run at 200MHz. At least at those places I have looked
-at in the spec.
+On 2020-11-25 10:39, David Brazdil wrote:
+> On Mon, Nov 23, 2020 at 02:20:07PM +0000, Marc Zyngier wrote:
 
 [...]
 
-Kind regards
-Uffe
+>> > +
+>> > +	/*
+>> > +	 * Flush the init params from the data cache because the struct will
+>> > +	 * be read while the MMU is off.
+>> > +	 */
+>> > +	__flush_dcache_area(params, sizeof(*params));
+>> 
+>> nit: please use kvm_flush_dcache_to_poc(), as it clearly indicates to
+>> which point we are flushing.
+> 
+> Will change, but out of curiosity - how is it different? AFAICT, it is 
+> just
+> an alias with a single use in __clean_dcache_guest_page:
+> 
+>   #define kvm_flush_dcache_to_poc(a,l)	__flush_dcache_area((a), (l))
+
+It is indeed the exact same thing, but it says clearly in the name that 
+we
+are cleaning to the "Point Of Coherency", as opposed to any other 
+architectural level (Unification or Persistence).
+
+It makes it clear that we are cleaning all the way to the point where it 
+can
+be accessed reliably with an uncacheable mapping, and not leaving the 
+data
+dangling at a shallower cache level.
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
