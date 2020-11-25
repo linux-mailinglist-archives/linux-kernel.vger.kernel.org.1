@@ -2,166 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732582C4A43
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5952C4A46
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 22:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733025AbgKYVwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 16:52:22 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:45674 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730523AbgKYVwW (ORCPT
+        id S1733054AbgKYVwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 16:52:51 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:45304 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730523AbgKYVwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 16:52:22 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ki2hi-00FDMB-8u; Wed, 25 Nov 2020 14:51:58 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1ki2hh-009hO3-1p; Wed, 25 Nov 2020 14:51:57 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Geoff Levand <geoff@infradead.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <87r1on1v62.fsf@x220.int.ebiederm.org>
-        <20201120231441.29911-2-ebiederm@xmission.com>
-        <20201123175052.GA20279@redhat.com>
-        <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com>
-        <87im9vx08i.fsf@x220.int.ebiederm.org>
-        <87pn42r0n7.fsf@x220.int.ebiederm.org>
-        <CAHk-=wi-h8y5MK83DA6Vz2TDSQf4eEadddhWLTT_94bP996=Ug@mail.gmail.com>
-        <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com>
-        <ed83033f-80af-5be0-ecbe-f2bf5c2075e9@infradead.org>
-Date:   Wed, 25 Nov 2020 15:51:32 -0600
-In-Reply-To: <ed83033f-80af-5be0-ecbe-f2bf5c2075e9@infradead.org> (Geoff
-        Levand's message of "Tue, 24 Nov 2020 15:44:50 -0800")
-Message-ID: <87h7pdnlzv.fsf_-_@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 25 Nov 2020 16:52:51 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 4099758C481;
+        Thu, 26 Nov 2020 08:52:48 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1ki2iV-00F18A-J1; Thu, 26 Nov 2020 08:52:47 +1100
+Date:   Thu, 26 Nov 2020 08:52:47 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dave Chinner <dchinner@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.9 33/33] xfs: don't allow NOWAIT DIO across
+ extent boundaries
+Message-ID: <20201125215247.GD2842436@dread.disaster.area>
+References: <20201125153550.810101-1-sashal@kernel.org>
+ <20201125153550.810101-33-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1ki2hh-009hO3-1p;;;mid=<87h7pdnlzv.fsf_-_@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19XfRweRSAi6EyZ571wGpCRuKmbgK3HI3A=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_XMDrugObfuBody_08,XMSubLong,
-        XM_B_SpammyWords autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Geoff Levand <geoff@infradead.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 415 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 10 (2.4%), b_tie_ro: 9 (2.1%), parse: 0.93 (0.2%),
-         extract_message_metadata: 16 (3.9%), get_uri_detail_list: 2.4 (0.6%),
-        tests_pri_-1000: 14 (3.3%), tests_pri_-950: 1.24 (0.3%),
-        tests_pri_-900: 1.05 (0.3%), tests_pri_-90: 69 (16.7%), check_bayes:
-        68 (16.4%), b_tokenize: 8 (2.0%), b_tok_get_all: 9 (2.3%),
-        b_comp_prob: 3.3 (0.8%), b_tok_touch_all: 43 (10.4%), b_finish: 0.91
-        (0.2%), tests_pri_0: 288 (69.5%), check_dkim_signature: 0.56 (0.1%),
-        check_dkim_adsp: 2.2 (0.5%), poll_dns_idle: 0.75 (0.2%), tests_pri_10:
-        2.3 (0.6%), tests_pri_500: 9 (2.1%), rewrite_mail: 0.00 (0.0%)
-Subject: [RFC][PATCH] coredump: Document coredump code exclusively used by cell spufs
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125153550.810101-33-sashal@kernel.org>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=nNwsprhYR40A:10 a=20KFwNOVAAAA:8 a=yPCof4ZbAAAA:8
+        a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8 a=zLXZRxuV2e5zHgAcDCcA:9
+        a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 25, 2020 at 10:35:50AM -0500, Sasha Levin wrote:
+> From: Dave Chinner <dchinner@redhat.com>
+> 
+> [ Upstream commit 883a790a84401f6f55992887fd7263d808d4d05d ]
+> 
+> Jens has reported a situation where partial direct IOs can be issued
+> and completed yet still return -EAGAIN. We don't want this to report
+> a short IO as we want XFS to complete user DIO entirely or not at
+> all.
+> 
+> This partial IO situation can occur on a write IO that is split
+> across an allocated extent and a hole, and the second mapping is
+> returning EAGAIN because allocation would be required.
+> 
+> The trivial reproducer:
+> 
+> $ sudo xfs_io -fdt -c "pwrite 0 4k" -c "pwrite -V 1 -b 8k -N 0 8k" /mnt/scr/foo
+> wrote 4096/4096 bytes at offset 0
+> 4 KiB, 1 ops; 0.0001 sec (27.509 MiB/sec and 7042.2535 ops/sec)
+> pwrite: Resource temporarily unavailable
+> $
+> 
+> The pwritev2(0, 8kB, RWF_NOWAIT) call returns EAGAIN having done
+> the first 4kB write:
+> 
+>  xfs_file_direct_write: dev 259:1 ino 0x83 size 0x1000 offset 0x0 count 0x2000
+>  iomap_apply:          dev 259:1 ino 0x83 pos 0 length 8192 flags WRITE|DIRECT|NOWAIT (0x31) ops xfs_direct_write_iomap_ops caller iomap_dio_rw actor iomap_dio_actor
+>  xfs_ilock_nowait:     dev 259:1 ino 0x83 flags ILOCK_SHARED caller xfs_ilock_for_iomap
+>  xfs_iunlock:          dev 259:1 ino 0x83 flags ILOCK_SHARED caller xfs_direct_write_iomap_begin
+>  xfs_iomap_found:      dev 259:1 ino 0x83 size 0x1000 offset 0x0 count 8192 fork data startoff 0x0 startblock 24 blockcount 0x1
+>  iomap_apply_dstmap:   dev 259:1 ino 0x83 bdev 259:1 addr 102400 offset 0 length 4096 type MAPPED flags DIRTY
+> 
+> Here the first iomap loop has mapped the first 4kB of the file and
+> issued the IO, and we enter the second iomap_apply loop:
+> 
+>  iomap_apply: dev 259:1 ino 0x83 pos 4096 length 4096 flags WRITE|DIRECT|NOWAIT (0x31) ops xfs_direct_write_iomap_ops caller iomap_dio_rw actor iomap_dio_actor
+>  xfs_ilock_nowait:     dev 259:1 ino 0x83 flags ILOCK_SHARED caller xfs_ilock_for_iomap
+>  xfs_iunlock:          dev 259:1 ino 0x83 flags ILOCK_SHARED caller xfs_direct_write_iomap_begin
+> 
+> And we exit with -EAGAIN out because we hit the allocate case trying
+> to make the second 4kB block.
+> 
+> Then IO completes on the first 4kB and the original IO context
+> completes and unlocks the inode, returning -EAGAIN to userspace:
+> 
+>  xfs_end_io_direct_write: dev 259:1 ino 0x83 isize 0x1000 disize 0x1000 offset 0x0 count 4096
+>  xfs_iunlock:          dev 259:1 ino 0x83 flags IOLOCK_SHARED caller xfs_file_dio_aio_write
+> 
+> There are other vectors to the same problem when we re-enter the
+> mapping code if we have to make multiple mappinfs under NOWAIT
+> conditions. e.g. failing trylocks, COW extents being found,
+> allocation being required, and so on.
+> 
+> Avoid all these potential problems by only allowing IOMAP_NOWAIT IO
+> to go ahead if the mapping we retrieve for the IO spans an entire
+> allocated extent. This avoids the possibility of subsequent mappings
+> to complete the IO from triggering NOWAIT semantics by any means as
+> NOWAIT IO will now only enter the mapping code once per NOWAIT IO.
+> 
+> Reported-and-tested-by: Jens Axboe <axboe@kernel.dk>
+> Signed-off-by: Dave Chinner <dchinner@redhat.com>
+> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  fs/xfs/xfs_iomap.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
 
-Oleg Nesterov recently asked[1] why is there an unshare_files in
-do_coredump.  After digging through all of the callers of lookup_fd it
-turns out that it is
-arch/powerpc/platforms/cell/spufs/coredump.c:coredump_next_context
-that needs the unshare_files in do_coredump.
+No, please don't pick this up for stable kernels until at least 5.10
+is released. This still needs some time integration testing time to
+ensure that we haven't introduced any other performance regressions
+with this change.
 
-Looking at the history[2] this code was also the only piece of coredump code
-that required the unshare_files when the unshare_files was added.
+We've already had one XFS upstream kernel regression in this -rc
+cycle propagated to the stable kernels in 5.9.9 because the stable
+process picked up a bunch of random XFS fixes within hours of them
+being merged by Linus. One of those commits was a result of a
+thinko, and despite the fact we found it and reverted it within a
+few days, users of stable kernels have been exposed to it for a
+couple of weeks. That *should never have happened*. 
 
-Looking at that code it turns out that cell is also the only
-architecture that implements elf_coredump_extra_notes_size and
-elf_coredump_extra_notes_write.
+This has happened before, and *again* we were lucky this wasn't
+worse than it was. We were saved by the flaw being caught by own
+internal pre-write corruption verifiers (which exist because we
+don't trust our code to be bug-free, let alone the collections of
+random, poorly tested backports) so that it only resulted in
+corruption shutdowns rather than permanent on-disk damage and data
+loss.
 
-I looked at the gdb repo[3] support for cell has been removed[4] in binutils
-2.34.  Geoff Levand reports he is still getting questions on how to
-run modern kernels on the PS3, from people using 3rd party firmware so
-this code is not dead.  According to Wikipedia the last PS3 shipped in
-Japan sometime in 2017.  So it will probably be a little while before
-everyone's hardware dies.
+Put simply: the stable process is flawed because it shortcuts the
+necessary stabilisation testing for new code. It doesn't matter if
+the merged commits have a "fixes" tag in them, that tag doesn't mean
+the change is ready to be exposed to production systems. We need the
+*-rc stabilisation process* to weed out thinkos, brown paper bag
+bugs, etc, because we all make mistakes, and bugs in filesystem code
+can *lose user data permanently*.
 
-Add some comments briefly documenting the coredump code that exists
-only to support cell spufs to make it easier to understand the
-coredump code.  Eventually the hardware will be dead, or their won't
-be userspace tools, or the coredump code will be refactored and it
-will be too difficult to update a dead architecture and these comments
-make it easy to tell where to pull to remove cell spufs support.
+Hence I ask that the stable maintainers only do automated pulls of
+iomap and XFS changes from upstream kernels when Linus officially
+releases them rather than at random points in time in the -rc cycle.
+If there is a critical fix we need to go back to stable kernels
+immediately, we will let stable@kernel.org know directly that we
+want this done.
 
-[1] https://lkml.kernel.org/r/20201123175052.GA20279@redhat.com
-[2] 179e037fc137 ("do_coredump(): make sure that descriptor table isn't shared")
-[3] git://sourceware.org/git/binutils-gdb.git
-[4] abf516c6931a ("Remove Cell Broadband Engine debugging support").
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
----
+Cheers,
 
-Does this change look good to people?  I think it captures this state of
-things and makes things clearer without breaking anything or removing
-functionality for anyone.
-
- fs/binfmt_elf.c | 2 ++
- fs/coredump.c   | 1 +
- 2 files changed, 3 insertions(+)
-
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index b6b3d052ca86..c1996f0aeaed 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -2198,6 +2198,7 @@ static int elf_core_dump(struct coredump_params *cprm)
- 	{
- 		size_t sz = get_note_info_size(&info);
- 
-+		/* For cell spufs */
- 		sz += elf_coredump_extra_notes_size();
- 
- 		phdr4note = kmalloc(sizeof(*phdr4note), GFP_KERNEL);
-@@ -2261,6 +2262,7 @@ static int elf_core_dump(struct coredump_params *cprm)
- 	if (!write_note_info(&info, cprm))
- 		goto end_coredump;
- 
-+	/* For cell spufs */
- 	if (elf_coredump_extra_notes_write(cprm))
- 		goto end_coredump;
- 
-diff --git a/fs/coredump.c b/fs/coredump.c
-index abf807235262..3ff17eea812e 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -790,6 +790,7 @@ void do_coredump(const kernel_siginfo_t *siginfo)
- 	}
- 
- 	/* get us an unshared descriptor table; almost always a no-op */
-+	/* The cell spufs coredump code reads the file descriptor tables */
- 	retval = unshare_files();
- 	if (retval)
- 		goto close_fail;
+Dave.
 -- 
-2.25.0
-
-Eric
+Dave Chinner
+david@fromorbit.com
