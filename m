@@ -2,166 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36A82C475A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA9A2C475D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Nov 2020 19:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732948AbgKYSOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 13:14:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46872 "EHLO
+        id S1733020AbgKYSPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 13:15:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730643AbgKYSOy (ORCPT
+        with ESMTP id S1730621AbgKYSPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 13:14:54 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE93AC0613D4;
-        Wed, 25 Nov 2020 10:14:53 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id m13so3040895ioq.9;
-        Wed, 25 Nov 2020 10:14:53 -0800 (PST)
+        Wed, 25 Nov 2020 13:15:39 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E8DC0613D4;
+        Wed, 25 Nov 2020 10:15:38 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id l1so2815369wrb.9;
+        Wed, 25 Nov 2020 10:15:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NIpG45UWwddpGV+62KwVJM4R9vkmQaVM+kUHYytsuOk=;
-        b=kWV6G2yZXMm4VSHbnojYmPa+C5P3JnpUTHqE23CMhNkQBQWRzmmhqOLBUtQv2atXCT
-         gfx8m7eCmFJ7pVlsuccPiH6QWEPUd8AOsN93MuFELIyPMSRf5jsCMU0WOq//RI0OE3v8
-         Xcdy8XkXYHOwwkywVeuV38sTpPsttpVy3JvqUPqjjnzwH11K8V/hcwvS5Z9IHaMrKIUK
-         5aPycy8OBpj2x7nvopzyosAyOu5TyhaWlUYzEp+8JqfTnIOXSNZZFCbA0rFGLuslWfdY
-         0h9j9VHpYmDhGDt0sVob662k93U0Re/54lGaFjmxi8C+L9fpuTq3YUdx9b9EMjfmYlAP
-         xBkg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cxDV/cJpIfcx9YO7YSoPmjZvWF3a1aMv7vyPqRw+nys=;
+        b=Z1ITS4HEGGlN44kxO/mL0CCOmvDCCv4Vhdb3eLCCji8LCUdYLutVT5azV2xAhboLT3
+         /78QMKmJtgZk7NiPxo9MPnufc3Fztepx9rnU8kxVMu5REmrL5750IDNyXDpkubW+yDcw
+         xS1Fmo7qvONYFsoY8cTUdTs6PtBlOzAOMFUmGf86cULQweiLCRd2canys0jeLXsYCOE2
+         B8+QF1Rn2W0J52u5dUrE8bfCh4bssT886l5v0IrBQbhi94KYGr2hZ/J14TF9ZINCp5jB
+         nPV6wbepj5J4EzsnoQip8UAxRxNDUdQRTeOyLzRAhrooshahRLtwlX7tzy7bUMoR/7HD
+         dq3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NIpG45UWwddpGV+62KwVJM4R9vkmQaVM+kUHYytsuOk=;
-        b=eGNs1ZBLBayuVA4HFTYdwRRp2B6JX5sBFZu9gdbQXp7ZkUya3FzV3rNyLsIaXdh2fl
-         1hQVdNaU/cI4mn4GB6XdOTFgRjLyBuUNfVBU2Z3gWB7RYJm69S8+NnaWho44nF792gC0
-         m9/tuZkaVbKSINvAVLeZLKT1105l/4jdMX2EaRAHu2NQUWMkZiJUZ2p7NZJW7RN0SWjd
-         5g/5eUxANUESc3xvKVXaQDvpAGH66XBCSRsdWnA2DeB/mEBI//RsTVYavGsCHo9s6O58
-         TtbjsxqiahEdB+eL3UWU6sF1XuHw5r6SL2FNZgNfVIHPIzvePpZQ1RHKLz8pDGjqmEfC
-         N8uA==
-X-Gm-Message-State: AOAM531jHlFCHk4UC5pcbvGttDLYkCbgoo6zlgxUMds69xaYUmoWI5hh
-        vvs65c/j52dhKSxTH0IKtPfC/znq5UeUzz7EIkQ=
-X-Google-Smtp-Source: ABdhPJy4bdnOlLLsyDMAPulYW5mY6232Uy6n2lvrULm8bBlPIp8KqHJcFEF94nx0UycVv+ODFkxSMwE58yByCsD5otA=
-X-Received: by 2002:a5e:a815:: with SMTP id c21mr2793016ioa.141.1606328093153;
- Wed, 25 Nov 2020 10:14:53 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cxDV/cJpIfcx9YO7YSoPmjZvWF3a1aMv7vyPqRw+nys=;
+        b=Byb0GH254xwq8oVQdYAy8bFMl38t79fcvmwpxtn6X1xi23VIDsLnlbi7AfiBagK9Xg
+         LobE6hUvrJCGJD+WX5nOYWFKauRXZ8iAC+9D4lv5Ihj+ba6y/I+QXJTNOUJj0U59dHvN
+         gYaDZJzxHzr8iZRGfSiMhA4FMOyhMEPC9HdEpkOj41XCaUyeA0W6DVXU9/e11kBip0MT
+         qm7CGU6gJccojOCOXPHrGviFP3W9v1SFfc/giDMN+x7nImDoZD1rzCk94z8B0hI1FIlV
+         YRDgT9fLijRDhEXqtdvu6q2Q7GO1hI1njBzbGvV+8ClfATPNXXvXN3weIyFEccpyyr7P
+         aZzA==
+X-Gm-Message-State: AOAM5324u98k3LU+tC4s80qZ4PQxCbA5S1ZzFb+hKMZA6UsEiNOIpgK8
+        shUlyJLG8bYmpaYsb7mftRQ=
+X-Google-Smtp-Source: ABdhPJwH143DPR/m8Ye15E/IMHSzxYoFs35JplLGyBmM4CvNLf+S+vQZyZHTh8os+pO9uvboH1qnlw==
+X-Received: by 2002:adf:dc4b:: with SMTP id m11mr5416545wrj.328.1606328137508;
+        Wed, 25 Nov 2020 10:15:37 -0800 (PST)
+Received: from ?IPv6:2a01:110f:b59:fd00:a410:510b:ab5:5694? ([2a01:110f:b59:fd00:a410:510b:ab5:5694])
+        by smtp.gmail.com with ESMTPSA id c9sm5412252wrp.73.2020.11.25.10.15.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Nov 2020 10:15:36 -0800 (PST)
+Subject: Re: [PATCH v8 1/6] leds: flash: Add flash registration with undefined
+ CONFIG_LEDS_CLASS_FLASH
+To:     Gene Chen <gene.chen.richtek@gmail.com>, pavel@ucw.cz,
+        robh+dt@kernel.org, matthias.bgg@gmail.com
+Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+References: <1606301475-7030-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1606301475-7030-2-git-send-email-gene.chen.richtek@gmail.com>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <da86a941-2752-fd25-a74f-e22b3e82357e@gmail.com>
+Date:   Wed, 25 Nov 2020 19:15:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <30b491ad-a7e1-f7b5-26b8-2cfffc81a080@huawei.com> <CAAH8bW_p3LJPgOoJgUHt6O0run+LB2RbjnAVpeLn_KCAZKNR+A@mail.gmail.com>
-In-Reply-To: <CAAH8bW_p3LJPgOoJgUHt6O0run+LB2RbjnAVpeLn_KCAZKNR+A@mail.gmail.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Wed, 25 Nov 2020 10:14:42 -0800
-Message-ID: <CAAH8bW8Zo1U3oMu5Gggp-MyNNZ8_WieQn+GKYiML93O9sJB=Dg@mail.gmail.com>
-Subject: Re: [Question] About SECCOMP issue for ILP32
-To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     bobo.shaobowang@huawei.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Alexander Graf <agraf@suse.de>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Andreas Schwab <schwab@suse.de>,
-        Andrew Pinski <pinskia@gmail.com>,
-        Bamvor Zhangjian <bamv2005@gmail.com>,
-        Chris Metcalf <cmetcalf@mellanox.com>,
-        Christoph Muellner <christoph.muellner@theobroma-systems.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Florian Weimer <fweimer@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        James Hogan <james.hogan@imgtec.com>,
-        James Morse <james.morse@arm.com>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Lin Yongting <linyongting@huawei.com>,
-        Manuel Montezelo <manuel.montezelo@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Nathan_Lynch <Nathan_Lynch@mentor.com>,
-        Philipp Tomsich <philipp.tomsich@theobroma-systems.com>,
-        Prasun Kapoor <Prasun.Kapoor@caviumnetworks.com>,
-        Ramana Radhakrishnan <ramana.gcc@googlemail.com>,
-        Steve Ellcey <sellcey@caviumnetworks.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1606301475-7030-2-git-send-email-gene.chen.richtek@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 11:15 AM Yury Norov <yury.norov@gmail.com> wrote:
->
-> On Mon, Aug 31, 2020 at 5:48 AM Xiongfeng Wang
-> <wangxiongfeng2@huawei.com> wrote:
-> >
-> > Hi Yury,
-> >
->
-> Hi Xiongfeng,
->
-> [restore CC list]
->
-> Haven't seen this before. What kernel / glibc / ltp do you use?
->
-> > We were testing the ILP32 feature and came accross a problem. Very apperaciate
-> > it if you could give us some help !
-> >
-> > We compile the LTP testsuite with '-mabi=ilp32' and run it on a machine with
-> > kernel and glibc applied with ILP32 patches. But we failed on one testcase,
-> > prctl04. It print the following error info.
-> > 'prctl04.c:199: FAIL: SECCOMP_MODE_STRICT doesn't permit read(2) write(2) and
-> > _exit(2)'
-> >
-> > The testcase is like below, syscall 'prctl' followed by a syscall 'write'.
-> > prctl(PR_SET_SECCOMP, SECCOMP_MODE_STRICT);
-> > SAFE_WRITE(1, fd, "a", 1);
-> >
-> > When we execute syscall 'write', we receive a SIGKILL. It's not as expected.
-> > We track the kernel and found out it is because we failed the syscall_whitelist
-> > check in '__secure_computing_strict'. Because flag 'TIF_32BIT_AARCH64' is set,
-> > we falls into the 'in_compat_syscall()' branch. We compare the parameter
-> > 'this_syscall' with return value of 'get_compat_model_syscalls()'
-> > The syscall number of '__NR_write' for ilp32 application is 64, but it is 4 for
-> > 'model_syscalls_32' returned from 'get_compat_model_syscalls()'
-> > So '__secure_computing_strict' retuned with 'do_exit(SIGKILL)'. We have a
-> > modification like below, but I am not sure if it correct or not.
-> >
-> > --- a/kernel/seccomp.c
-> > +++ b/kernel/seccomp.c
-> > @@ -618,7 +618,7 @@ static void __secure_computing_strict(int this_syscall)
-> >  {
-> >         const int *syscall_whitelist = mode1_syscalls;
-> >  #ifdef CONFIG_COMPAT
-> > -       if (in_compat_syscall())
-> > +       if (is_a32_compat_task())
-> >                 syscall_whitelist = get_compat_mode1_syscalls();
->
-> It calls the arch function from generic code. It may break build for
-> other arches.
-> This also looks dangerous because it treats ILP32 execution as non-compat.
->
-> The right approach would be implementing arch-specific
-> get_compat_mode1_syscalls()
-> in arch/arm64/include/asm/seccomp.h that returns an appropriate table.
-> Refer MIPS
-> code for this: arch/mips/include/asm/seccomp.h
->
-> Thanks,
-> Yury
->
-> >  #endif
-> >         do {
-> >
-> >
-> > Thanks,
-> > Xiongfeng
-> >
+Hi Gene,
 
-The fix is on my repo; versions 5.2 and 4.19 are updated:
+On 11/25/20 11:51 AM, Gene Chen wrote:
+> From: Gene Chen <gene_chen@richtek.com>
+> 
+> Add flash registration with undefined CONFIG_LEDS_CLASS_FLASH
+> 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>   include/linux/led-class-flash.h | 36 ++++++++++++++++++++++++++++++++++++
+>   1 file changed, 36 insertions(+)
+> 
+> diff --git a/include/linux/led-class-flash.h b/include/linux/led-class-flash.h
+> index 21a3358..5f36eae 100644
+> --- a/include/linux/led-class-flash.h
+> +++ b/include/linux/led-class-flash.h
+> @@ -85,6 +85,7 @@ static inline struct led_classdev_flash *lcdev_to_flcdev(
+>   	return container_of(lcdev, struct led_classdev_flash, led_cdev);
+>   }
+>   
+> +#if IS_ENABLED(CONFIG_LEDS_CLASS_FLASH)
+>   /**
+>    * led_classdev_flash_register_ext - register a new object of LED class with
+>    *				     init data and with support for flash LEDs
+> @@ -127,6 +128,41 @@ static inline int devm_led_classdev_flash_register(struct device *parent,
+>   void devm_led_classdev_flash_unregister(struct device *parent,
+>   					struct led_classdev_flash *fled_cdev);
+>   
+> +#else
+> +
+> +static inline int led_classdev_flash_register_ext(struct device *parent,
+> +				    struct led_classdev_flash *fled_cdev,
+> +				    struct led_init_data *init_data)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline int led_classdev_flash_register(struct device *parent,
+> +					   struct led_classdev_flash *fled_cdev)
+> +{
+> +	return led_classdev_flash_register_ext(parent, fled_cdev, NULL);
+> +}
 
-https://github.com/norov/linux/commits/ilp32-4.19
-https://github.com/norov/linux/commits/ilp32-5.2
+This function can be placed after #ifdef block - now it is in two copies
+in this file.
+
+> +
+> +static inline void led_classdev_flash_unregister(struct led_classdev_flash *fled_cdev) {};
+> +static inline int devm_led_classdev_flash_register_ext(struct device *parent,
+> +				     struct led_classdev_flash *fled_cdev,
+> +				     struct led_init_data *init_data)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline int devm_led_classdev_flash_register(struct device *parent,
+> +				     struct led_classdev_flash *fled_cdev)
+> +{
+> +	return devm_led_classdev_flash_register_ext(parent, fled_cdev, NULL);
+> +}
+
+Ditto.
+
+> +static inline void devm_led_classdev_flash_unregister(struct device *parent,
+> +					struct led_classdev_flash *fled_cdev)
+> +{};
+> +
+> +#endif  /* IS_ENABLED(CONFIG_LEDS_CLASS_FLASH) */
+> +
+>   /**
+>    * led_set_flash_strobe - setup flash strobe
+>    * @fled_cdev: the flash LED to set strobe on
+> 
+
+-- 
+Best regards,
+Jacek Anaszewski
