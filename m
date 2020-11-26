@@ -2,119 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624962C53BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548B92C53C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389531AbgKZMN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 07:13:56 -0500
-Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:43377 "EHLO
-        outbound-smtp37.blacknight.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726062AbgKZMNz (ORCPT
+        id S2389540AbgKZMOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 07:14:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388797AbgKZMOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 07:13:55 -0500
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id 618E01C26
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 12:13:53 +0000 (GMT)
-Received: (qmail 9453 invoked from network); 26 Nov 2020 12:13:53 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 Nov 2020 12:13:52 -0000
-Date:   Thu, 26 Nov 2020 12:13:51 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        0day robot <lkp@intel.com>, Mel Gorman <mgorman@suse.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jiang Biao <benbjiang@gmail.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        Aubrey Li <aubrey.li@intel.com>, yu.c.chen@intel.com
-Subject: Re: [sched/fair] 8d86968ac3: netperf.Throughput_tps -29.5% regression
-Message-ID: <20201126121351.GJ3371@techsingularity.net>
-References: <20201125090923.GA3723@shao2-debian>
- <6fef3fc7-be18-92e5-c622-add6decb88c4@linux.intel.com>
+        Thu, 26 Nov 2020 07:14:16 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FE1C0613D4;
+        Thu, 26 Nov 2020 04:14:15 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id r3so1926390wrt.2;
+        Thu, 26 Nov 2020 04:14:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=leRIBFMdc/+95yE03Mwyi+p0MqR4836R4TmqRPoXHYk=;
+        b=NDmPqvPIeTqk4uF0nostxKHoa7F04XIhs/+Cu4cC9EteZAc1MXGkt3UtLA8Q7RZFi+
+         gNOR1aG4OP0zB9fkdoVJHx6WHlJJ+ttlcZwAOvR/GUIOSTSJr1yDA8alo7jGyaKrhtXa
+         r0q3u9TdXpxOgTIXAx75wgk40S6Y+TQ9bFO/yk0LX4K8e540Rl6vSM37boycnQFx3Mhm
+         DocPNEvWozVGKAo+gqIMUBapkf/gUItK80xjvbJnXhT2pCz1Ls+Q69opTTPk5ggIBIN3
+         hm5HLJa7QR4OwhODOQ9EwFy3vrir4PG1cvVAeJzXknov1rYb2EOtKAuKRFhhtaaqcreN
+         tJeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=leRIBFMdc/+95yE03Mwyi+p0MqR4836R4TmqRPoXHYk=;
+        b=pDUHxJ8Vl9q8sRXmOlO477nQX4GN2Ati69JoASgcC4NZaBOgNKewfn784crqMlZbbJ
+         a2P0WVzy5fNw+UBgHtkaVDn2mrsyVxpUlUO3hDhue7JCFXgm+uh6tdoeSaAMLsf/9zHq
+         CQRpPpjB6S7db22vAKv9JoPuwDE0agmx5QyCSHKjjA0aUrkRBW3avhbL1/zhoEbu7eKc
+         wFhQDakf7eJOQ2e9j5fOFhZ+D1hiHab3jWXFLzbwqo0a4Gf3pyFdaSt2glHdRtGzNUj2
+         TWGLbKLRX5/LHbtTKzKEs24lfE1uBy1QKBYeVSEji5Bu0lDLeKA+ndEE+uvf9u3zFMiM
+         I2ng==
+X-Gm-Message-State: AOAM531viSPOkkmH+kMM6S5R6/3k3DT/zIf7VeXqTLyy+mwnYvBBNVGJ
+        hujtrU15yKbhNXJ7MsgFX7c=
+X-Google-Smtp-Source: ABdhPJx9WI5ffS1A5nhB9sPFGNuoIdGNWY9lmRCtj1GCm0Tkx5Kmm8SNmYO/hwqHar88SB9h0XVj5w==
+X-Received: by 2002:a5d:4046:: with SMTP id w6mr3619887wrp.51.1606392853754;
+        Thu, 26 Nov 2020 04:14:13 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id k81sm10057458wma.2.2020.11.26.04.14.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Nov 2020 04:14:13 -0800 (PST)
+Subject: Re: set_thread_area.2: csky architecture undocumented
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     linux-man <linux-man@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+References: <014e670b-2a11-3deb-4e7e-bfe9defd8597@gmail.com>
+ <c669c780-f6e8-bd2a-e6ec-0a5960b7d7d8@gmail.com>
+From:   "Alejandro Colomar (mailing lists; readonly)" 
+        <alx.mailinglists@gmail.com>
+Message-ID: <57bc9bce-5c04-fd1f-13c9-3e900a74f1eb@gmail.com>
+Date:   Thu, 26 Nov 2020 13:14:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <6fef3fc7-be18-92e5-c622-add6decb88c4@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c669c780-f6e8-bd2a-e6ec-0a5960b7d7d8@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 02:57:07PM +0800, Li, Aubrey wrote:
-> Hi Robot,
-> 
-> On 2020/11/25 17:09, kernel test robot wrote:
-> > Greeting,
-> > 
-> > FYI, we noticed a -29.5% regression of netperf.Throughput_tps due to commit:
-> > 
-> > 
-> > commit: 8d86968ac36ea5bff487f70b5ffc252a87d44c51 ("[RFC PATCH v4] sched/fair: select idle cpu from idle cpumask for task wakeup")
-> > url: https://github.com/0day-ci/linux/commits/Aubrey-Li/sched-fair-select-idle-cpu-from-idle-cpumask-for-task-wakeup/20201118-115145
-> > base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 09162bc32c880a791c6c0668ce0745cf7958f576
-> 
-> I tried to replicate this on my side on a 192 threads(with SMT) machine as well and didn't see the regression.
-> 
-> nr_threads		v5.9.8		+patch
-> 96(50%)			1 (+/- 2.499%)	1.007672(+/- 3.0872%)
-> 
-> I also tested another 100% case and see similar improvement as what I saw on uperf benchmark
-> 
-> nr_threads		v5.9.8		+patch
-> 192(100%)		1 (+/- 45.32%)	1.864917(+/- 23.29%)
-> 
-> My base is v5.9.8 BTW.
-> 
-> > 	ip: ipv4
-> > 	runtime: 300s
-> > 	nr_threads: 50%
-> > 	cluster: cs-localhost
-> > 	test: UDP_RR
-> > 	cpufreq_governor: performance
-> > 	ucode: 0x5003003
-> > 
+HI Michael,
 
-Note that I suspect that regressions with this will be tricky to reproduce
-because it'll depend on the timing of when the idle mask gets updated. With
-this configuration there are 50% "threads" which likely gets translates
-into 1 client/server per thread or 100% of CPUs active but as it's a
-ping-pong workload, the pairs are rapidly idling for very short periods.
+On 11/24/20 10:51 AM, Michael Kerrisk (man-pages) wrote:
+> Hi Alex,
+> 
+> On 11/23/20 10:31 PM, Alejandro Colomar (man-pages) wrote:
+>> Hi Michael,
+>>
+>> SYNOPSIS
+>>        #include <linux/unistd.h>
+>>
+>>        #if defined __i386__ || defined __x86_64__
+>>        # include <asm/ldt.h>
+>>
+>>        int get_thread_area(struct user_desc *u_info);
+>>        int set_thread_area(struct user_desc *u_info);
+>>
+>>        #elif defined __m68k__
+>>
+>>        int get_thread_area(void);
+>>        int set_thread_area(unsigned long tp);
+>>
+>>        #elif defined __mips__
+>>
+>>        int set_thread_area(unsigned long addr);
+>>
+>>        #endif
+>>
+>>        Note: There are no glibc wrappers for these system  calls;  see
+>>        NOTES.
+>>
+>>
+>> $ grep -rn 'SYSCALL_DEFINE.*et_thread_area'
+>> arch/csky/kernel/syscall.c:6:
+>> SYSCALL_DEFINE1(set_thread_area, unsigned long, addr)
+>> arch/mips/kernel/syscall.c:86:
+>> SYSCALL_DEFINE1(set_thread_area, unsigned long, addr)
+>> arch/x86/kernel/tls.c:191:
+>> SYSCALL_DEFINE1(set_thread_area, struct user_desc __user *, u_info)
+>> arch/x86/kernel/tls.c:243:
+>> SYSCALL_DEFINE1(get_thread_area, struct user_desc __user *, u_info)
+>> arch/x86/um/tls_32.c:277:
+>> SYSCALL_DEFINE1(set_thread_area, struct user_desc __user *, user_desc)
+>> arch/x86/um/tls_32.c:325:
+>> SYSCALL_DEFINE1(get_thread_area, struct user_desc __user *, user_desc)
+>>
+>>
+>> See kernel commit 4859bfca11c7d63d55175bcd85a75d6cee4b7184
+>>
+>>
+>> I'd change
+>> -      #elif defined __mips__
+>> +      #elif defined(__mips__ || __csky__)
+>>
+>> and then change the rest of the text to add csky when appropriate.
+>> Am I correct?
+> 
+> AFAICT, you are correct. I think the reason that csky is missing is
+> that the architecture was added after this manual pages was added.
 
-If the idle mask is not getting cleared then select_idle_cpu() is
-probably returning immediately. select_idle_core() is almost certainly
-failing so that just leaves select_idle_smt() to find a potentially idle
-CPU. That's a limited search space so tasks may be getting stacked and
-missing CPUs that are idling for short periods.
+Yep, I guessed it was that :)
 
-On the flip side, I expect cases like hackbench to benefit because it
-can saturate a machine to such a degree that select_idle_cpu() is a waste
-of time.
+Thanks,
 
-That said, I haven't followed the different versions closely. I know v5
-got a lot of feedback so will take a closer look at v6. Fundamentally
-though I expect that using the idle mask will be a mixed bag. At low
-utilisation or over-saturation, it'll be a benefit. At the point where
-the machine is almost fully busy, some workloads will benefit (lightly
-communicating workloads that occasionally migrate) and others will not
-(ping-pong workloads looking for CPUs that are idle for very brief
-periods).
+Alex
 
-It's tricky enough that it might benefit from a sched_feat() check that
-is default true so it gets tested. For regressions that show up, it'll
-be easy enough to ask for the feature to be disabled to see if it fixes
-it. Over time, that might give an idea of exactly what sort of workloads
-benefit and what suffers.
-
-Note that the cost of select_idle_cpu() can also be reduced by enabling
-SIS_AVG_CPU so it would be interesting to know if the idle mask is superior
-or inferior to SIS_AVG_CPU for workloads that show regressions.
-
--- 
-Mel Gorman
-SUSE Labs
+> 
+> Thanks,
+> 
+> Michael
+> 
+> 
