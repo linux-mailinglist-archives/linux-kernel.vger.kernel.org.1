@@ -2,86 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3F52C525C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1CA2C526D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388447AbgKZKs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:48:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58680 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388281AbgKZKs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:48:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 48D03AC23;
-        Thu, 26 Nov 2020 10:48:56 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 240441E130F; Thu, 26 Nov 2020 11:48:56 +0100 (CET)
-Date:   Thu, 26 Nov 2020 11:48:56 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Jan Kara <jack@suse.cz>, Borislav Petkov <bp@alien8.de>,
-        =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, X86 ML <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
-Message-ID: <20201126104856.GB422@quack2.suse.cz>
-References: <20201101212738.GA16924@gmail.com>
- <20201102122638.GB23988@quack2.suse.cz>
- <20201103211747.GA3688@gmail.com>
- <20201123164622.GJ27294@quack2.suse.cz>
- <20201123224651.GA27809@gmail.com>
- <20201124084507.GA4009@zn.tnic>
- <20201124102033.GA19336@quack2.suse.cz>
- <CA+G9fYtKKmoYUJpPFLBtFVB6MRJwJTsVjtYtRcXmJxc5PbHAZA@mail.gmail.com>
+        id S2388114AbgKZKv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:51:29 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:45938 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726562AbgKZKv2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 05:51:28 -0500
+Received: by mail-ot1-f67.google.com with SMTP id k3so1486510otp.12;
+        Thu, 26 Nov 2020 02:51:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MKsnqNHLPjfzJEz+LOz9b4IyVMWHOQQVeFeqeTFluRM=;
+        b=t7UJ+DPZvpjdYgd0jmb1WyZyrlJ3Kcvg62FtGbwxoKhZk2Xy+ir7y43yS7Iq3vb8TE
+         7V3+E8sLKwiif4Yo58zw8xzEQedal+6sdjTrlNuHl8aHS7QoC4KZllUp7KdUC98PwCJs
+         e/E8dk0sG1BAuGqjTGB5YeYbk1mWYWWYx2yNTYPJBh6AC9leRJOAgnZFOXkfwCOlK1a6
+         4hMTPzi5VjGJjsRmz0/vwXHYFNNCAj3GCDBx4SaftCuvGVfjdGIgQfDwUA78fB11oob2
+         o0r/5Hiz+Gc2TpfFzQc3X9Nc14fcf73d0r3RDTEHRMbdXs5u36VMeM9/Cv3OWoF5f++s
+         peng==
+X-Gm-Message-State: AOAM532ameRQCD9k5VLWYIrVrFDfOv5DBGl4JYVknErbIFjGHInzhwXn
+        JSRPhfl+6IYTtm4NXgvv60haxjMmM01Zzx6y85s1J0PZYUo=
+X-Google-Smtp-Source: ABdhPJxjtblWrr1n26nJp4tQDVTYSnquxSVHhmkmB6z1QxpqadgNFEOGxbonsoJaFaUa3BMwTjR/nUCfuovN7HTCbWM=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr1831584otc.145.1606387886190;
+ Thu, 26 Nov 2020 02:51:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYtKKmoYUJpPFLBtFVB6MRJwJTsVjtYtRcXmJxc5PbHAZA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201125073303.19057-1-yuya.hamamachi.sx@renesas.com> <20201125073303.19057-2-yuya.hamamachi.sx@renesas.com>
+In-Reply-To: <20201125073303.19057-2-yuya.hamamachi.sx@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 26 Nov 2020 11:51:15 +0100
+Message-ID: <CAMuHMdVGMcEPOkofqBmwsHPGvLohYbXQ4KKvVzXd9ty1KR2K8w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: pci: rcar-pci-ep: Document r8a7795
+To:     Yuya Hamamachi <yuya.hamamachi.sx@renesas.com>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 26-11-20 01:01:30, Naresh Kamboju wrote:
-> On Tue, 24 Nov 2020 at 15:50, Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Tue 24-11-20 09:45:07, Borislav Petkov wrote:
-> > > On Mon, Nov 23, 2020 at 11:46:51PM +0100, Paweł Jasiak wrote:
-> > > > On 23/11/20, Jan Kara wrote:
-> > > > > OK, with a help of Boris Petkov I think I have a fix that looks correct
-> > > > > (attach). Can you please try whether it works for you? Thanks!
-> > > >
-> <trim>
-> >
-> > Thanks for checking! I didn't realize I needed to change the ifdefs as well
-> > (I missed that bit in 121b32a58a3a). So do I understand correctly that
-> > whenever the kernel is 64-bit, 64-bit syscall args (e.g. defined as u64) are
-> > passed just fine regardless of whether the userspace is 32-bit or not?
-> >
-> > Also how about other 32-bit archs? Because I now realized that
-> > CONFIG_COMPAT as well as the COMPAT_SYSCALL_DEFINE6() is also utilized by
-> > other 32-bit archs (I can see a reference to compat_sys_fanotify_mark e.g.
-> > in sparc, powerpc, and other args). So I probably need to actually keep
-> > that for other archs but do the modification only for x86, don't I?
-> >
-> > So something like attached patch?
-> 
-> I have tested the attached patch on i386 and qemu_i386 and the reported problem
-> got fixed.
-> 
-> Test links,
-> https://lkft.validation.linaro.org/scheduler/job/1985236#L1176
-> https://lkft.validation.linaro.org/scheduler/job/1985238#L801
+On Wed, Nov 25, 2020 at 8:45 AM Yuya Hamamachi
+<yuya.hamamachi.sx@renesas.com> wrote:
+> Document the support for R-Car PCIe EP on R8A7795 SoC device.
+>
+> Signed-off-by: Yuya Hamamachi <yuya.hamamachi.sx@renesas.com>
 
-Thanks for testing! I've added your tested-by tag.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-								Honza
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
