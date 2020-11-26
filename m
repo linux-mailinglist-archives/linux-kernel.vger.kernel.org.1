@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895032C56DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 050E82C56E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391061AbgKZOO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:14:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
+        id S2391072AbgKZOQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:16:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390266AbgKZOO4 (ORCPT
+        with ESMTP id S2390350AbgKZOQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:14:56 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717D5C0613D4;
-        Thu, 26 Nov 2020 06:14:56 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id j140so1003399vsd.4;
-        Thu, 26 Nov 2020 06:14:56 -0800 (PST)
+        Thu, 26 Nov 2020 09:16:06 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB53C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:16:06 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id s8so2288370wrw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:16:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VePxf7m/NgcAWkM2Kfm/Li7iK3Uu9oYrCoBb9NqSgu8=;
-        b=WpBod6oATDQlyduaK6nl+Sj2w+ol/6bsos8PTCiaR2xBkbOzeLps/ERf9CH299sy0d
-         +6YzsYw49zmbbgid6r7CjeFyIkK+HkphK+EOth7Ydx+dmL+cV7A8fyTJ2wxDfA8z4uBq
-         p86eTXOWnsuz1JUEES+d/LjnMGXT3UTgwNcAJuakFcvYGSXX+Fki8Z8EsYrSzKtXDY9I
-         bIBtNboYretnI2ulL9o2CRsOSeNejc3ykxBIums7GV+yKXZ1oNna3cMLAhA+JGyubjGd
-         aAiPjuckmyJq34gjY0MDOwj3JXX3Zd/feGHmVG46xARCikh3pD3lLG+TzYLswHNLcAtQ
-         IyNA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JVJYFI/qIjUZ3Hi9AztV74PIORKWvfJtU5CTcwVwdKc=;
+        b=TYk/4RpVJoVTqhuw7oP/HPv29AnhUOauwXQfwW9KAmBlmXL/z+Sv0AHWeiHg6PmpWn
+         hXwRS8OuLjZOSk5KI7zB+D/iQP3MXAIDV9kfz2mAKilN17pecwT4RLhTS7KSTfF0lbUQ
+         7UfOMUgJUiGxINLSR+4/903rpd2NTBe9oIMLwX2Gq0iF9kFkg0Rhomoz1/cb02DihvF/
+         TyiM5aBLe8qS8PToF2N2b+7PKkLCgaM2k6EcppFSDdDCdNjSXK6E3EQZgCyovrRHq2Xp
+         vgpAx6mUm0SzeUM//Fi79HMteNCYgc0d2upaqeyzv/KTRAzJVgPibCsz/7uCF16PUy65
+         PyyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VePxf7m/NgcAWkM2Kfm/Li7iK3Uu9oYrCoBb9NqSgu8=;
-        b=n13ouMgZ8ImisD5LEAgaON0bmmAaMY8qbyrlPm4U7ewk4r7gCXw9UKzdX5KPdBO3qK
-         X1p7O8qO1BiX13B63EA5KuoyIsf4BSyPVHqAt92MvH4lHdfuIKA+fqfxug4VrZhOI0Hv
-         4vcFSGkMnuicX23nhsMVxc3tCayMTcVctK3Elt20seRPTxaxvSlAnWRoPNlO6Yb89Mjt
-         sqx8hiFqyeq4JAlVxWgjsgXRrqBYe8tJdpZ1f1tWZX9NZO1/Tw4yUCbfLn64KJ5s4Cdn
-         NcNjZAwN/VFLMiVx8iR3U/SyNuBXRKz0SP0dv+hRlTk2Fs/Q8BOhci4Y21XH8tOYAnQN
-         9JKw==
-X-Gm-Message-State: AOAM531WxEQ2zdwQAc3nPmngnc1w2qolm1kKdsz2KMPBCwDu9VkjEdu0
-        KQLQYaGeyLsAR3ZRoAKJvtWKtRSpzmK4JE2YCk8=
-X-Google-Smtp-Source: ABdhPJwhWxBOqidwyQHM+jEIhbhAorzTPnNXyiCXyR5QyHNoiQxadi/kxX0TGqvREKUPc6Lr8WPoek2QDLKLniS20TU=
-X-Received: by 2002:a67:3115:: with SMTP id x21mr1921242vsx.12.1606400095332;
- Thu, 26 Nov 2020 06:14:55 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JVJYFI/qIjUZ3Hi9AztV74PIORKWvfJtU5CTcwVwdKc=;
+        b=pnSZ9EGCicHIOb9mOLvZF2FjiCyT3r1lezBSbirERHdyAf8PNYMZjjZyiM0on28t0g
+         B1e1UN4YB90XCCHR1GYGPHzIbCTV/KS1Z3o/BujJs7gH9xwIQnl91My7EEDqDAinVygL
+         JDpnD0GcOs7zkQoUJT140MX4Awq8qD5zRNYR2DrBw97PWj/vCoOZR5oIm2QoqgvFfpmn
+         vMSP75TM5t7u0ni9Yq5CpjNij7UmKieRByFz+w4sa+0ViqHpBp8JWCsQ6Xf9UKRo6HHE
+         saCf5r8mvRT8OESuD9QWXtFzoT9H/VYIv9RiJEWJ3Wwv7Cqu0qa+RBTTqYglkkV5ezlq
+         YhxA==
+X-Gm-Message-State: AOAM532ZK5LjSAsa3eO6LDtlh1JUOGMENp+BjF/fd01AuKu7euVNTaZ6
+        w7wrnEKOj6BoQabVDtAhruUjHQ==
+X-Google-Smtp-Source: ABdhPJyRT6DX4EfACs62HmCZ6SUs/HD49LkOIYjL7/qZ73YQ1Dl2aX3Sej/xfNYP/78CKkUhszgHxw==
+X-Received: by 2002:adf:f44c:: with SMTP id f12mr4207625wrp.155.1606400164752;
+        Thu, 26 Nov 2020 06:16:04 -0800 (PST)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:193b:ad82:52ad:936c])
+        by smtp.gmail.com with ESMTPSA id q16sm9286079wrn.13.2020.11.26.06.16.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 06:16:03 -0800 (PST)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     jbrunet@baylibre.com
+Cc:     linux-clk@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v2 0/2] clk: meson: g12a: add MIPI DSI Host Pixel Clock
+Date:   Thu, 26 Nov 2020 15:15:58 +0100
+Message-Id: <20201126141600.2084586-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201123191529.14908-1-TheSven73@gmail.com> <20201124161742.795f326d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201124161742.795f326d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Thu, 26 Nov 2020 09:14:44 -0500
-Message-ID: <CAGngYiWNeBbH3fnSPVs25pEUCtvuhKWANNv7ZhZNMzh5UHX+2g@mail.gmail.com>
-Subject: Re: [PATCH net-next v1 1/2] lan743x: clean up software_isr function
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 7:17 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Applied both, thank you!
+This serie adss the MIPI DSI Host Pixel Clock used to feed the DSI pixel
+clock to the DSI Host controller.
 
-Thank you Jakub !
+Unlike the AXG SoC, the DSI Pixel Clock has a supplementary mux, divider and gate
+stage before feeding the pixel clock to the MIPI DSI Host controller.
+
+Changes since v1 at [1]:
+- switch g12a_mipi_dsi_pxclk_sel flags to CLK_SET_RATE_NO_REPARENT
+- fix aligment of g12a_mipi_dsi_pxclk_div & g12a_mipi_dsi_pxclk parent_hws
+
+[1] https://lore.kernel.org/r/20201123163811.353444-1-narmstrong@baylibre.com
+
+Neil Armstrong (2):
+  dt-bindings: clk: g12a-clkc: add DSI Pixel clock bindings
+  clk: meson: g12a: add MIPI DSI Host Pixel Clock
+
+ drivers/clk/meson/g12a.c              | 74 +++++++++++++++++++++++++++
+ drivers/clk/meson/g12a.h              |  3 +-
+ include/dt-bindings/clock/g12a-clkc.h |  2 +
+ 3 files changed, 78 insertions(+), 1 deletion(-)
+
+-- 
+2.25.1
+
