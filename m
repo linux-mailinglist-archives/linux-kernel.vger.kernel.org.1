@@ -2,131 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759502C4F23
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEEB2C4F18
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388291AbgKZHHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 02:07:01 -0500
-Received: from mga11.intel.com ([192.55.52.93]:43220 "EHLO mga11.intel.com"
+        id S2388245AbgKZHEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 02:04:31 -0500
+Received: from mga01.intel.com ([192.55.52.88]:63683 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388248AbgKZHHA (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 02:07:00 -0500
-IronPort-SDR: g5ncQLcTw5tnJjMeXcL/w7VIrtUqVekWPXr/3grE17VHKu+fEzJ7PAXoTYHINJIJn28AbSrnnX
- i4uPQ7Yr9E7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="168738293"
+        id S2388093AbgKZHEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 02:04:31 -0500
+IronPort-SDR: nN6eqDoJWeGZwcBIDXny88nnWhXMb8x/71EnOyx2J1xIpq+861QCFgxbqlQfFEok47H8GmfNyI
+ Rs6peIVwCoYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="190398274"
 X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
-   d="scan'208";a="168738293"
+   d="scan'208";a="190398274"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 23:06:59 -0800
-IronPort-SDR: Q4k3HavhM5h6Zfp3d3mU1ySpbyz5o6zPpzZAh9h1Kf3r7xFREvu27e1o1wFzuWDrSwrRSJ9Ro7
- RxFCHSFXuO8w==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 23:04:30 -0800
+IronPort-SDR: yVSjYmtJ+eioJgW7PA/ayVVuOjAUDc4rKztwNTMKguZfpkMWZyS265pQ3UDhWQjQu/PIBnor6H
+ StHm6Sk0xspQ==
 X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
-   d="scan'208";a="479243562"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 23:06:55 -0800
-Subject: Re: [PATCH] perf script: Fix overrun issue for dynamically-allocated
- pmu type number
-To:     Adrian Hunter <adrian.hunter@intel.com>, acme@kernel.org,
-        jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20201126032425.19226-1-yao.jin@linux.intel.com>
- <e72c243b-a50f-510b-5e21-10c3a38176db@intel.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <8509ed3b-378f-5ee0-5a3e-bbd8cb9d86c4@linux.intel.com>
-Date:   Thu, 26 Nov 2020 15:06:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+   d="scan'208";a="479242797"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 23:04:27 -0800
+Date:   Thu, 26 Nov 2020 15:07:13 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Sasha Neftin <sasha.neftin@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Subject: Re: [PATCH] e1000e: Assign DPM_FLAG_SMART_SUSPEND and
+ DPM_FLAG_MAY_SKIP_RESUME to speed up s2ram
+Message-ID: <20201126070712.GA8072@chenyu-office.sh.intel.com>
+References: <20201124153221.11265-1-yu.c.chen@intel.com>
+ <8BA4D1E1-DACF-4E84-A5B8-75A7CEA65F98@canonical.com>
+ <20201125103612.GA17700@chenyu-office.sh.intel.com>
+ <B66CCBD9-5828-4514-AD08-C6FDF026646D@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <e72c243b-a50f-510b-5e21-10c3a38176db@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <B66CCBD9-5828-4514-AD08-C6FDF026646D@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
-
-On 11/26/2020 2:51 PM, Adrian Hunter wrote:
-> On 26/11/20 5:24 am, Jin Yao wrote:
->> When unpacking the event which is from dynamic pmu, the array
->> output[OUTPUT_TYPE_MAX] may be overrun. For example, type number of
->> SKL uncore_imc is 10, but OUTPUT_TYPE_MAX is 7 now (OUTPUT_TYPE_MAX =
->> PERF_TYPE_MAX + 1).
->>
->> /* In builtin-script.c */
->> process_event()
->> {
->> 	unsigned int type = output_type(attr->type);
->>
->> 	if (output[type].fields == 0)
->> 		return;
->> }
->>
->> output[10] is overrun.
->>
->> Create a type OUTPUT_TYPE_OTHER for dynamic pmu events, then
->> output_type(attr->type) will return OUTPUT_TYPE_OTHER here.
->>
->> Note that if PERF_TYPE_MAX ever changed, then there would be a conflict
->> between old perf.data files that had a dynamicaliy allocated PMU number
->> that would then be the same as a fixed PERF_TYPE.
->>
->> Example:
->>
->> perf record --switch-events -C 0 -e "{cpu-clock,uncore_imc/data_reads/,uncore_imc/data_writes/}:SD" -a -- sleep 1
->> perf script
->>
->> Before:
->>           swapper     0 [000] 1479253.987551:     277766               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.987797:     246709               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.988127:     329883               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.988273:     146393               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.988523:     249977               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.988877:     354090               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.989023:     145940               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.989383:     359856               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.989523:     140082               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>
->> After:
->>           swapper     0 [000] 1397040.402011:     272384               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1397040.402011:       5396  uncore_imc/data_reads/:
->>           swapper     0 [000] 1397040.402011:        967 uncore_imc/data_writes/:
->>           swapper     0 [000] 1397040.402259:     249153               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1397040.402259:       7231  uncore_imc/data_reads/:
->>           swapper     0 [000] 1397040.402259:       1297 uncore_imc/data_writes/:
->>           swapper     0 [000] 1397040.402508:     249108               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1397040.402508:       5333  uncore_imc/data_reads/:
->>           swapper     0 [000] 1397040.402508:       1008 uncore_imc/data_writes/:
->>
->> Fixes: 1405720d4f26 ("perf script: Add 'synth' event type for synthesized events")
+On Thu, Nov 26, 2020 at 02:36:42PM +0800, Kai-Heng Feng wrote:
 > 
-> It does not look to me like the problem was introduced by that commit.  Are
-> you sure this Fixes tag is correct?
 > 
+> > On Nov 25, 2020, at 18:36, Chen Yu <yu.c.chen@intel.com> wrote:
+> > 
+> > Hi Kai-Heng,
+> > On Wed, Nov 25, 2020 at 01:17:28AM +0800, Kai-Heng Feng wrote:
+> >> Hi Yu,
+> >> 
+> >>> On Nov 24, 2020, at 23:32, Chen Yu <yu.c.chen@intel.com> wrote:
+> >>> 
+> >>> The NIC is put in runtime suspend status when there is no wire connected.
+> >>> As a result, it is safe to keep this NIC in runtime suspended during s2ram
+> >>> because the system does not rely on the NIC plug event nor WOL to wake up
+> >>> the system. Unlike the s2idle, s2ram does not need to manipulate S0ix settings
+> >>> during suspend.
+> >> 
+> >> Please see below for the reason why I explicitly disable direct-complete in the driver.
+> >> 
+> > Okay.
+> >>> 
+> >>> This patch assigns DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME
+> >>> to the e1000e driver so that the s2ram could skip the .suspend_late(),
+> >>> .suspend_noirq() and .resume_noirq() .resume_early() when possible.
+> >>> Also skip .suspend() and .resume() if dev_pm_skip_suspend() and
+> >>> dev_pm_skip_resume() return true, so as to speed up the s2ram.
+> >> 
+> >> If we really want direct-complete here, maybe always set current WoL setting in runtime suspend routine?
+> >> 
+> > Indeed, that would be a choice.
+> >>> 
+> >>> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> >>> ---
+> >>> drivers/base/power/main.c                  |  2 ++
+> >>> drivers/net/ethernet/intel/e1000e/netdev.c | 14 +++++++++++++-
+> >>> 2 files changed, 15 insertions(+), 1 deletion(-)
+> >>> 
+> >>> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> >>> index c7ac49042cee..9cd8abba8612 100644
+> >>> --- a/drivers/base/power/main.c
+> >>> +++ b/drivers/base/power/main.c
+> >>> @@ -580,6 +580,7 @@ bool dev_pm_skip_resume(struct device *dev)
+> >>> 
+> >>> 	return !dev->power.must_resume;
+> >>> }
+> >>> +EXPORT_SYMBOL_GPL(dev_pm_skip_resume);
+> >> 
+> >> I don't think it's a good idea to use this predicate out side of PM core, must_resume may change during suspend process.
+> >> 
+> > The dev_pm_skip_resume() is used during system resume, not during suspend, so
+> > there would be no race condition I suppose?
+> 
+> I think it's better to let PM core to decide.
+>
+Humm, drivers/acpi/acpi_lpss.c alread used it in acpi_lpss_resume_early(), so e1000e is not the only
+one that wants to leverage this interface : )
+> >>> 
+> >>> /**
+> >>> * device_resume_noirq - Execute a "noirq resume" callback for given device.
+> >>> @@ -2010,3 +2011,4 @@ bool dev_pm_skip_suspend(struct device *dev)
+> >>> 	return dev_pm_test_driver_flags(dev, DPM_FLAG_SMART_SUSPEND) &&
+> >>> 		pm_runtime_status_suspended(dev);
+> >>> }
+> >>> +EXPORT_SYMBOL_GPL(dev_pm_skip_suspend);
+> >>> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> >>> index b30f00891c03..d79fddabc553 100644
+> >>> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> >>> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> >>> @@ -6965,6 +6965,14 @@ static __maybe_unused int e1000e_pm_suspend(struct device *dev)
+> >>> 	struct e1000_hw *hw = &adapter->hw;
+> >>> 	int rc;
+> >>> 
+> >>> +	/* Runtime suspended means that there is no wired connection
+> >>> +	 * and it has nothing to do with WOL that, we don't need to
+> >>> +	 * adjust the WOL settings. So it is safe to put NIC in
+> >>> +	 * runtime suspend while doing system suspend.
+> >>> +	 */
+> >> 
+> >> What about plugging ethernet cable and using WoL after system is suspended?
+> >> Commit "e1000e: Exclude device from suspend direct complete optimization" was to address that scenario.
+> >> 
+> > Yes, this is what I concerned previously. So in order to support this case,
+> > let's adjust this by checking
+> > 	if (device_may_wakeup() && dev_pm_skip_suspend())
+> > 
+> > so that if the user has disabled WOL via sysfs then we do not fall
+> > into this optimization
+> > commit 6bf6be1127f7 ("e1000e: Do not wake up the system via WOL if
+> > device wakeup is disabled")
+> 
+> I don't think this is right.
+> Isn't E1000_WUFC_LNKC already set for runtime suspend?
+> What if WoL doesn't have it set?
+>
+I did not quite get what your meaning is.
+First, it was a typo, please check v2 patch set, it is:
+	if (dev_pm_skip_suspend() && !device_may_wakeup(dev))
+if the NIC is runtime suspended, it means that, device_may_wakeup() return
+true, the code will continue to execute. In summary, if the NIC is a wake up
+device, we don't fall into the optimization.
 
-Commit 1405720d4f26 added the change:
+> >>> +	if (dev_pm_skip_suspend(dev))
+> >>> +		return 0;
+> >>> +
+> >>> 	e1000e_flush_lpic(pdev);
+> >>> 
+> >>> 	e1000e_pm_freeze(dev);
+> >>> @@ -6989,6 +6997,9 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
+> >>> 	struct e1000_hw *hw = &adapter->hw;
+> >>> 	int rc;
+> >>> 
+> >>> +	if (dev_pm_skip_resume(dev))
+> >>> +		return 0;
+> >>> +
+> >>> 	/* Introduce S0ix implementation */
+> >>> 	if (hw->mac.type >= e1000_pch_cnp &&
+> >>> 	    !e1000e_check_me(hw->adapter->pdev->device))
+> >>> @@ -7665,7 +7676,8 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >>> 
+> >>> 	e1000_print_device_info(adapter);
+> >>> 
+> >>> -	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+> >>> +	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE |
+> >>> +				DPM_FLAG_SMART_SUSPEND | DPM_FLAG_MAY_SKIP_RESUME);
+> >>> 
+> >>> 	if (pci_dev_run_wake(pdev) && hw->mac.type < e1000_pch_cnp)
+> >>> 		pm_runtime_put_noidle(&pdev->dev);
+> >> 
+> >> Also, most e1000e device on modern platforms doesn't runtime suspend at all after commit "e1000e: Disable runtime PM on CNP+".
+> >> 
+> > Yes, I did some hack on this to make runtime suspend work.
+> > As we do have more newer NICs to come, how about removing the
+> > restriction of runtime suspend and let the user determine whether
+> > to enable the runtime suspend via echo 'on' or 'auto' via
+> > sysfs's control.
+> 
+> There's a discussion on enable runtime PM by default for all PCI devices.
+> So removing this workaround will expose the bug for users.
+>
+> Let me get the system with the bug (Latitude 5500) and see if latest ACPI code can fix the GPE bug.
+>
+There is sysfs for user to disable runtime suspend. If there is an issue on that platform and
+if we don't want to break the user space(because the blacklist is already there), I think we
+should only disable the runtime suspend on that platform, but not blocking other platforms IMO.
 
-@@ -1215,8 +1253,9 @@ static void process_event(struct perf_script *script,
-  {
-         struct thread *thread = al->thread;
-         struct perf_event_attr *attr = &evsel->attr;
-+       unsigned int type = output_type(attr->type);
-
--       if (output[attr->type].fields == 0)
-+       if (output[type].fields == 0)
-                 return;
-
-But of course, we can also say the original "output[attr->type].fields" introduced the issue, I'm 
-not sure. Maybe Arnaldo can help to make the decision. :)
-
-Thanks
-Jin Yao
-
-
-
-
+thanks,
+Chenyu
+> Kai-Hengs
+> 
+> > 
+> > thanks,
+> > Chenyu
+> >> Kai-Heng
+> >> 
+> >>> -- 
+> >>> 2.25.1
+> 
