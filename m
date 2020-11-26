@@ -2,248 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FB72C5E52
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C70102C5E57
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388084AbgKZXvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 18:51:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgKZXvC (ORCPT
+        id S2392037AbgKZXx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 18:53:26 -0500
+Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:47324 "EHLO
+        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392000AbgKZXxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 18:51:02 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048A2C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 15:51:01 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id k4so3964641edl.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 15:51:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V5KYSx6aCS9NMZ6LBkhsZnID6zJfBDD/ql119aALBaU=;
-        b=BvFjIsHVznSKm0SCyX7mIYruIwzynFNq6nNjPldATYnR/9Kn4OLnH1J6oZe8DndYR8
-         qaZNte+m8uCJZSY0nFOFdcshKL6nsXVP71dxpFJKptdOGZ6saM+ujUu9dRLLJdmhclUL
-         mMAIYoZXdVTod+NpaYIQd0N82DsifDhARArDWSSxexpzD4K0UO6xINti8XffHGlJMagI
-         Di7/DyNAj0WIS5A+kqL1QExtFA4lhuYlGdouuIDmcTbhSQO9iE2xlvDJnt5qWOt9X9YA
-         JAp0VeyqBvB+SP2QGYuZhyfXztlAIzkhA/AonRyq86JTdvL/unX2h0Z3ff3cvDBGXFZ6
-         09kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V5KYSx6aCS9NMZ6LBkhsZnID6zJfBDD/ql119aALBaU=;
-        b=hPpXbi/wkoZN1mJfhRv7M9QRi4IwnDlY88wsn9yz+7d28Vez6sBWujwF7L7LO1c3/u
-         yltCX13yJvILvMaTA+bq5iL9Xl2VHGUuBFv7FY/CfCF5EbHGPKyVtOPhhh/MCBsDsjpm
-         /QRIOUJpLvZC/ly9ATdC4g6xoPIrV//l/SZSQyI7hWFvyO+kaAwM/leIvvL7hwojvSFA
-         3baCH/1L8HaGmhsaE52xJPUX+HxW7v0WWd/YoaaWcx/F/xfBsbIHi/so3ul/hXlYqsm5
-         M5BFUs6YZWvvxPOy1tw+UAZgLtKoOBJbn/ps9Q/6I6cjpBh1riuTo3zLJCkCjj+5A6Xt
-         6pFg==
-X-Gm-Message-State: AOAM532DP6QEdupJ3+Y51r9pEfDrTQLguAuDxCDE2suLQ+tFkhQamunI
-        jDLDpGoEc+tyFND8n4SoF33j5mMUg4dznsKX
-X-Google-Smtp-Source: ABdhPJwQHLhhw/lbWnHZhXTchXr4mWbGlEEXdb85zO5MBxYo1OPRGUb20Zv9zTqCeaUqb2a7HH6svA==
-X-Received: by 2002:a50:d784:: with SMTP id w4mr4718044edi.201.1606434660535;
-        Thu, 26 Nov 2020 15:51:00 -0800 (PST)
-Received: from [192.168.0.3] (hst-221-3.medicom.bg. [84.238.221.3])
-        by smtp.googlemail.com with ESMTPSA id 91sm1638444edy.45.2020.11.26.15.50.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 15:50:59 -0800 (PST)
-Subject: Re: [PATCH 1/3] venus: venc: Init the session only once in
- queue_setup
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Mansur Alisha Shaik <mansur@codeaurora.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-References: <20201120001037.10032-1-stanimir.varbanov@linaro.org>
- <20201120001037.10032-2-stanimir.varbanov@linaro.org>
- <CAPBb6MUU2tKUarrdPennSQ0NVnOUp+jwS3DN3Qye-wiq-aT5_Q@mail.gmail.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <dbd68079-6736-28bf-b9ab-dda51a07aa71@linaro.org>
-Date:   Fri, 27 Nov 2020 01:50:58 +0200
+        Thu, 26 Nov 2020 18:53:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1606434804;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=SLCqDVANdN37IdpKE2EPB96P4WCdxVYJYzL//A+bO6c=;
+  b=JULIwyseuDdN1N7n1ihKQvxYxut2FPTeh+Q1sSJkqWHbIHtEEM3MrY8k
+   gkM9KZrGOMJIU/vNuRSY+GDY6b5eNJA3ICGyx/x5HifySlLCfyhhHP33C
+   elgQ/IwTxE/LNI1RXQBRA66pxMAnvthmwpq5ug3tdSZSrUD7TiqV9ISVd
+   U=;
+Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: Iw9tRvlxv26rSHbSTrCrHFZS+53Gad/KgOYmH6NGCIbJMA7M0HPQwfWvtiMAKBoPTFUnKNx0I1
+ 6GPp/2JQqwyFG8wVDwPA3oMDdYu8NwhpvNCwxIi2JIb5Jh7DyqFzcWJQi6WiS/3wiV2Cucpvc0
+ BxGlm4EB8pPXM38rkYs6aguJXiiD0mrU5VkksDBbnxGq6ffkqLMkKKlT607ItHWicJVgjpd2Aj
+ OXRxM40hBg0e3LeqhKKljQnGdRccjKrJumEijdww8rr/PswB82S5P8GaehwYdGqwuyjpnwcXnw
+ VH4=
+X-SBRS: None
+X-MesageID: 32241856
+X-Ironport-Server: esa6.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.78,373,1599537600"; 
+   d="scan'208";a="32241856"
+Subject: Re: [PATCH] x86/cpu: correct values for GDT_ENTRY_INIT
+To:     Andy Lutomirski <luto@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, Akinobu Mita <akinobu.mita@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201126115459.28980-1-lukas.bulwahn@gmail.com>
+ <947b02eb-536f-16a0-fbb1-87b62ab8c13e@citrix.com>
+ <CAKXUXMybmC=JE3uDnekAuHfRUZcrzSLJ04xB3nR=3BqHCsNVqA@mail.gmail.com>
+ <CALCETrUyoaJyJ8mGpq9bdanKKfHgjg_1B=N0rtmuHCmCP9Q9=g@mail.gmail.com>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <3d9f41b1-9687-4aae-ad7d-2e38a33132ba@citrix.com>
+Date:   Thu, 26 Nov 2020 23:52:08 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAPBb6MUU2tKUarrdPennSQ0NVnOUp+jwS3DN3Qye-wiq-aT5_Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CALCETrUyoaJyJ8mGpq9bdanKKfHgjg_1B=N0rtmuHCmCP9Q9=g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
+ FTLPEX02CL04.citrite.net (10.13.108.177)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 26/11/2020 19:15, Andy Lutomirski wrote:
+> On Thu, Nov 26, 2020 at 11:07 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>> On Thu, Nov 26, 2020 at 6:16 PM Andrew Cooper <andrew.cooper3@citrix.com> wrote:
+>>> On 26/11/2020 11:54, Lukas Bulwahn wrote:
+>>>> Commit 1e5de18278e6 ("x86: Introduce GDT_ENTRY_INIT()") unintentionally
+>>>> transformed a few 0xffff values to 0xfffff (note: five times "f" instead of
+>>>> four) as part of the refactoring.
+>>> The transformation in that change is correct.
+>>>
+>>> Segment bases are 20 bits wide in x86,
 
+I of course meant segment limits here, rather than bases.
 
-On 11/25/20 5:13 AM, Alexandre Courbot wrote:
-> Hi Stan,
-> 
-> On Fri, Nov 20, 2020 at 9:12 AM Stanimir Varbanov
-> <stanimir.varbanov@linaro.org> wrote:
->>
->> Init the hfi session only once in queue_setup and also cover that
->> with inst->lock.
->>
->> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->> ---
->>  drivers/media/platform/qcom/venus/venc.c | 98 ++++++++++++++++++------
->>  1 file changed, 73 insertions(+), 25 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
->> index 4ecf78e30b59..3a2e449663d8 100644
->> --- a/drivers/media/platform/qcom/venus/venc.c
->> +++ b/drivers/media/platform/qcom/venus/venc.c
->> @@ -725,8 +725,10 @@ static int venc_init_session(struct venus_inst *inst)
->>         int ret;
->>
->>         ret = hfi_session_init(inst, inst->fmt_cap->pixfmt);
->> -       if (ret)
->> -               return ret;
->> +       if (ret == -EINVAL)
->> +               return 0;
-> 
-> Why is it safe to ignore EINVAL here?
+>>> Does:
+>>>
+>>> diff --git a/arch/x86/include/asm/desc_defs.h
+>>> b/arch/x86/include/asm/desc_defs.h
+>>> index f7e7099af595..9561f3c66e9e 100644
+>>> --- a/arch/x86/include/asm/desc_defs.h
+>>> +++ b/arch/x86/include/asm/desc_defs.h
+>>> @@ -22,7 +22,7 @@ struct desc_struct {
+>>>
+>>>  #define GDT_ENTRY_INIT(flags, base, limit)                     \
+>>>         {                                                       \
+>>> -               .limit0         = (u16) (limit),                \
+>>> +               .limit0         = (u16) (limit) & 0xFFFF,       \
+>>>                 .limit1         = ((limit) >> 16) & 0x0F,       \
+>>>                 .base0          = (u16) (base),                 \
+>>>                 .base1          = ((base) >> 16) & 0xFF,        \
+>>>
+>>> fix the warning?
+>>>
+>> Thanks, I will try that out, and try compiling a 32-bit kernel as well.
+> You should also try comparing the objdump output before and after your
+> patch.  objdump -D will produce bizarre output but should work.
 
-The confusion comes from hfi_session_init() return values. Presently
-hfi_session_init will return EINVAL when the session is already init.
-Maybe EINVAL is not fitting well with the expected behavior of the
-function. I thought about EALREADY, EBUSY but it doesn't fit well to me too.
+Expanding on this a little, if that does indeed fix the sparse warning,
+then I'd make an argument for this being a bug in sparse.  Explicitly
+casting to u16 is semantically and intentionally identical to & 0xffff.
 
-> 
->> +       else if (ret)
->> +               goto deinit;
->>
->>         ret = venus_helper_set_input_resolution(inst, inst->width,
->>                                                 inst->height);
->> @@ -762,17 +764,13 @@ static int venc_out_num_buffers(struct venus_inst *inst, unsigned int *num)
->>         struct hfi_buffer_requirements bufreq;
->>         int ret;
->>
->> -       ret = venc_init_session(inst);
->> +       ret = venus_helper_get_bufreq(inst, HFI_BUFFER_INPUT, &bufreq);
->>         if (ret)
->>                 return ret;
->>
->> -       ret = venus_helper_get_bufreq(inst, HFI_BUFFER_INPUT, &bufreq);
->> -
->>         *num = bufreq.count_actual;
->>
->> -       hfi_session_deinit(inst);
->> -
->> -       return ret;
->> +       return 0;
->>  }
->>
->>  static int venc_queue_setup(struct vb2_queue *q,
->> @@ -781,7 +779,7 @@ static int venc_queue_setup(struct vb2_queue *q,
->>  {
->>         struct venus_inst *inst = vb2_get_drv_priv(q);
->>         unsigned int num, min = 4;
->> -       int ret = 0;
->> +       int ret;
->>
->>         if (*num_planes) {
->>                 if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE &&
->> @@ -803,6 +801,17 @@ static int venc_queue_setup(struct vb2_queue *q,
->>                 return 0;
->>         }
->>
->> +       ret = mutex_lock_interruptible(&inst->lock);
-
-I'll keep original mutex_lock here in next version.
-
->> +       if (ret)
->> +               return ret;
->> +
->> +       ret = venc_init_session(inst);
->> +
->> +       mutex_unlock(&inst->lock);
->> +
->> +       if (ret)
->> +               return ret;
->> +
->>         switch (q->type) {
->>         case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
->>                 *num_planes = inst->fmt_out->num_planes;
->> @@ -838,6 +847,54 @@ static int venc_queue_setup(struct vb2_queue *q,
->>         return ret;
->>  }
->>
->> +static int venc_buf_init(struct vb2_buffer *vb)
->> +{
->> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
->> +
->> +       inst->buf_count++;
->> +
->> +       return venus_helper_vb2_buf_init(vb);
->> +}
->> +
->> +static void venc_release_session(struct venus_inst *inst)
->> +{
->> +       int ret, abort = 0;
->> +
->> +       mutex_lock(&inst->lock);
->> +
->> +       ret = hfi_session_deinit(inst);
->> +       abort = (ret && ret != -EINVAL) ? 1 : 0;
-> 
-> Here as well, I think a comment is warranted to explain why we can
-> ignore EINVAL.
-
-OK, will update that.
-
-> 
->> +
->> +       if (inst->session_error)
->> +               abort = 1;
->> +
->> +       if (abort)
->> +               hfi_session_abort(inst);
->> +
->> +       mutex_unlock(&inst->lock);
->> +
->> +       venus_pm_load_scale(inst);
->> +       INIT_LIST_HEAD(&inst->registeredbufs);
->> +       venus_pm_release_core(inst);
->> +}
->> +
->> +static void venc_buf_cleanup(struct vb2_buffer *vb)
->> +{
->> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
->> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
->> +       struct venus_buffer *buf = to_venus_buffer(vbuf);
->> +
->> +       mutex_lock(&inst->lock);
->> +       if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
->> +               if (!list_empty(&inst->registeredbufs))
->> +                       list_del_init(&buf->reg_list);
->> +       mutex_unlock(&inst->lock);
->> +
->> +       inst->buf_count--;
->> +       if (!inst->buf_count)
->> +               venc_release_session(inst);
-> 
-> We are calling venc_init_session() during the queue setup but
-> venc_release_session() when the last buffer is cleaned up. For
-> symmetry, wouldn't it make sense to call venc_init_session() when the
-> first buffer is initialized by venc_buf_init()? Otherwise we can
-
-No, the session must be initialized in queue_setup in order to return
-the number and sizes of source/destination buffers.
-
-I raised several times the need of symmetrical operation to queue_setup
-to cover reqbuf(0) but there is no progress on that. Latest suggestion
-was to use .vidioc_reqbufs ioctl op but I fall with some other issues
-and at the end I came to this counting buf_init|cleanup solution.
-
-> potentially have a scenario where the queue is set up, but no buffer
-> is ever created, leading to the session never being released.
-
-dmabuf import case?
-
-<cut>
-
--- 
-regards,
-Stan
+~Andrew
