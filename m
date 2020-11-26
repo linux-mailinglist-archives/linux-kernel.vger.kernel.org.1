@@ -2,174 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC702C5A40
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D9D2C5A47
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403990AbgKZRKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 12:10:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403791AbgKZRKJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:10:09 -0500
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61195C0613D4;
-        Thu, 26 Nov 2020 09:10:09 -0800 (PST)
-Received: by mail-vk1-xa43.google.com with SMTP id m6so607409vkl.2;
-        Thu, 26 Nov 2020 09:10:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eiVvdawmrHkkFbsTAsLVy02rzVF/6bcsRLkbJ87vgq4=;
-        b=jqIvnc/J0peqmBZs3k7obuCMl2j29mfgb4YUuBWNztlZGYaIhpWfy6SGuarIeesLKN
-         d1wy50SZ/TprSJSAWhLiHdQG93Lh4qKVZhpPjXe4HC/hrOp2okCFluI3XP3+hS2Gq8U+
-         pz4NDHGDUKC7qLr9JbK5AHtiE9ysmyxoPi4KBav1txbU+fC1GEw/Rdp42yzqODTPpMZ+
-         QtJWnBLyRIl09y5YnGIiRpIEb3RNU2eCDEvYuaJgANV6b/TyKUbvjW3obbqBsIAwCeWh
-         QMLrAYlO0+iGL8JgVyqCiyBvv7ws+5whZ9uhw0S367VyPWp+AvOlsaget9wtHuo3kmXd
-         mH5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eiVvdawmrHkkFbsTAsLVy02rzVF/6bcsRLkbJ87vgq4=;
-        b=uSaMN30uASs5sEoQsVMmDtAs1WU4dE12BD75MCBENsUVlE2VK+UG9eOv7u43+76H1C
-         2Gdx484yOgvrbFLs2pN38qwlhSd3/n6qGVPzfOI733CGHIDuEUgHsiUW3oivngZpUnhR
-         bDex42HnuM2Ici7tk07yoUzfIZTt6KV8lbrWehCIJ8bPIMJ9J2HtOxh98wvxY2Q3PU5R
-         oJvo2TC5m0rtccbOs0OItHyalVP+3I/8g7mMeB1QXP9qBISfHLLqEp5e6bxtyqnOCwj8
-         JmW7p7hYejzJVipT2UGBFrj1fcchhy/cWBL7VoWxsgQasCso/nHl1xv0+rTwBdfny7s3
-         yfzQ==
-X-Gm-Message-State: AOAM533xvL5qKkV+PGwW/Tm4aMFEYqS0I6fZM2UXLC6po1Za/mE2eaLX
-        YoPI1W+eenbNwN1/HO5C7YZNGL6xbYsVYkUqi1Q=
-X-Google-Smtp-Source: ABdhPJyBK5JvfFayn6xTjWYBLJT53TYMBwMWS0VfffWnSMcMiikLUZqjlHbyJDFIv9mPlR+t/ORQ2ppJO8dBmi2qn14=
-X-Received: by 2002:a1f:1e46:: with SMTP id e67mr2668290vke.8.1606410608466;
- Thu, 26 Nov 2020 09:10:08 -0800 (PST)
+        id S2404391AbgKZRMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:12:07 -0500
+Received: from foss.arm.com ([217.140.110.172]:40684 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404379AbgKZRMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 12:12:06 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E7DB31B;
+        Thu, 26 Nov 2020 09:12:06 -0800 (PST)
+Received: from [10.57.59.159] (unknown [10.57.59.159])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 472113F23F;
+        Thu, 26 Nov 2020 09:12:02 -0800 (PST)
+Subject: Re: [PATCH v4 17/24] iommu/mediatek: Add single domain
+To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, Greg Kroah-Hartman <gregkh@google.com>,
+        kernel-team@android.com
+References: <20201111123838.15682-1-yong.wu@mediatek.com>
+ <20201111123838.15682-18-yong.wu@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <22e49f08-6d23-86cf-bb9c-79d54ce55beb@arm.com>
+Date:   Thu, 26 Nov 2020 17:11:58 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201028221302.66583-1-kholk11@gmail.com> <CAMi1Hd1hh3NYuFTs3C39ha1Jy_0LxQ4Akg36sm0x1+uicWYRjQ@mail.gmail.com>
-In-Reply-To: <CAMi1Hd1hh3NYuFTs3C39ha1Jy_0LxQ4Akg36sm0x1+uicWYRjQ@mail.gmail.com>
-From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
-Date:   Thu, 26 Nov 2020 18:09:57 +0100
-Message-ID: <CAK7fi1a3m_5aT=G4BpPFqU53Z4j9s_FkVtp0qQ8C3xbQ8W4Y1Q@mail.gmail.com>
-Subject: Re: [PATCH v9 0/3] Add Novatek NT36xxx touchscreen driver
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, rydberg@bitmath.org,
-        priv.luk@gmail.com, linux-input@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>, marijns95@gmail.com,
-        Konrad Dybcio <konradybcio@gmail.com>, martin.botka1@gmail.com,
-        phone-devel@vger.kernel.org, dt <devicetree@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        andy.shevchenko@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201111123838.15682-18-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno lun 23 nov 2020 alle ore 11:13 Amit Pundir
-<amit.pundir@linaro.org> ha scritto:
->
-> Hi,
->
-> On Thu, 29 Oct 2020 at 06:32, <kholk11@gmail.com> wrote:
-> >
-> > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> >
-> > This patch series adds support for the Novatek NT36xxx Series' In-Cell
-> > touchscreen (integrated into the DriverIC).
-> >
-> > This patch series has been tested against the following devices:
-> >  - Sony Xperia 10        (SDM630 Ganges Kirin)
-> >  - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
->
-> Tested the patch series on Xiaomi Poco F1 (SDM845 Beryllium) using
-> Novatek NT36672A IC. May I suggest adding "novatek,nt36672a" in the
-> list of compatible of_device_id{} as well.
->
-> Regards,
-> Amit Pundir
->
->
-> >
-> > Changes in v2:
-> > - Fixed sparse warnings from lkp kernel test robot
-> >
-> > Changes in v3 (as requested by Dmitry Torokhov):
-> > - Using shorthand u16/u32 (sorry for the overlook!)
-> > - Now using more input and touchscreen APIs
-> > - Fixed useless workqueue involvements
-> > - Removed useless locking
-> > - Switched reads and writes to use regmap
-> > - Moved header contents to nt36xxx.c
-> > - Fixed reset gpio handling
-> > - Other cleanups
-> > - P.S.: Thanks, Dmitry!
-> >
-> > Changes in v4:
-> > - Fixed regmap read length for CRC_ERR_FLAG final check
-> > - Fixed YAML binding, as requested by Krzysztof Kozlowski
-> >
-> > Changes in v5:
-> > - Replaced subsystem maintainer's name with .. mine,
-> >   usage of additionalProperties to unevaluatedProperties
-> >   and a typo fix for reset-gpios as per Rob Herring's review
-> > - Changed compatible string as per Krzysztof K. request
-> > - Renamed the novatek,nt36xxx.yaml file to just nt36xxx.yaml
-> >   in order to now reflect the driver name instead of the DT
-> >   compatible
-> > - Fixed blank line at EOF
-> >
-> > Changes in v6:
-> > - Removed include of_gpio.h, added mod_devicetable.h and
-> >   gpio/consumer.h
-> > - Added kerneldoc to relevant functions/enum
-> > - Used traditional patterns for error checking where possible
-> > - Documented calls to usleep/msleep
-> > - Using be16_to_cpu / get_unaligned_be16 where possible
-> > - Added helper for CRC error check on retrieved buffer
-> > - Decreased indentation in the CRC reboot recovery function
-> > - Removed instances of error code sum
-> > - Dropped all likely/unlikely optimization as per request
-> > - Removed redundant reset_gpio checks
-> > - Dropped of_match_ptr and ifdefs for CONFIG_OF
-> >
-> > Changes in v7:
-> > - Fixed typo in nt36xxx.c
-> >
-> > Changes in v8:
-> > - Fixed typo reset-gpio -> reset-gpios in dt-bindings
-> >
-> > Changes in v9:
-> > - Includes are now sorted
-> > - Used proposed sizeof variable instead of sizeof type
-> > - Fixed a return value check for common pattern
-> > - Added NULL check to devm_kasprintf call
-> > - Returning ret on probe function to be consistent
-> >
-> > AngeloGioacchino Del Regno (3):
-> >   dt-bindings: Add vendor prefix for Novatek Microelectronics Corp.
-> >   Input: Add Novatek NT36xxx touchscreen driver
-> >   dt-bindings: touchscreen: Add binding for Novatek NT36xxx series
-> >     driver
-> >
-> >  .../bindings/input/touchscreen/nt36xxx.yaml   |  59 ++
-> >  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
-> >  drivers/input/touchscreen/Kconfig             |  12 +
-> >  drivers/input/touchscreen/Makefile            |   1 +
-> >  drivers/input/touchscreen/nt36xxx.c           | 894 ++++++++++++++++++
-> >  drivers/input/touchscreen/nt36xxx.h           | 122 +++
-> >  6 files changed, 1090 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-> >  create mode 100644 drivers/input/touchscreen/nt36xxx.c
-> >  create mode 100644 drivers/input/touchscreen/nt36xxx.h
-> >
-> > --
-> > 2.28.0
-> >
-Mind releasing a Tested-By tag for this?
+On 2020-11-11 12:38, Yong Wu wrote:
+> Defaultly the iova range is 0-4G. here we add a single-domain(0-4G)
+> for the previous SoC. this also is a preparing patch for supporting
+> multi-domains.
+> 
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>   drivers/iommu/mtk_iommu.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index bf3f4e0f4748..a7727a3899d1 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -161,6 +161,10 @@ struct mtk_iommu_iova_region {
+>   	unsigned long long	size;
+>   };
+>   
+> +static const struct mtk_iommu_iova_region single_domain[] = {
+> +	{.iova_base = 0,		.size = SZ_4G},
+> +};
 
-Anyway, I was suggested to add a compatible only for the "oldest" IC that
-is supported in this driver, since there is autodetection, that's why you see
-only the 36525 compatible here!
+Hang on, given how the previous patch works, surely this means you're 
+now going to *reserve* the entire address space? That doesn't seem 
+right... :/
 
-Yours,
-Angelo
+Robin.
+
+> +
+>   /*
+>    * There may be 1 or 2 M4U HWs, But we always expect they are in the same domain
+>    * for the performance.
+> @@ -922,6 +926,8 @@ static const struct mtk_iommu_plat_data mt2712_data = {
+>   	.m4u_plat     = M4U_MT2712,
+>   	.flags        = HAS_4GB_MODE | HAS_BCLK | HAS_VLD_PA_RNG,
+>   	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
+> +	.iova_region  = single_domain,
+> +	.iova_region_nr = ARRAY_SIZE(single_domain),
+>   	.larbid_remap = {{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}},
+>   };
+>   
+> @@ -929,6 +935,8 @@ static const struct mtk_iommu_plat_data mt6779_data = {
+>   	.m4u_plat      = M4U_MT6779,
+>   	.flags         = HAS_SUB_COMM | OUT_ORDER_WR_EN | WR_THROT_EN,
+>   	.inv_sel_reg   = REG_MMU_INV_SEL_GEN2,
+> +	.iova_region   = single_domain,
+> +	.iova_region_nr = ARRAY_SIZE(single_domain),
+>   	.larbid_remap  = {{0}, {1}, {2}, {3}, {5}, {7, 8}, {10}, {9}},
+>   };
+>   
+> @@ -944,6 +952,8 @@ static const struct mtk_iommu_plat_data mt8173_data = {
+>   	.flags	      = HAS_4GB_MODE | HAS_BCLK | RESET_AXI |
+>   			HAS_LEGACY_IVRP_PADDR,
+>   	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
+> +	.iova_region  = single_domain,
+> +	.iova_region_nr = ARRAY_SIZE(single_domain),
+>   	.larbid_remap = {{0}, {1}, {2}, {3}, {4}, {5}}, /* Linear mapping. */
+>   };
+>   
+> @@ -951,6 +961,8 @@ static const struct mtk_iommu_plat_data mt8183_data = {
+>   	.m4u_plat     = M4U_MT8183,
+>   	.flags        = RESET_AXI,
+>   	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
+> +	.iova_region  = single_domain,
+> +	.iova_region_nr = ARRAY_SIZE(single_domain),
+>   	.larbid_remap = {{0}, {4}, {5}, {6}, {7}, {2}, {3}, {1}},
+>   };
+>   
+> 
