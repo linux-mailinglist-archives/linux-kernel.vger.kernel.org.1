@@ -2,87 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2138B2C5000
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF242C5008
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388662AbgKZIJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 03:09:32 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:39780 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731457AbgKZIJc (ORCPT
+        id S2388665AbgKZIOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 03:14:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729107AbgKZIOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 03:09:32 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UGa28sv_1606378169;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGa28sv_1606378169)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 26 Nov 2020 16:09:29 +0800
-Subject: Re: [PATCH next] mm/swap.c: reduce lock contention in lru_cache_add
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1605860847-47445-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201126045234.GA1014081@google.com>
- <ed19e3f7-33cb-20ae-537e-a7ada2036895@linux.alibaba.com>
- <20201126072402.GA1047005@google.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <0e14f1dc-31bb-5965-4711-9e59c51ee36d@linux.alibaba.com>
-Date:   Thu, 26 Nov 2020 16:09:29 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Thu, 26 Nov 2020 03:14:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606378444;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lzOZ0+ORGJBLPor/ndG4DzkjsuKwEIa25PWAxEo/TLA=;
+        b=U0951HGOOEEV80W/yR9LmIKka95V/qI+2Lm/04mipRPZA7uyRwbdHjXVhXzupk/rZUM7Dd
+        KIlXYNE2NJbfAj+8s+C5DymNZJ00sADEjsgOj8UCh79c9VJGhMu6A43PwRW1j7KcahqCIo
+        79HqC62c/Gbb7hhQSwRfjcxH0tK3SgU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-o6oKrDUFPBex5xHfYOV6ew-1; Thu, 26 Nov 2020 03:13:59 -0500
+X-MC-Unique: o6oKrDUFPBex5xHfYOV6ew-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 15B1E8143E5;
+        Thu, 26 Nov 2020 08:13:58 +0000 (UTC)
+Received: from gondolin (ovpn-113-125.ams2.redhat.com [10.36.113.125])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 38D7860855;
+        Thu, 26 Nov 2020 08:13:55 +0000 (UTC)
+Date:   Thu, 26 Nov 2020 09:13:53 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Benjamin Block <bblock@linux.ibm.com>,
+        Steffen Maier <maier@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>
+Subject: Re: [PATCH] scsi: zfcp: fix use-after-free in zfcp_unit_remove
+Message-ID: <20201126091353.50cf6ab6.cohuck@redhat.com>
+In-Reply-To: <4c65bead-2553-171e-54d2-87a9de0330e8@huawei.com>
+References: <20201120074854.31754-1-miaoqinglang@huawei.com>
+        <20201125170658.GB8578@t480-pf1aa2c2>
+        <4c65bead-2553-171e-54d2-87a9de0330e8@huawei.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-In-Reply-To: <20201126072402.GA1047005@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 26 Nov 2020 09:27:41 +0800
+Qinglang Miao <miaoqinglang@huawei.com> wrote:
 
+> =E5=9C=A8 2020/11/26 1:06, Benjamin Block =E5=86=99=E9=81=93:
+> > On Fri, Nov 20, 2020 at 03:48:54PM +0800, Qinglang Miao wrote: =20
+> >> kfree(port) is called in put_device(&port->dev) so that following
+> >> use would cause use-after-free bug.
+> >>
+> >> The former put_device is redundant for device_unregister contains
+> >> put_device already. So just remove it to fix this.
+> >>
+> >> Fixes: 86bdf218a717 ("[SCSI] zfcp: cleanup unit sysfs attribute usage")
+> >> Reported-by: Hulk Robot <hulkci@huawei.com>
+> >> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> >> ---
+> >>   drivers/s390/scsi/zfcp_unit.c | 2 --
+> >>   1 file changed, 2 deletions(-)
+> >>
+> >> diff --git a/drivers/s390/scsi/zfcp_unit.c b/drivers/s390/scsi/zfcp_un=
+it.c
+> >> index e67bf7388..664b77853 100644
+> >> --- a/drivers/s390/scsi/zfcp_unit.c
+> >> +++ b/drivers/s390/scsi/zfcp_unit.c
+> >> @@ -255,8 +255,6 @@ int zfcp_unit_remove(struct zfcp_port *port, u64 f=
+cp_lun)
+> >>   		scsi_device_put(sdev);
+> >>   	}
+> >>  =20
+> >> -	put_device(&unit->dev);
+> >> -
+> >>   	device_unregister(&unit->dev); =20
+> >>  >>   	return 0; =20
+> >=20
+> > Same as in the other mail for `zfcp_sysfs_port_remove_store()`. We
+> > explicitly get a new ref in `_zfcp_unit_find()`, so we also need to put
+> > that away again.
+> > =20
+> Sorry, Benjamin, I don't think so, because device_unregister calls=20
+> put_device inside.
+>=20
+> It seem's that another put_device before or after device_unregister is=20
+> useless and even might cause an use-after-free.
 
-在 2020/11/26 下午3:24, Yu Zhao 写道:
-> Oh, no, I'm not against your idea. I was saying it doesn't seem
-> necessary to sort -- a nested loop would just do the job given
-> pagevec is small.
-> 
-> diff --git a/mm/swap.c b/mm/swap.c
-> index cb3794e13b48..1d238edc2907 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -996,15 +996,26 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
->   */
->  void __pagevec_lru_add(struct pagevec *pvec)
->  {
-> -	int i;
-> +	int i, j;
->  	struct lruvec *lruvec = NULL;
->  	unsigned long flags = 0;
->  
->  	for (i = 0; i < pagevec_count(pvec); i++) {
->  		struct page *page = pvec->pages[i];
->  
-> +		if (!page)
-> +			continue;
-> +
->  		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
-> -		__pagevec_lru_add_fn(page, lruvec);
-> +
-> +		for (j = i; j < pagevec_count(pvec); j++) {
-> +			if (page_to_nid(pvec->pages[j]) != page_to_nid(page) ||
-> +			    page_memcg(pvec->pages[j]) != page_memcg(page))
-> +				continue;
-> +
-> +			__pagevec_lru_add_fn(pvec->pages[j], lruvec);
-> +			pvec->pages[j] = NULL;
-> +		}
+The issue here (and in the other patches that I had commented on) is
+that the references have different origins. device_register() acquires
+a reference, and that reference is given up when you call
+device_unregister(). However, the code here grabs an extra reference,
+and it of course has to give it up again when it no longer needs it.
 
-Uh, I have to say your method is more better than mine.
-And this could be reused for all relock_page_lruvec. I expect this could
-speed up lru performance a lot!
+This is something that is not that easy to spot by an automated check,
+I guess?
 
-
->  	}
->  	if (lruvec)
->  		unlock_page_lruvec_irqrestore(lruvec, flags);
