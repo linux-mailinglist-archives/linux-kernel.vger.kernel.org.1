@@ -2,214 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA51D2C4EDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 07:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFBA2C4EE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 07:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388224AbgKZGgw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Nov 2020 01:36:52 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:34465 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388217AbgKZGgv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 01:36:51 -0500
-Received: from mail-pl1-f197.google.com ([209.85.214.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kiAtc-0008IE-VW
-        for linux-kernel@vger.kernel.org; Thu, 26 Nov 2020 06:36:49 +0000
-Received: by mail-pl1-f197.google.com with SMTP id f21so910743plj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 22:36:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=0TNrpxhz885n0vlqKPeUigEPpxte5fdCFowpmElQUl0=;
-        b=tDlH6Jao35mqur0E6tnC6Vc0yv9mCfzBfXQHfCEUmLXy0t63q0jU8YYjfpNGgj00g4
-         3zbr5OB3aiImUyAeVmti9kkjD6PPCq0NNG/yvFT8XEytvNVmjIm6v8Py2wbkcwg0BYk8
-         SRt4B0hr81ErZxe0MxZpIA252c3PFesqdgwFU6Gtf2C2QQ8jxTnPWHo6Dc6b/ONlVqtU
-         wIs3j6GV68cWwmqcmEdU5Hj8SjU3aJWQD2RiSjDgkZaYFUJpDosYcQyL1EQOUn6r7UCk
-         TscucWGHC0UYfRu2UyV/jstxhFwRLGYI3vMENtx5nw5veiHpBviH1EVRFSOmbsssGrFG
-         /c+g==
-X-Gm-Message-State: AOAM533oIb29exESU1styxQ8juW8gA+ZeyNEetAORIvuZG6JWKfq5few
-        4scgKNeIBpNoIDuZV+7e2tgXUKAfirQ/9LxFa247XgvXXTQE35niZhxsg3MzvMK2ZQTDWwsnfpZ
-        vZnugRzho/zhBwoTjgBFS9yfgO+Tq/K6poZCSsxNeHA==
-X-Received: by 2002:a62:8c08:0:b029:197:491c:bab1 with SMTP id m8-20020a628c080000b0290197491cbab1mr1482968pfd.49.1606372607401;
-        Wed, 25 Nov 2020 22:36:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz5aqydmL90QC4PsdiNqThIMoi9m7NqLLN82M9MfA3u/ezH1NWjaVv0powgCOONeZDTNtAFNg==
-X-Received: by 2002:a62:8c08:0:b029:197:491c:bab1 with SMTP id m8-20020a628c080000b0290197491cbab1mr1482941pfd.49.1606372607020;
-        Wed, 25 Nov 2020 22:36:47 -0800 (PST)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id w131sm3575352pfd.14.2020.11.25.22.36.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 25 Nov 2020 22:36:46 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH] e1000e: Assign DPM_FLAG_SMART_SUSPEND and
- DPM_FLAG_MAY_SKIP_RESUME to speed up s2ram
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20201125103612.GA17700@chenyu-office.sh.intel.com>
-Date:   Thu, 26 Nov 2020 14:36:42 +0800
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <B66CCBD9-5828-4514-AD08-C6FDF026646D@canonical.com>
-References: <20201124153221.11265-1-yu.c.chen@intel.com>
- <8BA4D1E1-DACF-4E84-A5B8-75A7CEA65F98@canonical.com>
- <20201125103612.GA17700@chenyu-office.sh.intel.com>
-To:     Chen Yu <yu.c.chen@intel.com>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+        id S1727771AbgKZGoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 01:44:04 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:37772 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726287AbgKZGoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 01:44:03 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C07C41A0A7A;
+        Thu, 26 Nov 2020 07:44:01 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B06021A0A76;
+        Thu, 26 Nov 2020 07:43:56 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 74756402EB;
+        Thu, 26 Nov 2020 07:43:50 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, cychiang@chromium.org,
+        kuninori.morimoto.gx@renesas.com, tzungbi@google.com,
+        shengjiu.wang@nxp.com, grandmaster@al2klimov.de,
+        jbrunet@baylibre.com, pankaj.laxminarayan.bharadiya@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: hdmi-codec: Add RX support
+Date:   Thu, 26 Nov 2020 14:36:48 +0800
+Message-Id: <1606372608-2329-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+HDMI interface can also be used as receiver, this patch is to
+add such support. The most difference compare with TX is that RX
+don't need to get edid information.
 
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/codecs/hdmi-codec.c | 33 ++++++++++++++++++++++++++++-----
+ 1 file changed, 28 insertions(+), 5 deletions(-)
 
-> On Nov 25, 2020, at 18:36, Chen Yu <yu.c.chen@intel.com> wrote:
-> 
-> Hi Kai-Heng,
-> On Wed, Nov 25, 2020 at 01:17:28AM +0800, Kai-Heng Feng wrote:
->> Hi Yu,
->> 
->>> On Nov 24, 2020, at 23:32, Chen Yu <yu.c.chen@intel.com> wrote:
->>> 
->>> The NIC is put in runtime suspend status when there is no wire connected.
->>> As a result, it is safe to keep this NIC in runtime suspended during s2ram
->>> because the system does not rely on the NIC plug event nor WOL to wake up
->>> the system. Unlike the s2idle, s2ram does not need to manipulate S0ix settings
->>> during suspend.
->> 
->> Please see below for the reason why I explicitly disable direct-complete in the driver.
->> 
-> Okay.
->>> 
->>> This patch assigns DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME
->>> to the e1000e driver so that the s2ram could skip the .suspend_late(),
->>> .suspend_noirq() and .resume_noirq() .resume_early() when possible.
->>> Also skip .suspend() and .resume() if dev_pm_skip_suspend() and
->>> dev_pm_skip_resume() return true, so as to speed up the s2ram.
->> 
->> If we really want direct-complete here, maybe always set current WoL setting in runtime suspend routine?
->> 
-> Indeed, that would be a choice.
->>> 
->>> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
->>> ---
->>> drivers/base/power/main.c                  |  2 ++
->>> drivers/net/ethernet/intel/e1000e/netdev.c | 14 +++++++++++++-
->>> 2 files changed, 15 insertions(+), 1 deletion(-)
->>> 
->>> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
->>> index c7ac49042cee..9cd8abba8612 100644
->>> --- a/drivers/base/power/main.c
->>> +++ b/drivers/base/power/main.c
->>> @@ -580,6 +580,7 @@ bool dev_pm_skip_resume(struct device *dev)
->>> 
->>> 	return !dev->power.must_resume;
->>> }
->>> +EXPORT_SYMBOL_GPL(dev_pm_skip_resume);
->> 
->> I don't think it's a good idea to use this predicate out side of PM core, must_resume may change during suspend process.
->> 
-> The dev_pm_skip_resume() is used during system resume, not during suspend, so
-> there would be no race condition I suppose?
-
-I think it's better to let PM core to decide.
-
->>> 
->>> /**
->>> * device_resume_noirq - Execute a "noirq resume" callback for given device.
->>> @@ -2010,3 +2011,4 @@ bool dev_pm_skip_suspend(struct device *dev)
->>> 	return dev_pm_test_driver_flags(dev, DPM_FLAG_SMART_SUSPEND) &&
->>> 		pm_runtime_status_suspended(dev);
->>> }
->>> +EXPORT_SYMBOL_GPL(dev_pm_skip_suspend);
->>> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
->>> index b30f00891c03..d79fddabc553 100644
->>> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
->>> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
->>> @@ -6965,6 +6965,14 @@ static __maybe_unused int e1000e_pm_suspend(struct device *dev)
->>> 	struct e1000_hw *hw = &adapter->hw;
->>> 	int rc;
->>> 
->>> +	/* Runtime suspended means that there is no wired connection
->>> +	 * and it has nothing to do with WOL that, we don't need to
->>> +	 * adjust the WOL settings. So it is safe to put NIC in
->>> +	 * runtime suspend while doing system suspend.
->>> +	 */
->> 
->> What about plugging ethernet cable and using WoL after system is suspended?
->> Commit "e1000e: Exclude device from suspend direct complete optimization" was to address that scenario.
->> 
-> Yes, this is what I concerned previously. So in order to support this case,
-> let's adjust this by checking
-> 	if (device_may_wakeup() && dev_pm_skip_suspend())
-> 
-> so that if the user has disabled WOL via sysfs then we do not fall
-> into this optimization
-> commit 6bf6be1127f7 ("e1000e: Do not wake up the system via WOL if
-> device wakeup is disabled")
-
-I don't think this is right.
-Isn't E1000_WUFC_LNKC already set for runtime suspend?
-What if WoL doesn't have it set?
-
->>> +	if (dev_pm_skip_suspend(dev))
->>> +		return 0;
->>> +
->>> 	e1000e_flush_lpic(pdev);
->>> 
->>> 	e1000e_pm_freeze(dev);
->>> @@ -6989,6 +6997,9 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
->>> 	struct e1000_hw *hw = &adapter->hw;
->>> 	int rc;
->>> 
->>> +	if (dev_pm_skip_resume(dev))
->>> +		return 0;
->>> +
->>> 	/* Introduce S0ix implementation */
->>> 	if (hw->mac.type >= e1000_pch_cnp &&
->>> 	    !e1000e_check_me(hw->adapter->pdev->device))
->>> @@ -7665,7 +7676,8 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->>> 
->>> 	e1000_print_device_info(adapter);
->>> 
->>> -	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
->>> +	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE |
->>> +				DPM_FLAG_SMART_SUSPEND | DPM_FLAG_MAY_SKIP_RESUME);
->>> 
->>> 	if (pci_dev_run_wake(pdev) && hw->mac.type < e1000_pch_cnp)
->>> 		pm_runtime_put_noidle(&pdev->dev);
->> 
->> Also, most e1000e device on modern platforms doesn't runtime suspend at all after commit "e1000e: Disable runtime PM on CNP+".
->> 
-> Yes, I did some hack on this to make runtime suspend work.
-> As we do have more newer NICs to come, how about removing the
-> restriction of runtime suspend and let the user determine whether
-> to enable the runtime suspend via echo 'on' or 'auto' via
-> sysfs's control.
-
-There's a discussion on enable runtime PM by default for all PCI devices.
-So removing this workaround will expose the bug for users.
-
-Let me get the system with the bug (Latitude 5500) and see if latest ACPI code can fix the GPE bug.
-
-Kai-Heng
-
-> 
-> thanks,
-> Chenyu
->> Kai-Heng
->> 
->>> -- 
->>> 2.25.1
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index e8410b2433de..d5fcc4db8284 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -282,6 +282,7 @@ struct hdmi_codec_priv {
+ 
+ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("TX"),
++	SND_SOC_DAPM_OUTPUT("RX"),
+ };
+ 
+ enum {
+@@ -389,6 +390,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 			      struct snd_soc_dai *dai)
+ {
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
++	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	int ret = 0;
+ 
+ 	mutex_lock(&hcp->lock);
+@@ -404,7 +406,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 			goto err;
+ 	}
+ 
+-	if (hcp->hcd.ops->get_eld) {
++	if (tx && hcp->hcd.ops->get_eld) {
+ 		ret = hcp->hcd.ops->get_eld(dai->dev->parent, hcp->hcd.data,
+ 					    hcp->eld, sizeof(hcp->eld));
+ 		if (ret)
+@@ -660,14 +662,20 @@ static int hdmi_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_dapm_context *dapm;
+ 	struct hdmi_codec_daifmt *daifmt;
+-	struct snd_soc_dapm_route route = {
+-		.sink = "TX",
+-		.source = dai->driver->playback.stream_name,
++	struct snd_soc_dapm_route route[] = {
++		{
++			.sink = "TX",
++			.source = dai->driver->playback.stream_name,
++		},
++		{
++			.sink = dai->driver->capture.stream_name,
++			.source = "RX",
++		},
+ 	};
+ 	int ret;
+ 
+ 	dapm = snd_soc_component_get_dapm(dai->component);
+-	ret = snd_soc_dapm_add_routes(dapm, &route, 1);
++	ret = snd_soc_dapm_add_routes(dapm, route, 2);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -757,6 +765,14 @@ static const struct snd_soc_dai_driver hdmi_i2s_dai = {
+ 		.formats = I2S_FORMATS,
+ 		.sig_bits = 24,
+ 	},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 2,
++		.channels_max = 8,
++		.rates = HDMI_RATES,
++		.formats = I2S_FORMATS,
++		.sig_bits = 24,
++	},
+ 	.ops = &hdmi_codec_i2s_dai_ops,
+ 	.pcm_new = hdmi_codec_pcm_new,
+ };
+@@ -773,6 +789,13 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
+ 		.rates = HDMI_RATES,
+ 		.formats = SPDIF_FORMATS,
+ 	},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = HDMI_RATES,
++		.formats = SPDIF_FORMATS,
++	},
+ 	.ops = &hdmi_codec_spdif_dai_ops,
+ 	.pcm_new = hdmi_codec_pcm_new,
+ };
+-- 
+2.27.0
 
