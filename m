@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B3C2C564A
+	by mail.lfdr.de (Postfix) with ESMTP id F0BD92C564C
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390706AbgKZNnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
+        id S2390916AbgKZNnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:43:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390631AbgKZNnh (ORCPT
+        with ESMTP id S2390646AbgKZNnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:43:37 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F00C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:36 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a65so2466394wme.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:36 -0800 (PST)
+        Thu, 26 Nov 2020 08:43:39 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636D3C061A47
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:38 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id g14so2163191wrm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BHyKENW6Yz4oTye/FJPzNNjmGfv58ayjrIYPkA+7OU0=;
-        b=ueetS8dxpG4eO8faloDa33OmDRYWKDXfGJ/MOesO0sVWIxlbnNg1acnUmuk2/IwmSf
-         ynWcfu3xKgFrRhph301W/t3OPcXaCv0WmUd0j5/ucJuRUAOZbxw9vKgw9JQWG+J73gYN
-         dzlwXWkZpqM7LOU60AzvhK5fYOoKjn8aBJ0By8qseo1RiV+Pn+RcSG8nAHQBVYeJAlE0
-         R6/K5j0Q03t+8e/0vdaMYHRUH2q4nfbUwpSJU9mS9SfRbIikwWIlUa3yc5tvBbjUPxqz
-         V0323xh/2ZuoVA0U8/JRnXY/0a0M097+5zsUWW5yfK/gEEyacVeFwDldJ8Hay3MhqIUT
-         ytSQ==
+        bh=Y2L4ju+uZ20D0/2E1suojqs76azBxprDmuerWKuUkXg=;
+        b=FzDylEEID+ChIWfzEFmWZz2uTH3H493rVHv8wAvc/cf9fkvCuUjCYRsUuc0NZXnjf1
+         RKC6y9MRt2HtbaXRd/+MWYzK3N9y1OvjOlg09FC4aGlO7LmuK5ZixylQLIKi9ABmiFAo
+         hxbj4w7/JM80JHphzbW5XttO40XyJrkWmTUouAZskGFh9ZE8MPiRS2TN49jrHkQZx6hZ
+         Aj25a2l0d3gBcvRIXwPGQzYr1D559lBW3CGtJNZHzHYeW9lMFGYoPiaggT+FfcVDLXNu
+         mZnqjJF1Rj3ZrfBjjJAt8qSov1+FvRd4MW2OiLuZ0SRwmY5hra7HcnjZIiR9Ez4Gc2pf
+         QU2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BHyKENW6Yz4oTye/FJPzNNjmGfv58ayjrIYPkA+7OU0=;
-        b=YSKTtxIF4uxQyyQ0CDsj08u/+WfFbfl3FJiYgQUijAantB2x6gIE8Twkv5nli7fN/p
-         +KvPSG+WYKdab5G8fJzt/z1SugFKJREw6FCMFOof/Bqu5KupqF5UP2OT/Zgxpd4k9Zx2
-         dYBSHxb3QzfniI6JdSAyWXCQ9nHNDtRidhTEDRakvVSC65NJJ6Zb2kUfW4WZVNcyyJNR
-         HWTsUIkmoL+aaUyiNwwXtz7HDhRHCy4OJdB0biCuDo5/KoSNAaRgfpfkM55exaX0BOfI
-         oT0UUv9/taKmYWvr/kEutJA5ZNsZR+mV8+dgah1w5V4TVji/oV61z926OIVY0c6YGsZC
-         WEkg==
-X-Gm-Message-State: AOAM531OOv3zjwyXFjoQv+qAf0I1egp3DkCE2Xh79qxg6fNEkXYjtlZF
-        kILHI71/57JXDy1oUp3+lbw52RlejSClDhU1
-X-Google-Smtp-Source: ABdhPJyQXsU5/AEeoFFjY7XHZxkueaCPYvuChFDxVYSEAIRAWOqSivqDUyYaPfLnYEj+pww8vgdxcg==
-X-Received: by 2002:a1c:4c02:: with SMTP id z2mr3499582wmf.139.1606398215596;
-        Thu, 26 Nov 2020 05:43:35 -0800 (PST)
+        bh=Y2L4ju+uZ20D0/2E1suojqs76azBxprDmuerWKuUkXg=;
+        b=fxUTCsdb9hAjfoynIifj/2kIOBLlS1BYE0G0/ODec9MKhwptkSVR4uCHQVU2gp7BB/
+         V0aGLFdjOArT4KRONI9vJuZpeMvr30U70oKP5g8jfTm2kzjZ3BMH4mUp1CXXJFMmjMoI
+         uVjt38OwFyu10IKNYHR0JbqtJAtOeghtM7F5LGB44+Z2xuv7mb2gMz0bZ2cI0LCDIFjh
+         be788WwiocrU132mKo2TUxWanfjB96T0NH+/zs1fMM0AhY1t4pr6M6nWu1n7QGcTGE92
+         YPlC55CMf+QH7q8fJDGZaetv0V0+qv2BGigEC6UHqc9Yus8ZAnNHjvQ379c4LapdNQsD
+         OqCg==
+X-Gm-Message-State: AOAM531DWJPgp+YlcuniB7KPeaZTIxsCGdlBHrhm6dXSnS8QT6QnMQ0U
+        1PJAP+UDvO52mB7RApbi2vtudQ==
+X-Google-Smtp-Source: ABdhPJxfGQggZwM6noRk+tdnupoa9wCcjIPp3cRIt3Lxi9cHuFJWCdN0QQSBGG4Qw8BvZOr+tcmuvA==
+X-Received: by 2002:adf:e9c9:: with SMTP id l9mr4041256wrn.124.1606398217128;
+        Thu, 26 Nov 2020 05:43:37 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.43.34
+        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.43.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:43:34 -0800 (PST)
+        Thu, 26 Nov 2020 05:43:36 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 34/40] drm/amd/display/amdgpu_dm/amdgpu_dm_helpers: Use 'gnu_printf' format notation
-Date:   Thu, 26 Nov 2020 13:42:34 +0000
-Message-Id: <20201126134240.3214176-35-lee.jones@linaro.org>
+Subject: [PATCH 35/40] drm/amd/display/amdgpu_dm/amdgpu_dm_color: Demote a misuse and fix another kernel-doc header
+Date:   Thu, 26 Nov 2020 13:42:35 +0000
+Message-Id: <20201126134240.3214176-36-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201126134240.3214176-1-lee.jones@linaro.org>
 References: <20201126134240.3214176-1-lee.jones@linaro.org>
@@ -73,9 +73,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_helpers.c: In function ‘dm_dtn_log_append_v’:
- drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_helpers.c:345:2: warning: function ‘dm_dtn_log_append_v’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
- drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_helpers.c:375:3: warning: function ‘dm_dtn_log_append_v’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_color.c:128: warning: Function parameter or member 'lut' not described in '__drm_lut_to_dc_gamma'
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_color.c:128: warning: Function parameter or member 'gamma' not described in '__drm_lut_to_dc_gamma'
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_color.c:128: warning: Function parameter or member 'is_legacy' not described in '__drm_lut_to_dc_gamma'
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_color.c:426: warning: Function parameter or member 'dc_plane_state' not described in 'amdgpu_dm_update_plane_color_mgmt'
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -87,21 +88,31 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-index b7d7ec3ba00d7..24a81642baa26 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-@@ -318,6 +318,7 @@ void dm_dtn_log_begin(struct dc_context *ctx,
- 	dm_dtn_log_append_v(ctx, log_ctx, "%s", msg);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+index 5df05f0d18bc9..157fe4efbb599 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+@@ -119,7 +119,7 @@ static bool __is_lut_linear(const struct drm_color_lut *lut, uint32_t size)
+ 	return true;
  }
  
-+__printf(3, 4)
- void dm_dtn_log_append_v(struct dc_context *ctx,
- 	struct dc_log_buffer_ctx *log_ctx,
- 	const char *msg, ...)
+-/**
++/*
+  * Convert the drm_color_lut to dc_gamma. The conversion depends on the size
+  * of the lut - whether or not it's legacy.
+  */
+@@ -413,7 +413,7 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc)
+ /**
+  * amdgpu_dm_update_plane_color_mgmt: Maps DRM color management to DC plane.
+  * @crtc: amdgpu_dm crtc state
+- * @ dc_plane_state: target DC surface
++ * @dc_plane_state: target DC surface
+  *
+  * Update the underlying dc_stream_state's input transfer function (ITF) in
+  * preparation for hardware commit. The transfer function used depends on
 -- 
 2.25.1
 
