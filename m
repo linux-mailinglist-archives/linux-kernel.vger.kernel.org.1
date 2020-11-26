@@ -2,77 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EDE2C5BC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48CB2C5BC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404979AbgKZSMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 13:12:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
+        id S2404988AbgKZSML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 13:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404527AbgKZSMB (ORCPT
+        with ESMTP id S2404714AbgKZSMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 13:12:01 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C97C0613D4;
-        Thu, 26 Nov 2020 10:12:01 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0c9000558d893f9f23e622.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9000:558d:893f:9f23:e622])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2886E1EC053C;
-        Thu, 26 Nov 2020 19:11:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606414318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=5BLwUS4p0NnmZmEmK/q6ireDuvIHVZDCQbvulzT8+Sg=;
-        b=Od9viEE2UWHMiNOvudBmLnoE+eWhlc8eOITmhU5RZ1UqJljbC3ngVElvIyAVb8QLbGWyzL
-        t99CSz2jJl2wXOMMjBAeWYy+c+bWB7hfzBS1s6yDOWMsVaGwdhTwx/5K/LivGRJdyMjjle
-        OE+bIXZpdi/ZgOnw9XVzOV4ESBz3Cu4=
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] media: atomisp: Fix size_t format specifier in hmm_alloc() debug statemenet
-Date:   Thu, 26 Nov 2020 19:11:50 +0100
-Message-Id: <20201126181150.10576-1-bp@alien8.de>
-X-Mailer: git-send-email 2.21.0
+        Thu, 26 Nov 2020 13:12:10 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED24C0613D4;
+        Thu, 26 Nov 2020 10:12:10 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id mc24so4131635ejb.6;
+        Thu, 26 Nov 2020 10:12:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wsJA7uvFveswa9oa5q3BcYpK4K/UQQ/hYMCGdNw27k8=;
+        b=lslK+q38pDdMlxGUEhEznkii9b8maWWgwbU5TwxISoune0MT9dCOdR02fWKFWJewx6
+         q1yusoV/9yMn8cJRB6poWERcHt8hbtrJfY7a8h2ypDp7wi9ywuZQmRASXhiCZTJ8eT6D
+         xPJGXqcFB+jwRgv5fn1hbge4+tpARnReECQuN6qg0SVgh55jIudx2w11JwD0b6r2x4UU
+         N5LxH2sYl6qwUrwYAY6hWt6tB4DkDUuTshDzTmJP6ntuCX4kT3yf53JjAKU7tqC1qe12
+         7COZxJie9bwANr3D1O49YBCQqIFXACaW9/QJ37eQUmUE5rRayBhtwMNf5CBbwi11qpuX
+         i9cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wsJA7uvFveswa9oa5q3BcYpK4K/UQQ/hYMCGdNw27k8=;
+        b=hQsXDYm4lxmi7XxUtsaOyYvEuUN451CgoN04sjCl1rfDXVfNuTnaQYGM1+yLAnpsIB
+         OoqVBdQNS49oR0H+OmfNun2gnAqTdJ9GoyinS8hXJjFmPzA2AvcLvvrA//liMil74AWW
+         UyA700qNnM0tInd4sX/LdsLY3RVgrAXTNnboA2Y6jwfrACQHooqrHvBV0Eez7emeqaUK
+         7Sg0GBPC9FMoyKs/wkMD3JAuJPCVMoxO6addOtyUvepfzC1OwR0kmQ4A8PmYRUJGFrdW
+         wx7Hh7eTazQKnQJ+NUWPCEFWWhuf5qJrtLYTYJoJ392IH8fGyfK9QaEvWf+RDy0uo3Jz
+         A54g==
+X-Gm-Message-State: AOAM530nGDDr8Q8TCG4TEgnUlM50SOAmg2S+meQbIZ10bFcv/KPNz5io
+        9M2NOqXhLPW6xZxtIA6LFGA=
+X-Google-Smtp-Source: ABdhPJxhQJAv2dJNegQkCi94M7mKoKOAd4Um4aSooo7QneCsYcM5iHfBsQB1N5l/Q5REF/8SJ+/NuA==
+X-Received: by 2002:a17:906:8c7:: with SMTP id o7mr3970705eje.413.1606414329295;
+        Thu, 26 Nov 2020 10:12:09 -0800 (PST)
+Received: from ?IPv6:2a01:110f:b59:fd00:385b:d58:7bd:b2fd? ([2a01:110f:b59:fd00:385b:d58:7bd:b2fd])
+        by smtp.gmail.com with ESMTPSA id k2sm3475826ejp.6.2020.11.26.10.12.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Nov 2020 10:12:08 -0800 (PST)
+Subject: Re: [PATCH v9 1/6] leds: flash: Add flash registration with undefined
+ CONFIG_LEDS_CLASS_FLASH
+To:     Gene Chen <gene.chen.richtek@gmail.com>, pavel@ucw.cz,
+        robh+dt@kernel.org, matthias.bgg@gmail.com
+Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+References: <1606390654-6075-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1606390654-6075-2-git-send-email-gene.chen.richtek@gmail.com>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <2cfb1dce-8789-8c31-1c5a-873abe896418@gmail.com>
+Date:   Thu, 26 Nov 2020 19:12:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1606390654-6075-2-git-send-email-gene.chen.richtek@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+Hi Gene,
 
-Fix this build warning on 32-bit:
+Thank you for addressing my remarks.
 
-  drivers/staging/media/atomisp/pci/hmm/hmm.c: In function ‘hmm_alloc’:
-  drivers/staging/media/atomisp/pci/hmm/hmm.c:272:3: warning: format ‘%ld’ \
-     expects argument of type ‘long int’, but argument 6 has type ‘size_t {aka unsigned int}’ [-Wformat=]
-     "%s: pages: 0x%08x (%ld bytes), type: %d from highmem %d, user ptr %p, cached %d\n",
-     ^
+On 11/26/20 12:37 PM, Gene Chen wrote:
+> From: Gene Chen <gene_chen@richtek.com>
+> 
+> Add flash registration with undefined CONFIG_LEDS_CLASS_FLASH
+> 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>   include/linux/led-class-flash.h | 42 ++++++++++++++++++++++++++++++++---------
+>   1 file changed, 33 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/led-class-flash.h b/include/linux/led-class-flash.h
+> index 21a3358..612b4ca 100644
+> --- a/include/linux/led-class-flash.h
+> +++ b/include/linux/led-class-flash.h
+> @@ -85,6 +85,7 @@ static inline struct led_classdev_flash *lcdev_to_flcdev(
+>   	return container_of(lcdev, struct led_classdev_flash, led_cdev);
+>   }
+>   
+> +#if IS_ENABLED(CONFIG_LEDS_CLASS_FLASH)
+>   /**
+>    * led_classdev_flash_register_ext - register a new object of LED class with
+>    *				     init data and with support for flash LEDs
+> @@ -98,12 +99,6 @@ int led_classdev_flash_register_ext(struct device *parent,
+>   				    struct led_classdev_flash *fled_cdev,
+>   				    struct led_init_data *init_data);
+>   
+> -static inline int led_classdev_flash_register(struct device *parent,
+> -					   struct led_classdev_flash *fled_cdev)
+> -{
+> -	return led_classdev_flash_register_ext(parent, fled_cdev, NULL);
+> -}
+> -
+>   /**
+>    * led_classdev_flash_unregister - unregisters an object of led_classdev class
+>    *				   with support for flash LEDs
+> @@ -118,15 +113,44 @@ int devm_led_classdev_flash_register_ext(struct device *parent,
+>   				     struct led_init_data *init_data);
+>   
+>   
+> +void devm_led_classdev_flash_unregister(struct device *parent,
+> +					struct led_classdev_flash *fled_cdev);
+> +
+> +#else
+> +
+> +static inline int led_classdev_flash_register_ext(struct device *parent,
+> +				    struct led_classdev_flash *fled_cdev,
+> +				    struct led_init_data *init_data)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline void led_classdev_flash_unregister(struct led_classdev_flash *fled_cdev) {};
+> +static inline int devm_led_classdev_flash_register_ext(struct device *parent,
+> +				     struct led_classdev_flash *fled_cdev,
+> +				     struct led_init_data *init_data)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline void devm_led_classdev_flash_unregister(struct device *parent,
+> +					struct led_classdev_flash *fled_cdev)
+> +{};
+> +
+> +#endif  /* IS_ENABLED(CONFIG_LEDS_CLASS_FLASH) */
+> +
+> +static inline int led_classdev_flash_register(struct device *parent,
+> +					   struct led_classdev_flash *fled_cdev)
+> +{
+> +	return led_classdev_flash_register_ext(parent, fled_cdev, NULL);
+> +}
+> +
+>   static inline int devm_led_classdev_flash_register(struct device *parent,
+>   				     struct led_classdev_flash *fled_cdev)
+>   {
+>   	return devm_led_classdev_flash_register_ext(parent, fled_cdev, NULL);
+>   }
+>   
+> -void devm_led_classdev_flash_unregister(struct device *parent,
+> -					struct led_classdev_flash *fled_cdev);
+> -
+>   /**
+>    * led_set_flash_strobe - setup flash strobe
+>    * @fled_cdev: the flash LED to set strobe on
+> 
 
-Fixes: 03884c93560c ("media: atomisp: add debug for hmm alloc")
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- drivers/staging/media/atomisp/pci/hmm/hmm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It would be good if patch description mentioned also moving the
+functions outside of #ifdef block.
 
-diff --git a/drivers/staging/media/atomisp/pci/hmm/hmm.c b/drivers/staging/media/atomisp/pci/hmm/hmm.c
-index e0eaff0f8a22..6a5ee4607089 100644
---- a/drivers/staging/media/atomisp/pci/hmm/hmm.c
-+++ b/drivers/staging/media/atomisp/pci/hmm/hmm.c
-@@ -269,7 +269,7 @@ ia_css_ptr hmm_alloc(size_t bytes, enum hmm_bo_type type,
- 		hmm_set(bo->start, 0, bytes);
- 
- 	dev_dbg(atomisp_dev,
--		"%s: pages: 0x%08x (%ld bytes), type: %d from highmem %d, user ptr %p, cached %d\n",
-+		"%s: pages: 0x%08x (%zu bytes), type: %d from highmem %d, user ptr %p, cached %d\n",
- 		__func__, bo->start, bytes, type, from_highmem, userptr, cached);
- 
- 	return bo->start;
+With that:
+
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+
 -- 
-2.21.0
-
+Best regards,
+Jacek Anaszewski
