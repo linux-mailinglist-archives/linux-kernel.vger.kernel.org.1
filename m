@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666E32C4DA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4943F2C4DA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732732AbgKZDFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 22:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732425AbgKZDFD (ORCPT
+        id S1732958AbgKZDFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 22:05:10 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7990 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732425AbgKZDFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 22:05:03 -0500
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808EEC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 19:05:02 -0800 (PST)
-Received: by mail-oo1-xc41.google.com with SMTP id h10so96367ooi.10
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 19:05:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ia7D6bExbGpst+sPe9IYyFsCKYnhwQ5YD1Ag6MqNa9Q=;
-        b=QeTQ5iJEWt0cMw5dqYxHgFZVxroA73afTnZTUKin+4nghfef6B5yrxcFNPvegT8qBf
-         YTefi635NXQkqTOruqoPH96n8Rx/WcMPI9Bt0KQGDGR/xgC/CjCqw8rov//5y2bYgMWA
-         OHGf0ZH9xck3Y+FCvyCpunR1x18dZW2hPvQv7FiRqlnXS+VebnXMvYVFoZMjoW/lTXm/
-         N34gqQikhzSAdBnbJaeqvCJQCksT3a4GZiFLQXB8cxO4Cv+iPqR053/SVkxnZv0vfou2
-         9nsUUYFeJqWgspU+YFMLtB/DKtqU5WjjzifukOe1l36AM/AsXb/Ftw8un1Z9feEdbfu5
-         6d+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ia7D6bExbGpst+sPe9IYyFsCKYnhwQ5YD1Ag6MqNa9Q=;
-        b=dRx0OJkazWfFnin/qb3yNSGLYOEHBbK9w4EtXf1C/5ZqgApki6U4E2AxRF1zYcQsj1
-         r0TBfCK/OJjPNnc2KSVEZuJOJURwOP8yGa2uidYZtxaF1x5TrBRydNbrl4yO+TBH5mOE
-         NloFlwNBzLtaFeJ3947dAWHPAg2jIFSTM6t8NomzZW8jV9YKV7pmIfzLnOVGQ6TBYjSc
-         65B+Y7B8ieT7SFBaCEuOR/+m8EkopyvCGvP/pxWYFfF1gzIokCXva7jZnFRiO7msQfeV
-         r4rtxI8nEuoHkhwRfLVATmXCPn/cTpN4ePUHpQAQkyWXGIzc+tpAFYvxf8Sit+uSSE8L
-         4bKw==
-X-Gm-Message-State: AOAM530q0eEUXbCgWExLlewsLAkDQrfmiCGM1+8XI/FHmyaRDE3nwnQT
-        4KXT2Ty8AQitR4XyZTFsXf7TL4XI/o+aLTpoS+cPeg==
-X-Google-Smtp-Source: ABdhPJzEQJKg3GtGD4nIFKKsjIIVXwsdLRt5qMtGdVulnYTH6c76BbtnO7sKZ1nNwOktpYnj4U+GEioYklOycxeSWDs=
-X-Received: by 2002:a4a:de19:: with SMTP id y25mr638218oot.33.1606359901824;
- Wed, 25 Nov 2020 19:05:01 -0800 (PST)
+        Wed, 25 Nov 2020 22:05:10 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4ChN0N5WKmzhYKZ;
+        Thu, 26 Nov 2020 11:04:52 +0800 (CST)
+Received: from [10.174.177.149] (10.174.177.149) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 26 Nov 2020 11:05:04 +0800
+Subject: Re: [PATCH] xfs: check the return value of krealloc() in
+ xfs_uuid_mount
+To:     Gao Xiang <hsiangkao@redhat.com>
+CC:     Eric Sandeen <sandeen@sandeen.net>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        <linux-xfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201125065036.154312-1-miaoqinglang@huawei.com>
+ <365b952c-7fea-3bc2-55ea-3f6b1c9f9142@sandeen.net>
+ <9f998a9d-0684-6b45-009e-acf2e0ac4c85@huawei.com>
+ <20201126021622.GA336866@xiangao.remote.csb>
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+Message-ID: <5d6b6f6f-4bc3-2821-d5b1-569afba0221a@huawei.com>
+Date:   Thu, 26 Nov 2020 11:05:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20201111100608.108842-2-zong.li@sifive.com> <202011250226.TqdPflR5-lkp@intel.com>
-In-Reply-To: <202011250226.TqdPflR5-lkp@intel.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Thu, 26 Nov 2020 11:04:51 +0800
-Message-ID: <CANXhq0o-k0JwavOR9S=Wvjn9v5tkOSX1QYnoiGH1LRWeFaKaww@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] clk: sifive: Extract prci core to common base
-To:     kernel test robot <lkp@intel.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Pragnesh Patel <pragnesh.patel@openfive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Yash Shah <yash.shah@sifive.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, kbuild-all@lists.01.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201126021622.GA336866@xiangao.remote.csb>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 2:43 AM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Zong,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on clk/clk-next]
-> [also build test ERROR on robh/for-next linus/master linux/master v5.10-rc5 next-20201124]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Zong-Li/clk-add-driver-for-the-SiFive-FU740/20201111-180900
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-next
-> config: riscv-randconfig-r003-20201124 (attached as .config)
-> compiler: riscv32-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/f08e191181ee40e21d9c1d63cfa4d894bc86ff27
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Zong-Li/clk-add-driver-for-the-SiFive-FU740/20201111-180900
->         git checkout f08e191181ee40e21d9c1d63cfa4d894bc86ff27
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=riscv
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    riscv32-linux-ld: drivers/clk/sifive/sifive-prci.o: in function `sifive_prci_wrpll_recalc_rate':
-> >> sifive-prci.c:(.text+0x398): undefined reference to `wrpll_calc_output_rate'
->    riscv32-linux-ld: drivers/clk/sifive/sifive-prci.o: in function `sifive_prci_wrpll_round_rate':
-> >> sifive-prci.c:(.text+0x41a): undefined reference to `wrpll_configure_for_rate'
-> >> riscv32-linux-ld: sifive-prci.c:(.text+0x428): undefined reference to `wrpll_calc_output_rate'
->    riscv32-linux-ld: drivers/clk/sifive/sifive-prci.o: in function `sifive_prci_wrpll_set_rate':
->    sifive-prci.c:(.text+0x480): undefined reference to `wrpll_configure_for_rate'
-> >> riscv32-linux-ld: sifive-prci.c:(.text+0x4ee): undefined reference to `wrpll_calc_max_lock_us'
-> >> riscv32-linux-ld: drivers/clk/sifive/sifive-prci.o:(.srodata+0x0): undefined reference to `__prci_init_clocks_fu540'
->
 
-Fix the dependency of sifive-prci.c in the next version patch set by
-following, only build core code if CONFIG_CLK_SIFIVE_PRCI is selected.
 
-- obj-y  += sifive-prci.o
-+ obj-$(CONFIG_CLK_SIFIVE_PRCI)   += sifive-prci.o
-
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+在 2020/11/26 10:16, Gao Xiang 写道:
+> Hi Qinglang,
+> 
+> On Thu, Nov 26, 2020 at 09:21:11AM +0800, Qinglang Miao wrote:
+>>
+>>
+>> 在 2020/11/25 23:55, Eric Sandeen 写道:
+>>> On 11/25/20 12:50 AM, Qinglang Miao wrote:
+>>>> krealloc() may fail to expand the memory space.
+>>>
+>>> Even with __GFP_NOFAIL?
+>>>
+>>>     * ``GFP_KERNEL | __GFP_NOFAIL`` - overrides the default allocator behavior
+>>>       and all allocation requests will loop endlessly until they succeed.
+>>>       This might be really dangerous especially for larger orders.
+>>>
+>>>> Add sanity checks to it,
+>>>> and WARN() if that really happened.
+>>>
+>>> As aside, there is no WARN added in this patch for a memory failure.
+>>>
+>>>> Fixes: 771915c4f688 ("xfs: remove kmem_realloc()")
+>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>>> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+>>>> ---
+>>>>    fs/xfs/xfs_mount.c | 6 +++++-
+>>>>    1 file changed, 5 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
+>>>> index 150ee5cb8..c07f48c32 100644
+>>>> --- a/fs/xfs/xfs_mount.c
+>>>> +++ b/fs/xfs/xfs_mount.c
+>>>> @@ -80,9 +80,13 @@ xfs_uuid_mount(
+>>>>    	}
+>>>>    	if (hole < 0) {
+>>>> -		xfs_uuid_table = krealloc(xfs_uuid_table,
+>>>> +		uuid_t *if_xfs_uuid_table;
+>>>> +		if_xfs_uuid_table = krealloc(xfs_uuid_table,
+>>>>    			(xfs_uuid_table_size + 1) * sizeof(*xfs_uuid_table),
+>>>>    			GFP_KERNEL | __GFP_NOFAIL);
+>>>> +		if (!if_xfs_uuid_table)
+>>>> +			goto out_duplicate;
+>>>
+>>> And this would emit "Filesystem has duplicate UUID" which is not correct.
+>>>
+>>> But anyway, the __GFP_NOFAIL in the call makes this all moot AFAICT.
+>>>
+>>> -Eric
+>> Hi Eric,
+>>
+>> Sorry for neglecting __GFP_NOFAIL symbol, and I would add a WARN in memory
+>> failure next time.
+> 
+> Sorry about my limited knowledge, but why it needs a WARN here since
+> I think it will never fail if __GFP_NOFAIL is added (no ?).
+'next time' means next time when I send patches related to memory 
+failure, not on this one. Sorry for making confusing to you.
+> 
+> I'm not sure if Hulk CI is completely broken or not on this, also if
+> such CI can now generate trivial patch (?) since the subject, commit
+> message and even the variable name is quite similiar to
+> https://lore.kernel.org/linux-xfs/20201124104531.561-2-thunder.leizhen@huawei.com
+> in a day.
+> 
+> And it'd be better to look into the code before sending patches...
+Yeah..  I should pay more attension.
+> 
+> Thanks,
+> Gao Xiang >
+Thanks for your advice~
+>>
+>> Thanks for your advice！
+>>
+> 
+> .
+> 
