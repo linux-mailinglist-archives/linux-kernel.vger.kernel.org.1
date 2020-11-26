@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A292C5B83
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 293562C5B85
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404750AbgKZSEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 13:04:25 -0500
-Received: from shelob.surriel.com ([96.67.55.147]:40104 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404742AbgKZSEZ (ORCPT
+        id S2404758AbgKZSEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 13:04:31 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1988 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404733AbgKZSE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 13:04:25 -0500
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kiLcu-0003WL-9h; Thu, 26 Nov 2020 13:04:16 -0500
-Message-ID: <920c627330f3c7d295ab58edd1b62f28fdbd14bc.camel@surriel.com>
-Subject: Re: [PATCH 2/3] mm,thp,shm: limit gfp mask to no more than specified
-From:   Rik van Riel <riel@surriel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     hughd@google.com, xuyu@linux.alibaba.com,
-        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
-        willy@infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz
-Date:   Thu, 26 Nov 2020 13:04:14 -0500
-In-Reply-To: <20201126134034.GI31550@dhcp22.suse.cz>
-References: <20201124194925.623931-1-riel@surriel.com>
-         <20201124194925.623931-3-riel@surriel.com>
-         <20201126134034.GI31550@dhcp22.suse.cz>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-67VJL8SKwNL83SFfDlDI"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Thu, 26 Nov 2020 13:04:28 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbfee330001>; Thu, 26 Nov 2020 10:04:35 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
+ 2020 18:04:28 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.47) by
+ HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 26 Nov 2020 18:04:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UZ9+gi0qOF9VVGPVEd3QY1B/ytnEatf0RRi/5xUZqdTPo6vpUdGxIwtLAHsujZe7nlGeglc8juFFEdiCIz8gcBZGZF2LB9Nqtol7XHMDrQPaFFzLz1kd91tyKUZ1KmTgIR7ukWUy8FJGcFmkRUiicaWVeA/caOkTALc13crQckFGUVF6flhj9XV72XDLjdigOwSP1B89mqlLFd5vQycimiKIlA+c/MsDwOtWPRdzhOZ6L4Noqe0oQlzmUFIBTcIM/IE6ku5F1E1i69N3BmA13LnqmbjyO8Iy8gEsN4th94X0Sm7UIs1Zz+gQsDNdXL/w+722Hrxto0q9IvaEDGdZuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bP/jacIAXara8xVvAyE4gCMNtaSv8jbWtO4yCxGpTEA=;
+ b=c0uwrdHisA72WS2d8HqkfSKarAWNl/JZaCwpwbqtMLDhexTrTk5i2YBbuZa+eZq4hgMkaC6IqtJUZOE9uZiZ7F6G456Uitu7vSX1Z3D1WtpjPtanq7FfmsiVn0D7Cv9rVP7nyvXtQ0AxszZ1xXaBaVThp85hsN3zklKANizVxN8lSgYCDBbcx71USE5RzD9lqZLbxlfTQbRdRKTgv3zJrvJm4freCfc1jMEZLG2EgUBI7oVyDvvVtWK4hAn6pahHrWknLqaxP708aN4eBZbyYlgw0AtNCG3iSqEN2+XupRx7BEXe+sa+Ig+jJ/sgBmnZNFFr0EK+tJlAf3SyGDWLVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Thu, 26 Nov
+ 2020 18:04:20 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3611.024; Thu, 26 Nov 2020
+ 18:04:20 +0000
+Date:   Thu, 26 Nov 2020 14:04:18 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH rdma-next 0/2] Enable querying AH for XRC QP types
+Message-ID: <20201126180418.GA541574@nvidia.com>
+References: <20201115121425.139833-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201115121425.139833-1-leon@kernel.org>
+X-ClientProxiedBy: BL0PR02CA0064.namprd02.prod.outlook.com
+ (2603:10b6:207:3d::41) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0064.namprd02.prod.outlook.com (2603:10b6:207:3d::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Thu, 26 Nov 2020 18:04:19 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kiLcw-002Gtk-On; Thu, 26 Nov 2020 14:04:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606413875; bh=bP/jacIAXara8xVvAyE4gCMNtaSv8jbWtO4yCxGpTEA=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=pWSQ2wqaSvWRjjT1Ol6sqcTXpcAI9at1F/JaINCzlyVtf11qngxhd9npuxe7cw2Hn
+         Xt9lEryHwom2GuemQniHYdBZCn7qDmyx1ZiCDuBvld+63JH+fODrKnKoVpg6Rj5F0Y
+         6UaM0PK6pwAJSNsBa55b2Ao43+bTuuCk8fm6Y2AHcThbRZMVaZwY56Kk1U73BrLCZO
+         EGrGLdPtZn468xJE432jgIQDYqHpWl9FZILspMGDfRzvq3ThSR6HNF7bXdEAu7mB8n
+         mXUcu9z9r/DFIhw9Ija7XsNyl9zUFv4Mu7l+oT8t37j1g+Hg2h/ojnRvOst1RCyeWo
+         ms22zDq/FN4ug==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Nov 15, 2020 at 02:14:23PM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Update mlx4 and mlx5 drivers to support querying AH for XRC QP types.
+> 
+> Thanks
+> 
+> Avihai Horon (2):
+>   RDMA/mlx5: Enable querying AH for XRC QP types
+>   RDMA/mlx4: Enable querying AH for XRC QP types
 
---=-67VJL8SKwNL83SFfDlDI
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Applied to for-next, thanks
 
-On Thu, 2020-11-26 at 14:40 +0100, Michal Hocko wrote:
-> On Tue 24-11-20 14:49:24, Rik van Riel wrote:
-> > Matthew Wilcox pointed out that the i915 driver opportunistically
-> > allocates tmpfs memory, but will happily reclaim some of its
-> > pool if no memory is available.
-> >=20
-> > Make sure the gfp mask used to opportunistically allocate a THP
-> > is always at least as restrictive as the original gfp mask.
->=20
-> I have brought this up in the previous version review and I feel my
-> feedback hasn't been addressed. Please describe the expected behavior
-> by
-> those shmem users including GFP_KERNEL restriction which would make
-> the
-> THP flags incompatible. Is this a problem? Is there any actual
-> problem
-> if the THP uses its own set of flags?
-
-In the case of i915, the gfp flags passed in by the i915
-driver expect the VM to easily fail the allocation, in
-which case the i915 driver will reclaim some existing
-buffers and try again.
-
-Trying harder than the original gfp_mask would
-change
-the OOM behavior of systems using the i915 driver.
-
-> I am also not happy how those two sets of flags are completely
-> detached
-> and we can only expect surprises there.=20
-
-I would be more than happy to implement things differently,
-but I am not sure what alternative you are suggesting.
-
---=20
-All Rights Reversed.
-
---=-67VJL8SKwNL83SFfDlDI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+/7h4ACgkQznnekoTE
-3oNYDwgAgSEz682PGBHWXeILtW9myPB2wDN8OOoSivRAGnVaJpQNflUsNke/pHMK
-ONtKDDwMRqE11vzjbqZUYPFfpYeDLyizno01z2j0NzrqU4pKBBYUZb32q6Nd39eU
-nZfpUtSxVWTS/r/GiC7BVwqJF/SkVQ8io8nlWZX2Thku6jdbo28spalaDw2hqIRV
-978iyF1ljYpA20x6tZyZK5krhBecGqDHW4HDpuoo/ut8lj0IcXWQ3nFfzDLSkYIY
-hfU/Ltl3+59OYya4ghvJ9BlpiLHTon/2lPEDdbQrrjzcxai663iuwzuNwA00S4PY
-xrgK853amtt+fS4wx1brw3JZyWJXnA==
-=Eoqq
------END PGP SIGNATURE-----
-
---=-67VJL8SKwNL83SFfDlDI--
-
+Jason
