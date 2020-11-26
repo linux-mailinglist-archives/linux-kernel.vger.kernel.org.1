@@ -2,217 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28102C57DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5A02C57E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390826AbgKZPG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:06:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389743AbgKZPG6 (ORCPT
+        id S2391148AbgKZPMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:12:36 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15384 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390351AbgKZPMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:06:58 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31A8C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:06:57 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id 64so2454024wra.11
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:06:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IIkKdgG3MXucw3bhwEXYRsXrYXFeeMD56CZk70OXd98=;
-        b=V+KbBdJetUPHiz08XVz2xtuvEwzvDhJeNOUmMm3YHvh2VEIPgciQeMzpe4tdz6wfVb
-         QeIZS5Jhe64Z1DnqB6YJMaKZtJP1/O3Hu9xDHIfayi/a9QvO5sqN+8vvr5utc/JD3mvO
-         tZ0ZWKOS0fEsWIM8Y73mfAgAAyixQUjBYa1Z46lP765OQbSRlkfU7KNrLyr+gc8qXlhw
-         8xfJHqye20Tmz/6n5gzjanwJUvw0PGq8sfWrxRRqjs5jxr+tqVmM4S5g9nhTBSpZiTFu
-         mr8PgaB2MSAUNsB3weM34d0Lz0Mj2wGFXQLcheksSTdZKoZqUw7MLNxxXN0bOxv9ictB
-         FPJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IIkKdgG3MXucw3bhwEXYRsXrYXFeeMD56CZk70OXd98=;
-        b=ng0tUkALPhamlSGWFgcQnK+QNW2gwQMBBlNMSpN/FFQsHZw2KvFHreClSjxptpvI9t
-         KSk11+fV8OLTvxtrEbforBGpYjkXH7Brl87FC0Iv9/SdiSFyefeHTIMeWa4J9G4dZMI/
-         gnq+kv+aSeH22D4yzu61GaRquA9Hj+qCmAvDI6n0mW7fZ8C++E3fbSdEj5gAwYF/gLQo
-         9uTzFHg9etaVKIAQrxpWdklpDEQIYo9dJTtd1+Cz6NBvJZaVZMyFxcSXZeyDigcusfSV
-         gXPUxWIlunzwMhrS/riK7DejoxwQ0PXPHpgyYYeQ/q5G5kS0m3THYxKaURaW60w7jd6n
-         Q1WA==
-X-Gm-Message-State: AOAM5323aQGgFAgJnCh43oraDlO7+dtbYu7dOjmJSlbU81YxL7gV0TPc
-        yH9ihxqooNm66VDd5o79qQgWWw==
-X-Google-Smtp-Source: ABdhPJxq4h0HMwUBOCYGysfOyb2AHk+w3QVN3uFDg1LPIyPzhTxlNA+HwvwT6MxVENkQalyVMf1L5Q==
-X-Received: by 2002:adf:f2ce:: with SMTP id d14mr4389915wrp.94.1606403216354;
-        Thu, 26 Nov 2020 07:06:56 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c023:e75f:e8c4:d86? ([2a01:e34:ed2f:f020:c023:e75f:e8c4:d86])
-        by smtp.googlemail.com with ESMTPSA id p11sm9662762wrj.14.2020.11.26.07.06.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 07:06:55 -0800 (PST)
-Subject: Re: [PATCH v3 4/4] powercap/drivers/dtpm: Add CPU energy model based
- support
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rjw@rjwysocki.net, corbet@lwn.net, ulf.hansson@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ilina@codeaurora.org, rkumbako@codeaurora.org, rui.zhang@intel.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20201123214208.11007-1-daniel.lezcano@linaro.org>
- <20201123214208.11007-5-daniel.lezcano@linaro.org>
- <50db7265-3870-b977-6e41-b0a0ac3cdb94@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <68b0f4e5-bdff-a4a7-f59a-e2a4d0a138de@linaro.org>
-Date:   Thu, 26 Nov 2020 16:06:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 26 Nov 2020 10:12:36 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbfc5e30000>; Thu, 26 Nov 2020 07:12:35 -0800
+Received: from [172.27.12.84] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
+ 2020 15:12:33 +0000
+Subject: Re: [PATCH v2 00/17] vdpa: generalize vdpa simulator
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        <virtualization@lists.linux-foundation.org>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        <linux-kernel@vger.kernel.org>,
+        Laurent Vivier <lvivier@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>, Oren Duer <oren@nvidia.com>,
+        Shahaf Shuler <shahafs@nvidia.com>
+References: <20201126144950.92850-1-sgarzare@redhat.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <751e8938-8055-511c-c339-2b55dc902944@nvidia.com>
+Date:   Thu, 26 Nov 2020 17:12:30 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <50db7265-3870-b977-6e41-b0a0ac3cdb94@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201126144950.92850-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606403555; bh=vtGXiLJGj14rKPmHhudnMAtjCzWUYwLzn0s8yBeVSHw=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=XhwI+JIouPOqtJ2VNtrmoSq+4SZ2mCWLlNea1Nh3lPvUjlJX3ieQIORafSVTtqj9s
+         egoEZCfp4HBl8F3Zqp20AIn7L89aMaB2ZN8ikaSctz7G0Dh/54B6tTLKILDnnohs3a
+         uDLkQJPprJNfGv92M+eGrML0/3dKvFxhtGx3615lo3B0MIwif01ouS0TxS36C3ojly
+         8KIX1I80Zi0kxFWCDdoRGCuUgJ25oFnXW6mNX6clk+NgpCRdJiSMhhCdlelsZs/VAO
+         fLA7PKjKx0zvnrXOdY+Ny7hZXcLeZ+m9le0cAkYkH2yIg7qOYBvDfey8Uh6wYBhLSD
+         nQXXh8B/DNPrg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi Lukasz,
+On 11/26/2020 4:49 PM, Stefano Garzarella wrote:
+> This series moves the network device simulator in a new module
+> (vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
+> module, allowing the possibility to add new vDPA device simulators.
+>
+> For now I removed the vdpa-blk simulator patches, since I'm still working
+> on them and debugging the iotlb issues.
+>
+> Thanks to Max that started this work! I took his patches and extended a bit.
+>
+> As Jason suggested, I simplified the "vdpa: split vdpasim to core and
+> net modules" patch, moving some changes out in small patches.
+> @Max: I put your Co-developed-by and Signed-off-by tags on these patches,
+> let me know if it is okay for you, or if there is a better way to give
+> credit to your work!
+
+Stefano,
+
+thanks for taking my initial series and bringing it to upstream level 
+and thanks Jason for your reviews.
+
+I'm ok with the tags and hopefully I'll be able to help a bit in the 
+submission in couple of weeks.
+
+great progress !
 
 
-On 26/11/2020 11:06, Lukasz Luba wrote:
-> Hi Daniel,
-> 
-> On 11/23/20 9:42 PM, Daniel Lezcano wrote:
->> With the powercap dtpm controller, we are able to plug devices with
->> power limitation features in the tree.
->>
-> 
-> [snip]
-> 
->> +
->> +static void pd_release(struct dtpm *dtpm)
->> +{
->> +    struct dtpm_cpu *dtpm_cpu = dtpm->private;
->> +
-> 
-> Maybe it's worth to add:
-> ------------------->8----------------
-> if (freq_qos_request_active(&dtpm_cpu->qos_req))
->     freq_qos_remove_request(&dtpm_cpu->qos_req);
-> -------------------8<---------------
-> 
-> If we are trying to unregister dtpm in error path due to freq_qos
-> registration failure, a warning would be emitted from freq_qos.
+> v1: https://lists.linuxfoundation.org/pipermail/virtualization/2020-November/050677.html
+>
+> v2:
+>    - moved most of the patches before the vdpa-core/net split [Jason]
+>    - removed unnecessary headers
+>    - removed 'default n' in Kconfig entries [Jason]
+>    - added VDPASIM_IOTLB_LIMIT macro [Jason]
+>    - set vringh notify callback [Jason]
+>    - used VIRTIO terminology for in_iov/out_iov [Stefan]
+>    - simplified "vdpa: split vdpasim to core and net modules" patch,
+>      moving some changes out in small patches
+>    - left batch_mapping module parameter in the core [Jason]
+>
+> Max Gurtovoy (2):
+>    vdpa_sim: remove hard-coded virtq count
+>    vdpa: split vdpasim to core and net modules
+>
+> Stefano Garzarella (15):
+>    vdpa: remove unnecessary 'default n' in Kconfig entries
+>    vdpa_sim: remove unnecessary headers inclusion
+>    vdpa_sim: remove the limit of IOTLB entries
+>    vdpa_sim: rename vdpasim_config_ops variables
+>    vdpa_sim: add struct vdpasim_dev_attr for device attributes
+>    vdpa_sim: add device id field in vdpasim_dev_attr
+>    vdpa_sim: add supported_features field in vdpasim_dev_attr
+>    vdpa_sim: add work_fn in vdpasim_dev_attr
+>    vdpa_sim: store parsed MAC address in a buffer
+>    vdpa_sim: make 'config' generic and usable for any device type
+>    vdpa_sim: add get_config callback in vdpasim_dev_attr
+>    vdpa_sim: set vringh notify callback
+>    vdpa_sim: use kvmalloc to allocate vdpasim->buffer
+>    vdpa_sim: make vdpasim->buffer size configurable
+>    vdpa_sim: split vdpasim_virtqueue's iov field in out_iov and in_iov
 
-Ah yes, good point.
-
->> +    freq_qos_remove_request(&dtpm_cpu->qos_req);
->> +    kfree(dtpm_cpu);
->> +}
-> 
-> [snip]
-> 
->> +
->> +static int cpuhp_dtpm_cpu_online(unsigned int cpu)
->> +{
->> +    struct dtpm *dtpm;
->> +    struct dtpm_cpu *dtpm_cpu;
->> +    struct cpufreq_policy *policy;
->> +    struct em_perf_domain *pd;
->> +    char name[CPUFREQ_NAME_LEN];
->> +    int ret;
->> +
->> +    policy = cpufreq_cpu_get(cpu);
->> +
->> +    if (!policy)
->> +        return 0;
->> +
->> +    pd = em_cpu_get(cpu);
->> +    if (!pd)
->> +        return -EINVAL;
->> +
->> +    dtpm = per_cpu(dtpm_per_cpu, cpu);
->> +    if (dtpm)
->> +        return power_add(dtpm, pd);
->> +
->> +    dtpm = dtpm_alloc(&dtpm_ops);
->> +    if (!dtpm)
->> +        return -EINVAL;
->> +
->> +    dtpm_cpu = kzalloc(sizeof(dtpm_cpu), GFP_KERNEL);
->> +    if (!dtpm_cpu) {
->> +        kfree(dtpm);
->> +        return -ENOMEM;
->> +    }
->> +
->> +    dtpm->private = dtpm_cpu;
->> +    dtpm_cpu->cpu = cpu;
->> +
->> +    for_each_cpu(cpu, policy->related_cpus)
->> +        per_cpu(dtpm_per_cpu, cpu) = dtpm;
->> +
->> +    sprintf(name, "cpu%d", dtpm_cpu->cpu);
->> +
->> +    ret = dtpm_register(name, dtpm, __parent);
->> +    if (ret)
->> +        goto out_kfree_dtpm_cpu;
->> +
->> +    ret = power_add(dtpm, pd);
->> +    if (ret)
->> +        goto out_power_sub;
-> 
-> Shouldn't we call dtpm_unregister() instead?
-> The dtpm_unregister() would remove the zone, which IIUC we
-> are currently missing.
-> 
->> +
->> +    ret = freq_qos_add_request(&policy->constraints,
->> +                   &dtpm_cpu->qos_req, FREQ_QOS_MAX,
->> +                   pd->table[pd->nr_perf_states - 1].frequency);
->> +    if (ret)
->> +        goto out_dtpm_unregister;
-> 
-> Could this trigger different steps, starting from out_power_sub_v2
-> below?
-> 
->> +
->> +    return 0;
->> +
->> +out_dtpm_unregister:
->> +    dtpm_unregister(dtpm);
->> +    dtpm_cpu = NULL; /* Already freed by the release ops */
->> +out_power_sub:
->> +    power_sub(dtpm, pd);
-> 
-> I would change the order of these two above into something like:
-
-Ok, I'll revisit the rollback routine.
-
-> out_power_sub_v2:
->     power_sub(dtpm, pd);
-> out_dtpm_unregister_v2:
->     dtpm_unregister(dtpm);
->     dtpm_cpu = NULL;
-> 
->> +out_kfree_dtpm_cpu:
->> +    for_each_cpu(cpu, policy->related_cpus)
->> +        per_cpu(dtpm_per_cpu, cpu) = NULL;
->> +    kfree(dtpm_cpu);
->> +
->> +    return ret;
->> +}
-> 
-> IIUC power_sub() would decrement the power and set it to 0 for that
-> dtmp, then the dtpm_unregister() would also try to decrement the power,
-> but by the value of 0. So it should be safe.
-
-Right.
-
-
-Thanks for the review
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
