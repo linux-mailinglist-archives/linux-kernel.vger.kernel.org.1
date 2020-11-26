@@ -2,132 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7037A2C5561
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3072C559F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390008AbgKZNbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:31:50 -0500
-Received: from mout01.posteo.de ([185.67.36.65]:50337 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389775AbgKZNbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:31:49 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 0138E16005F
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:31:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1606397507; bh=ngM+0rw6x2l2xrLAt+k14uW3bBh+HwtctRSqgtfOE7k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=P2yqY/ctkbt5+O7vzW3DVobQ0dA29ObOvp/J7K6itKOJ3LaCo77SWFC9XT2wjxLYd
-         Z3wpInvMRpp7jb/dd6EOqXTwYzJ9/ELeQQWi5Kawon7JEZ0p2Q+0FXVClSUZ17A3Rd
-         Jj/+DHf+wnS740WEc6gM4EWSELi/13cvWILt+/PYzWqYxJyk+m+0u+SvT2LzQtJaZB
-         YIDEwSs3GVeN2f7oFqfI5vtonIjZuoSTmQ7l3ywanezZ0kdUntjfCNVCFslkBl6ZSl
-         amJ2vmPyxBwPBB50R2jnInj+OlJhjg4qOPdz7toVf/W+c0+c8usnDphKB2/uVOpE4P
-         8tDrFKVImkUqQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4Chdvj31Bmz6tmM;
-        Thu, 26 Nov 2020 14:31:45 +0100 (CET)
-Date:   Thu, 26 Nov 2020 14:31:43 +0100
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH 2/2] hwspinlock: add sunxi hardware spinlock support
-Message-ID: <20201126143143.06107cf4@monster.powergraphx.local>
-In-Reply-To: <20201124145425.GB185852@builder.lan>
-References: <cover.1605693132.git.wilken.gottwalt@posteo.net>
-        <149526a0ba8d18ebb68baa24e95d946ede90b4c0.1605693132.git.wilken.gottwalt@posteo.net>
-        <20201122051900.GH807@yoga>
-        <20201123191712.72484b19@monster.powergraphx.local>
-        <20201124145425.GB185852@builder.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2390268AbgKZNcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390243AbgKZNcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 08:32:07 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959DAC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:32:07 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so2157236wrx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:32:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LgKtNmQfGnZeeFNwZJm+JSbHcTG8sEx1i9uktjmVfHw=;
+        b=diSVxSAoA40tZEtS/HzleEtjZHtOlucT3xtLPjQTgjZqyNCONejvfwzDQ9rykhgSo/
+         EC3mKBZiW8Y5/3yHi2UXTIJGHUlJZWmhmGKEzoFG4WE77PAi2Gt1qssdtssc+4ye7qOY
+         pOOJu38hmlttKJ/wu6A29AeM/dSRlCKiFap/M1FUM0A49ppUqc4MS/6/YZ7Ilmaon+3l
+         ZykubvRyrnyBUVtXVW4XC2vYrPauBp/aPbGRvXo3xT80JNaEwaIuofRvLbFtOJdsF2Gb
+         6oJI+aIb0M4cuqnQcp21K4cd3cKvyCpJ8sim4c2daOi3LjPnapOS7eUQuEB9kOLB6Phn
+         y6zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LgKtNmQfGnZeeFNwZJm+JSbHcTG8sEx1i9uktjmVfHw=;
+        b=Nf8JEzm4omcIiNQqKNa2foKM2cfnGr3aIebTtIazVz68j0q4mwiXASdC+HFsCFqBRi
+         +wWMqRaoWlul/3B6TBdmBqufBNBw328tBO3MUhGEOS845gwi95b14awiHxFosNGnsion
+         FInSJPjORUzKu7hM9vGA8Lpu73bqtea9vWk8qzkJSEjWby/UQ1VLP+bQbRqMNW0HdKRQ
+         U3BjbR0TQqvB4WckWBoGBktQrxvlYFyF9t7MmMep4b35Ei+wDbt1Iev1tZfxRWmumkpk
+         vN3anYGUl/+pecK2q3+VbriJIBTQz5f3u8A172/n33i4V3BoOGUfloykBLRFX2nJu7aR
+         SVeQ==
+X-Gm-Message-State: AOAM532b58biQiGffi8XU97BbWChDF7zd/tLbd1MzaTvH+9erXcv1Hi4
+        /XIN74UYgFnjHSwWV9r3e+s/hQ==
+X-Google-Smtp-Source: ABdhPJxCIYT+lF7JbaW4XiyGU7BSoo+9JGKkKGnf0fEfWfYR7PXVvWXzcXpp+ZzvHC83M7okR4aAcQ==
+X-Received: by 2002:adf:e4d1:: with SMTP id v17mr3803758wrm.325.1606397526033;
+        Thu, 26 Nov 2020 05:32:06 -0800 (PST)
+Received: from dell.default ([91.110.221.235])
+        by smtp.gmail.com with ESMTPSA id n10sm8701001wrv.77.2020.11.26.05.32.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 05:32:05 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org, kvalo@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 08/17] iwlwifi: iwl-eeprom-parse: Fix 'struct iwl_eeprom_enhanced_txpwr's header
+Date:   Thu, 26 Nov 2020 13:31:43 +0000
+Message-Id: <20201126133152.3211309-9-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201126133152.3211309-1-lee.jones@linaro.org>
+References: <20201126133152.3211309-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 08:54:25 -0600
-Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+Fixes the following W=1 kernel build warning(s):
 
-> On Mon 23 Nov 12:17 CST 2020, Wilken Gottwalt wrote:
-> 
-> > On Sat, 21 Nov 2020 23:19:00 -0600
-> > Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
-> > > > +static int hwlocks_inuse_show(struct seq_file *seqf, void *unused)
-> > > > +{
-> > > > +	struct sunxi_hwspinlock_data *priv = seqf->private;
-> > > > +	int inuse;
-> > > > +
-> > > > +	/* getting the status of only the main 32 spinlocks is supported */
-> > > > +	inuse = hweight32(readl(priv->io_base + SPINLOCK_STATUS_REG));
-> > > 
-> > > So this returns how many of the locks are taken? How is that useful?
-> > 
-> > It is a way to see if locks were taken from linux or the arisc core without
-> > touching the actual hwspinlock abi or the locks. So it is a nice way to debug
-> > hwspinlocks, hence it is part of debugfs.
-> > 
-> 
-> So in a scenario where two remote processors ping-pong the lock between
-> them, this will always read 1 and you won't know why?
+ drivers/net/wireless/intel/iwlwifi/iwl-eeprom-parse.c:340: warning: cannot understand function prototype: 'struct iwl_eeprom_enhanced_txpwr '
 
-I know it is not perfect. I will change it to actually report which locks are
-taken. And currently the crust firmware does not use the locks and on the
-Linux side there are only a handful of driver/components using hwspinlocks,
-and none of them are active in a kernel compiled for a H5. So it really is a
-nice way to check/debug the hwspinlocks. I already have a simple test running
-where crust sets a spinlock and I can see it on Linux without touching the
-actuall locks thanks to this status register.
+Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Cc: Luca Coelho <luciano.coelho@intel.com>
+Cc: Intel Linux Wireless <linuxwifi@intel.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ .../net/wireless/intel/iwlwifi/iwl-eeprom-parse.c    | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-> > > > +	seq_printf(seqf, "%d\n", inuse);
-> [..]
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +static const struct of_device_id sunxi_hwspinlock_ids[] = {
-> > > > +	{ .compatible = "allwinner,sun8i-hwspinlock", },
-> > > > +	{ .compatible = "allwinner,sun50i-hwspinlock", },
-> > > > +	{},
-> > > > +};
-> > > > +MODULE_DEVICE_TABLE(of, sunxi_hwspinlock_ids);
-> > > > +
-> > > > +static struct platform_driver sunxi_hwspinlock_driver = {
-> > > > +	.probe	= sunxi_hwspinlock_probe,
-> > > > +	.remove	= sunxi_hwspinlock_remove,
-> > > > +	.driver	= {
-> > > > +		.name		= DRIVER_NAME,
-> > > > +		.of_match_table	= of_match_ptr(sunxi_hwspinlock_ids),
-> > > 
-> > > Please avoid of_match_ptr, as this will cause warnings about unused
-> > > variables when COMPILE_TEST without OF.
-> > 
-> > So did you mean to leave it out completely?
-> > 
-> 
-> Yes, "worst case" is that you include the reference to
-> sunxi_hwspinlock_ids on a build without CONFIG_OF and wasting a little
-> bit of memory.
-> 
-> Using of_match_ptr() with CONFIG_OF=n will result in NULL and as such
-> we'll get a compile warning that nothing references sunxi_hwspinlock_ids
-> - so then that will have to be marked __maybe_unused, or wrapped in an
-> #if...
-> 
-> So better just leave it as:
-> 	.of_match_table = sunxi_hwspinlock_ids,
-
-Thank you for the explanation. I really like to know the details and reasons
-behind this.
-
-greetings,
-Wilken
-
-> Regards,
-> Bjorn
+diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-eeprom-parse.c b/drivers/net/wireless/intel/iwlwifi/iwl-eeprom-parse.c
+index cf7e2a9232e52..f29d5758c8dff 100644
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-eeprom-parse.c
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-eeprom-parse.c
+@@ -324,15 +324,15 @@ enum iwl_eeprom_enhanced_txpwr_flags {
+ };
+ 
+ /**
+- * iwl_eeprom_enhanced_txpwr structure
++ * struct iwl_eeprom_enhanced_txpwr
+  * @flags: entry flags
+  * @channel: channel number
+- * @chain_a_max_pwr: chain a max power in 1/2 dBm
+- * @chain_b_max_pwr: chain b max power in 1/2 dBm
+- * @chain_c_max_pwr: chain c max power in 1/2 dBm
++ * @chain_a_max: chain a max power in 1/2 dBm
++ * @chain_b_max: chain b max power in 1/2 dBm
++ * @chain_c_max: chain c max power in 1/2 dBm
+  * @delta_20_in_40: 20-in-40 deltas (hi/lo)
+- * @mimo2_max_pwr: mimo2 max power in 1/2 dBm
+- * @mimo3_max_pwr: mimo3 max power in 1/2 dBm
++ * @mimo2_max: mimo2 max power in 1/2 dBm
++ * @mimo3_max: mimo3 max power in 1/2 dBm
+  *
+  * This structure presents the enhanced regulatory tx power limit layout
+  * in an EEPROM image.
+-- 
+2.25.1
 
