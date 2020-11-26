@@ -2,171 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33FB2C51CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B31C02C51CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727623AbgKZKI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:08:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55313 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726099AbgKZKI4 (ORCPT
+        id S2387477AbgKZKJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:09:13 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:38849 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726099AbgKZKJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:08:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606385335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1fw29BUC+iOD9ysD5cv7mr3mRRM27lwYqqofhsgmaRQ=;
-        b=Bwy2dcKLtVcHccO5w8ErknzA9ZQ3oUXpNrLPZJx6SVZZFdjam2tLvtgipBrJesPYi2iBq1
-        CvgbotdMEi4YgSYRy5HW9GI1it5hpQ3s5ol393/uqRdHsybgiuWVdqhAmHVvXrv4Jj5RHy
-        +ljk6UPzGF9sk93SmPeYwmGg3e+P2T8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-MPO8cTv_Pk2hTmNnQS1dow-1; Thu, 26 Nov 2020 05:08:53 -0500
-X-MC-Unique: MPO8cTv_Pk2hTmNnQS1dow-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E62948145E1;
-        Thu, 26 Nov 2020 10:08:51 +0000 (UTC)
-Received: from lithium.redhat.com (ovpn-112-167.ams2.redhat.com [10.36.112.167])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 92B985D9CA;
-        Thu, 26 Nov 2020 10:08:50 +0000 (UTC)
-From:   Giuseppe Scrivano <gscrivan@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     christian.brauner@ubuntu.com, serge@hallyn.com,
-        ebiederm@xmission.com
-Subject: [PATCH] kernel: automatically split user namespace extent
-Date:   Thu, 26 Nov 2020 11:08:39 +0100
-Message-Id: <20201126100839.381415-1-gscrivan@redhat.com>
+        Thu, 26 Nov 2020 05:09:12 -0500
+Received: by mail-lf1-f67.google.com with SMTP id s27so1709961lfp.5;
+        Thu, 26 Nov 2020 02:09:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=eW8rVlKYblufr25dJFt7P8D/4U9Fps3APdQ1oTwqjCs=;
+        b=lvnyTXi7x19r7yAZR7zs24HZLjXhI0gZqXkV78xSQdQb0n/qzXGdT2sbPROWSfyRZI
+         AOBMva13vFYAr7Ui3xVum6n8l9q37EqPiRO9GsSPKFVA4o55G6DyHAW0cK4fJPU6UPYA
+         wIIKK93jszIL0i2N1mzTKss+wJlbP08Ee7AXCXWFQm56ssuyHkWbmytWHDsfiP7TfPXp
+         6lvBOOe+QE3vyXxHptEojx7Vy3krj5uYF2V3P50JBiPVhNyXaZMlvdlQ38a6ZjqzJw5m
+         c2HguQKieRJqX/JapI9f6gLfh2X+wttVAgHzgFMcdnrqLTON+GPm53x0n9CNNsXOGwlm
+         oyQg==
+X-Gm-Message-State: AOAM530iVfxwN3sHRspu1838Vzia5H8er/stBATWZRCMRRVeyfW9VjfB
+        E0HflmEp11EZEAw7tBqtjqQ=
+X-Google-Smtp-Source: ABdhPJzkbLnKETyLBzbhFeI2tWkn6WN7SO2lO80StzAh2q1hwm1lUCT65bECHok74zGz05HahLXZVg==
+X-Received: by 2002:a05:6512:3f6:: with SMTP id n22mr1008390lfq.393.1606385348714;
+        Thu, 26 Nov 2020 02:09:08 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id o17sm254173lfg.136.2020.11.26.02.09.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 02:09:07 -0800 (PST)
+Date:   Thu, 26 Nov 2020 12:09:01 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [RFC PATCH 0/2] power: supply: Add some fuel-gauge logic
+Message-ID: <cover.1606384967.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-writing to the id map fails when an extent overlaps multiple mappings
-in the parent user namespace, e.g.:
+Sorry folks - I picked you as recipients just because I saw
+your name in few recent commits to power-supply (well,
+obviously Sebastian would have been picked anyways). I assumed
+you could have something to say in here. Please let me know if you
+wish to be dropped from CC if this gets any further.
 
-$ cat /proc/self/uid_map
-         0       1000          1
-         1     100000      65536
-$ unshare -U sleep 100 &
-[1] 1029703
-$ printf "0 0 100\n" | tee /proc/$!/uid_map
-0 0 100
-tee: /proc/1029703/uid_map: Operation not permitted
 
-To prevent it from happening, automatically split an extent so that
-each portion fits in one extent in the parent user namespace.
 
-$ cat /proc/self/uid_map
-         0       1000          1
-         1     110000      65536
-$ unshare -U sleep 100 &
-[1] 1552
-$ printf "0 0 100\n" | tee /proc/$!/uid_map
-0 0 100
-$ cat /proc/$!/uid_map
-         0          0          1
-         1          1         99
+power: supply: add sw-gauge for SOC estimation and CC correction
 
-Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
----
- kernel/user_namespace.c | 62 ++++++++++++++++++++++++++++++++++-------
- 1 file changed, 52 insertions(+), 10 deletions(-)
+I have couple of ROHM PMIC drivers for devices with battery charger
+and coulomb counter in device. Some users have asked me if these
+drivers could be added upstream - and I actually think it would help
+people. While evaluating these drivers I saw they do implement
+some fuel-gauging/CC correcting logic - which might be useful for
+other similar ICs. Hence I am wondering if I should try pulling the
+logic out of IC drivers to power-supply core while leaving just IC
+specific code in drivers. This RFC is first result for pulling the
+logic out of drivers.
 
-diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-index 87804e0371fe..b5542be2bd0a 100644
---- a/kernel/user_namespace.c
-+++ b/kernel/user_namespace.c
-@@ -706,6 +706,41 @@ const struct seq_operations proc_projid_seq_operations = {
- 	.show = projid_m_show,
- };
- 
-+static void split_overlapping_mappings(struct uid_gid_map *parent_map,
-+				       struct uid_gid_extent *extent,
-+				       struct uid_gid_extent *overflow_extent)
-+{
-+	unsigned int idx;
-+
-+	overflow_extent->first = (u32) -1;
-+
-+	/* Split extent if it not fully contained in an extent from parent_map.  */
-+	for (idx = 0; idx < parent_map->nr_extents; idx++) {
-+		struct uid_gid_extent *prev;
-+		u32 first, last, prev_last, size;
-+
-+		if (parent_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
-+			prev = &parent_map->extent[idx];
-+		else
-+			prev = &parent_map->forward[idx];
-+
-+		first = extent->lower_first;
-+		last = extent->lower_first + extent->count - 1;
-+		prev_last = prev->first + prev->count - 1;
-+
-+		if ((first <= prev_last) && (last > prev_last)) {
-+			size = prev_last - first + 1;
-+
-+			overflow_extent->first = extent->first + size;
-+			overflow_extent->lower_first = extent->lower_first + size;
-+			overflow_extent->count = extent->count - size;
-+
-+			extent->count = size;
-+			return;
-+		}
-+	}
-+}
-+
- static bool mappings_overlap(struct uid_gid_map *new_map,
- 			     struct uid_gid_extent *extent)
- {
-@@ -852,6 +887,7 @@ static ssize_t map_write(struct file *file, const char __user *buf,
- 	struct uid_gid_map new_map;
- 	unsigned idx;
- 	struct uid_gid_extent extent;
-+	struct uid_gid_extent overflow_extent;
- 	char *kbuf = NULL, *pos, *next_line;
- 	ssize_t ret;
- 
-@@ -946,18 +982,24 @@ static ssize_t map_write(struct file *file, const char __user *buf,
- 		     extent.lower_first)
- 			goto out;
- 
--		/* Do the ranges in extent overlap any previous extents? */
--		if (mappings_overlap(&new_map, &extent))
--			goto out;
-+		do {
-+			/* Do the ranges in extent overlap any previous extents? */
-+			if (mappings_overlap(&new_map, &extent))
-+				goto out;
- 
--		if ((new_map.nr_extents + 1) == UID_GID_MAP_MAX_EXTENTS &&
--		    (next_line != NULL))
--			goto out;
-+			if ((new_map.nr_extents + 1) == UID_GID_MAP_MAX_EXTENTS &&
-+			    (next_line != NULL))
-+				goto out;
- 
--		ret = insert_extent(&new_map, &extent);
--		if (ret < 0)
--			goto out;
--		ret = -EINVAL;
-+			split_overlapping_mappings(parent_map, &extent, &overflow_extent);
-+
-+			ret = insert_extent(&new_map, &extent);
-+			if (ret < 0)
-+				goto out;
-+			ret = -EINVAL;
-+
-+			extent = overflow_extent;
-+		} while (overflow_extent.first != (u32) -1);
- 	}
- 	/* Be very certaint the new map actually exists */
- 	if (new_map.nr_extents == 0)
+The goal of this RFC is really to clarify if I should just abandon
+this idea and keep this logic in charger-driver(s) - or if there
+already is some "de-facto" way of achieving the same (in which
+case I should again abandon this and get new direction).
+
+In other words, this is an early state RFC for adding some
+fuel-gauge logic to power-supply core. I would highly appreciate if
+the idea of adding _something_ like this was first discussed and
+evaluated. This RFC has only been compile-tested this far so no
+accurate reviewing or "acceptance" for this version is requested.
+The code may still have few issues here and there...  So instead of
+asking for proper code review here, I am overall asking if this
+kind of functionality would be welcome in power-supply core, and if
+yes - then I would like to get some overall direction for this.
+I am for example wondering if this should be added as a own entity
+which uses power-supply class underneath (in a way this RFC
+introduces it) - or if it should be meld in existing power-supply
+class. But there's no point in pondering this if this kind of
+functionality has no chance being accepted :)
+
+Is seen as potentially useful feature which should be
+in-kernel? (I think this has it's place in-kernel as HW details
+like coulomb-counter adjustment should really not be something
+user-space should care. Another reason is that few low-power
+embedded devices actually do periodical wake-up from suspend/
+other low-power states just to do CC adjustment - even though
+the wake-up costs some power. If this is ever to be supported
+by mainline kernel - then waking up the whole user-space just
+to do this CC adjustment iteration is not preferable. But that
+wake-up is not covered by this RFC, it is just one motvation
+behind putting this in-kernel - where it in my opinion would be
+better to be generic and available for all ICs than written in
+each IC specific driver).
+
+Oh, please let me know if you wish to see some more documentation,
+I can try adding something in Documentation folder too.
+
+Anyways, enough of babbling for now - thanks for reading all the
+way here:)
+
+
+Matti Vaittinen (2):
+  power: supply: add cap2ocv batinfo helper
+  power: supply: add sw-gauge for SOC estimation and CC correction
+
+ drivers/power/supply/Kconfig                |   8 +
+ drivers/power/supply/Makefile               |   1 +
+ drivers/power/supply/power_supply_core.c    |  51 ++
+ drivers/power/supply/power_supply_swgauge.c | 808 ++++++++++++++++++++
+ include/linux/power/sw_gauge.h              | 203 +++++
+ include/linux/power_supply.h                |  11 +
+ 6 files changed, 1082 insertions(+)
+ create mode 100644 drivers/power/supply/power_supply_swgauge.c
+ create mode 100644 include/linux/power/sw_gauge.h
+
+
+base-commit: 09162bc32c880a791c6c0668ce0745cf7958f576
 -- 
-2.28.0
+2.25.4
 
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
