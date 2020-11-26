@@ -2,132 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFBA2C4EE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 07:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B8F2C4EE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 07:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgKZGoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 01:44:04 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:37772 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbgKZGoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 01:44:03 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C07C41A0A7A;
-        Thu, 26 Nov 2020 07:44:01 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B06021A0A76;
-        Thu, 26 Nov 2020 07:43:56 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 74756402EB;
-        Thu, 26 Nov 2020 07:43:50 +0100 (CET)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, cychiang@chromium.org,
-        kuninori.morimoto.gx@renesas.com, tzungbi@google.com,
-        shengjiu.wang@nxp.com, grandmaster@al2klimov.de,
-        jbrunet@baylibre.com, pankaj.laxminarayan.bharadiya@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: hdmi-codec: Add RX support
-Date:   Thu, 26 Nov 2020 14:36:48 +0800
-Message-Id: <1606372608-2329-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1733125AbgKZGjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 01:39:07 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:41037 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731252AbgKZGjH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 01:39:07 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UGZY9rf_1606372743;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGZY9rf_1606372743)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 26 Nov 2020 14:39:03 +0800
+Subject: Re: [PATCH next] mm/swap.c: reduce lock contention in lru_cache_add
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1605860847-47445-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201126045234.GA1014081@google.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <ed19e3f7-33cb-20ae-537e-a7ada2036895@linux.alibaba.com>
+Date:   Thu, 26 Nov 2020 14:39:03 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201126045234.GA1014081@google.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HDMI interface can also be used as receiver, this patch is to
-add such support. The most difference compare with TX is that RX
-don't need to get edid information.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/hdmi-codec.c | 33 ++++++++++++++++++++++++++++-----
- 1 file changed, 28 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index e8410b2433de..d5fcc4db8284 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -282,6 +282,7 @@ struct hdmi_codec_priv {
- 
- static const struct snd_soc_dapm_widget hdmi_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("TX"),
-+	SND_SOC_DAPM_OUTPUT("RX"),
- };
- 
- enum {
-@@ -389,6 +390,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *dai)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-+	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	int ret = 0;
- 
- 	mutex_lock(&hcp->lock);
-@@ -404,7 +406,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 			goto err;
- 	}
- 
--	if (hcp->hcd.ops->get_eld) {
-+	if (tx && hcp->hcd.ops->get_eld) {
- 		ret = hcp->hcd.ops->get_eld(dai->dev->parent, hcp->hcd.data,
- 					    hcp->eld, sizeof(hcp->eld));
- 		if (ret)
-@@ -660,14 +662,20 @@ static int hdmi_dai_probe(struct snd_soc_dai *dai)
- {
- 	struct snd_soc_dapm_context *dapm;
- 	struct hdmi_codec_daifmt *daifmt;
--	struct snd_soc_dapm_route route = {
--		.sink = "TX",
--		.source = dai->driver->playback.stream_name,
-+	struct snd_soc_dapm_route route[] = {
-+		{
-+			.sink = "TX",
-+			.source = dai->driver->playback.stream_name,
-+		},
-+		{
-+			.sink = dai->driver->capture.stream_name,
-+			.source = "RX",
-+		},
- 	};
- 	int ret;
- 
- 	dapm = snd_soc_component_get_dapm(dai->component);
--	ret = snd_soc_dapm_add_routes(dapm, &route, 1);
-+	ret = snd_soc_dapm_add_routes(dapm, route, 2);
- 	if (ret)
- 		return ret;
- 
-@@ -757,6 +765,14 @@ static const struct snd_soc_dai_driver hdmi_i2s_dai = {
- 		.formats = I2S_FORMATS,
- 		.sig_bits = 24,
- 	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 8,
-+		.rates = HDMI_RATES,
-+		.formats = I2S_FORMATS,
-+		.sig_bits = 24,
-+	},
- 	.ops = &hdmi_codec_i2s_dai_ops,
- 	.pcm_new = hdmi_codec_pcm_new,
- };
-@@ -773,6 +789,13 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
- 		.rates = HDMI_RATES,
- 		.formats = SPDIF_FORMATS,
- 	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = HDMI_RATES,
-+		.formats = SPDIF_FORMATS,
-+	},
- 	.ops = &hdmi_codec_spdif_dai_ops,
- 	.pcm_new = hdmi_codec_pcm_new,
- };
--- 
-2.27.0
+ÔÚ 2020/11/26 ÏÂÎç12:52, Yu Zhao Ð´µÀ:
+>>   */
+>>  void __pagevec_lru_add(struct pagevec *pvec)
+>>  {
+>> -	int i;
+>> -	struct lruvec *lruvec = NULL;
+>> +	int i, nr_lruvec;
+>>  	unsigned long flags = 0;
+>> +	struct page *page;
+>> +	struct lruvecs lruvecs;
+>>  
+>> -	for (i = 0; i < pagevec_count(pvec); i++) {
+>> -		struct page *page = pvec->pages[i];
+>> +	nr_lruvec = sort_page_lruvec(&lruvecs, pvec);
+> Simply looping pvec multiple times (15 at most) for different lruvecs
+> would be better because 1) it requires no extra data structures and
+> therefore has better cache locality (theoretically faster) 2) it only
+> loops once when !CONFIG_MEMCG and !CONFIG_NUMA and therefore has no
+> impact on Android and Chrome OS.
+> 
 
+With multiple memcgs, it do help a lot, I had gotten 30% grain on readtwice
+case. but yes, w/o MEMCG and NUMA, it's good to keep old behavior. So 
+would you like has a proposal for this?
+
+Thanks
+Alex
