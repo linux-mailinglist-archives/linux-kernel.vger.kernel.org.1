@@ -2,104 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31732C5AB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB902C5AB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391682AbgKZRfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 12:35:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391674AbgKZRfi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:35:38 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F284EC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:35:37 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id t143so2990503oif.10
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:35:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gOY/HezNek0HUVN6eUm3quDyWmYoOFo+0d2VCWNsFOQ=;
-        b=uyts//qgDq6NIdz41iSPmW0NCMxG4s7vPE2JLlimI8k9Dta7Lp8XN3VJlMbLFtrINE
-         ro3BRSTRMv8Umr3glOZq7WmCg6G9Mz1RUKqmM89Rmar/e78MeFdctXcDlc1ZAhFFjdLb
-         7Jpkw0WgJOjL9h0qCLWS3Q8yAnWkuFza2aGB86HqlDhpyMfFFen/5YzijCvoCFHHzAj9
-         RZ69xF5KjNsRdPkxSoNygXNdaYH/1Kfm9D7iozMjiT1iO4NflgDrIwbbUD5EHy43f8LP
-         hndzJaxF4dK4CfHiTWjBHhtT8KvAx3h6t9woa85EBeKLkVa1tyNeLy5aBve1xDhEtYo9
-         +yAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gOY/HezNek0HUVN6eUm3quDyWmYoOFo+0d2VCWNsFOQ=;
-        b=l/C/cA964SRPuGBdwqLoQZsfYCgN7TS54Y5zYfUImVGf9FpL7w6fIaHkRFKdcM/RyV
-         ZSyi7+tAWo0lLj4m9ArpVE5CY/6foi2NU6I2gZxC8MwJ0XF476GEzAq3KQzSQVGxkb3j
-         1GUUPEGaZZgLgJbARu6JkIbQu5DVlsm+SgM8x7xelTFMFqZxCa+FJmLZGTn8X1XhpyWJ
-         VfXCnvzhMXsgQpEwAPs+CFBbW/++J7yW6sO7rrx5hj6qgKnMuvuptLF8/q5SlENQevnr
-         j994SGQOGTOQsiyFycl72wAa3xsBNS4Bt/J/r1RyUt/GUA2t+ttotj81Riffg85JyU8F
-         v4KA==
-X-Gm-Message-State: AOAM532E9NBUbjFQLha2NZM91qZdfknFoJwuRlk/2/qkWewT1DgW5z6K
-        PIxWFXOaEsOWCfIaIERfD6lq7w==
-X-Google-Smtp-Source: ABdhPJx8msTvrsuwihO242PXv7u5F1/YsYDoAhSS6k0ZQZqFcGnBf3qEN5bVS8tSjAhdCenA2tCkyg==
-X-Received: by 2002:aca:5413:: with SMTP id i19mr2773415oib.87.1606412136991;
-        Thu, 26 Nov 2020 09:35:36 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s28sm3186106otd.2.2020.11.26.09.35.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 09:35:35 -0800 (PST)
-Date:   Thu, 26 Nov 2020 11:35:34 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] regulator: dt-bindings: Add PMX55 compatibles
-Message-ID: <X7/nZg7tXb8F3rtk@builder.lan>
-References: <20201126093018.1085594-1-vkoul@kernel.org>
+        id S2404114AbgKZRfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:35:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:41610 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403842AbgKZRfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 12:35:42 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B2F331B;
+        Thu, 26 Nov 2020 09:35:41 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.30.234])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B5C053F23F;
+        Thu, 26 Nov 2020 09:35:37 -0800 (PST)
+Date:   Thu, 26 Nov 2020 17:35:34 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 04/23] arm64: Move MAIR_EL1_SET to asm/memory.h
+Message-ID: <20201126173534.GE38486@C02TD0UTHF1T.local>
+References: <20201126155421.14901-1-dbrazdil@google.com>
+ <20201126155421.14901-5-dbrazdil@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126093018.1085594-1-vkoul@kernel.org>
+In-Reply-To: <20201126155421.14901-5-dbrazdil@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 26 Nov 03:30 CST 2020, Vinod Koul wrote:
-
-> Add PMX55 compatibles for PMIC found in SDX55 platform
+On Thu, Nov 26, 2020 at 03:54:02PM +0000, David Brazdil wrote:
+> KVM currently initializes MAIR_EL2 to the value of MAIR_EL1. In
+> preparation for initializing MAIR_EL2 before MAIR_EL1, move the constant
+> into a shared header file. Since it is used for EL1 and EL2, rename to
+> MAIR_ELx_SET.
 > 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
 > ---
->  .../devicetree/bindings/regulator/qcom,rpmh-regulator.txt       | 2 ++
->  1 file changed, 2 insertions(+)
+>  arch/arm64/include/asm/memory.h | 13 +++++++++++++
+>  arch/arm64/mm/proc.S            | 15 +--------------
+>  2 files changed, 14 insertions(+), 14 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
-> index 97c3e0b7611c..bae558b87686 100644
-> --- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
-> +++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
-> @@ -30,6 +30,7 @@ Supported regulator node names:
->  	PMI8998:	bob
->  	PM6150:         smps1 - smps5, ldo1 - ldo19
->  	PM6150L:        smps1 - smps8, ldo1 - ldo11, bob
-> +	PMX55:		smps1 - smps7, ldo1 - ldo16
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index cd61239bae8c..54a22cb5b17b 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -152,6 +152,19 @@
+>  #define MT_S2_FWB_NORMAL	6
+>  #define MT_S2_FWB_DEVICE_nGnRE	1
 >  
->  ========================
->  First Level Nodes - PMIC
-> @@ -47,6 +48,7 @@ First Level Nodes - PMIC
->  		    "qcom,pmi8998-rpmh-regulators"
->  		    "qcom,pm6150-rpmh-regulators"
->  		    "qcom,pm6150l-rpmh-regulators"
-> +		    "qcom,pmx55-rpmh-regulators"
+> +/*
+> + * Default MAIR_ELx. MT_NORMAL_TAGGED is initially mapped as Normal memory and
+> + * changed during __cpu_setup to Normal Tagged if the system supports MTE.
+> + */
+> +#define MAIR_ELx_SET							\
+> +	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+
+Patch 7 initializes MAIR_EL2 with this directly rather than copying it
+from MAIR_EL1, which means that MT_NORMAL_TAGGED will never be tagged
+within the nVHE hyp code.
+
+Is that expected? I suspect it's worth a comment here (introduced in
+patch 7), just to make that clear.
+
+Otherwise this looks fine to me.
+
+Thanks,
+Mark.
+
+
+> +
+>  #ifdef CONFIG_ARM64_4K_PAGES
+>  #define IOREMAP_MAX_ORDER	(PUD_SHIFT)
+>  #else
+> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+> index 23c326a06b2d..e3b9aa372b96 100644
+> --- a/arch/arm64/mm/proc.S
+> +++ b/arch/arm64/mm/proc.S
+> @@ -45,19 +45,6 @@
+>  #define TCR_KASAN_FLAGS 0
+>  #endif
 >  
->  - qcom,pmic-id
->  	Usage:      required
+> -/*
+> - * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal memory and
+> - * changed during __cpu_setup to Normal Tagged if the system supports MTE.
+> - */
+> -#define MAIR_EL1_SET							\
+> -	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+> -
+>  #ifdef CONFIG_CPU_PM
+>  /**
+>   * cpu_do_suspend - save CPU registers context
+> @@ -425,7 +412,7 @@ SYM_FUNC_START(__cpu_setup)
+>  	/*
+>  	 * Memory region attributes
+>  	 */
+> -	mov_q	x5, MAIR_EL1_SET
+> +	mov_q	x5, MAIR_ELx_SET
+>  #ifdef CONFIG_ARM64_MTE
+>  	/*
+>  	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
 > -- 
-> 2.26.2
+> 2.29.2.454.gaff20da3a2-goog
 > 
