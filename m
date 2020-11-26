@@ -2,255 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECDE2C5216
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A00612C521C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387918AbgKZKc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:32:28 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7737 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727633AbgKZKc2 (ORCPT
+        id S2388033AbgKZKeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:34:22 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39970 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727251AbgKZKeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:32:28 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ChYwF3SxHzkgSq;
-        Thu, 26 Nov 2020 18:31:57 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 26 Nov 2020 18:32:14 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v3] f2fs: compress: support chksum
-Date:   Thu, 26 Nov 2020 18:32:09 +0800
-Message-ID: <20201126103209.67985-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 26 Nov 2020 05:34:22 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AQAX80F086925;
+        Thu, 26 Nov 2020 05:34:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=8goriOFKvIxE4Rq8aYTKlFxSyPqdmuMelaGWqBRdbXU=;
+ b=eqzpHxw98+Lhf39/j2pz7bR6m22VSeDyZ9sinR0VHZ1nnwjF+9OeqmFQ3yUGFww8nYg5
+ dKkJbVEXWN9IHMHsqDfOnTaZNxECfCNqEekg/VligDgdqN+BAbLLo+z5pBp16S1SPFxN
+ boc7yXpFOUSgSdPXvnHaIdmvJoGUNPTmaAZnU5sbHlBU8BfhHoo/QjKyBCM6U8JNGk10
+ mG1GMYSdw7MkBT1JjRij6qmIgwYZw6SijKfa5otLtM5MZwQCd/1oGrl2D5U7/O5MtYLZ
+ GXMqHduHF5qlhfqh3sWV7CZSJVF8NUhddekyg1ra+wDkAdjL6GBeOoAjoasvbX7QRJsh 5Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3526k8ev31-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 05:34:21 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AQAX8Gn087011;
+        Thu, 26 Nov 2020 05:34:20 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3526k8ev21-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 05:34:20 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AQARJFl029993;
+        Thu, 26 Nov 2020 10:34:18 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 351vqqrjtr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 10:34:18 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AQAYFYM8520442
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Nov 2020 10:34:15 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 439DDA4057;
+        Thu, 26 Nov 2020 10:34:15 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 80037A4040;
+        Thu, 26 Nov 2020 10:34:14 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.0.176])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 26 Nov 2020 10:34:14 +0000 (GMT)
+Date:   Thu, 26 Nov 2020 11:34:12 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v12 03/17] 390/vfio-ap: use new AP bus interface to
+ search for queue devices
+Message-ID: <20201126113412.62c0f42b.pasic@linux.ibm.com>
+In-Reply-To: <20201124214016.3013-4-akrowiak@linux.ibm.com>
+References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
+        <20201124214016.3013-4-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-26_03:2020-11-26,2020-11-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 mlxscore=0 phishscore=0 adultscore=0
+ spamscore=0 clxscore=1015 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011260063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch supports to store chksum value with compressed
-data, and verify the integrality of compressed data while
-reading the data.
+On Tue, 24 Nov 2020 16:40:02 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-The feature can be enabled through specifying mount option
-'compress_chksum'.
-
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v3:
-- remove incorrect duplicated definition in f2fs_decompress_pages().
- Documentation/filesystems/f2fs.rst |  1 +
- fs/f2fs/compress.c                 | 23 +++++++++++++++++++++++
- fs/f2fs/f2fs.h                     | 16 ++++++++++++++--
- fs/f2fs/inode.c                    |  3 +++
- fs/f2fs/super.c                    |  9 +++++++++
- include/linux/f2fs_fs.h            |  2 +-
- 6 files changed, 51 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index b8ee761c9922..985ae7d35066 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
- 			 For other files, we can still enable compression via ioctl.
- 			 Note that, there is one reserved special extension '*', it
- 			 can be set to enable compression for all files.
-+compress_chksum		 Support verifying chksum of raw data in compressed cluster.
- inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
- 			 files using the blk-crypto framework rather than
- 			 filesystem-layer encryption. This allows the use of
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 3957a84a185e..487c4280a7b8 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -607,6 +607,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
- 				f2fs_cops[fi->i_compress_algorithm];
- 	unsigned int max_len, new_nr_cpages;
- 	struct page **new_cpages;
-+	u32 chksum = 0;
- 	int i, ret;
- 
- 	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
-@@ -660,6 +661,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
- 
- 	cc->cbuf->clen = cpu_to_le32(cc->clen);
- 
-+	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
-+		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
-+					cc->cbuf->cdata, cc->clen);
-+	cc->cbuf->chksum = cpu_to_le32(chksum);
-+
- 	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
- 		cc->cbuf->reserved[i] = cpu_to_le32(0);
- 
-@@ -795,6 +801,23 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
- 
- 	ret = cops->decompress_pages(dic);
- 
-+	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
-+		u32 provided = le32_to_cpu(dic->cbuf->chksum);
-+		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
-+
-+		if (provided != calculated) {
-+			if (!is_inode_flag_set(dic->inode, FI_COMPRESS_CORRUPT)) {
-+				set_inode_flag(dic->inode, FI_COMPRESS_CORRUPT);
-+				printk_ratelimited(
-+					"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
-+					KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
-+					provided, calculated);
-+			}
-+			set_sbi_flag(sbi, SBI_NEED_FSCK);
-+			WARN_ON_ONCE(1);
-+		}
-+	}
-+
- out_vunmap_cbuf:
- 	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
- out_vunmap_rbuf:
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 0d38f2135016..7c2e7e4738e5 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -147,7 +147,8 @@ struct f2fs_mount_info {
- 
- 	/* For compression */
- 	unsigned char compress_algorithm;	/* algorithm type */
--	unsigned compress_log_size;		/* cluster log size */
-+	unsigned char compress_log_size;	/* cluster log size */
-+	bool compress_chksum;			/* compressed data chksum */
- 	unsigned char compress_ext_cnt;		/* extension count */
- 	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
- };
-@@ -674,6 +675,7 @@ enum {
- 	FI_ATOMIC_REVOKE_REQUEST, /* request to drop atomic data */
- 	FI_VERITY_IN_PROGRESS,	/* building fs-verity Merkle tree */
- 	FI_COMPRESSED_FILE,	/* indicate file's data can be compressed */
-+	FI_COMPRESS_CORRUPT,	/* indicate compressed cluster is corrupted */
- 	FI_MMAP_FILE,		/* indicate file was mmapped */
- 	FI_MAX,			/* max flag, never be used */
- };
-@@ -731,6 +733,7 @@ struct f2fs_inode_info {
- 	atomic_t i_compr_blocks;		/* # of compressed blocks */
- 	unsigned char i_compress_algorithm;	/* algorithm type */
- 	unsigned char i_log_cluster_size;	/* log of cluster size */
-+	unsigned short i_compress_flag;		/* compress flag */
- 	unsigned int i_cluster_size;		/* cluster size */
- };
- 
-@@ -1270,9 +1273,15 @@ enum compress_algorithm_type {
- 	COMPRESS_MAX,
- };
- 
--#define COMPRESS_DATA_RESERVED_SIZE		5
-+enum compress_flag {
-+	COMPRESS_CHKSUM,
-+	COMPRESS_MAX_FLAG,
-+};
-+
-+#define COMPRESS_DATA_RESERVED_SIZE		4
- struct compress_data {
- 	__le32 clen;			/* compressed data size */
-+	__le32 chksum;			/* compressed data chksum */
- 	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
- 	u8 cdata[];			/* compressed data */
- };
-@@ -3887,6 +3896,9 @@ static inline void set_compress_context(struct inode *inode)
- 			F2FS_OPTION(sbi).compress_algorithm;
- 	F2FS_I(inode)->i_log_cluster_size =
- 			F2FS_OPTION(sbi).compress_log_size;
-+	F2FS_I(inode)->i_compress_flag =
-+			F2FS_OPTION(sbi).compress_chksum ?
-+				1 << COMPRESS_CHKSUM : 0;
- 	F2FS_I(inode)->i_cluster_size =
- 			1 << F2FS_I(inode)->i_log_cluster_size;
- 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
-diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-index 657db2fb6739..349d9cb933ee 100644
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
- 					le64_to_cpu(ri->i_compr_blocks));
- 			fi->i_compress_algorithm = ri->i_compress_algorithm;
- 			fi->i_log_cluster_size = ri->i_log_cluster_size;
-+			fi->i_compress_flag = le16_to_cpu(ri->i_compress_flag);
- 			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
- 			set_inode_flag(inode, FI_COMPRESSED_FILE);
- 		}
-@@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
- 					&F2FS_I(inode)->i_compr_blocks));
- 			ri->i_compress_algorithm =
- 				F2FS_I(inode)->i_compress_algorithm;
-+			ri->i_compress_flag =
-+				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
- 			ri->i_log_cluster_size =
- 				F2FS_I(inode)->i_log_cluster_size;
- 		}
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 0ec292d7fcdb..78714bae1c48 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -146,6 +146,7 @@ enum {
- 	Opt_compress_algorithm,
- 	Opt_compress_log_size,
- 	Opt_compress_extension,
-+	Opt_compress_chksum,
- 	Opt_atgc,
- 	Opt_err,
- };
-@@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
- 	{Opt_compress_algorithm, "compress_algorithm=%s"},
- 	{Opt_compress_log_size, "compress_log_size=%u"},
- 	{Opt_compress_extension, "compress_extension=%s"},
-+	{Opt_compress_chksum, "compress_chksum"},
- 	{Opt_atgc, "atgc"},
- 	{Opt_err, NULL},
- };
-@@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 			F2FS_OPTION(sbi).compress_ext_cnt++;
- 			kfree(name);
- 			break;
-+		case Opt_compress_chksum:
-+			F2FS_OPTION(sbi).compress_chksum = true;
-+			break;
- #else
- 		case Opt_compress_algorithm:
- 		case Opt_compress_log_size:
- 		case Opt_compress_extension:
-+		case Opt_compress_chksum:
- 			f2fs_info(sbi, "compression options not supported");
- 			break;
- #endif
-@@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
- 		seq_printf(seq, ",compress_extension=%s",
- 			F2FS_OPTION(sbi).extensions[i]);
- 	}
-+
-+	if (F2FS_OPTION(sbi).compress_chksum)
-+		seq_puts(seq, ",compress_chksum");
- }
- 
- static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
-diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-index a5dbb57a687f..7dc2a06cf19a 100644
---- a/include/linux/f2fs_fs.h
-+++ b/include/linux/f2fs_fs.h
-@@ -273,7 +273,7 @@ struct f2fs_inode {
- 			__le64 i_compr_blocks;	/* # of compressed blocks */
- 			__u8 i_compress_algorithm;	/* compress algorithm */
- 			__u8 i_log_cluster_size;	/* log of cluster size */
--			__le16 i_padding;		/* padding */
-+			__le16 i_compress_flag;		/* compress flag */
- 			__le32 i_extra_end[0];	/* for attribute size calculation */
- 		} __packed;
- 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
--- 
-2.26.2
-
+A nit: for all other patches the title prefix is  s390/vfio-ap, here you
+have 390/vfio-ap.
