@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832392C58CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB61D2C58D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403881AbgKZPzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:55:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
+        id S2403893AbgKZPzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:55:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403866AbgKZPzQ (ORCPT
+        with ESMTP id S2403866AbgKZPzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:55:16 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F0CC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:55:15 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id z7so2647026wrn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:55:15 -0800 (PST)
+        Thu, 26 Nov 2020 10:55:20 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67B9C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:55:19 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id a65so2874855wme.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:55:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oyYLFWQZMneEnEj2VSn1LS09AGJVymYOLIqAbKZwt6U=;
-        b=srDcQuvUhOpoS6XSk1yX5MJj4AVevyOIrmgCRMvuzNjXQLIIJpow8ZYVJGXOAFPuPp
-         dWq6VKySkD2XWUUzXzIG2ru6B6Wv878jxXMs1gdAr3aqnnFjRuIcKatC3IvG5dnwH/Kd
-         z4/S4ecfHLSdmxRm8YG5vzFFd23znMIXdf4yzi6tTZ9Ya3b7nLFTAFa+7ZDf7W6r4CWi
-         EyPt3TlxjLEbVff+OZ+dGgaF0hP77PcnEgxL3ms/56P/1sF0YnhJdeaCxrk4u5MuDO/D
-         tgXZVYJceqIWsNdo+g2jjh64bWPyb1+awZyn/9jfD5UZgLu8SmAj1gfMPiywgQmUfb17
-         iqdQ==
+        bh=aOLJOeUdUyn9Tp5EB3J9cYHwXErbIHpd/Aan89z6ZHs=;
+        b=QM/rbtXwOgu6dblgPCWfx4ngm1/thgvoQ0YW4L2bPmt43izjfGp+feFlrQOkpQS9Om
+         6IyiMWQDM9+9UTy3hB+J5mL08+VjIOU0v7HHn2JQNnWZfWWWlGmxzXwQJ5YeUMP4URzL
+         1QtnGLr7B86YDgrOowd0eJ/ZlG7g90/JdTPeSBg4Np5jEsxeOF3riX5Aj+ZJnFB1nucH
+         eGRGKeHAcqx9n6NEDtpKYSogxV+eRc23vpbWc9NRm5ShbBf3SY7zuFqqGKiDs+I9VeCG
+         lbM65gvfMyzKPRVDcbtqP39F0X2J1baGFNxxaE1G/RusVZXby+KoCinFSOxt/dKolC8/
+         f6PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oyYLFWQZMneEnEj2VSn1LS09AGJVymYOLIqAbKZwt6U=;
-        b=Uzvp92vjwCHDFPE6IqR/HmMPOIOyJatvr738mpNk00+gKR13Oht5x3y4WANsqog0a1
-         VEi29s91ULLX7MOPxt/BlU9ehsVvwChK5LcdMYe9ovjr++l7H/oJ0QzIe5uzz9b8gla2
-         o6MrM6aRMssOCql+yJyAiMMRzFlG3PpBG2AbYDc7ZK6W4LesHDrn4mEbzB4oBGuoHGd9
-         IIgfK0UFaM+ILeOCxFo8nik4VwcSedDmq58Ox51y+LJpotKiGXTV7LA3UwMojweMxnqt
-         FktGdhogiHiR8EBQJFh0YoBb+DuNoZQ4BR8LHsUGzMnvhlholvaO1htTtL0aIdfFajWi
-         6R6g==
-X-Gm-Message-State: AOAM532bDHqklPz29dcy2w8jvEU3snGYvbSxYqkuHcdq3x1WVInYw0Oz
-        k/YM5f3cthTlwjR5E4kF+zWgKA==
-X-Google-Smtp-Source: ABdhPJyXJxAcdnGaEOLfWk+JL7WUP6NfvyxPJK4EaBXXt8h/6IhmFqWc5LMhe1Lrb0MJFulrnvz4kg==
-X-Received: by 2002:a5d:46c6:: with SMTP id g6mr4819602wrs.170.1606406114096;
-        Thu, 26 Nov 2020 07:55:14 -0800 (PST)
+        bh=aOLJOeUdUyn9Tp5EB3J9cYHwXErbIHpd/Aan89z6ZHs=;
+        b=ZS6wdQQNtB1gyMw3puKlOTEN8b5+j+Sxs2MGSP8MmQRoKraK0dTInwoicK+cFDKlxP
+         sHHUI+waNDKrp4lGj4yFNfvhmdnkM5BeYo6otcE0gLAzALh1NKWJVnS19CSDTebslRSC
+         Jvf0GmeXZXuM4QkXKrGT/mHExcxHGF39MMoHSYZm4IZedqBBz/JRhZdJ3Rvn/zxdHIIa
+         toT27moySIK0+bCRlpDzWJPw7cpqg/7FkR7zPumWE6lmalHsW4g+aFw/1OZTKysor4rY
+         yXdLgE/uOU7RHzjN5KECAD/e4c3GSWNj/ak+T+A3N8BJMv8yRLC87hz+QA264c8+Wgt0
+         pNWQ==
+X-Gm-Message-State: AOAM532Te2huyeuk5pEwQ8MDHwIJCeZIDC0401LLNJT/vapJ5UQ7QPTV
+        SqxmZHfOnAfdxzo/dbInBSnaGQ==
+X-Google-Smtp-Source: ABdhPJxNaayzFy0JXM9EQDhPZc7SkErVTVeHwN5g49VsWueupWVWXJ57HuFtoPXgm7dm47oDpr8iqg==
+X-Received: by 2002:a1c:bd08:: with SMTP id n8mr4124459wmf.136.1606406116246;
+        Thu, 26 Nov 2020 07:55:16 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:f008:704d:8d4b:9951])
-        by smtp.gmail.com with ESMTPSA id b4sm10161280wmc.1.2020.11.26.07.55.12
+        by smtp.gmail.com with ESMTPSA id j4sm9290305wrn.83.2020.11.26.07.55.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 07:55:13 -0800 (PST)
+        Thu, 26 Nov 2020 07:55:15 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     Jonathan Corbet <corbet@lwn.net>,
@@ -63,9 +63,9 @@ Cc:     Jonathan Corbet <corbet@lwn.net>,
         Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         kernel-team@android.com, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v3 22/23] kvm: arm64: Trap host SMCs in protected mode
-Date:   Thu, 26 Nov 2020 15:54:20 +0000
-Message-Id: <20201126155421.14901-23-dbrazdil@google.com>
+Subject: [PATCH v3 23/23] kvm: arm64: Fix EL2 mode availability checks
+Date:   Thu, 26 Nov 2020 15:54:21 +0000
+Message-Id: <20201126155421.14901-24-dbrazdil@google.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201126155421.14901-1-dbrazdil@google.com>
 References: <20201126155421.14901-1-dbrazdil@google.com>
@@ -75,78 +75,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While protected nVHE KVM is installed, start trapping all host SMCs.
-By default, these are simply forwarded to EL3, but PSCI SMCs are
-validated first.
+With protected nVHE hyp code interception host's PSCI CPU_ON/SUSPEND
+SMCs, the host starts seeing new CPUs boot in EL1 instead of EL2. The
+kernel logic that keeps track of the boot mode needs to be adjusted.
 
-Create new constant HCR_HOST_NVHE_PROTECTED_FLAGS with the new set of HCR
-flags to use while the nVHE vector is installed when the kernel was
-booted with the protected flag enabled. Switch back to the default HCR
-flags when switching back to the stub vector.
+Add a static key enabled if KVM protected nVHE initialization is
+successful.
+
+When the key is enabled, is_hyp_mode_available continues to report
+`true` because its users either treat it as a check whether KVM will be
+/ was initialized, or whether stub HVCs can be made (eg. hibernate).
+
+is_hyp_mode_mismatched is changed to report `false` when the key is
+enabled. That's because all cores' modes matched at the point of KVM
+init and KVM will not allow cores not present at init to boot. That
+said, the function is never used after KVM is initialized.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/include/asm/kvm_arm.h   |  1 +
- arch/arm64/kvm/hyp/nvhe/hyp-init.S | 10 ++++++++++
- arch/arm64/kvm/hyp/nvhe/switch.c   |  5 ++++-
- 3 files changed, 15 insertions(+), 1 deletion(-)
+ arch/arm64/include/asm/virt.h | 18 ++++++++++++++++++
+ arch/arm64/kvm/arm.c          | 10 +++++++---
+ 2 files changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
-index 64ce29378467..4e90c2debf70 100644
---- a/arch/arm64/include/asm/kvm_arm.h
-+++ b/arch/arm64/include/asm/kvm_arm.h
-@@ -80,6 +80,7 @@
- 			 HCR_FMO | HCR_IMO | HCR_PTW )
- #define HCR_VIRT_EXCP_MASK (HCR_VSE | HCR_VI | HCR_VF)
- #define HCR_HOST_NVHE_FLAGS (HCR_RW | HCR_API | HCR_APK | HCR_ATA)
-+#define HCR_HOST_NVHE_PROTECTED_FLAGS (HCR_HOST_NVHE_FLAGS | HCR_TSC)
- #define HCR_HOST_VHE_FLAGS (HCR_RW | HCR_TGE | HCR_E2H)
+diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
+index 2fde1186b962..f7cf3f0e5297 100644
+--- a/arch/arm64/include/asm/virt.h
++++ b/arch/arm64/include/asm/virt.h
+@@ -65,9 +65,19 @@ extern u32 __boot_cpu_mode[2];
+ void __hyp_set_vectors(phys_addr_t phys_vector_base);
+ void __hyp_reset_vectors(void);
  
- /* TCR_EL2 Registers bits */
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-init.S b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-index fbb195851fb9..7af18fa1983d 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-@@ -88,6 +88,11 @@ SYM_CODE_END(__kvm_hyp_init)
-  * x0: struct kvm_nvhe_init_params PA
-  */
- SYM_CODE_START(___kvm_hyp_init)
-+alternative_if ARM64_PROTECTED_KVM
-+	mov_q	x1, HCR_HOST_NVHE_PROTECTED_FLAGS
-+	msr	hcr_el2, x1
-+alternative_else_nop_endif
++DECLARE_STATIC_KEY_FALSE(kvm_protected_mode_initialized);
 +
- 	ldr	x1, [x0, #NVHE_INIT_TPIDR_EL2]
- 	msr	tpidr_el2, x1
- 
-@@ -233,6 +238,11 @@ reset:
- 	msr	sctlr_el2, x5
- 	isb
- 
-+alternative_if ARM64_PROTECTED_KVM
-+	mov_q	x5, HCR_HOST_NVHE_FLAGS
-+	msr	hcr_el2, x5
-+alternative_else_nop_endif
+ /* Reports the availability of HYP mode */
+ static inline bool is_hyp_mode_available(void)
+ {
++	/*
++	 * If KVM protected mode is initialized, all CPUs must have been booted
++	 * in EL2. Avoid checking __boot_cpu_mode as CPUs now come up in EL1.
++	 */
++	if (IS_ENABLED(CONFIG_KVM) &&
++	    static_branch_likely(&kvm_protected_mode_initialized))
++		return true;
 +
- 	/* Install stub vectors */
- 	adr_l	x5, __hyp_stub_vectors
- 	msr	vbar_el2, x5
-diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
-index 3e50ff35aa4f..f3d0e9eca56c 100644
---- a/arch/arm64/kvm/hyp/nvhe/switch.c
-+++ b/arch/arm64/kvm/hyp/nvhe/switch.c
-@@ -97,7 +97,10 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
- 	mdcr_el2 |= MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT;
- 
- 	write_sysreg(mdcr_el2, mdcr_el2);
--	write_sysreg(HCR_HOST_NVHE_FLAGS, hcr_el2);
-+	if (is_protected_kvm_enabled())
-+		write_sysreg(HCR_HOST_NVHE_PROTECTED_FLAGS, hcr_el2);
-+	else
-+		write_sysreg(HCR_HOST_NVHE_FLAGS, hcr_el2);
- 	write_sysreg(CPTR_EL2_DEFAULT, cptr_el2);
- 	write_sysreg(__kvm_hyp_host_vector, vbar_el2);
+ 	return (__boot_cpu_mode[0] == BOOT_CPU_MODE_EL2 &&
+ 		__boot_cpu_mode[1] == BOOT_CPU_MODE_EL2);
  }
+@@ -75,6 +85,14 @@ static inline bool is_hyp_mode_available(void)
+ /* Check if the bootloader has booted CPUs in different modes */
+ static inline bool is_hyp_mode_mismatched(void)
+ {
++	/*
++	 * If KVM protected mode is initialized, all CPUs must have been booted
++	 * in EL2. Avoid checking __boot_cpu_mode as CPUs now come up in EL1.
++	 */
++	if (IS_ENABLED(CONFIG_KVM) &&
++	    static_branch_likely(&kvm_protected_mode_initialized))
++		return false;
++
+ 	return __boot_cpu_mode[0] != __boot_cpu_mode[1];
+ }
+ 
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 6ec8ddf74643..b153c08e50fa 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -46,6 +46,8 @@
+ __asm__(".arch_extension	virt");
+ #endif
+ 
++DEFINE_STATIC_KEY_FALSE(kvm_protected_mode_initialized);
++
+ DECLARE_KVM_HYP_PER_CPU(unsigned long, kvm_hyp_vector);
+ 
+ static DEFINE_PER_CPU(unsigned long, kvm_arm_hyp_stack_page);
+@@ -1877,12 +1879,14 @@ int kvm_arch_init(void *opaque)
+ 	if (err)
+ 		goto out_hyp;
+ 
+-	if (is_protected_kvm_enabled())
++	if (is_protected_kvm_enabled()) {
++		static_branch_enable(&kvm_protected_mode_initialized);
+ 		kvm_info("Protected nVHE mode initialized successfully\n");
+-	else if (in_hyp_mode)
++	} else if (in_hyp_mode) {
+ 		kvm_info("VHE mode initialized successfully\n");
+-	else
++	} else {
+ 		kvm_info("Hyp mode initialized successfully\n");
++	}
+ 
+ 	return 0;
+ 
 -- 
 2.29.2.454.gaff20da3a2-goog
 
