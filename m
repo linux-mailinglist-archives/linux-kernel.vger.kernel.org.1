@@ -2,93 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753A72C7067
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 957C22C70FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732598AbgK1R54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 12:57:56 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:50352 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733041AbgK1Rzz (ORCPT
+        id S2390512AbgK1VvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:09 -0500
+Received: from vds-pan4eg24.timeweb.ru ([176.57.215.228]:48448 "EHLO
+        95495.local" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729925AbgK1Scn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 12:55:55 -0500
-Received: from 220-133-187-190.hinet-ip.hinet.net ([220.133.187.190] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        Sat, 28 Nov 2020 13:32:43 -0500
+X-Greylist: delayed 165259 seconds by postgrey-1.27 at vger.kernel.org; Sat, 28 Nov 2020 13:32:43 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=tuninglancer10.ru; s=mail; h=Message-Id:Reply-To:Date:From:To:Subject:
+        Content-Description:Content-Transfer-Encoding:MIME-Version:Content-Type;
+        bh=TpRG8Mb5817hoC4zENrSDU5fK51fe39rNg+5RojG3IU=; b=WFTj3qDM26xxHgfoCOEifQvfRO
+        LU5twJeshHkYxJfrUgImQtLj+SRcOnMhi+F+GRbjbOmTQI4V+5/OoRHH81QmyQEcrXuJT+QYDr11d
+        LHVw023TLpXIphx9XV5l9LODQ/g7gnIIawnvTHtFMTNGjWVfPWZW9K7/F3M57IQlBvG0=;
+Received: from [41.85.161.172] (helo=[192.168.8.114])
+        by 95495.local with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:256)
         (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kj4RB-0006Sy-2o; Sat, 28 Nov 2020 17:55:10 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        linux-pm@vger.kernel.org (open list:THERMAL),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 3/3] thermal: intel: intel_pch_thermal: Indicate userspace usage
-Date:   Sun, 29 Nov 2020 01:54:50 +0800
-Message-Id: <20201128175450.12456-3-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201128175450.12456-1-kai.heng.feng@canonical.com>
-References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
+        (envelope-from <info@tuninglancer10.ru>)
+        id 1kiO1x-0005K4-Il; Thu, 26 Nov 2020 23:38:17 +0300
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: 
+To:     Recipients <info@tuninglancer10.ru>
+From:   info@tuninglancer10.ru
+Date:   Thu, 26 Nov 2020 10:37:04 +0100
+Reply-To: onlinequityloan@gmail.com
+Message-Id: <E1kiO1x-0005K4-Il@95495.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device isn't present under ACPI ThermalZone, and there's a dedicated
-userspace daemon for this thermal device.
-
-Let thermal core know it shouldn't handle trips to avoid surprising
-thermal shutdown.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/thermal/intel/intel_pch_thermal.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/thermal/intel/intel_pch_thermal.c b/drivers/thermal/intel/intel_pch_thermal.c
-index 3b813ebb6ca1..e55e6318d733 100644
---- a/drivers/thermal/intel/intel_pch_thermal.c
-+++ b/drivers/thermal/intel/intel_pch_thermal.c
-@@ -270,6 +270,10 @@ static struct thermal_zone_device_ops tzd_ops = {
- 	.get_trip_temp = pch_get_trip_temp,
- };
- 
-+static struct thermal_zone_params tzd_params = {
-+	.userspace = true,
-+};
-+
- enum board_ids {
- 	board_hsw,
- 	board_wpt,
-@@ -346,21 +350,16 @@ static int intel_pch_thermal_probe(struct pci_dev *pdev,
- 		goto error_cleanup;
- 
- 	ptd->tzd = thermal_zone_device_register(bi->name, nr_trips, 0, ptd,
--						&tzd_ops, NULL, 0, 0);
-+						&tzd_ops, &tzd_params, 0, 0);
- 	if (IS_ERR(ptd->tzd)) {
- 		dev_err(&pdev->dev, "Failed to register thermal zone %s\n",
- 			bi->name);
- 		err = PTR_ERR(ptd->tzd);
- 		goto error_cleanup;
- 	}
--	err = thermal_zone_device_enable(ptd->tzd);
--	if (err)
--		goto err_unregister;
- 
- 	return 0;
- 
--err_unregister:
--	thermal_zone_device_unregister(ptd->tzd);
- error_cleanup:
- 	iounmap(ptd->hw_base);
- error_release:
--- 
-2.29.2
-
+Hi, I can assist you with loan? how much do you need? & the time you can pa=
+y back? give us a call now via our direct office line: +18502212989.
+Green Rodriguez.
+Loan Coordinator,
+Equity Loan Company.
+Address: 1 Cheshire House, Gorsey Lane, Widnes, Texas, USA.
+Website: www.equityloancompany.online
