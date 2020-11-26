@@ -2,203 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8F02C59FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:05:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053F72C5A04
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404267AbgKZRCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 12:02:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404240AbgKZRCT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:02:19 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D40BC061A04
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:02:17 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id g14so2831915wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:02:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SyZHVQfg5UasRnRBi3W8BI7EDbmbn+6eB9vLQ5Pp2HY=;
-        b=fA0RiKXkxKUleTSpu9sFswF9isRUHKBVQcc0iFHjQytBucWWbVkKm99wSwmhMaR/Mp
-         xbSzn8VCCNM0WPBgYSBY66IDgYKSeffh0eL8hG6F7EL+nVdJYqL6LPKbkee27QJjNF4I
-         skam84Z6jUkO8ERvzzxbt85mvwAGwZkudWBcM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SyZHVQfg5UasRnRBi3W8BI7EDbmbn+6eB9vLQ5Pp2HY=;
-        b=fQWCRhpAoV331+d8C/6JWiussuouSUx+lgMh+FayZzpCR41C9Z66iSa6kB6ynzYri7
-         PDlNEU1epx3sxwOHakBlDtyJDyp6zRKNFjGRply+1hybAcx8fOIqdDA5qg3uk7+DGov9
-         6P/EdRIFvHFfPkKOxZ7xSzyN3tMdGpj8LRyiFVN0C3YqTOjcedXFXhTmnT2J0MP6UHdM
-         pF3OfGQtupRutN0SMp6I7OtrPOhErhUTWaIWkYoYVepLWXlmuea/DmUx31SXHnAhLpTs
-         YuKo14XkbQ/gui73WH/Cbp8A5MT84Fd17/26uMhF7vq+EpOU4Lhp27HNPAXhZJ8mrq2r
-         trZg==
-X-Gm-Message-State: AOAM533uizPxXGAiI5cd+vNFdEFq9B9luZtug5K/944YHzqekz/Y4B25
-        cDoJHCAuM5dmGFugQlLQup9DIw==
-X-Google-Smtp-Source: ABdhPJy0yhbmTT4EP0QCtY4CaJGWo9teCucIPZrWJdlHYhJ2EnwPpFySLQRhraU7zDnUBdbWuOmGRA==
-X-Received: by 2002:adf:de12:: with SMTP id b18mr5008582wrm.187.1606410136330;
-        Thu, 26 Nov 2020 09:02:16 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id d17sm9373192wro.62.2020.11.26.09.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 09:02:15 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-X-Google-Original-From: Florent Revest <revest@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] bpf: Add a selftest for the tracing bpf_get_socket_cookie
-Date:   Thu, 26 Nov 2020 18:02:12 +0100
-Message-Id: <20201126170212.1749137-2-revest@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201126170212.1749137-1-revest@google.com>
-References: <20201126170212.1749137-1-revest@google.com>
+        id S2391622AbgKZRDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:03:21 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:46790 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391568AbgKZRDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 12:03:19 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 1A4CDFB04;
+        Thu, 26 Nov 2020 18:03:17 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id MEhzIyxxQDjY; Thu, 26 Nov 2020 18:03:16 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 991F74068F; Thu, 26 Nov 2020 18:03:15 +0100 (CET)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/1] usb: typec: tps6598x: Export some power supply properties
+Date:   Thu, 26 Nov 2020 18:03:14 +0100
+Message-Id: <cover.1606410063.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This builds up on the existing socket cookie test which checks whether
-the bpf_get_socket_cookie helpers provide the same value in
-cgroup/connect6 and sockops programs for a socket created by the
-userspace part of the test.
+This allows downstream supplies and userspace to detect whether external power
+is supplied.
 
-Adding a tracing program to the existing objects requires a different
-attachment strategy and different headers.
+The Librem 5 has the tp65982 in front of bq25980 charge controller.  Since that
+is capable of sinking and sourcing power the online property helps to decide
+what to do. It also makes upower happy.
 
-Signed-off-by: Florent Revest <revest@google.com>
----
- .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
- .../selftests/bpf/test_socket_cookie.c        | 18 +++++---
- 2 files changed, 49 insertions(+), 10 deletions(-)
+There will be follow up patches providing more properties but these need some
+more time to cook and i wanted to check if this is the right way to go?
 
-diff --git a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-index 0cb5656a22b0..a11026aeaaf1 100644
---- a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-+++ b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-@@ -1,11 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2018 Facebook
- 
--#include <linux/bpf.h>
--#include <sys/socket.h>
-+#include "vmlinux.h"
- 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define AF_INET6 10
- 
- struct socket_cookie {
- 	__u64 cookie_key;
-@@ -19,6 +21,14 @@ struct {
- 	__type(value, struct socket_cookie);
- } socket_cookies SEC(".maps");
- 
-+/*
-+ * These three programs get executed in a row on connect() syscalls. The
-+ * userspace side of the test creates a client socket, issues a connect() on it
-+ * and then checks that the local storage associated with this socket has:
-+ * cookie_value == local_port << 8 | 0xFF
-+ * The different parts of this cookie_value are appended by those hooks if they
-+ * all agree on the output of bpf_get_socket_cookie().
-+ */
- SEC("cgroup/connect6")
- int set_cookie(struct bpf_sock_addr *ctx)
- {
-@@ -32,14 +42,14 @@ int set_cookie(struct bpf_sock_addr *ctx)
- 	if (!p)
- 		return 1;
- 
--	p->cookie_value = 0xFF;
-+	p->cookie_value = 0xF;
- 	p->cookie_key = bpf_get_socket_cookie(ctx);
- 
- 	return 1;
- }
- 
- SEC("sockops")
--int update_cookie(struct bpf_sock_ops *ctx)
-+int update_cookie_sockops(struct bpf_sock_ops *ctx)
- {
- 	struct bpf_sock *sk;
- 	struct socket_cookie *p;
-@@ -60,11 +70,32 @@ int update_cookie(struct bpf_sock_ops *ctx)
- 	if (p->cookie_key != bpf_get_socket_cookie(ctx))
- 		return 1;
- 
--	p->cookie_value = (ctx->local_port << 8) | p->cookie_value;
-+	p->cookie_value |= (ctx->local_port << 8);
- 
- 	return 1;
- }
- 
-+SEC("fexit/inet_stream_connect")
-+int BPF_PROG(update_cookie_tracing, struct socket *sock,
-+	     struct sockaddr *uaddr, int addr_len, int flags)
-+{
-+	struct socket_cookie *p;
-+
-+	if (uaddr->sa_family != AF_INET6)
-+		return 0;
-+
-+	p = bpf_sk_storage_get(&socket_cookies, sock->sk, 0, 0);
-+	if (!p)
-+		return 0;
-+
-+	if (p->cookie_key != bpf_get_socket_cookie(sock->sk))
-+		return 0;
-+
-+	p->cookie_value |= 0xF0;
-+
-+	return 0;
-+}
-+
- int _version SEC("version") = 1;
- 
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_socket_cookie.c b/tools/testing/selftests/bpf/test_socket_cookie.c
-index ca7ca87e91aa..0d955c65a4f8 100644
---- a/tools/testing/selftests/bpf/test_socket_cookie.c
-+++ b/tools/testing/selftests/bpf/test_socket_cookie.c
-@@ -133,6 +133,7 @@ static int run_test(int cgfd)
- 	struct bpf_prog_load_attr attr;
- 	struct bpf_program *prog;
- 	struct bpf_object *pobj;
-+	struct bpf_link *link;
- 	const char *prog_name;
- 	int server_fd = -1;
- 	int client_fd = -1;
-@@ -153,11 +154,18 @@ static int run_test(int cgfd)
- 	bpf_object__for_each_program(prog, pobj) {
- 		prog_name = bpf_program__section_name(prog);
- 
--		if (libbpf_attach_type_by_name(prog_name, &attach_type))
--			goto err;
--
--		err = bpf_prog_attach(bpf_program__fd(prog), cgfd, attach_type,
--				      BPF_F_ALLOW_OVERRIDE);
-+		if (bpf_program__is_tracing(prog)) {
-+			link = bpf_program__attach(prog);
-+			err = !link;
-+			continue;
-+		} else {
-+			if (libbpf_attach_type_by_name(prog_name, &attach_type))
-+				goto err;
-+
-+			err = bpf_prog_attach(bpf_program__fd(prog), cgfd,
-+					      attach_type,
-+					      BPF_F_ALLOW_OVERRIDE);
-+		}
- 		if (err) {
- 			log_err("Failed to attach prog %s", prog_name);
- 			goto out;
+changes from v1
+  - As per review comments from Heikki Krogerus
+    https://lore.kernel.org/linux-usb/20201126123552.GP1008337@kuha.fi.intel.com/
+    - select POWER_SUPPLY
+    - use POWER_SUPPLY_USB_TYPE_PD when a PD contract got negotiated
+
+Guido Günther (1):
+  usb: typec: tps6598x: Export some power supply properties
+
+ drivers/usb/typec/Kconfig    |   1 +
+ drivers/usb/typec/tps6598x.c | 105 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 106 insertions(+)
+
 -- 
-2.29.2.454.gaff20da3a2-goog
+2.29.2
 
