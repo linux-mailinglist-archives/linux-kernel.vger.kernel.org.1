@@ -2,132 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0232C5256
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F9D2C525A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388420AbgKZKr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:47:59 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2159 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388389AbgKZKr6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:47:58 -0500
-Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ChZDf0Dz0z67GpV;
-        Thu, 26 Nov 2020 18:46:10 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 26 Nov 2020 11:47:56 +0100
-Received: from [10.210.172.213] (10.210.172.213) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Thu, 26 Nov 2020 10:47:55 +0000
-Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <martin.petersen@oracle.com>,
-        <jejb@linux.ibm.com>, <linuxarm@huawei.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
- <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
- <874klmqu2r.fsf@nanos.tec.linutronix.de>
- <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
- <87lfexp6am.fsf@nanos.tec.linutronix.de>
- <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
- <873615oy8a.fsf@nanos.tec.linutronix.de>
- <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
- <87sg91ik9e.wl-maz@kernel.org>
- <0edc9a11-0b92-537f-1790-6b4b6de4900d@huawei.com>
- <afd97dd4b1e102ac9ad49800821231a4@kernel.org>
- <5a314713-c1ee-2d34-bee1-60beae274742@huawei.com>
- <0525a4bcf17a355cd141632d4f3714be@kernel.org>
- <702e1729-9a4b-b16f-6a58-33172b1a3220@huawei.com>
- <5a588f5d86010602ff9a90e8f057743c@kernel.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <80e0a19b-3291-1304-1a5b-0445c49efe31@huawei.com>
-Date:   Thu, 26 Nov 2020 10:47:33 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S2388424AbgKZKsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:48:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58484 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729107AbgKZKsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 05:48:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 123D6AC23;
+        Thu, 26 Nov 2020 10:48:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 8D0C31E130F; Thu, 26 Nov 2020 11:48:27 +0100 (CET)
+Date:   Thu, 26 Nov 2020 11:48:27 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jan Kara <jack@suse.cz>,
+        =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: PROBLEM: fanotify_mark EFAULT on x86
+Message-ID: <20201126104827.GA422@quack2.suse.cz>
+References: <20201101212738.GA16924@gmail.com>
+ <20201102122638.GB23988@quack2.suse.cz>
+ <20201103211747.GA3688@gmail.com>
+ <20201123164622.GJ27294@quack2.suse.cz>
+ <20201123224651.GA27809@gmail.com>
+ <20201124084507.GA4009@zn.tnic>
+ <20201124102033.GA19336@quack2.suse.cz>
+ <20201124102814.GE4009@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <5a588f5d86010602ff9a90e8f057743c@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.210.172.213]
-X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201124102814.GE4009@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
->> Right, I did consider this.
+On Tue 24-11-20 11:28:14, Borislav Petkov wrote:
+> On Tue, Nov 24, 2020 at 11:20:33AM +0100, Jan Kara wrote:
+> > On Tue 24-11-20 09:45:07, Borislav Petkov wrote:
+> > > On Mon, Nov 23, 2020 at 11:46:51PM +0100, Paweł Jasiak wrote:
+> > > > On 23/11/20, Jan Kara wrote:
+> > > > > OK, with a help of Boris Petkov I think I have a fix that looks correct
+> > > > > (attach). Can you please try whether it works for you? Thanks!
+> > > > 
+> > > > Unfortunately I am getting a linker error.
+> > > > 
+> > > > ld: arch/x86/entry/syscall_32.o:(.rodata+0x54c): undefined reference to `__ia32_sys_ia32_fanotify_mark'
+> > > 
+> > > Because CONFIG_COMPAT is not set in your .config.
+> > > 
+> > > Jan, look at 121b32a58a3a and especially this hunk
+> > > 
+> > > diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+> > > index 9b294c13809a..b8f89f78b8cd 100644
+> > > --- a/arch/x86/kernel/Makefile
+> > > +++ b/arch/x86/kernel/Makefile
+> > > @@ -53,6 +53,8 @@ obj-y                 += setup.o x86_init.o i8259.o irqinit.o
+> > >  obj-$(CONFIG_JUMP_LABEL)       += jump_label.o
+> > >  obj-$(CONFIG_IRQ_WORK)  += irq_work.o
+> > >  obj-y                  += probe_roms.o
+> > > +obj-$(CONFIG_X86_32)   += sys_ia32.o
+> > > +obj-$(CONFIG_IA32_EMULATION)   += sys_ia32.o
+> > > 
+> > > how it enables the ia32 syscalls depending on those config items. Now,
+> > > you have
+> > > 
+> > >  #ifdef CONFIG_COMPAT
+> > > -COMPAT_SYSCALL_DEFINE6(fanotify_mark,
+> > > +SYSCALL_DEFINE6(ia32_fanotify_mark,
+> > > 
+> > > which is under CONFIG_COMPAT which is not set in Paweł's config.
+> > > 
+> > > config COMPAT
+> > >         def_bool y
+> > >         depends on IA32_EMULATION || X86_X32
+> > > 
+> > > but it depends on those two config items.
+> > > 
+> > > However, it looks to me like ia32_fanotify_mark's definition should be
+> > > simply under CONFIG_X86_32 because:
+> > > 
+> > > IA32_EMULATION is 32-bit emulation on 64-bit kernels
+> > > X86_X32 is for the x32 ABI
+> > 
+> > Thanks for checking! I didn't realize I needed to change the ifdefs as well
+> > (I missed that bit in 121b32a58a3a). So do I understand correctly that
+> > whenever the kernel is 64-bit, 64-bit syscall args (e.g. defined as u64) are
+> > passed just fine regardless of whether the userspace is 32-bit or not?
+> > 
+> > Also how about other 32-bit archs? Because I now realized that
+> > CONFIG_COMPAT as well as the COMPAT_SYSCALL_DEFINE6() is also utilized by
+> > other 32-bit archs (I can see a reference to compat_sys_fanotify_mark e.g.
+> > in sparc, powerpc, and other args). So I probably need to actually keep
+> > that for other archs but do the modification only for x86, don't I?
 > 
-> FWIW, I've pushed my hack branch[1]
-
-Did you miss that reference?
-
-> out with a couple of patches
-> for you to try (the top 3 patches). They allow platform-MSI domains
-> created by devices (mbigen, ICU) to be advertised as shared between
-> devices, so that the low-level driver can handle that in an appropriate
-> way.
+> Hmm, you raise a good point and looking at that commit again, the
+> intention is to supply those ia32 wrappers as both 32-bit native *and*
+> 32-bit emulation ones.
 > 
-> I gave it a go on my D05 and nothing blew up, but I can't really remove
-> the kernel module, as that's where my disks are... :-/
+> So I think this
+> 
+> > -#ifdef CONFIG_COMPAT
+> > +#if defined(CONFIG_COMPAT) || defined(CONFIG_X86_32)
+> > +#ifdef CONFIG_X86_32
+> > +SYSCALL_DEFINE6(ia32_fanotify_mark,
+> > +#elif CONFIG_COMPAT
+> >  COMPAT_SYSCALL_DEFINE6(fanotify_mark,
+> > +#endif
+> 
+> should be
+> 
+> if defined(CONFIG_X86_32) || defined(CONFIG_IA32_EMULATION)
+> SYSCALL_DEFINE6(ia32_fanotify_mark,
+> #elif CONFIG_COMPAT
+> COMPAT_SYSCALL_DEFINE6(fanotify_mark,
+> #endif
+> 
+> or so.
+> 
+> Meaning that 32-bit native or 32-bit emulation supplies
+> ia32_fanotify_mark() as a syscall wrapper and other arches doing
+> CONFIG_COMPAT, still do the COMPAT_SYSCALL_DEFINE6() thing.
 
-You still should be able to enable my favorite 
-CONFIG_DEBUG_TEST_DRIVER_REMOVE=y, while the distro still boot. But I'll 
-just test if you want.
+Yeah, looking again at what those config options mean I agree. Patch
+updated.
 
-> Please let me know if that helps.
-> 
->>> It is just that passing that information down isn't a simple affair,
->>> as msi_alloc_info_t isn't a generic type... Let me have a think.
->>
->> I think that there is a way to circumvent the problem, which you might
->> call hacky, but OTOH, not sure if there's much point changing mbigen
->> or related infrastructure at this stage.
-> 
-> Bah, it's a simple change, and there is now more than the mbigen using
-> the same API...
-> 
->>
->> Anyway, so we have 128 irqs in total for the mbigen domain, but the
->> driver only is interesting in something like irq indexes 1,2,72-81,
->> and 96-112. So we can just dispose the mappings for irq index 0-112 at
->> removal stage, thereby keeping the its device around. We do still call
->> platform_irq_count(), which sets up all 128 mappings, so maybe we
->> should be unmapping all of these - this would be the contentious part.
->> But maybe not, as the device driver is only interested in that subset,
->> and has no business unmapping the rest.
-> 
-> I don't think the driver should mess with interrupts it doesn't own.
+> But I'd prefer if someone more knowledgeable than me in that whole
+> syscall macros muck to have a look...
 
-I would tend to agree. But all 128 lines here are for the SAS 
-controller. It's quite strange, as only about ~20 are useful.
+I'd prefer that as well but if nobody pops up, I'll just push this to my
+tree next week and will see what breaks :)
 
-> And while the mbigen port that is connected to the SAS controller
-> doesn't seem to be shared between endpoints, some other ports definitely
-> are:
-> 
-> # cat /sys/kernel/debug/irq/domains/\\_SB.MBI1
-> name:   \_SB.MBI1
->   size:   409
->   mapped: 192
->   flags:  0x00000003
-> 
-> [...]
-> 
-> I guess that the other 217 lines are connected somewhere.
-> 
+								Honza
 
-I think that is not the right one. See 
-https://github.com/tianocore/edk2-platforms/blob/master/Silicon/Hisilicon/Hi1616/D05AcpiTables/Dsdt/D05Sas.asl#L101
-
-
-Thanks,
-John
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
