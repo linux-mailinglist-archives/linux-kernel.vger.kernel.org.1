@@ -2,80 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E69D2C4D70
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB702C4D76
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733282AbgKZCZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 21:25:04 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:54227 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732673AbgKZCZE (ORCPT
+        id S1732168AbgKZCaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 21:30:10 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8591 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730809AbgKZCaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 21:25:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UGYyqEh_1606357500;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGYyqEh_1606357500)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 26 Nov 2020 10:25:01 +0800
-Subject: Re: [PATCH next] mm/vmscan: __isolate_lru_page_prepare clean up
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>, Yu Zhao <yuzhao@google.com>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1605859413-53864-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201120151307.4d9e3ef092ba01a325db7ce2@linux-foundation.org>
- <a355270e-5949-ebb2-30cb-a3723f6c93f8@linux.alibaba.com>
- <20201122123552.GF4327@casper.infradead.org>
- <728874d7-2d93-4049-68c1-dcc3b2d52ccd@linux.alibaba.com>
- <46ad053f-1401-31e8-50cf-09acda588f6f@suse.cz>
- <20201125154346.b2032c39cf3905bbebec3322@linux-foundation.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <ebbad64b-069a-26e0-ac0a-854649e20a97@linux.alibaba.com>
-Date:   Thu, 26 Nov 2020 10:25:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Wed, 25 Nov 2020 21:30:10 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ChMCg3QWMzLqTs;
+        Thu, 26 Nov 2020 10:29:35 +0800 (CST)
+Received: from [10.174.178.174] (10.174.178.174) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 26 Nov 2020 10:29:58 +0800
+Subject: Re: [PATCH] iommu: fix return error code in iommu_probe_device()
+To:     Will Deacon <will@kernel.org>
+CC:     Lu Baolu <baolu.lu@linux.intel.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>
+References: <20201117025238.3425422-1-yangyingliang@huawei.com>
+ <835ab066-b6b8-a211-4941-c01781031de8@linux.intel.com>
+ <454f5e3e-c380-e8a5-9283-3f7578eb601e@huawei.com>
+ <20201117224102.GD524@willie-the-truck>
+ <78bee047-ab33-4d81-6f77-af4c5b6e8aaa@huawei.com>
+ <20201125113545.GA15451@willie-the-truck>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <9e7481f4-e55e-6c7a-dde9-62912c6e5eb4@huawei.com>
+Date:   Thu, 26 Nov 2020 10:29:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20201125154346.b2032c39cf3905bbebec3322@linux-foundation.org>
-Content-Type: text/plain; charset=gbk
+In-Reply-To: <20201125113545.GA15451@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 2020/11/25 19:35, Will Deacon wrote:
+> On Wed, Nov 25, 2020 at 09:54:34AM +0800, Yang Yingliang wrote:
+>> On 2020/11/18 6:41, Will Deacon wrote:
+>>> On Tue, Nov 17, 2020 at 07:11:28PM +0800, Yang Yingliang wrote:
+>>>> On 2020/11/17 17:40, Lu Baolu wrote:
+>>>>> On 2020/11/17 10:52, Yang Yingliang wrote:
+>>>>>> If iommu_group_get() failed, it need return error code
+>>>>>> in iommu_probe_device().
+>>>>>>
+>>>>>> Fixes: cf193888bfbd ("iommu: Move new probe_device path...")
+>>>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>>>>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>>>>>> ---
+>>>>>>     drivers/iommu/iommu.c | 4 +++-
+>>>>>>     1 file changed, 3 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>>>>>> index b53446bb8c6b..6f4a32df90f6 100644
+>>>>>> --- a/drivers/iommu/iommu.c
+>>>>>> +++ b/drivers/iommu/iommu.c
+>>>>>> @@ -253,8 +253,10 @@ int iommu_probe_device(struct device *dev)
+>>>>>>             goto err_out;
+>>>>>>           group = iommu_group_get(dev);
+>>>>>> -    if (!group)
+>>>>>> +    if (!group) {
+>>>>>> +        ret = -ENODEV;
+>>>>> Can you please explain why you use -ENODEV here?
+>>>> Before 79659190ee97 ("iommu: Don't take group reference in
+>>>> iommu_alloc_default_domain()"), in
+>>>>
+>>>> iommu_alloc_default_domain(), if group is NULL, it will return -ENODEV.
+>>> Hmm. While I think the patch is ok, I'm not sure it qualifies as a fix.
+>>> Has iommu_probe_device() ever propagated this error? The commit you
+>>> identify in the 'Fixes:' tag doesn't seem to change this afaict.
+>> I think after this commit 439945e74a4b ("iommu: Move default domain
+>> allocation to iommu_probe_device()"),
+> That SHA doesn't exist in my tree (maybe you mean 6e1aa2049154?). But even
+> then, I'm not sure 6e1aa2049154 is actually broken if you look at the
+> interaction with group creation in __iommu_probe_device().
+>
+> In fact, isn't that the case in mainline too? If __iommu_probe_device()
+> returns 0, then we _know_ a group exists and so iommu_group_get() will
+> succeed. I'm still happy with the patch in case this changes in future,
+> but it doesn't appear to be fixing anything. Do you agree?
 
-�� 2020/11/26 ����7:43, Andrew Morton д��:
-> On Tue, 24 Nov 2020 12:21:28 +0100 Vlastimil Babka <vbabka@suse.cz> wrote:
-> 
->> On 11/22/20 3:00 PM, Alex Shi wrote:
->>> Thanks a lot for all comments, I picked all up and here is the v3:
->>>
->>>  From 167131dd106a96fd08af725df850e0da6ec899af Mon Sep 17 00:00:00 2001
->>> From: Alex Shi <alex.shi@linux.alibaba.com>
->>> Date: Fri, 20 Nov 2020 14:49:16 +0800
->>> Subject: [PATCH v3 next] mm/vmscan: __isolate_lru_page_prepare clean up
->>>
->>> The function just return 2 results, so use a 'switch' to deal with its
->>> result is unnecessary, and simplify it to a bool func as Vlastimil
->>> suggested.
->>>
->>> Also remove 'goto' by reusing list_move(), and take Matthew Wilcox's
->>> suggestion to update comments in function.
->>
->> I wouldn't mind if the goto stayed, but it's not repeating that much 
->> without it (list_move() + continue, 3 times) so...
-> 
-> I tried that, and .text became significantly larger, for reasons which
-> I didn't investigate ;)
-> 
+Yes, I look into the __iommu_probe_device(), if it can't get group, it 
+will return error
 
+first.  Do I need send a v2 without the fix tag ?
 
-Uh, BTW, with the gcc 8.3.1 and centos 7, goto or continue version has same size
-on my side with or w/o DEBUG_LIST. But actually, this clean up patch could
-add 10 bytes also with or w/o DEDBUG_LIST.
-
-Maybe related with different compiler?
-
-Thanks
-Alex
+>
+> Will
+> .
