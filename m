@@ -2,150 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93AA2C4CDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 325A42C4CF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732508AbgKZBs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 20:48:59 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38018 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731984AbgKZBsm (ORCPT
+        id S1732479AbgKZBzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 20:55:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731378AbgKZBzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 20:48:42 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AQ1WL0u118049;
-        Wed, 25 Nov 2020 20:48:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=uCYlkH5iQ+L908Nf0wbhEccUqKJpvqoojo1F1Q4GFbY=;
- b=GPqIjVhhcXsWK7iUIutlgkVdlpdTDoetbUofYXSXXDRsK6BPU/IDFw4v3JAJyLzdoCCN
- XS0o5YBCYCO2/ufVuPb+hKbIxeaXw8FPy6fMj7/3xMAKUTFUAGc1ez/WCqL0wr1GNO3G
- QsRxCC6SW00o4rX78KHCFJIxRz0DYNNoHrtFtOdNxeb3cZ0Imn/haFVnsgJdSr6GxEp5
- O6A992n387eEjlIXDSTNiDziDSmxAGINcos3d6DRsS94XfslsczI81pZ5po7AjgDjIWu
- u/5rZg1vNNiW8/iWgjKcrl4R33wms7pl6vUQ/6+MeR3hTTQ9LayobHDA9PAQiM7Xd3pC 9A== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 351vyvg9v7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Nov 2020 20:48:36 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AQ1lG3L026374;
-        Thu, 26 Nov 2020 01:48:36 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02dal.us.ibm.com with ESMTP id 34xthacpm7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Nov 2020 01:48:36 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AQ1mYTn7143962
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Nov 2020 01:48:34 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 80F706E04C;
-        Thu, 26 Nov 2020 01:48:34 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A2056E052;
-        Thu, 26 Nov 2020 01:48:34 +0000 (GMT)
-Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 26 Nov 2020 01:48:34 +0000 (GMT)
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
-Subject: [PATCH 13/13] ibmvfc: register Sub-CRQ handles with VIOS during channel setup
-Date:   Wed, 25 Nov 2020 19:48:24 -0600
-Message-Id: <20201126014824.123831-14-tyreld@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201126014824.123831-1-tyreld@linux.ibm.com>
-References: <20201126014824.123831-1-tyreld@linux.ibm.com>
+        Wed, 25 Nov 2020 20:55:02 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E67C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 17:55:00 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id u21so267802iol.12
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 17:55:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i17QMd8vkhN67qG5gREON3zvFxFBu1aRL3V4o/4TxAg=;
+        b=IEjKalurW30XYFDjdsl28nQBRfKLYLJ+qdAf5CYAzGgPDk2W0RmL5XRxRW+c0ZRExk
+         H5aMqxcKU6rj9sUURloAfDfs0ollquNBzMxTA+NqMJbHu0bLLQ0WwGaf07OUpoK6eIjb
+         yAiz0oDSy9HA+jqkhzELVzRr7IRXjwLi+femMmqtOILDxdbPsD4BVkhLtm9qA+x79RZY
+         NsatKxNsN67k3u8KfVlyUCv7YtlLXUXlHqhp8MiY3x05bglTpEPR2JbBw60xpIOXR+ll
+         xlFtzRRwPMfaXoM/K79WDGp1CqCBaJUF1neXWAr5azjLyAIgFX7T2oRbFHSnzloSe1Sg
+         i7ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i17QMd8vkhN67qG5gREON3zvFxFBu1aRL3V4o/4TxAg=;
+        b=Wz6f6EKFfY10g0OIL0qKPe3CDYvbFAi/eiq1gvFFGjAL39loiS9o6rsSE1Ofnefkcl
+         evIBgcSFXioTomIBBUsf3Fp8gjV3b0vwK/IoY5zJ+g6cl+S6wQz3k1YwMvLuvQ9s+ZrZ
+         hZudDq8HDV4h3Nwe4gEt+Dmo/DqwtV8hHn3501XnPPCH80Qil/QmKW08LoCun6fMMvG1
+         NkjGFLy+cEkO1wscib0bmiR6ZQhc7xAUiwsw7oQ30LoSYToMJQLSIMitBJbBvq0HrweZ
+         q25W54wBLiATJR1p9tj3FwXM5mdUHlh/bWCIi8UtubfjIAGQZ2ji4vQ0vmkqASOx+5Oc
+         zoHQ==
+X-Gm-Message-State: AOAM531e5SI2h1yMVLAbMCR252fIdLE2j7db/05txfS0EcItwu5X+lip
+        sW/J9u2YrOEhu9tI9hx41RQd5g==
+X-Google-Smtp-Source: ABdhPJy71WnIi4Z58HUMX4jikkOEFY/62xggxdr1QUv8zavqnRz5yH8xDGn4uhPdVIr7ue5rcjqxRw==
+X-Received: by 2002:a05:6602:22c2:: with SMTP id e2mr739207ioe.156.1606355700182;
+        Wed, 25 Nov 2020 17:55:00 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id r17sm1714907ioj.5.2020.11.25.17.54.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 17:54:59 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] arm64: dts: fixes
+Date:   Wed, 25 Nov 2020 19:54:54 -0600
+Message-Id: <20201126015457.6557-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-25_14:2020-11-25,2020-11-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=999 malwarescore=0 priorityscore=1501 bulkscore=0
- suspectscore=3 spamscore=0 clxscore=1015 adultscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011260001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the ibmvfc client adapter requests channels it must submit a number
-of Sub-CRQ handles matching the number of channels being requested. The
-VIOS in its response will overwrite the actual number of channel
-resources allocated which may be less than what was requested. The
-client then must store the VIOS Sub-CRQ handle for each queue. This VIOS
-handle is needed as a parameter with  h_send_sub_crq().
+The first patch in this series changes the IOMMU specification for
+the IPA node in "sc7180.dtsi" to identify two streams distinctly,
+rather than specifying them with a mask.  This was inspired by
+something Bjorn did recently for IPA in "sdm845.dtsi".
 
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
----
- drivers/scsi/ibmvscsi/ibmvfc.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+The second and third just replace 0 with GIC_SPI in two IPA
+interrupt specifications.
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 897e3236534d..6bb1028bbe44 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -4494,15 +4494,35 @@ static void ibmvfc_discover_targets(struct ibmvfc_host *vhost)
- static void ibmvfc_channel_setup_done(struct ibmvfc_event *evt)
- {
- 	struct ibmvfc_host *vhost = evt->vhost;
-+	struct ibmvfc_channel_setup *setup = vhost->channel_setup_buf;
-+	struct ibmvfc_scsi_channels *scrqs = &vhost->scsi_scrqs;
- 	u32 mad_status = be16_to_cpu(evt->xfer_iu->channel_setup.common.status);
- 	int level = IBMVFC_DEFAULT_LOG_LEVEL;
-+	int flags, active_queues, i;
- 
- 	ibmvfc_free_event(evt);
- 
- 	switch (mad_status) {
- 	case IBMVFC_MAD_SUCCESS:
- 		ibmvfc_dbg(vhost, "Channel Setup succeded\n");
-+		flags = be32_to_cpu(setup->flags);
- 		vhost->do_enquiry = 0;
-+		active_queues = be32_to_cpu(setup->num_scsi_subq_channels);
-+		scrqs->active_queues = active_queues;
-+
-+		if (flags & IBMVFC_CHANNELS_CANCELED) {
-+			ibmvfc_dbg(vhost, "Channels Canceled\n");
-+			vhost->using_channels = 0;
-+		} else {
-+			if (active_queues)
-+				vhost->using_channels = 1;
-+			for (i = 0; i < active_queues; i++)
-+				scrqs->scrqs[i].vios_cookie =
-+					be64_to_cpu(setup->channel_handles[i]);
-+
-+			ibmvfc_dbg(vhost, "Using %u channels\n",
-+				   vhost->scsi_scrqs.active_queues);
-+		}
- 		break;
- 	case IBMVFC_MAD_FAILED:
- 		level += ibmvfc_retry_host_init(vhost);
-@@ -4526,9 +4546,19 @@ static void ibmvfc_channel_setup(struct ibmvfc_host *vhost)
- 	struct ibmvfc_channel_setup_mad *mad;
- 	struct ibmvfc_channel_setup *setup_buf = vhost->channel_setup_buf;
- 	struct ibmvfc_event *evt = ibmvfc_get_event(vhost);
-+	struct ibmvfc_scsi_channels *scrqs = &vhost->scsi_scrqs;
-+	unsigned int num_channels =
-+		min(vhost->client_scsi_channels, vhost->max_vios_scsi_channels);
-+	int i;
- 
- 	memset(setup_buf, 0, sizeof(*setup_buf));
--	setup_buf->flags = cpu_to_be32(IBMVFC_CANCEL_CHANNELS);
-+	if (num_channels == 0)
-+		setup_buf->flags = cpu_to_be32(IBMVFC_CANCEL_CHANNELS);
-+	else {
-+		setup_buf->num_scsi_subq_channels = cpu_to_be32(num_channels);
-+		for (i = 0; i < num_channels; i++)
-+			setup_buf->channel_handles[i] = cpu_to_be64(scrqs->scrqs[i].cookie);
-+	}
- 
- 	ibmvfc_init_event(evt, ibmvfc_channel_setup_done, IBMVFC_MAD_FORMAT);
- 	mad = &evt->iu.channel_setup;
+(I'm sorry if I should have separated these.)
+
+					-Alex
+
+Alex Elder (3):
+  arm64: dts: qcom: sc7180: limit IPA iommu streams
+  arm64: dts: qcom: sc7180: use GIC_SPI for IPA interrupts
+  arm64: dts: qcom: sdm845: use GIC_SPI for IPA interrupts
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 7 ++++---
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 4 ++--
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
 -- 
-2.27.0
+2.20.1
 
