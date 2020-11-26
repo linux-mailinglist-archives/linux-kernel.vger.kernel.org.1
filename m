@@ -2,224 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F642C55C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B92902C55C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390441AbgKZNdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390431AbgKZNdq (ORCPT
+        id S2390463AbgKZNfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:35:20 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:49258 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389919AbgKZNfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:33:46 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B56C0617A7;
-        Thu, 26 Nov 2020 05:33:46 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x15so1164177pll.2;
-        Thu, 26 Nov 2020 05:33:46 -0800 (PST)
+        Thu, 26 Nov 2020 08:35:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lFqwseqjUdPHrT4EG6Wlq8LJBCMEaHP4XDjdijKJGlc=;
-        b=HLDHVCRn7nXHzLWPEsCTQm0oacQ+FrI7yeyvocy+iLJ8XvEgfQ8pHutLqjiKa9VVVU
-         h9hVvQZDMIEZCsoqcdRB9hTjvHw8BUtiWln0F+q8x7Gz4SkisFNLah7PVJFN44xIuTo2
-         6IHpQzrB3L+MjzS5JeMJ/+YBpGW3kLpgvgz73elL3zvNHQS7H7JWXVphKNofsbNEFOfd
-         1KC5+qXtqcie+H3aEu0SnNy0me5s6MyKYFDQmsPkorWntkeuPhy3ofYCnsUDBm0oeuqQ
-         fxbCCAGquk+lfUss67dbaoGVqo1UDl9xBQ4j9QJJ9TakTg3cxHl7DLlvoolO7ofrLZjD
-         M5Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lFqwseqjUdPHrT4EG6Wlq8LJBCMEaHP4XDjdijKJGlc=;
-        b=qYtF7WKd2Gd0PAv4TlZmaKaLXgf7CzR4TlNiqMm2mbDOuYR2bTeirqc9iAzapB/i+r
-         Alj7Pqt0qAkSUneFGgF+oNRcZZ1fydp/YoE8V3GVhJMAQKyjG4EHaqrBVxlXfG3u/sNU
-         u+zPsgI/z8Q5nk127fh1UBG1Qbb/0GPyk8NqHylfvvSGzMQiflhA+jo3dZOAZa5uFFBZ
-         UVeTK38d7BI5MtyatqWPU/i2niLuORlbXqcxvhXQP6PoX5fycoSx9Qii8FqNA848i4DR
-         AAAZKxk6ljgK5dhI0H2jdQN7M+2K5GNxgfbIGxfEM4bizqnJtSV5/iDXDQdkP9SYDnTQ
-         j8YQ==
-X-Gm-Message-State: AOAM532YAb6y0K6nKguchL860QDvUcM9GMAakcAf8Chz2HkjgWOccgjo
-        7RQSlkZJsH6hSEbSqXqzDf+BND8mg+CytSmNZKup6FMy9EwWfg==
-X-Google-Smtp-Source: ABdhPJy4UYV9iR7zL6Oio11y665Er2PnqftzQKLkdvHfefSG1EqAPUZY6aP67ann4c6y4V4n3hBRO4CT/o/fSQvk/SA=
-X-Received: by 2002:a17:902:7201:b029:d7:c439:b36f with SMTP id
- ba1-20020a1709027201b02900d7c439b36fmr2770558plb.26.1606397625580; Thu, 26
- Nov 2020 05:33:45 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1606397719; x=1637933719;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=ZzE6apVr+NBCq2ey7Bb9uQl8U1AZvvrD2/7u2VMKxsI=;
+  b=B0K4IZCM92G3QScOp2yrGzP5cjhPLdTGgGqyjZ/9erJrwKDjEL7PIpvV
+   R1zCReUlSlL/+RP+n9ICHlecog1hgfIqmbTxDwNGY+igi3QMl3ZAG+mKg
+   FuxiXzaYgpKsmWny8sU1huZbQKCZKtdqDHlI0HTG1ycD5iBqZtoJUsuHv
+   c=;
+X-IronPort-AV: E=Sophos;i="5.78,372,1599523200"; 
+   d="scan'208";a="67484231"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 26 Nov 2020 13:35:12 +0000
+Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id 5324EC1B51;
+        Thu, 26 Nov 2020 13:35:00 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.124) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 26 Nov 2020 13:34:43 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        <Jonathan.Cameron@huawei.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Qian Cai <cai@lca.pw>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David Hildenbrand" <david@redhat.com>, <dwmw@amazon.com>,
+        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
+        <foersleo@amazon.de>, "Greg Thelen" <gthelen@google.com>,
+        Ian Rogers <irogers@google.com>, <jolsa@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, <namhyung@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>, <sblbir@amazon.com>,
+        Shuah Khan <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>, <zgf574564920@gmail.com>,
+        <linux-damon@amazon.com>, Linux MM <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v22 06/18] mm/damon: Implement primitives for the virtual memory address spaces
+Date:   Thu, 26 Nov 2020 14:34:27 +0100
+Message-ID: <20201126133427.3677-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CALvZod4hYx4nytwkDrxd9MOtzMUKe-YmRavfTOxZaHCfUK6dXA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201026125016.1905945-1-balsini@android.com> <20201026125016.1905945-3-balsini@android.com>
-In-Reply-To: <20201026125016.1905945-3-balsini@android.com>
-From:   Peng Tao <bergwolf@gmail.com>
-Date:   Thu, 26 Nov 2020 21:33:34 +0800
-Message-ID: <CA+a=Yy4bhC-432h8shxbsrY5vjTcRZopS-Ojo0924L49+Be3Cg@mail.gmail.com>
-Subject: Re: [PATCH V10 2/5] fuse: Passthrough initialization and release
-To:     Alessio Balsini <balsini@android.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.124]
+X-ClientProxiedBy: EX13D42UWB004.ant.amazon.com (10.43.161.99) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 12:19 AM Alessio Balsini <balsini@android.com> wrote:
->
-> Implement the FUSE passthrough ioctl() that associates the lower
-> (passthrough) file system file with the fuse_file.
->
-> The file descriptor passed to the ioctl() by the FUSE daemon is used to
-> access the relative file pointer, that will be copied to the fuse_file data
-> structure to consolidate the link between the FUSE and lower file system.
->
-> To enable the passthrough mode, userspace triggers the
-> FUSE_DEV_IOC_PASSTHROUGH_OPEN ioctl() and, if the call succeeds,
-> receives back an identifier that will be used at open/create response
-> time in the fuse_open_out field to associate the FUSE file to the lower
-> file system file.
-> The value returned by the ioctl() to userspace can be:
-> - > 0: success, the identifier can be used as part of an open/create
->   reply.
-> - < 0: an error occurred.
-> The value 0 has been left unused for backward compatibility: the
-> fuse_open_out field that is used to pass the passthrough_fh back to the
-> kernel uses the same bits that were previously as struct padding,
-> zero-initialized in the common libfuse implementation. Removing the 0
-> value fixes the ambiguity between the case in which 0 corresponds to a
-> real passthrough_fh or a missing implementation, simplifying the
-> userspace implementation.
->
-> For the passthrough mode to be successfully activated, the lower file
-> system file must implement both read_ and write_iter file operations.
-> This extra check avoids special pseudo files to be targeted for this
-> feature.
-> Passthrough comes with another limitation: no further file system stacking
-> is allowed for those FUSE file systems using passthrough.
->
-> Signed-off-by: Alessio Balsini <balsini@android.com>
-> ---
->  fs/fuse/inode.c       |  5 +++
->  fs/fuse/passthrough.c | 80 +++++++++++++++++++++++++++++++++++++++++--
->  2 files changed, 83 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> index 6738dd5ff5d2..1e94c54d1455 100644
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@ -1034,6 +1034,11 @@ EXPORT_SYMBOL_GPL(fuse_send_init);
->
->  static int free_fuse_passthrough(int id, void *p, void *data)
->  {
-> +       struct fuse_passthrough *passthrough = (struct fuse_passthrough *)p;
-> +
-> +       fuse_passthrough_release(passthrough);
-> +       kfree(p);
-> +
->         return 0;
->  }
->
-> diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
-> index 594060c654f8..a135c955cc33 100644
-> --- a/fs/fuse/passthrough.c
-> +++ b/fs/fuse/passthrough.c
-> @@ -3,19 +3,95 @@
->  #include "fuse_i.h"
->
->  #include <linux/fuse.h>
-> +#include <linux/idr.h>
->
->  int fuse_passthrough_open(struct fuse_dev *fud,
->                           struct fuse_passthrough_out *pto)
->  {
-> -       return -EINVAL;
-> +       int res;
-> +       struct file *passthrough_filp;
-> +       struct fuse_conn *fc = fud->fc;
-> +       struct fuse_passthrough *passthrough;
-> +
-> +       if (!fc->passthrough)
-> +               return -EPERM;
-> +
-> +       /* This field is reserved for future implementation */
-> +       if (pto->len != 0)
-> +               return -EINVAL;
-> +
-> +       passthrough_filp = fget(pto->fd);
-> +       if (!passthrough_filp) {
-> +               pr_err("FUSE: invalid file descriptor for passthrough.\n");
-> +               return -EBADF;
-> +       }
-> +
-> +       if (!passthrough_filp->f_op->read_iter ||
-> +           !passthrough_filp->f_op->write_iter) {
-> +               pr_err("FUSE: passthrough file misses file operations.\n");
-> +               return -EBADF;
-> +       }
-> +
-> +       passthrough = kmalloc(sizeof(struct fuse_passthrough), GFP_KERNEL);
-> +       if (!passthrough)
-> +               return -ENOMEM;
-> +
-> +       passthrough->filp = passthrough_filp;
-> +
-> +       idr_preload(GFP_KERNEL);
-> +       spin_lock(&fc->passthrough_req_lock);
-> +       res = idr_alloc(&fc->passthrough_req, passthrough, 1, 0, GFP_ATOMIC);
-> +       spin_unlock(&fc->passthrough_req_lock);
-> +       idr_preload_end();
-> +       if (res <= 0) {
-> +               fuse_passthrough_release(passthrough);
-> +               kfree(passthrough);
-> +       }
-> +
-> +       return res;
->  }
->
->  int fuse_passthrough_setup(struct fuse_conn *fc, struct fuse_file *ff,
->                            struct fuse_open_out *openarg)
->  {
-> -       return -EINVAL;
-> +       struct inode *passthrough_inode;
-> +       struct super_block *passthrough_sb;
-> +       struct fuse_passthrough *passthrough;
-> +       int passthrough_fh = openarg->passthrough_fh;
-> +
-> +       if (!fc->passthrough)
-> +               return -EPERM;
-> +
-> +       /* Default case, passthrough is not requested */
-> +       if (passthrough_fh <= 0)
-> +               return -EINVAL;
-> +
-> +       spin_lock(&fc->passthrough_req_lock);
-> +       passthrough = idr_remove(&fc->passthrough_req, passthrough_fh);
-> +       spin_unlock(&fc->passthrough_req_lock);
-> +
-> +       if (!passthrough)
-> +               return -EINVAL;
-> +
-> +       passthrough_inode = file_inode(passthrough->filp);
-> +       passthrough_sb = passthrough_inode->i_sb;
-> +       if (passthrough_sb->s_stack_depth >= FILESYSTEM_MAX_STACK_DEPTH) {
-Hi Alessio,
+On Wed, 25 Nov 2020 07:30:18 -0800 Shakeel Butt <shakeelb@google.com> wrote:
 
-passthrough_sb is the underlying filesystem superblock, right? It
-seems to prevent fuse passthrough fs from stacking on another fully
-stacked file system, instead of preventing other file systems from
-stacking on this fuse passthrough file system. Am I misunderstanding
-it?
+> On Tue, Oct 20, 2020 at 2:06 AM SeongJae Park <sjpark@amazon.com> wrote:
+> >
+> > From: SeongJae Park <sjpark@amazon.de>
+> >
+> > This commit introduces a reference implementation of the address space
+> > specific low level primitives for the virtual address space, so that
+> > users of DAMON can easily monitor the data accesses on virtual address
+> > spaces of specific processes by simply configuring the implementation to
+> > be used by DAMON.
+> >
+> > The low level primitives for the fundamental access monitoring are
+> > defined in two parts:
+> > 1. Identification of the monitoring target address range for the address
+> > space.
+> > 2. Access check of specific address range in the target space.
+> >
+> > The reference implementation for the virtual address space provided by
+> > this commit is designed as below.
+> >
+> > PTE Accessed-bit Based Access Check
+> > -----------------------------------
+> >
+> > The implementation uses PTE Accessed-bit for basic access checks.  That
+> > is, it clears the bit for next sampling target page and checks whether
+> > it set again after one sampling period.  This could disturb other kernel
+> > subsystems using the Accessed bits, namely Idle page tracking and the
+> > reclaim logic.  To avoid such disturbances, DAMON makes it mutually
+> > exclusive with Idle page tracking and uses ``PG_idle`` and ``PG_young``
+> > page flags to solve the conflict with the reclaim logics, as Idle page
+> > tracking does.
+> >
+> > VMA-based Target Address Range Construction
+> > -------------------------------------------
+> >
+> > Only small parts in the super-huge virtual address space of the
+> > processes are mapped to physical memory and accessed.  Thus, tracking
+> > the unmapped address regions is just wasteful.  However, because DAMON
+> > can deal with some level of noise using the adaptive regions adjustment
+> > mechanism, tracking every mapping is not strictly required but could
+> > even incur a high overhead in some cases.  That said, too huge unmapped
+> > areas inside the monitoring target should be removed to not take the
+> > time for the adaptive mechanism.
+> >
+> > For the reason, this implementation converts the complex mappings to
+> > three distinct regions that cover every mapped area of the address
+> > space.  Also, the two gaps between the three regions are the two biggest
+> > unmapped areas in the given address space.  The two biggest unmapped
+> > areas would be the gap between the heap and the uppermost mmap()-ed
+> > region, and the gap between the lowermost mmap()-ed region and the stack
+> > in most of the cases.  Because these gaps are exceptionally huge in
+> > usual address spacees, excluding these will be sufficient to make a
+> > reasonable trade-off.  Below shows this in detail::
+> >
+> >     <heap>
+> >     <BIG UNMAPPED REGION 1>
+> >     <uppermost mmap()-ed region>
+> >     (small mmap()-ed regions and munmap()-ed regions)
+> >     <lowermost mmap()-ed region>
+> >     <BIG UNMAPPED REGION 2>
+> >     <stack>
+> >
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > Reviewed-by: Leonard Foerster <foersleo@amazon.de>
+> > ---
+> >  include/linux/damon.h |  14 +
+> >  mm/damon/Kconfig      |  10 +
+> >  mm/damon/Makefile     |   1 +
+> >  mm/damon/primitives.c | 582 ++++++++++++++++++++++++++++++++++++++++++
+> >  4 files changed, 607 insertions(+)
+> >  create mode 100644 mm/damon/primitives.c
+> >
+> > diff --git a/include/linux/damon.h b/include/linux/damon.h
+> > index b8562814751e..70cc4b54212e 100644
+> > --- a/include/linux/damon.h
+> > +++ b/include/linux/damon.h
+> > @@ -238,4 +238,18 @@ int damon_stop(struct damon_ctx **ctxs, int nr_ctxs);
+> >
+> >  #endif /* CONFIG_DAMON */
+> >
+> > +#ifdef CONFIG_DAMON_PRIMITIVES
+> > +
+> > +/* Reference callback implementations for virtual memory */
+> > +void damon_va_init_regions(struct damon_ctx *ctx);
+> > +void damon_va_update_regions(struct damon_ctx *ctx);
+> > +void damon_va_prepare_access_checks(struct damon_ctx *ctx);
+> > +unsigned int damon_va_check_accesses(struct damon_ctx *ctx);
+> > +bool damon_va_target_valid(struct damon_target *t);
+> > +void damon_va_cleanup(struct damon_ctx *ctx);
+> > +void damon_va_set_primitives(struct damon_ctx *ctx);
+> > +
+> > +#endif /* CONFIG_DAMON_PRIMITIVES */
+> > +
+> > +
+> >  #endif
+> > diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
+> > index d00e99ac1a15..0d2a18ddb9d8 100644
+> > --- a/mm/damon/Kconfig
+> > +++ b/mm/damon/Kconfig
+> > @@ -12,4 +12,14 @@ config DAMON
+> >           See https://damonitor.github.io/doc/html/latest-damon/index.html for
+> >           more information.
+> >
+> > +config DAMON_PRIMITIVES
+> 
+> I would rather name this base on virtual address space monitoring
+> maybe like DAMON_VMA_OPTIMIZED_MONITORING or something similar.
+> PRIMITIVES does not seem like a good name for this.
 
-Cheers,
-Tao
---
-Into Sth. Rich & Strange
+Agreed, will rename in the next version.  How about DAMON_PRIMITIVES_VADDR?
+
+> 
+> > +       bool "Monitoring primitives for virtual address spaces monitoring"
+> > +       depends on DAMON && MMU && !IDLE_PAGE_TRACKING
+> > +       select PAGE_EXTENSION if !64BIT
+> > +       select PAGE_IDLE_FLAG
+> > +       help
+> > +         This builds the default data access monitoring primitives for DAMON.
+> > +         The primitives support only virtual address spaces.  If this cannot
+> > +         cover your use case, you can implement and use your own primitives.
+> > +
+> >  endmenu
+> > diff --git a/mm/damon/Makefile b/mm/damon/Makefile
+> > index 4fd2edb4becf..2f3235a52e5e 100644
+> > --- a/mm/damon/Makefile
+> > +++ b/mm/damon/Makefile
+> > @@ -1,3 +1,4 @@
+> >  # SPDX-License-Identifier: GPL-2.0
+> >
+> >  obj-$(CONFIG_DAMON)            := core.o
+> > +obj-$(CONFIG_DAMON_PRIMITIVES) += primitives.o
+> > diff --git a/mm/damon/primitives.c b/mm/damon/primitives.c
+> > new file mode 100644
+> > index 000000000000..9b603ac0077c
+> > --- /dev/null
+> > +++ b/mm/damon/primitives.c
+> 
+> Same with the filename.
+
+Agreed.
+
+> 
+> > @@ -0,0 +1,582 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> [snip]
+> > +static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
+> > +                       unsigned long *page_sz)
+> > +{
+> > +       pte_t *pte = NULL;
+> > +       pmd_t *pmd = NULL;
+> > +       spinlock_t *ptl;
+> > +       bool young = false;
+> > +
+> > +       if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
+> > +               return false;
+> > +
+> > +       *page_sz = PAGE_SIZE;
+> > +       if (pte) {
+> > +               young = pte_young(*pte);
+> > +               if (!young)
+> > +                       young = !page_is_idle(pte_page(*pte));
+> > +               pte_unmap_unlock(pte, ptl);
+> > +               return young;
+> > +       }
+> > +
+> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > +       young = pmd_young(*pmd);
+> > +       if (!young)
+> > +               young = !page_is_idle(pmd_page(*pmd));
+> > +       spin_unlock(ptl);
+> > +       *page_sz = ((1UL) << HPAGE_PMD_SHIFT);
+> > +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+> > +
+> > +       return young;
+> 
+> Don't you need mmu_notifier_clear_young() here?
+
+I think we don't need it here because we only read the Accessed bit and PG_Idle
+if Accessed bit was not set.
+
+> 
+> I am still looking more into this patch
+
+Looking forward your more comments!
+
+
+Thanks,
+SeongJae Park
