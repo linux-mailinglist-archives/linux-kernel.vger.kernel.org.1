@@ -2,196 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803992C59BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 495A22C59C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403941AbgKZQ7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 11:59:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403871AbgKZQ7F (ORCPT
+        id S2403985AbgKZRAt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Nov 2020 12:00:49 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:39050 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403951AbgKZRAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 11:59:05 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDC3C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 08:59:05 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id p22so2740227wmg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 08:59:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yiihBYT29r/F8u49HtrLNtVGlhzIYUGfbvVDX4SQ4Us=;
-        b=JbwJAnnczSMj8Bkfb75JNqFiES00+ZMEGcmdQTL3NapeB7Ia86rKrZ+Mg5Uhjk4qtZ
-         vlAakh+huJ0GfKOIgxXjKgs+9c/lmlJDT875SshAPOpcyP7K9igd08TovQGfwPaiBJtd
-         NvPDNnoVnbWDAoFqVsrSdcO2wgyn+g8yvrnng=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yiihBYT29r/F8u49HtrLNtVGlhzIYUGfbvVDX4SQ4Us=;
-        b=G0BAgb7fhPiIyIVB1XMdyCmOkLjyx7CdsVjL+tWty4RyJGH2deSN1j1cZTrhE/T69a
-         VQ3tT37ED8w2whTZ/mOPj13oZnEEJneCyqpqxSK9tbuCbbAXOn+Km8SR59g/70F/YxGi
-         WVusYmo5XVZmDQq2vMdFjvRh3yODyVtSzaXci2omS+DjYg6saR7NgDxu1POHdcmJnO7C
-         Rt/vW7jil6chxc0vymeNUT8YCd5ErLDjRT69RfgvJZxL2tArNJOFc01IGdlVxOL9Q0hi
-         5dHxfDIJTMCSrK7qvI6XvIjSFf4i4nx4yk+GwFUo2pGpjjoQqYOGHuWWHAau9y/Rtvgy
-         Tv0w==
-X-Gm-Message-State: AOAM531Xou5yY1pwMrqC7hUGvk+aG0/pfPlcd7O4J79s+GY2/t1M2/2l
-        RQ+WUP9FYJ9czgqiPgccu/eREg==
-X-Google-Smtp-Source: ABdhPJxIrqvMoXZzhTP8EI1BkupGBVYUC0Y2SeBVcJDR5a6h+t8bHPKs9RaJGjUL/5zPm4o1reLqrg==
-X-Received: by 2002:a1c:7318:: with SMTP id d24mr4453757wmb.39.1606409944007;
-        Thu, 26 Nov 2020 08:59:04 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id 17sm8768032wmf.48.2020.11.26.08.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 08:59:03 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-X-Google-Original-From: Florent Revest <revest@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add bpf_kallsyms_lookup test
-Date:   Thu, 26 Nov 2020 17:57:48 +0100
-Message-Id: <20201126165748.1748417-2-revest@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201126165748.1748417-1-revest@google.com>
-References: <20201126165748.1748417-1-revest@google.com>
+        Thu, 26 Nov 2020 12:00:49 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-76LN8YB0PECEHKvjeXhr6g-1; Thu, 26 Nov 2020 12:00:40 -0500
+X-MC-Unique: 76LN8YB0PECEHKvjeXhr6g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CCE571007499;
+        Thu, 26 Nov 2020 17:00:37 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 72A7660C75;
+        Thu, 26 Nov 2020 17:00:27 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     "Frank Ch . Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCHv4 00/25] perf: Add mmap2 build id support
+Date:   Thu, 26 Nov 2020 18:00:01 +0100
+Message-Id: <20201126170026.2619053-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This piggybacks on the existing "ksyms" test because this test also
-relies on a __ksym symbol and requires CONFIG_KALLSYMS.
+hi,
+adding the support to have buildid stored in mmap2 event,
+so we can bypass the final perf record hunt on build ids.
 
-Signed-off-by: Florent Revest <revest@google.com>
+This patchset allows perf to record build ID in mmap2 event,
+and adds perf tooling to store/download binaries to .debug
+cache based on these build IDs.
+
+Note that the build id retrieval code is stolen from bpf
+code, where it's been used (together with file offsets)
+to replace IPs in user space stack traces. It's now added
+under lib directory.
+
+v4 changes:
+  - fixed typo in changelog [Namhyung]
+  - removed force_download bool from struct dso_store_data,
+    because it's not used  [Namhyung]
+
+v3 changes:
+  - added acks
+  - removed forgotten debug code [Arnaldo]
+  - fixed readlink termination [Ian]
+  - fixed doc for --debuginfod=URLs [Ian]
+  - adopted kernel's memchr_inv function and used
+    it in build_id__is_defined function [Arnaldo]
+
+On recording server:
+
+  - on the recording server we can run record with --buildid-mmap
+    option to store build ids in mmap2 events:
+
+    # perf record --buildid-mmap
+    ^C[ perf record: Woken up 2 times to write data ]
+    [ perf record: Captured and wrote 0.836 MB perf.data ]
+
+  - it stores nothing to ~/.debug cache:
+
+    # find ~/.debug
+    find: ‘/root/.debug’: No such file or directory
+
+  - and still reports properly:
+
+    # perf report --stdio
+    ...
+    99.82%  swapper          [kernel.kallsyms]  [k] native_safe_halt
+     0.03%  swapper          [kernel.kallsyms]  [k] finish_task_switch
+     0.02%  swapper          [kernel.kallsyms]  [k] __softirqentry_text_start
+     0.01%  kcompactd0       [kernel.kallsyms]  [k] _raw_spin_unlock_irqrestore
+     0.01%  ksoftirqd/6      [kernel.kallsyms]  [k] slab_free_freelist_hook
+     0.01%  kworker/17:1H-x  [kernel.kallsyms]  [k] slab_free_freelist_hook
+
+  - display used/hit build ids:
+
+    # perf buildid-list | head -5
+    5dcec522abf136fcfd3128f47e131f2365834dd7 /proc/kcore
+    589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+
+  - store build id binaries into build id cache:
+
+    # perf buildid-cache -a perf.data
+    OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /proc/kcore
+    OK   589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    OK   94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    OK   559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    OK   40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+    OK   a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
+    OK   e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
+    OK   9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
+
+    # find ~/.debug | head -5
+    /root/.debug
+    /root/.debug/proc
+    /root/.debug/proc/kcore
+    /root/.debug/proc/kcore/5dcec522abf136fcfd3128f47e131f2365834dd7
+    /root/.debug/proc/kcore/5dcec522abf136fcfd3128f47e131f2365834dd7/kallsyms
+
+  - run debuginfod daemon to provide binaries to another server (below)
+    (the initialization could take some time)
+
+    # debuginfod -F /
+
+
+On another server:
+
+  - copy perf.data from 'record' server and run:
+
+    $ find ~/.debug/
+    find: ‘/home/jolsa/.debug/’: No such file or directory
+
+    $ perf buildid-list | head -5
+    No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
+    5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
+    5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+    589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+
+  - report does not show anything (kernel build id does not match):
+
+   $ perf report --stdio
+   ...
+    76.73%  swapper          [kernel.kallsyms]    [k] 0xffffffff81aa8ebe
+     1.89%  find             [kernel.kallsyms]    [k] 0xffffffff810f2167
+     0.93%  sshd             [kernel.kallsyms]    [k] 0xffffffff8153380c
+     0.83%  swapper          [kernel.kallsyms]    [k] 0xffffffff81104b0b
+     0.71%  kworker/u40:2-e  [kernel.kallsyms]    [k] 0xffffffff810f3850
+     0.70%  kworker/u40:0-e  [kernel.kallsyms]    [k] 0xffffffff810f3850
+     0.64%  find             [kernel.kallsyms]    [k] 0xffffffff81a9ba0a
+     0.63%  find             [kernel.kallsyms]    [k] 0xffffffff81aa93b0
+
+  - add build ids does not work, because existing binaries (on another server)
+    have different build ids:
+
+    $ perf buildid-cache -a perf.data 
+    No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
+    FAIL 5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
+    FAIL 5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+    FAIL 589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    FAIL 94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    FAIL 559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    FAIL 40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+    FAIL a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
+    FAIL e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
+    FAIL 9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
+
+  - add build ids with debuginfod setup pointing to record server:
+
+    $ perf buildid-cache -a perf.data --debuginfod http://192.168.122.174:8002
+    No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
+    OK   5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
+    OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+    OK   589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+    OK   94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
+    OK   559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
+    OK   40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
+    OK   a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
+    OK   e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
+    OK   9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
+
+  - and report works:
+
+    $ perf report --stdio
+    ...
+    76.73%  swapper          [kernel.kallsyms]    [k] native_safe_halt
+     1.91%  find             [kernel.kallsyms]    [k] queue_work_on
+     0.93%  sshd             [kernel.kallsyms]    [k] iowrite16
+     0.83%  swapper          [kernel.kallsyms]    [k] finish_task_switch
+     0.72%  kworker/u40:2-e  [kernel.kallsyms]    [k] process_one_work
+     0.70%  kworker/u40:0-e  [kernel.kallsyms]    [k] process_one_work
+     0.64%  find             [kernel.kallsyms]    [k] syscall_enter_from_user_mode
+     0.63%  find             [kernel.kallsyms]    [k] _raw_spin_unlock_irqrestore
+
+  - because we have the data in build id cache:
+
+    $ find ~/.debug | head -10
+    .../.debug
+    .../.debug/home
+    .../.debug/home/jolsa
+    .../.debug/home/jolsa/.cache
+    .../.debug/home/jolsa/.cache/debuginfod_client
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7/elf
+    .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7/debug
+
+
+Available also in:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  perf/build_id
+
+thanks,
+jirka
+
+
+Cc: Frank Ch. Eigler <fche@redhat.com>
+Cc: Mark Wielaard <mjw@redhat.com>
 ---
- tools/testing/selftests/bpf/config            |  1 +
- .../testing/selftests/bpf/prog_tests/ksyms.c  | 46 ++++++++++++++++++-
- .../bpf/progs/test_kallsyms_lookup.c          | 38 +++++++++++++++
- 3 files changed, 84 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
+Jiri Olsa (25):
+      bpf: Move stack_map_get_build_id into lib
+      bpf: Add size arg to build_id_parse function
+      perf: Add build id data in mmap2 event
+      tools headers uapi: Sync tools/include/uapi/linux/perf_event.h
+      tools lib: Adopt memchr_inv() from kernel
+      perf tools: Do not swap mmap2 fields in case it contains build id
+      perf tools: Add build_id__is_defined function
+      perf tools: Add filename__decompress function
+      perf tools: Add support to read build id from compressed elf
+      perf tools: Add check for existing link in buildid dir
+      perf tools: Use struct extra_kernel_map in machine__process_kernel_mmap_event
+      perf tools: Try to load vmlinux from buildid database
+      perf tools: Store build id from mmap2 events
+      perf tools: Allow mmap2 event to synthesize kernel image
+      perf tools: Allow mmap2 event to synthesize modules
+      perf tools: Synthesize build id for kernel/modules/tasks
+      perf tools: Add support to display build id for mmap2 events
+      perf tools: Use machine__for_each_dso in perf_session__cache_build_ids
+      perf tools: Add __perf_session__cache_build_ids function
+      perf tools: Add is_perf_data function
+      perf tools: Add build_id_cache__add function
+      perf buildid-cache: Add support to add build ids from perf data
+      perf buildid-cache: Add --debuginfod option
+      perf buildid-list: Add support for mmap2's buildid events
+      perf record: Add --buildid-mmap option to enable mmap's build id
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 365bf9771b07..791a46e5d013 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -43,3 +43,4 @@ CONFIG_IMA=y
- CONFIG_SECURITYFS=y
- CONFIG_IMA_WRITE_POLICY=y
- CONFIG_IMA_READ_POLICY=y
-+CONFIG_KALLSYMS=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms.c b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-index b295969b263b..0478b67a92ae 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-@@ -3,11 +3,12 @@
- 
- #include <test_progs.h>
- #include "test_ksyms.skel.h"
-+#include "test_kallsyms_lookup.skel.h"
- #include <sys/stat.h>
- 
- static int duration;
- 
--void test_ksyms(void)
-+void test_ksyms_variables(void)
- {
- 	const char *btf_path = "/sys/kernel/btf/vmlinux";
- 	struct test_ksyms *skel;
-@@ -59,3 +60,46 @@ void test_ksyms(void)
- cleanup:
- 	test_ksyms__destroy(skel);
- }
-+
-+void test_kallsyms_lookup(void)
-+{
-+	struct test_kallsyms_lookup *skel;
-+	int err;
-+
-+	skel = test_kallsyms_lookup__open_and_load();
-+	if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
-+		return;
-+
-+	err = test_kallsyms_lookup__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	usleep(1);
-+
-+	CHECK(strcmp(skel->bss->name, "schedule"), "name",
-+	      "got \"%s\", exp \"schedule\"\n", skel->bss->name);
-+	CHECK(strcmp(skel->bss->name_truncated, "sched"), "name_truncated",
-+	      "got \"%s\", exp \"sched\"\n", skel->bss->name_truncated);
-+	CHECK(strcmp(skel->bss->name_invalid, ""), "name_invalid",
-+	      "got \"%s\", exp \"\"\n", skel->bss->name_invalid);
-+	CHECK(strcmp(skel->bss->module_name, ""), "module_name",
-+	      "got \"%s\", exp \"\"\n", skel->bss->module_name);
-+	CHECK(skel->bss->schedule_ret != 9, "schedule_ret",
-+	      "got %d, exp 0\n", skel->bss->schedule_ret);
-+	CHECK(skel->bss->sched_ret != 9, "sched_ret",
-+	      "got %d, exp 0\n", skel->bss->sched_ret);
-+	CHECK(skel->bss->invalid_ret != -EINVAL, "invalid_ret",
-+	      "got %d, exp %d\n", skel->bss->invalid_ret, -EINVAL);
-+
-+cleanup:
-+	test_kallsyms_lookup__destroy(skel);
-+}
-+
-+void test_ksyms(void)
-+{
-+	if (test__start_subtest("ksyms_variables"))
-+		test_ksyms_variables();
-+	if (test__start_subtest("kallsyms_lookup"))
-+		test_kallsyms_lookup();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c b/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
-new file mode 100644
-index 000000000000..4f15f1527ab4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Google LLC. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+extern const void schedule __ksym;
-+
-+#define SYMBOL_NAME_LEN			10
-+char name[SYMBOL_NAME_LEN];
-+char name_invalid[SYMBOL_NAME_LEN];
-+
-+#define SYMBOL_TRUNCATED_NAME_LEN	6
-+char name_truncated[SYMBOL_TRUNCATED_NAME_LEN];
-+
-+#define MODULE_NAME_LEN			64
-+char module_name[MODULE_NAME_LEN];
-+
-+long schedule_ret;
-+long sched_ret;
-+long invalid_ret;
-+
-+SEC("raw_tp/sys_enter")
-+int handler(const void *ctx)
-+{
-+	schedule_ret = bpf_kallsyms_lookup((__u64)&schedule,
-+					   name, SYMBOL_NAME_LEN,
-+					   module_name, MODULE_NAME_LEN);
-+	invalid_ret = bpf_kallsyms_lookup(0,
-+					  name_invalid, SYMBOL_NAME_LEN,
-+					  module_name, MODULE_NAME_LEN);
-+	sched_ret = bpf_kallsyms_lookup((__u64)&schedule, name_truncated,
-+					SYMBOL_TRUNCATED_NAME_LEN,
-+					module_name, MODULE_NAME_LEN);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.29.2.454.gaff20da3a2-goog
+ include/linux/buildid.h                           |  12 +++++
+ include/uapi/linux/perf_event.h                   |  42 +++++++++++++++---
+ kernel/bpf/stackmap.c                             | 143 ++----------------------------------------------------------
+ kernel/events/core.c                              |  32 ++++++++++++--
+ lib/Makefile                                      |   3 +-
+ lib/buildid.c                                     | 149 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/include/linux/string.h                      |   1 +
+ tools/include/uapi/linux/perf_event.h             |  42 +++++++++++++++---
+ tools/lib/perf/include/perf/event.h               |  18 ++++++--
+ tools/lib/string.c                                |  58 +++++++++++++++++++++++++
+ tools/perf/Documentation/perf-buildid-cache.txt   |  18 +++++++-
+ tools/perf/Documentation/perf-config.txt          |  10 ++++-
+ tools/perf/Documentation/perf-record.txt          |   3 ++
+ tools/perf/builtin-buildid-cache.c                | 241 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ tools/perf/builtin-buildid-list.c                 |   3 ++
+ tools/perf/builtin-record.c                       |  20 +++++++++
+ tools/perf/tests/shell/trace+probe_vfs_getname.sh |   2 +-
+ tools/perf/util/build-id.c                        | 127 ++++++++++++++++++++++++++++++++++-------------------
+ tools/perf/util/build-id.h                        |   8 ++++
+ tools/perf/util/data.c                            |  19 ++++++++
+ tools/perf/util/data.h                            |   1 +
+ tools/perf/util/dso.c                             |  31 ++++++++-----
+ tools/perf/util/dso.h                             |   2 +
+ tools/perf/util/event.c                           |  41 +++++++++++++-----
+ tools/perf/util/evsel.c                           |  10 +++--
+ tools/perf/util/machine.c                         |  80 +++++++++++++++++++++-------------
+ tools/perf/util/map.c                             |   8 +++-
+ tools/perf/util/map.h                             |   3 +-
+ tools/perf/util/perf_api_probe.c                  |  10 +++++
+ tools/perf/util/perf_api_probe.h                  |   1 +
+ tools/perf/util/perf_event_attr_fprintf.c         |   2 +
+ tools/perf/util/probe-event.c                     |   6 +--
+ tools/perf/util/record.h                          |   1 +
+ tools/perf/util/session.c                         |  11 +++--
+ tools/perf/util/symbol-elf.c                      |  37 +++++++++++++++-
+ tools/perf/util/symbol.c                          |  16 +++++++
+ tools/perf/util/symbol_conf.h                     |   3 +-
+ tools/perf/util/synthetic-events.c                | 121 ++++++++++++++++++++++++++++++++++++++-------------
+ 38 files changed, 1024 insertions(+), 311 deletions(-)
+ create mode 100644 include/linux/buildid.h
+ create mode 100644 lib/buildid.c
 
