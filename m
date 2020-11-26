@@ -2,112 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D482C57BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B39EF2C57C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391286AbgKZPBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:01:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
+        id S2390885AbgKZPCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:02:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390811AbgKZPBp (ORCPT
+        with ESMTP id S2389568AbgKZPCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:01:45 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98BBC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:01:44 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id e8so1871802pfh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:01:44 -0800 (PST)
+        Thu, 26 Nov 2020 10:02:43 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E82FC061A04
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:02:43 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id 128so801365vsw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:02:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YBBDP4mSopcfuTFCAYlEnNAgNCuA2bebai0CbzK0+1Y=;
-        b=BX0/A0I2f/dIMqnY7ZHR9Z2d4t0/iZyOoKFEuYzsqxyi2F8a9XNJLQsGh3Zca2/dlW
-         0ESZmeNu18zuPjd+NTg+rmmzuxUdX6f623qdKfP6LXp9goz95BcTSCAsS1pLRRUi3FHm
-         5sAJ1nMRkjjtoAHJ5FfwKiie1NZPtWqjrLUobqrdJALCPAS7LTUqflJwNzrKTIaAazFw
-         ml6DKM8XglRJ/2vivvA1pYLa3xAunvZO1CQZNUHOikwl8ZL6q+pfUmCF22lOAwMd6c5z
-         0NmhM/9MVfXcw7iqvExaztMh6mSJh8J4/GNwi/eRioDWDQCO0xjrbzYdJCMl+HyxAJv4
-         GDNA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OqkXUBQ1i4Vmor4ADqr8LW41OTo4FFyxr1N6+Z/rA5s=;
+        b=Gh8XjXmYgT4LldSMXq+eDAAJJpw9+ajrtOclQFMjho93UopgOYSwWmMfZN88qbnn26
+         Nik7LSQ7REuIyVQ7fxRGiuZcBaqes3wRK2JQ10kCOh23GLRDycvOlg97xnzmhkugYdPV
+         KmzeHc9Pt2T9xYCjwUEWtsuN2ccRc+NKG5V7Z3uxlUSnjE7ewPM9NNJKEHuQlzJHY2Tz
+         YIE8FRx/qOeXbU4NC3VafWqKHfPkZ+VhUMmfvWJwMhwpO3QG1vPdOr2Dj2FPC0tzg36Y
+         1ztZHIegTsaPgVDT0IOSNor/yjpsbO5wPNXCpOZg6iEJbSpcplcxlVxrHP4ppCkH3FAi
+         xRxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YBBDP4mSopcfuTFCAYlEnNAgNCuA2bebai0CbzK0+1Y=;
-        b=lCdDgch6kqo/8cZAUwRLehjUHxE/KN48N7jhyNrDLF6P/d9bw4RVPcYWlf3J8llxMR
-         HDVwnNQFxGVhQGZyWYyDWiV0HyPU9D50Q6oyE6GZuXuUqngj+oP8Fs94fj6YlST+wIBh
-         tJi8SQNpxI9hWB+Xuo6htlxDumF2T36yLO9Hi/+z+sLxZW4NjM7uz79Gz06tiyJjyxJI
-         coouXyMiOaEjA6Z9ISM+MRHKqMifmB92LC+1CSbZXeuGJbw4Qs/7cVJvcPmIv29UkPKp
-         t8RWnMd/nPfoxaWWqjfzNxx+iJWMwwRy4kkD0Jf0wOhgF0k0YEdJ9ENPuNKbTyXWlhiv
-         oDng==
-X-Gm-Message-State: AOAM532s/mniLsKEuNSHIMyA+TvZ0YGqvFU8/v4hD/Az12DEk0DXNr7A
-        Aw9TEUJ++buNFlPfMJeGRNu9kt2ShpE=
-X-Google-Smtp-Source: ABdhPJzo+zCK/GbEbDxwMt3RRNEGmRW8O0bixkn825znAlxY23Szhi1U1HrVgfzqDtC4Byu+Car1Ag==
-X-Received: by 2002:a17:90a:940e:: with SMTP id r14mr4242967pjo.47.1606402904501;
-        Thu, 26 Nov 2020 07:01:44 -0800 (PST)
-Received: from localhost ([221.153.153.187])
-        by smtp.gmail.com with ESMTPSA id c6sm4891444pgl.38.2020.11.26.07.01.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 07:01:43 -0800 (PST)
-From:   Chanho Park <parkch98@gmail.com>
-X-Google-Original-From: Chanho Park <chanho61.park@samsung.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Chanho Park <chanho61.park@samsung.com>
-Subject: [PATCH] drivers core: export symbols for device hotplug
-Date:   Fri, 27 Nov 2020 00:01:38 +0900
-Message-Id: <20201126150138.159896-1-chanho61.park@samsung.com>
-X-Mailer: git-send-email 2.23.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OqkXUBQ1i4Vmor4ADqr8LW41OTo4FFyxr1N6+Z/rA5s=;
+        b=Q+W20Ajlu2OqDbrHLbV49qvIdttTB2PrjnuIYPIlizWCoxLGd/hM+7zKNHumdRtO7/
+         nb2eKZa7O3jE15UO0OiJKj+7QOUN57sTXngYtJVJfIUEUN62RIgzLWqxhXIoCWOBgEuo
+         4XXYYLbArKnoYd68k4sBlE4ZON1Hmoj4nTpbSbpcq1/cl6jTKKKcQHqLv8Mb45bmtTwQ
+         sluXrh1E1VOqghbuymLlI55ah+pgPLDkhLc+cVvjh8joF8kiEE4AwNgcT7IyH+d1hDcu
+         tkG/QrqYphX5qlxkKGBdjZrXvEQnupl5TCo4It0TTklzD1En7+j2ddneNL5JILG7WSW0
+         TdLw==
+X-Gm-Message-State: AOAM531VEEjtaCO7Y/y73wCmEy72BUtUojXDkUogisUv0hOInQ28OXxh
+        +Sw3RCTy2n6hEmdK8qbqkyJsu9rfHjKGikjeSkIRAA==
+X-Google-Smtp-Source: ABdhPJytKgXCtMQjzdnzBaMHgZEdsYliZUdDBrFUZSCukRRaCw2+1Wea9rb3AivqdOw/P9snQqpJZoEWty8mGhoOa9s=
+X-Received: by 2002:a67:8c44:: with SMTP id o65mr1942819vsd.55.1606402962450;
+ Thu, 26 Nov 2020 07:02:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201124060202.776-1-ricky_wu@realtek.com> <20201124204915.GA585306@bjorn-Precision-5520>
+ <CAJZ5v0gt4aeC5S6RY2W98vmcMSs9gb_SBA8-eoq1NU3wPptL8g@mail.gmail.com>
+ <6f721ea4d5a84f45b0249b932d742367@realtek.com> <CAJZ5v0ggtd3+YEo2nERhuTeurRx5OQrvLkAz3aEMPRmEfo_Rnw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0ggtd3+YEo2nERhuTeurRx5OQrvLkAz3aEMPRmEfo_Rnw@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 26 Nov 2020 16:02:05 +0100
+Message-ID: <CAPDyKFohv9qC4Sp3ffGg9z6Bj7gKq3-iubaiuZqY2121amL2Bw@mail.gmail.com>
+Subject: Re: [PATCH] misc: rtsx: rts5249 support runtime PM
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        =?UTF-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "vaibhavgupta40@gmail.com" <vaibhavgupta40@gmail.com>,
+        "kdlnx@doth.eu" <kdlnx@doth.eu>,
+        Doug Anderson <dianders@chromium.org>,
+        "rmfrfs@gmail.com" <rmfrfs@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support module build for cpu hotplug driver on type-1 hypervisor
-such as drivers/xen/cpu_hotplug.c, we need to export below four symbols.
+On Thu, 26 Nov 2020 at 15:19, Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Nov 26, 2020 at 4:07 AM =E5=90=B3=E6=98=8A=E6=BE=84 Ricky <ricky_=
+wu@realtek.com> wrote:
+> >
+> > > -----Original Message-----
+> > > From: Rafael J. Wysocki [mailto:rafael@kernel.org]
+> > > Sent: Wednesday, November 25, 2020 10:04 PM
+> > > To: Bjorn Helgaas; =E5=90=B3=E6=98=8A=E6=BE=84 Ricky
+>
+> [cut]
+>
+> > > > > +static void rtsx_pci_rtd3_work(struct work_struct *work)
+> > > > > +{
+> > > > > +     struct delayed_work *dwork =3D to_delayed_work(work);
+> > > > > +     struct rtsx_pcr *pcr =3D container_of(dwork, struct rtsx_pc=
+r,
+> > > rtd3_work);
+> > > > > +
+> > > > > +     pcr_dbg(pcr, "--> %s\n", __func__);
+> > > > > +
+> > > > > +     while (pcr->pci->dev.power.usage_count.counter > 0) {
+> > > > > +             if (pm_runtime_active(&(pcr->pci->dev)))
+> > > > > +                     pm_runtime_put(&(pcr->pci->dev));
+> > > >
+> > > > I'm not a runtime PM expert, but this looks fishy.  AFAICT this is =
+the
+> > > > only driver in the tree that uses usage_count.counter this way, whi=
+ch
+> > > > is a pretty big hint that this needs a closer look.  Cc'd Rafael.
+> > >
+> > > You are right, this is not correct from the PM-runtime POV.
+> > >
+> > > It looks like this attempts to force the PM-runtime usage counter dow=
+n
+> > > to 0 and it's kind of hard to say why this is done (and it shouldn't
+> > > be done in the first place, because it destroys the usage counter
+> > > balance).
+> > >
+> > > Ricky, is this an attempt to work around an issue of some sort?
+> > >
+> >
+> > Thanks Bjorn and Rafael
+> > I found when we boot up, our dev pcr->pci->dev.power.usage_count.counte=
+r always is 2,
+> > Don=E2=80=99t know how to make it to 0 because we need to support D3 an=
+d run runtime_suspended callback function
+> > Is there something wrong with us to enable runtime PM?
+>
+> That is possible.
+>
+> If you want it to be enabled by default, you need to call
+> pm_runtime_allow() from the driver at probe time, in addition to
+> pm_runtime_enable(), in the first place, but that only drops one
+> reference, so question is where the other one comes from.
 
-lock_device_hotplug / unlock_device_hotplug
-device_online / device_offline
+Yes, good point.
 
-Signed-off-by: Chanho Park <chanho61.park@samsung.com>
----
- drivers/base/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Moreover, I am wondering whether you also need to deploy support for
+runtime PM for the child device (managed by
+drivers/mmc/host/rtsx_pci_sdmmc.c driver), as to make the support
+complete.
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index d661ada1518f..1bfd0c54a778 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1586,11 +1586,13 @@ void lock_device_hotplug(void)
- {
- 	mutex_lock(&device_hotplug_lock);
- }
-+EXPORT_SYMBOL_GPL(lock_device_hotplug);
- 
- void unlock_device_hotplug(void)
- {
- 	mutex_unlock(&device_hotplug_lock);
- }
-+EXPORT_SYMBOL_GPL(unlock_device_hotplug);
- 
- int lock_device_hotplug_sysfs(void)
- {
-@@ -3419,6 +3421,7 @@ int device_offline(struct device *dev)
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(device_offline);
- 
- /**
-  * device_online - Put the device back online after successful device_offline().
-@@ -3450,6 +3453,7 @@ int device_online(struct device *dev)
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(device_online);
- 
- struct root_device {
- 	struct device dev;
--- 
-2.23.0
+>
+> Are the pm_runtime_get*() and pm_runtime_put*() calls balanced?
 
+Perhaps have a look at how the drivers/misc/cardreader/rtsx_usb.c and
+drivers/mmc/host/rtsx_usb_sdmmc.c have implemented this could help. I
+know it's USB, but it should work quite similar in regards to runtime
+PM, I think.
+
+Kind regards
+Uffe
