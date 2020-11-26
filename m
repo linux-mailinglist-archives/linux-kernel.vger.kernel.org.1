@@ -2,157 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610BF2C50DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D5C2C50EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389137AbgKZJCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 04:02:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgKZJCs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 04:02:48 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A17C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 01:02:48 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id r3so1294172wrt.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 01:02:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=GFyCHi/uBU1dtOcUSYpx65nLIeE0S+Y9gUbYQTFljb0=;
-        b=j9d9YS49slF6glftrGUPhNlLNKLxwo0LbWOgMai+Dj2szvu3yv1dneZpHyyZnCPnI9
-         TEb4Ua8IM28iztZzrGLOKgglT40/xDKvF28qKzvcDIlkEgaSzfdowuYX60/PQxaMXGS2
-         qKjDGJ6TuOtoU9BIYAcXRmmDTQ1nu12VOT0No3UYQ0wA2t+DxoZrpKj6mQe75GT67qNN
-         oM0kIIEgqujWcDrNl75vc751AQa8EDzJGpIPxn0AIv6EbzF+xpY7tQ9x3TJXKQOcbBSz
-         0UyG3aTzA57/UG9bgSLc76DgnGWc0PowTtkHsA4CtFIIjBuwP/P0fCqxieL0zuWvuR2p
-         8Nww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=GFyCHi/uBU1dtOcUSYpx65nLIeE0S+Y9gUbYQTFljb0=;
-        b=AfH3ZDQoCZdwr9ELbWbF8iHCwOu8RxKbJ8NLt1vs4DCCnF7Tbn+T8MC0zR86I9Qb4j
-         iIQYeU2ISU0dKQXJa6WaYRz/DAVP/RWFSARMb62m/khalYhX/W35eNxSK9VaE907dTFJ
-         bzEFrCuJs0X4+r6nSrdLC6XcfAarliRLx+yzmVzJ+FGJc1rzsYIqDp+DEvNxU3FVgSRN
-         aVM6RSI98vyykhjd3u3jX3PG+Qt3mwAFK+HbkJGci1I0fOAEdp+htORMP5kTzEOj6QLL
-         E4ZrtB4hdqAogdQ3X1OwuDJVdaBVvjjyfWVU/3U+NfFY1YCgufX6DpS1jGb9XvX5HnTI
-         OcTA==
-X-Gm-Message-State: AOAM532LQGTs+loNnsOZFy3XYzCRAxijIwhecf5a0bNFhw1E48rkHnCt
-        bgSWddhBXzOeMCHDC9tfC1speg==
-X-Google-Smtp-Source: ABdhPJziBTTVxWQQnfbQPFNqaoBuTqg7asyjyHqQLwLCs96p1DtgCmBzGo7d2qW7QvmtM/nbRnpyaA==
-X-Received: by 2002:a5d:6250:: with SMTP id m16mr2597470wrv.400.1606381366987;
-        Thu, 26 Nov 2020 01:02:46 -0800 (PST)
-Received: from localhost (253.35.17.109.rev.sfr.net. [109.17.35.253])
-        by smtp.gmail.com with ESMTPSA id e1sm8912528wra.22.2020.11.26.01.02.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 01:02:46 -0800 (PST)
-References: <20201123153817.1616814-1-ciorneiioana@gmail.com>
- <20201123153817.1616814-7-ciorneiioana@gmail.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Ioana Ciornei <ciorneiioana@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH net-next 06/15] net: phy: meson-gxl: remove the use of
- .ack_callback()
-In-reply-to: <20201123153817.1616814-7-ciorneiioana@gmail.com>
-Message-ID: <1jim9s8p8r.fsf@starbuckisacylon.baylibre.com>
-Date:   Thu, 26 Nov 2020 10:02:44 +0100
+        id S2389155AbgKZJN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:13:28 -0500
+Received: from mga17.intel.com ([192.55.52.151]:55742 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732910AbgKZJNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 04:13:25 -0500
+IronPort-SDR: MorjxH7inJBOHI5/qMuq0+suf/ZpM190MeCzaU25CWzu+Dy5jjNrkGUCcvg85R1g/+EWVg7VNs
+ roGcyecM9cOA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="152093744"
+X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
+   d="scan'208";a="152093744"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 01:13:25 -0800
+IronPort-SDR: 1W98j++zDlKY+Uyu1ROvcdDJOJF1MCSg4O2+mApuDwET4gmPwUg6O9xBS/6ofTHijiyvhxdySz
+ a6EHzU3NcBqw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
+   d="scan'208";a="433221130"
+Received: from allen-box.sh.intel.com ([10.239.159.28])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Nov 2020 01:13:23 -0800
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH 1/1] iommu: Fix htmldocs warnings in sysfs-kernel-iommu_groups
+Date:   Thu, 26 Nov 2020 17:06:03 +0800
+Message-Id: <20201126090603.1511589-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Below warnings are fixed:
 
-On Mon 23 Nov 2020 at 16:38, Ioana Ciornei <ciorneiioana@gmail.com> wrote:
+Documentation/ABI/testing/sysfs-kernel-iommu_groups:38: WARNING: Unexpected indentation.
+Documentation/ABI/testing/sysfs-kernel-iommu_groups:38: WARNING: Block quote ends without a blank line; unexpected unindent.
+Documentation/ABI/testing/sysfs-kernel-iommu_groups:38: WARNING: Enumerated list ends without a blank line; unexpected unindent.
+Documentation/ABI/testing/sysfs-kernel-iommu_groups:38: WARNING: Unexpected indentation.
+Documentation/ABI/testing/sysfs-kernel-iommu_groups:38: WARNING: Block quote ends without a blank line; unexpected unindent.
 
-> From: Ioana Ciornei <ioana.ciornei@nxp.com>
->
-> In preparation of removing the .ack_interrupt() callback, we must replace
-> its occurrences (aka phy_clear_interrupt), from the 2 places where it is
-> called from (phy_enable_interrupts and phy_disable_interrupts), with
-> equivalent functionality.
->
-> This means that clearing interrupts now becomes something that the PHY
-> driver is responsible of doing, before enabling interrupts and after
-> clearing them. Make this driver follow the new contract.
->
-> Cc: Jerome Brunet <jbrunet@baylibre.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-> ---
->  drivers/net/phy/meson-gxl.c | 19 +++++++++++--------
->  1 file changed, 11 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/net/phy/meson-gxl.c b/drivers/net/phy/meson-gxl.c
-> index b16b1cc89165..7e7904fee1d9 100644
-> --- a/drivers/net/phy/meson-gxl.c
-> +++ b/drivers/net/phy/meson-gxl.c
-> @@ -204,22 +204,27 @@ static int meson_gxl_config_intr(struct phy_device *phydev)
->  	int ret;
->  
->  	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
-> +		/* Ack any pending IRQ */
-> +		ret = meson_gxl_ack_interrupt(phydev);
-> +		if (ret)
-> +			return ret;
-> +
->  		val = INTSRC_ANEG_PR
->  			| INTSRC_PARALLEL_FAULT
->  			| INTSRC_ANEG_LP_ACK
->  			| INTSRC_LINK_DOWN
->  			| INTSRC_REMOTE_FAULT
->  			| INTSRC_ANEG_COMPLETE;
-> +		ret = phy_write(phydev, INTSRC_MASK, val);
->  	} else {
->  		val = 0;
-> -	}
-> +		ret = phy_write(phydev, INTSRC_MASK, val);
->  
-> -	/* Ack any pending IRQ */
-> -	ret = meson_gxl_ack_interrupt(phydev);
-> -	if (ret)
-> -		return ret;
-> +		/* Ack any pending IRQ */
-> +		ret = meson_gxl_ack_interrupt(phydev);
-> +	}
->  
-> -	return phy_write(phydev, INTSRC_MASK, val);
-> +	return ret;
+Fixes: 63a816749d86 ("iommu: Document usage of "/sys/kernel/iommu_groups/<grp_id>/type" file")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Link: https://lore.kernel.org/linux-next/20201126174851.200e0e58@canb.auug.org.au/
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+---
+ .../ABI/testing/sysfs-kernel-iommu_groups     | 33 ++++++++++---------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
 
-The only thing the above does is clear the irq *after* writing INTSRC_MASK
-*only* when the interrupts are not enabled. If that was not the intent,
-please let me know.
-
-As it stands, I don't think this hunk is necessary and I would prefer if
-it was not included.
-
->  }
->  
->  static irqreturn_t meson_gxl_handle_interrupt(struct phy_device *phydev)
-> @@ -249,7 +254,6 @@ static struct phy_driver meson_gxl_phy[] = {
->  		.soft_reset     = genphy_soft_reset,
->  		.config_init	= meson_gxl_config_init,
->  		.read_status	= meson_gxl_read_status,
-> -		.ack_interrupt	= meson_gxl_ack_interrupt,
->  		.config_intr	= meson_gxl_config_intr,
->  		.handle_interrupt = meson_gxl_handle_interrupt,
->  		.suspend        = genphy_suspend,
-> @@ -260,7 +264,6 @@ static struct phy_driver meson_gxl_phy[] = {
->  		/* PHY_BASIC_FEATURES */
->  		.flags		= PHY_IS_INTERNAL,
->  		.soft_reset     = genphy_soft_reset,
-> -		.ack_interrupt	= meson_gxl_ack_interrupt,
->  		.config_intr	= meson_gxl_config_intr,
->  		.handle_interrupt = meson_gxl_handle_interrupt,
->  		.suspend        = genphy_suspend,
+diff --git a/Documentation/ABI/testing/sysfs-kernel-iommu_groups b/Documentation/ABI/testing/sysfs-kernel-iommu_groups
+index 407b1628d7fd..0fedbb0f94e4 100644
+--- a/Documentation/ABI/testing/sysfs-kernel-iommu_groups
++++ b/Documentation/ABI/testing/sysfs-kernel-iommu_groups
+@@ -40,23 +40,24 @@ KernelVersion:	v5.11
+ Contact:	Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
+ Description:	/sys/kernel/iommu_groups/<grp_id>/type shows the type of default
+ 		domain in use by iommu for this group. See include/linux/iommu.h
+-		for possible values. A privileged user could request kernel to
+-		change the group type by writing to this file. Presently, only
+-		three types of request are supported:
+-		1. DMA: All the DMA transactions from the device in this group
+-			are translated by the iommu.
+-		2. identity: All the DMA transactions from the device in this
+-			     group are *not* translated by the iommu.
+-		3. auto: Change to the type the device was booted with.
+-		Note:
+-		-----
++		for possible read values. A privileged user could request kernel to
++		change the group type by writing to this file. Valid write values:
++
++		========  ======================================================
++		DMA       All the DMA transactions from the device in this group
++		          are translated by the iommu.
++		identity  All the DMA transactions from the device in this group
++		          are not translated by the iommu.
++		auto      Change to the type the device was booted with.
++		========  ======================================================
++
+ 		The default domain type of a group may be modified only when
+-		1. The group has *only* one device
+-		2. The device in the group is not bound to any device driver.
+-		   So, the users must unbind the appropriate driver before
+-		   changing the default domain type.
+-		Caution:
+-		--------
++
++		- The group has only one device.
++		- The device in the group is not bound to any device driver.
++		  So, the users must unbind the appropriate driver before
++		  changing the default domain type.
++
+ 		Unbinding a device driver will take away the driver's control
+ 		over the device and if done on devices that host root file
+ 		system could lead to catastrophic effects (the users might
+-- 
+2.25.1
 
