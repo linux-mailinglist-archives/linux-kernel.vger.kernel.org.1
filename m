@@ -2,111 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1292C513C
+	by mail.lfdr.de (Postfix) with ESMTP id 79B9A2C513D
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389112AbgKZJ2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 04:28:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730060AbgKZJ2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 04:28:54 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3E352173E;
-        Thu, 26 Nov 2020 09:28:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606382932;
-        bh=RWj4wX5AYIaChRd8iz/VAmF+RKCOhZ3XebOPiy20CRc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xGyHf780VVINu9Z8rovYPhKkDhHxt2/ZZAkNAEA2w1e9P/0oWX3estJ9qnGW4O6sQ
-         RO7aIg121TVU0aEsYdYCD4L8emQqwZGsU07VaPYXvluFznXuGlB+ONF+SeyzeQxMSx
-         n4Atnh+tg15SfEHwjtZHZXL5X5gAiN+CAGtWTl2M=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kiDa6-00DlGl-K4; Thu, 26 Nov 2020 09:28:50 +0000
+        id S1731561AbgKZJ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:29:37 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2384 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729002AbgKZJ3g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 04:29:36 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4ChXWh6Q6Pz4xym;
+        Thu, 26 Nov 2020 17:29:04 +0800 (CST)
+Received: from dggemi710-chm.china.huawei.com (10.3.20.109) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Thu, 26 Nov 2020 17:29:31 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi710-chm.china.huawei.com (10.3.20.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 26 Nov 2020 17:29:32 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Thu, 26 Nov 2020 17:29:32 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Miles Chen <miles.chen@mediatek.com>
+CC:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "wsd_upstream@mediatek.com" <wsd_upstream@mediatek.com>
+Subject: RE: [RESEND PATCH v1] proc: use untagged_addr() for pagemap_read
+ addresses
+Thread-Topic: [RESEND PATCH v1] proc: use untagged_addr() for pagemap_read
+ addresses
+Thread-Index: AQHWwWNz5MRhXZKR2UCNja39TEhHcanaA0sg//+FDQCAAIXFIIAAGMsQ
+Date:   Thu, 26 Nov 2020 09:29:31 +0000
+Message-ID: <94ffb814f1dd4c6dbf6c501985ce0410@hisilicon.com>
+References: <20201123063835.18981-1-miles.chen@mediatek.com>
+         <24d32889abb1412abcd4e868a36783f9@hisilicon.com>
+ <1606376946.17565.6.camel@mtkswgap22> 
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.201]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 26 Nov 2020 09:28:50 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com, lenb@kernel.org,
-        rjw@rjwysocki.net, gregkh@linuxfoundation.org, tglx@linutronix.de,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] driver core: platform: Add platform_put_irq()
-In-Reply-To: <1606324841-217570-4-git-send-email-john.garry@huawei.com>
-References: <1606324841-217570-1-git-send-email-john.garry@huawei.com>
- <1606324841-217570-4-git-send-email-john.garry@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <f6fb9ff74c8b361a592a6a4ceebd032d@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: john.garry@huawei.com, jejb@linux.ibm.com, martin.petersen@oracle.com, lenb@kernel.org, rjw@rjwysocki.net, gregkh@linuxfoundation.org, tglx@linutronix.de, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, linuxarm@huawei.com, linux-acpi@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-25 17:20, John Garry wrote:
-> Add a function to tear down the work which was done in 
-> platform_get_irq()
-> for when the device driver is done with the irq.
-> 
-> For ACPI companion devices the irq resource is set as disabled, as this
-> resource is configured from platform_get_irq()->acpi_irq_get() and 
-> requires
-> resetting.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->  drivers/base/platform.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-> index 88aef93eb4dd..3eeda3746701 100644
-> --- a/drivers/base/platform.c
-> +++ b/drivers/base/platform.c
-> @@ -289,6 +289,20 @@ int platform_irq_count(struct platform_device 
-> *dev)
->  }
->  EXPORT_SYMBOL_GPL(platform_irq_count);
-> 
-> +void platform_put_irq(struct platform_device *dev, unsigned int num)
-> +{
-> +	unsigned int virq = platform_get_irq(dev, num);
-
-I find it pretty odd to have to recompute the interrupt number,
-which in turn results in a domain lookup. It things were refcounted
-(they aren't yet), irq_dispose_mapping() would have no effect.
-
-<pedant>
-It also goes against the usual construct where if you obtain an object
-based on some parameters, the release happens by specifying the object
-itself, and not the parameters that lead to the object.
-</pedant>
-
-> +
-> +	irq_dispose_mapping(virq);
-> +	if (has_acpi_companion(&dev->dev)) {
-> +		struct resource *r = platform_get_resource(dev, IORESOURCE_IRQ,
-> +							   num);
-> +
-> +		if (r)
-> +			acpi_dev_irqresource_disabled(r, 0);
-
-It looks to me that the ACPI thing is what needs to be promoted to a
-first class function, releasing all the resources that have used by
-a given device.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU29uZyBCYW8gSHVhIChC
+YXJyeSBTb25nKQ0KPiBTZW50OiBUaHVyc2RheSwgTm92ZW1iZXIgMjYsIDIwMjAgODo1MyBQTQ0K
+PiBUbzogJ01pbGVzIENoZW4nIDxtaWxlcy5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gQ2M6IEFsZXhl
+eSBEb2JyaXlhbiA8YWRvYnJpeWFuQGdtYWlsLmNvbT47IEFuZHJldyBNb3J0b24NCj4gPGFrcG1A
+bGludXgtZm91bmRhdGlvbi5vcmc+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBs
+aW51eC1mc2RldmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtbWVkaWF0ZWtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZzsNCj4gd3NkX3Vwc3RyZWFtQG1lZGlhdGVrLmNvbQ0KPiBTdWJqZWN0OiBSRTogW1JF
+U0VORCBQQVRDSCB2MV0gcHJvYzogdXNlIHVudGFnZ2VkX2FkZHIoKSBmb3IgcGFnZW1hcF9yZWFk
+DQo+IGFkZHJlc3Nlcw0KPiANCj4gDQo+IA0KPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+DQo+ID4gRnJvbTogTWlsZXMgQ2hlbiBbbWFpbHRvOm1pbGVzLmNoZW5AbWVkaWF0ZWsuY29tXQ0K
+PiA+IFNlbnQ6IFRodXJzZGF5LCBOb3ZlbWJlciAyNiwgMjAyMCA4OjQ5IFBNDQo+ID4gVG86IFNv
+bmcgQmFvIEh1YSAoQmFycnkgU29uZykgPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPg0KPiA+
+IENjOiBBbGV4ZXkgRG9icml5YW4gPGFkb2JyaXlhbkBnbWFpbC5jb20+OyBBbmRyZXcgTW9ydG9u
+DQo+ID4gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJu
+ZWwub3JnOw0KPiA+IGxpbnV4LWZzZGV2ZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1tZWRpYXRl
+a0BsaXN0cy5pbmZyYWRlYWQub3JnOw0KPiA+IHdzZF91cHN0cmVhbUBtZWRpYXRlay5jb20NCj4g
+PiBTdWJqZWN0OiBSRTogW1JFU0VORCBQQVRDSCB2MV0gcHJvYzogdXNlIHVudGFnZ2VkX2FkZHIo
+KSBmb3INCj4gcGFnZW1hcF9yZWFkDQo+ID4gYWRkcmVzc2VzDQo+ID4NCj4gPiBPbiBUaHUsIDIw
+MjAtMTEtMjYgYXQgMDc6MTYgKzAwMDAsIFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykgd3JvdGU6
+DQo+ID4gPg0KPiA+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gPiBGcm9t
+OiBNaWxlcyBDaGVuIFttYWlsdG86bWlsZXMuY2hlbkBtZWRpYXRlay5jb21dDQo+ID4gPiA+IFNl
+bnQ6IE1vbmRheSwgTm92ZW1iZXIgMjMsIDIwMjAgNzozOSBQTQ0KPiA+ID4gPiBUbzogQWxleGV5
+IERvYnJpeWFuIDxhZG9icml5YW5AZ21haWwuY29tPjsgQW5kcmV3IE1vcnRvbg0KPiA+ID4gPiA8
+YWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZz4NCj4gPiA+ID4gQ2M6IGxpbnV4LWtlcm5lbEB2Z2Vy
+Lmtlcm5lbC5vcmc7IGxpbnV4LWZzZGV2ZWxAdmdlci5rZXJuZWwub3JnOw0KPiA+ID4gPiBsaW51
+eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQub3JnOyB3c2RfdXBzdHJlYW1AbWVkaWF0ZWsuY29t
+OyBNaWxlcw0KPiA+ID4gPiBDaGVuIDxtaWxlcy5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4g
+U3ViamVjdDogW1JFU0VORCBQQVRDSCB2MV0gcHJvYzogdXNlIHVudGFnZ2VkX2FkZHIoKSBmb3Ig
+cGFnZW1hcF9yZWFkDQo+ID4gPiA+IGFkZHJlc3Nlcw0KPiA+ID4gPg0KPiA+ID4gPiBXaGVuIHdl
+IHRyeSB0byB2aXNpdCB0aGUgcGFnZW1hcCBvZiBhIHRhZ2dlZCB1c2Vyc3BhY2UgcG9pbnRlciwg
+d2UgZmluZA0KPiA+ID4gPiB0aGF0IHRoZSBzdGFydF92YWRkciBpcyBub3QgY29ycmVjdCBiZWNh
+dXNlIG9mIHRoZSB0YWcuDQo+ID4gPiA+IFRvIGZpeCBpdCwgd2Ugc2hvdWxkIHVudGFnIHRoZSB1
+c2VzcGFjZSBwb2ludGVycyBpbiBwYWdlbWFwX3JlYWQoKS4NCj4gPiA+ID4NCj4gPiA+ID4gSSB0
+ZXN0ZWQgd2l0aCA1LjEwLXJjNCBhbmQgdGhlIGlzc3VlIHJlbWFpbnMuDQo+ID4gPiA+DQo+ID4g
+PiA+IE15IHRlc3QgY29kZSBpcyBiYWVkIG9uIFsxXToNCj4gPiA+ID4NCj4gPiA+ID4gQSB1c2Vy
+c3BhY2UgcG9pbnRlciB3aGljaCBoYXMgYmVlbiB0YWdnZWQgYnkgMHhiNDoNCj4gMHhiNDAwMDA3
+NjYyZjU0MWM4DQo+ID4gPiA+DQo+ID4gPiA+ID09PSB1c2Vyc3BhY2UgcHJvZ3JhbSA9PT0NCj4g
+PiA+ID4NCj4gPiA+ID4gdWludDY0IE9zTGF5ZXI6OlZpcnR1YWxUb1BoeXNpY2FsKHZvaWQgKnZh
+ZGRyKSB7DQo+ID4gPiA+IAl1aW50NjQgZnJhbWUsIHBhZGRyLCBwZm5tYXNrLCBwYWdlbWFzazsN
+Cj4gPiA+ID4gCWludCBwYWdlc2l6ZSA9IHN5c2NvbmYoX1NDX1BBR0VTSVpFKTsNCj4gPiA+ID4g
+CW9mZjY0X3Qgb2ZmID0gKCh1aW50cHRyX3QpdmFkZHIpIC8gcGFnZXNpemUgKiA4OyAvLyBvZmYg
+PQ0KPiA+ID4gPiAweGI0MDAwMDc2NjJmNTQxYzggLyBwYWdlc2l6ZSAqIDggPSAweDVhMDAwMDNi
+MzE3YWEwDQo+ID4gPiA+IAlpbnQgZmQgPSBvcGVuKGtQYWdlbWFwUGF0aCwgT19SRE9OTFkpOw0K
+PiA+ID4gPiAJLi4uDQo+ID4gPiA+DQo+ID4gPiA+IAlpZiAobHNlZWs2NChmZCwgb2ZmLCBTRUVL
+X1NFVCkgIT0gb2ZmIHx8IHJlYWQoZmQsICZmcmFtZSwgOCkgIT0gOCkgew0KPiA+ID4gPiAJCWlu
+dCBlcnIgPSBlcnJubzsNCj4gPiA+ID4gCQlzdHJpbmcgZXJydHh0ID0gRXJyb3JTdHJpbmcoZXJy
+KTsNCj4gPiA+ID4gCQlpZiAoZmQgPj0gMCkNCj4gPiA+ID4gCQkJY2xvc2UoZmQpOw0KPiA+ID4g
+PiAJCXJldHVybiAwOw0KPiA+ID4gPiAJfQ0KPiA+ID4gPiAuLi4NCj4gPiA+ID4gfQ0KPiA+ID4g
+Pg0KPiA+ID4gPiA9PT0ga2VybmVsIGZzL3Byb2MvdGFza19tbXUuYyA9PT0NCj4gPiA+ID4NCj4g
+PiA+ID4gc3RhdGljIHNzaXplX3QgcGFnZW1hcF9yZWFkKHN0cnVjdCBmaWxlICpmaWxlLCBjaGFy
+IF9fdXNlciAqYnVmLA0KPiA+ID4gPiAJCXNpemVfdCBjb3VudCwgbG9mZl90ICpwcG9zKQ0KPiA+
+ID4gPiB7DQo+ID4gPiA+IAkuLi4NCj4gPiA+ID4gCXNyYyA9ICpwcG9zOw0KPiA+ID4gPiAJc3Zw
+Zm4gPSBzcmMgLyBQTV9FTlRSWV9CWVRFUzsgLy8gc3ZwZm4gPT0gMHhiNDAwMDA3NjYyZjU0DQo+
+ID4gPiA+IAlzdGFydF92YWRkciA9IHN2cGZuIDw8IFBBR0VfU0hJRlQ7IC8vIHN0YXJ0X3ZhZGRy
+ID09DQo+ID4gPiA+IDB4YjQwMDAwNzY2MmY1NDAwMA0KPiA+ID4gPiAJZW5kX3ZhZGRyID0gbW0t
+PnRhc2tfc2l6ZTsNCj4gPiA+ID4NCj4gPiA+ID4gCS8qIHdhdGNoIG91dCBmb3Igd3JhcGFyb3Vu
+ZCAqLw0KPiA+ID4gPiAJLy8gc3ZwZm4gPT0gMHhiNDAwMDA3NjYyZjU0DQo+ID4gPiA+IAkvLyAo
+bW0tPnRhc2tfc2l6ZSA+PiBQQUdFKSA9PSAweDgwMDAwMDANCj4gPiA+ID4gCWlmIChzdnBmbiA+
+IG1tLT50YXNrX3NpemUgPj4gUEFHRV9TSElGVCkgLy8gdGhlIGNvbmRpdGlvbiBpcyB0cnVlDQo+
+IGJlY2F1c2UNCj4gPiA+ID4gb2YgdGhlIHRhZyAweGI0DQo+ID4gPiA+IAkJc3RhcnRfdmFkZHIg
+PSBlbmRfdmFkZHI7DQo+ID4gPiA+DQo+ID4gPiA+IAlyZXQgPSAwOw0KPiA+ID4gPiAJd2hpbGUg
+KGNvdW50ICYmIChzdGFydF92YWRkciA8IGVuZF92YWRkcikpIHsgLy8gd2UgY2Fubm90IHZpc2l0
+DQo+IGNvcnJlY3QNCj4gPiA+ID4gZW50cnkgYmVjYXVzZSBzdGFydF92YWRkciBpcyBzZXQgdG8g
+ZW5kX3ZhZGRyDQo+ID4gPiA+IAkJaW50IGxlbjsNCj4gPiA+ID4gCQl1bnNpZ25lZCBsb25nIGVu
+ZDsNCj4gPiA+ID4gCQkuLi4NCj4gPiA+ID4gCX0NCj4gPiA+ID4gCS4uLg0KPiA+ID4gPiB9DQo+
+ID4gPiA+DQo+ID4gPiA+IFsxXQ0KPiA+ID4gPg0KPiA+IGh0dHBzOi8vZ2l0aHViLmNvbS9zdHJl
+c3NhcHB0ZXN0L3N0cmVzc2FwcHRlc3QvYmxvYi9tYXN0ZXIvc3JjL29zLmNjI0wxNTgNCj4gPiA+
+ID4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogTWlsZXMgQ2hlbiA8bWlsZXMuY2hlbkBtZWRpYXRl
+ay5jb20+DQo+ID4gPiA+IC0tLQ0KPiA+ID4gPiAgZnMvcHJvYy90YXNrX21tdS5jIHwgNCArKy0t
+DQo+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygt
+KQ0KPiA+ID4gPg0KPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZnMvcHJvYy90YXNrX21tdS5jIGIvZnMv
+cHJvYy90YXNrX21tdS5jDQo+ID4gPiA+IGluZGV4IDIxN2FhMjcwNWQ1ZC4uZTlhNzBmN2VlNTE1
+IDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9mcy9wcm9jL3Rhc2tfbW11LmMNCj4gPiA+ID4gKysrIGIv
+ZnMvcHJvYy90YXNrX21tdS5jDQo+ID4gPiA+IEBAIC0xNTk5LDExICsxNTk5LDExIEBAIHN0YXRp
+YyBzc2l6ZV90IHBhZ2VtYXBfcmVhZChzdHJ1Y3QgZmlsZSAqZmlsZSwNCj4gPiBjaGFyDQo+ID4g
+PiA+IF9fdXNlciAqYnVmLA0KPiA+ID4gPg0KPiA+ID4gPiAgCXNyYyA9ICpwcG9zOw0KPiA+ID4g
+PiAgCXN2cGZuID0gc3JjIC8gUE1fRU5UUllfQllURVM7DQo+ID4gPiA+IC0Jc3RhcnRfdmFkZHIg
+PSBzdnBmbiA8PCBQQUdFX1NISUZUOw0KPiA+ID4gPiArCXN0YXJ0X3ZhZGRyID0gdW50YWdnZWRf
+YWRkcihzdnBmbiA8PCBQQUdFX1NISUZUKTsNCj4gPiA+ID4gIAllbmRfdmFkZHIgPSBtbS0+dGFz
+a19zaXplOw0KPiA+ID4gPg0KPiA+ID4gPiAgCS8qIHdhdGNoIG91dCBmb3Igd3JhcGFyb3VuZCAq
+Lw0KPiA+ID4gPiAtCWlmIChzdnBmbiA+IG1tLT50YXNrX3NpemUgPj4gUEFHRV9TSElGVCkNCj4g
+PiA+ID4gKwlpZiAoc3RhcnRfdmFkZHIgPiBtbS0+dGFza19zaXplKQ0KPiA+ID4gPiAgCQlzdGFy
+dF92YWRkciA9IGVuZF92YWRkcjsNCj4gPiA+DQo+ID4gPiBXb3VsZG4ndCB0aGUgdW50YWcgYmUg
+ZG9uZSBieSB0aGUgdXNlciByZWFkaW5nIHBhZ2VtYXAgZmlsZT8NCj4gPiA+IFdpdGggdGhpcyBw
+YXRjaCwgZXZlbiB1c2VycyBwYXNzIGFuIGlsbGVnYWwgYWRkcmVzcywgZm9yIGV4YW1wbGUsDQo+
+ID4gPiB1c2VycyBwdXQgYSB0YWcgb24gYSB2aXJ0dWFsIGFkZHJlc3Mgd2hpY2ggaGFzbid0IHJl
+YWxseSBhIHRhZywNCj4gPiA+IHRoZXkgd2lsbCBzdGlsbCBnZXQgdGhlIHJpZ2h0IHBhZ2VtYXAu
+DQo+ID4gPg0KPiA+DQo+ID4NCj4gPiBJIHJ1biBhcm02NCBkZXZpY2VzLg0KPiA+IElmIHRoZSB0
+YWdnZWQgcG9pbnRlciBpcyBlbmFibGVkLCB0aGUgQVJNIHRvcC1ieXRlIElnbm9yZSBpcyBhbHNv
+DQo+ID4gZW5hYmxlZC4gSXQgbWVhbnMgdGhlIHRvcC1ieXRlIGlzIGFsd2F5cyBiZSBpZ25vcmVk
+Lg0KPiA+DQo+ID4gSSB0aGluayB0aGUga2VybmVsIHNob3VsZCBub3QgYnJlYWsgZXhpc3Rpbmcg
+dXNlcnNwYWNlIHByb2dyYW0sIHNvIGl0J3MNCj4gPiBiZXR0ZXIgdG8gaGFuZGxlIHRoZSB0YWdn
+ZWQgdXNlciBwb2ludGVyIGluIGtlcm5lbC4NCj4gPg0KPiA+IGdyZXAgJ3VudGFnJyBtbSAtUm5I
+IHRvIHNlZSBleGlzdGluZyBleGFtcGxlcy4NCj4gDQo+IEkgc2VlIHlvdXIgcG9pbnQuIEJ1dCB0
+aGUgZXhpc3RpbmcgZXhhbXBsZXMgc3VjaCBhcyBndXAgZXRjIGFyZSByZWNlaXZpbmcNCj4gYW4g
+YWRkcmVzcyBmcm9tIHVzZXJzcGFjZS4NCj4gDQo+IHBhZ2VtYXAgaXNuJ3QgZ2V0dGluZyBhbiBh
+ZGRyZXNzLCBpdCBpcyBnZXR0aW5nIGEgZmlsZSBvZmZzZXQgd2hpY2gNCj4gc2hvdWxkIGJlIGZp
+Z3VyZWQgb3V0IGJ5IHVzZXJzcGFjZSBjb3JyZWN0bHkuIFdoaWxlIHdlIHJlYWQgYSBmaWxlLA0K
+PiB3ZSBzaG91bGQgbWFrZSBzdXJlIHRoZSBvZmZzZXQgaXMgaW4gdGhlIHJhbmdlIG9mIHRoZSBm
+aWxlIGxlbmd0aC4NCg0KQlRXLCBwZXJzb25hbGx5IEkgZG9uJ3Qgb2JqZWN0IHRvIHRoaXMgcGF0
+Y2guIEkganVzdCBmZWVsIGEgbGl0dGxlIGJpdCB3ZWlyZA0KYXMgdGhlIHBhcmFtZXRlciBpbiBw
+YWdlbWFwX3JlYWQgaXMgYW4gb2Zmc2V0IGluIG9uZSBmaWxlIHJhdGhlciB0aGFuDQphIHZpcnR1
+YWwgYWRkcmVzcy4NCg0KaWYgdGhlcmUgYXJlIG1hbnkgdXNlciBwcm9ncmFtcyB3aGljaCBhcmUg
+d3JpdHRlbiB3aXRob3V0IHRoZQ0KYXdhcmVuZXNzIG9mIHRhZyB3aGlsZSByZWFkaW5nIHBhZ2Vt
+YXAgb3IgaWYgb3RoZXIgcGVvcGxlIGxpa2UNCnRoaXMgcGF0Y2gsIGl0IG1pZ2h0IG1ha2Ugc2Vu
+c2UgdG8gaGF2ZSBpdCBpbiBrZXJuZWwgOi0pDQoNCj4gDQo+ID4NCj4gPg0KPiA+IHRoYW5rcywN
+Cj4gPiBNaWxlcw0KPiA+DQo+ID4gPiA+DQo+ID4gPiA+ICAJLyoNCj4gPiA+ID4gLS0NCj4gPiA+
+ID4gMi4xOC4wDQo+ID4gPg0KPiANCg0KVGhhbmtzDQpCYXJyeQ0K
