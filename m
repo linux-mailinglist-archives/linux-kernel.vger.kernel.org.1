@@ -2,228 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA4D2C5C1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203222C5C45
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404578AbgKZSo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 13:44:58 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:56205 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403877AbgKZSo6 (ORCPT
+        id S2405112AbgKZSzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 13:55:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405005AbgKZSy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 13:44:58 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 26 Nov 2020 13:54:59 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865BCC061A48;
+        Thu, 26 Nov 2020 10:54:58 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 8F09922FB3;
-        Thu, 26 Nov 2020 19:44:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1606416296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F4G3wkfyZh+ZkhkCWeNqDVduF80380aDLmzrc2B9C6Y=;
-        b=JqAOtACUBQd/vNEiis8fLuLUGckSv8RLxJjx4vecIMdxJT/Ty3mrcRprE1/28VoZq4H0AU
-        JzGXFZ/txkSxTl99uoGgH1mOgHI5eYD1dIbmhkkg9LmLkAqlazY8nx9O4lIHJXqPVkLb2v
-        GoPfhaZ/sjp+WadqDoG2JTy9cUsMsYk=
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id B3B23405ED;
+        Thu, 26 Nov 2020 19:46:32 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, ulf.hansson@linaro.org,
+        jorge.ramirez-ortiz@linaro.org, broonie@kernel.org,
+        lgirdwood@gmail.com, daniel.lezcano@linaro.org, nks@flawful.org,
+        bjorn.andersson@linaro.org, agross@kernel.org, robh+dt@kernel.org,
+        viresh.kumar@linaro.org, rjw@rjwysocki.net,
+        konrad.dybcio@somainline.org, martin.botka@somainline.org,
+        marijn.suijten@somainline.org, phone-devel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH 00/13] Enable CPRh/3/4, CPU Scaling on various QCOM SoCs
+Date:   Thu, 26 Nov 2020 19:45:46 +0100
+Message-Id: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-Date:   Thu, 26 Nov 2020 19:44:53 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor.Ambarus@microchip.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        boris.brezillon@collabora.com
-Subject: Re: [PATCH v5 1/3] mtd: spi-nor: atmel: remove global protection flag
-In-Reply-To: <40cab307-1ef5-92e0-c922-9766f5ddf6d6@microchip.com>
-References: <20201003153235.29762-1-michael@walle.cc>
- <20201003153235.29762-2-michael@walle.cc>
- <7b5159c1-5457-b43c-2bf2-1a17ed6df34a@microchip.com>
- <f9724ff71809557283beb7c8c4d4b356@walle.cc>
- <40cab307-1ef5-92e0-c922-9766f5ddf6d6@microchip.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <44ec82d4e287ff1b05bb9f6ded085dc0@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-11-26 17:42, schrieb Tudor.Ambarus@microchip.com:
-> On 11/25/20 8:17 PM, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the content is safe
->> 
->> Am 2020-11-24 20:09, schrieb Tudor.Ambarus@microchip.com:
->>> On 10/3/20 6:32 PM, Michael Walle wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you 
->>>> know
->>>> the content is safe
->>>> 
->>>> This is considered bad for the following reasons:
->>>>  (1) We only support the block protection with BPn bits for write
->>>>      protection. Not all Atmel parts support this.
->>>>  (2) Newly added flash chip will automatically inherit the "has
->>>>      locking" support and thus needs to explicitly tested. Better
->>>>      be opt-in instead of opt-out.
->>>>  (3) There are already supported flashes which doesn't support
->>>>      the locking scheme. So I assume this wasn't properly tested
->>>>      before adding that chip; which enforces my previous argument
->>>>      that locking support should be an opt-in.
->>>> 
->>>> Remove the global flag and add individual flags to all flashes which
->>>> supports BP locking. In particular the following flashes don't 
->>>> support
->>>> the BP scheme:
->>>>  - AT26F004
->>>>  - AT25SL321
->>>>  - AT45DB081D
->>>> 
->>>> Please note, that some flashes which are marked as SPI_NOR_HAS_LOCK
->>>> just
->>>> support Global Protection, i.e. not our supported block protection
->>>> locking scheme. This is to keep backwards compatibility with the
->>>> current "unlock all at boot" mechanism. In particular the following
->>>> flashes doesn't have BP bits:
->>>>  - AT25DF041A
->>>>  - AT25DF321
->>>>  - AT25DF321A
->>>>  - AT25DF641
->>>>  - AT26DF081A
->>>>  - AT26DF161A
->>>>  - AT26DF321
->>>> 
->>>> Signed-off-by: Michael Walle <michael@walle.cc>
->>> 
->>> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->>> 
->>>> ---
->>>> changes since v4:
->>>>  - none
->>>> 
->>>> changes since v3/v2/v1:
->>>>  - there was no such version because this patch was bundled with
->>>> another
->>>>    patch
->>>> 
->>>> changes since RFC:
->>>>  - mention the flashes which just support the "Global Unprotect" in
->>>> the
->>>>    commit message
->>>> 
->>>>  drivers/mtd/spi-nor/atmel.c | 28 +++++++++-------------------
->>>>  1 file changed, 9 insertions(+), 19 deletions(-)
->>>> 
->>>> diff --git a/drivers/mtd/spi-nor/atmel.c 
->>>> b/drivers/mtd/spi-nor/atmel.c
->>>> index 3f5f21a473a6..49d392c6c8bc 100644
->>>> --- a/drivers/mtd/spi-nor/atmel.c
->>>> +++ b/drivers/mtd/spi-nor/atmel.c
->>>> @@ -10,37 +10,27 @@
->>>> 
->>>>  static const struct flash_info atmel_parts[] = {
->>>>         /* Atmel -- some are (confusingly) marketed as "DataFlash" 
->>>> */
->>>> -       { "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K) 
->>>> },
->>>> -       { "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) 
->>>> },
->>>> +       { "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K |
->>>> SPI_NOR_HAS_LOCK) },
->>> 
->>> https://datasheetspdf.com/pdf-file/587164/ATMELCorporation/AT25FS010/1
->>> BP bits are at bit 2, 3, 5 and 6.
->>> BP0, BP1, BP3, BP4 and WPEN, are nonvolatile cells
->>> 
->>>> +       { "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K |
->>>> SPI_NOR_HAS_LOCK) },
->>> 
->>> https://datasheetspdf.com/pdf-file/587165/ATMELCorporation/AT25FS040/1
->>> BP bits are at bit 2, 3, 4, 5, and 6.
->>> BP0, BP1, BP2, BP3, BP4 are nonvolatile cells
->>> 
->>>> 
->>>> -       { "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K) 
->>>> },
->>>> -       { "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K) 
->>>> },
->>>> -       { "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K) 
->>>> },
->>>> -       { "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) 
->>>> },
->>>> +       { "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K |
->>>> SPI_NOR_HAS_LOCK) },
->>> 
->>> https://datasheetspdf.com/pdf-file/975331/Adesto/AT25DF041A/1
->>> Global Protect/Unprotect using Write SR command:
->>> Global Unlock: write 0x00 to SR
->>> Global Lock: Read SR. If SR.SPRL is 1 write 0xff to SR, else write
->>> 0x7f.
->> 
->> That is not my understanding. Quote:
->>   To perform a Global Protect, the appropriate WP pin and SPRL
->>   conditions must be met, and the system must write a logical “1”
->>   to bits 5, 4, 3, and 2 of the Status Register.
->> 
->> And
->>   Conversely, to per-form a Global Unprotect, the same WP and SPRL
->>   conditions must be met but the system must write a logical “0” to
->>   bits 5, 4, 3, and 2 of the Status Register
->> 
->> Keep in mind that bit 5, 4, 3 and 2 is exactly the
->> ATMEL_SR_GLOBAL_PROTECT_MASK. The SPRL bit is handled in the unlock()
->> function. Accoring to table 9.2 you also have to first disable the 
->> SPRL
->> bit and then write the BP bits to zero.
->> 
-> 
-> We took this on irc, I try to summarize the conclusions:
-> 1/ for global unlock protect we have to first set SPRL to zero, if not 
-> already
-> set, then to set the BP bits to zero
-> 2/ for global lock protect, SPRL and BP bits should be written in one 
-> shot
+This patch series is definitely big.
+Yup. But it all goes together... here's why:
 
-This is the other way around from the datasheet:
-https://www.adestotech.com/wp-content/uploads/doc3668.pdf
+This series implements full support for CPU scaling on *many* Qualcomm
+SoCs and partial support for the others on which the Operating State
+Manager is not present.
+Since this is a bit tangled, let's go step by step.
 
-   When changing the SPRL bit to a logical “1” from a logical “0”, it
-   is also possible to perform a Global Protect or Global Unprotect at
-   the same time by writing the appropriate values into bits 5, 4, 3,
-   and 2 of the Status Register.
+First of all, there's the SPM: this is a component that we can find on
+very old chips, like MSM8974; there, it has been used to actually do the
+power scaling basically "on its own" - sending the cores in a specific
+sleep mode to save power.
+On the newer ones, including MSM8998, SDM630, 660 and others, it is still
+present! Though, this time, it's being used for the cluster caches and it
+has a different firmware (and maybe it's also slightly different HW),
+implementing the SAWv4.1 set and getting controlled *not by the OS* but
+by other controllers in the SoC (like the OSM).
 
-Doing Global Protect and setting SPRL=1 at the same time is also 
-possible,
-see Table 9-2. That is pretty clear.
+Contrary from MSM8974 and the like, this new version of the SPM just
+requires us to set the initial parameters for AVS and *nothing else*, as
+its states will be totally managed internally.
 
-Therefore, we could do both lock and unlock in one step. But one thing I
-didn't consider is that it may be possible that clearing will fail if 
-WP#
-is asserted. The current patch will check that and report an error. I'd
-like to keep that.
+Then, hardening here we come!
+In all the new SoCs - as new as SM8150 and most probably even newer ones -
+there are also new versions of "the same old story".. and here I'm
+referring to the Core Power Reduction (CPR) block: since MSM8996 (or
+around that time frame), this block has got a sort of major change...
+which actually varies the register set and implements "threads".
+I won't go far with explaining that in this cover letter (as it's all
+explained in the commits) but, in short, here's the catch:
+CPR v3, v4 and CPR-Hardened are all based over the same register set
+and are extensions of their previous.
 
-> 3/ consider WP#: set SPRL to 1 when something is locked, set it to zero
-> if nothing is locked.
+A sort of special treatment must be given to CPR-Hardened (CPRh): this is
+the one that's present on the newest SoCs, as this is a hardened version
+of CPR4 and - in this version - it has got the ability to also get managed
+internally, along with the SAWv4.1, by the Operating State Manager (OSM).
 
-Ack. This follows the behavior of the current locking mechanism for 
-flashes
-with BP bits.
+And finally, we get to the OSM.
+This final piece appeared on MSM8998 for the first time (as far as I know),
+and it is (a sort of microcontroller?) doing the "real deal": CPU DVFS
+through a lookup table providing "corners" - or "performance states" - to
+the OS; pretty straightforward way of offloading a whole lot of tasks that
+the kernel would otherwise have to do.
 
-> 4/ at25fs010 and at25fs040 have a BPn mechanism that uses BP4, similar 
-> to
-> what we have in spi_nor_sr_locking_ops(). We decided that it doesn't 
-> worth
-> to pollute the core function just for these flashes, they will have 
-> their
-> own fixup hook. We can't use the hook introduced in 3/3 because those
-> flashes are using "individual sector protection", and even if the
-> "global protect/unprotect feature" is close to writing a 0x0 to SR,
-> eventually the "individual sector protection" locking mechanism should 
-> be
-> extended to also support individual sector locking.
+And there we go with the full picture:
+- From SDM845 onwards, SAW, CPRh and OSM are getting setup by the
+  bootloader/TZ *before* booting the OS, so then all the OS has to do
+  is to request a specific performance state to the OSM hardware and
+  forget about all the rest, which is anyway protected by the hypervisor
+  (so there's no access anyway); BUT:
+- In MSM/APQ 8998, SDM/SDA 630/636/660 (and other variants), there is no
+  setup of any of these puzzle pieces, and they're also (basically) fully
+  accessible, which means that the OS must do it in order to get in the
+  same state as the newer ones and to get the entire scaling hardware to
+  start rolling.
 
-Ack
+"Simply", that's it. Now that I've written a kilometer-long "short
+explaination" of what's going on, there's a shorter version of it:
+- On new SoCs, the bootloader sets up the entire thing
+- On old ones, the OS must do what the bootloader didn't do.
+- That's what this patch series does. :))
 
--michael
+There's also slightly more: since - as already explained - the
+CPR-Hardened is an incremental upgrade of CPR v3->v4, it was necessary
+for me to also implement support for these two versions, present in
+"another whole bunch" of Qualcomm SoCs, including MSM8953, MSM8996 and
+others, which is used to do either power reduction or complete voltage
+scaling for the CPU clusters on these old ones... and, well, also
+in 8998/630/660 along with the Hardened one... and the reason is...
+that this piece of HW is also capable of doing the same with the GPU,
+even though this is not yet implemented in this set.
+
+I didn't feel like implementing the Multimedia Subsystem (MMSS) part
+of the CPR3/4 in this patch series because, eh, it's already long enough,
+I'd say.
+
+Perhaps, later... :)
+
+AngeloGioacchino Del Regno (13):
+  cpuidle: qcom_spm: Detach state machine from main SPM handling
+  soc: qcom: spm: Implement support for SAWv4.1, SDM630/660 L2 AVS
+  soc: qcom: spm: Add compatible for MSM8998 SAWv4.1 L2
+  cpufreq: blacklist SDM630/636/660 in cpufreq-dt-platdev
+  soc: qcom: cpr: Move common functions to new file
+  arm64: qcom: qcs404: Change CPR nvmem-names
+  dt-bindings: avs: cpr: Convert binding to YAML schema
+  soc: qcom: Add support for Core Power Reduction v3, v4 and Hardened
+  MAINTAINERS: Add entry for Qualcomm CPRv3/v4/Hardened driver
+  dt-bindings: soc: qcom: cpr3: Add bindings for CPR3 driver
+  dt-bindings: cpufreq: Convert qcom-cpufreq-hw to YAML binding
+  cpufreq: qcom-hw: Implement CPRh aware OSM programming
+  dt-bindings: cpufreq: qcom-hw: Add bindings for 8998
+
+ .../bindings/cpufreq/cpufreq-qcom-hw.txt      |  173 +-
+ .../bindings/cpufreq/qcom,cpufreq-hw.yaml     |  219 ++
+ .../bindings/power/avs/qcom,cpr.txt           |  131 +-
+ .../bindings/soc/qcom/qcom,cpr.yaml           |  115 +
+ .../bindings/soc/qcom/qcom,cpr3.yaml          |  226 ++
+ MAINTAINERS                                   |    8 +-
+ arch/arm64/boot/dts/qcom/qcs404.dtsi          |   26 +-
+ drivers/cpufreq/cpufreq-dt-platdev.c          |    3 +
+ drivers/cpufreq/qcom-cpufreq-hw.c             |  914 +++++-
+ drivers/cpuidle/Kconfig.arm                   |    1 +
+ drivers/cpuidle/cpuidle-qcom-spm.c            |  294 +-
+ drivers/soc/qcom/Kconfig                      |   26 +
+ drivers/soc/qcom/Makefile                     |    4 +-
+ drivers/soc/qcom/cpr-common.c                 |  382 +++
+ drivers/soc/qcom/cpr-common.h                 |  113 +
+ drivers/soc/qcom/cpr.c                        |  441 +--
+ drivers/soc/qcom/cpr3.c                       | 2474 +++++++++++++++++
+ drivers/soc/qcom/spm.c                        |  226 ++
+ include/soc/qcom/spm.h                        |   45 +
+ 19 files changed, 4824 insertions(+), 997 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.yaml
+ create mode 100644 drivers/soc/qcom/cpr-common.c
+ create mode 100644 drivers/soc/qcom/cpr-common.h
+ create mode 100644 drivers/soc/qcom/cpr3.c
+ create mode 100644 drivers/soc/qcom/spm.c
+ create mode 100644 include/soc/qcom/spm.h
+
+-- 
+2.29.2
+
