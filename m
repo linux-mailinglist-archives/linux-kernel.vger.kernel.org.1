@@ -2,137 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71C92C586D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B9A2C5873
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731877AbgKZPoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:44:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41482 "EHLO mx2.suse.de"
+        id S2391241AbgKZPqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:46:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727481AbgKZPoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:44:06 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2A8F6ACC4;
-        Thu, 26 Nov 2020 15:44:05 +0000 (UTC)
-Subject: Re: [PATCH next] mm/swap.c: reduce lock contention in lru_cache_add
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Yu Zhao <yuzhao@google.com>, Alex Shi <alex.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1605860847-47445-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201126045234.GA1014081@google.com>
- <ed19e3f7-33cb-20ae-537e-a7ada2036895@linux.alibaba.com>
- <20201126072402.GA1047005@google.com>
- <464fa387-9dfd-a8c7-3d86-040f26fd4115@suse.cz>
-Message-ID: <c3d53633-af28-79c1-f42c-d5b851af4d56@suse.cz>
-Date:   Thu, 26 Nov 2020 16:44:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727481AbgKZPqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 10:46:32 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E297321D1A;
+        Thu, 26 Nov 2020 15:46:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606405591;
+        bh=tMFcEUcsugJhclfbAIgWqCPLPAsTFSEY51zdjOIJUlk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=I7kkzcw63pBQbWrwysnZwfmyX3Y5XbhKwnookQG5c97fHnU3XubUUw5S0vb6UGx2g
+         xWghVD9OX57oo/9J9IpBjeV0TUobnmYUEEXAwh8Lq7sCEUk+qkOWrHqZs+qKOLIdQ3
+         Hvz6k1nbgAfIqkH4U1j++phqGg/GyMYmx1Xs+ESA=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 83AF03520A96; Thu, 26 Nov 2020 07:46:30 -0800 (PST)
+Date:   Thu, 26 Nov 2020 07:46:30 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: kdump always hangs in rcu_barrier() -> wait_for_completion()
+Message-ID: <20201126154630.GR1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <464fa387-9dfd-a8c7-3d86-040f26fd4115@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/20 12:22 PM, Vlastimil Babka wrote:
-> On 11/26/20 8:24 AM, Yu Zhao wrote:
->> On Thu, Nov 26, 2020 at 02:39:03PM +0800, Alex Shi wrote:
->>> 
->>> 
->>> 在 2020/11/26 下午12:52, Yu Zhao 写道:
->>> >>   */
->>> >>  void __pagevec_lru_add(struct pagevec *pvec)
->>> >>  {
->>> >> -	int i;
->>> >> -	struct lruvec *lruvec = NULL;
->>> >> +	int i, nr_lruvec;
->>> >>  	unsigned long flags = 0;
->>> >> +	struct page *page;
->>> >> +	struct lruvecs lruvecs;
->>> >>  
->>> >> -	for (i = 0; i < pagevec_count(pvec); i++) {
->>> >> -		struct page *page = pvec->pages[i];
->>> >> +	nr_lruvec = sort_page_lruvec(&lruvecs, pvec);
->>> > Simply looping pvec multiple times (15 at most) for different lruvecs
->>> > would be better because 1) it requires no extra data structures and
->>> > therefore has better cache locality (theoretically faster) 2) it only
->>> > loops once when !CONFIG_MEMCG and !CONFIG_NUMA and therefore has no
->>> > impact on Android and Chrome OS.
->>> > 
->>> 
->>> With multiple memcgs, it do help a lot, I had gotten 30% grain on readtwice
->>> case. but yes, w/o MEMCG and NUMA, it's good to keep old behavior. So 
->>> would you like has a proposal for this?
->> 
->> Oh, no, I'm not against your idea. I was saying it doesn't seem
->> necessary to sort -- a nested loop would just do the job given
->> pagevec is small.
+On Wed, Nov 25, 2020 at 04:56:33AM +0000, Dexuan Cui wrote:
+> Hi,
+> I happened to hit a kdump hang issue in a Linux VM running on some
+> Hyper-V host. Please see the attached log: the kdump kernel always hangs,
+> even if I configure only 1 virtual CPU to the VM.
 > 
-> Yeah that could work. The worst case doesn't look nice (O(n^2)) but it should be
-> rather rare to have pages from really multiple memcgs/nodes?
+> I firstly hit the issue in RHEL 8.3's 4.18.x kernel, but later I found that 
+> the latest upstream v5.10-rc5 also has the same issue (at least the
+> symptom is exactly the same), so I dug into v5.10-rc5 and found that the
+> kdump kernel always hangs in kernel_init() -> mark_readonly() ->
+> rcu_barrier() -> wait_for_completion(&rcu_state.barrier_completion).
+> 
+> Let's take the 1-vCPU case for example (refer to the attached log): in the
+> below code, somehow rcu_segcblist_n_cbs() returns true, so the call
+> smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1) increases
+> the counter by 1, and hence later the counter is still 1 after the
+> atomic_sub_and_test(), and the complete() is not called.
+> 
+> static void rcu_barrier_func(void *cpu_in)
+> {
+>         ...
+>         if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
+>                 atomic_inc(&rcu_state.barrier_cpu_count);
+>         } else {
+>         ...
+> }
+> 
+> void rcu_barrier(void)
+> {
+>         ...
+>         atomic_set(&rcu_state.barrier_cpu_count, 2);
+>         ...
+>         for_each_possible_cpu(cpu) {
+>                 rdp = per_cpu_ptr(&rcu_data, cpu);
+>                 ...
+>                 if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
+>                         ...
+>                         smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
+>                         ...
+>                 }
+>         }
+>         ...
+>         if (atomic_sub_and_test(2, &rcu_state.barrier_cpu_count))
+>                 complete(&rcu_state.barrier_completion);
+> 
+>         ...
+>         wait_for_completion(&rcu_state.barrier_completion);
+> 
+> Sorry for my ignorance of RCU -- I'm not sure why the rcu_segcblist_n_cbs()
+> returns 1 here. In the normal kernel, it returns 0, so the normal kernel does not
+> hang.
 
-However, Matthew wanted to increase pagevec size [1] and once 15^2 becomes 63^2, 
-it starts to be somewhat more worrying.
+The rcu_segcblist_n_cbs() function returns non-zero because something
+invoked call_rcu() some time previously.  The ftrace facility (or just
+a printk) should help you work out where that call_rcu() is located.
 
-[1] https://lore.kernel.org/linux-mm/20201105172651.2455-1-willy@infradead.org/
+> Note: in the case of kdump kernel, if I remove the kernel parameter
+> console=ttyS0 OR if I build the kernel with CONFIG_HZ=250, the issue can
+> no longer reproduce. Currently my kernel uses CONFIG_HZ=1000 and I use
+> console=ttyS0, so I'm able to reproduce the isue every time.
+> 
+> Note: the same kernel binary can not reproduce the issue when the VM
+> runs on another Hyper-V host.
+> 
+> It looks there is some kind of race condition?
 
-> Maybe with the following change? Avoids going through the nulls if we got lucky
-> (or have !MEMCG !NUMA).
-> 
->> diff --git a/mm/swap.c b/mm/swap.c
->> index cb3794e13b48..1d238edc2907 100644
->> --- a/mm/swap.c
->> +++ b/mm/swap.c
->> @@ -996,15 +996,26 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
->>    */
->>   void __pagevec_lru_add(struct pagevec *pvec)
->>   {
->> -	int i;
->> +	int i, j;
-> 
-> int i, j, n;
-> 
->>   	struct lruvec *lruvec = NULL;
->>   	unsigned long flags = 0;
->>   
-> 
-> n = pagevec_count(pvec);
->>   	for (i = 0; i < pagevec_count(pvec); i++) {
-> 
->      	for (i = 0; n; i++) {
-> 
->>   		struct page *page = pvec->pages[i];
->>   
->> +		if (!page)
->> +			continue;
->> +
->>   		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
->> -		__pagevec_lru_add_fn(page, lruvec);
-> 
-> 		n--;
-> 
->> +
->> +		for (j = i; j < pagevec_count(pvec); j++) {
->> +			if (page_to_nid(pvec->pages[j]) != page_to_nid(page) ||
->> +			    page_memcg(pvec->pages[j]) != page_memcg(page))
->> +				continue;
->> +
->> +			__pagevec_lru_add_fn(pvec->pages[j], lruvec);
->> +			pvec->pages[j] = NULL;
-> 
-> 			n--;
->> +		}
->>   	}
->>   	if (lruvec)
->>   		unlock_page_lruvec_irqrestore(lruvec, flags);
->> 
-> 
+Quite possibly.  Perhaps there is some code somewhere in the kernel that
+invokes call_rcu() after some number of jiffies, in which case reducing
+CONFIG_HZ would delay that call_rcu() invocation until after this call
+to rcu_barrier().  Perhaps that call_rcu() is also associated with the
+console=ttyS0, so that it is delayed sufficiently with reduced CONFIG_HZ
+and missing entirely without console=ttyS0.
 
+> Looking forward to your insights!
+> 
+> I'm happy to test any patch or enable more tracing, if necessary. Thanks!
+
+My best guess is that the underlying bug is that you are invoking
+rcu_barrier() before the RCU grace-period kthread has been created.
+This means that RCU grace periods cannot complete, which in turn means
+that if there has been even one invocation of call_rcu() since boot,
+rcu_barrier() cannot complete, which is what you are in fact seeing.
+Please note that it is perfectly legal to invoke call_rcu() very early in
+the boot process, as in even before the call to rcu_init().  Therefore,
+if this is the case, the bug is the early call to rcu_barrier(), not
+the early calls to call_rcu().
+
+To check this, at the beginning of rcu_barrier(), check the value of
+rcu_state.gp_kthread.  If my guess is correct, it will be NULL.
+
+Another possibility is that rcu_state.gp_kthread is non-NULL, but that
+something else is preventing RCU grace periods from completing, but in
+that case you should see RCU CPU stall warnings.  Unless of course they
+have been disabled.
+
+Please let me know what you find!
+
+							Thanx, Paul
