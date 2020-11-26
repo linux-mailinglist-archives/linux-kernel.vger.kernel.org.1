@@ -2,92 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B1F2C539F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAF52C53A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388340AbgKZMKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 07:10:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730635AbgKZMKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 07:10:32 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 243A02087C;
-        Thu, 26 Nov 2020 12:10:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606392631;
-        bh=/rUMWHk4jL3AgeomuslJnALbEWnZK9cStZOEYNQAZgA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=abqPjQJYcyQl8fJld2cNmRQokEgoJV/VEUx+gdOPWvUpNgCpVdvVm1unGgNKL+BO2
-         ekM0VIHE8r2PoDj/9F2+sQi4jqE0dTG33t/xqfjedbjXDDdWy1QKP8UZyN+PeraFBT
-         Ozewfky9m+va8XQlSdoxpQ6Lbl0vQw3T7WLTOreE=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8B14540E29; Thu, 26 Nov 2020 09:10:28 -0300 (-03)
-Date:   Thu, 26 Nov 2020 09:10:28 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Leo Yan <leo.yan@linaro.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v9 00/16] perf arm-spe: Refactor decoding & dumping flow
-Message-ID: <20201126121028.GA53384@kernel.org>
-References: <20201119152441.6972-1-leo.yan@linaro.org>
- <20201125141755.GB16159@willie-the-truck>
+        id S2388550AbgKZMLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 07:11:01 -0500
+Received: from ec2-3-21-30-127.us-east-2.compute.amazonaws.com ([3.21.30.127]:38252
+        "EHLO www.teo-en-ming.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388404AbgKZMLB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 07:11:01 -0500
+Received: from localhost (localhost [IPv6:::1])
+        by www.teo-en-ming.com (Postfix) with ESMTPA id E48F7448EE0;
+        Thu, 26 Nov 2020 20:10:59 +0800 (+08)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125141755.GB16159@willie-the-truck>
-X-Url:  http://acmel.wordpress.com
+Date:   Thu, 26 Nov 2020 20:10:59 +0800
+From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ceo@teo-en-ming-corp.com
+Subject: Basic Setup of Aruba IAP-325-RW Instant Access Point
+Message-ID: <3975b8c530ff122d2df69aa49d6caea0@teo-en-ming.com>
+X-Sender: ceo@teo-en-ming.com
+User-Agent: Roundcube Webmail/1.2.3
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 25, 2020 at 02:17:56PM +0000, Will Deacon escreveu:
-> On Thu, Nov 19, 2020 at 11:24:25PM +0800, Leo Yan wrote:
-> > This is patch set v9 for refactoring Arm SPE trace decoding and dumping.
-> > 
-> > According to comments and suggestions from patch set v8, it squashs the
-> > two patches into single one: "perf arm-spe: Refactor printing string to
-> > buffer" and "perf arm-spe: Consolidate arm_spe_pkt_desc()'s return
-> > value".
-> > 
-> > In the patch 01/16, it renames the function arm_spe_pkt_snprintf() to
-> > arm_spe_pkt_out_string(), since the function is not the same semantics
-> > with snprintf(), the renaming can avoid confusion.
-> > 
-> > This patch set is cleanly applied on the top of perf/core branch
-> > with commit 29396cd573da ("perf expr: Force encapsulation on
-> > expr_id_data").
-> > 
-> > This patch set has been tested on Hisilicon D06 platform with commands
-> > "perf report -D" and "perf script", compared the decoding results
-> > between with this patch set and without this patch set, "diff" tool
-> > shows the result as expected.
-> > 
-> > I also manually built the patches for arm/arm64/x86_64 and verfied
-> > every single patch can build successfully.
-> 
-> I'm unable to test this, so I'm please that you can! Anyway, it all looks
-> fine from a quick look:
-> 
-> Acked-by: Will Deacon <will@kernel.org>
-> 
-> so I think Arnaldo can pick this up when he's ready.
+Subject: Basic Setup of Aruba IAP-325-RW Instant Access Point
 
-This is all ARM specific stuff, if you are good with it, I'll do just a
-cursory look and apply.
+Author: Mr. Turritopsis Dohrnii Teo En Ming (TARGETED INDIVIDUAL)
 
-- Arnaldo
+Country: Singapore
+
+Date: 26 November 2020 Thursday Singapore Time
+
+Type of Publication: Plain Text
+
+Document version: 20201126.01
+
+Assumptions
+===========
+
+An Aruba wireless controller already exists on the network.
+
+Steps
+=====
+
+0. Unbox the new Aruba IAP-325-RW Instant Access Point and the IEEE 
+802.3at midspan.
+
+1. Connect LAN cable from the switch to "Data In" port on the POE 
+Injector (aka midspan).
+
+2. Connect LAN cable from "Data and Power Out" port on POE Injector to 
+Aruba IAP-325-RW Instant Access Point (ENET0 port).
+
+3. Note down the MAC address of the new Aruba IAP-325-RW.
+
+4. Run Advanced IP scanner on the network.
+
+5. Look for the MAC address of the new Aruba IAP-325-RW IAP on Advanced 
+IP Scanner. You will get the IP address of the new Aruba IAP-325-RW. The 
+Aruba IAP-325-RW automatically obtains an IP address from the DHCP 
+server on the network.
+
+6. Login to the GUI of the Aruba IAP-325-RW at 
+https://aaa.bbb.ccc.ddd:4343
+
+7. This Aruba IAP-325-RW has been provisioned by the existing Aruba 
+wireless controller on the network, so you cannot use the default 
+username and password of "admin" to login any more.
+
+I told my boss Donald Trump (fictitious name used) that the new Aruba 
+IAP-325-RW is up on the network. Before I can even explore the 
+configuration settings, my boss immediately rushed and beat me in 
+configuring the new Aruba IAP-325-RW, leaving me with no opportunity to 
+learn how to configure the new Aruba IAP-325-RW at all.
+
+8. After my boss Donald Trump (fictitious name used) has configured the 
+new Aruba IAP-325-RW, I tried to figure out how he configured it.
+
+9. Once you login to the GUI of Aruba IAP-325-RW, click New.
+
+10. Under "1. WLAN Settings" tab:
+
+Name: Enter your desired wireless network name (SSID)
+
+Primary usage: Employee
+
+11. Under "2. VLAN" tab:
+
+Client IP assignment: Network assigned
+
+Client VLAN assignment: Default
+
+12. Under "3. Security" tab:
+
+Security Level: choose Personal
+
+Key management: WPA-2 Personal
+
+Passphrase format: 8-63 chars
+
+Passphrase: Enter your desired wi-fi password
+
+Retype: Enter your desired wi-fi password
+
+MAC authentication: Disabled
+
+Blacklisting: Disabled
+
+Enforce DHCP: Disabled
+
+Fast Roaming
+
+802.11r: Not checked
+
+802.11k: Not checked
+
+802.11v: Not checked
+
+13. Under "4. Access" tab:
+
+Access Rules: Unrestricted
+
+Click Finish.
+
+14. I am not very sure about the detailed configuration settings my boss 
+made. He never shared them with me. But from what I gather, he has to 
+give the new Aruba IAP-325-RW a hostname and associate the newly created 
+SSID to this Aruba IAP-325-RW access point.
+
+15. When I have the opportunity to configure Aruba wireless products 
+again in the future, I will publish a more refined and detailed guide 
+again. Stay tuned.
+
+
+
+
+-- 
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link: 
+https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
+
+********************************************************************************************
+
+Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's 
+Academic
+Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
+United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
+2019) and Australia (25 Dec 2019 to 9 Jan 2020):
+
+[1] https://tdtemcerts.wordpress.com/
+
+[2] https://tdtemcerts.blogspot.sg/
+
+[3] https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
