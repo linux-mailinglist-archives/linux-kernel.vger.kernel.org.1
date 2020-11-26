@@ -2,43 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645772C598F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5382C599A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391566AbgKZQuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 11:50:10 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2166 "EHLO
+        id S2391598AbgKZQwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 11:52:49 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2167 "EHLO
         frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391226AbgKZQuJ (ORCPT
+        with ESMTP id S2390599AbgKZQws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 11:50:09 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ChkFW4TMnz67JGL;
-        Fri, 27 Nov 2020 00:47:27 +0800 (CST)
+        Thu, 26 Nov 2020 11:52:48 -0500
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ChkKB3rfbz67J6L;
+        Fri, 27 Nov 2020 00:50:38 +0800 (CST)
 Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 26 Nov 2020 17:50:07 +0100
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 26 Nov 2020 17:52:47 +0100
 Received: from [10.210.172.213] (10.210.172.213) by
  lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Thu, 26 Nov 2020 16:50:06 +0000
-Subject: Re: [PATCH V1] block: Fix use-after-free while iterating over
- requests
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Pradeep P V K <ppvk@codeaurora.org>, <axboe@kernel.dk>,
-        <linux-block@vger.kernel.org>
-CC:     <stummala@codeaurora.org>, <linux-kernel@vger.kernel.org>,
-        Ming Lei <ming.lei@redhat.com>
-References: <1606402925-24420-1-git-send-email-ppvk@codeaurora.org>
- <c94fcada-7f6d-a1e3-4c88-d225af1a676e@acm.org>
+ 15.1.1913.5; Thu, 26 Nov 2020 16:52:45 +0000
+Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
 From:   John Garry <john.garry@huawei.com>
-Message-ID: <693ea723-aa9e-1166-8a19-a7787f724969@huawei.com>
-Date:   Thu, 26 Nov 2020 16:49:41 +0000
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <martin.petersen@oracle.com>,
+        <jejb@linux.ibm.com>, <linuxarm@huawei.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
+ <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
+ <874klmqu2r.fsf@nanos.tec.linutronix.de>
+ <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
+ <87lfexp6am.fsf@nanos.tec.linutronix.de>
+ <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
+ <873615oy8a.fsf@nanos.tec.linutronix.de>
+ <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
+ <87sg91ik9e.wl-maz@kernel.org>
+ <0edc9a11-0b92-537f-1790-6b4b6de4900d@huawei.com>
+ <afd97dd4b1e102ac9ad49800821231a4@kernel.org>
+ <5a314713-c1ee-2d34-bee1-60beae274742@huawei.com>
+ <0525a4bcf17a355cd141632d4f3714be@kernel.org>
+ <702e1729-9a4b-b16f-6a58-33172b1a3220@huawei.com>
+ <5a588f5d86010602ff9a90e8f057743c@kernel.org>
+ <80e0a19b-3291-1304-1a5b-0445c49efe31@huawei.com>
+ <d696d314514a4bd53c85f2da73a23eed@kernel.org>
+ <e96dd9b0-c3a7-f7fb-0317-2fc2107f405a@huawei.com>
+Message-ID: <696c04a9-8c13-0fec-08c4-068d4dd5ba67@huawei.com>
+Date:   Thu, 26 Nov 2020 16:52:22 +0000
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <c94fcada-7f6d-a1e3-4c88-d225af1a676e@acm.org>
+In-Reply-To: <e96dd9b0-c3a7-f7fb-0317-2fc2107f405a@huawei.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -50,79 +65,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2020 16:27, Bart Van Assche wrote:
-> On 11/26/20 7:02 AM, Pradeep P V K wrote:
->> Observes below crash while accessing (use-after-free) request queue
->> member of struct request.
+Hi Marc,
+
 >>
->> 191.784789:   <2> Unable to handle kernel paging request at virtual
->> address ffffff81429a4440
->> ...
->> 191.786174:   <2> CPU: 3 PID: 213 Comm: kworker/3:1H Tainted: G S
->> O      5.4.61-qgki-debug-ge45de39 #1
->> ...
->> 191.786226:   <2> Workqueue: kblockd blk_mq_timeout_work
->> 191.786242:   <2> pstate: 20c00005 (nzCv daif +PAN +UAO)
->> 191.786261:   <2> pc : bt_for_each+0x114/0x1a4
->> 191.786274:   <2> lr : bt_for_each+0xe0/0x1a4
->> ...
->> 191.786494:   <2> Call trace:
->> 191.786507:   <2>  bt_for_each+0x114/0x1a4
->> 191.786519:   <2>  blk_mq_queue_tag_busy_iter+0x60/0xd4
->> 191.786532:   <2>  blk_mq_timeout_work+0x54/0xe8
->> 191.786549:   <2>  process_one_work+0x2cc/0x568
->> 191.786562:   <2>  worker_thread+0x28c/0x518
->> 191.786577:   <2>  kthread+0x160/0x170
->> 191.786594:   <2>  ret_from_fork+0x10/0x18
->> 191.786615:   <2> Code: 0b080148 f9404929 f8685921 b4fffe01 (f9400028)
->> 191.786630:   <2> ---[ end trace 0f1f51d79ab3f955 ]---
->> 191.786643:   <2> Kernel panic - not syncing: Fatal exception
->>
->> Fix this by updating the freed request with NULL.
->> This could avoid accessing the already free request from other
->> contexts while iterating over the requests.
->>
->> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
->> ---
->>   block/blk-mq.c | 1 +
->>   block/blk-mq.h | 1 +
->>   2 files changed, 2 insertions(+)
->>
->> diff --git a/block/blk-mq.c b/block/blk-mq.c
->> index 55bcee5..9996cb1 100644
->> --- a/block/blk-mq.c
->> +++ b/block/blk-mq.c
->> @@ -492,6 +492,7 @@ static void __blk_mq_free_request(struct request *rq)
->>   
->>   	blk_crypto_free_request(rq);
->>   	blk_pm_mark_last_busy(rq);
->> +	hctx->tags->rqs[rq->tag] = NULL;
->>   	rq->mq_hctx = NULL;
->>   	if (rq->tag != BLK_MQ_NO_TAG)
->>   		blk_mq_put_tag(hctx->tags, ctx, rq->tag);
->> diff --git a/block/blk-mq.h b/block/blk-mq.h
->> index a52703c..8747bf1 100644
->> --- a/block/blk-mq.h
->> +++ b/block/blk-mq.h
->> @@ -224,6 +224,7 @@ static inline int __blk_mq_active_requests(struct blk_mq_hw_ctx *hctx)
->>   static inline void __blk_mq_put_driver_tag(struct blk_mq_hw_ctx *hctx,
->>   					   struct request *rq)
->>   {
->> +	hctx->tags->rqs[rq->tag] = NULL;
->>   	blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
->>   	rq->tag = BLK_MQ_NO_TAG;
+>> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/hacks 
 > 
-> Is this perhaps a block driver bug instead of a block layer core bug? If
-> this would be a block layer core bug, it would have been reported before.
+> 
+> ok, I'll have a look
 
-Isn't this the same issue which as been reported many times:
+I tried that and it doesn't look to work.
 
-https://lore.kernel.org/linux-block/20200820180335.3109216-1-ming.lei@redhat.com/
+I find that for the its_msi_prepare() call, its_dev->shared does not get 
+set, as MSI_ALLOC_FLAGS_SHARED_DEVICE is not set in info->flags.
 
-https://lore.kernel.org/linux-block/8376443a-ec1b-0cef-8244-ed584b96fa96@huawei.com/
+If I understand the code correctly, MSI_ALLOC_FLAGS_SHARED_DEVICE is 
+supposed to be set in info->flags in platform_msi_set_desc(), but this 
+is called per-msi after its_msi_prepare(), so we don't the flags set at 
+the right time. That's how it looks to me...
 
-But I never saw a crash, just kasan report.
-
-Thanks,
+Cheers,
 John
-
