@@ -2,145 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4EF2C4D5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DC82C4D5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733178AbgKZCQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 21:16:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34278 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732838AbgKZCQi (ORCPT
+        id S1733007AbgKZCTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 21:19:53 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7682 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732380AbgKZCTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 21:16:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606356997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uguMoFH+kwrpviQ3187PbbsfntNX+68NnH8KwBZPA9I=;
-        b=DaluCAcmzwXfh3VmwEHiepXsIWYAbkkgpyk4pgSLgRN2akmRmof3D4KOJY57WUL2MeL5Tn
-        pLsDXffNdzJMgwwEsiKHMUBzM/VvtB8Y+VZrzyr+h64IL2xVgE/y6AdQoLi78fvoY1X3aY
-        SY+KbF5hR91XYrmxK9Jh3u293s+hfxM=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-51-4kQbGLZdNMqha_ITMWpRBA-1; Wed, 25 Nov 2020 21:16:34 -0500
-X-MC-Unique: 4kQbGLZdNMqha_ITMWpRBA-1
-Received: by mail-pf1-f197.google.com with SMTP id 185so483290pfw.18
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 18:16:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=uguMoFH+kwrpviQ3187PbbsfntNX+68NnH8KwBZPA9I=;
-        b=uV4NbZc3IsmkyMyv6ctlexx7CIt1r4shHj+qPfGYRArFbDkTso2lRRXB1opYt4Ccka
-         b0fSaghCGxVyw5NqrdEVNdU17Nx1hyi00ddVQhgUTmZYSwE5e9VUzZ3wOYBO5jhGZ6zG
-         LyCSjUj1SZkFdDRve8Mho9gkCuK72yUY3qERUgGHKmNZqL0Ag4g5Yof5USyFS3x2/EgU
-         mdn9uTm+vYdYmXBeQZTucEM+SK4NFRUVqKZsHbnt2cN7hcMWwRakodBNSCNSV3zAVyQs
-         dC5LHJU59O+QV5BSnftBodHpM4ybKwTXqOYtxwbYZEL2WAOglcT00aKa2zXRE771rI/V
-         TW7g==
-X-Gm-Message-State: AOAM533OObwce07yEth5Nstcb3NYJJbGTD7WMaOlbyachgds3vJNz6ln
-        iTaK6rQ/WPrkWfeXXptR9inrA93J8QYEj9B7ikcwTNSIlx7amzEsV1bx4vNGSoN9tPujtOIN+8P
-        wrvA4hcQvddZ7U3ezlYG6Furb
-X-Received: by 2002:a17:902:7b97:b029:d8:e703:1367 with SMTP id w23-20020a1709027b97b02900d8e7031367mr833157pll.11.1606356993748;
-        Wed, 25 Nov 2020 18:16:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJydbRTPpfQsca2Y0ykPJnWRG71ByeeDLMhrwRxCG8U5AVyaDPoyx8LTPPoGCHqXbNyjpmuzqQ==
-X-Received: by 2002:a17:902:7b97:b029:d8:e703:1367 with SMTP id w23-20020a1709027b97b02900d8e7031367mr833143pll.11.1606356993480;
-        Wed, 25 Nov 2020 18:16:33 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y25sm3004714pfn.44.2020.11.25.18.16.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 18:16:33 -0800 (PST)
-Date:   Thu, 26 Nov 2020 10:16:22 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Eric Sandeen <sandeen@sandeen.net>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xfs: check the return value of krealloc() in
- xfs_uuid_mount
-Message-ID: <20201126021622.GA336866@xiangao.remote.csb>
-References: <20201125065036.154312-1-miaoqinglang@huawei.com>
- <365b952c-7fea-3bc2-55ea-3f6b1c9f9142@sandeen.net>
- <9f998a9d-0684-6b45-009e-acf2e0ac4c85@huawei.com>
+        Wed, 25 Nov 2020 21:19:52 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ChM004Lsyz15Qhx;
+        Thu, 26 Nov 2020 10:19:28 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Thu, 26 Nov 2020
+ 10:19:44 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/5] crypto: hisilicon - add some new algorithms
+Date:   Thu, 26 Nov 2020 10:18:01 +0800
+Message-ID: <1606357086-9785-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9f998a9d-0684-6b45-009e-acf2e0ac4c85@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qinglang,
+As the new Kunpeng930 supports some new algorithms,
+the driver needs to be updated
 
-On Thu, Nov 26, 2020 at 09:21:11AM +0800, Qinglang Miao wrote:
-> 
-> 
-> 在 2020/11/25 23:55, Eric Sandeen 写道:
-> > On 11/25/20 12:50 AM, Qinglang Miao wrote:
-> > > krealloc() may fail to expand the memory space.
-> > 
-> > Even with __GFP_NOFAIL?
-> > 
-> >    * ``GFP_KERNEL | __GFP_NOFAIL`` - overrides the default allocator behavior
-> >      and all allocation requests will loop endlessly until they succeed.
-> >      This might be really dangerous especially for larger orders.
-> > 
-> > > Add sanity checks to it,
-> > > and WARN() if that really happened.
-> > 
-> > As aside, there is no WARN added in this patch for a memory failure.
-> > 
-> > > Fixes: 771915c4f688 ("xfs: remove kmem_realloc()")
-> > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> > > ---
-> > >   fs/xfs/xfs_mount.c | 6 +++++-
-> > >   1 file changed, 5 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
-> > > index 150ee5cb8..c07f48c32 100644
-> > > --- a/fs/xfs/xfs_mount.c
-> > > +++ b/fs/xfs/xfs_mount.c
-> > > @@ -80,9 +80,13 @@ xfs_uuid_mount(
-> > >   	}
-> > >   	if (hole < 0) {
-> > > -		xfs_uuid_table = krealloc(xfs_uuid_table,
-> > > +		uuid_t *if_xfs_uuid_table;
-> > > +		if_xfs_uuid_table = krealloc(xfs_uuid_table,
-> > >   			(xfs_uuid_table_size + 1) * sizeof(*xfs_uuid_table),
-> > >   			GFP_KERNEL | __GFP_NOFAIL);
-> > > +		if (!if_xfs_uuid_table)
-> > > +			goto out_duplicate;
-> > 
-> > And this would emit "Filesystem has duplicate UUID" which is not correct.
-> > 
-> > But anyway, the __GFP_NOFAIL in the call makes this all moot AFAICT.
-> > 
-> > -Eric
-> Hi Eric,
-> 
-> Sorry for neglecting __GFP_NOFAIL symbol, and I would add a WARN in memory
-> failure next time.
+Longfang Liu (4):
+  crypto: hisilicon/sec - add new type of sqe for Kunpeng930
+  crypto: hisilicon/sec - add new skcipher mode for SEC
+  crypto: hisilicon/sec - add new AEAD mode for SEC
+  crypto: hisilicon/sec - fixes some coding style
 
-Sorry about my limited knowledge, but why it needs a WARN here since
-I think it will never fail if __GFP_NOFAIL is added (no ?).
+Meng Yu (1):
+  crypto: hisilicon/hpre - add version adapt to new algorithms
 
-I'm not sure if Hulk CI is completely broken or not on this, also if
-such CI can now generate trivial patch (?) since the subject, commit
-message and even the variable name is quite similiar to
-https://lore.kernel.org/linux-xfs/20201124104531.561-2-thunder.leizhen@huawei.com
-in a day.
+ drivers/crypto/hisilicon/hpre/hpre.h        |   5 +-
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c |   4 +-
+ drivers/crypto/hisilicon/qm.c               |   4 +-
+ drivers/crypto/hisilicon/qm.h               |   4 +-
+ drivers/crypto/hisilicon/sec2/sec.h         |  19 +-
+ drivers/crypto/hisilicon/sec2/sec_crypto.c  | 822 ++++++++++++++++++++++------
+ drivers/crypto/hisilicon/sec2/sec_crypto.h  | 182 +++++-
+ drivers/crypto/hisilicon/zip/zip.h          |   4 +-
+ drivers/crypto/hisilicon/zip/zip_crypto.c   |   4 +-
+ 9 files changed, 860 insertions(+), 188 deletions(-)
 
-And it'd be better to look into the code before sending patches...
-
-Thanks,
-Gao Xiang
-
-> 
-> Thanks for your advice！
-> 
+-- 
+2.8.1
 
