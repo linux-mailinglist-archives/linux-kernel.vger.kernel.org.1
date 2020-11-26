@@ -2,148 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B712C5414
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DE52C5411
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388805AbgKZMlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 07:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731421AbgKZMlA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 07:41:00 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613E1C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 04:41:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=p0O18K0NodQGhP9nF2NIBoqyFyxWCXdlWgRp9cTuHDI=; b=TNqsk2kfryt3Cc20TJ2X7HA10y
-        DPzb8qPVEfnsDd3FvIWJZk9lZKR6jYRrRtGxTXSdjXCwooXFrLeD4v4j9HCKPkXsVQKUCGH5cwFhx
-        rWS1+YW5VKO8/aBxu0QCn/TGPauuE5mjrLV/VyrkulsiR1LA5VT+LrGAi3MUE/PuPAkUoM8YnCqeP
-        wVmdOQhjyCYLiv3qKtcpEwiVVQuSpbYzhYj9waGiFhVxEyXOoDK2lnphCC1jT+7S5ZpSb2mW+TjUB
-        ocl/PbiFTiGz9K71YYpjVfZuF0M37qKdn5To97thpn1z7hnxwZR+mFa8JwNZp/bvgv4f1rffs0HQX
-        inlJAe+w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kiGZI-0002Gl-Vs; Thu, 26 Nov 2020 12:40:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S2388748AbgKZMj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 07:39:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388375AbgKZMj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 07:39:57 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 395293059DE;
-        Thu, 26 Nov 2020 13:40:11 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 22F66201E6BBD; Thu, 26 Nov 2020 13:40:11 +0100 (CET)
-Date:   Thu, 26 Nov 2020 13:40:11 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        OWeisse@umich.edu, Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 02/32] sched: Introduce sched_class::pick_task()
-Message-ID: <20201126124011.GL3040@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-3-joel@joelfernandes.org>
- <CAKfTPtDSnr85X90gpPvgOf94Adh_mvH2CGhkXXx4FHn6EkCErg@mail.gmail.com>
- <20201126090710.GF2414@hirez.programming.kicks-ass.net>
- <CAKfTPtCPESw89KLs2HQGtxSM68yqSGoJoaU8FDRKrr00ZHWPWQ@mail.gmail.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD08120B80;
+        Thu, 26 Nov 2020 12:39:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606394396;
+        bh=0PzfkZxzSz+Tr8N1gBaxXQkoZUtHrQ9csBuPBbYPTMM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=y5A/LGkrfnZKFDpKgXSPqk7fRrJNKGQgpwBKEfTzb/8Ru2bQXrx10CwlGf9iz4Q+6
+         w2UI0ltU2L4zUnfF8CXwLqI1P7Q4aNVFbnDtp1ifatY5xrIrheDhnTXfaJtzvLILT6
+         JLHiS9HDoSorgvEu3wtuAL9nqt4Kna7c1wohS6/Y=
+Date:   Thu, 26 Nov 2020 13:41:07 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Badhri Jagan Sridharan <badhri@google.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpm: Disregard vbus off while in
+ PR_SWAP_SNK_SRC_SOURCE_ON
+Message-ID: <X7+iY9RSpD3wSHjr@kroah.com>
+References: <20201125020703.1604979-1-badhri@google.com>
+ <20201126120120.GM1008337@kuha.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtCPESw89KLs2HQGtxSM68yqSGoJoaU8FDRKrr00ZHWPWQ@mail.gmail.com>
+In-Reply-To: <20201126120120.GM1008337@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 11:17:48AM +0100, Vincent Guittot wrote:
-
-> > Something like so then?
+On Thu, Nov 26, 2020 at 02:01:20PM +0200, Heikki Krogerus wrote:
+> On Tue, Nov 24, 2020 at 06:07:03PM -0800, Badhri Jagan Sridharan wrote:
+> > During PR_SWAP sequence, when TCPM is waiting in PR_SWAP_SNK_SRC_SOURCE_ON
+> > for the vbus source to ramp up, TCPM would prematurely exit
+> > PR_SWAP_SNK_SRC_SOURCE_ON and transition to SNK_UNATTACHED state when a
+> > vbus off notification is received. This should not be the case as vbus
+> > can still be off while in PR_SWAP_SNK_SRC_SOURCE_ON and the vbus source
+> > has PD_T_NEWSRC to ramp up.
+> > 
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 > 
-> yes. it seems ok
+> FWIW:
 > 
-> >
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
+> Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-> > @@ -6982,20 +6982,29 @@ static void check_preempt_wakeup(struct
-> >  #ifdef CONFIG_SMP
-> >  static struct task_struct *pick_task_fair(struct rq *rq)
-> >  {
-> >         struct sched_entity *se;
-> > +       struct cfs_rq *cfs_rq;
-> > +
-> > +again:
-> > +       cfs_rq = &rq->cfs;
-> >         if (!cfs_rq->nr_running)
-> >                 return NULL;
-> >
-> >         do {
-> >                 struct sched_entity *curr = cfs_rq->curr;
-> >
-> > +               /* When we pick for a remote RQ, we'll not have done put_prev_entity() */
-> > +               if (curr) {
-> > +                       if (curr->on_rq)
-> > +                               update_curr(cfs_rq);
-> > +                       else
-> > +                               curr = NULL;
-> >
-> > +                       if (unlikely(check_cfs_rq_runtime(cfs_rq)))
-> > +                               goto again;
+Thanks, i've added this, and your other ack, to the commits in my tree.
 
-Head-ache though; pick_task() was supposed to be stateless, but now
-we're modifying a remote runqueue... I suppose it still works, because
-irrespective of which task we end up picking (even idle), we'll schedule
-the remote CPU, which would've resulted in the same (and possibly
-triggered a reschedule if we'd not done it here).
-
-There's a wrinkle through, other than in schedule(), where we dequeue()
-and keep running with the current task while we release rq->lock, this
-has preemption enabled as well.
-
-This means that if we do this, the remote CPU could preempt, but the
-task is then no longer on the runqueue.
-
-I _think_ it all still works, but yuck!
-
-> > +               }
-> >
-> > +               se = pick_next_entity(cfs_rq, curr);
-> >                 cfs_rq = group_cfs_rq(se);
-> >         } while (cfs_rq);
-> >
+greg k-h
