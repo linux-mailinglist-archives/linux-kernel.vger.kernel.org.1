@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBABF2C5E4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7DC2C5E4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392028AbgKZXqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 18:46:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
+        id S2388240AbgKZXrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 18:47:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729501AbgKZXqC (ORCPT
+        with ESMTP id S1729173AbgKZXrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 18:46:02 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B993AC0613D4;
-        Thu, 26 Nov 2020 15:46:01 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606434359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jm3trDZs2718Nq5qmyX6yF17hhp4QM/wTJbnNLUJFxM=;
-        b=iZi1qo83o5fs+vlu4+dekBXqIV8GFGw7W/dxJXPxjlj8pJbInC3lHg44oYBn4uF8lQegya
-        XEnbgxLmQcBDq25U6kmKG+svIACh4OdheTYNY7zq6PnSgYvCz13lloj8xIhk+0oHD24BTG
-        oqzucwF40KrXG8F6fEMG250XrKzEONUnl7l6ecvxV/6NXQ2es2nKydtlKnDBpETYYVGI+M
-        v7Zp8dbvogMn7AES0KszTsLHC13i/oFpOuA6joxchtavJH7hfGgoFVMj29Ase2nXpuOEfs
-        oBVqWW1/zLyqxCujAPWlEn00+njmCPvMRHylWtNCNmigolvRPl7tVhIw05Qogg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606434359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jm3trDZs2718Nq5qmyX6yF17hhp4QM/wTJbnNLUJFxM=;
-        b=py+qfo2WlcnagPSLxEU+AK7kCxekA8q6QytsGP4WVywQr+Sk4nJZJ7lHNK4tVBBq3kzISq
-        eLF7TLoc/rRGikDQ==
-To:     Stefan =?utf-8?Q?B=C3=BChler?= 
-        <stefan.buehler@tik.uni-stuttgart.de>,
-        sean.v.kelley@linux.intel.com
-Cc:     bhelgaas@google.com, bp@alien8.de, corbet@lwn.net,
-        kar.hin.ong@ni.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        mingo@redhat.com, sassmann@kpanic.de, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: boot interrupt quirk (also in 4.19.y) breaks serial ports (was: [PATCH v2 0/2] pci: Add boot interrupt quirk mechanism for Xeon chipsets)
-In-Reply-To: <d512469f-de04-2f66-ca42-21ec3c5331ba@tik.uni-stuttgart.de>
-References: <20200220192930.64820-1-sean.v.kelley@linux.intel.com> <b2da25c8-121a-b241-c028-68e49bab0081@tik.uni-stuttgart.de> <87zh35k5xa.fsf@nanos.tec.linutronix.de> <d512469f-de04-2f66-ca42-21ec3c5331ba@tik.uni-stuttgart.de>
-Date:   Fri, 27 Nov 2020 00:45:59 +0100
-Message-ID: <87blfjk7go.fsf@nanos.tec.linutronix.de>
+        Thu, 26 Nov 2020 18:47:02 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DC2C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 15:47:00 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id b17so3999542ljf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 15:47:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hgk+y3R/+wKHwY8AHHPwfYUtuRseW4QHOS+AXJzFHJc=;
+        b=UmZCklVE+6LJBZ0ksVoPTJGBuaE/NBsqmU1zhUV2JHO+B1a3YZprPMTxMvlFYLe585
+         8phq9Up9vzDLmSOQwsIG1W+AxT4EyUf2qOm/wRGyf4WS+Q26VYwYp3rKHA3t0qOp2ZfE
+         wZfH2QRJP1xMN1Mc8kgAd8naaakEi0S6S5At8gW5g+iZYYHtlIVeOeQy5YcdzDsPZHNw
+         qGs11TL4maxG7T8+iBgl9Zf/xxKo4X2KJopi6ZGaV0jEzPH9yqojYS45ehjH+O3lMvIa
+         pm1g3qUpd1nm1ZxSyoFELZw+5BItIOwHelBeDNijVZriJ7sSVJ63VuNHPKzWXF0DjV1E
+         8B6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hgk+y3R/+wKHwY8AHHPwfYUtuRseW4QHOS+AXJzFHJc=;
+        b=WrpLaWf1j6tfwrJ2K5fqprULtPCSF0nkQl4UI6DwgaHM9RlKPY1/2UsYn7eDKeUdfu
+         jUurw2pEumfCFkXCs6fG406Ujd981s6RP/aDQ+SkYzu5ASNTO5jbsPT4uDgJqdBehBmN
+         mwYoeqQEXm1zVcWZNo+wWT3XjRpGBbmleuh1G46m939obm74BijLlAvJoESYukzDHlNJ
+         OijMPZQ7RALQSQLIHxC+9k567AJBZsIbnfDiph7sJLhgaSK5gB2DzFDWf2q+4Qb3yN8F
+         gJVvB50LdvVqY1uecAv9l0rQS/cKEtLykjtwZkTgE+x5vfuS81oy/pgNJOHstrfqjhg2
+         CuDw==
+X-Gm-Message-State: AOAM531QiZiYaPWOPadHdNebwlQRmzWqvt55uReuR8B/xHExUcaWDeWm
+        Vomvs7yBQzz8dEy0LWrhgvDPWAbLkHhSnYqO4JA=
+X-Google-Smtp-Source: ABdhPJyRNLpKaqnV8O473Pl/YaIe0OR/eS2o+HSGUuD84MarnbDCD5StxxWczokLGXB+yMtV9I/q6Ok8wEfPj6Xqjns=
+X-Received: by 2002:a05:651c:213:: with SMTP id y19mr2089989ljn.250.1606434418814;
+ Thu, 26 Nov 2020 15:46:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20201123031751.36811-1-daeho43@gmail.com> <20201123031751.36811-2-daeho43@gmail.com>
+ <5b3cb83d-5d0f-c1ca-2cff-f28372dec48e@huawei.com> <CACOAw_xs0dizV_xg4-8ssC8wPRq8eXPw3QhHAFf3S-w3hp9jcg@mail.gmail.com>
+ <X7/qr/kVxl3AO/PR@sol.localdomain>
+In-Reply-To: <X7/qr/kVxl3AO/PR@sol.localdomain>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Fri, 27 Nov 2020 08:46:47 +0900
+Message-ID: <CACOAw_xaJ6pfT_EDqCSaL8UnBVkktXK5N_GXuHT+xzu1ufVacg@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Chao Yu <yuchao0@huawei.com>, Daeho Jeong <daehojeong@google.com>,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stefan,
+Chao,
 
-On Wed, Nov 25 2020 at 14:41, Stefan B=C3=BChler wrote:
-> On 11/25/20 12:54 PM, Thomas Gleixner wrote:
->> On Wed, Sep 16 2020 at 12:12, Stefan B=C3=BChler wrote:
->> Can you please provide the output of:
->>=20
->>  for ID in 05:00.0 06:00.0 06:00.1 06:01.0 06:01.1; do lspci -s $ID -vvv=
-; done
->
-> See attachment.
->
-> Also I boot the affected systems now with "pci=3Dnoioapicquirk", which
-> "solves" the issue too (instead of patching the kernel).
+Got it~
 
-Yes, it skips the quirks.
+Eric,
 
-> 05:00.0 PCI bridge: PLX Technology, Inc. PEX8112 x1 Lane PCI Express-to-P=
-CI Bridge (rev aa) (prog-if 00 [Normal decode])
-> 	Physical Slot: 1
-> 	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Step=
-ping- SERR+ FastB2B- DisINTx-
-> 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort- <TAbort=
-- <MAbort- >SERR- <PERR- INTx-
-> 	Latency: 0, Cache Line Size: 32 bytes
-> 	Interrupt: pin A routed to IRQ 16
-> 	NUMA node: 0
-> 	Bus: primary=3D05, secondary=3D06, subordinate=3D06, sec-latency=3D64
-> 	I/O behind bridge: 0000e000-0000efff
-> 	Memory behind bridge: fb400000-fb4fffff
-> 	Prefetchable memory behind bridge: fff00000-000fffff
-> 	Secondary status: 66MHz+ FastB2B- ParErr- DEVSEL=3Dmedium >TAbort- <TAbo=
-rt- <MAbort+ <SERR- <PERR-
-> 	BridgeCtl: Parity- SERR+ NoISA- VGA- MAbort- >Reset- FastB2B-
-> 		PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-> 	Capabilities: <access denied>
-
-Can you please run this as root so the Capabilities are accessible?
+Actually, I wanted to detour the internal readahead mechanism using
+page_cache_ra_unbounded() to generate cluster size aligned read
+requests.
+But, page_cache_async_readahead() or page_cache_sync_readahead() can
+be also good enough, since those can compensate for the misaligned
+reads reading more pages in advance.
 
 Thanks,
 
-        tglx
+2020=EB=85=84 11=EC=9B=94 27=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 2:49, =
+Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Thu, Nov 26, 2020 at 02:04:41PM +0900, Daeho Jeong wrote:
+> > Eric,
+> >
+> > do_page_cache_ra() is defined in mm/internal.h for internal use
+> > between in mm, so we cannot use this one right now.
+> > So, I think we could use page_cache_ra_unbounded(), because we already
+> > check i_size boundary on our own.
+> > What do you think?
+>
+> What about page_cache_async_readahead() or page_cache_sync_readahead()?
+>
+> - Eric
