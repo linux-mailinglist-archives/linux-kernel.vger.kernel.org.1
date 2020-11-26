@@ -2,92 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCE22C5863
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E532C5865
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391357AbgKZPim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:38:42 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:42938 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733044AbgKZPim (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:38:42 -0500
-Received: by mail-pl1-f194.google.com with SMTP id s2so1296792plr.9;
-        Thu, 26 Nov 2020 07:38:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rzGZIAEm926uhIyxuRw0b4qhN9U79TKpOJgS1rllun8=;
-        b=U5Sxvj9+gTeGrPKJnIUQV5FNO8Pc0nMZo62ZIau60f9ibAh0gfkY7yN6VN8l94HwRr
-         +pRoM6VlEBc92HNSQT0Tt0IULYGaiVwf45zZHdwm2WqKxXFrVwY3lgVh5xQIeGWJ0uvF
-         piYqrtVe/rrMNDQsdWQYIYD+hCYehN3NuNFWw+MpDJDFaRMderRI58i7+6/K4LQY7bHr
-         7fziZkeVLGmxp4pfISlRMxi6ybC/LzWfQZfj07+YpkwePUATN6TnJFow9psC1fvTBtle
-         8T0XrdgWDVaeS+nuye0oo9ddAuMabUo6Bq52pGcuAqoiGFrwjCkXcAe6xDhDjPDbtxU1
-         YUEg==
-X-Gm-Message-State: AOAM533Quwmc69VzdAmvt0hHYdiRDZZy2yreP7QTttCH47tT7pDJx/hb
-        0zaS4TTtPIZkcKuTz2/8+JA=
-X-Google-Smtp-Source: ABdhPJyq6tAlIeIXdtjepXInKufD9Wb3jpaAZXuUc1WqO59gK4pvUzWFf6UUaCo42m9yldLHqPg0CA==
-X-Received: by 2002:a17:902:bd84:b029:da:17d0:e754 with SMTP id q4-20020a170902bd84b02900da17d0e754mr3201046pls.68.1606405121352;
-        Thu, 26 Nov 2020 07:38:41 -0800 (PST)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id 22sm7575053pjb.40.2020.11.26.07.38.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 07:38:39 -0800 (PST)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id EC16140317; Thu, 26 Nov 2020 15:38:38 +0000 (UTC)
-Date:   Thu, 26 Nov 2020 15:38:38 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Boris Kolpackov <boris@codesynthesis.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Felix Fietkau <nbd@openwrt.org>,
-        Patrick Franz <patfra71@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Junio C Hamano <gitster@pobox.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: kconfig as a git subtree on Linux
-Message-ID: <20201126153838.GL4332@42.do-not-panic.com>
-References: <20201125172544.GJ4332@42.do-not-panic.com>
- <boris.20201126122203@codesynthesis.com>
+        id S2391397AbgKZPjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:39:16 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:35555 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391241AbgKZPjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 10:39:16 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606405155; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=38H0DAMMcWtlOHTux2NFMNChShiaxRsHcu5JOxSmp6I=; b=R/XRjbEZHNvqXPgL50WlgF1l7UOD6yk+DYVIqB46NbuE+0bwJQBRVp1YsCx72e5ESit3WWI6
+ prjtRhkGtezeNryQcyPT5XdpAEFhE5COh0zuWNMYdca/8lL2HZFDfEKYrrV6cxdlCbXgOfK8
+ 52amjG3ae8ED8w7lEGuIDZvOFzw=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5fbfcc18e714ea6501286d4c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Nov 2020 15:39:04
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D5E63C43462; Thu, 26 Nov 2020 15:39:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.9] (unknown [59.89.236.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 54B11C433ED;
+        Thu, 26 Nov 2020 15:38:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 54B11C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH] drm/msm: adreno: Make speed-bin support generic
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        dri-devel@freedesktop.org,
+        freedreno <freedreno@lists.freedesktop.org>
+References: <1605196144-23516-1-git-send-email-akhilpo@codeaurora.org>
+ <CAF6AEGutT0M9mu2NhUnqnvrqSNEUEqYJKS6Mt0vXwV+mPyQGMw@mail.gmail.com>
+ <0c872e78-0f2c-5771-979d-862c7c30b281@codeaurora.org>
+ <CAF6AEGtysKTSdX_HmHs_fdvGLYYkQn4XmM_NWgSdBLK3JMF_zQ@mail.gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <b5074339-21a2-06e8-7703-6bdc905944c8@codeaurora.org>
+Date:   Thu, 26 Nov 2020 21:08:57 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <boris.20201126122203@codesynthesis.com>
+In-Reply-To: <CAF6AEGtysKTSdX_HmHs_fdvGLYYkQn4XmM_NWgSdBLK3JMF_zQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 12:38:41PM +0200, Boris Kolpackov wrote:
-> Luis Chamberlain <mcgrof@kernel.org> writes:
+On 11/16/2020 9:52 PM, Rob Clark wrote:
+> On Mon, Nov 16, 2020 at 6:34 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+>>
+>> On 11/12/2020 10:07 PM, Rob Clark wrote:
+>>> On Thu, Nov 12, 2020 at 7:49 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+>>>>
+>>>> So far a530v2 gpu has support for detecting its supported opps
+>>>> based on a fuse value called speed-bin. This patch makes this
+>>>> support generic across gpu families. This is in preparation to
+>>>> extend speed-bin support to a6x family.
+>>>>
+>>>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>>>> ---
+>>>> This patch is rebased on top of msm-next-staging branch in rob's tree.
+>>>>
+>>>>    drivers/gpu/drm/msm/adreno/a5xx_gpu.c      | 34 --------------
+>>>>    drivers/gpu/drm/msm/adreno/adreno_device.c |  4 ++
+>>>>    drivers/gpu/drm/msm/adreno/adreno_gpu.c    | 71 ++++++++++++++++++++++++++++++
+>>>>    drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  5 +++
+>>>>    4 files changed, 80 insertions(+), 34 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+>>>> index 8fa5c91..7d42321 100644
+>>>> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+>>>> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+>>>> @@ -1531,38 +1531,6 @@ static const struct adreno_gpu_funcs funcs = {
+>>>>           .get_timestamp = a5xx_get_timestamp,
+>>>>    };
+>>>>
+>>>> -static void check_speed_bin(struct device *dev)
+>>>> -{
+>>>> -       struct nvmem_cell *cell;
+>>>> -       u32 val;
+>>>> -
+>>>> -       /*
+>>>> -        * If the OPP table specifies a opp-supported-hw property then we have
+>>>> -        * to set something with dev_pm_opp_set_supported_hw() or the table
+>>>> -        * doesn't get populated so pick an arbitrary value that should
+>>>> -        * ensure the default frequencies are selected but not conflict with any
+>>>> -        * actual bins
+>>>> -        */
+>>>> -       val = 0x80;
+>>>> -
+>>>> -       cell = nvmem_cell_get(dev, "speed_bin");
+>>>> -
+>>>> -       if (!IS_ERR(cell)) {
+>>>> -               void *buf = nvmem_cell_read(cell, NULL);
+>>>> -
+>>>> -               if (!IS_ERR(buf)) {
+>>>> -                       u8 bin = *((u8 *) buf);
+>>>> -
+>>>> -                       val = (1 << bin);
+>>>> -                       kfree(buf);
+>>>> -               }
+>>>> -
+>>>> -               nvmem_cell_put(cell);
+>>>> -       }
+>>>> -
+>>>> -       dev_pm_opp_set_supported_hw(dev, &val, 1);
+>>>> -}
+>>>> -
+>>>>    struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
+>>>>    {
+>>>>           struct msm_drm_private *priv = dev->dev_private;
+>>>> @@ -1588,8 +1556,6 @@ struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
+>>>>
+>>>>           a5xx_gpu->lm_leakage = 0x4E001A;
+>>>>
+>>>> -       check_speed_bin(&pdev->dev);
+>>>> -
+>>>>           ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 4);
+>>>>           if (ret) {
+>>>>                   a5xx_destroy(&(a5xx_gpu->base.base));
+>>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>>> index 87c8b03..e0ff16c 100644
+>>>> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>>> @@ -18,6 +18,8 @@ bool snapshot_debugbus = false;
+>>>>    MODULE_PARM_DESC(snapshot_debugbus, "Include debugbus sections in GPU devcoredump (if not fused off)");
+>>>>    module_param_named(snapshot_debugbus, snapshot_debugbus, bool, 0600);
+>>>>
+>>>> +const u32 a530v2_speedbins[] = {0, 1, 2, 3, 4, 5, 6, 7};
+>>>> +
+>>>>    static const struct adreno_info gpulist[] = {
+>>>>           {
+>>>>                   .rev   = ADRENO_REV(2, 0, 0, 0),
+>>>> @@ -163,6 +165,8 @@ static const struct adreno_info gpulist[] = {
+>>>>                           ADRENO_QUIRK_FAULT_DETECT_MASK,
+>>>>                   .init = a5xx_gpu_init,
+>>>>                   .zapfw = "a530_zap.mdt",
+>>>> +               .speedbins = a530v2_speedbins,
+>>>> +               .speedbins_count = ARRAY_SIZE(a530v2_speedbins),
+>>>>           }, {
+>>>>                   .rev = ADRENO_REV(5, 4, 0, 2),
+>>>>                   .revn = 540,
+>>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+>>>> index f21561d..cdd0c11 100644
+>>>> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+>>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+>>>> @@ -14,6 +14,7 @@
+>>>>    #include <linux/pm_opp.h>
+>>>>    #include <linux/slab.h>
+>>>>    #include <linux/soc/qcom/mdt_loader.h>
+>>>> +#include <linux/nvmem-consumer.h>
+>>>>    #include <soc/qcom/ocmem.h>
+>>>>    #include "adreno_gpu.h"
+>>>>    #include "msm_gem.h"
+>>>> @@ -891,6 +892,69 @@ void adreno_gpu_ocmem_cleanup(struct adreno_ocmem *adreno_ocmem)
+>>>>                              adreno_ocmem->hdl);
+>>>>    }
+>>>>
+>>>> +static int adreno_set_supported_hw(struct device *dev,
+>>>> +               struct adreno_gpu *adreno_gpu)
+>>>> +{
+>>>> +       u8 speedbins_count = adreno_gpu->info->speedbins_count;
+>>>> +       const u32 *speedbins = adreno_gpu->info->speedbins;
+>>>> +       struct nvmem_cell *cell;
+>>>> +       u32 bin, i;
+>>>> +       u32 val = 0;
+>>>> +       void *buf, *opp_table;
+>>>> +
+>>>> +       cell = nvmem_cell_get(dev, "speed_bin");
+>>>> +       /*
+>>>> +        * -ENOENT means that the platform doesn't support speedbin which is
+>>>> +        * fine
+>>>> +        */
+>>>> +       if (PTR_ERR(cell) == -ENOENT)
+>>>> +               return 0;
+>>>> +       else if (IS_ERR(cell))
+>>>> +               return PTR_ERR(cell);
+>>>> +
+>>>> +       /* A speedbin table is must if the platform supports speedbin */
+>>>> +       if (!speedbins) {
+>>>> +               DRM_DEV_ERROR(dev, "speed-bin table is missing\n");
+>>>> +               return -ENOENT;
+>>>
+>>> Hmm, this means that hw which supports speed-bin, but for which we
+>>> haven't yet added a speedbin table, will start failing.  Which seems
+>>> not great.  Maybe it would be better to keep the DRM_DEV_ERROR() (so
+>>> people realize something is missing), but return 0?
+>> We can't because if the gpu opp table has "opp-supported-hw" property,
+>> opp driver expects us to call dev_pm_opp_set_supported_hw() to select
+>> the supported hardware. I think we can just pick a default one and also
+>> print a detailed warning, will that work for you?
 > 
-> > I'd like to propose we discuss the possibility of taking kconfig and
-> > making it a git subtree under the Linux kernel. This would allow
-> > other projects outside of the Linux kernel to be able to update their
-> > own copy / fork of kconfig in a jiffie *very* easily.
+> That seems like it could work.. or maybe just skip all this if there
+> is no opp table?
 > 
-> I am maintaining one such copy/fork[1] and for me the effort to pull
-> in the new version of upstream (which I currently do by just copying
-> scripts/kconfig/*) is nothing compared to the effort of maintaining
-> a set of patches[2] on top of that which are necessary to make kconfig
-> buildable on other platforms and usable with other build systems.
+> BR,
+> -R
+Rob, I will share a new patchset shortly.
+
+-Akhil.
 > 
-> So unless there is also an agreement that such portability patches
-> are now welcome, this is not going to be a major improvement for me.
+>> -Akhil.
+>>>
+>>> Or do you think we could add the speed-bin tables for all supported hw
+>>> immediately?
+>>>
+>>> BR,
+>>> -R
+>>>
+>>>> +       }
+>>>> +
+>>>> +       buf = nvmem_cell_read(cell, NULL);
+>>>> +       if (IS_ERR(buf)) {
+>>>> +               nvmem_cell_put(cell);
+>>>> +               return PTR_ERR(buf);
+>>>> +       }
+>>>> +
+>>>> +       bin = *((u32 *) buf);
+>>>> +
+>>>> +       for (i = 0; i < speedbins_count; i++) {
+>>>> +               if (bin == speedbins[i]) {
+>>>> +                       val = (1 << i);
+>>>> +                       break;
+>>>> +               }
+>>>> +       }
+>>>> +
+>>>> +       kfree(buf);
+>>>> +       nvmem_cell_put(cell);
+>>>> +
+>>>> +       if (!val) {
+>>>> +               DRM_DEV_ERROR(dev, "missing support for speed-bin: %u\n", bin);
+>>>> +               return -ENOENT;
+>>>> +       }
+>>>> +
+>>>> +       opp_table = dev_pm_opp_set_supported_hw(dev, &val, 1);
+>>>> +       if (IS_ERR(opp_table))
+>>>> +               return PTR_ERR(opp_table);
+>>>> +
+>>>> +       adreno_gpu->opp_table = opp_table;
+>>>> +       return 0;
+>>>> +}
+>>>> +
+>>>> +static void adreno_put_supported_hw(struct opp_table *opp_table)
+>>>> +{
+>>>> +       if (opp_table)
+>>>> +               dev_pm_opp_put_supported_hw(opp_table);
+>>>> +}
+>>>> +
+>>>>    int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>>>                   struct adreno_gpu *adreno_gpu,
+>>>>                   const struct adreno_gpu_funcs *funcs, int nr_rings)
+>>>> @@ -899,6 +963,7 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>>>           struct adreno_platform_config *config = dev->platform_data;
+>>>>           struct msm_gpu_config adreno_gpu_config  = { 0 };
+>>>>           struct msm_gpu *gpu = &adreno_gpu->base;
+>>>> +       int ret;
+>>>>
+>>>>           adreno_gpu->funcs = funcs;
+>>>>           adreno_gpu->info = adreno_info(config->rev);
+>>>> @@ -910,6 +975,10 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>>>
+>>>>           adreno_gpu_config.nr_rings = nr_rings;
+>>>>
+>>>> +       ret = adreno_set_supported_hw(dev, adreno_gpu);
+>>>> +       if (ret)
+>>>> +               return ret;
+>>>> +
+>>>>           adreno_get_pwrlevels(dev, gpu);
+>>>>
+>>>>           pm_runtime_set_autosuspend_delay(dev,
+>>>> @@ -936,4 +1005,6 @@ void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
+>>>>
+>>>>           icc_put(gpu->icc_path);
+>>>>           icc_put(gpu->ocmem_icc_path);
+>>>> +
+>>>> +       adreno_put_supported_hw(adreno_gpu->opp_table);
+>>>>    }
+>>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>>>> index c3775f7..a756ad7 100644
+>>>> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>>>> @@ -55,6 +55,7 @@ struct adreno_reglist {
+>>>>    };
+>>>>
+>>>>    extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[];
+>>>> +extern const u32 a618_speedbins[];
+>>>>
+>>>>    struct adreno_info {
+>>>>           struct adreno_rev rev;
+>>>> @@ -67,6 +68,8 @@ struct adreno_info {
+>>>>           const char *zapfw;
+>>>>           u32 inactive_period;
+>>>>           const struct adreno_reglist *hwcg;
+>>>> +       const u32 *speedbins;
+>>>> +       const u8 speedbins_count;
+>>>>    };
+>>>>
+>>>>    const struct adreno_info *adreno_info(struct adreno_rev rev);
+>>>> @@ -112,6 +115,8 @@ struct adreno_gpu {
+>>>>            * code (a3xx_gpu.c) and stored in this common location.
+>>>>            */
+>>>>           const unsigned int *reg_offsets;
+>>>> +
+>>>> +       struct opp_table *opp_table;
+>>>>    };
+>>>>    #define to_adreno_gpu(x) container_of(x, struct adreno_gpu, base)
+>>>>
+>>>> --
+>>>> 2.7.4
+>>>>
+>>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
 
-Unless you have tried git subtrees, I doubt you really mean this. How
-is a 'make refresh' command as comparable as manually pulling in
-changes from a project to your project?
-
-> And right now such patches are clearly not welcome[3] (but no hard
-> feelings; I wouldn't touch Windows with a ten-foot pole if I could
-> help it).
-
-Portability of kconfig to other platorm is a topic of its own. If that
-sort of conversation can exist, I think it would have to be *secondary*
-to deciding whether or not kconfig lives on its own to allow other
-Linux projects to benefit from it.
-
-  Luis
