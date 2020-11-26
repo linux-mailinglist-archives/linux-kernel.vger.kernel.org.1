@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C492C55F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0012C55EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390543AbgKZNjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:39:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        id S2389895AbgKZNjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:39:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390539AbgKZNjJ (ORCPT
+        with ESMTP id S2390560AbgKZNjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:39:09 -0500
+        Thu, 26 Nov 2020 08:39:10 -0500
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB549C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:39:08 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id t4so2154763wrr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:39:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2B3C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:39:10 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id l1so2176750wrb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:39:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=x/23In7GphBjuvLzsFPzeVbxW1AkJoC7VMLuq9ClVEg=;
-        b=UEZU7070gAWrlkVS/SYDGQ+9C95/de63HCNZ65/cX/5BWpx/6BcM7agMCTUeKx/06w
-         69/AsA5jdtT3qRFfxI6HF+jy5/obbKLu0FOteMDf9qbcZnraymJGR5vzEq/tg8lERYOf
-         wmfr2Gev2IkGxLru4olxTDfHTQ9DQB1eztZliBIUoQj+dVsnduLoyv8SCulplTL7Pg3C
-         5/tA2LWbNxRbXYQZRAfREtCjyc7da6PPF+w9uL2dKRlfzd4sw1De4odDvMiRHblF82FI
-         4Id0tHmnrwkdwLpcZ91rH635Ti5iYzvsOAgvUyAiYQd6caMi4BfYa3o6NMZ99CfGwZ96
-         zeDw==
+        bh=xRpAJlbq6+V+ePZQw5yqXL7428RUL9OWlsKS5RA6BKg=;
+        b=CRjmklKzjv8jTVM8y5ehKKzL+Eel4+NeZfyvFpAJcJJCxkpaa/dQY/KI+1cxh1uKQ4
+         x31XOW25cX4mFhG9B7f7Iq2OIMx1+YfwDvE8nsKg8nvngYAjmgAV1fdsiTKsLKsqr20d
+         AVbJvZ+6JOoefJT03HN8cVZvAS/fcbeQr1wDFZHm80j3PrkvXxeRl91q4S97uqp5DDi6
+         c8V8JkOpiN+wGrHi1sLekRUKouPglPzl1kSpPXorZqMDILV4Mo6Nd0z19ltIH1Hu0zoN
+         wUZihn3nrw73DDDpfNkwdhmP6qJozeDF8vGvP60mgCrsT6gXef46skpBc28THKvD2tXQ
+         6Iwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=x/23In7GphBjuvLzsFPzeVbxW1AkJoC7VMLuq9ClVEg=;
-        b=bw8g/AAgfHYeyinKhWu3Qw2xBUw0+pstawTBbd6rQYawvrNOt3rBd5E7DBoxOXG0PN
-         LBPIyCG+vLh8fkn53p94/xq4l0hRGKjlY0+MO65v6BgsIl+gynw8UeoxcHed2UHbrYQh
-         gzsMjbommtnvKThbzXw44PJCC4vi8+65ATEper5FZCHgpYoHEPtRKWFWYjRn6/y/w/7M
-         jHInqkEOz+u10rbvMVVsUlPHPe57yLeENvaV1iyC76Grpr7IgTxmHLbh9lbJR3Q9nSny
-         9EhK41qMR+LRXFw9KuFV8trQDc3IyBvOgd+7s5/TdEkYN1l0Ra+WA4ISPJBb7NubYsxH
-         eeDw==
-X-Gm-Message-State: AOAM530r5O+1vLFfb74+yrCMd2dMkfs9wNMLBibYr90A661ScmwsAhdk
-        6W2nJLNUVh7jDVBPyj3Ylgmrjw==
-X-Google-Smtp-Source: ABdhPJxSopU6jVkoXk+6uS11exgwGi6kmMxE34CJKNAI1nyYQxx9mod7s9FvAbxeTyST+kFeTclXAQ==
-X-Received: by 2002:a5d:4349:: with SMTP id u9mr3805104wrr.319.1606397947553;
-        Thu, 26 Nov 2020 05:39:07 -0800 (PST)
+        bh=xRpAJlbq6+V+ePZQw5yqXL7428RUL9OWlsKS5RA6BKg=;
+        b=t26tGpa8zDq1v0vgBRkOhcHB7IcTm+DVcGN6LvsH4rKN65g9gjwwyGYJiTKRmAoxHa
+         LmXqvnitEgdJTlHQDrKrboNCxxyHWpPnEKj8zPQdme6smZ6E258Uk0KS8hnb+2K2vbVO
+         BjDFiQsI+s323BmAlbc8s8+LXq94cOG5vW2Un4xThhdznW45PCfX5beLvruqOHInBlNu
+         SWew4cafPuQKtBuzPG7GDBrGzNPuN5tO3tfvdbaSJ7Dy+886CvEFHI2X67COdSliaZO0
+         voQFsD9W4+wG9ZKXcSz2Dao3l/D5SweTjS2vNqve+DH5QB3vla1c2PyRTGhFvhGyAC9E
+         KrWw==
+X-Gm-Message-State: AOAM532UnIC2zimVAWePBj0oK8lCvOt+MqaSVNt+lJ8+vkYhU5hOL9Q1
+        lC60tincsOm3bSAcHs45vV31fQ==
+X-Google-Smtp-Source: ABdhPJyLZT0V4+zVqDNFo6SwnsBmTFtnBfv+6D8SII+64k4pMDJ9qNUY8G8xUyMfkpwcg4n/U1GplQ==
+X-Received: by 2002:a5d:66cd:: with SMTP id k13mr3908174wrw.365.1606397949075;
+        Thu, 26 Nov 2020 05:39:09 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id s133sm7035825wmf.38.2020.11.26.05.39.06
+        by smtp.gmail.com with ESMTPSA id s133sm7035825wmf.38.2020.11.26.05.39.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:39:06 -0800 (PST)
+        Thu, 26 Nov 2020 05:39:08 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Utz Bacher <utz.bacher@de.ibm.com>,
-        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
-        netdev@vger.kernel.org
-Subject: [PATCH 7/8] net: ethernet: toshiba: spider_net: Document a whole bunch of function parameters
-Date:   Thu, 26 Nov 2020 13:38:52 +0000
-Message-Id: <20201126133853.3213268-8-lee.jones@linaro.org>
+        Santiago Leon <santi_leon@yahoo.com>,
+        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
+        John Allen <jallen@linux.vnet.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org
+Subject: [PATCH 8/8] net: ethernet: ibm: ibmvnic: Fix some kernel-doc issues
+Date:   Thu, 26 Nov 2020 13:38:53 +0000
+Message-Id: <20201126133853.3213268-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201126133853.3213268-1-lee.jones@linaro.org>
 References: <20201126133853.3213268-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -71,127 +77,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/ethernet/toshiba/spider_net.c:263: warning: Function parameter or member 'hwdescr' not described in 'spider_net_get_descr_status'
- drivers/net/ethernet/toshiba/spider_net.c:263: warning: Excess function parameter 'descr' description in 'spider_net_get_descr_status'
- drivers/net/ethernet/toshiba/spider_net.c:554: warning: Function parameter or member 'netdev' not described in 'spider_net_get_multicast_hash'
- drivers/net/ethernet/toshiba/spider_net.c:902: warning: Function parameter or member 't' not described in 'spider_net_cleanup_tx_ring'
- drivers/net/ethernet/toshiba/spider_net.c:902: warning: Excess function parameter 'card' description in 'spider_net_cleanup_tx_ring'
- drivers/net/ethernet/toshiba/spider_net.c:1074: warning: Function parameter or member 'card' not described in 'spider_net_resync_head_ptr'
- drivers/net/ethernet/toshiba/spider_net.c:1234: warning: Function parameter or member 'napi' not described in 'spider_net_poll'
- drivers/net/ethernet/toshiba/spider_net.c:1234: warning: Excess function parameter 'netdev' description in 'spider_net_poll'
- drivers/net/ethernet/toshiba/spider_net.c:1278: warning: Function parameter or member 'p' not described in 'spider_net_set_mac'
- drivers/net/ethernet/toshiba/spider_net.c:1278: warning: Excess function parameter 'ptr' description in 'spider_net_set_mac'
- drivers/net/ethernet/toshiba/spider_net.c:1350: warning: Function parameter or member 'error_reg1' not described in 'spider_net_handle_error_irq'
- drivers/net/ethernet/toshiba/spider_net.c:1350: warning: Function parameter or member 'error_reg2' not described in 'spider_net_handle_error_irq'
- drivers/net/ethernet/toshiba/spider_net.c:1968: warning: Function parameter or member 't' not described in 'spider_net_link_phy'
- drivers/net/ethernet/toshiba/spider_net.c:1968: warning: Excess function parameter 'data' description in 'spider_net_link_phy'
- drivers/net/ethernet/toshiba/spider_net.c:2149: warning: Function parameter or member 'work' not described in 'spider_net_tx_timeout_task'
- drivers/net/ethernet/toshiba/spider_net.c:2149: warning: Excess function parameter 'data' description in 'spider_net_tx_timeout_task'
- drivers/net/ethernet/toshiba/spider_net.c:2182: warning: Function parameter or member 'txqueue' not described in 'spider_net_tx_timeout'
+ from drivers/net/ethernet/ibm/ibmvnic.c:35:
+ inlined from ‘handle_vpd_rsp’ at drivers/net/ethernet/ibm/ibmvnic.c:4124:3:
+ drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Function parameter or member 'hdr_data' not described in 'build_hdr_data'
+ drivers/net/ethernet/ibm/ibmvnic.c:1362: warning: Excess function parameter 'tot_len' description in 'build_hdr_data'
+ drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Function parameter or member 'hdr_data' not described in 'create_hdr_descs'
+ drivers/net/ethernet/ibm/ibmvnic.c:1423: warning: Excess function parameter 'data' description in 'create_hdr_descs'
+ drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Function parameter or member 'txbuff' not described in 'build_hdr_descs_arr'
+ drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Excess function parameter 'skb' description in 'build_hdr_descs_arr'
+ drivers/net/ethernet/ibm/ibmvnic.c:1474: warning: Excess function parameter 'subcrq' description in 'build_hdr_descs_arr'
 
-Cc: Ishizaki Kou <kou.ishizaki@toshiba.co.jp>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Dany Madden <drt@linux.ibm.com>
+Cc: Lijun Pan <ljp@linux.ibm.com>
+Cc: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Utz Bacher <utz.bacher@de.ibm.com>
-Cc: Jens Osterkamp <Jens.Osterkamp@de.ibm.com>
+Cc: Santiago Leon <santi_leon@yahoo.com>
+Cc: Thomas Falcon <tlfalcon@linux.vnet.ibm.com>
+Cc: John Allen <jallen@linux.vnet.ibm.com>
+Cc: linuxppc-dev@lists.ozlabs.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/ethernet/toshiba/spider_net.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/toshiba/spider_net.c b/drivers/net/ethernet/toshiba/spider_net.c
-index 5f5b33e6653b2..d5a75ef7e3ca9 100644
---- a/drivers/net/ethernet/toshiba/spider_net.c
-+++ b/drivers/net/ethernet/toshiba/spider_net.c
-@@ -254,7 +254,7 @@ spider_net_set_promisc(struct spider_net_card *card)
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 36ea37721e3c8..0687f6cb0c7a2 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -1379,7 +1379,7 @@ static int ibmvnic_close(struct net_device *netdev)
+  * @hdr_field: bitfield determining needed headers
+  * @skb: socket buffer
+  * @hdr_len: array of header lengths
+- * @tot_len: total length of data
++ * @hdr_data: buffer to write the header to
+  *
+  * Reads hdr_field to determine which headers are needed by firmware.
+  * Builds a buffer containing these headers.  Saves individual header
+@@ -1437,7 +1437,7 @@ static int build_hdr_data(u8 hdr_field, struct sk_buff *skb,
+ /**
+  * create_hdr_descs - create header and header extension descriptors
+  * @hdr_field: bitfield determining needed headers
+- * @data: buffer containing header data
++ * @hdr_data: buffer containing header data
+  * @len: length of data buffer
+  * @hdr_len: array of individual header lengths
+  * @scrq_arr: descriptor array
+@@ -1488,9 +1488,8 @@ static int create_hdr_descs(u8 hdr_field, u8 *hdr_data, int len, int *hdr_len,
  
  /**
-  * spider_net_get_descr_status -- returns the status of a descriptor
-- * @descr: descriptor to look at
-+ * @hwdescr: descriptor to look at
+  * build_hdr_descs_arr - build a header descriptor array
+- * @skb: socket buffer
++ * @txbuff: tx buffer
+  * @num_entries: number of descriptors to be sent
+- * @subcrq: first TX descriptor
+  * @hdr_field: bit field determining which headers will be sent
   *
-  * returns the status as in the dmac_cmd_status field of the descriptor
-  */
-@@ -542,6 +542,7 @@ spider_net_alloc_rx_skbs(struct spider_net_card *card)
- 
- /**
-  * spider_net_get_multicast_hash - generates hash for multicast filter table
-+ * @netdev: interface device structure
-  * @addr: multicast address
-  *
-  * returns the hash value.
-@@ -890,7 +891,7 @@ spider_net_xmit(struct sk_buff *skb, struct net_device *netdev)
- 
- /**
-  * spider_net_cleanup_tx_ring - cleans up the TX ring
-- * @card: card structure
-+ * @t: timer context used to obtain the pointer to net card data structure
-  *
-  * spider_net_cleanup_tx_ring is called by either the tx_timer
-  * or from the NAPI polling routine.
-@@ -1063,6 +1064,7 @@ static void show_rx_chain(struct spider_net_card *card)
- 
- /**
-  * spider_net_resync_head_ptr - Advance head ptr past empty descrs
-+ * @card: card structure
-  *
-  * If the driver fails to keep up and empty the queue, then the
-  * hardware wil run out of room to put incoming packets. This
-@@ -1220,7 +1222,7 @@ spider_net_decode_one_descr(struct spider_net_card *card)
- 
- /**
-  * spider_net_poll - NAPI poll function called by the stack to return packets
-- * @netdev: interface device structure
-+ * @napi: napi device structure
-  * @budget: number of packets we can pass to the stack at most
-  *
-  * returns 0 if no more packets available to the driver/stack. Returns 1,
-@@ -1268,7 +1270,7 @@ static int spider_net_poll(struct napi_struct *napi, int budget)
- /**
-  * spider_net_set_mac - sets the MAC of an interface
-  * @netdev: interface device structure
-- * @ptr: pointer to new MAC address
-+ * @p: pointer to new MAC address
-  *
-  * Returns 0 on success, <0 on failure. Currently, we don't support this
-  * and will always return EOPNOTSUPP.
-@@ -1340,6 +1342,8 @@ spider_net_link_reset(struct net_device *netdev)
-  * spider_net_handle_error_irq - handles errors raised by an interrupt
-  * @card: card structure
-  * @status_reg: interrupt status register 0 (GHIINT0STS)
-+ * @error_reg1: interrupt status register 1 (GHIINT1STS)
-+ * @error_reg2: interrupt status register 2 (GHIINT2STS)
-  *
-  * spider_net_handle_error_irq treats or ignores all error conditions
-  * found when an interrupt is presented
-@@ -1961,8 +1965,7 @@ spider_net_open(struct net_device *netdev)
- 
- /**
-  * spider_net_link_phy
-- * @data: used for pointer to card structure
-- *
-+ * @t: timer context used to obtain the pointer to net card data structure
-  */
- static void spider_net_link_phy(struct timer_list *t)
- {
-@@ -2140,7 +2143,7 @@ spider_net_stop(struct net_device *netdev)
- /**
-  * spider_net_tx_timeout_task - task scheduled by the watchdog timeout
-  * function (to be called not under interrupt status)
-- * @data: data, is interface device structure
-+ * @work: work context used to obtain the pointer to net card data structure
-  *
-  * called as task when tx hangs, resets interface (if interface is up)
-  */
-@@ -2174,6 +2177,7 @@ spider_net_tx_timeout_task(struct work_struct *work)
- /**
-  * spider_net_tx_timeout - called when the tx timeout watchdog kicks in.
-  * @netdev: interface device structure
-+ * @txqueue: unused
-  *
-  * called, if tx hangs. Schedules a task that resets the interface
-  */
+  * This function will build a TX descriptor array with applicable
 -- 
 2.25.1
 
