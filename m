@@ -2,441 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D712C5C5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 20:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5EE2C5C63
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 20:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405154AbgKZSzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 13:55:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
+        id S1731633AbgKZS5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 13:57:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405019AbgKZSy5 (ORCPT
+        with ESMTP id S1728722AbgKZS5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 13:54:57 -0500
-X-Greylist: delayed 499 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Nov 2020 10:54:56 PST
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA34CC061A47;
-        Thu, 26 Nov 2020 10:54:56 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 53D6340635;
-        Thu, 26 Nov 2020 19:46:37 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, ulf.hansson@linaro.org,
-        jorge.ramirez-ortiz@linaro.org, broonie@kernel.org,
-        lgirdwood@gmail.com, daniel.lezcano@linaro.org, nks@flawful.org,
-        bjorn.andersson@linaro.org, agross@kernel.org, robh+dt@kernel.org,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net,
-        konrad.dybcio@somainline.org, martin.botka@somainline.org,
-        marijn.suijten@somainline.org, phone-devel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH 11/13] dt-bindings: cpufreq: Convert qcom-cpufreq-hw to YAML binding
-Date:   Thu, 26 Nov 2020 19:45:57 +0100
-Message-Id: <20201126184559.3052375-12-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
-References: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 26 Nov 2020 13:57:19 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB895C0613D4;
+        Thu, 26 Nov 2020 10:57:18 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id f9so2092689ejw.4;
+        Thu, 26 Nov 2020 10:57:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=hxouV8TOd4XlVrwIhmMmebV4SGHsuIQGOklsA6qAvCc=;
+        b=P1BA5OZB9H1UMsnEh5lZFDw1h9hn3R4fCP4UNcUKF8r+gVmXGhbKOLQnJdVa0TtOdM
+         g4mp07JHOyZEPhO6FYts5hhu+ohkDJKbRSezLrfpwCKgrcHyrcwDdfk+KtF/E4eXQCCz
+         eag0ShohciEhvzuQJ03Ko1WGjHlDaMDb8BQ9iTxJEAPszwIUroWhJPLpvYIBcqDl+6WY
+         P+5tdGaKllTdPlbUN4IVzoEc9Qdro0WaethqaEKystBBkfvKRYjryxt7JoP+8EKb6jkq
+         4J4iqojkiia8u53TMjoi5qmX9vMcvxCMeIGXKKCFWWxBcsztN1XYd5Xo2cPE/rVltx1L
+         CRHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hxouV8TOd4XlVrwIhmMmebV4SGHsuIQGOklsA6qAvCc=;
+        b=TkX4VtuRoj6z3rLieJzQp+Sg+nAnFrR+Q+2ncMHBpOsx3+3fzN4ui9GAQJ2JOIJwTt
+         GQ9wfgGNyLILngL7I/xlzv/TJG4tKhNy2TNdvsd/cv4JMd7Onw5+wZrGE9oMM3wFBc6r
+         XfFvNUncjezLZWO6iDT6rSsXo2s+2iavXwHIoc0Tgv6jkfYyzJxmQPPUMBYxIx3I+Z/d
+         NMMDnmXqTIBS0Pnl65GZ62VBCfjnZeWo+LbAUa4AU+VjNLThnVg5Yu4CjwRY2yO4JnHZ
+         PHOGgXs9Za+O309q549kOss+MwZufO/psOey2l777hMcYX0sQPpPcpOMMbTXLhicKX5V
+         LT4g==
+X-Gm-Message-State: AOAM533bUt57triW1x9B4VzbgKie5tQbgZjbhg2bDxTB6Y5fMbXrzuTw
+        UKeSkIguiRCOBQxuquY1BWQ=
+X-Google-Smtp-Source: ABdhPJySyqwz/r9Kf4d4rxdX4Z3k4Zsrt3FePPH8A2z70ISRpvgRiIK5q333LgaToGDUmeRQ4qyEEg==
+X-Received: by 2002:a17:906:7c48:: with SMTP id g8mr3891042ejp.395.1606417037519;
+        Thu, 26 Nov 2020 10:57:17 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d3f:bc00:d891:6628:cbb1:a6e5])
+        by smtp.gmail.com with ESMTPSA id k2sm3529855ejp.6.2020.11.26.10.57.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 10:57:16 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+Cc:     "H . Peter Anvin" <hpa@zytor.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] x86/usercopy: adjust __user annotation on __copy_user_intel()
+Date:   Thu, 26 Nov 2020 19:56:52 +0100
+Message-Id: <20201126185652.1875-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the qcom-cpufreq-hw documentation to YAML binding as
-qcom,cpufreq-hw.yaml.
+Since commit beba3a20bf90 ("x86: switch to RAW_COPY_USER"),
+__copy_user_ll() is used for copying in both directions, i.e., from user
+memory space to kernel memory space and vice versa.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+The underlying __copy_user_intel() is hence also used for copying in both
+directions. The __user annotation on the arguments suggests a
+specification, only copying to user memory space, that simply does not hold
+anymore.
+
+So, reflect this use of __copy_user_intel() by dropping the __user
+annotation, as the __user annotations have already been removed at higher
+level from the pointers in the raw_copy_from_user() and raw_copy_to_user()
+before passing those pointers on to the low-level __copy_user_ll().
+
+__copy_user_intel() is only used in __copy_user_ll(); so checking soundness
+of the __user annotations around __copy_user_ll() is all that is needed.
+
+No functional change. No change in object code.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- .../bindings/cpufreq/cpufreq-qcom-hw.txt      | 173 +---------------
- .../bindings/cpufreq/qcom,cpufreq-hw.yaml     | 196 ++++++++++++++++++
- 2 files changed, 197 insertions(+), 172 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
+applies cleanly on current master and next-20201126
 
-diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-index 9299028ee712..bd4e81f6f835 100644
---- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-+++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-@@ -1,172 +1 @@
--Qualcomm Technologies, Inc. CPUFREQ Bindings
--
--CPUFREQ HW is a hardware engine used by some Qualcomm Technologies, Inc. (QTI)
--SoCs to manage frequency in hardware. It is capable of controlling frequency
--for multiple clusters.
--
--Properties:
--- compatible
--	Usage:		required
--	Value type:	<string>
--	Definition:	must be "qcom,cpufreq-hw" or "qcom,cpufreq-epss".
--
--- clocks
--	Usage:		required
--	Value type:	<phandle> From common clock binding.
--	Definition:	clock handle for XO clock and GPLL0 clock.
--
--- clock-names
--	Usage:		required
--	Value type:	<string> From common clock binding.
--	Definition:	must be "xo", "alternate".
--
--- reg
--	Usage:		required
--	Value type:	<prop-encoded-array>
--	Definition:	Addresses and sizes for the memory of the HW bases in
--			each frequency domain.
--- reg-names
--	Usage:		Optional
--	Value type:	<string>
--	Definition:	Frequency domain name i.e.
--			"freq-domain0", "freq-domain1".
--
--- #freq-domain-cells:
--	Usage:		required.
--	Definition:	Number of cells in a freqency domain specifier.
--
--* Property qcom,freq-domain
--Devices supporting freq-domain must set their "qcom,freq-domain" property with
--phandle to a cpufreq_hw followed by the Domain ID(0/1) in the CPU DT node.
--
--
--Example:
--
--Example 1: Dual-cluster, Quad-core per cluster. CPUs within a cluster switch
--DCVS state together.
--
--/ {
--	cpus {
--		#address-cells = <2>;
--		#size-cells = <0>;
--
--		CPU0: cpu@0 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x0>;
--			enable-method = "psci";
--			next-level-cache = <&L2_0>;
--			qcom,freq-domain = <&cpufreq_hw 0>;
--			L2_0: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--				L3_0: l3-cache {
--				      compatible = "cache";
--				};
--			};
--		};
--
--		CPU1: cpu@100 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x100>;
--			enable-method = "psci";
--			next-level-cache = <&L2_100>;
--			qcom,freq-domain = <&cpufreq_hw 0>;
--			L2_100: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU2: cpu@200 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x200>;
--			enable-method = "psci";
--			next-level-cache = <&L2_200>;
--			qcom,freq-domain = <&cpufreq_hw 0>;
--			L2_200: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU3: cpu@300 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x300>;
--			enable-method = "psci";
--			next-level-cache = <&L2_300>;
--			qcom,freq-domain = <&cpufreq_hw 0>;
--			L2_300: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU4: cpu@400 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x400>;
--			enable-method = "psci";
--			next-level-cache = <&L2_400>;
--			qcom,freq-domain = <&cpufreq_hw 1>;
--			L2_400: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU5: cpu@500 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x500>;
--			enable-method = "psci";
--			next-level-cache = <&L2_500>;
--			qcom,freq-domain = <&cpufreq_hw 1>;
--			L2_500: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU6: cpu@600 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x600>;
--			enable-method = "psci";
--			next-level-cache = <&L2_600>;
--			qcom,freq-domain = <&cpufreq_hw 1>;
--			L2_600: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU7: cpu@700 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x700>;
--			enable-method = "psci";
--			next-level-cache = <&L2_700>;
--			qcom,freq-domain = <&cpufreq_hw 1>;
--			L2_700: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--	};
--
-- soc {
--	cpufreq_hw: cpufreq@17d43000 {
--		compatible = "qcom,cpufreq-hw";
--		reg = <0x17d43000 0x1400>, <0x17d45800 0x1400>;
--		reg-names = "freq-domain0", "freq-domain1";
--
--		clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GPLL0>;
--		clock-names = "xo", "alternate";
--
--		#freq-domain-cells = <1>;
--	};
--}
-+This file has been moved to qcom,cpufreq-hw.yaml
-diff --git a/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml b/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
-new file mode 100644
-index 000000000000..94a56317b14b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
-@@ -0,0 +1,196 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/cpufreq/qcom,cpufreq-hw.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Qualcomm Technologies, Inc. CPUFREQ HW Bindings
-+
-+description: |
-+  CPUFREQ HW is a hardware engine used by some Qualcomm Technologies, Inc. (QTI)
-+  SoCs to manage frequency in hardware. It is capable of controlling frequency
-+  for multiple clusters.
-+
-+maintainers:
-+  - TBD
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - qcom,cpufreq-hw
-+          - qcom,cpufreq-hw-8998
-+          - qcom,cpufreq-epss
-+
-+  reg:
-+    minItems: 2
-+    maxItems: 2
-+
-+  reg-names:
-+    description:
-+      Frequency domain register region for each domain.
-+    items:
-+      - const: "freq-domain0"
-+      - const: "freq-domain1"
-+
-+  clock-names:
-+    - const: xo
-+    - const: ref
-+
-+  clocks:
-+    maxItems: 2
-+
-+  '#freq-domain-cells':
-+    description: Number of cells in a freqency domain specifier.
-+    const: 1
-+
-+  operating-points-v2: true
-+
-+  qcom,freq-domain:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: |
-+      Devices supporting freq-domain must set their "qcom,freq-domain"
-+      property with phandle to a cpufreq_hw followed by the Domain ID(0/1)
-+      in the CPU DT node.
-+
-+required:
-+  - compatible
-+  - reg
-+  - clock-names
-+  - clocks
-+  - "#freq-domain-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    // Example 1: Dual-cluster, Quad-core per cluster. CPUs within a
-+    //            cluster switch DCVS state together.
-+
-+    #include <dt-bindings/clock/qcom,rpmh.h>
-+    #include <dt-bindings/clock/qcom,gcc-sc7180.h>
-+
-+    cpus {
-+        #address-cells = <2>;
-+        #size-cells = <0>;
-+
-+        CPU0: cpu@0 {
-+            device_type = "cpu";
-+            compatible = "qcom,kryo385";
-+            reg = <0x0 0x0>;
-+            enable-method = "psci";
-+            next-level-cache = <&L2_0>;
-+            qcom,freq-domain = <&cpufreq_hw 0>;
-+            L2_0: l2-cache {
-+                compatible = "cache";
-+                next-level-cache = <&L3_0>;
-+                L3_0: l3-cache {
-+                      compatible = "cache";
-+                };
-+            };
-+        };
-+
-+        CPU1: cpu@100 {
-+            device_type = "cpu";
-+            compatible = "qcom,kryo385";
-+            reg = <0x0 0x100>;
-+            enable-method = "psci";
-+            next-level-cache = <&L2_100>;
-+            qcom,freq-domain = <&cpufreq_hw 0>;
-+            L2_100: l2-cache {
-+                compatible = "cache";
-+                next-level-cache = <&L3_0>;
-+            };
-+        };
-+
-+        CPU2: cpu@200 {
-+            device_type = "cpu";
-+            compatible = "qcom,kryo385";
-+            reg = <0x0 0x200>;
-+            enable-method = "psci";
-+            next-level-cache = <&L2_200>;
-+            qcom,freq-domain = <&cpufreq_hw 0>;
-+            L2_200: l2-cache {
-+                compatible = "cache";
-+                next-level-cache = <&L3_0>;
-+            };
-+        };
-+
-+        CPU3: cpu@300 {
-+            device_type = "cpu";
-+            compatible = "qcom,kryo385";
-+            reg = <0x0 0x300>;
-+            enable-method = "psci";
-+            next-level-cache = <&L2_300>;
-+            qcom,freq-domain = <&cpufreq_hw 0>;
-+            L2_300: l2-cache {
-+                compatible = "cache";
-+                next-level-cache = <&L3_0>;
-+            };
-+        };
-+
-+        CPU4: cpu@400 {
-+            device_type = "cpu";
-+            compatible = "qcom,kryo385";
-+            reg = <0x0 0x400>;
-+            enable-method = "psci";
-+            next-level-cache = <&L2_400>;
-+            qcom,freq-domain = <&cpufreq_hw 1>;
-+            L2_400: l2-cache {
-+                compatible = "cache";
-+                next-level-cache = <&L3_0>;
-+            };
-+        };
-+
-+        CPU5: cpu@500 {
-+            device_type = "cpu";
-+            compatible = "qcom,kryo385";
-+            reg = <0x0 0x500>;
-+            enable-method = "psci";
-+            next-level-cache = <&L2_500>;
-+            qcom,freq-domain = <&cpufreq_hw 1>;
-+            L2_500: l2-cache {
-+                compatible = "cache";
-+                next-level-cache = <&L3_0>;
-+            };
-+        };
-+
-+        CPU6: cpu@600 {
-+            device_type = "cpu";
-+            compatible = "qcom,kryo385";
-+            reg = <0x0 0x600>;
-+            enable-method = "psci";
-+            next-level-cache = <&L2_600>;
-+            qcom,freq-domain = <&cpufreq_hw 1>;
-+            L2_600: l2-cache {
-+                compatible = "cache";
-+                next-level-cache = <&L3_0>;
-+            };
-+        };
-+
-+        CPU7: cpu@700 {
-+            device_type = "cpu";
-+            compatible = "qcom,kryo385";
-+            reg = <0x0 0x700>;
-+            enable-method = "psci";
-+            next-level-cache = <&L2_700>;
-+            qcom,freq-domain = <&cpufreq_hw 1>;
-+            L2_700: l2-cache {
-+                compatible = "cache";
-+                next-level-cache = <&L3_0>;
-+            };
-+        };
-+    };
-+
-+    soc {
-+        cpufreq_hw: cpufreq@17d43000 {
-+            compatible = "qcom,cpufreq-hw";
-+            reg = <0x17d43000 0x1400>, <0x17d45800 0x1400>;
-+            reg-names = "freq-domain0", "freq-domain1";
-+
-+            clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GPLL0>;
-+            clock-names = "xo", "alternate";
-+
-+            #freq-domain-cells = <1>;
-+    };
-+...
+Thomas, Ingo, Boris, please pick this minor non-urgent clean-up patch.
+
+ arch/x86/lib/usercopy_32.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/lib/usercopy_32.c b/arch/x86/lib/usercopy_32.c
+index 7d290777246d..4976283a01f0 100644
+--- a/arch/x86/lib/usercopy_32.c
++++ b/arch/x86/lib/usercopy_32.c
+@@ -94,7 +94,7 @@ EXPORT_SYMBOL(__clear_user);
+ 
+ #ifdef CONFIG_X86_INTEL_USERCOPY
+ static unsigned long
+-__copy_user_intel(void __user *to, const void *from, unsigned long size)
++__copy_user_intel(void *to, const void *from, unsigned long size)
+ {
+ 	int d0, d1;
+ 	__asm__ __volatile__(
+@@ -291,7 +291,7 @@ static unsigned long __copy_user_intel_nocache(void *to,
+  * Leave these declared but undefined.  They should not be any references to
+  * them
+  */
+-unsigned long __copy_user_intel(void __user *to, const void *from,
++unsigned long __copy_user_intel(void *to, const void *from,
+ 					unsigned long size);
+ #endif /* CONFIG_X86_INTEL_USERCOPY */
+ 
 -- 
-2.29.2
+2.17.1
 
