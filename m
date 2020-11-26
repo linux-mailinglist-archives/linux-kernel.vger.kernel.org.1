@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23342C507D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E98F2C5080
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:34:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388883AbgKZI35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 03:29:57 -0500
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:34970 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727039AbgKZI35 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 03:29:57 -0500
-Received: by mail-oo1-f65.google.com with SMTP id y3so237662ooq.2;
-        Thu, 26 Nov 2020 00:29:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j/vBBElAksTvt4HjurCYnxT73LNYVZ5qmRqRKKnCoNw=;
-        b=SBDUNm3+NYqZ7dOowcbPhy3YJbjDU+cyirOt7w0EkG8uBm4EpeOwLx/6g7IdT76HT0
-         vGFFqRKqms2cKwRLwHd5uzLNP4mzV6WLf4rohuyuim1JFyeOQQet2unlWEdUPsK02Xh8
-         g3XAEiVBLtqtVxHLj1NC5AgacpAh5BHW2wmP82wmdomvdAJ3g4sA289up8s2Eze0mg8m
-         6HCRQ/rt3HNoI/vYmY+krIBPRPNSf37oKQue4ClAalsHB854gmh8OyGSFRfSCbVjTA3A
-         /VGfTT45V9/9uCFAQlD+TuJ8b5CS/2o3gcRUzO83dE9PbFzuy6ZbiflOZSC/lKnwYQ3T
-         n0xA==
-X-Gm-Message-State: AOAM530RJn4uQXQSH6k4fMXhz3ZUWJlrA33IK36tMnm7iUbYASEHWisG
-        J81WCjcMfHYbuY6IpcHYmoPi3lmEi/Sy8sRfCHA=
-X-Google-Smtp-Source: ABdhPJwPulrHQWSHcYoomf4Z7RDCXvKABZRXcws/8ZD9MXQyBQxa3HrEjaME+FqCdHcKa4kGkfEeLCOXS4eDYfiorh4=
-X-Received: by 2002:a4a:abc9:: with SMTP id o9mr1291425oon.1.1606379394915;
- Thu, 26 Nov 2020 00:29:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20201126003957.19604-1-rdunlap@infradead.org>
-In-Reply-To: <20201126003957.19604-1-rdunlap@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 26 Nov 2020 09:29:43 +0100
-Message-ID: <CAMuHMdVpcLc9enskSBJobmHXy3GU5ULdt78ArAr522VXRmty5w@mail.gmail.com>
-Subject: Re: [PATCH] fbdev: aty: SPARC64 requires FB_ATY_CT
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2388919AbgKZIbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 03:31:47 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:54688 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727070AbgKZIbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 03:31:46 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606379505; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=pCwSQlf0qnuyc2pBtanhq4bzyUOsyOocqXKJhXbLSM0=; b=ueCdbO300LJR8v/MI8hBfvHaHHxd1jFXvNYytuNGLJsQ2gAdhaiPpG4YPV2IfwB2BJ8xHX+Z
+ 8VCefVnHWxGlq1TA409l/Y67lW5/2RgAAYoGEPubPIMRS08AutMyPyUQ3QN1JzPUFiHOpNEj
+ 1p78rd9HR03W8xyyiwda6qV+GKg=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fbf67f177b63cdb34eb9454 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Nov 2020 08:31:45
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9E1D2C433C6; Thu, 26 Nov 2020 08:31:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A1CB9C433ED;
+        Thu, 26 Nov 2020 08:31:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A1CB9C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     andy.gross@linaro.org, bjorn.andersson@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dianders@chromium.org, swboyd@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [RESEND] soc: qcom: rpmh: Use __fill_rpmh_msg API during rpmh_write()
+Date:   Thu, 26 Nov 2020 14:01:30 +0530
+Message-Id: <1606379490-4052-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+Use __fill_rpmh_msg API during rpmh_write(). This allows to
+remove duplication of code in error checking, copying commands
+and setting message state.
 
-On Thu, Nov 26, 2020 at 1:40 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> It looks like SPARC64 requires FB_ATY_CT to build without errors,
-> so adjust the Kconfig entry of FB_ATY_CT so that it is always 'y'
-> for SPARC64 && PCI by disabling the prompt for SPARC64 && PCI.
->
-> As it currently is, FB_ATY_CT can be disabled, resulting in build
-> errors:
->
-> ERROR: modpost: "aty_postdividers" [drivers/video/fbdev/aty/atyfb.ko] undefined!
-> ERROR: modpost: "aty_ld_pll_ct" [drivers/video/fbdev/aty/atyfb.ko] undefined!
->
-> Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+---
+ drivers/soc/qcom/rpmh.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-Thanks for your patch!
-
-> --- linux-next-20201124.orig/drivers/video/fbdev/Kconfig
-> +++ linux-next-20201124/drivers/video/fbdev/Kconfig
-> @@ -1277,7 +1277,7 @@ config FB_ATY
->           module will be called atyfb.
->
->  config FB_ATY_CT
-> -       bool "Mach64 CT/VT/GT/LT (incl. 3D RAGE) support"
-> +       bool "Mach64 CT/VT/GT/LT (incl. 3D RAGE) support" if !(SPARC64 && PCI)
->         depends on PCI && FB_ATY
->         default y if SPARC64 && PCI
->         help
-
-What about letting FB_ATY select FB_ATY_CT if SPARC64 && PCI, and
-dropping the "default y"-line, instead?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/soc/qcom/rpmh.c b/drivers/soc/qcom/rpmh.c
+index ad1f062..01765ee 100644
+--- a/drivers/soc/qcom/rpmh.c
++++ b/drivers/soc/qcom/rpmh.c
+@@ -181,8 +181,6 @@ static int __rpmh_write(const struct device *dev, enum rpmh_state state,
+ 	struct cache_req *req;
+ 	int i;
+ 
+-	rpm_msg->msg.state = state;
+-
+ 	/* Cache the request in our store and link the payload */
+ 	for (i = 0; i < rpm_msg->msg.num_cmds; i++) {
+ 		req = cache_rpm_request(ctrlr, state, &rpm_msg->msg.cmds[i]);
+@@ -190,8 +188,6 @@ static int __rpmh_write(const struct device *dev, enum rpmh_state state,
+ 			return PTR_ERR(req);
+ 	}
+ 
+-	rpm_msg->msg.state = state;
+-
+ 	if (state == RPMH_ACTIVE_ONLY_STATE) {
+ 		WARN_ON(irqs_disabled());
+ 		ret = rpmh_rsc_send_data(ctrlr_to_drv(ctrlr), &rpm_msg->msg);
+@@ -268,11 +264,9 @@ int rpmh_write(const struct device *dev, enum rpmh_state state,
+ 	DEFINE_RPMH_MSG_ONSTACK(dev, state, &compl, rpm_msg);
+ 	int ret;
+ 
+-	if (!cmd || !n || n > MAX_RPMH_PAYLOAD)
+-		return -EINVAL;
+-
+-	memcpy(rpm_msg.cmd, cmd, n * sizeof(*cmd));
+-	rpm_msg.msg.num_cmds = n;
++	ret = __fill_rpmh_msg(&rpm_msg, state, cmd, n);
++	if (ret)
++		return ret;
+ 
+ 	ret = __rpmh_write(dev, state, &rpm_msg);
+ 	if (ret)
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
