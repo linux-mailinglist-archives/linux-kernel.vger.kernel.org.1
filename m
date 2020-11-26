@@ -2,103 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D132C507B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C68E42C507F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388873AbgKZI3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 03:29:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59590 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388866AbgKZI3T (ORCPT
+        id S2388893AbgKZIaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 03:30:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727039AbgKZIaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 03:29:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606379358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=saFRkzBjwNYVIzOFQ9gg9qkqgMtu8TL9hGt5bH7Do50=;
-        b=PQ6AT20aBZVzAjAAGeFUePFhXmnSU5mVWuKW1+TXi6MTRFmyYKnJ4DK6w8RXv+zwPgaXqz
-        rlL3AY2jC0Uv+tNVoah+JP75omq0B0xQhSb8IVcniL+rWNyuCFiq7hzdv0e0+6uO/wZiRv
-        hH5SNhXIFKHCVgxtU1KHr8Vo5KhWnO4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-28-TcFidZI_MIehiIoxx3YsYg-1; Thu, 26 Nov 2020 03:29:12 -0500
-X-MC-Unique: TcFidZI_MIehiIoxx3YsYg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C36AA10151E7;
-        Thu, 26 Nov 2020 08:29:10 +0000 (UTC)
-Received: from thinkpad.redhat.com (ovpn-113-83.ams2.redhat.com [10.36.113.83])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 066E45C1B4;
-        Thu, 26 Nov 2020 08:29:07 +0000 (UTC)
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Paul Mackerras <paulus@samba.org>, linux-pci@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-block@vger.kernel.org,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Marc Zyngier <maz@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Greg Kurz <groug@kaod.org>, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Laurent Vivier <lvivier@redhat.com>
-Subject: [PATCH v4 2/2] powerpc/pseries: Pass MSI affinity to irq_create_mapping()
-Date:   Thu, 26 Nov 2020 09:28:52 +0100
-Message-Id: <20201126082852.1178497-3-lvivier@redhat.com>
-In-Reply-To: <20201126082852.1178497-1-lvivier@redhat.com>
-References: <20201126082852.1178497-1-lvivier@redhat.com>
+        Thu, 26 Nov 2020 03:30:16 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A653C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 00:30:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fDlu5J9M+Xdp0HOAKxmY6WP3yf0ej07B8LChxfpJT5A=; b=3HfQBIMKZLxJjn4pRg2PO2R1jU
+        wEkDFC4MFR3nFwXrubpqJaNBB4Pt25gsq4UgMzK6QW7bAvMFmZKLeoAe0veVbFdm2LhnQP1fIdmD9
+        tDPndmQYPrItovxELLijTVIa/fOr2O3WHIeYwJamDnxTSiSRkGYwvqZQzfnw0e4excqpMot5Hh5Lg
+        bNP/iZBQjALRyIYbbFcEirMlVKh5/5GDb7gziIJxPiElP4GQlUq3WddRCVQ4ZRUQDqkn9Z6rjuu6s
+        3sDS8knnyBctBzYvX/0cdNJjLvyvt4Y/1zkPffcmyQCR81iUECM/MT0/jixzysBtDTUMOn3UMGcRJ
+        TNozZo2A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kiCeS-0000dY-8Y; Thu, 26 Nov 2020 08:29:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4CC6B3012DF;
+        Thu, 26 Nov 2020 09:29:14 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 30F3920D6FE65; Thu, 26 Nov 2020 09:29:14 +0100 (CET)
+Date:   Thu, 26 Nov 2020 09:29:14 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Balbir Singh <bsingharora@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 10/32] sched: Fix priority inversion of cookied task
+ with sibling
+Message-ID: <20201126082914.GE2414@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-11-joel@joelfernandes.org>
+ <20201122224123.GE110669@balbir-desktop>
+ <20201124183038.GG1021337@google.com>
+ <20201125230519.GC163610@balbir-desktop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125230519.GC163610@balbir-desktop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With virtio multiqueue, normally each queue IRQ is mapped to a CPU.
+On Thu, Nov 26, 2020 at 10:05:19AM +1100, Balbir Singh wrote:
+> > @@ -5259,7 +5254,20 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+> >  			 * Optimize the 'normal' case where there aren't any
+> >  			 * cookies and we don't need to sync up.
+> >  			 */
+> > -			if (i == cpu && !need_sync && !p->core_cookie) {
+> > +			if (i == cpu && !need_sync) {
+> > +				if (p->core_cookie) {
+> > +					/*
+> > +					 * This optimization is only valid as
+> > +					 * long as there are no cookies
+> 
+> This is not entirely true, need_sync is a function of core cookies, so I
+> think this needs more clarification, it sounds like we enter this when
+> the core has no cookies, but the task has a core_cookie? The term cookie
+> is quite overloaded when used in the context of core vs task.
 
-Commit 0d9f0a52c8b9f ("virtio_scsi: use virtio IRQ affinity") exposed
-an existing shortcoming of the arch code by moving virtio_scsi to
-the automatic IRQ affinity assignment.
+Nah, its the same. So each task gets a cookie to identify the 'group' of
+tasks (possibly just itself) it is allowed to share a core with.
 
-The affinity is correctly computed in msi_desc but this is not applied
-to the system IRQs.
+When we to core task selection, the core gets assigned the cookie of the
+group it will run, same thing.
 
-It appears the affinity is correctly passed to rtas_setup_msi_irqs() but
-lost at this point and never passed to irq_domain_alloc_descs()
-(see commit 06ee6d571f0e ("genirq: Add affinity hint to irq allocation"))
-because irq_create_mapping() doesn't take an affinity parameter.
+> Effectively from what I understand this means that p wants to be
+> coscheduled, but the core itself is not coscheduling anything at the
+> moment, so we need to see if we should do a sync and that sync might
+> cause p to get kicked out and a higher priority class to come in?
 
-As the previous patch has added the affinity parameter to
-irq_create_mapping() we can forward the affinity from rtas_setup_msi_irqs()
-to irq_domain_alloc_descs().
+This whole patch is about eliding code-wide task selection when it is
+not required. IOW an optimization.
 
-With this change, the virtqueues are correctly dispatched between the CPUs
-on pseries.
+When there wasn't a core cookie (IOW, the previous task selection wasn't
+core wide and limited) and the task we just selected for our own CPU
+also didn't have a cookie (IOW it doesn't have to be core-wide) we can
+skip the core wide task selection and schedule just this CPU and call it
+a day.
 
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
-Reviewed-by: Greg Kurz <groug@kaod.org>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
----
- arch/powerpc/platforms/pseries/msi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/platforms/pseries/msi.c b/arch/powerpc/platforms/pseries/msi.c
-index 133f6adcb39c..b3ac2455faad 100644
---- a/arch/powerpc/platforms/pseries/msi.c
-+++ b/arch/powerpc/platforms/pseries/msi.c
-@@ -458,7 +458,8 @@ static int rtas_setup_msi_irqs(struct pci_dev *pdev, int nvec_in, int type)
- 			return hwirq;
- 		}
- 
--		virq = irq_create_mapping(NULL, hwirq);
-+		virq = irq_create_mapping_affinity(NULL, hwirq,
-+						   entry->affinity);
- 
- 		if (!virq) {
- 			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
--- 
-2.28.0
-
+The logic was subtly wrong, this patch fixes it. A next patch completely
+rewrites it again to make it far simpler again. Don't spend time trying
+to understand this patch (unless you're _that_ kind of person ;-) but
+instead apply the whole thing and look at the resulting pick_next_task()
+function.
