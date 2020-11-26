@@ -2,98 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE08F2C57C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C3D2C57CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391304AbgKZPCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:02:23 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:56776 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390811AbgKZPCW (ORCPT
+        id S2391311AbgKZPDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:03:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390916AbgKZPDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:02:22 -0500
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 26 Nov 2020 07:02:22 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Nov 2020 07:02:20 -0800
-X-QCInternal: smtphost
-Received: from hydcbspbld03.qualcomm.com ([10.242.221.48])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 26 Nov 2020 20:32:09 +0530
-Received: by hydcbspbld03.qualcomm.com (Postfix, from userid 2304101)
-        id EE1C021110; Thu, 26 Nov 2020 20:32:07 +0530 (IST)
-From:   Pradeep P V K <ppvk@codeaurora.org>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org
-Cc:     stummala@codeaurora.org, linux-kernel@vger.kernel.org,
-        Pradeep P V K <ppvk@codeaurora.org>
-Subject: [PATCH V1] block: Fix use-after-free while iterating over requests
-Date:   Thu, 26 Nov 2020 20:32:05 +0530
-Message-Id: <1606402925-24420-1-git-send-email-ppvk@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Thu, 26 Nov 2020 10:03:42 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0C3C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:03:42 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id m9so1951312pgb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:03:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4OqB/3haiWYCNr8nadTh8VkbptmpmSoKvfEWA0bQC/U=;
+        b=Pv7y3gJh/O2SA04pT3kRHcXjTKjcw8QZT9E17Tx3c1PlEwBePny6zGflC+KZvsh+3e
+         cHXb6iWUtXMk1weI8tGHTbofxeKeF+LQZYJWt9rhnm90tJT0xOLLoJEHTy7WSbSECbmX
+         UHfYZ6NPdiOnGzBoNvvkj+ZPuvki8eFt2kdRx9EmmfNM0FDeprIW7TkfKopFK/tGVMni
+         CEDdVeHTccibrOCpGKOOWEB7vQJ0GNaay8COrzqw51o/nJb5fkwAtfR5mAYYUAh7YyMp
+         4Enjsa0IpRhkke17Kt9T909WyJyLOv0AFF0KC5VR/KgOVaZJsTXyLmbMXTHAhu91X197
+         mTtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4OqB/3haiWYCNr8nadTh8VkbptmpmSoKvfEWA0bQC/U=;
+        b=M71FY+pmvVjR/hlzyqs1ku4P3n1PxvDNqQQifsBXppi45JYg9rXIRGv7OvULHvaJrw
+         NPE49tvEj2WhWCt08vNOOJG1KPxr31rX1fK1DqM9dZkqMgj5+d5d0FvgurNnLmfvz9G+
+         YkgMQi2YdSw82HzSwaZC+vrnOUYc95OcwkQq5GvgpNYH4tXHWVReJNe7ETgPS3yiUhYn
+         ozUYcp1ICztGfyr3iKPE8RPXaXOS3FDlMrN6z4DI0OCO/lorCcGSxbSDF6t8Mi5vGhkI
+         HVUhsiTpC9FNZHPAmPe8cKhXm6DrJJedKBAGT0tVPuzyUIPsJ6GiJl1jPlIpkvyZ65KD
+         DDow==
+X-Gm-Message-State: AOAM530qcAPPDLib8t7UMMnO5/tYxdeslqyQD5EmjvAdKbVzSoEA5rF2
+        MnKEg8SDsdrv+bMnuS/T7fcv
+X-Google-Smtp-Source: ABdhPJzV0LkP3ze5/E8gzvI2qrygejJBGBhcv7q10/iXU6If946LEMRLWGJaJj6madvdw476mX5vkw==
+X-Received: by 2002:a63:461b:: with SMTP id t27mr2895424pga.122.1606403021920;
+        Thu, 26 Nov 2020 07:03:41 -0800 (PST)
+Received: from thinkpad ([2409:4072:6e95:f2a:3996:9d7f:e389:7f7d])
+        by smtp.gmail.com with ESMTPSA id m204sm5055616pfd.118.2020.11.26.07.03.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 07:03:41 -0800 (PST)
+Date:   Thu, 26 Nov 2020 20:33:34 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     loic.poulain@linaro.org, linux-i2c@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] i2c: qcom: Fix IRQ error misassignement
+Message-ID: <20201126150334.GC51288@thinkpad>
+References: <20201126145321.18269-1-robert.foss@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126145321.18269-1-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Observes below crash while accessing (use-after-free) request queue
-member of struct request.
+On Thu, Nov 26, 2020 at 03:53:21PM +0100, Robert Foss wrote:
+> During cci_isr() errors read from register fields belonging to
+> i2c master1 are currently assigned to the status field belonging to
 
-191.784789:   <2> Unable to handle kernel paging request at virtual
-address ffffff81429a4440
-...
-191.786174:   <2> CPU: 3 PID: 213 Comm: kworker/3:1H Tainted: G S
-O      5.4.61-qgki-debug-ge45de39 #1
-...
-191.786226:   <2> Workqueue: kblockd blk_mq_timeout_work
-191.786242:   <2> pstate: 20c00005 (nzCv daif +PAN +UAO)
-191.786261:   <2> pc : bt_for_each+0x114/0x1a4
-191.786274:   <2> lr : bt_for_each+0xe0/0x1a4
-...
-191.786494:   <2> Call trace:
-191.786507:   <2>  bt_for_each+0x114/0x1a4
-191.786519:   <2>  blk_mq_queue_tag_busy_iter+0x60/0xd4
-191.786532:   <2>  blk_mq_timeout_work+0x54/0xe8
-191.786549:   <2>  process_one_work+0x2cc/0x568
-191.786562:   <2>  worker_thread+0x28c/0x518
-191.786577:   <2>  kthread+0x160/0x170
-191.786594:   <2>  ret_from_fork+0x10/0x18
-191.786615:   <2> Code: 0b080148 f9404929 f8685921 b4fffe01 (f9400028)
-191.786630:   <2> ---[ end trace 0f1f51d79ab3f955 ]---
-191.786643:   <2> Kernel panic - not syncing: Fatal exception
+s/correctly/incorrectly
 
-Fix this by updating the freed request with NULL.
-This could avoid accessing the already free request from other
-contexts while iterating over the requests.
+> i2c master0. This patch corrects this error, and always assigns
+> master1 errors to the status field of master1.
+> 
 
-Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
----
- block/blk-mq.c | 1 +
- block/blk-mq.h | 1 +
- 2 files changed, 2 insertions(+)
+This patch fixes a legitimate bug. So there should be a fixes tag!
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 55bcee5..9996cb1 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -492,6 +492,7 @@ static void __blk_mq_free_request(struct request *rq)
- 
- 	blk_crypto_free_request(rq);
- 	blk_pm_mark_last_busy(rq);
-+	hctx->tags->rqs[rq->tag] = NULL;
- 	rq->mq_hctx = NULL;
- 	if (rq->tag != BLK_MQ_NO_TAG)
- 		blk_mq_put_tag(hctx->tags, ctx, rq->tag);
-diff --git a/block/blk-mq.h b/block/blk-mq.h
-index a52703c..8747bf1 100644
---- a/block/blk-mq.h
-+++ b/block/blk-mq.h
-@@ -224,6 +224,7 @@ static inline int __blk_mq_active_requests(struct blk_mq_hw_ctx *hctx)
- static inline void __blk_mq_put_driver_tag(struct blk_mq_hw_ctx *hctx,
- 					   struct request *rq)
- {
-+	hctx->tags->rqs[rq->tag] = NULL;
- 	blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
- 	rq->tag = BLK_MQ_NO_TAG;
- 
--- 
-2.7.4
+> Suggested-by: Loic Poulain <loic.poulain@linaro.org>
 
+Reported-by?
+
+Thanks,
+Mani
+
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+>  drivers/i2c/busses/i2c-qcom-cci.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-qcom-cci.c b/drivers/i2c/busses/i2c-qcom-cci.c
+> index f13735beca58..1c259b5188de 100644
+> --- a/drivers/i2c/busses/i2c-qcom-cci.c
+> +++ b/drivers/i2c/busses/i2c-qcom-cci.c
+> @@ -194,9 +194,9 @@ static irqreturn_t cci_isr(int irq, void *dev)
+>  	if (unlikely(val & CCI_IRQ_STATUS_0_I2C_M1_ERROR)) {
+>  		if (val & CCI_IRQ_STATUS_0_I2C_M1_Q0_NACK_ERR ||
+>  			val & CCI_IRQ_STATUS_0_I2C_M1_Q1_NACK_ERR)
+> -			cci->master[0].status = -ENXIO;
+> +			cci->master[1].status = -ENXIO;
+>  		else
+> -			cci->master[0].status = -EIO;
+> +			cci->master[1].status = -EIO;
+>  
+>  		writel(CCI_HALT_REQ_I2C_M1_Q0Q1, cci->base + CCI_HALT_REQ);
+>  		ret = IRQ_HANDLED;
+> -- 
+> 2.27.0
+> 
