@@ -2,161 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE51B2C584F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8EB2C5859
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391400AbgKZPdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:33:24 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:13801 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731658AbgKZPdX (ORCPT
+        id S2391390AbgKZPfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:35:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731552AbgKZPfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:33:23 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 139FF24001A;
-        Thu, 26 Nov 2020 15:33:20 +0000 (UTC)
-Date:   Thu, 26 Nov 2020 16:33:20 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: Re: [PATCH v3 16/25] arch: arm: mach-at91: pm: Move prototypes to
- mutually included header
-Message-ID: <20201126153320.GE1296649@piout.net>
-References: <20200713144930.1034632-1-lee.jones@linaro.org>
- <20200713144930.1034632-17-lee.jones@linaro.org>
- <20201112093918.GV2063125@dell>
- <20201126132840.GD2455276@dell>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201126132840.GD2455276@dell>
+        Thu, 26 Nov 2020 10:35:03 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D6DC0613D4;
+        Thu, 26 Nov 2020 07:35:03 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w202so1916759pff.10;
+        Thu, 26 Nov 2020 07:35:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=f18jjpAb3a6wwaCwAQVq0XjGDSvE4J1ZBEOKED5Wevo=;
+        b=on+EDg2Z1e4uBbPphYAsXBdymQ1mDw1L7F4O+cc3NuYhxJmsVg1q4l0KdjogSr0UmM
+         5zX3C570Udeih/3brql3WxCCiAIZw+1Lf1952jtEqG2jsSOX3xqxQk7Xuf0OIbWUz0br
+         hiShsEQNM0vzINR6dKHYML6X7wfzmY7aAH11ekUPkl3PhnFVS9VnHKRIM0ULwfuJqZBD
+         L2LyRWHFu6IQAuWmsWK/+7aQqqhBPc6eOEbUKFF1229In9jIuG9TxcJyEnYunJ7WrJhg
+         cyhHUZK9vAJ6KnDbTzZtc0aUb67mksJOUh8/HT9iAelnsyCsL6I8CPW1KJNqEUMEBeEz
+         co4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=f18jjpAb3a6wwaCwAQVq0XjGDSvE4J1ZBEOKED5Wevo=;
+        b=rbo/h5MuMpi7UqZGu6YGW4kHYoTuu4oc6kLv582Gnh9tnFHvi4rSqcCHOb8O2w2kwl
+         z4E9ACVlaiaX4DKfGPNxCTiJ/4RRCaHy3ADb26TiB0fjzT6iIj4CLGULbp5vFFWkD5xi
+         O/rEwuUmjC5scMP7FuJx8mBidIkESIbllqvO45awVCZ+sxCPwBnCaawuBU0xj0VD6OKp
+         ZW2XSiGhPeGQewcPMH7dK4X5/Bm9beez2d8QD1zD2J/iBmeoWTmqBoPKGyU4hl3Wy0oJ
+         9O2FYe/YPQoNLkqZKjm+3/DFzVVRSkMaolrxOGPiS9+f77CgZyhm4ZpGG3UQNXSEQBol
+         2Xbw==
+X-Gm-Message-State: AOAM531ki4ShbP1NQTb5X2IoQjtRlE0NebGfAhwFoiKXTP/3krshzdBW
+        yCD3KynVnE4X2vfhgIlaAjQ=
+X-Google-Smtp-Source: ABdhPJwN8JxU7ItTaAdq7ulGQESO+3r0lT2l5ej+ZQV1Afo2Y+5tToywpDHctLNXQGDL7+pqnZjdsg==
+X-Received: by 2002:a17:90a:a81:: with SMTP id 1mr4229453pjw.165.1606404903469;
+        Thu, 26 Nov 2020 07:35:03 -0800 (PST)
+Received: from localhost.localdomain ([182.226.226.37])
+        by smtp.googlemail.com with ESMTPSA id g6sm6506481pjd.3.2020.11.26.07.35.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 26 Nov 2020 07:35:02 -0800 (PST)
+From:   bongsu.jeon2@gmail.com
+X-Google-Original-From: bongsu.jeon@samsung.com
+To:     krzk@kernel.org, k.opasiak@samsung.com
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, <stable@vger.kernel.org>
+Subject: [PATCH net-next 1/3] nfc: s3fwrn5: use signed integer for parsing GPIO numbers
+Date:   Fri, 27 Nov 2020 00:33:37 +0900
+Message-Id: <1606404819-30647-1-git-send-email-bongsu.jeon@samsung.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2020 13:28:40+0000, Lee Jones wrote:
-> Both the caller and the supplier's source file should have access to
-> the include file containing the prototypes.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/pinctrl/pinctrl-at91.c:1637:6: warning: no previous prototype for ‘at91_pinctrl_gpio_suspend’ [-Wmissing-prototypes]
->  1637 | void at91_pinctrl_gpio_suspend(void)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~~
->  drivers/pinctrl/pinctrl-at91.c:1661:6: warning: no previous prototype for ‘at91_pinctrl_gpio_resume’ [-Wmissing-prototypes]
->  1661 | void at91_pinctrl_gpio_resume(void)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
+GPIOs - as returned by of_get_named_gpio() and used by the gpiolib - are
+signed integers, where negative number indicates error.  The return
+value of of_get_named_gpio() should not be assigned to an unsigned int
+because in case of !CONFIG_GPIOLIB such number would be a valid GPIO.
 
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Fixes: c04c674fadeb ("nfc: s3fwrn5: Add driver for Samsung S3FWRN5 NFC Chip")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/nfc/s3fwrn5/i2c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This is my ack in case Linus wants that to go through the pinctrl tree,
-which is fine with me.
-
-I can also take it through the at91 tree with Linus' ack.
-
-> ---
->  arch/arm/mach-at91/pm.c        | 19 ++++++++-----------
->  drivers/pinctrl/pinctrl-at91.c |  2 ++
->  include/soc/at91/pm.h          | 16 ++++++++++++++++
->  3 files changed, 26 insertions(+), 11 deletions(-)
->  create mode 100644 include/soc/at91/pm.h
-> 
-> diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-> index 120f9aa6fff32..90dcdfe3b3d0d 100644
-> --- a/arch/arm/mach-at91/pm.c
-> +++ b/arch/arm/mach-at91/pm.c
-> @@ -17,6 +17,8 @@
->  #include <linux/clk/at91_pmc.h>
->  #include <linux/platform_data/atmel.h>
->  
-> +#include <soc/at91/pm.h>
-> +
->  #include <asm/cacheflush.h>
->  #include <asm/fncpy.h>
->  #include <asm/system_misc.h>
-> @@ -25,17 +27,6 @@
->  #include "generic.h"
->  #include "pm.h"
->  
-> -/*
-> - * FIXME: this is needed to communicate between the pinctrl driver and
-> - * the PM implementation in the machine. Possibly part of the PM
-> - * implementation should be moved down into the pinctrl driver and get
-> - * called as part of the generic suspend/resume path.
-> - */
-> -#ifdef CONFIG_PINCTRL_AT91
-> -extern void at91_pinctrl_gpio_suspend(void);
-> -extern void at91_pinctrl_gpio_resume(void);
-> -#endif
-> -
->  struct at91_soc_pm {
->  	int (*config_shdwc_ws)(void __iomem *shdwc, u32 *mode, u32 *polarity);
->  	int (*config_pmc_ws)(void __iomem *pmc, u32 mode, u32 polarity);
-> @@ -326,6 +317,12 @@ static void at91_pm_suspend(suspend_state_t state)
->  static int at91_pm_enter(suspend_state_t state)
->  {
->  #ifdef CONFIG_PINCTRL_AT91
-> +	/*
-> +	 * FIXME: this is needed to communicate between the pinctrl driver and
-> +	 * the PM implementation in the machine. Possibly part of the PM
-> +	 * implementation should be moved down into the pinctrl driver and get
-> +	 * called as part of the generic suspend/resume path.
-> +	 */
->  	at91_pinctrl_gpio_suspend();
->  #endif
->  
-> diff --git a/drivers/pinctrl/pinctrl-at91.c b/drivers/pinctrl/pinctrl-at91.c
-> index 72edc675431ce..0a7e10d39505c 100644
-> --- a/drivers/pinctrl/pinctrl-at91.c
-> +++ b/drivers/pinctrl/pinctrl-at91.c
-> @@ -23,6 +23,8 @@
->  /* Since we request GPIOs from ourself */
->  #include <linux/pinctrl/consumer.h>
->  
-> +#include <soc/at91/pm.h>
-> +
->  #include "pinctrl-at91.h"
->  #include "core.h"
->  
-> diff --git a/include/soc/at91/pm.h b/include/soc/at91/pm.h
-> new file mode 100644
-> index 0000000000000..7a41e53a3ffa3
-> --- /dev/null
-> +++ b/include/soc/at91/pm.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Atmel Power Management
-> + *
-> + * Copyright (C) 2020 Atmel
-> + *
-> + * Author: Lee Jones <lee.jones@linaro.org>
-> + */
-> +
-> +#ifndef __SOC_ATMEL_PM_H
-> +#define __SOC_ATMEL_PM_H
-> +
-> +void at91_pinctrl_gpio_suspend(void);
-> +void at91_pinctrl_gpio_resume(void);
-> +
-> +#endif /* __SOC_ATMEL_PM_H */
-> -- 
-> 2.25.1
-
+diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
+index 0ffa389..ae26594 100644
+--- a/drivers/nfc/s3fwrn5/i2c.c
++++ b/drivers/nfc/s3fwrn5/i2c.c
+@@ -25,8 +25,8 @@ struct s3fwrn5_i2c_phy {
+ 	struct i2c_client *i2c_dev;
+ 	struct nci_dev *ndev;
+ 
+-	unsigned int gpio_en;
+-	unsigned int gpio_fw_wake;
++	int gpio_en;
++	int gpio_fw_wake;
+ 
+ 	struct mutex mutex;
+ 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+1.9.1
+
