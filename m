@@ -2,138 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9CB2C4CC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851242C4CC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730963AbgKZBpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 20:45:06 -0500
-Received: from mga17.intel.com ([192.55.52.151]:39756 "EHLO mga17.intel.com"
+        id S1731681AbgKZBps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 20:45:48 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:22187 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgKZBpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 20:45:05 -0500
-IronPort-SDR: HOkOzRD0U5fZcoABq3d1A407H6ASjGHqdlCWsbG9LHobbDwWsdiQzXxOmqm93L/nxWgQ6JEhXU
- x6NMuR39Ra+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="152058687"
-X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
-   d="scan'208";a="152058687"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 17:45:04 -0800
-IronPort-SDR: zJhsZISN6zolVB+cjXsvSs3la757HJkgnz0WqsJXQMDiYcEiSB4G7giyU+C8ptErAFYJjMk15Q
- H6xKhhySqVSA==
-X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
-   d="scan'208";a="479162524"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 17:44:57 -0800
-Subject: Re: [Intel-gfx] [drm/i915/gem] 59dd13ad31:
- phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second
- -54.0% regression
-To:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Oliver Sang <oliver.sang@intel.com>
-Cc:     feng.tang@intel.com, tiejun.li@intel.com, frank.du@intel.com,
-        guobing.chen@intel.com, jiebin.sun@intel.com, Shuhua.Fan@intel.com,
-        Matthew Auld <matthew.auld@intel.com>, fan.zhao@intel.com,
-        ying.huang@intel.com, shan.kang@intel.com, zhengjun.xing@intel.com,
-        Wenhuan.Huang@intel.com, intel-gfx@lists.freedesktop.org,
-        guangli.li@intel.com, gengxin.xie@intel.com, ming.a.chen@intel.com,
-        yu.ma@intel.com, jessica.ji@intel.com, lkp@lists.01.org,
-        wangyang.guo@intel.com, dapeng1.mi@intel.com,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20201111155811.GB24657@xsang-OptiPlex-9020>
- <160527763346.5566.3471508802857132043@jlahtine-mobl.ger.corp.intel.com>
- <20201119072018.GA15197@xsang-OptiPlex-9020>
- <160625087275.29168.7080737993781611765@build.alporthouse.com>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <ab9ebc5a-7d79-8003-c7bc-5cf0923983c6@linux.intel.com>
-Date:   Thu, 26 Nov 2020 09:44:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726009AbgKZBpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 20:45:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606355146; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=6kA4yB6bdKjcHInjZZatsMpg7eCWZl7Qhyizne2iGx8=;
+ b=FwtYh4pcMpdrMl0UYcexRNc754EgeSrUFY+NeIRD8ZpzXtPA/lsQpvqxO0P3i1YeAbMpp3JO
+ N6wBj8tqhVbez8XXuEuhQrJVXlUBkd8p1jKZaUElSu6LeTiCPtkg7X8sIUgDHXahheATkhM2
+ GNzpMcCs4JnAREdyOj1NCDVCG6o=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fbf08c522377520eec62095 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Nov 2020 01:45:41
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 77855C43464; Thu, 26 Nov 2020 01:45:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C013C433C6;
+        Thu, 26 Nov 2020 01:45:40 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <160625087275.29168.7080737993781611765@build.alporthouse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 26 Nov 2020 09:45:40 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
+ remove skip_ref_clk
+In-Reply-To: <4e84df2ecb17dfb1fc8070953d8690b29615f409.camel@gmail.com>
+References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
+ <1606202906-14485-2-git-send-email-cang@codeaurora.org>
+ <9070660d115dd96c70bc3cc90d5c7dab833f36a8.camel@gmail.com>
+ <d112935400a5ef115a384a4c753b6d04@codeaurora.org>
+ <0b0c545d80f9a0e8106a634063c23a8f0ba895fc.camel@gmail.com>
+ <9484cba7b95c6c6fcbafd96bc35c1dee@codeaurora.org>
+ <4e84df2ecb17dfb1fc8070953d8690b29615f409.camel@gmail.com>
+Message-ID: <e56e31f68142cf4175a9024e107eb728@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/25/2020 4:47 AM, Chris Wilson wrote:
-> Quoting Oliver Sang (2020-11-19 07:20:18)
->> On Fri, Nov 13, 2020 at 04:27:13PM +0200, Joonas Lahtinen wrote:
->>> Hi,
->>>
->>> Could you add intel-gfx@lists.freedesktop.org into reports going
->>> forward.
->>>
->>> Quoting kernel test robot (2020-11-11 17:58:11)
->>>>
->>>> Greeting,
->>>>
->>>> FYI, we noticed a -54.0% regression of phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second due to commit:
->>>
->>> How many runs are there on the bad version to ensure the bisect is
->>> repeatable?
->>
->> test 4 times.
->> zxing@inn:/result/phoronix-test-suite/performance-true-Radial_Gradient_Paint-1024x1024-jxrendermark-1.2.4-ucode=0xd6-monitor=da39a3ee/lkp-cfl-d1/debian-x86_64-phoronix/x86_64-rhel-8.3/gcc-9/59dd13ad310793757e34afa489dd6fc8544fc3da$ grep -r "operations_per_second" */stats.json
->> 0/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4133.487932,
->> 1/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4120.421503,
->> 2/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4188.414835,
->> 3/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4068.549514,
+On 2020-11-26 03:02, Bean Huo wrote:
+> On Wed, 2020-11-25 at 20:28 +0800, Can Guo wrote:
+>> > On Wed, 2020-11-25 at 08:53 +0800, Can Guo wrote:
+>> > > > > +       bool always_on_while_link_active;
+>> > > >
+>> > > > Can,
+>> > > > using a sentence as a parameter name looks a little bit clumsy
+>> > > > to
+>> > > > me.
+>> > > > The meaning has been explained in the comments section. How
+>> > > > about
+>> > > > simplify it and in line with other parameters in the structure?
+>> > > >
+>> > >
+>> > > Do you have a better name in mind?
+>> > >
+>> >
+>> > no specail input in mind, maybe just "bool eternal_on"
+>> 
+>> It is like plain "always_on", but it cannot tell the whole story.
+>> If it is not something crutial, let's just let it go first so long
+>> as it does not break the original functionality. What do you say?
+>> 
+>> Thanks,
+>> 
+>> Can Guo.
 > 
-> a w/o revert (drm-tip)
-> b w/ revert
-> +mB----------------------------------------------------------------------------+
-> |                             ..b                                              |
-> |                             ..b.aa                                           |
-> |                             ....a.a                                          |
-> |                             ....a.a                                          |
-> |                      b  b  ........a                                         |
-> |                   b  b  b b......... a                                       |
-> |                   b  bb bbb...........                                       |
-> |b               ab bbab.bb.b............ba b a a            ab               a|
-> |                             |__A__|                                          |
-> |                             |MA_|                                            |
-> +------------------------------------------------------------------------------+
->      N                Min           Max        Median           Avg        Stddev
-> a 120          3621.8761     7356.4442     4606.7895     4607.9132     156.17693
-> b 120          2664.0563     6359.9686     4519.5036     4534.4463     95.471121
+> Can,
 > 
-> The patch is not expected to have any impact on the machine you are testing on.
-> -Chris
+> yes, it is not functional change, but always_on_while_link_active is
+> too fat, and not non-productive way.
+> anyway,
+
+I will change it to keep_link_active in next version. Thank you sir.
+
+Regards,
+
+Can Guo.
+
 > 
-
-What's your code base?
-For my side:
-1) sync the code to the head of Linux mainline
-2) git reset --hard 59dd13ad31
-3) git revert 59dd13ad3107
-We compare the test result of commit 59dd13ad3107 (step 2) and 
-2052847b06f8 (step 3, revert 59dd13ad3107), the regression should 
-related with 59dd13ad3107. Each test case we run 5 times.
-=========================================================================================
-tbox_group/testcase/rootfs/kconfig/compiler/need_x/test/option_a/option_b/cpufreq_governor/ucode/debug-setup:
- 
-lkp-cfl-d1/phoronix-test-suite/debian-x86_64-phoronix/x86_64-rhel-8.3/gcc-9/true/jxrendermark-1.2.4/Radial 
-Gradient Paint/1024x1024/performance/0xde/regression_test
-
-commit:
-   0dccdba51e852271a3dbc9358375f4c882b863f2
-   59dd13ad310793757e34afa489dd6fc8544fc3da
-   2052847b06f863a028f7f3bbc62401e043b34301 (revert 59dd13ad3107)
-
-0dccdba51e852271 59dd13ad310793757e34afa489d 2052847b06f863a028f7f3bbc62
----------------- --------------------------- ---------------------------
-          %stddev     %change         %stddev     %change         %stddev
-              \          |                \          |                \
-       8145 ±  2%     -53.1%       3817 ±  3%      -1.8%       7995 
- 
-phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second
-
-
--- 
-Zhengjun Xing
+> Reviewed-by: Bean Huo <beanhuo@micron.com>
