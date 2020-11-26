@@ -2,87 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B842C573F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7602C5749
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390834AbgKZOlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:41:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60818 "EHLO mail.kernel.org"
+        id S2390388AbgKZOpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:45:17 -0500
+Received: from foss.arm.com ([217.140.110.172]:35256 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389991AbgKZOlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:41:04 -0500
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABF29221F9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:41:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606401663;
-        bh=kDKRaFwSyrQzI/5KqIOMDNUjvyh0rFbVZ0h/er1Jx1o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CoMGVWppG7tUtVl9oMi4Qpz87k1/ZRliLF72IDjgB/TIW9T6Z4vKDimaS5DGd0Q2l
-         G7zr35Xtyevb/Sh/mQ2T3gTl2JPfh4yCdsF1R3bE+qvG/rZPvKHIGOSQz2ZurNI4aG
-         rjXikd4fVXCTTKXvtvApqWMdES9EUfl8ajQ0jP60=
-Received: by mail-ot1-f50.google.com with SMTP id 11so2031685oty.9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:41:03 -0800 (PST)
-X-Gm-Message-State: AOAM532jWioiiTnHjMV0W1u+L0W2nD5sZ47BtxRGM9m7ejGsA4X7OOat
-        l0BCBqpTWkl1CAA0HbUbpgZNsdHklx+lZtH4dgE=
-X-Google-Smtp-Source: ABdhPJwb8V1WMLDcmr3+lGiQPHZARsGS3/JdagxpjPuVMuYRdrt1TcHjveIjIea19JypNV/jr3GIes0ZNNZuAKkYJVQ=
-X-Received: by 2002:a9d:6317:: with SMTP id q23mr2544828otk.251.1606401662959;
- Thu, 26 Nov 2020 06:41:02 -0800 (PST)
+        id S2389316AbgKZOpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 09:45:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72A6E31B;
+        Thu, 26 Nov 2020 06:45:16 -0800 (PST)
+Received: from [10.57.29.239] (unknown [10.57.29.239])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E76B3F71F;
+        Thu, 26 Nov 2020 06:45:15 -0800 (PST)
+Subject: Re: [PATCH v4 0/3] Improve the estimations in Intelligent Power
+ Allocation
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        amitk@kernel.org, Dietmar.Eggemann@arm.com, ionela.voinescu@arm.com
+References: <20201124161025.27694-1-lukasz.luba@arm.com>
+ <e953e887-0fc7-8375-9e5d-1be339f48216@arm.com>
+ <f9899f7b-0bc9-40e2-4969-eb76bd11ed5b@linaro.org>
+ <ef6bcc10-7034-0ac1-b832-938393682d2f@arm.com>
+ <fc3228c2-d668-6f32-8965-00896b630351@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <9680cd44-c22e-2f5e-43ec-4a7f16680a45@arm.com>
+Date:   Thu, 26 Nov 2020 14:45:13 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <43486cab370e0c0a79860120b71e0caac75a7e44.1606397528.git.michal.simek@xilinx.com>
-In-Reply-To: <43486cab370e0c0a79860120b71e0caac75a7e44.1606397528.git.michal.simek@xilinx.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 26 Nov 2020 15:40:47 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0zj90cMS922L9jhEtimatzp0cjEr1T-e=tHWSuzZqy8Q@mail.gmail.com>
-Message-ID: <CAK8P3a0zj90cMS922L9jhEtimatzp0cjEr1T-e=tHWSuzZqy8Q@mail.gmail.com>
-Subject: Re: [PATCH v2] microblaze: Remove noMMU code
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>,
-        Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Baoquan He <bhe@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Ira Weiny <ira.weiny@intel.com>, Jens Axboe <axboe@kernel.dk>,
-        Joe Perches <joe@perches.com>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rob Herring <robh@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Stefan Asserhall <stefan.asserhall@xilinx.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <fc3228c2-d668-6f32-8965-00896b630351@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 2:32 PM Michal Simek <michal.simek@xilinx.com> wrote:
->
-> This configuration is obsolete and likely none is really using it. That's
-> why remove it to simplify code.
->
-> Note about CONFIG_MMU in hw_exception_handler.S is left intentionally
-> for better comment understanding.
->
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+On 11/26/20 2:30 PM, Daniel Lezcano wrote:
+> On 26/11/2020 15:02, Lukasz Luba wrote:
+> 
+> [ ... ]
+> 
+>>>> changed via sysfs.
+>>>>
+>>>> Could you take it please? It should apply smoothly in your tree.
+>>>
+>>> Actually, I'm waiting for Ionela and Dietmar ack.
+>>>
+>>>
+>>
+>> Are they maintainers of this file that you need their ACKs?
+>> Maybe I should drop mine then.
+> 
+> Ok let me clarify :)
+> 
+> In general when someone comments on the changes, I usually wait for the
+> consensus before merging the patches. If the persons who commented
+> before are unresponsive, depending on the context and my perception, I
+> apply the changes or not.
+> 
+> I'm giving the opportunity to Ionela to review the series again as she
+> commented the previous version (and gave a reviewed-by). I thought also
+> Dietmar commented the series but apparently I was wrong.
+> 
+> As you stated, you are the maintainer of the subsystem, so if there are
+> no acked-by or reviewed-by, the series will be applied anyway soon.
+> 
+> Meanwhile, they are in the 'testing' branch of the tree, the antechamber
+> of 'linux-next' and 'next' ;)
+> 
+
+Thank you clarifying this and taking the patches into the testing
+branch.
+
+Regards,
+Lukasz
