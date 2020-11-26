@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37632C5603
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:42:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 815522C55FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390717AbgKZNlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:41:36 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:45490 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390709AbgKZNle (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:41:34 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AQDauWQ014866;
-        Thu, 26 Nov 2020 14:41:17 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : references
- : from : message-id : date : mime-version : in-reply-to : content-type :
- content-transfer-encoding; s=STMicroelectronics;
- bh=C3D7d5sJHZxc5cS/imefA7F5mnEiTGKp+VWMyJUmNnk=;
- b=KyH5jBzr9r45M7XDUOrjEOEadr2Y8CZP1jr1dDJ1W+qlebq4Ihv+65mqGRYQJQ4GR1SH
- qLfILS0xoNNDFTdWYHwAAlrXXiMUNDyb9sX2f5n9l/D35qVOs1v5EIuTSSiWWYTLsu/g
- sAKD80azRFqAWBe79YsHFOanR4AM/kW7zjBxxnoO0/7xA5DnW18iOTp0LdQZhj1SJUdf
- 9s//DvNUcI6B0pkv+dSg6i4fTqFozgsyvo8XItlWqf2Om2kWhHq4a5GrweVXorsWt2wg
- geLPaHGzuO/Crwik+BNsW9O2Qwpht7TgFTlJ7ZhlL515OBM0B+tNKlsvdcZiMaoi59jl 5g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34y0fh7uym-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Nov 2020 14:41:17 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B07F410002A;
-        Thu, 26 Nov 2020 14:41:16 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7ADEF205D11;
-        Thu, 26 Nov 2020 14:41:16 +0100 (CET)
-Received: from lmecxl0912.lme.st.com (10.75.127.48) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
- 2020 14:41:15 +0100
-Subject: Re: [PATCH v2 0/2] ARM: multi_v7_defconfig: enable dfsdm and spdifrx
- support
-To:     Olivier MOYSAN <olivier.moysan@st.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "olof@lixom.net" <olof@lixom.net>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "geert+renesas@glider.be" <geert+renesas@glider.be>,
-        Amelie DELAUNAY <amelie.delaunay@st.com>,
-        "aisheng.dong@nxp.com" <aisheng.dong@nxp.com>,
-        "prabhakar.mahadev-lad.rj@bp.renesas.com" 
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "christian.gmeiner@gmail.com" <christian.gmeiner@gmail.com>,
-        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
-        Lionel DEBIEVE <lionel.debieve@st.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201120091506.18326-1-olivier.moysan@st.com>
- <c80be2f8-8568-1dae-df31-1134ccea759a@st.com>
- <5bec2267-5ce6-87c3-38bd-a00f5b124a7a@st.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <632d4421-bf30-6311-f6d1-dbdb5937875d@st.com>
-Date:   Thu, 26 Nov 2020 14:40:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2390457AbgKZNki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:40:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56436 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390022AbgKZNkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 08:40:37 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606398035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9tpQ2yN+EcMyN7hnntqz+RkMEw6hXQibeFRMrMM5L2s=;
+        b=ajTwHAYd5J0mqReqBekTnBlsHHrNFEO2eq6u4Ld8L6JTiJiyCw/6cPwlyL+/8n48mCToMO
+        9Fj6YnH2i8ERYfahSgxPKMouUumvsl2wEMjOv8qwNncauWTW6QbzM4Kca7A+6xWQxltQbk
+        ddaiT31gMg3MoDiILTaN+MtEExvEZgY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A1D05AC6A;
+        Thu, 26 Nov 2020 13:40:35 +0000 (UTC)
+Date:   Thu, 26 Nov 2020 14:40:34 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     hughd@google.com, xuyu@linux.alibaba.com,
+        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
+        willy@infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz
+Subject: Re: [PATCH 2/3] mm,thp,shm: limit gfp mask to no more than specified
+Message-ID: <20201126134034.GI31550@dhcp22.suse.cz>
+References: <20201124194925.623931-1-riel@surriel.com>
+ <20201124194925.623931-3-riel@surriel.com>
 MIME-Version: 1.0
-In-Reply-To: <5bec2267-5ce6-87c3-38bd-a00f5b124a7a@st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-26_04:2020-11-26,2020-11-26 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124194925.623931-3-riel@surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/26/20 2:38 PM, Olivier MOYSAN wrote:
-> Hi Alex
+On Tue 24-11-20 14:49:24, Rik van Riel wrote:
+> Matthew Wilcox pointed out that the i915 driver opportunistically
+> allocates tmpfs memory, but will happily reclaim some of its
+> pool if no memory is available.
 > 
-> On 11/26/20 12:25 PM, Alexandre Torgue wrote:
->> Hi Olivier
->>
->> On 11/20/20 10:15 AM, Olivier Moysan wrote:
->>> Add STM32 SPDIFRX and DFSDM audio support to multi_v7_defconfig
->>>
->>> Change in v2:
->>> - Add targeted SoC in commit message for DFSDM config
->>>
->>> Olivier Moysan (2):
->>>     ARM: multi_v7_defconfig: enable spdifrx support
->>>     ARM: multi_v7_defconfig: enable dfsdm audio support
->>>
->>>    arch/arm/configs/multi_v7_defconfig | 2 ++
->>>    1 file changed, 2 insertions(+)
->>>
->>
->> Targeted platform (STM32) should be added in the commit title for both
->> patches as you enable STM32 dfsdm and STM32 spdifrx support. No ?
->>
->> If you agree, I'll add it during merge. No need to send a v3.
->>
->> Regards
->> Alex
+> Make sure the gfp mask used to opportunistically allocate a THP
+> is always at least as restrictive as the original gfp mask.
+
+I have brought this up in the previous version review and I feel my
+feedback hasn't been addressed. Please describe the expected behavior by
+those shmem users including GFP_KERNEL restriction which would make the
+THP flags incompatible. Is this a problem? Is there any actual problem
+if the THP uses its own set of flags?
+
+I am also not happy how those two sets of flags are completely detached
+and we can only expect surprises there. 
+
+> Signed-off-by: Rik van Riel <riel@surriel.com>
+> Suggested-by: Matthew Wilcox <willy@infradead.org>
+> ---
+>  mm/shmem.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
 > 
-> It's okay for me.
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 6c3cb192a88d..ee3cea10c2a4 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1531,6 +1531,26 @@ static struct page *shmem_swapin(swp_entry_t swap, gfp_t gfp,
+>  	return page;
+>  }
+>  
+> +/*
+> + * Make sure huge_gfp is always more limited than limit_gfp.
+> + * Some of the flags set permissions, while others set limitations.
+> + */
+> +static gfp_t limit_gfp_mask(gfp_t huge_gfp, gfp_t limit_gfp)
+> +{
+> +	gfp_t allowflags = __GFP_IO | __GFP_FS | __GFP_RECLAIM;
+> +	gfp_t denyflags = __GFP_NOWARN | __GFP_NORETRY;
+> +	gfp_t result = huge_gfp & ~allowflags;
+> +
+> +	/*
+> +	 * Minimize the result gfp by taking the union with the deny flags,
+> +	 * and the intersection of the allow flags.
+> +	 */
+> +	result |= (limit_gfp & denyflags);
+> +	result |= (huge_gfp & limit_gfp) & allowflags;
+> +
+> +	return result;
+> +}
+> +
+>  static struct page *shmem_alloc_hugepage(gfp_t gfp,
+>  		struct shmem_inode_info *info, pgoff_t index)
+>  {
+> @@ -1889,6 +1909,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>  
+>  alloc_huge:
+>  	huge_gfp = vma_thp_gfp_mask(vma);
+> +	huge_gfp = limit_gfp_mask(huge_gfp, gfp);
+>  	page = shmem_alloc_and_acct_page(huge_gfp, inode, index, true);
+>  	if (IS_ERR(page)) {
+>  alloc_nohuge:
+> -- 
+> 2.25.4
 > 
 
-Thanks. Series applied on stm32-next.
-
-Regards
-Alex
-
-> BRs
-> Olivier
-> 
+-- 
+Michal Hocko
+SUSE Labs
