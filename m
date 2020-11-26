@@ -2,196 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2E92C58F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCD02C58F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391515AbgKZQAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 11:00:15 -0500
-Received: from mail-eopbgr80088.outbound.protection.outlook.com ([40.107.8.88]:62691
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730602AbgKZQAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 11:00:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nwi0B5VlKHT1BsuBaIOnBjBH99JNCmm2+gkljsa3nI9em0LrUxoLfDTaQEWjJmqVqNPO6bGFNGDpyvejtST2EyAt70pz//l6zA/rlWSRG1QeiqnKDA3UFWjvy3+4D0HgUtTxvS8W0mr8EQCumqNjkdzDStPXEodpL3N2dtrr7CF08HdMQHunlLJuaNtcEKQo9vr3q0uoiXuW3ORpDkNwvFo+O7gv0IuC9eOk4gam5m7yrje/kh6rCN7/GU3mYgQVD8O0QQv8x9H7do9UHaAboc1h6BEDlqiCArtmfggH6Q8b86a8JRRXd3G1j8x+ZB5HjawKxdshNBY6YeJ5gKi47w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/QdodjfIcX+67mOg3QhTHDb6Kci1LRYAwUuQnDyitnM=;
- b=X0h4J4g0Lrc1DGGwQmO9T+AwlXhkJTjQAwXsjhjS0iYOw1ylfUDAq8yePnxNyMtjyQG0P6omCn42yBqXuAcbR2i+lGzW6IhvJsc4KFqwZGIFHIgLHAIIhXcEDl/ygudlIDZRG+yEx6wkIAN/lKzEJH1QmO51ncZhgSA79HXFyoywQqzuaxP7heeM/kxEq0Gcqi8waZzDkfkN9mBjxgBYfHK5D+49OLF+s2eh979jmvJJctvhHDdP6V4isHZRGBzA0UkLneBffnVMIvEYn2eZ6XGimOxtjH/w61vm6IfsR8fhKMwEOglsoS3ER2g7u1MuuJ5j0ZCl628rXVV8xF+ajw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/QdodjfIcX+67mOg3QhTHDb6Kci1LRYAwUuQnDyitnM=;
- b=dONczpa31c/o238dY2kkcsO9Zqt7Xy1DARqyJ33NAIbI5m4sQ5h2LUnulWFbhc2yp56WaRKbKjvMJPRXC9SAgWfh1BXJ06JUrid1kBMDSuXjO+upAp3EvUPMNXeIo12fHDJnfvjMqhBkNjvIcNJ5zlLsdIDPNFxnHuODLil+mqQ=
-Authentication-Results: oss.nxp.com; dkim=none (message not signed)
- header.d=none;oss.nxp.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
- (2603:10a6:803:1c::25) by VE1PR04MB7325.eurprd04.prod.outlook.com
- (2603:10a6:800:1af::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22; Thu, 26 Nov
- 2020 16:00:09 +0000
-Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
- ([fe80::ade4:e169:1f4a:28c]) by VI1PR0402MB3712.eurprd04.prod.outlook.com
- ([fe80::ade4:e169:1f4a:28c%4]) with mapi id 15.20.3589.025; Thu, 26 Nov 2020
- 16:00:09 +0000
-Subject: Re: [RFC PATCH 0/4] crypto: add CRYPTO_TFM_REQ_DMA flag
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Horia Geanta <horia.geanta@nxp.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-imx <linux-imx@nxp.com>,
-        "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-References: <20201125211311.2179-1-iuliana.prodan@oss.nxp.com>
- <CAMj1kXH=gyCz7NQXaAoNC4cf37t9E8znngyLFVPv+dO79=Z9oQ@mail.gmail.com>
- <20b1493d-bfb6-d0bc-3b73-740b216db5f2@nxp.com>
- <CAMj1kXGBa7st9duOu1Z1y28_-Xci3ur7kevAP+pPFp6+xvcy2Q@mail.gmail.com>
-From:   Iuliana Prodan <iuliana.prodan@nxp.com>
-Message-ID: <50866e6a-e352-3728-a6c4-1fcc33af13f9@nxp.com>
-Date:   Thu, 26 Nov 2020 18:00:05 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-In-Reply-To: <CAMj1kXGBa7st9duOu1Z1y28_-Xci3ur7kevAP+pPFp6+xvcy2Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [188.26.141.79]
-X-ClientProxiedBy: AM0PR03CA0014.eurprd03.prod.outlook.com
- (2603:10a6:208:14::27) To VI1PR0402MB3712.eurprd04.prod.outlook.com
- (2603:10a6:803:1c::25)
+        id S2391530AbgKZQAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 11:00:30 -0500
+Received: from foss.arm.com ([217.140.110.172]:37916 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391518AbgKZQA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 11:00:29 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E259131B;
+        Thu, 26 Nov 2020 08:00:28 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 847EE3F23F;
+        Thu, 26 Nov 2020 08:00:28 -0800 (PST)
+Date:   Thu, 26 Nov 2020 16:00:27 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        daniel.lezcano@linaro.org, amitk@kernel.org,
+        Dietmar.Eggemann@arm.com
+Subject: Re: [PATCH v4 3/3] thermal: power allocator: change the 'k_*' always
+ in estimate_pid_constants()
+Message-ID: <20201126160027.GA28582@arm.com>
+References: <20201124161025.27694-1-lukasz.luba@arm.com>
+ <20201124161025.27694-4-lukasz.luba@arm.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.5] (188.26.141.79) by AM0PR03CA0014.eurprd03.prod.outlook.com (2603:10a6:208:14::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Thu, 26 Nov 2020 16:00:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2c73529c-8079-44e1-2c12-08d892245949
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7325:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB73256D1E7534EA5FDB601C068CF90@VE1PR04MB7325.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Isc5ktcjrKnDpNPpKxVFpt9bN5zB0Btrt5ubV8+PVm6RIhPi7jv1Hfi2Pht0gtvVs3K7a3cTFR3DJnwA7/WzNI2uA9YBflSHP5Gzu2wQdyWXd2WFf91yS3lA50QTtiq9i63npaw+7ui+RAOzz8Q5xanowOP94pO5XhgRCHZMuHM2fgKF6Rz5EiKVe5qwUarI/NMXyIwubn83Doz01qEIcIzh1aSWN5khqHwOewX/05AzZeYOYw+9tKemYIbFiRAhecatXjzJZxwUKDpzM0WQYSIhvb3QSAnJTaOxz+a2rlcwQUIP8P2jup1bB30ZBh3zhH8ovvVOVjyumAt73xlxqnbY9V5NlplQC6kDMVWbkfpkLwKxT4lq8+UWxKN/5gb3xFVNtJ+NwFvMTNqz6FEp8YzseQu3/weJ77CXpdHLMmElE4bM8VId6Ez7E9xBV1AyRLEAJ4721O5BHIpdX/vZPQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3712.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(498600001)(86362001)(31696002)(54906003)(110136005)(2906002)(16576012)(16526019)(36756003)(26005)(186003)(966005)(2616005)(83380400001)(8936002)(53546011)(45080400002)(44832011)(6636002)(4326008)(5660300002)(52116002)(956004)(8676002)(6486002)(31686004)(66946007)(66556008)(66476007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MGtpZFlsS3YzQWVBVGRCa0pBSlVJTExhZ3ZTbCtodWtxc05mdU5WbzB3ZmQw?=
- =?utf-8?B?dFRQTUtSbkYyNWNPelNtWnNqZG1HR0FmVnQ4cjVIdUw4NS9RdmxDL1VPVHhv?=
- =?utf-8?B?YlRDc1JVb1A5NjUxYW1RbncveE5CN04zb2ZQRlJCSUZGNGZaZk5rc0RtUWxQ?=
- =?utf-8?B?Mmx3VUdXUzhTSUZLbjZqaVhLWThhM1B3UDJsQitYVGUxWmJRUGFvVUdENVhw?=
- =?utf-8?B?cGx1eDlaV0dwQnVRT3lUVjdWaVN2WlVZcUt3akxOMjlGbTdHWUs5N1g4SkhG?=
- =?utf-8?B?a0c1b3Q1MEFXYXRQUHA0RXB2aHJwN00wWjQwQ0NzdjZJelpIZ2srMTU1dXVs?=
- =?utf-8?B?YVBnQ0NSTlhPQi8xSURUMWc2MGlxL2NlQUdrMlRnRUhDbEZpUSs2NWcxSmdY?=
- =?utf-8?B?aUdsV3FqMnhOeUZLOW9uczZ4cDBHS0gxcC8yVGhlb3hCajBQbEdEcHFBN1h5?=
- =?utf-8?B?bmtlSk5IYUZVODJocjIzYk5ja1ppWmc1NGV3cldUQTk3ODNXOUNlc3NRNFdD?=
- =?utf-8?B?dVRpV3BCeWxSbmhjTXZvWUFLeFF5dDBGUzJBZVRTWHNJZnlkc1phOWlTWUFR?=
- =?utf-8?B?SUpSdHBXQlY2WmZKMmQwWXhXQ0VJMllkY1djbkdyNUV3eDZlenl0d3pDZ0hW?=
- =?utf-8?B?TXNULzVxakxqdW1GNFNsVDVZdmJqN0VXaTlkcFRXc1gxQ3M3dHJMSTNCNVVy?=
- =?utf-8?B?Rm4xN3Q2OS94YTZKbVRaZkFMeE1Lbzh0azFiTi9SVXh2V3gva0tadjkzQmNm?=
- =?utf-8?B?Wk9ldW5LL0txQ2RLSC91Y1grWTVON21icDVvZGg5NWpYNUVDMjZqYy8vYWd1?=
- =?utf-8?B?SVZORmhsSG9lT0tTcnA5RjNHa3VjRGliWW5vRUhaUGxQYnBselptbldNdlRQ?=
- =?utf-8?B?R2kxaCtwTTJZSE85elRId2c2L3pmUFdMeUREN0ppQ09JclFqMHFLS3pLeFJz?=
- =?utf-8?B?TWZ3UDBhWk9WMmQ5dmtoZ1JvOW5obGZKV0xUNFJiRlVXMkEzeUVjSEZudHFk?=
- =?utf-8?B?aUE2Y1FZM3dueVE5bTRjRTZqdHV3NTdZUkMzTWE4VEtzbWlVcFdHc1JKcW9u?=
- =?utf-8?B?NzJJRGdMd0JTTkJ4MW9mRnExSmQweC9idmtVcVMzM1Uyd2VoaDNNZFJxU0JN?=
- =?utf-8?B?ZUNjT1JvRFh3eFcxVnNZM0JlVVdaWVl1OTV0VHoxbHFxZzUzNWEyeSt1Rk1x?=
- =?utf-8?B?eEhkME0xZGdrcDErWFBNSFVIVGF4bzR4VGo2OC9CdmJvZUNiaGlIcUM2NCs3?=
- =?utf-8?B?eC9LdDN3RGZUSFdoUGVnZkJXSVR3N2t3eXc4K1NlMndiQTcrMElEVW9MZHJS?=
- =?utf-8?Q?qpMAnjmiNFyt6DXFwjqDzugtsLdPR3FirU?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c73529c-8079-44e1-2c12-08d892245949
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3712.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2020 16:00:08.9009
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G/0PzUg9/ExEsu9ozmTDYsHP2zJwKIJezGfE6GN91lULfWTWDM2ey0lk62uC90b4id543SvdkgM4KrnawYZTrQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7325
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124161025.27694-4-lukasz.luba@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/2020 9:09 AM, Ard Biesheuvel wrote:
-> On Wed, 25 Nov 2020 at 22:39, Iuliana Prodan <iuliana.prodan@nxp.com> wrote:
->>
->> On 11/25/2020 11:16 PM, Ard Biesheuvel wrote:
->>> On Wed, 25 Nov 2020 at 22:14, Iuliana Prodan (OSS)
->>> <iuliana.prodan@oss.nxp.com> wrote:
->>>>
->>>> From: Iuliana Prodan <iuliana.prodan@nxp.com>
->>>>
->>>> Add the option to allocate the crypto request object plus any extra space
->>>> needed by the driver into a DMA-able memory.
->>>>
->>>> Add CRYPTO_TFM_REQ_DMA flag to be used by backend implementations to
->>>> indicate to crypto API the need to allocate GFP_DMA memory
->>>> for private contexts of the crypto requests.
->>>>
->>>
->>> These are always directional DMA mappings, right? So why can't we use
->>> bounce buffering here?
->>>
->> The idea was to avoid allocating any memory in crypto drivers.
->> We want to be able to use dm-crypt with CAAM, which needs DMA-able
->> memory and increasing reqsize is not enough.
+On Tuesday 24 Nov 2020 at 16:10:25 (+0000), Lukasz Luba wrote:
+> The PID coefficients should be estimated again when there was a change to
+> sustainable power value made by user. This change removes unused argument
+> 'force' and makes the function ready for such updates.
 > 
-> But what does 'needs DMA-able memory' mean? DMA operations are
-> asynchronous by definition, and so the DMA layer should be able to
-> allocate bounce buffers when needed. This will cost some performance
-> in cases where the hardware cannot address all of memory directly, but
-> this is a consequence of the design, and I don't think we should
-> burden the generic API with this.
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/thermal/gov_power_allocator.c | 28 +++++++++------------------
+>  1 file changed, 9 insertions(+), 19 deletions(-)
 > 
-Ard, I believe you're right.
+> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+> index d7e4b9f6af60..7a4170a0b51f 100644
+> --- a/drivers/thermal/gov_power_allocator.c
+> +++ b/drivers/thermal/gov_power_allocator.c
+> @@ -117,18 +117,13 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
+>   * @sustainable_power:	sustainable power for the thermal zone
+>   * @trip_switch_on:	trip point number for the switch on temperature
+>   * @control_temp:	target temperature for the power allocator governor
+> - * @force:	whether to force the update of the constants
+>   *
+>   * This function is used to update the estimation of the PID
+>   * controller constants in struct thermal_zone_parameters.
+> - *
+> - * If @force is not set, the values in the thermal zone's parameters
+> - * are preserved if they are not zero.  If @force is set, the values
+> - * in thermal zone's parameters are overwritten.
+>   */
+>  static void estimate_pid_constants(struct thermal_zone_device *tz,
+>  				   u32 sustainable_power, int trip_switch_on,
+> -				   int control_temp, bool force)
+> +				   int control_temp)
+>  {
+>  	int ret;
+>  	int switch_on_temp;
+> @@ -151,18 +146,14 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
+>  	if (!temperature_threshold)
+>  		return;
+>  
+> -	if (!tz->tzp->k_po || force)
+> -		tz->tzp->k_po = int_to_frac(sustainable_power) /
+> -			temperature_threshold;
+> +	tz->tzp->k_po = int_to_frac(sustainable_power) /
+> +		temperature_threshold;
+>  
+> -	if (!tz->tzp->k_pu || force)
+> -		tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
+> -			temperature_threshold;
+> +	tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
+> +		temperature_threshold;
+>  
+> -	if (!tz->tzp->k_i || force) {
+> -		k_i = tz->tzp->k_pu / 10;
+> -		tz->tzp->k_i = k_i > 0 ? k_i : 1;
+> -	}
+> +	k_i = tz->tzp->k_pu / 10;
+> +	tz->tzp->k_i = k_i > 0 ? k_i : 1;
+>  
+>  	/*
+>  	 * The default for k_d and integral_cutoff is 0, so we can
+> @@ -195,8 +186,7 @@ static u32 get_sustainable_power(struct thermal_zone_device *tz,
+>  	/* Check if it's init value 0 or there was update via sysfs */
+>  	if (sustainable_power != params->sustainable_power) {
+>  		estimate_pid_constants(tz, sustainable_power,
+> -				       params->trip_switch_on, control_temp,
+> -				       true);
+> +				       params->trip_switch_on, control_temp);
+>  
+>  		/* Do the estimation only once and make available in sysfs */
+>  		tz->tzp->sustainable_power = sustainable_power;
+> @@ -640,7 +630,7 @@ static int power_allocator_bind(struct thermal_zone_device *tz)
+>  		if (!ret)
+>  			estimate_pid_constants(tz, tz->tzp->sustainable_power,
+>  					       params->trip_switch_on,
+> -					       control_temp, false);
+> +					       control_temp);
+>  	}
+>  
+>  	reset_pid_controller(params);
+> -- 
 
-In CAAM, for req->src and req->dst, which comes from crypto request, we 
-use DMA mappings without knowing if the memory is DMAable or not.
+I was actually wondering why we still need force, while reading 2/3.
 
-We should do the same for CAAM's hw descriptors commands and link 
-tables. That's the extra memory allocated by increasing reqsize.
+It looks good!
 
-Horia, do you see any limitations, in CAAM, for not using the above 
-approach?
+Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
 
-
->> It started from here
->> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flinux-crypto%2F71b6f739-d4a8-8b26-bf78-ce9acf9a0f99%40nxp.com%2FT%2F%23m39684173a2f0f4b83d8bcbec223e98169273d1e4&amp;data=04%7C01%7Ciuliana.prodan%40nxp.com%7C436d50e009434fd1c52808d891da3c8f%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637419713794116972%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=38rJuxFhPWDJXWc2R66Hu%2Fn7vve9u%2BeF0Evp%2BFAhCwQ%3D&amp;reserved=0
->>
->>>> For IPsec use cases, CRYPTO_TFM_REQ_DMA flag is also checked in
->>>> esp_alloc_tmp() function for IPv4 and IPv6.
->>>>
->>>> This series includes an example of how a driver can use
->>>> CRYPTO_TFM_REQ_DMA flag while setting reqsize to a larger value
->>>> to avoid allocating memory at crypto request runtime.
->>>> The extra size needed by the driver is added to the reqsize field
->>>> that indicates how much memory could be needed per request.
->>>>
->>>> Iuliana Prodan (4):
->>>>     crypto: add CRYPTO_TFM_REQ_DMA flag
->>>>     net: esp: check CRYPTO_TFM_REQ_DMA flag when allocating crypto request
->>>>     crypto: caam - avoid allocating memory at crypto request runtime for
->>>>       skcipher
->>>>     crypto: caam - avoid allocating memory at crypto request runtime for
->>>>       aead
->>>>
->>>>    drivers/crypto/caam/caamalg.c | 130 +++++++++++++++++++++++++---------
->>>>    include/crypto/aead.h         |   4 ++
->>>>    include/crypto/akcipher.h     |  21 ++++++
->>>>    include/crypto/hash.h         |   4 ++
->>>>    include/crypto/skcipher.h     |   4 ++
->>>>    include/linux/crypto.h        |   1 +
->>>>    net/ipv4/esp4.c               |   7 +-
->>>>    net/ipv6/esp6.c               |   7 +-
->>>>    8 files changed, 144 insertions(+), 34 deletions(-)
->>>>
->>>> --
->>>> 2.17.1
->>>>
+> 2.17.1
+> 
