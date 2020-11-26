@@ -2,339 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A8B2C4DBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6282C4DBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733312AbgKZDUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 22:20:52 -0500
-Received: from mga11.intel.com ([192.55.52.93]:59135 "EHLO mga11.intel.com"
+        id S2387414AbgKZDU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 22:20:59 -0500
+Received: from mga06.intel.com ([134.134.136.31]:3826 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733213AbgKZDUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 22:20:52 -0500
-IronPort-SDR: 7K5TfNDxMRKCXl4Uqx5/ugePHSRdlKR2z6sSBKY+qmhOS83PLCRW38sJLn2d8xg0m7qqjyO6R1
- MD7bvb2GFacw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="168721808"
+        id S1733213AbgKZDU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 22:20:59 -0500
+IronPort-SDR: Hq/S3XjklneIBjyMYiVXgrnMD30Juhequ8RGkwyKExValS2JwCzLcT6xATxanESdNFzDIsgOZ1
+ Mrrg71X6JR2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="233836712"
 X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
-   d="scan'208";a="168721808"
+   d="scan'208";a="233836712"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 19:20:51 -0800
-IronPort-SDR: SiQgjLKzbMEtXzVorP4eNaLkeytyiLPxnCiTujoLpjt4PwBKzkj5LJagAOBgWcrYSqgNM3ygVQ
- fwELVqY1Zj7g==
-X-ExtLoop1: 1
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 19:20:57 -0800
+IronPort-SDR: xRgQNBN6QMGNf3R7kIqBZNtQUU1pxrZR/TucTZfFzkaihBsMmbJ7rrHn1bADioSwKD07bzOBWZ
+ vU93fmL2otWw==
 X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
-   d="scan'208";a="371128055"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Nov 2020 19:20:41 -0800
-Subject: Re: [PATCH -tip 14/32] sched: migration changes for core scheduling
-To:     Balbir Singh <bsingharora@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-15-joel@joelfernandes.org>
- <20201122235456.GF110669@balbir-desktop>
- <0b2514ef-6cc3-c1a3-280b-5d9062c80a31@linux.intel.com>
- <20201124154237.GZ3021@hirez.programming.kicks-ass.net>
- <d541b70c-c65f-5bf6-5e71-0b9b35457fae@linux.intel.com>
- <20201125225731.GB163610@balbir-desktop>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <d9f356dd-be58-b52c-504d-ff46d37c1479@linux.intel.com>
-Date:   Thu, 26 Nov 2020 11:20:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+   d="scan'208";a="333240193"
+Received: from jjbeatty-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.150.216])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 19:20:55 -0800
+Subject: Re: [PATCH 4/5] PCI/ACPI: Centralize pcie_ports_native checking
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     ashok.raj@intel.com, knsathya@kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <20201126011816.711106-1-helgaas@kernel.org>
+ <20201126011816.711106-5-helgaas@kernel.org>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <0c7eb524-ff3a-d3ec-f9e6-7656e75b3437@linux.intel.com>
+Date:   Wed, 25 Nov 2020 19:20:53 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201125225731.GB163610@balbir-desktop>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201126011816.711106-5-helgaas@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/26 6:57, Balbir Singh wrote:
-> On Wed, Nov 25, 2020 at 11:12:53AM +0800, Li, Aubrey wrote:
->> On 2020/11/24 23:42, Peter Zijlstra wrote:
->>> On Mon, Nov 23, 2020 at 12:36:10PM +0800, Li, Aubrey wrote:
->>>>>> +#ifdef CONFIG_SCHED_CORE
->>>>>> +		/*
->>>>>> +		 * Skip this cpu if source task's cookie does not match
->>>>>> +		 * with CPU's core cookie.
->>>>>> +		 */
->>>>>> +		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
->>>>>> +			continue;
->>>>>> +#endif
->>>>>> +
->>>>>
->>>>> Any reason this is under an #ifdef? In sched_core_cookie_match() won't
->>>>> the check for sched_core_enabled() do the right thing even when
->>>>> CONFIG_SCHED_CORE is not enabed?> 
->>>> Yes, sched_core_enabled works properly when CONFIG_SCHED_CORE is not
->>>> enabled. But when CONFIG_SCHED_CORE is not enabled, it does not make
->>>> sense to leave a core scheduler specific function here even at compile
->>>> time. Also, for the cases in hot path, this saves CPU cycles to avoid
->>>> a judgment.
->>>
->>> No, that's nonsense. If it works, remove the #ifdef. Less (#ifdef) is
->>> more.
->>>
->>
->> Okay, I pasted the refined patch here.
->> @Joel, please let me know if you want me to send it in a separated thread.
->>
+
+
+On 11/25/20 5:18 PM, Bjorn Helgaas wrote:
+> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > 
-> You still have a bunch of #ifdefs, can't we just do
+> If the user booted with "pcie_ports=native", we take control of the PCIe
+> features unconditionally, regardless of what _OSC says.
 > 
-> #ifndef CONFIG_SCHED_CORE
-> static inline bool sched_core_enabled(struct rq *rq)
-> {
->         return false;
-> }
-> #endif
+> Centralize the testing of pcie_ports_native in acpi_pci_root_create(),
+> where we interpret the _OSC results, so other places only have to check
+> host_bridge->native_X and we don't have to sprinkle tests of
+> pcie_ports_native everywhere.
 > 
-> and frankly I think even that is not needed because there is a jump
-> label __sched_core_enabled that tells us if sched_core is enabled or
-> not.
+> [bhelgaas: commit log, rework OSC_PCI_EXPRESS_CONTROL_MASKS, logging]
+> Link: https://lore.kernel.org/r/bc87c9e675118960949043a832bed86bc22becbd.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>   drivers/acpi/pci_root.c           | 19 +++++++++++++++++++
+>   drivers/pci/hotplug/pciehp_core.c |  2 +-
+>   drivers/pci/pci-acpi.c            |  3 ---
+>   drivers/pci/pcie/aer.c            |  2 +-
+>   drivers/pci/pcie/portdrv_core.c   |  9 +++------
+>   5 files changed, 24 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+> index 6db071038fd5..36142ed7b8f8 100644
+> --- a/drivers/acpi/pci_root.c
+> +++ b/drivers/acpi/pci_root.c
+> @@ -882,6 +882,8 @@ static void acpi_pci_root_release_info(struct pci_host_bridge *bridge)
+>   			flag = 0;	\
+>   	} while (0)
+>   
+> +#define FLAG(x)		((x) ? '+' : '-')
+> +
+>   struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+>   				     struct acpi_pci_root_ops *ops,
+>   				     struct acpi_pci_root_info *info,
+> @@ -930,6 +932,23 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+>   	OSC_OWNER(ctrl, OSC_PCI_EXPRESS_LTR_CONTROL, host_bridge->native_ltr);
+>   	OSC_OWNER(ctrl, OSC_PCI_EXPRESS_DPC_CONTROL, host_bridge->native_dpc);
+>   
+> +	if (pcie_ports_native) {
+> +		dev_info(&root->device->dev, "Taking control of PCIe-related features because \"pcie_ports=native\" specified; may conflict with firmware\n");
+> +		host_bridge->native_pcie_hotplug = 1;
+> +		host_bridge->native_aer = 1;
+> +		host_bridge->native_pme = 1;
+> +		host_bridge->native_ltr = 1;
+> +		host_bridge->native_dpc = 1;
+> +	}
+Won't it be better if its merged with above OSC_OWNER() calls? If pcie_ports_native
+is set, then above OSC_OWNER() calls for PCIe related features are redundant. Let me
+know.
+> +
+> +	dev_info(&root->device->dev, "OS native features: SHPCHotplug%c PCIeHotplug%c PME%c AER%c DPC%c LTR%c\n",
+> +		FLAG(host_bridge->native_shpc_hotplug),
+> +		FLAG(host_bridge->native_pcie_hotplug),
+> +		FLAG(host_bridge->native_pme),
+> +		FLAG(host_bridge->native_aer),
+> +		FLAG(host_bridge->native_dpc),
+> +		FLAG(host_bridge->native_ltr));
+> +
+>   	/*
+>   	 * Evaluate the "PCI Boot Configuration" _DSM Function.  If it
+>   	 * exists and returns 0, we must preserve any PCI resource
+> diff --git a/drivers/pci/hotplug/pciehp_core.c b/drivers/pci/hotplug/pciehp_core.c
+> index ad3393930ecb..d1831e6bf60a 100644
+> --- a/drivers/pci/hotplug/pciehp_core.c
+> +++ b/drivers/pci/hotplug/pciehp_core.c
+> @@ -256,7 +256,7 @@ static bool pme_is_native(struct pcie_device *dev)
+>   	const struct pci_host_bridge *host;
+>   
+>   	host = pci_find_host_bridge(dev->port->bus);
+> -	return pcie_ports_native || host->native_pme;
+> +	return host->native_pme;
+>   }
+>   
+>   static void pciehp_disable_interrupt(struct pcie_device *dev)
+> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> index bf03648c2072..a84f75ec6df8 100644
+> --- a/drivers/pci/pci-acpi.c
+> +++ b/drivers/pci/pci-acpi.c
+> @@ -800,9 +800,6 @@ bool pciehp_is_native(struct pci_dev *bridge)
+>   	if (!(slot_cap & PCI_EXP_SLTCAP_HPC))
+>   		return false;
+>   
+> -	if (pcie_ports_native)
+> -		return true;
+> -
+>   	host = pci_find_host_bridge(bridge->bus);
+>   	return host->native_pcie_hotplug;
+>   }
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index 65dff5f3457a..79bb441139c2 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -219,7 +219,7 @@ int pcie_aer_is_native(struct pci_dev *dev)
+>   	if (!dev->aer_cap)
+>   		return 0;
+>   
+> -	return pcie_ports_native || host->native_aer;
+> +	return host->native_aer;
+>   }
+>   
+>   int pci_enable_pcie_error_reporting(struct pci_dev *dev)
+> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+> index 50a9522ab07d..2a1190e8db60 100644
+> --- a/drivers/pci/pcie/portdrv_core.c
+> +++ b/drivers/pci/pcie/portdrv_core.c
+> @@ -208,8 +208,7 @@ static int get_port_device_capability(struct pci_dev *dev)
+>   	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
+>   	int services = 0;
+>   
+> -	if (dev->is_hotplug_bridge &&
+> -	    (pcie_ports_native || host->native_pcie_hotplug)) {
+> +	if (host->native_pcie_hotplug && dev->is_hotplug_bridge) {
+May be this reordering can be split into a different patch ?
+>   		services |= PCIE_PORT_SERVICE_HP;
+>   
+>   		/*
+> @@ -221,8 +220,7 @@ static int get_port_device_capability(struct pci_dev *dev)
+>   	}
+>   
+>   #ifdef CONFIG_PCIEAER
+> -	if (dev->aer_cap && pci_aer_available() &&
+> -	    (pcie_ports_native || host->native_aer)) {
+> +	if (host->native_aer && dev->aer_cap && pci_aer_available()) {
+same as above.
+>   		services |= PCIE_PORT_SERVICE_AER;
+>   
+>   		/*
+> @@ -238,8 +236,7 @@ static int get_port_device_capability(struct pci_dev *dev)
+>   	 * Event Collectors can also generate PMEs, but we don't handle
+>   	 * those yet.
+>   	 */
+> -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT &&
+> -	    (pcie_ports_native || host->native_pme)) {
+> +	if (host->native_pme && pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
+>   		services |= PCIE_PORT_SERVICE_PME;
+>   
+>   		/*
+> 
 
-Hmm..., I need another wrapper for CONFIG_SCHED_CORE specific variables.
-How about this one?
-
-Thanks,
--Aubrey
-
-From 61dac9067e66b5b9ea26c684c8c8235714bab38a Mon Sep 17 00:00:00 2001
-From: Aubrey Li <aubrey.li@linux.intel.com>
-Date: Thu, 26 Nov 2020 03:08:04 +0000
-Subject: [PATCH] sched: migration changes for core scheduling
-
- - Don't migrate if there is a cookie mismatch
-     Load balance tries to move task from busiest CPU to the
-     destination CPU. When core scheduling is enabled, if the
-     task's cookie does not match with the destination CPU's
-     core cookie, this task will be skipped by this CPU. This
-     mitigates the forced idle time on the destination CPU.
-
- - Select cookie matched idle CPU
-     In the fast path of task wakeup, select the first cookie matched
-     idle CPU instead of the first idle CPU.
-
- - Find cookie matched idlest CPU
-     In the slow path of task wakeup, find the idlest CPU whose core
-     cookie matches with task's cookie
-
- - Don't migrate task if cookie not match
-     For the NUMA load balance, don't migrate task to the CPU whose
-     core cookie does not match with task's cookie
-
-Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Vineeth Remanan Pillai <viremana@linux.microsoft.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/sched/fair.c  | 57 ++++++++++++++++++++++++++++++++++++++++----
- kernel/sched/sched.h | 43 +++++++++++++++++++++++++++++++++
- 2 files changed, 95 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index de82f88ba98c..70dd013dff1d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1921,6 +1921,13 @@ static void task_numa_find_cpu(struct task_numa_env *env,
- 		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
- 			continue;
- 
-+		/*
-+		 * Skip this cpu if source task's cookie does not match
-+		 * with CPU's core cookie.
-+		 */
-+		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
-+			continue;
-+
- 		env->dst_cpu = cpu;
- 		if (task_numa_compare(env, taskimp, groupimp, maymove))
- 			break;
-@@ -5867,11 +5874,15 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
- 
- 	/* Traverse only the allowed CPUs */
- 	for_each_cpu_and(i, sched_group_span(group), p->cpus_ptr) {
-+		struct rq *rq = cpu_rq(i);
-+
-+		if (!sched_core_cookie_match(rq, p))
-+			continue;
-+
- 		if (sched_idle_cpu(i))
- 			return i;
- 
- 		if (available_idle_cpu(i)) {
--			struct rq *rq = cpu_rq(i);
- 			struct cpuidle_state *idle = idle_get_state(rq);
- 			if (idle && idle->exit_latency < min_exit_latency) {
- 				/*
-@@ -6129,8 +6140,19 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		if (!--nr)
- 			return -1;
--		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
--			break;
-+
-+		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu)) {
-+			/*
-+			 * If Core Scheduling is enabled, select this cpu
-+			 * only if the process cookie matches core cookie.
-+			 */
-+			if (sched_core_enabled(cpu_rq(cpu))) {
-+				if (__cookie_match(cpu_rq(cpu), p))
-+					break;
-+			} else {
-+				break;
-+			}
-+		}
- 	}
- 
- 	time = cpu_clock(this) - time;
-@@ -7530,8 +7552,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
- 	 * We do not migrate tasks that are:
- 	 * 1) throttled_lb_pair, or
- 	 * 2) cannot be migrated to this CPU due to cpus_ptr, or
--	 * 3) running (obviously), or
--	 * 4) are cache-hot on their current CPU.
-+	 * 3) task's cookie does not match with this CPU's core cookie
-+	 * 4) running (obviously), or
-+	 * 5) are cache-hot on their current CPU.
- 	 */
- 	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
- 		return 0;
-@@ -7566,6 +7589,13 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
- 		return 0;
- 	}
- 
-+	/*
-+	 * Don't migrate task if the task's cookie does not match
-+	 * with the destination CPU's core cookie.
-+	 */
-+	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
-+		return 0;
-+
- 	/* Record that we found atleast one task that could run on dst_cpu */
- 	env->flags &= ~LBF_ALL_PINNED;
- 
-@@ -8792,6 +8822,23 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 					p->cpus_ptr))
- 			continue;
- 
-+		if (sched_core_enabled(cpu_rq(this_cpu))) {
-+			int i = 0;
-+			bool cookie_match = false;
-+
-+			for_each_cpu(i, sched_group_span(group)) {
-+				struct rq *rq = cpu_rq(i);
-+
-+				if (sched_core_cookie_match(rq, p)) {
-+					cookie_match = true;
-+					break;
-+				}
-+			}
-+			/* Skip over this group if no cookie matched */
-+			if (!cookie_match)
-+				continue;
-+		}
-+
- 		local_group = cpumask_test_cpu(this_cpu,
- 					       sched_group_span(group));
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e72942a9ee11..8bb3b72d593c 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1135,6 +1135,40 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
- 
- bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
- 
-+/*
-+ * Helper to check if the CPU's core cookie matches with the task's cookie
-+ * when core scheduling is enabled.
-+ * A special case is that the task's cookie always matches with CPU's core
-+ * cookie if the CPU is in an idle core.
-+ */
-+static inline bool __cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	return rq->core->core_cookie == p->core_cookie;
-+}
-+
-+static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	bool idle_core = true;
-+	int cpu;
-+
-+	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
-+	if (!sched_core_enabled(rq))
-+		return true;
-+
-+	for_each_cpu(cpu, cpu_smt_mask(cpu_of(rq))) {
-+		if (!available_idle_cpu(cpu)) {
-+			idle_core = false;
-+			break;
-+		}
-+	}
-+
-+	/*
-+	 * A CPU in an idle core is always the best choice for tasks with
-+	 * cookies.
-+	 */
-+	return idle_core || __cookie_match(rq, p);
-+}
-+
- extern void queue_core_balance(struct rq *rq);
- 
- #else /* !CONFIG_SCHED_CORE */
-@@ -1153,6 +1187,15 @@ static inline void queue_core_balance(struct rq *rq)
- {
- }
- 
-+static inline bool __cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	return true;
-+}
-+
-+static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	return true;
-+}
- #endif /* CONFIG_SCHED_CORE */
- 
- #ifdef CONFIG_SCHED_SMT
 -- 
-2.17.1
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
