@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE8E2C4FEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FB12C4FF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388579AbgKZIC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 03:02:27 -0500
-Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:51274 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726392AbgKZIC0 (ORCPT
+        id S2388594AbgKZIDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 03:03:20 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:39403 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726392AbgKZIDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 03:02:26 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 9F0B71801EA65;
-        Thu, 26 Nov 2020 08:02:25 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:559:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3315:3353:3622:3653:3865:3866:3867:3868:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:6235:7514:7557:9025:10004:10400:10848:11026:11232:11658:11914:12043:12294:12297:12438:12555:12740:12895:12986:13255:13439:13894:14181:14659:14721:21080:21324:21451:21627:21660:21811:21891:21939:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:809,LUA_SUMMARY:none
-X-HE-Tag: smash37_3e0bf802737d
-X-Filterd-Recvd-Size: 2893
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 26 Nov 2020 08:02:23 +0000 (UTC)
-Message-ID: <4b40cac946eaabf875556674a24ad7c9fc1c909b.camel@perches.com>
-Subject: Re: [PATCH RFC] checkpatch: add warning for unnecessary use of
- %h[xudi] and %hh[xudi]
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Thu, 26 Nov 2020 00:02:22 -0800
-In-Reply-To: <20201126072840.32681-1-dwaipayanray1@gmail.com>
-References: <20201126072840.32681-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 26 Nov 2020 03:03:20 -0500
+Received: by mail-wm1-f67.google.com with SMTP id s13so1382100wmh.4;
+        Thu, 26 Nov 2020 00:03:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s8u0GP23qDOSeM1D2brxZfZl6FgFTmnoBYV41ukmE/k=;
+        b=fZLnYl7irlEu/yNZsi28YJ/s8ve9RvNu2FCCMk8FUFu47I3NeVqgm3M8X6gOXSDIec
+         oqv0r4yBgHYwdXw8khbnWjhrNPOPupAS/mc+e/RwQgBBgVPjdHN/uG+vvFL4Jk7Gb83A
+         /xYVbeLXhzeNaM68h5U42j0b1SBmaaIqnCvQb8GcaeH55c3TYI/J24CpzvvOd5leYDNi
+         SjdbY+q75hL6JHKW831KnkAhTYV/5bq8ImCPn0El57R6NdCXIjDFXExOdnwXf47SsE+i
+         6vhROi5m5NzAixRYKxS9G3fXWI8/yCaTJuRvWTfWM0Spw30rhKyDMV9Awtjr3oi/Wmo7
+         XUvA==
+X-Gm-Message-State: AOAM531XH0vnr/NacmKdtkqoB1KCRc2TAj3kQxDgWg7r7OPsW/ph/rUn
+        DlD3GOz+NaHmjmATrGzqhYo=
+X-Google-Smtp-Source: ABdhPJwStgiEbq6kndIHhkeGtEwcXjTWb91nIp7UGJ9+FsyJ/CK0wz2Q24X3XEYE2wbPSmfHSGoySw==
+X-Received: by 2002:a7b:c94d:: with SMTP id i13mr1875524wml.130.1606377798092;
+        Thu, 26 Nov 2020 00:03:18 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id v6sm7983100wrb.53.2020.11.26.00.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 00:03:16 -0800 (PST)
+Date:   Thu, 26 Nov 2020 09:03:15 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm64: dts: imx8mm-beacon-som: Fix RTC aliases
+Message-ID: <20201126080315.GA4347@kozik-lap>
+References: <20201125210339.1071419-1-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201125210339.1071419-1-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-26 at 12:58 +0530, Dwaipayan Ray wrote:
-> Modifiers %h and %hh should never be used.
+On Wed, Nov 25, 2020 at 03:03:38PM -0600, Adam Ford wrote:
+> On the i.MX8MM Beacon SOM, there is an RTC chip which is fed power
+> from the baseboard during power off.  The SNVS RTC integrated into
+> the SoC is not fed power.  Depending on the order the modules are
+> loaded, this can be a problem if the external RTC isn't rtc0.
 > 
-> Commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use
-> of unnecessary %h[xudi] and %hh[xudi]") specifies that:
+> Make the alias for rtc0 point to the external RTC all the time and
+> rtc1 point to the SVNS in order to correctly hold date/time over
+> a power-cycle.
 > 
-> "Standard integer promotion is already done and %hx and %hhx is useless
-> so do not encourage the use of %hh[xudi] or %h[xudi]."
-> 
-> "The "h" and "hh" things should never be used. The only reason for them
-> being used if you have an "int", but you want to print it out as a
-> "char" (and honestly, that is a really bad reason, you'd be better off
-> just using a proper cast to make the code more obvious)."
-> 
-> Add a new check to emit a warning on finding an unneeded use of %h or
-> %hh modifier.
-> 
-> Link: https://lore.kernel.org/lkml/4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com/
-> 
-> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> ---
->  scripts/checkpatch.pl | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 7dc094445d83..47c1017a9973 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -6570,6 +6570,19 @@ sub process {
->  			}
->  		}
->  
-> 
-> +# check for unnecessary use of %h[xudi] and %hh[xudi]
-> +		if ($perl_version_ok &&
-> +		    defined $stat &&
-> +		    $line =~ /(?:[sd]?print[kfd]|(?:pr_|drm_)(?:info|debug|warn|error))/i) {
+> Fixes: 593816fa2f35 ("arm64: dts: imx: Add Beacon i.MX8m-Mini development kit")
 
-Use $logFunctions and please move this close to the lines with
-"# check for logging functions with KERN_<LEVEL>"
+There is no bug here so this is not a fix. Please remove the "fix" from
+the title and "Fixes" tag.
 
-> +			my $lc = $stat =~ tr@\n@@;
-> +			$lc = $lc + $linenr;
-> +			my $stat_real = get_stat_real($linenr, $lc);
-> +			if ($stat_real =~ /\"[^\"]*%[\d\.\*\-]*h+[idux].*\"/i) {
-> +				WARN("UNNECESSARY_MODIFIER",
-> +				     "Unnecessary use of length modifiers %h[xudi] or %hh[xudi]\n" . "$here\n$stat_real\n");
-> +			}
-> +		}
-> +
->  # check for naked sscanf
->  		if ($perl_version_ok &&
->  		    defined $stat &&
+This is purely for making user-space RTC lookup easier, nothing to fix.
 
-
+Best regards,
+Krzysztof
