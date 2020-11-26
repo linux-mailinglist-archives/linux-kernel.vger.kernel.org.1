@@ -2,276 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529E52C4F30
+	by mail.lfdr.de (Postfix) with ESMTP id BF97E2C4F31
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388343AbgKZHNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2388355AbgKZHNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 02:13:32 -0500
+Received: from mail-eopbgr1300070.outbound.protection.outlook.com ([40.107.130.70]:44583
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388333AbgKZHNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 26 Nov 2020 02:13:30 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:33752 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732167AbgKZHNa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 02:13:30 -0500
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 9805158C639;
-        Thu, 26 Nov 2020 18:13:24 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kiBT1-00F9UK-94; Thu, 26 Nov 2020 18:13:23 +1100
-Date:   Thu, 26 Nov 2020 18:13:23 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Dave Chinner <dchinner@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.9 33/33] xfs: don't allow NOWAIT DIO across
- extent boundaries
-Message-ID: <20201126071323.GF2842436@dread.disaster.area>
-References: <20201125153550.810101-1-sashal@kernel.org>
- <20201125153550.810101-33-sashal@kernel.org>
- <20201125215247.GD2842436@dread.disaster.area>
- <20201125234654.GN643756@sasha-vm>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RtZ8yXx7cESq2gUAI/Ikjuof0EyfQM9mC2l5CjONk+Gq3jsWi0VddZh5nQer3RwaH5AicGLyi34zWpLx+zPQmq9p5Gh528EP5Y7vrImjaTXrQFRWqiz8xpwXNw6gvYoy42OlmS37wx6pf8QK7T/4d0E4gNV0yZO7c4JQzz5bQuAtK+VpwXSsDTk6kMCrhfuynwPY7eMcORMWREVGXv3Cwzu44cVr5eVC/AnyqibEdXBqdlcubmeFQu/sEUXYBmzC0inux0dSeFfXzycLi8nIQgbdXg5zpjXsoCrL7N874Zv5ft4hRD9G0FtpcoaS2lo/ddUcVHxtA6Oe+XxH+wTgaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+TKRrr3oyWGMVGmeIRJ2AOUfHaMeFfHrA8UgydINz24=;
+ b=n41GqV4TpTJ/Dk28m3/RwgP1oBJIwDt3g2dZ+nUlgKoMFpcU/ejWv8GPgfyyBPiTCv5TBaqrQwRmGHavVSExEKzKGNT+RYD3R3c0aC3uMuuywrSiCvVrCzbc3VahR9FEwp3+J62zDDf6JkJFa9KO3yYjqvhKzuwrpWsB7MvmiMuHFNUWUA09jQ8WA3U9FqGmbg3ZuYDMEmKIgWxm+pn/0Pla6GIeXUu1dAoPvKXihIuyQTDNNTTdxZuvsCv0hajQFOnMFf990re7LB+VB1nmxUcACZljicSojaIOrf5Sj3C+2hL6s1ogE3ofRK05orVtnJi5NV2SMP/gta1FfcDgkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+TKRrr3oyWGMVGmeIRJ2AOUfHaMeFfHrA8UgydINz24=;
+ b=Se8K1To5aHYtBDnSwsimwtWNO1CTllTyEO4Rgd2VaobzuX1GjiHJ76tf9jBJFXJmT1V73HuwFlYHwlMU0rrVwI5VOhnDf60EIxzuITAjfp2VYqypBbL14OQoPhnsyk8hRoqBeDkK+3pjrNCT+7n2YTSi8xc7W7krjok6AqN9Lcc=
+Received: from HKAPR02MB4291.apcprd02.prod.outlook.com (2603:1096:203:d3::12)
+ by HKAPR02MB4371.apcprd02.prod.outlook.com (2603:1096:203:d4::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Thu, 26 Nov
+ 2020 07:13:25 +0000
+Received: from HKAPR02MB4291.apcprd02.prod.outlook.com
+ ([fe80::b9b8:aaf4:2afd:218b]) by HKAPR02MB4291.apcprd02.prod.outlook.com
+ ([fe80::b9b8:aaf4:2afd:218b%3]) with mapi id 15.20.3611.022; Thu, 26 Nov 2020
+ 07:13:25 +0000
+From:   =?utf-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Suravee.Suthikulpanit@amd.com" <Suravee.Suthikulpanit@amd.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: [PATCH] kvm:svm: Return the correct error code
+Thread-Topic: [PATCH] kvm:svm: Return the correct error code
+Thread-Index: AdbDw07DFQcZfob5RjiYdtD4llKu/w==
+Date:   Thu, 26 Nov 2020 07:13:25 +0000
+Message-ID: <HKAPR02MB42915D77D43D4ED125BD2121E0F90@HKAPR02MB4291.apcprd02.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oppo.com;
+x-originating-ip: [58.252.5.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6a599748-f468-40eb-8dc0-08d891dac444
+x-ms-traffictypediagnostic: HKAPR02MB4371:
+x-microsoft-antispam-prvs: <HKAPR02MB437112ABEC0DFF8B82C3DD16E0F90@HKAPR02MB4371.apcprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lhrudQuDxtDp4cnuUvn9SB2AK7ivEXxpELMwYIApoGSfXf556DifLdjoiPGpMdgQ5wRRqkuOQ+hLGkJeNSaR5cCYxanEnZb028LpfSWP0YA2wGf6+32PEseqYLwXK/AH0S06LyC6Fb1OOUVYiyvm9TAyFlREdqxTAyTdxO7ZvP5DTfdv/INJk50WYJZrXH7uzsjKc60VVW2OLvdz0x15TyHKw8do6zmAmHxJ0dmij9YG7wAbaJJ2BXuOdi5eAwDhZwJ7SURqWbqkPZDFF3MEHMFAnfhU6QMS/ve0lvZvixyn3SDpCKCciTTIsYPe2TDlOjtyi1sSx27G9f89jgcHjmt02fZixUzz5MQow1OW/OHPl7Xa6Ha89ArriUgN47Mi
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HKAPR02MB4291.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(396003)(366004)(376002)(4744005)(6506007)(8676002)(83380400001)(4326008)(66946007)(52536014)(7696005)(8936002)(2906002)(86362001)(71200400001)(9686003)(55016002)(110136005)(85182001)(76116006)(66446008)(316002)(186003)(5660300002)(478600001)(66556008)(26005)(66476007)(64756008)(33656002)(54906003)(11606006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?cjJZemRDS3NxbitWME90SU5MUmpxV1M0cnIyMFRvVC9IV3JXQit1NVYvK3dB?=
+ =?utf-8?B?Z2tTY0Mwc1dZTGswVmlvN2RNakZoeEhNY3lnVjhwU3ZWbU1USE1mVzhId3px?=
+ =?utf-8?B?dnU0VzlVSUpEYjczRDdVNFY3Vm0rK2pVS2svdlFiMVRwVEhrbWR5KzFWY3g0?=
+ =?utf-8?B?OGpCTVRvbTNvbmRQbENwSHJIbWNuc1Frc2hpSjE2bGJOK0ZiWGhvY1J6eXMr?=
+ =?utf-8?B?VVAwNlREazcrRzVCTlV0SXN4Z3YxcjArVktpVUQvQ29WY2IwWmtuM1FQNjVq?=
+ =?utf-8?B?R1g3NHNiTTd6MVNrZUVmVGhoZ29ZWjBLQkhXN2ZudWM4U0tzd2Y5WFYwZzBr?=
+ =?utf-8?B?NldreVc2a2pwaDJ1aXBacThmNnRIRmtMdGdCYTdRd2VHSzhXVlhybEVxM0xw?=
+ =?utf-8?B?WGlNYVZzZGlQbjhoR3VOek84QjYveWU2M0o4Q3R5bGZodjZMYkNTb3E2SDV3?=
+ =?utf-8?B?cG1EeHNZaWdnTUlabmNLZEFlaHJvUFk5Tmh1MkFrWFV2VDBqMWFqNGJtbXg5?=
+ =?utf-8?B?bWxGMXRwa1ZjZnB2SG9mQmc2cEM5YWJVMUxzb0lpczZRdEsyRTdPaDJyZXR5?=
+ =?utf-8?B?NWZab1BhYkswSmIzRDJ6dE9FdWhQTTQ4d0paWmNHNnIxOGNzNGZ4Y0dmcUlK?=
+ =?utf-8?B?Uk5kOEljcDVJQXBSTVNqWDlkVE05d2FKTkx1YUhDZWV1U0Z2WEN3TkI3RTRv?=
+ =?utf-8?B?ZkYzTkhkNndNQlQ4MXRKNS9XLzFsdThPTTQxOUVkdFNkNUdKcTdzaEdLYW94?=
+ =?utf-8?B?RXZPUCsySEU4cFFITFVpamZUMkxibXJjc21NMXVSTmVSRHlVNEtMSzBHTk9V?=
+ =?utf-8?B?U0JCL0ZYVC8zS3pMelR1Q2cwQUJ4K3RDMTBTKzF5VUl1dm1JbFptNnh5Ty9O?=
+ =?utf-8?B?UC8rRm1JT084VjdFYWF5clJVSHI0UVJXRWNLbkZXc2VxSGRYbDNBanNzTUlQ?=
+ =?utf-8?B?dVFiZ1B3aXlNYWgycDAvUzFRaHhYam5xRTlzS2g1eFlOZ0ZOMEV5aUpyN3Q0?=
+ =?utf-8?B?QkU0SlR2YmNRZnhOT1M1RmJkRDMxeW4vSkpXeTlJZitOY1doSnBSc1N0Y3kv?=
+ =?utf-8?B?cEVGMzh1NytxVXBjSmRQMVVzZThBYXhISTl1VFA5QmZ1VjBjMTRlNlhMNm1T?=
+ =?utf-8?B?ZFVnZjk0YTZJaEh3alRlM1B6VkY2M1NweExqYmVCTDAvTW5RMS9Wb2FFb1Mx?=
+ =?utf-8?B?aEtPSFhyK0EvMmh1OTE5M0t3aUNHQy9NMmRtZmxwM24wRGJXWkNOdFpzTTBM?=
+ =?utf-8?B?QVRaN3U1OFlVbGhpTzFUcmFSRWNtS1ZpcFBweDF3S3EvRjFKMjBpRWNEVzBT?=
+ =?utf-8?Q?pmM8Jha6zCdfE=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125234654.GN643756@sasha-vm>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=nNwsprhYR40A:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
-        a=3N_etuhSgFmOKDSDCMsA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HKAPR02MB4291.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a599748-f468-40eb-8dc0-08d891dac444
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2020 07:13:25.3405
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8022BFKxVRNZrz8zG//NzvZfzFjG65vKHQ+fua2finVIwUCeRgvpo0nliW8BlI28nTAj+36gP0jTpET1+QwOJw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HKAPR02MB4371
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 06:46:54PM -0500, Sasha Levin wrote:
-> On Thu, Nov 26, 2020 at 08:52:47AM +1100, Dave Chinner wrote:
-> > We've already had one XFS upstream kernel regression in this -rc
-> > cycle propagated to the stable kernels in 5.9.9 because the stable
-> > process picked up a bunch of random XFS fixes within hours of them
-> > being merged by Linus. One of those commits was a result of a
-> > thinko, and despite the fact we found it and reverted it within a
-> > few days, users of stable kernels have been exposed to it for a
-> > couple of weeks. That *should never have happened*.
-> 
-> No, what shouldn't have happened is a commit that never went out for a review
-> on the public mailing lists nor spending any time in linux-next ending
-> up in Linus's tree.
-
-<sigh>
-
-I think you've got your wires crossed somewhere, Sasha, because none
-of that happened here.  From the public record, the patch was first
-posted here by Darrick:
-
-https://lore.kernel.org/linux-xfs/160494584816.772693.2490433010759557816.stgit@magnolia/
-
-on Nov 9, and was reviewed by Christoph a day later.  It was merged
-into the XFS tree on Nov 10, with the rvb tag:
-
-https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git/commit/?h=for-next&id=6ff646b2ceb0eec916101877f38da0b73e3a5b7f
-
-Which means it should have been in linux-next on Nov 11, 12 and 13,
-when Darrick sent the pull request:
-
-https://lore.kernel.org/linux-xfs/20201113231738.GX9695@magnolia/
-
-It was merged into Linus's tree an hour later.
-
-So, in contrast to your claims, the evidence is that the patch was,
-in fact, publicly posted, reviewed, and spent time in linux-next
-before ending up in Linus's tree.
-
-FWIW, on November 17, GregKH sent the patch to lkml for stable review
-after being selected by the stable process for a stable backport.
-This was not cc'd to the XFS list, and it was committed without
-comment into the  5.9.x tree is on November 18.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/fs/xfs?h=linux-5.9.y&id=0ca9a072112b18efc9ba9d3a9b77e9dae60f93ac
-
-IOWs, the XFS developers didn't ask for it to be backported to
-stable kernels - the commit did not contain a "cc:
-stable@kernel.org", nor was the original patch posting cc'd to the
-stable list.
-
-The fact is that entire decision to backport this commit was made by
-stable maintainers and/or their tools, and the stable maintainers
-themselves chose not to tell the XFS list they had selected it for
-backport.
-
-Hence:
-
-> It's ridiculous that you see a failure in the maintainership workflow of
-> XFS and turn around to blame it somehow on the stable process.
-
-.... I think you really need to have another look at the evidence
-before you dig yourself a deeper hole and waste more of my time....
-
-> > This has happened before, and *again* we were lucky this wasn't
-> > worse than it was. We were saved by the flaw being caught by own
-> > internal pre-write corruption verifiers (which exist because we
-> > don't trust our code to be bug-free, let alone the collections of
-> > random, poorly tested backports) so that it only resulted in
-> > corruption shutdowns rather than permanent on-disk damage and data
-> > loss.
-> > 
-> > Put simply: the stable process is flawed because it shortcuts the
-> > necessary stabilisation testing for new code. It doesn't matter if
-> 
-> The stable process assumes that commits that ended up upstream were
-> reviewed and tested; the stable process doesn't offer much in the way of
-> in-depth review of specific patches but mostly focuses on testing the
-> product of backporting hundreds of patches into each stable branch.
-
-And I've lost count of the number of times I've told the stable
-maintainers that this is an invalid assumption.
-
-Yet here we are again.
-
-How many times do we have to make the same mistake before we learn
-from it?
-
-> Release candidate cycles are here to squash the bugs that went in during
-> the merge window, not to introduce new "thinkos" in the way of pulling
-> patches out of your hip in the middle of the release cycle.
-
-"pulling patches out of your hip"
-
-Nice insult. Avoids profanity filters and everything. But I don't
-know why you're trying to insult me over something I played no part
-in.
-
-Seriously, merging critical fixes discovered in the -rc cycle
-happens *all the time* and has been done for as long as we've had
--rc cycles.  Even Linus himself does this.
-
-The fact is that the -rc process is intended to accomodate merging
-fixes quickly whilst still allowing sufficient testing time to be
-confident that no regressions were introduced or have been found and
-addressed before release.
-
-And that's the whole point of having an iterative integration
-testing phase in the release cycle - it can be adapted in duration
-to the current state of the code base and the fixes that are being
-made late in the cycle.
-
-You *should* know all this Sasha, so I'm not sure why you are
-claiming that long standing, well founded software engineering
-practices are suddenly a problem...
-
-> > the merged commits have a "fixes" tag in them, that tag doesn't mean
-> > the change is ready to be exposed to production systems. We need the
-> > *-rc stabilisation process* to weed out thinkos, brown paper bag
-> > bugs, etc, because we all make mistakes, and bugs in filesystem code
-> > can *lose user data permanently*.
-> 
-> What needed to happen here is that XFS's internal testing story would
-> run *before* this patch was merged anywhere and catch this bug. Why
-> didn't it happen?
-
-It did. It's simply that kernel unit testing didn't discover the
-bug. That happens all the time, not just in XFS.  In fact, it was
-XFS userspace unit testing that found the bug.
-
-The kernel by itself didn't trigger inconsistencies because
-everything it created matches what it expected, and an old userspace
-checking a new kernel would ignore the bits changed by the bad
-commit in the kernel.  IOWs, the typical kernel unit testing
-configuration of "new kernel, stable userspace" didn't see anything
-wrong.
-
-It wasn't until a new userspace was run with an old kernel that the
-problem was found. The new userspace expected bits in the keys
-on disk to be set that an old kernel didn't set and that's when
-inconsistencies were flagged and the problem uncovered. This was
-found by the userspace XFS maintainer as when testing the
-changes merged from the kernel code. Unit testing userspace is
-the opposite of the kernel - "stable kernel, new userspace" - and
-that's the combination that triggered the errors that made us aware
-of the problem.
-
-So, yes, our normal testing processes found the bug, it's just a the
-filesystem is *much more than just the kernel code* and sometimes
-bugs in the core code are found on the userspace side before they
-are found in the kernel.
-
-However, testing variations in kernel and/or userspace tool versions
-is not generally part of the unit tests developers run.  It is,
-however, something that we cover as the new code rolls out to
-testers and developers code as part of the integration testing
-process. That's when version mismatch and upgrade/downgrade bugs
-tend to show up as that's when the variety of installations the code
-is tested on rapidly expands.  IOWs, we caught the problem exactly
-when hindsight tells us we should expect to catch such a problem.
-
-The reality is that a single developer cannot do this sort of
-testing, hence we do not expect a single developer to do this. We
-don't even expect the maintainer to be able to cover such a huge
-testing scope before merging commits. It's simply not realistic to
-cover everything before code changes are merged. Perfection is the
-enemy of good.
-
-I'll repeat the lesson to be learned here: merging a commit into
-Linus's tree does not mean it is fully tested and production ready.
-It just means it's passed a wide range of unit tests without
-regressions and so is considered ready for wider integration testing
-by a larger population of developers and testers.
-
-> > Hence I ask that the stable maintainers only do automated pulls of
-> > iomap and XFS changes from upstream kernels when Linus officially
-> > releases them rather than at random points in time in the -rc cycle.
-> > If there is a critical fix we need to go back to stable kernels
-> > immediately, we will let stable@kernel.org know directly that we
-> > want this done.
-> 
-> I'll happily switch back to a model where we look only for stable tags
-> from XFS, but sadly this happened only *once* in the past year. How is
-> this helping to prevent the dangerous bugs that may cause users to lose
-> their data permanently?
-
-Given that the only dangerous bug that XFS users have been directly
-exposed to in recent times has been caused by an automated stable
-kernel backport short-circuiting our normal commit-test-release
-cycle, I can't see how XFS users will be worse off by turning off
-automated backports. :/
-
-But that is not what I asked you to do or consider, it's just a
-strawman you constructed.  What I want is for users to benefit from
-the overall stable process, but I don't want them exposed to the
-potential catastrophic risks that the current stable process exposes
-them to.
-
-As developers, the stable process gives us no margin for error. We
-need at least some margin to prevent users for being exposed to
-avoidable regressions in stable kernels.  So what I'm asking you to
-do is back off the bots a bit to provide that margin because, as we
-all known, bugs and mistakes happen.
-
-An acceptible compromise from our perspective would be to run
-automated scans on released kernels that have already run the full
-test cycle.  This way the users get the benefits of both full
-integration testing of the patches that get backported, and all the
-changes that the stable maintainers think their kernels should be
-getting end up in the stable kernel.
-
-For the sorts of changes your process is typically backporting from
-XFS, an extra couple of weeks time lag is going to make no
-difference to users at all. But that extra margin means that
-situations like this recent stable kernel regression do not occur,
-resulting in stable kernels having a much lower risk profile for
-it's users.
-
-That seems like a win-win-win scenario to me, so rather than throw
-shade and insults at the messenger, how about listening, learning
-from mistakes and trying to improve the process in a way that
-benefits everyone?
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+VGhlIHJldHVybiB2YWx1ZSBvZiBzZXZfYXNpZF9uZXcgaXMgYXNzaWduZWQgdG8gdGhlIHZhcmlh
+YmxlIGFzaWQsIHdoaWNoDQpzaG91bGQgYmUgcmV0dXJuZWQgZGlyZWN0bHkgaWYgdGhlIGFzaWQg
+aXMgYW4gZXJyb3IgY29kZS4NCg0KRml4ZXM6IDE2NTRlZmNiYzQzMSAoIktWTTogU1ZNOiBBZGQg
+S1ZNX1NFVl9JTklUIGNvbW1hbmQiKQ0KU2lnbmVkLW9mZi1ieTogUGVuZyBIYW8gPHJpY2hhcmQu
+cGVuZ0BvcHBvLmNvbT4NCi0tLQ0KIGFyY2gveDg2L2t2bS9zdm0vc2V2LmMgfCAyICstDQogMSBm
+aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRpZmYgLS1naXQg
+YS9hcmNoL3g4Ni9rdm0vc3ZtL3Nldi5jIGIvYXJjaC94ODYva3ZtL3N2bS9zZXYuYw0KaW5kZXgg
+NTY2ZjRkMTgxODViLi40MWNlYTZiNjk4NjAgMTAwNjQ0DQotLS0gYS9hcmNoL3g4Ni9rdm0vc3Zt
+L3Nldi5jDQorKysgYi9hcmNoL3g4Ni9rdm0vc3ZtL3Nldi5jDQpAQCAtMTc0LDcgKzE3NCw3IEBA
+IHN0YXRpYyBpbnQgc2V2X2d1ZXN0X2luaXQoc3RydWN0IGt2bSAqa3ZtLCBzdHJ1Y3Qga3ZtX3Nl
+dl9jbWQgKmFyZ3ApDQoNCiAgICAgICAgYXNpZCA9IHNldl9hc2lkX25ldygpOw0KICAgICAgICBp
+ZiAoYXNpZCA8IDApDQotICAgICAgICAgICAgICAgcmV0dXJuIHJldDsNCisgICAgICAgICAgICAg
+ICByZXR1cm4gYXNpZDsNCg0KICAgICAgICByZXQgPSBzZXZfcGxhdGZvcm1faW5pdCgmYXJncC0+
+ZXJyb3IpOw0KICAgICAgICBpZiAocmV0KQ0KLS0NCjIuMTguNA0K
