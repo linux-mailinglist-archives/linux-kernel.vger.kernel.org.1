@@ -2,122 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1848D2C5A75
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B7D2C5A5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404408AbgKZRXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 12:23:48 -0500
-Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:52623 "EHLO
-        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404314AbgKZRXr (ORCPT
+        id S2391649AbgKZRRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:17:18 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:40203 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390083AbgKZRRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:23:47 -0500
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Thu, 26 Nov 2020 12:23:47 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1606411427;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=30eEf+LXDGboAMJuVJgnrOE10nGpyifLpuzbpTyE6v0=;
-  b=WNl/M0luAhGWvKcSbVrRe/K9Z9AkjyHQrUkSu3nt4+qQG0VsfmDkRHLK
-   nIjZWwN1lNZRiS2Mr7s5z2JT5vEnT8T31r6uUu72WcKzLv+/VjUfFYJkj
-   4FHQLPQeRQ1zi88CPznUaOkKLz4ofOQI/NH/JAesXcU4evauYqeIbb3xj
-   w=;
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: 1KWvzA3XKYqmExMrRgkDqSUSq8jWif4zd6yFt6Bw43YNYZPO7mwMd6sqbgcfgGDIlWolnz/bgH
- 97J3MzPUyjNH39hGUqf+BPnmz1OvW/XS+Q+zoQfCDAQJznrsWedNLptB+vuFa7JLz7wjKSLgVl
- rK6LwSAcLnpt+qOoA7YD8YwYVq6O8cATiMiJaFMFlfuAYQUlEscXDZurWzA92M17EgW+ndQgNC
- Ng4/9/qz9HFWY7y86FVz81DhTpKAMJn6qo9rznnlxzkskKGsEhIstko1Y9etuOrno+ZdP+KlHw
- U3A=
-X-SBRS: None
-X-MesageID: 32232619
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.78,372,1599537600"; 
-   d="scan'208";a="32232619"
-Subject: Re: [PATCH] x86/cpu: correct values for GDT_ENTRY_INIT
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, Akinobu Mita <akinobu.mita@gmail.com>,
-        Joerg Roedel <jroedel@suse.de>
-CC:     "H . Peter Anvin" <hpa@zytor.com>,
-        <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201126115459.28980-1-lukas.bulwahn@gmail.com>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <947b02eb-536f-16a0-fbb1-87b62ab8c13e@citrix.com>
-Date:   Thu, 26 Nov 2020 17:16:33 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 26 Nov 2020 12:17:18 -0500
+Received: by mail-io1-f71.google.com with SMTP id c2so1817588ioq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:17:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=nz0kWD3jPQEETBi1E7TNq3BBn/NlA7rJRZa61l4DyJ8=;
+        b=YIAuT1zeLHxb1ZEF3eNEUWa2EzpJ/9Cwe0+22qyV5h+R1oYYg8HaiUMJ8aPAMSqLHy
+         hteUy6v1tyq9zzBDykOifv9Q3TUi8RdFRAjM/3XEcrE7zF+osK7EP0TO5xouTk7ZDAOA
+         FYyt/wl4TRw/sapbpo1hTxUtRieP3HmJb5kmGqqYlEdOfbzBBTB2/IS2+p3Z8bwK+vDN
+         DaTHHD85jAz6YMwCEjqobd+2fSZtvrImFrwroQSA1EjFwS4hLzek9yziNjupgELOJS7k
+         CZyq2FlsnyQjbuDomAhzqoowEDCh7xbUbJC33fgb2gZ4iyTQnNT5l6vvN40Heo3AikfA
+         0b0g==
+X-Gm-Message-State: AOAM533Y20B4l2Ql2khC6e9Fzxi+naaegTxBBubdIg9ResM9v9ZmX7G3
+        a3snHW8bkM5CPDA7B6ZRL0mqelll0GJHWh4k0JYbjzPPTPV3
+X-Google-Smtp-Source: ABdhPJyAUtPAIwDuTJx0shOYau9IFkx1HjwllJ7w0/aSVXwA7FFhIkIQyZgGRBmgHCKoPWcRd3nlf74MOrJ1Mkp0GDFxa2Gi81+V
 MIME-Version: 1.0
-In-Reply-To: <20201126115459.28980-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- FTLPEX02CL04.citrite.net (10.13.108.177)
+X-Received: by 2002:a92:cc45:: with SMTP id t5mr3289985ilq.248.1606411035805;
+ Thu, 26 Nov 2020 09:17:15 -0800 (PST)
+Date:   Thu, 26 Nov 2020 09:17:15 -0800
+In-Reply-To: <000000000000c19e7b05b4c35440@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000270f5805b505b74c@google.com>
+Subject: Re: WARNING in cm109_submit_buzz_toggle/usb_submit_urb
+From:   syzbot <syzbot+c7e665956b189738fe5e@syzkaller.appspotmail.com>
+To:     eli.billauer@gmail.com, gregkh@linuxfoundation.org,
+        gustavoars@kernel.org, ingrassia@epigenesys.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        oneukum@suse.com, syzkaller-bugs@googlegroups.com, tiwai@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2020 11:54, Lukas Bulwahn wrote:
-> Commit 1e5de18278e6 ("x86: Introduce GDT_ENTRY_INIT()") unintentionally
-> transformed a few 0xffff values to 0xfffff (note: five times "f" instead of
-> four) as part of the refactoring.
+syzbot has found a reproducer for the following issue on:
 
-The transformation in that change is correct.
+HEAD commit:    fa02fcd9 Merge tag 'media/v5.10-2' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16d1a88d500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cb8d1a3819ba4356
+dashboard link: https://syzkaller.appspot.com/bug?extid=c7e665956b189738fe5e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ba912d500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10dfad85500000
 
-Segment bases are 20 bits wide in x86, but the top nibble is folded into
-the middle of the attributes, which is why the transformation also has
-xfxx => x0xx for the attributes field.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c7e665956b189738fe5e@syzkaller.appspotmail.com
 
->
-> A quick check with:
->
->   git show 1e5de18278e6 | grep "fffff"
->
-> reveals all those 14 occurrences:
->
->     12 in ./arch/x86/kernel/cpu/common.c, and
->     2  in ./arch/x86/include/asm/lguest.h.
->
-> The two occurrences in ./arch/x86/include/asm/lguest.h were deleted with
-> commit ecda85e70277 ("x86/lguest: Remove lguest support").
-> Correct the remaining twelve occurrences in ./arch/x86/kernel/cpu/common.c
-> back to the original values in the source code before the refactoring.
->
-> Commit 866b556efa12 ("x86/head/64: Install startup GDT") probably simply
-> copied the required startup gdt information from
-> ./arch/x86/kernel/cpu/common.c to ./arch/x86/kernel/head64.c.
-> So, correct those three occurrences in ./arch/x86/kernel/head64.c as well.
->
-> As this value is truncated anyway, the object code has not changed when
-> introducing the mistake and is also not changed with this correction now.
->
-> This was discovered with sparse, which warns with:
->
->   warning: cast truncates bits from constant value (fffff becomes ffff)
+------------[ cut here ]------------
+URB 0000000056bd5df7 submitted while active
+WARNING: CPU: 0 PID: 8490 at drivers/usb/core/urb.c:378 usb_submit_urb+0x1228/0x14e0 drivers/usb/core/urb.c:378
+Modules linked in:
+CPU: 0 PID: 8490 Comm: syz-executor949 Not tainted 5.10.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:usb_submit_urb+0x1228/0x14e0 drivers/usb/core/urb.c:378
+Code: 89 de e8 6b d6 3b fc 84 db 0f 85 da f4 ff ff e8 4e de 3b fc 4c 89 fe 48 c7 c7 00 57 e1 89 c6 05 01 64 a4 07 01 e8 d4 0c 78 03 <0f> 0b e9 b8 f4 ff ff c7 44 24 14 01 00 00 00 e9 6f f5 ff ff 41 bd
+RSP: 0018:ffffc900012ef710 EFLAGS: 00010086
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88802068b480 RSI: ffffffff8158d875 RDI: fffff5200025ded4
+RBP: 0000000000000020 R08: 0000000000000001 R09: ffff8880b9e2011b
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880117c3078
+R13: 00000000fffffff0 R14: ffffffff85a190a0 R15: ffff88801d38cd00
+FS:  0000000001949880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005637666ec160 CR3: 0000000029267000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ cm109_submit_buzz_toggle+0xd0/0x130 drivers/input/misc/cm109.c:351
+ cm109_toggle_buzzer_async drivers/input/misc/cm109.c:487 [inline]
+ cm109_input_ev+0x1ea/0x230 drivers/input/misc/cm109.c:621
+ input_handle_event+0x66e/0x1400 drivers/input/input.c:376
+ input_inject_event+0x2f5/0x310 drivers/input/input.c:471
+ kd_sound_helper+0x122/0x260 drivers/tty/vt/keyboard.c:242
+ input_handler_for_each_handle+0xf4/0x210 drivers/input/input.c:2356
+ kd_mksound+0x85/0x120 drivers/tty/vt/keyboard.c:266
+ do_con_trol+0x813/0x54c0 drivers/tty/vt/vt.c:2152
+ do_con_write+0xb89/0x1dd0 drivers/tty/vt/vt.c:2911
+ con_write+0x22/0xb0 drivers/tty/vt/vt.c:3255
+ process_output_block drivers/tty/n_tty.c:595 [inline]
+ n_tty_write+0x3ce/0xf80 drivers/tty/n_tty.c:2333
+ do_tty_write drivers/tty/tty_io.c:962 [inline]
+ tty_write+0x4d9/0x870 drivers/tty/tty_io.c:1046
+ vfs_write+0x28e/0xa30 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x444859
+Code: e8 bc af 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffd082c1508 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00000000004002e0 RCX: 0000000000444859
+RDX: 0000000000001006 RSI: 0000000020001440 RDI: 0000000000000005
+RBP: 00000000006d0018 R08: 00000000004002e0 R09: 00000000004002e0
+R10: 000000000000000d R11: 0000000000000246 R12: 0000000000402480
+R13: 0000000000402510 R14: 0000000000000000 R15: 0000000000000000
 
-Does:
-
-diff --git a/arch/x86/include/asm/desc_defs.h
-b/arch/x86/include/asm/desc_defs.h
-index f7e7099af595..9561f3c66e9e 100644
---- a/arch/x86/include/asm/desc_defs.h
-+++ b/arch/x86/include/asm/desc_defs.h
-@@ -22,7 +22,7 @@ struct desc_struct {
- 
- #define GDT_ENTRY_INIT(flags, base, limit)                     \
-        {                                                       \
--               .limit0         = (u16) (limit),                \
-+               .limit0         = (u16) (limit) & 0xFFFF,       \
-                .limit1         = ((limit) >> 16) & 0x0F,       \
-                .base0          = (u16) (base),                 \
-                .base1          = ((base) >> 16) & 0xFF,        \
-
-fix the warning?
-
-Changing the limit from 4G to 128M isn't going to be compatible with a
-32bit kernel trying to boot :).
-
-~Andrew
