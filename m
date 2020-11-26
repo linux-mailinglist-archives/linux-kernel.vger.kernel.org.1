@@ -2,102 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A682C5A6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C4C2C5A71
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404208AbgKZRV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 12:21:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:41088 "EHLO foss.arm.com"
+        id S2404403AbgKZRVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:21:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726677AbgKZRV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:21:29 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DACB31B;
-        Thu, 26 Nov 2020 09:21:28 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.30.234])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 353A53F23F;
-        Thu, 26 Nov 2020 09:21:24 -0800 (PST)
-Date:   Thu, 26 Nov 2020 17:21:21 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 01/23] psci: Support psci_ops.get_version for v0.1
-Message-ID: <20201126172121.GB38486@C02TD0UTHF1T.local>
-References: <20201126155421.14901-1-dbrazdil@google.com>
- <20201126155421.14901-2-dbrazdil@google.com>
+        id S2404388AbgKZRVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 12:21:40 -0500
+Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECD4A206CA;
+        Thu, 26 Nov 2020 17:21:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606411298;
+        bh=Ntq+SdXSf7E3TCJQBlO1tASYt8vXBVEvZQrdeacnTUs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oKhrIZaOTG1bjb/Xgt80ddDzBmnlWDDnK9TnSQR6CpMq2MneYkXy9Uwr3frOIRn8D
+         SCfU2HmqtJPC+TUNxV47pRKd+MlGxQBH4omYnzB+5KEpJu6OkwUrEloYRi5zddT2uT
+         U8Ckx+qZe2QZkhzcYVK05sBWoMX1/LfVfNwAYsqk=
+Date:   Thu, 26 Nov 2020 18:21:33 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Chanho Park <parkch98@gmail.com>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        Chanho Park <chanho61.park@samsung.com>
+Subject: Re: [PATCH] drivers core: export symbols for device hotplug
+Message-ID: <X7/kHYpgmRZ6Lwhm@kroah.com>
+References: <20201126150138.159896-1-chanho61.park@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126155421.14901-2-dbrazdil@google.com>
+In-Reply-To: <20201126150138.159896-1-chanho61.park@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 03:53:59PM +0000, David Brazdil wrote:
-> KVM's host PSCI SMC filter needs to be aware of the PSCI version of the
-> system but currently it is impossible to distinguish between v0.1 and
-> PSCI disabled because both have get_version == NULL.
+On Fri, Nov 27, 2020 at 12:01:38AM +0900, Chanho Park wrote:
+> To support module build for cpu hotplug driver on type-1 hypervisor
+> such as drivers/xen/cpu_hotplug.c, we need to export below four symbols.
 > 
-> Populate get_version for v0.1 with a function that returns a constant.
+> lock_device_hotplug / unlock_device_hotplug
+> device_online / device_offline
 > 
-> psci_opt.get_version is currently unused so this has no effect on
-> existing functionality.
-> 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> Signed-off-by: Chanho Park <chanho61.park@samsung.com>
 > ---
->  drivers/firmware/psci/psci.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  drivers/base/core.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-> index 00af99b6f97c..213c68418a65 100644
-> --- a/drivers/firmware/psci/psci.c
-> +++ b/drivers/firmware/psci/psci.c
-> @@ -146,6 +146,11 @@ static int psci_to_linux_errno(int errno)
->  	return -EINVAL;
->  }
->  
-> +static u32 psci_get_version_0_1(void)
-> +{
-> +	return PSCI_VERSION(0, 1);
-> +}
-
-Elsewhere in this file we've used a psci_${MAJOR}_${MINOR}_* naming
-scheme.
-
-To match that, I'd prefer we call this psci_0_1_get_version(), and
-rename psci_get_version() to psci_0_2_get_version().
-
-With that:
-	
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Thanks,
-Mark.
-
-> +
->  static u32 psci_get_version(void)
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index d661ada1518f..1bfd0c54a778 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -1586,11 +1586,13 @@ void lock_device_hotplug(void)
 >  {
->  	return invoke_psci_fn(PSCI_0_2_FN_PSCI_VERSION, 0, 0, 0);
-> @@ -514,6 +519,8 @@ static int __init psci_0_1_init(struct device_node *np)
->  
->  	pr_info("Using PSCI v0.1 Function IDs from DT\n");
->  
-> +	psci_ops.get_version = psci_get_version_0_1;
-> +
->  	if (!of_property_read_u32(np, "cpu_suspend", &id)) {
->  		psci_function_id[PSCI_FN_CPU_SUSPEND] = id;
->  		psci_ops.cpu_suspend = psci_cpu_suspend;
-> -- 
-> 2.29.2.454.gaff20da3a2-goog
-> 
+>  	mutex_lock(&device_hotplug_lock);
+>  }
+> +EXPORT_SYMBOL_GPL(lock_device_hotplug);
+
+Ick, really?  Anyway, where is the follow-on patch that uses this in a
+module?  We need that in order to export these otherwise we will just
+un-export them with no in-kernel users.
+
+thanks,
+
+greg k-h
