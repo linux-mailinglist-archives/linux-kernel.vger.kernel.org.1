@@ -2,107 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D5C2C50EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCD02C50E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389155AbgKZJN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 04:13:28 -0500
-Received: from mga17.intel.com ([192.55.52.151]:55742 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732910AbgKZJNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 04:13:25 -0500
-IronPort-SDR: MorjxH7inJBOHI5/qMuq0+suf/ZpM190MeCzaU25CWzu+Dy5jjNrkGUCcvg85R1g/+EWVg7VNs
- roGcyecM9cOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="152093744"
-X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
-   d="scan'208";a="152093744"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 01:13:25 -0800
-IronPort-SDR: 1W98j++zDlKY+Uyu1ROvcdDJOJF1MCSg4O2+mApuDwET4gmPwUg6O9xBS/6ofTHijiyvhxdySz
- a6EHzU3NcBqw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
-   d="scan'208";a="433221130"
-Received: from allen-box.sh.intel.com ([10.239.159.28])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Nov 2020 01:13:23 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 1/1] iommu: Fix htmldocs warnings in sysfs-kernel-iommu_groups
-Date:   Thu, 26 Nov 2020 17:06:03 +0800
-Message-Id: <20201126090603.1511589-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S2389147AbgKZJIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:08:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389036AbgKZJId (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 04:08:33 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7767EC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 01:08:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2zXA8xrVRXPGgqB9cMk3pA+Z8nviwDoJP0B7lI7X6RU=; b=VEwDua+o40NYyE2dEiASgNcM1n
+        Prr3FJf0uYJodu1QlSxpdqmB7nB5Mo6+Svjv5cNNjMxq4pVGPNGWRAg+wUqI+iP3J4bg6WeW7cZsd
+        e4HLiuwjAWT0YRGkMdgblo3zH6otgS0weiEigKES7HkIIzDrYI4mAXE9aJr8eJqXaUaDQW2GtsX+a
+        ldiVdCs8CPNDhw/GUgpApOPUccwRDdZUwbGdKCl/zjthdO785o0DPJFZ5Acle7mcmd3B6JswNWI1U
+        t4G3oofD2QlQwor6rQRWvMBSgYXF5p0uR5O44XRHhE7wLFPwzGeHuqiz/dSi2Vdhjbdc2/qLaY4tP
+        4eL3aY/Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kiDFB-0005yJ-Uk; Thu, 26 Nov 2020 09:07:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 73F393059DE;
+        Thu, 26 Nov 2020 10:07:10 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 414A32CF9A1E7; Thu, 26 Nov 2020 10:07:10 +0100 (CET)
+Date:   Thu, 26 Nov 2020 10:07:10 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>,
+        Jiang Biao <benbjiang@tencent.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        OWeisse@umich.edu, Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 02/32] sched: Introduce sched_class::pick_task()
+Message-ID: <20201126090710.GF2414@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-3-joel@joelfernandes.org>
+ <CAKfTPtDSnr85X90gpPvgOf94Adh_mvH2CGhkXXx4FHn6EkCErg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtDSnr85X90gpPvgOf94Adh_mvH2CGhkXXx4FHn6EkCErg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below warnings are fixed:
+On Wed, Nov 25, 2020 at 05:28:36PM +0100, Vincent Guittot wrote:
+> On Wed, 18 Nov 2020 at 00:20, Joel Fernandes (Google)
 
-Documentation/ABI/testing/sysfs-kernel-iommu_groups:38: WARNING: Unexpected indentation.
-Documentation/ABI/testing/sysfs-kernel-iommu_groups:38: WARNING: Block quote ends without a blank line; unexpected unindent.
-Documentation/ABI/testing/sysfs-kernel-iommu_groups:38: WARNING: Enumerated list ends without a blank line; unexpected unindent.
-Documentation/ABI/testing/sysfs-kernel-iommu_groups:38: WARNING: Unexpected indentation.
-Documentation/ABI/testing/sysfs-kernel-iommu_groups:38: WARNING: Block quote ends without a blank line; unexpected unindent.
+> > +#ifdef CONFIG_SMP
+> > +static struct task_struct *pick_task_fair(struct rq *rq)
+> > +{
+> > +       struct cfs_rq *cfs_rq = &rq->cfs;
+> > +       struct sched_entity *se;
+> > +
+> > +       if (!cfs_rq->nr_running)
+> > +               return NULL;
+> > +
+> > +       do {
+> > +               struct sched_entity *curr = cfs_rq->curr;
+> > +
+> > +               se = pick_next_entity(cfs_rq, NULL);
+> 
+> Calling pick_next_entity clears buddies. This is fine without
+> coresched because the se will be the next one. But calling
+> pick_task_fair doesn't mean that the se will be used
 
-Fixes: 63a816749d86 ("iommu: Document usage of "/sys/kernel/iommu_groups/<grp_id>/type" file")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Link: https://lore.kernel.org/linux-next/20201126174851.200e0e58@canb.auug.org.au/
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- .../ABI/testing/sysfs-kernel-iommu_groups     | 33 ++++++++++---------
- 1 file changed, 17 insertions(+), 16 deletions(-)
+Urgh, nice one :/
 
-diff --git a/Documentation/ABI/testing/sysfs-kernel-iommu_groups b/Documentation/ABI/testing/sysfs-kernel-iommu_groups
-index 407b1628d7fd..0fedbb0f94e4 100644
---- a/Documentation/ABI/testing/sysfs-kernel-iommu_groups
-+++ b/Documentation/ABI/testing/sysfs-kernel-iommu_groups
-@@ -40,23 +40,24 @@ KernelVersion:	v5.11
- Contact:	Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
- Description:	/sys/kernel/iommu_groups/<grp_id>/type shows the type of default
- 		domain in use by iommu for this group. See include/linux/iommu.h
--		for possible values. A privileged user could request kernel to
--		change the group type by writing to this file. Presently, only
--		three types of request are supported:
--		1. DMA: All the DMA transactions from the device in this group
--			are translated by the iommu.
--		2. identity: All the DMA transactions from the device in this
--			     group are *not* translated by the iommu.
--		3. auto: Change to the type the device was booted with.
--		Note:
--		-----
-+		for possible read values. A privileged user could request kernel to
-+		change the group type by writing to this file. Valid write values:
-+
-+		========  ======================================================
-+		DMA       All the DMA transactions from the device in this group
-+		          are translated by the iommu.
-+		identity  All the DMA transactions from the device in this group
-+		          are not translated by the iommu.
-+		auto      Change to the type the device was booted with.
-+		========  ======================================================
-+
- 		The default domain type of a group may be modified only when
--		1. The group has *only* one device
--		2. The device in the group is not bound to any device driver.
--		   So, the users must unbind the appropriate driver before
--		   changing the default domain type.
--		Caution:
--		--------
-+
-+		- The group has only one device.
-+		- The device in the group is not bound to any device driver.
-+		  So, the users must unbind the appropriate driver before
-+		  changing the default domain type.
-+
- 		Unbinding a device driver will take away the driver's control
- 		over the device and if done on devices that host root file
- 		system could lead to catastrophic effects (the users might
--- 
-2.25.1
+> > +
+> > +               if (curr) {
+> > +                       if (se && curr->on_rq)
+> > +                               update_curr(cfs_rq);
+> > +
+> 
+> Shouldn't you check if cfs_rq is throttled ?
 
+Hmm,... I suppose we do.
+
+> > +                       if (!se || entity_before(curr, se))
+> > +                               se = curr;
+> > +               }
+> > +
+> > +               cfs_rq = group_cfs_rq(se);
+> > +       } while (cfs_rq);
+> > +
+> > +       return task_of(se);
+> > +}
+> > +#endif
+
+Something like so then?
+
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4354,6 +4354,8 @@ check_preempt_tick(struct cfs_rq *cfs_rq
+ static void
+ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ {
++	clear_buddies(cfs_rq, se);
++
+ 	/* 'current' is not kept within the tree. */
+ 	if (se->on_rq) {
+ 		/*
+@@ -4440,8 +4442,6 @@ pick_next_entity(struct cfs_rq *cfs_rq,
+ 		se = cfs_rq->last;
+ 	}
+ 
+-	clear_buddies(cfs_rq, se);
+-
+ 	return se;
+ }
+ 
+@@ -6982,20 +6982,29 @@ static void check_preempt_wakeup(struct
+ #ifdef CONFIG_SMP
+ static struct task_struct *pick_task_fair(struct rq *rq)
+ {
+-	struct cfs_rq *cfs_rq = &rq->cfs;
+ 	struct sched_entity *se;
+-
++	struct cfs_rq *cfs_rq;
++       
++again:
++	cfs_rq = &rq->cfs;
+ 	if (!cfs_rq->nr_running)
+ 		return NULL;
+ 
+ 	do {
+ 		struct sched_entity *curr = cfs_rq->curr;
+ 
+-		if (curr && curr->on_rq)
+-			update_curr(cfs_rq);
++		/* When we pick for a remote RQ, we'll not have done put_prev_entity() */
++		if (curr) {
++			if (curr->on_rq)
++				update_curr(cfs_rq);
++			else
++				curr = NULL;
+ 
+-		se = pick_next_entity(cfs_rq, curr);
++			if (unlikely(check_cfs_rq_runtime(cfs_rq)))
++				goto again;
++		}
+ 
++		se = pick_next_entity(cfs_rq, curr);
+ 		cfs_rq = group_cfs_rq(se);
+ 	} while (cfs_rq);
+ 
