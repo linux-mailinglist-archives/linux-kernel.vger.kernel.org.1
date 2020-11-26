@@ -2,91 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B452C5467
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A312C5464
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389825AbgKZNCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:02:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
+        id S2389810AbgKZNCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:02:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389814AbgKZNCe (ORCPT
+        with ESMTP id S2389729AbgKZNCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:02:34 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DABCC0613D4;
-        Thu, 26 Nov 2020 05:02:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hLIHvPXWJN2+QMWWENMIdOYVjlW+boeIBinzicswIpY=; b=HkGfyJk1ztoJSLeBDC3iOhNo3N
-        Sx5j5ga/YCWb+wo++NMG/gnhL8S2WoKL/BA8uMnAuRL6+dGgEPsPmFaB1YkumjBwT+RDRlmVqZUHy
-        RrN2ZEOhU1S9r4u59aZNXKHMJQfwAW/EyK9+ZKrekfqn5zmI4zD5HBdsgoTCvfeh13ksse0O1j2+H
-        qWwdpILV07vgJNJZRnMBCJqLkt/baSIDzvSERP32q4SxBNxOQR1NKSujVynxGfsd78xtlRS64oEZl
-        lkALVz+fg1yw7AmFKOVjH/jjOV6RImvn9mbICf1Vnd+Q5qqdr2W/tCYxTDF9n6OcUeRuCB44hnOKs
-        VgfZEgPw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kiGuS-0007ck-Am; Thu, 26 Nov 2020 13:02:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D49C9305CC3;
-        Thu, 26 Nov 2020 14:02:02 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BDD89201E6BBD; Thu, 26 Nov 2020 14:02:02 +0100 (CET)
-Date:   Thu, 26 Nov 2020 14:02:02 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     kan.liang@linux.intel.com, mingo@kernel.org, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, eranian@google.com, christophe.leroy@csgroup.eu,
-        npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        mpe@ellerman.id.au, will@kernel.org, aneesh.kumar@linux.ibm.com,
-        sparclinux@vger.kernel.org, davem@davemloft.net,
-        catalin.marinas@arm.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com
-Subject: Re: [PATCH v2 1/6] mm/gup: Provide gup_get_pte() more generic
-Message-ID: <20201126130202.GH2414@hirez.programming.kicks-ass.net>
-References: <20201126120114.071913521@infradead.org>
- <20201126121121.036370527@infradead.org>
- <20201126124300.GP4327@casper.infradead.org>
+        Thu, 26 Nov 2020 08:02:31 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0B4C0613D4;
+        Thu, 26 Nov 2020 05:02:31 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id k9so2778073ejc.11;
+        Thu, 26 Nov 2020 05:02:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QY7dh3vckMKD6ltiTnksJuU8XWzuwGJAwKPsT1GH95k=;
+        b=fESxPUs/SuTDJqRxWAuiI526aY/jWEhn8FEf/I+/puc7bZSLa+Ekx6q2XHo8F3N4Gk
+         McczI6dT0/kWPHOJhHgQCpa7dB7e7YAAsorvgmYAjw+TJQR1MSfbuZ8F0N72mMImeSj+
+         WaMTOCPpx85Yrx1srZ0Duxpq0l/KOoZ+JoIzrWmBCLCG8+DW0KcPH1XRdNeo1l1AT7Jz
+         vyvz+EJ9/a9Ti3FrVWzo1DSXG0nzUwoKaWSiOMyVJGRteeLZoE9/Vd0g1d1A1CnOTBch
+         iefGXSd562MU1daLguSxVuSYz48gbB4cw9V2VrpWT1ohWxBZWfHUGKX7gVMhZayptsdN
+         6tkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QY7dh3vckMKD6ltiTnksJuU8XWzuwGJAwKPsT1GH95k=;
+        b=mh5NztUUC5qqbH0CkxYTexZy6XPOKk5lOBjWvQUH0hhR/10sFkko70/MeRt//mBsu5
+         QpaJnWaDlsV6si30HtagNPjzPb0g1lCvohuk65bQo0dsTtLnQaP4AKIAdN1u1gSxSjpN
+         VGQ5nmecofhcl/BP2yAPN5i6rJFjMcJ+R4sPRrtxsrq1xotLPAiVswYs66RCaJnHMSsU
+         fJrV0ZmLPB6cDzROV3KJiGX5u3vbeJKd2js1vxARiV0Kmn5hllhdNxvLNlCxx886jGKD
+         OnuqIPPoTpisoA+ya2aGDMlkHNVkE6jSkZMqtfzXmTzfg6QNurh0W6xzRUfzNW3FmOHe
+         efpw==
+X-Gm-Message-State: AOAM532PftFucFk4zQhwFpwbrWTx2BD7IiGJfQmpnJefxXPKha5E88ng
+        SK+tatdNBRDhQz78HCbaAOc=
+X-Google-Smtp-Source: ABdhPJwVFv4wBEiQMW6J55O5DFXO9OXLz5XqS6hm2ntps1LABNFAjygVJ6W5qcIzFMtXZIXRJo5khQ==
+X-Received: by 2002:a17:906:7c56:: with SMTP id g22mr2526763ejp.282.1606395749956;
+        Thu, 26 Nov 2020 05:02:29 -0800 (PST)
+Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id t11sm3030276ejx.68.2020.11.26.05.02.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Nov 2020 05:02:29 -0800 (PST)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Subject: [PATCH v2] drm/msm: Fix use-after-free in msm_gem with carveout
+Date:   Thu, 26 Nov 2020 15:02:23 +0200
+Message-Id: <20201126130223.1663853-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201126124300.GP4327@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 12:43:00PM +0000, Matthew Wilcox wrote:
-> On Thu, Nov 26, 2020 at 01:01:15PM +0100, Peter Zijlstra wrote:
-> > +#ifdef CONFIG_GUP_GET_PTE_LOW_HIGH
-> > +/*
-> > + * WARNING: only to be used in the get_user_pages_fast() implementation.
-> > + * With get_user_pages_fast(), we walk down the pagetables without taking any
-> > + * locks.  For this we would like to load the pointers atomically, but sometimes
-> > + * that is not possible (e.g. without expensive cmpxchg8b on x86_32 PAE).  What
-> > + * we do have is the guarantee that a PTE will only either go from not present
-> > + * to present, or present to not present or both -- it will not switch to a
-> > + * completely different present page without a TLB flush in between; something
-> > + * that we are blocking by holding interrupts off.
-> 
-> I feel like this comment needs some love.  How about:
-> 
->  * For walking the pagetables without holding any locks.  Some architectures
->  * (eg x86-32 PAE) cannot load the entries atomically without using
->  * expensive instructions.  We are guaranteed that a PTE will only either go
->  * from not present to present, or present to not present -- it will not
->  * switch to a completely different present page without a TLB flush
->  * inbetween; which we are blocking by holding interrupts off.
-> 
-> And it would be nice to have an assertion that interrupts are disabled
-> in the code.  Because comments are nice, but nobody reads them.
+When using gem with vram carveout the page allocation is managed via
+drm_mm. The necessary drm_mm_node is allocated in add_vma, but it is
+referenced in msm_gem_object as well. It is freed before the drm_mm_node
+has been deallocated leading to use-after-free on every single vram
+allocation.
 
-Quite agreed, I'll stick a separate patch on with the updated comment
-and a lockdep_assert_irqs_disabled() in. I'm afraid that latter will make
-for header soup though :/
+Currently put_iova is called before put_pages in both
+msm_gem_free_object and msm_gem_purge:
 
-We'll see, let the robots have it.
+	put_iova -> del_vma -> kfree(vma) // vma holds drm_mm_node
+	/* later */
+	put_pages -> put_pages_vram -> drm_mm_remove_node(
+						msm_obj->vram_node)
+				 	// vram_node is a ref to
+					// drm_mm_node; in _msm_gem_new
+
+It looks like del_vma does nothing else other than freeing the vma
+object and removing it from it's list, so delaying the deletion should
+be harmless.
+
+This patch splits put_iova in put_iova_spaces and put_iova_vmas, so the
+vma can be freed after the mm_node has been deallocated with the mm.
+
+Note: The breaking commit separated the vma allocation from within
+msm_gem_object to outside, so the vram_node reference became outside the
+msm_gem_object allocation, and freeing order was therefore overlooked.
+
+Fixes: 4b85f7f5cf7 ("drm/msm: support for an arbitrary number of address spaces")
+Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+---
+v1: https://lkml.org/lkml/2020/11/26/130
+
+Changes in v2:
+- patch now compiles (oops)
+- improve commit message
+- add fixes tag
+
+ drivers/gpu/drm/msm/msm_gem.c | 27 ++++++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index 15715a156620f..dfe6387c62c86 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -355,18 +355,31 @@ static void del_vma(struct msm_gem_vma *vma)
+
+ /* Called with msm_obj locked */
+ static void
+-put_iova(struct drm_gem_object *obj)
++put_iova_spaces(struct drm_gem_object *obj)
+ {
+ 	struct msm_gem_object *msm_obj = to_msm_bo(obj);
+-	struct msm_gem_vma *vma, *tmp;
++	struct msm_gem_vma *vma;
+
+ 	WARN_ON(!msm_gem_is_locked(obj));
+
+-	list_for_each_entry_safe(vma, tmp, &msm_obj->vmas, list) {
++	list_for_each_entry(vma, &msm_obj->vmas, list) {
+ 		if (vma->aspace) {
+ 			msm_gem_purge_vma(vma->aspace, vma);
+ 			msm_gem_close_vma(vma->aspace, vma);
+ 		}
++	}
++}
++
++/* Called with msm_obj locked */
++static void
++put_iova_vmas(struct drm_gem_object *obj)
++{
++	struct msm_gem_object *msm_obj = to_msm_bo(obj);
++	struct msm_gem_vma *vma, *tmp;
++
++	WARN_ON(!msm_gem_is_locked(obj));
++
++	list_for_each_entry_safe(vma, tmp, &msm_obj->vmas, list) {
+ 		del_vma(vma);
+ 	}
+ }
+@@ -688,12 +701,14 @@ void msm_gem_purge(struct drm_gem_object *obj)
+ 	WARN_ON(!is_purgeable(msm_obj));
+ 	WARN_ON(obj->import_attach);
+
+-	put_iova(obj);
++	put_iova_spaces(obj);
+
+ 	msm_gem_vunmap(obj);
+
+ 	put_pages(obj);
+
++	put_iova_vmas(obj);
++
+ 	msm_obj->madv = __MSM_MADV_PURGED;
+
+ 	drm_vma_node_unmap(&obj->vma_node, dev->anon_inode->i_mapping);
+@@ -942,7 +957,7 @@ void msm_gem_free_object(struct drm_gem_object *obj)
+
+ 	msm_gem_lock(obj);
+
+-	put_iova(obj);
++	put_iova_spaces(obj);
+
+ 	if (obj->import_attach) {
+ 		WARN_ON(msm_obj->vaddr);
+@@ -965,6 +980,8 @@ void msm_gem_free_object(struct drm_gem_object *obj)
+ 		msm_gem_unlock(obj);
+ 	}
+
++	put_iova_vmas(obj);
++
+ 	drm_gem_object_release(obj);
+
+ 	kfree(msm_obj);
+
+base-commit: 6147c83fd749d19a0d3ccc2f64d12138ab010b47
+--
+2.29.2
+
