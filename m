@@ -2,155 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040972C56B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D1B2C56CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390518AbgKZOML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:12:11 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36288 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390475AbgKZOML (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:12:11 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AQEBpGx052408;
-        Thu, 26 Nov 2020 08:11:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606399911;
-        bh=h8FvSlW6MYmLAlmNm/rV0XpPr72kXTVgiwM9oYW4MMM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=NTOShYdv54TtN9SpqxKPn3Xk4FZdWAjP5Bt6zY9ONfBQzuyZwe0Fqjx6qP+OKvED3
-         rrLec01H3eeQiUOYbyih6iP9D4dTufZYN1av9oSclUmHiESmV9iLqcBiVa68l/9YBI
-         DTzdGNybvLQxRgM0tTd/qgZ4EBBbViycbrxF/aZE=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AQEBpB6002918
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 26 Nov 2020 08:11:51 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 26
- Nov 2020 08:11:51 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 26 Nov 2020 08:11:51 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AQEBndX044966;
-        Thu, 26 Nov 2020 08:11:49 -0600
-Subject: Re: [REGRESSION] omapdrm/N900 display broken
-To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-CC:     Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200728181412.GA49617@darkstar.musicnaut.iki.fi>
- <660b2fe1-343d-b83e-11d2-5a5eb530b83f@ti.com>
- <448c1441-2cac-44ef-95ef-bb28b512297b@ti.com>
- <20200823162625.GC4313@darkstar.musicnaut.iki.fi>
- <ac42f7f9-2ac2-246e-69c1-3d56cea7e59b@ti.com>
- <5072a25d-e885-cdd2-978d-70942406c272@gmail.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <09044fd2-2926-c7b3-826b-52b742e84ff5@ti.com>
-Date:   Thu, 26 Nov 2020 16:11:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2390538AbgKZONn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:13:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:34138 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389834AbgKZONn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 09:13:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A053831B;
+        Thu, 26 Nov 2020 06:13:42 -0800 (PST)
+Received: from e121896.arm.com (unknown [10.57.53.242])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C15823F71F;
+        Thu, 26 Nov 2020 06:13:40 -0800 (PST)
+From:   James Clark <james.clark@arm.com>
+To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jolsa@redhat.com, namhyung@kernel.org
+Cc:     james.clark@arm.com, john.garry@huawei.com
+Subject: [PATCH v6 00/12] perf tools: fix perf stat with large socket IDs
+Date:   Thu, 26 Nov 2020 16:13:16 +0200
+Message-Id: <20201126141328.6509-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <5072a25d-e885-cdd2-978d-70942406c272@gmail.com>
-Content-Type: multipart/mixed;
-        boundary="------------F4CB996E1B69C173202E7352"
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------F4CB996E1B69C173202E7352
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Changes since v5:
+  * Fix test for cpu_map__get_die() by shifting id before testing.
+  * Fix test for cpu_map__get_socket() by not using cpu_map__id_to_socket()
+    which is only valid in CPU aggregation mode.
 
-Hi Aaro, Ivaylo,
+James Clark (12):
+  perf tools: Improve topology test
+  perf tools: Use allocator for perf_cpu_map
+  perf tools: Add new struct for cpu aggregation
+  perf tools: Replace aggregation ID with a struct
+  perf tools: add new map type for aggregation
+  perf tools: drop in cpu_aggr_map struct
+  perf tools: Start using cpu_aggr_id in map
+  perf tools: Add separate node member
+  perf tools: Add separate socket member
+  perf tools: Add separate die member
+  perf tools: Add separate core member
+  perf tools: Add separate thread member
 
-On 24/11/2020 23:03, Ivaylo Dimitrov wrote:
-
-> Is there any progress on the issue? I tried 5.9.1 and still nothing displayed.
-
-Can you test the attached patch?
-
- Tomi
+ tools/perf/builtin-stat.c      | 128 ++++++++++++------------
+ tools/perf/tests/topology.c    |  64 ++++++++++--
+ tools/perf/util/cpumap.c       | 171 ++++++++++++++++++++++-----------
+ tools/perf/util/cpumap.h       |  55 ++++++-----
+ tools/perf/util/stat-display.c | 102 ++++++++++++--------
+ tools/perf/util/stat.c         |   2 +-
+ tools/perf/util/stat.h         |   9 +-
+ 7 files changed, 337 insertions(+), 194 deletions(-)
 
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.28.0
 
---------------F4CB996E1B69C173202E7352
-Content-Type: text/x-patch; charset="UTF-8";
-	name="0001-drm-omap-sdi-fix-bridge-enable-disable.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="0001-drm-omap-sdi-fix-bridge-enable-disable.patch"
-
-From 97c55032ac5c44885b0ec219467699af0b6153c1 Mon Sep 17 00:00:00 2001
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Date: Thu, 26 Nov 2020 16:04:24 +0200
-Subject: [PATCH] drm/omap: sdi: fix bridge enable/disable
-
-When the SDI output was converted to DRM bridge, the atomic versions of
-enable and disable funcs were used. This was not intended, as that would
-require implementing other atomic funcs too. This leads to:
-
-WARNING: CPU: 0 PID: 18 at drivers/gpu/drm/drm_bridge.c:708 drm_atomic_helper_commit_modeset_enables+0x134/0x268
-
-and display not working.
-
-Fix this by using the legacy enable/disable funcs.
-
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Reported-by: Aaro Koskinen <aaro.koskinen@iki.fi>
-Fixes: 8bef8a6d5da81b909a190822b96805a47348146f ("drm/omap: sdi: Register a drm_bridge")
-Cc: stable@vger.kernel.org #v5.7+
----
- drivers/gpu/drm/omapdrm/dss/sdi.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/omapdrm/dss/sdi.c b/drivers/gpu/drm/omapdrm/dss/sdi.c
-index 033fd30074b0..282e4c837cd9 100644
---- a/drivers/gpu/drm/omapdrm/dss/sdi.c
-+++ b/drivers/gpu/drm/omapdrm/dss/sdi.c
-@@ -195,8 +195,7 @@ static void sdi_bridge_mode_set(struct drm_bridge *bridge,
- 	sdi->pixelclock = adjusted_mode->clock * 1000;
- }
- 
--static void sdi_bridge_enable(struct drm_bridge *bridge,
--			      struct drm_bridge_state *bridge_state)
-+static void sdi_bridge_enable(struct drm_bridge *bridge)
- {
- 	struct sdi_device *sdi = drm_bridge_to_sdi(bridge);
- 	struct dispc_clock_info dispc_cinfo;
-@@ -259,8 +258,7 @@ static void sdi_bridge_enable(struct drm_bridge *bridge,
- 	regulator_disable(sdi->vdds_sdi_reg);
- }
- 
--static void sdi_bridge_disable(struct drm_bridge *bridge,
--			       struct drm_bridge_state *bridge_state)
-+static void sdi_bridge_disable(struct drm_bridge *bridge)
- {
- 	struct sdi_device *sdi = drm_bridge_to_sdi(bridge);
- 
-@@ -278,8 +276,8 @@ static const struct drm_bridge_funcs sdi_bridge_funcs = {
- 	.mode_valid = sdi_bridge_mode_valid,
- 	.mode_fixup = sdi_bridge_mode_fixup,
- 	.mode_set = sdi_bridge_mode_set,
--	.atomic_enable = sdi_bridge_enable,
--	.atomic_disable = sdi_bridge_disable,
-+	.enable = sdi_bridge_enable,
-+	.disable = sdi_bridge_disable,
- };
- 
- static void sdi_bridge_init(struct sdi_device *sdi)
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
-
---------------F4CB996E1B69C173202E7352--
