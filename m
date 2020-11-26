@@ -2,67 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1CA2C526D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669E92C5272
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388114AbgKZKv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:51:29 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:45938 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726562AbgKZKv2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:51:28 -0500
-Received: by mail-ot1-f67.google.com with SMTP id k3so1486510otp.12;
-        Thu, 26 Nov 2020 02:51:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MKsnqNHLPjfzJEz+LOz9b4IyVMWHOQQVeFeqeTFluRM=;
-        b=t7UJ+DPZvpjdYgd0jmb1WyZyrlJ3Kcvg62FtGbwxoKhZk2Xy+ir7y43yS7Iq3vb8TE
-         7V3+E8sLKwiif4Yo58zw8xzEQedal+6sdjTrlNuHl8aHS7QoC4KZllUp7KdUC98PwCJs
-         e/E8dk0sG1BAuGqjTGB5YeYbk1mWYWWYx2yNTYPJBh6AC9leRJOAgnZFOXkfwCOlK1a6
-         4hMTPzi5VjGJjsRmz0/vwXHYFNNCAj3GCDBx4SaftCuvGVfjdGIgQfDwUA78fB11oob2
-         o0r/5Hiz+Gc2TpfFzQc3X9Nc14fcf73d0r3RDTEHRMbdXs5u36VMeM9/Cv3OWoF5f++s
-         peng==
-X-Gm-Message-State: AOAM532ameRQCD9k5VLWYIrVrFDfOv5DBGl4JYVknErbIFjGHInzhwXn
-        JSRPhfl+6IYTtm4NXgvv60haxjMmM01Zzx6y85s1J0PZYUo=
-X-Google-Smtp-Source: ABdhPJxjtblWrr1n26nJp4tQDVTYSnquxSVHhmkmB6z1QxpqadgNFEOGxbonsoJaFaUa3BMwTjR/nUCfuovN7HTCbWM=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr1831584otc.145.1606387886190;
- Thu, 26 Nov 2020 02:51:26 -0800 (PST)
+        id S2388579AbgKZKvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:51:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59910 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726562AbgKZKvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 05:51:37 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6A73DAC22;
+        Thu, 26 Nov 2020 10:51:36 +0000 (UTC)
+Date:   Thu, 26 Nov 2020 10:51:34 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <20201126105134.GP3306@suse.de>
+References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
+ <20201121194506.13464-1-aarcange@redhat.com>
+ <20201121194506.13464-2-aarcange@redhat.com>
+ <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
+ <X73s8fxDKPRD6wET@redhat.com>
+ <1c4c405b-52e0-cf6b-1f82-91a0a1e3dd53@suse.cz>
+ <cd9f0b9f-c4f6-b80c-03cd-12697324bfca@redhat.com>
+ <20201125141325.GK123287@linux.ibm.com>
+ <3a25844f-f6c4-a794-69ef-fdf49e5b7cf8@redhat.com>
 MIME-Version: 1.0
-References: <20201125073303.19057-1-yuya.hamamachi.sx@renesas.com> <20201125073303.19057-2-yuya.hamamachi.sx@renesas.com>
-In-Reply-To: <20201125073303.19057-2-yuya.hamamachi.sx@renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 26 Nov 2020 11:51:15 +0100
-Message-ID: <CAMuHMdVGMcEPOkofqBmwsHPGvLohYbXQ4KKvVzXd9ty1KR2K8w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pci: rcar-pci-ep: Document r8a7795
-To:     Yuya Hamamachi <yuya.hamamachi.sx@renesas.com>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <3a25844f-f6c4-a794-69ef-fdf49e5b7cf8@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 8:45 AM Yuya Hamamachi
-<yuya.hamamachi.sx@renesas.com> wrote:
-> Document the support for R-Car PCIe EP on R8A7795 SoC device.
->
-> Signed-off-by: Yuya Hamamachi <yuya.hamamachi.sx@renesas.com>
+On Wed, Nov 25, 2020 at 03:42:37PM +0100, David Hildenbrand wrote:
+> > Now the loop is for interesection of [zone_start_pfn, zone_end_pfn] with
+> > memblock.memory and for x86 reserved ranges are not in memblock.memory,
+> > so the memmap for them remains semi-initialized.
+> 
+> As far as I understood Mel, rounding these ranges up/down to cover full
+> MAX_ORDER blocks/pageblocks might work.
+> 
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Yes, round down the lower end of the hole and round up the higher end to
+the MAX_ORDER boundary for the purposes of having valid zone/node
+linkages even if the underlying page is PageReserved.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Mel Gorman
+SUSE Labs
