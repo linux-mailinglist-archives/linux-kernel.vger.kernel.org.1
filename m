@@ -2,243 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58442C565B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A53E32C566D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390859AbgKZNpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:45:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34196 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390196AbgKZNpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:45:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A4956AC6A;
-        Thu, 26 Nov 2020 13:45:34 +0000 (UTC)
-Subject: Re: [PATCH 6/7] mm,hwpoison: Disable pcplists before grabbing a
- refcount
-To:     Oscar Salvador <osalvador@suse.de>, akpm@linux-foundation.org
-Cc:     n-horiguchi@ah.jp.nec.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20201119105716.5962-1-osalvador@suse.de>
- <20201119105716.5962-7-osalvador@suse.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <5512967d-a96a-c94e-7442-e5e71baa7b19@suse.cz>
-Date:   Thu, 26 Nov 2020 14:45:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2390148AbgKZNrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:47:35 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:61604 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390354AbgKZNrf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 08:47:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1606398454; x=1637934454;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=fyAnVHSM7DUGAUg/UQTCA37wZ5eyuf7HfQz0TTccKaA=;
+  b=nFc2aNQOhGa8p77FBo0X3QwCL2C+7jixou3Ag1n7OdQmebRr2CvNjCNY
+   I5BruyZHh6rnAYmjNBviXiXGrvOs+Di2uyl7iemJLm7YsnsKNKK5/DO1/
+   ttX+IYOlnQ4WEGnQpRe6xQPQXIa/vhItJupLrwEjD12+ynr21sVzt1M0I
+   s=;
+X-IronPort-AV: E=Sophos;i="5.78,372,1599523200"; 
+   d="scan'208";a="91197811"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 26 Nov 2020 13:46:15 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (Postfix) with ESMTPS id 8C108A1F84;
+        Thu, 26 Nov 2020 13:46:12 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 26 Nov 2020 13:45:55 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        <Jonathan.Cameron@huawei.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Qian Cai <cai@lca.pw>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David Hildenbrand" <david@redhat.com>, <dwmw@amazon.com>,
+        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
+        <foersleo@amazon.de>, "Greg Thelen" <gthelen@google.com>,
+        Ian Rogers <irogers@google.com>, <jolsa@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, <namhyung@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>, <sblbir@amazon.com>,
+        Shuah Khan <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>, <zgf574564920@gmail.com>,
+        <linux-damon@amazon.com>, Linux MM <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v22 10/18] mm/damon: Implement a debugfs-based user space interface
+Date:   Thu, 26 Nov 2020 14:45:39 +0100
+Message-ID: <20201126134539.5974-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CALvZod6md-OQD6ZKYtPjOgC5TvhDb0X0fBewA9dZAwhmwQw4=w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201119105716.5962-7-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.237]
+X-ClientProxiedBy: EX13D42UWA001.ant.amazon.com (10.43.160.153) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/20 11:57 AM, Oscar Salvador wrote:
-> Currently, we have a sort of retry mechanism to make sure pages in
-> pcp-lists are spilled to the buddy system, so we can handle those.
-> 
-> We can save us this extra checks with the new disable-pcplist mechanism
-> that is available with [1].
-> 
-> zone_pcplist_disable makes sure to 1) disable pcplists, so any page
-> that is freed up from that point onwards will end up in the buddy
-> system and 2) drain pcplists, so those pages that already in pcplists
-> are spilled to buddy.
-> 
-> With that, we can make a common entry point for grabbing a refcount
-> from both soft_offline and memory_failure paths that is guarded by
-> zone_pcplist_disable/zone_pcplist_enable.
-> 
-> [1] https://patchwork.kernel.org/project/linux-mm/cover/20201111092812.11329-1-vbabka@suse.cz/
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+On Wed, 25 Nov 2020 07:30:36 -0800 Shakeel Butt <shakeelb@google.com> wrote:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-Note as you say the series should go after [1] above, which means after 
-mm-page_alloc-disable-pcplists-during-memory-offline.patch in mmots, but 
-currently it's ordered before, where zone_pcp_disable() etc doesn't yet exist. 
-Found out as I review using checked out this commit from -next.
-
-> ---
->   mm/memory-failure.c | 120 +++++++++++++++++++++-----------------------
->   1 file changed, 58 insertions(+), 62 deletions(-)
+> On Tue, Oct 20, 2020 at 2:06 AM SeongJae Park <sjpark@amazon.com> wrote:
+> >
+> > From: SeongJae Park <sjpark@amazon.de>
+> >
+> > DAMON is designed to be used by kernel space code such as the memory
+> > management subsystems, and therefore it provides only kernel space API.
+> > That said, letting the user space control DAMON could provide some
+> > benefits to them.  For example, it will allow user space to analyze
+> > their specific workloads and make their own special optimizations.
+> >
+> > For such cases, this commit implements a simple DAMON application kernel
+> > module, namely 'damon-dbgfs', which merely wraps the DAMON api and
+> > exports those to the user space via the debugfs.
+> >
+> > 'damon-dbgfs' exports three files, ``attrs``, ``target_ids``, and
+> > ``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
+> >>
+[...]
+> > +/**
+> > + * damon_nr_running_ctxs() - Return number of currently running contexts.
+> > + */
+> > +int damon_nr_running_ctxs(void)
+> > +{
+> > +       int nr_ctxs;
+> > +
+> > +       mutex_lock(&damon_lock);
+> > +       nr_ctxs = nr_running_ctxs;
+> > +       mutex_unlock(&damon_lock);
+> > +
 > 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 4abf5d5ffc96..512613e9a1bd 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -985,26 +985,67 @@ static int __get_hwpoison_page(struct page *page)
->   	return 0;
->   }
->   
-> -static int get_hwpoison_page(struct page *p)
-> +/*
-> + * Safely get reference count of an arbitrary page.
-> + *
-> + * Returns 0 for a free page, 1 for an in-use page,
-> + * -EIO for a page-type we cannot handle and -EBUSY if we raced with an
-> + * allocation.
-> + * We only incremented refcount in case the page was already in-use and it
-> + * is a known type we can handle.
-> + */
-> +static int get_any_page(struct page *p)
->   {
-> -	int ret;
-> -	bool drained = false;
-> +	int ret = 0, pass = 0;
->   
-> -retry:
-> -	ret = __get_hwpoison_page(p);
-> -	if (!ret && !is_free_buddy_page(p) && !page_count(p) && !drained) {
-> -		/*
-> -		 * The page might be in a pcplist, so try to drain those
-> -		 * and see if we are lucky.
-> -		 */
-> -		drain_all_pages(page_zone(p));
-> -		drained = true;
-> -		goto retry;
-> +try_again:
-> +	if (!__get_hwpoison_page(p)) {
-> +		if (page_count(p)) {
-> +			/* We raced with an allocation, retry. */
-> +			if (pass++ < 3)
-> +				goto try_again;
-> +			ret = -EBUSY;
-> +		} else if (!PageHuge(p) && !is_free_buddy_page(p)) {
-> +			/* We raced with put_page, retry. */
-> +			if (pass++ < 3)
-> +				goto try_again;
-> +			ret = -EIO;
-> +		}
-> +	} else {
-> +		if (PageHuge(p) || PageLRU(p) || __PageMovable(p)) {
-> +			ret = 1;
-> +		} else {
-> +			/*
-> +			 * A page we cannot handle. Check whether we can turn
-> +			 * it into something we can handle.
-> +			 */
-> +			if (pass++ < 3) {
-> +				put_page(p);
-> +				shake_page(p, 1);
-> +				goto try_again;
-> +			}
-> +			put_page(p);
-> +			ret = -EIO;
-> +		}
->   	}
->   
->   	return ret;
->   }
->   
-> +static int get_hwpoison_page(struct page *p, enum mf_flags ctxt)
-> +{
-> +	int ret;
-> +
-> +	zone_pcp_disable(page_zone(p));
-> +	if (ctxt == MF_SOFT_OFFLINE)
-> +		ret = get_any_page(p);
-> +	else
-> +		ret = __get_hwpoison_page(p);
-> +	zone_pcp_enable(page_zone(p));
-> +
-> +	return ret;
-> +}
-> +
->   /*
->    * Do all that is necessary to remove user space mappings. Unmap
->    * the pages and send SIGBUS to the processes if the data was dirty.
-> @@ -1185,7 +1226,7 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
->   
->   	num_poisoned_pages_inc();
->   
-> -	if (!get_hwpoison_page(p)) {
-> +	if (!get_hwpoison_page(p, 0)) {
->   		/*
->   		 * Check "filter hit" and "race with other subpage."
->   		 */
-> @@ -1387,7 +1428,7 @@ int memory_failure(unsigned long pfn, int flags)
->   	 * In fact it's dangerous to directly bump up page count from 0,
->   	 * that may make page_ref_freeze()/page_ref_unfreeze() mismatch.
->   	 */
-> -	if (!get_hwpoison_page(p)) {
-> +	if (!get_hwpoison_page(p, 0)) {
->   		if (is_free_buddy_page(p)) {
->   			if (take_page_off_buddy(p)) {
->   				page_ref_inc(p);
-> @@ -1674,7 +1715,7 @@ int unpoison_memory(unsigned long pfn)
->   		return 0;
->   	}
->   
-> -	if (!get_hwpoison_page(p)) {
-> +	if (!get_hwpoison_page(p, 0)) {
->   		if (TestClearPageHWPoison(p))
->   			num_poisoned_pages_dec();
->   		unpoison_pr_info("Unpoison: Software-unpoisoned free page %#lx\n",
-> @@ -1705,51 +1746,6 @@ int unpoison_memory(unsigned long pfn)
->   }
->   EXPORT_SYMBOL(unpoison_memory);
->   
-> -/*
-> - * Safely get reference count of an arbitrary page.
-> - * Returns 0 for a free page, 1 for an in-use page, -EIO for a page-type we
-> - * cannot handle and -EBUSY if we raced with an allocation.
-> - * We only incremented refcount in case the page was already in-use and it is
-> - * a known type we can handle.
-> - */
-> -static int get_any_page(struct page *p)
-> -{
-> -	int ret = 0, pass = 0;
-> -
-> -try_again:
-> -	if (!get_hwpoison_page(p)) {
-> -		if (page_count(p)) {
-> -			/* We raced with an allocation, retry. */
-> -			if (pass++ < 3)
-> -				goto try_again;
-> -			ret = -EBUSY;
-> -		} else if (!PageHuge(p) && !is_free_buddy_page(p)) {
-> -			/* We raced with put_page, retry. */
-> -			if (pass++ < 3)
-> -				goto try_again;
-> -			ret = -EIO;
-> -		}
-> -	} else {
-> -		if (PageHuge(p) || PageLRU(p) || __PageMovable(p)) {
-> -			ret = 1;
-> -		} else {
-> -			/*
-> -			 * A page we cannot handle. Check whether we can turn
-> -			 * it into something we can handle.
-> -			 */
-> -			if (pass++ < 3) {
-> -				put_page(p);
-> -				shake_page(p, 1);
-> -				goto try_again;
-> -			}
-> -			put_page(p);
-> -			ret = -EIO;
-> -		}
-> -	}
-> -
-> -	return ret;
-> -}
-> -
->   static bool isolate_page(struct page *page, struct list_head *pagelist)
->   {
->   	bool isolated = false;
-> @@ -1920,7 +1916,7 @@ int soft_offline_page(unsigned long pfn)
->   
->   retry:
->   	get_online_mems();
-> -	ret = get_any_page(page);
-> +	ret = get_hwpoison_page(page, MF_SOFT_OFFLINE);
->   	put_online_mems();
->   
->   	if (ret > 0) {
-> 
+> READ_ONCE() instead of mutex?
 
+Right, it would be ok and even make the code slightly faster.  But, if you're
+ok, I'd like to keep this as is because this helps reader easily find what
+variables are protected by the mutex and this is not performance critical.
+
+> 
+> > +       return nr_ctxs;
+> > +}
+> > +
+[...]
+> > +
+> > +static ssize_t dbgfs_target_ids_write(struct file *file,
+> > +               const char __user *buf, size_t count, loff_t *ppos)
+> > +{
+> > +       struct damon_ctx *ctx = file->private_data;
+> > +       char *kbuf, *nrs;
+> > +       bool received_pidfds = false;
+> > +       unsigned long *targets;
+> > +       ssize_t nr_targets;
+> > +       ssize_t ret = count;
+> > +       int i;
+> > +       int err;
+> > +
+> > +       kbuf = user_input_str(buf, count, ppos);
+> > +       if (IS_ERR(kbuf))
+> > +               return PTR_ERR(kbuf);
+> > +
+> > +       nrs = kbuf;
+> > +
+> > +       if (!strncmp(kbuf, "pidfd ", 6)) {
+> > +               received_pidfds = true;
+> 
+> I am inclining towards having simple pids instead of pidfds. Basically
+> what cgroup/resctrl does.
+
+Ok, I will drop the pidfd support for simplicity.  Restoring it back when real
+requirement comes out would not be too late.
+
+> 
+> 
+> > +               nrs = &kbuf[6];
+> > +       }
+> > +
+> > +       targets = str_to_target_ids(nrs, ret, &nr_targets);
+> > +       if (!targets) {
+> > +               ret = -ENOMEM;
+> > +               goto out;
+> > +       }
+> > +
+> > +       if (received_pidfds) {
+> > +               for (i = 0; i < nr_targets; i++)
+> > +                       targets[i] = (unsigned long)damon_get_pidfd_pid(
+> > +                                       (unsigned int)targets[i]);
+> > +       } else if (targetid_is_pid(ctx)) {
+> > +               for (i = 0; i < nr_targets; i++)
+> > +                       targets[i] = (unsigned long)find_get_pid(
+> > +                                       (int)targets[i]);
+> > +       }
+> > +
+> > +       mutex_lock(&ctx->kdamond_lock);
+> > +       if (ctx->kdamond) {
+> > +               ret = -EINVAL;
+> > +               goto unlock_out;
+> > +       }
+> > +
+> > +       err = damon_set_targets(ctx, targets, nr_targets);
+> 
+> Hmm this is leaking the references to the previous targets.
+
+'damon_set_targets()' frees the previous targets itself, so we don't leak.
+
+> 
+> > +       if (err)
+> > +               ret = err;
+> > +unlock_out:
+> > +       mutex_unlock(&ctx->kdamond_lock);
+> > +       kfree(targets);
+> > +out:
+> > +       kfree(kbuf);
+> > +       return ret;
+> > +}
+> > +
+> 
+> Still looking.
+
+Looking forward your comments!
+
+
+Thanks,
+SeongJae Park
