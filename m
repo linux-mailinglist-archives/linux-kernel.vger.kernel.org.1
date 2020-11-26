@@ -2,146 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548B92C53C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 551532C53C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389540AbgKZMOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 07:14:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
+        id S2388797AbgKZMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 07:14:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388797AbgKZMOQ (ORCPT
+        with ESMTP id S1725980AbgKZMOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 07:14:16 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FE1C0613D4;
-        Thu, 26 Nov 2020 04:14:15 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id r3so1926390wrt.2;
-        Thu, 26 Nov 2020 04:14:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=leRIBFMdc/+95yE03Mwyi+p0MqR4836R4TmqRPoXHYk=;
-        b=NDmPqvPIeTqk4uF0nostxKHoa7F04XIhs/+Cu4cC9EteZAc1MXGkt3UtLA8Q7RZFi+
-         gNOR1aG4OP0zB9fkdoVJHx6WHlJJ+ttlcZwAOvR/GUIOSTSJr1yDA8alo7jGyaKrhtXa
-         r0q3u9TdXpxOgTIXAx75wgk40S6Y+TQ9bFO/yk0LX4K8e540Rl6vSM37boycnQFx3Mhm
-         DocPNEvWozVGKAo+gqIMUBapkf/gUItK80xjvbJnXhT2pCz1Ls+Q69opTTPk5ggIBIN3
-         hm5HLJa7QR4OwhODOQ9EwFy3vrir4PG1cvVAeJzXknov1rYb2EOtKAuKRFhhtaaqcreN
-         tJeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=leRIBFMdc/+95yE03Mwyi+p0MqR4836R4TmqRPoXHYk=;
-        b=pDUHxJ8Vl9q8sRXmOlO477nQX4GN2Ati69JoASgcC4NZaBOgNKewfn784crqMlZbbJ
-         a2P0WVzy5fNw+UBgHtkaVDn2mrsyVxpUlUO3hDhue7JCFXgm+uh6tdoeSaAMLsf/9zHq
-         CQRpPpjB6S7db22vAKv9JoPuwDE0agmx5QyCSHKjjA0aUrkRBW3avhbL1/zhoEbu7eKc
-         wFhQDakf7eJOQ2e9j5fOFhZ+D1hiHab3jWXFLzbwqo0a4Gf3pyFdaSt2glHdRtGzNUj2
-         TWGLbKLRX5/LHbtTKzKEs24lfE1uBy1QKBYeVSEji5Bu0lDLeKA+ndEE+uvf9u3zFMiM
-         I2ng==
-X-Gm-Message-State: AOAM531viSPOkkmH+kMM6S5R6/3k3DT/zIf7VeXqTLyy+mwnYvBBNVGJ
-        hujtrU15yKbhNXJ7MsgFX7c=
-X-Google-Smtp-Source: ABdhPJx9WI5ffS1A5nhB9sPFGNuoIdGNWY9lmRCtj1GCm0Tkx5Kmm8SNmYO/hwqHar88SB9h0XVj5w==
-X-Received: by 2002:a5d:4046:: with SMTP id w6mr3619887wrp.51.1606392853754;
-        Thu, 26 Nov 2020 04:14:13 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id k81sm10057458wma.2.2020.11.26.04.14.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 04:14:13 -0800 (PST)
-Subject: Re: set_thread_area.2: csky architecture undocumented
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-References: <014e670b-2a11-3deb-4e7e-bfe9defd8597@gmail.com>
- <c669c780-f6e8-bd2a-e6ec-0a5960b7d7d8@gmail.com>
-From:   "Alejandro Colomar (mailing lists; readonly)" 
-        <alx.mailinglists@gmail.com>
-Message-ID: <57bc9bce-5c04-fd1f-13c9-3e900a74f1eb@gmail.com>
-Date:   Thu, 26 Nov 2020 13:14:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 26 Nov 2020 07:14:45 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BF0C0613D4;
+        Thu, 26 Nov 2020 04:14:44 -0800 (PST)
+Date:   Thu, 26 Nov 2020 12:14:42 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606392883;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mxy39yWj5RVUiaFh1SEO1pqw1vyYRUxNHy3KF12oS/Q=;
+        b=TTPm4DK1Gp1MooGgbIJtCzIPQ4j1IU9UoKDUJEE6OJfUXsRmlikP3qRkWfSJBCycXBfwfd
+        XRX2/6ipbqeDKs2YC1ziMgXfF9P2N8JT8DGj6P2qx0iCus27frUCD7GLTODPYoHr0mvbmG
+        3qxrWt5JJ9OHzVSn3mJXCwVdMqzKdIScqG/VMP3Dru99FE9R0uUigt8QDXzu3w3SZIKgDO
+        Kyc2bZzwkV+7V6dQstm6Xrl7tahwCE0hedWkAi4DoHEZXwkj4MPOPsGBLouerISlN48Gv9
+        i2Ln81PALRoaYy3Wdikj7IGq0LoWSSPLDlfKK9E8m66JfRdKerypr6HudqKJ+g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606392883;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mxy39yWj5RVUiaFh1SEO1pqw1vyYRUxNHy3KF12oS/Q=;
+        b=M63xevglf9+ZBRxYr3HKMA2nydFbU3v7My13ZILeE882w7iMMXUxvsjM1FcOjrqNW7NV8e
+        4aczMPDVQbYnfhAA==
+From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/asm: Drop unused RDPID macro
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201027214532.1792-1-sean.j.christopherson@intel.com>
+References: <20201027214532.1792-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <c669c780-f6e8-bd2a-e6ec-0a5960b7d7d8@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <160639288228.3364.6749574723160205981.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Michael,
+The following commit has been merged into the x86/cleanups branch of tip:
 
-On 11/24/20 10:51 AM, Michael Kerrisk (man-pages) wrote:
-> Hi Alex,
-> 
-> On 11/23/20 10:31 PM, Alejandro Colomar (man-pages) wrote:
->> Hi Michael,
->>
->> SYNOPSIS
->>        #include <linux/unistd.h>
->>
->>        #if defined __i386__ || defined __x86_64__
->>        # include <asm/ldt.h>
->>
->>        int get_thread_area(struct user_desc *u_info);
->>        int set_thread_area(struct user_desc *u_info);
->>
->>        #elif defined __m68k__
->>
->>        int get_thread_area(void);
->>        int set_thread_area(unsigned long tp);
->>
->>        #elif defined __mips__
->>
->>        int set_thread_area(unsigned long addr);
->>
->>        #endif
->>
->>        Note: There are no glibc wrappers for these system  calls;  see
->>        NOTES.
->>
->>
->> $ grep -rn 'SYSCALL_DEFINE.*et_thread_area'
->> arch/csky/kernel/syscall.c:6:
->> SYSCALL_DEFINE1(set_thread_area, unsigned long, addr)
->> arch/mips/kernel/syscall.c:86:
->> SYSCALL_DEFINE1(set_thread_area, unsigned long, addr)
->> arch/x86/kernel/tls.c:191:
->> SYSCALL_DEFINE1(set_thread_area, struct user_desc __user *, u_info)
->> arch/x86/kernel/tls.c:243:
->> SYSCALL_DEFINE1(get_thread_area, struct user_desc __user *, u_info)
->> arch/x86/um/tls_32.c:277:
->> SYSCALL_DEFINE1(set_thread_area, struct user_desc __user *, user_desc)
->> arch/x86/um/tls_32.c:325:
->> SYSCALL_DEFINE1(get_thread_area, struct user_desc __user *, user_desc)
->>
->>
->> See kernel commit 4859bfca11c7d63d55175bcd85a75d6cee4b7184
->>
->>
->> I'd change
->> -      #elif defined __mips__
->> +      #elif defined(__mips__ || __csky__)
->>
->> and then change the rest of the text to add csky when appropriate.
->> Am I correct?
-> 
-> AFAICT, you are correct. I think the reason that csky is missing is
-> that the architecture was added after this manual pages was added.
+Commit-ID:     8539d3f06710a9e91b9968fa736549d7c6b44206
+Gitweb:        https://git.kernel.org/tip/8539d3f06710a9e91b9968fa736549d7c6b44206
+Author:        Sean Christopherson <sean.j.christopherson@intel.com>
+AuthorDate:    Tue, 27 Oct 2020 14:45:32 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 26 Nov 2020 12:58:56 +01:00
 
-Yep, I guessed it was that :)
+x86/asm: Drop unused RDPID macro
 
-Thanks,
+Drop the GAS-compatible RDPID macro. RDPID is unsafe in the kernel
+because KVM loads guest's TSC_AUX on VM-entry and may not restore the
+host's value until the CPU returns to userspace.
 
-Alex
+See
 
-> 
-> Thanks,
-> 
-> Michael
-> 
-> 
+  6a3ea3e68b8a ("x86/entry/64: Do not use RDPID in paranoid entry to accomodate KVM")
+
+for details.
+
+It can always be resurrected from git history, if needed.
+
+ [ bp: Massage commit message. ]
+
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201027214532.1792-1-sean.j.christopherson@intel.com
+---
+ arch/x86/include/asm/inst.h | 15 ---------------
+ 1 file changed, 15 deletions(-)
+
+diff --git a/arch/x86/include/asm/inst.h b/arch/x86/include/asm/inst.h
+index bd7f024..438ccd4 100644
+--- a/arch/x86/include/asm/inst.h
++++ b/arch/x86/include/asm/inst.h
+@@ -143,21 +143,6 @@
+ 	.macro MODRM mod opd1 opd2
+ 	.byte \mod | (\opd1 & 7) | ((\opd2 & 7) << 3)
+ 	.endm
+-
+-.macro RDPID opd
+-	REG_TYPE rdpid_opd_type \opd
+-	.if rdpid_opd_type == REG_TYPE_R64
+-	R64_NUM rdpid_opd \opd
+-	.else
+-	R32_NUM rdpid_opd \opd
+-	.endif
+-	.byte 0xf3
+-	.if rdpid_opd > 7
+-	PFX_REX rdpid_opd 0
+-	.endif
+-	.byte 0x0f, 0xc7
+-	MODRM 0xc0 rdpid_opd 0x7
+-.endm
+ #endif
+ 
+ #endif
