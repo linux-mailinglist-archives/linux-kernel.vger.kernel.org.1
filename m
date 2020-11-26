@@ -2,162 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750C22C57EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC972C57F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391251AbgKZPNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:13:08 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41854 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389316AbgKZPNH (ORCPT
+        id S2391183AbgKZPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390011AbgKZPS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:13:07 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AQF2KPp010743;
-        Thu, 26 Nov 2020 10:12:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to : sender; s=pp1;
- bh=24ioQCaQnbpaw4ZzpAU/UlSxiu/85955NmGjGmE/f+U=;
- b=lir9ziI2xN6ift3gK7vPK6SKtD248KuN8KCZ56ZiPXQbup5PUuRLc3WNo17xYYgm7N6J
- 3uoRy9ZZAjK7DzamFKyBNWG1pvRRcLtqGp2OGx0/fCnbThaJIcKVriuRSbaVKWqTwEc9
- zLEjHSj9D9HNBEotmSOyVGafwKY2guJIWXaKZUUi0y0oPYr279nEeLc22tH3mn5azE44
- 4kYv58HBrVnCb6oNd3qq3Tm1WtyqgUybytubgFAZP6d8YU21NIQD6fAzY3AYQHtgPfxI
- n2cT/SNF4LZ1NrhDRc5EQ5s48cOFnHGEWzcxyov+ieK/zNVt1hXCbNyudxDXZS11AHA4 zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 352ccemeyc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Nov 2020 10:12:51 -0500
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AQF2OwB011245;
-        Thu, 26 Nov 2020 10:12:51 -0500
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 352ccemexc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Nov 2020 10:12:51 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AQF6re1031217;
-        Thu, 26 Nov 2020 15:12:48 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 352ata03v6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Nov 2020 15:12:48 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AQFCjmK8651342
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Nov 2020 15:12:45 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B3C6611C04C;
-        Thu, 26 Nov 2020 15:12:45 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9BEC611C058;
-        Thu, 26 Nov 2020 15:12:45 +0000 (GMT)
-Received: from t480-pf1aa2c2 (unknown [9.145.178.201])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 26 Nov 2020 15:12:45 +0000 (GMT)
-Received: from bblock by t480-pf1aa2c2 with local (Exim 4.94)
-        (envelope-from <bblock@linux.ibm.com>)
-        id 1kiIwt-002zEL-1k; Thu, 26 Nov 2020 16:12:43 +0100
-Date:   Thu, 26 Nov 2020 16:12:42 +0100
-From:   Benjamin Block <bblock@linux.ibm.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Steffen Maier <maier@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH] scsi: zfcp: fix use-after-free in zfcp_unit_remove
-Message-ID: <20201126151242.GI8578@t480-pf1aa2c2>
-References: <20201120074854.31754-1-miaoqinglang@huawei.com>
- <20201125170658.GB8578@t480-pf1aa2c2>
- <4c65bead-2553-171e-54d2-87a9de0330e8@huawei.com>
- <20201126091353.50cf6ab6.cohuck@redhat.com>
- <20201126094259.GE8578@t480-pf1aa2c2>
- <9ba663ad-97fe-6c2a-e15a-45f2de1f0af0@huawei.com>
+        Thu, 26 Nov 2020 10:18:29 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3C7C061A04
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:18:28 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id y10so2726810ljc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:18:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GPXg0sqGSLG0UcV+BOdF/ev2TrBOmf0+tzuWK+lzNxY=;
+        b=GY6QZ9ajA72zJW7zsjgD0Z3DcuNaA/I15KO9ANEh9fNsKzrQqN0ACEnT7F535wLYWW
+         zkMDm//21gdgEsJzCyx9c1XFXVbvqfnwDMRXWa642OlDGGTCV9nXeoSEhDd1eOxKA+6p
+         a8BZXq44VHbsKqR9EWry1iuV1sp9X8B+5+exI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GPXg0sqGSLG0UcV+BOdF/ev2TrBOmf0+tzuWK+lzNxY=;
+        b=DE1DEWLHCjtIuOw8pCpYyvrgoxJFWn/scqTbSOLnUvDgD8m35dwT+wT+Kiip/7viQt
+         C5zutB2/1ZZzXJZSHa6h2qkIpgbgvpVaMgmQD+MglPEOTI0VUpnxJZQaVQ1RQEQ+Z8Jc
+         t5EEf3NYT9vfjetKpOxJc7RhcM083q4sqkdbnJwDepo24JLrG+LN3rx3/6h8IV23IHUD
+         dHefLvbldh7vN2q2EbM469K4+hzueKbIlkwT72z0BnYFoVnzr+eWB7w4sRWM+7Vw7b99
+         ug0I4RQXW9ZvG6OKGMUeF3TTzGP+yr89BXndJNSwSeqWU3t1xZx41uYf6rFYOa7KRL7G
+         T7sQ==
+X-Gm-Message-State: AOAM533YhpyxdD48kgB4NvEvqNP4hisuJ/KVvQ2KaOckqSImD4/k1LDu
+        VqixOG40FoZuVQ/XeoQ/kP8F1DhMn9mJWugCCaEARPrAjTxImQ==
+X-Google-Smtp-Source: ABdhPJzEGWhyk6/I8i+D+5kzxLmAaJHtLCJpQ4SDw/4GTv4UmjS7Uwll/lhR7TWTTecVg3Y4Xf+4RYEET16LXcbK9xA=
+X-Received: by 2002:a2e:984e:: with SMTP id e14mr1593226ljj.110.1606403907228;
+ Thu, 26 Nov 2020 07:18:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9ba663ad-97fe-6c2a-e15a-45f2de1f0af0@huawei.com>
-Sender: Benjamin Block <bblock@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-26_04:2020-11-26,2020-11-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- clxscore=1015 spamscore=0 phishscore=0 priorityscore=1501 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011260089
+References: <20201124151210.1081188-1-kpsingh@chromium.org>
+ <20201124151210.1081188-4-kpsingh@chromium.org> <a5c2244f-c733-ef78-7347-ac0a2a6bb77f@fb.com>
+In-Reply-To: <a5c2244f-c733-ef78-7347-ac0a2a6bb77f@fb.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Thu, 26 Nov 2020 16:18:16 +0100
+Message-ID: <CACYkzJ4w8RzJPqRZ9hZ=EdoX1qMr3UvA+V3nyse+NSvPAJem9g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] bpf: Add a selftest for bpf_ima_inode_hash
+To:     Yonghong Song <yhs@fb.com>
+Cc:     James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 08:07:32PM +0800, Qinglang Miao wrote:
-> 在 2020/11/26 17:42, Benjamin Block 写道:
-> > On Thu, Nov 26, 2020 at 09:13:53AM +0100, Cornelia Huck wrote:
-> > > On Thu, 26 Nov 2020 09:27:41 +0800
-> > > Qinglang Miao <miaoqinglang@huawei.com> wrote:
-> > > > 在 2020/11/26 1:06, Benjamin Block 写道:
-> > > > > On Fri, Nov 20, 2020 at 03:48:54PM +0800, Qinglang Miao wrote:
-....
-> > Let's go by example. If we assume the reference count of `unit->dev` is
-> > R, and the function starts with R = 1 (otherwise the deivce would've
-> > been freed already), we get:
-> > 
-> >      int zfcp_unit_remove(struct zfcp_port *port, u64 fcp_lun)
-> >      {
-> >      	struct zfcp_unit *unit;
-> >      	struct scsi_device *sdev;
-> >      	write_lock_irq(&port->unit_list_lock);
-> > // unit->dev (R = 1)
-> >      	unit = _zfcp_unit_find(port, fcp_lun);
-> > // get_device(&unit->dev)
-> > // unit->dev (R = 2)
-> >      	if (unit)
-> >      		list_del(&unit->list);
-> >      	write_unlock_irq(&port->unit_list_lock);
-> >      	if (!unit)
-> >      		return -EINVAL;
-> >      	sdev = zfcp_unit_sdev(unit);
-> >      	if (sdev) {
-> >      		scsi_remove_device(sdev);
-> >      		scsi_device_put(sdev);
-> >      	}
-> > // unit->dev (R = 2)
-> >      	put_device(&unit->dev);
-> > // unit->dev (R = 1)
-> >      	device_unregister(&unit->dev);
-> > // unit->dev (R = 0)
-> >      	return 0;
-> >      }
-> > 
-> > If we now apply this patch, we'd end up with R = 1 after
-> > `device_unregister()`, and the device would not be properly removed.
-> > 
-> > If you still think that's wrong, then you'll need to better explain why.
-> > 
-> Hi Banjamin and Cornelia,
-> 
-> Your replies make me reliaze that I've been holding a mistake understanding
-> of put_device() as well as reference count.
-> 
-> Thanks for you two's patient explanation !!
-> 
-> BTW, should I send a v2 on these two patches to move the position of
-> put_device()?
+[...]
 
-Feel free to do so.
+> > +             exit(errno);
+>
+> Running test_progs-no-alu32, the test failed as:
+>
+> root@arch-fb-vm1:~/net-next/net-next/tools/testing/selftests/bpf
+> ./test_progs-no_alu32 -t test_ima
 
-I think having the `put_device()` call after `device_unregister()` in
-both `zfcp_unit_remove()` and `zfcp_sysfs_port_remove_store()` is more
-natural, because it ought to be the last time we touch the object in
-both functions.
+Note to self: Also start testing test_progs-no_alu32
 
+>
+> sh: ./ima_setup.sh: No such file or directory
+>
+> sh: ./ima_setup.sh: No such file or directory
+>
+> test_test_ima:PASS:skel_load 0 nsec
+>
+> test_test_ima:PASS:attach 0 nsec
+>
+> test_test_ima:PASS:mkdtemp 0 nsec
+>
+> test_test_ima:FAIL:56
+>
+> test_test_ima:FAIL:71
+>
+> #114 test_ima:FAIL
+>
+> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>
+> Although the file is indeed in this directory:
+> root@arch-fb-vm1:~/net-next/net-next/tools/testing/selftests/bpf ls
+> ima_setup.sh
+> ima_setup.sh
+>
+> I think the execution actually tries to get file from
+> no_alu32 directory to avoid reusing the same files in
+> .../testing/selftests/bpf for -mcpu=v3 purpose.
+>
+> The following change, which copies ima_setup.sh to
+> no_alu32 directory, seems fixing the issue:
 
--- 
-Best Regards, Benjamin Block  / Linux on IBM Z Kernel Development / IBM Systems
-IBM Deutschland Research & Development GmbH    /    https://www.ibm.com/privacy
-Vorsitz. AufsR.: Gregor Pillen         /        Geschäftsführung: Dirk Wittkopp
-Sitz der Gesellschaft: Böblingen / Registergericht: AmtsG Stuttgart, HRB 243294
+Thanks!
+
+>
+> TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c
+>      \
+>                           network_helpers.c testing_helpers.c            \
+>                           btf_helpers.c  flow_dissector_load.h
+>   TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read                          \
+> +                      ima_setup.sh                                     \
+>                         $(wildcard progs/btf_dump_test_case_*.c)
+>   TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+>   TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+>
+> Could you do a followup on this?
+
+Yes, I will send out a fix today.
+
+- KP
