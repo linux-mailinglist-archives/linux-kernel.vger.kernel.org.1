@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688A82C5772
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FBA2C5775
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390667AbgKZOvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:51:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35998 "EHLO
+        id S2391183AbgKZOv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:51:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38020 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389884AbgKZOvY (ORCPT
+        by vger.kernel.org with ESMTP id S2390888AbgKZOv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:51:24 -0500
+        Thu, 26 Nov 2020 09:51:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606402282;
+        s=mimecast20190719; t=1606402285;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AvPeeHHoT4Pkp9t4pr876aL0bN/na468zEenNgmt1Gk=;
-        b=Ej6zNsOtdZimP2nkAO0baovVQqMsE7R5Yj2QJUibhsugHFwpi2Y8sofBtvnTtPTbzB9b+5
-        GOU3HGYLPsaH01ojFPZNN3xALLN3LsJFW0mwwXbHk6dmRS7JstP2C09fVnllX4YNtgWPHY
-        xZM20M2hoeZLftW0GsTmChwiOtLz3DQ=
+        bh=VC227IjJ++QgLe8qn6v9Ot5LdCf00QlmkoCumtZGXpc=;
+        b=Wl/JBGqdQDBO79+qSjduZBldbPaUuiwT3pmrFvDlw4j2Brt3LvDpbrldWfacVuAIGmd4Sf
+        D8QQi0kunrzIk075e1/Y+v7N5bhv0QcGCbFA6MMajcNhydrZdC7VIlqQgEjrmFA4KSuHaU
+        HnL2uJz1Iyx/NM7RG5OW/Q/ECDasbbI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-145-Y68Ia_P8Pa-c5jmWhdg7lQ-1; Thu, 26 Nov 2020 09:51:18 -0500
-X-MC-Unique: Y68Ia_P8Pa-c5jmWhdg7lQ-1
+ us-mta-378-lT11_URxNpa6KGwiOGWQBA-1; Thu, 26 Nov 2020 09:51:20 -0500
+X-MC-Unique: lT11_URxNpa6KGwiOGWQBA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B10CE190A7A0;
-        Thu, 26 Nov 2020 14:51:17 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA249190A7A1;
+        Thu, 26 Nov 2020 14:51:19 +0000 (UTC)
 Received: from steredhat.redhat.com (ovpn-113-252.ams2.redhat.com [10.36.113.252])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B0BE189A4;
-        Thu, 26 Nov 2020 14:51:15 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0DE9B5B4A0;
+        Thu, 26 Nov 2020 14:51:17 +0000 (UTC)
 From:   Stefano Garzarella <sgarzare@redhat.com>
 To:     virtualization@lists.linux-foundation.org
 Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
@@ -41,9 +41,9 @@ Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
         Max Gurtovoy <mgurtovoy@nvidia.com>,
         "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
         Jason Wang <jasowang@redhat.com>
-Subject: [PATCH v2 09/17] vdpa_sim: add work_fn in vdpasim_dev_attr
-Date:   Thu, 26 Nov 2020 15:49:42 +0100
-Message-Id: <20201126144950.92850-10-sgarzare@redhat.com>
+Subject: [PATCH v2 10/17] vdpa_sim: store parsed MAC address in a buffer
+Date:   Thu, 26 Nov 2020 15:49:43 +0100
+Message-Id: <20201126144950.92850-11-sgarzare@redhat.com>
 In-Reply-To: <20201126144950.92850-1-sgarzare@redhat.com>
 References: <20201126144950.92850-1-sgarzare@redhat.com>
 MIME-Version: 1.0
@@ -53,54 +53,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename vdpasim_work() in vdpasim_net_work() and add it to
-the vdpasim_dev_attr structure.
+As preparation for the next patches, we store the MAC address,
+parsed during the vdpasim_create(), in a buffer that will be used
+to fill 'config' together with other configurations.
 
-Co-developed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
 Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 ---
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 36677fc3631b..b84d9acd130c 100644
+index b84d9acd130c..9f2ca3a77025 100644
 --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
 +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -60,6 +60,8 @@ struct vdpasim_dev_attr {
- 	u64 supported_features;
- 	int nvqs;
- 	u32 id;
+@@ -29,6 +29,8 @@ static char *macaddr;
+ module_param(macaddr, charp, 0);
+ MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
+ 
++u8 macaddr_buf[ETH_ALEN];
 +
-+	work_func_t work_fn;
- };
+ struct vdpasim_virtqueue {
+ 	struct vringh vring;
+ 	struct vringh_kiov iov;
+@@ -386,13 +388,13 @@ static struct vdpasim *vdpasim_create(struct vdpasim_dev_attr *dev_attr)
+ 		goto err_iommu;
  
- /* State of each vdpasim device */
-@@ -153,7 +155,7 @@ static void vdpasim_reset(struct vdpasim *vdpasim)
- 	++vdpasim->generation;
+ 	if (macaddr) {
+-		mac_pton(macaddr, vdpasim->config.mac);
+-		if (!is_valid_ether_addr(vdpasim->config.mac)) {
++		mac_pton(macaddr, macaddr_buf);
++		if (!is_valid_ether_addr(macaddr_buf)) {
+ 			ret = -EADDRNOTAVAIL;
+ 			goto err_iommu;
+ 		}
+ 	} else {
+-		eth_random_addr(vdpasim->config.mac);
++		eth_random_addr(macaddr_buf);
+ 	}
+ 
+ 	for (i = 0; i < dev_attr->nvqs; i++)
+@@ -528,6 +530,8 @@ static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
+ 
+ 	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
+ 	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
++	memcpy(config->mac, macaddr_buf, ETH_ALEN);
++
+ 	return 0;
  }
- 
--static void vdpasim_work(struct work_struct *work)
-+static void vdpasim_net_work(struct work_struct *work)
- {
- 	struct vdpasim *vdpasim = container_of(work, struct
- 						 vdpasim, work);
-@@ -360,7 +362,7 @@ static struct vdpasim *vdpasim_create(struct vdpasim_dev_attr *dev_attr)
- 		goto err_alloc;
- 
- 	vdpasim->dev_attr = *dev_attr;
--	INIT_WORK(&vdpasim->work, vdpasim_work);
-+	INIT_WORK(&vdpasim->work, dev_attr->work_fn);
- 	spin_lock_init(&vdpasim->lock);
- 	spin_lock_init(&vdpasim->iommu_lock);
- 
-@@ -730,6 +732,7 @@ static int __init vdpasim_dev_init(void)
- 	dev_attr.id = VIRTIO_ID_NET;
- 	dev_attr.supported_features = VDPASIM_NET_FEATURES;
- 	dev_attr.nvqs = VDPASIM_VQ_NUM;
-+	dev_attr.work_fn = vdpasim_net_work;
- 
- 	vdpasim_dev = vdpasim_create(&dev_attr);
  
 -- 
 2.26.2
