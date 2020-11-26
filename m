@@ -2,107 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7152C5248
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0232C5256
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388334AbgKZKrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:47:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57850 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388289AbgKZKrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:47:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 45855AC2E;
-        Thu, 26 Nov 2020 10:47:23 +0000 (UTC)
-Date:   Thu, 26 Nov 2020 10:47:20 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-Message-ID: <20201126104720.GO3306@suse.de>
-References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
- <20201121194506.13464-1-aarcange@redhat.com>
- <20201121194506.13464-2-aarcange@redhat.com>
- <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
- <20201124133205.GK3306@suse.de>
- <X71zdnZd61r429aO@redhat.com>
- <20201125103053.GL3306@suse.de>
- <X76bnmBb2rkef/nS@redhat.com>
+        id S2388420AbgKZKr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:47:59 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2159 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388389AbgKZKr6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 05:47:58 -0500
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ChZDf0Dz0z67GpV;
+        Thu, 26 Nov 2020 18:46:10 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 26 Nov 2020 11:47:56 +0100
+Received: from [10.210.172.213] (10.210.172.213) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Thu, 26 Nov 2020 10:47:55 +0000
+Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <martin.petersen@oracle.com>,
+        <jejb@linux.ibm.com>, <linuxarm@huawei.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
+ <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
+ <874klmqu2r.fsf@nanos.tec.linutronix.de>
+ <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
+ <87lfexp6am.fsf@nanos.tec.linutronix.de>
+ <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
+ <873615oy8a.fsf@nanos.tec.linutronix.de>
+ <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
+ <87sg91ik9e.wl-maz@kernel.org>
+ <0edc9a11-0b92-537f-1790-6b4b6de4900d@huawei.com>
+ <afd97dd4b1e102ac9ad49800821231a4@kernel.org>
+ <5a314713-c1ee-2d34-bee1-60beae274742@huawei.com>
+ <0525a4bcf17a355cd141632d4f3714be@kernel.org>
+ <702e1729-9a4b-b16f-6a58-33172b1a3220@huawei.com>
+ <5a588f5d86010602ff9a90e8f057743c@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <80e0a19b-3291-1304-1a5b-0445c49efe31@huawei.com>
+Date:   Thu, 26 Nov 2020 10:47:33 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <X76bnmBb2rkef/nS@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5a588f5d86010602ff9a90e8f057743c@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.210.172.213]
+X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 12:59:58PM -0500, Andrea Arcangeli wrote:
-> On Wed, Nov 25, 2020 at 10:30:53AM +0000, Mel Gorman wrote:
-> > On Tue, Nov 24, 2020 at 03:56:22PM -0500, Andrea Arcangeli wrote:
-> > > Hello,
-> > > 
-> > > On Tue, Nov 24, 2020 at 01:32:05PM +0000, Mel Gorman wrote:
-> > > > I would hope that is not the case because they are not meant to overlap.
-> > > > However, if the beginning of the pageblock was not the start of a zone
-> > > > then the pages would be valid but the pfn would still be outside the
-> > > > zone boundary. If it was reserved, the struct page is valid but not
-> > > > suitable for set_pfnblock_flags_mask. However, it is a concern in
-> > > > general because the potential is there that pages are isolated from the
-> > > > wrong zone.
-> > > 
-> > > I guess we have more than one issue to correct in that function
-> > > because the same BUG_ON reproduced again even with the tentative patch
-> > > I posted earlier.
-> > > 
-> > > So my guess is that the problematic reserved page isn't pointed by the
-> > > min_pfn, but it must have been pointed by the "highest" variable
-> > > calculated below?
-> > > 
-> > > 			if (pfn >= highest)
-> > > 				highest = pageblock_start_pfn(pfn);
-> > > 
-> > > When I looked at where "highest" comes from, it lacks
-> > > pageblock_pfn_to_page check (which was added around v5.7 to min_pfn).
-> > > 
-> > > Is that the real bug, which may be fixed by something like this? (untested)
-> > > 
-> > 
-> > It's plausible as it is a potential source of leaking but as you note
-> > in another mail, it's surprising to me that valid struct pages, even if
-> > within memory holes and reserved would have broken node/zone information
-> > in the page flags.
+Hi Marc,
+
+>> Right, I did consider this.
 > 
-> I think the patch to add pageblock_pfn_to_page is still needed to cope
-> with !pfn_valid or a pageblock in between zones, but pfn_valid or
-> pageblock in between zones is not what happens here.
+> FWIW, I've pushed my hack branch[1]
+
+Did you miss that reference?
+
+> out with a couple of patches
+> for you to try (the top 3 patches). They allow platform-MSI domains
+> created by devices (mbigen, ICU) to be advertised as shared between
+> devices, so that the low-level driver can handle that in an appropriate
+> way.
 > 
-> So the patch adding pageblock_pfn_to_page would have had the undesired
-> side effect of hiding the bug so it's best to deal with the other bug
-> first.
+> I gave it a go on my D05 and nothing blew up, but I can't really remove
+> the kernel module, as that's where my disks are... :-/
+
+You still should be able to enable my favorite 
+CONFIG_DEBUG_TEST_DRIVER_REMOVE=y, while the distro still boot. But I'll 
+just test if you want.
+
+> Please let me know if that helps.
+> 
+>>> It is just that passing that information down isn't a simple affair,
+>>> as msi_alloc_info_t isn't a generic type... Let me have a think.
+>>
+>> I think that there is a way to circumvent the problem, which you might
+>> call hacky, but OTOH, not sure if there's much point changing mbigen
+>> or related infrastructure at this stage.
+> 
+> Bah, it's a simple change, and there is now more than the mbigen using
+> the same API...
+> 
+>>
+>> Anyway, so we have 128 irqs in total for the mbigen domain, but the
+>> driver only is interesting in something like irq indexes 1,2,72-81,
+>> and 96-112. So we can just dispose the mappings for irq index 0-112 at
+>> removal stage, thereby keeping the its device around. We do still call
+>> platform_irq_count(), which sets up all 128 mappings, so maybe we
+>> should be unmapping all of these - this would be the contentious part.
+>> But maybe not, as the device driver is only interested in that subset,
+>> and has no business unmapping the rest.
+> 
+> I don't think the driver should mess with interrupts it doesn't own.
+
+I would tend to agree. But all 128 lines here are for the SAS 
+controller. It's quite strange, as only about ~20 are useful.
+
+> And while the mbigen port that is connected to the SAS controller
+> doesn't seem to be shared between endpoints, some other ports definitely
+> are:
+> 
+> # cat /sys/kernel/debug/irq/domains/\\_SB.MBI1
+> name:   \_SB.MBI1
+>   size:   409
+>   mapped: 192
+>   flags:  0x00000003
+> 
+> [...]
+> 
+> I guess that the other 217 lines are connected somewhere.
 > 
 
-Agreed. This thread has a lot of different directions in it at this
-point so what I'd hope for is first, a patch that initialises holes with
-zone/node linkages within a 1<<(MAX_ORDER-1) alignment. If there is a
-hole, it would be expected the pages are PageReserved. Second, a fix to
-fast_isolate that forces PFNs returned to always be within the stated
-zone boundaries.
+I think that is not the right one. See 
+https://github.com/tianocore/edk2-platforms/blob/master/Silicon/Hisilicon/Hi1616/D05AcpiTables/Dsdt/D05Sas.asl#L101
 
-The first is because there are assumptions that without HOLES_IN_ZONE, a
-true pfn_valid within 1<<(MAX_ORDER-1) means pfn_valid would be true for
-any PFN within that range. That assumption is relaxed in many cases --
-e.g. the page allocator may not care at the moment because of how it
-orders checks but compaction assumes that pfn_valid within a pageblock
-means that all PFNs within that pageblock are valid.
 
--- 
-Mel Gorman
-SUSE Labs
+Thanks,
+John
