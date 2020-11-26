@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6941B2C4F1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 759502C4F23
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388278AbgKZHGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 02:06:06 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:56805 "EHLO ozlabs.org"
+        id S2388291AbgKZHHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 02:07:01 -0500
+Received: from mga11.intel.com ([192.55.52.93]:43220 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388266AbgKZHGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 02:06:06 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ChTLg4sPPz9sRK;
-        Thu, 26 Nov 2020 18:06:03 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606374364;
-        bh=RSw8f9gnygzj81ImNkvKDJ+GoE5urlFQ5Kg7cRV/RCI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=m6/1fwVn0zvZoq7YOd00OFSR9pgggYWBEvRWWLK4XfeuhYHX05kbvWkiB47DI5Ygj
-         D0+UTCYsNL1DlcyHKfFl+vfU44gYCHJ9s0Pl0EkAl2OGGTpaI6/vkKvl3PkgHv/HUm
-         2JYJRHym4iVNS1esb2D/2zp6u5hnkxsLaotWxjdjw+55IGAj7kOlDTWbu5DyDTiMvP
-         l5WpceFqi9+nyLRezTILV3uPIk3Lw1QV8BV1OP85x4ezZD1txTOtgo9ciA2s2aM1iX
-         nZCmp4QscJJe0+7fuzM3FNeoj1iH4+zReImhQj+2Qznr7Dh9rhpiY/Pyqngz4k1qZ9
-         i6R9F7NnUwtbg==
-Date:   Thu, 26 Nov 2020 18:06:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: linux-next: manual merge of the akpm tree with the arm64 tree
-Message-ID: <20201126180602.002588dd@canb.auug.org.au>
+        id S2388248AbgKZHHA (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 02:07:00 -0500
+IronPort-SDR: g5ncQLcTw5tnJjMeXcL/w7VIrtUqVekWPXr/3grE17VHKu+fEzJ7PAXoTYHINJIJn28AbSrnnX
+ i4uPQ7Yr9E7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="168738293"
+X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
+   d="scan'208";a="168738293"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 23:06:59 -0800
+IronPort-SDR: Q4k3HavhM5h6Zfp3d3mU1ySpbyz5o6zPpzZAh9h1Kf3r7xFREvu27e1o1wFzuWDrSwrRSJ9Ro7
+ RxFCHSFXuO8w==
+X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
+   d="scan'208";a="479243562"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 23:06:55 -0800
+Subject: Re: [PATCH] perf script: Fix overrun issue for dynamically-allocated
+ pmu type number
+To:     Adrian Hunter <adrian.hunter@intel.com>, acme@kernel.org,
+        jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20201126032425.19226-1-yao.jin@linux.intel.com>
+ <e72c243b-a50f-510b-5e21-10c3a38176db@intel.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <8509ed3b-378f-5ee0-5a3e-bbd8cb9d86c4@linux.intel.com>
+Date:   Thu, 26 Nov 2020 15:06:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/90nwctSvEorm8C=pwjepCv.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <e72c243b-a50f-510b-5e21-10c3a38176db@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/90nwctSvEorm8C=pwjepCv.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Adrian,
 
-Hi all,
+On 11/26/2020 2:51 PM, Adrian Hunter wrote:
+> On 26/11/20 5:24 am, Jin Yao wrote:
+>> When unpacking the event which is from dynamic pmu, the array
+>> output[OUTPUT_TYPE_MAX] may be overrun. For example, type number of
+>> SKL uncore_imc is 10, but OUTPUT_TYPE_MAX is 7 now (OUTPUT_TYPE_MAX =
+>> PERF_TYPE_MAX + 1).
+>>
+>> /* In builtin-script.c */
+>> process_event()
+>> {
+>> 	unsigned int type = output_type(attr->type);
+>>
+>> 	if (output[type].fields == 0)
+>> 		return;
+>> }
+>>
+>> output[10] is overrun.
+>>
+>> Create a type OUTPUT_TYPE_OTHER for dynamic pmu events, then
+>> output_type(attr->type) will return OUTPUT_TYPE_OTHER here.
+>>
+>> Note that if PERF_TYPE_MAX ever changed, then there would be a conflict
+>> between old perf.data files that had a dynamicaliy allocated PMU number
+>> that would then be the same as a fixed PERF_TYPE.
+>>
+>> Example:
+>>
+>> perf record --switch-events -C 0 -e "{cpu-clock,uncore_imc/data_reads/,uncore_imc/data_writes/}:SD" -a -- sleep 1
+>> perf script
+>>
+>> Before:
+>>           swapper     0 [000] 1479253.987551:     277766               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1479253.987797:     246709               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1479253.988127:     329883               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1479253.988273:     146393               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1479253.988523:     249977               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1479253.988877:     354090               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1479253.989023:     145940               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1479253.989383:     359856               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1479253.989523:     140082               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>
+>> After:
+>>           swapper     0 [000] 1397040.402011:     272384               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1397040.402011:       5396  uncore_imc/data_reads/:
+>>           swapper     0 [000] 1397040.402011:        967 uncore_imc/data_writes/:
+>>           swapper     0 [000] 1397040.402259:     249153               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1397040.402259:       7231  uncore_imc/data_reads/:
+>>           swapper     0 [000] 1397040.402259:       1297 uncore_imc/data_writes/:
+>>           swapper     0 [000] 1397040.402508:     249108               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
+>>           swapper     0 [000] 1397040.402508:       5333  uncore_imc/data_reads/:
+>>           swapper     0 [000] 1397040.402508:       1008 uncore_imc/data_writes/:
+>>
+>> Fixes: 1405720d4f26 ("perf script: Add 'synth' event type for synthesized events")
+> 
+> It does not look to me like the problem was introduced by that commit.  Are
+> you sure this Fixes tag is correct?
+> 
 
-Today's linux-next merge of the akpm tree got a conflict in:
+Commit 1405720d4f26 added the change:
 
-  arch/arm64/mm/proc.S
+@@ -1215,8 +1253,9 @@ static void process_event(struct perf_script *script,
+  {
+         struct thread *thread = al->thread;
+         struct perf_event_attr *attr = &evsel->attr;
++       unsigned int type = output_type(attr->type);
 
-between commit:
+-       if (output[attr->type].fields == 0)
++       if (output[type].fields == 0)
+                 return;
 
-  49b3cf035edc ("kasan: arm64: set TCR_EL1.TBID1 when enabled")
+But of course, we can also say the original "output[attr->type].fields" introduced the issue, I'm 
+not sure. Maybe Arnaldo can help to make the decision. :)
 
-from the arm64 tree and commit:
+Thanks
+Jin Yao
 
-  68cd215d6529 ("arm64: kasan: allow enabling in-kernel MTE")
 
-from the akpm tree.
 
-I fixed it up (I think, see below) and can carry the fix as necessary.
-This is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
 
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/mm/proc.S
-index a0831bf8a018,0d85e6df42bc..000000000000
---- a/arch/arm64/mm/proc.S
-+++ b/arch/arm64/mm/proc.S
-@@@ -40,9 -40,15 +40,15 @@@
-  #define TCR_CACHE_FLAGS	TCR_IRGN_WBWA | TCR_ORGN_WBWA
- =20
-  #ifdef CONFIG_KASAN_SW_TAGS
-- #define TCR_KASAN_FLAGS TCR_TBI1 | TCR_TBID1
- -#define TCR_KASAN_SW_FLAGS TCR_TBI1
-++#define TCR_KASAN_SW_FLAGS TCR_TBI1 | TCR_TBID1
-  #else
-- #define TCR_KASAN_FLAGS 0
-+ #define TCR_KASAN_SW_FLAGS 0
-+ #endif
-+=20
-+ #ifdef CONFIG_KASAN_HW_TAGS
- -#define TCR_KASAN_HW_FLAGS SYS_TCR_EL1_TCMA1 | TCR_TBI1
-++#define TCR_KASAN_HW_FLAGS SYS_TCR_EL1_TCMA1 | TCR_TBI1 | TCR_TBID1
-+ #else
-+ #define TCR_KASAN_HW_FLAGS 0
-  #endif
- =20
-  /*
-
---Sig_/90nwctSvEorm8C=pwjepCv.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+/U9sACgkQAVBC80lX
-0Gx1MQgAgOqIBQ9YXWNRs54LfH56EHpGUS4SoL2ALUXmrgtqdzgZAvGQuX4DQy1/
-8UMnraNVKQgLR1c5wcxS2sgP9YT8X4dSkI5C2DmQlDsMt2WLlU+Oi/WcdICQZW2P
-GxMBypxoKRMfQAD96P2gJKkp2zi0s2+Rnb0s041d3Z+ei/EsiPqxVMK0ZRs0hzyD
-eyQt2+Kal1SakUI9/fF7SIWpRFf9LsIV3cmU1cgaho4OVW0OBkYISAWijgyPgaT/
-MY5zn7EHQh87wQbtOam5C19fPENDsRrBUKjc3p5lJkiUst2QAeGOLBz2kx0ig0ED
-tMil9WVCPTjVKBIwUnZJo8gLzifVuA==
-=DgvC
------END PGP SIGNATURE-----
-
---Sig_/90nwctSvEorm8C=pwjepCv.--
