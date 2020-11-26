@@ -2,227 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5242C5405
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252AF2C540B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388375AbgKZMfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 07:35:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729001AbgKZMfT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 07:35:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA4BC0613D4;
-        Thu, 26 Nov 2020 04:35:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9ejhLH5luSTjMivR8iBYSZAH/Td+wNgIzWpOtcETQ6g=; b=FXZZHVTpXmN6oW30ah+VdZoImZ
-        r0gdA4IuETmU07lnHrKQyWFWueUkBOKhmc9k2unLHzbEK+BQLqnERF8pGBN9seyfPC64GVcPrbiJW
-        K6hTKulAQXrVVZza5zeIwRjiiOcG1jEAgjqT2XLHdduiFxUxp3aKPSyH9wAohbr5niFIJZRi+0Vgb
-        pf/Q/nFuDLIr4e4qeeWW7rE7oW8CnCBDvokxVk+dDS7909dW10l2XWVu3kI+IXyizvkYF2X+qYpZ6
-        b6XUF2rL1joGwLOOBnfqdTTid6nkGyHh3XR7fxFTy5BlrNqlArurE9wejW7fxoGnqqyKLVK1YrRdP
-        g1GM83Iw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kiGUE-0001rB-D8; Thu, 26 Nov 2020 12:34:58 +0000
-Date:   Thu, 26 Nov 2020 12:34:58 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     kan.liang@linux.intel.com, mingo@kernel.org, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, eranian@google.com, christophe.leroy@csgroup.eu,
-        npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        mpe@ellerman.id.au, will@kernel.org, aneesh.kumar@linux.ibm.com,
-        sparclinux@vger.kernel.org, davem@davemloft.net,
-        catalin.marinas@arm.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com
-Subject: Re: [PATCH v2 3/6] perf/core: Fix arch_perf_get_page_size()
-Message-ID: <20201126123458.GO4327@casper.infradead.org>
-References: <20201126120114.071913521@infradead.org>
- <20201126121121.164675154@infradead.org>
+        id S2388395AbgKZMf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 07:35:56 -0500
+Received: from mga01.intel.com ([192.55.52.88]:26410 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726030AbgKZMf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 07:35:56 -0500
+IronPort-SDR: vW09C8pcElfdGhlomZvTlrwjVf6zC6+Wk5QtmrwlZde09Diqk4J4q45Tlw355nY+NV9kfqiMrH
+ 8eUm3Kb/MEug==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="190432887"
+X-IronPort-AV: E=Sophos;i="5.78,372,1599548400"; 
+   d="scan'208";a="190432887"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 04:35:55 -0800
+IronPort-SDR: zSmyipLRtAMIDZzHT2u/n2FtqS0w1VfrJRLIzhGUz5UWIzUwx4dSONJIDkNgK+pptNRLA32Nse
+ WomjeBuOYxDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,372,1599548400"; 
+   d="scan'208";a="433261584"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 26 Nov 2020 04:35:53 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 26 Nov 2020 14:35:52 +0200
+Date:   Thu, 26 Nov 2020 14:35:52 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] usb: typec: tps6598x: Export some power supply
+ properties
+Message-ID: <20201126123552.GP1008337@kuha.fi.intel.com>
+References: <cover.1606326871.git.agx@sigxcpu.org>
+ <b28b09937f3ade9355fcbfa2833dd98fab8fe2bc.1606326871.git.agx@sigxcpu.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201126121121.164675154@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b28b09937f3ade9355fcbfa2833dd98fab8fe2bc.1606326871.git.agx@sigxcpu.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 01:01:17PM +0100, Peter Zijlstra wrote:
-> The (new) page-table walker in arch_perf_get_page_size() is broken in
-> various ways. Specifically while it is used in a lockless manner, it
-> doesn't depend on CONFIG_HAVE_FAST_GUP nor uses the proper _lockless
-> offset methods, nor is careful to only read each entry only once.
+On Wed, Nov 25, 2020 at 06:55:46PM +0100, Guido Günther wrote:
+> This allows downstream supplies and userspace to detect
+> whether external power is supplied.
 > 
-> Also the hugetlb support is broken due to calling pte_page() without
-> first checking pte_special().
-> 
-> Rewrite the whole thing to be a proper lockless page-table walker and
-> employ the new pXX_leaf_size() pgtable functions to determine the
-> pagetable size without looking at the page-frames.
-> 
-> Fixes: 51b646b2d9f8 ("perf,mm: Handle non-page-table-aligned hugetlbfs")
-> Fixes: 8d97e71811aa ("perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE")
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Tested-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+
+This look OK to me, but I have one request below.
+
+Btw. Are you sure that this works when the power supply class is not
+enabled? If I remember correctly, there are no stubs for the power
+supply functions.
+
 > ---
->  arch/arm64/include/asm/pgtable.h    |    3 +
->  arch/sparc/include/asm/pgtable_64.h |   13 ++++
->  arch/sparc/mm/hugetlbpage.c         |   19 ++++--
->  include/linux/pgtable.h             |   16 +++++
->  kernel/events/core.c                |  102 +++++++++++++-----------------------
->  5 files changed, 82 insertions(+), 71 deletions(-)
-
-This diffstat doesn't match the patch in this email ...
-
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -52,6 +52,7 @@
->  #include <linux/mount.h>
->  #include <linux/min_heap.h>
->  #include <linux/highmem.h>
-> +#include <linux/pgtable.h>
+>  drivers/usb/typec/tps6598x.c | 97 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 97 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
+> index 3db33bb622c3..ea72957602d8 100644
+> --- a/drivers/usb/typec/tps6598x.c
+> +++ b/drivers/usb/typec/tps6598x.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/i2c.h>
+>  #include <linux/acpi.h>
+>  #include <linux/module.h>
+> +#include <linux/power_supply.h>
+>  #include <linux/regmap.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/usb/typec.h>
+> @@ -55,6 +56,7 @@ enum {
+>  };
 >  
->  #include "internal.h"
+>  /* TPS_REG_POWER_STATUS bits */
+> +#define TPS_POWER_STATUS_CONNECTION	BIT(0)
+>  #define TPS_POWER_STATUS_SOURCESINK	BIT(1)
+>  #define TPS_POWER_STATUS_PWROPMODE(p)	(((p) & GENMASK(3, 2)) >> 2)
 >  
-> @@ -7001,90 +7001,62 @@ static u64 perf_virt_to_phys(u64 virt)
->  	return phys_addr;
->  }
+> @@ -96,8 +98,24 @@ struct tps6598x {
+>  	struct typec_partner *partner;
+>  	struct usb_pd_identity partner_identity;
+>  	struct usb_role_switch *role_sw;
+> +	struct typec_capability typec_cap;
+> +
+> +	struct power_supply *psy;
+> +	struct power_supply_desc psy_desc;
+> +	enum power_supply_usb_type usb_type;
+> +};
+> +
+> +static enum power_supply_property tps6598x_psy_props[] = {
+> +	POWER_SUPPLY_PROP_USB_TYPE,
+> +	POWER_SUPPLY_PROP_ONLINE,
+> +};
+> +
+> +static enum power_supply_usb_type tps6598x_psy_usb_types[] = {
+> +	POWER_SUPPLY_USB_TYPE_C,
+>  };
 >  
-> -#ifdef CONFIG_MMU
-> -
+> +static const char *tps6598x_psy_name_prefix = "tps6598x-source-psy-";
+> +
 >  /*
-> - * Return the MMU page size of a given virtual address.
-> - *
-> - * This generic implementation handles page-table aligned huge pages, as well
-> - * as non-page-table aligned hugetlbfs compound pages.
-> - *
-> - * If an architecture supports and uses non-page-table aligned pages in their
-> - * kernel mapping it will need to provide it's own implementation of this
-> - * function.
-> + * Return the pagetable size of a given virtual address.
->   */
-> -__weak u64 arch_perf_get_page_size(struct mm_struct *mm, unsigned long addr)
-> +static u64 perf_get_pgtable_size(struct mm_struct *mm, unsigned long addr)
->  {
-> -	struct page *page;
-> -	pgd_t *pgd;
-> -	p4d_t *p4d;
-> -	pud_t *pud;
-> -	pmd_t *pmd;
-> -	pte_t *pte;
-> +	u64 size = 0;
+>   * Max data bytes for Data1, Data2, and other registers. See ch 1.3.2:
+>   * https://www.ti.com/lit/ug/slvuan1a/slvuan1a.pdf
+> @@ -248,6 +266,8 @@ static int tps6598x_connect(struct tps6598x *tps, u32 status)
+>  	if (desc.identity)
+>  		typec_partner_set_identity(tps->partner);
 >  
-> -	pgd = pgd_offset(mm, addr);
-> -	if (pgd_none(*pgd))
-> -		return 0;
-> +#ifdef CONFIG_HAVE_FAST_GUP
-> +	pgd_t *pgdp, pgd;
-> +	p4d_t *p4dp, p4d;
-> +	pud_t *pudp, pud;
-> +	pmd_t *pmdp, pmd;
-> +	pte_t *ptep, pte;
->  
-> -	p4d = p4d_offset(pgd, addr);
-> -	if (!p4d_present(*p4d))
-> +	pgdp = pgd_offset(mm, addr);
-> +	pgd = READ_ONCE(*pgdp);
-> +	if (pgd_none(pgd))
->  		return 0;
->  
-> -	if (p4d_leaf(*p4d))
-> -		return 1ULL << P4D_SHIFT;
-> +	if (pgd_leaf(pgd))
-> +		return pgd_leaf_size(pgd);
->  
-> -	pud = pud_offset(p4d, addr);
-> -	if (!pud_present(*pud))
-> +	p4dp = p4d_offset_lockless(pgdp, pgd, addr);
-> +	p4d = READ_ONCE(*p4dp);
-> +	if (!p4d_present(p4d))
->  		return 0;
->  
-> -	if (pud_leaf(*pud)) {
-> -#ifdef pud_page
-> -		page = pud_page(*pud);
-> -		if (PageHuge(page))
-> -			return page_size(compound_head(page));
-> -#endif
-> -		return 1ULL << PUD_SHIFT;
-> -	}
-> +	if (p4d_leaf(p4d))
-> +		return p4d_leaf_size(p4d);
->  
-> -	pmd = pmd_offset(pud, addr);
-> -	if (!pmd_present(*pmd))
-> +	pudp = pud_offset_lockless(p4dp, p4d, addr);
-> +	pud = READ_ONCE(*pudp);
-> +	if (!pud_present(pud))
->  		return 0;
->  
-> -	if (pmd_leaf(*pmd)) {
-> -#ifdef pmd_page
-> -		page = pmd_page(*pmd);
-> -		if (PageHuge(page))
-> -			return page_size(compound_head(page));
-> -#endif
-> -		return 1ULL << PMD_SHIFT;
-> -	}
-> +	if (pud_leaf(pud))
-> +		return pud_leaf_size(pud);
->  
-> -	pte = pte_offset_map(pmd, addr);
-> -	if (!pte_present(*pte)) {
-> -		pte_unmap(pte);
-> +	pmdp = pmd_offset_lockless(pudp, pud, addr);
-> +	pmd = READ_ONCE(*pmdp);
-> +	if (!pmd_present(pmd))
->  		return 0;
-> -	}
->  
-> -	page = pte_page(*pte);
-> -	if (PageHuge(page)) {
-> -		u64 size = page_size(compound_head(page));
-> -		pte_unmap(pte);
-> -		return size;
-> -	}
-> -
-> -	pte_unmap(pte);
-> -	return PAGE_SIZE;
-> -}
-> +	if (pmd_leaf(pmd))
-> +		return pmd_leaf_size(pmd);
->  
-> -#else
-> +	ptep = pte_offset_map(&pmd, addr);
-> +	pte = ptep_get_lockless(ptep);
-> +	if (pte_present(pte))
-> +		size = pte_leaf_size(pte);
-> +	pte_unmap(ptep);
-> +#endif /* CONFIG_HAVE_FAST_GUP */
->  
-> -static u64 arch_perf_get_page_size(struct mm_struct *mm, unsigned long addr)
-> -{
-> -	return 0;
-> +	return size;
+> +	power_supply_changed(tps->psy);
+> +
+>  	return 0;
 >  }
 >  
-> -#endif
-> -
->  static u64 perf_get_page_size(unsigned long addr)
+> @@ -260,6 +280,7 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
+>  	typec_set_pwr_role(tps->port, TPS_STATUS_PORTROLE(status));
+>  	typec_set_vconn_role(tps->port, TPS_STATUS_VCONN(status));
+>  	tps6598x_set_data_role(tps, TPS_STATUS_DATAROLE(status), false);
+> +	power_supply_changed(tps->psy);
+>  }
+>  
+>  static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+> @@ -467,6 +488,78 @@ static const struct regmap_config tps6598x_regmap_config = {
+>  	.max_register = 0x7F,
+>  };
+>  
+> +static int tps6598x_psy_get_online(struct tps6598x *tps,
+> +				   union power_supply_propval *val)
+> +{
+> +	int ret;
+> +	u16 pwr_status;
+> +
+> +	ret = tps6598x_read16(tps, TPS_REG_POWER_STATUS, &pwr_status);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (!(pwr_status & TPS_POWER_STATUS_CONNECTION) ||
+> +	    !(pwr_status & TPS_POWER_STATUS_SOURCESINK)) {
+> +		val->intval = 0;
+> +	} else {
+> +		val->intval = 1;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int tps6598x_psy_get_prop(struct power_supply *psy,
+> +				 enum power_supply_property psp,
+> +				 union power_supply_propval *val)
+> +{
+> +	struct tps6598x *tps = power_supply_get_drvdata(psy);
+> +	int ret = 0;
+> +
+> +	switch (psp) {
+> +	case POWER_SUPPLY_PROP_USB_TYPE:
+> +		val->intval = POWER_SUPPLY_USB_TYPE_C;
+
+It shouldn't be a problem to already check if there is PD contract in
+place by reading the Power Status register:
+
+        ret = tps6598x_read16(tps, TPS_REG_POWER_STATUS, &pwr_status);
+        if (ret < 0)
+                ...
+
+        if (TPS_POWER_STATUS_PWROPMODE(pwr_status) == TYPEC_PWR_MODE_PD)
+                val->intval = POWER_SUPPLY_USB_TYPE_PD;
+        else
+                val->intval = POWER_SUPPLY_USB_TYPEC_C;
+
+Something like that.
+
+> +		break;
+> +	case POWER_SUPPLY_PROP_ONLINE:
+> +		ret = tps6598x_psy_get_online(tps, val);
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int devm_tps6598_psy_register(struct tps6598x *tps)
+> +{
+> +	struct power_supply_config psy_cfg = {};
+> +	const char *port_dev_name = dev_name(tps->dev);
+> +	size_t psy_name_len = strlen(tps6598x_psy_name_prefix) +
+> +				     strlen(port_dev_name) + 1;
+> +	char *psy_name;
+> +
+> +	psy_cfg.drv_data = tps;
+> +	psy_cfg.fwnode = dev_fwnode(tps->dev);
+> +	psy_name = devm_kzalloc(tps->dev, psy_name_len, GFP_KERNEL);
+> +	if (!psy_name)
+> +		return -ENOMEM;
+> +
+> +	snprintf(psy_name, psy_name_len, "%s%s", tps6598x_psy_name_prefix,
+> +		 port_dev_name);
+> +	tps->psy_desc.name = psy_name;
+> +	tps->psy_desc.type = POWER_SUPPLY_TYPE_USB;
+> +	tps->psy_desc.usb_types = tps6598x_psy_usb_types;
+> +	tps->psy_desc.num_usb_types = ARRAY_SIZE(tps6598x_psy_usb_types);
+> +	tps->psy_desc.properties = tps6598x_psy_props;
+> +	tps->psy_desc.num_properties = ARRAY_SIZE(tps6598x_psy_props);
+> +	tps->psy_desc.get_property = tps6598x_psy_get_prop;
+> +
+> +	tps->usb_type = POWER_SUPPLY_USB_TYPE_C;
+> +
+> +	tps->psy = devm_power_supply_register(tps->dev, &tps->psy_desc,
+> +					       &psy_cfg);
+> +	return PTR_ERR_OR_ZERO(tps->psy);
+> +}
+> +
+>  static int tps6598x_probe(struct i2c_client *client)
 >  {
->  	struct mm_struct *mm;
-> @@ -7109,7 +7081,7 @@ static u64 perf_get_page_size(unsigned l
->  		mm = &init_mm;
+>  	struct typec_capability typec_cap = { };
+> @@ -560,6 +653,10 @@ static int tps6598x_probe(struct i2c_client *client)
+>  		goto err_role_put;
 >  	}
 >  
-> -	size = arch_perf_get_page_size(mm, addr);
-> +	size = perf_get_pgtable_size(mm, addr);
->  
->  	local_irq_restore(flags);
->  
-> 
-> 
+> +	ret = devm_tps6598_psy_register(tps);
+> +	if (ret)
+> +		return ret;
+> +
+>  	tps->port = typec_register_port(&client->dev, &typec_cap);
+>  	if (IS_ERR(tps->port)) {
+>  		ret = PTR_ERR(tps->port);
+> -- 
+> 2.29.2
+
+thanks,
+
+-- 
+heikki
