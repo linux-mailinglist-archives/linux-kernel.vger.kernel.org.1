@@ -2,121 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835302C4CB6
+	by mail.lfdr.de (Postfix) with ESMTP id F010E2C4CB7
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732150AbgKZBgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 20:36:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42946 "EHLO mail.kernel.org"
+        id S1732179AbgKZBhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 20:37:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732098AbgKZBgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 20:36:48 -0500
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731670AbgKZBhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 20:37:14 -0500
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6055D206F7;
-        Thu, 26 Nov 2020 01:36:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69810206F7;
+        Thu, 26 Nov 2020 01:37:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606354607;
-        bh=DHcTvmA/WJHw9Fef17EQ48UfNXJ4eOswow3HLd1nbKM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wgO6ET37DsEZWesI0u/8IZhSkcxPGnkLC6/msVEPGWZ2gUGmOgoDEsQec9/9c+Ocb
-         H6klNG3OQpnQBad/oR19wBjx6AnQb90bTtMLNhD/RKkTHU9Wwd5Qs4EZI+LGohBOIH
-         SsbAO57nvfdr653/S4KlTQlkoJZ/lIhplnag+vhE=
-Received: by mail-lj1-f174.google.com with SMTP id z1so503766ljn.4;
-        Wed, 25 Nov 2020 17:36:47 -0800 (PST)
-X-Gm-Message-State: AOAM530iIfotgkMqGPSCNTW5ZQiuHSF9JDp2eXiYemsVmU9sKWjmjiTm
-        J81FBsrhCnOtx3ijJ5sHkA6dFy1vioOG3Bm06ls=
-X-Google-Smtp-Source: ABdhPJynU3Q6OuiQr1gLVZT8RMGMk5PPaD9gUtqgzbi5KO1M0HS0fEeUJkhnusDypDgk9XMT4B+DIjg/pAozFIBwnNk=
-X-Received: by 2002:a05:651c:203:: with SMTP id y3mr310118ljn.66.1606354605575;
- Wed, 25 Nov 2020 17:36:45 -0800 (PST)
-MIME-Version: 1.0
-References: <1606225437-22948-1-git-send-email-guoren@kernel.org>
- <1606225437-22948-2-git-send-email-guoren@kernel.org> <20201124143931.GI2414@hirez.programming.kicks-ass.net>
- <CAK8P3a1ykYmpXtjVbeAjLPY0AtfQTpL9jJ8e6SokiTb=J9UhnQ@mail.gmail.com>
- <20201125141645.GB2414@hirez.programming.kicks-ass.net> <20201125143128.GC16159@willie-the-truck>
-In-Reply-To: <20201125143128.GC16159@willie-the-truck>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 26 Nov 2020 09:36:34 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTD8NqegPGvqFhUeidGYiuiE6aT3AOELEs2e0JeE_CmUg@mail.gmail.com>
-Message-ID: <CAJF2gTTD8NqegPGvqFhUeidGYiuiE6aT3AOELEs2e0JeE_CmUg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] riscv: Add QUEUED_SPINLOCKS & QUEUED_RWLOCKS supported
-To:     Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Michael Clark <michaeljclark@mac.com>
-Content-Type: text/plain; charset="UTF-8"
+        s=default; t=1606354633;
+        bh=1bzCsK3pUzVc5uoXaRp/Kcz+Q0YOjQKCfDGGKmnLL1g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aCIpiywZTW6wg1TYBBSt9KJ+2f8AdcUtAyXcE/81j+oHCHd9Urtu4iGEtlkxfqjfs
+         YjG9fBx87mxHLq15a2uPu1LZWAD16zvSeXEGZcjUTmoJcZRoaYaS0lf83+iT+C6KZJ
+         heUPIlV+PbVmVx8q0olklVsNTbO/5QHNMwdYLnzw=
+Date:   Thu, 26 Nov 2020 10:37:09 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v0 03/19] x86/insn: Add an insn_decode() API
+Message-Id: <20201126103709.23d581fe2320f14a272a7dc5@kernel.org>
+In-Reply-To: <20201125192553.GD9996@zn.tnic>
+References: <20201124101952.7909-1-bp@alien8.de>
+        <20201124101952.7909-4-bp@alien8.de>
+        <20201126015333.fb0fb2b548013073ce72f19f@kernel.org>
+        <20201125192553.GD9996@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+On Wed, 25 Nov 2020 20:25:53 +0100
+Borislav Petkov <bp@alien8.de> wrote:
 
-On Wed, Nov 25, 2020 at 10:31 PM Will Deacon <will@kernel.org> wrote:
->
-> On Wed, Nov 25, 2020 at 03:16:45PM +0100, Peter Zijlstra wrote:
-> > @@ -207,6 +187,32 @@ static __always_inline void clear_pending_set_locked(struct qspinlock *lock)
-> >       atomic_add(-_Q_PENDING_VAL + _Q_LOCKED_VAL, &lock->val);
-> >  }
-> >
-> > +#endif /* _Q_PENDING_BITS == 8 */
-> > +
-> > +#if _Q_PENDING_BITS == 8 && ARCH_HAS_XCHG16
-> > +
-> > +/*
-> > + * xchg_tail - Put in the new queue tail code word & retrieve previous one
-> > + * @lock : Pointer to queued spinlock structure
-> > + * @tail : The new queue tail code word
-> > + * Return: The previous queue tail code word
-> > + *
-> > + * xchg(lock, tail), which heads an address dependency
-> > + *
-> > + * p,*,* -> n,*,* ; prev = xchg(lock, node)
-> > + */
-> > +static __always_inline u32 xchg_tail(struct qspinlock *lock, u32 tail)
-> > +{
-> > +     /*
-> > +      * We can use relaxed semantics since the caller ensures that the
-> > +      * MCS node is properly initialized before updating the tail.
-> > +      */
-> > +     return (u32)xchg_relaxed(&lock->tail,
-> > +                              tail >> _Q_TAIL_OFFSET) << _Q_TAIL_OFFSET;
-> > +}
-> > +
-> > +#else /* !(_Q_PENDING_BITS == 8 && ARCH_HAS_XCHG16) */
->
-> Why can't architectures just implement this with a 32-bit xchg instruction
-> if they don't have one that operates on 16 bits? Sure, they'll store more
-> data, but it's atomic so you shouldn't be able to tell... (ignoring parisc
-> crazy).
->
-> Also, I'm surprised qspinlock benefits riscv. On arm64, there's nothing in
-> it over tickets for <= 16 CPUs.
-NUMA is on the way:
-https://lore.kernel.org/linux-riscv/20201119003829.1282810-1-atish.patra@wdc.com/
+> On Thu, Nov 26, 2020 at 01:53:33AM +0900, Masami Hiramatsu wrote:
+> > (only from the viewpoint of VEX coding, a bit stricter, but not perfect.)
+> 
+> Yeah, I wanted to document the fact that it has changed behavior in the
+> commit message - we'll make it perfect later. :-)
 
-With your advice, I think we could using tickets lock when <= 16 CPUs
-and using qspinlock when > 16 CPUs.
-Is that right?
+It is just a note :) and no need to update the document.
 
-The next patchset plan is:
- - Using tickets & qspinlock together in riscv. Abandon 16bits
-xchg/cmpxchg implementation.
- - Abanden qspinlock in csky, because it only could 4 CPUs' SMP.
+BTW, the instruction validation depends on who needs it, because to
+check the all invalid ops, we need more information in the x86-opcode-map.txt
+and it will bloat up the table size and consumes more time to analysis.
+(Moreover, it depends on the processor generation -- older processor will
+not support VEX prefix, those are invalid)
+If we can expect that the target instruction is kernel text which compiler
+outputs, we may not need such instruction validation.
+> 
+> > > @@ -98,8 +101,12 @@ static void insn_get_emulate_prefix(struct insn *insn)
+> > >   * Populates the @insn->prefixes bitmap, and updates @insn->next_byte
+> > >   * to point to the (first) opcode.  No effect if @insn->prefixes.got
+> > >   * is already set.
+> > > + *
+> > > + * * Returns:
+> > > + * 0:  on success
+> > > + * !0: on error
+> > >   */
+> > 
+> > So this is different from...
+> > 
+> > [..]
+> > > +
+> > > +/**
+> > > + * insn_decode() - Decode an x86 instruction
+> > > + * @insn:	&struct insn to be initialized
+> > > + * @kaddr:	address (in kernel memory) of instruction (or copy thereof)
+> > > + * @buf_len:	length of the insn buffer at @kaddr
+> > > + * @m:		insn mode, see enum insn_mode
+> > > + *
+> > > + * Returns:
+> > > + * 0: if decoding succeeded
+> > > + * < 0: otherwise.
+> > 
+> > this return value.
+> > 
+> > Even for the insn_get_*(), I would like to see them returning -EINVAL
+> > as same as insn_decode(). Same API group has different return value is
+> > confusing.
+> 
+> Right, my goal in the end here is to make *all* users of the decoder
+> call insn_decode() and nothing else. And there you can have different
+> return values so checking negative/positive is the proper way to go.
+> 
+> Those other helpers, though, should then become internal and for those I
+> think it is easier to use them when they return a boolean yes/no value,
+> meaning, they do one thing and one thing only:
+> 
+> For example, it is more readable to do:
+> 
+> 	if (insn_...)
+> 
+> vs
+> 
+> 	int ret;
+> 
+> 	...
+> 
+> 	ret = insn_,...()
+> 	if (ret)
+> 		...
+> 
+> which is 4 more lines of error handling and return variable, leading to
+> more code.
 
->
-> Will
+OK, then could you use -1 instead of 1? It may allow us to expand it
+to return error code in the future.
 
+> 
+> But if you want to be able to use those other helpers outside of the
+> decoder - for whatever reason - then sure, the function signatures
+> should be the same.
 
+I think insn_get_prefixes() can be used independently, because x86
+perfix bytes is very complex. (I found kprobes is using its insn_attribute
+directly, but that is not good. I'll fix it)
+
+Thank you,
 
 -- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+Masami Hiramatsu <mhiramat@kernel.org>
