@@ -2,202 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9C22C5204
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7B92C5220
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387901AbgKZK2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:28:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727468AbgKZK2R (ORCPT
+        id S2388128AbgKZKel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:34:41 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:48491 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388040AbgKZKek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:28:17 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D3CC0613D4;
-        Thu, 26 Nov 2020 02:28:16 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id E3D7E1F45936
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-integrity@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Helen Koike <helen.koike@collabora.com>,
-        Duncan Laurie <dlaurie@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>, kernel@collabora.com,
+        Thu, 26 Nov 2020 05:34:40 -0500
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201126103436epoutp02ac9a563c933f59897e796a8e72c3b8a3~LCFp9YADu2915829158epoutp02Z
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 10:34:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201126103436epoutp02ac9a563c933f59897e796a8e72c3b8a3~LCFp9YADu2915829158epoutp02Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1606386876;
+        bh=SLA+YxSxwuaVy5M4r5sM0kRP4lwMguF/Prn+O9V/IEI=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=qt2D70inCTC4LDmk5lr1eTgqho36/gz9LtKosz7MHBS63vH/CMBYhMNSHGRNM6oaI
+         uJy5x5Ud3dVv5OlIAHDy4LzZismHMzGR5ZLjHb8Ikqd6JdJu8sOKhqSgsxXw3g1/cr
+         6aPkj512U36Tet8UnvK+LvssHssOp2B8wWwYkXp4=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20201126103436epcas5p180b833cd843d91f42f7321724051be5d~LCFpNe70L2350023500epcas5p1T;
+        Thu, 26 Nov 2020 10:34:36 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2F.25.33964.BB48FBF5; Thu, 26 Nov 2020 19:34:35 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201126045221epcas5p46f00cd452b8023262f5556e6f4567352~K9a1ZhjFi0428904289epcas5p4b;
+        Thu, 26 Nov 2020 04:52:21 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201126045221epsmtrp29075bc18fcb1d5b52cbde980e22b689d~K9a1Ysv8o2791927919epsmtrp2J;
+        Thu, 26 Nov 2020 04:52:21 +0000 (GMT)
+X-AuditID: b6c32a4b-eb7ff700000184ac-76-5fbf84bb50d7
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D5.A0.13470.5843FBF5; Thu, 26 Nov 2020 13:52:21 +0900 (KST)
+Received: from ubuntu.sa.corp.samsungelectronics.net (unknown
+        [107.108.83.125]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201126045220epsmtip1a5102e03d1a816fa0344453580167107~K9azy9Xka1656716567epsmtip1C;
+        Thu, 26 Nov 2020 04:52:20 +0000 (GMT)
+From:   Pankaj Sharma <pankj.sharma@samsung.com>
+To:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] char: tpm: add i2c driver for cr50
-In-Reply-To: <6409c32842ab080d91d1851a58f7ec7bb4524336.camel@collabora.com>
-References: <20201120172345.4040187-1-adrian.ratiu@collabora.com>
- <20201123220643.GA16777@kernel.org>
- <f36c43f81968a9ce2f3342e5c2c069722d8bfc7f.camel@collabora.com>
- <7edf80b70e4dd67d6f95c796c1ae26df9e51ba8d.camel@kernel.org>
- <6409c32842ab080d91d1851a58f7ec7bb4524336.camel@collabora.com>
-Date:   Thu, 26 Nov 2020 12:30:00 +0200
-Message-ID: <87d000xvfb.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Cc:     sriram.dash@samsung.com, dmurphy@ti.com, wg@grandegger.com,
+        mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
+        pankaj.dubey@samsung.com, Pankaj Sharma <pankj.sharma@samsung.com>
+Subject: [PATCH] can: m_can: add support for bosch mcan version 3.3.0
+Date:   Thu, 26 Nov 2020 10:21:42 +0530
+Message-Id: <1606366302-5520-1-git-send-email-pankj.sharma@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrEIsWRmVeSWpSXmKPExsWy7bCmhu7ulv3xBh9vmVvMOd/CYtF9egur
+        xYVtfawWq75PZba4vGsOm8X6RVNYLI4tELNYtPULu8XyrvvMFjfWs1ssvbeT1YHbY8vKm0we
+        Hy/dZvTYtKqTzaP/r4FH35ZVjB7Hb2xn8vi8SS6APYrLJiU1J7MstUjfLoErY+n8t2wFJ9kr
+        jv/bwdbAuJyti5GTQ0LAROLVp8vsXYxcHEICuxkl/myZzwLhfGKUOPd1KlTmG6NEy4r7rDAt
+        OzbPg6rayyhx6fEsVginhUni94zvYFVsAnoSl95PBlsiIhAqsax3AlicWeAAo8SvnzldjBwc
+        wgKuEo2nSkDCLAKqEucPPWIHsXkF3CVm/u2EWiYncfNcJzPIfAmBa+wS154cY4dIuEgcW3yd
+        EcIWlnh1fAtUXEri87u9UM9lSyzc3c8CsktCoEKibYYwRNhe4sCVOWBhZgFNifW79CHCshJT
+        T61jgriST6L39xMmiDivxI55MLaaxNSn76C2ykjcebQZapOHxJLDV8FsIYFYiW2Xl7JOYJSd
+        hbBhASPjKkbJ1ILi3PTUYtMC47zUcr3ixNzi0rx0veT83E2M4GSh5b2D8dGDD3qHGJk4GA8x
+        SnAwK4nwugvvjRfiTUmsrEotyo8vKs1JLT7EKM3BoiTOq/TjTJyQQHpiSWp2ampBahFMlomD
+        U6qByTZn0xVO3wmL2CatzRX49e5LYPypSXl/5nLEpv3+cmN6rTnThJd2zVIsxrrft25luxzz
+        hOXl9O03rPh+KpvUJciaZLKy3fvKLb7ksJug7p8288QDajr3Mz8/EH65o+F3VkyPgIKrit+O
+        TVJTVnpfbtefkZIVsce/+fF97cKO7KonfdNyVljduchsE2x7e8NOj2uCItEXVmxJN24Qnidb
+        6Cg9NWnn2vVV/6SuuU/5+86zwin4+A7m+OsSL1bNeMqe9c38zs0XTh+MMlM+M3Z1RTvM5As6
+        J2JaqLi9ya/plEzp1C9r1oXelW+/8nnH2de9aScF906PXeH4+2PXdz6LeTL8E6K2vNxzWbt5
+        wX+9g0osxRmJhlrMRcWJAC5/IWeFAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJLMWRmVeSWpSXmKPExsWy7bCSnG6ryf54g8OTTCzmnG9hseg+vYXV
+        4sK2PlaLVd+nMltc3jWHzWL9oiksFscWiFks2vqF3WJ5131mixvr2S2W3tvJ6sDtsWXlTSaP
+        j5duM3psWtXJ5tH/18Cjb8sqRo/jN7YzeXzeJBfAHsVlk5Kak1mWWqRvl8CVsXT+W7aCk+wV
+        x//tYGtgXM7WxcjJISFgIrFj8zyWLkYuDiGB3YwSi6a9AEpwACVkJBZ/roaoEZZY+e85O0RN
+        E5PEzpe7GEESbAJ6EpfeTwYbJCIQLrFzQhcTSBGzwClGiU93VzCBDBIWcJVoPFUCUsMioCpx
+        /tAjdhCbV8BdYubfTlaIBXISN891Mk9g5FnAyLCKUTK1oDg3PbfYsMAwL7Vcrzgxt7g0L10v
+        OT93EyM49LQ0dzBuX/VB7xAjEwfjIUYJDmYlEV534b3xQrwpiZVVqUX58UWlOanFhxilOViU
+        xHlvFC6MExJITyxJzU5NLUgtgskycXBKNTAt61wQasWxRKNZcTc3+xnrxx55+zdm39Dauyj/
+        +oXZ7swWqQeaHTkd/2xeJeDxVL/u2HLNhhfOxlw9mSwe+Wl37my6dbQzeX7qma+ONYcrk09X
+        +p17qR7qGntg755zn19YLlY50V/HuNSAyVXGKfmoB1+Y+Nq9V/Vrjwe/3cg4gVXe+zy3rOVE
+        g6hdDRtXFeSt5vvN5GXPdtkl8NOOgwb9wW4b99kp+jnHKpxkbNa9qnNr2ySzLzm/uJxEWipN
+        63/paf/z/bnwUV9Iwll1ibu8tQs7QtyU9u8/5t550umC5bo5es7ip1bHnX/GGajZ0+30ZK/Y
+        t7g6h113bi/T/PqmUcltw3qNhD+hkvOMipVYijMSDbWYi4oTAffoYf+sAgAA
+X-CMS-MailID: 20201126045221epcas5p46f00cd452b8023262f5556e6f4567352
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20201126045221epcas5p46f00cd452b8023262f5556e6f4567352
+References: <CGME20201126045221epcas5p46f00cd452b8023262f5556e6f4567352@epcas5p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020, Ezequiel Garcia <ezequiel@collabora.com> 
-wrote:
-> On Thu, 2020-11-26 at 05:30 +0200, Jarkko Sakkinen wrote: 
->> On Tue, 2020-11-24 at 10:14 -0300, Ezequiel Garcia wrote: 
->> > Hi Jarkko,  Thanks for your review.   On Tue, 2020-11-24 at 
->> > 00:06 +0200, Jarkko Sakkinen wrote: 
->> > > On Fri, Nov 20, 2020 at 07:23:45PM +0200, Adrian Ratiu 
->> > > wrote: 
->> > > > From: "dlaurie@chromium.org" <dlaurie@chromium.org>  Add 
->> > > > TPM 2.0 compatible I2C interface for chips with cr50 
->> > > > firmware.   The firmware running on the currently 
->> > > > supported H1 MCU requires a special driver to handle its 
->> > > > specific protocol, and this makes it unsuitable to use 
->> > > > tpm_tis_core_* and instead it must implement the 
->> > > > underlying TPM protocol similar to the other I2C TPM 
->> > > > drivers.   - All 4 byes of status register must be 
->> > > > read/written at once.  - FIFO and burst count is limited 
->> > > > to 63 and must be drained by AP.  - Provides an interrupt 
->> > > > to indicate when read response data is ready and when the 
->> > > > TPM is finished processing write data.   This driver is 
->> > > > based on the existing infineon I2C TPM driver, which most 
->> > > > closely matches the cr50 i2c protocol behavior.   Cc: 
->> > > > Helen Koike <helen.koike@collabora.com> Signed-off-by: 
->> > > > Duncan Laurie <dlaurie@chromium.org> 
->> > > > [swboyd@chromium.org: Depend on i2c even if it's a 
->> > > > module, replace boilier plate with SPDX tag, drop 
->> > > > asm/byteorder.h include, simplify return from probe] 
->> > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org> 
->> > > > Signed-off-by: Fabien Lahoudere 
->> > > > <fabien.lahoudere@collabora.com> Signed-off-by: Adrian 
->> > > > Ratiu <adrian.ratiu@collabora.com> --- Changes in v2: 
->> > > >   - Various small fixes all over (reorder includes, 
->> > > >   MAX_BUFSIZE, 
->> > > > comments, etc) 
->> > > >   - Reworked return values of i2c_wait_tpm_ready() to fix 
->> > > >   timeout 
->> > > > mis-handling so ret == 0 now means success, the wait 
->> > > > period jiffies is ignored because that number is 
->> > > > meaningless and return a proper timeout error in case 
->> > > > jiffies == 0. 
->> > > >   - Make i2c default to 1 message per transfer (requested 
->> > > >   by 
->> > > > Helen) 
->> > > >   - Move -EIO error reporting to transfer function to 
->> > > >   cleanup 
->> > > > transfer() itself and its R/W callers 
->> > > >   - Remove magic value hardcodings and introduce enum 
->> > > > force_release.   v1 posted at 
->> > > > https://lkml.org/lkml/2020/2/25/349  Applies on 
->> > > > next-20201120, tested on Chromebook EVE.  --- 
->> > > >  drivers/char/tpm/Kconfig            |  10 + 
->> > > >  drivers/char/tpm/Makefile           |   2 + 
->> > > >  drivers/char/tpm/tpm_tis_i2c_cr50.c | 768 
->> > > > ++++++++++++++++++++++++++++ 
->> > > >  3 files changed, 780 insertions(+) create mode 100644 
->> > > >  drivers/char/tpm/tpm_tis_i2c_cr50.c 
->> > > >  diff --git a/drivers/char/tpm/Kconfig 
->> > > > b/drivers/char/tpm/Kconfig index 
->> > > > a18c314da211..4308f9ca7a43 100644 --- 
->> > > > a/drivers/char/tpm/Kconfig +++ b/drivers/char/tpm/Kconfig 
->> > > > @@ -86,6 +86,16 @@ config TCG_TIS_SYNQUACER 
->> > > >           To compile this driver as a module, choose  M 
->> > > >           here; the module will be called 
->> > > >           tpm_tis_synquacer. 
->> > > >   
->> > > > +config TCG_TIS_I2C_CR50 +       tristate "TPM Interface 
->> > > > Specification 2.0 Interface (I2C - CR50)" +       depends 
->> > > > on I2C +       select TCG_CR50 +       help + 
->> > > > This is a driver for the Google cr50 I2C TPM interface 
->> > > > which is a +         custom microcontroller and requires 
->> > > > a custom i2c protocol interface +         to handle the 
->> > > > limitations of the hardware.  To compile this driver + 
->> > > > as a module, choose M here; the module will be called 
->> > > > tcg_tis_i2c_cr50.  + 
->> > > >  config TCG_TIS_I2C_ATMEL 
->> > > >         tristate "TPM Interface Specification 1.2 
->> > > >         Interface (I2C 
->> > > > - Atmel)" 
->> > > >         depends on I2C 
->> > > > diff --git a/drivers/char/tpm/Makefile 
->> > > > b/drivers/char/tpm/Makefile index 
->> > > > 84db4fb3a9c9..66d39ea6bd10 100644 --- 
->> > > > a/drivers/char/tpm/Makefile +++ 
->> > > > b/drivers/char/tpm/Makefile @@ -27,6 +27,8 @@ 
->> > > > obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o 
->> > > >  tpm_tis_spi-y := tpm_tis_spi_main.o 
->> > > >  tpm_tis_spi-$(CONFIG_TCG_TIS_SPI_CR50) += 
->> > > >  tpm_tis_spi_cr50.o  
->> > > > +obj-$(CONFIG_TCG_TIS_I2C_CR50) += tpm_tis_i2c_cr50.o + 
->> > > >  obj-$(CONFIG_TCG_TIS_I2C_ATMEL) += tpm_i2c_atmel.o 
->> > > >  obj-$(CONFIG_TCG_TIS_I2C_INFINEON) += tpm_i2c_infineon.o 
->> > > >  obj-$(CONFIG_TCG_TIS_I2C_NUVOTON) += tpm_i2c_nuvoton.o 
->> > > > diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c 
->> > > > b/drivers/char/tpm/tpm_tis_i2c_cr50.c new file mode 
->> > > > 100644 index 000000000000..37555dafdca0 --- /dev/null +++ 
->> > > > b/drivers/char/tpm/tpm_tis_i2c_cr50.c @@ -0,0 +1,768 @@ 
->> > > > +// SPDX-License-Identifier: GPL-2.0 +/* + * Copyright 
->> > > > 2016 Google Inc.  + * + * Based on Linux Kernel TPM 
->> > > > driver by + * Peter Huewe <peter.huewe@infineon.com> + * 
->> > > > Copyright (C) 2011 Infineon Technologies + */ + +/* + * 
->> > > > cr50 is a firmware for H1 secure modules that requires 
->> > > > special + * handling for the I2C interface.  + * + * - 
->> > > > Use an interrupt for transaction status instead of 
->> > > > hardcoded delays + * - Must use write+wait+read read 
->> > > > protocol + * - All 4 bytes of status register must be 
->> > > > read/written at once + * - Burst count max is 63 bytes, 
->> > > > and burst count behaves + *   slightly differently than 
->> > > > other I2C TPMs + * - When reading from FIFO the full 
->> > > > burstcnt must be read + *   instead of just reading 
->> > > > header and determining the remainder + */ + +#include 
->> > > > <linux/acpi.h> +#include <linux/completion.h> +#include 
->> > > > <linux/i2c.h> +#include <linux/interrupt.h> +#include 
->> > > > <linux/module.h> +#include <linux/pm.h> +#include 
->> > > > <linux/slab.h> +#include <linux/wait.h> + +#include 
->> > > > "tpm_tis_core.h" + +#define CR50_MAX_BUFSIZE       64 
->> > > > +#define CR50_TIMEOUT_SHORT_MS  2       /* Short timeout 
->> > > > during transactions */ +#define CR50_TIMEOUT_NOIRQ_MS  20 
->> > > > /* Timeout for TPM ready without IRQ */ +#define 
->> > > > CR50_I2C_DID_VID       0x00281ae0L +#define 
->> > > > CR50_I2C_MAX_RETRIES   3       /* Max retries due to I2C 
->> > > > errors */ +#define CR50_I2C_RETRY_DELAY_LO        55 
->> > > > /* Min usecs between retries on I2C */ +#define 
->> > > > CR50_I2C_RETRY_DELAY_HI        65      /* Max usecs 
->> > > > between retries on I2C */ 
->> > >  CR50_ -> TPM_CR50_  
->> > > > + +#define TPM_I2C_ACCESS(l)      (0x0000 | ((l) << 4)) 
->> > > > +#define TPM_I2C_STS(l)         (0x0001 | ((l) << 4)) 
->> > > > +#define TPM_I2C_DATA_FIFO(l)   (0x0005 | ((l) << 4)) 
->> > > > +#define TPM_I2C_DID_VID(l)     (0x0006 | ((l) << 4)) + 
->> > > > +struct priv_data { +       int irq; +       int 
->> > > > locality; +       struct completion tpm_ready; +       u8 
->> > > > buf[CR50_MAX_BUFSIZE]; +}; 
->> > >  tpm_i2c_cr50_priv_data  
->> > > > + +enum force_release { +       CR50_NO_FORCE = 0x0, + 
->> > > > CR50_FORCE = 0x1, +}; 
->> > >  I'd just   #define TPM_I2C_CR50_NO_FORCE   0 #define 
->> > > TPM_I2C_CR50_FORCE      1  
->> >  A proper enumerated type has advantages over a preprocessor 
->> > macro: even if the compiler won't warn you, static analyzers 
->> > can warn about a misuse. 
->>  Why don't you just use "bool", "true" and "false"? I ignored 
->> that this has nothing to do with the hardware last time.  
-> 
-> Well, boolean parameters are a known anti-pattern [1]. 
-> 
-> [1] https://people.mpi-inf.mpg.de/~jblanche/api-design.pdf 
+Add support for mcan bit timing and control mode according to bosch mcan IP
+version 3.3.0
+The mcan version read from the Core Release field of CREL register would be
+33. Accordingly the properties are to be set for mcan v3.3.0
 
-Funny because that's what I wrote a few days ago in my v3 WIP 
-branch, #defines and a bool function parameter. XD
+Signed-off-by: Pankaj Sharma <pankj.sharma@samsung.com>
+---
+Depends on:
+https://marc.info/?l=linux-can&m=160624495218700&w=2
 
-As Jarkko correctly observed these values are unrelated to the HW, 
-we just need to distinguish FORCE vs NO_FORCE and IMO any method 
-will do just as well for such a small and obvious use case.
+ drivers/net/can/m_can/m_can.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-So based on the arguments given, I'll stop bikeshedding and just 
-use enums :)
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 86bbbfa..7652175 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1385,6 +1385,8 @@ static int m_can_dev_setup(struct m_can_classdev *m_can_dev)
+ 						&m_can_data_bittiming_const_31X;
+ 		break;
+ 	case 32:
++	case 33:
++		/* Support both MCAN version v3.2.x and v3.3.0 */
+ 		m_can_dev->can.bittiming_const = m_can_dev->bit_timing ?
+ 			m_can_dev->bit_timing : &m_can_bittiming_const_31X;
+ 
+-- 
+2.7.4
 
-Thank you both,
-Adrian
