@@ -2,168 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BE22C5504
+	by mail.lfdr.de (Postfix) with ESMTP id 578902C5503
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390100AbgKZNJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        id S2390090AbgKZNJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:09:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389760AbgKZNJr (ORCPT
+        with ESMTP id S2389788AbgKZNJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:09:47 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0242C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:09:46 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id 64so2064303wra.11
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:09:46 -0800 (PST)
+        Thu, 26 Nov 2020 08:09:42 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACF5C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:09:40 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id i2so2085415wrs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:09:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=8QNZUu2Cb3lWrQ6TZfg+vI39J3foEyVGk8naM+GJ9AI=;
-        b=aH1WQcBaYy4asjjBlbIWGuZmqJDEI3r9QB7qPEANzc+zwav4fWgWZGvbpNU8DSGOVg
-         LTlG5tkdoAtJzI3DXJlCP7ImQY5/b1ZmZoDRYGuoQRQSURyv9vgRtg8H9TzFNcx+rPFX
-         pk8jvHfjzDQaeKuXgKpMvmLWDLqD/P0+UvupQ=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uPX5WtnioZEgnMR9Q1L+JTJpZPzfNtcvjnReWuKjp/g=;
+        b=u2q8FzMDnqtZA9RS+RdFR/YBqcsAM8vhZoUM8AcwGIyYOHa1cLFQiQIGp0idGay/jV
+         hfJa0fdpByabunWMGXAD6Gl+67CCZkUMp9DM+DH4IS4KAUGTCy6ywoBQDmyCjGzpcy8K
+         nDh81NJaVH4fDafXXoDxzS3nHtZsZYAkgCMyur942i4trwWO6XGB/jwKnMQQxZEIgqel
+         16Ub7WUO//qEjZqsprAiXj/BaKQIssOVdKnhZ0nxKGq2r+niZAtfLVwowU4cfKOC8X34
+         jVUNt987SVJ9bhZ16pj+yzIRr/u7RAGZmD0g7hxieTMvBlaEIPAjXc6vpTm8WLUyvmzt
+         yK5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=8QNZUu2Cb3lWrQ6TZfg+vI39J3foEyVGk8naM+GJ9AI=;
-        b=kiF5v54KwPHoaw1cWB1yet2UUd+3aZXeUN8yx6RI5WxtrS/h7W25OQMf72O5sOtq+J
-         iuuhKUUSfmRmO+/kyG+WnblgU/+VZTopoKdC+HLHk9mJJx8YD2s6vuoSMtq8mC6hzWtT
-         4/33hJPLy5n7JkZZ5dsV1UYmkvhZdXPdhZXrImuCDPyUZ+MX1cpug97klxQcar2QjdGZ
-         PdnABk5Ijmvw12MW6c3qVwJkQNJNNEY4bQkuMc7n99lEJp2BSzBmjd5j/V4PdTmbb7Ex
-         5n6dJnQFUQXU2xqhK8gN5RRYsSDhg+Ip8Go9DcJXTKmi/nuRu4QtHPkkpklC7W4+My5J
-         bAlQ==
-X-Gm-Message-State: AOAM531J97BmelWId/GPS3Z3qSK+DK2RPMUOmk2qBtL/Y0pyxsXOh/AS
-        DUidu+EW2uaj7mvLOaO+VC0ctT3GMUcCR9ZS2msOMkDOKTXF9g==
-X-Google-Smtp-Source: ABdhPJx4fFNWx1/Gke8sRMXIL1e1HJpim6R8QFHoYzSOnw8kqnMXPE3V3AqD25oLsRDjC5osy/UzyaKLn83jMce05n0=
-X-Received: by 2002:a5d:5604:: with SMTP id l4mr3708930wrv.127.1606396185044;
- Thu, 26 Nov 2020 05:09:45 -0800 (PST)
+        bh=uPX5WtnioZEgnMR9Q1L+JTJpZPzfNtcvjnReWuKjp/g=;
+        b=R45TskeAWk19KpG/3uFp/iJV7VJo6/V0jcSyiuVL4hCSHrlp6MEQR8CyUyQsQXTx31
+         JSGyzQmBd6Cy6GfAtB3enqX9O6WFLOVmYKurZnsj9ybbmRtp2Zs6FQWpvvRan1wckFP5
+         SO6jkOTF65GymS4WZKDQ45RRSKIllV6swJmGfZlpPicTdJpXN7jTEQ0oJ5u28HmENvht
+         lS+XZZgUkzfJap2jd0nv82l8j1mKJ9p6egjzWLTbB56N3ombMr5InXEbNM9bCo0WyzkU
+         Mnjl0ZSFKb39R9EFEqDRmW67jZjqskyXXpaWOVwEBIuVL2cY9GLMS8QyWWwrO52jI0nQ
+         JCww==
+X-Gm-Message-State: AOAM532DZy+RamwffMXUwhZhdDMY21qJ2oyp/mRllNFoY94V150FtQn5
+        24JB4xCH6eH+feplLEN8VroDqzt8WhROrg==
+X-Google-Smtp-Source: ABdhPJyRnrD4xBuApMK0aBHjnXTYxNNyNq9SVndaTvfq07J8Czhpuvfe4GR//R/RBevvaq4JrCC6Ig==
+X-Received: by 2002:adf:de05:: with SMTP id b5mr3793933wrm.131.1606396179220;
+        Thu, 26 Nov 2020 05:09:39 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:c023:e75f:e8c4:d86? ([2a01:e34:ed2f:f020:c023:e75f:e8c4:d86])
+        by smtp.googlemail.com with ESMTPSA id u5sm8140424wml.13.2020.11.26.05.09.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Nov 2020 05:09:38 -0800 (PST)
+Subject: Re: [PATCH v4 0/3] Improve the estimations in Intelligent Power
+ Allocation
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        amitk@kernel.org, Dietmar.Eggemann@arm.com, ionela.voinescu@arm.com
+References: <20201124161025.27694-1-lukasz.luba@arm.com>
+ <e953e887-0fc7-8375-9e5d-1be339f48216@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <f9899f7b-0bc9-40e2-4969-eb76bd11ed5b@linaro.org>
+Date:   Thu, 26 Nov 2020 14:09:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-From:   Alban Crequy <alban@kinvolk.io>
-Date:   Thu, 26 Nov 2020 14:09:33 +0100
-Message-ID: <CADZs7q4sw71iNHmV8EOOXhUKJMORPzF7thraxZYddTZsxta-KQ@mail.gmail.com>
-Subject: SECCOMP_IOCTL_NOTIF_ADDFD race condition
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <e953e887-0fc7-8375-9e5d-1be339f48216@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 26/11/2020 13:49, Lukasz Luba wrote:
+> Hi Daniel,
+> 
+> On 11/24/20 4:10 PM, Lukasz Luba wrote:
+>> Hi all,
+>>
+>> The Intelligent Power Allocation (IPA) estimates the needed
+>> coefficients for
+>> internal algorithm. It can also estimate the sustainable power value
+>> when the
+>> DT has not provided one. Fix the 'k_i' coefficient which might be to big
+>> related to the other values, when the sustainable power is in an abstract
+>> scale. Do the estimation of sustainable power only once and avoid
+>> expensive
+>> calculation every time the IPA is called. Do the estimation of PID
+>> constants
+>> when there was user update via sysfs to sustainable power.
+>>
+>> The patch set should apply on top next-20201124
+>>
+>> Changes:
+>> v4:
+>> - added new function get_sustainable_power() which handles use cases
+>>    when the value should be estimated again or simply returned
+>> - added sustainable_power in the power_allocator_params to track if there
+>>    was a change to sustainable_power by the user via sysfs
+>> - addressed Daniel's comments that sustainable power set via sysfs should
+>>    trigger PID coefficients estimation
+>> - removed 'force' argument from estimate_pid_constants() and make it
+>> ready
+>>    for updates due to new value for sust. power from sysfs
+>> - abandoned the design from v3 with a single function responsible for
+>>    estimation both sust. power and PID const. requested by Ionela
+>> v3 [1]:
+>> - changed estimate_pid_constants to estimate_tzp_constants and related
+>> comments
+>> - estimate the PID coefficients always together with sust. power
+>> - added print indicating that we are estimating sust. power and PID
+>> const.
+>> - don't use local variable 'sustainable_power'
+>>
+>> Regards,
+>> Lukasz Luba
+>>
+>> [1]
+>> https://lore.kernel.org/lkml/20201009135850.14727-1-lukasz.luba@arm.com/
+>>
+>> Lukasz Luba (3):
+>>    thermal: power allocator: change the 'k_i' coefficient estimation
+>>    thermal: power allocator: refactor sustainable power estimation
+>>    thermal: power allocator: change the 'k_*' always in
+>>      estimate_pid_constants()
+>>
+>>   drivers/thermal/gov_power_allocator.c | 76 +++++++++++++++++----------
+>>   1 file changed, 49 insertions(+), 27 deletions(-)
+>>
+> 
+> Gentle ping. This is a self contained change to only power allocator
+> file. It addresses also your requirement regarding sustainable_power
+> changed via sysfs.
+> 
+> Could you take it please? It should apply smoothly in your tree.
 
-With the addfd feature (added in =E2=80=9Cseccomp: Introduce addfd ioctl to
-seccomp user notifier=E2=80=9D, commit 7cf97b125455), the new file is
-installed in the target process during the SECCOMP_IOCTL_NOTIF_ADDFD
-operation and not at the end with the SECCOMP_IOCTL_NOTIF_SEND
-operation. This can cause race conditions when the target process is
-interrupted by a signal (EINTR) and restarted automatically.
+Actually, I'm waiting for Ionela and Dietmar ack.
 
-This is more noticeable in multithreaded processes like with Golang.
-In Golang 1.14:
-https://golang.org/doc/go1.14
-> "A consequence of the implementation of preemption is that on Unix system=
-s, including Linux and macOS systems, programs built with Go 1.14 will rece=
-ive more signals than programs built with earlier releases. This means that=
- programs that use packages like syscall or golang.org/x/sys/unix will see =
-more slow system calls fail with EINTR errors. Those programs will have to =
-handle those errors in some way, most likely looping to try the system call=
- again."
 
-In my test, I added a seccomp policy which returns
-SECCOMP_RET_USER_NOTIF on execve() and I added a sleep(2) in the
-seccomp agent (using https://github.com/kinvolk/seccompagent/) between
-SECCOMP_IOCTL_NOTIF_RECV and SECCOMP_IOCTL_NOTIF_SEND to make it a bit
-slow to reply with SECCOMP_USER_NOTIF_FLAG_CONTINUE. I got the
-following strace log going on in a loop:
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-[pid 2656199] execve("/bin/sh", ["sh", "-c", "sleep infinity"],
-0xc000063b00 /* 11 vars */ <unfinished ...>
-[pid 2656200] <... nanosleep resumed>NULL) =3D 0
-[pid 2656200] epoll_pwait(7, [], 128, 0, NULL, 0) =3D 0
-[pid 2656200] getpid()                  =3D 1
-[pid 2656200] tgkill(1, 1, SIGURG)      =3D 0
-[pid 2656199] <... execve resumed>)     =3D ? ERESTARTSYS (To be
-restarted if SA_RESTART is set)
-[pid 2656200] nanosleep({tv_sec=3D0, tv_nsec=3D10000000},  <unfinished ...>
-[pid 2656199] --- SIGURG {si_signo=3DSIGURG, si_code=3DSI_TKILL, si_pid=3D1=
-,
-si_uid=3D0} ---
-[pid 2656199] rt_sigreturn({mask=3D[]})   =3D 59
-[pid 2656199] execve("/bin/sh", ["sh", "-c", "sleep infinity"],
-0xc000063b00 /* 11 vars */ <unfinished ...>
-
-On the seccomp agent side, the ioctl(SECCOMP_IOCTL_NOTIF_SEND) returns
-ENOENT, and then it receives the same notification at the next
-iteration of the loop.
-
-The SIGURG signal is sent by the Golang runtime, causing the execve to
-be interrupted, and restarted automatically, triggering the new
-seccomp notification. In this example with execve, this is not a big
-deal because the seccomp agent doesn't add a fd. But on a open() or
-accept() syscall, I fear that the seccomp agent could install a file
-descriptor without knowing that the syscall will be interrupted soon
-after, but before the SECCOMP_IOCTL_NOTIF_SEND is completed.
-
-I understand the need to have two different ioctl() to add the fd and
-to reply to the seccomp notification because the seccomp agent needs
-to know the fd number being assigned before specifying the return
-value of the syscall with that number.
-
-What do you think is the best way to solve this problem? Here are a few ide=
-as:
-
-- Idea 1: add a second flag for the struct seccomp_notif_resp
-=E2=80=9CSECCOMP_USER_NOTIF_FLAG_RETURN_FD=E2=80=9D to instruct seccomp to =
-override
-the return value with the first fd to install. It would not help to
-emulate recvfrom() with SCM_RIGHTS but it will solve the problem for
-syscalls that return a fd because we can then implement a new ioctl
-(=E2=80=9CSECCOMP_IOCTL_NOTIF_SEND_WITH_FDS=E2=80=9D?) that does the addfd =
-and the
-notification response in one step.
-
-Other ideas but they cause more problems:
-
-- Idea 2: We need some kind of transactions where the fd is sent with
-the first ioctl() and installed in the fd table but marked somehow to
-be closed automatically if the syscall is interrupted with EINTR
-outside of the control of the seccomp agent. The new fd in the fd
-table would be committed at the end if the syscall is not interrupted.
-But this introduces other issues: another thread could call dup() on
-the fd before it gets closed. Or another process sharing the fd table
-with CLONE_FILES could do the same. Should the not-yet-committed fds
-be visible in /proc/<pid>/fd/? Or inherited to new processes created
-by fork()?
-
-- Idea 3: We could add fds in a temporary location but not in the
-`struct files_struct` of the target process, and only commit at
-SECCOMP_IOCTL_NOTIF_SEND time. In this way, threads or processes
-sharing the fd table with CLONE_FILES would not be impacted. However,
-this could open new race conditions if other threads are installing
-fds in the same slots in the fd table. Also, this seems quite
-dangerous to add this concept of "inflight" fd for seccomp because
-there are already inflight fds for SCM_RIGHT and a garbage collector
-to clean circular references (net/unix/garbage.c). If we add an
-inflight fd mechanism on seccomp, a malicious user could just use
-SECCOMP_IOCTL_NOTIF_ADDFD to send a unix socket that has the
-seccomp-fd inflight in SCM_RIGHT. Then, the malicious seccomp agent
-would close(seccompFd) and we will be in a situation where both the
-seccomp-fd and the unix socket are not attached to any process but
-they reference each other, so they cannot be closed.
-
-What do you think? Is there a better solution?
-
-Cheers
-Alban
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
