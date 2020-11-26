@@ -2,136 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B119F2C528E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B8A2C5291
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730836AbgKZLCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 06:02:18 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:44948 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729663AbgKZLCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 06:02:17 -0500
-Received: from zn.tnic (p200300ec2f0c90002c8516e75060f16f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9000:2c85:16e7:5060:f16f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 864301EC04CC;
-        Thu, 26 Nov 2020 12:02:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606388535;
+        id S2387924AbgKZLCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 06:02:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46974 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731216AbgKZLC2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 06:02:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606388547;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=thPwP/sRGoGF+5wJi3jAB2qEXFSTTtsRS5IciU/FKjE=;
-        b=pcm6mB5+9r0Oi78iZwGK6chAYEl3nP9AOEKBkZfQT5sioFIkiPiyR8uzRCUIRftvxb6ibJ
-        tOyCIem2q0U6MWKIEJUG1eqjzj3/R111C2RXSrsgkQZ9SOtNLTWotnQheFk45xhycOPV8q
-        0EbKNo0zrfri2cdGiAR2H2Q2W4KiAXg=
-Date:   Thu, 26 Nov 2020 12:02:15 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v15 03/26] x86/fpu/xstate: Introduce CET MSR XSAVES
- supervisor states
-Message-ID: <20201126110215.GD31565@zn.tnic>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-4-yu-cheng.yu@intel.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=8cvGV8OUthTmjmbY5oJ7mRxJLMMwznOKcyuaPUff3ek=;
+        b=VezbIcJalAdt/otNdxYgQil5QVSdbXlehicqEyhGBWBCVCiJzLL0t8enPJIlyr35Cchr2a
+        nzZXjjyxclHMD639PRhxITSS3o/dSbOwkfB/MxNBsYLGLTjXuL4bYQXKHKR39jIc08qYEZ
+        mrHxatGwzRXg07yudk4mrJJSGfZXrgI=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-405-FaJPpW0bPCKcBwUw690mNg-1; Thu, 26 Nov 2020 06:02:24 -0500
+X-MC-Unique: FaJPpW0bPCKcBwUw690mNg-1
+Received: by mail-wr1-f72.google.com with SMTP id g5so1097061wrp.5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 03:02:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8cvGV8OUthTmjmbY5oJ7mRxJLMMwznOKcyuaPUff3ek=;
+        b=UhTMw5Vk6mCj1kgUDJ62b+6yQlHcd0UB7wfNsQYcSEaypq39+QbKhFm0x0KH1Q1mEm
+         1z3y2SRLYKBZxUpxTzIlPSXC0NKAfqAU7IaJrxhviCFEiL23qiR1Q3/abTalBIrVIwb+
+         gno7pd9NAV0ESUvHZC8vFdhrZqwmoIOc+yR8DZIaRauNxJAZ4CvZounQpCj2xBti4WMb
+         lKkF6qi5NSBHvxwhGLcaqR+1VvTXjXUsutS2Mg/OA5mw2KIwmVzMa2NTkBl+eiYLDau6
+         RPAQIHLG0HrgaV3n8eZNTQGvjxpYKurwOuZue1ntsCsk7O0Qa9LiR6q2x6jEFx4PjSUO
+         mUfg==
+X-Gm-Message-State: AOAM531pRoGjJXkSJwQrVaQY0ravAmMEPp51ik+NUisODY0e2+P1NYgH
+        zbmn9DNirlLAvBtr6uLlrj8Qvf9rZQ4osDJQxfvpgpc41adWZloYMQ8GcdquUz33uM+DF8aDwHL
+        nM/KTJ1bIGqOQMVsl0z5xyls=
+X-Received: by 2002:adf:a54d:: with SMTP id j13mr3210914wrb.132.1606388543441;
+        Thu, 26 Nov 2020 03:02:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzNurD+B9K0wyu+wLx1//nc60gT6N9gDdwcKceycA0Aw8hI/yIujAcODjNgQftSCd3n2mbAxg==
+X-Received: by 2002:adf:a54d:: with SMTP id j13mr3210886wrb.132.1606388543257;
+        Thu, 26 Nov 2020 03:02:23 -0800 (PST)
+Received: from localhost (cpc111767-lutn13-2-0-cust344.9-3.cable.virginm.net. [86.5.41.89])
+        by smtp.gmail.com with ESMTPSA id y2sm8806139wrn.31.2020.11.26.03.02.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 03:02:21 -0800 (PST)
+Date:   Thu, 26 Nov 2020 11:02:20 +0000
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm <linux-mm@kvack.org>
+Subject: Re: [PATCH] memcg: add support to generate the total count of
+ children from root
+Message-ID: <20201126110220.k4o6s32er5jy2mdk@ava.usersys.com>
+X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
+X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
+References: <20201124105836.713371-1-atomlin@redhat.com>
+ <20201124112612.GV27488@dhcp22.suse.cz>
+ <CANfR36hyrqXjk2tL03GzCk6rn6sCD7Sd811soBsZC3dHY0h9fQ@mail.gmail.com>
+ <20201124133644.GA31550@dhcp22.suse.cz>
+ <CANfR36hw8iSSszSt4sNh+ika3vTdXQnXHPLj5t2iLL=5-nzZZw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201110162211.9207-4-yu-cheng.yu@intel.com>
+In-Reply-To: <CANfR36hw8iSSszSt4sNh+ika3vTdXQnXHPLj5t2iLL=5-nzZZw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 08:21:48AM -0800, Yu-cheng Yu wrote:
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index 972a34d93505..6f05ab2a1fa4 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -922,4 +922,24 @@
->  #define MSR_VM_IGNNE                    0xc0010115
->  #define MSR_VM_HSAVE_PA                 0xc0010117
->  
-> +/* Control-flow Enforcement Technology MSRs */
-> +#define MSR_IA32_U_CET		0x6a0 /* user mode cet setting */
-> +#define MSR_IA32_S_CET		0x6a2 /* kernel mode cet setting */
-> +#define MSR_IA32_PL0_SSP	0x6a4 /* kernel shstk pointer */
-> +#define MSR_IA32_PL1_SSP	0x6a5 /* ring-1 shstk pointer */
-> +#define MSR_IA32_PL2_SSP	0x6a6 /* ring-2 shstk pointer */
-> +#define MSR_IA32_PL3_SSP	0x6a7 /* user shstk pointer */
-> +#define MSR_IA32_INT_SSP_TAB	0x6a8 /* exception shstk table */
-> +
-> +/* MSR_IA32_U_CET and MSR_IA32_S_CET bits */
+On Tue 2020-11-24 13:47 +0000, Aaron Tomlin wrote:
+> On Tue, 24 Nov 2020 at 13:36, Michal Hocko <mhocko@suse.com> wrote:
+> > This like any other user visible interface would be a much easier sell
+> > if there was a clear usecase to justify it. I do not see anything
+> > controversial about exporting such a value but my general take is that
+> > we are only adding new interface when existing ones are insufficient. A
+> > performance might be a very good reason but that would really require to
+> > come with some real life numbers.
 
-Pls put the bit defines under the MSRs they belong to.
+Michal,
 
-> +#define CET_SHSTK_EN		BIT_ULL(0)
-> +#define CET_WRSS_EN		BIT_ULL(1)
-> +#define CET_ENDBR_EN		BIT_ULL(2)
-> +#define CET_LEG_IW_EN		BIT_ULL(3)
-> +#define CET_NO_TRACK_EN		BIT_ULL(4)
-> +#define CET_SUPPRESS_DISABLE	BIT_ULL(5)
-> +#define CET_RESERVED		(BIT_ULL(6) | BIT_ULL(7) | BIT_ULL(8) | BIT_ULL(9))
-> +#define CET_SUPPRESS		BIT_ULL(10)
-> +#define CET_WAIT_ENDBR		BIT_ULL(11)
+> Fair enough and understood.
+> 
+> At this stage, I unfortunately do not have such supporting data. This was only
+> useful in an isolated situation. Having said this, I thought that the
+> aforementioned interface would be helpful to others, in particular, given the
+> known limitation.
 
-...
+Furthermore, I can see that this is already provided via /proc/cgroups
+(see proc_cgroupstats_show()). As such, another possibility:
+the proposed interface could reliably produce the difference between the
+maximum permitted memory-controlled cgroup count and the used count
+(i.e. the remaining memory cgroup count, from root); albeit, I doubt that
+this would be particularly useful to others i.e., the use-case would be
+rather limited.
 
->  	 * Clear XSAVE features that are disabled in the normal CPUID.
->  	 */
->  	for (i = 0; i < ARRAY_SIZE(xsave_cpuid_features); i++) {
-> -		if (!boot_cpu_has(xsave_cpuid_features[i]))
-> -			xfeatures_mask_all &= ~BIT_ULL(i);
-> +		if (xsave_cpuid_features[i] == X86_FEATURE_SHSTK) {
-> +			/*
-> +			 * X86_FEATURE_SHSTK and X86_FEATURE_IBT share
-> +			 * same states, but can be enabled separately.
-> +			 */
-> +			if (!boot_cpu_has(X86_FEATURE_SHSTK) &&
-> +			    !boot_cpu_has(X86_FEATURE_IBT))
-> +				xfeatures_mask_all &= ~BIT_ULL(i);
-> +		} else {
-> +			if ((xsave_cpuid_features[i] == -1) ||
-			     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-That is a new check. I guess it could be done first to simplify the
-code:
-
-	for (i = 0; i < ARRAY_SIZE(xsave_cpuid_features); i++) {
-		if (xsave_cpuid_features[i] == -1) {
-			xfeatures_mask_all &= ~BIT_ULL(i);
-			continue;
-		}
-
-		/* the rest of the bla */
-
-Yes?
+Kind regards,
 
 -- 
-Regards/Gruss,
-    Boris.
+Aaron Tomlin
 
-https://people.kernel.org/tglx/notes-about-netiquette
