@@ -2,105 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCE72C564D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990EF2C5654
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390924AbgKZNnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:43:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390631AbgKZNno (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:43:44 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712EBC061A48
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:44 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id g14so2163535wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SMoItuxgDP7ogQHGcYXarl4I2+ROLy8sCFsG16Aywwg=;
-        b=OhdPMGyIXHI+TAj6MaIkGlRL9xzZ4qWRyHui4ZR+pMaQ/MzD27wZVVBTfPeDNog00z
-         NN3tcAMPCRSSI/h4caCGAL300/4COFpkwzh6agGGfqN6hncmMlw7j3PtU1UxqxkVKqBE
-         Kx3u4BG3SofRKVYlqmEaqTRm47XrknFaSfZkn154BEgBa3g0vXg3i9GxIwnJtSkCCz/0
-         pGce+BNmaLjB3fcPjyUNY78xB8MCxdDrxEoi5L65AvoElMM8WTdbh9XaC/bhHhuDsllP
-         K3czuao4DwqdPvDwxO4w9U/WhJUFgfC5xxn/gW6UHrM8Dmb5UvG/rLxaxLiMBCsgc1e8
-         uVnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SMoItuxgDP7ogQHGcYXarl4I2+ROLy8sCFsG16Aywwg=;
-        b=ZcNszS3qO71qurP+N838ChHbqmcNKIl9cHjXkVQamEwRD5xY1TJvZVIBBX5RdRYYSp
-         LTWVNeBMcq8FWwMiDrKk0JEngKDd9cYNs9TpAOJbxpA2xuv4XQlcawgBhVxG53/kNhj5
-         ICyayFwNqhj41yo8soWib1OMyti0kfg4k3mKdloUu7ZsDOzXVOjS0tiAzdMvyop86i83
-         2GHPcupu21DRdg5wR8K+0KmbxcLe0QAlbVVgCBdLHHTNx5zlwaBJUOpMUNqykh00/KrO
-         mZ8OrGnYM81n50lBviGQj9PWMF4G6r3U9oJYCrnzMYkNbOLXi4ORgn0OrGEVg6BoRfKS
-         eFDw==
-X-Gm-Message-State: AOAM530MZpIPQJKSWtIpJ2ss8UTVRUy9E9Vqr3r2J9Dh7tGMRVGAOwOv
-        4OY7sQ/8Nm4xE9dLLIduv88ul/eoZ3RFLm0/
-X-Google-Smtp-Source: ABdhPJxxfxoPWMWdyUpDsvOcaHaUFvY3HIue0Wl7PPH2WdJaCaoaw6b0nF5iFH992zGsvfRMtwCqXw==
-X-Received: by 2002:adf:fc01:: with SMTP id i1mr4133125wrr.250.1606398223218;
-        Thu, 26 Nov 2020 05:43:43 -0800 (PST)
-Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.43.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:43:42 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 40/40] drm/amd/display/dc/basics/vector: Make local function 'dal_vector_presized_costruct' static
-Date:   Thu, 26 Nov 2020 13:42:40 +0000
-Message-Id: <20201126134240.3214176-41-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201126134240.3214176-1-lee.jones@linaro.org>
-References: <20201126134240.3214176-1-lee.jones@linaro.org>
+        id S2390993AbgKZNoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:44:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:33156 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390653AbgKZNnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 08:43:25 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA3A631B;
+        Thu, 26 Nov 2020 05:43:24 -0800 (PST)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 713713F71F;
+        Thu, 26 Nov 2020 05:43:23 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [RFC 1/3] mm/hotplug: Pre-validate the address range with
+ platform
+To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+References: <1606098529-7907-1-git-send-email-anshuman.khandual@arm.com>
+ <1606098529-7907-2-git-send-email-anshuman.khandual@arm.com>
+ <13392308-45a8-f85d-b25e-4a728e1e0730@redhat.com>
+Message-ID: <0c13a221-570a-0d64-fce9-d28e52cbdd6c@arm.com>
+Date:   Thu, 26 Nov 2020 19:13:15 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <13392308-45a8-f85d-b25e-4a728e1e0730@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/dc/basics/vector.c:55:6: warning: no previous prototype for ‘dal_vector_presized_costruct’ [-Wmissing-prototypes]
+On 11/25/20 10:34 PM, David Hildenbrand wrote:
+> On 23.11.20 03:28, Anshuman Khandual wrote:
+>> This introduces memhp_range_allowed() which gets called in various hotplug
+>> paths. Then memhp_range_allowed() calls arch_get_addressable_range() via
+>> memhp_get_pluggable_range(). This callback can be defined by the platform
+>> to provide addressable physical range, depending on whether kernel linear
+>> mapping is required or not. This mechanism will prevent platform specific
+>> errors deep down during hotplug calls. While here, this drops now redundant
+>> check_hotplug_memory_addressable() check in __add_pages().
+>>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: linux-mm@kvack.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Suggested-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  include/linux/memory_hotplug.h | 51 ++++++++++++++++++++++++++++++++++
+>>  mm/memory_hotplug.c            | 29 ++++++-------------
+>>  mm/memremap.c                  |  9 +++++-
+>>  3 files changed, 68 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+>> index 551093b74596..2018c0201672 100644
+>> --- a/include/linux/memory_hotplug.h
+>> +++ b/include/linux/memory_hotplug.h
+>> @@ -6,6 +6,7 @@
+>>  #include <linux/spinlock.h>
+>>  #include <linux/notifier.h>
+>>  #include <linux/bug.h>
+>> +#include <linux/range.h>
+>>  
+>>  struct page;
+>>  struct zone;
+>> @@ -70,6 +71,56 @@ typedef int __bitwise mhp_t;
+>>   */
+>>  #define MEMHP_MERGE_RESOURCE	((__force mhp_t)BIT(0))
+>>  
+>> +/*
+>> + * Platforms should define arch_get_addressable_range() which provides
+>> + * addressable physical memory range depending upon whether the linear
+>> + * mapping is required or not. Returned address range must follow
+>> + *
+>> + * 1. range.start <= range.end
+>> + * 1. Must include end both points i.e range.start and range.end
+>> + *
+>> + * Nonetheless there is a fallback definition provided here providing
+>> + * maximum possible addressable physical range, irrespective of the
+>> + * linear mapping requirements.
+>> + */
+>> +#ifndef arch_get_addressable_range
+>> +static inline struct range arch_get_addressable_range(bool need_mapping)
+> 
+> Why not simply
+> 
+> "arch_get_mappable_range(void)" (or similar) ?
 
-Cc: Harry Wentland <harry.wentland@amd.com>
-Cc: Leo Li <sunpeng.li@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/gpu/drm/amd/display/dc/basics/vector.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The current name seems bit better (I guess). Because we are asking for
+max addressable range with or without the linear mapping.
 
-diff --git a/drivers/gpu/drm/amd/display/dc/basics/vector.c b/drivers/gpu/drm/amd/display/dc/basics/vector.c
-index 8f93d25f91ee2..706c803c4d3b0 100644
---- a/drivers/gpu/drm/amd/display/dc/basics/vector.c
-+++ b/drivers/gpu/drm/amd/display/dc/basics/vector.c
-@@ -52,7 +52,7 @@ bool dal_vector_construct(
- 	return true;
- }
- 
--bool dal_vector_presized_costruct(
-+static bool dal_vector_presized_costruct(
- 	struct vector *vector,
- 	struct dc_context *ctx,
- 	uint32_t count,
--- 
-2.25.1
+> 
+> AFAIKs, both implementations (arm64/s390x) simply do the exact same
+> thing as memhp_get_pluggable_range() for !need_mapping.
 
+That is for now. Even the range without requiring linear mapping might not
+be the same (like now) for every platform as some might have constraints.
+So asking the platform ranges with or without linear mapping seems to be
+better and could accommodate special cases going forward. Anyways, there
+is an always an "all allowing" fallback option nonetheless.
+
+> 
+>> +{
+>> +	struct range memhp_range = {
+>> +		.start = 0UL,
+>> +		.end = -1ULL,
+>> +	};
+>> +	return memhp_range;
+>> +}
+>> +#endif
+>> +
+>> +static inline struct range memhp_get_pluggable_range(bool need_mapping)
+>> +{
+>> +	const u64 max_phys = (1ULL << (MAX_PHYSMEM_BITS + 1)) - 1;
+>> +	struct range memhp_range = arch_get_addressable_range(need_mapping);
+>> +
+>> +	if (memhp_range.start > max_phys) {
+>> +		memhp_range.start = 0;
+>> +		memhp_range.end = 0;
+>> +	}
+>> +	memhp_range.end = min_t(u64, memhp_range.end, max_phys);
+>> +	return memhp_range;
+>> +}
+>> +
+>> +static inline bool memhp_range_allowed(u64 start, u64 size, bool need_mapping)
+>> +{
+>> +	struct range memhp_range = memhp_get_pluggable_range(need_mapping);
+>> +	u64 end = start + size;
+>> +
+>> +	if ((start < end) && (start >= memhp_range.start) &&
+>> +	   ((end - 1) <= memhp_range.end))
+> 
+> You can drop quite a lot of () here :)
+
+Will replace with.
+
+if (start < end && start >= memhp_range.start && (end - 1) <= memhp_range.end)
+
+But too much open comparisons looked bit risky initially :)
+
+> 
+>> +		return true;
+>> +
+>> +	WARN(1, "Hotplug memory [%#llx-%#llx] exceeds maximum addressable range [%#llx-%#llx]\n",
+>> +		start, end, memhp_range.start, memhp_range.end);
+> 
+> pr_warn() (or even pr_warn_once())
+> 
+> while we're at it. No reason to eventually crash a system :)
+
+Didn't quite get it. How could this crash the system ?
+
+> 
+>> +	return false;
+>> +}
+>> +
+> 
+> 
+> I'd suggest moving these functions into mm/memory_hotplug.c and only
+> exposing what makes sense. These functions are not on any hot path. You
+> can then convert the arch_ function into a "__weak".
+
+Sure, will move them to mm/memory_hotplug.c and change the arch
+function into a '__weak'.
+
+> 
+>>  /*
+>>   * Extended parameters for memory hotplug:
+>>   * altmap: alternative allocator for memmap array (optional)
+>> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+>> index 63b2e46b6555..9efb6c8558ed 100644
+>> --- a/mm/memory_hotplug.c
+>> +++ b/mm/memory_hotplug.c
+>> @@ -284,22 +284,6 @@ static int check_pfn_span(unsigned long pfn, unsigned long nr_pages,
+>>  	return 0;
+>>  }
+>>  
+>> -static int check_hotplug_memory_addressable(unsigned long pfn,
+>> -					    unsigned long nr_pages)
+>> -{
+>> -	const u64 max_addr = PFN_PHYS(pfn + nr_pages) - 1;
+>> -
+>> -	if (max_addr >> MAX_PHYSMEM_BITS) {
+>> -		const u64 max_allowed = (1ull << (MAX_PHYSMEM_BITS + 1)) - 1;
+>> -		WARN(1,
+>> -		     "Hotplugged memory exceeds maximum addressable address, range=%#llx-%#llx, maximum=%#llx\n",
+>> -		     (u64)PFN_PHYS(pfn), max_addr, max_allowed);
+>> -		return -E2BIG;
+>> -	}
+>> -
+>> -	return 0;
+>> -}
+>> -
+>>  /*
+>>   * Reasonably generic function for adding memory.  It is
+>>   * expected that archs that support memory hotplug will
+>> @@ -317,10 +301,6 @@ int __ref __add_pages(int nid, unsigned long pfn, unsigned long nr_pages,
+>>  	if (WARN_ON_ONCE(!params->pgprot.pgprot))
+>>  		return -EINVAL;
+>>  
+>> -	err = check_hotplug_memory_addressable(pfn, nr_pages);
+>> -	if (err)
+>> -		return err;
+>> -
+>>  	if (altmap) {
+>>  		/*
+>>  		 * Validate altmap is within bounds of the total request
+>> @@ -1109,6 +1089,9 @@ int __ref __add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
+>>  	struct resource *res;
+>>  	int ret;
+>>  
+>> +	if (!memhp_range_allowed(start, size, 1))
+>> +		return -ERANGE;
+> 
+> We used to return -E2BIG, no? Maybe better keep that.
+
+ERANGE seems to be better as the range can overrun on either side.
+
+> 
+>> +
+>>  	res = register_memory_resource(start, size, "System RAM");
+>>  	if (IS_ERR(res))
+>>  		return PTR_ERR(res);
+>> @@ -1123,6 +1106,9 @@ int add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
+>>  {
+>>  	int rc;
+>>  
+>> +	if (!memhp_range_allowed(start, size, 1))
+>> +		return -ERANGE;
+>> +
+>>  	lock_device_hotplug();
+>>  	rc = __add_memory(nid, start, size, mhp_flags);
+>>  	unlock_device_hotplug();
+>> @@ -1163,6 +1149,9 @@ int add_memory_driver_managed(int nid, u64 start, u64 size,
+>>  	    resource_name[strlen(resource_name) - 1] != ')')
+>>  		return -EINVAL;
+>>  
+>> +	if (!memhp_range_allowed(start, size, 0))
+>> +		return -ERANGE;
+>> +
+>>  	lock_device_hotplug();
+> 
+> For all 3 cases, doing a single check in register_memory_resource() is
+> sufficient.
+
+Will replace with a single check in register_memory_resource(). But does
+add_memory_driver_managed() always require linear mapping ? The proposed
+check here did not ask for linear mapping in add_memory_driver_managed().
+
+> 
+>>  
+>>  	res = register_memory_resource(start, size, resource_name);
+>> diff --git a/mm/memremap.c b/mm/memremap.c
+>> index 16b2fb482da1..388a34b068c1 100644
+>> --- a/mm/memremap.c
+>> +++ b/mm/memremap.c
+>> @@ -188,6 +188,7 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+>>  	struct range *range = &pgmap->ranges[range_id];
+>>  	struct dev_pagemap *conflict_pgmap;
+>>  	int error, is_ram;
+>> +	bool is_private = false;
+> 
+> nit: Reverse christmas tree :)
+> 
+> 
+> const bool is_private = pgmap->type == MEMORY_DEVICE_PRIVATE;
+
+Will replace with this right at the beginning.
+
+> 
+>>  
+>>  	if (WARN_ONCE(pgmap_altmap(pgmap) && range_id > 0,
+>>  				"altmap not supported for multiple ranges\n"))
+>> @@ -207,6 +208,9 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+>>  		return -ENOMEM;
+>>  	}
+>>  
+>> +	if (pgmap->type == MEMORY_DEVICE_PRIVATE)
+>> +		is_private = true;
+>> +
+>>  	is_ram = region_intersects(range->start, range_len(range),
+>>  		IORESOURCE_SYSTEM_RAM, IORES_DESC_NONE);
+>>  
+>> @@ -230,6 +234,9 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+>>  	if (error)
+>>  		goto err_pfn_remap;
+>>  
+>> +	if (!memhp_range_allowed(range->start, range_len(range), !is_private))
+>> +		goto err_pfn_remap;
+>> +
+>>  	mem_hotplug_begin();
+>>  
+>>  	/*
+>> @@ -243,7 +250,7 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+>>  	 * the CPU, we do want the linear mapping and thus use
+>>  	 * arch_add_memory().
+>>  	 */
+>> -	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
+>> +	if (is_private) {
+>>  		error = add_pages(nid, PHYS_PFN(range->start),
+>>  				PHYS_PFN(range_len(range)), params);
+>>  	} else {
+>>
+> 
+> Doing these checks in add_pages() / arch_add_memory() would be neater -
+> but as they we don't have clean generic wrappers yet, I consider this
+> good enough until we have reworked that part. (others might disagree :) )
+
+Sure, will leave the check as is.
