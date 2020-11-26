@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3B32C5776
+	by mail.lfdr.de (Postfix) with ESMTP id AC6212C5777
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391195AbgKZOv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:51:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56519 "EHLO
+        id S2391203AbgKZOv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:51:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30111 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391157AbgKZOvz (ORCPT
+        by vger.kernel.org with ESMTP id S2391157AbgKZOv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:51:55 -0500
+        Thu, 26 Nov 2020 09:51:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606402314;
+        s=mimecast20190719; t=1606402318;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZyF2RezjtRh8PkVqZb2B0jFCu4bHjavIfAJ0cPl7PyM=;
-        b=ZILZscPbLIE9NGqll/ZiYKrpqPQkmSsryEENPyqqaC/NhRXsY7KsWzE4PXtPgIwn9ovF+r
-        PS760xBgd3q8XlFOUqrdZ3QkXDFONX4LBru+VM9n0W76poiTlvm84YVkGUPT9zIXe63kpc
-        n+Xc5cJXz/NrvwVHVOXiva/s0E1W2p8=
+        bh=zgeuJHqaj3U5wNqlggBJs76w7QiOxVJJ27PT5+3lfuM=;
+        b=UZEk5UQojEKj3ElYwI0Uco99xQ3xyNZbA+Fy28Lx2Ef5cuRqb31e9QtGWUTED4RGqDw0zr
+        mrEk3AQ2ntHyMpNFAKN1cxzmfB3e9N4lnut863O9ZsVzOr9sryeMEIM2z409eEhQEzobpr
+        oik0AS2L9k//dSbTKSz0OVU6ATsi1oU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-69-divCSuaDOW6IkNMlI-shcg-1; Thu, 26 Nov 2020 09:51:52 -0500
-X-MC-Unique: divCSuaDOW6IkNMlI-shcg-1
+ us-mta-456-jKWCr-bYNNC1mwQ2urLg7Q-1; Thu, 26 Nov 2020 09:51:54 -0500
+X-MC-Unique: jKWCr-bYNNC1mwQ2urLg7Q-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F25AA87308D;
-        Thu, 26 Nov 2020 14:51:50 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22810180E48E;
+        Thu, 26 Nov 2020 14:51:53 +0000 (UTC)
 Received: from steredhat.redhat.com (ovpn-113-252.ams2.redhat.com [10.36.113.252])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F19CB60855;
-        Thu, 26 Nov 2020 14:51:42 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5003B60855;
+        Thu, 26 Nov 2020 14:51:51 +0000 (UTC)
 From:   Stefano Garzarella <sgarzare@redhat.com>
 To:     virtualization@lists.linux-foundation.org
 Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
@@ -41,9 +41,9 @@ Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
         Max Gurtovoy <mgurtovoy@nvidia.com>,
         "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
         Jason Wang <jasowang@redhat.com>
-Subject: [PATCH v2 12/17] vdpa_sim: add get_config callback in vdpasim_dev_attr
-Date:   Thu, 26 Nov 2020 15:49:45 +0100
-Message-Id: <20201126144950.92850-13-sgarzare@redhat.com>
+Subject: [PATCH v2 13/17] vdpa_sim: set vringh notify callback
+Date:   Thu, 26 Nov 2020 15:49:46 +0100
+Message-Id: <20201126144950.92850-14-sgarzare@redhat.com>
 In-Reply-To: <20201126144950.92850-1-sgarzare@redhat.com>
 References: <20201126144950.92850-1-sgarzare@redhat.com>
 MIME-Version: 1.0
@@ -53,105 +53,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The get_config callback can be used by the device to fill the
-config structure.
-The callback will be invoked in vdpasim_get_config() before copying
-bytes into caller buffer.
+Instead of calling the vq callback directly, we can leverage the
+vringh_notify() function, adding vdpasim_vq_notify() and setting it
+in the vringh notify callback.
 
-Move vDPA-net config updates from vdpasim_set_features() in the
-new vdpasim_net_get_config() callback.
-
+Suggested-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 ---
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 33 +++++++++++++++++++-------------
- 1 file changed, 20 insertions(+), 13 deletions(-)
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index c07ddf6af720..8b87ce0485b6 100644
+index 8b87ce0485b6..4327efd6d41e 100644
 --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
 +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -58,6 +58,8 @@ struct vdpasim_virtqueue {
- #define VDPASIM_NET_FEATURES	(VDPASIM_FEATURES | \
- 				 (1ULL << VIRTIO_NET_F_MAC))
- 
-+struct vdpasim;
-+
- struct vdpasim_dev_attr {
- 	u64 supported_features;
- 	size_t config_size;
-@@ -65,6 +67,7 @@ struct vdpasim_dev_attr {
- 	u32 id;
- 
- 	work_func_t work_fn;
-+	void (*get_config)(struct vdpasim *vdpasim, void *config);
- };
- 
- /* State of each vdpasim device */
-@@ -520,8 +523,6 @@ static u64 vdpasim_get_features(struct vdpa_device *vdpa)
- static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
--	struct virtio_net_config *config =
--		(struct virtio_net_config *)vdpasim->config;
- 
- 	/* DMA mapping must be done by driver */
- 	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
-@@ -529,15 +530,6 @@ static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
- 
- 	vdpasim->features = features & vdpasim->dev_attr.supported_features;
- 
--	/* We generally only know whether guest is using the legacy interface
--	 * here, so generally that's the earliest we can set config fields.
--	 * Note: We actually require VIRTIO_F_ACCESS_PLATFORM above which
--	 * implies VIRTIO_F_VERSION_1, but let's not try to be clever here.
--	 */
--
--	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
--	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
--	memcpy(config->mac, macaddr_buf, ETH_ALEN);
- 
- 	return 0;
+@@ -120,6 +120,17 @@ static struct vdpasim *dev_to_sim(struct device *dev)
+ 	return vdpa_to_sim(vdpa);
  }
-@@ -593,8 +585,12 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
  
--	if (offset + len < vdpasim->dev_attr.config_size)
--		memcpy(buf, vdpasim->config + offset, len);
-+	if (offset + len > vdpasim->dev_attr.config_size)
++static void vdpasim_vq_notify(struct vringh *vring)
++{
++	struct vdpasim_virtqueue *vq =
++		container_of(vring, struct vdpasim_virtqueue, vring);
++
++	if (!vq->cb)
 +		return;
 +
-+	vdpasim->dev_attr.get_config(vdpasim, vdpasim->config);
-+
-+	memcpy(buf, vdpasim->config + offset, len);
- }
- 
- static void vdpasim_set_config(struct vdpa_device *vdpa, unsigned int offset,
-@@ -737,6 +733,16 @@ static const struct vdpa_config_ops vdpasim_batch_config_ops = {
- 	.free                   = vdpasim_free,
- };
- 
-+static void vdpasim_net_get_config(struct vdpasim *vdpasim, void *config)
-+{
-+	struct virtio_net_config *net_config =
-+		(struct virtio_net_config *)config;
-+
-+	net_config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
-+	net_config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
-+	memcpy(net_config->mac, macaddr_buf, ETH_ALEN);
++	vq->cb(vq->private);
 +}
 +
- static int __init vdpasim_dev_init(void)
+ static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
  {
- 	struct vdpasim_dev_attr dev_attr = {};
-@@ -745,6 +751,7 @@ static int __init vdpasim_dev_init(void)
- 	dev_attr.supported_features = VDPASIM_NET_FEATURES;
- 	dev_attr.nvqs = VDPASIM_VQ_NUM;
- 	dev_attr.config_size = sizeof(struct virtio_net_config);
-+	dev_attr.get_config = vdpasim_net_get_config;
- 	dev_attr.work_fn = vdpasim_net_work;
+ 	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
+@@ -131,6 +142,8 @@ static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
+ 			  (uintptr_t)vq->driver_addr,
+ 			  (struct vring_used *)
+ 			  (uintptr_t)vq->device_addr);
++
++	vq->vring.notify = vdpasim_vq_notify;
+ }
  
- 	vdpasim_dev = vdpasim_create(&dev_attr);
+ static void vdpasim_vq_reset(struct vdpasim *vdpasim,
+@@ -220,10 +233,10 @@ static void vdpasim_net_work(struct work_struct *work)
+ 		smp_wmb();
+ 
+ 		local_bh_disable();
+-		if (txq->cb)
+-			txq->cb(txq->private);
+-		if (rxq->cb)
+-			rxq->cb(rxq->private);
++		if (vringh_need_notify_iotlb(&txq->vring) > 0)
++			vringh_notify(&txq->vring);
++		if (vringh_need_notify_iotlb(&rxq->vring) > 0)
++			vringh_notify(&rxq->vring);
+ 		local_bh_enable();
+ 
+ 		if (++pkts > 4) {
 -- 
 2.26.2
 
