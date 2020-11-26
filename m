@@ -2,133 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28052C5143
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C742C5145
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732177AbgKZJaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 04:30:13 -0500
-Received: from ec2-3-21-30-127.us-east-2.compute.amazonaws.com ([3.21.30.127]:37394
-        "EHLO www.teo-en-ming.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731885AbgKZJaN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 04:30:13 -0500
-Received: from localhost (localhost [IPv6:::1])
-        by www.teo-en-ming.com (Postfix) with ESMTPA id DF054448EE0;
-        Thu, 26 Nov 2020 17:30:11 +0800 (+08)
+        id S1732838AbgKZJac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:30:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732578AbgKZJac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 04:30:32 -0500
+Received: from localhost.localdomain (unknown [122.179.79.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B17B82173E;
+        Thu, 26 Nov 2020 09:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606383031;
+        bh=YZj1IydU4I0vSKpgs5ho9/hmedVUqXGt6+jMq33PK6g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=d2f7YCKIaT8f4aY7OQG5S0uunUUXCq/6HFGJoEgjwObV/K+Oyva3N6xiohgEvyFEU
+         xj6wbtd1uHNrPzrbYP6+K0rX1dG5gtIUymDtlcWsFY83g4fXGxUBI7oRW+VRLKTqtV
+         DaWupHrDMKa7n6Dp1AKBcCVa3n0y9jj6R0elwWUU=
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 1/2] regulator: dt-bindings: Add PMX55 compatibles
+Date:   Thu, 26 Nov 2020 15:00:17 +0530
+Message-Id: <20201126093018.1085594-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Date:   Thu, 26 Nov 2020 17:30:11 +0800
-From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ceo@teo-en-ming-corp.com
-Subject: Roundcube Webmail: Server Error: Failed to send fetch command
-Message-ID: <5b93da4f118ec3e987e83ae41a42fa06@teo-en-ming.com>
-X-Sender: ceo@teo-en-ming.com
-User-Agent: Roundcube Webmail/1.2.3
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: Roundcube Webmail: Server Error: Failed to send fetch command
+Add PMX55 compatibles for PMIC found in SDX55 platform
 
-Good day from Singapore,
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ .../devicetree/bindings/regulator/qcom,rpmh-regulator.txt       | 2 ++
+ 1 file changed, 2 insertions(+)
 
-This is a personal experience. I use Roundcube webmail, which comes out 
-of the box with CentOS/Control Web Panel (CWP) web hosting control 
-panel.
-
-After my Inbox reaches almost 200,000 email messages, I frequently 
-encounter the following error:
-
-"Server Error: Failed to send fetch command"
-
-My Inbox fails to list messages even after multiple repeated attempts to 
-reload. Using Microsoft Outlook to delete all the email messages in 
-Inbox and then emptying the Trash/Deleted Items does not work.
-
-After *briefly* searching the internet, I found the solution. The 
-solution can be found in the following article.
-
-Article: Standard Webmail (Round Cube) slow performance mitigation
-
-Link: 
-https://community.plus.net/t5/Email/Standard-Webmail-Round-Cube-slow-performance-mitigation/td-p/1661899
-
-The solution is quoted as follows:
-
-[QUOTE=Townman]
-
-The SUs have had this under constant review with Plusnet.  After many 
-months of looking at the obvious likely causes, it now looks as though a 
-performance issue within the Round Cube Webmail client has been 
-identified as being a significant contributor to the end user experience 
-of slow loading email lists.  Though other issues have been found and 
-addressed, this one remains under investigation.
-
-There is however a simple end user mitigation for the issue, which tests 
-have shown makes a SIGNIFICANT performance difference.  The issue 
-appears to be related to the mail list display sort sequence.  If a user 
-has EVER changed the sort list from the default setting (none) - which 
-lists newest email first - to something different … and then switches 
-back to most recent item first using the column sort toggles, this DOES 
-NOT result in the same configuration as per before changing the sort 
-sequence.  There remains an explicit sort setting which gives rise to 
-the performance issue.  Not exactly an obvious expectation.
-
-To set the sort sequence back to the default setting requires EXPLICT 
-user action...
-
-1. Log into webmail
-2. On the inbox list screen select LIST OPTIONS which is the little grid 
-icon on the left of the column title bar
-3. Set sorting column to NONE
-4. Click save
-5. See the mailbox list display nearly instantly
-
-Work continues to identify the cause of the delay in retrieving a sorted 
-list. Squirrel Mail (Basic webmail) does not suffer this issue, so might 
-be more pragmatic if you have a large mailbox which you wish to view in 
-a sequence other than by date, most recent first.
-
-[/QUOTE]
-
-Mr. Turritopsis Dohrnii Teo En Ming is very happy to have solved this 
-problem/issue with Roundcube webmail, because I will be able to use 
-Roundcube webmail anywhere in the world.
-
-Mr. Turritopsis Dohrnii Teo En Ming, 42 years old as of 26 November 2020 
-Thursday, is a TARGETED INDIVIDUAL (TI) living in Singapore.
-
-
-
-
-
-
+diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+index 97c3e0b7611c..bae558b87686 100644
+--- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
++++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+@@ -30,6 +30,7 @@ Supported regulator node names:
+ 	PMI8998:	bob
+ 	PM6150:         smps1 - smps5, ldo1 - ldo19
+ 	PM6150L:        smps1 - smps8, ldo1 - ldo11, bob
++	PMX55:		smps1 - smps7, ldo1 - ldo16
+ 
+ ========================
+ First Level Nodes - PMIC
+@@ -47,6 +48,7 @@ First Level Nodes - PMIC
+ 		    "qcom,pmi8998-rpmh-regulators"
+ 		    "qcom,pm6150-rpmh-regulators"
+ 		    "qcom,pm6150l-rpmh-regulators"
++		    "qcom,pmx55-rpmh-regulators"
+ 
+ - qcom,pmic-id
+ 	Usage:      required
 -- 
------BEGIN EMAIL SIGNATURE-----
+2.26.2
 
-The Gospel for all Targeted Individuals (TIs):
-
-[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
-U.S. Embassy Workers
-
-Link: 
-https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
-
-********************************************************************************************
-
-Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's 
-Academic
-Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
-United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
-2019) and Australia (25 Dec 2019 to 9 Jan 2020):
-
-[1] https://tdtemcerts.wordpress.com/
-
-[2] https://tdtemcerts.blogspot.sg/
-
-[3] https://www.scribd.com/user/270125049/Teo-En-Ming
-
------END EMAIL SIGNATURE-----
