@@ -2,180 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4D22C50F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484662C50F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389192AbgKZJSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 04:18:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45548 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389112AbgKZJSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 04:18:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606382303; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ian4owIHsNjq/LmRQUNxOoU4jXiOvBKNxwHha59CDIQ=;
-        b=AWX78B5wZ3aQTZTaO7xgxcf6x0+keppVeOYrPMTdCkZZt8RoPZftA2MGvxHD66jKHOaUbZ
-        piqN8aC43Ik4ikHNQAjUo4qB7eBPItI/DI0eD05LxuGmohTD/zzGyh7kKjPNIpGDDS4MMC
-        iXg6H01cGXMAzipLrQIHdoqDW4Uk94o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 047A5AD75;
-        Thu, 26 Nov 2020 09:18:23 +0000 (UTC)
-Date:   Thu, 26 Nov 2020 10:18:22 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Charan Teja Kalla <charante@codeaurora.org>
-Cc:     akpm@linux-foundation.org, david@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>
-Subject: Re: [PATCH] mm: memory_hotplug: put migration failure information
- under DEBUG_VM
-Message-ID: <20201126091822.GG31550@dhcp22.suse.cz>
-References: <1606140196-6053-1-git-send-email-charante@codeaurora.org>
- <20201123141354.GQ27488@dhcp22.suse.cz>
- <bfa430f6-a6a6-8b08-2776-cb62197619c0@codeaurora.org>
- <20201124074141.GR27488@dhcp22.suse.cz>
- <685882be-10d7-e313-cb6c-f3f45fc2dd08@codeaurora.org>
+        id S2389201AbgKZJUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:20:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728306AbgKZJUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 04:20:43 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CB6C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 01:20:43 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 64so1312287wra.11
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 01:20:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Vjnri2iG884jsAbEDtenGOoYQ0PUwGM2neI6pEIa5dc=;
+        b=E4q1C0OhNiqgpJRWbspAskdXQUtb694RK9cHy3KQGyn4VMInesTx0hP5NyEwaf/iIq
+         wm6Xtgdwz6inZ0QyqTud1/5vMQeoOcShkRBGjBsNNeu66oUOB1/ewB/ZnrQgHdjFO57z
+         TmDloB/kZKJ8oq7nNAerejkEAtnYzDlK7Hpmb+adcmyw5GCVjWRpTaRLmRWm/27rOI25
+         9bPYY4caUgNQ7lf+ic0my/cnnN07m2arAdmw5uEe6KRbd+Il5ckAGisDfM9tKGglE0Zi
+         kq87RjvTDFNICKa8PnKl3v2nfyDwDCWy+I/76Ll/vr/OraO4Lt6ek5kk8f2KqKUTOGJW
+         feKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Vjnri2iG884jsAbEDtenGOoYQ0PUwGM2neI6pEIa5dc=;
+        b=dF/YLO5hm6SGkMY+bYV3SdL8dJxQcxclbvTfaKao5lfwlUWrijOcxtb3RdL4+ssBR5
+         e7cYrT/0awBDsZLujr33hAmMI+VoTIjHj4pWubNQCBReY0pijYg/URrLTdUHCezDGeiV
+         euqLGgezabeID740M+UyAMs0wBRbOpTrp4wo7y8a7A1Sh++W/Hm4gcB5Zm1XXU4wPg7X
+         H9T9hSHD8gbg9105b/qvKIUmEENHhxzG5THronJScj9m7GN0kD3QgL1L/WqTPGEbrEOd
+         6g9jj/DCFo5vPMcinO9CjiRD7bZhfLVd+nSkDQ4NZ7+poSpftEGrtp8ukMYCtsBi7epC
+         sKEQ==
+X-Gm-Message-State: AOAM5329HDchBK6+qHMki4XhWEwgCXJ3ndhahASdvzZH5jgbh2b3yXwt
+        ruvdc0n5RVZQDJKbTyzU6UagSw==
+X-Google-Smtp-Source: ABdhPJwyQTAl+vIICKHZZXXyNsl5/ZUR3KUvyPfg0OL/W2B4swO4CCBJ64qFtF+RVrbSp/mSsgUquQ==
+X-Received: by 2002:a5d:66c3:: with SMTP id k3mr2616604wrw.123.1606382441862;
+        Thu, 26 Nov 2020 01:20:41 -0800 (PST)
+Received: from dell ([91.110.221.235])
+        by smtp.gmail.com with ESMTPSA id a12sm8651164wrq.58.2020.11.26.01.20.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 01:20:41 -0800 (PST)
+Date:   Thu, 26 Nov 2020 09:20:39 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/25] soc: bcm: brcmstb: pm: pm-arm: Provide prototype
+ for brcmstb_pm_s3_finish()
+Message-ID: <20201126092039.GB2455276@dell>
+References: <20201103152838.1290217-1-lee.jones@linaro.org>
+ <20201103152838.1290217-2-lee.jones@linaro.org>
+ <20201104032507.565008-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <685882be-10d7-e313-cb6c-f3f45fc2dd08@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104032507.565008-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 25-11-20 16:18:06, Charan Teja Kalla wrote:
-> 
-> 
-> On 11/24/2020 1:11 PM, Michal Hocko wrote:
-> > On Mon 23-11-20 20:40:40, Charan Teja Kalla wrote:
-> >>
-> >> Thanks Michal!
-> >> On 11/23/2020 7:43 PM, Michal Hocko wrote:
-> >>> On Mon 23-11-20 19:33:16, Charan Teja Reddy wrote:
-> >>>> When the pages are failed to get isolate or migrate, the page owner
-> >>>> information along with page info is dumped. If there are continuous
-> >>>> failures in migration(say page is pinned) or isolation, the log buffer
-> >>>> is simply getting flooded with the page owner information. As most of
-> >>>> the times page info is sufficient to know the causes for failures of
-> >>>> migration or isolation, place the page owner information under DEBUG_VM.
-> >>>
-> >>> I do not see why this path is any different from others that call
-> >>> dump_page. Page owner can add a very valuable information to debug
-> >>> the underlying reasons for failures here. It is an opt-in debugging
-> >>> feature which needs to be enabled explicitly. So I would argue users
-> >>> are ready to accept a lot of data in the kernel log.
-> >>
-> >> Just thinking how frequently failures can happen in those paths. In the
-> >> memory hotplug path, we can flood the page owner logs just by making one
-> >> page pinned.
-> > 
-> > If you are operating on a movable zone then pages shouldn't be pinned
-> > for unbound amount of time. Yeah there are some ways to break this
-> > fundamental assumption but this is a bigger problem that needs a
-> > solution.
-> > 
-> >> Say If it is anonymous page, the page owner information
-> >> shows is something like below, which is not really telling anything
-> >> other than how the pinned page is allocated.
-> > 
-> > Well you can tell an anonymous page from __dump_page, all right, but
-> > this is not true universally.
-> > 
-> >> page last allocated via order 0, migratetype Movable, gfp_mask
-> >> 0x100dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO)
-> >>   prep_new_page+0x7c/0x1a4
-> >>   get_page_from_freelist+0x1ac/0x1c4
-> >>   __alloc_pages_nodemask+0x12c/0x378
-> >>   do_anonymous_page+0xac/0x3b4
-> >>   handle_pte_fault+0x2a4/0x3bc
-> >>   __handle_speculative_fault+0x208/0x3c0
-> >>   do_page_fault+0x280/0x508
-> >>   do_translation_fault+0x3c/0x54
-> >>   do_mem_abort+0x64/0xf4
-> >>   el0_da+0x1c/0x20
-> >>  page last free stack trace:
-> >>   free_pcp_prepare+0x320/0x454
-> >>   free_unref_page_list+0x9c/0x2a4
-> >>   release_pages+0x370/0x3c8
-> >>   free_pages_and_swap_cache+0xdc/0x10c
-> >>   tlb_flush_mmu+0x110/0x134
-> >>   tlb_finish_mmu+0x48/0xc0
-> >>   unmap_region+0x104/0x138
-> >>   __do_munmap+0x2ec/0x3b4
-> >>   __arm64_sys_munmap+0x80/0xd8
-> >>
-> >> I see at some places in the kernel where they put the dump_page under
-> >> DEBUG_VM, but in the end I agree that it is up to the users need. Then
-> >> there are some users who don't care for these page owner logs.
-> > 
-> > Well, as I've said page_owner requires an explicit enabling and I would
-> > expect that if somebody enables this tracking then it is expected to see
-> > the information when we dump a page state.
-> > 
-> >> And an issue on Embedded systems with these continuous logs being
-> >> printed to the console is the watchdog timeouts, because console logging
-> >> happens by disabling the interrupts.
-> > 
-> > Are you enabling page_owner on those systems unconditionally?
-> > 
-> 
-> Yes, We do always enable the page owner on just the internal debug
-> builds for memory analysis, But never on the production kernels. And on
-> these builds excessive logging, at times because of a pinned page,
-> causing the watchdog timeouts, is the problem.
+On Tue, 03 Nov 2020, Florian Fainelli wrote:
 
-OK, I see but I still believe that the debugging might be useful
-especially when the owner is not really obvious from the page state.
-I also agree that if the output is swapping the logs then the situation
-is not really great either. Would something like the below work for your
-situation?
+> On Tue,  3 Nov 2020 15:28:14 +0000, Lee Jones <lee.jones@linaro.org> wrote:
+> > brcmstb_pm_s3_finish() cannot be made static because it is referenced
+> > from brcmstb_pm_s3(), so let's provide a prototype for it instead.
+> > 
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/soc/bcm/brcmstb/pm/pm-arm.c:395:14: warning: no previous prototype for ‘brcmstb_pm_s3_finish’ [-Wmissing-prototypes]
+> > 
+> > Cc: Florian Fainelli <f.fainelli@gmail.com>
+> > Cc: bcm-kernel-feedback-list@broadcom.com
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> 
+> Applied to drivers/next, thanks!
 
-MAGIC_NUMBER would need to be somehow figured but I would start with 10
-or so. 
+Does your branch not get sucked into -next?
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index b44d4c7ba73b..3da5c434fb77 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1299,6 +1299,8 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- 	LIST_HEAD(source);
- 
- 	for (pfn = start_pfn; pfn < end_pfn; pfn++) {
-+		int dumped_page = MAGIC_NUMBER;
-+
- 		if (!pfn_valid(pfn))
- 			continue;
- 		page = pfn_to_page(pfn);
-@@ -1344,7 +1346,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- 
- 		} else {
- 			pr_warn("failed to isolate pfn %lx\n", pfn);
--			dump_page(page, "isolation failed");
-+			if (dumped_page--) {
-+				dump_page(page, "isolation failed");
-+				dumped_page = true;
-+			}
- 		}
- 		put_page(page);
- 	}
-@@ -1372,10 +1377,14 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- 		ret = migrate_pages(&source, alloc_migration_target, NULL,
- 			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
- 		if (ret) {
-+			int dumped_page = MAGIC_NUMBER;
-+
- 			list_for_each_entry(page, &source, lru) {
- 				pr_warn("migrating pfn %lx failed ret:%d ",
- 				       page_to_pfn(page), ret);
--				dump_page(page, "migration failure");
-+				if (dumped_page--) {
-+					dump_page(page, "migration failure");
-+				}
- 			}
- 			putback_movable_pages(&source);
- 		}
+Only it's not currently there.
+
 -- 
-Michal Hocko
-SUSE Labs
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
