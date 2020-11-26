@@ -2,94 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5162C57BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D482C57BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391215AbgKZPAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:00:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
+        id S2391286AbgKZPBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:01:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391180AbgKZPAS (ORCPT
+        with ESMTP id S2390811AbgKZPBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:00:18 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B8BC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:00:18 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id ek7so1029460qvb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:00:18 -0800 (PST)
+        Thu, 26 Nov 2020 10:01:45 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98BBC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:01:44 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id e8so1871802pfh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:01:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:mime-version:date:message-id;
-        bh=qfMwSqnk0RUEJvnAIRSVXuZ7QDhIr4/4UMmKVwRvU1s=;
-        b=MsCriKm4FptOt1FtMaChBpj/3LGtglhTiAi4+O90pTWyO7QU81pjskN5J5AUFFLU16
-         B9xq2054vcAlSHOS+zicJOIArBVbEbzFvb2E3bSTDknXJOTza6hXen2fwFxjWZbE5QKK
-         xONEokQ5akmBeY5hZTVcuekdXz/vWQ5LHR/h42pKclX8/uPq6+1AZQMZptpiG4vRIQcA
-         e3ZBRm75Z0W7A2/2PzbRp/+Lv5zidqeujKel36qkvN83rZtSVKNUJkBcAEFExuD4O9Hp
-         m+sHM4JEKyhXgmJSMgcPx8nlXCyHRU4RZsBj0X1I30TNRgPXUwyw4+wUQby8C91FE/P+
-         K1yg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YBBDP4mSopcfuTFCAYlEnNAgNCuA2bebai0CbzK0+1Y=;
+        b=BX0/A0I2f/dIMqnY7ZHR9Z2d4t0/iZyOoKFEuYzsqxyi2F8a9XNJLQsGh3Zca2/dlW
+         0ESZmeNu18zuPjd+NTg+rmmzuxUdX6f623qdKfP6LXp9goz95BcTSCAsS1pLRRUi3FHm
+         5sAJ1nMRkjjtoAHJ5FfwKiie1NZPtWqjrLUobqrdJALCPAS7LTUqflJwNzrKTIaAazFw
+         ml6DKM8XglRJ/2vivvA1pYLa3xAunvZO1CQZNUHOikwl8ZL6q+pfUmCF22lOAwMd6c5z
+         0NmhM/9MVfXcw7iqvExaztMh6mSJh8J4/GNwi/eRioDWDQCO0xjrbzYdJCMl+HyxAJv4
+         GDNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:mime-version:date
-         :message-id;
-        bh=qfMwSqnk0RUEJvnAIRSVXuZ7QDhIr4/4UMmKVwRvU1s=;
-        b=HJKg77NEHbdED/S0k0kF/HunvAx3sPghUf8rO0zhMeqTCJ+iSpdi2UxCpWtQyo1QMp
-         tOCht9QRZOnMjRGwpT8rll39mqkoqZyVzYfYfPbTVs6hKlG3zw6Pkd4lMNdsPXzPpEcu
-         pJyX5T7O0lDdyOdKU1e3xLYqyGOQgVGM9asgp6Yfa9n7JAM4H15NxrCBL/+2QqA8wkGT
-         HNPc8KEgKzFRM8+/rnnc/I1LOMYKzetsMWRe8MetZ4tQhahOkQPJTI3S5P1jyyHCOPap
-         ASqD/dfUjVl/++k/LlR1jp3FluUGpgt7sVR5bI2IjSN1tYnO+COeNNU1cKQK46M0dSJM
-         DwtA==
-X-Gm-Message-State: AOAM530gBwFtniYqblRVDI5Lsf8GkxJ5+zBN+kfcMSRcjxQiKoTKKSLA
-        1FLoIPhL0lvQBsjRRW0f1AlFSQ==
-X-Google-Smtp-Source: ABdhPJzFBNneKrhNAMvfZ9IgrxaB93YuXHpdNG1lonKvRFRjgNA49RRp7Lll1CHE/AKh3hdTyi3X5A==
-X-Received: by 2002:a0c:fc52:: with SMTP id w18mr3578801qvp.48.1606402817425;
-        Thu, 26 Nov 2020 07:00:17 -0800 (PST)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id z20sm2978067qtb.31.2020.11.26.07.00.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 07:00:16 -0800 (PST)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>
-cc:     kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kasan, mm: fix build issue with asmlinkage
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date:   Thu, 26 Nov 2020 10:00:15 -0500
-Message-ID: <35126.1606402815@turing-police>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YBBDP4mSopcfuTFCAYlEnNAgNCuA2bebai0CbzK0+1Y=;
+        b=lCdDgch6kqo/8cZAUwRLehjUHxE/KN48N7jhyNrDLF6P/d9bw4RVPcYWlf3J8llxMR
+         HDVwnNQFxGVhQGZyWYyDWiV0HyPU9D50Q6oyE6GZuXuUqngj+oP8Fs94fj6YlST+wIBh
+         tJi8SQNpxI9hWB+Xuo6htlxDumF2T36yLO9Hi/+z+sLxZW4NjM7uz79Gz06tiyJjyxJI
+         coouXyMiOaEjA6Z9ISM+MRHKqMifmB92LC+1CSbZXeuGJbw4Qs/7cVJvcPmIv29UkPKp
+         t8RWnMd/nPfoxaWWqjfzNxx+iJWMwwRy4kkD0Jf0wOhgF0k0YEdJ9ENPuNKbTyXWlhiv
+         oDng==
+X-Gm-Message-State: AOAM532s/mniLsKEuNSHIMyA+TvZ0YGqvFU8/v4hD/Az12DEk0DXNr7A
+        Aw9TEUJ++buNFlPfMJeGRNu9kt2ShpE=
+X-Google-Smtp-Source: ABdhPJzo+zCK/GbEbDxwMt3RRNEGmRW8O0bixkn825znAlxY23Szhi1U1HrVgfzqDtC4Byu+Car1Ag==
+X-Received: by 2002:a17:90a:940e:: with SMTP id r14mr4242967pjo.47.1606402904501;
+        Thu, 26 Nov 2020 07:01:44 -0800 (PST)
+Received: from localhost ([221.153.153.187])
+        by smtp.gmail.com with ESMTPSA id c6sm4891444pgl.38.2020.11.26.07.01.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Nov 2020 07:01:43 -0800 (PST)
+From:   Chanho Park <parkch98@gmail.com>
+X-Google-Original-From: Chanho Park <chanho61.park@samsung.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Chanho Park <chanho61.park@samsung.com>
+Subject: [PATCH] drivers core: export symbols for device hotplug
+Date:   Fri, 27 Nov 2020 00:01:38 +0900
+Message-Id: <20201126150138.159896-1-chanho61.park@samsung.com>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 2df573d2ca4c1ce6ea33cb7849222f771e759211
-Author: Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue Nov 24 16:45:08 2020 +1100
+To support module build for cpu hotplug driver on type-1 hypervisor
+such as drivers/xen/cpu_hotplug.c, we need to export below four symbols.
 
-    kasan: shadow declarations only for software modes
+lock_device_hotplug / unlock_device_hotplug
+device_online / device_offline
 
-introduces a build failure when it removed an include for linux/pgtable.h
-It actually only needs linux/linkage.h
-
-Test builds on both x86_64 and arm build cleanly
-
-Fixes:   2df573d2ca4c ("kasan: shadow declarations only for software modes")
-Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
-
+Signed-off-by: Chanho Park <chanho61.park@samsung.com>
 ---
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 83860aa4e89c..5e0655fb2a6f 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -12,6 +12,7 @@ struct task_struct;
- 
- #ifdef CONFIG_KASAN
- 
-+#include <linux/linkage.h>
- #include <asm/kasan.h>
- 
- /* kasan_data struct is used in KUnit tests for KASAN expected failures */
+ drivers/base/core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index d661ada1518f..1bfd0c54a778 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -1586,11 +1586,13 @@ void lock_device_hotplug(void)
+ {
+ 	mutex_lock(&device_hotplug_lock);
+ }
++EXPORT_SYMBOL_GPL(lock_device_hotplug);
+ 
+ void unlock_device_hotplug(void)
+ {
+ 	mutex_unlock(&device_hotplug_lock);
+ }
++EXPORT_SYMBOL_GPL(unlock_device_hotplug);
+ 
+ int lock_device_hotplug_sysfs(void)
+ {
+@@ -3419,6 +3421,7 @@ int device_offline(struct device *dev)
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(device_offline);
+ 
+ /**
+  * device_online - Put the device back online after successful device_offline().
+@@ -3450,6 +3453,7 @@ int device_online(struct device *dev)
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(device_online);
+ 
+ struct root_device {
+ 	struct device dev;
+-- 
+2.23.0
 
