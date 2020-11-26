@@ -2,204 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2432C5942
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A17762C5944
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391306AbgKZQ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 11:26:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:38978 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390284AbgKZQ0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 11:26:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14E5731B;
-        Thu, 26 Nov 2020 08:26:13 -0800 (PST)
-Received: from [10.57.29.239] (unknown [10.57.29.239])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 96F103F23F;
-        Thu, 26 Nov 2020 08:26:11 -0800 (PST)
-Subject: Re: [PATCH v4 2/3] thermal: power allocator: refactor sustainable
- power estimation
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        daniel.lezcano@linaro.org, amitk@kernel.org,
-        Dietmar.Eggemann@arm.com
-References: <20201124161025.27694-1-lukasz.luba@arm.com>
- <20201124161025.27694-3-lukasz.luba@arm.com> <20201126155948.GA25966@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <e6ae0cd5-2ca3-ebda-f7ec-3c71f517c924@arm.com>
-Date:   Thu, 26 Nov 2020 16:26:09 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2391506AbgKZQ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 11:27:50 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:45976 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391309AbgKZQ1t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 11:27:49 -0500
+Received: by mail-pg1-f196.google.com with SMTP id 62so2068001pgg.12;
+        Thu, 26 Nov 2020 08:27:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fapffKzj5pJupvS4Tasqmky7DVQH81Xk12pbcyyGjoQ=;
+        b=JFj6hZgE65v1ahuwEQHoMmZ4M37s+4+ph9zfuXVfmdewscNFKXSjWlD5VfUOGPtHFp
+         XCcEmG58guiDDDor5t59cMfLaplyHxUnfaRabxgws95ieRXif5/70UBOfFTZEVy85S6T
+         5TZj8d26ubTvoavaPPHjzQN4q7eda9pE5eoRwK2eeCIlreOPqaFgRG/JgMqU5kI1XNS1
+         CHX8uYYAEV+m0Em0mUq/RDm0V45N/P+UeLoOh/YbuKHfj/R9Th2mScOLiMqDAAaXwlpp
+         CnUGG/Na+5E6efyHpc4o1QSEvZX9lUZ7pMDk7T7rMk0fsUTkWKAyhbxqlH4voOk9GjJg
+         nt6g==
+X-Gm-Message-State: AOAM530EEc3bJQ/Fpjj+5A0zasIUspXsttXcoPyzInzJ0QvlX/E2B3sR
+        icATDmWOhrvTgb84p845XyENay/LCf8=
+X-Google-Smtp-Source: ABdhPJx5OzU1RlFxOEdmQV/MP1XUQLo0Hq7A3nnM/02sUsGEsZyR4dnZAuvdjSzYx7FteoaehjK4vw==
+X-Received: by 2002:a63:4950:: with SMTP id y16mr2165485pgk.415.1606408068393;
+        Thu, 26 Nov 2020 08:27:48 -0800 (PST)
+Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id s30sm5012324pgl.39.2020.11.26.08.27.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Nov 2020 08:27:47 -0800 (PST)
+Subject: Re: [PATCH V1] block: Fix use-after-free while iterating over
+ requests
+To:     Pradeep P V K <ppvk@codeaurora.org>, axboe@kernel.dk,
+        linux-block@vger.kernel.org
+Cc:     stummala@codeaurora.org, linux-kernel@vger.kernel.org
+References: <1606402925-24420-1-git-send-email-ppvk@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <c94fcada-7f6d-a1e3-4c88-d225af1a676e@acm.org>
+Date:   Thu, 26 Nov 2020 08:27:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201126155948.GA25966@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1606402925-24420-1-git-send-email-ppvk@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ionela,
-
-On 11/26/20 3:59 PM, Ionela Voinescu wrote:
-> Hey,
+On 11/26/20 7:02 AM, Pradeep P V K wrote:
+> Observes below crash while accessing (use-after-free) request queue
+> member of struct request.
 > 
-> Mostly trivial nits (added in case you want to consider them for this code
-> or future changes).
+> 191.784789:   <2> Unable to handle kernel paging request at virtual
+> address ffffff81429a4440
+> ...
+> 191.786174:   <2> CPU: 3 PID: 213 Comm: kworker/3:1H Tainted: G S
+> O      5.4.61-qgki-debug-ge45de39 #1
+> ...
+> 191.786226:   <2> Workqueue: kblockd blk_mq_timeout_work
+> 191.786242:   <2> pstate: 20c00005 (nzCv daif +PAN +UAO)
+> 191.786261:   <2> pc : bt_for_each+0x114/0x1a4
+> 191.786274:   <2> lr : bt_for_each+0xe0/0x1a4
+> ...
+> 191.786494:   <2> Call trace:
+> 191.786507:   <2>  bt_for_each+0x114/0x1a4
+> 191.786519:   <2>  blk_mq_queue_tag_busy_iter+0x60/0xd4
+> 191.786532:   <2>  blk_mq_timeout_work+0x54/0xe8
+> 191.786549:   <2>  process_one_work+0x2cc/0x568
+> 191.786562:   <2>  worker_thread+0x28c/0x518
+> 191.786577:   <2>  kthread+0x160/0x170
+> 191.786594:   <2>  ret_from_fork+0x10/0x18
+> 191.786615:   <2> Code: 0b080148 f9404929 f8685921 b4fffe01 (f9400028)
+> 191.786630:   <2> ---[ end trace 0f1f51d79ab3f955 ]---
+> 191.786643:   <2> Kernel panic - not syncing: Fatal exception
 > 
-> On Tuesday 24 Nov 2020 at 16:10:24 (+0000), Lukasz Luba wrote:
->> The sustainable power value might come from the Device Tree or can be
->> estimated in run time. The sustainable power might be updated by the user
->> via sysfs interface, which should trigger new estimation of PID
->> coefficients. There is no need to estimate it every time when the
->> governor is called and temperature is high. Instead, store the estimated
->> value and make it available via standard sysfs interface, so it can be
->> checked from the user-space.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/thermal/gov_power_allocator.c | 52 ++++++++++++++++++++-------
->>   1 file changed, 40 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
->> index 2e20085ed217..d7e4b9f6af60 100644
->> --- a/drivers/thermal/gov_power_allocator.c
->> +++ b/drivers/thermal/gov_power_allocator.c
->> @@ -63,6 +63,8 @@ static inline s64 div_frac(s64 x, s64 y)
->>    * @trip_max_desired_temperature:	last passive trip point of the thermal
->>    *					zone.  The temperature we are
->>    *					controlling for.
->> + * @sustainable_power:	Sustainable power (heat) that this thermal zone can
->> + *			dissipate
->>    */
->>   struct power_allocator_params {
->>   	bool allocated_tzp;
->> @@ -70,6 +72,7 @@ struct power_allocator_params {
->>   	s32 prev_err;
->>   	int trip_switch_on;
->>   	int trip_max_desired_temperature;
->> +	u32 sustainable_power;
->>   };
->>   
->>   /**
->> @@ -118,10 +121,6 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
->>    *
->>    * This function is used to update the estimation of the PID
->>    * controller constants in struct thermal_zone_parameters.
->> - * Sustainable power is provided in case it was estimated.  The
->> - * estimated sustainable_power should not be stored in the
->> - * thermal_zone_parameters so it has to be passed explicitly to this
->> - * function.
->>    *
->>    * If @force is not set, the values in the thermal zone's parameters
->>    * are preserved if they are not zero.  If @force is set, the values
->> @@ -171,6 +170,42 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
->>   	 */
->>   }
->>   
->> +/**
->> + * get_sustainable_power() - Get the right sustainable power
->                                      ^^^^^^^^^
-> Nit: I would not say there is a right sustainable power. I would remove
-> this.
-
-I meant the 'right' at that moment in time (because value can change).
-
+> Fix this by updating the freed request with NULL.
+> This could avoid accessing the already free request from other
+> contexts while iterating over the requests.
 > 
->> + * @tz:		thermal zone for which to estimate the constants
->> + * @params:	parameters for the power allocator governor
->> + * @control_temp:	target temperature for the power allocator governor
->> + *
->> + * This function is used for getting the proper sustainable power value based
->> + * on variables which might be updated by the user sysfs interface. If that
->                                            ^^
-> 					  through
->> + * happen the new value is going to be estimated and updated. It is also used
+> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
+> ---
+>  block/blk-mq.c | 1 +
+>  block/blk-mq.h | 1 +
+>  2 files changed, 2 insertions(+)
 > 
-> Nit: "If that happens, the new.."
-> 
->> + * after thermal zone binding, where the initial values where set to 0.
->                                                      ^^^^^^^^^^^^^^^^^^^^^
-> 						    value could be 0.
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 55bcee5..9996cb1 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -492,6 +492,7 @@ static void __blk_mq_free_request(struct request *rq)
+>  
+>  	blk_crypto_free_request(rq);
+>  	blk_pm_mark_last_busy(rq);
+> +	hctx->tags->rqs[rq->tag] = NULL;
+>  	rq->mq_hctx = NULL;
+>  	if (rq->tag != BLK_MQ_NO_TAG)
+>  		blk_mq_put_tag(hctx->tags, ctx, rq->tag);
+> diff --git a/block/blk-mq.h b/block/blk-mq.h
+> index a52703c..8747bf1 100644
+> --- a/block/blk-mq.h
+> +++ b/block/blk-mq.h
+> @@ -224,6 +224,7 @@ static inline int __blk_mq_active_requests(struct blk_mq_hw_ctx *hctx)
+>  static inline void __blk_mq_put_driver_tag(struct blk_mq_hw_ctx *hctx,
+>  					   struct request *rq)
+>  {
+> +	hctx->tags->rqs[rq->tag] = NULL;
+>  	blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
+>  	rq->tag = BLK_MQ_NO_TAG;  
 
-I meant many variables in the struct which was kzalloc'ed
+Is this perhaps a block driver bug instead of a block layer core bug? If
+this would be a block layer core bug, it would have been reported before.
 
->> + */
-> 
-> Nit: I think the code is self explanatory so you might not need to go
-> into so many details in the description.
-> 
->> +static u32 get_sustainable_power(struct thermal_zone_device *tz,
->> +				 struct power_allocator_params *params,
->> +				 int control_temp)
->> +{
->> +	u32 sustainable_power;
->> +
-> 
-> Given that we call this every time the controller kicks in, it might
-> help to add unlikely to both conditions. I think the most likely
-> scenario is for our stored params->sustainable_power and
-> tz->tzp->sustainable_power to match.
-
-No, because it returned recently and Greg was explicit [1]:
-
-'Unless you can benchmark the benifit of using likely/unlikely, do not
-use it, as the compiler/CPU will do it better for you.'
-
-
-> 
->> +	if (!tz->tzp->sustainable_power)
->> +		sustainable_power = estimate_sustainable_power(tz);
->> +	else
->> +		sustainable_power = tz->tzp->sustainable_power;
->> +
->> +	/* Check if it's init value 0 or there was update via sysfs */
->> +	if (sustainable_power != params->sustainable_power) {
->> +		estimate_pid_constants(tz, sustainable_power,
->> +				       params->trip_switch_on, control_temp,
->> +				       true);
->> +
->> +		/* Do the estimation only once and make available in sysfs */
->> +		tz->tzp->sustainable_power = sustainable_power;
->> +		params->sustainable_power = sustainable_power;
->> +	}
->> +
->> +	return sustainable_power;
->> +}
->> +
->>   /**
->>    * pid_controller() - PID controller
->>    * @tz:	thermal zone we are operating in
->> @@ -200,14 +235,7 @@ static u32 pid_controller(struct thermal_zone_device *tz,
->>   
->>   	max_power_frac = int_to_frac(max_allocatable_power);
->>   
->> -	if (tz->tzp->sustainable_power) {
->> -		sustainable_power = tz->tzp->sustainable_power;
->> -	} else {
->> -		sustainable_power = estimate_sustainable_power(tz);
->> -		estimate_pid_constants(tz, sustainable_power,
->> -				       params->trip_switch_on, control_temp,
->> -				       true);
->> -	}
->> +	sustainable_power = get_sustainable_power(tz, params, control_temp);
->>   
->>   	err = control_temp - tz->temperature;
->>   	err = int_to_frac(err);
->> -- 
-> 
-> The logic seems sane so:
-> 
-> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> 
-> Thank you,
-> Ionela.
-> 
-
-
-Thank you for the review.
-
-Regards,
-Lukasz
-
-[1] https://lore.kernel.org/lkml/X7P4lA1nITo58eFT@kroah.com/
+Bart.
