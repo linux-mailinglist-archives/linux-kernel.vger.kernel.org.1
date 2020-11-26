@@ -2,119 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9BB2C52F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3571A2C52F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389115AbgKZLaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 06:30:19 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2161 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388808AbgKZLaT (ORCPT
+        id S2389076AbgKZLaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 06:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388808AbgKZLaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 06:30:19 -0500
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Chb954LpRz67HS9;
-        Thu, 26 Nov 2020 19:28:09 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 26 Nov 2020 12:30:17 +0100
-Received: from [10.210.172.213] (10.210.172.213) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Thu, 26 Nov 2020 11:30:16 +0000
-Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <martin.petersen@oracle.com>,
-        <jejb@linux.ibm.com>, <linuxarm@huawei.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
- <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
- <874klmqu2r.fsf@nanos.tec.linutronix.de>
- <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
- <87lfexp6am.fsf@nanos.tec.linutronix.de>
- <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
- <873615oy8a.fsf@nanos.tec.linutronix.de>
- <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
- <87sg91ik9e.wl-maz@kernel.org>
- <0edc9a11-0b92-537f-1790-6b4b6de4900d@huawei.com>
- <afd97dd4b1e102ac9ad49800821231a4@kernel.org>
- <5a314713-c1ee-2d34-bee1-60beae274742@huawei.com>
- <0525a4bcf17a355cd141632d4f3714be@kernel.org>
- <702e1729-9a4b-b16f-6a58-33172b1a3220@huawei.com>
- <5a588f5d86010602ff9a90e8f057743c@kernel.org>
- <80e0a19b-3291-1304-1a5b-0445c49efe31@huawei.com>
- <d696d314514a4bd53c85f2da73a23eed@kernel.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <e96dd9b0-c3a7-f7fb-0317-2fc2107f405a@huawei.com>
-Date:   Thu, 26 Nov 2020 11:29:54 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Thu, 26 Nov 2020 06:30:12 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE60C0613D4;
+        Thu, 26 Nov 2020 03:30:11 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id s8so1748077wrw.10;
+        Thu, 26 Nov 2020 03:30:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Xg3ChPxHBLzC8XSHVd6gyVWVYNsBjJ8+ii6EObsboRw=;
+        b=vLhO5gc72sNDeMLmAyYhqT0Ah94gB76AqnxnDR/7M96dW3ASzUSktS0WK0J8s0/k4N
+         BMyJT8yC8soDPtgJ9bUfgBSbCBzuwA6zTwRS+S4NARX2JVlBGrk+nhLBeep1X6lGX1eG
+         ehwRW8+HTVFOzuEZtpElTi2MZPrTlERjgz+nOgjnl/NhKuU2Sb14T+cqspIuZsNPQFMx
+         dRkIcQCQE4rtE+mn9RK5ppupwC/LvWppkMCIyvXR90C62EcL5Tp2ikok42I+Vtc+e2Rd
+         XX0cJ3Rh/4828sKoZ8DdWTQVgegFsu9LMdfvGnjUmG+Dn076Q6wOzEAgIKxYN+d8wj/R
+         qzPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Xg3ChPxHBLzC8XSHVd6gyVWVYNsBjJ8+ii6EObsboRw=;
+        b=b0BGM7nZXzIsbNDlA8mH8O5Mgxwf8CI89Lito6Hg6if/6nLs+I74f/N7nH8OEISVr9
+         k8gb4EwsTlVcb9ov6eHovF9AQBTf5zPrlZca00R4uFAZgoJaSmI7nAN9xq3IA5Km7VWZ
+         j7viFFjDy3PXkW4Yvf2B1+f4NWm31jh9d1/+cfFUZd+Qfzc5Jf3TVLVw5muEicNArHP6
+         gaTY+opfrVzDjeRmEVL2Hfv32TCkCTX5CbSiIpjH+WKb5HODarCXCCIh3KWOyQgufxrL
+         s4SO70ro0XnPIpX9Jh0iopIQPdlriJqmhFOOdWcVHZcVtnLQ4w2aJSJq+PoTlGwPypKW
+         G9ng==
+X-Gm-Message-State: AOAM531fnmRkjMrS8HtA5s7INTYb8sfa99mSosZNr+zszO7qNJiCUfPC
+        ot/tsF7YdWI5TPVR7CZ7n9wnCTUTmK0=
+X-Google-Smtp-Source: ABdhPJyWAMOkzlh2+FXquc7q0hVfUCgbmPH8Kn7rvnJu071pXWCM+0BnQFjABEXy+VnkqFHpr8mPYg==
+X-Received: by 2002:adf:dec3:: with SMTP id i3mr3242324wrn.263.1606390210598;
+        Thu, 26 Nov 2020 03:30:10 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id h20sm7916651wmb.29.2020.11.26.03.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 03:30:09 -0800 (PST)
+Date:   Thu, 26 Nov 2020 12:30:07 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        jonathanh@nvidia.com, jingoohan1@gmail.com, kw@linux.com,
+        gregkh@linuxfoundation.org, linux-pci@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH] PCI: tegra: Move "dbi" accesses to post common DWC
+ initialization
+Message-ID: <X7+Rv8iK84k/lWlc@ulmo>
+References: <20201125192234.2270-1-vidyas@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <d696d314514a4bd53c85f2da73a23eed@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.210.172.213]
-X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uRpyf/ZCw+A6MDI4"
+Content-Disposition: inline
+In-Reply-To: <20201125192234.2270-1-vidyas@nvidia.com>
+User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
 
-> 
-> I did:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/hacks 
+--uRpyf/ZCw+A6MDI4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-ok, I'll have a look
+On Thu, Nov 26, 2020 at 12:52:34AM +0530, Vidya Sagar wrote:
+> commit a0fd361db8e5 ("PCI: dwc: Move "dbi", "dbi2", and "addr_space"
+> resource setup into common code") moved the code that sets up dbi_base
+> to DWC common code thereby creating a requirement to not access the "dbi"
+> region before calling common DWC initialization code. But, Tegra194
+> already had some code that programs some of the "dbi" registers resulting
+> in system crash. This patch addresses that issue by refactoring the code
+> to have accesses to the "dbi" region only after common DWC initialization.
+>=20
+> Fixes: a0fd361db8e5 ("PCI: dwc: Move "dbi", "dbi2", and "addr_space" reso=
+urce setup into common code")
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-tegra194.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
 
->>
->> You still should be able to enable my favorite
->> CONFIG_DEBUG_TEST_DRIVER_REMOVE=y, while the distro still boot. But
->> I'll just test if you want.
-> 
-> Ah! Let me try that then. Having been debugging some ugly driver removal
-> lately, I wish I had known that config option and inflicted it on their
-> authors...
+This, together with your other patch fixes Tegra194 PCI on top of
+next-20201126 for me, so:
 
-Just in case - be careful with this one! It kills the boot of many 
-systems, but D05 should be fine.
+Tested-by: Thierry Reding <treding@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-> 
-> [...]
-> 
->>> And while the mbigen port that is connected to the SAS controller
->>> doesn't seem to be shared between endpoints, some other ports definitely
->>> are:
->>>
->>> # cat /sys/kernel/debug/irq/domains/\\_SB.MBI1
->>> name:   \_SB.MBI1
->>>   size:   409
->>>   mapped: 192
->>>   flags:  0x00000003
->>>
->>> [...]
->>>
->>> I guess that the other 217 lines are connected somewhere.
->>>
->>
->> I think that is not the right one. See
->> https://github.com/tianocore/edk2-platforms/blob/master/Silicon/Hisilicon/Hi1616/D05AcpiTables/Dsdt/D05Sas.asl#L101 
->>
->>
-> 
-> I know, I was just outlining the fact that some of the mbigen
-> ports are shared between devices, and MBI1 seems to be an example
-> of that (though my reading of ASL is... primitive).
+--uRpyf/ZCw+A6MDI4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Ah, ok. So this one is for the networking subsystem, and it does have 
-many devices in the topology model, but I can't claim to known much more 
-than that.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-John
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+/kbsACgkQ3SOs138+
+s6Fk1w/+Mq+/FnR7JB8L8JAdeYVHpnSPDhRK2/CIhYAjkL8BC5MOu6+d/0f3yeE/
+UV4jBmvKO+bGV386mBWMtCYxEDPgMh5D6Fem3EVs2y5siekXvDSiIsH0vbcPAbNM
+B4XU0eTzINlrQN+la5MWHCVbb/RapCbdL8F1ygKbMxVXNKfnzEP03QQpYNhvRjTX
+ys5TJY0ds3ILTL3mQ2aCy8Rk8c+wYafNk5yqgxDTvMTkYVfGeSuUECyM23rFe3Le
+6TpOPQ/ZpaSa7jjxzkkGLAkVnJB2MPv4FyguMrrRy9pUGQfqxvyrpRlQ8l9y5dyK
+O6hGQclhyAM5biNuCntcGZpr2mLvCp43lYiZs0QVNPsiiZeC1Xgt9TtkiEyb64Ko
+azW8gwo4O8zGTGOq6YKeQXpUOrcOSqysaldxQKB4cyLtrL5K5digBTdzLL9LdOXd
+ZbuyeTQeGElYMjKGCniriofPmI1TLYiTMPLm83kk6SAFKrAa1a4aVyp/6VyRENou
+U/fC2ko6cWQo/r6Hvr/is6d8QB89f4ekj4e2YEnpX4//t6GqixM7Qmxe31u3kR0F
+PQjaeUpmk1r3qdYH9O3fYSjwhZMj+sy+zNzOy8NHZD0EHUdCpqXHfB6bVUxC98jq
+IsctYY9Ij52LNQW8d9EW8+XFrhgluiWuUepM545GsYLSZKce07Y=
+=qg65
+-----END PGP SIGNATURE-----
+
+--uRpyf/ZCw+A6MDI4--
