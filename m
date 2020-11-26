@@ -2,158 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B1A2C5A4F
+	by mail.lfdr.de (Postfix) with ESMTP id CECAF2C5A50
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403995AbgKZRNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2404106AbgKZRNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:13:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404008AbgKZRNJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 26 Nov 2020 12:13:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390083AbgKZRNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:13:08 -0500
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C1C821D7E;
-        Thu, 26 Nov 2020 17:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606410787;
-        bh=wPvtDOtQvxniPFVl/LtU6cPrB5mf3Raj/1WlT/Ggv6Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oc4jSHVfy9GORY2wT6dfxUnKoTjvyys61BlKvTVi8MqAcRvU99Jq5n/URrjRNvJxe
-         o17umLkiAfUsMawd5bpzcJPUtTSi8SfcM3VmPLRDAskySgJRhgGUpbADR9cZMalwjL
-         DCGg5volwaRwgwQ5L/XP8nz+QCTNcrnc/2tXuKBk=
-Received: by mail-ot1-f45.google.com with SMTP id f12so2395628oto.10;
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A998C0613D4;
+        Thu, 26 Nov 2020 09:13:08 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id i17so3116523ljd.3;
         Thu, 26 Nov 2020 09:13:07 -0800 (PST)
-X-Gm-Message-State: AOAM532LMx89bLksXmcUHoZefHFkuvWXAy8QWI02BP4VD+VZpSAyrF8W
-        BFxgNYF+mVf89/c5K7UqHurXZ/6w2BKF4tdhSL8=
-X-Google-Smtp-Source: ABdhPJwkA4GlgPVz4Bt9VWOXX3qijUlz/gcbzcTYFwKGQPldclFt9VwbtT9goDD5RR9K4hKUF53+36Y6b0t6TkWWaSE=
-X-Received: by 2002:a9d:62c1:: with SMTP id z1mr3022467otk.108.1606410786716;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VpnUj0vwEBxW6p7ITczWY4IsgxvLvEJLYdLmcYXOZkU=;
+        b=bNIV9vN0a4JsfmKqZ80aejvtZg4VlBh59eCSvINKkY7gI+B3p+OINaw1WT8TbCuYEp
+         w9SieaelhASvFeb55DSGvdrvjXoa8lCwCqZCffodPp7944KO4zJpQSkdVpwDf5B6mmPd
+         MmKveMlfHhcEnUbl1FMte4aJpELc8Wtt3ENVKEEVfMGk/tTXcmS+a84sk9XirGRBFa75
+         Pz/oTnxPeCwC9u/bNg8DJCn+qRvt7/gQRVVmn2X6jxWNyoVc8ddJy4TbAs/X3poYhsn3
+         bhlzF+ZVefYRNx2Hi7+3WG1KJ5joQFxklIMgsIEX/v4JUJ+/WE7VLGCtv0ZhEzJ4cHrj
+         L04g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VpnUj0vwEBxW6p7ITczWY4IsgxvLvEJLYdLmcYXOZkU=;
+        b=fbpdMkrCJUSaX0YDMSQKe64kZJHhjwwFPzFcOX8PpqRbPb7b9fPmAeFZ7qeFIfQmjo
+         hxbrdzx1crE4jwmyaMcVblVDhfztNcSO1evpYFWBL0rXFfY0VLk0kuMytiqUfBD8GVBP
+         cTsrXy5zZYhkE3GqFn1wZaOucc7TSYEWbiPjLztIBEtsAFshXpsRrOti+zqIpmvnWtRA
+         zsc3CSw9f+MbTkeZehEJcPz2WCWk+xZ3m22CKfqZhVSXs8selzqKq866ivxHQ8iqzpCl
+         fkmA2b9nQD+Q0IYjfUm2zZCiXGDBaRVAZHeBV2w0rXXY1OpbwTytgxem9ENuYaf1Fef8
+         bgjg==
+X-Gm-Message-State: AOAM531yaOiJ7Mnir8MfZjijtEplQtd25gzyyVmmAMSxNgW8wxT4n5Mp
+        aPssykWM6lonor6x22vXjLPk5zFj4hBcsz9pVf8=
+X-Google-Smtp-Source: ABdhPJy3urs2BeAfWjkHI6bDf9nhnilb7OzdM0ndQotzW8xx/eFGnLcSx3/i/yka1xN40aF1n6yHdaWNpOKCmlEuXMA=
+X-Received: by 2002:a2e:9648:: with SMTP id z8mr1567183ljh.91.1606410786463;
  Thu, 26 Nov 2020 09:13:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20201125211311.2179-1-iuliana.prodan@oss.nxp.com>
- <CAMj1kXH=gyCz7NQXaAoNC4cf37t9E8znngyLFVPv+dO79=Z9oQ@mail.gmail.com>
- <20b1493d-bfb6-d0bc-3b73-740b216db5f2@nxp.com> <CAMj1kXGBa7st9duOu1Z1y28_-Xci3ur7kevAP+pPFp6+xvcy2Q@mail.gmail.com>
- <50866e6a-e352-3728-a6c4-1fcc33af13f9@nxp.com>
-In-Reply-To: <50866e6a-e352-3728-a6c4-1fcc33af13f9@nxp.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 26 Nov 2020 18:12:55 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGNqY18R7f=oOvrjeboVHVNZ415ASV6EOiwvXU_UKB5fQ@mail.gmail.com>
-Message-ID: <CAMj1kXGNqY18R7f=oOvrjeboVHVNZ415ASV6EOiwvXU_UKB5fQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] crypto: add CRYPTO_TFM_REQ_DMA flag
-To:     Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc:     Horia Geanta <horia.geanta@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-imx <linux-imx@nxp.com>,
-        "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
+References: <20201125030119.2864302-1-guro@fb.com> <20201125030119.2864302-7-guro@fb.com>
+ <ef140167-8d80-c581-318c-36c0430e4cfa@iogearbox.net> <20201126023000.GB840171@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20201126023000.GB840171@carbon.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 26 Nov 2020 09:12:55 -0800
+Message-ID: <CAADnVQ+eohA6drYFbbw4ZD-H91xESf=WjZT-oPK85dpdJJAYhQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 06/34] bpf: prepare for memcg-based memory
+ accounting for bpf maps
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 at 17:00, Iuliana Prodan <iuliana.prodan@nxp.com> wrote=
-:
+On Wed, Nov 25, 2020 at 6:30 PM Roman Gushchin <guro@fb.com> wrote:
 >
-> On 11/26/2020 9:09 AM, Ard Biesheuvel wrote:
-> > On Wed, 25 Nov 2020 at 22:39, Iuliana Prodan <iuliana.prodan@nxp.com> w=
-rote:
-> >>
-> >> On 11/25/2020 11:16 PM, Ard Biesheuvel wrote:
-> >>> On Wed, 25 Nov 2020 at 22:14, Iuliana Prodan (OSS)
-> >>> <iuliana.prodan@oss.nxp.com> wrote:
-> >>>>
-> >>>> From: Iuliana Prodan <iuliana.prodan@nxp.com>
-> >>>>
-> >>>> Add the option to allocate the crypto request object plus any extra =
-space
-> >>>> needed by the driver into a DMA-able memory.
-> >>>>
-> >>>> Add CRYPTO_TFM_REQ_DMA flag to be used by backend implementations to
-> >>>> indicate to crypto API the need to allocate GFP_DMA memory
-> >>>> for private contexts of the crypto requests.
-> >>>>
-> >>>
-> >>> These are always directional DMA mappings, right? So why can't we use
-> >>> bounce buffering here?
-> >>>
-> >> The idea was to avoid allocating any memory in crypto drivers.
-> >> We want to be able to use dm-crypt with CAAM, which needs DMA-able
-> >> memory and increasing reqsize is not enough.
-> >
-> > But what does 'needs DMA-able memory' mean? DMA operations are
-> > asynchronous by definition, and so the DMA layer should be able to
-> > allocate bounce buffers when needed. This will cost some performance
-> > in cases where the hardware cannot address all of memory directly, but
-> > this is a consequence of the design, and I don't think we should
-> > burden the generic API with this.
-> >
-> Ard, I believe you're right.
->
-> In CAAM, for req->src and req->dst, which comes from crypto request, we
-> use DMA mappings without knowing if the memory is DMAable or not.
->
-> We should do the same for CAAM's hw descriptors commands and link
-> tables. That's the extra memory allocated by increasing reqsize.
->
+> I did consider this option. There are pros and cons. In general we tend to charge the cgroup
+> which actually allocates the memory, and I decided to stick with this rule. I agree, it's fairly
+> easy to come with arguments why always charging the map creator is better. The opposite is
+> also true: it's not clear why bpf is different here. So I'm fine with both options, if there
+> is a wide consensus, I'm happy to switch to the other option. In general, I believe that
+> the current scheme is more flexible.
 
-It depends on whether any such mappings are non-directional. But I
-would not expect per-request mappings to be modifiable by both the CPU
-and the device at the same time.
+I don't understand the 'more flexible' part.
+The current_memcg or map_memcg approach makes it less predictable.
+pre-alloc vs not is somewhat orthogonal.
+I've grepped through the kernel where set_active_memcg() is used
+and couldn't find a conditional pattern of its usage.
+If memcg is known it's used. I couldn't come up with the use case where
+using current memcg is the more correct thing to do.
 
+> In general we tend to charge the cgroup which actually allocates the memory
 
-> Horia, do you see any limitations, in CAAM, for not using the above
-> approach?
->
->
-> >> It started from here
-> >> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flo=
-re.kernel.org%2Flinux-crypto%2F71b6f739-d4a8-8b26-bf78-ce9acf9a0f99%40nxp.c=
-om%2FT%2F%23m39684173a2f0f4b83d8bcbec223e98169273d1e4&amp;data=3D04%7C01%7C=
-iuliana.prodan%40nxp.com%7C436d50e009434fd1c52808d891da3c8f%7C686ea1d3bc2b4=
-c6fa92cd99c5c301635%7C0%7C0%7C637419713794116972%7CUnknown%7CTWFpbGZsb3d8ey=
-JWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp=
-;sdata=3D38rJuxFhPWDJXWc2R66Hu%2Fn7vve9u%2BeF0Evp%2BFAhCwQ%3D&amp;reserved=
-=3D0
-> >>
-> >>>> For IPsec use cases, CRYPTO_TFM_REQ_DMA flag is also checked in
-> >>>> esp_alloc_tmp() function for IPv4 and IPv6.
-> >>>>
-> >>>> This series includes an example of how a driver can use
-> >>>> CRYPTO_TFM_REQ_DMA flag while setting reqsize to a larger value
-> >>>> to avoid allocating memory at crypto request runtime.
-> >>>> The extra size needed by the driver is added to the reqsize field
-> >>>> that indicates how much memory could be needed per request.
-> >>>>
-> >>>> Iuliana Prodan (4):
-> >>>>     crypto: add CRYPTO_TFM_REQ_DMA flag
-> >>>>     net: esp: check CRYPTO_TFM_REQ_DMA flag when allocating crypto r=
-equest
-> >>>>     crypto: caam - avoid allocating memory at crypto request runtime=
- for
-> >>>>       skcipher
-> >>>>     crypto: caam - avoid allocating memory at crypto request runtime=
- for
-> >>>>       aead
-> >>>>
-> >>>>    drivers/crypto/caam/caamalg.c | 130 +++++++++++++++++++++++++----=
------
-> >>>>    include/crypto/aead.h         |   4 ++
-> >>>>    include/crypto/akcipher.h     |  21 ++++++
-> >>>>    include/crypto/hash.h         |   4 ++
-> >>>>    include/crypto/skcipher.h     |   4 ++
-> >>>>    include/linux/crypto.h        |   1 +
-> >>>>    net/ipv4/esp4.c               |   7 +-
-> >>>>    net/ipv6/esp6.c               |   7 +-
-> >>>>    8 files changed, 144 insertions(+), 34 deletions(-)
-> >>>>
-> >>>> --
-> >>>> 2.17.1
-> >>>>
+that makes sense where allocation is driven by the user process.
+Like user space doing a syscall then all kernel allocation would be
+from memcg of that process.
+But bpf tracing allocations are not something that the user process requested
+the kernel to do. It's like another user space process tapped into another.
+Arguably when bpf prog is running the two user processes are active.
+One that created the map and loaded the prog and another that is being traced.
+I think there will be cases where bpf prog will request the kernel to allocate
+memory on behalf of the process being traced, but that memory should be
+given back to the process and accessible by it in some form.
+Like bpf prog could ask the kernel to grow heap of that process or
+trigger readahead.
+In such case current_memcg would be the right thing to charge.
