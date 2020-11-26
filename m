@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170A12C4C81
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CD12C4C83
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730921AbgKZBRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 20:17:53 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8588 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728995AbgKZBRw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 20:17:52 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ChKcM3svwzLvWy;
-        Thu, 26 Nov 2020 09:17:23 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 26 Nov 2020 09:17:46 +0800
-Subject: Re: [PATCH] fpga: dfl: add missing platform_device_put in
- build_info_create_dev
-To:     "Wu, Hao" <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>
-CC:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201125065030.154074-1-miaoqinglang@huawei.com>
- <DM6PR11MB381903C990E8D7C76EF04E5F85FA0@DM6PR11MB3819.namprd11.prod.outlook.com>
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-Message-ID: <f2ac1d09-4e9d-31ed-6ba2-fea3219ff4a9@huawei.com>
-Date:   Thu, 26 Nov 2020 09:17:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1731016AbgKZBS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 20:18:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729679AbgKZBS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 20:18:27 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80953206C0;
+        Thu, 26 Nov 2020 01:18:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606353506;
+        bh=V7MlPQFlobtD0sir/+h8W4SKAyV7EWgo18/G4Rrzi6U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=wjbuZEfWDIJW+HIAFIOTpfDFKwsdiRB6q8dm8thZOoFe3x7d8e28ZYl45SGm9Xbnz
+         IM2etds4mpg0y1+d+Dn6K2mFok6d+Z+19csbj6Mk3qnG4T9l0OQY4bpSJjHDxBUtLQ
+         pIflPFLY0Ls1XdxtTGfzlibB+I5kWDiy1RCbwCZU=
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     ashok.raj@intel.com, knsathya@kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH v12 0/5] Simplify PCIe native ownership
+Date:   Wed, 25 Nov 2020 19:18:11 -0600
+Message-Id: <20201126011816.711106-1-helgaas@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <DM6PR11MB381903C990E8D7C76EF04E5F85FA0@DM6PR11MB3819.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bjorn Helgaas <bhelgaas@google.com>
 
+This is Sathy's work with a few tweaks on top.
 
-ÔÚ 2020/11/25 18:06, Wu, Hao Ð´µÀ:
->> Subject: [PATCH] fpga: dfl: add missing platform_device_put in
->> build_info_create_dev
->>
->> platform_device_put is missing when it fails to set fdev->id. Set
->> a temp value to do sanity check.
-> 
-> will this case be covered already by build_info_free()?
-> 
-> Hao
-Yes, you're right Hao.
+I dropped the DPC pcie_ports_dpc_native changes for now just because I
+haven't had time to understand it all.  We currently ignore the
+OSC_PCI_EXPRESS_DPC_CONTROL bit, which seems wrong.  We might want to start
+looking at it, but we should try to make that a separate patch that's as
+small as possible.
 
-build_info_create_dev is performed in parse_feature_list which follows
-build_info_free.
+Changes since v11:
+ * Add bugfix for DPC with no AER Capability
+ * Split OSC_OWNER trivial changes from pcie_ports_native changes
+ * Temporarily drop pcie_ports_dpc_native changes
 
-So please ignore this patch.
+v11 posting: https://lore.kernel.org/r/cover.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com
 
-Thanks!
-> 
->>
->> Fixes: 543be3d8c999 ("fpga: add device feature list support")
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->> ---
->>   drivers/fpga/dfl.c | 9 ++++++---
->>   1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
->> index b450870b7..8958f0860 100644
->> --- a/drivers/fpga/dfl.c
->> +++ b/drivers/fpga/dfl.c
->> @@ -877,10 +877,13 @@ build_info_create_dev(struct
->> build_feature_devs_info *binfo,
->>
->>   	INIT_LIST_HEAD(&binfo->sub_features);
->>
->> -	fdev->id = dfl_id_alloc(type, &fdev->dev);
->> -	if (fdev->id < 0)
->> -		return fdev->id;
->> +	int tmp_id = dfl_id_alloc(type, &fdev->dev);
->> +	if (tmp_id < 0) {
->> +		platform_device_put(fdev);
->> +		return tmp_id;
->> +	}
->>
->> +	fdev->id = tmp_id;
->>   	fdev->dev.parent = &binfo->cdev->region->dev;
->>   	fdev->dev.devt = dfl_get_devt(dfl_devs[type].devt_type, fdev->id);
->>
->> --
->> 2.23.0
-> 
-> .
-> 
+Bjorn Helgaas (2):
+  PCI/DPC: Ignore devices with no AER Capability
+  PCI/ACPI: Centralize pci_aer_available() checking
+
+Kuppuswamy Sathyanarayanan (3):
+  PCI: Assume control of portdrv-related features only when portdrv
+    enabled
+  PCI/ACPI: Tidy _OSC control bit checking
+  PCI/ACPI: Centralize pcie_ports_native checking
+
+ drivers/acpi/pci_root.c           | 49 ++++++++++++++++++++++++-------
+ drivers/pci/hotplug/pciehp_core.c |  2 +-
+ drivers/pci/pci-acpi.c            |  3 --
+ drivers/pci/pcie/aer.c            |  2 +-
+ drivers/pci/pcie/dpc.c            |  3 ++
+ drivers/pci/pcie/portdrv_core.c   |  9 ++----
+ drivers/pci/probe.c               |  6 ++--
+ 7 files changed, 50 insertions(+), 24 deletions(-)
+
+-- 
+2.25.1
+
