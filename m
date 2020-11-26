@@ -2,136 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AED2C5231
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5C52C523A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731271AbgKZKjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:39:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34524 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729906AbgKZKjL (ORCPT
+        id S2388114AbgKZKoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:44:10 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62774 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731271AbgKZKoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:39:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606387149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yo9d18j2JYmcCVTus4QfEo0yCONfJHdLzX0h7oSMmXc=;
-        b=UKl0Qs/UtT8sjWgA5uTNmNmch6b2k2BHNEpij3KtV9vGAHFapas+NQciYg7TBL1WI9V5xV
-        LAQOn1ugUIUIOLm1W3gYdwmzIhwWaauFRlylbeTrg34UlB8ZNhPs/gCr6N6CzcutFWamYk
-        b5+sLU9HGmKUVAUOzM2ytTF5sxLNlPw=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-TM3oiWZ9MuSdT17ICcYm4g-1; Thu, 26 Nov 2020 05:39:07 -0500
-X-MC-Unique: TM3oiWZ9MuSdT17ICcYm4g-1
-Received: by mail-ej1-f71.google.com with SMTP id e7so659928eja.15
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 02:39:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Yo9d18j2JYmcCVTus4QfEo0yCONfJHdLzX0h7oSMmXc=;
-        b=gXFyZGR5VxTvlUDeZJKWVkmkcd6zDWlDZYtEruRz1iIGPggUS0MLOpaM6uVKc0NBPn
-         f4eb/F48dbM3M5HDhT6ZdCTnp21k0IlfymUOQ6ITDF4FlMpQzmIScTaXhlxOv/KXZxBS
-         dIFKj0TQ7hx59nW+vGC0IkH9q66oUieVAysF65avoejnYPN4Yn2ihJPaEeGK8c7/WqvC
-         WvSAcYSopxfs7+l7xnHJMYLyasfp9PnGOy75gUM7v/lh8bb7yA7WObKJ8emMTD1bgLW7
-         SwLwYSmR2WI0t5PmeQT7clZpvmNAngHFYExsJKmmxZepwwaPirdU9/CoTDuQTzQwWj3c
-         Q7Cw==
-X-Gm-Message-State: AOAM530LRCwLojq7GbQPSbDdY/bPjc5E1/HtcIP2+G47+Vw5x6sWOwDc
-        7Zf5YvJYTJ8lgvbsL624VGXpjUxsbVZk+98DHSwR92Rz6d44kQyRmuHPRb4PTOixSyR6GtLDazZ
-        Tzb6ygiPvdOzCp22BkhdyBQqs
-X-Received: by 2002:a17:906:5396:: with SMTP id g22mr57514ejo.111.1606387146253;
-        Thu, 26 Nov 2020 02:39:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwNqyNPOsDiAGgbbM5IQoz3m9FelhIsADjjDJACM8vb6NtTGhRKPRR3xeOyoTkIcLDaA2Gjww==
-X-Received: by 2002:a17:906:5396:: with SMTP id g22mr57496ejo.111.1606387146055;
-        Thu, 26 Nov 2020 02:39:06 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id a26sm2961625edt.74.2020.11.26.02.39.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 02:39:05 -0800 (PST)
-Subject: Re: [PATCH v3 0/5] x86/platform/uv: Add uv_sysfs platform driver
-To:     Justin Ernst <justin.ernst@hpe.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org
-Cc:     Andy Shevchenko <andy@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Mike Travis <mike.travis@hpe.com>
-References: <20201125175444.279074-1-justin.ernst@hpe.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <ac3d704e-4403-2dfb-7fb5-a2c4cbaa1deb@redhat.com>
-Date:   Thu, 26 Nov 2020 11:39:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 26 Nov 2020 05:44:09 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AQAWFSD103024;
+        Thu, 26 Nov 2020 05:44:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=hdR+ae0kP4ATe3PbLi6XSYSCpaYF/SUoeIXoly5akqA=;
+ b=LwdbjDF9kf33IKR3Q+jniJLc8d3nYVFlKaQ9ul4VcjBeSxjNOA77zBXK0AOMh6eTzz8Q
+ /DwYu+w9gYQxbdPDttEjlcP5qopSUkN6yHeEkkLE+xFgHZNisx398CF+GMcoJRTiIFtl
+ DNKlgEdeCuDwuaEulysWQIoWgdml5CSF5M1LQZKpnfldkV2NhG+Z4nVgR34tn+gMRl9K
+ 9Fo9EdbPTf5PHrnqQ24avXWb6LCknIeXXIGGtwbe6Nl0Evqrl/eauXRypy/Zhuwsrv+j
+ 5XnGsHP/w0IkF0zDR/XP8A+Rqf3p3nQ6K+4ofEYAc4lrYjErmlmSuVbQ5JULz024Q96z Fg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 352am6rd7q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 05:44:01 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AQAWvKd104695;
+        Thu, 26 Nov 2020 05:44:01 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 352am6rd5y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 05:44:00 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AQAgI3U026939;
+        Thu, 26 Nov 2020 10:43:58 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 34xth8aun6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 10:43:58 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AQAhuZ840763678
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Nov 2020 10:43:56 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A6DE5204E;
+        Thu, 26 Nov 2020 10:43:56 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.183.229])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 4C4A852051;
+        Thu, 26 Nov 2020 10:43:55 +0000 (GMT)
+Date:   Thu, 26 Nov 2020 12:43:53 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <20201126104353.GR123287@linux.ibm.com>
+References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
+ <20201121194506.13464-1-aarcange@redhat.com>
+ <20201121194506.13464-2-aarcange@redhat.com>
+ <ea911b11-945f-d2c5-5558-a3fe0bda492a@suse.cz>
+ <X73s8fxDKPRD6wET@redhat.com>
+ <X78jpOqo+IVq1Fn+@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201125175444.279074-1-justin.ernst@hpe.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X78jpOqo+IVq1Fn+@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-26_03:2020-11-26,2020-11-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ spamscore=0 mlxscore=0 lowpriorityscore=0 clxscore=1015 mlxlogscore=999
+ suspectscore=56 adultscore=0 impostorscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011260060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Nov 25, 2020 at 10:40:20PM -0500, Andrea Arcangeli wrote:
+> On Wed, Nov 25, 2020 at 12:34:41AM -0500, Andrea Arcangeli wrote:
+> 
+> Summary: both old code (missing PG_reserved) and the current code
+> (leaving the page struct uninitialized and with wrong nodeid/nid) look
+> wrong.
+> 
+> Overall this brings more questions:
+> 
+> - why memblock.reserved exists and isn't automatically calculated as
+>   inversion of memblock.memory? (or if you prefer: why is the above
+>   call to memblock_reserve needed to initialize the memory holes?)
 
-On 11/25/20 6:54 PM, Justin Ernst wrote:
-> Introduce a new platform driver to gather topology information from UV systems
-> and expose that information via a sysfs interface at /sys/firmware/sgi_uv/.
-> 
-> This is version 3 with these changes since version 2:
-> 
->  * Export sn_coherency_id to fix build failure when UV_SYSFS=m, caused by re-introduction
-> 	of /sys/firmware/sgi_uv/coherence_id in v2.
-> 
->  * Fix a null pointer dereference in drivers/platform/x86/uv_sysfs.c:uv_ports_exit()
-> 	caused by calling kobject_put() on an out of range index value.
-> 
-> Version 2 included these changes since version 1:
-> 
->  * Re-introduced /sys/firmware/sgi_uv/coherence_id file in the new driver after
-> 	removing it in Patch 1/5. This keeps the userspace API unbroken.
-> 
-> Justin Ernst (5):
->   x86/platform/uv: Remove existing /sys/firmware/sgi_uv/ interface
->   x86/platform/uv: Add and export uv_bios_* functions
->   x86/platform/uv: Add new uv_sysfs platform driver
->   x86/platform/uv: Update ABI documentation of /sys/firmware/sgi_uv/
->   x86/platform/uv: Update MAINTAINERS for uv_sysfs driver
-> 
->  .../ABI/testing/sysfs-firmware-sgi_uv         | 141 ++-
->  MAINTAINERS                                   |   6 +
->  arch/x86/include/asm/uv/bios.h                |  49 +
->  arch/x86/include/asm/uv/uv_geo.h              | 103 +++
->  arch/x86/platform/uv/Makefile                 |   2 +-
->  arch/x86/platform/uv/bios_uv.c                |  55 ++
->  arch/x86/platform/uv/uv_sysfs.c               |  63 --
->  drivers/platform/x86/Kconfig                  |  11 +
->  drivers/platform/x86/Makefile                 |   3 +
->  drivers/platform/x86/uv_sysfs.c               | 862 ++++++++++++++++++
->  10 files changed, 1217 insertions(+), 78 deletions(-)
->  create mode 100644 arch/x86/include/asm/uv/uv_geo.h
->  delete mode 100644 arch/x86/platform/uv/uv_sysfs.c
->  create mode 100644 drivers/platform/x86/uv_sysfs.c
+memblock.reserved represents memory areas that were allocated before
+page allocator is up. This could be memory reported by firmware as
+resrved, kernel image, initrd, and any memory kernel allocates before
+page allocator is ready.
 
-My acked-by for merging the drivers/platform/x86 bits through the x86/tip
-tree still stands:
+> - why there's no initialization of the memblock.reserved regions given
+>   they exists, was it just an oversight? (this one is fixed by Mike's
+>   patch, although I wish it was possible to drop the function
+>   memblock_reserve instead)
 
-Acked-by: Hans de Goede <hdegoede@redhat.com>
+It was an oversight when I posted
+73a6e474cb376921a311786652782155eac2fdf0. I overlooked the fact that x86
+does not consider memory allocated by firmware as memory and only parts
+of it are considred reserved.
 
-REgards,
+> - what can we do instead of setting the uninitialized nodeid/nid to
+>   0,0 and to reliably detect at boot if some page structure within
+>   zones (but ideally also outside the zone boundary for any pfn where
+>   pfn_valid returns true) is left uninitialized, as it is happening
+>   currently on the e820 type 20 range?
 
-Hans
+I think that we need to fix the e820 and memblock interaction at the
+first place. The "non-RAM" holes reported as various types other than
+E820_TYPE_RAM are actually seem to be "RAM that firmware grabbed for
+itself", so they should be seen by the system as such, like in all other
+architectures.
+For the regions that cannot be mapped, like those on HPE UV (was it
+SGI?) systems, we have MEMBLOCK_NOMAP exactly for that purpose.
 
+Once this is done, we can straihgten logic around memmap intialization
+in page_alloc, and I feel it will get simpler that today in the end.
+
+> Thanks,
+> Andrea
+
+-- 
+Sincerely yours,
+Mike.
