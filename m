@@ -2,206 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06F52C56E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9592C56EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391090AbgKZOQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:16:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
+        id S2390307AbgKZOSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:18:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390350AbgKZOQK (ORCPT
+        with ESMTP id S2390078AbgKZOSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:16:10 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2166BC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:16:10 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id x22so2273041wmc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:16:10 -0800 (PST)
+        Thu, 26 Nov 2020 09:18:11 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856A4C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:18:11 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id y197so1634166qkb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:18:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tMVgTeO03AHhfaOSmS4teYNEJZSWM7hPB1HU15pX36k=;
-        b=gVtPSCQalNvDgr33ts7W1WaWeEMcrGJRwq51W7OCAC9uj3VCBekCCfcLbzwb/8S0zm
-         NUD1DrOfqHWkkbKBLKyftCMjuEyeP8yU8ATXGOOjFRoUyWZL6wZ/6dn/inrI834Mx9i3
-         SuPNcVzNtodBIqclscIz8iPdzdIAukRemLN1OQN4J7/sW4VMRg91TBHtENsC+pRfsoa3
-         4wVd9b4D7BE9eQgMaXglhfjd6YNh16MgNJ+lZXfs+qbQaGKzP1yEkX1BJvEoVE2kdORk
-         Ahr45Mh5BFRvrDn0Ek6KeV+eKzEL2fL4KEF4LY/sturMGkDNCBv/zKQhBsVjJOCBiCYR
-         bcYA==
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
+         :content-transfer-encoding:date:message-id;
+        bh=R6BrEWkteQvQbjsApcd3N42+tWQEuLbo/lT+UxHp8d0=;
+        b=k29quvvY9G5+WStu6ovANfxwBJG+sS86f9VTW9pGp+Jrw71aymFRgPnssA8K0F8SIq
+         s6KtUC9OqNqOMgxqXE/UxSjCO245QvGAWF13Xk+VSZcuJPw842s6syijNZmGp5ukMOlU
+         UQqQSWepCmILk+DycLz7OmhUHjtcxYfzgX88oYN4VKOeIccVUvUjclqFeRPH0HI1X1Ib
+         DiYUtd7Mg0AsKZmQCi4Kfd/jsqbctH+HmeQCte8SnHCxKl0GVUp/OrFH6HSKqNJ40qUj
+         jwwjtF9ILIWOC4cOsBqqn+fJnfXj6U2B2VKAC5eYezCI5/y89fuw2PqyWee/OX+NSeRP
+         vOOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tMVgTeO03AHhfaOSmS4teYNEJZSWM7hPB1HU15pX36k=;
-        b=egukhaJCZbzADRjz3KMoLlEI+15QG13kr9i4hJ968eG8L6PnbQJeEkvMa0Zo8q3j6m
-         EGthe8PMUQQ3azsRvONMcBjccZhVEJZijkv8twYsAdme4RIGmedZ0TXbTV4Ew5iKGusr
-         wSF91R1IiTWK6xjAyWKFWFrfH86pHI+n4595a8B9KVUxNYUC7zgfzPwPIcZ1OtyjYSfg
-         9VRVYTQdOj44t/L8fmMard+Xu4bLWNFBfLU6uK7L5ROYyJQsRcMeMAYSceZrq7nEe70O
-         1rfIFV4cpi893f6EWwTJPuwLOAs9TuRvEYVdKWfcLpkYi+HEI3iDRNJJ1z4P0y6N+W0I
-         fqOA==
-X-Gm-Message-State: AOAM5307gMIOPHWZpWjsDqZ8xLfr08aWT+0mqPzQvf1/Fa21e9j8Qt7l
-        lNqeC2qPVeXqsAgS7rJi2saAEQ==
-X-Google-Smtp-Source: ABdhPJzyw6FRZRnhPaXyj5fKgnv9UjDJ2IPRJKrRiF/jQm3EgOpM1u2p5SXBCxI6KRvHok2ByHZ0Qg==
-X-Received: by 2002:a1c:61c5:: with SMTP id v188mr3597306wmb.141.1606400168632;
-        Thu, 26 Nov 2020 06:16:08 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:193b:ad82:52ad:936c])
-        by smtp.gmail.com with ESMTPSA id q16sm9286079wrn.13.2020.11.26.06.16.06
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :mime-version:content-transfer-encoding:date:message-id;
+        bh=R6BrEWkteQvQbjsApcd3N42+tWQEuLbo/lT+UxHp8d0=;
+        b=R/cOhOX0joX8pVCB02Vct7S9nRRpdux5QwLqoFn6x3klpwuWWaJA3vx5LYu9VzmF/H
+         U+YFSQUkshwAo+J93iITEBS50oYDLne2jQ228tISDwGHgalrp3CwNfJ5mjxUt9faEjNA
+         ysarBfToTzqYaLXONYaBwqRW6AB29cWFeU9i2gQh7tsRcN3Uemd53ATEkdmz/s5S7FGX
+         o66r2iOgwBfPJdBWJRzetjb2aQ1qC/vODdQqY8fiSEex93mu2g9xXtM4N9vHhB52eXx3
+         iqNNXxVAhzP/IRYWhUBrwucBYKw76in/ujYMVx/YNzbAU0/Qxp32yf+mV5icB7UyPkN3
+         RUdw==
+X-Gm-Message-State: AOAM5303g646m9vk+xoaM7SNWEAtlgtngBEymm2j/GZZB+EMvuj8qrE9
+        muWxfWFXxBtg0p5o5tqBqwr5UIg7YHbyGQ==
+X-Google-Smtp-Source: ABdhPJwZ/+zR5x35WU+uEgCh82/pnPI/abEvdP00dApAKd2rCmA1RycQJmvoYAGMDMunLbg45q8nnQ==
+X-Received: by 2002:a37:5444:: with SMTP id i65mr1818763qkb.263.1606400290743;
+        Thu, 26 Nov 2020 06:18:10 -0800 (PST)
+Received: from turing-police ([2601:5c0:c380:d61::359])
+        by smtp.gmail.com with ESMTPSA id n125sm2636977qkd.85.2020.11.26.06.18.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 06:16:07 -0800 (PST)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     jbrunet@baylibre.com
-Cc:     linux-clk@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v2 2/2] clk: meson: g12a: add MIPI DSI Host Pixel Clock
-Date:   Thu, 26 Nov 2020 15:16:00 +0100
-Message-Id: <20201126141600.2084586-3-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201126141600.2084586-1-narmstrong@baylibre.com>
-References: <20201126141600.2084586-1-narmstrong@baylibre.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 26 Nov 2020 06:18:09 -0800 (PST)
+Sender: Valdis Kletnieks <valdis@vt.edu>
+From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-arm-kernel@lists.infradead.org, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: linux-next 20201126 - build error on arm allmodconfig
+In-Reply-To: <20201126141429.GL1551@shell.armlinux.org.uk>
+References: <24105.1606397102@turing-police>
+ <20201126141429.GL1551@shell.armlinux.org.uk>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="==_Exmh_1606400287_2385P";
+         micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 26 Nov 2020 09:18:08 -0500
+Message-ID: <27841.1606400288@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the MIPI DSI Host Pixel Clock, unlike AXG, the pixel clock can be different
-from the VPU ENCL output clock to feed the DSI Host controller with a different clock rate.
+--==_Exmh_1606400287_2385P
+Content-Type: text/plain; charset=us-ascii
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- drivers/clk/meson/g12a.c | 74 ++++++++++++++++++++++++++++++++++++++++
- drivers/clk/meson/g12a.h |  3 +-
- 2 files changed, 76 insertions(+), 1 deletion(-)
+On Thu, 26 Nov 2020 14:14:29 +0000, Russell King - ARM Linux admin said:
 
-diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-index 3cb8196c8e29..b080359b4645 100644
---- a/drivers/clk/meson/g12a.c
-+++ b/drivers/clk/meson/g12a.c
-@@ -3658,6 +3658,68 @@ static struct clk_regmap g12a_hdmi_tx = {
- 	},
- };
- 
-+/* MIPI DSI Host Clocks */
-+
-+static const struct clk_hw *g12a_mipi_dsi_pxclk_parent_hws[] = {
-+	&g12a_vid_pll.hw,
-+	&g12a_gp0_pll.hw,
-+	&g12a_hifi_pll.hw,
-+	&g12a_mpll1.hw,
-+	&g12a_fclk_div2.hw,
-+	&g12a_fclk_div2p5.hw,
-+	&g12a_fclk_div3.hw,
-+	&g12a_fclk_div7.hw,
-+};
-+
-+static struct clk_regmap g12a_mipi_dsi_pxclk_sel = {
-+	.data = &(struct clk_regmap_mux_data){
-+		.offset = HHI_MIPIDSI_PHY_CLK_CNTL,
-+		.mask = 0x7,
-+		.shift = 12,
-+		.flags = CLK_MUX_ROUND_CLOSEST,
-+	},
-+	.hw.init = &(struct clk_init_data){
-+		.name = "mipi_dsi_pxclk_sel",
-+		.ops = &clk_regmap_mux_ops,
-+		.parent_hws = g12a_mipi_dsi_pxclk_parent_hws,
-+		.num_parents = ARRAY_SIZE(g12a_mipi_dsi_pxclk_parent_hws),
-+		.flags = CLK_SET_RATE_NO_REPARENT,
-+	},
-+};
-+
-+static struct clk_regmap g12a_mipi_dsi_pxclk_div = {
-+	.data = &(struct clk_regmap_div_data){
-+		.offset = HHI_MIPIDSI_PHY_CLK_CNTL,
-+		.shift = 0,
-+		.width = 7,
-+	},
-+	.hw.init = &(struct clk_init_data){
-+		.name = "mipi_dsi_pxclk_div",
-+		.ops = &clk_regmap_divider_ops,
-+		.parent_hws = (const struct clk_hw *[]) {
-+			&g12a_mipi_dsi_pxclk_sel.hw
-+		},
-+		.num_parents = 1,
-+		.flags = CLK_SET_RATE_PARENT,
-+	},
-+};
-+
-+static struct clk_regmap g12a_mipi_dsi_pxclk = {
-+	.data = &(struct clk_regmap_gate_data){
-+		.offset = HHI_MIPIDSI_PHY_CLK_CNTL,
-+		.bit_idx = 8,
-+	},
-+	.hw.init = &(struct clk_init_data) {
-+		.name = "mipi_dsi_pxclk",
-+		.ops = &clk_regmap_gate_ops,
-+		.parent_hws = (const struct clk_hw *[]) {
-+			&g12a_mipi_dsi_pxclk_div.hw
-+		},
-+		.num_parents = 1,
-+		.flags = CLK_SET_RATE_PARENT,
-+	},
-+};
-+
- /* HDMI Clocks */
- 
- static const struct clk_parent_data g12a_hdmi_parent_data[] = {
-@@ -4403,6 +4465,9 @@ static struct clk_hw_onecell_data g12a_hw_onecell_data = {
- 		[CLKID_SPICC1_SCLK_SEL]		= &g12a_spicc1_sclk_sel.hw,
- 		[CLKID_SPICC1_SCLK_DIV]		= &g12a_spicc1_sclk_div.hw,
- 		[CLKID_SPICC1_SCLK]		= &g12a_spicc1_sclk.hw,
-+		[CLKID_MIPI_DSI_PXCLK_SEL]	= &g12a_mipi_dsi_pxclk_sel.hw,
-+		[CLKID_MIPI_DSI_PXCLK_DIV]	= &g12a_mipi_dsi_pxclk_div.hw,
-+		[CLKID_MIPI_DSI_PXCLK]		= &g12a_mipi_dsi_pxclk.hw,
- 		[NR_CLKS]			= NULL,
- 	},
- 	.num = NR_CLKS,
-@@ -4658,6 +4723,9 @@ static struct clk_hw_onecell_data g12b_hw_onecell_data = {
- 		[CLKID_SPICC1_SCLK_SEL]		= &g12a_spicc1_sclk_sel.hw,
- 		[CLKID_SPICC1_SCLK_DIV]		= &g12a_spicc1_sclk_div.hw,
- 		[CLKID_SPICC1_SCLK]		= &g12a_spicc1_sclk.hw,
-+		[CLKID_MIPI_DSI_PXCLK_SEL]	= &g12a_mipi_dsi_pxclk_sel.hw,
-+		[CLKID_MIPI_DSI_PXCLK_DIV]	= &g12a_mipi_dsi_pxclk_div.hw,
-+		[CLKID_MIPI_DSI_PXCLK]		= &g12a_mipi_dsi_pxclk.hw,
- 		[NR_CLKS]			= NULL,
- 	},
- 	.num = NR_CLKS,
-@@ -4904,6 +4972,9 @@ static struct clk_hw_onecell_data sm1_hw_onecell_data = {
- 		[CLKID_NNA_CORE_CLK_SEL]	= &sm1_nna_core_clk_sel.hw,
- 		[CLKID_NNA_CORE_CLK_DIV]	= &sm1_nna_core_clk_div.hw,
- 		[CLKID_NNA_CORE_CLK]		= &sm1_nna_core_clk.hw,
-+		[CLKID_MIPI_DSI_PXCLK_SEL]	= &g12a_mipi_dsi_pxclk_sel.hw,
-+		[CLKID_MIPI_DSI_PXCLK_DIV]	= &g12a_mipi_dsi_pxclk_div.hw,
-+		[CLKID_MIPI_DSI_PXCLK]		= &g12a_mipi_dsi_pxclk.hw,
- 		[NR_CLKS]			= NULL,
- 	},
- 	.num = NR_CLKS,
-@@ -5151,6 +5222,9 @@ static struct clk_regmap *const g12a_clk_regmaps[] = {
- 	&sm1_nna_core_clk_sel,
- 	&sm1_nna_core_clk_div,
- 	&sm1_nna_core_clk,
-+	&g12a_mipi_dsi_pxclk_sel,
-+	&g12a_mipi_dsi_pxclk_div,
-+	&g12a_mipi_dsi_pxclk,
- };
- 
- static const struct reg_sequence g12a_init_regs[] = {
-diff --git a/drivers/clk/meson/g12a.h b/drivers/clk/meson/g12a.h
-index 69b6a69549c7..a97613df38b3 100644
---- a/drivers/clk/meson/g12a.h
-+++ b/drivers/clk/meson/g12a.h
-@@ -264,8 +264,9 @@
- #define CLKID_NNA_AXI_CLK_DIV			263
- #define CLKID_NNA_CORE_CLK_SEL			265
- #define CLKID_NNA_CORE_CLK_DIV			266
-+#define CLKID_MIPI_DSI_PXCLK_DIV		268
- 
--#define NR_CLKS					268
-+#define NR_CLKS					271
- 
- /* include the CLKIDs that have been made part of the DT binding */
- #include <dt-bindings/clock/g12a-clkc.h>
--- 
-2.25.1
+> The real answer is for asm/kasan.h to include linux/linkage.h
 
+OK... I'll cook up the patch.
+
+--==_Exmh_1606400287_2385P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Exmh version 2.9.0 11/07/2018
+
+iQIVAwUBX7+5HwdmEQWDXROgAQJMKA//eov2gfD2DBYzF0uuV+ihRR8rhFilRQYh
+5/GbflGzyksBKdpX3muKRi4MCJ/6TTvBAJmwcXUNtxCdV9Bv+OR49BmAdouPT5My
+3+SA8KPA6Gx4kzBsYHF9TXRfqPT0ocB48rLdr2Nl9UiCXgcRu7Cchc9slJJfQ5gJ
+Cst8Iw1QMm2T4Ez4BOyz4Mb7qaCz0obRz1OSmZCN00NKAdBxwtd2h87wFCbIRnB2
+1X0jZXAj/rZ5tFPFNIzR9DWHxV+WbLlBHehSdpp/xrS/1G0t28lrKd4AKoXzKEpK
+BiAmQr3WTLok25FS6OUkcRBF1PKOEcAac5GxPhafnHvZxVIPgz9C1JZ0meJb5adj
+S6Q7br2Rldsc7Ug9jJdGi3o6ns2gjjKQTY2nSRrAkySBtv+zgxgX7tjiQHSCJQm8
+GUFnGSdWX7ht9OUrUUaAKBjo9kqDIhHQTNGWLe/iNmGkoYjYDihqolATHbWE6r3v
+pAbzTKc5phxnByP/R4MhubaBQZwkguNafOuqtPpiMI74rzeUMSHfeRb3e/ku2BJV
+pIALKrQqKA4QXrGgwpsclW+zv4zkeV0tc7gVQv6uZqwHU2a1UIi7Q4Nzv+IWhaww
+XrCD7RUUL8RuJGshi/4L1JDG4JUrJJVVKDhhQxOMvVnkQmfDtcXjBtqWaZp6p73L
+93xqF71a4Lc=
+=nqtk
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1606400287_2385P--
