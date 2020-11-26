@@ -2,101 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121A02C55EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 385F62C55E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390562AbgKZNjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:39:10 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:27346 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390375AbgKZNjH (ORCPT
+        id S2390294AbgKZNi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:38:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390090AbgKZNi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:39:07 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AQDc0QT027460;
-        Thu, 26 Nov 2020 14:38:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type : content-id :
- content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=Ci0rfkR7gx5y/cceBVVjShRgXinep4d4vbCk1y7YzFg=;
- b=LHziUzA7/yM4LYU8lvCaQdryQ1AuLjv3vlA4ZdI25aty5dkAmLHjvtLTGyOwUiAb+xy8
- 6VYlloF1bMP/kZz21b8uLwf+lmC3gq5QiRfgen3ub32gB1t4FIvVmBGPGPYnxfI34ZTa
- PPldafW1yl8YI3rhkK2UBSKXwqdLOJRxYCSNqv3pwo1EQ+smjFzPqqr9d8mJTv8YsYDc
- ULJarnkYfr4YIVGxwNgNGBmgWAGeUKnhQangz5pqZMpLw2O06ccDlqMEchpu8pnqaRYj
- jhZ/GMFAeqnDg+WeuQBOx/9J7lgHuXCk6qm4dftmdU68cF2X8Ud7JWmjAhT82m+DZ+tW Kg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34y0hjqsbb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Nov 2020 14:38:41 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 13517100034;
-        Thu, 26 Nov 2020 14:38:40 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E6E5424BAA2;
-        Thu, 26 Nov 2020 14:38:39 +0100 (CET)
-Received: from SFHDAG2NODE2.st.com (10.75.127.5) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
- 2020 14:38:39 +0100
-Received: from SFHDAG2NODE2.st.com ([fe80::14c2:73ff:db87:a27b]) by
- SFHDAG2NODE2.st.com ([fe80::14c2:73ff:db87:a27b%20]) with mapi id
- 15.00.1473.003; Thu, 26 Nov 2020 14:38:39 +0100
-From:   Olivier MOYSAN <olivier.moysan@st.com>
-To:     Alexandre TORGUE <alexandre.torgue@st.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "olof@lixom.net" <olof@lixom.net>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "geert+renesas@glider.be" <geert+renesas@glider.be>,
-        Amelie DELAUNAY <amelie.delaunay@st.com>,
-        "aisheng.dong@nxp.com" <aisheng.dong@nxp.com>,
-        "prabhakar.mahadev-lad.rj@bp.renesas.com" 
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "christian.gmeiner@gmail.com" <christian.gmeiner@gmail.com>,
-        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
-        Lionel DEBIEVE <lionel.debieve@st.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/2] ARM: multi_v7_defconfig: enable dfsdm and spdifrx
- support
-Thread-Topic: [PATCH v2 0/2] ARM: multi_v7_defconfig: enable dfsdm and spdifrx
- support
-Thread-Index: AQHWvx2lhaOQuG0c5kabN1zxgD24ranaPqOAgAAlQgA=
-Date:   Thu, 26 Nov 2020 13:38:39 +0000
-Message-ID: <5bec2267-5ce6-87c3-38bd-a00f5b124a7a@st.com>
-References: <20201120091506.18326-1-olivier.moysan@st.com>
- <c80be2f8-8568-1dae-df31-1134ccea759a@st.com>
-In-Reply-To: <c80be2f8-8568-1dae-df31-1134ccea759a@st.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.49]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E6873B9CFF1C9A49A22286B6A2DA3922@st.com>
-Content-Transfer-Encoding: base64
+        Thu, 26 Nov 2020 08:38:58 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C301C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:38:58 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id a186so2188466wme.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:38:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eLYy9GrW221tE7bgw0J/86UTqSktvqRhGJxBlLeC3CQ=;
+        b=l8uEDUWZzvTPhQEmHkZEDzGn+Iktals9WkH8ixtmNOmOetN+vKndogKyVo59zGXYLz
+         XRXvLUk5/+I04WWy7FCL0sLq4G94vw7QdXKfevLaySsnixEVKYZjC38zOVHNwqTkRYLN
+         La8EC6Kxt6FBWP9D25iK6dlCY0QSnmFPjI0JmdW+T/tdAWhzrLYaOiJHbt1NLSwEkhEx
+         Y5DRG1yTcLpH7SVmPZVFWQDYEG3aMUf+bQ4cF2ARtkMOy6ywbUIdkC/0GkwZWXKV+ZrI
+         GJxdb71yq3kNI4ucwGOAP83wwCKHEcGCH1dgmfnG+q6ylSw4bmYBixyYObvyjE2aYJuI
+         JqmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eLYy9GrW221tE7bgw0J/86UTqSktvqRhGJxBlLeC3CQ=;
+        b=lNQN1VU7GKVaKmub9f/+SHD9DCJYjYIYCA56vc8/eIYdt56tLYA/r8Gi2s+byJj5FL
+         pkeuy7b6u9LAbu7+s6XX78B/IvUujXVFH+FZ0VCTyxkP770Z5PhPO5BFsNUYhlWPf6ca
+         9PV9OPFroSDdcPEc6J2ZrTmhPHpi5TXIUYQQTC0N8XM3578sFvnv2Z5W9ipWVPxA09vC
+         iSWX52V2qhCjxnuKIbov0pJ71kkPSoVS1gZ4x+OnnOnAKV4zCDa7yyPjrvpMW2+2LO3w
+         jDS8Ct+yYFJBabNqdDkopUjPjs3rkTvfclQgCibOa+KsebuizHcsboGdV1L8lOIDxtKX
+         C0zw==
+X-Gm-Message-State: AOAM5300e5ZXDuwM/dcsR+U3S2mhBoXoZLDNb8f+Fzjz+ONr+FVsfs/Z
+        Oeo7RLqtnswqvtpWaHXJNGNgNxivvWFpTzZt
+X-Google-Smtp-Source: ABdhPJyX27kWdIdFacrNhU+B2wpKeoJmDR9OAO7qJiUZ6oA3MPy3XKvt03Krjrfl2kApfFtGjVazXw==
+X-Received: by 2002:a1c:dc82:: with SMTP id t124mr3481528wmg.94.1606397937237;
+        Thu, 26 Nov 2020 05:38:57 -0800 (PST)
+Received: from dell.default ([91.110.221.235])
+        by smtp.gmail.com with ESMTPSA id s133sm7035825wmf.38.2020.11.26.05.38.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 05:38:56 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Dany Madden <drt@linux.ibm.com>,
+        Daris A Nevil <dnevil@snmc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Erik Stahlman <erik@vt.edu>,
+        Geoff Levand <geoff@infradead.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Allen <jallen@linux.vnet.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Lijun Pan <ljp@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org,
+        Nicolas Pitre <nico@fluxnic.net>, Paul Durrant <paul@xen.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Cammaert <pc@denkart.be>,
+        Russell King <rmk@arm.linux.org.uk>,
+        Rusty Russell <rusty@rustcorp.com.au>,
+        Santiago Leon <santi_leon@yahoo.com>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
+        Utz Bacher <utz.bacher@de.ibm.com>,
+        Wei Liu <wei.liu@kernel.org>, xen-devel@lists.xenproject.org
+Subject: [PATCH 0/8] Rid W=1 warnings in Net
+Date:   Thu, 26 Nov 2020 13:38:45 +0000
+Message-Id: <20201126133853.3213268-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-26_04:2020-11-26,2020-11-26 signatures=0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWxleA0KDQpPbiAxMS8yNi8yMCAxMjoyNSBQTSwgQWxleGFuZHJlIFRvcmd1ZSB3cm90ZToN
-Cj4gSGkgT2xpdmllcg0KPiANCj4gT24gMTEvMjAvMjAgMTA6MTUgQU0sIE9saXZpZXIgTW95c2Fu
-IHdyb3RlOg0KPj4gQWRkIFNUTTMyIFNQRElGUlggYW5kIERGU0RNIGF1ZGlvIHN1cHBvcnQgdG8g
-bXVsdGlfdjdfZGVmY29uZmlnDQo+Pg0KPj4gQ2hhbmdlIGluIHYyOg0KPj4gLSBBZGQgdGFyZ2V0
-ZWQgU29DIGluIGNvbW1pdCBtZXNzYWdlIGZvciBERlNETSBjb25maWcNCj4+DQo+PiBPbGl2aWVy
-IE1veXNhbiAoMik6DQo+PiDCoMKgIEFSTTogbXVsdGlfdjdfZGVmY29uZmlnOiBlbmFibGUgc3Bk
-aWZyeCBzdXBwb3J0DQo+PiDCoMKgIEFSTTogbXVsdGlfdjdfZGVmY29uZmlnOiBlbmFibGUgZGZz
-ZG0gYXVkaW8gc3VwcG9ydA0KPj4NCj4+IMKgIGFyY2gvYXJtL2NvbmZpZ3MvbXVsdGlfdjdfZGVm
-Y29uZmlnIHwgMiArKw0KPj4gwqAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQ0KPj4N
-Cj4gDQo+IFRhcmdldGVkIHBsYXRmb3JtIChTVE0zMikgc2hvdWxkIGJlIGFkZGVkIGluIHRoZSBj
-b21taXQgdGl0bGUgZm9yIGJvdGggDQo+IHBhdGNoZXMgYXMgeW91IGVuYWJsZSBTVE0zMiBkZnNk
-bSBhbmQgU1RNMzIgc3BkaWZyeCBzdXBwb3J0LiBObyA/DQo+IA0KPiBJZiB5b3UgYWdyZWUsIEkn
-bGwgYWRkIGl0IGR1cmluZyBtZXJnZS4gTm8gbmVlZCB0byBzZW5kIGEgdjMuDQo+IA0KPiBSZWdh
-cmRzDQo+IEFsZXgNCg0KSXQncyBva2F5IGZvciBtZS4NCg0KQlJzDQpPbGl2aWVy
+Resending the stragglers.
+
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
+
+Lee Jones (8):
+  net: ethernet: smsc: smc91x: Demote non-conformant kernel function
+    header
+  net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+  net: ethernet: ti: am65-cpsw-qos: Demote non-conformant function
+    header
+  net: ethernet: ti: am65-cpts: Document am65_cpts_rx_enable()'s 'en'
+    parameter
+  net: ethernet: ibm: ibmvnic: Fix some kernel-doc misdemeanours
+  net: ethernet: toshiba: ps3_gelic_net: Fix some kernel-doc
+    misdemeanours
+  net: ethernet: toshiba: spider_net: Document a whole bunch of function
+    parameters
+  net: ethernet: ibm: ibmvnic: Fix some kernel-doc issues
+
+ drivers/net/ethernet/ibm/ibmvnic.c           | 27 ++++++++++----------
+ drivers/net/ethernet/smsc/smc91x.c           |  2 +-
+ drivers/net/ethernet/ti/am65-cpsw-qos.c      |  2 +-
+ drivers/net/ethernet/ti/am65-cpts.c          |  2 +-
+ drivers/net/ethernet/toshiba/ps3_gelic_net.c |  9 ++++---
+ drivers/net/ethernet/toshiba/spider_net.c    | 18 ++++++++-----
+ drivers/net/xen-netback/xenbus.c             |  4 +--
+ drivers/net/xen-netfront.c                   |  6 ++---
+ 8 files changed, 37 insertions(+), 33 deletions(-)
+
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: bpf@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Dany Madden <drt@linux.ibm.com>
+Cc: Daris A Nevil <dnevil@snmc.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Erik Stahlman <erik@vt.edu>
+Cc: Geoff Levand <geoff@infradead.org>
+Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Ishizaki Kou <kou.ishizaki@toshiba.co.jp>
+Cc: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jens Osterkamp <Jens.Osterkamp@de.ibm.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: John Allen <jallen@linux.vnet.ibm.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Kurt Kanzenbach <kurt@linutronix.de>
+Cc: Lijun Pan <ljp@linux.ibm.com>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: netdev@vger.kernel.org
+Cc: Nicolas Pitre <nico@fluxnic.net>
+Cc: Paul Durrant <paul@xen.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Peter Cammaert <pc@denkart.be>
+Cc: Russell King <rmk@arm.linux.org.uk>
+Cc: Rusty Russell <rusty@rustcorp.com.au>
+Cc: Santiago Leon <santi_leon@yahoo.com>
+Cc: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Cc: Thomas Falcon <tlfalcon@linux.vnet.ibm.com>
+Cc: Utz Bacher <utz.bacher@de.ibm.com>
+Cc: Wei Liu <wei.liu@kernel.org>
+Cc: xen-devel@lists.xenproject.org
+-- 
+2.25.1
+
