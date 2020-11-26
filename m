@@ -2,166 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AB62C5754
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B18B82C576A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391159AbgKZOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:47:27 -0500
-Received: from mga06.intel.com ([134.134.136.31]:21356 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390791AbgKZOr0 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:47:26 -0500
-IronPort-SDR: 9OTxOvQy8YX6HC239ylqHr41GsiQQpxl97l9kAUU8G9oIPpnJBce91ZOGwzC+q1Gbi7UiB0MVJ
- 3Qji7P+Gr/Eg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="233896910"
-X-IronPort-AV: E=Sophos;i="5.78,372,1599548400"; 
-   d="scan'208";a="233896910"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 06:47:25 -0800
-IronPort-SDR: XPauXJs9zmHbfOZknqA7ZOCOM9iBy9yfZPOl5Fa4dd5HnY01dJjGtfOgiJICA19WpOb+dAddz5
- 2sd+e+24iy7A==
-X-IronPort-AV: E=Sophos;i="5.78,372,1599548400"; 
-   d="scan'208";a="547740730"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.254.211.14]) ([10.254.211.14])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 06:47:21 -0800
-Subject: Re: [PATCH] perf script: Fix overrun issue for dynamically-allocated
- pmu type number
-To:     Adrian Hunter <adrian.hunter@intel.com>, acme@kernel.org,
-        jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20201126032425.19226-1-yao.jin@linux.intel.com>
- <e72c243b-a50f-510b-5e21-10c3a38176db@intel.com>
- <8509ed3b-378f-5ee0-5a3e-bbd8cb9d86c4@linux.intel.com>
- <2f48d37f-d7d5-8e61-0894-44b57b61cd88@intel.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <9e2e2552-ac94-96e6-9a34-90c9252d419e@linux.intel.com>
-Date:   Thu, 26 Nov 2020 22:47:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2391068AbgKZOuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:50:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39143 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728017AbgKZOuF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 09:50:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606402204;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=SVVxBNARCD8CQXWqDsuH/lbOEODOsgmpqioxX0mWgfM=;
+        b=VM+EhKs8lnazn+xMSFcm1A+T/3qI/TM/8c6ZnXeNVmdrcsGkfOUjDrr6XT/EevpHHWNczc
+        j1/8V2FFzKelYODnoWud6L2kjSBqC+/TyJ1uDTk8Pj/PfoIs8KvngNcn+Xgj4KzvFQ/PlZ
+        lkwHL/9fAsJo3tiQpH5Shp5cjaIe/lw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-awRmv38SP1ms0WxvC9UiGg-1; Thu, 26 Nov 2020 09:50:01 -0500
+X-MC-Unique: awRmv38SP1ms0WxvC9UiGg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 788759A229;
+        Thu, 26 Nov 2020 14:49:59 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-113-252.ams2.redhat.com [10.36.113.252])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6FB2B19C66;
+        Thu, 26 Nov 2020 14:49:51 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>
+Subject: [PATCH v2 00/17] vdpa: generalize vdpa simulator
+Date:   Thu, 26 Nov 2020 15:49:33 +0100
+Message-Id: <20201126144950.92850-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <2f48d37f-d7d5-8e61-0894-44b57b61cd88@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
+This series moves the network device simulator in a new module
+(vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
+module, allowing the possibility to add new vDPA device simulators.
 
-On 11/26/2020 4:36 PM, Adrian Hunter wrote:
-> On 26/11/20 9:06 am, Jin, Yao wrote:
->> Hi Adrian,
->>
->> On 11/26/2020 2:51 PM, Adrian Hunter wrote:
->>> On 26/11/20 5:24 am, Jin Yao wrote:
->>>> When unpacking the event which is from dynamic pmu, the array
->>>> output[OUTPUT_TYPE_MAX] may be overrun. For example, type number of
->>>> SKL uncore_imc is 10, but OUTPUT_TYPE_MAX is 7 now (OUTPUT_TYPE_MAX =
->>>> PERF_TYPE_MAX + 1).
->>>>
->>>> /* In builtin-script.c */
->>>> process_event()
->>>> {
->>>>      unsigned int type = output_type(attr->type);
->>>>
->>>>      if (output[type].fields == 0)
->>>>          return;
->>>> }
->>>>
->>>> output[10] is overrun.
->>>>
->>>> Create a type OUTPUT_TYPE_OTHER for dynamic pmu events, then
->>>> output_type(attr->type) will return OUTPUT_TYPE_OTHER here.
->>>>
->>>> Note that if PERF_TYPE_MAX ever changed, then there would be a conflict
->>>> between old perf.data files that had a dynamicaliy allocated PMU number
->>>> that would then be the same as a fixed PERF_TYPE.
->>>>
->>>> Example:
->>>>
->>>> perf record --switch-events -C 0 -e
->>>> "{cpu-clock,uncore_imc/data_reads/,uncore_imc/data_writes/}:SD" -a --
->>>> sleep 1
->>>> perf script
->>>>
->>>> Before:
->>>>            swapper     0 [000] 1479253.987551:     277766
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1479253.987797:     246709
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1479253.988127:     329883
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1479253.988273:     146393
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1479253.988523:     249977
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1479253.988877:     354090
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1479253.989023:     145940
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1479253.989383:     359856
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1479253.989523:     140082
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>
->>>> After:
->>>>            swapper     0 [000] 1397040.402011:     272384
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1397040.402011:       5396
->>>> uncore_imc/data_reads/:
->>>>            swapper     0 [000] 1397040.402011:        967
->>>> uncore_imc/data_writes/:
->>>>            swapper     0 [000] 1397040.402259:     249153
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1397040.402259:       7231
->>>> uncore_imc/data_reads/:
->>>>            swapper     0 [000] 1397040.402259:       1297
->>>> uncore_imc/data_writes/:
->>>>            swapper     0 [000] 1397040.402508:     249108
->>>> cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>>>            swapper     0 [000] 1397040.402508:       5333
->>>> uncore_imc/data_reads/:
->>>>            swapper     0 [000] 1397040.402508:       1008
->>>> uncore_imc/data_writes/:
->>>>
->>>> Fixes: 1405720d4f26 ("perf script: Add 'synth' event type for synthesized
->>>> events")
->>>
->>> It does not look to me like the problem was introduced by that commit.  Are
->>> you sure this Fixes tag is correct?
->>>
->>
->> Commit 1405720d4f26 added the change:
->>
->> @@ -1215,8 +1253,9 @@ static void process_event(struct perf_script *script,
->>   {
->>          struct thread *thread = al->thread;
->>          struct perf_event_attr *attr = &evsel->attr;
->> +       unsigned int type = output_type(attr->type);
->>
->> -       if (output[attr->type].fields == 0)
->> +       if (output[type].fields == 0)
->>                  return;
-> 
-> That is a nop if attr->type != PERF_TYPE_SYNTH
-> Given that PERF_TYPE_SYNTH is (INT_MAX + 1), it is a nop for all kernel
-> dynamically allocated PMU numbers.
-> 
->>
->> But of course, we can also say the original "output[attr->type].fields"
->> introduced the issue, I'm not sure. Maybe Arnaldo can help to make the
->> decision. :)
-> 
-> I think perf script has always had this problem.
-> 
+For now I removed the vdpa-blk simulator patches, since I'm still working
+on them and debugging the iotlb issues.
 
-Since perf-script has always had this problem, I'm OK to remove the fixes tag from the patch 
-description.
+Thanks to Max that started this work! I took his patches and extended a bit.
 
-Thanks
-Jin Yao
+As Jason suggested, I simplified the "vdpa: split vdpasim to core and
+net modules" patch, moving some changes out in small patches.
+@Max: I put your Co-developed-by and Signed-off-by tags on these patches,
+let me know if it is okay for you, or if there is a better way to give
+credit to your work!
+
+v1: https://lists.linuxfoundation.org/pipermail/virtualization/2020-November/050677.html
+
+v2:
+  - moved most of the patches before the vdpa-core/net split [Jason]
+  - removed unnecessary headers
+  - removed 'default n' in Kconfig entries [Jason]
+  - added VDPASIM_IOTLB_LIMIT macro [Jason]
+  - set vringh notify callback [Jason]
+  - used VIRTIO terminology for in_iov/out_iov [Stefan]
+  - simplified "vdpa: split vdpasim to core and net modules" patch,
+    moving some changes out in small patches
+  - left batch_mapping module parameter in the core [Jason]
+
+Max Gurtovoy (2):
+  vdpa_sim: remove hard-coded virtq count
+  vdpa: split vdpasim to core and net modules
+
+Stefano Garzarella (15):
+  vdpa: remove unnecessary 'default n' in Kconfig entries
+  vdpa_sim: remove unnecessary headers inclusion
+  vdpa_sim: remove the limit of IOTLB entries
+  vdpa_sim: rename vdpasim_config_ops variables
+  vdpa_sim: add struct vdpasim_dev_attr for device attributes
+  vdpa_sim: add device id field in vdpasim_dev_attr
+  vdpa_sim: add supported_features field in vdpasim_dev_attr
+  vdpa_sim: add work_fn in vdpasim_dev_attr
+  vdpa_sim: store parsed MAC address in a buffer
+  vdpa_sim: make 'config' generic and usable for any device type
+  vdpa_sim: add get_config callback in vdpasim_dev_attr
+  vdpa_sim: set vringh notify callback
+  vdpa_sim: use kvmalloc to allocate vdpasim->buffer
+  vdpa_sim: make vdpasim->buffer size configurable
+  vdpa_sim: split vdpasim_virtqueue's iov field in out_iov and in_iov
+
+ drivers/vdpa/vdpa_sim/vdpa_sim.h     | 103 ++++++++++
+ drivers/vdpa/vdpa_sim/vdpa_sim.c     | 290 +++++++--------------------
+ drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 171 ++++++++++++++++
+ drivers/vdpa/Kconfig                 |  16 +-
+ drivers/vdpa/vdpa_sim/Makefile       |   1 +
+ 5 files changed, 351 insertions(+), 230 deletions(-)
+ create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim.h
+ create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+
+-- 
+2.26.2
+
