@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6B22C5AA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A31732C5AB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391668AbgKZRet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 12:34:49 -0500
-Received: from foss.arm.com ([217.140.110.172]:41564 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726677AbgKZRet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:34:49 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D73D31B;
-        Thu, 26 Nov 2020 09:34:48 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C9993F23F;
-        Thu, 26 Nov 2020 09:34:46 -0800 (PST)
-Date:   Thu, 26 Nov 2020 17:34:40 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 02/23] psci: Accessor for configured PSCI function IDs
-Message-ID: <20201126173440.GA21563@e121166-lin.cambridge.arm.com>
-References: <20201126155421.14901-1-dbrazdil@google.com>
- <20201126155421.14901-3-dbrazdil@google.com>
+        id S2391682AbgKZRfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:35:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391674AbgKZRfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 12:35:38 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F284EC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:35:37 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id t143so2990503oif.10
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:35:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gOY/HezNek0HUVN6eUm3quDyWmYoOFo+0d2VCWNsFOQ=;
+        b=uyts//qgDq6NIdz41iSPmW0NCMxG4s7vPE2JLlimI8k9Dta7Lp8XN3VJlMbLFtrINE
+         ro3BRSTRMv8Umr3glOZq7WmCg6G9Mz1RUKqmM89Rmar/e78MeFdctXcDlc1ZAhFFjdLb
+         7Jpkw0WgJOjL9h0qCLWS3Q8yAnWkuFza2aGB86HqlDhpyMfFFen/5YzijCvoCFHHzAj9
+         RZ69xF5KjNsRdPkxSoNygXNdaYH/1Kfm9D7iozMjiT1iO4NflgDrIwbbUD5EHy43f8LP
+         hndzJaxF4dK4CfHiTWjBHhtT8KvAx3h6t9woa85EBeKLkVa1tyNeLy5aBve1xDhEtYo9
+         +yAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gOY/HezNek0HUVN6eUm3quDyWmYoOFo+0d2VCWNsFOQ=;
+        b=l/C/cA964SRPuGBdwqLoQZsfYCgN7TS54Y5zYfUImVGf9FpL7w6fIaHkRFKdcM/RyV
+         ZSyi7+tAWo0lLj4m9ArpVE5CY/6foi2NU6I2gZxC8MwJ0XF476GEzAq3KQzSQVGxkb3j
+         1GUUPEGaZZgLgJbARu6JkIbQu5DVlsm+SgM8x7xelTFMFqZxCa+FJmLZGTn8X1XhpyWJ
+         VfXCnvzhMXsgQpEwAPs+CFBbW/++J7yW6sO7rrx5hj6qgKnMuvuptLF8/q5SlENQevnr
+         j994SGQOGTOQsiyFycl72wAa3xsBNS4Bt/J/r1RyUt/GUA2t+ttotj81Riffg85JyU8F
+         v4KA==
+X-Gm-Message-State: AOAM532E9NBUbjFQLha2NZM91qZdfknFoJwuRlk/2/qkWewT1DgW5z6K
+        PIxWFXOaEsOWCfIaIERfD6lq7w==
+X-Google-Smtp-Source: ABdhPJx8msTvrsuwihO242PXv7u5F1/YsYDoAhSS6k0ZQZqFcGnBf3qEN5bVS8tSjAhdCenA2tCkyg==
+X-Received: by 2002:aca:5413:: with SMTP id i19mr2773415oib.87.1606412136991;
+        Thu, 26 Nov 2020 09:35:36 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s28sm3186106otd.2.2020.11.26.09.35.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 09:35:35 -0800 (PST)
+Date:   Thu, 26 Nov 2020 11:35:34 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] regulator: dt-bindings: Add PMX55 compatibles
+Message-ID: <X7/nZg7tXb8F3rtk@builder.lan>
+References: <20201126093018.1085594-1-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126155421.14901-3-dbrazdil@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201126093018.1085594-1-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 03:54:00PM +0000, David Brazdil wrote:
-> Function IDs used by PSCI are configurable for v0.1 via DT/APCI. If the
+On Thu 26 Nov 03:30 CST 2020, Vinod Koul wrote:
 
-Side note: in ACPI we don't support versions < 0.2, for commit log
-accuracy.
-
-Other than that I agree with Mark's change request.
-
-Thanks,
-Lorenzo
-
-> host is using PSCI v0.1, KVM's host PSCI proxy needs to use the same IDs.
-> Expose the array holding the information with a read-only accessor.
+> Add PMX55 compatibles for PMIC found in SDX55 platform
 > 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
 > ---
->  drivers/firmware/psci/psci.c | 16 ++++++++--------
->  include/linux/psci.h         | 10 ++++++++++
->  2 files changed, 18 insertions(+), 8 deletions(-)
+>  .../devicetree/bindings/regulator/qcom,rpmh-regulator.txt       | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-> index 213c68418a65..40609564595e 100644
-> --- a/drivers/firmware/psci/psci.c
-> +++ b/drivers/firmware/psci/psci.c
-> @@ -58,16 +58,16 @@ typedef unsigned long (psci_fn)(unsigned long, unsigned long,
->  				unsigned long, unsigned long);
->  static psci_fn *invoke_psci_fn;
+> diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+> index 97c3e0b7611c..bae558b87686 100644
+> --- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+> +++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
+> @@ -30,6 +30,7 @@ Supported regulator node names:
+>  	PMI8998:	bob
+>  	PM6150:         smps1 - smps5, ldo1 - ldo19
+>  	PM6150L:        smps1 - smps8, ldo1 - ldo11, bob
+> +	PMX55:		smps1 - smps7, ldo1 - ldo16
 >  
-> -enum psci_function {
-> -	PSCI_FN_CPU_SUSPEND,
-> -	PSCI_FN_CPU_ON,
-> -	PSCI_FN_CPU_OFF,
-> -	PSCI_FN_MIGRATE,
-> -	PSCI_FN_MAX,
-> -};
-> -
->  static u32 psci_function_id[PSCI_FN_MAX];
+>  ========================
+>  First Level Nodes - PMIC
+> @@ -47,6 +48,7 @@ First Level Nodes - PMIC
+>  		    "qcom,pmi8998-rpmh-regulators"
+>  		    "qcom,pm6150-rpmh-regulators"
+>  		    "qcom,pm6150l-rpmh-regulators"
+> +		    "qcom,pmx55-rpmh-regulators"
 >  
-> +u32 psci_get_function_id(enum psci_function fn)
-> +{
-> +	if (WARN_ON_ONCE(fn < 0 || fn >= PSCI_FN_MAX))
-> +		return 0;
-> +
-> +	return psci_function_id[fn];
-> +}
-> +
->  #define PSCI_0_2_POWER_STATE_MASK		\
->  				(PSCI_0_2_POWER_STATE_ID_MASK | \
->  				PSCI_0_2_POWER_STATE_TYPE_MASK | \
-> diff --git a/include/linux/psci.h b/include/linux/psci.h
-> index 2a1bfb890e58..5b49a5c82d6f 100644
-> --- a/include/linux/psci.h
-> +++ b/include/linux/psci.h
-> @@ -21,6 +21,16 @@ bool psci_power_state_is_valid(u32 state);
->  int psci_set_osi_mode(bool enable);
->  bool psci_has_osi_support(void);
->  
-> +enum psci_function {
-> +	PSCI_FN_CPU_SUSPEND,
-> +	PSCI_FN_CPU_ON,
-> +	PSCI_FN_CPU_OFF,
-> +	PSCI_FN_MIGRATE,
-> +	PSCI_FN_MAX,
-> +};
-> +
-> +u32 psci_get_function_id(enum psci_function fn);
-> +
->  struct psci_operations {
->  	u32 (*get_version)(void);
->  	int (*cpu_suspend)(u32 state, unsigned long entry_point);
+>  - qcom,pmic-id
+>  	Usage:      required
 > -- 
-> 2.29.2.454.gaff20da3a2-goog
+> 2.26.2
 > 
