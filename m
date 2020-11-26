@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121B52C5336
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086902C533D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732436AbgKZLoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 06:44:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
+        id S1732498AbgKZLsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 06:48:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731379AbgKZLoz (ORCPT
+        with ESMTP id S1727632AbgKZLsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 06:44:55 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6415C0613D4;
-        Thu, 26 Nov 2020 03:44:53 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id 62so1519150pgg.12;
-        Thu, 26 Nov 2020 03:44:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UpERwUmn/OuG9/9GiqizbXJDLzVxL1S8PfGCKpa9aUg=;
-        b=nYGL5wwMzInwZKf69/TnCeMo02Cht0pAdcQoAUSgCVe5YzuaNqWcOj9BMSrJG11J2f
-         KNcl4S4BCDyYQZ9xw4Y7s1+6wFphhly5hk8wMuIGqUaPzSzSN98tnParN/VVKeaQNJV1
-         KhMm0oyRhW/8xPEbWsyFARG/ib75aDcW85H82wQyIIf/H75HSWxzBXzqqRPWQh1WqZcX
-         iPdAS4W+W92oDObcecbFDg5zHufOPtH8/afpKxrogGEW3TTkAY+fxXaJ14gouOOTshdj
-         lDZUplgZzM2IrqxRyA5OetWAyeNjvrdA+uf3NtbZL7nOSM1+RgxdRJ0hsNWi3qqnzHJX
-         thgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UpERwUmn/OuG9/9GiqizbXJDLzVxL1S8PfGCKpa9aUg=;
-        b=dIdT955rtQoAL64otwwvv/PreNSIo+OCTRiwTTrYytKCmhEVYIFmPBgpKa4li1opUF
-         ENuYDpabXwU+CpJa8j76AojDhJihANjgeZVceyLteDSn0A2OL3jeBR71i+/GCysTpJdv
-         cSIildg/MwpxP0/bdaWNzzrsLj7IptP8YXYX/WljIOyVkx3AssVFjR32d5yQ69anLzLS
-         eQw888ZHd2jjwj1SEGkOk9Pz7njeNkgtrZ6haP9uafdwO2CiP/4xmEwgMN6Mhun0afNe
-         Ubu9t6HEbdhVMDZ7SLEgyrUHddEAezYLcUyHFGyOAz34F7jVbQ+IqGgFhG+hMujl6efv
-         1brw==
-X-Gm-Message-State: AOAM531MqtQJ9BV8njN2OMrBbAWzewjpObongyYwvcOxlxWVK4gK5mud
-        HQpfd9ISnT81YQGx5JeLaBk=
-X-Google-Smtp-Source: ABdhPJw/1d59DXda0KuVqjExWVYT3bxoXf2mR5gIjPc+28YwR+iFHQlRFLWrBosK+geb9FM5JmT/vA==
-X-Received: by 2002:a63:62c6:: with SMTP id w189mr2343708pgb.440.1606391093464;
-        Thu, 26 Nov 2020 03:44:53 -0800 (PST)
-Received: from localhost ([2401:fa00:8f:203:a6ae:11ff:fe11:4b46])
-        by smtp.gmail.com with ESMTPSA id d15sm6575313pjr.27.2020.11.26.03.44.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 03:44:52 -0800 (PST)
-Date:   Thu, 26 Nov 2020 20:44:50 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>
-Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
-Message-ID: <20201126114450.GB3723071@google.com>
-References: <20201125221917.150463-1-ribalda@chromium.org>
+        Thu, 26 Nov 2020 06:48:38 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2685C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 03:48:38 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606391316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Nn6vIi9zYYOV8SxXoVNmLqy1mY0WSdF5TV6Sb639hJY=;
+        b=Hwu2le+Pa672R41U1V2yIUXxXNxp+Ix/bLanR09cAd2mo392zlDQ5RHigO0fktAeYg+jH6
+        jtFysgBOeRHwxf1/WCiZGdvxnGHX2V/VHhoZAT0wNSW0rQEvCBKU7/3wfEjY8bdVfXYSIc
+        6lKDfpJrblt+CluSt5P/S2O91+OUlJuEWD+rzTsqJbbtYF2O6Agl4KcJA9fnhz78MEeTpF
+        TQB0Vrqwpx2NVDEWW3uM7gZShaVO7XcYbB6nErAndJRNwhYMoVMC9n63Ejeo2wxA7pbNb3
+        FlReos8xvDR86Je0WvE8aZ9iTbc1gnwMyDG1s3644a4pOMmhByRExZw2uM9JsA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606391316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Nn6vIi9zYYOV8SxXoVNmLqy1mY0WSdF5TV6Sb639hJY=;
+        b=8iAaw2193M+waPlOABmyvQOobMjiknkaBukT0KOH8xncYifzffeXqXcXU7EVzqaLnCOyp/
+        Nk3Vb88U3pdXyTBg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] printk: finalize records with trailing newlines
+Date:   Thu, 26 Nov 2020 12:54:36 +0106
+Message-Id: <20201126114836.14750-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125221917.150463-1-ribalda@chromium.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/11/25 23:19), Ricardo Ribalda wrote:
-[..]
-> +	if (uvc_urb->pages)
-> +		dma_sync_sgtable_for_device(stream_to_dmadev(uvc_urb->stream),
-> +					    &uvc_urb->sgt, DMA_FROM_DEVICE);
+Any record with a trailing newline (LOG_NEWLINE flag) cannot
+be continued because the newline has been stripped and will
+not be visible if the message is appended. This was already
+handled correctly when committing in log_output() but was
+not handled correctly when committing in log_store().
 
-[..]
+Fixes: f5f022e53b87 ("printk: reimplement log_cont using record extension")
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ This is an important bugfix for continuous messages and should
+ be part of the 5.10 release.
 
-> +	if (uvc_urb->pages)
-> +		dma_sync_sgtable_for_cpu(stream_to_dmadev(stream),
-> +					 &uvc_urb->sgt, DMA_FROM_DEVICE);
+ If not applied, newlines will vanish when concatenating
+ continuous with trailing newlines.
 
-[..]
+ kernel/printk/printk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> +	uvc_urb->pages = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
-> +						 &uvc_urb->dma,
-> +						 gfp_flags | __GFP_NOWARN, 0);
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index fe64a49344bf..bc1e3b5a97bd 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -528,8 +528,8 @@ static int log_store(u32 caller_id, int facility, int level,
+ 	if (dev_info)
+ 		memcpy(&r.info->dev_info, dev_info, sizeof(r.info->dev_info));
+ 
+-	/* insert message */
+-	if ((flags & LOG_CONT) || !(flags & LOG_NEWLINE))
++	/* A message without a trailing newline can be continued. */
++	if (!(flags & LOG_NEWLINE))
+ 		prb_commit(&e);
+ 	else
+ 		prb_final_commit(&e);
+-- 
+2.20.1
 
-Do we need to pass __GFP_NOWARN? It seems that
-
-dma_alloc_noncontiguous()
-  __iommu_dma_alloc_noncontiguous()
-    __iommu_dma_alloc_pages()
-
-does this internally.
-
-> +	if (!uvc_urb->pages)
-> +		return false;
-> +
-> +	uvc_urb->buffer = vmap(uvc_urb->pages,
-> +			       PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT,
-> +			       VM_DMA_COHERENT, PAGE_KERNEL);
-
-This is not related to Ricardo's patch, just a side note:
-
-  I think VM_DMA_COHERENT needs to be renamed. I found it a bit confusing
-  to see DMA_COHERENT mapping being dma_sync-ed. It turned out that the
-  flag has different meaning.
-
-	-ss
