@@ -2,352 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5022A2C5153
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 642112C5157
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731403AbgKZJfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 04:35:51 -0500
-Received: from mga09.intel.com ([134.134.136.24]:55302 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730787AbgKZJfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 04:35:50 -0500
-IronPort-SDR: AydpswO9i1XTnBXBCsTIP52OhRBF7TS53pKizH0IaoeVMA2Dzep9FnQ5ixl8UyYtf7ViIFSPnt
- Ze/QCY356Etw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="172417494"
-X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
-   d="scan'208";a="172417494"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 01:35:49 -0800
-IronPort-SDR: Mo9XY8aQEu3OXc/15xoZlm6MBrj80n1hXIRY4hUqT5pLYnpdSZ/oD6ojBYYeGWJfAu4iJo+wwh
- djMLZMeDTfDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
-   d="scan'208";a="371221327"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by FMSMGA003.fm.intel.com with ESMTP; 26 Nov 2020 01:35:46 -0800
-Subject: Re: [RFC PATCH v5] sched/fair: select idle cpu from idle cpumask for
- task wakeup
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
-References: <20201118043113.53128-1-aubrey.li@linux.intel.com>
- <CAKfTPtBZU-QKqzsTL9Y0+wuUdGayyfuC8hKu2wcHZAAAmNJyfw@mail.gmail.com>
- <262397dc-b783-2040-6214-b8de5abf5617@linux.intel.com>
- <20201124170136.GA26613@vingu-book>
- <67a14568-4fa5-d9b4-d2fc-72a22c226189@linux.intel.com>
- <CAKfTPtB5=VSkE3YQf5igi6rBFPUSua=hM2FEnvBnRpF9n4VYwg@mail.gmail.com>
- <2a715c5d-c93f-0e5f-8b1a-83803cb6def6@linux.intel.com>
- <CAKfTPtB2FG64Csi0VBG-rZVr-KQ9x+WccFiWaXPVFremSHbcJw@mail.gmail.com>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <f5a7d584-7235-d1f4-f7db-0081a59c3846@linux.intel.com>
-Date:   Thu, 26 Nov 2020 17:35:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1732878AbgKZJgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:36:20 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44694 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730787AbgKZJgT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 04:36:19 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AQ9VcSk046886;
+        Thu, 26 Nov 2020 04:36:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=BHOW0tulpmQeXyFvwbUO41NDo+7nvJxRlbNmyPuLc/o=;
+ b=pqvQlBc0VjV9vZp6DbXGQRkCFCj3NkrfY5tsQlNLjR4JiBR3vg6IuFw2repZ/cvq5O4b
+ pTUNyZhhncz0e4a3OZL5H3oNwD39KQ19fQvIiaFCK0ibpzdHRcr8LPDB8FzsDx81Wxbg
+ GzQ5SNWkDmwYI3aoirbExL9K+ellWzcsIBJiBmdydypXQxRdqWSAvYaVMwtBOBWHDr7a
+ E/LpU0WmfS0MQ17JvbbxB5rULKIplVJXyZVLsufI45rPAKoknSAui205xZ+0f98iIW3N
+ X1SBffFlWFcpiHBrjTw6d5C7Wve2GY82XAPWbIzISouY+VuHgwJk5LVkXWeqdMlBwflN MA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3526npd9je-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 04:36:10 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AQ9WjTB050156;
+        Thu, 26 Nov 2020 04:36:09 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3526npd9hs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 04:36:09 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AQ9S2ln026666;
+        Thu, 26 Nov 2020 09:36:07 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 3518j8hh1s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 09:36:07 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AQ9a5AR48038218
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Nov 2020 09:36:05 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8DF3E11C05B;
+        Thu, 26 Nov 2020 09:36:05 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 95CA111C050;
+        Thu, 26 Nov 2020 09:36:04 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.183.229])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 26 Nov 2020 09:36:04 +0000 (GMT)
+Date:   Thu, 26 Nov 2020 11:36:02 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <20201126093602.GQ123287@linux.ibm.com>
+References: <X73s8fxDKPRD6wET@redhat.com>
+ <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
+ <X76iatgBErQH5El4@redhat.com>
+ <a4cc62ba-8066-3e9c-cead-98cd74d313dd@redhat.com>
+ <20201125210414.GO123287@linux.ibm.com>
+ <X77OyM8utmWcq1Di@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtB2FG64Csi0VBG-rZVr-KQ9x+WccFiWaXPVFremSHbcJw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X77OyM8utmWcq1Di@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-26_03:2020-11-26,2020-11-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 spamscore=0
+ phishscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011260055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/26 16:14, Vincent Guittot wrote:
-> On Wed, 25 Nov 2020 at 14:37, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->>
->> On 2020/11/25 16:31, Vincent Guittot wrote:
->>> On Wed, 25 Nov 2020 at 03:03, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->>>>
->>>> On 2020/11/25 1:01, Vincent Guittot wrote:
->>>>> Hi Aubrey,
->>>>>
->>>>> Le mardi 24 nov. 2020 à 15:01:38 (+0800), Li, Aubrey a écrit :
->>>>>> Hi Vincent,
->>>>>>
->>>>>> On 2020/11/23 17:27, Vincent Guittot wrote:
->>>>>>> Hi Aubrey,
->>>>>>>
->>>>>>> On Thu, 19 Nov 2020 at 13:15, Aubrey Li <aubrey.li@linux.intel.com> wrote:
->>>>>>>>
->>>>>>>> Add idle cpumask to track idle cpus in sched domain. When a CPU
->>>>>>>> enters idle, if the idle driver indicates to stop tick, this CPU
->>>>>>>> is set in the idle cpumask to be a wakeup target. And if the CPU
->>>>>>>> is not in idle, the CPU is cleared in idle cpumask during scheduler
->>>>>>>> tick to ratelimit idle cpumask update.
->>>>>>>>
->>>>>>>> When a task wakes up to select an idle cpu, scanning idle cpumask
->>>>>>>> has low cost than scanning all the cpus in last level cache domain,
->>>>>>>> especially when the system is heavily loaded.
->>>>>>>>
->>>>>>>> Benchmarks were tested on a x86 4 socket system with 24 cores per
->>>>>>>> socket and 2 hyperthreads per core, total 192 CPUs. Hackbench and
->>>>>>>> schbench have no notable change, uperf has:
->>>>>>>>
->>>>>>>> uperf throughput: netperf workload, tcp_nodelay, r/w size = 90
->>>>>>>>
->>>>>>>>   threads       baseline-avg    %std    patch-avg       %std
->>>>>>>>   96            1               0.83    1.23            3.27
->>>>>>>>   144           1               1.03    1.67            2.67
->>>>>>>>   192           1               0.69    1.81            3.59
->>>>>>>>   240           1               2.84    1.51            2.67
->>>>>>>>
->>>>>>>> v4->v5:
->>>>>>>> - add update_idle_cpumask for s2idle case
->>>>>>>> - keep the same ordering of tick_nohz_idle_stop_tick() and update_
->>>>>>>>   idle_cpumask() everywhere
->>>>>>>>
->>>>>>>> v3->v4:
->>>>>>>> - change setting idle cpumask from every idle entry to tickless idle
->>>>>>>>   if cpu driver is available.
->>>>>>>
->>>>>>> Could you remind me why you did this change ? Clearing the cpumask is
->>>>>>> done during the tick to rate limit the number of updates of the
->>>>>>> cpumask but It's not clear for me why you have associated the set with
->>>>>>> the tick stop condition too.
->>>>>>
->>>>>> I found the current implementation has better performance at a more
->>>>>> suitable load range.
->>>>>>
->>>>>> The two kinds of implementions(v4 and v5) have the same rate(scheduler
->>>>>> tick) to shrink idle cpumask when the system is busy, but
->>>>>
->>>>> I'm ok with the part above
->>>>>
->>>>>>
->>>>>> - Setting the idle mask everytime the cpu enters idle requires a much
->>>>>> heavier load level to preserve the idle cpumask(not call into idle),
->>>>>> otherwise the bits cleared in scheduler tick will be restored when the
->>>>>> cpu enters idle. That is, idle cpumask is almost equal to the domain
->>>>>> cpumask during task wakeup if the system load is not heavy enough.
->>>>>
->>>>> But setting the idle cpumask is useful because it helps to select an idle
->>>>> cpu at wake up instead of waiting ifor ILB to fill the empty CPU. IMO,
->>>>> the idle cpu mask is useful in heavy cases because a system, which is
->>>>> already fully busy with work, doesn't want to waste time looking for an
->>>>> idle cpu that doesn't exist.
->>>>
->>>> Yes, this is what v3 does.
->>>>
->>>>> But if there is an idle cpu, we should still looks for it.
->>>>
->>>> IMHO, this is a potential opportunity can be improved. The idle cpu could be
->>>> in different idle state, the idle duration could be long or could be very short.
->>>> For example, if there are two idle cpus:
->>>>
->>>> - CPU1 is very busy, the pattern is 50us idle and 950us work.
->>>> - CPU2 is in idle for a tick length and wake up to do the regular work
->>>>
->>>> If both added to the idle cpumask, we want the latter one, or we can just add
->>>> the later one into the idle cpumask. That's why I want to associate tick stop
->>>> signal with it.
->>>>
->>>>>
->>>>>>
->>>>>>
->>>>>> - Associating with tick stop tolerates idle to preserve the idle cpumask
->>>>>> but only short idle, which causes tick retains. This is more fitable for
->>>>>> the real workload.
->>>>>
->>>>> I don't agree with this and real use cases with interaction will probably
->>>>> not agree as well as they want to run on an idle cpu if any but not wait
->>>>> on an already busy one.
->>>>
->>>> The problem is scan overhead, scanning idle cpu need time. If an idle cpu
->>>> is in the short idle mode, it's very likely that when it's picked up for a
->>>> wakeup task, it goes back to work again, and the wakeup task has to wait too,
->>>> maybe longer because the running task just starts.
->>>>
->>>> One benefit of waiting on the previous one is warm cache.
->>>>
->>>>> Also keep in mind that a tick can be up to 10ms long
->>>>
->>>> Right, but the point here is, if this 10ms tick retains, the CPU should be
->>>> in the short idle mode.
->>>
->>> But 10, 4 or even 1ms is quite long for a system and that's even more
->>> true compared to scanning the idle cpu mask
->>>
->>>>
->>>>>
->>>>>>
->>>>>>>
->>>>>>> This change means that a cpu will not be part of the idle mask if the
->>>>>>> tick is not stopped. On some arm/arm64 platforms, the tick stops only
->>>>>>> if the idle duration is expected to be higher than 1-2ms which starts
->>>>>>> to be significantly long. Also, the cpuidle governor can easily
->>>>>>> mis-predict a short idle duration whereas it will be finally a long
->>>>>>> idle duration; In this case, the next tick will correct the situation
->>>>>>> and select a deeper state, but this can happen up to 4ms later on
->>>>>>> arm/arm64.
->>>>>>
->>>>>> Yes this is intented. If the tick is not stopped, that indicates the
->>>>>> CPU is very busy, cpu idle governor selected the polling idle state, and/or
->>>>>> the expected idle duration is shorter than the tick period length. For
->>>>>
->>>>> As mentioned above a tick can be up to 10ms long which is not a short idle
->>>>> duration.
->>>>
->>>> Usually when the tick retains, the CPU is in the short idle mode or even polling
->>>> instead of idle.
->>>
->>> Also keep in mind that cpuidle can select a shallow state and retains
->>> tick because of the wake up latency constraint and not the idle
->>> duration. So you can't really make the assumption that retaining tick
->>> means short idle duration
->>>
->> idle governor has short idle information, probably can let idle governor
->> expose a short idle indicator?
->>
->>>>
->>>>>
->>>>> Then the governor also mispredicts the idle duration and this is one
->>>>> reason that the tick is not stopped because it will give the opportunity
->>>>> to reevaluate the idle state in case of misprediction.
->>>>>
->>>> We always predict the next state based on the past states, so misprediction
->>>> does happen. This is not what this patch is trying to solve. I'm certainly
->>>
->>> My point here was to say that one original goal of cpuidle for
->>> retaining the tick was to handle case where the governor mispredicts a
->>> short idle time. Retaining the tick prevents the cpu to stay too long
->>> in this shallow idle state and to waste power which seems to happen
->>> often enough to be raised by people
->>
->> I see, thanks!
->>
->>>
->>>> open if there is a better signal instead of stop_tick from idle governor.
->>>>
->>>>
->>>>>> example, uperf enters and exits 80 times between two ticks when utilizes
->>>>>> 100% CPU, and the average idle residency < 50us.
->>>>>
->>>>> But scheduler looks for idle state of prev cpu before looping the idle cpu
->>>>> mask so i'm not sure that uperf is impacted in this case because scheduler
->>>>> will select prev cpu before loop idle cpu mask.
->>>>>
->>>>>>
->>>>>> If this CPU is added to idle cpumask, the wakeup task likely needs to
->>>>>> wait in the runqueue as this CPU will run its current task very soon.
->>>>>>
->>>>>>>
->>>>>>> So I would prefer to keep trying to set the idle mask everytime the
->>>>>>> cpu enters idle. If a tick has not happened between 2 idle phases, the
->>>>>>> cpumask will not be updated and the overhead will be mostly testing if
->>>>>>> (rq->last_idle_state == idle_state).
->>>>>>
->>>>>> Not sure if I addressed your concern, did you see any workloads any cases
->>>>>> v4 performs better than v5?
->>>>>
->>>>> Yes, I see some perf regression on my octo arm64 system for hackbench with
->>>>> only 1 group (and for few ther ones but it's less obvious). There is no
->>>>> perf impact with more groups most probably because the cpus are no more idle.
->>>>>
->>>>> The regression happens even if the shallowest idle state is the only one to
->>>>> be enabled.
->>>>
->>>> Thanks for the data.
->>>>
->>>>>
->>>>> - 2 x 4 cores arm64 system
->>>>>
->>>>> 12 iterations of hackbench -l (256000/#grp) -g #grp
->>>>>
->>>>> Only the shallowest state enabled
->>>>
->>>>> (as a sidenote, we don't have polling mode on arm64)
->>>> Okay, this might be the cause of the difference between yours and mine. So do you
->>>> think if it makes sense to let idle governor to return a polling flag and associate
->>>> it with idle cpumask update instead of stop_tick? A CPU is idle but actually polling
->>>> may not be suitable for the wake up target.
->>>
->>> I don't know much about polling but can't this mode be used up to a tick too ?
->>> I think so. So short idle need a definition. I'm not sure if it's a good idea to define
->> the short idle as a tunable and default set it to tick >> 2?
+On Wed, Nov 25, 2020 at 04:38:16PM -0500, Andrea Arcangeli wrote:
+> On Wed, Nov 25, 2020 at 11:04:14PM +0200, Mike Rapoport wrote:
+> > I think the very root cause is how e820__memblock_setup() registers
+> > memory with memblock:
+> > 
+> > 		if (entry->type == E820_TYPE_SOFT_RESERVED)
+> > 			memblock_reserve(entry->addr, entry->size);
+> > 
+> > 		if (entry->type != E820_TYPE_RAM && entry->type != E820_TYPE_RESERVED_KERN)
+> > 			continue;
+> > 
+> > 		memblock_add(entry->addr, entry->size);
+> > 
+> > From that point the system has inconsistent view of RAM in both
+> > memblock.memory and memblock.reserved and, which is then translated to
+> > memmap etc.
+> > 
+> > Unfortunately, simply adding all RAM to memblock is not possible as
+> > there are systems that for them "the addresses listed in the reserved
+> > range must never be accessed, or (as we discovered) even be reachable by
+> > an active page table entry" [1].
+> > 
+> > [1] https://lore.kernel.org/lkml/20200528151510.GA6154@raspberrypi/
 > 
-> I have never been fond of heuristic like tick << 2 or sys tunable
+> It looks like what's missing is a blockmem_reserve which I don't think
+> would interfere at all with the issue above since it won't create
+> direct mapping and it'll simply invoke the second stage that wasn't
+> invoked here.
 > 
-> TBH, I'm not sure that using the tick is a good idea. And such kind of
-> parameter need more thought
+> I guess this would have a better chance to have the second
+> initialization stage run in reserve_bootmem_region and it would likely
+> solve the problem without breaking E820_TYPE_RESERVED which is known
+> by the kernel:
 > 
->>
->> Updating idle cpumask everytime cpu enters idle works for me, as we have state change
->> check, so we won't actually update idle cpumask everytime the cpu enters idle.
+> > 		if (entry->type == E820_TYPE_SOFT_RESERVED)
+> > 			memblock_reserve(entry->addr, entry->size);
+> > 
 > 
-> Yes, In this case, the overhead stays reasonable and is limited to the
-> test of a rq->last_idle_state
-> This will benefit heavy use a case by reducing the scanning time  and
-> will not regress other use case.
+> +		if (entry->type == 20)
+> +			memblock_reserve(entry->addr, entry->size);
 > 
->>
->> But I'm still willing to exclude short idle case, what do you think?
+> > 		if (entry->type != E820_TYPE_RAM && entry->type != E820_TYPE_RESERVED_KERN)
+> > 			continue;
+> > 
 > 
-> something similar to patch v3 or patch v5 + my changes seems to be a
-> good 1st step that will benefit heavy use cases with regressing other
-> ones.
+> This is however just to show the problem, I didn't check what type 20
+> is.
+
+I think it's inveneted by your BIOS vendor :)
+
+> To me it doesn't look the root cause though, the root cause is that if
+> you don't call memblock_reserve the page->flags remains uninitialized.
+
+I didn't mean that root cause is that we don't call memblock_reserve().
+I meant that the root cause is inconsitency in memory representation.
+
+On most architectures, memblock.memory represents the entire RAM in the
+system and memblock.reserved represents memory regions that were
+reserved either by the firmware or by the kernel during early boot.
+
+On x86 the memory that firmware reserved for its use is never considered
+memory and some of the reserved memory types are never registered with
+memblock at all.
+
+As memblock data is used to initialize the memory map, we end up with
+some page structs not being properly initialized.
+
+> I think the page_alloc.c need to be more robust and detect at least if
+> if holes within zones (but ideally all pfn_valid of all struct pages
+> in system even if beyond the end of the zone) aren't being initialized
+> in the second stage without relying on the arch code to remember to
+> call memblock_reserve.
+
+I agree that page_alloc.c needs to be more robust, but it anyway needs
+to rely on some data supplied by arch to know where valid memory is.
+With SPARSMEM, pfn_valid() only says where memmap exists, it's not
+necessary there is an actual page frame behind a valid pfn.
+
+> In fact it's not clear why memblock_reserve even exists, that
+> information can be calculated reliably by page_alloc in function of
+> memblock.memory alone by walking all nodes and all zones. It doesn't
+> even seem to help in destroying the direct mapping,
+> reserve_bootmem_region just initializes the struct pages so it doesn't
+> need a special memeblock_reserved to find those ranges.
+
+memblock_reserve() is there to allow architectures to mark memory
+regions as busy so this memory won't be used by buddy as free pages. It
+could be memory that firmware reported as reserved, memory occupied by
+the kernel image and initrd, or the early memory allocations kernel does
+before page allocator is up.
+
+> In fact it's scary that codes then does stuff like this trusting the
+> memblock_reserve is nearly complete information (which obviously isn't
+> given type 20 doesn't get queued and I got that type 20 in all my systems):
 > 
-> Trying to exclude short idle case will need more thoughts and changes
-> especially about to how to get this information and if it is reliable.
+> 	for_each_reserved_mem_region(i, &start, &end) {
+> 		if (addr >= start && addr_end <= end)
+> 			return true;
+> 	}
+> 
+> That code in irq-gic-v3-its.c should stop using
+> for_each_reserved_mem_region and start doing
+> pfn_valid(addr>>PAGE_SHIFT) if
+> PageReserved(pfn_to_page(addr>>PAGE_SHIFT)) instead.
+
+I think that for coldpluged CPUs this code runs before memmap us set up,
+so pfn_valid() or PageReserved() are not yet available then.
+
+> At best memory.reserved should be calculated automatically by the
+> page_alloc.c based on the zone_start_pfn/zone_end_pfn and not passed
+> by the e820 caller, instead of adding the memory_reserve call for type
+> 20 we should delete the memory_reserve function.
+ 
+memory.reserved cannot be calculated automatically. It represents all
+the memory allocations made before page allocator is up. And as
+memblock_reserve() is the most basic to allocate memory early at boot we
+cannot really delete it ;-)
+
+As for e820 and type 20, unless it is in memblock, page_alloc.c has no
+way to properly initialize memmap for it. It can continue to guess, like
+it does with init_unavailable_memory().
+
+> Thanks,
+> Andrea
 > 
 
-okay, I'll post a v6 with v5 + your change below after data measurement.
-May I add you a signed-off-by to the patch?
-
-Thanks,
--Aubrey
-
----
- kernel/sched/idle.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index a38d8822ce0d..ca32197778b0 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -156,6 +156,7 @@ static void cpuidle_idle_call(void)
- 		return;
- 	}
- 
-+	update_idle_cpumask(this_rq(), true);
- 	/*
- 	 * The RCU framework needs to be told that we are entering an idle
- 	 * section, so no more rcu read side critical sections and one more
-@@ -163,7 +164,6 @@ static void cpuidle_idle_call(void)
- 	 */
- 
- 	if (cpuidle_not_available(drv, dev)) {
--		update_idle_cpumask(this_rq(), true);
- 		tick_nohz_idle_stop_tick();
- 
- 		default_idle_call();
-@@ -194,7 +194,6 @@ static void cpuidle_idle_call(void)
- 			max_latency_ns = dev->forced_idle_latency_limit_ns;
- 		}
- 
--		update_idle_cpumask(this_rq(), true);
- 		tick_nohz_idle_stop_tick();
- 
- 		next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
-@@ -208,7 +207,6 @@ static void cpuidle_idle_call(void)
- 		next_state = cpuidle_select(drv, dev, &stop_tick);
- 
- 		if (stop_tick || tick_nohz_tick_stopped()) {
--			update_idle_cpumask(this_rq(), true);
- 			tick_nohz_idle_stop_tick();
- 		} else {
- 			tick_nohz_idle_retain_tick();
 -- 
-2.17.1
-
+Sincerely yours,
+Mike.
