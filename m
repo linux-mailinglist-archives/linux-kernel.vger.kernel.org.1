@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE29B2C5636
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE2D2C5638
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390806AbgKZNnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:43:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
+        id S2390826AbgKZNnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:43:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390786AbgKZNm7 (ORCPT
+        with ESMTP id S2390803AbgKZNnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:42:59 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3280EC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:42:58 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id p19so3692163wmg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:42:58 -0800 (PST)
+        Thu, 26 Nov 2020 08:43:01 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9D3C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:01 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id c198so2210661wmd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NHPe3Mn8cbArsPPQt69rySCnIbjXwyEYsPDbwO3FTTg=;
-        b=ZrrrsDoz87EZgy+M2aL51jy5fVNnRT9Ooj/mOazxarq50HhmO8uE9haPCFapX0NTg9
-         x6bITVxxMy2ceyMIwwlvVmfWhLohKVIHaifZYvD564ABfgOPiHpkcZAbNCqT3gCiBxRH
-         imzJ74y7rbX2hhwcFh9PdH9ckSdhgs9smHWe8Tx/tFs4BfKX7eww65fmFdde3p7JFBTQ
-         ry69c8PoPC0zzTqFcvuG7NWha5f4adD59UdUYcyH7Yn6EZ8wG8/T5Smq0V+PfDRSZvlZ
-         Z2SczZBNrlqd51wVoJ/qGri9TQGx9wCE+/ihHS3qMxVbsFChNME1JW6ADJCox2oValvD
-         4kYw==
+        bh=gri5Q1ZsHo+JoBxGfrJZZW9SZIInF5/xkJvef28TzCQ=;
+        b=fqPPgyNW5YpmOSE71xHIKuvM+xg9IUILLUjRvO1hWX8/333x8W4QT67NPv+C8bozIy
+         tFMqF9icDS0zvyTYZgWA/m1fP0mCA7OTmHoUE2MDnIiXC9C3s2c+eDGlVzXLXwjGsVe+
+         IDFwppI5i0UFrRo0NZjZ70MKdLrBCl7IB8cqFEMoqacGdKqEUpy4PeNmvBdiVrp/5mXA
+         AyPY1L3++JBVT/rTM+8v2z9lupnMBLt5Y+1T1592dGIa4JCSyREVc8Nf1t1JHL7NPbfL
+         8xYftyKeq7YlGfWS2xkpEPVttx7SNLBqIcMnMACyPyTAB1kpH27piWLOWJ+DylNcrA9Q
+         K0Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NHPe3Mn8cbArsPPQt69rySCnIbjXwyEYsPDbwO3FTTg=;
-        b=jElebZdVaIJtk12Ut/zyvJ4TzXbWlUtH+JWcZYEZFY2JUR8zH0AkBS2+B3xlrZ0tDZ
-         lly1TkYbU8GzHVPr4Qy8a+lpno9kceMJvKsjrgLqFQCen2VgJaf+peOZ17JOJKJ89oku
-         mfHSzEqO+f8r7B1SrFEutNWXr0+UP6o/U8+hG7mjvd7asv6gejZmj394B0Mp6LWo+FJQ
-         a4jeq39+odpfhTCO8Eix9Ddc567C5+KpQISuoxiIGAL9Zsq1LIfF94IbNvbmJl6eovk6
-         xi6BDHcIJ6DMPnC/rotTMLlAJ+SfTGyoCEV5ryyz8xheiWwpogIUkaXi/wzB4dn99laB
-         RY6w==
-X-Gm-Message-State: AOAM532Q3z1ftG0E2VS3mHndi0+qCUmBrTcVwkF1fcV4TaWCp71nCB1p
-        +bZuf4+jzFy8P47y+zily1qK2Q==
-X-Google-Smtp-Source: ABdhPJxByRK1Q8cdllulc14iL3DZ69ssy3TPiMpLDs4KGV5DAkCdW1u+aGwsGVDu2jftEfHpDkPoDA==
-X-Received: by 2002:a7b:c055:: with SMTP id u21mr3512224wmc.130.1606398176747;
-        Thu, 26 Nov 2020 05:42:56 -0800 (PST)
+        bh=gri5Q1ZsHo+JoBxGfrJZZW9SZIInF5/xkJvef28TzCQ=;
+        b=Jm1L1Y+QArADfDXdZwhykuI4o6dxFwBUy5p7S5C0k8sauF3FlStjNfi9Gilgn9hIUO
+         cZcHbPTTbvJQCxH2jlSb+owa4f9UeDCCTAu4gc4zfQwgs/pQmNOX8kqFy0HVKcw0jCyy
+         GxwETW3CWxj6p/P/hkgE/D8NKOfkOC9AXcxxN+s3KazSVQ3G+lSUKSKkyeXwlkzAnfGI
+         bd+WRJA/nCaveD73lQfbcCwNkLaLNA0KTGl4CbdcMPAXNPzG+f/rxhQL2nSNyY+ZPFn6
+         gxqznaXfouOQmpLJldh+zV8TmeY3MtB+2A/QeFlTStT0YwU2X26jCFiyBNr5L3eUUGUi
+         +LZw==
+X-Gm-Message-State: AOAM531TYXdvPbQstPAYEJT0dEGGfv73Ylp6P4brl+aJgWGcAP4MkfPX
+        POKUAmkBAV5tQ0Z8UJ4DYkfFIQ==
+X-Google-Smtp-Source: ABdhPJxpsMWiO7wJ6aWp2ZBnURciNFJyzaYsTRXTQCiK/i14aN+DP5ZoGSNsIGmzdHfSZtoU5ZxP3g==
+X-Received: by 2002:a7b:c1ce:: with SMTP id a14mr3493478wmj.169.1606398177946;
+        Thu, 26 Nov 2020 05:42:57 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.42.55
+        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.42.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:42:56 -0800 (PST)
+        Thu, 26 Nov 2020 05:42:57 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 08/40] drm/amd/pm/powerplay/hwmgr/hardwaremanager: Remove unused 'phm_set_*()' functions
-Date:   Thu, 26 Nov 2020 13:42:08 +0000
-Message-Id: <20201126134240.3214176-9-lee.jones@linaro.org>
+Subject: [PATCH 09/40] drm/amd/pm/powerplay/hwmgr/hwmgr: Move 'smu8_init_function_pointers()' prototype to shared header
+Date:   Thu, 26 Nov 2020 13:42:09 +0000
+Message-Id: <20201126134240.3214176-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201126134240.3214176-1-lee.jones@linaro.org>
 References: <20201126134240.3214176-1-lee.jones@linaro.org>
@@ -71,10 +71,6 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/hardwaremanager.c:518:5: warning: no previous prototype for ‘phm_set_min_deep_sleep_dcefclk’ [-Wmissing-prototypes]
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/hardwaremanager.c:528:5: warning: no previous prototype for ‘phm_set_hard_min_dcefclk_by_freq’ [-Wmissing-prototypes]
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/hardwaremanager.c:538:5: warning: no previous prototype for ‘phm_set_hard_min_fclk_by_freq’ [-Wmissing-prototypes]
-
 Cc: Evan Quan <evan.quan@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
@@ -84,48 +80,33 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- .../amd/pm/powerplay/hwmgr/hardwaremanager.c  | 31 -------------------
- 1 file changed, 31 deletions(-)
+ drivers/gpu/drm/amd/pm/inc/hwmgr.h             | 1 +
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hardwaremanager.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hardwaremanager.c
-index 1f9b9facdf1f4..45dde3e74b578 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hardwaremanager.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hardwaremanager.c
-@@ -514,34 +514,3 @@ int phm_set_active_display_count(struct pp_hwmgr *hwmgr, uint32_t count)
+diff --git a/drivers/gpu/drm/amd/pm/inc/hwmgr.h b/drivers/gpu/drm/amd/pm/inc/hwmgr.h
+index 1bb379498a121..0e22cba3ce3a6 100644
+--- a/drivers/gpu/drm/amd/pm/inc/hwmgr.h
++++ b/drivers/gpu/drm/amd/pm/inc/hwmgr.h
+@@ -828,5 +828,6 @@ int hwmgr_handle_task(struct pp_hwmgr *hwmgr,
  
- 	return hwmgr->hwmgr_func->set_active_display_count(hwmgr, count);
- }
--
--int phm_set_min_deep_sleep_dcefclk(struct pp_hwmgr *hwmgr, uint32_t clock)
--{
--	PHM_FUNC_CHECK(hwmgr);
--
--	if (!hwmgr->hwmgr_func->set_min_deep_sleep_dcefclk)
--		return -EINVAL;
--
--	return hwmgr->hwmgr_func->set_min_deep_sleep_dcefclk(hwmgr, clock);
--}
--
--int phm_set_hard_min_dcefclk_by_freq(struct pp_hwmgr *hwmgr, uint32_t clock)
--{
--	PHM_FUNC_CHECK(hwmgr);
--
--	if (!hwmgr->hwmgr_func->set_hard_min_dcefclk_by_freq)
--		return -EINVAL;
--
--	return hwmgr->hwmgr_func->set_hard_min_dcefclk_by_freq(hwmgr, clock);
--}
--
--int phm_set_hard_min_fclk_by_freq(struct pp_hwmgr *hwmgr, uint32_t clock)
--{
--	PHM_FUNC_CHECK(hwmgr);
--
--	if (!hwmgr->hwmgr_func->set_hard_min_fclk_by_freq)
--		return -EINVAL;
--
--	return hwmgr->hwmgr_func->set_hard_min_fclk_by_freq(hwmgr, clock);
--}
--
+ #define PHM_ENTIRE_REGISTER_MASK 0xFFFFFFFFU
+ 
++int smu8_init_function_pointers(struct pp_hwmgr *hwmgr);
+ 
+ #endif /* _HWMGR_H_ */
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
+index 739e215ec8b7f..ec17a3e63ea02 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
+@@ -47,7 +47,6 @@ extern const struct pp_smumgr_func smu10_smu_funcs;
+ extern const struct pp_smumgr_func vega20_smu_funcs;
+ 
+ extern int smu7_init_function_pointers(struct pp_hwmgr *hwmgr);
+-extern int smu8_init_function_pointers(struct pp_hwmgr *hwmgr);
+ extern int vega10_hwmgr_init(struct pp_hwmgr *hwmgr);
+ extern int vega12_hwmgr_init(struct pp_hwmgr *hwmgr);
+ extern int vega20_hwmgr_init(struct pp_hwmgr *hwmgr);
 -- 
 2.25.1
 
