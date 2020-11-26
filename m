@@ -2,104 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3340A2C50D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 610BF2C50DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389105AbgKZI7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 03:59:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729672AbgKZI7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 03:59:13 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BBEC20B1F;
-        Thu, 26 Nov 2020 08:59:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606381153;
-        bh=3Z7eRBn4dS+xir49QzOYa87bW7pn9PHPlCT+5gQc7Og=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PSNCdCVQz1MyuMUhKyU2c1gKbWizEfuomF+7Qezcb4C2PGrhqfIdaty8QHPV2jQrU
-         5H7dE01Wxra89dScVelDQTIPKy0J6SjOvPV5vJT/sode7QxQw+QnkctQn2Iz6lrvwm
-         IXbYN5r4CrtuZe4lmNuv5hRHehQvpFc6OtEGM/6E=
-Date:   Thu, 26 Nov 2020 08:59:08 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu: fix return error code in iommu_probe_device()
-Message-ID: <20201126085908.GC17797@willie-the-truck>
-References: <20201117025238.3425422-1-yangyingliang@huawei.com>
- <835ab066-b6b8-a211-4941-c01781031de8@linux.intel.com>
- <454f5e3e-c380-e8a5-9283-3f7578eb601e@huawei.com>
- <20201117224102.GD524@willie-the-truck>
- <78bee047-ab33-4d81-6f77-af4c5b6e8aaa@huawei.com>
- <20201125113545.GA15451@willie-the-truck>
- <9e7481f4-e55e-6c7a-dde9-62912c6e5eb4@huawei.com>
+        id S2389137AbgKZJCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:02:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726347AbgKZJCs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 04:02:48 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A17C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 01:02:48 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id r3so1294172wrt.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 01:02:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=GFyCHi/uBU1dtOcUSYpx65nLIeE0S+Y9gUbYQTFljb0=;
+        b=j9d9YS49slF6glftrGUPhNlLNKLxwo0LbWOgMai+Dj2szvu3yv1dneZpHyyZnCPnI9
+         TEb4Ua8IM28iztZzrGLOKgglT40/xDKvF28qKzvcDIlkEgaSzfdowuYX60/PQxaMXGS2
+         qKjDGJ6TuOtoU9BIYAcXRmmDTQ1nu12VOT0No3UYQ0wA2t+DxoZrpKj6mQe75GT67qNN
+         oM0kIIEgqujWcDrNl75vc751AQa8EDzJGpIPxn0AIv6EbzF+xpY7tQ9x3TJXKQOcbBSz
+         0UyG3aTzA57/UG9bgSLc76DgnGWc0PowTtkHsA4CtFIIjBuwP/P0fCqxieL0zuWvuR2p
+         8Nww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=GFyCHi/uBU1dtOcUSYpx65nLIeE0S+Y9gUbYQTFljb0=;
+        b=AfH3ZDQoCZdwr9ELbWbF8iHCwOu8RxKbJ8NLt1vs4DCCnF7Tbn+T8MC0zR86I9Qb4j
+         iIQYeU2ISU0dKQXJa6WaYRz/DAVP/RWFSARMb62m/khalYhX/W35eNxSK9VaE907dTFJ
+         bzEFrCuJs0X4+r6nSrdLC6XcfAarliRLx+yzmVzJ+FGJc1rzsYIqDp+DEvNxU3FVgSRN
+         aVM6RSI98vyykhjd3u3jX3PG+Qt3mwAFK+HbkJGci1I0fOAEdp+htORMP5kTzEOj6QLL
+         E4ZrtB4hdqAogdQ3X1OwuDJVdaBVvjjyfWVU/3U+NfFY1YCgufX6DpS1jGb9XvX5HnTI
+         OcTA==
+X-Gm-Message-State: AOAM532LQGTs+loNnsOZFy3XYzCRAxijIwhecf5a0bNFhw1E48rkHnCt
+        bgSWddhBXzOeMCHDC9tfC1speg==
+X-Google-Smtp-Source: ABdhPJziBTTVxWQQnfbQPFNqaoBuTqg7asyjyHqQLwLCs96p1DtgCmBzGo7d2qW7QvmtM/nbRnpyaA==
+X-Received: by 2002:a5d:6250:: with SMTP id m16mr2597470wrv.400.1606381366987;
+        Thu, 26 Nov 2020 01:02:46 -0800 (PST)
+Received: from localhost (253.35.17.109.rev.sfr.net. [109.17.35.253])
+        by smtp.gmail.com with ESMTPSA id e1sm8912528wra.22.2020.11.26.01.02.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 01:02:46 -0800 (PST)
+References: <20201123153817.1616814-1-ciorneiioana@gmail.com>
+ <20201123153817.1616814-7-ciorneiioana@gmail.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Ioana Ciornei <ciorneiioana@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH net-next 06/15] net: phy: meson-gxl: remove the use of
+ .ack_callback()
+In-reply-to: <20201123153817.1616814-7-ciorneiioana@gmail.com>
+Message-ID: <1jim9s8p8r.fsf@starbuckisacylon.baylibre.com>
+Date:   Thu, 26 Nov 2020 10:02:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9e7481f4-e55e-6c7a-dde9-62912c6e5eb4@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 10:29:57AM +0800, Yang Yingliang wrote:
-> 
-> On 2020/11/25 19:35, Will Deacon wrote:
-> > On Wed, Nov 25, 2020 at 09:54:34AM +0800, Yang Yingliang wrote:
-> > > On 2020/11/18 6:41, Will Deacon wrote:
-> > > > On Tue, Nov 17, 2020 at 07:11:28PM +0800, Yang Yingliang wrote:
-> > > > > On 2020/11/17 17:40, Lu Baolu wrote:
-> > > > > > On 2020/11/17 10:52, Yang Yingliang wrote:
-> > > > > > > If iommu_group_get() failed, it need return error code
-> > > > > > > in iommu_probe_device().
-> > > > > > > 
-> > > > > > > Fixes: cf193888bfbd ("iommu: Move new probe_device path...")
-> > > > > > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > > > > > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> > > > > > > ---
-> > > > > > >     drivers/iommu/iommu.c | 4 +++-
-> > > > > > >     1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > > > > 
-> > > > > > > diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> > > > > > > index b53446bb8c6b..6f4a32df90f6 100644
-> > > > > > > --- a/drivers/iommu/iommu.c
-> > > > > > > +++ b/drivers/iommu/iommu.c
-> > > > > > > @@ -253,8 +253,10 @@ int iommu_probe_device(struct device *dev)
-> > > > > > >             goto err_out;
-> > > > > > >           group = iommu_group_get(dev);
-> > > > > > > -    if (!group)
-> > > > > > > +    if (!group) {
-> > > > > > > +        ret = -ENODEV;
-> > > > > > Can you please explain why you use -ENODEV here?
-> > > > > Before 79659190ee97 ("iommu: Don't take group reference in
-> > > > > iommu_alloc_default_domain()"), in
-> > > > > 
-> > > > > iommu_alloc_default_domain(), if group is NULL, it will return -ENODEV.
-> > > > Hmm. While I think the patch is ok, I'm not sure it qualifies as a fix.
-> > > > Has iommu_probe_device() ever propagated this error? The commit you
-> > > > identify in the 'Fixes:' tag doesn't seem to change this afaict.
-> > > I think after this commit 439945e74a4b ("iommu: Move default domain
-> > > allocation to iommu_probe_device()"),
-> > That SHA doesn't exist in my tree (maybe you mean 6e1aa2049154?). But even
-> > then, I'm not sure 6e1aa2049154 is actually broken if you look at the
-> > interaction with group creation in __iommu_probe_device().
-> > 
-> > In fact, isn't that the case in mainline too? If __iommu_probe_device()
-> > returns 0, then we _know_ a group exists and so iommu_group_get() will
-> > succeed. I'm still happy with the patch in case this changes in future,
-> > but it doesn't appear to be fixing anything. Do you agree?
-> 
-> Yes, I look into the __iommu_probe_device(), if it can't get group, it will
-> return error
-> 
-> first.  Do I need send a v2 without the fix tag ?
 
-Yes, I think that would be fine, and perhaps update the commit message
-to make it clear that this is purely cosmetic.
+On Mon 23 Nov 2020 at 16:38, Ioana Ciornei <ciorneiioana@gmail.com> wrote:
 
-Will
+> From: Ioana Ciornei <ioana.ciornei@nxp.com>
+>
+> In preparation of removing the .ack_interrupt() callback, we must replace
+> its occurrences (aka phy_clear_interrupt), from the 2 places where it is
+> called from (phy_enable_interrupts and phy_disable_interrupts), with
+> equivalent functionality.
+>
+> This means that clearing interrupts now becomes something that the PHY
+> driver is responsible of doing, before enabling interrupts and after
+> clearing them. Make this driver follow the new contract.
+>
+> Cc: Jerome Brunet <jbrunet@baylibre.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+> ---
+>  drivers/net/phy/meson-gxl.c | 19 +++++++++++--------
+>  1 file changed, 11 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/net/phy/meson-gxl.c b/drivers/net/phy/meson-gxl.c
+> index b16b1cc89165..7e7904fee1d9 100644
+> --- a/drivers/net/phy/meson-gxl.c
+> +++ b/drivers/net/phy/meson-gxl.c
+> @@ -204,22 +204,27 @@ static int meson_gxl_config_intr(struct phy_device *phydev)
+>  	int ret;
+>  
+>  	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
+> +		/* Ack any pending IRQ */
+> +		ret = meson_gxl_ack_interrupt(phydev);
+> +		if (ret)
+> +			return ret;
+> +
+>  		val = INTSRC_ANEG_PR
+>  			| INTSRC_PARALLEL_FAULT
+>  			| INTSRC_ANEG_LP_ACK
+>  			| INTSRC_LINK_DOWN
+>  			| INTSRC_REMOTE_FAULT
+>  			| INTSRC_ANEG_COMPLETE;
+> +		ret = phy_write(phydev, INTSRC_MASK, val);
+>  	} else {
+>  		val = 0;
+> -	}
+> +		ret = phy_write(phydev, INTSRC_MASK, val);
+>  
+> -	/* Ack any pending IRQ */
+> -	ret = meson_gxl_ack_interrupt(phydev);
+> -	if (ret)
+> -		return ret;
+> +		/* Ack any pending IRQ */
+> +		ret = meson_gxl_ack_interrupt(phydev);
+> +	}
+>  
+> -	return phy_write(phydev, INTSRC_MASK, val);
+> +	return ret;
+
+The only thing the above does is clear the irq *after* writing INTSRC_MASK
+*only* when the interrupts are not enabled. If that was not the intent,
+please let me know.
+
+As it stands, I don't think this hunk is necessary and I would prefer if
+it was not included.
+
+>  }
+>  
+>  static irqreturn_t meson_gxl_handle_interrupt(struct phy_device *phydev)
+> @@ -249,7 +254,6 @@ static struct phy_driver meson_gxl_phy[] = {
+>  		.soft_reset     = genphy_soft_reset,
+>  		.config_init	= meson_gxl_config_init,
+>  		.read_status	= meson_gxl_read_status,
+> -		.ack_interrupt	= meson_gxl_ack_interrupt,
+>  		.config_intr	= meson_gxl_config_intr,
+>  		.handle_interrupt = meson_gxl_handle_interrupt,
+>  		.suspend        = genphy_suspend,
+> @@ -260,7 +264,6 @@ static struct phy_driver meson_gxl_phy[] = {
+>  		/* PHY_BASIC_FEATURES */
+>  		.flags		= PHY_IS_INTERNAL,
+>  		.soft_reset     = genphy_soft_reset,
+> -		.ack_interrupt	= meson_gxl_ack_interrupt,
+>  		.config_intr	= meson_gxl_config_intr,
+>  		.handle_interrupt = meson_gxl_handle_interrupt,
+>  		.suspend        = genphy_suspend,
+
