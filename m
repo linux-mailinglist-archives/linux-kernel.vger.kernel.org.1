@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730732C5032
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0432C5038
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388860AbgKZITX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 03:19:23 -0500
-Received: from mga17.intel.com ([192.55.52.151]:50276 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730579AbgKZITX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 03:19:23 -0500
-IronPort-SDR: HOLcryu3fqTnUbgBSgC15MKYmtuKMsMtok77p7ONuLuh+ptB15QUl/QdHpeG8LjuiwqaibxOhN
- ictJqXl9ePpg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="152087987"
-X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
-   d="scan'208";a="152087987"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 00:19:21 -0800
-IronPort-SDR: uK6QwxwFO0K+Ye1iM3CeQMR2m7AwAEuOxoRcV+sv+ehA2WTCw6kp2FyfsFCGJ/dFZQNw4w3PCp
- nk7ApJCwESqg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
-   d="scan'208";a="362722416"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Nov 2020 00:19:19 -0800
-Subject: Re: [RFC PATCH v3.1 00/27] Add support UHS-II for GL9755
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
-        greg.tu@genesyslogic.com.tw
-References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
- <20201125074125.GC62993@laputa>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <c8f7e9ad-3e8d-01cc-edeb-5be364bfcc36@intel.com>
-Date:   Thu, 26 Nov 2020 10:18:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727496AbgKZITx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 03:19:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60598 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730302AbgKZITw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 03:19:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606378790;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z+p2GprWbi/If7VTS8JWkfE6Lqw1+SLhZ1FsmVKk/Hc=;
+        b=XILHxQQdJN9277AtKKKoy7XhCNIBNFGoYdgoYhfLLp7w4uAbZgqqlCoA33DCUy/P5o0S2f
+        WfX9VsKRK58vSLCI1srY41tNzlfz7bcYHY4PbdK3WF0APWyoGzJkvlxunaot3UtkFFSecR
+        LRihEiV9WiODAf7SYIPXFGBljhHJZiQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-xR60jiNjNfyAZn5VXKFC7A-1; Thu, 26 Nov 2020 03:19:46 -0500
+X-MC-Unique: xR60jiNjNfyAZn5VXKFC7A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8742D8143EB;
+        Thu, 26 Nov 2020 08:19:44 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-111.rdu2.redhat.com [10.10.112.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7CCF95D6AC;
+        Thu, 26 Nov 2020 08:19:42 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20201126063303.GA18366@gondor.apana.org.au>
+References: <20201126063303.GA18366@gondor.apana.org.au> <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     dhowells@redhat.com, bfields@fieldses.org,
+        trond.myklebust@hammerspace.com, linux-crypto@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 00/18] crypto: Add generic Kerberos library
 MIME-Version: 1.0
-In-Reply-To: <20201125074125.GC62993@laputa>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1976718.1606378781.1@warthog.procyon.org.uk>
+Date:   Thu, 26 Nov 2020 08:19:41 +0000
+Message-ID: <1976719.1606378781@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/11/20 9:41 am, AKASHI Takahiro wrote:
-> Gentle ping;
-> 
-> On Fri, Nov 06, 2020 at 11:26:59AM +0900, AKASHI Takahiro wrote:
->> This is an interim snapshot of our next version, v4, for enabling
->> UHS-II on MMC/SD.
->>
->> It is focused on 'sdhci' side to address Adrian's comments regarding
->> "modularising" sdhci-uhs2.c.
->> The whole aim of this version is to get early feedback from Adrian (and
->> others) on this issue. Without any consensus about the code structure,
-> 
-> Any comments so far?
-> 
+Herbert Xu <herbert@gondor.apana.org.au> wrote:
 
-Overall, I like this approach of separating UHS2 from legacy sdhci as much
-as possible.  The only major change, is to drop support for legacy quirks
-and features that you do not need.  The reason for that, is that there may
-be few drivers that end up with UHS-II support (opting instead for SD
-Express), so there is no point going to a lot of trouble to support things
-that never get used.
+> > Here's my first cut at a generic Kerberos crypto library in the kernel so
+> > that I can share code between rxrpc and sunrpc (and cifs?).
+> 
+> I can't find the bit where you are actually sharing this code with
+> sunrpc, am I missing something?
 
-From what I have seen that looks like it includes:
-	- any quirks
-	- SDHCI LED support
-	- external DMA support
-In this regard, the important thing is to have a comment somewhere that
-lists what is not supported.
+I haven't done that yet.  Sorry, I should've been more explicit with what I
+was after.  I was wanting to find out if the nfs/nfsd people are okay with
+this (and if there are any gotchas I should know about - it turns out, if I
+understand it correctly, the relevant code may being being rewritten a bit
+anyway).
 
-I have only looked at SDHCI patches so far, and only up to about patch 20,
-but maybe that gives you enough to go on for a while.
+And from you, I was wanting to find out if you're okay with an interface of
+this kind in crypto/ where the code is just used directly - or whether I'll
+be required to wrap it up in the autoloading, module-handling mechanisms.
+
+David
+
