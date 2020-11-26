@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7B12C4C59
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7562C4C5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730391AbgKZA6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 19:58:42 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:60448 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729371AbgKZA6m (ORCPT
+        id S1729679AbgKZBAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 20:00:16 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7989 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgKZBAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 19:58:42 -0500
-X-UUID: 11307a1992a24223ba4bd2307ca99185-20201126
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=B+YqNU++fb4lSeIdFp4cnM3988znwgJ6sEBCbGdHlKA=;
-        b=ADjYILEcQYSpgJwps4ADCxvmvSqGuVfp+lwnNFKvFKui1wpinQ6i3yrA/aQENH8fHZIAhXdfEAH5za0VZS6o69/bbozO69r5Ge93z7a9wqiS3aydEwwq2aUXme6StgodbUVlbvGQR5lO0sZYYZ54+/LOP580F9GePylG0dceY6g=;
-X-UUID: 11307a1992a24223ba4bd2307ca99185-20201126
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 157600909; Thu, 26 Nov 2020 08:58:36 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS09N2.mediatek.inc (172.21.101.94) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 26 Nov 2020 08:58:36 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 26 Nov 2020 08:58:36 +0800
-Message-ID: <1606352316.23925.1.camel@mtkswgap22>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
- remove skip_ref_clk
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <ziqichen@codeaurora.org>,
-        <rnayak@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <kernel-team@android.com>, <saravanak@google.com>,
-        <salyzyn@google.com>, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Thu, 26 Nov 2020 08:58:36 +0800
-In-Reply-To: <1606202906-14485-2-git-send-email-cang@codeaurora.org>
-References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
-         <1606202906-14485-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 25 Nov 2020 20:00:16 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4ChKDG0pcXzhgHw;
+        Thu, 26 Nov 2020 08:59:58 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 26 Nov 2020 09:00:08 +0800
+Subject: Re: [PATCH] drivers: clocksource: timer-riscv: Depend on the SBI
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        <linux-riscv@lists.infradead.org>
+CC:     Palmer Dabbelt <palmerdabbelt@google.com>, <tglx@linutronix.de>,
+        <daniel.lezcano@linaro.org>, <kernel-team@android.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20201125195804.3780975-1-palmer@dabbelt.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <d5ce9003-b070-0dfc-042c-a2879b992959@huawei.com>
+Date:   Thu, 26 Nov 2020 09:00:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20201125195804.3780975-1-palmer@dabbelt.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2FuLA0KDQoiUmVmZWN0b3IiIGluIHRpdGxlIHNoYWxsIGJlICJSZWZhY3RvciI/DQoNCk9u
-IE1vbiwgMjAyMC0xMS0yMyBhdCAyMzoyOCAtMDgwMCwgQ2FuIEd1byB3cm90ZToNCj4gUmVtb3Zl
-IHRoZSBwYXJhbSBza2lwX3JlZl9jbGsgZnJvbSBfX3Vmc2hjZF9zZXR1cF9jbG9ja3MoKSwgYnV0
-IGtlZXAgYSBmbGFnDQo+IGluIHN0cnVjdCB1ZnNfY2xrX2luZm8gdG8gdGVsbCB3aGV0aGVyIGEg
-Y2xvY2sgY2FuIGJlIGRpc2FibGVkIG9yIG5vdCB3aGlsZQ0KPiB0aGUgbGluayBpcyBhY3RpdmUu
-DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDYW4gR3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPg0KDQpP
-dGhlcndpc2UgbG9va3MgZ29vZCB0byBtZS4NCg0KUmV2aWV3ZWQtYnk6IFN0YW5sZXkgQ2h1IDxz
-dGFubGV5LmNodUBtZWRpYXRlay5jb20+DQoNCg==
+Hi Palmer，  I send a same patch and have been acked from you : )
 
+https://patchwork.kernel.org/project/linux-riscv/patch/20201028131230.72907-1-wangkefeng.wang@huawei.com/
+
+On 2020/11/26 3:58, Palmer Dabbelt wrote:
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
+>
+> Fundamentally this is an SBI timer driver, so it cannot be enabled without
+> support for the RISC-V SBI.
+>
+> Fixes: d5be89a8d118 ("RISC-V: Resurrect the MMIO timer implementation for M-mode systems")
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>   drivers/clocksource/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> index 68b087bff59c..3eeaf0efba8f 100644
+> --- a/drivers/clocksource/Kconfig
+> +++ b/drivers/clocksource/Kconfig
+> @@ -655,6 +655,7 @@ config ATCPIT100_TIMER
+>   config RISCV_TIMER
+>   	bool "Timer for the RISC-V platform" if COMPILE_TEST
+>   	depends on GENERIC_SCHED_CLOCK && RISCV
+> +	depends on RISCV_SBI
+>   	select TIMER_PROBE
+>   	select TIMER_OF
+>   	help
