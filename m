@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1DD2C4F91
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1D52C4F90
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388599AbgKZHdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 02:33:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730896AbgKZHdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731052AbgKZHdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 26 Nov 2020 02:33:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730149AbgKZHdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 02:33:46 -0500
 Received: from wens.tw (mirror2.csie.ntu.edu.tw [140.112.30.76])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D12F21D93;
-        Thu, 26 Nov 2020 07:33:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B384F20DD4;
+        Thu, 26 Nov 2020 07:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606376026;
-        bh=CX6BU1Zni/drTwYoTIuGnFbbK6HsOMzc5TdCbHxmoMQ=;
+        s=default; t=1606376025;
+        bh=k//4bcHWV3nCxnjDrzlPndrPPL6OH6Rfq6mk/LsgvYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DaZ/H3PaGS3CLckuKq8ZAXKPcg3LTvmGKlHW71zN+g3CwgMxcq3IrpaWeuUkM7Cue
-         PUaEWNDfZrZ1fYsVHAwop47RuSc/nsuVXFhEi2y64zFDf5sHptNNWWJnlDjpukLptk
-         jfnobTkQddMUJXip8aQoI/PQDlUMWKjKO6CjSb00=
+        b=nQ25SNWDPvlhULo5y/v3hZxy0D5Y5KnvPzF6ryvoGEEIByVcu4bW1oAsdH3EagQdg
+         y3loBePWgef3x4D+CNfLNXR3MC3zq5Il6RFzNlG9Jgx/hbFWeHnkzylSuQe2DiYlR5
+         7ZucM2vxRUlABizcyz8aPLTBJlliJY0g517QjgA0=
 Received: by wens.tw (Postfix, from userid 1000)
-        id E60805FA83; Thu, 26 Nov 2020 15:33:42 +0800 (CST)
+        id F103C5FA9D; Thu, 26 Nov 2020 15:33:42 +0800 (CST)
 From:   Chen-Yu Tsai <wens@kernel.org>
 To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
 Cc:     Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] arm64: dts: rockchip: rk3328-roc-cc: Enable HDMI audio
-Date:   Thu, 26 Nov 2020 15:33:35 +0800
-Message-Id: <20201126073336.30794-3-wens@kernel.org>
+Subject: [PATCH 3/3] arm64: dts: rockchip: rk3328-roc-cc: Enable analog audio
+Date:   Thu, 26 Nov 2020 15:33:36 +0800
+Message-Id: <20201126073336.30794-4-wens@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201126073336.30794-1-wens@kernel.org>
 References: <20201126073336.30794-1-wens@kernel.org>
@@ -44,37 +44,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chen-Yu Tsai <wens@csie.org>
 
-The RK3328-ROC-CC already has HDMI display output enabled. Now that
-audio for the HDMI controller is supported, it can be enabled as well.
+Now that driver support for the RK3328's audio codec, and the plumbing
+is defined at the SoC level, we can enable analog audio at the board
+level.
 
-Enable the simple-audio-card, and the I2S interface the audio is fed
-from.
+Enable analog audio by enabling the codec and the I2S interface
+connected and the simple-audio-card that binds them together.
 
 Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-index b76282e704de..697fce709031 100644
+index 697fce709031..19959bfba451 100644
 --- a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
 +++ b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-@@ -161,6 +161,10 @@ &hdmiphy {
- 	status = "okay";
- };
- 
-+&hdmi_sound {
-+	status = "okay";
-+};
-+
- &i2c1 {
- 	status = "okay";
- 
-@@ -270,6 +274,10 @@ regulator-state-mem {
+@@ -104,6 +104,14 @@ user_led: led-1 {
  	};
  };
  
-+&i2s0 {
++&analog_sound {
++	status = "okay";
++};
++
++&codec {
++	status = "okay";
++};
++
+ &cpu0 {
+ 	cpu-supply = <&vdd_arm>;
+ };
+@@ -278,6 +286,10 @@ &i2s0 {
+ 	status = "okay";
+ };
+ 
++&i2s1 {
 +	status = "okay";
 +};
 +
