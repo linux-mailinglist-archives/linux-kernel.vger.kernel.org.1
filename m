@@ -2,143 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578902C5503
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 667222C550E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390090AbgKZNJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:09:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389788AbgKZNJm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:09:42 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACF5C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:09:40 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id i2so2085415wrs.4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:09:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uPX5WtnioZEgnMR9Q1L+JTJpZPzfNtcvjnReWuKjp/g=;
-        b=u2q8FzMDnqtZA9RS+RdFR/YBqcsAM8vhZoUM8AcwGIyYOHa1cLFQiQIGp0idGay/jV
-         hfJa0fdpByabunWMGXAD6Gl+67CCZkUMp9DM+DH4IS4KAUGTCy6ywoBQDmyCjGzpcy8K
-         nDh81NJaVH4fDafXXoDxzS3nHtZsZYAkgCMyur942i4trwWO6XGB/jwKnMQQxZEIgqel
-         16Ub7WUO//qEjZqsprAiXj/BaKQIssOVdKnhZ0nxKGq2r+niZAtfLVwowU4cfKOC8X34
-         jVUNt987SVJ9bhZ16pj+yzIRr/u7RAGZmD0g7hxieTMvBlaEIPAjXc6vpTm8WLUyvmzt
-         yK5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uPX5WtnioZEgnMR9Q1L+JTJpZPzfNtcvjnReWuKjp/g=;
-        b=R45TskeAWk19KpG/3uFp/iJV7VJo6/V0jcSyiuVL4hCSHrlp6MEQR8CyUyQsQXTx31
-         JSGyzQmBd6Cy6GfAtB3enqX9O6WFLOVmYKurZnsj9ybbmRtp2Zs6FQWpvvRan1wckFP5
-         SO6jkOTF65GymS4WZKDQ45RRSKIllV6swJmGfZlpPicTdJpXN7jTEQ0oJ5u28HmENvht
-         lS+XZZgUkzfJap2jd0nv82l8j1mKJ9p6egjzWLTbB56N3ombMr5InXEbNM9bCo0WyzkU
-         Mnjl0ZSFKb39R9EFEqDRmW67jZjqskyXXpaWOVwEBIuVL2cY9GLMS8QyWWwrO52jI0nQ
-         JCww==
-X-Gm-Message-State: AOAM532DZy+RamwffMXUwhZhdDMY21qJ2oyp/mRllNFoY94V150FtQn5
-        24JB4xCH6eH+feplLEN8VroDqzt8WhROrg==
-X-Google-Smtp-Source: ABdhPJyRnrD4xBuApMK0aBHjnXTYxNNyNq9SVndaTvfq07J8Czhpuvfe4GR//R/RBevvaq4JrCC6Ig==
-X-Received: by 2002:adf:de05:: with SMTP id b5mr3793933wrm.131.1606396179220;
-        Thu, 26 Nov 2020 05:09:39 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c023:e75f:e8c4:d86? ([2a01:e34:ed2f:f020:c023:e75f:e8c4:d86])
-        by smtp.googlemail.com with ESMTPSA id u5sm8140424wml.13.2020.11.26.05.09.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 05:09:38 -0800 (PST)
-Subject: Re: [PATCH v4 0/3] Improve the estimations in Intelligent Power
- Allocation
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        amitk@kernel.org, Dietmar.Eggemann@arm.com, ionela.voinescu@arm.com
-References: <20201124161025.27694-1-lukasz.luba@arm.com>
- <e953e887-0fc7-8375-9e5d-1be339f48216@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <f9899f7b-0bc9-40e2-4969-eb76bd11ed5b@linaro.org>
-Date:   Thu, 26 Nov 2020 14:09:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2390110AbgKZNKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:10:47 -0500
+Received: from mout02.posteo.de ([185.67.36.66]:35967 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389879AbgKZNKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 08:10:46 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 453872400FF
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:10:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1606396243; bh=JBKgdlVv9ZLDBtqhmp72rJGZIYphVWv0LA7AuWZp+9M=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ryFEfqP9D4ZkZQPjiULvd4/Iq8lLUWpGuWAQpNGe0GH1B5PxbQY0Ob1Yv/4gfxkrA
+         FpBE1aaa8BPsBuy3wUjL//lezrU9X/lavV0JxshgmqCfx2r3Ol4pq6Ig2zrRBWaCs8
+         u+82pRAMs0vHgmeeq8eoCzJgJ3Gsm8oxAgPM4hN/BshvXzYt/8dAwr1o3LPZzAqki2
+         QM5jaspRrinoTUhuriK4UqXY9RaTPRQeeGIq49RBDJ0BOBkrWhY4ZW+j8Z5jnUzhnL
+         0lTYcwh7KWWR3cOupOYAZnBeDev6Q4TBYCCjLvK2c8+ywlSzqmo9z6/hVp9BMzyjEZ
+         NynUI7yBLX/+Q==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4ChdRP5XG3z9rxG;
+        Thu, 26 Nov 2020 14:10:41 +0100 (CET)
+Date:   Thu, 26 Nov 2020 14:10:39 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>, linux-kernel@vger.kernel.org,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH 2/2] hwspinlock: add sunxi hardware spinlock support
+Message-ID: <20201126141039.45d56786@monster.powergraphx.local>
+In-Reply-To: <39136764-2b58-f66d-68ea-e1c6b4d74edf@sholland.org>
+References: <cover.1605693132.git.wilken.gottwalt@posteo.net>
+        <149526a0ba8d18ebb68baa24e95d946ede90b4c0.1605693132.git.wilken.gottwalt@posteo.net>
+        <20201118153733.jgiokn6jkwu6rv6c@gilmour.lan>
+        <20201118203624.7221ba8b@monster.powergraphx.local>
+        <20201119071523.5cbpgy2cpo5cmuev@gilmour.lan>
+        <20201119111343.74956eae@monster.powergraphx.local>
+        <20201120164231.nmzxe5scwnfoyy3o@gilmour>
+        <20201121122255.GB22987@debian>
+        <20201121164418.hxrxzgob7whgzkpj@gilmour>
+        <20201123193206.0b2d1b6d@monster.powergraphx.local>
+        <39136764-2b58-f66d-68ea-e1c6b4d74edf@sholland.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <e953e887-0fc7-8375-9e5d-1be339f48216@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2020 13:49, Lukasz Luba wrote:
-> Hi Daniel,
+On Mon, 23 Nov 2020 21:35:52 -0600
+Samuel Holland <samuel@sholland.org> wrote:
+
+> On 11/23/20 12:32 PM, Wilken Gottwalt wrote:
+> > On Sat, 21 Nov 2020 17:44:18 +0100
+> > Maxime Ripard <maxime@cerno.tech> wrote:
+> > 
+> >> On Sat, Nov 21, 2020 at 08:22:55PM +0800, fuyao wrote:
+> >>> On Fri, Nov 20, 2020 at 05:42:31PM +0100, Maxime Ripard wrote:
+> >>>> Hi,
+> >>>>
+> >>>> On Thu, Nov 19, 2020 at 11:13:43AM +0100, Wilken Gottwalt wrote:
+> >>>>> On Thu, 19 Nov 2020 08:15:23 +0100
+> >>>>> Maxime Ripard <maxime@cerno.tech> wrote:
+> >>>>>>> can you help me here a bit? I still try to figure out how to do patch sets
+> >>>>>>> properly. Some kernel submitting documentation says everything goes into the
+> >>>>>>> coverletter and other documentation only tells how to split the patches. So
+> >>>>>>> what would be the right way? A quick example based on my patch set would be
+> >>>>>>> really helpful.
+> >>>>>>
+> >>>>>> I mean, the split between your patches and so on is good, you got that right
+> >>>>>>
+> >>>>>> The thing I wanted better details on is the commit log itself, so the
+> >>>>>> message attached to that patch.
+> >>>>>
+> >>>>> Ah yes, I think I got it now. So basically add a nice summary of the coverletter
+> >>>>> there.
+> >>>>
+> >>>> Yes, a bit more context as well. Eventually, this should be the
+> >>>> motivation on why this patch is useful. So what it can be used for, what
+> >>>> are the challenges, how it was tested, etc.
+> >>>>
+> >>>> The cover letter is usually here more to provide some meta-context: what
+> >>>> you expect from the maintainers / reviewers if it's an RFC, if there's
+> >>>> any feature missing or that could be added later on, etc.
+> >>>>
+> >>>>>>>> Most importantly, this hwspinlock is used to synchronize the ARM cores
+> >>>>>>>> and the ARISC. How did you test this driver?
+> >>>>>>>
+> >>>>>>> Yes, you are right, I should have mentioned this. I have a simple test kernel
+> >>>>>>> module for this. But I must admit, testing the ARISC is very hard and I have
+> >>>>>>> no real idea how to do it. Testing the hwspinlocks in general seems to work
+> >>>>>>> with my test kernel module, but I'm not sure if this is really sufficient. I
+> >>>>>>> can provide the code for it if you like. What would be the best way? Github?
+> >>>>>>> Just mailing a patch?
+> >>>>>>>
+> >>>>>>> The test module produces these results:
+> >>>>>>>
+> >>>>>>> # insmod /lib/modules/5.9.8/kernel/drivers/hwspinlock/sunxi_hwspinlock_test.ko 
+> >>>>>>> [   45.395672] [init] sunxi hwspinlock test driver start
+> >>>>>>> [   45.400775] [init] start test locks
+> >>>>>>> [   45.404263] [run ] testing 32 locks
+> >>>>>>> [   45.407804] [test] testing lock 0 -----
+> >>>>>>> [   45.411652] [test] taking lock attempt #0 succeded
+> >>>>>>> [   45.416438] [test] try taken lock attempt #0
+> >>>>>>> [   45.420735] [test] unlock/take attempt #0
+> >>>>>>> [   45.424752] [test] taking lock attempt #1 succeded
+> >>>>>>> [   45.429556] [test] try taken lock attempt #1
+> >>>>>>> [   45.433823] [test] unlock/take attempt #1
+> >>>>>>> [   45.437862] [test] testing lock 1 -----
+> >>>>>>
+> >>>>>> That doesn't really test for contention though, and dealing with
+> >>>>>> contention is mostly what this hardware is about. Could you make a small
+> >>>>>> test with crust to see if when the arisc has taken the lock, the ARM
+> >>>>>> cores can't take it?
+> >>>>>
+> >>>>> So the best solution would be to write a bare metal program that runs on the
+> >>>>> arisc and can be triggered from the linux side (the test kernel module) to take
+> >>>>> a spinlock ... or at least take spinlocks periodically for a while and watch it
+> >>>>> on the linux side. Okay, I think I can do this. Though, I have to dig through
+> >>>>> all this new stuff first.
+> >>>>
+> >>>> It doesn't have to be super complicated, just a loop that takes a lock,
+> >>>> sleeps for some time, and releases the lock should be enough to at least
+> >>>> validate that the lock is actually working
+> >>>>
+> >>>
+> >>> I think the difficulty is the bare metal program in arsic has little
+> >>> documentation.
+> >>
+> >> crust has mostly figured it out:
+> >> https://github.com/crust-firmware/crust
+> > 
+> > I actually have serious trouble to get crust running. It compiles for H2+/H3, but
+> > I can't figure out if it runs at all. I will switch to a H5 based device which is
 > 
-> On 11/24/20 4:10 PM, Lukasz Luba wrote:
->> Hi all,
->>
->> The Intelligent Power Allocation (IPA) estimates the needed
->> coefficients for
->> internal algorithm. It can also estimate the sustainable power value
->> when the
->> DT has not provided one. Fix the 'k_i' coefficient which might be to big
->> related to the other values, when the sustainable power is in an abstract
->> scale. Do the estimation of sustainable power only once and avoid
->> expensive
->> calculation every time the IPA is called. Do the estimation of PID
->> constants
->> when there was user update via sysfs to sustainable power.
->>
->> The patch set should apply on top next-20201124
->>
->> Changes:
->> v4:
->> - added new function get_sustainable_power() which handles use cases
->>    when the value should be estimated again or simply returned
->> - added sustainable_power in the power_allocator_params to track if there
->>    was a change to sustainable_power by the user via sysfs
->> - addressed Daniel's comments that sustainable power set via sysfs should
->>    trigger PID coefficients estimation
->> - removed 'force' argument from estimate_pid_constants() and make it
->> ready
->>    for updates due to new value for sust. power from sysfs
->> - abandoned the design from v3 with a single function responsible for
->>    estimation both sust. power and PID const. requested by Ionela
->> v3 [1]:
->> - changed estimate_pid_constants to estimate_tzp_constants and related
->> comments
->> - estimate the PID coefficients always together with sust. power
->> - added print indicating that we are estimating sust. power and PID
->> const.
->> - don't use local variable 'sustainable_power'
->>
->> Regards,
->> Lukasz Luba
->>
->> [1]
->> https://lore.kernel.org/lkml/20201009135850.14727-1-lukasz.luba@arm.com/
->>
->> Lukasz Luba (3):
->>    thermal: power allocator: change the 'k_i' coefficient estimation
->>    thermal: power allocator: refactor sustainable power estimation
->>    thermal: power allocator: change the 'k_*' always in
->>      estimate_pid_constants()
->>
->>   drivers/thermal/gov_power_allocator.c | 76 +++++++++++++++++----------
->>   1 file changed, 49 insertions(+), 27 deletions(-)
->>
+> Crust does not yet support the H2+/H3 (it is active WIP). H5 should work
+> well.
 > 
-> Gentle ping. This is a self contained change to only power allocator
-> file. It addresses also your requirement regarding sustainable_power
-> changed via sysfs.
+> > confirmed to work. If I see this correctly crust is doing nothing with spinlocks
+> > yet, so I may end up also working on crust, adding the spinlocks there too. Don't> know yet how
+> > long I will take to understand every detail, but I will
+> report
+> > progress.
 > 
-> Could you take it please? It should apply smoothly in your tree.
+> Correct. There is currently no hwspinlock driver in crust. For testing,
+> you can poke MMIO from the main loop, near the call to scpi_poll() in
+> common/system.c. You can use the timeout.h functions for timing.
 
-Actually, I'm waiting for Ionela and Dietmar ack.
+Thank you very much for the hint. I already have a very simple test running
+were crust changes the state of the first spinlock every 250ms (with the high
+timeout it is much easier to catch).
+ 
+> If you want to write a full driver, I would like to know how you expect
+> to use the hwspinlocks. Allocating the locks has to be coordinated among
+> all of the users: Linux, U-Boot, crust, any other ARISC firmware, etc.
 
+I will think about this if the Linux hwspinlock driver is in an acceptable
+state and I can easily show, that it works. I want to create more complex
+tests first.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Can I actualy print messages from crust to the debug uart while linux runs?
+It doesn't matter if the messages get scrambled while both write to the uart.
+It would be just nice to see this playing out in "realtime".
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> > Greetings,
+> > Wilken
+> 
+> Cheers,
+> Samuel
+
