@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D462C4C8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D6F2C4C90
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731469AbgKZBSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 20:18:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729679AbgKZBSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 20:18:41 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAEF1206C0;
-        Thu, 26 Nov 2020 01:18:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606353521;
-        bh=fog10W20ZnIu55AcNV7BiDI5Wh8kOel1mDnmrzT6wIg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xaAJkYKYC6amA26QUYRADxqBXArBDibtJAKAbIoQ6txu7BH8K38JeLpuW5xo8SLh9
-         9ZbqTSMX9KaCstt58b3jI1R4Lyj1RBuFjk1dJ3qsaTeLFwe9JwHDrsDfgRWnA7ISUq
-         AyhvbKB/54XbkZ2wlKNKfQ9awAq6Kw8JwQVWuREA=
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     ashok.raj@intel.com, knsathya@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5/5] PCI/ACPI: Centralize pci_aer_available() checking
-Date:   Wed, 25 Nov 2020 19:18:16 -0600
-Message-Id: <20201126011816.711106-6-helgaas@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201126011816.711106-1-helgaas@kernel.org>
-References: <20201126011816.711106-1-helgaas@kernel.org>
+        id S1731501AbgKZBVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 20:21:18 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8589 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730762AbgKZBVS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 20:21:18 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ChKhH5ZwGzLvWM;
+        Thu, 26 Nov 2020 09:20:47 +0800 (CST)
+Received: from [10.174.177.149] (10.174.177.149) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 26 Nov 2020 09:21:11 +0800
+Subject: Re: [PATCH] xfs: check the return value of krealloc() in
+ xfs_uuid_mount
+To:     Eric Sandeen <sandeen@sandeen.net>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        <linux-xfs@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20201125065036.154312-1-miaoqinglang@huawei.com>
+ <365b952c-7fea-3bc2-55ea-3f6b1c9f9142@sandeen.net>
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+Message-ID: <9f998a9d-0684-6b45-009e-acf2e0ac4c85@huawei.com>
+Date:   Thu, 26 Nov 2020 09:21:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <365b952c-7fea-3bc2-55ea-3f6b1c9f9142@sandeen.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
 
-Check pci_aer_available() in acpi_pci_root_create() when we're interpreting
-_OSC results so host_bridge->native_aer becomes the single way to determine
-whether we control AER capabilities.
 
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/acpi/pci_root.c         | 3 +++
- drivers/pci/pcie/portdrv_core.c | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+在 2020/11/25 23:55, Eric Sandeen 写道:
+> On 11/25/20 12:50 AM, Qinglang Miao wrote:
+>> krealloc() may fail to expand the memory space.
+> 
+> Even with __GFP_NOFAIL?
+> 
+>    * ``GFP_KERNEL | __GFP_NOFAIL`` - overrides the default allocator behavior
+>      and all allocation requests will loop endlessly until they succeed.
+>      This might be really dangerous especially for larger orders.
+> 
+>> Add sanity checks to it,
+>> and WARN() if that really happened.
+> 
+> As aside, there is no WARN added in this patch for a memory failure.
+> 
+>> Fixes: 771915c4f688 ("xfs: remove kmem_realloc()")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+>> ---
+>>   fs/xfs/xfs_mount.c | 6 +++++-
+>>   1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
+>> index 150ee5cb8..c07f48c32 100644
+>> --- a/fs/xfs/xfs_mount.c
+>> +++ b/fs/xfs/xfs_mount.c
+>> @@ -80,9 +80,13 @@ xfs_uuid_mount(
+>>   	}
+>>   
+>>   	if (hole < 0) {
+>> -		xfs_uuid_table = krealloc(xfs_uuid_table,
+>> +		uuid_t *if_xfs_uuid_table;
+>> +		if_xfs_uuid_table = krealloc(xfs_uuid_table,
+>>   			(xfs_uuid_table_size + 1) * sizeof(*xfs_uuid_table),
+>>   			GFP_KERNEL | __GFP_NOFAIL);
+>> +		if (!if_xfs_uuid_table)
+>> +			goto out_duplicate;
+> 
+> And this would emit "Filesystem has duplicate UUID" which is not correct.
+> 
+> But anyway, the __GFP_NOFAIL in the call makes this all moot AFAICT.
+> 
+> -Eric
+Hi Eric,
 
-diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-index 36142ed7b8f8..f9969b86d3b6 100644
---- a/drivers/acpi/pci_root.c
-+++ b/drivers/acpi/pci_root.c
-@@ -941,6 +941,9 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
- 		host_bridge->native_dpc = 1;
- 	}
- 
-+	if (!pci_aer_available())
-+		host_bridge->native_aer = 0;
-+
- 	dev_info(&root->device->dev, "OS native features: SHPCHotplug%c PCIeHotplug%c PME%c AER%c DPC%c LTR%c\n",
- 		FLAG(host_bridge->native_shpc_hotplug),
- 		FLAG(host_bridge->native_pcie_hotplug),
-diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-index 2a1190e8db60..48c14c2471ef 100644
---- a/drivers/pci/pcie/portdrv_core.c
-+++ b/drivers/pci/pcie/portdrv_core.c
-@@ -220,7 +220,7 @@ static int get_port_device_capability(struct pci_dev *dev)
- 	}
- 
- #ifdef CONFIG_PCIEAER
--	if (host->native_aer && dev->aer_cap && pci_aer_available()) {
-+	if (host->native_aer && dev->aer_cap) {
- 		services |= PCIE_PORT_SERVICE_AER;
- 
- 		/*
--- 
-2.25.1
+Sorry for neglecting __GFP_NOFAIL symbol, and I would add a WARN in 
+memory failure next time.
 
+Thanks for your advice！
+> 
+>> +		xfs_uuid_table = if_xfs_uuid_table;
+>>   		hole = xfs_uuid_table_size++;
+>>   	}
+>>   	xfs_uuid_table[hole] = *uuid;
+>>
+> .
+> 
