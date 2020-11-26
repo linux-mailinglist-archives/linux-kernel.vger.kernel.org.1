@@ -2,88 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4C82C56A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5022C56AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390388AbgKZOFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:05:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389970AbgKZOFH (ORCPT
+        id S2390008AbgKZOIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:08:38 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31008 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388291AbgKZOIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:05:07 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34154C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:05:06 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id f9so907338ejw.4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:05:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IR/x5ppg0wZJxqnSWD4QBn+IO7HGLxlSw1Ip7OHvr2U=;
-        b=eSQRSkHDHxJpGRZx48zDMHSQApFE6qcCNRpRf0pE7BWtGOQCTmM4C3P0zzIY7oHk7e
-         CLmsvn+WzYqU+jCO7fi3ZyDQek3W0BWW5xU7d6WKH+m8VcnFJ4eBDn8r6vPLoOc4pK62
-         +TGdfGxT6y8iZ8Yb7Rtf0Sn7UJEdC5WVLezdc4qgL4YDi7Z5dqY5NuhWXYHEGL3QXV8b
-         gRYuvwEepC8v3DpgLZNG7XG/FegZMMHBT2bJHoyKD0njG63oRRkax4dCyCd2Z4QNYOYa
-         cxNGRycYEXaQVzcEUtf+vYbDHv7mcjvmi3DR5RbeC8WuHqBLxlbTGFdJPd7mL1CKv84n
-         H/ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=IR/x5ppg0wZJxqnSWD4QBn+IO7HGLxlSw1Ip7OHvr2U=;
-        b=CRnVZZsB3XSNUF/TzZeIMwoa3S/Q1UsUnKLaunQW03Iqg9Iqkwmf0n/YRL/bjz0+9C
-         Dpf0M5MRGwiJPCxkg39N1BysDNfKrafC5r4IDs2tIdM6pKP9ikUh0cgVs6uaxozqCdQi
-         mXD3nFSoFGZa7RQkUt/nhzxjCU/TKVWoDrqOgvsNws6PWy/jeM02yCQe1n0rDQMIPNd6
-         5BzjyxWGrhIHUJo0atSjnfZie8A0dvtFn9fMUpHy/uiUl6qPLUjyzxOPouw7wL7FWZXx
-         H3bav87x176pnheV68t95gUmwqy8U23xsQliwrS5mzGOpM1if0ZvOwyEbnT81R3/OElm
-         mB6g==
-X-Gm-Message-State: AOAM531M5iAP06CpTvkvjIDfidEvlZDqNF/aDXAG3TJtS4R/Kf/iuRcs
-        GmUnx/QdVkb22dwz1JSrhgJIQBANPQ86XDSe
-X-Google-Smtp-Source: ABdhPJzSMYfd2Kmru4HnfgP50Cxw9b3MaPKHFEhAqa44DK5nvRY/yjEIqNjmvpfpr6q9nlo/Bxwb9g==
-X-Received: by 2002:a17:906:a183:: with SMTP id s3mr2928234ejy.60.1606399504680;
-        Thu, 26 Nov 2020 06:05:04 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id q26sm3127131ejt.73.2020.11.26.06.05.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 26 Nov 2020 06:05:04 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] ARM: zynq: Fix incorrect reference to XM013 instead of XM011
-Date:   Thu, 26 Nov 2020 15:05:02 +0100
-Message-Id: <39e16e667aa8f132496092d4fa554935ddd5a55f.1606399500.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 26 Nov 2020 09:08:38 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AQE32qB072410;
+        Thu, 26 Nov 2020 09:08:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=sj6pwlTM26uzANfJRuGsI+hlWiYKct3Y5yGAfXZ2MGg=;
+ b=DNC64MryATRapW8LQ/hvVVrdoqPxfUeZuizKs5n0RuVwYyPugRoSQ1Z+02GViZWEXMEP
+ aaW/8XWsJIsUXphfX8ZFe+cfoHWffoZCPdDVpY31sD0VxdR6NAsW5JPAs+TyJtwDkoJ2
+ wIVVnpRGV7MfBwIRMaa1dn2LGITMa/y4IEN/GgCMHf33NnS4VPMNgECo+VXHlY+/9ya2
+ azU0AokZ6oYnQyqiKlHacy/umzZRTe1Ym0moYALSNQVhbhZr2Li6FktpLgoJvc53KIfG
+ yzlM7nZVYPQoDOr52r+QV84lhl/ddezxunLgSoeohbGqXgMAemzVXjBfU+Hsdmw10zIO 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 352dp68ct9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 09:08:35 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AQE3G8h073452;
+        Thu, 26 Nov 2020 09:08:35 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 352dp68csm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 09:08:35 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AQE2Vvi001097;
+        Thu, 26 Nov 2020 14:08:33 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 34xth8dp6v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 14:08:33 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AQE8Uvf6619710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Nov 2020 14:08:30 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E9B0AE057;
+        Thu, 26 Nov 2020 14:08:30 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD762AE045;
+        Thu, 26 Nov 2020 14:08:29 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.0.176])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 26 Nov 2020 14:08:29 +0000 (GMT)
+Date:   Thu, 26 Nov 2020 15:08:28 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v12 05/17] s390/vfio-ap: manage link between queue
+ struct and matrix mdev
+Message-ID: <20201126150828.78776e62.pasic@linux.ibm.com>
+In-Reply-To: <20201124214016.3013-6-akrowiak@linux.ibm.com>
+References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
+        <20201124214016.3013-6-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-26_04:2020-11-26,2020-11-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ bulkscore=0 clxscore=1015 impostorscore=0 suspectscore=2 phishscore=0
+ spamscore=0 adultscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011260085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix comment about targeted extension card. It was likely just c&p error.
+On Tue, 24 Nov 2020 16:40:04 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+> @@ -1155,6 +1243,11 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
+>  			     matrix_mdev->matrix.apm_max + 1) {
+>  		for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm,
+>  				     matrix_mdev->matrix.aqm_max + 1) {
+> +			q = vfio_ap_mdev_get_queue(matrix_mdev,
+> +						   AP_MKQID(apid, apqi));
+> +			if (!q)
+> +				continue;
+> +
+>  			ret = vfio_ap_mdev_reset_queue(apid, apqi, 1);
+>  			/*
+>  			 * Regardless whether a queue turns out to be busy, or
+> @@ -1164,9 +1257,7 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
+>  			if (ret)
+>  				rc = ret;
+>  
+> -			q = vfio_ap_get_queue(matrix_mdev, AP_MKQID(apid, apqi);
+> -			if (q)
+> -				vfio_ap_free_aqic_resources(q);
+> +			vfio_ap_free_aqic_resources(q);
+>  		}
+>  	}
 
- arch/arm/boot/dts/zynq-zc770-xm011.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+During the review of v11 we discussed this. Introducing this the one
+way around, just to change it in the next patch, which should deal
+with something different makes no sense to me.
 
-diff --git a/arch/arm/boot/dts/zynq-zc770-xm011.dts b/arch/arm/boot/dts/zynq-zc770-xm011.dts
-index b7f65862c022..56732e8f6ca1 100644
---- a/arch/arm/boot/dts/zynq-zc770-xm011.dts
-+++ b/arch/arm/boot/dts/zynq-zc770-xm011.dts
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0+
- /*
-- * Xilinx ZC770 XM013 board DTS
-+ * Xilinx ZC770 XM011 board DTS
-  *
-  * Copyright (C) 2013-2018 Xilinx, Inc.
-  */
--- 
-2.29.2
-
+BTW I've provided a ton of feedback for '[PATCH v11 03/14]
+s390/vfio-ap: manage link between queue struct and matrix mdev', but I
+can't find your response to that. Some of the things resurface here, and
+I don't feel like repeating myself. Can you provide me an answer to
+the v11 version?
