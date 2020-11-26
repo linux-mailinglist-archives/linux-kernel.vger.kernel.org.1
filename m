@@ -2,79 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79722C58A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECB22C58D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391279AbgKZPyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:54:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730181AbgKZPyZ (ORCPT
+        id S2391492AbgKZPzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:55:31 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63454 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391421AbgKZPyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:54:25 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9140C0613D4;
-        Thu, 26 Nov 2020 07:54:24 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id f9so1377646ejw.4;
-        Thu, 26 Nov 2020 07:54:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LhVa8jfQzjJvmCilxYrG6nSbqJTzGo2dOTG8F9FmarI=;
-        b=jr5i1JWhYnHIO/I1DiJ4KSMBdQ6y/w78vOmLhjyF6CmI3TvQEr/YrPXBaJCTUJm1rX
-         VrJtpF1XD7ySBuPDcKNT+6WWK5yoznGNZjr3cBD3OW85mmFZt9rGiZPDLhgyYgvnI0PW
-         ihj5GtTJ96GziJ3Gq/mFSQXnbAVAfikbeb/pKHl1KtYKnNMHUltAXb5dJKjPcfEJw2cT
-         lc1T8xNqOeHYlGyRMceObwssX3Rdsjy8GXTHy3b7MTq7X2jygDEo4t4iezgQrFD43s99
-         iLRdLmD081c2DWl+feUy6MTFszNqS2jPj8LwqGhUlaGRy/WRcW3odcykRxUHaL5GOHeV
-         M6AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LhVa8jfQzjJvmCilxYrG6nSbqJTzGo2dOTG8F9FmarI=;
-        b=Ojyaud6lNqPD2UfzCsOZeT8IEEM8cUQ1WjoT/0++5Y9TU9zd7eOLs13MWJG2j12g62
-         mN9beBRWhwXDuLV4GhQ8SNKJN1Hk6oitmqF22tVAKLzz/sEqUjnStNS0T5Uqt5WGvQy5
-         fbzi0mLquPWj9scMvl6jC40yTrNUODzUZ4xwhAuGFJuV8nCUqn4gSy1xLujE6aU8xNek
-         bjgG/c4VkyG7jg5NoVi8xD5tf7pC6sQs+p2D+YqOv8qtGBI8pxi+bv49E+FjtmzkRHE4
-         r3LQBRws+Mw+Eswev0eeB+L+eELy1l+5k6//gSv+L2Ch1Kpyb8AyFAgZ1Cx+J1uQmkOr
-         lNAg==
-X-Gm-Message-State: AOAM530xzWuSckzhb89D1MJ6SuuwKS4lXfIKrKxiooCO3dY026//D/Yo
-        lGBGoNZlzffNVC7vXdFlUKo=
-X-Google-Smtp-Source: ABdhPJxdyy4xHY3ZhbV5pw0UXu1yYgkQlJ41NTDex2CIC+STH+hqK1oxHTSPU5nwSRQUJfOywLeEfQ==
-X-Received: by 2002:a17:907:20cd:: with SMTP id qq13mr3298943ejb.141.1606406063457;
-        Thu, 26 Nov 2020 07:54:23 -0800 (PST)
-Received: from skbuf ([188.25.2.120])
-        by smtp.gmail.com with ESMTPSA id dk4sm3496904edb.54.2020.11.26.07.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 07:54:22 -0800 (PST)
-Date:   Thu, 26 Nov 2020 17:54:21 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH] dpaa2-mac: select NET_DEVLINK to fix build
-Message-ID: <20201126155421.2gd47fwxw7bgzfq2@skbuf>
-References: <20201126140933.1535197-1-sudeep.holla@arm.com>
+        Thu, 26 Nov 2020 10:54:44 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AQFWNou064250;
+        Thu, 26 Nov 2020 10:54:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=e4Qwx/ayVeb9ZbZv5VaULTaIFsFfcFgooqcpj2nGS1M=;
+ b=B8X9NYEXw4KwdwIbIKyPFG0iZ7gyxLd1SDmh2BEhkOeR9cbJEpukBODHT/WC9tsAd4ZM
+ sYK8jv3jkp0KulL99YyAZ3E3OvKqmaJqOxL23A8A1Esd2NZ5+aNMoLaG8g1eXkRwNGAE
+ hyGcdtKCC6RGS2kXL4ytDKaLLfbqpvXboCXa0NvMMeGiDq8CALlmOB8OZXZAL3qotCgM
+ LpZoD5CAOufGxu3099TVgduaDi4C85wX1IhDS+xJ74i897T0O9z7nwm9dV0ck/IzHJLH
+ WPRO5SgzmPCpfRpmc12q6b2dUK9wHb6iCg1kxHdt1+VTjHpU+enK97siZMB2CXdN+GfV aA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 352cqumtq8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 10:54:40 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AQFWPcW064498;
+        Thu, 26 Nov 2020 10:54:39 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 352cqumtpa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 10:54:39 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AQFlaOq020032;
+        Thu, 26 Nov 2020 15:54:37 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 352ata04gh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 15:54:37 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AQFsYG863111536
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Nov 2020 15:54:34 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5414011C04C;
+        Thu, 26 Nov 2020 15:54:34 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 89D7111C050;
+        Thu, 26 Nov 2020 15:54:33 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.0.176])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 26 Nov 2020 15:54:33 +0000 (GMT)
+Date:   Thu, 26 Nov 2020 16:54:31 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v12 07/17] s390/vfio-ap: implement in-use callback for
+ vfio_ap driver
+Message-ID: <20201126165431.6ef1457a.pasic@linux.ibm.com>
+In-Reply-To: <20201124214016.3013-8-akrowiak@linux.ibm.com>
+References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
+        <20201124214016.3013-8-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201126140933.1535197-1-sudeep.holla@arm.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-26_05:2020-11-26,2020-11-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 clxscore=1015 adultscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011260092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 02:09:33PM +0000, Sudeep Holla wrote:
-> When NET_DEVLINK is not selected, we get the following build error:
-[...]
->
-> Commit f6b19b354d50 ("net: devlink: select NET_DEVLINK from drivers")
-> selected NET_DEVLINK from several drivers and rely on the functions
-> being there.
->
-> Replicate the same for FSL_DPAA2_ETH.
+On Tue, 24 Nov 2020 16:40:06 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=078eb55cdf25e
+> Let's implement the callback to indicate when an APQN
+> is in use by the vfio_ap device driver. The callback is
+> invoked whenever a change to the apmask or aqmask would
+> result in one or more queue devices being removed from the driver. The
+> vfio_ap device driver will indicate a resource is in use
+> if the APQN of any of the queue devices to be removed are assigned to
+> any of the matrix mdevs under the driver's control.
+> 
+> There is potential for a deadlock condition between the matrix_dev->lock
+> used to lock the matrix device during assignment of adapters and domains
+> and the ap_perms_mutex locked by the AP bus when changes are made to the
+> sysfs apmask/aqmask attributes.
+> 
+> Consider following scenario (courtesy of Halil Pasic):
+> 1) apmask_store() takes ap_perms_mutex
+> 2) assign_adapter_store() takes matrix_dev->lock
+> 3) apmask_store() calls vfio_ap_mdev_resource_in_use() which tries
+>    to take matrix_dev->lock
+> 4) assign_adapter_store() calls ap_apqn_in_matrix_owned_by_def_drv
+>    which tries to take ap_perms_mutex
+> 
+> BANG!
+> 
+> To resolve this issue, instead of using the mutex_lock(&matrix_dev->lock)
+> function to lock the matrix device during assignment of an adapter or
+> domain to a matrix_mdev as well as during the in_use callback, the
+> mutex_trylock(&matrix_dev->lock) function will be used. If the lock is not
+> obtained, then the assignment and in_use functions will terminate with
+> -EBUSY.
+
+Good news is: the final product is OK with regards to in_use(). Bad news
+is: this patch does not do enough. At this stage we are still racy.
+
+The problem is that the assign operations don't bother to take the
+ap_perms_mutex lock under the matrix_dev->lock.
+
+The scenario is the following:
+1) apmask_store() takes ap_perms_mutex
+2) apmask_store() calls vfio_ap_mdev_resource_in_use() which
+     takes matrix_dev->lock
+3) vfio_ap_mdev_resource_in_use() releases matrix_dev->lock
+   and returns 0
+4) assign_adapter_store() takes matrix_dev->lock does the
+   assign (the queues are still bound to vfio_ap) and releases
+   matrix_dev->lock 
+5) apmask_store() carries on, does the update to apask and releases
+   ap_perms_mutex
+6) The queues get 'stolen' from vfio ap while used.
+
+This gets fixed with "s390/vfio-ap: allow assignment of unavailable AP
+queues to mdev device". Maybe we can reorder these patches. I didn't
+look into that.
+
+We could also just ignore the problem, because it is just for a couple
+of commits, but I would prefer it gone.
+
+Regards,
+Halil
+   
+
+
