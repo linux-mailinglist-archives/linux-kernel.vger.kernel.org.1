@@ -2,195 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC692C4EB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 07:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 909232C4EB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 07:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388006AbgKZG2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 01:28:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgKZG2i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 01:28:38 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF68C0617A7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 22:28:36 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id d8so917025lfa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 22:28:36 -0800 (PST)
+        id S2388022AbgKZGa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 01:30:56 -0500
+Received: from mail-mw2nam12on2073.outbound.protection.outlook.com ([40.107.244.73]:28705
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388010AbgKZGa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 01:30:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SE8RrvYkk0tYCsTUDxVRkLBH7IF/WXxV5vNPYKbPa+UVAp36dSR9GmjkaLNRhj1sWPG3ntUTCH0S8h+JVMe++utaquEKhJEAHbl7WRwwb/iTfcijFJiYGCK0TGSzaKASnnRg4U3JhCvGJJTqUsDEn+HCwQ0yNC8f7U+Ku6+HZB5OLWcZ4pIT21auwxsgJUjfdRaVx4a5xMd8/D7z3glov2+r2WRtwQAy+GfRy3NcmJjKDHx2edJaw2M7TpJpaAQoz2FxxQcgF937dA671rZwDfkkIGC0Ws1O778ccOxjeI7fZklSvmjmdinfXI4I8s6leeo5Tgs9KHih8IP4s8bApA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z2lfawqwMSgjo+fvXa2PHhK6IXuXMpu4ZTaIghaLdHc=;
+ b=jyXrX6WGb0gI5lImVcS+fFJXqXN71dj7Y1nu09B2Y+EUWKbYugL6W68KbjezWsqrn0XWAHC0FN3BMz+8w8cqNN/23SPUC2oXp0fb+MOMR124xpFxl+FoV19PQdEBuVxRmoeBN9V+RS7mzBcinaxipdDWrfhmbBIhoN1y/lKxvtYbGXD1IFtlBMriPUjH9HAKHnsVKOSNsPm/c5dXjt1MYru9W/R5Qn6ZdTCYAe7atpiEUIN0S9zChRSumgrxHpBTcDxZ1036nyKBRidZostmNFy//o6/6/dMJgb2HGlczHfApfCWiB9RmHrraUxpaa/tVxJmL9gWMvyLvdszQvJ+VA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BrCn0HK4581wnsppy1Np5qiOd8IF6a02wHXrju6sSj8=;
-        b=MT3ReyDA7GcUE3UEiRtFN8XqF1c4x/Bat1aEy7UvE3NUZIGQ7+0vGliiI6mLh18xy6
-         K+IMDFI98iJFuZ3KGhx+MiNbu0shWRW8oalOqLC7DHEvDfGX8c7QoiF+UOrxBcQ8Z8La
-         0/xjg/qnlzTzaVYJGEKY4DRpGqhPmkF5VKKKE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BrCn0HK4581wnsppy1Np5qiOd8IF6a02wHXrju6sSj8=;
-        b=pigvbFr29PmFlCUo7juhnsIrtWTV7ZB4ooHBy5RKMX2EAHrv+iY1m/SsJu0GISVotL
-         6R2dbR4/SDU8xJVl3IdMv26DyclKgawUteL34HfEqYuY5B6Q/2fkIYI3kGnGUyIU23MR
-         LOLRg0uiV86ASpdNPc5B9X3OgbEDE4jLvXtVZj/i0TF8tbuEtduTR2abq/5Lruy/UDjK
-         TSCG3glzxTGdSvbIO652Rmc3vvlIS9OXUk7qUcOZqUnVFLUX8PKfLn5RfEm9TJv/z9h9
-         uswLlDazj6y7KVik9CctyQy9E0GTsQP5g2j+1hrcj6JFC13WYG3ZC93OhDadoBCbPGC9
-         cg5Q==
-X-Gm-Message-State: AOAM5311wMR0ySCqv5Ri+ggEQuBLBTTpEdySQE63isNfgZN0LGJ0svkr
-        0E9gwQTv34Yg10PKiEavm08+VIHB6dtcLQD2
-X-Google-Smtp-Source: ABdhPJzR7++Zu88hP7tEzUA99kkkTIQJu2FnBK7BrLpxaNtOx/7r89XKLbD6uck6AJPbzzzrRl9ZXA==
-X-Received: by 2002:ac2:5219:: with SMTP id a25mr721369lfl.264.1606372114490;
-        Wed, 25 Nov 2020 22:28:34 -0800 (PST)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id d22sm484997ljh.44.2020.11.25.22.28.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 22:28:34 -0800 (PST)
-Received: by mail-lj1-f177.google.com with SMTP id j10so1084022lja.5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 22:28:33 -0800 (PST)
-X-Received: by 2002:a2e:9bd2:: with SMTP id w18mr698548ljj.312.1606372113030;
- Wed, 25 Nov 2020 22:28:33 -0800 (PST)
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z2lfawqwMSgjo+fvXa2PHhK6IXuXMpu4ZTaIghaLdHc=;
+ b=idj3z0SsWr4mPNuiHbDb78Aghuu5+W6hCSDyo2l1cnCjdwQzsp9qZBQqtmDdikhl+2aX1yc+74iVkT65Kgl3xz8flFykOCFWPey0qLwZCE5EfXHU270lTuiIno1vZ+qEZuutJnRb6wwqm3wTIDWkd5RrNvYhn0BqK6ogZaFxNrE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
+ by DM6PR11MB2762.namprd11.prod.outlook.com (2603:10b6:5:c8::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.29; Thu, 26 Nov
+ 2020 06:30:54 +0000
+Received: from DM6PR11MB4545.namprd11.prod.outlook.com
+ ([fe80::4985:c74a:ffcb:6f40]) by DM6PR11MB4545.namprd11.prod.outlook.com
+ ([fe80::4985:c74a:ffcb:6f40%4]) with mapi id 15.20.3611.025; Thu, 26 Nov 2020
+ 06:30:53 +0000
+From:   Paul Gortmaker <paul.gortmaker@windriver.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Subject: [PATCH 0/3] clear_warn_once: add timed interval resetting
+Date:   Thu, 26 Nov 2020 01:30:26 -0500
+Message-Id: <20201126063029.2030-1-paul.gortmaker@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [128.224.252.2]
+X-ClientProxiedBy: YTXPR0101CA0012.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00::25) To DM6PR11MB4545.namprd11.prod.outlook.com
+ (2603:10b6:5:2ae::14)
 MIME-Version: 1.0
-References: <20201120001037.10032-1-stanimir.varbanov@linaro.org>
- <20201120001037.10032-3-stanimir.varbanov@linaro.org> <CAPBb6MUnXmtSKy9NwikYXjafgB+WM9TKEFjkYK16T2V7KRx=JQ@mail.gmail.com>
- <8c6231b2-61c2-d432-aa47-ddc29de8da19@linaro.org>
-In-Reply-To: <8c6231b2-61c2-d432-aa47-ddc29de8da19@linaro.org>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Thu, 26 Nov 2020 15:28:20 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MXRat0g_+d04eoOL9Vpbv-2iJfqdOkzGB17=yjRMeVWXQ@mail.gmail.com>
-Message-ID: <CAPBb6MXRat0g_+d04eoOL9Vpbv-2iJfqdOkzGB17=yjRMeVWXQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] venus: Limit HFI sessions to the maximum supported
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Mansur Alisha Shaik <mansur@codeaurora.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hackbox.wrs.com (128.224.252.2) by YTXPR0101CA0012.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Thu, 26 Nov 2020 06:30:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4abc7762-b93e-4abf-f09c-08d891d4d35b
+X-MS-TrafficTypeDiagnostic: DM6PR11MB2762:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR11MB27627001C94C1ECF6EC0400483F90@DM6PR11MB2762.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: isWb4pjMimM56FIZDeaire4tGRo+nefgYH4aWb3eiuxRknaZx0Oy0Rd8n/Fmqrry7aGGLgL/t+TF6gU2dW5YTAGa1NwwgfuqrIwNURvIGErnP3ob/fr0dXUgOcWR0U6hLZZKUMPoc5h/o62AgGSRfU0W/gdNOjmwz8P5zFltVP5GPm37THIwhmOMQ8XNGUI678l8w8aDV7gb12Wp8GoeAn6Bn553qrs7tXnQdUVch369VDXpACdcO+Z8o9YO1O2/49tsXfziq/yy8A8xyEcCrBUpvdVlILQKEe3cbUxHWKQK7MY5NTiByuYl3aVS7wjV40r23fHPvd9eYZPgU8TJ/Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(346002)(39850400004)(376002)(2616005)(66946007)(6666004)(66476007)(44832011)(6512007)(66556008)(478600001)(956004)(2906002)(4326008)(5660300002)(8936002)(8676002)(6506007)(54906003)(186003)(16526019)(1076003)(52116002)(316002)(6486002)(86362001)(6916009)(36756003)(83380400001)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?UoGwD9xatei711QaWOyMNYEdZiHvtkV+9+UU3VgylWQU0Uvpil8AwcxJt9X+?=
+ =?us-ascii?Q?aq0Sd/QgN9Oi6PjHiX9ZfnHA3Oo1d9WquxceciprSJ5T0QLmk1MVgavhUyp2?=
+ =?us-ascii?Q?yfnLlSD1Bp8sFVpwifsUWntMJ7zs3IHcSOOqbpCFBwyQ7QScduKrwxEpddhg?=
+ =?us-ascii?Q?mjc9OXxc9P/QLWj1WqRPfg4pPm1hVq7n/fmgRAvLJnZhttlzlbPzUvnT2PAQ?=
+ =?us-ascii?Q?HCIvSNtkYMavm3q/c1DW39V4773DokUQb3psX2BXqZ8HI3K6YAAHIgqCOxrK?=
+ =?us-ascii?Q?pxrmzCSI9lg94iVHiltb6vqin86k/8RV/WAM112X7HG9LIAs3kHd4b55zkD8?=
+ =?us-ascii?Q?8sl6OkLaaPDMrpX7PBSMZ24GVWiX++vu2mYgaUQcS0Z2narAqFjIndA2Gtgc?=
+ =?us-ascii?Q?U0Q6jqqrJuSxwVm04acM49xzLouBlEt9vwSN7kDDelOY/RpcqwJKIr6fsg92?=
+ =?us-ascii?Q?7JOygk1bc+LHREJoWl/L9qOcvnsfk54yhog6gJJRAOCh4T8E2tLx2zuCrdIO?=
+ =?us-ascii?Q?87DQveA5R5iFggWgwn0oOreKeRfgTDe0MfVq2g4IgMtzoo/NKb+o1/d1cf5R?=
+ =?us-ascii?Q?512M98NkNITIxTARog2CWopmdQ0WZb0//YUiRtWoxUBdGG3PK49DndX5GNP8?=
+ =?us-ascii?Q?dT98jjnP4OOJP95CV/mOYmqtbcACmTrV6a0mfHI6ByerqQKYROX4eMjcMg2S?=
+ =?us-ascii?Q?rre1TlcRuNvfXFRrebE5I//5R4IHEjKP6Pw0pjnDRGXWw/D0LIq8+SSWAnRw?=
+ =?us-ascii?Q?evtf9X/tj5Q7BWA8jp0a/1oyEMAuXzicv4Wsg7m77PabQCw5Lo83yCB4iAwW?=
+ =?us-ascii?Q?c3uQRY48bcLDCckVBvJGLsMRWg3sPS4S7uUUlnsUjdLW5s+6ixxQ4IWSCzdq?=
+ =?us-ascii?Q?CpUr3RB0MByVybGBm/FYplrpeudjvAy6/qiFGcQ5coxSOYslY8znOUGUtWTa?=
+ =?us-ascii?Q?FhUkP7i2J/0oNHm+3I7CotHaOsrvpLjOykMdiMh+7txSfQcRrQy4jVQaQ/OF?=
+ =?us-ascii?Q?XMQy?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4abc7762-b93e-4abf-f09c-08d891d4d35b
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2020 06:30:53.9441
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rjpT9CzfFfoZYT8NGDCMFgQC6RE0HscwSwPrc7rqLb9yc0c3LbbYtxdkwOPtCVk78F+dSSFHtjnyOlvP4PgkUXlDv3osFvAjUgd4k7S8AH8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2762
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 10:01 PM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
->
->
-> On 11/25/20 5:46 AM, Alexandre Courbot wrote:
-> > On Fri, Nov 20, 2020 at 9:12 AM Stanimir Varbanov
-> > <stanimir.varbanov@linaro.org> wrote:
-> >>
-> >> Currently we rely on firmware to return error when we reach the maximum
-> >> supported number of sessions. But this errors are happened at reqbuf
-> >> time which is a bit later. The more reasonable way looks like is to
-> >> return the error on driver open.
-> >>
-> >> To achieve that modify hfi_session_create to return error when we reach
-> >> maximum count of sessions and thus refuse open.
-> >>
-> >> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> >> ---
-> >>  drivers/media/platform/qcom/venus/core.h      |  1 +
-> >>  drivers/media/platform/qcom/venus/hfi.c       | 19 +++++++++++++++----
-> >>  .../media/platform/qcom/venus/hfi_parser.c    |  3 +++
-> >>  3 files changed, 19 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-> >> index db0e6738281e..3a477fcdd3a8 100644
-> >> --- a/drivers/media/platform/qcom/venus/core.h
-> >> +++ b/drivers/media/platform/qcom/venus/core.h
-> >> @@ -96,6 +96,7 @@ struct venus_format {
-> >>  #define MAX_CAP_ENTRIES                32
-> >>  #define MAX_ALLOC_MODE_ENTRIES 16
-> >>  #define MAX_CODEC_NUM          32
-> >> +#define MAX_SESSIONS           16
-> >>
-> >>  struct raw_formats {
-> >>         u32 buftype;
-> >> diff --git a/drivers/media/platform/qcom/venus/hfi.c b/drivers/media/platform/qcom/venus/hfi.c
-> >> index 638ed5cfe05e..8420be6d3991 100644
-> >> --- a/drivers/media/platform/qcom/venus/hfi.c
-> >> +++ b/drivers/media/platform/qcom/venus/hfi.c
-> >> @@ -175,6 +175,7 @@ static int wait_session_msg(struct venus_inst *inst)
-> >>  int hfi_session_create(struct venus_inst *inst, const struct hfi_inst_ops *ops)
-> >>  {
-> >>         struct venus_core *core = inst->core;
-> >> +       int ret;
-> >>
-> >>         if (!ops)
-> >>                 return -EINVAL;
-> >> @@ -183,12 +184,22 @@ int hfi_session_create(struct venus_inst *inst, const struct hfi_inst_ops *ops)
-> >>         init_completion(&inst->done);
-> >>         inst->ops = ops;
-> >>
-> >> -       mutex_lock(&core->lock);
-> >> -       list_add_tail(&inst->list, &core->instances);
-> >> -       atomic_inc(&core->insts_count);
-> >> +       ret = mutex_lock_interruptible(&core->lock);
-> >> +       if (ret)
-> >> +               return ret;
-> >
-> > Why do we change to mutex_lock_interruptible() here? This makes this
->
-> Because mutex_lock_interruptible is preferable in kernel docs, but I
-> agree that changing mutex_lock with mutex_lock_interruptible should be
-> subject of another lock related patches. I will drop this in next patch
-> version.
->
-> > function return an error even though we could obtain the lock just by
-> > trying a bit harder.
->
-> I didn't get that. The behavior of mutex_lock_interruptible is that same
-> as mutex_lock, i.e. the it will sleep to acquire the lock. The
-> difference is that the sleep could be interrupted by a signal. You might
-> think about mutex_trylock?
+The existing clear_warn_once functionality is currently a manually
+issued state reset via the file /sys/kernel/debug/clear_warn_once when
+debugfs is mounted.  The idea being that a developer would be running
+some tests, like LTP or similar, and want to check reproducibility
+without having to reboot.
 
-Unless that mutex can be held by someone else for a rather long time
-(i.e. to the point where we may want to give priority to signals when
-userspace opens the device, since that's where hfi_session_create() is
-called), I am not convinced this change is necessary? It may confuse
-userspace into thinking there was a serious error while there is none.
-Granted, userspace should manage this case, and from what I can see
-this code is correct, but I'm not sure we would gain anything by
-adding this extra complexity.
+But you currently can't make use of clear_warn_once unless you've got
+debugfs enabled and mounted - which may not be desired by some people
+in some deployment situations.
 
->
-> >
-> >> +
-> >> +       ret = atomic_read(&core->insts_count);
-> >> +       if (ret + 1 > core->max_sessions_supported) {
-> >> +               ret = -EAGAIN;
-> >> +       } else {
-> >> +               atomic_inc(&core->insts_count);
-> >> +               list_add_tail(&inst->list, &core->instances);
-> >> +               ret = 0;
-> >> +       }
-> >> +
-> >>         mutex_unlock(&core->lock);
-> >>
-> >> -       return 0;
-> >> +       return ret;
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(hfi_session_create);
-> >>
-> >> diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c b/drivers/media/platform/qcom/venus/hfi_parser.c
-> >> index 363ee2a65453..52898633a8e6 100644
-> >> --- a/drivers/media/platform/qcom/venus/hfi_parser.c
-> >> +++ b/drivers/media/platform/qcom/venus/hfi_parser.c
-> >> @@ -276,6 +276,9 @@ u32 hfi_parser(struct venus_core *core, struct venus_inst *inst, void *buf,
-> >>                 words_count--;
-> >>         }
-> >>
-> >> +       if (!core->max_sessions_supported)
-> >> +               core->max_sessions_supported = MAX_SESSIONS;
-> >> +
-> >>         parser_fini(inst, codecs, domain);
-> >>
-> >>         return HFI_ERR_NONE;
-> >> --
-> >> 2.17.1
-> >>
->
-> --
-> regards,
-> Stan
+The functionality added here allows for periodic resets in addition to
+the one-shot reset it already had.  Then we allow for a boot-time setting
+of the periodic resets so it can be used even when debugfs isn't mounted.
+
+By having a periodic reset, we also open the door for having the various
+"once" functions act as long period ratelimited messages, where a sysadmin
+can pick an hour or a day reset if they are facing an issue and are
+wondering "did this just happen once, or am I only being informed once?"
+
+Tested with DEBUG_FS_ALLOW_ALL and DEBUG_FS_ALLOW_NONE on an otherwise
+defconfig.
+
+---
+
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: John Ogness <john.ogness@linutronix.de>
+
+Paul Gortmaker (3):
+  clear_warn_once: expand debugfs to include read support
+  clear_warn_once: bind a timer to written reset value
+  clear_warn_once: add a warn_once_reset= boot parameter
+
+ .../admin-guide/clearing-warn-once.rst        |  9 +++
+ .../admin-guide/kernel-parameters.txt         |  8 ++
+ kernel/panic.c                                | 78 +++++++++++++++++--
+ 3 files changed, 90 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
