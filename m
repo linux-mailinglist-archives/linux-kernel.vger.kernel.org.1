@@ -2,98 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FE42C4C94
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321932C4C97
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730544AbgKZBZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 20:25:29 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:49995 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727062AbgKZBZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 20:25:29 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606353929; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=V16thVLdBJdUt6KU8AVud/cH+EtHnsC94YUQORQwInc=;
- b=pPkEQDCu0/IionCXxC9sDpcereCAzcdoE/7T2TCFo3IRcd31LnpHN9ZVvlD1aAWbJ9+ljBnC
- xlEIYutbwjadys+AkgIK0lFs3RQgSaZlwbEBatIMRk7syi5nbGpaXcysD4UftrfFhKtocsL+
- 8QdF8PSzqr5gFqNGUFxf4o0Xeds=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fbf040022377520eec09503 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Nov 2020 01:25:20
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 65DD8C43465; Thu, 26 Nov 2020 01:25:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 32D74C433ED;
-        Thu, 26 Nov 2020 01:25:19 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 26 Nov 2020 09:25:19 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Refector ufshcd_setup_clocks() to
- remove skip_ref_clk
-In-Reply-To: <1606352316.23925.1.camel@mtkswgap22>
-References: <1606202906-14485-1-git-send-email-cang@codeaurora.org>
- <1606202906-14485-2-git-send-email-cang@codeaurora.org>
- <1606352316.23925.1.camel@mtkswgap22>
-Message-ID: <07687efa0e49a5c2266deadad94c92dd@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S1731223AbgKZB0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 20:26:41 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:56604 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730632AbgKZB0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 20:26:41 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutBKBL9ffsQWAA--.37398S2;
+        Thu, 26 Nov 2020 09:26:34 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] acpi: Fix use-after-free in acpi_ipmi.c
+Date:   Thu, 26 Nov 2020 09:26:34 +0800
+Message-Id: <1606353994-10348-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxutBKBL9ffsQWAA--.37398S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKw18JF15Xry8JFy8GrWxWFg_yoWxZrb_u3
+        ZF9rW7X3Wqyr10kr12vr1rZrWj9FsIqFZ3ur10qF1Ik3s3Xr97Jry7Z340vr15Zw4UGFn8
+        XanFyr1kAr4agjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7AYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_KwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8HxR3UUUUU==
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-26 08:58, Stanley Chu wrote:
-> Hi Can,
-> 
-> "Refector" in title shall be "Refactor"?
-> 
-> On Mon, 2020-11-23 at 23:28 -0800, Can Guo wrote:
->> Remove the param skip_ref_clk from __ufshcd_setup_clocks(), but keep a 
->> flag
->> in struct ufs_clk_info to tell whether a clock can be disabled or not 
->> while
->> the link is active.
->> 
->> Signed-off-by: Can Guo <cang@codeaurora.org>
-> 
-> Otherwise looks good to me.
-> 
+kfree() has been called inside put_device so anther kfree would cause a
+use-after-free bug.
 
-Sorry, will fix it in next version.
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ drivers/acpi/acpi_ipmi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks,
+diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
+index 9d6c0fc..18edf8b 100644
+--- a/drivers/acpi/acpi_ipmi.c
++++ b/drivers/acpi/acpi_ipmi.c
+@@ -142,7 +142,6 @@ static void ipmi_dev_release(struct acpi_ipmi_device *ipmi_device)
+ {
+ 	ipmi_destroy_user(ipmi_device->user_interface);
+ 	put_device(ipmi_device->dev);
+-	kfree(ipmi_device);
+ }
+ 
+ static void ipmi_dev_release_kref(struct kref *kref)
+-- 
+2.1.0
 
-Can Guo.
-
-> Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
