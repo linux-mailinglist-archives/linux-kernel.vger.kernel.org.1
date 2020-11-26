@@ -2,69 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB152C59A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 279392C59B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403854AbgKZQ4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 11:56:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33058 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391237AbgKZQ4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 11:56:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C1125ACE0;
-        Thu, 26 Nov 2020 16:56:47 +0000 (UTC)
-Subject: Re: [PATCH 1/3] mm,thp,shmem: limit shmem THP alloc gfp_mask
-To:     Rik van Riel <riel@surriel.com>, hughd@google.com
-Cc:     xuyu@linux.alibaba.com, akpm@linux-foundation.org, mgorman@suse.de,
-        aarcange@redhat.com, willy@infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        linux-mm@kvack.org, mhocko@suse.com
-References: <20201124194925.623931-1-riel@surriel.com>
- <20201124194925.623931-2-riel@surriel.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <18cea0b2-1037-3276-1d42-2a4adcc129e4@suse.cz>
-Date:   Thu, 26 Nov 2020 17:56:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2403918AbgKZQ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 11:59:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403871AbgKZQ7E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 11:59:04 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646DCC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 08:59:04 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 3so334135wmj.4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 08:59:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0L00r4rPHemcbzcKizDl5R/fNH5uAoaWPolJKjNNL9c=;
+        b=EivVOmLNk176rC1BaDYKctnghwXfBJ8z7Vtqp3kgoYE9GywHRyCXiLuUXCFTUOrUxa
+         /l5zZGyjrAbnUwyPs1Y9iN/ilkHw2xWvXklsmM8mKMvuW9Q+H9ispA2Wt6bxLoWZ8Ba/
+         g/vBv3cyAQaJSj+Ve66wA52pJQBf8mNihZ/cQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0L00r4rPHemcbzcKizDl5R/fNH5uAoaWPolJKjNNL9c=;
+        b=r9a+b5tGTxhPaXt+qhYDJU4t4tCVxg6tIJO+2yNdnkL0+9GevvKTcatFvCqCo7pOms
+         viXFh6o51alTkoFDgYf+rrumJv3iex385wc69DMOrk3ZTRc2hFdYNfDLnUH8O4dWqMWW
+         d20aePMffu+XwpQQOfBb5ERvQpPUlXngRa2LXphwAhHiq1Y/J1mxfdjQup2cFyHYUCY0
+         SCKUMGmEF+HQGupmvL834fq9rCvYFdJzGcpCii9at6OdbrKOdz60tElpDdgX37wL5IdG
+         0QhGaVzuSxeen+A5/NL7wZYk5HHFnHOFqbVq7kB5V+B2youHae3Ygo02TWj+4ToatvYJ
+         MriQ==
+X-Gm-Message-State: AOAM5317ql1yYC4YN7k1Ee+MS8hQpTOxKkPZQ5p3tU3fezceFO6NpuB5
+        wuq1iwEklewcJsTu2DZHds/GgQ==
+X-Google-Smtp-Source: ABdhPJyIgpPGSqDwYRnHLR+STfy/X3mG/aOhmRn390E4IPISSzL02fN4S0cJfWSOd/Lw11+HIV2Kkg==
+X-Received: by 2002:a1c:1f16:: with SMTP id f22mr4243742wmf.108.1606409943063;
+        Thu, 26 Nov 2020 08:59:03 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
+        by smtp.gmail.com with ESMTPSA id 17sm8768032wmf.48.2020.11.26.08.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 08:59:02 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+X-Google-Original-From: Florent Revest <revest@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@chromium.org, revest@google.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+Date:   Thu, 26 Nov 2020 17:57:47 +0100
+Message-Id: <20201126165748.1748417-1-revest@google.com>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-In-Reply-To: <20201124194925.623931-2-riel@surriel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/20 8:49 PM, Rik van Riel wrote:
-> The allocation flags of anonymous transparent huge pages can be controlled
-> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
-> help the system from getting bogged down in the page reclaim and compaction
-> code when many THPs are getting allocated simultaneously.
-> 
-> However, the gfp_mask for shmem THP allocations were not limited by those
-> configuration settings, and some workloads ended up with all CPUs stuck
-> on the LRU lock in the page reclaim code, trying to allocate dozens of
-> THPs simultaneously.
-> 
-> This patch applies the same configurated limitation of THPs to shmem
-> hugepage allocations, to prevent that from happening.
-> 
-> Controlling the gfp_mask of THP allocations through the knobs in
-> sysfs allows users to determine the balance between how aggressively
-> the system tries to allocate THPs at fault time, and how much the
-> application may end up stalling attempting those allocations.
-> 
-> This way a THP defrag setting of "never" or "defer+madvise" will result
-> in quick allocation failures without direct reclaim when no 2MB free
-> pages are available.
-> 
-> With this patch applied, THP allocations for tmpfs will be a little
-> more aggressive than today for files mmapped with MADV_HUGEPAGE,
-> and a little less aggressive for files that are not mmapped or
-> mapped without that flag.
-> 
-> Signed-off-by: Rik van Riel <riel@surriel.com>
+This helper exposes the kallsyms_lookup function to eBPF tracing
+programs. This can be used to retrieve the name of the symbol at an
+address. For example, when hooking into nf_register_net_hook, one can
+audit the name of the registered netfilter hook and potentially also
+the name of the module in which the symbol is located.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Florent Revest <revest@google.com>
+---
+ include/uapi/linux/bpf.h       | 16 +++++++++++++
+ kernel/trace/bpf_trace.c       | 41 ++++++++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h | 16 +++++++++++++
+ 3 files changed, 73 insertions(+)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index c3458ec1f30a..670998635eac 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3817,6 +3817,21 @@ union bpf_attr {
+  *		The **hash_algo** is returned on success,
+  *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
+  *		invalid arguments are passed.
++ *
++ * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
++ *	Description
++ *		Uses kallsyms to write the name of the symbol at *address*
++ *		into *symbol* of size *symbol_sz*. This is guaranteed to be
++ *		zero terminated.
++ *		If the symbol is in a module, up to *module_size* bytes of
++ *		the module name is written in *module*. This is also
++ *		guaranteed to be zero-terminated. Note: a module name
++ *		is always shorter than 64 bytes.
++ *	Return
++ *		On success, the strictly positive length of the full symbol
++ *		name, If this is greater than *symbol_size*, the written
++ *		symbol is truncated.
++ *		On error, a negative value.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3981,6 +3996,7 @@ union bpf_attr {
+ 	FN(bprm_opts_set),		\
+ 	FN(ktime_get_coarse_ns),	\
+ 	FN(ima_inode_hash),		\
++	FN(kallsyms_lookup),	\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index d255bc9b2bfa..9d86e20c2b13 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -17,6 +17,7 @@
+ #include <linux/error-injection.h>
+ #include <linux/btf_ids.h>
+ #include <linux/bpf_lsm.h>
++#include <linux/kallsyms.h>
+ 
+ #include <net/bpf_sk_storage.h>
+ 
+@@ -1260,6 +1261,44 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+ 	.arg5_type	= ARG_ANYTHING,
+ };
+ 
++BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32, symbol_size,
++	   char *, module, u32, module_size)
++{
++	char buffer[KSYM_SYMBOL_LEN];
++	unsigned long offset, size;
++	const char *name;
++	char *modname;
++	long ret;
++
++	name = kallsyms_lookup(address, &size, &offset, &modname, buffer);
++	if (!name)
++		return -EINVAL;
++
++	ret = strlen(name) + 1;
++	if (symbol_size) {
++		strncpy(symbol, name, symbol_size);
++		symbol[symbol_size - 1] = '\0';
++	}
++
++	if (modname && module_size) {
++		strncpy(module, modname, module_size);
++		module[module_size - 1] = '\0';
++	}
++
++	return ret;
++}
++
++const struct bpf_func_proto bpf_kallsyms_lookup_proto = {
++	.func		= bpf_kallsyms_lookup,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_ANYTHING,
++	.arg2_type	= ARG_PTR_TO_MEM,
++	.arg3_type	= ARG_CONST_SIZE,
++	.arg4_type	= ARG_PTR_TO_MEM,
++	.arg5_type	= ARG_CONST_SIZE,
++};
++
+ const struct bpf_func_proto *
+ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+@@ -1356,6 +1395,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_per_cpu_ptr_proto;
+ 	case BPF_FUNC_bpf_this_cpu_ptr:
+ 		return &bpf_this_cpu_ptr_proto;
++	case BPF_FUNC_kallsyms_lookup:
++		return &bpf_kallsyms_lookup_proto;
+ 	default:
+ 		return NULL;
+ 	}
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index c3458ec1f30a..670998635eac 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3817,6 +3817,21 @@ union bpf_attr {
+  *		The **hash_algo** is returned on success,
+  *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
+  *		invalid arguments are passed.
++ *
++ * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
++ *	Description
++ *		Uses kallsyms to write the name of the symbol at *address*
++ *		into *symbol* of size *symbol_sz*. This is guaranteed to be
++ *		zero terminated.
++ *		If the symbol is in a module, up to *module_size* bytes of
++ *		the module name is written in *module*. This is also
++ *		guaranteed to be zero-terminated. Note: a module name
++ *		is always shorter than 64 bytes.
++ *	Return
++ *		On success, the strictly positive length of the full symbol
++ *		name, If this is greater than *symbol_size*, the written
++ *		symbol is truncated.
++ *		On error, a negative value.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3981,6 +3996,7 @@ union bpf_attr {
+ 	FN(bprm_opts_set),		\
+ 	FN(ktime_get_coarse_ns),	\
+ 	FN(ima_inode_hash),		\
++	FN(kallsyms_lookup),	\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+-- 
+2.29.2.454.gaff20da3a2-goog
+
