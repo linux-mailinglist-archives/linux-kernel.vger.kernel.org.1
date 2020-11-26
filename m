@@ -2,106 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D27F2C5C1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 988272C5C25
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404691AbgKZSqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 13:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403877AbgKZSqJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 13:46:09 -0500
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B51C0613D4;
-        Thu, 26 Nov 2020 10:46:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender:
-        Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Jm9WExEEGbZnOC+/zAJaeZ73Cvbu8YyRGJ7tUNH6vk0=; b=wfQmoh83XQfT54jh1iV8LauzzD
-        n/z69omMALivwYrURu1uC1lvMahX4fBJbr5KA8EH8Unhtw68sKPC4XSLrBEXOFAZKYdNQxdRXtIIN
-        2ztH/xnuenTCPwXK7T4OFXz4ODJtVMBVJPdaLJjJIdm63eGVfunBKgrFT1YTrDs0tiGq/G5KuVb0+
-        DXtVntH1sLNUE+iwNt6kBT2qtgPQ6oXF+wyzBy9wJNJHCGwsEnnEieSsLToXobr2rh9JWW53rVWRg
-        wjfNoNoqiNrlMYTdb/iwjuz5eLg4spQwTP81lDvYR9Fc/vO5FTzP6zkyEUjd9D5ZiNOUnmEe43uiZ
-        PWLS/B2A==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1kiMHK-0000KY-OU; Thu, 26 Nov 2020 18:46:02 +0000
-Date:   Thu, 26 Nov 2020 18:46:02 +0000
-From:   Jonathan McDowell <noodles@earth.li>
-To:     Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org
-Subject: [PATCH] dmaengine: qcom: Fix ADM driver kerneldoc markup
-Message-ID: <20201126184602.GA1008@earth.li>
+        id S2404925AbgKZStl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 13:49:41 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:35552 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404018AbgKZStl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 13:49:41 -0500
+Received: from zn.tnic (p200300ec2f0c9000558d893f9f23e622.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9000:558d:893f:9f23:e622])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EA7DB1EC051F;
+        Thu, 26 Nov 2020 19:49:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606416579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=2W+NL3SAFLUluBOMDMd2sp2541nCq4pNaSr+RwgKTNo=;
+        b=FlzZs4iD/b1N/2T6ze+nzfRu5fchjA5IhevHmlusf1y3m5/h8mqAnGoz6gDYdGcG7pDV46
+        5NC838TlUNV/76f1iPpRpp+I5SQ6QTgqyL5FOl2Ax/jwED3ngFT3Au1m6fbcyWqa9S+mxW
+        u71XOVZbahIDozSfK49q+L8fWUgOX4s=
+Date:   Thu, 26 Nov 2020 19:49:33 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v15 04/26] x86/cet: Add control-protection fault handler
+Message-ID: <20201126184933.GF31565@zn.tnic>
+References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
+ <20201110162211.9207-5-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201110162211.9207-5-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the kerneldoc function headers to fix build warnings:
+On Tue, Nov 10, 2020 at 08:21:49AM -0800, Yu-cheng Yu wrote:
+> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> index e19df6cde35d..6c21c1e92605 100644
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -598,6 +598,65 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
+>  	cond_local_irq_disable(regs);
+>  }
+>  
+> +#ifdef CONFIG_X86_CET
+> +static const char * const control_protection_err[] = {
+> +	"unknown",
+> +	"near-ret",
+> +	"far-ret/iret",
+> +	"endbranch",
+> +	"rstorssp",
+> +	"setssbsy",
+> +};
+> +
+> +/*
+> + * When a control protection exception occurs, send a signal
+> + * to the responsible application.  Currently, control
+> + * protection is only enabled for the user mode.  This
+> + * exception should not come from the kernel mode.
+> + */
 
-drivers/dma/qcom/qcom_adm.c:180: warning: Function parameter or member 'chan' not described in 'adm_free_chan'
-drivers/dma/qcom/qcom_adm.c:190: warning: Function parameter or member 'burst' not described in 'adm_get_blksize'
-drivers/dma/qcom/qcom_adm.c:466: warning: Function parameter or member 'chan' not described in 'adm_terminate_all'
-drivers/dma/qcom/qcom_adm.c:466: warning: Excess function parameter 'achan' description in 'adm_terminate_all'
-drivers/dma/qcom/qcom_adm.c:503: warning: Function parameter or member 'achan' not described in 'adm_start_dma'
+Make that 80 cols wide.
 
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
----
- drivers/dma/qcom/qcom_adm.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
+> +{
+> +	struct task_struct *tsk;
+> +
+> +	if (notify_die(DIE_TRAP, "control protection fault", regs,
+> +		       error_code, X86_TRAP_CP, SIGSEGV) == NOTIFY_STOP)
+> +		return;
 
-diff --git a/drivers/dma/qcom/qcom_adm.c b/drivers/dma/qcom/qcom_adm.c
-index 9b6f8e050ecc..ee78bed8d60d 100644
---- a/drivers/dma/qcom/qcom_adm.c
-+++ b/drivers/dma/qcom/qcom_adm.c
-@@ -173,8 +173,9 @@ struct adm_device {
- /**
-  * adm_free_chan - Frees dma resources associated with the specific channel
-  *
-- * Free all allocated descriptors associated with this channel
-+ * @chan: dma channel
-  *
-+ * Free all allocated descriptors associated with this channel
-  */
- static void adm_free_chan(struct dma_chan *chan)
- {
-@@ -185,6 +186,7 @@ static void adm_free_chan(struct dma_chan *chan)
- /**
-  * adm_get_blksize - Get block size from burst value
-  *
-+ * @burst: Burst size of transaction
-  */
- static int adm_get_blksize(unsigned int burst)
- {
-@@ -456,7 +458,7 @@ static struct dma_async_tx_descriptor *adm_prep_slave_sg(struct dma_chan *chan,
- 
- /**
-  * adm_terminate_all - terminate all transactions on a channel
-- * @achan: adm dma channel
-+ * @chan: dma channel
-  *
-  * Dequeues and frees all transactions, aborts current transaction
-  * No callbacks are done
-@@ -497,7 +499,7 @@ static int adm_slave_config(struct dma_chan *chan, struct dma_slave_config *cfg)
- 
- /**
-  * adm_start_dma - start next transaction
-- * @achan - ADM dma channel
-+ * @achan: ADM dma channel
-  */
- static void adm_start_dma(struct adm_chan *achan)
- {
+What is the intent here, notifiers can prevent the machine from printing
+the CP error below?
+
+> +	cond_local_irq_enable(regs);
+> +
+> +	if (!user_mode(regs))
+> +		die("kernel control protection fault", regs, error_code);
+
+Let's write that more explicitly:
+
+		die("Unexpected/unsupported control protection fault"...
+
+> +
+> +	if (!static_cpu_has(X86_FEATURE_SHSTK) &&
+> +	    !static_cpu_has(X86_FEATURE_IBT))
+
+Why static_cpu_has?
+
+> +		WARN_ONCE(1, "CET is disabled but got control protection fault\n");
+
+			     "Control protection fault with CET support disabled\n"
+
+> +
+> +	tsk = current;
+> +	tsk->thread.error_code = error_code;
+> +	tsk->thread.trap_nr = X86_TRAP_CP;
+> +
+> +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
+> +	    printk_ratelimit()) {
+> +		unsigned int max_err;
+> +		unsigned long ssp;
+> +
+> +		max_err = ARRAY_SIZE(control_protection_err) - 1;
+> +		if ((error_code < 0) || (error_code > max_err))
+> +			error_code = 0;
+
+<---- newline here.
+
+> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
+> +		pr_info("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
+> +			tsk->comm, task_pid_nr(tsk),
+> +			regs->ip, regs->sp, ssp, error_code,
+> +			control_protection_err[error_code]);
+> +		print_vma_addr(KERN_CONT " in ", regs->ip);
+> +		pr_cont("\n");
+> +	}
+
+...
+
 -- 
-2.20.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
