@@ -2,166 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B462C5821
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79222C584E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389911AbgKZP21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:28:27 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:42547 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730181AbgKZP2Z (ORCPT
+        id S2391376AbgKZPbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:31:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391368AbgKZPbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:28:25 -0500
-Received: by mail-ot1-f65.google.com with SMTP id 11so2148455oty.9;
-        Thu, 26 Nov 2020 07:28:24 -0800 (PST)
+        Thu, 26 Nov 2020 10:31:15 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BCF7C0613D4;
+        Thu, 26 Nov 2020 07:31:15 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id m6so2551634wrg.7;
+        Thu, 26 Nov 2020 07:31:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=33G2Aw3cGR8fTdmd4bVmmACQpGg8i7XaRf6DP/2Dh78=;
+        b=AUL+bBJ6+TTNvTF+WPlDhIWJ4eIPV0Z6KrcKw3WROMEB1ZzOjiR8zsJYJkckbx6ZH6
+         GidcFOEa6f7yCyl362OmqDy2ODXEWyhpWcOfyVpt941+Mqc1jqOztOKITujqRC/lIeSH
+         0H+Xi2poObhhMyWz5k24rx//wOUvGPLArrNrb0LAp/Lz/jxP2SPFUwQ6y3Q5/ywwRg0o
+         8jCwtJOZhGqehpgDEf7CSztkw3glxvZ0O3uK/GFQfaRCfgQlCwxDBgYUKgFkgeSu3vVN
+         kZM+umkM4pYgo/sS+E+0ACnhKR5R0HWRfP2r1NGWaaC25PlxqFSxK2e/jh7mPvBKuxY1
+         eX8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kP9MspVOPl/NnVl8oGn1EIC/+F8CcK5+OXo+jY56Nno=;
-        b=p1LPklKauT6ZD3B4tEKvNCKzEP0Yfd4DGDo3Iy66e66PmLNNLYG+6ZxPyPtfaEn7Xx
-         O+Z1pSRZ2UylNm9jTTBRuUrKYw8QH6kndmudWNZFh1BzZhnXavwPjhAJGyN7oFoCD+Vt
-         uLF65g3oXOLCdOjNhgoRZR+sRMRAn/pCs75lCP9ntJMUbtEsLzpX0RwjTtwtDNMA8uWm
-         99mU+jCr2Jqq0f9P7SrCkv2nQnjHN1f3h3TV8PZ/Myt7RYbAgNp6grJN5/qrt1mOqs/G
-         OmYaJMRKhc80I1olU0DqWbgdTCNXn+hedUK06eUhHH2CxLj7JMpWP1YCRcumhBPHZHMQ
-         4TZQ==
-X-Gm-Message-State: AOAM532rYdzinpIMfCfA4fW6Y+YK3PQ0OYDO36NGYiA8INbBNzUJPDnw
-        Z6Ar5ecjZWk1XTPSza3q25qBxwPhwHFZ6bNsgIZBdtug
-X-Google-Smtp-Source: ABdhPJyYtol6dSfaI6WhgTcuunq7fhBuSULViECyA4Z+K27bCejCuaia55DZ/aziu9dD69JTQZlYwW/4z6Mu7Di+rU4=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr2551843otc.145.1606404504116;
- Thu, 26 Nov 2020 07:28:24 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=33G2Aw3cGR8fTdmd4bVmmACQpGg8i7XaRf6DP/2Dh78=;
+        b=scXEhjYAMQw652jNo50rf26S8/RnDygDBaL5buNANhgESw7qmfW8g93yJPCC8k9/AY
+         tNaCoGqd4HiRfgP1DyuCiw4Quo/pflMslRK2tf3e5ZP/9/iWXqwHQhQ1QVVDR7jjfWAS
+         Fny4HyTLNIZO/tzjzDlwgb/yj/f1ZhGYCwSR14jPfPrfut76NeU6uZmpe3nMYx86+qRp
+         svkSk/QeYXqUSS6dkU7NhrT30T8ipuB25YsIcOmNdE/KKTLjYgZ2v1duDDcNdElO3j4u
+         /HXsvjhfgl5rl59ntBkugD8ZjcS5YO9W1w90F/ORGnhLI/Iqkjsos1BSJ95J0yDluWuD
+         MF4Q==
+X-Gm-Message-State: AOAM53242+WPb5pEphxT4OIxToNxOHgRdjVHRlwKjc2T66pIXjkK7cYX
+        5NeJu2k5dY2e75y1oc9neNZYRAQw0F4=
+X-Google-Smtp-Source: ABdhPJx7eDLOL3dQjC1CQ45Mb8OE6ssDTX0Ve4IPHbTS77oNWkrSC2ZMgLVcmPPRG6yIkJNswknW2Q==
+X-Received: by 2002:a5d:510d:: with SMTP id s13mr4494577wrt.380.1606404674237;
+        Thu, 26 Nov 2020 07:31:14 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id f18sm9410313wru.42.2020.11.26.07.31.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 07:31:12 -0800 (PST)
+Date:   Thu, 26 Nov 2020 16:31:11 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     JC Kuo <jckuo@nvidia.com>
+Cc:     kishon@ti.com, vkoul@kernel.org, gregkh@linuxfoundation.org,
+        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, nkristam@nvidia.com
+Subject: Re: [PATCH v1] phy: tegra: xusb: Fix usb_phy device driver field
+Message-ID: <X7/KP/rnFkw329TY@ulmo>
+References: <20201117083803.185209-1-jckuo@nvidia.com>
 MIME-Version: 1.0
-References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
- <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
- <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
- <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
- <CANiq72k5tpDoDPmJ0ZWc1DGqm+81Gi-uEENAtvEs9v3SZcx6_Q@mail.gmail.com>
- <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
- <CANiq72kqO=bYMJnFS2uYRpgWATJ=uXxZuNUsTXT+3aLtrpnzvQ@mail.gmail.com>
- <44005bde-f6d4-5eaa-39b8-1a5efeedb2d3@gmail.com> <CANiq72nobq=ptWK-qWxU91JHqkKhMcRtJNnw2XJd5-vSJWZd8Q@mail.gmail.com>
-In-Reply-To: <CANiq72nobq=ptWK-qWxU91JHqkKhMcRtJNnw2XJd5-vSJWZd8Q@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 26 Nov 2020 16:28:12 +0100
-Message-ID: <CAMuHMdV5kOakvZJMWLxbpigFPS+Xuw6DVYsWCWZy7wGsv3idcw@mail.gmail.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Edward Cree <ecree.xilinx@gmail.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net,
-        Lars Ellenberg <drbd-dev@lists.linbit.com>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        scsi <linux-scsi@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        coreteam@netfilter.org, intel-wired-lan@lists.osuosl.org,
-        linux-input <linux-input@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>, selinux@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        linux-geode@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        linux-hams@vger.kernel.org,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hwmon@vger.kernel.org,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        GR-Linux-NIC-Dev@marvell.com,
-        tipc-discussion@lists.sourceforge.net,
-        Linux-MM <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-sctp@vger.kernel.org, USB list <linux-usb@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        target-devel <target-devel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WN6ltYL4TufsTCLD"
+Content-Disposition: inline
+In-Reply-To: <20201117083803.185209-1-jckuo@nvidia.com>
+User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miguel,
 
-On Thu, Nov 26, 2020 at 3:54 PM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
-> On Wed, Nov 25, 2020 at 11:44 PM Edward Cree <ecree.xilinx@gmail.com> wrote:
-> > To make the intent clear, you have to first be certain that you
-> >  understand the intent; otherwise by adding either a break or a
-> >  fallthrough to suppress the warning you are just destroying the
-> >  information that "the intent of this code is unknown".
->
-> If you don't know what the intent of your own code is, then you
-> *already* have a problem in your hands.
+--WN6ltYL4TufsTCLD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The maintainer is not necessarily the owner/author of the code, and
-thus may not know the intent of the code.
+On Tue, Nov 17, 2020 at 04:38:03PM +0800, JC Kuo wrote:
+> In commit "phy: tegra: xusb: Add usb-phy support", an OTG capable PHY
+> device, such as phy-usb2.0 device of Jetson-TX1 platform, will be
+> bound to the tegra-xusb-padctl driver by the following line in
+> tegra_xusb_setup_usb_role_switch().
+>=20
+> 	port->usb_phy.dev->driver =3D port->padctl->dev->driver;
+>=20
+> With this, dev_pm_ops set of tegra-xusb-padctl driver will be invoked
+> for the OTG capable PHY incorrectly as below logs show.
+>=20
+> This commit fixes the issue by assigning an empty driver to it.
+>=20
+> [  153.451108] tegra-xusb-padctl phy-usb2.0: > tegra_xusb_padctl_suspend_=
+noirq(dev=3Dffff000080917000)
+> [  153.460353] tegra-xusb-padctl phy-usb2.0:   driver: ffff8000114453e0 (=
+tegra_xusb_padctl_driver)
+> [  153.469245] tegra-xusb-padctl phy-usb2.0:   padctl: ffff0000829f6480
+> [  153.475772] tegra-xusb-padctl phy-usb2.0:     soc: ef7bdd7fffffffff (0=
+xef7bdd7fffffffff)
+> [  153.484061] Unable to handle kernel paging request at virtual address =
+007bdd800000004f
+> [  153.492132] Mem abort info:
+> [  153.495083]   ESR =3D 0x96000004
+> [  153.498308]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+> [  153.503771]   SET =3D 0, FnV =3D 0
+> [  153.506979]   EA =3D 0, S1PTW =3D 0
+> [  153.510260] Data abort info:
+> [  153.513200]   ISV =3D 0, ISS =3D 0x00000004
+> [  153.517181]   CM =3D 0, WnR =3D 0
+> [  153.520302] [007bdd800000004f] address between user and kernel address=
+ ranges
+> [  153.527600] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> [  153.533231] Modules linked in: nouveau panel_simple tegra_video(C) teg=
+ra_drm drm_ttm_helper videobuf2_dma_contig ttm videobuf2_memops cec videobu=
+f2_v4l2 videobuf2_common drm_kms_helper v4l2_fwnode videodev drm mc snd_hda=
+_codec_hdmi cdc_ether usbnet snd_hda_tegra r8152 crct10dif_ce snd_hda_codec=
+ snd_hda_core tegra_xudc host1x lp855x_bl at24 ip_tables x_tables ipv6
+> [  153.566417] CPU: 0 PID: 300 Comm: systemd-sleep Tainted: G         C  =
+      5.10.0-rc3-next-20201113-00019-g5c064d5372b0-dirty #624
+> [  153.578283] Hardware name: NVIDIA Jetson TX1 Developer Kit (DT)
+> [  153.584281] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=3D--)
+> [  153.590381] pc : tegra_xusb_padctl_suspend_noirq+0x88/0x100
+> [  153.596016] lr : tegra_xusb_padctl_suspend_noirq+0x80/0x100
+> [  153.601632] sp : ffff8000120dbb60
+> [  153.604999] x29: ffff8000120dbb60 x28: ffff000080a1df00
+> [  153.610430] x27: 0000000000000002 x26: ffff8000106f8540
+> [  153.615858] x25: ffff8000113ac4a4 x24: ffff80001148c198
+> [  153.621277] x23: ffff800010c4538c x22: 0000000000000002
+> [  153.626692] x21: ffff800010ccde80 x20: ffff0000829f6480
+> [  153.632107] x19: ffff000080917000 x18: 0000000000000030
+> [  153.637521] x17: 0000000000000000 x16: 0000000000000000
+> [  153.642933] x15: ffff000080a1e380 x14: 74636461702d6273
+> [  153.648346] x13: ffff8000113ad058 x12: 0000000000000f39
+> [  153.653759] x11: 0000000000000513 x10: ffff800011405058
+> [  153.659176] x9 : 00000000fffff000 x8 : ffff8000113ad058
+> [  153.664590] x7 : ffff800011405058 x6 : 0000000000000000
+> [  153.670002] x5 : 0000000000000000 x4 : ffff0000fe908bc0
+> [  153.675414] x3 : ffff0000fe910228 x2 : 162ef67e0581e700
+> [  153.680826] x1 : 162ef67e0581e700 x0 : ef7bdd7fffffffff
+> [  153.686241] Call trace:
+> [  153.688769]  tegra_xusb_padctl_suspend_noirq+0x88/0x100
+> [  153.694077]  __device_suspend_noirq+0x68/0x1cc
+> [  153.698594]  dpm_noirq_suspend_devices+0x10c/0x1d0
+> [  153.703456]  dpm_suspend_noirq+0x28/0xa0
+> [  153.707461]  suspend_devices_and_enter+0x234/0x4bc
+> [  153.712314]  pm_suspend+0x1e4/0x270
+> [  153.715868]  state_store+0x8c/0x110
+> [  153.719440]  kobj_attr_store+0x1c/0x30
+> [  153.723259]  sysfs_kf_write+0x4c/0x7c
+> [  153.726981]  kernfs_fop_write+0x124/0x240
+> [  153.731065]  vfs_write+0xe4/0x204
+> [  153.734449]  ksys_write+0x6c/0x100
+> [  153.737925]  __arm64_sys_write+0x20/0x30
+> [  153.741931]  el0_svc_common.constprop.0+0x78/0x1a0
+> [  153.746789]  do_el0_svc+0x24/0x90
+> [  153.750181]  el0_sync_handler+0x254/0x260
+> [  153.754251]  el0_sync+0x174/0x180
+> [  153.757663] Code: aa0303e2 94000f64 f9405680 b40000e0 (f9402803)
+> [  153.763826] ---[ end trace 81543a3394cb409d ]---
+>=20
+> Fixes: e8f7d2f409a1 ("phy: tegra: xusb: Add usb-phy support")
+>=20
+> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+> ---
+>  drivers/phy/tegra/xusb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > or does it flag up code
-> >  that can be mindlessly "fixed" (in which case the warning is
-> >  worthless)?  Proponents in this thread seem to be trying to
-> >  have it both ways.
->
-> A warning is not worthless just because you can mindlessly fix it.
-> There are many counterexamples, e.g. many
-> checkpatch/lint/lang-format/indentation warnings, functional ones like
-> the `if (a = b)` warning...
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-BTW, you cannot mindlessly fix the latter, as you cannot know if
-"(a == b)" or "((a = b))" was intended, without understanding the code
-(and the (possibly unavailable) data sheet, and the hardware, ...).
+--WN6ltYL4TufsTCLD
+Content-Type: application/pgp-signature; name="signature.asc"
 
-P.S. So far I've stayed out of this thread, as I like it if the compiler
-     flags possible mistakes.  After all I was the one fixing new
-     "may be used uninitialized" warnings thrown up by gcc-4.1, until
-     (a bit later than) support for that compiler was removed...
+-----BEGIN PGP SIGNATURE-----
 
-Gr{oetje,eeting}s,
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+/yjwACgkQ3SOs138+
+s6FarQ/+KLMzGhRAJyRksGyp5J4x7FtZ2ncbxEyy5Ckgbxo61m6El35NaXHt3GX2
+ydIbmgBxtiP13+BYIc2GmvPltA54TeVR7SgRtJhU0gM6ZgRqrGt/ECRwaYQitWFq
+51SercayKWitTB0darPan4evzo4JqJZl/hSjotNnR9HyqkanysSyzOPYSBmxnRR6
+nXuSEh9OZVi8zYWwUIyibZa5vWxzLc7ocCQin9G0hAYwgvjYg4pW2Jz6zA63UDxu
+U+oLdfFC6zALZSaDKEqCsGIoIa6IMQT/C6rLjLXKqTPeBCmw4lALfOMfSN4HPYTG
+9iX7vCipTeA+hf/Ozw3Nz1S29QGs2P1f9Iy45Dt79snTuvL2LwDmheSpbubj9Ui+
+ChkNVfAwRLWsAcaBUvvf8E5N3O13pXyfgaEfU/bH2QMuLCw0fgVGkTb4Y11XcM6c
+9R/hldT3Np79+jrXGOtSsLbBNkwV3AkDYNtX+uScHCmRcy1YvR39dAi7NJkAu1W1
+QG8GeIdDV0FyhRb15AXu3NTOGrnzdnoQ+vGxTZJ4AcjroFScGaNqb/xv35CKD4nj
+HR+53WGZYVPSt6xCHSzcwYl7EjatTRDrMW0R3VEh/YvPIkgx894VuYwWbSPUQWkZ
+m9eY2S/MVO+iLb2/Zw7+bhsED0ABWLIgQ4qy+nPjJD0kdLFtkMQ=
+=ufTC
+-----END PGP SIGNATURE-----
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--WN6ltYL4TufsTCLD--
