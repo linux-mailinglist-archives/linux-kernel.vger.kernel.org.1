@@ -2,129 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68E42C507F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23342C507D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388893AbgKZIaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 03:30:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727039AbgKZIaQ (ORCPT
+        id S2388883AbgKZI35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 03:29:57 -0500
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:34970 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727039AbgKZI35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 03:30:16 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A653C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 00:30:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fDlu5J9M+Xdp0HOAKxmY6WP3yf0ej07B8LChxfpJT5A=; b=3HfQBIMKZLxJjn4pRg2PO2R1jU
-        wEkDFC4MFR3nFwXrubpqJaNBB4Pt25gsq4UgMzK6QW7bAvMFmZKLeoAe0veVbFdm2LhnQP1fIdmD9
-        tDPndmQYPrItovxELLijTVIa/fOr2O3WHIeYwJamDnxTSiSRkGYwvqZQzfnw0e4excqpMot5Hh5Lg
-        bNP/iZBQjALRyIYbbFcEirMlVKh5/5GDb7gziIJxPiElP4GQlUq3WddRCVQ4ZRUQDqkn9Z6rjuu6s
-        3sDS8knnyBctBzYvX/0cdNJjLvyvt4Y/1zkPffcmyQCR81iUECM/MT0/jixzysBtDTUMOn3UMGcRJ
-        TNozZo2A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kiCeS-0000dY-8Y; Thu, 26 Nov 2020 08:29:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4CC6B3012DF;
-        Thu, 26 Nov 2020 09:29:14 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 30F3920D6FE65; Thu, 26 Nov 2020 09:29:14 +0100 (CET)
-Date:   Thu, 26 Nov 2020 09:29:14 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Balbir Singh <bsingharora@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 10/32] sched: Fix priority inversion of cookied task
- with sibling
-Message-ID: <20201126082914.GE2414@hirez.programming.kicks-ass.net>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-11-joel@joelfernandes.org>
- <20201122224123.GE110669@balbir-desktop>
- <20201124183038.GG1021337@google.com>
- <20201125230519.GC163610@balbir-desktop>
+        Thu, 26 Nov 2020 03:29:57 -0500
+Received: by mail-oo1-f65.google.com with SMTP id y3so237662ooq.2;
+        Thu, 26 Nov 2020 00:29:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j/vBBElAksTvt4HjurCYnxT73LNYVZ5qmRqRKKnCoNw=;
+        b=SBDUNm3+NYqZ7dOowcbPhy3YJbjDU+cyirOt7w0EkG8uBm4EpeOwLx/6g7IdT76HT0
+         vGFFqRKqms2cKwRLwHd5uzLNP4mzV6WLf4rohuyuim1JFyeOQQet2unlWEdUPsK02Xh8
+         g3XAEiVBLtqtVxHLj1NC5AgacpAh5BHW2wmP82wmdomvdAJ3g4sA289up8s2Eze0mg8m
+         6HCRQ/rt3HNoI/vYmY+krIBPRPNSf37oKQue4ClAalsHB854gmh8OyGSFRfSCbVjTA3A
+         /VGfTT45V9/9uCFAQlD+TuJ8b5CS/2o3gcRUzO83dE9PbFzuy6ZbiflOZSC/lKnwYQ3T
+         n0xA==
+X-Gm-Message-State: AOAM530RJn4uQXQSH6k4fMXhz3ZUWJlrA33IK36tMnm7iUbYASEHWisG
+        J81WCjcMfHYbuY6IpcHYmoPi3lmEi/Sy8sRfCHA=
+X-Google-Smtp-Source: ABdhPJwPulrHQWSHcYoomf4Z7RDCXvKABZRXcws/8ZD9MXQyBQxa3HrEjaME+FqCdHcKa4kGkfEeLCOXS4eDYfiorh4=
+X-Received: by 2002:a4a:abc9:: with SMTP id o9mr1291425oon.1.1606379394915;
+ Thu, 26 Nov 2020 00:29:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125230519.GC163610@balbir-desktop>
+References: <20201126003957.19604-1-rdunlap@infradead.org>
+In-Reply-To: <20201126003957.19604-1-rdunlap@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 26 Nov 2020 09:29:43 +0100
+Message-ID: <CAMuHMdVpcLc9enskSBJobmHXy3GU5ULdt78ArAr522VXRmty5w@mail.gmail.com>
+Subject: Re: [PATCH] fbdev: aty: SPARC64 requires FB_ATY_CT
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 10:05:19AM +1100, Balbir Singh wrote:
-> > @@ -5259,7 +5254,20 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
-> >  			 * Optimize the 'normal' case where there aren't any
-> >  			 * cookies and we don't need to sync up.
-> >  			 */
-> > -			if (i == cpu && !need_sync && !p->core_cookie) {
-> > +			if (i == cpu && !need_sync) {
-> > +				if (p->core_cookie) {
-> > +					/*
-> > +					 * This optimization is only valid as
-> > +					 * long as there are no cookies
-> 
-> This is not entirely true, need_sync is a function of core cookies, so I
-> think this needs more clarification, it sounds like we enter this when
-> the core has no cookies, but the task has a core_cookie? The term cookie
-> is quite overloaded when used in the context of core vs task.
+Hi Randy,
 
-Nah, its the same. So each task gets a cookie to identify the 'group' of
-tasks (possibly just itself) it is allowed to share a core with.
+On Thu, Nov 26, 2020 at 1:40 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> It looks like SPARC64 requires FB_ATY_CT to build without errors,
+> so adjust the Kconfig entry of FB_ATY_CT so that it is always 'y'
+> for SPARC64 && PCI by disabling the prompt for SPARC64 && PCI.
+>
+> As it currently is, FB_ATY_CT can be disabled, resulting in build
+> errors:
+>
+> ERROR: modpost: "aty_postdividers" [drivers/video/fbdev/aty/atyfb.ko] undefined!
+> ERROR: modpost: "aty_ld_pll_ct" [drivers/video/fbdev/aty/atyfb.ko] undefined!
+>
+> Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-When we to core task selection, the core gets assigned the cookie of the
-group it will run, same thing.
+Thanks for your patch!
 
-> Effectively from what I understand this means that p wants to be
-> coscheduled, but the core itself is not coscheduling anything at the
-> moment, so we need to see if we should do a sync and that sync might
-> cause p to get kicked out and a higher priority class to come in?
+> --- linux-next-20201124.orig/drivers/video/fbdev/Kconfig
+> +++ linux-next-20201124/drivers/video/fbdev/Kconfig
+> @@ -1277,7 +1277,7 @@ config FB_ATY
+>           module will be called atyfb.
+>
+>  config FB_ATY_CT
+> -       bool "Mach64 CT/VT/GT/LT (incl. 3D RAGE) support"
+> +       bool "Mach64 CT/VT/GT/LT (incl. 3D RAGE) support" if !(SPARC64 && PCI)
+>         depends on PCI && FB_ATY
+>         default y if SPARC64 && PCI
+>         help
 
-This whole patch is about eliding code-wide task selection when it is
-not required. IOW an optimization.
+What about letting FB_ATY select FB_ATY_CT if SPARC64 && PCI, and
+dropping the "default y"-line, instead?
 
-When there wasn't a core cookie (IOW, the previous task selection wasn't
-core wide and limited) and the task we just selected for our own CPU
-also didn't have a cookie (IOW it doesn't have to be core-wide) we can
-skip the core wide task selection and schedule just this CPU and call it
-a day.
+Gr{oetje,eeting}s,
 
-The logic was subtly wrong, this patch fixes it. A next patch completely
-rewrites it again to make it far simpler again. Don't spend time trying
-to understand this patch (unless you're _that_ kind of person ;-) but
-instead apply the whole thing and look at the resulting pick_next_task()
-function.
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
