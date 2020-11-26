@@ -2,103 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2CF2C5907
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123D22C590C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391512AbgKZQKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 11:10:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391376AbgKZQKL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 11:10:11 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24427C061A04
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 08:10:11 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id x24so2007225pfn.6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 08:10:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XX1dKY+g5cNULWumwqO6QpUHR/ReF5hRORN8sYXjQBU=;
-        b=W/5Fc9iFFkc2XtMFTWg9row9KaKBexv9VZ4pj/3ElJzj3fs6664TpDiV/EtYqkAf6G
-         cXvRsFe1Beft6NBMjnSc+jzEMm+GEAsWhbIYFb0mnHbpSapv7WxJPuo28+89D2OAuLC5
-         jZnnRjBbWnf2n+J3RUyGwGBRHnpBeF1xJkOA5cnN7lXn7AEUrKTsnTNmTjwLA2l89HoX
-         oXfruCXbK9RDekg6imdjiQNJUMl9tlSBK61ahG1Ip//G05vtTgv2ic5Fr02RhPmUPScH
-         rDWITon7R6/yPNAQtrEPdQC/I5JoFbTC7m1dYiEvfGKfazR68aElmh82ycmopbWLkZ88
-         VpqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XX1dKY+g5cNULWumwqO6QpUHR/ReF5hRORN8sYXjQBU=;
-        b=asVueDyyQilWPQi1mkLxd6GEdfX+FhbO1VpZFGhO9c6sfbLlEfysADmJMbh/JJHj7A
-         grBCYpGSQMfidfqVI63KEIvsY54k9ENvZUFytpI1Wq/IDP9ccudqSsASE9VG8gSfM/fI
-         85ANVGL3MzRcJz8X2MaEpMsj9zs58uxOLDtbBodZ8YyjP+Pu02e2cXLKg6UTAU651jK8
-         kG4mQW7YAp+6mPc6OOE4hsCz+JpVgsa181mjC10UqyvTtKQgZuuVrbfP5SLwPKpJq6Qs
-         dcR9bGFNV9hMapsfehqReaW8AP/XC1gu77LhvAKCx8h0pp+uoxeNTIGRJJQ7gcycJ9IH
-         cSEQ==
-X-Gm-Message-State: AOAM530/BRntARUFliYZXlBQREIaEs8FRGSQWihD6pSNZm+iYmPqbu0k
-        Weo28X/BiD8ix77offt2riuBQK8S6xfz
-X-Google-Smtp-Source: ABdhPJxPk8yzwbdBrvHhw1L2hjPE0hNuaXTYPgSDi9ylqtHzP7IaIaBzhdHSGeeTo5FjZtQmSLGqDw==
-X-Received: by 2002:a63:d157:: with SMTP id c23mr2967582pgj.196.1606407010538;
-        Thu, 26 Nov 2020 08:10:10 -0800 (PST)
-Received: from thinkpad ([2409:4072:6e95:f2a:3996:9d7f:e389:7f7d])
-        by smtp.gmail.com with ESMTPSA id q5sm5256623pff.36.2020.11.26.08.10.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 08:10:09 -0800 (PST)
-Date:   Thu, 26 Nov 2020 21:40:05 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>, linux-i2c@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] i2c: qcom: Fix IRQ error misassignement
-Message-ID: <20201126161005.GF51288@thinkpad>
-References: <20201126145321.18269-1-robert.foss@linaro.org>
- <20201126150334.GC51288@thinkpad>
- <CAG3jFysosSVGfLzAvERS=GaEz8J8SJwh7roS5twG6-7meErKdw@mail.gmail.com>
+        id S2391421AbgKZQQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 11:16:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:38634 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730181AbgKZQQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 11:16:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB5CE31B;
+        Thu, 26 Nov 2020 08:16:03 -0800 (PST)
+Received: from [10.57.59.159] (unknown [10.57.59.159])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F9A03F23F;
+        Thu, 26 Nov 2020 08:15:59 -0800 (PST)
+Subject: Re: [PATCH v4 11/24] iommu/io-pgtable-arm-v7s: Quad lvl1 pgtable for
+ MediaTek
+To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     youlin.pei@mediatek.com, devicetree@vger.kernel.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream@mediatek.com, chao.hao@mediatek.com,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        iommu@lists.linux-foundation.org,
+        linux-mediatek@lists.infradead.org,
+        Krzysztof Kozlowski <krzk@kernel.org>, anan.sun@mediatek.com,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20201111123838.15682-1-yong.wu@mediatek.com>
+ <20201111123838.15682-12-yong.wu@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <54eee2dd-21d5-e796-d5a1-eaf7097a9745@arm.com>
+Date:   Thu, 26 Nov 2020 16:15:58 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG3jFysosSVGfLzAvERS=GaEz8J8SJwh7roS5twG6-7meErKdw@mail.gmail.com>
+In-Reply-To: <20201111123838.15682-12-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 04:58:48PM +0100, Robert Foss wrote:
-> Thanks for the review Mani.
-> 
-> On Thu, 26 Nov 2020 at 16:03, Manivannan Sadhasivam
-> <manivannan.sadhasivam@linaro.org> wrote:
-> >
-> > On Thu, Nov 26, 2020 at 03:53:21PM +0100, Robert Foss wrote:
-> > > During cci_isr() errors read from register fields belonging to
-> > > i2c master1 are currently assigned to the status field belonging to
-> >
-> > s/correctly/incorrectly
-> 
-> I don't think there actually is an error in the comment.
-> 
+On 2020-11-11 12:38, Yong Wu wrote:
+> The standard input iova bits is 32. MediaTek quad the lvl1 pagetable
+> (4 * lvl1). No change for lvl2 pagetable. Then the iova bits can reach
+> 34bit.
 
-Yeah its an error in my comment ;) Please ignore that.
+Yay, I love how simple the actual change becomes now!
 
-Thanks,
-Mani
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-> >
-> > > i2c master0. This patch corrects this error, and always assigns
-> > > master1 errors to the status field of master1.
-> > >
-> >
-> > This patch fixes a legitimate bug. So there should be a fixes tag!
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>   drivers/iommu/io-pgtable-arm-v7s.c | 7 ++++---
+>   drivers/iommu/mtk_iommu.c          | 2 +-
+>   2 files changed, 5 insertions(+), 4 deletions(-)
 > 
-> On it, fixed in v2
+> diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
+> index 0b3c5b904ddc..5601dc8bf810 100644
+> --- a/drivers/iommu/io-pgtable-arm-v7s.c
+> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
+> @@ -45,9 +45,10 @@
+>   /*
+>    * We have 32 bits total; 12 bits resolved at level 1, 8 bits at level 2,
+>    * and 12 bits in a page.
+> + * MediaTek extend 2 bits to reach 34bits, 14 bits at lvl1 and 8 bits at lvl2.
+>    */
+>   #define ARM_V7S_ADDR_BITS		32
+> -#define _ARM_V7S_LVL_BITS(lvl, cfg)	((lvl) == 1 ? 12 : 8)
+> +#define _ARM_V7S_LVL_BITS(lvl, cfg)	((lvl) == 1 ? ((cfg)->ias - 20) : 8)
+>   #define ARM_V7S_LVL_SHIFT(lvl)		((lvl) == 1 ? 20 : 12)
+>   #define ARM_V7S_TABLE_SHIFT		10
+>   
+> @@ -61,7 +62,7 @@
+>   #define _ARM_V7S_IDX_MASK(lvl, cfg)	(ARM_V7S_PTES_PER_LVL(lvl, cfg) - 1)
+>   #define ARM_V7S_LVL_IDX(addr, lvl, cfg)	({				\
+>   	int _l = lvl;							\
+> -	((u32)(addr) >> ARM_V7S_LVL_SHIFT(_l)) & _ARM_V7S_IDX_MASK(_l, cfg); \
+> +	((addr) >> ARM_V7S_LVL_SHIFT(_l)) & _ARM_V7S_IDX_MASK(_l, cfg); \
+>   })
+>   
+>   /*
+> @@ -754,7 +755,7 @@ static struct io_pgtable *arm_v7s_alloc_pgtable(struct io_pgtable_cfg *cfg,
+>   {
+>   	struct arm_v7s_io_pgtable *data;
+>   
+> -	if (cfg->ias > ARM_V7S_ADDR_BITS)
+> +	if (cfg->ias > (arm_v7s_is_mtk_enabled(cfg) ? 34 : ARM_V7S_ADDR_BITS))
+>   		return NULL;
+>   
+>   	if (cfg->oas > (arm_v7s_is_mtk_enabled(cfg) ? 35 : ARM_V7S_ADDR_BITS))
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index ec3c87d4b172..55f9b329e637 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -319,7 +319,7 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom)
+>   			IO_PGTABLE_QUIRK_TLBI_ON_MAP |
+>   			IO_PGTABLE_QUIRK_ARM_MTK_EXT,
+>   		.pgsize_bitmap = mtk_iommu_ops.pgsize_bitmap,
+> -		.ias = 32,
+> +		.ias = 34,
+>   		.oas = 35,
+>   		.tlb = &mtk_iommu_flush_ops,
+>   		.iommu_dev = data->dev,
 > 
-> >
-> > > Suggested-by: Loic Poulain <loic.poulain@linaro.org>
-> >
-> > Reported-by?
-> 
-> I'll add both in v2
