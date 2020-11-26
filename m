@@ -2,342 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54AB82C4FA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BC02C4F74
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730005AbgKZHoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 02:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
+        id S2388532AbgKZH3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 02:29:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728954AbgKZHoT (ORCPT
+        with ESMTP id S2388472AbgKZH3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 02:44:19 -0500
-X-Greylist: delayed 2327 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Nov 2020 23:44:18 PST
-Received: from srv1.deutnet.info (srv1.deutnet.info [IPv6:2a01:4f8:c2c:6846::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D3CC0613D4;
-        Wed, 25 Nov 2020 23:44:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deutnet.info; s=default; h=Message-Id:Date:Subject:Cc:To:From:in-reply-to;
-         bh=P0S8C3sSe2e5YSzuN2CkiWD27lD7mYY9AT/48Cv9nDE=; b=RIZr7NZCF5JkZPLcIb82qnp7C
-        I45HU3TocjuB0V74WDz4i14+QQWL+PO/01KjwdFLAcFaztCeAFsyMoFsjZzhVbcqzmFQBJx50CoQw
-        ALIvbTxMFtGkQcyI+ecFfwOD7Jc8d3LmlAo4XcybxzQsMOjRktWk2vCt/0QpQ/voQGiEGRRdGe4ZH
-        PFOJdrc2m4/XlLnxeWYHPcyionHUb17+hY67sJ+kA2BlNPtHUHrahZBQytZVf0/PSrPGohRngGhQ8
-        uPEdFppj61pSBVmPv6On3cBjH0/IL/7f+1nGOMYM78HEGYsyTwa1MxyQZRNh1jebiSIGmzhjLfPhy
-        w2rtl8u/g==;
-Received: from [2001:bc8:3dc9::1] (helo=srv100.deutnet.info)
-        by srv1.deutnet.info with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <agriveaux@deutnet.info>)
-        id 1kiBLG-0000zG-G7; Thu, 26 Nov 2020 08:05:22 +0100
-Received: from agriveaux by srv100.deutnet.info with local (Exim 4.92)
-        (envelope-from <agriveaux@deutnet.info>)
-        id 1kiBLG-000MLv-5A; Thu, 26 Nov 2020 08:05:22 +0100
-From:   agriveaux@deutnet.info
-To:     michal.simek@xilinx.com, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Alexandre GRIVEAUX <agriveaux@deutnet.info>
-Subject: [PATCH v2] ARM: zynq: Add Z-turn board V5
-Date:   Thu, 26 Nov 2020 08:05:16 +0100
-Message-Id: <20201126070516.85882-1-agriveaux@deutnet.info>
-X-Mailer: git-send-email 2.20.1
+        Thu, 26 Nov 2020 02:29:20 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2918C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 23:29:18 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id f5so700153plj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 23:29:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tKeDU7wLT1VaIcRI7u/5UzSUWisuIYCG+o7J39ucz6o=;
+        b=WtSJ+14bT2LWUFLGHL1oUpA0IgViWPj0rsAYJsNzOx7Y02TU0j8mOkqUpf9yK8Ii47
+         Zs5PIZQ2GbAzQkYLI8xprI+9+TjSaVwlHFN4liaJwaoHYHZpGlAirJLQ6d2ffK8qcJDC
+         ogHY/dkpJKPJkjBrSr+AIVk3uM3uhuNK6h9JbgjcVWHKwBO8EfHeDPpuWxYZ2BBcxfe/
+         hWyEpFxN21eNGIgr6cGR02GzK6gPo7KmQGB0fiXSSYUmTMMU641oErKELRcNI+Mw3sKv
+         ZSfpTPoc58yUISoDbeeU8Imb6/5XoTllM5MrKl/ke474CGpahRgCetuppN/ChfZLjNEf
+         2pZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tKeDU7wLT1VaIcRI7u/5UzSUWisuIYCG+o7J39ucz6o=;
+        b=H4fpRx41WBKAVHo7IqSKzSK/IoETf115tdfzLOJyk23InjvMZk+lwOPoK6zO+IROz5
+         GqSsQ3+yaZJzAqquX2RkaiVm6ZWBQnO/aisP5O+AvOAgf770LI6atUVDNaCb5QYO9NvY
+         ahbI06ZFO0OyWz7jxvzLl+Ek97C7GghPLmiSge4QnvhoT1nWXAoze/GNi0bHo1NUPKxS
+         HLnt0TuwnrreuMX3iHBfVI8O0YviDwA1bYW5TwA+Dc6dJrSECGVMNuNwQz1xpyKk3ygU
+         NzKorcWPeaRIRAhWlrj+W81HxiaGxmb/0D9NynOBUZzh1dVHEbHvJJQNaMb/U4Zj2Nza
+         FWhA==
+X-Gm-Message-State: AOAM530UPtH92R9gQWFa5X6bTBIjZHB9LV58SL3Cz5OSD5iEHDiSmisw
+        CpN+MtndUZc9l6jEfVr3/sX+
+X-Google-Smtp-Source: ABdhPJyJk7a02fUIuuZ8ZTn3WdkX1gQ+12ctrQYVjJYFn1NAa6aqEpaAUZybI/NRUlA7Hqk2WRBmDA==
+X-Received: by 2002:a17:902:654f:b029:da:347d:7af3 with SMTP id d15-20020a170902654fb02900da347d7af3mr1735503pln.18.1606375758437;
+        Wed, 25 Nov 2020 23:29:18 -0800 (PST)
+Received: from localhost.localdomain ([2409:4072:6e95:f2a:3996:9d7f:e389:7f7d])
+        by smtp.gmail.com with ESMTPSA id t9sm5508097pjq.46.2020.11.25.23.29.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 23:29:17 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org
+Cc:     bjorn.andersson@linaro.org, vkoul@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [RESEND PATCH v4 0/6] Add GCC and RPMh clock support for SDX55
+Date:   Thu, 26 Nov 2020 12:58:38 +0530
+Message-Id: <20201126072844.35370-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre GRIVEAUX <agriveaux@deutnet.info>
+Hello,
 
-Adding Z-turn board V5 to resolve the change between:
+This series adds Global Clock Controller (GCC) and RPMh clock support
+for SDX55 SoC from Qualcomm with relevant DT bindings.
 
-"Z-TURNBOARD_schematic.pdf" schematics state version 1 to 4 has Atheros AR8035
-"Z-Turn_Board_sch_V15_20160303.pdf" schematics state version 5 has Micrel KSZ9031
+This series has been tested on SDX55 MTP board. The dts patches will be
+posted separately.
 
-Changes v1 -> v2: Instead of using new board, the v2 using a common devicetree
-for z-turn boards (zynq-zturn-common.dtsi) and for each board a specific DT
+Thanks,
+Mani
 
-Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
----
- arch/arm/boot/dts/Makefile               |   1 +
- arch/arm/boot/dts/zynq-zturn-common.dtsi | 112 +++++++++++++++++++++++
- arch/arm/boot/dts/zynq-zturn-v5.dts      |  15 +++
- arch/arm/boot/dts/zynq-zturn.dts         | 101 +-------------------
- 4 files changed, 129 insertions(+), 100 deletions(-)
- create mode 100644 arch/arm/boot/dts/zynq-zturn-common.dtsi
- create mode 100644 arch/arm/boot/dts/zynq-zturn-v5.dts
+Changes in v4:
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index ce66ffd5a1bb..3de85fe42f76 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1302,6 +1302,7 @@ dtb-$(CONFIG_ARCH_ZYNQ) += \
- 	zynq-zc770-xm013.dtb \
- 	zynq-zed.dtb \
- 	zynq-zturn.dtb \
-+	zynq-zturn-v5.dtb \
- 	zynq-zybo.dtb \
- 	zynq-zybo-z7.dtb
- dtb-$(CONFIG_MACH_ARMADA_370) += \
-diff --git a/arch/arm/boot/dts/zynq-zturn-common.dtsi b/arch/arm/boot/dts/zynq-zturn-common.dtsi
-new file mode 100644
-index 000000000000..84f3c85c5bab
---- /dev/null
-+++ b/arch/arm/boot/dts/zynq-zturn-common.dtsi
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (C) 2015 Andrea Merello <adnrea.merello@gmail.com>
-+ *  Copyright (C) 2017 Alexander Graf <agraf@suse.de>
-+ *
-+ *  Based on zynq-zed.dts which is:
-+ *  Copyright (C) 2011 - 2014 Xilinx
-+ *  Copyright (C) 2012 National Instruments Corp.
-+ *
-+ */
-+
-+/dts-v1/;
-+/include/ "zynq-7000.dtsi"
-+
-+/ {
-+	compatible = "xlnx,zynq-7000";
-+
-+	aliases {
-+		ethernet0 = &gem0;
-+		serial0 = &uart1;
-+		serial1 = &uart0;
-+		mmc0 = &sdhci0;
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x40000000>;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	gpio-leds {
-+		compatible = "gpio-leds";
-+		usr-led1 {
-+			label = "usr-led1";
-+			gpios = <&gpio0 0x0 0x1>;
-+			default-state = "off";
-+		};
-+
-+		usr-led2 {
-+			label = "usr-led2";
-+			gpios = <&gpio0 0x9 0x1>;
-+			default-state = "off";
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		autorepeat;
-+		K1 {
-+			label = "K1";
-+			gpios = <&gpio0 0x32 0x1>;
-+			linux,code = <0x66>;
-+			wakeup-source;
-+			autorepeat;
-+		};
-+	};
-+};
-+
-+&clkc {
-+	ps-clk-frequency = <33333333>;
-+};
-+
-+&gem0 {
-+	status = "okay";
-+	phy-mode = "rgmii-id";
-+	phy-handle = <&ethernet_phy>;
-+
-+	ethernet_phy: ethernet-phy@0 {
-+	};
-+};
-+
-+&sdhci0 {
-+	status = "okay";
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	status = "okay";
-+	dr_mode = "host";
-+};
-+
-+&can0 {
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	stlm75@49 {
-+		status = "okay";
-+		compatible = "lm75";
-+		reg = <0x49>;
-+	};
-+
-+	accelerometer@53 {
-+		compatible = "adi,adxl345", "adxl345", "adi,adxl34x", "adxl34x";
-+		reg = <0x53>;
-+		interrupt-parent = <&intc>;
-+		interrupts = <0x0 0x1e 0x4>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/zynq-zturn-v5.dts b/arch/arm/boot/dts/zynq-zturn-v5.dts
-new file mode 100644
-index 000000000000..536632a09a25
---- /dev/null
-+++ b/arch/arm/boot/dts/zynq-zturn-v5.dts
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/dts-v1/;
-+/include/ "zynq-zturn-common.dtsi"
-+
-+/ {
-+	model = "Zynq Z-Turn MYIR Board V5";
-+	compatible = "myir,zynq-zturn-v5", "xlnx,zynq-7000";
-+};
-+
-+&gem0 {
-+	ethernet_phy: ethernet-phy@0 {
-+		reg = <0x3>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/zynq-zturn.dts b/arch/arm/boot/dts/zynq-zturn.dts
-index 5ec616ebca08..620b24a25e06 100644
---- a/arch/arm/boot/dts/zynq-zturn.dts
-+++ b/arch/arm/boot/dts/zynq-zturn.dts
-@@ -1,114 +1,15 @@
- // SPDX-License-Identifier: GPL-2.0
--/*
-- *  Copyright (C) 2015 Andrea Merello <adnrea.merello@gmail.com>
-- *  Copyright (C) 2017 Alexander Graf <agraf@suse.de>
-- *
-- *  Based on zynq-zed.dts which is:
-- *  Copyright (C) 2011 - 2014 Xilinx
-- *  Copyright (C) 2012 National Instruments Corp.
-- *
-- */
- 
- /dts-v1/;
--/include/ "zynq-7000.dtsi"
-+/include/ "zynq-zturn-common.dtsi"
- 
- / {
- 	model = "Zynq Z-Turn MYIR Board";
- 	compatible = "myir,zynq-zturn", "xlnx,zynq-7000";
--
--	aliases {
--		ethernet0 = &gem0;
--		serial0 = &uart1;
--		serial1 = &uart0;
--		mmc0 = &sdhci0;
--	};
--
--	memory@0 {
--		device_type = "memory";
--		reg = <0x0 0x40000000>;
--	};
--
--	chosen {
--		stdout-path = "serial0:115200n8";
--	};
--
--	gpio-leds {
--		compatible = "gpio-leds";
--		usr-led1 {
--			label = "usr-led1";
--			gpios = <&gpio0 0x0 0x1>;
--			default-state = "off";
--		};
--
--		usr-led2 {
--			label = "usr-led2";
--			gpios = <&gpio0 0x9 0x1>;
--			default-state = "off";
--		};
--	};
--
--	gpio-keys {
--		compatible = "gpio-keys";
--		autorepeat;
--		K1 {
--			label = "K1";
--			gpios = <&gpio0 0x32 0x1>;
--			linux,code = <0x66>;
--			wakeup-source;
--			autorepeat;
--		};
--	};
--};
--
--&clkc {
--	ps-clk-frequency = <33333333>;
- };
- 
- &gem0 {
--	status = "okay";
--	phy-mode = "rgmii-id";
--	phy-handle = <&ethernet_phy>;
--
- 	ethernet_phy: ethernet-phy@0 {
- 		reg = <0x0>;
- 	};
- };
--
--&sdhci0 {
--	status = "okay";
--};
--
--&uart0 {
--	status = "okay";
--};
--
--&uart1 {
--	status = "okay";
--};
--
--&usb0 {
--	status = "okay";
--	dr_mode = "host";
--};
--
--&can0 {
--	status = "okay";
--};
--
--&i2c0 {
--	status = "okay";
--	clock-frequency = <400000>;
--
--	stlm75@49 {
--		status = "okay";
--		compatible = "lm75";
--		reg = <0x49>;
--	};
--
--	accelerometer@53 {
--		compatible = "adi,adxl345", "adxl345", "adi,adxl34x", "adxl34x";
--		reg = <0x53>;
--		interrupt-parent = <&intc>;
--		interrupts = <0x0 0x1e 0x4>;
--	};
--};
+* Made core_bi_pll_test_se clock optional in binding
+* Added GDSC patches
+
+Changes in v3:
+
+* Documented core_bi_pll_test_se clock in dt binding
+* Collected reviews
+
+Changes in v2:
+
+* Modified the GCC Kconfig symbol from GCC_SDX55 to SDX_GCC_55
+* Added S-o-b tag to bindings patch
+* Incorporated review comments from Stephen on the gcc driver
+* Added review tag from Bjorn on RPMh patch
+
+Manivannan Sadhasivam (3):
+  clk: qcom: Add support for SDX55 RPMh clocks
+  dt-bindings: clock: Add GDSC in SDX55 GCC
+  clk: qcom: Add GDSC support for SDX55 GCC
+
+Naveen Yadav (1):
+  clk: qcom: Add SDX55 GCC support
+
+Vinod Koul (2):
+  dt-bindings: clock: Add SDX55 GCC clock bindings
+  dt-bindings: clock: Introduce RPMHCC bindings for SDX55
+
+ .../bindings/clock/qcom,gcc-sdx55.yaml        |   77 +
+ .../bindings/clock/qcom,rpmhcc.yaml           |    1 +
+ drivers/clk/qcom/Kconfig                      |    8 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/clk-rpmh.c                   |   20 +
+ drivers/clk/qcom/gcc-sdx55.c                  | 1659 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-sdx55.h    |  117 ++
+ include/dt-bindings/clock/qcom,rpmh.h         |    1 +
+ 8 files changed, 1884 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml
+ create mode 100644 drivers/clk/qcom/gcc-sdx55.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-sdx55.h
+
 -- 
-2.20.1
+2.25.1
 
