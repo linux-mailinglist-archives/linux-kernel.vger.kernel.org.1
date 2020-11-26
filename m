@@ -2,374 +2,493 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E032C500C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E412C500E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388685AbgKZIPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 03:15:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388677AbgKZIPF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 03:15:05 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8879AC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 00:15:03 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id z21so1207976lfe.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 00:15:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iXEX2HSeD8DyGMXzHCSB2Gx3hV/XABz2dWOLT9VbyQo=;
-        b=u2eH1cDjBN4Hwr5hFQ6uA4xRQJjs0eAWIdWEAoMZHlrpffAMnUjQ7aEPLpV1v8hSAd
-         SRYKJeN6KuTJqbPqCYgwfPmnUV2/IQNHBorT4L4ekt8k8m37/GODuH4vmHsQsoIZUXmb
-         c+iI6MOzrQE4dsPDm6cdDAoDZ8SKlmiPLX90rAzeJ4LcjQbLfU/sx0FSdwo8XUVX8n+g
-         uMPHh5V51r2pqtGdediOjvsZjyKGuWC4vwHTcSCXyGr2J8czFspqVFiOe/g+IQCi8uC4
-         3rC1jET85VtiNTcdTPqsPNxAWEFDH6rm7LZ3LHw6QYX2htBB5hvqnVGB+UGKoUfPHUSW
-         LOhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iXEX2HSeD8DyGMXzHCSB2Gx3hV/XABz2dWOLT9VbyQo=;
-        b=CPF0vyr/4uxIDeDRFyqYEeg9MFBguweUFbSsI3MV3lsoZOtVWLFMGywIE6+FR4ixU7
-         BOgz7VC2uYQh0AsN8EKKWeCi5XT42VCWeSTIiL39lXw+v6c5IfYkOxZ675oml1Q9jxil
-         2gsBIVWjbF8e0jKhD4EyWRC/56Af49B1IgPGqQWa6nmi+U6I9yaMPtYfIjJHITQnb0p1
-         o98EEZSMHPR6wwnmjOxcKtGwcElC1k6NvhC1s0A4+CBcOg/rVfm5h4YrTtyk7WSbeu/+
-         wUCrkBY6Dp0NgZdYCeJHYvJaNTrQeDsbKQibQvi16kjH7PqL1qRV0RgOaxRftl+0JOUT
-         Ul2g==
-X-Gm-Message-State: AOAM530uKze3Rd5Gv5wZAy2Z/Yo9us8fs5NnCl3h1Tuqw0siXNTxVNE2
-        KzYAoYPhFK1cIXnpYlKv2/abXqYOGp5DVLgvAKBnZA==
-X-Google-Smtp-Source: ABdhPJwSCngBgcIq6nYbivLvSAp9hDHqh9CdEb5vyXauTRcamQgHI+odGDFv4BrcjY1KG9T9Hb9kZ2ix6oQ+pMWfwGg=
-X-Received: by 2002:ac2:43b1:: with SMTP id t17mr859710lfl.385.1606378501894;
- Thu, 26 Nov 2020 00:15:01 -0800 (PST)
+        id S2388695AbgKZIQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 03:16:05 -0500
+Received: from mga01.intel.com ([192.55.52.88]:5989 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728901AbgKZIQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 03:16:05 -0500
+IronPort-SDR: djNqZ9Ez0uOnbvfJI7YuH4dwDk5A/wGN2nK47z6HLgVzQZZWbq2UkKbeJzEvUnRzpwafZOSkLA
+ umvjTANpGxwA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="190405878"
+X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
+   d="scan'208";a="190405878"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 00:16:04 -0800
+IronPort-SDR: QcoPPkU9kdeB9WhO1218zZHpdX/xJia32sThR+ii+Boj/0JCslPyHRqf69eYDdvKuVUOJZZaya
+ q4Xy3cW+PBLA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,371,1599548400"; 
+   d="scan'208";a="362721203"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by fmsmga004.fm.intel.com with ESMTP; 26 Nov 2020 00:15:52 -0800
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [RFC PATCH v3.1 09/27] mmc: sdhci: add UHS-II related definitions
+ in headers
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+ <20201106022726.19831-10-takahiro.akashi@linaro.org>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <aa8b2aab-51c0-9757-276b-f36dd5d33679@intel.com>
+Date:   Thu, 26 Nov 2020 10:15:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201118043113.53128-1-aubrey.li@linux.intel.com>
- <CAKfTPtBZU-QKqzsTL9Y0+wuUdGayyfuC8hKu2wcHZAAAmNJyfw@mail.gmail.com>
- <262397dc-b783-2040-6214-b8de5abf5617@linux.intel.com> <20201124170136.GA26613@vingu-book>
- <67a14568-4fa5-d9b4-d2fc-72a22c226189@linux.intel.com> <CAKfTPtB5=VSkE3YQf5igi6rBFPUSua=hM2FEnvBnRpF9n4VYwg@mail.gmail.com>
- <2a715c5d-c93f-0e5f-8b1a-83803cb6def6@linux.intel.com>
-In-Reply-To: <2a715c5d-c93f-0e5f-8b1a-83803cb6def6@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 26 Nov 2020 09:14:50 +0100
-Message-ID: <CAKfTPtB2FG64Csi0VBG-rZVr-KQ9x+WccFiWaXPVFremSHbcJw@mail.gmail.com>
-Subject: Re: [RFC PATCH v5] sched/fair: select idle cpu from idle cpumask for
- task wakeup
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201106022726.19831-10-takahiro.akashi@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 at 14:37, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->
-> On 2020/11/25 16:31, Vincent Guittot wrote:
-> > On Wed, 25 Nov 2020 at 03:03, Li, Aubrey <aubrey.li@linux.intel.com> wr=
-ote:
-> >>
-> >> On 2020/11/25 1:01, Vincent Guittot wrote:
-> >>> Hi Aubrey,
-> >>>
-> >>> Le mardi 24 nov. 2020 =C3=A0 15:01:38 (+0800), Li, Aubrey a =C3=A9cri=
-t :
-> >>>> Hi Vincent,
-> >>>>
-> >>>> On 2020/11/23 17:27, Vincent Guittot wrote:
-> >>>>> Hi Aubrey,
-> >>>>>
-> >>>>> On Thu, 19 Nov 2020 at 13:15, Aubrey Li <aubrey.li@linux.intel.com>=
- wrote:
-> >>>>>>
-> >>>>>> Add idle cpumask to track idle cpus in sched domain. When a CPU
-> >>>>>> enters idle, if the idle driver indicates to stop tick, this CPU
-> >>>>>> is set in the idle cpumask to be a wakeup target. And if the CPU
-> >>>>>> is not in idle, the CPU is cleared in idle cpumask during schedule=
-r
-> >>>>>> tick to ratelimit idle cpumask update.
-> >>>>>>
-> >>>>>> When a task wakes up to select an idle cpu, scanning idle cpumask
-> >>>>>> has low cost than scanning all the cpus in last level cache domain=
-,
-> >>>>>> especially when the system is heavily loaded.
-> >>>>>>
-> >>>>>> Benchmarks were tested on a x86 4 socket system with 24 cores per
-> >>>>>> socket and 2 hyperthreads per core, total 192 CPUs. Hackbench and
-> >>>>>> schbench have no notable change, uperf has:
-> >>>>>>
-> >>>>>> uperf throughput: netperf workload, tcp_nodelay, r/w size =3D 90
-> >>>>>>
-> >>>>>>   threads       baseline-avg    %std    patch-avg       %std
-> >>>>>>   96            1               0.83    1.23            3.27
-> >>>>>>   144           1               1.03    1.67            2.67
-> >>>>>>   192           1               0.69    1.81            3.59
-> >>>>>>   240           1               2.84    1.51            2.67
-> >>>>>>
-> >>>>>> v4->v5:
-> >>>>>> - add update_idle_cpumask for s2idle case
-> >>>>>> - keep the same ordering of tick_nohz_idle_stop_tick() and update_
-> >>>>>>   idle_cpumask() everywhere
-> >>>>>>
-> >>>>>> v3->v4:
-> >>>>>> - change setting idle cpumask from every idle entry to tickless id=
-le
-> >>>>>>   if cpu driver is available.
-> >>>>>
-> >>>>> Could you remind me why you did this change ? Clearing the cpumask =
-is
-> >>>>> done during the tick to rate limit the number of updates of the
-> >>>>> cpumask but It's not clear for me why you have associated the set w=
-ith
-> >>>>> the tick stop condition too.
-> >>>>
-> >>>> I found the current implementation has better performance at a more
-> >>>> suitable load range.
-> >>>>
-> >>>> The two kinds of implementions(v4 and v5) have the same rate(schedul=
-er
-> >>>> tick) to shrink idle cpumask when the system is busy, but
-> >>>
-> >>> I'm ok with the part above
-> >>>
-> >>>>
-> >>>> - Setting the idle mask everytime the cpu enters idle requires a muc=
-h
-> >>>> heavier load level to preserve the idle cpumask(not call into idle),
-> >>>> otherwise the bits cleared in scheduler tick will be restored when t=
-he
-> >>>> cpu enters idle. That is, idle cpumask is almost equal to the domain
-> >>>> cpumask during task wakeup if the system load is not heavy enough.
-> >>>
-> >>> But setting the idle cpumask is useful because it helps to select an =
-idle
-> >>> cpu at wake up instead of waiting ifor ILB to fill the empty CPU. IMO=
-,
-> >>> the idle cpu mask is useful in heavy cases because a system, which is
-> >>> already fully busy with work, doesn't want to waste time looking for =
-an
-> >>> idle cpu that doesn't exist.
-> >>
-> >> Yes, this is what v3 does.
-> >>
-> >>> But if there is an idle cpu, we should still looks for it.
-> >>
-> >> IMHO, this is a potential opportunity can be improved. The idle cpu co=
-uld be
-> >> in different idle state, the idle duration could be long or could be v=
-ery short.
-> >> For example, if there are two idle cpus:
-> >>
-> >> - CPU1 is very busy, the pattern is 50us idle and 950us work.
-> >> - CPU2 is in idle for a tick length and wake up to do the regular work
-> >>
-> >> If both added to the idle cpumask, we want the latter one, or we can j=
-ust add
-> >> the later one into the idle cpumask. That's why I want to associate ti=
-ck stop
-> >> signal with it.
-> >>
-> >>>
-> >>>>
-> >>>>
-> >>>> - Associating with tick stop tolerates idle to preserve the idle cpu=
-mask
-> >>>> but only short idle, which causes tick retains. This is more fitable=
- for
-> >>>> the real workload.
-> >>>
-> >>> I don't agree with this and real use cases with interaction will prob=
-ably
-> >>> not agree as well as they want to run on an idle cpu if any but not w=
-ait
-> >>> on an already busy one.
-> >>
-> >> The problem is scan overhead, scanning idle cpu need time. If an idle =
-cpu
-> >> is in the short idle mode, it's very likely that when it's picked up f=
-or a
-> >> wakeup task, it goes back to work again, and the wakeup task has to wa=
-it too,
-> >> maybe longer because the running task just starts.
-> >>
-> >> One benefit of waiting on the previous one is warm cache.
-> >>
-> >>> Also keep in mind that a tick can be up to 10ms long
-> >>
-> >> Right, but the point here is, if this 10ms tick retains, the CPU shoul=
-d be
-> >> in the short idle mode.
-> >
-> > But 10, 4 or even 1ms is quite long for a system and that's even more
-> > true compared to scanning the idle cpu mask
-> >
-> >>
-> >>>
-> >>>>
-> >>>>>
-> >>>>> This change means that a cpu will not be part of the idle mask if t=
-he
-> >>>>> tick is not stopped. On some arm/arm64 platforms, the tick stops on=
-ly
-> >>>>> if the idle duration is expected to be higher than 1-2ms which star=
-ts
-> >>>>> to be significantly long. Also, the cpuidle governor can easily
-> >>>>> mis-predict a short idle duration whereas it will be finally a long
-> >>>>> idle duration; In this case, the next tick will correct the situati=
-on
-> >>>>> and select a deeper state, but this can happen up to 4ms later on
-> >>>>> arm/arm64.
-> >>>>
-> >>>> Yes this is intented. If the tick is not stopped, that indicates the
-> >>>> CPU is very busy, cpu idle governor selected the polling idle state,=
- and/or
-> >>>> the expected idle duration is shorter than the tick period length. F=
-or
-> >>>
-> >>> As mentioned above a tick can be up to 10ms long which is not a short=
- idle
-> >>> duration.
-> >>
-> >> Usually when the tick retains, the CPU is in the short idle mode or ev=
-en polling
-> >> instead of idle.
-> >
-> > Also keep in mind that cpuidle can select a shallow state and retains
-> > tick because of the wake up latency constraint and not the idle
-> > duration. So you can't really make the assumption that retaining tick
-> > means short idle duration
-> >
-> idle governor has short idle information, probably can let idle governor
-> expose a short idle indicator?
->
-> >>
-> >>>
-> >>> Then the governor also mispredicts the idle duration and this is one
-> >>> reason that the tick is not stopped because it will give the opportun=
-ity
-> >>> to reevaluate the idle state in case of misprediction.
-> >>>
-> >> We always predict the next state based on the past states, so mispredi=
-ction
-> >> does happen. This is not what this patch is trying to solve. I'm certa=
-inly
-> >
-> > My point here was to say that one original goal of cpuidle for
-> > retaining the tick was to handle case where the governor mispredicts a
-> > short idle time. Retaining the tick prevents the cpu to stay too long
-> > in this shallow idle state and to waste power which seems to happen
-> > often enough to be raised by people
->
-> I see, thanks!
->
-> >
-> >> open if there is a better signal instead of stop_tick from idle govern=
-or.
-> >>
-> >>
-> >>>> example, uperf enters and exits 80 times between two ticks when util=
-izes
-> >>>> 100% CPU, and the average idle residency < 50us.
-> >>>
-> >>> But scheduler looks for idle state of prev cpu before looping the idl=
-e cpu
-> >>> mask so i'm not sure that uperf is impacted in this case because sche=
-duler
-> >>> will select prev cpu before loop idle cpu mask.
-> >>>
-> >>>>
-> >>>> If this CPU is added to idle cpumask, the wakeup task likely needs t=
-o
-> >>>> wait in the runqueue as this CPU will run its current task very soon=
-.
-> >>>>
-> >>>>>
-> >>>>> So I would prefer to keep trying to set the idle mask everytime the
-> >>>>> cpu enters idle. If a tick has not happened between 2 idle phases, =
-the
-> >>>>> cpumask will not be updated and the overhead will be mostly testing=
- if
-> >>>>> (rq->last_idle_state =3D=3D idle_state).
-> >>>>
-> >>>> Not sure if I addressed your concern, did you see any workloads any =
-cases
-> >>>> v4 performs better than v5?
-> >>>
-> >>> Yes, I see some perf regression on my octo arm64 system for hackbench=
- with
-> >>> only 1 group (and for few ther ones but it's less obvious). There is =
-no
-> >>> perf impact with more groups most probably because the cpus are no mo=
-re idle.
-> >>>
-> >>> The regression happens even if the shallowest idle state is the only =
-one to
-> >>> be enabled.
-> >>
-> >> Thanks for the data.
-> >>
-> >>>
-> >>> - 2 x 4 cores arm64 system
-> >>>
-> >>> 12 iterations of hackbench -l (256000/#grp) -g #grp
-> >>>
-> >>> Only the shallowest state enabled
-> >>
-> >>> (as a sidenote, we don't have polling mode on arm64)
-> >> Okay, this might be the cause of the difference between yours and mine=
-. So do you
-> >> think if it makes sense to let idle governor to return a polling flag =
-and associate
-> >> it with idle cpumask update instead of stop_tick? A CPU is idle but ac=
-tually polling
-> >> may not be suitable for the wake up target.
-> >
-> > I don't know much about polling but can't this mode be used up to a tic=
-k too ?
-> >I think so. So short idle need a definition. I'm not sure if it's a good=
- idea to define
-> the short idle as a tunable and default set it to tick >> 2?
+On 6/11/20 4:27 am, AKASHI Takahiro wrote:
+> Add UHS-II related definitions in shdci.h and sdhci-uhs2.h.
+> 
+> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> ---
+>  drivers/mmc/host/sdhci-uhs2.h | 210 ++++++++++++++++++++++++++++++++++
+>  drivers/mmc/host/sdhci.h      |  73 +++++++++++-
+>  2 files changed, 282 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/mmc/host/sdhci-uhs2.h
+> 
+> diff --git a/drivers/mmc/host/sdhci-uhs2.h b/drivers/mmc/host/sdhci-uhs2.h
+> new file mode 100644
+> index 000000000000..3b157df9c89c
+> --- /dev/null
+> +++ b/drivers/mmc/host/sdhci-uhs2.h
+> @@ -0,0 +1,210 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +/*
+> + *  linux/drivers/mmc/host/sdhci-uhs2.h - Secure Digital Host Controller
+> + *  Interface driver
+> + *
+> + * Header file for Host Controller UHS2 related registers and I/O accessors.
+> + *
+> + *  Copyright (C) 2014 Intel Corp, All Rights Reserved.
+> + */
+> +#ifndef __SDHCI_UHS2_H
+> +#define __SDHCI_UHS2_H
+> +
+> +#include <linux/bits.h>
+> +
+> +/*
+> + * UHS-II Controller registers
+> + * 0x74 preset in sdhci.h
+> + * 0x80
+> + * 0x84-0xB4
+> + * 0xB8-0xCF
+> + * 0xE0-0xE7
+> + */
+> +/* UHS2 */
+> +#define SDHCI_UHS2_BLOCK_SIZE	0x80
+> +#define  SDHCI_UHS2_MAKE_BLKSZ(dma, blksz) \
+> +	((((dma) & 0x7) << 12) | ((blksz) & 0xFFF))
+> +
+> +#define SDHCI_UHS2_BLOCK_COUNT	0x84
+> +
+> +#define SDHCI_UHS2_CMD_PACKET	0x88
+> +#define  SDHCI_UHS2_CMD_PACK_MAX_LEN	20
+> +
+> +#define SDHCI_UHS2_TRANS_MODE	0x9C
+> +#define  SDHCI_UHS2_TRNS_DMA		BIT(0)
+> +#define  SDHCI_UHS2_TRNS_BLK_CNT_EN	BIT(1)
+> +#define  SDHCI_UHS2_TRNS_DATA_TRNS_WRT	BIT(4)
+> +#define  SDHCI_UHS2_TRNS_BLK_BYTE_MODE	BIT(5)
+> +#define  SDHCI_UHS2_TRNS_RES_R5		BIT(6)
+> +#define  SDHCI_UHS2_TRNS_RES_ERR_CHECK_EN	BIT(7)
+> +#define  SDHCI_UHS2_TRNS_RES_INT_DIS	BIT(8)
+> +#define  SDHCI_UHS2_TRNS_WAIT_EBSY	BIT(14)
+> +#define  SDHCI_UHS2_TRNS_2L_HD		BIT(15)
+> +
+> +#define SDHCI_UHS2_COMMAND	0x9E
+> +#define  SDHCI_UHS2_COMMAND_SUB_CMD	0x0004
+> +#define  SDHCI_UHS2_COMMAND_DATA	0x0020
+> +#define  SDHCI_UHS2_COMMAND_TRNS_ABORT	0x0040
+> +#define  SDHCI_UHS2_COMMAND_CMD12	0x0080
+> +#define  SDHCI_UHS2_COMMAND_DORMANT	0x00C0
+> +#define  SDHCI_UHS2_COMMAND_PACK_LEN_MASK	GENMASK(12,8)
+> +#define  SDHCI_UHS2_COMMAND_PACK_LEN_SHIFT	8
+> +
+> +#define SDHCI_UHS2_RESPONSE	0xA0
+> +#define  SDHCI_UHS2_RESPONSE_MAX_LEN	20
+> +
+> +#define SDHCI_UHS2_MSG_SELECT	0xB4
+> +#define SDHCI_UHS2_MSG_SELECT_CURR	0x0
+> +#define SDHCI_UHS2_MSG_SELECT_ONE	0x1
+> +#define SDHCI_UHS2_MSG_SELECT_TWO	0x2
+> +#define SDHCI_UHS2_MSG_SELECT_THREE	0x3
+> +
+> +#define SDHCI_UHS2_MSG		0xB8
+> +
+> +#define SDHCI_UHS2_DEV_INT_STATUS	0xBC
+> +
+> +#define SDHCI_UHS2_DEV_SELECT	0xBE
+> +#define SDHCI_UHS2_DEV_SELECT_DEV_SEL_MASK	GENMASK(3,0)
+> +#define SDHCI_UHS2_DEV_SELECT_INT_MSG_EN	BIT(7)
+> +
+> +#define SDHCI_UHS2_DEV_INT_CODE	0xBF
+> +
+> +#define SDHCI_UHS2_SW_RESET	0xC0
+> +#define SDHCI_UHS2_SW_RESET_FULL	0x0001
+> +#define SDHCI_UHS2_SW_RESET_SD		0x0002
+> +
+> +#define SDHCI_UHS2_TIMER_CTRL	0xC2
+> +#define SDHCI_UHS2_TIMER_CTRL_DEADLOCK_SHIFT	4
+> +
+> +#define SDHCI_UHS2_ERR_INT_STATUS		0xC4
+> +#define SDHCI_UHS2_ERR_INT_STATUS_EN		0xC8
+> +#define SDHCI_UHS2_ERR_INT_SIG_EN		0xCC
+> +#define SDHCI_UHS2_ERR_INT_STATUS_HEADER	BIT(0)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_RES		BIT(1)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_RETRY_EXP	BIT(2)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_CRC		BIT(3)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_FRAME		BIT(4)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_TID		BIT(5)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_UNRECOVER	BIT(7)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_EBUSY		BIT(8)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_ADMA		BIT(15)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_RES_TIMEOUT	BIT(16)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_DEADLOCK_TIMEOUT	BIT(17)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_VENDOR	BIT(27)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_MASK	\
+> +		(SDHCI_UHS2_ERR_INT_STATUS_HEADER |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_RES |		\
+> +		SDHCI_UHS2_ERR_INT_STATUS_RETRY_EXP |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_CRC |		\
+> +		SDHCI_UHS2_ERR_INT_STATUS_FRAME |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_TID |		\
+> +		SDHCI_UHS2_ERR_INT_STATUS_UNRECOVER |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_EBUSY |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_ADMA |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_RES_TIMEOUT |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_DEADLOCK_TIMEOUT)
+> +#define SDHCI_UHS2_ERR_INT_STATUS_CMD_MASK	\
+> +		(SDHCI_UHS2_ERR_INT_STATUS_HEADER |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_RES |		\
+> +		SDHCI_UHS2_ERR_INT_STATUS_FRAME |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_TID |		\
+> +		SDHCI_UHS2_ERR_INT_STATUS_RES_TIMEOUT)
+> +/* CRC Error occurs during a packet receiving */
+> +#define SDHCI_UHS2_ERR_INT_STATUS_DATA_MASK	\
+> +		(SDHCI_UHS2_ERR_INT_STATUS_RETRY_EXP |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_CRC |		\
+> +		SDHCI_UHS2_ERR_INT_STATUS_UNRECOVER |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_EBUSY |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_ADMA |	\
+> +		SDHCI_UHS2_ERR_INT_STATUS_DEADLOCK_TIMEOUT)
+> +
+> +#define SDHCI_UHS2_SET_PTR	0xE0
+> +#define   SDHCI_UHS2_GEN_SET_POWER_LOW		0x0001
+> +#define   SDHCI_UHS2_GEN_SET_N_LANES_POS	8
+> +#define   SDHCI_UHS2_GEN_SET_2L_FD_HD		0x0
+> +#define   SDHCI_UHS2_GEN_SET_2D1U_FD		0x2
+> +#define   SDHCI_UHS2_GEN_SET_1D2U_FD		0x3
+> +#define   SDHCI_UHS2_GEN_SET_2D2U_FD		0x4
+> +
+> +#define   SDHCI_UHS2_PHY_SET_SPEED_POS		6
+> +#define   SDHCI_UHS2_PHY_SET_HIBER_EN		BIT(12)
+> +#define   SDHCI_UHS2_PHY_SET_N_LSS_SYN_MASK	GENMASK(19,16)
+> +#define   SDHCI_UHS2_PHY_SET_N_LSS_SYN_POS	16
+> +#define   SDHCI_UHS2_PHY_SET_N_LSS_DIR_MASK	GENMASK(23,20)
+> +#define   SDHCI_UHS2_PHY_SET_N_LSS_DIR_POS	20
+> +
+> +#define   SDHCI_UHS2_TRAN_SET_N_FCU_MASK	GENMASK(15,8)
+> +#define   SDHCI_UHS2_TRAN_SET_N_FCU_POS		8
+> +#define   SDHCI_UHS2_TRAN_SET_RETRY_CNT_MASK	GENMASK(17,16)
+> +#define   SDHCI_UHS2_TRAN_SET_RETRY_CNT_POS	16
+> +
+> +#define   SDHCI_UHS2_TRAN_SET_1_N_DAT_GAP_MASK	GENMASK(7,0)
+> +
+> +#define SDHCI_UHS2_HOST_CAPS_PTR	0xE2
+> +#define  SDHCI_UHS2_HOST_CAPS_GEN_OFFSET	0
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_DAP_MASK	GENMASK(3,0)
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_GAP_MASK	GENMASK(7,4)
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_GAP(gap)	((gap) * 360)
+> +#define SDHCI_UHS2_HOST_CAPS_GEN_GAP_SHIFT 4
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_LANE_MASK	GENMASK(13,8)
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_LANE_SHIFT	8
+> +#define    SDHCI_UHS2_HOST_CAPS_GEN_2L_HD_FD	1
+> +#define    SDHCI_UHS2_HOST_CAPS_GEN_2D1U_FD	2
+> +#define    SDHCI_UHS2_HOST_CAPS_GEN_1D2U_FD	4
+> +#define    SDHCI_UHS2_HOST_CAPS_GEN_2D2U_FD	8
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_ADDR_64	BIT(14)
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_BOOT		BIT(15)
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_DEV_TYPE_MASK	GENMASK(17,16)
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_DEV_TYPE_SHIFT	16
+> +#define    SDHCI_UHS2_HOST_CAPS_GEN_DEV_TYPE_RMV	0
+> +#define    SDHCI_UHS2_HOST_CAPS_GEN_DEV_TYPE_EMB	1
+> +#define    SDHCI_UHS2_HOST_CAPS_GEN_DEV_TYPE_EMB_RMV	2
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_NUM_DEV_MASK		GENMASK(21,18)
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_NUM_DEV_SHIFT	18
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_MASK	GENMASK(23,22)
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_SHIFT	22
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_P2P		0
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_RING	1
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_HUB		2
+> +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_HUB_RING	3
+> +
+> +#define  SDHCI_UHS2_HOST_CAPS_PHY_OFFSET	4
+> +#define   SDHCI_UHS2_HOST_CAPS_PHY_REV_MASK		GENMASK(5,0)
+> +#define   SDHCI_UHS2_HOST_CAPS_PHY_RANGE_MASK		GENMASK(7,6)
+> +#define   SDHCI_UHS2_HOST_CAPS_PHY_RANGE_SHIFT		6
+> +#define   SDHCI_UHS2_HOST_CAPS_PHY_RANGE_A		0
+> +#define   SDHCI_UHS2_HOST_CAPS_PHY_RANGE_B		1
+> +#define   SDHCI_UHS2_HOST_CAPS_PHY_N_LSS_SYN_MASK	GENMASK(19,16)
+> +#define   SDHCI_UHS2_HOST_CAPS_PHY_N_LSS_SYN_SHIFT	16
+> +#define   SDHCI_UHS2_HOST_CAPS_PHY_N_LSS_DIR_MASK	GENMASK(23,20)
+> +#define   SDHCI_UHS2_HOST_CAPS_PHY_N_LSS_DIR_SHIFT	20
+> +#define  SDHCI_UHS2_HOST_CAPS_TRAN_OFFSET	8
+> +#define   SDHCI_UHS2_HOST_CAPS_TRAN_LINK_REV_MASK	GENMASK(5,0)
+> +#define   SDHCI_UHS2_HOST_CAPS_TRAN_N_FCU_MASK		GENMASK(15,8)
+> +#define   SDHCI_UHS2_HOST_CAPS_TRAN_N_FCU_SHIFT		8
+> +#define   SDHCI_UHS2_HOST_CAPS_TRAN_HOST_TYPE_MASK	GENMASK(18,16)
+> +#define   SDHCI_UHS2_HOST_CAPS_TRAN_HOST_TYPE_SHIFT	16
+> +#define   SDHCI_UHS2_HOST_CAPS_TRAN_BLK_LEN_MASK	GENMASK(31,20)
+> +#define   SDHCI_UHS2_HOST_CAPS_TRAN_BLK_LEN_SHIFT	20
+> +
+> +#define  SDHCI_UHS2_HOST_CAPS_TRAN_1_OFFSET	12
+> +#define  SDHCI_UHS2_HOST_CAPS_TRAN_1_N_DATA_GAP_MASK	GENMASK(7,0)
+> +
+> +#define SDHCI_UHS2_TEST_PTR	0xE4
+> +#define  SDHCI_UHS2_TEST_ERR_HEADER	BIT(0)
+> +#define  SDHCI_UHS2_TEST_ERR_RES	BIT(1)
+> +#define  SDHCI_UHS2_TEST_ERR_RETRY_EXP	BIT(2)
+> +#define  SDHCI_UHS2_TEST_ERR_CRC	BIT(3)
+> +#define  SDHCI_UHS2_TEST_ERR_FRAME	BIT(4)
+> +#define  SDHCI_UHS2_TEST_ERR_TID	BIT(5)
+> +#define  SDHCI_UHS2_TEST_ERR_UNRECOVER	BIT(7)
+> +#define  SDHCI_UHS2_TEST_ERR_EBUSY	BIT(8)
+> +#define  SDHCI_UHS2_TEST_ERR_ADMA	BIT(15)
+> +#define  SDHCI_UHS2_TEST_ERR_RES_TIMEOUT	BIT(16)
+> +#define  SDHCI_UHS2_TEST_ERR_DEADLOCK_TIMEOUT	BIT(17)
+> +#define  SDHCI_UHS2_TEST_ERR_VENDOR	BIT(27)
+> +
+> +#define SDHCI_UHS2_EMBED_CTRL	0xE6
+> +#define SDHCI_UHS2_VENDOR	0xE8
+> +
+> +#endif /* __SDHCI_UHS2_H */
+> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+> index 0770c036e2ff..d9d7a76cedc1 100644
+> --- a/drivers/mmc/host/sdhci.h
+> +++ b/drivers/mmc/host/sdhci.h
+> @@ -43,8 +43,27 @@
+>  #define  SDHCI_TRNS_READ	0x10
+>  #define  SDHCI_TRNS_MULTI	0x20
+>  
+> +/*
+> + * Defined in Host Version 4.10.
+> + * 1 - R5 (SDIO)
+> + * 0 - R1 (Memory)
+> + */
+> +#define  SDHCI_TRNS_RES_TYPE		0x40
+> +#define  SDHCI_TRNS_RES_ERR_CHECK	0x80
+> +#define  SDHCI_TRNS_RES_INT_DIS		0x0100
+> +
+>  #define SDHCI_COMMAND		0x0E
+>  #define  SDHCI_CMD_RESP_MASK	0x03
+> +
+> +/*
+> + * Host Version 4.10 adds this bit to distinguish a main command or
+> + * sub command.
+> + * CMD53(SDIO) - main command
+> + * CMD52(SDIO) - sub command which doesn't have data block or doesn't
+> + * indicate busy.
+> + */
+> +#define  SDHCI_CMD_SUB_CMD	0x04
+> +
+>  #define  SDHCI_CMD_CRC		0x08
+>  #define  SDHCI_CMD_INDEX	0x10
+>  #define  SDHCI_CMD_DATA		0x20
+> @@ -60,11 +79,19 @@
+>  
+>  #define SDHCI_RESPONSE		0x10
+>  
+> +#define  SDHCI_RESPONSE_CM_TRAN_ABORT_OFFSET	0x10
+> +#define  SDHCI_RESPONSE_CM_TRAN_ABORT_SIZE	4
+> +#define  SDHCI_RESPONSE_SD_TRAN_ABORT_OFFSET	0x18
+> +#define  SDHCI_RESPONSE_SD_TRAN_ABORT_SIZE	8
 
-I have never been fond of heuristic like tick << 2 or sys tunable
+I would prefer to have all the UHS2 definitions in sdhci-uhs2.  If they
+belong to an existing register, just put a comment saying what register.
 
-TBH, I'm not sure that using the tick is a good idea. And such kind of
-parameter need more thought
 
->
-> Updating idle cpumask everytime cpu enters idle works for me, as we have =
-state change
-> check, so we won't actually update idle cpumask everytime the cpu enters =
-idle.
+> +
+>  #define SDHCI_BUFFER		0x20
+>  
+>  #define SDHCI_PRESENT_STATE	0x24
+>  #define  SDHCI_CMD_INHIBIT	0x00000001
+>  #define  SDHCI_DATA_INHIBIT	0x00000002
+> +
+> +#define  SDHCI_DATA_HIGH_LVL_MASK	0x000000F0
+> +
+>  #define  SDHCI_DOING_WRITE	0x00000100
+>  #define  SDHCI_DOING_READ	0x00000200
+>  #define  SDHCI_SPACE_AVAILABLE	0x00000400
+> @@ -80,6 +107,13 @@
+>  #define   SDHCI_DATA_0_LVL_MASK	0x00100000
+>  #define  SDHCI_CMD_LVL		0x01000000
+>  
+> +#define  SDHCI_HOST_REGULATOR_STABLE	0x02000000
+> +#define  SDHCI_CMD_NOT_ISSUE_ERR	0x08000000
+> +#define  SDHCI_SUB_CMD_STATUS		0x10000000
+> +#define  SDHCI_UHS2_IN_DORMANT_STATE	0x20000000
+> +#define  SDHCI_UHS2_LANE_SYNC		0x40000000
+> +#define  SDHCI_UHS2_IF_DETECT		0x80000000
+> +
+>  #define SDHCI_HOST_CONTROL	0x28
+>  #define  SDHCI_CTRL_LED		0x01
+>  #define  SDHCI_CTRL_4BITBUS	0x02
+> @@ -100,6 +134,11 @@
+>  #define  SDHCI_POWER_300	0x0C
+>  #define  SDHCI_POWER_330	0x0E
+>  
+> +/* VDD2 - UHS2 */
+> +#define  SDHCI_VDD2_POWER_ON		0x10
+> +#define  SDHCI_VDD2_POWER_180		0xA0
+> +#define  SDHCI_VDD2_POWER_120		0x80
+> +
+>  #define SDHCI_BLOCK_GAP_CONTROL	0x2A
+>  
+>  #define SDHCI_WAKE_UP_CONTROL	0x2B
+> @@ -110,7 +149,7 @@
+>  #define SDHCI_CLOCK_CONTROL	0x2C
+>  #define  SDHCI_DIVIDER_SHIFT	8
+>  #define  SDHCI_DIVIDER_HI_SHIFT	6
+> -#define  SDHCI_DIV_MASK	0xFF
+> +#define  SDHCI_DIV_MASK		0xFF
+>  #define  SDHCI_DIV_MASK_LEN	8
+>  #define  SDHCI_DIV_HI_MASK	0x300
+>  #define  SDHCI_PROG_CLOCK_MODE	0x0020
+> @@ -139,6 +178,10 @@
+>  #define  SDHCI_INT_CARD_REMOVE	0x00000080
+>  #define  SDHCI_INT_CARD_INT	0x00000100
+>  #define  SDHCI_INT_RETUNE	0x00001000
+> +
+> +/* Host Version 4.10 */
+> +#define  SDHCI_INT_FX_EVENT	0x00002000
+> +
+>  #define  SDHCI_INT_CQE		0x00004000
+>  #define  SDHCI_INT_ERROR	0x00008000
+>  #define  SDHCI_INT_TIMEOUT	0x00010000
+> @@ -152,6 +195,9 @@
+>  #define  SDHCI_INT_AUTO_CMD_ERR	0x01000000
+>  #define  SDHCI_INT_ADMA_ERROR	0x02000000
+>  
+> +/* Host Version 4.0 */
+> +#define  SDHCI_INT_RESPONSE_ERROR	0x08000000
+> +
+>  #define  SDHCI_INT_NORMAL_MASK	0x00007FFF
+>  #define  SDHCI_INT_ERROR_MASK	0xFFFF8000
+>  
+> @@ -178,6 +224,9 @@
+>  #define  SDHCI_AUTO_CMD_END_BIT	0x00000008
+>  #define  SDHCI_AUTO_CMD_INDEX	0x00000010
+>  
+> +/* Host Version 4.10 */
+> +#define  SDHCI_ACMD_RESPONSE_ERROR	0x0020
+> +
+>  #define SDHCI_HOST_CONTROL2		0x3E
+>  #define  SDHCI_CTRL_UHS_MASK		0x0007
+>  #define   SDHCI_CTRL_UHS_SDR12		0x0000
+> @@ -186,6 +235,7 @@
+>  #define   SDHCI_CTRL_UHS_SDR104		0x0003
+>  #define   SDHCI_CTRL_UHS_DDR50		0x0004
+>  #define   SDHCI_CTRL_HS400		0x0005 /* Non-standard */
+> +#define   SDHCI_CTRL_UHS_2		0x0007 /* UHS-2 */
+>  #define  SDHCI_CTRL_VDD_180		0x0008
+>  #define  SDHCI_CTRL_DRV_TYPE_MASK	0x0030
+>  #define   SDHCI_CTRL_DRV_TYPE_B		0x0000
+> @@ -194,9 +244,12 @@
+>  #define   SDHCI_CTRL_DRV_TYPE_D		0x0030
+>  #define  SDHCI_CTRL_EXEC_TUNING		0x0040
+>  #define  SDHCI_CTRL_TUNED_CLK		0x0080
+> +#define  SDHCI_CTRL_UHS2_INTERFACE_EN	0x0100 /* UHS-2 */
+> +#define  SDHCI_CTRL_ADMA2_LEN_MODE	0x0400
+>  #define  SDHCI_CMD23_ENABLE		0x0800
+>  #define  SDHCI_CTRL_V4_MODE		0x1000
+>  #define  SDHCI_CTRL_64BIT_ADDR		0x2000
+> +#define  SDHCI_CTRL_ASYNC_INT_EN	0x4000
+>  #define  SDHCI_CTRL_PRESET_VAL_ENABLE	0x8000
+>  
+>  #define SDHCI_CAPABILITIES	0x40
+> @@ -217,11 +270,13 @@
+>  #define  SDHCI_CAN_VDD_180	0x04000000
+>  #define  SDHCI_CAN_64BIT_V4	0x08000000
+>  #define  SDHCI_CAN_64BIT	0x10000000
+> +#define  SDHCI_CAN_ASYNC_INT	0x20000000
+>  
+>  #define SDHCI_CAPABILITIES_1	0x44
+>  #define  SDHCI_SUPPORT_SDR50	0x00000001
+>  #define  SDHCI_SUPPORT_SDR104	0x00000002
+>  #define  SDHCI_SUPPORT_DDR50	0x00000004
+> +#define  SDHCI_SUPPORT_UHS2	0x00000008 /* UHS-2 support */
+>  #define  SDHCI_DRIVER_TYPE_A	0x00000010
+>  #define  SDHCI_DRIVER_TYPE_C	0x00000020
+>  #define  SDHCI_DRIVER_TYPE_D	0x00000040
+> @@ -230,19 +285,28 @@
+>  #define  SDHCI_RETUNING_MODE_MASK		GENMASK(15, 14)
+>  #define  SDHCI_CLOCK_MUL_MASK			GENMASK(23, 16)
+>  #define  SDHCI_CAN_DO_ADMA3	0x08000000
+> +#define  SDHCI_SUPPORT_VDD2_180	0x10000000 /* UHS-2 1.8V VDD2 */
+> +#define  SDHCI_RSVD_FOR_VDD2    0x20000000 /* Rsvd for future VDD2 */
+>  #define  SDHCI_SUPPORT_HS400	0x80000000 /* Non-standard */
+>  
+>  #define SDHCI_MAX_CURRENT		0x48
+> +#define SDHCI_MAX_CURRENT_1		0x4C
+>  #define  SDHCI_MAX_CURRENT_LIMIT	GENMASK(7, 0)
+>  #define  SDHCI_MAX_CURRENT_330_MASK	GENMASK(7, 0)
+>  #define  SDHCI_MAX_CURRENT_300_MASK	GENMASK(15, 8)
+>  #define  SDHCI_MAX_CURRENT_180_MASK	GENMASK(23, 16)
+> +#define  SDHCI_MAX_CURRENT_VDD2_180_MASK	GENMASK(7, 0) /* UHS2 */
+>  #define   SDHCI_MAX_CURRENT_MULTIPLIER	4
+>  
+>  /* 4C-4F reserved for more max current */
+>  
+>  #define SDHCI_SET_ACMD12_ERROR	0x50
+> +/* Host Version 4.10 */
+> +#define SDHCI_SET_ACMD_RESPONSE_ERROR	0x20
+>  #define SDHCI_SET_INT_ERROR	0x52
+> +/* Host Version 4.10 */
+> +#define SDHCI_SET_INT_TUNING_ERROR	0x0400
+> +#define SDHCI_SET_INT_RESPONSE_ERROR	0x0800
+>  
+>  #define SDHCI_ADMA_ERROR	0x54
+>  
+> @@ -259,10 +323,16 @@
+>  #define SDHCI_PRESET_FOR_SDR104        0x6C
+>  #define SDHCI_PRESET_FOR_DDR50 0x6E
+>  #define SDHCI_PRESET_FOR_HS400 0x74 /* Non-standard */
+> +
+> +/* TODO: 0x74 is used for UHS2 in 4.10. How about HS400? */
+> +/* UHS2 */
+> +#define SDHCI_PRESET_FOR_UHS2  0x74
+>  #define SDHCI_PRESET_DRV_MASK		GENMASK(15, 14)
+>  #define SDHCI_PRESET_CLKGEN_SEL		BIT(10)
+>  #define SDHCI_PRESET_SDCLK_FREQ_MASK	GENMASK(9, 0)
+>  
+> +#define SDHCI_ADMA3_ADDRESS	0x78
+> +
+>  #define SDHCI_SLOT_INT_STATUS	0xFC
+>  
+>  #define SDHCI_HOST_VERSION	0xFE
+> @@ -652,6 +722,7 @@ struct sdhci_ops {
+>  	void	(*request_done)(struct sdhci_host *host,
+>  				struct mmc_request *mrq);
+>  	void    (*dump_vendor_regs)(struct sdhci_host *host);
+> +	void	(*dump_uhs2_regs)(struct sdhci_host *host);
+>  };
+>  
+>  #ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
+> 
 
-Yes, In this case, the overhead stays reasonable and is limited to the
-test of a rq->last_idle_state
-This will benefit heavy use a case by reducing the scanning time  and
-will not regress other use case.
-
->
-> But I'm still willing to exclude short idle case, what do you think?
-
-something similar to patch v3 or patch v5 + my changes seems to be a
-good 1st step that will benefit heavy use cases with regressing other
-ones.
-
-Trying to exclude short idle case will need more thoughts and changes
-especially about to how to get this information and if it is reliable.
-
->
-> Thanks,
-> -Aubrey
->
->
