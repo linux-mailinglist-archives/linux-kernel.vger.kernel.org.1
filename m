@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0962C4BC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 01:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F802C4BCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 01:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728889AbgKZAGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 19:06:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
+        id S1729009AbgKZAHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 19:07:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728829AbgKZAGv (ORCPT
+        with ESMTP id S1728934AbgKZAHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 19:06:51 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31F0C061A4F
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 16:06:50 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id n137so1179pfd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 16:06:50 -0800 (PST)
+        Wed, 25 Nov 2020 19:07:16 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914EBC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 16:07:16 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id l11so242845plt.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 16:07:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3NQ3wtA4MBw7H9ENpDbNl6UnCj99yYqE7sfkNlQV7eE=;
-        b=usNarmQPin3VDizPkcmlfmbwneHIL3EeRbi4gk1ze61Z/zBAlQVhJ6v58duGy+V7DB
-         Dt/AjB1GTXegac5tPWOdxulgpKgXIgt0roT7mCInCkzTOs/Ht3qpLNjtne4hgE2Nnye7
-         tlaCBD4653nADezPOJa0x6ysKPcXiv9RsMg07afG2cM8L8pEcJTiTWXZvId9G8eXblX1
-         zXnMzl9NouOKtPA4dlBIXhyrfrltIRJTqkpX5+IZG/SsakXjmC+8pEmQ/n0CnRV6/VBV
-         kVjrvQ4PARiLW9bwEcNqw72jI1KTwso+OWo4SGIHFZ9x5H53h4wQJWE88DW7jleWidkl
-         vK2g==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lXKGFwlwk5BhnLTOpbOaW2N4zPIH8hU8zMiJmAIHSzM=;
+        b=UcNa1hiKKrFYlPeAOBA52BSPUa2xFQ4A3OyNKpIrp7OUj0PSUhb9nDuKEjKwvz/aP1
+         /Bx/xrcz2r/u24ScMRL7as3hV0D1TieEglnop9SXMgZJMPOkN3DtdaNbfsOJXvVSIU7X
+         AAFvP8OmJ93oDMXs+llXaO+OWqwt0rTTjFn8yWM+/+KGqsY5je9IXlkWOG08aPU/HrmR
+         P562toTIhxvVevj4sot64sz5Nur9qIkcjcxM89afF/W8RjYISkH1ukUqaH6+tep1Qr9s
+         c0dybXURey+1cz6LU/rE0K+QLrbf0b2Km/So4KumMJ0bT6ypq8Go7O2jPHR3sb+9npoU
+         iqIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=3NQ3wtA4MBw7H9ENpDbNl6UnCj99yYqE7sfkNlQV7eE=;
-        b=nuMrNI/pkwfayDmMhx8DuCYzShqFCz6bsHKuJu60sc2qcQBGLqXtws9G3Pbm3S/pSk
-         A1dWQsk5ZYY3X4KWWDfRDo0x3YiinbGPd27tbeMugfvWTEvumgnx12bbDh4r+evApwrb
-         6QYM8EGFktaddoLAbL5ImCwCrxDrPStY+YrctI1G4OcY96Y0Sfo9qMD1RO56ONzqijxi
-         SvhZRRq7gEaCmwrWc2eMPVT4YI7fGkKx3ssNoJhn6Kym3IgHwSl2q6fBVB3x/QNIXG3U
-         6vgJexvUehLLzEZ/Itw2CWIqV4fqZFDqg0Ibz2lYHVSEMooyKcB9xFbhtjXK4hiCa6SO
-         brWQ==
-X-Gm-Message-State: AOAM530JvwMP8sMviUoYpglQEmfYBINvicIs6X+x5pSLGNiUMMtMP4md
-        nnr2l9zFzQ0E/Yv0p3liSh5Plw==
-X-Google-Smtp-Source: ABdhPJyz+8WuEITK2opyP1MAyT8G9kd0dpqAPhmXCCXyHAVL6gpKEOwgXzg3KPv93QJdGlwevBtt0A==
-X-Received: by 2002:a63:b05:: with SMTP id 5mr311632pgl.267.1606349210325;
-        Wed, 25 Nov 2020 16:06:50 -0800 (PST)
-Received: from laputa (p784a5642.tkyea130.ap.so-net.ne.jp. [120.74.86.66])
-        by smtp.gmail.com with ESMTPSA id n68sm2872706pfn.161.2020.11.25.16.06.47
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=lXKGFwlwk5BhnLTOpbOaW2N4zPIH8hU8zMiJmAIHSzM=;
+        b=T8cPhZh39TqwoJ/sA2pDiiLRycfkiAKoupiEwxF62Bzbhx/cNSe+MEo2eoCSjeHwkT
+         Mb9iWAaDtBWIpCxwO9OxfChD6pmLLl+4ZfTl4AvtoiKyn6YPCuTGnM16ognoOutg8qfQ
+         WXDZK+iCtSN4Z+gCWjIx9BTUvZ6fgb+m7l2HbWQpPkfsCd7zwiYaI5CePjXdSzy9q0+g
+         iDDZKVBN1a+9/WniuhgGJ10vtN7y7nuDxXmQe+haDZj4TVPdrfg5LsIiOMSfY9mB7Zg/
+         9TxsuIjaSP+V8XAxlNz5UCuhcaY1h3OLID5EnAdLNICanI+tVYxizp35McQlZiI6OXr9
+         BX0w==
+X-Gm-Message-State: AOAM531H2U6r9fG6PDTX5bJkmxb+kQbK/0xMeeGNsAAbnLL18F8/70VT
+        S26ya1XzmhFBImTNlm+WWXASAQ==
+X-Google-Smtp-Source: ABdhPJyvB7YW85IRla3uGns9Rt1ES3C2J2rlLJ6FQ6Vz6Un6ISz46ng2k6fWeN359MQKL8ccHtX9aA==
+X-Received: by 2002:a17:902:b604:b029:da:3006:696e with SMTP id b4-20020a170902b604b02900da3006696emr344981pls.34.1606349235954;
+        Wed, 25 Nov 2020 16:07:15 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id e5sm196699pjl.51.2020.11.25.16.07.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 16:06:49 -0800 (PST)
-Date:   Thu, 26 Nov 2020 09:06:45 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH v3.1 00/27] Add support UHS-II for GL9755
-Message-ID: <20201126000645.GA14078@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw
-References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
- <20201125074125.GC62993@laputa>
- <CAPDyKFo_DjqTzaPhhBCKEj7axDU-4hMBnd1sw_hwP8nmp8xmTg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFo_DjqTzaPhhBCKEj7axDU-4hMBnd1sw_hwP8nmp8xmTg@mail.gmail.com>
+        Wed, 25 Nov 2020 16:07:15 -0800 (PST)
+Date:   Wed, 25 Nov 2020 16:07:15 -0800 (PST)
+X-Google-Original-Date: Wed, 25 Nov 2020 16:07:12 PST (-0800)
+Subject:     Re: [PATCH v3 0/5] Improve kernel section protections
+In-Reply-To: <CAHCEehJnnytcvRr9OdXbdvzjJ9M2D4LBq4rN7TUXoW65nLx2ZQ@mail.gmail.com>
+CC:     Atish Patra <Atish.Patra@wdc.com>, linux-kernel@vger.kernel.org,
+        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
+        anup@brainfault.org, ardb@kernel.org, ren_guo@c-sky.com,
+        linux-riscv@lists.infradead.org, walken@google.com,
+        ojeda@kernel.org, rppt@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>, zong.li@sifive.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     greentime.hu@sifive.com
+Message-ID: <mhng-82cf34ec-f691-4aaa-a702-c2a5bb91e59b@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 11:43:18AM +0100, Ulf Hansson wrote:
-> On Wed, 25 Nov 2020 at 08:41, AKASHI Takahiro
-> <takahiro.akashi@linaro.org> wrote:
-> >
-> > Gentle ping;
-> >
-> > On Fri, Nov 06, 2020 at 11:26:59AM +0900, AKASHI Takahiro wrote:
-> > > This is an interim snapshot of our next version, v4, for enabling
-> > > UHS-II on MMC/SD.
-> > >
-> > > It is focused on 'sdhci' side to address Adrian's comments regarding
-> > > "modularising" sdhci-uhs2.c.
-> > > The whole aim of this version is to get early feedback from Adrian (and
-> > > others) on this issue. Without any consensus about the code structure,
-> >
-> > Any comments so far?
-> 
-> I haven't been able to look at sdhci parts (I will try to), but as you
-> know, I am relying on Adrian's help with this.
+On Mon, 23 Nov 2020 23:21:08 PST (-0800), greentime.hu@sifive.com wrote:
+> Atish Patra <atish.patra@wdc.com> 於 2020年11月5日 週四 上午8:05寫道：
+>>
+>> This series aims at improving kernel permissions by doing following things.
+>>
+>> 1. Protect kernel sections early instead of after /init.
+>> 2. Protect .init.text & .init.data sections with appropriate permissions.
+>> 3. Move dynamic relocation section to _init.
+>> 4. Moved .init sections after .text. This is what most of the other archs
+>>    are also doing.
+>>
+>> After applying this patch, here are the linear mapped sections with non-uefi boot.
+>>
+>> ---[ Linear mapping ]---
+>> 0xffffffe000000000-0xffffffe000800000    0x0000000080200000         8M PMD     D A . . X . R V
+>> 0xffffffe000800000-0xffffffe000c00000    0x0000000080a00000         4M PMD     D A . . . W R V
+>> 0xffffffe000c00000-0xffffffe001200000    0x0000000080e00000         6M PMD     D A . . . . R V
+>> 0xffffffe001200000-0xffffffe03fe00000    0x0000000081400000      1004M PMD     D A . . . W R V
+>>
+>> Linear mapping with uefi boot.
+>>
+>> ---[ Linear mapping ]---
+>> 0xffffffe000000000-0xffffffe000800000    0x0000000080200000         8M PTE     D A . . X . R V
+>> 0xffffffe000800000-0xffffffe000c00000    0x0000000080a00000         4M PTE     D A . . . W R V
+>> 0xffffffe000c00000-0xffffffe001200000    0x0000000080e00000         6M PTE     D A . . . . R V
+>> 0xffffffe001200000-0xffffffe03e534000    0x0000000081400000   1002704K PTE     D A . . . W R V
+>> 0xffffffe03e538000-0xffffffe03e539000    0x00000000be738000         4K PTE     D A . . . W R V
+>> 0xffffffe03e53a000-0xffffffe03e53c000    0x00000000be73a000         8K PTE     D A . . . W R V
+>> 0xffffffe03e540000-0xffffffe03e541000    0x00000000be740000         4K PTE     D A . . . W R V
+>> 0xffffffe03e545000-0xffffffe03e546000    0x00000000be745000         4K PTE     D A . . . W R V
+>> 0xffffffe03e549000-0xffffffe03e54a000    0x00000000be749000         4K PTE     D A . . . W R V
+>> 0xffffffe03e54b000-0xffffffe03fd6d000    0x00000000be74b000     24712K PTE     D A . . . W R V
+>> 0xffffffe03fd6e000-0xffffffe03fdee000    0x00000000bff6e000       512K PTE     D A . . . W R V
+>>
+>>
+>> Changes from v2->v3:
+>> 1. Added few extra comments to clarify rodata permissions.
+>> 2. Changed the name of the functions set_memory_default to set_memory_rw_nx.
+>> 3. Squashed patch 3&5 together as they depend on each other to allow
+>>    bisectability.
+>> 4. Removed redundant arguments in protect_kernel_text_data.
+>>
+>> Changes from v1->v2:
+>> 1. .init.text section is aligned with SECTION_ALIGN.
+>> 2. .init.text is moved to below of .text so that .head.text & .text are in
+>>    one section.
+>> 3. We don't need Guo's fix for static object issue.
+>> 4. Rebased on 5.10-rc1.
+>>
+>> Atish Patra (5):
+>> RISC-V: Move __start_kernel to .head.text
+>> RISC-V: Initialize SBI early
+>> RISC-V: Align the .init.text section
+>> RISC-V: Protect all kernel sections including init early
+>> RISC-V: Move dynamic relocation section under __init
+>>
+>> arch/riscv/include/asm/sections.h   |  2 +
+>> arch/riscv/include/asm/set_memory.h |  4 ++
+>> arch/riscv/kernel/head.S            |  1 -
+>> arch/riscv/kernel/setup.c           | 19 +++++++--
+>> arch/riscv/kernel/vmlinux.lds.S     | 63 +++++++++++++++++------------
+>> arch/riscv/mm/init.c                | 21 +++++++---
+>> arch/riscv/mm/pageattr.c            |  6 +++
+>> 7 files changed, 80 insertions(+), 36 deletions(-)
+>>
+>
+> Test this series in v5.10-rc3 in Qemu and it works.
+> Tested-by: Greentime Hu <greentime.hu@sifive.com>
+>
+> Thank you. :)
 
-Yeah, I understand.
-
-> When it comes to the core part, I am planning to help to put some of
-> the foundation in place for the mmc core changes. Although,
-> unfortunately I haven't been able to post patches, yet. I will keep
-> you in the loop, when I get to it.
-
-I think Ben has some idea on the topic.
-
--Takahiro Akashi
-
-
-> [...]
-> 
-> Kind regards
-> Uffe
+Thanks, this is on for-next.
