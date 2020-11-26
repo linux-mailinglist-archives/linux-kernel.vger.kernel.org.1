@@ -2,249 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B592C4EA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 07:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D358E2C4EA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 07:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387956AbgKZGTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 01:19:40 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:37726 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387783AbgKZGTj (ORCPT
+        id S2387967AbgKZGTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 01:19:54 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:49556 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387783AbgKZGTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 01:19:39 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 443821F45659
-Message-ID: <6409c32842ab080d91d1851a58f7ec7bb4524336.camel@collabora.com>
-Subject: Re: [PATCH v2] char: tpm: add i2c driver for cr50
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     linux-integrity@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Helen Koike <helen.koike@collabora.com>,
-        Duncan Laurie <dlaurie@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>, kernel@collabora.com,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 26 Nov 2020 03:19:24 -0300
-In-Reply-To: <7edf80b70e4dd67d6f95c796c1ae26df9e51ba8d.camel@kernel.org>
-References: <20201120172345.4040187-1-adrian.ratiu@collabora.com>
-         <20201123220643.GA16777@kernel.org>
-         <f36c43f81968a9ce2f3342e5c2c069722d8bfc7f.camel@collabora.com>
-         <7edf80b70e4dd67d6f95c796c1ae26df9e51ba8d.camel@kernel.org>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        Thu, 26 Nov 2020 01:19:54 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AQ6Ja20042813;
+        Thu, 26 Nov 2020 00:19:36 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606371576;
+        bh=e4U46c/ZSWjtdN/RPRLl1RQ1O+XoGB2Xmee9a5TINmg=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=brlZupJw8a+dBQPyhJEqKe1cHWhEfpGdi44KHI7/OpJbwgUGOvHVbCfZe/lSOMbvb
+         iip+p4b6SFFai9jYp0m/oD+eg4kib50eKS3SLwcdysO2ZzL4zc24ev4Ib5vKRMUObi
+         8yMZnUiujnLe1M/iCQHpLqw93n3iN0jQ6ZJjw2qs=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AQ6Jaso064916
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 26 Nov 2020 00:19:36 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 26
+ Nov 2020 00:19:36 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 26 Nov 2020 00:19:36 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AQ6JYCb102804;
+        Thu, 26 Nov 2020 00:19:35 -0600
+Subject: Re: [PATCH] drm/omap: dmm_tiler: fix return error code in
+ omap_dmm_probe()
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20201117061045.3452287-1-yangyingliang@huawei.com>
+ <04c96207-3c67-0cab-d3e7-919b96fbb46b@suse.de>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <5b671522-1a98-3935-33e6-bfa307debb53@ti.com>
+Date:   Thu, 26 Nov 2020 08:19:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <04c96207-3c67-0cab-d3e7-919b96fbb46b@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-26 at 05:30 +0200, Jarkko Sakkinen wrote:
-> On Tue, 2020-11-24 at 10:14 -0300, Ezequiel Garcia wrote:
-> > Hi Jarkko,
-> > 
-> > Thanks for your review.
-> > 
-> > On Tue, 2020-11-24 at 00:06 +0200, Jarkko Sakkinen wrote:
-> > > On Fri, Nov 20, 2020 at 07:23:45PM +0200, Adrian Ratiu wrote:
-> > > > From: "dlaurie@chromium.org" <dlaurie@chromium.org>
-> > > > 
-> > > > Add TPM 2.0 compatible I2C interface for chips with cr50
-> > > > firmware.
-> > > > 
-> > > > The firmware running on the currently supported H1 MCU requires a
-> > > > special driver to handle its specific protocol, and this makes it
-> > > > unsuitable to use tpm_tis_core_* and instead it must implement
-> > > > the
-> > > > underlying TPM protocol similar to the other I2C TPM drivers.
-> > > > 
-> > > > - All 4 byes of status register must be read/written at once.
-> > > > - FIFO and burst count is limited to 63 and must be drained by
-> > > > AP.
-> > > > - Provides an interrupt to indicate when read response data is
-> > > > ready
-> > > > and when the TPM is finished processing write data.
-> > > > 
-> > > > This driver is based on the existing infineon I2C TPM driver,
-> > > > which
-> > > > most closely matches the cr50 i2c protocol behavior.
-> > > > 
-> > > > Cc: Helen Koike <helen.koike@collabora.com>
-> > > > Signed-off-by: Duncan Laurie <dlaurie@chromium.org>
-> > > > [swboyd@chromium.org: Depend on i2c even if it's a module,
-> > > > replace
-> > > > boilier plate with SPDX tag, drop asm/byteorder.h include,
-> > > > simplify
-> > > > return from probe]
-> > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > > > Signed-off-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
-> > > > Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> > > > ---
-> > > > Changes in v2:
-> > > >   - Various small fixes all over (reorder includes, MAX_BUFSIZE,
-> > > > comments, etc)
-> > > >   - Reworked return values of i2c_wait_tpm_ready() to fix timeout
-> > > > mis-handling
-> > > > so ret == 0 now means success, the wait period jiffies is ignored
-> > > > because that
-> > > > number is meaningless and return a proper timeout error in case
-> > > > jiffies == 0.
-> > > >   - Make i2c default to 1 message per transfer (requested by
-> > > > Helen)
-> > > >   - Move -EIO error reporting to transfer function to cleanup
-> > > > transfer() itself
-> > > > and its R/W callers
-> > > >   - Remove magic value hardcodings and introduce enum
-> > > > force_release.
-> > > > 
-> > > > v1 posted at https://lkml.org/lkml/2020/2/25/349
-> > > > 
-> > > > Applies on next-20201120, tested on Chromebook EVE.
-> > > > ---
-> > > >  drivers/char/tpm/Kconfig            |  10 +
-> > > >  drivers/char/tpm/Makefile           |   2 +
-> > > >  drivers/char/tpm/tpm_tis_i2c_cr50.c | 768
-> > > > ++++++++++++++++++++++++++++
-> > > >  3 files changed, 780 insertions(+)
-> > > >  create mode 100644 drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > > 
-> > > > diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
-> > > > index a18c314da211..4308f9ca7a43 100644
-> > > > --- a/drivers/char/tpm/Kconfig
-> > > > +++ b/drivers/char/tpm/Kconfig
-> > > > @@ -86,6 +86,16 @@ config TCG_TIS_SYNQUACER
-> > > >           To compile this driver as a module, choose  M here;
-> > > >           the module will be called tpm_tis_synquacer.
-> > > >  
-> > > > +config TCG_TIS_I2C_CR50
-> > > > +       tristate "TPM Interface Specification 2.0 Interface (I2C
-> > > > - CR50)"
-> > > > +       depends on I2C
-> > > > +       select TCG_CR50
-> > > > +       help
-> > > > +         This is a driver for the Google cr50 I2C TPM interface
-> > > > which is a
-> > > > +         custom microcontroller and requires a custom i2c
-> > > > protocol interface
-> > > > +         to handle the limitations of the hardware.  To compile
-> > > > this driver
-> > > > +         as a module, choose M here; the module will be called
-> > > > tcg_tis_i2c_cr50.
-> > > > +
-> > > >  config TCG_TIS_I2C_ATMEL
-> > > >         tristate "TPM Interface Specification 1.2 Interface (I2C
-> > > > - Atmel)"
-> > > >         depends on I2C
-> > > > diff --git a/drivers/char/tpm/Makefile
-> > > > b/drivers/char/tpm/Makefile
-> > > > index 84db4fb3a9c9..66d39ea6bd10 100644
-> > > > --- a/drivers/char/tpm/Makefile
-> > > > +++ b/drivers/char/tpm/Makefile
-> > > > @@ -27,6 +27,8 @@ obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o
-> > > >  tpm_tis_spi-y := tpm_tis_spi_main.o
-> > > >  tpm_tis_spi-$(CONFIG_TCG_TIS_SPI_CR50) += tpm_tis_spi_cr50.o
-> > > >  
-> > > > +obj-$(CONFIG_TCG_TIS_I2C_CR50) += tpm_tis_i2c_cr50.o
-> > > > +
-> > > >  obj-$(CONFIG_TCG_TIS_I2C_ATMEL) += tpm_i2c_atmel.o
-> > > >  obj-$(CONFIG_TCG_TIS_I2C_INFINEON) += tpm_i2c_infineon.o
-> > > >  obj-$(CONFIG_TCG_TIS_I2C_NUVOTON) += tpm_i2c_nuvoton.o
-> > > > diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > > b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > > new file mode 100644
-> > > > index 000000000000..37555dafdca0
-> > > > --- /dev/null
-> > > > +++ b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > > @@ -0,0 +1,768 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > +/*
-> > > > + * Copyright 2016 Google Inc.
-> > > > + *
-> > > > + * Based on Linux Kernel TPM driver by
-> > > > + * Peter Huewe <peter.huewe@infineon.com>
-> > > > + * Copyright (C) 2011 Infineon Technologies
-> > > > + */
-> > > > +
-> > > > +/*
-> > > > + * cr50 is a firmware for H1 secure modules that requires
-> > > > special
-> > > > + * handling for the I2C interface.
-> > > > + *
-> > > > + * - Use an interrupt for transaction status instead of
-> > > > hardcoded delays
-> > > > + * - Must use write+wait+read read protocol
-> > > > + * - All 4 bytes of status register must be read/written at once
-> > > > + * - Burst count max is 63 bytes, and burst count behaves
-> > > > + *   slightly differently than other I2C TPMs
-> > > > + * - When reading from FIFO the full burstcnt must be read
-> > > > + *   instead of just reading header and determining the
-> > > > remainder
-> > > > + */
-> > > > +
-> > > > +#include <linux/acpi.h>
-> > > > +#include <linux/completion.h>
-> > > > +#include <linux/i2c.h>
-> > > > +#include <linux/interrupt.h>
-> > > > +#include <linux/module.h>
-> > > > +#include <linux/pm.h>
-> > > > +#include <linux/slab.h>
-> > > > +#include <linux/wait.h>
-> > > > +
-> > > > +#include "tpm_tis_core.h"
-> > > > +
-> > > > +#define CR50_MAX_BUFSIZE       64
-> > > > +#define CR50_TIMEOUT_SHORT_MS  2       /* Short timeout during
-> > > > transactions */
-> > > > +#define CR50_TIMEOUT_NOIRQ_MS  20      /* Timeout for TPM ready
-> > > > without IRQ */
-> > > > +#define CR50_I2C_DID_VID       0x00281ae0L
-> > > > +#define CR50_I2C_MAX_RETRIES   3       /* Max retries due to I2C
-> > > > errors */
-> > > > +#define CR50_I2C_RETRY_DELAY_LO        55      /* Min usecs
-> > > > between retries on I2C */
-> > > > +#define CR50_I2C_RETRY_DELAY_HI        65      /* Max usecs
-> > > > between retries on I2C */
-> > > 
-> > > CR50_ -> TPM_CR50_
-> > > 
-> > > > +
-> > > > +#define TPM_I2C_ACCESS(l)      (0x0000 | ((l) << 4))
-> > > > +#define TPM_I2C_STS(l)         (0x0001 | ((l) << 4))
-> > > > +#define TPM_I2C_DATA_FIFO(l)   (0x0005 | ((l) << 4))
-> > > > +#define TPM_I2C_DID_VID(l)     (0x0006 | ((l) << 4))
-> > > > +
-> > > > +struct priv_data {
-> > > > +       int irq;
-> > > > +       int locality;
-> > > > +       struct completion tpm_ready;
-> > > > +       u8 buf[CR50_MAX_BUFSIZE];
-> > > > +};
-> > > 
-> > > tpm_i2c_cr50_priv_data
-> > > 
-> > > > +
-> > > > +enum force_release {
-> > > > +       CR50_NO_FORCE = 0x0,
-> > > > +       CR50_FORCE = 0x1,
-> > > > +};
-> > > 
-> > > I'd just 
-> > > 
-> > > #define TPM_I2C_CR50_NO_FORCE   0
-> > > #define TPM_I2C_CR50_FORCE      1
-> > > 
-> > 
-> > A proper enumerated type has advantages over a preprocessor macro:
-> > even if the compiler won't warn you, static analyzers can warn
-> > about a misuse.
+On 17/11/2020 15:41, Thomas Zimmermann wrote:
+> Hi
 > 
-> Why don't you just use "bool", "true" and "false"? I ignored that
-> this has nothing to do with the hardware last time.
+> Am 17.11.20 um 07:10 schrieb Yang Yingliang:
+>> Return -ENOMEM when allocating refill memory failed.
+>>
+>> Fixes: 71e8831f6407 ("drm/omap: DMM/TILER support for OMAP4+ platform")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>> ---
+>>  drivers/gpu/drm/omapdrm/omap_dmm_tiler.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+>> index 42ec51bb7b1b..7f4317248812 100644
+>> --- a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+>> +++ b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+>> @@ -889,6 +889,7 @@ static int omap_dmm_probe(struct platform_device *dev)
+>>  					   &omap_dmm->refill_pa, GFP_KERNEL);
+>>  	if (!omap_dmm->refill_va) {
+>>  		dev_err(&dev->dev, "could not allocate refill memory\n");
+>> +		ret = -ENOMEM;
 > 
+> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+> 
+> Thanks for the patch. I'll add it to drm-misc-next. There are more such
+> errors here. If the very first allocation fails, the function returns
+> -EFAULT, which makes no sense.
 
-Well, boolean parameters are a known anti-pattern [1].
+Indeed. -EFAULT is quite an odd default value for ret... I'll drop the default and assign a real
+error value where needed.
 
-[1] https://people.mpi-inf.mpg.de/~jblanche/api-design.pdf
+ Tomi
 
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
