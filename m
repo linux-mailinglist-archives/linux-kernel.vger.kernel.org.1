@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153152C5A9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6B22C5AA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404427AbgKZRaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 12:30:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58586 "EHLO mail.kernel.org"
+        id S2391668AbgKZRet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:34:49 -0500
+Received: from foss.arm.com ([217.140.110.172]:41564 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404325AbgKZRap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:30:45 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05BD421D7E;
-        Thu, 26 Nov 2020 17:30:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606411845;
-        bh=eGgDmj+9VdpVGdJDh6xNed07pQF31b07D87E8UC5bs0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QK/lMVqivbWHGwEFO6gzc6IIQvT+p8puagQ9fr7t9GJHwXGQOF1XLiCQU+lOy5cwY
-         1PSNxSvVwktn4m2gzTzPqPbphXW120TXugU+d4754nm3KTHeMb5lPCkrPNQ23Ph8mq
-         VvvjiiYpcX0aZ7mBktCPSGonT+xuPZGM9i0fcpvA=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E9E3240E29; Thu, 26 Nov 2020 14:30:42 -0300 (-03)
-Date:   Thu, 26 Nov 2020 14:30:42 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
+        id S1726677AbgKZRet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 12:34:49 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D73D31B;
+        Thu, 26 Nov 2020 09:34:48 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C9993F23F;
+        Thu, 26 Nov 2020 09:34:46 -0800 (PST)
+Date:   Thu, 26 Nov 2020 17:34:40 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 06/25] perf tools: Do not swap mmap2 fields in case it
- contains build id
-Message-ID: <20201126173042.GF53384@kernel.org>
-References: <20201126170026.2619053-1-jolsa@kernel.org>
- <20201126170026.2619053-7-jolsa@kernel.org>
+        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 02/23] psci: Accessor for configured PSCI function IDs
+Message-ID: <20201126173440.GA21563@e121166-lin.cambridge.arm.com>
+References: <20201126155421.14901-1-dbrazdil@google.com>
+ <20201126155421.14901-3-dbrazdil@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126170026.2619053-7-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201126155421.14901-3-dbrazdil@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 26, 2020 at 06:00:07PM +0100, Jiri Olsa escreveu:
-> If PERF_RECORD_MISC_MMAP_BUILD_ID misc bit is set,
-> mmap2 event carries build id, placed in following union:
-> 
->   union {
->           struct {
->                   u32       maj;
->                   u32       min;
->                   u64       ino;
->                   u64       ino_generation;
->           };
->           struct {
->                   u8        build_id[20];
->                   u8        build_id_size;
->                   u8        __reserved_1;
->                   u16       __reserved_2;
->           };
->   };
+On Thu, Nov 26, 2020 at 03:54:00PM +0000, David Brazdil wrote:
+> Function IDs used by PSCI are configurable for v0.1 via DT/APCI. If the
 
-Did you forgot to update just this cset comment?
+Side note: in ACPI we don't support versions < 0.2, for commit log
+accuracy.
 
-- Arnaldo
- 
-> In this case we can't swap above fields.
+Other than that I agree with Mark's change request.
+
+Thanks,
+Lorenzo
+
+> host is using PSCI v0.1, KVM's host PSCI proxy needs to use the same IDs.
+> Expose the array holding the information with a read-only accessor.
 > 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
 > ---
->  tools/perf/util/session.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
+>  drivers/firmware/psci/psci.c | 16 ++++++++--------
+>  include/linux/psci.h         | 10 ++++++++++
+>  2 files changed, 18 insertions(+), 8 deletions(-)
 > 
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 5cc722b6fe7c..cc1c11ca94fd 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -592,10 +592,13 @@ static void perf_event__mmap2_swap(union perf_event *event,
->  	event->mmap2.start = bswap_64(event->mmap2.start);
->  	event->mmap2.len   = bswap_64(event->mmap2.len);
->  	event->mmap2.pgoff = bswap_64(event->mmap2.pgoff);
-> -	event->mmap2.maj   = bswap_32(event->mmap2.maj);
-> -	event->mmap2.min   = bswap_32(event->mmap2.min);
-> -	event->mmap2.ino   = bswap_64(event->mmap2.ino);
-> -	event->mmap2.ino_generation = bswap_64(event->mmap2.ino_generation);
-> +
-> +	if (!(event->header.misc & PERF_RECORD_MISC_MMAP_BUILD_ID)) {
-> +		event->mmap2.maj   = bswap_32(event->mmap2.maj);
-> +		event->mmap2.min   = bswap_32(event->mmap2.min);
-> +		event->mmap2.ino   = bswap_64(event->mmap2.ino);
-> +		event->mmap2.ino_generation = bswap_64(event->mmap2.ino_generation);
-> +	}
+> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+> index 213c68418a65..40609564595e 100644
+> --- a/drivers/firmware/psci/psci.c
+> +++ b/drivers/firmware/psci/psci.c
+> @@ -58,16 +58,16 @@ typedef unsigned long (psci_fn)(unsigned long, unsigned long,
+>  				unsigned long, unsigned long);
+>  static psci_fn *invoke_psci_fn;
 >  
->  	if (sample_id_all) {
->  		void *data = &event->mmap2.filename;
+> -enum psci_function {
+> -	PSCI_FN_CPU_SUSPEND,
+> -	PSCI_FN_CPU_ON,
+> -	PSCI_FN_CPU_OFF,
+> -	PSCI_FN_MIGRATE,
+> -	PSCI_FN_MAX,
+> -};
+> -
+>  static u32 psci_function_id[PSCI_FN_MAX];
+>  
+> +u32 psci_get_function_id(enum psci_function fn)
+> +{
+> +	if (WARN_ON_ONCE(fn < 0 || fn >= PSCI_FN_MAX))
+> +		return 0;
+> +
+> +	return psci_function_id[fn];
+> +}
+> +
+>  #define PSCI_0_2_POWER_STATE_MASK		\
+>  				(PSCI_0_2_POWER_STATE_ID_MASK | \
+>  				PSCI_0_2_POWER_STATE_TYPE_MASK | \
+> diff --git a/include/linux/psci.h b/include/linux/psci.h
+> index 2a1bfb890e58..5b49a5c82d6f 100644
+> --- a/include/linux/psci.h
+> +++ b/include/linux/psci.h
+> @@ -21,6 +21,16 @@ bool psci_power_state_is_valid(u32 state);
+>  int psci_set_osi_mode(bool enable);
+>  bool psci_has_osi_support(void);
+>  
+> +enum psci_function {
+> +	PSCI_FN_CPU_SUSPEND,
+> +	PSCI_FN_CPU_ON,
+> +	PSCI_FN_CPU_OFF,
+> +	PSCI_FN_MIGRATE,
+> +	PSCI_FN_MAX,
+> +};
+> +
+> +u32 psci_get_function_id(enum psci_function fn);
+> +
+>  struct psci_operations {
+>  	u32 (*get_version)(void);
+>  	int (*cpu_suspend)(u32 state, unsigned long entry_point);
 > -- 
-> 2.26.2
+> 2.29.2.454.gaff20da3a2-goog
 > 
-
--- 
-
-- Arnaldo
