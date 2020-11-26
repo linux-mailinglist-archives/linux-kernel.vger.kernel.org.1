@@ -2,159 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8921B2C5246
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE902C5253
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388259AbgKZKqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:46:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59880 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388207AbgKZKp7 (ORCPT
+        id S2388385AbgKZKrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:47:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388340AbgKZKri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:45:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606387558;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XMFsV6J4cYnv0icJ5WDcZXl06565syo1zevHWnWoHSI=;
-        b=K8YuiRzL739JZ8XcXT0jNar3M0+GyX3olKgceYcmFVCQ+ODPdKFRA8EeJTIwwucXR1AY2u
-        hoVYLZl9kGd1MawFbqqw/mn8+cfboj6yC3Z7ZrJMhcYlGdRJ1AV3gJRsW6zfRgH6WAKvG1
-        bjezZPajB6ptmx7pfX5Ila8z9OrabLM=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167--WANnoeTM_2K_S9XjqAtnw-1; Thu, 26 Nov 2020 05:45:54 -0500
-X-MC-Unique: -WANnoeTM_2K_S9XjqAtnw-1
-Received: by mail-ej1-f72.google.com with SMTP id e22so684073ejx.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 02:45:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XMFsV6J4cYnv0icJ5WDcZXl06565syo1zevHWnWoHSI=;
-        b=rrwbUkIzzFeWP2yCw4ZmsEgmYW1ixSJV93DRE6Lb/EuWEgQh35W1s0djV0WcKST4le
-         RpnO/2LTEgqi/FyEigBfSdYVEtt0El+oYigBVZzd/KTZzSIx5QKZFlpeilH8TEyX7QT8
-         f9hNwAzcDSyedGvswhVaxqInftmf8ZNXNtAeXfoTbcxbG7qoRoDfdH1chZ3Xtsod+2Q2
-         6FKY+xkWYV+NYrKjuq1oF9Ezq0YV4OfuYNvhD9+FOtIoTdGNY00q8ETDd+PYRUVH9Tbk
-         xKrIGVu9qWSbRquKn/1HdGMRhqT4z/r/rCGODIHjVNg2kNNUpHCOBTZmNu0il4ceC9jd
-         wDGQ==
-X-Gm-Message-State: AOAM532PUtfwUibIWVh6PVp7JpIUH3xEqJ3gpVm1oXSvdXT8bh0IGMqW
-        VYxbpOxg0sQQQTS2XITWDF/aJjsM4tCPwEsceYJCSgZkJnNPiAmFQpyWzeOebs71GFivYNgddC9
-        FlRuXZnLheouYWZiSxA6Vka3s
-X-Received: by 2002:a17:906:4c82:: with SMTP id q2mr1986959eju.285.1606387552996;
-        Thu, 26 Nov 2020 02:45:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxH8NOeignej3q+i+UEpdi3N/tpkCIRdvzf1FEQPgvSmaiPQtiOA1QaUEJPPdzLJRVRe2qmwA==
-X-Received: by 2002:a17:906:4c82:: with SMTP id q2mr1986939eju.285.1606387552837;
-        Thu, 26 Nov 2020 02:45:52 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id w16sm2875826eds.81.2020.11.26.02.45.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 02:45:52 -0800 (PST)
-Subject: Re: [PATCH 4/5] x86/platform/uv: Add deprecated messages to /proc
- info leaves
-To:     Mike Travis <mike.travis@hpe.com>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>
-Cc:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20201125172907.240996-1-mike.travis@hpe.com>
- <20201125172907.240996-5-mike.travis@hpe.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <b0339696-049a-e46e-bcd4-079f1b13d725@redhat.com>
-Date:   Thu, 26 Nov 2020 11:45:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 26 Nov 2020 05:47:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDC0C0613D4;
+        Thu, 26 Nov 2020 02:47:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tFBEb0BLu3uXogjw3SOLqhrulKz6jh3zxahm8XIOiP8=; b=X3cXyvr1KiNTPPNYsE55p34qzs
+        01WR57/NTCJJBTLnooSCiqxRLfe1NoFr12FKiB6sIEBBSutg9ejvt0PVkeecAF+mpv6dTf8ALS0Gm
+        xhqbpCHFBeyIrf+sFcr5qLhcRmKH4/FE0Pt3zYF5jFf46D9MsXl8GMUOivcOmSz7vK+xfdAkyV351
+        jzDDCgoug6jn/+HFsM1y/JKSSLVp9DlLQ8ZRbbpJ9c6bp/kBfbJCLFmcooHmQW9b98d3DJDJ2/FR0
+        xeXgp6zkPj+bioLqm25WdK36TJtI5sB9sBZ3lALxjkdNEuHxVS3oL6SFnqB+2FlF9dqVtYpLh7738
+        LsYFbjzA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kiEnd-0003Eg-Ub; Thu, 26 Nov 2020 10:46:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 38B21306DD8;
+        Thu, 26 Nov 2020 11:46:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 137AC20162619; Thu, 26 Nov 2020 11:46:51 +0100 (CET)
+Date:   Thu, 26 Nov 2020 11:46:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     kan.liang@linux.intel.com, mingo@kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, npiggin@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au, will@kernel.org,
+        willy@infradead.org, aneesh.kumar@linux.ibm.com,
+        sparclinux@vger.kernel.org, davem@davemloft.net,
+        catalin.marinas@arm.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com
+Subject: Re: [PATCH 0/5] perf/mm: Fix PERF_SAMPLE_*_PAGE_SIZE
+Message-ID: <20201126104651.GG3092@hirez.programming.kicks-ass.net>
+References: <20201113111901.743573013@infradead.org>
+ <16ad8cab-08e2-27a7-6803-baadc6b8721b@csgroup.eu>
+ <2a32b00b-2214-3283-58e0-9cb0ff4bd728@csgroup.eu>
+ <20201120122004.GG3021@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20201125172907.240996-5-mike.travis@hpe.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120122004.GG3021@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Nov 20, 2020 at 01:20:04PM +0100, Peter Zijlstra wrote:
 
-On 11/25/20 6:29 PM, Mike Travis wrote:
-> Add "deprecated" message to any access to old /proc/sgi_uv/* leaves.
-> 
-> Signed-off-by: Mike Travis <mike.travis@hpe.com>
-> Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-> ---
->  arch/x86/kernel/apic/x2apic_uv_x.c | 26 +++++++++++++++++++++++++-
->  1 file changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-> index 48746031b39a..bfd77a00c2a1 100644
-> --- a/arch/x86/kernel/apic/x2apic_uv_x.c
-> +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-> @@ -1615,21 +1615,45 @@ static void check_efi_reboot(void)
->  		reboot_type = BOOT_ACPI;
->  }
->  
-> -/* Setup user proc fs files */
-> +/*
-> + * User proc fs file handling now deprecated.
-> + * Recommend using /sys/firmware/sgi_uv/... instead.
-> + */
-> +static void proc_print_msg(int *flag, char *what, char *which)
-> +{
-> +	if (*flag)
-> +		return;
-> +
-> +	pr_notice(
-> +		"%s: using deprecated /proc/sgi_uv/%s, use /sys/firmware/sgi_uv/%s\n",
-> +		current->comm, what, which ? which : what);
-> +
-> +	*flag = 1;
-> +}
-> +
+> > > I can help with powerpc 8xx. It is a 32 bits powerpc. The PGD has 1024
+> > > entries, that means each entry maps 4M.
+> > > 
+> > > Page sizes are 4k, 16k, 512k and 8M.
+> > > 
+> > > For the 8M pages we use hugepd with a single entry. The two related PGD
+> > > entries point to the same hugepd.
+> > > 
+> > > For the other sizes, they are in standard page tables. 16k pages appear
+> > > 4 times in the page table. 512k entries appear 128 times in the page
+> > > table.
+> > > 
+> > > When the PGD entry has _PMD_PAGE_8M bits, the PMD entry points to a
+> > > hugepd with holds the single 8M entry.
+> > > 
+> > > In the PTE, we have two bits: _PAGE_SPS and _PAGE_HUGE
+> > > 
+> > > _PAGE_HUGE means it is a 512k page
+> > > _PAGE_SPS means it is not a 4k page
+> > > 
+> > > The kernel can by build either with 4k pages as standard page size, or
+> > > 16k pages. It doesn't change the page table layout though.
+> > > 
+> > > Hope this is clear. Now I don't really know to wire that up to your series.
 
-You have just re-invented pr_notice_once, please just use pr_notice_once
-directly in the _show functions.
+Does the below accurately reflect things?
 
-Regards,
+Let me go find a suitable cross-compiler ..
 
-Hans
-
-
-
-
->  static int __maybe_unused proc_hubbed_show(struct seq_file *file, void *data)
->  {
-> +	static int flag;
-> +
-> +	proc_print_msg(&flag, "hubbed", "hub_type");
->  	seq_printf(file, "0x%x\n", uv_hubbed_system);
->  	return 0;
->  }
->  
->  static int __maybe_unused proc_hubless_show(struct seq_file *file, void *data)
->  {
-> +	static int flag;
-> +
-> +	proc_print_msg(&flag, "hubless", NULL);
->  	seq_printf(file, "0x%x\n", uv_hubless_system);
->  	return 0;
->  }
->  
->  static int __maybe_unused proc_archtype_show(struct seq_file *file, void *data)
->  {
-> +	static int flag;
-> +
-> +	proc_print_msg(&flag, "archtype", NULL);
->  	seq_printf(file, "%s/%s\n", uv_archtype, oem_table_id);
->  	return 0;
->  }
-> 
-
+diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+index 1581204467e1..fcc48d590d88 100644
+--- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+@@ -135,6 +135,29 @@ static inline pte_t pte_mkhuge(pte_t pte)
+ }
+ 
+ #define pte_mkhuge pte_mkhuge
++
++static inline unsigned long pgd_leaf_size(pgd_t pgd)
++{
++	if (pgd_val(pgd) & _PMD_PAGE_8M)
++		return SZ_8M;
++	return SZ_4M;
++}
++
++#define pgd_leaf_size pgd_leaf_size
++
++static inline unsigned long pte_leaf_size(pte_t pte)
++{
++	pte_basic_t val = pte_val(pte);
++
++	if (val & _PAGE_HUGE)
++		return SZ_512K;
++	if (val & _PAGE_SPS)
++		return SZ_16K;
++	return SZ_4K;
++}
++
++#define pte_leaf_size pte_leaf_size
++
+ #endif
+ 
+ #endif /* __KERNEL__ */
