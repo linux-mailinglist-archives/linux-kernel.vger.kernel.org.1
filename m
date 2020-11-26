@@ -2,148 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CEA2C5DCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 23:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D4A2C5DD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 23:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391849AbgKZW1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 17:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
+        id S2391864AbgKZWbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 17:31:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729257AbgKZW1x (ORCPT
+        with ESMTP id S2388120AbgKZWbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 17:27:53 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959E1C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:27:53 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id s21so2722611pfu.13
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:27:53 -0800 (PST)
+        Thu, 26 Nov 2020 17:31:52 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9015EC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:31:52 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id t37so2706348pga.7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:31:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ooswFgMeNsythX+/qBR9OI9wHD8VXSogRNh49IYd+vE=;
-        b=pQweySULAkeJLGSir1/275kvZSu1n+bS9J7mr4dXXQZr+0SXSl+xzuDJJNkNwBVRUw
-         VNdVErJhVC65dbS+DIDMfIoDNtPl2PZQVTE6N91w16ym8CFwkcn4MY0sd0wirStuu1Zz
-         b4Dh8rYVCByftLYA19jlcsFgIwPV7OKPd+/YIus4IkWnZyYXzYi9qtVmRsj+mnGNb1pK
-         Ne4+ZDh0RanhamRMAtT1tKHeJcH7d9ix4DJDaJTGNY5VgvMLSUf3sQckvwYUo6EMg9nI
-         HorhxvlGkQCZh8gnXqYT1mkmzD3PcAAs9lnItplL5zrmZp2zORsVVqtAKij7zsyNy202
-         BS3Q==
+        bh=wGSsT9seajVOjbFERio1tYJo2XEKlH2gqwsbWcXTilg=;
+        b=KlSuraKBJnqVtHFjN5zwb2K/A/fQkQnDE3CeKNSueLqUuC0zIGUmM/8fD/8R71bvO8
+         SJRCjSRBqQ6ObpW0EQVC6wij8dF7lWrYzQi7a/QkGjgsoATLLueesnWYpEJvzX81tIOa
+         gwlFEeTD5rt0Oci1I0X5fNOvijzzIKHY8AS6yS86IGskc20HAXF6RtDum2mBNEG1xNrI
+         LhN/SD8r+Y8F5YKV+aYAf79VOF/5jH6oZwN8utNCeYrUt9Pm9qGkQySDE8svDZlw0u9r
+         suHroQ1eQDh4Z52/BrrhMg/OhsRtbgZ+kWt5p7VPvWxZkHFO2kK+BdzlUywOOY1O9a9h
+         oztg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ooswFgMeNsythX+/qBR9OI9wHD8VXSogRNh49IYd+vE=;
-        b=hPUDzCX3nh2LcBWPIGIH0MSt+B7K4oNLg0WQN1l27Um9UiQUhUBPSywwZO5b5cV+zo
-         c8ktMRVVrUzezp5g5nFn9GlRER40QdikpusgW0yvjgXvnoeNY1NYwYmjOrFucq5JDhb5
-         26uIF8/YkuToNfDQ6SMpMb8T9OwlXpKTwqGp2qvgNfknekVVTmqAkjUtQwl4VtU2oL6N
-         UCGpjuIHc4jxg/AQyjhfk30AJgK0FyqrYFXZKVT9xnTVOnbtc5HRQOUqqNm3BYn0PR4B
-         GGadVfNNwCwSIBWotPJ2o4VOBa+/4SRfFoR89TMPAx1y6TI+Z3LNwP3ctFOw1yFdypNf
-         nhnw==
-X-Gm-Message-State: AOAM532OhpS5DQ8a0Q8mgcH1pkKCOwglNTg6y/JOwWQUuVYRw3qM0ZSP
-        M+6kf6Id3aWlCRccwq1R1qU=
-X-Google-Smtp-Source: ABdhPJx+0w/r2ANa+MyhWxUwMSefLxlFOlxg8tuoxRyPq12IKJg2uIu3nMgzjUWqFu5c69BDJ5JMNA==
-X-Received: by 2002:aa7:8a87:0:b029:19a:8ccd:895 with SMTP id a7-20020aa78a870000b029019a8ccd0895mr4296277pfc.61.1606429672885;
-        Thu, 26 Nov 2020 14:27:52 -0800 (PST)
-Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
-        by smtp.gmail.com with ESMTPSA id 16sm7171088pjf.36.2020.11.26.14.27.50
+        bh=wGSsT9seajVOjbFERio1tYJo2XEKlH2gqwsbWcXTilg=;
+        b=FxG9lvWUhWMFHa8/ZZnDwk75jzBlNjX5GXcaMn+0XOVkK5npFJkD+LuaIKQo9EqYYQ
+         0ymi4r6ERsQZEJ3qxszYWKqQAFueU3dpsLHsy9kSZCB72QPZtc4Jg2tnlq3pQZndvdqM
+         3L7y7gYAOaPAH7/D04ZoKYK62Xs0KwQfSkI2800feYdrv7cjRJ+tpkQNvfxzj+zzGIge
+         aP3nYDsaIvTQiuTpnceHCgLfbiDBGyshwsh0zoJkxSEXt2P2wNGLk+715mZzWovSitku
+         qzFP7Rjx/txgvwo84/3Tj3hwppuUvaqkHnbmRhIlKWWQKcuGjb4riAW+1FP21BFSCuEs
+         Bshg==
+X-Gm-Message-State: AOAM532dtD/Byb682vyu1Z/zP/bWQ7qYeYM3oR4JQ2Uu/6HOq1C+N2D5
+        JJXDxG4imvJP3lLt7KVRa75UqA==
+X-Google-Smtp-Source: ABdhPJxspCOJquAz7Th3kxpvAy5m41TZyhhFsRw2ctcxoSwuXvukL7DEk/zJZoDRiAKoREBXLQcCVg==
+X-Received: by 2002:aa7:9501:0:b029:155:3b11:d5c4 with SMTP id b1-20020aa795010000b02901553b11d5c4mr4316766pfp.76.1606429911964;
+        Thu, 26 Nov 2020 14:31:51 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id t13sm8158981pjq.15.2020.11.26.14.31.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 14:27:50 -0800 (PST)
-Date:   Fri, 27 Nov 2020 09:27:47 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 10/32] sched: Fix priority inversion of cookied task
- with sibling
-Message-ID: <20201126222710.GJ163610@balbir-desktop>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-11-joel@joelfernandes.org>
- <20201122224123.GE110669@balbir-desktop>
- <20201124183038.GG1021337@google.com>
- <20201125230519.GC163610@balbir-desktop>
- <20201126082914.GE2414@hirez.programming.kicks-ass.net>
+        Thu, 26 Nov 2020 14:31:51 -0800 (PST)
+Date:   Thu, 26 Nov 2020 15:31:49 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Loic Pallardy <loic.pallardy@st.com>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Tony Lindgren <tony@atomide.com>,
+        linux-remoteproc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] remoteproc: Fix unbalanced boot with sysfs for no
+ auto-boot rprocs
+Message-ID: <20201126223149.GA897651@xps15>
+References: <20201121030156.22857-1-s-anna@ti.com>
+ <20201121030156.22857-2-s-anna@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126082914.GE2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201121030156.22857-2-s-anna@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 09:29:14AM +0100, Peter Zijlstra wrote:
-> On Thu, Nov 26, 2020 at 10:05:19AM +1100, Balbir Singh wrote:
-> > > @@ -5259,7 +5254,20 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
-> > >  			 * Optimize the 'normal' case where there aren't any
-> > >  			 * cookies and we don't need to sync up.
-> > >  			 */
-> > > -			if (i == cpu && !need_sync && !p->core_cookie) {
-> > > +			if (i == cpu && !need_sync) {
-> > > +				if (p->core_cookie) {
-> > > +					/*
-> > > +					 * This optimization is only valid as
-> > > +					 * long as there are no cookies
-> > 
-> > This is not entirely true, need_sync is a function of core cookies, so I
-> > think this needs more clarification, it sounds like we enter this when
-> > the core has no cookies, but the task has a core_cookie? The term cookie
-> > is quite overloaded when used in the context of core vs task.
+On Fri, Nov 20, 2020 at 09:01:54PM -0600, Suman Anna wrote:
+> The remoteproc core performs automatic boot and shutdown of a remote
+> processor during rproc_add() and rproc_del() for remote processors
+> supporting 'auto-boot'. The remoteproc devices not using 'auto-boot'
+> require either a remoteproc client driver or a userspace client to
+> use the sysfs 'state' variable to perform the boot and shutdown. The
+> in-kernel client drivers hold the corresponding remoteproc driver
+> module's reference count when they acquire a rproc handle through
+> the rproc_get_by_phandle() API, but there is no such support for
+> userspace applications performing the boot through sysfs interface.
 > 
-> Nah, its the same. So each task gets a cookie to identify the 'group' of
-> tasks (possibly just itself) it is allowed to share a core with.
+> The shutdown of a remoteproc upon removing a remoteproc platform
+> driver is automatic only with 'auto-boot' and this can cause a
+> remoteproc with no auto-boot to stay powered on and never freed
+> up if booted using the sysfs interface without a matching stop,
+> and when the remoteproc driver module is removed or unbound from
+> the device. This will result in a memory leak as well as the
+> corresponding remoteproc ida being never deallocated. Fix this
+> by holding a module reference count for the remoteproc's driver
+> during a sysfs 'start' and releasing it during the sysfs 'stop'
+> operation.
 > 
-> When we to core task selection, the core gets assigned the cookie of the
-> group it will run, same thing.
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> ---
+> v2: rebased version, no changes
+> v1: https://patchwork.kernel.org/project/linux-remoteproc/patch/20180915003725.17549-2-s-anna@ti.com/
 > 
-> > Effectively from what I understand this means that p wants to be
-> > coscheduled, but the core itself is not coscheduling anything at the
-> > moment, so we need to see if we should do a sync and that sync might
-> > cause p to get kicked out and a higher priority class to come in?
+>  drivers/remoteproc/remoteproc_sysfs.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
 > 
-> This whole patch is about eliding code-wide task selection when it is
-> not required. IOW an optimization.
-> 
-> When there wasn't a core cookie (IOW, the previous task selection wasn't
-> core wide and limited) and the task we just selected for our own CPU
-> also didn't have a cookie (IOW it doesn't have to be core-wide) we can
-> skip the core wide task selection and schedule just this CPU and call it
-> a day.
-> 
-> The logic was subtly wrong, this patch fixes it. A next patch completely
-> rewrites it again to make it far simpler again. Don't spend time trying
-> to understand this patch (unless you're _that_ kind of person ;-) but
-> instead apply the whole thing and look at the resulting pick_next_task()
-> function.
+> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+> index d1cf7bf277c4..bd2950a246c9 100644
+> --- a/drivers/remoteproc/remoteproc_sysfs.c
+> +++ b/drivers/remoteproc/remoteproc_sysfs.c
+> @@ -3,6 +3,7 @@
+>   * Remote Processor Framework
+>   */
+>  
+> +#include <linux/module.h>
+>  #include <linux/remoteproc.h>
+>  #include <linux/slab.h>
+>  
+> @@ -228,14 +229,27 @@ static ssize_t state_store(struct device *dev,
+>  		if (rproc->state == RPROC_RUNNING)
+>  			return -EBUSY;
+>  
+> +		/*
+> +		 * prevent underlying implementation from being removed
+> +		 * when remoteproc does not support auto-boot
+> +		 */
+> +		if (!rproc->auto_boot &&
+> +		    !try_module_get(dev->parent->driver->owner))
+> +			return -EINVAL;
+> +
+>  		ret = rproc_boot(rproc);
+> -		if (ret)
+> +		if (ret) {
+>  			dev_err(&rproc->dev, "Boot failed: %d\n", ret);
+> +			if (!rproc->auto_boot)
+> +				module_put(dev->parent->driver->owner);
+> +		}
+>  	} else if (sysfs_streq(buf, "stop")) {
+>  		if (rproc->state != RPROC_RUNNING)
+>  			return -EINVAL;
+>  
+>  		rproc_shutdown(rproc);
+> +		if (!rproc->auto_boot)
+> +			module_put(dev->parent->driver->owner);
 
-Thanks, I'll look at the git tree and see what the final outcome looks like.
+I tackled the same problem by fixing another problem we had in the core.  Patch
+2 [1] and 3 [2] of this set [3] get rid of the problem related to the auto_boot
+check without having to deal with module counters.
 
-Balbir Singh.
+Please see if that covers the use case you are dealing with.
+
+Thanks,
+Mathieu
+
+[1]. https://patchwork.kernel.org/project/linux-remoteproc/patch/20201126210642.897302-3-mathieu.poirier@linaro.org/
+[2]. https://patchwork.kernel.org/project/linux-remoteproc/patch/20201126210642.897302-4-mathieu.poirier@linaro.org/
+[3]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=391789
+
+
+>  	} else {
+>  		dev_err(&rproc->dev, "Unrecognised option: %s\n", buf);
+>  		ret = -EINVAL;
+> -- 
+> 2.28.0
+> 
