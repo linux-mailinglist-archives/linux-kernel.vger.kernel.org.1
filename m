@@ -2,110 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999932C518A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122A42C518B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732277AbgKZJnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 04:43:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbgKZJnq (ORCPT
+        id S1733225AbgKZJoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:44:12 -0500
+Received: from de-out1.bosch-org.com ([139.15.230.186]:60494 "EHLO
+        de-out1.bosch-org.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbgKZJoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 04:43:46 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139DDC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 01:43:46 -0800 (PST)
-Received: from [2a0a:edc0:0:900:6245:cbff:fea0:1793] (helo=kresse.office.stw.pengutronix.de)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1kiDoQ-0000Nm-52; Thu, 26 Nov 2020 10:43:38 +0100
-Message-ID: <47fb9966f3f633a5ec8297500d26f1c571bc26b2.camel@pengutronix.de>
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
+        Thu, 26 Nov 2020 04:44:11 -0500
+Received: from fe0vm1650.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
+        by fe0vms0186.rbdmz01.com (Postfix) with ESMTPS id 4ChXs30gThz1XLFjn;
+        Thu, 26 Nov 2020 10:44:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=de.bosch.com;
+        s=key2-intmail; t=1606383847;
+        bh=QOVT2mUwEso2r2vSzAbbRTE8tEp4jLn2WQ002C6w8rk=; l=10;
+        h=From:Subject:From:Reply-To:Sender;
+        b=I5uRHmDIe2oPOW2Fh1IQBnwOa9NQXvMUOMQbuoxRv91jDZXOcC7Ctxd88J8CE5O8P
+         AKNOC9EmRaRH1EW49RbcsXntMP2OiDXGui69FZBqUvQ54WJRKXntZ+W28V2uKk3Ir+
+         9MI1R4VjRuHYuRy/X6W/TbRATnQ0ZE4IE91sS+NM=
+Received: from fe0vm7918.rbesz01.com (unknown [10.58.172.176])
+        by fe0vm1650.rbesz01.com (Postfix) with ESMTPS id 4ChXs30KlMzNg9;
+        Thu, 26 Nov 2020 10:44:07 +0100 (CET)
+X-AuditID: 0a3aad10-b0bff70000002230-2a-5fbf78e69abc
+Received: from fe0vm1651.rbesz01.com ( [10.58.173.29])
+        (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by fe0vm7918.rbesz01.com (SMG Outbound) with SMTP id 60.84.08752.6E87FBF5; Thu, 26 Nov 2020 10:44:06 +0100 (CET)
+Received: from FE-MBX2052.de.bosch.com (unknown [10.3.231.146])
+        by fe0vm1651.rbesz01.com (Postfix) with ESMTPS id 4ChXs25sZDzvlD;
+        Thu, 26 Nov 2020 10:44:06 +0100 (CET)
+Received: from SGPMBX2031.APAC.bosch.com (10.187.56.92) by
+ FE-MBX2052.de.bosch.com (10.3.231.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Thu, 26 Nov 2020 10:44:06 +0100
+Received: from FE-MBX2051.de.bosch.com (10.3.231.61) by
+ SGPMBX2031.APAC.bosch.com (10.187.56.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Thu, 26 Nov 2020 17:44:03 +0800
+Received: from FE-MBX2051.de.bosch.com ([fe80::9402:faf1:5852:4e2f]) by
+ FE-MBX2051.de.bosch.com ([fe80::9402:faf1:5852:4e2f%6]) with mapi id
+ 15.01.2106.004; Thu, 26 Nov 2020 10:44:02 +0100
+From:   "Jonas Mark (BT-FIR/ENG1-Grb)" <Mark.Jonas@de.bosch.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+CC:     Thomas Zimmermann <tzimmermann@suse.de>,
+        "RUAN Tingquan (BT-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 26 Nov 2020 10:43:36 +0100
-In-Reply-To: <20201125103909.16548-1-laurentiu.palcu@oss.nxp.com>
-References: <20201125103909.16548-1-laurentiu.palcu@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+        David Airlie <airlied@linux.ie>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>
+Subject: AW: [PATCH] drm: imx: Move fbdev setup to before output polling
+Thread-Topic: [PATCH] drm: imx: Move fbdev setup to before output polling
+Thread-Index: AQHWvPnAfxZE9kwfn0Gz111spU5g9qnNecSAgAAN4oCAAAOfAIAAEkZQgAABggCADGtuUA==
+Date:   Thu, 26 Nov 2020 09:44:02 +0000
+Message-ID: <98c874b923bd4e60bf2e727a29729dfc@de.bosch.com>
+References: <20201117155229.9837-1-mark.jonas@de.bosch.com>
+ <e089d4d5-3bd8-c2cd-3011-ed87ae4284e8@suse.de>
+ <CAKMK7uEpEt4w4kVJLOd2Yw1MnsrCn-NMgT4TjcxROpZBa_xvYg@mail.gmail.com>
+ <68af913c-9f4e-73b5-a2cb-8692902a2847@suse.de>
+ <38c2d92ac5f04a228e55af43a12a4bd7@de.bosch.com>
+ <CAKMK7uFofJ2f4ozx=QMkfYHLAy0euOf6S0wou5qYC--QiEe5Qw@mail.gmail.com>
+In-Reply-To: <CAKMK7uFofJ2f4ozx=QMkfYHLAy0euOf6S0wou5qYC--QiEe5Qw@mail.gmail.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.142.160.117]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:6245:cbff:fea0:1793
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
-        metis.ext.pengutronix.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=4.0 tests=AWL,BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH] arm64: dts: imx8mq: add DCSS node
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on metis.ext.pengutronix.de)
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDIsWRmVeSWpSXmKPExsXCZbVWVvdZxf54g9UTzC16z51ksvi/bSKz
+        xZWv79ksVk3dyWKx6fE1VouuXyuZLS7vmsNm8Xf7JhaLF1vELba8mcjqwOWx99sCFo9NqzrZ
+        PLZ/e8Dqcb/7OJPH5iX1Hhvf7WDy6P9r4LH5dLXH501yAZxRXDYpqTmZZalF+nYJXBnbl5QV
+        rPOoeLLgF3MD4wG3LkZODgkBE4kVfWeYuhi5OIQEpjNJTHzQxwjhrGaUOPt2GzOE85FRYsH8
+        GawQzgdGia6jjVBlBxglnvUsYgMZxiZgJ7H/9RsmEFtEQFmif/McsA5mgQvMEndfXgErEhbw
+        kHj64iwLRJGnxLu5z9kg7DCJ2w+WsYPYLAKqEk3L5oHFeQWsJTq3voVafZdJom/3DrAiToFA
+        iU9nWsG2MQrISmzYcJ4ZxGYWEJfY9Ow7K8R7AhJL9kDEJQREJV4+/gcVV5K4fqgJ6AUOoHpN
+        ifW79CFaFSWmdD9kh9grKHFy5hOWCYwSs5BMnYXQMQtJxywkHQsYWVYxiqalGpTlmlsaWugV
+        JaUWVxkY6iXn525ihCQAgR2Mt7s/6B1iZOJgPMQowcGsJMLrLrw3Xog3JbGyKrUoP76oNCe1
+        +BCjNAeLkjivCs/GOCGB9MSS1OzU1ILUIpgsEwenVANTTEif5aM++a2O5VqaajbHlh656M7/
+        a9rF3VJczu//REpc8nM/m3V/OceU+S+MPVg/5bk+5VN1n/tt7Q7hzd8Uk8WyTATuH3AzvLFk
+        36I6byudNft5nv7LjXvmaO+2bcsR67m5NnMvGue/P3s/8u/V+a97zEynHZPcuHWqp3Fh3pv9
+        Tr+sNP7xeM7h3d7nd0gp9epEduWV2Yxu25d+vflMYf3XNV5zFuS+lFNov67kamd0uemUzNmA
+        2XEvVKuNNuldeLPY1Pi6hkrzTY7PvzKD8x02rnDX0WaV8nnfMifnIv8h17JPRfI1FdI5S0v4
+        3txgtkw1kb24tLXVtW/FjV3nX6Ze1jvE9E76zgL2Hw/LlViKMxINtZiLihMBDQMnf28DAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mi, 2020-11-25 at 12:39 +0200, Laurentiu Palcu wrote:
-> This patch adds the node for iMX8MQ Display Controller Subsystem.
-> 
-> Signed-off-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-
-Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
-
-> ---
-> Hi,
-> 
-> This is, actually, a resend of the patch because we decided to drop it
-> from the main DCSS patchset until the driver gets merged.
-> 
-> Now that the driver is in mainline, we can finally add DCSS node in DTS.
-> 
-> Thanks,
-> laurentiu
-> 
->  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> index 5e0e7d0f1bc4..5a617f9ed8b5 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> @@ -1103,6 +1103,29 @@
->  			#size-cells = <1>;
->  			ranges = <0x32c00000 0x32c00000 0x400000>;
->  
-> +			dcss: display-controller@32e00000 {
-> +				compatible = "nxp,imx8mq-dcss";
-> +				reg = <0x32e00000 0x2d000>, <0x32e2f000 0x1000>;
-> +				interrupts = <6>, <8>, <9>;
-> +				interrupt-names = "ctxld", "ctxld_kick", "vblank";
-> +				interrupt-parent = <&irqsteer>;
-> +				clocks = <&clk IMX8MQ_CLK_DISP_APB_ROOT>,
-> +					 <&clk IMX8MQ_CLK_DISP_AXI_ROOT>,
-> +					 <&clk IMX8MQ_CLK_DISP_RTRM_ROOT>,
-> +					 <&clk IMX8MQ_VIDEO2_PLL_OUT>,
-> +					 <&clk IMX8MQ_CLK_DISP_DTRC>;
-> +				clock-names = "apb", "axi", "rtrm", "pix", "dtrc";
-> +				assigned-clocks = <&clk IMX8MQ_CLK_DISP_AXI>,
-> +						  <&clk IMX8MQ_CLK_DISP_RTRM>,
-> +						  <&clk IMX8MQ_VIDEO2_PLL1_REF_SEL>;
-> +				assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_800M>,
-> +							 <&clk IMX8MQ_SYS1_PLL_800M>,
-> +							 <&clk IMX8MQ_CLK_27M>;
-> +				assigned-clock-rates = <800000000>,
-> +						       <400000000>;
-> +				status = "disabled";
-> +			};
-> +
->  			irqsteer: interrupt-controller@32e2d000 {
->  				compatible = "fsl,imx8m-irqsteer", "fsl,imx-irqsteer";
->  				reg = <0x32e2d000 0x1000>;
-
+SGkgRGFuaWVsLA0KDQo+ID4gVGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgeW91ciBmZWVkYmFjay4g
+V2UgYXBwcmVjaWF0ZSBpdC4NCj4gPg0KPiA+ID4gPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dw
+dS9kcm0vaW14L2lteC1kcm0tY29yZS5jDQo+ID4gPiA+Pj4gYi9kcml2ZXJzL2dwdS9kcm0vaW14
+L2lteC1kcm0tY29yZS5jDQo+ID4gPiA+Pj4gaW5kZXggOWJmNWFkNmQxOGEyLi4yNjY1MDQwZTEx
+YzcgMTAwNjQ0DQo+ID4gPiA+Pj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2lteC9pbXgtZHJtLWNv
+cmUuYw0KPiA+ID4gPj4+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pbXgvaW14LWRybS1jb3JlLmMN
+Cj4gPiA+ID4+PiBAQCAtMjQwLDE0ICsyNDAsMTggQEAgc3RhdGljIGludCBpbXhfZHJtX2JpbmQo
+c3RydWN0IGRldmljZSAqZGV2KQ0KPiA+ID4gPj4+ICAgICAgICAgICAgICAgIGxlZ2FjeWZiX2Rl
+cHRoID0gMTY7DQo+ID4gPiA+Pj4gICAgICAgIH0NCj4gPiA+ID4+Pg0KPiA+ID4gPj4+ICsgICAg
+IC8qDQo+ID4gPiA+Pj4gKyAgICAgICogVGhlIGdlbmVyaWMgZmJkZXYgaGFzIHRvIGJlIHNldHVw
+IGJlZm9yZSBlbmFibGluZyBvdXRwdXQgcG9sbGluZy4NCj4gPiA+ID4+PiArICAgICAgKiBPdGhl
+cndpc2UgdGhlIGZiZGV2IGNsaWVudCBpcyBub3QgcmVhZHkgdG8gaGFuZGxlIGRlbGF5ZWQgZXZl
+bnRzLg0KPiA+ID4gPj4+ICsgICAgICAqLw0KPiA+ID4gPj4+ICsgICAgIGRybV9mYmRldl9nZW5l
+cmljX3NldHVwKGRybSwgbGVnYWN5ZmJfZGVwdGgpOw0KPiA+ID4gPj4+ICsNCj4gPiA+ID4+PiAg
+ICAgICAgZHJtX2ttc19oZWxwZXJfcG9sbF9pbml0KGRybSk7DQo+ID4gPiA+Pj4NCj4gPiA+ID4+
+PiAgICAgICAgcmV0ID0gZHJtX2Rldl9yZWdpc3Rlcihkcm0sIDApOw0KPiA+ID4gPj4+ICAgICAg
+ICBpZiAocmV0KQ0KPiA+ID4gPj4+ICAgICAgICAgICAgICAgIGdvdG8gZXJyX3BvbGxfZmluaTsN
+Cj4gPiA+ID4+Pg0KPiA+ID4gPj4+IC0gICAgIGRybV9mYmRldl9nZW5lcmljX3NldHVwKGRybSwg
+bGVnYWN5ZmJfZGVwdGgpOw0KPiA+ID4gPj4+IC0NCj4gPiA+ID4+DQo+ID4gPiA+PiBUaGlzIGRv
+ZXMgbm90IHdvcmsgd2VsbC4gZmJkZXYgaXMgc3VwcG9zZWQgdG8gYmUgYW5vdGhlciByZWd1bGFy
+DQo+ID4gPiA+PiBEUk0gY2xpZW50LiBJdCBoYXMgdG8gYmUgZW5hYmxlZCBhZnRlciByZWdpc3Rl
+cmluZyB0aGUgRFJNIGRldmljZS4NCj4gPiA+ID4+DQo+ID4gPiA+PiBJJ2QgcmF0aGVyIGltcHJv
+dmUgZmJkZXYgb3IgdGhlIGRyaXZlciB0byBoYW5kbGUgdGhpcyBncmFjZWZ1bGx5Lg0KPiA+ID4g
+Pg0KPiA+ID4gPiBZZWFoIEknbSBub3QgdW5kZXJzdGFuZGluZyB0aGUgcG9pbnQgaGVyZS4gT25j
+ZSBmYmNvbiBpcyBydW5uaW5nLA0KPiA+ID4gPiB5b3UgaGF2ZSBhIHNjcmVlbi4gQW55IGZiZGV2
+IHVzZXJzcGFjZSBjbGllbnQgIGFsc28gc2hvdWxkIGRvIGENCj4gPiA+ID4gbW9kZXNldCBmaXJz
+dC4gQW5kIGlmIHRoZXkgZG9udCBhbmQgaXQncyBleHBlY3RlZCB1YXBpIGZvciBmYmRldg0KPiA+
+ID4gPiBjaGFyZGV2IHRoYXQgdGhlIGRpc3BsYXkgYm9vdHMgdXAgZW5hYmxlZCwgdGhlbiB3ZSBu
+ZWVkIHRvIGZpeA0KPiA+ID4gPiB0aGF0IGluIHRoZSBmYmRldiBoZWxwZXJzLCBub3QgdGhyb3Vn
+aCBjbGV2ZXIgcmVvcmRlcmluZyBpbg0KPiA+ID4gPiBkcml2ZXJzIHNvIHRoYXQgYSBzaWRlLWVm
+ZmVjdCBjYXVzZXMgYSBtb2Rlc2V0Lg0KPiA+ID4gPg0KPiA+ID4gPiBOb3RlIHRoYXQgdGhpcyBp
+cyBhIGJpdCB0cmlja3kgc2luY2UgZmJkZXYgc2hvdWxkbid0IHRha2Ugb3ZlciB0aGUNCj4gPiA+
+ID4gc2NyZWVuIGJ5IGRlZmF1bHQsIHNvIHdlJ2QgbmVlZCB0byBkZWxheSB0aGlzIHVudGlsIGZp
+cnN0IG9wZW4gb2YNCj4gPiA+ID4gL2Rldi9mYjAuIEFuZCB3ZSBzaG91bGQgcHJvYmFibHkgYWxz
+byBkZWxheSB0aGUgaG90cGx1ZyBoYW5kbGluZw0KPiA+ID4gPiB1bnRpbCB0aGUgZmlyc3Qgb3Bl
+bi4gZmJjb24gYWxzbyBmYWtlLW9wZW5zIHRoZSBmYmRldiBmaWxlLCBzbw0KPiA+ID4gPiBpdCdz
+IHRoZSBzYW1lIGNvZGUgcGF0aC4NCj4gPiA+DQo+ID4gPiBBcyBmYXIgYXMgSSB1bmRlcnN0YW5k
+IHRoZSBjb21taXQgbWVzc2FnZSwgdGhlIHByb2JsZW0gaXMgdGhhdCB0aGUNCj4gPiA+IGRpc3Bs
+YXkgYmxhbmtzIG91dCBhZnRlciByZWdpc3RlcmluZyB0aGUgZHJpdmVyLiBBbmQgZmJkZXYgc29t
+ZXdoYXQNCj4gPiA+IG1pdGlnYXRlcyB0aGlzIGJ5IGRvaW5nIGFuIGVhcmx5IG1vZGVzZXQuIFVz
+ZXJzIHdpdGggZmJkZXYgZGlzYWJsZWQNCj4gPiA+IChtb3N0IG9mIHRoZW0gaW4gZW1iZWRkZWQs
+IEkgZ3Vlc3MpIHdvdWxkIHN0aWxsIHJ1biBpbnRvIHRoZSBpc3N1ZQ0KPiA+ID4gdW50aWwgdXNl
+cnNwYWNlIG1ha2VzIGEgbW9kZXNldC4NCj4gPiA+DQo+ID4gPiBNYXJrLCBpZiB0aGF0J3MgdGhl
+IGNhc2UsIGFuIG9wdGlvbiBtaWdodCBiZSB0byBwaWNrIHVwIHRoZSBkZXZpY2UNCj4gPiA+IHNl
+dHRpbmdzIGluc3RlYWQgb2YgY2FsbGluZyBkcm1fbW9kZV9jb25maWdfcmVzZXQoKS4gVGhlIGRy
+aXZlcg0KPiA+ID4gd291bGQgdGhlbiBjb250aW51ZSB0byBkaXNwbGF5IHdoYXRldmVyIGlzIG9u
+IHRoZSBzY3JlZW4uDQo+ID4NCj4gPiBXZSBhcmUgc3RhcnRlZCB1c2luZyBmYmRldiBpbiBvdXIg
+ZW1iZWRkZWQgYXBwbGljYXRpb24gd2l0aCBMaW51eA0KPiA+IDMuMTAsIGxhdGVyIHVwZGF0ZWQg
+dG8gNC4xNCBhbmQgYXJlIG5vdyBpbiB0aGUgcHJvY2VzcyBvZiB1cGRhdGluZyB0bw0KPiA+IDUu
+NC4gU28gZmFyIHRoZSB1YXBpIGFwcGVhcmVkIHRvIHVzIGFzIGlmIHdlIGNvdWxkIHJlbHkgb24g
+YW4gYWxyZWFkeQ0KPiA+IGVuYWJsZWQgZmJkZXYuIFRoYXQgaXMsIG5vbmUgb2Ygb3VyIGFwcGxp
+Y2F0aW9ucyBkb2VzIGEgbW9kZXNldC4NCj4gPg0KPiA+IFdoZW4gc3dpdGNoaW5nIHRvIDUuNCB3
+ZSBub3RpY2VkIHRoYXQgdGhlIGZiZGV2IHVhcGkgY2hhbmdlZC4gVGhhdCBpcywNCj4gPiB0aGUg
+TENEIGlzIHN3aXRjaGVkIG9mZiB1bnRpbCBpdCBpcyBleHBsaWNpdGx5IGVuYWJsZWQuIEl0IGNv
+dWxkIGJlDQo+ID4gZW5hYmxlZCBieSB3cml0aW5nIHRvIC9zeXMvY2xhc3MvZ3JhcGhpY3MvZmIw
+L2JsYW5rLg0KPiA+DQo+ID4gWW91IGFyZSByaWdodCwgd2UgYXJlIG5vdCB1c2luZyBmYmNvbi4g
+ZmJjb24gd2lsbCBzdGlsbCBlbmFibGUgdGhlIExDRA0KPiA+IGJ1dCBpbiBvdXIgZW1iZWRkZWQg
+ZG9tYWluIHdlIGhhdmUgaXQgZGlzYWJsZWQgYmVjYXVzZSB3ZSBtdXN0IG5vdCBzaG93IGENCj4g
+Y29uc29sZS4NCj4gPg0KPiA+IERvIHdlIHVuZGVyc3RhbmQgeW91ciBwcm9wb3NhbCBjb3JyZWN0
+bHkgdG8gcmVwbGFjZSB0aGUgY2FsbCB0bw0KPiA+IGRybV9tb2RlX2NvbmZpZ19yZXNldCgpIGlu
+IGlteF9kcm1fYmluZCgpIFtpbXgtZHJtLWNvcmUuY10gd2l0aA0KPiA+IHBpY2tpbmcgdXAgdGhl
+IGRldmljZSBzZXR0aW5ncyBpbnN0ZWFkPw0KPiA+DQo+ID4gaHR0cHM6Ly9ldXIwMy5zYWZlbGlu
+a3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHBzJTNBJTJGJTJGZWxpeA0KPiA+IGly
+LmJvb3RsaW4uY29tJTJGbGludXglMkZ2NS4xMC0NCj4gcmM0JTJGc291cmNlJTJGZHJpdmVycyUy
+RmdwdSUyRmRybSUyRmltDQo+ID4geCUyRmlteC1kcm0tDQo+IGNvcmUuYyUyM0wyMzEmYW1wO2Rh
+dGE9MDQlN0MwMSU3Q01hcmsuSm9uYXMlNDBkZS5ib3NjaC5jb20NCj4gPg0KPiAlN0M5YmJmNWVk
+ZTI3ZWQ0MGJlOWFhYTA4ZDg4YmFjMGM1MyU3QzBhZTUxZTE5MDdjODRlNGJiYjZkNjQ4ZWUNCj4g
+NTg0MTBmNA0KPiA+DQo+ICU3QzAlN0MwJTdDNjM3NDEyOTE4MzM4ODE5NTA5JTdDVW5rbm93biU3
+Q1RXRnBiR1pzYjNkOGV5Sg0KPiBXSWpvaU1DNHdMakF3DQo+ID4NCj4gTURBaUxDSlFJam9pVjJs
+dU16SWlMQ0pCVGlJNklrMWhhV3dpTENKWFZDSTZNbjAlM0QlN0MxMDAwJmFtcDtzZA0KPiBhdGE9
+NjgNCj4gPg0KPiAxa09TQXMyWHNJMWw0c09KN2o1VUFHa0FNY2lSNzhtYSUyRmdiRDVqUjk4JTNE
+JmFtcDtyZXNlcnZlZD0wDQo+ID4NCj4gPiBXZSBhcmUgYSBsaXR0bGUgY2x1ZWxlc3MgcmlnaHQg
+bm93OiBIb3cgZG8gd2UgcGljayB1cCB0aGUgZGV2aWNlIHNldHRpbmdzPw0KPiANCj4gTm9wZSwg
+bm90IHdoYXQgSSBoYWQgaW4gbWluZC4NCj4gDQo+IEluc3RlYWQgaW50ZXJjZXB0IHRoZSBmYl9v
+cHMtPm9wZW4gY2FsbCBhbmQgaW4gdGhlcmUgaWYgaXQncyBhIHVzZXJzcGFjZSBvcGVuDQo+ICh1
+c2VyIHBhcmFtZXRlciBvZiB0aGUgY2FsbGJhY2sgdGVsbHMgeW91IHRoYXQpIGFuZCBrbXMgaXMg
+bm90IGluIHVzZSwgdGhlbiB0cnkgdG8NCj4gbGlnaHQgdXAgdGhlIGRpc3BsYXkgZm9yIHRoZSBm
+YmRldiB1c2Vyc3BhY2UgdG8gdXNlLiBkcm0gZmJkZXYgaGVscGVycyBhbHJlYWR5DQo+IGhhdmUg
+dGhhdCBjYWxsYmFjayBhcyBkcm1fZmJkZXZfZmJfb3BlbigpLiBJIHRoaW5rIHlvdSBjb3VsZCB0
+cnkgYW5kIGp1c3QgY2FsbA0KPiBkcm1fZmJkZXZfY2xpZW50X2hvdHBsdWcgZGlyZWN0bHksIHRo
+YXQgc2hvdWxkIGRvIHRoZSB0cmljay4gT3IgbWF5YmUgY2FsbGluZw0KPiBkcm1fZmJfaGVscGVy
+X2RwbXMgaXMgdGhlIGJldHRlciBvcHRpb24sIG5vdCBzdXJlLiBmYm1lbS5jIHNlZW1zIHRvIG5v
+dCBzdG9yZQ0KPiBhbnkgYmxhbmtpbmcgc3RhdGUgYXQgYWxsLCBzbyB0aGlzIGlzIHByb2JhYmx5
+IGFsbCBpbGwtZGVmaW5lZC4NCj4gDQo+IEltcG9ydGFudCBwYXJ0IGlzIHRvIGRvIHRoaXMgb25s
+eSBmb3IgdGhlIHVzZXIgZmJfb3BlbiBjYXNlLCBzaW5jZSBmYmNvbiB3aWxsIGRvIGl0cw0KPiBv
+d24gdGhpbmcgdG9vLg0KPiANCj4gUGx1cyBJIGd1ZXNzIHdlIG5lZWQgdG8gZG9jdW1lbnQgdGhh
+dCB0aGlzIGlzIHRoZSB1YXBpIHdlJ3JlIGhhdmluZyBmb3IgZmJkZXYNCj4gY2xpZW50cywgc28g
+aWRlYWxseSB0aGlzIHNob3VsZCBiZSBjYydlZCB3aWRlbHkgc28gd2UgY2FuIGdldCBzb21lIGFj
+a3MgZnJvbQ0KPiBmb3JtZXIgZmJkZXYgbWFpbnRhaW5lcnMuDQo+IA0KPiBBbHNvIGlkZWFsbHkg
+d2UnZCBoYXZlIGFuIGlndCBmb3IgdGhpcyB1YXBpIHRvIG1ha2Ugc3VyZSBpdCBuZXZlciBicmVh
+a3MgYWdhaW4uDQo+IFNvbWV0aGluZyBsaWtlOg0KPiAxLiBvcGVuIHRoZSBrbXMgZHJpdmVyIGZv
+ciB0aGlzLCBtYWtlIHN1cmUgZGlzcGxheSBpcyBjb21wbGV0ZWx5IG9mZi4NCj4gMi4gY2xvc2Ug
+a21zIGZpbGUNCj4gMy4gb3BlbiBmYmRldiBmaWxlDQo+IDQuIGNoZWNrICh0aHJvdWdoIG9wZW5p
+bmcga21zIHNpZGUgYWdhaW4pIHRoYXQgdGhlIGRpc3BsYXkgaGFzIGJlZW4gZW5hYmxlZC4NCj4g
+DQo+IFNlZQ0KPiBodHRwczovL2V1cjAzLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29t
+Lz91cmw9aHR0cHMlM0ElMkYlMkZkcmkuZnJlZWRlDQo+IHNrdG9wLm9yZyUyRmRvY3MlMkZkcm0l
+MkZncHUlMkZkcm0tdWFwaS5odG1sJTIzdmFsaWRhdGluZy1jaGFuZ2VzLQ0KPiB3aXRoLQ0KPiBp
+Z3QmYW1wO2RhdGE9MDQlN0MwMSU3Q01hcmsuSm9uYXMlNDBkZS5ib3NjaC5jb20lN0M5YmJmNWVk
+ZTI3ZWQ0DQo+IDBiZTlhYWEwOGQ4OGJhYzBjNTMlN0MwYWU1MWUxOTA3Yzg0ZTRiYmI2ZDY0OGVl
+NTg0MTBmNCU3QzAlN0MwDQo+ICU3QzYzNzQxMjkxODMzODgxOTUwOSU3Q1Vua25vd24lN0NUV0Zw
+Ykdac2IzZDhleUpXSWpvaU1DNHdMag0KPiBBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRpSTZJ
+azFoYVd3aUxDSlhWQ0k2TW4wJTNEJTdDMTAwMCZhbQ0KPiBwO3NkYXRhPXRnZGFPSlAyd0s3ZVhG
+bU9RbFZkVWElMkI3Q1J3WnhPeDk5QkNDTU5FOGlEMCUzRCZhDQo+IG1wO3Jlc2VydmVkPTANCj4g
+Zm9yIHNvbWUgZGV0YWlscyBvbiBvdXIgdmFsaWRhdGlvbiB0ZXN0aW5nLCB0aGVyZSdzIGFscmVh
+ZHkgYSB2ZXJ5IGJhc2ljIGZiZGV2DQo+IHRlc3RjYXNlIHRoZXJlLg0KDQpXZSBoYWQgYSBsb29r
+IGludG8gdGhlIHRvcGljIGFuZCBjYW1lIHRvIHRoZSBjb25jbHVzaW9uIHRoYXQgd2UgY2Fubm90
+IGRvIGl0DQpyaWdodCBub3cuIFdlIGFyZSBsYWNraW5nIGV4cGVyaWVuY2UgaW4gdGhlIGZpZWxk
+IGFuZCBuZWVkIHRvIGtlZXAgZHJpdmluZyBvdXINCmFwcGxpY2F0aW9uIGRldmVsb3BtZW50Lg0K
+DQpUaHVzLCB3aXRoIGEgaGVhdnkgaGVhcnQsIHdlIHdpbGwgaW5zdGVhZCBpbXBsZW1lbnQgYSB3
+b3JrYXJvdW5kIHdoaWNoIHdpbGwNCmVuYWJsZSB0aGUgTENEIGF0IGJvb3QgdGltZSBmcm9tIHVz
+ZXIgc3BhY2UuIFdoYXQgd29ya3MgZ29vZCBmb3IgdXMgaXMgd3JpdGluZw0KdG8gL3N5cy9jbGFz
+cy9ncmFwaGljcy9mYjAvYmxhbmsuDQoNCkdyZWV0aW5ncywNCk1hcmsNCg0KQnVpbGRpbmcgVGVj
+aG5vbG9naWVzLCBQYW5lbCBTb2Z0d2FyZSBGaXJlIChCVC1GSVIvRU5HMS1HcmIpDQpCb3NjaCBT
+aWNoZXJoZWl0c3N5c3RlbWXCoEdtYkggfCBQb3N0ZmFjaCAxMSAxMSB8IDg1NjI2IEdyYXNicnVu
+biB8IEdFUk1BTlkgfCB3d3cuYm9zY2hzZWN1cml0eS5jb20NCg0KU2l0ejogU3R1dHRnYXJ0LCBS
+ZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IFN0dXR0Z2FydCBIUkIgMjMxMTgNCkF1ZnNpY2h0
+c3JhdHN2b3JzaXR6ZW5kZXI6IENocmlzdGlhbiBGaXNjaGVyOyBHZXNjaMOkZnRzZsO8aHJ1bmc6
+IFRhbmphIFLDvGNrZXJ0LCBBbmRyZWFzIEJhcnR6LCBUaG9tYXMgUXVhbnRlDQoNCjEwMCBZZWFy
+cyBCb3NjaCBCdWlsZGluZyBUZWNobm9sb2dpZXMgMTkyMC0yMDIwDQo=
