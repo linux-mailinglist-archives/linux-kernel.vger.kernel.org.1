@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E552C560D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E562C5635
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390783AbgKZNm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:42:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
+        id S2390795AbgKZNnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:43:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390767AbgKZNmz (ORCPT
+        with ESMTP id S2390785AbgKZNm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:42:55 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE06C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:42:55 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id u12so2218670wrt.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:42:55 -0800 (PST)
+        Thu, 26 Nov 2020 08:42:59 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E87C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:42:56 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id u12so2218730wrt.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:42:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JRGzsr7E+IJLlqxa5D+IrFAdZhiFdGYpEedhVyk6GiY=;
-        b=npJUR/DbxvX22PhhvsddHD3XwoyyDVf+g0XRN8KgbhT11qHmB4zphgQBWSBHNqNjr/
-         8Vo0vv65NfZ9JCW8L/2SMi1OI6FMPbNOzBTW/o/VfmojKflzjEGWCqSYTC7rPf98wwMv
-         mSK7VJ0LcB9+AQPMEzZtIq1VLY8QK6X9GkV8LJGK+XMVPn3+lE2rsA/0S10wsQww0dax
-         gOzL2JHYgBqZPD72m+1EvomBH7ybMYA10Bci7AkXEShO9cuvmxBL+VMQn7rB6Nholahm
-         0H7D+pNpH/VIKwt5Lzsklllify4PiA1rjNC+VV0Q6JzUxkKrm3UyRNkoGvpwqigXwObt
-         QsRg==
+        bh=OVaLmyvacPrY1rDoSMt/9G1ek5c/J/kPXEt2r1H/RjI=;
+        b=F2cBuUeywubkOSdIZeQQGSOkWu7bs2lvYsnoh/sMGgtoODB+x3nOzrprIw4bW+NOhC
+         1HArIKXo5vW+OQ827Tml7/kmK9Q5iXrEOhIU1LTaiwJJgCo2D2VV6u/5cI3BzmzPKo8L
+         dxzGm1Z5ZWfFHWMwWyIZauQV1ZDzwm6vHRVMkrXmPtyCxcsTwuBj0cUsbf9iUNkTvcbE
+         xTMgeqcxaGa3H4pLwbHbD4QvzZnNl4LhAj/2rOFjLjhmxKaRTZQnBKPd7uMFlzbHuoHi
+         Q2lzTkJiYhrcjM9WpL6pUdQAEwXmYDU90a5gi9HzoDIZ34X3+FTwbxugBc9iTWbywbPj
+         d37g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JRGzsr7E+IJLlqxa5D+IrFAdZhiFdGYpEedhVyk6GiY=;
-        b=Rbrs3PzuI/HjwVQ0GOElZDN3u77pvZOtO3ZNUskjA9grFpie9DsGWqb+1dig5No8t7
-         4I/nCyxc14NGqfe0GcThMDExPL83s8B/ilQRGAXGinC6JN21FLpyPASikZh3usimTozz
-         jTvPorvd98Y063mv4ZizkXNg93EGpKP2FSz4LrqS1nUJBuRXCinWmFlKk7GiulEv2KUS
-         qf+EssbveNEOHm2cYGc4JJ4ZyxZosXUYdLjZtz75eH54+PvDHN9I5kHJWUzN4W1DoDq8
-         owK4n1bz0lcfSWdwJzB3Y3xFImEJF+aa/2HPNqgwOHVd1kGeX3Bsks56/cy1D0niT8Xw
-         thsQ==
-X-Gm-Message-State: AOAM533+fLGG/6jnZEEJcc9Yycwh90+M7PnDq4Ws3r5yFh8Xng6zzSTp
-        osaB7T6FG/Ah7cntaJKULnDo8A==
-X-Google-Smtp-Source: ABdhPJwo3+FQc6tpgfzfYae15R5ZY9ynnRvbHNRXmcN7/sg1nZfCyc5IUVsESXdGkNqsUW9sg2Vo8g==
-X-Received: by 2002:a5d:4408:: with SMTP id z8mr4111560wrq.204.1606398174228;
-        Thu, 26 Nov 2020 05:42:54 -0800 (PST)
+        bh=OVaLmyvacPrY1rDoSMt/9G1ek5c/J/kPXEt2r1H/RjI=;
+        b=htx1o2mhYPLPltPuictQSyRKrgyjt9QcIihXsSHsSPTGEYwIzPo5B7ML2ffohxaJ2q
+         IaFXhznEuAjeAxD5V7UKNCDlmXpSIJDaQc2bENMmH4UZeYhvhiiPChwOHS2ZOpu207P8
+         MGOQkPb/xS+kX7C6W9WzbixLVDzlxQBQaSViM46yiYF/dHSQwRJ60mIBEvj4dItFkqWL
+         w6p0ytzzW9zcTcfxcIfclxlp0JWd0Fd39x05YtjISF2yxb7dQQHOJ6wfsUG3V/ThDtk2
+         VKawfsE8sTOTtEY6ycr07LqCjLWct4vFA+6K6RGkxmLhcTfR+aNUmLh+O+r4s/6yuQKF
+         en0Q==
+X-Gm-Message-State: AOAM530H5U6RldsqosX+wx8wq3B+h1+hkRebOQiFhBqug31WZSlOti/9
+        eAjMiZeD8s1acG9LH8rWk8jTjg==
+X-Google-Smtp-Source: ABdhPJxfI0LU2ckWg4e0UGMMQXSTJKeWbI4Br1gKXvc+4RK9MNkeL8wdqdRuMbFSyo6qKpVFgmsJsQ==
+X-Received: by 2002:adf:dd04:: with SMTP id a4mr3979594wrm.77.1606398175472;
+        Thu, 26 Nov 2020 05:42:55 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.42.53
+        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.42.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:42:53 -0800 (PST)
+        Thu, 26 Nov 2020 05:42:54 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 06/40] drm/amd/pm/powerplay/smumgr/smu9_smumgr: Include our own header containing our prototypes
-Date:   Thu, 26 Nov 2020 13:42:06 +0000
-Message-Id: <20201126134240.3214176-7-lee.jones@linaro.org>
+Subject: [PATCH 07/40] drm/amd/pm/powerplay/smumgr/fiji_smumgr: Demote kernel-doc format abuse
+Date:   Thu, 26 Nov 2020 13:42:07 +0000
+Message-Id: <20201126134240.3214176-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201126134240.3214176-1-lee.jones@linaro.org>
 References: <20201126134240.3214176-1-lee.jones@linaro.org>
@@ -71,10 +71,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/smu9_smumgr.c:38:6: warning: no previous prototype for ‘smu9_is_smc_ram_running’ [-Wmissing-prototypes]
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/smu9_smumgr.c:112:5: warning: no previous prototype for ‘smu9_send_msg_to_smc’ [-Wmissing-prototypes]
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/smu9_smumgr.c:140:5: warning: no previous prototype for ‘smu9_send_msg_to_smc_with_parameter’ [-Wmissing-prototypes]
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/smu9_smumgr.c:165:10: warning: no previous prototype for ‘smu9_get_argument’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/fiji_smumgr.c:1107: warning: Function parameter or member 'mem_clock' not described in 'fiji_get_mclk_frequency_ratio'
 
 Cc: Evan Quan <evan.quan@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
@@ -85,21 +82,22 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/pm/powerplay/smumgr/smu9_smumgr.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/smu9_smumgr.c b/drivers/gpu/drm/amd/pm/powerplay/smumgr/smu9_smumgr.c
-index 8a9aee85043ec..23e5de3c4ec16 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/smu9_smumgr.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/smu9_smumgr.c
-@@ -22,6 +22,7 @@
-  */
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c b/drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c
+index fea008cc1f254..02c094a06605d 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c
+@@ -1090,7 +1090,7 @@ static int fiji_populate_all_graphic_levels(struct pp_hwmgr *hwmgr)
+ }
  
- #include "smumgr.h"
-+#include "smu9_smumgr.h"
- #include "vega10_inc.h"
- #include "soc15_common.h"
- #include "pp_debug.h"
+ 
+-/**
++/*
+  * MCLK Frequency Ratio
+  * SEQ_CG_RESP  Bit[31:24] - 0x0
+  * Bit[27:24] \96 DDR3 Frequency ratio
 -- 
 2.25.1
 
