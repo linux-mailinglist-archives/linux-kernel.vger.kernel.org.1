@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A52A2C56B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B9B2C56C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390286AbgKZOJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:09:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:34032 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389606AbgKZOJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:09:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 456F931B;
-        Thu, 26 Nov 2020 06:09:39 -0800 (PST)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 42E703F71F;
-        Thu, 26 Nov 2020 06:09:38 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     netdev@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH] dpaa2-mac: select NET_DEVLINK to fix build
-Date:   Thu, 26 Nov 2020 14:09:33 +0000
-Message-Id: <20201126140933.1535197-1-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S2390443AbgKZONC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:13:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390144AbgKZONB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 09:13:01 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B285FC0613D4;
+        Thu, 26 Nov 2020 06:12:59 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id o9so3172470ejg.1;
+        Thu, 26 Nov 2020 06:12:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AY0reqhJ8LJfRYGSpAtGjhzLoCCsaBuOvKFqC/hE97I=;
+        b=fBXC5ElqASADFI/r2xA/CpSucv/W2kAgwYSPK3lfUIiSB6jyzBhBLIa1yzexVtRT0I
+         w6rifn8V4cnQSIbudonZH1aG8L0tBWne50lCi8LahzYZ/831wsHDBASbiRLJqpV+9hnE
+         tIOk5wWwyeRyOsB130DJoZpsNo2A+INyElCHxQJAUxhZN7HV47rrpJjq2V1289K5fybd
+         EWcaILkRwURyLGXvESICUaUI/yCB9iKrLwFfUikOrx80oIAkOn0hjzA/jIHbon/1jBqH
+         WuDPbg0/x569wf/OomFwlraA1RTylqMdIrjGSykk3LEzqgx7DSE2x+oujY+FLIi0c6X6
+         v9jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AY0reqhJ8LJfRYGSpAtGjhzLoCCsaBuOvKFqC/hE97I=;
+        b=ADu/7ml6GQx/e0oKjwAR5vo3elPUrXi/5wPVSGy/QO70RwvmXpuv142zR9mFv6xIIA
+         dp55ayAZJlP/QH6KtCpFCRFSzOFuchPC2ZjoDTpPUvEEve4eLlobJajHELVUa+HqHZXl
+         8Iyij+IjLR/3f6ihintAE6UsWIZO2coV0l9L2C44Y69nPL7nQvVwIEJnQ1C3EYMziHRn
+         OcWJRang10owDwpvJq+VS8Zfri+Ugzdi0oy7iHp9G9y1Y/C0T4BZjiIq4oN0YA+tvuJD
+         rBCWlKBZmNR1LzKdbcgQGUh9fJyKfQqpXE1NNXe0E86JR7YPSvIkmmlZ9/fjcrVSRSR2
+         iv+A==
+X-Gm-Message-State: AOAM530irgm/d8ujVpdhfZa12yhXTA4UBnrqcWVipySGCJodbwg7Xdk5
+        FsocJog9NQVi/NNucS9X1Zs=
+X-Google-Smtp-Source: ABdhPJwQ8D2xdY6pUDrtvCRzpa+vFbdwrFG1FFSgKzjU2kIrTiMF59RdJmhOIBFw47uAuzeumhkEgg==
+X-Received: by 2002:a17:906:3ecf:: with SMTP id d15mr2884222ejj.297.1606399978411;
+        Thu, 26 Nov 2020 06:12:58 -0800 (PST)
+Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id c4sm3201578ejx.9.2020.11.26.06.12.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Nov 2020 06:12:57 -0800 (PST)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-arm-msm@vger.kernel.org,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Subject: [PATCH 1/2] ARM: dts: qcom: msm8974-klte: Add fuel gauge
+Date:   Thu, 26 Nov 2020 16:11:43 +0200
+Message-Id: <20201126141144.1763779-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When NET_DEVLINK is not selected, we get the following build error:
+The Samsung Galaxy S5 uses a maxim17048 fuelgauge. The maxim,rcomp value
+is taken from downstream kernel. Model data and temperature-based
+compensation are not yet supported in the mainline driver, but the
+readings seem fine nevertheless.
 
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.o: in function `dpaa2_eth_rx_err':
-drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c:554: undefined reference to `devlink_trap_report'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.o: in function `dpaa2_eth_dl_info_get':
-drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:42: undefined reference to `devlink_info_driver_name_put'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:47: undefined reference to `devlink_info_version_running_put'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.o: in function `dpaa2_eth_dl_register':
-drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:199: undefined reference to `devlink_alloc'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:207: undefined reference to `devlink_register'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:216: undefined reference to `devlink_free'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.o: in function `dpaa2_eth_dl_unregister':
-drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:223: undefined reference to `devlink_unregister'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:224: undefined reference to `devlink_free'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.o: in function `dpaa2_eth_dl_port_add':
-drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:234: undefined reference to `devlink_port_attrs_set'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:236: undefined reference to `devlink_port_register'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:240: undefined reference to `devlink_port_type_eth_set'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.o: in function `dpaa2_eth_dl_port_del':
-drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:249: undefined reference to `devlink_port_type_clear'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:250: undefined reference to `devlink_port_unregister'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.o: in function `dpaa2_eth_dl_traps_register':
-drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:273: undefined reference to `devlink_trap_groups_register'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:280: undefined reference to `devlink_traps_register'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:290: undefined reference to `devlink_trap_groups_unregister'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.o: in function `dpaa2_eth_dl_traps_unregister':
-drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:303: undefined reference to `devlink_traps_unregister'
-ld: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-devlink.c:305: undefined reference to `devlink_trap_groups_unregister'
-
-Commit f6b19b354d50 ("net: devlink: select NET_DEVLINK from drivers")
-selected NET_DEVLINK from several drivers and rely on the functions
-being there.
-
-Replicate the same for FSL_DPAA2_ETH.
-
-Cc: Ioana Ciornei <ioana.ciornei@nxp.com>
-Cc: Ioana Radulescu <ruxandra.radulescu@nxp.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
 ---
- drivers/net/ethernet/freescale/dpaa2/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ .../boot/dts/qcom-msm8974-samsung-klte.dts    | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/dpaa2/Kconfig b/drivers/net/ethernet/freescale/dpaa2/Kconfig
-index cfd369cf4c8c..a86f9ebcf63b 100644
---- a/drivers/net/ethernet/freescale/dpaa2/Kconfig
-+++ b/drivers/net/ethernet/freescale/dpaa2/Kconfig
-@@ -4,6 +4,7 @@ config FSL_DPAA2_ETH
- 	depends on FSL_MC_BUS && FSL_MC_DPIO
- 	select PHYLINK
- 	select PCS_LYNX
-+	select NET_DEVLINK
- 	help
- 	  This is the DPAA2 Ethernet driver supporting Freescale SoCs
- 	  with DPAA2 (DataPath Acceleration Architecture v2).
+diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
+index b0899107f3ced..97352de913142 100644
+--- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
++++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
+@@ -406,6 +406,16 @@ mux {
+ 			};
+ 		};
+ 
++		i2c12_pins: i2c12 {
++			mux {
++				pins = "gpio87", "gpio88";
++				function = "blsp_i2c12";
++
++				drive-strength = <2>;
++				bias-disable;
++			};
++		};
++
+ 		i2c_touchkey_pins: i2c-touchkey {
+ 			mux {
+ 				pins = "gpio95", "gpio96";
+@@ -666,6 +676,27 @@ max77826_buckboost: BUCKBOOST {
+ 			};
+ 		};
+ 	};
++
++	i2c@f9968000 {
++		status = "okay";
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&i2c12_pins>;
++
++		fuelgauge@36 {
++			compatible = "maxim,max17048";
++			reg = <0x36>;
++
++			maxim,double-soc;
++			maxim,rcomp = /bits/ 8 <0x56>;
++
++			interrupt-parent = <&pma8084_gpios>;
++			interrupts = <21 IRQ_TYPE_EDGE_FALLING>;
++
++			pinctrl-names = "default";
++			pinctrl-0 = <&fuelgauge_pin>;
++		};
++	};
+ };
+ 
+ &spmi_bus {
+@@ -703,6 +734,14 @@ wlan_sleep_clk_pin: wlan-sleep-clk-pin {
+ 				power-source = <PMA8084_GPIO_S4>;
+ 				qcom,drive-strength = <PMIC_GPIO_STRENGTH_HIGH>;
+ 			};
++
++			fuelgauge_pin: fuelgauge-int-pin {
++				pins = "gpio21";
++				function = "normal";
++				bias-disable;
++				input-enable;
++				power-source = <PMA8084_GPIO_S4>;
++			};
+ 		};
+ 	};
+ };
+
+base-commit: 6147c83fd749d19a0d3ccc2f64d12138ab010b47
 -- 
-2.25.1
+2.29.2
 
