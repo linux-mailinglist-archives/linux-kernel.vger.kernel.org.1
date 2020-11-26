@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BDA2C4CFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AA32C4D03
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732088AbgKZCAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 21:00:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56658 "EHLO mail.kernel.org"
+        id S1732274AbgKZCAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 21:00:24 -0500
+Received: from mga05.intel.com ([192.55.52.43]:59686 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730060AbgKZCAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 21:00:07 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606356006;
-        bh=tSfDL+nPc5rTobRs+AYXM9ATSjEhnIs5yqsA8MEXEKw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IsyTCbif//S9hnmfKInN4/keUJYO0cui2GQKL9qFutlPxrUn/d4qEmmF1Prb8HOve
-         TxUkt6F/NRczAvmu4nXX0PryyY/qniEdwXuy4uS9zq0UMW2CBbUmoJRwmPyqtH7GJ+
-         aQgcLQ5FGleNEggMbGUxrxoFW3JxL+hj4u+YSa2c=
+        id S1730060AbgKZCAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 21:00:24 -0500
+IronPort-SDR: KKYAvdoM9cBOKO8v9NMBXTcA2bbLuMAqw6+zdGwosjHGSlhPY7AUPzNx8srWg/rUq4yPJaJEOX
+ uMLmZTVDXSrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="256933778"
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="256933778"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 18:00:23 -0800
+IronPort-SDR: 913kfw8Ec+NcvFxFD6m4Gu+rguSGuI/s3mXDR8Y+FHviKD1VfSUOTp2Swp1GI+aSrMDp9DlIXS
+ tviKmatTO/xA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="359379959"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.51]) ([10.239.154.51])
+  by orsmga008.jf.intel.com with ESMTP; 25 Nov 2020 18:00:18 -0800
+Subject: Re: [PATCH v4] i2c: virtio: add a virtio i2c frontend driver
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, jasowang@redhat.com,
+        wsa+renesas@sang-engineering.com, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
+        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
+        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
+        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
+        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com
+References: <7c5e44c534b3fd07b855af22d8d4b78bc44cd7a4.1602465440.git.jie.deng@intel.com>
+ <20201125043422-mutt-send-email-mst@kernel.org>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <6cbea83e-04fa-8d5a-bba7-d80afabe8a5d@intel.com>
+Date:   Thu, 26 Nov 2020 10:00:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/4] dt-bindings: net: dsa: microchip: convert KSZ
- bindings to yaml
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160635600627.28583.6196679476073419959.git-patchwork-notify@kernel.org>
-Date:   Thu, 26 Nov 2020 02:00:06 +0000
-References: <20201120112107.16334-1-ceggers@arri.de>
-In-Reply-To: <20201120112107.16334-1-ceggers@arri.de>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     olteanv@gmail.com, kuba@kernel.org, andrew@lunn.ch,
-        robh+dt@kernel.org, richardcochran@gmail.com,
-        vivien.didelot@gmail.com, davem@davemloft.net,
-        kurt.kanzenbach@linutronix.de, marex@denx.de,
-        codrin.ciubotariu@microchip.com, Tristram.Ha@microchip.com,
-        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <20201125043422-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On 2020/11/25 17:35, Michael S. Tsirkin wrote:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+> On Mon, Oct 12, 2020 at 09:55:55AM +0800, Jie Deng wrote:
+>> Add an I2C bus driver for virtio para-virtualization.
+>>
+>> The controller can be emulated by the backend driver in
+>> any device model software by following the virtio protocol.
+>>
+>> This driver communicates with the backend driver through a
+>> virtio I2C message structure which includes following parts:
+>>
+>> - Header: i2c_msg addr, flags, len.
+>> - Data buffer: the pointer to the I2C msg data.
+>> - Status: the processing result from the backend.
+>>
+>> People may implement different backend drivers to emulate
+>> different controllers according to their needs. A backend
+>> example can be found in the device model of the open source
+>> project ACRN. For more information, please refer to
+>> https://projectacrn.org.
+>>
+>> The virtio device ID 34 is used for this I2C adpter since IDs
+>> before 34 have been reserved by other virtio devices.
+>>
+>> Co-developed-by: Conghui Chen <conghui.chen@intel.com>
+>> Signed-off-by: Conghui Chen <conghui.chen@intel.com>
+>> Signed-off-by: Jie Deng <jie.deng@intel.com>
+>> Reviewed-by: Shuo Liu <shuo.a.liu@intel.com>
+>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> I assume this will be updated once the specification is acked
+> by the virtio tc. Holding off on this one for now since
+> we know there will be host/guest ABI changes.
 
-On Fri, 20 Nov 2020 12:21:03 +0100 you wrote:
-> These patches are orginally from the series
-> 
-> "net: dsa: microchip: PTP support for KSZ956x"
-> 
-> As the the device tree conversion to yaml is not really related to the
-> PTP patches and the original series is going to take more time than
-> I expected, I would like to split this.
-> 
-> [...]
+Yeah. I will update this driver once the specification is acked by the 
+virtio tc.
 
-Here is the summary with links:
-  - [net-next,1/4] dt-bindings: net: dsa: convert ksz bindings document to yaml
-    https://git.kernel.org/netdev/net-next/c/4f36d97786c6
-  - [net-next,2/4] net: dsa: microchip: support for "ethernet-ports" node
-    https://git.kernel.org/netdev/net-next/c/44e53c88828f
-  - [net-next,3/4] net: dsa: microchip: ksz9477: setup SPI mode
-    https://git.kernel.org/netdev/net-next/c/9ed602bac971
-  - [net-next,4/4] net: dsa: microchip: ksz8795: setup SPI mode
-    https://git.kernel.org/netdev/net-next/c/8c4599f49841
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Thanks.
 
