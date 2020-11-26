@@ -2,228 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2B22C51A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A612C51B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387445AbgKZJ4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 04:56:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32216 "EHLO
+        id S2387477AbgKZJ6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:58:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54274 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726099AbgKZJ4U (ORCPT
+        by vger.kernel.org with ESMTP id S1733240AbgKZJ6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 04:56:20 -0500
+        Thu, 26 Nov 2020 04:58:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606384577;
+        s=mimecast20190719; t=1606384723;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=XL2h/hir+tmct6ROumYIQmrzt7JrIUdXPqptvlCNWjc=;
-        b=CDWr6QDpKFBYL+wNzOjqKUhinpw3oPsIx3GjPlDwvJY/12kV+fmeN+qIL6Fp4bnfsTFghg
-        9AorqSXezjCPBDQ9yE+bT8ekHe5j0Qxfspkim9LG3rzFZoCA/1+qJ57DwQwt77cWQsr2c6
-        yF3nHWLEf4UpbFn5WmnmyX8eU975oSk=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-LbDsqq7mMTOIenJx9YmDnA-1; Thu, 26 Nov 2020 04:56:15 -0500
-X-MC-Unique: LbDsqq7mMTOIenJx9YmDnA-1
-Received: by mail-ed1-f72.google.com with SMTP id d3so819527eds.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 01:56:15 -0800 (PST)
+        bh=Txczrzj5TdjarWdFax7+8SYyUhh5Cpy1wHDBd4VU294=;
+        b=Xmer9I53hNE8qBR6cmMYWAbOCZ9Sr0p4s6d1Lb0+AzqkuVYOFtwqcjTTp91+rbluzFP8jP
+        omJR1kI3f7AhsSer4bZOpvlltZU3d9nEDs5oNyE7NDQZZl9dNtFvH00N1r3lEwGXnKRgeT
+        AUcBGs45XDA56mGTyGsJc2v338I7Tt0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-252-XpqSkcBoN3STqXpLuYK3Zg-1; Thu, 26 Nov 2020 04:58:40 -0500
+X-MC-Unique: XpqSkcBoN3STqXpLuYK3Zg-1
+Received: by mail-wr1-f71.google.com with SMTP id e6so963984wrx.13
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 01:58:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=XL2h/hir+tmct6ROumYIQmrzt7JrIUdXPqptvlCNWjc=;
-        b=O2z1HGDDrTtWXraNz+fgoX6LF3tX7WUxQ778eXaiX+TDhNx8KVVbBU6wYqJTD2giZv
-         FAOj1usIsedNA2cMSzhBPLN3g/SeVq/JaPEC+sJZx2mbRIDb+lrSA5eeIxpWnsMoQnRh
-         f9YShM64bJuvq4YmvdnYTMNQMsvXrXf5f57xk/bNKa0mp7utXz024YpvyDkiJ+woa3dJ
-         Mr0Kh+tfqVEUps/cfG5q/ePfNcnEmuhRho4ponJ+XXyo8cTiAmturEIyP8uBp/zjnZsf
-         qEi4Yn7QCCrkbRKvRQy9ObSq7ScZQqjXIFC/KsZuUEYbAAWVxsG6mANmkc6aiE/c9Xt5
-         BYBg==
-X-Gm-Message-State: AOAM533wB3d+qd68u33A/8etv0HwaysoxIB9br/coU1UZvzz3jRxn+lE
-        ethHZDLF5sFktTxgQ6WH+5PSZVxPPl8V1mdNg/5FRADVsm3+GbgbRJ8y3gQ5Lh8c7HeRfg4eNDQ
-        sErfMORn+036PnsqdC+Bxm58W
-X-Received: by 2002:a17:906:4149:: with SMTP id l9mr2025943ejk.48.1606384573589;
-        Thu, 26 Nov 2020 01:56:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxpwWVFyFaUq292qnGC1BLOcKdLXpzzdLATaHboam1LmcQEjYpWqGxMbDjjskkqrrnuIe1btQ==
-X-Received: by 2002:a17:906:4149:: with SMTP id l9mr2025917ejk.48.1606384573185;
-        Thu, 26 Nov 2020 01:56:13 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id jr13sm2742167ejb.50.2020.11.26.01.56.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Txczrzj5TdjarWdFax7+8SYyUhh5Cpy1wHDBd4VU294=;
+        b=pestEgNTF/2PamgrMNqqGZJjCG3WXtddR7dDnZOFk2xfRuvyxoS4+RdNr4cRNpTtha
+         F5G4uGR6PK3su9jv232YDpecmTJygLxSKho0YlMeg9ufCo2nzLhyGxpoEjXt1q5k6ss9
+         Yp47dJ9sI+WCEcA6RO/WLwqDg9tKVc+NSosY5fzJh9DWbO8PRu2uv0Gl4cU+0MmpprmX
+         vZ5ifXTk095ZqwM9siZEf6K/n6hbXv0WPfUxHj6qT7bFkdfhDfPHY4HOQoGA+I+z/N2b
+         Vhmr53XZvZ8izT7io++E551TCNdf7U/2/smhd62fuEjR5+TjUeS8+/qb8cacotB4uEXG
+         7+Qw==
+X-Gm-Message-State: AOAM532G7V5xK7g3AmT9wUoLmkmpYATiZLKrnhWQmIlWTNFbcvKBQiif
+        MWJh1Z0s9zs23fbxQMpztoeIGb6ulIdnR1X4+GdI4WcKazT+fF2JhVMOqTz9a68uTwxCz0z7vcY
+        KFCAuvNmQYXxORXxfnE5PWs9r
+X-Received: by 2002:a5d:45c5:: with SMTP id b5mr2905661wrs.14.1606384719446;
+        Thu, 26 Nov 2020 01:58:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyagAdyUIvb+LKXexDjMlDWFtLBvBaCo07L82J8DsJVdjOnXKdy37em+fIHldUz7GbM31ozGg==
+X-Received: by 2002:a5d:45c5:: with SMTP id b5mr2905644wrs.14.1606384719288;
+        Thu, 26 Nov 2020 01:58:39 -0800 (PST)
+Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
+        by smtp.gmail.com with ESMTPSA id f16sm7462115wmh.7.2020.11.26.01.58.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 01:56:12 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 13A1E183064; Thu, 26 Nov 2020 10:56:12 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Roman Gushchin <guro@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, netdev@vger.kernel.org,
-        andrii@kernel.org, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        hannes@cmpxchg.org, tj@kernel.org
-Subject: Re: [PATCH bpf-next v8 06/34] bpf: prepare for memcg-based memory
- accounting for bpf maps
-In-Reply-To: <20201126023000.GB840171@carbon.dhcp.thefacebook.com>
-References: <20201125030119.2864302-1-guro@fb.com>
- <20201125030119.2864302-7-guro@fb.com>
- <ef140167-8d80-c581-318c-36c0430e4cfa@iogearbox.net>
- <20201126023000.GB840171@carbon.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 26 Nov 2020 10:56:12 +0100
-Message-ID: <87lfeol9vn.fsf@toke.dk>
+        Thu, 26 Nov 2020 01:58:38 -0800 (PST)
+Date:   Thu, 26 Nov 2020 04:58:35 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     "Winkler, Tomas" <tomas.winkler@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Usyskin, Alexander" <alexander.usyskin@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wang, Yu1" <yu1.wang@intel.com>,
+        "Liu, Shuo A" <shuo.a.liu@intel.com>,
+        "virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>
+Subject: Re: [char-misc-next 13/13] mei: virtio: virtualization frontend
+ driver
+Message-ID: <20201126045340-mutt-send-email-mst@kernel.org>
+References: <20200818115147.2567012-1-tomas.winkler@intel.com>
+ <20200818115147.2567012-14-tomas.winkler@intel.com>
+ <20201125160326-mutt-send-email-mst@kernel.org>
+ <7f6181d8e80d4efb9464e9ec436800b7@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7f6181d8e80d4efb9464e9ec436800b7@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Roman Gushchin <guro@fb.com> writes:
+On Wed, Nov 25, 2020 at 09:18:04PM +0000, Winkler, Tomas wrote:
+> > 
+> > On Tue, Aug 18, 2020 at 02:51:47PM +0300, Tomas Winkler wrote:
+> > > +#ifndef VIRTIO_ID_MEI
+> > > +#define VIRTIO_ID_MEI 0xFFFE /* virtio mei */ #endif
+> > 
+> > Just noticed now that this driver landed upstream.  Can I ask that you guys
+> > please register IDs with the virtio TC and not just pick a number at random?
+> > In particular this is way outside allowed range.
+> > 
+> > IDs should also be listed in include/uapi/linux/virtio_ids.h
+> > 
+> > If people just pick random numbers like this collistions are unavoidable.
+> > 
+> > List of IDs is part of virtio spec, chapter "Device Types".
+> > 
+> > Please do this change now before this goes out to production!
+> Okay,  this was assigned by ACRN, my impression was it's already registered.
+> Will take care of.
+> Thanks
+> Tomas
 
-> On Thu, Nov 26, 2020 at 01:21:41AM +0100, Daniel Borkmann wrote:
->> On 11/25/20 4:00 AM, Roman Gushchin wrote:
->> > In the absolute majority of cases if a process is making a kernel
->> > allocation, it's memory cgroup is getting charged.
->> > 
->> > Bpf maps can be updated from an interrupt context and in such
->> > case there is no process which can be charged. It makes the memory
->> > accounting of bpf maps non-trivial.
->> > 
->> > Fortunately, after commit 4127c6504f25 ("mm: kmem: enable kernel
->> > memcg accounting from interrupt contexts") and b87d8cefe43c
->> > ("mm, memcg: rework remote charging API to support nesting")
->> > it's finally possible.
->> > 
->> > To do it, a pointer to the memory cgroup of the process, which created
->> > the map, is saved, and this cgroup can be charged for all allocations
->> > made from an interrupt context. This commit introduces 2 helpers:
->> > bpf_map_kmalloc_node() and bpf_map_alloc_percpu(). They can be used in
->> > the bpf code for accounted memory allocations, both in the process and
->> > interrupt contexts. In the interrupt context they're using the saved
->> > memory cgroup, otherwise the current cgroup is getting charged.
->> > 
->> > Signed-off-by: Roman Gushchin <guro@fb.com>
->> 
->> Thanks for updating the cover letter; replying in this series instead
->> on one more item that came to mind:
->> 
->> [...]
->> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> > index f3fe9f53f93c..4154c616788c 100644
->> > --- a/kernel/bpf/syscall.c
->> > +++ b/kernel/bpf/syscall.c
->> > @@ -31,6 +31,8 @@
->> >   #include <linux/poll.h>
->> >   #include <linux/bpf-netns.h>
->> >   #include <linux/rcupdate_trace.h>
->> > +#include <linux/memcontrol.h>
->> > +#include <linux/sched/mm.h>
->> >   #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
->> >   			  (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
->> > @@ -456,6 +458,77 @@ void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock)
->> >   		__release(&map_idr_lock);
->> >   }
->> > +#ifdef CONFIG_MEMCG_KMEM
->> > +static void bpf_map_save_memcg(struct bpf_map *map)
->> > +{
->> > +	map->memcg = get_mem_cgroup_from_mm(current->mm);
->> > +}
->> > +
->> > +static void bpf_map_release_memcg(struct bpf_map *map)
->> > +{
->> > +	mem_cgroup_put(map->memcg);
->> > +}
->> > +
->> > +void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
->> > +			   int node)
->> > +{
->> > +	struct mem_cgroup *old_memcg;
->> > +	bool in_interrupt;
->> > +	void *ptr;
->> > +
->> > +	/*
->> > +	 * If the memory allocation is performed from an interrupt context,
->> > +	 * the memory cgroup to charge can't be determined from the context
->> > +	 * of the current task. Instead, we charge the memory cgroup, which
->> > +	 * contained the process created the map.
->> > +	 */
->> > +	in_interrupt = in_interrupt();
->> > +	if (in_interrupt)
->> > +		old_memcg = set_active_memcg(map->memcg);
->> > +
->> > +	ptr = kmalloc_node(size, flags, node);
->> > +
->> > +	if (in_interrupt)
->> > +		set_active_memcg(old_memcg);
->> > +
->> > +	return ptr;
->> > +}
->> > +
->> > +void __percpu *bpf_map_alloc_percpu(const struct bpf_map *map, size_t size,
->> > +				    size_t align, gfp_t gfp)
->> > +{
->> > +	struct mem_cgroup *old_memcg;
->> > +	bool in_interrupt;
->> > +	void *ptr;
->> > +
->> > +	/*
->> > +	 * If the memory allocation is performed from an interrupt context,
->> > +	 * the memory cgroup to charge can't be determined from the context
->> > +	 * of the current task. Instead, we charge the memory cgroup, which
->> > +	 * contained the process created the map.
->> > +	 */
->> > +	in_interrupt = in_interrupt();
->> > +	if (in_interrupt)
->> > +		old_memcg = set_active_memcg(map->memcg);
->> > +
->> > +	ptr = __alloc_percpu_gfp(size, align, gfp);
->> > +
->> > +	if (in_interrupt)
->> > +		set_active_memcg(old_memcg);
->> 
->> For this and above bpf_map_kmalloc_node() one, wouldn't it make more sense to
->> perform the temporary memcg unconditionally?
->> 
->> 	old_memcg = set_active_memcg(map->memcg);
->> 	ptr = kmalloc_node(size, flags, node);
->> 	set_active_memcg(old_memcg);
->> 
->> I think the semantics are otherwise a bit weird and the charging unpredictable;
->> this way it would /always/ be accounted against the prog in the memcg that
->> originally created the map.
->> 
->> E.g. maps could be shared between progs attached to, say, XDP/tc where in_interrupt()
->> holds true with progs attached to skb-cgroup/egress where we're still in process
->> context. So some part of the memory is charged against the original map's memcg and
->> some other part against the current process' memcg which seems odd, no? Or, for example,
->> if we start to run a tracing BPF prog which updates state in a BPF map ... that tracing
->> prog now interferes with processes in other memcgs which may not be intentional & could
->> lead to potential failures there as opposed when the tracing prog is not run. My concern
->> is that the semantics are not quite clear and behavior unpredictable compared to always
->> charging against map->memcg.
->> 
->> Similarly, what if an orchestration prog creates dedicated memcg(s) for maps with
->> individual limits ... the assumed behavior (imho) would be that whatever memory is
->> accounted on the map it can be accurately retrieved from there & similarly limits
->> enforced, no? It seems that would not be the case currently.
->> 
->> Thoughts?
->
-> I did consider this option. There are pros and cons. In general we
-> tend to charge the cgroup which actually allocates the memory, and I
-> decided to stick with this rule. I agree, it's fairly easy to come
-> with arguments why always charging the map creator is better. The
-> opposite is also true: it's not clear why bpf is different here. So
-> I'm fine with both options, if there is a wide consensus, I'm happy to
-> switch to the other option. In general, I believe that the current
-> scheme is more flexible: if someone want to pay in advance, they are
-> free to preallocate the map. Otherwise it's up to whoever wants to
-> populate it.
+Found this:
+https://projectacrn.github.io/latest/developer-guides/hld/hld-virtio-devices.html
 
-I think I agree with Daniel here: conceptually the memory used by a map
-ought to belong to that map's memcg. I can see how the other scheme can
-be more flexible, but as Daniel points out it seems like it can lead to
-hard-to-debug errors...
+Supported Virtio Devices
+All the BE virtio drivers are implemented using the ACRN virtio APIs, and the FE drivers are reusing the standard Linux FE virtio drivers. For the devices with FE drivers available in the Linux kernel, they should use standard virtio Vendor ID/Device ID and Subsystem Vendor ID/Subsystem Device ID. For other devices within ACRN, their temporary IDs are listed in the following table.
 
-(Side note: I'm really excited about this work in general! The ulimit
-thing has been a major pain...)
+Table 5 Virtio Devices without existing FE drivers in Linux
+virtio device	Vendor ID	Device ID	Subvendor ID	Subdevice ID
+RPMB	0x8086	0x8601	0x8086	0xFFFF
+HECI	0x8086	0x8602	0x8086	0xFFFE
+audio	0x8086	0x8603	0x8086	0xFFFD
+IPU	0x8086	0x8604	0x8086	0xFFFC
+TSN/AVB	0x8086	0x8605	0x8086	0xFFFB
+hyper_dmabuf	0x8086	0x8606	0x8086	0xFFFA
+HDCP	0x8086	0x8607	0x8086	0xFFF9
+COREU	0x8086	0x8608	0x8086	0xFFF8
+I2C	0x8086	0x860a	0x8086	0xFFF6
+GPIO	0x8086	0x8609	0x8086	0xFFF7
 
--Toke
+so IIUC what you are using is a temporary ID which is fine for
+experimentation but not for production.
+
+Note it does take a couple of weeks for a TC to vote on reserving an ID
+so pls do not delay this too much.
+
+-- 
+MST
 
