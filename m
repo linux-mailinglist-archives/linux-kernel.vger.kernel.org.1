@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7852C4D1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB592C4D22
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:10:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732800AbgKZCHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 21:07:37 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:64874 "EHLO m42-4.mailgun.net"
+        id S1732673AbgKZCKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 21:10:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730921AbgKZCHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 21:07:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606356456; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=eM/OlWlq0U/ubShojsUmq0EBcUvDZy0oih5TzXFbMYE=;
- b=OSTqICcUmu1+gaP9jMx5KpOerJUC5UXkalbfz3+UIdiJVw8aoLpiwICXy00KEuXlSaiNshFN
- JTQEJTvWFbNPS6m8mpT9e/TXeN4KDHV1CZtTXxWBdQyS94f1le7CEUUbcxkqsV9EXYsI0Ucc
- XQtPcijQT2J0yXAmQ8iKwajQHqI=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fbf0de7a5a29b56a162f766 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Nov 2020 02:07:35
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5A8C8C43467; Thu, 26 Nov 2020 02:07:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 75B37C433ED;
-        Thu, 26 Nov 2020 02:07:34 +0000 (UTC)
+        id S1730764AbgKZCKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 21:10:06 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606356605;
+        bh=Nf6CDhay0gejj0HYl6ztIGfNjJHoJrPIjOXPz8yRjNU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=SkrssBiEe2vNh54od3RCrK0fjP6Jms6MUJlUzm8whEGTR6k+I0qaI3x7sot/tSoIt
+         RjVksaKjP0TY/K+ddJfzdnymdkD2fKhyRzf/hDpUT5u1g25CYsM1cCABoEiEtysTQv
+         QZKdxuWA6+6tVdMmmnXLw2E22WKH/GwMncHdDAro=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 26 Nov 2020 10:07:34 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: ufs: Remove unnecessary if condition in
- ufshcd_suspend()
-In-Reply-To: <20201125185300.3394-1-huobean@gmail.com>
-References: <20201125185300.3394-1-huobean@gmail.com>
-Message-ID: <c241a19195be34886cd754d73bd6d168@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next PATCH v5 0/4] net: dsa: mv88e6xxx: serdes link without phy
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160635660574.32694.2697138080235929457.git-patchwork-notify@kernel.org>
+Date:   Thu, 26 Nov 2020 02:10:05 +0000
+References: <20201124043440.28400-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20201124043440.28400-1-chris.packham@alliedtelesis.co.nz>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk, pavana.sharma@digi.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-26 02:53, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> In the case that auto_bkops_enable is false, which means auto bkops
-> has been disabled, so no need to call ufshcd_disable_auto_bkops().
-> 
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 80cbce414678..d169db41ee16 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -8543,11 +8543,9 @@ static int ufshcd_suspend(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  	}
-> 
->  	if (req_dev_pwr_mode != hba->curr_dev_pwr_mode) {
-> -		if ((ufshcd_is_runtime_pm(pm_op) && !hba->auto_bkops_enabled) ||
-> -		    !ufshcd_is_runtime_pm(pm_op)) {
-> +		if (!ufshcd_is_runtime_pm(pm_op))
->  			/* ensure that bkops is disabled */
->  			ufshcd_disable_auto_bkops(hba);
-> -		}
-> 
->  		if (!hba->dev_info.b_rpm_dev_flush_capable) {
->  			ret = ufshcd_set_dev_pwr_mode(hba, req_dev_pwr_mode);
+Hello:
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Tue, 24 Nov 2020 17:34:36 +1300 you wrote:
+> This small series gets my hardware into a working state. The key points are to
+> make sure we don't force the link and that we ask the MAC for the link status.
+> I also have updated my dts to say `phy-mode = "1000base-x";` and `managed =
+> "in-band-status";`
+> 
+> I've dropped the patch for the 88E6123 as it's a distraction and I lack
+> hardware to do any proper testing with it. Earlier versions are on the mailing
+> list if anyone wants to pick it up in the future.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v5,1/4] net: dsa: mv88e6xxx: Don't force link when using in-band-status
+    https://git.kernel.org/netdev/net-next/c/4efe76629036
+  - [net-next,v5,2/4] net: dsa: mv88e6xxx: Support serdes ports on MV88E6097/6095/6185
+    https://git.kernel.org/netdev/net-next/c/f5be107c3338
+  - [net-next,v5,3/4] net: dsa: mv88e6xxx: Add serdes interrupt support for MV88E6097
+    https://git.kernel.org/netdev/net-next/c/5c19bc8b5734
+  - [net-next,v5,4/4] net: dsa: mv88e6xxx: Handle error in serdes_get_regs
+    https://git.kernel.org/netdev/net-next/c/0fd5d79efa4a
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
