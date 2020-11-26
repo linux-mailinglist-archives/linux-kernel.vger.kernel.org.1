@@ -2,179 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667222C550E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5600D2C5510
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390110AbgKZNKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:10:47 -0500
-Received: from mout02.posteo.de ([185.67.36.66]:35967 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389879AbgKZNKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:10:46 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 453872400FF
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:10:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1606396243; bh=JBKgdlVv9ZLDBtqhmp72rJGZIYphVWv0LA7AuWZp+9M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ryFEfqP9D4ZkZQPjiULvd4/Iq8lLUWpGuWAQpNGe0GH1B5PxbQY0Ob1Yv/4gfxkrA
-         FpBE1aaa8BPsBuy3wUjL//lezrU9X/lavV0JxshgmqCfx2r3Ol4pq6Ig2zrRBWaCs8
-         u+82pRAMs0vHgmeeq8eoCzJgJ3Gsm8oxAgPM4hN/BshvXzYt/8dAwr1o3LPZzAqki2
-         QM5jaspRrinoTUhuriK4UqXY9RaTPRQeeGIq49RBDJ0BOBkrWhY4ZW+j8Z5jnUzhnL
-         0lTYcwh7KWWR3cOupOYAZnBeDev6Q4TBYCCjLvK2c8+ywlSzqmo9z6/hVp9BMzyjEZ
-         NynUI7yBLX/+Q==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4ChdRP5XG3z9rxG;
-        Thu, 26 Nov 2020 14:10:41 +0100 (CET)
-Date:   Thu, 26 Nov 2020 14:10:39 +0100
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <maxime@cerno.tech>, linux-kernel@vger.kernel.org,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH 2/2] hwspinlock: add sunxi hardware spinlock support
-Message-ID: <20201126141039.45d56786@monster.powergraphx.local>
-In-Reply-To: <39136764-2b58-f66d-68ea-e1c6b4d74edf@sholland.org>
-References: <cover.1605693132.git.wilken.gottwalt@posteo.net>
-        <149526a0ba8d18ebb68baa24e95d946ede90b4c0.1605693132.git.wilken.gottwalt@posteo.net>
-        <20201118153733.jgiokn6jkwu6rv6c@gilmour.lan>
-        <20201118203624.7221ba8b@monster.powergraphx.local>
-        <20201119071523.5cbpgy2cpo5cmuev@gilmour.lan>
-        <20201119111343.74956eae@monster.powergraphx.local>
-        <20201120164231.nmzxe5scwnfoyy3o@gilmour>
-        <20201121122255.GB22987@debian>
-        <20201121164418.hxrxzgob7whgzkpj@gilmour>
-        <20201123193206.0b2d1b6d@monster.powergraphx.local>
-        <39136764-2b58-f66d-68ea-e1c6b4d74edf@sholland.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2390119AbgKZNK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:10:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389879AbgKZNK6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 08:10:58 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD67C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:10:57 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id o9so2899418ejg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:10:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VKmIqZxCI8NVNA08P3qFAEJ1Jf8cRqufRdNCDIZ8fmI=;
+        b=SMFhwQdd/FUceNer8PQ4A+C0KcPg5v+hnaZYigmnjSV8yKrE2GzjQRueVFtM4TpbAu
+         cmgbHAmic236ekNfRN2SUTghmEpHOsVLpdhH2Hf7H547+oqvX5AimGGKaFbUwWGzCbQo
+         nZhET82cRJ7aqa0UPkZ2WFUs9pqcNJD9ykyIoOhGp1Bqx3SjPib/lQj7JOeF/XVqTXir
+         FYxYbGKGgOO7yyapNz8hLdnTOzllOCz3My/wC3xKmDzkIux73aV9gLJ0l4tcwSSHhMQi
+         aL9yUPuMLetaZi2JSrwTASrRCLdqyhPiHRAifNqqXUjimWUI6kgkiMIvIpW7FrVMUVwo
+         nVYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VKmIqZxCI8NVNA08P3qFAEJ1Jf8cRqufRdNCDIZ8fmI=;
+        b=MamlwSGS2PWPpzWQoHwsMuMnlYWQuooDJac3lRXsKxp8elYXEfl4Xzan6501hh58V/
+         3y9+HL951t9tr2tNnLDGSAzTjlbUdce43dmLrj6rX+jXcsN0zjCV00HTgL8Ta4Z3oApD
+         e+YUTnEPykgXsxpiqBmIrF2K24FhBh49hDGbf9nYt4x3LFkLfveP56HsaDLaYabSf7JE
+         eiARH75+CJbwsy4eh5Q0JFKClIHmJE7YiaDTWh/8dBLrmQATlsbgX0hzI5faBfUfQtG8
+         hkTQ/fk8qTL4upvpwFDtPJzUvw45Vgny0U6Q3uoWT6hCy27fT1uR1I+6jprA1k3H21eU
+         747w==
+X-Gm-Message-State: AOAM532rG8uLh80tKAmoJfM7Qcbsitmq8waA6FLgYLeXnZ4u2iXF7hSf
+        199D1Mm+DX0pJd+f8Xb5B4K3MQ==
+X-Google-Smtp-Source: ABdhPJw3QZVqa9++OYXekeackK5FEka69eO0OrwCcnysj0j9rTL7Tx65KKp0fmd09Pk05BtFrnneFA==
+X-Received: by 2002:a17:906:a052:: with SMTP id bg18mr2616021ejb.550.1606396256167;
+        Thu, 26 Nov 2020 05:10:56 -0800 (PST)
+Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id f16sm3193187edc.44.2020.11.26.05.10.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Nov 2020 05:10:55 -0800 (PST)
+Subject: Re: [PATCH v2] ARM: zynq: Add Z-turn board V5
+To:     agriveaux@deutnet.info, michal.simek@xilinx.com, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20201126070516.85882-1-agriveaux@deutnet.info>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <88764538-1c7e-ca7f-e138-08090091ae3f@monstr.eu>
+Date:   Thu, 26 Nov 2020 14:10:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201126070516.85882-1-agriveaux@deutnet.info>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 21:35:52 -0600
-Samuel Holland <samuel@sholland.org> wrote:
 
-> On 11/23/20 12:32 PM, Wilken Gottwalt wrote:
-> > On Sat, 21 Nov 2020 17:44:18 +0100
-> > Maxime Ripard <maxime@cerno.tech> wrote:
-> > 
-> >> On Sat, Nov 21, 2020 at 08:22:55PM +0800, fuyao wrote:
-> >>> On Fri, Nov 20, 2020 at 05:42:31PM +0100, Maxime Ripard wrote:
-> >>>> Hi,
-> >>>>
-> >>>> On Thu, Nov 19, 2020 at 11:13:43AM +0100, Wilken Gottwalt wrote:
-> >>>>> On Thu, 19 Nov 2020 08:15:23 +0100
-> >>>>> Maxime Ripard <maxime@cerno.tech> wrote:
-> >>>>>>> can you help me here a bit? I still try to figure out how to do patch sets
-> >>>>>>> properly. Some kernel submitting documentation says everything goes into the
-> >>>>>>> coverletter and other documentation only tells how to split the patches. So
-> >>>>>>> what would be the right way? A quick example based on my patch set would be
-> >>>>>>> really helpful.
-> >>>>>>
-> >>>>>> I mean, the split between your patches and so on is good, you got that right
-> >>>>>>
-> >>>>>> The thing I wanted better details on is the commit log itself, so the
-> >>>>>> message attached to that patch.
-> >>>>>
-> >>>>> Ah yes, I think I got it now. So basically add a nice summary of the coverletter
-> >>>>> there.
-> >>>>
-> >>>> Yes, a bit more context as well. Eventually, this should be the
-> >>>> motivation on why this patch is useful. So what it can be used for, what
-> >>>> are the challenges, how it was tested, etc.
-> >>>>
-> >>>> The cover letter is usually here more to provide some meta-context: what
-> >>>> you expect from the maintainers / reviewers if it's an RFC, if there's
-> >>>> any feature missing or that could be added later on, etc.
-> >>>>
-> >>>>>>>> Most importantly, this hwspinlock is used to synchronize the ARM cores
-> >>>>>>>> and the ARISC. How did you test this driver?
-> >>>>>>>
-> >>>>>>> Yes, you are right, I should have mentioned this. I have a simple test kernel
-> >>>>>>> module for this. But I must admit, testing the ARISC is very hard and I have
-> >>>>>>> no real idea how to do it. Testing the hwspinlocks in general seems to work
-> >>>>>>> with my test kernel module, but I'm not sure if this is really sufficient. I
-> >>>>>>> can provide the code for it if you like. What would be the best way? Github?
-> >>>>>>> Just mailing a patch?
-> >>>>>>>
-> >>>>>>> The test module produces these results:
-> >>>>>>>
-> >>>>>>> # insmod /lib/modules/5.9.8/kernel/drivers/hwspinlock/sunxi_hwspinlock_test.ko 
-> >>>>>>> [   45.395672] [init] sunxi hwspinlock test driver start
-> >>>>>>> [   45.400775] [init] start test locks
-> >>>>>>> [   45.404263] [run ] testing 32 locks
-> >>>>>>> [   45.407804] [test] testing lock 0 -----
-> >>>>>>> [   45.411652] [test] taking lock attempt #0 succeded
-> >>>>>>> [   45.416438] [test] try taken lock attempt #0
-> >>>>>>> [   45.420735] [test] unlock/take attempt #0
-> >>>>>>> [   45.424752] [test] taking lock attempt #1 succeded
-> >>>>>>> [   45.429556] [test] try taken lock attempt #1
-> >>>>>>> [   45.433823] [test] unlock/take attempt #1
-> >>>>>>> [   45.437862] [test] testing lock 1 -----
-> >>>>>>
-> >>>>>> That doesn't really test for contention though, and dealing with
-> >>>>>> contention is mostly what this hardware is about. Could you make a small
-> >>>>>> test with crust to see if when the arisc has taken the lock, the ARM
-> >>>>>> cores can't take it?
-> >>>>>
-> >>>>> So the best solution would be to write a bare metal program that runs on the
-> >>>>> arisc and can be triggered from the linux side (the test kernel module) to take
-> >>>>> a spinlock ... or at least take spinlocks periodically for a while and watch it
-> >>>>> on the linux side. Okay, I think I can do this. Though, I have to dig through
-> >>>>> all this new stuff first.
-> >>>>
-> >>>> It doesn't have to be super complicated, just a loop that takes a lock,
-> >>>> sleeps for some time, and releases the lock should be enough to at least
-> >>>> validate that the lock is actually working
-> >>>>
-> >>>
-> >>> I think the difficulty is the bare metal program in arsic has little
-> >>> documentation.
-> >>
-> >> crust has mostly figured it out:
-> >> https://github.com/crust-firmware/crust
-> > 
-> > I actually have serious trouble to get crust running. It compiles for H2+/H3, but
-> > I can't figure out if it runs at all. I will switch to a H5 based device which is
+
+On 26. 11. 20 8:05, agriveaux@deutnet.info wrote:
+> From: Alexandre GRIVEAUX <agriveaux@deutnet.info>
 > 
-> Crust does not yet support the H2+/H3 (it is active WIP). H5 should work
-> well.
+> Adding Z-turn board V5 to resolve the change between:
 > 
-> > confirmed to work. If I see this correctly crust is doing nothing with spinlocks
-> > yet, so I may end up also working on crust, adding the spinlocks there too. Don't> know yet how
-> > long I will take to understand every detail, but I will
-> report
-> > progress.
+> "Z-TURNBOARD_schematic.pdf" schematics state version 1 to 4 has Atheros AR8035
+> "Z-Turn_Board_sch_V15_20160303.pdf" schematics state version 5 has Micrel KSZ9031
 > 
-> Correct. There is currently no hwspinlock driver in crust. For testing,
-> you can poke MMIO from the main loop, near the call to scpi_poll() in
-> common/system.c. You can use the timeout.h functions for timing.
-
-Thank you very much for the hint. I already have a very simple test running
-were crust changes the state of the first spinlock every 250ms (with the high
-timeout it is much easier to catch).
- 
-> If you want to write a full driver, I would like to know how you expect
-> to use the hwspinlocks. Allocating the locks has to be coordinated among
-> all of the users: Linux, U-Boot, crust, any other ARISC firmware, etc.
-
-I will think about this if the Linux hwspinlock driver is in an acceptable
-state and I can easily show, that it works. I want to create more complex
-tests first.
-
-Can I actualy print messages from crust to the debug uart while linux runs?
-It doesn't matter if the messages get scrambled while both write to the uart.
-It would be just nice to see this playing out in "realtime".
-
-> > Greetings,
-> > Wilken
+> Changes v1 -> v2: Instead of using new board, the v2 using a common devicetree
+> for z-turn boards (zynq-zturn-common.dtsi) and for each board a specific DT
 > 
-> Cheers,
-> Samuel
+> Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
+> ---
+>  arch/arm/boot/dts/Makefile               |   1 +
+>  arch/arm/boot/dts/zynq-zturn-common.dtsi | 112 +++++++++++++++++++++++
+>  arch/arm/boot/dts/zynq-zturn-v5.dts      |  15 +++
+>  arch/arm/boot/dts/zynq-zturn.dts         | 101 +-------------------
+>  4 files changed, 129 insertions(+), 100 deletions(-)
+>  create mode 100644 arch/arm/boot/dts/zynq-zturn-common.dtsi
+>  create mode 100644 arch/arm/boot/dts/zynq-zturn-v5.dts
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index ce66ffd5a1bb..3de85fe42f76 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1302,6 +1302,7 @@ dtb-$(CONFIG_ARCH_ZYNQ) += \
+>  	zynq-zc770-xm013.dtb \
+>  	zynq-zed.dtb \
+>  	zynq-zturn.dtb \
+> +	zynq-zturn-v5.dtb \
+>  	zynq-zybo.dtb \
+>  	zynq-zybo-z7.dtb
+>  dtb-$(CONFIG_MACH_ARMADA_370) += \
+> diff --git a/arch/arm/boot/dts/zynq-zturn-common.dtsi b/arch/arm/boot/dts/zynq-zturn-common.dtsi
+> new file mode 100644
+> index 000000000000..84f3c85c5bab
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/zynq-zturn-common.dtsi
+> @@ -0,0 +1,112 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + *  Copyright (C) 2015 Andrea Merello <adnrea.merello@gmail.com>
+> + *  Copyright (C) 2017 Alexander Graf <agraf@suse.de>
+> + *
+> + *  Based on zynq-zed.dts which is:
+> + *  Copyright (C) 2011 - 2014 Xilinx
+> + *  Copyright (C) 2012 National Instruments Corp.
+> + *
+> + */
+> +
+> +/dts-v1/;
+> +/include/ "zynq-7000.dtsi"
+> +
+> +/ {
+> +	compatible = "xlnx,zynq-7000";
+> +
+> +	aliases {
+> +		ethernet0 = &gem0;
+> +		serial0 = &uart1;
+> +		serial1 = &uart0;
+> +		mmc0 = &sdhci0;
+> +	};
+> +
+> +	memory@0 {
+> +		device_type = "memory";
+> +		reg = <0x0 0x40000000>;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	gpio-leds {
+> +		compatible = "gpio-leds";
+> +		usr-led1 {
+> +			label = "usr-led1";
+> +			gpios = <&gpio0 0x0 0x1>;
+> +			default-state = "off";
+> +		};
+> +
+> +		usr-led2 {
+> +			label = "usr-led2";
+> +			gpios = <&gpio0 0x9 0x1>;
+> +			default-state = "off";
+> +		};
+> +	};
+> +
+> +	gpio-keys {
+> +		compatible = "gpio-keys";
+> +		autorepeat;
+> +		K1 {
+> +			label = "K1";
+> +			gpios = <&gpio0 0x32 0x1>;
+> +			linux,code = <0x66>;
+> +			wakeup-source;
+> +			autorepeat;
+> +		};
+> +	};
+> +};
+> +
+> +&clkc {
+> +	ps-clk-frequency = <33333333>;
+> +};
+> +
+> +&gem0 {
+> +	status = "okay";
+> +	phy-mode = "rgmii-id";
+> +	phy-handle = <&ethernet_phy>;
+> +
+> +	ethernet_phy: ethernet-phy@0 {
+> +	};
+> +};
+> +
+> +&sdhci0 {
+> +	status = "okay";
+> +};
+> +
+> +&uart0 {
+> +	status = "okay";
+> +};
+> +
+> +&uart1 {
+> +	status = "okay";
+> +};
+> +
+> +&usb0 {
+> +	status = "okay";
+> +	dr_mode = "host";
+> +};
+> +
+> +&can0 {
+> +	status = "okay";
+> +};
+> +
+> +&i2c0 {
+> +	status = "okay";
+> +	clock-frequency = <400000>;
+> +
+> +	stlm75@49 {
+> +		status = "okay";
+> +		compatible = "lm75";
+> +		reg = <0x49>;
+> +	};
+> +
+> +	accelerometer@53 {
+> +		compatible = "adi,adxl345", "adxl345", "adi,adxl34x", "adxl34x";
+> +		reg = <0x53>;
+> +		interrupt-parent = <&intc>;
+> +		interrupts = <0x0 0x1e 0x4>;
+> +	};
+> +};
+> diff --git a/arch/arm/boot/dts/zynq-zturn-v5.dts b/arch/arm/boot/dts/zynq-zturn-v5.dts
+> new file mode 100644
+> index 000000000000..536632a09a25
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/zynq-zturn-v5.dts
+> @@ -0,0 +1,15 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/dts-v1/;
+> +/include/ "zynq-zturn-common.dtsi"
+> +
+> +/ {
+> +	model = "Zynq Z-Turn MYIR Board V5";
+> +	compatible = "myir,zynq-zturn-v5", "xlnx,zynq-7000";
+> +};
+> +
+> +&gem0 {
+> +	ethernet_phy: ethernet-phy@0 {
+> +		reg = <0x3>;
+> +	};
+> +};
+> diff --git a/arch/arm/boot/dts/zynq-zturn.dts b/arch/arm/boot/dts/zynq-zturn.dts
+> index 5ec616ebca08..620b24a25e06 100644
+> --- a/arch/arm/boot/dts/zynq-zturn.dts
+> +++ b/arch/arm/boot/dts/zynq-zturn.dts
+> @@ -1,114 +1,15 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -/*
+> - *  Copyright (C) 2015 Andrea Merello <adnrea.merello@gmail.com>
+> - *  Copyright (C) 2017 Alexander Graf <agraf@suse.de>
+> - *
+> - *  Based on zynq-zed.dts which is:
+> - *  Copyright (C) 2011 - 2014 Xilinx
+> - *  Copyright (C) 2012 National Instruments Corp.
+> - *
+> - */
+>  
+>  /dts-v1/;
+> -/include/ "zynq-7000.dtsi"
+> +/include/ "zynq-zturn-common.dtsi"
+>  
+>  / {
+>  	model = "Zynq Z-Turn MYIR Board";
+>  	compatible = "myir,zynq-zturn", "xlnx,zynq-7000";
+> -
+> -	aliases {
+> -		ethernet0 = &gem0;
+> -		serial0 = &uart1;
+> -		serial1 = &uart0;
+> -		mmc0 = &sdhci0;
+> -	};
+> -
+> -	memory@0 {
+> -		device_type = "memory";
+> -		reg = <0x0 0x40000000>;
+> -	};
+> -
+> -	chosen {
+> -		stdout-path = "serial0:115200n8";
+> -	};
+> -
+> -	gpio-leds {
+> -		compatible = "gpio-leds";
+> -		usr-led1 {
+> -			label = "usr-led1";
+> -			gpios = <&gpio0 0x0 0x1>;
+> -			default-state = "off";
+> -		};
+> -
+> -		usr-led2 {
+> -			label = "usr-led2";
+> -			gpios = <&gpio0 0x9 0x1>;
+> -			default-state = "off";
+> -		};
+> -	};
+> -
+> -	gpio-keys {
+> -		compatible = "gpio-keys";
+> -		autorepeat;
+> -		K1 {
+> -			label = "K1";
+> -			gpios = <&gpio0 0x32 0x1>;
+> -			linux,code = <0x66>;
+> -			wakeup-source;
+> -			autorepeat;
+> -		};
+> -	};
+> -};
+> -
+> -&clkc {
+> -	ps-clk-frequency = <33333333>;
+>  };
+>  
+>  &gem0 {
+> -	status = "okay";
+> -	phy-mode = "rgmii-id";
+> -	phy-handle = <&ethernet_phy>;
+> -
+>  	ethernet_phy: ethernet-phy@0 {
+>  		reg = <0x0>;
+>  	};
+>  };
+> -
+> -&sdhci0 {
+> -	status = "okay";
+> -};
+> -
+> -&uart0 {
+> -	status = "okay";
+> -};
+> -
+> -&uart1 {
+> -	status = "okay";
+> -};
+> -
+> -&usb0 {
+> -	status = "okay";
+> -	dr_mode = "host";
+> -};
+> -
+> -&can0 {
+> -	status = "okay";
+> -};
+> -
+> -&i2c0 {
+> -	status = "okay";
+> -	clock-frequency = <400000>;
+> -
+> -	stlm75@49 {
+> -		status = "okay";
+> -		compatible = "lm75";
+> -		reg = <0x49>;
+> -	};
+> -
+> -	accelerometer@53 {
+> -		compatible = "adi,adxl345", "adxl345", "adi,adxl34x", "adxl34x";
+> -		reg = <0x53>;
+> -		interrupt-parent = <&intc>;
+> -		interrupts = <0x0 0x1e 0x4>;
+> -	};
+> -};
+> 
+
+Applied.
+
+Thanks,
+Michal
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
 
