@@ -2,118 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75C62C530D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FABD2C534C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389261AbgKZLdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 06:33:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:57076 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389236AbgKZLdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 06:33:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE0641478;
-        Thu, 26 Nov 2020 03:33:43 -0800 (PST)
-Received: from [10.37.12.45] (unknown [10.37.12.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C824B3F71F;
-        Thu, 26 Nov 2020 03:33:41 -0800 (PST)
-Subject: Re: [PATCH 1/2] syscalls: avoid time() using __cvdso_gettimeofday in
- use-level's VDSO
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Cyril Hrubis <chrubis@suse.cz>, Li Wang <liwang@redhat.com>
-Cc:     ltp@lists.linux.it, Chunyu Hu <chuhu@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Carlos O'Donell <carlos@redhat.com>
-References: <20201123083137.11575-1-liwang@redhat.com>
- <20201124153837.GA24470@yuki.lan> <875z5tllih.fsf@nanos.tec.linutronix.de>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <c77c4306-6a7e-01f5-c338-ec1c8ef2c0c6@arm.com>
-Date:   Thu, 26 Nov 2020 11:36:54 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <875z5tllih.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2387582AbgKZLxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 06:53:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387504AbgKZLxE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 06:53:04 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2042BC0613D4;
+        Thu, 26 Nov 2020 03:53:04 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id t3so1545530pgi.11;
+        Thu, 26 Nov 2020 03:53:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=NB+hgipCPxO33R/oYTaZ2+/pLeRXsls+8i2W5CCQlic=;
+        b=rOn0dxA51INWEnuKSagvPNzYlpdrzneszl/wskmyYiHXKCmxBmwmtLkeF0QiS83U8+
+         jZK8NA1Ai61bqtsL8jOa5T8FBzUhHeJk7jezzWuOdFEeWOxEp0E9+5C4f5xiVvNZvFWy
+         IvqgZU1JPoI9Gp8D2Xlw/y9qGNzYAtT6582pTEpfitmXzzvzsyNOY0C+b1j7mB+PHtFW
+         IFwP2xxsCmcESQGIYVO4X7brWGrDyddQYuB1sVDdQgWSfMHxjynER3ytoydGx5YimljD
+         cy2q40LWCON4pNQK4m0E//kHylReXgGPnoMdGHs3mnwpdet2xRyJtBhjAiOmbAUp2urP
+         fYtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NB+hgipCPxO33R/oYTaZ2+/pLeRXsls+8i2W5CCQlic=;
+        b=A36+r4SrpDhqTHjVQEGC4yz7jiayudnPiOfKnWEI1D1iyd5HtzKccl4vm1emIyO2n2
+         yamywFQ2kcAgwwC/ByZBK54UVetydHQFCnAZG2sB8zO82RV3OU0CxBhzTeMOl/Ykdpeh
+         Mkb6humLs1KU63YIETdt2EUl5xBHnRJV2vSbBGIHqBhnwr+uY+yxAXaGGjKRz3JuyCPt
+         A60g91xbNAu7SSwgWlLA9+GUwZmKnBwCUKEYyxUuwWyzwafUQAf0p1BeQA2WuJ1qcRZ+
+         ay7xpfkin8GtjEaUoi+14mxULV2GMKQqrecj9Num0kI5TOdPpGLu196VhfbEg9MNdUyY
+         eHfw==
+X-Gm-Message-State: AOAM531//R+W8QaXc+YJ9KNTB8pAoiwddBFvR4zul5akjbdblzqwrsZb
+        jfqhzW9NLvMvilvbrg7Yipg=
+X-Google-Smtp-Source: ABdhPJwI4qEZTwkiIzlmjBp7u3mUWxJmwVlkf8Qv2IMVV4FtZaxOg35VzCo7nPoGVxyDmT05TH7fVw==
+X-Received: by 2002:a63:2885:: with SMTP id o127mr2265597pgo.391.1606391583571;
+        Thu, 26 Nov 2020 03:53:03 -0800 (PST)
+Received: from localhost.localdomain ([101.10.31.14])
+        by smtp.gmail.com with ESMTPSA id r4sm4721617pgs.54.2020.11.26.03.52.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 26 Nov 2020 03:53:03 -0800 (PST)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: [PATCH v9 0/6] leds: mt6360: Add LED driver for MT6360
+Date:   Thu, 26 Nov 2020 19:37:28 +0800
+Message-Id: <1606390654-6075-1-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas.
+This patch series add MT6360 LED support contains driver and binding document
 
-On 11/25/20 11:32 AM, Thomas Gleixner wrote:
-[...]
+Gene Chen (6)
+ leds: flash: Add flash registration with undefined CONFIG_LEDS_CLASS_FLASH
+ leds: flash: Fix multicolor registration no-ops by return 0
+ dt-bindings: leds: Add LED_COLOR_ID_MOONLIGHT definitions
+ dt-bindings: leds: common: Increase LED_COLOR_ID_* maximum size
+ dt-bindings: leds: Add bindings for MT6360 LED
+ leds: mt6360: Add LED driver for MT6360
 
->>> Here we propose to use '__NR_time' to invoke syscall directly that makes
->>> test all get real seconds via ktime_get_real_second.
-> 
-> This is a general problem and not really just for this particular test
-> case.
-> 
-> Due to the internal implementation of ktime_get_real_seconds(), which is
-> a 2038 safe replacement for the former get_seconds() function, this
-> accumulation issue can be observed. (time(2) via syscall and newer
-> versions of VDSO use the same mechanism).
-> 
->      clock_gettime(CLOCK_REALTIME, &ts);
->      sec = time();
->      assert(sec >= ts.tv_sec);
-> 
-> That assert can trigger for two reasons:
-> 
->  1) Clock was set between the clock_gettime() and time().
-> 
->  2) The clock has advanced far enough that:
-> 
->     timekeeper.tv_nsec + (clock_now_ns() - last_update_ns) > NSEC_PER_SEC
-> 
-> #1 is just a property of clock REALTIME. There is nothing we can do
->    about that.
-> 
-> #2 is due to the optimized get_seconds()/time() access which avoids to
->    read the clock. This can happen on bare metal as well, but is far
->    more likely to be exposed on virt.
-> 
-> The same problem exists for CLOCK_XXX vs. CLOCK_XXX_COARSE
-> 
->      clock_gettime(CLOCK_XXX, &ts);
->      clock_gettime(CLOCK_XXX_COARSE, &tc);
->      assert(tc.tv_sec >= ts.tv_sec);
-> 
-> The _COARSE variants return their associated timekeeper.tv_sec,tv_nsec
-> pair without reading the clock. Same as #2 above just extended to clock
-> MONOTONIC.
-> 
-> There is no way to fix this except giving up on the fast accessors and
-> make everything take the slow path and read the clock, which might make
-> a lot of people unhappy.
-> 
-> For clock REALTIME #1 is anyway an issue, so I think documenting this
-> proper is the right thing to do.
-> 
-> Thoughts?
->
+ Documentation/devicetree/bindings/leds/common.yaml      |    2 
+ Documentation/devicetree/bindings/leds/leds-mt6360.yaml |  164 +++
+ drivers/leds/Kconfig                                    |   13 
+ drivers/leds/Makefile                                   |    1 
+ drivers/leds/leds-mt6360.c                              |  811 ++++++++++++++++
+ include/dt-bindings/leds/common.h                       |    1 
+ include/linux/led-class-flash.h                         |   42 
+ include/linux/led-class-multicolor.h                    |   42 
+ 8 files changed, 1039 insertions(+), 37 deletions(-)
 
-I completely agree with your analysis and the fact that we should document this
-information.
+changelogs between v1 & v2
+ - add led driver with mfd
 
-My proposal would be to use either the vDSO document present in the kernel [1]
-or the man pages for time(2) and clock_gettime(2). Probably the second would be
-more accessible to user space developers.
+changelogs between v2 & v3
+ - independent add led driver
+ - add dt-binding document
+ - refactor macros definition for easy to debug
+ - parse device tree by fwnode
+ - use devm*ext to register led class device
 
-[1] Documentation/ABI/stable/vdso
+changelogs between v3 & v4
+ - fix binding document description
+ - use GENMASK and add unit postfix to definition
+ - isink register led class device
 
-> Thanks,
-> 
->         tglx
-> 
+changelogs between v4 & v5
+ - change rgb isink to multicolor control
+ - add binding reference to mfd yaml
 
--- 
-Regards,
-Vincenzo
+changelogs between v5 & v6
+ - Use DT to decide RGB LED is multicolor device or indicator device only
+
+changelogs between v6 & v7
+ - Add binding multicolor device sample code
+ - Add flash ops mutex lock
+ - Remove V4L2 init with indicator device
+
+changelogs between v7 & v8
+ - Add mutex for led fault get ops
+ - Fix flash and multicolor no-ops return 0
+ - Add LED_FUNCTION_MOONLIGHT
+
+changelogs between v8 & v9
+ - reuse api in flash and multicolor header
+
