@@ -2,177 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDD22C51F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9C22C5204
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387881AbgKZKTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:19:02 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:36268 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387747AbgKZKTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:19:01 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606385941; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=OjEE2fQz+mShxwnREioiMJDo4aCYGC1JU+LVyLbVZKI=; b=d5Vp1f5xgjjItJUuJ/OTYXBs1E06wr5toHJKoTZ+5W4t3FeXJkO/98Sv2eSp26UFQmR6dtlX
- MAn2ieV/tL+Dvdo11qVEB0Bf2b82TSqnBQXztrvyLcs4h8IRJNcPupflQAb0Q8Q+/P1DKOSo
- 4dCP/AU+c29ramtdyurRp+txeqs=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fbf810e4146c5eefd1be52f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Nov 2020 10:18:54
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 36990C43461; Thu, 26 Nov 2020 10:18:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6C9A8C433ED;
-        Thu, 26 Nov 2020 10:18:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6C9A8C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     bjorn.andersson@linaro.org, andy.gross@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        tkjos@google.com, dianders@chromium.org, ilina@codeaurora.org,
-        lsrao@codeaurora.org, Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH 3/3] soc: qcom: rpmh: Conditionally check lockdep_assert_irqs_disabled()
-Date:   Thu, 26 Nov 2020 15:48:18 +0530
-Message-Id: <1606385898-8609-4-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606385898-8609-1-git-send-email-mkshah@codeaurora.org>
-References: <1606385898-8609-1-git-send-email-mkshah@codeaurora.org>
+        id S2387901AbgKZK2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:28:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727468AbgKZK2R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 05:28:17 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D3CC0613D4;
+        Thu, 26 Nov 2020 02:28:16 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id E3D7E1F45936
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-integrity@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Helen Koike <helen.koike@collabora.com>,
+        Duncan Laurie <dlaurie@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>, kernel@collabora.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] char: tpm: add i2c driver for cr50
+In-Reply-To: <6409c32842ab080d91d1851a58f7ec7bb4524336.camel@collabora.com>
+References: <20201120172345.4040187-1-adrian.ratiu@collabora.com>
+ <20201123220643.GA16777@kernel.org>
+ <f36c43f81968a9ce2f3342e5c2c069722d8bfc7f.camel@collabora.com>
+ <7edf80b70e4dd67d6f95c796c1ae26df9e51ba8d.camel@kernel.org>
+ <6409c32842ab080d91d1851a58f7ec7bb4524336.camel@collabora.com>
+Date:   Thu, 26 Nov 2020 12:30:00 +0200
+Message-ID: <87d000xvfb.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lockdep_assert_irqs_disabled() was added to check rpmh_flush()
-can only be invoked when irqs are disabled, this is true for
-APPS RSC as the last CPU going to deepest low power mode is
-writing sleep and wake TCSes.
+On Thu, 26 Nov 2020, Ezequiel Garcia <ezequiel@collabora.com> 
+wrote:
+> On Thu, 2020-11-26 at 05:30 +0200, Jarkko Sakkinen wrote: 
+>> On Tue, 2020-11-24 at 10:14 -0300, Ezequiel Garcia wrote: 
+>> > Hi Jarkko,  Thanks for your review.   On Tue, 2020-11-24 at 
+>> > 00:06 +0200, Jarkko Sakkinen wrote: 
+>> > > On Fri, Nov 20, 2020 at 07:23:45PM +0200, Adrian Ratiu 
+>> > > wrote: 
+>> > > > From: "dlaurie@chromium.org" <dlaurie@chromium.org>  Add 
+>> > > > TPM 2.0 compatible I2C interface for chips with cr50 
+>> > > > firmware.   The firmware running on the currently 
+>> > > > supported H1 MCU requires a special driver to handle its 
+>> > > > specific protocol, and this makes it unsuitable to use 
+>> > > > tpm_tis_core_* and instead it must implement the 
+>> > > > underlying TPM protocol similar to the other I2C TPM 
+>> > > > drivers.   - All 4 byes of status register must be 
+>> > > > read/written at once.  - FIFO and burst count is limited 
+>> > > > to 63 and must be drained by AP.  - Provides an interrupt 
+>> > > > to indicate when read response data is ready and when the 
+>> > > > TPM is finished processing write data.   This driver is 
+>> > > > based on the existing infineon I2C TPM driver, which most 
+>> > > > closely matches the cr50 i2c protocol behavior.   Cc: 
+>> > > > Helen Koike <helen.koike@collabora.com> Signed-off-by: 
+>> > > > Duncan Laurie <dlaurie@chromium.org> 
+>> > > > [swboyd@chromium.org: Depend on i2c even if it's a 
+>> > > > module, replace boilier plate with SPDX tag, drop 
+>> > > > asm/byteorder.h include, simplify return from probe] 
+>> > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org> 
+>> > > > Signed-off-by: Fabien Lahoudere 
+>> > > > <fabien.lahoudere@collabora.com> Signed-off-by: Adrian 
+>> > > > Ratiu <adrian.ratiu@collabora.com> --- Changes in v2: 
+>> > > >   - Various small fixes all over (reorder includes, 
+>> > > >   MAX_BUFSIZE, 
+>> > > > comments, etc) 
+>> > > >   - Reworked return values of i2c_wait_tpm_ready() to fix 
+>> > > >   timeout 
+>> > > > mis-handling so ret == 0 now means success, the wait 
+>> > > > period jiffies is ignored because that number is 
+>> > > > meaningless and return a proper timeout error in case 
+>> > > > jiffies == 0. 
+>> > > >   - Make i2c default to 1 message per transfer (requested 
+>> > > >   by 
+>> > > > Helen) 
+>> > > >   - Move -EIO error reporting to transfer function to 
+>> > > >   cleanup 
+>> > > > transfer() itself and its R/W callers 
+>> > > >   - Remove magic value hardcodings and introduce enum 
+>> > > > force_release.   v1 posted at 
+>> > > > https://lkml.org/lkml/2020/2/25/349  Applies on 
+>> > > > next-20201120, tested on Chromebook EVE.  --- 
+>> > > >  drivers/char/tpm/Kconfig            |  10 + 
+>> > > >  drivers/char/tpm/Makefile           |   2 + 
+>> > > >  drivers/char/tpm/tpm_tis_i2c_cr50.c | 768 
+>> > > > ++++++++++++++++++++++++++++ 
+>> > > >  3 files changed, 780 insertions(+) create mode 100644 
+>> > > >  drivers/char/tpm/tpm_tis_i2c_cr50.c 
+>> > > >  diff --git a/drivers/char/tpm/Kconfig 
+>> > > > b/drivers/char/tpm/Kconfig index 
+>> > > > a18c314da211..4308f9ca7a43 100644 --- 
+>> > > > a/drivers/char/tpm/Kconfig +++ b/drivers/char/tpm/Kconfig 
+>> > > > @@ -86,6 +86,16 @@ config TCG_TIS_SYNQUACER 
+>> > > >           To compile this driver as a module, choose  M 
+>> > > >           here; the module will be called 
+>> > > >           tpm_tis_synquacer. 
+>> > > >   
+>> > > > +config TCG_TIS_I2C_CR50 +       tristate "TPM Interface 
+>> > > > Specification 2.0 Interface (I2C - CR50)" +       depends 
+>> > > > on I2C +       select TCG_CR50 +       help + 
+>> > > > This is a driver for the Google cr50 I2C TPM interface 
+>> > > > which is a +         custom microcontroller and requires 
+>> > > > a custom i2c protocol interface +         to handle the 
+>> > > > limitations of the hardware.  To compile this driver + 
+>> > > > as a module, choose M here; the module will be called 
+>> > > > tcg_tis_i2c_cr50.  + 
+>> > > >  config TCG_TIS_I2C_ATMEL 
+>> > > >         tristate "TPM Interface Specification 1.2 
+>> > > >         Interface (I2C 
+>> > > > - Atmel)" 
+>> > > >         depends on I2C 
+>> > > > diff --git a/drivers/char/tpm/Makefile 
+>> > > > b/drivers/char/tpm/Makefile index 
+>> > > > 84db4fb3a9c9..66d39ea6bd10 100644 --- 
+>> > > > a/drivers/char/tpm/Makefile +++ 
+>> > > > b/drivers/char/tpm/Makefile @@ -27,6 +27,8 @@ 
+>> > > > obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o 
+>> > > >  tpm_tis_spi-y := tpm_tis_spi_main.o 
+>> > > >  tpm_tis_spi-$(CONFIG_TCG_TIS_SPI_CR50) += 
+>> > > >  tpm_tis_spi_cr50.o  
+>> > > > +obj-$(CONFIG_TCG_TIS_I2C_CR50) += tpm_tis_i2c_cr50.o + 
+>> > > >  obj-$(CONFIG_TCG_TIS_I2C_ATMEL) += tpm_i2c_atmel.o 
+>> > > >  obj-$(CONFIG_TCG_TIS_I2C_INFINEON) += tpm_i2c_infineon.o 
+>> > > >  obj-$(CONFIG_TCG_TIS_I2C_NUVOTON) += tpm_i2c_nuvoton.o 
+>> > > > diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c 
+>> > > > b/drivers/char/tpm/tpm_tis_i2c_cr50.c new file mode 
+>> > > > 100644 index 000000000000..37555dafdca0 --- /dev/null +++ 
+>> > > > b/drivers/char/tpm/tpm_tis_i2c_cr50.c @@ -0,0 +1,768 @@ 
+>> > > > +// SPDX-License-Identifier: GPL-2.0 +/* + * Copyright 
+>> > > > 2016 Google Inc.  + * + * Based on Linux Kernel TPM 
+>> > > > driver by + * Peter Huewe <peter.huewe@infineon.com> + * 
+>> > > > Copyright (C) 2011 Infineon Technologies + */ + +/* + * 
+>> > > > cr50 is a firmware for H1 secure modules that requires 
+>> > > > special + * handling for the I2C interface.  + * + * - 
+>> > > > Use an interrupt for transaction status instead of 
+>> > > > hardcoded delays + * - Must use write+wait+read read 
+>> > > > protocol + * - All 4 bytes of status register must be 
+>> > > > read/written at once + * - Burst count max is 63 bytes, 
+>> > > > and burst count behaves + *   slightly differently than 
+>> > > > other I2C TPMs + * - When reading from FIFO the full 
+>> > > > burstcnt must be read + *   instead of just reading 
+>> > > > header and determining the remainder + */ + +#include 
+>> > > > <linux/acpi.h> +#include <linux/completion.h> +#include 
+>> > > > <linux/i2c.h> +#include <linux/interrupt.h> +#include 
+>> > > > <linux/module.h> +#include <linux/pm.h> +#include 
+>> > > > <linux/slab.h> +#include <linux/wait.h> + +#include 
+>> > > > "tpm_tis_core.h" + +#define CR50_MAX_BUFSIZE       64 
+>> > > > +#define CR50_TIMEOUT_SHORT_MS  2       /* Short timeout 
+>> > > > during transactions */ +#define CR50_TIMEOUT_NOIRQ_MS  20 
+>> > > > /* Timeout for TPM ready without IRQ */ +#define 
+>> > > > CR50_I2C_DID_VID       0x00281ae0L +#define 
+>> > > > CR50_I2C_MAX_RETRIES   3       /* Max retries due to I2C 
+>> > > > errors */ +#define CR50_I2C_RETRY_DELAY_LO        55 
+>> > > > /* Min usecs between retries on I2C */ +#define 
+>> > > > CR50_I2C_RETRY_DELAY_HI        65      /* Max usecs 
+>> > > > between retries on I2C */ 
+>> > >  CR50_ -> TPM_CR50_  
+>> > > > + +#define TPM_I2C_ACCESS(l)      (0x0000 | ((l) << 4)) 
+>> > > > +#define TPM_I2C_STS(l)         (0x0001 | ((l) << 4)) 
+>> > > > +#define TPM_I2C_DATA_FIFO(l)   (0x0005 | ((l) << 4)) 
+>> > > > +#define TPM_I2C_DID_VID(l)     (0x0006 | ((l) << 4)) + 
+>> > > > +struct priv_data { +       int irq; +       int 
+>> > > > locality; +       struct completion tpm_ready; +       u8 
+>> > > > buf[CR50_MAX_BUFSIZE]; +}; 
+>> > >  tpm_i2c_cr50_priv_data  
+>> > > > + +enum force_release { +       CR50_NO_FORCE = 0x0, + 
+>> > > > CR50_FORCE = 0x1, +}; 
+>> > >  I'd just   #define TPM_I2C_CR50_NO_FORCE   0 #define 
+>> > > TPM_I2C_CR50_FORCE      1  
+>> >  A proper enumerated type has advantages over a preprocessor 
+>> > macro: even if the compiler won't warn you, static analyzers 
+>> > can warn about a misuse. 
+>>  Why don't you just use "bool", "true" and "false"? I ignored 
+>> that this has nothing to do with the hardware last time.  
+> 
+> Well, boolean parameters are a known anti-pattern [1]. 
+> 
+> [1] https://people.mpi-inf.mpg.de/~jblanche/api-design.pdf 
 
-However for RSCs that support solver mode, drivers can invoke
-rpmh_write_sleep_and_wake() to immediately write cached sleep
-and wake sets to TCSes from any CPU. Conditionally check if RSC
-controller supports 'HW solver' mode then do not check for irqs
-disabled as such RSCs can write sleepand wake TCSes at any point.
+Funny because that's what I wrote a few days ago in my v3 WIP 
+branch, #defines and a bool function parameter. XD
 
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
----
- drivers/soc/qcom/rpmh-internal.h |  5 +++++
- drivers/soc/qcom/rpmh-rsc.c      |  3 +++
- drivers/soc/qcom/rpmh.c          | 26 ++++++++++++++++++++++----
- 3 files changed, 30 insertions(+), 4 deletions(-)
+As Jarkko correctly observed these values are unrelated to the HW, 
+we just need to distinguish FORCE vs NO_FORCE and IMO any method 
+will do just as well for such a small and obvious use case.
 
-diff --git a/drivers/soc/qcom/rpmh-internal.h b/drivers/soc/qcom/rpmh-internal.h
-index 79486d6..39fa3c5 100644
---- a/drivers/soc/qcom/rpmh-internal.h
-+++ b/drivers/soc/qcom/rpmh-internal.h
-@@ -17,6 +17,9 @@
- #define MAX_TCS_NR			(MAX_TCS_PER_TYPE * TCS_TYPE_NR)
- #define MAX_TCS_SLOTS			(MAX_CMDS_PER_TCS * MAX_TCS_PER_TYPE)
- 
-+/* CTRLR specific flags */
-+#define SOLVER_PRESENT			1
-+
- struct rsc_drv;
- 
- /**
-@@ -78,6 +81,7 @@ struct rpmh_request {
-  * @cache_lock: synchronize access to the cache data
-  * @dirty: was the cache updated since flush
-  * @in_solver_mode: Controller is busy in solver mode
-+ * @flags: Controller specific flags
-  * @batch_cache: Cache sleep and wake requests sent as batch
-  */
- struct rpmh_ctrlr {
-@@ -85,6 +89,7 @@ struct rpmh_ctrlr {
- 	spinlock_t cache_lock;
- 	bool dirty;
- 	bool in_solver_mode;
-+	u32 flags;
- 	struct list_head batch_cache;
- };
- 
-diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index ffb4ca7..4caaddf 100644
---- a/drivers/soc/qcom/rpmh-rsc.c
-+++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -1031,6 +1031,9 @@ static int rpmh_rsc_probe(struct platform_device *pdev)
- 	if (!solver_config) {
- 		drv->rsc_pm.notifier_call = rpmh_rsc_cpu_pm_callback;
- 		cpu_pm_register_notifier(&drv->rsc_pm);
-+		drv->client.flags &= ~SOLVER_PRESENT;
-+	} else {
-+		drv->client.flags |= SOLVER_PRESENT;
- 	}
- 
- 	/* Enable the active TCS to send requests immediately */
-diff --git a/drivers/soc/qcom/rpmh.c b/drivers/soc/qcom/rpmh.c
-index 725b8f0..604d511 100644
---- a/drivers/soc/qcom/rpmh.c
-+++ b/drivers/soc/qcom/rpmh.c
-@@ -83,6 +83,9 @@ static int check_ctrlr_state(struct rpmh_ctrlr *ctrlr, enum rpmh_state state)
- 	if (state != RPMH_ACTIVE_ONLY_STATE)
- 		return ret;
- 
-+	if (!(ctrlr->flags & SOLVER_PRESENT))
-+		return ret;
-+
- 	/* Do not allow sending active votes when in solver mode */
- 	spin_lock(&ctrlr->cache_lock);
- 	if (ctrlr->in_solver_mode)
-@@ -468,12 +471,24 @@ int rpmh_flush(struct rpmh_ctrlr *ctrlr)
- 	struct cache_req *p;
- 	int ret = 0;
- 
--	lockdep_assert_irqs_disabled();
-+	/*
-+	 * For RSC that don't have solver mode,
-+	 * rpmh_flush() is only called when we think we're running
-+	 * on the last CPU with irqs_disabled.
-+	 *
-+	 * For RSC that have solver mode,
-+	 * rpmh_flush() can be invoked with irqs enabled by any CPU.
-+	 *
-+	 * Conditionally check for irqs_disabled only when solver mode
-+	 * is not available.
-+	 */
-+
-+	if (!(ctrlr->flags & SOLVER_PRESENT))
-+		lockdep_assert_irqs_disabled();
- 
- 	/*
--	 * Currently rpmh_flush() is only called when we think we're running
--	 * on the last processor.  If the lock is busy it means another
--	 * processor is up and it's better to abort than spin.
-+	 * If the lock is busy it means another transaction is on going,
-+	 * in such case it's better to abort than spin.
- 	 */
- 	if (!spin_trylock(&ctrlr->cache_lock))
- 		return -EBUSY;
-@@ -568,6 +583,9 @@ int rpmh_mode_solver_set(const struct device *dev, bool enable)
- 	int ret;
- 	struct rpmh_ctrlr *ctrlr = get_rpmh_ctrlr(dev);
- 
-+	if (!(ctrlr->flags & SOLVER_PRESENT))
-+		return -EINVAL;
-+
- 	spin_lock(&ctrlr->cache_lock);
- 	ret = rpmh_rsc_mode_solver_set(ctrlr_to_drv(ctrlr), enable);
- 	if (!ret)
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+So based on the arguments given, I'll stop bikeshedding and just 
+use enums :)
 
+Thank you both,
+Adrian
