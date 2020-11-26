@@ -2,146 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B9A2C5873
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:47:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8762B2C587D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391241AbgKZPqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:46:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50968 "EHLO mail.kernel.org"
+        id S2391331AbgKZPtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:49:25 -0500
+Received: from foss.arm.com ([217.140.110.172]:37326 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727481AbgKZPqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:46:32 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E297321D1A;
-        Thu, 26 Nov 2020 15:46:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606405591;
-        bh=tMFcEUcsugJhclfbAIgWqCPLPAsTFSEY51zdjOIJUlk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=I7kkzcw63pBQbWrwysnZwfmyX3Y5XbhKwnookQG5c97fHnU3XubUUw5S0vb6UGx2g
-         xWghVD9OX57oo/9J9IpBjeV0TUobnmYUEEXAwh8Lq7sCEUk+qkOWrHqZs+qKOLIdQ3
-         Hvz6k1nbgAfIqkH4U1j++phqGg/GyMYmx1Xs+ESA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 83AF03520A96; Thu, 26 Nov 2020 07:46:30 -0800 (PST)
-Date:   Thu, 26 Nov 2020 07:46:30 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: kdump always hangs in rcu_barrier() -> wait_for_completion()
-Message-ID: <20201126154630.GR1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
+        id S1730181AbgKZPtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 10:49:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A539531B;
+        Thu, 26 Nov 2020 07:49:23 -0800 (PST)
+Received: from [10.57.59.159] (unknown [10.57.59.159])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9BC053F23F;
+        Thu, 26 Nov 2020 07:49:20 -0800 (PST)
+Subject: Re: [PATCH v4 08/24] iommu/io-pgtable-arm-v7s: Extend PA34 for
+ MediaTek
+To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, Greg Kroah-Hartman <gregkh@google.com>,
+        kernel-team@android.com
+References: <20201111123838.15682-1-yong.wu@mediatek.com>
+ <20201111123838.15682-9-yong.wu@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <a85692d8-d514-8c52-e2c7-53c7fc357c66@arm.com>
+Date:   Thu, 26 Nov 2020 15:49:19 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201111123838.15682-9-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 04:56:33AM +0000, Dexuan Cui wrote:
-> Hi,
-> I happened to hit a kdump hang issue in a Linux VM running on some
-> Hyper-V host. Please see the attached log: the kdump kernel always hangs,
-> even if I configure only 1 virtual CPU to the VM.
-> 
-> I firstly hit the issue in RHEL 8.3's 4.18.x kernel, but later I found that 
-> the latest upstream v5.10-rc5 also has the same issue (at least the
-> symptom is exactly the same), so I dug into v5.10-rc5 and found that the
-> kdump kernel always hangs in kernel_init() -> mark_readonly() ->
-> rcu_barrier() -> wait_for_completion(&rcu_state.barrier_completion).
-> 
-> Let's take the 1-vCPU case for example (refer to the attached log): in the
-> below code, somehow rcu_segcblist_n_cbs() returns true, so the call
-> smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1) increases
-> the counter by 1, and hence later the counter is still 1 after the
-> atomic_sub_and_test(), and the complete() is not called.
-> 
-> static void rcu_barrier_func(void *cpu_in)
-> {
->         ...
->         if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
->                 atomic_inc(&rcu_state.barrier_cpu_count);
->         } else {
->         ...
-> }
-> 
-> void rcu_barrier(void)
-> {
->         ...
->         atomic_set(&rcu_state.barrier_cpu_count, 2);
->         ...
->         for_each_possible_cpu(cpu) {
->                 rdp = per_cpu_ptr(&rcu_data, cpu);
->                 ...
->                 if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
->                         ...
->                         smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
->                         ...
->                 }
->         }
->         ...
->         if (atomic_sub_and_test(2, &rcu_state.barrier_cpu_count))
->                 complete(&rcu_state.barrier_completion);
-> 
->         ...
->         wait_for_completion(&rcu_state.barrier_completion);
-> 
-> Sorry for my ignorance of RCU -- I'm not sure why the rcu_segcblist_n_cbs()
-> returns 1 here. In the normal kernel, it returns 0, so the normal kernel does not
-> hang.
+On 2020-11-11 12:38, Yong Wu wrote:
+> MediaTek extend the bit5 in lvl1 and lvl2 descriptor as PA34.
 
-The rcu_segcblist_n_cbs() function returns non-zero because something
-invoked call_rcu() some time previously.  The ftrace facility (or just
-a printk) should help you work out where that call_rcu() is located.
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-> Note: in the case of kdump kernel, if I remove the kernel parameter
-> console=ttyS0 OR if I build the kernel with CONFIG_HZ=250, the issue can
-> no longer reproduce. Currently my kernel uses CONFIG_HZ=1000 and I use
-> console=ttyS0, so I'm able to reproduce the isue every time.
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> Acked-by: Will Deacon <will@kernel.org>
+> ---
+>   drivers/iommu/io-pgtable-arm-v7s.c | 9 +++++++--
+>   drivers/iommu/mtk_iommu.c          | 2 +-
+>   include/linux/io-pgtable.h         | 4 ++--
+>   3 files changed, 10 insertions(+), 5 deletions(-)
 > 
-> Note: the same kernel binary can not reproduce the issue when the VM
-> runs on another Hyper-V host.
+> diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
+> index e880745ab1e8..4d0aa079470f 100644
+> --- a/drivers/iommu/io-pgtable-arm-v7s.c
+> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
+> @@ -112,9 +112,10 @@
+>   #define ARM_V7S_TEX_MASK		0x7
+>   #define ARM_V7S_ATTR_TEX(val)		(((val) & ARM_V7S_TEX_MASK) << ARM_V7S_TEX_SHIFT)
+>   
+> -/* MediaTek extend the two bits for PA 32bit/33bit */
+> +/* MediaTek extend the bits below for PA 32bit/33bit/34bit */
+>   #define ARM_V7S_ATTR_MTK_PA_BIT32	BIT(9)
+>   #define ARM_V7S_ATTR_MTK_PA_BIT33	BIT(4)
+> +#define ARM_V7S_ATTR_MTK_PA_BIT34	BIT(5)
+>   
+>   /* *well, except for TEX on level 2 large pages, of course :( */
+>   #define ARM_V7S_CONT_PAGE_TEX_SHIFT	6
+> @@ -194,6 +195,8 @@ static arm_v7s_iopte paddr_to_iopte(phys_addr_t paddr, int lvl,
+>   		pte |= ARM_V7S_ATTR_MTK_PA_BIT32;
+>   	if (paddr & BIT_ULL(33))
+>   		pte |= ARM_V7S_ATTR_MTK_PA_BIT33;
+> +	if (paddr & BIT_ULL(34))
+> +		pte |= ARM_V7S_ATTR_MTK_PA_BIT34;
+>   	return pte;
+>   }
+>   
+> @@ -218,6 +221,8 @@ static phys_addr_t iopte_to_paddr(arm_v7s_iopte pte, int lvl,
+>   		paddr |= BIT_ULL(32);
+>   	if (pte & ARM_V7S_ATTR_MTK_PA_BIT33)
+>   		paddr |= BIT_ULL(33);
+> +	if (pte & ARM_V7S_ATTR_MTK_PA_BIT34)
+> +		paddr |= BIT_ULL(34);
+>   	return paddr;
+>   }
+>   
+> @@ -754,7 +759,7 @@ static struct io_pgtable *arm_v7s_alloc_pgtable(struct io_pgtable_cfg *cfg,
+>   	if (cfg->ias > ARM_V7S_ADDR_BITS)
+>   		return NULL;
+>   
+> -	if (cfg->oas > (arm_v7s_is_mtk_enabled(cfg) ? 34 : ARM_V7S_ADDR_BITS))
+> +	if (cfg->oas > (arm_v7s_is_mtk_enabled(cfg) ? 35 : ARM_V7S_ADDR_BITS))
+>   		return NULL;
+>   
+>   	if (cfg->quirks & ~(IO_PGTABLE_QUIRK_ARM_NS |
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index 6451d83753e1..ec3c87d4b172 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -320,7 +320,7 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom)
+>   			IO_PGTABLE_QUIRK_ARM_MTK_EXT,
+>   		.pgsize_bitmap = mtk_iommu_ops.pgsize_bitmap,
+>   		.ias = 32,
+> -		.oas = 34,
+> +		.oas = 35,
+>   		.tlb = &mtk_iommu_flush_ops,
+>   		.iommu_dev = data->dev,
+>   	};
+> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+> index 4cde111e425b..1ae0757f4f94 100644
+> --- a/include/linux/io-pgtable.h
+> +++ b/include/linux/io-pgtable.h
+> @@ -77,8 +77,8 @@ struct io_pgtable_cfg {
+>   	 *	TLB maintenance when mapping as well as when unmapping.
+>   	 *
+>   	 * IO_PGTABLE_QUIRK_ARM_MTK_EXT: (ARM v7s format) MediaTek IOMMUs extend
+> -	 *	to support up to 34 bits PA where the bit32 and bit33 are
+> -	 *	encoded in the bit9 and bit4 of the PTE respectively.
+> +	 *	to support up to 35 bits PA where the bit32, bit33 and bit34 are
+> +	 *	encoded in the bit9, bit4 and bit5 of the PTE respectively.
+>   	 *
+>   	 * IO_PGTABLE_QUIRK_NON_STRICT: Skip issuing synchronous leaf TLBIs
+>   	 *	on unmap, for DMA domains using the flush queue mechanism for
 > 
-> It looks there is some kind of race condition?
-
-Quite possibly.  Perhaps there is some code somewhere in the kernel that
-invokes call_rcu() after some number of jiffies, in which case reducing
-CONFIG_HZ would delay that call_rcu() invocation until after this call
-to rcu_barrier().  Perhaps that call_rcu() is also associated with the
-console=ttyS0, so that it is delayed sufficiently with reduced CONFIG_HZ
-and missing entirely without console=ttyS0.
-
-> Looking forward to your insights!
-> 
-> I'm happy to test any patch or enable more tracing, if necessary. Thanks!
-
-My best guess is that the underlying bug is that you are invoking
-rcu_barrier() before the RCU grace-period kthread has been created.
-This means that RCU grace periods cannot complete, which in turn means
-that if there has been even one invocation of call_rcu() since boot,
-rcu_barrier() cannot complete, which is what you are in fact seeing.
-Please note that it is perfectly legal to invoke call_rcu() very early in
-the boot process, as in even before the call to rcu_init().  Therefore,
-if this is the case, the bug is the early call to rcu_barrier(), not
-the early calls to call_rcu().
-
-To check this, at the beginning of rcu_barrier(), check the value of
-rcu_state.gp_kthread.  If my guess is correct, it will be NULL.
-
-Another possibility is that rcu_state.gp_kthread is non-NULL, but that
-something else is preventing RCU grace periods from completing, but in
-that case you should see RCU CPU stall warnings.  Unless of course they
-have been disabled.
-
-Please let me know what you find!
-
-							Thanx, Paul
