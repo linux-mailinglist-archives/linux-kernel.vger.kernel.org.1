@@ -2,111 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468CA2C4E22
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 06:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3092C4E28
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 06:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727958AbgKZFBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 00:01:32 -0500
-Received: from mail-eopbgr110130.outbound.protection.outlook.com ([40.107.11.130]:17565
-        "EHLO GBR01-CWL-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725846AbgKZFBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 00:01:31 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zg8IlNqjt/qW+NipdHelqjdbWWb3z+H6kbOQuQJFznh1mAUWE/v+VgYWDVnXBLVJXFaPXRN2jwFoDg9R11QJ7yh3g4sV6JW9DwUk3+iwmAW0RcLYi2SlxnN1lhfT+x+M6vkHsDbnXqSrhXgxBC58ru4mq9yKKwQ9umVhHKyh5wZwIWmGunRgOay9Ev1sk1daCgZskU0bZPu/sA0IGMQiFyXOGNB+isq1OhHhS7FzJzyid5oDIyb6gfQh8Q4HFPoH2iZ7qKvxYPyz1ljWv2tZbaK8NUki4IIA8OGh2WGrCClQsofowX0ccII+gAff/gaNXj2oD3YMeuoJDS7eZUi45g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qHYrsIFQP6xLkBg6mg8RoMXOyIYUJyyshQMi5sz0Bb8=;
- b=gGrNQ1nm/2Hdq9nXFq0lV+fya5oc9VmdGgn2PtJL2yFz5SiilotYxGyHJnrJBC2UC7ihkFKlLVPHxcT22Znkr8HUHZeZRozwMRU3k1UpQwNUxYSIZsvokvYJexK7Li3qc/S3a8xwGTCj6ungUgXrBDwn3QTSNwlei+l4pudmfwz9Nw3+M0jA0BzYC6RiToMdDraSamVQzVgTGsL2jfD3rMIo6QiJnx5dq071C8lBH/P0+MorNFnDLIGAA/7T+63dD4VWc/38QQcAh60xWIYsoukY4SX3vyt1Gj9p3nSmlG0Mg0fKaHO9u4fo0mh/LClP/bsl/m6Joo93fpwQM1XPZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=purelifi.com; dmarc=pass action=none header.from=purelifi.com;
- dkim=pass header.d=purelifi.com; arc=none
+        id S2387702AbgKZFEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 00:04:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725846AbgKZFEs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 00:04:48 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F18EC0613D4;
+        Wed, 25 Nov 2020 21:04:46 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id s8so679652wrw.10;
+        Wed, 25 Nov 2020 21:04:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=purevlc.onmicrosoft.com; s=selector2-purevlc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qHYrsIFQP6xLkBg6mg8RoMXOyIYUJyyshQMi5sz0Bb8=;
- b=qB0bxE2zBXn69m0UzGj733pYaVbEcTSEkGfUfJbYcNCEbVF4pL9bO0IVDO5U0WwZcEMYfyaLT1zysG3wIEm1i8wvgKYSX756YBhmxaX1WtneYcMB7yNsa9QzZWg5ZdpglRB04okXSKB/2adWFq8qDq++jm93HaPTdnDaAGYScyk=
-Received: from CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:3a::14)
- by CWLP265MB0435.GBRP265.PROD.OUTLOOK.COM (2603:10a6:401:18::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Thu, 26 Nov
- 2020 05:01:28 +0000
-Received: from CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM
- ([fe80::f8b6:b3c:d651:2dde]) by CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM
- ([fe80::f8b6:b3c:d651:2dde%7]) with mapi id 15.20.3611.022; Thu, 26 Nov 2020
- 05:01:28 +0000
-From:   Srinivasan Raju <srini.raju@purelifi.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-CC:     Mostafa Afgani <mostafa.afgani@purelifi.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS (WIRELESS)" 
-        <linux-wireless@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
-Subject: Re: [PATCH] [v7] wireless: Initial driver submission for pureLiFi STA
- devices
-Thread-Topic: [PATCH] [v7] wireless: Initial driver submission for pureLiFi
- STA devices
-Thread-Index: AQHWu/oh8T+esyecpUerAB1FdPgUnqnXaMIAgAKA/Dg=
-Date:   Thu, 26 Nov 2020 05:01:28 +0000
-Message-ID: <CWXP265MB17998453F1460D55FA667E51E0F90@CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM>
-References: <20201116092253.1302196-1-srini.raju@purelifi.com>,<20201124144448.4E95EC43460@smtp.codeaurora.org>
-In-Reply-To: <20201124144448.4E95EC43460@smtp.codeaurora.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none
- header.from=purelifi.com;
-x-originating-ip: [106.203.70.227]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2963f816-652f-4b58-5fe5-08d891c8553f
-x-ms-traffictypediagnostic: CWLP265MB0435:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CWLP265MB0435CEE6696F848D39FF200FE0F90@CWLP265MB0435.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NBJOmsUTv1thfZFUL6qILglOXyFQehkhrhs4gcUwnawbMw77C/egmvZWphDG00URS3NZUzLMEEt5+Gq6YDWSDneGb0q7UI/q7BfUp65muxzg5YKtHxLEgNWimJunJeJbnwkCNB80qX0FJW/Z2SLAQtFWX0yG2tMSZwfUYaYTH98fUBypkxvG659NDCr3g07MbFOnceJJ6fM3kROaJKZmVaDe9s4421tj5VMc0VrtJaZ66ahPzDsuIS5dVvJhoXVmFEDHWECYqHxwGaJEqJplLN6xBdlHkOkwx4HC9Ii3nmVnOVs/TTdeZzOAB4L2uQBZe3X3Id1sllr9nMTA+8iqefpnVQDNfhnY9LyAEsHipmOvlEYDcdtlSwvFkVgykSLAuFbaUvX0oYaMeHWN9IWXfw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(6029001)(4636009)(396003)(366004)(376002)(39830400003)(346002)(136003)(186003)(8936002)(4326008)(71200400001)(83380400001)(26005)(7696005)(76116006)(6916009)(478600001)(33656002)(2906002)(86362001)(9686003)(4744005)(55016002)(966005)(66946007)(52536014)(64756008)(316002)(8676002)(6506007)(66476007)(66446008)(54906003)(5660300002)(66556008)(55236004)(91956017);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: mbqPLqMYYctQ6WYmhBYEWf0qoHtnbjGeeiI7fGaqsxd7GbXcfH3N49b3jj9WgD1+/pQFGc2JmDHhlELLZofeU2BwapjXR9zlXBdbLuw3WugCFkUs0xS9X8DMFCJfhIoqqzlzy6x9aNHFqzLOB+40zsQ3qlukuV/upRTrZir/KW1UFvBI7tR19t/TPjKR/0uZWnVFxzRL0UbGobx4WYa618JBs3Hjeu6f1d2D8ibklqNZCEYKm2aG1T6OLuAXevR10VXhSdmTepWHn2vjElgTV/QMIP1Gxk41G+sH1wILoA5JtTZ91o3MIm19QBUWgzX9lm7LQuwW62epJpxnfH8rIp53I7k9ECv0L+g5OADjQtLCo6vEdGYLyi6xMyn7OZ0sm9WlmLyhbCJFBpaOgw4l3jqaIhUcjnU32aRY+zz07+F5vTbl4kB3cSXb9ia+tz8DtUjztvU454vokUe/CTWutP3j0xv8sKcgjDq9Ca+N/yzKAl6L1vnbU1k9Fsdzx9g+FTh5elavjo81ei2vaW+kX12ojAkFbIQ3RCtup2P1pRX5pRK84nulc4ABs81wX8rrqiuT71aSxXa63g7e3K3ljnhh7Sfx6D5NATuBtYwr0lS8+N85mpMxMsRq1Nok26hV7XqTZxC88ZqqMa/upS9MRrFG3ysW6m0fGAX8+HYAO+TII4Jr1Z0LctL/dw9Ts2k2lChTlRV/lMBDA3h+2UNJboXHvFsoH469KbEff+EzeK01wvcLklr/3qP+EkDKIW757UV3q3ZOkiQmaV0aJnjaxT7/gENy+yRegC+55U0+fo6lwwH5gfn03VJMDa1c3Tn7/G+h54HD2jed2ioT+sAcNsPwoLPyCJ0h6yimD8YIs1ig2KQ1HfyJlFITsfibwz9ky74o2XmacPL/oPERcCX7HA==
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: purelifi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2963f816-652f-4b58-5fe5-08d891c8553f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2020 05:01:28.1722
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5cf4eba2-7b8f-4236-bed4-a2ac41f1a6dc
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +4HFlZNe34CZH+/6dJguqbbvy4UL7JNoEi8J+AgBqN5//dRPNpDbes9Svn561eeLiN19ZhH98RaFZ5fs2SbJNA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB0435
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=DZ3C1e84Q51GI7F4JZus9ZaT3v1v7zEgkxNXr+KQkIE=;
+        b=qRzUAnvibDyG1v45yf4awEtyY4M41A1MkQvjh3IiaHm+2w0hZLnJ406gnL9qRv2nwh
+         dtXk4A419YSZPrmyX13LGf0PkqKD/YwSwKPhq9zFHUREGjcWW6eEtkqOozWWLlOKCz/b
+         SZHJOPFySoJLdh2n9e67pnJVxx2uk1yia5p010gZjVvN2i7+qHv5OJqauT1m3iqL+kqM
+         f47A7pcFyA6E/MqszVcNCjYfGWc+FeuCmWEm6dNWjNcDhJoo6QPpn7fC29253t7c/g+k
+         IQPA9go7CL940ZApPEhwZfpA3WjHhfLRoJdXwXRjdSC3vNowmal/p+0aHMAb7CNl03re
+         j0TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=DZ3C1e84Q51GI7F4JZus9ZaT3v1v7zEgkxNXr+KQkIE=;
+        b=nbk7kMS8pww8zaLJhYRzF49+GkzuBEDWYzr7lm67PcCgG5pkb4H0nz4NCQJUFQqna6
+         eBalFthpQWHS9qK94xS/a+7Nn+lsYzbHHYIGGwgh7jYezNWmtrsJlgzbmsmC4Pr7eZF+
+         WArKb0pyyJA1pkWs2rwwZZS99DAezxnqViVpUOE1m8zUT/BrAhJrmP91a/0XHgOGL5qf
+         quH2Vbyjz9u62h63W7Dp/8XSSNRoVifubgDm3WVv0D2Ye3WfTXgO3uePKH/a1mZ4fbGs
+         +At2aEye1TVvW4HC49CpEyJoo1jG59/SQRrt0snKMa2pua0rZIXMvZUJG6b9yt4vhQZd
+         KO4w==
+X-Gm-Message-State: AOAM5300KhypFpp2JR3pvNXdRAY5/QIcy68yENpEcL6NIwTRJ6TIUOlQ
+        v+g2+1Vi2gp286nlNJC4S1I=
+X-Google-Smtp-Source: ABdhPJz5FV82f9hJOxdF8i2ckFRs3psGrGy50FNjKBTIMkp+fjjqtzNm8ST5kzQ7r7KGx185ANvUrQ==
+X-Received: by 2002:adf:e444:: with SMTP id t4mr1493356wrm.152.1606367085211;
+        Wed, 25 Nov 2020 21:04:45 -0800 (PST)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id g186sm7625369wmf.2.2020.11.25.21.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 21:04:44 -0800 (PST)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH] arm64: dts: meson: add KHAMSIN IR remote node to SML5442TW
+Date:   Thu, 26 Nov 2020 05:04:40 +0000
+Message-Id: <20201126050440.6273-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=0A=
-=0A=
-> I haven't had a chance to review this yet but we have some documentation =
-for new drivers:=0A=
-=0A=
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpa=
-tches#new_driver=0A=
-=0A=
-> Is the firmware publically available?=0A=
-=0A=
-Thanks Kalle, We will make the firmware available in our website for public=
- access and share the details.=0A=
-=0A=
-Regards=0A=
-Srini=0A=
-=0A=
+Set the IR keymap to the KHAMSIN remote shipped with the SML5442TW.
+
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+The rc-khamsin keymap is queued (or in the process of being picked) via the
+media tree [0] so it would be nice to add this within the 5.11 cycle.
+
+[0] https://patchwork.linuxtv.org/project/linux-media/patch/20201125161413.GA915@gofer.mess.org/
+
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905d-sml5442tw.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-sml5442tw.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-sml5442tw.dts
+index 0b95e9ecbef0..ad6d72254150 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-sml5442tw.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-sml5442tw.dts
+@@ -63,6 +63,10 @@
+ 	pinctrl-names = "default";
+ };
+ 
++&ir {
++        linux,rc-map-name = "rc-khamsin";
++};
++
+ /* This is connected to the Bluetooth module: */
+ &uart_A {
+ 	status = "okay";
+-- 
+2.17.1
+
