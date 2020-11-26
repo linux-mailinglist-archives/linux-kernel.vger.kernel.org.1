@@ -2,150 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51F72C5CAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 20:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8EA2C5CAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 20:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405272AbgKZTod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 14:44:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404817AbgKZToc (ORCPT
+        id S2405279AbgKZTop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 14:44:45 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13526 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404817AbgKZTop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 14:44:32 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EB5C0613D4;
-        Thu, 26 Nov 2020 11:44:32 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id l1so1585890pld.5;
-        Thu, 26 Nov 2020 11:44:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Q6+9AIQzu0mTDLScA3MxPbaf0ZqBfnQEsRT0YPfOhCI=;
-        b=qVRgH1mwe7J6UzYQ1wpjkCDsLdQB+YVsBhT3D8L4Q5icrtxvb15LScWNQVxf1OzDaV
-         X3UfMmXevUP3Dvqh6UXhaBg0WN3tAXbGgxJ/GjiupKzhzgG876TYg0s9w3obocRxlbOr
-         XTfRM397m+6wmd1Auky0T3GYJDBvHUei+G2gGyx0v0TVP++Tl4PKiSqYtw3+OEKCFv8U
-         ugr/JmEE3BvLYeub3BZjJqpwo0oCsfACLYaeqaw9TEU6/yzJTqzzCIgzWgazilFnOQly
-         TncW1IOLb81Il5/hSQ7HoLEhfgsr4keCzzfmHvoHVwQxNn5OfNqpXJ/ZuGFfd2pe+dhn
-         QSGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Q6+9AIQzu0mTDLScA3MxPbaf0ZqBfnQEsRT0YPfOhCI=;
-        b=Ox8bxgxHnG84rQtXcaMgqBKyXLjuH/0YFIj36vbBltpzqTkPDRifgOYiFqodAtwMUk
-         yzbsCUrV1Cua0oW0qhPoA584FppcbbDuqjO5YZOp5NosqzWHmL5Iaj4cGuPy1nIwgeYa
-         0HsmrQyzWoo79kxngagW34T35L3U7uBxFiGfL+lCwg+X8NF33ngtP/GAFmmv+VvNFKwO
-         g8N4PBc662ElT71fI/L15n7VkoolxFqWUx2Lup1X/zE3EyMj2tHRs453YsynG1hqbusR
-         AAsMeKVWrh1A9PTLOoOBcOBWMZK29lM3ddlafo6fCKNlKEoExyvLymC21aHXO54kzWd9
-         L+Mg==
-X-Gm-Message-State: AOAM531FwYdNmVsArRPgCY4w0qb34vUWLwLHqjRb4/WuR4FmpY7OOWkp
-        M2JhjgtY/dOcpQF3HxFe0Wkj++WA4pL9pA==
-X-Google-Smtp-Source: ABdhPJyZcFztd27CIvTj/jb8ApeL8DTTbBv4qpHudzYYDnxlPBzORfbl0Rof+N0aAHK0TH5O5c5F8A==
-X-Received: by 2002:a17:902:b415:b029:d6:ec35:755b with SMTP id x21-20020a170902b415b02900d6ec35755bmr3887204plr.47.1606419871852;
-        Thu, 26 Nov 2020 11:44:31 -0800 (PST)
-Received: from [192.168.1.155] (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
-        by smtp.gmail.com with ESMTPSA id kb12sm7325265pjb.2.2020.11.26.11.44.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 11:44:30 -0800 (PST)
-Message-ID: <4f88f25c78d82e980f5fa7e686b00ad5b20031c5.camel@gmail.com>
-Subject: Re: [PATCH 1/3] mwifiex: disable ps_mode explicitly by default
- instead
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
-Date:   Fri, 27 Nov 2020 04:44:24 +0900
-In-Reply-To: <CA+ASDXMUdYHTKphxFwcAim79N_DJiQFHFN0gDZsPB4rMHyxxXw@mail.gmail.com>
-References: <20201028142433.18501-1-kitakar@gmail.com>
-         <20201028142433.18501-2-kitakar@gmail.com>
-         <CA+ASDXMfuqy=kCECktP_mYm9cAapXukeLhe=1i3uPbTu9wS2Qw@mail.gmail.com>
-         <8fa12bfff1cc30b655934e303cad78ae75b0fcde.camel@gmail.com>
-         <CA+ASDXMUdYHTKphxFwcAim79N_DJiQFHFN0gDZsPB4rMHyxxXw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        Thu, 26 Nov 2020 14:44:45 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AQJWDHs053867;
+        Thu, 26 Nov 2020 14:44:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=k/m6V5N+h4BhWiV5k+PX3XPFR5YAIshVlQ2vREx5FiI=;
+ b=mBw4mpILpQjiz6L53h9J7NnQ4UqorK4GV3o5qVtO/yHD5TczsnaBna0GTW7XxW88r49r
+ NkeOV+zygiiGbog1EtwUJcS2NORak23lJdtKJY+O3poAr8np8lLFmtoqEK/ZcgFpHYHl
+ SasdusOEgWduRDw78kWsB/eseeKXXqOWl4n3ScAylkgakKO9+fiy4DJptL8hQI/nd+T2
+ ZZWRP5ScCaUgyDTksIUfBPMhGf0pTTwsISoSCH2xxoQ3R3+JmT14Ro9atxEJ5WI/7++/
+ 427fwJcxlKrux2X4ls8yMDvQiiYiMSxqai6rlgsJQKaTd9cu6xc2N+HfZ1xZ8Q4v9cG7 ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 352ft149uf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 14:44:35 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AQJiZgj095455;
+        Thu, 26 Nov 2020 14:44:35 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 352ft149u3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 14:44:35 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AQJYcG7000565;
+        Thu, 26 Nov 2020 19:44:33 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 352drkg572-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 19:44:33 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AQJiVIP4719340
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Nov 2020 19:44:31 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 34ADD42041;
+        Thu, 26 Nov 2020 19:44:31 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D024B4203F;
+        Thu, 26 Nov 2020 19:44:28 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.183.229])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 26 Nov 2020 19:44:28 +0000 (GMT)
+Date:   Thu, 26 Nov 2020 21:44:26 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <20201126194426.GU123287@linux.ibm.com>
+References: <X73s8fxDKPRD6wET@redhat.com>
+ <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
+ <X76iatgBErQH5El4@redhat.com>
+ <a4cc62ba-8066-3e9c-cead-98cd74d313dd@redhat.com>
+ <20201125210414.GO123287@linux.ibm.com>
+ <X77OyM8utmWcq1Di@redhat.com>
+ <20201126093602.GQ123287@linux.ibm.com>
+ <X7/0CmrPwjq9LDUj@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X7/0CmrPwjq9LDUj@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-26_08:2020-11-26,2020-11-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 adultscore=0 clxscore=1015 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011260117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-20 at 13:04 -0800, Brian Norris wrote:
-> On Fri, Oct 30, 2020 at 1:04 AM Tsuchiya Yuto <kitakar@gmail.com> wrote:
-> > On Thu, 2020-10-29 at 11:25 -0700, Brian Norris wrote:
-> > > For the record, Chrome OS supports plenty of mwifiex systems with 8897
-> > > (SDIO only) and 8997 (PCIe), with PS enabled, and you're hurting
-> > > those. Your problem sounds to be exclusively a problem with the PCIe
-> > > 8897 firmware.
-> > 
-> > Actually, I already know that some Chromebooks use these mwifiex cards
-> > (but not out PCIe-88W8897) because I personally like chromiumos. I'm
-> > always wondering what is the difference. If the difference is firmware,
-> > our PCIe-88W8897 firmware should really be fixed instead of this stupid
-> > series.
+On Thu, Nov 26, 2020 at 01:29:30PM -0500, Andrea Arcangeli wrote:
+> On Thu, Nov 26, 2020 at 11:36:02AM +0200, Mike Rapoport wrote:
+> > memory.reserved cannot be calculated automatically. It represents all
+> > the memory allocations made before page allocator is up. And as
+> > memblock_reserve() is the most basic to allocate memory early at boot we
+> > cannot really delete it ;-)
 > 
-> PCIe is a very different beast. (For one, it uses DMA and
-> memory-mapped registers, where SDIO has neither.) It was a very
-> difficult slog to get PCIe/8997 working reliably for the few
-> Chromebooks that shipped it, and lots of that work is in firmware. I
-> would not be surprised if the PCIe-related changes Marvell made for
-> 8997 never fed back into their PCIe-8897 firmware. Or maybe they only
-> ever launched PCIe-8897 for Windows, and the Windows driver included
-> workarounds that were never published to their Linux driver. But now
-> I'm just speculating.
-
-Thanks. Yeah, this is indeed hard work. Actually, I (and maybe also other
-users) am already thankful that there is wifi driver/firmware available
-on Linux :) and it'll be greater if we can fix ps_mode-related issues.
-
-> > Yes, I'm sorry that I know this series is just a stupid one but I have to
-> > send this anyway because this stability issue has not been fixed for a
-> > long time. I should have added this buglink to every commit as well:
-> > 
-> > BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=109681
-> > 
-> > If the firmware can't be fixed, I'm afraid I have to go this way. It makes
-> > no sense to keep enabling power_save for the affected devices if we know
-> > it's broken.
+> Well this explanation totally covers "memory allocated early at
+> boot" that overlaps with memblock.memory.
 > 
-> Condolences and sympathy, seriously. You likely have little chance of
-> getting the firmware fixed, so without new information (e.g,. other
-> workarounds?), this is the probably the right way to go.
+> Does the E820_TYPE_SOFT_RESERVED range added to memblock.reserve
+> define as "memory allocated early at boot"?
+> 
+> Does it overlap ranges added with any RAM added to memblock.memory?
+> 
+> 		if (entry->type == E820_TYPE_SOFT_RESERVED)
+> 			memblock_reserve(entry->addr, entry->size);
+> 
+> 		if (entry->type != E820_TYPE_RAM && entry->type != E820_TYPE_RESERVED_KERN)
+> 			continue;
+> 
+> 		memblock_add(entry->addr, entry->size);
+> 
+> To me the above looks it's being used for something completely
+> different than from reserving "memory allocated early at boot".
+> 
+> Why there is no warning at boot if there's no overlap between
+> memblock.resereve and memblock.memory?
 
-Thank you for the pointer!
+> My question about memblock.reserve is really about the non overlapping
+> ranges: why are ranges non overlapping with memblock.memory regions,
+> added to memblock.reserve, and why aren't those calculated
+> automatically as reverse of memblock.memory?
 
-There are two issues regarding ps_mode:
-1) fw crashes with "Firmware wakeup failed"
-   (I haven't mentioned in this series, but ps_mode also causes fw crashes)
-2) connection instability (like large ping delay or even ping not reaching)
+Once there was this comment in arch/x86/kernel/e820.c:
 
-If anyone is ever interested in dmesg log with debug_mask=0xffffffff and
-device_dump, I posted them to the Bugzilla [1] before.
+	/*
+	 * all !E820_TYPE_RAM ranges (including gap ranges) are put
+	 * into memblock.reserved to make sure that struct pages in
+	 * such regions are not left uninitialized after bootup.
+	 */
 
-Regarding the #2, although this is even not a workaround but I found
-scanning APs will fix this. So, when I encounter this issue, I keep
-scanning APs like "watch -n10 sudo iw dev ${dev_name} scan". So, it
-seems that scanning APs will somehow wake wifi up? In other words, wifi
-is sleeping when it shouldn't? or wifi somehow failed to wake up when
-it should?
+I presume there were struct pages that corresponded to some unusable
+memory and they were not initilized, so the solution was to add them to
+memblock.reserved.
 
-Regarding #1, we don't have any ideas yet. There is a guess that memory
-leak will occur in the fw every time wifi goes into sleep, but don't know.
+> It's easy to see that when memblock.reserve overlaps fully, it makes
+> perfect sense and it has to stay for it. I was really only thinking at
+> the usage like above of memblock_reserve that looks like it should be
+> turned into a noop and deleted.
 
-We even don't have the exact reproducers for both #1 and #2. What we
-know so far is that, enabling ps_mode causes these issues.
+TBH, the whole interaction between e820 and memblock keeps me puzzled
+and I can only make educated guesses why some ranges here are
+memblock_reserve()'d and some memblock_add()ed.
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=109681#c130
+I think what should be there is that e820 entries that are essentially
+RAM, used by BIOS or not, should be listed in memblock.memory. Then
+using memblock_reserve() for parts that BIOS claimed for itself would
+have the same semantics as for memory allocated by kernel.
 
-> Brian
+I.e. if there is a DIMM from 0 to, say 512M, memblock.memory will have a
+range [0, 512M]. And areas such as 0x000-0xfff, 0x9d000-0x9ffff will be
+in memblock.reserved.
+
+Than in page_alloc.c we'll know that we have a physical memory bank from
+0 to 512M but there are some ranges that we cannot use.
+
+I suggested it back then when the issue with compaction was reported at
+the first time, but Baoquan mentioned that there are systems that cannot
+even tolerate having BIOS reserved areas in the page tables and I didn't
+continue to pursue this.
+
+Now I'm thinking to resurrect this patch with some additions so that
+init_mem_mapping could skip such regions.
+
+[1] https://lore.kernel.org/lkml/20200528090731.GI20045@MiWiFi-R3L-srv/#t
 
 
+> Thanks,
+> Andrea
+> 
+
+-- 
+Sincerely yours,
+Mike.
