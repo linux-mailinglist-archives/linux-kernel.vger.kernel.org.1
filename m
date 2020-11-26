@@ -2,144 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A532C5CB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 20:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D51F72C5CAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 20:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405303AbgKZTrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 14:47:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54380 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728118AbgKZTrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 14:47:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E852BACEB;
-        Thu, 26 Nov 2020 19:47:19 +0000 (UTC)
-Subject: Re: [PATCH 3/3] mm,thp,shmem: make khugepaged obey tmpfs mount flags
-To:     Rik van Riel <riel@surriel.com>, hughd@google.com
-Cc:     xuyu@linux.alibaba.com, akpm@linux-foundation.org, mgorman@suse.de,
-        aarcange@redhat.com, willy@infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        linux-mm@kvack.org, mhocko@suse.com
-References: <20201124194925.623931-1-riel@surriel.com>
- <20201124194925.623931-4-riel@surriel.com>
- <eda496c8-e248-c8fe-e7bd-f7e71d20e499@suse.cz>
- <8f2428a049f2c29f092782699bcb3af76bf72b6a.camel@surriel.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <cc08c0b4-84b3-5aa0-4c96-03f3767eec56@suse.cz>
-Date:   Thu, 26 Nov 2020 20:42:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S2405272AbgKZTod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 14:44:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404817AbgKZToc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 14:44:32 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EB5C0613D4;
+        Thu, 26 Nov 2020 11:44:32 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id l1so1585890pld.5;
+        Thu, 26 Nov 2020 11:44:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Q6+9AIQzu0mTDLScA3MxPbaf0ZqBfnQEsRT0YPfOhCI=;
+        b=qVRgH1mwe7J6UzYQ1wpjkCDsLdQB+YVsBhT3D8L4Q5icrtxvb15LScWNQVxf1OzDaV
+         X3UfMmXevUP3Dvqh6UXhaBg0WN3tAXbGgxJ/GjiupKzhzgG876TYg0s9w3obocRxlbOr
+         XTfRM397m+6wmd1Auky0T3GYJDBvHUei+G2gGyx0v0TVP++Tl4PKiSqYtw3+OEKCFv8U
+         ugr/JmEE3BvLYeub3BZjJqpwo0oCsfACLYaeqaw9TEU6/yzJTqzzCIgzWgazilFnOQly
+         TncW1IOLb81Il5/hSQ7HoLEhfgsr4keCzzfmHvoHVwQxNn5OfNqpXJ/ZuGFfd2pe+dhn
+         QSGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Q6+9AIQzu0mTDLScA3MxPbaf0ZqBfnQEsRT0YPfOhCI=;
+        b=Ox8bxgxHnG84rQtXcaMgqBKyXLjuH/0YFIj36vbBltpzqTkPDRifgOYiFqodAtwMUk
+         yzbsCUrV1Cua0oW0qhPoA584FppcbbDuqjO5YZOp5NosqzWHmL5Iaj4cGuPy1nIwgeYa
+         0HsmrQyzWoo79kxngagW34T35L3U7uBxFiGfL+lCwg+X8NF33ngtP/GAFmmv+VvNFKwO
+         g8N4PBc662ElT71fI/L15n7VkoolxFqWUx2Lup1X/zE3EyMj2tHRs453YsynG1hqbusR
+         AAsMeKVWrh1A9PTLOoOBcOBWMZK29lM3ddlafo6fCKNlKEoExyvLymC21aHXO54kzWd9
+         L+Mg==
+X-Gm-Message-State: AOAM531FwYdNmVsArRPgCY4w0qb34vUWLwLHqjRb4/WuR4FmpY7OOWkp
+        M2JhjgtY/dOcpQF3HxFe0Wkj++WA4pL9pA==
+X-Google-Smtp-Source: ABdhPJyZcFztd27CIvTj/jb8ApeL8DTTbBv4qpHudzYYDnxlPBzORfbl0Rof+N0aAHK0TH5O5c5F8A==
+X-Received: by 2002:a17:902:b415:b029:d6:ec35:755b with SMTP id x21-20020a170902b415b02900d6ec35755bmr3887204plr.47.1606419871852;
+        Thu, 26 Nov 2020 11:44:31 -0800 (PST)
+Received: from [192.168.1.155] (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
+        by smtp.gmail.com with ESMTPSA id kb12sm7325265pjb.2.2020.11.26.11.44.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 11:44:30 -0800 (PST)
+Message-ID: <4f88f25c78d82e980f5fa7e686b00ad5b20031c5.camel@gmail.com>
+Subject: Re: [PATCH 1/3] mwifiex: disable ps_mode explicitly by default
+ instead
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
+Date:   Fri, 27 Nov 2020 04:44:24 +0900
+In-Reply-To: <CA+ASDXMUdYHTKphxFwcAim79N_DJiQFHFN0gDZsPB4rMHyxxXw@mail.gmail.com>
+References: <20201028142433.18501-1-kitakar@gmail.com>
+         <20201028142433.18501-2-kitakar@gmail.com>
+         <CA+ASDXMfuqy=kCECktP_mYm9cAapXukeLhe=1i3uPbTu9wS2Qw@mail.gmail.com>
+         <8fa12bfff1cc30b655934e303cad78ae75b0fcde.camel@gmail.com>
+         <CA+ASDXMUdYHTKphxFwcAim79N_DJiQFHFN0gDZsPB4rMHyxxXw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-In-Reply-To: <8f2428a049f2c29f092782699bcb3af76bf72b6a.camel@surriel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/20 7:14 PM, Rik van Riel wrote:
-> On Thu, 2020-11-26 at 18:18 +0100, Vlastimil Babka wrote:
->> On 11/24/20 8:49 PM, Rik van Riel wrote:
->>> Currently if thp enabled=[madvise], mounting a tmpfs filesystem
->>> with huge=always and mmapping files from that tmpfs does not
->>> result in khugepaged collapsing those mappings, despite the
->>> mount flag indicating that it should.
->>>
->>> Fix that by breaking up the blocks of tests in hugepage_vma_check
->>> a little bit, and testing things in the correct order.
->>>
->>> Signed-off-by: Rik van Riel <riel@surriel.com>
->>> Fixes: c2231020ea7b ("mm: thp: register mm for khugepaged when
->>> merging vma for shmem")
->>
->> Looks ok. But, it we have sysfs thp enabled=never, and shmem mount
->> explicitly 
->> thp enabled, then shmem mount overrides the global sysfs setting and
->> thp's will 
->> be allocated there, right? However, khugepaged_enabled() will be
->> false and thus 
->> khugepaged won't run at all? So a similar situation than what you're
->> fixing here.
+On Fri, 2020-11-20 at 13:04 -0800, Brian Norris wrote:
+> On Fri, Oct 30, 2020 at 1:04 AM Tsuchiya Yuto <kitakar@gmail.com> wrote:
+> > On Thu, 2020-10-29 at 11:25 -0700, Brian Norris wrote:
+> > > For the record, Chrome OS supports plenty of mwifiex systems with 8897
+> > > (SDIO only) and 8997 (PCIe), with PS enabled, and you're hurting
+> > > those. Your problem sounds to be exclusively a problem with the PCIe
+> > > 8897 firmware.
+> > 
+> > Actually, I already know that some Chromebooks use these mwifiex cards
+> > (but not out PCIe-88W8897) because I personally like chromiumos. I'm
+> > always wondering what is the difference. If the difference is firmware,
+> > our PCIe-88W8897 firmware should really be fixed instead of this stupid
+> > series.
 > 
-> Indeed, that is somewhat similar. Whether or not shmem
-> allocations attempt huge pages is controlled by both
-> the file /sys/kernel/mm/transparent_hugepage/shmem_enabled
+> PCIe is a very different beast. (For one, it uses DMA and
+> memory-mapped registers, where SDIO has neither.) It was a very
+> difficult slog to get PCIe/8997 working reliably for the few
+> Chromebooks that shipped it, and lots of that work is in firmware. I
+> would not be surprised if the PCIe-related changes Marvell made for
+> 8997 never fed back into their PCIe-8897 firmware. Or maybe they only
+> ever launched PCIe-8897 for Windows, and the Windows driver included
+> workarounds that were never published to their Linux driver. But now
+> I'm just speculating.
 
-Ah right, there's also that sysfs file.
+Thanks. Yeah, this is indeed hard work. Actually, I (and maybe also other
+users) am already thankful that there is wifi driver/firmware available
+on Linux :) and it'll be greater if we can fix ps_mode-related issues.
 
-> and mount options.
+> > Yes, I'm sorry that I know this series is just a stupid one but I have to
+> > send this anyway because this stability issue has not been fixed for a
+> > long time. I should have added this buglink to every commit as well:
+> > 
+> > BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=109681
+> > 
+> > If the firmware can't be fixed, I'm afraid I have to go this way. It makes
+> > no sense to keep enabling power_save for the affected devices if we know
+> > it's broken.
 > 
-> This patch makes khugepaged treat the mount options
-> and/or
-> sysfs flag as enabling collapsing of huge pages in case
-> enabled = [always] for regular THPs.
-> 
-> Should I send another patch on top
-> of this that causes
-> khugepaged to be enabled when regular THPs are disabled,
-> but shmem THPs are enabled in any way?
+> Condolences and sympathy, seriously. You likely have little chance of
+> getting the firmware fixed, so without new information (e.g,. other
+> workarounds?), this is the probably the right way to go.
 
-I think it would make sense. Although it might involve counting
-thp-enabled shmem mounts and only run khugepaged when there are >0 of them.
+Thank you for the pointer!
+
+There are two issues regarding ps_mode:
+1) fw crashes with "Firmware wakeup failed"
+   (I haven't mentioned in this series, but ps_mode also causes fw crashes)
+2) connection instability (like large ping delay or even ping not reaching)
+
+If anyone is ever interested in dmesg log with debug_mask=0xffffffff and
+device_dump, I posted them to the Bugzilla [1] before.
+
+Regarding the #2, although this is even not a workaround but I found
+scanning APs will fix this. So, when I encounter this issue, I keep
+scanning APs like "watch -n10 sudo iw dev ${dev_name} scan". So, it
+seems that scanning APs will somehow wake wifi up? In other words, wifi
+is sleeping when it shouldn't? or wifi somehow failed to wake up when
+it should?
+
+Regarding #1, we don't have any ideas yet. There is a guess that memory
+leak will occur in the fw every time wifi goes into sleep, but don't know.
+
+We even don't have the exact reproducers for both #1 and #2. What we
+know so far is that, enabling ps_mode causes these issues.
+
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=109681#c130
+
+> Brian
+
+
