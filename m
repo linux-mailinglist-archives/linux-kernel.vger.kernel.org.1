@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D712C5ABE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 117AB2C5ACC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:40:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404451AbgKZRgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 12:36:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403901AbgKZRgx (ORCPT
+        id S2391685AbgKZRj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:39:27 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:55219 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391424AbgKZRj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:36:53 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC67C061A47
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:36:52 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id 79so2464763otc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:36:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RzscB+HPvNo5OLPGyWcEVasjH1OgEnw1N/daccQTcjw=;
-        b=TiNa/CZ9bt4dyGcJGi3+DSceDoxSyy6UZUER3AOqg4GE5ZhCj46vPHN8d+7IdS4lxe
-         v7KAYYWF0mQYxM3vIupYxJiWjiPrLJgwqKYbti5ro/2THxTbi5Smq/4+McxMh8ONbC/x
-         JLwyY1PNPjP5QzP6Vj++4xyfKhb2WAL2GJnEagvBrDwHBkDT7AynKdTv15PA4r1MC7AI
-         m6cIy3iRQqIQiJT4w5fXg/VrcsZEFilfUNCztm9T7L7SJ2M8oUPjVubmq42/rE5WgpW/
-         Onwz3JLHrggbpVh+WKRSp5BbbVbaLH7+2nk0ENJLIPgrV3aeUCizFxhz9STQmvc+hooj
-         mvqA==
+        Thu, 26 Nov 2020 12:39:26 -0500
+Received: by mail-wm1-f67.google.com with SMTP id 3so433483wmj.4;
+        Thu, 26 Nov 2020 09:39:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RzscB+HPvNo5OLPGyWcEVasjH1OgEnw1N/daccQTcjw=;
-        b=bZN52uoCQahvOh+AaqZsNsfixxAJrXFrcBODhLCVrJq4cW3SwBH3zElosG0LuomRv7
-         10X/wf5hZsdnaszuiX/BMWTZD1BeNCJv0CeaHtl79RLvLX4ZfLFlhElTVsjG+RZB7ET9
-         TRZaoazozh5BCXc0AM6smY1wHf/nueygVNQDprLjjpXXgfDDuXGWA0sR0lmKoQXmqzJ6
-         tUqP+AYE4/7TSbI9eApC22P8snDQ6hMYMHna/IoVqRK9i6otZc1tOWULtmQWbzHOQVWh
-         SP4F87jPLyELFCuFeIAAxGNgWncJ/6pMvbcGeHwIezBSLywI1DtoIJFSTv3HMnzS38ip
-         oVNA==
-X-Gm-Message-State: AOAM531l94Ixkg/oh7UwjN2dEG9WJAl74WsNgW1kbSG31f/2q1cn2Stg
-        HLH4qoOsfwb9M+Jhc5t8WYY9Ag==
-X-Google-Smtp-Source: ABdhPJyHVTzDKx1lcHaJkXpFi2a3H0kvz7t8PZQ1lWl7nZ712Y81nbkxBYUgt5qmGLhKwxRh/Dltvw==
-X-Received: by 2002:a05:6830:8f:: with SMTP id a15mr2952856oto.362.1606412211389;
-        Thu, 26 Nov 2020 09:36:51 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j8sm3499723oif.55.2020.11.26.09.36.50
+        bh=cjXv/ScxbZ0BiPP6MPGhGSZjdPE+o5XCx97qivgu68s=;
+        b=ZUmqDYUd4qc5nadvVZr+hly3unJwoiUnBPDzfhU0UqBHOgZ46atNpQQjYYaysf3u64
+         sPcNUJDp4+QBQtiWcHilTuyHKrfwePG7tOv5s7ERIEXWXPrHd6RqsMILcVmr+GyCsfW/
+         TNpW8G+3Wf1vRlis9aF3aVflxpmKgW72MzeKUezu4sAuhW4ailN8GE7BaYrJOYGwYXl+
+         m6leN25+cfzJLyDUcOlfjcBoM+6add3gD26Sp/lBQE1LFdUKgCYHAawf7vlxj5wU1eNA
+         GyL6wMHiTTQs2JwfXRTf2mPAZHkKDMo2dADhLslqKpMSzbpd/+mRZdQKaTY1/Wm6fIKr
+         UXhA==
+X-Gm-Message-State: AOAM533BzCom2XwD2a/SZYzt46RN7rTQV/6ioHtgOarZlv3LbW0ubYOZ
+        2SZrXybVjSm/OEdnDtoI338=
+X-Google-Smtp-Source: ABdhPJym9BuTs4VMvKws9pdTIceCeRsKsxs2y5eVHiwUU6Em5mTTgU03rlmfFANSNsZ3NxhF5CkhzQ==
+X-Received: by 2002:a1c:66c4:: with SMTP id a187mr4694548wmc.186.1606412364616;
+        Thu, 26 Nov 2020 09:39:24 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id w21sm9198231wmi.29.2020.11.26.09.39.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 09:36:50 -0800 (PST)
-Date:   Thu, 26 Nov 2020 11:36:49 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Thu, 26 Nov 2020 09:39:23 -0800 (PST)
+Date:   Thu, 26 Nov 2020 18:39:22 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] pinctrl: qcom-pmic-gpio: Add support for pmx55
-Message-ID: <X7/nsdVsQZdrRlPn@builder.lan>
-References: <20201126092151.1082697-1-vkoul@kernel.org>
- <20201126092151.1082697-2-vkoul@kernel.org>
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 17/47] dt-bindings: memory: tegra20: Add memory client
+ IDs
+Message-ID: <20201126173922.GA7048@kozik-lap>
+References: <20201104164923.21238-1-digetx@gmail.com>
+ <20201104164923.21238-18-digetx@gmail.com>
+ <X7/lLaZJNp+Vfczk@ulmo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201126092151.1082697-2-vkoul@kernel.org>
+In-Reply-To: <X7/lLaZJNp+Vfczk@ulmo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 26 Nov 03:21 CST 2020, Vinod Koul wrote:
-
-> PM55 pmic support gpio controller so add compatible and comment for gpio
-> holes
+On Thu, Nov 26, 2020 at 06:26:05PM +0100, Thierry Reding wrote:
+> On Wed, Nov 04, 2020 at 07:48:53PM +0300, Dmitry Osipenko wrote:
+> > Each memory client has unique hardware ID, add these IDs.
+> > 
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > ---
+> >  include/dt-bindings/memory/tegra20-mc.h | 53 +++++++++++++++++++++++++
+> >  1 file changed, 53 insertions(+)
 > 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-> ---
->  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Is there any chance you could drop these dt-bindings include patches
+> (17, 18 and 19) so that I can pick them up into the Tegra tree? The
+> device tree changes that I was going to pick up depend on this and
+> fail to build if applied as-is.
 > 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> index 17441388ce8f..9801c717e311 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> @@ -1129,6 +1129,8 @@ static const struct of_device_id pmic_gpio_of_match[] = {
->  	{ .compatible = "qcom,pm8150l-gpio", .data = (void *) 12 },
->  	{ .compatible = "qcom,pm6150-gpio", .data = (void *) 10 },
->  	{ .compatible = "qcom,pm6150l-gpio", .data = (void *) 12 },
-> +	/* pmx55 has 11 GPIOs with holes on 3, 7, 10, 11 */
-> +	{ .compatible = "qcom,pmx55-gpio", .data = (void *) 11 },
->  	{ },
->  };
->  
-> -- 
-> 2.26.2
-> 
+> I was looking at your linux-mem-ctrl tree and had initially thought I
+> could just pull in one of the branches to get these dependencies, but it
+> looks like the dt-bindings patches are on the for-v5.11/tegra-mc branch,
+> which the ARM SoC maintainers wouldn't like to see me pull in for a
+> dependency on device tree changes.
+
+Partially you answered here. :) Since you should not pull my branch into
+a DT branch, you also should not put these include/dt-bindings patches
+there.  SoC guys will complain about this as well.
+
+These patches are also needed for the driver, so if you take them, I
+would need them back in a pull request. SoC folks could spot it as well
+and point that such merge should not happen.
+
+> If this is all fixed at this point, I'll just have to push back the
+> device tree changes to v5.12, or perhaps see if the ARM SoC maintainers
+> are willing to take a late pull request that's based on v5.11-rc1.
+
+Yeah, that's a known problem. I asked about this Arnd and Olof in the
+past and got reply with two solutions:
+1. Apply current version of patch without defines, just hard-coded
+   numbers. After merging to Linus, replace the numbers with defines.
+
+2. Wait with DTS till dependencies reach Linus.
+
+Best regards,
+Krzysztof
