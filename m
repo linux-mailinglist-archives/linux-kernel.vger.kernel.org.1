@@ -2,156 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB142C598A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 645772C598F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 17:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391551AbgKZQrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 11:47:40 -0500
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:20153 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390083AbgKZQrj (ORCPT
+        id S2391566AbgKZQuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 11:50:10 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2166 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391226AbgKZQuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 11:47:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606409258; x=1637945258;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Z92vN/+s1eMoJ+btIKlisjsRWB6TiJLbm43YxZFkrRY=;
-  b=LCJKeHD5GvdkU5Sta/0NaBBcRdpQfRHKbtijgLe1kvBQaNL0v+mDm0Nj
-   aXXDYxEooSRjXQUWxDGdcs7X9shroDF0oR0YcDLl4Q21jrtCxPfttIXsI
-   L+9u6NLLYhJZZP9iC2SrEs10itylbjMcn2qFqhJrGnkZckzdfbMvK55Jz
-   U3r9kqZXF/D2IypzvlzS6po6c5mDTTjjaSkFEIncM4ZSuH1Q/Ns2HZRce
-   I6LcRLjnwxuJcFWEYNOrJrDzMnOxLurIFFlBJYe+kvM4c23j+eJ/q0ZIF
-   yT/t5E3W/wabYwC1IBgQZKMIF7Id1c2xVpxP8f53dYpti2P/Y2cO0Ek9T
-   A==;
-IronPort-SDR: C+DZfwVqkn48I0vw1rYXCijdF9wTTzc5kSU7AoZMhnNwroFV4WBdzkdh3m0CXAGQsTHO3NUAr0
- imBDV//86ygB5VnHf/Vv9UL+f4DHluFgkAz+NdCJC2spgFabT/jSf8CVfrSE7UuFVMO3ehOBN+
- 5mTGAxuv/GHrW85sXFLP6Czz7YqfovtJfS5hqc7u2bLFJR3MtQa57q5RRSXOkewNgJEai/re+A
- 4utxapq3EyAYPciR/wv2fb3OU9cYL3TxxEJ/SkL1QFcxkV+zQHyyrBwdwG22m705FnjXtrXcHR
- v2s=
-X-IronPort-AV: E=Sophos;i="5.78,372,1599548400"; 
-   d="scan'208";a="105154114"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Nov 2020 09:47:38 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 26 Nov 2020 09:47:37 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Thu, 26 Nov 2020 09:47:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fi2yR7qFm5ub4Mhnh1mEqEP5PwzXYQXuUbLpICKnlaKbmwpIr/8IbSccXmu0FjvzwVEtoWpAgrhG0PyKTlyrMYOlf4ODDCRxhOKnDor0IAEjM2y0/qM5nyzb1D/36BfYNNAeu/tFdxSxtEl2qTbnfk/kG04dTNgTim2cWuS78hfHrC4sEHv1UunC+j7UO1EkcGNdSy45RlVy47Wwk3TbL/HdvnTgpkuLJD03z7CpEdx2ZzwMZKex2UeCxZ/QaQod36/KbSYHtLzmo+6o/d98KHyw7zTLxt6dsLCxO2iyLjRW/SSVeSahylPHnMfJnIivMG+ItLRG2CHAvx6gPRrVqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z92vN/+s1eMoJ+btIKlisjsRWB6TiJLbm43YxZFkrRY=;
- b=OQY9iPn2S8/+DRPj2PuvjmrFj9rETKBniv6QxiKjVVXrBgQUQTi1UhaSZB5CZ3oanmveLUGnnr0/c7T3ryRa5LVMT5l/IjtjIu3O1poNAK3PUL4vjna93L8VKoTIEzV7MWuJy0CFBBo9mXgdyAdoSuIk9pr0hd/thA2jAqA+LXIp4wI5MrDkH0F3Rfs9cYDGMiG/LFI7M/tNvNP/WZcQMUMKUb1hP8BZZzFawSOYITkBNfWWCJ1GS9X78edWVTFAJmhnhSOak0veVmE6EnW6CWEF+Ku/BfTaFjwdAIPZs7ODKySpVL7VPFw9bTSVh61vGvYcmul6+AV8FF2oOuX+Nw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z92vN/+s1eMoJ+btIKlisjsRWB6TiJLbm43YxZFkrRY=;
- b=pbOSCIcTag4105Xu45ARFxg5sDAadw5cv33DXPBPM5wvaqEw674KDdsZxpnw/KGG+okcEuuy2mBBYXdyyjN7LyRusxFLBmERoKR17SwRGdCjjQ8bNzlRej9Nh/NBXmF4codxVDvVnVF8eeBKpFwsMoWxrM7skgpiiEFLuz1GNmI=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SA2PR11MB5164.namprd11.prod.outlook.com (2603:10b6:806:f9::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Thu, 26 Nov
- 2020 16:47:36 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::6903:3212:cc9e:761]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::6903:3212:cc9e:761%7]) with mapi id 15.20.3611.021; Thu, 26 Nov 2020
- 16:47:36 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <michael@walle.cc>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v5 3/3] mtd: spi-nor: keep lock bits if they are
- non-volatile
-Thread-Topic: [PATCH v5 3/3] mtd: spi-nor: keep lock bits if they are
- non-volatile
-Thread-Index: AQHWwyV9Mln+2AGpp0CZylv8vNNFfw==
-Date:   Thu, 26 Nov 2020 16:47:36 +0000
-Message-ID: <897d0205-b4c1-b5a7-6034-d0d7144c0868@microchip.com>
-References: <20201003153235.29762-1-michael@walle.cc>
- <20201003153235.29762-4-michael@walle.cc>
- <e9437b3e-de44-7b17-df2c-6a8502b48ca4@microchip.com>
- <f6344b9cb5c61c3bfd075e231b708269@walle.cc>
-In-Reply-To: <f6344b9cb5c61c3bfd075e231b708269@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [79.115.63.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5ebb3d17-7395-4f0b-a618-08d8922afadd
-x-ms-traffictypediagnostic: SA2PR11MB5164:
-x-microsoft-antispam-prvs: <SA2PR11MB51646EE3D04E1AADD993A5F6F0F90@SA2PR11MB5164.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:546;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: BjxcdTAwV0Oec7dIsix91mwumLtTevi92ruHdLln22+P2a33NKIyklmG5DMm/q6AblmlqBwNlTInHqSpehUlIY+DuCgrpmmTkZxC3naqR5SXUXxrpgQGDCl7a2cVMOfdX6Vq4X2YRBuc37twknzzqHck8eURx4a2AR3A6oyVJpDZQ3rcfEvT+VzNpw3YbC5JPdZ0rt2mXxN+ERRt8d3ucHcH7CcBwGQYHge4IQCRb6ZZxhaUyZjnAiqzGmgLx94+C7MAtqlulA+wlY61hw8JAY1u1lkp7yiVi9BFtvXH5CCQoWLbtRAzRostM6EfJt9boGP6+0N0i9RonOWFFpe0akqxGIBIpXRHpAfMeZxeYxGoBHvjoMGnJvWLCrOU1beF8+xt5P2kSWd/b8NxwDDwAqbohWCXFR0z6gPZCv1ovCCXRs+zuwQXq0B9520ShFGWjJeNjp2CiLt22S8fcp3Ggg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(39860400002)(366004)(396003)(71200400001)(6916009)(64756008)(31696002)(5660300002)(66476007)(76116006)(66446008)(66946007)(4326008)(36756003)(86362001)(66556008)(83380400001)(6486002)(6512007)(54906003)(2906002)(478600001)(316002)(2616005)(186003)(8676002)(8936002)(966005)(53546011)(31686004)(26005)(4744005)(6506007)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?TU84bjdiYXhOd2NXRVM2bXF6TUV5aVFkTUx6V3lGckF4U0RSTDJUc1UwL3Rq?=
- =?utf-8?B?NHhuWDQwVUhjeTAzOTM4TFRzR3N5bW5oNEhOYTNlNnE5TGcxRTd1WWRhdEpW?=
- =?utf-8?B?eFJLYmRPdGg2YlJmMXh5clI2dmdDaUhHT0dJaG5FYXpoRmYrTlZDcGh5SmZ1?=
- =?utf-8?B?NXdmRkN6UlBrM2ZlYjFsTnF0dlFuV0hnenlrRXVvRjFlM3ZoR3huV0ZzNWg3?=
- =?utf-8?B?SlVFTGdrbUlnY1VqNGpEZUF2Q290MDZOeUhoQW9PdGRPUjFpeE1xUWxVR053?=
- =?utf-8?B?cjB0L1k5dkhMTy9RMGhUNFgwYTdVaXpmTGtFNEdPSHVoYnRheVJ1T1pCVlBX?=
- =?utf-8?B?K2tPaGcxOTh2VFBQT28vV0RDaFlscWxJTmIxdS9LRDZoUUVYZ0VsOHJibG9Y?=
- =?utf-8?B?Tm9BUUdvdkcyeXI3RTRsQ0VLSzVLbVNMaThRYVhicUtNY0hlamVQOFhLd3Az?=
- =?utf-8?B?VEJTWG41NklxZjVCOU1OZUp6ZUVFdXlzc2FsYzFXQVFyOXVYZ1pKZE9DTjNQ?=
- =?utf-8?B?SjkySEtWUWM3ZC9UenpVMFNTbzMrN0pBMEpNNDNXWXhDZElidEhsOXRPOENw?=
- =?utf-8?B?NUFycVhibzMvd1BhV05iTkRtZXZNNzhOTEs2VUhDRUxUbWw4RVV3dHFNMnQ5?=
- =?utf-8?B?YUViYlJTYXVyTWM4RHRmUGw5L3Z0UnpwVWFVbzNZWGhpVmVZb1V0ckJHZnE4?=
- =?utf-8?B?RnJEWmtHa2diUm04eXJQRlhSaWRocHZwT2pWOW9RaVdaQ2FtOVYrMjI1b2tu?=
- =?utf-8?B?L2hlcHNud2tHVFFYazJIOHJjd1hmWC8vWWc3cUxrUEdRT292bUlraHUzL1pj?=
- =?utf-8?B?VkxoZjJiTmhKalJlOHdLWk1WYkxFWUZScHZDK01qMGg4dkFEYjFlSngwdW5R?=
- =?utf-8?B?YU84bFU2bVgyRUM0QUxkRnV1c3A2S0c4ZlJ3dTAzZnBaaEc3OHRWN3NaOXVI?=
- =?utf-8?B?VFFadFBtUHcrZVFUNkxCSjZBeldkczJuYnNtME8rOTdVZU1WQVA1RUYrQ09S?=
- =?utf-8?B?dXdQbkp4THRXYTAvUDFIU0t5MWNTWlhUNStKbHFxME9DQ1MwK01zRE83ZVpL?=
- =?utf-8?B?dWJuTXN1L3loa1k1bUQ0SUVvazZYRWNsVG5sVUgvNVdxUHBpcG5sWFdwR1Ir?=
- =?utf-8?B?dXIvbGJzcG9uTldJQy9VUnphWmJhWk12bER0MVpla2xLa0MwRTczUnFxcWd5?=
- =?utf-8?B?SnVieWswdjFOcWU1TWcxR3Rhc2l4RWNVZ05tNndtVEw2ejdPUWhuY202VE56?=
- =?utf-8?B?d25NT1VVaU1tQ3BJV0RsbEt5Mml2djhzOVZTYlBuRk5pS1pwZWpWN2l0WU1T?=
- =?utf-8?Q?Fh5z1On9uhWh0=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F0BC1D7E5DFF9C4980BAE3A4E393794F@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 26 Nov 2020 11:50:09 -0500
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ChkFW4TMnz67JGL;
+        Fri, 27 Nov 2020 00:47:27 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 26 Nov 2020 17:50:07 +0100
+Received: from [10.210.172.213] (10.210.172.213) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Thu, 26 Nov 2020 16:50:06 +0000
+Subject: Re: [PATCH V1] block: Fix use-after-free while iterating over
+ requests
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Pradeep P V K <ppvk@codeaurora.org>, <axboe@kernel.dk>,
+        <linux-block@vger.kernel.org>
+CC:     <stummala@codeaurora.org>, <linux-kernel@vger.kernel.org>,
+        Ming Lei <ming.lei@redhat.com>
+References: <1606402925-24420-1-git-send-email-ppvk@codeaurora.org>
+ <c94fcada-7f6d-a1e3-4c88-d225af1a676e@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <693ea723-aa9e-1166-8a19-a7787f724969@huawei.com>
+Date:   Thu, 26 Nov 2020 16:49:41 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5ebb3d17-7395-4f0b-a618-08d8922afadd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2020 16:47:36.7320
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gNgMcqtpb89KUzFTphPgw/0sCURMgD/ictlPaGx6qBs+SZGG8SfnWCXWeZJsdJfYz4p5sY+G81T+Fbd4qQvIl046I3MdWAbpFXV2rsfa0TQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5164
+In-Reply-To: <c94fcada-7f6d-a1e3-4c88-d225af1a676e@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.172.213]
+X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTEvMjUvMjAgODo1MiBQTSwgTWljaGFlbCBXYWxsZSB3cm90ZToNCj4+IExvb2tzIGxpa2Ug
-QlAzIGlzIG5lZWRlZCBoZXJlLg0KPiANCj4gaHR0cHM6Ly93dzEubWljcm9jaGlwLmNvbS9kb3du
-bG9hZHMvZW4vRGV2aWNlRG9jLzIwMDA1MDM2Qy5wZGYNCj4gDQo+IGFncmVlZC4gQnV0IGFnYWlu
-IGNhbm5vdCB0ZXN0IGl0LiBXb3VsZCBhZGQgaXQgYXMgYSBzZXBlcmF0ZSBwYXRjaA0KPiB0byB0
-aGlzIHNlcmllcy4gKG9yIGxlYXZlIGl0IGxpa2UgaXQgaXMpDQoNClNlcGFyYXRlIHBhdGNoIGZv
-ciB0aGUgVEIvQlAzIGJpdHMgaXMgZmluZS4gV2Ugc2hvdWxkIGFkZCBhIGZpeGVzIHRhZw0KZm9y
-IHRoZSBwYXRjaCB0aGF0IGludHJvZHVjZWQgdGhlIGJ1ZzoNCmNvbW1pdCAzZTA5MzBmMTA5ZTc2
-ICgibXRkOiBzcGktbm9yOiBSZXdvcmsgdGhlIGRpc2FibGluZyBvZiBibG9jayB3cml0ZSBwcm90
-ZWN0aW9uIikNCg0KY2hlZXJzLA0KdGENCg==
+On 26/11/2020 16:27, Bart Van Assche wrote:
+> On 11/26/20 7:02 AM, Pradeep P V K wrote:
+>> Observes below crash while accessing (use-after-free) request queue
+>> member of struct request.
+>>
+>> 191.784789:   <2> Unable to handle kernel paging request at virtual
+>> address ffffff81429a4440
+>> ...
+>> 191.786174:   <2> CPU: 3 PID: 213 Comm: kworker/3:1H Tainted: G S
+>> O      5.4.61-qgki-debug-ge45de39 #1
+>> ...
+>> 191.786226:   <2> Workqueue: kblockd blk_mq_timeout_work
+>> 191.786242:   <2> pstate: 20c00005 (nzCv daif +PAN +UAO)
+>> 191.786261:   <2> pc : bt_for_each+0x114/0x1a4
+>> 191.786274:   <2> lr : bt_for_each+0xe0/0x1a4
+>> ...
+>> 191.786494:   <2> Call trace:
+>> 191.786507:   <2>  bt_for_each+0x114/0x1a4
+>> 191.786519:   <2>  blk_mq_queue_tag_busy_iter+0x60/0xd4
+>> 191.786532:   <2>  blk_mq_timeout_work+0x54/0xe8
+>> 191.786549:   <2>  process_one_work+0x2cc/0x568
+>> 191.786562:   <2>  worker_thread+0x28c/0x518
+>> 191.786577:   <2>  kthread+0x160/0x170
+>> 191.786594:   <2>  ret_from_fork+0x10/0x18
+>> 191.786615:   <2> Code: 0b080148 f9404929 f8685921 b4fffe01 (f9400028)
+>> 191.786630:   <2> ---[ end trace 0f1f51d79ab3f955 ]---
+>> 191.786643:   <2> Kernel panic - not syncing: Fatal exception
+>>
+>> Fix this by updating the freed request with NULL.
+>> This could avoid accessing the already free request from other
+>> contexts while iterating over the requests.
+>>
+>> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
+>> ---
+>>   block/blk-mq.c | 1 +
+>>   block/blk-mq.h | 1 +
+>>   2 files changed, 2 insertions(+)
+>>
+>> diff --git a/block/blk-mq.c b/block/blk-mq.c
+>> index 55bcee5..9996cb1 100644
+>> --- a/block/blk-mq.c
+>> +++ b/block/blk-mq.c
+>> @@ -492,6 +492,7 @@ static void __blk_mq_free_request(struct request *rq)
+>>   
+>>   	blk_crypto_free_request(rq);
+>>   	blk_pm_mark_last_busy(rq);
+>> +	hctx->tags->rqs[rq->tag] = NULL;
+>>   	rq->mq_hctx = NULL;
+>>   	if (rq->tag != BLK_MQ_NO_TAG)
+>>   		blk_mq_put_tag(hctx->tags, ctx, rq->tag);
+>> diff --git a/block/blk-mq.h b/block/blk-mq.h
+>> index a52703c..8747bf1 100644
+>> --- a/block/blk-mq.h
+>> +++ b/block/blk-mq.h
+>> @@ -224,6 +224,7 @@ static inline int __blk_mq_active_requests(struct blk_mq_hw_ctx *hctx)
+>>   static inline void __blk_mq_put_driver_tag(struct blk_mq_hw_ctx *hctx,
+>>   					   struct request *rq)
+>>   {
+>> +	hctx->tags->rqs[rq->tag] = NULL;
+>>   	blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
+>>   	rq->tag = BLK_MQ_NO_TAG;
+> 
+> Is this perhaps a block driver bug instead of a block layer core bug? If
+> this would be a block layer core bug, it would have been reported before.
+
+Isn't this the same issue which as been reported many times:
+
+https://lore.kernel.org/linux-block/20200820180335.3109216-1-ming.lei@redhat.com/
+
+https://lore.kernel.org/linux-block/8376443a-ec1b-0cef-8244-ed584b96fa96@huawei.com/
+
+But I never saw a crash, just kasan report.
+
+Thanks,
+John
+
