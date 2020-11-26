@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E372C58AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 293552C58AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391320AbgKZPya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51068 "EHLO
+        id S2391342AbgKZPyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730181AbgKZPy3 (ORCPT
+        with ESMTP id S2391331AbgKZPya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:54:29 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE913C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:54:27 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id e7so2640154wrv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:54:27 -0800 (PST)
+        Thu, 26 Nov 2020 10:54:30 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F108CC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:54:29 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id r3so2656320wrt.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:54:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PYeJaSm88hY1OXHAOwbtBVxKGHgJPc5mwzbhhlyynEE=;
-        b=dbbWmaFGzmEM/5ruz4/Z+DeG8I1QJ3E7BZZIUlz04xlmm5mpXCXyDNZuQEBkdhMaMl
-         AS/3kbrq6ApEJVDa1EWQ7GE3Zv+43ZDFCu8ZgL6c2in1kkmdfc3Xfb56Nbw+I4tyzZ0d
-         cZfOb5fGLtaLONRw5bxxovN0HifciY0MSOOaqB8tHbaiNFVZgbyB68yI7gdIxEcwWDkU
-         vwfFPgrG7LFDXj1G/CIUMjwKu5AxT/h9i6BiTmLEmW3vf6euE0U8dVUGZT6nIdsbJnQD
-         pwVKLM8IK4mJUYQTOBDyoBAyy+P1dvspXdNdJiZdnyOnj3LkxIwHH6CqJof5p6AlYAxA
-         GNsA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9eBkN6lmfdOZ6y3T4AeVQ2xEMCxfbxxoIUc76Qx59Gw=;
+        b=q0DXHENIOaqhJFnVso9J1kN3Eb61iVK8nd3AricHajirGlfnSXv+NmgwWHCMVIELoM
+         /xkucGICwySq83LXla7dhpUSyhhrYAX2WyLB2M0GSO+2LUD2XI2l+m2AypGqvHH1oZWj
+         ar44f6d4mUGekt4sM2d7YlccV/6w5dO+75q5vS8ABmkgJxt4nsK1E5YYxMSRXHZwtqRw
+         CgRzDUSpetP2+yE0F4UC58Vh56PRAdl/j8zQgvJ3gdi0B97IexPJS8ZDk2Z0gcqlwvRq
+         +6NN5jRL2/yL9KuYo3aGBfcKHp1j9xVMqkzoFKdL7JrD/vM8UlDrwr99kKCpPxKPalu6
+         8LXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PYeJaSm88hY1OXHAOwbtBVxKGHgJPc5mwzbhhlyynEE=;
-        b=jj4GZ0DT135CUekbK7g19GM/Tugo0dw0DqaCOIfzNRJMuECymELEg3GCGUuw5Hta/0
-         zF3sOq+SQpXfYeBPbCR2HrG/n0CSr4Qavxxsdbjzw11bSYlQss5dYr/MfS+W34AMfkHY
-         TJQLoePSnA1e8zFg01h48GCm6wYK/w2IlZEBMCmXZqsZQVwybuDJ9s8QpsiD4IPuJv5W
-         2rMrySfrGjau8+rlHROjZtnJTvJ9RPwo+ZWkahqh4QlNGjvmrUIJTHZa+dhlq8WrPsJK
-         WEQjav/dvuqltnOnom16DrPyjFTtQg5QM/1IXUB72l+wyeYw5TwEo/8eIdvyu52SyqO0
-         bwcw==
-X-Gm-Message-State: AOAM530ptSjdRcb5bSLP7eRaodMf5UV3NtXYeDC2Qgymnma55SlhZofe
-        ywWpasuRE6XC8JYTbs0SopWSQg==
-X-Google-Smtp-Source: ABdhPJw48M5ZmOT1FESI9opelMUihSUq3ZOHJRFXfPns+z2bHZ7YU5uZ5kH5mgL1y3kcqmMB5aOkvw==
-X-Received: by 2002:a5d:5604:: with SMTP id l4mr4564625wrv.127.1606406066449;
-        Thu, 26 Nov 2020 07:54:26 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9eBkN6lmfdOZ6y3T4AeVQ2xEMCxfbxxoIUc76Qx59Gw=;
+        b=Apzh2aRx+h6SqWGEVPfSr6455xBY0Q7BJ36UWqdm6auHEuRf7MOT7+PppJfRknYtpT
+         rfBwcTPIT3NtQeiPvUUlTtRUqDJV2rTzhStnyrYEJfjMOA5/Kd8GakKBKR9Tu9d2AUKR
+         4PIbpKJtB3MRqAatiQNVADkYFHvTBRsMrCJOxZ8g8WififeoSuyh/V5QtomcYKhaEUbC
+         VQy3jPswrpxTW1gNhOZCKDiqxVEhflw6Hzij0XNEnaZR8VVGEpDurpq6qI1fnLkms5mN
+         4mChsP97uh3PU59X42Sx+XbY5fJSXu+VUSBmb7dY9E6eEhUTpr3upRmHdx5HYrDD3MzK
+         yhpw==
+X-Gm-Message-State: AOAM530fUI35BAmMNh5UZ4Qfmfn5ODVYlikbKjjh2GYewy6YZdRjgPaE
+        92E0fISt/noiqGEaOlBsz8Mo2A==
+X-Google-Smtp-Source: ABdhPJw/lRW3PEMxi02nhLES66F/ltyrof/LoT+FjVRp6ybB+E4igrjSX8c/nxUUNknF9HL5GfidZA==
+X-Received: by 2002:a5d:5482:: with SMTP id h2mr4667449wrv.18.1606406068612;
+        Thu, 26 Nov 2020 07:54:28 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:f008:704d:8d4b:9951])
-        by smtp.gmail.com with ESMTPSA id r21sm9938901wrc.16.2020.11.26.07.54.24
+        by smtp.gmail.com with ESMTPSA id v7sm2637615wma.26.2020.11.26.07.54.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 07:54:25 -0800 (PST)
+        Thu, 26 Nov 2020 07:54:27 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     Jonathan Corbet <corbet@lwn.net>,
@@ -63,131 +63,57 @@ Cc:     Jonathan Corbet <corbet@lwn.net>,
         Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         kernel-team@android.com, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v3 00/23] Opt-in always-on nVHE hypervisor
-Date:   Thu, 26 Nov 2020 15:53:58 +0000
-Message-Id: <20201126155421.14901-1-dbrazdil@google.com>
+Subject: [PATCH v3 01/23] psci: Support psci_ops.get_version for v0.1
+Date:   Thu, 26 Nov 2020 15:53:59 +0000
+Message-Id: <20201126155421.14901-2-dbrazdil@google.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201126155421.14901-1-dbrazdil@google.com>
+References: <20201126155421.14901-1-dbrazdil@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As we progress towards being able to keep guest state private to the
-host running nVHE hypervisor, this series allows the hypervisor to
-install itself on newly booted CPUs before the host is allowed to run
-on them.
+KVM's host PSCI SMC filter needs to be aware of the PSCI version of the
+system but currently it is impossible to distinguish between v0.1 and
+PSCI disabled because both have get_version == NULL.
 
-All functionality described below is opt-in, guarded by an early param
-'kvm-arm.protected'. Future patches specific to the new "protected" mode
-should be hidden behind the same param.
+Populate get_version for v0.1 with a function that returns a constant.
 
-The hypervisor starts trapping host SMCs and intercepting host's PSCI
-CPU_ON/SUSPEND calls. It replaces the host's entry point with its own,
-initializes the EL2 state of the new CPU and installs the nVHE hyp vector
-before ERETing to the host's entry point.
+psci_opt.get_version is currently unused so this has no effect on
+existing functionality.
 
-The kernel checks new cores' features against the finalized system
-capabilities. To avoid the need to move this code/data to EL2, the
-implementation only allows to boot cores that were online at the time of
-KVM initialization and therefore had been checked already.
+Signed-off-by: David Brazdil <dbrazdil@google.com>
+---
+ drivers/firmware/psci/psci.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Other PSCI SMCs are forwarded to EL3, though only the known set of SMCs
-implemented in the kernel is allowed. Non-PSCI SMCs are also forwarded
-to EL3. Future changes will need to ensure the safety of all SMCs wrt.
-private guests.
-
-The host is still allowed to reset EL2 back to the stub vector, eg. for
-hibernation or kexec, but will not disable nVHE when there are no VMs.
-
-Tested on Rock Pi 4B, based on kvmarm/queue, itself on top of 5.10-rc4.
-
-Patches also available at:
-    https://android-kvm.googlesource.com/linux topic/psci-on-master_v3
-
-changes since v2:
-  * avoid non-spec error in CPU_SUSPEND
-  * refuse to init without PSCI
-  * compute hyp VA args of hyp-init in hyp instead of using params struct
-  * use hyp_symbol_addr in per-cpu calls
-  * simplify memory.h/sysreg.h includes
-  * rebase on kvmarm/queue, use trap handler args macros
-
-changes since v1:
-  * early param sets a capability instead of a static key
-  * assume SMCCC v1.2 for host SMC forwarding
-  * fix reserved SMC ID range for PSCI
-  * split init_el2_state into smaller macros, move to el2_setup.h
-  * many small cleanups
-
-changes since RFC:
-  * add early param to make features opt-in
-  * simplify CPU_ON/SUSPEND implementation
-  * replace spinlocks with CAS atomic
-  * make cpu_logical_map ro_after_init
-
-David Brazdil (23):
-  psci: Support psci_ops.get_version for v0.1
-  psci: Accessor for configured PSCI function IDs
-  arm64: Make cpu_logical_map() take unsigned int
-  arm64: Move MAIR_EL1_SET to asm/memory.h
-  arm64: Extract parts of el2_setup into a macro
-  kvm: arm64: Add kvm-arm.protected early kernel parameter
-  kvm: arm64: Initialize MAIR_EL2 using a constant
-  kvm: arm64: Remove vector_ptr param of hyp-init
-  kvm: arm64: Move hyp-init params to a per-CPU struct
-  kvm: arm64: Add .hyp.data..ro_after_init ELF section
-  kvm: arm64: Support per_cpu_ptr in nVHE hyp code
-  kvm: arm64: Create nVHE copy of cpu_logical_map
-  kvm: arm64: Add SMC handler in nVHE EL2
-  kvm: arm64: Bootstrap PSCI SMC handler in nVHE EL2
-  kvm: arm64: Add offset for hyp VA <-> PA conversion
-  kvm: arm64: Forward safe PSCI SMCs coming from host
-  kvm: arm64: Extract __do_hyp_init into a helper function
-  kvm: arm64: Add function to enter host from KVM nVHE hyp code
-  kvm: arm64: Intercept host's CPU_ON SMCs
-  kvm: arm64: Intercept host's CPU_SUSPEND PSCI SMCs
-  kvm: arm64: Keep nVHE EL2 vector installed
-  kvm: arm64: Trap host SMCs in protected mode
-  kvm: arm64: Fix EL2 mode availability checks
-
- .../admin-guide/kernel-parameters.txt         |   5 +
- arch/arm64/include/asm/cpucaps.h              |   3 +-
- arch/arm64/include/asm/el2_setup.h            | 182 +++++++++++
- arch/arm64/include/asm/kvm_arm.h              |   1 +
- arch/arm64/include/asm/kvm_asm.h              |   8 +-
- arch/arm64/include/asm/kvm_hyp.h              |   4 +-
- arch/arm64/include/asm/kvm_mmu.h              |  26 +-
- arch/arm64/include/asm/memory.h               |  13 +
- arch/arm64/include/asm/percpu.h               |   6 +
- arch/arm64/include/asm/sections.h             |   1 +
- arch/arm64/include/asm/smp.h                  |   4 +-
- arch/arm64/include/asm/virt.h                 |  26 ++
- arch/arm64/kernel/asm-offsets.c               |   3 +
- arch/arm64/kernel/cpufeature.c                |  29 ++
- arch/arm64/kernel/head.S                      | 144 +--------
- arch/arm64/kernel/image-vars.h                |   3 +
- arch/arm64/kernel/setup.c                     |   2 +-
- arch/arm64/kernel/vmlinux.lds.S               |  10 +
- arch/arm64/kvm/arm.c                          | 101 ++++--
- .../arm64/kvm/hyp/include/nvhe/trap_handler.h |  18 ++
- arch/arm64/kvm/hyp/nvhe/Makefile              |   3 +-
- arch/arm64/kvm/hyp/nvhe/host.S                |  47 +++
- arch/arm64/kvm/hyp/nvhe/hyp-init.S            |  97 +++++-
- arch/arm64/kvm/hyp/nvhe/hyp-main.c            |  45 ++-
- arch/arm64/kvm/hyp/nvhe/hyp-smp.c             |  40 +++
- arch/arm64/kvm/hyp/nvhe/hyp.lds.S             |   1 +
- arch/arm64/kvm/hyp/nvhe/psci-relay.c          | 296 ++++++++++++++++++
- arch/arm64/kvm/hyp/nvhe/switch.c              |   5 +-
- arch/arm64/kvm/va_layout.c                    |  30 +-
- arch/arm64/mm/proc.S                          |  15 +-
- drivers/firmware/psci/psci.c                  |  23 +-
- include/linux/psci.h                          |  10 +
- 32 files changed, 999 insertions(+), 202 deletions(-)
- create mode 100644 arch/arm64/include/asm/el2_setup.h
- create mode 100644 arch/arm64/kvm/hyp/include/nvhe/trap_handler.h
- create mode 100644 arch/arm64/kvm/hyp/nvhe/hyp-smp.c
- create mode 100644 arch/arm64/kvm/hyp/nvhe/psci-relay.c
-
---
+diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+index 00af99b6f97c..213c68418a65 100644
+--- a/drivers/firmware/psci/psci.c
++++ b/drivers/firmware/psci/psci.c
+@@ -146,6 +146,11 @@ static int psci_to_linux_errno(int errno)
+ 	return -EINVAL;
+ }
+ 
++static u32 psci_get_version_0_1(void)
++{
++	return PSCI_VERSION(0, 1);
++}
++
+ static u32 psci_get_version(void)
+ {
+ 	return invoke_psci_fn(PSCI_0_2_FN_PSCI_VERSION, 0, 0, 0);
+@@ -514,6 +519,8 @@ static int __init psci_0_1_init(struct device_node *np)
+ 
+ 	pr_info("Using PSCI v0.1 Function IDs from DT\n");
+ 
++	psci_ops.get_version = psci_get_version_0_1;
++
+ 	if (!of_property_read_u32(np, "cpu_suspend", &id)) {
+ 		psci_function_id[PSCI_FN_CPU_SUSPEND] = id;
+ 		psci_ops.cpu_suspend = psci_cpu_suspend;
+-- 
 2.29.2.454.gaff20da3a2-goog
+
