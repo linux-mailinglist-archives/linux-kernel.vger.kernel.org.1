@@ -2,107 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A3B2C5811
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B462C5821
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 16:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391329AbgKZPY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 10:24:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48433 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391322AbgKZPY4 (ORCPT
+        id S2389911AbgKZP21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 10:28:27 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:42547 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730181AbgKZP2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 10:24:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606404293;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=os+Q+Blp9HyEuGcQTO6G5ktoOsiuGVlsUvHpEhOMdh8=;
-        b=XOy/XDKRmrIwQ6MT0/uPoTbk9BKXpVRj8ngzWnOwwbhrjG3H5opELpPSW0NpSl7v8JH+PY
-        JhKWF2HWyEdx3PdfdKB2fQQpxvU1n0vS7uQzmodG+EoNSDSW2kCn8LN7ZJtq6XG8MNNIjW
-        Et0RGvVdMxKtDQaPisUOIDVFtez5TrY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-162-pNS2itOCPjGoDZ6o4cT49w-1; Thu, 26 Nov 2020 10:24:51 -0500
-X-MC-Unique: pNS2itOCPjGoDZ6o4cT49w-1
-Received: by mail-wr1-f70.google.com with SMTP id 91so1435534wrk.17
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 07:24:50 -0800 (PST)
+        Thu, 26 Nov 2020 10:28:25 -0500
+Received: by mail-ot1-f65.google.com with SMTP id 11so2148455oty.9;
+        Thu, 26 Nov 2020 07:28:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=os+Q+Blp9HyEuGcQTO6G5ktoOsiuGVlsUvHpEhOMdh8=;
-        b=L1DoRXCotzLdkW1WjVxe6coh2ygResN2WOmOa1La3asWjssxksTmpNaZV3FYJAFfGL
-         rcGJNpdYmHz6Yss67no0Ktn3q232RoREZN8SQgatLr/kVD0aP7uqlYtsTVOy81TYmS1S
-         Ti2hvWfIzQYCuNgl0HlTRo+OIeErRZuHKaLOlcsD7WXmjDGgYhmVt6PZgxA3UKRHLN+H
-         Gk7WzbQ5eoybZOGSeQ2XWmFm8wnIojygO6np5oyJAtDHwnbpDNncCfrR5PnvI2s14bOK
-         aRXXF+vMHk1btYkj2cszQd+ELahSJMQ3tgzPu+rOtMauIgM7lzMzGXFFK6q81eLEJ4zc
-         sLYQ==
-X-Gm-Message-State: AOAM531vLSmsgqNPH40Ub84cFW5dL95IFV7ARsvN+fpkuZMjiQCPapUX
-        97ZzLHxsxNHuvbzbAgJhoKyWG4RueXFa9Q7xxm5Vx9b3E6xbaoyAUbA0tbLlkq5Z47xvrJq1fGo
-        ZGfkWLBxEwvCNy6ItgDyFEUIr
-X-Received: by 2002:a1c:ddc4:: with SMTP id u187mr3993217wmg.55.1606404289360;
-        Thu, 26 Nov 2020 07:24:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz9OI6f7Ith7j2DJeW7ukSH/WzE5q8wUVem/TW5/l5aphxSgk/jB9dGYbJEH7CwzfT2T2xyeA==
-X-Received: by 2002:a1c:ddc4:: with SMTP id u187mr3993197wmg.55.1606404289170;
-        Thu, 26 Nov 2020 07:24:49 -0800 (PST)
-Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
-        by smtp.gmail.com with ESMTPSA id b14sm9723294wrx.35.2020.11.26.07.24.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 07:24:48 -0800 (PST)
-Date:   Thu, 26 Nov 2020 16:24:46 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        Jason Wang <jasowang@redhat.com>, Oren Duer <oren@nvidia.com>,
-        Shahaf Shuler <shahafs@nvidia.com>
-Subject: Re: [PATCH v2 00/17] vdpa: generalize vdpa simulator
-Message-ID: <20201126152446.lvf2db2u5crtv2ep@steredhat>
-References: <20201126144950.92850-1-sgarzare@redhat.com>
- <751e8938-8055-511c-c339-2b55dc902944@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kP9MspVOPl/NnVl8oGn1EIC/+F8CcK5+OXo+jY56Nno=;
+        b=p1LPklKauT6ZD3B4tEKvNCKzEP0Yfd4DGDo3Iy66e66PmLNNLYG+6ZxPyPtfaEn7Xx
+         O+Z1pSRZ2UylNm9jTTBRuUrKYw8QH6kndmudWNZFh1BzZhnXavwPjhAJGyN7oFoCD+Vt
+         uLF65g3oXOLCdOjNhgoRZR+sRMRAn/pCs75lCP9ntJMUbtEsLzpX0RwjTtwtDNMA8uWm
+         99mU+jCr2Jqq0f9P7SrCkv2nQnjHN1f3h3TV8PZ/Myt7RYbAgNp6grJN5/qrt1mOqs/G
+         OmYaJMRKhc80I1olU0DqWbgdTCNXn+hedUK06eUhHH2CxLj7JMpWP1YCRcumhBPHZHMQ
+         4TZQ==
+X-Gm-Message-State: AOAM532rYdzinpIMfCfA4fW6Y+YK3PQ0OYDO36NGYiA8INbBNzUJPDnw
+        Z6Ar5ecjZWk1XTPSza3q25qBxwPhwHFZ6bNsgIZBdtug
+X-Google-Smtp-Source: ABdhPJyYtol6dSfaI6WhgTcuunq7fhBuSULViECyA4Z+K27bCejCuaia55DZ/aziu9dD69JTQZlYwW/4z6Mu7Di+rU4=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr2551843otc.145.1606404504116;
+ Thu, 26 Nov 2020 07:28:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <751e8938-8055-511c-c339-2b55dc902944@nvidia.com>
+References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+ <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
+ <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
+ <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
+ <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
+ <CANiq72k5tpDoDPmJ0ZWc1DGqm+81Gi-uEENAtvEs9v3SZcx6_Q@mail.gmail.com>
+ <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
+ <CANiq72kqO=bYMJnFS2uYRpgWATJ=uXxZuNUsTXT+3aLtrpnzvQ@mail.gmail.com>
+ <44005bde-f6d4-5eaa-39b8-1a5efeedb2d3@gmail.com> <CANiq72nobq=ptWK-qWxU91JHqkKhMcRtJNnw2XJd5-vSJWZd8Q@mail.gmail.com>
+In-Reply-To: <CANiq72nobq=ptWK-qWxU91JHqkKhMcRtJNnw2XJd5-vSJWZd8Q@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 26 Nov 2020 16:28:12 +0100
+Message-ID: <CAMuHMdV5kOakvZJMWLxbpigFPS+Xuw6DVYsWCWZy7wGsv3idcw@mail.gmail.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        linux-atm-general@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-ide@vger.kernel.org, dm-devel@redhat.com,
+        keyrings@vger.kernel.org,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        usb-storage@lists.one-eyed-alien.net,
+        Lars Ellenberg <drbd-dev@lists.linbit.com>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        scsi <linux-scsi@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        coreteam@netfilter.org, intel-wired-lan@lists.osuosl.org,
+        linux-input <linux-input@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>, selinux@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        linux-geode@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        op-tee@lists.trustedfirmware.org,
+        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
+        Nouveau Dev <nouveau@lists.freedesktop.org>,
+        linux-hams@vger.kernel.org,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        GR-Linux-NIC-Dev@marvell.com,
+        tipc-discussion@lists.sourceforge.net,
+        Linux-MM <linux-mm@kvack.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-sctp@vger.kernel.org, USB list <linux-usb@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        target-devel <target-devel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 05:12:30PM +0200, Max Gurtovoy wrote:
->
->On 11/26/2020 4:49 PM, Stefano Garzarella wrote:
->>This series moves the network device simulator in a new module
->>(vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
->>module, allowing the possibility to add new vDPA device simulators.
->>
->>For now I removed the vdpa-blk simulator patches, since I'm still working
->>on them and debugging the iotlb issues.
->>
->>Thanks to Max that started this work! I took his patches and extended a bit.
->>
->>As Jason suggested, I simplified the "vdpa: split vdpasim to core and
->>net modules" patch, moving some changes out in small patches.
->>@Max: I put your Co-developed-by and Signed-off-by tags on these patches,
->>let me know if it is okay for you, or if there is a better way to give
->>credit to your work!
->
->Stefano,
->
->thanks for taking my initial series and bringing it to upstream level 
->and thanks Jason for your reviews.
->
->I'm ok with the tags and hopefully I'll be able to help a bit in the 
->submission in couple of weeks.
+Hi Miguel,
 
-Great! :-)
-I'll keep you updated.
-
+On Thu, Nov 26, 2020 at 3:54 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+> On Wed, Nov 25, 2020 at 11:44 PM Edward Cree <ecree.xilinx@gmail.com> wrote:
+> > To make the intent clear, you have to first be certain that you
+> >  understand the intent; otherwise by adding either a break or a
+> >  fallthrough to suppress the warning you are just destroying the
+> >  information that "the intent of this code is unknown".
 >
->great progress !
+> If you don't know what the intent of your own code is, then you
+> *already* have a problem in your hands.
 
-Thanks,
-Stefano
+The maintainer is not necessarily the owner/author of the code, and
+thus may not know the intent of the code.
 
+> > or does it flag up code
+> >  that can be mindlessly "fixed" (in which case the warning is
+> >  worthless)?  Proponents in this thread seem to be trying to
+> >  have it both ways.
+>
+> A warning is not worthless just because you can mindlessly fix it.
+> There are many counterexamples, e.g. many
+> checkpatch/lint/lang-format/indentation warnings, functional ones like
+> the `if (a = b)` warning...
+
+BTW, you cannot mindlessly fix the latter, as you cannot know if
+"(a == b)" or "((a = b))" was intended, without understanding the code
+(and the (possibly unavailable) data sheet, and the hardware, ...).
+
+P.S. So far I've stayed out of this thread, as I like it if the compiler
+     flags possible mistakes.  After all I was the one fixing new
+     "may be used uninitialized" warnings thrown up by gcc-4.1, until
+     (a bit later than) support for that compiler was removed...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
