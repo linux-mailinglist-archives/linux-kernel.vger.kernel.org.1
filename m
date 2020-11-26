@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05782C568F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71A72C5698
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390004AbgKZOCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:02:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389867AbgKZOCB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:02:01 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B563C061A04
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:02:01 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id d17so1169437ejy.9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:02:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C//B80UKsPK42OnJkphrjgs/wi9PrOEUKSvu4T2pPCo=;
-        b=Va5VHao16C8ylNksfKF3uVxr4ASphzaBEyKfiBAMrb8Ph1Gkj9FOJwyvAgYhnTeixp
-         WMj8PhmtD/eu7d8rBAxk2ijMYb25zeWj/L5MKrMWwU3nKUEDEG57WaHHj+QozeKiA7CK
-         3lZF82bhvFbi+abXHhsyNh/x0HWoB9Fcu32UCl4a6xci/2jJHMmmoVhCjNezmhTPxwPY
-         8u9m7EcE0T3BHVcjlH2t+gViqwuNjCs9E+cmO9s2Ami3nXzsHjEKu3M/vprHSrjKGxa7
-         khr2UPD2IHKBZ5m9Q1uRMNQYREfOeutaD7oDPg53ldESp6mXV6i3SqVHK73gF7ih5vZK
-         reeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C//B80UKsPK42OnJkphrjgs/wi9PrOEUKSvu4T2pPCo=;
-        b=XBlGmN9J5QG0KSMsZQ+CStyL6Xc2IkDy2da8w470P9V8ThSwvcIKgZ+Il7d82PSJq2
-         QNYPS0hq3JQTp0T45WqacqN2nuTsv7gvrm8/q/KQ9WD6cUv5Uv5dFIaxC0JaLuIhWxRW
-         AE8xVnatggXIWKmtJl+xQ7fMqcc8lxNASRnrp0BQ1gCbRXXVg3hifvDLdj1mDNH8iHMO
-         3Sy/F8lCh0CNtLdEFTPlqMVnuFLVCigPu3C4X+pJcnGZQNyKwgx6pWbivyi3VGSMnmH/
-         C1icPGrQr3ieP7RaqhHd7oLbFNdfHLq3cX9n35Ceg6l+XRpKTpaH8MtgKV0CB0YvMbRN
-         /HqA==
-X-Gm-Message-State: AOAM532Cpq/NwFXECKez84d6GrHqS5CgoCkgMyvSTIUXzsj7O6Y+n13I
-        EtjSdFciIJP5sTkXgO9Ac0/B/LXACRg9RNXGG+6gCQ==
-X-Google-Smtp-Source: ABdhPJw137LyNOPuU8evpHIqYGUXPc4VybKBndRUo+PEoVMXB3gSi+WS6uuhYdkyaB2U2vIOPc0TKnzAu2kmaKXGO4Q=
-X-Received: by 2002:a17:906:1e0c:: with SMTP id g12mr2872384ejj.115.1606399319938;
- Thu, 26 Nov 2020 06:01:59 -0800 (PST)
+        id S2390033AbgKZOCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:02:46 -0500
+Received: from foss.arm.com ([217.140.110.172]:33816 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389434AbgKZOCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 09:02:45 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C030A31B;
+        Thu, 26 Nov 2020 06:02:44 -0800 (PST)
+Received: from [10.57.29.239] (unknown [10.57.29.239])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 82CB33F71F;
+        Thu, 26 Nov 2020 06:02:43 -0800 (PST)
+Subject: Re: [PATCH v4 0/3] Improve the estimations in Intelligent Power
+ Allocation
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        amitk@kernel.org, Dietmar.Eggemann@arm.com, ionela.voinescu@arm.com
+References: <20201124161025.27694-1-lukasz.luba@arm.com>
+ <e953e887-0fc7-8375-9e5d-1be339f48216@arm.com>
+ <f9899f7b-0bc9-40e2-4969-eb76bd11ed5b@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <ef6bcc10-7034-0ac1-b832-938393682d2f@arm.com>
+Date:   Thu, 26 Nov 2020 14:02:41 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20201124093828.307709-1-colin.king@canonical.com>
-In-Reply-To: <20201124093828.307709-1-colin.king@canonical.com>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Thu, 26 Nov 2020 15:01:49 +0100
-Message-ID: <CAMGffEnNkj4GkM-Er-MDuUQiFdZCBD-Bzb1_pGGXazfH=NkCtQ@mail.gmail.com>
-Subject: Re: [PATCH][next] scsi: pm8001: remove space in a debug message
-To:     Colin King <colin.king@canonical.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f9899f7b-0bc9-40e2-4969-eb76bd11ed5b@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 10:38 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There are two words that need separating with a space in a
-> pm8001_dbg message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Thanks
-> ---
->  drivers/scsi/pm8001/pm8001_hwi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
-> index 08d6cc9b50db..c8d4d87c5473 100644
-> --- a/drivers/scsi/pm8001/pm8001_hwi.c
-> +++ b/drivers/scsi/pm8001/pm8001_hwi.c
-> @@ -1031,7 +1031,7 @@ pm8001_chip_soft_rst(struct pm8001_hba_info *pm8001_ha)
->         regVal = pm8001_cr32(pm8001_ha, 2, GSM_WRITE_DATA_PARITY_CHECK);
->         pm8001_cw32(pm8001_ha, 2, GSM_WRITE_DATA_PARITY_CHECK, regVal3);
->         pm8001_dbg(pm8001_ha, INIT,
-> -                  "GSM 0x700048 - Write Data Parity Check Enableis set to = 0x%x\n",
-> +                  "GSM 0x700048 - Write Data Parity Check Enable is set to = 0x%x\n",
->                    pm8001_cr32(pm8001_ha, 2, GSM_WRITE_DATA_PARITY_CHECK));
->
->         /* step 13: bring the IOP and AAP1 out of reset */
-> --
-> 2.29.2
->
+
+
+On 11/26/20 1:09 PM, Daniel Lezcano wrote:
+> On 26/11/2020 13:49, Lukasz Luba wrote:
+>> Hi Daniel,
+>>
+>> On 11/24/20 4:10 PM, Lukasz Luba wrote:
+>>> Hi all,
+>>>
+>>> The Intelligent Power Allocation (IPA) estimates the needed
+>>> coefficients for
+>>> internal algorithm. It can also estimate the sustainable power value
+>>> when the
+>>> DT has not provided one. Fix the 'k_i' coefficient which might be to big
+>>> related to the other values, when the sustainable power is in an abstract
+>>> scale. Do the estimation of sustainable power only once and avoid
+>>> expensive
+>>> calculation every time the IPA is called. Do the estimation of PID
+>>> constants
+>>> when there was user update via sysfs to sustainable power.
+>>>
+>>> The patch set should apply on top next-20201124
+>>>
+>>> Changes:
+>>> v4:
+>>> - added new function get_sustainable_power() which handles use cases
+>>>     when the value should be estimated again or simply returned
+>>> - added sustainable_power in the power_allocator_params to track if there
+>>>     was a change to sustainable_power by the user via sysfs
+>>> - addressed Daniel's comments that sustainable power set via sysfs should
+>>>     trigger PID coefficients estimation
+>>> - removed 'force' argument from estimate_pid_constants() and make it
+>>> ready
+>>>     for updates due to new value for sust. power from sysfs
+>>> - abandoned the design from v3 with a single function responsible for
+>>>     estimation both sust. power and PID const. requested by Ionela
+>>> v3 [1]:
+>>> - changed estimate_pid_constants to estimate_tzp_constants and related
+>>> comments
+>>> - estimate the PID coefficients always together with sust. power
+>>> - added print indicating that we are estimating sust. power and PID
+>>> const.
+>>> - don't use local variable 'sustainable_power'
+>>>
+>>> Regards,
+>>> Lukasz Luba
+>>>
+>>> [1]
+>>> https://lore.kernel.org/lkml/20201009135850.14727-1-lukasz.luba@arm.com/
+>>>
+>>> Lukasz Luba (3):
+>>>     thermal: power allocator: change the 'k_i' coefficient estimation
+>>>     thermal: power allocator: refactor sustainable power estimation
+>>>     thermal: power allocator: change the 'k_*' always in
+>>>       estimate_pid_constants()
+>>>
+>>>    drivers/thermal/gov_power_allocator.c | 76 +++++++++++++++++----------
+>>>    1 file changed, 49 insertions(+), 27 deletions(-)
+>>>
+>>
+>> Gentle ping. This is a self contained change to only power allocator
+>> file. It addresses also your requirement regarding sustainable_power
+>> changed via sysfs.
+>>
+>> Could you take it please? It should apply smoothly in your tree.
+> 
+> Actually, I'm waiting for Ionela and Dietmar ack.
+> 
+> 
+
+Are they maintainers of this file that you need their ACKs?
+Maybe I should drop mine then.
