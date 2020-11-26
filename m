@@ -2,106 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3012C5B89
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F182C5B91
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404765AbgKZSGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 13:06:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:42526 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404339AbgKZSGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 13:06:16 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C69831B;
-        Thu, 26 Nov 2020 10:06:15 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.30.234])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F2F63F23F;
-        Thu, 26 Nov 2020 10:06:11 -0800 (PST)
-Date:   Thu, 26 Nov 2020 18:06:08 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 05/23] arm64: Extract parts of el2_setup into a macro
-Message-ID: <20201126180608.GF38486@C02TD0UTHF1T.local>
-References: <20201126155421.14901-1-dbrazdil@google.com>
- <20201126155421.14901-6-dbrazdil@google.com>
+        id S2404776AbgKZSGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 13:06:50 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:44466 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391576AbgKZSGu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 13:06:50 -0500
+Received: by mail-wr1-f66.google.com with SMTP id 64so3045505wra.11;
+        Thu, 26 Nov 2020 10:06:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1QLKFnMd0xMr/FuISvhLJSJ7sMuGt7dY11QW5pCEZlM=;
+        b=t/JeBsIPKAQIbE5npPqhfKbrOsY3lY448eZ0DyltN66XMoagQ6K73CyE+vc/k3LIJd
+         ezPlTXs6UJT9eWg1pt8GwaUzyT/rWaOHTLXMiL9X+fk35nBlFqV/SapWFU91naRUOZSZ
+         9JoFolQ2kC4JV9DIn511e6xqiBDI/NH8yOUOX7fraVndXVfiQEjFXhXwmjeJjUq74JEM
+         07ym/k9PVjVyLByDPNFxTgP6c66R0Ok3fDTtMtTlKSXF5D8axindYu9QTl0GxHdCPcb6
+         xFkIxrtTHEhnHCm+vFcwtzFDy2R9ruQTqleba++ZSDHtrdWIYAFfO4hxqg7b6kFUo4dU
+         UcuQ==
+X-Gm-Message-State: AOAM5335sdaEkEWztE0trF8Z85hnmkShuvdHWuPBONFXlOM2fO7RS1dU
+        eeSlOEUZvlCbAGMKfthdXNk=
+X-Google-Smtp-Source: ABdhPJwJIzd4XnJQtTCHV2LiRu+9UIhtQQYRHVWoL0G78pv9E0vIbZE77Fy9quW92PvulxW+y/CkuQ==
+X-Received: by 2002:adf:ec8a:: with SMTP id z10mr5467457wrn.113.1606414006586;
+        Thu, 26 Nov 2020 10:06:46 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id o5sm9374179wmh.8.2020.11.26.10.06.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 10:06:45 -0800 (PST)
+Date:   Thu, 26 Nov 2020 19:06:43 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 17/47] dt-bindings: memory: tegra20: Add memory client
+ IDs
+Message-ID: <20201126180643.GA18074@kozik-lap>
+References: <20201104164923.21238-1-digetx@gmail.com>
+ <20201104164923.21238-18-digetx@gmail.com>
+ <X7/lLaZJNp+Vfczk@ulmo>
+ <20201126173922.GA7048@kozik-lap>
+ <X7/tz8KwCBEgA6vi@ulmo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201126155421.14901-6-dbrazdil@google.com>
+In-Reply-To: <X7/tz8KwCBEgA6vi@ulmo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 03:54:03PM +0000, David Brazdil wrote:
-> When the a CPU is booted in EL2, the kernel checks for VHE support and
-> initializes the CPU core accordingly. For nVHE it also installs the stub
-> vectors and drops down to EL1.
+On Thu, Nov 26, 2020 at 07:02:55PM +0100, Thierry Reding wrote:
+> On Thu, Nov 26, 2020 at 06:39:22PM +0100, Krzysztof Kozlowski wrote:
+> > On Thu, Nov 26, 2020 at 06:26:05PM +0100, Thierry Reding wrote:
+> > > On Wed, Nov 04, 2020 at 07:48:53PM +0300, Dmitry Osipenko wrote:
+> > > > Each memory client has unique hardware ID, add these IDs.
+> > > > 
+> > > > Acked-by: Rob Herring <robh@kernel.org>
+> > > > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > > > ---
+> > > >  include/dt-bindings/memory/tegra20-mc.h | 53 +++++++++++++++++++++++++
+> > > >  1 file changed, 53 insertions(+)
+> > > 
+> > > Is there any chance you could drop these dt-bindings include patches
+> > > (17, 18 and 19) so that I can pick them up into the Tegra tree? The
+> > > device tree changes that I was going to pick up depend on this and
+> > > fail to build if applied as-is.
+> > > 
+> > > I was looking at your linux-mem-ctrl tree and had initially thought I
+> > > could just pull in one of the branches to get these dependencies, but it
+> > > looks like the dt-bindings patches are on the for-v5.11/tegra-mc branch,
+> > > which the ARM SoC maintainers wouldn't like to see me pull in for a
+> > > dependency on device tree changes.
+> > 
+> > Partially you answered here. :) Since you should not pull my branch into
+> > a DT branch, you also should not put these include/dt-bindings patches
+> > there.  SoC guys will complain about this as well.
+> > 
+> > These patches are also needed for the driver, so if you take them, I
+> > would need them back in a pull request. SoC folks could spot it as well
+> > and point that such merge should not happen.
+> > 
+> > > If this is all fixed at this point, I'll just have to push back the
+> > > device tree changes to v5.12, or perhaps see if the ARM SoC maintainers
+> > > are willing to take a late pull request that's based on v5.11-rc1.
+> > 
+> > Yeah, that's a known problem. I asked about this Arnd and Olof in the
+> > past and got reply with two solutions:
+> > 1. Apply current version of patch without defines, just hard-coded
+> >    numbers. After merging to Linus, replace the numbers with defines.
+> > 
+> > 2. Wait with DTS till dependencies reach Linus.
 > 
-> Once KVM gains the ability to boot cores without going through the
-> kernel entry point, it will need to initialize the CPU the same way.
-> Extract the relevant bits of el2_setup into an init_el2_state macro
-> with an argument specifying whether to initialize for VHE or nVHE.
+> What I've done occasionally in the past was to put these kinds of
+> patches into a separate "dt-bindings" branch that I could use to resolve
+> dependencies from device tree files. The ARM SoC maintainers never had
+> any issues with that approach.
 > 
-> No functional change. Size of el2_setup increased by 148 bytes due
-> to duplication.
+> I guess this is a bit of a special case, because the DT includes are
+> ultimately really a part of the device tree, so mixing them both isn't
+> problematic.
 
-As a heads-up, this will conflict with my rework which is queued in the
-arm64 for-next/uaccess branch. I reworked an renamed el2_setup to
-initialize SCTLR_ELx and PSTATE more consistently as a prerequisite for
-the set_fs() removal.
+Indeed, that way could work... and no one would spot it. :) Many times
+these headers were for clock symbols so if they go via SoC/DT tree,
+merge back to clock tree could be accepted.
 
-I'm afraid this is going to conflict, and I reckon this needs to be
-rebased atop that. I think the actual conflicts are logically trivial,
-but the diff is going to be painful.
+Best regards,
+Krzysztof
 
-I'm certainly in favour of breaking this down into manageable chunks,
-especially as that makes the branch naming easier to follow, but I have
-a couple of concerns below.
-
-> +/* GICv3 system register access */
-> +.macro __init_el2_gicv3
-> +	mrs	x0, id_aa64pfr0_el1
-> +	ubfx	x0, x0, #ID_AA64PFR0_GIC_SHIFT, #4
-> +	cbz	x0, 1f
-> +
-> +	mrs_s	x0, SYS_ICC_SRE_EL2
-> +	orr	x0, x0, #ICC_SRE_EL2_SRE	// Set ICC_SRE_EL2.SRE==1
-> +	orr	x0, x0, #ICC_SRE_EL2_ENABLE	// Set ICC_SRE_EL2.Enable==1
-> +	msr_s	SYS_ICC_SRE_EL2, x0
-> +	isb					// Make sure SRE is now set
-> +	mrs_s	x0, SYS_ICC_SRE_EL2		// Read SRE back,
-> +	tbz	x0, #0, 1f			// and check that it sticks
-> +	msr_s	SYS_ICH_HCR_EL2, xzr		// Reset ICC_HCR_EL2 to defaults
-> +1:
-> +.endm
-
-In the head.S code, this was under an ifdef CONFIG_ARM_GIC_V3, but that
-ifdef wasn't carried into the macro here, or into its use below. I'm not
-sure of the impact, but that does seem to be a functional change.
-
-> +
-> +.macro __init_el2_hstr
-> +	msr	hstr_el2, xzr			// Disable CP15 traps to EL2
-> +.endm
-
-Likewise, this used to be be guarded by CONFIG_COMPAT, but that's not
-carried into the macro or its use.
-
-If the intent was to remove the conditionality, then that should be
-mentioned in the commit message, since it is a potential functional
-change.
-
-Thanks,
-Mark.
