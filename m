@@ -2,171 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7F12C4F1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6941B2C4F1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388264AbgKZHFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 02:05:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388248AbgKZHFQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 02:05:16 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43142C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 23:05:14 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id w24so1249474wmi.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 23:05:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+ssUyDjxHgveCYHcSneSBCki2wyrxz+WJuAVHLW5ABU=;
-        b=FxTEFUH67gsaxH703aaVavAsuhSKkvo8z/ec60AFRrzZRT9zOEETlanfV195SXR3cj
-         SZRG+b59KIaQEGtefAFg4LVxVF5BIo2WhHa6aEn059GLC7SGtw2mHbdD5xY0zwHmhgE7
-         yDjD017lZTgkTZPQ3gcUXxnLcvF9Kh0BRGf5Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=+ssUyDjxHgveCYHcSneSBCki2wyrxz+WJuAVHLW5ABU=;
-        b=L7pXtDqOv/2QeVGaV7Hl1vLbJyFbxO49nM6xWRnD2J+W+rVQwr93JGiV3fEzu5m6yx
-         Rwa2Efw2lHQi5DyqIY8dMo276ESd0WZxykA/xwM1G2VS086IuRHKewyi1jXBaxaaVC+f
-         KnVw9p4d9MM5V5yHgLTyyz8DE90g1da3Y3tOb8Ii5K9wN9SoZHzzXDeSC6oT5wrwFqhv
-         /MN17sl4Nv++Wsn9q7TKHK9wVMqu+f7YPaaJNKfqMT/3goHtSsR+GIR3jtpPf0g6LItu
-         cnS5GisEW0gbjDvfsNZgjy/jp8N6uaJgsSAokWobK6T0Hjc7RRsXsQglXecS8y3j2+Pg
-         BoZQ==
-X-Gm-Message-State: AOAM530SL1o40EvZzYpn5TIZyvlzGIeGVyHWd8dDpUCRF8dKhMTH4ziC
-        0lmmVnp+2xZVHLHPlVnDNPbefQWYcneU2g==
-X-Google-Smtp-Source: ABdhPJzpkoO8QKPC6d3ZxgXrjJu4huFOtj4AiQ2JvXSolZ5ScNLTxBfP1RuqNtD6THSN9IgvknpK1g==
-X-Received: by 2002:a05:600c:2601:: with SMTP id h1mr1626720wma.35.1606374312862;
-        Wed, 25 Nov 2020 23:05:12 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m3sm7310982wrv.6.2020.11.25.23.05.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 23:05:12 -0800 (PST)
-Date:   Thu, 26 Nov 2020 08:05:10 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Matti Hamalainen <ccr@tnsp.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Subject: Re: [PATCH] drm/nouveau: fix relocations applying logic and a
- double-free
-Message-ID: <20201126070510.GA401619@phenom.ffwll.local>
-Mail-Followup-To: Matti Hamalainen <ccr@tnsp.org>,
+        id S2388278AbgKZHGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 02:06:06 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:56805 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388266AbgKZHGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 02:06:06 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ChTLg4sPPz9sRK;
+        Thu, 26 Nov 2020 18:06:03 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606374364;
+        bh=RSw8f9gnygzj81ImNkvKDJ+GoE5urlFQ5Kg7cRV/RCI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=m6/1fwVn0zvZoq7YOd00OFSR9pgggYWBEvRWWLK4XfeuhYHX05kbvWkiB47DI5Ygj
+         D0+UTCYsNL1DlcyHKfFl+vfU44gYCHJ9s0Pl0EkAl2OGGTpaI6/vkKvl3PkgHv/HUm
+         2JYJRHym4iVNS1esb2D/2zp6u5hnkxsLaotWxjdjw+55IGAj7kOlDTWbu5DyDTiMvP
+         l5WpceFqi9+nyLRezTILV3uPIk3Lw1QV8BV1OP85x4ezZD1txTOtgo9ciA2s2aM1iX
+         nZCmp4QscJJe0+7fuzM3FNeoj1iH4+zReImhQj+2Qznr7Dh9rhpiY/Pyqngz4k1qZ9
+         i6R9F7NnUwtbg==
+Date:   Thu, 26 Nov 2020 18:06:02 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-References: <20201120152338.1203257-1-ccr@tnsp.org>
- <CAKMK7uGDY+aLP-yYwyW5t-usUK3XM-oU9ZLHm1_jU0BTjJUN+g@mail.gmail.com>
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: linux-next: manual merge of the akpm tree with the arm64 tree
+Message-ID: <20201126180602.002588dd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uGDY+aLP-yYwyW5t-usUK3XM-oU9ZLHm1_jU0BTjJUN+g@mail.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: multipart/signed; boundary="Sig_/90nwctSvEorm8C=pwjepCv.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:51:25AM +0100, Daniel Vetter wrote:
-> On Fri, Nov 20, 2020 at 4:23 PM Matti Hamalainen <ccr@tnsp.org> wrote:
-> >
-> > Commit 03e0d26fcf79 ("drm/nouveau: slowpath for pushbuf ioctl") included
-> > a logic-bug which results in the relocations not actually getting
-> > applied at all as the call to nouveau_gem_pushbuf_reloc_apply() is
-> > never reached. This causes a regression with graphical corruption,
-> > triggered when relocations need to be done (for example after a
-> > suspend/resume cycle.)
-> >
-> > Fix by setting *apply_relocs value only if there were more than 0
-> > relocations.
-> >
-> > Additionally, the never reached code had a leftover u_free() call,
-> > which, after fixing the logic, now got called and resulted in a
-> > double-free. Fix by removing one u_free(), moving the other
-> > and adding check for errors.
-> >
-> > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > Cc: Ben Skeggs <bskeggs@redhat.com>
-> > Cc: nouveau@lists.freedesktop.org
-> > Cc: dri-devel@lists.freedesktop.org
-> > Signed-off-by: Matti Hamalainen <ccr@tnsp.org>
-> > Fixes: 03e0d26fcf79 ("drm/nouveau: slowpath for pushbuf ioctl")
-> > Link: https://gitlab.freedesktop.org/drm/nouveau/-/issues/11
-> 
-> Link: is for the mailing list submission of the patch itself (to link
-> the git log to the mailing list discussions), this should be
-> References: or similar. Aside from this:
-> 
-> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> 
-> Ben, I'm assuming you'll push this through your tree.
+--Sig_/90nwctSvEorm8C=pwjepCv.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Ok Dave asked me to just push it into drm-misc-fixes.
+Hi all,
 
-Thanks for your patch!
--Daniel
+Today's linux-next merge of the akpm tree got a conflict in:
 
-> -Daniel
-> 
-> 
-> > ---
-> >  drivers/gpu/drm/nouveau/nouveau_gem.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouveau/nouveau_gem.c
-> > index 549bc67feabb..c2051380d18c 100644
-> > --- a/drivers/gpu/drm/nouveau/nouveau_gem.c
-> > +++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
-> > @@ -558,8 +558,10 @@ nouveau_gem_pushbuf_validate(struct nouveau_channel *chan,
-> >                         NV_PRINTK(err, cli, "validating bo list\n");
-> >                 validate_fini(op, chan, NULL, NULL);
-> >                 return ret;
-> > +       } else if (ret > 0) {
-> > +               *apply_relocs = true;
-> >         }
-> > -       *apply_relocs = ret;
-> > +
-> >         return 0;
-> >  }
-> >
-> > @@ -662,7 +664,6 @@ nouveau_gem_pushbuf_reloc_apply(struct nouveau_cli *cli,
-> >                 nouveau_bo_wr32(nvbo, r->reloc_bo_offset >> 2, data);
-> >         }
-> >
-> > -       u_free(reloc);
-> >         return ret;
-> >  }
-> >
-> > @@ -872,9 +873,10 @@ nouveau_gem_ioctl_pushbuf(struct drm_device *dev, void *data,
-> >                                 break;
-> >                         }
-> >                 }
-> > -               u_free(reloc);
-> >         }
-> >  out_prevalid:
-> > +       if (!IS_ERR(reloc))
-> > +               u_free(reloc);
-> >         u_free(bo);
-> >         u_free(push);
-> >
-> >
-> > base-commit: 3494d58865ad4a47611dbb427b214cc5227fa5eb
-> > --
-> > 2.29.2
-> >
-> 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+  arch/arm64/mm/proc.S
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+between commit:
+
+  49b3cf035edc ("kasan: arm64: set TCR_EL1.TBID1 when enabled")
+
+from the arm64 tree and commit:
+
+  68cd215d6529 ("arm64: kasan: allow enabling in-kernel MTE")
+
+from the akpm tree.
+
+I fixed it up (I think, see below) and can carry the fix as necessary.
+This is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/mm/proc.S
+index a0831bf8a018,0d85e6df42bc..000000000000
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@@ -40,9 -40,15 +40,15 @@@
+  #define TCR_CACHE_FLAGS	TCR_IRGN_WBWA | TCR_ORGN_WBWA
+ =20
+  #ifdef CONFIG_KASAN_SW_TAGS
+- #define TCR_KASAN_FLAGS TCR_TBI1 | TCR_TBID1
+ -#define TCR_KASAN_SW_FLAGS TCR_TBI1
+++#define TCR_KASAN_SW_FLAGS TCR_TBI1 | TCR_TBID1
+  #else
+- #define TCR_KASAN_FLAGS 0
++ #define TCR_KASAN_SW_FLAGS 0
++ #endif
++=20
++ #ifdef CONFIG_KASAN_HW_TAGS
+ -#define TCR_KASAN_HW_FLAGS SYS_TCR_EL1_TCMA1 | TCR_TBI1
+++#define TCR_KASAN_HW_FLAGS SYS_TCR_EL1_TCMA1 | TCR_TBI1 | TCR_TBID1
++ #else
++ #define TCR_KASAN_HW_FLAGS 0
+  #endif
+ =20
+  /*
+
+--Sig_/90nwctSvEorm8C=pwjepCv.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+/U9sACgkQAVBC80lX
+0Gx1MQgAgOqIBQ9YXWNRs54LfH56EHpGUS4SoL2ALUXmrgtqdzgZAvGQuX4DQy1/
+8UMnraNVKQgLR1c5wcxS2sgP9YT8X4dSkI5C2DmQlDsMt2WLlU+Oi/WcdICQZW2P
+GxMBypxoKRMfQAD96P2gJKkp2zi0s2+Rnb0s041d3Z+ei/EsiPqxVMK0ZRs0hzyD
+eyQt2+Kal1SakUI9/fF7SIWpRFf9LsIV3cmU1cgaho4OVW0OBkYISAWijgyPgaT/
+MY5zn7EHQh87wQbtOam5C19fPENDsRrBUKjc3p5lJkiUst2QAeGOLBz2kx0ig0ED
+tMil9WVCPTjVKBIwUnZJo8gLzifVuA==
+=DgvC
+-----END PGP SIGNATURE-----
+
+--Sig_/90nwctSvEorm8C=pwjepCv.--
