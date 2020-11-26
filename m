@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774652C4E16
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 05:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABB52C4E18
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 05:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387681AbgKZEtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 23:49:43 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:39409 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731054AbgKZEtm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 23:49:42 -0500
-Received: by mail-qk1-f196.google.com with SMTP id q22so620940qkq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 20:49:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5XMSpQDvOLBCrWc9cN7r0+tuqM412AuYZKYEtfQYteA=;
-        b=gEiqTHJ5PTUXz7K9kBxl3uoCat1srxYvB5lthD1RQbOgiWzu8t6yHF+6Z9MfK8akO1
-         /swms68VYzmIvxnoMhCGIZ2jaBAQZYHJHB/bLjpJdqt9Z0aeybZ3283jRd5KDODZxxAd
-         2dUOyGlovwxN4a7BCFBGOGHS4rylvfXhs9KlRbiTCPor3AymmJ0dRFOkjNWKO8tRmCaC
-         KqCECvcX4Agsu17sC62YEdxGcOOlNQvejOphRUL2lZiNdMapfEIqnCDgDiD/FyzJ0Ve3
-         JBZ1muyJGsXtyTD2dmDQNC/WvzB9ljDY8x3yNlQ/5hWJnS5+4YZnjtahpALw/eUgKXQa
-         a0hw==
-X-Gm-Message-State: AOAM531Vssa1JHj2oeZk6gJk0/HfL4ycZKHufQAmuuAwTofryJlqCi/t
-        Ch3lJzWtp9gIqc0/cOayTXAhGbAEEs1Jjha9Kno=
-X-Google-Smtp-Source: ABdhPJyWiu+10+MnM8SryBpFJ1TlJMcwMsRFP+VN6jcFnnDjqQXfFxyD4VM+N8kLm0Z7UhF8VGLowdokTYISmmMwyeE=
-X-Received: by 2002:a05:620a:990:: with SMTP id x16mr1508150qkx.316.1606366181844;
- Wed, 25 Nov 2020 20:49:41 -0800 (PST)
+        id S2387695AbgKZEuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 23:50:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387684AbgKZEuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 23:50:40 -0500
+Received: from localhost (unknown [122.179.79.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 010B82145D;
+        Thu, 26 Nov 2020 04:50:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606366240;
+        bh=t8TaVfhJXLJs3qX8q4hwu4FUKcPn1ZUAgVG39jnLMz0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rg0nz22TB9YyMCDBgxlFqiZLPKGX10kdP0XYWmwet/TPpJtqXhzMhdTgcp27DaVEC
+         0Ji/jqmGLa2v5ojhaN6fRc/NktWSsxjGlzBD2JamDl7MnhUjEgXrq7PDKDD2cPaRLA
+         o1sa+aiWI273/Q5t2Fho8Wb7Vjb1OlAOVXk43Xo4=
+Date:   Thu, 26 Nov 2020 10:20:35 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        andriy.shevchenko@intel.com, chuanhua.lei@linux.intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
+Subject: Re: [PATCH v9 2/2] Add Intel LGM SoC DMA support.
+Message-ID: <20201126045035.GI8403@vkoul-mobl>
+References: <cover.1605158930.git.mallikarjunax.reddy@linux.intel.com>
+ <67be905aa3bcb9faac424f2a134e88d076700419.1605158930.git.mallikarjunax.reddy@linux.intel.com>
+ <20201118173840.GW50232@vkoul-mobl>
+ <a4ea240f-b121-5bc9-a046-95bbcff87553@linux.intel.com>
+ <20201121121701.GB8403@vkoul-mobl>
+ <dc8c5f27-bce6-d276-af0b-93c6e63e85a1@linux.intel.com>
+ <20201124172149.GT8403@vkoul-mobl>
+ <ee275d37-5dda-205a-a897-7a61ad13b536@linux.intel.com>
 MIME-Version: 1.0
-References: <20201123230512.2097312-1-jolsa@kernel.org> <20201123230512.2097312-23-jolsa@kernel.org>
- <CAM9d7cgiCJeUx3tTBq+EHpCY-ycifXXn8ZW32F+F9br3CoOiSA@mail.gmail.com> <20201125163626.GJ2164284@krava>
-In-Reply-To: <20201125163626.GJ2164284@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 26 Nov 2020 13:49:29 +0900
-Message-ID: <CAM9d7ciEGMbtMhr7dLof2VHwiBSHWNr8AbH+RYnsL=z-x5zkdg@mail.gmail.com>
-Subject: Re: [PATCH 22/25] perf buildid-cache: Add support to add build ids
- from perf data
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ee275d37-5dda-205a-a897-7a61ad13b536@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 1:36 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Nov 25, 2020 at 10:00:10PM +0900, Namhyung Kim wrote:
-> > On Tue, Nov 24, 2020 at 8:06 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > Adding support to specify perf data file as -a option file
-> > > argument,
-> > >
-> > > If the file is detected to be perf data file, it is processed
-> > > and all dso objects with sample hit are stored to the build
-> > > id cache.
-> > >
-> > >   $ DEBUGINFOD_URLS=http://192.168.122.174:8002 perf buildid-cache -a perf.data
-> > >   OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /home/jolsa/.debug/.build-id/5d/cec522abf136fcfd3128f47e131f2365834dd7/elf
-> > >   OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
-> > >
-> > > By default we store only dso with hits, but it's possible to
-> > > specify 'all' to store all dso objects, like:
-> > >     -a perf.data,all
-> >
-> > I think we can add -A/--add-all like we have -p and -P.
->
-> hm, the thing is that 'all' is specific for perf data file: '-a perf.data'
-> hence -A 'file' would make no sense, only for '-A perf.data', so the current
-> 'all' parameter seems less confusing to me
+On 25-11-20, 18:39, Reddy, MallikarjunaX wrote:
 
-Yeah, I also thought about the '-A perf.data' form.
-But I won't insist on it strongly, it's up to you. :)
+> > > > > desc needs to be configure for each dma channel and the remapped address of
+> > > > > the IGP & EGP is desc base adress.
+> > > > Why should this address not passed as src_addr/dst_addr?
+> > > src_addr/dst_addr is the data pointer. Data pointer indicates address
+> > > pointer of data buffer.
+> > > 
+> > > ldma_chan_desc_cfg() carries the descriptor address.
+> > > 
+> > > The descriptor list entry contains the data pointer, which points to the
+> > > data section in the memory.
+> > > 
+> > > So we should not use src_addr/dst_addr as desc base address.
+> > Okay sounds reasonable. why is this using in API here?
+> descriptor base address needs to be write into the dma register (DMA_CDBA).
 
-Thanks,
-Namhyung
+Why cant descriptor be allocated by damenegine driver, passed to client
+as we normally do in prep_* callbacks ? Why do you need a custom API
+
+-- 
+~Vinod
