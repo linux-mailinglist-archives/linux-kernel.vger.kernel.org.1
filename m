@@ -2,265 +2,661 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B512C5227
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6D72C5236
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387901AbgKZKfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:35:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729095AbgKZKfu (ORCPT
+        id S1730896AbgKZKkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:40:52 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8126 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726602AbgKZKkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:35:50 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246FCC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 02:35:50 -0800 (PST)
-Received: from [2a0a:edc0:0:900:6245:cbff:fea0:1793] (helo=kresse.office.stw.pengutronix.de)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1kiEcm-00065O-L3; Thu, 26 Nov 2020 11:35:41 +0100
-Message-ID: <d5336c30883c5ed3192a5e18fc5741dfcb5f8987.camel@pengutronix.de>
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Thu, 26 Nov 2020 11:35:38 +0100
-In-Reply-To: <20201105145018.27255-1-laurentiu.palcu@oss.nxp.com>
-References: <20201105145018.27255-1-laurentiu.palcu@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+        Thu, 26 Nov 2020 05:40:51 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ChZ5x4hjVz15LXd;
+        Thu, 26 Nov 2020 18:40:21 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 26 Nov 2020 18:40:33 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v2] f2fs: compress: add compress_inode to cache compressed blocks
+Date:   Thu, 26 Nov 2020 18:37:09 +0800
+Message-ID: <20201126103709.80006-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:6245:cbff:fea0:1793
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
-        metis.ext.pengutronix.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=4.0 tests=AWL,BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_FILL_THIS_FORM_SHORT autolearn=no
-        autolearn_force=no version=3.4.2
-Subject: Re: [PATCH] drm/imx/dcss: allow using nearest neighbor
- interpolation scaling
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on metis.ext.pengutronix.de)
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Do, 2020-11-05 at 16:50 +0200, Laurentiu Palcu wrote:
-> This patch adds support for using NN interpolation scaling by setting the
-> SCALING_FILTER plane property to 1. Otherwise, the default method is used.
-> 
-> Signed-off-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+Support to use address space of inner inode to cache compressed block,
+in order to improve cache hit ratio of random read.
 
-Reviewed and pushed into drm-misc-next.
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+v2:
+- don't assign a_ops with f2fs_compress_aops if F2FS_FS_COMPRESSION is not
+defined.
+- don't remove sbi variable in f2fs_do_decompress_pages().
+ Documentation/filesystems/f2fs.rst |   3 +
+ fs/f2fs/compress.c                 | 151 ++++++++++++++++++++++++++---
+ fs/f2fs/data.c                     |  29 +++++-
+ fs/f2fs/debug.c                    |  13 +++
+ fs/f2fs/f2fs.h                     |  31 +++++-
+ fs/f2fs/gc.c                       |   1 +
+ fs/f2fs/inode.c                    |  18 +++-
+ fs/f2fs/segment.c                  |   6 +-
+ fs/f2fs/super.c                    |  19 +++-
+ include/linux/f2fs_fs.h            |   1 +
+ 10 files changed, 252 insertions(+), 20 deletions(-)
 
-Regards,
-Lucas
-
-> ---
-> I had no retro pixel art games to test this with, so I used modetest to see the
-> results:
-> 
-> To test, I used a 240x135 buffer, upscaled 8 times to 1920x1080:
->  * default scaling method using gaussian filter:
-> /usr/bin/modetest -M imx-dcss -w 33:SCALING_FILTER:0 -P 33@38:240x135*8@XR24
->  * NN interpolation method:
-> /usr/bin/modetest -M imx-dcss -w 33:SCALING_FILTER:1 -P 33@38:240x135*8@XR24
-> 
-> Thanks,
-> laurentiu
-> 
->  drivers/gpu/drm/imx/dcss/dcss-dev.h    |  3 ++
->  drivers/gpu/drm/imx/dcss/dcss-plane.c  | 10 +++++-
->  drivers/gpu/drm/imx/dcss/dcss-scaler.c | 47 +++++++++++++++++++++-----
->  3 files changed, 50 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.h b/drivers/gpu/drm/imx/dcss/dcss-dev.h
-> index c642ae17837f..1e582270c6ea 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-dev.h
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-dev.h
-> @@ -7,6 +7,7 @@
->  #define __DCSS_PRV_H__
->  
->  #include <drm/drm_fourcc.h>
-> +#include <drm/drm_plane.h>
->  #include <linux/io.h>
->  #include <video/videomode.h>
->  
-> @@ -165,6 +166,8 @@ void dcss_ss_sync_set(struct dcss_ss *ss, struct videomode *vm,
->  /* SCALER */
->  int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base);
->  void dcss_scaler_exit(struct dcss_scaler *scl);
-> +void dcss_scaler_set_filter(struct dcss_scaler *scl, int ch_num,
-> +			    enum drm_scaling_filter scaling_filter);
->  void dcss_scaler_setup(struct dcss_scaler *scl, int ch_num,
->  		       const struct drm_format_info *format,
->  		       int src_xres, int src_yres, int dst_xres, int dst_yres,
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-plane.c b/drivers/gpu/drm/imx/dcss/dcss-plane.c
-> index 5db093aada2f..03ba88f7f995 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-plane.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-plane.c
-> @@ -257,7 +257,8 @@ static bool dcss_plane_needs_setup(struct drm_plane_state *state,
->  	       state->src_h  != old_state->src_h  ||
->  	       fb->format->format != old_fb->format->format ||
->  	       fb->modifier  != old_fb->modifier ||
-> -	       state->rotation != old_state->rotation;
-> +	       state->rotation != old_state->rotation ||
-> +	       state->scaling_filter != old_state->scaling_filter;
->  }
->  
->  static void dcss_plane_atomic_update(struct drm_plane *plane,
-> @@ -313,6 +314,9 @@ static void dcss_plane_atomic_update(struct drm_plane *plane,
->  	is_rotation_90_or_270 = state->rotation & (DRM_MODE_ROTATE_90 |
->  						   DRM_MODE_ROTATE_270);
->  
-> +	dcss_scaler_set_filter(dcss->scaler, dcss_plane->ch_num,
-> +			       state->scaling_filter);
-> +
->  	dcss_scaler_setup(dcss->scaler, dcss_plane->ch_num,
->  			  state->fb->format,
->  			  is_rotation_90_or_270 ? src_h : src_w,
-> @@ -394,6 +398,10 @@ struct dcss_plane *dcss_plane_init(struct drm_device *drm,
->  	if (ret)
->  		return ERR_PTR(ret);
->  
-> +	drm_plane_create_scaling_filter_property(&dcss_plane->base,
-> +					BIT(DRM_SCALING_FILTER_DEFAULT) |
-> +					BIT(DRM_SCALING_FILTER_NEAREST_NEIGHBOR));
-> +
->  	drm_plane_create_rotation_property(&dcss_plane->base,
->  					   DRM_MODE_ROTATE_0,
->  					   DRM_MODE_ROTATE_0   |
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-scaler.c b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-> index cd21905de580..47852b9dd5ea 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-> @@ -77,6 +77,8 @@ struct dcss_scaler_ch {
->  
->  	u32 c_vstart;
->  	u32 c_hstart;
-> +
-> +	bool use_nn_interpolation;
->  };
->  
->  struct dcss_scaler {
-> @@ -243,6 +245,17 @@ static void dcss_scaler_gaussian_filter(int fc_q, bool use_5_taps,
->  	}
->  }
->  
-> +static void dcss_scaler_nearest_neighbor_filter(bool use_5_taps,
-> +						int coef[][PSC_NUM_TAPS])
-> +{
-> +	int i, j;
-> +
-> +	for (i = 0; i < PSC_STORED_PHASES; i++)
-> +		for (j = 0; j < PSC_NUM_TAPS; j++)
-> +			coef[i][j] = j == PSC_NUM_TAPS >> 1 ?
-> +						(1 << PSC_COEFF_PRECISION) : 0;
-> +}
-> +
->  /**
->   * dcss_scaler_filter_design() - Compute filter coefficients using
->   *				 Gaussian filter.
-> @@ -253,7 +266,8 @@ static void dcss_scaler_gaussian_filter(int fc_q, bool use_5_taps,
->   */
->  static void dcss_scaler_filter_design(int src_length, int dst_length,
->  				      bool use_5_taps, bool phase0_identity,
-> -				      int coef[][PSC_NUM_TAPS])
-> +				      int coef[][PSC_NUM_TAPS],
-> +				      bool nn_interpolation)
->  {
->  	int fc_q;
->  
-> @@ -263,8 +277,11 @@ static void dcss_scaler_filter_design(int src_length, int dst_length,
->  	else
->  		fc_q = div_q(dst_length, src_length * PSC_NUM_PHASES);
->  
-> -	/* compute gaussian filter coefficients */
-> -	dcss_scaler_gaussian_filter(fc_q, use_5_taps, phase0_identity, coef);
-> +	if (nn_interpolation)
-> +		dcss_scaler_nearest_neighbor_filter(use_5_taps, coef);
-> +	else
-> +		/* compute gaussian filter coefficients */
-> +		dcss_scaler_gaussian_filter(fc_q, use_5_taps, phase0_identity, coef);
->  }
->  
->  static void dcss_scaler_write(struct dcss_scaler_ch *ch, u32 val, u32 ofs)
-> @@ -653,12 +670,14 @@ static void dcss_scaler_yuv_coef_set(struct dcss_scaler_ch *ch,
->  
->  	/* horizontal luma */
->  	dcss_scaler_filter_design(src_xres, dst_xres, false,
-> -				  src_xres == dst_xres, coef);
-> +				  src_xres == dst_xres, coef,
-> +				  ch->use_nn_interpolation);
->  	dcss_scaler_program_7_coef_set(ch, DCSS_SCALER_COEF_HLUM, coef);
->  
->  	/* vertical luma */
->  	dcss_scaler_filter_design(src_yres, dst_yres, program_5_taps,
-> -				  src_yres == dst_yres, coef);
-> +				  src_yres == dst_yres, coef,
-> +				  ch->use_nn_interpolation);
->  
->  	if (program_5_taps)
->  		dcss_scaler_program_5_coef_set(ch, DCSS_SCALER_COEF_VLUM, coef);
-> @@ -678,14 +697,14 @@ static void dcss_scaler_yuv_coef_set(struct dcss_scaler_ch *ch,
->  	/* horizontal chroma */
->  	dcss_scaler_filter_design(src_xres, dst_xres, false,
->  				  (src_xres == dst_xres) && (ch->c_hstart == 0),
-> -				  coef);
-> +				  coef, ch->use_nn_interpolation);
->  
->  	dcss_scaler_program_7_coef_set(ch, DCSS_SCALER_COEF_HCHR, coef);
->  
->  	/* vertical chroma */
->  	dcss_scaler_filter_design(src_yres, dst_yres, program_5_taps,
->  				  (src_yres == dst_yres) && (ch->c_vstart == 0),
-> -				  coef);
-> +				  coef, ch->use_nn_interpolation);
->  	if (program_5_taps)
->  		dcss_scaler_program_5_coef_set(ch, DCSS_SCALER_COEF_VCHR, coef);
->  	else
-> @@ -700,12 +719,14 @@ static void dcss_scaler_rgb_coef_set(struct dcss_scaler_ch *ch,
->  
->  	/* horizontal RGB */
->  	dcss_scaler_filter_design(src_xres, dst_xres, false,
-> -				  src_xres == dst_xres, coef);
-> +				  src_xres == dst_xres, coef,
-> +				  ch->use_nn_interpolation);
->  	dcss_scaler_program_7_coef_set(ch, DCSS_SCALER_COEF_HLUM, coef);
->  
->  	/* vertical RGB */
->  	dcss_scaler_filter_design(src_yres, dst_yres, false,
-> -				  src_yres == dst_yres, coef);
-> +				  src_yres == dst_yres, coef,
-> +				  ch->use_nn_interpolation);
->  	dcss_scaler_program_7_coef_set(ch, DCSS_SCALER_COEF_VLUM, coef);
->  }
->  
-> @@ -751,6 +772,14 @@ static void dcss_scaler_set_rgb10_order(struct dcss_scaler_ch *ch,
->  	ch->sdata_ctrl |= a2r10g10b10_format << A2R10G10B10_FORMAT_POS;
->  }
->  
-> +void dcss_scaler_set_filter(struct dcss_scaler *scl, int ch_num,
-> +			    enum drm_scaling_filter scaling_filter)
-> +{
-> +	struct dcss_scaler_ch *ch = &scl->ch[ch_num];
-> +
-> +	ch->use_nn_interpolation = scaling_filter == DRM_SCALING_FILTER_NEAREST_NEIGHBOR;
-> +}
-> +
->  void dcss_scaler_setup(struct dcss_scaler *scl, int ch_num,
->  		       const struct drm_format_info *format,
->  		       int src_xres, int src_yres, int dst_xres, int dst_yres,
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index 985ae7d35066..8830a11a11be 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -261,6 +261,9 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
+ 			 Note that, there is one reserved special extension '*', it
+ 			 can be set to enable compression for all files.
+ compress_chksum		 Support verifying chksum of raw data in compressed cluster.
++compress_cache		 Support to use address space of inner inode to cache
++			 compressed block, in order to improve cache hit ratio of
++			 random read.
+ inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
+ 			 files using the blk-crypto framework rather than
+ 			 filesystem-layer encryption. This allows the use of
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 487c4280a7b8..2ec34168adbb 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -15,6 +15,7 @@
+ 
+ #include "f2fs.h"
+ #include "node.h"
++#include "segment.h"
+ #include <trace/events/f2fs.h>
+ 
+ static struct kmem_cache *cic_entry_slab;
+@@ -726,25 +727,14 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+ 	return ret;
+ }
+ 
+-void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
++void f2fs_do_decompress_pages(struct decompress_io_ctx *dic, bool verity)
+ {
+-	struct decompress_io_ctx *dic =
+-			(struct decompress_io_ctx *)page_private(page);
+-	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+ 	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
+ 	const struct f2fs_compress_ops *cops =
+ 			f2fs_cops[fi->i_compress_algorithm];
+ 	int ret;
+ 	int i;
+ 
+-	dec_page_count(sbi, F2FS_RD_DATA);
+-
+-	if (bio->bi_status || PageError(page))
+-		dic->failed = true;
+-
+-	if (atomic_dec_return(&dic->pending_pages))
+-		return;
+-
+ 	trace_f2fs_decompress_pages_start(dic->inode, dic->cluster_idx,
+ 				dic->cluster_size, fi->i_compress_algorithm);
+ 
+@@ -802,6 +792,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+ 	ret = cops->decompress_pages(dic);
+ 
+ 	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
++		struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+ 		u32 provided = le32_to_cpu(dic->cbuf->chksum);
+ 		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
+ 
+@@ -838,6 +829,30 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+ 		f2fs_free_dic(dic);
+ }
+ 
++void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
++								block_t blkaddr);
++void f2fs_decompress_pages(struct bio *bio, struct page *page,
++						bool verity, unsigned int ofs)
++{
++	struct decompress_io_ctx *dic =
++			(struct decompress_io_ctx *)page_private(page);
++	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
++	block_t blkaddr;
++
++	dec_page_count(sbi, F2FS_RD_DATA);
++
++	if (bio->bi_status || PageError(page))
++		dic->failed = true;
++
++	blkaddr = SECTOR_TO_BLOCK(bio->bi_iter.bi_sector) + ofs;
++	f2fs_cache_compressed_page(sbi, page, blkaddr);
++
++	if (atomic_dec_return(&dic->pending_pages))
++		return;
++
++	f2fs_do_decompress_pages(dic, verity);
++}
++
+ static bool is_page_in_cluster(struct compress_ctx *cc, pgoff_t index)
+ {
+ 	if (cc->cluster_idx == NULL_CLUSTER)
+@@ -1608,6 +1623,118 @@ void f2fs_decompress_end_io(struct page **rpages,
+ 	}
+ }
+ 
++const struct address_space_operations f2fs_compress_aops = {
++	.releasepage = f2fs_release_page,
++	.invalidatepage = f2fs_invalidate_page,
++};
++
++struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi)
++{
++	return sbi->compress_inode->i_mapping;
++}
++
++void invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr)
++{
++	if (!sbi->compress_inode)
++		return;
++	invalidate_mapping_pages(COMPRESS_MAPPING(sbi), blkaddr, blkaddr);
++}
++
++void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
++								block_t blkaddr)
++{
++	struct page *cpage;
++	int ret;
++	struct sysinfo si;
++	unsigned long free_ram, avail_ram;
++
++	if (!test_opt(sbi, COMPRESS_CACHE))
++		return;
++
++	si_meminfo(&si);
++	free_ram = si.freeram;
++	avail_ram = si.totalram - si.totalhigh;
++
++	/* free memory is lower than watermark, deny caching compress page */
++	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
++		return;
++
++	/* cached page count exceed threshold, deny caching compress page */
++	if (COMPRESS_MAPPING(sbi)->nrpages >=
++			free_ram / 100 * sbi->compress_percent)
++		return;
++
++	cpage = find_get_page(COMPRESS_MAPPING(sbi), blkaddr);
++	if (cpage) {
++		f2fs_put_page(cpage, 0);
++		return;
++	}
++
++	cpage = alloc_page(__GFP_IO);
++	if (!cpage)
++		return;
++
++	ret = add_to_page_cache_lru(cpage, COMPRESS_MAPPING(sbi),
++						blkaddr, GFP_NOFS);
++	if (ret) {
++		f2fs_put_page(cpage, 0);
++		return;
++	}
++
++	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
++	SetPageUptodate(cpage);
++	f2fs_put_page(cpage, 1);
++}
++
++void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
++								block_t blkaddr)
++{
++	struct page *cpage;
++
++	if (!test_opt(sbi, COMPRESS_CACHE))
++		return;
++
++	cpage = f2fs_pagecache_get_page(COMPRESS_MAPPING(sbi),
++				blkaddr, FGP_LOCK | FGP_NOWAIT, GFP_NOFS);
++	if (cpage) {
++		if (PageUptodate(cpage)) {
++			atomic_inc(&sbi->compress_page_hit);
++			memcpy(page_address(page),
++				page_address(cpage), PAGE_SIZE);
++			SetPageUptodate(page);
++		}
++		f2fs_put_page(cpage, 1);
++	}
++}
++
++int f2fs_init_compress_inode(struct f2fs_sb_info *sbi)
++{
++	struct inode *inode;
++
++	if (!test_opt(sbi, COMPRESS_CACHE))
++		return 0;
++
++	inode = f2fs_iget(sbi->sb, F2FS_COMPRESS_INO(sbi));
++	if (IS_ERR(inode))
++		return PTR_ERR(inode);
++	sbi->compress_inode = inode;
++
++	sbi->compress_percent = COMPRESS_PERCENT;
++	sbi->compress_watermark = COMPRESS_WATERMARK;
++
++	atomic_set(&sbi->compress_page_hit, 0);
++
++	return 0;
++}
++
++void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi)
++{
++	if (!sbi->compress_inode)
++		return;
++	iput(sbi->compress_inode);
++	sbi->compress_inode = NULL;
++}
++
+ int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi)
+ {
+ 	dev_t dev = sbi->sb->s_bdev->bd_dev;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index be4da52604ed..26b4ce15be3f 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -133,17 +133,21 @@ static void __read_end_io(struct bio *bio, bool compr, bool verity)
+ 	struct page *page;
+ 	struct bio_vec *bv;
+ 	struct bvec_iter_all iter_all;
++	unsigned int ofs = 0;
+ 
+ 	bio_for_each_segment_all(bv, bio, iter_all) {
+ 		page = bv->bv_page;
+ 
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 		if (compr && f2fs_is_compressed_page(page)) {
+-			f2fs_decompress_pages(bio, page, verity);
++			f2fs_decompress_pages(bio, page, verity, ofs);
++			ofs++;
+ 			continue;
+ 		}
+-		if (verity)
++		if (verity) {
++			ofs++;
+ 			continue;
++		}
+ #endif
+ 
+ 		/* PG_error was set if any post_read step failed */
+@@ -156,6 +160,7 @@ static void __read_end_io(struct bio *bio, bool compr, bool verity)
+ 		}
+ 		dec_page_count(F2FS_P_SB(page), __read_io_type(page));
+ 		unlock_page(page);
++		ofs++;
+ 	}
+ }
+ 
+@@ -1417,9 +1422,11 @@ static int __allocate_data_block(struct dnode_of_data *dn, int seg_type)
+ 	old_blkaddr = dn->data_blkaddr;
+ 	f2fs_allocate_data_block(sbi, NULL, old_blkaddr, &dn->data_blkaddr,
+ 				&sum, seg_type, NULL);
+-	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO)
++	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO) {
+ 		invalidate_mapping_pages(META_MAPPING(sbi),
+ 					old_blkaddr, old_blkaddr);
++		invalidate_compress_page(sbi, old_blkaddr);
++	}
+ 	f2fs_update_data_blkaddr(dn, dn->data_blkaddr);
+ 
+ 	/*
+@@ -2253,6 +2260,22 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+ 						dn.ofs_in_node + i + 1);
+ 
++		f2fs_load_compressed_page(sbi, page, blkaddr);
++		if (PageUptodate(page)) {
++			if (!atomic_dec_return(&dic->pending_pages)) {
++				bool verity =
++					f2fs_need_verity(inode, start_idx);
++
++				f2fs_do_decompress_pages(dic, verity);
++				if (verity) {
++					f2fs_verify_pages(dic->rpages,
++							dic->cluster_size);
++					f2fs_free_dic(dic);
++				}
++			}
++			continue;
++		}
++
+ 		if (bio && (!page_is_mergeable(sbi, bio,
+ 					*last_block_in_bio, blkaddr) ||
+ 		    !f2fs_crypt_mergeable_bio(bio, inode, page->index, NULL))) {
+diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+index a8357fd4f5fa..7d76eb5839b4 100644
+--- a/fs/f2fs/debug.c
++++ b/fs/f2fs/debug.c
+@@ -145,6 +145,12 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+ 		si->node_pages = NODE_MAPPING(sbi)->nrpages;
+ 	if (sbi->meta_inode)
+ 		si->meta_pages = META_MAPPING(sbi)->nrpages;
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (sbi->compress_inode) {
++		si->compress_pages = COMPRESS_MAPPING(sbi)->nrpages;
++		si->compress_page_hit = atomic_read(&sbi->compress_page_hit);
++	}
++#endif
+ 	si->nats = NM_I(sbi)->nat_cnt;
+ 	si->dirty_nats = NM_I(sbi)->dirty_nat_cnt;
+ 	si->sits = MAIN_SEGS(sbi);
+@@ -298,6 +304,12 @@ static void update_mem_info(struct f2fs_sb_info *sbi)
+ 		unsigned npages = META_MAPPING(sbi)->nrpages;
+ 		si->page_mem += (unsigned long long)npages << PAGE_SHIFT;
+ 	}
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (sbi->compress_inode) {
++		unsigned npages = COMPRESS_MAPPING(sbi)->nrpages;
++		si->page_mem += (unsigned long long)npages << PAGE_SHIFT;
++	}
++#endif
+ }
+ 
+ static int stat_show(struct seq_file *s, void *v)
+@@ -460,6 +472,7 @@ static int stat_show(struct seq_file *s, void *v)
+ 			"volatile IO: %4d (Max. %4d)\n",
+ 			   si->inmem_pages, si->aw_cnt, si->max_aw_cnt,
+ 			   si->vw_cnt, si->max_vw_cnt);
++		seq_printf(s, "  - compress: %4d, hit:%8d\n", si->compress_pages, si->compress_page_hit);
+ 		seq_printf(s, "  - nodes: %4d in %4d\n",
+ 			   si->ndirty_node, si->node_pages);
+ 		seq_printf(s, "  - dents: %4d in dirs:%4d (%4d)\n",
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 7c2e7e4738e5..4f2766f3d2c1 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -99,6 +99,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
+ #define F2FS_MOUNT_DISABLE_CHECKPOINT	0x02000000
+ #define F2FS_MOUNT_NORECOVERY		0x04000000
+ #define F2FS_MOUNT_ATGC			0x08000000
++#define F2FS_MOUNT_COMPRESS_CACHE	0x10000000
+ 
+ #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
+ #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
+@@ -1278,6 +1279,9 @@ enum compress_flag {
+ 	COMPRESS_MAX_FLAG,
+ };
+ 
++#define	COMPRESS_WATERMARK			20
++#define	COMPRESS_PERCENT			20
++
+ #define COMPRESS_DATA_RESERVED_SIZE		4
+ struct compress_data {
+ 	__le32 clen;			/* compressed data size */
+@@ -1549,6 +1553,11 @@ struct f2fs_sb_info {
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 	struct kmem_cache *page_array_slab;	/* page array entry */
+ 	unsigned int page_array_slab_size;	/* default page array slab size */
++
++	struct inode *compress_inode;		/* cache compressed blocks */
++	unsigned int compress_percent;		/* cache page percentage */
++	unsigned int compress_watermark;	/* cache page watermark */
++	atomic_t compress_page_hit;		/* cache hit count */
+ #endif
+ };
+ 
+@@ -3497,7 +3506,8 @@ struct f2fs_stat_info {
+ 	unsigned int bimodal, avg_vblocks;
+ 	int util_free, util_valid, util_invalid;
+ 	int rsvd_segs, overp_segs;
+-	int dirty_count, node_pages, meta_pages;
++	int dirty_count, node_pages, meta_pages, compress_pages;
++	int compress_page_hit;
+ 	int prefree_count, call_count, cp_count, bg_cp_count;
+ 	int tot_segs, node_segs, data_segs, free_segs, free_secs;
+ 	int bg_node_segs, bg_data_segs;
+@@ -3839,7 +3849,8 @@ bool f2fs_is_compress_backend_ready(struct inode *inode);
+ bool f2fs_is_compress_algorithm_valid(unsigned char algorithm);
+ int f2fs_init_compress_mempool(void);
+ void f2fs_destroy_compress_mempool(void);
+-void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
++void f2fs_do_decompress_pages(struct decompress_io_ctx *dic, bool verity);
++void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity, unsigned int ofs);
+ bool f2fs_cluster_is_empty(struct compress_ctx *cc);
+ bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index);
+ void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page);
+@@ -3858,10 +3869,18 @@ void f2fs_decompress_end_io(struct page **rpages,
+ int f2fs_init_compress_ctx(struct compress_ctx *cc);
+ void f2fs_destroy_compress_ctx(struct compress_ctx *cc);
+ void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
++int f2fs_init_compress_inode(struct f2fs_sb_info *sbi);
++void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi);
+ int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
+ void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
+ int __init f2fs_init_compress_cache(void);
+ void f2fs_destroy_compress_cache(void);
++struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi);
++void invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr);
++void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
++								block_t blkaddr);
++void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
++								block_t blkaddr);
+ #else
+ static inline bool f2fs_is_compressed_page(struct page *page) { return false; }
+ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+@@ -3882,10 +3901,18 @@ static inline struct page *f2fs_compress_control_page(struct page *page)
+ }
+ static inline int f2fs_init_compress_mempool(void) { return 0; }
+ static inline void f2fs_destroy_compress_mempool(void) { }
++static inline int f2fs_init_compress_inode(struct f2fs_sb_info *sbi) { return 0; }
++static inline void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi) { }
+ static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return 0; }
+ static inline void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi) { }
+ static inline int __init f2fs_init_compress_cache(void) { return 0; }
+ static inline void f2fs_destroy_compress_cache(void) { }
++static inline void invalidate_compress_page(struct f2fs_sb_info *sbi,
++				block_t blkaddr) { }
++static inline void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi,
++				struct page *page, block_t blkaddr) { }
++static inline void f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
++				struct page *page, block_t blkaddr) { }
+ #endif
+ 
+ static inline void set_compress_context(struct inode *inode)
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index 05641a1e36cc..b2a558e76b61 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -1225,6 +1225,7 @@ static int move_data_block(struct inode *inode, block_t bidx,
+ 	f2fs_put_page(mpage, 1);
+ 	invalidate_mapping_pages(META_MAPPING(fio.sbi),
+ 				fio.old_blkaddr, fio.old_blkaddr);
++	invalidate_compress_page(fio.sbi, fio.old_blkaddr);
+ 
+ 	set_page_dirty(fio.encrypted_page);
+ 	if (clear_page_dirty_for_io(fio.encrypted_page))
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index 349d9cb933ee..39fad324ca52 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -18,6 +18,10 @@
+ 
+ #include <trace/events/f2fs.h>
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++extern const struct address_space_operations f2fs_compress_aops;
++#endif
++
+ void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync)
+ {
+ 	if (is_inode_flag_set(inode, FI_NEW_INODE))
+@@ -494,6 +498,11 @@ struct inode *f2fs_iget(struct super_block *sb, unsigned long ino)
+ 	if (ino == F2FS_NODE_INO(sbi) || ino == F2FS_META_INO(sbi))
+ 		goto make_now;
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (ino == F2FS_COMPRESS_INO(sbi))
++		goto make_now;
++#endif
++
+ 	ret = do_read_inode(inode);
+ 	if (ret)
+ 		goto bad_inode;
+@@ -504,6 +513,12 @@ struct inode *f2fs_iget(struct super_block *sb, unsigned long ino)
+ 	} else if (ino == F2FS_META_INO(sbi)) {
+ 		inode->i_mapping->a_ops = &f2fs_meta_aops;
+ 		mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
++	} else if (ino == F2FS_COMPRESS_INO(sbi)) {
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++		inode->i_mapping->a_ops = &f2fs_compress_aops;
++#endif
++		mapping_set_gfp_mask(inode->i_mapping,
++			GFP_NOFS | __GFP_HIGHMEM | __GFP_MOVABLE);
+ 	} else if (S_ISREG(inode->i_mode)) {
+ 		inode->i_op = &f2fs_file_inode_operations;
+ 		inode->i_fop = &f2fs_file_operations;
+@@ -723,7 +738,8 @@ void f2fs_evict_inode(struct inode *inode)
+ 	truncate_inode_pages_final(&inode->i_data);
+ 
+ 	if (inode->i_ino == F2FS_NODE_INO(sbi) ||
+-			inode->i_ino == F2FS_META_INO(sbi))
++			inode->i_ino == F2FS_META_INO(sbi) ||
++			inode->i_ino == F2FS_COMPRESS_INO(sbi))
+ 		goto out_clear;
+ 
+ 	f2fs_bug_on(sbi, get_dirty_pages(inode));
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 1596502f7375..39d6dce09fb7 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -2298,6 +2298,7 @@ void f2fs_invalidate_blocks(struct f2fs_sb_info *sbi, block_t addr)
+ 		return;
+ 
+ 	invalidate_mapping_pages(META_MAPPING(sbi), addr, addr);
++	invalidate_compress_page(sbi, addr);
+ 
+ 	/* add it into sit main buffer */
+ 	down_write(&sit_i->sentry_lock);
+@@ -3425,9 +3426,11 @@ static void do_write_page(struct f2fs_summary *sum, struct f2fs_io_info *fio)
+ reallocate:
+ 	f2fs_allocate_data_block(fio->sbi, fio->page, fio->old_blkaddr,
+ 			&fio->new_blkaddr, sum, type, fio);
+-	if (GET_SEGNO(fio->sbi, fio->old_blkaddr) != NULL_SEGNO)
++	if (GET_SEGNO(fio->sbi, fio->old_blkaddr) != NULL_SEGNO) {
+ 		invalidate_mapping_pages(META_MAPPING(fio->sbi),
+ 					fio->old_blkaddr, fio->old_blkaddr);
++		invalidate_compress_page(fio->sbi, fio->old_blkaddr);
++	}
+ 
+ 	/* writeout dirty page into bdev */
+ 	f2fs_submit_page_write(fio);
+@@ -3600,6 +3603,7 @@ void f2fs_do_replace_block(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
+ 	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO) {
+ 		invalidate_mapping_pages(META_MAPPING(sbi),
+ 					old_blkaddr, old_blkaddr);
++		invalidate_compress_page(sbi, old_blkaddr);
+ 		if (!from_gc)
+ 			update_segment_mtime(sbi, old_blkaddr, 0);
+ 		update_sit_entry(sbi, old_blkaddr, -1);
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 78714bae1c48..e71db2a0a9c7 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -147,6 +147,7 @@ enum {
+ 	Opt_compress_log_size,
+ 	Opt_compress_extension,
+ 	Opt_compress_chksum,
++	Opt_compress_cache,
+ 	Opt_atgc,
+ 	Opt_err,
+ };
+@@ -216,6 +217,7 @@ static match_table_t f2fs_tokens = {
+ 	{Opt_compress_log_size, "compress_log_size=%u"},
+ 	{Opt_compress_extension, "compress_extension=%s"},
+ 	{Opt_compress_chksum, "compress_chksum"},
++	{Opt_compress_cache, "compress_cache"},
+ 	{Opt_atgc, "atgc"},
+ 	{Opt_err, NULL},
+ };
+@@ -939,11 +941,15 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 		case Opt_compress_chksum:
+ 			F2FS_OPTION(sbi).compress_chksum = true;
+ 			break;
++		case Opt_compress_cache:
++			set_opt(sbi, COMPRESS_CACHE);
++			break;
+ #else
+ 		case Opt_compress_algorithm:
+ 		case Opt_compress_log_size:
+ 		case Opt_compress_extension:
+ 		case Opt_compress_chksum:
++		case Opt_compress_cache:
+ 			f2fs_info(sbi, "compression options not supported");
+ 			break;
+ #endif
+@@ -1268,6 +1274,8 @@ static void f2fs_put_super(struct super_block *sb)
+ 
+ 	f2fs_bug_on(sbi, sbi->fsync_node_num);
+ 
++	f2fs_destroy_compress_inode(sbi);
++
+ 	iput(sbi->node_inode);
+ 	sbi->node_inode = NULL;
+ 
+@@ -1532,6 +1540,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+ 
+ 	if (F2FS_OPTION(sbi).compress_chksum)
+ 		seq_puts(seq, ",compress_chksum");
++
++	if (test_opt(sbi, COMPRESS_CACHE))
++		seq_puts(seq, ",compress_cache");
+ }
+ 
+ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+@@ -3753,10 +3764,14 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 		goto free_node_inode;
+ 	}
+ 
+-	err = f2fs_register_sysfs(sbi);
++	err = f2fs_init_compress_inode(sbi);
+ 	if (err)
+ 		goto free_root_inode;
+ 
++	err = f2fs_register_sysfs(sbi);
++	if (err)
++		goto free_compress_inode;
++
+ #ifdef CONFIG_QUOTA
+ 	/* Enable quota usage during mount */
+ 	if (f2fs_sb_has_quota_ino(sbi) && !f2fs_readonly(sb)) {
+@@ -3890,6 +3905,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	/* evict some inodes being cached by GC */
+ 	evict_inodes(sb);
+ 	f2fs_unregister_sysfs(sbi);
++free_compress_inode:
++	f2fs_destroy_compress_inode(sbi);
+ free_root_inode:
+ 	dput(sb->s_root);
+ 	sb->s_root = NULL;
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index 7dc2a06cf19a..55be7afeee90 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -34,6 +34,7 @@
+ #define F2FS_ROOT_INO(sbi)	((sbi)->root_ino_num)
+ #define F2FS_NODE_INO(sbi)	((sbi)->node_ino_num)
+ #define F2FS_META_INO(sbi)	((sbi)->meta_ino_num)
++#define F2FS_COMPRESS_INO(sbi)	(NM_I(sbi)->max_nid)
+ 
+ #define F2FS_MAX_QUOTAS		3
+ 
+-- 
+2.26.2
 
