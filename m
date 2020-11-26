@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6262C4C91
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F9D2C4C93
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731508AbgKZBXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 20:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730836AbgKZBXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 20:23:02 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3742C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 17:23:00 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id 34so284762pgp.10
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 17:23:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mrsxVUiMkWS7JUFPKnz/uT9F+wc8O7biNC7a93Ji8g0=;
-        b=qsB4jJTxnH6RtKdiSkOBmBe+J9ZbeuLn/0VYyqd+d/uVETzhyLV/RdzfGIZdT4y2uY
-         ySAAEk+7Uw94zjAXZ5XAT//VXvuGrb5t4eEp1IqWuPv044UjR1y97NFSB6L91IgPw+b7
-         TlYgY4a9m753segGEt9Ku9s+Uxpi9Or4x2v8kwAMRR/xOFaGN9/w4DlGeiTs0CJ+xJLx
-         9A+Wg5e6u7bjVtg3vjCIztG8gI7FlD49RSTKKKaAkRmzB2vOAoKq53LLN8ar+yPSTTDP
-         OFAIemeN1sQKdrKrGSUUBjjbaqXzQyOnaWkacBzm4ok/jA81Ywrd3DItjAzXjE/sPSWO
-         YYvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mrsxVUiMkWS7JUFPKnz/uT9F+wc8O7biNC7a93Ji8g0=;
-        b=RDhy4XvywSIomagf8WR+jHtH+Kh0nW/q2RE+PDCH9fNvpkE6W5/vsKafQOy2n4zZgk
-         pB2WAJyKYmnrkwrEr7vsML5f2EPlv7/MIqyXNES23zGBMjrqqzrn60ziZQ/F507R0N+9
-         z5+cD/MTNSIlAHNK7/BmiNL3eh1JAQy524XZybKuQfjWe6b6U9B5HKFGkH+KXlnWpUl7
-         FSYlTLGxfom8oX0JRxfjG2cA+HHNkpoxx02/mfCKh1mG+xiwSQG2RnflLPF3htH2rZZH
-         HXt+F+104jckudxBsbnOYb7mMapIUG5XvTI2FvwSFdBJ0O+9zZn9Jn/jQcTsa2YD0bsj
-         1KLw==
-X-Gm-Message-State: AOAM531O1OqCxLRpZ4qZ15asbRCScm0hhkOdAIaiajsngDVHQjenPorl
-        3u29a+qySe+tBdq5UyA9pSImCw==
-X-Google-Smtp-Source: ABdhPJwLk6YKJay0TMbBFmIB8Q9UvWL0YIDPzL0Ng/7a6CtwKnBFxZBfYTFcVMbvdkiuIgyOdr0gHw==
-X-Received: by 2002:a17:90a:7e0f:: with SMTP id i15mr653463pjl.93.1606353780342;
-        Wed, 25 Nov 2020 17:23:00 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([103.127.239.100])
-        by smtp.gmail.com with ESMTPSA id h20sm2723924pgv.23.2020.11.25.17.22.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 25 Nov 2020 17:22:59 -0800 (PST)
-Date:   Thu, 26 Nov 2020 09:22:56 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     gregkh@linuxfoundation.org, suzuki.poulose@arm.com,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] MAINTAINERS: Adding help for coresight subsystem
-Message-ID: <20201126012256.GA31690@leoy-ThinkPad-X240s>
-References: <20201125223519.734388-1-mathieu.poirier@linaro.org>
+        id S1731493AbgKZBYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 20:24:32 -0500
+Received: from mga04.intel.com ([192.55.52.120]:47619 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730861AbgKZBYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 20:24:31 -0500
+IronPort-SDR: 9im9K55+2J0t7EbxWDfTNyBGYsP5tQHpYWd6ypyjGaGAgFH8Q25jdI8s3LAFHJqxQQ2bU52rjJ
+ KuKDua8FpguA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="169662535"
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="169662535"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 17:24:31 -0800
+IronPort-SDR: gb93F3GoatNOuqc4+u7f5LeLVs3VebqlGN5fEPZ1DnCh2MyIpVaNmZF2QEz5TaC1w7WdPa3S0i
+ ec/I8p4+hxBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="537123847"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
+  by fmsmga005.fm.intel.com with ESMTP; 25 Nov 2020 17:24:21 -0800
+Date:   Thu, 26 Nov 2020 09:24:21 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        rui.zhang@intel.com, len.brown@intel.com
+Subject: Re: [PATCH] x86/PCI: Convert force_disable_hpet() to standard quirk
+Message-ID: <20201126012421.GA92582@shbuild999.sh.intel.com>
+References: <20201119181904.149129-1-helgaas@kernel.org>
+ <87v9dtk3j4.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201125223519.734388-1-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <87v9dtk3j4.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 03:35:19PM -0700, Mathieu Poirier wrote:
-> With the steady stream of new features coming into the subsystem
-> it has been clear for some time now that help is needed.
-> 
-> Suzuki and Leo have worked extensively on various parts of the
-> project and have agreed to help.
-> 
-> While at it add the new location for the coresight git tree.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  MAINTAINERS | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e73636b75f29..8d0b008c7781 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1723,11 +1723,13 @@ F:	arch/arm/mach-ep93xx/micro9.c
->  
->  ARM/CORESIGHT FRAMEWORK AND DRIVERS
->  M:	Mathieu Poirier <mathieu.poirier@linaro.org>
-> -R:	Suzuki K Poulose <suzuki.poulose@arm.com>
-> +M:	Suzuki K Poulose <suzuki.poulose@arm.com>
->  R:	Mike Leach <mike.leach@linaro.org>
-> +R:	Leo Yan <leo.yan@linaro.org>
+Hi Thomas,
 
-Acked-by: Leo Yan <leo.yan@linaro.org>
-
->  L:	coresight@lists.linaro.org (moderated for non-subscribers)
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Maintained
-> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/coresight/linux.git
->  F:	Documentation/ABI/testing/sysfs-bus-coresight-devices-*
->  F:	Documentation/devicetree/bindings/arm/coresight-cpu-debug.txt
->  F:	Documentation/devicetree/bindings/arm/coresight-cti.yaml
-> -- 
-> 2.25.1
+On Wed, Nov 25, 2020 at 01:46:23PM +0100, Thomas Gleixner wrote:
+> On Thu, Nov 19 2020 at 12:19, Bjorn Helgaas wrote:
+> > 62187910b0fc ("x86/intel: Add quirk to disable HPET for the Baytrail
+> > platform") implemented force_disable_hpet() as a special early quirk.
+> > These run before the PCI core is initialized and depend on the
+> > x86/pci/early.c accessors that use I/O ports 0xcf8 and 0xcfc.
+> >
+> > But force_disable_hpet() doesn't need to be one of these special early
+> > quirks.  It merely sets "boot_hpet_disable", which is tested by
+> > is_hpet_capable(), which is only used by hpet_enable() and hpet_disable().
+> > hpet_enable() is an fs_initcall(), so it runs after the PCI core is
+> > initialized.
 > 
+> hpet_enable() is not an fs_initcall(). hpet_late_init() is and that
+> invokes hpet_enable() only for the case that ACPI did not advertise it
+> and the force_hpet quirk provided a base address.
+> 
+> But hpet_enable() is also invoked via:
+> 
+>  start_kernel()
+>    late_time_init()
+>      x86_late_time_init()
+>        hpet_time_init()
+> 
+> which is way before the PCI core is available and we really don't want
+> to set it up there if it's known to be broken :)
+> 
+> Now the more interesting question is why this needs to be a PCI quirk in
+> the first place. Can't we just disable the HPET based on family/model
+> quirks?
+> 
+> e0748539e3d5 ("x86/intel: Disable HPET on Intel Ice Lake platforms")
+> f8edbde885bb ("x86/intel: Disable HPET on Intel Coffee Lake H platforms")
+> fc5db58539b4 ("x86/quirks: Disable HPET on Intel Coffe Lake platforms")
+
+
+
+> 62187910b0fc ("x86/intel: Add quirk to disable HPET for the Baytrail platform")
+I added this commit, and I can explain some for Baytrail. There was
+some discussion about the way to disable it:
+https://lore.kernel.org/lkml/20140328073718.GA12762@feng-snb/t/
+
+It uses PCI ID early quirk in the hope that later Baytrail stepping
+doesn't have the problem. And later on, there was official document
+(section 18.10.1.3 http://www.intel.com/content/dam/www/public/us/en/documents/datasheets/atom-z8000-datasheet-vol-1.pdf)
+stating Baytrail's HPET halts in deep idle. So I think your way of 
+using CPUID to disable Baytrail HPET makes more sense.
+
+
+> I might be missing something here, but in general on anything modern
+> HPET is mostly useless.
+
+IIUC, nowdays HPET's main use is as a clocksource watchdog monitor.
+And in one debug case, we found it still useful. The debug platform has 
+early serial console which prints many messages in early boot phase,
+when the HPET is disabled, the software 'jiffies' clocksource will
+be used as the monitor. Early printk will disable interrupt will
+printing message, and this could be quite long for a slow 115200
+device, and cause the periodic HW timer interrupt get missed, and
+make the 'jiffies' clocksource not accurate, which will in turn
+judge the TSC clocksrouce inaccurate, and disablt it. (Adding Rui,
+Len for more details)
+
+Thanks,
+Feng
+
+
+> Thanks,
+> 
+>         tglx
