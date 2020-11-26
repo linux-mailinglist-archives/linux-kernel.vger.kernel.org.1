@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E252C55AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3302C55AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390340AbgKZNcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:32:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
+        id S2390307AbgKZNcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:32:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390311AbgKZNcP (ORCPT
+        with ESMTP id S2390308AbgKZNcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 26 Nov 2020 08:32:15 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982EEC061A48
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:32:13 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id 10so2164793wml.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:32:13 -0800 (PST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE8EC061A04
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:32:14 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id u12so2184427wrt.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:32:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=O6+Wy4iFDi+o50ayVR/RzqW4RGQ8DgYcSYBAfri+vWM=;
-        b=YznWFMVFnrL3SHRm/qzlOafIUlBxNuihoIkIF7OlhyVT4+9ZeyqW9cBmOoMgt7pLyw
-         T7hKhHI/quPJlot8cNCu+3XvV04sD7ckvL4b5ap7US4iZezEuhlRmDYVJ7SoTvOp5qLO
-         7xEHAZ4XtVDbwKVxICGgNttf3FdsRCRnwDnX9hvuMOXcBxi3c3uBNe/g9coM24UfPtcu
-         K6yMTfbLfoEfj5XCdAEZJUvl9hNlWfTWyTwrBvrdPfpgoDLTKHB2/LFDnyF1GTiTZICM
-         LqzrCSx4XukGOReSH+dhFXc+XF4vYzetV7RVAW1KexiAbrOKDlH6EAHyOsmRvV8BHtsZ
-         cVEw==
+        bh=oATorMQPiNVEoXmBjgNPIPCMhMKpxL92yv6qxOrQmpk=;
+        b=IbJpdC6i4+GdmwJWSs//6cgsZfjzcpBfm/L8Mjzto4Jo9wyyg4hd19km+JlwJHpINW
+         f01TQrqs5iES89DzrbzYY85mFR3nKkhNsHBodFx+Jco8nrRyerd6sov+bZg9r2mlFHug
+         IgAAGffYPn7HOkX8bvXFMUfSg87rfEKX+EcWEpydNBniojEX6wWMgDUdCIDAyu7T1nnK
+         QsuwkRz+MNIThTRt0pTWKgi4WCYrXyr2s/AcXVl1QbpJmqyAjIenuuAEizVVVNY0+WLf
+         +Cf5nadVwB7oYQkGGMCvCmH3pYNMFxbbLrLyxC4qJhpRiRz1UODFcA/iGtN/CwQafyDe
+         PGTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O6+Wy4iFDi+o50ayVR/RzqW4RGQ8DgYcSYBAfri+vWM=;
-        b=LXg4+f8rNdn28j+SPmq0XutZVthp7fajf/0RqqsZm5qzDnCu48TZ8zq5Yhhh3niDWc
-         XgSZgtpC0XSn0by/wB6W+UPLgtYiubhgroSMlHsU6Z7z4DgN9okRSikIcPlI5CF8rxZ0
-         GNFmFd2hvvTPTQpIWhtmkKCdtW9BnlnacXk6g1X9v5XU8JlVrHUoWfXuwZ7CIsKk10Wc
-         qjoXWfsq8Hka9zJPDeIKyq50PYEfLHI5IKbfSuhs877aAA6S1RgEqFgqEJfRVyNquiOZ
-         1eXDvpCyfCSzUWvFrpKrIFAY/5JKv4zwSis4A3/AZYW4y58S2RDwDdqxXb3IwPrRRy4e
-         VWiQ==
-X-Gm-Message-State: AOAM532s2BrQZVkj/JpK4cHsdGo6CtXImOWUsjlCG0drBMVIGLXlG5T0
-        lulDteQXfNZmUT9KQE652x7hQA==
-X-Google-Smtp-Source: ABdhPJyuWp5WvGRoZZgxkoG9Oq62kxy/bru//LJwk7blbiQxWqPZlJHwxTOooVtaPi4kfalsFWJUAQ==
-X-Received: by 2002:a1c:ba0b:: with SMTP id k11mr3396548wmf.37.1606397532313;
-        Thu, 26 Nov 2020 05:32:12 -0800 (PST)
+        bh=oATorMQPiNVEoXmBjgNPIPCMhMKpxL92yv6qxOrQmpk=;
+        b=fQH1Z7nygDacNMaKqv0WXcRG/LwHUGsWUg4KuXU3HxCDFqn7THzec8dDthub/CvuAO
+         pnjuNc+ZoY0v5clu/a7fZtUbcFn8aN81zJ171Ium33tNZdwLu+Np4PwTa5DJwITMxmzw
+         Kg/xWDRImy7w27WCFbXN2KnYcSSiyIrcSfcY4Id2F0ZnOAFLIxuZ9+h7rsLBQmcaN0Pq
+         1g2EJnQYv3zpecpAdZr+vsudVfXsLlVsmuRsJuy/d6yQ/o8dYAZ8Ma3GjT0nq1ZD5hRk
+         B9vQmMxSs78G6YLEmHNV34iI4h9pa2e2/aZ3SOdDlA98OIqKwX91j1Q3HQa/BPqOTDF1
+         ffhQ==
+X-Gm-Message-State: AOAM532aCbi94h2R074bVIyV1bxblDMWJq3iLPvtQEFmUIP02UgFIYMk
+        cLHhopV4zFPQ+luRUcb6qgq3vw==
+X-Google-Smtp-Source: ABdhPJzar5pL8NJXSGoKYV0wnB0lIWqTVB12EIyFUGuvX5/YQrx4//RE3ORazZXu+kfKxp3kELmzfQ==
+X-Received: by 2002:adf:f1cb:: with SMTP id z11mr3926438wro.363.1606397533529;
+        Thu, 26 Nov 2020 05:32:13 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id n10sm8701001wrv.77.2020.11.26.05.32.11
+        by smtp.gmail.com with ESMTPSA id n10sm8701001wrv.77.2020.11.26.05.32.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:32:11 -0800 (PST)
+        Thu, 26 Nov 2020 05:32:12 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org, kvalo@codeaurora.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -57,10 +57,11 @@ Cc:     linux-kernel@vger.kernel.org,
         Intel Linux Wireless <linuxwifi@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
+        Shahar S Matityahu <shahar.s.matityahu@intel.com>,
         linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 13/17] iwlwifi: iwl-phy-db: Add missing struct member description for 'trans'
-Date:   Thu, 26 Nov 2020 13:31:48 +0000
-Message-Id: <20201126133152.3211309-14-lee.jones@linaro.org>
+Subject: [PATCH 14/17] iwlwifi: fw: dbg: Fix misspelling of 'reg_data' in function header
+Date:   Thu, 26 Nov 2020 13:31:49 +0000
+Message-Id: <20201126133152.3211309-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201126133152.3211309-1-lee.jones@linaro.org>
 References: <20201126133152.3211309-1-lee.jones@linaro.org>
@@ -72,7 +73,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/intel/iwlwifi/iwl-phy-db.c:97: warning: Function parameter or member 'trans' not described in 'iwl_phy_db'
+ drivers/net/wireless/intel/iwlwifi/fw/dbg.c:1932: warning: Function parameter or member 'reg_data' not described in 'iwl_dump_ini_mem'
+ drivers/net/wireless/intel/iwlwifi/fw/dbg.c:1932: warning: Excess function parameter 'reg' description in 'iwl_dump_ini_mem'
 
 Cc: Johannes Berg <johannes.berg@intel.com>
 Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
@@ -81,30 +83,27 @@ Cc: Intel Linux Wireless <linuxwifi@intel.com>
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Shahar S Matityahu <shahar.s.matityahu@intel.com>
 Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/intel/iwlwifi/iwl-phy-db.c | 2 +-
+ drivers/net/wireless/intel/iwlwifi/fw/dbg.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-phy-db.c b/drivers/net/wireless/intel/iwlwifi/iwl-phy-db.c
-index ae83cfdb750e6..c9ce270ceee07 100644
---- a/drivers/net/wireless/intel/iwlwifi/iwl-phy-db.c
-+++ b/drivers/net/wireless/intel/iwlwifi/iwl-phy-db.c
-@@ -79,11 +79,11 @@ struct iwl_phy_db_entry {
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/dbg.c b/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
+index ab4a8b942c81d..c0a180b496988 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
++++ b/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
+@@ -1923,7 +1923,7 @@ struct iwl_dump_ini_mem_ops {
   *
-  * @cfg: phy configuration.
-  * @calib_nch: non channel specific calibration data.
-- * @calib_ch: channel specific calibration data.
-  * @n_group_papd: number of entries in papd channel group.
-  * @calib_ch_group_papd: calibration data related to papd channel group.
-  * @n_group_txp: number of entries in tx power channel group.
-  * @calib_ch_group_txp: calibration data related to tx power chanel group.
-+ * @trans: transport layer
+  * @fwrt: fw runtime struct
+  * @list: list to add the dump tlv to
+- * @reg: memory region
++ * @reg_data: memory region
+  * @ops: memory dump operations
   */
- struct iwl_phy_db {
- 	struct iwl_phy_db_entry	cfg;
+ static u32 iwl_dump_ini_mem(struct iwl_fw_runtime *fwrt, struct list_head *list,
 -- 
 2.25.1
 
