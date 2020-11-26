@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667612C5658
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2442C5640
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391017AbgKZNom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:44:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58928 "EHLO
+        id S2390304AbgKZNnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:43:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390880AbgKZNnP (ORCPT
+        with ESMTP id S2390539AbgKZNnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:43:15 -0500
+        Thu, 26 Nov 2020 08:43:18 -0500
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D34C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:14 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 64so2174575wra.11
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B009C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:18 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id m6so2185207wrg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jJ48BnAFuIYXRbLOjlTsHmoQNdzeeMH8+iEVcNp9LRw=;
-        b=irhFLR+D7PHiZmn27CayKxpHC+pspRcPPxBdS39NIWI1a1AtvgPFGv1+GKKx7263iY
-         OF6nv8G3JtBO5NxqtncSSzSt0O5Kxp54ywhxmA/qVsGyeNSpdfYQyURlg8Dll8XkVSuh
-         0GTu5Ok7Oll9qvpzpd+tL20UWO0nKxHiBJv9lGLVykcWC73tOgo4PbxN0U5XVazzA6KD
-         2TzPexCvYD2WiKh84ClrArAA8ixmghure9qvs8p6u/f+XIEVoBZwhRrl0PZnwO/RcbmE
-         vO4xFDL7xwqjciD/I8NYHJ+PcUhxtnQbH3HtpfRiLn595SDbPYOnYvBQYqgx/b7nZh5w
-         hHAQ==
+        bh=tHkmifUCbIBOfDozUuzbPpd9+rHglUI4NupilVtjZ78=;
+        b=Yh1V280HmCQD+zBZqYDnmH9yyoevWopyCFULzHuZD5/ZTWq709dW3oI0V9GAxPPtxx
+         eCCoDGOJN3YGnrkr2OlcUMwNrUyR3rKwJqXY/kFjveAAbuwhWdpsoX1w9HhPOZmFlz4N
+         FjyNr8orPeKdAGxHh03q1gCxOZj1+geaaEiSpjVgz+PsuuEO1s4bfjcUnGh4uD69FJvv
+         VZUMgql3lzbVBB/R/UtLcCrRKSWE3VYvkc1WSgVrg3WcaRBkKEE5qcgbj6wUP/e6miwU
+         AyLDxXe2IH2PA/FXEE/Iju3twBIEVmQxXfuU1JzIfWp7no8nmQXxhD5LlZH/1FRnfyx5
+         OwCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jJ48BnAFuIYXRbLOjlTsHmoQNdzeeMH8+iEVcNp9LRw=;
-        b=EpGnsTv4P9CbJ2xLERQV4bq2CmpmQwqzU9+/kskRFS5XKE+Jn+Pg3Sg3VwwoJsYmDj
-         fRBoFnMr1dGzvtrURzHPLtawZYB2tgHgoKxoLBA0xJ4N5MlQRSjxWELoi6UetRk5/+cT
-         Q0nHJlXYcJihlUUH15M8c7KJR1JJDjd2JdRqp21WgvRsNLQAd7/xydCQqx6f00mOcPLg
-         T0esoW/5pR6poBvKKymovpT17MUwOIVtkDWlU9vsXYnupPzcpGoonbseRHvBaD85Uf2b
-         Pzn3ikHZL5JOc0zs4l2TGaZ0PXVNU9r0CLDlSHXh/S4khDnHqf3hQYqB9+OiAeX4nlGv
-         lmVg==
-X-Gm-Message-State: AOAM5319/j3vbaxhujE/ndMYEKDejBZfY7++xiSCfX6i9cHROpuhIDBa
-        Ok531ODsAnFPpxRUmIhrRfZa4Q==
-X-Google-Smtp-Source: ABdhPJyBWPP7GLsGLVwS/IL9jApgh75kjijq4JKQlg1qMhleCsPjU6MQ3Ci3aAZZpO3cFw+MWjErbA==
-X-Received: by 2002:adf:f608:: with SMTP id t8mr4051594wrp.72.1606398193594;
-        Thu, 26 Nov 2020 05:43:13 -0800 (PST)
+        bh=tHkmifUCbIBOfDozUuzbPpd9+rHglUI4NupilVtjZ78=;
+        b=lGEKw5ko2E3fRNYUsCSQmL2ae4edToct90D+2oJ0yqCq8JFtN0OKA5VL5EA4QjChKy
+         HRTzgaJ+Nx/NLld6YBcWqblfHJPTqrUwP3AaN4zRLPQb3BsO7S8dmW0P5esR67w59IWw
+         q4w2Zd5bPgT/Tisn5tKDD/KKrYT9FMLBs+ANpvmNAd7weRJnA65y4JWGYBZx0F4DuXlp
+         oCfKP8z6cfoUzjnDlol4dlnC+SeJtlIhn9JqW7+UfO2vO4oWQR6dAeP5/Fp9AZtwqUhB
+         HyiUeNMI6QQmKWZl8CCkRUc2qT9o68S6sc3ecmtugBcLnkWzGQqvLxlEYIA+gWM35oW3
+         S57g==
+X-Gm-Message-State: AOAM532TrDLKLOoZG9GlSs2D6294zpHYLiQUfYDYcJDWvEGtJN21qNMm
+        MIAcXWg9QuYn1uRO+We1Y/QNiQ==
+X-Google-Smtp-Source: ABdhPJzytCtM7ybHBpw4V46jpDyxdvhAX2PglRXJkA+rrqEdtCapDYC0bdc9bCaPqyhcqBjQUVHvMQ==
+X-Received: by 2002:adf:f2c7:: with SMTP id d7mr3872623wrp.142.1606398194838;
+        Thu, 26 Nov 2020 05:43:14 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.43.12
+        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.43.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:43:12 -0800 (PST)
+        Thu, 26 Nov 2020 05:43:14 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 18/40] drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0: Convert to proper kernel-doc format
-Date:   Thu, 26 Nov 2020 13:42:18 +0000
-Message-Id: <20201126134240.3214176-19-lee.jones@linaro.org>
+Subject: [PATCH 19/40] drm/amd/pm/powerplay/hwmgr/ppatomctrl: Fix a myriad of kernel-doc issues
+Date:   Thu, 26 Nov 2020 13:42:19 +0000
+Message-Id: <20201126134240.3214176-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201126134240.3214176-1-lee.jones@linaro.org>
 References: <20201126134240.3214176-1-lee.jones@linaro.org>
@@ -71,29 +71,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:41: warning: Function parameter or member 'hwmgr' not described in 'set_hw_cap'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:41: warning: Function parameter or member 'setIt' not described in 'set_hw_cap'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:41: warning: Function parameter or member 'cap' not described in 'set_hw_cap'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:56: warning: Function parameter or member 'hwmgr' not described in 'set_platform_caps'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:56: warning: Function parameter or member 'powerplay_caps' not described in 'set_platform_caps'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:135: warning: Function parameter or member 'hwmgr' not described in 'get_powerplay_table'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:202: warning: Function parameter or member 'hwmgr' not described in 'get_platform_power_management_table'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:202: warning: Function parameter or member 'atom_ppm_table' not described in 'get_platform_power_management_table'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:246: warning: Function parameter or member 'hwmgr' not described in 'init_dpm_2_parameters'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:246: warning: Function parameter or member 'powerplay_table' not described in 'init_dpm_2_parameters'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:791: warning: Function parameter or member 'hwmgr' not described in 'init_clock_voltage_dependency'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:791: warning: Function parameter or member 'powerplay_table' not described in 'init_clock_voltage_dependency'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:911: warning: Function parameter or member 'hwmgr' not described in 'init_thermal_controller'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:911: warning: Function parameter or member 'powerplay_table' not described in 'init_thermal_controller'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:1121: warning: Function parameter or member 'hwmgr' not described in 'check_powerplay_tables'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:1121: warning: Function parameter or member 'powerplay_table' not described in 'check_powerplay_tables'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:1263: warning: Function parameter or member 'hwmgr' not described in 'make_classification_flags'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:1263: warning: Function parameter or member 'classification' not described in 'make_classification_flags'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:1263: warning: Function parameter or member 'classification2' not described in 'make_classification_flags'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:1370: warning: Function parameter or member 'hwmgr' not described in 'get_powerplay_table_entry_v1_0'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:1370: warning: Function parameter or member 'entry_index' not described in 'get_powerplay_table_entry_v1_0'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:1370: warning: Function parameter or member 'power_state' not described in 'get_powerplay_table_entry_v1_0'
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/process_pptables_v1_0.c:1370: warning: Function parameter or member 'call_back_func' not described in 'get_powerplay_table_entry_v1_0'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:104: warning: Function parameter or member 'reg_block' not described in 'atomctrl_set_mc_reg_address_table'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:104: warning: Function parameter or member 'table' not described in 'atomctrl_set_mc_reg_address_table'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:213: warning: Function parameter or member 'hwmgr' not described in 'atomctrl_set_engine_dram_timings_rv770'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:213: warning: Function parameter or member 'engine_clock' not described in 'atomctrl_set_engine_dram_timings_rv770'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:213: warning: Function parameter or member 'memory_clock' not described in 'atomctrl_set_engine_dram_timings_rv770'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:239: warning: Function parameter or member 'device' not described in 'get_voltage_info_table'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:519: warning: Function parameter or member 'hwmgr' not described in 'atomctrl_get_reference_clock'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:548: warning: Function parameter or member 'hwmgr' not described in 'atomctrl_is_voltage_controlled_by_gpio_v3'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:548: warning: Function parameter or member 'voltage_type' not described in 'atomctrl_is_voltage_controlled_by_gpio_v3'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:548: warning: Function parameter or member 'voltage_mode' not described in 'atomctrl_is_voltage_controlled_by_gpio_v3'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:640: warning: Function parameter or member 'device' not described in 'get_gpio_lookup_table'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:663: warning: Function parameter or member 'hwmgr' not described in 'atomctrl_get_pp_assign_pin'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:663: warning: Function parameter or member 'pinId' not described in 'atomctrl_get_pp_assign_pin'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:663: warning: Function parameter or member 'gpio_pin_assignment' not described in 'atomctrl_get_pp_assign_pin'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1152: warning: Function parameter or member 'hwmgr' not described in 'atomctrl_get_voltage_evv'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1152: warning: Function parameter or member 'virtual_voltage_id' not described in 'atomctrl_get_voltage_evv'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1152: warning: Function parameter or member 'voltage' not described in 'atomctrl_get_voltage_evv'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1194: warning: Function parameter or member 'hwmgr' not described in 'atomctrl_get_mpll_reference_clock'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1227: warning: Function parameter or member 'device' not described in 'asic_internal_ss_get_ss_table'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1258: warning: Function parameter or member 'hwmgr' not described in 'asic_internal_ss_get_ss_asignment'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1258: warning: Function parameter or member 'clockSource' not described in 'asic_internal_ss_get_ss_asignment'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1258: warning: Function parameter or member 'clockSpeed' not described in 'asic_internal_ss_get_ss_asignment'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1258: warning: Function parameter or member 'ssEntry' not described in 'asic_internal_ss_get_ss_asignment'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1321: warning: Function parameter or member 'hwmgr' not described in 'atomctrl_get_memory_clock_spread_spectrum'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1321: warning: Function parameter or member 'memory_clock' not described in 'atomctrl_get_memory_clock_spread_spectrum'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1321: warning: Function parameter or member 'ssInfo' not described in 'atomctrl_get_memory_clock_spread_spectrum'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1332: warning: Function parameter or member 'hwmgr' not described in 'atomctrl_get_engine_clock_spread_spectrum'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1332: warning: Function parameter or member 'engine_clock' not described in 'atomctrl_get_engine_clock_spread_spectrum'
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomctrl.c:1332: warning: Function parameter or member 'ssInfo' not described in 'atomctrl_get_engine_clock_spread_spectrum'
 
 Cc: Evan Quan <evan.quan@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
@@ -104,181 +110,202 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- .../powerplay/hwmgr/process_pptables_v1_0.c   | 81 ++++++++++---------
- 1 file changed, 41 insertions(+), 40 deletions(-)
+ .../drm/amd/pm/powerplay/hwmgr/ppatomctrl.c   | 74 ++++++++++---------
+ 1 file changed, 39 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
-index 801a565026703..741e03ad5311f 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
-@@ -32,10 +32,10 @@
- #include "pptable_v1_0.h"
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomctrl.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomctrl.c
+index 2cb913ab77f26..83a6504e093cb 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomctrl.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomctrl.c
+@@ -92,11 +92,11 @@ static int atomctrl_retrieve_ac_timing(
+ }
  
  /**
-- * Private Function used during initialization.
-- * @param hwmgr Pointer to the hardware manager.
-- * @param setIt A flag indication if the capability should be set (TRUE) or reset (FALSE).
-- * @param cap Which capability to set/reset.
-+ * set_hw_cap - Private Function used during initialization.
-+ * @hwmgr: Pointer to the hardware manager.
-+ * @setIt: A flag indication if the capability should be set (TRUE) or reset (FALSE).
-+ * @cap: Which capability to set/reset.
+- * Get memory clock AC timing registers index from VBIOS table
++ * atomctrl_set_mc_reg_address_table - Get memory clock AC timing registers index from VBIOS table
+  * VBIOS set end of memory clock AC timing registers by ucPreRegDataLength bit6 = 1
+- * @param    reg_block the address ATOM_INIT_REG_BLOCK
+- * @param    table the address of MCRegTable
+- * @return   0
++ * @reg_block: the address ATOM_INIT_REG_BLOCK
++ * @table: the address of MCRegTable
++ * Return:   0
   */
- static void set_hw_cap(struct pp_hwmgr *hwmgr, bool setIt, enum phm_platform_caps cap)
- {
-@@ -47,10 +47,10 @@ static void set_hw_cap(struct pp_hwmgr *hwmgr, bool setIt, enum phm_platform_cap
+ static int atomctrl_set_mc_reg_address_table(
+ 		ATOM_INIT_REG_BLOCK *reg_block,
+@@ -203,7 +203,7 @@ int atomctrl_initialize_mc_reg_table_v2_2(
+ 	return result;
+ }
  
- 
- /**
-- * Private Function used during initialization.
-- * @param hwmgr Pointer to the hardware manager.
-- * @param powerplay_caps the bit array (from BIOS) of capability bits.
-- * @exception the current implementation always returns 1.
-+ * set_platform_caps - Private Function used during initialization.
-+ * @hwmgr: Pointer to the hardware manager.
-+ * @powerplay_caps: the bit array (from BIOS) of capability bits.
-+ * Exception:  the current implementation always returns 1.
+-/**
++/*
+  * Set DRAM timings based on engine clock and memory clock.
   */
- static int set_platform_caps(struct pp_hwmgr *hwmgr, uint32_t powerplay_caps)
- {
-@@ -128,7 +128,7 @@ static int set_platform_caps(struct pp_hwmgr *hwmgr, uint32_t powerplay_caps)
- 	return 0;
+ int atomctrl_set_engine_dram_timings_rv770(
+@@ -229,7 +229,7 @@ int atomctrl_set_engine_dram_timings_rv770(
+ 			(uint32_t *)&engine_clock_parameters);
  }
  
 -/**
 +/*
   * Private Function to get the PowerPlay Table Address.
-  */
- static const void *get_powerplay_table(struct pp_hwmgr *hwmgr)
-@@ -191,10 +191,10 @@ static int get_vddc_lookup_table(
+  * WARNING: The tabled returned by this function is in
+  * dynamically allocated memory.
+@@ -274,12 +274,13 @@ static const ATOM_VOLTAGE_OBJECT_V3 *atomctrl_lookup_voltage_type_v3(
+ 	return NULL;
  }
  
- /**
-- * Private Function used during initialization.
-+ * get_platform_power_management_table - Private Function used during initialization.
-  * Initialize Platform Power Management Parameter table
-- * @param hwmgr Pointer to the hardware manager.
-- * @param atom_ppm_table Pointer to PPM table in VBIOS
-+ * @hwmgr: Pointer to the hardware manager.
-+ * @atom_ppm_table: Pointer to PPM table in VBIOS
+-/** atomctrl_get_memory_pll_dividers_si().
++/**
++ * atomctrl_get_memory_pll_dividers_si().
+  *
+- * @param hwmgr                 input parameter: pointer to HwMgr
+- * @param clock_value             input parameter: memory clock
+- * @param dividers                 output parameter: memory PLL dividers
+- * @param strobe_mode            input parameter: 1 for strobe mode,  0 for performance mode
++ * @hwmgr:           input parameter: pointer to HwMgr
++ * @clock_value:     input parameter: memory clock
++ * @dividers:        output parameter: memory PLL dividers
++ * @strobe_mode:     input parameter: 1 for strobe mode,  0 for performance mode
   */
- static int get_platform_power_management_table(
+ int atomctrl_get_memory_pll_dividers_si(
  		struct pp_hwmgr *hwmgr,
-@@ -234,10 +234,10 @@ static int get_platform_power_management_table(
- }
- 
- /**
-- * Private Function used during initialization.
-+ * init_dpm_2_parameters - Private Function used during initialization.
-  * Initialize TDP limits for DPM2
-- * @param hwmgr Pointer to the hardware manager.
-- * @param powerplay_table Pointer to the PowerPlay Table.
-+ * @hwmgr: Pointer to the hardware manager.
-+ * @powerplay_table: Pointer to the PowerPlay Table.
-  */
- static int init_dpm_2_parameters(
- 		struct pp_hwmgr *hwmgr,
-@@ -779,10 +779,10 @@ static int get_gpio_table(struct pp_hwmgr *hwmgr,
- 	return 0;
- }
- /**
-- * Private Function used during initialization.
-+ * init_clock_voltage_dependency - Private Function used during initialization.
-  * Initialize clock voltage dependency
-- * @param hwmgr Pointer to the hardware manager.
-- * @param powerplay_table Pointer to the PowerPlay Table.
-+ * @hwmgr: Pointer to the hardware manager.
-+ * @powerplay_table: Pointer to the PowerPlay Table.
-  */
- static int init_clock_voltage_dependency(
- 		struct pp_hwmgr *hwmgr,
-@@ -871,15 +871,16 @@ static int init_clock_voltage_dependency(
+@@ -326,11 +327,12 @@ int atomctrl_get_memory_pll_dividers_si(
  	return result;
  }
  
--/** Retrieves the (signed) Overdrive limits from VBIOS.
+-/** atomctrl_get_memory_pll_dividers_vi().
 +/**
-+ * init_over_drive_limits - Retrieves the (signed) Overdrive limits from VBIOS.
-  * The max engine clock, memory clock and max temperature come from the firmware info table.
++ * atomctrl_get_memory_pll_dividers_vi().
   *
-  * The information is placed into the platform descriptor.
-  *
-- * @param hwmgr source of the VBIOS table and owner of the platform descriptor to be updated.
-- * @param powerplay_table the address of the PowerPlay table.
-+ * @hwmgr: source of the VBIOS table and owner of the platform descriptor to be updated.
-+ * @powerplay_table: the address of the PowerPlay table.
-  *
-- * @return 1 as long as the firmware info table was present and of a supported version.
-+ * Return: 1 as long as the firmware info table was present and of a supported version.
+- * @param hwmgr                 input parameter: pointer to HwMgr
+- * @param clock_value             input parameter: memory clock
+- * @param dividers               output parameter: memory PLL dividers
++ * @hwmgr:                 input parameter: pointer to HwMgr
++ * @clock_value:           input parameter: memory clock
++ * @dividers:              output parameter: memory PLL dividers
   */
- static int init_over_drive_limits(
- 		struct pp_hwmgr *hwmgr,
-@@ -898,11 +899,11 @@ static int init_over_drive_limits(
- }
- 
- /**
-- * Private Function used during initialization.
-+ * init_thermal_controller - Private Function used during initialization.
-  * Inspect the PowerPlay table for obvious signs of corruption.
-- * @param hwmgr Pointer to the hardware manager.
-- * @param powerplay_table Pointer to the PowerPlay Table.
-- * @exception This implementation always returns 1.
-+ * @hwmgr: Pointer to the hardware manager.
-+ * @powerplay_table: Pointer to the PowerPlay Table.
-+ * Exception:  This implementation always returns 1.
-  */
- static int init_thermal_controller(
- 		struct pp_hwmgr *hwmgr,
-@@ -1108,11 +1109,11 @@ static int init_thermal_controller(
- }
- 
- /**
-- * Private Function used during initialization.
-+ * check_powerplay_tables - Private Function used during initialization.
-  * Inspect the PowerPlay table for obvious signs of corruption.
-- * @param hwmgr Pointer to the hardware manager.
-- * @param powerplay_table Pointer to the PowerPlay Table.
-- * @exception 2 if the powerplay table is incorrect.
-+ * @hwmgr: Pointer to the hardware manager.
-+ * @powerplay_table: Pointer to the PowerPlay Table.
-+ * Exception:  2 if the powerplay table is incorrect.
-  */
- static int check_powerplay_tables(
- 		struct pp_hwmgr *hwmgr,
-@@ -1255,9 +1256,9 @@ int get_number_of_powerplay_table_entries_v1_0(struct pp_hwmgr *hwmgr)
- 	return (uint32_t)(state_arrays->ucNumEntries);
+ int atomctrl_get_memory_pll_dividers_vi(struct pp_hwmgr *hwmgr,
+ 		uint32_t clock_value, pp_atomctrl_memory_clock_param *mpll_param)
+@@ -512,7 +514,7 @@ int atomctrl_get_dfs_pll_dividers_vi(
+ 	return result;
  }
  
 -/**
--* Private function to convert flags stored in the BIOS to software flags in PowerPlay.
--*/
 +/*
-+ * Private function to convert flags stored in the BIOS to software flags in PowerPlay.
-+ */
- static uint32_t make_classification_flags(struct pp_hwmgr *hwmgr,
- 		uint16_t classification, uint16_t classification2)
- {
-@@ -1356,13 +1357,13 @@ static int ppt_get_vce_state_table_entry_v1_0(struct pp_hwmgr *hwmgr, uint32_t i
+  * Get the reference clock in 10KHz
+  */
+ uint32_t atomctrl_get_reference_clock(struct pp_hwmgr *hwmgr)
+@@ -535,7 +537,7 @@ uint32_t atomctrl_get_reference_clock(struct pp_hwmgr *hwmgr)
+ 	return clock;
  }
  
+-/**
++/*
+  * Returns true if the given voltage type is controlled by GPIO pins.
+  * voltage_type is one of SET_VOLTAGE_TYPE_ASIC_VDDC,
+  * SET_VOLTAGE_TYPE_ASIC_MVDDC, SET_VOLTAGE_TYPE_ASIC_MVDDQ.
+@@ -630,7 +632,7 @@ static bool atomctrl_lookup_gpio_pin(
+ 	return false;
+ }
+ 
+-/**
++/*
+  * Private Function to get the PowerPlay Table Address.
+  * WARNING: The tabled returned by this function is in
+  * dynamically allocated memory.
+@@ -653,7 +655,7 @@ static ATOM_GPIO_PIN_LUT *get_gpio_lookup_table(void *device)
+ 	return (ATOM_GPIO_PIN_LUT *)table_address;
+ }
+ 
+-/**
++/*
+  * Returns 1 if the given pin id find in lookup table.
+  */
+ bool atomctrl_get_pp_assign_pin(
+@@ -1101,14 +1103,15 @@ int atomctrl_calculate_voltage_evv_on_sclk(
+ 	return result;
+ }
+ 
+-/** atomctrl_get_voltage_evv_on_sclk gets voltage via call to ATOM COMMAND table.
+- * @param hwmgr	input: pointer to hwManager
+- * @param voltage_type            input: type of EVV voltage VDDC or VDDGFX
+- * @param sclk                        input: in 10Khz unit. DPM state SCLK frequency
+- *		which is define in PPTable SCLK/VDDC dependence
+- *				table associated with this virtual_voltage_Id
+- * @param virtual_voltage_Id      input: voltage id which match per voltage DPM state: 0xff01, 0xff02.. 0xff08
+- * @param voltage		       output: real voltage level in unit of mv
++/**
++ * atomctrl_get_voltage_evv_on_sclk gets voltage via call to ATOM COMMAND table.
++ * @hwmgr:              input: pointer to hwManager
++ * @voltage_type:       input: type of EVV voltage VDDC or VDDGFX
++ * @sclk:               input: in 10Khz unit. DPM state SCLK frequency
++ *		         which is define in PPTable SCLK/VDDC dependence
++ *			 table associated with this virtual_voltage_Id
++ * @virtual_voltage_Id: input: voltage id which match per voltage DPM state: 0xff01, 0xff02.. 0xff08
++ * @voltage: 	        output: real voltage level in unit of mv
+  */
+ int atomctrl_get_voltage_evv_on_sclk(
+ 		struct pp_hwmgr *hwmgr,
+@@ -1142,9 +1145,9 @@ int atomctrl_get_voltage_evv_on_sclk(
+ 
  /**
--* Create a Power State out of an entry in the PowerPlay table.
--* This function is called by the hardware back-end.
--* @param hwmgr Pointer to the hardware manager.
--* @param entry_index The index of the entry to be extracted from the table.
--* @param power_state The address of the PowerState instance being created.
--* @return -1 if the entry cannot be retrieved.
--*/
-+ * get_powerplay_table_entry_v1_0 - Create a Power State out of an entry in the PowerPlay table.
-+ * This function is called by the hardware back-end.
-+ * @hwmgr: Pointer to the hardware manager.
-+ * @entry_index: The index of the entry to be extracted from the table.
-+ * @power_state: The address of the PowerState instance being created.
-+ * Return: -1 if the entry cannot be retrieved.
-+ */
- int get_powerplay_table_entry_v1_0(struct pp_hwmgr *hwmgr,
- 		uint32_t entry_index, struct pp_power_state *power_state,
- 		int (*call_back_func)(struct pp_hwmgr *, void *,
+  * atomctrl_get_voltage_evv gets voltage via call to ATOM COMMAND table.
+- * @param hwmgr	input: pointer to hwManager
+- * @param virtual_voltage_id      input: voltage id which match per voltage DPM state: 0xff01, 0xff02.. 0xff08
+- * @param voltage		       output: real voltage level in unit of mv
++ * @hwmgr:              input: pointer to hwManager
++ * @virtual_voltage_id: input: voltage id which match per voltage DPM state: 0xff01, 0xff02.. 0xff08
++ * @voltage: 	       output: real voltage level in unit of mv
+  */
+ int atomctrl_get_voltage_evv(struct pp_hwmgr *hwmgr,
+ 			     uint16_t virtual_voltage_id,
+@@ -1187,7 +1190,7 @@ int atomctrl_get_voltage_evv(struct pp_hwmgr *hwmgr,
+ 	return result;
+ }
+ 
+-/**
++/*
+  * Get the mpll reference clock in 10KHz
+  */
+ uint32_t atomctrl_get_mpll_reference_clock(struct pp_hwmgr *hwmgr)
+@@ -1220,7 +1223,7 @@ uint32_t atomctrl_get_mpll_reference_clock(struct pp_hwmgr *hwmgr)
+ 	return clock;
+ }
+ 
+-/**
++/*
+  * Get the asic internal spread spectrum table
+  */
+ static ATOM_ASIC_INTERNAL_SS_INFO *asic_internal_ss_get_ss_table(void *device)
+@@ -1248,7 +1251,7 @@ bool atomctrl_is_asic_internal_ss_supported(struct pp_hwmgr *hwmgr)
+ 		return false;
+ }
+ 
+-/**
++/*
+  * Get the asic internal spread spectrum assignment
+  */
+ static int asic_internal_ss_get_ss_asignment(struct pp_hwmgr *hwmgr,
+@@ -1311,7 +1314,7 @@ static int asic_internal_ss_get_ss_asignment(struct pp_hwmgr *hwmgr,
+ 	return entry_found ? 0 : 1;
+ }
+ 
+-/**
++/*
+  * Get the memory clock spread spectrum info
+  */
+ int atomctrl_get_memory_clock_spread_spectrum(
+@@ -1322,7 +1325,8 @@ int atomctrl_get_memory_clock_spread_spectrum(
+ 	return asic_internal_ss_get_ss_asignment(hwmgr,
+ 			ASIC_INTERNAL_MEMORY_SS, memory_clock, ssInfo);
+ }
+-/**
++
++/*
+  * Get the engine clock spread spectrum info
+  */
+ int atomctrl_get_engine_clock_spread_spectrum(
 -- 
 2.25.1
 
