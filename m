@@ -2,97 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173402C5E1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA80A2C5E1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391914AbgKZXVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 18:21:24 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46784 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388513AbgKZXVX (ORCPT
+        id S2391931AbgKZXYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 18:24:04 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:58199 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391918AbgKZXYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 18:21:23 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id A2EB61F46084
-Message-ID: <1496f292eadc62a3ab585a89cf9b997ce4a1d799.camel@collabora.com>
-Subject: Re: [PATCH v3] media: cedrus: Add support for VP8 decoding
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Jernej Skrabec <jernej.skrabec@siol.net>, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com
-Cc:     mchehab@kernel.org, wens@csie.org, hverkuil@xs4all.nl,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@googlegroups.com,
-        Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Date:   Thu, 26 Nov 2020 20:21:11 -0300
-In-Reply-To: <20201110223540.4105284-1-jernej.skrabec@siol.net>
-References: <20201110223540.4105284-1-jernej.skrabec@siol.net>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        Thu, 26 Nov 2020 18:24:04 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kiQcK-0001Ms-Q8; Thu, 26 Nov 2020 23:24:00 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: qcom: Kconfig: Fix spelling mistake "dyanmic" -> "dynamic"
+Date:   Thu, 26 Nov 2020 23:24:00 +0000
+Message-Id: <20201126232400.15011-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jernej, Emmanuel,
+From: Colin Ian King <colin.king@canonical.com>
 
-Thanks for the patch.
+There is a spelling mistake in the Kconfig help text. Fix it.
 
-On Tue, 2020-11-10 at 23:35 +0100, Jernej Skrabec wrote:
-> VP8 in Cedrus shares same engine as H264.
-> 
-> Note that it seems necessary to call bitstream parsing functions,
-> to parse frame header, otherwise decoded image is garbage. This is
-> contrary to what is driver supposed to do. However, values are not
-> really used, so this might be acceptable. It's possible that bitstream
-> parsing functions set some internal VPU state, which is later necessary
-> for proper decoding. Biggest suspect is "VP8 probs update" trigger.
-> 
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> [addressed issues from reviewer]
-> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-> ---
-> Changes in v3:
-> - addressed comments from Ezequiel Garcia - new comments,
->   using new macros from VP8 UAPI, new function for waiting
->   on bit to be set
-> Changes in v2:
-> - rebased on top of current linux-media master branch
-> 
-> NOTE: This now depends on following patch:
-> https://patchwork.linuxtv.org/project/linux-media/patch/20201108202021.4187-1-linkmauve@linkmauve.fr/
-> 
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/clk/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The patch looks fairly good, so let's wait and see
-what Hans, Paul and Maxime think about it.
-
-FWIW, my humble Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-
-It would be good to make sure this doesn't regress
-v4l2-compliance, or cause some regression in decoding.
-
-Not really a blocker to merge this, but I'm thinking
-that now that we have Fluster for conformance testing,
-we could add the VP8 vectors and use them against
-Cedrus and Hantro:
-
-https://chromium.googlesource.com/webm/vp8-test-vectors/+/refs/heads/master
-
-Thanks,
-Ezequiel
-
->  drivers/staging/media/sunxi/cedrus/Makefile   |   3 +-
->  drivers/staging/media/sunxi/cedrus/cedrus.c   |   8 +
->  drivers/staging/media/sunxi/cedrus/cedrus.h   |  24 +
->  .../staging/media/sunxi/cedrus/cedrus_dec.c   |   5 +
->  .../staging/media/sunxi/cedrus/cedrus_hw.c    |   2 +
->  .../staging/media/sunxi/cedrus/cedrus_regs.h  |  80 ++
->  .../staging/media/sunxi/cedrus/cedrus_video.c |   9 +
->  .../staging/media/sunxi/cedrus/cedrus_vp8.c   | 907 ++++++++++++++++++
->  8 files changed, 1037 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/staging/media/sunxi/cedrus/cedrus_vp8.c
-> 
+diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+index 48c624a1eff1..8c8b568609d4 100644
+--- a/drivers/clk/qcom/Kconfig
++++ b/drivers/clk/qcom/Kconfig
+@@ -44,7 +44,7 @@ config QCOM_CLK_APCC_MSM8996
+ 	help
+ 	  Support for the CPU clock controller on msm8996 devices.
+ 	  Say Y if you want to support CPU clock scaling using CPUfreq
+-	  drivers for dyanmic power management.
++	  drivers for dynamic power management.
+ 
+ config QCOM_CLK_RPM
+ 	tristate "RPM based Clock Controller"
+-- 
+2.29.2
 
