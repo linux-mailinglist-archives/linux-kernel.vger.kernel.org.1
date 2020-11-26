@@ -2,172 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85082C4D6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF2C2C4D6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733216AbgKZCYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 21:24:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33534 "EHLO mail.kernel.org"
+        id S1733256AbgKZCYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 21:24:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732996AbgKZCYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 21:24:18 -0500
+        id S1732996AbgKZCYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 21:24:19 -0500
 Received: from localhost (unknown [104.132.1.66])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A55B52075A;
-        Thu, 26 Nov 2020 02:24:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7661420B1F;
+        Thu, 26 Nov 2020 02:24:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606357457;
-        bh=Alo9zNvA+1NWVx4osETZs6kbouoDQ8KV8oIAa+Uia5M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Rq1/TfKWQipMYYQjxO+g6ZXa133wOfhTo/9bTZlcCrkesTrP1NsicguAgztC7GyvN
-         TlgSUFZxT2FMRdeE/hRYYu3AShOJ4oosWSJ5DDYdvEtAoog2qJckNSGv6rgomOhRcS
-         fW2g+lubvcQm+XdKQvmzdZAuZgR0IlveFnufGKdw=
+        s=default; t=1606357458;
+        bh=/EK1Ht2YSmcXKzOA8XtJjuwxh82MdQhwULTWNbahAzc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QDUXp9ny7CBTuPZ8sC/bxZ+iYpk1wYi7jCwz0arWov+y+oumFdeW2Jx3tPMkM4oN3
+         +Oe1Rwjz7ItOp0C+A3MQ5zo3nLmCvrCFuNuhdfTw8lUSAF0UnYxfPg07DEiuk9rn4Z
+         gwKpkcEwcLmR/Q3JllIeq9NKWb2uJAn9yj1kZCC4=
 From:   Jaegeuk Kim <jaegeuk@kernel.org>
 To:     linux-kernel@vger.kernel.org, kernel-team@android.com
 Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 1/4] f2fs: rename logical_to_blk and blk_to_logical
-Date:   Wed, 25 Nov 2020 18:24:13 -0800
-Message-Id: <20201126022416.3068426-1-jaegeuk@kernel.org>
+Subject: [PATCH 2/4] f2fs: use new conversion functions between blks and bytes
+Date:   Wed, 25 Nov 2020 18:24:14 -0800
+Message-Id: <20201126022416.3068426-2-jaegeuk@kernel.org>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+In-Reply-To: <20201126022416.3068426-1-jaegeuk@kernel.org>
+References: <20201126022416.3068426-1-jaegeuk@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch renames two functions like below having u64.
- - logical_to_blk to bytes_to_blks
- - blk_to_logical to blks_to_bytes
+This patch cleans up blks and bytes conversions.
 
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 ---
- fs/f2fs/data.c | 40 ++++++++++++++++++++--------------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+ fs/f2fs/data.c | 46 +++++++++++++++++++++-------------------------
+ 1 file changed, 21 insertions(+), 25 deletions(-)
 
 diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index be4da52604ed..a8612c6f40ab 100644
+index a8612c6f40ab..a84e5bc09337 100644
 --- a/fs/f2fs/data.c
 +++ b/fs/f2fs/data.c
-@@ -1808,14 +1808,14 @@ static int get_data_block_bmap(struct inode *inode, sector_t iblock,
+@@ -1750,6 +1750,16 @@ bool f2fs_overwrite_io(struct inode *inode, loff_t pos, size_t len)
+ 	return true;
+ }
+ 
++static inline u64 bytes_to_blks(struct inode *inode, u64 bytes)
++{
++	return (bytes >> inode->i_blkbits);
++}
++
++static inline u64 blks_to_bytes(struct inode *inode, u64 blks)
++{
++	return (blks << inode->i_blkbits);
++}
++
+ static int __get_data_block(struct inode *inode, sector_t iblock,
+ 			struct buffer_head *bh, int create, int flag,
+ 			pgoff_t *next_pgofs, int seg_type, bool may_write)
+@@ -1758,7 +1768,7 @@ static int __get_data_block(struct inode *inode, sector_t iblock,
+ 	int err;
+ 
+ 	map.m_lblk = iblock;
+-	map.m_len = bh->b_size >> inode->i_blkbits;
++	map.m_len = bytes_to_blks(inode, bh->b_size);
+ 	map.m_next_pgofs = next_pgofs;
+ 	map.m_next_extent = NULL;
+ 	map.m_seg_type = seg_type;
+@@ -1768,7 +1778,7 @@ static int __get_data_block(struct inode *inode, sector_t iblock,
+ 	if (!err) {
+ 		map_bh(bh, inode->i_sb, map.m_pblk);
+ 		bh->b_state = (bh->b_state & ~F2FS_MAP_FLAGS) | map.m_flags;
+-		bh->b_size = (u64)map.m_len << inode->i_blkbits;
++		bh->b_size = blks_to_bytes(inode, map.m_len);
+ 	}
+ 	return err;
+ }
+@@ -1808,16 +1818,6 @@ static int get_data_block_bmap(struct inode *inode, sector_t iblock,
  						NO_CHECK_TYPE, create);
  }
  
--static inline sector_t logical_to_blk(struct inode *inode, loff_t offset)
-+static inline u64 bytes_to_blks(struct inode *inode, u64 bytes)
- {
--	return (offset >> inode->i_blkbits);
-+	return (bytes >> inode->i_blkbits);
- }
- 
--static inline loff_t blk_to_logical(struct inode *inode, sector_t blk)
-+static inline u64 blks_to_bytes(struct inode *inode, u64 blks)
- {
--	return (blk << inode->i_blkbits);
-+	return (blks << inode->i_blkbits);
- }
- 
+-static inline u64 bytes_to_blks(struct inode *inode, u64 bytes)
+-{
+-	return (bytes >> inode->i_blkbits);
+-}
+-
+-static inline u64 blks_to_bytes(struct inode *inode, u64 blks)
+-{
+-	return (blks << inode->i_blkbits);
+-}
+-
  static int f2fs_xattr_fiemap(struct inode *inode,
-@@ -1843,7 +1843,7 @@ static int f2fs_xattr_fiemap(struct inode *inode,
- 			return err;
- 		}
+ 				struct fiemap_extent_info *fieinfo)
+ {
+@@ -2053,8 +2053,7 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
+ 					bool is_readahead)
+ {
+ 	struct bio *bio = *bio_ret;
+-	const unsigned blkbits = inode->i_blkbits;
+-	const unsigned blocksize = 1 << blkbits;
++	const unsigned blocksize = blks_to_bytes(inode, 1);
+ 	sector_t block_in_file;
+ 	sector_t last_block;
+ 	sector_t last_block_in_file;
+@@ -2063,8 +2062,8 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
  
--		phys = (__u64)blk_to_logical(inode, ni.blk_addr);
-+		phys = blks_to_bytes(inode, ni.blk_addr);
- 		offset = offsetof(struct f2fs_inode, i_addr) +
- 					sizeof(__le32) * (DEF_ADDRS_PER_INODE -
- 					get_inline_xattr_addrs(inode));
-@@ -1875,7 +1875,7 @@ static int f2fs_xattr_fiemap(struct inode *inode,
- 			return err;
- 		}
+ 	block_in_file = (sector_t)page_index(page);
+ 	last_block = block_in_file + nr_pages;
+-	last_block_in_file = (f2fs_readpage_limit(inode) + blocksize - 1) >>
+-							blkbits;
++	last_block_in_file = bytes_to_blks(inode,
++			f2fs_readpage_limit(inode) + blocksize - 1);
+ 	if (last_block > last_block_in_file)
+ 		last_block = last_block_in_file;
  
--		phys = (__u64)blk_to_logical(inode, ni.blk_addr);
-+		phys = blks_to_bytes(inode, ni.blk_addr);
- 		len = inode->i_sb->s_blocksize;
+@@ -2177,16 +2176,15 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 	struct bio *bio = *bio_ret;
+ 	unsigned int start_idx = cc->cluster_idx << cc->log_cluster_size;
+ 	sector_t last_block_in_file;
+-	const unsigned blkbits = inode->i_blkbits;
+-	const unsigned blocksize = 1 << blkbits;
++	const unsigned blocksize = blks_to_bytes(inode, 1);
+ 	struct decompress_io_ctx *dic = NULL;
+ 	int i;
+ 	int ret = 0;
  
- 		f2fs_put_page(page, 1);
-@@ -1945,18 +1945,18 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 			goto out;
- 	}
+ 	f2fs_bug_on(sbi, f2fs_cluster_is_empty(cc));
  
--	if (logical_to_blk(inode, len) == 0)
--		len = blk_to_logical(inode, 1);
-+	if (bytes_to_blks(inode, len) == 0)
-+		len = blks_to_bytes(inode, 1);
+-	last_block_in_file = (f2fs_readpage_limit(inode) +
+-					blocksize - 1) >> blkbits;
++	last_block_in_file = bytes_to_blks(inode,
++			f2fs_readpage_limit(inode) + blocksize - 1);
  
--	start_blk = logical_to_blk(inode, start);
--	last_blk = logical_to_blk(inode, start + len - 1);
-+	start_blk = bytes_to_blks(inode, start);
-+	last_blk = bytes_to_blks(inode, start + len - 1);
+ 	/* get rid of pages beyond EOF */
+ 	for (i = 0; i < cc->cluster_size; i++) {
+@@ -3968,7 +3966,6 @@ static int check_swap_activate(struct swap_info_struct *sis,
+ 	struct inode *inode = mapping->host;
+ 	unsigned blocks_per_page;
+ 	unsigned long page_no;
+-	unsigned blkbits;
+ 	sector_t probe_block;
+ 	sector_t last_block;
+ 	sector_t lowest_block = -1;
+@@ -3979,8 +3976,7 @@ static int check_swap_activate(struct swap_info_struct *sis,
+ 	if (PAGE_SIZE == F2FS_BLKSIZE)
+ 		return check_swap_activate_fast(sis, swap_file, span);
  
- next:
- 	memset(&map_bh, 0, sizeof(struct buffer_head));
- 	map_bh.b_size = len;
+-	blkbits = inode->i_blkbits;
+-	blocks_per_page = PAGE_SIZE >> blkbits;
++	blocks_per_page = bytes_to_blks(inode, PAGE_SIZE);
  
- 	if (compr_cluster)
--		map_bh.b_size = blk_to_logical(inode, cluster_size - 1);
-+		map_bh.b_size = blks_to_bytes(inode, cluster_size - 1);
- 
- 	ret = get_data_block(inode, start_blk, &map_bh, 0,
- 					F2FS_GET_BLOCK_FIEMAP, &next_pgofs);
-@@ -1967,7 +1967,7 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 	if (!buffer_mapped(&map_bh)) {
- 		start_blk = next_pgofs;
- 
--		if (blk_to_logical(inode, start_blk) < blk_to_logical(inode,
-+		if (blks_to_bytes(inode, start_blk) < blks_to_bytes(inode,
- 						max_inode_blocks(inode)))
- 			goto prep_next;
- 
-@@ -1993,9 +1993,9 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 		compr_cluster = false;
- 
- 
--		logical = blk_to_logical(inode, start_blk - 1);
--		phys = blk_to_logical(inode, map_bh.b_blocknr);
--		size = blk_to_logical(inode, cluster_size);
-+		logical = blks_to_bytes(inode, start_blk - 1);
-+		phys = blks_to_bytes(inode, map_bh.b_blocknr);
-+		size = blks_to_bytes(inode, cluster_size);
- 
- 		flags |= FIEMAP_EXTENT_ENCODED;
- 
-@@ -2013,14 +2013,14 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 		goto prep_next;
- 	}
- 
--	logical = blk_to_logical(inode, start_blk);
--	phys = blk_to_logical(inode, map_bh.b_blocknr);
-+	logical = blks_to_bytes(inode, start_blk);
-+	phys = blks_to_bytes(inode, map_bh.b_blocknr);
- 	size = map_bh.b_size;
- 	flags = 0;
- 	if (buffer_unwritten(&map_bh))
- 		flags = FIEMAP_EXTENT_UNWRITTEN;
- 
--	start_blk += logical_to_blk(inode, size);
-+	start_blk += bytes_to_blks(inode, size);
- 
- prep_next:
- 	cond_resched();
-@@ -3903,7 +3903,7 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
- 	 * to be very smart.
+ 	/*
+ 	 * Map all the blocks into the extent list.  This code doesn't try
+@@ -3988,7 +3984,7 @@ static int check_swap_activate(struct swap_info_struct *sis,
  	 */
- 	cur_lblock = 0;
--	last_lblock = logical_to_blk(inode, i_size_read(inode));
-+	last_lblock = bytes_to_blks(inode, i_size_read(inode));
- 	len = i_size_read(inode);
+ 	probe_block = 0;
+ 	page_no = 0;
+-	last_block = i_size_read(inode) >> blkbits;
++	last_block = bytes_to_blks(inode, i_size_read(inode));
+ 	while ((probe_block + blocks_per_page) <= last_block &&
+ 			page_no < sis->max) {
+ 		unsigned block_in_page;
+@@ -4028,7 +4024,7 @@ static int check_swap_activate(struct swap_info_struct *sis,
+ 			}
+ 		}
  
- 	while (cur_lblock <= last_lblock && cur_lblock < sis->max) {
-@@ -3925,7 +3925,7 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
- 			goto err_out;
- 
- 		pblock = map_bh.b_blocknr;
--		nr_pblocks = logical_to_blk(inode, map_bh.b_size);
-+		nr_pblocks = bytes_to_blks(inode, map_bh.b_size);
- 
- 		if (cur_lblock + nr_pblocks >= sis->max)
- 			nr_pblocks = sis->max - cur_lblock;
+-		first_block >>= (PAGE_SHIFT - blkbits);
++		first_block >>= (PAGE_SHIFT - inode->i_blkbits);
+ 		if (page_no) {	/* exclude the header page */
+ 			if (first_block < lowest_block)
+ 				lowest_block = first_block;
 -- 
 2.29.2.454.gaff20da3a2-goog
 
