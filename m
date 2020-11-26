@@ -2,82 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E702C4C73
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEB62C4C78
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 02:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730666AbgKZBPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 20:15:04 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2444 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729131AbgKZBPE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 20:15:04 -0500
-Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4ChKYD6vgTz4yNM;
-        Thu, 26 Nov 2020 09:14:40 +0800 (CST)
-Received: from [127.0.0.1] (10.57.36.170) by dggeme760-chm.china.huawei.com
- (10.3.19.106) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Thu, 26
- Nov 2020 09:15:01 +0800
-Subject: Re: [PATCH v3 net-next] net: phy: realtek: read actual speed on
- rtl8211f to detect downshift
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     Antonio Borneo <antonio.borneo@st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        Willy Liu <willy.liu@realtek.com>,
-        <linux-kernel@vger.kernel.org>,
-        Salil Mehta <salil.mehta@huawei.com>, <linuxarm@huawei.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20201124143848.874894-1-antonio.borneo@st.com>
- <20201124230756.887925-1-antonio.borneo@st.com>
- <d62710c3-7813-7506-f209-fcfa65931778@huawei.com>
- <f24476cc-39f0-ea5f-d6af-faad481e3235@huawei.com>
- <20201125170714.GK1551@shell.armlinux.org.uk>
-From:   Yonglong Liu <liuyonglong@huawei.com>
-Message-ID: <3fdb1d11-d59e-9d3d-a5a8-8f20e4ca7f0a@huawei.com>
-Date:   Thu, 26 Nov 2020 09:15:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        id S1730725AbgKZBQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 20:16:19 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:54304 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729679AbgKZBQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 20:16:18 -0500
+Received: from [10.130.0.193] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutDeAb9fnMMWAA--.37392S3;
+        Thu, 26 Nov 2020 09:16:15 +0800 (CST)
+Subject: Re: [PATCH] acpi: Fix use-after-free in acpi_ipmi.c
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+References: <1606222266-11685-1-git-send-email-tangyouling@loongson.cn>
+ <CAJZ5v0i2RYpw-rxvGWXzetiaSO34EH6x3TN5-O2npZM25Kww7w@mail.gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Youling Tang <tangyouling@loongson.cn>
+Message-ID: <615eeadd-fc87-7b7a-f9cc-f2ef5046cea3@loongson.cn>
+Date:   Thu, 26 Nov 2020 09:16:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201125170714.GK1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <CAJZ5v0i2RYpw-rxvGWXzetiaSO34EH6x3TN5-O2npZM25Kww7w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.57.36.170]
-X-ClientProxiedBy: dggeme715-chm.china.huawei.com (10.1.199.111) To
- dggeme760-chm.china.huawei.com (10.3.19.106)
-X-CFilter-Loop: Reflected
+X-CM-TRANSID: AQAAf9AxutDeAb9fnMMWAA--.37392S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur13ZF4rXFWUJFy5Jry3XFb_yoW8GFy3pF
+        yxtay2vFW7KF1UGa1UZa4UXryrJa1jv34S9FW8Aw12k3Wq9ry3KryDAF15Ka47ZF9rGF42
+        qa9rJ3W8C3WUZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
+        8wCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
+        uYvjxUc8nYUUUUU
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Russell:
 
-     I found this message in kernel log, thanks!
+Hi，
+On 11/25/2020 11:53 PM, Rafael J. Wysocki wrote:
+> On Tue, Nov 24, 2020 at 1:51 PM Youling Tang <tangyouling@loongson.cn> wrote:
+>> kfree() has been called inside put_device so anther kfree would cause a
+>> use-after-free bug.
+>>
+>> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+>> ---
+>>   drivers/acpi/acpi_ipmi.c | 2 --
+>>   1 file changed, 2 deletions(-)
+>>
+>> diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
+>> index 9d6c0fc..72902b6 100644
+>> --- a/drivers/acpi/acpi_ipmi.c
+>> +++ b/drivers/acpi/acpi_ipmi.c
+>> @@ -130,7 +130,6 @@ ipmi_dev_alloc(int iface, struct device *dev, acpi_handle handle)
+>>                                 ipmi_device, &user);
+>>          if (err) {
+>>                  put_device(dev);
+>> -               kfree(ipmi_device);
+> dev doesn't point to the same object in memory as ipmi_device, though,
+> if I'm not mistaken.
+>
+> Please double check that and resend the patch if you are sure that it
+> is correct.
+You're right, dev really doesn't point to the same memory object
+as ipmi_device. I'll send v2 later.
 
-On 2020/11/26 1:07, Russell King - ARM Linux admin wrote:
-> On Thu, Nov 26, 2020 at 12:57:37AM +0800, Yonglong Liu wrote:
->> Hi, Antonio:
+Thanks,
+Youling.
+>>                  return NULL;
+>>          }
+>>          ipmi_device->user_interface = user;
+>> @@ -142,7 +141,6 @@ static void ipmi_dev_release(struct acpi_ipmi_device *ipmi_device)
+>>   {
+>>          ipmi_destroy_user(ipmi_device->user_interface);
+>>          put_device(ipmi_device->dev);
+>> -       kfree(ipmi_device);
+>>   }
 >>
->>      Could you help to provide a downshift warning message when this happen?
+>>   static void ipmi_dev_release_kref(struct kref *kref)
+>> --
+>> 2.1.0
 >>
->>      It's a little strange that the adv and the lpa support 1000M, but
->> finally the link speed is 100M.
-> That is an identifying feature of downshift.
->
-> Downshift can happen at either end of the link, and since we must not
-> change the "Advertised link modes" since this is what userspace
-> configured, if a downshift occurs at the local end, then you will get
-> the ethtool output you provide, where the speed does not agree with
-> the reported advertisements.
->
-> You should already be getting a warning in the kernel log when this
-> happens; phy_check_downshift() which is part of the phylib core code
-> will check this every time the link comes up. You should already
-> have a message "Downshift occurred ..." in your kernel log. Please
-> check.
->
 
