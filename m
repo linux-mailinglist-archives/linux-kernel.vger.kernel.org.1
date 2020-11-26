@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8972C5608
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3748C2C5609
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390738AbgKZNmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:42:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
+        id S2390747AbgKZNmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:42:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390730AbgKZNms (ORCPT
+        with ESMTP id S2390234AbgKZNms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 26 Nov 2020 08:42:48 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95515C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:42:46 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 1so2455236wme.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:42:46 -0800 (PST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F7EC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:42:47 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id i2so2192674wrs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:42:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YuzX4IvswDkJ8SA2+BkBhvbot5/c2/3wXnFFxZJ8VHQ=;
-        b=sRGeaUQGfXY/xtrrAXDFNvJrX3YKVvXloSsB437HHje8kVce4ACPjCwY2I+mqD4Ntn
-         R36M0zwVsj+jWH9K0pApQNqSDZXF9SNbtgkJiBPwo3+1Dp3oZew2onO4cF/ygdNH90i8
-         vLGPicCNcRFzYM5NkLCrj9rNXGTUnwxHYq+xeG56NMLOUvGZOgFBKSOL9m3DDDgQPQ3L
-         zYo+cQnG6BEMvVyiquM9HL9I+WDDvXSJka74EwuqIxRA862k9s377J9nWHyMRAS2Zr+a
-         cwVBb8x9aH+3e1v5ss4W8ZsDENgF0tKInWFDh3TT08apWnP+5+hfO3XmYMY/gaefgXdB
-         NWsg==
+        bh=dmY41ceyc6chYcpESZmZP3QGDnanFIcluGLqchr029A=;
+        b=e1rVMTz6bLbCWASJmqUfDpitRKv9ISCBYaTNCD0SsSAd2EevlEBxrDdSKB+rQAYuFU
+         8rr0oxy3WkZj1teuHpAo7OhQRMfaVPWERVifkADPWDCscLCwxlhpbpAl2LORsJ9Ui0rg
+         OObbVbb/IohqBdFI9IFOxkjXusCH1fFfn4hLae9Cnj+rpHn0caLy1qwtkD2LImtKrn8v
+         6tA0xY4l+ViFaqf7bT6YmrhuJQiz/rwJyTU8lb6/112ic37dwpE9bXfBwZeB9WBS9kIl
+         hZIA2MDWZJQC0Hp2Lh0GAUnYFNRGY2M6211dL4sn+pPH9Jk9PvbofcF7LWhBFxx9C5BD
+         /UTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YuzX4IvswDkJ8SA2+BkBhvbot5/c2/3wXnFFxZJ8VHQ=;
-        b=OnC9gAMsQoI3hAMX3zufVznZsS9qa8cEqXg8QWLi+SWD0mbruQqDxUv/RlN7N7Ll6e
-         YIhFcyKn1T7TVg8cnd2nZnb4QUIw3FpbF0RNtstol4Cps7te4rPwmSdfCntmuUqMENC6
-         CcEre8VdpSMYzsOl8bfwAhWqw18wnbgZvd16P3aRgTGnKIWNIV0JOEzMTEewZuEHGHlc
-         MoSwRKNz7T4E0lrUwHod6VDnzL7HmhJi9fesbmu/y2vltKmovj1auGC7bQHRPbGjemu7
-         Ow70+PvqWQQBTjVHOvtufbToqCmZbt6k2YLp39Nm6EItmWTg2NZTDjX/74ShCHxIDUZg
-         QYJg==
-X-Gm-Message-State: AOAM532QQqd015uqQlFyt+VjX2zkreBIm9BZNH/baZYFG8XNIH9/BDy5
-        YPHMLSvno1tlnGewaGaIqzZ0FQ==
-X-Google-Smtp-Source: ABdhPJxj15M1SEPtHn27yhWOhuSIur/4laupvsT3VboOtcpMEaD4/YV5Sx+xX9ZrHTm5GaKL0vlzZg==
-X-Received: by 2002:a1c:2284:: with SMTP id i126mr3459973wmi.43.1606398165341;
-        Thu, 26 Nov 2020 05:42:45 -0800 (PST)
+        bh=dmY41ceyc6chYcpESZmZP3QGDnanFIcluGLqchr029A=;
+        b=p/BR8+KTlq0XqasFWwQEkEZZ/Hu0Kwj91gRKc7UtXPr6g/WZWLQA90BZtX+IYrargl
+         IHlF4/6o1s5+mooEjclRQFOGf1zpqi6fL2kShs/FSWwOyiB/SaON86s0G0RQObTV6oDD
+         pHKnQqBVU2uXmaddKOhxqCSTdJoz5YkNVQvKdLRX1PnQGdqqLoqUVGeBm5yCdSxHbENJ
+         RW9nBQ3yXalFmq3fxSCXd+/VoAb8+upK1B4ry/oDsLvAiPXnV9gnwPWAwViXJaz8NqIy
+         lbgNBvHqDHT7+QQn9cWpUJwQQu6qNJvfd7EAZkrgNso43MA48EKzC+X8j2cUuZfNeIcy
+         EiqQ==
+X-Gm-Message-State: AOAM531J6tskT6P5l32QAu80I0DgR9hr9TiERG7xYvGXIaO3dvmlK7tV
+        4iRUIneUzBfI3jMD7O/0hhvZS/YJ9EXTEMTt
+X-Google-Smtp-Source: ABdhPJwQFSXC5wh+xxoo2UvAuPfEbz5ABc/LCULY9XBt+X2t0p9Y7pi4DpLwBb/4gHK4J8jJ1Nl8MQ==
+X-Received: by 2002:adf:f2c7:: with SMTP id d7mr3870152wrp.142.1606398166640;
+        Thu, 26 Nov 2020 05:42:46 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.42.44
+        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.42.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:42:44 -0800 (PST)
+        Thu, 26 Nov 2020 05:42:45 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 01/40] drm/amd/pm/powerplay/smumgr/tonga_smumgr: Remove set but unused variable 'res'
-Date:   Thu, 26 Nov 2020 13:42:01 +0000
-Message-Id: <20201126134240.3214176-2-lee.jones@linaro.org>
+Subject: [PATCH 02/40] drm/amd/pm/powerplay/smumgr/polaris10_smumgr: Make function called by reference static
+Date:   Thu, 26 Nov 2020 13:42:02 +0000
+Message-Id: <20201126134240.3214176-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201126134240.3214176-1-lee.jones@linaro.org>
 References: <20201126134240.3214176-1-lee.jones@linaro.org>
@@ -71,8 +71,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/tonga_smumgr.c: In function ‘tonga_thermal_setup_fan_table’:
- drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/tonga_smumgr.c:2469:6: warning: variable ‘res’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/polaris10_smumgr.c:2145:5: warning: no previous prototype for ‘polaris10_thermal_avfs_enable’ [-Wmissing-prototypes]
 
 Cc: Evan Quan <evan.quan@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
@@ -83,36 +82,22 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/pm/powerplay/smumgr/tonga_smumgr.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/amd/pm/powerplay/smumgr/polaris10_smumgr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/tonga_smumgr.c b/drivers/gpu/drm/amd/pm/powerplay/smumgr/tonga_smumgr.c
-index 4bfadb49521bc..c28f3e1299701 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/tonga_smumgr.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/tonga_smumgr.c
-@@ -2466,7 +2466,6 @@ static int tonga_thermal_setup_fan_table(struct pp_hwmgr *hwmgr)
- 	uint32_t t_diff1, t_diff2, pwm_diff1, pwm_diff2;
- 	uint16_t fdo_min, slope1, slope2;
- 	uint32_t reference_clock;
--	int res;
- 	uint64_t tmp64;
- 
- 	if (!phm_cap_enabled(hwmgr->platform_descriptor.platformCaps,
-@@ -2539,11 +2538,9 @@ static int tonga_thermal_setup_fan_table(struct pp_hwmgr *hwmgr)
- 
- 	fan_table.FanControl_GL_Flag = 1;
- 
--	res = smu7_copy_bytes_to_smc(hwmgr,
--					smu_data->smu7_data.fan_table_start,
--					(uint8_t *)&fan_table,
--					(uint32_t)sizeof(fan_table),
--					SMC_RAM_END);
-+	smu7_copy_bytes_to_smc(hwmgr, smu_data->smu7_data.fan_table_start,
-+			       (uint8_t *)&fan_table,
-+			       (uint32_t)sizeof(fan_table), SMC_RAM_END);
- 
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/polaris10_smumgr.c b/drivers/gpu/drm/amd/pm/powerplay/smumgr/polaris10_smumgr.c
+index 052bc88cf33c9..45214a364baa9 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/polaris10_smumgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/polaris10_smumgr.c
+@@ -2142,7 +2142,7 @@ static int polaris10_program_mem_timing_parameters(struct pp_hwmgr *hwmgr)
  	return 0;
  }
+ 
+-int polaris10_thermal_avfs_enable(struct pp_hwmgr *hwmgr)
++static int polaris10_thermal_avfs_enable(struct pp_hwmgr *hwmgr)
+ {
+ 	struct smu7_hwmgr *data = (struct smu7_hwmgr *)(hwmgr->backend);
+ 
 -- 
 2.25.1
 
