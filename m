@@ -2,128 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575982C52DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BB82C52DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:24:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389007AbgKZLWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 06:22:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54590 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730539AbgKZLWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 06:22:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6E6AAC22;
-        Thu, 26 Nov 2020 11:22:30 +0000 (UTC)
-To:     Yu Zhao <yuzhao@google.com>, Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1605860847-47445-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201126045234.GA1014081@google.com>
- <ed19e3f7-33cb-20ae-537e-a7ada2036895@linux.alibaba.com>
- <20201126072402.GA1047005@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH next] mm/swap.c: reduce lock contention in lru_cache_add
-Message-ID: <464fa387-9dfd-a8c7-3d86-040f26fd4115@suse.cz>
-Date:   Thu, 26 Nov 2020 12:22:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2389023AbgKZLXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 06:23:30 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2160 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726985AbgKZLXa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 06:23:30 -0500
+Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Chb0c2V2Dz67HSx;
+        Thu, 26 Nov 2020 19:20:48 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 26 Nov 2020 12:23:27 +0100
+Received: from [10.210.172.213] (10.210.172.213) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Thu, 26 Nov 2020 11:23:25 +0000
+Subject: Re: [PATCH v3 3/5] driver core: platform: Add platform_put_irq()
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <lenb@kernel.org>, <rjw@rjwysocki.net>,
+        <gregkh@linuxfoundation.org>, <tglx@linutronix.de>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <linux-acpi@vger.kernel.org>
+References: <1606324841-217570-1-git-send-email-john.garry@huawei.com>
+ <1606324841-217570-4-git-send-email-john.garry@huawei.com>
+ <f6fb9ff74c8b361a592a6a4ceebd032d@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <4a7359bb-620b-2219-9b88-8a657f716336@huawei.com>
+Date:   Thu, 26 Nov 2020 11:23:04 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20201126072402.GA1047005@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <f6fb9ff74c8b361a592a6a4ceebd032d@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.210.172.213]
+X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/20 8:24 AM, Yu Zhao wrote:
-> On Thu, Nov 26, 2020 at 02:39:03PM +0800, Alex Shi wrote:
->> 
->> 
->> 在 2020/11/26 下午12:52, Yu Zhao 写道:
->> >>   */
->> >>  void __pagevec_lru_add(struct pagevec *pvec)
->> >>  {
->> >> -	int i;
->> >> -	struct lruvec *lruvec = NULL;
->> >> +	int i, nr_lruvec;
->> >>  	unsigned long flags = 0;
->> >> +	struct page *page;
->> >> +	struct lruvecs lruvecs;
->> >>  
->> >> -	for (i = 0; i < pagevec_count(pvec); i++) {
->> >> -		struct page *page = pvec->pages[i];
->> >> +	nr_lruvec = sort_page_lruvec(&lruvecs, pvec);
->> > Simply looping pvec multiple times (15 at most) for different lruvecs
->> > would be better because 1) it requires no extra data structures and
->> > therefore has better cache locality (theoretically faster) 2) it only
->> > loops once when !CONFIG_MEMCG and !CONFIG_NUMA and therefore has no
->> > impact on Android and Chrome OS.
->> > 
->> 
->> With multiple memcgs, it do help a lot, I had gotten 30% grain on readtwice
->> case. but yes, w/o MEMCG and NUMA, it's good to keep old behavior. So 
->> would you like has a proposal for this?
+On 26/11/2020 09:28, Marc Zyngier wrote:
+> On 2020-11-25 17:20, John Garry wrote:
+>> Add a function to tear down the work which was done in platform_get_irq()
+>> for when the device driver is done with the irq.
+>>
+>> For ACPI companion devices the irq resource is set as disabled, as this
+>> resource is configured from platform_get_irq()->acpi_irq_get() and 
+>> requires
+>> resetting.
+>>
+>> Signed-off-by: John Garry <john.garry@huawei.com>
+>> ---
+>>  drivers/base/platform.c | 14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
+>>
+>> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+>> index 88aef93eb4dd..3eeda3746701 100644
+>> --- a/drivers/base/platform.c
+>> +++ b/drivers/base/platform.c
+>> @@ -289,6 +289,20 @@ int platform_irq_count(struct platform_device *dev)
+>>  }
+>>  EXPORT_SYMBOL_GPL(platform_irq_count);
+>>
+
+Hi Marc,
+
+>> +void platform_put_irq(struct platform_device *dev, unsigned int num)
+>> +{
+>> +    unsigned int virq = platform_get_irq(dev, num);
 > 
-> Oh, no, I'm not against your idea. I was saying it doesn't seem
-> necessary to sort -- a nested loop would just do the job given
-> pagevec is small.
+> I find it pretty odd to have to recompute the interrupt number,
+> which in turn results in a domain lookup. 
 
-Yeah that could work. The worst case doesn't look nice (O(n^2)) but it should be 
-rather rare to have pages from really multiple memcgs/nodes?
+Well we do have the virq available, but then we need to pass the virq 
+and device irq index. But maybe I somehow reverse-lookup the ACPI res 
+somehow from virq, such that we don't require the irq device index.
 
-Maybe with the following change? Avoids going through the nulls if we got lucky 
-(or have !MEMCG !NUMA).
-
-> diff --git a/mm/swap.c b/mm/swap.c
-> index cb3794e13b48..1d238edc2907 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -996,15 +996,26 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
->    */
->   void __pagevec_lru_add(struct pagevec *pvec)
->   {
-> -	int i;
-> +	int i, j;
-
-int i, j, n;
-
->   	struct lruvec *lruvec = NULL;
->   	unsigned long flags = 0;
->   
-
-n = pagevec_count(pvec);
->   	for (i = 0; i < pagevec_count(pvec); i++) {
-
-    	for (i = 0; n; i++) {
-
->   		struct page *page = pvec->pages[i];
->   
-> +		if (!page)
-> +			continue;
-> +
->   		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
-> -		__pagevec_lru_add_fn(page, lruvec);
-
-		n--;
-
-> +
-> +		for (j = i; j < pagevec_count(pvec); j++) {
-> +			if (page_to_nid(pvec->pages[j]) != page_to_nid(page) ||
-> +			    page_memcg(pvec->pages[j]) != page_memcg(page))
-> +				continue;
-> +
-> +			__pagevec_lru_add_fn(pvec->pages[j], lruvec);
-> +			pvec->pages[j] = NULL;
-
-			n--;
-> +		}
->   	}
->   	if (lruvec)
->   		unlock_page_lruvec_irqrestore(lruvec, flags);
+> It things were refcounted
+> (they aren't yet), irq_dispose_mapping() would have no effect.
 > 
+> <pedant>
+> It also goes against the usual construct where if you obtain an object
+> based on some parameters, the release happens by specifying the object
+> itself, and not the parameters that lead to the object.
+> </pedant>
 
+Yes, ideally we can use virq.
+
+> 
+>> +
+>> +    irq_dispose_mapping(virq);
+>> +    if (has_acpi_companion(&dev->dev)) {
+>> +        struct resource *r = platform_get_resource(dev, IORESOURCE_IRQ,
+>> +                               num);
+>> +
+>> +        if (r)
+>> +            acpi_dev_irqresource_disabled(r, 0);
+> 
+> It looks to me that the ACPI thing is what needs to be promoted to a
+> first class function, releasing all the resources that have used by
+> a given device.
+
+This is just clearing the irq resource flags, but it could be reasonable 
+(to promote).
+
+Thanks,
+John
