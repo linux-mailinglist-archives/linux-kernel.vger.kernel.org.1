@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BD92C564C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7322C5651
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390916AbgKZNnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:43:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
+        id S2390966AbgKZNoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:44:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390646AbgKZNnj (ORCPT
+        with ESMTP id S2390685AbgKZNnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:43:39 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636D3C061A47
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:38 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id g14so2163191wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:38 -0800 (PST)
+        Thu, 26 Nov 2020 08:43:41 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89141C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:39 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id h21so2461130wmb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Y2L4ju+uZ20D0/2E1suojqs76azBxprDmuerWKuUkXg=;
-        b=FzDylEEID+ChIWfzEFmWZz2uTH3H493rVHv8wAvc/cf9fkvCuUjCYRsUuc0NZXnjf1
-         RKC6y9MRt2HtbaXRd/+MWYzK3N9y1OvjOlg09FC4aGlO7LmuK5ZixylQLIKi9ABmiFAo
-         hxbj4w7/JM80JHphzbW5XttO40XyJrkWmTUouAZskGFh9ZE8MPiRS2TN49jrHkQZx6hZ
-         Aj25a2l0d3gBcvRIXwPGQzYr1D559lBW3CGtJNZHzHYeW9lMFGYoPiaggT+FfcVDLXNu
-         mZnqjJF1Rj3ZrfBjjJAt8qSov1+FvRd4MW2OiLuZ0SRwmY5hra7HcnjZIiR9Ez4Gc2pf
-         QU2w==
+        bh=OAy1jRBTuNLPEHs/IXnokv+zNFaXcfFnOzJRsPBonE0=;
+        b=SPTU9J2onyq2/XfSieB6u7AH3glpdPGvhmzSX3HJXoTSMfOTHMvK+Hckq7OHwcT5c8
+         nMz2ecjWqsf3eR95wiufhXwqvFtVokgNJnANAEtpnikhBUVWb4IApNYv5tRct69yKWht
+         8vMDT005lM9fiCQVEfDQrkmGK6OTLch+KMRqiXcxJsY8df7z7nFWy/Qxxedis58l58XJ
+         wyu90Jjl/9wajPkoyiq4SH6mMhOOJGNlQfgzcAWkC78bxsfK1Wq6YID35dlschDhkHIY
+         PZkJx0cinT7BfcUdSJWOzilPUw10Vm+1qJ1wDXind70xKEGJ4n2vDKjvUABmT5VQ+ujl
+         iq9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Y2L4ju+uZ20D0/2E1suojqs76azBxprDmuerWKuUkXg=;
-        b=fxUTCsdb9hAjfoynIifj/2kIOBLlS1BYE0G0/ODec9MKhwptkSVR4uCHQVU2gp7BB/
-         V0aGLFdjOArT4KRONI9vJuZpeMvr30U70oKP5g8jfTm2kzjZ3BMH4mUp1CXXJFMmjMoI
-         uVjt38OwFyu10IKNYHR0JbqtJAtOeghtM7F5LGB44+Z2xuv7mb2gMz0bZ2cI0LCDIFjh
-         be788WwiocrU132mKo2TUxWanfjB96T0NH+/zs1fMM0AhY1t4pr6M6nWu1n7QGcTGE92
-         YPlC55CMf+QH7q8fJDGZaetv0V0+qv2BGigEC6UHqc9Yus8ZAnNHjvQ379c4LapdNQsD
-         OqCg==
-X-Gm-Message-State: AOAM531DWJPgp+YlcuniB7KPeaZTIxsCGdlBHrhm6dXSnS8QT6QnMQ0U
-        1PJAP+UDvO52mB7RApbi2vtudQ==
-X-Google-Smtp-Source: ABdhPJxfGQggZwM6noRk+tdnupoa9wCcjIPp3cRIt3Lxi9cHuFJWCdN0QQSBGG4Qw8BvZOr+tcmuvA==
-X-Received: by 2002:adf:e9c9:: with SMTP id l9mr4041256wrn.124.1606398217128;
-        Thu, 26 Nov 2020 05:43:37 -0800 (PST)
+        bh=OAy1jRBTuNLPEHs/IXnokv+zNFaXcfFnOzJRsPBonE0=;
+        b=haEPcVLE6RUVBk1kjgpU8axOdHoPnKvDg6N3aqdBQ5qniVAc6vNPZIR0ZGKaqcjTuC
+         PZfHPSFG7wf7YarBHMW3LUENjZ/+CQz6yQBaxGDZLDw4sf41cSHWSyF4cWnbBeDLwYBI
+         6cIR/jou17IW7++mTQD1garHWp9/64kmkyUfTN8r7n2mpNS0BfhCDCz/Kcp7QPZ17tK6
+         IYJYp2fbXd599xpgY9SE5rZfp8Q057LpvRyLrL0ZB2lKCQ5I+MKxougjcDA87y1bQoPI
+         /qLyrUi+MisoLZLVzHW7TytliOoSvdkGVn/6UmYZiaC6jLsGyaYX9yIjntK+7U8ljSnF
+         U0KA==
+X-Gm-Message-State: AOAM531Zg5NUgyvD9DofjBIMCpb2md2P1FdqO9WqFOodYouDG5IeJJ18
+        0ml9a+bqjVxCH8EzQamtdStZEw==
+X-Google-Smtp-Source: ABdhPJyrIuGbGAFK6cCNbi887UT+vTL3eGrZMw/5tagoDRi/oTCsGa25Ce80vqYgDTfdzpRIdh4OxA==
+X-Received: by 2002:a7b:cc95:: with SMTP id p21mr3487702wma.92.1606398218319;
+        Thu, 26 Nov 2020 05:43:38 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.43.35
+        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.43.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:43:36 -0800 (PST)
+        Thu, 26 Nov 2020 05:43:37 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 35/40] drm/amd/display/amdgpu_dm/amdgpu_dm_color: Demote a misuse and fix another kernel-doc header
-Date:   Thu, 26 Nov 2020 13:42:35 +0000
-Message-Id: <20201126134240.3214176-36-lee.jones@linaro.org>
+Subject: [PATCH 36/40] drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu: Mark local functions invoked by reference as static
+Date:   Thu, 26 Nov 2020 13:42:36 +0000
+Message-Id: <20201126134240.3214176-37-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201126134240.3214176-1-lee.jones@linaro.org>
 References: <20201126134240.3214176-1-lee.jones@linaro.org>
@@ -73,10 +73,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_color.c:128: warning: Function parameter or member 'lut' not described in '__drm_lut_to_dc_gamma'
- drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_color.c:128: warning: Function parameter or member 'gamma' not described in '__drm_lut_to_dc_gamma'
- drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_color.c:128: warning: Function parameter or member 'is_legacy' not described in '__drm_lut_to_dc_gamma'
- drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_color.c:426: warning: Function parameter or member 'dc_plane_state' not described in 'amdgpu_dm_update_plane_color_mgmt'
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:538:6: warning: no previous prototype for ‘pp_rv_set_wm_ranges’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:590:6: warning: no previous prototype for ‘pp_rv_set_pme_wa_enable’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:601:6: warning: no previous prototype for ‘pp_rv_set_active_display_count’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:614:6: warning: no previous prototype for ‘pp_rv_set_min_deep_sleep_dcfclk’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:627:6: warning: no previous prototype for ‘pp_rv_set_hard_min_dcefclk_by_freq’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:640:6: warning: no previous prototype for ‘pp_rv_set_hard_min_fclk_by_freq’ [-Wmissing-prototypes]
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -88,31 +90,76 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c   | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-index 5df05f0d18bc9..157fe4efbb599 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-@@ -119,7 +119,7 @@ static bool __is_lut_linear(const struct drm_color_lut *lut, uint32_t size)
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c
+index 84065c12d4b85..ac0a0539854ef 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c
+@@ -535,7 +535,7 @@ bool dm_pp_get_static_clocks(
  	return true;
  }
  
--/**
-+/*
-  * Convert the drm_color_lut to dc_gamma. The conversion depends on the size
-  * of the lut - whether or not it's legacy.
-  */
-@@ -413,7 +413,7 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc)
- /**
-  * amdgpu_dm_update_plane_color_mgmt: Maps DRM color management to DC plane.
-  * @crtc: amdgpu_dm crtc state
-- * @ dc_plane_state: target DC surface
-+ * @dc_plane_state: target DC surface
-  *
-  * Update the underlying dc_stream_state's input transfer function (ITF) in
-  * preparation for hardware commit. The transfer function used depends on
+-void pp_rv_set_wm_ranges(struct pp_smu *pp,
++static void pp_rv_set_wm_ranges(struct pp_smu *pp,
+ 		struct pp_smu_wm_range_sets *ranges)
+ {
+ 	const struct dc_context *ctx = pp->dm;
+@@ -587,7 +587,7 @@ void pp_rv_set_wm_ranges(struct pp_smu *pp,
+ 							   &wm_with_clock_ranges);
+ }
+ 
+-void pp_rv_set_pme_wa_enable(struct pp_smu *pp)
++static void pp_rv_set_pme_wa_enable(struct pp_smu *pp)
+ {
+ 	const struct dc_context *ctx = pp->dm;
+ 	struct amdgpu_device *adev = ctx->driver_context;
+@@ -598,7 +598,7 @@ void pp_rv_set_pme_wa_enable(struct pp_smu *pp)
+ 		pp_funcs->notify_smu_enable_pwe(pp_handle);
+ }
+ 
+-void pp_rv_set_active_display_count(struct pp_smu *pp, int count)
++static void pp_rv_set_active_display_count(struct pp_smu *pp, int count)
+ {
+ 	const struct dc_context *ctx = pp->dm;
+ 	struct amdgpu_device *adev = ctx->driver_context;
+@@ -611,7 +611,7 @@ void pp_rv_set_active_display_count(struct pp_smu *pp, int count)
+ 	pp_funcs->set_active_display_count(pp_handle, count);
+ }
+ 
+-void pp_rv_set_min_deep_sleep_dcfclk(struct pp_smu *pp, int clock)
++static void pp_rv_set_min_deep_sleep_dcfclk(struct pp_smu *pp, int clock)
+ {
+ 	const struct dc_context *ctx = pp->dm;
+ 	struct amdgpu_device *adev = ctx->driver_context;
+@@ -624,7 +624,7 @@ void pp_rv_set_min_deep_sleep_dcfclk(struct pp_smu *pp, int clock)
+ 	pp_funcs->set_min_deep_sleep_dcefclk(pp_handle, clock);
+ }
+ 
+-void pp_rv_set_hard_min_dcefclk_by_freq(struct pp_smu *pp, int clock)
++static void pp_rv_set_hard_min_dcefclk_by_freq(struct pp_smu *pp, int clock)
+ {
+ 	const struct dc_context *ctx = pp->dm;
+ 	struct amdgpu_device *adev = ctx->driver_context;
+@@ -637,7 +637,7 @@ void pp_rv_set_hard_min_dcefclk_by_freq(struct pp_smu *pp, int clock)
+ 	pp_funcs->set_hard_min_dcefclk_by_freq(pp_handle, clock);
+ }
+ 
+-void pp_rv_set_hard_min_fclk_by_freq(struct pp_smu *pp, int mhz)
++static void pp_rv_set_hard_min_fclk_by_freq(struct pp_smu *pp, int mhz)
+ {
+ 	const struct dc_context *ctx = pp->dm;
+ 	struct amdgpu_device *adev = ctx->driver_context;
+@@ -661,7 +661,7 @@ static enum pp_smu_status pp_nv_set_wm_ranges(struct pp_smu *pp,
+ 	return PP_SMU_RESULT_OK;
+ }
+ 
+-enum pp_smu_status pp_nv_set_pme_wa_enable(struct pp_smu *pp)
++static enum pp_smu_status pp_nv_set_pme_wa_enable(struct pp_smu *pp)
+ {
+ 	const struct dc_context *ctx = pp->dm;
+ 	struct amdgpu_device *adev = ctx->driver_context;
 -- 
 2.25.1
 
