@@ -2,156 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F062C5E09
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E58C2C5E11
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391908AbgKZW7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 17:59:23 -0500
-Received: from mail-dm6nam12on2105.outbound.protection.outlook.com ([40.107.243.105]:58881
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732858AbgKZW7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 17:59:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eJn0bihrZlCZE0uFXiIFD0msMqmmNYKFrEf025cGwPcE4ZOyMvid08rPo0Tr8rN8hNoT0PZnAXa/oEQe04Zn2E2oLvN0AIoMFCGDt/2MEvvJyVCU24vLc/50fMvTMbYnK+3UMi6WzLj0DY5X86LNiQSm3PDh3cZI1gIVAqoixjVyeGIeXCPm3iKMhgvpS6jAFJNahCXZJT8rEx5HtJvCucM8uvPUsed+gnmLsqfKaY1wroU9PklfvuioH/Fj8jTro7dYqcNd6JEztjh9A2YKS1ZCpq5J/e8R+cM5Phpm5R6srhT0loSBDhNU4WbcJotLdxrpUwoaYiI2ezxG17q5uA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VE95hY45kX7aX/15ZOdSeDhzXe2LTr/73Jska0kF6yI=;
- b=aeiekS6SNA/wSrx9tgragiJ0Dx7ur8e7FhTeOb+0Vtr74WsW3JwcUDzv5zUfNmRhHOhXxdvUhiupS+QwjaOvdJ3k+yHrg7ADpzACnrY3f+cExBDhuMOuL2EzEZsVD+9SKt2TXb9Wz07dmh6ilkHyKcRRrIEBR4UUg5UB+PEccUJuMOm+ShLW/oJKWerGiHssPuVIzLZKk1vvgcawCy+nzwG6/VyTHuALYOwHAvrgjkNCs+HydV1vJATDTuSPUKMaxR0G6+LwVOrwvlKwzJ3YKD2mlRg0wpgXTFd+tW22+NbWyZSW44YxXrfT4JUS/qM2Z7pmeOb8+Mkq4eD0GfBM2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VE95hY45kX7aX/15ZOdSeDhzXe2LTr/73Jska0kF6yI=;
- b=KdapkEb/HOBiixNN7IDFD6yyLq+SZ4A1vvniKN+GfJJB1f4eV8yoLoO6WZo4AVksomzFLkZvx7Z1/zIiVTOdJnQIQMZ1R5eb0IC0kKeR6Xgb/a1T4VNPCY/8CknN2UbHoLRx1R/3fciFsFX6jTHsAyToWj1fZr/VWfqyTmGE10o=
-Received: from MW2PR2101MB1801.namprd21.prod.outlook.com (2603:10b6:302:5::20)
- by MWHPR21MB0191.namprd21.prod.outlook.com (2603:10b6:300:79::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.0; Thu, 26 Nov
- 2020 22:59:19 +0000
-Received: from MW2PR2101MB1801.namprd21.prod.outlook.com
- ([fe80::d8c7:7c95:5325:155a]) by MW2PR2101MB1801.namprd21.prod.outlook.com
- ([fe80::d8c7:7c95:5325:155a%4]) with mapi id 15.20.3632.009; Thu, 26 Nov 2020
- 22:59:19 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: kdump always hangs in rcu_barrier() -> wait_for_completion()
-Thread-Topic: kdump always hangs in rcu_barrier() -> wait_for_completion()
-Thread-Index: AdbC4sELsDFnKKqwSUucudo1Ms9VZwBKI3EAAAtIoWAAASWqAAABOEgg
-Date:   Thu, 26 Nov 2020 22:59:19 +0000
-Message-ID: <MW2PR2101MB18011DA2FCF66D03BF8BB0CCBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
-References: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
- <20201126154630.GR1437@paulmck-ThinkPad-P72>
- <MW2PR2101MB18014505C01027A9486D45EEBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
- <20201126214226.GS1437@paulmck-ThinkPad-P72>
-In-Reply-To: <20201126214226.GS1437@paulmck-ThinkPad-P72>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=d55a0606-100d-4e47-890e-1a8b2096574c;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-11-26T22:17:21Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [2601:600:a280:7f70:909f:1fdc:142a:48f6]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1801911e-1801-4a7f-a4ba-08d8925ee88d
-x-ms-traffictypediagnostic: MWHPR21MB0191:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <MWHPR21MB0191FDA238ACA02C782DE710BFF91@MWHPR21MB0191.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mw4pN+wFkvMuhcTpSNjPhsddtD2/1b7GzrsoE6PXtS1BxjSUuixST6ekk/tI0DE+ql7VxjubgkxUiZL4pJf76/36gz3lyhwMnwD/TY6O5aceSQ6hBDXLhUdISSFuy7cc1YNaUrMuObW3ZoP8beq77EeJ5zV0KTwOZMqPPV2PONY7unmMlNS8InsTB+bOCwfOonYuNX0PTUoP/meDe5YTty9SQyfDw57iRaF4cBFX1Df3T4YSy3ntiof9E4QiwQ89gsSMnLRacdnHtOUKn4QFarVm2lDJFLbDItilRCyphz6bvREyWrmQnfg3TBe+FA/gEWAolyLAD3I2z/UEjYZ9dQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1801.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(136003)(396003)(316002)(71200400001)(83380400001)(54906003)(82960400001)(186003)(6506007)(86362001)(66476007)(6916009)(66946007)(5660300002)(8936002)(52536014)(82950400001)(8676002)(4326008)(2906002)(8990500004)(55016002)(478600001)(9686003)(10290500003)(33656002)(66556008)(76116006)(7696005)(64756008)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?5sLvZF998+Egsjg3AExbV/pKs0G4/WpaslD0kua7GSQsvrlgB4wbqbC1RNF8?=
- =?us-ascii?Q?Obqi7zAosfmc3tymMxWpz1+CH104ouGf26Mho61d/sSbeIL8P1g8mTI4C4uF?=
- =?us-ascii?Q?/sT22XvgIDpNvVSXh9zfr5T+baY46kRDky1MAnCpeWa3G0NbeecsMuDaj0oX?=
- =?us-ascii?Q?Xi7uQbxXmbP0WQg2XWFjxLhZkLcQzbVqcdegK2V5fiZPrH56t8vP4RGHwUDR?=
- =?us-ascii?Q?IQvrofDksyuRV5DpZiAeYp12AhopoEHQ96PXU0zJZIvO7LYIgisEDMpr7zDn?=
- =?us-ascii?Q?CGLxgSTRk+ek+FepcW1JxSsl71P4pLVht6wVM/jJqc96LPclbnxbn/eOTpX5?=
- =?us-ascii?Q?Ub1cfOjRnSOO35/y4oR2bXQx9G+ypwvNE2FxxeO+9hCB/hUQvuW0oXp3ZxxD?=
- =?us-ascii?Q?HaeCm3BSFuYOEXJbLgG7h2LFsP4G+ORRVgrXgtOcKwxo8XZwSlJE/5VlWY7g?=
- =?us-ascii?Q?ydwB2v881uf7Wo6f0LpE2OIYQTml3jmgLvhD7Nn+KmD5lU60aMafSB5nadHX?=
- =?us-ascii?Q?XaH0EOiCdry6a1h3q0x6SY4hEgt1Ya3DVzZSq0OrfwXBo0sMpPSZpH4pVqVW?=
- =?us-ascii?Q?LtN3oAk5RdT3MnBiC5xp76geFilMh+iGeotcJCCmSbMqaoJyaWcrtYSYsfFE?=
- =?us-ascii?Q?sm1TF7XFepfxuXKwGmd2CMpgG0RzOAJv29keim0Nh2mV2dcokM3zFsR8zlVh?=
- =?us-ascii?Q?q6EFZUxXYWih6+rUIuG5HpBBJtMMkqAGJo9nAMQvLN0lDzeg9NKRXKcZfeY7?=
- =?us-ascii?Q?9swjUD9C/B/X1ry+L2mATa4iotBItMjxmdxAvgvfHpYSaWCVFBzEtkFPh6ud?=
- =?us-ascii?Q?2I0KI/bEm8u/laL3YYka8SuZD0HVDG/wSnv7wD7fi+PFDtHWRRnQ59zl10Xm?=
- =?us-ascii?Q?p1apzfCThEKdR+di1UFYRhm+aGeyIEbzcLOBm5cvccGoP+0TykLJu9K/S4k3?=
- =?us-ascii?Q?1IWNoTJ+pyUUi2vbkzN/PAuYsjfko7vnl7on+czgM6He42VguKezczJFtEuM?=
- =?us-ascii?Q?ilIuCQrQdomtUjdJbFHj7hru46No8KNKPbbx60WA4JV4GlI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2388496AbgKZXLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 18:11:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726357AbgKZXLV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 18:11:21 -0500
+X-Greylist: delayed 365 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Nov 2020 15:11:21 PST
+Received: from hillosipuli.retiisi.eu (unknown [IPv6:2a01:4f9:c010:4572::e8:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9D3C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 15:11:21 -0800 (PST)
+Received: from valkosipuli.localdomain (unknown [IPv6:fd35:1bc8:1a6:d3d5::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 4DA93634C24;
+        Fri, 27 Nov 2020 01:04:29 +0200 (EET)
+Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@retiisi.org.uk>)
+        id 1kiQJR-0001vW-OP; Fri, 27 Nov 2020 01:04:29 +0200
+Date:   Fri, 27 Nov 2020 01:04:29 +0200
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Rob Herring <robh@kernel.org>
+Cc:     kholk11@gmail.com, mchehab@kernel.org, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] media: dt-bindings: media: i2c: Add IMX300 CMOS
+ sensor binding
+Message-ID: <20201126230429.GG4351@valkosipuli.retiisi.org.uk>
+References: <20201029172947.34315-1-kholk11@gmail.com>
+ <20201029172947.34315-3-kholk11@gmail.com>
+ <20201104214806.GA4175708@bogus>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1801.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1801911e-1801-4a7f-a4ba-08d8925ee88d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2020 22:59:19.8183
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xZ4DxnVwjHfbR/PA1VJFqOp5Piq0hRwg+a/p1BnM821bF+0FFd13+M+NFzeye9T1wU8wDuuJmPYiRqLJyU2a4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0191
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104214806.GA4175708@bogus>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Paul E. McKenney <paulmck@kernel.org>
-> Sent: Thursday, November 26, 2020 1:42 PM
->=20
-> > > Another possibility is that rcu_state.gp_kthread is non-NULL, but tha=
-t
-> > > something else is preventing RCU grace periods from completing, but i=
-n
-> >
-> > It looks like somehow the scheduling is not working here: in rcu_barrie=
-r()
-> > , if I replace the wait_for_completion() with
-> > wait_for_completion_timeout(&rcu_state.barrier_completion, 30*HZ), the
-> > issue persists.
->=20
-> Have you tried using sysreq-t to see what the various tasks are doing?
+Hi Rob, AngeloGioacchino,
 
-Will try it.
+On Wed, Nov 04, 2020 at 03:48:06PM -0600, Rob Herring wrote:
+> On Thu, Oct 29, 2020 at 06:29:47PM +0100, kholk11@gmail.com wrote:
+> > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > 
+> > Add YAML device tree binding for IMX300 CMOS image sensor, and
+> > the relevant MAINTAINERS entries.
+> > 
+> > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > ---
+> >  .../bindings/media/i2c/sony,imx300.yaml       | 112 ++++++++++++++++++
+> >  MAINTAINERS                                   |   7 ++
+> >  2 files changed, 119 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+> > new file mode 100644
+> > index 000000000000..8f1d795f8072
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+> > @@ -0,0 +1,112 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/i2c/sony,imx300.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Sony 1/2.3-Inch 8Mpixel Stacked CMOS Digital Image Sensor
+> > +
+> > +maintainers:
+> > +  - AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > +
+> > +description: |-
+> > +  The Sony IMX300 is a 1/2.3-inch Stacked CMOS (Exmor-RS) digital image
+> > +  sensor with a pixel size of 1.08um and an active array size of
+> > +  5948H x 4140V. It is programmable through I2C interface at address 0x10.
+> > +  Image data is sent through MIPI CSI-2, which is configured as either 2 or
+> > +  4 data lanes.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: sony,imx300
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    maxItems: 1
 
-BTW, this is a "Generation 2" VM on Hyper-V, meaning sysrq only starts to
-work after the Hyper-V para-virtualized keyboard driver loads... So, at thi=
-s
-early point, sysrq is not working. :-( I'll have to hack the code and use a=
-=20
-virtual NMI interrupt to force the sysrq handler to be called.
-=20
-> Having interrupts disabled on all CPUs would have the effect of disabling
-> the RCU CPU stall warnings.
-> 							Thanx, Paul
+The frequency needs to come from DT; it's not a property of the sensor.
 
-I'm sure the interrupts are not disabled. Here the VM only has 1 virtual CP=
-U,
-and when the hang issue happens the virtual serial console is still respond=
-ing
-when I press Enter (it prints a new line) or Ctrl+C (it prints ^C).
+> > +
+> > +  vdig-supply:
+> > +    description:
+> > +      Digital I/O voltage supply, 1.15-1.20 volts
+> > +
+> > +  vana-supply:
+> > +    description:
+> > +      Analog voltage supply, 2.2 volts
+> > +
+> > +  vddl-supply:
+> > +    description:
+> > +      Digital core voltage supply, 1.8 volts
+> > +
+> > +  reset-gpios:
+> 
+> maxItems: 1
+> 
+> > +    description: |-
+> > +      Reference to the GPIO connected to the xclr pin, if any.
+> > +      Must be released (set high) after all supplies are applied.
+> > +
+> > +  # See ../video-interfaces.txt for more details
+> > +  port:
+> > +    type: object
+> > +    properties:
+> > +      endpoint:
+> > +        type: object
+> > +
+> > +        properties:
+> > +          data-lanes:
+> > +            description: |-
+> > +              The sensor supports either two-lane, or four-lane operation,
+> > +              but the driver currently supports only four-lane.
+> 
+> What the driver is not relevant. Please define all possible 
+> configurations. Or just omit? What's the behavior if omitted?
 
-Here the VM does not use the "legacy timers" (PIT, Local APIC timer, etc.) =
-at all.
-Instead, the VM uses the Hyper-V para-virtualized timers. It looks the Hype=
-r-V
-timer never fires in the kdump kernel when the hang issue happens. I'm=20
-looking into this... I suspect this hang issue may only be specific to Hype=
-r-V.
+I think we've used to specify the number of lanes if it's configurable,
+instead of having defaults. I'd do the same here, i.e. require data-lanes.
 
-Thanks,
--- Dexuan
+> 
+> > +            items:
+> > +              - const: 0
+> > +              - const: 1
+> > +              - const: 2
+> > +              - const: 3
+
+-- 
+Kind regards,
+
+Sakari Ailus
