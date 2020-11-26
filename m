@@ -2,319 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990EF2C5654
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C31A2C566F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390993AbgKZNoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:44:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:33156 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390653AbgKZNnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:43:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA3A631B;
-        Thu, 26 Nov 2020 05:43:24 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 713713F71F;
-        Thu, 26 Nov 2020 05:43:23 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [RFC 1/3] mm/hotplug: Pre-validate the address range with
- platform
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1606098529-7907-1-git-send-email-anshuman.khandual@arm.com>
- <1606098529-7907-2-git-send-email-anshuman.khandual@arm.com>
- <13392308-45a8-f85d-b25e-4a728e1e0730@redhat.com>
-Message-ID: <0c13a221-570a-0d64-fce9-d28e52cbdd6c@arm.com>
-Date:   Thu, 26 Nov 2020 19:13:15 +0530
+        id S2390861AbgKZNru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:47:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390524AbgKZNru (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 08:47:50 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97E0C0613D4;
+        Thu, 26 Nov 2020 05:47:49 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id a3so2460976wmb.5;
+        Thu, 26 Nov 2020 05:47:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=42IiVM2iDa/ycvnEnXQM3gjeNp3QeNAvXnEQm3/xGY0=;
+        b=qYfluQ2skD66SH8JAnuV0sEMqK5j03/OX/nqV6NBvOT6AdOLuoaCmixOJmd7sOC4a3
+         ojZTWilrnFGf+g2KTnPI/d6n5H4fkvamSdjO3yhiLGNzSuBdBmNZm1i+jmMwyv0PGNDl
+         +6pybafgM7CJw/kAfzm2bmUnBN5m+J967YvC6oSi99snsGKO7ugSJQ8B8TrU+zPQQyoP
+         z8U/mhR3/h6zqU2+9WCtI/ATFyFSH5ZFT8y9psdULDAXFv5wzG7OGvK85sXjBvLFhkX4
+         FyDkRPJ+u62iA/pClMeAn3efEEvn3pQxcKOv3NDmyW/+wrfTR1OZhzpPjsHIyilXNOYc
+         1voA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=42IiVM2iDa/ycvnEnXQM3gjeNp3QeNAvXnEQm3/xGY0=;
+        b=kcklmcz+OC61Jo9VS+K16TjIVdaV5PyiE7vGxKaHqPV1xlc5dSUUrwNAsG5pkiEwby
+         LuHWiIhj9kZEriqWHU+J3qXv7v3IOCDJ/nQ3eKKyXzyYgKnTUAwTvKthhLVhS7MOX/8l
+         gyOT8dCoVBG8Y/KsHgz4HodUWrAO+ZSe/bGJW/3iVoh+W8IbV/YgXn89KWj1lD9Z6fF4
+         s1f1Sm3CMn+DUgvwApSG9mg6jKSuyVBavHz62xdJTYnRtMEzhoKqFvur/Ro5g5RM7Vu9
+         cxrns0e0cuwl9dsQOoy2qHWwUv2hlFfd5nDbv1h6wj9x1CIGnUCiwSRgj6sP0Trjrwte
+         2l6Q==
+X-Gm-Message-State: AOAM531r1KQgEy45ivSt7bBM+D+r04by1Co99tSOUStG9UsWWZg5duXr
+        l7WFdLFyV396iRRk3dXO6270kf6Y7I8=
+X-Google-Smtp-Source: ABdhPJxbS/OMVzeUV+23NHkUEkN1xfW7/aEEpUU5Yi1oe6auDrW7iBQ4lg8qAdPyCZALaecBfg/E1A==
+X-Received: by 2002:a7b:c157:: with SMTP id z23mr3580414wmi.70.1606398468250;
+        Thu, 26 Nov 2020 05:47:48 -0800 (PST)
+Received: from [192.168.1.118] (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
+        by smtp.gmail.com with ESMTPSA id p19sm9705686wrg.18.2020.11.26.05.47.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Nov 2020 05:47:47 -0800 (PST)
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Omar Sandoval <osandov@osandov.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1606058975.git.asml.silence@gmail.com>
+ <488177c02dccda60c5e8af2e53156c42b7f1acc0.1606058975.git.asml.silence@gmail.com>
+ <20201126024658.GA42718@T590>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH v2 2/4] sbitmap: remove swap_lock
+Message-ID: <3ef0bee9-e0e5-a249-9dfb-3ea3c0af2160@gmail.com>
+Date:   Thu, 26 Nov 2020 13:44:36 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <13392308-45a8-f85d-b25e-4a728e1e0730@redhat.com>
+In-Reply-To: <20201126024658.GA42718@T590>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/25/20 10:34 PM, David Hildenbrand wrote:
-> On 23.11.20 03:28, Anshuman Khandual wrote:
->> This introduces memhp_range_allowed() which gets called in various hotplug
->> paths. Then memhp_range_allowed() calls arch_get_addressable_range() via
->> memhp_get_pluggable_range(). This callback can be defined by the platform
->> to provide addressable physical range, depending on whether kernel linear
->> mapping is required or not. This mechanism will prevent platform specific
->> errors deep down during hotplug calls. While here, this drops now redundant
->> check_hotplug_memory_addressable() check in __add_pages().
+On 26/11/2020 02:46, Ming Lei wrote:
+> On Sun, Nov 22, 2020 at 03:35:46PM +0000, Pavel Begunkov wrote:
+>> map->swap_lock protects map->cleared from concurrent modification,
+>> however sbitmap_deferred_clear() is already atomically drains it, so
+>> it's guaranteed to not loose bits on concurrent
+>> sbitmap_deferred_clear().
 >>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> Suggested-by: David Hildenbrand <david@redhat.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> A one threaded tag heavy test on top of nullbk showed ~1.5% t-put
+>> increase, and 3% -> 1% cycle reduction of sbitmap_get() according to perf.
+>>
+>> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 >> ---
->>  include/linux/memory_hotplug.h | 51 ++++++++++++++++++++++++++++++++++
->>  mm/memory_hotplug.c            | 29 ++++++-------------
->>  mm/memremap.c                  |  9 +++++-
->>  3 files changed, 68 insertions(+), 21 deletions(-)
+>>  include/linux/sbitmap.h |  5 -----
+>>  lib/sbitmap.c           | 14 +++-----------
+>>  2 files changed, 3 insertions(+), 16 deletions(-)
 >>
->> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
->> index 551093b74596..2018c0201672 100644
->> --- a/include/linux/memory_hotplug.h
->> +++ b/include/linux/memory_hotplug.h
->> @@ -6,6 +6,7 @@
->>  #include <linux/spinlock.h>
->>  #include <linux/notifier.h>
->>  #include <linux/bug.h>
->> +#include <linux/range.h>
->>  
->>  struct page;
->>  struct zone;
->> @@ -70,6 +71,56 @@ typedef int __bitwise mhp_t;
->>   */
->>  #define MEMHP_MERGE_RESOURCE	((__force mhp_t)BIT(0))
->>  
->> +/*
->> + * Platforms should define arch_get_addressable_range() which provides
->> + * addressable physical memory range depending upon whether the linear
->> + * mapping is required or not. Returned address range must follow
->> + *
->> + * 1. range.start <= range.end
->> + * 1. Must include end both points i.e range.start and range.end
->> + *
->> + * Nonetheless there is a fallback definition provided here providing
->> + * maximum possible addressable physical range, irrespective of the
->> + * linear mapping requirements.
->> + */
->> +#ifndef arch_get_addressable_range
->> +static inline struct range arch_get_addressable_range(bool need_mapping)
-> 
-> Why not simply
-> 
-> "arch_get_mappable_range(void)" (or similar) ?
-
-The current name seems bit better (I guess). Because we are asking for
-max addressable range with or without the linear mapping.
-
-> 
-> AFAIKs, both implementations (arm64/s390x) simply do the exact same
-> thing as memhp_get_pluggable_range() for !need_mapping.
-
-That is for now. Even the range without requiring linear mapping might not
-be the same (like now) for every platform as some might have constraints.
-So asking the platform ranges with or without linear mapping seems to be
-better and could accommodate special cases going forward. Anyways, there
-is an always an "all allowing" fallback option nonetheless.
-
-> 
->> +{
->> +	struct range memhp_range = {
->> +		.start = 0UL,
->> +		.end = -1ULL,
->> +	};
->> +	return memhp_range;
->> +}
->> +#endif
->> +
->> +static inline struct range memhp_get_pluggable_range(bool need_mapping)
->> +{
->> +	const u64 max_phys = (1ULL << (MAX_PHYSMEM_BITS + 1)) - 1;
->> +	struct range memhp_range = arch_get_addressable_range(need_mapping);
->> +
->> +	if (memhp_range.start > max_phys) {
->> +		memhp_range.start = 0;
->> +		memhp_range.end = 0;
->> +	}
->> +	memhp_range.end = min_t(u64, memhp_range.end, max_phys);
->> +	return memhp_range;
->> +}
->> +
->> +static inline bool memhp_range_allowed(u64 start, u64 size, bool need_mapping)
->> +{
->> +	struct range memhp_range = memhp_get_pluggable_range(need_mapping);
->> +	u64 end = start + size;
->> +
->> +	if ((start < end) && (start >= memhp_range.start) &&
->> +	   ((end - 1) <= memhp_range.end))
-> 
-> You can drop quite a lot of () here :)
-
-Will replace with.
-
-if (start < end && start >= memhp_range.start && (end - 1) <= memhp_range.end)
-
-But too much open comparisons looked bit risky initially :)
-
-> 
->> +		return true;
->> +
->> +	WARN(1, "Hotplug memory [%#llx-%#llx] exceeds maximum addressable range [%#llx-%#llx]\n",
->> +		start, end, memhp_range.start, memhp_range.end);
-> 
-> pr_warn() (or even pr_warn_once())
-> 
-> while we're at it. No reason to eventually crash a system :)
-
-Didn't quite get it. How could this crash the system ?
-
-> 
->> +	return false;
->> +}
->> +
-> 
-> 
-> I'd suggest moving these functions into mm/memory_hotplug.c and only
-> exposing what makes sense. These functions are not on any hot path. You
-> can then convert the arch_ function into a "__weak".
-
-Sure, will move them to mm/memory_hotplug.c and change the arch
-function into a '__weak'.
-
-> 
->>  /*
->>   * Extended parameters for memory hotplug:
->>   * altmap: alternative allocator for memmap array (optional)
->> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
->> index 63b2e46b6555..9efb6c8558ed 100644
->> --- a/mm/memory_hotplug.c
->> +++ b/mm/memory_hotplug.c
->> @@ -284,22 +284,6 @@ static int check_pfn_span(unsigned long pfn, unsigned long nr_pages,
->>  	return 0;
->>  }
->>  
->> -static int check_hotplug_memory_addressable(unsigned long pfn,
->> -					    unsigned long nr_pages)
->> -{
->> -	const u64 max_addr = PFN_PHYS(pfn + nr_pages) - 1;
->> -
->> -	if (max_addr >> MAX_PHYSMEM_BITS) {
->> -		const u64 max_allowed = (1ull << (MAX_PHYSMEM_BITS + 1)) - 1;
->> -		WARN(1,
->> -		     "Hotplugged memory exceeds maximum addressable address, range=%#llx-%#llx, maximum=%#llx\n",
->> -		     (u64)PFN_PHYS(pfn), max_addr, max_allowed);
->> -		return -E2BIG;
->> -	}
->> -
->> -	return 0;
->> -}
->> -
->>  /*
->>   * Reasonably generic function for adding memory.  It is
->>   * expected that archs that support memory hotplug will
->> @@ -317,10 +301,6 @@ int __ref __add_pages(int nid, unsigned long pfn, unsigned long nr_pages,
->>  	if (WARN_ON_ONCE(!params->pgprot.pgprot))
->>  		return -EINVAL;
->>  
->> -	err = check_hotplug_memory_addressable(pfn, nr_pages);
->> -	if (err)
->> -		return err;
->> -
->>  	if (altmap) {
->>  		/*
->>  		 * Validate altmap is within bounds of the total request
->> @@ -1109,6 +1089,9 @@ int __ref __add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
->>  	struct resource *res;
->>  	int ret;
->>  
->> +	if (!memhp_range_allowed(start, size, 1))
->> +		return -ERANGE;
-> 
-> We used to return -E2BIG, no? Maybe better keep that.
-
-ERANGE seems to be better as the range can overrun on either side.
-
-> 
->> +
->>  	res = register_memory_resource(start, size, "System RAM");
->>  	if (IS_ERR(res))
->>  		return PTR_ERR(res);
->> @@ -1123,6 +1106,9 @@ int add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
->>  {
->>  	int rc;
->>  
->> +	if (!memhp_range_allowed(start, size, 1))
->> +		return -ERANGE;
->> +
->>  	lock_device_hotplug();
->>  	rc = __add_memory(nid, start, size, mhp_flags);
->>  	unlock_device_hotplug();
->> @@ -1163,6 +1149,9 @@ int add_memory_driver_managed(int nid, u64 start, u64 size,
->>  	    resource_name[strlen(resource_name) - 1] != ')')
->>  		return -EINVAL;
->>  
->> +	if (!memhp_range_allowed(start, size, 0))
->> +		return -ERANGE;
->> +
->>  	lock_device_hotplug();
-> 
-> For all 3 cases, doing a single check in register_memory_resource() is
-> sufficient.
-
-Will replace with a single check in register_memory_resource(). But does
-add_memory_driver_managed() always require linear mapping ? The proposed
-check here did not ask for linear mapping in add_memory_driver_managed().
-
-> 
->>  
->>  	res = register_memory_resource(start, size, resource_name);
->> diff --git a/mm/memremap.c b/mm/memremap.c
->> index 16b2fb482da1..388a34b068c1 100644
->> --- a/mm/memremap.c
->> +++ b/mm/memremap.c
->> @@ -188,6 +188,7 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->>  	struct range *range = &pgmap->ranges[range_id];
->>  	struct dev_pagemap *conflict_pgmap;
->>  	int error, is_ram;
->> +	bool is_private = false;
-> 
-> nit: Reverse christmas tree :)
-> 
-> 
-> const bool is_private = pgmap->type == MEMORY_DEVICE_PRIVATE;
-
-Will replace with this right at the beginning.
-
-> 
->>  
->>  	if (WARN_ONCE(pgmap_altmap(pgmap) && range_id > 0,
->>  				"altmap not supported for multiple ranges\n"))
->> @@ -207,6 +208,9 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->>  		return -ENOMEM;
->>  	}
->>  
->> +	if (pgmap->type == MEMORY_DEVICE_PRIVATE)
->> +		is_private = true;
->> +
->>  	is_ram = region_intersects(range->start, range_len(range),
->>  		IORESOURCE_SYSTEM_RAM, IORES_DESC_NONE);
->>  
->> @@ -230,6 +234,9 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->>  	if (error)
->>  		goto err_pfn_remap;
->>  
->> +	if (!memhp_range_allowed(range->start, range_len(range), !is_private))
->> +		goto err_pfn_remap;
->> +
->>  	mem_hotplug_begin();
->>  
->>  	/*
->> @@ -243,7 +250,7 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->>  	 * the CPU, we do want the linear mapping and thus use
->>  	 * arch_add_memory().
+>> diff --git a/include/linux/sbitmap.h b/include/linux/sbitmap.h
+>> index e40d019c3d9d..74cc6384715e 100644
+>> --- a/include/linux/sbitmap.h
+>> +++ b/include/linux/sbitmap.h
+>> @@ -32,11 +32,6 @@ struct sbitmap_word {
+>>  	 * @cleared: word holding cleared bits
 >>  	 */
->> -	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
->> +	if (is_private) {
->>  		error = add_pages(nid, PHYS_PFN(range->start),
->>  				PHYS_PFN(range_len(range)), params);
->>  	} else {
->>
+>>  	unsigned long cleared ____cacheline_aligned_in_smp;
+>> -
+>> -	/**
+>> -	 * @swap_lock: Held while swapping word <-> cleared
+>> -	 */
+>> -	spinlock_t swap_lock;
+>>  } ____cacheline_aligned_in_smp;
+>>  
+>>  /**
+>> diff --git a/lib/sbitmap.c b/lib/sbitmap.c
+>> index c1c8a4e69325..4fd877048ba8 100644
+>> --- a/lib/sbitmap.c
+>> +++ b/lib/sbitmap.c
+>> @@ -15,13 +15,9 @@
+>>  static inline bool sbitmap_deferred_clear(struct sbitmap_word *map)
+>>  {
+>>  	unsigned long mask, val;
+>> -	bool ret = false;
+>> -	unsigned long flags;
+>>  
+>> -	spin_lock_irqsave(&map->swap_lock, flags);
+>> -
+>> -	if (!map->cleared)
+>> -		goto out_unlock;
+>> +	if (!READ_ONCE(map->cleared))
+>> +		return false;
 > 
-> Doing these checks in add_pages() / arch_add_memory() would be neater -
-> but as they we don't have clean generic wrappers yet, I consider this
-> good enough until we have reworked that part. (others might disagree :) )
+> This way might break sbitmap_find_bit_in_index()/sbitmap_get_shallow().
+> Currently if sbitmap_deferred_clear() returns false, it means nothing
+> can be allocated from this word. With this patch, even though 'false'
+> is returned, free bits still might be available because another
+> sbitmap_deferred_clear() can be run concurrently.
 
-Sure, will leave the check as is.
+But that can happen anyway if someone frees a requests right after we
+return from sbitmap_deferred_clear(). Can you elaborate what exactly
+it breaks? Something in sbq wakeup paths?
+
+-- 
+Pavel Begunkov
