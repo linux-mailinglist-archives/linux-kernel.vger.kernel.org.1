@@ -2,287 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4754C2C4D1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7852C4D1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732416AbgKZCGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 21:06:22 -0500
-Received: from gproxy2-pub.mail.unifiedlayer.com ([69.89.18.3]:47545 "EHLO
-        gproxy2-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732212AbgKZCGW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 21:06:22 -0500
-Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
-        by gproxy2.mail.unifiedlayer.com (Postfix) with ESMTP id 419D81E0CF1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 19:06:21 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id i6fskg6ENh41li6ftkjrdh; Wed, 25 Nov 2020 19:06:21 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=MuZ8FVSe c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=nNwsprhYR40A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=bGMl5HoiAAAA:8
- a=_jlGtV7tAAAA:8 a=HUTit5NPLnmaScQUXtkA:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=4zD4jYFdOPo6jgvxhsoC:22 a=nlm17XC03S6CtCLSeiRr:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SSGA6C8SJG8ggIgsy6+8Sb9pPcWegu4f1TVOacXrf5c=; b=qYP7lPvju2VTJR9XozD0QGM9uH
-        OXYScDVf3xqKdckN4+lXv0/k8plXfMaGmbY7kI5cv2Nkjjl/mQLcIcJAANwVIZZc18A3ZurCLhAg2
-        AMLhX8vfBNssMu/3oCBliaM3aa4vtqSNaIzQ66HVZMyK1wAPt1yjMTME/Fs2Iy6mHAsmeSRYXDs70
-        Dcq8MnR5tkyQBOyAoye/6vc6UdlAsFe+Aknl6Inc1U6FnnUcGOH5UmgrFIt805zFZ2cwCX3Br8u39
-        NqgmG2u2MotgF3pY+LVwOk2DeXWEjm7k+Z07ReCcuhosHh/yuSavXHsjeRJSB4H1cCGEJFtQg/5em
-        ogI0EqHQ==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:36454 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1ki6fs-002lTk-AH; Thu, 26 Nov 2020 02:06:20 +0000
-Date:   Wed, 25 Nov 2020 18:06:19 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Michael Brunner <Michael.Brunner@kontron.com>
-Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "mibru@gmx.de" <mibru@gmx.de>,
-        "vkrasnov@dev.rtsoft.ru" <vkrasnov@dev.rtsoft.ru>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mfd: kempld-core: Add support for additional devices
-Message-ID: <20201126020619.GF111386@roeck-us.net>
-References: <0474e39790ab7351b1b11b565b995b94d49fb87c.camel@kontron.com>
- <76458fc9615cf2fb805ccd4196e3e9824ad18523.camel@kontron.com>
+        id S1732800AbgKZCHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 21:07:37 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:64874 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730921AbgKZCHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 21:07:37 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606356456; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=eM/OlWlq0U/ubShojsUmq0EBcUvDZy0oih5TzXFbMYE=;
+ b=OSTqICcUmu1+gaP9jMx5KpOerJUC5UXkalbfz3+UIdiJVw8aoLpiwICXy00KEuXlSaiNshFN
+ JTQEJTvWFbNPS6m8mpT9e/TXeN4KDHV1CZtTXxWBdQyS94f1le7CEUUbcxkqsV9EXYsI0Ucc
+ XQtPcijQT2J0yXAmQ8iKwajQHqI=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5fbf0de7a5a29b56a162f766 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 26 Nov 2020 02:07:35
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5A8C8C43467; Thu, 26 Nov 2020 02:07:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 75B37C433ED;
+        Thu, 26 Nov 2020 02:07:34 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76458fc9615cf2fb805ccd4196e3e9824ad18523.camel@kontron.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1ki6fs-002lTk-AH
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:36454
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 6
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 26 Nov 2020 10:07:34 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: ufs: Remove unnecessary if condition in
+ ufshcd_suspend()
+In-Reply-To: <20201125185300.3394-1-huobean@gmail.com>
+References: <20201125185300.3394-1-huobean@gmail.com>
+Message-ID: <c241a19195be34886cd754d73bd6d168@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 03:53:27PM +0000, Michael Brunner wrote:
-> This update includes DMI IDs for the following Kontron modules and
-> systems:
-> COMe-bDV7, COMe-cDV7, COMe-m4AL, COMe-mCT10, SMARC-sXAL, SMARC-sXA4,
-> Qseven-Q7AL, mITX-APL, pITX-APL and KBox A-203
+On 2020-11-26 02:53, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
 > 
-> Furthermore the ACPI HID KEM0000 is added, as it is also reserved for
-> kempld devices.
+> In the case that auto_bkops_enable is false, which means auto bkops
+> has been disabled, so no need to call ufshcd_disable_auto_bkops().
 > 
-> Instead of also adding the newly supported devices to the Kconfig
-> description this patch removes the lengthy list. With future usage of
-> the ACPI HIDs it will not be necessary to explicitly add support for
-> each individual device to the driver and therefore the list would
-> become incomplete anyway.
-> 
-> Signed-off-by: Michael Brunner <michael.brunner@kontron.com>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 > ---
+>  drivers/scsi/ufs/ufshcd.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
->  v2: Corrected a board name, only use 4 digits for IDs
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 80cbce414678..d169db41ee16 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -8543,11 +8543,9 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	}
 > 
->  drivers/mfd/Kconfig       | 30 ++--------------
->  drivers/mfd/kempld-core.c | 76 +++++++++++++++++++++++++++++++++++++--
->  2 files changed, 77 insertions(+), 29 deletions(-)
+>  	if (req_dev_pwr_mode != hba->curr_dev_pwr_mode) {
+> -		if ((ufshcd_is_runtime_pm(pm_op) && !hba->auto_bkops_enabled) ||
+> -		    !ufshcd_is_runtime_pm(pm_op)) {
+> +		if (!ufshcd_is_runtime_pm(pm_op))
+>  			/* ensure that bkops is disabled */
+>  			ufshcd_disable_auto_bkops(hba);
+> -		}
 > 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 8b99a13669bf..befd19da8562 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -720,33 +720,9 @@ config MFD_KEMPLD
->  	select MFD_CORE
->  	help
->  	  This is the core driver for the PLD (Programmable Logic Device) found
-> -	  on some Kontron ETX and COMexpress (ETXexpress) modules. The PLD
-> -	  device may provide functions like watchdog, GPIO, UART and I2C bus.
-> -
-> -	  The following modules are supported:
-> -		* COMe-bBD#
-> -		* COMe-bBL6
-> -		* COMe-bHL6
-> -		* COMe-bSL6
-> -		* COMe-bIP#
-> -		* COMe-bKL6
-> -		* COMe-bPC2 (ETXexpress-PC)
-> -		* COMe-bSC# (ETXexpress-SC T#)
-> -		* COMe-cAL6
-> -		* COMe-cBL6
-> -		* COMe-cBT6
-> -		* COMe-cBW6
-> -		* COMe-cCT6
-> -		* COMe-cDC2 (microETXexpress-DC)
-> -		* COMe-cHL6
-> -		* COMe-cKL6
-> -		* COMe-cPC2 (microETXexpress-PC)
-> -		* COMe-cSL6
-> -		* COMe-mAL10
-> -		* COMe-mBT10
-> -		* COMe-mCT10
-> -		* COMe-mTT10 (nanoETXexpress-TT)
-> -		* ETX-OH
-> +	  on some Kontron ETX and nearly all COMexpress (ETXexpress) modules as
-> +	  well as on some other Kontron products. The PLD device may provide
-> +	  functions like watchdog, GPIO, UART and I2C bus.
->  
->  	  This driver can also be built as a module. If so, the module
->  	  will be called kempld-core.
-> diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
-> index ecd26271b9a4..9166075c1f32 100644
-> --- a/drivers/mfd/kempld-core.c
-> +++ b/drivers/mfd/kempld-core.c
-> @@ -552,6 +552,7 @@ static int kempld_remove(struct platform_device *pdev)
->  
->  #ifdef CONFIG_ACPI
->  static const struct acpi_device_id kempld_acpi_table[] = {
-> +	{ "KEM0000", (kernel_ulong_t)&kempld_platform_data_generic },
->  	{ "KEM0001", (kernel_ulong_t)&kempld_platform_data_generic },
->  	{}
->  };
-> @@ -584,6 +585,14 @@ static const struct dmi_system_id kempld_dmi_table[] __initconst = {
->  		},
->  		.driver_data = (void *)&kempld_platform_data_generic,
->  		.callback = kempld_create_platform_device,
-> +	}, {
-> +		.ident = "BDV7",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Kontron"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "COMe-bDV7"),
-> +		},
-> +		.driver_data = (void *)&kempld_platform_data_generic,
-> +		.callback = kempld_create_platform_device,
->  	}, {
->  		.ident = "BHL6",
->  		.matches = {
-> @@ -648,6 +657,14 @@ static const struct dmi_system_id kempld_dmi_table[] __initconst = {
->  		},
->  		.driver_data = (void *)&kempld_platform_data_generic,
->  		.callback = kempld_create_platform_device,
-> +	}, {
-> +		.ident = "CDV7",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Kontron"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "COMe-cDV7"),
-> +		},
-> +		.driver_data = (void *)&kempld_platform_data_generic,
-> +		.callback = kempld_create_platform_device,
->  	}, {
->  		.ident = "CHL6",
->  		.matches = {
-> @@ -767,6 +784,22 @@ static const struct dmi_system_id kempld_dmi_table[] __initconst = {
->  		},
->  		.driver_data = (void *)&kempld_platform_data_generic,
->  		.callback = kempld_create_platform_device,
-> +	}, {
-> +		.ident = "A203",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Kontron"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "KBox A-203"),
-> +		},
-> +		.driver_data = (void *)&kempld_platform_data_generic,
-> +		.callback = kempld_create_platform_device,
-> +	}, {
-> +		.ident = "M4A1",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Kontron"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "COMe-m4AL"),
-> +		},
-> +		.driver_data = (void *)&kempld_platform_data_generic,
-> +		.callback = kempld_create_platform_device,
->  	}, {
->  		.ident = "MAL1",
->  		.matches = {
-> @@ -775,6 +808,14 @@ static const struct dmi_system_id kempld_dmi_table[] __initconst = {
->  		},
->  		.driver_data = (void *)&kempld_platform_data_generic,
->  		.callback = kempld_create_platform_device,
-> +	}, {
-> +		.ident = "MAPL",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Kontron"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "mITX-APL"),
-> +		},
-> +		.driver_data = (void *)&kempld_platform_data_generic,
-> +		.callback = kempld_create_platform_device,
->  	}, {
->  		.ident = "MBR1",
->  		.matches = {
-> @@ -823,6 +864,30 @@ static const struct dmi_system_id kempld_dmi_table[] __initconst = {
->  		},
->  		.driver_data = (void *)&kempld_platform_data_generic,
->  		.callback = kempld_create_platform_device,
-> +	}, {
-> +		.ident = "PAPL",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Kontron"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "pITX-APL"),
-> +		},
-> +		.driver_data = (void *)&kempld_platform_data_generic,
-> +		.callback = kempld_create_platform_device,
-> +	}, {
-> +		.ident = "SXAL",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Kontron"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "SMARC-sXAL"),
-> +		},
-> +		.driver_data = (void *)&kempld_platform_data_generic,
-> +		.callback = kempld_create_platform_device,
-> +	}, {
-> +		.ident = "SXAL4",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Kontron"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "SMARC-sXA4"),
-> +		},
-> +		.driver_data = (void *)&kempld_platform_data_generic,
-> +		.callback = kempld_create_platform_device,
->  	}, {
->  		.ident = "UNP1",
->  		.matches = {
-> @@ -863,8 +928,7 @@ static const struct dmi_system_id kempld_dmi_table[] __initconst = {
->  		},
->  		.driver_data = (void *)&kempld_platform_data_generic,
->  		.callback = kempld_create_platform_device,
-> -	},
-> -	{
-> +	}, {
->  		.ident = "UTH6",
->  		.matches = {
->  			DMI_MATCH(DMI_BOARD_VENDOR, "Kontron"),
-> @@ -872,6 +936,14 @@ static const struct dmi_system_id kempld_dmi_table[] __initconst = {
->  		},
->  		.driver_data = (void *)&kempld_platform_data_generic,
->  		.callback = kempld_create_platform_device,
-> +	}, {
-> +		.ident = "Q7AL",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Kontron"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "Qseven-Q7AL"),
-> +		},
-> +		.driver_data = (void *)&kempld_platform_data_generic,
-> +		.callback = kempld_create_platform_device,
->  	},
->  	{}
->  };
-> -- 
-> 2.25.1
-> 
+>  		if (!hba->dev_info.b_rpm_dev_flush_capable) {
+>  			ret = ufshcd_set_dev_pwr_mode(hba, req_dev_pwr_mode);
+
+Reviewed-by: Can Guo <cang@codeaurora.org>
