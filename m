@@ -2,118 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0912C5420
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B712C5414
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389545AbgKZMly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 07:41:54 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:43182 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388958AbgKZMlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 07:41:49 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E63BF1A099E;
-        Thu, 26 Nov 2020 13:41:46 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D73211A00EF;
-        Thu, 26 Nov 2020 13:41:46 +0100 (CET)
-Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 63ED42026B;
-        Thu, 26 Nov 2020 13:41:46 +0100 (CET)
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Peng Fan <peng.fan@nxp.com>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>, linux-clk@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, Abel Vesa <abel.vesa@nxp.com>
-Subject: [PATCH v2 5/5] clk: imx8m: Use dram variant registration for dram clocks
-Date:   Thu, 26 Nov 2020 14:40:09 +0200
-Message-Id: <1606394409-12755-6-git-send-email-abel.vesa@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606394409-12755-1-git-send-email-abel.vesa@nxp.com>
-References: <1606394409-12755-1-git-send-email-abel.vesa@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2388805AbgKZMlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 07:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731421AbgKZMlA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 07:41:00 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613E1C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 04:41:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=p0O18K0NodQGhP9nF2NIBoqyFyxWCXdlWgRp9cTuHDI=; b=TNqsk2kfryt3Cc20TJ2X7HA10y
+        DPzb8qPVEfnsDd3FvIWJZk9lZKR6jYRrRtGxTXSdjXCwooXFrLeD4v4j9HCKPkXsVQKUCGH5cwFhx
+        rWS1+YW5VKO8/aBxu0QCn/TGPauuE5mjrLV/VyrkulsiR1LA5VT+LrGAi3MUE/PuPAkUoM8YnCqeP
+        wVmdOQhjyCYLiv3qKtcpEwiVVQuSpbYzhYj9waGiFhVxEyXOoDK2lnphCC1jT+7S5ZpSb2mW+TjUB
+        ocl/PbiFTiGz9K71YYpjVfZuF0M37qKdn5To97thpn1z7hnxwZR+mFa8JwNZp/bvgv4f1rffs0HQX
+        inlJAe+w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kiGZI-0002Gl-Vs; Thu, 26 Nov 2020 12:40:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 395293059DE;
+        Thu, 26 Nov 2020 13:40:11 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 22F66201E6BBD; Thu, 26 Nov 2020 13:40:11 +0100 (CET)
+Date:   Thu, 26 Nov 2020 13:40:11 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>,
+        Jiang Biao <benbjiang@tencent.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        OWeisse@umich.edu, Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 02/32] sched: Introduce sched_class::pick_task()
+Message-ID: <20201126124011.GL3040@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-3-joel@joelfernandes.org>
+ <CAKfTPtDSnr85X90gpPvgOf94Adh_mvH2CGhkXXx4FHn6EkCErg@mail.gmail.com>
+ <20201126090710.GF2414@hirez.programming.kicks-ass.net>
+ <CAKfTPtCPESw89KLs2HQGtxSM68yqSGoJoaU8FDRKrr00ZHWPWQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtCPESw89KLs2HQGtxSM68yqSGoJoaU8FDRKrr00ZHWPWQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both dram_apb and dram_alt are controlled by EL3. Using the dram
-variant registration of the composite-8m clock, the mux and the
-divider will be read only. Do this for all i.MX8M platforms.
+On Thu, Nov 26, 2020 at 11:17:48AM +0100, Vincent Guittot wrote:
 
-Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
----
- drivers/clk/imx/clk-imx8mm.c | 4 ++--
- drivers/clk/imx/clk-imx8mn.c | 4 ++--
- drivers/clk/imx/clk-imx8mp.c | 4 ++--
- drivers/clk/imx/clk-imx8mq.c | 4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
+> > Something like so then?
+> 
+> yes. it seems ok
+> 
+> >
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
 
-diff --git a/drivers/clk/imx/clk-imx8mm.c b/drivers/clk/imx/clk-imx8mm.c
-index 7c90586..f94f0a4 100644
---- a/drivers/clk/imx/clk-imx8mm.c
-+++ b/drivers/clk/imx/clk-imx8mm.c
-@@ -468,8 +468,8 @@ static int imx8mm_clocks_probe(struct platform_device *pdev)
- 	 * DRAM clocks are manipulated from TF-A outside clock framework.
- 	 * Mark with GET_RATE_NOCACHE to always read div value from hardware
- 	 */
--	hws[IMX8MM_CLK_DRAM_ALT] = __imx8m_clk_hw_composite("dram_alt", imx8mm_dram_alt_sels, base + 0xa000, CLK_GET_RATE_NOCACHE);
--	hws[IMX8MM_CLK_DRAM_APB] = __imx8m_clk_hw_composite("dram_apb", imx8mm_dram_apb_sels, base + 0xa080, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
-+	hws[IMX8MM_CLK_DRAM_ALT] = imx8m_clk_hw_composite_dram("dram_alt", imx8mm_dram_alt_sels, base + 0xa000);
-+	hws[IMX8MM_CLK_DRAM_APB] = imx8m_clk_hw_composite_dram("dram_apb", imx8mm_dram_apb_sels, base + 0xa080);
- 
- 	/* IP */
- 	hws[IMX8MM_CLK_VPU_G1] = imx8m_clk_hw_composite("vpu_g1", imx8mm_vpu_g1_sels, base + 0xa100);
-diff --git a/drivers/clk/imx/clk-imx8mn.c b/drivers/clk/imx/clk-imx8mn.c
-index 3c21db9..eb90879 100644
---- a/drivers/clk/imx/clk-imx8mn.c
-+++ b/drivers/clk/imx/clk-imx8mn.c
-@@ -451,8 +451,8 @@ static int imx8mn_clocks_probe(struct platform_device *pdev)
- 	 * DRAM clocks are manipulated from TF-A outside clock framework.
- 	 * Mark with GET_RATE_NOCACHE to always read div value from hardware
- 	 */
--	hws[IMX8MN_CLK_DRAM_ALT] = __imx8m_clk_hw_composite("dram_alt", imx8mn_dram_alt_sels, base + 0xa000, CLK_GET_RATE_NOCACHE);
--	hws[IMX8MN_CLK_DRAM_APB] = __imx8m_clk_hw_composite("dram_apb", imx8mn_dram_apb_sels, base + 0xa080, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
-+	hws[IMX8MN_CLK_DRAM_ALT] = imx8m_clk_hw_composite_dram("dram_alt", imx8mn_dram_alt_sels, base + 0xa000);
-+	hws[IMX8MN_CLK_DRAM_APB] = imx8m_clk_hw_composite_dram("dram_apb", imx8mn_dram_apb_sels, base + 0xa080);
- 
- 	hws[IMX8MN_CLK_DISP_PIXEL] = imx8m_clk_hw_composite("disp_pixel", imx8mn_disp_pixel_sels, base + 0xa500);
- 	hws[IMX8MN_CLK_SAI2] = imx8m_clk_hw_composite("sai2", imx8mn_sai2_sels, base + 0xa600);
-diff --git a/drivers/clk/imx/clk-imx8mp.c b/drivers/clk/imx/clk-imx8mp.c
-index 2f4e1d6..70d671c 100644
---- a/drivers/clk/imx/clk-imx8mp.c
-+++ b/drivers/clk/imx/clk-imx8mp.c
-@@ -579,8 +579,8 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
- 	hws[IMX8MP_CLK_IPG_ROOT] = imx_clk_hw_divider2("ipg_root", "ahb_root", ccm_base + 0x9080, 0, 1);
- 	hws[IMX8MP_CLK_IPG_AUDIO_ROOT] = imx_clk_hw_divider2("ipg_audio_root", "audio_ahb", ccm_base + 0x9180, 0, 1);
- 
--	hws[IMX8MP_CLK_DRAM_ALT] = imx8m_clk_hw_composite("dram_alt", imx8mp_dram_alt_sels, ccm_base + 0xa000);
--	hws[IMX8MP_CLK_DRAM_APB] = imx8m_clk_hw_composite_critical("dram_apb", imx8mp_dram_apb_sels, ccm_base + 0xa080);
-+	hws[IMX8MP_CLK_DRAM_ALT] = imx8m_clk_hw_composite_dram("dram_alt", imx8mp_dram_alt_sels, ccm_base + 0xa000);
-+	hws[IMX8MP_CLK_DRAM_APB] = imx8m_clk_hw_composite_dram("dram_apb", imx8mp_dram_apb_sels, ccm_base + 0xa080);
- 	hws[IMX8MP_CLK_VPU_G1] = imx8m_clk_hw_composite("vpu_g1", imx8mp_vpu_g1_sels, ccm_base + 0xa100);
- 	hws[IMX8MP_CLK_VPU_G2] = imx8m_clk_hw_composite("vpu_g2", imx8mp_vpu_g2_sels, ccm_base + 0xa180);
- 	hws[IMX8MP_CLK_CAN1] = imx8m_clk_hw_composite("can1", imx8mp_can1_sels, ccm_base + 0xa200);
-diff --git a/drivers/clk/imx/clk-imx8mq.c b/drivers/clk/imx/clk-imx8mq.c
-index 779ea69..a30642f 100644
---- a/drivers/clk/imx/clk-imx8mq.c
-+++ b/drivers/clk/imx/clk-imx8mq.c
-@@ -458,8 +458,8 @@ static int imx8mq_clocks_probe(struct platform_device *pdev)
- 	 * Mark with GET_RATE_NOCACHE to always read div value from hardware
- 	 */
- 	hws[IMX8MQ_CLK_DRAM_CORE] = imx_clk_hw_mux2_flags("dram_core_clk", base + 0x9800, 24, 1, imx8mq_dram_core_sels, ARRAY_SIZE(imx8mq_dram_core_sels), CLK_IS_CRITICAL);
--	hws[IMX8MQ_CLK_DRAM_ALT] = __imx8m_clk_hw_composite("dram_alt", imx8mq_dram_alt_sels, base + 0xa000, CLK_GET_RATE_NOCACHE);
--	hws[IMX8MQ_CLK_DRAM_APB] = __imx8m_clk_hw_composite("dram_apb", imx8mq_dram_apb_sels, base + 0xa080, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
-+	hws[IMX8MQ_CLK_DRAM_ALT] = imx8m_clk_hw_composite_dram("dram_alt", imx8mq_dram_alt_sels, base + 0xa000);
-+	hws[IMX8MQ_CLK_DRAM_APB] = imx8m_clk_hw_composite_dram("dram_apb", imx8mq_dram_apb_sels, base + 0xa080);
- 
- 	/* IP */
- 	hws[IMX8MQ_CLK_VPU_G1] = imx8m_clk_hw_composite("vpu_g1", imx8mq_vpu_g1_sels, base + 0xa100);
--- 
-2.7.4
+> > @@ -6982,20 +6982,29 @@ static void check_preempt_wakeup(struct
+> >  #ifdef CONFIG_SMP
+> >  static struct task_struct *pick_task_fair(struct rq *rq)
+> >  {
+> >         struct sched_entity *se;
+> > +       struct cfs_rq *cfs_rq;
+> > +
+> > +again:
+> > +       cfs_rq = &rq->cfs;
+> >         if (!cfs_rq->nr_running)
+> >                 return NULL;
+> >
+> >         do {
+> >                 struct sched_entity *curr = cfs_rq->curr;
+> >
+> > +               /* When we pick for a remote RQ, we'll not have done put_prev_entity() */
+> > +               if (curr) {
+> > +                       if (curr->on_rq)
+> > +                               update_curr(cfs_rq);
+> > +                       else
+> > +                               curr = NULL;
+> >
+> > +                       if (unlikely(check_cfs_rq_runtime(cfs_rq)))
+> > +                               goto again;
 
+Head-ache though; pick_task() was supposed to be stateless, but now
+we're modifying a remote runqueue... I suppose it still works, because
+irrespective of which task we end up picking (even idle), we'll schedule
+the remote CPU, which would've resulted in the same (and possibly
+triggered a reschedule if we'd not done it here).
+
+There's a wrinkle through, other than in schedule(), where we dequeue()
+and keep running with the current task while we release rq->lock, this
+has preemption enabled as well.
+
+This means that if we do this, the remote CPU could preempt, but the
+task is then no longer on the runqueue.
+
+I _think_ it all still works, but yuck!
+
+> > +               }
+> >
+> > +               se = pick_next_entity(cfs_rq, curr);
+> >                 cfs_rq = group_cfs_rq(se);
+> >         } while (cfs_rq);
+> >
