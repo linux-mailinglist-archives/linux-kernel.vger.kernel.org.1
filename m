@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086902C533D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E322C5340
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732498AbgKZLsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 06:48:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727632AbgKZLsi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 06:48:38 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2685C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 03:48:38 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606391316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Nn6vIi9zYYOV8SxXoVNmLqy1mY0WSdF5TV6Sb639hJY=;
-        b=Hwu2le+Pa672R41U1V2yIUXxXNxp+Ix/bLanR09cAd2mo392zlDQ5RHigO0fktAeYg+jH6
-        jtFysgBOeRHwxf1/WCiZGdvxnGHX2V/VHhoZAT0wNSW0rQEvCBKU7/3wfEjY8bdVfXYSIc
-        6lKDfpJrblt+CluSt5P/S2O91+OUlJuEWD+rzTsqJbbtYF2O6Agl4KcJA9fnhz78MEeTpF
-        TQB0Vrqwpx2NVDEWW3uM7gZShaVO7XcYbB6nErAndJRNwhYMoVMC9n63Ejeo2wxA7pbNb3
-        FlReos8xvDR86Je0WvE8aZ9iTbc1gnwMyDG1s3644a4pOMmhByRExZw2uM9JsA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606391316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Nn6vIi9zYYOV8SxXoVNmLqy1mY0WSdF5TV6Sb639hJY=;
-        b=8iAaw2193M+waPlOABmyvQOobMjiknkaBukT0KOH8xncYifzffeXqXcXU7EVzqaLnCOyp/
-        Nk3Vb88U3pdXyTBg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] printk: finalize records with trailing newlines
-Date:   Thu, 26 Nov 2020 12:54:36 +0106
-Message-Id: <20201126114836.14750-1-john.ogness@linutronix.de>
+        id S1733266AbgKZLti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 06:49:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730735AbgKZLti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 06:49:38 -0500
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 115FB20678;
+        Thu, 26 Nov 2020 11:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606391377;
+        bh=9e4yaA6CcohD3sgKshLtFCqZxBH1iZur10IvEDoTtrw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pQty6a3tWyYqJjQviHpFGeRLxcjHF+P3k3KQ3qQlFgdR4tYRM8pK0rIU2CAvfZ/1K
+         TjDnABJYCL2kXRaGxoZqnUxfEwluBH8Y+HQPPEPAyWr+oHFeRNeb9HUV59zGkoR2ju
+         81uKAzFMy08X5lLFzz5Uo1vuwtvm9Isrj0S2tdNU=
+Date:   Thu, 26 Nov 2020 11:49:12 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/6] PCI: brcmstb: Add control of EP voltage
+ regulator(s)
+Message-ID: <20201126114912.GA8506@sirena.org.uk>
+References: <20201125192424.14440-1-james.quinlan@broadcom.com>
+ <20201125192424.14440-3-james.quinlan@broadcom.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
+Content-Disposition: inline
+In-Reply-To: <20201125192424.14440-3-james.quinlan@broadcom.com>
+X-Cookie: Serving suggestion.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any record with a trailing newline (LOG_NEWLINE flag) cannot
-be continued because the newline has been stripped and will
-not be visible if the message is appended. This was already
-handled correctly when committing in log_output() but was
-not handled correctly when committing in log_store().
 
-Fixes: f5f022e53b87 ("printk: reimplement log_cont using record extension")
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- This is an important bugfix for continuous messages and should
- be part of the 5.10 release.
+--y0ulUmNC+osPPQO6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- If not applied, newlines will vanish when concatenating
- continuous with trailing newlines.
+On Wed, Nov 25, 2020 at 02:24:19PM -0500, Jim Quinlan wrote:
 
- kernel/printk/printk.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> +	for (i = 0; i < PCIE_REGULATORS_MAX; i++) {
+> +		ep_reg = devm_regulator_get_optional(dev, ep_regulator_names[i]);
+> +		if (IS_ERR(ep_reg)) {
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index fe64a49344bf..bc1e3b5a97bd 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -528,8 +528,8 @@ static int log_store(u32 caller_id, int facility, int level,
- 	if (dev_info)
- 		memcpy(&r.info->dev_info, dev_info, sizeof(r.info->dev_info));
- 
--	/* insert message */
--	if ((flags & LOG_CONT) || !(flags & LOG_NEWLINE))
-+	/* A message without a trailing newline can be continued. */
-+	if (!(flags & LOG_NEWLINE))
- 		prb_commit(&e);
- 	else
- 		prb_final_commit(&e);
--- 
-2.20.1
+Does PCI allow supplies to be physically absent?  If not then the driver
+shouldn't be using regulator_get_optional() and much of the code here
+can be deleted.
 
+> +static void brcm_set_regulators(struct brcm_pcie *pcie, bool on)
+> +{
+
+This is open coding the regulator bulk APIs.
+
+--y0ulUmNC+osPPQO6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+/ljcACgkQJNaLcl1U
+h9BIAAf/QqjxCH8S51N4QuGM0DaR1GewyFK4OXnt3/H++qbgzoNsOF8XLIKc/tqg
+tYD1zmUpQYD44YaQ9HKIdsXUZ8LYfxL1OFgzKhi3Af6OWsG5Fp2A5VxoeWNTFAJQ
+QtlbGx0eBXRurktsqrwTPTbpygjTdYTOLbmF1Mn4jKvAk8JeU6/i6UG9ozlCd0VK
+qIrPLyLNkzx74vaZZUGBM5nZoiR2g9MgaQo3vSXIHJsms5yITf2eU1B43hGOU0+o
+HDwViSGHWGrCXBV55A2XbPWy3FzucuOiF36EeItx8Z/H6s5UVAixsUgqlibkYFeY
+LV6yhHjuY7o9jDuZj2WUVSL8ZdUHJw==
+=ub0o
+-----END PGP SIGNATURE-----
+
+--y0ulUmNC+osPPQO6--
