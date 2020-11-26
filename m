@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B882C5CB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 20:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C27B2C5CB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 20:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405291AbgKZTqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 14:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
+        id S2405299AbgKZTqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 14:46:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404430AbgKZTqD (ORCPT
+        with ESMTP id S2404970AbgKZTqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 14:46:03 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A000AC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 11:46:01 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id p8so3337212wrx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 11:46:01 -0800 (PST)
+        Thu, 26 Nov 2020 14:46:54 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF031C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 11:46:52 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id l1so3341271wrb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 11:46:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GKkyJodLEeeNbPye6V7AiF19XM8ebf++RaZMHvZXzts=;
-        b=kENLa3OzB6IAi48pL35dakngyclFRpWhXkdSWvd5Jbd9T+ufxyPNKqcDPOsonnkUsx
-         OlQyPsQzwUkA0JiTqu0rRKitxSOG4ylsSRL/jNwXk5gCO1uG7+bFVowGcyy0QN5NBEfF
-         u4/erPlMAG0UlEzrjNoaF2QGIkGKBU1io6ud8mOF75hC5vUxb6L+rk2neFRiqF/RXDHN
-         i7my+MkjV4bfVxg7+AAMU3c19OMpOuH4wnDeUJEBylzTh83dFPG5fWKZmnBLM39rZs/E
-         8cFSsyZjuYDUwMrw/pW0AZQr1TOLhJal5v+3OHeCozGKLtNXqLLdg4LTam4ANYDz1cl7
-         dlPA==
+        bh=oA+p6sQRZh6K/+2/r/vzDoG47gc/rMQlygvkOGkhwFw=;
+        b=aB00JKdnobOsgyuS2Ye42WpIYWno/EcfbYt+MymjWdzhfUS1RdpH+3b9ihSLo2rwuR
+         gnoOvR5M8NrDTMeEl7HrAjlh1JfQ0PDx1XWf0PstYelsiiBvPtIyUyG7mTQ42WFyr65O
+         yJ/5dJVPk3FGXSgNF2/mKj2a1V6uvuq5N2EFzuL8X6xHT5tEe1Zwvv8j79cFWAI0IIVX
+         NHe5hPqLvn6bhhNj73yuttk3tL34D6bUzLWdajTy8ia94p+D0oq7IDq4TlDsdJe+bcJn
+         XMSiN8hI8LTy35LNk7pD0TIp8vT0rBfNfhckDDSTKxddrp1Wa7bPm26OZnmU5Sor0Q9p
+         wzGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=GKkyJodLEeeNbPye6V7AiF19XM8ebf++RaZMHvZXzts=;
-        b=oe0exgSOS4m9gT0Ik1/nhd3mYfNmQBQkEOeFhTHPopQIa1wehjF6AlvakfxRcxjFiE
-         J3PSLTcLZ1BvFK2zk5oQM4m69B/rdRXN4Ompam6w7aFW7wcBSBXLKncQA1d7+0lJYEm3
-         nS/yjrFmB+EoQaoc6OPSZA4jvpgWy1PdXmfv34ETPyGlzoxh+xE0wSJ3aPVAUtWqEjwR
-         /q9FkQdX5bVT16DVW+uZbmDQmC4mkWlVoHEdb6/KHl8crlLua6knRndlzwqteWjlLznp
-         6efOsJsJlJnTpvKzEY4PEcb4RNCseZQs7RifvxTHsyE0xmhLIyEgdsni4uegz1EItvxU
-         aPEA==
-X-Gm-Message-State: AOAM530EMXxhLkhQFV7txiL17X5GoYezWBkyQUoqRyhBHt/hooxNm5cg
-        M2L1fg97ibW5ftW+4+NanPGVFA==
-X-Google-Smtp-Source: ABdhPJxHwJMqOL8OFlViCsvtV3ZXC/jH0BZABj/IJumNOPCW19X1g67VbLYenkzSu40SiBqAefzeDw==
-X-Received: by 2002:adf:fec5:: with SMTP id q5mr5884512wrs.245.1606419960348;
-        Thu, 26 Nov 2020 11:46:00 -0800 (PST)
+        bh=oA+p6sQRZh6K/+2/r/vzDoG47gc/rMQlygvkOGkhwFw=;
+        b=N7APyzJrtnSMMId17PJH9fwgWUPkmUpXyOoBfd2p0VZKCZODFXWuOt3VH8q7UaqBTv
+         XBSGRJaRzGqMxWCZu7fyjIGWSIOGvkQWLYYqopTfrY5hICO6Ma7OqCztjM0T36Zvxe6u
+         iFq5+wmEP7avQV71eELWQ9dUZGX5A5UqS5Kd++KqVhzgCrg6733oDaWKJgIfSBNi2g4q
+         LrUf3s1ZzDy5c71BuxLaI4ZsJBaK2jyZ3g85w6Pd2JJduirzxKONFLgSn2mHhvP32hnZ
+         UP0e6MH3J+afYSTizt/7u+1/PKSIB82Iq+UbL8tjMvlVxo6w5PPmjD5I0IHZ+uSmjveb
+         LeNg==
+X-Gm-Message-State: AOAM531hzmhoNoaGN/CZOWZfaa1s7cxsTLpj66+OAXpMlPZWtZ2Z9VNt
+        h0z/AVuVvEmRpHXEIAcOYin1fw==
+X-Google-Smtp-Source: ABdhPJx1bIwWl+pH8X8yYvQ3W1QeOmH7r+FL4p2P5x38EbIHYQgRF9EC5Aem35LNOdoK0T4pQFCkaA==
+X-Received: by 2002:adf:fe82:: with SMTP id l2mr4250868wrr.232.1606420011286;
+        Thu, 26 Nov 2020 11:46:51 -0800 (PST)
 Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id l8sm9360046wro.46.2020.11.26.11.45.58
+        by smtp.gmail.com with ESMTPSA id n10sm10316007wrv.77.2020.11.26.11.46.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 11:45:59 -0800 (PST)
-Subject: Re: [PATCH v2 05/19] elf: Remove compat_arch_setup_additional_pages()
+        Thu, 26 Nov 2020 11:46:50 -0800 (PST)
+Subject: Re: [PATCH v2 06/19] elf/vdso: Reuse arch_setup_additional_pages()
+ parameters
 To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -65,35 +66,39 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-fsdevel@vger.kernel.org
 References: <20201124002932.1220517-1-dima@arista.com>
- <20201124002932.1220517-6-dima@arista.com>
- <77b23c00-13a2-a8bb-6b9e-72980c5d6fca@csgroup.eu>
+ <20201124002932.1220517-7-dima@arista.com>
+ <aefd633f-6dec-313f-f658-6e0b556171a4@csgroup.eu>
 From:   Dmitry Safonov <dima@arista.com>
-Message-ID: <9ba031b6-e399-a425-bebc-aa807e3dbb1c@arista.com>
-Date:   Thu, 26 Nov 2020 19:45:58 +0000
+Message-ID: <0e665fc7-0e00-d193-ef78-c29059d6d4aa@arista.com>
+Date:   Thu, 26 Nov 2020 19:46:49 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <77b23c00-13a2-a8bb-6b9e-72980c5d6fca@csgroup.eu>
+In-Reply-To: <aefd633f-6dec-313f-f658-6e0b556171a4@csgroup.eu>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/20 6:13 AM, Christophe Leroy wrote:
+On 11/24/20 6:18 AM, Christophe Leroy wrote:
+> "Reuse arch_setup_additional_pages() parameters"
 > 
+> Did you mean "remove" ? Or "Revise" ?
 > 
-> Le 24/11/2020 à 01:29, Dmitry Safonov a écrit :
->> Now that all users rely on detecting bitness of new-born task checking
->> personality, remove compat_arch_setup_additional_pages() macro,
->> simplifying the code.
+> Maybe could be:
 > 
-> I understand from cover that you wanted to reword "new-born" ?
+> "Modify arch_setup_additional_pages() parameters"
 
-Yes. I have reread the messages, not sure how I've missed it,
+Sure.
 
 Thanks,
           Dmitry
