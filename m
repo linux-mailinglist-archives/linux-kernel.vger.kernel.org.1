@@ -2,127 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1183C2C56C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 040972C56B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390398AbgKZONk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:13:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389834AbgKZONk (ORCPT
+        id S2390518AbgKZOML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:12:11 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36288 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390475AbgKZOML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:13:40 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABCEC0617A7;
-        Thu, 26 Nov 2020 06:13:39 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id y4so2438561edy.5;
-        Thu, 26 Nov 2020 06:13:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=n2eFuuH6B+oZkz8tFDCjc/cdWtzItPupMT/Dcx8KuCo=;
-        b=Nl5OeAMCNpcgqycBAmhWwe66S7XeC7eQFHPA9IxKbaTPogfk5Y0MyPIk59W/GKAaM7
-         N2rSVXo2j/WLhqYGBNVCurOKqZyyFi77dnzeaJPPpyVRW1NW4GWQWJ/zz8cVie7baKDY
-         KWgRRA4KM7QQxx/Z12adUOfePnOE7BTXTwFTGDIdvcyhN0wDcmRUfmS3cdYDTChecH7j
-         s0N1gNV+Z0pPLsdDgeAlbwCKXuQIZ+vkXnJgVqDUg0L9v+lHiXmE5+9UT4pWMa82g6oy
-         vxp1ys6F0bhjZWF9CoOIuR0TG3MLTledEsr6xENHU+4c0w2KdjcBd6zNSsif79z3rKrN
-         mAZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=n2eFuuH6B+oZkz8tFDCjc/cdWtzItPupMT/Dcx8KuCo=;
-        b=SihV0YXL6FzZHmIlf4HdbVdCPgOymU3EOl9xvQAghcBiZeLpnuq9HfTdMiV+6ZuUdL
-         HO62sqzC9MrnS/ytxDG4AbIGSt5cYtr16OBi//TQL2riDhk+F5IcxTGAmYUlW6y5vx9f
-         Ps7/2biYq/SVD4Y6j+vZKnDTMpOshKWyOkqn9wEGubrm72sms8ROxqLOBWrClywkhUFS
-         icXBzsSwzwt6YuMNj7D8eCrMEbIQqf107ISExAZRKA9UxSIczlJkXAotnGurerH2Z1iQ
-         N36PQqZeVl/q//xvGhSx84rk8C/iq5nXWM8oNSKUckHcibNgrm0PvdGaJiomUgHiZ75b
-         UA8Q==
-X-Gm-Message-State: AOAM531w4zto2KE2R5vzRu/bFYFJ60g6l0akj21XiY5aiAwg0xDXM2gP
-        HmfRaXQ8Wa6VmRRhIZsWkOo=
-X-Google-Smtp-Source: ABdhPJwLr0fIgxvzzYNWHnu63PnUW5t0PdPhxgcvzPwmq9jC7NFcPQj5QbN4emJH0NH0ARe5zqjipg==
-X-Received: by 2002:a05:6402:1352:: with SMTP id y18mr2711639edw.378.1606400018672;
-        Thu, 26 Nov 2020 06:13:38 -0800 (PST)
-Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id n14sm3281139edw.38.2020.11.26.06.13.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 06:13:37 -0800 (PST)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-arm-msm@vger.kernel.org,
-        Iskren Chernev <iskren.chernev@gmail.com>,
-        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
-        <nfraprado@protonmail.com>
-Subject: [PATCH 2/2] ARM: dts: qcom: msm8974-lge-nexus5: Add fuel gauge
-Date:   Thu, 26 Nov 2020 16:11:44 +0200
-Message-Id: <20201126141144.1763779-2-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201126141144.1763779-1-iskren.chernev@gmail.com>
-References: <20201126141144.1763779-1-iskren.chernev@gmail.com>
+        Thu, 26 Nov 2020 09:12:11 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AQEBpGx052408;
+        Thu, 26 Nov 2020 08:11:51 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606399911;
+        bh=h8FvSlW6MYmLAlmNm/rV0XpPr72kXTVgiwM9oYW4MMM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=NTOShYdv54TtN9SpqxKPn3Xk4FZdWAjP5Bt6zY9ONfBQzuyZwe0Fqjx6qP+OKvED3
+         rrLec01H3eeQiUOYbyih6iP9D4dTufZYN1av9oSclUmHiESmV9iLqcBiVa68l/9YBI
+         DTzdGNybvLQxRgM0tTd/qgZ4EBBbViycbrxF/aZE=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AQEBpB6002918
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 26 Nov 2020 08:11:51 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 26
+ Nov 2020 08:11:51 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 26 Nov 2020 08:11:51 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AQEBndX044966;
+        Thu, 26 Nov 2020 08:11:49 -0600
+Subject: Re: [REGRESSION] omapdrm/N900 display broken
+To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>
+CC:     Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200728181412.GA49617@darkstar.musicnaut.iki.fi>
+ <660b2fe1-343d-b83e-11d2-5a5eb530b83f@ti.com>
+ <448c1441-2cac-44ef-95ef-bb28b512297b@ti.com>
+ <20200823162625.GC4313@darkstar.musicnaut.iki.fi>
+ <ac42f7f9-2ac2-246e-69c1-3d56cea7e59b@ti.com>
+ <5072a25d-e885-cdd2-978d-70942406c272@gmail.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <09044fd2-2926-c7b3-826b-52b742e84ff5@ti.com>
+Date:   Thu, 26 Nov 2020 16:11:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5072a25d-e885-cdd2-978d-70942406c272@gmail.com>
+Content-Type: multipart/mixed;
+        boundary="------------F4CB996E1B69C173202E7352"
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LG Nexus 5 uses a maxim17048 fuelgauge. The maxim,rcomp value is
-taken from downstream dt. Temperature-based compensation is not yet
-supported in the mainline driver, but the readings seem fine nevertheless.
+--------------F4CB996E1B69C173202E7352
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-Tested-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
----
- .../qcom-msm8974-lge-nexus5-hammerhead.dts    | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Hi Aaro, Ivaylo,
 
-diff --git a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-index 32b474bfeec32..e769f638f2052 100644
---- a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-@@ -566,6 +566,22 @@ charger: bq24192@6b {
- 
- 			usb_otg_vbus: usb-otg-vbus { };
- 		};
-+
-+		fuelgauge: max17048@36 {
-+			compatible = "maxim,max17048";
-+			reg = <0x36>;
-+
-+			maxim,double-soc;
-+			maxim,rcomp = /bits/ 8 <0x4d>;
-+
-+			interrupt-parent = <&msmgpio>;
-+			interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
-+
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&fuelgauge_pin>;
-+
-+			maxim,alert-low-soc-level = <2>;
-+		};
- 	};
- 
- 	i2c@f9924000 {
-@@ -706,6 +722,15 @@ gpio_keys_pin_a: gpio-keys-active {
- 				power-source = <PM8941_GPIO_S3>;
- 			};
- 
-+			fuelgauge_pin: fuelgauge-int {
-+				pins = "gpio9";
-+				function = "normal";
-+
-+				bias-disable;
-+				input-enable;
-+				power-source = <PM8941_GPIO_S3>;
-+			};
-+
- 			wlan_sleep_clk_pin: wl-sleep-clk {
- 				pins = "gpio16";
- 				function = "func2";
+On 24/11/2020 23:03, Ivaylo Dimitrov wrote:
+
+> Is there any progress on the issue? I tried 5.9.1 and still nothing displayed.
+
+Can you test the attached patch?
+
+ Tomi
+
 -- 
-2.29.2
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
+--------------F4CB996E1B69C173202E7352
+Content-Type: text/x-patch; charset="UTF-8";
+	name="0001-drm-omap-sdi-fix-bridge-enable-disable.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="0001-drm-omap-sdi-fix-bridge-enable-disable.patch"
+
+From 97c55032ac5c44885b0ec219467699af0b6153c1 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Date: Thu, 26 Nov 2020 16:04:24 +0200
+Subject: [PATCH] drm/omap: sdi: fix bridge enable/disable
+
+When the SDI output was converted to DRM bridge, the atomic versions of
+enable and disable funcs were used. This was not intended, as that would
+require implementing other atomic funcs too. This leads to:
+
+WARNING: CPU: 0 PID: 18 at drivers/gpu/drm/drm_bridge.c:708 drm_atomic_helper_commit_modeset_enables+0x134/0x268
+
+and display not working.
+
+Fix this by using the legacy enable/disable funcs.
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Reported-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+Fixes: 8bef8a6d5da81b909a190822b96805a47348146f ("drm/omap: sdi: Register a drm_bridge")
+Cc: stable@vger.kernel.org #v5.7+
+---
+ drivers/gpu/drm/omapdrm/dss/sdi.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/omapdrm/dss/sdi.c b/drivers/gpu/drm/omapdrm/dss/sdi.c
+index 033fd30074b0..282e4c837cd9 100644
+--- a/drivers/gpu/drm/omapdrm/dss/sdi.c
++++ b/drivers/gpu/drm/omapdrm/dss/sdi.c
+@@ -195,8 +195,7 @@ static void sdi_bridge_mode_set(struct drm_bridge *bridge,
+ 	sdi->pixelclock = adjusted_mode->clock * 1000;
+ }
+ 
+-static void sdi_bridge_enable(struct drm_bridge *bridge,
+-			      struct drm_bridge_state *bridge_state)
++static void sdi_bridge_enable(struct drm_bridge *bridge)
+ {
+ 	struct sdi_device *sdi = drm_bridge_to_sdi(bridge);
+ 	struct dispc_clock_info dispc_cinfo;
+@@ -259,8 +258,7 @@ static void sdi_bridge_enable(struct drm_bridge *bridge,
+ 	regulator_disable(sdi->vdds_sdi_reg);
+ }
+ 
+-static void sdi_bridge_disable(struct drm_bridge *bridge,
+-			       struct drm_bridge_state *bridge_state)
++static void sdi_bridge_disable(struct drm_bridge *bridge)
+ {
+ 	struct sdi_device *sdi = drm_bridge_to_sdi(bridge);
+ 
+@@ -278,8 +276,8 @@ static const struct drm_bridge_funcs sdi_bridge_funcs = {
+ 	.mode_valid = sdi_bridge_mode_valid,
+ 	.mode_fixup = sdi_bridge_mode_fixup,
+ 	.mode_set = sdi_bridge_mode_set,
+-	.atomic_enable = sdi_bridge_enable,
+-	.atomic_disable = sdi_bridge_disable,
++	.enable = sdi_bridge_enable,
++	.disable = sdi_bridge_disable,
+ };
+ 
+ static void sdi_bridge_init(struct sdi_device *sdi)
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
+
+--------------F4CB996E1B69C173202E7352--
