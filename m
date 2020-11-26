@@ -2,54 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187742C4F35
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C57BA2C4F3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 08:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388314AbgKZHQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 02:16:05 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:40348 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730639AbgKZHQE (ORCPT
+        id S2388391AbgKZHRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 02:17:49 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7689 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729688AbgKZHRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 02:16:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xia1@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UGaDlDq_1606374944;
-Received: from rs3b04014.et2sqa.tbsite.net(mailfrom:xia1@linux.alibaba.com fp:SMTPD_---0UGaDlDq_1606374944)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 26 Nov 2020 15:16:01 +0800
-From:   Runzhe Wang <xia1@linux.alibaba.com>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Runzhe Wang <xia1@linux.alibaba.com>
-Subject: [PATCH] NFC:Fix Warning: Comparison to bool
-Date:   Thu, 26 Nov 2020 15:15:42 +0800
-Message-Id: <1606374942-1570157-1-git-send-email-xia1@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 26 Nov 2020 02:17:48 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ChTbY42tTz15P5R;
+        Thu, 26 Nov 2020 15:17:13 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 26 Nov 2020 15:17:27 +0800
+From:   Yicong Yang <yangyicong@hisilicon.com>
+To:     <viro@zeniv.linux.org.uk>, <linux-fsdevel@vger.kernel.org>
+CC:     <hch@lst.de>, <linux-kernel@vger.kernel.org>,
+        <prime.zeng@huawei.com>, <linuxarm@huawei.com>,
+        <yangyicong@hisilicon.com>
+Subject: [PATCH] fs: export vfs_stat() and vfs_fstatat()
+Date:   Thu, 26 Nov 2020 15:15:48 +0800
+Message-ID: <1606374948-38713-1-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch uses the shdlc->rnr variable as a judgment condition of
-statement, rather than compares with bool.
+The public function vfs_stat() and vfs_fstatat() are
+unexported after moving out of line in
+commit 09f1bde4017e ("fs: move vfs_fstatat out of line"),
+which will prevent the using in kernel modules.
+So make them exported.
 
-Signed-off-by: Runzhe Wang <xia1@linux.alibaba.com>
-Reported-by: Abaci <abaci@linux.alibaba.com>
+Fixes: 09f1bde4017e ("fs: move vfs_fstatat out of line")
+Reported-by: Yang Shen <shenyang39@huawei.com>
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 ---
- net/nfc/hci/llc_shdlc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/stat.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/nfc/hci/llc_shdlc.c b/net/nfc/hci/llc_shdlc.c
-index 0eb4ddc..f178a42 100644
---- a/net/nfc/hci/llc_shdlc.c
-+++ b/net/nfc/hci/llc_shdlc.c
-@@ -319,7 +319,7 @@ static void llc_shdlc_rcv_s_frame(struct llc_shdlc *shdlc,
- 	switch (s_frame_type) {
- 	case S_FRAME_RR:
- 		llc_shdlc_rcv_ack(shdlc, nr);
--		if (shdlc->rnr == true) {	/* see SHDLC 10.7.7 */
-+		if (shdlc->rnr) {	/* see SHDLC 10.7.7 */
- 			shdlc->rnr = false;
- 			if (shdlc->send_q.qlen == 0) {
- 				skb = llc_shdlc_alloc_skb(shdlc, 0);
--- 
-1.8.3.1
+diff --git a/fs/stat.c b/fs/stat.c
+index dacecdd..7d690c6 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -147,6 +147,7 @@ int vfs_fstat(int fd, struct kstat *stat)
+ 	fdput(f);
+ 	return error;
+ }
++EXPORT_SYMBOL(vfs_fstat);
+
+ /**
+  * vfs_statx - Get basic and extra attributes by filename
+@@ -207,6 +208,7 @@ int vfs_fstatat(int dfd, const char __user *filename,
+ 	return vfs_statx(dfd, filename, flags | AT_NO_AUTOMOUNT,
+ 			 stat, STATX_BASIC_STATS);
+ }
++EXPORT_SYMBOL(vfs_fstatat);
+
+ #ifdef __ARCH_WANT_OLD_STAT
+
+--
+2.8.1
 
