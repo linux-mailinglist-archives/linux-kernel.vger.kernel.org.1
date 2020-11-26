@@ -2,124 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26ED02C5444
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB4D2C544C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389763AbgKZMxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 07:53:39 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:45496 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389703AbgKZMxi (ORCPT
+        id S2389698AbgKZM42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 07:56:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388892AbgKZM41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 07:53:38 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AQCrKGM023622;
-        Thu, 26 Nov 2020 06:53:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606395200;
-        bh=8/i0PLwLC3PRuf2Girkk7ibqMIDhWokbjMZAt9wBkBQ=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=HqpYXplKRSKhcYglOcByMX66sSMECwWSazz3TavTY8gVsDOzIO7NLcucUzMomuFA1
-         pg8IN7CUEqvbN7LnN5lGcFiXSNy8X0aHbrSRCHG2E9hplmoRk6+yRLcSAZ+iEIfpLO
-         3ZT1Wg+8+zVx6cMjTqw1UCv61J34/c0bee8KYxrU=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AQCrK0e011046
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 26 Nov 2020 06:53:20 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 26
- Nov 2020 06:53:20 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 26 Nov 2020 06:53:20 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AQCrG9p031373;
-        Thu, 26 Nov 2020 06:53:16 -0600
-Subject: Re: [PATCH 1/3] dt-bindings: pci: ti,j721e: Fix "ti,syscon-pcie-ctrl"
- to take argument
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Rob Herring <robh@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-CC:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201116173141.31873-1-kishon@ti.com>
- <20201116173141.31873-2-kishon@ti.com> <20201118211139.GA1815279@bogus>
- <1e9b0b56-a42d-bea0-704b-6209532b1abe@ti.com>
-Message-ID: <1ed82ab5-6171-108d-9b92-a18389044174@ti.com>
-Date:   Thu, 26 Nov 2020 18:23:10 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 26 Nov 2020 07:56:27 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCBEC0613D4;
+        Thu, 26 Nov 2020 04:56:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Wzqquq5/8D9FV29EVrzwmTN0u25CnsZPxZTtTznyxuY=; b=kwtYBwhPT/xZPaiK1qJKZ2HGr7
+        4quVpggBZGhRHOmciM0yyjUsYzXiVZmu3u3Pk0PSig7f3bnc2DnWNmqGhsEXLpcsUy8MqOLtxFiPq
+        yemCSvOVi6L6aCTSF2KLJeKgK0w82yTmoe0CxCovoaDO5mvJy7nZ4nCW8E68MWCxGd2ei90UVJblp
+        wjU+bSg380UGlOMpwS3X7MTXxRAqzF6205FfNpCb7yw6bDwdEkNv5ouvbb9HlNrYY5ea2yPOYigEc
+        K+PjYbYftBbGrPwt+LbQsB5Y9gsJ1NFNEQ3pDT5Lwhzv5zJAgu57y3r7Y1Puc6/9zMPZ9dv+rxV/k
+        q2rhtnRQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kiGog-0003FD-PN; Thu, 26 Nov 2020 12:56:07 +0000
+Date:   Thu, 26 Nov 2020 12:56:06 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     kan.liang@linux.intel.com, mingo@kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, christophe.leroy@csgroup.eu,
+        npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
+        mpe@ellerman.id.au, will@kernel.org, aneesh.kumar@linux.ibm.com,
+        sparclinux@vger.kernel.org, davem@davemloft.net,
+        catalin.marinas@arm.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com
+Subject: Re: [PATCH v2 3/6] perf/core: Fix arch_perf_get_page_size()
+Message-ID: <20201126125606.GR4327@casper.infradead.org>
+References: <20201126120114.071913521@infradead.org>
+ <20201126121121.164675154@infradead.org>
+ <20201126123458.GO4327@casper.infradead.org>
+ <20201126124207.GM3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <1e9b0b56-a42d-bea0-704b-6209532b1abe@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126124207.GM3040@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Thu, Nov 26, 2020 at 01:42:07PM +0100, Peter Zijlstra wrote:
+> +	pgdp = pgd_offset(mm, addr);
+> +	pgd = READ_ONCE(*pgdp);
 
-On 20/11/20 10:39 am, Kishon Vijay Abraham I wrote:
-> Hi Rob,
-> 
-> On 19/11/20 2:41 am, Rob Herring wrote:
->> On Mon, Nov 16, 2020 at 11:01:39PM +0530, Kishon Vijay Abraham I wrote:
->>> Fix binding documentation of "ti,syscon-pcie-ctrl" to take phandle with
->>> argument. The argument is the register offset within "syscon" used to
->>> configure PCIe controller.
->>>
->>> Link: Link: http://lore.kernel.org/r/CAL_JsqKiUcO76bo1GoepWM1TusJWoty_BRy2hFSgtEVMqtrvvQ@mail.gmail.com
->>
->> Link: Link: ?
->>
->> AIUI, 'Link' is supposed to be a link to this patch. I guess more than 1 
->> Link would be okay though.
-> 
-> Two Links was a typo, will fix it in the next revision. Nishanth as well
-> was asking about using "Link:" tag for a mailing list discussion.
-> 
-> I started using it after Lorenzo had asked me to use Link tag for
-> mailing list discussion here sometime back.
-> 
-> https://patchwork.kernel.org/project/linux-pci/patch/20171219083627.7904-1-kishon@ti.com/#21350261
-> 
->>
->>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->>> ---
->>>  .../devicetree/bindings/pci/ti,j721e-pci-ep.yaml     | 12 ++++++++----
->>>  .../devicetree/bindings/pci/ti,j721e-pci-host.yaml   | 12 ++++++++----
->>>  2 files changed, 16 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
->>> index 3ae3e1a2d4b0..e9685c0bdc3e 100644
->>> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
->>> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
->>> @@ -29,9 +29,13 @@ properties:
->>>        - const: mem
->>>  
->>>    ti,syscon-pcie-ctrl:
->>> -    description: Phandle to the SYSCON entry required for configuring PCIe mode
->>> -                 and link speed.
->>> -    $ref: /schemas/types.yaml#/definitions/phandle
->>> +    allOf:
->>
->> You no longer need allOf here.
-> 
-> hmm, don't we need it for specifying phandle with fixed cells? FWIW, I
-> was referring
-> 
-> https://github.com/devicetree-org/dt-schema/blob/master/test/schemas/good-example.yaml#L187
+I forget how x86-32-PAE maps to Linux's PGD/P4D/PUD/PMD scheme, but
+according to volume 3, section 4.4.2, PAE paging uses a 64-bit PDE, so
+whether a PDE is a PGD or a PMD, we're only reading it with READ_ONCE
+rather than the lockless-retry method used by ptep_get_lockless().
+So it's potentially racy?  Do we need a pmdp_get_lockless() or
+pgdp_get_lockless()?
 
-Can you clarify this please?
-
-Thank You,
-Kishon
+[...]
+> +	pmdp = pmd_offset_lockless(pudp, pud, addr);
+> +	pmd = READ_ONCE(*pmdp);
+> +	if (!pmd_present(pmd))
+>  		return 0;
+>  
+> +	if (pmd_leaf(pmd))
+> +		return pmd_leaf_size(pmd);
+>  
