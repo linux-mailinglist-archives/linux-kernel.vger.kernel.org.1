@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC962C4DAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6528E2C4DAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733184AbgKZDIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 22:08:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730326AbgKZDIw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 22:08:52 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029ECC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 19:08:52 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id m9so502011pgb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 19:08:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=atnJehQZVO119pd4VO6r7q8kYsvyqoBTmsMlSh7A/i8=;
-        b=BM3vd/ZFTSIIrKiVzBBNSfoocvC2mblhZ+0r6qJV9fNEKYFCP90dXn3R9CA4G5/2pW
-         C99fiMkTeWf0gmDuqNgO58YNoGNW1I2ngQc3mvSf6PCpZpMlhxlsTxuUVEldMDeg00F8
-         f2LEf6I/A7CjN2hp8bOumSlFwDFEcFucwQ3L0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=atnJehQZVO119pd4VO6r7q8kYsvyqoBTmsMlSh7A/i8=;
-        b=LBTWk8TsA+X0oYqif9FO/xRD9JsX3j7jb3u6VIiva9ZQGfCFBo4rnBqbB2mJ3HqZjF
-         qUThc7FmsOFwbUqRNM3+BLuAVjcqhvVjrFuSYd80hyHt/kV/4JSwudXr43AXY4qSiT9b
-         hPuNC/nuB1r4cJuvciZJXlqRZuWOLjfF6m+OQ+KQq8OlsXNeEZFeN+UvIkcK5V+62g7r
-         Q2OwGyuP8ARzknDQ+1FiD6U0dBATSl1w9SFjIZ1ab6xA3DKv8J+j7LMQI0kd8Q2iD5/i
-         oslEgTHaGFwsFocUWcKz2B21kJEl1OLiyowseB/+D08UVD7dhXmzTulr+d7Fwc+W5Niq
-         3xXw==
-X-Gm-Message-State: AOAM530NyeIgcD+Ik5+JzH6UU2NKpSfRhQJjQ4X4bDI1dNdj83RznQPC
-        5d+mc4Rg2up8sQ8DsO5cf09mJQ==
-X-Google-Smtp-Source: ABdhPJyAC2YiZ6o3LkjuCB38jzADK3Pw3TNqQRc+UnVcBfB1j9l5XRJ1Br9UH0oCUYWbT3uXJ1Z9ww==
-X-Received: by 2002:a17:90b:30cb:: with SMTP id hi11mr1119711pjb.94.1606360131611;
-        Wed, 25 Nov 2020 19:08:51 -0800 (PST)
-Received: from localhost.localdomain ([120.152.32.152])
-        by smtp.gmail.com with ESMTPSA id y9sm4323663pjj.8.2020.11.25.19.08.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 19:08:51 -0800 (PST)
-From:   Evan Benn <evanbenn@chromium.org>
-To:     linux-media@vger.kernel.org
-Cc:     Evan Benn <evanbenn@chromium.org>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] media: mtk-vcodec: Fix order of log arguments
-Date:   Thu, 26 Nov 2020 14:08:42 +1100
-Message-Id: <20201126140839.1.I723c6846bc6913bd0831a78874aa767dcbdae470@changeid>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+        id S1733226AbgKZDK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 22:10:28 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:50748 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730696AbgKZDK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 22:10:27 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ki7fp-008urs-Ix; Thu, 26 Nov 2020 04:10:21 +0100
+Date:   Thu, 26 Nov 2020 04:10:21 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Lukasz Majewski <lukma@denx.de>, Peng Fan <peng.fan@nxp.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>, stefan.agner@toradex.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        krzk@kernel.org, "David S . Miller" <davem@davemloft.net>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC 0/4] net: l2switch: Provide support for L2 switch on i.MX28
+ SoC
+Message-ID: <20201126031021.GK2075216@lunn.ch>
+References: <20201125232459.378-1-lukma@denx.de>
+ <20201126000049.GL2073444@lunn.ch>
+ <c717666c-8357-60a2-7c66-5d9e9f18d250@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c717666c-8357-60a2-7c66-5d9e9f18d250@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Evan Benn <evanbenn@chromium.org>
+On Wed, Nov 25, 2020 at 05:30:04PM -0800, Florian Fainelli wrote:
+> 
+> 
+> On 11/25/2020 4:00 PM, Andrew Lunn wrote:
+> > On Thu, Nov 26, 2020 at 12:24:55AM +0100, Lukasz Majewski wrote:
+> >> This is the first attempt to add support for L2 switch available on some NXP
+> >> devices - i.e. iMX287 or VF610. This patch set uses common FEC and DSA code.
+> > 
+> > Interesting. I need to take another look at the Vybrid manual. Last
+> > time i looked, i was more thinking of a pure switchdev driver, not a
+> > DSA driver. So i'm not sure this is the correct architecture. But has
+> > been a while since i looked at the datasheet.
+> 
+> Agreed the block diagram shows one DMA for each "switch port" which
+> definitively fits more within the switchdev model than the DSA model
+> that re-purposes an existing Ethernet MAC controller as-is and bolts on
+> an integrated or external switch IC.
 
----
+Hi Florian
 
- drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I'm not sure it is that simple. I'm looking at the Vybrid
+datasheet. There are two major configurations.
 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c
-index a3c7a380c9308..785ec0df445ec 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c
-@@ -27,11 +27,11 @@ int mtk_vcodec_wait_for_done_ctx(struct mtk_vcodec_ctx  *ctx, int command,
- 
- 	if (!ret) {
- 		status = -1;	/* timeout */
--		mtk_v4l2_err("[%d] cmd=%d, ctx->type=%d, wait_event_interruptible_timeout time=%ums out %d %d!",
-+		mtk_v4l2_err("[%d] ctx->type=%d, cmd=%d, wait_event_interruptible_timeout time=%ums out %d %d!",
- 				ctx->id, ctx->type, command, timeout_ms,
- 				ctx->int_cond, ctx->int_type);
- 	} else if (-ERESTARTSYS == ret) {
--		mtk_v4l2_err("[%d] cmd=%d, ctx->type=%d, wait_event_interruptible_timeout interrupted by a signal %d %d",
-+		mtk_v4l2_err("[%d] ctx->type=%d, cmd=%d, wait_event_interruptible_timeout interrupted by a signal %d %d",
- 				ctx->id, ctx->type, command, ctx->int_cond,
- 				ctx->int_type);
- 		status = -1;
--- 
-2.29.2.454.gaff20da3a2-goog
+1) The switch is pass through, and does nothing. Then two DMA channels
+are used, one per external port. You basically just have two Ethernet
+interfaces
 
+2) The switch is active. You then have a 3 port switch, 2 ports for
+the external interfaces, and one port connected to a single DMA
+channel.
+
+So when in an active mode, it does look more like a DSA switch.
+
+What is not yet clear to me is how you direct frames out specific
+interfaces. This is where i think we hit problems. I don't see a
+generic mechanism, which is probably why Lukasz put tagger as None. It
+does appear you can control the output of BPDUs, but it is not very
+friendly. You write a register with the port you would like the next
+BPDU to go out, queue the frame up on the DMA, and then poll a bit in
+the register which flips when the frame is actually processed in the
+switch. I don't see how you determine what port a BPDU came in on!
+Maybe you have to use the learning interface?
+
+Ah, the ESW_FFEN register can be used to send a frame out a specific
+port. Write this register with the destination port, DMA a frame, and
+it goes out the specific port. You then need to write the register
+again for the next frame.
+
+I get the feeling this is going to need a very close relationship
+between the 'tagger' and the DMA engine. I don't see how this can be
+done using the DSA architecture, the coupling is too loose.
+
+It seems like the HW design assumes frames from the CPU will be
+switched using the switch internal FDB, making Linux integration
+"interesting"
+
+It does not look like this is a classic DSA switch with a tagging
+protocol. It might be possible to do VLAN per port, in order to direct
+frames out a specific port?
+
+       Andrew
