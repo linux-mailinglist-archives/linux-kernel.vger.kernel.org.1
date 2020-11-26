@@ -2,115 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12AA2C5D87
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 22:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 043A42C5D8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 22:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387833AbgKZVdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 16:33:19 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:56390 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgKZVdS (ORCPT
+        id S2388065AbgKZVe0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Nov 2020 16:34:26 -0500
+Received: from mail.fireflyinternet.com ([77.68.26.236]:60210 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726178AbgKZVe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 16:33:18 -0500
-Received: from mail-qv1-f70.google.com ([209.85.219.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <gpiccoli@canonical.com>)
-        id 1kiOt9-0001ox-TC
-        for linux-kernel@vger.kernel.org; Thu, 26 Nov 2020 21:33:16 +0000
-Received: by mail-qv1-f70.google.com with SMTP id s8so1846054qvr.20
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 13:33:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:to:from:subject:autocrypt:message-id:date
-         :user-agent:mime-version:content-language:content-transfer-encoding;
-        bh=LkGnUEWLOTsXw7OTNCwX6L+iv752ZbpNWi5kPbxoFVk=;
-        b=kKWit2XaJ62V59VW6N9sfc/mLz4yZ0DflXmsHo/H93qNhYBr76jcwFxh5xkl2jtucD
-         YXibZgEF9bfL7CvwafVxC1Vy808I/TfQdbKSLeF49NSMbzZJGENqOO+DrjKEb7OcwEOK
-         8nq7xlI+tdtLftvG8iUbtesvHILm9teCec8wozWT+LFGkEHkxLmKF3q7FCD2dP1vsR+V
-         BNsSGqoDbIYfKlbH9Gg/H4xvV8DlY5W9sSDYOM0rQx6cDPOgt0bhw885Ej+mZjhie4ZZ
-         uxU3gRuaP+b0jHRpxEynkC3HmyofHMzzCvDBqASbAt3j7XJSuc3DfQpTI2ZWDxLbWzwZ
-         pdRw==
-X-Gm-Message-State: AOAM530Lm2RBjU9fbJtGprTxAtteD4dZhLIrx9zrU8WYPmFfsLdFoHBJ
-        n3DuhWylEB+xYsO28DITckglNQAl25Obibr9QbQcbBLmqXAat//1tRpbz8KnA7dCrWQkSTX7/Xu
-        CbR9BfoCTUgvK/8GsUxOBOVrtIQOjYdDAK3aD4LQpXQ==
-X-Received: by 2002:a37:cd1:: with SMTP id 200mr5074412qkm.55.1606426394880;
-        Thu, 26 Nov 2020 13:33:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw+YYZi8TYoMEuLLcCNrIvVAL5nSvOGWc7H6vTxbBtfx3bslLpNRfeJZq+Rj4h/rUWZFJL/jg==
-X-Received: by 2002:a37:cd1:: with SMTP id 200mr5074386qkm.55.1606426394567;
-        Thu, 26 Nov 2020 13:33:14 -0800 (PST)
-Received: from [192.168.1.75] (200-160-92-130.static-user.ajato.com.br. [200.160.92.130])
-        by smtp.gmail.com with ESMTPSA id t63sm3518947qka.128.2020.11.26.13.33.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2020 13:33:14 -0800 (PST)
-Cc:     Kees Cook <keescook@chromium.org>, ccross@android.com,
-        tony.luck@intel.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        u.kleine-koenig@pengutronix.de
-To:     anton@enomsg.org, joel@joelfernandes.org
-From:   "Guilherme G. Piccoli" <gpiccoli@canonical.com>
-Subject: About ftrace+pstore+ramoops
-Autocrypt: addr=gpiccoli@canonical.com; prefer-encrypt=mutual; keydata=
- xsBNBFpVBxcBCADPNKmu2iNKLepiv8+Ssx7+fVR8lrL7cvakMNFPXsXk+f0Bgq9NazNKWJIn
- Qxpa1iEWTZcLS8ikjatHMECJJqWlt2YcjU5MGbH1mZh+bT3RxrJRhxONz5e5YILyNp7jX+Vh
- 30rhj3J0vdrlIhPS8/bAt5tvTb3ceWEic9mWZMsosPavsKVcLIO6iZFlzXVu2WJ9cov8eQM/
- irIgzvmFEcRyiQ4K+XUhuA0ccGwgvoJv4/GWVPJFHfMX9+dat0Ev8HQEbN/mko/bUS4Wprdv
- 7HR5tP9efSLucnsVzay0O6niZ61e5c97oUa9bdqHyApkCnGgKCpg7OZqLMM9Y3EcdMIJABEB
- AAHNLUd1aWxoZXJtZSBHLiBQaWNjb2xpIDxncGljY29saUBjYW5vbmljYWwuY29tPsLAdwQT
- AQgAIQUCWmClvQIbAwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRDOR5EF9K/7Gza3B/9d
- 5yczvEwvlh6ksYq+juyuElLvNwMFuyMPsvMfP38UslU8S3lf+ETukN1S8XVdeq9yscwtsRW/
- 4YoUwHinJGRovqy8gFlm3SAtjfdqysgJqUJwBmOtcsHkmvFXJmPPGVoH9rMCUr9s6VDPox8f
- q2W5M7XE9YpsfchS/0fMn+DenhQpV3W6pbLtuDvH/81GKrhxO8whSEkByZbbc+mqRhUSTdN3
- iMpRL0sULKPVYbVMbQEAnfJJ1LDkPqlTikAgt3peP7AaSpGs1e3pFzSEEW1VD2jIUmmDku0D
- LmTHRl4t9KpbU/H2/OPZkrm7809QovJGRAxjLLPcYOAP7DUeltvezsBNBFpVBxcBCADbxD6J
- aNw/KgiSsbx5Sv8nNqO1ObTjhDR1wJw+02Bar9DGuFvx5/qs3ArSZkl8qX0X9Vhptk8rYnkn
- pfcrtPBYLoux8zmrGPA5vRgK2ItvSc0WN31YR/6nqnMfeC4CumFa/yLl26uzHJa5RYYQ47jg
- kZPehpc7IqEQ5IKy6cCKjgAkuvM1rDP1kWQ9noVhTUFr2SYVTT/WBHqUWorjhu57/OREo+Tl
- nxI1KrnmW0DbF52tYoHLt85dK10HQrV35OEFXuz0QPSNrYJT0CZHpUprkUxrupDgkM+2F5LI
- bIcaIQ4uDMWRyHpDbczQtmTke0x41AeIND3GUc+PQ4hWGp9XABEBAAHCwF8EGAEIAAkFAlpV
- BxcCGwwACgkQzkeRBfSv+xv1wwgAj39/45O3eHN5pK0XMyiRF4ihH9p1+8JVfBoSQw7AJ6oU
- 1Hoa+sZnlag/l2GTjC8dfEGNoZd3aRxqfkTrpu2TcfT6jIAsxGjnu+fUCoRNZzmjvRziw3T8
- egSPz+GbNXrTXB8g/nc9mqHPPprOiVHDSK8aGoBqkQAPZDjUtRwVx112wtaQwArT2+bDbb/Y
- Yh6gTrYoRYHo6FuQl5YsHop/fmTahpTx11IMjuh6IJQ+lvdpdfYJ6hmAZ9kiVszDF6pGFVkY
- kHWtnE2Aa5qkxnA2HoFpqFifNWn5TyvJFpyqwVhVI8XYtXyVHub/WbXLWQwSJA4OHmqU8gDl
- X18zwLgdiQ==
-Message-ID: <72df55ca-20f3-c3ee-861b-c50c1a55495e@canonical.com>
-Date:   Thu, 26 Nov 2020 18:33:09 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 26 Nov 2020 16:34:26 -0500
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 23122683-1500050 
+        for multiple; Thu, 26 Nov 2020 21:34:08 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <ab9ebc5a-7d79-8003-c7bc-5cf0923983c6@linux.intel.com>
+References: <20201111155811.GB24657@xsang-OptiPlex-9020> <160527763346.5566.3471508802857132043@jlahtine-mobl.ger.corp.intel.com> <20201119072018.GA15197@xsang-OptiPlex-9020> <160625087275.29168.7080737993781611765@build.alporthouse.com> <ab9ebc5a-7d79-8003-c7bc-5cf0923983c6@linux.intel.com>
+Subject: Re: [Intel-gfx] [drm/i915/gem] 59dd13ad31: phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second -54.0% regression
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     feng.tang@intel.com, tiejun.li@intel.com, guangli.li@intel.com,
+        frank.du@intel.com, guobing.chen@intel.com, jiebin.sun@intel.com,
+        Shuhua.Fan@intel.com, Matthew Auld <matthew.auld@intel.com>,
+        fan.zhao@intel.com, ying.huang@intel.com, shan.kang@intel.com,
+        zhengjun.xing@intel.com, Wenhuan.Huang@intel.com,
+        intel-gfx@lists.freedesktop.org, lkp@lists.01.org,
+        ming.a.chen@intel.com, yu.ma@intel.com, jessica.ji@intel.com,
+        dapeng1.mi@intel.com, wangyang.guo@intel.com,
+        LKML <linux-kernel@vger.kernel.org>, gengxin.xie@intel.com
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oliver Sang <oliver.sang@intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Date:   Thu, 26 Nov 2020 21:34:07 +0000
+Message-ID: <160642644736.15379.9850669928715684163@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anton / Joel (and all CCed), sorry for annoyance but I'm not being
-able to make pstore ftrace capture to work - I'm not sure if I might be
-missing something, or if there's a known limitation.
+Quoting Xing Zhengjun (2020-11-26 01:44:55)
+> 
+> 
+> On 11/25/2020 4:47 AM, Chris Wilson wrote:
+> > Quoting Oliver Sang (2020-11-19 07:20:18)
+> >> On Fri, Nov 13, 2020 at 04:27:13PM +0200, Joonas Lahtinen wrote:
+> >>> Hi,
+> >>>
+> >>> Could you add intel-gfx@lists.freedesktop.org into reports going
+> >>> forward.
+> >>>
+> >>> Quoting kernel test robot (2020-11-11 17:58:11)
+> >>>>
+> >>>> Greeting,
+> >>>>
+> >>>> FYI, we noticed a -54.0% regression of phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second due to commit:
+> >>>
+> >>> How many runs are there on the bad version to ensure the bisect is
+> >>> repeatable?
+> >>
+> >> test 4 times.
+> >> zxing@inn:/result/phoronix-test-suite/performance-true-Radial_Gradient_Paint-1024x1024-jxrendermark-1.2.4-ucode=0xd6-monitor=da39a3ee/lkp-cfl-d1/debian-x86_64-phoronix/x86_64-rhel-8.3/gcc-9/59dd13ad310793757e34afa489dd6fc8544fc3da$ grep -r "operations_per_second" */stats.json
+> >> 0/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4133.487932,
+> >> 1/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4120.421503,
+> >> 2/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4188.414835,
+> >> 3/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4068.549514,
+> > 
+> > a w/o revert (drm-tip)
+> > b w/ revert
+> > +mB----------------------------------------------------------------------------+
+> > |                             ..b                                              |
+> > |                             ..b.aa                                           |
+> > |                             ....a.a                                          |
+> > |                             ....a.a                                          |
+> > |                      b  b  ........a                                         |
+> > |                   b  b  b b......... a                                       |
+> > |                   b  bb bbb...........                                       |
+> > |b               ab bbab.bb.b............ba b a a            ab               a|
+> > |                             |__A__|                                          |
+> > |                             |MA_|                                            |
+> > +------------------------------------------------------------------------------+
+> >      N                Min           Max        Median           Avg        Stddev
+> > a 120          3621.8761     7356.4442     4606.7895     4607.9132     156.17693
+> > b 120          2664.0563     6359.9686     4519.5036     4534.4463     95.471121
+> > 
+> > The patch is not expected to have any impact on the machine you are testing on.
+> > -Chris
+> > 
+> 
+> What's your code base?
+> For my side:
+> 1) sync the code to the head of Linux mainline
+> 2) git reset --hard 59dd13ad31
+> 3) git revert 59dd13ad3107
+> We compare the test result of commit 59dd13ad3107 (step 2) and 
+> 2052847b06f8 (step 3, revert 59dd13ad3107), the regression should 
+> related with 59dd13ad3107. Each test case we run 5 times.
 
-So, first, my use case: I'd like to be able to collect *ftrace* trace
-buffer in a specific point in time, when some issue I'm facing happens;
-for that, I enable ftrace through tracing_on() in the correct point in
-the code. After this issue, machine is not responsive, so I need to
-reboot (hence I'd like to persist the trace buffer in my ramoops
-reserved area).
-
-For the basic test purpose though, I'm doing just what is suggested in
-the ramoops documentation, which is to write 1 on
-<debugfs>/pstore/record_ftrace and reboot - but no ftrace file is
-present in the pstore folder after the reboot. I've tested the same
-system/config by inducing a kernel oops and the corresponding
-dmesg-ramoops file is there after the reboot...
-
-Just for clarification: this ftrace feature in pstore is meant to do
-what I want right? It should *always* collect the same information as
-seen in the trace buffer, but on the persistent memory region configured
-by ramoops, correct?
-Any guidance you can provide me is much appreciated.
-Thanks in advance,
-
-
-Guilherme
+a 59dd13ad31
+b revert
++mB----------------------------------------------------------------------------+
+|                        a                                                     |
+|                       aa                                                     |
+|                     .b....ba                                                 |
+|                     .b....baa    b                                           |
+|                     .........b . b   b                                       |
+|                a   b.......... ..bb  b        b                              |
+|              b a   b.............b.a b        b                              |
+|a    a  b.    .aaa..b.............b..b....ab   b     a                       .|
+|                      |__A__|                                                 |
+|                      |___A_____|                                             |
++------------------------------------------------------------------------------+
+    N                Min           Max        Median           Avg        Stddev
+a 120          3658.3435     6363.7812     4527.4406      4536.612     86.095459
+b 120          3928.9643      6375.829     4576.0482     4585.4224      157.284
