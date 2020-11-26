@@ -2,73 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE142C5CD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 21:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622662C5CD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 21:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390107AbgKZUGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 15:06:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728118AbgKZUGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 15:06:32 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34B9320DD4;
-        Thu, 26 Nov 2020 20:06:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606421191;
-        bh=sBT7bn7VejPsdukWpI8QDrdOk3m1GS5gMWAwG2jG0Tw=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=PRLOqp71XKR4m2Tr15QlFJHao8RnjXLSnWhgkSuVJeeOz9HxKSe5Thf6VOS3qLmJ6
-         rqAB2g/2Bshe6QeBy9dy6MBqhCXpKIz868fzbaYME9s89+5fD+vQeedobIRvp0f+un
-         oICRPFxlNpjGMVLmRMXKGROeYkvw5AZi7jxu+8KM=
-Date:   Thu, 26 Nov 2020 20:06:06 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>, lgirdwood@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        jonathanh@nvidia.com
-In-Reply-To: <1606325147-606-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1606325147-606-1-git-send-email-claudiu.beznea@microchip.com>
-Subject: Re: [RESEND PATCH] regulator: core: return zero for selectors lower than linear_min_sel
-Message-Id: <160642116162.9318.1338696690812308259.b4-ty@kernel.org>
+        id S2391021AbgKZUHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 15:07:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389989AbgKZUHJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 15:07:09 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803C0C0613D4;
+        Thu, 26 Nov 2020 12:07:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0Oynq0P9qwAVLUJIozexhIrD4X8bgYbBxQMqU661Oro=; b=OaYSyI+vbas3gKInvB8tgJHU8U
+        l3DfxHSKXTg2R3LKiX/4ZCz6NO6M4ChYqZT0FYtOucI3gQrQwNa+4Zww5X3C68bEAsgKR5DqOGRK4
+        39NtnKv8nH05FPs1KJMB9wLgSPD3GTLyy89krwdar7NcUpJLoWYe+N88Mily9LvWE2bYVWpsajx5P
+        vZsYT+um7imRp+bdpL6l93jEXbrhhmtl9Mvb45DTbxUHZc6CkB8R68o8NrXnr3rXCM34vifKg0Qan
+        jf2Brgc1lKnwuxlJL9nkafnTa53Vs+hSRBKKAplJuDnsDqQjd9sR7m5eB1IuWdKrin3lowD9WIPmA
+        eNgr5X3g==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kiNXj-0005L2-5Z; Thu, 26 Nov 2020 20:07:03 +0000
+Date:   Thu, 26 Nov 2020 20:07:03 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Linux-FSDevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Christoph Hellwig <hch@lst.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>, dchinner@redhat.com,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
+Message-ID: <20201126200703.GW4327@casper.infradead.org>
+References: <alpine.LSU.2.11.2011160128001.1206@eggly.anvils>
+ <20201117153947.GL29991@casper.infradead.org>
+ <alpine.LSU.2.11.2011170820030.1014@eggly.anvils>
+ <20201117191513.GV29991@casper.infradead.org>
+ <20201117234302.GC29991@casper.infradead.org>
+ <20201125023234.GH4327@casper.infradead.org>
+ <20201125150859.25adad8ff64db312681184bd@linux-foundation.org>
+ <CANsGZ6a95WK7+2H4Zyg5FwDxhdJQqR8nKND1Cn6r6e3QxWeW4Q@mail.gmail.com>
+ <20201126121546.GN4327@casper.infradead.org>
+ <alpine.LSU.2.11.2011261101230.2851@eggly.anvils>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2011261101230.2851@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 19:25:47 +0200, Claudiu Beznea wrote:
-> Selectors lower than linear_min_sel should not be considered invalid.
-> Thus return zero in case _regulator_list_voltage(),
-> regulator_list_hardware_vsel() or regulator_list_voltage_table()
-> receives such selectors as argument.
+On Thu, Nov 26, 2020 at 11:24:59AM -0800, Hugh Dickins wrote:
+> On Thu, 26 Nov 2020, Matthew Wilcox wrote:
+> > On Wed, Nov 25, 2020 at 04:11:57PM -0800, Hugh Dickins wrote:
+> > > > +                               index = truncate_inode_partial_page(mapping,
+> > > > +                                               page, lstart, lend);
+> > > > +                               if (index > end)
+> > > > +                                       end = indices[i] - 1;
+> > > >                         }
+> > > > -                       unlock_page(page);
+> > > 
+> > > The fix needed is here: instead of deleting that unlock_page(page)
+> > > line, it needs to be } else { unlock_page(page); }
+> > 
+> > It also needs a put_page(page);
+> 
+> Oh yes indeed, sorry for getting that wrong.  I'd misread the
+> pagevec_reinit() at the end as the old pagevec_release().  Do you
+> really need to do pagevec_remove_exceptionals() there if you're not
+> using pagevec_release()?
 
-Applied to
+Oh, good point!
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+> > That's now taken care of by truncate_inode_partial_page(), so if we're
+> > not calling that, we need to put the page as well.  ie this:
+> 
+> Right, but I do find it confusing that truncate_inode_partial_page()
+> does the unlock_page(),put_page() whereas truncate_inode_page() does
+> not: I think you would do better to leave them out of _partial_page(),
+> even if including them there saves a couple of lines somewhere else.
 
-Thanks!
+I agree; I don't love it.  The only reason I moved them in there was
+because after calling split_huge_page(), we have to call unlock_page();
+put_page(); on the former-tail-page-that-is-now-partial, not on the
+head page.
 
-[1/1] regulator: core: return zero for selectors lower than linear_min_sel
-      commit: 55cca73931c3a08eb74f5ad06e88304af7a292e0
+Hm, what I could do is return the struct page which is now the partial
+page.  Why do I never think of these things before posting?  I'll see
+how that works out.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> But right now it's the right fix that's important: ack to yours below.
+> 
+> I've not yet worked out the other issues I saw: will report when I have.
+> Rebooted this laptop, pretty sure it missed freeing a shmem swap entry,
+> not yet reproduced, will study the change there later, but the non-swap 
+> hang in generic/476 (later seen also in generic/112) more important.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+The good news is that I've sorted out the SCRATCH_DEV issue with
+running xfstests.  The bad news is that (even on an unmodified kernel),
+generic/027 takes 19 hours to run.  On xfs, it's 4 minutes.  Any idea
+why it's so slow on tmpfs?
