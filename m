@@ -2,94 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7DC2C5E4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FB72C5E52
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388240AbgKZXrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 18:47:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
+        id S2388084AbgKZXvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 18:51:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729173AbgKZXrC (ORCPT
+        with ESMTP id S1726287AbgKZXvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 18:47:02 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DC2C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 15:47:00 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id b17so3999542ljf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 15:47:00 -0800 (PST)
+        Thu, 26 Nov 2020 18:51:02 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048A2C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 15:51:01 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id k4so3964641edl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 15:51:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hgk+y3R/+wKHwY8AHHPwfYUtuRseW4QHOS+AXJzFHJc=;
-        b=UmZCklVE+6LJBZ0ksVoPTJGBuaE/NBsqmU1zhUV2JHO+B1a3YZprPMTxMvlFYLe585
-         8phq9Up9vzDLmSOQwsIG1W+AxT4EyUf2qOm/wRGyf4WS+Q26VYwYp3rKHA3t0qOp2ZfE
-         wZfH2QRJP1xMN1Mc8kgAd8naaakEi0S6S5At8gW5g+iZYYHtlIVeOeQy5YcdzDsPZHNw
-         qGs11TL4maxG7T8+iBgl9Zf/xxKo4X2KJopi6ZGaV0jEzPH9yqojYS45ehjH+O3lMvIa
-         pm1g3qUpd1nm1ZxSyoFELZw+5BItIOwHelBeDNijVZriJ7sSVJ63VuNHPKzWXF0DjV1E
-         8B6A==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V5KYSx6aCS9NMZ6LBkhsZnID6zJfBDD/ql119aALBaU=;
+        b=BvFjIsHVznSKm0SCyX7mIYruIwzynFNq6nNjPldATYnR/9Kn4OLnH1J6oZe8DndYR8
+         qaZNte+m8uCJZSY0nFOFdcshKL6nsXVP71dxpFJKptdOGZ6saM+ujUu9dRLLJdmhclUL
+         mMAIYoZXdVTod+NpaYIQd0N82DsifDhARArDWSSxexpzD4K0UO6xINti8XffHGlJMagI
+         Di7/DyNAj0WIS5A+kqL1QExtFA4lhuYlGdouuIDmcTbhSQO9iE2xlvDJnt5qWOt9X9YA
+         JAp0VeyqBvB+SP2QGYuZhyfXztlAIzkhA/AonRyq86JTdvL/unX2h0Z3ff3cvDBGXFZ6
+         09kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hgk+y3R/+wKHwY8AHHPwfYUtuRseW4QHOS+AXJzFHJc=;
-        b=WrpLaWf1j6tfwrJ2K5fqprULtPCSF0nkQl4UI6DwgaHM9RlKPY1/2UsYn7eDKeUdfu
-         jUurw2pEumfCFkXCs6fG406Ujd981s6RP/aDQ+SkYzu5ASNTO5jbsPT4uDgJqdBehBmN
-         mwYoeqQEXm1zVcWZNo+wWT3XjRpGBbmleuh1G46m939obm74BijLlAvJoESYukzDHlNJ
-         OijMPZQ7RALQSQLIHxC+9k567AJBZsIbnfDiph7sJLhgaSK5gB2DzFDWf2q+4Qb3yN8F
-         gJVvB50LdvVqY1uecAv9l0rQS/cKEtLykjtwZkTgE+x5vfuS81oy/pgNJOHstrfqjhg2
-         CuDw==
-X-Gm-Message-State: AOAM531QiZiYaPWOPadHdNebwlQRmzWqvt55uReuR8B/xHExUcaWDeWm
-        Vomvs7yBQzz8dEy0LWrhgvDPWAbLkHhSnYqO4JA=
-X-Google-Smtp-Source: ABdhPJyRNLpKaqnV8O473Pl/YaIe0OR/eS2o+HSGUuD84MarnbDCD5StxxWczokLGXB+yMtV9I/q6Ok8wEfPj6Xqjns=
-X-Received: by 2002:a05:651c:213:: with SMTP id y19mr2089989ljn.250.1606434418814;
- Thu, 26 Nov 2020 15:46:58 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V5KYSx6aCS9NMZ6LBkhsZnID6zJfBDD/ql119aALBaU=;
+        b=hPpXbi/wkoZN1mJfhRv7M9QRi4IwnDlY88wsn9yz+7d28Vez6sBWujwF7L7LO1c3/u
+         yltCX13yJvILvMaTA+bq5iL9Xl2VHGUuBFv7FY/CfCF5EbHGPKyVtOPhhh/MCBsDsjpm
+         /QRIOUJpLvZC/ly9ATdC4g6xoPIrV//l/SZSQyI7hWFvyO+kaAwM/leIvvL7hwojvSFA
+         3baCH/1L8HaGmhsaE52xJPUX+HxW7v0WWd/YoaaWcx/F/xfBsbIHi/so3ul/hXlYqsm5
+         M5BFUs6YZWvvxPOy1tw+UAZgLtKoOBJbn/ps9Q/6I6cjpBh1riuTo3zLJCkCjj+5A6Xt
+         6pFg==
+X-Gm-Message-State: AOAM532DP6QEdupJ3+Y51r9pEfDrTQLguAuDxCDE2suLQ+tFkhQamunI
+        jDLDpGoEc+tyFND8n4SoF33j5mMUg4dznsKX
+X-Google-Smtp-Source: ABdhPJwQHLhhw/lbWnHZhXTchXr4mWbGlEEXdb85zO5MBxYo1OPRGUb20Zv9zTqCeaUqb2a7HH6svA==
+X-Received: by 2002:a50:d784:: with SMTP id w4mr4718044edi.201.1606434660535;
+        Thu, 26 Nov 2020 15:51:00 -0800 (PST)
+Received: from [192.168.0.3] (hst-221-3.medicom.bg. [84.238.221.3])
+        by smtp.googlemail.com with ESMTPSA id 91sm1638444edy.45.2020.11.26.15.50.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Nov 2020 15:50:59 -0800 (PST)
+Subject: Re: [PATCH 1/3] venus: venc: Init the session only once in
+ queue_setup
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+References: <20201120001037.10032-1-stanimir.varbanov@linaro.org>
+ <20201120001037.10032-2-stanimir.varbanov@linaro.org>
+ <CAPBb6MUU2tKUarrdPennSQ0NVnOUp+jwS3DN3Qye-wiq-aT5_Q@mail.gmail.com>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <dbd68079-6736-28bf-b9ab-dda51a07aa71@linaro.org>
+Date:   Fri, 27 Nov 2020 01:50:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201123031751.36811-1-daeho43@gmail.com> <20201123031751.36811-2-daeho43@gmail.com>
- <5b3cb83d-5d0f-c1ca-2cff-f28372dec48e@huawei.com> <CACOAw_xs0dizV_xg4-8ssC8wPRq8eXPw3QhHAFf3S-w3hp9jcg@mail.gmail.com>
- <X7/qr/kVxl3AO/PR@sol.localdomain>
-In-Reply-To: <X7/qr/kVxl3AO/PR@sol.localdomain>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Fri, 27 Nov 2020 08:46:47 +0900
-Message-ID: <CACOAw_xaJ6pfT_EDqCSaL8UnBVkktXK5N_GXuHT+xzu1ufVacg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Chao Yu <yuchao0@huawei.com>, Daeho Jeong <daehojeong@google.com>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAPBb6MUU2tKUarrdPennSQ0NVnOUp+jwS3DN3Qye-wiq-aT5_Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chao,
 
-Got it~
 
-Eric,
+On 11/25/20 5:13 AM, Alexandre Courbot wrote:
+> Hi Stan,
+> 
+> On Fri, Nov 20, 2020 at 9:12 AM Stanimir Varbanov
+> <stanimir.varbanov@linaro.org> wrote:
+>>
+>> Init the hfi session only once in queue_setup and also cover that
+>> with inst->lock.
+>>
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  drivers/media/platform/qcom/venus/venc.c | 98 ++++++++++++++++++------
+>>  1 file changed, 73 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+>> index 4ecf78e30b59..3a2e449663d8 100644
+>> --- a/drivers/media/platform/qcom/venus/venc.c
+>> +++ b/drivers/media/platform/qcom/venus/venc.c
+>> @@ -725,8 +725,10 @@ static int venc_init_session(struct venus_inst *inst)
+>>         int ret;
+>>
+>>         ret = hfi_session_init(inst, inst->fmt_cap->pixfmt);
+>> -       if (ret)
+>> -               return ret;
+>> +       if (ret == -EINVAL)
+>> +               return 0;
+> 
+> Why is it safe to ignore EINVAL here?
 
-Actually, I wanted to detour the internal readahead mechanism using
-page_cache_ra_unbounded() to generate cluster size aligned read
-requests.
-But, page_cache_async_readahead() or page_cache_sync_readahead() can
-be also good enough, since those can compensate for the misaligned
-reads reading more pages in advance.
+The confusion comes from hfi_session_init() return values. Presently
+hfi_session_init will return EINVAL when the session is already init.
+Maybe EINVAL is not fitting well with the expected behavior of the
+function. I thought about EALREADY, EBUSY but it doesn't fit well to me too.
 
-Thanks,
+> 
+>> +       else if (ret)
+>> +               goto deinit;
+>>
+>>         ret = venus_helper_set_input_resolution(inst, inst->width,
+>>                                                 inst->height);
+>> @@ -762,17 +764,13 @@ static int venc_out_num_buffers(struct venus_inst *inst, unsigned int *num)
+>>         struct hfi_buffer_requirements bufreq;
+>>         int ret;
+>>
+>> -       ret = venc_init_session(inst);
+>> +       ret = venus_helper_get_bufreq(inst, HFI_BUFFER_INPUT, &bufreq);
+>>         if (ret)
+>>                 return ret;
+>>
+>> -       ret = venus_helper_get_bufreq(inst, HFI_BUFFER_INPUT, &bufreq);
+>> -
+>>         *num = bufreq.count_actual;
+>>
+>> -       hfi_session_deinit(inst);
+>> -
+>> -       return ret;
+>> +       return 0;
+>>  }
+>>
+>>  static int venc_queue_setup(struct vb2_queue *q,
+>> @@ -781,7 +779,7 @@ static int venc_queue_setup(struct vb2_queue *q,
+>>  {
+>>         struct venus_inst *inst = vb2_get_drv_priv(q);
+>>         unsigned int num, min = 4;
+>> -       int ret = 0;
+>> +       int ret;
+>>
+>>         if (*num_planes) {
+>>                 if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE &&
+>> @@ -803,6 +801,17 @@ static int venc_queue_setup(struct vb2_queue *q,
+>>                 return 0;
+>>         }
+>>
+>> +       ret = mutex_lock_interruptible(&inst->lock);
 
-2020=EB=85=84 11=EC=9B=94 27=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 2:49, =
-Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Thu, Nov 26, 2020 at 02:04:41PM +0900, Daeho Jeong wrote:
-> > Eric,
-> >
-> > do_page_cache_ra() is defined in mm/internal.h for internal use
-> > between in mm, so we cannot use this one right now.
-> > So, I think we could use page_cache_ra_unbounded(), because we already
-> > check i_size boundary on our own.
-> > What do you think?
->
-> What about page_cache_async_readahead() or page_cache_sync_readahead()?
->
-> - Eric
+I'll keep original mutex_lock here in next version.
+
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       ret = venc_init_session(inst);
+>> +
+>> +       mutex_unlock(&inst->lock);
+>> +
+>> +       if (ret)
+>> +               return ret;
+>> +
+>>         switch (q->type) {
+>>         case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
+>>                 *num_planes = inst->fmt_out->num_planes;
+>> @@ -838,6 +847,54 @@ static int venc_queue_setup(struct vb2_queue *q,
+>>         return ret;
+>>  }
+>>
+>> +static int venc_buf_init(struct vb2_buffer *vb)
+>> +{
+>> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+>> +
+>> +       inst->buf_count++;
+>> +
+>> +       return venus_helper_vb2_buf_init(vb);
+>> +}
+>> +
+>> +static void venc_release_session(struct venus_inst *inst)
+>> +{
+>> +       int ret, abort = 0;
+>> +
+>> +       mutex_lock(&inst->lock);
+>> +
+>> +       ret = hfi_session_deinit(inst);
+>> +       abort = (ret && ret != -EINVAL) ? 1 : 0;
+> 
+> Here as well, I think a comment is warranted to explain why we can
+> ignore EINVAL.
+
+OK, will update that.
+
+> 
+>> +
+>> +       if (inst->session_error)
+>> +               abort = 1;
+>> +
+>> +       if (abort)
+>> +               hfi_session_abort(inst);
+>> +
+>> +       mutex_unlock(&inst->lock);
+>> +
+>> +       venus_pm_load_scale(inst);
+>> +       INIT_LIST_HEAD(&inst->registeredbufs);
+>> +       venus_pm_release_core(inst);
+>> +}
+>> +
+>> +static void venc_buf_cleanup(struct vb2_buffer *vb)
+>> +{
+>> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+>> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+>> +       struct venus_buffer *buf = to_venus_buffer(vbuf);
+>> +
+>> +       mutex_lock(&inst->lock);
+>> +       if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+>> +               if (!list_empty(&inst->registeredbufs))
+>> +                       list_del_init(&buf->reg_list);
+>> +       mutex_unlock(&inst->lock);
+>> +
+>> +       inst->buf_count--;
+>> +       if (!inst->buf_count)
+>> +               venc_release_session(inst);
+> 
+> We are calling venc_init_session() during the queue setup but
+> venc_release_session() when the last buffer is cleaned up. For
+> symmetry, wouldn't it make sense to call venc_init_session() when the
+> first buffer is initialized by venc_buf_init()? Otherwise we can
+
+No, the session must be initialized in queue_setup in order to return
+the number and sizes of source/destination buffers.
+
+I raised several times the need of symmetrical operation to queue_setup
+to cover reqbuf(0) but there is no progress on that. Latest suggestion
+was to use .vidioc_reqbufs ioctl op but I fall with some other issues
+and at the end I came to this counting buf_init|cleanup solution.
+
+> potentially have a scenario where the queue is set up, but no buffer
+> is ever created, leading to the session never being released.
+
+dmabuf import case?
+
+<cut>
+
+-- 
+regards,
+Stan
