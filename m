@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9801A2C5649
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B3C2C564A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390677AbgKZNnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:43:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
+        id S2390706AbgKZNnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:43:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390906AbgKZNnf (ORCPT
+        with ESMTP id S2390631AbgKZNnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:43:35 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C506C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:35 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id t4so2169261wrr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:35 -0800 (PST)
+        Thu, 26 Nov 2020 08:43:37 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F00C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:36 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id a65so2466394wme.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:43:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MzRVFp8AO2A9mZrX3brzbvLyGgDmiC5m751T9imyCRc=;
-        b=WruioXcrjaQXU228DJaADLs63/PeaAfgh5GoVhtS5sxDT1aaFya2f4AYcNpDv9u7bu
-         GE1IyxUSraaGMfjae2iGxbtoeGDlaW+aiGQz0vg8TbLIY3ULpfiO0MK4dgdeEqpWqVx1
-         yjcfF20TWnnH0cv4oDwvCg85uHtK2SGSmK1YF38tJjmq8Q3LkjcNMsQhTX/53aLKtFf5
-         m/kX+iYDcOMeyHPxWub6ueiDU0b4zprEOJhekf0gK6T4eHQe+/Vq2GekDvnMHh8QrFzI
-         xCL2JKIJXk2Yr/1uD0ZBcmLFk/2Tp0pKgKnkhHZPm825anEGjFCEYELdOff1mSgXjeKf
-         GGZA==
+        bh=BHyKENW6Yz4oTye/FJPzNNjmGfv58ayjrIYPkA+7OU0=;
+        b=ueetS8dxpG4eO8faloDa33OmDRYWKDXfGJ/MOesO0sVWIxlbnNg1acnUmuk2/IwmSf
+         ynWcfu3xKgFrRhph301W/t3OPcXaCv0WmUd0j5/ucJuRUAOZbxw9vKgw9JQWG+J73gYN
+         dzlwXWkZpqM7LOU60AzvhK5fYOoKjn8aBJ0By8qseo1RiV+Pn+RcSG8nAHQBVYeJAlE0
+         R6/K5j0Q03t+8e/0vdaMYHRUH2q4nfbUwpSJU9mS9SfRbIikwWIlUa3yc5tvBbjUPxqz
+         V0323xh/2ZuoVA0U8/JRnXY/0a0M097+5zsUWW5yfK/gEEyacVeFwDldJ8Hay3MhqIUT
+         ytSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MzRVFp8AO2A9mZrX3brzbvLyGgDmiC5m751T9imyCRc=;
-        b=jvxcUGs2RQiNhGnGwCszNoMxfs5LMNoolQaFBf1Kimez8UOaZykmIirIQeHasGIgZh
-         emiYpth9PaytqLoEMFgl372vdWnkzFRhc8xEEFB2e55F3kDTnfYRrLb5M1Tz7LRItRM7
-         u7whC4x5SkMzVVQZCxcejX6LvjC7MTE45boHvlGjEFnSYmYJuwb+9L1TPG0K0ZxWOKeW
-         AHzpFCqDsysry1ECgZfEPGSbMkcC114tiQlzHrPOb3qrYZ5pUxeRKfqbh0vgsRiwUNEc
-         b8HRevubyepAorYzUvg+ErSpyWGZ6qlkzT4CWAkUAV2XykUBDW0RhDqH0+9k2DmUImoX
-         cgBg==
-X-Gm-Message-State: AOAM530eppM7odkuS1OFeioALoi8hFL5v/meuWBSr7rFtfjOfQV5qhlu
-        Gtd3O4ekXiUr1M6URA9eGrDORA==
-X-Google-Smtp-Source: ABdhPJzgo+nf2gxrwPa2phadC7hbPLT0T+NFYc2Mw3GiAqa/kWC5egDN9CWdbIV+A6DvPgiUPY+pMg==
-X-Received: by 2002:adf:f651:: with SMTP id x17mr3881849wrp.185.1606398214358;
-        Thu, 26 Nov 2020 05:43:34 -0800 (PST)
+        bh=BHyKENW6Yz4oTye/FJPzNNjmGfv58ayjrIYPkA+7OU0=;
+        b=YSKTtxIF4uxQyyQ0CDsj08u/+WfFbfl3FJiYgQUijAantB2x6gIE8Twkv5nli7fN/p
+         +KvPSG+WYKdab5G8fJzt/z1SugFKJREw6FCMFOof/Bqu5KupqF5UP2OT/Zgxpd4k9Zx2
+         dYBSHxb3QzfniI6JdSAyWXCQ9nHNDtRidhTEDRakvVSC65NJJ6Zb2kUfW4WZVNcyyJNR
+         HWTsUIkmoL+aaUyiNwwXtz7HDhRHCy4OJdB0biCuDo5/KoSNAaRgfpfkM55exaX0BOfI
+         oT0UUv9/taKmYWvr/kEutJA5ZNsZR+mV8+dgah1w5V4TVji/oV61z926OIVY0c6YGsZC
+         WEkg==
+X-Gm-Message-State: AOAM531OOv3zjwyXFjoQv+qAf0I1egp3DkCE2Xh79qxg6fNEkXYjtlZF
+        kILHI71/57JXDy1oUp3+lbw52RlejSClDhU1
+X-Google-Smtp-Source: ABdhPJyQXsU5/AEeoFFjY7XHZxkueaCPYvuChFDxVYSEAIRAWOqSivqDUyYaPfLnYEj+pww8vgdxcg==
+X-Received: by 2002:a1c:4c02:: with SMTP id z2mr3499582wmf.139.1606398215596;
+        Thu, 26 Nov 2020 05:43:35 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.43.33
+        by smtp.gmail.com with ESMTPSA id k205sm9275738wmk.4.2020.11.26.05.43.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:43:33 -0800 (PST)
+        Thu, 26 Nov 2020 05:43:34 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 33/40] drm/amd/display/dc/inc/hw/dpp: Mark 'dpp_input_csc_matrix' as __maybe_unused
-Date:   Thu, 26 Nov 2020 13:42:33 +0000
-Message-Id: <20201126134240.3214176-34-lee.jones@linaro.org>
+Subject: [PATCH 34/40] drm/amd/display/amdgpu_dm/amdgpu_dm_helpers: Use 'gnu_printf' format notation
+Date:   Thu, 26 Nov 2020 13:42:34 +0000
+Message-Id: <20201126134240.3214176-35-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201126134240.3214176-1-lee.jones@linaro.org>
 References: <20201126134240.3214176-1-lee.jones@linaro.org>
@@ -71,14 +71,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'dpp_input_csc_matrix' is used by some, but not all source files which
-include dpp.h.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/dc/inc/hw/dpp.h:50:42: warning: ‘dpp_input_csc_matrix’ defined but not used [-Wunused-const-variable=]
-
-NB: Snipped lots of these for brevity
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_helpers.c: In function ‘dm_dtn_log_append_v’:
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_helpers.c:345:2: warning: function ‘dm_dtn_log_append_v’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
+ drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_helpers.c:375:3: warning: function ‘dm_dtn_log_append_v’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -90,22 +87,21 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/display/dc/inc/hw/dpp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/dpp.h b/drivers/gpu/drm/amd/display/dc/inc/hw/dpp.h
-index 6751186f6f904..ddbe4bb52724a 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/hw/dpp.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/hw/dpp.h
-@@ -47,7 +47,7 @@ struct dpp_input_csc_matrix {
- 	uint16_t regval[12];
- };
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+index b7d7ec3ba00d7..24a81642baa26 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+@@ -318,6 +318,7 @@ void dm_dtn_log_begin(struct dc_context *ctx,
+ 	dm_dtn_log_append_v(ctx, log_ctx, "%s", msg);
+ }
  
--static const struct dpp_input_csc_matrix dpp_input_csc_matrix[] = {
-+static const struct dpp_input_csc_matrix __maybe_unused dpp_input_csc_matrix[] = {
- 	{COLOR_SPACE_SRGB,
- 		{0x2000, 0, 0, 0, 0, 0x2000, 0, 0, 0, 0, 0x2000, 0} },
- 	{COLOR_SPACE_SRGB_LIMITED,
++__printf(3, 4)
+ void dm_dtn_log_append_v(struct dc_context *ctx,
+ 	struct dc_log_buffer_ctx *log_ctx,
+ 	const char *msg, ...)
 -- 
 2.25.1
 
