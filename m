@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270922C55A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E5E2C55A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389906AbgKZNcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:32:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+        id S2390291AbgKZNcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:32:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390276AbgKZNcL (ORCPT
+        with ESMTP id S2390277AbgKZNcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:32:11 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2794AC061A48
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:32:10 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id z7so2165365wrn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:32:10 -0800 (PST)
+        Thu, 26 Nov 2020 08:32:12 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D61C061A51
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:32:11 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id z7so2165428wrn.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:32:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OAyFBnkzLiaZhl/JnY/CqxtoMQBIM48e3o5HHcfQRSE=;
-        b=KvBj7vPRJZnSo5P9Vrpd05dp/jHgMi246Xu6fMSd4mmudD6p0ToaXtzaOArSdCtl7I
-         oNtRfXDD9BJijpm3RhSAjFAWn3uJy82DW34dQGky/LUOHTMpPEg1V3z5rY415++HISJF
-         mza8MsVES2/1YXkXRnZYGcPi7xEJq/0AtxmNoDMGoXn2E9iTkrKR1TVYqlcQVZvAw694
-         E1OSTltME0XgOt4Zv1ETxpK6+CeSl0kMWVjJRyJUEE8Tg+XXs9mrLKTRmtm0YLRkMJn0
-         DhDaAl0VgrIJ2tgvTx9eC0fvGx3TRIcrglvOo7j9jlHPI86XURijwXBDXqcT3uxkuFD5
-         eqCA==
+        bh=OcBd80NlVbn3uGSdfGXvocYKOP7aRNETXFKMl2YiPGc=;
+        b=Q8jkVen12XCoRGnL4iPurJx+25LwQnN4rkU8WQh9kxbtbsrgsycqNffe2qOGBYR+7C
+         Svfqh6UT2eGQdJXGyNyslkVr/NuOXoGtaDzSUcNQ3uptyIFnbW+fO3wzISfc1qaQsjJi
+         5vZlttAaVI5n5zE874WJack/ZatNl3cE9nZWW+B4v04noSvn3CuzseQtPkQTXoF5QSS9
+         eVRsopl+s0zomc541bDr63PewFZ8NVmVKt8HuY1l1P5/DW/m1U8JXu/MWptu1wjCpjwR
+         abJII0TpdSoGv/qiXv3CZY+vSNLU8netmmGJxdMR4phDapNWTVDvBCXciVvU75IRIFcM
+         8i8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OAyFBnkzLiaZhl/JnY/CqxtoMQBIM48e3o5HHcfQRSE=;
-        b=UITnV9POAguDIR3j6aLeHN+Sz5gIxtaRCZlX8DZPc/tqCpownXzNPn7lb9HQOvYPWI
-         brjK5ICBFns37AUyNXOY31p9xVsudcISiFQWN1v7ihkB0qGUeGz0R/ZpVQ6++tjglc6S
-         U+F5BVG7+YW+BmFqk7h/lKruGXo76l+TcNGq3DnvDCaOuALIxSZeopDRpqjeq2ZdLiDf
-         rZ03QUkXtc3DrlSdCnbdraR1/K/f4PtPxC0wqywrZ06SrhJm/wgF+p2TvBI6eK5YPWVL
-         JqJduJ3T8bFZ+LzkZJpqzQwocIstn7jCeQ6ZgVKEgu0SKJA8AQHZnkIFwOn08PaVA4F2
-         68SA==
-X-Gm-Message-State: AOAM532QnHOktOuUk5zMKNUqOtEj3VeZjkG0+oYDIq+BWJiMrrtrvAaK
-        nY6xI/pdCAvjZCUb25lvD736PA==
-X-Google-Smtp-Source: ABdhPJx4DWwdS4AQo1feaaXyk8LdNheDTjbG6QpSfvEBpKFfeL9xMvx2NQF9SO8N3aKOXvr8nvLBBw==
-X-Received: by 2002:a5d:4701:: with SMTP id y1mr3868307wrq.33.1606397528852;
-        Thu, 26 Nov 2020 05:32:08 -0800 (PST)
+        bh=OcBd80NlVbn3uGSdfGXvocYKOP7aRNETXFKMl2YiPGc=;
+        b=OPoLlLOuehAlGbWPYyK+geT+hD9HIPHs9yJjEL4N3hFJqOYmkPheRk6rIldjZGQfiu
+         o8iibjXHw0EqFALF3sFDYBkZJaCmOukIKgEhZB7PtGj+dyRcKQet5GthY4HmkiYPWWdE
+         QzNOF+pde6i9Va6x4s+SesoRPPHYQvGZz3EtAlvvO5xcn4o18XzDjsKepbkQm7ubajtR
+         0tfoq5C5J7VNZd1TKejmsBTPN6mrd62qLEPrkwikHO2rX0s93eBS7h3YkkAARTPboW8R
+         uay48H15XF3puOhVmM/lej+0JSZgQWcSK0MEx2PgYyys/EXBmVv6M6yVFZI9gfHmchcE
+         db0Q==
+X-Gm-Message-State: AOAM5308VK+D6zxbvPO3FHmiEPapHGnsWAhKrVuK3tA/V65o6b0T7w1k
+        uGrqwxxBN/val4Qw63xnnfi2tA==
+X-Google-Smtp-Source: ABdhPJwzkmAeb05I5tYzBStx7l2lOPLol3d3q+SROPVuSSvfSZQoLVYS2QldMxZ2jqVYNhsvFPWSTw==
+X-Received: by 2002:adf:fc49:: with SMTP id e9mr3872317wrs.31.1606397529940;
+        Thu, 26 Nov 2020 05:32:09 -0800 (PST)
 Received: from dell.default ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id n10sm8701001wrv.77.2020.11.26.05.32.07
+        by smtp.gmail.com with ESMTPSA id n10sm8701001wrv.77.2020.11.26.05.32.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:32:08 -0800 (PST)
+        Thu, 26 Nov 2020 05:32:09 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org, kvalo@codeaurora.org
 Cc:     linux-kernel@vger.kernel.org,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 10/17] ath9k: ar5008_phy: Demote half completed function headers
-Date:   Thu, 26 Nov 2020 13:31:45 +0000
-Message-Id: <20201126133152.3211309-11-lee.jones@linaro.org>
+Subject: [PATCH 11/17] ath: dfs_pattern_detector: Fix some function kernel-doc headers
+Date:   Thu, 26 Nov 2020 13:31:46 +0000
+Message-Id: <20201126133152.3211309-12-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201126133152.3211309-1-lee.jones@linaro.org>
 References: <20201126133152.3211309-1-lee.jones@linaro.org>
@@ -69,12 +68,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/ath/ath9k/ar5008_phy.c:119: warning: Function parameter or member 'rfBuf' not described in 'ar5008_hw_phy_modify_rx_buffer'
- drivers/net/wireless/ath/ath9k/ar5008_phy.c:119: warning: Function parameter or member 'reg32' not described in 'ar5008_hw_phy_modify_rx_buffer'
- drivers/net/wireless/ath/ath9k/ar5008_phy.c:119: warning: Function parameter or member 'numBits' not described in 'ar5008_hw_phy_modify_rx_buffer'
- drivers/net/wireless/ath/ath9k/ar5008_phy.c:119: warning: Function parameter or member 'firstBit' not described in 'ar5008_hw_phy_modify_rx_buffer'
+ drivers/net/wireless/ath/dfs_pattern_detector.c:34: warning: Function parameter or member 'region' not described in 'radar_types'
+ drivers/net/wireless/ath/dfs_pattern_detector.c:141: warning: Function parameter or member 'region' not described in 'get_dfs_domain_radar_types'
+ drivers/net/wireless/ath/dfs_pattern_detector.c:239: warning: Function parameter or member 'dpd' not described in 'channel_detector_get'
+ drivers/net/wireless/ath/dfs_pattern_detector.c:239: warning: Function parameter or member 'freq' not described in 'channel_detector_get'
 
-Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
 Cc: Kalle Valo <kvalo@codeaurora.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
@@ -82,52 +80,48 @@ Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/ath/ath9k/ar5008_phy.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ drivers/net/wireless/ath/dfs_pattern_detector.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/ar5008_phy.c b/drivers/net/wireless/ath/ath9k/ar5008_phy.c
-index 2fa30834a88db..6610d76131fa8 100644
---- a/drivers/net/wireless/ath/ath9k/ar5008_phy.c
-+++ b/drivers/net/wireless/ath/ath9k/ar5008_phy.c
-@@ -102,13 +102,8 @@ static void ar5008_write_bank6(struct ath_hw *ah, unsigned int *writecnt)
- 	REGWRITE_BUFFER_FLUSH(ah);
- }
+diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
+index 0813473793df1..80390495ea250 100644
+--- a/drivers/net/wireless/ath/dfs_pattern_detector.c
++++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
+@@ -23,7 +23,7 @@
  
--/**
-+/*
-  * ar5008_hw_phy_modify_rx_buffer() - perform analog swizzling of parameters
-- * @rfbuf:
-- * @reg32:
-- * @numBits:
-- * @firstBit:
-- * @column:
-  *
-  * Performs analog "swizzling" of parameters into their location.
-  * Used on external AR2133/AR5133 radios.
-@@ -198,10 +193,8 @@ static void ar5008_hw_force_bias(struct ath_hw *ah, u16 synth_freq)
- 	ar5008_write_bank6(ah, &reg_writes);
- }
+ /**
+  * struct radar_types - contains array of patterns defined for one DFS domain
+- * @domain: DFS regulatory domain
++ * @region: regulatory DFS region
+  * @num_radar_types: number of radar types to follow
+  * @radar_types: radar types array
+  */
+@@ -133,8 +133,9 @@ static const struct radar_types *dfs_domains[] = {
  
--/**
-+/*
-  * ar5008_hw_set_channel - tune to a channel on the external AR2133/AR5133 radios
-- * @ah: atheros hardware structure
-- * @chan:
-  *
-  * For the external AR2133/AR5133 radios, takes the MHz channel value and set
-  * the channel value. Assumes writes enabled to analog bus and bank6 register
-@@ -430,10 +423,8 @@ void ar5008_hw_cmn_spur_mitigate(struct ath_hw *ah,
- 	REG_WRITE(ah, AR_PHY_MASK2_P_61_45, tmp_mask);
- }
+ /**
+  * get_dfs_domain_radar_types() - get radar types for a given DFS domain
+- * @param domain DFS domain
+- * @return radar_types ptr on success, NULL if DFS domain is not supported
++ * @region: regulatory DFS region
++ *
++ * Return value: radar_types ptr on success, NULL if DFS domain is not supported
+  */
+ static const struct radar_types *
+ get_dfs_domain_radar_types(enum nl80211_dfs_regions region)
+@@ -227,9 +228,10 @@ channel_detector_create(struct dfs_pattern_detector *dpd, u16 freq)
  
--/**
-+/*
-  * ar5008_hw_spur_mitigate - convert baseband spur frequency for external radios
-- * @ah: atheros hardware structure
-- * @chan:
+ /**
+  * channel_detector_get() - get channel detector for given frequency
+- * @param dpd instance pointer
+- * @param freq frequency in MHz
+- * @return pointer to channel detector on success, NULL otherwise
++ * @dpd: DPD instance pointer
++ * @freq: freq frequency in MHz
++ *
++ * Return value: pointer to channel detector on success, NULL otherwise
   *
-  * For non single-chip solutions. Converts to baseband spur frequency given the
-  * input channel frequency and compute register settings below.
+  * Return existing channel detector for the given frequency or return a
+  * newly create one.
 -- 
 2.25.1
 
