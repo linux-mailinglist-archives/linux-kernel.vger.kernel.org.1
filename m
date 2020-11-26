@@ -2,507 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585B22C5B81
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A292C5B83
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404740AbgKZSEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 13:04:12 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1980 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404733AbgKZSEL (ORCPT
+        id S2404750AbgKZSEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 13:04:25 -0500
+Received: from shelob.surriel.com ([96.67.55.147]:40104 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404742AbgKZSEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 13:04:11 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbfee220000>; Thu, 26 Nov 2020 10:04:18 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
- 2020 18:04:11 +0000
-Received: from audio.nvidia.com (172.20.13.39) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 26 Nov 2020 18:04:08 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <thierry.reding@gmail.com>
-CC:     <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v6 6/6] arm64: tegra: Audio graph sound card for Jetson Nano and TX1
-Date:   Thu, 26 Nov 2020 23:33:43 +0530
-Message-ID: <1606413823-19885-7-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606413823-19885-1-git-send-email-spujar@nvidia.com>
-References: <1606413823-19885-1-git-send-email-spujar@nvidia.com>
+        Thu, 26 Nov 2020 13:04:25 -0500
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kiLcu-0003WL-9h; Thu, 26 Nov 2020 13:04:16 -0500
+Message-ID: <920c627330f3c7d295ab58edd1b62f28fdbd14bc.camel@surriel.com>
+Subject: Re: [PATCH 2/3] mm,thp,shm: limit gfp mask to no more than specified
+From:   Rik van Riel <riel@surriel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     hughd@google.com, xuyu@linux.alibaba.com,
+        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
+        willy@infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz
+Date:   Thu, 26 Nov 2020 13:04:14 -0500
+In-Reply-To: <20201126134034.GI31550@dhcp22.suse.cz>
+References: <20201124194925.623931-1-riel@surriel.com>
+         <20201124194925.623931-3-riel@surriel.com>
+         <20201126134034.GI31550@dhcp22.suse.cz>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-67VJL8SKwNL83SFfDlDI"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606413858; bh=7Xf2p7q6sLj/nHibZUjeyNnHhKjOwsiJG8GjpwoFLzg=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Type;
-        b=jxGFlSqzjYIQNlrXmUGYGR5/+mKGJbDV7+oEmrJO+G0Chv6v0Kq6rLYdwAHYTuAfJ
-         p/GT+2K6i6Z3ByA1ZBoR7e03XMKlL4nkGANgUrhxEzQcWg5yKa7ex3OKTMpOnioGla
-         BYfBzbajjPpreos3oMdwr0Hi7zMIHGQXDx5HhFO7JBv5eeKW370pI48nWL43u6Gij0
-         zQcJmNQCXWVvxSuhZi4gPcRQqY8ExSpbUArXCrSjYL9UpdinXcf7nHBhTH/o8njKEB
-         /jobKoRblbGTPmJdCOQ2NyK79qJQh12gU3EQ39FmKxypr8WbmlBjuPrGAJXO+1el58
-         yfqrgYgM3E1CA==
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable support for audio-graph based sound card on Jetson-Nano and
-Jetson-TX1. Depending on the platform, required I/O interfaces are
-enabled.
 
- * Jetson-Nano: Enable I2S3, I2S4, DMIC1 and DMIC2.
- * Jetson-TX1: Enable all I2S and DMIC interfaces.
+--=-67VJL8SKwNL83SFfDlDI
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 262 +++++++++++++++++++++
- arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 146 ++++++++++++
- 2 files changed, 408 insertions(+)
+On Thu, 2020-11-26 at 14:40 +0100, Michal Hocko wrote:
+> On Tue 24-11-20 14:49:24, Rik van Riel wrote:
+> > Matthew Wilcox pointed out that the i915 driver opportunistically
+> > allocates tmpfs memory, but will happily reclaim some of its
+> > pool if no memory is available.
+> >=20
+> > Make sure the gfp mask used to opportunistically allocate a THP
+> > is always at least as restrictive as the original gfp mask.
+>=20
+> I have brought this up in the previous version review and I feel my
+> feedback hasn't been addressed. Please describe the expected behavior
+> by
+> those shmem users including GFP_KERNEL restriction which would make
+> the
+> THP flags incompatible. Is this a problem? Is there any actual
+> problem
+> if the THP uses its own set of flags?
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-index 69102dc..747ab93 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-@@ -3,6 +3,7 @@
- 
- #include "tegra210-p2180.dtsi"
- #include "tegra210-p2597.dtsi"
-+#include "tegra210-audio-graph.dtsi"
- 
- / {
- 	model = "NVIDIA Jetson TX1 Developer Kit";
-@@ -127,4 +128,265 @@
- 			status = "okay";
- 		};
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		compatible = "nvidia,tegra210-audio-graph-card";
-+
-+		dais = /* FE */
-+		       <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
-+		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>,
-+		       <&admaif7_port>, <&admaif8_port>, <&admaif9_port>,
-+		       <&admaif10_port>,
-+		       /* Router */
-+		       <&xbar_i2s1_port>, <&xbar_i2s2_port>, <&xbar_i2s3_port>,
-+		       <&xbar_i2s4_port>, <&xbar_i2s5_port>, <&xbar_dmic1_port>,
-+		       <&xbar_dmic2_port>, <&xbar_dmic3_port>,
-+		       /* I/O DAP Ports */
-+		       <&i2s1_port>, <&i2s2_port>, <&i2s3_port>, <&i2s4_port>,
-+		       <&i2s5_port>, <&dmic1_port>, <&dmic2_port>, <&dmic3_port>;
-+
-+		label = "jetson-tx1-ape";
-+	};
-+};
-+
-+&tegra_admaif {
-+	status = "okay";
-+};
-+
-+&tegra_ahub {
-+	status = "okay";
-+
-+	ports {
-+		xbar_i2s1_port: port@a {
-+			reg = <0xa>;
-+			xbar_i2s1_ep: endpoint {
-+				remote-endpoint = <&i2s1_cif_ep>;
-+			};
-+		};
-+		xbar_i2s2_port: port@b {
-+			reg = <0xb>;
-+			xbar_i2s2_ep: endpoint {
-+				remote-endpoint = <&i2s2_cif_ep>;
-+			};
-+		};
-+		xbar_i2s3_port: port@c {
-+			reg = <0xc>;
-+			xbar_i2s3_ep: endpoint {
-+				remote-endpoint = <&i2s3_cif_ep>;
-+			};
-+		};
-+		xbar_i2s4_port: port@d {
-+			reg = <0xd>;
-+			xbar_i2s4_ep: endpoint {
-+				remote-endpoint = <&i2s4_cif_ep>;
-+			};
-+		};
-+		xbar_i2s5_port: port@e {
-+			reg = <0xe>;
-+			xbar_i2s5_ep: endpoint {
-+				remote-endpoint = <&i2s5_cif_ep>;
-+			};
-+		};
-+		xbar_dmic1_port: port@f {
-+			reg = <0xf>;
-+			xbar_dmic1_ep: endpoint {
-+				remote-endpoint = <&dmic1_cif_ep>;
-+			};
-+		};
-+		xbar_dmic2_port: port@10 {
-+			reg = <0x10>;
-+			xbar_dmic2_ep: endpoint {
-+				remote-endpoint = <&dmic2_cif_ep>;
-+			};
-+		};
-+		xbar_dmic3_port: port@11 {
-+			reg = <0x11>;
-+			xbar_dmic3_ep: endpoint {
-+				remote-endpoint = <&dmic3_cif_ep>;
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s1 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s1_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s1_ep>;
-+			};
-+		};
-+		i2s1_port: port@1 {
-+			reg = <1>;
-+			i2s1_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s2 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s2_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s2_ep>;
-+			};
-+		};
-+		i2s2_port: port@1 {
-+			reg = <1>;
-+			i2s2_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s3 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s3_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s3_ep>;
-+			};
-+		};
-+		i2s3_port: port@1 {
-+			reg = <1>;
-+			i2s3_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s4 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s4_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s4_ep>;
-+			};
-+		};
-+		i2s4_port: port@1 {
-+			reg = <1>;
-+			i2s4_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s5 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s5_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s5_ep>;
-+			};
-+		};
-+		i2s5_port: port@1 {
-+			reg = <1>;
-+			i2s5_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic1 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic1_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_dmic1_ep>;
-+			};
-+		};
-+		dmic1_port: port@1 {
-+			reg = <1>;
-+			dmic1_dap_ep: endpoint {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic2 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic2_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_dmic2_ep>;
-+			};
-+		};
-+		dmic2_port: port@1 {
-+			reg = <1>;
-+			dmic2_dap_ep: endpoint {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic3 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic3_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_dmic3_ep>;
-+			};
-+		};
-+		dmic3_port: port@1 {
-+			reg = <1>;
-+			dmic3_dap_ep: endpoint {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
- };
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-index 6a877de..0c917a1 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-@@ -6,6 +6,7 @@
- #include <dt-bindings/mfd/max77620.h>
- 
- #include "tegra210.dtsi"
-+#include "tegra210-audio-graph.dtsi"
- 
- / {
- 	model = "NVIDIA Jetson Nano Developer Kit";
-@@ -870,4 +871,149 @@
- 
- 		vin-supply = <&vdd_5v0_sys>;
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		compatible = "nvidia,tegra210-audio-graph-card";
-+
-+		dais = /* FE */
-+		       <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
-+		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>,
-+		       <&admaif7_port>, <&admaif8_port>, <&admaif9_port>,
-+		       <&admaif10_port>,
-+		       /* Router */
-+		       <&xbar_i2s3_port>, <&xbar_i2s4_port>,
-+		       <&xbar_dmic1_port>, <&xbar_dmic2_port>,
-+		       /* I/O DAP Ports */
-+		       <&i2s3_port>, <&i2s4_port>,
-+		       <&dmic1_port>, <&dmic2_port>;
-+
-+		label = "jetson-nano-ape";
-+	};
-+};
-+
-+&tegra_admaif {
-+	status = "okay";
-+};
-+
-+&tegra_ahub {
-+	status = "okay";
-+
-+	ports {
-+		xbar_i2s3_port: port@c {
-+			reg = <0xc>;
-+			xbar_i2s3_ep: endpoint {
-+				remote-endpoint = <&i2s3_cif_ep>;
-+			};
-+		};
-+		xbar_i2s4_port: port@d {
-+			reg = <0xd>;
-+			xbar_i2s4_ep: endpoint {
-+				remote-endpoint = <&i2s4_cif_ep>;
-+			};
-+		};
-+		xbar_dmic1_port: port@f {
-+			reg = <0xf>;
-+			xbar_dmic1_ep: endpoint {
-+				remote-endpoint = <&dmic1_cif_ep>;
-+			};
-+		};
-+		xbar_dmic2_port: port@10 {
-+			reg = <0x10>;
-+			xbar_dmic2_ep: endpoint {
-+				remote-endpoint = <&dmic2_cif_ep>;
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s3 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s3_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s3_ep>;
-+			};
-+		};
-+		i2s3_port: port@1 {
-+			reg = <1>;
-+			i2s3_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s4 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s4_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s4_ep>;
-+			};
-+		};
-+		i2s4_port: port@1 {
-+			reg = <1>;
-+			i2s4_dap_ep: endpoint@0 {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic1 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic1_cif_ep: endpoint@0 {
-+				remote-endpoint = <&xbar_dmic1_ep>;
-+			};
-+		};
-+		dmic1_port: port@1 {
-+			reg = <1>;
-+			dmic1_dap_ep: endpoint@0 {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic2 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic2_cif_ep: endpoint@0 {
-+				remote-endpoint = <&xbar_dmic2_ep>;
-+			};
-+		};
-+		dmic2_port: port@1 {
-+			reg = <1>;
-+			dmic2_dap_ep: endpoint@0 {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
- };
--- 
-2.7.4
+In the case of i915, the gfp flags passed in by the i915
+driver expect the VM to easily fail the allocation, in
+which case the i915 driver will reclaim some existing
+buffers and try again.
+
+Trying harder than the original gfp_mask would
+change
+the OOM behavior of systems using the i915 driver.
+
+> I am also not happy how those two sets of flags are completely
+> detached
+> and we can only expect surprises there.=20
+
+I would be more than happy to implement things differently,
+but I am not sure what alternative you are suggesting.
+
+--=20
+All Rights Reversed.
+
+--=-67VJL8SKwNL83SFfDlDI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+/7h4ACgkQznnekoTE
+3oNYDwgAgSEz682PGBHWXeILtW9myPB2wDN8OOoSivRAGnVaJpQNflUsNke/pHMK
+ONtKDDwMRqE11vzjbqZUYPFfpYeDLyizno01z2j0NzrqU4pKBBYUZb32q6Nd39eU
+nZfpUtSxVWTS/r/GiC7BVwqJF/SkVQ8io8nlWZX2Thku6jdbo28spalaDw2hqIRV
+978iyF1ljYpA20x6tZyZK5krhBecGqDHW4HDpuoo/ut8lj0IcXWQ3nFfzDLSkYIY
+hfU/Ltl3+59OYya4ghvJ9BlpiLHTon/2lPEDdbQrrjzcxai663iuwzuNwA00S4PY
+xrgK853amtt+fS4wx1brw3JZyWJXnA==
+=Eoqq
+-----END PGP SIGNATURE-----
+
+--=-67VJL8SKwNL83SFfDlDI--
 
