@@ -2,203 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53E32C566D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E19EB2C5667
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390148AbgKZNrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:47:35 -0500
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:61604 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390354AbgKZNrf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:47:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1606398454; x=1637934454;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=fyAnVHSM7DUGAUg/UQTCA37wZ5eyuf7HfQz0TTccKaA=;
-  b=nFc2aNQOhGa8p77FBo0X3QwCL2C+7jixou3Ag1n7OdQmebRr2CvNjCNY
-   I5BruyZHh6rnAYmjNBviXiXGrvOs+Di2uyl7iemJLm7YsnsKNKK5/DO1/
-   ttX+IYOlnQ4WEGnQpRe6xQPQXIa/vhItJupLrwEjD12+ynr21sVzt1M0I
-   s=;
-X-IronPort-AV: E=Sophos;i="5.78,372,1599523200"; 
-   d="scan'208";a="91197811"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 26 Nov 2020 13:46:15 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (Postfix) with ESMTPS id 8C108A1F84;
-        Thu, 26 Nov 2020 13:46:12 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 26 Nov 2020 13:45:55 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     SeongJae Park <sjpark@amazon.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        <Jonathan.Cameron@huawei.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Qian Cai <cai@lca.pw>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "David Hildenbrand" <david@redhat.com>, <dwmw@amazon.com>,
-        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
-        <foersleo@amazon.de>, "Greg Thelen" <gthelen@google.com>,
-        Ian Rogers <irogers@google.com>, <jolsa@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        id S2391096AbgKZNqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:46:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:33426 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390637AbgKZNqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 08:46:39 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CFB931B;
+        Thu, 26 Nov 2020 05:46:38 -0800 (PST)
+Received: from [10.57.53.242] (unknown [10.57.53.242])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4B1A3F71F;
+        Thu, 26 Nov 2020 05:46:36 -0800 (PST)
+Subject: Re: [PATCH v5 01/12] perf tools: Improve topology test
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     linux-perf-users <linux-perf-users@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, <namhyung@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        David Rientjes <rientjes@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Rapoport <rppt@kernel.org>, <sblbir@amazon.com>,
-        Shuah Khan <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, Vlastimil Babka <vbabka@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Huang Ying <ying.huang@intel.com>, <zgf574564920@gmail.com>,
-        <linux-damon@amazon.com>, Linux MM <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v22 10/18] mm/damon: Implement a debugfs-based user space interface
-Date:   Thu, 26 Nov 2020 14:45:39 +0100
-Message-ID: <20201126134539.5974-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CALvZod6md-OQD6ZKYtPjOgC5TvhDb0X0fBewA9dZAwhmwQw4=w@mail.gmail.com>
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>
+References: <20201117144845.13714-1-james.clark@arm.com>
+ <20201117144845.13714-2-james.clark@arm.com>
+ <CAM9d7cj6zbsVB_DNmH0R9XqVJfXe9bofMwreH+u-BaDL-xm2_A@mail.gmail.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <d1742147-eebd-a03d-6f09-174448e0d02d@arm.com>
+Date:   Thu, 26 Nov 2020 15:46:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.237]
-X-ClientProxiedBy: EX13D42UWA001.ant.amazon.com (10.43.160.153) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+In-Reply-To: <CAM9d7cj6zbsVB_DNmH0R9XqVJfXe9bofMwreH+u-BaDL-xm2_A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 07:30:36 -0800 Shakeel Butt <shakeelb@google.com> wrote:
 
-> On Tue, Oct 20, 2020 at 2:06 AM SeongJae Park <sjpark@amazon.com> wrote:
-> >
-> > From: SeongJae Park <sjpark@amazon.de>
-> >
-> > DAMON is designed to be used by kernel space code such as the memory
-> > management subsystems, and therefore it provides only kernel space API.
-> > That said, letting the user space control DAMON could provide some
-> > benefits to them.  For example, it will allow user space to analyze
-> > their specific workloads and make their own special optimizations.
-> >
-> > For such cases, this commit implements a simple DAMON application kernel
-> > module, namely 'damon-dbgfs', which merely wraps the DAMON api and
-> > exports those to the user space via the debugfs.
-> >
-> > 'damon-dbgfs' exports three files, ``attrs``, ``target_ids``, and
-> > ``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
-> >>
-[...]
-> > +/**
-> > + * damon_nr_running_ctxs() - Return number of currently running contexts.
-> > + */
-> > +int damon_nr_running_ctxs(void)
-> > +{
-> > +       int nr_ctxs;
-> > +
-> > +       mutex_lock(&damon_lock);
-> > +       nr_ctxs = nr_running_ctxs;
-> > +       mutex_unlock(&damon_lock);
-> > +
+
+On 18/11/2020 13:21, Namhyung Kim wrote:
+> Hello,
 > 
-> READ_ONCE() instead of mutex?
+> On Tue, Nov 17, 2020 at 11:49 PM James Clark <james.clark@arm.com> wrote:
+>>
+>> Improve the topology test to check all aggregation
+>> types. This is to lock down the behaviour before
+>> 'id' is changed into a struct in later commits.
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>> Cc: Jiri Olsa <jolsa@redhat.com>
+>> Cc: Namhyung Kim <namhyung@kernel.org>
+>> Cc: Thomas Richter <tmricht@linux.ibm.com>
+>> Cc: John Garry <john.garry@huawei.com>
+>> ---
+>>  tools/perf/tests/topology.c | 53 ++++++++++++++++++++++++++++++++-----
+>>  1 file changed, 46 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
+>> index 22daf2bdf5fa..7bd8848d36b6 100644
+>> --- a/tools/perf/tests/topology.c
+>> +++ b/tools/perf/tests/topology.c
+>> @@ -64,10 +64,11 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>>                 .path = path,
+>>                 .mode = PERF_DATA_MODE_READ,
+>>         };
+>> -       int i;
+>> +       int i, id;
+>>
+>>         session = perf_session__new(&data, false, NULL);
+>>         TEST_ASSERT_VAL("can't get session", !IS_ERR(session));
+>> +       cpu__setup_cpunode_map();
+>>
+>>         /* On platforms with large numbers of CPUs process_cpu_topology()
+>>          * might issue an error while reading the perf.data file section
+>> @@ -85,11 +86,18 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>>          *  "socket_id number is too big. You may need to upgrade the
+>>          *  perf tool."
+>>          *
+>> -        *  This is the reason why this test might be skipped.
+>> +        *  This is the reason why this test might be skipped. aarch64 and
+>> +        *  s390 always write this part of the header, even when the above
+>> +        *  condition is true (see do_core_id_test in header.c). So always
+>> +        *  run this test on those platforms.
+>>          */
+>> -       if (!session->header.env.cpu)
+>> +       if (!session->header.env.cpu
+>> +                       && strncmp(session->header.env.arch, "s390", 4)
+>> +                       && strncmp(session->header.env.arch, "aarch64", 7))
+>>                 return TEST_SKIP;
+>>
+>> +       TEST_ASSERT_VAL("Session header CPU map not set", session->header.env.cpu);
+>> +
+>>         for (i = 0; i < session->header.env.nr_cpus_avail; i++) {
+>>                 if (!cpu_map__has(map, i))
+>>                         continue;
+>> @@ -98,14 +106,45 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>>                          session->header.env.cpu[i].socket_id);
+>>         }
+>>
+>> +       // Test that core ID contains socket, die and core
+>> +       for (i = 0; i < map->nr; i++) {
+>> +               id = cpu_map__get_core(map, i, NULL);
+>> +               TEST_ASSERT_VAL("Core map - Core ID doesn't match",
+>> +                       session->header.env.cpu[map->map[i]].core_id == cpu_map__id_to_cpu(id));
+>> +
+>> +               TEST_ASSERT_VAL("Core map - Socket ID doesn't match",
+>> +                       session->header.env.cpu[map->map[i]].socket_id ==
+>> +                               cpu_map__id_to_socket(id));
+>> +
+>> +               TEST_ASSERT_VAL("Core map - Die ID doesn't match",
+>> +                       session->header.env.cpu[map->map[i]].die_id == cpu_map__id_to_die(id));
+>> +       }
+>> +
+>> +       // Test that die ID contains socket and die
+>>         for (i = 0; i < map->nr; i++) {
+>> -               TEST_ASSERT_VAL("Core ID doesn't match",
+>> -                       (session->header.env.cpu[map->map[i]].core_id == (cpu_map__get_core(map, i, NULL) & 0xffff)));
+>> +               id = cpu_map__get_die(map, i, NULL);
+>> +               TEST_ASSERT_VAL("Die map - Socket ID doesn't match",
+>> +                       session->header.env.cpu[map->map[i]].socket_id ==
+>> +                               cpu_map__id_to_socket(id));
+> 
+> I'm not sure it works.  It seems cpu_map__get_die() returns
+> 16 bit id (socket | die) but cpu_map__id_to_socket() takes
+> 32 bit id (socket | die | core), right?
 
-Right, it would be ok and even make the code slightly faster.  But, if you're
-ok, I'd like to keep this as is because this helps reader easily find what
-variables are protected by the mutex and this is not performance critical.
+Hi Namhyung,
+
+Yes you are right. I assumed the cpu_map__id_to_...() etc functions applied in all cases. Actually
+they only work in the per core aggregation mode. In stat-display.c the id is shifted when in die
+mode to account for this:
+
+  	case AGGR_DIE:
+		fprintf(config->output, "S%d-D%*d%s%*d%s",
+			cpu_map__id_to_socket(id << 16),
+			config->csv_output ? 0 : -8,
+			cpu_map__id_to_die(id << 16),
+
+I've updated the test to match this in patchset v6. When running the test on a multi socket machine it did fail,
+but now it passes. The reason I didn't see the issue is because I only tested the last patchset in the
+series which doesn't have this issue.
+
+
+Thanks
+James
 
 > 
-> > +       return nr_ctxs;
-> > +}
-> > +
-[...]
-> > +
-> > +static ssize_t dbgfs_target_ids_write(struct file *file,
-> > +               const char __user *buf, size_t count, loff_t *ppos)
-> > +{
-> > +       struct damon_ctx *ctx = file->private_data;
-> > +       char *kbuf, *nrs;
-> > +       bool received_pidfds = false;
-> > +       unsigned long *targets;
-> > +       ssize_t nr_targets;
-> > +       ssize_t ret = count;
-> > +       int i;
-> > +       int err;
-> > +
-> > +       kbuf = user_input_str(buf, count, ppos);
-> > +       if (IS_ERR(kbuf))
-> > +               return PTR_ERR(kbuf);
-> > +
-> > +       nrs = kbuf;
-> > +
-> > +       if (!strncmp(kbuf, "pidfd ", 6)) {
-> > +               received_pidfds = true;
+>>
+>> -               TEST_ASSERT_VAL("Socket ID doesn't match",
+>> -                       (session->header.env.cpu[map->map[i]].socket_id == cpu_map__get_socket(map, i, NULL)));
+>> +               TEST_ASSERT_VAL("Die map - Die ID doesn't match",
+>> +                       session->header.env.cpu[map->map[i]].die_id == cpu_map__id_to_die(id));
+>>         }
+>>
+>> +       // Test that socket ID contains only socket
+>> +       for (i = 0; i < map->nr; i++) {
+>> +               id = cpu_map__get_socket(map, i, NULL);
+>> +               TEST_ASSERT_VAL("Socket map - Socket ID doesn't match",
+>> +                       session->header.env.cpu[map->map[i]].socket_id ==
+>> +                               cpu_map__id_to_socket(id));
 > 
-> I am inclining towards having simple pids instead of pidfds. Basically
-> what cgroup/resctrl does.
-
-Ok, I will drop the pidfd support for simplicity.  Restoring it back when real
-requirement comes out would not be too late.
-
+> Same here.
+> 
+> Thanks,
+> Namhyung
 > 
 > 
-> > +               nrs = &kbuf[6];
-> > +       }
-> > +
-> > +       targets = str_to_target_ids(nrs, ret, &nr_targets);
-> > +       if (!targets) {
-> > +               ret = -ENOMEM;
-> > +               goto out;
-> > +       }
-> > +
-> > +       if (received_pidfds) {
-> > +               for (i = 0; i < nr_targets; i++)
-> > +                       targets[i] = (unsigned long)damon_get_pidfd_pid(
-> > +                                       (unsigned int)targets[i]);
-> > +       } else if (targetid_is_pid(ctx)) {
-> > +               for (i = 0; i < nr_targets; i++)
-> > +                       targets[i] = (unsigned long)find_get_pid(
-> > +                                       (int)targets[i]);
-> > +       }
-> > +
-> > +       mutex_lock(&ctx->kdamond_lock);
-> > +       if (ctx->kdamond) {
-> > +               ret = -EINVAL;
-> > +               goto unlock_out;
-> > +       }
-> > +
-> > +       err = damon_set_targets(ctx, targets, nr_targets);
-> 
-> Hmm this is leaking the references to the previous targets.
-
-'damon_set_targets()' frees the previous targets itself, so we don't leak.
-
-> 
-> > +       if (err)
-> > +               ret = err;
-> > +unlock_out:
-> > +       mutex_unlock(&ctx->kdamond_lock);
-> > +       kfree(targets);
-> > +out:
-> > +       kfree(kbuf);
-> > +       return ret;
-> > +}
-> > +
-> 
-> Still looking.
-
-Looking forward your comments!
-
-
-Thanks,
-SeongJae Park
+>> +       }
+>> +
+>> +       // Test that node ID contains only node
+>> +       for (i = 0; i < map->nr; i++) {
+>> +               id = cpu_map__get_node(map, i, NULL);
+>> +               TEST_ASSERT_VAL("Node map - Node ID doesn't match",
+>> +                       cpu__get_node(map->map[i]) == id);
+>> +       }
+>>         perf_session__delete(session);
+>>
+>>         return 0;
+>> --
+>> 2.28.0
+>>
