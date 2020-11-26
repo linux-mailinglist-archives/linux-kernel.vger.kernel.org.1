@@ -2,178 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C3F2C554E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5542C5562
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390031AbgKZN2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:28:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
+        id S2390136AbgKZNb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:31:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389807AbgKZN2q (ORCPT
+        with ESMTP id S2390034AbgKZNb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:28:46 -0500
+        Thu, 26 Nov 2020 08:31:58 -0500
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E813C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:28:44 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id 23so2142345wrc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:28:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97554C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:31:57 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id p8so2156701wrx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:31:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=j3jIfABHebgIQYyFTFzGmbyYJsJoQbpfkOYYN2ZM7fo=;
-        b=ZV/eZfIM43W03jQJiomsNpvL3M8Xh3ZEDa9SgEFel/1eJgOCQRYNDwnjNphuFPVUe6
-         Cu75OlfOHnbtg1VPxD16IwF+kqVWISdtQr7/IRrg6HPxJ0zR4hdIqTXJ63SLaRyc7gGJ
-         zACoRj3zLKrxWyfpMeOSgLIBTqTCAPyEYD0b9BecjSqrb1LSdSnmRS95P2/X6snZKlbB
-         b4PBHCSLFZ4AYJb0pnowd2rpv5vbOjVFQf91wUnS50wMFC/mIaOrlyA1xLHJ6Erkk2NO
-         Gl55jhGewJFv/NI3Oq0nu6iCPtl2Nk8qqGFykzALj/kWMqnZ3B/aF0coK2WgRBgJwa0h
-         5nfg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FjyZA9I7yFOBEtCbfXIU5SHh6pLoJjT44roAa80KCLE=;
+        b=kui+NaCLN8lc8tkXHcRKVcWIXN1GenHm8MR/KyQxUoqmwBQASP6Wzz4F+S98Gbww6S
+         uMkaVbYtvpQhdcfRATgZj3RtNAV1dF3sN5HKSbW4D6F/DCOQ6f35lr/WVFT1BL3JRiLl
+         TjIqW/pcucuIAO4/d6VaM7dpUfbdGrKOvJfYAVhwKxizQ6P57pWbpGdLcQIf1ZG3V9QB
+         TpbMc5QtXYKmej4JoRVX73e696RaoK0BV+Ne+LBq5koGtg1nsWNHhbOdoiE6aoCc4IjZ
+         iNSQsZD71qbJCXSwno6zDHNoPpP73ZMZa7CxfuTxIYIrtQ1FKq75+uWCl7O0KcpVOZg8
+         JSUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=j3jIfABHebgIQYyFTFzGmbyYJsJoQbpfkOYYN2ZM7fo=;
-        b=tE7jR/IRGireMYrrvddg+Q0AcE6IDLZ9zOgk3UztN2Y9W/CDQ2aFtQkqpzOP3AeUtO
-         Jk21aMQQROYI4aj3VkEBXfKyqpfi70YebGsU2UdG6nAXS44dAnVy9VCBITeDheTvQxuY
-         YC1TmbAcwQU1mg2o94JPcojYP80ABj00AdS7x0unR+XoglMgRzWsL6vPuzQW+hUk/0e3
-         7q67rrwLpye/kgdo/DKJGCkaXcdodACvrnmuzTuceprhBrqp/+F2GxzrMAuXPUE4XYtW
-         buOm+w47IwcbzPyAbPkbtpCjc+IJVBeK/0ujLik+kfAGN0vvRxGkFLi4uXQ1kaIDxpyA
-         J1VA==
-X-Gm-Message-State: AOAM5324nGQbOJBJVxTAKYms5vRuhrzgml8niCRujPnqv0YYrtVMmZFN
-        /p8X9QdkR2pLQQ5ePfmiL+fnhQ==
-X-Google-Smtp-Source: ABdhPJxjSIJGgNUpcnxPjjDIW+t5f0FHzaGLdtLotQpqb9VBHJar1Tt99YBGNFo23H7IPjUPjwYxMQ==
-X-Received: by 2002:adf:fd06:: with SMTP id e6mr3897159wrr.206.1606397323119;
-        Thu, 26 Nov 2020 05:28:43 -0800 (PST)
-Received: from dell ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id b18sm9316605wrt.54.2020.11.26.05.28.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FjyZA9I7yFOBEtCbfXIU5SHh6pLoJjT44roAa80KCLE=;
+        b=dqpDtNeY17No0BSjFYUsye+59HcDEbspBlmha6t6A0zxsjMRq2h4DxSuxKYb9bIEvA
+         GWDIF5Lpv1dLjc6EQvBUCUBfN56AFKiELE/7rcWl5Y169mth4vaTz4pO6phM3e3G+eeJ
+         9kcQI1X1KCVj0GmTx9tFoyL8gWhSepwe+PbmR365yOZYfU8cuXXl65nm9bbFr13fQHWm
+         mBXsVquPGXJavZYxFG+hOVS7/bRUhaXYIWmgxQhA43Quw7YDPfPfLkVciop8WwXGm9MT
+         6JaLFBmfAjJ5x9AEBAiXAofIjagosKvdwSaIl1OZYmqpFqqqU1BH1Zgd4hK+sY6eZUVd
+         WY+A==
+X-Gm-Message-State: AOAM530oEw5Qj0+KcVcefofSyy9j53KZBOcJed2SJEvMtcPG6Vy0zebz
+        6YPUieQx6CZZ1iVzb0UsEsb4lqKZui5d4QOS
+X-Google-Smtp-Source: ABdhPJy+4ikTycM8ES5sSh18sX7zJcCpn462tjHqy3xH4ycrddEim8OyKqRzwP/kujYArGxZN2fefQ==
+X-Received: by 2002:adf:a3ca:: with SMTP id m10mr3936515wrb.228.1606397516281;
+        Thu, 26 Nov 2020 05:31:56 -0800 (PST)
+Received: from dell.default ([91.110.221.235])
+        by smtp.gmail.com with ESMTPSA id n10sm8701001wrv.77.2020.11.26.05.31.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 05:28:42 -0800 (PST)
-Date:   Thu, 26 Nov 2020 13:28:40 +0000
+        Thu, 26 Nov 2020 05:31:55 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
-To:     linus.walleij@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: [PATCH v3 16/25] arch: arm: mach-at91: pm: Move prototypes to
- mutually included header
-Message-ID: <20201126132840.GD2455276@dell>
-References: <20200713144930.1034632-1-lee.jones@linaro.org>
- <20200713144930.1034632-17-lee.jones@linaro.org>
- <20201112093918.GV2063125@dell>
+To:     lee.jones@linaro.org, kvalo@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-wireless@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Maya Erez <merez@codeaurora.org>, netdev@vger.kernel.org,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        Shahar S Matityahu <shahar.s.matityahu@intel.com>,
+        wil6210@qti.qualcomm.com, Yan-Hsuan Chuang <yhchuang@realtek.com>
+Subject: [PATCH v2 00/17] [Set 4] Rid W=1 warnings in Wireless
+Date:   Thu, 26 Nov 2020 13:31:35 +0000
+Message-Id: <20201126133152.3211309-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201112093918.GV2063125@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both the caller and the supplier's source file should have access to
-the include file containing the prototypes.
+[Last batch!]
 
-Fixes the following W=1 kernel build warning(s):
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
- drivers/pinctrl/pinctrl-at91.c:1637:6: warning: no previous prototype for ‘at91_pinctrl_gpio_suspend’ [-Wmissing-prototypes]
- 1637 | void at91_pinctrl_gpio_suspend(void)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/pinctrl/pinctrl-at91.c:1661:6: warning: no previous prototype for ‘at91_pinctrl_gpio_resume’ [-Wmissing-prototypes]
- 1661 | void at91_pinctrl_gpio_resume(void)
- | ^~~~~~~~~~~~~~~~~~~~~~~~
+v2:
+ - Unify rtw_pci_(probe,remove,shutdown}() prototypses
+   - Suggested-by: Brian Norris
 
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- arch/arm/mach-at91/pm.c        | 19 ++++++++-----------
- drivers/pinctrl/pinctrl-at91.c |  2 ++
- include/soc/at91/pm.h          | 16 ++++++++++++++++
- 3 files changed, 26 insertions(+), 11 deletions(-)
- create mode 100644 include/soc/at91/pm.h
+Lee Jones (17):
+  wil6210: wmi: Correct misnamed function parameter 'ptr_'
+  iwlwifi: mvm: rs: Demote non-conformant function documentation headers
+  ath9k: ar9330_1p1_initvals: Remove unused const variable
+    'ar9331_common_tx_gain_offset1_1'
+  ath9k: ar9340_initvals: Remove unused const variable
+    'ar9340Modes_ub124_tx_gain_table_1p0'
+  ath9k: ar9485_initvals: Remove unused const variable
+    'ar9485_fast_clock_1_1_baseband_postamble'
+  ath9k: ar9003_2p2_initvals: Remove unused const variables
+  iwlwifi: iwl-eeprom-read: Demote one nonconformant function header
+  iwlwifi: iwl-eeprom-parse: Fix 'struct iwl_eeprom_enhanced_txpwr's
+    header
+  ath: regd: Provide description for ath_reg_apply_ir_flags's 'reg'
+    param
+  ath9k: ar5008_phy: Demote half completed function headers
+  ath: dfs_pattern_detector: Fix some function kernel-doc headers
+  ath: dfs_pri_detector: Demote zero/half completed kernel-doc headers
+  iwlwifi: iwl-phy-db: Add missing struct member description for 'trans'
+  iwlwifi: fw: dbg: Fix misspelling of 'reg_data' in function header
+  ath9k: dynack: Demote non-compliant function header
+  iwlwifi: fw: acpi: Demote non-conformant function headers
+  realtek: rtw88: pci: Add prototypes for .probe, .remove and .shutdown
 
-diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-index 120f9aa6fff32..90dcdfe3b3d0d 100644
---- a/arch/arm/mach-at91/pm.c
-+++ b/arch/arm/mach-at91/pm.c
-@@ -17,6 +17,8 @@
- #include <linux/clk/at91_pmc.h>
- #include <linux/platform_data/atmel.h>
- 
-+#include <soc/at91/pm.h>
-+
- #include <asm/cacheflush.h>
- #include <asm/fncpy.h>
- #include <asm/system_misc.h>
-@@ -25,17 +27,6 @@
- #include "generic.h"
- #include "pm.h"
- 
--/*
-- * FIXME: this is needed to communicate between the pinctrl driver and
-- * the PM implementation in the machine. Possibly part of the PM
-- * implementation should be moved down into the pinctrl driver and get
-- * called as part of the generic suspend/resume path.
-- */
--#ifdef CONFIG_PINCTRL_AT91
--extern void at91_pinctrl_gpio_suspend(void);
--extern void at91_pinctrl_gpio_resume(void);
--#endif
--
- struct at91_soc_pm {
- 	int (*config_shdwc_ws)(void __iomem *shdwc, u32 *mode, u32 *polarity);
- 	int (*config_pmc_ws)(void __iomem *pmc, u32 mode, u32 polarity);
-@@ -326,6 +317,12 @@ static void at91_pm_suspend(suspend_state_t state)
- static int at91_pm_enter(suspend_state_t state)
- {
- #ifdef CONFIG_PINCTRL_AT91
-+	/*
-+	 * FIXME: this is needed to communicate between the pinctrl driver and
-+	 * the PM implementation in the machine. Possibly part of the PM
-+	 * implementation should be moved down into the pinctrl driver and get
-+	 * called as part of the generic suspend/resume path.
-+	 */
- 	at91_pinctrl_gpio_suspend();
- #endif
- 
-diff --git a/drivers/pinctrl/pinctrl-at91.c b/drivers/pinctrl/pinctrl-at91.c
-index 72edc675431ce..0a7e10d39505c 100644
---- a/drivers/pinctrl/pinctrl-at91.c
-+++ b/drivers/pinctrl/pinctrl-at91.c
-@@ -23,6 +23,8 @@
- /* Since we request GPIOs from ourself */
- #include <linux/pinctrl/consumer.h>
- 
-+#include <soc/at91/pm.h>
-+
- #include "pinctrl-at91.h"
- #include "core.h"
- 
-diff --git a/include/soc/at91/pm.h b/include/soc/at91/pm.h
-new file mode 100644
-index 0000000000000..7a41e53a3ffa3
---- /dev/null
-+++ b/include/soc/at91/pm.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Atmel Power Management
-+ *
-+ * Copyright (C) 2020 Atmel
-+ *
-+ * Author: Lee Jones <lee.jones@linaro.org>
-+ */
-+
-+#ifndef __SOC_ATMEL_PM_H
-+#define __SOC_ATMEL_PM_H
-+
-+void at91_pinctrl_gpio_suspend(void);
-+void at91_pinctrl_gpio_resume(void);
-+
-+#endif /* __SOC_ATMEL_PM_H */
+ drivers/net/wireless/ath/ath9k/ar5008_phy.c   |  15 +--
+ .../wireless/ath/ath9k/ar9003_2p2_initvals.h  |  14 ---
+ .../wireless/ath/ath9k/ar9330_1p1_initvals.h  |   7 --
+ .../net/wireless/ath/ath9k/ar9340_initvals.h  | 101 ------------------
+ .../net/wireless/ath/ath9k/ar9485_initvals.h  |   7 --
+ drivers/net/wireless/ath/ath9k/dynack.c       |   3 +-
+ .../net/wireless/ath/dfs_pattern_detector.c   |  14 +--
+ drivers/net/wireless/ath/dfs_pri_detector.c   |   9 +-
+ drivers/net/wireless/ath/regd.c               |   1 +
+ drivers/net/wireless/ath/wil6210/wmi.c        |   2 +-
+ drivers/net/wireless/intel/iwlwifi/fw/acpi.c  |  12 +--
+ drivers/net/wireless/intel/iwlwifi/fw/dbg.c   |   2 +-
+ .../wireless/intel/iwlwifi/iwl-eeprom-parse.c |  12 +--
+ .../wireless/intel/iwlwifi/iwl-eeprom-read.c  |   2 +-
+ .../net/wireless/intel/iwlwifi/iwl-phy-db.c   |   2 +-
+ drivers/net/wireless/intel/iwlwifi/mvm/rs.c   |  10 +-
+ drivers/net/wireless/realtek/rtw88/pci.h      |   8 ++
+ .../net/wireless/realtek/rtw88/rtw8723de.c    |   1 +
+ .../net/wireless/realtek/rtw88/rtw8723de.h    |   4 -
+ .../net/wireless/realtek/rtw88/rtw8821ce.c    |   1 +
+ .../net/wireless/realtek/rtw88/rtw8821ce.h    |   4 -
+ .../net/wireless/realtek/rtw88/rtw8822be.c    |   1 +
+ .../net/wireless/realtek/rtw88/rtw8822be.h    |   4 -
+ .../net/wireless/realtek/rtw88/rtw8822ce.c    |   1 +
+ .../net/wireless/realtek/rtw88/rtw8822ce.h    |   4 -
+ 25 files changed, 50 insertions(+), 191 deletions(-)
+
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Cc: Intel Linux Wireless <linuxwifi@intel.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org
+Cc: Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
+Cc: Luca Coelho <luciano.coelho@intel.com>
+Cc: Maya Erez <merez@codeaurora.org>
+Cc: netdev@vger.kernel.org
+Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+Cc: Shahar S Matityahu <shahar.s.matityahu@intel.com>
+Cc: wil6210@qti.qualcomm.com
+Cc: Yan-Hsuan Chuang <yhchuang@realtek.com>
 -- 
 2.25.1
+
