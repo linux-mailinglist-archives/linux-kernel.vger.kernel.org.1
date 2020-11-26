@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA642C59C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 338592C59C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404050AbgKZRBK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Nov 2020 12:01:10 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:30619 "EHLO
+        id S2391465AbgKZRBR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Nov 2020 12:01:17 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:48444 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2403995AbgKZRBJ (ORCPT
+        by vger.kernel.org with ESMTP id S2403995AbgKZRBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:01:09 -0500
+        Thu, 26 Nov 2020 12:01:17 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-381-jeSIGMKFNKi3DbvkwCxjuw-1; Thu, 26 Nov 2020 12:01:04 -0500
-X-MC-Unique: jeSIGMKFNKi3DbvkwCxjuw-1
+ us-mta-420-frgBxfloPauFbIvfB3AHMw-1; Thu, 26 Nov 2020 12:01:09 -0500
+X-MC-Unique: frgBxfloPauFbIvfB3AHMw-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A683680EDAC;
-        Thu, 26 Nov 2020 17:01:02 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E2AA190D342;
+        Thu, 26 Nov 2020 17:01:07 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9977260C05;
-        Thu, 26 Nov 2020 17:00:59 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 03BA860BFA;
+        Thu, 26 Nov 2020 17:01:02 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -39,9 +39,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 07/25] perf tools: Add build_id__is_defined function
-Date:   Thu, 26 Nov 2020 18:00:08 +0100
-Message-Id: <20201126170026.2619053-8-jolsa@kernel.org>
+Subject: [PATCH 08/25] perf tools: Add filename__decompress function
+Date:   Thu, 26 Nov 2020 18:00:09 +0100
+Message-Id: <20201126170026.2619053-9-jolsa@kernel.org>
 In-Reply-To: <20201126170026.2619053-1-jolsa@kernel.org>
 References: <20201126170026.2619053-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -56,48 +56,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding build_id__is_defined helper to check build id
-is defined and is != zero build id.
+Factor filename__decompress from decompress_kmodule function.
+It can decompress files with compressions supported in perf -
+xz and gz, the support needs to be compiled in.
+
+It will to be used in following changes to get build id out of
+compressed elf objects.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/build-id.c | 6 ++++++
- tools/perf/util/build-id.h | 1 +
- 2 files changed, 7 insertions(+)
+ tools/perf/util/dso.c | 31 +++++++++++++++++++------------
+ tools/perf/util/dso.h |  2 ++
+ 2 files changed, 21 insertions(+), 12 deletions(-)
 
-diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-index 6b410c3d52dc..2aacc8b29f7e 100644
---- a/tools/perf/util/build-id.c
-+++ b/tools/perf/util/build-id.c
-@@ -37,6 +37,7 @@
- 
- #include <linux/ctype.h>
- #include <linux/zalloc.h>
-+#include <linux/string.h>
- #include <asm/bug.h>
- 
- static bool no_buildid_cache;
-@@ -912,3 +913,8 @@ void build_id__init(struct build_id *bid, const u8 *data, size_t size)
- 	memcpy(bid->data, data, size);
- 	bid->size = size;
+diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
+index 89b5fd2b5de3..d786cf6b0cfa 100644
+--- a/tools/perf/util/dso.c
++++ b/tools/perf/util/dso.c
+@@ -279,18 +279,12 @@ bool dso__needs_decompress(struct dso *dso)
+ 		dso->symtab_type == DSO_BINARY_TYPE__GUEST_KMODULE_COMP;
  }
-+
-+bool build_id__is_defined(const struct build_id *bid)
-+{
-+	return bid && bid->size ? !!memchr_inv(bid->data, 0, bid->size) : false;
-+}
-diff --git a/tools/perf/util/build-id.h b/tools/perf/util/build-id.h
-index f293f99d5dba..d53415feaf69 100644
---- a/tools/perf/util/build-id.h
-+++ b/tools/perf/util/build-id.h
-@@ -21,6 +21,7 @@ struct feat_fd;
  
- void build_id__init(struct build_id *bid, const u8 *data, size_t size);
- int build_id__sprintf(const struct build_id *build_id, char *bf);
-+bool build_id__is_defined(const struct build_id *bid);
- int sysfs__sprintf_build_id(const char *root_dir, char *sbuild_id);
- int filename__sprintf_build_id(const char *pathname, char *sbuild_id);
- char *build_id_cache__kallsyms_path(const char *sbuild_id, char *bf,
+-static int decompress_kmodule(struct dso *dso, const char *name,
+-			      char *pathname, size_t len)
++int filename__decompress(const char *name, char *pathname,
++			 size_t len, int comp, int *err)
+ {
+ 	char tmpbuf[] = KMOD_DECOMP_NAME;
+ 	int fd = -1;
+ 
+-	if (!dso__needs_decompress(dso))
+-		return -1;
+-
+-	if (dso->comp == COMP_ID__NONE)
+-		return -1;
+-
+ 	/*
+ 	 * We have proper compression id for DSO and yet the file
+ 	 * behind the 'name' can still be plain uncompressed object.
+@@ -304,17 +298,17 @@ static int decompress_kmodule(struct dso *dso, const char *name,
+ 	 * To keep this transparent, we detect this and return the file
+ 	 * descriptor to the uncompressed file.
+ 	 */
+-	if (!compressions[dso->comp].is_compressed(name))
++	if (!compressions[comp].is_compressed(name))
+ 		return open(name, O_RDONLY);
+ 
+ 	fd = mkstemp(tmpbuf);
+ 	if (fd < 0) {
+-		dso->load_errno = errno;
++		*err = errno;
+ 		return -1;
+ 	}
+ 
+-	if (compressions[dso->comp].decompress(name, fd)) {
+-		dso->load_errno = DSO_LOAD_ERRNO__DECOMPRESSION_FAILURE;
++	if (compressions[comp].decompress(name, fd)) {
++		*err = DSO_LOAD_ERRNO__DECOMPRESSION_FAILURE;
+ 		close(fd);
+ 		fd = -1;
+ 	}
+@@ -328,6 +322,19 @@ static int decompress_kmodule(struct dso *dso, const char *name,
+ 	return fd;
+ }
+ 
++static int decompress_kmodule(struct dso *dso, const char *name,
++			      char *pathname, size_t len)
++{
++	if (!dso__needs_decompress(dso))
++		return -1;
++
++	if (dso->comp == COMP_ID__NONE)
++		return -1;
++
++	return filename__decompress(name, pathname, len, dso->comp,
++				    &dso->load_errno);
++}
++
+ int dso__decompress_kmodule_fd(struct dso *dso, const char *name)
+ {
+ 	return decompress_kmodule(dso, name, NULL, 0);
+diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
+index d8cb4f5680a4..cd2fe64a3c5d 100644
+--- a/tools/perf/util/dso.h
++++ b/tools/perf/util/dso.h
+@@ -274,6 +274,8 @@ bool dso__needs_decompress(struct dso *dso);
+ int dso__decompress_kmodule_fd(struct dso *dso, const char *name);
+ int dso__decompress_kmodule_path(struct dso *dso, const char *name,
+ 				 char *pathname, size_t len);
++int filename__decompress(const char *name, char *pathname,
++			 size_t len, int comp, int *err);
+ 
+ #define KMOD_DECOMP_NAME  "/tmp/perf-kmod-XXXXXX"
+ #define KMOD_DECOMP_LEN   sizeof(KMOD_DECOMP_NAME)
 -- 
 2.26.2
 
