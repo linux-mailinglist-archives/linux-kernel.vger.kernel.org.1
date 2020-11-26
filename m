@@ -2,138 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EC02C4E11
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 05:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9803F2C4E13
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 05:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387616AbgKZEo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 23:44:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
+        id S2387669AbgKZEp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 23:45:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387571AbgKZEo6 (ORCPT
+        with ESMTP id S2387571AbgKZEpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 23:44:58 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A338C061A04
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 20:44:57 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id gj5so958978ejb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 20:44:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=m4GPv/KrxL/EKHDV5VuB3uSSYTmTjv1zYqG7ehiPM7Y=;
-        b=rHAcqdKBDrMu+67OseFiZgy7JFk1eXMh4r2G5QgsIW1tZuATQ2cptDcVjNO2jHiAHr
-         IMmo2krmNYze7rzsOqycC/jRmpnT5I76/PXlT2VHJ9F5wFiJsE9FsgHNzspAK9nRS9Yu
-         UImlDgcz581tgRQLT2i3C5EzzlS4NsfKAhOaPg1IWBE5QbnfSMwgmS6rj6M/dpdL3VBw
-         vAz9itGR5gcIweVDnohjvkd1Yc+Vj2vrQZV4/IEahJc09v2HLn2MoN97m0G9IQf8PV8O
-         2AuVnIH2bLtRXvTxcF6w7ueBISjS9eXWFTa5m8loGYx+5pea6ftb5UjnlseenJhW60Id
-         y3HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=m4GPv/KrxL/EKHDV5VuB3uSSYTmTjv1zYqG7ehiPM7Y=;
-        b=L4czvYl0GnwWIh/QUOqF8LWhIv4XAOLx7YDAydNpkClsS7xQ38FXENB2T8dVmIzaO3
-         JXcUU8DsCFjvaaGjqil9k7Bgexq1iBmzXyIini1E/QNk4PTVG52ZDiz2OqdsX8nE/fPc
-         Rt2AY4BChQvgz7xpTXonnr3inPlAwCROgfTvf1uXnPEiGhfqJojPOye13vGBjfRMUM7r
-         QspVcIupFnRt1qT3Tj5hCymdYJROEtno00zgZS/sK/ulXP6NTkDhafSNv70e82Qg4GX3
-         jcexETarQQxMVvrTOv0EJ1YXY3J4tzrVe/7PgYwWnXCpWC0L5/pQY0izhC2BC0H9TI8W
-         OZTw==
-X-Gm-Message-State: AOAM532PDuSkgQydKpC01wnNPYm7wIXAQrB0Y8ZPgv8FpATqmNhQLuv/
-        nJ4Ce7ztC32w8QAp+zIb2YKSe3+uv9KNfOpBqcL1xA==
-X-Google-Smtp-Source: ABdhPJzv9R9kRP1kS9nB/jL+2HEjEHa5if+L9A+XcMPbgQliFrEk//XwT+3PcMmEuswBR11t/32idgpodB9b4R909XI=
-X-Received: by 2002:a17:906:bd2:: with SMTP id y18mr1040957ejg.503.1606365894859;
- Wed, 25 Nov 2020 20:44:54 -0800 (PST)
+        Wed, 25 Nov 2020 23:45:55 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D4DC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 20:45:55 -0800 (PST)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 8A594806A8;
+        Thu, 26 Nov 2020 17:45:49 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1606365949;
+        bh=fpmZlWWGYYvSibpY0vtVoSbzv6E2nviLb/qUCvY6RIE=;
+        h=From:To:Cc:Subject:Date;
+        b=FXpZIIiD3YTopcPuSzOIl8YS4Ol4mwWSe9xQqWjPGARH+uWXgSUbOHTzZW/DP3PXO
+         vOGPWXg56oJaPRe3oS2QVqA539sQOL8DS4WQBZKsTz5QVpmAR3CRxHwJ5y08E40/CR
+         l9ugtbbGbK0WxR5oBNL5OgaKzADYMAPKQG1gqgQI04KXjB8w+hL834UaF6TwofrqEQ
+         VS3oxtvEZyxYcdaBegsM8x1SUK4Xz8B4Ql0TZ4w1++guveCRvPvrHnGP3cmdMUZ5Nk
+         d/p53r0ToJTuRyZpExfFDgo7ZjDtPAqh5LqzCxtCr4P6MEGj/2Y5ofk9XllVnmesZC
+         xbpFWcJ/FK+0Q==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5fbf32fd0000>; Thu, 26 Nov 2020 17:45:49 +1300
+Received: from aryans-dl.ws.atlnz.lc (aryans-dl.ws.atlnz.lc [10.33.21.30])
+        by smtp (Postfix) with ESMTP id E1E1113EE9C;
+        Thu, 26 Nov 2020 17:45:48 +1300 (NZDT)
+Received: by aryans-dl.ws.atlnz.lc (Postfix, from userid 1844)
+        id 38BB014C00BB; Thu, 26 Nov 2020 17:45:49 +1300 (NZDT)
+From:   Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+To:     robh+dt@kernel.org, jason@lakedaemon.net, andrew@lunn.ch,
+        gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v2] ARM: dts: mvebu: Add device tree for RD-AC3X-48G4X2XL board
+Date:   Thu, 26 Nov 2020 17:45:44 +1300
+Message-Id: <20201126044544.17829-1-aryan.srivastava@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 26 Nov 2020 10:14:43 +0530
-Message-ID: <CA+G9fYt0qHxUty2qt7_9_YTOZamdtknhddbsi5gc3PDy0PvZ5A@mail.gmail.com>
-Subject: [stable 4.9] PANIC: double fault, error_code: 0x0 - clang boot failed
- on x86_64
-To:     linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        x86@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linaro recently started building and testing with stable branches with clang.
-Stable 4.9 branch kernel built with clang 10 boot crashed on x86 and qemu_x86.
-We do not have base line results to compare with.
+Add device tree for RD-AC3X-48G4X2XL board. This has a Armada 382 SoC on
+a interposer board connected to a baseboard with a Prestera AC3X ASIC
+connected via PCI.
 
-steps to build and boot:
-# build kernel with tuxmake
-# sudo pip3 install -U tuxmake
-# tuxmake --runtime docker --target-arch x86 --toolchain clang-10
---kconfig defconfig --kconfig-add
-https://builds.tuxbuild.com/1kgtX7QEDmhvj6OfbZBdlGaEple/config
-# boot qemu_x86_64
-# /usr/bin/qemu-system-x86_64 -cpu host -enable-kvm -nographic -net
-nic,model=virtio,macaddr=DE:AD:BE:EF:66:14 -net tap -m 1024 -monitor
-none -kernel kernel/bzImage --append "root=/dev/sda  rootwait
-console=ttyS0,115200" -hda
-rootfs/rpb-console-image-lkft-intel-corei7-64-20201022181159-3085.rootfs.ext4
--m 4096 -smp 4 -nographic
+Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
 
-Crash log:
----------------
-[   14.121499] Freeing unused kernel memory: 1896K
-[   14.126962] random: fast init done
-[   14.206005] PANIC: double fault, error_code: 0x0
-[   14.210633] CPU: 1 PID: 1 Comm: systemd Not tainted 4.9.246-rc1 #2
-[   14.216809] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.2 05/23/2018
-[   14.224196] task: ffff88026e2c0000 task.stack: ffffc90000020000
-[   14.230105] RIP: 0010:[<ffffffff8117ec2b>]  [<ffffffff8117ec2b>]
-proc_dostring+0x13b/0x1e0
-[   14.238374] RSP: 0018:000000000000000c  EFLAGS: 00010297
-[   14.243676] RAX: 00005638939fb850 RBX: 000000000000000c RCX: 00005638939fb850
-[   14.250799] RDX: 000000000000000c RSI: 0000000000000000 RDI: 000000000000007f
-[   14.257925] RBP: ffffc90000023d98 R08: ffffc90000023ef8 R09: 00005638939fb850
-[   14.265049] R10: 0000000000000000 R11: ffffffff8117f9e0 R12: ffffffff82479cf0
-[   14.272171] R13: ffffc90000023ef8 R14: ffffc90000023dd8 R15: 000000000000007f
-[   14.279298] FS:  00007f57fbce8840(0000) GS:ffff880277880000(0000)
-knlGS:0000000000000000
-[   14.287384] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   14.293120] CR2: fffffffffffffff8 CR3: 000000026d58a000 CR4: 0000000000360670
-[   14.300243] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   14.307368] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   14.314491] Stack:
-[   14.316504] Call Trace:
-[   14.318955] Code: c3 49 8b 10 31 f6 48 01 da 49 89 10 49 83 3e 00
-74 49 41 83 c7 ff 49 63 ff 4c 89 c9 0f 1f 40 00 48 39 fe 73 36 48 89
-c8 48 89 dc <e8> b0 9d 3a 00 85 c0 0f 85 8c 00 00 00 84 d2 74 1f 80 fa
-0a 74
-[   14.338906] Kernel panic - not syncing: Machine halted.
-[   14.344123] CPU: 1 PID: 1 Comm: systemd Not tainted 4.9.246-rc1 #2
-[   14.350291] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.2 05/23/2018
-[   14.357677]  ffff880277888e80 ffffffff81518ae9 ffff880277888e98
-ffffffff82971a10
-[   14.365129]  000000000000000f 0000000000000000 0000000000000086
-ffffffff820c5d57
-[   14.372584]  ffff880277888f08 ffffffff81175736 0000003000000008
-ffff880277888f18
-[   14.380038] Call Trace:
-[   14.382481]  <#DF> [   14.384406]  [<ffffffff81518ae9>] dump_stack+0xa9/0x100
-[   14.389641]  [<ffffffff81175736>] panic+0xe6/0x2a0
-[   14.394432]  [<ffffffff810c9911>] df_debug+0x31/0x40
-[   14.399389]  [<ffffffff81096312>] do_double_fault+0x102/0x140
-[   14.405128]  [<ffffffff81ccc987>] double_fault+0x27/0x30
-[   14.410440]  [<ffffffff8117f9e0>] ? proc_put_long+0xc0/0xc0
-[   14.416004]  [<ffffffff8117ec2b>] ? proc_dostring+0x13b/0x1e0
-[   14.421739]  <EOE> [   14.423703] Kernel Offset: disabled
-[   14.427209] ---[ end Kernel panic - not syncing: Machine halted.
+Notes:
+    Changes in v2:
+    -Added comment for CPLD
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/armada-382-rd-ac3x-48g4x2xl.dts  | 112 ++++++++++++++++++
+ 2 files changed, 113 insertions(+)
+ create mode 100644 arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
 
-full test log,
-https://lkft.validation.linaro.org/scheduler/job/1978901#L916
-https://lkft.validation.linaro.org/scheduler/job/1980839#L578
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index ce66ffd5a1bb..a60407ad7347 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1319,6 +1319,7 @@ dtb-$(CONFIG_MACH_ARMADA_370) +=3D \
+ dtb-$(CONFIG_MACH_ARMADA_375) +=3D \
+ 	armada-375-db.dtb
+ dtb-$(CONFIG_MACH_ARMADA_38X) +=3D \
++	armada-382-rd-ac3x-48g4x2xl.dtb \
+ 	armada-385-clearfog-gtr-s4.dtb \
+ 	armada-385-clearfog-gtr-l8.dtb \
+ 	armada-385-db-88f6820-amc.dtb \
+diff --git a/arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts b/arch/arm=
+/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
+new file mode 100644
+index 000000000000..584f0d0398a5
+--- /dev/null
++++ b/arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
+@@ -0,0 +1,112 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Device Tree file for Marvell Armada 382 reference board
++ * (RD-AC3X-48G4X2XL)
++ *
++ * Copyright (C) 2020 Allied Telesis Labs
++ */
++
++/dts-v1/;
++#include "armada-385.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++
++/ {
++	model =3D "Marvell Armada 382 RD-AC3X";
++	compatible =3D "marvell,rd-ac3x-48g4x2xl", "marvell,rd-ac3x",
++			 "marvell,armada385", "marvell,armada380";
++
++	chosen {
++		stdout-path =3D "serial0:115200n8";
++	};
++
++	aliases {
++		ethernet0 =3D &eth1;
++	};
++
++	memory {
++		device_type =3D "memory";
++		reg =3D <0x00000000 0x20000000>; /* 512MB */
++	};
++
++	soc {
++		ranges =3D <MBUS_ID(0xf0, 0x01) 0 0xf1000000 0x100000
++			  MBUS_ID(0x01, 0x1d) 0 0xfff00000 0x100000>;
++	};
++};
++
++&i2c0 {
++	pinctrl-names =3D "default";
++	pinctrl-0 =3D <&i2c0_pins>;
++	status =3D "okay";
++
++	eeprom@53{
++		compatible =3D "atmel,24c64";
++		reg =3D <0x53>;
++	};
++
++	/* CPLD device present at 0x3c. Function unknown */
++};
++
++&uart0 {
++	pinctrl-names =3D "default";
++	pinctrl-0 =3D <&uart0_pins>;
++	status =3D "okay";
++};
++
++&eth1 {
++	status =3D "okay";
++	phy =3D <&phy0>;
++	phy-mode =3D "rgmii-id";
++};
++
++&mdio {
++	pinctrl-names =3D "default";
++	pinctrl-0 =3D <&mdio_pins>;
++
++	phy0: ethernet-phy@0 {
++		reg =3D <0>;
++	};
++};
++
++&pciec {
++	status =3D "okay";
++};
++
++&pcie1 {
++	/* Port 0, Lane 0 */
++	status =3D "okay";
++};
++
++&nand_controller {
++	status =3D "okay";
++
++	nand@0 {
++		reg =3D <0>;
++		label =3D "pxa3xx_nand-0";
++		nand-rb =3D <0>;
++		nand-on-flash-bbt;
++
++		partitions {
++			compatible =3D "fixed-partitions";
++			#address-cells =3D <1>;
++			#size-cells =3D <1>;
++			partition@0 {
++				reg =3D <0x00000000 0x00500000>;
++				label =3D "u-boot";
++			};
++			partition@500000{
++				reg =3D <0x00500000 0x00400000>;
++				label =3D "u-boot env";
++			};
++			partition@900000{
++				reg =3D <0x00900000 0x3F700000>;
++				label =3D "user";
++			};
++		};
++	};
++};
++
++&refclk {
++	clock-frequency =3D <200000000>;
++};
+--=20
+2.29.2
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
