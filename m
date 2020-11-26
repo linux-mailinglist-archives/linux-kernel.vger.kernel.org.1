@@ -2,153 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864332C53F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 382682C5400
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387498AbgKZMad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 07:30:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727633AbgKZMac (ORCPT
+        id S2387712AbgKZMb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 07:31:56 -0500
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:29773 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387568AbgKZMbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 07:30:32 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6155CC0613D4;
-        Thu, 26 Nov 2020 04:30:32 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id o9so2723744ejg.1;
-        Thu, 26 Nov 2020 04:30:32 -0800 (PST)
+        Thu, 26 Nov 2020 07:31:55 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2m+lvGSR6BHsH9qKxh1TPWUrONGP2N8HIxUK/qJixF8=;
-        b=tulT464tQTXRd7bYocc5gHqkSpzMlqWbXuOm1Ch/HU5XbNujpD/ZBcJmRGmccz+zQt
-         Ddst5/a3Ldj9QhjlHqTuzDnF/D3gdXAtU00ZsWaK9ztomOaLFY69m7H9AsOosM9/UPZo
-         uQ+4M7zrmf3pC/SFBZPprdPc4aFFyNCZ2S0EEj1RXBn00CxRZqOs5LSE2mCTAhsihG5S
-         dbLu9jmgVrGOleUJGxjxPGqF2q/jpR7Oyl+NUKlW2qW/dy2NBC/S69HpKy89z6y+8fqp
-         IRUDqGDaH6OTHzQkPeTktD/nu+cJ8ce0eDVas4smXA57HuveaLD8dVA2R4Orw43YZqo8
-         dieA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2m+lvGSR6BHsH9qKxh1TPWUrONGP2N8HIxUK/qJixF8=;
-        b=m0bQtj/NrD0x8Bm1U1Q1swi05MaAnfvrgrpq0KdHReW6R7Z47u4WEE6DCWgS00wILQ
-         dgBIcOlTlITOyXfA+7Bp6eOoQHM1dXdPJxYzYcpUpPnYzF5nIbkoVGrXLP0mcFmm2HqO
-         Njmxt9nmbBhGwFgRqCt4+v/7afqsXV7EPLa9WX/WgmCmj9ej0AEbB58FD1q2wV06SBNM
-         WNvv09mJ8y2jBJYwckp3DYWkKiuw5/t18UPBhslG7dmMnYkcOAttG9qLXHUHFPO+JpG5
-         54aGJLo6ZENaHAkb21cuKFZauiKERWB08y86+g897sdpTBD4bvfIkj0XusW30WdDAann
-         JnsA==
-X-Gm-Message-State: AOAM5302fcy+kacTR0+93L3PWzQ+cDa9X62KwuIk5GFSt0AkzfeCY0eK
-        NtHeQIQ/BCCA1c4iunHMFrs=
-X-Google-Smtp-Source: ABdhPJyky7aETAB1Auf4sTcYZY/tUTC2pIUCoYPJAyUotZ0x/OJjMuOEsL/kWsGW4j/YSdYTotvgaQ==
-X-Received: by 2002:a17:906:4410:: with SMTP id x16mr2125701ejo.536.1606393830953;
-        Thu, 26 Nov 2020 04:30:30 -0800 (PST)
-Received: from skbuf ([188.25.2.120])
-        by smtp.gmail.com with ESMTPSA id y15sm3116327eds.56.2020.11.26.04.30.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 04:30:30 -0800 (PST)
-Date:   Thu, 26 Nov 2020 14:30:27 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Fugang Duan <fugang.duan@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Fabio Estevam <festevam@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>, stefan.agner@toradex.com,
-        krzk@kernel.org, Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [RFC 0/4] net: l2switch: Provide support for L2 switch on i.MX28
- SoC
-Message-ID: <20201126123027.ocsykutucnhpmqbt@skbuf>
-References: <20201125232459.378-1-lukma@denx.de>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1606393914; x=1637929914;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=Bf7T7cQ4DkNx5eSUf7ZCWCcBGIFOEog4bxy6IiSRd0E=;
+  b=O7BgcMI2C5XogVgEyVIPhgMi/NaeHdXhsW8B2yaMITp+mzlXGoLKRuYe
+   XtxHUpIXgRbXeoGixrVrQ+V3dtUVVUUXNC0//v+CS/uyuI4j7xQxQ7+Pd
+   xyniFIDZVnRKzAjIGRTDgQHiE8n1Da3eBd7mlfm5C899PtTPUJNOZXVyK
+   0=;
+X-IronPort-AV: E=Sophos;i="5.78,372,1599523200"; 
+   d="scan'208";a="99444738"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-41350382.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 26 Nov 2020 12:31:53 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-41350382.us-west-2.amazon.com (Postfix) with ESMTPS id 7F63FC2E41;
+        Thu, 26 Nov 2020 12:31:50 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.55) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 26 Nov 2020 12:31:33 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        <Jonathan.Cameron@huawei.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Qian Cai <cai@lca.pw>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David Hildenbrand" <david@redhat.com>, <dwmw@amazon.com>,
+        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
+        <foersleo@amazon.de>, "Greg Thelen" <gthelen@google.com>,
+        Ian Rogers <irogers@google.com>, <jolsa@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, <namhyung@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>, <sblbir@amazon.com>,
+        Shuah Khan <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>, <zgf574564920@gmail.com>,
+        <linux-damon@amazon.com>, Linux MM <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v22 05/18] mm/idle_page_tracking: Make PG_(idle|young) reusable
+Date:   Thu, 26 Nov 2020 13:31:17 +0100
+Message-ID: <20201126123117.23394-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CALvZod5DGLtegPdDjj72WOO1RmR1MV_8DE+NEakg1PYGurHNUQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125232459.378-1-lukma@denx.de>
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.55]
+X-ClientProxiedBy: EX13D10UWA001.ant.amazon.com (10.43.160.216) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
+On Wed, 25 Nov 2020 07:30:06 -0800 Shakeel Butt <shakeelb@google.com> wrote:
 
-On Thu, Nov 26, 2020 at 12:24:55AM +0100, Lukasz Majewski wrote:
-> This is the first attempt to add support for L2 switch available on some NXP
-> devices - i.e. iMX287 or VF610. This patch set uses common FEC and DSA code.
->
-> This code provides _very_ basic switch functionality (packets are passed
-> between lan1 and lan2 ports and it is possible to send packets via eth0),
-> at its main purpose is to establish the way of reusing the FEC driver. When
-> this is done, one can add more advanced features to the switch (like vlan or
-> port separation).
->
-> I also do have a request for testing on e.g. VF610 if this driver works on
-> it too.
-> The L2 switch documentation is very scant on NXP's User Manual [0] and most
-> understanding of how it really works comes from old (2.6.35) NXP driver [1].
-> The aforementioned old driver [1] was monolitic and now this patch set tries
-> to mix FEC and DSA.
->
-> Open issues:
-> - I do have a hard time on understanding how to "disable" ENET-MAC{01} ports
-> in DSA (via port_disable callback in dsa_switch_ops).
-> When I disable L2 switch port1,2 or the ENET-MAC{01} in control register, I
-> cannot simply re-enable it with enabling this bit again. The old driver reset
-> (and setup again) the whole switch.
+> On Tue, Oct 20, 2020 at 2:04 AM SeongJae Park <sjpark@amazon.com> wrote:
+> >
+> > From: SeongJae Park <sjpark@amazon.de>
+> >
+> > PG_idle and PG_young allows the two PTE Accessed bit users,
+> > IDLE_PAGE_TRACKING and the reclaim logic concurrently work while don't
+> > interfere each other.  That is, when they need to clear the Accessed
+> > bit, they set PG_young
+> 
+> Only PG_young bit
 
-You don't have to disable the ports if that does more harm than good, of course.
+Oops, right.  Maybe I was out of my mind while writing this.  Thank you for
+correcting this.
 
-> - The L2 switch is part of the SoC silicon, so we cannot follow the "normal" DSA
-> pattern with "attaching" it via mdio device. The switch reuses already well
-> defined ENET-MAC{01}. For that reason the MoreThanIP switch driver is
-> registered as platform device
+> 
+> > and PG_idle to represent the previous state of
+> > the bit, respectively.  And when they need to read the bit, if the bit
+> > is cleared, they further read the PG_young
+> 
+> Again only PG_young bit.
 
-That is not a problem. Also, I would not say that the "normal" DSA
-pattern is to have an MDIO-attached switch. Maybe that was true 10 years
-ago. But now, we have DSA switches registered as platform devices, I2C
-devices, SPI devices, PCI devices. That is not an issue under any
-circumstance.
+Sure.
 
-> - The question regarding power management - at least for my use case there
-> is no need for runtime power management. The L2 switch shall work always at
-> it connects other devices.
->
-> - The FEC clock is also used for L2 switch management and configuration (as
-> the L2 switch is just in the same, large IP block). For now I just keep it
-> enabled so DSA code can use it. It looks a bit problematic to export
-> fec_enet_clk_enable() to be reused on DSA code.
->
-> Links:
-> [0] - "i.MX28 Applications Processor Reference Manual, Rev. 2, 08/2013"
-> [1] - https://github.com/lmajewski/linux-imx28-l2switch/commit/e3c7a6eab73401e021aef0070e1935a0dba84fb5
+> 
+> PG_idle bit is only read (and set) by the page idle tracking code and
+> it can be cleared by others (reclaim or file access).
+> 
+> > and PG_idle, respectively, to
+> > know whether the other has cleared the bit meanwhile or not.
+> >
+> > We could add another page flag and extend the mechanism to use the flag
+> > if we need to add another concurrent PTE Accessed bit user subsystem.
+> > However, it would be only waste the space.  Instead, if the new
+> > subsystem is mutually exclusive with IDLE_PAGE_TRACKING, it could simply
+> > reuse the PG_idle flag.  However, it's impossible because the flags are
+> > dependent on IDLE_PAGE_TRACKING.
+> >
+> > To allow such reuse of the flags, this commit separates the PG_young and
+> > PG_idle flag logic from IDLE_PAGE_TRACKING and introduces new kernel
+> > config, 'PAGE_IDLE_FLAG'.  Hence, if !IDLE_PAGE_TRACKING and
+> > IDLE_PAGE_FLAG, a new subsystem would be able to reuse PG_idle.
+> >
+> > In the next commit, DAMON's reference implementation of the virtual
+> > memory address space monitoring primitives will use it.
+> >
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > ---
+> >  include/linux/page-flags.h     |  4 ++--
+> >  include/linux/page_ext.h       |  2 +-
+> >  include/linux/page_idle.h      |  6 +++---
+> >  include/trace/events/mmflags.h |  2 +-
+> >  mm/Kconfig                     |  8 ++++++++
+> >  mm/page_ext.c                  | 12 +++++++++++-
+> >  mm/page_idle.c                 | 10 ----------
+> >  7 files changed, 26 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > index 6be1aa559b1e..7736d290bb61 100644
+> > --- a/include/linux/page-flags.h
+> > +++ b/include/linux/page-flags.h
+> > @@ -132,7 +132,7 @@ enum pageflags {
+> >  #ifdef CONFIG_MEMORY_FAILURE
+> >         PG_hwpoison,            /* hardware poisoned page. Don't touch */
+> >  #endif
+> > -#if defined(CONFIG_IDLE_PAGE_TRACKING) && defined(CONFIG_64BIT)
+> > +#if defined(CONFIG_PAGE_IDLE_FLAG) && defined(CONFIG_64BIT)
+> >         PG_young,
+> >         PG_idle,
+> >  #endif
+> > @@ -432,7 +432,7 @@ static inline bool set_hwpoison_free_buddy_page(struct page *page)
+> >  #define __PG_HWPOISON 0
+> >  #endif
+> >
+> > -#if defined(CONFIG_IDLE_PAGE_TRACKING) && defined(CONFIG_64BIT)
+> > +#if defined(CONFIG_PAGE_IDLE_FLAG) && defined(CONFIG_64BIT)
+> >  TESTPAGEFLAG(Young, young, PF_ANY)
+> >  SETPAGEFLAG(Young, young, PF_ANY)
+> >  TESTCLEARFLAG(Young, young, PF_ANY)
+> > diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
+> > index cfce186f0c4e..c9cbc9756011 100644
+> > --- a/include/linux/page_ext.h
+> > +++ b/include/linux/page_ext.h
+> > @@ -19,7 +19,7 @@ struct page_ext_operations {
+> >  enum page_ext_flags {
+> >         PAGE_EXT_OWNER,
+> >         PAGE_EXT_OWNER_ALLOCATED,
+> > -#if defined(CONFIG_IDLE_PAGE_TRACKING) && !defined(CONFIG_64BIT)
+> > +#if defined(CONFIG_PAGE_IDLE_FLAG) && !defined(CONFIG_64BIT)
+> >         PAGE_EXT_YOUNG,
+> >         PAGE_EXT_IDLE,
+> >  #endif
+> > diff --git a/include/linux/page_idle.h b/include/linux/page_idle.h
+> > index 1e894d34bdce..d8a6aecf99cb 100644
+> > --- a/include/linux/page_idle.h
+> > +++ b/include/linux/page_idle.h
+> > @@ -6,7 +6,7 @@
+> >  #include <linux/page-flags.h>
+> >  #include <linux/page_ext.h>
+> >
+> > -#ifdef CONFIG_IDLE_PAGE_TRACKING
+> > +#ifdef CONFIG_PAGE_IDLE_FLAG
+> >
+> >  #ifdef CONFIG_64BIT
+> >  static inline bool page_is_young(struct page *page)
+> > @@ -106,7 +106,7 @@ static inline void clear_page_idle(struct page *page)
+> >  }
+> >  #endif /* CONFIG_64BIT */
+> >
+> > -#else /* !CONFIG_IDLE_PAGE_TRACKING */
+> > +#else /* !CONFIG_PAGE_IDLE_FLAG */
+> >
+> >  static inline bool page_is_young(struct page *page)
+> >  {
+> > @@ -135,6 +135,6 @@ static inline void clear_page_idle(struct page *page)
+> >  {
+> >  }
+> >
+> > -#endif /* CONFIG_IDLE_PAGE_TRACKING */
+> > +#endif /* CONFIG_PAGE_IDLE_FLAG */
+> >
+> >  #endif /* _LINUX_MM_PAGE_IDLE_H */
+> > diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
+> > index 5fb752034386..4d182c32071b 100644
+> > --- a/include/trace/events/mmflags.h
+> > +++ b/include/trace/events/mmflags.h
+> > @@ -73,7 +73,7 @@
+> >  #define IF_HAVE_PG_HWPOISON(flag,string)
+> >  #endif
+> >
+> > -#if defined(CONFIG_IDLE_PAGE_TRACKING) && defined(CONFIG_64BIT)
+> > +#if defined(CONFIG_PAGE_IDLE_FLAG) && defined(CONFIG_64BIT)
+> >  #define IF_HAVE_PG_IDLE(flag,string) ,{1UL << flag, string}
+> >  #else
+> >  #define IF_HAVE_PG_IDLE(flag,string)
+> > diff --git a/mm/Kconfig b/mm/Kconfig
+> > index 19fe2251c87a..044317ef9143 100644
+> > --- a/mm/Kconfig
+> > +++ b/mm/Kconfig
+> > @@ -761,10 +761,18 @@ config DEFERRED_STRUCT_PAGE_INIT
+> >           lifetime of the system until these kthreads finish the
+> >           initialisation.
+> >
+> > +config PAGE_IDLE_FLAG
+> > +       bool "Add PG_idle and PG_young flags"
+> > +       help
+> > +         This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
+> > +         Accessed bit writers can set the state of the bit in the flags to let
+> > +         other PTE Accessed bit readers don't disturbed.
+> > +
+> >  config IDLE_PAGE_TRACKING
+> >         bool "Enable idle page tracking"
+> >         depends on SYSFS && MMU
+> >         select PAGE_EXTENSION if !64BIT
+> > +       select PAGE_IDLE_FLAG
+> >         help
+> >           This feature allows to estimate the amount of user pages that have
+> >           not been touched during a given period of time. This information can
+> > diff --git a/mm/page_ext.c b/mm/page_ext.c
+> > index a3616f7a0e9e..f9a6ff65ac0a 100644
+> > --- a/mm/page_ext.c
+> > +++ b/mm/page_ext.c
+> > @@ -58,11 +58,21 @@
+> >   * can utilize this callback to initialize the state of it correctly.
+> >   */
+> >
+> 
+> Is there a need to move the following code in this patch?
 
-Disclaimer: I don't know the details of imx28, it's just now that I
-downloaded the reference manual to see what it's about.
+After this patchset, someone would turn CONFIG_PAGE_IDLE_FLAG on but
+CONFIG_IDLE_PAGE_TRACKING.  In that case, the build will fail because
+page_idle.c will not be compiled.  Because below code is used by page_ext.c
+only, I think moving into here is ok.
 
-I would push back and say that the switch offers bridge acceleration for
-the FEC. The fact that the bridge acceleration is provided by a different
-vendor and requires access to an extra set of register blocks is immaterial.
-To qualify as a DSA switch, you need to have indirect networking I/O
-through a different network interface. You do not have that. What I
-would do is I would expand the fec driver into something that, on
-capable SoCs, detects bridging of the ENET_MAC0 and ENETC_MAC1 ports and
-configures the switch accordingly to offload that in a seamless manner
-for the user. This would also solve your power management issues, since
-the entire Ethernet block would be handled by a single driver.
-DSA is a complication you do not need. Convince me otherwise.
+> 
+> 
+> > +#if defined(CONFIG_PAGE_IDLE_FLAG) && !defined(CONFIG_64BIT)
+> > +static bool need_page_idle(void)
+> > +{
+> > +       return true;
+> > +}
+> > +struct page_ext_operations page_idle_ops = {
+> > +       .need = need_page_idle,
+> > +};
+> > +#endif
+> > +
+> >  static struct page_ext_operations *page_ext_ops[] = {
+> >  #ifdef CONFIG_PAGE_OWNER
+> >         &page_owner_ops,
+> >  #endif
+> > -#if defined(CONFIG_IDLE_PAGE_TRACKING) && !defined(CONFIG_64BIT)
+> > +#if defined(CONFIG_PAGE_IDLE_FLAG) && !defined(CONFIG_64BIT)
+> >         &page_idle_ops,
+> >  #endif
+> >  };
+> > diff --git a/mm/page_idle.c b/mm/page_idle.c
+> > index 057c61df12db..144fb4ed961d 100644
+> > --- a/mm/page_idle.c
+> > +++ b/mm/page_idle.c
+> > @@ -211,16 +211,6 @@ static const struct attribute_group page_idle_attr_group = {
+> >         .name = "page_idle",
+> >  };
+> >
+> > -#ifndef CONFIG_64BIT
+> > -static bool need_page_idle(void)
+> > -{
+> > -       return true;
+> > -}
+> > -struct page_ext_operations page_idle_ops = {
+> > -       .need = need_page_idle,
+> > -};
+> > -#endif
+> > -
+> >  static int __init page_idle_init(void)
+> >  {
+> >         int err;
+> > --
+> > 2.17.1
+> >
+> 
+> Overall this patch looks good to me.
 
-Also, side note.
-Please, please, please, stop calling it "l2 switch" and use something
-more specific. If everybody writing a driver for the Linux kernel called
-their L2 switch "L2 switch", we would go crazy. The kernel is not a deep
-silo like the hardware team that integrated this MTIP switching IP into
-imx28, and for whom this L2 switch is the only switch that exists, and
-therefore for whom no further qualification was necessary. Andy, Peng or
-Fabio might be able to give you a reference to an internal code name
-that you can use, or something. Otherwise, I don't care if you need to
-invent a name yourself - be as creative as you feel like. mtip-fec-switch,
-charlie, matilda, brunhild, all fine by me.
+Appreciate!
+
+
+Thanks,
+SeongJae Park
