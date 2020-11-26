@@ -2,125 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A2A2C5D8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 22:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC842C5D97
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 22:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388678AbgKZVfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 16:35:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30894 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726178AbgKZVfh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 16:35:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606426536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z982jnqmuXNIrAhimGtzkblqKSt24Z3qnI8EZ/1iDQY=;
-        b=haJwrw/lHDJi6u7357ieuFEuzotNvbt9IjFVV8S88ui+F2R+1v+GgPSW6B8LB0IIIsrwwW
-        hmZOwVQEIWbT9UIukwqGiZtT7YiFhWTqpH/zCqDjuQxBtPFV87xvr1cMUsuSNQgHkWmmeb
-        FvCKeOsNUsabPDIRrOph1io96SqbY9M=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-95-Y23xNNg7NqiLq7oC30JAWw-1; Thu, 26 Nov 2020 16:35:34 -0500
-X-MC-Unique: Y23xNNg7NqiLq7oC30JAWw-1
-Received: by mail-pl1-f198.google.com with SMTP id bd1so2156334plb.22
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 13:35:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=z982jnqmuXNIrAhimGtzkblqKSt24Z3qnI8EZ/1iDQY=;
-        b=PrCd9bCa3MlDGDXu69Imt2pETRjzMZKa35AB6ZMfWHtr710RQvdiOcGwDA1lDLT+T4
-         puxNHgpm5s/bxqApylBlwgTfvMl7TUBd70ZlYOlbNZu0XydrXXsVwRgIye4HO0u1x+5J
-         foFFrrKN3JOuGwee+p/50mL5Q4j3y9mUTKRlqYxBhVGWkhtL4ORHeoDxucrLeW0ChWoU
-         WBF7aCfljL/bVpUN7S5dwAZwXMUga/I0KG2/c3KOHOeK7m7SOKPl45iWqEtidR8WrEeq
-         TXCLdjaDj1TxoN9NpBDKjRpF2fECtHH0k/FYBojJlw276oBvOZc0tT/Tqv6+VD8y5pBO
-         p4Ow==
-X-Gm-Message-State: AOAM5307HQUETKnzrCCfwPw1LKFgE4iMAvjevFaq3v0WWXayNt4IdrWK
-        LOYK9yBBx36HsQiRYPYPJL4CB108prCBQFpa0cFKICWUcfb7+xAlLww5W4qKGE3G8wNwSfc1c2m
-        QpE/1JryZSSFL3/IxOJWpYyW1
-X-Received: by 2002:a17:90a:de86:: with SMTP id n6mr5636642pjv.214.1606426533157;
-        Thu, 26 Nov 2020 13:35:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzAlUToijww7RFSIadHfTUIsFRgP0jROP7USN5shf1kH7HUlqvESAgcIckwBz8UQwmCwAYwNw==
-X-Received: by 2002:a17:90a:de86:: with SMTP id n6mr5636628pjv.214.1606426532884;
-        Thu, 26 Nov 2020 13:35:32 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id z126sm5587671pfz.120.2020.11.26.13.35.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 13:35:31 -0800 (PST)
-References: <87h7pd6v2k.fsf@redhat.com>
- <bd1fd204-3596-b16c-5617-7e691ceac83b@linux.intel.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@kernel.vger.org
-Subject: Re: Question about domain_init (v5.3-v5.7)
-In-reply-to: <bd1fd204-3596-b16c-5617-7e691ceac83b@linux.intel.com>
-Date:   Thu, 26 Nov 2020 14:35:30 -0700
-Message-ID: <87a6v3hkd9.fsf@jsnitsel.users.ipa.redhat.com>
+        id S2389483AbgKZVm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 16:42:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgKZVm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 16:42:27 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A66320872;
+        Thu, 26 Nov 2020 21:42:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606426946;
+        bh=Hy1ZQK9dRMU3ToqMmxOyHjgGadc+D2Wc65UGFap7/Kg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=l7vIXpopAMloE7428TO49IBDwok55u7vtDQbfzUgssbE87lVSbVZREo5mAlTASoT7
+         eLR8K1pM4HUuzl3RsLIqiJdFfXVN4GJcj/PyWeoS98u5hfc787uEnGZU6/sLQbtXn0
+         Q6RJYt+ISJdmlOAYmGtVJWJ6gevxkaVL2f1YEdq0=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 367243522FFC; Thu, 26 Nov 2020 13:42:26 -0800 (PST)
+Date:   Thu, 26 Nov 2020 13:42:26 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: kdump always hangs in rcu_barrier() -> wait_for_completion()
+Message-ID: <20201126214226.GS1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
+ <20201126154630.GR1437@paulmck-ThinkPad-P72>
+ <MW2PR2101MB18014505C01027A9486D45EEBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW2PR2101MB18014505C01027A9486D45EEBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 26, 2020 at 09:25:28PM +0000, Dexuan Cui wrote:
+> > From: Paul E. McKenney <paulmck@kernel.org>
+> > Sent: Thursday, November 26, 2020 7:47 AM
+> >  ...
+> > The rcu_segcblist_n_cbs() function returns non-zero because something
+> > invoked call_rcu() some time previously.  The ftrace facility (or just
+> > a printk) should help you work out where that call_rcu() is located.
+> 
+> call_rcu() is indeed called multiple times, but as you said, this should
+> be normal.
 
-Lu Baolu @ 2020-11-26 04:01 MST:
+Good to know, thank you!
 
-> Hi Jerry,
->
-> On 2020/11/26 4:27, Jerry Snitselaar wrote:
->> Is there a reason we check the requested guest address width against
->> the
->> iommu's mgaw, instead of the agaw that we already know for the iommu?
->> I've run into a case with a new system where the mgaw reported is 57,
->> but if they set PAE to 46 instead of 52 in the bios, then sagaw reports
->> the highest supported agaw is 48 and the domain_init code fails here. In
->
-> Isn't this a platform bug? If it's too late to fix it in the BIOS, you
-> maybe have to add a platform specific quirk to set mgaw to the highest
-> supported agaw?
->
-> Best regards,
-> baolu
+> > My best guess is that the underlying bug is that you are invoking
+> > rcu_barrier() before the RCU grace-period kthread has been created.
+> > This means that RCU grace periods cannot complete, which in turn means
+> > that if there has been even one invocation of call_rcu() since boot,
+> > rcu_barrier() cannot complete, which is what you are in fact seeing.
+> > Please note that it is perfectly legal to invoke call_rcu() very early in
+> > the boot process, as in even before the call to rcu_init().  Therefore,
+> > if this is the case, the bug is the early call to rcu_barrier(), not
+> > the early calls to call_rcu().
+> >
+> > To check this, at the beginning of rcu_barrier(), check the value of
+> > rcu_state.gp_kthread.  If my guess is correct, it will be NULL.
+> 
+> Unluckily, it's not NULL here. :-)
 
-Is there somewhere you can point me to that discusses how they should be
-setting the mgaw? I misunderstood when I previously asked you about
-whether the mgaw could be a value that was greater than any of sagaw.
-If it is a bios issue, then they should fix it there.
+You can't have everything!  ;-)
 
->
->> other places like prepare_domain_attach_device, the dmar domain agaw
->> gets adjusted down to the iommu agaw. The agaw of the iommu gets
->> determined based off what is reported for sagaw. I'm wondering if it
->> can't instead do:
->> ---
->>   drivers/iommu/intel-iommu.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->> diff --git a/drivers/iommu/intel-iommu.c
->> b/drivers/iommu/intel-iommu.c
->> index 6ca5c92ef2e5..a8e41ec36d9e 100644
->> --- a/drivers/iommu/intel-iommu.c
->> +++ b/drivers/iommu/intel-iommu.c
->> @@ -1862,8 +1862,8 @@ static int domain_init(struct dmar_domain *domain, struct intel_iommu *iommu,
->>   	domain_reserve_special_ranges(domain);
->>   	/* calculate AGAW */
->> -	if (guest_width > cap_mgaw(iommu->cap))
->> -	        guest_width = cap_mgaw(iommu->cap);
->> +	if (guest_width > agaw_to_width(iommu->agaw))
->> +	        guest_width = agaw_to_width(iommu->agaw);
->>   	domain->gaw = guest_width;
->>   	adjust_width = guestwidth_to_adjustwidth(guest_width);
->>   	agaw = width_to_agaw(adjust_width);
->> --
->> 2.27.0
->> 
->> Thoughts? With the former code the ehci device for the ilo fails when
->> trying to get a private domain.
->> Thanks,
->> Jerry
->> 
+> > Another possibility is that rcu_state.gp_kthread is non-NULL, but that
+> > something else is preventing RCU grace periods from completing, but in
+> 
+> It looks like somehow the scheduling is not working here: in rcu_barrier()
+> , if I replace the wait_for_completion() with
+> wait_for_completion_timeout(&rcu_state.barrier_completion, 30*HZ), the
+> issue persists.
 
+Have you tried using sysreq-t to see what the various tasks are doing?
+
+One way that this can happen is if whatever task is currently running
+has managed to enter long loop with interrupts disabled.
+
+> > that case you should see RCU CPU stall warnings.  Unless of course they
+> > have been disabled.
+> > 							Thanx, Paul
+> 
+> I guess I didn't disable the wanrings (I don't even know how to do that :)
+
+Having interrupts disabled on all CPUs would have the effect of disabling
+the RCU CPU stall warnings.
+
+The intended method is in Documentation/admin-guide/kernel-parameters.txt.
+Search for rcu_cpu_stall_suppress.  Not that it seems important at this
+point.
+
+							Thanx, Paul
+
+> grep RCU .config
+> # RCU Subsystem
+> CONFIG_TREE_RCU=y
+> # CONFIG_RCU_EXPERT is not set
+> CONFIG_SRCU=y
+> CONFIG_TREE_SRCU=y
+> CONFIG_TASKS_RCU_GENERIC=y
+> CONFIG_TASKS_RUDE_RCU=y
+> CONFIG_TASKS_TRACE_RCU=y
+> CONFIG_RCU_STALL_COMMON=y
+> CONFIG_RCU_NEED_SEGCBLIST=y
+> CONFIG_RCU_NOCB_CPU=y
+> # end of RCU Subsystem
+> CONFIG_MMU_GATHER_RCU_TABLE_FREE=y
+> # RCU Debugging
+> # CONFIG_RCU_SCALE_TEST is not set
+> # CONFIG_RCU_TORTURE_TEST is not set
+> # CONFIG_RCU_REF_SCALE_TEST is not set
+> CONFIG_RCU_CPU_STALL_TIMEOUT=30
+> CONFIG_RCU_TRACE=y
+> CONFIG_RCU_EQS_DEBUG=y
+> # end of RCU Debugging
+> 
+> Thanks,
+> -- Dexuan
+> 
