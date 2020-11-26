@@ -2,336 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E35D2C5089
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7457B2C508E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 09:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388973AbgKZIb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 03:31:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
+        id S2388992AbgKZIcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 03:32:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388965AbgKZIb5 (ORCPT
+        with ESMTP id S1726719AbgKZIcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 03:31:57 -0500
+        Thu, 26 Nov 2020 03:32:55 -0500
 Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B29C061A04
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 00:31:57 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id 62so1087302pgg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 00:31:57 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37696C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 00:32:55 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id l17so1134265pgk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 00:32:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oRuYHyxqXzpChYy7W0ymMwWXMo0FUq8G8eMX6y4JimA=;
-        b=yt66b2fGthFIztxfIKA0VR66dgzmwk7nMhiLSxEobLV8wX+l9OSBkcpx5Onm8na6IJ
-         G/3Z/M+porRIba9qq4uDXTJW+igSJ9ut7GzXgnlkquRtgbzX3n9uopbHzaY9i2jXNXwH
-         jank50avNR1qdDwbDsu0GhE5oyBOfaXjUER2JuRPt53DFeZ5oIETf+qPIG5S3MdgDFMI
-         6bIeHWr8eKIuKCP3F//jFlr9PnMZVd2MQLaPdrLGK5hn3LD209trezNKESZwJbxh43bQ
-         KInLjkSOffzH/cmdJ5SSbZTOJP//5itBry76RvdXNdDdMVjtUWVNgiXRPH+XcevB+a6X
-         Q0HQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ThVV3qfibPjNal6tYQdY3Whw9cRRAWHD6CSTXYOg89w=;
+        b=UPokA16ofbDD8wdP2Z1jln8ku0H7icHQsJRivgyePaTUGul0I58rPZR8JpuESomyT6
+         6ZQ2Splb0lQSAutNv62432VbrG+Ug4ftPh3IxWT+Qj11lqnGbBtLs1M/sgPQBv+wEV4A
+         aNQA8Se3gCJwcjsRRNAYqpBje8dz8zFoTZZ75tvsuKnpbzSLfsUbt/wZgnf+ci/8iWsy
+         gkQJlkM+xpvrj54ODeTqS3JDIcH/AVi5FM4LUUniAYbUGjm3nBID7eDk1suh+vJOy7gd
+         NwCdjCCgKLpfUxEk6/AsStoPYjxls6HCMFRdzeGJ1P+qrmPo/ekbHadfr1GZCIi0rgOJ
+         aYkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oRuYHyxqXzpChYy7W0ymMwWXMo0FUq8G8eMX6y4JimA=;
-        b=XTtO81TwvjU/X3DhgZmnTIW9fAGuBE8wRBOmMxSVDIzNKoE/7M+ODW0bFO95AJ3D9J
-         TJf9rm7BdP6GJjHcqRSqY/8uob+5V53pTmginvwPc4tjwhV79AacHKcNpKC/fYd8LTcD
-         7zXs3p/P197uIRDEl18NjYjPaVkLd6AmiCJbmWE0mvhG2bAe0cBjqou+r9Xqr6BhBCrC
-         /Jy7+ct0Ag667P4A2mZMdbIfeAG6d61BzqiPrlgudbChZqGbyJZB73G7C4brJcb3ULTJ
-         NWFSq2ngskeMY02HIzL5RyQAhMAUDDVVSuLanzbJJ+VvJ2l/MFUUbXTAiooJ5+nj+o4w
-         OJbQ==
-X-Gm-Message-State: AOAM53113Lk1CwnyNdEf8lb9He4UzWrKz8pboY0DPO3bN6UDupTK+BYl
-        BTXRsZewzsWIUK4Q+srWOoBU
-X-Google-Smtp-Source: ABdhPJyLxqc3gM+dt535DKVvqoU7lYzhXiSQENQaXUdaAk/quTUpD7sbB0PWykh1WFPsFW0OK0Icrw==
-X-Received: by 2002:a17:90a:66c7:: with SMTP id z7mr2415427pjl.175.1606379516823;
-        Thu, 26 Nov 2020 00:31:56 -0800 (PST)
-Received: from localhost.localdomain ([2409:4072:6e95:f2a:3996:9d7f:e389:7f7d])
-        by smtp.gmail.com with ESMTPSA id b21sm5360949pji.24.2020.11.26.00.31.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ThVV3qfibPjNal6tYQdY3Whw9cRRAWHD6CSTXYOg89w=;
+        b=siSD1otpIwp/e9r8d1RIQme8jASGwyJ6rpLPxpJUnwC1JnyRna/ZJNXa/i/1Mtj2r6
+         r2dHV6la+qcI4hCIeHWljTxlcNEzGo95If4AgYeYprPZc6wjJQNdYhbNjvYnmFyO4oIG
+         xTn75QyNVjApXG+s6yFx+blTImkVbQSoFBGRe7ByT/RztJBFxrNA7FP45PsPLZAG8Oc0
+         Pn+lHNBW+iwfZe6PEBRHaqeq5ogUQQjodQKt3ErgSUhWmjZITzrsM5H2GBZlu0tRjnWh
+         BTt17vM0ifTJqn1cOk/rbt4wX7ZL4i6bSqJ3OacedfjwIa7JByaMVRbINSvHkystZ9WP
+         yWOA==
+X-Gm-Message-State: AOAM532HXk8lC///byxiIX2vKjmYRnkVpDLIUcgEGjFrsSDB+cPrhzwT
+        oX3TJPpA4Izbo1wy6qR2eqk=
+X-Google-Smtp-Source: ABdhPJxK9jgyCuaCj/PocauKyj3ScU0G/8mv/raWtN5GLs+ouXgbWRD0jEveFAl164AvA72NPYBKzA==
+X-Received: by 2002:a17:90a:a67:: with SMTP id o94mr2474094pjo.236.1606379574639;
+        Thu, 26 Nov 2020 00:32:54 -0800 (PST)
+Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
+        by smtp.gmail.com with ESMTPSA id u6sm5274778pjn.56.2020.11.26.00.32.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 00:31:56 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     vkoul@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v3 2/2] ARM: dts: qcom: Add SDX55 platform and MTP board support
-Date:   Thu, 26 Nov 2020 14:01:38 +0530
-Message-Id: <20201126083138.47047-3-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201126083138.47047-1-manivannan.sadhasivam@linaro.org>
-References: <20201126083138.47047-1-manivannan.sadhasivam@linaro.org>
+        Thu, 26 Nov 2020 00:32:53 -0800 (PST)
+Date:   Thu, 26 Nov 2020 19:32:50 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 14/32] sched: migration changes for core scheduling
+Message-ID: <20201126083250.GI163610@balbir-desktop>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-15-joel@joelfernandes.org>
+ <20201122235456.GF110669@balbir-desktop>
+ <0b2514ef-6cc3-c1a3-280b-5d9062c80a31@linux.intel.com>
+ <20201124154237.GZ3021@hirez.programming.kicks-ass.net>
+ <d541b70c-c65f-5bf6-5e71-0b9b35457fae@linux.intel.com>
+ <20201125225731.GB163610@balbir-desktop>
+ <d9f356dd-be58-b52c-504d-ff46d37c1479@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d9f356dd-be58-b52c-504d-ff46d37c1479@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic devicetree support for SDX55 platform and MTP board from
-Qualcomm. The SDX55 platform features an ARM Cortex A7 CPU which forms
-the Application Processor Sub System (APSS) along with standard Qualcomm
-peripherals like GCC, TLMM, BLSP, QPIC, and BAM etc... Also, there
-exists the networking parts such as IPA, MHI, PCIE-EP, EMAC, and Modem
-etc..
+On Thu, Nov 26, 2020 at 11:20:41AM +0800, Li, Aubrey wrote:
+> On 2020/11/26 6:57, Balbir Singh wrote:
+> > On Wed, Nov 25, 2020 at 11:12:53AM +0800, Li, Aubrey wrote:
+> >> On 2020/11/24 23:42, Peter Zijlstra wrote:
+> >>> On Mon, Nov 23, 2020 at 12:36:10PM +0800, Li, Aubrey wrote:
+> >>>>>> +#ifdef CONFIG_SCHED_CORE
+> >>>>>> +		/*
+> >>>>>> +		 * Skip this cpu if source task's cookie does not match
+> >>>>>> +		 * with CPU's core cookie.
+> >>>>>> +		 */
+> >>>>>> +		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
+> >>>>>> +			continue;
+> >>>>>> +#endif
+> >>>>>> +
+> >>>>>
+> >>>>> Any reason this is under an #ifdef? In sched_core_cookie_match() won't
+> >>>>> the check for sched_core_enabled() do the right thing even when
+> >>>>> CONFIG_SCHED_CORE is not enabed?> 
+> >>>> Yes, sched_core_enabled works properly when CONFIG_SCHED_CORE is not
+> >>>> enabled. But when CONFIG_SCHED_CORE is not enabled, it does not make
+> >>>> sense to leave a core scheduler specific function here even at compile
+> >>>> time. Also, for the cases in hot path, this saves CPU cycles to avoid
+> >>>> a judgment.
+> >>>
+> >>> No, that's nonsense. If it works, remove the #ifdef. Less (#ifdef) is
+> >>> more.
+> >>>
+> >>
+> >> Okay, I pasted the refined patch here.
+> >> @Joel, please let me know if you want me to send it in a separated thread.
+> >>
+> > 
+> > You still have a bunch of #ifdefs, can't we just do
+> > 
+> > #ifndef CONFIG_SCHED_CORE
+> > static inline bool sched_core_enabled(struct rq *rq)
+> > {
+> >         return false;
+> > }
+> > #endif
+> > 
+> > and frankly I think even that is not needed because there is a jump
+> > label __sched_core_enabled that tells us if sched_core is enabled or
+> > not.
+> 
+> Hmm..., I need another wrapper for CONFIG_SCHED_CORE specific variables.
+> How about this one?
+>
 
-Currently, this basic devicetree support includes GCC, RPMh clock, INTC
-and Debug UART.
+Much better :)
+ 
+> Thanks,
+> -Aubrey
+> 
+> From 61dac9067e66b5b9ea26c684c8c8235714bab38a Mon Sep 17 00:00:00 2001
+> From: Aubrey Li <aubrey.li@linux.intel.com>
+> Date: Thu, 26 Nov 2020 03:08:04 +0000
+> Subject: [PATCH] sched: migration changes for core scheduling
+> 
+>  - Don't migrate if there is a cookie mismatch
+>      Load balance tries to move task from busiest CPU to the
+>      destination CPU. When core scheduling is enabled, if the
+>      task's cookie does not match with the destination CPU's
+>      core cookie, this task will be skipped by this CPU. This
+>      mitigates the forced idle time on the destination CPU.
+> 
+>  - Select cookie matched idle CPU
+>      In the fast path of task wakeup, select the first cookie matched
+>      idle CPU instead of the first idle CPU.
+> 
+>  - Find cookie matched idlest CPU
+>      In the slow path of task wakeup, find the idlest CPU whose core
+>      cookie matches with task's cookie
+> 
+>  - Don't migrate task if cookie not match
+>      For the NUMA load balance, don't migrate task to the CPU whose
+>      core cookie does not match with task's cookie
+> 
+> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
+> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> Signed-off-by: Vineeth Remanan Pillai <viremana@linux.microsoft.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/sched/fair.c  | 57 ++++++++++++++++++++++++++++++++++++++++----
+>  kernel/sched/sched.h | 43 +++++++++++++++++++++++++++++++++
+>  2 files changed, 95 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index de82f88ba98c..70dd013dff1d 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -1921,6 +1921,13 @@ static void task_numa_find_cpu(struct task_numa_env *env,
+>  		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
+>  			continue;
+>  
+> +		/*
+> +		 * Skip this cpu if source task's cookie does not match
+> +		 * with CPU's core cookie.
+> +		 */
+> +		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
+> +			continue;
+> +
+>  		env->dst_cpu = cpu;
+>  		if (task_numa_compare(env, taskimp, groupimp, maymove))
+>  			break;
+> @@ -5867,11 +5874,15 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
+>  
+>  	/* Traverse only the allowed CPUs */
+>  	for_each_cpu_and(i, sched_group_span(group), p->cpus_ptr) {
+> +		struct rq *rq = cpu_rq(i);
+> +
+> +		if (!sched_core_cookie_match(rq, p))
+> +			continue;
+> +
+>  		if (sched_idle_cpu(i))
+>  			return i;
+>  
+>  		if (available_idle_cpu(i)) {
+> -			struct rq *rq = cpu_rq(i);
+>  			struct cpuidle_state *idle = idle_get_state(rq);
+>  			if (idle && idle->exit_latency < min_exit_latency) {
+>  				/*
+> @@ -6129,8 +6140,19 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>  	for_each_cpu_wrap(cpu, cpus, target) {
+>  		if (!--nr)
+>  			return -1;
+> -		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> -			break;
+> +
+> +		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu)) {
+> +			/*
+> +			 * If Core Scheduling is enabled, select this cpu
+> +			 * only if the process cookie matches core cookie.
+> +			 */
+> +			if (sched_core_enabled(cpu_rq(cpu))) {
+> +				if (__cookie_match(cpu_rq(cpu), p))
+> +					break;
+> +			} else {
+> +				break;
+> +			}
+> +		}
 
-Co-developed-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- arch/arm/boot/dts/Makefile           |   3 +-
- arch/arm/boot/dts/qcom-sdx55-mtp.dts |  27 ++++
- arch/arm/boot/dts/qcom-sdx55.dtsi    | 193 +++++++++++++++++++++++++++
- 3 files changed, 222 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm/boot/dts/qcom-sdx55-mtp.dts
- create mode 100644 arch/arm/boot/dts/qcom-sdx55.dtsi
+Isn't this better and equivalent?
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index ce66ffd5a1bb..1505c6cdc5ca 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -917,7 +917,8 @@ dtb-$(CONFIG_ARCH_QCOM) += \
- 	qcom-msm8974-sony-xperia-amami.dtb \
- 	qcom-msm8974-sony-xperia-castor.dtb \
- 	qcom-msm8974-sony-xperia-honami.dtb \
--	qcom-mdm9615-wp8548-mangoh-green.dtb
-+	qcom-mdm9615-wp8548-mangoh-green.dtb \
-+	qcom-sdx55-mtp.dtb
- dtb-$(CONFIG_ARCH_RDA) += \
- 	rda8810pl-orangepi-2g-iot.dtb \
- 	rda8810pl-orangepi-i96.dtb
-diff --git a/arch/arm/boot/dts/qcom-sdx55-mtp.dts b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-new file mode 100644
-index 000000000000..262660e6dd11
---- /dev/null
-+++ b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2020, Linaro Ltd.
-+ */
-+
-+/dts-v1/;
-+
-+#include "qcom-sdx55.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. SDX55 MTP";
-+	compatible = "qcom,sdx55-mtp", "qcom,sdx55";
-+	qcom,board-id = <0x5010008 0x0>;
-+
-+	aliases {
-+		serial0 = &blsp1_uart3;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&blsp1_uart3 {
-+	status = "ok";
-+};
-diff --git a/arch/arm/boot/dts/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom-sdx55.dtsi
-new file mode 100644
-index 000000000000..c236faf9726b
---- /dev/null
-+++ b/arch/arm/boot/dts/qcom-sdx55.dtsi
-@@ -0,0 +1,193 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * SDX55 SoC device tree source
-+ *
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2020, Linaro Ltd.
-+ */
-+
-+#include <dt-bindings/clock/qcom,rpmh.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/soc/qcom,rpmh-rsc.h>
-+
-+/ {
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+	qcom,msm-id = <357 0x10000>, <368 0x10000>, <418 0x10000>;
-+	interrupt-parent = <&intc>;
-+
-+	memory {
-+		device_type = "memory";
-+		reg = <0 0>;
-+	};
-+
-+	clocks {
-+		xo_board: xo-board {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <38400000>;
-+			clock-output-names = "xo_board";
-+		};
-+
-+		sleep_clk: sleep-clk {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <32000>;
-+		};
-+	};
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a7";
-+			reg = <0x0>;
-+			enable-method = "psci";
-+		};
-+	};
-+
-+	psci {
-+		compatible = "arm,psci-1.0";
-+		method = "smc";
-+	};
-+
-+	soc: soc {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges;
-+		compatible = "simple-bus";
-+
-+		gcc: clock-controller@100000 {
-+			compatible = "qcom,gcc-sdx55";
-+			reg = <0x100000 0x1f0000>;
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			clock-names = "bi_tcxo", "sleep_clk";
-+			clocks = <&rpmhcc RPMH_CXO_CLK>, <&sleep_clk>;
-+		};
-+
-+		blsp1_uart3: serial@831000 {
-+			compatible = "qcom,msm-uartdm-v1.4", "qcom,msm-uartdm";
-+			reg = <0x00831000 0x200>;
-+			interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&gcc 30>,
-+				 <&gcc 9>;
-+			clock-names = "core", "iface";
-+			status = "disabled";
-+		};
-+
-+		pdc: interrupt-controller@b210000 {
-+			compatible = "qcom,sdx55-pdc", "qcom,pdc";
-+			reg = <0x0b210000 0x30000>;
-+			qcom,pdc-ranges = <0 179 52>;
-+			#interrupt-cells = <3>;
-+			interrupt-parent = <&intc>;
-+			interrupt-controller;
-+		};
-+
-+		intc: interrupt-controller@17800000 {
-+			compatible = "qcom,msm-qgic2";
-+			interrupt-controller;
-+			interrupt-parent = <&intc>;
-+			#interrupt-cells = <3>;
-+			reg = <0x17800000 0x1000>,
-+			      <0x17802000 0x1000>;
-+		};
-+
-+		timer@17820000 {
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+			compatible = "arm,armv7-timer-mem";
-+			reg = <0x17820000 0x1000>;
-+			clock-frequency = <19200000>;
-+
-+			frame@17821000 {
-+				frame-number = <0>;
-+				interrupts = <GIC_SPI 7 0x4>,
-+					     <GIC_SPI 6 0x4>;
-+				reg = <0x17821000 0x1000>,
-+				      <0x17822000 0x1000>;
-+			};
-+
-+			frame@17823000 {
-+				frame-number = <1>;
-+				interrupts = <GIC_SPI 8 0x4>;
-+				reg = <0x17823000 0x1000>;
-+				status = "disabled";
-+			};
-+
-+			frame@17824000 {
-+				frame-number = <2>;
-+				interrupts = <GIC_SPI 9 0x4>;
-+				reg = <0x17824000 0x1000>;
-+				status = "disabled";
-+			};
-+
-+			frame@17825000 {
-+				frame-number = <3>;
-+				interrupts = <GIC_SPI 10 0x4>;
-+				reg = <0x17825000 0x1000>;
-+				status = "disabled";
-+			};
-+
-+			frame@17826000 {
-+				frame-number = <4>;
-+				interrupts = <GIC_SPI 11 0x4>;
-+				reg = <0x17826000 0x1000>;
-+				status = "disabled";
-+			};
-+
-+			frame@17827000 {
-+				frame-number = <5>;
-+				interrupts = <GIC_SPI 12 0x4>;
-+				reg = <0x17827000 0x1000>;
-+				status = "disabled";
-+			};
-+
-+			frame@17828000 {
-+				frame-number = <6>;
-+				interrupts = <GIC_SPI 13 0x4>;
-+				reg = <0x17828000 0x1000>;
-+				status = "disabled";
-+			};
-+
-+			frame@17829000 {
-+				frame-number = <7>;
-+				interrupts = <GIC_SPI 14 0x4>;
-+				reg = <0x17829000 0x1000>;
-+				status = "disabled";
-+			};
-+		};
-+
-+		apps_rsc: rsc@17840000 {
-+			compatible = "qcom,rpmh-rsc";
-+			reg = <0x17830000 0x10000>, <0x17840000 0x10000>;
-+			reg-names = "drv-0", "drv-1";
-+			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
-+			qcom,tcs-offset = <0xd00>;
-+			qcom,drv-id = <1>;
-+			qcom,tcs-config = <ACTIVE_TCS  2>, <SLEEP_TCS   2>,
-+					  <WAKE_TCS    2>, <CONTROL_TCS 1>;
-+
-+			rpmhcc: clock-controller {
-+				compatible = "qcom,sdx55-rpmh-clk";
-+				#clock-cells = <1>;
-+				clock-names = "xo";
-+				clocks = <&xo_board>;
-+			};
-+		};
-+	};
-+
-+	timer {
-+		compatible = "arm,armv7-timer";
-+		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-+			     <GIC_PPI 12 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-+			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-+			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
-+		clock-frequency = <19200000>;
-+	};
-+};
--- 
-2.25.1
+	if ((available_idle_cpu(cpu) || sched_idle_cpu(cpu)) &&
+		sched_core_cookie_match(cpu_rq(cpu), p))
+		break;
 
+>  	}
+>  
+>  	time = cpu_clock(this) - time;
+> @@ -7530,8 +7552,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+>  	 * We do not migrate tasks that are:
+>  	 * 1) throttled_lb_pair, or
+>  	 * 2) cannot be migrated to this CPU due to cpus_ptr, or
+> -	 * 3) running (obviously), or
+> -	 * 4) are cache-hot on their current CPU.
+> +	 * 3) task's cookie does not match with this CPU's core cookie
+> +	 * 4) running (obviously), or
+> +	 * 5) are cache-hot on their current CPU.
+>  	 */
+>  	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
+>  		return 0;
+> @@ -7566,6 +7589,13 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+>  		return 0;
+>  	}
+>  
+> +	/*
+> +	 * Don't migrate task if the task's cookie does not match
+> +	 * with the destination CPU's core cookie.
+> +	 */
+> +	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
+> +		return 0;
+> +
+>  	/* Record that we found atleast one task that could run on dst_cpu */
+>  	env->flags &= ~LBF_ALL_PINNED;
+>  
+> @@ -8792,6 +8822,23 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+>  					p->cpus_ptr))
+>  			continue;
+>  
+> +		if (sched_core_enabled(cpu_rq(this_cpu))) {
+> +			int i = 0;
+> +			bool cookie_match = false;
+> +
+> +			for_each_cpu(i, sched_group_span(group)) {
+> +				struct rq *rq = cpu_rq(i);
+> +
+> +				if (sched_core_cookie_match(rq, p)) {
+> +					cookie_match = true;
+> +					break;
+> +				}
+> +			}
+> +			/* Skip over this group if no cookie matched */
+> +			if (!cookie_match)
+> +				continue;
+> +		}
+> +
+
+Again, I think this can be refactored because sched_core_cookie_match checks
+for sched_core_enabled()
+
+	int i = 0;
+	bool cookie_match = false;
+	for_each_cpu(i, sched_group_span(group)) {
+		if (sched_core_cookie_match(cpu_rq(i), p))
+			break;
+	}
+	if (i >= nr_cpu_ids)
+		continue;
+
+> +			}
+> +			/* Skip over this group if no cookie matched */
+> +			if (!cookie_match)
+> +				continue;
+
+>  		local_group = cpumask_test_cpu(this_cpu,
+>  					       sched_group_span(group));
+>  
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index e72942a9ee11..8bb3b72d593c 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1135,6 +1135,40 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
+>  
+>  bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
+>  
+> +/*
+> + * Helper to check if the CPU's core cookie matches with the task's cookie
+> + * when core scheduling is enabled.
+> + * A special case is that the task's cookie always matches with CPU's core
+> + * cookie if the CPU is in an idle core.
+> + */
+> +static inline bool __cookie_match(struct rq *rq, struct task_struct *p)
+> +{
+> +	return rq->core->core_cookie == p->core_cookie;
+> +}
+> +
+> +static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
+> +{
+> +	bool idle_core = true;
+> +	int cpu;
+> +
+> +	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
+> +	if (!sched_core_enabled(rq))
+> +		return true;
+> +
+> +	for_each_cpu(cpu, cpu_smt_mask(cpu_of(rq))) {
+> +		if (!available_idle_cpu(cpu)) {
+> +			idle_core = false;
+> +			break;
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * A CPU in an idle core is always the best choice for tasks with
+> +	 * cookies.
+> +	 */
+> +	return idle_core || __cookie_match(rq, p);
+> +}
+> +
+>  extern void queue_core_balance(struct rq *rq);
+>  
+>  #else /* !CONFIG_SCHED_CORE */
+> @@ -1153,6 +1187,15 @@ static inline void queue_core_balance(struct rq *rq)
+>  {
+>  }
+>  
+> +static inline bool __cookie_match(struct rq *rq, struct task_struct *p)
+> +{
+> +	return true;
+> +}
+> +
+> +static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
+> +{
+> +	return true;
+> +}
+>  #endif /* CONFIG_SCHED_CORE */
+>  
+>  #ifdef CONFIG_SCHED_SMT
+> -- 
+> 2.17.1
+>
+
+Balbir Singh. 
