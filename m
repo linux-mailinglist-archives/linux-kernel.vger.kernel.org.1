@@ -2,261 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2692C59EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8BE2C59BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404258AbgKZRCQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Nov 2020 12:02:16 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:28419 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404240AbgKZRCO (ORCPT
+        id S2403976AbgKZRAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:00:47 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61356 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2403791AbgKZRAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:02:14 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-1-i3Sud2N6mq6oUpYQuDaA-1; Thu, 26 Nov 2020 12:02:08 -0500
-X-MC-Unique: 1-i3Sud2N6mq6oUpYQuDaA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A523805BFA;
-        Thu, 26 Nov 2020 17:02:06 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5390760BFA;
-        Thu, 26 Nov 2020 17:02:03 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 25/25] perf record: Add --buildid-mmap option to enable mmap's build id
-Date:   Thu, 26 Nov 2020 18:00:26 +0100
-Message-Id: <20201126170026.2619053-26-jolsa@kernel.org>
-In-Reply-To: <20201126170026.2619053-1-jolsa@kernel.org>
-References: <20201126170026.2619053-1-jolsa@kernel.org>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+        Thu, 26 Nov 2020 12:00:46 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AQGVSXw064087;
+        Thu, 26 Nov 2020 12:00:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=xLLYkQqQFU+OX7rJCIVxSIQbccOuUwR6E7EFl8NMsZs=;
+ b=X6Tu8KUGX44DlQ1Dlxlgp4jUsSIwqwQlzSiGqLmEIqwjbuMHG7pohUKez3lYTU3LUskR
+ jqSKk1bqDbYkTD1U05NXCGgCDXA+Mw3tT6QpCeVtKojq+jANRDQAbX9Aq1qJ8wUyme4m
+ v6EOYJiVTncGS2RwusY19tWks2mNILYVIziJPcG+/cZ0e81w4riERxz52mv1cHCe9rVL
+ 7NDRgVny+MGZd1ynRYVLHb9koqmbREI23iZL0jIbrJtK1jP9nC8Njwn42MaoKKG0aqKQ
+ 3FW5yo6To8PquPfPz8RGDoR4eNWiKdvhuu1OquBGYQFMYKVIbnhlP6pQll0b+MpbuTlk Aw== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3526nps8bx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 12:00:45 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AQGwD6b003406;
+        Thu, 26 Nov 2020 17:00:43 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 34xth8durw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Nov 2020 17:00:42 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AQH0dWi53084544
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Nov 2020 17:00:40 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC4494204D;
+        Thu, 26 Nov 2020 17:00:39 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 543724203F;
+        Thu, 26 Nov 2020 17:00:39 +0000 (GMT)
+Received: from oc3871087118.ibm.com (unknown [9.145.159.67])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 26 Nov 2020 17:00:39 +0000 (GMT)
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: [PATCH v3] s390/pci: fix CPU address in MSI for directed IRQ
+Date:   Thu, 26 Nov 2020 18:00:37 +0100
+Message-Id: <1606410037-11436-1-git-send-email-agordeev@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-26_06:2020-11-26,2020-11-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 spamscore=0
+ phishscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 clxscore=1011
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011260097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding --buildid-mmap option to enable build id in mmap2 events.
-It will only work if there's kernel support for that and it disables
-build id cache (implies --no-buildid).
+The directed MSIs are delivered to CPUs whose address is
+written to the MSI message data. The current code assumes
+that a CPU logical number (as it is seen by the kernel)
+is also that CPU address.
 
-It's also possible to enable it permanently via config option
-in ~.perfconfig file:
+The above assumption is not correct, as the CPU address
+is rather the value returned by STAP instruction. That
+value does not necessarily match the kernel logical CPU
+number.
 
-  [record]
-  build-id=mmap
-
-Also added build_id bit in the verbose output for perf_event_attr:
-
-  # perf record --buildid-mmap -vv
-  ...
-  perf_event_attr:
-    type                             1
-    size                             120
-    ...
-    build_id                         1
-
-Adding also missing text_poke bit.
-
-Acked-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Fixes: e979ce7bced2 ("s390/pci: provide support for CPU directed interrupts")
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
 ---
- tools/perf/Documentation/perf-config.txt  |  3 ++-
- tools/perf/Documentation/perf-record.txt  |  3 +++
- tools/perf/builtin-record.c               | 20 ++++++++++++++++++++
- tools/perf/util/evsel.c                   | 10 ++++++----
- tools/perf/util/perf_api_probe.c          | 10 ++++++++++
- tools/perf/util/perf_api_probe.h          |  1 +
- tools/perf/util/perf_event_attr_fprintf.c |  2 ++
- tools/perf/util/record.h                  |  1 +
- 8 files changed, 45 insertions(+), 5 deletions(-)
+ arch/s390/pci/pci_irq.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
-index e3672c5d801b..8a1c6c16821a 100644
---- a/tools/perf/Documentation/perf-config.txt
-+++ b/tools/perf/Documentation/perf-config.txt
-@@ -559,11 +559,12 @@ kmem.*::
- 
- record.*::
- 	record.build-id::
--		This option can be 'cache', 'no-cache' or 'skip'.
-+		This option can be 'cache', 'no-cache', 'skip' or 'mmap'.
- 		'cache' is to post-process data and save/update the binaries into
- 		the build-id cache (in ~/.debug). This is the default.
- 		But if this option is 'no-cache', it will not update the build-id cache.
- 		'skip' skips post-processing and does not update the cache.
-+		'mmap' skips post-processing and reads build-ids from MMAP events.
- 
- 	record.call-graph::
- 		This is identical to 'call-graph.record-mode', except it is
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 768888b9326a..1bcf51e24979 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -482,6 +482,9 @@ Specify vmlinux path which has debuginfo.
- --buildid-all::
- Record build-id of all DSOs regardless whether it's actually hit or not.
- 
-+--buildid-mmap::
-+Record build ids in mmap2 events, disables build id cache (implies --no-buildid).
-+
- --aio[=n]::
- Use <n> control blocks in asynchronous (Posix AIO) trace writing mode (default: 1, max: 4).
- Asynchronous mode is supported only when linking Perf tool with libc library
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index adf311d15d3d..47bae9d82d43 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -102,6 +102,7 @@ struct record {
- 	bool			no_buildid_cache;
- 	bool			no_buildid_cache_set;
- 	bool			buildid_all;
-+	bool			buildid_mmap;
- 	bool			timestamp_filename;
- 	bool			timestamp_boundary;
- 	struct switch_output	switch_output;
-@@ -2139,6 +2140,8 @@ static int perf_record_config(const char *var, const char *value, void *cb)
- 			rec->no_buildid_cache = true;
- 		else if (!strcmp(value, "skip"))
- 			rec->no_buildid = true;
-+		else if (!strcmp(value, "mmap"))
-+			rec->buildid_mmap = true;
- 		else
- 			return -1;
- 		return 0;
-@@ -2554,6 +2557,8 @@ static struct option __record_options[] = {
- 		   "file", "vmlinux pathname"),
- 	OPT_BOOLEAN(0, "buildid-all", &record.buildid_all,
- 		    "Record build-id of all DSOs regardless of hits"),
-+	OPT_BOOLEAN(0, "buildid-mmap", &record.buildid_mmap,
-+		    "Record build-id in map events"),
- 	OPT_BOOLEAN(0, "timestamp-filename", &record.timestamp_filename,
- 		    "append timestamp to output filename"),
- 	OPT_BOOLEAN(0, "timestamp-boundary", &record.timestamp_boundary,
-@@ -2657,6 +2662,21 @@ int cmd_record(int argc, const char **argv)
- 
- 	}
- 
-+	if (rec->buildid_mmap) {
-+		if (!perf_can_record_build_id()) {
-+			pr_err("Failed: no support to record build id in mmap events, update your kernel.\n");
-+			err = -EINVAL;
-+			goto out_opts;
-+		}
-+		pr_debug("Enabling build id in mmap2 events.\n");
-+		/* Enable mmap build id synthesizing. */
-+		symbol_conf.buildid_mmap2 = true;
-+		/* Enable perf_event_attr::build_id bit. */
-+		rec->opts.build_id = true;
-+		/* Disable build id cache. */
-+		rec->no_buildid = true;
-+	}
-+
- 	if (rec->opts.kcore)
- 		rec->data.is_dir = true;
- 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 1cad6051d8b0..749d806ee1d1 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1170,10 +1170,12 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 	if (opts->sample_weight)
- 		evsel__set_sample_bit(evsel, WEIGHT);
- 
--	attr->task  = track;
--	attr->mmap  = track;
--	attr->mmap2 = track && !perf_missing_features.mmap2;
--	attr->comm  = track;
-+	attr->task     = track;
-+	attr->mmap     = track;
-+	attr->mmap2    = track && !perf_missing_features.mmap2;
-+	attr->comm     = track;
-+	attr->build_id = track && opts->build_id;
-+
- 	/*
- 	 * ksymbol is tracked separately with text poke because it needs to be
- 	 * system wide and enabled immediately.
-diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_api_probe.c
-index 3840d02f0f7b..829af17a0867 100644
---- a/tools/perf/util/perf_api_probe.c
-+++ b/tools/perf/util/perf_api_probe.c
-@@ -98,6 +98,11 @@ static void perf_probe_text_poke(struct evsel *evsel)
- 	evsel->core.attr.text_poke = 1;
- }
- 
-+static void perf_probe_build_id(struct evsel *evsel)
-+{
-+	evsel->core.attr.build_id = 1;
-+}
-+
- bool perf_can_sample_identifier(void)
+diff --git a/arch/s390/pci/pci_irq.c b/arch/s390/pci/pci_irq.c
+index 743f257cf2cb..75217fb63d7b 100644
+--- a/arch/s390/pci/pci_irq.c
++++ b/arch/s390/pci/pci_irq.c
+@@ -103,9 +103,10 @@ static int zpci_set_irq_affinity(struct irq_data *data, const struct cpumask *de
  {
- 	return perf_probe_api(perf_probe_sample_identifier);
-@@ -172,3 +177,8 @@ bool perf_can_aux_sample(void)
+ 	struct msi_desc *entry = irq_get_msi_desc(data->irq);
+ 	struct msi_msg msg = entry->msg;
++	int cpu_addr = smp_cpu_get_cpu_address(cpumask_first(dest));
  
- 	return true;
- }
+ 	msg.address_lo &= 0xff0000ff;
+-	msg.address_lo |= (cpumask_first(dest) << 8);
++	msg.address_lo |= (cpu_addr << 8);
+ 	pci_write_msi_msg(data->irq, &msg);
+ 
+ 	return IRQ_SET_MASK_OK;
+@@ -238,6 +239,7 @@ int arch_setup_msi_irqs(struct pci_dev *pdev, int nvec, int type)
+ 	unsigned long bit;
+ 	struct msi_desc *msi;
+ 	struct msi_msg msg;
++	int cpu_addr;
+ 	int rc, irq;
+ 
+ 	zdev->aisb = -1UL;
+@@ -287,9 +289,15 @@ int arch_setup_msi_irqs(struct pci_dev *pdev, int nvec, int type)
+ 					 handle_percpu_irq);
+ 		msg.data = hwirq - bit;
+ 		if (irq_delivery == DIRECTED) {
++			if (msi->affinity)
++				cpu = cpumask_first(&msi->affinity->mask);
++			else
++				cpu = 0;
++			cpu_addr = smp_cpu_get_cpu_address(cpu);
 +
-+bool perf_can_record_build_id(void)
-+{
-+	return perf_probe_api(perf_probe_build_id);
-+}
-diff --git a/tools/perf/util/perf_api_probe.h b/tools/perf/util/perf_api_probe.h
-index d5506a983a94..f12ca55f509a 100644
---- a/tools/perf/util/perf_api_probe.h
-+++ b/tools/perf/util/perf_api_probe.h
-@@ -11,5 +11,6 @@ bool perf_can_record_cpu_wide(void);
- bool perf_can_record_switch_events(void);
- bool perf_can_record_text_poke_events(void);
- bool perf_can_sample_identifier(void);
-+bool perf_can_record_build_id(void);
- 
- #endif // __PERF_API_PROBE_H
-diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-index e67a227c0ce7..656a7fddfc26 100644
---- a/tools/perf/util/perf_event_attr_fprintf.c
-+++ b/tools/perf/util/perf_event_attr_fprintf.c
-@@ -134,6 +134,8 @@ int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
- 	PRINT_ATTRf(bpf_event, p_unsigned);
- 	PRINT_ATTRf(aux_output, p_unsigned);
- 	PRINT_ATTRf(cgroup, p_unsigned);
-+	PRINT_ATTRf(text_poke, p_unsigned);
-+	PRINT_ATTRf(build_id, p_unsigned);
- 
- 	PRINT_ATTRn("{ wakeup_events, wakeup_watermark }", wakeup_events, p_unsigned);
- 	PRINT_ATTRf(bp_type, p_unsigned);
-diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-index 266760ac9143..609e706f4282 100644
---- a/tools/perf/util/record.h
-+++ b/tools/perf/util/record.h
-@@ -49,6 +49,7 @@ struct record_opts {
- 	bool	      no_bpf_event;
- 	bool	      kcore;
- 	bool	      text_poke;
-+	bool	      build_id;
- 	unsigned int  freq;
- 	unsigned int  mmap_pages;
- 	unsigned int  auxtrace_mmap_pages;
+ 			msg.address_lo = zdev->msi_addr & 0xff0000ff;
+-			msg.address_lo |= msi->affinity ?
+-				(cpumask_first(&msi->affinity->mask) << 8) : 0;
++			msg.address_lo |= (cpu_addr << 8);
++
+ 			for_each_possible_cpu(cpu) {
+ 				airq_iv_set_data(zpci_ibv[cpu], hwirq, irq);
+ 			}
 -- 
-2.26.2
+2.26.0
 
