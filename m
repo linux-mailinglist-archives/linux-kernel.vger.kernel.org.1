@@ -2,78 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDAE2C554C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C3F2C554E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 14:29:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390042AbgKZN2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 08:28:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
+        id S2390031AbgKZN2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 08:28:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390030AbgKZN2R (ORCPT
+        with ESMTP id S2389807AbgKZN2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:28:17 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D60C0613D4;
-        Thu, 26 Nov 2020 05:28:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ari7OxjV4+Br2gS6ab2HYMH0icZaForhuiN0IThPPRE=; b=ZNRZ5ap4VyQbiLbNa1RUTGJwN5
-        pR0gi5S50T2EEZPWjQfdgNR9UuBWj6ykPj8qNUMYU04BN4J3JnYaSre8Ic/lx0nh12yVbfwwof/rC
-        gKhkpYICZMheAiORuQvHe3xlNt6r91V6ChC4GqnN/na/SmgBQJpV0HkiUubvvG6DcaFmvvQRy0bOz
-        HbeaIHCFEzSbmLUOutek9CKHtdSPJ+pmvNZs1wNKu/0fQgwRQGRp7vaTdQU5r0PVNpbB76liiLBrI
-        ozNke1HR4/CGq0eiV6ZLqwDlRnU04p26lsTwI08fJvp8rAfTT4b8e5ozvpD+KhRdgnFemuuBGHwaY
-        gbS2ukCg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kiHJL-0005zK-E4; Thu, 26 Nov 2020 13:27:47 +0000
-Date:   Thu, 26 Nov 2020 13:27:47 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     kan.liang@linux.intel.com, mingo@kernel.org, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, eranian@google.com, christophe.leroy@csgroup.eu,
-        npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        mpe@ellerman.id.au, will@kernel.org, aneesh.kumar@linux.ibm.com,
-        sparclinux@vger.kernel.org, davem@davemloft.net,
-        catalin.marinas@arm.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com
-Subject: Re: [PATCH v2 3/6] perf/core: Fix arch_perf_get_page_size()
-Message-ID: <20201126132747.GS4327@casper.infradead.org>
-References: <20201126120114.071913521@infradead.org>
- <20201126121121.164675154@infradead.org>
- <20201126123458.GO4327@casper.infradead.org>
- <20201126124207.GM3040@hirez.programming.kicks-ass.net>
- <20201126125606.GR4327@casper.infradead.org>
- <20201126130619.GI2414@hirez.programming.kicks-ass.net>
+        Thu, 26 Nov 2020 08:28:46 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E813C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:28:44 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id 23so2142345wrc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 05:28:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=j3jIfABHebgIQYyFTFzGmbyYJsJoQbpfkOYYN2ZM7fo=;
+        b=ZV/eZfIM43W03jQJiomsNpvL3M8Xh3ZEDa9SgEFel/1eJgOCQRYNDwnjNphuFPVUe6
+         Cu75OlfOHnbtg1VPxD16IwF+kqVWISdtQr7/IRrg6HPxJ0zR4hdIqTXJ63SLaRyc7gGJ
+         zACoRj3zLKrxWyfpMeOSgLIBTqTCAPyEYD0b9BecjSqrb1LSdSnmRS95P2/X6snZKlbB
+         b4PBHCSLFZ4AYJb0pnowd2rpv5vbOjVFQf91wUnS50wMFC/mIaOrlyA1xLHJ6Erkk2NO
+         Gl55jhGewJFv/NI3Oq0nu6iCPtl2Nk8qqGFykzALj/kWMqnZ3B/aF0coK2WgRBgJwa0h
+         5nfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=j3jIfABHebgIQYyFTFzGmbyYJsJoQbpfkOYYN2ZM7fo=;
+        b=tE7jR/IRGireMYrrvddg+Q0AcE6IDLZ9zOgk3UztN2Y9W/CDQ2aFtQkqpzOP3AeUtO
+         Jk21aMQQROYI4aj3VkEBXfKyqpfi70YebGsU2UdG6nAXS44dAnVy9VCBITeDheTvQxuY
+         YC1TmbAcwQU1mg2o94JPcojYP80ABj00AdS7x0unR+XoglMgRzWsL6vPuzQW+hUk/0e3
+         7q67rrwLpye/kgdo/DKJGCkaXcdodACvrnmuzTuceprhBrqp/+F2GxzrMAuXPUE4XYtW
+         buOm+w47IwcbzPyAbPkbtpCjc+IJVBeK/0ujLik+kfAGN0vvRxGkFLi4uXQ1kaIDxpyA
+         J1VA==
+X-Gm-Message-State: AOAM5324nGQbOJBJVxTAKYms5vRuhrzgml8niCRujPnqv0YYrtVMmZFN
+        /p8X9QdkR2pLQQ5ePfmiL+fnhQ==
+X-Google-Smtp-Source: ABdhPJxjSIJGgNUpcnxPjjDIW+t5f0FHzaGLdtLotQpqb9VBHJar1Tt99YBGNFo23H7IPjUPjwYxMQ==
+X-Received: by 2002:adf:fd06:: with SMTP id e6mr3897159wrr.206.1606397323119;
+        Thu, 26 Nov 2020 05:28:43 -0800 (PST)
+Received: from dell ([91.110.221.235])
+        by smtp.gmail.com with ESMTPSA id b18sm9316605wrt.54.2020.11.26.05.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 05:28:42 -0800 (PST)
+Date:   Thu, 26 Nov 2020 13:28:40 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linus.walleij@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: [PATCH v3 16/25] arch: arm: mach-at91: pm: Move prototypes to
+ mutually included header
+Message-ID: <20201126132840.GD2455276@dell>
+References: <20200713144930.1034632-1-lee.jones@linaro.org>
+ <20200713144930.1034632-17-lee.jones@linaro.org>
+ <20201112093918.GV2063125@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201126130619.GI2414@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112093918.GV2063125@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 02:06:19PM +0100, Peter Zijlstra wrote:
-> On Thu, Nov 26, 2020 at 12:56:06PM +0000, Matthew Wilcox wrote:
-> > On Thu, Nov 26, 2020 at 01:42:07PM +0100, Peter Zijlstra wrote:
-> > > +	pgdp = pgd_offset(mm, addr);
-> > > +	pgd = READ_ONCE(*pgdp);
-> > 
-> > I forget how x86-32-PAE maps to Linux's PGD/P4D/PUD/PMD scheme, but
-> > according to volume 3, section 4.4.2, PAE paging uses a 64-bit PDE, so
-> > whether a PDE is a PGD or a PMD, we're only reading it with READ_ONCE
-> > rather than the lockless-retry method used by ptep_get_lockless().
-> > So it's potentially racy?  Do we need a pmdp_get_lockless() or
-> > pgdp_get_lockless()?
-> 
-> Oh gawd... this isn't new here though, right? Current gup_fast also gets
-> that wrong, if it is in deed wrong.
-> 
-> I suppose it's a race far more likely today, with THP and all, than it
-> ever was back then.
+Both the caller and the supplier's source file should have access to
+the include file containing the prototypes.
 
-Right, it's not new.  I wouldn't block this patchset for that fix.
-Just want to get the problem on your radar ;-)  I just never reviewed
-the gup fast codepath before, and this jumped out at me.
+Fixes the following W=1 kernel build warning(s):
+
+ drivers/pinctrl/pinctrl-at91.c:1637:6: warning: no previous prototype for ‘at91_pinctrl_gpio_suspend’ [-Wmissing-prototypes]
+ 1637 | void at91_pinctrl_gpio_suspend(void)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/pinctrl/pinctrl-at91.c:1661:6: warning: no previous prototype for ‘at91_pinctrl_gpio_resume’ [-Wmissing-prototypes]
+ 1661 | void at91_pinctrl_gpio_resume(void)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~
+
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ arch/arm/mach-at91/pm.c        | 19 ++++++++-----------
+ drivers/pinctrl/pinctrl-at91.c |  2 ++
+ include/soc/at91/pm.h          | 16 ++++++++++++++++
+ 3 files changed, 26 insertions(+), 11 deletions(-)
+ create mode 100644 include/soc/at91/pm.h
+
+diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
+index 120f9aa6fff32..90dcdfe3b3d0d 100644
+--- a/arch/arm/mach-at91/pm.c
++++ b/arch/arm/mach-at91/pm.c
+@@ -17,6 +17,8 @@
+ #include <linux/clk/at91_pmc.h>
+ #include <linux/platform_data/atmel.h>
+ 
++#include <soc/at91/pm.h>
++
+ #include <asm/cacheflush.h>
+ #include <asm/fncpy.h>
+ #include <asm/system_misc.h>
+@@ -25,17 +27,6 @@
+ #include "generic.h"
+ #include "pm.h"
+ 
+-/*
+- * FIXME: this is needed to communicate between the pinctrl driver and
+- * the PM implementation in the machine. Possibly part of the PM
+- * implementation should be moved down into the pinctrl driver and get
+- * called as part of the generic suspend/resume path.
+- */
+-#ifdef CONFIG_PINCTRL_AT91
+-extern void at91_pinctrl_gpio_suspend(void);
+-extern void at91_pinctrl_gpio_resume(void);
+-#endif
+-
+ struct at91_soc_pm {
+ 	int (*config_shdwc_ws)(void __iomem *shdwc, u32 *mode, u32 *polarity);
+ 	int (*config_pmc_ws)(void __iomem *pmc, u32 mode, u32 polarity);
+@@ -326,6 +317,12 @@ static void at91_pm_suspend(suspend_state_t state)
+ static int at91_pm_enter(suspend_state_t state)
+ {
+ #ifdef CONFIG_PINCTRL_AT91
++	/*
++	 * FIXME: this is needed to communicate between the pinctrl driver and
++	 * the PM implementation in the machine. Possibly part of the PM
++	 * implementation should be moved down into the pinctrl driver and get
++	 * called as part of the generic suspend/resume path.
++	 */
+ 	at91_pinctrl_gpio_suspend();
+ #endif
+ 
+diff --git a/drivers/pinctrl/pinctrl-at91.c b/drivers/pinctrl/pinctrl-at91.c
+index 72edc675431ce..0a7e10d39505c 100644
+--- a/drivers/pinctrl/pinctrl-at91.c
++++ b/drivers/pinctrl/pinctrl-at91.c
+@@ -23,6 +23,8 @@
+ /* Since we request GPIOs from ourself */
+ #include <linux/pinctrl/consumer.h>
+ 
++#include <soc/at91/pm.h>
++
+ #include "pinctrl-at91.h"
+ #include "core.h"
+ 
+diff --git a/include/soc/at91/pm.h b/include/soc/at91/pm.h
+new file mode 100644
+index 0000000000000..7a41e53a3ffa3
+--- /dev/null
++++ b/include/soc/at91/pm.h
+@@ -0,0 +1,16 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Atmel Power Management
++ *
++ * Copyright (C) 2020 Atmel
++ *
++ * Author: Lee Jones <lee.jones@linaro.org>
++ */
++
++#ifndef __SOC_ATMEL_PM_H
++#define __SOC_ATMEL_PM_H
++
++void at91_pinctrl_gpio_suspend(void);
++void at91_pinctrl_gpio_resume(void);
++
++#endif /* __SOC_ATMEL_PM_H */
+-- 
+2.25.1
