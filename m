@@ -2,112 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871A32C4BB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 00:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 818682C4BBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 01:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725776AbgKYX5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 18:57:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727315AbgKYX5Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 18:57:24 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA42FC0617A7
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 15:57:23 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id d9so142540qke.8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 15:57:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1gLJhkwZL5WHnwEIFNB/JO9CIv8V2CHzH3Td89zgurk=;
-        b=GSfuslRTJrgxqEjDVUBmPEGmyMIn2pC+5TfmYI0jmUTxknWfVqTuN+vWRct7yucSZb
-         /pNmb3h40HTTGcy3Ru1Co7qqVywsR8Npt3aXTjec65ac4TIWAh5jwL1Gt5kQhOeGDdZ2
-         Jtx16L3J0Ct2uGH7EcUaMgwvDmWbcOqUUIUFzOSrVcb7vwyb7rQx/d3vEIaOXKEIHCT5
-         VWW0is8j2/kxqkVEwgvNjDgJNXvPtSpiqhfXUZTgg4kDxUPLVDwlhqSd42OX8SIB0MyG
-         bhMCpQFCPF/wUgJcMI4+CjUNy8JwyOaqJPOHHoLhXx4N9ssLqfFUMA9SW1xc62E2wZ8I
-         XxaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1gLJhkwZL5WHnwEIFNB/JO9CIv8V2CHzH3Td89zgurk=;
-        b=kQiLUJ7zlCrN4y33gGNct4jvajUZFObjaLv4lukXfHb47KL0DAfW0s0+JQvWk09OLh
-         bkLHkN5TcC32bZnqPOild9mkDY9nTnVVfpVb1mp4vVpoZbw6fMMAUSHMU5cTPsL5UmzS
-         kIM3KdocYSknwLoBB2JECqi9hCXQTV2E770yDO7lCUFF8D2+kpigdhfZWIQ08/PiioLs
-         KUNDY9bJGid1SgG66MzdZWyDcJPMuEYRAt372+X34MfWvmj0TK9iS38loXZFPDRcGZZh
-         Lgt+rzJuhcONg6ufouqtaJNPVU3XKo6VP943TP0m1iXS3JEmWCEYRofT3MLkBFInbcTO
-         13iQ==
-X-Gm-Message-State: AOAM533GnTAeC4cIpEiRZ3Qh4bX7Jg5p3MME2PQ2KcK8TEO3ZpQoapvf
-        65JuCIH460EgX2Lnx394ePpsIA==
-X-Google-Smtp-Source: ABdhPJyaalvrOWdezNgB6SjAER/qll6NTs9Dt1njWus9sIdv1t5iA8R0eLQMngEdaAP+frmCSD+eGg==
-X-Received: by 2002:a37:4893:: with SMTP id v141mr574084qka.361.1606348642398;
-        Wed, 25 Nov 2020 15:57:22 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id x19sm901590qtr.65.2020.11.25.15.57.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 15:57:21 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ki4f2-001QAA-Pf; Wed, 25 Nov 2020 19:57:20 -0400
-Date:   Wed, 25 Nov 2020 19:57:20 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Linux MM <linux-mm@kvack.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Brian Paul <brianp@vmware.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>
-Subject: Re: [PATCH] drm/ttm: don't set page->mapping
-Message-ID: <20201125235720.GR5487@ziepe.ca>
-References: <20201125162532.1299794-1-daniel.vetter@ffwll.ch>
- <20201125162532.1299794-5-daniel.vetter@ffwll.ch>
- <CAKMK7uGXfqaPUtnX=VgA3tFn3S+Gt9GV+kPguakZ6FF_n8LKuA@mail.gmail.com>
- <20201125180606.GQ5487@ziepe.ca>
- <20201125181129.GA1858@infradead.org>
+        id S1728545AbgKZAA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 19:00:58 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:50598 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728350AbgKZAA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 19:00:58 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ki4iP-008tGk-Qz; Thu, 26 Nov 2020 01:00:49 +0100
+Date:   Thu, 26 Nov 2020 01:00:49 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Fugang Duan <fugang.duan@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>, stefan.agner@toradex.com,
+        krzk@kernel.org, Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [RFC 0/4] net: l2switch: Provide support for L2 switch on i.MX28
+ SoC
+Message-ID: <20201126000049.GL2073444@lunn.ch>
+References: <20201125232459.378-1-lukma@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201125181129.GA1858@infradead.org>
+In-Reply-To: <20201125232459.378-1-lukma@denx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 06:11:29PM +0000, Christoph Hellwig wrote:
-> On Wed, Nov 25, 2020 at 02:06:06PM -0400, Jason Gunthorpe wrote:
-> > It uses a empty 'cover-letter' commit and automatically transforms it
-> > into exactly the right stuff. Keeps track of everything you send in
-> > git, and there is a little tool to auto-run git range-diff to help
-> > build change logs..
-> > 
-> > https://github.com/jgunthorpe/Kernel-Maintainer-Tools/blob/master/gj_tools/cmd_send_patches.py
-> > 
-> > I've been occasionaly wondering if I should suggest Konstantin add a
-> > sending side to b4, maybe using some of those ideas..
-> > 
-> > (careful if you run it, it does autosend without prompting)
-> 
-> The looks pretty fancy.  Here is my trivial patchbomb.sh script
-> 
-> #!/bin/sh
-> 
-> COVERLETTER=$1
-> PATCHES=$2
-> 
-> git send-email --annotate --to-cover --cc-cover $1 $2
-> 
-> still needs the git basecommit..endcommit notation, but it fires
-> up the series for review.
+On Thu, Nov 26, 2020 at 12:24:55AM +0100, Lukasz Majewski wrote:
+> This is the first attempt to add support for L2 switch available on some NXP
+> devices - i.e. iMX287 or VF610. This patch set uses common FEC and DSA code.
 
-annotate is OK, I used that for a long time..
+Interesting. I need to take another look at the Vybrid manual. Last
+time i looked, i was more thinking of a pure switchdev driver, not a
+DSA driver. So i'm not sure this is the correct architecture. But has
+been a while since i looked at the datasheet.
 
-My main gripe was it didn't setup the to/cc until after the annotate
-editor closes.
-
-Jason
+    Andrew
