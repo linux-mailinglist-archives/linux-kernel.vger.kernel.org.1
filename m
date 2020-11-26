@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307A62C5138
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1292C513C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731403AbgKZJ2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 04:28:21 -0500
-Received: from smtprelay0125.hostedemail.com ([216.40.44.125]:52964 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726721AbgKZJ2T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 04:28:19 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id EF36F182CF666;
-        Thu, 26 Nov 2020 09:28:17 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:559:599:800:960:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2525:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:6235:7514:7557:7875:9010:9025:10004:10400:10848:11026:11232:11658:11914:12043:12294:12297:12438:12555:12740:12895:12986:13019:13095:13255:13439:13894:14181:14659:14721:21063:21080:21221:21324:21433:21451:21627:21660:21811:21939:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:110,LUA_SUMMARY:none
-X-HE-Tag: snake52_100d3822737e
-X-Filterd-Recvd-Size: 3167
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 26 Nov 2020 09:28:16 +0000 (UTC)
-Message-ID: <dbc8d300b4b53dfc3e62d0400d58865e6d3c14f8.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: add warning for unnecessary use of
- %h[xudi] and %hh[xudi]
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Thu, 26 Nov 2020 01:28:15 -0800
-In-Reply-To: <20201126084623.39178-1-dwaipayanray1@gmail.com>
-References: <20201126084623.39178-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S2389112AbgKZJ2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:28:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730060AbgKZJ2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 04:28:54 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3E352173E;
+        Thu, 26 Nov 2020 09:28:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606382932;
+        bh=RWj4wX5AYIaChRd8iz/VAmF+RKCOhZ3XebOPiy20CRc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xGyHf780VVINu9Z8rovYPhKkDhHxt2/ZZAkNAEA2w1e9P/0oWX3estJ9qnGW4O6sQ
+         RO7aIg121TVU0aEsYdYCD4L8emQqwZGsU07VaPYXvluFznXuGlB+ONF+SeyzeQxMSx
+         n4Atnh+tg15SfEHwjtZHZXL5X5gAiN+CAGtWTl2M=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kiDa6-00DlGl-K4; Thu, 26 Nov 2020 09:28:50 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 26 Nov 2020 09:28:50 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com, lenb@kernel.org,
+        rjw@rjwysocki.net, gregkh@linuxfoundation.org, tglx@linutronix.de,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] driver core: platform: Add platform_put_irq()
+In-Reply-To: <1606324841-217570-4-git-send-email-john.garry@huawei.com>
+References: <1606324841-217570-1-git-send-email-john.garry@huawei.com>
+ <1606324841-217570-4-git-send-email-john.garry@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <f6fb9ff74c8b361a592a6a4ceebd032d@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: john.garry@huawei.com, jejb@linux.ibm.com, martin.petersen@oracle.com, lenb@kernel.org, rjw@rjwysocki.net, gregkh@linuxfoundation.org, tglx@linutronix.de, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, linuxarm@huawei.com, linux-acpi@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-26 at 14:16 +0530, Dwaipayan Ray wrote:
-> Modifiers %h and %hh should never be used.
+On 2020-11-25 17:20, John Garry wrote:
+> Add a function to tear down the work which was done in 
+> platform_get_irq()
+> for when the device driver is done with the irq.
 > 
-> Commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use
-> of unnecessary %h[xudi] and %hh[xudi]") specifies that:
+> For ACPI companion devices the irq resource is set as disabled, as this
+> resource is configured from platform_get_irq()->acpi_irq_get() and 
+> requires
+> resetting.
 > 
-> "Standard integer promotion is already done and %hx and %hhx is useless
-> so do not encourage the use of %hh[xudi] or %h[xudi]."
-> 
-> "The "h" and "hh" things should never be used. The only reason for them
-> being used if you have an "int", but you want to print it out as a
-> "char" (and honestly, that is a really bad reason, you'd be better off
-> just using a proper cast to make the code more obvious)."
-> 
-> Add a new check to emit a warning on finding an unneeded use of %h or
-> %hh modifier.
-> 
-> Link: https://lore.kernel.org/lkml/4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com/
-> 
-> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> Signed-off-by: John Garry <john.garry@huawei.com>
 > ---
-> Changes in v2:
-> - Use $logFunctions instead of the manual list.
-> - Relocate the check to after logging continuations check.
-> - Remove perl_version_ok condition which is unneeded here.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -6027,6 +6027,18 @@ sub process {
->  			     "Avoid logging continuation uses where feasible\n" . $herecurr);
->  		}
+>  drivers/base/platform.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
-> +# check for unnecessary use of %h[xudi] and %hh[xudi] in logging functions
-> +		if (defined $stat &&
-> +		    $line =~ /\b$logFunctions\s*\(/) {
-> +			my $lc = $stat =~ tr@\n@@;
-> +			$lc = $lc + $linenr;
-> +			my $stat_real = get_stat_real($linenr, $lc);
-> +			if ($stat_real =~ /\"[^\"]*%[\d\.\*\-]*h+[idux].*\"/i) {
-> +				WARN("UNNECESSARY_MODIFIER",
-> +				     "Unnecessary use of modifiers %h[xudi] or %hh[xudi]\n" . "$here\n$stat_real\n");
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index 88aef93eb4dd..3eeda3746701 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -289,6 +289,20 @@ int platform_irq_count(struct platform_device 
+> *dev)
+>  }
+>  EXPORT_SYMBOL_GPL(platform_irq_count);
+> 
+> +void platform_put_irq(struct platform_device *dev, unsigned int num)
+> +{
+> +	unsigned int virq = platform_get_irq(dev, num);
 
-o Why not capture the group and show the actual integer format portion here?
-  (%[\d\.\*\-]*h+[idux])
-o This might also show every unnecessary use of %h. (using while (.../g)
-o The .*\" isn't useful.
-o The /i is probably wrong.
-o Perhaps this could use a --fix line if the format is on the same line
-  as $logFunctions
-o Perhaps the message should say something about integer promotion.
-  Maybe something like:
-  "Integer promotion: using 'h' in '$1' is unnecessary\n"
+I find it pretty odd to have to recompute the interrupt number,
+which in turn results in a domain lookup. It things were refcounted
+(they aren't yet), irq_dispose_mapping() would have no effect.
 
+<pedant>
+It also goes against the usual construct where if you obtain an object
+based on some parameters, the release happens by specifying the object
+itself, and not the parameters that lead to the object.
+</pedant>
 
+> +
+> +	irq_dispose_mapping(virq);
+> +	if (has_acpi_companion(&dev->dev)) {
+> +		struct resource *r = platform_get_resource(dev, IORESOURCE_IRQ,
+> +							   num);
+> +
+> +		if (r)
+> +			acpi_dev_irqresource_disabled(r, 0);
 
+It looks to me that the ACPI thing is what needs to be promoted to a
+first class function, releasing all the resources that have used by
+a given device.
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
