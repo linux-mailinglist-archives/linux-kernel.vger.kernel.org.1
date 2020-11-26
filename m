@@ -2,131 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB902C5AB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1AE2C5AB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404114AbgKZRfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 12:35:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:41610 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403842AbgKZRfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:35:42 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B2F331B;
-        Thu, 26 Nov 2020 09:35:41 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.30.234])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B5C053F23F;
-        Thu, 26 Nov 2020 09:35:37 -0800 (PST)
-Date:   Thu, 26 Nov 2020 17:35:34 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 04/23] arm64: Move MAIR_EL1_SET to asm/memory.h
-Message-ID: <20201126173534.GE38486@C02TD0UTHF1T.local>
-References: <20201126155421.14901-1-dbrazdil@google.com>
- <20201126155421.14901-5-dbrazdil@google.com>
+        id S2404325AbgKZRfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:35:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403842AbgKZRfw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 12:35:52 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C56FC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:35:51 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id l206so2984938oif.12
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 09:35:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jXRWgBkcCar10/HFUqu1XeMHw3BU4LMAJKWRFNlNPJE=;
+        b=QYWwF5bQ19HsdP7eN+nzWMeKGdRMZ3nIg9cIX6eqkbtKmoz2PQAsEItEuiAUJhFsj6
+         l3zsaj0YijlFdsXCTBsEkMuF0gn8RzcqGWxdicredRcBkcw208wBGKUJs1FUxw2FlmVb
+         6kJbVbWfmiFGSXJoRIGUa8pg+8qijHknZnK/xFLmLmAF124BJDw4pqVUKAiGuakO1xAg
+         5nKp6JHowbL2FjPd0/xso6d4mdZVDqOxS9N3ZMqMJnHZCZ9htFsrZ+Er3/oZjMUdx6lg
+         yQTEpxcmaNC3nfW0h5otmoa7rgumvizs+Y/JoRn5AF8J1D3e8UaIkaTsZMRM8ORLW3Vh
+         a5jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jXRWgBkcCar10/HFUqu1XeMHw3BU4LMAJKWRFNlNPJE=;
+        b=k978GhU+8IJgPBtOYgnwU1pyiHj+dh36gyobmEWrElYZjONC4j07339JBCwGHwME76
+         49UuRJ9VsvidSL3g+6RUh0MQrFwe9hl3zR08jb+f7g7DnPYQg5RnYQplXXuTGoa525c+
+         qyms+kXs41PWX6uQD1q3zPlJHu8K/mVQSFLYZTG4sWd+EUQ+GtG8y2xzuGoFs8IhXMA9
+         iwHlPrpHOFaXd6CVyMDrsiq+sFwKgeKQKwxJlqI6BoOuaN4lIK/QYEB6yNunS+/L1hxC
+         U5rYu6F40MWz4v8m2gUm3JRIuzzdDkX5UXTmX5lpTsYFPvKZYlbfvecSRRMP3zJhNgft
+         9NQA==
+X-Gm-Message-State: AOAM5335VFJFZWVnu18Xj3bW569VGkL23PJbrY3aySCJV8/BFf7E1LXf
+        xbz3iBrUh1sadqNQB6y4gnPoAg==
+X-Google-Smtp-Source: ABdhPJxX5a371w/DpR/MK/IFWBYEx1W6uSAqDhguLOSgJP4+ra58Jl9NPbHyu8Acw++1zzIsQ8cO5Q==
+X-Received: by 2002:aca:38c6:: with SMTP id f189mr2676928oia.61.1606412150567;
+        Thu, 26 Nov 2020 09:35:50 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 11sm3206406oty.65.2020.11.26.09.35.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 09:35:49 -0800 (PST)
+Date:   Thu, 26 Nov 2020 11:35:48 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] regulator: qcom-rpmh: Add support for SDX55
+Message-ID: <X7/ndJsUbRkdmQPq@builder.lan>
+References: <20201126093018.1085594-1-vkoul@kernel.org>
+ <20201126093018.1085594-2-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126155421.14901-5-dbrazdil@google.com>
+In-Reply-To: <20201126093018.1085594-2-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 03:54:02PM +0000, David Brazdil wrote:
-> KVM currently initializes MAIR_EL2 to the value of MAIR_EL1. In
-> preparation for initializing MAIR_EL2 before MAIR_EL1, move the constant
-> into a shared header file. Since it is used for EL1 and EL2, rename to
-> MAIR_ELx_SET.
+On Thu 26 Nov 03:30 CST 2020, Vinod Koul wrote:
+
+> Add support from RPMH regulators found in SDX55 platform
 > 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
 > ---
->  arch/arm64/include/asm/memory.h | 13 +++++++++++++
->  arch/arm64/mm/proc.S            | 15 +--------------
->  2 files changed, 14 insertions(+), 14 deletions(-)
+>  drivers/regulator/qcom-rpmh-regulator.c | 31 +++++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
 > 
-> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-> index cd61239bae8c..54a22cb5b17b 100644
-> --- a/arch/arm64/include/asm/memory.h
-> +++ b/arch/arm64/include/asm/memory.h
-> @@ -152,6 +152,19 @@
->  #define MT_S2_FWB_NORMAL	6
->  #define MT_S2_FWB_DEVICE_nGnRE	1
+> diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
+> index d488325499a9..e673d48b31a1 100644
+> --- a/drivers/regulator/qcom-rpmh-regulator.c
+> +++ b/drivers/regulator/qcom-rpmh-regulator.c
+> @@ -930,6 +930,33 @@ static const struct rpmh_vreg_init_data pm6150l_vreg_data[] = {
+>  	{},
+>  };
 >  
-> +/*
-> + * Default MAIR_ELx. MT_NORMAL_TAGGED is initially mapped as Normal memory and
-> + * changed during __cpu_setup to Normal Tagged if the system supports MTE.
-> + */
-> +#define MAIR_ELx_SET							\
-> +	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
-> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
-> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
-> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
-> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
-> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
-> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
-
-Patch 7 initializes MAIR_EL2 with this directly rather than copying it
-from MAIR_EL1, which means that MT_NORMAL_TAGGED will never be tagged
-within the nVHE hyp code.
-
-Is that expected? I suspect it's worth a comment here (introduced in
-patch 7), just to make that clear.
-
-Otherwise this looks fine to me.
-
-Thanks,
-Mark.
-
-
+> +static const struct rpmh_vreg_init_data pmx55_vreg_data[] = {
+> +	RPMH_VREG("smps1",   "smp%s1",    &pmic5_ftsmps510, "vdd-s1"),
+> +	RPMH_VREG("smps2",   "smp%s2",    &pmic5_hfsmps510, "vdd-s2"),
+> +	RPMH_VREG("smps3",   "smp%s3",    &pmic5_hfsmps510, "vdd-s3"),
+> +	RPMH_VREG("smps4",   "smp%s4",    &pmic5_hfsmps510, "vdd-s4"),
+> +	RPMH_VREG("smps5",   "smp%s5",    &pmic5_hfsmps510, "vdd-s5"),
+> +	RPMH_VREG("smps6",   "smp%s6",    &pmic5_ftsmps510, "vdd-s6"),
+> +	RPMH_VREG("smps7",   "smp%s7",    &pmic5_hfsmps510, "vdd-s7"),
+> +	RPMH_VREG("ldo1",    "ldo%s1",    &pmic5_nldo,      "vdd-l1-l2"),
+> +	RPMH_VREG("ldo2",    "ldo%s2",    &pmic5_nldo,      "vdd-l1-l2"),
+> +	RPMH_VREG("ldo3",    "ldo%s3",    &pmic5_nldo,      "vdd-l3-l9"),
+> +	RPMH_VREG("ldo4",    "ldo%s4",    &pmic5_nldo,      "vdd-l4-l12"),
+> +	RPMH_VREG("ldo5",    "ldo%s5",    &pmic5_pldo,      "vdd-l5-l6"),
+> +	RPMH_VREG("ldo6",    "ldo%s6",    &pmic5_pldo,      "vdd-l5-l6"),
+> +	RPMH_VREG("ldo7",    "ldo%s7",    &pmic5_nldo,      "vdd-l7-l8"),
+> +	RPMH_VREG("ldo8",    "ldo%s8",    &pmic5_nldo,      "vdd-l7-l8"),
+> +	RPMH_VREG("ldo9",    "ldo%s9",    &pmic5_nldo,      "vdd-l3-l9"),
+> +	RPMH_VREG("ldo10",   "ldo%s10",   &pmic5_pldo,      "vdd-l10-l11-l13"),
+> +	RPMH_VREG("ldo11",   "ldo%s11",   &pmic5_pldo,      "vdd-l10-l11-l13"),
+> +	RPMH_VREG("ldo12",   "ldo%s12",   &pmic5_nldo,      "vdd-l4-l12"),
+> +	RPMH_VREG("ldo13",   "ldo%s13",   &pmic5_pldo,      "vdd-l10-l11-l13"),
+> +	RPMH_VREG("ldo14",   "ldo%s14",   &pmic5_nldo,      "vdd-l14"),
+> +	RPMH_VREG("ldo15",   "ldo%s15",   &pmic5_nldo,      "vdd-l15"),
+> +	RPMH_VREG("ldo16",   "ldo%s16",   &pmic5_pldo,      "vdd-l16"),
+> +	{},
+> +};
 > +
->  #ifdef CONFIG_ARM64_4K_PAGES
->  #define IOREMAP_MAX_ORDER	(PUD_SHIFT)
->  #else
-> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-> index 23c326a06b2d..e3b9aa372b96 100644
-> --- a/arch/arm64/mm/proc.S
-> +++ b/arch/arm64/mm/proc.S
-> @@ -45,19 +45,6 @@
->  #define TCR_KASAN_FLAGS 0
->  #endif
->  
-> -/*
-> - * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal memory and
-> - * changed during __cpu_setup to Normal Tagged if the system supports MTE.
-> - */
-> -#define MAIR_EL1_SET							\
-> -	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
-> -	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
-> -	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
-> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
-> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
-> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
-> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
-> -
->  #ifdef CONFIG_CPU_PM
->  /**
->   * cpu_do_suspend - save CPU registers context
-> @@ -425,7 +412,7 @@ SYM_FUNC_START(__cpu_setup)
->  	/*
->  	 * Memory region attributes
->  	 */
-> -	mov_q	x5, MAIR_EL1_SET
-> +	mov_q	x5, MAIR_ELx_SET
->  #ifdef CONFIG_ARM64_MTE
->  	/*
->  	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
+>  static int rpmh_regulator_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+> @@ -1000,6 +1027,10 @@ static const struct of_device_id __maybe_unused rpmh_regulator_match_table[] = {
+>  		.compatible = "qcom,pm6150l-rpmh-regulators",
+>  		.data = pm6150l_vreg_data,
+>  	},
+> +	{
+> +		.compatible = "qcom,pmx55-rpmh-regulators",
+> +		.data = pmx55_vreg_data,
+> +	},
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, rpmh_regulator_match_table);
 > -- 
-> 2.29.2.454.gaff20da3a2-goog
+> 2.26.2
 > 
