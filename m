@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC2D2C5E01
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 23:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 777F72C5E08
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 00:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391864AbgKZW6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 17:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        id S2391897AbgKZW7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 17:59:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387854AbgKZW6R (ORCPT
+        with ESMTP id S2387854AbgKZW7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 17:58:17 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5330EC061A04
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:58:17 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id d20so4509157lfe.11
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:58:17 -0800 (PST)
+        Thu, 26 Nov 2020 17:59:00 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9441EC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:58:58 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id l11so4575837lfg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 14:58:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QaDOiTzv7bYdMLTWXNj4oE28VVQBAWH2AlPKGR+E+eo=;
-        b=SaadWWvtWjDmQJF+g83I57GsOtBRiaSkSsV6m7Aw0E6ectfQcDqBDC8hUH1MK8TeNr
-         6VIWKhr0DinotXc0Dpiy9jeb1R6of6uACiO8yNRzwCtQgTqzGcuPnIkwz1RD1w7q7eVC
-         7znuCxydQzXvCSdP/cAZv44g8TfAXjMNQbHzU=
+        bh=VbvO5dSdtAz5yP7JQHiIG1ZdO1uj9eGKYWf4GFyY1IA=;
+        b=AXQCh7ItXLxQL7RPXxI9PmAwNgVP3m5Gkdxa4nXbi/PqAWMB+a5uF5mGwr/tTuWmbO
+         RfU5WPrD05w16aiz/mTchVug/oC+KMZhocEN15F/F216or6fvMS5/bJIwGn137Ulz1bB
+         neHOHr8N1PONM2ACa+iojvrnlDqiBbyzSFMf4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QaDOiTzv7bYdMLTWXNj4oE28VVQBAWH2AlPKGR+E+eo=;
-        b=tdkT/osE+UwsQ6Ty7Gbmz8K0d1K0WAlJU5u7hEizydN27XrMH16tamJ2HNKksSE6nY
-         peiQjkzrUtj9NgqZC4+PMzUSW4yRAyjO8Crkn/xwYmYdyyPWR5OYm+/xWVEdIW2gcDBz
-         6LlQtAttHvM/4Y06zBRuaiPGagcBat2sH84cMRaqLHWakLdvHl50XFUET+Q04UNjTTPw
-         NePQQtKfe6+eJaZJ9r2Fuem42pUfrQ5aEBAmUD1ccyTI8EGRiWY4+7CD+BvJkwkTkPGT
-         /JYMWdggBOrGaFJHuepJtwPOgj9h0lH2KgLdQ/65V/MvQ5zwLrNArP9D0Dz01XhDr9VO
-         tncw==
-X-Gm-Message-State: AOAM531sFQsYNT46FELEEo4VGR2TaHHfUWzJhUBKMldkXrCI46K4K0Ro
-        FZQ6g+OclFfJQcw5gAD1ZUTwTi+DhdNYm4xBhpPRZQ==
-X-Google-Smtp-Source: ABdhPJzwIixXgMfP9Xlb2QJc7RM7bfwkIDUDIt/rwlFzyf7GHGqD1RyaKJhK2IYOk9lvUhuKE8yyIuMFPLZIDr2r9vc=
-X-Received: by 2002:a19:f114:: with SMTP id p20mr2216142lfh.146.1606431494290;
- Thu, 26 Nov 2020 14:58:14 -0800 (PST)
+        bh=VbvO5dSdtAz5yP7JQHiIG1ZdO1uj9eGKYWf4GFyY1IA=;
+        b=QHgpV9hsFQKbEBsP+70VcTjAflEFVcvDT/I5K5U1bAErYle/W6dFoJIqTUUq35CDHK
+         s/l/W1/SVzvHbL8T79utJ14ruArq4BHBqiX8a5osjgmYjb2f5X3Te8nHC4jnBhx+hX0n
+         U9jS0rc7Cl9Vvq8bQatL2Tw4dKQRSuLkdpz8xPFe2++tOT1Wjt7Fo2vksZwGyV9hacRZ
+         cz6m9A09c0oxVYLg+Pd0HeQFWG9rizjjv8ay5GCZlkyD0JasHXY/4/AWpmvlP8zW/06r
+         I70od9zmCbFBHr6PZtZ5Pnzh1gt+Ln4yaKmBEooI9P4DnGbBTgWOSq0U8qLTYiCBRBRM
+         hBxw==
+X-Gm-Message-State: AOAM530N/rB+GMbsbX4IHQk8LAUpgV4pItDqG6uF7qwpgF3Q0C0BzqXY
+        NmTJYGp/XI9bKFVnHOdth5Ri3cvObOhXRpytGXc4yQ==
+X-Google-Smtp-Source: ABdhPJyDJTzaXWmgcQh/C5YbKg9A7ZBSQoloICvgELj4MleifAxlMR5NLUXrrYD0v/cqQ4ynKfv0I0aACxVCPoYW5WY=
+X-Received: by 2002:a19:418d:: with SMTP id o135mr2252176lfa.329.1606431537041;
+ Thu, 26 Nov 2020 14:58:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201126164449.1745292-1-revest@google.com>
-In-Reply-To: <20201126164449.1745292-1-revest@google.com>
+References: <20201126164449.1745292-1-revest@google.com> <20201126164449.1745292-3-revest@google.com>
+In-Reply-To: <20201126164449.1745292-3-revest@google.com>
 From:   KP Singh <kpsingh@chromium.org>
-Date:   Thu, 26 Nov 2020 23:58:03 +0100
-Message-ID: <CACYkzJ6QEmUzNfWCFoffOy1YY_qBR+Qw74DT+FddQMkm+ZpSEw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/6] net: Remove the err argument from sock_from_file
+Date:   Thu, 26 Nov 2020 23:58:46 +0100
+Message-ID: <CACYkzJ5fJUP606eq9qLJcOP+-yGHc8eVQadcTQk2GBWuBCd2cw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/6] bpf: Expose bpf_sk_storage_* to iterator programs
 To:     Florent Revest <revest@chromium.org>
 Cc:     bpf <bpf@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
@@ -66,14 +66,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Nov 26, 2020 at 5:45 PM Florent Revest <revest@chromium.org> wrote:
 >
-> Currently, the sock_from_file prototype takes an "err" pointer that is
-> either not set or set to -ENOTSOCK IFF the returned socket is NULL. This
-> makes the error redundant and it is ignored by a few callers.
+> Iterators are currently used to expose kernel information to userspace
+> over fast procfs-like files but iterators could also be used to
+> manipulate local storage. For example, the task_file iterator could be
+> used to initialize a socket local storage with associations between
+> processes and sockets or to selectively delete local storage values.
 >
-> This patch simplifies the API by letting callers deduce the error based
-> on whether the returned socket is NULL or not.
->
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
 > Signed-off-by: Florent Revest <revest@google.com>
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-Reviewed-by: KP Singh <kpsingh@google.com>
+Acked-by: KP Singh <kpsingh@google.com>
