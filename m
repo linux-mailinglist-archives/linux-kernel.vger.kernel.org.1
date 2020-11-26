@@ -2,938 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136792C535D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C471F2C5328
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:40:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389394AbgKZLxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 06:53:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726849AbgKZLxe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 06:53:34 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8B8C0613D4;
-        Thu, 26 Nov 2020 03:53:33 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id e8so1457038pfh.2;
-        Thu, 26 Nov 2020 03:53:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=iVlQ0sj9eSJ9oQBqHBdhuiHO2N4cRl0ZOdtJDUPRqt0=;
-        b=MiwZ5735tNl1X5G4UPdrleE1dsy8ajOjvNITBLLUPV1E/8DeylrwkjGslZJUw6BsgU
-         m+YRwgZ5P1/R43DW3JOtVipsVv84gKEK3iCHpsuYHN16F+JRWpzgPDLiubS4PMGtFT+/
-         Vei0825hW1cKoT/7tG4j5NBtpB+S9TVNyBf9p1DX0r+HZVymbtdBTnRE46pgPC23uMZ+
-         b/VKmWcHQJNpJ8w7HoyYroN2eWmBNolBUnpZjxiYqLv6400Nla+R0Ih5xky4giksyM0J
-         /oS/xzavaQpSkmtp1c1DzGM5nPcG0jxacsbG2/Rh+n1jXAGchXh6OBHYdwOFou+ZjIZC
-         a2lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=iVlQ0sj9eSJ9oQBqHBdhuiHO2N4cRl0ZOdtJDUPRqt0=;
-        b=G1ckcNhv5PHu//XCPCwDHbIQXal/MqJv87DnXaUe3aeuGWEM+egchwo/IyFOK7ldJs
-         Mg7+IA6I/KHCUZpXLMgaXM5V3Wevvl3xCmx3l0WAHnQbmhAvb6REAYUNv7cVn8iNiq86
-         +TpnsPcSKxxl8Q9xdXzPNLbvSaRldR3UamUWgHn1FSf8Q8wBKPvxPnJxV9m+szpi8MpM
-         NVomqxjUVwSYFJiJ791cRWtbbI64JbWVtfpUK3ygUVdsFn3EGR08lKg2XGMS7QRflBgj
-         /XigdAJ+mdfnprHwksrMV4N86/RUCVjDnMiH+LgBGL+RYvQxMF632NI6GQEod8oCECfh
-         tQQg==
-X-Gm-Message-State: AOAM531w94CQpIa0j+6EMyTzjngKSBm92Jj98vsiDnDUU5+KOkq6cZb8
-        4UITrS/m4qwb+7bvQWdPRDI=
-X-Google-Smtp-Source: ABdhPJwlGvv66msSjpr5qkMm6B5xM+YTPYIipt1gw6qtqOLX2smqW+3K0MlK4kKwG6sTrZz8yZ7D2w==
-X-Received: by 2002:a65:644d:: with SMTP id s13mr2339736pgv.108.1606391612621;
-        Thu, 26 Nov 2020 03:53:32 -0800 (PST)
-Received: from localhost.localdomain ([101.10.31.14])
-        by smtp.gmail.com with ESMTPSA id r4sm4721617pgs.54.2020.11.26.03.53.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 26 Nov 2020 03:53:32 -0800 (PST)
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-To:     jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org,
-        matthias.bgg@gmail.com
-Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: [PATCH v9 6/6] leds: mt6360: Add LED driver for MT6360
-Date:   Thu, 26 Nov 2020 19:37:34 +0800
-Message-Id: <1606390654-6075-7-git-send-email-gene.chen.richtek@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606390654-6075-1-git-send-email-gene.chen.richtek@gmail.com>
-References: <1606390654-6075-1-git-send-email-gene.chen.richtek@gmail.com>
+        id S1727632AbgKZLkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 06:40:22 -0500
+Received: from mout01.posteo.de ([185.67.36.65]:43366 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725911AbgKZLkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 06:40:22 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id ACDF8160064
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 12:40:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1606390819; bh=mPeZ5XsgllBppPwyq/izzl8/zrGd7JvDlZWqr+4K+M0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=QGPf2fBjJ3hGepwiBtTJZSeoxGezscXVTJnFR1tUtALNtneDjs+62Qb8m6Qlu3XJu
+         OvFfYzXGZY9GeqzgyNcgQ8nAx92M0S5CB5xYZBMZWzAeWTdYZgeqNTPga0P6L3EA75
+         V6mRisPAziaWkP/shlFfUeP2LUwUYhDBcYo+gEYfqRbiRNoy58cygCtDnEdKxTfn2L
+         Hq5qHhIvVlRPN6jflkzJOmkkWPjB3dY8bxjTxDX61j6B6RBnjoM8jIBfBwy6A8lzx6
+         5XwqPFmkmv0AxO/dDIlm6UQxg2mtWZWLWH/c3EBHjvW7HzLueK767OdkeEQtgQYrUy
+         XtPHJiU8/31ig==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4ChbR62jq0z6tm5;
+        Thu, 26 Nov 2020 12:40:18 +0100 (CET)
+Date:   Thu, 26 Nov 2020 12:40:16 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
+Subject: [PATCH] hwmon: corsair-psu: update supported devices
+Message-ID: <X7+T4aZSUuzfsf7H@monster.powergraphx.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gene Chen <gene_chen@richtek.com>
+Adds support for another Corsair PSUs series: AX760i, AX860i, AX1200i,
+AX1500i and AX1600i. The first 3 power supplies are supported through
+the Corsair Link USB Dongle which is some kind of USB/Serial/TTL
+converter especially made for the COM ports of these power supplies.
+There are 3 known revisions of these adapters. The AX1500i power supply
+has revision 3 built into the case and AX1600i is the only one in that
+series, which has an unique usb hid id like the RM/RX series.
 
-Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
-3-channel RGB LED support Register/Flash/Breath Mode, and 1-channel for
-moonlight LED.
+The patch also changes the usb hid ids to use upper case letters to be
+consistent with the rest of the hex numbers in the driver and updates
+the hwmon documentation.
 
-Signed-off-by: Gene Chen <gene_chen@richtek.com>
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+This patch adds:
+- hwmon/corsair-psu documentation update
+- corsair-psu driver update
+
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
 ---
- drivers/leds/Kconfig       |  13 +
- drivers/leds/Makefile      |   1 +
- drivers/leds/leds-mt6360.c | 811 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 825 insertions(+)
- create mode 100644 drivers/leds/leds-mt6360.c
+ Documentation/hwmon/corsair-psu.rst | 10 +++++++++
+ drivers/hwmon/Kconfig               |  7 +++---
+ drivers/hwmon/corsair-psu.c         | 33 +++++++++++++++++++----------
+ 3 files changed, 36 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index 1c181df..4f533bc 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -271,6 +271,19 @@ config LEDS_MT6323
- 	  This option enables support for on-chip LED drivers found on
- 	  Mediatek MT6323 PMIC.
+diff --git a/Documentation/hwmon/corsair-psu.rst b/Documentation/hwmon/corsair-psu.rst
+index 396b95c9a76a..6227e9046d73 100644
+--- a/Documentation/hwmon/corsair-psu.rst
++++ b/Documentation/hwmon/corsair-psu.rst
+@@ -7,6 +7,16 @@ Supported devices:
  
-+config LEDS_MT6360
-+	tristate "LED Support for Mediatek MT6360 PMIC"
-+	depends on LEDS_CLASS && OF
-+	depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
-+	depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
-+	depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
-+	depends on MFD_MT6360
-+	help
-+	  This option enables support for dual Flash LED drivers found on
-+	  Mediatek MT6360 PMIC.
-+	  Independent current sources supply for each flash LED support torch
-+	  and strobe mode.
+ * Corsair Power Supplies
+ 
++  Corsair AX760i (by Corsair Link USB Dongle)
 +
- config LEDS_S3C24XX
- 	tristate "LED Support for Samsung S3C24XX GPIO LEDs"
- 	depends on LEDS_CLASS
-diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-index c2c7d7a..5596427 100644
---- a/drivers/leds/Makefile
-+++ b/drivers/leds/Makefile
-@@ -66,6 +66,7 @@ obj-$(CONFIG_LEDS_MIKROTIK_RB532)	+= leds-rb532.o
- obj-$(CONFIG_LEDS_MLXCPLD)		+= leds-mlxcpld.o
- obj-$(CONFIG_LEDS_MLXREG)		+= leds-mlxreg.o
- obj-$(CONFIG_LEDS_MT6323)		+= leds-mt6323.o
-+obj-$(CONFIG_LEDS_MT6360)		+= leds-mt6360.o
- obj-$(CONFIG_LEDS_NET48XX)		+= leds-net48xx.o
- obj-$(CONFIG_LEDS_NETXBIG)		+= leds-netxbig.o
- obj-$(CONFIG_LEDS_NIC78BX)		+= leds-nic78bx.o
-diff --git a/drivers/leds/leds-mt6360.c b/drivers/leds/leds-mt6360.c
-new file mode 100644
-index 0000000..94836bb
---- /dev/null
-+++ b/drivers/leds/leds-mt6360.c
-@@ -0,0 +1,811 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++  Corsair AX860i (by Corsair Link USB Dongle)
 +
-+#include <linux/bitops.h>
-+#include <linux/delay.h>
-+#include <linux/init.h>
-+#include <linux/interrupt.h>
-+#include <linux/kernel.h>
-+#include <linux/led-class-flash.h>
-+#include <linux/led-class-multicolor.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+#include <linux/regmap.h>
-+#include <media/v4l2-flash-led-class.h>
++  Corsair AX1200i (by Corsair Link USB Dongle)
 +
-+enum {
-+	MT6360_LED_ISNK1 = 0,
-+	MT6360_LED_ISNK2,
-+	MT6360_LED_ISNK3,
-+	MT6360_LED_ISNKML,
-+	MT6360_LED_FLASH1,
-+	MT6360_LED_FLASH2,
-+	MT6360_LED_MULTICOLOR,
-+	MT6360_MAX_LEDS = MT6360_LED_MULTICOLOR
-+};
++  Corsair AX1500i (by builtin Corsair Link USB Dongle)
 +
-+#define MT6360_REG_RGBEN		0x380
-+#define MT6360_REG_ISNK(_led_no)	(0x381 + (_led_no))
-+#define MT6360_ISNK_ENMASK(_led_no)	BIT(7 - (_led_no))
-+#define MT6360_ISNK_MASK		GENMASK(4, 0)
-+#define MT6360_CHRINDSEL_MASK		BIT(3)
++  Corsair AX1600i
 +
-+#define MULTICOLOR_NUM_CHANNELS		3
-+
-+#define MT6360_REG_FLEDEN		0x37E
-+#define MT6360_REG_STRBTO		0x373
-+#define MT6360_REG_FLEDBASE(_id)	(0x372 + 4 * (_id - MT6360_LED_FLASH1))
-+#define MT6360_REG_FLEDISTRB(_id)	(MT6360_REG_FLEDBASE(_id) + 2)
-+#define MT6360_REG_FLEDITOR(_id)	(MT6360_REG_FLEDBASE(_id) + 3)
-+#define MT6360_REG_CHGSTAT2		0x3E1
-+#define MT6360_REG_FLEDSTAT1		0x3E9
-+#define MT6360_ITORCH_MASK		GENMASK(4, 0)
-+#define MT6360_ISTROBE_MASK		GENMASK(6, 0)
-+#define MT6360_STRBTO_MASK		GENMASK(6, 0)
-+#define MT6360_TORCHEN_MASK		BIT(3)
-+#define MT6360_STROBEN_MASK		BIT(2)
-+#define MT6360_FLCSEN_MASK(_id)		BIT(MT6360_LED_FLASH2 - _id)
-+#define MT6360_FLEDCHGVINOVP_MASK	BIT(3)
-+#define MT6360_FLED1STRBTO_MASK		BIT(11)
-+#define MT6360_FLED2STRBTO_MASK		BIT(10)
-+#define MT6360_FLED1STRB_MASK		BIT(9)
-+#define MT6360_FLED2STRB_MASK		BIT(8)
-+#define MT6360_FLED1SHORT_MASK		BIT(7)
-+#define MT6360_FLED2SHORT_MASK		BIT(6)
-+#define MT6360_FLEDLVF_MASK		BIT(3)
-+
-+#define MT6360_ISNKRGB_STEPUA		2000
-+#define MT6360_ISNKRGB_MAXUA		24000
-+#define MT6360_ISNKML_STEPUA		5000
-+#define MT6360_ISNKML_MAXUA		150000
-+
-+#define MT6360_ITORCH_MINUA		25000
-+#define MT6360_ITORCH_STEPUA		12500
-+#define MT6360_ITORCH_MAXUA		400000
-+#define MT6360_ISTRB_MINUA		50000
-+#define MT6360_ISTRB_STEPUA		12500
-+#define MT6360_ISTRB_MAXUA		1500000
-+#define MT6360_STRBTO_MINUS		64000
-+#define MT6360_STRBTO_STEPUS		32000
-+#define MT6360_STRBTO_MAXUS		2432000
-+
-+#define STATE_OFF			0
-+#define STATE_KEEP			1
-+#define STATE_ON			2
-+
-+struct mt6360_led {
-+	union {
-+		struct led_classdev isnk;
-+		struct led_classdev_mc mc;
-+		struct led_classdev_flash flash;
-+	};
-+	struct v4l2_flash *v4l2_flash;
-+	struct mt6360_priv *priv;
-+	u32 led_no;
-+	u32 default_state;
-+};
-+
-+struct mt6360_priv {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	struct mutex lock;
-+	unsigned int fled_strobe_used;
-+	unsigned int fled_torch_used;
-+	unsigned int leds_active;
-+	unsigned int leds_count;
-+	struct mt6360_led leds[];
-+};
-+
-+static int mt6360_mc_brightness_set(struct led_classdev *lcdev, enum led_brightness level)
-+{
-+	struct led_classdev_mc *mccdev = lcdev_to_mccdev(lcdev);
-+	struct mt6360_led *led = container_of(mccdev, struct mt6360_led, mc);
-+	struct mt6360_priv *priv = led->priv;
-+	u32 real_bright, enable_mask = 0, enable = 0;
-+	int i, ret;
-+
-+	mutex_lock(&priv->lock);
-+
-+	led_mc_calc_color_components(mccdev, level);
-+
-+	for (i = 0; i < mccdev->num_colors; i++) {
-+		struct mc_subled *subled = mccdev->subled_info + i;
-+
-+		real_bright = min(lcdev->max_brightness, subled->brightness);
-+		ret = regmap_update_bits(priv->regmap, MT6360_REG_ISNK(i), MT6360_ISNK_MASK,
-+					 real_bright);
-+		if (ret)
-+			goto out;
-+
-+		enable_mask |= MT6360_ISNK_ENMASK(subled->channel);
-+		if (real_bright)
-+			enable |= MT6360_ISNK_ENMASK(subled->channel);
-+	}
-+
-+	ret = regmap_update_bits(priv->regmap, MT6360_REG_RGBEN, enable_mask, enable);
-+
-+out:
-+	mutex_unlock(&priv->lock);
-+	return ret;
-+}
-+
-+static int mt6360_isnk_brightness_set(struct led_classdev *lcdev, enum led_brightness level)
-+{
-+	struct mt6360_led *led = container_of(lcdev, struct mt6360_led, isnk);
-+	struct mt6360_priv *priv = led->priv;
-+	u32 enable_mask = MT6360_ISNK_ENMASK(led->led_no);
-+	u32 val = level ? MT6360_ISNK_ENMASK(led->led_no) : 0;
-+	int ret;
-+
-+	mutex_lock(&priv->lock);
-+
-+	ret = regmap_update_bits(priv->regmap, MT6360_REG_ISNK(led->led_no), MT6360_ISNK_MASK,
-+				 level);
-+	if (ret)
-+		goto out;
-+
-+	ret = regmap_update_bits(priv->regmap, MT6360_REG_RGBEN, enable_mask, val);
-+
-+out:
-+	mutex_unlock(&priv->lock);
-+	return ret;
-+}
-+
-+static int mt6360_torch_brightness_set(struct led_classdev *lcdev, enum led_brightness level)
-+{
-+	struct mt6360_led *led = container_of(lcdev, struct mt6360_led, flash.led_cdev);
-+	struct mt6360_priv *priv = led->priv;
-+	u32 enable_mask = MT6360_TORCHEN_MASK | MT6360_FLCSEN_MASK(led->led_no);
-+	u32 val = level ? MT6360_FLCSEN_MASK(led->led_no) : 0;
-+	u32 prev = priv->fled_torch_used, curr;
-+	int ret;
-+
-+	mutex_lock(&priv->lock);
-+
-+	/* Only one set of flash control logic, use the flag to avoid strobe is currently used */
-+	if (priv->fled_strobe_used) {
-+		dev_warn(lcdev->dev, "Please disable strobe first [%d]\n", priv->fled_strobe_used);
-+		ret = -EBUSY;
-+		goto unlock;
-+	}
-+
-+	if (level)
-+		curr = prev | BIT(led->led_no);
-+	else
-+		curr = prev & ~BIT(led->led_no);
-+
-+	if (curr)
-+		val |= MT6360_TORCHEN_MASK;
-+
-+	if (level) {
-+		ret = regmap_update_bits(priv->regmap, MT6360_REG_FLEDITOR(led->led_no),
-+					 MT6360_ITORCH_MASK, level - 1);
-+		if (ret)
-+			goto unlock;
-+	}
-+
-+	ret = regmap_update_bits(priv->regmap, MT6360_REG_FLEDEN, enable_mask, val);
-+	if (ret)
-+		goto unlock;
-+
-+	priv->fled_torch_used = curr;
-+
-+unlock:
-+	mutex_unlock(&priv->lock);
-+	return ret;
-+}
-+
-+static int mt6360_flash_brightness_set(struct led_classdev_flash *fl_cdev, u32 brightness)
-+{
+   Corsair HX550i
+ 
+   Corsair HX650i
+diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+index 716df51edc87..3c059fc23cd6 100644
+--- a/drivers/hwmon/Kconfig
++++ b/drivers/hwmon/Kconfig
+@@ -453,11 +453,12 @@ config SENSORS_CORSAIR_PSU
+ 	tristate "Corsair PSU HID controller"
+ 	depends on HID
+ 	help
+-	  If you say yes here you get support for Corsair PSUs with a HID
++	  If you say yes here you get support for Corsair PSUs with an USB HID
+ 	  interface.
+ 	  Currently this driver supports the (RM/HX)550i, (RM/HX)650i,
+-	  (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i and HX1200i power supplies
+-	  by Corsair.
++	  (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i, HX1200i and AX1600i power
++	  supplies by Corsair. The AX760i, AX860i, AX1200i and AX1500i
++	  power supplies are supported through the Corsair Link USB Dongle.
+ 
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called corsair-psu.
+diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+index 99494056f4bd..0146dda3e2c3 100644
+--- a/drivers/hwmon/corsair-psu.c
++++ b/drivers/hwmon/corsair-psu.c
+@@ -571,17 +571,28 @@ static int corsairpsu_raw_event(struct hid_device *hdev, struct hid_report *repo
+ }
+ 
+ static const struct hid_device_id corsairpsu_idtable[] = {
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c03) }, /* Corsair HX550i */
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c04) }, /* Corsair HX650i */
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c05) }, /* Corsair HX750i */
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c06) }, /* Corsair HX850i */
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c07) }, /* Corsair HX1000i */
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c08) }, /* Corsair HX1200i */
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c09) }, /* Corsair RM550i */
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c0a) }, /* Corsair RM650i */
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c0b) }, /* Corsair RM750i */
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c0c) }, /* Corsair RM850i */
+-	{ HID_USB_DEVICE(0x1b1c, 0x1c0d) }, /* Corsair RM1000i */
 +	/*
-+	 * Due to the current spike when turning on flash, let brightness to be kept by framework.
-+	 * This empty function is used to prevent led_classdev_flash register ops check failure.
++	 * The Corsair USB/COM Dongles appear in at least 3 different revisions, where rev 1 and 2
++	 * are commonly used with the AX760i, AX860i and AX1200i, while rev3 is rarely seen with
++	 * these PSUs. Rev3 is also build into the AX1500i, while the AX1600i is the first PSU of
++	 * this series which has an unique usb hid id. Though, the actual device name is part of
++	 * the HID message protocol, so it doesn't matter which dongle is connected.
 +	 */
-+	return 0;
-+}
-+
-+static int _mt6360_flash_brightness_set(struct led_classdev_flash *fl_cdev, u32 brightness)
-+{
-+	struct mt6360_led *led = container_of(fl_cdev, struct mt6360_led, flash);
-+	struct mt6360_priv *priv = led->priv;
-+	struct led_flash_setting *s = &fl_cdev->brightness;
-+	u32 val = (brightness - s->min) / s->step;
-+
-+	return regmap_update_bits(priv->regmap, MT6360_REG_FLEDISTRB(led->led_no),
-+				 MT6360_ISTROBE_MASK, val);
-+}
-+
-+static int mt6360_strobe_set(struct led_classdev_flash *fl_cdev, bool state)
-+{
-+	struct mt6360_led *led = container_of(fl_cdev, struct mt6360_led, flash);
-+	struct mt6360_priv *priv = led->priv;
-+	struct led_classdev *lcdev = &fl_cdev->led_cdev;
-+	struct led_flash_setting *s = &fl_cdev->brightness;
-+	u32 enable_mask = MT6360_STROBEN_MASK | MT6360_FLCSEN_MASK(led->led_no);
-+	u32 val = state ? MT6360_FLCSEN_MASK(led->led_no) : 0;
-+	u32 prev = priv->fled_strobe_used, curr;
-+	int ret;
-+
-+	mutex_lock(&priv->lock);
-+
-+	/* Only one set of flash control logic, use the flag to avoid torch is currently used */
-+	if (priv->fled_torch_used) {
-+		dev_warn(lcdev->dev, "Please disable torch first [0x%x]\n", priv->fled_torch_used);
-+		ret = -EBUSY;
-+		goto unlock;
-+	}
-+
-+	if (state)
-+		curr = prev | BIT(led->led_no);
-+	else
-+		curr = prev & ~BIT(led->led_no);
-+
-+	if (curr)
-+		val |= MT6360_STROBEN_MASK;
-+
-+	ret = regmap_update_bits(priv->regmap, MT6360_REG_FLEDEN, enable_mask, val);
-+	if (ret) {
-+		dev_err(lcdev->dev, "[%d] control current source %d fail\n", led->led_no, state);
-+		goto unlock;
-+	}
-+
-+	/*
-+	 * If the flash need to be on, config the flash current ramping up to the setting value
-+	 * Else, always recover back to the minimum one
-+	 */
-+	ret = _mt6360_flash_brightness_set(fl_cdev, state ? s->val : s->min);
-+	if (ret)
-+		goto unlock;
-+
-+	/* For the flash turn on/off, HW rampping up/down time is 5ms/500us, respectively */
-+	if (!prev && curr)
-+		usleep_range(5000, 6000);
-+	else if (prev && !curr)
-+		udelay(500);
-+
-+	priv->fled_strobe_used = curr;
-+
-+unlock:
-+	mutex_unlock(&priv->lock);
-+	return ret;
-+}
-+
-+static int mt6360_strobe_get(struct led_classdev_flash *fl_cdev, bool *state)
-+{
-+	struct mt6360_led *led = container_of(fl_cdev, struct mt6360_led, flash);
-+	struct mt6360_priv *priv = led->priv;
-+
-+	mutex_lock(&priv->lock);
-+	*state = !!(priv->fled_strobe_used & BIT(led->led_no));
-+	mutex_unlock(&priv->lock);
-+
-+	return 0;
-+}
-+
-+static int mt6360_timeout_set(struct led_classdev_flash *fl_cdev, u32 timeout)
-+{
-+	struct mt6360_led *led = container_of(fl_cdev, struct mt6360_led, flash);
-+	struct mt6360_priv *priv = led->priv;
-+	struct led_flash_setting *s = &fl_cdev->timeout;
-+	u32 val = (timeout - s->min) / s->step;
-+	int ret;
-+
-+	mutex_lock(&priv->lock);
-+	ret = regmap_update_bits(priv->regmap, MT6360_REG_STRBTO, MT6360_STRBTO_MASK, val);
-+	mutex_unlock(&priv->lock);
-+
-+	return ret;
-+}
-+
-+static int mt6360_fault_get(struct led_classdev_flash *fl_cdev, u32 *fault)
-+{
-+	struct mt6360_led *led = container_of(fl_cdev, struct mt6360_led, flash);
-+	struct mt6360_priv *priv = led->priv;
-+	u16 fled_stat;
-+	unsigned int chg_stat, strobe_timeout_mask, fled_short_mask;
-+	u32 rfault = 0;
-+	int ret;
-+
-+	mutex_lock(&priv->lock);
-+	ret = regmap_read(priv->regmap, MT6360_REG_CHGSTAT2, &chg_stat);
-+	if (ret)
-+		goto unlock;
-+
-+	ret = regmap_raw_read(priv->regmap, MT6360_REG_FLEDSTAT1, &fled_stat, sizeof(fled_stat));
-+	if (ret)
-+		goto unlock;
-+
-+	if (led->led_no == MT6360_LED_FLASH1) {
-+		strobe_timeout_mask = MT6360_FLED1STRBTO_MASK;
-+		fled_short_mask = MT6360_FLED1SHORT_MASK;
-+	} else {
-+		strobe_timeout_mask = MT6360_FLED2STRBTO_MASK;
-+		fled_short_mask = MT6360_FLED2SHORT_MASK;
-+	}
-+
-+	if (chg_stat & MT6360_FLEDCHGVINOVP_MASK)
-+		rfault |= LED_FAULT_INPUT_VOLTAGE;
-+
-+	if (fled_stat & strobe_timeout_mask)
-+		rfault |= LED_FAULT_TIMEOUT;
-+
-+	if (fled_stat & fled_short_mask)
-+		rfault |= LED_FAULT_SHORT_CIRCUIT;
-+
-+	if (fled_stat & MT6360_FLEDLVF_MASK)
-+		rfault |= LED_FAULT_UNDER_VOLTAGE;
-+
-+	*fault = rfault;
-+unlock:
-+	mutex_unlock(&priv->lock);
-+	return ret;
-+}
-+
-+static const struct led_flash_ops mt6360_flash_ops = {
-+	.flash_brightness_set = mt6360_flash_brightness_set,
-+	.strobe_set = mt6360_strobe_set,
-+	.strobe_get = mt6360_strobe_get,
-+	.timeout_set = mt6360_timeout_set,
-+	.fault_get = mt6360_fault_get,
-+};
-+
-+static int mt6360_isnk_init_default_state(struct mt6360_led *led)
-+{
-+	struct mt6360_priv *priv = led->priv;
-+	unsigned int regval;
-+	u32 level;
-+	int ret;
-+
-+	ret = regmap_read(priv->regmap, MT6360_REG_ISNK(led->led_no), &regval);
-+	if (ret)
-+		return ret;
-+	level = regval & MT6360_ISNK_MASK;
-+
-+	ret = regmap_read(priv->regmap, MT6360_REG_RGBEN, &regval);
-+	if (ret)
-+		return ret;
-+
-+	if (!(regval & MT6360_ISNK_ENMASK(led->led_no)))
-+		level = LED_OFF;
-+
-+	switch (led->default_state) {
-+	case STATE_ON:
-+		led->isnk.brightness = led->isnk.max_brightness;
-+		break;
-+	case STATE_KEEP:
-+		led->isnk.brightness = min(level, led->isnk.max_brightness);
-+		break;
-+	default:
-+		led->isnk.brightness = LED_OFF;
-+	}
-+
-+	return mt6360_isnk_brightness_set(&led->isnk, led->isnk.brightness);
-+}
-+
-+static int mt6360_flash_init_default_state(struct mt6360_led *led)
-+{
-+	struct led_classdev_flash *flash = &led->flash;
-+	struct mt6360_priv *priv = led->priv;
-+	u32 enable_mask = MT6360_TORCHEN_MASK | MT6360_FLCSEN_MASK(led->led_no);
-+	u32 level;
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(priv->regmap, MT6360_REG_FLEDITOR(led->led_no), &regval);
-+	if (ret)
-+		return ret;
-+	level = regval & MT6360_ITORCH_MASK;
-+
-+	ret = regmap_read(priv->regmap, MT6360_REG_FLEDEN, &regval);
-+	if (ret)
-+		return ret;
-+
-+	if ((regval & enable_mask) == enable_mask)
-+		level += 1;
-+	else
-+		level = LED_OFF;
-+
-+	switch (led->default_state) {
-+	case STATE_ON:
-+		flash->led_cdev.brightness = flash->led_cdev.max_brightness;
-+		break;
-+	case STATE_KEEP:
-+		flash->led_cdev.brightness = min(level, flash->led_cdev.max_brightness);
-+		break;
-+	default:
-+		flash->led_cdev.brightness = LED_OFF;
-+	}
-+
-+	return mt6360_torch_brightness_set(&flash->led_cdev, flash->led_cdev.brightness);
-+}
-+
-+#if IS_ENABLED(CONFIG_V4L2_FLASH_LED_CLASS)
-+static int mt6360_flash_external_strobe_set(struct v4l2_flash *v4l2_flash, bool enable)
-+{
-+	struct led_classdev_flash *flash = v4l2_flash->fled_cdev;
-+	struct mt6360_led *led = container_of(flash, struct mt6360_led, flash);
-+	struct mt6360_priv *priv = led->priv;
-+	u32 mask = MT6360_FLCSEN_MASK(led->led_no);
-+	u32 val = enable ? mask : 0;
-+	int ret;
-+
-+	mutex_lock(&priv->lock);
-+
-+	ret = regmap_update_bits(priv->regmap, MT6360_REG_FLEDEN, mask, val);
-+	if (ret)
-+		goto unlock;
-+
-+	if (enable)
-+		priv->fled_strobe_used |= BIT(led->led_no);
-+	else
-+		priv->fled_strobe_used &= ~BIT(led->led_no);
-+
-+unlock:
-+	mutex_unlock(&priv->lock);
-+	return ret;
-+}
-+
-+static const struct v4l2_flash_ops v4l2_flash_ops = {
-+	.external_strobe_set = mt6360_flash_external_strobe_set,
-+};
-+
-+static void mt6360_init_v4l2_flash_config(struct mt6360_led *led, struct v4l2_flash_config *config)
-+{
-+	struct led_classdev *lcdev;
-+	struct led_flash_setting *s = &config->intensity;
-+
-+	lcdev = &led->flash.led_cdev;
-+
-+	s->min = MT6360_ITORCH_MINUA;
-+	s->step = MT6360_ITORCH_STEPUA;
-+	s->val = s->max = s->min + (lcdev->max_brightness - 1) * s->step;
-+
-+	config->has_external_strobe = 1;
-+	strscpy(config->dev_name, lcdev->dev->kobj.name, sizeof(config->dev_name));
-+
-+	config->flash_faults = LED_FAULT_SHORT_CIRCUIT | LED_FAULT_TIMEOUT |
-+			       LED_FAULT_INPUT_VOLTAGE | LED_FAULT_UNDER_VOLTAGE;
-+}
-+#else
-+static const struct v4l2_flash_ops v4l2_flash_ops;
-+static void mt6360_init_v4l2_flash_config(struct mt6360_led *led, struct v4l2_flash_config *config)
-+{
-+}
-+#endif
-+
-+static int mt6360_led_register(struct device *parent, struct mt6360_led *led,
-+				struct led_init_data *init_data)
-+{
-+	struct mt6360_priv *priv = led->priv;
-+	struct v4l2_flash_config v4l2_config = {0};
-+	int ret;
-+
-+	if ((led->led_no == MT6360_LED_ISNK1 || led->led_no == MT6360_LED_MULTICOLOR) &&
-+		(priv->leds_active & BIT(MT6360_LED_ISNK1))) {
-+		/* Change isink1 to SW control mode, disconnect it with charger state */
-+		ret = regmap_update_bits(priv->regmap, MT6360_REG_RGBEN, MT6360_CHRINDSEL_MASK,
-+					 MT6360_CHRINDSEL_MASK);
-+		if (ret) {
-+			dev_err(parent, "Failed to config ISNK1 to SW mode\n");
-+			return ret;
-+		}
-+	}
-+
-+	switch (led->led_no) {
-+	case MT6360_LED_MULTICOLOR:
-+		ret = mt6360_mc_brightness_set(&led->mc.led_cdev, LED_OFF);
-+		if (ret) {
-+			dev_err(parent, "Failed to init multicolor brightness\n");
-+			return ret;
-+		}
-+
-+		ret = devm_led_classdev_multicolor_register_ext(parent, &led->mc, init_data);
-+		if (ret) {
-+			dev_err(parent, "Couldn't register multicolor\n");
-+			return ret;
-+		}
-+		break;
-+	case MT6360_LED_ISNK1 ... MT6360_LED_ISNKML:
-+		ret = mt6360_isnk_init_default_state(led);
-+		if (ret) {
-+			dev_err(parent, "Failed to init %d isnk state\n", led->led_no);
-+			return ret;
-+		}
-+
-+		ret = devm_led_classdev_register_ext(parent, &led->isnk, init_data);
-+		if (ret) {
-+			dev_err(parent, "Couldn't register isink %d\n", led->led_no);
-+			return ret;
-+		}
-+		break;
-+	default:
-+		ret = mt6360_flash_init_default_state(led);
-+		if (ret) {
-+			dev_err(parent, "Failed to init %d flash state\n", led->led_no);
-+			return ret;
-+		}
-+
-+		ret = devm_led_classdev_flash_register_ext(parent, &led->flash, init_data);
-+		if (ret) {
-+			dev_err(parent, "Couldn't register flash %d\n", led->led_no);
-+			return ret;
-+		}
-+
-+		mt6360_init_v4l2_flash_config(led, &v4l2_config);
-+		led->v4l2_flash = v4l2_flash_init(parent, init_data->fwnode, &led->flash,
-+						  &v4l2_flash_ops, &v4l2_config);
-+		if (IS_ERR(led->v4l2_flash)) {
-+			dev_err(parent, "Failed to register %d v4l2 sd\n", led->led_no);
-+			return PTR_ERR(led->v4l2_flash);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static u32 clamp_align(u32 val, u32 min, u32 max, u32 step)
-+{
-+	u32 retval;
-+
-+	retval = clamp_val(val, min, max);
-+	if (step > 1)
-+		retval = rounddown(retval - min, step) + min;
-+
-+	return retval;
-+}
-+
-+static int mt6360_init_isnk_properties(struct mt6360_led *led, struct led_init_data *init_data)
-+{
-+	struct led_classdev *lcdev;
-+	struct mt6360_priv *priv = led->priv;
-+	struct fwnode_handle *child;
-+	u32 step_uA = MT6360_ISNKRGB_STEPUA, max_uA = MT6360_ISNKRGB_MAXUA;
-+	u32 val;
-+	int num_color = 0, ret;
-+
-+	if (led->led_no == MT6360_LED_MULTICOLOR) {
-+		struct mc_subled *sub_led;
-+
-+		sub_led = devm_kzalloc(priv->dev, sizeof(*sub_led) * MULTICOLOR_NUM_CHANNELS,
-+				       GFP_KERNEL);
-+		if (!sub_led)
-+			return -ENOMEM;
-+
-+		fwnode_for_each_child_node(init_data->fwnode, child) {
-+			u32 reg, color;
-+
-+			ret = fwnode_property_read_u32(child, "reg", &reg);
-+			if (ret || reg > MT6360_LED_ISNK3 || priv->leds_active & BIT(reg))
-+				return -EINVAL;
-+
-+			ret = fwnode_property_read_u32(child, "color", &color);
-+			if (ret) {
-+				dev_err(priv->dev, "led %d, no color specified\n", led->led_no);
-+				return ret;
-+			}
-+
-+			priv->leds_active |= BIT(reg);
-+			sub_led[num_color].color_index = color;
-+			sub_led[num_color].channel = reg;
-+			num_color++;
-+		}
-+
-+		if (num_color < 2) {
-+			dev_err(priv->dev, "Multicolor must include 2 or more led channel\n");
-+			return -EINVAL;
-+		}
-+
-+		led->mc.num_colors = num_color;
-+		led->mc.subled_info = sub_led;
-+
-+		lcdev = &led->mc.led_cdev;
-+		lcdev->brightness_set_blocking = mt6360_mc_brightness_set;
-+	} else {
-+		if (led->led_no == MT6360_LED_ISNKML) {
-+			step_uA = MT6360_ISNKML_STEPUA;
-+			max_uA = MT6360_ISNKML_MAXUA;
-+		}
-+
-+		lcdev = &led->isnk;
-+		lcdev->brightness_set_blocking = mt6360_isnk_brightness_set;
-+	}
-+
-+	ret = fwnode_property_read_u32(init_data->fwnode, "led-max-microamp", &val);
-+	if (ret) {
-+		dev_warn(priv->dev, "Not specified led-max-microamp, config to the minimum\n");
-+		val = step_uA;
-+	} else
-+		val = clamp_align(val, 0, max_uA, step_uA);
-+
-+	lcdev->max_brightness = val / step_uA;
-+
-+	fwnode_property_read_string(init_data->fwnode, "linux,default-trigger",
-+				    &lcdev->default_trigger);
-+
-+	return 0;
-+}
-+
-+static int mt6360_init_flash_properties(struct mt6360_led *led, struct led_init_data *init_data)
-+{
-+	struct led_classdev_flash *flash = &led->flash;
-+	struct led_classdev *lcdev = &flash->led_cdev;
-+	struct mt6360_priv *priv = led->priv;
-+	struct led_flash_setting *s;
-+	u32 val;
-+	int ret;
-+
-+	ret = fwnode_property_read_u32(init_data->fwnode, "led-max-microamp", &val);
-+	if (ret) {
-+		dev_warn(priv->dev, "Not specified led-max-microamp, config to the minimum\n");
-+		val = MT6360_ITORCH_MINUA;
-+	} else
-+		val = clamp_align(val, MT6360_ITORCH_MINUA, MT6360_ITORCH_MAXUA,
-+				  MT6360_ITORCH_STEPUA);
-+
-+	lcdev->max_brightness = (val - MT6360_ITORCH_MINUA) / MT6360_ITORCH_STEPUA + 1;
-+	lcdev->brightness_set_blocking = mt6360_torch_brightness_set;
-+	lcdev->flags |= LED_DEV_CAP_FLASH;
-+
-+	ret = fwnode_property_read_u32(init_data->fwnode, "flash-max-microamp", &val);
-+	if (ret) {
-+		dev_warn(priv->dev, "Not specified flash-max-microamp, config to the minimum\n");
-+		val = MT6360_ISTRB_MINUA;
-+	} else
-+		val = clamp_align(val, MT6360_ISTRB_MINUA, MT6360_ISTRB_MAXUA, MT6360_ISTRB_STEPUA);
-+
-+	s = &flash->brightness;
-+	s->min = MT6360_ISTRB_MINUA;
-+	s->step = MT6360_ISTRB_STEPUA;
-+	s->val = s->max = val;
-+
-+	/* Always configure as min level when off to prevent flash current spike */
-+	ret = _mt6360_flash_brightness_set(flash, s->min);
-+	if (ret)
-+		return ret;
-+
-+	ret = fwnode_property_read_u32(init_data->fwnode, "flash-max-timeout-us", &val);
-+	if (ret) {
-+		dev_warn(priv->dev, "Not specified flash-max-timeout-us, config to the minimum\n");
-+		val = MT6360_STRBTO_MINUS;
-+	} else
-+		val = clamp_align(val, MT6360_STRBTO_MINUS, MT6360_STRBTO_MAXUS,
-+				  MT6360_STRBTO_STEPUS);
-+
-+	s = &flash->timeout;
-+	s->min = MT6360_STRBTO_MINUS;
-+	s->step = MT6360_STRBTO_STEPUS;
-+	s->val = s->max = val;
-+
-+	flash->ops = &mt6360_flash_ops;
-+
-+	return 0;
-+}
-+
-+static int mt6360_init_common_properties(struct mt6360_led *led, struct led_init_data *init_data)
-+{
-+	const char * const states[] = { "off", "keep", "on" };
-+	const char *str;
-+	int ret;
-+
-+	if (!fwnode_property_read_string(init_data->fwnode, "default-state", &str)) {
-+		ret = match_string(states, ARRAY_SIZE(states), str);
-+		if (ret < 0)
-+			ret = STATE_OFF;
-+
-+		led->default_state = ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void mt6360_v4l2_flash_release(struct mt6360_priv *priv)
-+{
-+	int i;
-+
-+	for (i = 0; i < priv->leds_count; i++) {
-+		struct mt6360_led *led = priv->leds + i;
-+
-+		if (led->v4l2_flash)
-+			v4l2_flash_release(led->v4l2_flash);
-+	}
-+}
-+
-+static int mt6360_led_probe(struct platform_device *pdev)
-+{
-+	struct mt6360_priv *priv;
-+	struct fwnode_handle *child;
-+	size_t count;
-+	int i = 0, ret;
-+
-+	count = device_get_child_node_count(&pdev->dev);
-+	if (!count || count > MT6360_MAX_LEDS) {
-+		dev_err(&pdev->dev, "No child node or node count over max led number %lu\n", count);
-+		return -EINVAL;
-+	}
-+
-+	priv = devm_kzalloc(&pdev->dev, struct_size(priv, leds, count), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->leds_count = count;
-+	priv->dev = &pdev->dev;
-+	mutex_init(&priv->lock);
-+
-+	priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-+	if (!priv->regmap) {
-+		dev_err(&pdev->dev, "Failed to get parent regmap\n");
-+		return -ENODEV;
-+	}
-+
-+	device_for_each_child_node(&pdev->dev, child) {
-+		struct mt6360_led *led = priv->leds + i;
-+		struct led_init_data init_data = { .fwnode = child, };
-+		u32 reg;
-+
-+		ret = fwnode_property_read_u32(child, "reg", &reg);
-+		if (ret)
-+			goto out_flash_release;
-+
-+		if (reg > MT6360_MAX_LEDS || priv->leds_active & BIT(reg))
-+			return -EINVAL;
-+		priv->leds_active |= BIT(reg);
-+
-+		led->led_no = reg;
-+		led->priv = priv;
-+
-+		ret = mt6360_init_common_properties(led, &init_data);
-+		if (ret)
-+			goto out_flash_release;
-+
-+		if (reg == MT6360_LED_MULTICOLOR ||
-+			(reg >= MT6360_LED_ISNK1 && reg <= MT6360_LED_ISNKML))
-+			ret = mt6360_init_isnk_properties(led, &init_data);
-+		else
-+			ret = mt6360_init_flash_properties(led, &init_data);
-+
-+		if (ret)
-+			goto out_flash_release;
-+
-+		ret = mt6360_led_register(&pdev->dev, led, &init_data);
-+		if (ret)
-+			goto out_flash_release;
-+
-+		i++;
-+	}
-+
-+	platform_set_drvdata(pdev, priv);
-+	return 0;
-+
-+out_flash_release:
-+	mt6360_v4l2_flash_release(priv);
-+	return ret;
-+}
-+
-+static int mt6360_led_remove(struct platform_device *pdev)
-+{
-+	struct mt6360_priv *priv = platform_get_drvdata(pdev);
-+
-+	mt6360_v4l2_flash_release(priv);
-+	return 0;
-+}
-+
-+static const struct of_device_id __maybe_unused mt6360_led_of_id[] = {
-+	{ .compatible = "mediatek,mt6360-led", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, mt6360_led_of_id);
-+
-+static struct platform_driver mt6360_led_driver = {
-+	.driver = {
-+		.name = "mt6360-led",
-+		.of_match_table = mt6360_led_of_id,
-+	},
-+	.probe = mt6360_led_probe,
-+	.remove = mt6360_led_remove,
-+};
-+module_platform_driver(mt6360_led_driver);
-+
-+MODULE_AUTHOR("Gene Chen <gene_chen@richtek.com>");
-+MODULE_DESCRIPTION("MT6360 LED Driver");
-+MODULE_LICENSE("GPL v2");
++	{ HID_USB_DEVICE(0x1B1C, 0x1C00) }, /* Corsair Link USB/COM Dongle rev1 */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C01) }, /* Corsair Link USB/COM Dongle rev2 */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C02) }, /* Corsair Link USB/COM Dongle rev3 (AX1500i) */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C03) }, /* Corsair HX550i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C04) }, /* Corsair HX650i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C05) }, /* Corsair HX750i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C06) }, /* Corsair HX850i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C07) }, /* Corsair HX1000i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C08) }, /* Corsair HX1200i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C09) }, /* Corsair RM550i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C0A) }, /* Corsair RM650i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C0B) }, /* Corsair RM750i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C0C) }, /* Corsair RM850i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C0D) }, /* Corsair RM1000i */
++	{ HID_USB_DEVICE(0x1B1C, 0x1C11) }, /* Corsair AX1600i */
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(hid, corsairpsu_idtable);
 -- 
-2.7.4
+2.29.2
 
