@@ -2,118 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551532C53C6
+	by mail.lfdr.de (Postfix) with ESMTP id C6DB92C53C7
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 13:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388797AbgKZMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 07:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
+        id S2387601AbgKZMPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 07:15:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgKZMOp (ORCPT
+        with ESMTP id S1728965AbgKZMPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 07:14:45 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BF0C0613D4;
-        Thu, 26 Nov 2020 04:14:44 -0800 (PST)
-Date:   Thu, 26 Nov 2020 12:14:42 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606392883;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mxy39yWj5RVUiaFh1SEO1pqw1vyYRUxNHy3KF12oS/Q=;
-        b=TTPm4DK1Gp1MooGgbIJtCzIPQ4j1IU9UoKDUJEE6OJfUXsRmlikP3qRkWfSJBCycXBfwfd
-        XRX2/6ipbqeDKs2YC1ziMgXfF9P2N8JT8DGj6P2qx0iCus27frUCD7GLTODPYoHr0mvbmG
-        3qxrWt5JJ9OHzVSn3mJXCwVdMqzKdIScqG/VMP3Dru99FE9R0uUigt8QDXzu3w3SZIKgDO
-        Kyc2bZzwkV+7V6dQstm6Xrl7tahwCE0hedWkAi4DoHEZXwkj4MPOPsGBLouerISlN48Gv9
-        i2Ln81PALRoaYy3Wdikj7IGq0LoWSSPLDlfKK9E8m66JfRdKerypr6HudqKJ+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606392883;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mxy39yWj5RVUiaFh1SEO1pqw1vyYRUxNHy3KF12oS/Q=;
-        b=M63xevglf9+ZBRxYr3HKMA2nydFbU3v7My13ZILeE882w7iMMXUxvsjM1FcOjrqNW7NV8e
-        4aczMPDVQbYnfhAA==
-From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/asm: Drop unused RDPID macro
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201027214532.1792-1-sean.j.christopherson@intel.com>
-References: <20201027214532.1792-1-sean.j.christopherson@intel.com>
+        Thu, 26 Nov 2020 07:15:51 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCEDC0613D4;
+        Thu, 26 Nov 2020 04:15:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bwE3ntsWwlmjPInYkgT+nMI6emH/bLopsilbB9Xfo0k=; b=EW1GywcfwLEnGDTSbbRk3iX/fu
+        vMLSY16+iniAcBp5/Q9wBUI/garKVHl2j6/XASpTq8Hry7PGTTJjIdm2tuekGe5cG9WBo2nzg8hr2
+        g2VpVUEwUR6NauZ8klKaQOD6Ha1+rjJtL4oN9NNQJeI/Wb2m4CJrabTAkEEKRfjuAk2SJNRYCbVcO
+        45UFPkNWFKhMt81CD4/KFoh3beaDayv+ifK+lhedpUjINOr04s3nl5J/7q1vHul/OvBQAY6kA3jik
+        mEbbpmdNkhoZG6NY84MEDGiWFnvgtLjfFEgE4k8hS8kG/BOxB77tNrYYxMWfmDKNfsC55iCKshKYB
+        V+YH1OhA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kiGBe-0000jE-QC; Thu, 26 Nov 2020 12:15:46 +0000
+Date:   Thu, 26 Nov 2020 12:15:46 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Linux-FSDevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Christoph Hellwig <hch@lst.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>, dchinner@redhat.com,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
+Message-ID: <20201126121546.GN4327@casper.infradead.org>
+References: <20201112212641.27837-1-willy@infradead.org>
+ <alpine.LSU.2.11.2011160128001.1206@eggly.anvils>
+ <20201117153947.GL29991@casper.infradead.org>
+ <alpine.LSU.2.11.2011170820030.1014@eggly.anvils>
+ <20201117191513.GV29991@casper.infradead.org>
+ <20201117234302.GC29991@casper.infradead.org>
+ <20201125023234.GH4327@casper.infradead.org>
+ <20201125150859.25adad8ff64db312681184bd@linux-foundation.org>
+ <CANsGZ6a95WK7+2H4Zyg5FwDxhdJQqR8nKND1Cn6r6e3QxWeW4Q@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <160639288228.3364.6749574723160205981.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANsGZ6a95WK7+2H4Zyg5FwDxhdJQqR8nKND1Cn6r6e3QxWeW4Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On Wed, Nov 25, 2020 at 04:11:57PM -0800, Hugh Dickins wrote:
+> The little fix definitely needed was shown by generic/083: each
+> fsstress waiting for page lock, happens even without forcing huge
+> pages. See below...
 
-Commit-ID:     8539d3f06710a9e91b9968fa736549d7c6b44206
-Gitweb:        https://git.kernel.org/tip/8539d3f06710a9e91b9968fa736549d7c6b44206
-Author:        Sean Christopherson <sean.j.christopherson@intel.com>
-AuthorDate:    Tue, 27 Oct 2020 14:45:32 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 26 Nov 2020 12:58:56 +01:00
+Huh ... I need to look into why my xfstests run is skipping generic/083:
 
-x86/asm: Drop unused RDPID macro
+0006 generic/083 3s ... run fstests generic/083 at 2020-11-26 12:11:52
+0006 [not run] this test requires a valid $SCRATCH_MNT and unique 
+0006 Ran: generic/083
+0006 Not run: generic/083
 
-Drop the GAS-compatible RDPID macro. RDPID is unsafe in the kernel
-because KVM loads guest's TSC_AUX on VM-entry and may not restore the
-host's value until the CPU returns to userspace.
+> >                         if (!unfalloc || !PageUptodate(page)) {
+> >                                 if (page_mapping(page) != mapping) {
+> >                                         /* Page was replaced by swap: retry */
+> >                                         unlock_page(page);
+> > -                                       index--;
+> > +                                       put_page(page);
+> >                                         break;
+> >                                 }
+> >                                 VM_BUG_ON_PAGE(PageWriteback(page), page);
+> > -                               if (shmem_punch_compound(page, start, end))
+> > -                                       truncate_inode_page(mapping, page);
+> > -                               else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+> > -                                       /* Wipe the page and don't get stuck */
+> > -                                       clear_highpage(page);
+> > -                                       flush_dcache_page(page);
+> > -                                       set_page_dirty(page);
+> > -                                       if (index <
+> > -                                           round_up(start, HPAGE_PMD_NR))
+> > -                                               start = index + 1;
+> > -                               }
+> > +                               index = truncate_inode_partial_page(mapping,
+> > +                                               page, lstart, lend);
+> > +                               if (index > end)
+> > +                                       end = indices[i] - 1;
+> >                         }
+> > -                       unlock_page(page);
+> 
+> The fix needed is here: instead of deleting that unlock_page(page)
+> line, it needs to be } else { unlock_page(page); }
 
-See
+It also needs a put_page(page);
 
-  6a3ea3e68b8a ("x86/entry/64: Do not use RDPID in paranoid entry to accomodate KVM")
+That's now taken care of by truncate_inode_partial_page(), so if we're
+not calling that, we need to put the page as well.  ie this:
 
-for details.
++++ b/mm/shmem.c
+@@ -954,6 +954,9 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+                                                page, lstart, lend);
+                                if (index > end)
+                                        end = indices[i] - 1;
++                       } else {
++                               unlock_page(page);
++                               put_page(page);
+                        }
+                }
+                index = indices[i - 1] + 1;
 
-It can always be resurrected from git history, if needed.
-
- [ bp: Massage commit message. ]
-
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201027214532.1792-1-sean.j.christopherson@intel.com
----
- arch/x86/include/asm/inst.h | 15 ---------------
- 1 file changed, 15 deletions(-)
-
-diff --git a/arch/x86/include/asm/inst.h b/arch/x86/include/asm/inst.h
-index bd7f024..438ccd4 100644
---- a/arch/x86/include/asm/inst.h
-+++ b/arch/x86/include/asm/inst.h
-@@ -143,21 +143,6 @@
- 	.macro MODRM mod opd1 opd2
- 	.byte \mod | (\opd1 & 7) | ((\opd2 & 7) << 3)
- 	.endm
--
--.macro RDPID opd
--	REG_TYPE rdpid_opd_type \opd
--	.if rdpid_opd_type == REG_TYPE_R64
--	R64_NUM rdpid_opd \opd
--	.else
--	R32_NUM rdpid_opd \opd
--	.endif
--	.byte 0xf3
--	.if rdpid_opd > 7
--	PFX_REX rdpid_opd 0
--	.endif
--	.byte 0x0f, 0xc7
--	MODRM 0xc0 rdpid_opd 0x7
--.endm
- #endif
- 
- #endif
+> >                 }
+> > +               index = indices[i - 1] + 1;
+> >                 pagevec_remove_exceptionals(&pvec);
+> > -               pagevec_release(&pvec);
+> > -               index++;
+> > +               pagevec_reinit(&pvec);
