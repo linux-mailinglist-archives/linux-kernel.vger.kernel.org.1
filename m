@@ -2,105 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FBE2C5BCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CC22C5BCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 19:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404489AbgKZSO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 13:14:58 -0500
-Received: from shelob.surriel.com ([96.67.55.147]:40134 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404196AbgKZSO6 (ORCPT
+        id S2391709AbgKZSPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 13:15:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60313 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391523AbgKZSPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 13:14:58 -0500
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kiLnD-0007lT-Rk; Thu, 26 Nov 2020 13:14:55 -0500
-Message-ID: <8f2428a049f2c29f092782699bcb3af76bf72b6a.camel@surriel.com>
-Subject: Re: [PATCH 3/3] mm,thp,shmem: make khugepaged obey tmpfs mount flags
-From:   Rik van Riel <riel@surriel.com>
-To:     Vlastimil Babka <vbabka@suse.cz>, hughd@google.com
-Cc:     xuyu@linux.alibaba.com, akpm@linux-foundation.org, mgorman@suse.de,
-        aarcange@redhat.com, willy@infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        linux-mm@kvack.org, mhocko@suse.com
-Date:   Thu, 26 Nov 2020 13:14:55 -0500
-In-Reply-To: <eda496c8-e248-c8fe-e7bd-f7e71d20e499@suse.cz>
-References: <20201124194925.623931-1-riel@surriel.com>
-         <20201124194925.623931-4-riel@surriel.com>
-         <eda496c8-e248-c8fe-e7bd-f7e71d20e499@suse.cz>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-pjHMC/LhDPh+SjBdooxx"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Thu, 26 Nov 2020 13:15:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606414520;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hr8wXcIpPppGS97jdPzVZuGasHPDWlCeBn83szgFA6k=;
+        b=FvSmYs7M3QW4bW1EEj3QTCOrcgaRd4pDkN5V6jwvAvZB9DWQNshzoJd7VdtJY7P6QHWNyQ
+        okwnNU11bvACNnf0ZPIcc5+1PFqWwGUp+5PL1aaiRVpg0KffO9My6pNSQbbE1dClBNAmpq
+        +qv73sKZzlB/4/bSoeAmINNGf8yUvMo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-518-bS2Ru4VcNzO3HKNt1GylXQ-1; Thu, 26 Nov 2020 13:15:18 -0500
+X-MC-Unique: bS2Ru4VcNzO3HKNt1GylXQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9941805BFC;
+        Thu, 26 Nov 2020 18:15:16 +0000 (UTC)
+Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 02DEB60855;
+        Thu, 26 Nov 2020 18:15:13 +0000 (UTC)
+Date:   Thu, 26 Nov 2020 13:15:12 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <X7/wsNx9fInRZtQx@redhat.com>
+References: <X73s8fxDKPRD6wET@redhat.com>
+ <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
+ <X76iatgBErQH5El4@redhat.com>
+ <a4cc62ba-8066-3e9c-cead-98cd74d313dd@redhat.com>
+ <20201125210414.GO123287@linux.ibm.com>
+ <X77OyM8utmWcq1Di@redhat.com>
+ <20201126093602.GQ123287@linux.ibm.com>
+ <3bb709a7-6100-aa5c-4125-7ed80c6d9643@redhat.com>
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3bb709a7-6100-aa5c-4125-7ed80c6d9643@redhat.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 26, 2020 at 11:05:14AM +0100, David Hildenbrand wrote:
+> I agree that this is sub-optimal, as such pages are impossible to detect
+> (PageReserved is just not clear as discussed with Andrea). The basic
+> question is how we want to proceed:
+> 
+> a) Make sure any online struct page has a valid nid/zid, and is spanned
+> by the nid/zid.
+> b) Use a fake nid that will bail out when used for page_zone() and
+> page_pgdat(), and make pfn walkers detect that.
+> 
+> AFAIU, Andrea seems to prefer a). I thing b) might be easier in corner
+> cases. Thoughts?
 
---=-pjHMC/LhDPh+SjBdooxx
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Yes that's a good summary.
 
-On Thu, 2020-11-26 at 18:18 +0100, Vlastimil Babka wrote:
-> On 11/24/20 8:49 PM, Rik van Riel wrote:
-> > Currently if thp enabled=3D[madvise], mounting a tmpfs filesystem
-> > with huge=3Dalways and mmapping files from that tmpfs does not
-> > result in khugepaged collapsing those mappings, despite the
-> > mount flag indicating that it should.
-> >=20
-> > Fix that by breaking up the blocks of tests in hugepage_vma_check
-> > a little bit, and testing things in the correct order.
-> >=20
-> > Signed-off-by: Rik van Riel <riel@surriel.com>
-> > Fixes: c2231020ea7b ("mm: thp: register mm for khugepaged when
-> > merging vma for shmem")
->=20
-> Looks ok. But, it we have sysfs thp enabled=3Dnever, and shmem mount
-> explicitly=20
-> thp enabled, then shmem mount overrides the global sysfs setting and
-> thp's will=20
-> be allocated there, right? However, khugepaged_enabled() will be
-> false and thus=20
-> khugepaged won't run at all? So a similar situation than what you're
-> fixing here.
+My reason I slightly prefer a) is that it will perform faster at
+runtime.
 
-Indeed, that is somewhat similar. Whether or not shmem
-allocations attempt huge pages is controlled by both
-the file /sys/kernel/mm/transparent_hugepage/shmem_enabled
-and mount options.
+I seen also the proposed patch that adds the pfn_to_page embedded in
+pfn_valid to show those pfn as invalid, that is especially slow and I
+don't like it for that reason. Additional bugchecks for NO_NODEID will
+slowdown things too, so they should be justified by some benefit. It
+concerns me if pfn_valid becomes slower.
 
-This patch makes khugepaged treat the mount options
-and/or
-sysfs flag as enabling collapsing of huge pages in case
-enabled =3D [always] for regular THPs.
+b) will also make compaction bail out on that pageblock which it
+doesn't need to so it'll provide a worse runtime to compaction as
+well.
 
-Should I send another patch on top
-of this that causes
-khugepaged to be enabled when regular THPs are disabled,
-but shmem THPs are enabled in any way?
+a) is what the code already does if only the e820 map range was
+reserved with memblock_reserved, after applying Mike's patch to
+initialize reserved memblock regions too.
 
---=20
-All Rights Reversed.
+It turns out the VM_BUG_ON_PAGE, as far as compaction is concerned, is
+just a false positive, it detected a broken VM invariant, but it was
+fine to proceed in the DEBUG_VM=n case that wouldn't crash.
 
---=-pjHMC/LhDPh+SjBdooxx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Before da50c57bdbb8e37ec6f8c934a2f8acbf4e4fdfb9 the struct page
+corresponding to the e820 unknown type range page wouldn't be marked
+PageReserved, that also looked wrong but it was also basically harmless.
 
------BEGIN PGP SIGNATURE-----
+Neither of the two defects is too bad: it could be ignored if we just
+remove the bugcheck, but it's just nice if the bugcheck turn out to be
+correct in the pageblock.
 
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+/8J8ACgkQznnekoTE
-3oNbZgf/diF51qurPmCQ6k1Qm78hFdIIcawa0JQGueXEj9erGFEInRK6t0fHlhKM
-FdbfTqlwRq1bPMQiuTvdDkpKHr/D1wX4aDh9UnAQ4oeOLsLHwF1k+HJh/XRjjDmx
-WwF68eL6mR6nNX28xjB7IPE9j3TjcHKHHrIcl0zhohf9zfv3Clk+idnFbO/1W8ns
-9WBfK1+QClmspFfTw91d9nh20Q0m0sYL15CoEymbl+VKu3CIq6Cwf3IGIRJkmmtN
-3u5HIiaBUyZrflSaLJcvqAkwg/afi5nPdDuAhgXA6WyW+c4ICRgyOQthZ2EWN/bE
-OIcIgCHTz4a1+AguzTF9AEpw7R+Flw==
-=/Xou
------END PGP SIGNATURE-----
+If we initialize all RAM and non-RAM ranges in the same way, then
+there's no discrepancy. Mike's patch seem to do just that by walking
+the memblock.reserved memblocks in the same way as the
+memblock.memory.
 
---=-pjHMC/LhDPh+SjBdooxx--
+NOTE: I would also much prefer b) if only it would guarantee zero
+runtime slowdown. (Which is I especially dislike pfn_valid internally
+calling pfn_to_page)
+
+Thanks,
+Andrea
 
