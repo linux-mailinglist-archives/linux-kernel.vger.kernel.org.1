@@ -2,104 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3D52C5149
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 268072C514E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 10:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732332AbgKZJai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 04:30:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgKZJah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 04:30:37 -0500
-Received: from localhost.localdomain (unknown [122.179.79.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2585021D91;
-        Thu, 26 Nov 2020 09:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606383036;
-        bh=peoe6om42rZkZB7Dd7Y61MeWRKgrzoucjoFoKjpcn6s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=am75Q/j0U7W2Q0z6GlSu3vTxnpq0UNAeKpIeTpeCzgD7ZHX6HNyLgb5yNriuo6/7s
-         1KhvHfLoERbZn8PKlu9vnaBBXKic+CsH1WaZPUlyAoBGiTadqlE1jUmu4A2+ZV+bCb
-         BfwVxl922/5mApbxufwsPzIH+YCw6bjj9IOo4ZM8=
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 2/2] regulator: qcom-rpmh: Add support for SDX55
-Date:   Thu, 26 Nov 2020 15:00:18 +0530
-Message-Id: <20201126093018.1085594-2-vkoul@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201126093018.1085594-1-vkoul@kernel.org>
-References: <20201126093018.1085594-1-vkoul@kernel.org>
+        id S2389243AbgKZJbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 04:31:49 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:41735 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730908AbgKZJbs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 04:31:48 -0500
+Received: by mail-qk1-f195.google.com with SMTP id d9so1019446qke.8;
+        Thu, 26 Nov 2020 01:31:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m7rrJTHCOqfGVq2YH9fpddLIPmI3lIR6B6JPtIwfF0Y=;
+        b=FDwYMmXCJwc9CP6gzzg+L+8KgAnYdRwjs1YKoIa4kcw3lmDCxn0HF3RRjSDJw+fiZ6
+         oW8rvSmhp7Rruw6o+MbWhpx+HPYfz6RIh9+r27YhRMYMZ+A613UeAVnmSF4dphoaEoYv
+         4oOwEL7whuZ6FL87cF5h+e+E8Mp1NPG7rDk2hxUM08IRo00UYjwNSKqKDOiYZbPBxEDX
+         Q9ML5vLkDRl7zvPCm49EG/d0jeN6pVqpR8w6bb2wjYjSz+LI8qb4ShO4vIxzFYXDpI+u
+         zb+0VvOEJI9oC/QnQR3rm/S+fdWioXh9C+I0/hphrNMtBMIIwkoh+PlvewscXDX+tNa9
+         JtxA==
+X-Gm-Message-State: AOAM531L+FMBKwZtiWNA0BsMz6GSJxzCLpFCmGELRnxneYLWVe1PFOhg
+        BBzSauR5M7dZfjEyaW2BmBIXa4lNQAgoacerFLE=
+X-Google-Smtp-Source: ABdhPJwd95vo1L81hrFJrEHdm8ACPCCwJuOgG1VX9+Z6Jl/0f+Ta+4Yp24jkZsJTX+cj9jjZ8H6hmC98uhDS0L4+PEk=
+X-Received: by 2002:a05:620a:2e8:: with SMTP id a8mr2433728qko.144.1606383107454;
+ Thu, 26 Nov 2020 01:31:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201125225654.1618966-1-minchan@kernel.org> <X79Ch+WDwYwqWGk8@kroah.com>
+In-Reply-To: <X79Ch+WDwYwqWGk8@kroah.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 26 Nov 2020 18:31:35 +0900
+Message-ID: <CAM9d7cgr+c=kNQoEAaWiZ8Q6VjpZd-4gF4Uy90EZuq9WpkgYBA@mail.gmail.com>
+Subject: Re: [PATCH] tracing: Fix align of static buffer
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "stable # 4 . 5" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support from RPMH regulators found in SDX55 platform
+Hi Greg,
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
----
- drivers/regulator/qcom-rpmh-regulator.c | 31 +++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+On Thu, Nov 26, 2020 at 2:52 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Nov 25, 2020 at 02:56:54PM -0800, Minchan Kim wrote:
+> > With 5.9 kernel on ARM64, I found ftrace_dump output was broken but
+> > it had no problem with normal output "cat /sys/kernel/debug/tracing/trace".
+> >
+> > With investigation, it seems coping the data into temporal buffer seems to
+> > break the align binary printf expects if the static buffer is not aligned
+> > with 4-byte. IIUC, get_arg in bstr_printf expects that args has already
+> > right align to be decoded and seq_buf_bprintf says ``the arguments are saved
+> > in a 32bit word array that is defined by the format string constraints``.
+> > So if we don't keep the align under copy to temporal buffer, the output
+> > will be broken by shifting some bytes.
+> >
+> > This patch fixes it.
+>
+> Does this resolve the issue reported at:
+>         https://lore.kernel.org/r/20201124223917.795844-1-elavila@google.com
+> ?
 
-diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
-index d488325499a9..e673d48b31a1 100644
---- a/drivers/regulator/qcom-rpmh-regulator.c
-+++ b/drivers/regulator/qcom-rpmh-regulator.c
-@@ -930,6 +930,33 @@ static const struct rpmh_vreg_init_data pm6150l_vreg_data[] = {
- 	{},
- };
- 
-+static const struct rpmh_vreg_init_data pmx55_vreg_data[] = {
-+	RPMH_VREG("smps1",   "smp%s1",    &pmic5_ftsmps510, "vdd-s1"),
-+	RPMH_VREG("smps2",   "smp%s2",    &pmic5_hfsmps510, "vdd-s2"),
-+	RPMH_VREG("smps3",   "smp%s3",    &pmic5_hfsmps510, "vdd-s3"),
-+	RPMH_VREG("smps4",   "smp%s4",    &pmic5_hfsmps510, "vdd-s4"),
-+	RPMH_VREG("smps5",   "smp%s5",    &pmic5_hfsmps510, "vdd-s5"),
-+	RPMH_VREG("smps6",   "smp%s6",    &pmic5_ftsmps510, "vdd-s6"),
-+	RPMH_VREG("smps7",   "smp%s7",    &pmic5_hfsmps510, "vdd-s7"),
-+	RPMH_VREG("ldo1",    "ldo%s1",    &pmic5_nldo,      "vdd-l1-l2"),
-+	RPMH_VREG("ldo2",    "ldo%s2",    &pmic5_nldo,      "vdd-l1-l2"),
-+	RPMH_VREG("ldo3",    "ldo%s3",    &pmic5_nldo,      "vdd-l3-l9"),
-+	RPMH_VREG("ldo4",    "ldo%s4",    &pmic5_nldo,      "vdd-l4-l12"),
-+	RPMH_VREG("ldo5",    "ldo%s5",    &pmic5_pldo,      "vdd-l5-l6"),
-+	RPMH_VREG("ldo6",    "ldo%s6",    &pmic5_pldo,      "vdd-l5-l6"),
-+	RPMH_VREG("ldo7",    "ldo%s7",    &pmic5_nldo,      "vdd-l7-l8"),
-+	RPMH_VREG("ldo8",    "ldo%s8",    &pmic5_nldo,      "vdd-l7-l8"),
-+	RPMH_VREG("ldo9",    "ldo%s9",    &pmic5_nldo,      "vdd-l3-l9"),
-+	RPMH_VREG("ldo10",   "ldo%s10",   &pmic5_pldo,      "vdd-l10-l11-l13"),
-+	RPMH_VREG("ldo11",   "ldo%s11",   &pmic5_pldo,      "vdd-l10-l11-l13"),
-+	RPMH_VREG("ldo12",   "ldo%s12",   &pmic5_nldo,      "vdd-l4-l12"),
-+	RPMH_VREG("ldo13",   "ldo%s13",   &pmic5_pldo,      "vdd-l10-l11-l13"),
-+	RPMH_VREG("ldo14",   "ldo%s14",   &pmic5_nldo,      "vdd-l14"),
-+	RPMH_VREG("ldo15",   "ldo%s15",   &pmic5_nldo,      "vdd-l15"),
-+	RPMH_VREG("ldo16",   "ldo%s16",   &pmic5_pldo,      "vdd-l16"),
-+	{},
-+};
-+
- static int rpmh_regulator_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -1000,6 +1027,10 @@ static const struct of_device_id __maybe_unused rpmh_regulator_match_table[] = {
- 		.compatible = "qcom,pm6150l-rpmh-regulators",
- 		.data = pm6150l_vreg_data,
- 	},
-+	{
-+		.compatible = "qcom,pmx55-rpmh-regulators",
-+		.data = pmx55_vreg_data,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, rpmh_regulator_match_table);
--- 
-2.26.2
+No, it's a different issue.
 
+Thanks,
+Namhyung
