@@ -2,259 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1BA2C4DCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 591182C4DD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733292AbgKZDbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 22:31:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730930AbgKZDbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 22:31:15 -0500
-Received: from suppilovahvero.lan (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70AED21741;
-        Thu, 26 Nov 2020 03:31:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606361474;
-        bh=5ZKQEvzl3d+izjSmHH3HjnXQRphRvWxGFVuxZCSyKBQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=hQ8DBIzK24L6OS9BoMJpfzPZzqqOij+kqvanvH4NwbqFaO55GL7FCqSbzOPm1Yp60
-         QE+JER27/optcIYlRzj8XxX4R0TU3i0cniZIWGImo2guvOECNKHdKQ/gY9g2BQv6v2
-         4NIOIo2eU03D3yzbsR2YPtfA29248fadl7GBLnP0=
-Message-ID: <7edf80b70e4dd67d6f95c796c1ae26df9e51ba8d.camel@kernel.org>
-Subject: Re: [PATCH v2] char: tpm: add i2c driver for cr50
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     linux-integrity@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Helen Koike <helen.koike@collabora.com>,
-        Duncan Laurie <dlaurie@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>, kernel@collabora.com,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 26 Nov 2020 05:30:24 +0200
-In-Reply-To: <f36c43f81968a9ce2f3342e5c2c069722d8bfc7f.camel@collabora.com>
-References: <20201120172345.4040187-1-adrian.ratiu@collabora.com>
-         <20201123220643.GA16777@kernel.org>
-         <f36c43f81968a9ce2f3342e5c2c069722d8bfc7f.camel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+        id S2387482AbgKZDgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 22:36:17 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7688 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387468AbgKZDgR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 22:36:17 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ChNh83Y69z15STQ;
+        Thu, 26 Nov 2020 11:35:52 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 26 Nov 2020
+ 11:36:11 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] USB:ehci:fix an interrupt calltrace error
+Date:   Thu, 26 Nov 2020 11:34:33 +0800
+Message-ID: <1606361673-573-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-24 at 10:14 -0300, Ezequiel Garcia wrote:
-> Hi Jarkko,
-> 
-> Thanks for your review.
-> 
-> On Tue, 2020-11-24 at 00:06 +0200, Jarkko Sakkinen wrote:
-> > On Fri, Nov 20, 2020 at 07:23:45PM +0200, Adrian Ratiu wrote:
-> > > From: "dlaurie@chromium.org" <dlaurie@chromium.org>
-> > > 
-> > > Add TPM 2.0 compatible I2C interface for chips with cr50
-> > > firmware.
-> > > 
-> > > The firmware running on the currently supported H1 MCU requires a
-> > > special driver to handle its specific protocol, and this makes it
-> > > unsuitable to use tpm_tis_core_* and instead it must implement
-> > > the
-> > > underlying TPM protocol similar to the other I2C TPM drivers.
-> > > 
-> > > - All 4 byes of status register must be read/written at once.
-> > > - FIFO and burst count is limited to 63 and must be drained by
-> > > AP.
-> > > - Provides an interrupt to indicate when read response data is
-> > > ready
-> > > and when the TPM is finished processing write data.
-> > > 
-> > > This driver is based on the existing infineon I2C TPM driver,
-> > > which
-> > > most closely matches the cr50 i2c protocol behavior.
-> > > 
-> > > Cc: Helen Koike <helen.koike@collabora.com>
-> > > Signed-off-by: Duncan Laurie <dlaurie@chromium.org>
-> > > [swboyd@chromium.org: Depend on i2c even if it's a module,
-> > > replace
-> > > boilier plate with SPDX tag, drop asm/byteorder.h include,
-> > > simplify
-> > > return from probe]
-> > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > > Signed-off-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
-> > > Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> > > ---
-> > > Changes in v2:
-> > >   - Various small fixes all over (reorder includes, MAX_BUFSIZE,
-> > > comments, etc)
-> > >   - Reworked return values of i2c_wait_tpm_ready() to fix timeout
-> > > mis-handling
-> > > so ret == 0 now means success, the wait period jiffies is ignored
-> > > because that
-> > > number is meaningless and return a proper timeout error in case
-> > > jiffies == 0.
-> > >   - Make i2c default to 1 message per transfer (requested by
-> > > Helen)
-> > >   - Move -EIO error reporting to transfer function to cleanup
-> > > transfer() itself
-> > > and its R/W callers
-> > >   - Remove magic value hardcodings and introduce enum
-> > > force_release.
-> > > 
-> > > v1 posted at https://lkml.org/lkml/2020/2/25/349
-> > > 
-> > > Applies on next-20201120, tested on Chromebook EVE.
-> > > ---
-> > >  drivers/char/tpm/Kconfig            |  10 +
-> > >  drivers/char/tpm/Makefile           |   2 +
-> > >  drivers/char/tpm/tpm_tis_i2c_cr50.c | 768
-> > > ++++++++++++++++++++++++++++
-> > >  3 files changed, 780 insertions(+)
-> > >  create mode 100644 drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > 
-> > > diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
-> > > index a18c314da211..4308f9ca7a43 100644
-> > > --- a/drivers/char/tpm/Kconfig
-> > > +++ b/drivers/char/tpm/Kconfig
-> > > @@ -86,6 +86,16 @@ config TCG_TIS_SYNQUACER
-> > >           To compile this driver as a module, choose  M here;
-> > >           the module will be called tpm_tis_synquacer.
-> > >  
-> > > +config TCG_TIS_I2C_CR50
-> > > +       tristate "TPM Interface Specification 2.0 Interface (I2C
-> > > - CR50)"
-> > > +       depends on I2C
-> > > +       select TCG_CR50
-> > > +       help
-> > > +         This is a driver for the Google cr50 I2C TPM interface
-> > > which is a
-> > > +         custom microcontroller and requires a custom i2c
-> > > protocol interface
-> > > +         to handle the limitations of the hardware.  To compile
-> > > this driver
-> > > +         as a module, choose M here; the module will be called
-> > > tcg_tis_i2c_cr50.
-> > > +
-> > >  config TCG_TIS_I2C_ATMEL
-> > >         tristate "TPM Interface Specification 1.2 Interface (I2C
-> > > - Atmel)"
-> > >         depends on I2C
-> > > diff --git a/drivers/char/tpm/Makefile
-> > > b/drivers/char/tpm/Makefile
-> > > index 84db4fb3a9c9..66d39ea6bd10 100644
-> > > --- a/drivers/char/tpm/Makefile
-> > > +++ b/drivers/char/tpm/Makefile
-> > > @@ -27,6 +27,8 @@ obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o
-> > >  tpm_tis_spi-y := tpm_tis_spi_main.o
-> > >  tpm_tis_spi-$(CONFIG_TCG_TIS_SPI_CR50) += tpm_tis_spi_cr50.o
-> > >  
-> > > +obj-$(CONFIG_TCG_TIS_I2C_CR50) += tpm_tis_i2c_cr50.o
-> > > +
-> > >  obj-$(CONFIG_TCG_TIS_I2C_ATMEL) += tpm_i2c_atmel.o
-> > >  obj-$(CONFIG_TCG_TIS_I2C_INFINEON) += tpm_i2c_infineon.o
-> > >  obj-$(CONFIG_TCG_TIS_I2C_NUVOTON) += tpm_i2c_nuvoton.o
-> > > diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > new file mode 100644
-> > > index 000000000000..37555dafdca0
-> > > --- /dev/null
-> > > +++ b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > @@ -0,0 +1,768 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * Copyright 2016 Google Inc.
-> > > + *
-> > > + * Based on Linux Kernel TPM driver by
-> > > + * Peter Huewe <peter.huewe@infineon.com>
-> > > + * Copyright (C) 2011 Infineon Technologies
-> > > + */
-> > > +
-> > > +/*
-> > > + * cr50 is a firmware for H1 secure modules that requires
-> > > special
-> > > + * handling for the I2C interface.
-> > > + *
-> > > + * - Use an interrupt for transaction status instead of
-> > > hardcoded delays
-> > > + * - Must use write+wait+read read protocol
-> > > + * - All 4 bytes of status register must be read/written at once
-> > > + * - Burst count max is 63 bytes, and burst count behaves
-> > > + *   slightly differently than other I2C TPMs
-> > > + * - When reading from FIFO the full burstcnt must be read
-> > > + *   instead of just reading header and determining the
-> > > remainder
-> > > + */
-> > > +
-> > > +#include <linux/acpi.h>
-> > > +#include <linux/completion.h>
-> > > +#include <linux/i2c.h>
-> > > +#include <linux/interrupt.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/pm.h>
-> > > +#include <linux/slab.h>
-> > > +#include <linux/wait.h>
-> > > +
-> > > +#include "tpm_tis_core.h"
-> > > +
-> > > +#define CR50_MAX_BUFSIZE       64
-> > > +#define CR50_TIMEOUT_SHORT_MS  2       /* Short timeout during
-> > > transactions */
-> > > +#define CR50_TIMEOUT_NOIRQ_MS  20      /* Timeout for TPM ready
-> > > without IRQ */
-> > > +#define CR50_I2C_DID_VID       0x00281ae0L
-> > > +#define CR50_I2C_MAX_RETRIES   3       /* Max retries due to I2C
-> > > errors */
-> > > +#define CR50_I2C_RETRY_DELAY_LO        55      /* Min usecs
-> > > between retries on I2C */
-> > > +#define CR50_I2C_RETRY_DELAY_HI        65      /* Max usecs
-> > > between retries on I2C */
-> > 
-> > CR50_ -> TPM_CR50_
-> > 
-> > > +
-> > > +#define TPM_I2C_ACCESS(l)      (0x0000 | ((l) << 4))
-> > > +#define TPM_I2C_STS(l)         (0x0001 | ((l) << 4))
-> > > +#define TPM_I2C_DATA_FIFO(l)   (0x0005 | ((l) << 4))
-> > > +#define TPM_I2C_DID_VID(l)     (0x0006 | ((l) << 4))
-> > > +
-> > > +struct priv_data {
-> > > +       int irq;
-> > > +       int locality;
-> > > +       struct completion tpm_ready;
-> > > +       u8 buf[CR50_MAX_BUFSIZE];
-> > > +};
-> > 
-> > tpm_i2c_cr50_priv_data
-> > 
-> > > +
-> > > +enum force_release {
-> > > +       CR50_NO_FORCE = 0x0,
-> > > +       CR50_FORCE = 0x1,
-> > > +};
-> > 
-> > I'd just 
-> > 
-> > #define TPM_I2C_CR50_NO_FORCE   0
-> > #define TPM_I2C_CR50_FORCE      1
-> > 
-> 
-> A proper enumerated type has advantages over a preprocessor macro:
-> even if the compiler won't warn you, static analyzers can warn
-> about a misuse.
+The system goes to suspend when using USB audio player. This causes
+the USB device continuous send interrupt signal to system, When the
+number of interrupts exceeds 100000, the system will forcibly close
+the interrupts and output a calltrace error.
 
-Why don't you just use "bool", "true" and "false"? I ignored that
-this has nothing to do with the hardware last time.
+When the system goes to suspend, the last interrupt is reported to
+the driver. At this time, the system has set the state to suspend.
+This causes the last interrupt to not be processed by the system and
+not clear the interrupt state flag. This uncleared interrupt flag
+constantly triggers new interrupt event. This causing the driver to
+receive more than 100,000 interrupts, which causes the system to
+forcibly close the interrupt report and report the calltrace error.
 
+so, when the driver goes to sleep and changes the system state to
+suspend, the interrupt flag needs to be cleared.
 
-> Also, it allows for a more obvious prototype.
-> 
-> I am curious why do you propose this change?
-> 
-> Thanks,
-> Ezequiel
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/usb/host/ehci-hub.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-/Jarkko
+diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
+index ce0eaf7..5b13825 100644
+--- a/drivers/usb/host/ehci-hub.c
++++ b/drivers/usb/host/ehci-hub.c
+@@ -348,6 +348,11 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
+ 
+ 	/* Any IAA cycle that started before the suspend is now invalid */
+ 	end_iaa_cycle(ehci);
++
++	/* clear interrupt status */
++	if (ehci->has_synopsys_hc_bug)
++		ehci_writel(ehci, INTR_MASK | STS_FLR, &ehci->regs->status);
++
+ 	ehci_handle_start_intr_unlinks(ehci);
+ 	ehci_handle_intr_unlinks(ehci);
+ 	end_free_itds(ehci);
+-- 
+2.8.1
 
