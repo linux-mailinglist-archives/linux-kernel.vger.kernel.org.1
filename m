@@ -2,103 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172A42C569B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5462C569A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390138AbgKZODF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:03:05 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:47170 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389434AbgKZODD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:03:03 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AQE0K5q028820;
-        Thu, 26 Nov 2020 06:02:57 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=0lMQuVyeSLaCjUzlC/0+yjavvRfmhPNeL7CyRnFdi0I=;
- b=WywXpOSx+ju9aqH//zsTOHRswTK8cC8ZTBBMl7jq08q17/XrMJZzaATU4dfmEVMnuA2O
- dEHIZzDguyXVHKx3WE1MeNByvHB00AXqPuuxjO6yFooXCyUnXAU4bMwWfzbbM9IXoABg
- hIHnB8xcgmnx60w4jmZ8CXOHlFkCqmNQL/ivSIZySsaACHvD0mvAgJoHLLtmU19FiNlZ
- e7f0w7mPHf2IsbFwJgZdsP7OobzwjgBfNLwhw4RLzTy/pssCp4fw5+pQLNwzJRHzsT7Q
- zgqKvrYJBxTHqyrSvo6pjzZfGcVkzcnrnIOdM+/bcddt5wss5wI6wGCr94VyaKOkIMJP XA== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 34y39rhnvc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 26 Nov 2020 06:02:57 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 26 Nov
- 2020 06:02:55 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 26 Nov 2020 06:02:55 -0800
-Received: from hyd1584.caveonetworks.com (unknown [10.29.37.82])
-        by maili.marvell.com (Postfix) with ESMTP id 482203F7041;
-        Thu, 26 Nov 2020 06:02:52 -0800 (PST)
-From:   George Cherian <george.cherian@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <gakula@marvell.com>,
-        <masahiroy@kernel.org>, <george.cherian@marvell.com>,
-        <willemdebruijn.kernel@gmail.com>, <saeed@kernel.org>,
-        <jiri@resnulli.us>
-Subject: [PATCHv5 net-next 0/3] Add devlink and devlink health reporters to 
-Date:   Thu, 26 Nov 2020 19:32:48 +0530
-Message-ID: <20201126140251.963048-1-george.cherian@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        id S2390078AbgKZOCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:02:55 -0500
+Received: from mail-eopbgr80110.outbound.protection.outlook.com ([40.107.8.110]:23425
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389434AbgKZOCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 09:02:54 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gzV7r+EKmUIfe1xDKFgX0I0ObCYytvJLHhdva0U4Wo1cw3Uq2POUsafrOJTPX1kTuGxTNi1L4+8FHDSs9yn9dmv2pW+PPW9D7BQEtsN0ioANUmILHkiWwUB/OxpfsoZxQnMpUB2E0lyZQ+CFYdxl8jrT75Xwh2x9Xs5Bcf/T3XARcAFsHKFI1GxfQhybsb3yrXzmgCYA37Vp7YKJRqJ3PUOZ3YSXUsclz+aAS8Qs+P80SSCKeCAjV0JkMi+eSHf/p3GuE7QcB4Ac35FNFUpqe1P58hTtZ8JDGZlwQ5zbQ8CZZduAxaXceAVOvmchaMrPFZkVDFoT/N8wyqP1qV/kQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C0mVguaJSeyooPy1Xmz6PW0bYnE+qF7j6KRAs6YvNWw=;
+ b=E3hBNu1XJPgGT2yyoT89kChHiguoqXCsOsQE1jgylcKJl949XKod/klzJP8CnytyV84QyikiLJrnX94GgO5yWCUSASQGp/HUwLlNorZl0HQY1sXWi3aMp23oh1dU2j4x+dAAzgnA4z1GcTQLNPn0hYQHQF+hrVjBqJD19s5NsuibX/6AbVIAlMXFtdBNkgxv5WTD8nC5UjZc6GRyCpliXpzYy0bNfhrjBUnaLD8Ivoty1eczWumK8j8z/fxSNgu1vBqxsVomHvn4MtFizu0NJth1zE6HSTWJZU5ogXr+9IHweykJtxy3LDwuqu+sJPzdndfJntTt2o8n28q4nfu/IQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silicom.dk; dmarc=pass action=none header.from=silicom.dk;
+ dkim=pass header.d=silicom.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=SILICOMLTD.onmicrosoft.com; s=selector2-SILICOMLTD-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C0mVguaJSeyooPy1Xmz6PW0bYnE+qF7j6KRAs6YvNWw=;
+ b=qeinjyFEHZqARsSJTSkvY/V1eGD4MovTU1GZW9tvzjBtqwm80iPz2GLpVUMRsaKSv0XqCVn5WE5smeEh5/x16lvF66pUudccJd681EKCz6iLHJIA+mmcZryUm+m3SVsCChIyrPlhyrrmwvyNK2OzbixtW/ex2zpC1b3SQ+5+w+w=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=silicom.dk;
+Received: from AM0PR0402MB3426.eurprd04.prod.outlook.com
+ (2603:10a6:208:22::15) by AM0PR04MB5779.eurprd04.prod.outlook.com
+ (2603:10a6:208:131::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Thu, 26 Nov
+ 2020 14:02:50 +0000
+Received: from AM0PR0402MB3426.eurprd04.prod.outlook.com
+ ([fe80::bdca:6651:1054:423b]) by AM0PR0402MB3426.eurprd04.prod.outlook.com
+ ([fe80::bdca:6651:1054:423b%5]) with mapi id 15.20.3589.030; Thu, 26 Nov 2020
+ 14:02:50 +0000
+Subject: Re: [PATCH v6 2/7] fpga: sec-mgr: enable secure updates
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com
+References: <20201106010905.11935-1-russell.h.weight@intel.com>
+ <20201106010905.11935-3-russell.h.weight@intel.com>
+From:   =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>
+Message-ID: <9dd75daf-eb73-4008-ca65-6f7ea3923e35@silicom.dk>
+Date:   Thu, 26 Nov 2020 15:02:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
+In-Reply-To: <20201106010905.11935-3-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US-large
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [85.184.138.169]
+X-ClientProxiedBy: AM7PR04CA0011.eurprd04.prod.outlook.com
+ (2603:10a6:20b:110::21) To AM0PR0402MB3426.eurprd04.prod.outlook.com
+ (2603:10a6:208:22::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-26_04:2020-11-26,2020-11-26 signatures=0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.8.20] (85.184.138.169) by AM7PR04CA0011.eurprd04.prod.outlook.com (2603:10a6:20b:110::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Thu, 26 Nov 2020 14:02:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f94449d4-5b49-4d90-0d38-08d89213f5d2
+X-MS-TrafficTypeDiagnostic: AM0PR04MB5779:
+X-Microsoft-Antispam-PRVS: <AM0PR04MB577988C984EF293354EF7C6BD5F90@AM0PR04MB5779.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cQkr1iM5UzW+u8m96XZVOyGycKZ2SBeOlg3ipL/KDCAKNIw09Y5iP5Qd36nwxdu6qoygMc5FoqQ24OIqpfu7vfVNgWA+rT0RhozG7OPiq0SOrrwQh8G8qttWbiRAYquDDaISdFnEtQ1b4FU8hDA5FwzWsASygx+E8UbhH6/aoye5LkgcB8KAsbhSF4xzs07kbwoB8k+kFDjxx+NgpXMvGlCFJf4w7LXurD3m3qtn5LpUF79U9GWMU9UZasTLkdeKaVgdnEAbVadiDbSiY8td4iBM7IBAgexIhlGg5nUe0bDMXc82Gqi4KpgO4c9hS173Gs4ez7sqQh/GLBYGHnUOw4WfOUrssBidkZmq/szkSdw2MPY5QWzHLz0PEhnHUNX1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR0402MB3426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(346002)(39850400004)(366004)(376002)(52116002)(8976002)(4326008)(83380400001)(8676002)(2906002)(26005)(8936002)(86362001)(2616005)(956004)(6486002)(31696002)(16576012)(316002)(66556008)(16526019)(36756003)(478600001)(15650500001)(66946007)(66476007)(186003)(5660300002)(31686004)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?elh2OVY2L1E4UmVoRitBSmxLUmF6MkhVSDJnOVk0YndsQ0RZQk9uMEdCVmhB?=
+ =?utf-8?B?ZUJCT2liT084UW9Sa2JGK1oyQld6b0FYVE5UeHFlUmJ0bXlaYlljUlh1S3BD?=
+ =?utf-8?B?T1krMGdwOUZWQlU0YXYweENKQzlCbU1OcGFUMy9OclVUSzN3SHZBY2lya1NL?=
+ =?utf-8?B?Zy83cExQWi9idm83MktnMDl0K3hlWWdEV1g2S0ttZGtwTno2a2hsTmtpTmQ1?=
+ =?utf-8?B?eFVaaWttaUpobVVUR1ZMVldLQ0xGRHpOT0toUXBEeUx4VXRkY1hBQkxZenJT?=
+ =?utf-8?B?eFN0ZCtaS2ROOERnb1BhKy8vTmpKWGdGT1ZhMmVWL3ZKZElrdE1YV2FBSTV0?=
+ =?utf-8?B?MVA2bXNTZ2NzcTNMYVBaeVo0enBXNWllcitYUTlDcnBoejBqdGFldWFwN2lh?=
+ =?utf-8?B?NDlwcnRWNFZybjBuRzAzODlZMlJzeWxYb1FHUmRpK0RtL0RDRUdjRm5PSWpy?=
+ =?utf-8?B?eEYvZGFSS3g3bTRJb1daempQcUFTTkZwTVY3Y0tRMzVadVgrU3lSNUMrNGdH?=
+ =?utf-8?B?cWVoa3RIT3FnL0hkVjZwOVNFSFFnQlRWUVdYc0RyeE1vUXlXNk1YeS9hWEw3?=
+ =?utf-8?B?c0RpK2ZxOWVobjdZOXVsS2NmRGkwNXM2RHUrOE84eDBDUUxYTlJCVEFZSjEy?=
+ =?utf-8?B?TGdSTzR1dEFvYzNrVklVVnM2bUE4cG0wUU9oTEg5cXVRcC9yN1F0U3NiRm9h?=
+ =?utf-8?B?M0ZoMHJrQUh2amNFZkQrQ0EzQStDWjJGbUpIZ2h2OVJLUWU1RnBiRStQMEdr?=
+ =?utf-8?B?TU5ObHUrbTZqR2JzZi9zZmdsRVkvY09QZkxFcjJxbktoYWdzcTR3U1JOQzRC?=
+ =?utf-8?B?cnNRUEZ6WTg5c2I4OUxjRXQxQkkyM0JueGpmTnZtMGlISnFINjFieXB6dFdG?=
+ =?utf-8?B?OXB3S0J1RlF3UzhkSzhqRlY3TDJ2UHRCQ3pQdlZDT0VxeW5ldTJxbVhid0RK?=
+ =?utf-8?B?VExpWmRpMFhVcWh6SGR3aU1CUHp1NjVzWXJ3dkxPLzlJanZxSTlmZ0d4MGZy?=
+ =?utf-8?B?cWxiVW1ZVXdKV2JtMmZJR3dTYUVNN0haU2dTOTBla0EwSlFZUlIzcmtmdWh1?=
+ =?utf-8?B?bFdFa01PaFlockgvTm1sdDQ5aURoZHpwN2pSeTYyVEdQM2pIeCtBb2xZN3R5?=
+ =?utf-8?B?ejVxTWpPTnl2eGFmVlhGbTdxQnJUaTRRSnBqNUxrN2pURlNrVlIzTU9zZVhJ?=
+ =?utf-8?B?QlA3WUpKcUM2VTRERXBtUGNIK244OUM3UkU1STBuMDBqbmIwYlF1TitwZldZ?=
+ =?utf-8?B?aGVhZG94eXhTSGxRb1RNVHV0eE00Uks4d1cwQXRHOUlxM0svNTdqYnpPMkRy?=
+ =?utf-8?Q?+dllRxTnVbFyLGsw2cVCmCHeQ8b99SvS3/?=
+X-OriginatorOrg: silicom.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: f94449d4-5b49-4d90-0d38-08d89213f5d2
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR0402MB3426.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2020 14:02:50.3570
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: c9e326d8-ce47-4930-8612-cc99d3c87ad1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1A4T36ds9my4RXqP0htES7+wWoWDrsxq1l23+FqthkOGmqfyhmDRcTVyYPN0DXBY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5779
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Russ,
 
-Add basic devlink and devlink health reporters.
-Devlink health reporters are added for NPA and NIX blocks.
-These reporters report the error count in respective blocks.
+I found another thing while testing this...
 
-Address Jakub's comment to add devlink support for error reporting.
-https://www.spinics.net/lists/netdev/msg670712.html
+On 06/11/2020 02.09, Russ Weight wrote:
 
-Change-log:
-v5 
- - Address Jiri's comment
- - use devlink_fmsg_arr_pair_nest_start() for NIX blocks 
+<snip>
 
-v4 
- - Rebase to net-next (no logic changes).
- 
-v3
- - Address Saeed's comments on v2.
- - Renamed the reporter name as hw_*.
- - Call devlink_health_report() when an event is raised.
- - Added recover op too.
+> +static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
+> +			      const char *buf, size_t count)
+> +{
+> +	struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
+> +	int ret = count;
+> +
+> +	if (count == 0 || count >= PATH_MAX)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&smgr->lock);
+> +	if (smgr->driver_unload || smgr->progress != FPGA_SEC_PROG_IDLE) {
+> +		ret = -EBUSY;
+> +		goto unlock_exit;
+> +	}
+> +
+> +	smgr->filename = kstrndup(buf, count - 1, GFP_KERNEL);
 
-v2
- - Address Willem's comments on v1.
- - Fixed the sparse issues, reported by Jakub.
+The `count - 1` is meant to remove a trailing newline, but opae-sdk 
+writes the filename without newline, so better do it conditionally...
 
+> +	if (!smgr->filename) {
+> +		ret = -ENOMEM;
+> +		goto unlock_exit;
+> +	}
+> +
+> +	smgr->err_code = FPGA_SEC_ERR_NONE;
+> +	smgr->progress = FPGA_SEC_PROG_READING;
+> +	reinit_completion(&smgr->update_done);
+> +	schedule_work(&smgr->work);
+> +
+> +unlock_exit:
+> +	mutex_unlock(&smgr->lock);
+> +	return ret;
+> +}
+> +static DEVICE_ATTR_WO(filename);
+> +
+> +static struct attribute *sec_mgr_update_attrs[] = {
+> +	&dev_attr_filename.attr,
+> +	NULL,
+> +};
 
-George Cherian (3):
-  octeontx2-af: Add devlink suppoort to af driver
-  octeontx2-af: Add devlink health reporters for NPA
-  octeontx2-af: Add devlink health reporters for NIX
-
- .../net/ethernet/marvell/octeontx2/Kconfig    |   1 +
- .../ethernet/marvell/octeontx2/af/Makefile    |   2 +-
- .../net/ethernet/marvell/octeontx2/af/rvu.c   |   9 +-
- .../net/ethernet/marvell/octeontx2/af/rvu.h   |   4 +
- .../marvell/octeontx2/af/rvu_devlink.c        | 978 ++++++++++++++++++
- .../marvell/octeontx2/af/rvu_devlink.h        |  82 ++
- .../marvell/octeontx2/af/rvu_struct.h         |  33 +
- 7 files changed, 1107 insertions(+), 2 deletions(-)
- create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
- create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h
-
--- 
-2.25.1
-
+Thanks,
+Martin
