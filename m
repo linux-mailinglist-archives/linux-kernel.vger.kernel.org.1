@@ -2,64 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40AE2C521F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456692C5224
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 11:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388079AbgKZKei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 05:34:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388042AbgKZKei (ORCPT
+        id S2388150AbgKZKfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 05:35:14 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2158 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729095AbgKZKfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 05:34:38 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38031C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 02:34:38 -0800 (PST)
-Received: from [2a0a:edc0:0:900:6245:cbff:fea0:1793] (helo=kresse.office.stw.pengutronix.de)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1kiEbg-0005sk-GJ; Thu, 26 Nov 2020 11:34:33 +0100
-Message-ID: <824d78bd94125c4c4e7ad8c106199ba11e39c233.camel@pengutronix.de>
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Thu, 26 Nov 2020 11:34:29 +0100
-In-Reply-To: <20201105140127.25249-1-laurentiu.palcu@oss.nxp.com>
-References: <20201105140127.25249-1-laurentiu.palcu@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+        Thu, 26 Nov 2020 05:35:14 -0500
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ChYww1WYjz67Hmq;
+        Thu, 26 Nov 2020 18:32:32 +0800 (CST)
+Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.161)
+ by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Thu, 26 Nov 2020 11:35:10 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <torvalds@linux-foundation.org>,
+        <hch@infradead.org>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <silviu.vlasceanu@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH] ima: Don't modify file descriptor mode on the fly
+Date:   Thu, 26 Nov 2020 11:34:56 +0100
+Message-ID: <20201126103456.15167-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.27.GIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:6245:cbff:fea0:1793
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
-        metis.ext.pengutronix.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=4.0 tests=AWL,BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH 0/2] drm/imx/dcss: a couple of fixes
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on metis.ext.pengutronix.de)
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.65.161]
+X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Do, 2020-11-05 at 16:01 +0200, Laurentiu Palcu wrote:
-> Hi,
-> 
-> This patchset fixes 90/270 rotations for Vivante tiled and super-tiled
-> formats and a Coccinelle warning.
+Commit a408e4a86b36b ("ima: open a new file instance if no read
+permissions") already introduced a second open to measure a file when the
+original file descriptor does not allow it. However, it didn't remove the
+existing method of changing the mode of the original file descriptor, which
+is still necessary if the current process does not have enough privileges
+to open a new one.
 
-Thanks, looks good. I've pushed them into drm-misc-next.
+Changing the mode isn't really an option, as the filesystem might need to
+do preliminary steps to make the read possible. Thus, this patch removes
+the code and keeps the second open as the only option to measure a file
+when it is unreadable with the original file descriptor.
 
-Regards,
-Lucas
+Cc: <stable@vger.kernel.org> # 4.20.x: 0014cc04e8ec0 ima: Set file->f_mode
+Cc: <stable@vger.kernel.org> # 4.20.x
+Fixes: 2fe5d6def1672 ("ima: integrity appraisal extension")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ security/integrity/ima/ima_crypto.c | 20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
+
+diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
+index 21989fa0c107..f6a7e9643b54 100644
+--- a/security/integrity/ima/ima_crypto.c
++++ b/security/integrity/ima/ima_crypto.c
+@@ -537,7 +537,7 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
+ 	loff_t i_size;
+ 	int rc;
+ 	struct file *f = file;
+-	bool new_file_instance = false, modified_mode = false;
++	bool new_file_instance = false;
+ 
+ 	/*
+ 	 * For consistency, fail file's opened with the O_DIRECT flag on
+@@ -555,18 +555,10 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
+ 				O_TRUNC | O_CREAT | O_NOCTTY | O_EXCL);
+ 		flags |= O_RDONLY;
+ 		f = dentry_open(&file->f_path, flags, file->f_cred);
+-		if (IS_ERR(f)) {
+-			/*
+-			 * Cannot open the file again, lets modify f_mode
+-			 * of original and continue
+-			 */
+-			pr_info_ratelimited("Unable to reopen file for reading.\n");
+-			f = file;
+-			f->f_mode |= FMODE_READ;
+-			modified_mode = true;
+-		} else {
+-			new_file_instance = true;
+-		}
++		if (IS_ERR(f))
++			return PTR_ERR(f);
++
++		new_file_instance = true;
+ 	}
+ 
+ 	i_size = i_size_read(file_inode(f));
+@@ -581,8 +573,6 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
+ out:
+ 	if (new_file_instance)
+ 		fput(f);
+-	else if (modified_mode)
+-		f->f_mode &= ~FMODE_READ;
+ 	return rc;
+ }
+ 
+-- 
+2.27.GIT
 
