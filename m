@@ -2,138 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6707D2C5A78
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CD12C5A7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 18:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404279AbgKZRY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 12:24:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:41232 "EHLO foss.arm.com"
+        id S2391620AbgKZR0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 12:26:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726677AbgKZRY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:24:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF47031B;
-        Thu, 26 Nov 2020 09:24:56 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.30.234])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 350C13F23F;
-        Thu, 26 Nov 2020 09:24:53 -0800 (PST)
-Date:   Thu, 26 Nov 2020 17:24:50 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 02/23] psci: Accessor for configured PSCI function IDs
-Message-ID: <20201126172450.GC38486@C02TD0UTHF1T.local>
-References: <20201126155421.14901-1-dbrazdil@google.com>
- <20201126155421.14901-3-dbrazdil@google.com>
+        id S2391347AbgKZR0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 12:26:06 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72755206F4;
+        Thu, 26 Nov 2020 17:26:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606411565;
+        bh=2NYIiNNYpC3H3s7SxseGQH3I0YFr06MT1xJN10INj38=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V8wZ1Ayz3jt23BJsMZzzoXz+J/aJRFLLSPHCEiXQ7fiiCrlaiKOofTqRfsDZktNzp
+         V3pqXiQJwIVkfObjD+uu7vgkL6cu34jks/kryjFpECVyLFe8NVeUzGxAL2XigieLrJ
+         4Gtvt6H7WIbnMxa96y6o36SKgeo1o7rSuUdoqyGY=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0AEEC40E29; Thu, 26 Nov 2020 14:26:03 -0300 (-03)
+Date:   Thu, 26 Nov 2020 14:26:03 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [BUG] perf probe can't remove probes
+Message-ID: <20201126172603.GD53384@kernel.org>
+References: <20201125172755.GA53351@kernel.org>
+ <20201126092125.402257a8776637d6bd2e090c@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126155421.14901-3-dbrazdil@google.com>
+In-Reply-To: <20201126092125.402257a8776637d6bd2e090c@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 03:54:00PM +0000, David Brazdil wrote:
-> Function IDs used by PSCI are configurable for v0.1 via DT/APCI. If the
-> host is using PSCI v0.1, KVM's host PSCI proxy needs to use the same IDs.
-> Expose the array holding the information with a read-only accessor.
+Em Thu, Nov 26, 2020 at 09:21:25AM +0900, Masami Hiramatsu escreveu:
+> Hi Arnaldo,
 > 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  drivers/firmware/psci/psci.c | 16 ++++++++--------
->  include/linux/psci.h         | 10 ++++++++++
->  2 files changed, 18 insertions(+), 8 deletions(-)
+> On Wed, 25 Nov 2020 14:27:55 -0300
+> Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 > 
-> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-> index 213c68418a65..40609564595e 100644
-> --- a/drivers/firmware/psci/psci.c
-> +++ b/drivers/firmware/psci/psci.c
-> @@ -58,16 +58,16 @@ typedef unsigned long (psci_fn)(unsigned long, unsigned long,
->  				unsigned long, unsigned long);
->  static psci_fn *invoke_psci_fn;
->  
-> -enum psci_function {
-> -	PSCI_FN_CPU_SUSPEND,
-> -	PSCI_FN_CPU_ON,
-> -	PSCI_FN_CPU_OFF,
-> -	PSCI_FN_MIGRATE,
-> -	PSCI_FN_MAX,
-> -};
-> -
->  static u32 psci_function_id[PSCI_FN_MAX];
->  
-> +u32 psci_get_function_id(enum psci_function fn)
-> +{
-> +	if (WARN_ON_ONCE(fn < 0 || fn >= PSCI_FN_MAX))
-> +		return 0;
-> +
-> +	return psci_function_id[fn];
-> +}
+> > 
+> > Masami, have you stumbled on this already?
+> > 
+> > [root@seventh ~]# perf probe security_locked_down%return 'ret=$retval'
+> > Added new event:
+> >   probe:security_locked_down__return (on security_locked_down%return with ret=$retval)
+> > 
+> > You can now use it in all perf tools, such as:
+> > 
+> > 	perf record -e probe:security_locked_down__return -aR sleep 1
+> > 
+> > [root@seventh ~]# perf probe security_locked_down what
+> > Added new event:
+> >   probe:security_locked_down (on security_locked_down with what)
+> > 
+> > You can now use it in all perf tools, such as:
+> > 
+> > 	perf record -e probe:security_locked_down -aR sleep 1
+> > 
+> > [root@seventh ~]#
+> > 
+> > 
+> > [root@seventh ~]# uname -r
+> > 5.10.0-rc3.bpfsign+
+> > [root@seventh ~]# perf probe -l
+> >   probe:security_locked_down (on security_locked_down@git/bpf/security/security.c with what)
+> >   probe:security_locked_down__return (on security_locked_down%return@git/bpf/security/security.c with ret)
+> > [root@seventh ~]# perf probe -D '*:*'
+> > Semantic error :There is non-digit char in line number.
+> > 
+> >  Usage: perf probe [<options>] 'PROBEDEF' ['PROBEDEF' ...]
+> >     or: perf probe [<options>] --add 'PROBEDEF' [--add 'PROBEDEF' ...]
+> >     or: perf probe [<options>] --del '[GROUP:]EVENT' ...
+> >     or: perf probe --list [GROUP:]EVENT ...
+> >     or: perf probe [<options>] --line 'LINEDESC'
+> >     or: perf probe [<options>] --vars 'PROBEPOINT'
+> >     or: perf probe [<options>] --funcs
+> > 
+> >     -D, --definition <[EVENT=]FUNC[@SRC][+OFF|%return|:RL|;PT]|SRC:AL|SRC;PT [[NAME=]ARG ...]>
+> >                           Show trace event definition of given traceevent for k/uprobe_events.
+> 
+> As you can see, "-D" is showing definition. Not delete. (*)
+> Delete is "-d" or "--del".
 
-I'd really like if we could namespace this with a psci_0_1_* prefix
-before we expose it outside of the PSCI code. I appreciate that's a
-larger change, but I reckon we only need a couple of new patches:
+Yeah, I was in a hurry and looked at just the first line right after the
+command, didn't want to forget reporting it so sent the "bug" report,
+d0h, sorry about the noise, using -d or --del works.
 
-1) Split the ops which consume the FN ids into separate psci_0_1_*() and
-   psci_0_2_*() variants, with a common __psci_*() helper that takes the
-   function ID as an argument. The 0_1 variants would read the function
-   ID from a variable, and the 0_2 variants would hard-code the id.
+But having both -d and -D, in retrospect, wasn't such a good idea :-\
 
-2) Replace the psci_function_id array with:
-
-   struct psci_0_1_function_ids {
-   	u32 suspend;
-   	u32 cpu_on;
-   	u32 cpu_off;
-   	u32 migrate;
-   };
-
-   ... and remove enum psci_function entirely.
-
-3) Add a helper which returns the entire psci_0_1_function_ids struct in
-   one go. No warnings necessary.
-
-Does that sound OK to you?
-
-Thanks,
-Mark.
-
-> +
->  #define PSCI_0_2_POWER_STATE_MASK		\
->  				(PSCI_0_2_POWER_STATE_ID_MASK | \
->  				PSCI_0_2_POWER_STATE_TYPE_MASK | \
-> diff --git a/include/linux/psci.h b/include/linux/psci.h
-> index 2a1bfb890e58..5b49a5c82d6f 100644
-> --- a/include/linux/psci.h
-> +++ b/include/linux/psci.h
-> @@ -21,6 +21,16 @@ bool psci_power_state_is_valid(u32 state);
->  int psci_set_osi_mode(bool enable);
->  bool psci_has_osi_support(void);
->  
-> +enum psci_function {
-> +	PSCI_FN_CPU_SUSPEND,
-> +	PSCI_FN_CPU_ON,
-> +	PSCI_FN_CPU_OFF,
-> +	PSCI_FN_MIGRATE,
-> +	PSCI_FN_MAX,
-> +};
-> +
-> +u32 psci_get_function_id(enum psci_function fn);
-> +
->  struct psci_operations {
->  	u32 (*get_version)(void);
->  	int (*cpu_suspend)(u32 state, unsigned long entry_point);
+- Arnaldo
+ 
+> (*) this option is for different version of kernel, remote-machine
+> and boot-time tracing.
+> 
+> > [root@seventh ~]# perf probe probe:security_locked_down
+> > Semantic error :There is non-digit char in line number.
+> >   Error: Command Parse Error.
+> > [root@seventh ~]# perf probe probe:security_locked_down__return
+> > Semantic error :There is non-digit char in line number.
+> >   Error: Command Parse Error.
+> 
+> Since you don't pass any option, both are for adding new probe event.
+> 
+> What happen if you run
+> 
+> $ perf probe -d "*:*"
+> 
+> ?
+> 
+> Thank you,
+> 
 > -- 
-> 2.29.2.454.gaff20da3a2-goog
-> 
+> Masami Hiramatsu <mhiramat@kernel.org>
+
+-- 
+
+- Arnaldo
