@@ -2,215 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48522C56D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1F82C56D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 15:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391000AbgKZOOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 09:14:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:34346 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390839AbgKZOOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:14:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 49CFA31B;
-        Thu, 26 Nov 2020 06:14:17 -0800 (PST)
-Received: from e121896.arm.com (unknown [10.57.53.242])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C6AB43F71F;
-        Thu, 26 Nov 2020 06:14:14 -0800 (PST)
-From:   James Clark <james.clark@arm.com>
-To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@redhat.com, namhyung@kernel.org
-Cc:     james.clark@arm.com, john.garry@huawei.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH v6 12/12] perf tools: Add separate thread member
-Date:   Thu, 26 Nov 2020 16:13:28 +0200
-Message-Id: <20201126141328.6509-13-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201126141328.6509-1-james.clark@arm.com>
-References: <20201126141328.6509-1-james.clark@arm.com>
+        id S2391022AbgKZOOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 09:14:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390022AbgKZOOe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 09:14:34 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B43C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 06:14:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=l+r/ujMibWxRMGoyxuToDzSWZqq35vXIRnqSxtmnTk8=; b=zRe5uvbkZY2/VpqCTglS7P2Hu
+        qj90YaWrDXLJuyMqXJTJxJPXE2mngGjgymCVJR8Ul82lwIoeirlzmzM5lLnD61mY8WPMW0lGfsDki
+        WCImjakz0JYoKOs/ta2gBwdNLm7FWbUEEjSOZXxwJ2VrXnZHgR1oWPugd82qsERhDeEEckMFVqUHF
+        1mTC4TX178jp1/UGvCrdahhKP9et4IdxfRVJA1p5bWpEzKiyVBUJPJowRbezRrdfetnLbZKyE6dKE
+        4Tl5VPakkrgJiEfHmZnFSTdVsK2YcCe0rDuBodsk+QpesN/V/pbi71EpatN2gMSa9iwAmdd/eDvrT
+        T6IBv8qJw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36344)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kiI2Y-0001qm-J8; Thu, 26 Nov 2020 14:14:30 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kiI2X-000108-Af; Thu, 26 Nov 2020 14:14:29 +0000
+Date:   Thu, 26 Nov 2020 14:14:29 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-arm-kernel@lists.infradead.org, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: linux-next 20201126 - build error on arm allmodconfig
+Message-ID: <20201126141429.GL1551@shell.armlinux.org.uk>
+References: <24105.1606397102@turing-police>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <24105.1606397102@turing-police>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A separate field isn't strictly required. The core
-field could be re-used for thread IDs as a single
-field was used previously.
+On Thu, Nov 26, 2020 at 08:25:02AM -0500, Valdis Klētnieks wrote:
+> Seems something is giving it indigestion regarding asmlinkage...
+> 
+>   CC      arch/arm/mm/kasan_init.o
+> In file included from ./include/linux/kasan.h:15,
+>                  from arch/arm/mm/kasan_init.c:11:
+> ./arch/arm/include/asm/kasan.h:26:11: error: expected ';' before 'void'
+>  asmlinkage void kasan_early_init(void);
+>            ^~~~~
+>            ;
+> make[2]: *** [scripts/Makefile.build:283: arch/arm/mm/kasan_init.o] Error 1
+> make[1]: *** [scripts/Makefile.build:500: arch/arm/mm] Error 2
+> make: *** [Makefile:1803: arch/arm] Error 2
+> 
+> Git bisect points at:
+> 
+> commit 2df573d2ca4c1ce6ea33cb7849222f771e759211
+> Author: Andrey Konovalov <andreyknvl@google.com>
+> Date:   Tue Nov 24 16:45:08 2020 +1100
+> 
+>     kasan: shadow declarations only for software modes
+> 
+> Looks like it's this chunk:
+> 
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 59538e795df4..26f2ab92e7ca 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -11,7 +11,6 @@ struct task_struct;
+> 
+>  #ifdef CONFIG_KASAN
+> 
+> -#include <linux/pgtable.h>
+>  #include <asm/kasan.h>
+> 
+> Testing shows putting that #include back in makes it compile correctly,
+> but it's not obvious why putting that back makes 'asmlinkage' recognized.
+> 
+> "You are in a twisty little maze of #includes, all different"... :)
 
-But separating them will avoid confusion and catch
-potential errors where core IDs are read as thread
-IDs and vice versa.
+The real answer is for asm/kasan.h to include linux/linkage.h
 
-Also remove the placeholder id field which is now
-no longer used.
-
-Signed-off-by: James Clark <james.clark@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Thomas Richter <tmricht@linux.ibm.com>
-Cc: John Garry <john.garry@huawei.com>
----
- tools/perf/tests/topology.c    |  8 ++++----
- tools/perf/util/cpumap.c       | 14 +++++++-------
- tools/perf/util/cpumap.h       |  2 +-
- tools/perf/util/stat-display.c |  8 ++++----
- 4 files changed, 16 insertions(+), 16 deletions(-)
-
-diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
-index 6779c7b93649..078051116546 100644
---- a/tools/perf/tests/topology.c
-+++ b/tools/perf/tests/topology.c
-@@ -119,7 +119,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 		TEST_ASSERT_VAL("Core map - Die ID doesn't match",
- 			session->header.env.cpu[map->map[i]].die_id == id.die);
- 		TEST_ASSERT_VAL("Core map - Node ID is set", id.node == -1);
--		TEST_ASSERT_VAL("Core map - ID is set", id.id == -1);
-+		TEST_ASSERT_VAL("Core map - Thread is set", id.thread == -1);
- 	}
- 
- 	// Test that die ID contains socket and die
-@@ -132,8 +132,8 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 			session->header.env.cpu[map->map[i]].die_id == id.die);
- 
- 		TEST_ASSERT_VAL("Die map - Node ID is set", id.node == -1);
--		TEST_ASSERT_VAL("Die map - ID is set", id.id == -1);
- 		TEST_ASSERT_VAL("Die map - Core is set", id.core == -1);
-+		TEST_ASSERT_VAL("Die map - Thread is set", id.thread == -1);
- 	}
- 
- 	// Test that socket ID contains only socket
-@@ -144,8 +144,8 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 
- 		TEST_ASSERT_VAL("Socket map - Node ID is set", id.node == -1);
- 		TEST_ASSERT_VAL("Socket map - Die ID is set", id.die == -1);
--		TEST_ASSERT_VAL("Socket map - ID is set", id.id == -1);
- 		TEST_ASSERT_VAL("Socket map - Core is set", id.core == -1);
-+		TEST_ASSERT_VAL("Socket map - Thread is set", id.thread == -1);
- 	}
- 
- 	// Test that node ID contains only node
-@@ -153,10 +153,10 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 		id = cpu_map__get_node(map, i, NULL);
- 		TEST_ASSERT_VAL("Node map - Node ID doesn't match",
- 			cpu__get_node(map->map[i]) == id.node);
--		TEST_ASSERT_VAL("Node map - ID is set", id.id == -1);
- 		TEST_ASSERT_VAL("Node map - Socket is set", id.socket == -1);
- 		TEST_ASSERT_VAL("Node map - Die ID is set", id.die == -1);
- 		TEST_ASSERT_VAL("Node map - Core is set", id.core == -1);
-+		TEST_ASSERT_VAL("Node map - Thread is set", id.thread == -1);
- 	}
- 	perf_session__delete(session);
- 
-diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
-index d164f7bd1ac7..87d3eca9b872 100644
---- a/tools/perf/util/cpumap.c
-+++ b/tools/perf/util/cpumap.c
-@@ -148,16 +148,16 @@ static int cmp_aggr_cpu_id(const void *a_pointer, const void *b_pointer)
- 	struct aggr_cpu_id *a = (struct aggr_cpu_id *)a_pointer;
- 	struct aggr_cpu_id *b = (struct aggr_cpu_id *)b_pointer;
- 
--	if (a->id != b->id)
--		return a->id - b->id;
--	else if (a->node != b->node)
-+	if (a->node != b->node)
- 		return a->node - b->node;
- 	else if (a->socket != b->socket)
- 		return a->socket - b->socket;
- 	else if (a->die != b->die)
- 		return a->die - b->die;
--	else
-+	else if (a->core != b->core)
- 		return a->core - b->core;
-+	else
-+		return a->thread - b->thread;
- }
- 
- int cpu_map__build_map(struct perf_cpu_map *cpus, struct cpu_aggr_map **res,
-@@ -616,7 +616,7 @@ const struct perf_cpu_map *cpu_map__online(void) /* thread unsafe */
- 
- bool cpu_map__compare_aggr_cpu_id(struct aggr_cpu_id a, struct aggr_cpu_id b)
- {
--	return a.id == b.id &&
-+	return a.thread == b.thread &&
- 		a.node == b.node &&
- 		a.socket == b.socket &&
- 		a.die == b.die &&
-@@ -625,7 +625,7 @@ bool cpu_map__compare_aggr_cpu_id(struct aggr_cpu_id a, struct aggr_cpu_id b)
- 
- bool cpu_map__aggr_cpu_id_is_empty(struct aggr_cpu_id a)
- {
--	return a.id == -1 &&
-+	return a.thread == -1 &&
- 		a.node == -1 &&
- 		a.socket == -1 &&
- 		a.die == -1 &&
-@@ -635,7 +635,7 @@ bool cpu_map__aggr_cpu_id_is_empty(struct aggr_cpu_id a)
- struct aggr_cpu_id cpu_map__empty_aggr_cpu_id(void)
- {
- 	struct aggr_cpu_id ret = {
--		.id = -1,
-+		.thread = -1,
- 		.node = -1,
- 		.socket = -1,
- 		.die = -1,
-diff --git a/tools/perf/util/cpumap.h b/tools/perf/util/cpumap.h
-index 1bb8f7d47206..a27eeaf086e8 100644
---- a/tools/perf/util/cpumap.h
-+++ b/tools/perf/util/cpumap.h
-@@ -8,7 +8,7 @@
- #include <perf/cpumap.h>
- 
- struct aggr_cpu_id {
--	int id;
-+	int thread;
- 	int node;
- 	int socket;
- 	int die;
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index df54036c5e39..114153ca14ba 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -127,9 +127,9 @@ static void aggr_printout(struct perf_stat_config *config,
- 	case AGGR_THREAD:
- 		fprintf(config->output, "%*s-%*d%s",
- 			config->csv_output ? 0 : 16,
--			perf_thread_map__comm(evsel->core.threads, id.id),
-+			perf_thread_map__comm(evsel->core.threads, id.thread),
- 			config->csv_output ? 0 : -8,
--			perf_thread_map__pid(evsel->core.threads, id.id),
-+			perf_thread_map__pid(evsel->core.threads, id.thread),
- 			config->csv_sep);
- 		break;
- 	case AGGR_GLOBAL:
-@@ -743,7 +743,7 @@ static struct perf_aggr_thread_value *sort_aggr_thread(
- 
- 		buf[i].counter = counter;
- 		buf[i].id = cpu_map__empty_aggr_cpu_id();
--		buf[i].id.id = thread;
-+		buf[i].id.thread = thread;
- 		buf[i].uval = uval;
- 		buf[i].val = val;
- 		buf[i].run = run;
-@@ -784,7 +784,7 @@ static void print_aggr_thread(struct perf_stat_config *config,
- 		if (config->stats)
- 			printout(config, id, 0, buf[thread].counter, buf[thread].uval,
- 				 prefix, buf[thread].run, buf[thread].ena, 1.0,
--				 &config->stats[id.id]);
-+				 &config->stats[id.thread]);
- 		else
- 			printout(config, id, 0, buf[thread].counter, buf[thread].uval,
- 				 prefix, buf[thread].run, buf[thread].ena, 1.0,
 -- 
-2.28.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
