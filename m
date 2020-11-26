@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591182C4DD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA0A2C4DD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387482AbgKZDgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 22:36:17 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7688 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387468AbgKZDgR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 22:36:17 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ChNh83Y69z15STQ;
-        Thu, 26 Nov 2020 11:35:52 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 26 Nov 2020
- 11:36:11 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] USB:ehci:fix an interrupt calltrace error
-Date:   Thu, 26 Nov 2020 11:34:33 +0800
-Message-ID: <1606361673-573-1-git-send-email-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S2387466AbgKZDfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 22:35:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387414AbgKZDfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 22:35:20 -0500
+Received: from suppilovahvero.lan (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96B3520578;
+        Thu, 26 Nov 2020 03:35:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606361719;
+        bh=Pm86dA96vUB8ve/WV9A5oJB00MJ+s60jMcnkxr4UFJo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Ao43ezJomqCbc8UXSXpuCxDN6NNJmTWH9EJcqzDgLvZaJZ9Wg6lnU4GQFDMO0AYw+
+         d+DefLfOulwbgxAPWLfgHsJrqlzxao1dhx6WLIFrGh2fBDv5BqHqrlWxgIvK9vCWTA
+         vNIrbJDnVXQs47LMpv0bSM8ltuFv7p9/om+dkb3g=
+Message-ID: <4192b5a07ebd0539dd8244afe9e065b4996f4f4a.camel@kernel.org>
+Subject: Re: [PATCH] tpm: ibmvtpm: fix error return code in
+ tpm_ibmvtpm_probe()
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Wang Hai <wanghai38@huawei.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, peterhuewe@gmx.de,
+        jgg@ziepe.ca, stefanb@linux.ibm.com, nayna@linux.ibm.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 26 Nov 2020 05:35:15 +0200
+In-Reply-To: <20201124135244.31932-1-wanghai38@huawei.com>
+References: <20201124135244.31932-1-wanghai38@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The system goes to suspend when using USB audio player. This causes
-the USB device continuous send interrupt signal to system, When the
-number of interrupts exceeds 100000, the system will forcibly close
-the interrupts and output a calltrace error.
+On Tue, 2020-11-24 at 21:52 +0800, Wang Hai wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Fixes: d8d74ea3c002 ("tpm: ibmvtpm: Wait for buffer to be set before
+> proceeding")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 
-When the system goes to suspend, the last interrupt is reported to
-the driver. At this time, the system has set the state to suspend.
-This causes the last interrupt to not be processed by the system and
-not clear the interrupt state flag. This uncleared interrupt flag
-constantly triggers new interrupt event. This causing the driver to
-receive more than 100,000 interrupts, which causes the system to
-forcibly close the interrupt report and report the calltrace error.
+Provide a reasoning for -ETIMEOUT in the commit message.
 
-so, when the driver goes to sleep and changes the system state to
-suspend, the interrupt flag needs to be cleared.
+/Jarkko
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
----
- drivers/usb/host/ehci-hub.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> ---
+>  drivers/char/tpm/tpm_ibmvtpm.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/char/tpm/tpm_ibmvtpm.c
+> b/drivers/char/tpm/tpm_ibmvtpm.c
+> index 994385bf37c0..813eb2cac0ce 100644
+> --- a/drivers/char/tpm/tpm_ibmvtpm.c
+> +++ b/drivers/char/tpm/tpm_ibmvtpm.c
+> @@ -687,6 +687,7 @@ static int tpm_ibmvtpm_probe(struct vio_dev
+> *vio_dev,
+>                                 ibmvtpm->rtce_buf != NULL,
+>                                 HZ)) {
+>                 dev_err(dev, "CRQ response timed out\n");
+> +               rc = -ETIMEDOUT;
+>                 goto init_irq_cleanup;
+>         }
+>  
 
-diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
-index ce0eaf7..5b13825 100644
---- a/drivers/usb/host/ehci-hub.c
-+++ b/drivers/usb/host/ehci-hub.c
-@@ -348,6 +348,11 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
- 
- 	/* Any IAA cycle that started before the suspend is now invalid */
- 	end_iaa_cycle(ehci);
-+
-+	/* clear interrupt status */
-+	if (ehci->has_synopsys_hc_bug)
-+		ehci_writel(ehci, INTR_MASK | STS_FLR, &ehci->regs->status);
-+
- 	ehci_handle_start_intr_unlinks(ehci);
- 	ehci_handle_intr_unlinks(ehci);
- 	end_free_itds(ehci);
--- 
-2.8.1
 
