@@ -2,111 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0162C4D8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E98F2C4D90
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732416AbgKZCrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 21:47:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24328 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729649AbgKZCrR (ORCPT
+        id S1731106AbgKZDAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 22:00:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729715AbgKZDAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 21:47:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606358835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4sR99PB2o0qcECDBVCtOM3GDdGKKTrzR/ArpxanzOp0=;
-        b=Qf59tOcr9jkhfqhkRW02q5fx/K0XXYBYeU1qMJMhVbMXaNejP+o9gJndaxvzNV93Za5oe9
-        FsEsLG40SQnDVb8m2BUcW1mAXzOeLq8HdzM1KXSA2Ijb/kVAxuO0PVmzRHEiF+bEgoh7pc
-        Ox8MN3RkkBJBmtayaSuSPXXGthadUBo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-465-QyPpSyXXPkycPD4IlZNo3w-1; Wed, 25 Nov 2020 21:47:11 -0500
-X-MC-Unique: QyPpSyXXPkycPD4IlZNo3w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 789C71005E5B;
-        Thu, 26 Nov 2020 02:47:10 +0000 (UTC)
-Received: from T590 (ovpn-13-94.pek2.redhat.com [10.72.13.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 49C3510023B2;
-        Thu, 26 Nov 2020 02:47:02 +0000 (UTC)
-Date:   Thu, 26 Nov 2020 10:46:58 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Omar Sandoval <osandov@osandov.com>,
+        Wed, 25 Nov 2020 22:00:09 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F67EC061A04
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 19:00:09 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id t21so490419pgl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Nov 2020 19:00:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=CLUvaNFj/PurXHTr5z9vmApyltiJfzFSkjwCQHk27Nk=;
+        b=WHW8I2y0MPHzhrMDKHi79uizkexoDaIscCw1GWtxg7GTjVco8QFv3EJtcnKsebd3Vz
+         EKfUZgtAH8UOGHk8/86XYCYQLqpF0+3NcJca/LK9g/1bYfgFbXaamLdpaBNMBL4Rht0j
+         E05riYul8IlXDN3iEuYXFiKfXqr6g/S5PSgsRImYuqcJXnsq/YfYinh+6iZCACjGkPXz
+         ms/gwQDPmF6pmWFboQQob42miT54K+sHWF9lWleReUxQ8rXgv2siOV3G/gPJPOk0QBbB
+         46Yez1jGTTVE3PydB9kZt0z5wqwVtTYHgf+o3QW70X9bJYqLY3n7MFzWo8Ynn8Qd1ZjV
+         keCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=CLUvaNFj/PurXHTr5z9vmApyltiJfzFSkjwCQHk27Nk=;
+        b=EqtwZqKJkhfvk61uNxNdk6tjXTGudW22maOaO21gJhvhg1LJSpNzWgZ6yC/12J4/mG
+         CQh6lXEqPvM+8p97U4IcSgHsK92vh25HvJfCGZCmdvCub+asg1M1OhtMjM0oQoLNAarU
+         N3x5+ccj7PiSjgTWygWm0PNn7wq7jU1bzgJuOeFZ3+9ZZl3QwRSLvTA9RNDrV9lhylL0
+         1S33moU9BYXMEL+cEex01UrvtreE9+Dgj5klq7WXaEGKxNPjRA4dglnocEQmhtcJc2WO
+         nz4erxf2hl/g7TwvMnnPatM2yanPcaabCsbzEdrvR37Nb+H4OPgKDfqx+vDX6wvtpSgS
+         9pqw==
+X-Gm-Message-State: AOAM530nzqMC4YrsMqNF6o2Bv+Nj2mF40RzlqDfX+U1IVp+5Pyk0Yoim
+        tWG77ovPQ8lCRe9RUuqiA19y6g==
+X-Google-Smtp-Source: ABdhPJybuFh0mFrl+Q6q7Hcb+Lq2vTCBVYmwBarsqkSwBM8BiikLz5hnIx8RR8kJy571/RZADrLhoQ==
+X-Received: by 2002:a17:90a:6588:: with SMTP id k8mr1056676pjj.197.1606359608591;
+        Wed, 25 Nov 2020 19:00:08 -0800 (PST)
+Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id s145sm3105674pfs.187.2020.11.25.19.00.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 25 Nov 2020 19:00:07 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <13D075AD-D08F-44DA-B01C-9CDF239D4358@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_5232A0BF-221A-45DB-A681-BE4E94ED05F0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: UAPI value collision: STATX_ATTR_MOUNT_ROOT vs STATX_ATTR_DAX
+Date:   Wed, 25 Nov 2020 20:00:02 -0700
+In-Reply-To: <CAJfpegvc5FjU-X1DxNtPjJLgEp_gT228kqk2Va31nk7GjZbPBQ@mail.gmail.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-man <linux-man@vger.kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] sbitmap: remove swap_lock
-Message-ID: <20201126024658.GA42718@T590>
-References: <cover.1606058975.git.asml.silence@gmail.com>
- <488177c02dccda60c5e8af2e53156c42b7f1acc0.1606058975.git.asml.silence@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <488177c02dccda60c5e8af2e53156c42b7f1acc0.1606058975.git.asml.silence@gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+To:     Miklos Szeredi <miklos@szeredi.hu>
+References: <1927370.1606323014@warthog.procyon.org.uk>
+ <CAJfpegvc5FjU-X1DxNtPjJLgEp_gT228kqk2Va31nk7GjZbPBQ@mail.gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 03:35:46PM +0000, Pavel Begunkov wrote:
-> map->swap_lock protects map->cleared from concurrent modification,
-> however sbitmap_deferred_clear() is already atomically drains it, so
-> it's guaranteed to not loose bits on concurrent
-> sbitmap_deferred_clear().
-> 
-> A one threaded tag heavy test on top of nullbk showed ~1.5% t-put
-> increase, and 3% -> 1% cycle reduction of sbitmap_get() according to perf.
-> 
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->  include/linux/sbitmap.h |  5 -----
->  lib/sbitmap.c           | 14 +++-----------
->  2 files changed, 3 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/sbitmap.h b/include/linux/sbitmap.h
-> index e40d019c3d9d..74cc6384715e 100644
-> --- a/include/linux/sbitmap.h
-> +++ b/include/linux/sbitmap.h
-> @@ -32,11 +32,6 @@ struct sbitmap_word {
->  	 * @cleared: word holding cleared bits
->  	 */
->  	unsigned long cleared ____cacheline_aligned_in_smp;
-> -
-> -	/**
-> -	 * @swap_lock: Held while swapping word <-> cleared
-> -	 */
-> -	spinlock_t swap_lock;
->  } ____cacheline_aligned_in_smp;
->  
->  /**
-> diff --git a/lib/sbitmap.c b/lib/sbitmap.c
-> index c1c8a4e69325..4fd877048ba8 100644
-> --- a/lib/sbitmap.c
-> +++ b/lib/sbitmap.c
-> @@ -15,13 +15,9 @@
->  static inline bool sbitmap_deferred_clear(struct sbitmap_word *map)
->  {
->  	unsigned long mask, val;
-> -	bool ret = false;
-> -	unsigned long flags;
->  
-> -	spin_lock_irqsave(&map->swap_lock, flags);
-> -
-> -	if (!map->cleared)
-> -		goto out_unlock;
-> +	if (!READ_ONCE(map->cleared))
-> +		return false;
 
-This way might break sbitmap_find_bit_in_index()/sbitmap_get_shallow().
-Currently if sbitmap_deferred_clear() returns false, it means nothing
-can be allocated from this word. With this patch, even though 'false'
-is returned, free bits still might be available because another
-sbitmap_deferred_clear() can be run concurrently.
+--Apple-Mail=_5232A0BF-221A-45DB-A681-BE4E94ED05F0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Thanks,
-Ming
+On Nov 25, 2020, at 12:26 PM, Miklos Szeredi <miklos@szeredi.hu> wrote:
+>=20
+> On Wed, Nov 25, 2020 at 5:57 PM David Howells <dhowells@redhat.com> =
+wrote:
+>>=20
+>> Hi Linus, Miklos, Ira,
+>>=20
+>> It seems that two patches that got merged in the 5.8 merge window =
+collided and
+>> no one noticed until now:
+>>=20
+>> 80340fe3605c0 (Miklos Szeredi     2020-05-14 184) #define =
+STATX_ATTR_MOUNT_ROOT         0x00002000 /* Root of a mount */
+>> ...
+>> 712b2698e4c02 (Ira Weiny          2020-04-30 186) #define =
+STATX_ATTR_DAX                        0x00002000 /* [I] File is DAX */
+>>=20
+>> The question is, what do we do about it?  Renumber one or both of the
+>> constants?
+>=20
+> <uapi/linux/stat.h>:
+> * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
+> * semantically.  Where possible, the numerical value is picked to =
+correspond
+> * also.
+>=20
+> <uapi/linux/fs.h>:
+> #define FS_DAX_FL 0x02000000 /* Inode is DAX */
+>=20
+> The DAX one can be the same value as FS_DAX_FL, the placement (after
+> STATX_ATTR_VERITY, instead of before) seems to confirm this intention.
 
+Yes, this looks like a bug in the STATX_ATTR_DAX value.  It should be =
+the same
+as FS_DAX_FL, like all of the other STATX_ATTR_* [I] values are.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_5232A0BF-221A-45DB-A681-BE4E94ED05F0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl+/GjIACgkQcqXauRfM
+H+A16RAArYXwTjbh6UN5DHPHFjmKbi40h9BMIlxtwkeVKXptVB1oe4FsbhtpnYrm
+5mQuxaCPBs70A8ZcSN7tMv5ldseeoThIGoCq84VqFC17lQHd6KzEZw+b2kc85wtc
+PCOVgT/xabaHVvRr4ZXYN8m+tdka+FSbBjS3S7pwPKM2Xam9Ov6Mv4YZ4E0Knsnd
+DvltX8X3cZ5cK+EXzRKcddbpgh6eUJgBxcIrk3RXD4q35OLNI6PIvP6kD/xBizti
+NUgpAWoJspTP95XurKHERCPMhwwmEDEEa5naBJpQvhKDkqzxAIbYSnGDORYXy+sF
+FW+GP3Z/EFgd994P0ZRaDNuuSBLdMzRCJtOCjE+bIpZLNhci5niGBjUdS+b6gA5N
+q2bNt8UJC+AgTlz0PVMFPlSKG33w65rnrBsGQnmY8l4YufmnD2z7nZglmwZVGVx8
+RqLJYzYMYQwgFN9peQ4YEjo/NVTi1tiiKBq2eJ3cQ92lPrcxnYKNNgjyGGqWd5SX
+RXv8bmRn+iDsvYL0MH7N9Y/TKA5y2Y4MU4q9wKxwQfLzZEaSAWmVcw1A18+zIuPr
+if9rkcxqH5/ZMmgAmzDJXZ89PakYfYW4hc21AcUJV4Hy1eF9ohi3Hv+B1l/d5z1S
+hvHWuu/C5Kyq8/crZgE0ZT6d9f5bdHLaNLvKflXJ/feliySLb74=
+=HE3n
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_5232A0BF-221A-45DB-A681-BE4E94ED05F0--
