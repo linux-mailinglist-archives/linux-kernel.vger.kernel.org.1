@@ -2,179 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EC62C5D47
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 22:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DF92C5D80
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 22:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391747AbgKZVHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 16:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391682AbgKZVHA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 16:07:00 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88696C061A4F
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 13:06:59 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id f5so1651583plj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 13:06:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UzN8V164vVCPagQUl1vXLvqIdHPB6vICDyDiG0FXeQk=;
-        b=dhODEkY7e25iR1VREZyGWflNm42VplRKLSKAzQqLjPvWmoR+oziwyu1lHO9za5VXtt
-         RWXv30Cze/3Sce07DR1pqpeJIk0nEbW2rd/rnGWDDOprl0rM6i1al3mxI/NdJPCsN7g6
-         G+7qnmQQEn4+IwSoDwufkjy2o2qWQ/w2f2MHrMxMNtZn8A3oU0s0Jx+ShugNoRVPG3bm
-         mESv7PczX40OIwTUdQLGnVu5i1Jcqwlq2GTK46kGyiISmTkgXA4bLEsSdwOrGeRh+Gto
-         K50gzxDPoKjQ56K3P+pXbiV6lPpTnR6UlBFbBhH1IharaH6AeIzTlK/GD51vvw8fhg8l
-         +ZHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UzN8V164vVCPagQUl1vXLvqIdHPB6vICDyDiG0FXeQk=;
-        b=GzH9yB4x56NBth/B08CDqr81sQBOJC6c9L118UbWxlPm2UTgP317AW2/TcjUlWmgpU
-         OeiyiyJHgLJBhMMnuvOemDQ9qeh68DbQxCa8+hZ52ln+jkJt2eYAIJ5oFvAaCv1W3gOB
-         HqZx2O+L35Jz6LDADcpWr7f8eO70J3qe2TK97vckzUodJfwsmIyh7dKyTA1kqeHvRfZp
-         FiHHCL84jEKd0CsPfmR/9/HC/IQ+Z1v2vHom5vhSTpbvVxiib+EP7YzJzC1EZmDEI2yr
-         2BFu569fAAx7V24gw+kBD+QkfOU5NQrAZOcT5k12OfB8GRVA7Xdm5XEpTZg8a0CeZ3D0
-         VMZw==
-X-Gm-Message-State: AOAM531gv9V0ov7sDYGZ1HqZe9dJuH4cLsH9ismTSeVpOuZp2sKuF6YY
-        K3IzwBgqrAh7O780MX3emu13nJwANF1iH4jX
-X-Google-Smtp-Source: ABdhPJxxNOks0gg+1lBr4tfFpWk48fjnRO/zPBA/fCTy9l8CZRHMsrBL9px/uFMlVrQQp1eqiHuIGw==
-X-Received: by 2002:a17:902:e787:b029:d9:f88d:c32d with SMTP id cp7-20020a170902e787b02900d9f88dc32dmr4123620plb.79.1606424819073;
-        Thu, 26 Nov 2020 13:06:59 -0800 (PST)
-Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id c203sm5612676pfc.10.2020.11.26.13.06.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 13:06:58 -0800 (PST)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com
-Subject: [PATCH v3 15/15] remoteproc: Refactor rproc delete and cdev release path
-Date:   Thu, 26 Nov 2020 14:06:42 -0700
-Message-Id: <20201126210642.897302-16-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201126210642.897302-1-mathieu.poirier@linaro.org>
-References: <20201126210642.897302-1-mathieu.poirier@linaro.org>
+        id S2388021AbgKZVZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 16:25:32 -0500
+Received: from mail-bn7nam10on2104.outbound.protection.outlook.com ([40.107.92.104]:26400
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732543AbgKZVZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 16:25:32 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OtMYvSQIpFuowf3wTcswqPu9vyERaoRhhpYBIBcu8gFdoHj3idSSSD7S6ryJ6UTVDdPk+sovFPZ0EYuq8FvyhrLkA1aBK5ZWQWOa//pLsvxIgeuTr0Rqstpoe42pGAxvrqO+Jm4FpQLH9nteTKH1Kk/GFUizrhRlEMBWTZsUORp5LC4nQKqeTkJCXhw67xXyjVolPi8k5v32LtG6FgSHaC2+EqoXloS7zDV+uQ9TNgR+ZkjPiVc6ejnPzsQAFhulOmo2q4ActjqcgOYDtlL6yk45EVQbhX6Mf8KbJaWfuKlf+FVA8+0Nmw6lSyippV1xdxaU/UxwnFpaU592bOScbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1CsLGUQ7rZrNVACq427BGECRjQ+7Ixc/3+SkbHj8Aco=;
+ b=ZnbEv5iadztWKddi28D3uNsuxqp1BVpQwMC2sk38WQ18mwktjI2Jnew1Ub5ijieTi3eeb72KEcSZSSf3yTegMx+YMK531n5sL7q24G7mKQq6CU370MGETtAQmKF5sb1JFG7og9TmbZ9m7wi1iQvBJJvgthKDpFBLyqE3MwBXkivtFG5Y1XKwQJ9g1TaC4HzYD3I0isrmrQCcRADhO1ooopX1mLa1B44Kh/s/oGc84HubdFi5M+ppycyqoS1JpTE2WubDx+3SkOf0DENHcFZenOShuyJkQ3A9jPC4weDLz3SZfN9lZ5eaqfxLs/Sms9nPg5Dm5/dJeNmU2ocM494Alw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1CsLGUQ7rZrNVACq427BGECRjQ+7Ixc/3+SkbHj8Aco=;
+ b=jlHEg+coTvNNkZyTm/3aWYvBJlctuJg1tW5pYQ052FqEzB4EHiGoxH4IsL1QQEw3J6dsT+QGyPCjy2x00lxTxdhT484iYD3O3jXBArRzZDPQuNu33+Ltl2f7jLkTEXTpRwAn1TMz3soD66Ai6AugKog1W1TXF1rXfK9VXe7+z8s=
+Received: from MW2PR2101MB1801.namprd21.prod.outlook.com (2603:10b6:302:5::20)
+ by MW2PR2101MB1002.namprd21.prod.outlook.com (2603:10b6:302:4::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.2; Thu, 26 Nov
+ 2020 21:25:28 +0000
+Received: from MW2PR2101MB1801.namprd21.prod.outlook.com
+ ([fe80::d8c7:7c95:5325:155a]) by MW2PR2101MB1801.namprd21.prod.outlook.com
+ ([fe80::d8c7:7c95:5325:155a%4]) with mapi id 15.20.3632.009; Thu, 26 Nov 2020
+ 21:25:28 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>
+CC:     "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: kdump always hangs in rcu_barrier() -> wait_for_completion()
+Thread-Topic: kdump always hangs in rcu_barrier() -> wait_for_completion()
+Thread-Index: AdbC4sELsDFnKKqwSUucudo1Ms9VZwBKI3EAAAtIoWA=
+Date:   Thu, 26 Nov 2020 21:25:28 +0000
+Message-ID: <MW2PR2101MB18014505C01027A9486D45EEBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
+References: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
+ <20201126154630.GR1437@paulmck-ThinkPad-P72>
+In-Reply-To: <20201126154630.GR1437@paulmck-ThinkPad-P72>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a1881c9b-afcd-4996-9367-78f54d1fb553;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-11-26T21:09:35Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [2601:600:a280:7f70:909f:1fdc:142a:48f6]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8ed13e1c-9078-43d2-0215-08d89251cbe0
+x-ms-traffictypediagnostic: MW2PR2101MB1002:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MW2PR2101MB10027027301683F0A7C0D41CBFF91@MW2PR2101MB1002.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FaRvd095pDKp1kaMDmPdnQHZbhWput5IqODF1JtgUdwL69gMKZtcxPLFHslMY+0NBxdozEN67ML6UrXoTX9tbc7dyn5lxT5kdNSrd1FRPVQl1aypd8MG6Dk7hPGmGdR11gt+6ytdrA2R/4WPZ/WmlqwrEOGwdn1bWR/cvTsXJZWHP0XVqX88Add/oykiVLy5p4P+4Xz6dYSNT3jZnSPt30vGj30qXYxTg60VSmKfjE5WYdkR6AUJw14kwbXQYObRT1lAZqxgw1VONdanLz1276Fnp5V7EhkjlgSu3YHugQV2TlvNKIjTkH15dbFlKDAG
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1801.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(346002)(376002)(366004)(5660300002)(83380400001)(9686003)(478600001)(8990500004)(186003)(6506007)(86362001)(4326008)(7696005)(55016002)(54906003)(33656002)(316002)(66476007)(82960400001)(82950400001)(8936002)(66946007)(6916009)(71200400001)(64756008)(2906002)(76116006)(52536014)(66446008)(8676002)(10290500003)(66556008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?wwcGL5E5CPR64zprxwlzCCB8vcDFyoFDZV9wtd7UWiTc9QqE9WwqPYZ8UJ8p?=
+ =?us-ascii?Q?Y6zazrlMgSGuYBuyZaCeV+QytJlFlzydhiPZc2Z+JjWorstgGlOSh/Qt2Qxl?=
+ =?us-ascii?Q?VdeovqoR9KxQCxvGA7jBQGCwXl7+3t59KytgXh8Xn6NRjZ78ughWaaH1iWJw?=
+ =?us-ascii?Q?X1IzZMjBhg+vLIrrGHf9UtEKKAP9Zoa0qAnx2SXeKN9WirpLQkWqnih3LTW1?=
+ =?us-ascii?Q?f9FV/3teOdMbmGKLhELQFsFsjlu2AkJEy3BKkfqE6TzNjI6Dol+XS5jK1YNY?=
+ =?us-ascii?Q?BqqLTZ4TUdQiEs5ero0M4ui5+9wXhQJ0Z2KJFbP9IsTtMcPiVL7bgh9X6GlC?=
+ =?us-ascii?Q?gHnGshRu32FqkKnioIupSuRPsXwthQ+Ff1ScfWeY9pBCZwguodg+qusyl/1k?=
+ =?us-ascii?Q?3cO0lWHpfF5clFgVFt6vSr8qcVLJ6BDAa6ggMiV1JpD0c1SD5q2IWjSteXxH?=
+ =?us-ascii?Q?8BkJXv5+wW8bNLLHOTSDdu9JmtHkMPAw4HIExDYJHW8Z2S6NgNKA81UChpxa?=
+ =?us-ascii?Q?/TN6gqtH9FJqgV9G2JC3mPoZ0HYR7iGPwc3Y/8z7tb6DZUG6+7fX5vc5/dHz?=
+ =?us-ascii?Q?UGlMNiQsv8NFKB0xWis8hXS30EuCtdjHwlSwDGZAFZHfS2BRmDh53eYWmQ3Y?=
+ =?us-ascii?Q?QMQKl3bFmxkUli5UVPtvDEpaEe62JM4/2wd6jSG/9fxiJ/eyuIKNAWtPDa0i?=
+ =?us-ascii?Q?7SaNF8f2LWQUyn5TuUKfViadYOV8gkNgTFmmWcnFQlqq74phxMzIYIFqg7lz?=
+ =?us-ascii?Q?1zdboVm1RRq85qM5DAavmYBkWGZlPjC4rLHtPtqq8QyTVNzavgWXujd09OYZ?=
+ =?us-ascii?Q?1Xt/EigXJU7ho2vWzSC8bLRh2e/w+C879Qvr8KkspOXLTEUQYzFsmaw5FT7C?=
+ =?us-ascii?Q?QBFqwCaDFAgkMdcdUjEa98iRapn1FgHDidA4XaoocR+Wmc4QWGCA8d3fS0em?=
+ =?us-ascii?Q?zRIQ4q1kJ7T5AFC2iHPk+XylxyD7cUhA0V+rUFEr15ov12O0gnQKtwTu1pRc?=
+ =?us-ascii?Q?zg40iDJIp/ic5Vrkbuq8bH35zHr5pKztf5AKhU5B7kKRqJo=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1801.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ed13e1c-9078-43d2-0215-08d89251cbe0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2020 21:25:28.2627
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QqZ6AS1l7q369DbND4KGbsTq2nLk8NrX/Vwx9CqXdZG685ZVg5wd+nlDW4rvwlFR43vmi2gdp0WaXddi5yzi7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor function rproc_del() and rproc_cdev_release() to take
-into account the policy specified in the device tree.
+> From: Paul E. McKenney <paulmck@kernel.org>
+> Sent: Thursday, November 26, 2020 7:47 AM
+>  ...
+> The rcu_segcblist_n_cbs() function returns non-zero because something
+> invoked call_rcu() some time previously.  The ftrace facility (or just
+> a printk) should help you work out where that call_rcu() is located.
 
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
- drivers/remoteproc/remoteproc_cdev.c | 13 +++++++++++-
- drivers/remoteproc/remoteproc_core.c | 30 ++++++++++++++++++++++++++--
- include/linux/remoteproc.h           |  4 ++++
- 3 files changed, 44 insertions(+), 3 deletions(-)
+call_rcu() is indeed called multiple times, but as you said, this should
+be normal.
 
-diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
-index f7645f289563..3dfe555dfc07 100644
---- a/drivers/remoteproc/remoteproc_cdev.c
-+++ b/drivers/remoteproc/remoteproc_cdev.c
-@@ -88,7 +88,18 @@ static int rproc_cdev_release(struct inode *inode, struct file *filp)
- {
- 	struct rproc *rproc = container_of(inode->i_cdev, struct rproc, cdev);
- 
--	if (rproc->cdev_put_on_release && rproc->state == RPROC_RUNNING)
-+	if (!rproc->cdev_put_on_release)
-+		return 0;
-+
-+	/*
-+	 * The application has crashed or is releasing its file handle.  Detach
-+	 * or shutdown the remote processor based on the policy specified in the
-+	 * DT.  No need to check rproc->state right away, it will be done
-+	 * in either rproc_detach() or rproc_shutdown().
-+	 */
-+	if (rproc->autonomous_on_core_shutdown)
-+		rproc_detach(rproc);
-+	else
- 		rproc_shutdown(rproc);
- 
- 	return 0;
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index 3d7d245edc4e..1a170103bf27 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -2294,6 +2294,22 @@ static int rproc_alloc_ops(struct rproc *rproc, const struct rproc_ops *ops)
- 	return 0;
- }
- 
-+static void rproc_set_automation_flags(struct rproc *rproc)
-+{
-+	struct device *dev = rproc->dev.parent;
-+	struct device_node *np = dev->of_node;
-+	bool core_shutdown;
-+
-+	/*
-+	 * When function rproc_cdev_release() or rproc_del() are called and
-+	 * the remote processor has been attached to, it will be detached from
-+	 * (rather than turned off) if "autonomous-on-core-shutdown is specified
-+	 * in the DT.
-+	 */
-+	core_shutdown = of_property_read_bool(np, "autonomous-on-core-shutdown");
-+	rproc->autonomous_on_core_shutdown = core_shutdown;
-+}
-+
- /**
-  * rproc_alloc() - allocate a remote processor handle
-  * @dev: the underlying device
-@@ -2352,6 +2368,8 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
- 	if (rproc_alloc_ops(rproc, ops))
- 		goto put_device;
- 
-+	rproc_set_automation_flags(rproc);
-+
- 	/* Assign a unique device index and name */
- 	rproc->index = ida_simple_get(&rproc_dev_index, 0, 0, GFP_KERNEL);
- 	if (rproc->index < 0) {
-@@ -2435,8 +2453,16 @@ int rproc_del(struct rproc *rproc)
- 	if (!rproc)
- 		return -EINVAL;
- 
--	/* TODO: make sure this works with rproc->power > 1 */
--	rproc_shutdown(rproc);
-+	/*
-+	 * TODO: make sure this works with rproc->power > 1
-+	 *
-+	 * No need to check rproc->state right away, it will be done in either
-+	 * rproc_detach() or rproc_shutdown().
-+	 */
-+	if (rproc->autonomous_on_core_shutdown)
-+		rproc_detach(rproc);
-+	else
-+		rproc_shutdown(rproc);
- 
- 	mutex_lock(&rproc->lock);
- 	rproc->state = RPROC_DELETED;
-diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-index 02312096d59f..5702f630d810 100644
---- a/include/linux/remoteproc.h
-+++ b/include/linux/remoteproc.h
-@@ -516,6 +516,9 @@ struct rproc_dump_segment {
-  * @nb_vdev: number of vdev currently handled by rproc
-  * @char_dev: character device of the rproc
-  * @cdev_put_on_release: flag to indicate if remoteproc should be shutdown on @char_dev release
-+ * @autonomous_on_core_shutdown: true if the remote processor should be detached
-+ *				 from (rather than turned off) when the remoteproc
-+ *				 core goes away.
-  */
- struct rproc {
- 	struct list_head node;
-@@ -554,6 +557,7 @@ struct rproc {
- 	u16 elf_machine;
- 	struct cdev cdev;
- 	bool cdev_put_on_release;
-+	bool autonomous_on_core_shutdown;
- };
- 
- /**
--- 
-2.25.1
+> My best guess is that the underlying bug is that you are invoking
+> rcu_barrier() before the RCU grace-period kthread has been created.
+> This means that RCU grace periods cannot complete, which in turn means
+> that if there has been even one invocation of call_rcu() since boot,
+> rcu_barrier() cannot complete, which is what you are in fact seeing.
+> Please note that it is perfectly legal to invoke call_rcu() very early in
+> the boot process, as in even before the call to rcu_init().  Therefore,
+> if this is the case, the bug is the early call to rcu_barrier(), not
+> the early calls to call_rcu().
+>
+> To check this, at the beginning of rcu_barrier(), check the value of
+> rcu_state.gp_kthread.  If my guess is correct, it will be NULL.
+
+Unluckily, it's not NULL here. :-)
+
+>
+> Another possibility is that rcu_state.gp_kthread is non-NULL, but that
+> something else is preventing RCU grace periods from completing, but in
+
+It looks like somehow the scheduling is not working here: in rcu_barrier()
+, if I replace the wait_for_completion() with
+wait_for_completion_timeout(&rcu_state.barrier_completion, 30*HZ), the
+issue persists.
+
+> that case you should see RCU CPU stall warnings.  Unless of course they
+> have been disabled.
+> 							Thanx, Paul
+
+I guess I didn't disable the wanrings (I don't even know how to do that :)
+
+grep RCU .config
+# RCU Subsystem
+CONFIG_TREE_RCU=3Dy
+# CONFIG_RCU_EXPERT is not set
+CONFIG_SRCU=3Dy
+CONFIG_TREE_SRCU=3Dy
+CONFIG_TASKS_RCU_GENERIC=3Dy
+CONFIG_TASKS_RUDE_RCU=3Dy
+CONFIG_TASKS_TRACE_RCU=3Dy
+CONFIG_RCU_STALL_COMMON=3Dy
+CONFIG_RCU_NEED_SEGCBLIST=3Dy
+CONFIG_RCU_NOCB_CPU=3Dy
+# end of RCU Subsystem
+CONFIG_MMU_GATHER_RCU_TABLE_FREE=3Dy
+# RCU Debugging
+# CONFIG_RCU_SCALE_TEST is not set
+# CONFIG_RCU_TORTURE_TEST is not set
+# CONFIG_RCU_REF_SCALE_TEST is not set
+CONFIG_RCU_CPU_STALL_TIMEOUT=3D30
+CONFIG_RCU_TRACE=3Dy
+CONFIG_RCU_EQS_DEBUG=3Dy
+# end of RCU Debugging
+
+Thanks,
+-- Dexuan
 
