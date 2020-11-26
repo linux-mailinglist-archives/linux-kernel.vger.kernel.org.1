@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1632B2C5CD1
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0B32C5CD2
 	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 21:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389432AbgKZUGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 15:06:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35528 "EHLO mail.kernel.org"
+        id S2389585AbgKZUGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 15:06:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728118AbgKZUGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 15:06:06 -0500
+        id S1728118AbgKZUGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 15:06:16 -0500
 Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27F3A221E9;
-        Thu, 26 Nov 2020 20:06:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 705F420678;
+        Thu, 26 Nov 2020 20:06:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606421165;
-        bh=Wqwm9STBFzNnMy/CB+5wRkk6aIx+t9Lpuhu2scKh5Xc=;
+        s=default; t=1606421175;
+        bh=EM0Gc7hlnQ4Cs9nEMQ22xspbkHodETF50L21WryubTw=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=JIYP54KJCgcohFyO3pbrXUtpoy7JWFsw5+woTe/i7R8N0T79xefqqEe2hKC2O5syu
-         ZpigwylXfdT3FyYhD471R1anAqwKpRj73RRM4urQDjmfR99pHwnMHeDd2FgB2Gs8+g
-         ETQxD9YPjOCeu3FM48yBD2bzL0ZgZEkbSrzxDgb0=
-Date:   Thu, 26 Nov 2020 20:05:40 +0000
+        b=1Za8wBXmvqp6zDKkhxRm/KTTcX+iZIfA2yWgsi5di58elphv2wjzubUVtM0UwCv4H
+         pvTWgv2dyztFSu2GDuCl0gQJoTyI8mRy1J7JJqW+QCgDw6uaItaKn1vfpl+8Udzhns
+         d388oFO8ZegfVpPvLZbVvFr/JUuw5lLqCic6gh48=
+Date:   Thu, 26 Nov 2020 20:05:50 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, timur@kernel.org, perex@perex.cz,
-        festevam@gmail.com, Xiubo.Lee@gmail.com,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        alsa-devel@alsa-project.org, nicoleotsuka@gmail.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1606371293-29099-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1606371293-29099-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl: Fix config name of CONFIG_ARCH_MXC
-Message-Id: <160642112480.9090.10420790643480941582.b4-ty@kernel.org>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     hui.wang@canonical.com, linux-kernel@vger.kernel.org,
+        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com,
+        srinivas.kandagatla@linaro.org, gregkh@linuxfoundation.org,
+        sanyog.r.kale@intel.com, bard.liao@intel.com, jank@cadence.com,
+        tiwai@suse.de, vinod.koul@linaro.org
+In-Reply-To: <20201125130128.15952-1-yung-chuan.liao@linux.intel.com>
+References: <20201125130128.15952-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] regmap: sdw: add required header files
+Message-Id: <160642115072.9278.5484290158146538846.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,17 +44,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 14:14:53 +0800, Shengjiu Wang wrote:
-> CONFIG_ARCH_MXC should be ARCH_MXC
+On Wed, 25 Nov 2020 21:01:28 +0800, Bard Liao wrote:
+> Explicitly add header files used by regmap SoundWire support.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
 Thanks!
 
-[1/1] ASoC: fsl: Fix config name of CONFIG_ARCH_MXC
-      commit: c61d1142cfd45f58b63bf9d2d59523f91096e873
+[1/1] regmap: sdw: add required header files
+      commit: d9a500b2985b139d7019231ec16e379d2031cb40
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
