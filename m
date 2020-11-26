@@ -2,145 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91902C4DC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1BA2C4DCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 04:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387447AbgKZDZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 22:25:34 -0500
-Received: from mga17.intel.com ([192.55.52.151]:4721 "EHLO mga17.intel.com"
+        id S1733292AbgKZDbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 22:31:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733292AbgKZDZe (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 22:25:34 -0500
-IronPort-SDR: c/zNtjc8WxEaTX19DpOvQ5STsNpIx6XmAExC38C2y7bmyzwTVZ3FAwSbKQsx7Yr9uCj6zjZSmJ
- qLYuL4S/uH0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="152066049"
-X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
-   d="scan'208";a="152066049"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 19:25:34 -0800
-IronPort-SDR: 0p0zQFnp/nV4sdpeR8GknjgIF+cjyfePjt8MaCBrnejL5ilpP9gLazIPRWaPRhjGqfG0WvCAI7
- VFrCPPRPYs9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
-   d="scan'208";a="362650725"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Nov 2020 19:25:31 -0800
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com, drian.hunter@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH] perf script: Fix overrun issue for dynamically-allocated pmu type number
-Date:   Thu, 26 Nov 2020 11:24:25 +0800
-Message-Id: <20201126032425.19226-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730930AbgKZDbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Nov 2020 22:31:15 -0500
+Received: from suppilovahvero.lan (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70AED21741;
+        Thu, 26 Nov 2020 03:31:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606361474;
+        bh=5ZKQEvzl3d+izjSmHH3HjnXQRphRvWxGFVuxZCSyKBQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=hQ8DBIzK24L6OS9BoMJpfzPZzqqOij+kqvanvH4NwbqFaO55GL7FCqSbzOPm1Yp60
+         QE+JER27/optcIYlRzj8XxX4R0TU3i0cniZIWGImo2guvOECNKHdKQ/gY9g2BQv6v2
+         4NIOIo2eU03D3yzbsR2YPtfA29248fadl7GBLnP0=
+Message-ID: <7edf80b70e4dd67d6f95c796c1ae26df9e51ba8d.camel@kernel.org>
+Subject: Re: [PATCH v2] char: tpm: add i2c driver for cr50
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     linux-integrity@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Helen Koike <helen.koike@collabora.com>,
+        Duncan Laurie <dlaurie@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>, kernel@collabora.com,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 26 Nov 2020 05:30:24 +0200
+In-Reply-To: <f36c43f81968a9ce2f3342e5c2c069722d8bfc7f.camel@collabora.com>
+References: <20201120172345.4040187-1-adrian.ratiu@collabora.com>
+         <20201123220643.GA16777@kernel.org>
+         <f36c43f81968a9ce2f3342e5c2c069722d8bfc7f.camel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When unpacking the event which is from dynamic pmu, the array
-output[OUTPUT_TYPE_MAX] may be overrun. For example, type number of
-SKL uncore_imc is 10, but OUTPUT_TYPE_MAX is 7 now (OUTPUT_TYPE_MAX =
-PERF_TYPE_MAX + 1).
+On Tue, 2020-11-24 at 10:14 -0300, Ezequiel Garcia wrote:
+> Hi Jarkko,
+> 
+> Thanks for your review.
+> 
+> On Tue, 2020-11-24 at 00:06 +0200, Jarkko Sakkinen wrote:
+> > On Fri, Nov 20, 2020 at 07:23:45PM +0200, Adrian Ratiu wrote:
+> > > From: "dlaurie@chromium.org" <dlaurie@chromium.org>
+> > > 
+> > > Add TPM 2.0 compatible I2C interface for chips with cr50
+> > > firmware.
+> > > 
+> > > The firmware running on the currently supported H1 MCU requires a
+> > > special driver to handle its specific protocol, and this makes it
+> > > unsuitable to use tpm_tis_core_* and instead it must implement
+> > > the
+> > > underlying TPM protocol similar to the other I2C TPM drivers.
+> > > 
+> > > - All 4 byes of status register must be read/written at once.
+> > > - FIFO and burst count is limited to 63 and must be drained by
+> > > AP.
+> > > - Provides an interrupt to indicate when read response data is
+> > > ready
+> > > and when the TPM is finished processing write data.
+> > > 
+> > > This driver is based on the existing infineon I2C TPM driver,
+> > > which
+> > > most closely matches the cr50 i2c protocol behavior.
+> > > 
+> > > Cc: Helen Koike <helen.koike@collabora.com>
+> > > Signed-off-by: Duncan Laurie <dlaurie@chromium.org>
+> > > [swboyd@chromium.org: Depend on i2c even if it's a module,
+> > > replace
+> > > boilier plate with SPDX tag, drop asm/byteorder.h include,
+> > > simplify
+> > > return from probe]
+> > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > > Signed-off-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
+> > > Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+> > > ---
+> > > Changes in v2:
+> > >   - Various small fixes all over (reorder includes, MAX_BUFSIZE,
+> > > comments, etc)
+> > >   - Reworked return values of i2c_wait_tpm_ready() to fix timeout
+> > > mis-handling
+> > > so ret == 0 now means success, the wait period jiffies is ignored
+> > > because that
+> > > number is meaningless and return a proper timeout error in case
+> > > jiffies == 0.
+> > >   - Make i2c default to 1 message per transfer (requested by
+> > > Helen)
+> > >   - Move -EIO error reporting to transfer function to cleanup
+> > > transfer() itself
+> > > and its R/W callers
+> > >   - Remove magic value hardcodings and introduce enum
+> > > force_release.
+> > > 
+> > > v1 posted at https://lkml.org/lkml/2020/2/25/349
+> > > 
+> > > Applies on next-20201120, tested on Chromebook EVE.
+> > > ---
+> > >  drivers/char/tpm/Kconfig            |  10 +
+> > >  drivers/char/tpm/Makefile           |   2 +
+> > >  drivers/char/tpm/tpm_tis_i2c_cr50.c | 768
+> > > ++++++++++++++++++++++++++++
+> > >  3 files changed, 780 insertions(+)
+> > >  create mode 100644 drivers/char/tpm/tpm_tis_i2c_cr50.c
+> > > 
+> > > diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
+> > > index a18c314da211..4308f9ca7a43 100644
+> > > --- a/drivers/char/tpm/Kconfig
+> > > +++ b/drivers/char/tpm/Kconfig
+> > > @@ -86,6 +86,16 @@ config TCG_TIS_SYNQUACER
+> > >           To compile this driver as a module, choose  M here;
+> > >           the module will be called tpm_tis_synquacer.
+> > >  
+> > > +config TCG_TIS_I2C_CR50
+> > > +       tristate "TPM Interface Specification 2.0 Interface (I2C
+> > > - CR50)"
+> > > +       depends on I2C
+> > > +       select TCG_CR50
+> > > +       help
+> > > +         This is a driver for the Google cr50 I2C TPM interface
+> > > which is a
+> > > +         custom microcontroller and requires a custom i2c
+> > > protocol interface
+> > > +         to handle the limitations of the hardware.  To compile
+> > > this driver
+> > > +         as a module, choose M here; the module will be called
+> > > tcg_tis_i2c_cr50.
+> > > +
+> > >  config TCG_TIS_I2C_ATMEL
+> > >         tristate "TPM Interface Specification 1.2 Interface (I2C
+> > > - Atmel)"
+> > >         depends on I2C
+> > > diff --git a/drivers/char/tpm/Makefile
+> > > b/drivers/char/tpm/Makefile
+> > > index 84db4fb3a9c9..66d39ea6bd10 100644
+> > > --- a/drivers/char/tpm/Makefile
+> > > +++ b/drivers/char/tpm/Makefile
+> > > @@ -27,6 +27,8 @@ obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o
+> > >  tpm_tis_spi-y := tpm_tis_spi_main.o
+> > >  tpm_tis_spi-$(CONFIG_TCG_TIS_SPI_CR50) += tpm_tis_spi_cr50.o
+> > >  
+> > > +obj-$(CONFIG_TCG_TIS_I2C_CR50) += tpm_tis_i2c_cr50.o
+> > > +
+> > >  obj-$(CONFIG_TCG_TIS_I2C_ATMEL) += tpm_i2c_atmel.o
+> > >  obj-$(CONFIG_TCG_TIS_I2C_INFINEON) += tpm_i2c_infineon.o
+> > >  obj-$(CONFIG_TCG_TIS_I2C_NUVOTON) += tpm_i2c_nuvoton.o
+> > > diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c
+> > > b/drivers/char/tpm/tpm_tis_i2c_cr50.c
+> > > new file mode 100644
+> > > index 000000000000..37555dafdca0
+> > > --- /dev/null
+> > > +++ b/drivers/char/tpm/tpm_tis_i2c_cr50.c
+> > > @@ -0,0 +1,768 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * Copyright 2016 Google Inc.
+> > > + *
+> > > + * Based on Linux Kernel TPM driver by
+> > > + * Peter Huewe <peter.huewe@infineon.com>
+> > > + * Copyright (C) 2011 Infineon Technologies
+> > > + */
+> > > +
+> > > +/*
+> > > + * cr50 is a firmware for H1 secure modules that requires
+> > > special
+> > > + * handling for the I2C interface.
+> > > + *
+> > > + * - Use an interrupt for transaction status instead of
+> > > hardcoded delays
+> > > + * - Must use write+wait+read read protocol
+> > > + * - All 4 bytes of status register must be read/written at once
+> > > + * - Burst count max is 63 bytes, and burst count behaves
+> > > + *   slightly differently than other I2C TPMs
+> > > + * - When reading from FIFO the full burstcnt must be read
+> > > + *   instead of just reading header and determining the
+> > > remainder
+> > > + */
+> > > +
+> > > +#include <linux/acpi.h>
+> > > +#include <linux/completion.h>
+> > > +#include <linux/i2c.h>
+> > > +#include <linux/interrupt.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/pm.h>
+> > > +#include <linux/slab.h>
+> > > +#include <linux/wait.h>
+> > > +
+> > > +#include "tpm_tis_core.h"
+> > > +
+> > > +#define CR50_MAX_BUFSIZE       64
+> > > +#define CR50_TIMEOUT_SHORT_MS  2       /* Short timeout during
+> > > transactions */
+> > > +#define CR50_TIMEOUT_NOIRQ_MS  20      /* Timeout for TPM ready
+> > > without IRQ */
+> > > +#define CR50_I2C_DID_VID       0x00281ae0L
+> > > +#define CR50_I2C_MAX_RETRIES   3       /* Max retries due to I2C
+> > > errors */
+> > > +#define CR50_I2C_RETRY_DELAY_LO        55      /* Min usecs
+> > > between retries on I2C */
+> > > +#define CR50_I2C_RETRY_DELAY_HI        65      /* Max usecs
+> > > between retries on I2C */
+> > 
+> > CR50_ -> TPM_CR50_
+> > 
+> > > +
+> > > +#define TPM_I2C_ACCESS(l)      (0x0000 | ((l) << 4))
+> > > +#define TPM_I2C_STS(l)         (0x0001 | ((l) << 4))
+> > > +#define TPM_I2C_DATA_FIFO(l)   (0x0005 | ((l) << 4))
+> > > +#define TPM_I2C_DID_VID(l)     (0x0006 | ((l) << 4))
+> > > +
+> > > +struct priv_data {
+> > > +       int irq;
+> > > +       int locality;
+> > > +       struct completion tpm_ready;
+> > > +       u8 buf[CR50_MAX_BUFSIZE];
+> > > +};
+> > 
+> > tpm_i2c_cr50_priv_data
+> > 
+> > > +
+> > > +enum force_release {
+> > > +       CR50_NO_FORCE = 0x0,
+> > > +       CR50_FORCE = 0x1,
+> > > +};
+> > 
+> > I'd just 
+> > 
+> > #define TPM_I2C_CR50_NO_FORCE   0
+> > #define TPM_I2C_CR50_FORCE      1
+> > 
+> 
+> A proper enumerated type has advantages over a preprocessor macro:
+> even if the compiler won't warn you, static analyzers can warn
+> about a misuse.
 
-/* In builtin-script.c */
-process_event()
-{
-	unsigned int type = output_type(attr->type);
+Why don't you just use "bool", "true" and "false"? I ignored that
+this has nothing to do with the hardware last time.
 
-	if (output[type].fields == 0)
-		return;
-}
 
-output[10] is overrun.
+> Also, it allows for a more obvious prototype.
+> 
+> I am curious why do you propose this change?
+> 
+> Thanks,
+> Ezequiel
 
-Create a type OUTPUT_TYPE_OTHER for dynamic pmu events, then
-output_type(attr->type) will return OUTPUT_TYPE_OTHER here.
-
-Note that if PERF_TYPE_MAX ever changed, then there would be a conflict
-between old perf.data files that had a dynamicaliy allocated PMU number
-that would then be the same as a fixed PERF_TYPE.
-
-Example:
-
-perf record --switch-events -C 0 -e "{cpu-clock,uncore_imc/data_reads/,uncore_imc/data_writes/}:SD" -a -- sleep 1
-perf script
-
-Before:
-         swapper     0 [000] 1479253.987551:     277766               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.987797:     246709               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.988127:     329883               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.988273:     146393               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.988523:     249977               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.988877:     354090               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.989023:     145940               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.989383:     359856               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1479253.989523:     140082               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-
-After:
-         swapper     0 [000] 1397040.402011:     272384               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1397040.402011:       5396  uncore_imc/data_reads/:
-         swapper     0 [000] 1397040.402011:        967 uncore_imc/data_writes/:
-         swapper     0 [000] 1397040.402259:     249153               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1397040.402259:       7231  uncore_imc/data_reads/:
-         swapper     0 [000] 1397040.402259:       1297 uncore_imc/data_writes/:
-         swapper     0 [000] 1397040.402508:     249108               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
-         swapper     0 [000] 1397040.402508:       5333  uncore_imc/data_reads/:
-         swapper     0 [000] 1397040.402508:       1008 uncore_imc/data_writes/:
-
-Fixes: 1405720d4f26 ("perf script: Add 'synth' event type for synthesized events")
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/builtin-script.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 48588ccf902e..d68684fb9b53 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -183,6 +183,7 @@ struct output_option {
- 
- enum {
- 	OUTPUT_TYPE_SYNTH = PERF_TYPE_MAX,
-+	OUTPUT_TYPE_OTHER,
- 	OUTPUT_TYPE_MAX
- };
- 
-@@ -279,6 +280,18 @@ static struct {
- 
- 		.invalid_fields = PERF_OUTPUT_TRACE | PERF_OUTPUT_BPF_OUTPUT,
- 	},
-+
-+	[OUTPUT_TYPE_OTHER] = {
-+		.user_set = false,
-+
-+		.fields = PERF_OUTPUT_COMM | PERF_OUTPUT_TID |
-+			      PERF_OUTPUT_CPU | PERF_OUTPUT_TIME |
-+			      PERF_OUTPUT_EVNAME | PERF_OUTPUT_IP |
-+			      PERF_OUTPUT_SYM | PERF_OUTPUT_SYMOFFSET |
-+			      PERF_OUTPUT_DSO | PERF_OUTPUT_PERIOD,
-+
-+		.invalid_fields = PERF_OUTPUT_TRACE | PERF_OUTPUT_BPF_OUTPUT,
-+	},
- };
- 
- struct evsel_script {
-@@ -339,8 +352,11 @@ static inline int output_type(unsigned int type)
- 	case PERF_TYPE_SYNTH:
- 		return OUTPUT_TYPE_SYNTH;
- 	default:
--		return type;
-+		if (type < PERF_TYPE_MAX)
-+			return type;
- 	}
-+
-+	return OUTPUT_TYPE_OTHER;
- }
- 
- static inline unsigned int attr_type(unsigned int type)
--- 
-2.17.1
+/Jarkko
 
