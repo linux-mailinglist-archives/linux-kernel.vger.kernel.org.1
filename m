@@ -2,99 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB702C4D76
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBBF2C4D79
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 03:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732168AbgKZCaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Nov 2020 21:30:10 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8591 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730809AbgKZCaK (ORCPT
+        id S1732854AbgKZCa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Nov 2020 21:30:29 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:18224 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730809AbgKZCa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Nov 2020 21:30:10 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ChMCg3QWMzLqTs;
-        Thu, 26 Nov 2020 10:29:35 +0800 (CST)
-Received: from [10.174.178.174] (10.174.178.174) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 26 Nov 2020 10:29:58 +0800
-Subject: Re: [PATCH] iommu: fix return error code in iommu_probe_device()
-To:     Will Deacon <will@kernel.org>
-CC:     Lu Baolu <baolu.lu@linux.intel.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>
-References: <20201117025238.3425422-1-yangyingliang@huawei.com>
- <835ab066-b6b8-a211-4941-c01781031de8@linux.intel.com>
- <454f5e3e-c380-e8a5-9283-3f7578eb601e@huawei.com>
- <20201117224102.GD524@willie-the-truck>
- <78bee047-ab33-4d81-6f77-af4c5b6e8aaa@huawei.com>
- <20201125113545.GA15451@willie-the-truck>
-From:   Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <9e7481f4-e55e-6c7a-dde9-62912c6e5eb4@huawei.com>
-Date:   Thu, 26 Nov 2020 10:29:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 25 Nov 2020 21:30:28 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AQ2ThbD005350;
+        Wed, 25 Nov 2020 18:30:11 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=1Tvt934Y8NKZb3371lejoeEp+YlGWUyvQuobprGX6wE=;
+ b=bK7mNgCa8snfckWHZBYgYGYDO9ppdlendXY5hEQW4GRA+9oP8IqEB4wPmvMk/VWzu5sG
+ CGJUrIk7KSTkJ3z7KI+uIRh5tuLABTWPOoFNgkGADYszwWgf6qyPvfrfyWTf23CnoLYl
+ wHJWMCgzs6z/hITlW7TdZgiPcJBuMAKMzZc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 351dspng9d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 25 Nov 2020 18:30:10 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 25 Nov 2020 18:30:09 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BEZxP+xjP266MIyYZoNlEXT/MNcR2gfJHw3TucgVKh9+ziPrVQvU4i7XbnnzMuNmZ/c5KPflrfFJSFjnQ0QZd/Uy+gNQUJNGQCMKODnk5UIdXSucV50oyFf0f1Zx2PMZgYf0AITUL5ow8aZ/ZMXDfedabcLUlHqW4XKX6RU8xPy6VmTAlzcaSCpq9+wA/r7So9vAz0iT+0XVJ5KoHo2/hLMPcwny7Cbyx2n1xLfgfHVcsEb95SqxS4elOv6RsfXDNujjdOfF3zRssi1K+SbZ79MCkzzoCFE5FYUgxAA/2fnzBWyjWddwGkzpT2EObBEzlb8VRMTaHj92aOHj+5yL3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Tvt934Y8NKZb3371lejoeEp+YlGWUyvQuobprGX6wE=;
+ b=XtzM6ES1RXP15R6nBpzUEGfQfRZA0vslo5hCg5nhZWjIJxw8dICD7BDcsIeqc/iZaR3W61Ab5yxo3WCKMPtLIaJxbBw0ETCEzj8w88XVfkZJmQ8pq1JxuhiymI8nKNA56U/6EzmiZ4olA/JgRN8NVUwr0IFnPTM32Xz9ilTGVfOjAms6eu76mcSMwRrF81PQ2Yj02+0bvAc8ReshnO7mMsqqPuw+xQ5DvkN6i4TZ9r8o7slqktQargSnd8Ne/uk0LuIlsWS11/Vm8yNJYkqkpZWf1gEabUK4jduw8cRncrFiCgOcKwuYCNpj5eWxOVpbvBHuAq1rwg+cZVwaqcrV9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Tvt934Y8NKZb3371lejoeEp+YlGWUyvQuobprGX6wE=;
+ b=AWOIOOuwTq4ZZ6gGiSaHJYU3UZ544r/eBOd2PAlJgtYfFB/onFfofneX2yM7jEEjPmHMei2hh4tU9s1kW70gFLTAs3dgnt9DgpxIIeb13Xw2YUcBlmjQX+Qz4TCFNXq2WujBCCkPlnKkzT3VYa7LIG5A8yxabwxQBCD3lS5txMo=
+Authentication-Results: iogearbox.net; dkim=none (message not signed)
+ header.d=none;iogearbox.net; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY5PR15MB3524.namprd15.prod.outlook.com (2603:10b6:a03:1f5::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.29; Thu, 26 Nov
+ 2020 02:30:06 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396%7]) with mapi id 15.20.3589.031; Thu, 26 Nov 2020
+ 02:30:06 +0000
+Date:   Wed, 25 Nov 2020 18:30:00 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <netdev@vger.kernel.org>,
+        <andrii@kernel.org>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-team@fb.com>, <hannes@cmpxchg.org>, <tj@kernel.org>
+Subject: Re: [PATCH bpf-next v8 06/34] bpf: prepare for memcg-based memory
+ accounting for bpf maps
+Message-ID: <20201126023000.GB840171@carbon.dhcp.thefacebook.com>
+References: <20201125030119.2864302-1-guro@fb.com>
+ <20201125030119.2864302-7-guro@fb.com>
+ <ef140167-8d80-c581-318c-36c0430e4cfa@iogearbox.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ef140167-8d80-c581-318c-36c0430e4cfa@iogearbox.net>
+X-Originating-IP: [2620:10d:c090:400::5:781]
+X-ClientProxiedBy: MWHPR19CA0068.namprd19.prod.outlook.com
+ (2603:10b6:300:94::30) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-In-Reply-To: <20201125113545.GA15451@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:781) by MWHPR19CA0068.namprd19.prod.outlook.com (2603:10b6:300:94::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Thu, 26 Nov 2020 02:30:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d7b424f6-8b1b-48b4-a56b-08d891b32f9e
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3524:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3524B87357188C5A0B021EBBBEF90@BY5PR15MB3524.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: F8DkNXH3BbbWEo2AOlAAK1FZbDsattcc2fX+WPAFn1l82VaZfyhy6R1w+6HZxeaH2A1uV3Up5sE7NZWA6T4El1I/30uAXnZqFQuGFYdVmwM0klSREBsI+HCSfmhtrOpDMdvMsll2DfRAp+4nyoLqAzy2mO7IfN1FzVN8mQ08+1qfI61iauynuVyi+ATprHcNwsKrMPuD6OOpzFq/xkDx7jA4RZ8lWdBx9aNSQZF895LWSmRfSS3NeSweUn6sNXcsAyD//Tzj+Q0gPTRap4sQmuoP9qqrlQJ1z+SLRKqP+H2Y/twf5lAfqNe3Po49aiLMznW5ht+41G/AFcTbhUKQAA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(396003)(39860400002)(346002)(53546011)(9686003)(6506007)(7416002)(316002)(55016002)(2906002)(16526019)(1076003)(8936002)(186003)(8676002)(6916009)(478600001)(66556008)(83380400001)(33656002)(86362001)(66476007)(6666004)(52116002)(15650500001)(5660300002)(7696005)(66946007)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: CFL6Kreatb17RVvmwUeRVyOPCcGIsh4mAFZU6tl7dzZD9plGce58h5AAkIXUdjICyt4FNUz+Gxl06ySG3xOWb7A5R2r2LGuoFOMCxfYLEqqpfD7Zje3cpbO9Dz3Fka+26z+6dI1LhaK02mTfsoJnUn0+serp9bnn1UrRB5PBedw1rsC9MFHIWExkUsmQg3zKIwVHT74Ao+Jqwfp7R198WvlXT89tHW0Eq2bVby7raiSmeE+fjvidV79QEJnUbfMlFlF7fLA1gZWFXcuGtlw0RphgxmlgoVO6gwPzPeicfZfv5e5ZWZxvUx07mDp2B8/OcqCRROPcxKgxw9O0WZLeaJ6i8iERIZBYitaS8726p0AU2QdGX9ueP99h9v10tdTS+u6/zC/0aPUNbGZ1JD8Ybe7NYlmJq/Fw1gO1PksNGqquyuhZeYJ0mAFn92WdrBoLB2XsaC/hlpGrMbszBOJ4AcKuZhUV9JYoy6p19SoTOBSKC8YP2Csbz5mc0KEDrKvaKEm1dug32gLssH4NZkryFES8Miju7MjDpE/DsrBv/s02DaZpQZSR6sfHg5af7VjGRQ/eUGyrDEywD+jw9lWRTe5/eOBw2yoBR6SVUvfOg02f6/56mlic62KXhyBe6fMqHnh7XUbhqm4zykc52pGCbj6HV5x4i6bM54INx6wj/++/NogB37a2Z0MyUc2kr3OSYELe6Gbd30Rk775mDqMguyQWGlLo8bdg3ccC38tTGt38zMppW00uOB2q+vJJDGQH9M9BnhbyWCU5+TH68uAckSgPTsT3XOZApu+8cvCjdNLrA5lwWU40c599rzz1I29Vwf4DOu/wuURPDbJHGlv/9X/0bsAJlmFUzO0oZ1rn6wQ1KU4r3zGhJTpCN5+BXkeGNTufNq70i8+LQDQAx6+BsyCL8B0rzpMj04o9Sg/lVNc=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7b424f6-8b1b-48b4-a56b-08d891b32f9e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2020 02:30:05.9203
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XYDXIRv/SqvWc2MM2O3JgP8//y7Bx7PbiPgmgDoQKWBee5COkaFTrS/cai+TO/UO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3524
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-25_14:2020-11-25,2020-11-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
+ malwarescore=0 suspectscore=5 spamscore=0 mlxscore=0 impostorscore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=999 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011260012
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 26, 2020 at 01:21:41AM +0100, Daniel Borkmann wrote:
+> On 11/25/20 4:00 AM, Roman Gushchin wrote:
+> > In the absolute majority of cases if a process is making a kernel
+> > allocation, it's memory cgroup is getting charged.
+> > 
+> > Bpf maps can be updated from an interrupt context and in such
+> > case there is no process which can be charged. It makes the memory
+> > accounting of bpf maps non-trivial.
+> > 
+> > Fortunately, after commit 4127c6504f25 ("mm: kmem: enable kernel
+> > memcg accounting from interrupt contexts") and b87d8cefe43c
+> > ("mm, memcg: rework remote charging API to support nesting")
+> > it's finally possible.
+> > 
+> > To do it, a pointer to the memory cgroup of the process, which created
+> > the map, is saved, and this cgroup can be charged for all allocations
+> > made from an interrupt context. This commit introduces 2 helpers:
+> > bpf_map_kmalloc_node() and bpf_map_alloc_percpu(). They can be used in
+> > the bpf code for accounted memory allocations, both in the process and
+> > interrupt contexts. In the interrupt context they're using the saved
+> > memory cgroup, otherwise the current cgroup is getting charged.
+> > 
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> 
+> Thanks for updating the cover letter; replying in this series instead
+> on one more item that came to mind:
+> 
+> [...]
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index f3fe9f53f93c..4154c616788c 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -31,6 +31,8 @@
+> >   #include <linux/poll.h>
+> >   #include <linux/bpf-netns.h>
+> >   #include <linux/rcupdate_trace.h>
+> > +#include <linux/memcontrol.h>
+> > +#include <linux/sched/mm.h>
+> >   #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+> >   			  (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
+> > @@ -456,6 +458,77 @@ void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock)
+> >   		__release(&map_idr_lock);
+> >   }
+> > +#ifdef CONFIG_MEMCG_KMEM
+> > +static void bpf_map_save_memcg(struct bpf_map *map)
+> > +{
+> > +	map->memcg = get_mem_cgroup_from_mm(current->mm);
+> > +}
+> > +
+> > +static void bpf_map_release_memcg(struct bpf_map *map)
+> > +{
+> > +	mem_cgroup_put(map->memcg);
+> > +}
+> > +
+> > +void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
+> > +			   int node)
+> > +{
+> > +	struct mem_cgroup *old_memcg;
+> > +	bool in_interrupt;
+> > +	void *ptr;
+> > +
+> > +	/*
+> > +	 * If the memory allocation is performed from an interrupt context,
+> > +	 * the memory cgroup to charge can't be determined from the context
+> > +	 * of the current task. Instead, we charge the memory cgroup, which
+> > +	 * contained the process created the map.
+> > +	 */
+> > +	in_interrupt = in_interrupt();
+> > +	if (in_interrupt)
+> > +		old_memcg = set_active_memcg(map->memcg);
+> > +
+> > +	ptr = kmalloc_node(size, flags, node);
+> > +
+> > +	if (in_interrupt)
+> > +		set_active_memcg(old_memcg);
+> > +
+> > +	return ptr;
+> > +}
+> > +
+> > +void __percpu *bpf_map_alloc_percpu(const struct bpf_map *map, size_t size,
+> > +				    size_t align, gfp_t gfp)
+> > +{
+> > +	struct mem_cgroup *old_memcg;
+> > +	bool in_interrupt;
+> > +	void *ptr;
+> > +
+> > +	/*
+> > +	 * If the memory allocation is performed from an interrupt context,
+> > +	 * the memory cgroup to charge can't be determined from the context
+> > +	 * of the current task. Instead, we charge the memory cgroup, which
+> > +	 * contained the process created the map.
+> > +	 */
+> > +	in_interrupt = in_interrupt();
+> > +	if (in_interrupt)
+> > +		old_memcg = set_active_memcg(map->memcg);
+> > +
+> > +	ptr = __alloc_percpu_gfp(size, align, gfp);
+> > +
+> > +	if (in_interrupt)
+> > +		set_active_memcg(old_memcg);
+> 
+> For this and above bpf_map_kmalloc_node() one, wouldn't it make more sense to
+> perform the temporary memcg unconditionally?
+> 
+> 	old_memcg = set_active_memcg(map->memcg);
+> 	ptr = kmalloc_node(size, flags, node);
+> 	set_active_memcg(old_memcg);
+> 
+> I think the semantics are otherwise a bit weird and the charging unpredictable;
+> this way it would /always/ be accounted against the prog in the memcg that
+> originally created the map.
+> 
+> E.g. maps could be shared between progs attached to, say, XDP/tc where in_interrupt()
+> holds true with progs attached to skb-cgroup/egress where we're still in process
+> context. So some part of the memory is charged against the original map's memcg and
+> some other part against the current process' memcg which seems odd, no? Or, for example,
+> if we start to run a tracing BPF prog which updates state in a BPF map ... that tracing
+> prog now interferes with processes in other memcgs which may not be intentional & could
+> lead to potential failures there as opposed when the tracing prog is not run. My concern
+> is that the semantics are not quite clear and behavior unpredictable compared to always
+> charging against map->memcg.
+> 
+> Similarly, what if an orchestration prog creates dedicated memcg(s) for maps with
+> individual limits ... the assumed behavior (imho) would be that whatever memory is
+> accounted on the map it can be accurately retrieved from there & similarly limits
+> enforced, no? It seems that would not be the case currently.
+> 
+> Thoughts?
 
-On 2020/11/25 19:35, Will Deacon wrote:
-> On Wed, Nov 25, 2020 at 09:54:34AM +0800, Yang Yingliang wrote:
->> On 2020/11/18 6:41, Will Deacon wrote:
->>> On Tue, Nov 17, 2020 at 07:11:28PM +0800, Yang Yingliang wrote:
->>>> On 2020/11/17 17:40, Lu Baolu wrote:
->>>>> On 2020/11/17 10:52, Yang Yingliang wrote:
->>>>>> If iommu_group_get() failed, it need return error code
->>>>>> in iommu_probe_device().
->>>>>>
->>>>>> Fixes: cf193888bfbd ("iommu: Move new probe_device path...")
->>>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>>>>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
->>>>>> ---
->>>>>>     drivers/iommu/iommu.c | 4 +++-
->>>>>>     1 file changed, 3 insertions(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>>>>> index b53446bb8c6b..6f4a32df90f6 100644
->>>>>> --- a/drivers/iommu/iommu.c
->>>>>> +++ b/drivers/iommu/iommu.c
->>>>>> @@ -253,8 +253,10 @@ int iommu_probe_device(struct device *dev)
->>>>>>             goto err_out;
->>>>>>           group = iommu_group_get(dev);
->>>>>> -    if (!group)
->>>>>> +    if (!group) {
->>>>>> +        ret = -ENODEV;
->>>>> Can you please explain why you use -ENODEV here?
->>>> Before 79659190ee97 ("iommu: Don't take group reference in
->>>> iommu_alloc_default_domain()"), in
->>>>
->>>> iommu_alloc_default_domain(), if group is NULL, it will return -ENODEV.
->>> Hmm. While I think the patch is ok, I'm not sure it qualifies as a fix.
->>> Has iommu_probe_device() ever propagated this error? The commit you
->>> identify in the 'Fixes:' tag doesn't seem to change this afaict.
->> I think after this commit 439945e74a4b ("iommu: Move default domain
->> allocation to iommu_probe_device()"),
-> That SHA doesn't exist in my tree (maybe you mean 6e1aa2049154?). But even
-> then, I'm not sure 6e1aa2049154 is actually broken if you look at the
-> interaction with group creation in __iommu_probe_device().
->
-> In fact, isn't that the case in mainline too? If __iommu_probe_device()
-> returns 0, then we _know_ a group exists and so iommu_group_get() will
-> succeed. I'm still happy with the patch in case this changes in future,
-> but it doesn't appear to be fixing anything. Do you agree?
+I did consider this option. There are pros and cons. In general we tend to charge the cgroup
+which actually allocates the memory, and I decided to stick with this rule. I agree, it's fairly
+easy to come with arguments why always charging the map creator is better. The opposite is
+also true: it's not clear why bpf is different here. So I'm fine with both options, if there
+is a wide consensus, I'm happy to switch to the other option. In general, I believe that
+the current scheme is more flexible: if someone want to pay in advance, they are free to preallocate
+the map. Otherwise it's up to whoever wants to populate it.
 
-Yes, I look into the __iommu_probe_device(), if it can't get group, it 
-will return error
-
-first.  Do I need send a v2 without the fix tag ?
-
->
-> Will
-> .
+Thanks!
