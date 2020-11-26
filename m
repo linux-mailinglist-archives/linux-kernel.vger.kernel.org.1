@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC662C52A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E36BD2C52D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Nov 2020 12:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388734AbgKZLKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 06:10:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388706AbgKZLKV (ORCPT
+        id S2388916AbgKZLVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 06:21:47 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:19773 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729932AbgKZLVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 06:10:21 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58ADFC0613D4;
-        Thu, 26 Nov 2020 03:10:21 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w187so1363689pfd.5;
-        Thu, 26 Nov 2020 03:10:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arm-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ysDAMzeQzMrmseqw54pHHcgme62kOCrHB1LTNQfRYkQ=;
-        b=Xr53pffB+0JmTjNdhXpjfVXnysRhdot/YQSjQUJlVWTn/ra/bYOUd4f50o4JZ0CL0A
-         ioWAtUAU+RQByPSuQqokkjMgg232/OhoKQ8N4kpXItcBPzWsX7bIWIjB4v+/7xdZS7Dj
-         iLKY7YoLqzT61mgxsIV84+OBt3qwCq9vM7Cvr3hMldHQU/kL+1cp2SlPSewjqTguauLE
-         R0pjpvsizfkUFEsDRCHINR7RhPez5hJnh2rafYy11tElHz4+M2rQlqb5dilAsqjGZ6tS
-         yyWcYo1xgCC0NtARWGWnjulKrfhRqWBf5xDBFDKbNYvab/BQo4ehaPAcablRXN7fsn33
-         yp3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ysDAMzeQzMrmseqw54pHHcgme62kOCrHB1LTNQfRYkQ=;
-        b=cODHyCTbBra/XxCh02PpIyh+BtMH9Za8wVlnnrIVt5CYk2YnpQZWAchgP99s99fWbi
-         2Ofs3B4QjGo+ljtYBquMnq7rCTpOcH/WRRi6w8mkvCTacCfrnuSrtYZzHBBPELk+VuqD
-         ojTH7YwlY+mZ5ipROuMOUywRuFOCRWlepurhrbXzbGx4oIadlINc8OE2an7l7iyuhfHs
-         J6BWCJMtvSi9Ly/XuoSt6HRpovP5gTZHK4TQX/Z79Qv9RLMfkCnX1J7VQ4EGLyxR5HCi
-         SlQMfi2VUvtkrIqQJhuFmUtUEOWk+vXvngbgsctdg8pKlEpdHkwYzGv/xtcrhrJHFDF6
-         4yGg==
-X-Gm-Message-State: AOAM531UDt18BpRd5clpNJprUnrHwxO6e/pcNJWNAfCOIcvt4zoEb04H
-        mN0pUsMS1V/pAWP1aQ7r3c8XO8CRiQU0uTGE5W4=
-X-Google-Smtp-Source: ABdhPJxJD1NykgWeec15xFKr3NqfS1cXWilGx/PVFgSGw7gcEgeheK7b3dQCpTxeed6pibGoMSpYnv3Ex1gCrw5ZXOo=
-X-Received: by 2002:a05:6a00:14cf:b029:18c:959d:929e with SMTP id
- w15-20020a056a0014cfb029018c959d929emr2306209pfu.53.1606389020793; Thu, 26
- Nov 2020 03:10:20 -0800 (PST)
+        Thu, 26 Nov 2020 06:21:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606389705;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=uNCS1aFmz5+GRjbGXLATLfWOc3SHgcCVSH1L0o5r82g=;
+        b=Yb5k4FHxkAX3gmnIslJIjnS8PKtNh14Lf8BlBEOpdcnnJkimu6XN5zQqeLHkrfb/u1
+        5HtK/h69To3dqIHU2wWCSe3ilzYBvmIJCj0HytcCLZ/jtoDAPjWcHLiRRS2StMXIiCwk
+        BNbmXAb/U/IrwnTZ9KFgxoXW58t1w73nu7VJKwFHK02hYLR3qIGWE0n7Y6En8WzQsD0b
+        5/DOM46ZzPJb2Hpv8/SQFqJD1IpOqpI5MjpY2OO06onrKHPdaeuIfTxSb90Z0Vs7F4cL
+        dcL61bbHCqtvAFNiJ9jkOlfWR97Zy1hfKV8ktEd2XdNvTdUNozx+i0DxrIUILg/9b6wV
+        U9Cg==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTGVxiOMVupw=="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.10.137]
+        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
+        with ESMTPSA id n07f3bwAQBLgsaF
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 26 Nov 2020 12:21:42 +0100 (CET)
+Subject: Re: [PATCH] can: m_can: add support for bosch mcan version 3.3.0
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Pankaj Sharma <pankj.sharma@samsung.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     sriram.dash@samsung.com, dmurphy@ti.com, wg@grandegger.com,
+        davem@davemloft.net, kuba@kernel.org, pankaj.dubey@samsung.com
+References: <CGME20201126045221epcas5p46f00cd452b8023262f5556e6f4567352@epcas5p4.samsung.com>
+ <1606366302-5520-1-git-send-email-pankj.sharma@samsung.com>
+ <e7a65c29-d0b0-358f-fc5f-c08944ada4df@pengutronix.de>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <e6f36ce5-1197-d93b-705b-2f7d68761f04@hartkopp.net>
+Date:   Thu, 26 Nov 2020 12:21:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201123063835.18981-1-miles.chen@mediatek.com>
-In-Reply-To: <20201123063835.18981-1-miles.chen@mediatek.com>
-From:   Catalin Marinas <catalin.marinas@arm.com>
-Date:   Thu, 26 Nov 2020 11:10:09 +0000
-Message-ID: <CAHkRjk7xGoU=KBeFE4gy=yxkLhvHqz2A1JyCBKF8dhjJNDD=zA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v1] proc: use untagged_addr() for pagemap_read addresses
-To:     Miles Chen <miles.chen@mediatek.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        wsd_upstream@mediatek.com, andreyknvl@google.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e7a65c29-d0b0-358f-fc5f-c08944ada4df@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miles,
 
-Could you please cc me and Andrey Konovalov on future versions of this
-patch (if any)?
 
-On Mon, 23 Nov 2020 at 08:47, Miles Chen <miles.chen@mediatek.com> wrote:
-> When we try to visit the pagemap of a tagged userspace pointer, we find
-> that the start_vaddr is not correct because of the tag.
-> To fix it, we should untag the usespace pointers in pagemap_read().
->
-> I tested with 5.10-rc4 and the issue remains.
->
-> My test code is baed on [1]:
->
-> A userspace pointer which has been tagged by 0xb4: 0xb400007662f541c8
->
-> === userspace program ===
->
-> uint64 OsLayer::VirtualToPhysical(void *vaddr) {
->         uint64 frame, paddr, pfnmask, pagemask;
->         int pagesize = sysconf(_SC_PAGESIZE);
->         off64_t off = ((uintptr_t)vaddr) / pagesize * 8; // off = 0xb400007662f541c8 / pagesize * 8 = 0x5a00003b317aa0
+On 26.11.20 11:48, Marc Kleine-Budde wrote:
+> On 11/26/20 5:51 AM, Pankaj Sharma wrote:
+>> Add support for mcan bit timing and control mode according to bosch mcan IP
+>> version 3.3.0
+>> The mcan version read from the Core Release field of CREL register would be
+>> 33. Accordingly the properties are to be set for mcan v3.3.0
+> 
+> BTW: do you have the v3.2 and v3.1 datasheets?
 
-Arguably, that's a user-space bug since tagged file offsets were never
-supported. In this case it's not even a tag at bit 56 as per the arm64
-tagged address ABI but rather down to bit 47. You could say that the
-problem is caused by the C library (malloc()) or whoever created the
-tagged vaddr and passed it to this function. It's not a kernel
-regression as we've never supported it.
+Unfortunately Bosch does not give access to older documents, so I tried 
+to concentrate all my downloaded versions of public available 
+information here:
 
-Now, pagemap is a special case where the offset is usually not
-generated as a classic file offset but rather derived by shifting a
-user virtual address. I guess we can make a concession for pagemap
-(only) and allow such offset with the tag at bit (56 - PAGE_SHIFT +
-3).
+https://github.com/hartkopp/M_CAN-User-Manual-History
 
-Please fix the patch as per Eric's suggestion on avoiding the
-overflow. You should also add a Cc: stable v5.4- as that's when we
-enabled the tagged address ABI on arm64 and when it's more likely for
-the C library/malloc() to start generating such pointers.
+PR's with updates are welcome ;-)
 
-If the problem is only limited to this test, I'd rather fix the user
-but I can't tell how widespread the /proc/pid/pagemap usage is.
+Best,
+Oliver
 
-Thanks.
+ps. @Bosch Semiconductors - Read the README there! I would like to 
+remove my own collection.
 
--- 
-Catalin
+> 
+> Marc
+> 
+>> Signed-off-by: Pankaj Sharma <pankj.sharma@samsung.com>
+>> ---
+>> Depends on:
+>> https://marc.info/?l=linux-can&m=160624495218700&w=2
+>>
+>>   drivers/net/can/m_can/m_can.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+>> index 86bbbfa..7652175 100644
+>> --- a/drivers/net/can/m_can/m_can.c
+>> +++ b/drivers/net/can/m_can/m_can.c
+>> @@ -1385,6 +1385,8 @@ static int m_can_dev_setup(struct m_can_classdev *m_can_dev)
+>>   						&m_can_data_bittiming_const_31X;
+>>   		break;
+>>   	case 32:
+>> +	case 33:
+>> +		/* Support both MCAN version v3.2.x and v3.3.0 */
+>>   		m_can_dev->can.bittiming_const = m_can_dev->bit_timing ?
+>>   			m_can_dev->bit_timing : &m_can_bittiming_const_31X;
+>>   
+>>
+> 
+> 
