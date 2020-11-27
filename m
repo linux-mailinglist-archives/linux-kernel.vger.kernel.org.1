@@ -2,163 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449E72C66A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EEF2C66AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730446AbgK0NUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 08:20:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730416AbgK0NUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 08:20:37 -0500
-Received: from localhost.localdomain (unknown [49.77.180.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E03412224A;
-        Fri, 27 Nov 2020 13:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606483236;
-        bh=RoBnMKMk2+nQSgM8kG4CDxlDlRoChZXV1gVhZwUI/mk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aD4a3aXuvVS5sERq4Vw/tkWAbtLkwEe6aoGnFufe/CrjuPfV4U6T9ddEkKLYxDSaN
-         VOCNU1vY5ZQWwY5c4FnXZUve6HAewAI0HdLONhTSuJlRMVw3c+lD13hIspjEfWV0Rt
-         aJX0mYzd8knH6Vs4vMKkM2d12dzEYHJ6l2Afydd8=
-From:   Chao Yu <chao@kernel.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: fix kbytes written stat for multi-device case
-Date:   Fri, 27 Nov 2020 21:20:06 +0800
-Message-Id: <20201127132006.6251-1-chao@kernel.org>
-X-Mailer: git-send-email 2.22.0
+        id S1730101AbgK0NVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 08:21:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729402AbgK0NVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 08:21:10 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B257C0613D1;
+        Fri, 27 Nov 2020 05:21:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=da54PXozPjm/EiAuixh+YkNgFXGB4rDLTyepbBzA2dg=; b=KWyx1YxC2nmhmtUDOgtptiYfoB
+        DBlXqBO8lAYi82F1oTeGeg2nSXKnjj08jQo5fYlD1qSAIuqD8371atETcszq4NDVrqkDcuY2sFnmd
+        s7134C6ZpaZot5dOYPXIzMrVFwqJ1CcMMjrThl35Wf9Uzbo4hCGLaE7xJgD5rmR3haPT9TFVUdDEn
+        UELctJd41vXMh9FS+KC6/8N7FeSZlQ4AapfDD3xCC2QL362xPvm+ou2TWbfrNdLYVp2Kn3O2/b8A4
+        mhXS4paxUp385fxxNnd0RY8/OGS2HSiWf61TRyZJVpmHm0NFSOJLHABVXZ+XuD1+sS8tqFEFH/Yhs
+        SUGuneFQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kidfT-0007Mn-0i; Fri, 27 Nov 2020 13:20:07 +0000
+Date:   Fri, 27 Nov 2020 13:20:06 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, ira.weiny@intel.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Steve French <sfrench@samba.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Brian King <brking@us.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 01/17] mm/highmem: Lift memcpy_[to|from]_page and
+ memset_page to core
+Message-ID: <20201127132006.GY4327@casper.infradead.org>
+References: <20201124060755.1405602-1-ira.weiny@intel.com>
+ <20201124060755.1405602-2-ira.weiny@intel.com>
+ <160648238432.10416.12405581766428273347@jlahtine-mobl.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160648238432.10416.12405581766428273347@jlahtine-mobl.ger.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+On Fri, Nov 27, 2020 at 03:06:24PM +0200, Joonas Lahtinen wrote:
+> Quoting ira.weiny@intel.com (2020-11-24 08:07:39)
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > Working through a conversion to a call such as kmap_thread() revealed
+> > many places where the pattern kmap/memcpy/kunmap occurred.
+> > 
+> > Eric Biggers, Matthew Wilcox, Christoph Hellwig, Dan Williams, and Al
+> > Viro all suggested putting this code into helper functions.  Al Viro
+> > further pointed out that these functions already existed in the iov_iter
+> > code.[1]
+> > 
+> > Placing these functions in 'highmem.h' is suboptimal especially with the
+> > changes being proposed in the functionality of kmap.  From a caller
+> > perspective including/using 'highmem.h' implies that the functions
+> > defined in that header are only required when highmem is in use which is
+> > increasingly not the case with modern processors.  Some headers like
+> > mm.h or string.h seem ok but don't really portray the functionality
+> > well.  'pagemap.h', on the other hand, makes sense and is already
+> > included in many of the places we want to convert.
+> > 
+> > Another alternative would be to create a new header for the promoted
+> > memcpy functions, but it masks the fact that these are designed to copy
+> > to/from pages using the kernel direct mappings and complicates matters
+> > with a new header.
+> > 
+> > Lift memcpy_to_page(), memcpy_from_page(), and memzero_page() to
+> > pagemap.h.
+> > 
+> > Also, add a memcpy_page(), memmove_page, and memset_page() to cover more
+> > kmap/mem*/kunmap. patterns.
+> > 
+> > [1] https://lore.kernel.org/lkml/20201013200149.GI3576660@ZenIV.linux.org.uk/
+> >     https://lore.kernel.org/lkml/20201013112544.GA5249@infradead.org/
+> > 
+> > Cc: Dave Hansen <dave.hansen@intel.com>
+> > Suggested-by: Matthew Wilcox <willy@infradead.org>
+> > Suggested-by: Christoph Hellwig <hch@infradead.org>
+> > Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> > Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+> > Suggested-by: Eric Biggers <ebiggers@kernel.org>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> <SNIP>
+> 
+> > +static inline void memset_page(struct page *page, int val, size_t offset, size_t len)
+> > +{
+> > +       char *addr = kmap_atomic(page);
+> > +       memset(addr + offset, val, len);
+> > +       kunmap_atomic(addr);
+> > +}
+> 
+> Other functions have (page, offset) pair. Insertion of 'val' in the middle here required
+> to take a double look during review.
 
-For multi-device case, one f2fs image includes multi devices, so it
-needs to account bytes written of all block devices belong to the image
-rather than one main block device, fix it.
+Let's be explicit here.  Your suggested order is:
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/checkpoint.c | 27 +++++++++++++++++++++++----
- fs/f2fs/f2fs.h       |  8 +-------
- fs/f2fs/super.c      |  5 +----
- fs/f2fs/sysfs.c      |  3 ++-
- 4 files changed, 27 insertions(+), 16 deletions(-)
+	(page, offset, val, len)
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index 9b0628e0d8bc..97ac921bd581 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -1385,6 +1385,27 @@ static void commit_checkpoint(struct f2fs_sb_info *sbi,
- 	f2fs_submit_merged_write(sbi, META_FLUSH);
- }
- 
-+static inline u64 get_sectors_written(struct block_device *bdev)
-+{
-+	return bdev->bd_part ?
-+		(u64)part_stat_read(bdev->bd_part, sectors[STAT_WRITE]) : 0;
-+}
-+
-+u64 f2fs_get_sectors_written(struct f2fs_sb_info *sbi)
-+{
-+	if (f2fs_is_multi_device(sbi)) {
-+		u64 sectors = 0;
-+		int i;
-+
-+		for (i = 0; i < sbi->s_ndevs; i++)
-+			sectors += get_sectors_written(FDEV(i).bdev);
-+
-+		return sectors;
-+	}
-+
-+	return get_sectors_written(sbi->sb->s_bdev);
-+}
-+
- static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
- {
- 	struct f2fs_checkpoint *ckpt = F2FS_CKPT(sbi);
-@@ -1395,7 +1416,6 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
- 	__u32 crc32 = 0;
- 	int i;
- 	int cp_payload_blks = __cp_payload(sbi);
--	struct super_block *sb = sbi->sb;
- 	struct curseg_info *seg_i = CURSEG_I(sbi, CURSEG_HOT_NODE);
- 	u64 kbytes_written;
- 	int err;
-@@ -1490,9 +1510,8 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
- 
- 	/* Record write statistics in the hot node summary */
- 	kbytes_written = sbi->kbytes_written;
--	if (sb->s_bdev->bd_part)
--		kbytes_written += BD_PART_WRITTEN(sbi);
--
-+	kbytes_written += (f2fs_get_sectors_written(sbi) -
-+				sbi->sectors_written_start) >> 1;
- 	seg_i->journal->info.kbytes_written = cpu_to_le64(kbytes_written);
- 
- 	if (__remain_node_summaries(cpc->reason)) {
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index bfefdf99cd3e..d32065417616 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1613,13 +1613,6 @@ static inline bool f2fs_is_multi_device(struct f2fs_sb_info *sbi)
- 	return sbi->s_ndevs > 1;
- }
- 
--/* For write statistics. Suppose sector size is 512 bytes,
-- * and the return value is in kbytes. s is of struct f2fs_sb_info.
-- */
--#define BD_PART_WRITTEN(s)						 \
--(((u64)part_stat_read((s)->sb->s_bdev->bd_part, sectors[STAT_WRITE]) -   \
--		(s)->sectors_written_start) >> 1)
--
- static inline void f2fs_update_time(struct f2fs_sb_info *sbi, int type)
- {
- 	unsigned long now = jiffies;
-@@ -3392,6 +3385,7 @@ void f2fs_update_dirty_page(struct inode *inode, struct page *page);
- void f2fs_remove_dirty_inode(struct inode *inode);
- int f2fs_sync_dirty_inodes(struct f2fs_sb_info *sbi, enum inode_type type);
- void f2fs_wait_on_all_pages(struct f2fs_sb_info *sbi, int type);
-+u64 f2fs_get_sectors_written(struct f2fs_sb_info *sbi);
- int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc);
- void f2fs_init_ino_entry_info(struct f2fs_sb_info *sbi);
- int __init f2fs_create_checkpoint_caches(void);
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index e71db2a0a9c7..b0c6ef2df7b8 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3719,10 +3719,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 	}
- 
- 	/* For write statistics */
--	if (sb->s_bdev->bd_part)
--		sbi->sectors_written_start =
--			(u64)part_stat_read(sb->s_bdev->bd_part,
--					    sectors[STAT_WRITE]);
-+	sbi->sectors_written_start = f2fs_get_sectors_written(sbi);
- 
- 	/* Read accumulated write IO statistics if exists */
- 	seg_i = CURSEG_I(sbi, CURSEG_HOT_NODE);
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 8c63a6e61dfd..0a7383e1302d 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -97,7 +97,8 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
- 
- 	return sprintf(buf, "%llu\n",
- 			(unsigned long long)(sbi->kbytes_written +
--			BD_PART_WRITTEN(sbi)));
-+			((f2fs_get_sectors_written(sbi) -
-+				sbi->sectors_written_start) >> 1)));
- }
- 
- static ssize_t features_show(struct f2fs_attr *a,
--- 
-2.22.0
-
+right?  I think I would prefer that to (page, val, offset, len).
