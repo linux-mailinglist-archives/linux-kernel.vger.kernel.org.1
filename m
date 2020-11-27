@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F30D2C6930
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C51C2C6935
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731233AbgK0QMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:12:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731150AbgK0QMz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:12:55 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A373C0613D1;
-        Fri, 27 Nov 2020 08:12:54 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id p8so6117931wrx.5;
-        Fri, 27 Nov 2020 08:12:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eXqA66SSXSjOYL7nUJMPq8DdoGjGHwevZLW6WLAEElY=;
-        b=N7gWS7x5A52K8T1zw0wAND5sZ/5XsYmmE0RCNZ2Wuy9ZUeZIIVoT/ZY2NeuhNfP7ux
-         7Huzi2chLlyuA68tfuMVetfMpzQGD9t5WWNHEhOCaoQSyWhTkn1GqLUNT0BD6xeHy7Z2
-         A6YRxpUCcPof9j+1WMCgyzySpnsVdfVqqITxfAzcrM0vuDI9pj3PJFiiZUacgaqk+Mgj
-         YS1vaabEloZ8bf9ViOar13AYkzqjGv9PBIF1zkODv6FoKfRoxUXyxrdV1cULmcGl/LUi
-         ZIFmBkp95BINqX82z5eRaNaSJ/kA6XpGi9vqLSKGSTijln/npRSAfzAv+bg1ZV7dK1rb
-         nZMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eXqA66SSXSjOYL7nUJMPq8DdoGjGHwevZLW6WLAEElY=;
-        b=jcM4i4oew5qwCj6cVLRVbUXtPmRN64It0FXGESl5rtCvmdDFy4xjq79euFEe9JadcU
-         nSisBXRXe9RX9l0QYM+hmtzDruP8aP05le1v4Q33BNwhcd02153xza7L2P5d+GRy4aSi
-         emeIb8fWwKKyNTPbLR1j16q5Jj3y9XwBtd8GRHYfX736vd8zr0h+FXZwN4ylmGAmDD+z
-         /mRz3zZaJ6QKy6YWlqVTuqNvCFe/DnpaGhLAIsmJas3s3PFChcHvJvDGdFJCviHFMFO6
-         OKbDTEnBB1VjcW1IF42zkGH3RfybM2LAfDDs/0PhtF3tGITvvtYL6HlAiQ2NjFzJuT77
-         1Pgw==
-X-Gm-Message-State: AOAM533tZZhR26OYlt97+X/CWoC7KssDQ2lZKRjuNfSyBv4/k75KQf62
-        j40ZWiA51+pgtKQ84ssh5ka/FH0JiWB+9Q==
-X-Google-Smtp-Source: ABdhPJzp1q4bYCuJp9sGSOAEKbZTGkCjwZtlbkOLd/Quw+3RcvdAkkCqfaO9Of2YoaLukCQ8MNcbkA==
-X-Received: by 2002:a5d:5342:: with SMTP id t2mr11489578wrv.243.1606493573151;
-        Fri, 27 Nov 2020 08:12:53 -0800 (PST)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id z19sm13971840wmk.12.2020.11.27.08.12.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 08:12:52 -0800 (PST)
-Subject: Re: [PATCH] MAINTAINERS: assign mediatek headers to Mediatek SoC
- support
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201103060733.25729-1-lukas.bulwahn@gmail.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <9bce8087-b734-d6bd-c21a-3e9701cc1d94@gmail.com>
-Date:   Fri, 27 Nov 2020 17:12:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1731381AbgK0QN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:13:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39666 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726889AbgK0QNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 11:13:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606493633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zNyePPr8eaM8q6N1hI8z6fuqCl9mrbj+/oSQS+LcGdc=;
+        b=qxot8es63erorEWepO3xkbh/OnZQsbV5DAmD478L74PIdOK5TOvWXbwgE27UHuuu1YTiFt
+        H+YZqvkVTWnZQTFR4dH1OdqCFzhgH3adySpeBkklnUAr+AzBm2QnUq19Mc5rsZmd2556ld
+        kaMBZRwNX8C9Zjls+1LinOQxg7Tsa84=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B387FAC2D;
+        Fri, 27 Nov 2020 16:13:53 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 17:13:52 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH 0/3] clear_warn_once: add timed interval resetting
+Message-ID: <X8ElwBh9tw+OLHF+@alley>
+References: <20201126063029.2030-1-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <20201103060733.25729-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126063029.2030-1-paul.gortmaker@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 2020-11-26 01:30:26, Paul Gortmaker wrote:
+> The existing clear_warn_once functionality is currently a manually
+> issued state reset via the file /sys/kernel/debug/clear_warn_once when
+> debugfs is mounted.  The idea being that a developer would be running
+> some tests, like LTP or similar, and want to check reproducibility
+> without having to reboot.
+> 
+> But you currently can't make use of clear_warn_once unless you've got
+> debugfs enabled and mounted - which may not be desired by some people
+> in some deployment situations.
+> 
+> The functionality added here allows for periodic resets in addition to
+> the one-shot reset it already had.  Then we allow for a boot-time setting
+> of the periodic resets so it can be used even when debugfs isn't mounted.
+> 
+> By having a periodic reset, we also open the door for having the various
+> "once" functions act as long period ratelimited messages, where a sysadmin
+> can pick an hour or a day reset if they are facing an issue and are
+> wondering "did this just happen once, or am I only being informed once?"
+
+What is the primary problem that you wanted to solve, please?
+
+Do you have an example what particular printk_once() you were
+interested into?
+
+I guess that the main problem is that
+/sys/kernel/debug/clear_warn_once is available only when debugfs is
+mounted. And the periodic reset is just one possible solution
+that looks like a nice to have. Do I get it correctly, please?
+
+I am not completely against the idea. But I have some concerns.
+
+1. It allows to convert printk_once() into printk_ratelimited()
+   with some special semantic and interface. It opens possibilities
+   for creativity. It might be good and it also might create
+   problems that are hard to foresight now.
+
+   printk_ratelimited() is problematic, definitely, see below.
 
 
-On 03/11/2020 07:07, Lukas Bulwahn wrote:
-> ./include/soc/mediatek/smi.h and ./include/linux/soc/mediatek/infracfg.h
-> are currently not assigned to a specific section in MAINTAINERS.
-> 
-> ./include/soc/mediatek/smi.h is the header file for definitions in
-> ./drivers/memory/mtk-smi.c, which is assigned to the section ARM/Mediatek
-> SoC support in MAINTAINERS.
-> 
-> ./include/linux/soc/mediatek/infracfg.h is the header file for definitions
-> in ./drivers/soc/mediatek/mtk-infracfg.c, which is assigned to the section
-> ARM/Mediatek SoC support in MAINTAINERS.
-> 
-> Hence, assign those header files to ARM/Mediatek SoC support as well.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> Matthias, please pick this minor non-urgent cleanup patch.
-> 
-> This patch is part of an initial experiment to assign all files to
-> specific sections in MAINTAINERS. At the moment, about 3200 files are
-> currently not assigned to specific sections and maintainers.
-> 
-> If you think these cleanup patch cause more churn than value, please let
-> me know. Thanks.
-> 
->   MAINTAINERS | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b4197e9da495..1703c7d2e146 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2066,6 +2066,8 @@ F:	arch/arm/boot/dts/mt8*
->   F:	arch/arm/mach-mediatek/
->   F:	arch/arm64/boot/dts/mediatek/
->   F:	drivers/soc/mediatek/
-> +F:	include/linux/soc/mediatek/infracfg.h
-> +F:	include/soc/mediatek/smi.h
+2. printk_ratelimited() is typically used when a message might get
+   printed too often. It prevents overloading consoles, log daemons.
+   Also it helps to see other messages that might get lost otherwise.
 
-I the most important file is missing: mtk-mmsys.h
-smi.h is part of drivers/memory and should be added to Krzysztof entry.
+   I have seen many discussions about what is the right ratelimit
+   for a particular message. I have to admit that it was mainly
+   related to console speed. The messages were lost with slow
+   consoles. People want to see more on fast consoles.
 
-Regards,
-Matthias
+   The periodic warn once should not have this problem because the
+   period would typically be long. And it would produce only
+   one message on each location.
+
+   The problem is that it is a global setting. It would reset
+   all printk_once() callers. And I see two problems here:
+
+       + Periodic reset might cause printing related problems
+	 in the wrong order. Messages from victims first. Messages
+	 about the root of the problem later (from next cycle).
+	 It might create confusion.
+
+       + People have problems to set the right ratelimit for
+	 a particular message. It would be even bigger problem
+	 to set the right ratelimit for the entire system.
 
 
->   N:	mtk
->   N:	mt[678]
->   K:	mediatek
-> 
+I do not know. Maybe I am just too paranoid today. Anyway, there
+are other possibilities:
+
++ Move clear_warn_once from debugfs to a location that is always
+  available. For example, into /proc
+
++ Allow to change printk_once() to printk_n_times() globally. I mean
+  that it would print the same message only N-times instead on once.
+  It will print only first few occurrences, so it will not have
+  the problem with ordering.
+
+Any other opinion?
+
+Best Regards,
+Petr
