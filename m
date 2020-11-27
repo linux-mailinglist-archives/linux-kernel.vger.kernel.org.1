@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D842C695A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB472C695E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731215AbgK0Q0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:26:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44570 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730786AbgK0Q0S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:26:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606494377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=9kcT9NngfazbuS/JmAbn32wrrn8CkOa26eF7oEFiGFI=;
-        b=Q5Nxv5640UEOOM9EhrhfC7+TAupY6aCunb0rj7qhSy9P8tOQelN/EZqmagsS/ARZKQZrO2
-        1gb1CFPTPpWWbFdZZ2erMn68Y7Pkgik1JGVrAEu3Bx+WUB7yO+Qn4LuhJjJYX5qDCK+CK3
-        jlKEi6e4Bwob4ZtNZfAEUDHfCyuSceA=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-100-3wVkL_wHMMWPMYRj60ZarQ-1; Fri, 27 Nov 2020 11:26:16 -0500
-X-MC-Unique: 3wVkL_wHMMWPMYRj60ZarQ-1
-Received: by mail-qt1-f198.google.com with SMTP id n95so3515175qte.16
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:26:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=9kcT9NngfazbuS/JmAbn32wrrn8CkOa26eF7oEFiGFI=;
-        b=sSLWpQIIiX6lZVd2TDpP5CsVKYRFi8cY3FIDlhpUn97jMrT8Ym84YokzxQnzvGBDhK
-         +7G0CW8e3xPmk7uCtKLf1RPetJ4cY0KUpi5GJyvsqYpiJLWD/25nWY8CSYsnUX3F3ozz
-         YQNaihFewzNbtxg3qMsckpC2gr8Q6GVKoGJZe+IAwSzjJ3EfjpjN30jKVjjbkcBwXWBj
-         v8mlPvCAW7nI5pJ+q+FhrUlUq5td/gNra6UUSmfk4CcL55VKMeNlEVMmqDz/rK6alXFN
-         WfYb7FAxxA41a8mkspnzxA9T4zfYEYNfcTV3dXhLOoAxpbFCjKZ4BcW1Iu0diqsMVhyU
-         JENg==
-X-Gm-Message-State: AOAM530Pk6v1KIWUZe5zARuKaC6iHyms0OqVNet/d68yLTFzxLA0gxP2
-        veMxCrKjyctOL1QazYbf5gVyP5d2H/mTm7F5TjrUu66Wy9rCL/sbybery9QRfnGKytrnKA75lUp
-        5WdrmErkiNZcPZvEPOle5VSpc
-X-Received: by 2002:a37:4350:: with SMTP id q77mr9607302qka.14.1606494374657;
-        Fri, 27 Nov 2020 08:26:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxNGd4qb8oVRkjqDYpGhY8hkSGk1iJ3KkPlgznYCKM24/i6OjNo9tI0muQNVpoA0U0g2g/58g==
-X-Received: by 2002:a37:4350:: with SMTP id q77mr9607280qka.14.1606494374479;
-        Fri, 27 Nov 2020 08:26:14 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id x33sm6358454qte.73.2020.11.27.08.26.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 08:26:13 -0800 (PST)
-From:   trix@redhat.com
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, Hawking.Zhang@amd.com,
-        evan.quan@amd.com, Felix.Kuehling@amd.com, luben.tuikov@amd.com,
-        Dennis.Li@amd.com, andrey.grodzovsky@amd.com,
-        Joseph.Greathouse@amd.com, jonathan.kim@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] drm/amdgpu/display: remove trailing semicolon in macro definition
-Date:   Fri, 27 Nov 2020 08:26:07 -0800
-Message-Id: <20201127162607.2656353-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.4
+        id S1731405AbgK0Q1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:27:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731300AbgK0Q1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 11:27:02 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 509E521D7A;
+        Fri, 27 Nov 2020 16:27:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606494421;
+        bh=2RXBZ7l1i3OanimKbEWfF/F9FByKTdx4MivKfCLvYJ8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=p+69W7Ndi6d7uBkdXTFsN8h8sjZB/XaQdBbz75R3L6zqd76In1WaLvd0B4U4s0mQz
+         ty7cqgorPAveDSz5PqJmGLI+JSk/Id53KHnY1YCtRzmFfpSJnF2tkw54ZGpu6jfZIf
+         zmquQivOcWPsFg7MSu3HPaklzrqmJNiFWUe8/ApQ=
+Date:   Fri, 27 Nov 2020 08:27:00 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>, Dan Murphy <dmurphy@ti.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: Re: [RESEND PATCH v2] dt-bindings: net: correct interrupt flags in
+ examples
+Message-ID: <20201127082700.4a218688@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <3fafb016-5d9e-5e0f-9e5a-2421fbde3eb1@pengutronix.de>
+References: <20201026153620.89268-1-krzk@kernel.org>
+        <3fafb016-5d9e-5e0f-9e5a-2421fbde3eb1@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Fri, 27 Nov 2020 10:13:01 +0100 Marc Kleine-Budde wrote:
+> On 10/26/20 4:36 PM, Krzysztof Kozlowski wrote:
+> > GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+> > These are simple defines so they could be used in DTS but they will not
+> > have the same meaning:
+> > 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+> > 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
+> > 
+> > Correct the interrupt flags, assuming the author of the code wanted same
+> > logical behavior behind the name "ACTIVE_xxx", this is:
+> >   ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
+> >   ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for tcan4x5x.txt  
+> 
+> Jakub, can you queue this patch for net/master?
 
-The macro use will already have a semicolon.
+Sure! Are these correct?
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index f9c81bc21ba4..301e93c9e72a 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -1213,7 +1213,7 @@ int emu_soc_asic_init(struct amdgpu_device *adev);
- #define amdgpu_asic_update_umd_stable_pstate(adev, enter) \
- 	((adev)->asic_funcs->update_umd_stable_pstate ? (adev)->asic_funcs->update_umd_stable_pstate((adev), (enter)) : 0)
- 
--#define amdgpu_inc_vram_lost(adev) atomic_inc(&((adev)->vram_lost_counter));
-+#define amdgpu_inc_vram_lost(adev) atomic_inc(&((adev)->vram_lost_counter))
- 
- /* Common functions */
- bool amdgpu_device_has_job_running(struct amdgpu_device *adev);
--- 
-2.18.4
-
+Fixes: a1a8b4594f8d ("NFC: pn544: i2c: Add DTS Documentation")
+Fixes: 6be88670fc59 ("NFC: nxp-nci_i2c: Add I2C support to NXP NCI driver")
+Fixes: e3b329221567 ("dt-bindings: can: tcan4x5x: Update binding to use interrupt property")
