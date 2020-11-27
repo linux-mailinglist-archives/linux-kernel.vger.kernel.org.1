@@ -2,134 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E765F2C6C24
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 243F92C6C2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730218AbgK0TsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 14:48:15 -0500
-Received: from mout.gmx.net ([212.227.17.20]:57173 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730084AbgK0Tpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:45:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606506084;
-        bh=wu2nZP4IU+Top3OJoASjBBseXIv67/YM1/7RX5sWhD0=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=jvX7XMEx7fnA1DeOff7TSpbnP6OqTJJOqVo4A7JtM4lpeALPWTWVDV0kATIHO35eu
-         fsOaz/vrfl72PhphqyDLGGHDrIGdMX1zoiGMWCBAukHPzrJ0hFwPt3BpDYnotxuHoj
-         F7CGg6LZcOaPKCKx9pKBUHVdKFVtXrWeFg/+ST64=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from pinea64lts.fritz.box ([62.143.246.89]) by mail.gmx.com
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1N5GE1-1k1fCx3yCb-011BwR; Fri, 27 Nov 2020 20:20:59 +0100
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-To:     Ivan Hu <ivan.hu@canonical.com>, Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Colin King <colin.king@canonical.com>,
-        fwts-devel@lists.ubuntu.com,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-Subject: [PATCH 1/1] efi/efi_test: read RuntimeServicesSupported
-Date:   Fri, 27 Nov 2020 20:20:51 +0100
-Message-Id: <20201127192051.1430-1-xypron.glpk@gmx.de>
-X-Mailer: git-send-email 2.29.2
+        id S1730739AbgK0TxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 14:53:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730018AbgK0Trl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 14:47:41 -0500
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CDEC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:23:09 -0800 (PST)
+Received: by mail-ua1-x941.google.com with SMTP id a10so1798946uan.12
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:23:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lj/Md7KmedZSUw1wBs8z6JnileNDupkEL/4bRaDI8ME=;
+        b=qyoDSzbd6iG6EreTYzKr3BIzRhujEtYvEMyQrSIwnqgnZwGROdD6LQKm31ruyVQwyP
+         0qHpOkcfADz1VmJl3dvR+NLjr4WF3+bEFkMCidKE5nXlxo8XsIo0pQRE22kzUL5tSwXs
+         193UM4iyHr2Qbvp9Q6CLYS64VGTYBBKSwzTctbTSUyksEgs04Wamzuy6yCtxXQNnfDWp
+         CLMnx71bmnPx97iI1NDq/e77GgG/ofqZJ9YQvFLUSw9dc292nIEYgbulYXAqKn3owkc7
+         sEVYjdaAoAB9irQMSJSt5cu0jAYOF9JQfpX4M7aQ19f6K71itNJS8B0Eo75wp9YKmho5
+         oqzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lj/Md7KmedZSUw1wBs8z6JnileNDupkEL/4bRaDI8ME=;
+        b=AIbZlY8Q95cnwLyE9M2ToK3XGJAcT60VX6M6DFEPU5EHg6wGhoo0LEKvc9ip2ku8OH
+         vbRMBo9LM9YVthRc67i3uOmsUpA7wNXbGITkLLwgQ2WMWf+1ZBeGJvpul/OaxPRQYb5y
+         5rv2Ad2ODwvvxfYIlB4JJCy+vQxVt1hAP1CqMNGkWY2r/EpFYV4tV8ejMXUuvVCIuK/H
+         xN0Yt9kGloO/6rHafvN+eYo5Jgd1aI2wXcSGmi5Sonakws2ZiJ73r9VV7SKWKu/NMB0x
+         igJ4i1FshlVIm6FbW/jADFtRRWytkgmZJf9eVRHS5MW82XONgBkVm2J9wWUJkhuvpxrp
+         Q+5Q==
+X-Gm-Message-State: AOAM530OqiXU0XOoet1G2kQxxAA7eB8+wASeY+2y6hw4RGYtbdKGtK7h
+        Vbj+wtzEe9eutlwRhln+2iG76HOqOxSEyt10nso=
+X-Google-Smtp-Source: ABdhPJw5PL0NjJ+q+bKhtgVgiyH5lumDyAcOPabAX3a2Ivub98v2NL4GqQtf1FzjvWtW2+hs5GIQ5zZCbMX/bNMWVUA=
+X-Received: by 2002:ab0:2986:: with SMTP id u6mr7115267uap.118.1606504988446;
+ Fri, 27 Nov 2020 11:23:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lWorqsxpAegYMv42EWAGou4VXMWq2jeLtSdLq2ZTmDI6syKzKM4
- JxPRHWZVYtXZcQAOl6Cvm0R7FduZ5lDyIVjtBGp/m/o9oJhKX2tOk8S8vkErwBDX7jkn2Ci
- vGzW4VbnKaQqOd0JTTI1kERCD/GYa6NEsWIBJWt0i/uT9r4N5lDX/Ju8R8VnK+0ZNBzmioM
- OXNdOQZnwGs8LhgcmkG1w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NzH4fWBJMG4=:Z+VSTbLmTHVlcLW+Mms6vY
- HU4y3gqHEGnmDF7jilRgKeIxowGf8hTzVQ+Nmwn5mBh00etGLwL76Njb2bTV/mDoRsWOX0Y8m
- 4CImNrvw0FVqGK0K07XJ28h/kNbXuemxOIrfzncIgrHQRX/sW7wpYctCxCk/C8WmeGO25ofUV
- l+JipbPrjPuDN9Mle2Gz1C+E3mAMXjLtIHx7BrsH94mZ6p29KwIcmm7cPVRvR7MifIKBtI7j3
- 5hH0CUXUn/eAHC1I20Rn767nyKi18k3Y7xzuMgmInTDcVJJvvuTw1CsIBAxnebSL1BFR3Q15P
- nyn65JbVAIJAtwkCquxFzcwmGuOOEID5p/lNrweMcfoSIs3iolIYj9GEo2JTby2+Qm8v7JSMk
- HnenlRP0zGygEcyh5fmIx42PVgMWRarIGX5C0RcG5s2OC/UCUl7sd8joRWhSKAxRpwiwUKspz
- 1iEwI/FzEe2iJi+/u01lS+DMpId/yMBkWd4j2u/5nUWVBIfEkjtunRDFS93RETEL26vUW8fiU
- ixcW7pHw36XrfPzyr726khFh9dw34mv7f8qQkkDDkgEj348Q21mpjPgl/8bf85hClfGLQSIQR
- RTvQKYSVX4VmG8DxyxJskgign7npSQSuEyU5KPt0oqhE6ZuEr42WJDd8cVNJ64UXMxT4pRqEt
- vgNbfNMyhKThD2gNuFGLGy+mMcvSRF8pBFp2BJ5u/XiaOn543UGYdpExBrlwc+Dn56y/kUnT3
- GVTWq2EI7ZkcqknDHSX4+eJwQSDrgvD/sn3KRIHlCynFE47jIGn0kOo6mUt1FEepxxQHZhOEF
- aaSg3m1pWTgxd5HXn+UeSBlgK6J4V0tpzpZZhw4dfexLEnIKbNpavjR20RQ75lH+rdkecr4Ht
- Td6Q3ESvP+3H6YfLahmw==
+References: <20201112184106.733-1-georgi.djakov@linaro.org>
+ <20201112111436.c5deeadd3578877fc0b844a1@linux-foundation.org>
+ <02f682e2-0e9b-76a8-04fa-487891e18bdf@suse.cz> <3ef3d770-d74b-5588-6672-f092c1526461@linaro.org>
+ <bdf8727f-1191-34bd-d8ec-69b2a3d50c1b@suse.cz>
+In-Reply-To: <bdf8727f-1191-34bd-d8ec-69b2a3d50c1b@suse.cz>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Sat, 28 Nov 2020 00:53:11 +0530
+Message-ID: <CAFqt6zaZ8NCUUMpXA_-r2D-c_J99yrhjfRrpPFYhcebASeHebw@mail.gmail.com>
+Subject: Re: [PATCH] mm/page_owner: Record timestamp and pid
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
+        sudaraja@codeaurora.org, pratikp@codeaurora.org,
+        lmark@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the UEFI 2.8A specification the UEFI enabled firmware provides a
-configuration table EFI_RT_PROPERTIES_TABLE which indicates which runtime
-services are enabled. The EFI stub reads this table and saves the value of
-the field RuntimeServicesSupported internally.
+On Sat, Nov 28, 2020 at 12:36 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 11/27/20 7:57 PM, Georgi Djakov wrote:
+> > Hi Vlastimil,
+> >
+> > Thanks for the comment!
+> >
+> > On 11/27/20 19:52, Vlastimil Babka wrote:
+> >> On 11/12/20 8:14 PM, Andrew Morton wrote:
+> >>> On Thu, 12 Nov 2020 20:41:06 +0200 Georgi Djakov <georgi.djakov@linaro.org>
+> >>> wrote:
+> >>>
+> >>>> From: Liam Mark <lmark@codeaurora.org>
+> >>>>
+> >>>> Collect the time for each allocation recorded in page owner so that
+> >>>> allocation "surges" can be measured.
+> >>>>
+> >>>> Record the pid for each allocation recorded in page owner so that
+> >>>> the source of allocation "surges" can be better identified.
+> >>>
+> >>> Please provide a description of why this is considered useful.  What
+> >>> has it been used for, what problems has it been used to solve?
+> >>
+> >> Worth noting that on x86_64 it doubles the size of struct page_owner
+> >> from 16 bytes to 32, so it better be justified:
+> >
+> > Well, that's true. But for debug options there is almost always some penalty.
+> > The timestamp and pid information is very useful for me (and others, i believe)
+> > when doing memory analysis. On a crash for example, we can get this information
+> > from kdump (or RAM-dump) and look into it to catch memory allocation problems
+> > more easily.
+>
+> Right. Btw, you should add printing the info to __dump_page_owner().
+>
+> > If you find the above argument not strong enough, how about a separate config
+> > option for this? Maybe something like CONFIG_PAGE_OWNER_EXTENDED, which could
+> > be enabled in addition to CONFIG_PAGE_OWNER?
+>
+> It might be strong enough if it's mentioned in changelog, and also what exactly
+> the space tradeoff is :)
 
-The Firmware Test Suite requires the value to determine if UEFI runtime
-services are correctly implemented.
+Just a thought ... putting it inside CONFIG_PAGE_OWNER_DEBUG might be
+better if it is used
+purely for debugging purposes.
 
-With this patch an IOCTL call is provided to read the value of the field
-RuntimeServicesSupported, e.g.
-
-    #define EFI_RUNTIME_GET_SUPPORTED_MASK \
-            _IOR('p', 0x0C, unsigned int)
-    unsigned int mask;
-    fd =3D open("/dev/efi_test", O_RDWR);
-    ret =3D ioctl(fd, EFI_RUNTIME_GET_SUPPORTED_MASK, &mask);
-
-Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-=2D--
- drivers/firmware/efi/test/efi_test.c | 16 ++++++++++++++++
- drivers/firmware/efi/test/efi_test.h |  3 +++
- 2 files changed, 19 insertions(+)
-
-diff --git a/drivers/firmware/efi/test/efi_test.c b/drivers/firmware/efi/t=
-est/efi_test.c
-index ddf9eae396fe..47d67bb0a516 100644
-=2D-- a/drivers/firmware/efi/test/efi_test.c
-+++ b/drivers/firmware/efi/test/efi_test.c
-@@ -663,6 +663,19 @@ static long efi_runtime_query_capsulecaps(unsigned lo=
-ng arg)
- 	return rv;
- }
-
-+static long efi_runtime_get_supported_mask(unsigned long arg)
-+{
-+	unsigned int __user *supported_mask;
-+	int rv =3D 0;
-+
-+	supported_mask =3D (unsigned int *)arg;
-+
-+	if (put_user(efi.runtime_supported_mask, supported_mask))
-+		rv =3D -EFAULT;
-+
-+	return rv;
-+}
-+
- static long efi_test_ioctl(struct file *file, unsigned int cmd,
- 							unsigned long arg)
- {
-@@ -699,6 +712,9 @@ static long efi_test_ioctl(struct file *file, unsigned=
- int cmd,
-
- 	case EFI_RUNTIME_RESET_SYSTEM:
- 		return efi_runtime_reset_system(arg);
-+
-+	case EFI_RUNTIME_GET_SUPPORTED_MASK:
-+		return efi_runtime_get_supported_mask(arg);
- 	}
-
- 	return -ENOTTY;
-diff --git a/drivers/firmware/efi/test/efi_test.h b/drivers/firmware/efi/t=
-est/efi_test.h
-index f2446aa1c2e3..117349e57993 100644
-=2D-- a/drivers/firmware/efi/test/efi_test.h
-+++ b/drivers/firmware/efi/test/efi_test.h
-@@ -118,4 +118,7 @@ struct efi_resetsystem {
- #define EFI_RUNTIME_RESET_SYSTEM \
- 	_IOW('p', 0x0B, struct efi_resetsystem)
-
-+#define EFI_RUNTIME_GET_SUPPORTED_MASK \
-+	_IOR('p', 0x0C, unsigned int)
-+
- #endif /* _DRIVERS_FIRMWARE_EFI_TEST_H_ */
-=2D-
-2.29.2
-
+>
+> You can also mention that SLUB object tracking has also pid+timestamp.
+>
+> > Thanks,
+> > Georgi
+> >
+> >>
+> >> struct page_owner {
+> >>          short unsigned int         order;                /*     0     2 */
+> >>          short int                  last_migrate_reason;  /*     2     2 */
+> >>          gfp_t                      gfp_mask;             /*     4     4 */
+> >>          depot_stack_handle_t       handle;               /*     8     4 */
+> >>          depot_stack_handle_t       free_handle;          /*    12     4 */
+> >>          u64                        ts_nsec;              /*    16     8 */
+> >>          int                        pid;                  /*    24     4 */
+> >>
+> >>          /* size: 32, cachelines: 1, members: 7 */
+> >>          /* padding: 4 */
+> >>          /* last cacheline: 32 bytes */
+> >> };
+> >>
+> >
+>
+>
