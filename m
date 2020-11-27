@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518262C621F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A627C2C6222
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727350AbgK0JoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:44:20 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:33542 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgK0JoT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:44:19 -0500
-Received: by mail-wm1-f68.google.com with SMTP id u10so1331195wmm.0;
-        Fri, 27 Nov 2020 01:44:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0rcaXN0DZqE7YXIm9z0wb34aVoGoLqt6Pi2bXEDuuYM=;
-        b=dB3RawjokfsPRLTP29G3EU4Ngjw3pnL3yXZTnbUCiR0hDNQoqMo9yJh9aTmy2w+VZv
-         1dsfx4dMf3R4ybMsrbsS7y4p+y5v8BcxkPpiJ/0yJKO+609kM052YrOE25EpFIZ0n5qo
-         XEXF60HrZ7v0kAKNC+B5zN+N0WiJjU8VTci3wYPzPp549a+n41tA6zHEFFTc+s5ip8ck
-         PI3ZkPft0SFUqGcgTPLaIazMPD56WM4FQV4HXOLJEuGiZO9AD8YjkKEOCw7u59CCOMiu
-         UV/oiGmcKOIejXjdaIVowqEsYxvlf6kUm5PRqtvk1kylz7ZqbVUqBySE+5QbiM4h35Sb
-         GB7g==
-X-Gm-Message-State: AOAM53021ZbUd51uwsWo4w2PNMGp5J3wfJn4pYV63zeguMev3+tI5XUK
-        amqukWSpIvGrl6/nz/8CfG8=
-X-Google-Smtp-Source: ABdhPJzpw84z6c9Q6BcltT41XlX4adRZ0eiDKEb26LyiIg2prGdDUJwUQfyb5jqSAJL7qmnxzepTrg==
-X-Received: by 2002:a1c:9dd7:: with SMTP id g206mr8199701wme.49.1606470256949;
-        Fri, 27 Nov 2020 01:44:16 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id o13sm12131106wmc.44.2020.11.27.01.44.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 01:44:15 -0800 (PST)
-Date:   Fri, 27 Nov 2020 10:44:14 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
-        linux-samsung-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwrng: exynos - fix reference leak in exynos_trng_probe
-Message-ID: <20201127094414.GA10679@kozik-lap>
-References: <20201127094446.121277-1-miaoqinglang@huawei.com>
+        id S1727791AbgK0Jo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:44:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgK0Jo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:44:26 -0500
+Received: from gaia (unknown [95.146.230.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5919121D81;
+        Fri, 27 Nov 2020 09:44:24 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 09:44:21 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        steven.price@arm.com, gerald.schaefer@linux.ibm.com,
+        vgupta@synopsys.com, paul.walmsley@sifive.com
+Subject: Re: [PATCH 1/2] mm/debug_vm_pgtable/basic: Add validation for
+ dirtiness after write protect
+Message-ID: <20201127094421.GA25070@gaia>
+References: <1606453584-15399-1-git-send-email-anshuman.khandual@arm.com>
+ <1606453584-15399-2-git-send-email-anshuman.khandual@arm.com>
+ <a6f79aba-9f9f-326f-5d73-6e0175f554ab@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201127094446.121277-1-miaoqinglang@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a6f79aba-9f9f-326f-5d73-6e0175f554ab@csgroup.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 05:44:46PM +0800, Qinglang Miao wrote:
-> pm_runtime_get_sync will increment pm usage counter even it
-> failed. Forgetting to putting operation will result in a
-> reference leak here.
+On Fri, Nov 27, 2020 at 09:22:24AM +0100, Christophe Leroy wrote:
+> Le 27/11/2020 à 06:06, Anshuman Khandual a écrit :
+> > This adds validation tests for dirtiness after write protect conversion for
+> > each page table level. This is important for platforms such as arm64 that
+> > removes the hardware dirty bit while making it an write protected one. This
+> > also fixes pxx_wrprotect() related typos in the documentation file.
 > 
-> A new function pm_runtime_resume_and_get is introduced in
-> [0] to keep usage counter balanced. So We fix the reference
-> leak by replacing it with new funtion.
+> > diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> > index c05d9dcf7891..a5be11210597 100644
+> > --- a/mm/debug_vm_pgtable.c
+> > +++ b/mm/debug_vm_pgtable.c
+> > @@ -70,6 +70,7 @@ static void __init pte_basic_tests(unsigned long pfn, pgprot_t prot)
+> >   	WARN_ON(pte_young(pte_mkold(pte_mkyoung(pte))));
+> >   	WARN_ON(pte_dirty(pte_mkclean(pte_mkdirty(pte))));
+> >   	WARN_ON(pte_write(pte_wrprotect(pte_mkwrite(pte))));
+> > +	WARN_ON(pte_dirty(pte_wrprotect(pte)));
 > 
-> [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
-
-Do not put such dependencies into the commit message - it does not bring
-useful information to the history. Store it under '---' separator.
-
+> Wondering what you are testing here exactly.
 > 
-> Fixes: 6cd225cc5d8a ("hwrng: exynos - add Samsung Exynos True RNG driver")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  drivers/char/hw_random/exynos-trng.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Do you expect that if PTE has the dirty bit, it gets cleared by pte_wrprotect() ?
 > 
-> diff --git a/drivers/char/hw_random/exynos-trng.c b/drivers/char/hw_random/exynos-trng.c
-> index 8e1fe3f8d..666246bc8 100644
-> --- a/drivers/char/hw_random/exynos-trng.c
-> +++ b/drivers/char/hw_random/exynos-trng.c
-> @@ -132,7 +132,7 @@ static int exynos_trng_probe(struct platform_device *pdev)
->  		return PTR_ERR(trng->mem);
->  
->  	pm_runtime_enable(&pdev->dev);
-> -	ret = pm_runtime_get_sync(&pdev->dev);
-> +	ret = pm_runtime_resume_and_get(&pdev->dev);
+> Powerpc doesn't do that, it only clears the RW bit but the dirty bit remains
+> if it is set, until you call pte_mkclean() explicitely.
 
-This cannot be applied. Fix it by replacing err_clock label with this
-one.
+Arm64 has an unusual way of setting a hardware dirty "bit", it actually
+clears the PTE_RDONLY bit. The pte_wrprotect() sets the PTE_RDONLY bit
+back and we can lose the dirty information. Will found this and posted
+patches to fix the arm64 pte_wprotect() to set a software PTE_DIRTY if
+!PTE_RDONLY (we do this for ptep_set_wrprotect() already). My concern
+was that we may inadvertently make a fresh/clean pte dirty with such
+change, hence the suggestion for the test.
 
-Best regards,
-Krzysztof
+That said, I think we also need a test in the other direction,
+pte_wrprotect() should preserve any dirty information:
 
+	WARN_ON(!pte_dirty(pte_wrprotect(pte_mkdirty(pte))));
+
+If pte_mkwrite() makes a pte truly writable and potentially dirty, we
+could also add a test as below. However, I think that's valid for arm64,
+other architectures with a separate hardware dirty bit would fail this:
+
+	WARN_ON(!pte_dirty(pte_wrprotect(pte_mkwrite(pte))));
+
+-- 
+Catalin
