@@ -2,94 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC50A2C6D01
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E3A2C6CFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732316AbgK0VnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 16:43:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731224AbgK0Viy (ORCPT
+        id S1732116AbgK0VpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 16:45:14 -0500
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:41357 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732206AbgK0Vlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 16:38:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E84C0613D4;
-        Fri, 27 Nov 2020 13:38:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=nO4RXuLseZ9MllgwTyIUkN6yFSiutROqckJ+OiN9Exk=; b=LkWve4UNDL+zocHWZAlhr7y2Gj
-        u/UHYsXNREBswsFjIg5zoMAfXgomJ6MT7tF555vGL5q7ygZhq+jlBIYJWUh6hNn1t/5xEoSreQoYO
-        vYhtzN0rJqnK8D03nZvhYHaMc6vtmhOLXOtSO8P6yZgbrEvs+x44NKBwqncjjvxkHSM33IytDa7A2
-        oE0FMx1Px8LNwMUIHQXMPUXK6ko0e4njkwxi+/zIdntevqOjFLFwZ6AmVJ9/+IqQTi44lEe23xObL
-        dJtIoVMzqhNtP1SaZzU/3Ea57bu3GgpGe1VJT7vhNDZYdKN75UN1qMceoP7Ejj1tBQUJJK3Y/vImM
-        WAj4NYCw==;
-Received: from [2601:1c0:6280:3f0::cc1f]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kilS1-0004ga-Ln; Fri, 27 Nov 2020 21:38:46 +0000
-Subject: Re: linux-next: Tree for Nov 27 (drivers/idle/intel_idle.c)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20201127200457.1ffb6aaf@canb.auug.org.au>
- <0a6cc4c9-c48d-dbc4-6044-3b22cd133b76@infradead.org>
- <20201128083617.50021fff@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d9a42bb5-7a5d-cc19-2866-0cee1b8dd9bd@infradead.org>
-Date:   Fri, 27 Nov 2020 13:38:40 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 27 Nov 2020 16:41:51 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 762E8FF804;
+        Fri, 27 Nov 2020 21:41:40 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 22:41:40 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        arm@kernel.org, soc@kernel.org
+Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] ARM: at91: Drivers for 5.11 (bis)
+Message-ID: <20201127214140.GA1688544@piout.net>
 MIME-Version: 1.0
-In-Reply-To: <20201128083617.50021fff@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/20 1:36 PM, Stephen Rothwell wrote:
-> Hi Randy,
-> 
-> On Fri, 27 Nov 2020 07:57:32 -0800 Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 11/27/20 1:04 AM, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Changes since 20201126:
->>>   
->>
->> (This looks strange to me.)
->>
->>
->> on i386 or x86_64:
->>
->> # CONFIG_ACPI is not set
->>
->> ../drivers/idle/intel_idle.c: In function ‘intel_idle_init_cstates_icpu’:
->> ../drivers/idle/intel_idle.c:1510:7: error: implicit declaration of function ‘intel_idle_state_needs_timer_stop’; did you mean ‘intel_idle_init_cstates_icpu’? [-Werror=implicit-function-declaration]
->>    if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
->>        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> intel_idle_state_needs_timer_stop() is only defined when
-> CONFIG_ACPI_PROCESSOR_CSTATE is set, but is used once where that is not
-> necessarily set.  I assume CONFIG_ACPI_PROCESSOR_CSTATE is not set in
-> your config?
+Arnd, Olof,
 
-Yes, you are correct (not set).
+As discussed with Arnd, here are two cleanup patches for at91_cf. My end
+goal is to get rid of include/linux/platform_data/atmel.h.
+Also a very small patch adding SoC IDs for the sam9x60 SiPs.
 
-> Caused by commit
-> 
->   6e1d2bc675bd ("intel_idle: Fix intel_idle() vs tracing")
-> 
-> from the tip tree.
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux tags/at91-drivers-5.11
+
+for you to fetch changes up to 264788c8f23703d0d3e967fb5aea83eb64d2cb2b:
+
+  pcmcia: at91_cf: remove platform data support (2020-11-27 22:25:15 +0100)
+
+----------------------------------------------------------------
+AT91 drivers for 5.11:
+
+ - add sam9x60 SiP IDs
+ - at91_cf cleanups
+
+----------------------------------------------------------------
+Alexandre Belloni (2):
+      pcmcia: at91_cf: move definitions locally
+      pcmcia: at91_cf: remove platform data support
+
+Kai Stuhlemmer (1):
+      ARM: at91: sam9x60 SiP types added to soc description
+
+ drivers/pcmcia/Kconfig              |  1 +
+ drivers/pcmcia/at91_cf.c            | 50 ++++++++++++++-----------------------
+ drivers/soc/atmel/soc.c             |  6 +++++
+ drivers/soc/atmel/soc.h             |  3 +++
+ include/linux/platform_data/atmel.h | 12 ---------
+ 5 files changed, 29 insertions(+), 43 deletions(-)
 
 -- 
-~Randy
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
