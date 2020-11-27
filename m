@@ -2,73 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466792C61A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7962C61AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727558AbgK0J1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726859AbgK0J1N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:27:13 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A11C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:27:13 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id 64so4806198wra.11
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:27:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=SmNkndM5ibQOBO+98euVdeB3ddUlhWQyKWraShvz7jg=;
-        b=LvPHLer8vECGyXFh/SrLld8TBNxi1sRarddvQyRUGoxQIel40ysPlhPSE0VqHnuYj0
-         IwrSEsBkwNaXjsg+fCMufHIoYL9+BvAMCXU1p77YR2f1lx8m0Eqvc+ZTAAdtK473CC/7
-         BW8cxqC/eSGHAkony9fdpr86X2T56zwvrarf4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=SmNkndM5ibQOBO+98euVdeB3ddUlhWQyKWraShvz7jg=;
-        b=D+fe0vXbFE6KegSrDQfSvvRSFMTtTLfmRkU5Bittbo/705TPoeCvO1u/EIinLgHnzf
-         IkpJfBf3jjjMfK2snqdonRMDqfaSwSFVYVORDI8rhAwVP0aFuUHEPXA25R9W65H7LCAt
-         LP/uv8/K1MtPEZA/O8MmPwVzQRjk+Md5gX6H0ezbiuYuDyogjVCndKpoEUEuuXm5lTX6
-         5D5U8MIJ3nZBxbCPRRJDFNabzyufPKtWODMva0tfBQ+McWhz/osQhQK/PTuK7vSIoBGx
-         ngrOQcYsiHvp+GmxOnj/VjvS/tdwFjM9Xobfcx3tSFYGXjq/KLTryMmGKhO9UfOf2Zyb
-         yhqA==
-X-Gm-Message-State: AOAM530A/8pRDO2QyRGX0+GLC/9jXtoxZVT3fo59leL1AoTLb0ZnqVTW
-        ffyix/F9138qidvMjirJQcuBaQ==
-X-Google-Smtp-Source: ABdhPJwHp7aDcPgXPMSK3hbvaRot1sfBAfEZbk6OFHwbn11ztPHhMhlnCEpj+Jb/AsdYNiWmlYF6ag==
-X-Received: by 2002:a5d:658a:: with SMTP id q10mr4258898wru.115.1606469232278;
-        Fri, 27 Nov 2020 01:27:12 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id d16sm14491583wrw.17.2020.11.27.01.27.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 01:27:11 -0800 (PST)
-Message-ID: <8ab56347997ca2f849dc9c3127965795511883d5.camel@chromium.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-From:   Florent Revest <revest@chromium.org>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Fri, 27 Nov 2020 10:27:10 +0100
-In-Reply-To: <c5af620d027aba9c3cdf2d642c3611f908638a3c.camel@chromium.org>
-References: <20201126165748.1748417-1-revest@google.com>
-         <CACYkzJ65P5fxW1bxVXm_ehLLE=gn6nuR+UVxYWjqSJfXoZd+8g@mail.gmail.com>
-         <c5af620d027aba9c3cdf2d642c3611f908638a3c.camel@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        id S1728114AbgK0J1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:27:25 -0500
+Received: from foss.arm.com ([217.140.110.172]:35744 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726602AbgK0J1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:27:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 007CC1478;
+        Fri, 27 Nov 2020 01:27:24 -0800 (PST)
+Received: from [10.57.26.227] (unknown [10.57.26.227])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5176D3F71F;
+        Fri, 27 Nov 2020 01:27:21 -0800 (PST)
+Subject: Re: [RFC 1/2] dt-bindings: thermal: sprd: Add virtual thermal
+ documentation
+To:     gao.yunxiao6@gmail.com, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, amitk@kernel.org, robh+dt@kernel.org,
+        javi.merino@kernel.org
+Cc:     linux-pm@vger.kernel.org, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        "jeson.gao" <jeson.gao@unisoc.com>
+References: <1606466112-31584-1-git-send-email-gao.yunxiao6@gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <724ddf78-483c-2cf3-441c-4885af8425a9@arm.com>
+Date:   Fri, 27 Nov 2020 09:27:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <1606466112-31584-1-git-send-email-gao.yunxiao6@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-27 at 10:25 +0100, Florent Revest wrote:
-> I prefer Yongonhong's suggestion of having two helpers.
 
-Argh! I hit enter too fast! Yonghong*, sorry :|
 
+On 11/27/20 8:35 AM, gao.yunxiao6@gmail.com wrote:
+> From: "jeson.gao" <jeson.gao@unisoc.com>
+> 
+> virtual thermal node definition description in dts file
+> 
+> Signed-off-by: jeson.gao <jeson.gao@unisoc.com>
+> ---
+>   .../thermal/sprd-virtual-thermal.yaml         | 38 +++++++++++++++++++
+>   1 file changed, 38 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/thermal/sprd-virtual-thermal.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/sprd-virtual-thermal.yaml b/Documentation/devicetree/bindings/thermal/sprd-virtual-thermal.yaml
+> new file mode 100644
+> index 000000000000..3e3d2282e2a4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/thermal/sprd-virtual-thermal.yaml
+> @@ -0,0 +1,38 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/thermal/sprd-virtual-thermal.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Spreadtrum virtual thermal driver bindings
+> +
+> +maintainers:
+> +  - Yunxiao Gao <gao.yunxiao6@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: sprd,virtual-thermal
+> +
+> +  reg:
+> +    description: specify the virtual sensor id.
+> +    maxItems: 1
+> +
+> +  thmzone-names:
+> +    description: specify per-core thermal zone name.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - thmzone-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    virtual_sensor: virtual-sensor@1 {
+> +      compatible = "sprd,virtual-thermal";
+> +      reg = <1>;
+> +      thmzone-names = "ank0-thmzone","ank1-thmzone","ank2-thmzone",
+> +                      "ank3-thmzone","ank4-thmzone","ank5-thmzone","prometheus6-tzone0",
+> +                      "prometheus6-tzone1","prometheus7-thmzone";
+> +    };
+> 
+
+It's coming back. There were attempts to solve this problem.
+Javi tried to solved this using hierarchical thermal zones [1].
+It was even agreed (IIRC during LPC) but couldn't continue. Then Eduardo
+was going to continue this (last message at [3]). Unfortunately, 
+development stopped.
+
+I also have out-of-tree similar implementation for my Odroid-xu4,
+which does no have an 'SoC' sensor, but have CPU sensors and needs
+some aggregation function to get temperature.
+
+I can pick up Javi's patches and continue 'hierarchical thermal zones'
+approach.
+
+Javi, Daniel, Rui what do you think?
+
+Regards,
+Lukasz
+
+[1] https://lwn.net/Articles/666015/
+[2] 
+https://patchwork.kernel.org/project/linux-pm/patch/1448464186-26289-2-git-send-email-javi.merino@arm.com/
+[3] 
+https://patchwork.kernel.org/project/linux-pm/patch/1448464186-26289-3-git-send-email-javi.merino@arm.com/
+[4] 
+https://patchwork.kernel.org/project/linux-pm/patch/1448464186-26289-4-git-send-email-javi.merino@arm.com/
+[5] 
+https://patchwork.kernel.org/project/linux-pm/patch/1448464186-26289-5-git-send-email-javi.merino@arm.com/
