@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BF02C6A91
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9212C6A98
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732164AbgK0R0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:26:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54924 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726889AbgK0R0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:26:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2665CAE95;
-        Fri, 27 Nov 2020 17:26:24 +0000 (UTC)
-To:     Hui Su <sh_def@163.com>, hughd@google.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20201115174026.GA365412@rlk>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/shmem: use kmem_cache_zalloc in shmem_alloc_inode()
-Message-ID: <416a0cb6-fe34-a7ff-6021-92b8dff24f0b@suse.cz>
-Date:   Fri, 27 Nov 2020 18:26:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1732283AbgK0R14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:27:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732253AbgK0R1z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 12:27:55 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB34C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:27:54 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0ffb00878263292141260f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:fb00:8782:6329:2141:260f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 495301EC03EA;
+        Fri, 27 Nov 2020 18:27:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606498072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=LyNhbUhHmmRmZ2J7NLIbiLk8gD19KKbHGGUM+mvUJvE=;
+        b=Db6cVXjyi7AxPGY4RwJJcG0+MrRYyOT2CsixwXdDhow4fW4taN7DxToTWsCl2Hu0ypwWHU
+        v6WQVdgTvMNFVNC9sK1sQD4veh7KLXX67zDYA+Ue3u3iljom6FpqaZ9N+YhIwQIg/VU3i/
+        vLSkD2/UpgvYI+9osAHIf0vV+qrNxTI=
+Date:   Fri, 27 Nov 2020 18:27:47 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, Kim Phillips <kim.phillips@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Pu Wen <puwen@hygon.cn>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/cpu/amd: Remove dead code for TSEG region remapping
+Message-ID: <20201127172747.GE13163@zn.tnic>
+References: <20201127171324.1846019-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <20201115174026.GA365412@rlk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201127171324.1846019-1-nivedita@alum.mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/20 6:40 PM, Hui Su wrote:
-> in shmem_get_inode():
-> new_inode();
->    new_inode_pseudo();
->      alloc_inode();
->        ops->alloc_inode(); -> shmem_alloc_inode()
->          kmem_cache_alloc();
+On Fri, Nov 27, 2020 at 12:13:24PM -0500, Arvind Sankar wrote:
+> Commit
+>   26bfa5f89486 ("x86, amd: Cleanup init_amd")
+> moved the code that remaps the TSEG region using 4k pages from
+> init_amd() to bsp_init_amd().
 > 
-> memset(info, 0, (char *)inode - (char *)info);
+> However, bsp_init_amd() is executed well before the direct mapping is
+> actually created:
 > 
-> So use kmem_cache_zalloc() in shmem_alloc_inode(),
-> and remove the memset in shmem_get_inode().
+>   setup_arch()
+>     -> early_cpu_init()
+>       -> early_identify_cpu()
+>         -> this_cpu->c_bsp_init()
+> 	  -> bsp_init_amd()
+>     ...
+>     -> init_mem_mapping()
 > 
-> Signed-off-by: Hui Su <sh_def@163.com>
+> So the change effectively disabled the 4k remapping, because
+> pfn_range_is_mapped() is always false at this point.
+> 
+> It has been over six years since the commit, and no-one seems to have
+> noticed this, so just remove the code. The original code was also
+> incomplete, since it doesn't check how large the TSEG address range
+> actually is, so it might remap only part of it in any case.
 
-Looks correct, but now we clear also the inode part which seems to be handled by 
-alloc_inode() well enough. So, unsure. btrfs and ext4 variants don't use kzalloc 
-neither. It's also more obvious with the current way that the info is cleared. Hmm?
+Yah, and the patch which added this:
 
-> ---
->   mm/shmem.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 537c137698f8..b84adda45461 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -2308,7 +2308,6 @@ static struct inode *shmem_get_inode(struct super_block *sb, const struct inode
->   		inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
->   		inode->i_generation = prandom_u32();
->   		info = SHMEM_I(inode);
-> -		memset(info, 0, (char *)inode - (char *)info);
->   		spin_lock_init(&info->lock);
->   		atomic_set(&info->stop_eviction, 0);
->   		info->seals = F_SEAL_SEAL;
-> @@ -3828,7 +3827,7 @@ static struct kmem_cache *shmem_inode_cachep;
->   static struct inode *shmem_alloc_inode(struct super_block *sb)
->   {
->   	struct shmem_inode_info *info;
-> -	info = kmem_cache_alloc(shmem_inode_cachep, GFP_KERNEL);
-> +	info = kmem_cache_zalloc(shmem_inode_cachep, GFP_KERNEL);
->   	if (!info)
->   		return NULL;
->   	return &info->vfs_inode;
-> 
+6c62aa4a3c12 ("x86: make amd.c have 64bit support code")
 
+does not say what for (I'm not surprised, frankly).
+
+So if AMD folks on Cc don't have any need for actually fixing this
+properly, yap, we can zap it.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
