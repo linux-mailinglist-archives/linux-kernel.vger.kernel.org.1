@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DAE2C67CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82F72C67C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730994AbgK0OXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 09:23:09 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:46386 "EHLO honk.sigxcpu.org"
+        id S1730948AbgK0OXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 09:23:06 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:46334 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730961AbgK0OXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 09:23:08 -0500
+        id S1730911AbgK0OXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 09:23:05 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id E1B89FB02;
-        Fri, 27 Nov 2020 15:23:05 +0100 (CET)
+        by honk.sigxcpu.org (Postfix) with ESMTP id E773AFB0B;
+        Fri, 27 Nov 2020 15:23:02 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id l82Kx_J5hS00; Fri, 27 Nov 2020 15:23:03 +0100 (CET)
+        with ESMTP id SB1teDkuSQsf; Fri, 27 Nov 2020 15:23:01 +0100 (CET)
 Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id A7EE04070F; Fri, 27 Nov 2020 15:22:59 +0100 (CET)
+        id 9E0374068D; Fri, 27 Nov 2020 15:22:59 +0100 (CET)
 From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
@@ -33,9 +33,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Olof Johansson <olof@lixom.net>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/8] arm64: defconfig: Enable CONFIG_REGULATOR_TPS65132
-Date:   Fri, 27 Nov 2020 15:22:52 +0100
-Message-Id: <2ceb6e90b2efb980771a3531ddb514ff6ab5d2b9.1606486893.git.agx@sigxcpu.org>
+Subject: [PATCH v1 2/8] arm64: defconfig: Enable CONFIG_DRM_PANEL_MANTIX_MLAF057WE5
+Date:   Fri, 27 Nov 2020 15:22:53 +0100
+Message-Id: <30c1c4db938fcc837529a069170ecf92bf7df52d.1606486893.git.agx@sigxcpu.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1606486893.git.agx@sigxcpu.org>
 References: <cover.1606486893.git.agx@sigxcpu.org>
@@ -46,7 +46,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is used by the Librem 5 to supply power to the panel.
+This is the Librem 5's LCD panel.
 
 Signed-off-by: Guido Günther <agx@sigxcpu.org>
 ---
@@ -54,17 +54,17 @@ Signed-off-by: Guido Günther <agx@sigxcpu.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 270d326d5f28..22c9e65d1ba5 100644
+index 22c9e65d1ba5..787806d0091b 100644
 --- a/arch/arm64/configs/defconfig
 +++ b/arch/arm64/configs/defconfig
-@@ -595,6 +595,7 @@ CONFIG_REGULATOR_QCOM_SMD_RPM=y
- CONFIG_REGULATOR_QCOM_SPMI=y
- CONFIG_REGULATOR_RK808=y
- CONFIG_REGULATOR_S2MPS11=y
-+CONFIG_REGULATOR_TPS65132=m
- CONFIG_REGULATOR_VCTRL=m
- CONFIG_RC_CORE=m
- CONFIG_RC_DECODERS=y
+@@ -656,6 +656,7 @@ CONFIG_DRM_MSM=m
+ CONFIG_DRM_TEGRA=m
+ CONFIG_DRM_PANEL_LVDS=m
+ CONFIG_DRM_PANEL_SIMPLE=m
++CONFIG_DRM_PANEL_MANTIX_MLAF057WE51=m
+ CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
+ CONFIG_DRM_PANEL_SITRONIX_ST7703=m
+ CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
 -- 
 2.29.2
 
