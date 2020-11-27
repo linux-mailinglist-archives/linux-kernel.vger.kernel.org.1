@@ -2,120 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A822C66BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 528D22C66C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730517AbgK0NWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 08:22:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730502AbgK0NWd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 08:22:33 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F31CC0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 05:22:32 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id c198so5123674wmd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 05:22:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=oX0bOkw7GMihlFDHpc3hUl4NHpH/S5J1UA5FeTz+LA8=;
-        b=qIbq5vaBUR8UzcGOv6ZHj/GueHfwo63BjNzFQYSNNQufIWW7NVMqZf2QpJh89Jh3AV
-         MFWr8ToZx6SF3YXYRM9AdcoLleBGPlqux/pmGoz7lhXjuyjqmULnhLQKilnxXvbIG4Sr
-         H5kgQkLPVdVPKruTG6xRAbqZ20IuoLidlVJWxV0tNt6br/1mNxTvzTbat0uiLUA8TSjX
-         LeU5p6zFTPqNrey4ctH9Le+2dCxy1JkEAeHEHkCV9Gh3omzOp9fe7fG5gE64YKBuYHw7
-         0q/YvltmcuNtdgtN8XGDUmcmitCSLUJATUWXsHCX/8E2KFdNv8KjM6s/F1CVIgdmHlSM
-         yPDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=oX0bOkw7GMihlFDHpc3hUl4NHpH/S5J1UA5FeTz+LA8=;
-        b=Nhp5mUrlhHxxBLqtwUbwGuRZa0WidJ42JkNkyNidh67Kc0wNk/6MyQJZoi75e0C1He
-         Q5TDnWO+HUQ3ldUrLiMQt+g/OyL9KUr5BQTKBjbVWJn0KpGErFcfyvoMjFD7zAf+izMR
-         oyie2NRS6nqc9SHoIQHO2Ocf2U0GlBAOF8F3XQsx9gPjfM78nVnkBMuUyDG7L+3Qq4YC
-         b9sDSp/WUWTXC8237/JjSCXsz3iBaxbO6QHWSQUQ1WpWOCvsSBRgC5VsunRphy0Wsku9
-         g5KlF9SGYbL7KDpDK5IqdC+C8Sh1r8wVr6uro66TTscwGylFL7iBwOzfdEUanwsJpwTR
-         OwWg==
-X-Gm-Message-State: AOAM5314aX7zJkSuoJuo6poszmlKbOmRvRLSjImwYlcGtKKYcKq6b2C9
-        5Jh88SvME3XMNxTYjsAwHoazCw==
-X-Google-Smtp-Source: ABdhPJwbrXmgAUkkKu5kwC3hwFFP4pSk0YVly8kwcQFJUUxfEEFcnhGLIZd7qEZzqDzy6MZpVwjENA==
-X-Received: by 2002:a1c:b107:: with SMTP id a7mr8789408wmf.121.1606483351047;
-        Fri, 27 Nov 2020 05:22:31 -0800 (PST)
-Received: from dell ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id j13sm7837713wrp.70.2020.11.27.05.22.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 05:22:30 -0800 (PST)
-Date:   Fri, 27 Nov 2020 13:22:28 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/8] rtc: rework rtc_register_device() resource management
-Message-ID: <20201127132228.GV2455276@dell>
-References: <20201109163409.24301-1-brgl@bgdev.pl>
- <20201109163409.24301-8-brgl@bgdev.pl>
- <CAF2Aj3inp8=dn9xuc8f3uJbL+m5LH7W3BDoOeZyiiOupmbfgOw@mail.gmail.com>
- <CAMpxmJXa8L0TaeENeYsypmgfkabdP8pH6H6iniwmy0KJs8w4Pg@mail.gmail.com>
+        id S1730539AbgK0NXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 08:23:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:41614 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729888AbgK0NXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 08:23:11 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2093731B;
+        Fri, 27 Nov 2020 05:23:11 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4DAC3F70D;
+        Fri, 27 Nov 2020 05:23:08 -0800 (PST)
+Date:   Fri, 27 Nov 2020 13:23:06 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 08/14] arm64: exec: Adjust affinity for compat tasks
+ with mismatched 32-bit EL0
+Message-ID: <20201127132306.ee4frq6ujz3fqxic@e107158-lin.cambridge.arm.com>
+References: <20201124155039.13804-1-will@kernel.org>
+ <20201124155039.13804-9-will@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMpxmJXa8L0TaeENeYsypmgfkabdP8pH6H6iniwmy0KJs8w4Pg@mail.gmail.com>
+In-Reply-To: <20201124155039.13804-9-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020, Bartosz Golaszewski wrote:
-
-> On Fri, Nov 27, 2020 at 10:16 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> >
-> >
-> > On Mon, 9 Nov 2020 at 16:34, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >>
-> >> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >>
-> >> rtc_register_device() is a managed interface but it doesn't use devres
-> >> by itself - instead it marks an rtc_device as "registered" and the devres
-> >> callback for devm_rtc_allocate_device() takes care of resource release.
-> >>
-> >> This doesn't correspond with the design behind devres where managed
-> >> structures should not be aware of being managed. The correct solution
-> >> here is to register a separate devres callback for unregistering the
-> >> device.
-> >>
-> >> While at it: rename rtc_register_device() to devm_rtc_register_device()
-> >> and add it to the list of managed interfaces in devres.rst. This way we
-> >> can avoid any potential confusion of driver developers who may expect
-> >> there to exist a corresponding unregister function.
-> >>
-> >> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >> ---
-> >>  .../driver-api/driver-model/devres.rst        |  1 +
-> >>  arch/alpha/kernel/rtc.c                       |  2 +-
-> >>  drivers/mfd/menelaus.c                        |  2 +-
-> >
-> >
-> > This patch should have been sent to and Acked by MFD too.
-> >
+On 11/24/20 15:50, Will Deacon wrote:
+> When exec'ing a 32-bit task on a system with mismatched support for
+> 32-bit EL0, try to ensure that it starts life on a CPU that can actually
+> run it.
 > 
-> Sorry Lee, I missed the fact that there were changes outside of
-> drivers/rtc/. Other than skipping the MFD maintainer - do you see
-> anything wrong in that bit?
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  arch/arm64/kernel/process.c | 42 ++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 1540ab0fbf23..72116b0c7c73 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/init.h>
+>  #include <linux/cpu.h>
+> +#include <linux/cpuset.h>
+>  #include <linux/elfcore.h>
+>  #include <linux/pm.h>
+>  #include <linux/tick.h>
+> @@ -625,6 +626,45 @@ unsigned long arch_align_stack(unsigned long sp)
+>  	return sp & ~0xf;
+>  }
+>  
+> +static void adjust_compat_task_affinity(struct task_struct *p)
+> +{
+> +	cpumask_var_t cpuset_mask;
+> +	const struct cpumask *possible_mask = system_32bit_el0_cpumask();
+> +	const struct cpumask *newmask = possible_mask;
+> +
+> +	/*
+> +	 * Restrict the CPU affinity mask for a 32-bit task so that it contains
+> +	 * only the 32-bit-capable subset of its original CPU mask. If this is
+> +	 * empty, then try again with the cpuset allowed mask. If that fails,
+> +	 * forcefully override it with the set of all 32-bit-capable CPUs that
+> +	 * we know about.
+> +	 *
+> +	 * From the perspective of the task, this looks similar to what would
+> +	 * happen if the 64-bit-only CPUs were hot-unplugged at the point of
+> +	 * execve().
+> +	 */
+> +	if (!restrict_cpus_allowed_ptr(p, possible_mask))
+> +		goto out;
+> +
+> +	if (alloc_cpumask_var(&cpuset_mask, GFP_KERNEL)) {
+> +		cpuset_cpus_allowed(p, cpuset_mask);
+> +		if (cpumask_and(cpuset_mask, cpuset_mask, possible_mask)) {
+> +			newmask = cpuset_mask;
+> +			goto out_set_mask;
+> +		}
+> +	}
 
-No real harm done.
+Wouldn't it be better to move this logic to restrict_cpus_allowed_ptr()?
+I think it should always take cpusets into account and it's not special to
+this particular handling here, no?
 
-The patch looks fine from an MFD standpoint.
+> +
+> +	if (printk_ratelimit()) {
+> +		printk_deferred("Overriding affinity for 32-bit process %d (%s) to CPUs %*pbl\n",
+> +				task_pid_nr(p), p->comm, cpumask_pr_args(newmask));
+> +	}
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+We have 2 cases where the affinity could have been overridden but we won't
+print anything:
+
+	1. restrict_cpus_allowed_ptr()
+	2. intersection of cpuset_mask and possible mask drops some cpus.
+
+Shouldn't we print something in these cases too?
+
+IMO it would be better to move this print to restrict_cpus_allowed_ptr() too.
+
+Thanks
+
+--
+Qais Yousef
+
+> +out_set_mask:
+> +	set_cpus_allowed_ptr(p, newmask);
+> +	free_cpumask_var(cpuset_mask);
+> +out:
+> +	set_tsk_thread_flag(current, TIF_NOTIFY_RESUME);
+> +}
+> +
+>  /*
+>   * Called from setup_new_exec() after (COMPAT_)SET_PERSONALITY.
+>   */
+> @@ -635,7 +675,7 @@ void arch_setup_new_exec(void)
+>  	if (is_compat_task()) {
+>  		mmflags = MMCF_AARCH32;
+>  		if (static_branch_unlikely(&arm64_mismatched_32bit_el0))
+> -			set_tsk_thread_flag(current, TIF_NOTIFY_RESUME);
+> +			adjust_compat_task_affinity(current);
+>  	}
+>  
+>  	current->mm->context.flags = mmflags;
+> -- 
+> 2.29.2.454.gaff20da3a2-goog
+> 
