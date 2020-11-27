@@ -2,105 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120822C5F4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 05:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1D22C5F56
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 05:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392471AbgK0Ene (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 23:43:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39938 "EHLO mail.kernel.org"
+        id S2404641AbgK0Ex0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 23:53:26 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:35173 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388732AbgK0Ene (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 23:43:34 -0500
-Received: from suppilovahvero.lan (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731606AbgK0Ex0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 23:53:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606452804; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=xM24JflFy1SAsCAGU2vOf/vt49oiaZncEUPC7LPr8h0=; b=v/wxUnB+WpGXqFamh7n04VBJWtBuh9KDmMoEpRyg5EaqUhthJwa37USPOJtxR0PYJ3uQF1kG
+ HfMEZEB/SAbt6wRwOYimffXcr2RcGYb2R/WMMhicpB6TVDdcggQcwNlI+UVoqpcYaYh3NshZ
+ oRokKwrHAaeHu0wfe7jFbGCxfdw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fc0863e4146c5eefdbfe31a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 04:53:18
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C2E33C43468; Fri, 27 Nov 2020 04:53:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.105] (unknown [49.206.49.183])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 574A222228;
-        Fri, 27 Nov 2020 04:43:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606452213;
-        bh=KCh3+Weqe5EoWf6AM49ei1gCXMTd+SGq55MsrADXfZw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=xJa59Lc8W/rBYcF/YckZVBxZDJ3h1RH9b8NKOaBy2uTovn6/eTilJdfSbb5gZcrLS
-         1zjx0cVSA44XgysDbdmGK0gj7Q/uYRRVRKNQtjBEfwggu9DD7oFQMkS2760uR4+Kc2
-         jMXWt8fk+Zeft8BWaBPe5qIHaC4Gjx/Bc2xu52tI=
-Message-ID: <00461e52673271f71250398b5f43a9f311f20457.camel@kernel.org>
-Subject: Re: [PATCH 131/141] tpm: Fix fall-through warnings for Clang
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Date:   Fri, 27 Nov 2020 06:43:29 +0200
-In-Reply-To: <20201124144023.GH16084@embeddedor>
-References: <cover.1605896059.git.gustavoars@kernel.org>
-         <1804f48dac434541dc60ada5eefcb86f74905671.1605896060.git.gustavoars@kernel.org>
-         <20201123225226.GA17124@kernel.org> <20201123225322.GA19839@kernel.org>
-         <20201124144023.GH16084@embeddedor>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4BE12C433ED;
+        Fri, 27 Nov 2020 04:53:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4BE12C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH v2 tip/core/rcu 5/6] srcu: Provide polling interfaces for
+ Tree SRCU grace periods
+To:     paulmck@kernel.org, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, kent.overstreet@gmail.com
+References: <@@@> <20201121005919.17152-5-paulmck@kernel.org>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <05712100-9f65-d81c-1eb0-671bc54f3baa@codeaurora.org>
+Date:   Fri, 27 Nov 2020 10:22:59 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201121005919.17152-5-paulmck@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-24 at 08:40 -0600, Gustavo A. R. Silva wrote:
-> On Tue, Nov 24, 2020 at 12:53:22AM +0200, Jarkko Sakkinen wrote:
-> > On Tue, Nov 24, 2020 at 12:52:31AM +0200, Jarkko Sakkinen wrote:
-> > > On Fri, Nov 20, 2020 at 12:40:14PM -0600, Gustavo A. R. Silva wrote:
-> > > > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> > > > by explicitly adding a break statement instead of letting the code fall
-> > > > through to the next case.
-> > > > 
-> > > > Link: https://github.com/KSPP/linux/issues/115
-> > > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > > > ---
-> > > >  drivers/char/tpm/eventlog/tpm1.c | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > > 
-> > > > diff --git a/drivers/char/tpm/eventlog/tpm1.c b/drivers/char/tpm/eventlog/tpm1.c
-> > > > index 2c96977ad080..8aa9057601d6 100644
-> > > > --- a/drivers/char/tpm/eventlog/tpm1.c
-> > > > +++ b/drivers/char/tpm/eventlog/tpm1.c
-> > > > @@ -210,6 +210,7 @@ static int get_event_name(char *dest, struct tcpa_event *event,
-> > > >                 default:
-> > > >                         break;
-> > > >                 }
-> > > > +               break;
-> > > >         default:
-> > > >                 break;
-> > > >         }
-> > > > -- 
-> > > > 2.27.0
-> > > > 
-> > > > 
-> > > 
-> > > Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
-> > > 
-> > > Who is picking these patches?
+
+
+On 11/21/2020 6:29 AM, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
 > 
-> I can take it in my tree for 5.11 if people are OK with that. :)
+> There is a need for a polling interface for SRCU grace
+> periods, so this commit supplies get_state_synchronize_srcu(),
+> start_poll_synchronize_srcu(), and poll_state_synchronize_srcu() for this
+> purpose.  The first can be used if future grace periods are inevitable
+> (perhaps due to a later call_srcu() invocation), the second if future
+> grace periods might not otherwise happen, and the third to check if a
+> grace period has elapsed since the corresponding call to either of the
+> first two.
 > 
-> > > 
-> > > /Jarkko
-> > 
-> > I mean
-> > 
-> > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> As with get_state_synchronize_rcu() and cond_synchronize_rcu(),
+> the return value from either get_state_synchronize_srcu() or
+> start_poll_synchronize_srcu() must be passed in to a later call to
+> poll_state_synchronize_srcu().
 > 
-> Thanks, Jarkko.
-> --
-> Gustavo
+> Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+> Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+> [ paulmck: Add EXPORT_SYMBOL_GPL() per kernel test robot feedback. ]
+> [ paulmck: Apply feedback from Neeraj Upadhyay. ]
+> Link: https://lore.kernel.org/lkml/20201117004017.GA7444@paulmck-ThinkPad-P72/
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
 
-keyring:
+For version in -rcu dev
 
-https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/commit/?id=a49bdffa9db63a54a6ac56cdcdef8cc8f404f4b6
+Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 
-TPM:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/commit/?id=1ce46c91fdfe5ebf27a6d328b108c630406d1c8c
+Thanks
+Neeraj
 
-Looks good?
+>   kernel/rcu/srcutiny.c |  2 +-
+>   kernel/rcu/srcutree.c | 67 ++++++++++++++++++++++++++++++++++++++++++++++++---
+>   2 files changed, 64 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> index b073175..c8f4202 100644
+> --- a/kernel/rcu/srcutiny.c
+> +++ b/kernel/rcu/srcutiny.c
+> @@ -148,7 +148,7 @@ void srcu_drive_gp(struct work_struct *wp)
+>   	 * straighten that out.
+>   	 */
+>   	WRITE_ONCE(ssp->srcu_gp_running, false);
+> -	if (USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
+> +	if (USHORT_CMP_LT(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
+>   		schedule_work(&ssp->srcu_work);
+>   }
+>   EXPORT_SYMBOL_GPL(srcu_drive_gp);
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index d930ece..945c047 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -810,7 +810,8 @@ static void srcu_leak_callback(struct rcu_head *rhp)
+>   /*
+>    * Start an SRCU grace period, and also queue the callback if non-NULL.
+>    */
+> -static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rhp, bool do_norm)
+> +static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+> +					     struct rcu_head *rhp, bool do_norm)
+>   {
+>   	unsigned long flags;
+>   	int idx;
+> @@ -819,10 +820,12 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
+>   	unsigned long s;
+>   	struct srcu_data *sdp;
+>   
+> +	check_init_srcu_struct(ssp);
+>   	idx = srcu_read_lock(ssp);
+>   	sdp = raw_cpu_ptr(ssp->sda);
+>   	spin_lock_irqsave_rcu_node(sdp, flags);
+> -	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+> +	if (rhp)
+> +		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+>   	rcu_segcblist_advance(&sdp->srcu_cblist,
+>   			      rcu_seq_current(&ssp->srcu_gp_seq));
+>   	s = rcu_seq_snap(&ssp->srcu_gp_seq);
+> @@ -841,6 +844,7 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
+>   	else if (needexp)
+>   		srcu_funnel_exp_start(ssp, sdp->mynode, s);
+>   	srcu_read_unlock(ssp, idx);
+> +	return s;
+>   }
+>   
+>   /*
+> @@ -874,7 +878,6 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
+>   static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+>   			rcu_callback_t func, bool do_norm)
+>   {
+> -	check_init_srcu_struct(ssp);
+>   	if (debug_rcu_head_queue(rhp)) {
+>   		/* Probable double call_srcu(), so leak the callback. */
+>   		WRITE_ONCE(rhp->func, srcu_leak_callback);
+> @@ -882,7 +885,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+>   		return;
+>   	}
+>   	rhp->func = func;
+> -	srcu_gp_start_if_needed(ssp, rhp, do_norm);
+> +	(void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
+>   }
+>   
+>   /**
+> @@ -1011,6 +1014,62 @@ void synchronize_srcu(struct srcu_struct *ssp)
+>   }
+>   EXPORT_SYMBOL_GPL(synchronize_srcu);
+>   
+> +/**
+> + * get_state_synchronize_srcu - Provide an end-of-grace-period cookie
+> + * @ssp: srcu_struct to provide cookie for.
+> + *
+> + * This function returns a cookie that can be passed to
+> + * poll_state_synchronize_srcu(), which will return true if a full grace
+> + * period has elapsed in the meantime.  It is the caller's responsibility
+> + * to make sure that grace period happens, for example, by invoking
+> + * call_srcu() after return from get_state_synchronize_srcu().
+> + */
+> +unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp)
+> +{
+> +	// Any prior manipulation of SRCU-protected data must happen
+> +	// before the load from ->srcu_gp_seq.
+> +	smp_mb();
+> +	return rcu_seq_snap(&ssp->srcu_gp_seq);
+> +}
+> +EXPORT_SYMBOL_GPL(get_state_synchronize_srcu);
+> +
+> +/**
+> + * start_poll_synchronize_srcu - Provide cookie and start grace period
+> + * @ssp: srcu_struct to provide cookie for.
+> + *
+> + * This function returns a cookie that can be passed to
+> + * poll_state_synchronize_srcu(), which will return true if a full grace
+> + * period has elapsed in the meantime.  Unlike get_state_synchronize_srcu(),
+> + * this function also ensures that any needed SRCU grace period will be
+> + * started.  This convenience does come at a cost in terms of CPU overhead.
+> + */
+> +unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp)
+> +{
+> +	return srcu_gp_start_if_needed(ssp, NULL, true);
+> +}
+> +EXPORT_SYMBOL_GPL(start_poll_synchronize_srcu);
+> +
+> +/**
+> + * poll_state_synchronize_srcu - Has cookie's grace period ended?
+> + * @ssp: srcu_struct to provide cookie for.
+> + * @cookie: Return value from get_state_synchronize_srcu() or start_poll_synchronize_srcu().
+> + *
+> + * This function takes the cookie that was returned from either
+> + * get_state_synchronize_srcu() or start_poll_synchronize_srcu(), and
+> + * returns @true if an SRCU grace period elapsed since the time that the
+> + * cookie was created.
+> + */
+> +bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
+> +{
+> +	if (!rcu_seq_done(&ssp->srcu_gp_seq, cookie))
+> +		return false;
+> +	// Ensure that the end of the SRCU grace period happens before
+> +	// any subsequent code that the caller might execute.
+> +	smp_mb(); // ^^^
+> +	return true;
+> +}
+> +EXPORT_SYMBOL_GPL(poll_state_synchronize_srcu);
+> +
+>   /*
+>    * Callback function for srcu_barrier() use.
+>    */
+> 
 
-/Jarkko
-
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
