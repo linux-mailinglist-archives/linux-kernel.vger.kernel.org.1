@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4B62C5EC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 03:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730DB2C5EC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 03:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392258AbgK0ClJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 21:41:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29484 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728340AbgK0ClJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 21:41:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606444867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CGuxrkK2iZdB4UEGYj2iQ4NnbaMBbMY85hcPMYR8MBQ=;
-        b=hJ07LBPK6aOMffsSjpk9yNfN2rJ5yqivomKTC6wLsq0yGTDqAXtvAk34j3ics8Rl6SJrR9
-        sPQ5R/aTXogA5wylVerANw4aFt9YHMmIgpWdOcMsO5ZNrPJvatQLqIwz8nXGsWC+hwiFzw
-        4lONryBFrIs6mxBj1n+eXBOyzrw+tos=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-kITHRiolM6uqfv8pokK3Vw-1; Thu, 26 Nov 2020 21:41:04 -0500
-X-MC-Unique: kITHRiolM6uqfv8pokK3Vw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE3738049C3;
-        Fri, 27 Nov 2020 02:41:03 +0000 (UTC)
-Received: from T590 (ovpn-12-114.pek2.redhat.com [10.72.12.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1B52B1001281;
-        Fri, 27 Nov 2020 02:40:56 +0000 (UTC)
-Date:   Fri, 27 Nov 2020 10:40:52 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-mq: Make running from the wrong CPU less scary
-Message-ID: <20201127024052.GB126383@T590>
-References: <20201126095152.19151-1-dwagner@suse.de>
+        id S2404107AbgK0CqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 21:46:08 -0500
+Received: from mga02.intel.com ([134.134.136.20]:1330 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728340AbgK0CqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 21:46:07 -0500
+IronPort-SDR: sNkgTFkN2Gxkux9rHmd2Od79eJeXX8QuDBkVvhebKV4iUNLhQzdkumBvmH6sy3vwmM6aIUwzir
+ NSsWcwPA2jqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9817"; a="159390653"
+X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
+   d="scan'208";a="159390653"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 18:46:06 -0800
+IronPort-SDR: iA6kORbtUJkScIIr2NpQtD3e2CzuS7Tupqp6R3y02zRVe6bg59NvKbYG0M1yTzaUeOJKa6TceX
+ 1MVyeiYOLaJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
+   d="scan'208";a="433394877"
+Received: from lkp-server02.sh.intel.com (HELO e51121f5de4e) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Nov 2020 18:46:05 -0800
+Received: from kbuild by e51121f5de4e with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kiTlj-00005O-Hq; Fri, 27 Nov 2020 02:45:55 +0000
+Date:   Fri, 27 Nov 2020 10:45:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org
+Subject: Re: [PATCH v2 1/1] usb: typec: tps6598x: Export some power supply
+ properties
+Message-ID: <202011271005.zJVawX74-lkp@intel.com>
+References: <616993b62e4a8a39f2d8d874d95189b875dd05d8.1606410063.git.agx@sigxcpu.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126095152.19151-1-dwagner@suse.de>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <616993b62e4a8a39f2d8d874d95189b875dd05d8.1606410063.git.agx@sigxcpu.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 10:51:52AM +0100, Daniel Wagner wrote:
-> The current warning looks aweful like a proper crash. This is
-> confusing. There is not much information to gained from the stack
-> trace anyway, let's drop it.
-> 
-> While at it print the cpumask as there might be additial helpful
-> information when debugging the sitation.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
-> Hi,
-> 
-> We got a report from a customer because he was concerned about the log
-> entries. As it turns out, it fooled me too to be honest. What do you
-> think about making it a bit less look-a-like a kernel oops?
-> 
-> 
->  smpboot: Booting Node 0 Processor 12 APIC 0x26                                                
-> WARNING, didn't collect load info for all cpus, balancing is broken                            
->  run queue from wrong CPU 0, hctx active                                                       
->  CPU: 0 PID: 42300 Comm: kworker/13:2H Kdump: loaded Tainted: G           OE  X    5.3.18-109.$
->  Hardware name: IBM System x3650 M5 -[5462AC1]-/00KG915, BIOS -[TCE144J-3.11]- 12/03/2019      
->  Workqueue: kblockd blk_mq_run_work_fn                                                         
->  Call Trace:                                                                                   
->   dump_stack+0x66/0x8b                                                                         
->   __blk_mq_run_hw_queue+0xee/0x100                                                             
->   process_one_work+0x1f4/0x3e0                                                                 
->   worker_thread+0x2d/0x3e0                                                                     
->   ? process_one_work+0x3e0/0x3e0                                                               
->   kthread+0x10d/0x130                                                                          
->   ? kthread_park+0xa0/0xa0                                                                     
->   ret_from_fork+0x35/0x40                                                                      
->  run queue from wrong CPU 0, hctx active                                                       
->  CPU: 0 PID: 42300 Comm: kworker/13:2H Kdump: loaded Tainted: G           OE  X    5.3.18-109.$
->  Hardware name: IBM System x3650 M5 -[5462AC1]-/00KG915, BIOS -[TCE144J-3.11]- 12/03/2019      
->  Workqueue: kblockd blk_mq_run_work_fn    
-> 
-> 
-> Thanks,
-> Daniel
-> 
->  block/blk-mq.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index 55bcee5dc032..0427b719d9c4 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -1514,10 +1514,8 @@ static void __blk_mq_run_hw_queue(struct blk_mq_hw_ctx *hctx)
->  	 */
->  	if (!cpumask_test_cpu(raw_smp_processor_id(), hctx->cpumask) &&
->  		cpu_online(hctx->next_cpu)) {
-> -		printk(KERN_WARNING "run queue from wrong CPU %d, hctx %s\n",
-> -			raw_smp_processor_id(),
-> -			cpumask_empty(hctx->cpumask) ? "inactive": "active");
-> -		dump_stack();
-> +		printk(KERN_WARNING "run queue from wrong CPU %d, hctx %*pbl\n",
-> +			raw_smp_processor_id(), cpumask_pr_args(hctx->cpumask));
->  	}
+Hi "Guido,
 
-Now we have guaranteed that no any requests originated from one hctx exists
-when this hctx is going to offline, which is strong enough for killing the check.
+I love your patch! Yet something to improve:
 
-The reason why such warning is triggered is that wq's cpu hot unplug is
-handled before blk-mq's handling.
+[auto build test ERROR on usb/usb-testing]
+[also build test ERROR on v5.10-rc5 next-20201126]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-I'd suggest to kill the whole branch in the fast path.
+url:    https://github.com/0day-ci/linux/commits/Guido-G-nther/usb-typec-tps6598x-Export-some-power-supply-properties/20201127-010748
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+config: x86_64-rhel
+compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/0day-ci/linux/commit/e2127770a7cde95b57cbdc55a68d783382282517
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Guido-G-nther/usb-typec-tps6598x-Export-some-power-supply-properties/20201127-010748
+        git checkout e2127770a7cde95b57cbdc55a68d783382282517
+        # save the attached .config to linux build tree
+        make W=1 ARCH=x86_64 
 
-Thanks,
-Ming
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
+All errors (new ones prefixed by >>):
+
+>> drivers/power/supply/Kconfig:2:error: recursive dependency detected!
+   drivers/power/supply/Kconfig:2: symbol POWER_SUPPLY is selected by TYPEC_TPS6598X
+   drivers/usb/typec/Kconfig:64: symbol TYPEC_TPS6598X depends on REGMAP_I2C
+   drivers/base/regmap/Kconfig:19: symbol REGMAP_I2C is selected by CHARGER_ADP5061
+   drivers/power/supply/Kconfig:93: symbol CHARGER_ADP5061 depends on POWER_SUPPLY
+   For a resolution refer to Documentation/kbuild/kconfig-language.rst
+   subsection "Kconfig recursive dependency limitations"
+
+vim +2 drivers/power/supply/Kconfig
+
+8c0984e5a75337d Sebastian Reichel 2016-06-17 @2  menuconfig POWER_SUPPLY
+8c0984e5a75337d Sebastian Reichel 2016-06-17  3  	bool "Power supply class support"
+8c0984e5a75337d Sebastian Reichel 2016-06-17  4  	help
+8c0984e5a75337d Sebastian Reichel 2016-06-17  5  	  Say Y here to enable power supply class support. This allows
+8c0984e5a75337d Sebastian Reichel 2016-06-17  6  	  power supply (batteries, AC, USB) monitoring by userspace
+8c0984e5a75337d Sebastian Reichel 2016-06-17  7  	  via sysfs and uevent (if available) and/or APM kernel interface
+8c0984e5a75337d Sebastian Reichel 2016-06-17  8  	  (if selected below).
+8c0984e5a75337d Sebastian Reichel 2016-06-17  9  
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
