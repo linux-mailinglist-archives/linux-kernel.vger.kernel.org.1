@@ -2,146 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95D52C5E98
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 02:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4542C5E9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 02:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392153AbgK0Bvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 20:51:50 -0500
-Received: from mga05.intel.com ([192.55.52.43]:46124 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392146AbgK0Bvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 20:51:50 -0500
-IronPort-SDR: gz9JNOvJ4vBDN+YZnPbK+GXVVw0ymohfMk3A8b6f3I+/sBBYpFPL0V5ut3uDXhOUdDQA9ghvlQ
- lZi6v1mUYhyg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9817"; a="257047939"
-X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
-   d="scan'208";a="257047939"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 17:51:49 -0800
-IronPort-SDR: pzZfEjcbbXsj4s7s73nUVpfDvWKSmE07ZQjnjC23jff/Sz97bd5OoHA+DZZhEACrnr/8yzu93d
- Hg7xkpQfTlFQ==
-X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
-   d="scan'208";a="547895306"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 17:51:43 -0800
-Subject: Re: [Intel-gfx] [drm/i915/gem] 59dd13ad31:
- phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second
- -54.0% regression
-To:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Oliver Sang <oliver.sang@intel.com>
-Cc:     feng.tang@intel.com, tiejun.li@intel.com, guangli.li@intel.com,
-        frank.du@intel.com, guobing.chen@intel.com, jiebin.sun@intel.com,
-        Shuhua.Fan@intel.com, Matthew Auld <matthew.auld@intel.com>,
-        fan.zhao@intel.com, ying.huang@intel.com, shan.kang@intel.com,
-        zhengjun.xing@intel.com, Wenhuan.Huang@intel.com,
-        intel-gfx@lists.freedesktop.org, lkp@lists.01.org,
-        ming.a.chen@intel.com, yu.ma@intel.com, jessica.ji@intel.com,
-        dapeng1.mi@intel.com, wangyang.guo@intel.com,
-        LKML <linux-kernel@vger.kernel.org>, gengxin.xie@intel.com
-References: <20201111155811.GB24657@xsang-OptiPlex-9020>
- <160527763346.5566.3471508802857132043@jlahtine-mobl.ger.corp.intel.com>
- <20201119072018.GA15197@xsang-OptiPlex-9020>
- <160625087275.29168.7080737993781611765@build.alporthouse.com>
- <ab9ebc5a-7d79-8003-c7bc-5cf0923983c6@linux.intel.com>
- <160642644736.15379.9850669928715684163@build.alporthouse.com>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <e14d546c-b1c6-448b-d8ac-50d072802c98@linux.intel.com>
-Date:   Fri, 27 Nov 2020 09:51:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2392163AbgK0B4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 20:56:11 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:38561 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2392146AbgK0B4K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 20:56:10 -0500
+X-UUID: 0f62a53ab5004a49a1ee2d9318ed2892-20201127
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=w8vnzPmIF9GP6qq9n7qD+b4xYK8LSksy/BEZVgo8LGA=;
+        b=lCtGEG1J6mQZdDPK9dH8MNUW8ZsiUsM+7eiY+F5nK91J/n0Wcwm+hEtdzLHW/DycWaIvbIZTAqhNX93MZWo/jQ8Sqg5YiHJ7YiXO4NyNU5NFvzr7LX9qeqZCwRu2uVQCmlnt/itC32z7hvJCZiBvJk2mELlmxaUH9Y4MV0kSb88=;
+X-UUID: 0f62a53ab5004a49a1ee2d9318ed2892-20201127
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 194068124; Fri, 27 Nov 2020 09:55:59 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 27 Nov 2020 09:55:28 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 27 Nov 2020 09:55:30 +0800
+Message-ID: <1606442130.8845.2.camel@mtkswgap22>
+Subject: Re: [RESEND PATCH v1] proc: use untagged_addr() for pagemap_read
+ addresses
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+CC:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
+Date:   Fri, 27 Nov 2020 09:55:30 +0800
+In-Reply-To: <87lfeqsizr.fsf@x220.int.ebiederm.org>
+References: <20201123063835.18981-1-miles.chen@mediatek.com>
+         <87lfeqsizr.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <160642644736.15379.9850669928715684163@build.alporthouse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gVHVlLCAyMDIwLTExLTI0IGF0IDEyOjMyIC0wNjAwLCBFcmljIFcuIEJpZWRlcm1hbiB3cm90
+ZToNCj4gTWlsZXMgQ2hlbiA8bWlsZXMuY2hlbkBtZWRpYXRlay5jb20+IHdyaXRlczoNCj4gDQo+
+ID4gV2hlbiB3ZSB0cnkgdG8gdmlzaXQgdGhlIHBhZ2VtYXAgb2YgYSB0YWdnZWQgdXNlcnNwYWNl
+IHBvaW50ZXIsIHdlIGZpbmQNCj4gPiB0aGF0IHRoZSBzdGFydF92YWRkciBpcyBub3QgY29ycmVj
+dCBiZWNhdXNlIG9mIHRoZSB0YWcuDQo+ID4gVG8gZml4IGl0LCB3ZSBzaG91bGQgdW50YWcgdGhl
+IHVzZXNwYWNlIHBvaW50ZXJzIGluIHBhZ2VtYXBfcmVhZCgpLg0KPiA+DQo+ID4gSSB0ZXN0ZWQg
+d2l0aCA1LjEwLXJjNCBhbmQgdGhlIGlzc3VlIHJlbWFpbnMuDQo+ID4NCj4gPiBNeSB0ZXN0IGNv
+ZGUgaXMgYmFlZCBvbiBbMV06DQo+ID4NCj4gPiBBIHVzZXJzcGFjZSBwb2ludGVyIHdoaWNoIGhh
+cyBiZWVuIHRhZ2dlZCBieSAweGI0OiAweGI0MDAwMDc2NjJmNTQxYzgNCj4gDQo+IA0KPiBTaWdo
+IHRoaXMgcGF0Y2ggaXMgYnVnZ3kuDQo+IA0KPiA+ID09PSB1c2Vyc3BhY2UgcHJvZ3JhbSA9PT0N
+Cj4gPg0KPiA+IHVpbnQ2NCBPc0xheWVyOjpWaXJ0dWFsVG9QaHlzaWNhbCh2b2lkICp2YWRkcikg
+ew0KPiA+IAl1aW50NjQgZnJhbWUsIHBhZGRyLCBwZm5tYXNrLCBwYWdlbWFzazsNCj4gPiAJaW50
+IHBhZ2VzaXplID0gc3lzY29uZihfU0NfUEFHRVNJWkUpOw0KPiA+IAlvZmY2NF90IG9mZiA9ICgo
+dWludHB0cl90KXZhZGRyKSAvIHBhZ2VzaXplICogODsgLy8gb2ZmID0gMHhiNDAwMDA3NjYyZjU0
+MWM4IC8gcGFnZXNpemUgKiA4ID0gMHg1YTAwMDAzYjMxN2FhMA0KPiA+IAlpbnQgZmQgPSBvcGVu
+KGtQYWdlbWFwUGF0aCwgT19SRE9OTFkpOw0KPiA+IAkuLi4NCj4gPg0KPiA+IAlpZiAobHNlZWs2
+NChmZCwgb2ZmLCBTRUVLX1NFVCkgIT0gb2ZmIHx8IHJlYWQoZmQsICZmcmFtZSwgOCkgIT0gOCkg
+ew0KPiA+IAkJaW50IGVyciA9IGVycm5vOw0KPiA+IAkJc3RyaW5nIGVycnR4dCA9IEVycm9yU3Ry
+aW5nKGVycik7DQo+ID4gCQlpZiAoZmQgPj0gMCkNCj4gPiAJCQljbG9zZShmZCk7DQo+ID4gCQly
+ZXR1cm4gMDsNCj4gPiAJfQ0KPiA+IC4uLg0KPiA+IH0NCj4gPg0KPiA+ID09PSBrZXJuZWwgZnMv
+cHJvYy90YXNrX21tdS5jID09PQ0KPiA+DQo+ID4gc3RhdGljIHNzaXplX3QgcGFnZW1hcF9yZWFk
+KHN0cnVjdCBmaWxlICpmaWxlLCBjaGFyIF9fdXNlciAqYnVmLA0KPiA+IAkJc2l6ZV90IGNvdW50
+LCBsb2ZmX3QgKnBwb3MpDQo+ID4gew0KPiA+IAkuLi4NCj4gPiAJc3JjID0gKnBwb3M7DQo+ID4g
+CXN2cGZuID0gc3JjIC8gUE1fRU5UUllfQllURVM7IC8vIHN2cGZuID09IDB4YjQwMDAwNzY2MmY1
+NA0KPiA+IAlzdGFydF92YWRkciA9IHN2cGZuIDw8IFBBR0VfU0hJRlQ7IC8vIHN0YXJ0X3ZhZGRy
+ID09IDB4YjQwMDAwNzY2MmY1NDAwMA0KPiA+IAllbmRfdmFkZHIgPSBtbS0+dGFza19zaXplOw0K
+PiA+DQo+ID4gCS8qIHdhdGNoIG91dCBmb3Igd3JhcGFyb3VuZCAqLw0KPiA+IAkvLyBzdnBmbiA9
+PSAweGI0MDAwMDc2NjJmNTQNCj4gPiAJLy8gKG1tLT50YXNrX3NpemUgPj4gUEFHRSkgPT0gMHg4
+MDAwMDAwDQo+ID4gCWlmIChzdnBmbiA+IG1tLT50YXNrX3NpemUgPj4gUEFHRV9TSElGVCkgLy8g
+dGhlIGNvbmRpdGlvbiBpcyB0cnVlIGJlY2F1c2Ugb2YgdGhlIHRhZyAweGI0DQo+ID4gCQlzdGFy
+dF92YWRkciA9IGVuZF92YWRkcjsNCj4gPg0KPiA+IAlyZXQgPSAwOw0KPiA+IAl3aGlsZSAoY291
+bnQgJiYgKHN0YXJ0X3ZhZGRyIDwgZW5kX3ZhZGRyKSkgeyAvLyB3ZSBjYW5ub3QgdmlzaXQgY29y
+cmVjdCBlbnRyeSBiZWNhdXNlIHN0YXJ0X3ZhZGRyIGlzIHNldCB0byBlbmRfdmFkZHINCj4gPiAJ
+CWludCBsZW47DQo+ID4gCQl1bnNpZ25lZCBsb25nIGVuZDsNCj4gPiAJCS4uLg0KPiA+IAl9DQo+
+ID4gCS4uLg0KPiA+IH0NCj4gPg0KPiA+IFsxXSBodHRwczovL2dpdGh1Yi5jb20vc3RyZXNzYXBw
+dGVzdC9zdHJlc3NhcHB0ZXN0L2Jsb2IvbWFzdGVyL3NyYy9vcy5jYyNMMTU4DQo+ID4NCj4gPiBT
+aWduZWQtb2ZmLWJ5OiBNaWxlcyBDaGVuIDxtaWxlcy5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gPiAt
+LS0NCj4gPiAgZnMvcHJvYy90YXNrX21tdS5jIHwgNCArKy0tDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
+LCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
+ZnMvcHJvYy90YXNrX21tdS5jIGIvZnMvcHJvYy90YXNrX21tdS5jDQo+ID4gaW5kZXggMjE3YWEy
+NzA1ZDVkLi5lOWE3MGY3ZWU1MTUgMTAwNjQ0DQo+ID4gLS0tIGEvZnMvcHJvYy90YXNrX21tdS5j
+DQo+ID4gKysrIGIvZnMvcHJvYy90YXNrX21tdS5jDQo+ID4gQEAgLTE1OTksMTEgKzE1OTksMTEg
+QEAgc3RhdGljIHNzaXplX3QgcGFnZW1hcF9yZWFkKHN0cnVjdCBmaWxlICpmaWxlLCBjaGFyIF9f
+dXNlciAqYnVmLA0KPiA+ICANCj4gPiAgCXNyYyA9ICpwcG9zOw0KPiA+ICAJc3ZwZm4gPSBzcmMg
+LyBQTV9FTlRSWV9CWVRFUzsNCj4gDQo+ID4gLQlzdGFydF92YWRkciA9IHN2cGZuIDw8IFBBR0Vf
+U0hJRlQ7DQo+ID4gKwlzdGFydF92YWRkciA9IHVudGFnZ2VkX2FkZHIoc3ZwZm4gPDwgUEFHRV9T
+SElGVCk7DQo+ICAgICAgICAgXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5e
+Xl5eXl5eXl5eXg0KPiANCj4gQXJndWFibHkgdGhlIGxpbmUgYWJvdmUgaXMgc2FmZSwgYnV0IHVu
+Zm9ydHVuYXRlbHkgaXQgaGFzIHRoZQ0KPiBwb3NzaWJpbGl0eSBvZiBzdWZmZXJpbmcgZnJvbSBv
+dmVyZmxvdy4NCj4gDQo+ID4gIAllbmRfdmFkZHIgPSBtbS0+dGFza19zaXplOw0KPiA+ICANCj4g
+PiAgCS8qIHdhdGNoIG91dCBmb3Igd3JhcGFyb3VuZCAqLw0KPiA+IC0JaWYgKHN2cGZuID4gbW0t
+PnRhc2tfc2l6ZSA+PiBQQUdFX1NISUZUKQ0KPiA+ICsJaWYgKHN0YXJ0X3ZhZGRyID4gbW0tPnRh
+c2tfc2l6ZSkNCj4gPiAgCQlzdGFydF92YWRkciA9IGVuZF92YWRkcjsNCj4gDQo+IE92ZXJmbG93
+IGhhbmRsaW5nIHlvdSBhcmUgcmVtb3ZpbmcgaGVyZS4NCj4gPiAgDQo+ID4gIAkvKg0KPiANCj4g
+DQo+IEkgc3VzcGVjdCB0aGUgcHJvcGVyIHdheSB0byBoYW5kbGUgdGhpcyBpcyB0byBtb3ZlIHRo
+ZSB0ZXN0IGZvcg0KPiBvdmVyZmxvdyBlYXJsaWVyIHNvIHRoZSBjb2RlIGxvb2tzIHNvbWV0aGlu
+ZyBsaWtlOg0KPiANCj4gCWVuZF92YWRkciA9IG1tLT50YXNrX3NpemU7DQo+IA0KPiAJc3JjID0g
+KnBwb3M7DQo+IAlzdnBmbiA9IHNyYyAvIFBNX0VOVFJZX0JZVEVTOw0KPiANCj4gCS8qIHdhdGNo
+IG91dCBmb3Igd3JhcGFyb3VuZCAqLw0KPiAgICAgICAgIHN0YXJ0X3ZhZGRyID0gZW5kX3ZhZGRy
+Ow0KPiAJaWYgKHN2cGZuIDwgKFVMT05HX01BWCA+PiBQQUdFX1NISUZUKSkNCj4gICAgICAgICAJ
+c3RhcnRfdmFkZHIgPSB1bnRhZ2dlZF9hZGRyKHN2cGZuIDw8IFBBR0VfU0hJRlQpOw0KPiANCj4g
+CS8qIEVuc3VyZSB0aGUgYWRkcmVzcyBpcyBpbnNpZGUgdGhlIHRhc2sgKi8NCj4gCWlmIChzdGFy
+dF92YWRkciA+IG1tLT50YXNrX3NpemUpDQo+ICAgICAgICAgCXN0YXJ0X3ZhZGRyID0gZW5kX3Zh
+ZGRyOw0KDQoNClRoYW5rcyBmb3IgdGhlIGNvbW1lbnQsIEkgd2lsbCBmaXggdGhhdCBpbiBwYXRj
+aCB2Mi4NCg0KTWlsZXMNCj4gDQo+IEVyaWMNCj4gDQoNCg==
 
-
-On 11/27/2020 5:34 AM, Chris Wilson wrote:
-> Quoting Xing Zhengjun (2020-11-26 01:44:55)
->>
->>
->> On 11/25/2020 4:47 AM, Chris Wilson wrote:
->>> Quoting Oliver Sang (2020-11-19 07:20:18)
->>>> On Fri, Nov 13, 2020 at 04:27:13PM +0200, Joonas Lahtinen wrote:
->>>>> Hi,
->>>>>
->>>>> Could you add intel-gfx@lists.freedesktop.org into reports going
->>>>> forward.
->>>>>
->>>>> Quoting kernel test robot (2020-11-11 17:58:11)
->>>>>>
->>>>>> Greeting,
->>>>>>
->>>>>> FYI, we noticed a -54.0% regression of phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second due to commit:
->>>>>
->>>>> How many runs are there on the bad version to ensure the bisect is
->>>>> repeatable?
->>>>
->>>> test 4 times.
->>>> zxing@inn:/result/phoronix-test-suite/performance-true-Radial_Gradient_Paint-1024x1024-jxrendermark-1.2.4-ucode=0xd6-monitor=da39a3ee/lkp-cfl-d1/debian-x86_64-phoronix/x86_64-rhel-8.3/gcc-9/59dd13ad310793757e34afa489dd6fc8544fc3da$ grep -r "operations_per_second" */stats.json
->>>> 0/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4133.487932,
->>>> 1/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4120.421503,
->>>> 2/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4188.414835,
->>>> 3/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4068.549514,
->>>
->>> a w/o revert (drm-tip)
->>> b w/ revert
->>> +mB----------------------------------------------------------------------------+
->>> |                             ..b                                              |
->>> |                             ..b.aa                                           |
->>> |                             ....a.a                                          |
->>> |                             ....a.a                                          |
->>> |                      b  b  ........a                                         |
->>> |                   b  b  b b......... a                                       |
->>> |                   b  bb bbb...........                                       |
->>> |b               ab bbab.bb.b............ba b a a            ab               a|
->>> |                             |__A__|                                          |
->>> |                             |MA_|                                            |
->>> +------------------------------------------------------------------------------+
->>>       N                Min           Max        Median           Avg        Stddev
->>> a 120          3621.8761     7356.4442     4606.7895     4607.9132     156.17693
->>> b 120          2664.0563     6359.9686     4519.5036     4534.4463     95.471121
->>>
->>> The patch is not expected to have any impact on the machine you are testing on.
->>> -Chris
->>>
->>
->> What's your code base?
->> For my side:
->> 1) sync the code to the head of Linux mainline
->> 2) git reset --hard 59dd13ad31
->> 3) git revert 59dd13ad3107
->> We compare the test result of commit 59dd13ad3107 (step 2) and
->> 2052847b06f8 (step 3, revert 59dd13ad3107), the regression should
->> related with 59dd13ad3107. Each test case we run 5 times.
-> 
-> a 59dd13ad31
-> b revert
-> +mB----------------------------------------------------------------------------+
-> |                        a                                                     |
-> |                       aa                                                     |
-> |                     .b....ba                                                 |
-> |                     .b....baa    b                                           |
-> |                     .........b . b   b                                       |
-> |                a   b.......... ..bb  b        b                              |
-> |              b a   b.............b.a b        b                              |
-> |a    a  b.    .aaa..b.............b..b....ab   b     a                       .|
-> |                      |__A__|                                                 |
-> |                      |___A_____|                                             |
-> +------------------------------------------------------------------------------+
->      N                Min           Max        Median           Avg        Stddev
-> a 120          3658.3435     6363.7812     4527.4406      4536.612     86.095459
-> b 120          3928.9643      6375.829     4576.0482     4585.4224      157.284
-> 
-
-Could you share with me your test commands and the hardware info, then I 
-can reproduce it on my side? Thanks.
--- 
-Zhengjun Xing
