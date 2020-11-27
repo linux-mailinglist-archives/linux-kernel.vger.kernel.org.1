@@ -2,86 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D592C69F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26BC92C69FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732212AbgK0QoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:44:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33025 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731265AbgK0QoR (ORCPT
+        id S1731689AbgK0QpQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Nov 2020 11:45:16 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:34756 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732016AbgK0QpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:44:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606495456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=TwpGbXjOlt1kS9wpoNLS5N+Ed2xsTnCZ7b23klTflIs=;
-        b=JMD7GrOW8aOHnzcKdc1RtVwjpHp7YCO6SxJYnrxMFrDu8+h935nRv4/v17jxecvTLLHo0O
-        ZwYuSaAr3VagWxybL3VepOu1sEiH/8Ad2rsdaVzURgrEhtV5JhVuEUIIvjH3nEjPKKFitO
-        +DCPEdlxXV51hbDN2pvcGA7kNUUaK8o=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-wUXtsgAoP2KBwpmML-KlEg-1; Fri, 27 Nov 2020 11:44:14 -0500
-X-MC-Unique: wUXtsgAoP2KBwpmML-KlEg-1
-Received: by mail-qt1-f200.google.com with SMTP id r16so3549264qtn.19
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:44:14 -0800 (PST)
+        Fri, 27 Nov 2020 11:45:15 -0500
+Received: by mail-oi1-f195.google.com with SMTP id s18so6502909oih.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:45:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TwpGbXjOlt1kS9wpoNLS5N+Ed2xsTnCZ7b23klTflIs=;
-        b=e9UyIj/TnGY3h7iAi4u5yQAm87lO9LgCZwfOdrFj/AsgTPhQHUEVDWQTeybNn0gnKc
-         Lz2rDkoEkpGBgy3HlipzjXSzVHC3LM6veG0UoVqtVr8tq/lMUw8zQbAsQBoqVIvz1eae
-         jL1seX/w0TbnwoyCLG3NkFA5uIm1JWfugCn/E2k5HLC6KN4YQ4TcySVIpGHvMxgKWjvV
-         IHFhNm/K5SlgsDIkXjZTkK0Szm96FV0p2IzSFBWf7GJ/wXC4lNJwsswbuyhs45UEua9X
-         nIiNXn3uoGhcs1sTaJSlhZGYhxo2X4gALzJPhseOc+ymLouQ8ag0VB4pe9juruaKrVtf
-         HKRg==
-X-Gm-Message-State: AOAM533fdUZrJtxWDu9NB6ehIJxJ8kdoe3FSHd1xZw8ecSATV0fP8pte
-        hRxkNzTnaoKlmGa+XZ0gBaBW76pZB+Md8Tx/ENhW2dm7ZbviCzMzG0aFdBtq7hrfJ3HtphwZpFM
-        MmzjJJIpmMR6yNIibsge5SUy7
-X-Received: by 2002:a37:9d04:: with SMTP id g4mr9419343qke.358.1606495454195;
-        Fri, 27 Nov 2020 08:44:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJydEvQKiS/17x/Cvd7NOY/yxXaR8v6isQTidB5yWEDYSbUF8gQewgYqaSQtYkwQ8mZrhHEgLw==
-X-Received: by 2002:a37:9d04:: with SMTP id g4mr9419325qke.358.1606495454006;
-        Fri, 27 Nov 2020 08:44:14 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id m68sm5267180qkb.47.2020.11.27.08.44.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 08:44:13 -0800 (PST)
-From:   trix@redhat.com
-To:     edubezval@gmail.com, mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        gustavoars@kernel.org, sakari.ailus@linux.intel.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] [media] si4713: remove trailing semicolon in macro definition
-Date:   Fri, 27 Nov 2020 08:44:08 -0800
-Message-Id: <20201127164408.2682460-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PNkdNVtybM7ASEm6wqIScGKsEVgtoQgmQQZVfx855PU=;
+        b=MMFGmxtC/nGYZLxOu8F8fUwwtgU54cHXiqMUmumaJkmQhjZQ18owwsJYaQ4JGa9o0r
+         geKe639G9dBqamEz5ljvcvHi8VUF8doG9rbrpwZ72onEaylKHpzCx0TMMD5epn6SINtF
+         ZqlawvGh5DDZ0coHC3d6mlPF87f6STkegeWfxofWBSoslU5ejd22IZEVQbqN5bZ7Dz0x
+         Gdb9Mtkw7MksnJN06AelN9ZcLQYrdJMc9cRMI2NQTuSc1XfSV6nv0i5BjKcdbdwztnmc
+         QLjnU75lj5C1pnntX/C3e5bDBXSnqjiTfsa2kPgZVGifdGyrCMLGItUbwLm0wAexQC5o
+         7L2Q==
+X-Gm-Message-State: AOAM532sKo6uHA8EIIs6GyE9s2Jlw3D9zm0zRVMqOIgyHJ0t67OjeIxZ
+        OxH7TbTL27+eus5OOB5Pz0XnHyJXDnxK4ppZv7Q=
+X-Google-Smtp-Source: ABdhPJx+9Sh6yRQ40w4dQ0pplbEXiAcCxvTWO/rHlQT0V7qB0CCMd0abmN+DCNLBSZPwBf7tV6tVRhBWCicqXztQv+s=
+X-Received: by 2002:aca:4bc3:: with SMTP id y186mr6005674oia.153.1606495514466;
+ Fri, 27 Nov 2020 08:45:14 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1606495281.git.agx@sigxcpu.org> <a27f198a0fed19e52a380e59339105c4bf98c989.1606495281.git.agx@sigxcpu.org>
+In-Reply-To: <a27f198a0fed19e52a380e59339105c4bf98c989.1606495281.git.agx@sigxcpu.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 27 Nov 2020 17:45:03 +0100
+Message-ID: <CAMuHMdUK3gbHwR94BcjRBkNvdpQSJrMn0itrs65Ay5KqUCA-Hg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] arm64: defconfig: Enable more Librem 5 hardware
+To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Walle <michael@walle.cc>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Hi Guido,
 
-The macro use will already have a semicolon.
+Thanks for your patch!
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/media/radio/si4713/si4713.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Nov 27, 2020 at 5:42 PM Guido Günther <agx@sigxcpu.org> wrote:
+> This enables
+>
+> - CONFIG_BATTERY_MAX17042: battery chip
+> - CONFIG_CHARGER_BQ25980: charge controller
+> - CONFIG_DRM_PANEL_MANTIX_MLAF057WE5: LCD panel
+> - CONFIG_IMX_DCSS: 2nd dislay controller
 
-diff --git a/drivers/media/radio/si4713/si4713.c b/drivers/media/radio/si4713/si4713.c
-index 6afa7c3464ab..fcb4030b9091 100644
---- a/drivers/media/radio/si4713/si4713.c
-+++ b/drivers/media/radio/si4713/si4713.c
-@@ -86,7 +86,7 @@ MODULE_VERSION("0.0.1");
- #define check_command_failed(status)	(!(status & SI4713_CTS) || \
- 					(status & SI4713_ERR))
- /* mute definition */
--#define set_mute(p)	((p & 1) | ((p & 1) << 1));
-+#define set_mute(p)	((p & 1) | ((p & 1) << 1))
- 
- #ifdef DEBUG
- #define DBG_BUFFER(device, message, buffer, size)			\
+display
+
+> - CONFIG_LEDS_LM3692X: LCD backlight
+> - CONFIG_REGULATOR_TPS65132: regulator for the LCD panel
+> - CONFIG_TOUCHSCREEN_EDT_FT5X06: touch controller
+> - CONFIG_TYPEC_TPS6598X: USB PD controller
+> - CONFIG_VCNL4000: ambient light and proximiry sensor
+
+proximity
+
+>
+> as modules.
+>
+> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.18.4
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
