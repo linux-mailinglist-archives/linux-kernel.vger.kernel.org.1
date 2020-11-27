@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583C92C6B0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D60A2C6B0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732800AbgK0Rxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:53:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54626 "EHLO
+        id S1732838AbgK0Rzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:55:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54098 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732451AbgK0Rxr (ORCPT
+        by vger.kernel.org with ESMTP id S1732436AbgK0Rzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:53:47 -0500
+        Fri, 27 Nov 2020 12:55:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606499626;
+        s=mimecast20190719; t=1606499740;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=qO38NSfxZWa4WAPrmeDJabPo497l111qJuCqqB4b5gM=;
-        b=ilrzeF9L+hMVunmIDhikPz4N5ATQ0xoIInI71bkwLOu0cao+G4EHxes4fUvV1QbnNxmwEi
-        d2R+iCH8D3OdCnnZptEjrcUv9xeWNiZKDKd2sfSv9GwwcKVSdSjCyXZ9cgl3iXBKQZAKTW
-        R7D845PuDghDHLI3xruzkBAdlhaYSTw=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-2THvNVxcOn-wVgOmJPWQcA-1; Fri, 27 Nov 2020 12:53:42 -0500
-X-MC-Unique: 2THvNVxcOn-wVgOmJPWQcA-1
-Received: by mail-qv1-f69.google.com with SMTP id b9so3452759qvj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:42 -0800 (PST)
+         to:to:cc:cc; bh=Br/IPbdHx/OaYg6xCtsKtihEPu1TMwZ+6MkhSnyxsRs=;
+        b=OlqeNknsyJOgPCiYYSBRTA1H+W8HdCu3r7pnY6q3humVeUUUN0epS5Txaj2k7smHLoJUsU
+        OjDWByJeZc0ecyFyPUVGFzh+EGAOM3cdS/UiFDI6/RcnUHrfMY3HTbxZVQTdmx8M5Xcfsx
+        7os+S7JElacrYsG1hPt69nx4xeRbU78=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-101-0ZPn9j7nMjC-5JWdCvVu_A-1; Fri, 27 Nov 2020 12:55:38 -0500
+X-MC-Unique: 0ZPn9j7nMjC-5JWdCvVu_A-1
+Received: by mail-qt1-f200.google.com with SMTP id i20so3662765qtr.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:55:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qO38NSfxZWa4WAPrmeDJabPo497l111qJuCqqB4b5gM=;
-        b=FaLhN76TDLcdEAUEUvDqXVaX+NgqO52mEmaAOeBCEoJdvX4iadyDR5XiqIV0ANbGyY
-         BOz4yx6JnUAYGDQ/qjAXtEsOJ/5HM1Rlf2t+7WS6txy4Nh2BskWXSXwdyzs1ya/1+VeE
-         mqmKYneMI4KOlKQnOgj4yEVsA9bGnKDYObkI3Q26yhgIoAUz5l09dow+fz5ZLZ/8Fo1T
-         7EeskEn1mhP1wDfilbiPBUPEnfcTjknWnAoHHEDk3zrXSwhPxEPxczHT7UtPIwAltS89
-         qszmUw3TJv6URCB28Z5nVzqBs1pX9yPU7QYW758Py+SmQtOWr8dQL3aeF0Vt/nBbUGdz
-         Jw7g==
-X-Gm-Message-State: AOAM531C6kJOb2zWgZPP4H3z+ZxA5xN/5OtTdba+/2kMrJnr7IG0cAd+
-        EslmWnCXQPPN8hotTAE//DdtVLT/upuFaz0siHFXruGKqpPv7m+slRB0jzkjC1I/gpsK3YyPHJn
-        A9iUsF87NPPx4rTIUUbWtQqUO
-X-Received: by 2002:a05:6214:5cd:: with SMTP id t13mr9508299qvz.56.1606499622093;
-        Fri, 27 Nov 2020 09:53:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwfH2VXvTvUj9haJRf6OI04GWQ+Bz6Iu0NjOaH9CUGPlGii6j/onExY9XycfKuzXq4xhmDsZA==
-X-Received: by 2002:a05:6214:5cd:: with SMTP id t13mr9508283qvz.56.1606499621938;
-        Fri, 27 Nov 2020 09:53:41 -0800 (PST)
+        bh=Br/IPbdHx/OaYg6xCtsKtihEPu1TMwZ+6MkhSnyxsRs=;
+        b=TbUukwMJrSuWyIROHVqYTw0KooAVN1dbnSCdx/IjFJa9TP+rCjU0swywdm83B6C8Sb
+         1senhNLjjPb5jG5S34S1YZjgBQnVSAPYMCV2ySFe1ZCt8G7KB0geu3uddwjrSxykPl5k
+         MlH78qcV2OWJngZQzBpOROgtmNDhfZauezs1u6ft+5id8ZP50MKk8R/vWyWUJKA4OhT0
+         gDCiHTFxfBNJaoGLHce5jGVCHVr+YuKeBIxoKWjgzFIYFpH+y0Gn3bGVM6hKJjqCsfvv
+         eiKTrN/U1ZlMHbyQwho3uWPbyOiMyOo2E8RZTBGGGcG0pc8aZV6StpKPO816emlF8gsh
+         inmg==
+X-Gm-Message-State: AOAM531514dtlJLJ6waSyjDXath+MxoVWPXLm26fs8Ya8ZRdz8AoU2jD
+        f8zn1ZLccyppvihvxnJ8xVDQZWW9zufr3/t8jehsHYz1ZpmJBkj+mOWR0HzgYK8eGHDyGxyQX2X
+        7jv/BRwdY+T6Toem/Nl/nU1cQ
+X-Received: by 2002:a05:620a:a9a:: with SMTP id v26mr9511050qkg.56.1606499737598;
+        Fri, 27 Nov 2020 09:55:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw2L15Xpt+pzKI2tQJ1Mja1bZVxZ9cJq3+yTQqjAUjwGC9JUF+NSrylLZnhZYHe6hp4SZgoPA==
+X-Received: by 2002:a05:620a:a9a:: with SMTP id v26mr9511031qkg.56.1606499737423;
+        Fri, 27 Nov 2020 09:55:37 -0800 (PST)
 Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id t126sm6425935qkh.133.2020.11.27.09.53.40
+        by smtp.gmail.com with ESMTPSA id r48sm6421675qtr.21.2020.11.27.09.55.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 09:53:41 -0800 (PST)
+        Fri, 27 Nov 2020 09:55:36 -0800 (PST)
 From:   trix@redhat.com
-To:     ath9k-devel@qca.qualcomm.com, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
+To:     chunkeey@googlemail.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org
 Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] net: ath9k: remove trailing semicolon in macro definition
-Date:   Fri, 27 Nov 2020 09:53:36 -0800
-Message-Id: <20201127175336.2752730-1-trix@redhat.com>
+Subject: [PATCH] net: carl9170: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 09:55:31 -0800
+Message-Id: <20201127175531.2754461-1-trix@redhat.com>
 X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -66,36 +66,31 @@ The macro use will already have a semicolon.
 
 Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/net/wireless/ath/ath9k/common-debug.c | 2 +-
- drivers/net/wireless/ath/ath9k/dfs_debug.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/carl9170/debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/common-debug.c b/drivers/net/wireless/ath/ath9k/common-debug.c
-index 53ca4b063eb9..7aefb79f6bed 100644
---- a/drivers/net/wireless/ath/ath9k/common-debug.c
-+++ b/drivers/net/wireless/ath/ath9k/common-debug.c
-@@ -189,7 +189,7 @@ static ssize_t read_file_phy_err(struct file *file, char __user *user_buf,
- {
- #define PHY_ERR(s, p) \
- 	len += scnprintf(buf + len, size - len, "%22s : %10u\n", s, \
--			 rxstats->phy_err_stats[p]);
-+			 rxstats->phy_err_stats[p])
+diff --git a/drivers/net/wireless/ath/carl9170/debug.c b/drivers/net/wireless/ath/carl9170/debug.c
+index 19009aafc4e1..bb40889d7c72 100644
+--- a/drivers/net/wireless/ath/carl9170/debug.c
++++ b/drivers/net/wireless/ath/carl9170/debug.c
+@@ -45,7 +45,7 @@
+ #include "cmd.h"
  
- 	struct ath_rx_stats *rxstats = file->private_data;
- 	char *buf;
-diff --git a/drivers/net/wireless/ath/ath9k/dfs_debug.c b/drivers/net/wireless/ath/ath9k/dfs_debug.c
-index 3251c9abe270..2a79c2fa8415 100644
---- a/drivers/net/wireless/ath/ath9k/dfs_debug.c
-+++ b/drivers/net/wireless/ath/ath9k/dfs_debug.c
-@@ -26,7 +26,7 @@ static struct ath_dfs_pool_stats dfs_pool_stats = { 0 };
+ #define ADD(buf, off, max, fmt, args...)				\
+-	off += scnprintf(&buf[off], max - off, fmt, ##args);
++	off += scnprintf(&buf[off], max - off, fmt, ##args)
  
- #define ATH9K_DFS_STAT(s, p) \
- 	len += scnprintf(buf + len, size - len, "%28s : %10u\n", s, \
--			 sc->debug.stats.dfs_stats.p);
-+			 sc->debug.stats.dfs_stats.p)
- #define ATH9K_DFS_POOL_STAT(s, p) \
- 	len += scnprintf(buf + len, size - len, "%28s : %10u\n", s, \
- 			 dfs_pool_stats.p);
+ 
+ struct carl9170_debugfs_fops {
+@@ -818,7 +818,7 @@ void carl9170_debugfs_register(struct ar9170 *ar)
+ #define DEBUGFS_ADD(name)						\
+ 	debugfs_create_file(#name, carl_debugfs_##name ##_ops.attr,	\
+ 			    ar->debug_dir, ar,				\
+-			    &carl_debugfs_##name ## _ops.fops);
++			    &carl_debugfs_##name ## _ops.fops)
+ 
+ 	DEBUGFS_ADD(usb_tx_anch_urbs);
+ 	DEBUGFS_ADD(usb_rx_pool_urbs);
 -- 
 2.18.4
 
