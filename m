@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396D42C63DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 12:23:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9A92C63E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 12:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729580AbgK0LXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 06:23:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727232AbgK0LXh (ORCPT
+        id S1727737AbgK0LZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 06:25:59 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:28591 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726250AbgK0LZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 06:23:37 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2244C0613D1;
-        Fri, 27 Nov 2020 03:23:36 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id m6so5194946wrg.7;
-        Fri, 27 Nov 2020 03:23:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LhhiEW4KSlNFZUbpyyVfomsLPj+WD51ZBQLOEOaXXA4=;
-        b=VtMIQeonz59RDuOkHzr0iTf6DwQwS647PwRLUPfmoqqVOmnzv6KGmYvJ17YWGeOIq3
-         Nqu2yCrgPZw9CEYtmxwL6wY8BKOUmEr3ZF2jr8l7SZrkpgMVll+OpErOCwsGVoWJhsr3
-         rZQDX9Nz3dlAE2kc3o57fDUVfeacBzA/mWByrHSnx6KVZ+YFhEnDKanZ9sMawAjSc2U/
-         xxYAJvSLxg+yZMkFmStdOS66jcl+whTAwofjIvBZtQJTbO8HvqKXUC3Lif2Cxg5YTaWc
-         pnLv8GRqnAAj8YtqRiWoagqRTpTM5n7nPuitC0RhvUPK8CkRyOM5o1wvY967JJBSue5c
-         rlyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LhhiEW4KSlNFZUbpyyVfomsLPj+WD51ZBQLOEOaXXA4=;
-        b=rNpfm67+baobM2yxXZ4fa8Efx4cCaMbiLj0ln3yEGWZ47rJBfF7xZ+Bx40m4v6xsBp
-         OnWAxD5X8QyrardF7jZybNfgdxlg8UvbpSlzmosrMACLL8tTDW413DESpXiECAhHw4Ua
-         rpCCJOfOA7X2n5pgsNnvverQj+Ue364ZvoTLKTXVZd0952x4HHVG02/5UF2KjgMs2qup
-         8aQD2rEkODip747Lpk2Rmq/suwzeyS4h7gOxAuREl3/VV/sVvz3GfGW/3oGmqN+MkHkR
-         +YkX7Pf69WwwXMuC3i9Cl8OeDjG6ggUWtT6lvJgUix7WwQjroS/3nI3oc79dJCeIjCC7
-         b+AQ==
-X-Gm-Message-State: AOAM531tPzyJfRxwHVyQ2Eql72txswK0ng9VWpAzbqdZ6jG0kPCR4i3+
-        /+ULXBHXTIjxTa25bdBo8tY=
-X-Google-Smtp-Source: ABdhPJxY/2/QR/4yr5F1mQgU87OQIFws27IhKyl9W840Q9+BZaUu+NSpgPsf2FlkbuSiMwOT17tYFw==
-X-Received: by 2002:a5d:49ce:: with SMTP id t14mr9851504wrs.75.1606476215624;
-        Fri, 27 Nov 2020 03:23:35 -0800 (PST)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id v6sm15302413wrb.53.2020.11.27.03.23.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 03:23:34 -0800 (PST)
-Subject: Re: [PATCH 0/3] arm64: dts: mediatek: Add dsi and display support for
- MT8183 based boards
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20201127104930.1981497-1-enric.balletbo@collabora.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <96ae2394-ed66-f233-e858-00890813793c@gmail.com>
-Date:   Fri, 27 Nov 2020 12:23:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 27 Nov 2020 06:25:59 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-260-gbkyh3AuOmu58dLY9RyzNg-1; Fri, 27 Nov 2020 11:25:54 +0000
+X-MC-Unique: gbkyh3AuOmu58dLY9RyzNg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 27 Nov 2020 11:25:53 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 27 Nov 2020 11:25:53 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andrew Cooper' <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, Akinobu Mita <akinobu.mita@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] x86/cpu: correct values for GDT_ENTRY_INIT
+Thread-Topic: [PATCH] x86/cpu: correct values for GDT_ENTRY_INIT
+Thread-Index: AQHWxE+DFGTCNd4wOUqkA7q3pMvz06nb06qg
+Date:   Fri, 27 Nov 2020 11:25:53 +0000
+Message-ID: <b4d2750b3d094aac858118aef611a135@AcuMS.aculab.com>
+References: <20201126115459.28980-1-lukas.bulwahn@gmail.com>
+ <947b02eb-536f-16a0-fbb1-87b62ab8c13e@citrix.com>
+ <CAKXUXMybmC=JE3uDnekAuHfRUZcrzSLJ04xB3nR=3BqHCsNVqA@mail.gmail.com>
+ <CALCETrUyoaJyJ8mGpq9bdanKKfHgjg_1B=N0rtmuHCmCP9Q9=g@mail.gmail.com>
+ <3d9f41b1-9687-4aae-ad7d-2e38a33132ba@citrix.com>
+In-Reply-To: <3d9f41b1-9687-4aae-ad7d-2e38a33132ba@citrix.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20201127104930.1981497-1-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RnJvbTogQW5kcmV3IENvb3Blcg0KPiBTZW50OiAyNiBOb3ZlbWJlciAyMDIwIDIzOjUyDQo+IA0K
+PiBPbiAyNi8xMS8yMDIwIDE5OjE1LCBBbmR5IEx1dG9taXJza2kgd3JvdGU6DQo+ID4gT24gVGh1
+LCBOb3YgMjYsIDIwMjAgYXQgMTE6MDcgQU0gTHVrYXMgQnVsd2FobiA8bHVrYXMuYnVsd2FobkBn
+bWFpbC5jb20+IHdyb3RlOg0KPiA+PiBPbiBUaHUsIE5vdiAyNiwgMjAyMCBhdCA2OjE2IFBNIEFu
+ZHJldyBDb29wZXIgPGFuZHJldy5jb29wZXIzQGNpdHJpeC5jb20+IHdyb3RlOg0KPiA+Pj4gT24g
+MjYvMTEvMjAyMCAxMTo1NCwgTHVrYXMgQnVsd2FobiB3cm90ZToNCj4gPj4+PiBDb21taXQgMWU1
+ZGUxODI3OGU2ICgieDg2OiBJbnRyb2R1Y2UgR0RUX0VOVFJZX0lOSVQoKSIpIHVuaW50ZW50aW9u
+YWxseQ0KPiA+Pj4+IHRyYW5zZm9ybWVkIGEgZmV3IDB4ZmZmZiB2YWx1ZXMgdG8gMHhmZmZmZiAo
+bm90ZTogZml2ZSB0aW1lcyAiZiIgaW5zdGVhZCBvZg0KPiA+Pj4+IGZvdXIpIGFzIHBhcnQgb2Yg
+dGhlIHJlZmFjdG9yaW5nLg0KPiA+Pj4gVGhlIHRyYW5zZm9ybWF0aW9uIGluIHRoYXQgY2hhbmdl
+IGlzIGNvcnJlY3QuDQo+ID4+Pg0KPiA+Pj4gU2VnbWVudCBiYXNlcyBhcmUgMjAgYml0cyB3aWRl
+IGluIHg4NiwNCj4gDQo+IEkgb2YgY291cnNlIG1lYW50IHNlZ21lbnQgbGltaXRzIGhlcmUsIHJh
+dGhlciB0aGFuIGJhc2VzLg0KPiANCj4gPj4+IERvZXM6DQo+ID4+Pg0KPiA+Pj4gZGlmZiAtLWdp
+dCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL2Rlc2NfZGVmcy5oDQo+ID4+PiBiL2FyY2gveDg2L2lu
+Y2x1ZGUvYXNtL2Rlc2NfZGVmcy5oDQo+ID4+PiBpbmRleCBmN2U3MDk5YWY1OTUuLjk1NjFmM2M2
+NmU5ZSAxMDA2NDQNCj4gPj4+IC0tLSBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL2Rlc2NfZGVmcy5o
+DQo+ID4+PiArKysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9kZXNjX2RlZnMuaA0KPiA+Pj4gQEAg
+LTIyLDcgKzIyLDcgQEAgc3RydWN0IGRlc2Nfc3RydWN0IHsNCj4gPj4+DQo+ID4+PiAgI2RlZmlu
+ZSBHRFRfRU5UUllfSU5JVChmbGFncywgYmFzZSwgbGltaXQpICAgICAgICAgICAgICAgICAgICAg
+XA0KPiA+Pj4gICAgICAgICB7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIFwNCj4gPj4+IC0gICAgICAgICAgICAgICAubGltaXQwICAgICAgICAg
+PSAodTE2KSAobGltaXQpLCAgICAgICAgICAgICAgICBcDQo+ID4+PiArICAgICAgICAgICAgICAg
+LmxpbWl0MCAgICAgICAgID0gKHUxNikgKGxpbWl0KSAmIDB4RkZGRiwgICAgICAgXA0KPiA+Pj4g
+ICAgICAgICAgICAgICAgIC5saW1pdDEgICAgICAgICA9ICgobGltaXQpID4+IDE2KSAmIDB4MEYs
+ICAgICAgIFwNCj4gPj4+ICAgICAgICAgICAgICAgICAuYmFzZTAgICAgICAgICAgPSAodTE2KSAo
+YmFzZSksICAgICAgICAgICAgICAgICBcDQo+ID4+PiAgICAgICAgICAgICAgICAgLmJhc2UxICAg
+ICAgICAgID0gKChiYXNlKSA+PiAxNikgJiAweEZGLCAgICAgICAgXA0KPiA+Pj4NCj4gPj4+IGZp
+eCB0aGUgd2FybmluZz8NCj4gPj4+DQo+ID4+IFRoYW5rcywgSSB3aWxsIHRyeSB0aGF0IG91dCwg
+YW5kIHRyeSBjb21waWxpbmcgYSAzMi1iaXQga2VybmVsIGFzIHdlbGwuDQo+ID4gWW91IHNob3Vs
+ZCBhbHNvIHRyeSBjb21wYXJpbmcgdGhlIG9iamR1bXAgb3V0cHV0IGJlZm9yZSBhbmQgYWZ0ZXIg
+eW91cg0KPiA+IHBhdGNoLiAgb2JqZHVtcCAtRCB3aWxsIHByb2R1Y2UgYml6YXJyZSBvdXRwdXQg
+YnV0IHNob3VsZCB3b3JrLg0KPiANCj4gRXhwYW5kaW5nIG9uIHRoaXMgYSBsaXR0bGUsIGlmIHRo
+YXQgZG9lcyBpbmRlZWQgZml4IHRoZSBzcGFyc2Ugd2FybmluZywNCj4gdGhlbiBJJ2QgbWFrZSBh
+biBhcmd1bWVudCBmb3IgdGhpcyBiZWluZyBhIGJ1ZyBpbiBzcGFyc2UuwqAgRXhwbGljaXRseQ0K
+PiBjYXN0aW5nIHRvIHUxNiBpcyBzZW1hbnRpY2FsbHkgYW5kIGludGVudGlvbmFsbHkgaWRlbnRp
+Y2FsIHRvICYgMHhmZmZmLg0KDQpFdmVuIHRoZSAodTE2KSBjYXN0IGlzIHBvaW50bGVzcy4NCkkg
+ZG9uJ3QgdGhpbmsgdGhlIGN1cnJlbnQgdmVyc2lvbnMgb2YgZ2NjIGFyZSBhcyBzdHVwaWQgYXMg
+b2xkIG9uZXMsDQpidXQgSSBoYXZlIHNlZW46DQoJKmNwID0gKGNoYXIpKHggJiAweGZmKTsNCmdl
+bmVyYXRlIGNvZGUgdGhhdCBtYXNrcyB3aXRoIDB4ZmYsIG1hc2tzIHdpdGggMHhmZiBhZ2FpbiwN
+CmFuZCB0aGVuIGRvZXMgYSBieXRlIHN0b3JlLg0KDQpJIGhhdmUgYSBzdHJvbmcgZGlzbGlrZSBv
+ZiB0aGUgdXNlIG9mIGludGVnZXIgY2FzdHMgdG8gc2lsZW5jZQ0KY29tcGlsZXIgd2FybmluZ3Mu
+DQpDYXN0cyBzaG91bGQgYmUgcmFyZSBiZWNhdXNlIHRoZXkgY2FuIGhpZGUgdmVyeSBuYXN0eSBi
+dWdzLg0KQWx0aG91Z2ggdGhlICdwb2ludGVyIHRvIGludGVnZXIgb2YgZGlmZmVyZW50IHNpemUn
+IHdhcm5pbmcNCmRvZXMgcGljayB1cCBtb3N0IG9mIHRoZSBiYWQgb25lcy4NCg0KCURhdmlkDQoN
+Ci0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJt
+LCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChX
+YWxlcykNCg==
 
-
-On 27/11/2020 11:49, Enric Balletbo i Serra wrote:
-> Dear all,
-> 
-> The following patches add the required nodes to enable dsi and display
-> support for MT8183 based boards. The patches were tested on a Lenovo
-> Ideapad Duet with an out-of-tree patch that enables the display for that
-> board.
-
-Applied to v5.10-next/dts64
-
-Thanks!
-
-> 
-> The patches depends on [1].
-> 
-> [1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=374013
-> 
-> Enric Balletbo i Serra (2):
->    arm64: dts: mt8183: Add iommu and larb nodes
->    arm64: dts: mt8183: Add display nodes for MT8183
-> 
-> Jitao Shi (1):
->    arm64: dts: mt8183: Add dsi node
-> 
->   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 224 +++++++++++++++++++++++
->   1 file changed, 224 insertions(+)
-> 
