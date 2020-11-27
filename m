@@ -2,179 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862AD2C6E1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6452C6E2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730143AbgK1BMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 20:12:46 -0500
-Received: from mga11.intel.com ([192.55.52.93]:16754 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730049AbgK1BLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 20:11:41 -0500
-IronPort-SDR: 8dSP7UvS4tXevsJFQrPJ+TXRa5oMoZbYX9fDGT2VCyBB3lzbKqLXYS9nycGEBtuhdRUjwDbuM1
- e0VWuGuhfjiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9818"; a="168943814"
-X-IronPort-AV: E=Sophos;i="5.78,376,1599548400"; 
-   d="scan'208";a="168943814"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2020 17:11:11 -0800
-IronPort-SDR: rnRMG4AtMGWNBDIw9Biz6/gq3iC0HpOxx/7JZyrTp7YO+f32+e80gYu4FAhojBlBhN9Pvet8vj
- y830h8w6bPWw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,376,1599548400"; 
-   d="scan'208";a="536193349"
-Received: from lkp-server01.sh.intel.com (HELO b5888d13d5a5) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 27 Nov 2020 17:11:09 -0800
-Received: from kbuild by b5888d13d5a5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kiolZ-0000EE-87; Sat, 28 Nov 2020 01:11:09 +0000
-Date:   Sat, 28 Nov 2020 09:10:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 638920a66a17c8e1f4415cbab0d49dc4a344c2a7
-Message-ID: <5fc1a38e.RIKTORb2WuBQ1BCC%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1730224AbgK1BcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 20:32:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42194 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731098AbgK0T72 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 14:59:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606507152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=3cBR/GAHSZu/mG/kVh3pbERrLW8qnpOV0nfvW9Q+mXU=;
+        b=UoTHEUklWlpqlQbQUiYQFUAeivaC/NIiouxNwSjnun3K6Nm7GcyhOKdkk8aZ71VSiWHmf4
+        hZL733RRuxvgiz7i9cjA2O0BvQEkzwMojK2J08gdIvmOupR/FMmwwA+/PlUkrYw46W1vUC
+        NWtgSf6OS162AJ8cMQiu+ywaKJBUV08=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-ZJL3POv-MfS3jbLlZz3qrQ-1; Fri, 27 Nov 2020 14:20:40 -0500
+X-MC-Unique: ZJL3POv-MfS3jbLlZz3qrQ-1
+Received: by mail-qk1-f200.google.com with SMTP id d132so4253235qke.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:20:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3cBR/GAHSZu/mG/kVh3pbERrLW8qnpOV0nfvW9Q+mXU=;
+        b=Ft7fmcqRVunV3lNImfJZk0JDhUO3ZScsLkb2xxPfFhvosq94irfuyMGM1y92d/I8Ii
+         wPVUz7LhAyPYfzx6ieIc3US5avxtjcA9qQzP0okaBE2YCT6kjyKe+DPrzcjgp4LI5UZC
+         siqKIH+NaqlDKAN3+yjqHVlRWZZZvrsrEaefWrjJ013JLav95Le+ZtF1V47g6rv/8um0
+         BfcEcqjMbTUWxQ7M/cnrf0wgCvDIAC1Pg5TYebRhka+hos4Utpgn+XglSfX3Y+SkouxA
+         ekj253G4coE3GLY4lSC8Hdcpd3mbJHw6MlNFzuavc+7sBk6BeE1DlOiWFTBdVS+fSl+A
+         cw/w==
+X-Gm-Message-State: AOAM53114KbSn6HF0Jf8BrvKwIxgFplM2R2cw9h6uxnWoWLNjVnRbTwn
+        3XTZfZUtFm/qnwEL2gfRfAJiPJRp6ZV5azNd9yKhh7raT2h9vSf4Yp31ecMMJZqqNnTejg+aQjT
+        K13jvMMhtnyecXf/nKwzdk7Nc
+X-Received: by 2002:aed:2f81:: with SMTP id m1mr9264791qtd.209.1606504840012;
+        Fri, 27 Nov 2020 11:20:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwow2CpnnXkAmPv5elf6jRYc2fUaRyRZggyU2yVjFNSThGuDv/h+bB3I0vDIjnpmjS8h7gaFA==
+X-Received: by 2002:aed:2f81:: with SMTP id m1mr9264774qtd.209.1606504839841;
+        Fri, 27 Nov 2020 11:20:39 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id h4sm7327013qkh.93.2020.11.27.11.20.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 11:20:39 -0800 (PST)
+From:   trix@redhat.com
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] netfilter: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 11:20:34 -0800
+Message-Id: <20201127192034.2858213-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
-branch HEAD: 638920a66a17c8e1f4415cbab0d49dc4a344c2a7  x86/PCI: Make a kernel-doc comment a normal one
+From: Tom Rix <trix@redhat.com>
 
-elapsed time: 723m
+The macro use will already have a semicolon.
 
-configs tested: 115
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                           efm32_defconfig
-powerpc                    sam440ep_defconfig
-m68k                       m5475evb_defconfig
-xtensa                    smp_lx200_defconfig
-arm                         mv78xx0_defconfig
-arm                            qcom_defconfig
-m68k                          atari_defconfig
-arm                           omap1_defconfig
-mips                      pistachio_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                      ppc40x_defconfig
-arm                            dove_defconfig
-arm                      jornada720_defconfig
-powerpc                 mpc837x_rdb_defconfig
-nds32                               defconfig
-arm                         cm_x300_defconfig
-mips                          malta_defconfig
-arm                          pxa168_defconfig
-openrisc                 simple_smp_defconfig
-mips                         rt305x_defconfig
-sh                             sh03_defconfig
-sparc64                             defconfig
-mips                            gpr_defconfig
-arm                  colibri_pxa300_defconfig
-arm                           corgi_defconfig
-sh                          kfr2r09_defconfig
-sh                          sdk7786_defconfig
-mips                           ip22_defconfig
-sh                           se7722_defconfig
-powerpc                 linkstation_defconfig
-arm                        oxnas_v6_defconfig
-riscv                          rv32_defconfig
-sh                          rsk7201_defconfig
-mips                malta_kvm_guest_defconfig
-powerpc                     tqm8541_defconfig
-sh                         ap325rxa_defconfig
-openrisc                            defconfig
-powerpc                     pseries_defconfig
-mips                       lemote2f_defconfig
-h8300                       h8s-sim_defconfig
-arm                          pxa3xx_defconfig
-ia64                             alldefconfig
-sh                           se7721_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201127
-i386                 randconfig-a003-20201127
-i386                 randconfig-a002-20201127
-i386                 randconfig-a005-20201127
-i386                 randconfig-a001-20201127
-i386                 randconfig-a006-20201127
-x86_64               randconfig-a015-20201127
-x86_64               randconfig-a011-20201127
-x86_64               randconfig-a014-20201127
-x86_64               randconfig-a016-20201127
-x86_64               randconfig-a012-20201127
-x86_64               randconfig-a013-20201127
-i386                 randconfig-a012-20201127
-i386                 randconfig-a013-20201127
-i386                 randconfig-a011-20201127
-i386                 randconfig-a016-20201127
-i386                 randconfig-a014-20201127
-i386                 randconfig-a015-20201127
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20201127
-x86_64               randconfig-a003-20201127
-x86_64               randconfig-a004-20201127
-x86_64               randconfig-a005-20201127
-x86_64               randconfig-a002-20201127
-x86_64               randconfig-a001-20201127
-
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ include/net/netfilter/nf_tables_offload.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/net/netfilter/nf_tables_offload.h b/include/net/netfilter/nf_tables_offload.h
+index 1d34fe154fe0..ae8160b62b10 100644
+--- a/include/net/netfilter/nf_tables_offload.h
++++ b/include/net/netfilter/nf_tables_offload.h
+@@ -81,7 +81,7 @@ int nft_flow_rule_offload_commit(struct net *net);
+ 
+ #define NFT_OFFLOAD_MATCH_EXACT(__key, __base, __field, __len, __reg)	\
+ 	NFT_OFFLOAD_MATCH(__key, __base, __field, __len, __reg)		\
+-	memset(&(__reg)->mask, 0xff, (__reg)->len);
++	memset(&(__reg)->mask, 0xff, (__reg)->len)
+ 
+ int nft_chain_offload_priority(struct nft_base_chain *basechain);
+ 
+-- 
+2.18.4
+
