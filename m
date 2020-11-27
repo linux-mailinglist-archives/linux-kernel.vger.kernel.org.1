@@ -2,124 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4391A2C6825
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD3D2C6838
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:51:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731069AbgK0Oro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 09:47:44 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:42800 "EHLO m42-4.mailgun.net"
+        id S1731013AbgK0Oun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 09:50:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730908AbgK0Orn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 09:47:43 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606488463; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=HUJXvp284SgEwZROfQs9oj7GiVOC/2yMIUq8pK3JA5U=; b=EekN9MMhe1XylyED16a7HTPA2g+9KcsgfyVflkmfHxH3+QhFxreUmllaxMBPEHgibHY0Uw3V
- Mtb9ggGun4MTuzCP8M5ydG+M6JAQNAnf/dI0Z5gQAN+cCXRDW3b+rror6w0bthzm8t1NyXCB
- cW2/OI2Qqru8Rj7xpzBnlMMj4BY=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5fc1118c7f0cfa6a16f331c2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 14:47:40
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C3C3BC43464; Fri, 27 Nov 2020 14:47:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1730935AbgK0Oun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 09:50:43 -0500
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CEDF3C433C6;
-        Fri, 27 Nov 2020 14:47:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AAF0221EB;
+        Fri, 27 Nov 2020 14:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606488642;
+        bh=SqwkfWzTNnQQCwlRXK/BH4vTy85g339B51XDPUrpvL4=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=KC0PTcamUlxyFCrGUCrCaStWXSqoQub7m8wY8i99gjrKYtBMTIwHLgbVOQ5d+T7jS
+         ceITRcewrCJRk7ybV55CwXYwIO6vTlaPVHxRGyPKF3xRsHeDOEFYi0RLIPzm2aLMj7
+         av5PNgZ6fBIwjWM6x9UufyWkHjEh7WO4i1xE8MN0=
+Date:   Fri, 27 Nov 2020 15:50:39 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Pascal Giard <pascal.giard@etsmtl.ca>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sanjay Govind <sanjay.govind9@gmail.com>
+Subject: Re: [PATCH v3] HID: sony: support for ghlive ps3/wii u dongles
+In-Reply-To: <20201126030230.304940-1-pascal.giard@etsmtl.ca>
+Message-ID: <nycvar.YFH.7.76.2011271550230.3441@cbobk.fhfr.pm>
+References: <20201108013818.12214-1-pascal.giard@etsmtl.ca> <20201126030230.304940-1-pascal.giard@etsmtl.ca>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 27 Nov 2020 20:17:38 +0530
-From:   mdalam@codeaurora.org
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Md Sadre Alam <mdalam@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH 2/5] mtd: rawnand: qcom: Add initial support for qspi nand
-Message-ID: <885854a4765c302d86b0d482c2c45abc@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-29 14:37, Boris Brezillon wrote:
-> Hello,
-> 
-> On Sat, 10 Oct 2020 11:01:39 +0530
-> Md Sadre Alam <mdalam@codeaurora.org> wrote:
-> 
->> This change will add initial support for qspi (serial nand).
->> 
->> QPIC Version v.2.0 onwards supports serial nand as well so this
->> change will initialize all required register to enable qspi (serial
->> nand).
->> 
->> This change is supporting very basic functionality of qspi nand flash.
->> 
->> 1. Reset device (Reset QSPI NAND device).
->> 
->> 2. Device detection (Read id QSPI NAND device).
-> 
-> Unfortunately, that's not going to work in the long term. You're
-> basically hacking the raw NAND framework to make SPI NANDs fit. I do
-> understand the rationale behind this decision (re-using the code for
-> ECC and probably other things), but that's not going to work. So I'd
-> recommend doing the following instead:
-> 
-> 1/ implement a SPI-mem controller driver
-> 2/ implement an ECC engine driver so the ECC logic can be shared
->    between the SPI controller and raw NAND controller drivers
-> 3/ convert the raw NAND driver to the exec_op() interface (none of
->    this hack would have been possible if the driver was using the new
->    API)
+On Wed, 25 Nov 2020, Pascal Giard wrote:
 
-Sorry for late reply. I think I mixup the serial nand support and 
-QPIC_V2.0 support.
-Only patches [2/5] mtd: rawnand: qcom: Add initial support for qspi nand
-and [5/5] mtd: rawnand: qcom: Add support for serial training. are for 
-serial
-nand. Other patches [3/5] mtd: rawnand: qcom: Read QPIC version &
-[4/5] mtd: rawnand: qcom: Enable support for erase,read & write for 
-serial nand.
-are to support QPIC_V2.0. In QPIC_V2.0 onwards some additional registers 
-and features
-got added. QPIC_NAND_READ_LOCATION_LAST_CW_n register got added to read 
-last code word.
-Page scope read & multi page read feature got added to read single and 
-multiple
-pages. QPIC_NAND_AUTO_STATUS_EN register got added to read status in 
-page scope read
-& multi page read etc.
+> This commit adds support for the Guitar Hero Live PS3 and Wii U dongles.
 
-I will take out QPIC_V2.0 support patches and will push it separately.
-For serial nand support few lines of codes are there around 50 lines
-to initalize QPIC serial block and serial training code. So can I put 
-this
-this as a separate file inside drivers/mtd/nand/raw/qpic_serial_nand.c. 
-Would it be ok ?
-Because there is no dedicated spi controller for serial nand. QPIC 
-controller having
-one serial interface block to deal with serial nand device.
+Applied, thanks Pascal.
 
-> 
-> Regards,
-> 
-> Boris
+-- 
+Jiri Kosina
+SUSE Labs
+
