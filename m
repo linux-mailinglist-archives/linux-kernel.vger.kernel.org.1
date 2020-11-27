@@ -2,218 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5B12C6CD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67892C6CD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731144AbgK0VIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 16:08:25 -0500
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:59036 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727468AbgK0U6J (ORCPT
+        id S1731355AbgK0VLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 16:11:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731180AbgK0VIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 15:58:09 -0500
-Received: from localhost.localdomain ([81.185.168.160])
-        by mwinf5d27 with ME
-        id xYy3230043Tyla903Yy370; Fri, 27 Nov 2020 21:58:05 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 27 Nov 2020 21:58:05 +0100
-X-ME-IP: 81.185.168.160
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mchehab@kernel.org, baijiaju@tsinghua.edu.cn, sean@mess.org,
-        allen.lkml@gmail.com, gustavoars@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: ttpci: switch from 'pci_' to 'dma_' API
-Date:   Fri, 27 Nov 2020 21:58:01 +0100
-Message-Id: <20201127205801.1436239-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Fri, 27 Nov 2020 16:08:39 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472DFC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 13:08:39 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id r24so8766029lfm.8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 13:08:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7vfZVmZni5y5pUNP8sVY5cN8ztemvM29CZjahGiwHqQ=;
+        b=WqK8NyLZKb1SW4dOsSVDrG/QHynP06jRwhGvHeAfNjwz73taRzqZPpeDqq/jDuoTKm
+         F4y+dEvEBYFKx9MkS1RO4Z+4qvMLnrri8AscPY9xgoFFJd4GcQlhoEug+Lpv/t+Ev2pk
+         J8LjsgbV/e9n4r6R0HHBFBNZ+Kz9IrgiPyyqk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7vfZVmZni5y5pUNP8sVY5cN8ztemvM29CZjahGiwHqQ=;
+        b=ti/QYrjlevPN45szzJQDgNwMrDscDIEDaL9YPYs+Y6TBlfPok0dHQGPOjwjpgGGYSr
+         AmlX1slgXFgwJrrvXMo+GbXeyrlXglNogilqGH+Bg68Fy9OPdNS7tFzFHRTKKTKpN8bk
+         TzAwgxeRm+9XxbpkQ+NC0ushpJYRGPdTzcSx42g+nZhF3Ph9AT5wJW72RVZWcv+etCGF
+         s+wj1lGV+03OB2EEs0xOJCEViAKVAmOHT4a5nl0zWtqRGD16q425xZihiwpOehBOHhrr
+         UeaJlFqfbfeI+5cH589Ynv6+M4r+55VJgBzUkoACEXEO6U6c4cmNQVycNuJ19qcIDzT2
+         B6ng==
+X-Gm-Message-State: AOAM531q6D205ofX+bTHmZImGhNqlXRGSHJcpPKo8dC4quGgUabB0J7N
+        QMtlmKgW5B0G2OWi/8PtRdILkNduC6lyXg==
+X-Google-Smtp-Source: ABdhPJywbXyq5yUp62tLLnKr441CdD0UNmsS1b2rlaet7ErsZFK5FSY5H2LW60U7LsSUECUTtJWKxA==
+X-Received: by 2002:a19:8112:: with SMTP id c18mr4313408lfd.455.1606511317516;
+        Fri, 27 Nov 2020 13:08:37 -0800 (PST)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id g6sm821709lfb.291.2020.11.27.13.08.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 13:08:36 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id f18so7279240ljg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 13:08:36 -0800 (PST)
+X-Received: by 2002:a05:651c:339:: with SMTP id b25mr4749311ljp.285.1606511315967;
+ Fri, 27 Nov 2020 13:08:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAK7LNASn4Si3=YhAPtc06wEqajpU0uBh46-4T10f=cHy=LY2iA@mail.gmail.com>
+In-Reply-To: <CAK7LNASn4Si3=YhAPtc06wEqajpU0uBh46-4T10f=cHy=LY2iA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 27 Nov 2020 13:08:19 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wihYvkKOcXWPjY7wN13DXbh3k2YX_6JxK_1cQ=krbi9kg@mail.gmail.com>
+Message-ID: <CAHk-=wihYvkKOcXWPjY7wN13DXbh3k2YX_6JxK_1cQ=krbi9kg@mail.gmail.com>
+Subject: Re: [GIT PULL 2/2] Kconfig updates for v5.10-rc1
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Just a quick note, because it's been a small annoyance for a while (I
+don't think it has anything to do with the 5.10 pull, I'm just
+responding to your latest pull request)..
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+I have "make allmodconfig" taking unnecessarily long, and I finally
+started asking myself "what's so expensive here". I'd expect it to be
+basically instantaneous on my machine, and it isn't.
 
-When memory is allocated in 'av7110_attach()' GFP_KERNEL can be used
-because this flag is already used above in the same function and no lock is
-taken in the between.
+And when I looked at it, I noticed that it re-compiled
+scripts/kconfig/conf every single time.
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+For no obvious reason I can see.
 
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+Doing a
 
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
+       make --trace allmodconfig
 
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
+shows a series of
 
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+    scripts/Makefile.host:112: target 'scripts/kconfig/....o' does not exist
 
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+lines, which is silly and wrong (they definitely exist), and I suspect
+it's due to some confusion about the build directory or similar.
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
+It's probably obvious to you once you start looking at it.
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
+And yeah, I realize I'm being silly. Doing a "time make allmodconfig"
+shows that it takes 1.5s to do. Should I care? No. But I feel that's
+an eternity for something that I think should just be instantaneous.
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/media/pci/ttpci/av7110.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/media/pci/ttpci/av7110.c b/drivers/media/pci/ttpci/av7110.c
-index 2f7069e19b78..d74ee0ecfb36 100644
---- a/drivers/media/pci/ttpci/av7110.c
-+++ b/drivers/media/pci/ttpci/av7110.c
-@@ -1250,7 +1250,8 @@ static void vpeirq(struct tasklet_struct *t)
- 		return;
- 
- 	/* Ensure streamed PCI data is synced to CPU */
--	pci_dma_sync_sg_for_cpu(budget->dev->pci, budget->pt.slist, budget->pt.nents, PCI_DMA_FROMDEVICE);
-+	dma_sync_sg_for_cpu(&budget->dev->pci->dev, budget->pt.slist,
-+			    budget->pt.nents, DMA_FROM_DEVICE);
- 
- #if 0
- 	/* track rps1 activity */
-@@ -2637,7 +2638,8 @@ static int av7110_attach(struct saa7146_dev* dev,
- 	av7110->arm_thread = NULL;
- 
- 	/* allocate and init buffers */
--	av7110->debi_virt = pci_alloc_consistent(pdev, 8192, &av7110->debi_bus);
-+	av7110->debi_virt = dma_alloc_coherent(&pdev->dev, 8192,
-+					       &av7110->debi_bus, GFP_KERNEL);
- 	if (!av7110->debi_virt)
- 		goto err_saa71466_vfree_4;
- 
-@@ -2726,7 +2728,8 @@ static int av7110_attach(struct saa7146_dev* dev,
- err_iobuf_vfree_6:
- 	vfree(av7110->iobuf);
- err_pci_free_5:
--	pci_free_consistent(pdev, 8192, av7110->debi_virt, av7110->debi_bus);
-+	dma_free_coherent(&pdev->dev, 8192, av7110->debi_virt,
-+			  av7110->debi_bus);
- err_saa71466_vfree_4:
- 	if (av7110->grabbing)
- 		saa7146_vfree_destroy_pgtable(pdev, av7110->grabbing, &av7110->pt);
-@@ -2779,8 +2782,8 @@ static int av7110_detach(struct saa7146_dev* saa)
- 	av7110_av_exit(av7110);
- 
- 	vfree(av7110->iobuf);
--	pci_free_consistent(saa->pci, 8192, av7110->debi_virt,
--			    av7110->debi_bus);
-+	dma_free_coherent(&saa->pci->dev, 8192, av7110->debi_virt,
-+			  av7110->debi_bus);
- 
- 	i2c_del_adapter(&av7110->i2c_adap);
- 
--- 
-2.27.0
-
+                Linus
