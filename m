@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73ADB2C6AFF
+	by mail.lfdr.de (Postfix) with ESMTP id E48CA2C6B00
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732673AbgK0RxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:53:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
+        id S1732690AbgK0RxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:53:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732435AbgK0RxI (ORCPT
+        with ESMTP id S1732663AbgK0RxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:53:08 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F694C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:08 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id s2so3011622plr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:08 -0800 (PST)
+        Fri, 27 Nov 2020 12:53:09 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B091C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:09 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t3so4860176pgi.11
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dIDb70TVBZgre0o2Y2c30VS9W3UnJeMILhzgcalu4cA=;
-        b=J9FseNlQZNBEdC9FggIZ/qXHGNym9mg9AX+5msPMwH9e7HGUSu9IfSodJSEBqDUSZP
-         FoIjq5CePZg7k1LRHI4QyWvq7zaxqSKNl/T8C0Oz33aXmmB0E9kXaNZQpiax6fGDbwvJ
-         jRHlTKTaDKmHlSCxWit0UD9nUSIFyn2/CuBfSt8e1ddMEU6IquwutTBSGpV7VgVmciyP
-         r/Ij+wodrM7Hby595ZoEsCrh/Ayf5AlaARywGLKRCfP8ZRdiK/g2WEijJ5PyWeuEBv9q
-         4MmF0wnyxQ7Gnd5kVpji9O7MFNcLzTQWv1Ug5xsR2BUG0tU4nVxxY1bnFVceeHUxU5pv
-         JjgQ==
+        bh=ramerNGPDN8JQu0sTjF20UQ56cc88LDm81V2sxUvJXg=;
+        b=FQm6WB2AGfGgryu4sHXSOql5gOSUNN78KkHNtyDxfHwEBcR0eIqkJxVJqdhfqLzlAJ
+         NMNXr31xULLR4sNTxbph6Fv+OheR2nGJIVW+n4kQjhoh4HfhXRhX9jnbUNkCafqxrxxJ
+         DUJJOLuoXOiqweSh3hft2ZHw+HUrSkoh7LSy71Qqc6nYCPEcRseLyN5M5OtKuupOIC33
+         6UYOYqX1RYnuBgvoT1chHfM1sN3rIP7lT207vVUmXQYKrrAWPhE5MK/VqoGIuyeB+CZj
+         zH0SEBvFqL4EiylfrJdrpHqkAU1k0oSl2Vg41e3H2oEbL0KAs57THw9Pb5MYzR54wnMG
+         Do2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dIDb70TVBZgre0o2Y2c30VS9W3UnJeMILhzgcalu4cA=;
-        b=S3fEbL5ppUHU4JLpImi80KiLbue60YrGGzxJN+ZFfTnRtii0VaYKSJozaa3PyZ+Fer
-         PFSH8hcm7lBuzKQCMrntf0KTHvtsHY8zJOhWKyqqr6ETC0T68GlBm/hBCDkZljlFoQy4
-         VlqcdPt8CuzTLqwTIuuQj3wbzVca/eSvKuXRY4ZzVivMwZWuTlgsxjRWBA2dNooseydr
-         TqBJvoP+PdM1r6iI4LftxSfwaipGvk4fdzcu7pwiqoUczgOJ7ljbmEyqxGVxncWxfuDz
-         hxNIkQewJOCc19dOGCJ+7+MUh4MUDjeHCpjYvfVwqG7fdmNpTxxyIOsI4rJaWCDACOV6
-         qfbQ==
-X-Gm-Message-State: AOAM533t1gB42XeRtCmL78qvQNB3lfwzDJViJ0ciDm3vljZGwqUL0+Xm
-        f8Epn2NtsUCL3hnTZ7eX6MTBHuywMauGqWUG
-X-Google-Smtp-Source: ABdhPJzY0T9kaV36mzn+aiwFbi8EdPqbuxEa3JPRgJg3WMBMK8Jp/vPOnd4oswyp7XIZWeNUi7ensA==
-X-Received: by 2002:a17:902:b182:b029:da:d0c:abac with SMTP id s2-20020a170902b182b02900da0d0cabacmr7817626plr.40.1606499588035;
-        Fri, 27 Nov 2020 09:53:08 -0800 (PST)
+        bh=ramerNGPDN8JQu0sTjF20UQ56cc88LDm81V2sxUvJXg=;
+        b=CF8T8t6LY95khKXylTpfKjemtP6kkryu/b0P5Ha8yDz4kPTL2Umz3AP/6y7/aVBPGk
+         JpR7VfyUexFxF0BNDSspUqAgLsyuy1bYdfixwVUa4ei5KCQ0QTJ4/C0K3RHPPOvxzlDk
+         XPNu7dpv+/Y421mqBOoq0pEEqtl/V8YxbFX41MApvd7iqSny4Cz+6mMxKBWOEXLn6uSQ
+         aaGwpaXiqopTApAPR+JoC47lNOvi/2ZxhajCS/gpsCXBKZpGs2BE29niNkTaAPofK5ez
+         KHouwJhKX4vwDUkx6ig9aZTy+z9j+dPMDM6ORR9B8lhBgdUeLZiYpznCIGpG478ZsMBO
+         GnMw==
+X-Gm-Message-State: AOAM533QoZOaBWo+B6yUk4S7FJEbP5phCXROFfkJOSE2geIIkqHWpgy7
+        RzyflzHKlXQIyWUyKGP8bWienw==
+X-Google-Smtp-Source: ABdhPJwvTDualLfsYi67Q44KtxolPRq/KwqvenTwLJOC68J8jafxMn8ssGILH7qJLd5Twi65Eo/lJA==
+X-Received: by 2002:a17:90a:f314:: with SMTP id ca20mr11805963pjb.191.1606499589035;
+        Fri, 27 Nov 2020 09:53:09 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id t18sm10536724pji.1.2020.11.27.09.53.07
+        by smtp.gmail.com with ESMTPSA id t18sm10536724pji.1.2020.11.27.09.53.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 09:53:07 -0800 (PST)
+        Fri, 27 Nov 2020 09:53:08 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/15] coresight: etb10: Fix possible NULL ptr dereference in etb_enable_perf()
-Date:   Fri, 27 Nov 2020 10:52:51 -0700
-Message-Id: <20201127175256.1092685-11-mathieu.poirier@linaro.org>
+Subject: [PATCH 11/15] coresight: tmc-etr: Assign boolean values to a bool variable
+Date:   Fri, 27 Nov 2020 10:52:52 -0700
+Message-Id: <20201127175256.1092685-12-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201127175256.1092685-1-mathieu.poirier@linaro.org>
 References: <20201127175256.1092685-1-mathieu.poirier@linaro.org>
@@ -63,59 +63,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-There was a report of NULL pointer dereference in ETF enable
-path for perf CS mode with PID monitoring. It is almost 100%
-reproducible when the process to monitor is something very
-active such as chrome and with ETF as the sink, not ETR.
+Fix the following coccinelle warnings:
 
-But code path shows that ETB has a similar path as ETF, so
-there could be possible NULL pointer dereference crash in
-ETB as well. Currently in a bid to find the pid, the owner
-is dereferenced via task_pid_nr() call in etb_enable_perf()
-and with owner being NULL, we can get a NULL pointer
-dereference, so have a similar fix as ETF where we cache PID
-in alloc_buffer() callback which is called as the part of
-etm_setup_aux().
+./drivers/hwtracing/coresight/coresight-tmc-etr.c:957:2-15: WARNING: Assignment of 0/1 to bool variable
 
-Cc: stable@vger.kernel.org
-Fixes: 75d7dbd38824 ("coresight: etb10: Add support for CPU-wide trace scenarios")
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Fix them by assigning boolean values.
+
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight-etb10.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/hwtracing/coresight/coresight-tmc-etr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
-index 248cc82c838e..1b320ab581ca 100644
---- a/drivers/hwtracing/coresight/coresight-etb10.c
-+++ b/drivers/hwtracing/coresight/coresight-etb10.c
-@@ -176,6 +176,7 @@ static int etb_enable_perf(struct coresight_device *csdev, void *data)
- 	unsigned long flags;
- 	struct etb_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
- 	struct perf_output_handle *handle = data;
-+	struct cs_buffers *buf = etm_perf_sink_config(handle);
- 
- 	spin_lock_irqsave(&drvdata->spinlock, flags);
- 
-@@ -186,7 +187,7 @@ static int etb_enable_perf(struct coresight_device *csdev, void *data)
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+index 714f9e867e5f..525f0ecc129c 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+@@ -954,11 +954,11 @@ static void tmc_sync_etr_buf(struct tmc_drvdata *drvdata)
+ 		dev_dbg(&drvdata->csdev->dev,
+ 			"tmc memory error detected, truncating buffer\n");
+ 		etr_buf->len = 0;
+-		etr_buf->full = 0;
++		etr_buf->full = false;
+ 		return;
  	}
  
- 	/* Get a handle on the pid of the process to monitor */
--	pid = task_pid_nr(handle->event->owner);
-+	pid = buf->pid;
+-	etr_buf->full = status & TMC_STS_FULL;
++	etr_buf->full = !!(status & TMC_STS_FULL);
  
- 	if (drvdata->pid != -1 && drvdata->pid != pid) {
- 		ret = -EBUSY;
-@@ -383,6 +384,7 @@ static void *etb_alloc_buffer(struct coresight_device *csdev,
- 	if (!buf)
- 		return NULL;
+ 	WARN_ON(!etr_buf->ops || !etr_buf->ops->sync);
  
-+	buf->pid = task_pid_nr(event->owner);
- 	buf->snapshot = overwrite;
- 	buf->nr_pages = nr_pages;
- 	buf->data_pages = pages;
 -- 
 2.25.1
 
