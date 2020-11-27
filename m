@@ -2,129 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902A92C6256
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0882C6257
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727724AbgK0J4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:56:49 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:26397 "EHLO z5.mailgun.us"
+        id S1728134AbgK0J5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:57:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727232AbgK0J4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:56:48 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606471008; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=uh97Z0sQ4kcYvO9iLWdWG4UvbvTzslMqDnQZy4L6frI=; b=XuPw0WjBYE7rKB6ClQ77vZcQZW/0yMt6M2nNVC6lwJax1SyIcC7LO61hKw7ID5Qlvwi6D3ud
- AxhIP7A33xLIzbLOMP+Bv3qrGI5DganNnvUnjhH//eaoQT6CEqTQWLudG3zSmwo7eI6PqfN7
- RJFKMYjHbBXvEFBNHJlxDUJ92KM=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fc0cd5fa5c560669c7e683a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 09:56:47
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BB43AC4346A; Fri, 27 Nov 2020 09:56:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1725980AbgK0J5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:57:06 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 860B9C4346A;
-        Fri, 27 Nov 2020 09:56:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 860B9C4346A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: [PATCH v3] ASoC: qcom: Fix playback recover problem in suspend resume
-Date:   Fri, 27 Nov 2020 15:26:28 +0530
-Message-Id: <1606470988-26965-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id BFD6021D91;
+        Fri, 27 Nov 2020 09:57:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606471025;
+        bh=4GugmYkNqqz/xiT8jEHRtT/irIXf154k+PPE5BeKSBI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WfQcDybqcdPFo5DO6uLw3V+oOZX27NRtuG2/V/m0m5HRPheIQ8d3XZqoXD6MmLNZO
+         +xFMjzmE4Zl5JXo527j+3JVGwyCtvTOEzc8eNRoRRc+89hpS1289tX3F0qPwZdYxSA
+         lxPJ7X4yfwwX+bBvyPdBx/hc6NsXcApz8YwWWmu8=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kiaUx-00E1aU-Is; Fri, 27 Nov 2020 09:57:03 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 27 Nov 2020 09:57:03 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, gregkh@linuxfoundation.org,
+        rafael@kernel.org, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        linuxarm@huawei.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
+In-Reply-To: <696c04a9-8c13-0fec-08c4-068d4dd5ba67@huawei.com>
+References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
+ <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
+ <874klmqu2r.fsf@nanos.tec.linutronix.de>
+ <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
+ <87lfexp6am.fsf@nanos.tec.linutronix.de>
+ <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
+ <873615oy8a.fsf@nanos.tec.linutronix.de>
+ <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
+ <87sg91ik9e.wl-maz@kernel.org>
+ <0edc9a11-0b92-537f-1790-6b4b6de4900d@huawei.com>
+ <afd97dd4b1e102ac9ad49800821231a4@kernel.org>
+ <5a314713-c1ee-2d34-bee1-60beae274742@huawei.com>
+ <0525a4bcf17a355cd141632d4f3714be@kernel.org>
+ <702e1729-9a4b-b16f-6a58-33172b1a3220@huawei.com>
+ <5a588f5d86010602ff9a90e8f057743c@kernel.org>
+ <80e0a19b-3291-1304-1a5b-0445c49efe31@huawei.com>
+ <d696d314514a4bd53c85f2da73a23eed@kernel.org>
+ <e96dd9b0-c3a7-f7fb-0317-2fc2107f405a@huawei.com>
+ <696c04a9-8c13-0fec-08c4-068d4dd5ba67@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <34953f2d7b61f37ab1333627dc256975@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: john.garry@huawei.com, tglx@linutronix.de, gregkh@linuxfoundation.org, rafael@kernel.org, martin.petersen@oracle.com, jejb@linux.ibm.com, linuxarm@huawei.com, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support playback continuation after hard suspend(bypass powerd)
- and resume:
-Prepare device in  platform trigger callback.
-Make I2s and DMA control registers as non volatile.
+On 2020-11-26 16:52, John Garry wrote:
+> Hi Marc,
+> 
+>>> 
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/hacks
+>> 
+>> 
+>> ok, I'll have a look
+> 
+> I tried that and it doesn't look to work.
+> 
+> I find that for the its_msi_prepare() call, its_dev->shared does not
+> get set, as MSI_ALLOC_FLAGS_SHARED_DEVICE is not set in info->flags.
+> 
+> If I understand the code correctly, MSI_ALLOC_FLAGS_SHARED_DEVICE is
+> supposed to be set in info->flags in platform_msi_set_desc(), but this
+> is called per-msi after its_msi_prepare(), so we don't the flags set
+> at the right time. That's how it looks to me...
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
-Changes Since v1 and v2:
-  -- Subject lines changed
+Meh. I was trying multiple things, and of course commited the worse
+possible approach.
 
- sound/soc/qcom/lpass-cpu.c      | 8 ++------
- sound/soc/qcom/lpass-platform.c | 5 +++--
- 2 files changed, 5 insertions(+), 8 deletions(-)
+I've updated the branch, having verified that we do get the flag in
+the ITS now.
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index af684fd..c99be03 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -454,20 +454,16 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
- 	struct lpass_variant *v = drvdata->variant;
- 	int i;
- 
--	for (i = 0; i < v->i2s_ports; ++i)
--		if (reg == LPAIF_I2SCTL_REG(v, i))
--			return true;
- 	for (i = 0; i < v->irq_ports; ++i)
- 		if (reg == LPAIF_IRQSTAT_REG(v, i))
- 			return true;
- 
- 	for (i = 0; i < v->rdma_channels; ++i)
--		if (reg == LPAIF_RDMACURR_REG(v, i) || reg == LPAIF_RDMACTL_REG(v, i))
-+		if (reg == LPAIF_RDMACURR_REG(v, i))
- 			return true;
- 
- 	for (i = 0; i < v->wrdma_channels; ++i)
--		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start) ||
--			reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
-+		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
- 			return true;
- 
- 	return false;
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 80b09de..2b0a7c1 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -481,8 +481,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 		return -ENOTRECOVERABLE;
- 	}
- 	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-+		lpass_platform_pcmops_prepare(component, substream);
-+	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		ret = regmap_fields_write(dmactl->enable, id,
- 						 LPAIF_DMACTL_ENABLE_ON);
-@@ -592,7 +593,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 		break;
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
+Thanks,
+
+         M.
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Jazz is not dead. It just smells funny...
