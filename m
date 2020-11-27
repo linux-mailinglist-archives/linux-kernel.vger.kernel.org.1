@@ -2,92 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604A32C6687
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD292C6653
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730324AbgK0NN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 08:13:57 -0500
-Received: from know-smtprelay-omc-5.server.virginmedia.net ([80.0.253.69]:39504
-        "EHLO know-smtprelay-omc-5.server.virginmedia.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729953AbgK0NN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 08:13:56 -0500
-X-Greylist: delayed 333 seconds by postgrey-1.27 at vger.kernel.org; Fri, 27 Nov 2020 08:13:55 EST
-Received: from localhost.localdomain ([81.111.144.241])
-        by cmsmtp with ESMTPA
-        id idTwk4wUMJ4GLidTzkC7Tb; Fri, 27 Nov 2020 13:08:21 +0000
-X-Originating-IP: [81.111.144.241]
-X-Authenticated-User: yevhen.viktorov@virginmedia.com
-X-Spam: 0
-X-Authority: v=2.3 cv=Wu8Fz+Xv c=1 sm=1 tr=0 a=aPpzF8rvisTCf/6YdwUVag==:117
- a=aPpzF8rvisTCf/6YdwUVag==:17 a=NcN59idvAAAA:8 a=Svj1eyx6_mu90rxhUQgA:9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virginmedia.com;
-        s=meg.feb2017; t=1606482501;
-        bh=ugDgXZ/mn3X+une9KYM30/NSns80QOQiGUn6HIXILEI=;
-        h=From:To:Cc:Subject:Date;
-        b=MigVQfWa71ca9d9UgvbO5BnENfCamstPEYyxkMcwThVJiyhTVkMcDvaVsi4iiaUeD
-         VHPElBVbROouLNKfGtt2Tx0DgwAY3AnEzmInptroOefEsk96HU7qtAEMJOjGMrv45B
-         DsqKoYcQqGsJH6ffuL6QRNqvIabutqwkAa8M29G4gd8OFzjckd+s/u1IN2fsD8ee1i
-         VYRR28rZ0+z+FSNDpxPDKla4cVKJl4Y+ZEXqhbwpyCFFnriVofMiQyKeLbo8i32T2y
-         9seneB8M4yoVO/mnFCpwE7T+1s8re29TrMdc88E6cvxY6SeTqgr7dQwUKQ5by4Brzb
-         KvGKi1xIX0MmA==
-From:   Yevhen Viktorov <yevhen.viktorov@virginmedia.com>
-To:     maier@linux.ibm.com
-Cc:     bblock@linux.ibm.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yevhen Viktorov <yevhen.viktorov@virginmedia.com>
-Subject: [PATCH] scsi: zfcp: fix indentation coding style issue
-Date:   Fri, 27 Nov 2020 13:06:46 +0000
-Message-Id: <20201127130646.11427-1-yevhen.viktorov@virginmedia.com>
-X-Mailer: git-send-email 2.26.2
+        id S1730049AbgK0NH5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Nov 2020 08:07:57 -0500
+Received: from mail.fireflyinternet.com ([77.68.26.236]:54633 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730030AbgK0NH4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 08:07:56 -0500
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 23133040-1500050 
+        for multiple; Fri, 27 Nov 2020 13:07:20 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfCEBiHQe11O3hO3vti9Bxo3lO2jnNnR+Nb3J4Xb03+SxbGZxZxQEH3pSvzMWZvHpBazyHhI86qXRwksPZcs713S2JXfy4h5XMwJ7ZBqvLB+8X62mj5qq
- dwE+KOUXa5piCnCzruM+kZLR9aPYS8MjHMf1EQSt2uh6u7V87q8N702Vu1InWVHSaKiw68gHs7zAKkDXfZspnXwsJUWZhEukDoVqO+Udh/JU8s1h7Wg9HEHA
- 0lhYOK5nnGZcySVy5fX/9kaC8mWmxPezCQLZFx40ofCASygs/8VtqIcEAlOdRwH4nk9CcrDVCTGVtNaqkAUCE1iTTwNYQ9viz15hRnHPMEHZFcOud3r9ngbd
- v+ViTKRJ
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <e14d546c-b1c6-448b-d8ac-50d072802c98@linux.intel.com>
+References: <20201111155811.GB24657@xsang-OptiPlex-9020> <160527763346.5566.3471508802857132043@jlahtine-mobl.ger.corp.intel.com> <20201119072018.GA15197@xsang-OptiPlex-9020> <160625087275.29168.7080737993781611765@build.alporthouse.com> <ab9ebc5a-7d79-8003-c7bc-5cf0923983c6@linux.intel.com> <160642644736.15379.9850669928715684163@build.alporthouse.com> <e14d546c-b1c6-448b-d8ac-50d072802c98@linux.intel.com>
+Subject: Re: [Intel-gfx] [drm/i915/gem] 59dd13ad31: phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second -54.0% regression
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     feng.tang@intel.com, tiejun.li@intel.com, guangli.li@intel.com,
+        frank.du@intel.com, guobing.chen@intel.com, jiebin.sun@intel.com,
+        Shuhua.Fan@intel.com, Matthew Auld <matthew.auld@intel.com>,
+        fan.zhao@intel.com, ying.huang@intel.com, shan.kang@intel.com,
+        zhengjun.xing@intel.com, Wenhuan.Huang@intel.com,
+        intel-gfx@lists.freedesktop.org, lkp@lists.01.org,
+        ming.a.chen@intel.com, yu.ma@intel.com, jessica.ji@intel.com,
+        dapeng1.mi@intel.com, wangyang.guo@intel.com,
+        LKML <linux-kernel@vger.kernel.org>, gengxin.xie@intel.com
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oliver Sang <oliver.sang@intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Date:   Fri, 27 Nov 2020 13:07:19 +0000
+Message-ID: <160648243984.2925.329587293172518864@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-code indent should use tabs where possible
+Quoting Xing Zhengjun (2020-11-27 01:51:41)
+> 
+> 
+> On 11/27/2020 5:34 AM, Chris Wilson wrote:
+> > Quoting Xing Zhengjun (2020-11-26 01:44:55)
+> >>
+> >>
+> >> On 11/25/2020 4:47 AM, Chris Wilson wrote:
+> >>> Quoting Oliver Sang (2020-11-19 07:20:18)
+> >>>> On Fri, Nov 13, 2020 at 04:27:13PM +0200, Joonas Lahtinen wrote:
+> >>>>> Hi,
+> >>>>>
+> >>>>> Could you add intel-gfx@lists.freedesktop.org into reports going
+> >>>>> forward.
+> >>>>>
+> >>>>> Quoting kernel test robot (2020-11-11 17:58:11)
+> >>>>>>
+> >>>>>> Greeting,
+> >>>>>>
+> >>>>>> FYI, we noticed a -54.0% regression of phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second due to commit:
+> >>>>>
+> >>>>> How many runs are there on the bad version to ensure the bisect is
+> >>>>> repeatable?
+> >>>>
+> >>>> test 4 times.
+> >>>> zxing@inn:/result/phoronix-test-suite/performance-true-Radial_Gradient_Paint-1024x1024-jxrendermark-1.2.4-ucode=0xd6-monitor=da39a3ee/lkp-cfl-d1/debian-x86_64-phoronix/x86_64-rhel-8.3/gcc-9/59dd13ad310793757e34afa489dd6fc8544fc3da$ grep -r "operations_per_second" */stats.json
+> >>>> 0/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4133.487932,
+> >>>> 1/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4120.421503,
+> >>>> 2/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4188.414835,
+> >>>> 3/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4068.549514,
+> >>>
+> >>> a w/o revert (drm-tip)
+> >>> b w/ revert
+> >>> +mB----------------------------------------------------------------------------+
+> >>> |                             ..b                                              |
+> >>> |                             ..b.aa                                           |
+> >>> |                             ....a.a                                          |
+> >>> |                             ....a.a                                          |
+> >>> |                      b  b  ........a                                         |
+> >>> |                   b  b  b b......... a                                       |
+> >>> |                   b  bb bbb...........                                       |
+> >>> |b               ab bbab.bb.b............ba b a a            ab               a|
+> >>> |                             |__A__|                                          |
+> >>> |                             |MA_|                                            |
+> >>> +------------------------------------------------------------------------------+
+> >>>       N                Min           Max        Median           Avg        Stddev
+> >>> a 120          3621.8761     7356.4442     4606.7895     4607.9132     156.17693
+> >>> b 120          2664.0563     6359.9686     4519.5036     4534.4463     95.471121
+> >>>
+> >>> The patch is not expected to have any impact on the machine you are testing on.
+> >>> -Chris
+> >>>
+> >>
+> >> What's your code base?
+> >> For my side:
+> >> 1) sync the code to the head of Linux mainline
+> >> 2) git reset --hard 59dd13ad31
+> >> 3) git revert 59dd13ad3107
+> >> We compare the test result of commit 59dd13ad3107 (step 2) and
+> >> 2052847b06f8 (step 3, revert 59dd13ad3107), the regression should
+> >> related with 59dd13ad3107. Each test case we run 5 times.
+> > 
+> > a 59dd13ad31
+> > b revert
+> > +mB----------------------------------------------------------------------------+
+> > |                        a                                                     |
+> > |                       aa                                                     |
+> > |                     .b....ba                                                 |
+> > |                     .b....baa    b                                           |
+> > |                     .........b . b   b                                       |
+> > |                a   b.......... ..bb  b        b                              |
+> > |              b a   b.............b.a b        b                              |
+> > |a    a  b.    .aaa..b.............b..b....ab   b     a                       .|
+> > |                      |__A__|                                                 |
+> > |                      |___A_____|                                             |
+> > +------------------------------------------------------------------------------+
+> >      N                Min           Max        Median           Avg        Stddev
+> > a 120          3658.3435     6363.7812     4527.4406      4536.612     86.095459
+> > b 120          3928.9643      6375.829     4576.0482     4585.4224      157.284
+> > 
+> 
+> Could you share with me your test commands and the hardware info, then I 
+> can reproduce it on my side? Thanks.
 
-Signed-off-by: Yevhen Viktorov <yevhen.viktorov@virginmedia.com>
----
- drivers/s390/scsi/zfcp_def.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+It was a i7-8809G, identical i915 behaviour as the i7-8700 the report was
+generated on.
 
-diff --git a/drivers/s390/scsi/zfcp_def.h b/drivers/s390/scsi/zfcp_def.h
-index da8a5ceb615c..a2a59cbb330a 100644
---- a/drivers/s390/scsi/zfcp_def.h
-+++ b/drivers/s390/scsi/zfcp_def.h
-@@ -157,7 +157,7 @@ struct zfcp_adapter {
- 	u32			fsf_lic_version;
- 	u32			adapter_features;  /* FCP channel features */
- 	u32			connection_features; /* host connection features */
--        u32			hardware_version;  /* of FCP channel */
-+	u32			hardware_version;  /* of FCP channel */
- 	u32			fc_security_algorithms; /* of FCP channel */
- 	u32			fc_security_algorithms_old; /* of FCP channel */
- 	u16			timer_ticks;       /* time int for a tick */
-@@ -181,7 +181,7 @@ struct zfcp_adapter {
- 	rwlock_t		erp_lock;
- 	wait_queue_head_t	erp_done_wqh;
- 	struct zfcp_erp_action	erp_action;	   /* pending error recovery */
--        atomic_t                erp_counter;
-+	atomic_t                erp_counter;
- 	u32			erp_total_count;   /* total nr of enqueued erp
- 						      actions */
- 	u32			erp_low_mem_count; /* nr of erp actions waiting
-@@ -217,7 +217,7 @@ struct zfcp_port {
- 	u32		       d_id;	       /* D_ID */
- 	u32		       handle;	       /* handle assigned by FSF */
- 	struct zfcp_erp_action erp_action;     /* pending error recovery */
--        atomic_t               erp_counter;
-+	atomic_t               erp_counter;
- 	u32                    maxframe_size;
- 	u32                    supported_classes;
- 	u32                    connection_info;
--- 
-2.26.2
+sudo Xorg & for i in $(seq 1 120); do ./jx 13 1024 | awk '{print $1}' ; done
 
+using -modesetting + iris (i965 makes no difference, just slightly
+slower)
+-Chris
