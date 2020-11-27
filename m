@@ -2,159 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B0C2C6D33
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 23:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8629C2C6D41
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 23:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731810AbgK0W2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 17:28:08 -0500
-Received: from mga11.intel.com ([192.55.52.93]:50179 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730213AbgK0W1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 17:27:05 -0500
-IronPort-SDR: iRqB8amdMWTMiX+wE+Ov4UoYlSLMjnqEco12f53sxmTphnj66ytNP5R+OJhNjf2jHVkr/u7eC1
- TjlI8T5OYATQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9818"; a="168936281"
-X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
-   d="scan'208";a="168936281"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2020 14:26:57 -0800
-IronPort-SDR: E73vyBdQ0YDyHNzCHSmoOwfrC5Sy7smKZyhYJjDkXlnquVqs9eY9JYPLjRLy2Nu67ftScNzeEa
- mk22ipTbZn0w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
-   d="scan'208";a="548175657"
-Received: from lkp-server01.sh.intel.com (HELO b5888d13d5a5) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 27 Nov 2020 14:26:56 -0800
-Received: from kbuild by b5888d13d5a5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kimCd-0000Ba-Hn; Fri, 27 Nov 2020 22:26:55 +0000
-Date:   Sat, 28 Nov 2020 06:26:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 9b6205dd6a78acc4476ae51f992ce854e1bff941
-Message-ID: <5fc17d09.N9aEjVX80RbPV8Gj%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1731951AbgK0WeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 17:34:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731664AbgK0Wb1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 17:31:27 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFD6C0613D1;
+        Fri, 27 Nov 2020 14:31:02 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id s8so7006732wrw.10;
+        Fri, 27 Nov 2020 14:31:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=usJ3A0+AEcyPFYMCun2w2vVyj54EaMcegACm6ZHIIqs=;
+        b=Hv7hKNXh5ewYlUwLqPovTxP6piN42zRTWsKdKi5VP9nO3DAsJgEZw7P0N2geE2AeBL
+         AS2jPRT6ZA2AG/W6q3BrZ2nF2kpwcXcY8sV+u6VTnZIDQz6eqR5/kV/Qaf+vAb9LmIDg
+         bkdL9mPxcK+Ev2fXorKKP+BLG5DUkL/2gkmmvHZPIL6/tEfoJWAmaSkHgqWOzUOr+mtC
+         5qo0ROEIh9sNN+vBBIr09isyGQFXnDsMto9JgpR8XajmU0klF6iUtI5jWGPt09q+B/y4
+         wC6LgLiuA9O7GDBJpwynh4W2zDbmx1W2ApYyqTHmqdPT+LH45AQDXXe8I8vNitPZvq/7
+         8TfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=usJ3A0+AEcyPFYMCun2w2vVyj54EaMcegACm6ZHIIqs=;
+        b=jEzlYsobkFIl7XIDu956om6zxA50LfRfp4E7Jj0BXI2uzowXrEcECyo4pc1ZnNsUfW
+         nAAr4FJW+7bdXAvPnzX0s+6f9sZYjfgqUid7hOJR9ORupmDy6K7lqHZDWgXxqRlWsF2T
+         Y/WqLPtsXpu+JIJsywELMfWMQyqHXftkHW5+rcSOnKBcKctsHDq+q8xu/wmiOJSpwVJM
+         o/2TDOnQJyx0eaBSpNRUOhi7H/TpvTc1NhexRT8kZmgsaA+L6a2o9nIaqAYEydwftKR7
+         GxymziFplXhVam3S51vX+paucO2WYJcCZlPV0QNOwxWJMOeOxnQaBKQsgviuKG2jwieM
+         I3sA==
+X-Gm-Message-State: AOAM530tEDOHtolEg50T1QWZfRVgBAABRDWY5rTGuoY97Zb+ek+LzTxa
+        Zp3l2h/wG9jwHvk9J1Lulz0=
+X-Google-Smtp-Source: ABdhPJyMvlVKabX/YwPo/pxpexAiMvONIINt4aYxVa0VIzBxunZlG4sFzih0FyqVnqn+xh0XV9opIw==
+X-Received: by 2002:a05:6000:120c:: with SMTP id e12mr13777860wrx.59.1606516261315;
+        Fri, 27 Nov 2020 14:31:01 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id v188sm3308696wmb.20.2020.11.27.14.30.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 14:31:00 -0800 (PST)
+From:   kholk11@gmail.com
+To:     mchehab@kernel.org
+Cc:     robh+dt@kernel.org, marijn.suijten@somainline.org,
+        konrad.dybcio@somainline.org, martin.botka@somainline.org,
+        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sakari.ailus@iki.fi, andrey.konovalov@linaro.org,
+        angelogioacchino.delregno@somainline.org, kholk11@gmail.com
+Subject: [PATCH v3 0/2] Add support for the Sony Exmor-RS IMX300 camera sensor
+Date:   Fri, 27 Nov 2020 23:30:45 +0100
+Message-Id: <20201127223047.2764643-1-kholk11@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: 9b6205dd6a78acc4476ae51f992ce854e1bff941  Merge branch 'core/entry'
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-elapsed time: 728m
+This patch series adds support for the IMX300 camera sensor, (one of the)
+first Exmor-RS Stacked CMOS sensor(s), with support for both of the
+supported aspect ratios (4:3 and 16:9).
+This driver came out from reverse engineering of so called "userspace
+drivers" from Sony Xperia smartphones.
 
-configs tested: 95
-configs skipped: 2
+I tried to document all of my findings and giving a sense to the registers
+as much as possible, but that was only partially possible and resembles
+some names from the IMX219 public datasheet, even though the addresses are
+basically completely different.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+This camera sensor driver was tested with all the resolutions declared in
+it on two phones: Sony Xperia XA2 and XA2 Ultra, on a SDM630 SoC (camss
+patches for this SoC will come in a later series) and is working great.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          rsk7264_defconfig
-xtensa                    xip_kc705_defconfig
-sh                         microdev_defconfig
-arm                        realview_defconfig
-mips                    maltaup_xpa_defconfig
-c6x                        evmc6472_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                          rm200_defconfig
-arm                   milbeaut_m10v_defconfig
-mips                      pistachio_defconfig
-arm                         lpc18xx_defconfig
-m68k                        m5407c3_defconfig
-mips                     cu1000-neo_defconfig
-x86_64                           alldefconfig
-sh                                  defconfig
-ia64                      gensparse_defconfig
-arm                          collie_defconfig
-m68k                       m5208evb_defconfig
-arm                           h3600_defconfig
-sh                        edosk7760_defconfig
-powerpc                    klondike_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201127
-i386                 randconfig-a003-20201127
-i386                 randconfig-a002-20201127
-i386                 randconfig-a005-20201127
-i386                 randconfig-a001-20201127
-i386                 randconfig-a006-20201127
-x86_64               randconfig-a015-20201127
-x86_64               randconfig-a011-20201127
-x86_64               randconfig-a014-20201127
-x86_64               randconfig-a016-20201127
-x86_64               randconfig-a012-20201127
-x86_64               randconfig-a013-20201127
-i386                 randconfig-a012-20201127
-i386                 randconfig-a013-20201127
-i386                 randconfig-a011-20201127
-i386                 randconfig-a016-20201127
-i386                 randconfig-a014-20201127
-i386                 randconfig-a015-20201127
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+- Changes in v3:
+  - Removed unneeded fallthrough statements
+  - Fixed double mode initialization at probe time
+  - Fixed typo in the dt-binding description (8->25MPixels)
+  - Fixed dt-binding data-lanes description, added to required properties
 
-clang tested configs:
-x86_64               randconfig-a006-20201127
-x86_64               randconfig-a003-20201127
-x86_64               randconfig-a004-20201127
-x86_64               randconfig-a005-20201127
-x86_64               randconfig-a002-20201127
-x86_64               randconfig-a001-20201127
+- Changes in v2:
+  - Changed dt-binding name and fixed a misconception about lane
+    operation (sensor supports 2/4-Lane, driver supports 4-Lane only)
+  - Now using lowercase names for regulator supplies
+  - Fixed redefinition of clock-noncontinuous property
+  - Added informations about constraints on data bus frequencies
+  - Fixed MAINTAINERS: removed git tree
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+AngeloGioacchino Del Regno (2):
+  media: i2c: Add driver for the Sony Exmor-RS IMX300 camera sensor
+  media: dt-bindings: media: i2c: Add IMX300 CMOS sensor binding
+
+ .../bindings/media/i2c/sony,imx300.yaml       |  112 +
+ MAINTAINERS                                   |    7 +
+ drivers/media/i2c/Kconfig                     |   13 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/imx300.c                    | 3081 +++++++++++++++++
+ 5 files changed, 3214 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+ create mode 100644 drivers/media/i2c/imx300.c
+
+-- 
+2.29.2
+
