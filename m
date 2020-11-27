@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AD82C6241
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902A92C6256
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgK0Jy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:54:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgK0Jy6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:54:58 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0087DC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:54:57 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id r3so4940524wrt.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:54:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JjE5v+XtmXi4bhjUhwczYi8qu3IElsPJc6z70wBzRWs=;
-        b=sfYOdVjRyzcbYRH/Ekm8wSub6oWEzdjbW2nDTAMnh+6ng+DbEs+mHTZUhXoUXiM0G/
-         6hwWE5ZB2yeEMyCagbn48ngqnVd/Y5klQdMiAfN4mVSz+nY3HGFLtKuBtYX2clhCpvIG
-         IuMvX40k0Uea4kH/0bOWOe35Y2bAVJs9VJ3/XgrZZsEVzh5EmsUsIr9iBr1J9hIIpQDR
-         VvDvVN51IOVbbbe2X/suG6Ry3Slx41rPnME1ldpGZ+vwcCoSp4U8fYOSjwtj9jIHVz9v
-         QCd6icNy7782CsjPEAlFmgSBNUV3YZN26AsSirMGaHi1jQF+cbbTSiArlLUnRo9sY/Z5
-         tARA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JjE5v+XtmXi4bhjUhwczYi8qu3IElsPJc6z70wBzRWs=;
-        b=PTSEYIn+ySnqTEPkeO4cj8YL5sXs9GRzVXe9g4wvwiIWY4zzMd16pX7c8t2LntB3Pw
-         NvUNwNLZCG0oeSTvQxX94Ua5jdY7S8Hqb1SODT6NDXA4JBrnX4s9U70ByB+CBDmXYog/
-         1D6M05x8K/p2W058eBVyWYDi26A45eL3lAWAQ8F6B+vYyc2eX+IV+4w+yknZ2Xp4fwZn
-         i9nw+hx0m5bg9i8YgsZSVuq1p3cn/3OIaSdTiEFCPFmxFpgVEZ5LZKhcefPEUxc739c1
-         JC2RQ3CJZZSgtKuhFJvpHwKf1s9cMRM1yA+6f8szFFdol7hHizB4DANeCkFdQ1/I6+7/
-         ITNw==
-X-Gm-Message-State: AOAM532Wl10P5q1CkdKJSpz1c/nbHTH10/tgFKyRUAldXrpszTmiJC/m
-        AGXWYMhy+b2r+gt7m3UfEVR0tqvmqq2gl7qG
-X-Google-Smtp-Source: ABdhPJy8MKyha3Xk7UYSRiRLy3TVGJobBhb4KefTjlDXAMCo/TeSUVelqvExxjIfnbZXHjD1GJxklw==
-X-Received: by 2002:adf:dd52:: with SMTP id u18mr9079635wrm.44.1606470896481;
-        Fri, 27 Nov 2020 01:54:56 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id j127sm14205428wma.31.2020.11.27.01.54.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 01:54:56 -0800 (PST)
-Date:   Fri, 27 Nov 2020 09:54:52 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 11/14] sched: Reject CPU affinity changes based on
- arch_task_cpu_possible_mask()
-Message-ID: <20201127095452.GB906877@google.com>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-12-will@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124155039.13804-12-will@kernel.org>
+        id S1727724AbgK0J4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:56:49 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:26397 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727232AbgK0J4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:56:48 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606471008; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=uh97Z0sQ4kcYvO9iLWdWG4UvbvTzslMqDnQZy4L6frI=; b=XuPw0WjBYE7rKB6ClQ77vZcQZW/0yMt6M2nNVC6lwJax1SyIcC7LO61hKw7ID5Qlvwi6D3ud
+ AxhIP7A33xLIzbLOMP+Bv3qrGI5DganNnvUnjhH//eaoQT6CEqTQWLudG3zSmwo7eI6PqfN7
+ RJFKMYjHbBXvEFBNHJlxDUJ92KM=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5fc0cd5fa5c560669c7e683a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 09:56:47
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BB43AC4346A; Fri, 27 Nov 2020 09:56:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 860B9C4346A;
+        Fri, 27 Nov 2020 09:56:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 860B9C4346A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Subject: [PATCH v3] ASoC: qcom: Fix playback recover problem in suspend resume
+Date:   Fri, 27 Nov 2020 15:26:28 +0530
+Message-Id: <1606470988-26965-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 24 Nov 2020 at 15:50:36 (+0000), Will Deacon wrote:
-> Reject explicit requests to change the affinity mask of a task via
-> set_cpus_allowed_ptr() if the requested mask is not a subset of the
-> mask returned by arch_task_cpu_possible_mask(). This ensures that the
-> 'cpus_mask' for a given task cannot contain CPUs which are incapable of
-> executing it, except in cases where the affinity is forced.
+To support playback continuation after hard suspend(bypass powerd)
+ and resume:
+Prepare device in  platform trigger callback.
+Make I2s and DMA control registers as non volatile.
 
-I guess mentioning here (or as a comment) the 'funny' behaviour we get
-with cpusets wouldn't hurt. But this is a sensible patch nonetheless so:
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+Changes Since v1 and v2:
+  -- Subject lines changed
 
-Reviewed-by: Quentin Perret <qperret@google.com>
+ sound/soc/qcom/lpass-cpu.c      | 8 ++------
+ sound/soc/qcom/lpass-platform.c | 5 +++--
+ 2 files changed, 5 insertions(+), 8 deletions(-)
 
-Thanks,
-Quentin
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index af684fd..c99be03 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -454,20 +454,16 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
+ 	struct lpass_variant *v = drvdata->variant;
+ 	int i;
+ 
+-	for (i = 0; i < v->i2s_ports; ++i)
+-		if (reg == LPAIF_I2SCTL_REG(v, i))
+-			return true;
+ 	for (i = 0; i < v->irq_ports; ++i)
+ 		if (reg == LPAIF_IRQSTAT_REG(v, i))
+ 			return true;
+ 
+ 	for (i = 0; i < v->rdma_channels; ++i)
+-		if (reg == LPAIF_RDMACURR_REG(v, i) || reg == LPAIF_RDMACTL_REG(v, i))
++		if (reg == LPAIF_RDMACURR_REG(v, i))
+ 			return true;
+ 
+ 	for (i = 0; i < v->wrdma_channels; ++i)
+-		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start) ||
+-			reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
++		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
+ 			return true;
+ 
+ 	return false;
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 80b09de..2b0a7c1 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -481,8 +481,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+ 		return -ENOTRECOVERABLE;
+ 	}
+ 	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
++		lpass_platform_pcmops_prepare(component, substream);
++	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		ret = regmap_fields_write(dmactl->enable, id,
+ 						 LPAIF_DMACTL_ENABLE_ON);
+@@ -592,7 +593,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+ 		break;
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
