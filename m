@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23712C691B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C9A2C691E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731204AbgK0QHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:07:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56699 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731150AbgK0QHR (ORCPT
+        id S1731218AbgK0QH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:07:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730985AbgK0QH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:07:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606493236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=TsMD7b3MnWExoEfBuHmM8Gy0J5MPvPWD/mFWcwpBdWg=;
-        b=dKwL/9rBSvtpJjjtiKI8iiXJgXkVQUqFTgkIMCtZWEze0+zV2qtuoSNG5SUMw72OzDb6U+
-        nQB/ICEE24JSlcTxJGZAcZIR9DY674V65TYUM7ttSqEVIctEFmUnOlqmmlLKqUtLp8qotY
-        /WZ64t0IJa2J6suT1Zfomkz3jTH7fM0=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-tm9p3mJeMQukwbz4o833ww-1; Fri, 27 Nov 2020 11:07:14 -0500
-X-MC-Unique: tm9p3mJeMQukwbz4o833ww-1
-Received: by mail-qv1-f71.google.com with SMTP id b15so3320973qvm.10
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:07:14 -0800 (PST)
+        Fri, 27 Nov 2020 11:07:26 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24AFC0613D1;
+        Fri, 27 Nov 2020 08:07:24 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id m6so6093173wrg.7;
+        Fri, 27 Nov 2020 08:07:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VtmKlc5l/pNObTu4OTm+GaZxDRv60yZmGnsF1o+ezX8=;
+        b=QV/bPxNQUyGThdVnks5FOF5dzJv1fUblWtU8smU0v+wvenV+D6DXnj62sXGiVR+dcc
+         D/bCLm3Ihx5alkaavz8ZfaVfqGdDwtsjTPMvvjp6uyndmOw08LKJIUFzObbwlypEEHCa
+         Q0pUxyv9mGpPGUI+LLOKrp7SpMDHACHqhFM4BgcXnJRKiE0bXjnkMrv/eeYrCQ7Wf68k
+         9jKoTSm8CcUOysgHPn//NDrjAyb3Af08LgIBkNKmyGrsLfOQugKDOE16Hh2G6bTWOHoB
+         9xLTWBXfpvRSk3dQ7shQIX7HrHyoTyxpN0QUxZOc4ftl6L0eCrR1rzELUxhMZWMo5q2S
+         JxzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TsMD7b3MnWExoEfBuHmM8Gy0J5MPvPWD/mFWcwpBdWg=;
-        b=nQ81atHnRr2ivMmMAzylrJ3j0XeSyvr/+wajCrmOkV0qQmBPWdPGm4fGRYHmxOOjw/
-         4gUd/X/WXsZPaFL2+u5TdqmbBZeWJlMf/0oSA7f/yCEFjdCSBqkTW7WCB2jdgT2FEWVG
-         SK60NjgRxcijbq4f83u46UJzSDrnfs5lBXMHposB/oWi8L9m16Q9qYa76xM0n3G8W7Z2
-         vcyHElcSQmkuCE/sUeTVjN+P/FIS6DvdzuoaLCgLGwFxgLpJehRueLfi3kYJQpmOPnxe
-         t348TRyS5XYoFHB5kdnnu5XHJHd/mmEXzPdKrLez1XjshqBuvJ1GRt9gJLZdbXPraFZ7
-         T5zw==
-X-Gm-Message-State: AOAM532oN3uUUGk3yndLaLTLDq1DAIGLUhJdsITIbRRrE7Uq75eWK5iS
-        MkTAjWQYe8wwBAHx7vEmiYeuZGZtjPQKnfcKz8QNZLtiIPuMz4n4vpKCaRhmtlFPhXHg5fnO14n
-        hGvCIGFJ8UhLtIakjBToj1X62
-X-Received: by 2002:ac8:5059:: with SMTP id h25mr8937153qtm.283.1606493234320;
-        Fri, 27 Nov 2020 08:07:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy+zzViQ6Rqk2DxgBkqfwyhjs9VcRi7Mngdgz9bSSxFH/DfJqKgsYTy1Dp2gQ9sUoRbMvjYaw==
-X-Received: by 2002:ac8:5059:: with SMTP id h25mr8937129qtm.283.1606493234096;
-        Fri, 27 Nov 2020 08:07:14 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id u22sm6252620qkk.51.2020.11.27.08.07.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 08:07:13 -0800 (PST)
-From:   trix@redhat.com
-To:     boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com
-Cc:     x86@kernel.org, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] xen: remove trailing semicolon in macro definition
-Date:   Fri, 27 Nov 2020 08:07:07 -0800
-Message-Id: <20201127160707.2622061-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.4
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VtmKlc5l/pNObTu4OTm+GaZxDRv60yZmGnsF1o+ezX8=;
+        b=CIXGf7/ogSjjc1t4rxD2HRmG5QxOJCWY8aXIwzB7ezGcpoxvI1kPD8XX/ftNy6OhUL
+         7DP7NBdeWGKPF01crjD4RUgMREEmERUBr9k/Oi8oY2MkOHg6YZIQHrv3nFNLEL2n3ZQS
+         uBZa9XYl5Pok5Gwy2vA8Snx8n4izVliYZB6B9JSG1nZhg/B2myN0h5EarMoU7lfxChiN
+         Hgh/vyNXYdN8/AZGBXW3JHnzPP5fdXvH9Fb6WBORFgX8YEPhX76HLRrJYH2JLweY+Pwp
+         L5f+csB1bsxPKO+0crPem51Z9px2IAFigqLAfOAuq32Vua0+N5NImHEr1oGz9CrVlzpS
+         FkXA==
+X-Gm-Message-State: AOAM530uCfvVhTKXzn9qe4+tKvzhVln9MLrpWtsfQQ7rrXctIil6KE10
+        a9MoUK3ZTIsaBUTjttkae83vBcUt+oaIIA==
+X-Google-Smtp-Source: ABdhPJxmWVMnpP6RPhy8WzzK/a37799ZB7hvkB+DXcskQvASOZl8TlksZVEFOkbaTlU1kY5P+CsaXw==
+X-Received: by 2002:adf:f888:: with SMTP id u8mr11266010wrp.381.1606493243410;
+        Fri, 27 Nov 2020 08:07:23 -0800 (PST)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id c6sm17825734wrh.74.2020.11.27.08.07.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 08:07:22 -0800 (PST)
+Subject: Re: [RFC 1/3] dts64: mt7622: enable all pwm for bananapi r64
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org
+References: <20201016204019.2606-1-linux@fw-web.de>
+ <20201016204019.2606-2-linux@fw-web.de>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <4568d457-50d6-924f-c2ad-d6e508a543e4@gmail.com>
+Date:   Fri, 27 Nov 2020 17:07:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201016204019.2606-2-linux@fw-web.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-The macro use will already have a semicolon.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- arch/x86/include/asm/xen/page.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 16/10/2020 22:40, Frank Wunderlich wrote:
+> From: Frank Wunderlich <frank-w@public-files.de>
+> 
+> mt7622 only supports 6 pwm-channels so drop pwm7
+> 
+> third pwm (pwm2) is inverted and connected to fan-socket
+> 
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 
-diff --git a/arch/x86/include/asm/xen/page.h b/arch/x86/include/asm/xen/page.h
-index 5941e18edd5a..1a162e559753 100644
---- a/arch/x86/include/asm/xen/page.h
-+++ b/arch/x86/include/asm/xen/page.h
-@@ -355,7 +355,7 @@ unsigned long arbitrary_virt_to_mfn(void *vaddr);
- void make_lowmem_page_readonly(void *vaddr);
- void make_lowmem_page_readwrite(void *vaddr);
- 
--#define xen_remap(cookie, size) ioremap((cookie), (size));
-+#define xen_remap(cookie, size) ioremap((cookie), (size))
- #define xen_unmap(cookie) iounmap((cookie))
- 
- static inline bool xen_arch_need_swiotlb(struct device *dev,
--- 
-2.18.4
+Patch 1 and 2 now pushed to v5.10-next/dts64
 
+Thanks!
+
+> ---
+>   .../boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts     | 11 ++++++++---
+>   1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
+> index 1cc4dcb0008c..ad5b1592182d 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
+> @@ -414,10 +414,15 @@ mux {
+>   		};
+>   	};
+>   
+> -	pwm7_pins: pwm1-2-pins {
+> +	pwm_pins: pwm-pins {
+>   		mux {
+>   			function = "pwm";
+> -			groups = "pwm_ch7_2";
+> +			groups = "pwm_ch1_0", /* mt7622_pwm_ch1_0_pins[] = { 51, }; */
+> +				 "pwm_ch2_0", /* mt7622_pwm_ch2_0_pins[] = { 52, }; */
+> +				 "pwm_ch3_2", /* mt7622_pwm_ch3_2_pins[] = { 97, }; */
+> +				 "pwm_ch4_1", /* mt7622_pwm_ch4_1_pins[] = { 67, }; */
+> +				 "pwm_ch5_0", /* mt7622_pwm_ch5_0_pins[] = { 68, }; */
+> +				 "pwm_ch6_0"; /* mt7622_pwm_ch6_0_pins[] = { 69, }; */
+>   		};
+>   	};
+>   
+> @@ -537,7 +542,7 @@ mux {
+>   
+>   &pwm {
+>   	pinctrl-names = "default";
+> -	pinctrl-0 = <&pwm7_pins>;
+> +	pinctrl-0 = <&pwm_pins>;
+>   	status = "okay";
+>   };
+>   
+> 
