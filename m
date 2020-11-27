@@ -2,117 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341A22C67C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 211542C67C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730869AbgK0OVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 09:21:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60296 "EHLO
+        id S1730908AbgK0OWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 09:22:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730551AbgK0OVf (ORCPT
+        with ESMTP id S1730551AbgK0OWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 09:21:35 -0500
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6C2C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 06:21:35 -0800 (PST)
-Received: by mail-vs1-xe44.google.com with SMTP id r5so2634201vsp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 06:21:35 -0800 (PST)
+        Fri, 27 Nov 2020 09:22:03 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1385BC0613D1;
+        Fri, 27 Nov 2020 06:22:03 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w6so4746249pfu.1;
+        Fri, 27 Nov 2020 06:22:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8RO9atRNHdYldNSGmaQaTCeJbnbZeVqGELEiXjpI7As=;
-        b=Udqp5DAW7J30LmJqH6FoiBa2ezgB+t0lUaIp+KucxDq6wkej2M3+sknmpgpRLnSh03
-         YoMrr5EYyU9rYoa/Lhv+uxqkMMQ/PXmEHOvd5KKHMiB/MaTN/Z6ar7JU9UIotZMTzxOm
-         argViY9+yJLXwc1Xh6suS3clxriTdYtNnC4dL0equO3T8Pn9QDREhDOKzq5pAtUVKvrS
-         5wuS6/e/XNbreeQm61ibYnuStyf4kHWmS+tKoR/ohDpKPX3EgxQ7rY/tRjnSfjd1u5gZ
-         yJeMEntQ5jz9YPTmlXkEWDM235F17X5Wf2WXckIjd7v/ml6ztRj+DVdzPHxc+0Qksvia
-         j50w==
+        bh=NZuPwBGFQNcqFlpY7t4mA2yjp1/UdJ3toB4opd89Aaw=;
+        b=EgW10HX+IP6pglsGJGZ1kh14byOc7kx9T88xYwQQd/HjVvrAVuLZ3dMTy7N5qr3OrQ
+         rRYq8fo/leDcMAegz12JLkTTkeHA1nVYs3E9/celZ/SXlGhYINZM3mkC4mmPfGrtyzc3
+         hq+YfSWg5MdLTJpeZrm35k/GbaB2KMLmQ+maxCB2P0IPYhCntWYxVmGAPzNWK85SdxoX
+         eVKXjuyBE1sAPkArPWVVaq3+JcfPokT7EOQMkX8PLWfRWeEdFmPEXDUju5/3Bsfrd4R9
+         D0y2HjlQWTiBM3uE/AkEP91iy3ylPgl0cgZImW7kC/Q7C9T7aJ6psFNyLAqZqM4Bj6vi
+         pX/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8RO9atRNHdYldNSGmaQaTCeJbnbZeVqGELEiXjpI7As=;
-        b=uinf77aj9SrD/qiSBTac3zYJfsiwnRzoiOQDy/ESmh3zYxcPrLnawzJ45VDrNSftXu
-         nxJ+e3z6y8oHgv374SRzp1K03QpceBqeO/FU1bnie33L4nWAp2kwIF2oQ9YVcRWWkFW/
-         WColna4cC4OoTOIAVT02MzRLNWJtic2pUmOlf8Irb+dpx5S7qXysyPNkGkO1jxlskw5S
-         VTFVwf2HxCcda4sMFxOrLhCjSGxyH0ocyWQinOgyiEJAdkeKXBgnRdvARJubvvOywLWq
-         Ah/u6dq02GF1LgO1fLWF+Y/bsUhb6Td5ViEsMCYamuyMbNsW6hqPgNdIe38f2gRoG1kG
-         dKSQ==
-X-Gm-Message-State: AOAM530Y7Z1kuxpwcXQTft5UHgm4JxzFoBTotp6FZ0dmfnk3e6yGSYj6
-        WWoVNbms+M3tanlP+qvRlAJ+ck3jvH4=
-X-Google-Smtp-Source: ABdhPJxd3xEAaR6m8M3QcAok3ovC7T3WTlGur4gkV7IRCsBH59B9IuACit1FVPsTmBwZn2b0bBzzdQ==
-X-Received: by 2002:a67:32c1:: with SMTP id y184mr1991455vsy.5.1606486892165;
-        Fri, 27 Nov 2020 06:21:32 -0800 (PST)
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
-        by smtp.gmail.com with ESMTPSA id o193sm506886vkd.27.2020.11.27.06.21.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 06:21:31 -0800 (PST)
-Received: by mail-vs1-f50.google.com with SMTP id m62so2638239vsd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 06:21:30 -0800 (PST)
-X-Received: by 2002:a67:e210:: with SMTP id g16mr5804237vsa.28.1606486889898;
- Fri, 27 Nov 2020 06:21:29 -0800 (PST)
+        bh=NZuPwBGFQNcqFlpY7t4mA2yjp1/UdJ3toB4opd89Aaw=;
+        b=Htw0HTwEOcSU/tU/uRlLjqSR2iemGpR63eal3FJ/Q99xhGrqypCeWn99g1WFXDciCD
+         +1UpN97REdHyoViZ8s8a0JyDpTUMYDdgwvMxbk6H/XiBzFmr0Flzh79N6BHbzYfheV5z
+         cI8iVG6J29vWzXxE5VTqxrUtgeeBB83ffUJMywNn5c3B7f/M7c/gJuilRPYm54bu7Bt1
+         5OpfDx8mXfY+XtPprcQuaPvyBNDbLDiUF1KiBgCxLjDDO9ZzSUfh3uNNnemKPs8SfHFQ
+         shmPga6kBZzK5u03M+GD03BWhLgLSQlLZJooScsi1s7HtJvFy9x/xfA+gu46x5GbAbff
+         qa1Q==
+X-Gm-Message-State: AOAM533lVKi3WimwmGICwSzQqGPXOdLVnWKIc3ArEc9LOKwAPefi287Q
+        gen/Soqe8pBwz6oHJySzDIP2SPV+NzLlyNUJBgxL0dB3mnXqJA==
+X-Google-Smtp-Source: ABdhPJzD6N/5epoxKsbTqEQY7G2+eoyatzRwU1INHL8EDaJIH5aHrh77mm0BWZBD4J5RdKR8xAAzGBmiWjdoTRDWyQw=
+X-Received: by 2002:a63:1514:: with SMTP id v20mr6822588pgl.203.1606486922599;
+ Fri, 27 Nov 2020 06:22:02 -0800 (PST)
 MIME-Version: 1.0
-References: <d0ac1a26ed5943127cb0156148735f5f52a07075.1606459576.git.mchehab+huawei@kernel.org>
-In-Reply-To: <d0ac1a26ed5943127cb0156148735f5f52a07075.1606459576.git.mchehab+huawei@kernel.org>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 27 Nov 2020 09:20:53 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSenOoVxM6W9viwXQmPHo_MEoQzQ=GPxJi72fYGHHmqmwA@mail.gmail.com>
-Message-ID: <CA+FuTSenOoVxM6W9viwXQmPHo_MEoQzQ=GPxJi72fYGHHmqmwA@mail.gmail.com>
-Subject: Re: [PATCH] media: gp8psk: initialize stats at power control logic
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot <syzkaller@googlegroups.com>
+References: <20201127130834.136348-1-alexandru.ardelean@analog.com> <20201127130834.136348-2-alexandru.ardelean@analog.com>
+In-Reply-To: <20201127130834.136348-2-alexandru.ardelean@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 27 Nov 2020 16:22:51 +0200
+Message-ID: <CAHp75Vcd4t=RqC31S-b1PXMtd=8sypSLhTrSgRD9hbpSqOphoQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] spi: Add SPI_NO_TX/RX support
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 1:46 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> As reported on:
->         https://lore.kernel.org/linux-media/20190627222020.45909-1-willemdebruijn.kernel@gmail.com/
->
-> if gp8psk_usb_in_op() returns an error, the status var is not
-> initialized. Yet, this var is used later on, in order to
-> identify:
->         - if the device was already started;
->         - if firmware has loaded;
->         - if the LNBf was powered on.
->
-> Using status = 0 seems to ensure that everything will be
-> properly powered up.
->
-> So, instead of the proposed solution, let's just set
-> status = 0.
->
-> Reported-by: syzbot <syzkaller@googlegroups.com>
-> Reported-by: Willem de Bruijn <willemb@google.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/media/usb/dvb-usb/gp8psk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/media/usb/dvb-usb/gp8psk.c b/drivers/media/usb/dvb-usb/gp8psk.c
-> index c07f46f5176e..b4f661bb5648 100644
-> --- a/drivers/media/usb/dvb-usb/gp8psk.c
-> +++ b/drivers/media/usb/dvb-usb/gp8psk.c
-> @@ -182,7 +182,7 @@ static int gp8psk_load_bcm4500fw(struct dvb_usb_device *d)
->
->  static int gp8psk_power_ctrl(struct dvb_usb_device *d, int onoff)
->  {
-> -       u8 status, buf;
-> +       u8 status = 0, buf;
->         int gp_product_id = le16_to_cpu(d->udev->descriptor.idProduct);
->
->         if (onoff) {
-> --
-> 2.28.0
+On Fri, Nov 27, 2020 at 3:08 PM Alexandru Ardelean
+<alexandru.ardelean@analog.com> wrote:
+> Transmit/receive only is a valid SPI mode. For example, the MOSI/TX line
+> might be missing from an ADC while for a DAC the MISO/RX line may be
+> optional. This patch adds these two new modes: SPI_NO_TX and
+> SPI_NO_RX. This way, the drivers will be able to identify if any of
+> these two lines is missing and to adjust the transfers accordingly.
 
+...
 
-Is it okay to ignore the return value of gp8psk_usb_in_op here?
+> +       /*
+> +        * check mode to prevent that any two of DUAL, QUAD and NO_MOSI/MISO
+> +        * are set at the same time
+>          */
+
+Since you are here,
+ check -> Check
+ time -> time.
+
+...
+
+> +       if ((hweight_long(spi->mode &
+> +               (SPI_TX_DUAL | SPI_TX_QUAD | SPI_NO_TX)) > 1) ||
+> +           (hweight_long(spi->mode &
+> +               (SPI_RX_DUAL | SPI_RX_QUAD | SPI_NO_RX)) > 1)) {
+>                 dev_err(&spi->dev,
+> -               "setup: can not select dual and quad at the same time\n");
+> +               "setup: can not select any two of dual, quad and no-rx/tx "
+> +               "at the same time\n");
+
+Don't split literals, and probably rephrase (If I can't set 2, can I set 3?)
+   "setup: can't select more than one out of dual, quad, and no-Rx /
+no-Tx at the same time\n");
+
+> --- a/include/uapi/linux/spi/spi.h
+> +++ b/include/uapi/linux/spi/spi.h
+> @@ -43,5 +43,7 @@
+>  #define        SPI_TX_OCTAL            0x2000          /* transmit with 8 wires */
+>  #define        SPI_RX_OCTAL            0x4000          /* receive with 8 wires */
+>  #define        SPI_3WIRE_HIZ           0x8000          /* high impedance turnaround */
+> +#define        SPI_NO_TX               0x10000         /* no transmit wire */
+> +#define        SPI_NO_RX               0x20000         /* no receive wire */
+
+Is it really material for uAPI?
+Perhaps we may have something like
+SPI_MODE_USER_MASK in uAPI and
+in internal headers
+
+SPI_MODE_KERNEL_MASK with
+static_assert(_USER_MASK & _KERNEL_MASK); // check conditional
+
+?
+
+-- 
+With Best Regards,
+Andy Shevchenko
