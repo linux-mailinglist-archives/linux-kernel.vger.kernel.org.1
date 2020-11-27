@@ -2,150 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602282C65B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D19312C65B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728883AbgK0MXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:23:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35652 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728698AbgK0MXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:23:49 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606479828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ng2/Ugmp8ecll2pI050So3NqNDeLyF5Nm/J+RZ681Bg=;
-        b=svm+PTe2w4AfSBW10on4vxezJqJHdQK9XoRgPm8jQRc2qos71ordZVtGD5fnZWktZ+Jy4R
-        B4bsNXOWTF8GPKV1L0bQtvYyZTd9C8bCDPC8OjuQ0TF/0fpCH9kj8LUfCauxkyQ4uVZBnS
-        pDOTg/ThAJDNwLL6mkAjFxPd7tYVEZw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4F363ABD7;
-        Fri, 27 Nov 2020 12:23:48 +0000 (UTC)
-Date:   Fri, 27 Nov 2020 13:23:47 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH v2] mm/page_alloc: clear all pages in post_alloc_hook()
- with init_on_alloc=1
-Message-ID: <20201127122347.GR31550@dhcp22.suse.cz>
-References: <20201120180452.19071-1-david@redhat.com>
+        id S1728340AbgK0M0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:26:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgK0M0t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 07:26:49 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E492C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:26:48 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id f12so4518271oto.10
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:26:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=INnUE0sM05L2oreqITOkcAXoqFYcu3Qaos8NOOfhOTQ=;
+        b=RbEhXeDCcLG6KFDkofW6vC2lhXZqLixRKztRPhHHADZRxFmCHKdxew/X6buNWyeQPm
+         SYTCpiakjEpW+R8ggJqq0BhGj1sINRcXMaxNZK9Tk6K2uGLRZup8ZfiiYKo5zWSddhXs
+         ZkaMa3TBB4WEa3vG8H4QlHbg76bimbJQoWPGEYk33YfOdQ1tFIC0mZRG4eyAW1mh6P1T
+         kfYL+YsACuuilf3sSPfHlVGeAWtM+oyTeQkb3wiXYjHLho1D1p33cNvAaGnZapYl8OaB
+         X8jFOlYbYYiWOAx24QFMufWRlk5KCUEDVZhTzFQN0nL0KeuP9RNuurTu6UfQWwl0y9oc
+         hPdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=INnUE0sM05L2oreqITOkcAXoqFYcu3Qaos8NOOfhOTQ=;
+        b=R4T4BD2N6OgSkMDUu60hMZ/qeBkoEf8RrgwYzDYJOUkKLx7vy503wI96NsYQAG+YsO
+         C4hIN508+y6YQwMGZRoSKOzijdaI4Om/lB2FPr6JDPIQAmMNgrx78xF+nuls5B+o/ucl
+         d/k3Sxys3uxJ76sJrkVxryCZ32eLNHWTYy0zEV6pyGRiG7MmJOZufxsQL6p2aJVLV+Tx
+         uD4l7ubYnQVIUFEyJyQk2F1fn4Y2JGNQoINxPrgQneUfFrgErNTFv3Ttx9hG8ZmDZZip
+         Le5+4at5OLixfAaD4NJbb5bC/miOHTO6Xvb+zZXlevnzveMGbphkgBLcenKMn+LTE6hG
+         Yu1w==
+X-Gm-Message-State: AOAM53397OAoIOEhmEBgtq4CIZ9AJauKDtVm6+myreMEP/K9zaRHYfKM
+        o9vZx/n+nMfAf2jNSDqB/jQU5J0I1+9lG9CHuMmSqg==
+X-Google-Smtp-Source: ABdhPJwdkvpfZpec4AJHnHkvroUWUD22bNL8+btJPZre9LvmpggYaMzTkVMfQJdGNDxedL3NGUqUi0acSmkdra7e+ek=
+X-Received: by 2002:a9d:7d92:: with SMTP id j18mr5921417otn.17.1606480007166;
+ Fri, 27 Nov 2020 04:26:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120180452.19071-1-david@redhat.com>
+References: <20201125173436.1894624-1-elver@google.com> <20201125124313.593fc2b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CANpmjNP_=Awx0-eZisMXzgXxKqf7hcrZYCYzFXuebPcwZtkoLw@mail.gmail.com> <CAF=yD-JtRUjmy+12kTL=YY8Cfi_c92GVbHZ647smWmasLYiNMg@mail.gmail.com>
+In-Reply-To: <CAF=yD-JtRUjmy+12kTL=YY8Cfi_c92GVbHZ647smWmasLYiNMg@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 27 Nov 2020 13:26:35 +0100
+Message-ID: <CANpmjNO8H9OJDTcKhg4PRVEV04Gxnb56mJY2cB9j4cH+4nznhQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: switch to storing KCOV handle directly in sk_buff
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Aleksandr Nogikh <a.nogikh@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Ido Schimmel <idosch@idosch.org>,
+        Florian Westphal <fw@strlen.de>,
+        Willem de Bruijn <willemb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 20-11-20 19:04:52, David Hildenbrand wrote:
-> commit 6471384af2a6 ("mm: security: introduce init_on_alloc=1 and
-> init_on_free=1 boot options") resulted with init_on_alloc=1 in all pages
-> leaving the buddy via alloc_pages() and friends to be
-> initialized/cleared/zeroed on allocation.
-> 
-> However, the same logic is currently not applied to
-> alloc_contig_pages(): allocated pages leaving the buddy aren't cleared
-> with init_on_alloc=1 and init_on_free=0. Let's also properly clear
-> pages on that allocation path.
-> 
-> To achieve that, let's move clearing into post_alloc_hook(). This will not
-> only affect alloc_contig_pages() allocations but also any pages used as
-> migration target in compaction code via compaction_alloc().
-> 
-> While this sounds sub-optimal, it's the very same handling as when
-> allocating migration targets via alloc_migration_target() - pages will
-> get properly cleared with init_on_free=1. In case we ever want to optimize
-> migration in that regard, we should tackle all such migration users - if we
-> believe migration code can be fully trusted.
-> 
-> With this change, we will see double clearing of pages in some
-> cases. One example are gigantic pages (either allocated via CMA, or
-> allocated dynamically via alloc_contig_pages()) - which is the right
-> thing to do (and to be optimized outside of the buddy in the callers) as
-> discussed in:
->   https://lkml.kernel.org/r/20201019182853.7467-1-gpiccoli@canonical.com
-> 
-> This change implies that with init_on_alloc=1
-> - All CMA allocations will be cleared
-> - Gigantic pages allocated via alloc_contig_pages() will be cleared
-> - virtio-mem memory to be unplugged will be cleared. While this is
->   suboptimal, it's similar to memory balloon drivers handling, where
->   all pages to be inflated will get cleared as well.
-> - Pages isolated for compaction will be cleared
+On Thu, 26 Nov 2020 at 17:35, Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+> On Thu, Nov 26, 2020 at 3:19 AM Marco Elver <elver@google.com> wrote:
+[...]
+> > Will send v2.
+>
+> Does it make more sense to revert the patch that added the extensions
+> and the follow-on fixes and add a separate new patch instead?
 
-Yes, this looks much better than the previous version. Thanks for
-looking into it deeper!
+That doesn't work, because then we'll end up with a build-broken
+commit in between the reverts and the new version, because mac80211
+uses skb_get_kcov_handle().
 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> If adding a new field to the skb, even if only in debug builds,
+> please check with pahole how it affects struct layout if you
+> haven't yet.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Without KCOV:
 
-Btw. I think we would benefit from a documentation which would explain
-what is the purpose of the two parts of the initialization. What does
-belong to prep_new_page resp. post_alloc_hook.
+        /* size: 224, cachelines: 4, members: 72 */
+        /* sum members: 217, holes: 1, sum holes: 2 */
+        /* sum bitfield members: 36 bits, bit holes: 2, sum bit holes: 4 bits */
+        /* forced alignments: 2 */
+        /* last cacheline: 32 bytes */
 
-Thanks!
-> ---
-> 
-> This is the follow-up of:
->   "[PATCH v1] mm/page_alloc: clear pages in alloc_contig_pages() with
->   init_on_alloc=1 or __GFP_ZERO"
-> 
-> v1 -> v2:
-> - Let's clear anything that leaves the buddy, also affecting compaction.
-> - Don't implement __GFP_ZERO support for now
-> 
-> ---
->  mm/page_alloc.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index eaa227a479e4..108b81c0dfa8 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -2275,6 +2275,9 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
->  	kasan_alloc_pages(page, order);
->  	kernel_poison_pages(page, 1 << order, 1);
->  	set_page_owner(page, order, gfp_flags);
-> +
-> +	if (!free_pages_prezeroed() && want_init_on_alloc(gfp_flags))
-> +		kernel_init_free_pages(page, 1 << order);
->  }
->  
->  static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_flags,
-> @@ -2282,9 +2285,6 @@ static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_flags
->  {
->  	post_alloc_hook(page, order, gfp_flags);
->  
-> -	if (!free_pages_prezeroed() && want_init_on_alloc(gfp_flags))
-> -		kernel_init_free_pages(page, 1 << order);
-> -
->  	if (order && (gfp_flags & __GFP_COMP))
->  		prep_compound_page(page, order);
->  
-> -- 
-> 2.26.2
-> 
+With KCOV:
 
--- 
-Michal Hocko
-SUSE Labs
+        /* size: 232, cachelines: 4, members: 73 */
+        /* sum members: 225, holes: 1, sum holes: 2 */
+        /* sum bitfield members: 36 bits, bit holes: 2, sum bit holes: 4 bits */
+        /* forced alignments: 2 */
+        /* last cacheline: 40 bytes */
+
+
+> The skb_extensions idea was mine. Apologies for steering
+> this into an apparently unsuccessful direction. Adding new fields
+> to skb is very rare because possibly problematic wrt allocation.
