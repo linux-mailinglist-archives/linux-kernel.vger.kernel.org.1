@@ -2,164 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4E22C60B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0072C60B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389045AbgK0H6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 02:58:44 -0500
-Received: from mail-eopbgr70113.outbound.protection.outlook.com ([40.107.7.113]:39926
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729055AbgK0H6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 02:58:35 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mKU3CKUCUnNC996y2IbUdB5W1UyZVOCVDyisQ1JWNe6WIqWxl2PUXNpK8fxSL9McQzq1FrCdaYosKhtfD3swRoUwFrJ5zmt1tH2usoIwzxBqZx1uREGMynUHaYzh8CBGixxuKxbBZwbH7kEoYludC+0sDcw5GbzCbhzMSOp8Ax0411pacNmpxQTrNHzkqBdPLfdoPQ72f3UF4uo7PFLGCegcqOPDPJJxXeTKyHjSa0HkfGW69bMecr3Cs3S/dtlercbByletbKM/5ZFD+A4wr2vcCKHeH69+7KQvoO967RBaz9X1/NgEouKGx/ytydIEvltJLh8Q7QUaGd8pdoNgZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+04C944rPcBN+tJIr4271G3CMB90A9iHoDKuEi0vjv0=;
- b=dj8zN3LOTIxBxDMEgXIDMPc8lCW7vNUn8hRXbcECkkMPwgPZJ4waVEaxeyOtiJDCoMbwGnmNF/qSJE4vQaefzeL9fXhIzJ11SRIlEy3Y+7y9bqhFQ12p79GtyfMoELwLFad8zOn2VC7VMLyEqmARupfVpb/cg+gxeiJQ53efsrjJFucrrVcvUpybjO4Uix/47RZSJeyDpxds3EJPjvYBU6ik+1q4oIF9rwrYd9gExMhCR3/eWIvJIASt9+7KPoEdLcKkCmGrcN9GE8YFP3uVr2IEkN8Uh3BNnyLoxGfwWV834J5cgx4BgA5ZUMjAmLFTfzL952DfKKJZcoN0Nd0zbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+04C944rPcBN+tJIr4271G3CMB90A9iHoDKuEi0vjv0=;
- b=Y8KP4XBEWXErqvCbzzczXhTM9BF+q9hucElJfcsF9LirEfut1s6yEx6z9KNJuRDwT7HSk/HNh40gK8fqq7Ifk2NtMjQwdRnpNeVjHJGmh5FYZ6B/LPxCJVfHgbbzxSJE5CvYjJ7cwwkLyE8eopvdXSOctPwZtJ+cjF3yi1CO/rU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
- by AM0PR07MB6434.eurprd07.prod.outlook.com (2603:10a6:20b:15e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.6; Fri, 27 Nov
- 2020 07:58:31 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::d527:e75b:546c:a85b]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::d527:e75b:546c:a85b%6]) with mapi id 15.20.3564.039; Fri, 27 Nov 2020
- 07:58:31 +0000
-Subject: Re: ks-sa-rng.c:undefined reference to
- `devm_platform_ioremap_resource'
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-References: <202011132311.XmkAgWg0-lkp@intel.com>
- <20201127054844.GB23521@gondor.apana.org.au>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <c34d556c-bb44-1d7d-5207-ddd5ed81f18a@nokia.com>
-Date:   Fri, 27 Nov 2020 08:58:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-In-Reply-To: <20201127054844.GB23521@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [131.228.32.166]
-X-ClientProxiedBy: AM3PR04CA0135.eurprd04.prod.outlook.com (2603:10a6:207::19)
- To AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.166) by AM3PR04CA0135.eurprd04.prod.outlook.com (2603:10a6:207::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Fri, 27 Nov 2020 07:58:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9d50434f-dc6b-4941-31cf-08d892aa3b17
-X-MS-TrafficTypeDiagnostic: AM0PR07MB6434:
-X-Microsoft-Antispam-PRVS: <AM0PR07MB64348FF5AB3C1C583F5E2A8688F80@AM0PR07MB6434.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:175;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Dczfoz37+ZozImTpCrt0wHAarL1LNrqXqI4mSpQF4SeNlZ9XffcW+K6JCgKTv6VVh+JSlM2uf5vArj7iVrBVJAtgENTq6uwE2akZ6Zwa2O6Xrc82w+P35E5OA5gMClHhz/4uPOCPJwBRMFuHHFlpUf9/DbB0/O9W54coBftSm8QENHqwJ6UvPnt9IU+saTQooeKgeI0/yyT8G726lhbPlmwaQ0zxxXXq4lMZJpmQ6KO97WEncAi3Y9P+7aCGDd0K5G0ubBUuajjT+S5Sc4CAkgo7xb/5OrYxs2ZcxKaxXAElVif+2QmkyAM+vACStK11Hw9mg7tF66UZ+1GeY6ahKTW60WuTtIWPRDQuB+EJhQkyEx+lbdv+igOCPaZRzmC7oQJGkLB9W6lOsakRzf9OwGhkAni/bRjBnc63oBAv7wSmwcHAW89VBej7bgholwd1VEbl/LGiVnJETlHUkEoo+m9v9oCz08w1ph0emJq85pY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(366004)(376002)(16526019)(83380400001)(956004)(66476007)(66556008)(6506007)(31686004)(66946007)(8936002)(6486002)(316002)(53546011)(186003)(6512007)(44832011)(36756003)(86362001)(110136005)(966005)(478600001)(2906002)(26005)(52116002)(8676002)(5660300002)(4326008)(2616005)(31696002)(81973001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cUQ3RWp6MU51UDkwbzNVYlNCUG54NFBWdnlCL2RmaHJESk12L2JWZ1NFa2VP?=
- =?utf-8?B?K0VYb3JEcE9MdnFSVVo3bm1qRGxEZUtUMzMwL1dxeGJNcHVDYVQ1MGdOdHU5?=
- =?utf-8?B?eXZGQ05lUk9Rd3BuU1FueTV0Y2Y4OWtIYmxXSlAwckUrMTZlcFZSOFR3SDdl?=
- =?utf-8?B?RDhVZ2hlSEZxMjlkSkNnZkRLcGVkL1N5czdWZmVaYmk3ZEdWQmkreGpsMytO?=
- =?utf-8?B?aEpiVm9JanZvNHJyS3Y2K3lwY1ZaSURkOGd4c1NlK3p2cE9FaHU1cU90MFR3?=
- =?utf-8?B?RDhMMkE3WFRVRHp2K1lyenNUc2xOWVpKcHhZYnVWMEZuZ01PQVh5YUtmS1lK?=
- =?utf-8?B?R2ZUN0Q1aitMVVBsWWNONWJxUklGM1IvUytIVysrS2JJVnBPdkRnOVRxV2Zm?=
- =?utf-8?B?R244QWVzbDM2MGVxQkY5ZGNmQ09rdk9yQjZyb1BYelgxNm5FY3FOZUxqWlUw?=
- =?utf-8?B?V29GUVJVQ3VCUjVIQitlYkFpSzhRWE5panNGMGhqZHRGUVlwYjdMZTZMbUNQ?=
- =?utf-8?B?ZDc5Ym5BZ2F4dmg0RUlnNnVRRHRQTmlBV2ovM3ZlMmRuVEZDVEVPbG9EM1pG?=
- =?utf-8?B?VkdZclhGTlJiSkdxTGZKTWFOQ3BCMXZwellLZlBiN3RwWG5ZUkdLUURxVzdk?=
- =?utf-8?B?UjZUWTViaXpUVEhwRFBnUWxtZjc1Z3BXSndNSnNSd3RLOUdSVkFtcXgzNTV6?=
- =?utf-8?B?UGttVjZkZWlRU3BTZFUyeENaMmI3YUhlbTl0WHlPT29RcTBEMGV1U0lCU2th?=
- =?utf-8?B?S3gxZTVsTVpJVG9SdXUydCtzclpmbjFOanlncXdmSThHRVR3S1d1WUZZZDds?=
- =?utf-8?B?bkxPZUt6dnE4NmYrMkFGZXVxZnBhU3M2cVFlM1pDUGZYYXhCUnM1a2FwUlFR?=
- =?utf-8?B?ekFtQlNVR0dRUGkvWSt5K3NMaXJjUSs0QUkwdVVqelhRcGhMbVkyRVJXcHZK?=
- =?utf-8?B?Y2F2Tm44MDFFQzBaQ0MxaHJDRWNzTzJnWVhSTHZMNG8zSDFSU29LVzdpNDdL?=
- =?utf-8?B?YUFyeXVhcTgzQWtJY0Q5bXRNT3lnb3RYRTF4eFIrUnVVcGRsa0VOUWNkYXBl?=
- =?utf-8?B?WkQxRWhPVWxpeFhKYzkyaU10VmpoTUxIcktrMVAzdkNmZEF3RFJCWG1Uc1VI?=
- =?utf-8?B?M3grWi9uZHdJR2V5NXFBNlppcU5RaEVVZFlhd0lCN1NpaCtUMCtONUxFZm0w?=
- =?utf-8?B?RlBxL2JXWVRvNWhwOXRJSExBRnZHWnhXNzhneUQyRGdSTS9PbFZmZDk5Y3hq?=
- =?utf-8?B?cnhXeHAyWUhVRGdwcXl3YTl6UUIxU2kwVWhUQUYxTDVDejdUWFE2QTJqSlVQ?=
- =?utf-8?Q?ejB0bEdLpgFCj4KKzFTWfOSHAvy4j36fum?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d50434f-dc6b-4941-31cf-08d892aa3b17
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2020 07:58:30.9684
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6Dj8cQ6axe7JDZSXtce403Tr/hzD9FwYfBcwJwsBMxnNrEFDVmrIH5Q9382OQGlsCXKFwpWx1zq1vfw3f0jucuUDStxEYGMB5/WCnIaRwh8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB6434
+        id S2389114AbgK0IEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 03:04:14 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:56075 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726408AbgK0IEN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 03:04:13 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9B5FC5C03E0;
+        Fri, 27 Nov 2020 03:04:12 -0500 (EST)
+Received: from imap10 ([10.202.2.60])
+  by compute2.internal (MEProxy); Fri, 27 Nov 2020 03:04:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dend.ro; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type:content-transfer-encoding; s=fm1; bh=wEAsi
+        aXOmsqZMNHYu69wrrLEe6FYIcAIgszXIHF3axQ=; b=GI4uweY3cXOaaYBkgPWFO
+        KuLg0NsyM8RJLtOMljTErOp6sGIb0k5k2ZgvYFUIXHl/XjN1wIXAAN/v1TQvEMxb
+        xChaUs0vQY2yxlnCpIXOTfQ/2hhT7g54svMRo+3QoKUiI7Ht8Fd68VJ8ka+M4b2c
+        mfFOx9dSEWpBDUhTi7z0kpDEe/AmG1716wiZ5zc1kKXUXlATngpLPxR8RNAo9XGO
+        31sl4hlMWnNkmPxt7M6Un3JQ67JyPnAbqcdcHczpElJIqE3zbAZuNl0p20t2dB5Z
+        EGMLopVUrDFXBizpSNyzN/6DS2GEkM0xSfTZC5jgYK0tEmq9UX+ozUdtIMqeNbEp
+        A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=wEAsiaXOmsqZMNHYu69wrrLEe6FYIcAIgszXIHF3a
+        xQ=; b=c9FggQhdEHRSZ4P1nHr9Ph+NN003DiDcfCN7o3sh+9smtok9KRvvk7Np+
+        Sj9XMIdb5KpPkXT5esM6XfyzM5D6Ee5m7vcK3+kF7IjF9MPNLM5w7hVL1/kE9kQH
+        KDFC+cWQn38XB4bO+gAMy8nEg2rzZ+vOtvNrPYL3vIJCM/QCB67s1GSG2eg4Kq62
+        nEI+qC4p9/0GhxdVK6yikK46PDsUgP+V8BijBGg1xGSxk7bHrsanJI0v1rsaDSlw
+        ycc4by+EycE140hrRia3TuCjxugI9CS0/CTQQNUvnw611eitpbM+4oLBZHoT4Lbl
+        6Y8UxBd07dKZd8FKzIRZEJlZwPdwQ==
+X-ME-Sender: <xms:-7LAX4Gd31dpor__ZQrNPUPY1e2T3OQZxG2bah4FDRGN3DRVLvLWMg>
+    <xme:-7LAXxUSmqoV95JGS8w8rim7ONIs9tdIuA17p78ftylevkQUCculgxRnI7L-lXDf3
+    f3cLcEQFsNYWriItQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudehfedgudduhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepofgfggfkjghffffhvffutgfgse
+    htqhertderreejnecuhfhrohhmpefnrghurhgvnhhtihhupgfpihgtohhlrgcuoehlnhhi
+    tgholhgrseguvghnugdrrhhoqeenucggtffrrghtthgvrhhnpeeigfejueegtdetgefftd
+    duieehiedvtdetgfdtjeevudeghedvtdeuuedvuddukeenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlnhhitgholhgrseguvghnugdrrhho
+X-ME-Proxy: <xmx:-7LAXyLplOh7pBcxEBwStboJqsx1sF4jGBiisfUaLuWEbZmG3-gYqQ>
+    <xmx:-7LAX6E7F31oGUmMMWxf75V2B5Q9B57rtv24bsGQKtFjsq7BJkpUrA>
+    <xmx:-7LAX-XNJvXR0XCmPWDtoGzTJe9pXdeS1ucrDjsabwhIh4k_yC8Atg>
+    <xmx:_LLAX9QRK1lV3lw5EEXGypWRGYET6IArNCtBJLYiDjv1qgFeaBhrsA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 49EAA201D9; Fri, 27 Nov 2020 03:04:11 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-622-g4a97c0b-fm-20201115.001-g4a97c0b3
+Mime-Version: 1.0
+Message-Id: <ea40c3e8-0be1-4783-ba1e-86c96cf8e4af@www.fastmail.com>
+In-Reply-To: <875z5rk68z.fsf@nanos.tec.linutronix.de>
+References: <20201126074734.12664-1-lnicola@dend.ro>
+ <875z5rk68z.fsf@nanos.tec.linutronix.de>
+Date:   Fri, 27 Nov 2020 10:03:50 +0200
+From:   =?UTF-8?Q?Lauren=C8=9Biu_Nicola?= <lnicola@dend.ro>
+To:     "Thomas Gleixner" <tglx@linutronix.de>
+Cc:     mingo@redhat.com, bp@alien8.de, x86@kernel.org, trivial@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/irq: Lower unhandled irq error severity
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Hello,
 
-On 27/11/2020 06:48, Herbert Xu wrote:
-> On Fri, Nov 13, 2020 at 11:02:13PM +0800, kernel test robot wrote:
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
->> commit: 90c4b29eb1e555fee66f8329a18cb8a070090ad6 hwrng: ks-sa - Enable COMPILE_TEST
->> date:   12 months ago
->> config: s390-randconfig-r022-20201113 (attached as .config)
->> compiler: s390-linux-gcc (GCC) 9.3.0
->> reproduce (this is a W=1 build):
->>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=90c4b29eb1e555fee66f8329a18cb8a070090ad6
->>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>         git fetch --no-tags linus master
->>         git checkout 90c4b29eb1e555fee66f8329a18cb8a070090ad6
->>         # save the attached .config to linux build tree
->>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390 
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
-> 
->>    s390-linux-ld: drivers/char/hw_random/ks-sa-rng.o: in function `ks_sa_rng_probe':
->>>> ks-sa-rng.c:(.text+0x2fa): undefined reference to `devm_platform_ioremap_resource'
-> 
-> ---8<---
-> This patch adds a dependency for KEYSTONE on HAS_IOMEM and OF to
-> prevent COMPILE_TEST build failures.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+On Fri, Nov 27, 2020, at 02:12, Thomas Gleixner wrote:
+> On Thu, Nov 26 2020 at 09:47, Lauren=C8=9Biu Nicola wrote:
+> > These messages are described as warnings in the MSI code.
+>=20
+> Where and what has MSI to do with these messages?
 
-Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+There's a comment referring to it as a warning, but an error seemed a mo=
+re appropriate severity:
 
-> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-> index ab33a2e17cdf..9ff4fb3236f7 100644
-> --- a/drivers/char/hw_random/Kconfig
-> +++ b/drivers/char/hw_random/Kconfig
-> @@ -508,6 +508,7 @@ config HW_RANDOM_NPCM
->  
->  config HW_RANDOM_KEYSTONE
->  	depends on ARCH_KEYSTONE || COMPILE_TEST
-> +	depends on HAS_IOMEM && OF
->  	default HW_RANDOM
->  	tristate "TI Keystone NETCP SA Hardware random number generator"
->  	help
-> 
+     * If the vector is unused, then it is marked so it won't
+     * trigger the 'No irq handler for vector' warning in
+     * common_interrupt().
 
--- 
-Best regards,
-Alexander Sverdlin.
+> > Spotted because they break quiet boot on a Ryzen 5000 CPU.
+>=20
+> They don't break the boot.
+>=20
+> The machine boots fine, but having interrupts raised on a vector which=
+
+> is unused is really bad.
+
+That's right, sorry. It still boots, but it's no longer "quiet", that's =
+what I meant.
+
+> Can you please provide the actual message from dmesg?
+
+Sure:
+
+[    0.316902] __common_interrupt: 1.55 No irq handler for vector
+[    0.316902] __common_interrupt: 2.55 No irq handler for vector
+[    0.316902] __common_interrupt: 3.55 No irq handler for vector
+[    0.316902] __common_interrupt: 4.55 No irq handler for vector
+[    0.316902] __common_interrupt: 5.55 No irq handler for vector
+[    0.316902] __common_interrupt: 6.55 No irq handler for vector
+[    0.316902] __common_interrupt: 7.55 No irq handler for vector
+[    0.316902] __common_interrupt: 8.55 No irq handler for vector
+[    0.316902] __common_interrupt: 9.55 No irq handler for vector
+[    0.316902] __common_interrupt: 10.55 No irq handler for vector
+
+These only show up during boot (and not e.g. when a disabling and enabli=
+ng again a CPU).
+
+Lauren=C8=9Biu
