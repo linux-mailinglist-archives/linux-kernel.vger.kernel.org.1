@@ -2,215 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84312C63C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 12:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DBC2C63C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 12:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729302AbgK0LUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 06:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
+        id S1729387AbgK0LUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 06:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728451AbgK0LUN (ORCPT
+        with ESMTP id S1728941AbgK0LUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 06:20:13 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5D0C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 03:20:12 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id z1so5542474ljn.4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 03:20:12 -0800 (PST)
+        Fri, 27 Nov 2020 06:20:39 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30573C0613D1;
+        Fri, 27 Nov 2020 03:20:39 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id r3so5219110wrt.2;
+        Fri, 27 Nov 2020 03:20:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gx/sfWK7RQOwUhoWCcsjhmPBNWJ/nVv9as+ArKz2/0k=;
-        b=LpxDn9xb1o6vIwYbn0D7fOmklaeebC5h3J5u9lUnRCxHaOSgkhTx8JhUhFPPhKXna6
-         qAnKUmUv9r/Ocbld330pjSYhan9ZrBn90fMswzFFGkxl6YfvZ/V2AWVvIcmLQE8MUVOv
-         LKT/FpcvGCujzdg6GhWrQyzZLNI+5W3r10AGo=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cxB5L4+nF4sAICEXNlH6T+45cqgn3iHBYM/XseYVDT0=;
+        b=oMcX1SSPuZ7WZNlcfoLpo5kUKsjOQsj7bbxQ+lSji6KOD5rEscQ/FDo0JAKzLmYlfS
+         NZuaij9DXI5uOth4VRJ7/pkSVEQ0Ay5D3gIEI9AXJzfAnnNM9hFz4l/IaxhUJuzzNws8
+         tIfhOuGPV7vS1wfaOYCMw23AKZ1Yjp0DK0Z7p7g6AQzZz86cJT42EmpKwoYRChRV0mG7
+         JmJ5U7H84XyU+eDGQxjYdOy1CMxgjuIABGf7lYGTiR+T0P+Nv0lhUsr5CiKbkxE7Vm7v
+         VypW2u4Qziv8rhqzkGAwhh3Mt+Fu8JcAN2RY7bRIRPMKf/tsK1+rWf72nX9vLpdKdw2w
+         /SOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gx/sfWK7RQOwUhoWCcsjhmPBNWJ/nVv9as+ArKz2/0k=;
-        b=SCWEn+VXZ7KFkROARQlj1AJe/0Jq31GWzuRYG3g4KRgQM0J9jknSaQpYFnGmPOzB2B
-         nRtNZzKBbxbSWAlGhMI4w90qlKXW5PP/nNIuVpdhOhBWik9Z+JPCM0cbASiBYkz1zkZV
-         vSAYnmU0QnKaSLW7tN6FgrM807S2ERpafHcDlLxcBupY9xv7N0y8kKgA5bjuO9J/N4ka
-         w/kFhmBCL9CHz/h/41JOO5IShgpxU8ScQ9PJh1HQjWNdA61o0XqH0pCaLNaftBSziCS2
-         n/lo7/QcLBRhOlM5pvCKDqblLOPi6D1GOUYoPpY3GM1ZhzTqGTaDYc4/AcNLeno55wb1
-         9EtQ==
-X-Gm-Message-State: AOAM532d0jSa4mHK2USwEuE6dxn9I/mOK8KIarntxGGqIJcWWSWSdh7G
-        +G0wnsYEomy3MYaBh8Skl0NDs4dJnJvvD5rJCxxP3A==
-X-Google-Smtp-Source: ABdhPJyeArwArZ27qJf9UhZoBjPIOa9Awn/z/67I7KPm54UV3qp3Mt5NO+FBE+j9rYIkuGdT9jDKd2FZJyOmZcsrsWA=
-X-Received: by 2002:a2e:8e3b:: with SMTP id r27mr3217873ljk.466.1606476011042;
- Fri, 27 Nov 2020 03:20:11 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cxB5L4+nF4sAICEXNlH6T+45cqgn3iHBYM/XseYVDT0=;
+        b=oynuygQ4hzJD8stIvRv+Kr5DVoZhdbbMcukGeBRZdUOmuOG4aXyVGhLSad4KNg8+DF
+         LxnRODVMM+uHC1zV5AwaXcQA2W2e1HO2kKZa+Us2wK0MVHOBLnc94z2InAdoHZEf+TE6
+         sjbz+Ux60kN9EvIAH/0oMRf4vrslHXpzRyL0cgDY6G6wmA41owX+knoVRjkrDmUU0WTr
+         VaVGSFzHrWzTL/H9P6V5QppbTayVnf4V3Y1LdxSfy9GadMtoyY65VHjPDTOneLGg+sAv
+         UoBaTGl45uRFlm+DTW+N8WsGX04cKlR6yqlnq8qCgDpZmZABVQyZQnr3ecnJXa0yLGoy
+         i7zw==
+X-Gm-Message-State: AOAM532FBIojpHIBZBxY9mehLxcSj42K9b9NTn8hs1APNVA9TtDvmCRE
+        280CaFtfTGO/lLKzoTfVARQ=
+X-Google-Smtp-Source: ABdhPJwrYIqMkKez+ccJKOv7rpRAHruS5C1aifhxSJlqY+fgx0LKeQ89hHcgT/0TXhf2e0s2uxvG8w==
+X-Received: by 2002:adf:b78d:: with SMTP id s13mr9631926wre.383.1606476037970;
+        Fri, 27 Nov 2020 03:20:37 -0800 (PST)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id 189sm13678368wmb.18.2020.11.27.03.20.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 03:20:37 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: mt8183: Add pwm and backlight node
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20201124041253.4181273-1-hsinyi@chromium.org>
+ <8484ec3b-14aa-f0de-28d6-f360c491515b@collabora.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <acb813d6-8643-5b9a-2ae1-bc03f2a37ffa@gmail.com>
+Date:   Fri, 27 Nov 2020 12:20:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201126165748.1748417-1-revest@google.com> <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
-In-Reply-To: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Fri, 27 Nov 2020 12:20:00 +0100
-Message-ID: <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8484ec3b-14aa-f0de-28d6-f360c491515b@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 8:35 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 11/26/20 8:57 AM, Florent Revest wrote:
-> > This helper exposes the kallsyms_lookup function to eBPF tracing
-> > programs. This can be used to retrieve the name of the symbol at an
-> > address. For example, when hooking into nf_register_net_hook, one can
-> > audit the name of the registered netfilter hook and potentially also
-> > the name of the module in which the symbol is located.
-> >
-> > Signed-off-by: Florent Revest <revest@google.com>
-> > ---
-> >   include/uapi/linux/bpf.h       | 16 +++++++++++++
-> >   kernel/trace/bpf_trace.c       | 41 ++++++++++++++++++++++++++++++++++
-> >   tools/include/uapi/linux/bpf.h | 16 +++++++++++++
-> >   3 files changed, 73 insertions(+)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index c3458ec1f30a..670998635eac 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3817,6 +3817,21 @@ union bpf_attr {
-> >    *          The **hash_algo** is returned on success,
-> >    *          **-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
-> >    *          invalid arguments are passed.
-> > + *
-> > + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
-> > + *   Description
-> > + *           Uses kallsyms to write the name of the symbol at *address*
-> > + *           into *symbol* of size *symbol_sz*. This is guaranteed to be
-> > + *           zero terminated.
-> > + *           If the symbol is in a module, up to *module_size* bytes of
-> > + *           the module name is written in *module*. This is also
-> > + *           guaranteed to be zero-terminated. Note: a module name
-> > + *           is always shorter than 64 bytes.
-> > + *   Return
-> > + *           On success, the strictly positive length of the full symbol
-> > + *           name, If this is greater than *symbol_size*, the written
-> > + *           symbol is truncated.
-> > + *           On error, a negative value.
-> >    */
-> >   #define __BPF_FUNC_MAPPER(FN)               \
-> >       FN(unspec),                     \
-> > @@ -3981,6 +3996,7 @@ union bpf_attr {
-> >       FN(bprm_opts_set),              \
-> >       FN(ktime_get_coarse_ns),        \
-> >       FN(ima_inode_hash),             \
-> > +     FN(kallsyms_lookup),    \
-> >       /* */
-> >
-> >   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index d255bc9b2bfa..9d86e20c2b13 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -17,6 +17,7 @@
-> >   #include <linux/error-injection.h>
-> >   #include <linux/btf_ids.h>
-> >   #include <linux/bpf_lsm.h>
-> > +#include <linux/kallsyms.h>
-> >
-> >   #include <net/bpf_sk_storage.h>
-> >
-> > @@ -1260,6 +1261,44 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
-> >       .arg5_type      = ARG_ANYTHING,
-> >   };
-> >
-> > +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32, symbol_size,
-> > +        char *, module, u32, module_size)
-> > +{
-> > +     char buffer[KSYM_SYMBOL_LEN];
-> > +     unsigned long offset, size;
-> > +     const char *name;
-> > +     char *modname;
-> > +     long ret;
-> > +
-> > +     name = kallsyms_lookup(address, &size, &offset, &modname, buffer);
-> > +     if (!name)
-> > +             return -EINVAL;
-> > +
-> > +     ret = strlen(name) + 1;
-> > +     if (symbol_size) {
-> > +             strncpy(symbol, name, symbol_size);
-> > +             symbol[symbol_size - 1] = '\0';
-> > +     }
-> > +
-> > +     if (modname && module_size) {
-> > +             strncpy(module, modname, module_size);
-> > +             module[module_size - 1] = '\0';
->
-> In this case, module name may be truncated and user did not get any
-> indication from return value. In the helper description, it is mentioned
-> that module name currently is most 64 bytes. But from UAPI perspective,
-> it may be still good to return something to let user know the name
-> is truncated.
->
-> I do not know what is the best way to do this. One suggestion is
-> to break it into two helpers, one for symbol name and another
 
-I think it would be slightly preferable to have one helper though.
-maybe something like bpf_get_symbol_info (better names anyone? :))
-with flags to get the module name or the symbol name depending
-on the flag?
 
-> for module name. What is the use cases people want to get both
-> symbol name and module name and is it common?
+On 25/11/2020 11:24, Enric Balletbo i Serra wrote:
+> Hi Hsin-Yi,
+> 
+> Thank you for your patch.
+> 
+> On 24/11/20 5:12, Hsin-Yi Wang wrote:
+>> Add pwm to mt8183 and backlight to mt8183-kukui.
+>>
+>> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+>> ---
+> 
+> Picked the patch and checked that pwm for the backlight is working as expected
+> on my Lenovo Ideapad Duet.
+> 
+> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> 
 
-The use case would be to disambiguate symbols in the
-kernel from the ones from a kernel module. Similar to what
-/proc/kallsyms does:
+Applied to v5.10-next/dts64
 
-T cpufreq_gov_powersave_init [cpufreq_powersave]
+Thanks!
 
->
-> > +     }
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +const struct bpf_func_proto bpf_kallsyms_lookup_proto = {
-> > +     .func           = bpf_kallsyms_lookup,
-> > +     .gpl_only       = false,
-> > +     .ret_type       = RET_INTEGER,
-> > +     .arg1_type      = ARG_ANYTHING,
-> > +     .arg2_type      = ARG_PTR_TO_MEM,
-> ARG_PTR_TO_UNINIT_MEM?
->
-> > +     .arg3_type      = ARG_CONST_SIZE,
-> ARG_CONST_SIZE_OR_ZERO? This is especially true for current format
-> which tries to return both symbol name and module name and
-> user may just want to do one of them.
->
-> > +     .arg4_type      = ARG_PTR_TO_MEM,
-> ARG_PTR_TO_UNINIT_MEM?
->
-> > +     .arg5_type      = ARG_CONST_SIZE,
-> ARG_CONST_SIZE_OR_ZERO?
->
-> > +};
-> > +
-> >   const struct bpf_func_proto *
-> >   bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> >   {
-> > @@ -1356,6 +1395,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> >               return &bpf_per_cpu_ptr_proto;
-> >       case BPF_FUNC_bpf_this_cpu_ptr:
-> >               return &bpf_this_cpu_ptr_proto;
-> > +     case BPF_FUNC_kallsyms_lookup:
-> > +             return &bpf_kallsyms_lookup_proto;
-> >       default:
-> >               return NULL;
-> >       }
-> [...]
+>>   .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 28 +++++++++++++++++++
+>>   arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 10 +++++++
+>>   2 files changed, 38 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+>> index 85f7c33ba4461..bf2ad1294dd30 100644
+>> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+>> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+>> @@ -19,6 +19,17 @@ chosen {
+>>   		stdout-path = "serial0:115200n8";
+>>   	};
+>>   
+>> +	backlight_lcd0: backlight_lcd0 {
+>> +		compatible = "pwm-backlight";
+>> +		pwms = <&pwm0 0 500000>;
+>> +		power-supply = <&bl_pp5000>;
+>> +		enable-gpios = <&pio 176 0>;
+>> +		brightness-levels = <0 1023>;
+>> +		num-interpolated-steps = <1023>;
+>> +		default-brightness-level = <576>;
+>> +		status = "okay";
+>> +	};
+>> +
+>>   	memory@40000000 {
+>>   		device_type = "memory";
+>>   		reg = <0 0x40000000 0 0x80000000>;
+>> @@ -536,6 +547,17 @@ pins_clk {
+>>   		};
+>>   	};
+>>   
+>> +	pwm0_pin_default: pwm0_pin_default {
+>> +		pins1 {
+>> +			pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
+>> +			output-high;
+>> +			bias-pull-up;
+>> +		};
+>> +		pins2 {
+>> +			pinmux = <PINMUX_GPIO43__FUNC_DISP_PWM>;
+>> +		};
+>> +	};
+>> +
+>>   	scp_pins: scp {
+>>   		pins_scp_uart {
+>>   			pinmux = <PINMUX_GPIO110__FUNC_TP_URXD1_AO>,
+>> @@ -670,6 +692,12 @@ pins_wifi_wakeup {
+>>   	};
+>>   };
+>>   
+>> +&pwm0 {
+>> +	status = "okay";
+>> +	pinctrl-names = "default";
+>> +	pinctrl-0 = <&pwm0_pin_default>;
+>> +};
+>> +
+>>   &scp {
+>>   	status = "okay";
+>>   	pinctrl-names = "default";
+>> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+>> index 08a914d3a6435..a974bad899365 100644
+>> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+>> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+>> @@ -479,6 +479,16 @@ spi0: spi@1100a000 {
+>>   			status = "disabled";
+>>   		};
+>>   
+>> +		pwm0: pwm@1100e000 {
+>> +			compatible = "mediatek,mt8183-disp-pwm";
+>> +			reg = <0 0x1100e000 0 0x1000>;
+>> +			interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_LOW>;
+>> +			#pwm-cells = <2>;
+>> +			clocks = <&topckgen CLK_TOP_MUX_DISP_PWM>,
+>> +					<&infracfg CLK_INFRA_DISP_PWM>;
+>> +			clock-names = "main", "mm";
+>> +		};
+>> +
+>>   		i2c3: i2c@1100f000 {
+>>   			compatible = "mediatek,mt8183-i2c";
+>>   			reg = <0 0x1100f000 0 0x1000>,
+>>
