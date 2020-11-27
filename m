@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AFB2C6CB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 21:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE752C6C95
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 21:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732094AbgK0Urd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Nov 2020 15:47:33 -0500
-Received: from mail.fireflyinternet.com ([77.68.26.236]:50069 "EHLO
-        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727936AbgK0Upy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 15:45:54 -0500
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
-Received: from localhost (unverified [78.156.65.138]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 23138523-1500050 
-        for multiple; Fri, 27 Nov 2020 19:27:01 +0000
+        id S1732456AbgK0Uep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 15:34:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732374AbgK0Ubj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 15:31:39 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CB3F21D7A;
+        Fri, 27 Nov 2020 20:19:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606508354;
+        bh=o3RTkjTyHvzrrCB4moRhD+SXP7lFjO4qLgZ4zpDkqEw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=E1/Cvts2AleC6juqrgkFNASwChKaHV22sMpl7ga1RdwHhzr9Sxg1//qQRacMN5vTr
+         09SVpnPFbjA+/qQ+ocmDj0MCwXooOtNQMD0BH/9XJDSb0vcG51kZhsT47CJZAJVzyK
+         cOG8kTYQMOco+n84s865MMiBAncUY4edGYJUV4ls=
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201127162828.2660230-1-trix@redhat.com>
-References: <20201127162828.2660230-1-trix@redhat.com>
-Subject: Re: [PATCH] drm/i915: remove trailing semicolon in macro definition
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Tom Rix <trix@redhat.com>, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-To:     airlied@linux.ie, daniel@ffwll.ch, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        trix@redhat.com
-Date:   Fri, 27 Nov 2020 19:26:59 +0000
-Message-ID: <160650521947.2925.9215342814329752171@build.alporthouse.com>
-User-Agent: alot/0.9
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201125141505.GA77733@kozik-lap>
+References: <20201115170950.304460-1-krzk@kernel.org> <20201115170950.304460-2-krzk@kernel.org> <160568531746.60232.15496517544781609246@swboyd.mtv.corp.google.com> <20201118074812.GA5803@kozik-lap> <160626309137.2717324.9318376048083763040@swboyd.mtv.corp.google.com> <20201125141505.GA77733@kozik-lap>
+Subject: Re: [PATCH 1/3] clk: fix redefinition of clk_prepare on MIPS with HAVE_LEGACY_CLK
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 27 Nov 2020 12:19:12 -0800
+Message-ID: <160650835295.2717324.6223337132204167294@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting trix@redhat.com (2020-11-27 16:28:28)
-> From: Tom Rix <trix@redhat.com>
-> 
-> The macro use will already have a semicolon.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/gpu/drm/i915/intel_device_info.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/intel_device_info.c b/drivers/gpu/drm/i915/intel_device_info.c
-> index e67cec8fa2aa..ef767f04c37c 100644
-> --- a/drivers/gpu/drm/i915/intel_device_info.c
-> +++ b/drivers/gpu/drm/i915/intel_device_info.c
-> @@ -104,7 +104,7 @@ void intel_device_info_print_static(const struct intel_device_info *info,
->         drm_printf(p, "ppgtt-type: %d\n", info->ppgtt_type);
->         drm_printf(p, "dma_mask_size: %u\n", info->dma_mask_size);
->  
-> -#define PRINT_FLAG(name) drm_printf(p, "%s: %s\n", #name, yesno(info->name));
-> +#define PRINT_FLAG(name) drm_printf(p, "%s: %s\n", #name, yesno(info->name))
->         DEV_INFO_FOR_EACH_FLAG(PRINT_FLAG);
+Quoting Krzysztof Kozlowski (2020-11-25 06:15:05)
+> On Tue, Nov 24, 2020 at 04:11:31PM -0800, Stephen Boyd wrote:
+> >=20
+> > Ok so this patch isn't necessary then?
+>=20
+> For this particular build failure - it is not necessary anymore.
+>=20
+> However there might more of such errors - just not discovered yet. Also,
+> the clock bulk API has such ifdefs so it kind of symmetrical and
+> consistent approach.
+>=20
 
-I thought that this was a macro that avoided adding the ';' to each
-invocation. Perhaps another time.
-
-Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
--Chris
+Ok. Patches always welcome.
