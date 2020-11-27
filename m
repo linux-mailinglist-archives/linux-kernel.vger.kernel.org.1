@@ -2,111 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716E12C6BA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E7D2C6BB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728955AbgK0SiK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Nov 2020 13:38:10 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:47687 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727833AbgK0SiJ (ORCPT
+        id S1729031AbgK0SoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 13:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728995AbgK0SnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 13:38:09 -0500
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 15E961BF206;
-        Fri, 27 Nov 2020 18:38:04 +0000 (UTC)
-Date:   Fri, 27 Nov 2020 19:38:03 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] mtd: Fixes for v5.10-rc6
-Message-ID: <20201127193803.324e1f83@xps13>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 27 Nov 2020 13:43:02 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D2CC0613D1;
+        Fri, 27 Nov 2020 10:43:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=iUrRzu4PdjL5GQARPtIddUD1oOrMB3S2jTSowUjaD3U=; b=Sl93U8vImcXcYKJDk+mwjzxsml
+        p7MXo5r6Rb9LS5k2Lb/TCEVe8eNgeM5XnfQAsSmrfHrK9hwVjXN6LNO0oYSABuauGn6B6wLjyOWVU
+        zQu6SPt4cyWOWTj8Zz+J1EF03ptdBKvSCmlSrJfsEWXRap+fTlL0C74aZvnpvx/KOjVKjmGyaBVpL
+        DZsMNwiZrIWO39EgtJBK/lXGs0J7cAzrj61bcTfhppJ4QqWhh9m4UvhaTc2l0THAHfWLGXRkO33rB
+        RxL7XpYr94bJ0ILfSn/1qduu2f90enktiFlT5QJf+g2SmmeLisikjucjoG/jH0Or2Tl2cPqmR9oup
+        SzAJGFKg==;
+Received: from [2601:1c0:6280:3f0::cc1f]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kiii8-0000oG-9W; Fri, 27 Nov 2020 18:43:12 +0000
+Subject: Re: linux-next: Tree for Nov 27 (parisc: signal flags)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+References: <20201127200457.1ffb6aaf@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <155a20fd-09c4-df35-9cc6-8526a89c2933@infradead.org>
+Date:   Fri, 27 Nov 2020 10:43:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201127200457.1ffb6aaf@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On 11/27/20 1:04 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20201126:
+> 
 
-This is an MTD fixes PR for the next -rc.
+on parisc, _SA_SIGGFAULT is undefined and causing build errors.
 
-Thanks,
-Miquèl
+commit 23acdc76f1798b090bb9dcc90671cd29d929834e
+Author: Peter Collingbourne <pcc@google.com>
+Date:   Thu Nov 12 18:53:34 2020 -0800
 
-The following changes since commit f8394f232b1eab649ce2df5c5f15b0e528c92091:
+    signal: clear non-uapi flag bits when passing/returning sa_flags
 
-  Linux 5.10-rc3 (2020-11-08 16:10:16 -0800)
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.10-rc6
+_SA_SIGGFAULT is not used or defined anywhere else in the
+kernel source tree.
 
-for you to fetch changes up to b36bf0a0fe5d18561dd98eb774ef61dd396edc42:
-
-  mtd: rawnand: socrates: Move the ECC initialization to ->attach_chip() (2020-11-20 12:31:26 +0100)
-
-----------------------------------------------------------------
-Raw NAND changes:
-* Because of a recent change in the core, NAND controller drivers
-  initializing the ECC engine too early in the probe path are
-  broken. Drivers should wait for the NAND device to be discovered and
-  its memory layout known before doing any ECC related initialization,
-  so instead of reverting the faulty change which is actually moving
-  in the right direction, let's fix the drivers directly: socrates,
-  sharpsl, r852, plat_nand, pasemi, tmio, txx9ndfmc, orion, mpc5121,
-  lpc32xx_slc, lpc32xx_mlc, fsmc, diskonchip, davinci, cs553x, au1550,
-  ams-delta, xway and gpio.
-
-----------------------------------------------------------------
-Miquel Raynal (19):
-      mtd: rawnand: gpio: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: xway: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: ams-delta: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: au1550: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: cs553x: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: davinci: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: diskonchip: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: fsmc: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: lpc32xx_mlc: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: lpc32xx_slc: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: mpc5121: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: orion: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: txx9ndfmc: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: tmio: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: pasemi: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: plat_nand: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: r852: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: sharpsl: Move the ECC initialization to ->attach_chip()
-      mtd: rawnand: socrates: Move the ECC initialization to ->attach_chip()
-
- drivers/mtd/nand/raw/ams-delta.c     | 12 +++++++++---
- drivers/mtd/nand/raw/au1550nd.c      | 11 +++++++++--
- drivers/mtd/nand/raw/cs553x_nand.c   | 24 ++++++++++++++++--------
- drivers/mtd/nand/raw/davinci_nand.c  |  8 ++++----
- drivers/mtd/nand/raw/diskonchip.c    | 29 +++++++++++++++++++----------
- drivers/mtd/nand/raw/fsmc_nand.c     | 30 +++++++++++++++---------------
- drivers/mtd/nand/raw/gpio.c          | 11 +++++++++--
- drivers/mtd/nand/raw/lpc32xx_mlc.c   | 23 +++++++++++++----------
- drivers/mtd/nand/raw/lpc32xx_slc.c   | 26 ++++++++++++++------------
- drivers/mtd/nand/raw/mpc5121_nfc.c   | 19 +++++++++++++++++--
- drivers/mtd/nand/raw/orion_nand.c    | 19 +++++++++++++++++--
- drivers/mtd/nand/raw/pasemi_nand.c   | 19 +++++++++++++++++--
- drivers/mtd/nand/raw/plat_nand.c     | 20 +++++++++++++++++---
- drivers/mtd/nand/raw/r852.c          | 40 +++++++++++++++++++++++++++-------------
- drivers/mtd/nand/raw/r852.h          |  1 +
- drivers/mtd/nand/raw/sharpsl.c       | 32 ++++++++++++++++++++++++--------
- drivers/mtd/nand/raw/socrates_nand.c | 21 +++++++++++++++++----
- drivers/mtd/nand/raw/tmio_nand.c     | 33 ++++++++++++++++++++++++---------
- drivers/mtd/nand/raw/txx9ndfmc.c     | 14 +++++++++-----
- drivers/mtd/nand/raw/xway_nand.c     | 18 ++++++++++++++++--
- 20 files changed, 294 insertions(+), 116 deletions(-)
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
