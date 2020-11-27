@@ -2,105 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E052C692B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF822C6931
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731300AbgK0QLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:11:30 -0500
-Received: from gproxy2-pub.mail.unifiedlayer.com ([69.89.18.3]:52336 "EHLO
-        gproxy2-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731233AbgK0QL3 (ORCPT
+        id S1731311AbgK0QM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:12:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731150AbgK0QM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:11:29 -0500
-Received: from cmgw11.unifiedlayer.com (unknown [10.9.0.11])
-        by gproxy2.mail.unifiedlayer.com (Postfix) with ESMTP id EFD651E0895
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:11:28 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id igLIkLZbWdCH5igLIkQS8I; Fri, 27 Nov 2020 09:11:28 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=cYj8UELM c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=nNwsprhYR40A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=8AirrxEcAAAA:8
- a=_jlGtV7tAAAA:8 a=Nro7NMO--0V-uImYhzwA:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=ST-jHhOKWsTCqRlWije3:22 a=nlm17XC03S6CtCLSeiRr:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZILWuv1B2NBF1OR+RDhAcaumS1bJpcOjKqsC4w8N18I=; b=ibHAtFvGjF0GyUwyTIBC97cZ/z
-        u0DAf0ocdOHwcIjDJ6A/qlE8Mvd/LokIEZeEUvJ9onMTuOTASpp/tgKc7R1OnbWVvuUefIoaWwhRQ
-        XlH2lda5ZCeQ5UGLox/26QWtih/ifMudUxiqD6VDqINw8fWTDM++utDOyli5Q7rG7vhHLz7UWMbJ6
-        W3LkhSfoUit/W0xqVnczEF9Nzytp8Qktzcadu3YvhqqypIp/sc4I2bNwHn/SexPXDUPW2KHiL1/s+
-        tk8hutZP2VidBiq2UKxCUuDsZTWHiTI/Sb5cFzObUhvRil8FrFS8/eWU01cMAJvuWGACbRd/2Dpgr
-        Y1f1ViTA==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:43464 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kigLI-002mw7-17; Fri, 27 Nov 2020 16:11:28 +0000
-Date:   Fri, 27 Nov 2020 08:11:27 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Qiang Zhao <qiang.zhao@nxp.com>
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] wdt: sp805: add watchdog_stop on reboot
-Message-ID: <20201127161127.GB9881@roeck-us.net>
-References: <20201127075217.31312-1-qiang.zhao@nxp.com>
+        Fri, 27 Nov 2020 11:12:57 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0B5C0613D1;
+        Fri, 27 Nov 2020 08:12:56 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id n137so4982610pfd.3;
+        Fri, 27 Nov 2020 08:12:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2TL8KQ54wkv9B/Yxs0RIOT3jGAuhhdh5kFSYV9oX00I=;
+        b=SCvWFlIkhit55pRVpYXDApHZKpRq6cFW03mHL/4SQ8IB/P/BzXEckVbX2+5D7wCERF
+         NVsh+LUHfAelgCMfmXkqkAZIyUZ/sLWJlLYs9n/D7OuauH2d7eTRby3GDMyjhsWYWDyc
+         gyVUYEKQaO1YIyjBfPidnx1xAa9jHBboQl9vQMF26oG68b58zCq1kBcVE7Pp42lvLHCf
+         euvQUKlpLG7bYyq1bPVqbPspzx8xnqBiy1qHuc8cDY/4PY8YZQuK+T2z/7EKxtF6mkri
+         hCC5N4Ix5ru3FCUG8tSPeb6LrwimTzxtH9FWMsQA9qGT6lwJwBvut+zOEZWEVaAF4g0T
+         Zn1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2TL8KQ54wkv9B/Yxs0RIOT3jGAuhhdh5kFSYV9oX00I=;
+        b=sPiYM7WhsRBfPaVC4vS5QwRu9t7g6SiEaAuWF0sPLH95/cUxIJopsCo4gPcTy6nGjL
+         Yjz1qNhMtSgldkqF4GxvnSao31DcYg5mo1Zityg64zw3mxbSFv8sXP15j5zyFyAqjodJ
+         ISEKEc8yCHuATCs3R4nBrqWRnoYweztdwlteQj7yTc3vdRpAZ4k/b+VHSfwWNMZ1VD0O
+         +tr3Ozp0QgQphXcLgFqWhSC0lwoaI3n2UHMUZ+iZoDMJsxp3jnv5L5lkNmn3wQlNHzH6
+         L3qJgcrsADryKe1N3Aebp6Lakz05DbFG5hzCQ6+TZOle3GrN304U8XUuKIUz78mss5qq
+         GEoQ==
+X-Gm-Message-State: AOAM532YDzLolzY5n6b24Nxzj4lUYC3Q8M5Q6X0R2vcWoBVT/x7vmTF5
+        +QTxu8PJT6pdGKIsRrVATi8=
+X-Google-Smtp-Source: ABdhPJzVV5tNNGMWhEp2yBE1o8Pr9aNKV/tWEC0ldgw3jRy+mSnNgZE4XFpqxCUwQUrDlLqMa5hfGQ==
+X-Received: by 2002:a63:5d05:: with SMTP id r5mr7129700pgb.442.1606493576330;
+        Fri, 27 Nov 2020 08:12:56 -0800 (PST)
+Received: from localhost.localdomain ([115.192.120.179])
+        by smtp.gmail.com with ESMTPSA id v126sm7992715pfb.137.2020.11.27.08.12.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 27 Nov 2020 08:12:55 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, qianjun.kernel@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH v3 0/5] sched: support schedstats for RT sched class
+Date:   Sat, 28 Nov 2020 00:12:24 +0800
+Message-Id: <20201127161229.19336-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127075217.31312-1-qiang.zhao@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kigLI-002mw7-17
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:43464
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 5
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 03:52:17PM +0800, Qiang Zhao wrote:
-> From: Zhao Qiang <qiang.zhao@nxp.com>
-> 
-> Call watchdog_stop_on_reboot in probe func
-> 
-> Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
+We want to measure the latency of RT tasks in our production
+environment with schedstats facility, but currently schedstats is only
+supported for fair sched class. This patch enable it for RT sched class
+as well.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+- Structure
 
-> ---
->  drivers/watchdog/sp805_wdt.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/watchdog/sp805_wdt.c b/drivers/watchdog/sp805_wdt.c
-> index 190d26e..958dc32 100644
-> --- a/drivers/watchdog/sp805_wdt.c
-> +++ b/drivers/watchdog/sp805_wdt.c
-> @@ -291,6 +291,7 @@ sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
->  		set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
->  	}
->  
-> +	watchdog_stop_on_reboot(&wdt->wdd);
->  	ret = watchdog_register_device(&wdt->wdd);
->  	if (ret)
->  		goto err;
-> -- 
-> 2.7.4
-> 
+Before we make schedstats available for RT sched class, we should make
+struct sched_statistics independent of fair sched class first.
+
+
+The struct sched_statistics is the schedular statistics of a task_struct
+or a task_group. So we can move it into struct task_struct and
+struct task_group to achieve the goal.
+
+Below is the detailed explaination of the change in the structs.
+
+The struct before this patch:
+
+struct task_struct {            |-> struct sched_entity {
+    ...                         |       ...
+    struct sched_entity *se; ---|       struct sched_statistics statistics;
+    struct sched_rt_entity *rt;         ...
+    ...                                 ...
+};                                  };
+
+struct task_group {             |--> se[0]->statistics : schedstats of CPU0
+    ...                         |
+ #ifdef CONFIG_FAIR_GROUP_SCHED |
+    struct sched_entity **se; --|--> se[1]->statistics : schedstats of CPU1
+                                |
+ #endif                         |
+                                |--> se[N]->statistics : schedstats of CPUn
+
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+    struct sched_rt_entity  **rt_se; (N/A)
+ #endif
+    ...
+};
+
+The '**se' in task_group is allocated in the fair sched class, which is
+hard to be reused by other sched class.
+
+The struct after this patch:
+struct task_struct {
+    ...
+    struct sched_statistics statistics;
+    ...
+    struct sched_entity *se;
+    struct sched_rt_entity *rt;
+    ...
+};
+
+struct task_group {                    |---> stats[0] : of CPU0
+    ...                                |
+    struct sched_statistics **stats; --|---> stats[1] : of CPU1
+    ...                                |
+                                       |---> stats[n] : of CPUn
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+    struct sched_entity **se;
+ #endif
+ #ifdef CONFIG_RT_GROUP_SCHED
+    struct sched_rt_entity  **rt_se;
+ #endif
+    ...
+};
+
+After the patch it is clearly that both of se or rt_se can easily get the
+sched_statistics by a task_struct or a task_group.
+
+- Function Interface
+
+The original prototype of the schedstats helpers are
+
+update_stats_wait_*(struct cfs_rq *cfs_rq, struct sched_entity *se)
+
+The cfs_rq in these helpers is used to get the rq_clock, and the se is
+used to get the struct sched_statistics and the struct task_struct. In
+order to make these helpers available by all sched classes, we can pass
+the rq, sched_statistics and task_struct directly.
+
+Then the new helpers are
+
+update_stats_wait_*(struct rq *rq, struct task_struct *p,
+                    struct sched_statistics *stats)
+
+which are independent of fair sched class.
+
+To avoid vmlinux growing too large or introducing ovehead when
+!schedstat_enabled(), some new helpers after schedstat_enabled() are also
+introduced, Suggested by Mel. These helpers are in sched/stats.c,
+
+__update_stats_wait_*(struct rq *rq, struct task_struct *p,
+                      struct sched_statistics *stats)
+
+- Implementation
+
+After we make the struct sched_statistics and the helpers of it
+independent of fair sched class, we can easily use the schedstats
+facility for RT sched class.
+
+The schedstat usage in RT sched class is similar with fair sched class,
+for example,
+                fair                            RT
+enqueue         update_stats_enqueue_fair       update_stats_enqueue_rt
+dequeue         update_stats_dequeue_fair       update_stats_dequeue_rt
+put_prev_task   update_stats_wait_start         update_stats_wait_start
+set_next_task   update_stats_wait_end           update_stats_wait_end
+
+- Usage
+ 
+The user can get the schedstats information in the same way in fair sched
+class. For example,
+		fair				RT
+task show	/proc/[pid]/sched               /proc/[pid]/sched
+group show	cpu.stat in cgroup		cpu.stat in cgroup
+
+The sched:sched_stat_{wait, sleep, iowait, blocked} tracepoints can
+be used to trace RT tasks as well. sched_stat_runtime can also be
+supported in the future if it is helpful.
+
+Yafang Shao (5):
+  sched: don't include stats.h in sched.h
+  sched, fair: use __schedstat_set() in set_next_entity()
+  sched: make struct sched_statistics independent of fair sched class
+  sched: make schedstats helpers independent of fair sched class
+  sched, rt: support schedstats for RT sched class
+
+ include/linux/sched.h    |   3 +-
+ kernel/sched/core.c      |  25 +++--
+ kernel/sched/deadline.c  |   5 +-
+ kernel/sched/debug.c     |  82 +++++++--------
+ kernel/sched/fair.c      | 209 +++++++++++++++------------------------
+ kernel/sched/idle.c      |   1 +
+ kernel/sched/rt.c        | 178 ++++++++++++++++++++++++++++++++-
+ kernel/sched/sched.h     |  13 ++-
+ kernel/sched/stats.c     | 105 ++++++++++++++++++++
+ kernel/sched/stats.h     |  80 +++++++++++++++
+ kernel/sched/stop_task.c |   5 +-
+ 11 files changed, 517 insertions(+), 189 deletions(-)
+
+-- 
+2.18.4
+
