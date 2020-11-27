@@ -2,93 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C722C5EE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26972C5EE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392323AbgK0DQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 22:16:59 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:43586 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388759AbgK0DQ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 22:16:59 -0500
-X-UUID: 606221480a8f4f7f8517c9082c7167df-20201127
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=7mGvXBf1oDk/sMWGysxsG6Qx0eXvEJgGpJ68T2MY34w=;
-        b=UFEq9wBdUNIKj8Y/irFAvy44mpxdMh0TjJmSuCi6w2UhKAekaeV/9a5Io6qMJy5OUryUOOVV4k9qsAE3lqjVzSDEm7RStDmPP+HP92fqZo6OtyU3hjiF5epz1eAX/khmw52WTCJx/x5oLPPt/ScUph2AJb91RPEdL3FMH+qVH5U=;
-X-UUID: 606221480a8f4f7f8517c9082c7167df-20201127
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1976057886; Fri, 27 Nov 2020 11:16:54 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 27 Nov 2020 11:16:50 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 27 Nov 2020 11:16:52 +0800
-Message-ID: <1606447013.8845.5.camel@mtkswgap22>
-Subject: Re: [RESEND PATCH v1] proc: use untagged_addr() for pagemap_read
- addresses
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        <andreyknvl@google.com>
-Date:   Fri, 27 Nov 2020 11:16:53 +0800
-In-Reply-To: <CAHkRjk7xGoU=KBeFE4gy=yxkLhvHqz2A1JyCBKF8dhjJNDD=zA@mail.gmail.com>
-References: <20201123063835.18981-1-miles.chen@mediatek.com>
-         <CAHkRjk7xGoU=KBeFE4gy=yxkLhvHqz2A1JyCBKF8dhjJNDD=zA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S2392332AbgK0DRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 22:17:09 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:42082 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388759AbgK0DRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 22:17:08 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9Kqb8Bf+EsXAA--.52755S2;
+        Fri, 27 Nov 2020 11:16:58 +0800 (CST)
+From:   Xingxing Su <suxingxing@loongson.cn>
+To:     Christian Brauner <christian@brauner.io>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v2] selftests/clone3: Fix build error
+Date:   Fri, 27 Nov 2020 11:16:57 +0800
+Message-Id: <1606447017-10640-1-git-send-email-suxingxing@loongson.cn>
+X-Mailer: git-send-email 2.1.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dx_9Kqb8Bf+EsXAA--.52755S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XFW3ur18ury8WryDZF1xGrg_yoWkAFXEkw
+        srKrn7u390va1kZr4SqFZ5Jryvyw4agrs8JF1YqF43Ja4DA3Z8G3WDXr1DAa18WwsIvryS
+        vFs5uF1fAr4jkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8GwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5_xhJUUUUU==
+X-CM-SenderInfo: pvx0x0xj0l0wo6or00hjvr0hdfq/1tbiAQANC13QvMr+VAAHsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTExLTI2IGF0IDExOjEwICswMDAwLCBDYXRhbGluIE1hcmluYXMgd3JvdGU6
-DQo+IEhpIE1pbGVzLA0KPiANCj4gQ291bGQgeW91IHBsZWFzZSBjYyBtZSBhbmQgQW5kcmV5IEtv
-bm92YWxvdiBvbiBmdXR1cmUgdmVyc2lvbnMgb2YgdGhpcw0KPiBwYXRjaCAoaWYgYW55KT8NCj4g
-DQo+IE9uIE1vbiwgMjMgTm92IDIwMjAgYXQgMDg6NDcsIE1pbGVzIENoZW4gPG1pbGVzLmNoZW5A
-bWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPiBXaGVuIHdlIHRyeSB0byB2aXNpdCB0aGUgcGFnZW1h
-cCBvZiBhIHRhZ2dlZCB1c2Vyc3BhY2UgcG9pbnRlciwgd2UgZmluZA0KPiA+IHRoYXQgdGhlIHN0
-YXJ0X3ZhZGRyIGlzIG5vdCBjb3JyZWN0IGJlY2F1c2Ugb2YgdGhlIHRhZy4NCj4gPiBUbyBmaXgg
-aXQsIHdlIHNob3VsZCB1bnRhZyB0aGUgdXNlc3BhY2UgcG9pbnRlcnMgaW4gcGFnZW1hcF9yZWFk
-KCkuDQo+ID4NCj4gPiBJIHRlc3RlZCB3aXRoIDUuMTAtcmM0IGFuZCB0aGUgaXNzdWUgcmVtYWlu
-cy4NCj4gPg0KPiA+IE15IHRlc3QgY29kZSBpcyBiYWVkIG9uIFsxXToNCj4gPg0KPiA+IEEgdXNl
-cnNwYWNlIHBvaW50ZXIgd2hpY2ggaGFzIGJlZW4gdGFnZ2VkIGJ5IDB4YjQ6IDB4YjQwMDAwNzY2
-MmY1NDFjOA0KPiA+DQo+ID4gPT09IHVzZXJzcGFjZSBwcm9ncmFtID09PQ0KPiA+DQo+ID4gdWlu
-dDY0IE9zTGF5ZXI6OlZpcnR1YWxUb1BoeXNpY2FsKHZvaWQgKnZhZGRyKSB7DQo+ID4gICAgICAg
-ICB1aW50NjQgZnJhbWUsIHBhZGRyLCBwZm5tYXNrLCBwYWdlbWFzazsNCj4gPiAgICAgICAgIGlu
-dCBwYWdlc2l6ZSA9IHN5c2NvbmYoX1NDX1BBR0VTSVpFKTsNCj4gPiAgICAgICAgIG9mZjY0X3Qg
-b2ZmID0gKCh1aW50cHRyX3QpdmFkZHIpIC8gcGFnZXNpemUgKiA4OyAvLyBvZmYgPSAweGI0MDAw
-MDc2NjJmNTQxYzggLyBwYWdlc2l6ZSAqIDggPSAweDVhMDAwMDNiMzE3YWEwDQo+IA0KPiBBcmd1
-YWJseSwgdGhhdCdzIGEgdXNlci1zcGFjZSBidWcgc2luY2UgdGFnZ2VkIGZpbGUgb2Zmc2V0cyB3
-ZXJlIG5ldmVyDQo+IHN1cHBvcnRlZC4gSW4gdGhpcyBjYXNlIGl0J3Mgbm90IGV2ZW4gYSB0YWcg
-YXQgYml0IDU2IGFzIHBlciB0aGUgYXJtNjQNCj4gdGFnZ2VkIGFkZHJlc3MgQUJJIGJ1dCByYXRo
-ZXIgZG93biB0byBiaXQgNDcuIFlvdSBjb3VsZCBzYXkgdGhhdCB0aGUNCj4gcHJvYmxlbSBpcyBj
-YXVzZWQgYnkgdGhlIEMgbGlicmFyeSAobWFsbG9jKCkpIG9yIHdob2V2ZXIgY3JlYXRlZCB0aGUN
-Cj4gdGFnZ2VkIHZhZGRyIGFuZCBwYXNzZWQgaXQgdG8gdGhpcyBmdW5jdGlvbi4gSXQncyBub3Qg
-YSBrZXJuZWwNCj4gcmVncmVzc2lvbiBhcyB3ZSd2ZSBuZXZlciBzdXBwb3J0ZWQgaXQuDQoNCnRo
-YW5rcyBmb3IgdGhlIGV4cGxhaW5hdGlvbi4NCj4gDQo+IE5vdywgcGFnZW1hcCBpcyBhIHNwZWNp
-YWwgY2FzZSB3aGVyZSB0aGUgb2Zmc2V0IGlzIHVzdWFsbHkgbm90DQo+IGdlbmVyYXRlZCBhcyBh
-IGNsYXNzaWMgZmlsZSBvZmZzZXQgYnV0IHJhdGhlciBkZXJpdmVkIGJ5IHNoaWZ0aW5nIGENCj4g
-dXNlciB2aXJ0dWFsIGFkZHJlc3MuIEkgZ3Vlc3Mgd2UgY2FuIG1ha2UgYSBjb25jZXNzaW9uIGZv
-ciBwYWdlbWFwDQo+IChvbmx5KSBhbmQgYWxsb3cgc3VjaCBvZmZzZXQgd2l0aCB0aGUgdGFnIGF0
-IGJpdCAoNTYgLSBQQUdFX1NISUZUICsNCj4gMykuDQo+IA0KPiBQbGVhc2UgZml4IHRoZSBwYXRj
-aCBhcyBwZXIgRXJpYydzIHN1Z2dlc3Rpb24gb24gYXZvaWRpbmcgdGhlDQo+IG92ZXJmbG93LiBZ
-b3Ugc2hvdWxkIGFsc28gYWRkIGEgQ2M6IHN0YWJsZSB2NS40LSBhcyB0aGF0J3Mgd2hlbiB3ZQ0K
-PiBlbmFibGVkIHRoZSB0YWdnZWQgYWRkcmVzcyBBQkkgb24gYXJtNjQgYW5kIHdoZW4gaXQncyBt
-b3JlIGxpa2VseSBmb3INCj4gdGhlIEMgbGlicmFyeS9tYWxsb2MoKSB0byBzdGFydCBnZW5lcmF0
-aW5nIHN1Y2ggcG9pbnRlcnMuDQoNCkdvdCBpdCwgdGhhbmtzIGZvciB5b3VyIHJldmlld2luZyBh
-bmQgc3VnZ2VzdGlvbi4gSSB3aWxsIGZvbGxvdyBFcmljJ3MNCnN1Z2dlc3Rpb24gYW5kIHN1Ym1p
-dCBwYXRjaCB2MiBhbmQgY2Mgc3RhYmxlIHY1LjQtDQoNCk1pbGVzDQo+IA0KPiBJZiB0aGUgcHJv
-YmxlbSBpcyBvbmx5IGxpbWl0ZWQgdG8gdGhpcyB0ZXN0LCBJJ2QgcmF0aGVyIGZpeCB0aGUgdXNl
-cg0KPiBidXQgSSBjYW4ndCB0ZWxsIGhvdyB3aWRlc3ByZWFkIHRoZSAvcHJvYy9waWQvcGFnZW1h
-cCB1c2FnZSBpcy4NCj4gDQo+IFRoYW5rcy4NCj4gDQoNCg==
+When compiling the selftests with the -std=gnu99 option the build can
+fail with.
+
+Following build error:
+
+  test_core.c: In function ‘test_cgcore_destroy’:
+  test_core.c:87:2: error: ‘for’ loop initial declarations are only
+  allowed in C99 mode
+    for (int i = 0; i < 10; i++) {
+    ^
+  test_core.c:87:2: note: use option -std=c99 or -std=gnu99 to compile
+
+Add -std=gnu99 to the clone3 selftest Makefile to fix this.
+
+Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+ tools/testing/selftests/clone3/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/clone3/Makefile b/tools/testing/selftests/clone3/Makefile
+index ef7564c..88354a8 100644
+--- a/tools/testing/selftests/clone3/Makefile
++++ b/tools/testing/selftests/clone3/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-CFLAGS += -g -I../../../../usr/include/
++CFLAGS += -g -std=gnu99 -I../../../../usr/include/ 
+ LDLIBS += -lcap
+ 
+ TEST_GEN_PROGS := clone3 clone3_clear_sighand clone3_set_tid \
+-- 
+1.8.3.1
 
