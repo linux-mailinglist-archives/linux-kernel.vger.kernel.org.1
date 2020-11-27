@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA572C620B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156812C61D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbgK0Jlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:41:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729299AbgK0Jln (ORCPT
+        id S1725854AbgK0Jjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:39:53 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8046 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgK0Jjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:41:43 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014C6C0613D4;
-        Fri, 27 Nov 2020 01:41:42 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id m9so3928813pgb.4;
-        Fri, 27 Nov 2020 01:41:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9b3DW2H2fIy5rHH49Dn8tazN9CD4QYpDJnWXSKIEJRg=;
-        b=WBVyXHKgyjXFVD0Y+NaG93/hlXgNLhM5WgR7iO//yZdwTGHUdrseX7CfxM0dxiIwRd
-         IDFWOc/7RjUMEYJMaHuYW16U9ybCU5QHAYDhuMHVzyhvlgRa3Y0Jei/d4gT+fORFrRGD
-         lsUYg/GKnkOgM/DyACdQXJuXSttYpcu/7GDaPbWJmGKdmJTVj1pWdVGO4zIXPmO5nUnF
-         ph2MJE9hXTYDcJcu2oMgf4e21hvzJYB5saFofKoGvp4L8Uj8M+1Kt0wD9XssSal9vteK
-         FW2OURGsIScHz4nCkPXLH9RHVbDbzq6may/dpCl+ba0oQ4wttuM6cEc00ODXFYcgh1fu
-         KzpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9b3DW2H2fIy5rHH49Dn8tazN9CD4QYpDJnWXSKIEJRg=;
-        b=gdy9m5FwdXvQV6q/CzIvnuIgjLeC7q+emG1vEU7LfZvzB4VIj5xGpr/eYd5haZbBC4
-         KfEPg0VJ+mdOAsa+Ba+C0cWw2fRXV4B79RB1wt0W33N0J73xpjgONArWDA8zl8BsBEid
-         0e5QHQYnepy9YZHNuC97zTxNzmorRpdTzeD0o0oi9hw8A1EC/2bywKY6hmFPIYeVxAWJ
-         9NJ3kHqetMrMcNUw9gYytIb3IVAU2y6FBPA+n4Tpz/LzjbXkxK9uhvtGtCuDwrFYiNKe
-         iF3vYjkPqsSqtWZndwQWRMx4vupmM+46YzJ9lrCdmHR0uJC925patmJJjwqA5b1P33OT
-         LDlQ==
-X-Gm-Message-State: AOAM533axdGw5vCSUYCeiUNpsK6enS36vNwkj+ms/OgJ9v1E4h5HBd3A
-        vB8bsrhzbcTOgTDwBPCmIjM=
-X-Google-Smtp-Source: ABdhPJw/94xD49Tqe0zeIl775gnP9Lz9VeRJbWf9hNbVy3Cv6ss0njmbXSpCdExfb8x3T66vb1TFTg==
-X-Received: by 2002:a17:90a:940e:: with SMTP id r14mr9004730pjo.47.1606470102432;
-        Fri, 27 Nov 2020 01:41:42 -0800 (PST)
-Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id h7sm8120198pgi.90.2020.11.27.01.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 01:41:41 -0800 (PST)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH] media: vb2: always set buffer cache sync hints
-Date:   Fri, 27 Nov 2020 18:41:36 +0900
-Message-Id: <20201127094136.1051071-1-sergey.senozhatsky@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Fri, 27 Nov 2020 04:39:52 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cj8jC4pSwzhjJL;
+        Fri, 27 Nov 2020 17:39:27 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 27 Nov 2020 17:39:39 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH] drm/dev: Fix NULL pointer dereference in drm_minor_alloc
+Date:   Fri, 27 Nov 2020 17:43:55 +0800
+Message-ID: <20201127094355.120520-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to always set ->need_cache_sync_on_prepare and
-->need_cache_sync_on_finish when we initialize vb2 buffer.
+KASAN: null-ptr-deref in range [0x0000000000000030-0x0000000000000037]
+CPU: 0 PID: 18491 Comm: syz-executor.0 Tainted: G C 5.10.0-rc4+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
+RIP: 0010:kobject_put+0x2f/0x140
+Call Trace:
+put_device+0x20/0x40
+drm_minor_alloc_release+0x60/0xe0 [drm]
+drm_managed_release+0x1b6/0x440 [drm]
+drm_dev_init+0x50b/0x8e0 [drm]
+__devm_drm_dev_alloc+0x50/0x160 [drm]
+vgem_init+0x15c/0x1000 [vgem]
+do_one_initcall+0x149/0x7e0
+do_init_module+0x1ef/0x700
+load_module+0x3467/0x4140
+__do_sys_finit_module+0x10d/0x1a0
+do_syscall_64+0x34/0x80
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Currently these flags are set/adjusted only in V4L2's
-vb2_queue_or_prepare_buf(), which means that for the code
-paths that don't use V4L2 vb2 will always tell videobuf2
-core to skip ->prepare() and ->finish() cache syncs/flushes.
+kfree(minor->kdev) in put_device would raise a null-ptr-deref bug when
+minor->kdev is null or error pointer. So do check before put_device in
+drm_minor_alloc_release and prohibit minor->kdev becoming an error pointer.
 
-This is a quick solution that should do the trick. The
-proper fix, however, is much more complicated and requires
-a rather big videobuf2 refactoring - we need to move cache
-sync/flush decision making out of core videobuf2 to the
-allocators.
-
-Reported-by: Tomasz Figa <tfiga@chromium.org>
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Fixes: f96306f9892b ("drm: manage drm_minor cleanup with drmm_")
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/media/common/videobuf2/videobuf2-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/drm_drv.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index 5499013cf82e..14a26888a892 100644
---- a/drivers/media/common/videobuf2/videobuf2-core.c
-+++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -414,6 +414,8 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
- 		vb->index = q->num_buffers + buffer;
- 		vb->type = q->type;
- 		vb->memory = memory;
-+		vb->need_cache_sync_on_prepare = 1;
-+		vb->need_cache_sync_on_finish = 1;
- 		for (plane = 0; plane < num_planes; ++plane) {
- 			vb->planes[plane].length = plane_sizes[plane];
- 			vb->planes[plane].min_length = plane_sizes[plane];
+diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+index cd162d406..c253d3cd4 100644
+--- a/drivers/gpu/drm/drm_drv.c
++++ b/drivers/gpu/drm/drm_drv.c
+@@ -100,7 +100,8 @@ static void drm_minor_alloc_release(struct drm_device *dev, void *data)
+ 
+ 	WARN_ON(dev != minor->dev);
+ 
+-	put_device(minor->kdev);
++	if (minor->kdev)
++		put_device(minor->kdev);
+ 
+ 	spin_lock_irqsave(&drm_minor_lock, flags);
+ 	idr_remove(&drm_minors_idr, minor->index);
+@@ -140,8 +141,11 @@ static int drm_minor_alloc(struct drm_device *dev, unsigned int type)
+ 		return r;
+ 
+ 	minor->kdev = drm_sysfs_minor_alloc(minor);
+-	if (IS_ERR(minor->kdev))
+-		return PTR_ERR(minor->kdev);
++	if (IS_ERR(minor->kdev)) {
++		r = PTR_ERR(minor->kdev);
++		minor->kdev = NULL;
++		return r;
++	}
+ 
+ 	*drm_minor_get_slot(dev, type) = minor;
+ 	return 0;
 -- 
-2.29.2
+2.23.0
 
