@@ -2,66 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5862C681F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2132C6823
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731021AbgK0Op6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 09:45:58 -0500
-Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:55567 "EHLO
-        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730573AbgK0Op6 (ORCPT
+        id S1731049AbgK0Oqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 09:46:35 -0500
+Received: from mx.baikalchip.com ([94.125.187.42]:33606 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730696AbgK0Oqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 09:45:58 -0500
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id 3EED1BAAAB
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 14:45:56 +0000 (GMT)
-Received: (qmail 22099 invoked from network); 27 Nov 2020 14:45:56 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 Nov 2020 14:45:55 -0000
-Date:   Fri, 27 Nov 2020 14:45:54 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] cpuidle: Allow configuration of the polling interval
- before cpuidle enters a c-state
-Message-ID: <20201127144554.GQ3371@techsingularity.net>
-References: <20201126171824.GK3371@techsingularity.net>
- <CAJZ5v0hz4dBzUcvoyLoJf8Fmajws-uP3MB-_4dmzEYvMDJwEwQ@mail.gmail.com>
- <20201127140811.GA39892@fuller.cnet>
+        Fri, 27 Nov 2020 09:46:35 -0500
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] spi: dw-bt1: Fix undefined devm_mux_control_get symbol
+Date:   Fri, 27 Nov 2020 17:46:11 +0300
+Message-ID: <20201127144612.4204-1-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201116040721.8001-1-rdunlap@infradead.org>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201127140811.GA39892@fuller.cnet>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 11:08:11AM -0300, Marcelo Tosatti wrote:
-> > It requires the admin to know how cpuidle works and why this
-> > particular polling limit is likely to be suitable for the given
-> > workload.  And whether or not the default polling limit should be
-> > changed at all.
-> 
-> KVM polling (virt/kvm/kvm_main.c grow_halt_poll_ns/shrink_halt_poll_ns)
-> tries to adjust the polling window based on poll success/failure. 
-> 
-> The cpuidle haltpoll governor (for KVM guests) uses the same adjustment
-> logic.
-> 
-> Perhaps a similar (or improved) scheme can be adapted to baremetal.
-> 
-> https://www.kernel.org/doc/Documentation/virtual/kvm/halt-polling.txt
+I mistakenly added the select attributes to the SPI_DW_BT1_DIRMAP config
+instead of having them defined in SPI_DW_BT1. If the kernel doesn't have
+the MULTIPLEXER and MUX_MMIO configs manually enabled and the
+SPI_DW_BT1_DIRMAP config hasn't been selected, Baikal-T1 SPI device will
+always fail to be probed by the driver. Fix that and the error reported by
+the test robot:
 
-I'm aware of the haltpoll governor and why it makes sense for KVM. As
-adaptive polling would increase the exit latency, I assumed it would be
-an unpopular approach on bare metal. If that is not the case, then it
-would make more sense that the haltpoll adaptive logic would simply be
-part of the core and not a per-governor decision.
+>> ld.lld: error: undefined symbol: devm_mux_control_get
+   >>> referenced by spi-dw-bt1.c
+   >>> spi/spi-dw-bt1.o:(dw_spi_bt1_sys_init) in archive drivers/built-in.a
 
+by moving the MULTIPLEXER/MUX_MMIO configs selection to the SPI_DW_BT1
+config.
+
+Link: https://lore.kernel.org/lkml/202011161745.uYRlekse-lkp@intel.com/
+Link: https://lore.kernel.org/linux-spi/20201116040721.8001-1-rdunlap@infradead.org/
+Fixes: abf00907538e ("spi: dw: Add Baikal-T1 SPI Controller glue driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+
+---
+
+Mark, I see you haven't applied the previous version of the patch yet. So
+please replace it with this one.
+
+Randy, sorry for resending the patch. I've just realized that your
+solution doesn't completely fix the problem. Yeah, the kernel build won't
+fail to be linked after your patch being merged, but the driver still will
+fail to probe the device if the MULTIPLEXER and MUX_MMIO haven't been
+selected for the kernel. So the select attributes need to be moved from
+SPI_DW_BT1_DIRMAP to the SPI_DW_BT1 config.
+---
+ drivers/spi/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 415d57b2057f..0707068ffe47 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -255,6 +255,8 @@ config SPI_DW_MMIO
+ config SPI_DW_BT1
+ 	tristate "Baikal-T1 SPI driver for DW SPI core"
+ 	depends on MIPS_BAIKAL_T1 || COMPILE_TEST
++	select MULTIPLEXER
++	select MUX_MMIO
+ 	help
+ 	  Baikal-T1 SoC is equipped with three DW APB SSI-based MMIO SPI
+ 	  controllers. Two of them are pretty much normal: with IRQ, DMA,
+@@ -268,8 +270,6 @@ config SPI_DW_BT1
+ config SPI_DW_BT1_DIRMAP
+ 	bool "Directly mapped Baikal-T1 Boot SPI flash support"
+ 	depends on SPI_DW_BT1
+-	select MULTIPLEXER
+-	select MUX_MMIO
+ 	help
+ 	  Directly mapped SPI flash memory is an interface specific to the
+ 	  Baikal-T1 System Boot Controller. It is a 16MB MMIO region, which
 -- 
-Mel Gorman
-SUSE Labs
+2.29.2
+
