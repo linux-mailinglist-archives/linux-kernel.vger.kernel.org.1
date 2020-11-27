@@ -2,115 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68002C5F10
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132252C5F05
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392361AbgK0Dnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 22:43:33 -0500
-Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:48760 "EHLO
-        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S2388882AbgK0Dnd (ORCPT
+        id S2392344AbgK0DfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 22:35:16 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:43973 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727037AbgK0DfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 22:43:33 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 83A71200E247;
-        Fri, 27 Nov 2020 11:34:25 +0800 (HKT)
-X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
-Received: from mail.gtsys.com.hk ([127.0.0.1])
-        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wS6AOETFB3Et; Fri, 27 Nov 2020 11:34:25 +0800 (HKT)
-Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 62A04200E245;
-        Fri, 27 Nov 2020 11:34:25 +0800 (HKT)
-Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
-        by s01.gtsys.com.hk (Postfix) with ESMTP id 53758C01F81;
-        Fri, 27 Nov 2020 11:34:25 +0800 (HKT)
-Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
-        id CE341200756; Fri, 27 Nov 2020 11:34:24 +0800 (HKT)
-From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Cc:     Chris Ruehl <chris.ruehl@gtsys.com.hk>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: [PATCH 1/2] phy: rockchip: set pulldown for strobe line in dts
-Date:   Fri, 27 Nov 2020 11:33:59 +0800
-Message-Id: <20201127033359.32725-1-chris.ruehl@gtsys.com.hk>
-X-Mailer: git-send-email 2.20.1
+        Thu, 26 Nov 2020 22:35:16 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0AR3YxYjA015114, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0AR3YxYjA015114
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 27 Nov 2020 11:34:59 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.34) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Fri, 27 Nov 2020 11:34:59 +0800
+Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS03.realtek.com.tw (172.21.6.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 27 Nov 2020 11:34:59 +0800
+Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
+ RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
+ 15.01.2044.006; Fri, 27 Nov 2020 11:34:59 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>
+CC:     Tony Chuang <yhchuang@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH 17/17] realtek: rtw88: pci: Add prototypes for .probe, .remove and .shutdown
+Thread-Topic: [PATCH 17/17] realtek: rtw88: pci: Add prototypes for .probe,
+ .remove and .shutdown
+Thread-Index: AQHWw/kLX1PwJPIhYEea5OlYi0Fw16nazioA
+Date:   Fri, 27 Nov 2020 03:34:59 +0000
+Message-ID: <1606448026.14483.4.camel@realtek.com>
+References: <20201126133152.3211309-1-lee.jones@linaro.org>
+         <20201126133152.3211309-18-lee.jones@linaro.org>
+In-Reply-To: <20201126133152.3211309-18-lee.jones@linaro.org>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.213]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <49DDB1AC13524F4EB2755A4D8B720B98@realtek.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add support to set the internal pulldown via dt property
-and allow simplify the board design for the trace from emmc-phy to
-the eMMC chipset.
-Default to not set the pull-down.
-
-This patch was inspired from the 4.4 tree of the
-Rockchip SDK, where it is enabled unconditional.
-The patch had been tested with our rk3399 customized board.
-
-Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
----
- drivers/phy/rockchip/phy-rockchip-emmc.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/drivers/phy/rockchip/phy-rockchip-emmc.c b/drivers/phy/rockchip/phy-rockchip-emmc.c
-index 2dc19ddd120f..d9bc45828f74 100644
---- a/drivers/phy/rockchip/phy-rockchip-emmc.c
-+++ b/drivers/phy/rockchip/phy-rockchip-emmc.c
-@@ -67,6 +67,10 @@
- #define PHYCTRL_OTAPDLYENA_SHIFT	0xb
- #define PHYCTRL_OTAPDLYSEL_MASK		0xf
- #define PHYCTRL_OTAPDLYSEL_SHIFT	0x7
-+#define PHYCTRL_REN_STRB_DISABLE	0x0
-+#define PHYCTRL_REN_STRB_ENABLE	0x1
-+#define PHYCTRL_REN_STRB_MASK	0x1
-+#define PHYCTRL_REN_STRB_SHIFT	0x9
- 
- #define PHYCTRL_IS_CALDONE(x) \
- 	((((x) >> PHYCTRL_CALDONE_SHIFT) & \
-@@ -80,6 +84,7 @@ struct rockchip_emmc_phy {
- 	struct regmap	*reg_base;
- 	struct clk	*emmcclk;
- 	unsigned int drive_impedance;
-+	unsigned int enable_strobe_pulldown;
- };
- 
- static int rockchip_emmc_phy_power(struct phy *phy, bool on_off)
-@@ -295,6 +300,13 @@ static int rockchip_emmc_phy_power_on(struct phy *phy)
- 				   PHYCTRL_OTAPDLYSEL_MASK,
- 				   PHYCTRL_OTAPDLYSEL_SHIFT));
- 
-+	/* Internal pull-down for strobe line */
-+	regmap_write(rk_phy->reg_base,
-+			rk_phy->reg_offset + GRF_EMMCPHY_CON2,
-+			HIWORD_UPDATE(rk_phy->enable_strobe_pulldown,
-+				PHYCTRL_REN_STRB_MASK,
-+				PHYCTRL_REN_STRB_SHIFT));
-+
- 	/* Power up emmc phy analog blocks */
- 	return rockchip_emmc_phy_power(phy, PHYCTRL_PDB_PWR_ON);
- }
-@@ -359,10 +371,14 @@ static int rockchip_emmc_phy_probe(struct platform_device *pdev)
- 	rk_phy->reg_offset = reg_offset;
- 	rk_phy->reg_base = grf;
- 	rk_phy->drive_impedance = PHYCTRL_DR_50OHM;
-+	rk_phy->enable_strobe_pulldown = PHYCTRL_REN_STRB_DISABLE;
- 
- 	if (!of_property_read_u32(dev->of_node, "drive-impedance-ohm", &val))
- 		rk_phy->drive_impedance = convert_drive_impedance_ohm(pdev, val);
- 
-+	if (of_property_read_bool(dev->of_node, "enable-strobe-pulldown"))
-+		rk_phy->enable_strobe_pulldown = PHYCTRL_REN_STRB_ENABLE;
-+
- 	generic_phy = devm_phy_create(dev, dev->of_node, &ops);
- 	if (IS_ERR(generic_phy)) {
- 		dev_err(dev, "failed to create PHY\n");
--- 
-2.20.1
-
+DQpUaGUgc3ViamVjdCBwcmVmaXggZG9lc24ndCBuZWVkICdyZWFsdGVrOic7IHVzZSAncnR3ODg6
+Jy4NCg0KT24gVGh1LCAyMDIwLTExLTI2IGF0IDEzOjMxICswMDAwLCBMZWUgSm9uZXMgd3JvdGU6
+DQo+IEFsc28gc3RyaXAgb3V0IG90aGVyIGR1cGxpY2F0ZXMgZnJvbSBkcml2ZXIgc3BlY2lmaWMg
+aGVhZGVycy4NCj4gDQo+IEVuc3VyZSAnbWFpbi5oJyBpcyBleHBsaWNpdGx5IGluY2x1ZGVkIGlu
+ICdwY2kuaCcgc2luY2UgdGhlIGxhdHRlcg0KPiB1c2VzIHNvbWUgZGVmaW5lcyBmcm9tIHRoZSBm
+b3JtZXIuwqDCoEl0IGF2b2lkcyBpc3N1ZXMgbGlrZToNCj4gDQo+IMKgZnJvbSBkcml2ZXJzL25l
+dC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L3J0dzg4MjJiZS5jOjU6DQo+IMKgZHJpdmVycy9uZXQv
+d2lyZWxlc3MvcmVhbHRlay9ydHc4OC9wY2kuaDoyMDk6Mjg6IGVycm9yOg0KPiDigJhSVEtfTUFY
+X1RYX1FVRVVFX05VTeKAmSB1bmRlY2xhcmVkIGhlcmUgKG5vdCBpbiBhIGZ1bmN0aW9uKTsgZGlk
+IHlvdSBtZWFuDQo+IOKAmFJUS19NQVhfUlhfREVTQ19OVU3igJk/DQo+IMKgMjA5IHwgREVDTEFS
+RV9CSVRNQVAodHhfcXVldWVkLCBSVEtfTUFYX1RYX1FVRVVFX05VTSk7DQo+IMKgfCBefn5+fn5+
+fn5+fn5+fn5+fn5+fg0KPiANCj4gRml4ZXMgdGhlIGZvbGxvd2luZyBXPTEga2VybmVsIGJ1aWxk
+IHdhcm5pbmcocyk6DQo+IA0KPiDCoGRyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnR3ODgv
+cGNpLmM6MTQ4ODo1OiB3YXJuaW5nOiBubyBwcmV2aW91cw0KPiBwcm90b3R5cGUgZm9yIOKAmHJ0
+d19wY2lfcHJvYmXigJkgWy1XbWlzc2luZy1wcm90b3R5cGVzXQ0KPiDCoDE0ODggfCBpbnQgcnR3
+X3BjaV9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGRldiwNCj4gwqB8IF5+fn5+fn5+fn5+fn4NCj4g
+wqBkcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L3BjaS5jOjE1Njg6Njogd2Fybmlu
+Zzogbm8gcHJldmlvdXMNCj4gcHJvdG90eXBlIGZvciDigJhydHdfcGNpX3JlbW92ZeKAmSBbLVdt
+aXNzaW5nLXByb3RvdHlwZXNdDQo+IMKgMTU2OCB8IHZvaWQgcnR3X3BjaV9yZW1vdmUoc3RydWN0
+IHBjaV9kZXYgKnBkZXYpDQo+IMKgfCBefn5+fn5+fn5+fn5+fg0KPiDCoGRyaXZlcnMvbmV0L3dp
+cmVsZXNzL3JlYWx0ZWsvcnR3ODgvcGNpLmM6MTU5MDo2OiB3YXJuaW5nOiBubyBwcmV2aW91cw0K
+PiBwcm90b3R5cGUgZm9yIOKAmHJ0d19wY2lfc2h1dGRvd27igJkgWy1XbWlzc2luZy1wcm90b3R5
+cGVzXQ0KPiDCoDE1OTAgfCB2b2lkIHJ0d19wY2lfc2h1dGRvd24oc3RydWN0IHBjaV9kZXYgKnBk
+ZXYpDQo+IMKgfCBefn5+fn5+fn5+fn5+fn5+DQo+IA0KPiBDYzogWWFuLUhzdWFuIENodWFuZyA8
+eWhjaHVhbmdAcmVhbHRlay5jb20+DQo+IENjOiBLYWxsZSBWYWxvIDxrdmFsb0Bjb2RlYXVyb3Jh
+Lm9yZz4NCj4gQ2M6ICJEYXZpZCBTLiBNaWxsZXIiIDxkYXZlbUBkYXZlbWxvZnQubmV0Pg0KPiBD
+YzogSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz4NCj4gQ2M6IGxpbnV4LXdpcmVsZXNz
+QHZnZXIua2VybmVsLm9yZw0KPiBDYzogbmV0ZGV2QHZnZXIua2VybmVsLm9yZw0KPiBTaWduZWQt
+b2ZmLWJ5OiBMZWUgSm9uZXMgPGxlZS5qb25lc0BsaW5hcm8ub3JnPg0KPiAtLS0NCj4gwqBkcml2
+ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L3BjaS5owqDCoMKgwqDCoMKgwqB8IDggKysr
+KysrKysNCj4gwqBkcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L3J0dzg3MjNkZS5j
+IHwgMSArDQo+IMKgZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OC9ydHc4NzIzZGUu
+aCB8IDQgLS0tLQ0KPiDCoGRyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnR3ODgvcnR3ODgy
+MWNlLmMgfCAxICsNCj4gwqBkcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L3J0dzg4
+MjFjZS5oIHwgNCAtLS0tDQo+IMKgZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OC9y
+dHc4ODIyYmUuYyB8IDEgKw0KPiDCoGRyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnR3ODgv
+cnR3ODgyMmJlLmggfCA0IC0tLS0NCj4gwqBkcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0
+dzg4L3J0dzg4MjJjZS5jIHwgMSArDQo+IMKgZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9y
+dHc4OC9ydHc4ODIyY2UuaCB8IDQgLS0tLQ0KPiDCoDkgZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0
+aW9ucygrKSwgMTYgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvcmVhbHRlay9ydHc4OC9wY2kuaA0KPiBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3Jl
+YWx0ZWsvcnR3ODgvcGNpLmgNCj4gaW5kZXggY2ExN2FhOWNmN2RjNy4uY2RhNTY5MTlhNWYwZiAx
+MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OC9wY2kuaA0K
+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L3BjaS5oDQo+IEBAIC01
+LDYgKzUsOCBAQA0KPiDCoCNpZm5kZWYgX19SVEtfUENJX0hfDQo+IMKgI2RlZmluZSBfX1JUS19Q
+Q0lfSF8NCj4gwqANCj4gKyNpbmNsdWRlICJtYWluLmgiDQo+ICsNCg0KUGxlYXNlICNpbmNsdWRl
+ICJtYWluLmgiIGFoZWFkIG9mICJwY2kuaCIgaW4gZWFjaCBvZsKgcnR3OHh4eHhlLmMuDQoNCj4g
+wqAjZGVmaW5lIFJUS19ERUZBVUxUX1RYX0RFU0NfTlVNIDEyOA0KPiDCoCNkZWZpbmUgUlRLX0JF
+UV9UWF9ERVNDX05VTQkyNTYNCj4gwqANCj4gQEAgLTIxMiw2ICsyMTQsMTIgQEAgc3RydWN0IHJ0
+d19wY2kgew0KPiDCoAl2b2lkIF9faW9tZW0gKm1tYXA7DQo+IMKgfTsNCj4gwqANCj4gK2NvbnN0
+IHN0cnVjdCBkZXZfcG1fb3BzIHJ0d19wbV9vcHM7DQo+ICsNCj4gK2ludCBydHdfcGNpX3Byb2Jl
+KHN0cnVjdCBwY2lfZGV2ICpwZGV2LCBjb25zdCBzdHJ1Y3QgcGNpX2RldmljZV9pZCAqaWQpOw0K
+PiArdm9pZCBydHdfcGNpX3JlbW92ZShzdHJ1Y3QgcGNpX2RldiAqcGRldik7DQo+ICt2b2lkIHJ0
+d19wY2lfc2h1dGRvd24oc3RydWN0IHBjaV9kZXYgKnBkZXYpOw0KPiArDQo+IMKgc3RhdGljIGlu
+bGluZSB1MzIgbWF4X251bV9vZl90eF9xdWV1ZSh1OCBxdWV1ZSkNCj4gwqB7DQo+IMKgCXUzMiBt
+YXhfbnVtOw0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4
+OC9ydHc4NzIzZGUuYw0KPiBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnR3ODgvcnR3
+ODcyM2RlLmMNCj4gaW5kZXggYzgxZWI0YzMzNjQyNS4uMmRkNjg5NDQxZThkYyAxMDA2NDQNCj4g
+LS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OC9ydHc4NzIzZGUuYw0KPiAr
+KysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L3J0dzg3MjNkZS5jDQo+IEBA
+IC00LDYgKzQsNyBAQA0KPiDCoA0KPiDCoCNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gwqAj
+aW5jbHVkZSA8bGludXgvcGNpLmg+DQoNCkkgbWVhbiBoZXJlOg0KI2luY2x1ZGUgIm1haW4uaCIN
+Cg0KPiArI2luY2x1ZGUgInBjaS5oIg0KPiDCoCNpbmNsdWRlICJydHc4NzIzZGUuaCINCj4gwqAN
+Cj4gwqBzdGF0aWMgY29uc3Qgc3RydWN0IHBjaV9kZXZpY2VfaWQgcnR3Xzg3MjNkZV9pZF90YWJs
+ZVtdID0gew0KPiANCg0KW3NuaXBdDQoNCi0tLQ0KUGluZy1LZQ0KDQoNCg==
