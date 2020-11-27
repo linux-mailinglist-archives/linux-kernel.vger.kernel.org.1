@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A48B2C6A9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 598E72C6AA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731915AbgK0RaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:30:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730985AbgK0RaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:30:24 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9373122250;
-        Fri, 27 Nov 2020 17:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606498223;
-        bh=xmP8gcXuSDMVJyjkMa0hBLOirCsCrqhYvzLRXHrrROk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AlBjocCogPiRqU8mohInEWNBA/iXGN91/8RrU457W1oP3RNRwxQnfoPJ1WxbB0bRU
-         lAxxH1IFPL095drpFYJKwL/5MISvXSLt59hZ+N6BfkKVjZ6uE1G5KE01eVGksdqpwI
-         qq7n9MoHExSHhDmNCneZJWoDK1LSauuJIZRrlLaQ=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7E93E40D0D; Fri, 27 Nov 2020 14:30:21 -0300 (-03)
-Date:   Fri, 27 Nov 2020 14:30:21 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH] perf record: Synthesize cgroup events only if needed
-Message-ID: <20201127173021.GN70905@kernel.org>
-References: <20201127054356.405481-1-namhyung@kernel.org>
- <20201127154557.GB2729821@krava>
+        id S1732124AbgK0Ra6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:30:58 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:41112 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730985AbgK0Ra5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 12:30:57 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ARHUerL102484;
+        Fri, 27 Nov 2020 11:30:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606498240;
+        bh=TMc+/KMubRagvKXylVncMloff3Zi2x+utydRkFRJCGw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=aHxVOMA/37Ki2ukOpie+yhg0Ik3ZkrFQPJXmB/Mh23TVw4eXPv38I8NqFDra6HYwX
+         GrwRYt83RupJQaIGymg+SS3Vg8Bg837MCb8cPIcXhCCReDIdtQaGp0guh/36mTigVP
+         lXErxGmGGZ0DNWZ2SmjTG6Wjk4Rd1eosRfptOoBM=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ARHUe3v021696
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 27 Nov 2020 11:30:40 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 27
+ Nov 2020 11:30:40 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 27 Nov 2020 11:30:40 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ARHUcWo100496;
+        Fri, 27 Nov 2020 11:30:38 -0600
+Subject: Re: [REGRESSION] omapdrm/N900 display broken
+To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+CC:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200728181412.GA49617@darkstar.musicnaut.iki.fi>
+ <660b2fe1-343d-b83e-11d2-5a5eb530b83f@ti.com>
+ <448c1441-2cac-44ef-95ef-bb28b512297b@ti.com>
+ <20200823162625.GC4313@darkstar.musicnaut.iki.fi>
+ <ac42f7f9-2ac2-246e-69c1-3d56cea7e59b@ti.com>
+ <5072a25d-e885-cdd2-978d-70942406c272@gmail.com>
+ <09044fd2-2926-c7b3-826b-52b742e84ff5@ti.com>
+ <79ad8816-815c-14d3-ebe1-3c5007c81dd1@gmail.com>
+ <1fe9fed7-f619-eb6a-6e31-b9eadbf09bad@ti.com>
+ <8010e452-745a-ac12-bc02-5537305c70ed@gmail.com>
+ <4948a40d-c887-5617-f5bc-1e0aff824ad7@gmail.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <a86e0ef4-0b90-5aec-9632-e78fa4ca6d58@ti.com>
+Date:   Fri, 27 Nov 2020 19:30:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127154557.GB2729821@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <4948a40d-c887-5617-f5bc-1e0aff824ad7@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Nov 27, 2020 at 04:45:57PM +0100, Jiri Olsa escreveu:
-> On Fri, Nov 27, 2020 at 02:43:56PM +0900, Namhyung Kim wrote:
-> > It didn't check the tool->cgroup_events bit which is set when
-> > the --all-cgroups option is given.  Without it, samples will not have
-> > cgroup info so no reason to synthesize.
-> > 
-> > We can check the PERF_RECORD_CGROUP records after running perf record
-> > *WITHOUT* the --all-cgroups option:
-> > 
-> > Before:
-> >   $ perf report -D | grep CGROUP
-> >   0 0 0x8430 [0x38]: PERF_RECORD_CGROUP cgroup: 1 /
-> >           CGROUP events:          1
-> >           CGROUP events:          0
-> >           CGROUP events:          0
-> > 
-> > After:
-> >   $ perf report -D | grep CGROUP
-> >           CGROUP events:          0
-> >           CGROUP events:          0
-> >           CGROUP events:          0
-> > 
-> > Fixes: 8fb4b67939e16 ("perf record: Add --all-cgroups option")
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/synthetic-events.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-> > index 8a23391558cf..d9c624377da7 100644
-> > --- a/tools/perf/util/synthetic-events.c
-> > +++ b/tools/perf/util/synthetic-events.c
-> > @@ -563,6 +563,9 @@ int perf_event__synthesize_cgroups(struct perf_tool *tool,
-> >  	char cgrp_root[PATH_MAX];
-> >  	size_t mount_len;  /* length of mount point in the path */
-> >  
-> > +	if (!tool || !tool->cgroup_events)
-> > +		return 0;
-> 
-> can !tool actually happen here? or it's just being extra cautious
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+On 27/11/2020 17:37, Ivaylo Dimitrov wrote:
 
-Thanks, tested with/without --all-cgroups and applied.
+> With 5.9.11 and the patch on top, n900 boots fine, albeit display remains blank, could be related to
+> brightness, we're still investigating.
 
-- Arnaldo
+Ok. A DSS regdump for a working version and the latest one would be good too. There's a omapdss
+debugfs dir, with dss, dispc and clk files which are of interest here.
+
+ Tomi
+
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
