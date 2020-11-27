@@ -2,157 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994DB2C603B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A06EF2C603E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 08:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392494AbgK0G6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 01:58:05 -0500
-Received: from ozlabs.org ([203.11.71.1]:48469 "EHLO ozlabs.org"
+        id S2392592AbgK0G7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 01:59:40 -0500
+Received: from mga12.intel.com ([192.55.52.136]:27822 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726408AbgK0G6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 01:58:04 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cj56x6QBpz9sSn;
-        Fri, 27 Nov 2020 17:58:01 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606460282;
-        bh=czbpifdgKwbNrta/fpkG8YF+9ju5jmWzMWXBcBXauCo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uAUd+HVbAzVVmbxYcMFwhGjCUTY1Hs20QH1RUo/2v5GZYJwdqci4m0lj9IfaWs/1v
-         QuH+Vty2Q9ZnHneBF0iJ1r2KJDgLQHm4abe/a95eBI95hdrZT620Gck4DtWiFVwlyn
-         eP66Cwz+ZrNwHhCeVmR5wczIBagxmrB7aiAr3llZBbq0ZBXvet4OXYbFmas51zULWl
-         MhTln1xGOetDpDYo68FUFTi+L36COTYHUOgJy0lmjRpr7zeee75Nou9y1yVCNIU0x8
-         w/exAod98YDSu+KzHHQF5V7K1ErFgDwr3sMevkCBGjZ/DtS71uZ8nbmVmuHDmQwjqU
-         cS1J4qO0klwVQ==
-Date:   Fri, 27 Nov 2020 17:58:01 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the dma-mapping tree
-Message-ID: <20201127175801.538fbb30@canb.auug.org.au>
+        id S2387932AbgK0G7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 01:59:39 -0500
+IronPort-SDR: odULs7zRf6ovA5RduRj8A+FQjYsz5yyVd2Uj/7nkniXEABmLWkKNWjCVOfxbQq0PuWcO1vJXti
+ DZtEnF+l+xpQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9817"; a="151615635"
+X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
+   d="scan'208";a="151615635"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 22:59:39 -0800
+IronPort-SDR: Abt2sdJrscM+d9WMzLbQguH+4R3UUC6CZlBCD8dVKI+58xXp3IFhq1nQYH0Kq30D2Dtfhyk5V6
+ hRTA8fVXSrEA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
+   d="scan'208";a="359727285"
+Received: from lkp-server02.sh.intel.com (HELO c88ef3cb410b) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 26 Nov 2020 22:59:37 -0800
+Received: from kbuild by c88ef3cb410b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kiXjF-00000j-5t; Fri, 27 Nov 2020 06:59:37 +0000
+Date:   Fri, 27 Nov 2020 14:58:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/platform] BUILD SUCCESS
+ caf371103ea17de58251714131b06682d86b0df8
+Message-ID: <5fc0a3ac.IgzkX0XZ9KtTl+4P%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UeGbi9WUl5IjfbsLMyXKu1l";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UeGbi9WUl5IjfbsLMyXKu1l
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/platform
+branch HEAD: caf371103ea17de58251714131b06682d86b0df8  x86/platform/uv: Update MAINTAINERS for uv_sysfs driver
 
-Hi all,
+elapsed time: 762m
 
-After merging the dma-mapping tree, today's linux-next build (powerpc64
-allnoconfig) failed like this:
+configs tested: 142
+configs skipped: 3
 
-In file included from include/linux/dma-direct.h:10,
-                 from arch/powerpc/kernel/dma-iommu.c:9:
-include/linux/dma-map-ops.h:328:41: error: expected identifier or '(' befor=
-e numeric constant
-  328 | #define arch_dma_map_page_direct(d, a) (0)
-      |                                         ^
-arch/powerpc/kernel/dma-iommu.c:16:6: note: in expansion of macro 'arch_dma=
-_map_page_direct'
-   16 | bool arch_dma_map_page_direct(struct device *dev, phys_addr_t addr)
-      |      ^~~~~~~~~~~~~~~~~~~~~~~~
-include/linux/dma-map-ops.h:329:43: error: expected identifier or '(' befor=
-e numeric constant
-  329 | #define arch_dma_unmap_page_direct(d, a) (0)
-      |                                           ^
-arch/powerpc/kernel/dma-iommu.c:26:6: note: in expansion of macro 'arch_dma=
-_unmap_page_direct'
-   26 | bool arch_dma_unmap_page_direct(struct device *dev, dma_addr_t dma_=
-handle)
-      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-include/linux/dma-map-ops.h:330:42: error: expected identifier or '(' befor=
-e numeric constant
-  330 | #define arch_dma_map_sg_direct(d, s, n) (0)
-      |                                          ^
-arch/powerpc/kernel/dma-iommu.c:34:6: note: in expansion of macro 'arch_dma=
-_map_sg_direct'
-   34 | bool arch_dma_map_sg_direct(struct device *dev, struct scatterlist =
-*sg,
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-include/linux/dma-map-ops.h:331:44: error: expected identifier or '(' befor=
-e numeric constant
-  331 | #define arch_dma_unmap_sg_direct(d, s, n) (0)
-      |                                            ^
-arch/powerpc/kernel/dma-iommu.c:51:6: note: in expansion of macro 'arch_dma=
-_unmap_sg_direct'
-   51 | bool arch_dma_unmap_sg_direct(struct device *dev, struct scatterlis=
-t *sg,
-      |      ^~~~~~~~~~~~~~~~~~~~~~~~
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Caused by commit
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+h8300                       h8s-sim_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                          rsk7203_defconfig
+arm                         lubbock_defconfig
+sparc                       sparc32_defconfig
+powerpc                 mpc837x_mds_defconfig
+arc                          axs101_defconfig
+mips                      pic32mzda_defconfig
+arm                       imx_v6_v7_defconfig
+powerpc64                        alldefconfig
+sh                   sh7724_generic_defconfig
+m68k                        m5307c3_defconfig
+csky                             alldefconfig
+xtensa                          iss_defconfig
+sh                                  defconfig
+arm                        clps711x_defconfig
+mips                          ath25_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arc                              allyesconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                     mpc83xx_defconfig
+arm                           viper_defconfig
+s390                                defconfig
+sh                         ap325rxa_defconfig
+powerpc                      pasemi_defconfig
+mips                         bigsur_defconfig
+mips                        omega2p_defconfig
+xtensa                       common_defconfig
+powerpc                     kilauea_defconfig
+arm                           corgi_defconfig
+sh                            titan_defconfig
+mips                   sb1250_swarm_defconfig
+arm                          moxart_defconfig
+sh                               alldefconfig
+powerpc                 mpc8272_ads_defconfig
+arm                            dove_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                      chrp32_defconfig
+arm                      tct_hammer_defconfig
+powerpc                     rainier_defconfig
+m68k                        mvme147_defconfig
+mips                         tb0219_defconfig
+powerpc                     tqm8555_defconfig
+mips                    maltaup_xpa_defconfig
+mips                        bcm47xx_defconfig
+c6x                                 defconfig
+powerpc                      katmai_defconfig
+arm                         assabet_defconfig
+c6x                        evmc6474_defconfig
+mips                        nlm_xlp_defconfig
+mips                           ip28_defconfig
+powerpc                       eiger_defconfig
+powerpc                      ppc44x_defconfig
+mips                         tb0287_defconfig
+nios2                         10m50_defconfig
+mips                         db1xxx_defconfig
+sparc                               defconfig
+mips                            gpr_defconfig
+arm                              alldefconfig
+powerpc                  mpc885_ads_defconfig
+sh                         microdev_defconfig
+arm                          tango4_defconfig
+arc                          axs103_defconfig
+mips                     decstation_defconfig
+arc                            hsdk_defconfig
+powerpc                      ppc40x_defconfig
+sh                        dreamcast_defconfig
+arm                       spear13xx_defconfig
+um                            kunit_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201127
+i386                 randconfig-a003-20201127
+i386                 randconfig-a002-20201127
+i386                 randconfig-a005-20201127
+i386                 randconfig-a001-20201127
+i386                 randconfig-a006-20201127
+x86_64               randconfig-a011-20201127
+x86_64               randconfig-a012-20201127
+x86_64               randconfig-a013-20201127
+x86_64               randconfig-a015-20201127
+x86_64               randconfig-a014-20201127
+x86_64               randconfig-a016-20201127
+i386                 randconfig-a012-20201127
+i386                 randconfig-a013-20201127
+i386                 randconfig-a011-20201127
+i386                 randconfig-a016-20201127
+i386                 randconfig-a014-20201127
+i386                 randconfig-a015-20201127
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-  4e52b96ac85c ("powerpc/dma: Fallback to dma_ops when persistent memory pr=
-esent")
+clang tested configs:
+x86_64               randconfig-a006-20201127
+x86_64               randconfig-a003-20201127
+x86_64               randconfig-a004-20201127
+x86_64               randconfig-a005-20201127
+x86_64               randconfig-a002-20201127
+x86_64               randconfig-a001-20201127
 
-I have applied the following patch for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 27 Nov 2020 17:49:28 +1100
-Subject: [PATCH] powerpc/dma: fix for "powerpc/dma: Fallback to dma_ops when
- persistent memory present"
-
-Fixes: 4e52b96ac85c ("powerpc/dma: Fallback to dma_ops when persistent memo=
-ry present")
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- arch/powerpc/kernel/dma-iommu.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/powerpc/kernel/dma-iommu.c b/arch/powerpc/kernel/dma-iomm=
-u.c
-index c724548ca295..6364311eb6e9 100644
---- a/arch/powerpc/kernel/dma-iommu.c
-+++ b/arch/powerpc/kernel/dma-iommu.c
-@@ -10,6 +10,8 @@
- #include <linux/pci.h>
- #include <asm/iommu.h>
-=20
-+#ifdef CONFIG_ARCH_HAS_DMA_MAP_DIRECT
-+
- #define can_map_direct(dev, addr) \
- 	((dev)->bus_dma_limit >=3D phys_to_dma((dev), (addr)))
-=20
-@@ -64,6 +66,7 @@ bool arch_dma_unmap_sg_direct(struct device *dev, struct =
-scatterlist *sg,
-=20
- 	return true;
- }
-+#endif /* CONFIG_ARCH_HAS_DMA_MAP_DIRECT */
-=20
- /*
-  * Generic iommu implementation
---=20
-2.29.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/UeGbi9WUl5IjfbsLMyXKu1l
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Ao3kACgkQAVBC80lX
-0GyMaQf7Bs68XJVVI64v3WvzDcaYyEsvPX4weiDxX2f8VMlNxlzOoeHiFZrjkc66
-0Li5ZbT4h0ou2tZGjggcpuQz47rP/G6hYRDGg9iIb1uT3TP6IPHLH6glWFGBRKcq
-tPaZNwQgMGNjTmDsnDss6xokFCZsImkQsaKv8RcHQX54AM6OU/VyXNSZ2Xxu0kD0
-thgPIoIdcQpuPqdreb+JdZHDJCKYHfz9kw8xxBzQBPG9cuwhPNPxNGTlBY6dOeP4
-E1fhDBGgj9gh8dWURPZB0N0Qi/dz8v8i4YGlFfmNPcBPE3YPkcgb0CC3KkAkvY3V
-M97C7NlyLEqgEl3eQhmgyntQdAAClg==
-=7Ucg
------END PGP SIGNATURE-----
-
---Sig_/UeGbi9WUl5IjfbsLMyXKu1l--
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
