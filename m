@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA1D2C6976
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB5A2C697E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731487AbgK0QdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:33:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:45924 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730603AbgK0QdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:33:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB72C1516;
-        Fri, 27 Nov 2020 08:33:03 -0800 (PST)
-Received: from bogus (unknown [10.57.59.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 373573F71F;
-        Fri, 27 Nov 2020 08:33:00 -0800 (PST)
-Date:   Fri, 27 Nov 2020 16:32:54 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com
-Subject: Re: [PATCH v3 06/23] kvm: arm64: Add kvm-arm.protected early kernel
- parameter
-Message-ID: <20201127163254.zxdrszlveaxhluwn@bogus>
-References: <20201126155421.14901-1-dbrazdil@google.com>
- <20201126155421.14901-7-dbrazdil@google.com>
+        id S1731512AbgK0Qft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:35:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731440AbgK0Qft (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 11:35:49 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1144CC0613D1;
+        Fri, 27 Nov 2020 08:35:49 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id w4so4705952pgg.13;
+        Fri, 27 Nov 2020 08:35:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oeonf9+ssH3tiDFtNGxaIF9eFeoLL2QUF0mZX8JcTPU=;
+        b=u5qG5VuqAze9SNNcnAbaUKVq1mkcdhDQWZM6B3QdZEl7iWEHODXsr8rpisnEYNdjRC
+         S7jXTIe03qoBCAmKmp8gG6sdaPJTd09SObWlJ8gTHqdza5Ki4LK6T2BWVRKtk2OBRsFF
+         PJ3boGvmfUsNNlvg58QC5VGBLRlamzW4piMxa8naYTcSrZHGcVtv8dCeOQInXNiEvr21
+         WM1/EZTauFRLacGMfrYjQFOZDwS5QflyeuD8xrXa9uW8riWHQSEyPHvnzfHJ5mPQMgDJ
+         5YcUrL+v2FYYOIJTRJinpVJ0vmMcAWW6FLdpnRld/u62AMycLSGZoE/MjrJIqdGPD9VL
+         pYpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oeonf9+ssH3tiDFtNGxaIF9eFeoLL2QUF0mZX8JcTPU=;
+        b=qRyWqx4isHZBGA/A1YVpLNPYXmW8LKD8ZKsX8JO9nGS83+KZB71ZJ+6gLK7HFnA63z
+         zFl+qCljylP1+jvkREnUSZtAVmMflZ80z0nbPgq8yc6k187jGECfaJElDqqDY8mdJc6D
+         rttsmRbspdzO/MgcdKhabYz8LaBBRoIzhiFE6B5W8veMJABcbhPDdLoo0u76O4mGivcP
+         stmENzff0oyKjrGbtGG/vWpqnusR+Z8Sibo8o2upwxVqjvmBJL+5fQrmczxPKcUZONei
+         lRnL2AtDOd/6ODYW3cVWngFzA/iaaWXDtT+xLqtK8QolOcoIAopx9hFsl+XbD9VUybcE
+         yLjg==
+X-Gm-Message-State: AOAM5315TiknG2nZIPooPpynSFaFGUh6fdzr5jJ6ojajqIJSE6St6o4V
+        MU7QmMbHw+l4sEH9FJil4SM=
+X-Google-Smtp-Source: ABdhPJwg4EZ6JVGBOSAvWBiU1oI12df1VgK0NvLDh7IgBhGg5n0xDwue/6e6MsifLBu3LnHveI+RLA==
+X-Received: by 2002:a63:5845:: with SMTP id i5mr7290832pgm.355.1606494948492;
+        Fri, 27 Nov 2020 08:35:48 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id u3sm8091620pfu.47.2020.11.27.08.35.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 08:35:47 -0800 (PST)
+Date:   Sat, 28 Nov 2020 01:35:45 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH] media: vb2: always set buffer cache sync hints
+Message-ID: <X8Eq4V++hRsKuYSF@jagdpanzerIV.localdomain>
+References: <20201127094136.1051071-1-sergey.senozhatsky@gmail.com>
+ <0dbfa509-8c82-7470-c18b-24ab5c92dc4b@xs4all.nl>
+ <X8ENifLanjYuhF/r@jagdpanzerIV.localdomain>
+ <509cc69b-39d7-4b13-f392-ebf25530c8fe@xs4all.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126155421.14901-7-dbrazdil@google.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <509cc69b-39d7-4b13-f392-ebf25530c8fe@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 03:54:04PM +0000, David Brazdil wrote:
-> Add an early parameter that allows users to opt into protected KVM mode
-> when using the nVHE hypervisor. In this mode, guest state will be kept
-> private from the host. This will primarily involve enabling stage-2
-> address translation for the host, restricting DMA to host memory, and
-> filtering host SMCs.
+On (20/11/27 15:56), Hans Verkuil wrote:
+> Yes.
 > 
-> Capability ARM64_PROTECTED_KVM is set if the param is passed, CONFIG_KVM
-> is enabled and the kernel was not booted with VHE.
+> BTW, wouldn't it be sufficient to change this code to:
 > 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  .../admin-guide/kernel-parameters.txt         |  5 ++++
->  arch/arm64/include/asm/cpucaps.h              |  3 +-
->  arch/arm64/include/asm/virt.h                 |  8 +++++
->  arch/arm64/kernel/cpufeature.c                | 29 +++++++++++++++++++
->  arch/arm64/kvm/arm.c                          |  4 ++-
->  5 files changed, 47 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 526d65d8573a..06c89975c29c 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -2259,6 +2259,11 @@
->  			for all guests.
->  			Default is 1 (enabled) if in 64-bit or 32-bit PAE mode.
->  
-> +	kvm-arm.protected=
-> +			[KVM,ARM] Allow spawning protected guests whose state
-> +			is kept private from the host. Only valid for non-VHE.
-> +			Default is 0 (disabled).
-> +
+> 	if (!q->allow_cache_hints && q->memory != VB2_MEMORY_DMABUF) {
+> 		vb->need_cache_sync_on_prepare = 1;
+> 		vb->need_cache_sync_on_finish = 1;
+> 	}
 
-Sorry for being pedantic. Can we reword this to say valid for
-!CONFIG_ARM64_VHE ? I read this as valid only for non-VHE hardware, it may
-be just me, but if you agree please update so that it doesn't give remote
-idea that it is not valid on VHE enabled hardware.
+I think it would be sufficient.
 
-I was trying to run this on the hardware and was trying to understand the
-details on how to do that.
-
--- 
-Regards,
-Sudeep
+	-ss
