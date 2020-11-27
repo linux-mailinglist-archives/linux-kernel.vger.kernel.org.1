@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A74E2C6BA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 716E12C6BA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728790AbgK0Sh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 13:37:58 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53402 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727833AbgK0Sh5 (ORCPT
+        id S1728955AbgK0SiK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Nov 2020 13:38:10 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:47687 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727833AbgK0SiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 13:37:57 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ARIWJe1138418;
-        Fri, 27 Nov 2020 13:37:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=h4wx81vHkvRi+FuCSL6QTzi3gU0LUvvB13sMqP1wjyc=;
- b=fRwPmm4xBJFeGO5xPLuOjea28AERTLLpsm/Z9GZaQRl2Nz8+TBSTjeoinFijnbqpTkZi
- xzUciZ8Yragi9x0jiFQDOO+/2T/zvZ2NXT4VP/lsaPZ74oQ7uCbbsEZFFE241Odz3HlF
- 7Eh7zYd0DAqprDOZhN73pT8rK73KW4Nom5nIbBqGJULAOLUyB7bB1WNSvbZ5GySg+em3
- CM0Cy5iuQkseinxzm889sEvrt2CzKM6sVdrnLAGB8wFSTmFJupdibYSLTveDpM/JJ2dL
- lryqdK2Br2yoe2z1WthzfQyCGYUdatf9+7erO4sMCzPKvoPG13cXSgz6P9st/OeuQjx1 NA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3536n3rae5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Nov 2020 13:37:49 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ARIWdo7139302;
-        Fri, 27 Nov 2020 13:37:49 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3536n3rady-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Nov 2020 13:37:49 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ARIYxJe015304;
-        Fri, 27 Nov 2020 18:37:48 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02wdc.us.ibm.com with ESMTP id 352xhwk0kr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Nov 2020 18:37:48 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ARIblKg20382110
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Nov 2020 18:37:47 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D50FB78060;
-        Fri, 27 Nov 2020 18:37:47 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C57E978063;
-        Fri, 27 Nov 2020 18:37:46 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.194.234])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 27 Nov 2020 18:37:46 +0000 (GMT)
-Message-ID: <841ba4da542c338281eab9f335bbf496cb6b3f69.camel@linux.ibm.com>
-Subject: Re: [PATCH] [SCSI] sym53c8xx: remove trailing semicolon in macro
- definition
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     trix@redhat.com, willy@infradead.org, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 27 Nov 2020 10:37:45 -0800
-In-Reply-To: <20201127182906.2804973-1-trix@redhat.com>
-References: <20201127182906.2804973-1-trix@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 27 Nov 2020 13:38:09 -0500
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 15E961BF206;
+        Fri, 27 Nov 2020 18:38:04 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 19:38:03 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] mtd: Fixes for v5.10-rc6
+Message-ID: <20201127193803.324e1f83@xps13>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-27_10:2020-11-26,2020-11-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
- lowpriorityscore=0 spamscore=0 bulkscore=0 suspectscore=0
- priorityscore=1501 phishscore=0 adultscore=0 mlxlogscore=999
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011270107
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-27 at 10:29 -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> The macro use will already have a semicolon.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/scsi/sym53c8xx_2/sym_glue.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/sym53c8xx_2/sym_glue.c
-> b/drivers/scsi/sym53c8xx_2/sym_glue.c
-> index d9a045f9858c..f3b3345c1766 100644
-> --- a/drivers/scsi/sym53c8xx_2/sym_glue.c
-> +++ b/drivers/scsi/sym53c8xx_2/sym_glue.c
-> @@ -1001,12 +1001,12 @@ static int is_keyword(char *ptr, int len,
-> char *verb)
->  #define SKIP_SPACES(ptr, len)					
-> 	\
->  	if ((arg_len = sym_skip_spaces(ptr, len)) < 1)			
-> \
->  		return -EINVAL;						
-> \
-> -	ptr += arg_len; len -= arg_len;
-> +	ptr += arg_len; len -= arg_len
->  
->  #define GET_INT_ARG(ptr, len, v)					
-> \
->  	if (!(arg_len = get_int_arg(ptr, len, &(v))))			
-> \
->  		return -EINVAL;						
-> \
-> -	ptr += arg_len; len -= arg_len;
-> +	ptr += arg_len; len -= arg_len
+Hello Linus,
 
-Those macros have the wrong form which can lead to actual bugs and this
-cosmetic change does nothing to fix it.  If the goal here is to get the
-code base into better shape, please fix the bugs.
+This is an MTD fixes PR for the next -rc.
 
-James
+Thanks,
+Miquèl
 
+The following changes since commit f8394f232b1eab649ce2df5c5f15b0e528c92091:
 
+  Linux 5.10-rc3 (2020-11-08 16:10:16 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.10-rc6
+
+for you to fetch changes up to b36bf0a0fe5d18561dd98eb774ef61dd396edc42:
+
+  mtd: rawnand: socrates: Move the ECC initialization to ->attach_chip() (2020-11-20 12:31:26 +0100)
+
+----------------------------------------------------------------
+Raw NAND changes:
+* Because of a recent change in the core, NAND controller drivers
+  initializing the ECC engine too early in the probe path are
+  broken. Drivers should wait for the NAND device to be discovered and
+  its memory layout known before doing any ECC related initialization,
+  so instead of reverting the faulty change which is actually moving
+  in the right direction, let's fix the drivers directly: socrates,
+  sharpsl, r852, plat_nand, pasemi, tmio, txx9ndfmc, orion, mpc5121,
+  lpc32xx_slc, lpc32xx_mlc, fsmc, diskonchip, davinci, cs553x, au1550,
+  ams-delta, xway and gpio.
+
+----------------------------------------------------------------
+Miquel Raynal (19):
+      mtd: rawnand: gpio: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: xway: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: ams-delta: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: au1550: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: cs553x: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: davinci: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: diskonchip: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: fsmc: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: lpc32xx_mlc: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: lpc32xx_slc: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: mpc5121: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: orion: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: txx9ndfmc: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: tmio: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: pasemi: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: plat_nand: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: r852: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: sharpsl: Move the ECC initialization to ->attach_chip()
+      mtd: rawnand: socrates: Move the ECC initialization to ->attach_chip()
+
+ drivers/mtd/nand/raw/ams-delta.c     | 12 +++++++++---
+ drivers/mtd/nand/raw/au1550nd.c      | 11 +++++++++--
+ drivers/mtd/nand/raw/cs553x_nand.c   | 24 ++++++++++++++++--------
+ drivers/mtd/nand/raw/davinci_nand.c  |  8 ++++----
+ drivers/mtd/nand/raw/diskonchip.c    | 29 +++++++++++++++++++----------
+ drivers/mtd/nand/raw/fsmc_nand.c     | 30 +++++++++++++++---------------
+ drivers/mtd/nand/raw/gpio.c          | 11 +++++++++--
+ drivers/mtd/nand/raw/lpc32xx_mlc.c   | 23 +++++++++++++----------
+ drivers/mtd/nand/raw/lpc32xx_slc.c   | 26 ++++++++++++++------------
+ drivers/mtd/nand/raw/mpc5121_nfc.c   | 19 +++++++++++++++++--
+ drivers/mtd/nand/raw/orion_nand.c    | 19 +++++++++++++++++--
+ drivers/mtd/nand/raw/pasemi_nand.c   | 19 +++++++++++++++++--
+ drivers/mtd/nand/raw/plat_nand.c     | 20 +++++++++++++++++---
+ drivers/mtd/nand/raw/r852.c          | 40 +++++++++++++++++++++++++++-------------
+ drivers/mtd/nand/raw/r852.h          |  1 +
+ drivers/mtd/nand/raw/sharpsl.c       | 32 ++++++++++++++++++++++++--------
+ drivers/mtd/nand/raw/socrates_nand.c | 21 +++++++++++++++++----
+ drivers/mtd/nand/raw/tmio_nand.c     | 33 ++++++++++++++++++++++++---------
+ drivers/mtd/nand/raw/txx9ndfmc.c     | 14 +++++++++-----
+ drivers/mtd/nand/raw/xway_nand.c     | 18 ++++++++++++++++--
+ 20 files changed, 294 insertions(+), 116 deletions(-)
