@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCDD2C6901
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3EA2C6907
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731008AbgK0PzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 10:55:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
+        id S1731135AbgK0P5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 10:57:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728495AbgK0PzY (ORCPT
+        with ESMTP id S1726889AbgK0P5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 10:55:24 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4E5C0613D1;
-        Fri, 27 Nov 2020 07:55:24 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id v92so4927807ybi.4;
-        Fri, 27 Nov 2020 07:55:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OXr+s5wAAmU9q3J5K/pMxQtkv/iCji6oBFIpmoY8EgU=;
-        b=i8TlO/HSrIZgKHzub2Hkh91MLq6st6QSaekpQByjGZrJpv1XY0neQO2ef8ged8QYKT
-         mgRqw9QF3RrXK2LkdBc3z3quag556lJnifjP1/6NoKnkgi4Ey8tMkT8n6nQx5Dzs42IX
-         MEAiOwMggWPv9nhbQ2CEV1lqvw3GPfp0L2zk7Mke/zgnt7oc/YLWT2U04RD9p1j/dbk1
-         prPugYZEgA6xu3qIAkFkxH4NUf0v0kosbhheWtUdyIg7BDhvfH870QDFY8YHSmqG4TC7
-         Vgg2sYrlLRzXN/mqI8f3zt3o1dOprEssbaAdl7AufRg7tIWkKlKhe9vhjnlOsDwZ7MPV
-         Vqjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OXr+s5wAAmU9q3J5K/pMxQtkv/iCji6oBFIpmoY8EgU=;
-        b=o/5zk7XqF3KliZPF51QWINWcEn9wleUekpNQtWo4SH5wb0/gx2ewSoyvPdYu+BqYLw
-         BenVqhF27FtRymbAPJyuHQ5yqpqr6wAgl/3hw82Wdiy83UybgvdV+dWH7MWo1uFNHqTw
-         fjNt6AuSHCQfwwJTt7pfxkJ0ySkUvtnHPcg6vEz8NBoHPYNw2iw868o3CvqZEvFEF1nD
-         7R7tBFNwawgDXz82DV2z81DUTWFQa5ciBT55VJn2HhBot+sq/UgzLcQmrceu2nISMzUk
-         aZIAlfzv5YyBWos6IMi6n1GNiZua5rzI/WHcbSz8/h9OPEvKkC1esRGR+7/S5hUfHFsp
-         C7yg==
-X-Gm-Message-State: AOAM531ERTRFWWTfiCCJqRT2DbJXEHHL16KD1aTAmZ3lx6KtyOGvpgNz
-        i9SoLwwE0dfFEZ0klOq9mZXbHXyNvM8MuMafCpbVQa1vvVu47A==
-X-Google-Smtp-Source: ABdhPJyXmEKyWzC59hbBxUJqm85YZ2F5NFkm6gYoisaDevi695oBAQHt9/vpckMGq4moEpoQrAtQNC2b2N6x+m/6t5g=
-X-Received: by 2002:a25:df55:: with SMTP id w82mr9664030ybg.135.1606492523532;
- Fri, 27 Nov 2020 07:55:23 -0800 (PST)
+        Fri, 27 Nov 2020 10:57:49 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A51C0613D1;
+        Fri, 27 Nov 2020 07:57:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=aPA7vZc5skp5m9teFGxFcm65W4URoc1y/rCUFO2P2SY=; b=JT/TYvGtAZWEOa9U3G48Y7U04o
+        G4tiR+bG9B+xlpesJoXJNCZk3xc4ZbDMhnPEAdto1HyhXKo0HQY0vpYl0BZKXzZbtJ3TiyZOuQydI
+        20khW2WFD/zKCOPO34baicit2aPjI8HWnQhxMJklEu/Wzfd1OiElJoi7AepIN1IDAEB3jHWl21+Cd
+        bJNLpSVwTKgV6MiviOkWVuHyr5s0pgKvOiUmaxz4k7rf/hSeheSFrDiGL5sx6wHXyamOQvcP6qLT5
+        XdNg7B3wWX5+bHdvyXble2XbHt0pEIfKdPYcAn4samygafyeW+DcDqWLxAqSwED++2B8nLZwOhW+L
+        dT/Az4dQ==;
+Received: from [2601:1c0:6280:3f0::cc1f]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kig7y-0004XT-Tz; Fri, 27 Nov 2020 15:57:43 +0000
+Subject: Re: linux-next: Tree for Nov 27 (drivers/idle/intel_idle.c)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+References: <20201127200457.1ffb6aaf@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0a6cc4c9-c48d-dbc4-6044-3b22cd133b76@infradead.org>
+Date:   Fri, 27 Nov 2020 07:57:32 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201121194339.52290-1-masahiroy@kernel.org>
-In-Reply-To: <20201121194339.52290-1-masahiroy@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 27 Nov 2020 16:55:12 +0100
-Message-ID: <CANiq72=oFrCtd1rYw3p=AUyp6WzLoMqE2iC-2M9ndcBWBMfzFg@mail.gmail.com>
-Subject: Re: [PATCH] compiler_attribute: remove CONFIG_ENABLE_MUST_CHECK
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Shuah Khan <shuah@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201127200457.1ffb6aaf@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 8:44 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Revert commit cebc04ba9aeb ("add CONFIG_ENABLE_MUST_CHECK").
->
-> A lot of warn_unused_result warnings existed in 2006, but until now
-> they have been fixed thanks to people doing allmodconfig tests.
->
-> Our goal is to always enable __must_check where appreciate, so this
-> CONFIG option is no longer needed.
->
-> I see a lot of defconfig (arch/*/configs/*_defconfig) files having:
->
->     # CONFIG_ENABLE_MUST_CHECK is not set
->
-> I did not touch them for now since it would be a big churn. If arch
-> maintainers want to clean them up, please go ahead.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+On 11/27/20 1:04 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20201126:
+> 
 
-Picked it up through compiler-attributes with the "appreciate" typo
-fixed on my end. I did a quick compile-test with a minimal config.
-Let's see if the -next bots complain...
+(This looks strange to me.)
 
-Thanks!
 
-Cheers,
-Miguel
+on i386 or x86_64:
+
+# CONFIG_ACPI is not set
+
+../drivers/idle/intel_idle.c: In function ‘intel_idle_init_cstates_icpu’:
+../drivers/idle/intel_idle.c:1510:7: error: implicit declaration of function ‘intel_idle_state_needs_timer_stop’; did you mean ‘intel_idle_init_cstates_icpu’? [-Werror=implicit-function-declaration]
+   if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
