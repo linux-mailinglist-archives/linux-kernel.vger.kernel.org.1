@@ -2,259 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E1B2C5EBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 03:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7635E2C5EC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 03:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392243AbgK0C3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 21:29:33 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8597 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726862AbgK0C3d (ORCPT
+        id S2392253AbgK0CcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 21:32:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392216AbgK0CcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 21:29:33 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Chz8T5zB2zLw1f;
-        Fri, 27 Nov 2020 10:28:57 +0800 (CST)
-Received: from [10.67.76.251] (10.67.76.251) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Fri, 27 Nov 2020
- 10:29:16 +0800
-Subject: Re: [PATCH v7] lib: optimize cpumask_local_spread()
-To:     Dave Hansen <dave.hansen@intel.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Yuqi Jin <jinyuqi@huawei.com>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Paul Burton <paul.burton@mips.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Anshuman Khandual" <anshuman.khandual@arm.com>
-References: <1605668072-44780-1-git-send-email-zhangshaokun@hisilicon.com>
- <6a6e6d37-a3dc-94ed-bc8c-62c50ea1dff5@intel.com>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <a3b8ab12-604b-1efe-f091-de782c3c8ed5@hisilicon.com>
-Date:   Fri, 27 Nov 2020 10:29:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Thu, 26 Nov 2020 21:32:17 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D28EC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 18:32:17 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id z21so4980968lfe.12
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 18:32:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=duKXrMXbO5x97/X4ifJt1mH4DWBuc4Xj0bBfthNtITo=;
+        b=RdVbIFRv325tEKb1KxuR884D6+sUO17uL5VDFRX/mMETlyh/rWSMLOOCkq4JwuwzIP
+         WjByKo44zmV0Uh8tYD/lm/SijRhTovN4/OE9s+UL6M2mNFT9OE0eTUSHz5wrS7h+Gfwe
+         4bRtAW8ynalT354yFwKhUOZudZHtMXtMZq92s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=duKXrMXbO5x97/X4ifJt1mH4DWBuc4Xj0bBfthNtITo=;
+        b=Dz0izlNYvUFBTs1Rfj258YfkE/G5JifsUJekY8/4UXbGQ9vau0x7gbwzWyovhOe58d
+         8hRutg0aSrgpLHZsx+wk76In2bUh76zoSehi/685gHSVEVs/ri6kMFaTizdBm+sG+bPA
+         WIVxttaGfKEpC7HlHMDOVMvcNjo/ZX7+JNzLUh5ZYMCi4cbKSAWgGBnrg6L8pNXZyrw2
+         U4IyrWLWba7f2plwW3GHxcKLpVqhICeE/m5RMmxQM9Fsjq3ZxQX7oKNgoYW5Cex6V3am
+         kBxvHwVJdxxAG5/qB3a3oHDHOIVZnKvOVyZEyeRXIYRFLCxip1COPZgASn5WBV3DZ1h2
+         xUpw==
+X-Gm-Message-State: AOAM533cCCFcCkSP1gch0Qa/bK7uzJFzS6t5lenKXIKUtHWszlnxco2b
+        re5gw+mS3V6eBcL5KsjduP7eU03DGkNTlYfP1sR54gyjQxINnglM
+X-Google-Smtp-Source: ABdhPJyRfHa59VPLJk9D5ukrU4+/2/Vx2g97em7FvUpGC0yhzfjdDvSvAvT99Qfioctitgy9S0KPwt8yv8ZyB1g1TJU=
+X-Received: by 2002:a05:6512:34d3:: with SMTP id w19mr2235358lfr.418.1606444335787;
+ Thu, 26 Nov 2020 18:32:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <6a6e6d37-a3dc-94ed-bc8c-62c50ea1dff5@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.76.251]
-X-CFilter-Loop: Reflected
+References: <20201126165748.1748417-1-revest@google.com>
+In-Reply-To: <20201126165748.1748417-1-revest@google.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Fri, 27 Nov 2020 03:32:04 +0100
+Message-ID: <CACYkzJ65P5fxW1bxVXm_ehLLE=gn6nuR+UVxYWjqSJfXoZd+8g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+[...]
 
-Apologies for later reply.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index c3458ec1f30a..670998635eac 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3817,6 +3817,21 @@ union bpf_attr {
+>   *             The **hash_algo** is returned on success,
+>   *             **-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
+>   *             invalid arguments are passed.
+> + *
+> + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
+> + *     Description
+> + *             Uses kallsyms to write the name of the symbol at *address*
+> + *             into *symbol* of size *symbol_sz*. This is guaranteed to be
+> + *             zero terminated.
+> + *             If the symbol is in a module, up to *module_size* bytes of
+> + *             the module name is written in *module*. This is also
+> + *             guaranteed to be zero-terminated. Note: a module name
+> + *             is always shorter than 64 bytes.
+> + *     Return
+> + *             On success, the strictly positive length of the full symbol
+> + *             name, If this is greater than *symbol_size*, the written
+> + *             symbol is truncated.
+> + *             On error, a negative value.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -3981,6 +3996,7 @@ union bpf_attr {
+>         FN(bprm_opts_set),              \
+>         FN(ktime_get_coarse_ns),        \
+>         FN(ima_inode_hash),             \
+> +       FN(kallsyms_lookup),    \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index d255bc9b2bfa..9d86e20c2b13 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/error-injection.h>
+>  #include <linux/btf_ids.h>
+>  #include <linux/bpf_lsm.h>
+> +#include <linux/kallsyms.h>
+>
+>  #include <net/bpf_sk_storage.h>
+>
+> @@ -1260,6 +1261,44 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+>         .arg5_type      = ARG_ANYTHING,
+>  };
+>
+> +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32, symbol_size,
+> +          char *, module, u32, module_size)
+> +{
+> +       char buffer[KSYM_SYMBOL_LEN];
+> +       unsigned long offset, size;
+> +       const char *name;
+> +       char *modname;
+> +       long ret;
+> +
+> +       name = kallsyms_lookup(address, &size, &offset, &modname, buffer);
+> +       if (!name)
+> +               return -EINVAL;
+> +
+> +       ret = strlen(name) + 1;
+> +       if (symbol_size) {
+> +               strncpy(symbol, name, symbol_size);
+> +               symbol[symbol_size - 1] = '\0';
+> +       }
+> +
+> +       if (modname && module_size) {
+> +               strncpy(module, modname, module_size);
 
-在 2020/11/21 1:48, Dave Hansen 写道:
-> On 11/17/20 6:54 PM, Shaokun Zhang wrote:
->> From: Yuqi Jin <jinyuqi@huawei.com>
->>
->> In multi-processor and NUMA system, I/O driver will find cpu cores that
->> which shall be bound IRQ. When cpu cores in the local numa have been
->> used up, it is better to find the node closest to the local numa node
->> for performance, instead of choosing any online cpu immediately.
->>
->> On arm64 or x86 platform that has 2-sockets and 4-NUMA nodes, if the
->> network card is located in node2 of socket1, while the number queues
->> of network card is greater than the number of cores of node2, when all
->> cores of node2 has been bound to the queues, the remaining queues will
->> be bound to the cores of node0 which is further than NUMA node3.
-> 
-> That's quite the run-on sentence. :)
-> 
->> It is
->> not friendly for performance or Intel's DDIO (Data Direct I/O Technology)
-> 
-> Could you explain *why* it is not friendly to DDIO specifically?  This
-> patch affects where the interrupt handler runs.  But, DDIO is based on
-> memory locations rather than the location of the interrupt handler.
-> 
-> It would be ideal to make that connection: How does the location of the
-> interrupt handler impact the memory allocation location?
-> 
+The return value does not seem to be impacted by the truncation of the
+module name, I wonder if it is better to just use a single buffer.
 
-When the interrupt handler is across chips, the BD, packet header, and even
-payload are required for the RX packet interrupt handler. However, the DDIO
-cannot transmit data to there.
+For example, the proc kallsyms shows symbols as:
 
->> when if the user enables SNC (sub-NUMA-clustering).
-> 
-> Again, the role that SNC plays here isn't spelled out.  I *believe* it's
-> because SNC ends up reducing the number of CPUs in each NUMA node.  That
->  makes the existing code run out of CPUs to which to bind to the "local"
-> node sooner.
+<symbol_name> [module_name]
 
-Yes.
+https://github.com/torvalds/linux/blob/master/kernel/kallsyms.c#L648
 
-> 
->> +static int find_nearest_node(int node, bool *used)
->> +{
->> +	int i, min_dist, node_id = -1;
->> +
->> +	/* Choose the first unused node to compare */
->> +	for (i = 0; i < nr_node_ids; i++) {
->> +		if (used[i] == false) {
->> +			min_dist = node_distance(node, i);
->> +			node_id = i;
->> +			break;
->> +		}
->> +	}
->> +
->> +	/* Compare and return the nearest node */
->> +	for (i = 0; i < nr_node_ids; i++) {
->> +		if (node_distance(node, i) < min_dist && used[i] == false) {
->> +			min_dist = node_distance(node, i);
->> +			node_id = i;
->> +		}
->> +	}
->> +
->> +	return node_id;
->> +}
->> +
->>  /**
->>   * cpumask_local_spread - select the i'th cpu with local numa cpu's first
->>   * @i: index number
->>   * @node: local numa_node
->>   *
->>   * This function selects an online CPU according to a numa aware policy;
->> - * local cpus are returned first, followed by non-local ones, then it
->> - * wraps around.
->> + * local cpus are returned first, followed by the next one which is the
->> + * nearest unused NUMA node based on NUMA distance, then it wraps around.
->>   *
->>   * It's not very efficient, but useful for setup.
->>   */
->>  unsigned int cpumask_local_spread(unsigned int i, int node)
-> 
-> FWIW, I think 'i' is criminally bad naming.  It should be called
-> nr_cpus_to_skip or something similar.
-> 
+The square brackets do seem to be a waste here, so maybe we could use
+a single character as a separator?
 
-Ok, I really didn't consider this parameter naming before.
+> +               module[module_size - 1] = '\0';
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +const struct bpf_func_proto bpf_kallsyms_lookup_proto = {
+> +       .func           = bpf_kallsyms_lookup,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_ANYTHING,
+> +       .arg2_type      = ARG_PTR_TO_MEM,
+> +       .arg3_type      = ARG_CONST_SIZE,
+> +       .arg4_type      = ARG_PTR_TO_MEM,
+> +       .arg5_type      = ARG_CONST_SIZE,
+> +};
+> +
 
-> I also detest the comments that are there today.
-> 
-> 	Loop through all the online CPUs on the system.  Start with the
-> 	CPUs on 'node', then fall back to CPUs on NUMA nodes which are
-> 	increasingly far away.
-> 
-> 	Skip the first 'nr_cpus_to_skip' CPUs which are found.
-> 
-> 	This function is not very efficient, especially for large
-> 	'nr_cpus_to_skip' because it loops over the same CPUs on each
-> 	call and does not remember its state from previous calls.
-> 
-
-Shame for my bad comment, I will follow it.
-
->>  {
->> -	int cpu, hk_flags;
->> +	static DEFINE_SPINLOCK(spread_lock);
->> +	static bool used[MAX_NUMNODES];
-> 
-> I thought I mentioned this last time.  How large is this array?  How
-> large would it be if it were a nodemask_t?  Would this be less code if
-
-Apologies that I forgot to do it.
-
-> you just dynamically allocated and freed the node mask instead of having
-> a spinlock and a memset?
-> 
-
-Ok, but I think the spinlock is also needed, do I miss something?
-
->> +	unsigned long flags;
->> +	int cpu, hk_flags, j, id;
->>  	const struct cpumask *mask;
->>  
->>  	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
->> @@ -352,20 +379,27 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
->>  				return cpu;
->>  		}
->>  	} else {
->> -		/* NUMA first. */
->> -		for_each_cpu_and(cpu, cpumask_of_node(node), mask) {
->> -			if (i-- == 0)
->> -				return cpu;
->> +		spin_lock_irqsave(&spread_lock, flags);
->> +		memset(used, 0, nr_node_ids * sizeof(bool));
->> +		/* select node according to the distance from local node */
->> +		for (j = 0; j < nr_node_ids; j++) {
->> +			id = find_nearest_node(node, used);
->> +			if (id < 0)
->> +				break;
-> 
-> There's presumably an outer loop in a driver which is trying to bind a
-> bunch of interrupts to a bunch of CPUs.  We know there are on the order
-> of dozens of these interrupts.
-> 
-> 	for_each_interrupt() // in the driver
-> 		for (j=0;j<nr_node_ids;j++) // cpumask_local_spread()
-> 			// find_nearest_node():
-> 			for (i = 0; i < nr_node_ids; i++) {
-> 			for (i = 0; i < nr_node_ids; i++) {
-> 
-> Does this worry anybody else?  It thought our upper limits on the number
-> of NUMA nodes was 1024.  Doesn't that make our loop O(N^3) where the
-> worst case is hundreds of millions of loops?
-> 
-
-If the NUMA nodes is 1024 in real system, it is more worthy to find the
-earest node, rather than choose a random one, And it is only called in
-I/O device initialization. Comments also are given to this interface.
-
-> I don't want to prematurely optimize this, but that seems like something
-> that might just fall over on bigger systems.
-> 
-> This also seems really wasteful if we have a bunch of memory-only nodes.
->  Each of those will be found via find_nearest_node(), but then this loop:
-> 
-
-Got it, all effort is used to choose the nearest node for performance. If
-we don't it, I think some one will also debug this in future.
-
->> +			for_each_cpu_and(cpu, cpumask_of_node(id), mask)
->> +				if (i-- == 0) {
->> +					spin_unlock_irqrestore(&spread_lock,
->> +							       flags);
->> +					return cpu;
->> +				}
->> +			used[id] = true;
->>  		}
-> 
-> Will just exit immediately because cpumask_of_node() is empty.
-
-Yes, and this node used[id] became true.
-
-> 
-> 'used', for instance, should start by setting 'true' for all nodes which
-> are not in N_CPUS.
-
-No, because I used 'nr_node_ids' which is possible node ids to check.
-
-Thanks,
-Shaokun
-
-> 
->> +		spin_unlock_irqrestore(&spread_lock, flags);
->>  
->> -		for_each_cpu(cpu, mask) {
->> -			/* Skip NUMA nodes, done above. */
->> -			if (cpumask_test_cpu(cpu, cpumask_of_node(node)))
->> -				continue;
->> -
->> +		for_each_cpu(cpu, mask)
->>  			if (i-- == 0)
->>  				return cpu;
->> -		}
->>  	}
->>  	BUG();
->>  }
-> .
-> 
+[...]
