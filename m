@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735182C6C92
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 21:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F0E2C6C9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 21:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732412AbgK0UcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 15:32:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732307AbgK0U3w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 15:29:52 -0500
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFA122223D;
-        Fri, 27 Nov 2020 20:29:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606508990;
-        bh=8WXGibjYZ0t9GgILIvSSUtbCg5S7JG3534IJyVMr0Tw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NlqPW5nkcLlvI6BSWKG0DmJ2SIyCAg1uWcB8lnHKk8DMLiQMuFPBafd3Sk1MOzpwf
-         zvkHVRZXFPKGrxQ4iaqPZ7+arxvPb69X1Q1m2aJ7QSYrdXzr3Swtw2wf2PogPFCpAm
-         aH4CRw9iCRgUr5fjSVPnb0gr4dnyWEkqO8g8G80c=
-Received: by mail-ot1-f52.google.com with SMTP id o3so5690749ota.8;
-        Fri, 27 Nov 2020 12:29:49 -0800 (PST)
-X-Gm-Message-State: AOAM5317KTd4Lzfu0pirNf5UGoSWjo488fOdVtm+pRRNrkFoYXx19AdX
-        RSQKWiET0GWYUGjw5Rt1DXyGqGC1zEySmSNIWRM=
-X-Google-Smtp-Source: ABdhPJwWtUnNmzAaL6g5cEdD0neWf5eC/bn+E7dJx8QwCcQLQVTmp0k8NS+iUWrTm0kjrnb1F6M6iBbuPmksPMiqam0=
-X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr7261780otc.305.1606508989093;
- Fri, 27 Nov 2020 12:29:49 -0800 (PST)
+        id S1732495AbgK0Ui6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 15:38:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53309 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731803AbgK0Uaq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 15:30:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606509038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tglFuF875GWwN24HhSrupHcDE+HNcJd+ysCQTBH59Oo=;
+        b=V+rIQYmWyhyCUzTO3NQiHcTA4XrDsBsJ91IGIxU+IBmCnShhcJEHWZhg/1xkuDCeByqb2m
+        oOPFFXflcwDTrTmxXpzdmjmvovZX3or0NkhdV9klRXh4wAr/D2PIEw126FnVZef1l2opou
+        fgICeMBQAb7sthfxAIkpOg7gYyWosmY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-548-KakB_rpTOVWGbbXCvC6Cag-1; Fri, 27 Nov 2020 15:30:36 -0500
+X-MC-Unique: KakB_rpTOVWGbbXCvC6Cag-1
+Received: by mail-wr1-f72.google.com with SMTP id b5so3920033wrp.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 12:30:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tglFuF875GWwN24HhSrupHcDE+HNcJd+ysCQTBH59Oo=;
+        b=euQ0Q+XIkuPgaJkQqfrB9ypFvgdIrpDqiTeC3/GPnU39XzVNlrzGvvpvOojFb3i0Vv
+         89XC7xK7LZg6LT3QGCuPDkKh/fz9H81ymLEmKdb7c2Da3tg/Xu32arZQQJv3zwVchkSR
+         OCxZHrafdAhgS0QhPv5SBU205XR2LvFflIA6bf2RJUfzgCb+zqrk5yo5S12ByUdfA13I
+         EjXAK+seWDVIWavrY9l+9OZ/kfEk0hGK7vwanWae+BW8JuY+m/DY3b7RZqX9+uD7veSW
+         4xRTsttXxi+JixnjOoxRcs6XrORGWdhAyCS5w7Q7rLUMxCd0+PAX0ZOtmJNdM48b4xxR
+         KzyQ==
+X-Gm-Message-State: AOAM532ZwK5hDndaFrgq0vwOZatqZwV7N03stQxNQQjqbBJW/vYdC/HJ
+        zpqqaRA5fbXEq26p8rwmwO4Oq3GdJNOCHb2KIyuEivP1NwkT16a6NAeriIeTK8c+B/TAlmf3uyl
+        SCgqh3Agfj2bJjz17V9FnOmzxVywIRVSBwA69YNzR
+X-Received: by 2002:a1c:810c:: with SMTP id c12mr10983381wmd.96.1606509035026;
+        Fri, 27 Nov 2020 12:30:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzGlJj2B75JR2lX+fXCp5ap99UGZGXWUoXauI1HGlhqeCKz3FoiXIIgqe5JDWD+P9hEEiFMiBooAHIw60sUGWs=
+X-Received: by 2002:a1c:810c:: with SMTP id c12mr10983365wmd.96.1606509034803;
+ Fri, 27 Nov 2020 12:30:34 -0800 (PST)
 MIME-Version: 1.0
-References: <87r1on1v62.fsf@x220.int.ebiederm.org> <20201120231441.29911-2-ebiederm@xmission.com>
- <20201123175052.GA20279@redhat.com> <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com>
- <87im9vx08i.fsf@x220.int.ebiederm.org> <87pn42r0n7.fsf@x220.int.ebiederm.org>
- <CAHk-=wi-h8y5MK83DA6Vz2TDSQf4eEadddhWLTT_94bP996=Ug@mail.gmail.com>
- <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com>
- <ed83033f-80af-5be0-ecbe-f2bf5c2075e9@infradead.org> <877dqap76p.fsf@x220.int.ebiederm.org>
-In-Reply-To: <877dqap76p.fsf@x220.int.ebiederm.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 27 Nov 2020 21:29:33 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0hPG1cTxksTBCJHkAV_=TLZLCi2pZYMk2Dc2-kLzD3rg@mail.gmail.com>
-Message-ID: <CAK8P3a0hPG1cTxksTBCJHkAV_=TLZLCi2pZYMk2Dc2-kLzD3rg@mail.gmail.com>
-Subject: Re: [PATCH v2 02/24] exec: Simplify unshare_files
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Geoff Levand <geoff@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@arndb.de>
+References: <20201127191209.2850758-1-trix@redhat.com>
+In-Reply-To: <20201127191209.2850758-1-trix@redhat.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Fri, 27 Nov 2020 21:30:23 +0100
+Message-ID: <CAHc6FU51+xn3P1SeU-=n3dV2J2XcwEMJp0f7iTee-X3u0TJK4A@mail.gmail.com>
+Subject: Re: [PATCH] gfs2: remove trailing semicolon in macro definition
+To:     trix@redhat.com
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        cluster-devel <cluster-devel@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 2:16 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > On 11/24/20 12:14 PM, Arnd Bergmann wrote:
-> >
-> > There are still PS3-Linux users out there.  They use 'Homebrew' firmware
-> > released through 'Hacker' forums that allow them to run Linux on
-> > non-supported systems.  They are generally hobbies who don't post to
-> > Linux kernel mailing lists.  I get direct inquiries regularly asking
-> > about how to update to a recent kernel.  One of the things that attract
-> > them to the PS3 is the Cell processor and either using or programming
-> > the SPUs.
-> >
-> > It is difficult to judge how much use the SPU core dump support gets,
-> > but if it is not a cause of major problems I feel we should consider
-> > keeping it.
+On Fri, Nov 27, 2020 at 8:12 PM <trix@redhat.com> wrote:
+> From: Tom Rix <trix@redhat.com>
 >
-> I just took a quick look to get a sense how much tool support there is.
+> The macro use will already have a semicolon.
 >
-> In the gdb tree I found this 2019 commit abf516c6931a ("Remove Cell
-> Broadband Engine debugging support").  Which basically removes the code
-> in gdb that made sense of the spu coredumps.
-
-Ah, I had not realized this was gone already. The code in gdb for
-seamlessly debugging programs across CPU and SPU was clearly
-more complex than the kernel portion for the coredump, so it makes
-sense this was removed eventually.
-
-> I would not say the coredump support is a source major problems, but it
-> is a challenge to understand.  One of the pieces of code in there that
-> is necessary to make the coredump support work reliable, a call to
-> unshare_files, Oleg whole essentially maintains the ptrace and coredump
-> support did not know why it was there, and it was not at all obvious
-> when I looked at the code.
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  fs/gfs2/util.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> So we are certainly in maintainers loosing hours of time figuring out
-> what is going on and spending time fixing fuzzer bugs related to the
-> code.
-
-I also spent some amount of time on this code earlier this year Christoph
-did some refactoring, and we could both have used that time better.
-
-> At the minimum I will add a few more comments so people reading the code
-> can realize why it is there.   Perhaps putting the relevant code behind
-> a Kconfig so it is only built into the kernel when spufs is present.
+> diff --git a/fs/gfs2/util.h b/fs/gfs2/util.h
+> index d7562981b3a0..493020393ceb 100644
+> --- a/fs/gfs2/util.h
+> +++ b/fs/gfs2/util.h
+> @@ -162,7 +162,7 @@ void gfs2_io_error_bh_i(struct gfs2_sbd *sdp, struct buffer_head *bh,
+>  gfs2_io_error_bh_i((sdp), (bh), __func__, __FILE__, __LINE__, true);
 >
-> I think we are at a point we we can start planning on removing the
-> coredump support.  The tools to read it are going away.  None of what is
-> there is bad, but it is definitely a special case, and it definitely has
-> a maintenance cost.
+>  #define gfs2_io_error_bh(sdp, bh) \
+> -gfs2_io_error_bh_i((sdp), (bh), __func__, __FILE__, __LINE__, false);
+> +gfs2_io_error_bh_i((sdp), (bh), __func__, __FILE__, __LINE__, false)
+>
+>
+>  extern struct kmem_cache *gfs2_glock_cachep;
+> --
+> 2.18.4
 
-How about adding a comment in the coredump code so it can get
-removed the next time someone comes across it during refactoring,
-or when they find a bug that can't easily be worked around?
+Yeah okay, there are two more instances of exactly the same pattern
+further below in the same header file. I'm adding fixes for those as
+well.
 
-That way there is still a chance of using it where needed, but
-hopefully it won't waste anyone's time when it gets in the way.
+Thanks,
+Andreas
 
-If there are no objections, I can also send a patch to remove
-CONFIG_PPC_CELL_NATIVE, PPC_IBM_CELL_BLADE and
-everything that depends on those symbols, leaving only the
-bits needed by ps3 in the arch/powerpc/platforms/cell directory.
-
-      Arnd
