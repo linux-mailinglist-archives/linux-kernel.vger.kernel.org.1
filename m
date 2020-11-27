@@ -2,96 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05872C6C35
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0B02C6C29
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730860AbgK0Tyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 14:54:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58956 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730326AbgK0Tt7 (ORCPT
+        id S1730286AbgK0TuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 14:50:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730145AbgK0Trs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:49:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606506552;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=9qJpD7PFdKgMu/xcOXN6q7idq5UlxcE8KGC0MQOhIgM=;
-        b=SVfRrTvl+6ngJZixTRJZdYyfmhlK14JbxvmwkRM7NzRX5RSkZW8Cyg//7TYVzta/OLM3XG
-        Ba1JM6wwFb8TtJIiGQTN46926TMJw69Tgcsmwh8QO2ouqBnu81Q+E2yP8fswIrOFELZAUE
-        cZCH/NQ32+98ut1AK6E8yhVglZb/XFI=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-74-X2ZdtNGuO1CDbDmM2ayIow-1; Fri, 27 Nov 2020 14:27:42 -0500
-X-MC-Unique: X2ZdtNGuO1CDbDmM2ayIow-1
-Received: by mail-qv1-f72.google.com with SMTP id i2so2355487qvb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:27:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=9qJpD7PFdKgMu/xcOXN6q7idq5UlxcE8KGC0MQOhIgM=;
-        b=jnCZn3B1/m47s8CZmALZP6eWotnUYYD9VdPhuDrpsibQolJlWaMxjbvWe8NGehWU0o
-         /R5xr5n3DirHEXs8eUOtAp40iMYG2GPewFNN16bK/PVnmuiocsSqTHP5EQXGGXhInS+E
-         1FjlwLAkyLcOIIr7X5WNPbPhsZ/nEFjlQYVF7AOpeTybudl6G63TpElaITAOzft1ARPy
-         Mtj7u82MTk5JXZLa61sxx3+2j4klxkD2gQm109RZGoPCVVUUXBD4Z2JQij95giad48Us
-         zDs1pG4vakrbNmOZSKFT0Y70k428T2ZX8+idBdKuSFCGofCza6uzovvP8x893WwD7Za0
-         42Ww==
-X-Gm-Message-State: AOAM530XyIezMJHx92rPCqpxTpuF6nzh7leg6ow6XBren1Pa11bPN+W0
-        VVGwuZ1RAYFXDUt2Ad8SvKO0sjRISeFGJ2B8+LrQhildJ5bP8N+sRGfjLrFVLGre23/FrRUiiQn
-        JfxSLX+JrObENPXBYcQ/g5oEu
-X-Received: by 2002:ad4:5544:: with SMTP id v4mr9383598qvy.43.1606505261712;
-        Fri, 27 Nov 2020 11:27:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxuNWhcU9Ar3O10Wn0TX41HHp7RN7H86NAdJD2PtPOP28EoXt8oYhhMF7eDA1G5lCwZpeGCiA==
-X-Received: by 2002:ad4:5544:: with SMTP id v4mr9383569qvy.43.1606505261511;
-        Fri, 27 Nov 2020 11:27:41 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id w54sm7395471qtb.0.2020.11.27.11.27.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 11:27:40 -0800 (PST)
-From:   trix@redhat.com
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        rostedt@goodmis.org, mingo@redhat.com, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] bpf: remove trailing semicolon in macro definition
-Date:   Fri, 27 Nov 2020 11:27:34 -0800
-Message-Id: <20201127192734.2865832-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.4
+        Fri, 27 Nov 2020 14:47:48 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB6CC061A49;
+        Fri, 27 Nov 2020 11:33:06 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 6B9A01F465A0
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org
+Cc:     gofmanp@gmail.com, christian.brauner@ubuntu.com,
+        peterz@infradead.org, willy@infradead.org, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, x86@kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH v8 6/7] selftests: Add benchmark for syscall user dispatch
+Date:   Fri, 27 Nov 2020 14:32:37 -0500
+Message-Id: <20201127193238.821364-7-krisman@collabora.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201127193238.821364-1-krisman@collabora.com>
+References: <20201127193238.821364-1-krisman@collabora.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+This is the patch I'm using to evaluate the impact syscall user dispatch
+has on native syscall (syscalls not redirected to userspace) when
+enabled for the process and submiting syscalls though the unblocked
+dispatch selector. It works by running a step to define a baseline of
+the cost of executing sysinfo, then enabling SUD, and rerunning that
+step.
 
-The macro use will already have a semicolon.
+On my test machine, an AMD Ryzen 5 1500X, I have the following results
+with the latest version of syscall user dispatch patches.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
+root@olga:~# syscall_user_dispatch/sud_benchmark
+  Calibrating test set to last ~5 seconds...
+  test iterations = 37500000
+  Avg syscall time 134ns.
+  Caught sys_ff00
+  trapped_call_count 1, native_call_count 0.
+  Avg syscall time 147ns.
+  Interception overhead: 9.7% (+13ns).
+
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/trace/events/xdp.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../selftests/syscall_user_dispatch/Makefile  |   2 +-
+ .../syscall_user_dispatch/sud_benchmark.c     | 200 ++++++++++++++++++
+ 2 files changed, 201 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
 
-diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-index cd24e8a59529..65ffedf8386f 100644
---- a/include/trace/events/xdp.h
-+++ b/include/trace/events/xdp.h
-@@ -146,13 +146,13 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
- );
+diff --git a/tools/testing/selftests/syscall_user_dispatch/Makefile b/tools/testing/selftests/syscall_user_dispatch/Makefile
+index 8e15fa42bcda..03c120270953 100644
+--- a/tools/testing/selftests/syscall_user_dispatch/Makefile
++++ b/tools/testing/selftests/syscall_user_dispatch/Makefile
+@@ -5,5 +5,5 @@ LINUX_HDR_PATH = $(INSTALL_HDR_PATH)/include/
  
- #define _trace_xdp_redirect(dev, xdp, to)		\
--	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to);
-+	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to)
+ CFLAGS += -Wall -I$(LINUX_HDR_PATH)
  
- #define _trace_xdp_redirect_err(dev, xdp, to, err)	\
- 	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to);
- 
- #define _trace_xdp_redirect_map(dev, xdp, to, map, index)		\
--	 trace_xdp_redirect(dev, xdp, to, 0, map, index);
-+	 trace_xdp_redirect(dev, xdp, to, 0, map, index)
- 
- #define _trace_xdp_redirect_map_err(dev, xdp, to, map, index, err)	\
- 	 trace_xdp_redirect_err(dev, xdp, to, err, map, index);
+-TEST_GEN_PROGS := sud_test
++TEST_GEN_PROGS := sud_test sud_benchmark
+ include ../lib.mk
+diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c b/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
+new file mode 100644
+index 000000000000..6689f1183dbf
+--- /dev/null
++++ b/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
+@@ -0,0 +1,200 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2020 Collabora Ltd.
++ *
++ * Benchmark and test syscall user dispatch
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <signal.h>
++#include <errno.h>
++#include <time.h>
++#include <sys/time.h>
++#include <unistd.h>
++#include <sys/sysinfo.h>
++#include <sys/prctl.h>
++#include <sys/syscall.h>
++
++#ifndef PR_SET_SYSCALL_USER_DISPATCH
++# define PR_SET_SYSCALL_USER_DISPATCH	59
++# define PR_SYS_DISPATCH_OFF	0
++# define PR_SYS_DISPATCH_ON	1
++#endif
++
++#ifdef __NR_syscalls
++# define MAGIC_SYSCALL_1 (__NR_syscalls + 1) /* Bad Linux syscall number */
++#else
++# define MAGIC_SYSCALL_1 (0xff00)  /* Bad Linux syscall number */
++#endif
++
++/*
++ * To test returning from a sigsys with selector blocked, the test
++ * requires some per-architecture support (i.e. knowledge about the
++ * signal trampoline address).  On i386, we know it is on the vdso, and
++ * a small trampoline is open-coded for x86_64.  Other architectures
++ * that have a trampoline in the vdso will support TEST_BLOCKED_RETURN
++ * out of the box, but don't enable them until they support syscall user
++ * dispatch.
++ */
++#if defined(__x86_64__) || defined(__i386__)
++#define TEST_BLOCKED_RETURN
++#endif
++
++#ifdef __x86_64__
++void* (syscall_dispatcher_start)(void);
++void* (syscall_dispatcher_end)(void);
++#else
++unsigned long syscall_dispatcher_start = 0;
++unsigned long syscall_dispatcher_end = 0;
++#endif
++
++unsigned long trapped_call_count = 0;
++unsigned long native_call_count = 0;
++
++char selector;
++#define SYSCALL_BLOCK   (selector = PR_SYS_DISPATCH_ON)
++#define SYSCALL_UNBLOCK (selector = PR_SYS_DISPATCH_OFF)
++
++#define CALIBRATION_STEP 100000
++#define CALIBRATE_TO_SECS 5
++int factor;
++
++static double one_sysinfo_step(void)
++{
++	struct timespec t1, t2;
++	int i;
++	struct sysinfo info;
++
++	clock_gettime(CLOCK_MONOTONIC, &t1);
++	for (i = 0; i < CALIBRATION_STEP; i++)
++		sysinfo(&info);
++	clock_gettime(CLOCK_MONOTONIC, &t2);
++	return (t2.tv_sec - t1.tv_sec) + 1.0e-9 * (t2.tv_nsec - t1.tv_nsec);
++}
++
++static void calibrate_set(void)
++{
++	double elapsed = 0;
++
++	printf("Calibrating test set to last ~%d seconds...\n", CALIBRATE_TO_SECS);
++
++	while (elapsed < 1) {
++		elapsed += one_sysinfo_step();
++		factor += CALIBRATE_TO_SECS;
++	}
++
++	printf("test iterations = %d\n", CALIBRATION_STEP * factor);
++}
++
++static double perf_syscall(void)
++{
++	unsigned int i;
++	double partial = 0;
++
++	for (i = 0; i < factor; ++i)
++		partial += one_sysinfo_step()/(CALIBRATION_STEP*factor);
++	return partial;
++}
++
++static void handle_sigsys(int sig, siginfo_t *info, void *ucontext)
++{
++	char buf[1024];
++	int len;
++
++	SYSCALL_UNBLOCK;
++
++	/* printf and friends are not signal-safe. */
++	len = snprintf(buf, 1024, "Caught sys_%x\n", info->si_syscall);
++	write(1, buf, len);
++
++	if (info->si_syscall == MAGIC_SYSCALL_1)
++		trapped_call_count++;
++	else
++		native_call_count++;
++
++#ifdef TEST_BLOCKED_RETURN
++	SYSCALL_BLOCK;
++#endif
++
++#ifdef __x86_64__
++	__asm__ volatile("movq $0xf, %rax");
++	__asm__ volatile("leaveq");
++	__asm__ volatile("add $0x8, %rsp");
++	__asm__ volatile("syscall_dispatcher_start:");
++	__asm__ volatile("syscall");
++	__asm__ volatile("nop"); /* Landing pad within dispatcher area */
++	__asm__ volatile("syscall_dispatcher_end:");
++#endif
++
++}
++
++int main(void)
++{
++	struct sigaction act;
++	double time1, time2;
++	int ret;
++	sigset_t mask;
++
++	memset(&act, 0, sizeof(act));
++	sigemptyset(&mask);
++
++	act.sa_sigaction = handle_sigsys;
++	act.sa_flags = SA_SIGINFO;
++	act.sa_mask = mask;
++
++	calibrate_set();
++
++	time1 = perf_syscall();
++	printf("Avg syscall time %.0lfns.\n", time1 * 1.0e9);
++
++	ret = sigaction(SIGSYS, &act, NULL);
++	if (ret) {
++		perror("Error sigaction:");
++		exit(-1);
++	}
++
++	fprintf(stderr, "Enabling syscall trapping.\n");
++
++	if (prctl(PR_SET_SYSCALL_USER_DISPATCH, PR_SYS_DISPATCH_ON,
++		  syscall_dispatcher_start,
++		  (syscall_dispatcher_end - syscall_dispatcher_start + 1),
++		  &selector)) {
++		perror("prctl failed\n");
++		exit(-1);
++	}
++
++	SYSCALL_BLOCK;
++	syscall(MAGIC_SYSCALL_1);
++
++#ifdef TEST_BLOCKED_RETURN
++	if (selector == PR_SYS_DISPATCH_OFF) {
++		fprintf(stderr, "Failed to return with selector blocked.\n");
++		exit(-1);
++	}
++#endif
++
++	SYSCALL_UNBLOCK;
++
++	if (!trapped_call_count) {
++		fprintf(stderr, "syscall trapping does not work.\n");
++		exit(-1);
++	}
++
++	time2 = perf_syscall();
++
++	if (native_call_count) {
++		perror("syscall trapping intercepted more syscalls than expected\n");
++		exit(-1);
++	}
++
++	printf("trapped_call_count %lu, native_call_count %lu.\n",
++	       trapped_call_count, native_call_count);
++	printf("Avg syscall time %.0lfns.\n", time2 * 1.0e9);
++	printf("Interception overhead: %.1lf%% (+%.0lfns).\n",
++	       100.0 * (time2 / time1 - 1.0), 1.0e9 * (time2 - time1));
++	return 0;
++
++}
 -- 
-2.18.4
+2.29.2
 
