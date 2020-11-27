@@ -2,150 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC132C6AC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CFB2C6ACA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732094AbgK0RoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:44:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38496 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726889AbgK0RoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:44:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 30D0CAC55;
-        Fri, 27 Nov 2020 17:44:19 +0000 (UTC)
-Subject: Re: [PATCH v3] mm/shmem.c: make shmem_mapping() inline
-To:     Hui Su <sh_def@163.com>, hughd@google.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20201115165207.GA265355@rlk>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <89b2b0f5-a502-bd56-0234-bfcd72ef8765@suse.cz>
-Date:   Fri, 27 Nov 2020 18:44:18 +0100
+        id S1732377AbgK0RpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:45:19 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32626 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731398AbgK0RpS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 12:45:18 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ARHVYU2036883;
+        Fri, 27 Nov 2020 12:45:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=3/ZVldWlmUIuJREyB1FkD2ej4pD6YkF1Luk5Fj3d0No=;
+ b=M0vCfNC9KgfdSs1xC3Mgxm/SWoqau3dkh8ZGE8VwnmR1Dp4bI7DeBfG3pYjagcmI/k+F
+ oPCqzykzpBXCCxKJEayMO/U6HOMAtqdd3onhY9jbYjVazZ2RxrJrbgn9wphrNMB1D2VQ
+ 6bRuK0/12tIO7BxgI9FVew/lw2GQ0xaFvI7j8La7Sbs85ouh0pqRRZoPs4TTOJeOR7To
+ I8+CBXehbGzkw9zTa4ZbDxZ4F/9kmy0AU33oIe4w9s9aASwrB1FmpobQfZ6PDthwpbbQ
+ x7O57oqTervzxQlbync8rpokPscTHr6AJdwh93/i/KDHMWWZTaa2wTO4y3ynzXOKve7r vg== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3535utgbjw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 12:45:05 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ARHhD6k027669;
+        Fri, 27 Nov 2020 17:45:05 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma02dal.us.ibm.com with ESMTP id 34xthav05c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 17:45:05 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ARHisCM28508526
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Nov 2020 17:44:54 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F2DDC605B;
+        Fri, 27 Nov 2020 17:45:03 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EF892C6057;
+        Fri, 27 Nov 2020 17:45:02 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.163.79.105])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 27 Nov 2020 17:45:02 +0000 (GMT)
+Subject: Re: [PATCH 01/13] ibmvfc: add vhost fields and defaults for MQ
+ enablement
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201126014824.123831-1-tyreld@linux.ibm.com>
+ <20201126014824.123831-2-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <97e577a0-50f5-3ade-a377-7479f0f1c890@linux.vnet.ibm.com>
+Date:   Fri, 27 Nov 2020 11:45:02 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201115165207.GA265355@rlk>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201126014824.123831-2-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-27_10:2020-11-26,2020-11-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 phishscore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 mlxlogscore=999
+ mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011270099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/20 5:52 PM, Hui Su wrote:
-> shmem_mapping() isn't worth an out-of-line call
-> from any callsite.
-> 
-> So make it inline by
-> - make shmem_aops global
-> - export shmem_aops
-> - inline the shmem_mapping()
-> 
-> and replace the direct call 'shmem_aops' with shmem_mapping()
-> in shmem.c.
-> 
-> v1->v2:
-> remove the inline for func declaration in shmem_fs.h
-> 
-> v2->v3:
-> make shmem_aops global, and export it to modules.
-> 
-> Signed-off-by: Hui Su <sh_def@163.com>
+On 11/25/20 7:48 PM, Tyrel Datwyler wrote:
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.h b/drivers/scsi/ibmvscsi/ibmvfc.h
+> index 9d58cfd774d3..8225bdbb127e 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.h
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.h
+> @@ -41,6 +41,11 @@
+>  #define IBMVFC_DEFAULT_LOG_LEVEL	2
+>  #define IBMVFC_MAX_CDB_LEN		16
+>  #define IBMVFC_CLS3_ERROR		0
+> +#define IBMVFC_MQ			0
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Given that IBMVFC_MQ is getting set to 0 here, that means mq_enabled is also
+always zero, so am I correct that a lot of this code being added is not
+yet capable of being executed?
 
-> ---
->   include/linux/shmem_fs.h |  6 +++++-
->   mm/shmem.c               | 16 ++++++----------
->   2 files changed, 11 insertions(+), 11 deletions(-)
+> +#define IBMVFC_SCSI_CHANNELS		0
+
+Similar comment here...
+
+> +#define IBMVFC_SCSI_HW_QUEUES		1
+
+I don't see any subsequent patches in this series that would ever result
+in nr_hw_queues getting set to anything other than 1. Is that future work
+planned or am I missing something?
+
+> +#define IBMVFC_MIG_NO_SUB_TO_CRQ	0
+> +#define IBMVFC_MIG_NO_N_TO_M		0
+>  
+>  /*
+>   * Ensure we have resources for ERP and initialization:
+> @@ -826,6 +831,10 @@ struct ibmvfc_host {
+>  	int delay_init;
+>  	int scan_complete;
+>  	int logged_in;
+> +	int mq_enabled;
+> +	int using_channels;
+> +	int do_enquiry;
+> +	int client_scsi_channels;
+>  	int aborting_passthru;
+>  	int events_to_log;
+>  #define IBMVFC_AE_LINKUP	0x0001
 > 
-> diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
-> index a5a5d1d4d7b1..d82b6f396588 100644
-> --- a/include/linux/shmem_fs.h
-> +++ b/include/linux/shmem_fs.h
-> @@ -67,7 +67,11 @@ extern unsigned long shmem_get_unmapped_area(struct file *, unsigned long addr,
->   		unsigned long len, unsigned long pgoff, unsigned long flags);
->   extern int shmem_lock(struct file *file, int lock, struct user_struct *user);
->   #ifdef CONFIG_SHMEM
-> -extern bool shmem_mapping(struct address_space *mapping);
-> +extern const struct address_space_operations shmem_aops;
-> +static inline bool shmem_mapping(struct address_space *mapping)
-> +{
-> +	return mapping->a_ops == &shmem_aops;
-> +}
->   #else
->   static inline bool shmem_mapping(struct address_space *mapping)
->   {
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 537c137698f8..b7361fce50bc 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -246,7 +246,7 @@ static inline void shmem_inode_unacct_blocks(struct inode *inode, long pages)
->   }
->   
->   static const struct super_operations shmem_ops;
-> -static const struct address_space_operations shmem_aops;
-> +const struct address_space_operations shmem_aops;
->   static const struct file_operations shmem_file_operations;
->   static const struct inode_operations shmem_inode_operations;
->   static const struct inode_operations shmem_dir_inode_operations;
-> @@ -1152,7 +1152,7 @@ static void shmem_evict_inode(struct inode *inode)
->   	struct shmem_inode_info *info = SHMEM_I(inode);
->   	struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
->   
-> -	if (inode->i_mapping->a_ops == &shmem_aops) {
-> +	if (shmem_mapping(inode->i_mapping)) {
->   		shmem_unacct_size(info->flags, inode->i_size);
->   		inode->i_size = 0;
->   		shmem_truncate_range(inode, 0, (loff_t)-1);
-> @@ -1858,7 +1858,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->   	}
->   
->   	/* shmem_symlink() */
-> -	if (mapping->a_ops != &shmem_aops)
-> +	if (!shmem_mapping(mapping))
->   		goto alloc_nohuge;
->   	if (shmem_huge == SHMEM_HUGE_DENY || sgp_huge == SGP_NOHUGE)
->   		goto alloc_nohuge;
-> @@ -2352,11 +2352,6 @@ static struct inode *shmem_get_inode(struct super_block *sb, const struct inode
->   	return inode;
->   }
->   
-> -bool shmem_mapping(struct address_space *mapping)
-> -{
-> -	return mapping->a_ops == &shmem_aops;
-> -}
-> -
->   static int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
->   				  pmd_t *dst_pmd,
->   				  struct vm_area_struct *dst_vma,
-> @@ -3865,7 +3860,7 @@ static void shmem_destroy_inodecache(void)
->   	kmem_cache_destroy(shmem_inode_cachep);
->   }
->   
-> -static const struct address_space_operations shmem_aops = {
-> +const struct address_space_operations shmem_aops = {
->   	.writepage	= shmem_writepage,
->   	.set_page_dirty	= __set_page_dirty_no_writeback,
->   #ifdef CONFIG_TMPFS
-> @@ -3877,6 +3872,7 @@ static const struct address_space_operations shmem_aops = {
->   #endif
->   	.error_remove_page = generic_error_remove_page,
->   };
-> +EXPORT_SYMBOL(shmem_aops);
->   
->   static const struct file_operations shmem_file_operations = {
->   	.mmap		= shmem_mmap,
-> @@ -4312,7 +4308,7 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
->   	struct page *page;
->   	int error;
->   
-> -	BUG_ON(mapping->a_ops != &shmem_aops);
-> +	BUG_ON(!shmem_mapping(mapping));
->   	error = shmem_getpage_gfp(inode, index, &page, SGP_CACHE,
->   				  gfp, NULL, NULL, NULL);
->   	if (error)
-> 
+
+
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
 
