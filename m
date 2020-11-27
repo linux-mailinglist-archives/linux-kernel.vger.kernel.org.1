@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD612C617F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721AD2C6181
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727952AbgK0JSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:18:55 -0500
-Received: from smtp25.cstnet.cn ([159.226.251.25]:43534 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727333AbgK0JSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:18:55 -0500
-Received: from localhost.localdomain (unknown [124.16.141.242])
-        by APP-05 (Coremail) with SMTP id zQCowADXcghnxMBfjngQAA--.27352S2;
-        Fri, 27 Nov 2020 17:18:31 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
-        sam@ravnborg.org, bogdan.togorean@analog.com,
-        laurentiu.palcu@nxp.com
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: bridge: adv7511: Remove redundant null check before clk_disable_unprepare
-Date:   Fri, 27 Nov 2020 09:18:29 +0000
-Message-Id: <20201127091829.50695-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowADXcghnxMBfjngQAA--.27352S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ur4ruw15WFy7GFykCw4fAFb_yoW8GF4xpw
-        47uFZIkry8XrZFga1DAF45ta4Y9a1Uta4rZFZI9wnF9wsruFy0qFWDAw18ZFy7JFW8C347
-        tr1UKrykWF1ayaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7MxkIecxEwVAFwVW8uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07jztCwUUUUU=
-X-Originating-IP: [124.16.141.242]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgkNA10Tey1--QAAsb
+        id S1728014AbgK0JTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:19:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbgK0JTH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:19:07 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8400FC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:19:07 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id u12so4827126wrt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:19:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=A26ZMmYnqkQXeQq0wV1chPfAYo0PqBfot7Ttx2A33j0=;
+        b=PJ5t0QkEUJ6HGtDPjdNn6QEUcJKqNE1o/s0FcKd6DRVzCfLUZCaZlrwZP5UJp6No3g
+         zyk/3ySomDjKyXMbfAsPykWcIm+BJweQaTAWxw33FVJvGhqcNM/3tm0qyPkv8Q9BwDtu
+         Kl9LhaA1f9QeaZ0tlYpLqsRRmnDLpXEe8f8rL8lAVTrCHFSpO8U9iTeQuQc6IKgInHDE
+         BgyvMySrV4qIZjxd6Z5Qt3nfR5oEzqBNjZTbqugiogNtXH3mEtntDwolgaPAAFAYHak4
+         owpyQrkYv+g3vpSB+eeVrrWjWt/Gd3eARpiXtgRsQXtB4EQm7lTymi1slaedDr1fKkR0
+         urEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=A26ZMmYnqkQXeQq0wV1chPfAYo0PqBfot7Ttx2A33j0=;
+        b=lYudRbuEzS6Zl687uAA4M6vU8GDPz2Y5EtcEPPylJ6+8hob0VeFTItN9Gv9Lhwc6LA
+         vnqSrfYrFYavaWASUfiih+DlEhl89dIjtxqfjFb1X4ylL/Sa5kL6Bg8o/47XomZXzFLO
+         GdGmpZxUZgK5EQWkOgXjV+h2czi8NBbfwSrAS5p1z8f8RREh5rmMtq0AYUJ1WH1+TeMf
+         wMSsEo42WNS4xDGRuH9cpeT3ls08vlX6XcPUgWck1ivkg8vAtILf8enD7aSja6PFze/P
+         nmmMyGEldyRI0yKF7v0945Ti5juekcbeqpI6bGYaZm3y87eK5hdEmW4P/ljdWTxByPRA
+         zt3A==
+X-Gm-Message-State: AOAM532G+HvELgZN+nMYDtK5YOuBMhaCSydMiSili4nELzUXkUawFI4f
+        gWtiWPojEODTMNDfU3uUDUdgfQ==
+X-Google-Smtp-Source: ABdhPJyNkVvornnZnvqN1e7jEL7pv2co1g2LAVA5Q9nUQ5XYB9S3q5i2Ix85OBANIDvIOoAzw3mnYQ==
+X-Received: by 2002:a5d:5183:: with SMTP id k3mr9544586wrv.62.1606468746292;
+        Fri, 27 Nov 2020 01:19:06 -0800 (PST)
+Received: from dell ([91.110.221.235])
+        by smtp.gmail.com with ESMTPSA id y130sm2445113wmc.22.2020.11.27.01.19.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 01:19:05 -0800 (PST)
+Date:   Fri, 27 Nov 2020 09:19:03 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com
+Subject: Re: [PATCH v3 7/8] regulator: mt6359: Add support for MT6359P
+ regulator
+Message-ID: <20201127091903.GN2455276@dell>
+References: <1606103290-15034-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1606103290-15034-8-git-send-email-hsin-hsiung.wang@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1606103290-15034-8-git-send-email-hsin-hsiung.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because clk_disable_unprepare() already checked NULL clock parameter,
-so the additional check is unnecessary, just remove them.
+On Mon, 23 Nov 2020, Hsin-Hsiung Wang wrote:
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> The MT6359P is a eco version for MT6359 regulator.
+> We add support based on MT6359 regulator driver.
+> 
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> ---
+>  drivers/regulator/mt6359-regulator.c       | 413 ++++++++++++++++++++-
+>  include/linux/mfd/mt6359p/registers.h      | 249 +++++++++++++
+>  include/linux/regulator/mt6359-regulator.h |   1 +
+>  3 files changed, 658 insertions(+), 5 deletions(-)
+>  create mode 100644 include/linux/mfd/mt6359p/registers.h
 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-index a0d392c338da..76555ae64e9c 100644
---- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-+++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-@@ -1292,8 +1292,7 @@ static int adv7511_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
- 
- err_unregister_cec:
- 	i2c_unregister_device(adv7511->i2c_cec);
--	if (adv7511->cec_clk)
--		clk_disable_unprepare(adv7511->cec_clk);
-+	clk_disable_unprepare(adv7511->cec_clk);
- err_i2c_unregister_packet:
- 	i2c_unregister_device(adv7511->i2c_packet);
- err_i2c_unregister_edid:
-@@ -1311,8 +1310,7 @@ static int adv7511_remove(struct i2c_client *i2c)
- 	if (adv7511->type == ADV7533 || adv7511->type == ADV7535)
- 		adv7533_detach_dsi(adv7511);
- 	i2c_unregister_device(adv7511->i2c_cec);
--	if (adv7511->cec_clk)
--		clk_disable_unprepare(adv7511->cec_clk);
-+	clk_disable_unprepare(adv7511->cec_clk);
- 
- 	adv7511_uninit_regulators(adv7511);
- 
+For my own reference (apply this as-is to your sign-off block):
+
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
