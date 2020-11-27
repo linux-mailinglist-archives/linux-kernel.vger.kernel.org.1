@@ -2,102 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0882C6257
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4BA2C625F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgK0J5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:57:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55382 "EHLO mail.kernel.org"
+        id S1728959AbgK0J6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:58:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725980AbgK0J5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:57:06 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725989AbgK0J6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:58:07 -0500
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFD6021D91;
-        Fri, 27 Nov 2020 09:57:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B22021D91;
+        Fri, 27 Nov 2020 09:58:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606471025;
-        bh=4GugmYkNqqz/xiT8jEHRtT/irIXf154k+PPE5BeKSBI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WfQcDybqcdPFo5DO6uLw3V+oOZX27NRtuG2/V/m0m5HRPheIQ8d3XZqoXD6MmLNZO
-         +xFMjzmE4Zl5JXo527j+3JVGwyCtvTOEzc8eNRoRRc+89hpS1289tX3F0qPwZdYxSA
-         lxPJ7X4yfwwX+bBvyPdBx/hc6NsXcApz8YwWWmu8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kiaUx-00E1aU-Is; Fri, 27 Nov 2020 09:57:03 +0000
+        s=default; t=1606471086;
+        bh=GZ4Id4NPj/0z4l0L3vDEF+7KrF0Y8aco3ppn/S+WkzI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nrujzITmO0NEf5k1oxkMxuoStmoJFWbAG/YdAhpWalkHT/uOeLZPwhdfc3ag97xUq
+         hw2bnfBO6IDMvsPPUiwkJvScGI2ke83QDGU/NcSk9lFcPNEIWAP62nK2Xokjjyo+Ef
+         KXX1DLXv9Kx74SLWRBe+dA6EPUfky8BkY2UgTZyw=
+From:   Will Deacon <will@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>, Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 1/1] iommu/vt-d: Remove set but not used variable
+Date:   Fri, 27 Nov 2020 09:58:01 +0000
+Message-Id: <160647075022.1960777.14243304052525988022.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201127013308.1833610-1-baolu.lu@linux.intel.com>
+References: <20201127013308.1833610-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 27 Nov 2020 09:57:03 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        linuxarm@huawei.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
-In-Reply-To: <696c04a9-8c13-0fec-08c4-068d4dd5ba67@huawei.com>
-References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
- <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
- <874klmqu2r.fsf@nanos.tec.linutronix.de>
- <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
- <87lfexp6am.fsf@nanos.tec.linutronix.de>
- <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
- <873615oy8a.fsf@nanos.tec.linutronix.de>
- <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
- <87sg91ik9e.wl-maz@kernel.org>
- <0edc9a11-0b92-537f-1790-6b4b6de4900d@huawei.com>
- <afd97dd4b1e102ac9ad49800821231a4@kernel.org>
- <5a314713-c1ee-2d34-bee1-60beae274742@huawei.com>
- <0525a4bcf17a355cd141632d4f3714be@kernel.org>
- <702e1729-9a4b-b16f-6a58-33172b1a3220@huawei.com>
- <5a588f5d86010602ff9a90e8f057743c@kernel.org>
- <80e0a19b-3291-1304-1a5b-0445c49efe31@huawei.com>
- <d696d314514a4bd53c85f2da73a23eed@kernel.org>
- <e96dd9b0-c3a7-f7fb-0317-2fc2107f405a@huawei.com>
- <696c04a9-8c13-0fec-08c4-068d4dd5ba67@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <34953f2d7b61f37ab1333627dc256975@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: john.garry@huawei.com, tglx@linutronix.de, gregkh@linuxfoundation.org, rafael@kernel.org, martin.petersen@oracle.com, jejb@linux.ibm.com, linuxarm@huawei.com, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-26 16:52, John Garry wrote:
-> Hi Marc,
+On Fri, 27 Nov 2020 09:33:08 +0800, Lu Baolu wrote:
+> Fixes gcc '-Wunused-but-set-variable' warning:
 > 
->>> 
->>> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/hacks
->> 
->> 
->> ok, I'll have a look
+> drivers/iommu/intel/iommu.c:5643:27: warning: variable 'last_pfn' set but not used [-Wunused-but-set-variable]
+> 5643 |  unsigned long start_pfn, last_pfn;
+>      |                           ^~~~~~~~
 > 
-> I tried that and it doesn't look to work.
-> 
-> I find that for the its_msi_prepare() call, its_dev->shared does not
-> get set, as MSI_ALLOC_FLAGS_SHARED_DEVICE is not set in info->flags.
-> 
-> If I understand the code correctly, MSI_ALLOC_FLAGS_SHARED_DEVICE is
-> supposed to be set in info->flags in platform_msi_set_desc(), but this
-> is called per-msi after its_msi_prepare(), so we don't the flags set
-> at the right time. That's how it looks to me...
+> This variable is never used, so remove it.
 
-Meh. I was trying multiple things, and of course commited the worse
-possible approach.
+Applied to arm64 (for-next/iommu/vt-d), thanks!
 
-I've updated the branch, having verified that we do get the flag in
-the ITS now.
+[1/1] iommu/vt-d: Remove set but not used variable
+      https://git.kernel.org/arm64/c/405a43cc0047
 
-Thanks,
-
-         M.
+Cheers,
 -- 
-Jazz is not dead. It just smells funny...
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
