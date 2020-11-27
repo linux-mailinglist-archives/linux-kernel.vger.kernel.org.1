@@ -2,135 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2B92C6E27
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 303D42C6E24
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730484AbgK1BYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 20:24:19 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:57378 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731210AbgK0UA5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 15:00:57 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kijZN-0004ws-Tl; Fri, 27 Nov 2020 19:38:13 +0000
-Subject: Re: ACK: [PATCH 1/1] efi/efi_test: read RuntimeServicesSupported
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Ivan Hu <ivan.hu@canonical.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        fwts-devel@lists.ubuntu.com
-References: <20201127192051.1430-1-xypron.glpk@gmx.de>
- <98faddb2-5acc-c228-d002-71341d1c558e@canonical.com>
- <CAMj1kXFNtCJEvbhZpO9p96UNGuo-r2dXQPm0TRjmQuF4TLBUcg@mail.gmail.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <8d4133d9-3d4b-ee3c-7bb0-927c14d37961@canonical.com>
-Date:   Fri, 27 Nov 2020 19:38:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1729460AbgK0UBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 15:01:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730653AbgK0T5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 14:57:09 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D9F9208B3;
+        Fri, 27 Nov 2020 19:56:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606507008;
+        bh=hD40k2v78JS8MUejTYj7Rnup4W4KIqn/L63Q/BBpWx0=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=bppiD1tl2IfBfd/S0pS5kJoI93oBhxGkdXrQ/F4bUT0hr5RkAqGvm52w3yYnlzMVQ
+         u/PqofDiI2tV0gN2fSoYn2RgEFEqXsqWrgorEakjRjhld+mr5LLjyyV7PIRrrdPZKC
+         JnH3U8NAVSA34TzND4TC0oT48JAF5Q9NdqypK3OE=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXFNtCJEvbhZpO9p96UNGuo-r2dXQPm0TRjmQuF4TLBUcg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201127090551.50254-1-vulab@iscas.ac.cn>
+References: <20201127090551.50254-1-vulab@iscas.ac.cn>
+Subject: Re: [PATCH] clk: rockchip: Remove redundant null check before clk_prepare_enable
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+To:     Xu Wang <vulab@iscas.ac.cn>, heiko@sntech.de,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, mturquette@baylibre.com
+Date:   Fri, 27 Nov 2020 11:56:47 -0800
+Message-ID: <160650700726.2717324.52988673805116278@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2020 19:29, Ard Biesheuvel wrote:
-> On Fri, 27 Nov 2020 at 20:28, Colin Ian King <colin.king@canonical.com> wrote:
->>
->> On 27/11/2020 19:20, Heinrich Schuchardt wrote:
->>> Since the UEFI 2.8A specification the UEFI enabled firmware provides a
->>> configuration table EFI_RT_PROPERTIES_TABLE which indicates which runtime
->>> services are enabled. The EFI stub reads this table and saves the value of
->>> the field RuntimeServicesSupported internally.
->>>
->>> The Firmware Test Suite requires the value to determine if UEFI runtime
->>> services are correctly implemented.
->>>
->>> With this patch an IOCTL call is provided to read the value of the field
->>> RuntimeServicesSupported, e.g.
->>>
->>>     #define EFI_RUNTIME_GET_SUPPORTED_MASK \
->>>             _IOR('p', 0x0C, unsigned int)
->>>     unsigned int mask;
->>>     fd = open("/dev/efi_test", O_RDWR);
->>>     ret = ioctl(fd, EFI_RUNTIME_GET_SUPPORTED_MASK, &mask);
->>>
->>> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
->>> ---
->>>  drivers/firmware/efi/test/efi_test.c | 16 ++++++++++++++++
->>>  drivers/firmware/efi/test/efi_test.h |  3 +++
->>>  2 files changed, 19 insertions(+)
->>>
->>> diff --git a/drivers/firmware/efi/test/efi_test.c b/drivers/firmware/efi/test/efi_test.c
->>> index ddf9eae396fe..47d67bb0a516 100644
->>> --- a/drivers/firmware/efi/test/efi_test.c
->>> +++ b/drivers/firmware/efi/test/efi_test.c
->>> @@ -663,6 +663,19 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
->>>       return rv;
->>>  }
->>>
->>> +static long efi_runtime_get_supported_mask(unsigned long arg)
->>> +{
->>> +     unsigned int __user *supported_mask;
->>> +     int rv = 0;
->>> +
->>> +     supported_mask = (unsigned int *)arg;
->>> +
->>> +     if (put_user(efi.runtime_supported_mask, supported_mask))
->>> +             rv = -EFAULT;
->>> +
->>> +     return rv;
->>> +}
->>> +
->>>  static long efi_test_ioctl(struct file *file, unsigned int cmd,
->>>                                                       unsigned long arg)
->>>  {
->>> @@ -699,6 +712,9 @@ static long efi_test_ioctl(struct file *file, unsigned int cmd,
->>>
->>>       case EFI_RUNTIME_RESET_SYSTEM:
->>>               return efi_runtime_reset_system(arg);
->>> +
->>> +     case EFI_RUNTIME_GET_SUPPORTED_MASK:
->>> +             return efi_runtime_get_supported_mask(arg);
->>>       }
->>>
->>>       return -ENOTTY;
->>> diff --git a/drivers/firmware/efi/test/efi_test.h b/drivers/firmware/efi/test/efi_test.h
->>> index f2446aa1c2e3..117349e57993 100644
->>> --- a/drivers/firmware/efi/test/efi_test.h
->>> +++ b/drivers/firmware/efi/test/efi_test.h
->>> @@ -118,4 +118,7 @@ struct efi_resetsystem {
->>>  #define EFI_RUNTIME_RESET_SYSTEM \
->>>       _IOW('p', 0x0B, struct efi_resetsystem)
->>>
->>> +#define EFI_RUNTIME_GET_SUPPORTED_MASK \
->>> +     _IOR('p', 0x0C, unsigned int)
->>> +
->>>  #endif /* _DRIVERS_FIRMWARE_EFI_TEST_H_ */
->>> --
->>> 2.29.2
->>>
->>
->> Looks good to me. Thanks Heinrich.
->>
->> The EFI driver needs to be also updated in the linux kernel - has that
->> fix been submitted or do you require the fwts team to do that?
+Quoting Xu Wang (2020-11-27 01:05:51)
+> Because clk_prepare_enable() already checked NULL clock parameter,
+> so the additional check is unnecessary, just remove it.
+>=20
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
 
-Oops. It's been a lot week :-(
-
->>
-> 
-> This /is/ the EFI driver.
-> 
-> I'll take this as an acked-by but I'd like Ivan to chime in as well.
-> 
-+1
-
-
+Acked-by: Stephen Boyd <sboyd@kernel.org>
