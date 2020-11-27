@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F9C2C5FDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06992C5FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392491AbgK0FoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 00:44:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392483AbgK0FoD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 00:44:03 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC3DC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 21:44:03 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id 131so3522025pfb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 21:44:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KyoyRLPn2VjW1Dn9Oeq2by/YppU7fBj9WgqM013nTDw=;
-        b=Ou4jr2bEeRSTpMTJBhUwfI/D+zwC/BtTPRXJvZBdHkyC3Ajgi7n8ylcHE2JLNRdyKg
-         Xn5zuu1v0ZHl96Ge3qGWvQSapyTANg85kxSahJMc6aZXbxGH0EhYKVDxMerOtG95qx43
-         xNBQXFXv39ILJSykauCr48fwbhZpEpjotI6PjGNfOa9I1ZiP+AdhpXaijQT4EMDUMG25
-         40ZJjTxXqdCot34fMFBpWCJSqtF81i1g8dBfhYsKvH6N6dJl3rLtRbTgfcc+n6xcRnPz
-         +zttToeBiVaMXkU8rUJZHOYP8yP1r03LNA2//9BTAJLWL0zMJ8dVjNAZfVHXsx6reO/V
-         VgvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=KyoyRLPn2VjW1Dn9Oeq2by/YppU7fBj9WgqM013nTDw=;
-        b=Uw05LHrhrH/LqTofTlW4faJIahina6QHArzxvQJoq+3sOMbwWW7zYgC/N/TCxLN4j3
-         C8CAfhv/KAmCgkxZaa9BXC0FIghhj1YDmBqIgVj5wMU2TCm41t0gAkALOwnK0+/OfjG6
-         COHlCGf+1/ljuqW37oWPXOj/2jZ5CbX6erBhw3vysZKYEGY4rYbRKRLzbYHjq/MTwHUR
-         s9kdkXleP7+1X74QQ/JDaC4ioYAzGgba/HTtLvhtZyKt4p9mXMhDA5ZOEcyQsM6pAs6x
-         s63adf4fvgzbaFgDwaTxb5ucPTVzlmtSWoZvQYW/Pqy5gXnlQ7F+LtVauqC5wvliPK2S
-         wmFA==
-X-Gm-Message-State: AOAM533eDnb+H3EYtzmqYOq/9s0JxWnIYFe8HlwzNYq8rUOikDUV3f99
-        FhHTkPpj7ASBge6x+FDpL7Y=
-X-Google-Smtp-Source: ABdhPJzChgKfyWxbRtLvE1tm9Y9seR3sLQ38id6fJ0uvdV9yzYDsfUjU4Vbi7E7JlSjJXgofCdogPw==
-X-Received: by 2002:a17:90b:fd1:: with SMTP id gd17mr7738917pjb.148.1606455842557;
-        Thu, 26 Nov 2020 21:44:02 -0800 (PST)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id w137sm4791569pfc.190.2020.11.26.21.43.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 21:44:01 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH] perf record: Synthesize cgroup events only if needed
-Date:   Fri, 27 Nov 2020 14:43:56 +0900
-Message-Id: <20201127054356.405481-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+        id S2389401AbgK0Fsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 00:48:54 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:33306 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726952AbgK0Fsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 00:48:53 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kiWce-0000YS-J2; Fri, 27 Nov 2020 16:48:45 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Nov 2020 16:48:44 +1100
+Date:   Fri, 27 Nov 2020 16:48:44 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: ks-sa-rng.c:undefined reference to
+ `devm_platform_ioremap_resource'
+Message-ID: <20201127054844.GB23521@gondor.apana.org.au>
+References: <202011132311.XmkAgWg0-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202011132311.XmkAgWg0-lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It didn't check the tool->cgroup_events bit which is set when
-the --all-cgroups option is given.  Without it, samples will not have
-cgroup info so no reason to synthesize.
+On Fri, Nov 13, 2020 at 11:02:13PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+> commit: 90c4b29eb1e555fee66f8329a18cb8a070090ad6 hwrng: ks-sa - Enable COMPILE_TEST
+> date:   12 months ago
+> config: s390-randconfig-r022-20201113 (attached as .config)
+> compiler: s390-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=90c4b29eb1e555fee66f8329a18cb8a070090ad6
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 90c4b29eb1e555fee66f8329a18cb8a070090ad6
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
 
-We can check the PERF_RECORD_CGROUP records after running perf record
-*WITHOUT* the --all-cgroups option:
+>    s390-linux-ld: drivers/char/hw_random/ks-sa-rng.o: in function `ks_sa_rng_probe':
+> >> ks-sa-rng.c:(.text+0x2fa): undefined reference to `devm_platform_ioremap_resource'
 
-Before:
-  $ perf report -D | grep CGROUP
-  0 0 0x8430 [0x38]: PERF_RECORD_CGROUP cgroup: 1 /
-          CGROUP events:          1
-          CGROUP events:          0
-          CGROUP events:          0
+---8<---
+This patch adds a dependency for KEYSTONE on HAS_IOMEM and OF to
+prevent COMPILE_TEST build failures.
 
-After:
-  $ perf report -D | grep CGROUP
-          CGROUP events:          0
-          CGROUP events:          0
-          CGROUP events:          0
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Fixes: 8fb4b67939e16 ("perf record: Add --all-cgroups option")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/synthetic-events.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index 8a23391558cf..d9c624377da7 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -563,6 +563,9 @@ int perf_event__synthesize_cgroups(struct perf_tool *tool,
- 	char cgrp_root[PATH_MAX];
- 	size_t mount_len;  /* length of mount point in the path */
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index ab33a2e17cdf..9ff4fb3236f7 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -508,6 +508,7 @@ config HW_RANDOM_NPCM
  
-+	if (!tool || !tool->cgroup_events)
-+		return 0;
-+
- 	if (cgroupfs_find_mountpoint(cgrp_root, PATH_MAX, "perf_event") < 0) {
- 		pr_debug("cannot find cgroup mount point\n");
- 		return -1;
+ config HW_RANDOM_KEYSTONE
+ 	depends on ARCH_KEYSTONE || COMPILE_TEST
++	depends on HAS_IOMEM && OF
+ 	default HW_RANDOM
+ 	tristate "TI Keystone NETCP SA Hardware random number generator"
+ 	help
 -- 
-2.29.2.454.gaff20da3a2-goog
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
