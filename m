@@ -2,65 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D342C6936
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D318B2C693C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731392AbgK0QOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:14:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44438 "EHLO mail.kernel.org"
+        id S1731185AbgK0QSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:18:25 -0500
+Received: from mga09.intel.com ([134.134.136.24]:46780 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726889AbgK0QOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:14:12 -0500
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAE5222242
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 16:14:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606493652;
-        bh=Q1z+ajOqm3HB4ADX19Y79J4UyekHjRG2hxKzs5R3f0g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lW8ECdSyjdOqAg/7n0HzaPlxWHZsQat/lxnvN6LL/iJ16GWvoy6Rtn/hlJS2dVAzg
-         7NJouQiwdqG9NcmEUw7Ata1CWvBivlC+dxPCoIXgQS/QIHAL7R48+jy6X6tRepM0fg
-         drBuMgrhaXyp9SME2NW6nEPoevBVWM7wbG755fOs=
-Received: by mail-ej1-f49.google.com with SMTP id o9so8349941ejg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:14:11 -0800 (PST)
-X-Gm-Message-State: AOAM5308OazNOH8NHdL0EoJ3V1m1BtPXtvJTbMocabxpYuNvbYOoKx+U
-        o1mlBMSYewKTJmjiHw9MUIKUmGVhWWmN1p+3XZQ=
-X-Google-Smtp-Source: ABdhPJzU5L0g9Brv0yY+r1LZEDcFhx2z4zJN89QQhRHAZP09H7g0gJFJcs2IE1rl3RovnFHTm5yaW4zc0SpXv0BVQ5Q=
-X-Received: by 2002:a17:906:9588:: with SMTP id r8mr7191286ejx.148.1606493650262;
- Fri, 27 Nov 2020 08:14:10 -0800 (PST)
+        id S1730324AbgK0QSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 11:18:25 -0500
+IronPort-SDR: x0y67RIEi1s+LRD2SuyAMOuGErhkRJFSYNb6Mqt2n2cfN1QkikNt23jSK9GiU6kIjQoygCXUnt
+ dJFLUrmEqtNQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9818"; a="172567140"
+X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
+   d="scan'208";a="172567140"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2020 08:18:23 -0800
+IronPort-SDR: T/NWv4uCOBGKnlk2FygWraXekl408JsHQNbQYeOPsnFR037rmidmuwBhpKYYyBXX6kEtHakYr8
+ esiAIiCl+mpQ==
+X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
+   d="scan'208";a="548095098"
+Received: from paolonig001.ir.intel.com ([163.33.183.93])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2020 08:18:21 -0800
+From:   Gabriele Paoloni <gabriele.paoloni@intel.com>
+To:     tony.luck@intel.com, bp@alien8.de, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, hpa@zytor.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gabriele.paoloni@intel.com, linux-safety@lists.elisa.tech
+Subject: [PATCH v2 0/5] x86/MCE: some minor fixes
+Date:   Fri, 27 Nov 2020 16:18:14 +0000
+Message-Id: <20201127161819.3106432-1-gabriele.paoloni@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.1606486893.git.agx@sigxcpu.org> <9e6572819789805df2acd31a06004db788127d55.1606486893.git.agx@sigxcpu.org>
-In-Reply-To: <9e6572819789805df2acd31a06004db788127d55.1606486893.git.agx@sigxcpu.org>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Fri, 27 Nov 2020 17:13:58 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPdEwiSTg+cMes_wes5oz2F1qEexsus6iHenuLs9SAXk6g@mail.gmail.com>
-Message-ID: <CAJKOXPdEwiSTg+cMes_wes5oz2F1qEexsus6iHenuLs9SAXk6g@mail.gmail.com>
-Subject: Re: [PATCH v1 6/8] arm64: defconfig: Enable CONFIG_VCNL4000
-To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Walle <michael@walle.cc>,
-        Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 at 15:23, Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
->
-> This is the Librem 5's proximity sensor.
+During the safety analysis that was done in the context of the
+ELISA project by the safety architecture working group some
+incorrectnesses were spotted.
+This patchset proposes some fixes.
 
-Just squash all of them. Enabling option by option is too much.
+Changes since v1:
+- fixed grammar
+- improved readibility of patch1 and Cc'd for stable
+- kill_it flag renamed to kill_current_task
 
-Best regards,
-Krzysztof
+Signed-off-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+
+Gabriele Paoloni (5):
+  x86/mce: do not overwrite no_way_out if mce_end() fails
+  x86/mce: move the mce_panic() call and 'kill_it' assignments to the
+    right places
+  x86/mce: for LMCE panic only if mca_cfg.tolerant < 3
+  x86/mce: remove redundant call to irq_work_queue()
+  x86/mce: rename kill_it as kill_current_task
+
+ arch/x86/kernel/cpu/mce/core.c | 39 +++++++++++++++-------------------
+ 1 file changed, 17 insertions(+), 22 deletions(-)
+
+-- 
+2.20.1
+
+---------------------------------------------------------------------
+INTEL CORPORATION ITALIA S.p.A. con unico socio
+Sede: Milanofiori Palazzo E 4 
+CAP 20094 Assago (MI)
+Capitale Sociale Euro 104.000,00 interamente versato
+Partita I.V.A. e Codice Fiscale  04236760155
+Repertorio Economico Amministrativo n. 997124 
+Registro delle Imprese di Milano nr. 183983/5281/33
+Soggetta ad attivita' di direzione e coordinamento di 
+INTEL CORPORATION, USA
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
+
