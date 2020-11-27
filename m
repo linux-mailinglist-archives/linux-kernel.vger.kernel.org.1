@@ -2,136 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87852C6A6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F48D2C6A72
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731612AbgK0RKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:10:21 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:43272 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731169AbgK0RKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:10:20 -0500
-Received: from zn.tnic (p200300ec2f0ffb00fa2fd8ad942748bd.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:fb00:fa2f:d8ad:9427:48bd])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 456451EC042F;
-        Fri, 27 Nov 2020 18:10:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606497018;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=u6W3Ih82jfxbD+DI9YweOatwjesltCvnSeq3TqSUtnU=;
-        b=Qw32cDom4Nr5D+nAiugyMDt4WopNk82UIfnsTh5TWW1Ae4XcJ39IcPoa+GzKogo5QrQHIx
-        mhiTK2D5SSwXq/kn76nb1bJDepO55LKV+yfJo5RWlQTjDati38TpRWUk7AU1iO/ivRrs2Z
-        jO7gcT+EvHc/iDMLoOBjlIBtqbVpVmA=
-Date:   Fri, 27 Nov 2020 18:10:12 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v15 05/26] x86/cet/shstk: Add Kconfig option for
- user-mode Shadow Stack
-Message-ID: <20201127171012.GD13163@zn.tnic>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-6-yu-cheng.yu@intel.com>
+        id S1731846AbgK0RNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:13:30 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:37659 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731419AbgK0RN3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 12:13:29 -0500
+Received: by mail-qt1-f196.google.com with SMTP id l2so3677722qtq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:13:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UWR+jnNm0NV39A++0ksVikR0mdEL/dClTzGlWVyp1Ds=;
+        b=hsUB7blgTbNr0BkhavBIUMXAxT5knexeH4DwAAeTWwK1uSJT4B5UI2FJbN/osmlNvT
+         iDRSALz4jLn/vicN9IbFPpdUfaoDJH5aMR5ufhvwOXaZ/UQ6ecFL2WbU7OhHych7eO93
+         B1HM3QSrE8dPNwbLwMIS1Ux2q+op16tnMQvgTt9+B11ZH2epARq1MXirkOby4uBwj0wA
+         7dKWy7a9+S9esvQYNri2ML7AJ2dJQOZPCeqUWQ7lfudMYKwnOSK0PqLHCGZ0LSX2niht
+         7UaDtIb/b5rYc2veZ4TiC6UV0/IZ1NpJtliIBznw9rEGL5FXIPtcXkPhEnsaHApNWNer
+         Ii8Q==
+X-Gm-Message-State: AOAM530XRL0Hh5UpsAMKBO7UWRH47ydBxOE6c3XerMAwBRAO78JnAfM/
+        SnpMz+4DAPmxcz0RTndQGwjco6BekQ5DVA==
+X-Google-Smtp-Source: ABdhPJy/4lCt7cSVjFbjo1Hi5kD0Pzsc8lrliB4Fg4DVSZ3W0Y/SSOh57n3KDmv3DYBMjGopk6+43w==
+X-Received: by 2002:ac8:5653:: with SMTP id 19mr9485659qtt.136.1606497206326;
+        Fri, 27 Nov 2020 09:13:26 -0800 (PST)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id u22sm6451443qkk.51.2020.11.27.09.13.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 09:13:25 -0800 (PST)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, Pu Wen <puwen@hygon.cn>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/cpu/amd: Remove dead code for TSEG region remapping
+Date:   Fri, 27 Nov 2020 12:13:24 -0500
+Message-Id: <20201127171324.1846019-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201110162211.9207-6-yu-cheng.yu@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 08:21:50AM -0800, Yu-cheng Yu wrote:
-> +config X86_CET
-> +	def_bool n
-> +
-> +config ARCH_HAS_SHADOW_STACK
-> +	def_bool n
-> +
-> +config X86_SHADOW_STACK_USER
+Commit
+  26bfa5f89486 ("x86, amd: Cleanup init_amd")
+moved the code that remaps the TSEG region using 4k pages from
+init_amd() to bsp_init_amd().
 
-Is X86_SHADOW_STACK_KERNEL coming too?
+However, bsp_init_amd() is executed well before the direct mapping is
+actually created:
 
-Regardless, you can add it when it comes and you can use only X86_CET
-for now and drop this one and simplify this pile of Kconfig symbols.
+  setup_arch()
+    -> early_cpu_init()
+      -> early_identify_cpu()
+        -> this_cpu->c_bsp_init()
+	  -> bsp_init_amd()
+    ...
+    -> init_mem_mapping()
 
-> +	prompt "Intel Shadow Stacks for user-mode"
-> +	def_bool n
-> +	depends on CPU_SUP_INTEL && X86_64
-> +	depends on AS_HAS_SHADOW_STACK
-> +	select ARCH_USES_HIGH_VMA_FLAGS
-> +	select X86_CET
-> +	select ARCH_HAS_SHADOW_STACK
-> +	help
-> +	  Shadow Stacks provides protection against program stack
-> +	  corruption.  It's a hardware feature.  This only matters
-> +	  if you have the right hardware.  It's a security hardening
-> +	  feature and apps must be enabled to use it.  You get no
-> +	  protection "for free" on old userspace.  The hardware can
-> +	  support user and kernel, but this option is for user space
-> +	  only.
-> +	  Support for this feature is only known to be present on
-> +	  processors released in 2020 or later.  CET features are also
-> +	  known to increase kernel text size by 3.7 KB.
+So the change effectively disabled the 4k remapping, because
+pfn_range_is_mapped() is always false at this point.
 
-This help text needs some rewriting. You can find an inspiration about
-more adequate style in that same Kconfig file.
+It has been over six years since the commit, and no-one seems to have
+noticed this, so just remove the code. The original code was also
+incomplete, since it doesn't check how large the TSEG address range
+actually is, so it might remap only part of it in any case.
 
-> +
-> +	  If unsure, say N.
-> +
->  config EFI
->  	bool "EFI runtime service support"
->  	depends on ACPI
-> diff --git a/scripts/as-x86_64-has-shadow-stack.sh b/scripts/as-x86_64-has-shadow-stack.sh
-> new file mode 100755
-> index 000000000000..fac1d363a1b8
-> --- /dev/null
-> +++ b/scripts/as-x86_64-has-shadow-stack.sh
-> @@ -0,0 +1,4 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +echo "wrussq %rax, (%rbx)" | $* -x assembler -c -
+Hygon has copied the incorrect version, so the code has never run on it
+since the cpu support was added two years ago. Remove it from there as
+well.
 
-						      2> /dev/null
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+---
+ arch/x86/kernel/cpu/amd.c   | 21 ---------------------
+ arch/x86/kernel/cpu/hygon.c | 20 --------------------
+ 2 files changed, 41 deletions(-)
 
-otherwise you get
-
-{standard input}: Assembler messages:
-{standard input}:1: Error: no such instruction: `wrussq %rax,(%rbx)
-
-on non-enlightened toolchains during build.
-
-Thx.
-
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 1f71c7616917..f8ca66f3d861 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -23,7 +23,6 @@
+ 
+ #ifdef CONFIG_X86_64
+ # include <asm/mmconfig.h>
+-# include <asm/set_memory.h>
+ #endif
+ 
+ #include "cpu.h"
+@@ -509,26 +508,6 @@ static void early_init_amd_mc(struct cpuinfo_x86 *c)
+ 
+ static void bsp_init_amd(struct cpuinfo_x86 *c)
+ {
+-
+-#ifdef CONFIG_X86_64
+-	if (c->x86 >= 0xf) {
+-		unsigned long long tseg;
+-
+-		/*
+-		 * Split up direct mapping around the TSEG SMM area.
+-		 * Don't do it for gbpages because there seems very little
+-		 * benefit in doing so.
+-		 */
+-		if (!rdmsrl_safe(MSR_K8_TSEG_ADDR, &tseg)) {
+-			unsigned long pfn = tseg >> PAGE_SHIFT;
+-
+-			pr_debug("tseg: %010llx\n", tseg);
+-			if (pfn_range_is_mapped(pfn, pfn + 1))
+-				set_memory_4k((unsigned long)__va(tseg), 1);
+-		}
+-	}
+-#endif
+-
+ 	if (cpu_has(c, X86_FEATURE_CONSTANT_TSC)) {
+ 
+ 		if (c->x86 > 0x10 ||
+diff --git a/arch/x86/kernel/cpu/hygon.c b/arch/x86/kernel/cpu/hygon.c
+index dc0840aae26c..ae59115d18f9 100644
+--- a/arch/x86/kernel/cpu/hygon.c
++++ b/arch/x86/kernel/cpu/hygon.c
+@@ -14,9 +14,6 @@
+ #include <asm/cacheinfo.h>
+ #include <asm/spec-ctrl.h>
+ #include <asm/delay.h>
+-#ifdef CONFIG_X86_64
+-# include <asm/set_memory.h>
+-#endif
+ 
+ #include "cpu.h"
+ 
+@@ -203,23 +200,6 @@ static void early_init_hygon_mc(struct cpuinfo_x86 *c)
+ 
+ static void bsp_init_hygon(struct cpuinfo_x86 *c)
+ {
+-#ifdef CONFIG_X86_64
+-	unsigned long long tseg;
+-
+-	/*
+-	 * Split up direct mapping around the TSEG SMM area.
+-	 * Don't do it for gbpages because there seems very little
+-	 * benefit in doing so.
+-	 */
+-	if (!rdmsrl_safe(MSR_K8_TSEG_ADDR, &tseg)) {
+-		unsigned long pfn = tseg >> PAGE_SHIFT;
+-
+-		pr_debug("tseg: %010llx\n", tseg);
+-		if (pfn_range_is_mapped(pfn, pfn + 1))
+-			set_memory_4k((unsigned long)__va(tseg), 1);
+-	}
+-#endif
+-
+ 	if (cpu_has(c, X86_FEATURE_CONSTANT_TSC)) {
+ 		u64 val;
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.26.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
