@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735BC2C5FD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61302C5FD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389232AbgK0Fl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 00:41:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729830AbgK0Fl3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 00:41:29 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2685C0613D1;
-        Thu, 26 Nov 2020 21:41:27 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id d8so5432694lfa.1;
-        Thu, 26 Nov 2020 21:41:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=jTbdJPLCPCmKC1sQucjkCurKOKfvRNOl0rPRqRFsYFs=;
-        b=lFl6N3Dg+QQ82za+rkFQ0TN+wf6XTCAJuruvQ/rrIsW+JH+D44/zJlOW3SqcRKZIzT
-         lrRUUZPKbtB2kqYAq+AG/QGqZnD3PXXa8rUpw0vPmd3QOKe8zCEtDvYkazvF7Y4BEMAL
-         9uMKD7Um+UjqidjIlmJB1Gz24rF2LRwt89wKJlaBEOvo5X67mE2q44rxEr+e0Gzfr8P8
-         Km+FaG/xOR4VkuWgezqfjuDohMKNDO928+38/BHAOd2G36s7mO7/NdYODdGc5YzNI4qd
-         j7Mmc3ReOCJX5xWGgLsjyniTKsBTL7SfoyFF+ZZ6UJxdrXfpCVrG0BJWXM49wLTuMUWg
-         LGqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=jTbdJPLCPCmKC1sQucjkCurKOKfvRNOl0rPRqRFsYFs=;
-        b=Rseq4T825vTcZ9fY5qZbdG86OABoDRlcwN33GBHkV3qpb+jsOSus7qTEUb1G6ErWRB
-         BFGBbw9K69KnRw8BP5+gfAKRAvEhSg9ljkautRGI9q6U2oDTuM99wJt9sgJdDtQ8nTgq
-         IK7whHO7pgsJINrbZF48N6qhqoxOFB5wOnJAt2fjFnikNixLwVWarriTnn4Vm4ZBdqeG
-         AD9YaVz6y49nzS7vmjKtfF5Mb1+9dYFV4cN9lz53vz8v30+p9cm+S0InrGzTumSCh08z
-         t/JnCA80m1gTLuC1AkDlEvaAWbNAC+3f9W3JIrawXsT47QRG5z7ozBKzNSMxcKSZErTj
-         RxZg==
-X-Gm-Message-State: AOAM530jLHLYZY1zpi299V3B9hv1ojZTytrwrSGUC7xzWZh3D4V5uS1c
-        GFHLzU/tG7mwzwhDEs3Oxf6jn76lnFTlOHcKHxY=
-X-Google-Smtp-Source: ABdhPJyAeMEzfdGrvJT9b5AUNWayhzIAW5+4r+WiiKzD3LJnSTc5sziUMYp+pVfE4rkRvctYI3pCNM0lKqC81E7N614=
-X-Received: by 2002:a19:f60e:: with SMTP id x14mr2458236lfe.199.1606455686176;
- Thu, 26 Nov 2020 21:41:26 -0800 (PST)
+        id S2389366AbgK0Fln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 00:41:43 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:33280 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389241AbgK0Fln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 00:41:43 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kiWVa-0000NL-3z; Fri, 27 Nov 2020 16:41:27 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Nov 2020 16:41:26 +1100
+Date:   Fri, 27 Nov 2020 16:41:26 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     kernel test robot <lkp@intel.com>
+Cc:     "Jason A. Donenfeld" <zx2c4@kernel.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Samuel Neves <sneves@dei.uc.pt>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [PATCH] crypto: lib/blake2s - Move selftest prototype into header
+ file
+Message-ID: <20201127054125.GA23521@gondor.apana.org.au>
+References: <202011131622.l3VLezRW-lkp@intel.com>
 MIME-Version: 1.0
-Received: by 2002:a9a:999:0:b029:97:eac4:b89e with HTTP; Thu, 26 Nov 2020
- 21:41:25 -0800 (PST)
-In-Reply-To: <CAEx-X7esGyZ2QiTGbE1H7M7z1dqT47awmqrOtN+p0FbwtwfPOg@mail.gmail.com>
-References: <1606404819-30647-1-git-send-email-bongsu.jeon@samsung.com>
- <20201126170154.GA4978@kozik-lap> <CAEx-X7esGyZ2QiTGbE1H7M7z1dqT47awmqrOtN+p0FbwtwfPOg@mail.gmail.com>
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-Date:   Fri, 27 Nov 2020 14:41:25 +0900
-Message-ID: <CACwDmQA5acuCpUcjf7Q0biG9KnfK+3WGjTDbDaFpnMMMhBv9sg@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/3] nfc: s3fwrn5: use signed integer for parsing
- GPIO numbers
-To:     krzk@kernel.org
-Cc:     Krzysztof Opasiak <k.opasiak@samsung.com>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202011131622.l3VLezRW-lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/20, Bongsu Jeon <bs.jeon87@gmail.com> wrote:
-> On Fri, Nov 27, 2020 at 2:06 AM Krzysztof Kozlowski <krzk@kernel.org>
-> wrote:
->>
->> On Fri, Nov 27, 2020 at 12:33:37AM +0900, bongsu.jeon2@gmail.com wrote:
->> > From: Krzysztof Kozlowski <krzk@kernel.org>
->> >
->> > GPIOs - as returned by of_get_named_gpio() and used by the gpiolib -
->> > are
->> > signed integers, where negative number indicates error.  The return
->> > value of of_get_named_gpio() should not be assigned to an unsigned int
->> > because in case of !CONFIG_GPIOLIB such number would be a valid GPIO.
->> >
->> > Fixes: c04c674fadeb ("nfc: s3fwrn5: Add driver for Samsung S3FWRN5 NFC
->> > Chip")
->> > Cc: <stable@vger.kernel.org>
->> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->>
->> Why do you send my patch?
->>
->
-> I think that your patch should be applied before refactoring for this
-> driver.
-> So, I applied your patch to net-next branch and included your patch at
-> my patch list.
-> Is this the wrong process?
->
+On Fri, Nov 13, 2020 at 04:02:28PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+> commit: 66d7fb94e4ffe5acc589e0b2b4710aecc1f07a28 crypto: blake2s - generic C library implementation and selftest
+> date:   12 months ago
+> config: parisc-randconfig-r003-20201113 (attached as .config)
+> compiler: hppa-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=66d7fb94e4ffe5acc589e0b2b4710aecc1f07a28
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 66d7fb94e4ffe5acc589e0b2b4710aecc1f07a28
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> lib/crypto/blake2s-selftest.c:566:13: warning: no previous prototype for 'blake2s_selftest' [-Wmissing-prototypes]
+>      566 | bool __init blake2s_selftest(void)
+>          |             ^~~~~~~~~~~~~~~~
+> 
+> vim +/blake2s_selftest +566 lib/crypto/blake2s-selftest.c
+> 
+>    565	
+>  > 566	bool __init blake2s_selftest(void)
 
-Sorry to confuse you.
-I found your patch when i updated my workspace using git pull.
+---8<---
+This patch fixes a missing prototype warning on blake2s_selftest.
 
->> Best regards,
->> Krzysztof
->
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/include/crypto/internal/blake2s.h b/include/crypto/internal/blake2s.h
+index 74ff77032e52..6e376ae6b6b5 100644
+--- a/include/crypto/internal/blake2s.h
++++ b/include/crypto/internal/blake2s.h
+@@ -16,6 +16,8 @@ void blake2s_compress_generic(struct blake2s_state *state,const u8 *block,
+ void blake2s_compress_arch(struct blake2s_state *state,const u8 *block,
+ 			   size_t nblocks, const u32 inc);
+ 
++bool blake2s_selftest(void);
++
+ static inline void blake2s_set_lastblock(struct blake2s_state *state)
+ {
+ 	state->f[0] = -1;
+diff --git a/lib/crypto/blake2s.c b/lib/crypto/blake2s.c
+index 41025a30c524..6a4b6b78d630 100644
+--- a/lib/crypto/blake2s.c
++++ b/lib/crypto/blake2s.c
+@@ -17,8 +17,6 @@
+ #include <linux/bug.h>
+ #include <asm/unaligned.h>
+ 
+-bool blake2s_selftest(void);
+-
+ void blake2s_update(struct blake2s_state *state, const u8 *in, size_t inlen)
+ {
+ 	const size_t fill = BLAKE2S_BLOCK_SIZE - state->buflen;
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
