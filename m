@@ -2,116 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE872C65E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D9F2C65E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729637AbgK0Mps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:45:48 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:54913 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgK0Mpr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:45:47 -0500
-Received: from [192.168.1.155] ([95.114.158.11]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MPp0l-1kWAmh23Dn-00Mw0R; Fri, 27 Nov 2020 13:45:20 +0100
-Subject: Re: [PATCH] drivers: gpio: use of_match_ptr() and ACPI_PTR() macros
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-tegra@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Alban Bedel <albeu@free.fr>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>, zhang.lyra@gmail.com,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <marek.behun@nic.cz>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        dl-linux-imx <linux-imx@nxp.com>, orsonzhai@gmail.com,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        linux-pwm@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Sascha Hauer <kernel@pengutronix.de>, baolin.wang7@gmail.com,
-        Shawn Guo <shawnguo@kernel.org>
-References: <20201117154340.18216-1-info@metux.net>
- <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
- <20201118095342.sviuxvfsbmmn22mo@pengutronix.de>
- <CAHp75Vd9QUCcUoPLUW3kkJC0h=mPUqHNqNJPY74gDGSu67t8Hw@mail.gmail.com>
- <CAHp75Vcdu1aOLuF+EFDZibbi0OwGH4QfBhJQm9VZQkeEGEeKDQ@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <40d468a6-f8ba-7535-55dd-e91ba8299958@metux.net>
-Date:   Fri, 27 Nov 2020 13:45:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729542AbgK0Mpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:45:42 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39653 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726477AbgK0Mpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 07:45:42 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CjDr33CVGz9sSf;
+        Fri, 27 Nov 2020 23:45:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1606481139;
+        bh=yy/S0HBzf8IrbUsvJnHhpeKnuLhOtblAzE6jc5wg5K8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Jkw2E4IHCORKMaAoixPD3xZOOapz3T2LWZaOocTQvxYRvuWpQfxKb3dESE1UxIBX3
+         duViSb0/O/CsX9EcBFVQZ5XaEExDzTb8ik8A4iyWedNBo5hT2/Pta8evU5OVNKvaM4
+         hz28M4C4fOh0hP7SGGIaNctdBBDWNWCAVpyB1BCQAE1zesIbkisrvry2pA7zSrfMba
+         tw7IKNKuS8IKjp1gmfoaKvH9I3r0m8ppFTkBKB9iyIgiE79XOGT1gN3ClNxicQN47R
+         z02n6aasZBCKpCVDIe+Vwd1xM5+MQvoBQQW1LNjtQznWhmTgB/+nx2Q0KGfo28dJr8
+         80rdmltVa8naw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     christophe.leroy@csgroup.eu, clg@kaod.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        npiggin@gmail.com, oss@buserror.net, sfr@canb.auug.org.au
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.10-4 tag
+Date:   Fri, 27 Nov 2020 23:45:35 +1100
+Message-ID: <877dq7x91s.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vcdu1aOLuF+EFDZibbi0OwGH4QfBhJQm9VZQkeEGEeKDQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:yMIP6nH7cKntCrJuLgf/M3+4XwFIPkg7UfYtSb9J0SkpG6sGOv7
- /IR7PEjcUkbXZfn95xvF9kPZZUOb9RUnvrwEmPu6rP+AgFH9G1KbtEQbrGI6dOjDEAwqV/E
- EczzEgEJ3pvoStGVhjYfBSBY8R6QOUQt5Ao1T/pFBNKAztiWswegrgTUhY7Sz/LsMkjc4PG
- AXU7u5vqunrqkbLcYUoQg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:m5fjPJhCYJQ=:4vrnvGfA8e+95x4fem3OkF
- DfLkWIz4U0aBa8HLZrIOXcD4NWRi5pMo8Oa4rh/JJ6ngXDJTm/+FAY8quNYB/ANwdfDZQe48s
- k2CqQzxtZtilcnmHKe3lkzxpcwcFbAmCgCYFK3D/auj506nTbYO4c624QAzeKlxqJ9aCHd+Wt
- hI3o1ZxJl9DrzDwcoXjkznsF6FbhuSIoOss3ewNaFyBSbu3g2nqwNlNyj2HOFbPxM+r/J2tuu
- bZJU0A6yKpvQn5LrOthHb8IMcDYU+ctkst0nQXTHzlI8rZMMh1Y6r4K/vLbyb1aJ7BZlF8YaF
- Qx59hp3Vk6LqR7JSnkqsESRE70Qu6MnElAe5u2/7HTI9LGVM6UaRVUiDMjxUT4psNxVyefUaX
- /w7EbD7LArRl27YIShkQumClWDiabxBy/5FbFvypZGCtrLVGaftrxq8KTeQFL
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.11.20 11:01, Andy Shevchenko wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
->>> So a system without CONFIG_OF might still make use of .of_match_table?
->>
->> Yep!
-> 
-> If you are curious:
-> https://elixir.bootlin.com/linux/latest/source/drivers/acpi/bus.c#L615
+Hi Linus,
 
-Phuh, this changes everything ... sorry, didn't know that.
+Please pull some more powerpc fixes for 5.10.
 
-If ACPI now can contain OF pieces, we should ask the question whether
-of_match_ptr() should be used at all.
+Note this includes a merge of the powerpc-cve-2020-4788 tag, which you alre=
+ady
+have, so that I could fix a build break it introduced. That merge should be=
+ a
+nop from your POV.
 
-Would it be a compromise introducing a new macro (eg. "OF_MATCH_PTR()")
-which passes through the pointer if either OF or ACPI is enabled.
-Maybe we could introduce a new config item (eg "OF_MATCH_TABLE") for
-that, which is enabled by both OF and ACPI. And maybe add an option for
-of-compatible checking in ACPI.
-
-How do you folks think about that ?
+cheers
 
 
---mtx
+The following changes since commit da631f7fd623b6c180c8d93a93040d1e0d61291f:
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
+werpc-5.10-4
+
+for you to fetch changes up to b6b79dd53082db11070b4368d85dd6699ff0b063:
+
+  powerpc/64s: Fix allnoconfig build since uaccess flush (2020-11-23 21:16:=
+42 +1100)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.10 #4
+
+A regression fix for a boot failure on some 32-bit machines.
+
+A fix for host crashes in the KVM system reset handling.
+
+A fix for a possible oops in the KVM XIVE interrupt handling on Power9.
+
+A fix for host crashes triggerable via the KVM emulated MMIO handling when
+running HPT guests.
+
+A couple of small build fixes.
+
+Thanks to:
+  Andreas Schwab, C=C3=A9dric Le Goater, Christophe Leroy, Erhard Furtner, =
+Greg Kurz,
+  Greg Kurz, N=C3=A9meth M=C3=A1rton, Nicholas Piggin, Nick Desaulniers, Se=
+rge Belyshev,
+  Stephen Rothwell.
+
+- ------------------------------------------------------------------
+Christophe Leroy (1):
+      powerpc/32s: Use relocation offset when setting early hash table
+
+C=C3=A9dric Le Goater (1):
+      KVM: PPC: Book3S HV: XIVE: Fix possible oops when accessing ESB page
+
+Michael Ellerman (2):
+      powerpc: Drop -me200 addition to build flags
+      Merge tag 'powerpc-cve-2020-4788' into fixes
+
+Nicholas Piggin (2):
+      powerpc/64s: Fix KVM system reset handling when CONFIG_PPC_PSERIES=3Dy
+      powerpc/64s/exception: KVM Fix for host DSI being taken in HPT guest =
+MMU context
+
+Stephen Rothwell (1):
+      powerpc/64s: Fix allnoconfig build since uaccess flush
+
+
+ arch/powerpc/Makefile                          |  1 -
+ arch/powerpc/include/asm/book3s/64/kup-radix.h |  2 ++
+ arch/powerpc/kernel/exceptions-64s.S           | 13 +++++++------
+ arch/powerpc/kernel/head_book3s_32.S           |  3 ++-
+ arch/powerpc/kvm/book3s_xive_native.c          |  7 +++++++
+ 5 files changed, 18 insertions(+), 8 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl/A8B4ACgkQUevqPMjh
+pYCUdQ/9HN2ikGl+dT5h3CoAVZoGsyl6/KQm6t+tVjHHxDWcuH/wOmmpvqRET5th
+7uGOJrKEPaWDo3KwmM/Q2Srf74Qtb23n4D62Hi4dTBGoVix1930BIrz/VaQq416T
+WwvrZIwbOSOvklbERq/ta4YeXN9fHquAX0dgxQEWPgLugoXCJhKndvAoy+l+0ZLa
+F3uOFnqt1IKaQA7wM7I+BbgOlP6rF+VhNPMZmUEvNDsVa6HUhv6/R46c7Un4jKyQ
+O8hTn/yz/Sc7kB06LoF9PiHlwtZVuDvwIi+6h5W1LcLCWGIBkEhJkNZ1K6Qwiu7H
+YIFvCTLovliLSOYIRjRS+s1a0hSjRUdOcrb/VukzRNP/JFpbzKid8gHkVdG8yEN8
+HIXT6W9/YOACr+rviuYJAuA+hk4ll8SHdgbFnr7QGLJKdy9SCUHSWrkgoBHXKig5
+eV/bRE0H5WauyqPcct1xP781UKf1zmcNiouvDXmRBoAJalRSVFB5HxpN+GKPQxwu
+la/lv/eAujuydJYxlgCHu8pNbn/DhPsIPpbNnXLNOYxiWR8LXESkt4I7dxPJQxvr
+pkWuR+T1FAXzF6tor+iK8anpmAmXKrWFQNSC2cCnqBdGtORdARztjHhVWgOCQLiR
+H0mN8abC+b7h6LVsRsDieZt5u0+o+G69FvNLxaPQymvnDaQtbQI=3D
+=3D7BPy
+-----END PGP SIGNATURE-----
