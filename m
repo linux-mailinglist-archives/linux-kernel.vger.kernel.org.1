@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841402C6317
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8B32C6314
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729383AbgK0K26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 05:28:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
+        id S1729206AbgK0K2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 05:28:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727558AbgK0K2t (ORCPT
+        with ESMTP id S1729045AbgK0K2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 05:28:49 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D7BC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:28:49 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id u12so5047768wrt.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:28:49 -0800 (PST)
+        Fri, 27 Nov 2020 05:28:52 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1D4C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:28:50 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p8so5022796wrx.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:28:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=C8LfNjI2YK+QqbI1KrKFfCLd9R2a6y5l7Nv6AmHyNbg=;
-        b=FPQWfas3+gd7oeMfzwpBEsuUabIzYgRflvks6QfPgk0LN/kXoHYlgOmY8TI8roufT8
-         FwNidr1e4Lkoo56NZsZOU6PXw48MY+JiDuYtkaG4oiEX2ptgPcbnhqKbrh3M7q7+PnvP
-         jLQMTP2Nz3fAqgWdaF0p5UM7A4vT74pKogFeVi0EcjZU5sChJ1NvN+nreBGL7GMr/5cQ
-         fS6yNo/dr0rBzhoFyL3Bi9IRGxAXTHcPo1CRGQj67X+yARvQ1HqUATKTiDNl2vbf7nhc
-         ZClc00VVUlixFvXzbR0YDxquN20MkcnKsXCrZllBsNEvFv4rtycMnXatr42jGcx8ookk
-         Kodw==
+        bh=wxCuANfKRhjqikDqDFbzz3IdER5dA9jjrzANAD+5XmI=;
+        b=Y+HvmvE3uXb33B3nRL92d1vdM1viGpR7G26sTCfRjVPo4XB/+26oyoufxJ5Q5WpZ3N
+         yAbQJ5mOkC/AJLRxkuJAHLXZvlX/XSP3/kmtxozL1hPlWLN1KLGdqOZgq0RcmlEyJCsQ
+         s9UOylY/29UpD8zQ3aHS3BW337nEiWWJXjdLg+XCW9YrXWoMEboCwyxBzTkacfaho8Ku
+         bPTqiokAZyACqDTzPOJm/E/72vPbWVicH/vxjE4i6qZUulq2FiJnh4R96BiZR0c6DHcn
+         NPQ3xCxJWsMhtKLpgx6WwT8WpXLDDP1ruDxovLsV8vBZpuHucxke5hSjwvZnk/9MtH58
+         rRJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=C8LfNjI2YK+QqbI1KrKFfCLd9R2a6y5l7Nv6AmHyNbg=;
-        b=itn4MR/vS5ezs1nKRhWDeUYKmo3U2NA+1OdiGYrAHBB/jrzGqp+2h7tICI7+pnJxF3
-         qX9Xw7MtraDPjn9F+pQwiy+e5kd05kSmHrOE2VkIgCcIt6uc999+3yMz6JkW2hZn/fT8
-         /TCVl5hQ8GC+VKnKc6j+td0zELMBpxMMNNsuGrZ4byXtXrBD9LH9hj7S6sVu08yeu9Wz
-         mXIO9P92ssNmpFZkcONFzTJ6CbjGfQQRQB65N5/HnECNEdhK5uOt/5rQHPoodyKu9oKR
-         xyWERjEf9friKrErYyNk5RP47SU9joco3g18FFj2kzU0uKXnb6Y9qIv/tIUEwQLsuTAD
-         oCnA==
-X-Gm-Message-State: AOAM531W8jmcnSTxIcwdDO9JZVHnLWu+UKILAVIqEtLfCmbnXZtZL3a7
-        OCihvI9kG+rAdJZLvxFzJJjG4Q==
-X-Google-Smtp-Source: ABdhPJyero0+06kXeC9FouNC33rRbaoQ/iCA+vrAmYZC7OO/Oa6WVjfabRZqAyDW9WAFb6bHOozXwg==
-X-Received: by 2002:adf:eb88:: with SMTP id t8mr920538wrn.105.1606472928061;
-        Fri, 27 Nov 2020 02:28:48 -0800 (PST)
+        bh=wxCuANfKRhjqikDqDFbzz3IdER5dA9jjrzANAD+5XmI=;
+        b=ZwVBq1F1fjqeHpoDZu6mHsKMbJukOBUv/8pXXbE/opgSVLvufUqFjF6YYtEkjbM2zM
+         iA+uxIrHocdW9vIqVRzhRAXOU+cGqZUpL1mt1vGSZTCN45hF5C1AI1U6lM/h8pXZ5aJG
+         D+Ugn4YewiGvQEu+DSNle+1oCGoa6TnbSzAzlfXYxYceZZUT3VxOmW/4riuGioz1NKee
+         A/YI3UYa7U9/DCOHu1tLEVrMLXdX6vLKItNVoi48xQ1dU6iah4DIeG9kySPRZkq4C83K
+         idxbO3c2mkT6fZGrCayVPkONH5E48qavC+/fG582btKMv3XgSAHwL78rg5GlOb129Coq
+         lHZw==
+X-Gm-Message-State: AOAM533tjhByB7OBssrpLFZmFtyRTnRW21MP3Rnb4UmlgCoWC1yunyBW
+        3MQBhfABDZ5fEUzdJ7Tx61UKTQ==
+X-Google-Smtp-Source: ABdhPJw9IHwdtxdr2qYmMlVLtoGXUmg9k+YBZlzpO47N7l4lCqDWNEK7Egrl77N+4WF6JEn2LtJOVQ==
+X-Received: by 2002:adf:e481:: with SMTP id i1mr9339224wrm.282.1606472929182;
+        Fri, 27 Nov 2020 02:28:49 -0800 (PST)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id d8sm14073051wrp.44.2020.11.27.02.28.47
+        by smtp.gmail.com with ESMTPSA id d8sm14073051wrp.44.2020.11.27.02.28.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 02:28:47 -0800 (PST)
+        Fri, 27 Nov 2020 02:28:48 -0800 (PST)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Evan Green <evgreen@chromium.org>,
-        Rob Herring <robh@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 3/5] dt-bindings: nvmem: Add soc qfprom compatible strings
-Date:   Fri, 27 Nov 2020 10:28:35 +0000
-Message-Id: <20201127102837.19366-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 4/5] nvmem: qfprom: Don't touch certain fuses
+Date:   Fri, 27 Nov 2020 10:28:36 +0000
+Message-Id: <20201127102837.19366-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20201127102837.19366-1-srinivas.kandagatla@linaro.org>
 References: <20201127102837.19366-1-srinivas.kandagatla@linaro.org>
@@ -67,58 +67,88 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Evan Green <evgreen@chromium.org>
 
-Add SoC-specific compatible strings so that data can be attached
-to it in the driver.
+Some fuse ranges are protected by the XPU such that the AP cannot
+access them. Attempting to do so causes an SError. Use the newly
+introduced per-soc compatible string, and the newly introduced
+nvmem keepout support to attach the set of regions
+we should not access.
 
 Signed-off-by: Evan Green <evgreen@chromium.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/nvmem/qcom,qfprom.yaml  | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ drivers/nvmem/qfprom.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-index 1a18b6bab35e..992777c90a0b 100644
---- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-@@ -14,7 +14,18 @@ allOf:
+diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+index 5e9e60e2e591..6cace24dfbf7 100644
+--- a/drivers/nvmem/qfprom.c
++++ b/drivers/nvmem/qfprom.c
+@@ -12,6 +12,7 @@
+ #include <linux/mod_devicetable.h>
+ #include <linux/nvmem-provider.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/regulator/consumer.h>
  
- properties:
-   compatible:
--    const: qcom,qfprom
-+    items:
-+      - enum:
-+          - qcom,apq8064-qfprom
-+          - qcom,apq8084-qfprom
-+          - qcom,msm8974-qfprom
-+          - qcom,msm8916-qfprom
-+          - qcom,msm8996-qfprom
-+          - qcom,msm8998-qfprom
-+          - qcom,qcs404-qfprom
-+          - qcom,sc7180-qfprom
-+          - qcom,sdm845-qfprom
-+      - const: qcom,qfprom
+ /* Blow timer clock frequency in Mhz */
+@@ -88,6 +89,28 @@ struct qfprom_touched_values {
+ 	u32 timer_val;
+ };
  
-   reg:
-     # If the QFPROM is read-only OS image then only the corrected region
-@@ -60,7 +71,7 @@ examples:
-       #size-cells = <2>;
++/**
++ * struct qfprom_soc_compatible_data - Data matched against the SoC
++ * compatible string.
++ *
++ * @keepout: Array of keepout regions for this SoC.
++ * @nkeepout: Number of elements in the keepout array.
++ */
++struct qfprom_soc_compatible_data {
++	const struct nvmem_keepout *keepout;
++	unsigned int nkeepout;
++};
++
++static const struct nvmem_keepout sc7180_qfprom_keepout[] = {
++	{.start = 0x128, .end = 0x148},
++	{.start = 0x220, .end = 0x228}
++};
++
++static const struct qfprom_soc_compatible_data sc7180_qfprom = {
++	.keepout = sc7180_qfprom_keepout,
++	.nkeepout = ARRAY_SIZE(sc7180_qfprom_keepout)
++};
++
+ /**
+  * qfprom_disable_fuse_blowing() - Undo enabling of fuse blowing.
+  * @priv: Our driver data.
+@@ -281,6 +304,7 @@ static int qfprom_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct resource *res;
+ 	struct nvmem_device *nvmem;
++	const struct qfprom_soc_compatible_data *soc_data;
+ 	struct qfprom_priv *priv;
+ 	int ret;
  
-       efuse@784000 {
--        compatible = "qcom,qfprom";
-+        compatible = "qcom,sc7180-qfprom", "qcom,qfprom";
-         reg = <0 0x00784000 0 0x8ff>,
-               <0 0x00780000 0 0x7a0>,
-               <0 0x00782000 0 0x100>,
-@@ -85,7 +96,7 @@ examples:
-       #size-cells = <2>;
+@@ -299,6 +323,11 @@ static int qfprom_probe(struct platform_device *pdev)
+ 	econfig.priv = priv;
  
-       efuse@784000 {
--        compatible = "qcom,qfprom";
-+        compatible = "qcom,sdm845-qfprom", "qcom,qfprom";
-         reg = <0 0x00784000 0 0x8ff>;
-         #address-cells = <1>;
-         #size-cells = <1>;
+ 	priv->dev = dev;
++	soc_data = device_get_match_data(dev);
++	if (soc_data) {
++		econfig.keepout = soc_data->keepout;
++		econfig.nkeepout = soc_data->nkeepout;
++	}
+ 
+ 	/*
+ 	 * If more than one region is provided then the OS has the ability
+@@ -354,6 +383,7 @@ static int qfprom_probe(struct platform_device *pdev)
+ 
+ static const struct of_device_id qfprom_of_match[] = {
+ 	{ .compatible = "qcom,qfprom",},
++	{ .compatible = "qcom,sc7180-qfprom", .data = &sc7180_qfprom},
+ 	{/* sentinel */},
+ };
+ MODULE_DEVICE_TABLE(of, qfprom_of_match);
 -- 
 2.21.0
 
