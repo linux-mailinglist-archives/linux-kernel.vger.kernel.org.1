@@ -2,156 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396312C6A74
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5E62C6A7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731891AbgK0ROP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:14:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33272 "EHLO mail.kernel.org"
+        id S1732133AbgK0RPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:15:12 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:53152 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731419AbgK0ROP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:14:15 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57490221EB;
-        Fri, 27 Nov 2020 17:14:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606497254;
-        bh=tWBrsQAV0dVK6FFIiWA7bl7RIx2UuTl5wZD4vgMjKfw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PZh/9V5LjXhxcgHdYZjEjrlc6/fzCy2+1KDzfiQtymlnX9gJlq8hFqrH/053xA6Gz
-         52oonsz6RSsVxU2uQ7o4ZHhevVwmWpYb+jHcexgQdxKqMmJFe08OAmKOcLtR1jhqVY
-         K2YdLf3VT4ue93dSx7hXcr1mq1sZ8sUL16yImbv8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kihJz-00E7Sw-V0; Fri, 27 Nov 2020 17:14:12 +0000
+        id S1726889AbgK0RPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 12:15:12 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kihKs-0099nq-Kt; Fri, 27 Nov 2020 18:15:06 +0100
+Date:   Fri, 27 Nov 2020 18:15:06 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
+Message-ID: <20201127171506.GW2073444@lunn.ch>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-3-steen.hegelund@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 27 Nov 2020 17:14:11 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 03/14] KVM: arm64: Kill 32-bit vCPUs on systems with
- mismatched EL0 support
-In-Reply-To: <20201127115304.GB20564@willie-the-truck>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-4-will@kernel.org>
- <9bd06b193e7fb859a1207bb1302b7597@kernel.org>
- <20201127115304.GB20564@willie-the-truck>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <583c4074bbd4cf8b8085037745a5d1c0@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, gregkh@linuxfoundation.org, peterz@infradead.org, morten.rasmussen@arm.com, qais.yousef@arm.com, surenb@google.com, qperret@google.com, tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org, mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201127133307.2969817-3-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-27 11:53, Will Deacon wrote:
-> On Fri, Nov 27, 2020 at 10:26:47AM +0000, Marc Zyngier wrote:
->> On 2020-11-24 15:50, Will Deacon wrote:
->> > If a vCPU is caught running 32-bit code on a system with mismatched
->> > support at EL0, then we should kill it.
->> >
->> > Acked-by: Marc Zyngier <maz@kernel.org>
->> > Signed-off-by: Will Deacon <will@kernel.org>
->> > ---
->> >  arch/arm64/kvm/arm.c | 11 ++++++++++-
->> >  1 file changed, 10 insertions(+), 1 deletion(-)
->> >
->> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->> > index 5750ec34960e..d322ac0f4a8e 100644
->> > --- a/arch/arm64/kvm/arm.c
->> > +++ b/arch/arm64/kvm/arm.c
->> > @@ -633,6 +633,15 @@ static void check_vcpu_requests(struct kvm_vcpu
->> > *vcpu)
->> >  	}
->> >  }
->> >
->> > +static bool vcpu_mode_is_bad_32bit(struct kvm_vcpu *vcpu)
->> > +{
->> > +	if (likely(!vcpu_mode_is_32bit(vcpu)))
->> > +		return false;
->> > +
->> > +	return !system_supports_32bit_el0() ||
->> > +		static_branch_unlikely(&arm64_mismatched_32bit_el0);
->> > +}
->> > +
->> >  /**
->> >   * kvm_arch_vcpu_ioctl_run - the main VCPU run function to execute
->> > guest code
->> >   * @vcpu:	The VCPU pointer
->> > @@ -816,7 +825,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
->> >  		 * with the asymmetric AArch32 case), return to userspace with
->> >  		 * a fatal error.
->> >  		 */
->> > -		if (!system_supports_32bit_el0() && vcpu_mode_is_32bit(vcpu)) {
->> > +		if (vcpu_mode_is_bad_32bit(vcpu)) {
->> >  			/*
->> >  			 * As we have caught the guest red-handed, decide that
->> >  			 * it isn't fit for purpose anymore by making the vcpu
->> 
->> Given the new definition of system_supports_32bit_el0() in the 
->> previous
->> patch,
->> why do we need this patch at all?
-> 
-> I think the check is still needed, as this is an unusual case where we
-> want to reject the mismatched system. For example, imagine
-> 'arm64_mismatched_32bit_el0' is true and we're on a mismatched system: 
-> in
-> this case system_supports_32bit_el0() will return 'true' because we
-> allow 32-bit applications to run, we support the 32-bit personality 
-> etc.
-> 
-> However, we still want to terminate 32-bit vCPUs if we spot them in 
-> this
-> situation, so we have to check for:
-> 
-> 	!system_supports_32bit_el0() ||
-> 	static_branch_unlikely(&arm64_mismatched_32bit_el0)
-> 
-> so that we only allow 32-bit vCPUs when all of the physical CPUs 
-> support
-> it at EL0.
-> 
-> I could make this clearer either by adding a comment, or avoiding
-> system_supports_32bit_el0() entirely here and just checking the
-> sanitised SYS_ID_AA64PFR0_EL1 register directly instead.
-> 
-> What do you prefer?
+This is a very large driver, which is going to make it slow to review.
 
-Yeah, the sanitized read feels better, if only because that is
-what we are going to read in all the valid cases, unfortunately.
-read_sanitised_ftr_reg() is sadly not designed to be called on
-a fast path, meaning that 32bit guests will do a bsearch() on
-the ID-regs every time they exit...
+> +static int sparx5_probe_port(struct sparx5 *sparx5,
+> +			     struct device_node *portnp,
+> +			     struct phy *serdes,
+> +			     u32 portno,
+> +			     struct sparx5_port_config *conf)
+> +{
+> +	phy_interface_t phy_mode = conf->phy_mode;
+> +	struct sparx5_port *spx5_port;
+> +	struct net_device *ndev;
+> +	struct phylink *phylink;
+> +	int err;
+> +
+> +	err = sparx5_create_targets(sparx5);
+> +	if (err)
+> +		return err;
+> +	ndev = sparx5_create_netdev(sparx5, portno);
+> +	if (IS_ERR(ndev)) {
+> +		dev_err(sparx5->dev, "Could not create net device: %02u\n", portno);
+> +		return PTR_ERR(ndev);
+> +	}
+> +	spx5_port = netdev_priv(ndev);
+> +	spx5_port->of_node = portnp;
+> +	spx5_port->serdes = serdes;
+> +	spx5_port->pvid = NULL_VID;
+> +	spx5_port->signd_internal = true;
+> +	spx5_port->signd_active_high = true;
+> +	spx5_port->signd_enable = true;
+> +	spx5_port->flow_control = false;
+> +	spx5_port->max_vlan_tags = SPX5_PORT_MAX_TAGS_NONE;
+> +	spx5_port->vlan_type = SPX5_VLAN_PORT_TYPE_UNAWARE;
+> +	spx5_port->custom_etype = 0x8880; /* Vitesse */
+> +	conf->portmode = conf->phy_mode;
+> +	spx5_port->conf.speed = SPEED_UNKNOWN;
+> +	spx5_port->conf.power_down = true;
+> +	sparx5->ports[portno] = spx5_port;
 
-I guess we will have to evaluate how much we loose with this.
 
-Thanks,
+> +struct net_device *sparx5_create_netdev(struct sparx5 *sparx5, u32 portno)
+> +{
+> +	struct net_device *ndev;
+> +	struct sparx5_port *spx5_port;
+> +	int err;
+> +
+> +	ndev = devm_alloc_etherdev(sparx5->dev, sizeof(struct sparx5_port));
+> +	if (!ndev)
+> +		return ERR_PTR(-ENOMEM);
+> +
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+...
+
+> +	err = register_netdev(ndev);
+> +	if (err) {
+> +		dev_err(sparx5->dev, "netdev registration failed\n");
+> +		return ERR_PTR(err);
+> +	}
+
+This is one of the classic bugs in network drivers. As soon as you
+call register_netdev() the interface is live. The network stack can
+start using it. But you have not finished initialzing spx5_port. So
+bad things are going to happen.
+
+    Andrew
