@@ -2,162 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E672C600A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE682C6012
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392568AbgK0GYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 01:24:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389400AbgK0GYC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 01:24:02 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231E5C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 22:24:02 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id l14so3600754ybq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 22:24:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jYf2N8/ZVQCxQpjkikDPs3ZyvICDjudkUQ/29ylT6V0=;
-        b=xyYrQl6bZ2Slx7d1ZQB/h660xUsTBBuualrc11CKLOtTLNF+KWt+FlTyLYNgEDtYoR
-         58Oqkh9mZrI7KDvA9lDl0ACC55TS29I353L76UVn69EdS+oHkoiFjZCCTk6xoTnMx+LK
-         hOmF0vtlnbDQtmGLwxzvI1t0HdXK92tQBPfdxzN0qi6cfETq0G03YubgFk1NKQ80O+O0
-         gsZ2g1N09vheZ21vEOQTj4KbaH02/CIBwhlZuE4Dyq2edKjW2gKmVju9Iw11cDbKcD0C
-         UYv1HPXPUbWm3lSKwAIacjM2TFJCrs+bu/ujV3COqywYDiVCcEPM1bacsfGCy0udpS9i
-         8ahg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jYf2N8/ZVQCxQpjkikDPs3ZyvICDjudkUQ/29ylT6V0=;
-        b=DaFEuRa+MoF87JFYxSp0CIXdPdbhi5aCzguhsFUYzSpFL6wQ5JETkuB8Z73yRlWHo+
-         qdWBt/dhH1iCQ3srAz/x1VuABSwd3ZE+6rMJhQF2EDLdIqtzTgLWs5MhAtPHz2co3nzs
-         N3PvqXHr9zdc5Qf7yTJR/TxKUABqFqENBCvfYPCvRPD3YWg/VBqSEUDJ25AQ3Sb5T0w/
-         Ol/6OqFnHEf10peXH5v11/c/H3WeLUNTmosmHWh83fuYCsgC7G/udJGsvBbODAuUY+4i
-         pF3NKwVX0vgh/EwpHHjmRlW5Hs6/0oJTB27xnn6om/H/vF7YoLEUhaelnEfpOOIAxM1n
-         LRXg==
-X-Gm-Message-State: AOAM5330gGjnuzJ2DT8s81roBO60slnYqNHGXbPD5nMWcLs4xFBJ++C8
-        p4MF/KmdhaN2orpjvpG0TCDTF3O6VTc5mMmVSoWKaA==
-X-Google-Smtp-Source: ABdhPJxgKeEzmYJWN/P7AXqmnAfnEv7qlMNwtnwP4zB0FxPR5hP8RbtntlLfY/V83BMvhGieC4OAye+X9KBTl6djQyM=
-X-Received: by 2002:a25:d46:: with SMTP id 67mr6676204ybn.155.1606458241278;
- Thu, 26 Nov 2020 22:24:01 -0800 (PST)
+        id S2392582AbgK0GZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 01:25:23 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:33422 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728043AbgK0GZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 01:25:22 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kiXBx-0000x6-0Y; Fri, 27 Nov 2020 17:25:14 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Nov 2020 17:25:12 +1100
+Date:   Fri, 27 Nov 2020 17:25:12 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, davem@davemloft.net,
+        robh+dt@kernel.org, sboyd@kernel.org, mturquette@baylibre.com,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [Patch v2 0/6] Enable Qualcomm Crypto Engine on sdm845
+Message-ID: <20201127062512.GB11448@gondor.apana.org.au>
+References: <20201119155233.3974286-1-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-References: <20201028221302.66583-1-kholk11@gmail.com>
-In-Reply-To: <20201028221302.66583-1-kholk11@gmail.com>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Fri, 27 Nov 2020 11:53:25 +0530
-Message-ID: <CAMi1Hd00rPU2nUVxK000F=oP=33EKDKXLDymz9hbZT0XEGQZuw@mail.gmail.com>
-Subject: Re: [PATCH v9 0/3] Add Novatek NT36xxx touchscreen driver
-To:     kholk11@gmail.com
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, rydberg@bitmath.org,
-        priv.luk@gmail.com, linux-input@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>, marijns95@gmail.com,
-        Konrad Dybcio <konradybcio@gmail.com>, martin.botka1@gmail.com,
-        phone-devel@vger.kernel.org, dt <devicetree@vger.kernel.org>,
-        krzk@kernel.org, andy.shevchenko@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119155233.3974286-1-thara.gopinath@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 at 06:32, <kholk11@gmail.com> wrote:
->
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
->
-> This patch series adds support for the Novatek NT36xxx Series' In-Cell
-> touchscreen (integrated into the DriverIC).
->
-> This patch series has been tested against the following devices:
->  - Sony Xperia 10        (SDM630 Ganges Kirin)
->  - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
->
+On Thu, Nov 19, 2020 at 10:52:27AM -0500, Thara Gopinath wrote:
+> Qualcomm crypto engine supports hardware accelerated algorithms for
+> encryption and authentication. Enable support for aes,des,3des encryption
+> algorithms and sha1,sha256, hmac(sha1),hmac(sha256) authentication
+> algorithms on sdm845.The patch series has been tested using the kernel
+> crypto testing module tcrypto.ko.
+> 
+> v1->v2:
+> - Rebased to linux-next v5.10-rc4.
+> - Fixed subject line format in all patches as per Bjorn's feedback.
+> 
+> Thara Gopinath (6):
+>   dt-binding:clock: Add entry for crypto engine RPMH clock resource
+>   clk:qcom:rpmh: Add CE clock on sdm845.
+>   drivers:crypto:qce: Enable support for crypto engine on sdm845.
+>   drivers:crypto:qce: Fix SHA result buffer corruption issues.
+>   dts:qcom:sdm845: Add dt entries to support crypto engine.
+>   devicetree:bindings:crypto: Extend qcom-qce binding to add support for
+>     crypto engine version 5.4
+> 
+>  .../devicetree/bindings/crypto/qcom-qce.txt   |  4 ++-
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi          | 30 +++++++++++++++++++
+>  drivers/clk/qcom/clk-rpmh.c                   |  2 ++
+>  drivers/crypto/qce/core.c                     | 17 ++++++++++-
+>  drivers/crypto/qce/sha.c                      |  2 +-
+>  include/dt-bindings/clock/qcom,rpmh.h         |  1 +
+>  6 files changed, 53 insertions(+), 3 deletions(-)
 
-Tested the patch series on Xiaomi Poco F1 (SDM845 Beryllium, Novatek
-NT36672A IC).
-
-For the whole series:
-Tested-by: Amit Pundir <amit.pundir@linaro.org>
-
-Regards,
-Amit Pundir
-
-
-> Changes in v2:
-> - Fixed sparse warnings from lkp kernel test robot
->
-> Changes in v3 (as requested by Dmitry Torokhov):
-> - Using shorthand u16/u32 (sorry for the overlook!)
-> - Now using more input and touchscreen APIs
-> - Fixed useless workqueue involvements
-> - Removed useless locking
-> - Switched reads and writes to use regmap
-> - Moved header contents to nt36xxx.c
-> - Fixed reset gpio handling
-> - Other cleanups
-> - P.S.: Thanks, Dmitry!
->
-> Changes in v4:
-> - Fixed regmap read length for CRC_ERR_FLAG final check
-> - Fixed YAML binding, as requested by Krzysztof Kozlowski
->
-> Changes in v5:
-> - Replaced subsystem maintainer's name with .. mine,
->   usage of additionalProperties to unevaluatedProperties
->   and a typo fix for reset-gpios as per Rob Herring's review
-> - Changed compatible string as per Krzysztof K. request
-> - Renamed the novatek,nt36xxx.yaml file to just nt36xxx.yaml
->   in order to now reflect the driver name instead of the DT
->   compatible
-> - Fixed blank line at EOF
->
-> Changes in v6:
-> - Removed include of_gpio.h, added mod_devicetable.h and
->   gpio/consumer.h
-> - Added kerneldoc to relevant functions/enum
-> - Used traditional patterns for error checking where possible
-> - Documented calls to usleep/msleep
-> - Using be16_to_cpu / get_unaligned_be16 where possible
-> - Added helper for CRC error check on retrieved buffer
-> - Decreased indentation in the CRC reboot recovery function
-> - Removed instances of error code sum
-> - Dropped all likely/unlikely optimization as per request
-> - Removed redundant reset_gpio checks
-> - Dropped of_match_ptr and ifdefs for CONFIG_OF
->
-> Changes in v7:
-> - Fixed typo in nt36xxx.c
->
-> Changes in v8:
-> - Fixed typo reset-gpio -> reset-gpios in dt-bindings
->
-> Changes in v9:
-> - Includes are now sorted
-> - Used proposed sizeof variable instead of sizeof type
-> - Fixed a return value check for common pattern
-> - Added NULL check to devm_kasprintf call
-> - Returning ret on probe function to be consistent
->
-> AngeloGioacchino Del Regno (3):
->   dt-bindings: Add vendor prefix for Novatek Microelectronics Corp.
->   Input: Add Novatek NT36xxx touchscreen driver
->   dt-bindings: touchscreen: Add binding for Novatek NT36xxx series
->     driver
->
->  .../bindings/input/touchscreen/nt36xxx.yaml   |  59 ++
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->  drivers/input/touchscreen/Kconfig             |  12 +
->  drivers/input/touchscreen/Makefile            |   1 +
->  drivers/input/touchscreen/nt36xxx.c           | 894 ++++++++++++++++++
->  drivers/input/touchscreen/nt36xxx.h           | 122 +++
->  6 files changed, 1090 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
->  create mode 100644 drivers/input/touchscreen/nt36xxx.c
->  create mode 100644 drivers/input/touchscreen/nt36xxx.h
->
-> --
-> 2.28.0
->
+Patches 3-4 applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
