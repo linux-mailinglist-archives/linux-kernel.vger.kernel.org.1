@@ -2,114 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B836C2C63A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 12:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7148F2C63AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 12:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728968AbgK0LOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 06:14:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgK0LOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 06:14:18 -0500
-Received: from coco.lan (ip5f5ad5a6.dynamic.kabel-deutschland.de [95.90.213.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA54721527;
-        Fri, 27 Nov 2020 11:14:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606475657;
-        bh=UUHBLygREjHYXn3z1M033GRc6uSd/b7ObYwCOHWwod8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=R5uRv8ImrJl1TIvMjjrXi8QUS5/ZkIsqaHATSP0jbwCGdIG8Q8vxZSarNQXImurFe
-         JWekhIK4QpTFZolQrm1dzdBZ81/7MoQ/YtIDH33G8DZ3DCOPztbu/7/zld5/UtxzIx
-         NXvscXKSJB6dHftOxfMyRxN4Z0vcc+7UBlacXV84=
-Date:   Fri, 27 Nov 2020 12:14:12 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     stanimir.varbanov@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: venus: fix possible buffer overlow casued bad
- DMA value in venus_sfr_print()
-Message-ID: <20201127121412.2c982188@coco.lan>
-In-Reply-To: <20200530024117.24613-1-baijiaju1990@gmail.com>
-References: <20200530024117.24613-1-baijiaju1990@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1729330AbgK0LOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 06:14:49 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:58450 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729248AbgK0LOt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 06:14:49 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ARBApFJ025951;
+        Fri, 27 Nov 2020 06:14:35 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34y0p8jw26-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 06:14:35 -0500
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0ARBEXfR053808
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Fri, 27 Nov 2020 06:14:33 -0500
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 27 Nov 2020 03:14:32 -0800
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 27 Nov 2020 03:13:52 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Fri, 27 Nov 2020 03:14:31 -0800
+Received: from saturn.ad.analog.com ([10.48.65.109])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0ARBETQL023930;
+        Fri, 27 Nov 2020 06:14:29 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <lars@metafoo.de>, <dmitry.torokhov@gmail.com>,
+        <robh+dt@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v3 1/4] Input: adp5589-keys - add default platform data
+Date:   Fri, 27 Nov 2020 13:14:17 +0200
+Message-ID: <20201127111420.96500-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-27_05:2020-11-26,2020-11-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 adultscore=0
+ mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011270069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, 30 May 2020 10:41:17 +0800
-Jia-Ju Bai <baijiaju1990@gmail.com> escreveu:
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-> The value hdev->sfr.kva is stored in DMA memory, and it is assigned to
-> sfr, so sfr->buf_size can be modified at anytime by malicious hardware. 
-> In this case, a buffer overflow may happen when the code 
-> "sfr->data[sfr->buf_size - 1]" is executed.
-> 
-> To fix this possible bug, sfr->buf_size is assigned to a local variable,
-> and then this variable is checked before being used.
-> 
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  drivers/media/platform/qcom/venus/hfi_venus.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/venus/hfi_venus.c
-> index 0d8855014ab3..4251a9e47a1b 100644
-> --- a/drivers/media/platform/qcom/venus/hfi_venus.c
-> +++ b/drivers/media/platform/qcom/venus/hfi_venus.c
-> @@ -960,18 +960,23 @@ static void venus_sfr_print(struct venus_hfi_device *hdev)
->  {
->  	struct device *dev = hdev->core->dev;
->  	struct hfi_sfr *sfr = hdev->sfr.kva;
-> +	u32 buf_size;
->  	void *p;
->  
->  	if (!sfr)
->  		return;
->  
-> -	p = memchr(sfr->data, '\0', sfr->buf_size);
-> +	buf_size = sfr->buf_size;
-> +	if (buf_size > 1)
+If no platform data is supplied use a dummy platform data that configures
+the device in GPIO only mode. This change adds a adp5589_kpad_pdata_get()
+helper that returns the default platform-data. This can be later extended
+to load configuration from device-trees or ACPI.
 
-That seems plain wrong to me... I suspect you wanted to do,
-instead:
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
 
-	if (buf_size < 1)
+Changelog v2 - v3:
+* https://lore.kernel.org/linux-input/20201124082255.13427-1-alexandru.ardelean@analog.com/
+* added patch 'dt-bindings: add ADP5585/ADP5589 entries to trivial-devices'
 
-or even:
-	if (buf_size < 1 || buf_size >= maximum_size_of_data)
+ drivers/input/keyboard/adp5589-keys.c | 33 +++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/input/keyboard/adp5589-keys.c b/drivers/input/keyboard/adp5589-keys.c
+index e2cdf14d90cd..742bf4b97dbb 100644
+--- a/drivers/input/keyboard/adp5589-keys.c
++++ b/drivers/input/keyboard/adp5589-keys.c
+@@ -369,6 +369,25 @@ static const struct adp_constants const_adp5585 = {
+ 	.reg			= adp5585_reg,
+ };
+ 
++static const struct adp5589_gpio_platform_data adp5589_default_gpio_pdata = {
++	.gpio_start = -1,
++};
++
++static const struct adp5589_kpad_platform_data adp5589_default_pdata = {
++	.gpio_data = &adp5589_default_gpio_pdata,
++};
++
++static const struct adp5589_kpad_platform_data *adp5589_kpad_pdata_get(
++	struct device *dev)
++{
++	const struct adp5589_kpad_platform_data *pdata = dev_get_platdata(dev);
++
++	if (!pdata)
++		pdata = &adp5589_default_pdata;
++
++	return pdata;
++}
++
+ static int adp5589_read(struct i2c_client *client, u8 reg)
+ {
+ 	int ret = i2c_smbus_read_byte_data(client, reg);
+@@ -498,7 +517,8 @@ static int adp5589_build_gpiomap(struct adp5589_kpad *kpad,
+ static int adp5589_gpio_add(struct adp5589_kpad *kpad)
+ {
+ 	struct device *dev = &kpad->client->dev;
+-	const struct adp5589_kpad_platform_data *pdata = dev_get_platdata(dev);
++	const struct adp5589_kpad_platform_data *pdata =
++		adp5589_kpad_pdata_get(dev);
+ 	const struct adp5589_gpio_platform_data *gpio_data = pdata->gpio_data;
+ 	int i, error;
+ 
+@@ -619,7 +639,7 @@ static int adp5589_setup(struct adp5589_kpad *kpad)
+ {
+ 	struct i2c_client *client = kpad->client;
+ 	const struct adp5589_kpad_platform_data *pdata =
+-		dev_get_platdata(&client->dev);
++		adp5589_kpad_pdata_get(&client->dev);
+ 	u8 (*reg) (u8) = kpad->var->reg;
+ 	unsigned char evt_mode1 = 0, evt_mode2 = 0, evt_mode3 = 0;
+ 	unsigned char pull_mask = 0;
+@@ -824,7 +844,7 @@ static int adp5589_keypad_add(struct adp5589_kpad *kpad, unsigned int revid)
+ {
+ 	struct i2c_client *client = kpad->client;
+ 	const struct adp5589_kpad_platform_data *pdata =
+-		dev_get_platdata(&client->dev);
++		adp5589_kpad_pdata_get(&client->dev);
+ 	struct input_dev *input;
+ 	unsigned int i;
+ 	int error;
+@@ -948,7 +968,7 @@ static int adp5589_probe(struct i2c_client *client,
+ {
+ 	struct adp5589_kpad *kpad;
+ 	const struct adp5589_kpad_platform_data *pdata =
+-		dev_get_platdata(&client->dev);
++		adp5589_kpad_pdata_get(&client->dev);
+ 	unsigned int revid;
+ 	int error, ret;
+ 
+@@ -958,11 +978,6 @@ static int adp5589_probe(struct i2c_client *client,
+ 		return -EIO;
+ 	}
+ 
+-	if (!pdata) {
+-		dev_err(&client->dev, "no platform data?\n");
+-		return -EINVAL;
+-	}
+-
+ 	kpad = devm_kzalloc(&client->dev, sizeof(*kpad), GFP_KERNEL);
+ 	if (!kpad)
+ 		return -ENOMEM;
+-- 
+2.27.0
 
-> +		return;
-> +
-> +	p = memchr(sfr->data, '\0', buf_size);
->  	/*
->  	 * SFR isn't guaranteed to be NULL terminated since SYS_ERROR indicates
->  	 * that Venus is in the process of crashing.
->  	 */
->  	if (!p)
-> -		sfr->data[sfr->buf_size - 1] = '\0';
-> +		sfr->data[buf_size - 1] = '\0';
-
-Well, a malicious hardware with DMA access could simply write 0 to
-some random address, without needing to rely on the value
-of sfr->buf_size. I can't see how a change like that would prevent
-that.
-
-A check like that only makes sense if the driver can ever
-call this function with an invalid value for sfr->buf_size.
-
-
->  
->  	dev_err_ratelimited(dev, "SFR message from FW: %s\n", sfr->data);
->  }
-
-
-
-Thanks,
-Mauro
