@@ -2,122 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB462C5F27
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 05:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF6B2C5F2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 05:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392386AbgK0EKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 23:10:46 -0500
-Received: from ozlabs.org ([203.11.71.1]:38389 "EHLO ozlabs.org"
+        id S2392401AbgK0EM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 23:12:28 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:17329 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726908AbgK0EKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 23:10:45 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S2392394AbgK0EM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 23:12:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606450347; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=X7Qb679WxuRp4Difwrjsn0t8m9dWVYkJod5nmfHLyEo=; b=fQPLnJtGwHhXrNJ9PcO1Gl3m71WT4N2TY5Qg5J46S9/qeRUhIYasYuzK6TSfklp43KVPYie/
+ /fBeroHG5Y7Ele/3sjyNkHOGpEBMuZYYvsm0oi/wONefOMLcjMI3ZZr5Yk9CmeN+wwF6NfSZ
+ h2LNj3v0lvOohhac7ZqZkNz20eU=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5fc07caaba50d14f886d91d8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 04:12:26
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CDD8FC433ED; Fri, 27 Nov 2020 04:12:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cj1Pr0hqRz9s1l;
-        Fri, 27 Nov 2020 15:10:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606450243;
-        bh=n9Yi26F5OBO4PKmb8BO1U2D2/8TYoU1A337sZxnkoO4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LkuLCx/YqnErG27Vmh9GOv4w0soGjpfdMfeWFCuFp19YGiFX30qTLgHxgDO6nsPtd
-         sk4BvNu6a5IeSkeNcQt05w0ZCv5i97QCP+veME52YSq8gpB2BO/Gw6zCts7I7Xk0Ml
-         JXxVMWELdK3q4RZV8PA6VTkO+KAOfmjx2g9uTNelDeP9G/cRUPZtC6R3JKCzlD9qIa
-         x6l97qe/+VcFC+tkiS61mQ/b2xCwCpbOltU8ehHWOgeTmZj4tXlP/8Fa5E5l9nJF+I
-         P64crk+i8eb6aAH22vCEO/Nr3CTmrxCyeviwL/NqzYjR7gqE1Ud+onRoKRl1Gze7pW
-         0BoHGpXeSv4WA==
-Date:   Fri, 27 Nov 2020 15:10:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the tip tree
-Message-ID: <20201127151037.420aee20@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/AAR/qgPLKqHc9CdjEuaiO9d";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CADB8C433C6;
+        Fri, 27 Nov 2020 04:12:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CADB8C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Subject: [PATCH] Asoc: qcom: Fix for problem in resume with CRAS
+Date:   Fri, 27 Nov 2020 09:42:03 +0530
+Message-Id: <1606450323-21641-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/AAR/qgPLKqHc9CdjEuaiO9d
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+To support playback continuation after resume problem in chrome
+audio server:
+Prepare device in  platform trigger callback.
+Make I2s and DMA control registers as non volatile.
 
-Hi all,
-
-After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
-
-kernel/smp.c: In function 'csd_lock_wait_getcpu':
-kernel/smp.c:133:13: error: 'call_single_data_t' {aka 'struct __call_single=
-_data'} has no member named 'dst'
-  133 |   return csd->dst; /* Other CSD_TYPE_ values might not have ->dst. =
-*/
-      |             ^~
-
-Caused by commit
-
-  545b8c8df41f ("smp: Cleanup smp_call_function*()")
-
-[interacting with commit
-
-  35feb60474bf ("kernel/smp: Provide CSD lock timeout diagnostics")
-
-from before v5.10-rc1]
-
-I have applied the following patch for today:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 27 Nov 2020 15:04:00 +1100
-Subject: [PATCH] smp: fix up "smp: Cleanup smp_call_function*()"
-
-An instance if "dst" was missed.
-
-Fixes: 545b8c8df41f ("smp: Cleanup smp_call_function*()")
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 ---
- kernel/smp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/lpass-cpu.c      | 8 ++------
+ sound/soc/qcom/lpass-platform.c | 5 +++--
+ 2 files changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/smp.c b/kernel/smp.c
-index faf1a3ace6a9..1b6070bf97bb 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -130,7 +130,7 @@ static __always_inline int csd_lock_wait_getcpu(call_si=
-ngle_data_t *csd)
-=20
- 	csd_type =3D CSD_TYPE(csd);
- 	if (csd_type =3D=3D CSD_TYPE_ASYNC || csd_type =3D=3D CSD_TYPE_SYNC)
--		return csd->dst; /* Other CSD_TYPE_ values might not have ->dst. */
-+		return csd->node.dst; /* Other CSD_TYPE_ values might not have ->dst. */
- 	return -1;
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index af684fd..c99be03 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -454,20 +454,16 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
+ 	struct lpass_variant *v = drvdata->variant;
+ 	int i;
+ 
+-	for (i = 0; i < v->i2s_ports; ++i)
+-		if (reg == LPAIF_I2SCTL_REG(v, i))
+-			return true;
+ 	for (i = 0; i < v->irq_ports; ++i)
+ 		if (reg == LPAIF_IRQSTAT_REG(v, i))
+ 			return true;
+ 
+ 	for (i = 0; i < v->rdma_channels; ++i)
+-		if (reg == LPAIF_RDMACURR_REG(v, i) || reg == LPAIF_RDMACTL_REG(v, i))
++		if (reg == LPAIF_RDMACURR_REG(v, i))
+ 			return true;
+ 
+ 	for (i = 0; i < v->wrdma_channels; ++i)
+-		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start) ||
+-			reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
++		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
+ 			return true;
+ 
+ 	return false;
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 80b09de..2b0a7c1 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -481,8 +481,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+ 		return -ENOTRECOVERABLE;
+ 	}
+ 	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
++		lpass_platform_pcmops_prepare(component, substream);
++	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		ret = regmap_fields_write(dmactl->enable, id,
+ 						 LPAIF_DMACTL_ENABLE_ON);
+@@ -592,7 +593,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+ 		break;
+ 	}
+ 
+-	return 0;
++	return ret;
  }
-=20
---=20
-2.29.2
+ 
+ static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/AAR/qgPLKqHc9CdjEuaiO9d
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/AfD0ACgkQAVBC80lX
-0Gwsjgf+JfbEM+o5J8U6plvt/XAXHaMJaA7OFWBEBD1pzI3gF+aOdVI6zRbVUcL6
-/yRSLS81gf+vYQN10xnJF0buSS6THzzH3XEWPsoNdeivo+QY0HnrEYdItu+G1r24
-H7/ndcVpbrD5UnQrvqGQxBdk6owT2BG32XwBqdzR4aFpk57phGymK6vvUtrenoiJ
-D4EEWtq4tIhskA2yeQR6H2a9eUixB+EQDgoszOlXtTeuhMVVcK44r7u2Fs1liWCI
-Xcsv7wNKFo0j8S0TBMP2Tk2Yrei7DYpoI06ZM+lZiZ8bBGviZ/19vcqyd6db5aiN
-VfLQPMT2VhaO5b8USz1mf2jJg4AHeA==
-=MM2t
------END PGP SIGNATURE-----
-
---Sig_/AAR/qgPLKqHc9CdjEuaiO9d--
