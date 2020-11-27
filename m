@@ -2,136 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E1E2C65D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A8A2C65D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729459AbgK0MlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:41:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728340AbgK0MlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:41:06 -0500
-Received: from coco.lan (ip5f5ad5a6.dynamic.kabel-deutschland.de [95.90.213.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB89222240;
-        Fri, 27 Nov 2020 12:41:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606480865;
-        bh=Knjx8Ds+9n9DrWDY3pEXUQJXT6psTdPlMPP6Ng/RsPI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=wkkHUfefVS/6PNLa2srpgw035nmpZXgyNOr//wp3Nt1bKNOYG5GClpZZCiYZ0inQh
-         p7ujjchgdmKLUUvnSzY+yjr715I6BxzBRSPPvAF1Sf89cmt6ELggYWBNbSk67J0U/8
-         h5GaaZg7EV6Kux+GN2SOJL66wktW+M8BHlUcVK2k=
-Date:   Fri, 27 Nov 2020 13:41:00 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL for v5.10-rc6] vidtv driver fixes
-Message-ID: <20201127134100.101be34e@coco.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1729490AbgK0Mmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:42:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728013AbgK0Mmh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 07:42:37 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E23CC0613D1;
+        Fri, 27 Nov 2020 04:42:37 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id t4so5410044wrr.12;
+        Fri, 27 Nov 2020 04:42:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V+UYY93bQCO8HGvd/dOd/Rhtb0qsy0CmlK8sEYhElKA=;
+        b=GA7fGSjs3q6PrvswwEX9lGKUTiREVTe9Yob+iavzXSR3VV4fxkwC9WDdbzG66uqDRu
+         xV6AuGIOcIwOg8jYnj5QxOkncmsnxfCMenoYtVL+fKxDeLfPt+Mm5FnknXfNAF81ipi1
+         /AYi415kQ9YupGtZYCymGwtDYtgfOcCLtSdSEjQzKuPyewgDdxcUl6mugZnZrEJT6A7L
+         lxqnE+D3cPfOBRrPh+ik/CUZYkEeNvrSfpSPDmfo97txrh9isM3zJNrkhgm3NQJsnl9o
+         ZgYzIFjNbNINeW5ZhWqBE5qgGelIUm/hTyAN3u/i7J5F7n8OhsrjLgNK0KUt3JAxLSk+
+         f93w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V+UYY93bQCO8HGvd/dOd/Rhtb0qsy0CmlK8sEYhElKA=;
+        b=YTln3PLs/rxgz+EZ68xMNhZ/tX9xBkYD6BwqMCcH9UdJZGv2bZdJxVHiMNns28JNnv
+         caPYSI4jw1/iBREimP65kpkCIIKdep8qYFWh/Nk1puupjGoEUvpKmgWYsR0uQNWsK0Ma
+         i/+ud9wIDnAnQoLS7BD9Y9oNxoTbzzv97lvK1X3I0L7B2xJY2I86fTNt5+D8SjXhCqiq
+         FbEVQzrM6gN4yd0IRkjJW2ig/r9WuYmJnIGL7nWUhcgNtM7O0QEjhIvIsfgrgWmIJcel
+         /v0ykqzFzJDpDBEN4mb4ibGXdU+A7Wne+kOZnt4BEnG15ey+Yrg7R6IevmHFdi23eLFQ
+         ci0Q==
+X-Gm-Message-State: AOAM5310Fo3TRSQ/DdX4wQqOh5VQ0HTBCSPmYIjvUO0pqcG1jV5kEJ66
+        Wx4AvonsCqPEQDdZsoYAItY=
+X-Google-Smtp-Source: ABdhPJxYnDUaWz2GemI+sa/5eWMlJkVIio89EdsiU4JRnbiE02Bpz4xHERnzKBCs2dycUYuHqPQcSQ==
+X-Received: by 2002:a5d:4a07:: with SMTP id m7mr10130310wrq.316.1606480955830;
+        Fri, 27 Nov 2020 04:42:35 -0800 (PST)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id o134sm1707856wme.6.2020.11.27.04.42.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 04:42:35 -0800 (PST)
+Subject: Re: [PATCH v3] arm64: dts: mediatek: Add mt8192 power domains
+ controller
+To:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>
+References: <1605782884-19741-1-git-send-email-weiyi.lu@mediatek.com>
+ <CAFqH_522NuGY9c-_XWhHxoa3QkrdoM92qTOLxgM8PpOU=-ttbw@mail.gmail.com>
+ <1605791419.19819.4.camel@mtksdaap41>
+ <CAFqH_51m5Pg9ny4HWt1iwf8wtsGSdShpDCVaGwac=v9BBDj2vg@mail.gmail.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <1f25cc3f-324a-0020-7bf2-e5a915291522@gmail.com>
+Date:   Fri, 27 Nov 2020 13:42:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAFqH_51m5Pg9ny4HWt1iwf8wtsGSdShpDCVaGwac=v9BBDj2vg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Please pull from:
-  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.10-3
 
-For a series of fixes for the new the virtual digital TV driver (vidtv),
-which is meant to help doing tests with the digital TV core and media
-userspace apps and libraries.
+On 19/11/2020 15:13, Enric Balletbo Serra wrote:
+> Hi Weiyi,
+> 
+> Missatge de Weiyi Lu <weiyi.lu@mediatek.com> del dia dj., 19 de nov.
+> 2020 a les 14:10:
+>>
+>> On Thu, 2020-11-19 at 13:13 +0100, Enric Balletbo Serra wrote:
+>>> Hi Weiyi,
+>>>
+>>> Thank you for the patch
+>>>
+>>> Missatge de Weiyi Lu <weiyi.lu@mediatek.com> del dia dj., 19 de nov.
+>>> 2020 a les 11:48:
+>>>>
+>>>> Add power domains controller node for SoC mt8192
+>>>>
+>>>> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+>>>> ---
+[...]
+>>>> +                       /* System Power Manager */
+>>>> +                       spm: power-controller {
+>>>> +                               compatible = "mediatek,mt8192-power-controller";
+>>>> +                               #address-cells = <1>;
+>>>> +                               #size-cells = <0>;
+>>>> +                               #power-domain-cells = <1>;
+>>>> +
+>>>> +                               /* power domain of the SoC */
+>>>> +                               audio@MT8192_POWER_DOMAIN_AUDIO {
+>>>
+>>> If you run the dt_bindings_check it should return some errors, as all
+>>> these node names should be 'power-domain@'. Which is a bit annoying
+>>> because then you will get a bunch of errors like this:
+>>>
+>>> [    1.969110] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    1.976997] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    1.984828] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    1.992657] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    2.000685] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    2.008566] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    2.016395] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    2.024221] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    2.032049] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    2.039874] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    2.047699] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    2.055524] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    2.063352] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>> [    2.071176] debugfs: Directory 'power-domain' with parent
+>>> 'pm_genpd' already present!
+>>>
+>>> But that's another problem that should be handled in debugfs system.
+>>>
+>>
+>> Indeed...so I chose to use different name in dts to avoid problems in
+>> debugfs. It does violate the naming rules.
+>>
+> 
+> But your binding will not pass (or trigger warnings) the dtb check
+> then. Rob was clear that names should be generic. Proper fix is fix
+> debugfs not the binding.
+> 
 
-They cover a series of issues I found on it, together with a few new things
-in order to make it easier to detect problems at the DVB core.
-
+By the way, is anybody working on this debugfs issue?
 
 Regards,
-Mauro
-
-The following changes since commit 9215f6bb4705ffe205885411394732bfc439dee0:
-
-  media: venus: pm_helpers: Fix kernel module reload (2020-11-16 19:06:10 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.10-3
-
-for you to fetch changes up to 44f28934af141149959c4e6495bb60c1903bda32:
-
-  media: vidtv.rst: add kernel-doc markups (2020-11-26 08:05:24 +0100)
-
-----------------------------------------------------------------
-media fixes for v5.10-rc6
-
-----------------------------------------------------------------
-Daniel W. S. Almeida (6):
-      media: vidtv: extract the initial CRC value to into a #define
-      media: vidtv: psi: add a Network Information Table (NIT)
-      media: vidtv: psi: Implement an Event Information Table (EIT)
-      media: vidtv: psi: extract descriptor chaining code into a helper
-      media: vidtv: Move s302m specific fields into encoder context
-      media: vidtv: psi: fix missing assignments in while loops
-
-Mauro Carvalho Chehab (30):
-      media: vidtv: reorganize includes
-      media: vidtv: add error checks
-      media: vidtv: don't use recursive functions
-      media: vidtv: fix the name of the program
-      media: vidtv: fix the tone generator logic
-      media: vidtv: fix some notes at the tone generator
-      media: vidtv: avoid data copy when initializing the multiplexer
-      media: vidtv: avoid copying data for PES structs
-      media: vidtv: do some cleanups at the driver
-      media: vidtv: remove some unused functions
-      media: vidtv: pre-initialize mux arrays
-      media: vidtv: cleanup null packet initialization logic
-      media: vidtv: improve EIT data
-      media: vidtv: fix the network ID range
-      media: vidtv: properly fill EIT service_id
-      media: vidtv: add a PID entry for the NIT table
-      media: vidtv: fix service type
-      media: vidtv: fix service_id at SDT table
-      media: vidtv: add date to the current event
-      media: vidtv: simplify PSI write function
-      media: vidtv: simplify the crc writing logic
-      media: vidtv: cleanup PSI descriptor write function
-      media: vidtv: cleanup PSI table header function
-      media: vidtv: cleanup PAT write function
-      media: vidtv: cleanup PMT write table function
-      media: vidtv: simplify SDT write function
-      media: vidtv: simplify NIT write function
-      media: vidtv: simplify EIT write function
-      media: vidtv.rst: update vidtv documentation
-      media: vidtv.rst: add kernel-doc markups
-
- Documentation/driver-api/media/drivers/vidtv.rst |  120 +-
- drivers/media/test-drivers/vidtv/vidtv_bridge.c  |  116 +-
- drivers/media/test-drivers/vidtv/vidtv_bridge.h  |    4 +-
- drivers/media/test-drivers/vidtv/vidtv_channel.c |  312 ++++-
- drivers/media/test-drivers/vidtv/vidtv_channel.h |   11 +-
- drivers/media/test-drivers/vidtv/vidtv_common.h  |    1 -
- drivers/media/test-drivers/vidtv/vidtv_demod.c   |    2 +-
- drivers/media/test-drivers/vidtv/vidtv_demod.h   |   11 +-
- drivers/media/test-drivers/vidtv/vidtv_encoder.h |    9 +-
- drivers/media/test-drivers/vidtv/vidtv_mux.c     |  248 ++--
- drivers/media/test-drivers/vidtv/vidtv_mux.h     |   21 +-
- drivers/media/test-drivers/vidtv/vidtv_pes.c     |  179 ++-
- drivers/media/test-drivers/vidtv/vidtv_pes.h     |    8 +-
- drivers/media/test-drivers/vidtv/vidtv_psi.c     | 1521 ++++++++++++++++------
- drivers/media/test-drivers/vidtv/vidtv_psi.h     |  282 +++-
- drivers/media/test-drivers/vidtv/vidtv_s302m.c   |  125 +-
- drivers/media/test-drivers/vidtv/vidtv_s302m.h   |    9 +-
- drivers/media/test-drivers/vidtv/vidtv_ts.c      |    5 +-
- drivers/media/test-drivers/vidtv/vidtv_ts.h      |    5 +-
- drivers/media/test-drivers/vidtv/vidtv_tuner.c   |    5 +-
- drivers/media/test-drivers/vidtv/vidtv_tuner.h   |    1 +
- 21 files changed, 2182 insertions(+), 813 deletions(-)
-
+Matthias
