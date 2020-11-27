@@ -2,105 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356662C5FDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B722C5FE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392494AbgK0FtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 00:49:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39342 "EHLO mail.kernel.org"
+        id S2392500AbgK0Ftq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 00:49:46 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:33316 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726952AbgK0FtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 00:49:00 -0500
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 677F121D93;
-        Fri, 27 Nov 2020 05:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606456139;
-        bh=/YtIZKRJP1T006cX/Nf29w/v3Ysh0ly7iX2Zi8rOkEQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KiuZ7fk9h4xzTdPPv3iXLoCz/ffSZJgMhoBTSSCjU6iYMAHvqOOobthn/6AyusfOk
-         Z9M5KKRHKlzKgfWVsi4+Vb1l5dF1gbr3yhxUIksGpEufKkxY0PsqvGrOU3jkn9/cF+
-         9GF4WJU0tBa0C1LAJubsWoYYug3M6XSENvEhP1cA=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Thomas Richter <tmricht@linux.ibm.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH 2/2] perf-probe: Change function definition check due to broken dwarf
-Date:   Fri, 27 Nov 2020 14:48:55 +0900
-Message-Id: <160645613571.2824037.7441351537890235895.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201126172849.GE53384@kernel.org>
-References: <20201126172849.GE53384@kernel.org>
-User-Agent: StGit/0.19
+        id S2389456AbgK0Ftp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 00:49:45 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kiWdY-0000ZR-ID; Fri, 27 Nov 2020 16:49:41 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Nov 2020 16:49:40 +1100
+Date:   Fri, 27 Nov 2020 16:49:40 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [PATCH] hwrng: ks-sa - Add dependency on IOMEM and OF
+Message-ID: <20201127054940.GA29627@gondor.apana.org.au>
+References: <202011132311.XmkAgWg0-lkp@intel.com>
+ <20201127054844.GB23521@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201127054844.GB23521@gondor.apana.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since some gcc generates a broken DWARF which lacks DW_AT_declaration
-attribute from the subprogram DIE of function prototype.
-(https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060)
+Resent with fixed Subject line.
 
-So, in addition to the DW_AT_declaration check, we also check the
-subprogram DIE has DW_AT_inline or actual entry pc.
+---8<---
+This patch adds a dependency for KEYSTONE on HAS_IOMEM and OF to
+prevent COMPILE_TEST build failures.
 
-Reported-by: Thomas Richter <tmricht@linux.ibm.com>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- tools/perf/util/dwarf-aux.c    |   20 ++++++++++++++++++--
- tools/perf/util/probe-finder.c |    3 +--
- 2 files changed, 19 insertions(+), 4 deletions(-)
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-index 03c1a39c312a..7b2d471a6419 100644
---- a/tools/perf/util/dwarf-aux.c
-+++ b/tools/perf/util/dwarf-aux.c
-@@ -356,9 +356,25 @@ bool die_is_signed_type(Dwarf_Die *tp_die)
- bool die_is_func_def(Dwarf_Die *dw_die)
- {
- 	Dwarf_Attribute attr;
-+	Dwarf_Addr addr = 0;
-+
-+	if (dwarf_tag(dw_die) != DW_TAG_subprogram)
-+		return false;
-+
-+	if (dwarf_attr(dw_die, DW_AT_declaration, &attr))
-+		return false;
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index ab33a2e17cdf..9ff4fb3236f7 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -508,6 +508,7 @@ config HW_RANDOM_NPCM
  
--	return (dwarf_tag(dw_die) == DW_TAG_subprogram &&
--		dwarf_attr(dw_die, DW_AT_declaration, &attr) == NULL);
-+	/*
-+	 * DW_AT_declaration can be lost from function declaration
-+	 * by gcc's bug #97060.
-+	 * So we need to check this subprogram DIE has DW_AT_inline
-+	 * or an entry address.
-+	 */
-+	if (!dwarf_attr(dw_die, DW_AT_inline, &attr) &&
-+	    die_entrypc(dw_die, &addr) < 0)
-+		return false;
-+
-+	return true;
- }
- 
- /**
-diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-index 2c4061035f77..76dd349aa48d 100644
---- a/tools/perf/util/probe-finder.c
-+++ b/tools/perf/util/probe-finder.c
-@@ -1885,8 +1885,7 @@ static int line_range_search_cb(Dwarf_Die *sp_die, void *data)
- 	if (lr->file && strtailcmp(lr->file, dwarf_decl_file(sp_die)))
- 		return DWARF_CB_OK;
- 
--	if (die_is_func_def(sp_die) &&
--	    die_match_name(sp_die, lr->function)) {
-+	if (die_match_name(sp_die, lr->function) && die_is_func_def(sp_die)) {
- 		lf->fname = dwarf_decl_file(sp_die);
- 		dwarf_decl_line(sp_die, &lr->offset);
- 		pr_debug("fname: %s, lineno:%d\n", lf->fname, lr->offset);
-
+ config HW_RANDOM_KEYSTONE
+ 	depends on ARCH_KEYSTONE || COMPILE_TEST
++	depends on HAS_IOMEM && OF
+ 	default HW_RANDOM
+ 	tristate "TI Keystone NETCP SA Hardware random number generator"
+ 	help
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
