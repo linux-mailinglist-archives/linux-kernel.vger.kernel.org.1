@@ -2,178 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8982C5F76
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1CB2C5F8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729383AbgK0FIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 00:08:00 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:35064 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729251AbgK0FIA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 00:08:00 -0500
-X-UUID: 27f396485fea46efb890d0353610a2fe-20201127
-X-UUID: 27f396485fea46efb890d0353610a2fe-20201127
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 629195723; Fri, 27 Nov 2020 13:07:54 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 27 Nov 2020 13:07:39 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 27 Nov 2020 13:07:40 +0800
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Song Bao Hua <song.bao.hua@hisilicon.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v2] proc: use untagged_addr() for pagemap_read addresses
-Date:   Fri, 27 Nov 2020 13:07:38 +0800
-Message-ID: <20201127050738.14440-1-miles.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        id S1729418AbgK0FU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 00:20:59 -0500
+Received: from m12-14.163.com ([220.181.12.14]:40349 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729100AbgK0FU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 00:20:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=lmgddvHtAi5SdHCftt
+        KJz4DYN1iYMVB/xgJ/V1LKoCk=; b=IAn+C8K3nZ//qxxcqnBLP5k7vmmjR2OEXL
+        UjkFJzI/7GSepnhuooVVYneWUzftEo8xnWmldjuYcCluRcGg11aysMtJlHZjvt/0
+        oxmZEw/AbmQ0CdNHgZxkGm81EgKz+F2vR+lcHfIOzdyHtY8u0ziBWUcAZE5FT3qi
+        1ow2LnaiY=
+Received: from localhost.localdomain (unknown [115.238.52.186])
+        by smtp10 (Coremail) with SMTP id DsCowAC37vJijMBfOncJYA--.30588S3;
+        Fri, 27 Nov 2020 13:19:45 +0800 (CST)
+From:   linsheng_111@163.com
+To:     linus.walleij@linaro.org, khilman@baylibre.com,
+        narmstrong@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, linshenghuan@hangtu-china.com
+Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lin shenghuan <linsheng_111@163.com>
+Subject: [PATCH] add amlogic gpio to irq
+Date:   Fri, 27 Nov 2020 13:19:27 +0800
+Message-Id: <1606454367-3493-1-git-send-email-linsheng_111@163.com>
+X-Mailer: git-send-email 2.7.4
+Signed-off-by: Lin shenghuan <linshenghuan@hangtu-china.com>
+X-CM-TRANSID: DsCowAC37vJijMBfOncJYA--.30588S3
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJFy3Zr4xtw47Kr45Kr48WFg_yoW5WF45pF
+        43GFyYyr13JF47WryrAanrAFW3K3WxJFW2gay7Ka97uw13GFyDtFy29FW5Zrs8WrW5CF4r
+        Jr4rGFWUWr45AFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UHBTrUUUUU=
+X-Originating-IP: [115.238.52.186]
+X-CM-SenderInfo: polq2x5hqjsiirr6il2tof0z/1tbipBHpOlr7rnYrLgAAsa
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we try to visit the pagemap of a tagged userspace pointer, we find
-that the start_vaddr is not correct because of the tag.
-To fix it, we should untag the usespace pointers in pagemap_read().
-
-I tested with 5.10-rc4 and the issue remains.
-
-Explaination from Catalin in [1]:
-
-"
-Arguably, that's a user-space bug since tagged file offsets were never
-supported. In this case it's not even a tag at bit 56 as per the arm64
-tagged address ABI but rather down to bit 47. You could say that the
-problem is caused by the C library (malloc()) or whoever created the
-tagged vaddr and passed it to this function. It's not a kernel
-regression as we've never supported it.
-
-Now, pagemap is a special case where the offset is usually not generated
-as a classic file offset but rather derived by shifting a user virtual
-address. I guess we can make a concession for pagemap (only) and allow
-such offset with the tag at bit (56 - PAGE_SHIFT + 3).
-"
-
-My test code is baed on [2]:
-
-A userspace pointer which has been tagged by 0xb4: 0xb400007662f541c8
-
-=== userspace program ===
-
-uint64 OsLayer::VirtualToPhysical(void *vaddr) {
-	uint64 frame, paddr, pfnmask, pagemask;
-	int pagesize = sysconf(_SC_PAGESIZE);
-	off64_t off = ((uintptr_t)vaddr) / pagesize * 8; // off = 0xb400007662f541c8 / pagesize * 8 = 0x5a00003b317aa0
-	int fd = open(kPagemapPath, O_RDONLY);
-	...
-
-	if (lseek64(fd, off, SEEK_SET) != off || read(fd, &frame, 8) != 8) {
-		int err = errno;
-		string errtxt = ErrorString(err);
-		if (fd >= 0)
-			close(fd);
-		return 0;
-	}
-...
-}
-
-=== kernel fs/proc/task_mmu.c ===
-
-static ssize_t pagemap_read(struct file *file, char __user *buf,
-		size_t count, loff_t *ppos)
-{
-	...
-	src = *ppos;
-	svpfn = src / PM_ENTRY_BYTES; // svpfn == 0xb400007662f54
-	start_vaddr = svpfn << PAGE_SHIFT; // start_vaddr == 0xb400007662f54000
-	end_vaddr = mm->task_size;
-
-	/* watch out for wraparound */
-	// svpfn == 0xb400007662f54
-	// (mm->task_size >> PAGE) == 0x8000000
-	if (svpfn > mm->task_size >> PAGE_SHIFT) // the condition is true because of the tag 0xb4
-		start_vaddr = end_vaddr;
-
-	ret = 0;
-	while (count && (start_vaddr < end_vaddr)) { // we cannot visit correct entry because start_vaddr is set to end_vaddr
-		int len;
-		unsigned long end;
-		...
-	}
-	...
-}
-
-[1] https://lore.kernel.org/patchwork/patch/1343258/
-[2] https://github.com/stressapptest/stressapptest/blob/master/src/os.cc#L158
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Andrey Konovalov <andreyknvl@google.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-Cc: stable@vger.kernel.org # v5.4-
-Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+From: Lin shenghuan <linsheng_111@163.com>
 
 ---
+ drivers/pinctrl/meson/pinctrl-meson.c | 36 +++++++++++++++++++++++++++++++++++
+ drivers/pinctrl/meson/pinctrl-meson.h |  1 +
+ 2 files changed, 37 insertions(+)
 
-Change since v1:
-
-1. Follow Eirc's and Catalin's suggestion to avoid overflow
-2. Cc to stable v5.4-
-3. add explaination from Catalin to the commit message
----
- fs/proc/task_mmu.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 217aa2705d5d..92b277388f05 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1599,11 +1599,15 @@ static ssize_t pagemap_read(struct file *file, char __user *buf,
+diff --git a/drivers/pinctrl/meson/pinctrl-meson.c b/drivers/pinctrl/meson/pinctrl-meson.c
+index 20683cd..b91ff2c 100644
+--- a/drivers/pinctrl/meson/pinctrl-meson.c
++++ b/drivers/pinctrl/meson/pinctrl-meson.c
+@@ -51,6 +51,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/seq_file.h>
++#include <linux/of_irq.h>
  
- 	src = *ppos;
- 	svpfn = src / PM_ENTRY_BYTES;
--	start_vaddr = svpfn << PAGE_SHIFT;
- 	end_vaddr = mm->task_size;
+ #include "../core.h"
+ #include "../pinctrl-utils.h"
+@@ -598,6 +599,34 @@ static int meson_gpio_get(struct gpio_chip *chip, unsigned gpio)
+ 	return !!(val & BIT(bit));
+ }
  
- 	/* watch out for wraparound */
--	if (svpfn > mm->task_size >> PAGE_SHIFT)
-+	start_vaddr = end_vaddr;
-+	if (svpfn < (ULONG_MAX >> PAGE_SHIFT))
-+		start_vaddr = untagged_addr(svpfn << PAGE_SHIFT);
++static int meson_gpio_to_irq(struct gpio_chip *chip, unsigned int gpio)
++{
++	struct meson_pinctrl *pc = gpiochip_get_data(chip);
++	struct meson_bank *bank;
++	struct irq_fwspec fwspec;
++	int hwirq;
 +
-+	/* Ensure the address is inside the task */
-+	if (start_vaddr > mm->task_size)
- 		start_vaddr = end_vaddr;
++	if (meson_get_bank(pc, gpio, &bank))
++		return -EINVAL;
++
++	if (bank->irq_first < 0) {
++		dev_warn(pc->dev, "no support irq for pin[%d]\n", gpio);
++		return -EINVAL;
++	}
++	if (!pc->of_irq) {
++		dev_err(pc->dev, "invalid device node of gpio INTC\n");
++		return -EINVAL;
++	}
++
++	hwirq = gpio - bank->first + bank->irq_first;
++	fwspec.fwnode = of_node_to_fwnode(pc->of_irq);
++	fwspec.param_count = 2;
++	fwspec.param[0] = hwirq;
++	fwspec.param[1] = IRQ_TYPE_NONE;
++
++	return irq_create_fwspec_mapping(&fwspec);
++}
++
+ static int meson_gpiolib_register(struct meson_pinctrl *pc)
+ {
+ 	int ret;
+@@ -612,6 +641,7 @@ static int meson_gpiolib_register(struct meson_pinctrl *pc)
+ 	pc->chip.direction_output = meson_gpio_direction_output;
+ 	pc->chip.get = meson_gpio_get;
+ 	pc->chip.set = meson_gpio_set;
++	pc->chip.to_irq = meson_gpio_to_irq;
+ 	pc->chip.base = -1;
+ 	pc->chip.ngpio = pc->data->num_pins;
+ 	pc->chip.can_sleep = false;
+@@ -682,6 +712,12 @@ static int meson_pinctrl_parse_dt(struct meson_pinctrl *pc,
  
- 	/*
+ 	pc->of_node = gpio_np;
+ 
++	pc->of_irq = of_find_compatible_node(NULL,
++			NULL, "amlogic,meson-gpio-intc");
++	if (!pc->of_irq)
++		pc->of_irq = of_find_compatible_node(NULL,
++			NULL, "amlogic,meson-gpio-intc-ext");
++
+ 	pc->reg_mux = meson_map_resource(pc, gpio_np, "mux");
+ 	if (IS_ERR_OR_NULL(pc->reg_mux)) {
+ 		dev_err(pc->dev, "mux registers not found\n");
+diff --git a/drivers/pinctrl/meson/pinctrl-meson.h b/drivers/pinctrl/meson/pinctrl-meson.h
+index f8b0ff9..0f808bb 100644
+--- a/drivers/pinctrl/meson/pinctrl-meson.h
++++ b/drivers/pinctrl/meson/pinctrl-meson.h
+@@ -131,6 +131,7 @@ struct meson_pinctrl {
+ 	struct regmap *reg_ds;
+ 	struct gpio_chip chip;
+ 	struct device_node *of_node;
++	struct device_node *of_irq;
+ };
+ 
+ #define FUNCTION(fn)							\
 -- 
-2.18.0
+2.7.4
+
 
