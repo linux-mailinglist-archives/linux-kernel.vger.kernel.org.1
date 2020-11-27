@@ -2,136 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532B72C5FC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 735BC2C5FD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730201AbgK0Fgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 00:36:46 -0500
-Received: from smtpbg702.qq.com ([203.205.195.102]:51315 "EHLO
-        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729830AbgK0Fgq (ORCPT
+        id S2389232AbgK0Fl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 00:41:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729830AbgK0Fl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 00:36:46 -0500
-X-Greylist: delayed 78025 seconds by postgrey-1.27 at vger.kernel.org; Fri, 27 Nov 2020 00:36:45 EST
-X-QQ-mid: bizesmtp17t1606455382tq2xz4a8
-Received: from localhost.localdomain (unknown [115.238.52.186])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Fri, 27 Nov 2020 13:36:21 +0800 (CST)
-X-QQ-SSF: 0120000000800070B000B00A0000000
-X-QQ-FEAT: zN8aTbUO6yNNgGYJ4vOtjrU8x/KUgr9Mba0IGxwhgvtjzXkKwduROXQmvU9iv
-        m0Cp1K+6ryqXRSJyJ9qCR7eJYNhsiyKyz9a/qY4rIwi3S2hOH1MAaREoKEKCvuBe6qnlulr
-        zRB1XWX95icSf2tqZo9J79f7tdELdhMpGE2txZR84Vd27MTw/hOEBzyTqRrKYtqJcvsJAmC
-        DvZljsttQF31S4mTOlph2cdMRTslCPN4r0BlYzoJWN1/zMDqZIfJmt4BffcTeROUmmqPigF
-        bXrZe1CSF9sNbey6fI4b2X0avor/68/XRrEzqwGVeSW3OE75i8ow0LXo0=
-X-QQ-GoodBg: 0
-From:   linshenghuan@hangtu-china.com
-To:     linus.walleij@linaro.org, khilman@baylibre.com,
-        narmstrong@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, linshenghuan@hangtu-china.com
-Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lin shenghuan <linsheng_111@163.com>
-Subject: [PATCH] add amlogic gpio to irq
-Date:   Fri, 27 Nov 2020 13:36:19 +0800
-Message-Id: <1606455379-7236-1-git-send-email-linshenghuan@hangtu-china.com>
-X-Mailer: git-send-email 2.7.4
-Signed-off-by: Lin shenghuan <linshenghuan@hangtu-china.com>
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:hangtu-china.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
+        Fri, 27 Nov 2020 00:41:29 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2685C0613D1;
+        Thu, 26 Nov 2020 21:41:27 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id d8so5432694lfa.1;
+        Thu, 26 Nov 2020 21:41:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=jTbdJPLCPCmKC1sQucjkCurKOKfvRNOl0rPRqRFsYFs=;
+        b=lFl6N3Dg+QQ82za+rkFQ0TN+wf6XTCAJuruvQ/rrIsW+JH+D44/zJlOW3SqcRKZIzT
+         lrRUUZPKbtB2kqYAq+AG/QGqZnD3PXXa8rUpw0vPmd3QOKe8zCEtDvYkazvF7Y4BEMAL
+         9uMKD7Um+UjqidjIlmJB1Gz24rF2LRwt89wKJlaBEOvo5X67mE2q44rxEr+e0Gzfr8P8
+         Km+FaG/xOR4VkuWgezqfjuDohMKNDO928+38/BHAOd2G36s7mO7/NdYODdGc5YzNI4qd
+         j7Mmc3ReOCJX5xWGgLsjyniTKsBTL7SfoyFF+ZZ6UJxdrXfpCVrG0BJWXM49wLTuMUWg
+         LGqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=jTbdJPLCPCmKC1sQucjkCurKOKfvRNOl0rPRqRFsYFs=;
+        b=Rseq4T825vTcZ9fY5qZbdG86OABoDRlcwN33GBHkV3qpb+jsOSus7qTEUb1G6ErWRB
+         BFGBbw9K69KnRw8BP5+gfAKRAvEhSg9ljkautRGI9q6U2oDTuM99wJt9sgJdDtQ8nTgq
+         IK7whHO7pgsJINrbZF48N6qhqoxOFB5wOnJAt2fjFnikNixLwVWarriTnn4Vm4ZBdqeG
+         AD9YaVz6y49nzS7vmjKtfF5Mb1+9dYFV4cN9lz53vz8v30+p9cm+S0InrGzTumSCh08z
+         t/JnCA80m1gTLuC1AkDlEvaAWbNAC+3f9W3JIrawXsT47QRG5z7ozBKzNSMxcKSZErTj
+         RxZg==
+X-Gm-Message-State: AOAM530jLHLYZY1zpi299V3B9hv1ojZTytrwrSGUC7xzWZh3D4V5uS1c
+        GFHLzU/tG7mwzwhDEs3Oxf6jn76lnFTlOHcKHxY=
+X-Google-Smtp-Source: ABdhPJyAeMEzfdGrvJT9b5AUNWayhzIAW5+4r+WiiKzD3LJnSTc5sziUMYp+pVfE4rkRvctYI3pCNM0lKqC81E7N614=
+X-Received: by 2002:a19:f60e:: with SMTP id x14mr2458236lfe.199.1606455686176;
+ Thu, 26 Nov 2020 21:41:26 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a9a:999:0:b029:97:eac4:b89e with HTTP; Thu, 26 Nov 2020
+ 21:41:25 -0800 (PST)
+In-Reply-To: <CAEx-X7esGyZ2QiTGbE1H7M7z1dqT47awmqrOtN+p0FbwtwfPOg@mail.gmail.com>
+References: <1606404819-30647-1-git-send-email-bongsu.jeon@samsung.com>
+ <20201126170154.GA4978@kozik-lap> <CAEx-X7esGyZ2QiTGbE1H7M7z1dqT47awmqrOtN+p0FbwtwfPOg@mail.gmail.com>
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+Date:   Fri, 27 Nov 2020 14:41:25 +0900
+Message-ID: <CACwDmQA5acuCpUcjf7Q0biG9KnfK+3WGjTDbDaFpnMMMhBv9sg@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/3] nfc: s3fwrn5: use signed integer for parsing
+ GPIO numbers
+To:     krzk@kernel.org
+Cc:     Krzysztof Opasiak <k.opasiak@samsung.com>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin shenghuan <linsheng_111@163.com>
+On 11/27/20, Bongsu Jeon <bs.jeon87@gmail.com> wrote:
+> On Fri, Nov 27, 2020 at 2:06 AM Krzysztof Kozlowski <krzk@kernel.org>
+> wrote:
+>>
+>> On Fri, Nov 27, 2020 at 12:33:37AM +0900, bongsu.jeon2@gmail.com wrote:
+>> > From: Krzysztof Kozlowski <krzk@kernel.org>
+>> >
+>> > GPIOs - as returned by of_get_named_gpio() and used by the gpiolib -
+>> > are
+>> > signed integers, where negative number indicates error.  The return
+>> > value of of_get_named_gpio() should not be assigned to an unsigned int
+>> > because in case of !CONFIG_GPIOLIB such number would be a valid GPIO.
+>> >
+>> > Fixes: c04c674fadeb ("nfc: s3fwrn5: Add driver for Samsung S3FWRN5 NFC
+>> > Chip")
+>> > Cc: <stable@vger.kernel.org>
+>> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>>
+>> Why do you send my patch?
+>>
+>
+> I think that your patch should be applied before refactoring for this
+> driver.
+> So, I applied your patch to net-next branch and included your patch at
+> my patch list.
+> Is this the wrong process?
+>
 
----
- drivers/pinctrl/meson/pinctrl-meson.c | 36 +++++++++++++++++++++++++++++++++++
- drivers/pinctrl/meson/pinctrl-meson.h |  1 +
- 2 files changed, 37 insertions(+)
+Sorry to confuse you.
+I found your patch when i updated my workspace using git pull.
 
-diff --git a/drivers/pinctrl/meson/pinctrl-meson.c b/drivers/pinctrl/meson/pinctrl-meson.c
-index 20683cd..b91ff2c 100644
---- a/drivers/pinctrl/meson/pinctrl-meson.c
-+++ b/drivers/pinctrl/meson/pinctrl-meson.c
-@@ -51,6 +51,7 @@
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/seq_file.h>
-+#include <linux/of_irq.h>
- 
- #include "../core.h"
- #include "../pinctrl-utils.h"
-@@ -598,6 +599,34 @@ static int meson_gpio_get(struct gpio_chip *chip, unsigned gpio)
- 	return !!(val & BIT(bit));
- }
- 
-+static int meson_gpio_to_irq(struct gpio_chip *chip, unsigned int gpio)
-+{
-+	struct meson_pinctrl *pc = gpiochip_get_data(chip);
-+	struct meson_bank *bank;
-+	struct irq_fwspec fwspec;
-+	int hwirq;
-+
-+	if (meson_get_bank(pc, gpio, &bank))
-+		return -EINVAL;
-+
-+	if (bank->irq_first < 0) {
-+		dev_warn(pc->dev, "no support irq for pin[%d]\n", gpio);
-+		return -EINVAL;
-+	}
-+	if (!pc->of_irq) {
-+		dev_err(pc->dev, "invalid device node of gpio INTC\n");
-+		return -EINVAL;
-+	}
-+
-+	hwirq = gpio - bank->first + bank->irq_first;
-+	fwspec.fwnode = of_node_to_fwnode(pc->of_irq);
-+	fwspec.param_count = 2;
-+	fwspec.param[0] = hwirq;
-+	fwspec.param[1] = IRQ_TYPE_NONE;
-+
-+	return irq_create_fwspec_mapping(&fwspec);
-+}
-+
- static int meson_gpiolib_register(struct meson_pinctrl *pc)
- {
- 	int ret;
-@@ -612,6 +641,7 @@ static int meson_gpiolib_register(struct meson_pinctrl *pc)
- 	pc->chip.direction_output = meson_gpio_direction_output;
- 	pc->chip.get = meson_gpio_get;
- 	pc->chip.set = meson_gpio_set;
-+	pc->chip.to_irq = meson_gpio_to_irq;
- 	pc->chip.base = -1;
- 	pc->chip.ngpio = pc->data->num_pins;
- 	pc->chip.can_sleep = false;
-@@ -682,6 +712,12 @@ static int meson_pinctrl_parse_dt(struct meson_pinctrl *pc,
- 
- 	pc->of_node = gpio_np;
- 
-+	pc->of_irq = of_find_compatible_node(NULL,
-+			NULL, "amlogic,meson-gpio-intc");
-+	if (!pc->of_irq)
-+		pc->of_irq = of_find_compatible_node(NULL,
-+			NULL, "amlogic,meson-gpio-intc-ext");
-+
- 	pc->reg_mux = meson_map_resource(pc, gpio_np, "mux");
- 	if (IS_ERR_OR_NULL(pc->reg_mux)) {
- 		dev_err(pc->dev, "mux registers not found\n");
-diff --git a/drivers/pinctrl/meson/pinctrl-meson.h b/drivers/pinctrl/meson/pinctrl-meson.h
-index f8b0ff9..0f808bb 100644
---- a/drivers/pinctrl/meson/pinctrl-meson.h
-+++ b/drivers/pinctrl/meson/pinctrl-meson.h
-@@ -131,6 +131,7 @@ struct meson_pinctrl {
- 	struct regmap *reg_ds;
- 	struct gpio_chip chip;
- 	struct device_node *of_node;
-+	struct device_node *of_irq;
- };
- 
- #define FUNCTION(fn)							\
--- 
-2.7.4
-
-
-
+>> Best regards,
+>> Krzysztof
+>
