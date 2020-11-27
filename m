@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D5C2C6662
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E642C6667
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730205AbgK0NIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 08:08:51 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:8806 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730148AbgK0NIt (ORCPT
+        id S1730232AbgK0NJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 08:09:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729874AbgK0NJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 08:08:49 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ARCUrcr007370;
-        Fri, 27 Nov 2020 08:08:48 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34y0p8k45m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Nov 2020 08:08:48 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0ARD8k6I049549
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Fri, 27 Nov 2020 08:08:47 -0500
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Fri, 27 Nov
- 2020 05:08:45 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Fri, 27 Nov 2020 05:08:45 -0800
-Received: from saturn.ad.analog.com ([10.48.65.109])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0ARD8dKJ026672;
-        Fri, 27 Nov 2020 08:08:42 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <robh+dt@kernel.org>, <broonie@kernel.org>,
-        <andy.shevchenko@gmail.com>, <dragos.bogdan@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v3 3/3] spi: dt-bindings: document zero value for spi-{rx,tx}-bus-width properties
-Date:   Fri, 27 Nov 2020 15:08:34 +0200
-Message-ID: <20201127130834.136348-3-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201127130834.136348-1-alexandru.ardelean@analog.com>
-References: <20201127130834.136348-1-alexandru.ardelean@analog.com>
+        Fri, 27 Nov 2020 08:09:12 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F19C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 05:09:12 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id lt17so7553754ejb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 05:09:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
+        b=lmY5+YDMv4BIO8QDeSVMcM9mgH8PiPXyuysZfoyjZT8W+sHkXuUq5vqvEgmU1D0ISj
+         Bhj2PrGYKiD7ZmHLdAxRWsNNXXpE058OAAXCotRE0LKi3Xtnm141UuNjWtv6Qkrs3vZZ
+         uewsi1W1wQJhD6BF11u8TSo5onJS+ubaeMnUH7/V8lauEdllPZ9aN6zWGitJ9/v1WJBO
+         1s6Lp64qNrIg19RTvEhRaLt+9i+1jWA5RQaUDgHVYLeR5aLO10P6dinvhFTYP9tmrIiK
+         05NNEH7MjyhlUXVBpK2Hu7DyKM9QBmk+sz8FUPzaeIPqj3zfOJYycbTV6JWiswwHK4oq
+         Qg+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
+        b=j25H1Go2djDvCQGYy/z0wPI+4W8DY4RTQgtlFuq33JfgOcz3x61IxD/4//YyYKgSM1
+         +eKpU1GuiLpAOCYSzRDU5TZWD8wJdoth8ea1u2TaQqceuHxRA9kEAmkmnR/YwzlvqPD9
+         RalgTknoZvehJrMI079+uPUr/4D5/Jjwi3BFWJbvVSjfr58RAsThSdHwzNb9TjcUX0XM
+         l5+7S0SQq3OXVHDZo51MmofVO82rnJBtaCH+3Zb23IcxcOg+TgY6tvICIm++ITN3CVoa
+         r+xXV+tFfEdBLsAKUdtgJn+7uVUNwmd/e97/fZcGyApYDRq9wYKMJ26LEvLWg7FeeyV8
+         Bjdg==
+X-Gm-Message-State: AOAM530jF4tOp3qQt9Z6vycyaZNJCloxwrXu7q+rH5fkbfL/BSKyksKp
+        7JrPgRwHNYlE/ktsUlio5SNSkmK7BEp2FAAsI1Q=
+X-Google-Smtp-Source: ABdhPJydH8t90Z47qXtQrE8VG9k0GTYsz0vtmiilewMvIhBT6XdqND29Am1TUgL/yJ9IiSLjspKlRgGy1jehYe5wGJI=
+X-Received: by 2002:a17:906:b294:: with SMTP id q20mr7984215ejz.234.1606482551496;
+ Fri, 27 Nov 2020 05:09:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-27_06:2020-11-26,2020-11-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1015 priorityscore=1501 adultscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0 spamscore=0
- mlxlogscore=615 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011270078
+Received: by 2002:a05:6402:c8a:0:0:0:0 with HTTP; Fri, 27 Nov 2020 05:09:10
+ -0800 (PST)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <edemhoegbesso@gmail.com>
+Date:   Fri, 27 Nov 2020 14:09:10 +0100
+Message-ID: <CAPM9i68O-whBZoLBzNV-BTrP0drce73e1H5hOvzt92Br1+0_iA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following a change to the SPI framework, providing a value of zero for
-'spi-rx-bus-width' and 'spi-tx-bus-width' is now possible and will
-essentially mean than no RX or TX is allowed.
+Hallo
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- Documentation/devicetree/bindings/spi/spi-controller.yaml | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+Ihnen anbieten
+der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
+Millionen US-Dollar)
+Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
 
-diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-index 1b56d5e40f1f..f1aaaf9b3709 100644
---- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
-+++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-@@ -125,8 +125,9 @@ patternProperties:
-       spi-rx-bus-width:
-         description:
-           Bus width to the SPI bus used for read transfers.
-+          If 0 is provided, then no RX will be possible on this devices.
-         $ref: /schemas/types.yaml#/definitions/uint32
--        enum: [1, 2, 4, 8]
-+        enum: [0, 1, 2, 4, 8]
-         default: 1
- 
-       spi-rx-delay-us:
-@@ -136,8 +137,9 @@ patternProperties:
-       spi-tx-bus-width:
-         description:
-           Bus width to the SPI bus used for write transfers.
-+          If 0 is provided, then no RX will be possible on this devices.
-         $ref: /schemas/types.yaml#/definitions/uint32
--        enum: [1, 2, 4, 8]
-+        enum: [0, 1, 2, 4, 8]
-         default: 1
- 
-       spi-tx-delay-us:
--- 
-2.27.0
+Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall ums Leben gekommen ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Informationen: georgemike7031@gmail.com
 
+Vielen Dank im Voraus,
+Mr. George Mike,
