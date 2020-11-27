@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9678E2C623F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AD82C6241
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbgK0Jtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
+        id S1726178AbgK0Jy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728114AbgK0Jtq (ORCPT
+        with ESMTP id S1725865AbgK0Jy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:49:46 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CDAC0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:49:45 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id i2so4902050wrs.4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:49:45 -0800 (PST)
+        Fri, 27 Nov 2020 04:54:58 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0087DC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:54:57 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id r3so4940524wrt.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:54:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=SpT5mux3bkiG98XNqiWb/4fRNdxP5kYN/sKhC7Wqp5Y=;
-        b=ShlgV2ihO15dKzZF7Q5JSurKvH/8b7WBrfBL3rXm98DSM65G0173YTWVI9zUisZ9z+
-         s+srz7LcMlSJQVJgzweKt8t2Hh7GK5ff2Dkk3yXXtU3U0OgiBdlN5H601dPQZBpgoLRJ
-         +ehhVD1z9uyWz9+aNcNOk8JE7SFYC+bNaorZR4oRE0oYR/0Ti/9s5/kaiiYrNDnzDF8w
-         UkvfSFi4ASF4ELof6dCRRyPAa0AUptDfA+snYkAsPbzosOCQN13+EJNJFneHlrXy6t1+
-         VLiALeOUTEJK2w1CAVJeZdDshRolAhPrfpgyb69Z+LDQ7m4VbZlHCQ1RIykRu+UluUac
-         TpBg==
+        bh=JjE5v+XtmXi4bhjUhwczYi8qu3IElsPJc6z70wBzRWs=;
+        b=sfYOdVjRyzcbYRH/Ekm8wSub6oWEzdjbW2nDTAMnh+6ng+DbEs+mHTZUhXoUXiM0G/
+         6hwWE5ZB2yeEMyCagbn48ngqnVd/Y5klQdMiAfN4mVSz+nY3HGFLtKuBtYX2clhCpvIG
+         IuMvX40k0Uea4kH/0bOWOe35Y2bAVJs9VJ3/XgrZZsEVzh5EmsUsIr9iBr1J9hIIpQDR
+         VvDvVN51IOVbbbe2X/suG6Ry3Slx41rPnME1ldpGZ+vwcCoSp4U8fYOSjwtj9jIHVz9v
+         QCd6icNy7782CsjPEAlFmgSBNUV3YZN26AsSirMGaHi1jQF+cbbTSiArlLUnRo9sY/Z5
+         tARA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=SpT5mux3bkiG98XNqiWb/4fRNdxP5kYN/sKhC7Wqp5Y=;
-        b=M/uQOFXxr9GeeiosajS5y9Bxp6Z2f64OSUeQ1Yzjn3Il39kM/7nYGF7MR2zOXZREQW
-         mBczPYXA2G/8GisVZmCGOq+1pKbC1b4dq+lKmGgz6KoXmG/GbVLPmVhgNWqXjoD8z21c
-         +ZWQC8dHR9/Z6OFoxtLIRRVTmFOv7ImESfqruDrS9sm+JM5YvbH3lm4B3PiXLHoAZmL2
-         6vdwXv+5adx+7yJNK9NE3cny5DM+UHDG6dav/PHa3E2YVKghl33f0zDIRzQUEEu+zlI/
-         wKCxE+ZLf9/1TpUPOa+EuSZ0HYkVdqmZpITgAfjefxNU4/yGAzkvbFeGq8WPhu2EtZ6M
-         ztUQ==
-X-Gm-Message-State: AOAM531oRZxtzNZYmZBBxwo/Pu2Z12o3vZviKf8iy7Xh87LH667aV5Uh
-        x9U4GBFmctzD/ZncSfxgv9Iyaw==
-X-Google-Smtp-Source: ABdhPJzEeC7rSvqMDDBHhuFjpH6cfspj1JR8WUhh8BLlTEHIhPiXR/gY7Yq5b2S9zICmvRBnj1UkMg==
-X-Received: by 2002:adf:e449:: with SMTP id t9mr9451492wrm.257.1606470584483;
-        Fri, 27 Nov 2020 01:49:44 -0800 (PST)
+        bh=JjE5v+XtmXi4bhjUhwczYi8qu3IElsPJc6z70wBzRWs=;
+        b=PTSEYIn+ySnqTEPkeO4cj8YL5sXs9GRzVXe9g4wvwiIWY4zzMd16pX7c8t2LntB3Pw
+         NvUNwNLZCG0oeSTvQxX94Ua5jdY7S8Hqb1SODT6NDXA4JBrnX4s9U70ByB+CBDmXYog/
+         1D6M05x8K/p2W058eBVyWYDi26A45eL3lAWAQ8F6B+vYyc2eX+IV+4w+yknZ2Xp4fwZn
+         i9nw+hx0m5bg9i8YgsZSVuq1p3cn/3OIaSdTiEFCPFmxFpgVEZ5LZKhcefPEUxc739c1
+         JC2RQ3CJZZSgtKuhFJvpHwKf1s9cMRM1yA+6f8szFFdol7hHizB4DANeCkFdQ1/I6+7/
+         ITNw==
+X-Gm-Message-State: AOAM532Wl10P5q1CkdKJSpz1c/nbHTH10/tgFKyRUAldXrpszTmiJC/m
+        AGXWYMhy+b2r+gt7m3UfEVR0tqvmqq2gl7qG
+X-Google-Smtp-Source: ABdhPJy8MKyha3Xk7UYSRiRLy3TVGJobBhb4KefTjlDXAMCo/TeSUVelqvExxjIfnbZXHjD1GJxklw==
+X-Received: by 2002:adf:dd52:: with SMTP id u18mr9079635wrm.44.1606470896481;
+        Fri, 27 Nov 2020 01:54:56 -0800 (PST)
 Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id g131sm13545886wma.35.2020.11.27.01.49.43
+        by smtp.gmail.com with ESMTPSA id j127sm14205428wma.31.2020.11.27.01.54.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 01:49:43 -0800 (PST)
-Date:   Fri, 27 Nov 2020 09:49:40 +0000
+        Fri, 27 Nov 2020 01:54:56 -0800 (PST)
+Date:   Fri, 27 Nov 2020 09:54:52 +0000
 From:   Quentin Perret <qperret@google.com>
 To:     Will Deacon <will@kernel.org>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
@@ -66,40 +66,28 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         kernel-team@android.com
-Subject: Re: [PATCH v4 07/14] sched: Introduce restrict_cpus_allowed_ptr() to
- limit task CPU affinity
-Message-ID: <20201127094940.GA906877@google.com>
+Subject: Re: [PATCH v4 11/14] sched: Reject CPU affinity changes based on
+ arch_task_cpu_possible_mask()
+Message-ID: <20201127095452.GB906877@google.com>
 References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-8-will@kernel.org>
+ <20201124155039.13804-12-will@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201124155039.13804-8-will@kernel.org>
+In-Reply-To: <20201124155039.13804-12-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 24 Nov 2020 at 15:50:32 (+0000), Will Deacon wrote:
-> Asymmetric systems may not offer the same level of userspace ISA support
-> across all CPUs, meaning that some applications cannot be executed by
-> some CPUs. As a concrete example, upcoming arm64 big.LITTLE designs do
-> not feature support for 32-bit applications on both clusters.
-> 
-> Although userspace can carefully manage the affinity masks for such
-> tasks, one place where it is particularly problematic is execve()
-> because the CPU on which the execve() is occurring may be incompatible
-> with the new application image. In such a situation, it is desirable to
-> restrict the affinity mask of the task and ensure that the new image is
-> entered on a compatible CPU. From userspace's point of view, this looks
-> the same as if the incompatible CPUs have been hotplugged off in its
-> affinity mask.
-> 
-> In preparation for restricting the affinity mask for compat tasks on
-> arm64 systems without uniform support for 32-bit applications, introduce
-> a restrict_cpus_allowed_ptr(), which allows the current affinity mask
-> for a task to be shrunk to the intersection of a parameter mask.
-> 
-> Signed-off-by: Will Deacon <will@kernel.org>
+On Tuesday 24 Nov 2020 at 15:50:36 (+0000), Will Deacon wrote:
+> Reject explicit requests to change the affinity mask of a task via
+> set_cpus_allowed_ptr() if the requested mask is not a subset of the
+> mask returned by arch_task_cpu_possible_mask(). This ensures that the
+> 'cpus_mask' for a given task cannot contain CPUs which are incapable of
+> executing it, except in cases where the affinity is forced.
+
+I guess mentioning here (or as a comment) the 'funny' behaviour we get
+with cpusets wouldn't hurt. But this is a sensible patch nonetheless so:
 
 Reviewed-by: Quentin Perret <qperret@google.com>
 
