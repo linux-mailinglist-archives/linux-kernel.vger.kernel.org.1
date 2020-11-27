@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3472C6896
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0469F2C68A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730253AbgK0PRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 10:17:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41162 "EHLO mx2.suse.de"
+        id S1731040AbgK0PV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 10:21:26 -0500
+Received: from foss.arm.com ([217.140.110.172]:44462 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729225AbgK0PRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 10:17:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 26425AC2D;
-        Fri, 27 Nov 2020 15:17:37 +0000 (UTC)
-Subject: Re: [PATCH] mm/page_alloc: Do not isolate redundant pageblock
-To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20201127141900.43348-1-songmuchun@bytedance.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <9e32e476-3812-2616-b2f5-a9b6f3531b8b@suse.cz>
-Date:   Fri, 27 Nov 2020 16:17:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726889AbgK0PV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 10:21:26 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7499A1516;
+        Fri, 27 Nov 2020 07:21:25 -0800 (PST)
+Received: from e112269-lin.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C9B463F70D;
+        Fri, 27 Nov 2020 07:21:22 -0800 (PST)
+From:   Steven Price <steven.price@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: [PATCH v6 0/2] MTE support for KVM guest
+Date:   Fri, 27 Nov 2020 15:21:11 +0000
+Message-Id: <20201127152113.13099-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20201127141900.43348-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/20 3:19 PM, Muchun Song wrote:
-> Current pageblock isolation logic could isolate each pageblock individually
-> since commit d9dddbf55667 ("mm/page_alloc: prevent merging between isolated
-> and other pageblocks"). So we not need to concern about page allocator
-> merges buddies from different pageblocks and changes MIGRATE_ISOLATE to
-> some other migration type.
+It's been a week, and I think the comments on v5 made it clear that
+enforcing PROT_MTE requirements on the VMM was probably the wrong
+approach. So since I've got swap working correctly without that I
+thought I'd post a v6 which hopefully addresses all the comments so far.
 
-Yeah, that should be the case now.
+This series adds support for Arm's Memory Tagging Extension (MTE) to
+KVM, allowing KVM guests to make use of it. This builds on the existing
+user space support already in v5.10-rc4, see [1] for an overview.
 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->   mm/page_alloc.c | 26 ++++++++------------------
->   1 file changed, 8 insertions(+), 18 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index cefbef32bf4a..608a2c2b8ab7 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8313,16 +8313,14 @@ struct page *has_unmovable_pages(struct zone *zone, struct page *page,
->   }
->   
->   #ifdef CONFIG_CONTIG_ALLOC
-> -static unsigned long pfn_max_align_down(unsigned long pfn)
-> +static unsigned long pfn_align_down(unsigned long pfn)
->   {
-> -	return pfn & ~(max_t(unsigned long, MAX_ORDER_NR_PAGES,
-> -			     pageblock_nr_pages) - 1);
-> +	return pfn & ~(pageblock_nr_pages - 1);
->   }
->   
-> -static unsigned long pfn_max_align_up(unsigned long pfn)
-> +static unsigned long pfn_align_up(unsigned long pfn)
->   {
-> -	return ALIGN(pfn, max_t(unsigned long, MAX_ORDER_NR_PAGES,
-> -				pageblock_nr_pages));
-> +	return ALIGN(pfn, pageblock_nr_pages);
->   }
+[1] https://lwn.net/Articles/834289/
 
-How bout just removing these wrappers completely and using ALIGN and ALIGN_DOWN 
-directly, as there are just two uses for each?
+Changes since v5[2]:
 
->   /* [start, end) must belong to a single zone. */
-> @@ -8415,14 +8413,6 @@ int alloc_contig_range(unsigned long start, unsigned long end,
->   	INIT_LIST_HEAD(&cc.migratepages);
->   
->   	/*
-> -	 * What we do here is we mark all pageblocks in range as
-> -	 * MIGRATE_ISOLATE.  Because pageblock and max order pages may
-> -	 * have different sizes, and due to the way page allocator
-> -	 * work, we align the range to biggest of the two pages so
-> -	 * that page allocator won't try to merge buddies from
-> -	 * different pageblocks and change MIGRATE_ISOLATE to some
-> -	 * other migration type.
-> -	 *
->   	 * Once the pageblocks are marked as MIGRATE_ISOLATE, we
->   	 * migrate the pages from an unaligned range (ie. pages that
->   	 * we are interested in).  This will put all the pages in
-> @@ -8438,8 +8428,8 @@ int alloc_contig_range(unsigned long start, unsigned long end,
->   	 * put back to page allocator so that buddy can use them.
->   	 */
->   
-> -	ret = start_isolate_page_range(pfn_max_align_down(start),
-> -				       pfn_max_align_up(end), migratetype, 0);
-> +	ret = start_isolate_page_range(pfn_align_down(start), pfn_align_up(end),
-> +				       migratetype, 0);
->   	if (ret)
->   		return ret;
->   
-> @@ -8522,8 +8512,8 @@ int alloc_contig_range(unsigned long start, unsigned long end,
->   		free_contig_range(end, outer_end - end);
->   
->   done:
-> -	undo_isolate_page_range(pfn_max_align_down(start),
-> -				pfn_max_align_up(end), migratetype);
-> +	undo_isolate_page_range(pfn_align_down(start), pfn_align_up(end),
-> +				migratetype);
->   	return ret;
->   }
->   EXPORT_SYMBOL(alloc_contig_range);
-> 
+ * Revert back to not requiring the VMM to map all guest memory
+   PROT_MTE. Instead KVM will set the PG_mte_tagged flag automatically
+   if not present.
+
+ * Fixed swap behaviour vs v4 by always checking for saved MTE tags for
+   user entries in set_pte_at().
+
+[2] https://lore.kernel.org/r/20201119153901.53705-1-steven.price%40arm.com
+
+Steven Price (2):
+  arm64: kvm: Save/restore MTE registers
+  arm64: kvm: Introduce MTE VCPU feature
+
+ arch/arm64/include/asm/kvm_emulate.h       |  3 +++
+ arch/arm64/include/asm/kvm_host.h          |  8 ++++++++
+ arch/arm64/include/asm/pgtable.h           |  2 +-
+ arch/arm64/include/asm/sysreg.h            |  3 ++-
+ arch/arm64/kernel/mte.c                    | 18 +++++++++++++-----
+ arch/arm64/kvm/arm.c                       |  9 +++++++++
+ arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 14 ++++++++++++++
+ arch/arm64/kvm/mmu.c                       | 16 ++++++++++++++++
+ arch/arm64/kvm/sys_regs.c                  | 20 +++++++++++++++-----
+ include/uapi/linux/kvm.h                   |  1 +
+ 10 files changed, 82 insertions(+), 12 deletions(-)
+
+-- 
+2.20.1
 
