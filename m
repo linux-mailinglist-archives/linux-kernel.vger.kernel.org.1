@@ -2,92 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8578A2C6062
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 08:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBB32C6065
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 08:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392688AbgK0HPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 02:15:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgK0HPK (ORCPT
+        id S2392704AbgK0HR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 02:17:26 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7996 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392683AbgK0HRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 02:15:10 -0500
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81480C0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 23:15:10 -0800 (PST)
-Received: by mail-oo1-xc43.google.com with SMTP id r11so892054oos.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 23:15:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yaxtEmqvmorbGKJnkkOGAi0ROIbuHga/om0nivkkb44=;
-        b=aLY3U6MTUL5dWJ51yx3EqCGeVIF57s3SnrwJbIRRWHH1wUjzpWGvhbxj7+9L8qkAU4
-         WFVkHwVupp1lxevjJtNOAMyDzwPNsxVnIhoXQOMIZYWO8T5OJGRf1Nxi5UA5etOWAGKW
-         hjA1KC2oJmcYo1OpRvgw2V2Wl4C2Ry0l9nM/UUIeiILMD+n7GiLOh66BXBAZ+7+XtLp0
-         +YELbcmEOAQnnvL03qfBtucnfXw21h/kZXqyPQwbcbQMbet1TOfguLjVZtP5PopZT8H5
-         jES04bkn9ADkCO7hjLaAuCx8MLL7+e4r72MVV9aYBit52kFHYQx4lmUuy2yMvfk1VWyS
-         zZKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yaxtEmqvmorbGKJnkkOGAi0ROIbuHga/om0nivkkb44=;
-        b=mO3VzwQrp2gI+UBAteKNAbcTtx3vARRiMDz/Heg+98B84RYgcEobRvDdBJ5zq29Q8m
-         3/jYXZIYUsSRJ0f8IMV8KYTuylxOjhxI4nWEzkCbtaPn/HKh3IFmM2IxpHAR+eX41RAD
-         dXBEVWn2qYEygL8vowiQkwV6CtSO47LvpKaJLnL+pYBlSSP35oIDGoQzEx5bnu+ePVLq
-         zGTwe8m9gTnVH7hFw3X/oyJEeICqL+jwWaiwSw5xaNy94YRjMcmrnOFo4bnkTGEbnwcC
-         lum1X3zFS1Hp1RHdaAvpCk8LXllyFKLQMSqHiozPreaHHcf2cORuvXl1K9GCyEvb4G2q
-         EEEA==
-X-Gm-Message-State: AOAM5310d68kDIkBn7dRkZZDZBB4H2/9gsdWNZJ71MuVQSViRya79yLu
-        TBLtYD0ywrqoMsvn6Wzw+iwEzHdS11xyK3/aLLjtkQ==
-X-Google-Smtp-Source: ABdhPJzaQ7O+e2Jbc1bKrR0f+Mraefm0He/WricXD5DvEREyOW1QEFDqCYH+RUzETNr0QT8k5tlI+7JXq4ssDiMD0no=
-X-Received: by 2002:a4a:de87:: with SMTP id v7mr4592060oou.6.1606461309608;
- Thu, 26 Nov 2020 23:15:09 -0800 (PST)
+        Fri, 27 Nov 2020 02:17:25 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cj5Xy4XlbzhcYm;
+        Fri, 27 Nov 2020 15:17:06 +0800 (CST)
+Received: from [10.174.178.154] (10.174.178.154) by smtp.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 27 Nov
+ 2020 15:17:12 +0800
+Subject: Re: [PATCH] tomoyo: Avoid potential null pointer access
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+CC:     <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jmorris@namei.org>,
+        <serge@hallyn.com>, <weiyongjun1@huawei.com>
+References: <20201125121043.107662-1-zhengzengkai@huawei.com>
+ <cfc96d99-adff-6eb9-9685-422587830eb8@i-love.sakura.ne.jp>
+ <01d29bbf-9d77-c787-b2c2-d88a6a5047f7@huawei.com>
+ <59e0abdd-88a9-6269-9cd1-0f65792784ec@i-love.sakura.ne.jp>
+From:   Zheng Zengkai <zhengzengkai@huawei.com>
+Message-ID: <dfb6829e-0fb6-7dbc-5dfa-9707b2f0ae16@huawei.com>
+Date:   Fri, 27 Nov 2020 15:17:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20201125120134.GA1642471@jade> <CAK8P3a2CDp0KwCZjffA78fXUqOfAkvUb8Q=R64830fvvn_WG2w@mail.gmail.com>
-In-Reply-To: <CAK8P3a2CDp0KwCZjffA78fXUqOfAkvUb8Q=R64830fvvn_WG2w@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Fri, 27 Nov 2020 08:14:59 +0100
-Message-ID: <CAHUa44Fnj4zQ_3O+kdzVopVAggUOdb34KGnA8+r=Rp-4+etWbw@mail.gmail.com>
-Subject: Re: [GIT PULL] OP-TEE driver for v5.11
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org,
-        Rui Miguel Silva <rui.silva@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <59e0abdd-88a9-6269-9cd1-0f65792784ec@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Hello Tetsuo,
+> On 2020/11/26 15:33, Zheng Zengkai wrote:
+>> As your say,  I found the function tomoyo_assign_namespace( )
+>>
+>> in security/tomoyo/domain.c has the similar situation,
+>>
+>> Can I add __GFP_NOWARN for both and remove the null check for _entry_ in tomoyo_assign_namespace( )?
+>>
+> Good catch. Yes, please send as a patch.
+> .
 
-On Thu, Nov 26, 2020 at 10:00 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Wed, Nov 25, 2020 at 1:01 PM Jens Wiklander
-> <jens.wiklander@linaro.org> wrote:
-> >
-> > Hello arm-soc maintainers,
-> >
-> > Please pull this small patch which allows the OP-TEE driver to work with
-> > ARMv7 based single CPU systems.
->
-> Can you rebase that branch onto -rc1? I had started the arm/drivers
-> branch early on top of that, so I'd prefer to avoid a backmerged.
->
-> For the commit itself, shouldn't that be marked as a bugfix and get
-> merged into v5.10 instead? If it should, you don't have to rebase
-> since the arm/fixes branch is already ahead.
+I have resent a patch, thanks!
 
-Yes it is a bit of a bugfix, so if you don't mind taking it as that
-I'm sure that Rui would be happy to get it in this release.
-
->
-> Also, it would be nice to Cc linux-arm-kernel on the pull request
-> in addition to linux-kernel.
-
-I'll keep that in mind the next time. Thanks for the feedback.
-
-Cheers,
-Jens
