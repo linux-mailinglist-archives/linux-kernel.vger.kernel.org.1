@@ -2,164 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3AA2C68B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EAF2C68C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730418AbgK0PaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 10:30:02 -0500
-Received: from mail-eopbgr80095.outbound.protection.outlook.com ([40.107.8.95]:21383
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729113AbgK0PaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 10:30:01 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZqTMDr31EM+czyIzYDxvbAUaJc3gwH/H+mv4mLlts7fUVXUQ5wHxn76o7ipdhe2tcnXuAm47rG8B0szHxSx2MHO/mRpDdoICpbJpOeQ5WX3Ukd2uZbzO40UdhbKUjFQBsMKj0/1KcB0mZ35/vT4exrUBo5b1qy6sNSBvZfwmEzxQthzQioxKfPyi/on/HPS2VOGd6wZqnc+YCaRBXjldm02U6QT92S6x/6ItpL0jpRz0IlHhfGblToQMh1sTSb46SyzXFHgK1EjRzhdoGQ+oj0f6Up2PEFDp0ecOiQd19m38yd+gZ4BpKj8G8AlWwXyCZteqJdLdtrfjYJu7dCMA8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LyGT9oSTyzqXuGScKN1G+ssH23AhFvk1QMQMFBgjqE0=;
- b=MSzamTLTLo9ykKtxWfmyFkqOOIiZUKlC80gY6kTEe6ac1ZvA+9M8lC/nrSdLzKvooUNtjCvXlmI9Ir2YV81phAQuVmAq1DJMBH9yn7PWGL+nSGr8xFK/Pp2/QLkbNp4P9FWZSJnJjQY5VrOU/EHLhIgpjQ9T/rlUJ/KsIHouS9OC2SBoHqEsQBVqynprAniMNRt5vNTS7idrOp78NzwF1Ne3PhhitmjE7n6ty0gRooMQi00pW6PrSVYl5WMn4T0Tv/+xo0U6K4DP51quA0ZfdBr8lz78oYDdsCP5rDsBuH0ngi/7Du2hvqujQVogevpj46zKyh3io10rj3/U1zMKkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LyGT9oSTyzqXuGScKN1G+ssH23AhFvk1QMQMFBgjqE0=;
- b=aeyjn4gbJNUbZzo63c4NF+Q4qfoF+h+GP3kJYpNLvSmA8f4bsmDmZoyR7j/2t3cPDNRTjLDC/C8EYVlqhIMeLyD27aXnjN1hMsJBW5tfB2ceqfxuzuOIjRXhIh9Rx5T2RSCe9HNpdzRSbyfQ1s6/C3S0sZfuTJVJbR28+18pUzU=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=prevas.dk;
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
- by AM8PR10MB4227.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1e1::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Fri, 27 Nov
- 2020 15:29:57 +0000
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3611.025; Fri, 27 Nov 2020
- 15:29:57 +0000
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH] spi: fsl: fix use of spisel_boot signal on MPC8309
-Date:   Fri, 27 Nov 2020 16:29:47 +0100
-Message-Id: <20201127152947.376-1-rasmus.villemoes@prevas.dk>
-X-Mailer: git-send-email 2.23.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [81.216.59.226]
-X-ClientProxiedBy: HE1PR0401CA0080.eurprd04.prod.outlook.com
- (2603:10a6:3:19::48) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:3f::10)
+        id S1730324AbgK0Pfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 10:35:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49566 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728495AbgK0Pff (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 10:35:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606491333;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qrelzvpirT54cJCMkQo5XUUcncDgBEUnpZu4sUUbK54=;
+        b=Pi/cNgEgsPar5McQ2wOtYEKG0tiB3UdqmtQpJeFLXk14wEE+GcGE7e5yuCsfzRebrirRsS
+        nZWV5HOBYC5LZuVeg6bsv5CNoPZ9t2T5/6d0vumi/g28PNvfQ3sQqdCj/KgmYkCkv/ga84
+        n6l6DPiHUHAUQQ6D6KF4fuk8flhH/Ko=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-307-pRVTGOWmPqG_Y-idaTDnWg-1; Fri, 27 Nov 2020 10:35:31 -0500
+X-MC-Unique: pRVTGOWmPqG_Y-idaTDnWg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DD881800D41;
+        Fri, 27 Nov 2020 15:35:30 +0000 (UTC)
+Received: from x1.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A0135D9CC;
+        Fri, 27 Nov 2020 15:35:30 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 08:35:29 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Colin Xu <Colin.Xu@intel.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Fonn, Swee Yee" <swee.yee.fonn@intel.com>
+Subject: Re: [RFC PATCH] vfio/pci: Allow force needs_pm_restore as specified
+ by device:vendor
+Message-ID: <20201127083529.6c4a780c@x1.home>
+In-Reply-To: <7e7a83ca-8530-1afa-4b85-2ef76fb99a5c@intel.com>
+References: <20201125021824.27411-1-colin.xu@intel.com>
+        <20201125085312.63510f9f@w520.home>
+        <7e7a83ca-8530-1afa-4b85-2ef76fb99a5c@intel.com>
+Organization: Red Hat
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from prevas-ravi.prevas.se (81.216.59.226) by HE1PR0401CA0080.eurprd04.prod.outlook.com (2603:10a6:3:19::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22 via Frontend Transport; Fri, 27 Nov 2020 15:29:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 04330c99-a20e-4e76-2a1c-08d892e94ba6
-X-MS-TrafficTypeDiagnostic: AM8PR10MB4227:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM8PR10MB42275ECDB4B7CBB6E40B518393F80@AM8PR10MB4227.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:605;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FGgq/TJb+IZ5umO1NQm+RrXLwPF8fYK1q4RsBSrE+rEY0s9ZalGzhDDdOuko/1VbKrsOSUZgWsrBmTnjjUkeUDnK4FoyztE8aPdbqzXvgaz1JkpXxPt1/l12znpIMv1FNe2hOURB9hMPxBNrMoPDK6mYb/FDMixpBqaoVpQe50mBBEY0ChLAVTpjv64I9X+5P3SjuQ/6aGcU2WFN37dpaUL1+bL/DyBvC/YLEHF7SUl8ZJKnL8A7d7zmr8Kssxac25vGrPJWWhXLSePx7GdICU9V2Ge0SN6B5swj0mvmHlL2e8atIbWlJugL9ZpA0vtTAOfAbv9S/2wPcPa+gzErOdYR2t7YBBGUe8rWmo9TXpVtbmrx/u4zxJZ7OVctaqRCss3LBKIlU/3+YUVcmoSsZA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(396003)(39850400004)(136003)(66476007)(8976002)(2906002)(186003)(478600001)(8936002)(8676002)(16526019)(4326008)(5660300002)(44832011)(6486002)(6666004)(6506007)(956004)(83380400001)(966005)(316002)(26005)(1076003)(86362001)(66946007)(6512007)(66556008)(54906003)(52116002)(36756003)(2616005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?BPEyrAhJEKih1Iowueag0GXLD0ad1rRiwUNHd/Eh/UBvThKuHJxeVyXB8Mas?=
- =?us-ascii?Q?SOgzMi9H9vT58IeM3IcMRG6/l/sxVUrn0zk+qMnlt+JZxxtIiBmhRQ02vazv?=
- =?us-ascii?Q?mGSX4pScWYORzzKEYqMbVEyEVnXssEuYa1xPrl6NycF3emTKJ7/HQ4DXCPtl?=
- =?us-ascii?Q?U5afRc6wF5q0nZgZpnl2liWqxqTCs2LND17cyv1dCKtSw/cdlz5kA9th5/Yx?=
- =?us-ascii?Q?psnQr37GbCTsrZk8mwBHELy4oCVjSF+g9jTsMwG88ZJOMlTClXEXp8JC8ROS?=
- =?us-ascii?Q?Djxh2V2SiixV1nnOimoz1qs8Cf++J9OWsA36cFxj2VKVtr2v/1NM4ItAr20h?=
- =?us-ascii?Q?XN7QqXY0l+glHngMm+r92uhsN5fXJou1SRnYjnwgcfiJiehNNoJlIcSCN8Ct?=
- =?us-ascii?Q?/iBvGpKL8JuwE7GcyU3NRNa7fTo4Tk27UEhUdTW6zRZND19enV3cXNObCGPV?=
- =?us-ascii?Q?wRf7TT2PcIXeHL9PClh4FJntLWSEJeXtmOE6o72ss6x0MnOU6kGApTduwKyA?=
- =?us-ascii?Q?42gFhhdcATRHNARz1JE5L34s7LHLnNL9Gn4XoLgrOktqeNwp9FbWy2OsS80A?=
- =?us-ascii?Q?jVzWZ2zCwNfDkFVyp/g3h27EqP1bljnjX4mwR4UqC46zstllWBxlFQigR1wf?=
- =?us-ascii?Q?xUQdX4g7FTkFCRA7d95McJIYO4jGe8Xkxi6kpe+kUFxrFJ9YKdDNtfmLGPQ6?=
- =?us-ascii?Q?155dgAlGHAlNv3JUBiK8v4fv6+6sG5y1FtTg24KAhn1AB2Yfn7+CKapQxXCY?=
- =?us-ascii?Q?SFAy3wFtjeWVBCda5mTAuj/01ceSV6aEDkRMWWHqrP6nyB+cGQfZtLJv7qj2?=
- =?us-ascii?Q?fbPcsaTdvz0/dFShbRsMS+83acznVjf+WB2hHpSig+1gzyTvfkQu/gyFlYpa?=
- =?us-ascii?Q?F72AFwGrETM2ugXHf2m9828WSeFeCUPLA5mGh36/ON8xxE7HuqiJQfr1q/oQ?=
- =?us-ascii?Q?j/0iqpuuta8WJjcsi2SdJc9X+c3RkaboF6pWPuddFD14+B2QiVKXrGQZvu43?=
- =?us-ascii?Q?y8/l?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04330c99-a20e-4e76-2a1c-08d892e94ba6
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2020 15:29:56.9490
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hZtCcEOqUOvKA55CFrbdiuF5An3Vubzpx+tDw+6lOS6PrTKkRtZf+Z41v2m+KBExa2VmENZDrSSiqCx4rUM9SupI287XQ+s/WELZOUR0jmk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB4227
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
-broke the use of the SPISEL_BOOT signal as a chip select on the
-MPC8309.
+On Fri, 27 Nov 2020 11:53:39 +0800
+Colin Xu <Colin.Xu@intel.com> wrote:
 
-pdata->max_chipselect, which becomes master->num_chipselect, must be
-initialized to take into account the possibility that there's one more
-chip select in use than the number of GPIO chip selects.
+> On 11/25/20 11:53 PM, Alex Williamson wrote:
+> > On Wed, 25 Nov 2020 10:18:24 +0800
+> > Colin Xu <colin.xu@intel.com> wrote:
+> >  
+> >> Force specific device listed in params pm_restore_ids to follow
+> >> device state save/restore as needs_pm_restore.
+> >> Some device has NoSoftRst so will skip current state save/restore enabled
+> >> by needs_pm_restore. However once the device experienced power state
+> >> D3<->D0 transition, either by idle_d3 or the guest driver changes PM_CTL,
+> >> the guest driver won't get correct devie state although the configure
+> >> space doesn't change.  
+> > It sounds like you're describing a device that incorrectly exposes
+> > NoSoftRst when there is in fact some sort of internal reset that
+> > requires reprogramming config space.  What device requires this?  How
+> > is a user to know when this option is required?  It seems like this
+> > would be better handled via a quirk in PCI core that sets a device flag
+> > that the NoSoftRst value is incorrect for the specific affected
+> > devices.  Thanks,
+> >
+> > Alex  
+> 
+> Thanks for the feedback.
+> 
+> The device found are: Comet Lake PCH Serial IO I2C Controller
+> [8086:06e8]
+> [8086:06e9]
+> 
+> Yes you're right, there is no straight way for user to know the device. 
+> The above device I found is during pass through them to VM. Although 
+> adding such param may help in certain scenario, it still too 
+> device-specific but not common in most cases.
 
-Cc: stable@vger.kernel.org # v5.4+
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Fixes: 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
-Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
----
-Longer-term, it might be nicer to introduce a very trivial "gpiochip"
-with nr_gpios=1, which doesn't really implement neither the
-"general-purpose" nor the "input" part of the gpio acronym. That's how
-this ended up being handled in U-Boot, for example:
 
-https://github.com/u-boot/u-boot/commit/3fb22bc2f825ea1b3326edc5b32d711a759a265f
+The chipset i2c controller seems like a pretty suspicious device for
+Intel to advocate assigning to a VM.  Are you assigning this to satisfy
+the isolation issue that we often see where a device like a NIC is
+grouped together with platform management devices due to lack of
+multifunction ACS?  If that's the case, I would think it would make
+more sense to investigate from the perspective of whether there is
+actually DMA isolation between those integrated, multifunction devices
+and if so, implement ACS quirks to expose that isolation.  Thanks,
 
-But for -stable, this is much simpler.
+Alex
 
- drivers/spi/spi-fsl-spi.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/spi/spi-fsl-spi.c b/drivers/spi/spi-fsl-spi.c
-index 299e9870cf58..9494257e1c33 100644
---- a/drivers/spi/spi-fsl-spi.c
-+++ b/drivers/spi/spi-fsl-spi.c
-@@ -716,10 +716,11 @@ static int of_fsl_spi_probe(struct platform_device *ofdev)
- 	type = fsl_spi_get_type(&ofdev->dev);
- 	if (type == TYPE_FSL) {
- 		struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
-+		bool spisel_boot = false;
- #if IS_ENABLED(CONFIG_FSL_SOC)
- 		struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(pdata);
--		bool spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
- 
-+		spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
- 		if (spisel_boot) {
- 			pinfo->immr_spi_cs = ioremap(get_immrbase() + IMMR_SPI_CS_OFFSET, 4);
- 			if (!pinfo->immr_spi_cs)
-@@ -734,10 +735,14 @@ static int of_fsl_spi_probe(struct platform_device *ofdev)
- 		 * supported on the GRLIB variant.
- 		 */
- 		ret = gpiod_count(dev, "cs");
--		if (ret <= 0)
-+		if (ret < 0)
-+			ret = 0;
-+		if (ret == 0 && !spisel_boot) {
- 			pdata->max_chipselect = 1;
--		else
-+		} else {
-+			pdata->max_chipselect = ret + spisel_boot;
- 			pdata->cs_control = fsl_spi_cs_control;
-+		}
- 	}
- 
- 	ret = of_address_to_resource(np, 0, &mem);
--- 
-2.23.0
+> >> Cc: Swee Yee Fonn <swee.yee.fonn@intel.com>
+> >> Signed-off-by: Colin Xu <colin.xu@intel.com>
+> >> ---
+> >>   drivers/vfio/pci/vfio_pci.c | 66 ++++++++++++++++++++++++++++++++++++-
+> >>   1 file changed, 65 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+> >> index e6190173482c..50a4141c9e1d 100644
+> >> --- a/drivers/vfio/pci/vfio_pci.c
+> >> +++ b/drivers/vfio/pci/vfio_pci.c
+> >> @@ -34,6 +34,15 @@
+> >>   #define DRIVER_AUTHOR   "Alex Williamson <alex.williamson@redhat.com>"
+> >>   #define DRIVER_DESC     "VFIO PCI - User Level meta-driver"
+> >>   
+> >> +#define VFIO_MAX_PM_DEV 32
+> >> +struct vfio_pm_devs {
+> >> +	struct {
+> >> +		unsigned short  vendor;
+> >> +		unsigned short  device;
+> >> +	} ids[VFIO_MAX_PM_DEV];
+> >> +	u32 count;
+> >> +};
+> >> +
+> >>   static char ids[1024] __initdata;
+> >>   module_param_string(ids, ids, sizeof(ids), 0);
+> >>   MODULE_PARM_DESC(ids, "Initial PCI IDs to add to the vfio driver, format is \"vendor:device[:subvendor[:subdevice[:class[:class_mask]]]]\" and multiple comma separated entries can be specified");
+> >> @@ -64,6 +73,10 @@ static bool disable_denylist;
+> >>   module_param(disable_denylist, bool, 0444);
+> >>   MODULE_PARM_DESC(disable_denylist, "Disable use of device denylist. Disabling the denylist allows binding to devices with known errata that may lead to exploitable stability or security issues when accessed by untrusted users.");
+> >>   
+> >> +static char pm_restore_ids[1024] __initdata;
+> >> +module_param_string(pm_restore_ids, pm_restore_ids, sizeof(pm_restore_ids), 0);
+> >> +MODULE_PARM_DESC(pm_restore_ids, "comma separated device in format of \"vendor:device\"");
+> >> +
+> >>   static inline bool vfio_vga_disabled(void)
+> >>   {
+> >>   #ifdef CONFIG_VFIO_PCI_VGA
+> >> @@ -260,10 +273,50 @@ static bool vfio_pci_nointx(struct pci_dev *pdev)
+> >>   	return false;
+> >>   }
+> >>   
+> >> +static struct vfio_pm_devs pm_devs = {0};
+> >> +static void __init vfio_pci_fill_pm_ids(void)
+> >> +{
+> >> +	char *p, *id;
+> >> +	int idx = 0;
+> >> +
+> >> +	/* no ids passed actually */
+> >> +	if (pm_restore_ids[0] == '\0')
+> >> +		return;
+> >> +
+> >> +	/* add ids specified in the module parameter */
+> >> +	p = pm_restore_ids;
+> >> +	while ((id = strsep(&p, ","))) {
+> >> +		unsigned int vendor, device = PCI_ANY_ID;
+> >> +		int fields;
+> >> +
+> >> +		if (!strlen(id))
+> >> +			continue;
+> >> +
+> >> +		fields = sscanf(id, "%x:%x", &vendor, &device);
+> >> +
+> >> +		if (fields != 2) {
+> >> +			pr_warn("invalid vendor:device string \"%s\"\n", id);
+> >> +			continue;
+> >> +		}
+> >> +
+> >> +		if (idx < VFIO_MAX_PM_DEV) {
+> >> +			pm_devs.ids[idx].vendor = vendor;
+> >> +			pm_devs.ids[idx].device = device;
+> >> +			pm_devs.count++;
+> >> +			idx++;
+> >> +			pr_info("add [%04x:%04x] for needs_pm_restore\n",
+> >> +				vendor, device);
+> >> +		} else {
+> >> +			pr_warn("Exceed maximum %d, skip adding [%04x:%04x] for needs_pm_restore\n",
+> >> +				VFIO_MAX_PM_DEV, vendor, device);
+> >> +		}
+> >> +	}
+> >> +}
+> >> +
+> >>   static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
+> >>   {
+> >>   	struct pci_dev *pdev = vdev->pdev;
+> >> -	u16 pmcsr;
+> >> +	u16 pmcsr, idx;
+> >>   
+> >>   	if (!pdev->pm_cap)
+> >>   		return;
+> >> @@ -271,6 +324,16 @@ static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
+> >>   	pci_read_config_word(pdev, pdev->pm_cap + PCI_PM_CTRL, &pmcsr);
+> >>   
+> >>   	vdev->needs_pm_restore = !(pmcsr & PCI_PM_CTRL_NO_SOFT_RESET);
+> >> +
+> >> +	for (idx = 0; idx < pm_devs.count; idx++) {
+> >> +		if (vdev->pdev->vendor == pm_devs.ids[idx].vendor &&
+> >> +		    vdev->pdev->device == pm_devs.ids[idx].device) {
+> >> +			vdev->needs_pm_restore = true;
+> >> +			pr_info("force [%04x:%04x] to needs_pm_restore\n",
+> >> +				vdev->pdev->vendor, vdev->pdev->device);
+> >> +			break;
+> >> +		}
+> >> +	}
+> >>   }
+> >>   
+> >>   /*
+> >> @@ -2423,6 +2486,7 @@ static int __init vfio_pci_init(void)
+> >>   		goto out_driver;
+> >>   
+> >>   	vfio_pci_fill_ids();
+> >> +	vfio_pci_fill_pm_ids();
+> >>   
+> >>   	if (disable_denylist)
+> >>   		pr_warn("device denylist disabled.\n");  
+> 
 
