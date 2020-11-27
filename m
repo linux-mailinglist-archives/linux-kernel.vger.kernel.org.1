@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F210F2C65D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA262C65CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbgK0MjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:39:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48938 "EHLO mail.kernel.org"
+        id S1728661AbgK0MjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:39:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44462 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729148AbgK0MjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:39:23 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2A0322240;
-        Fri, 27 Nov 2020 12:39:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606480762;
-        bh=uitY12qTzJ6CCv8Sff1HVoEyGCJ5WaJc3uh+EFJw428=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kjFojvRH5W2864LJMjgV8LXoFhjHdTqCBxc64tYibo7aT9tPtIENd2Ja4CWpa4a4W
-         IPG0FUzwTPM9bFCAUIVq7rWxHoBH8l3UVC2DTZlBPfvdy/KptFKTB/tbqlBE6RuV4h
-         xaa6D5AHgV65Ab1gaN4BSiafN5cRy5AsZCzVEGbE=
-Date:   Fri, 27 Nov 2020 12:38:56 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: Re: [PATCH] Asoc: qcom: Fix for problem in resume with CRAS
-Message-ID: <20201127123856.GA4845@sirena.org.uk>
-References: <1606450323-21641-1-git-send-email-srivasam@codeaurora.org>
+        id S1725985AbgK0MjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 07:39:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606480756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S40mvgFHdlEpWQWWOkmkDIIHSMDH7gWDGXCALvGZ7L0=;
+        b=Kvrrd0TbDOdxYUHo8IBi/wiRJH6O/5B3Pj4cn0DyCRdybnAgsF34+NEKJfb8waYPB3EUs6
+        QG2OTowYvI8+kTlZm8YZsMRu5x/ItCXj8mmNj4UtUbpfnHHcIYBRTjlfdX8s1sUntAbAZt
+        2/R1aAQvMkaYbBsfIf6+c2a7pEY/lxs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 24174AC2E;
+        Fri, 27 Nov 2020 12:39:16 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 13:39:14 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] printk: finalize records with trailing newlines
+Message-ID: <X8DzctH5tYpM2/sd@alley>
+References: <20201126114836.14750-1-john.ogness@linutronix.de>
+ <53ab7746-5871-992b-7ab8-853b7c08ae13@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1606450323-21641-1-git-send-email-srivasam@codeaurora.org>
-X-Cookie: All work and no pay makes a housewife.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <53ab7746-5871-992b-7ab8-853b7c08ae13@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 2020-11-26 20:32:18, Kefeng Wang wrote:
+> 
+> On 2020/11/26 19:48, John Ogness wrote:
+> > Any record with a trailing newline (LOG_NEWLINE flag) cannot
+> > be continued because the newline has been stripped and will
+> > not be visible if the message is appended. This was already
+> > handled correctly when committing in log_output() but was
+> > not handled correctly when committing in log_store().
+> > 
+> > Fixes: f5f022e53b87 ("printk: reimplement log_cont using record extension")
+> > Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> > ---
+> >   This is an important bugfix for continuous messages and should
+> >   be part of the 5.10 release.
+> > 
+> >   If not applied, newlines will vanish when concatenating
+> >   continuous with trailing newlines.
+> Thanks for you quick fix.
+> 
+> Reported-and-tested-by:  Kefeng Wang <wangkefeng.wang@huawei.com>
 
---vtzGhvizbBRQ85DL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The patch is committed in printk/linux.git, branch
+for-5.10-pr_cont-fixup.
 
-On Fri, Nov 27, 2020 at 09:42:03AM +0530, Srinivasa Rao Mandadapu wrote:
-> To support playback continuation after resume problem in chrome
-> audio server:
-> Prepare device in  platform trigger callback.
-> Make I2s and DMA control registers as non volatile.
+I do not have much experience with pushing fixes this late in the
+release cycle.
 
-What is the actual issue this is fixing?
+Normally, I would prefer to give it few days in linux-next. But
+the fix is quite trivial. And it would be better to have it
+in 10-rc6 rather than in rc7 that might be the last rc before
+release.
 
-As I have previously said please submit patches using subject lines
-reflecting the style for the subsystem, this makes it easier for people
-to identify relevant patches.  Look at what existing commits in the area
-you're changing are doing and make sure your subject lines visually
-resemble what they're doing.  There's no need to resubmit to fix this
-alone.
+Thanks a lot for report, fix, and testing.
 
---vtzGhvizbBRQ85DL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/A82AACgkQJNaLcl1U
-h9A/7Qf/c6x/s5ZWRfoB7c+m1pakjVu2TQcvsEdS0xLz2/SldOq2hhGP0dW6gXca
-4brb3HK8lDaIwnlbk3N27mGDUObmzte/41ZJ/Gx0HNIqN8oU7dEgO+AEU+XJ+bnO
-cFBy1NhWu2ZnC33hkVxeyJSzDg0hT2pTE+rOoCRog0cgWXlsGfQW/OJONyTdVfeX
-g+LnVrLafbO4ERJRlYICy1Ibj8ongorQVPPGU3OoB1fq4cMXvO18NMi7pg/dFH/q
-YqzP2l5jrH+jiugbzniHHcvnkqVFta8BfKcxZqeXfDKT6Cv3vtT6c/k++/Guzq0V
-J67riGm4jZB7+pEneGlM4ZSQr/mmng==
-=YJfA
------END PGP SIGNATURE-----
-
---vtzGhvizbBRQ85DL--
+Best Regards,
+Petr
