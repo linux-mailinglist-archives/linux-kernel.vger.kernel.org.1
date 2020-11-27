@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244582C6CFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEBE2C6D08
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732179AbgK0Vre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 16:47:34 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48849 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732380AbgK0VpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 16:45:05 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CjSnV5F0qz9s0b;
-        Sat, 28 Nov 2020 08:44:14 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606513455;
-        bh=ub5PZnR5+XaV7QtxRqzhr61Zeo2CaES2yY+8j2LiOBo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VyJTWwTQs6JyWRW7wCopRXFaKqEqIeXynFXJyza6Ft0CgHRrEbzonwAeSwjfD35CU
-         YFEbFd6pqOvHPArAMQ/DgSY3KflMm7EPAgUbdZEoADNwZU9hD5TjeWh5S0AkIZCSDb
-         xbFr3QkVmT2wDfSP2IMqo4MNiQtjJ9q4N8wiAfXSX5J4aZ1EdsZNlrIvrBor7fl86T
-         8AUzVocijT6MxtJR2OLPAAYUboQXYlvVXots2bZre7XLE7cshXvWaRMsCUxpRqIjvf
-         qbwxgj9cOyTsBSR9rUlCPvk2g3mo5XeTVjLxRhgD4lA5/2ju9V1KvCXPgB/BOIrysR
-         CTFsbznxgOkYQ==
-Date:   Sat, 28 Nov 2020 08:44:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: linux-next: Tree for Nov 27 (parisc: signal flags)
-Message-ID: <20201128084414.3daa87d2@canb.auug.org.au>
-In-Reply-To: <155a20fd-09c4-df35-9cc6-8526a89c2933@infradead.org>
-References: <20201127200457.1ffb6aaf@canb.auug.org.au>
-        <155a20fd-09c4-df35-9cc6-8526a89c2933@infradead.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wQycoIya6A4=Fb8SpZ=hKS4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1732495AbgK0VyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 16:54:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730732AbgK0Vus (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 16:50:48 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CE5C0613D4;
+        Fri, 27 Nov 2020 13:50:48 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id f17so5265975pge.6;
+        Fri, 27 Nov 2020 13:50:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Z2ig0YQSnUunmi3IX5y1I8JdsSlOi9idmsNtTiBo7ok=;
+        b=l2Q+nJPuH8NmB2PzY1VrPimThUwNcXTaaau4xpvXD74XejsIqKORZEnL4B38xx49mD
+         K8JEtwZykO/tjwfkL+2ChwaP699bdQW5TjaCwQd9gsXG++TC9jnQ84m+t+bMHFQ5rywT
+         5kr5Bib8Zk0mcP96Ql/0clgy8QGTIiKL6cO1e+SpyLFtpzaBo6QaQ1V0OJD7sc2ipEKT
+         u8eUiHBU6fMb+XCaYjuVMVsqxHd/FD7bX5s/OcPP9XEbwKE/zcEIoYxmU9F0I98CHxCD
+         YSQodiw2rBrb4u/K08nXay/H3aioN5jjURZ4gJmi1KtslmDucGBwdN4A3Tg+ipkqu1Jw
+         d3jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Z2ig0YQSnUunmi3IX5y1I8JdsSlOi9idmsNtTiBo7ok=;
+        b=NAF8lVgAWGbMhGvBFOyCLNwLbatKdB5IqKS+kgTX9N2pRvIRNVKL0I5uN0aOzh2Huv
+         W9qh9MKufxEe9fxnMGcRedVSaaQS6H6cMf0pVYSFdLmfxrCkrcwXN1plmVgxX0y4xfcl
+         AFbXm3PesKAB9y1Z9C/weBZ6wxXesGm3q3mPLItr5EcviQFMzd6Tbb0J9nGd6/E4fKWo
+         QqXN8g/9/c4QaP5yt3ilG1u8EL9BpVxigZ+9FMdxZqzAXIPDSdll35/gPwVj2YSfy6mp
+         Nf4S1XqP+VTSgNobrbNCbyo5f39MitnpqjHRy/vx5WukRHEL2mWw8uHZRL+9iUV/2L0s
+         91ag==
+X-Gm-Message-State: AOAM530skfLNy6pkgZd1trLMrptUlKh3/4Vux121QVgbV9+bRIUfMh6m
+        Sp+Yv4gxfm16nhLDJSKb740=
+X-Google-Smtp-Source: ABdhPJyMU67Zli7Ek+SiL7ugkA0JFhHVA+oYndLCD2wsRVJhJtVJufk0Oif0dm6UmkXVakJsIe1CiA==
+X-Received: by 2002:aa7:91d2:0:b029:19a:8ccd:8b0 with SMTP id z18-20020aa791d20000b029019a8ccd08b0mr8730745pfa.40.1606513847674;
+        Fri, 27 Nov 2020 13:50:47 -0800 (PST)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.220.174])
+        by smtp.gmail.com with ESMTPSA id e141sm8545912pfh.13.2020.11.27.13.50.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 27 Nov 2020 13:50:47 -0800 (PST)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org, matthias.bgg@gmail.com
+Cc:     linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] remoteproc/mediatek: Fix kernel test robot warning
+Date:   Sat, 28 Nov 2020 03:20:55 +0530
+Message-Id: <1606513855-21130-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wQycoIya6A4=Fb8SpZ=hKS4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Kernel test robot throws below warning ->
 
-Hi all,
+>> drivers/remoteproc/mtk_scp.c:755:37: warning: unused variable
+>> 'mt8183_of_data' [-Wunused-const-variable]
+   static const struct mtk_scp_of_data mt8183_of_data = {
+                                       ^
+>> drivers/remoteproc/mtk_scp.c:765:37: warning: unused variable
+>> 'mt8192_of_data' [-Wunused-const-variable]
+   static const struct mtk_scp_of_data mt8192_of_data = {
+                                       ^
+As suggested by Bjorn, there's no harm in just dropping the
+of_match_ptr() wrapping of mtk_scp_of_match in the definition of
+mtk_scp_driver and we avoid this whole problem.
 
-On Fri, 27 Nov 2020 10:43:07 -0800 Randy Dunlap <rdunlap@infradead.org> wro=
-te:
->
-> On 11/27/20 1:04 AM, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > Changes since 20201126:
-> >  =20
->=20
-> on parisc, _SA_SIGGFAULT is undefined and causing build errors.
->=20
-> commit 23acdc76f1798b090bb9dcc90671cd29d929834e
-> Author: Peter Collingbourne <pcc@google.com>
-> Date:   Thu Nov 12 18:53:34 2020 -0800
->=20
->     signal: clear non-uapi flag bits when passing/returning sa_flags
->=20
->=20
->=20
-> _SA_SIGGFAULT is not used or defined anywhere else in the
-> kernel source tree.
+Reported-by: kernel test robot <lkp@intel.com>
+Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+---
+ drivers/remoteproc/mtk_scp.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
+diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
+index 7e0f1e1..5f42b9c 100644
+--- a/drivers/remoteproc/mtk_scp.c
++++ b/drivers/remoteproc/mtk_scp.c
+@@ -772,21 +772,19 @@ static int scp_remove(struct platform_device *pdev)
+ 	.host_to_scp_int_bit = MT8192_HOST_IPC_INT_BIT,
+ };
+ 
+-#if defined(CONFIG_OF)
+ static const struct of_device_id mtk_scp_of_match[] = {
+ 	{ .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
+ 	{ .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, mtk_scp_of_match);
+-#endif
+ 
+ static struct platform_driver mtk_scp_driver = {
+ 	.probe = scp_probe,
+ 	.remove = scp_remove,
+ 	.driver = {
+ 		.name = "mtk-scp",
+-		.of_match_table = of_match_ptr(mtk_scp_of_match),
++		.of_match_table = mtk_scp_of_match,
+ 	},
+ };
+ 
+-- 
+1.9.1
 
-_SA_SIGGFAULT was removed by commit
-
-  41f5a81c07cd ("parisc: Drop HP-UX specific fcntl and signal flags")
-
-which was added to Linus' tree in v5.10-rc1.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/wQycoIya6A4=Fb8SpZ=hKS4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Bcy4ACgkQAVBC80lX
-0GxIdQf+Jf2y/pnPzPbXSLELtuT+08SDoBstIe5ZBx9ZNjJe9928V543Pp8dT4ff
-zdglHKyu/Jx1A4PGzK1pEJUgpk50B0SGg3wMrnSW0SA3PdAjeSiurfzblGhS8DJH
-RioYdjqZrOwbNAAwX2nOwFSKDZclRkcgUuYyWBWz7bpKxbHKQYMLQEh3pNAQUSKt
-Fxfrfs/7XweCZYWV+wuBPeyyQ0bit69A9c/xVvTlPDNvj98ttFK7wYEimXYYj+Li
-rt1rQCQmZdwvr6LjtkZcA//vo++4D1selopI1E5+eQe9UeaNOg4kXXtRlFrTsht3
-yPIisKYL7+TeH78VwIVi0dOhIJgtGg==
-=Qxxn
------END PGP SIGNATURE-----
-
---Sig_/wQycoIya6A4=Fb8SpZ=hKS4--
