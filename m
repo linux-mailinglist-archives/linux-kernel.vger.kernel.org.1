@@ -2,92 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9C52C6A26
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E37AE2C6A2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731876AbgK0Qu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:50:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
+        id S1731953AbgK0QvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:51:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731534AbgK0Qu2 (ORCPT
+        with ESMTP id S1731900AbgK0QvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:50:28 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E40C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:50:26 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id hb22so8232963ejb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:50:26 -0800 (PST)
+        Fri, 27 Nov 2020 11:51:15 -0500
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1F6C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:51:14 -0800 (PST)
+Received: by mail-vk1-xa42.google.com with SMTP id s135so1272592vkh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:51:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=t1q1/SHKgIbW+C5B/mTAdQ8BsxcSyq0zUymWZe9rx3U=;
-        b=ge2XywzPkpdxv9n/Fbs5vWEHA989qR/8Yox1ZRHLfL1xJSVMaIqd7r2X0hfJqySlWl
-         MUDt/K1VtjFqQsHHOQBDcWjh9BqtMyF0ol3dlQdiybZobKY7sLJHvFb0vte1J1XIoGRz
-         juKlidqO/OxMgfrKNYLPFyQQExhPFDMupmdj8=
+        bh=X7jtzNs0NbYHlVVmlLsP7b2/FUYkvw9tqQfhdc87EyE=;
+        b=r7N5PALFBkMVMurrPrTyIWvenPdAmItRtcw/fq7VdG/Lmay5Gng1oWK0qXANy6S+tt
+         NCHXnAci/9v1VUarKydxLMEOj7yjlJ8X+EdUoZvLCg8bKqjyvrrfbJ3gKdt09gu1LWbf
+         s2O04IakYss1f17gOqG0NgUvL3lhSXMbKSmCd/8nPD82Ue3fvgcUmHiZ9cK9vGgi2LYV
+         Ca68HvMxWcglGqLXp8mCNjVqoxMa4SnJ33UD84nS4AyTlkP8Yp/PW2T+IY6j6Bi1w9R0
+         Zwg/549g3eVRVfL+X+xY1iz2odmNfd6W44KcyMlEWKItU+42UkW1rl0WxlhhcPLfthwt
+         nK3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=t1q1/SHKgIbW+C5B/mTAdQ8BsxcSyq0zUymWZe9rx3U=;
-        b=GyKceZuQs7XKJ69ADjQhijwyb/ghU+wCuGmKcLisnpkpjuGtFMP/qsGH0Y1BwBFa7F
-         0XgTHbcG+e7fu2EXXSm32ZfYDsNvLQM3Hnl9hCQYZ8YPkdGLTFnNiaYTShnR3oIaMkqZ
-         JbvAl+XOhf9oehPrjYu+8hFjLAyn9jg9EInHEG5SvtzuTR31pnJ36iqj/4P7uVpPJH8Q
-         ZwNkjjbCB9txxjpeb6gPL9N8SNM9NK+nC903delwApl+7VS51sHo//wCm6YOtKChpY6Q
-         wYFXeqOGuJNEC+hOxf0f2nsdqBkrDfppm24khRP5Qa+cCycQUNorFRWfqYVrBolNv804
-         xiEA==
-X-Gm-Message-State: AOAM531Nupn90Yr6KSngJlfYXE4mo1WYg2Pz4WkcXqch8nWbq9L/tRJ2
-        uLgMnCBTkouBTj1oxN+ZZ7fIm6TQPqoG+w==
-X-Google-Smtp-Source: ABdhPJzyQ+YUJbcgGIzSxzlbdEeCAXeE44fVkNvbb94cquwVBDsBw4BIAMtjUZOcB4JxyFioKEf4RA==
-X-Received: by 2002:a17:906:f18f:: with SMTP id gs15mr9018653ejb.474.1606495825037;
-        Fri, 27 Nov 2020 08:50:25 -0800 (PST)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
-        by smtp.gmail.com with ESMTPSA id v5sm5031314ejh.99.2020.11.27.08.50.24
+        bh=X7jtzNs0NbYHlVVmlLsP7b2/FUYkvw9tqQfhdc87EyE=;
+        b=EBtPoedYNEalXXds4Wvn20OAeVD0AkdHP8kFfUGQDCzp6lXib8kQJULyCcKuCumlJX
+         e+soF1lPAlURQg/GGKgKPCKUSkwTGTZro5Lu2n6dQ3F+bzjVnF9Xrc715Qt1vtJSkI1Z
+         rJyuApbQXEoGI7z7PFI57Dx1uEmIPXu8l0E4x86ed5gnMieGdj2HeoH4VzW6mS2CvFfM
+         mZN8OH7/asP09M+l7QQYP9wrjzz+lKCr8/GvhHUlWvvqA1IudhD1OVRVwssnVB92b2xZ
+         oyi27Vc80E9Mp5G0uKkrov9BCxrhBPSbyKMH/RkQjvMsfKw/nhRQJvDihY+ddcJ1i1xw
+         1cjQ==
+X-Gm-Message-State: AOAM533ANEctwwjE3NMYhBCshaxDppoCfIokFTwOubEagm2Sz6ieYwsz
+        Jq7MRUHVCVL+EhXnRB+gANXEHuXRFEE=
+X-Google-Smtp-Source: ABdhPJz0XwWbvkG4FO+A8fdtRwupeCPWCN/chQ//MDU/W4W4i7jpP/pcpt0eli0tymjMakbI+LqetA==
+X-Received: by 2002:ac5:cce1:: with SMTP id k1mr6895240vkn.11.1606495873416;
+        Fri, 27 Nov 2020 08:51:13 -0800 (PST)
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
+        by smtp.gmail.com with ESMTPSA id h79sm573463vka.50.2020.11.27.08.51.12
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 08:50:24 -0800 (PST)
-Received: by mail-wr1-f53.google.com with SMTP id 64so6209959wra.11
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:50:24 -0800 (PST)
-X-Received: by 2002:adf:f542:: with SMTP id j2mr11727842wrp.32.1606495823649;
- Fri, 27 Nov 2020 08:50:23 -0800 (PST)
+        Fri, 27 Nov 2020 08:51:12 -0800 (PST)
+Received: by mail-vs1-f44.google.com with SMTP id j140so2858969vsd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:51:12 -0800 (PST)
+X-Received: by 2002:a05:6102:1173:: with SMTP id k19mr6628798vsg.51.1606495871475;
+ Fri, 27 Nov 2020 08:51:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20201127094136.1051071-1-sergey.senozhatsky@gmail.com>
- <0dbfa509-8c82-7470-c18b-24ab5c92dc4b@xs4all.nl> <X8ENifLanjYuhF/r@jagdpanzerIV.localdomain>
- <509cc69b-39d7-4b13-f392-ebf25530c8fe@xs4all.nl> <X8Eq4V++hRsKuYSF@jagdpanzerIV.localdomain>
-In-Reply-To: <X8Eq4V++hRsKuYSF@jagdpanzerIV.localdomain>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Sat, 28 Nov 2020 01:50:12 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5D7V8hbdZv_VxAUHUBsbknJsWMaU=h=5j19Z-J8FL27FQ@mail.gmail.com>
-Message-ID: <CAAFQd5D7V8hbdZv_VxAUHUBsbknJsWMaU=h=5j19Z-J8FL27FQ@mail.gmail.com>
-Subject: Re: [PATCH] media: vb2: always set buffer cache sync hints
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
+References: <20201125173436.1894624-1-elver@google.com> <20201125124313.593fc2b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CANpmjNP_=Awx0-eZisMXzgXxKqf7hcrZYCYzFXuebPcwZtkoLw@mail.gmail.com>
+ <CAF=yD-JtRUjmy+12kTL=YY8Cfi_c92GVbHZ647smWmasLYiNMg@mail.gmail.com> <CANpmjNO8H9OJDTcKhg4PRVEV04Gxnb56mJY2cB9j4cH+4nznhQ@mail.gmail.com>
+In-Reply-To: <CANpmjNO8H9OJDTcKhg4PRVEV04Gxnb56mJY2cB9j4cH+4nznhQ@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 27 Nov 2020 11:50:34 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSfCSZFC2Bz5WpnaoU__jrd8sSwsDqN1TNar3yeGNbVeQQ@mail.gmail.com>
+Message-ID: <CA+FuTSfCSZFC2Bz5WpnaoU__jrd8sSwsDqN1TNar3yeGNbVeQQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: switch to storing KCOV handle directly in sk_buff
+To:     Marco Elver <elver@google.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Aleksandr Nogikh <a.nogikh@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Ido Schimmel <idosch@idosch.org>,
+        Florian Westphal <fw@strlen.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 1:35 AM Sergey Senozhatsky
-<sergey.senozhatsky@gmail.com> wrote:
+On Fri, Nov 27, 2020 at 7:26 AM Marco Elver <elver@google.com> wrote:
 >
-> On (20/11/27 15:56), Hans Verkuil wrote:
-> > Yes.
+> On Thu, 26 Nov 2020 at 17:35, Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> > On Thu, Nov 26, 2020 at 3:19 AM Marco Elver <elver@google.com> wrote:
+> [...]
+> > > Will send v2.
 > >
-> > BTW, wouldn't it be sufficient to change this code to:
-> >
-> >       if (!q->allow_cache_hints && q->memory != VB2_MEMORY_DMABUF) {
-> >               vb->need_cache_sync_on_prepare = 1;
-> >               vb->need_cache_sync_on_finish = 1;
-> >       }
+> > Does it make more sense to revert the patch that added the extensions
+> > and the follow-on fixes and add a separate new patch instead?
 >
-> I think it would be sufficient.
+> That doesn't work, because then we'll end up with a build-broken
+> commit in between the reverts and the new version, because mac80211
+> uses skb_get_kcov_handle().
+>
+> > If adding a new field to the skb, even if only in debug builds,
+> > please check with pahole how it affects struct layout if you
+> > haven't yet.
+>
+> Without KCOV:
+>
+>         /* size: 224, cachelines: 4, members: 72 */
+>         /* sum members: 217, holes: 1, sum holes: 2 */
+>         /* sum bitfield members: 36 bits, bit holes: 2, sum bit holes: 4 bits */
+>         /* forced alignments: 2 */
+>         /* last cacheline: 32 bytes */
+>
+> With KCOV:
+>
+>         /* size: 232, cachelines: 4, members: 73 */
+>         /* sum members: 225, holes: 1, sum holes: 2 */
+>         /* sum bitfield members: 36 bits, bit holes: 2, sum bit holes: 4 bits */
+>         /* forced alignments: 2 */
+>         /* last cacheline: 40 bytes */
 
-Does it matter at this point if allow_cache_hints is set or not?
+Thanks. defconfig leaves some symbols disabled, but manually enabling
+them just fills a hole, so 232 is indeed the worst case allocation.
 
-Best regards,
-Tomasz
+I recall a firm edict against growing skb, but I don't know of a
+hard limit at exactly 224.
+
+There is a limit at 2048 - sizeof(struct skb_shared_data) == 1728B
+when using pages for two ETH_FRAME_LEN (1514) allocations.
+
+This would leave 1728 - 1514 == 214B if also squeezing the skb itself
+in with the same allocation.
+
+But I have no idea if this is used anywhere. Certainly have no example
+ready. And as you show, the previous default already is at 224.
+
+If no one else knows of a hard limit at 224 or below, I suppose the
+next technical limit is just 256 for kmem cache purposes.
+
+My understanding was that skb_extensions was supposed to solve this
+problem of extending the skb without growing the main structure. Not
+for this patch, but I wonder if we can resolve the issues exposed here
+and make usable in more conditions.
