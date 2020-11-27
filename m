@@ -2,94 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BC92C69FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4682C69FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731689AbgK0QpQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Nov 2020 11:45:16 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:34756 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732016AbgK0QpP (ORCPT
+        id S1731687AbgK0Qpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:45:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52641 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731233AbgK0Qpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:45:15 -0500
-Received: by mail-oi1-f195.google.com with SMTP id s18so6502909oih.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:45:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PNkdNVtybM7ASEm6wqIScGKsEVgtoQgmQQZVfx855PU=;
-        b=MMFGmxtC/nGYZLxOu8F8fUwwtgU54cHXiqMUmumaJkmQhjZQ18owwsJYaQ4JGa9o0r
-         geKe639G9dBqamEz5ljvcvHi8VUF8doG9rbrpwZ72onEaylKHpzCx0TMMD5epn6SINtF
-         ZqlawvGh5DDZ0coHC3d6mlPF87f6STkegeWfxofWBSoslU5ejd22IZEVQbqN5bZ7Dz0x
-         Gdb9Mtkw7MksnJN06AelN9ZcLQYrdJMc9cRMI2NQTuSc1XfSV6nv0i5BjKcdbdwztnmc
-         QLjnU75lj5C1pnntX/C3e5bDBXSnqjiTfsa2kPgZVGifdGyrCMLGItUbwLm0wAexQC5o
-         7L2Q==
-X-Gm-Message-State: AOAM532sKo6uHA8EIIs6GyE9s2Jlw3D9zm0zRVMqOIgyHJ0t67OjeIxZ
-        OxH7TbTL27+eus5OOB5Pz0XnHyJXDnxK4ppZv7Q=
-X-Google-Smtp-Source: ABdhPJx+9Sh6yRQ40w4dQ0pplbEXiAcCxvTWO/rHlQT0V7qB0CCMd0abmN+DCNLBSZPwBf7tV6tVRhBWCicqXztQv+s=
-X-Received: by 2002:aca:4bc3:: with SMTP id y186mr6005674oia.153.1606495514466;
- Fri, 27 Nov 2020 08:45:14 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1606495281.git.agx@sigxcpu.org> <a27f198a0fed19e52a380e59339105c4bf98c989.1606495281.git.agx@sigxcpu.org>
-In-Reply-To: <a27f198a0fed19e52a380e59339105c4bf98c989.1606495281.git.agx@sigxcpu.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 27 Nov 2020 17:45:03 +0100
-Message-ID: <CAMuHMdUK3gbHwR94BcjRBkNvdpQSJrMn0itrs65Ay5KqUCA-Hg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] arm64: defconfig: Enable more Librem 5 hardware
-To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Walle <michael@walle.cc>,
+        Fri, 27 Nov 2020 11:45:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606495534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BFzxJ0LqFvUbcYcFeHzyf+vWZiMH5SU2REmsbBd10N8=;
+        b=SiP6sadTQQ5QvNNHUYycSFt6xlYyQTpBMGRMSq23rPLx4X9lseOi18PG+f6vXmnFmMZaiM
+        ybllgDEiITznKQhgBZWCPcidfLb6HF3CdJWw7MdLMd7dsR+Mb029tM+tFvADM/lv78EG6g
+        RTc9XgKc411gMr5Fhal6Je92weRomAE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-hJyyTcCMPxWe0M8Pz4bx4g-1; Fri, 27 Nov 2020 11:45:30 -0500
+X-MC-Unique: hJyyTcCMPxWe0M8Pz4bx4g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 801403FD1;
+        Fri, 27 Nov 2020 16:45:28 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C393060BF1;
+        Fri, 27 Nov 2020 16:45:24 +0000 (UTC)
+Subject: [PATCH 0/9] keys: Miscellaneous fixes
+From:   David Howells <dhowells@redhat.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     James Morris <jmorris@namei.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Jarkko Sakkinen <jarkko.sakkinen@iki.fi>,
+        Jann Horn <jannh@google.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Ben Boeckel <mathstuf@gmail.com>,
+        linux-security-module@vger.kernel.org,
+        Denis Efremov <efremov@linux.com>, keyrings@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tom Rix <trix@redhat.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, dhowells@redhat.com,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 27 Nov 2020 16:45:24 +0000
+Message-ID: <160649552401.2744658.15096366594785577090.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guido,
 
-Thanks for your patch!
+Hi Jarkko,
 
-On Fri, Nov 27, 2020 at 5:42 PM Guido Günther <agx@sigxcpu.org> wrote:
-> This enables
->
-> - CONFIG_BATTERY_MAX17042: battery chip
-> - CONFIG_CHARGER_BQ25980: charge controller
-> - CONFIG_DRM_PANEL_MANTIX_MLAF057WE5: LCD panel
-> - CONFIG_IMX_DCSS: 2nd dislay controller
+I've collected together a bunch of minor keyrings fixes, but I'm not sure
+there's anything that can't wait for the next merge window.
 
-display
+The patches can be found on the following branch:
 
-> - CONFIG_LEDS_LM3692X: LCD backlight
-> - CONFIG_REGULATOR_TPS65132: regulator for the LCD panel
-> - CONFIG_TOUCHSCREEN_EDT_FT5X06: touch controller
-> - CONFIG_TYPEC_TPS6598X: USB PD controller
-> - CONFIG_VCNL4000: ambient light and proximiry sensor
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-fixes
 
-proximity
+David
+---
+Alexander A. Klimov (1):
+      encrypted-keys: Replace HTTP links with HTTPS ones
 
->
-> as modules.
->
-> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+Denis Efremov (1):
+      security/keys: use kvfree_sensitive()
 
-Gr{oetje,eeting}s,
+Gabriel Krisman Bertazi (1):
+      watch_queue: Drop references to /dev/watch_queue
 
-                        Geert
+Gustavo A. R. Silva (1):
+      security: keys: Fix fall-through warnings for Clang
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Jann Horn (1):
+      keys: Remove outdated __user annotations
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Krzysztof Kozlowski (1):
+      KEYS: asymmetric: Fix kerneldoc
+
+Randy Dunlap (2):
+      security: keys: delete repeated words in comments
+      crypto: asymmetric_keys: fix some comments in pkcs7_parser.h
+
+Tom Rix (1):
+      KEYS: remove redundant memset
+
+
+ Documentation/security/keys/core.rst     |  4 ++--
+ crypto/asymmetric_keys/asymmetric_type.c |  6 ++++--
+ crypto/asymmetric_keys/pkcs7_parser.h    |  5 ++---
+ include/keys/encrypted-type.h            |  2 +-
+ samples/Kconfig                          |  2 +-
+ samples/watch_queue/watch_test.c         |  2 +-
+ security/keys/Kconfig                    |  8 ++++----
+ security/keys/big_key.c                  |  9 +++------
+ security/keys/keyctl.c                   |  2 +-
+ security/keys/keyctl_pkey.c              |  2 --
+ security/keys/keyring.c                  | 10 +++++-----
+ 11 files changed, 24 insertions(+), 28 deletions(-)
+
+
