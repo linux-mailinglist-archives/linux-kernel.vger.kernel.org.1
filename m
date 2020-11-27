@@ -2,192 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBD22C6B46
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638C12C6B57
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732442AbgK0SGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 13:06:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47324 "EHLO
+        id S1732768AbgK0SHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 13:07:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39878 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732020AbgK0SGT (ORCPT
+        by vger.kernel.org with ESMTP id S1732038AbgK0SHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 13:06:19 -0500
+        Fri, 27 Nov 2020 13:07:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606500377;
+        s=mimecast20190719; t=1606500438;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ebGUnf+D+tjWZN898crtikDbD2Vzc37yJxhrZ6b2A1w=;
-        b=eGxlUsea+RbwCaxE4EFUQllXk5kS39uk3SPAShzvq1kSPKL6LAT6ofengGaFI99fO79cfN
-        7UwMbbLt5cUy7/Jxg8FwBnNYAvDM2QJeX6RWmXrXPjTdWb/WF/eCfjdwfj3he5GEBePfqc
-        dkBaAvfBN5urplrxhYMiG9NzvnPlLm4=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-pLHJkgWlOa6tQ7rmU5obVA-1; Fri, 27 Nov 2020 13:06:16 -0500
-X-MC-Unique: pLHJkgWlOa6tQ7rmU5obVA-1
-Received: by mail-ed1-f71.google.com with SMTP id o11so2692994edq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:06:15 -0800 (PST)
+         to:to:cc:cc; bh=H7PcvPg+i5XoUPzJor4eQ+x6uH9OtzkraZC8rlH6KWc=;
+        b=Sd6qm5sVs0pBC29sQ05iQg33dlr7sop+KCab0CrMRg9A3TRRZ+LGgq1GO8DOFRgqJsYShn
+        0LPG7KY9KEfcAidQdlC7gdKXOhdmU8YEoCRyN+DO5aE/Hwf1tApRi7ghHoevKysYjz4lrL
+        gy3J27PzTpx7IW3pKEEsya//LG3zgMY=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-393-E_vSySwHOaemTZLyRA1iJA-1; Fri, 27 Nov 2020 13:07:16 -0500
+X-MC-Unique: E_vSySwHOaemTZLyRA1iJA-1
+Received: by mail-qk1-f200.google.com with SMTP id q21so4135084qkq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:07:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ebGUnf+D+tjWZN898crtikDbD2Vzc37yJxhrZ6b2A1w=;
-        b=kh/262yGM470n9lPeIuV/v4jLXt0Mf13AJ2neyNfu+xPIixwQKxRy8ziQNJggurAAZ
-         FvQe2mDf1TEJ10HoMDTkUhD+uSirkzT3ulljNDnSv26B31dI3UH6rsYbE2fR2wV2/eDu
-         iYs9p77xDLuAR4krqQ6HzBGHwkfJG0ZkxrFhBPzli2X3fqOcZaNKI0QAPjjQDhA5eWcD
-         DGU5+gum4qu15wRB4QiONzu9ZqHh4Dm7fV4ysMh7eR54VgiqTYXC6RoyykUW/aC4ZsRA
-         WxgRiFliIUgM8RvLlhADWkVG4P89fgagka+jSR9blZXxuR4YChyhP4kD465a5alYsb4o
-         iDKg==
-X-Gm-Message-State: AOAM531rtdOFp5GG2e3tRaf5UESNdrwm3ZzEOcbI1XVCX12ZcENq2Tfq
-        U9mJaP/hXswTHseOLVIo72RoAZOEpBDWMcle+Lm6lze3ZrUyExkZkOLbA/3E9R+J1YlW5ddFXr7
-        qzC1y3MzOpTKjlr9kIRlCe96k
-X-Received: by 2002:a17:907:28ca:: with SMTP id en10mr2823996ejc.268.1606500374673;
-        Fri, 27 Nov 2020 10:06:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw6aBkfGtGOFXG+casGEklTCCi3P6db8+wezgmFhHiiinJMxIYWNDQV8Ig3nS5DzlXFauuGiQ==
-X-Received: by 2002:a17:907:28ca:: with SMTP id en10mr2823978ejc.268.1606500374452;
-        Fri, 27 Nov 2020 10:06:14 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id c6sm5397373edy.62.2020.11.27.10.06.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 10:06:13 -0800 (PST)
-Subject: Re: [PATCH 4/5] x86/platform/uv: Add deprecated messages to /proc
- info leaves
-To:     Mike Travis <mike.travis@hpe.com>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>
-Cc:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20201125172907.240996-1-mike.travis@hpe.com>
- <20201125172907.240996-5-mike.travis@hpe.com>
- <b0339696-049a-e46e-bcd4-079f1b13d725@redhat.com>
- <ebd8451a-5910-1da5-4792-2a3d2f59b348@hpe.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <3bc4d491-e4c9-132e-97ce-8acfbe9dc509@redhat.com>
-Date:   Fri, 27 Nov 2020 19:06:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <ebd8451a-5910-1da5-4792-2a3d2f59b348@hpe.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=H7PcvPg+i5XoUPzJor4eQ+x6uH9OtzkraZC8rlH6KWc=;
+        b=UooqzqFvY6Bg2ru8T3QM31tq5Lu3dhzJaiGIHYQogTwRW3bOFN2gk7f1fa/7SqhCFh
+         XkRzok3m/EBtAZKAkrQYBs25v3adeHTwVzN6ZZvF7vGtxpAL0++zIA7D3TUxaqmfUTSD
+         th/UaDL5bb7+KVKHDbguaFbRJeWrSjgy2q4H0J++Wjb0r41fKk8hn1pgHLCwQJkw5+Ty
+         oBlqMqGc92sEAQTMI/+vH3cnQ+eqfj0u8gkrPDb0hmWajHFcDjnQYdlov9XU2JydW7Of
+         gsPv5P+xG4vOpOASSgLi6FHiXW4R6we+2sqRupWsEd7wR9SHKQuraokcN11QM0K3CQa3
+         c+ig==
+X-Gm-Message-State: AOAM530SYOyrFeLpkMAn/bKw7azPUES03Exjjk/rtHy8HPISlwxV/2SX
+        KpfL1N+QRKb2d/+UiCTo8a9p/y/s1YjGqudBM34VrayWwIxL2dYx0quvGxX0VX3zQ4eOK65aQrF
+        DREvBEQE2Mu/XIajx+MCG2VG4
+X-Received: by 2002:ac8:5ccc:: with SMTP id s12mr9497611qta.364.1606500436290;
+        Fri, 27 Nov 2020 10:07:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzrczAlHXv6AxBn4va9GpnW6SljlzQRkczv7FkNfINZgV5uL21V1Nx739W7zcwEcXppYH5Pjg==
+X-Received: by 2002:ac8:5ccc:: with SMTP id s12mr9497583qta.364.1606500436056;
+        Fri, 27 Nov 2020 10:07:16 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id r127sm6740373qke.64.2020.11.27.10.07.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 10:07:15 -0800 (PST)
+From:   trix@redhat.com
+To:     johannes.berg@intel.com, emmanuel.grumbach@intel.com,
+        luciano.coelho@intel.com, linuxwifi@intel.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        lee.jones@linaro.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] net: iwlwifi: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 10:07:09 -0800
+Message-Id: <20201127180709.2766925-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Tom Rix <trix@redhat.com>
 
-On 11/27/20 3:58 PM, Mike Travis wrote:
-> 
-> 
-> On 11/26/2020 2:45 AM, Hans de Goede wrote:
->> Hi,
->>
->> On 11/25/20 6:29 PM, Mike Travis wrote:
->>> Add "deprecated" message to any access to old /proc/sgi_uv/* leaves.
->>>
->>> Signed-off-by: Mike Travis <mike.travis@hpe.com>
->>> Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
->>> ---
->>>   arch/x86/kernel/apic/x2apic_uv_x.c | 26 +++++++++++++++++++++++++-
->>>   1 file changed, 25 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
->>> index 48746031b39a..bfd77a00c2a1 100644
->>> --- a/arch/x86/kernel/apic/x2apic_uv_x.c
->>> +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
->>> @@ -1615,21 +1615,45 @@ static void check_efi_reboot(void)
->>>           reboot_type = BOOT_ACPI;
->>>   }
->>>   -/* Setup user proc fs files */
->>> +/*
->>> + * User proc fs file handling now deprecated.
->>> + * Recommend using /sys/firmware/sgi_uv/... instead.
->>> + */
->>> +static void proc_print_msg(int *flag, char *what, char *which)
->>> +{
->>> +    if (*flag)
->>> +        return;
->>> +
->>> +    pr_notice(
->>> +        "%s: using deprecated /proc/sgi_uv/%s, use /sys/firmware/sgi_uv/%s\n",
->>> +        current->comm, what, which ? which : what);
->>> +
->>> +    *flag = 1;
->>> +}
->>> +
->>
->> You have just re-invented pr_notice_once, please just use pr_notice_once
->> directly in the _show functions.
-> 
-> I tried it both ways (actually with rate limiting as well).  The problem with using a static check in the error print function it will only print the first instance it encounters, not all of the references.
-> 
-> If I move it to the final output I need to replicate the verbiage of the format for every instance as you can't seem to combine the KERN_* level of printing and the pr_fmt reference of the format string.  I tried a few ways including just putting everything into a format character list.  But what used to work (indirect format pointer) doesn't any more.  Or I didn't hit on the correct combination of KERN_* level and indirect format string.
-> 
-> The last combination was no print limiting which caused of course the error message to be output on every occurrence.  (NASA has 35,000 customers for their big systems, that's a lot of potential console messages.)  This really annoys them and we would get calls from those that don't have any means of changing this so they ask us.
-> 
-> So I just chose this method of accomplishing all goals, except of course using the higher level of print function (pr_notice_once).  But if you think method two ("use pr_notice_once directly in the _show function") is most favorable I will switch to that.
+The macro use will already have a semicolon.
 
-Yeah I think using that is much better then reinventing it, you can simply just write
-out the 3 different messages which you are "formatting" now as static strings so you get:
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/net/wireless/intel/iwlwifi/dvm/rx.c      | 2 +-
+ drivers/net/wireless/intel/iwlwifi/fw/api/coex.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-	pr_notice_once("%s: using deprecated /proc/sgi_uv/hubbed, use /sys/firmware/sgi_uv/hub_type\n", current->comm);
-
-	pr_notice_once("%s: using deprecated /proc/sgi_uv/hubless, use /sys/firmware/sgi_uv/hubless\n", current->comm);
-
-	pr_notice_once("%s: using deprecated /proc/sgi_uv/archtype, use /sys/firmware/sgi_uv/archtype\n", current->comm);
-
-Regards,
-
-Hans
-
-
-
-
-> 
->>
->> Regards,
->>
->> Hans
->>
->>
->>
->>
->>>   static int __maybe_unused proc_hubbed_show(struct seq_file *file, void *data)
->>>   {
->>> +    static int flag;
->>> +
->>> +    proc_print_msg(&flag, "hubbed", "hub_type");
->>>       seq_printf(file, "0x%x\n", uv_hubbed_system);
->>>       return 0;
->>>   }
->>>     static int __maybe_unused proc_hubless_show(struct seq_file *file, void *data)
->>>   {
->>> +    static int flag;
->>> +
->>> +    proc_print_msg(&flag, "hubless", NULL);
->>>       seq_printf(file, "0x%x\n", uv_hubless_system);
->>>       return 0;
->>>   }
->>>     static int __maybe_unused proc_archtype_show(struct seq_file *file, void *data)
->>>   {
->>> +    static int flag;
->>> +
->>> +    proc_print_msg(&flag, "archtype", NULL);
->>>       seq_printf(file, "%s/%s\n", uv_archtype, oem_table_id);
->>>       return 0;
->>>   }
->>>
->>
-> 
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/rx.c b/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
+index 9d55ece05020..7b2f71e48c97 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
+@@ -318,7 +318,7 @@ iwlagn_accumulative_statistics(struct iwl_priv *priv,
+ 		    (__le32 *)&priv->delta_stats._name,		\
+ 		    (__le32 *)&priv->max_delta_stats._name,	\
+ 		    (__le32 *)&priv->accum_stats._name,		\
+-		    sizeof(*_name));
++		    sizeof(*_name))
+ 
+ 	ACCUM(common);
+ 	ACCUM(rx_non_phy);
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/api/coex.h b/drivers/net/wireless/intel/iwlwifi/fw/api/coex.h
+index 68060085010f..8f7c9b7eeeac 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/api/coex.h
++++ b/drivers/net/wireless/intel/iwlwifi/fw/api/coex.h
+@@ -199,7 +199,7 @@ enum iwl_bt_mxbox_dw3 {
+ 					 "\t%s: %d%s",			    \
+ 					 #_field,			    \
+ 					 BT_MBOX_MSG(notif, _num, _field),  \
+-					 true ? "\n" : ", ");
++					 true ? "\n" : ", ")
+ enum iwl_bt_activity_grading {
+ 	BT_OFF			= 0,
+ 	BT_ON_NO_CONNECTION	= 1,
+-- 
+2.18.4
 
