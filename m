@@ -2,94 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17832C5FED
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D00412C5FEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732840AbgK0F6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 00:58:25 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:3825 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731985AbgK0F6Z (ORCPT
+        id S1733065AbgK0GE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 01:04:27 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8416 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731381AbgK0GE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 00:58:25 -0500
-X-UUID: b4e933b0133147a1af2d03c003ee2205-20201127
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VV/UVxBer8cz/LL3HT1bG3fkm0bU1MCnYZbcXRXqx5g=;
-        b=abqYXwa5oSUmv/YH5Q2xOcqoc3nIqP4N73SJp60+hvJhiLJFzU3uGAhTIVVlc/c+T2RMd+nyZXPpzSPoZlp2ZRtNLb8iWg8HwEkDTmHieJY2F3U39oo6AjY+beCBFWd5jhvuSNRbWk+TZ4T3bfZwYj9FNI9JIneyaAEYdo2LdGI=;
-X-UUID: b4e933b0133147a1af2d03c003ee2205-20201127
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1039532657; Fri, 27 Nov 2020 13:58:16 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N2.mediatek.inc
- (172.27.4.72) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 27 Nov
- 2020 13:58:15 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 27 Nov 2020 13:58:14 +0800
-Message-ID: <1606456694.7284.13.camel@mhfsdcap03>
-Subject: Re: [PATCH v2] phy: mediatek: Make PHY_MTK_{XSPHY,TPHY} depend on
- HAS_IOMEM and OF_ADDRESS to fix build errors
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-CC:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Date:   Fri, 27 Nov 2020 13:58:14 +0800
-In-Reply-To: <1606289865-692-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1606289865-692-1-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Fri, 27 Nov 2020 01:04:27 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cj3wf4mdzz6vcv;
+        Fri, 27 Nov 2020 14:04:02 +0800 (CST)
+Received: from euler.huawei.com (10.175.124.27) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 27 Nov 2020 14:04:14 +0800
+From:   Wei Li <liwei391@huawei.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <guohanjun@huawei.com>
+Subject: [PATCH v3] drivers/perf: Add support for ARMv8.3-SPE
+Date:   Fri, 27 Nov 2020 14:03:22 +0800
+Message-ID: <20201127060322.29025-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: A1348FE1C622C32EE3BBD342ACC8DE129ED9659DFB7E737BC92FAEBB073FDC842000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTExLTI1IGF0IDE1OjM3ICswODAwLCBUaWV6aHUgWWFuZyB3cm90ZToNCj4g
-ZGV2bV9pb3JlbWFwX3Jlc291cmNlKCkgd2lsbCBiZSBub3QgYnVpbHQgaW4gbGliL2RldnJlcy5j
-IGlmDQo+IENPTkZJR19IQVNfSU9NRU0gaXMgbm90IHNldCwgb2ZfYWRkcmVzc190b19yZXNvdXJj
-ZSgpIHdpbGwgYmUNCj4gbm90IGJ1aWx0IGluIGRyaXZlcnMvb2YvYWRkcmVzcy5jIGlmIENPTkZJ
-R19PRl9BRERSRVNTIGlzIG5vdA0KPiBzZXQsIGFuZCB0aGVuIHRoZXJlIGV4aXN0cyB0d28gYnVp
-bGQgZXJyb3JzIGFib3V0IHVuZGVmaW5lZA0KPiByZWZlcmVuY2UgdG8gImRldm1faW9yZW1hcF9y
-ZXNvdXJjZSIgYW5kICJvZl9hZGRyZXNzX3RvX3Jlc291cmNlIg0KPiBpbiBwaHktbXRrLXhzcGh5
-LmMgdW5kZXIgQ09NUElMRV9URVNUIGFuZCBDT05GSUdfUEhZX01US19YU1BIWSwNCj4gbWFrZSBQ
-SFlfTVRLX1hTUEhZIGRlcGVuZCBvbiBIQVNfSU9NRU0gYW5kIE9GX0FERFJFU1MgdG8gZml4IGl0
-Lg0KPiANCj4gVGhlIGFib3ZlIGlzc3VlIGlzIHJlcG9ydGVkIGJ5IGtlcm5lbCB0ZXN0IHJvYm90
-IDxsa3BAaW50ZWwuY29tPiwNCj4gdGhyb3VnaCB0aGUgZGlzY3Vzc2lvbiBpbiB0aGUgdjEgcGF0
-Y2gsIGFzIENodW5mZW5nIHNhaWQgd2UgbmVlZA0KPiBhbHNvIGRvIHRoaXMgZm9yIGNvbmZpZyBQ
-SFlfTVRLX1RQSFk6DQo+IA0KPiBkcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHkuYzox
-MTU3OgkJcmV0dmFsID0gb2ZfYWRkcmVzc190b19yZXNvdXJjZShjaGlsZF9ucCwgMCwgJnJlcyk7
-DQo+IGRyaXZlcnMvcGh5L21lZGlhdGVrL3BoeS1tdGstdHBoeS5jOjExMjM6CQl0cGh5LT5zaWZf
-YmFzZSA9IGRldm1faW9yZW1hcF9yZXNvdXJjZShkZXYsIHNpZl9yZXMpOw0KPiBkcml2ZXJzL3Bo
-eS9tZWRpYXRlay9waHktbXRrLXRwaHkuYzoxMTY0OgkJaW5zdGFuY2UtPnBvcnRfYmFzZSA9IGRl
-dm1faW9yZW1hcF9yZXNvdXJjZSgmcGh5LT5kZXYsICZyZXMpOw0KPiANCj4gUmVwb3J0ZWQtYnk6
-IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBUaWV6
-aHUgWWFuZyA8eWFuZ3RpZXpodUBsb29uZ3Nvbi5jbj4NCj4gQWNrZWQtYnk6IFJhbmR5IER1bmxh
-cCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPg0KPiAtLS0NClRoZSBjaGFuZ2VzIGluIHYyIHNob3Vs
-ZCBiZSBkZXNjcmliZWQgYWZ0ZXIgJy0tLScNCg0KRXhjZXB0IHRoYXQsIGl0IGxvb2tzIGdvb2Qg
-dG8gbWUsDQpBY2tlZC1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29t
-Pg0KDQpUaGFua3MgYSBsb3QNCg0KPiAgZHJpdmVycy9waHkvbWVkaWF0ZWsvS2NvbmZpZyB8IDYg
-KysrKy0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygt
-KQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGh5L21lZGlhdGVrL0tjb25maWcgYi9kcml2
-ZXJzL3BoeS9tZWRpYXRlay9LY29uZmlnDQo+IGluZGV4IDUwYzVlOTMuLmY0NDgwMGIgMTAwNjQ0
-DQo+IC0tLSBhL2RyaXZlcnMvcGh5L21lZGlhdGVrL0tjb25maWcNCj4gKysrIGIvZHJpdmVycy9w
-aHkvbWVkaWF0ZWsvS2NvbmZpZw0KPiBAQCAtNSw3ICs1LDggQEANCj4gIGNvbmZpZyBQSFlfTVRL
-X1RQSFkNCj4gIAl0cmlzdGF0ZSAiTWVkaWFUZWsgVC1QSFkgRHJpdmVyIg0KPiAgCWRlcGVuZHMg
-b24gQVJDSF9NRURJQVRFSyB8fCBDT01QSUxFX1RFU1QNCj4gLQlkZXBlbmRzIG9uIE9GDQo+ICsJ
-ZGVwZW5kcyBvbiBPRiAmJiBPRl9BRERSRVNTDQo+ICsJZGVwZW5kcyBvbiBIQVNfSU9NRU0NCj4g
-IAlzZWxlY3QgR0VORVJJQ19QSFkNCj4gIAloZWxwDQo+ICAJICBTYXkgJ1knIGhlcmUgdG8gYWRk
-IHN1cHBvcnQgZm9yIE1lZGlhVGVrIFQtUEhZIGRyaXZlciwNCj4gQEAgLTI5LDcgKzMwLDggQEAg
-Y29uZmlnIFBIWV9NVEtfVUZTDQo+ICBjb25maWcgUEhZX01US19YU1BIWQ0KPiAgCXRyaXN0YXRl
-ICJNZWRpYVRlayBYUy1QSFkgRHJpdmVyIg0KPiAgCWRlcGVuZHMgb24gQVJDSF9NRURJQVRFSyB8
-fCBDT01QSUxFX1RFU1QNCj4gLQlkZXBlbmRzIG9uIE9GDQo+ICsJZGVwZW5kcyBvbiBPRiAmJiBP
-Rl9BRERSRVNTDQo+ICsJZGVwZW5kcyBvbiBIQVNfSU9NRU0NCj4gIAlzZWxlY3QgR0VORVJJQ19Q
-SFkNCj4gIAloZWxwDQo+ICAJICBFbmFibGUgdGhpcyB0byBzdXBwb3J0IHRoZSBTdXBlclNwZWVk
-UGx1cyBYUy1QSFkgdHJhbnNjZWl2ZXIgZm9yDQoNCg==
+Armv8.3 extends the SPE by adding:
+- Alignment field in the Events packet, and filtering on this event
+  using PMSEVFR_EL1.
+- Support for the Scalable Vector Extension (SVE).
+
+The main additions for SVE are:
+- Recording the vector length for SVE operations in the Operation Type
+  packet. It is not possible to filter on vector length.
+- Incomplete predicate and empty predicate fields in the Events packet,
+  and filtering on these events using PMSEVFR_EL1.
+
+Update the check of pmsevfr for empty/partial predicated SVE and
+alignment event in SPE driver. For adaption by the version of SPE,
+expose 'pmsver' as cap attribute to userspace.
+
+Signed-off-by: Wei Li <liwei391@huawei.com>
+---
+v2 -> v3:
+ - Make the definition of 'pmsevfr_res0' progressive and easy to check.
+   (Suggested by Will.)
+---
+v1 -> v2:
+ - Rename 'pmuver' to 'pmsver', change it's type to 'u16' from 'int'.
+   (Suggested by Will and Leo.)
+ - Expose 'pmsver' as cap attribute through sysfs, instead of printing.
+   (Suggested by Will.)
+---
+ arch/arm64/include/asm/sysreg.h |  9 ++++++++-
+ drivers/perf/arm_spe_pmu.c      | 21 +++++++++++++++++++--
+ 2 files changed, 27 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index d52c1b3ce589..57e5aee6f7e6 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -287,7 +287,11 @@
+ #define SYS_PMSFCR_EL1_ST_SHIFT		18
+ 
+ #define SYS_PMSEVFR_EL1			sys_reg(3, 0, 9, 9, 5)
+-#define SYS_PMSEVFR_EL1_RES0		0x0000ffff00ff0f55UL
++#define SYS_PMSEVFR_EL1_RES0_8_2	\
++	(GENMASK_ULL(47, 32) | GENMASK_ULL(23, 16) | GENMASK_ULL(11, 8) |\
++	 BIT_ULL(6) | BIT_ULL(4) | BIT_ULL(2) | BIT_ULL(0))
++#define SYS_PMSEVFR_EL1_RES0_8_3	\
++	(SYS_PMSEVFR_EL1_RES0_8_2 & ~(BIT_ULL(18) | BIT_ULL(17) | BIT_ULL(11)))
+ 
+ #define SYS_PMSLATFR_EL1		sys_reg(3, 0, 9, 9, 6)
+ #define SYS_PMSLATFR_EL1_MINLAT_SHIFT	0
+@@ -829,6 +833,9 @@
+ #define ID_AA64DFR0_PMUVER_8_5		0x6
+ #define ID_AA64DFR0_PMUVER_IMP_DEF	0xf
+ 
++#define ID_AA64DFR0_PMSVER_8_2		0x1
++#define ID_AA64DFR0_PMSVER_8_3		0x2
++
+ #define ID_DFR0_PERFMON_SHIFT		24
+ 
+ #define ID_DFR0_PERFMON_8_1		0x4
+diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+index cc00915ad6d1..515c51271d7f 100644
+--- a/drivers/perf/arm_spe_pmu.c
++++ b/drivers/perf/arm_spe_pmu.c
+@@ -54,7 +54,7 @@ struct arm_spe_pmu {
+ 	struct hlist_node			hotplug_node;
+ 
+ 	int					irq; /* PPI */
+-
++	u16					pmsver;
+ 	u16					min_period;
+ 	u16					counter_sz;
+ 
+@@ -93,6 +93,7 @@ enum arm_spe_pmu_capabilities {
+ 	SPE_PMU_CAP_FEAT_MAX,
+ 	SPE_PMU_CAP_CNT_SZ = SPE_PMU_CAP_FEAT_MAX,
+ 	SPE_PMU_CAP_MIN_IVAL,
++	SPE_PMU_CAP_PMSVER,
+ };
+ 
+ static int arm_spe_pmu_feat_caps[SPE_PMU_CAP_FEAT_MAX] = {
+@@ -110,6 +111,8 @@ static u32 arm_spe_pmu_cap_get(struct arm_spe_pmu *spe_pmu, int cap)
+ 		return spe_pmu->counter_sz;
+ 	case SPE_PMU_CAP_MIN_IVAL:
+ 		return spe_pmu->min_period;
++	case SPE_PMU_CAP_PMSVER:
++		return spe_pmu->pmsver;
+ 	default:
+ 		WARN(1, "unknown cap %d\n", cap);
+ 	}
+@@ -143,6 +146,7 @@ static struct attribute *arm_spe_pmu_cap_attr[] = {
+ 	SPE_CAP_EXT_ATTR_ENTRY(ernd, SPE_PMU_CAP_ERND),
+ 	SPE_CAP_EXT_ATTR_ENTRY(count_size, SPE_PMU_CAP_CNT_SZ),
+ 	SPE_CAP_EXT_ATTR_ENTRY(min_interval, SPE_PMU_CAP_MIN_IVAL),
++	SPE_CAP_EXT_ATTR_ENTRY(pmsver, SPE_PMU_CAP_PMSVER),
+ 	NULL,
+ };
+ 
+@@ -655,6 +659,18 @@ static irqreturn_t arm_spe_pmu_irq_handler(int irq, void *dev)
+ 	return IRQ_HANDLED;
+ }
+ 
++static u64 arm_spe_pmsevfr_res0(u16 pmsver)
++{
++	switch (pmsver) {
++	case ID_AA64DFR0_PMSVER_8_2:
++		return SYS_PMSEVFR_EL1_RES0_8_2;
++	case ID_AA64DFR0_PMSVER_8_3:
++		return SYS_PMSEVFR_EL1_RES0_8_3;
++	default:
++		return -1;
++	}
++}
++
+ /* Perf callbacks */
+ static int arm_spe_pmu_event_init(struct perf_event *event)
+ {
+@@ -670,7 +686,7 @@ static int arm_spe_pmu_event_init(struct perf_event *event)
+ 	    !cpumask_test_cpu(event->cpu, &spe_pmu->supported_cpus))
+ 		return -ENOENT;
+ 
+-	if (arm_spe_event_to_pmsevfr(event) & SYS_PMSEVFR_EL1_RES0)
++	if (arm_spe_event_to_pmsevfr(event) & arm_spe_pmsevfr_res0(spe_pmu->pmsver))
+ 		return -EOPNOTSUPP;
+ 
+ 	if (attr->exclude_idle)
+@@ -937,6 +953,7 @@ static void __arm_spe_pmu_dev_probe(void *info)
+ 			fld, smp_processor_id());
+ 		return;
+ 	}
++	spe_pmu->pmsver = (u16)fld;
+ 
+ 	/* Read PMBIDR first to determine whether or not we have access */
+ 	reg = read_sysreg_s(SYS_PMBIDR_EL1);
+-- 
+2.17.1
 
