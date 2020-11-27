@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0062C6918
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23712C691B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731180AbgK0QGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:06:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgK0QGM (ORCPT
+        id S1731204AbgK0QHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:07:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56699 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731150AbgK0QHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:06:12 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A437C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:06:12 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id e8so4971902pfh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:06:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5y0cnCOSgeEuZwjF+lwNyk9ZCoaXsS5uH8ZnqDQJLGw=;
-        b=tCTUScwH0byDPkT48N7M1GJPlekh3+TwXyKTpUudGHK3ODmu1Dda/NPabCIFKJA1pq
-         6rU/C30wUUfgMrrNHYjIpriDpAs9V0g6yWCSMYmSgu/ucek7JCgCODNdz0CM/Knc3Rn5
-         JGLGwuD+HO0pizkWONJ0dlc3xSqEew9ssP3xbMAp2+qgn9qSw0M9gblYy3BgsgVXLusp
-         1v1S7hbPq1Q5L85LtddTcXBPznAoGvBuUIysz4NX8gDeNDmao6vOBDKnX19/KtuZhpH1
-         AbxAWnViK43ShTtxjpwXRiZX6BhzBq3vqniBFJGZliRhfb8LjXvGU/XiyI7JsAJt81w1
-         9qQQ==
+        Fri, 27 Nov 2020 11:07:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606493236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=TsMD7b3MnWExoEfBuHmM8Gy0J5MPvPWD/mFWcwpBdWg=;
+        b=dKwL/9rBSvtpJjjtiKI8iiXJgXkVQUqFTgkIMCtZWEze0+zV2qtuoSNG5SUMw72OzDb6U+
+        nQB/ICEE24JSlcTxJGZAcZIR9DY674V65TYUM7ttSqEVIctEFmUnOlqmmlLKqUtLp8qotY
+        /WZ64t0IJa2J6suT1Zfomkz3jTH7fM0=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-tm9p3mJeMQukwbz4o833ww-1; Fri, 27 Nov 2020 11:07:14 -0500
+X-MC-Unique: tm9p3mJeMQukwbz4o833ww-1
+Received: by mail-qv1-f71.google.com with SMTP id b15so3320973qvm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:07:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5y0cnCOSgeEuZwjF+lwNyk9ZCoaXsS5uH8ZnqDQJLGw=;
-        b=maC3S13EYYkMB234ZjHkEa/S5jdAGoHcK5jCR3eWEwgBj8cJd/26DNq6aV7900GanF
-         0Gjg/qWrb74tlJubV460TTK0cjultcKeF/fIIkeFyxjwuTUZo82BUXGn/ptWEwlvVyp/
-         5f/cG+XmtPMPYVkF+zcA9DmysRIdpMZibJtVL+otiAIpdwzb3p6dym06eG8Loz9dDvJD
-         +rB65OF2XQZtqvwTVVL8wwEbmAkTmQi+R7dltXrFE7PqKlkZ5jhjYbS9/baT7JN/iEmo
-         wkJtzE3a4XFXPSVC1O/0vnCrTjgpSnXl4WCEgM6qusB+bPQ6bSOqQGxfQJnjLVYSiTpo
-         wIxA==
-X-Gm-Message-State: AOAM5325+WoO+CC5WSLnST1NamMJIpoxUPoIIG2bWjKQEIwH1kEq+X3F
-        iJXyJrIx15e/jcdrEzSDVHKa7lm0c2rV
-X-Google-Smtp-Source: ABdhPJx4PpbtAXHxtk99kkXV1YNZJcl745XhfowqzK9csFKk/5laSELRUQqFg73QzUOtH09NSkk1QA==
-X-Received: by 2002:a17:90a:68c3:: with SMTP id q3mr10906760pjj.135.1606493171411;
-        Fri, 27 Nov 2020 08:06:11 -0800 (PST)
-Received: from thinkpad ([2409:4072:88d:6f0d:1941:b53e:6208:a8c9])
-        by smtp.gmail.com with ESMTPSA id h11sm8258263pfn.27.2020.11.27.08.06.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=TsMD7b3MnWExoEfBuHmM8Gy0J5MPvPWD/mFWcwpBdWg=;
+        b=nQ81atHnRr2ivMmMAzylrJ3j0XeSyvr/+wajCrmOkV0qQmBPWdPGm4fGRYHmxOOjw/
+         4gUd/X/WXsZPaFL2+u5TdqmbBZeWJlMf/0oSA7f/yCEFjdCSBqkTW7WCB2jdgT2FEWVG
+         SK60NjgRxcijbq4f83u46UJzSDrnfs5lBXMHposB/oWi8L9m16Q9qYa76xM0n3G8W7Z2
+         vcyHElcSQmkuCE/sUeTVjN+P/FIS6DvdzuoaLCgLGwFxgLpJehRueLfi3kYJQpmOPnxe
+         t348TRyS5XYoFHB5kdnnu5XHJHd/mmEXzPdKrLez1XjshqBuvJ1GRt9gJLZdbXPraFZ7
+         T5zw==
+X-Gm-Message-State: AOAM532oN3uUUGk3yndLaLTLDq1DAIGLUhJdsITIbRRrE7Uq75eWK5iS
+        MkTAjWQYe8wwBAHx7vEmiYeuZGZtjPQKnfcKz8QNZLtiIPuMz4n4vpKCaRhmtlFPhXHg5fnO14n
+        hGvCIGFJ8UhLtIakjBToj1X62
+X-Received: by 2002:ac8:5059:: with SMTP id h25mr8937153qtm.283.1606493234320;
+        Fri, 27 Nov 2020 08:07:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy+zzViQ6Rqk2DxgBkqfwyhjs9VcRi7Mngdgz9bSSxFH/DfJqKgsYTy1Dp2gQ9sUoRbMvjYaw==
+X-Received: by 2002:ac8:5059:: with SMTP id h25mr8937129qtm.283.1606493234096;
+        Fri, 27 Nov 2020 08:07:14 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id u22sm6252620qkk.51.2020.11.27.08.07.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 08:06:10 -0800 (PST)
-Date:   Fri, 27 Nov 2020 21:36:02 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     loic.poulain@linaro.org, bjorn.andersson@linaro.org,
-        wsa@kernel.org, todor.too@gmail.com, vkoul@kernel.org,
-        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: qcom: Fix IRQ error misassignement
-Message-ID: <20201127160602.GA3096@thinkpad>
-References: <20201127133937.93208-1-robert.foss@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127133937.93208-1-robert.foss@linaro.org>
+        Fri, 27 Nov 2020 08:07:13 -0800 (PST)
+From:   trix@redhat.com
+To:     boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com
+Cc:     x86@kernel.org, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] xen: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 08:07:07 -0800
+Message-Id: <20201127160707.2622061-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 02:39:37PM +0100, Robert Foss wrote:
-> During cci_isr() errors read from register fields belonging to
-> i2c master1 are currently assigned to the status field belonging to
-> i2c master0. This patch corrects this error, and always assigns
-> master1 errors to the status field of master1.
-> 
-> Fixes: e517526195de ("i2c: Add Qualcomm CCI I2C driver")
-> 
+From: Tom Rix <trix@redhat.com>
 
-You don't need a new line here.
+The macro use will already have a semicolon.
 
-> Reported-by: Loic Poulain <loic.poulain@linaro.org>
-> Suggested-by: Loic Poulain <loic.poulain@linaro.org>
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ arch/x86/include/asm/xen/page.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+diff --git a/arch/x86/include/asm/xen/page.h b/arch/x86/include/asm/xen/page.h
+index 5941e18edd5a..1a162e559753 100644
+--- a/arch/x86/include/asm/xen/page.h
++++ b/arch/x86/include/asm/xen/page.h
+@@ -355,7 +355,7 @@ unsigned long arbitrary_virt_to_mfn(void *vaddr);
+ void make_lowmem_page_readonly(void *vaddr);
+ void make_lowmem_page_readwrite(void *vaddr);
+ 
+-#define xen_remap(cookie, size) ioremap((cookie), (size));
++#define xen_remap(cookie, size) ioremap((cookie), (size))
+ #define xen_unmap(cookie) iounmap((cookie))
+ 
+ static inline bool xen_arch_need_swiotlb(struct device *dev,
+-- 
+2.18.4
 
-Thanks,
-Mani
