@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96422C6B7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2B72C6B81
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732583AbgK0SQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 13:16:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732304AbgK0SQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 13:16:38 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1A62208B3;
-        Fri, 27 Nov 2020 18:16:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606500997;
-        bh=KJhR0+3cvmbOXE9PhjQeGFn/24gub6784UkEmwXw5uE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=2smiPe6gNquCuQoUII3DbEIDRB8r/6RQjNr+KsqSDVaxnOqqYDwSaMoSyJ9055QPn
-         ecGVfDEurF4rBgyL7dKUcTEMGa5xwbgEVNMYbSh18XbjqLrNscWB5ahf4YJmla/tED
-         3JELBrkR04VghGLZW+AQtL2NVaGoC/utl/0gQPBg=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kiiIN-00E8Gu-R2; Fri, 27 Nov 2020 18:16:35 +0000
+        id S1732260AbgK0SXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 13:23:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732241AbgK0SXW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 13:23:22 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28B0C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:23:21 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id s9so6838887ljo.11
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:23:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e5KHpDtt5i2rR9LdUm+DCPfd8QCddCnGgU8lKoXRsc0=;
+        b=k13XGK60aqGF8P+LZ5njqN9LkrUfUD2db3KBZtvlM/8c/m+Ar7Iaj3L9tzWBo8M07X
+         SLsANqBnyZqRR6Y4soOGO3BasvLtrGteYICfbknYu6+sh6RI2ecZi3k8piaxa2oAkZ9r
+         3r0E9YxnkK40upO2J0VCON60VP9A2pQg8FXc5xnBv6kNKFodimMOFDHidiR6CzUsbEFR
+         loPKKh70S/Se5tUMMtUFbZCKu5Z+hj/H3WQX43nUvJytv6dzolyzWwSFRv5P6nDBJLoK
+         qXUUk5BYiEe7ku9T/ezKgm1a+BRdDMxdD7inERGIrtnl3U0qHDisct5Mn5LnHgoH6V+P
+         18tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e5KHpDtt5i2rR9LdUm+DCPfd8QCddCnGgU8lKoXRsc0=;
+        b=hMvGIjV4LG/88tvaNoUrE9I3tNgcaTwa9xtcmZ8lhEewv1/kx2ggzqI3+Gweqrvvfa
+         yF3+X1Vq0BkWDlKvPJiiEHWy5jGgTZp5cLPaapKZme+0yC54C88P8xzIKHuPElnSFEdJ
+         VsnO4rUrtZOd7S8UAYZbDKHuZQKpFSOjBfM9UMw0ghrHjdwP4piYDaQArUxR8DIUaTMn
+         NJ/ilHgNzqf2A+wMTv5CttTT7+ve2LPjuJnztMEZRa91TogQBH3c2GmIaZVp7YI3brHz
+         lIYY91fVD0/EXDvpHdC7KYCzPLQP9T1chhzc1KyHvSlMBZzqn5hRgJptj9rLkAOTABSK
+         fh6A==
+X-Gm-Message-State: AOAM532ss04CTK/E8RKDD3Z+oGIOhCj3RDiaXB5Q9zx2QvYBWbHHezGN
+        5PlOSvJMbikkIPmQTRcZcFJYKopssQ+l3rTvcMyQXA==
+X-Google-Smtp-Source: ABdhPJws0SUY2VfCWZwO1KgOCMLdvLLRf++rtY0jADZAsBpXkmgj4FmHl+qbGYochUFxuoYBMzoAHyDIowR/TJhi40s=
+X-Received: by 2002:a2e:9216:: with SMTP id k22mr3959253ljg.138.1606501400078;
+ Fri, 27 Nov 2020 10:23:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 27 Nov 2020 18:16:35 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
+References: <3E05451B-A9CD-4719-99D0-72750A304044@amazon.com> <CAG48ez2VAu6oARGVZ+muDK9_6_38KVUTJf7utz5Nn=AsmN17nA@mail.gmail.com>
+In-Reply-To: <CAG48ez2VAu6oARGVZ+muDK9_6_38KVUTJf7utz5Nn=AsmN17nA@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 27 Nov 2020 19:22:53 +0100
+Message-ID: <CAG48ez13ZAAOVmA89PRKRqr9UezV2_bj8Q6_6sSPzcqfzbsuQQ@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/virt: vmgenid: add vm generation id driver
+To:     "Catangiu, Adrian Costin" <acatan@amazon.com>
+Cc:     "Graf (AWS), Alexander" <graf@amazon.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Willy Tarreau <w@1wt.eu>,
+        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "bonzini@gnu.org" <bonzini@gnu.org>,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>,
+        "oridgar@gmail.com" <oridgar@gmail.com>,
+        "ghammer@redhat.com" <ghammer@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 03/14] KVM: arm64: Kill 32-bit vCPUs on systems with
- mismatched EL0 support
-In-Reply-To: <20201127172434.GA984327@google.com>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-4-will@kernel.org>
- <9bd06b193e7fb859a1207bb1302b7597@kernel.org>
- <20201127115304.GB20564@willie-the-truck>
- <583c4074bbd4cf8b8085037745a5d1c0@kernel.org>
- <20201127172434.GA984327@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <9de8639549040b4478b312503fd5a23f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: qperret@google.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, gregkh@linuxfoundation.org, peterz@infradead.org, morten.rasmussen@arm.com, qais.yousef@arm.com, surenb@google.com, tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org, mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Qemu Developers <qemu-devel@nongnu.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux API <linux-api@vger.kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        "areber@redhat.com" <areber@redhat.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Andrey Vagin <avagin@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        "gil@azul.com" <gil@azul.com>,
+        "asmehra@redhat.com" <asmehra@redhat.com>,
+        "dgunigun@redhat.com" <dgunigun@redhat.com>,
+        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-27 17:24, Quentin Perret wrote:
-> On Friday 27 Nov 2020 at 17:14:11 (+0000), Marc Zyngier wrote:
+[resend in the hope that amazon will accept my mail this time instead
+of replying "550 Too many invalid recipients" again]
 
-[...]
-
->> Yeah, the sanitized read feels better, if only because that is
->> what we are going to read in all the valid cases, unfortunately.
->> read_sanitised_ftr_reg() is sadly not designed to be called on
->> a fast path, meaning that 32bit guests will do a bsearch() on
->> the ID-regs every time they exit...
->> 
->> I guess we will have to evaluate how much we loose with this.
-> 
-> Could we use the trick we have for arm64_ftr_reg_ctrel0 to speed this
-> up?
-
-Maybe. I want to first verify whether this has any measurable impact.
-Another possibility would be to cache the last read_sanitised_ftr_reg()
-access, just to see if that helps. There shouldn't be that many code
-paths hammering it.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+On Fri, Nov 20, 2020 at 11:29 PM Jann Horn <jannh@google.com> wrote:
+> On Mon, Nov 16, 2020 at 4:35 PM Catangiu, Adrian Costin
+> <acatan@amazon.com> wrote:
+> > This patch is a driver that exposes a monotonic incremental Virtual
+> > Machine Generation u32 counter via a char-dev FS interface that
+> > provides sync and async VmGen counter updates notifications. It also
+> > provides VmGen counter retrieval and confirmation mechanisms.
+> >
+> > The hw provided UUID is not exposed to userspace, it is internally
+> > used by the driver to keep accounting for the exposed VmGen counter.
+> > The counter starts from zero when the driver is initialized and
+> > monotonically increments every time the hw UUID changes (the VM
+> > generation changes).
+> >
+> > On each hw UUID change, the new hypervisor-provided UUID is also fed
+> > to the kernel RNG.
+>
+> As for v1:
+>
+> Is there a reasonable usecase for the "confirmation" mechanism? It
+> doesn't seem very useful to me.
+>
+> How do you envision integrating this with libraries that have to work
+> in restrictive seccomp sandboxes? If this was in the vDSO, that would
+> be much easier.
