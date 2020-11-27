@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A842C61E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5352C61F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgK0Jkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:40:53 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7999 "EHLO
+        id S1729118AbgK0JlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:41:19 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8435 "EHLO
         szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728493AbgK0Jkj (ORCPT
+        with ESMTP id S1729051AbgK0JlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:40:39 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cj8kD2DQTzhjF1;
-        Fri, 27 Nov 2020 17:40:20 +0800 (CST)
+        Fri, 27 Nov 2020 04:41:17 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cj8kz3KGnzhhmw;
+        Fri, 27 Nov 2020 17:40:59 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 27 Nov 2020 17:40:30 +0800
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 27 Nov 2020 17:41:08 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
-        "Krzysztof Kozlowski" <krzk@kernel.org>
-CC:     <linux-samsung-soc@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>,
+To:     Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <dmaengine@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] hwrng: exynos - fix reference leak in exynos_trng_probe
-Date:   Fri, 27 Nov 2020 17:44:46 +0800
-Message-ID: <20201127094446.121277-1-miaoqinglang@huawei.com>
+Subject: [PATCH 0/3] dmaengine: stm32: fix reference leak
+Date:   Fri, 27 Nov 2020 17:45:22 +0800
+Message-ID: <20201127094525.121388-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -41,34 +43,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 pm_runtime_get_sync will increment pm usage counter even it
 failed. Forgetting to putting operation will result in a
-reference leak here.
+reference leak here. 
 
-A new function pm_runtime_resume_and_get is introduced in
-[0] to keep usage counter balanced. So We fix the reference
-leak by replacing it with new funtion.
+Use pm_runtime_resume_and_get to fix it.
 
-[0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
+Qinglang Miao (3):
+  dmaengine: stm32-dma: fix reference leak in stm32_dma
+  dmaengine: stm32-dmamux: fix reference leak in stm32_dmamux
+  dmaengine: stm32-mdma: fix reference leak in stm32-mdma
 
-Fixes: 6cd225cc5d8a ("hwrng: exynos - add Samsung Exynos True RNG driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/char/hw_random/exynos-trng.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma/stm32-dma.c    | 4 ++--
+ drivers/dma/stm32-dmamux.c | 6 +++---
+ drivers/dma/stm32-mdma.c   | 4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/char/hw_random/exynos-trng.c b/drivers/char/hw_random/exynos-trng.c
-index 8e1fe3f8d..666246bc8 100644
---- a/drivers/char/hw_random/exynos-trng.c
-+++ b/drivers/char/hw_random/exynos-trng.c
-@@ -132,7 +132,7 @@ static int exynos_trng_probe(struct platform_device *pdev)
- 		return PTR_ERR(trng->mem);
- 
- 	pm_runtime_enable(&pdev->dev);
--	ret = pm_runtime_get_sync(&pdev->dev);
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Could not get runtime PM.\n");
- 		goto err_pm_get;
 -- 
 2.23.0
 
