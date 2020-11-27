@@ -2,229 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA5C2C6144
+	by mail.lfdr.de (Postfix) with ESMTP id D201A2C6145
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgK0JAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:00:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgK0JA3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:00:29 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1B8C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:00:28 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id i199so3758129qke.5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:00:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2keVCBoNEL2i/chTI8/TWvy++LJ9qFnLh0MA89GY3Xo=;
-        b=YPCtfKBVp3+ZTX+60Yfgk8xF38iFEmHgD2CAjuDXW15VIgdObbPsV/kl4aWSNylBfV
-         cze025GMSuQJAiFvYnTS3XmSF9W4ScY6vj7uYIyHELdKbX/2tVc0WO8YwYXdTk59d92n
-         2kasc8VtKHwD7ortDp4Mwrh2QHKqtD/tN7Yy/x/Ksy4ghHM2X+qHP8XMMFBvhNDuCh1G
-         dmjTwd+xQ3Ywrh5A2wjybiVMtScJt78V7mmIn/7kHtKilrZn4zTsRP38lyHMBrXsf52V
-         09BO95C6JfdJ7ttlqU2VLAZ0ClfbmjfsXZ0oCA3PfEttW+r8DuGP4il/HChWBABEVPWG
-         EB8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2keVCBoNEL2i/chTI8/TWvy++LJ9qFnLh0MA89GY3Xo=;
-        b=I8+hbWCkeGp8DJ5xVOKH09U0z71caXivipOirSliDDctEzeSQ0xtaJGLgKmFKlYL63
-         sl3f9ukF8CmbFJuBjBi/JmZRvX9qDjWp241wkB92IaBwPAscizVo997eNu+kbRV2H5Ge
-         T32VteG7G/pIRU6CiSQuBasuf7ieN4b6Vuf8RhHy3JMeSQUyw/0VnrNFMvH3GgS494oO
-         x0XRfKXx8/npX0hNbI8T5ns9SJiOYSh7sZTE5vpAnJLOheZrO5oHAtvwWLfDnEU9bcyq
-         Yr2HEt8EKThAtx3wHbOhs0mtGnHpjJowf+7qgB5vthvZKTxQY7d5YDYCyl4Goki0bbEF
-         lh1w==
-X-Gm-Message-State: AOAM5321E+DtDoz0k8KPorh6XYG5OT/9l6szVx9IPRpSRNeA3Z4yGEfQ
-        Ck9xxaZPDGyvxsxSmuBFueX4f+ZDYBRezXtg/uX74g==
-X-Google-Smtp-Source: ABdhPJysXzVbpc7tzq1GWWNggcfl45I5yliRXzbb5vkpjlL+J53tUFbsJNkXNlD3LMj02kTnHIWJddasasQhth99ET4=
-X-Received: by 2002:a37:7b44:: with SMTP id w65mr7557963qkc.350.1606467626962;
- Fri, 27 Nov 2020 01:00:26 -0800 (PST)
-MIME-Version: 1.0
-References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
- <20201118151038.GX3121392@hirez.programming.kicks-ass.net>
- <9bc4e07d-2a58-077b-b4c7-ab056ba33cf1@i-love.sakura.ne.jp>
- <CACT4Y+ZJNkssAQLuwfcKPTTKLZhHRAo0POGOMVsGFGizoHaNMg@mail.gmail.com>
- <CACT4Y+Zh10241gchu6e_=LwxPSEzXT-0HSmhnTtkXFZevKi_yQ@mail.gmail.com>
- <CACT4Y+a8TjV+Pe6mwne777RV+xB+aHT6GxuMLAVBn5mtK4P0Lw@mail.gmail.com>
- <CACT4Y+ZSsKjvojD8iFVFv9F5X5BvZR8vLyaKrgxUxyknma04Sg@mail.gmail.com>
- <5e8342c4-702f-80a9-e669-8a7386ce0da1@i-love.sakura.ne.jp>
- <CACT4Y+a4X4MNkWsvRySokKE=gO8AH1kegtUQk9T0M37EfWtN-w@mail.gmail.com>
- <CACT4Y+aNJmuhk0KicX4FzKW6PhawFBgvrC2gSJcWwUkR8VSSmg@mail.gmail.com>
- <CACT4Y+ZBVOHD79Mbdpmuxn6OC757BSA7p+JF_YNyUEVfvRFdGQ@mail.gmail.com>
- <CACT4Y+YdpbM44wbObS261CtvC3xfQTamKxkt9eFUwwKGYTELsw@mail.gmail.com>
- <CACT4Y+ZXKwgdML0FxfkXtDqiWWGK3m9bx_i_i+wbQXNh_t4sLA@mail.gmail.com>
- <CACT4Y+asqRbjaN9ras=P5DcxKgzsnV0fvV0tYb2VkT+P00pFvQ@mail.gmail.com> <4b89985e-99f9-18bc-0bf1-c883127dc70c@i-love.sakura.ne.jp>
-In-Reply-To: <4b89985e-99f9-18bc-0bf1-c883127dc70c@i-love.sakura.ne.jp>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 27 Nov 2020 10:00:15 +0100
-Message-ID: <CACT4Y+Z=eEHz-MCf8GNxhx8f4asytfQ+2QUhA_0G+zbH2_D2Sg@mail.gmail.com>
-Subject: Re: [PATCH v3] lockdep: Allow tuning tracing capacity constants.
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726417AbgK0JBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:01:10 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:26395 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726127AbgK0JBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:01:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606467669; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=OIY56LGrXG7EOd8OdvHPbhXheV+DzCN0elNY5uozLLw=; b=qqPzeMYVr3IoPpjSzs3iE3xAbbhtgURBS0XdpeKxk2FkiwqaIV2gnl+qUJ6HpDZCPzufGfQi
+ cROgMbL7kHzs5Le6oPhQdWWlR2b0xfstt0S8TMAfbrP45T9TdFQMfA3rwBWQ6R9S0uP+zEfc
+ R0hfo6AmGEGEoSrFoKo53zHehcw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fc0c03a22377520ee56a32b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 09:00:42
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 233CCC433ED; Fri, 27 Nov 2020 09:00:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EEA72C433C6;
+        Fri, 27 Nov 2020 09:00:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EEA72C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Subject: [PATCH v2] Asoc: qcom: Fix plaback recover problem in suspend resume
+Date:   Fri, 27 Nov 2020 14:30:21 +0530
+Message-Id: <1606467622-11735-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 2:56 AM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> On 2020/11/20 18:27, Dmitry Vyukov wrote:
-> > Peter, so far it looks like just a very large, but normal graph to me.
-> > The cheapest from an engineering point of view solution would be just
-> > to increase the constants. I assume a 2x increase should buy us lots
-> > of time to overflow.
-> > I can think of more elaborate solutions, e.g. using bitmasks to
-> > represent hot leaf and top-level locks. But it will both increase the
-> > resulting code complexity (no uniform representation anymore, all code
-> > will need to deal with different representations) and require some
-> > time investments (that I can't justify for me at least as compared to
-> > just throwing a bit more machine memory at it). And in the end it
-> > won't really reduce the size of the graph.
-> > What do you think?
-> >
->
-> Yes, I think it is a normal graph; simply syzkaller kernels tend to record
-> a few times more dependencies than my idle kernel (shown bottom).
->
-> Peter, you guessed that the culprit is sysfs at
-> https://lkml.kernel.org/r/20200916115057.GO2674@hirez.programming.kicks-ass.net , but
-> syzbot reported at https://syzkaller.appspot.com/text?tag=MachineInfo&x=99b8f2b092d9714f
-> that "BUG: MAX_LOCKDEP_ENTRIES too low!" can occur on a VM with only 2 CPUs.
-> Is your guess catching the culprit?
->
-> We could improve a few locks, but as a whole we won't be able to afford keeping
-> sum of individual dependencies under current threshold. Therefore, allow lockdep to
-> tune the capacity and allow syzkaller to dump when reaching the capacity will be
-> the way to go.
->
->
->
-> # cat /proc/lockdep_stats
->  lock-classes:                         1236 [max: 8192]
->  direct dependencies:                  9610 [max: 32768]
->  indirect dependencies:               40401
->  all direct dependencies:            174635
->  dependency chains:                   11398 [max: 65536]
->  dependency chain hlocks used:        42830 [max: 327680]
->  dependency chain hlocks lost:            0
->  in-hardirq chains:                      61
->  in-softirq chains:                     414
->  in-process chains:                   10923
->  stack-trace entries:                 93041 [max: 524288]
->  number of stack traces:               4997
->  number of stack hash chains:          4292
->  combined max dependencies:       281074520
->  hardirq-safe locks:                     50
->  hardirq-unsafe locks:                  805
->  softirq-safe locks:                    146
->  softirq-unsafe locks:                  722
->  irq-safe locks:                        155
->  irq-unsafe locks:                      805
->  hardirq-read-safe locks:                 2
->  hardirq-read-unsafe locks:             129
->  softirq-read-safe locks:                11
->  softirq-read-unsafe locks:             123
->  irq-read-safe locks:                    11
->  irq-read-unsafe locks:                 129
->  uncategorized locks:                   224
->  unused locks:                            0
->  max locking depth:                      15
->  max bfs queue depth:                   215
->  chain lookup misses:                 11664
->  chain lookup hits:                37393935
->  cyclic checks:                       11053
->  redundant checks:                        0
->  redundant links:                         0
->  find-mask forwards checks:            1588
->  find-mask backwards checks:           1779
->  hardirq on events:                17502380
->  hardirq off events:               17502376
->  redundant hardirq ons:                   0
->  redundant hardirq offs:                  0
->  softirq on events:                   90845
->  softirq off events:                  90845
->  redundant softirq ons:                   0
->  redundant softirq offs:                  0
->  debug_locks:                             1
->
->  zapped classes:                          0
->  zapped lock chains:                      0
->  large chain blocks:                      1
-> # awk ' { if ($2 == "OPS:") print $5" "$9 } ' /proc/lockdep | sort -rV | head -n 30
-> 423 (wq_completion)events
-> 405 (wq_completion)events_unbound
-> 393 &f->f_pos_lock
-> 355 &p->lock
-> 349 sb_writers#3
-> 342 sb_writers#6
-> 338 &of->mutex
-> 330 (work_completion)(&entry->work)
-> 330 pernet_ops_rwsem
-> 289 epmutex
-> 288 &ep->mtx
-> 281 tty_mutex
-> 280 &tty->legacy_mutex
-> 273 &tty->legacy_mutex/1
-> 269 &tty->ldisc_sem
-> 268 (wq_completion)ipv6_addrconf
-> 266 (work_completion)(&(&ifa->dad_work)->work)
-> 266 (linkwatch_work).work
-> 266 (addr_chk_work).work
-> 266 &ldata->atomic_read_lock
-> 265 (work_completion)(&buf->work)
-> 265 rtnl_mutex
-> 263 &tty->atomic_write_lock
-> 262 &buf->lock
-> 261 &tty->termios_rwsem
-> 242 &port->buf.lock/1
-> 242 kn->active#40
-> 241 &o_tty->termios_rwsem/1
-> 240 registration_lock
-> 239 &ldata->output_lock
-> # awk ' { if ($2 == "OPS:") print $7" "$9 } ' /proc/lockdep | sort -rV | head -n 30
-> 642 pool_lock
-> 641 &obj_hash[i].lock
-> 582 tk_core.seq.seqcount
-> 561 hrtimer_bases.lock
-> 560 &rt_rq->rt_runtime_lock
-> 559 &rt_b->rt_runtime_lock
-> 559 &cp->lock
-> 559 &cfs_rq->removed.lock
-> 559 &cfs_b->lock
-> 558 &rq->lock
-> 550 &tsk->delays->lock
-> 549 &p->pi_lock
-> 506 &base->lock
-> 504 &n->list_lock
-> 432 &____s->seqcount
-> 404 &x->wait#10
-> 401 &pool->lock
-> 369 &zone->lock
-> 330 rcu_node_0
-> 326 &(kretprobe_table_locks[i].lock)
-> 326 pgd_lock
-> 324 &pgdat->lru_lock
-> 323 lock#5
-> 321 &page_wait_table[i]
-> 319 ptlock_ptr(page)#2/1
-> 318 ptlock_ptr(page)#2
-> 316 &sem->wait_lock
-> 316 &mm->page_table_lock
-> 316 ptlock_ptr(page)
-> 315 &anon_vma->rwsem
+To support playback continuation after hard suspend(bypass powerd)
+ and resume:
+Prepare device in  platform trigger callback.
+Make I2s and DMA control registers as non volatile.
 
-The latest syzbot logs now contain these dumps as well, if anybody is
-interested in more:
-https://syzkaller.appspot.com/bug?id=63fc8d0501c39609dd2f268e4190ec9a72619563
-https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+Changes Since v1:
+  -- Subject lines changed
+
+ sound/soc/qcom/lpass-cpu.c      | 8 ++------
+ sound/soc/qcom/lpass-platform.c | 5 +++--
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index af684fd..c99be03 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -454,20 +454,16 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
+ 	struct lpass_variant *v = drvdata->variant;
+ 	int i;
+ 
+-	for (i = 0; i < v->i2s_ports; ++i)
+-		if (reg == LPAIF_I2SCTL_REG(v, i))
+-			return true;
+ 	for (i = 0; i < v->irq_ports; ++i)
+ 		if (reg == LPAIF_IRQSTAT_REG(v, i))
+ 			return true;
+ 
+ 	for (i = 0; i < v->rdma_channels; ++i)
+-		if (reg == LPAIF_RDMACURR_REG(v, i) || reg == LPAIF_RDMACTL_REG(v, i))
++		if (reg == LPAIF_RDMACURR_REG(v, i))
+ 			return true;
+ 
+ 	for (i = 0; i < v->wrdma_channels; ++i)
+-		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start) ||
+-			reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
++		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
+ 			return true;
+ 
+ 	return false;
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 80b09de..2b0a7c1 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -481,8 +481,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+ 		return -ENOTRECOVERABLE;
+ 	}
+ 	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
++		lpass_platform_pcmops_prepare(component, substream);
++	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		ret = regmap_fields_write(dmactl->enable, id,
+ 						 LPAIF_DMACTL_ENABLE_ON);
+@@ -592,7 +593,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+ 		break;
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
