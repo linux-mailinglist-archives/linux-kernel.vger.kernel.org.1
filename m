@@ -2,87 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0762C6BED
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EABBC2C6BF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgK0TUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 14:20:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730256AbgK0TPB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:15:01 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803E3C0613D1;
-        Fri, 27 Nov 2020 11:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=4JovlIohpzI+qwWZKvcpd23jikqjpizs8G1o7wuvprc=; b=eVZaVWlwSlNEPqlsoJWlfWR4iQ
-        wcA9+AMlnBhSHcVa8o14Bca5/tSGBuYi1tX4/0I8RdDsvvKXpZh2V7VfovVlk6f+mMKWWj9hTXjq4
-        8lBRgf+KBWZm4Gn9z5KUpcG3L70sc4mez1dLxcnwAOh5GS0aiW+3xgSycYwqMIZ6a/GAE1bU06XyU
-        ogWGRSmjmUcjxodcoueyGu0/5GduHnoLgq+wFzCxr4Li/TPAz7KOMsElEDQpdfo2xjX9tPl4Ps6CO
-        24LjjPdPwcxZBYxuyTlUAAR+P4QiTXlGENKfzHwWCe6sAt3ObVb/7EjJFCi9Vto2GR1a882WdMTYv
-        5NwI1fvg==;
-Received: from [2601:1c0:6280:3f0::cc1f]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kijAF-0002fj-Ip; Fri, 27 Nov 2020 19:12:16 +0000
-Subject: Re: linux-next: Tree for Nov 27 (parisc: signal flags)
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-References: <20201127200457.1ffb6aaf@canb.auug.org.au>
- <155a20fd-09c4-df35-9cc6-8526a89c2933@infradead.org>
-Message-ID: <377a18ac-ca0d-75ba-7a50-0876dabfc1ed@infradead.org>
-Date:   Fri, 27 Nov 2020 11:12:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727455AbgK0T0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 14:26:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730231AbgK0TNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 14:13:32 -0500
+Received: from localhost.localdomain (unknown [95.146.230.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDA81221F1;
+        Fri, 27 Nov 2020 19:12:45 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Will Deacon <will@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Pavel Tatashin <pasha.tatashin@soleen.com>
+Subject: Re: [PATCH 0/2] arm64: Implement CONFIG_CMDLINE_EXTEND
+Date:   Fri, 27 Nov 2020 19:12:43 +0000
+Message-Id: <160650434702.20875.12520970127987518808.b4-ty@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200921191557.350256-1-tyhicks@linux.microsoft.com>
+References: <20200921191557.350256-1-tyhicks@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <155a20fd-09c4-df35-9cc6-8526a89c2933@infradead.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[adding Eric]
-
-On 11/27/20 10:43 AM, Randy Dunlap wrote:
-> On 11/27/20 1:04 AM, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20201126:
->>
+On Mon, 21 Sep 2020 14:15:55 -0500, Tyler Hicks wrote:
+> Provide the CONFIG_CMDLINE_EXTEND config option for arm64 kernels. This
+> config option can be used to extend the kernel command line parameters,
+> specified by the bootloader, with additional command line parameters
+> specified in the kernel configuration.
 > 
-> on parisc, _SA_SIGGFAULT is undefined and causing build errors.
+> This option addresses the following use cases:
 > 
-> commit 23acdc76f1798b090bb9dcc90671cd29d929834e
-> Author: Peter Collingbourne <pcc@google.com>
-> Date:   Thu Nov 12 18:53:34 2020 -0800
-> 
->     signal: clear non-uapi flag bits when passing/returning sa_flags
-> 
-> 
-> 
-> _SA_SIGGFAULT is not used or defined anywhere else in the
-> kernel source tree.
+> [...]
 
+Applied to arm64 (for-next/cmdline-extended), thanks!
 
-Here is the build error (although it should be obvious):
-
-../kernel/signal.c: In function 'do_sigaction':
-../arch/parisc/include/asm/signal.h:24:30: error: '_SA_SIGGFAULT' undeclared (first use in this function)
-   24 | #define __ARCH_UAPI_SA_FLAGS _SA_SIGGFAULT
-      |                              ^~~~~~~~~~~~~
-
-
+[1/2] arm64: kaslr: Refactor early init command line parsing
+      https://git.kernel.org/arm64/c/52ec03f75d59
+[2/2] arm64: Extend the kernel command line from the bootloader
+      https://git.kernel.org/arm64/c/1e40d105dae5
 
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Catalin
+
