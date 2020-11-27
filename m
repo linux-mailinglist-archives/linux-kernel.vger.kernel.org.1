@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B432C6CDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEEC2C6CE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:25:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728509AbgK0VSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 16:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730815AbgK0VQP (ORCPT
+        id S1730724AbgK0VYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 16:24:50 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:50523 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731500AbgK0VXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 16:16:15 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8A9C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 13:16:05 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id s9so7278689ljo.11
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 13:16:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bcq5nvyQqo6mh3u7DswmsrnqFs0sPScZXFNxYa3vNA4=;
-        b=c6828afhOnkbjpth7Yk1WdawsTrP15Loc77tsWPGeki6JdT3pIdKiz1Rm7UQtJREb1
-         FKJcxLizt0aPl/2jHtrHwf6U2yEVf9RbnFXpCojlP0i1Cjf1J+/uRsfzfOpmXvTbfqQJ
-         T8Qh2BDNl3PSX+NtQ2pRuNIPHu3qPdPnszA7E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bcq5nvyQqo6mh3u7DswmsrnqFs0sPScZXFNxYa3vNA4=;
-        b=b84B4M9geiPpxlnfT7aiolAkzrIq8AciXjHlhTuiKHXjJ8c1Rz1leaAJgvmXPeIiDY
-         cWgOaKZHqFdGbzMBFakiLP61Us5N2sZjbWTTk6rzn74gtCvP7dXQ7YHzkuWqusdjYjcW
-         VGD56vSx0cDbnz8BI5TWX9ircadfW6MwzlPmNqw6lllORl1YiA1JF/yg2bJnfZtKDJQl
-         IMFbPZzpKrjVTx6GCEFtOJqcLrzLQ/dvvqWUY/9IeIMsMVpG157wzl9QJotOQfVu2aUE
-         pc6yyQDsAlmpunCYsh6dJT6R4BR2EnQx5JxAIcoRgO3OY4Gmpwbp1nDH2/tD+cymc3QI
-         pkIw==
-X-Gm-Message-State: AOAM533E/0kB6BT9A+llp4lIRbV6B57wdezgI9Nb1/wjUJin6gCZ/Ar3
-        f7JnQTgGNtcM/dib9+pjz7wJ0SikREMWrg==
-X-Google-Smtp-Source: ABdhPJxyx0gcRNV/pBMZiJw4rnj5nm0kWsGlwMaP7GqR8SFyxmGY/GH9Y1o6vUmZXtYKmFNQvLXcrw==
-X-Received: by 2002:a2e:b164:: with SMTP id a4mr335255ljm.271.1606511763654;
-        Fri, 27 Nov 2020 13:16:03 -0800 (PST)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id m7sm828200lfj.113.2020.11.27.13.16.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 13:16:02 -0800 (PST)
-Received: by mail-lf1-f45.google.com with SMTP id t6so8751860lfl.13
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 13:16:02 -0800 (PST)
-X-Received: by 2002:ac2:4199:: with SMTP id z25mr4440339lfh.148.1606511762473;
- Fri, 27 Nov 2020 13:16:02 -0800 (PST)
+        Fri, 27 Nov 2020 16:23:33 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 1BA0A1BF203;
+        Fri, 27 Nov 2020 21:23:24 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 22:23:24 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        arm@kernel.org, soc@kernel.org
+Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] ARM: at91: Drivers for 5.11
+Message-ID: <20201127212324.GG1296649@piout.net>
+References: <20201127210844.GA1683573@piout.net>
 MIME-Version: 1.0
-References: <CAK7LNASn4Si3=YhAPtc06wEqajpU0uBh46-4T10f=cHy=LY2iA@mail.gmail.com>
- <CAHk-=wihYvkKOcXWPjY7wN13DXbh3k2YX_6JxK_1cQ=krbi9kg@mail.gmail.com>
-In-Reply-To: <CAHk-=wihYvkKOcXWPjY7wN13DXbh3k2YX_6JxK_1cQ=krbi9kg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 27 Nov 2020 13:15:46 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi86Eu8Whu66CVu+GVTxbuJG+QNvDuk-hXnWu+5q90Zeg@mail.gmail.com>
-Message-ID: <CAHk-=wi86Eu8Whu66CVu+GVTxbuJG+QNvDuk-hXnWu+5q90Zeg@mail.gmail.com>
-Subject: Re: [GIT PULL 2/2] Kconfig updates for v5.10-rc1
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201127210844.GA1683573@piout.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 1:08 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
->        make --trace allmodconfig
->
-> shows a series of
->
->     scripts/Makefile.host:112: target 'scripts/kconfig/....o' does not exist
->
-> lines, which is silly and wrong
+Please ignore that one, I'm going to merge my current at91-drivers and
+at91-soc branches and send you only one PR as this is what makes more
+sense.
 
-Oh, this is a red herring. It's "make" output being misleading, and it
-just comes from the FORCE keyword.
+On 27/11/2020 22:08:46+0100, Alexandre Belloni wrote:
+> Arnd, Olof,
+> 
+> As discussed with Arnd, here are two cleanup patches for at91_cf. My end
+> goal is to get rid of include/linux/platform_data/atmel.h.
+> 
+> The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+> 
+>   Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux tags/at91-drivers-5.11
+> 
+> for you to fetch changes up to 91be3e89f450aa738204f6629f06d8b0e3d8d77b:
+> 
+>   pcmcia: at91_cf: remove platform data support (2020-11-24 12:05:24 +0100)
+> 
+> ----------------------------------------------------------------
+> AT91 drivers for 5.11:
+> 
+>  - at91_cf cleanups
+> 
+> ----------------------------------------------------------------
+> Alexandre Belloni (2):
+>       pcmcia: at91_cf: move definitions locally
+>       pcmcia: at91_cf: remove platform data support
+> 
+>  drivers/pcmcia/Kconfig              |  1 +
+>  drivers/pcmcia/at91_cf.c            | 49 ++++++++++++++-----------------------
+>  include/linux/platform_data/atmel.h | 12 ---------
+>  3 files changed, 20 insertions(+), 42 deletions(-)
+> 
+> -- 
+> Alexandre Belloni, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
 
-And no, those don't actually change the end result for me.
-
-        Linus
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
