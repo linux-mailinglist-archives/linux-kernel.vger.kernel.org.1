@@ -2,89 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771862C6378
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7332C637A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbgK0Kx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 05:53:27 -0500
-Received: from outbound-smtp01.blacknight.com ([81.17.249.7]:40142 "EHLO
-        outbound-smtp01.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726985AbgK0Kx1 (ORCPT
+        id S1729274AbgK0Kxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 05:53:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgK0Kxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 05:53:27 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id 775B2C4BA3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:53:24 +0000 (GMT)
-Received: (qmail 14850 invoked from network); 27 Nov 2020 10:53:24 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 Nov 2020 10:53:24 -0000
-Date:   Fri, 27 Nov 2020 10:53:22 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] cpuidle: Allow configuration of the polling interval
- before cpuidle enters a c-state
-Message-ID: <20201127105322.GO3371@techsingularity.net>
-References: <20201126171824.GK3371@techsingularity.net>
- <CAJZ5v0hz4dBzUcvoyLoJf8Fmajws-uP3MB-_4dmzEYvMDJwEwQ@mail.gmail.com>
- <20201126203151.GM3371@techsingularity.net>
+        Fri, 27 Nov 2020 05:53:31 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0125C0613D1;
+        Fri, 27 Nov 2020 02:53:30 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id i2so5107891wrs.4;
+        Fri, 27 Nov 2020 02:53:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=H24SSLC+UsrRju3W5x+fr83X/byfZ0NjxlHbFhkfZuM=;
+        b=Qh+q1aNN47QRpXHqyC0mh9Li/Rwuh6NkQolTSH0KaQH2wcB9btTjhnkkaKlec0ss7I
+         eAt1GPZ2j0uULRwjj3M8IC0xGEDwQFroE5O3QbuWzreUeDGmJ+YfBKqzvafoh2O6huON
+         jzg1F8eidyFXXuc3iYt9xm8kI6go1MY3Ht2p2g/CSe/r4D0h/NzibrThDIDS3MRW6KXQ
+         pb7FlAbpUbSyGaMM2NGGIhsnRtnzata3lkPdKOrrm+2+Hc5wObzLiOCQQ52WrVL/2cWD
+         rtmX4NkYra4plYQpmUdvIYVsr25AO4XIx+SdeGTos25emsSffF636/1zkVb4ZTdWmeGW
+         PLsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H24SSLC+UsrRju3W5x+fr83X/byfZ0NjxlHbFhkfZuM=;
+        b=Z9+qYCHbfvmwcHPyH2dvgj2wEZXKHMMNHWNveMcic5hjQaKf6bl1HAsA/cCcMI0cth
+         AkRbvSiOaW79yS0VqnGxwvjqnLr34pVnULjzb2HmADGDZ+u3REpU3z/ZUMoX+KEKyNjx
+         stllAN/BYKcWyQMxQzu3bHc0Xr1J2SNjOfbb45QM+U3i9LBvWOlpbC070xSAj4y+peNZ
+         x85DfHmgZemOA8Wq4Za/MSPYIdUOnE+b+Qxo7JV0O2Yb/IfMEHN2iKOO4a9XzyeVzRvB
+         KAz+NOLkHjWybXthY0wSOdcXbqnUXvCTc12sm3ywkPMHoNOajatId1r31QWvBEIbXHrM
+         G6JQ==
+X-Gm-Message-State: AOAM533qcV+8hhDz7d/OeoWx4dZCJYnq7dBYud3P5sm7sB7wiByoH0b0
+        f5IAZpo1c5g1C4cJzoxykn0oI9pE6OWaYg==
+X-Google-Smtp-Source: ABdhPJyKO1Npf6L8SAyW4OkuHev+Ra/SMrJunsOH/Zv+K/YwQHMs0Z3uoYv0cnb+qGuKz3Zko/5BBw==
+X-Received: by 2002:a5d:5552:: with SMTP id g18mr9669135wrw.145.1606474409341;
+        Fri, 27 Nov 2020 02:53:29 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id k11sm7432339wmj.42.2020.11.27.02.53.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 02:53:28 -0800 (PST)
+Subject: Re: [PATCH] spu_create.2: Clarify that one of the prototypes is the
+ current one
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201126183211.21857-1-alx.manpages@gmail.com>
+ <e4802e90-75e5-caaa-ea53-bdbe3c6dd17a@gmail.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <f4a0e805-8b86-7579-84f3-6bb4b1d936d2@gmail.com>
+Date:   Fri, 27 Nov 2020 11:53:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201126203151.GM3371@techsingularity.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <e4802e90-75e5-caaa-ea53-bdbe3c6dd17a@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 08:31:51PM +0000, Mel Gorman wrote:
-> > > and it is reasonable behaviour but it should be tunable.
-> > 
-> > Only if there is no way to cover all of the relevant use cases in a
-> > generally acceptable way without adding more module params etc.
-> > 
-> > In this particular case, it should be possible to determine a polling
-> > limit acceptable to everyone.
-> > 
+Hi Michael,
+
+On 11/27/20 11:43 AM, Michael Kerrisk (man-pages) wrote:
+> Hi ALex,
 > 
-> Potentially yes. cpuidle is not my strong suit but it could try being
-> adaptive the polling similar to how the menu governor tries to guess
-> the typical interval. Basically it would have to pick a polling internal
-> between 2 and TICK_NSEC. Superficially it a task is queued before polling
-> finishes, decrease the interval and increase it otherwise. That is a mess
-> though because then it may be polling for ages with nothing arriving. It
-> would have to start tracking when the CPU exited idle to see if polling
-> is even worthwhile. That
+> On 11/26/20 7:32 PM, Alejandro Colomar wrote:
+>> The current Linux kernel only provides a definition of 'spu_create()'.
+>> It has 4 parameters, the last being 'int neighbor_fd'.
+>>
+>> Before Linux 2.6.23, there was an older prototype,
+>> which didn't have this last parameter.
+>>
+>> Move that old prototype to VERSIONS,
+>> and keep the current one in SYNOPSIS.
+>>
+>> ......
+>>
+>> $ grep -rn "SYSCALL_DEFINE.(spu_create"
+>> arch/powerpc/platforms/cell/spu_syscalls.c:56:
+>> SYSCALL_DEFINE4(spu_create, const char __user *, name, unsigned int, flags,
+>>
+>> $ sed -n 56,/^}/p arch/powerpc/platforms/cell/spu_syscalls.c
+>> SYSCALL_DEFINE4(spu_create, const char __user *, name, unsigned int, flags,
+>> 	umode_t, mode, int, neighbor_fd)
+>> {
+>> 	long ret;
+>> 	struct spufs_calls *calls;
+>>
+>> 	calls = spufs_calls_get();
+>> 	if (!calls)
+>> 		return -ENOSYS;
+>>
+>> 	if (flags & SPU_CREATE_AFFINITY_SPU) {
+>> 		struct fd neighbor = fdget(neighbor_fd);
+>> 		ret = -EBADF;
+>> 		if (neighbor.file) {
+>> 			ret = calls->create_thread(name, flags, mode, neighbor.file);
+>> 			fdput(neighbor);
+>> 		}
+>> 	} else
+>> 		ret = calls->create_thread(name, flags, mode, NULL);
+>>
+>> 	spufs_calls_put(calls);
+>> 	return ret;
+>> }
+>>
+>> $ git blame arch/powerpc/platforms/cell/spu_syscalls.c -L 56,/\)/
+>> 1bc94226d5c64 (Al Viro 2011-07-26 16:50:23 -0400 56)
+>> SYSCALL_DEFINE4(spu_create, const char __user *, name, unsigned int, flags,
+>> 1bc94226d5c64 (Al Viro 2011-07-26 16:50:23 -0400 57)
+>>    umode_t, mode, int, neighbor_fd)
+>>
+>> $ git checkout 1bc94226d5c64~1
+>> $ git blame arch/powerpc/platforms/cell/spu_syscalls.c -L /spu_create/,/\)/
+>> 67207b9664a8d (Arnd Bergmann 2005-11-15 15:53:48 -0500 68)
+>> asmlinkage long sys_spu_create(const char __user *name,
+>> 8e68e2f248332 (Arnd Bergmann 2007-07-20 21:39:47 +0200 69)
+>>              unsigned int flags, mode_t mode, int neighbor_fd)
+>>
+>> $ git checkout 8e68e2f248332~1
+>> $ git blame arch/powerpc/platforms/cell/spu_syscalls.c -L /spu_create/,/\)/
+>> 67207b9664a8d (Arnd Bergmann 2005-11-15 15:53:48 -0500 36)
+>> asmlinkage long sys_spu_create(const char __user *name,
+>> 67207b9664a8d (Arnd Bergmann 2005-11-15 15:53:48 -0500 37)
+>>              unsigned int flags, mode_t mode)
+>>
+>> $ git describe --contains 8e68e2f248332
+>> v2.6.23-rc1~195^2~7
+>>
+>> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+>> ---
+>>  man2/spu_create.2 | 16 +++++++++++++---
+>>  1 file changed, 13 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/man2/spu_create.2 b/man2/spu_create.2
+>> index 4e6f5d730..3eeafee56 100644
+>> --- a/man2/spu_create.2
+>> +++ b/man2/spu_create.2
+>> @@ -30,9 +30,8 @@ spu_create \- create a new spu context
+>>  .B #include <sys/types.h>
+>>  .B #include <sys/spu.h>
+>>  .PP
+>> -.BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode ");"
+>> -.BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode ","
+>> -.BI "               int " neighbor_fd ");"
+>> +.BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode ,
+>> +.BI "               int " neighbor_fd );
+>>  .fi
+>>  .PP
+>>  .IR Note :
+>> @@ -247,6 +246,17 @@ By convention, it gets mounted in
+>>  The
+>>  .BR spu_create ()
+>>  system call was added to Linux in kernel 2.6.16.
+>> +.PP
+>> +.\" commit 8e68e2f248332a9c3fd4f08258f488c209bd3e0c
+>> +Before Linux 2.6.23, the prototype for
+>> +.BR spu_create ()
+>> +was:
+>> +.PP
+>> +.in +4n
+>> +.EX
+>> +.BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode );
+>> +.EE
+>> +.in
+>>  .SH CONFORMING TO
+>>  This call is Linux-specific and implemented only on the PowerPC
+>>  architecture.
 > 
-> I felt that starting with anything that tried adapting the polling
-> interval based on heuristics would meet higher resistance than making it
-> tunable. Hence, make it tunable so at least the problem can be addressed
-> when it's encountered.
+> Thanks for the detailed research.
+
+You're welcome! :)
+
+> The page was indeed a bit messy
+> in explaining some details. I've instead opted for a different change;
+> see below.
+
+Looks good!
+
+Cheers,
+
+Alex
+
 > 
-
-I looked at this again and determining a "polling limit acceptable
-to everyone" looks like reimplementing haltpoll in the core or adding
-haltpoll-like logic to each governor. I doubt that'll be a popular
-approach.
-
-The c1 exit latency as a hint is definitely too low though. I checked
-one of the test machines to double check what the granularity of the time
-checks in poll_idle() at boot time with something like this.
-
-        for (i = 0; i < POLL_IDLE_RELAX_COUNT; i++) {
-                cpu_relax();
-        }
-
-This takes roughly 1100ns on a test machine where the C1 exit latency is
-2000ns. Lets say you have a basic pair of tasks communicating over a pipe
-on the same machine (e.g. perf bench pipe). The time for a round-trip on
-the same machine is roughly 7000ns meaning that polling is almost never
-useful for a basic workload.
-
-
--- 
-Mel Gorman
-SUSE Labs
+> Thanks,
+> 
+> Michael
+> 
+> diff --git a/man2/spu_create.2 b/man2/spu_create.2
+> index 92f5fc304..f09d498ed 100644
+> --- a/man2/spu_create.2
+> +++ b/man2/spu_create.2
+> @@ -30,7 +30,6 @@ spu_create \- create a new spu context
+>  .B #include <sys/types.h>
+>  .B #include <sys/spu.h>
+>  .PP
+> -.BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode ");"
+>  .BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode ","
+>  .BI "               int " neighbor_fd ");"
+>  .fi
+> @@ -89,6 +88,12 @@ for a full list of the possible
+>  values.
+>  .PP
+>  The
+> +.I neighbor_fd
+> +is used only when the
+> +.B SPU_CREATE_AFFINITY_SPU
+> +flag is specified; see below.
+> +.PP
+> +The
+>  .I flags
+>  argument can be zero or any bitwise OR-ed
+>  combination of the following constants:
+> @@ -264,6 +269,14 @@ See
+>  .UR http://www.bsc.es\:/projects\:/deepcomputing\:/linuxoncell/
+>  .UE
+>  for the recommended libraries.
+> +.PP
+> +Prior to the addition of the
+> +.B SPU_CREATE_AFFINITY_SPU
+> +flag in Linux 2.6.23, the
+> +.BR spu_create ()
+> +system call took only three arguments (i.e., there was no
+> +.I neighbor_fd
+> +argument).
+>  .SH EXAMPLES
+>  See
+>  .BR spu_run (2)
+> 
+> 
