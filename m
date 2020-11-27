@@ -2,202 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A692C5F16
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB58C2C5F19
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392350AbgK0DwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 22:52:25 -0500
-Received: from mga11.intel.com ([192.55.52.93]:35460 "EHLO mga11.intel.com"
+        id S2392377AbgK0Dxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 22:53:43 -0500
+Received: from mga11.intel.com ([192.55.52.93]:35589 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388970AbgK0DwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 22:52:25 -0500
-IronPort-SDR: ej6IHgqXd7DoEv31o5YfbD4f3KmOjQteqGEgTK7unS20ijj0j3/4KB+WQrFlfhNuQjwclY8GQv
- pnfwAqe73jgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9817"; a="168846385"
+        id S1726908AbgK0Dxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 22:53:43 -0500
+IronPort-SDR: LR+0kKPDMj5bllNuAcdT5UrcbTI0DZDWelZRIRXoZbR08f+K726MmBJCHj/yhpwHJ1hsOiY2BD
+ 3afOZje0JlMw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9817"; a="168846461"
 X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
-   d="scan'208";a="168846385"
+   d="scan'208";a="168846461"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 19:52:24 -0800
-IronPort-SDR: LY20OFqENuXV4bADZiwIckHrsNtX2QvZCPYjHRdiGZzsaBxC97MKJEkPn+UDDVU6tJQrlc5+Mi
- AwNqT008Cwxg==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 19:53:41 -0800
+IronPort-SDR: PDWKXGulJfBdxugdnRyel4ohEwnJXRGbAIqIgVbi6EFUzAKbj/ApUKl9U57dGHoooYYR2o3SuR
+ goe97CCAk3Eg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
-   d="scan'208";a="333549361"
-Received: from lkp-server01.sh.intel.com (HELO fe15a1cd36f8) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 26 Nov 2020 19:52:23 -0800
-Received: from kbuild by fe15a1cd36f8 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kiUo2-00000M-Oe; Fri, 27 Nov 2020 03:52:22 +0000
-Date:   Fri, 27 Nov 2020 11:51:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 94908c81576bf30b2e0c8276444f589d3504216f
-Message-ID: <5fc077ca.ZDfB/untJH1UfN2/%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="363006640"
+Received: from unknown (HELO [10.239.160.22]) ([10.239.160.22])
+  by fmsmga004.fm.intel.com with ESMTP; 26 Nov 2020 19:53:40 -0800
+Reply-To: Colin.Xu@intel.com
+Subject: Re: [RFC PATCH] vfio/pci: Allow force needs_pm_restore as specified
+ by device:vendor
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Fonn, Swee Yee" <swee.yee.fonn@intel.com>
+References: <20201125021824.27411-1-colin.xu@intel.com>
+ <20201125085312.63510f9f@w520.home>
+From:   Colin Xu <Colin.Xu@intel.com>
+Message-ID: <7e7a83ca-8530-1afa-4b85-2ef76fb99a5c@intel.com>
+Date:   Fri, 27 Nov 2020 11:53:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20201125085312.63510f9f@w520.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: 94908c81576bf30b2e0c8276444f589d3504216f  Merge branch 'core/entry'
 
-elapsed time: 727m
+On 11/25/20 11:53 PM, Alex Williamson wrote:
+> On Wed, 25 Nov 2020 10:18:24 +0800
+> Colin Xu <colin.xu@intel.com> wrote:
+>
+>> Force specific device listed in params pm_restore_ids to follow
+>> device state save/restore as needs_pm_restore.
+>> Some device has NoSoftRst so will skip current state save/restore enabled
+>> by needs_pm_restore. However once the device experienced power state
+>> D3<->D0 transition, either by idle_d3 or the guest driver changes PM_CTL,
+>> the guest driver won't get correct devie state although the configure
+>> space doesn't change.
+> It sounds like you're describing a device that incorrectly exposes
+> NoSoftRst when there is in fact some sort of internal reset that
+> requires reprogramming config space.  What device requires this?  How
+> is a user to know when this option is required?  It seems like this
+> would be better handled via a quirk in PCI core that sets a device flag
+> that the NoSoftRst value is incorrect for the specific affected
+> devices.  Thanks,
+>
+> Alex
 
-configs tested: 138
-configs skipped: 2
+Thanks for the feedback.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The device found are: Comet Lake PCH Serial IO I2C Controller
+[8086:06e8]
+[8086:06e9]
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                          axs101_defconfig
-mips                      pic32mzda_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc64                        alldefconfig
-sh                   sh7724_generic_defconfig
-m68k                        m5307c3_defconfig
-csky                             alldefconfig
-xtensa                          iss_defconfig
-powerpc                      ep88xc_defconfig
-powerpc                        fsp2_defconfig
-powerpc                      acadia_defconfig
-arc                              allyesconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                     mpc83xx_defconfig
-arm                           viper_defconfig
-s390                                defconfig
-xtensa                    xip_kc705_defconfig
-parisc                generic-32bit_defconfig
-arm                        magician_defconfig
-arm                          moxart_defconfig
-sh                               alldefconfig
-arm                            dove_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                      chrp32_defconfig
-arm                      tct_hammer_defconfig
-powerpc                     rainier_defconfig
-m68k                        mvme147_defconfig
-c6x                                 defconfig
-powerpc                      katmai_defconfig
-arm                         assabet_defconfig
-c6x                        evmc6474_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                     akebono_defconfig
-arm                     davinci_all_defconfig
-powerpc                   bluestone_defconfig
-mips                          rb532_defconfig
-mips                           ip32_defconfig
-h8300                       h8s-sim_defconfig
-arm                         hackkit_defconfig
-sh                          r7780mp_defconfig
-m68k                        m5407c3_defconfig
-arm                         lubbock_defconfig
-powerpc                      arches_defconfig
-x86_64                           alldefconfig
-sh                             shx3_defconfig
-powerpc                        cell_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                          pxa3xx_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                     skiroot_defconfig
-arm                        trizeps4_defconfig
-arm                         nhk8815_defconfig
-powerpc                 mpc8272_ads_defconfig
-xtensa                              defconfig
-mips                       lemote2f_defconfig
-xtensa                  cadence_csp_defconfig
-mips                     decstation_defconfig
-arc                            hsdk_defconfig
-powerpc                      ppc40x_defconfig
-sh                        dreamcast_defconfig
-arm                       spear13xx_defconfig
-um                            kunit_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201127
-i386                 randconfig-a003-20201127
-i386                 randconfig-a002-20201127
-i386                 randconfig-a005-20201127
-i386                 randconfig-a001-20201127
-i386                 randconfig-a006-20201127
-x86_64               randconfig-a015-20201127
-x86_64               randconfig-a011-20201127
-x86_64               randconfig-a014-20201127
-x86_64               randconfig-a016-20201127
-x86_64               randconfig-a012-20201127
-x86_64               randconfig-a013-20201127
-i386                 randconfig-a012-20201127
-i386                 randconfig-a013-20201127
-i386                 randconfig-a011-20201127
-i386                 randconfig-a016-20201127
-i386                 randconfig-a014-20201127
-i386                 randconfig-a015-20201127
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Yes you're right, there is no straight way for user to know the device. 
+The above device I found is during pass through them to VM. Although 
+adding such param may help in certain scenario, it still too 
+device-specific but not common in most cases.
 
-clang tested configs:
-x86_64               randconfig-a006-20201127
-x86_64               randconfig-a003-20201127
-x86_64               randconfig-a004-20201127
-x86_64               randconfig-a005-20201127
-x86_64               randconfig-a002-20201127
-x86_64               randconfig-a001-20201127
+I'll try the pci quirk way.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Colin
+
+>
+>
+>> Cc: Swee Yee Fonn <swee.yee.fonn@intel.com>
+>> Signed-off-by: Colin Xu <colin.xu@intel.com>
+>> ---
+>>   drivers/vfio/pci/vfio_pci.c | 66 ++++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 65 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+>> index e6190173482c..50a4141c9e1d 100644
+>> --- a/drivers/vfio/pci/vfio_pci.c
+>> +++ b/drivers/vfio/pci/vfio_pci.c
+>> @@ -34,6 +34,15 @@
+>>   #define DRIVER_AUTHOR   "Alex Williamson <alex.williamson@redhat.com>"
+>>   #define DRIVER_DESC     "VFIO PCI - User Level meta-driver"
+>>   
+>> +#define VFIO_MAX_PM_DEV 32
+>> +struct vfio_pm_devs {
+>> +	struct {
+>> +		unsigned short  vendor;
+>> +		unsigned short  device;
+>> +	} ids[VFIO_MAX_PM_DEV];
+>> +	u32 count;
+>> +};
+>> +
+>>   static char ids[1024] __initdata;
+>>   module_param_string(ids, ids, sizeof(ids), 0);
+>>   MODULE_PARM_DESC(ids, "Initial PCI IDs to add to the vfio driver, format is \"vendor:device[:subvendor[:subdevice[:class[:class_mask]]]]\" and multiple comma separated entries can be specified");
+>> @@ -64,6 +73,10 @@ static bool disable_denylist;
+>>   module_param(disable_denylist, bool, 0444);
+>>   MODULE_PARM_DESC(disable_denylist, "Disable use of device denylist. Disabling the denylist allows binding to devices with known errata that may lead to exploitable stability or security issues when accessed by untrusted users.");
+>>   
+>> +static char pm_restore_ids[1024] __initdata;
+>> +module_param_string(pm_restore_ids, pm_restore_ids, sizeof(pm_restore_ids), 0);
+>> +MODULE_PARM_DESC(pm_restore_ids, "comma separated device in format of \"vendor:device\"");
+>> +
+>>   static inline bool vfio_vga_disabled(void)
+>>   {
+>>   #ifdef CONFIG_VFIO_PCI_VGA
+>> @@ -260,10 +273,50 @@ static bool vfio_pci_nointx(struct pci_dev *pdev)
+>>   	return false;
+>>   }
+>>   
+>> +static struct vfio_pm_devs pm_devs = {0};
+>> +static void __init vfio_pci_fill_pm_ids(void)
+>> +{
+>> +	char *p, *id;
+>> +	int idx = 0;
+>> +
+>> +	/* no ids passed actually */
+>> +	if (pm_restore_ids[0] == '\0')
+>> +		return;
+>> +
+>> +	/* add ids specified in the module parameter */
+>> +	p = pm_restore_ids;
+>> +	while ((id = strsep(&p, ","))) {
+>> +		unsigned int vendor, device = PCI_ANY_ID;
+>> +		int fields;
+>> +
+>> +		if (!strlen(id))
+>> +			continue;
+>> +
+>> +		fields = sscanf(id, "%x:%x", &vendor, &device);
+>> +
+>> +		if (fields != 2) {
+>> +			pr_warn("invalid vendor:device string \"%s\"\n", id);
+>> +			continue;
+>> +		}
+>> +
+>> +		if (idx < VFIO_MAX_PM_DEV) {
+>> +			pm_devs.ids[idx].vendor = vendor;
+>> +			pm_devs.ids[idx].device = device;
+>> +			pm_devs.count++;
+>> +			idx++;
+>> +			pr_info("add [%04x:%04x] for needs_pm_restore\n",
+>> +				vendor, device);
+>> +		} else {
+>> +			pr_warn("Exceed maximum %d, skip adding [%04x:%04x] for needs_pm_restore\n",
+>> +				VFIO_MAX_PM_DEV, vendor, device);
+>> +		}
+>> +	}
+>> +}
+>> +
+>>   static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
+>>   {
+>>   	struct pci_dev *pdev = vdev->pdev;
+>> -	u16 pmcsr;
+>> +	u16 pmcsr, idx;
+>>   
+>>   	if (!pdev->pm_cap)
+>>   		return;
+>> @@ -271,6 +324,16 @@ static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
+>>   	pci_read_config_word(pdev, pdev->pm_cap + PCI_PM_CTRL, &pmcsr);
+>>   
+>>   	vdev->needs_pm_restore = !(pmcsr & PCI_PM_CTRL_NO_SOFT_RESET);
+>> +
+>> +	for (idx = 0; idx < pm_devs.count; idx++) {
+>> +		if (vdev->pdev->vendor == pm_devs.ids[idx].vendor &&
+>> +		    vdev->pdev->device == pm_devs.ids[idx].device) {
+>> +			vdev->needs_pm_restore = true;
+>> +			pr_info("force [%04x:%04x] to needs_pm_restore\n",
+>> +				vdev->pdev->vendor, vdev->pdev->device);
+>> +			break;
+>> +		}
+>> +	}
+>>   }
+>>   
+>>   /*
+>> @@ -2423,6 +2486,7 @@ static int __init vfio_pci_init(void)
+>>   		goto out_driver;
+>>   
+>>   	vfio_pci_fill_ids();
+>> +	vfio_pci_fill_pm_ids();
+>>   
+>>   	if (disable_denylist)
+>>   		pr_warn("device denylist disabled.\n");
+
+-- 
+Best Regards,
+Colin Xu
+
