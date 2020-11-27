@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0BC2C6115
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:42:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8301B2C611D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729311AbgK0IlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 03:41:14 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8418 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728203AbgK0IlN (ORCPT
+        id S1729327AbgK0Iqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 03:46:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728965AbgK0Iqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 03:41:13 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cj7PX5XSqz6vHL;
-        Fri, 27 Nov 2020 16:40:48 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 27 Nov 2020 16:41:07 +0800
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] riscv/stacktrace: fix stackframe without ra on the top
-Date:   Fri, 27 Nov 2020 08:45:02 +0000
-Message-ID: <20201127084502.2133722-1-chenhuang5@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 27 Nov 2020 03:46:38 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D3CC0613D1;
+        Fri, 27 Nov 2020 00:46:38 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id u10so1231465wmm.0;
+        Fri, 27 Nov 2020 00:46:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dteSsltsDU7xAS3rAuXjux0r1sR5UkBdeacC7b6kchY=;
+        b=COyIxDdugmKMcB43JOkCzjpRaHtZoJu7EYxxlLRQwh4JEGiSJ4h9uJF6Sva64iKi62
+         SxmHtJYmsmGfXrZGQ84Sq1jVY4f0t1BPKVwQYFpa8/IbK1pKg2TYu/kyLKUkrCO14RDU
+         a0vi6L9bCs+BhJh6N31uXzFumqaik6gXg6acKCvUrAEQ6lPYsfMTv/i9D7K9j4Fwtc9a
+         xRQvXan7+TefaxvzVxB/z8L4Hs29f/9DUlESQRrU/RSn+/Y4ZGixXYqKr+4/eZABRfNN
+         xmiJBpfaa3EiWAWrKS/SlUkNygwHWmHeZyXpfmAM/kvxHCdKIYobC1fZgI/Vr5jBotS6
+         sTig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dteSsltsDU7xAS3rAuXjux0r1sR5UkBdeacC7b6kchY=;
+        b=MoNMsEt1BZfcVfsUnWibkGeHpNDEIHrr0AvliN6GxO3RqSBUGuWF5un4RcaBFDaN7Y
+         j2kaknYFk4r/JtX7GUjUBzn39FHJei0L/jeV2SIrVRYw65V5ShPFAPhZdKlNe6U73aKO
+         nl8tH7MSiSLt8L1yRDtLVVh/nq6rlkXtuI3GJNTxnoZqRNhqacgOv86JVc3PHk2kVdLk
+         k/DapyAL6tGm7zpmGj/XvkTHnnV7ii3fKkxVA/yv/xQGhiq/QvFhga3HhaABIfAjNa/f
+         V82EKjKOU1WN1vowxoaYnDubIXjecWiL1qT/HyeyUV3k1zv+zzddoMaX+D1PupYCo5n0
+         ok7Q==
+X-Gm-Message-State: AOAM5330wsJ1Q5itKLmD4nV4eUjHpngYhEkrLDQIvBxVpIoV+L+xbTno
+        4V2FoPPGxpBaW7YuJBh+oQLJBMu/e+8axA==
+X-Google-Smtp-Source: ABdhPJxYqiJaw43WZKooJ2W4WZivbk/XwYkCOjkMwWPpnfYalcHw8FEoQ3XLx8Tv55clh2xygtpScg==
+X-Received: by 2002:a7b:c744:: with SMTP id w4mr7851464wmk.0.1606466797131;
+        Fri, 27 Nov 2020 00:46:37 -0800 (PST)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id d17sm12870714wro.62.2020.11.27.00.46.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 00:46:36 -0800 (PST)
+Subject: Re: [PATCH 1/2] dt-bindings: dma: mtk-apdma: add bindings for MT8516
+ SOC
+To:     Rob Herring <robh@kernel.org>, Fabien Parent <fparent@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, sean.wang@mediatek.com,
+        dmaengine@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        vkoul@kernel.org, devicetree@vger.kernel.org
+References: <20201015123315.334919-1-fparent@baylibre.com>
+ <20201019211634.GA3616126@bogus>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <4e7974e6-fd47-f1e6-9bf4-bd9762033c2d@gmail.com>
+Date:   Fri, 27 Nov 2020 09:46:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201019211634.GA3616126@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a function doesn't have a callee, then it will not push ra
-into the stack, such as lkdtm_BUG() function:
+Hi Vinod,
 
-addi	sp,sp,-16
-sd	s0,8(sp)
-addi	s0,sp,16
-ebreak
+On 19/10/2020 23:16, Rob Herring wrote:
+> On Thu, 15 Oct 2020 14:33:14 +0200, Fabien Parent wrote:
+>> Add bindings to APDMA for MT8516 SoC. MT8516 is compatible with MT6577.
+>>
+>> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+>> ---
+>>   Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
+> 
 
-Then we use pt_regs as a parameter to walk_stackframe(), for the
-struct stackframe use {fp,ra} to get information from stack, it
-will get the wrong value. And the call trace will be:
+Will you take this patch through your tree or do you prefer that I take it.
 
-[<ffffffe00066c56c>] lkdtm_BUG+0x6/0x8
----[ end trace 18da3fbdf08e25d5 ]---
-
-It should be that:
-[<ffffffe00066c56c>] lkdtm_BUG+0x6/0x8
-[<ffffffe0008b24a4>] lkdtm_do_action+0x14/0x1c
-[<ffffffe00066c372>] direct_entry+0xc0/0x10a
-[<ffffffe000439f86>] full_proxy_write+0x42/0x6a
-[<ffffffe000309626>] vfs_write+0x7e/0x214
-[<ffffffe00030992a>] ksys_write+0x98/0xc0
-[<ffffffe000309960>] sys_write+0xe/0x16
-[<ffffffe0002014bc>] ret_from_syscall+0x0/0x2
----[ end trace 61917f3d9a9fadcd ]---
-
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
----
- arch/riscv/kernel/stacktrace.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-index 595342910c3f..d1d4c18335c4 100644
---- a/arch/riscv/kernel/stacktrace.c
-+++ b/arch/riscv/kernel/stacktrace.c
-@@ -57,7 +57,14 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
- 		/* Unwind stack frame */
- 		frame = (struct stackframe *)fp - 1;
- 		sp = fp;
--		fp = frame->fp;
-+		if (regs && (frame->fp & 0x7) && (pc == regs->epc)) {
-+			fp = frame->ra;
-+			pc = regs->ra;
-+			continue;
-+		} else {
-+			fp = frame->fp;
-+		}
-+
- 		pc = ftrace_graph_ret_addr(current, NULL, frame->ra,
- 					   (unsigned long *)(fp - 8));
- 	}
--- 
-2.17.1
-
+Regards,
+Matthias
