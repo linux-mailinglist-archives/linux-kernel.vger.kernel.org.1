@@ -2,80 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01ED2C6131
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA5F2C6134
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727774AbgK0Itx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 03:49:53 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8045 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgK0Itw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 03:49:52 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cj7bW5BKRzhXwL;
-        Fri, 27 Nov 2020 16:49:27 +0800 (CST)
-Received: from huawei.com (10.69.192.56) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Fri, 27 Nov 2020
- 16:49:42 +0800
-From:   Luo Jiaxing <luojiaxing@huawei.com>
-To:     <bgolaszewski@baylibre.com>, <linus.walleij@linaro.org>,
-        <Sergey.Semin@baikalelectronics.ru>
-CC:     <andy.shevchenko@gmail.com>, <andriy.shevchenko@linux.intel.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v2] gpio: dwapb: fix NULL pointer dereference at dwapb_gpio_suspend()
-Date:   Fri, 27 Nov 2020 16:50:02 +0800
-Message-ID: <1606467002-62964-1-git-send-email-luojiaxing@huawei.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+        id S1727427AbgK0Iwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 03:52:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726556AbgK0Iwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 03:52:38 -0500
+Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E358B22249;
+        Fri, 27 Nov 2020 08:52:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606467156;
+        bh=L0hWWJOvh2olKK63JPQ1fnHK0JEnXJ4ZPC/GhCIVAMg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OlugDK4wixIoeO1B2OHznxp2y7++AurX3KpvLXTVERDUpO/uuLqo6/JMTCzCftD8N
+         ybU3buZMvFLMbS5/TgU0D6w7ENmyiPNk219RdDev+TGdi4cOAmcr1dk08fjUWAHXwu
+         EjW9Fxe9kHRG4MNT8n7vRyuDT36IfGPDGYNlpOf0=
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     SW_Drivers@habana.ai
+Subject: [PATCH] habanalabs/gaudi: handle reset when f/w is in preboot
+Date:   Fri, 27 Nov 2020 10:52:32 +0200
+Message-Id: <20201127085232.3247-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following Calltrace is found when running echo freeze > /sys/power/state.
+Currently, if the f/w is in preboot/u-boot they don't perform the new
+reset mechanism. Therefore, the driver needs to reset the device.
+To prevent reset of PCI_IF, the driver needs to first configure the
+reset units.
 
-[  272.755506] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000010
-[  272.755585] Call trace:
-[  272.755587]  dwapb_gpio_suspend+0x18/0x318
-[  272.755588]  pm_generic_suspend+0x2c/0x48
-[  272.755595]  acpi_subsys_suspend+0x60/0x70
-[  272.755599]  dpm_run_callback.isra.18+0x40/0xe0
-[  272.755601]  __device_suspend+0xf4/0x360
+If the security is enabled, the driver can't configure the reset units.
+In that situation, don't reset the card.
 
-The reason is platform_set_drvdata() is deleted, and dwapb_gpio_suspend()
-get *gpio by dev_get_drvdata().
-
-Fixes: feeaefd378ca ("gpio: dwapb: Use resource managed GPIO-chip add data method")
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
-   v1->v2:
-          1. reduce calltrace log
-          2. delete blank line in tag block
----
----
- drivers/gpio/gpio-dwapb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/misc/habanalabs/gaudi/gaudi.c | 60 ++++++++++++++-------------
+ 1 file changed, 31 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-index 2a9046c..4275c18 100644
---- a/drivers/gpio/gpio-dwapb.c
-+++ b/drivers/gpio/gpio-dwapb.c
-@@ -724,6 +724,8 @@ static int dwapb_gpio_probe(struct platform_device *pdev)
- 			return err;
- 	}
- 
-+	platform_set_drvdata(pdev, gpio);
-+
- 	return 0;
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index cd18456fa523..568afe1b6849 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -3829,33 +3829,6 @@ static void gaudi_pre_hw_init(struct hl_device *hdev)
+ 	 * cleared by the H/W upon H/W reset
+ 	 */
+ 	WREG32(mmHW_STATE, HL_DEVICE_HW_STATE_DIRTY);
+-	if (hdev->asic_prop.fw_security_disabled) {
+-		/* Configure the reset registers. Must be done as early as
+-		 * possible in case we fail during H/W initialization
+-		 */
+-		WREG32(mmPSOC_GLOBAL_CONF_SOFT_RST_CFG_H,
+-						(CFG_RST_H_DMA_MASK |
+-						CFG_RST_H_MME_MASK |
+-						CFG_RST_H_SM_MASK |
+-						CFG_RST_H_TPC_7_MASK));
+-
+-		WREG32(mmPSOC_GLOBAL_CONF_SOFT_RST_CFG_L, CFG_RST_L_TPC_MASK);
+-
+-		WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST_CFG_H,
+-						(CFG_RST_H_HBM_MASK |
+-						CFG_RST_H_TPC_7_MASK |
+-						CFG_RST_H_NIC_MASK |
+-						CFG_RST_H_SM_MASK |
+-						CFG_RST_H_DMA_MASK |
+-						CFG_RST_H_MME_MASK |
+-						CFG_RST_H_CPU_MASK |
+-						CFG_RST_H_MMU_MASK));
+-
+-		WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST_CFG_L,
+-						(CFG_RST_L_IF_MASK |
+-						CFG_RST_L_PSOC_MASK |
+-						CFG_RST_L_TPC_MASK));
+-	}
  }
  
+ static int gaudi_hw_init(struct hl_device *hdev)
+@@ -3946,7 +3919,8 @@ static void gaudi_hw_fini(struct hl_device *hdev, bool hard_reset)
+ 	/* Set device to handle FLR by H/W as we will put the device CPU to
+ 	 * halt mode
+ 	 */
+-	if (!hdev->asic_prop.hard_reset_done_by_fw)
++	if (hdev->asic_prop.fw_security_disabled &&
++				!hdev->asic_prop.hard_reset_done_by_fw)
+ 		WREG32(mmPCIE_AUX_FLR_CTRL, (PCIE_AUX_FLR_CTRL_HW_CTRL_MASK |
+ 					PCIE_AUX_FLR_CTRL_INT_MASK_MASK));
+ 
+@@ -3957,7 +3931,35 @@ static void gaudi_hw_fini(struct hl_device *hdev, bool hard_reset)
+ 
+ 	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR, GAUDI_EVENT_HALT_MACHINE);
+ 
+-	if (!hdev->asic_prop.hard_reset_done_by_fw) {
++	if (hdev->asic_prop.fw_security_disabled &&
++				!hdev->asic_prop.hard_reset_done_by_fw) {
++
++		/* Configure the reset registers. Must be done as early as
++		 * possible in case we fail during H/W initialization
++		 */
++		WREG32(mmPSOC_GLOBAL_CONF_SOFT_RST_CFG_H,
++						(CFG_RST_H_DMA_MASK |
++						CFG_RST_H_MME_MASK |
++						CFG_RST_H_SM_MASK |
++						CFG_RST_H_TPC_7_MASK));
++
++		WREG32(mmPSOC_GLOBAL_CONF_SOFT_RST_CFG_L, CFG_RST_L_TPC_MASK);
++
++		WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST_CFG_H,
++						(CFG_RST_H_HBM_MASK |
++						CFG_RST_H_TPC_7_MASK |
++						CFG_RST_H_NIC_MASK |
++						CFG_RST_H_SM_MASK |
++						CFG_RST_H_DMA_MASK |
++						CFG_RST_H_MME_MASK |
++						CFG_RST_H_CPU_MASK |
++						CFG_RST_H_MMU_MASK));
++
++		WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST_CFG_L,
++						(CFG_RST_L_IF_MASK |
++						CFG_RST_L_PSOC_MASK |
++						CFG_RST_L_TPC_MASK));
++
+ 		msleep(cpu_timeout_ms);
+ 
+ 		/* Tell ASIC not to re-initialize PCIe */
 -- 
-2.7.4
+2.17.1
 
