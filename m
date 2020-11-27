@@ -2,95 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D60A2C6B0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:56:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8469C2C6B15
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732838AbgK0Rzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:55:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54098 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732436AbgK0Rzl (ORCPT
+        id S1732625AbgK0R5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:57:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730985AbgK0R5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:55:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606499740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=Br/IPbdHx/OaYg6xCtsKtihEPu1TMwZ+6MkhSnyxsRs=;
-        b=OlqeNknsyJOgPCiYYSBRTA1H+W8HdCu3r7pnY6q3humVeUUUN0epS5Txaj2k7smHLoJUsU
-        OjDWByJeZc0ecyFyPUVGFzh+EGAOM3cdS/UiFDI6/RcnUHrfMY3HTbxZVQTdmx8M5Xcfsx
-        7os+S7JElacrYsG1hPt69nx4xeRbU78=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-0ZPn9j7nMjC-5JWdCvVu_A-1; Fri, 27 Nov 2020 12:55:38 -0500
-X-MC-Unique: 0ZPn9j7nMjC-5JWdCvVu_A-1
-Received: by mail-qt1-f200.google.com with SMTP id i20so3662765qtr.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:55:37 -0800 (PST)
+        Fri, 27 Nov 2020 12:57:49 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9834C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:57:48 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id b5so3755051wrp.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:57:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=mYHoyQQELFte9RcoqeMyfOMdhbka6OyGE7l8wA2dMYU=;
+        b=JRCE5+AJnZ455uAlfvPFoUANq0PzfkPGfL1NhqGG2tmDSl9xHhFyZLBTtN+wbNuZr+
+         prWRx9TbcnIaZb6gcgpUkYelsfbPkLKgxZOymdtP5+waXXZD66MeC4dwJesZUljMh5CC
+         jHrUi1GYkTF7vQMwaRw5Vwp2foJ3qmao0DoUZWqQ1nF56UzH7FUCpxhNPPHdyAPUYEok
+         qYlbhlLG9LQFB1mTiq9S7rxj4HuPhhiyEp0HmYSEY3rz5JVyjY1ax0sij9SFIvccygDa
+         Fg3+0nkTGPL3aCuJBsUO4nG3hM0N3ezGxK+Ttmlnvon7m0Mpx43uP54THmKSshkf2IO1
+         weOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Br/IPbdHx/OaYg6xCtsKtihEPu1TMwZ+6MkhSnyxsRs=;
-        b=TbUukwMJrSuWyIROHVqYTw0KooAVN1dbnSCdx/IjFJa9TP+rCjU0swywdm83B6C8Sb
-         1senhNLjjPb5jG5S34S1YZjgBQnVSAPYMCV2ySFe1ZCt8G7KB0geu3uddwjrSxykPl5k
-         MlH78qcV2OWJngZQzBpOROgtmNDhfZauezs1u6ft+5id8ZP50MKk8R/vWyWUJKA4OhT0
-         gDCiHTFxfBNJaoGLHce5jGVCHVr+YuKeBIxoKWjgzFIYFpH+y0Gn3bGVM6hKJjqCsfvv
-         eiKTrN/U1ZlMHbyQwho3uWPbyOiMyOo2E8RZTBGGGcG0pc8aZV6StpKPO816emlF8gsh
-         inmg==
-X-Gm-Message-State: AOAM531514dtlJLJ6waSyjDXath+MxoVWPXLm26fs8Ya8ZRdz8AoU2jD
-        f8zn1ZLccyppvihvxnJ8xVDQZWW9zufr3/t8jehsHYz1ZpmJBkj+mOWR0HzgYK8eGHDyGxyQX2X
-        7jv/BRwdY+T6Toem/Nl/nU1cQ
-X-Received: by 2002:a05:620a:a9a:: with SMTP id v26mr9511050qkg.56.1606499737598;
-        Fri, 27 Nov 2020 09:55:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw2L15Xpt+pzKI2tQJ1Mja1bZVxZ9cJq3+yTQqjAUjwGC9JUF+NSrylLZnhZYHe6hp4SZgoPA==
-X-Received: by 2002:a05:620a:a9a:: with SMTP id v26mr9511031qkg.56.1606499737423;
-        Fri, 27 Nov 2020 09:55:37 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id r48sm6421675qtr.21.2020.11.27.09.55.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 09:55:36 -0800 (PST)
-From:   trix@redhat.com
-To:     chunkeey@googlemail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] net: carl9170: remove trailing semicolon in macro definition
-Date:   Fri, 27 Nov 2020 09:55:31 -0800
-Message-Id: <20201127175531.2754461-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.4
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=mYHoyQQELFte9RcoqeMyfOMdhbka6OyGE7l8wA2dMYU=;
+        b=RhNZ9f46IxRlTt0lVEUpZanhq00fhSf8kOVJqPsXq5lKvzl3ga1zR+zAJS3rIrMHD2
+         LpZRdIFlts3HaTLrTXW9LL1IRbQ2PlQqSW2rvpXNmHa7YDTcqhWH68Evb1sAm2giwNo5
+         LwvUMz1dfB+9w2jGoLhQof0yc7K86Quav6q1/cfSoOCASy9pMn348ciFnVzHOEtxER+e
+         bRoTtN22DVW+SuEHTtt4r+gTeqZBllokQGqrANEZLz9EB1HUR3azIH6eY7KRYNpXFfxl
+         04ufO28/8LAm/XR3mojI8gZbzaYYNNQ73c6LOxNxHGGopxcTor3JO6zZNGw0sE1HlPOE
+         7AZg==
+X-Gm-Message-State: AOAM532eMlfWetjOyfV34e1BojPLOIfRmaQUV5qUjIlRomsVvZ99tNAf
+        x7Q3Lq5lhbbpdGze5vGQx2WW+4FR72XwLA==
+X-Google-Smtp-Source: ABdhPJwaYDoq4MpI4cYkRRPkIYQ+OePsqvvzDLpjGb0Cxk6S90w+e8XJnMZ0yll68qxCOZ9ZUxA86GCnXFQc7Q==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a1c:7e87:: with SMTP id
+ z129mr10474359wmc.176.1606499867363; Fri, 27 Nov 2020 09:57:47 -0800 (PST)
+Date:   Fri, 27 Nov 2020 17:57:25 +0000
+Message-Id: <20201127175738.1085417-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH v2 bpf-next 00/13] Atomics for eBPF
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Status of the patches
+=====================
 
-The macro use will already have a semicolon.
+Thanks for the reviews! Differences from v1->v2 [1]:
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/net/wireless/ath/carl9170/debug.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+* Fixed mistakes in the netronome driver
 
-diff --git a/drivers/net/wireless/ath/carl9170/debug.c b/drivers/net/wireless/ath/carl9170/debug.c
-index 19009aafc4e1..bb40889d7c72 100644
---- a/drivers/net/wireless/ath/carl9170/debug.c
-+++ b/drivers/net/wireless/ath/carl9170/debug.c
-@@ -45,7 +45,7 @@
- #include "cmd.h"
- 
- #define ADD(buf, off, max, fmt, args...)				\
--	off += scnprintf(&buf[off], max - off, fmt, ##args);
-+	off += scnprintf(&buf[off], max - off, fmt, ##args)
- 
- 
- struct carl9170_debugfs_fops {
-@@ -818,7 +818,7 @@ void carl9170_debugfs_register(struct ar9170 *ar)
- #define DEBUGFS_ADD(name)						\
- 	debugfs_create_file(#name, carl_debugfs_##name ##_ops.attr,	\
- 			    ar->debug_dir, ar,				\
--			    &carl_debugfs_##name ## _ops.fops);
-+			    &carl_debugfs_##name ## _ops.fops)
- 
- 	DEBUGFS_ADD(usb_tx_anch_urbs);
- 	DEBUGFS_ADD(usb_rx_pool_urbs);
--- 
-2.18.4
+* Addd sub, add, or, xor operations
+
+* The above led to some refactors to keep things readable. (Maybe I
+  should have just waited until I'd implemented these before starting
+  the review...)
+
+* Replaced BPF_[CMP]SET | BPF_FETCH with just BPF_[CMP]XCHG, which
+  include the BPF_FETCH flag
+
+* Added a bit of documentation. Suggestions welcome for more places
+  to dump this info...
+
+The prog_test that's added depends on Clang/LLVM features added by
+Yonghong in https://reviews.llvm.org/D72184
+
+This only includes a JIT implementation for x86_64 - I don't plan to
+implement JIT support myself for other architectures.
+
+Operations
+==========
+
+This patchset adds atomic operations to the eBPF instruction set. The
+use-case that motivated this work was a trivial and efficient way to
+generate globally-unique cookies in BPF progs, but I think it's
+obvious that these features are pretty widely applicable.  The
+instructions that are added here can be summarised with this list of
+kernel operations:
+
+* atomic[64]_[fetch_]add
+* atomic[64]_[fetch_]sub
+* atomic[64]_[fetch_]and
+* atomic[64]_[fetch_]or
+* atomic[64]_xchg
+* atomic[64]_cmpxchg
+
+The following are left out of scope for this effort:
+
+* 16 and 8 bit operations
+* Explicit memory barriers
+
+Encoding
+========
+
+I originally planned to add new values for bpf_insn.opcode. This was
+rather unpleasant: the opcode space has holes in it but no entire
+instruction classes[2]. Yonghong Song had a better idea: use the
+immediate field of the existing STX XADD instruction to encode the
+operation. This works nicely, without breaking existing programs,
+because the immediate field is currently reserved-must-be-zero, and
+extra-nicely because BPF_ADD happens to be zero.
+
+Note that this of course makes immediate-source atomic operations
+impossible. It's hard to imagine a measurable speedup from such
+instructions, and if it existed it would certainly not benefit x86,
+which has no support for them.
+
+The BPF_OP opcode fields are re-used in the immediate, and an
+additional flag BPF_FETCH is used to mark instructions that should
+fetch a pre-modification value from memory.
+
+So, BPF_XADD is now called BPF_ATOMIC (the old name is kept to avoid
+breaking userspace builds), and where we previously had .imm = 0, we
+now have .imm = BPF_ADD (which is 0).
+
+Operands
+========
+
+Reg-source eBPF instructions only have two operands, while these
+atomic operations have up to four. To avoid needing to encode
+additional operands, then:
+
+- One of the input registers is re-used as an output register
+  (e.g. atomic_fetch_add both reads from and writes to the source
+  register).
+
+- Where necessary (i.e. for cmpxchg) , R0 is "hard-coded" as one of
+  the operands.
+
+This approach also allows the new eBPF instructions to map directly
+to single x86 instructions.
+
+[1] Previous patchset:
+    https://lore.kernel.org/bpf/20201123173202.1335708-1-jackmanb@google.com/
+
+[2] Visualisation of eBPF opcode space:
+    https://gist.github.com/bjackman/00fdad2d5dfff601c1918bc29b16e778
+
+
+Brendan Jackman (13):
+  bpf: x86: Factor out emission of ModR/M for *(reg + off)
+  bpf: x86: Factor out emission of REX byte
+  bpf: x86: Factor out function to emit NEG
+  bpf: x86: Factor out a lookup table for some ALU opcodes
+  bpf: Rename BPF_XADD and prepare to encode other atomics in .imm
+  bpf: Move BPF_STX reserved field check into BPF_STX verifier code
+  bpf: Add BPF_FETCH field / create atomic_fetch_add instruction
+  bpf: Add instructions for atomic_[cmp]xchg
+  bpf: Pull out a macro for interpreting atomic ALU operations
+  bpf: Add instructions for atomic[64]_[fetch_]sub
+  bpf: Add bitwise atomic instructions
+  bpf: Add tests for new BPF atomic operations
+  bpf: Document new atomic instructions
+
+ Documentation/networking/filter.rst           |  57 ++-
+ arch/arm/net/bpf_jit_32.c                     |   7 +-
+ arch/arm64/net/bpf_jit_comp.c                 |  16 +-
+ arch/mips/net/ebpf_jit.c                      |  11 +-
+ arch/powerpc/net/bpf_jit_comp64.c             |  25 +-
+ arch/riscv/net/bpf_jit_comp32.c               |  20 +-
+ arch/riscv/net/bpf_jit_comp64.c               |  16 +-
+ arch/s390/net/bpf_jit_comp.c                  |  27 +-
+ arch/sparc/net/bpf_jit_comp_64.c              |  17 +-
+ arch/x86/net/bpf_jit_comp.c                   | 252 ++++++++++----
+ arch/x86/net/bpf_jit_comp32.c                 |   6 +-
+ drivers/net/ethernet/netronome/nfp/bpf/jit.c  |  14 +-
+ drivers/net/ethernet/netronome/nfp/bpf/main.h |   4 +-
+ .../net/ethernet/netronome/nfp/bpf/verifier.c |  15 +-
+ include/linux/filter.h                        | 117 ++++++-
+ include/uapi/linux/bpf.h                      |   8 +-
+ kernel/bpf/core.c                             |  67 +++-
+ kernel/bpf/disasm.c                           |  41 ++-
+ kernel/bpf/verifier.c                         |  77 +++-
+ lib/test_bpf.c                                |   2 +-
+ samples/bpf/bpf_insn.h                        |   4 +-
+ samples/bpf/sock_example.c                    |   2 +-
+ samples/bpf/test_cgrp2_attach.c               |   4 +-
+ tools/include/linux/filter.h                  | 117 ++++++-
+ tools/include/uapi/linux/bpf.h                |   8 +-
+ tools/testing/selftests/bpf/Makefile          |  12 +-
+ .../selftests/bpf/prog_tests/atomics_test.c   | 329 ++++++++++++++++++
+ .../bpf/prog_tests/cgroup_attach_multi.c      |   4 +-
+ .../selftests/bpf/progs/atomics_test.c        | 124 +++++++
+ .../selftests/bpf/verifier/atomic_and.c       |  77 ++++
+ .../selftests/bpf/verifier/atomic_cmpxchg.c   |  96 +++++
+ .../selftests/bpf/verifier/atomic_fetch_add.c | 106 ++++++
+ .../selftests/bpf/verifier/atomic_or.c        |  77 ++++
+ .../selftests/bpf/verifier/atomic_sub.c       |  44 +++
+ .../selftests/bpf/verifier/atomic_xchg.c      |  46 +++
+ .../selftests/bpf/verifier/atomic_xor.c       |  77 ++++
+ tools/testing/selftests/bpf/verifier/ctx.c    |   7 +-
+ .../testing/selftests/bpf/verifier/leak_ptr.c |   4 +-
+ tools/testing/selftests/bpf/verifier/unpriv.c |   3 +-
+ tools/testing/selftests/bpf/verifier/xadd.c   |   2 +-
+ 40 files changed, 1754 insertions(+), 188 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/atomics_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/atomics_test.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_and.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch_add.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_or.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_sub.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xchg.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xor.c
+
+--
+2.29.2.454.gaff20da3a2-goog
 
