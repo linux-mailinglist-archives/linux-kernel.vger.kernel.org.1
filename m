@@ -2,153 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96882C626F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9441B2C6283
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgK0KBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 05:01:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728066AbgK0KBp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 05:01:45 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B3DC0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:01:43 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id l1so4928764wrb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:01:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DiX1BOjtmBdaUBxd27sZjTmBGtSbOqX8zXkWXxLiRSk=;
-        b=GwxYEgELirhM4f500MGN6ZFp3noYdf/8Ef7FA6s88Xk/mMJF0NTCWLt7bn3UMVwQ2j
-         ivOYZrZ/U6WwhLiN7txIvY2IzgJMUvzOwnQIBq8nI0aNcWHIyJKov+bVttYznU+BOCsN
-         a5/JOAE18R3ga1KK/KLZDXZdf8+YxYQ+mzcil/SUuWnm7J84ouIW1r28MQBtSBzpuOFo
-         1Lo0z0RamLAUYRay4Ddq0bEKeuTNXfUTfqnmsnXCne24qUsm3Kmi6ik7yqSiDIpLPBRU
-         +CT828fA8QhQP3Xv1H5hmzCx+r8TpgGgLKWFbcbykSNw83H95I43TYImE2HXQ0h7vrgH
-         RWmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DiX1BOjtmBdaUBxd27sZjTmBGtSbOqX8zXkWXxLiRSk=;
-        b=uQcITUhBHXY0dCnN7WqyMMrjo8xH6GZkXzLz+thLDqV1czh7hYmxbD3bBIaVAqWuto
-         0Q1s9lCPBBprorsRzxU4MwL9p4PkuDIwYo7Crpmv8PfaYEWDbwEEndJrkUaPv7sMMpPw
-         fOG/+/Owf/xxFwepFNcYcm7izzrLP6tHjgvDi8W5RmYQeS1h7IUXZvPAxBLLSFqhA3Es
-         R0NsYhNG45fKjIocBjRMCFRVx5pa0JtUWjzjS/WRPFucZ530TK8Vx9soMAw5Cct70Zdw
-         K95heR2CCYNui6CPQT2AFk/PWs2pa87TVV1LlmlVrDMOCd+8jmn6EmhSQqcNY1AOulc3
-         Z+jA==
-X-Gm-Message-State: AOAM533lG/FpPosfJRVXxXAuBOqgFjU89SLxjFmlnEgVWEeTs0K79iRx
-        k+eqzbpcOELjaOA1zf4XeNgvZw==
-X-Google-Smtp-Source: ABdhPJwC7qIr57iRwDeZya4zpiIbaD6hFj4axD8WZpWw0JGDRKDzWKHN8vWhzQjFj6ySkcVIUCt4oQ==
-X-Received: by 2002:a5d:56cb:: with SMTP id m11mr9781162wrw.346.1606471301740;
-        Fri, 27 Nov 2020 02:01:41 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id e27sm16006352wrc.9.2020.11.27.02.01.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 02:01:41 -0800 (PST)
-Date:   Fri, 27 Nov 2020 10:01:38 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 08/14] arm64: exec: Adjust affinity for compat tasks
- with mismatched 32-bit EL0
-Message-ID: <20201127100138.GC906877@google.com>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-9-will@kernel.org>
+        id S1728740AbgK0KGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 05:06:25 -0500
+Received: from foss.arm.com ([217.140.110.172]:36722 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726202AbgK0KGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 05:06:25 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4293C1516;
+        Fri, 27 Nov 2020 02:06:24 -0800 (PST)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F2D93F71F;
+        Fri, 27 Nov 2020 02:06:23 -0800 (PST)
+Subject: Re: [PATCH] drm/panfrost: fix reference leak in
+ panfrost_job_hw_submit
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20201127094441.121094-1-miaoqinglang@huawei.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <46d1944e-fbbe-075f-1c5b-356b5ce73ee0@arm.com>
+Date:   Fri, 27 Nov 2020 10:06:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124155039.13804-9-will@kernel.org>
+In-Reply-To: <20201127094441.121094-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 24 Nov 2020 at 15:50:33 (+0000), Will Deacon wrote:
-> When exec'ing a 32-bit task on a system with mismatched support for
-> 32-bit EL0, try to ensure that it starts life on a CPU that can actually
-> run it.
+On 27/11/2020 09:44, Qinglang Miao wrote:
+> pm_runtime_get_sync will increment pm usage counter even it
+> failed. Forgetting to putting operation will result in a
+> reference leak here.
 > 
-> Signed-off-by: Will Deacon <will@kernel.org>
+> A new function pm_runtime_resume_and_get is introduced in
+> [0] to keep usage counter balanced. So We fix the reference
+> leak by replacing it with new funtion.
+> 
+> [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
+> 
+> Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 > ---
->  arch/arm64/kernel/process.c | 42 ++++++++++++++++++++++++++++++++++++-
->  1 file changed, 41 insertions(+), 1 deletion(-)
+>   drivers/gpu/drm/panfrost/panfrost_job.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 1540ab0fbf23..72116b0c7c73 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -31,6 +31,7 @@
->  #include <linux/interrupt.h>
->  #include <linux/init.h>
->  #include <linux/cpu.h>
-> +#include <linux/cpuset.h>
->  #include <linux/elfcore.h>
->  #include <linux/pm.h>
->  #include <linux/tick.h>
-> @@ -625,6 +626,45 @@ unsigned long arch_align_stack(unsigned long sp)
->  	return sp & ~0xf;
->  }
->  
-> +static void adjust_compat_task_affinity(struct task_struct *p)
-> +{
-> +	cpumask_var_t cpuset_mask;
-> +	const struct cpumask *possible_mask = system_32bit_el0_cpumask();
-> +	const struct cpumask *newmask = possible_mask;
-> +
-> +	/*
-> +	 * Restrict the CPU affinity mask for a 32-bit task so that it contains
-> +	 * only the 32-bit-capable subset of its original CPU mask. If this is
-> +	 * empty, then try again with the cpuset allowed mask. If that fails,
-> +	 * forcefully override it with the set of all 32-bit-capable CPUs that
-> +	 * we know about.
-> +	 *
-> +	 * From the perspective of the task, this looks similar to what would
-> +	 * happen if the 64-bit-only CPUs were hot-unplugged at the point of
-> +	 * execve().
-> +	 */
-> +	if (!restrict_cpus_allowed_ptr(p, possible_mask))
-> +		goto out;
-> +
-> +	if (alloc_cpumask_var(&cpuset_mask, GFP_KERNEL)) {
-> +		cpuset_cpus_allowed(p, cpuset_mask);
-> +		if (cpumask_and(cpuset_mask, cpuset_mask, possible_mask)) {
-> +			newmask = cpuset_mask;
-> +			goto out_set_mask;
-> +		}
-> +	}
-> +
-> +	if (printk_ratelimit()) {
-> +		printk_deferred("Overriding affinity for 32-bit process %d (%s) to CPUs %*pbl\n",
-> +				task_pid_nr(p), p->comm, cpumask_pr_args(newmask));
-> +	}
-> +out_set_mask:
-> +	set_cpus_allowed_ptr(p, newmask);
-> +	free_cpumask_var(cpuset_mask);
-> +out:
-> +	set_tsk_thread_flag(current, TIF_NOTIFY_RESUME);
-> +}
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+> index 30e7b7196..04cf3bb67 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+> @@ -147,7 +147,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
+>   
+>   	panfrost_devfreq_record_busy(&pfdev->pfdevfreq);
+>   
+> -	ret = pm_runtime_get_sync(pfdev->dev);
+> +	ret = pm_runtime_resume_and_get(pfdev->dev);
 
-This starts to look an awful lot like select_fallback_rq(), but I
-suppose we shouldn't bother factoring out that code yet as we probably
-don't want this pattern to be re-used all over, so:
+Sorry, but in this case this change isn't correct. 
+panfrost_job_hw_submit() is expected to be unbalanced (the PM reference 
+count is expected to be incremented on return).
 
-Reviewed-by: Quentin Perret <qperret@google.com>
+In the case where pm_runtime_get_sync() fails, the job will eventually 
+timeout, and there's a corresponding pm_runtime_put_noidle() in 
+panfrost_reset().
 
-Thanks,
-Quentin
+Potentially this could be handled better (e.g. without waiting for the 
+timeout to occur), but equally this isn't something we expect to happen 
+in normal operation).
+
+Steve
+
+>   	if (ret < 0)
+>   		return;
+>   
+> 
+
