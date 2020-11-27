@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1EF2C61F0
+	by mail.lfdr.de (Postfix) with ESMTP id 60BBD2C61EF
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729059AbgK0JlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:41:15 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8049 "EHLO
+        id S1728965AbgK0JlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:41:09 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8602 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728056AbgK0Jkc (ORCPT
+        with ESMTP id S1728285AbgK0Jkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:40:32 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cj8k03kzqzhjJt;
-        Fri, 27 Nov 2020 17:40:08 +0800 (CST)
+        Fri, 27 Nov 2020 04:40:36 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cj8jx3KnnzLvB5;
+        Fri, 27 Nov 2020 17:40:05 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 27 Nov 2020 17:40:23 +0800
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 27 Nov 2020 17:40:25 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+To:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
+        "Daniel Vetter" <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] drm/mediatek: fix reference leak in mtk_crtc_ddp_hw_init
-Date:   Fri, 27 Nov 2020 17:44:39 +0800
-Message-ID: <20201127094439.121049-1-miaoqinglang@huawei.com>
+Subject: [PATCH] drm/panfrost: fix reference leak in panfrost_job_hw_submit
+Date:   Fri, 27 Nov 2020 17:44:41 +0800
+Message-ID: <20201127094441.121094-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -52,26 +50,26 @@ leak by replacing it with new funtion.
 
 [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
 
-Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
+Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 2 +-
+ drivers/gpu/drm/panfrost/panfrost_job.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index ac0385721..dfd5ed15a 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -274,7 +274,7 @@ static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
- 		drm_connector_list_iter_end(&conn_iter);
- 	}
+diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+index 30e7b7196..04cf3bb67 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_job.c
++++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+@@ -147,7 +147,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
  
--	ret = pm_runtime_get_sync(crtc->dev->dev);
-+	ret = pm_runtime_resume_and_get(crtc->dev->dev);
- 	if (ret < 0) {
- 		DRM_ERROR("Failed to enable power domain: %d\n", ret);
- 		return ret;
+ 	panfrost_devfreq_record_busy(&pfdev->pfdevfreq);
+ 
+-	ret = pm_runtime_get_sync(pfdev->dev);
++	ret = pm_runtime_resume_and_get(pfdev->dev);
+ 	if (ret < 0)
+ 		return;
+ 
 -- 
 2.23.0
 
