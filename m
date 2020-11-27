@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6208C2C61E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A842C61E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728888AbgK0Jky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:40:54 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8603 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728740AbgK0Jkm (ORCPT
+        id S1728829AbgK0Jkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:40:53 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7999 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728493AbgK0Jkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:40:42 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cj8k321tPzLwPQ;
-        Fri, 27 Nov 2020 17:40:11 +0800 (CST)
+        Fri, 27 Nov 2020 04:40:39 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cj8kD2DQTzhjF1;
+        Fri, 27 Nov 2020 17:40:20 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 27 Nov 2020 17:40:29 +0800
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 27 Nov 2020 17:40:30 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>
-CC:     <linux-gpio@vger.kernel.org>,
+To:     =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        "Krzysztof Kozlowski" <krzk@kernel.org>
+CC:     <linux-samsung-soc@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] gpio: zynq: fix reference leak in zynq_gpio functions
-Date:   Fri, 27 Nov 2020 17:44:45 +0800
-Message-ID: <20201127094445.121232-1-miaoqinglang@huawei.com>
+Subject: [PATCH] hwrng: exynos - fix reference leak in exynos_trng_probe
+Date:   Fri, 27 Nov 2020 17:44:46 +0800
+Message-ID: <20201127094446.121277-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -49,35 +49,26 @@ leak by replacing it with new funtion.
 
 [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
 
-Fixes: c2df3de0d07e ("gpio: zynq: properly support runtime PM for GPIO used as interrupts")
+Fixes: 6cd225cc5d8a ("hwrng: exynos - add Samsung Exynos True RNG driver")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/gpio/gpio-zynq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/char/hw_random/exynos-trng.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-zynq.c b/drivers/gpio/gpio-zynq.c
-index 0b5a17ab9..3521c1dc3 100644
---- a/drivers/gpio/gpio-zynq.c
-+++ b/drivers/gpio/gpio-zynq.c
-@@ -574,7 +574,7 @@ static int zynq_gpio_irq_reqres(struct irq_data *d)
- 	struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
- 	int ret;
+diff --git a/drivers/char/hw_random/exynos-trng.c b/drivers/char/hw_random/exynos-trng.c
+index 8e1fe3f8d..666246bc8 100644
+--- a/drivers/char/hw_random/exynos-trng.c
++++ b/drivers/char/hw_random/exynos-trng.c
+@@ -132,7 +132,7 @@ static int exynos_trng_probe(struct platform_device *pdev)
+ 		return PTR_ERR(trng->mem);
  
--	ret = pm_runtime_get_sync(chip->parent);
-+	ret = pm_runtime_resume_and_get(chip->parent);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -942,7 +942,7 @@ static int zynq_gpio_probe(struct platform_device *pdev)
- 
- 	pm_runtime_set_active(&pdev->dev);
  	pm_runtime_enable(&pdev->dev);
 -	ret = pm_runtime_get_sync(&pdev->dev);
 +	ret = pm_runtime_resume_and_get(&pdev->dev);
- 	if (ret < 0)
- 		goto err_pm_dis;
- 
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Could not get runtime PM.\n");
+ 		goto err_pm_get;
 -- 
 2.23.0
 
