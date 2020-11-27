@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362502C6043
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 08:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C5A2C6045
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 08:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404938AbgK0HAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 02:00:06 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:5454 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389454AbgK0HAD (ORCPT
+        id S2405083AbgK0HAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 02:00:21 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:42269 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727612AbgK0HAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 02:00:03 -0500
+        Fri, 27 Nov 2020 02:00:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1606460402; x=1637996402;
+  t=1606460419; x=1637996419;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=QQ4UGvVqiLpmPBI3y2pgedsgWExuRX2cpnTdk9uJCzo=;
-  b=W0zoSV5QVI8DYdb1dKtRxzGSAnOR3pqcF/TSQ7sdnBgGwOglucIf02V7
-   u9HEfqV5s2s+P0VQ8aoejMLNFWidWiXEYXSz1LGfOpv+6+D+yhJQ71ua6
-   ZbT3epn9OB9vnwbIrpOlju7jk9zrmSVYXmdcsLkoUt8TLUm6G1cKdiEFo
-   A=;
+  bh=viVKit3dVbSrh340cOllYtKoraRGThxG51PkfUAAw6I=;
+  b=rD2iqbo+Y0QcVjgiLo8rRijpLk+rjKwiLfDWLLMTslxNinkB+LNhbl9q
+   tSRxb0DepHru7axJQrlI85UcYGhTfjtppCVSrTLqhTgHqxO5F6rQHDpV7
+   eHvuFl/xBNxWrHYz8/+gT3gWrH+ufp9bY+FwncJZFuXnuKCoEKvPDC4Js
+   4=;
 X-IronPort-AV: E=Sophos;i="5.78,373,1599523200"; 
-   d="scan'208";a="98359495"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 27 Nov 2020 06:59:59 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 726CB221C4A;
-        Fri, 27 Nov 2020 06:59:58 +0000 (UTC)
-Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
+   d="scan'208";a="91359430"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-cc689b93.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 27 Nov 2020 07:00:08 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-cc689b93.us-west-2.amazon.com (Postfix) with ESMTPS id BDAF8120DF6;
+        Fri, 27 Nov 2020 07:00:07 +0000 (UTC)
+Received: from EX13D01UWA001.ant.amazon.com (10.43.160.60) by
  EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 27 Nov 2020 06:59:58 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
- EX13d01UWA002.ant.amazon.com (10.43.160.74) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 27 Nov 2020 06:59:57 +0000
-Received: from localhost (10.85.0.203) by mail-relay.amazon.com
- (10.43.160.118) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 27 Nov 2020 06:59:57 +0000
+ id 15.0.1497.2; Fri, 27 Nov 2020 07:00:00 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (10.43.60.12) by
+ EX13d01UWA001.ant.amazon.com (10.43.160.60) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 27 Nov 2020 07:00:00 +0000
+Received: from localhost (10.85.0.203) by mail-relay.amazon.com (10.43.60.234)
+ with Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Fri, 27 Nov
+ 2020 06:59:58 +0000
 From:   Balbir Singh <sblbir@amazon.com>
 To:     <tglx@linutronix.de>, <mingo@redhat.com>
 CC:     <peterz@infradead.org>, <linux-kernel@vger.kernel.org>,
@@ -46,9 +46,9 @@ CC:     <peterz@infradead.org>, <linux-kernel@vger.kernel.org>,
         <x86@kernel.org>, <dave.hansen@intel.com>,
         <thomas.lendacky@amd.com>, <torvalds@linux-foundation.org>,
         Balbir Singh <sblbir@amazon.com>
-Subject: [PATCH v3 4/5] prctl: Hook L1D flushing in via prctl
-Date:   Fri, 27 Nov 2020 17:59:37 +1100
-Message-ID: <20201127065938.8200-5-sblbir@amazon.com>
+Subject: [PATCH v3 5/5] Documentation: Add L1D flushing Documentation
+Date:   Fri, 27 Nov 2020 17:59:38 +1100
+Message-ID: <20201127065938.8200-6-sblbir@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201127065938.8200-1-sblbir@amazon.com>
 References: <20201127065938.8200-1-sblbir@amazon.com>
@@ -58,255 +58,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the existing PR_GET/SET_SPECULATION_CTRL API to expose the L1D
-flush capability. For L1D flushing PR_SPEC_FORCE_DISABLE and
-PR_SPEC_DISABLE_NOEXEC are not supported.
+Add documentation of l1d flushing, explain the need for the
+feature and how it can be used.
 
-Enabling L1D flush does not check if the task is running on
-an SMT enabled core, rather a check is done at runtime (at the
-time of flush), if the task runs on a non SMT enabled core
-then the task is sent a SIGBUS (this is done prior to the task
-executing on the core, so no data is leaked). This is better
-than the other alternatives of
-
-a. Ensuring strict affinity of the task (hard to enforce
-without further changes in the scheduler)
-b. Silently skipping flush for tasks that move to SMT enabled
-cores.
-
-An arch config ARCH_HAS_PARANOID_L1D_FLUSH has been added
-and struct task carries a callback_head for arch's that support
-this config (currently on x86), this callback head is used
-to schedule task work (SIGBUS delivery).
-
-There is also no seccomp integration for the feature.
-
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Balbir Singh <sblbir@amazon.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/Kconfig               |  4 +++
- arch/x86/Kconfig           |  1 +
- arch/x86/kernel/cpu/bugs.c | 54 ++++++++++++++++++++++++++++++++++++++
- arch/x86/mm/tlb.c          | 30 ++++++++++++++++++++-
- include/linux/sched.h      | 10 +++++++
- include/uapi/linux/prctl.h |  1 +
- 6 files changed, 99 insertions(+), 1 deletion(-)
+ Documentation/admin-guide/hw-vuln/index.rst   |  1 +
+ .../admin-guide/hw-vuln/l1d_flush.rst         | 69 +++++++++++++++++++
+ .../admin-guide/kernel-parameters.txt         | 17 +++++
+ Documentation/userspace-api/spec_ctrl.rst     |  8 +++
+ 4 files changed, 95 insertions(+)
+ create mode 100644 Documentation/admin-guide/hw-vuln/l1d_flush.rst
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 56b6ccc0e32d..d4a0501ac7fc 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -311,6 +311,10 @@ config ARCH_32BIT_OFF_T
- 	  still support 32-bit off_t. This option is enabled for all such
- 	  architectures explicitly.
+diff --git a/Documentation/admin-guide/hw-vuln/index.rst b/Documentation/admin-guide/hw-vuln/index.rst
+index ca4dbdd9016d..21710f8609fe 100644
+--- a/Documentation/admin-guide/hw-vuln/index.rst
++++ b/Documentation/admin-guide/hw-vuln/index.rst
+@@ -15,3 +15,4 @@ are configurable at compile, boot or run time.
+    tsx_async_abort
+    multihit.rst
+    special-register-buffer-data-sampling.rst
++   l1d_flush.rst
+diff --git a/Documentation/admin-guide/hw-vuln/l1d_flush.rst b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
+new file mode 100644
+index 000000000000..9db0f5e568cb
+--- /dev/null
++++ b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
+@@ -0,0 +1,69 @@
++L1D Flushing
++============
++
++With an increasing number of vulnerabilities being reported around data
++leaks from the Level 1 Data cache (L1D) the kernel provides an opt-in
++mechanism to flush the L1D cache on context switch.
++
++This mechanism can be used to address e.g. CVE-2020-0550. For applications
++the mechanism keeps them safe from vulnerabilities, related to leaks
++(snooping of) from the L1D cache.
++
++
++Related CVEs
++------------
++The following CVEs can be addressed by this
++mechanism
++
++    =============       ========================     ==================
++    CVE-2020-0550       Improper Data Forwarding     OS related aspects
++    =============       ========================     ==================
++
++Usage Guidelines
++----------------
++
++Please see document: :ref:`Documentation/userspace-api/spec_ctrl.rst
++<set_spec_ctrl>` for details.
++
++**NOTE**: The feature is disabled by default, applications need to
++specifically opt into the feature to enable it.
++
++Mitigation
++----------
++
++When PR_SET_L1D_FLUSH is enabled for a task a flush of the L1D cache is
++performed when the task is scheduled out and the incoming task belongs to a
++different process and therefore to a different address space.
++
++If the underlying CPU supports L1D flushing in hardware, the hardware
++mechanism is used, software fallback for the mitigation, is not supported.
++
++Mitigation control on the kernel command line
++---------------------------------------------
++
++The kernel command line allows to control the L1D flush mitigations at boot
++time with the option "l1d_flush_out=". The valid arguments for this option are:
++
++  ============  =============================================================
++  off		Disables the prctl interface, applications trying to use
++                the prctl() will fail with an error
++  ============  =============================================================
++
++By default the API is enabled and applications opt-in by using the prctl
++API.
++
++Limitations
++-----------
++
++The mechanism does not mitigate L1D data leaks between tasks belonging to
++different processes which are concurrently executing on sibling threads of
++a physical CPU core when SMT is enabled on the system.
++
++This can be addressed by controlled placement of processes on physical CPU
++cores or by disabling SMT. See the relevant chapter in the L1TF mitigation
++document: :ref:`Documentation/admin-guide/hw-vuln/l1tf.rst <smt_control>`.
++
++**NOTE** : The opt-in of a task for L1D flushing will work only when the
++tasks affinity is limited to cores running in non-SMT mode. Running the task
++on a CPU with SMT enabled would result in the task getting a SIGBUS when 
++t executes on the non-SMT core.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 44fde25bb221..e3ed24af91d1 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2320,6 +2320,23 @@
+ 			feature (tagged TLBs) on capable Intel chips.
+ 			Default is 1 (enabled)
  
-+config ARCH_HAS_PARANOID_L1D_FLUSH
-+	bool
-+	default n
++	l1d_flush_out=	[X86,INTEL]
++			Control mitigation for L1D based snooping vulnerability.
 +
- config HAVE_ASM_MODVERSIONS
- 	bool
- 	help
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index f6946b81f74a..4f6caa6dae16 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -101,6 +101,7 @@ config X86
- 	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
- 	select ARCH_WANT_HUGE_PMD_SHARE
- 	select ARCH_WANTS_THP_SWAP		if X86_64
-+	select ARCH_HAS_PARANOID_L1D_FLUSH
- 	select BUILDTIME_TABLE_SORT
- 	select CLKEVT_I8253
- 	select CLOCKSOURCE_VALIDATE_LAST_CYCLE
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 581fb7223ad0..dece79e4d1e9 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -296,6 +296,13 @@ enum taa_mitigations {
- 	TAA_MITIGATION_TSX_DISABLED,
- };
++			Certain CPUs are vulnerable to an exploit against CPU
++			internal buffers which can forward information to a
++			disclosure gadget under certain conditions.
++
++			In vulnerable processors, the speculatively
++			forwarded data can be used in a cache side channel
++			attack, to access data to which the attacker does
++			not have direct access.
++
++			This parameter controls the mitigation. The
++			options are:
++
++			off        - Unconditionally disable the mitigation
++
+ 	l1tf=           [X86] Control mitigation of the L1TF vulnerability on
+ 			      affected CPUs
  
-+enum l1d_flush_out_mitigations {
-+	L1D_FLUSH_OUT_OFF,
-+	L1D_FLUSH_OUT_ON,
-+};
+diff --git a/Documentation/userspace-api/spec_ctrl.rst b/Documentation/userspace-api/spec_ctrl.rst
+index 7ddd8f667459..f39744ef8810 100644
+--- a/Documentation/userspace-api/spec_ctrl.rst
++++ b/Documentation/userspace-api/spec_ctrl.rst
+@@ -106,3 +106,11 @@ Speculation misfeature controls
+    * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_INDIRECT_BRANCH, PR_SPEC_ENABLE, 0, 0);
+    * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_INDIRECT_BRANCH, PR_SPEC_DISABLE, 0, 0);
+    * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_INDIRECT_BRANCH, PR_SPEC_FORCE_DISABLE, 0, 0);
 +
-+static enum l1d_flush_out_mitigations l1d_flush_out_mitigation __ro_after_init = L1D_FLUSH_OUT_ON;
++- PR_SPEC_L1D_FLUSH_OUT: Flush L1D Cache on context switch out of the task
++                        (works only when tasks run on non SMT cores)
 +
- /* Default mitigation for TAA-affected CPUs */
- static enum taa_mitigations taa_mitigation __ro_after_init = TAA_MITIGATION_VERW;
- static bool taa_nosmt __ro_after_init;
-@@ -379,6 +386,18 @@ static void __init taa_select_mitigation(void)
- 	pr_info("%s\n", taa_strings[taa_mitigation]);
- }
- 
-+static int __init l1d_flush_out_parse_cmdline(char *str)
-+{
-+	if (!boot_cpu_has_bug(X86_BUG_L1TF))
-+		return 0;
-+
-+	if (!strcmp(str, "off"))
-+		l1d_flush_out_mitigation = L1D_FLUSH_OUT_OFF;
-+
-+	return 0;
-+}
-+early_param("l1d_flush_out", l1d_flush_out_parse_cmdline);
-+
- static int __init tsx_async_abort_parse_cmdline(char *str)
- {
- 	if (!boot_cpu_has_bug(X86_BUG_TAA))
-@@ -1215,6 +1234,23 @@ static void task_update_spec_tif(struct task_struct *tsk)
- 		speculation_ctrl_update_current();
- }
- 
-+static int l1d_flush_out_prctl_set(struct task_struct *task, unsigned long ctrl)
-+{
-+
-+	if (l1d_flush_out_mitigation == L1D_FLUSH_OUT_OFF)
-+		return -EPERM;
-+
-+	switch (ctrl) {
-+	case PR_SPEC_ENABLE:
-+		return enable_l1d_flush_for_task(task);
-+	case PR_SPEC_DISABLE:
-+		return disable_l1d_flush_for_task(task);
-+	default:
-+		return -ERANGE;
-+	}
-+	return 0;
-+}
-+
- static int ssb_prctl_set(struct task_struct *task, unsigned long ctrl)
- {
- 	if (ssb_mode != SPEC_STORE_BYPASS_PRCTL &&
-@@ -1324,6 +1360,8 @@ int arch_prctl_spec_ctrl_set(struct task_struct *task, unsigned long which,
- 		return ssb_prctl_set(task, ctrl);
- 	case PR_SPEC_INDIRECT_BRANCH:
- 		return ib_prctl_set(task, ctrl);
-+	case PR_SPEC_L1D_FLUSH_OUT:
-+		return l1d_flush_out_prctl_set(task, ctrl);
- 	default:
- 		return -ENODEV;
- 	}
-@@ -1340,6 +1378,20 @@ void arch_seccomp_spec_mitigate(struct task_struct *task)
- }
- #endif
- 
-+static int l1d_flush_out_prctl_get(struct task_struct *task)
-+{
-+	int ret;
-+
-+	if (l1d_flush_out_mitigation == L1D_FLUSH_OUT_OFF)
-+		return PR_SPEC_FORCE_DISABLE;
-+
-+	ret = test_ti_thread_flag(&task->thread_info, TIF_SPEC_L1D_FLUSH);
-+	if (ret)
-+		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
-+	else
-+		return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
-+}
-+
- static int ssb_prctl_get(struct task_struct *task)
- {
- 	switch (ssb_mode) {
-@@ -1390,6 +1442,8 @@ int arch_prctl_spec_ctrl_get(struct task_struct *task, unsigned long which)
- 		return ssb_prctl_get(task);
- 	case PR_SPEC_INDIRECT_BRANCH:
- 		return ib_prctl_get(task);
-+	case PR_SPEC_L1D_FLUSH_OUT:
-+		return l1d_flush_out_prctl_get(task);
- 	default:
- 		return -ENODEV;
- 	}
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 1531d98396a0..bdc399b86bc7 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -315,6 +315,16 @@ EXPORT_SYMBOL_GPL(leave_mm);
- 
- int enable_l1d_flush_for_task(struct task_struct *tsk)
- {
-+	/*
-+	 * Do not enable L1D_FLUSH_OUT if
-+	 * b. The CPU is not affected by the L1TF bug
-+	 * c. The CPU does not have L1D FLUSH feature support
-+	 */
-+
-+	if (!boot_cpu_has_bug(X86_BUG_L1TF) ||
-+			!boot_cpu_has(X86_FEATURE_FLUSH_L1D))
-+		return -EINVAL;
-+
- 	set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_L1D_FLUSH);
- 	return 0;
- }
-@@ -335,13 +345,31 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	local_irq_restore(flags);
- }
- 
-+/*
-+ * Sent to a task that opts into L1D flushing via the prctl interface
-+ * but ends up running on an SMT enabled core.
-+ */
-+static void l1d_flush_kill(struct callback_head *ch)
-+{
-+	force_sig(SIGBUS);
-+}
-+
- static inline unsigned long mm_mangle_tif_spec_bits(struct task_struct *next)
- {
- 	unsigned long next_tif = task_thread_info(next)->flags;
- 	unsigned long spec_bits = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_SPEC_MASK;
-+	unsigned long next_mm;
- 
- 	BUILD_BUG_ON(TIF_SPEC_L1D_FLUSH != TIF_SPEC_IB + 1);
--	return (unsigned long)next->mm | spec_bits;
-+	next_mm = (unsigned long)next->mm | spec_bits;
-+
-+	if ((next_mm & LAST_USER_MM_L1D_FLUSH) && this_cpu_read(cpu_info.smt_active)) {
-+		clear_ti_thread_flag(&next->thread_info, TIF_SPEC_L1D_FLUSH);
-+		next->l1d_flush_kill.func = l1d_flush_kill;
-+		task_work_add(next, &next->l1d_flush_kill, true);
-+	}
-+
-+	return next_mm;
- }
- 
- static void cond_mitigation(struct task_struct *next)
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 76cd21fa5501..f8c5b6833f14 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1348,6 +1348,16 @@ struct task_struct {
- 	struct callback_head		mce_kill_me;
- #endif
- 
-+#ifdef CONFIG_ARCH_HAS_PARANOID_L1D_FLUSH
-+	/*
-+	 * If L1D flush is supported on mm context switch
-+	 * then we use this callback head to queue kill work
-+	 * to kill tasks that are not running on SMT disabled
-+	 * cores
-+	 */
-+	struct callback_head		l1d_flush_kill;
-+#endif
-+
- 	/*
- 	 * New fields for task_struct should be added above here, so that
- 	 * they are included in the randomized portion of task_struct.
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 7f0827705c9a..c334e6a02e5f 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -213,6 +213,7 @@ struct prctl_mm_map {
- /* Speculation control variants */
- # define PR_SPEC_STORE_BYPASS		0
- # define PR_SPEC_INDIRECT_BRANCH	1
-+# define PR_SPEC_L1D_FLUSH_OUT		2
- /* Return and control values for PR_SET/GET_SPECULATION_CTRL */
- # define PR_SPEC_NOT_AFFECTED		0
- # define PR_SPEC_PRCTL			(1UL << 0)
++  Invocations:
++   * prctl(PR_GET_SPECULATION_CTRL, PR_SPEC_L1D_FLUSH_OUT, 0, 0, 0);
++   * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_L1D_FLUSH_OUT, PR_SPEC_ENABLE, 0, 0);
++   * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_L1D_FLUSH_OUT, PR_SPEC_DISABLE, 0, 0);
 -- 
 2.17.1
 
