@@ -2,178 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267152C67B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D03452C679B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730858AbgK0OTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 09:19:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48161 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730796AbgK0OTF (ORCPT
+        id S1730858AbgK0OMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 09:12:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730393AbgK0OME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 09:19:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606486743;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RGjwqW83+DhoUby3LrbvuhiDweHj1KLhNuKB+bNrk1s=;
-        b=S9Ub3DbwCmvWkCQy9+gdAhwvmztCgovSvlm0W8n9ZsRXGXC/XSlm99R+ptFtiQwNoj1po8
-        CmY2X5m63SEBZTwG4Q4QXI2bRxFrDgot1lRoGuoixx8Ftzqod9+rm6AWWvw9/FS02nSZWG
-        nH+QDHAfefPTuSfPfUlortGzaLOjFjg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-GL5megLeOX6SpBpCwDv27Q-1; Fri, 27 Nov 2020 09:18:59 -0500
-X-MC-Unique: GL5megLeOX6SpBpCwDv27Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BC56107ACF7;
-        Fri, 27 Nov 2020 14:18:58 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D475A5C276;
-        Fri, 27 Nov 2020 14:18:57 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id EB3BD4172ED9; Fri, 27 Nov 2020 11:08:11 -0300 (-03)
-Date:   Fri, 27 Nov 2020 11:08:11 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] cpuidle: Allow configuration of the polling interval
- before cpuidle enters a c-state
-Message-ID: <20201127140811.GA39892@fuller.cnet>
-References: <20201126171824.GK3371@techsingularity.net>
- <CAJZ5v0hz4dBzUcvoyLoJf8Fmajws-uP3MB-_4dmzEYvMDJwEwQ@mail.gmail.com>
+        Fri, 27 Nov 2020 09:12:04 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45412C0613D1;
+        Fri, 27 Nov 2020 06:12:04 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id t3so4429171pgi.11;
+        Fri, 27 Nov 2020 06:12:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=thEI5TlbSvSoaCh8wwqL+CLGgAjmzWPp9dwbcmScx2s=;
+        b=JqBFDUjSj9NA37E3AUvc0WkPF4MNRLnHL1PdMsDQPq03vfRv8em77dlRNZItLe3z6H
+         ALcDpC5n45LDMTYz7DAXBPuMH3tKsryVX6wm7zMy2X6t+cQmN1OEUCtfWwVDGUSEFS6e
+         JvZXFBfhiMSBu+R4NNpayy5A0d+pvjjTtItEKaclXIDSDXTzGQru/a84VZYvZ7jYdxgp
+         D1IWU/Ly6ARFmIVuprLIHlRIe/Lohr+DCRScV4aXf+c3w+dXYW405JtzafgybtHK7iE0
+         vdeDB5QU1g5ghfQ93n9srCzjbNBKmVwv/uUVhIK92I3OcIwVyQ1kNdMEwzlcvnadvtcC
+         IQtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=thEI5TlbSvSoaCh8wwqL+CLGgAjmzWPp9dwbcmScx2s=;
+        b=Sq/WNjhLNSwL7gLvuilB5riRB/azPWM7OOkeUCv7y8Nn60SYnob1S4zrTmbhhf4lDR
+         XaYOHwYhZUYV5oFmMD7OZlHSKp96rY9JRw3OMgzUcuSkw6N/OXgzH5V/WGeljXGx3PTi
+         e9yO782T6g3WEx41WrfqBZVvIkzBPs5qmJTvGy9F+YFDUhpxk5NDJIxN10WMphkoORxD
+         IJTF8hJDJp870ajwUE1qEq41D8m6YOfCr3NkVXlDW2cV5YfyHY0gNIx8YjM5JLn2jgE7
+         RRP+oPgXTUWYAQKWnphuY1CUwirrmukjK9duxxH4eYMSlc53sFY7qF9mY3YqQer31jTy
+         pucg==
+X-Gm-Message-State: AOAM5321vw1BhPGw+u25zvMYN+0IFzmCS27UnCGuAv88apYXFqT0x5S/
+        cyDKdppJ26r3oyL+bcdxumZu+yiSIux1xuXP144=
+X-Google-Smtp-Source: ABdhPJwNOvaD6rNl53GPgGkHBCQBWxkJBbs7OvfxviLpeNWkte3BkUyzxABD/Lf2TEOfBaaFmuZqAfozIvq5GF7YgDc=
+X-Received: by 2002:a63:8f1b:: with SMTP id n27mr6756219pgd.74.1606486323651;
+ Fri, 27 Nov 2020 06:12:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hz4dBzUcvoyLoJf8Fmajws-uP3MB-_4dmzEYvMDJwEwQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20201127130834.136348-1-alexandru.ardelean@analog.com>
+In-Reply-To: <20201127130834.136348-1-alexandru.ardelean@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 27 Nov 2020 16:12:52 +0200
+Message-ID: <CAHp75VeSS+-m=V59Z36n2maGtu499UwuKk=t9VB=JwqqvO=Qaw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] spi: uapi: unify SPI modes into a single spi.h header
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 07:24:41PM +0100, Rafael J. Wysocki wrote:
-> On Thu, Nov 26, 2020 at 6:25 PM Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > It was noted that a few workloads that idle rapidly regressed when commit
-> > 36fcb4292473 ("cpuidle: use first valid target residency as poll time")
-> > was merged. The workloads in question were heavy communicators that idle
-> > rapidly and were impacted by the c-state exit latency as the active CPUs
-> > were not polling at the time of wakeup. As they were not particularly
-> > realistic workloads, it was not considered to be a major problem.
-> >
-> > Unfortunately, a bug was then reported for a real workload in a production
-> > environment that relied on large numbers of threads operating in a worker
-> > pool pattern. These threads would idle for periods of time slightly
-> > longer than the C1 exit latency and so incurred the c-state exit latency.
-> > The application is sensitive to wakeup latency and appears to indirectly
-> > rely on behaviour prior to commit on a37b969a61c1 ("cpuidle: poll_state:
-> > Add time limit to poll_idle()") to poll for long enough to avoid the exit
-> > latency cost.
-> 
-> Well, this means that it depends on the governor to mispredict short
-> idle durations (so it selects "poll" over "C1" when it should select
-> "C1" often enough) and on the lack of a polling limit (or a large
-> enough one).
-> 
-> While the latter can be kind of addressed by increasing the polling
-> limit, the misprediction in the governor really isn't guaranteed to
-> happen and it really is necessary to have a PM QoS request in place to
-> ensure a suitable latency.
-> 
-> > The current behaviour favours power consumption over wakeup latency
-> > and it is reasonable behaviour but it should be tunable.
-> 
-> Only if there is no way to cover all of the relevant use cases in a
-> generally acceptable way without adding more module params etc.
-> 
-> In this particular case, it should be possible to determine a polling
-> limit acceptable to everyone.
-> 
-> BTW, I admit that using the exit latency of the lowest enabled C-state
-> was kind of arbitrary and it was based on the assumption that it would
-> make more sense to try to enter C1 instead of polling for that much
-> time, but C1 is an exception, because it is often artificially made
-> particularly attractive to the governors (by reducing its target
-> residency as much as possible).  Also making the polling limit that
-> short distorts the governor statistics somewhat.
-> 
-> So the polling limit equal to the target residency of C1 really may be
-> overly aggressive and something tick-based may work better in general
-> (e.g. 1/8 or 1/16 of the tick period).
-> 
-> In principle, a multiple of C1 target residency could be used too.
-> 
-> > In theory applications could use /dev/cpu_dma_latency but not all applications
-> > are aware of cpu_dma_latency. Similarly, a tool could be installed
-> > that opens cpu_dma_latency for the whole system but such a tool is not
-> > always available, is not always known to the sysadmin or the tool can have
-> > unexpected side-effects if it tunes more than cpu_dma_latency. In practice,
-> > it is more common for sysadmins to try idle=poll (which is x86 specific)
-> 
-> And really should be avoided if one cares about turbo or wants to
-> avoid thermal issues.
-> 
-> > or try disabling c-states and hope for the best.
-> >
-> > This patch makes it straight-forward to configure how long a CPU should
-> > poll before entering a c-state.
-> 
-> Well, IMV this is not straightforward at all.
-> 
-> It requires the admin to know how cpuidle works and why this
-> particular polling limit is likely to be suitable for the given
-> workload.  And whether or not the default polling limit should be
-> changed at all.
+On Fri, Nov 27, 2020 at 3:08 PM Alexandru Ardelean
+<alexandru.ardelean@analog.com> wrote:
+>
+> This change moves all the SPI mode bits into a separate 'spi.h' header in
+> uapi. This is meant to re-use these definitions inside the kernel as well
+> as export them to userspace (via uapi).
 
-KVM polling (virt/kvm/kvm_main.c grow_halt_poll_ns/shrink_halt_poll_ns)
-tries to adjust the polling window based on poll success/failure. 
+uapi -> UAPI (or uAPI) here and everywhere else where it makes sense.
 
-The cpuidle haltpoll governor (for KVM guests) uses the same adjustment
-logic.
+> The SPI mode definitions have usually been duplicated between between
+> 'include/linux/spi/spi.h' and 'include/uapi/linux/spi/spidev.h', so
+> whenever adding a new entry, this would need to be put in both headers.
+>
+> They've been moved from 'include/linux/spi/spi.h', since that seems a bit
+> more complete; the bits have descriptions and there is the SPI_MODE_X_MASK.
+>
+> For now, this change does a simple move; no conversions to BIT() macros are
+> being done at this point. This can be done later, as that requires also
+> another header inclusion (the 'const.h' header).
+> The change as-is makes this 'spi.h' header more standalone.
+>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>
+> Personally, I am not sure whether to convert the bitfield tos _BITUL()
+> macros or not. I feel that not-having these macros makes this uapi spi.h
+> header more standalone.
+> If there's a strong insistence to use those _BITUL() macros, I'll do it.
+> I'm hesitant now, because it requires that this spi.h includes the
+> 'const.h' header.
 
-Perhaps a similar (or improved) scheme can be adapted to baremetal.
+_BITUL is a part of uAPI, why not to use it?
+In general BIT() type of macros makes values easier to read and less
+error prone (in big numbers it's easy to miss 0).
+It's not a strong opinion, it's just the rationale behind how I see it.
 
-https://www.kernel.org/doc/Documentation/virtual/kvm/halt-polling.txt
-> 
-> Honestly, nobody knows that in advance (with all due respect) and this
-> would cause people to try various settings at random and stick to the
-> one that they feel works best for them without much understanding.
-> 
-> > By default, there is no behaviour change.
-> > At build time a decision can be made to favour performance over power
-> > by default even if that potentially impacts turbo boosting for workloads
-> > that are sensitive to wakeup latency. In the event the kernel default is
-> > not suitable, the kernel command line can be used as a substitute for
-> > implementing cpu_dma_latency support in an application or requiring an
-> > additional tool to be installed.
-> >
-> > Note that it is not expected that tuning for longer polling times will be a
-> > universal win. For example, extra polling might prevent a turbo state being
-> > used or prevent hyperthread resources being released to an SMT sibling.
-> >
-> > By default, nothing has changed but here is an example of tbench4
-> > comparing the default "poll based on the min cstate" vs "poll based on
-> > the max cstate"
-> >
-> > tbench4
-> >                           min-cstate             max-cstate
-> > Hmean     1        512.88 (   0.00%)      566.74 *  10.50%*
-> > Hmean     2        999.47 (   0.00%)     1090.01 *   9.06%*
-> > Hmean     4       1960.83 (   0.00%)     2106.62 *   7.44%*
-> > Hmean     8       3828.61 (   0.00%)     4097.93 *   7.03%*
-> > Hmean     16      6899.44 (   0.00%)     7120.38 *   3.20%*
-> > Hmean     32     10718.38 (   0.00%)    10672.44 *  -0.43%*
-> > Hmean     64     12672.21 (   0.00%)    12608.15 *  -0.51%*
-> > Hmean     128    20744.83 (   0.00%)    21147.02 *   1.94%*
-> > Hmean     256    20646.60 (   0.00%)    20608.48 *  -0.18%*
-> > Hmean     320    20892.89 (   0.00%)    20831.99 *  -0.29%*
-> 
-> I'm wondering if you have similar results for "poll based on 2 x min
-> cstate" (or 4 x min cstate for that matter).
+> Changelog v2 -> v3:
+> * https://lore.kernel.org/linux-spi/20201124102152.16548-1-alexandru.ardelean@analog.com/
+> * dropped 'spi: convert to BIT() all spi_device flags '
+>   added 'spi: uapi: unify SPI modes into a single spi.h header'
+>
+>  include/linux/spi/spi.h         | 22 +--------------
+>  include/uapi/linux/spi/spi.h    | 47 +++++++++++++++++++++++++++++++++
+>  include/uapi/linux/spi/spidev.h | 30 +--------------------
+>  3 files changed, 49 insertions(+), 50 deletions(-)
+>  create mode 100644 include/uapi/linux/spi/spi.h
+>
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index aa09fdc8042d..a4fedb33d34b 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -14,6 +14,7 @@
+>  #include <linux/scatterlist.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/ptp_clock_kernel.h>
+> +#include <uapi/linux/spi/spi.h>
+>
+>  struct dma_chan;
+>  struct property_entry;
+> @@ -165,27 +166,6 @@ struct spi_device {
+>         u8                      bits_per_word;
+>         bool                    rt;
+>         u32                     mode;
+> -#define        SPI_CPHA        0x01                    /* clock phase */
+> -#define        SPI_CPOL        0x02                    /* clock polarity */
+> -#define        SPI_MODE_0      (0|0)                   /* (original MicroWire) */
+> -#define        SPI_MODE_1      (0|SPI_CPHA)
+> -#define        SPI_MODE_2      (SPI_CPOL|0)
+> -#define        SPI_MODE_3      (SPI_CPOL|SPI_CPHA)
+> -#define        SPI_MODE_X_MASK (SPI_CPOL|SPI_CPHA)
+> -#define        SPI_CS_HIGH     0x04                    /* chipselect active high? */
+> -#define        SPI_LSB_FIRST   0x08                    /* per-word bits-on-wire */
+> -#define        SPI_3WIRE       0x10                    /* SI/SO signals shared */
+> -#define        SPI_LOOP        0x20                    /* loopback mode */
+> -#define        SPI_NO_CS       0x40                    /* 1 dev/bus, no chipselect */
+> -#define        SPI_READY       0x80                    /* slave pulls low to pause */
+> -#define        SPI_TX_DUAL     0x100                   /* transmit with 2 wires */
+> -#define        SPI_TX_QUAD     0x200                   /* transmit with 4 wires */
+> -#define        SPI_RX_DUAL     0x400                   /* receive with 2 wires */
+> -#define        SPI_RX_QUAD     0x800                   /* receive with 4 wires */
+> -#define        SPI_CS_WORD     0x1000                  /* toggle cs after each word */
+> -#define        SPI_TX_OCTAL    0x2000                  /* transmit with 8 wires */
+> -#define        SPI_RX_OCTAL    0x4000                  /* receive with 8 wires */
+> -#define        SPI_3WIRE_HIZ   0x8000                  /* high impedance turnaround */
+>         int                     irq;
+>         void                    *controller_state;
+>         void                    *controller_data;
+> diff --git a/include/uapi/linux/spi/spi.h b/include/uapi/linux/spi/spi.h
+> new file mode 100644
+> index 000000000000..ae028d64c779
+> --- /dev/null
+> +++ b/include/uapi/linux/spi/spi.h
+> @@ -0,0 +1,47 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+> +/*
+> + * include/linux/spi/spi.h
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write to the Free Software
+> + * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+> +  */
 
+Do we still need this boilerplate license header?
+
+> +
+> +#ifndef _UAPI_SPI_H
+> +#define _UAPI_SPI_H
+> +
+> +#define        SPI_CPHA                0x01            /* clock phase */
+> +#define        SPI_CPOL                0x02            /* clock polarity */
+> +
+> +#define        SPI_MODE_0              (0|0)           /* (original MicroWire) */
+> +#define        SPI_MODE_1              (0|SPI_CPHA)
+> +#define        SPI_MODE_2              (SPI_CPOL|0)
+> +#define        SPI_MODE_3              (SPI_CPOL|SPI_CPHA)
+> +#define        SPI_MODE_X_MASK         (SPI_CPOL|SPI_CPHA)
+> +
+> +#define        SPI_CS_HIGH             0x04            /* chipselect active high? */
+> +#define        SPI_LSB_FIRST           0x08            /* per-word bits-on-wire */
+> +#define        SPI_3WIRE               0x10            /* SI/SO signals shared */
+> +#define        SPI_LOOP                0x20            /* loopback mode */
+> +#define        SPI_NO_CS               0x40            /* 1 dev/bus, no chipselect */
+> +#define        SPI_READY               0x80            /* slave pulls low to pause */
+> +#define        SPI_TX_DUAL             0x100           /* transmit with 2 wires */
+> +#define        SPI_TX_QUAD             0x200           /* transmit with 4 wires */
+> +#define        SPI_RX_DUAL             0x400           /* receive with 2 wires */
+> +#define        SPI_RX_QUAD             0x800           /* receive with 4 wires */
+> +#define        SPI_CS_WORD             0x1000          /* toggle cs after each word */
+> +#define        SPI_TX_OCTAL            0x2000          /* transmit with 8 wires */
+> +#define        SPI_RX_OCTAL            0x4000          /* receive with 8 wires */
+> +#define        SPI_3WIRE_HIZ           0x8000          /* high impedance turnaround */
+> +
+> +#endif /* _UAPI_SPI_H */
+> diff --git a/include/uapi/linux/spi/spidev.h b/include/uapi/linux/spi/spidev.h
+> index d56427c0b3e0..0c3da08f2aff 100644
+> --- a/include/uapi/linux/spi/spidev.h
+> +++ b/include/uapi/linux/spi/spidev.h
+> @@ -25,35 +25,7 @@
+>
+>  #include <linux/types.h>
+>  #include <linux/ioctl.h>
+> -
+> -/* User space versions of kernel symbols for SPI clocking modes,
+> - * matching <linux/spi/spi.h>
+> - */
+> -
+> -#define SPI_CPHA               0x01
+> -#define SPI_CPOL               0x02
+> -
+> -#define SPI_MODE_0             (0|0)
+> -#define SPI_MODE_1             (0|SPI_CPHA)
+> -#define SPI_MODE_2             (SPI_CPOL|0)
+> -#define SPI_MODE_3             (SPI_CPOL|SPI_CPHA)
+> -
+> -#define SPI_CS_HIGH            0x04
+> -#define SPI_LSB_FIRST          0x08
+> -#define SPI_3WIRE              0x10
+> -#define SPI_LOOP               0x20
+> -#define SPI_NO_CS              0x40
+> -#define SPI_READY              0x80
+> -#define SPI_TX_DUAL            0x100
+> -#define SPI_TX_QUAD            0x200
+> -#define SPI_RX_DUAL            0x400
+> -#define SPI_RX_QUAD            0x800
+> -#define SPI_CS_WORD            0x1000
+> -#define SPI_TX_OCTAL           0x2000
+> -#define SPI_RX_OCTAL           0x4000
+> -#define SPI_3WIRE_HIZ          0x8000
+> -
+> -/*---------------------------------------------------------------------------*/
+> +#include <linux/spi/spi.h>
+>
+>  /* IOCTL commands */
+>
+> --
+> 2.27.0
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
