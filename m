@@ -2,84 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598E72C6AA2
+	by mail.lfdr.de (Postfix) with ESMTP id DC2032C6AA3
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732124AbgK0Ra6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:30:58 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:41112 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730985AbgK0Ra5 (ORCPT
+        id S1732229AbgK0Ra7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:30:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730985AbgK0Ra6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:30:57 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ARHUerL102484;
-        Fri, 27 Nov 2020 11:30:40 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606498240;
-        bh=TMc+/KMubRagvKXylVncMloff3Zi2x+utydRkFRJCGw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=aHxVOMA/37Ki2ukOpie+yhg0Ik3ZkrFQPJXmB/Mh23TVw4eXPv38I8NqFDra6HYwX
-         GrwRYt83RupJQaIGymg+SS3Vg8Bg837MCb8cPIcXhCCReDIdtQaGp0guh/36mTigVP
-         lXErxGmGGZ0DNWZ2SmjTG6Wjk4Rd1eosRfptOoBM=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ARHUe3v021696
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 27 Nov 2020 11:30:40 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 27
- Nov 2020 11:30:40 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 27 Nov 2020 11:30:40 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ARHUcWo100496;
-        Fri, 27 Nov 2020 11:30:38 -0600
-Subject: Re: [REGRESSION] omapdrm/N900 display broken
-To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-CC:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200728181412.GA49617@darkstar.musicnaut.iki.fi>
- <660b2fe1-343d-b83e-11d2-5a5eb530b83f@ti.com>
- <448c1441-2cac-44ef-95ef-bb28b512297b@ti.com>
- <20200823162625.GC4313@darkstar.musicnaut.iki.fi>
- <ac42f7f9-2ac2-246e-69c1-3d56cea7e59b@ti.com>
- <5072a25d-e885-cdd2-978d-70942406c272@gmail.com>
- <09044fd2-2926-c7b3-826b-52b742e84ff5@ti.com>
- <79ad8816-815c-14d3-ebe1-3c5007c81dd1@gmail.com>
- <1fe9fed7-f619-eb6a-6e31-b9eadbf09bad@ti.com>
- <8010e452-745a-ac12-bc02-5537305c70ed@gmail.com>
- <4948a40d-c887-5617-f5bc-1e0aff824ad7@gmail.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <a86e0ef4-0b90-5aec-9632-e78fa4ca6d58@ti.com>
-Date:   Fri, 27 Nov 2020 19:30:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 27 Nov 2020 12:30:58 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D96AC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:30:58 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id x24so5136626pfn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:30:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jRPKms8czRyZejPs/escCcopkjcFF901XVGwJamtDJM=;
+        b=CyR6dpR4c/4mgxkm4VQV7A/44VO1b41ki4UsBKPRL2o1PbTiDTDQFa15XdC9OWgXU3
+         wk9Jk8suxz2Xr5ZodttuyL+ujl0A6rG7cwN1PawFsn/WO9XyiIS7hsJF/f5SSUjQot+G
+         CAb5QAPJoNsRys41Cb20fsiopuvsGESc71r5Rxn+3NaRG9J/9saS62b1TG4yPF3z1iT1
+         K9lft/uUOKyGbhLx3N0aVpiue2EF5WFhZtTNvLY8GFLY5He0DcKBXcHz6yTCDcFmQ0Zs
+         /sw/IrMuEKqUpBmJYZqr5d2b0vpNTKwP+9f/wO5HdLHpw+dhsSFXfmxfYbvExaP/5h+q
+         Zyzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jRPKms8czRyZejPs/escCcopkjcFF901XVGwJamtDJM=;
+        b=MM0ZoOS59UFS+vnuFtv+2NVu+NsupcYuMOBX5JwkDDEOBc6QWC7/jchW8hGfSjaL0Q
+         JCN2EkJWMSUGM2ubmmxrORudMc0wxHtRi5uugaexCCcT5Mw8sNo5yEOarKhvpGvfnDaY
+         Coxf/6MFb6nYYWgFto114Lbsb0Lj/kzZL69pljBQfi1Llx+RdVnNZIy9NT9rXpj8l2vs
+         Sp4rvwSj2dWATZAlzTRIzJVQl2urEf8/2tduB6NMvyXXNOX1OOVeUd1nFjSnMFp4uRS/
+         n4q+q2FyC/4oawiKkcK681XJUefTMp+Ye/9vOH4S2ZarsQ9mXi300oXMJkdN475Zh4es
+         D3RQ==
+X-Gm-Message-State: AOAM533WEH2Qz4mH7xxIa3pY40YikShoswLKfk6ujWOvEcFu96DI5FiH
+        qhEbQUNIDShlyOGsPw/Jggo91kUrJZl8
+X-Google-Smtp-Source: ABdhPJwfLGmlIUKMw8ei/AYaI3sgaDIXBh/Qz4I2792/jWB4QCs3BU8vYLcAgylkImbpqUUucPO6Ow==
+X-Received: by 2002:a63:6f4c:: with SMTP id k73mr7354000pgc.319.1606498257787;
+        Fri, 27 Nov 2020 09:30:57 -0800 (PST)
+Received: from localhost.localdomain ([2409:4072:88d:6f0d:1941:b53e:6208:a8c9])
+        by smtp.gmail.com with ESMTPSA id j8sm7847014pgb.55.2020.11.27.09.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 09:30:57 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmitry.baryshkov@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH] arm64: dts: qcom: qrb5165-rb5: Add support for MCP2518FD
+Date:   Fri, 27 Nov 2020 23:00:44 +0530
+Message-Id: <20201127173044.55144-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <4948a40d-c887-5617-f5bc-1e0aff824ad7@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2020 17:37, Ivaylo Dimitrov wrote:
+Add support for onboard MCP2518FD SPI CAN transceiver attached to SPI0
+of RB5.
 
-> With 5.9.11 and the patch on top, n900 boots fine, albeit display remains blank, could be related to
-> brightness, we're still investigating.
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-Ok. A DSS regdump for a working version and the latest one would be good too. There's a omapdss
-debugfs dir, with dss, dispc and clk files which are of interest here.
-
- Tomi
-
+diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+index d9f52703ba2a..ce22d4fa383e 100644
+--- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
++++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+@@ -25,6 +25,13 @@ chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
++	/* Fixed crystal oscillator dedicated to MCP2518FD */
++	clk40M: can_clock {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <40000000>;
++	};
++
+ 	dc12v: dc12v-regulator {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "DC12V";
+@@ -493,6 +500,16 @@ &sdhc_2 {
+ /* CAN */
+ &spi0 {
+ 	status = "okay";
++
++	can@0 {
++		compatible = "microchip,mcp2518fd";
++		reg = <0>;
++		clocks = <&clk40M>;
++		interrupts-extended = <&tlmm 15 IRQ_TYPE_LEVEL_LOW>;
++		spi-max-frequency = <10000000>;
++		vdd-supply = <&vdc_5v>;
++		xceiver-supply = <&vdc_5v>;
++	};
+ };
+ 
+ &tlmm {
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.25.1
+
