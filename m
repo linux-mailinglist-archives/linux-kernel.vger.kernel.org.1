@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCEE2C65E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE872C65E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729113AbgK0Mpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:45:31 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2169 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgK0Mpa (ORCPT
+        id S1729637AbgK0Mps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:45:48 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:54913 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgK0Mpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:45:30 -0500
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CjDnn17sQz67JnM;
-        Fri, 27 Nov 2020 20:43:41 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 27 Nov 2020 13:45:29 +0100
-Received: from [10.210.170.35] (10.210.170.35) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Fri, 27 Nov 2020 12:45:27 +0000
-Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <martin.petersen@oracle.com>,
-        <jejb@linux.ibm.com>, <linuxarm@huawei.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
- <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
- <874klmqu2r.fsf@nanos.tec.linutronix.de>
- <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
- <87lfexp6am.fsf@nanos.tec.linutronix.de>
- <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
- <873615oy8a.fsf@nanos.tec.linutronix.de>
- <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
- <87sg91ik9e.wl-maz@kernel.org>
- <0edc9a11-0b92-537f-1790-6b4b6de4900d@huawei.com>
- <afd97dd4b1e102ac9ad49800821231a4@kernel.org>
- <5a314713-c1ee-2d34-bee1-60beae274742@huawei.com>
- <0525a4bcf17a355cd141632d4f3714be@kernel.org>
- <702e1729-9a4b-b16f-6a58-33172b1a3220@huawei.com>
- <5a588f5d86010602ff9a90e8f057743c@kernel.org>
- <80e0a19b-3291-1304-1a5b-0445c49efe31@huawei.com>
- <d696d314514a4bd53c85f2da73a23eed@kernel.org>
- <e96dd9b0-c3a7-f7fb-0317-2fc2107f405a@huawei.com>
- <696c04a9-8c13-0fec-08c4-068d4dd5ba67@huawei.com>
- <34953f2d7b61f37ab1333627dc256975@kernel.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <113d72e1-a624-5da9-89cf-eee950e5c984@huawei.com>
-Date:   Fri, 27 Nov 2020 12:45:05 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Fri, 27 Nov 2020 07:45:47 -0500
+Received: from [192.168.1.155] ([95.114.158.11]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MPp0l-1kWAmh23Dn-00Mw0R; Fri, 27 Nov 2020 13:45:20 +0100
+Subject: Re: [PATCH] drivers: gpio: use of_match_ptr() and ACPI_PTR() macros
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-tegra@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Alban Bedel <albeu@free.fr>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>, zhang.lyra@gmail.com,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <marek.behun@nic.cz>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        dl-linux-imx <linux-imx@nxp.com>, orsonzhai@gmail.com,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        linux-pwm@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Sascha Hauer <kernel@pengutronix.de>, baolin.wang7@gmail.com,
+        Shawn Guo <shawnguo@kernel.org>
+References: <20201117154340.18216-1-info@metux.net>
+ <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
+ <20201118095342.sviuxvfsbmmn22mo@pengutronix.de>
+ <CAHp75Vd9QUCcUoPLUW3kkJC0h=mPUqHNqNJPY74gDGSu67t8Hw@mail.gmail.com>
+ <CAHp75Vcdu1aOLuF+EFDZibbi0OwGH4QfBhJQm9VZQkeEGEeKDQ@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <40d468a6-f8ba-7535-55dd-e91ba8299958@metux.net>
+Date:   Fri, 27 Nov 2020 13:45:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <34953f2d7b61f37ab1333627dc256975@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.170.35]
-X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAHp75Vcdu1aOLuF+EFDZibbi0OwGH4QfBhJQm9VZQkeEGEeKDQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:yMIP6nH7cKntCrJuLgf/M3+4XwFIPkg7UfYtSb9J0SkpG6sGOv7
+ /IR7PEjcUkbXZfn95xvF9kPZZUOb9RUnvrwEmPu6rP+AgFH9G1KbtEQbrGI6dOjDEAwqV/E
+ EczzEgEJ3pvoStGVhjYfBSBY8R6QOUQt5Ao1T/pFBNKAztiWswegrgTUhY7Sz/LsMkjc4PG
+ AXU7u5vqunrqkbLcYUoQg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:m5fjPJhCYJQ=:4vrnvGfA8e+95x4fem3OkF
+ DfLkWIz4U0aBa8HLZrIOXcD4NWRi5pMo8Oa4rh/JJ6ngXDJTm/+FAY8quNYB/ANwdfDZQe48s
+ k2CqQzxtZtilcnmHKe3lkzxpcwcFbAmCgCYFK3D/auj506nTbYO4c624QAzeKlxqJ9aCHd+Wt
+ hI3o1ZxJl9DrzDwcoXjkznsF6FbhuSIoOss3ewNaFyBSbu3g2nqwNlNyj2HOFbPxM+r/J2tuu
+ bZJU0A6yKpvQn5LrOthHb8IMcDYU+ctkst0nQXTHzlI8rZMMh1Y6r4K/vLbyb1aJ7BZlF8YaF
+ Qx59hp3Vk6LqR7JSnkqsESRE70Qu6MnElAe5u2/7HTI9LGVM6UaRVUiDMjxUT4psNxVyefUaX
+ /w7EbD7LArRl27YIShkQumClWDiabxBy/5FbFvypZGCtrLVGaftrxq8KTeQFL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2020 09:57, Marc Zyngier wrote:
->> If I understand the code correctly, MSI_ALLOC_FLAGS_SHARED_DEVICE is
->> supposed to be set in info->flags in platform_msi_set_desc(), but this
->> is called per-msi after its_msi_prepare(), so we don't the flags set
->> at the right time. That's how it looks to me...
+On 18.11.20 11:01, Andy Shevchenko wrote:
+
+>>> So a system without CONFIG_OF might still make use of .of_match_table?
+>>
+>> Yep!
 > 
-> Meh. I was trying multiple things, and of course commited the worse
-> possible approach.
-> 
-> I've updated the branch, having verified that we do get the flag in
-> the ITS now.
+> If you are curious:
+> https://elixir.bootlin.com/linux/latest/source/drivers/acpi/bus.c#L615
 
-Hi Marc,
+Phuh, this changes everything ... sorry, didn't know that.
 
-That looks to work.
+If ACPI now can contain OF pieces, we should ask the question whether
+of_match_ptr() should be used at all.
 
-So do you have an upstream plan for this? I ask, as if you go with this, 
-then I may change my series to map and unmap all the irqs again - but 
-not sure about that.
+Would it be a compromise introducing a new macro (eg. "OF_MATCH_PTR()")
+which passes through the pointer if either OF or ACPI is enabled.
+Maybe we could introduce a new config item (eg "OF_MATCH_TABLE") for
+that, which is enabled by both OF and ACPI. And maybe add an option for
+of-compatible checking in ACPI.
 
-Thanks,
-John
+How do you folks think about that ?
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
