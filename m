@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11AF2C61D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D47AC2C61DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgK0JkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:40:22 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8047 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgK0JkW (ORCPT
+        id S1727558AbgK0Jk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:40:28 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7998 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgK0JkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:40:22 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cj8jl4KDwzhjJs;
-        Fri, 27 Nov 2020 17:39:55 +0800 (CST)
+        Fri, 27 Nov 2020 04:40:24 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cj8jx4FG7zhjCX;
+        Fri, 27 Nov 2020 17:40:05 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 27 Nov 2020 17:40:11 +0800
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 27 Nov 2020 17:40:13 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH] crypto: sa2ul - fix reference leak in sa_ul_probe()
-Date:   Fri, 27 Nov 2020 17:44:27 +0800
-Message-ID: <20201127094427.120635-1-miaoqinglang@huawei.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH] dmaengine: rcar-dmac: fix reference leak in rcar_dmac_probe
+Date:   Fri, 27 Nov 2020 17:44:29 +0800
+Message-ID: <20201127094429.120680-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -46,26 +46,26 @@ leak by replacing it with new funtion.
 
 [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
 
-Fixes: 7694b6ca649f ("crypto: sa2ul - Add crypto driver")
+Fixes: 87244fe5abdf ("dmaengine: rcar-dmac: Add Renesas R-Car Gen2 DMA Controller (DMAC) driver")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/crypto/sa2ul.c | 2 +-
+ drivers/dma/sh/rcar-dmac.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
-index eda93fab9..39d56ab12 100644
---- a/drivers/crypto/sa2ul.c
-+++ b/drivers/crypto/sa2ul.c
-@@ -2345,7 +2345,7 @@ static int sa_ul_probe(struct platform_device *pdev)
- 	dev_set_drvdata(sa_k3_dev, dev_data);
+diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
+index a57705356..991a7b5da 100644
+--- a/drivers/dma/sh/rcar-dmac.c
++++ b/drivers/dma/sh/rcar-dmac.c
+@@ -1874,7 +1874,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
  
- 	pm_runtime_enable(dev);
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
+ 	/* Enable runtime PM and initialize the device. */
+ 	pm_runtime_enable(&pdev->dev);
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
  	if (ret < 0) {
- 		dev_err(&pdev->dev, "%s: failed to get sync: %d\n", __func__,
- 			ret);
+ 		dev_err(&pdev->dev, "runtime PM get sync failed (%d)\n", ret);
+ 		return ret;
 -- 
 2.23.0
 
