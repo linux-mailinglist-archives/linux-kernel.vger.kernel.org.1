@@ -2,106 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113D32C6184
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AB02C6190
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727684AbgK0JU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:20:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgK0JU5 (ORCPT
+        id S1728156AbgK0JVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:21:31 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13028 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726014AbgK0JVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:20:57 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB152C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:20:56 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id u12so4832669wrt.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=rJpaqMmbVzz+/0uX+e9OASza/Sn3/crC+q1r7cTKszU=;
-        b=SzZ4g5EZyvlo/1WuSpEOEZ+lT/uj0/nD+7fbnLbOCukSu5cPvbndOrOgQmTskZUi9i
-         L6XoTJTbI9ePX5hhNoGaCa3Fzy+xrZCqx45naO/ZTANRygTOwjjYMVPjAKIP69BQpwHE
-         I8sqEf+EkI40NHTUPiimW43keAelqcer7FevI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=rJpaqMmbVzz+/0uX+e9OASza/Sn3/crC+q1r7cTKszU=;
-        b=m8Wz6BK8ufKD7/djV3WnzbLktwfZeYLkeKpO6Zy42mYR9BnTE8Zl4IyA+i1aDQ5KrD
-         7RiLPmRIx0jUhr9R2u4o0EzZ6fGK4/ZwXDlsYBUZcodA+8EmWqL7tUtyNpvdkVuu1olQ
-         cFBhbeVz4Jn/ydxruyGkvhw2ZWv0ln8Q6w+f7oyG9NFIngimeZJU85lHhdqtGITZ9Zdz
-         uRh/3Pd2Af1/vceAGh18oMEpCXNVvsV6LaQrFCl0dAlcKqSHY9BvDg1Yn+fu4TJCm+5q
-         mnmsy9Qvj0PM5yu5AK4J19C4AGejtXhjz64K++Q3sEaZ/A1rYeOTc27dHcYbvRr6jPPi
-         7NNQ==
-X-Gm-Message-State: AOAM532i6rs8H0fxZemfQAagQXUlPqUTA82hFUDuw6VJkEQTBYvVoj7o
-        pd5Fx6n2uT2eq1pVoaOJVf+NKQ==
-X-Google-Smtp-Source: ABdhPJx9AJrAO859wmrt5XgU3NFYEMmYexm61rQy05tUL65QlEC16hmuUT4HMlWjmMAaARuPripL4w==
-X-Received: by 2002:adf:ea03:: with SMTP id q3mr9098029wrm.141.1606468855682;
-        Fri, 27 Nov 2020 01:20:55 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id g11sm14320442wrq.7.2020.11.27.01.20.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 01:20:55 -0800 (PST)
-Message-ID: <b7e6aa907d62a36dc86e54691463ed699f22a4cb.camel@chromium.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-From:   Florent Revest <revest@chromium.org>
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 27 Nov 2020 10:20:54 +0100
-In-Reply-To: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
-References: <20201126165748.1748417-1-revest@google.com>
-         <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        Fri, 27 Nov 2020 04:21:30 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AR92sIY043644;
+        Fri, 27 Nov 2020 04:21:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=3+5uFdJAzDE4hZmH6EUh+WOYOUNSgrvapC3XLw32IjA=;
+ b=lLAIN5yANAURYCJl0yBfWvtt3a+Pbq/yJRGKVD1TRzRd4oQDvcBsLf0N9e7Gm0BesOVy
+ pn4szDUNuMqu+hdIGo79tHyVDTmayh+YGy6bK6Jrb4L6vU600OmdzXz58lnna4P1iLRi
+ Km20hr+bdDI0UIli8Iun2FgmoEJXz4UkCNaS1ETXnap5LYYAsS2OD9/ogH/scIvRsDE2
+ xMK7WeE9EyUg0ype3Pj4bLKDQzAgvWQy7u5xq6eSoVLYIGcJ/sa1+fSDAQAr1lCi8A+O
+ EdMwRLlDhgQj96pWH98cGCeCOOHnzcx2+AAmPR2a/a5dwwSaSSXL9n4YNP/O3tbNbFUQ eQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 352we6j8dq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 04:21:22 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AR93VLw046547;
+        Fri, 27 Nov 2020 04:21:22 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 352we6j8d4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 04:21:22 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AR97Uot002117;
+        Fri, 27 Nov 2020 09:21:20 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 352drkgdm6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 09:21:20 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AR9LHjC53674460
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Nov 2020 09:21:17 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8D9F2AE053;
+        Fri, 27 Nov 2020 09:21:17 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 12C36AE04D;
+        Fri, 27 Nov 2020 09:21:17 +0000 (GMT)
+Received: from oc4120165700.ibm.com (unknown [9.145.51.25])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 27 Nov 2020 09:21:16 +0000 (GMT)
+Subject: Re: [PATCH] scsi: zfcp: fix use-after-free in zfcp_unit_remove
+To:     Benjamin Block <bblock@linux.ibm.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+References: <20201120074854.31754-1-miaoqinglang@huawei.com>
+ <20201125170658.GB8578@t480-pf1aa2c2>
+ <4c65bead-2553-171e-54d2-87a9de0330e8@huawei.com>
+ <20201126091353.50cf6ab6.cohuck@redhat.com>
+ <20201126094259.GE8578@t480-pf1aa2c2>
+ <9ba663ad-97fe-6c2a-e15a-45f2de1f0af0@huawei.com>
+ <20201126151242.GI8578@t480-pf1aa2c2>
+From:   Steffen Maier <maier@linux.ibm.com>
+Message-ID: <90356c8e-f523-1d16-45a2-0c8b9fae15c0@linux.ibm.com>
+Date:   Fri, 27 Nov 2020 10:21:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201126151242.GI8578@t480-pf1aa2c2>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-27_04:2020-11-26,2020-11-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ clxscore=1011 suspectscore=0 mlxscore=0 spamscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011270052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-26 at 23:35 -0800, Yonghong Song wrote:
-> On 11/26/20 8:57 AM, Florent Revest wrote:
-> > +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32,
-> > symbol_size,
-> > +	   char *, module, u32, module_size)
-> > +{
-> > +	char buffer[KSYM_SYMBOL_LEN];
-> > +	unsigned long offset, size;
-> > +	const char *name;
-> > +	char *modname;
-> > +	long ret;
-> > +
-> > +	name = kallsyms_lookup(address, &size, &offset, &modname,
-> > buffer);
-> > +	if (!name)
-> > +		return -EINVAL;
-> > +
-> > +	ret = strlen(name) + 1;
-> > +	if (symbol_size) {
-> > +		strncpy(symbol, name, symbol_size);
-> > +		symbol[symbol_size - 1] = '\0';
-> > +	}
-> > +
-> > +	if (modname && module_size) {
-> > +		strncpy(module, modname, module_size);
-> > +		module[module_size - 1] = '\0';
+On 11/26/20 4:12 PM, Benjamin Block wrote:
+> On Thu, Nov 26, 2020 at 08:07:32PM +0800, Qinglang Miao wrote:
+>> 在 2020/11/26 17:42, Benjamin Block 写道:
+>>> On Thu, Nov 26, 2020 at 09:13:53AM +0100, Cornelia Huck wrote:
+>>>> On Thu, 26 Nov 2020 09:27:41 +0800
+>>>> Qinglang Miao <miaoqinglang@huawei.com> wrote:
+>>>>> 在 2020/11/26 1:06, Benjamin Block 写道:
+>>>>>> On Fri, Nov 20, 2020 at 03:48:54PM +0800, Qinglang Miao wrote:
+> ....
+>>> Let's go by example. If we assume the reference count of `unit->dev` is
+>>> R, and the function starts with R = 1 (otherwise the deivce would've
+>>> been freed already), we get:
+>>>
+>>>       int zfcp_unit_remove(struct zfcp_port *port, u64 fcp_lun)
+>>>       {
+>>>       	struct zfcp_unit *unit;
+>>>       	struct scsi_device *sdev;
+>>>       	write_lock_irq(&port->unit_list_lock);
+>>> // unit->dev (R = 1)
+>>>       	unit = _zfcp_unit_find(port, fcp_lun);
+>>> // get_device(&unit->dev)
+>>> // unit->dev (R = 2)
+>>>       	if (unit)
+>>>       		list_del(&unit->list);
+>>>       	write_unlock_irq(&port->unit_list_lock);
+>>>       	if (!unit)
+>>>       		return -EINVAL;
+>>>       	sdev = zfcp_unit_sdev(unit);
+>>>       	if (sdev) {
+>>>       		scsi_remove_device(sdev);
+>>>       		scsi_device_put(sdev);
+>>>       	}
+>>> // unit->dev (R = 2)
+>>>       	put_device(&unit->dev);
+>>> // unit->dev (R = 1)
+>>>       	device_unregister(&unit->dev);
+>>> // unit->dev (R = 0)
+>>>       	return 0;
+>>>       }
+>>>
+>>> If we now apply this patch, we'd end up with R = 1 after
+>>> `device_unregister()`, and the device would not be properly removed.
+>>>
+>>> If you still think that's wrong, then you'll need to better explain why.
+>>>
+>> Hi Banjamin and Cornelia,
+>>
+>> Your replies make me reliaze that I've been holding a mistake understanding
+>> of put_device() as well as reference count.
+>>
+>> Thanks for you two's patient explanation !!
+>>
+>> BTW, should I send a v2 on these two patches to move the position of
+>> put_device()?
 > 
-> In this case, module name may be truncated and user did not get any
-> indication from return value. In the helper description, it is
-> mentioned that module name currently is most 64 bytes. But from UAPI
-> perspective, it may be still good to return something to let user
-> know the name is truncated.
+> Feel free to do so.
 > 
-> I do not know what is the best way to do this. One suggestion is
-> to break it into two helpers, one for symbol name and another
-> for module name. What is the use cases people want to get both
-> symbol name and module name and is it common?
+> I think having the `put_device()` call after `device_unregister()` in
+> both `zfcp_unit_remove()` and `zfcp_sysfs_port_remove_store()` is more
+> natural, because it ought to be the last time we touch the object in
+> both functions.
 
-Fair, I can split this into two helpers :) The lookup would be done
-twice but I don't think that's a big deal.
+If you move put_device(), you could add a comment like we did here to explain 
+which (hidden) get_device is undone:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/s390/scsi?id=ef4021fe5fd77ced0323cede27979d80a56211ca
+("scsi: zfcp: fix to prevent port_remove with pure auto scan LUNs (only sdevs)")
+So in this patch it could be:
+	put_device(&unit->dev); /* undo _zfcp_unit_find() */
+And in the other patch it could be:
+	put_device(&port->dev); /* undo zfcp_get_port_by_wwpn() */
+Then it would be clearer next time somebody looks at the code.
 
+Especially for the other patch on zfcp_sysfs_port_remove_store() moving the 
+put_device(&port->dev) to at least *after* the call of 
+zfcp_erp_port_shutdown(port, 0, "syprs_1") would make the code cleaner to me. 
+Along the idead of passing the port to zfcp_erp_port_shutdown with the 
+reference we got from zfcp_get_port_by_wwpn(). That said, the current code is 
+of course still correct as we currently have the port ref of the earlier 
+device_register so passing the port to zfcp_erp_port_shutdown() is safe.
+
+If we wanted to make the gets and puts nicely nested, then we could move the 
+puts to just before the device_unregister, but that's bike shedding:
+	device_register()   --+
+	get_device() --+      |
+	put_device() --+      |
+	device_unregister() --+
+
+Benjamin's suggested move location works for me, too. After all, the kdoc of 
+device_unregister explicitly mentions the possibility that other refs might 
+continue to exist after device_unregister was called:
+	device_register()   --+
+	get_device() ---------|--+
+	device_unregister() --+  |
+	put_device() ------------+
+
+-- 
+Mit freundlichen Gruessen / Kind regards
+Steffen Maier
+
+Linux on IBM Z Development
+
+https://www.ibm.com/privacy/us/en/
+IBM Deutschland Research & Development GmbH
+Vorsitzender des Aufsichtsrats: Matthias Hartmann
+Geschaeftsfuehrung: Dirk Wittkopp
+Sitz der Gesellschaft: Boeblingen
+Registergericht: Amtsgericht Stuttgart, HRB 243294
