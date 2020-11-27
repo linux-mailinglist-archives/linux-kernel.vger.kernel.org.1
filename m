@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA2B2C67D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1C32C67C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731080AbgK0OXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 09:23:52 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55826 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727653AbgK0OXv (ORCPT
+        id S1730938AbgK0OWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 09:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730911AbgK0OWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 09:23:51 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ARENesJ013300;
-        Fri, 27 Nov 2020 08:23:40 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606487020;
-        bh=PhyXEFa04z4jyA1nInkwZxWormbSXLe8grkSoGIgTQo=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=sH8Z3qrPlQ13ERTb7KqT1Nw1Nl9nHRhx/oNEqdZYIRibQQfijDGC53h6HHv+iskYd
-         aUthLgQXN7TxwbA+/eQjfJL/VyKP+JPrP0Eb+lcRicP08KaHk10Es3sp13qVMPrIN2
-         tptXfUFGSjcenfEMCTWwhidXWONyk/vy+WBexkGE=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ARENe9v099705
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 27 Nov 2020 08:23:40 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 27
- Nov 2020 08:23:40 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 27 Nov 2020 08:23:39 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ARENe0w023178;
-        Fri, 27 Nov 2020 08:23:40 -0600
-Date:   Fri, 27 Nov 2020 08:23:40 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Sekhar Nori <nsekhar@ti.com>
-CC:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Andre Przywara <andre.przywara@arm.com>
-Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3: squelch warnings regarding no
- #address-cells for interrupt-controller
-Message-ID: <20201127142340.ei7o4zkg5trwcspy@chevron>
-References: <20201117161942.38754-1-nsekhar@ti.com>
- <20201117161942.38754-3-nsekhar@ti.com>
- <ab9658ef-c8a7-155b-acb1-effa872132ca@ti.com>
- <20201118151259.kpag44djji4ssiup@eldest>
- <18e41dba-a3dd-308a-605e-63b76ca638e5@ti.com>
- <20201119132829.sr435jf6s4275q4i@boxlike>
- <313a9cd5-7411-4ae1-cde4-42a2c18d11e6@ti.com>
- <20201124012100.fq7w7bjxvewuhbt2@shirt>
- <8885dd79-061b-82e3-1aeb-a318f7d8256d@ti.com>
+        Fri, 27 Nov 2020 09:22:52 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91BDC0613D1;
+        Fri, 27 Nov 2020 06:22:51 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id m9so4479276pgb.4;
+        Fri, 27 Nov 2020 06:22:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZJts5wluJiBEaxB7Ztt7ndMRPjti6kLXkg//zytMNbc=;
+        b=rWnXfdMYvvCo4dPYTLeZwozP2G3PeJzqwNOIINXOk2fYFFmKsbqZxN7GJuM4cqs7An
+         E94+kJE9azUr18AZpbev1qK8rg4aow0tePKyatJHw56e6SxkyyYqOAAia97h0+aCKCvw
+         GQecPXi28Trtogoe7Kwe2yoE6MAO+fircNe+gHNvSqsVwa/lXHKJwG7hcIq4q/x+3YBG
+         W/nsTlJlYO7gPi15ifTTz8y8WMFOSDkr35GFuZ7MXo1mGoj19fe522NzVU+fLZ+1B5Cm
+         LRGEo3O8dBJLpLKn3O3gW8z2LOX/uZthWQXuDOVY8fd2erwFYLOzV5IOmNoZhlkqkOdx
+         fgEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZJts5wluJiBEaxB7Ztt7ndMRPjti6kLXkg//zytMNbc=;
+        b=JyK0KVmTRwnkIz84pgvKMmSuRtYPo7QJ3ZrhSKIHWuUQyz1a5dD3DPyu4wq2LyrXa7
+         360zPze5UR/yvoKliSxEzPFEN+5p3hk4M1414mhppDHn/zAAEwkiYrF/RTsbAJmZflrG
+         OnfWgVj+kS/UpI9KqlprlcbXHDt2foxjo8wKz7GmL59syS5+FgoxMipz209EWPyTQLB0
+         xQw3fCFZQIqy4TedBIA1Jog5Aaan41LsQ0bNzPPZanU6T/mn5iLE+gX82AczIPYHko+t
+         vFxFLGOGkqlZMUn5BTGTtpk1iEiblHzcraB4CF4IIF0258JZ+oqM9fvN2QyC54zDQRAW
+         L93w==
+X-Gm-Message-State: AOAM533KH7c1zboUfYhdnDVzkkHjwuN6J+4/mETJ7Jti3zQmzXZwMqWx
+        JCZrJYwyLn9nXB+fae5YUwwVInLXK5SITknor5TaCO2r2MA=
+X-Google-Smtp-Source: ABdhPJymB9Dr1Yxeg9S/fXL3MVR0uUvGNDz9wBXLX2MKbj1D/KcWVCpa7CDlbK1CNTlRdyZKTY0fT4N5nqLhCxr/pTY=
+X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr10062134pjf.181.1606486971566;
+ Fri, 27 Nov 2020 06:22:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <8885dd79-061b-82e3-1aeb-a318f7d8256d@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201127130834.136348-1-alexandru.ardelean@analog.com>
+ <20201127130834.136348-2-alexandru.ardelean@analog.com> <CAHp75Vcd4t=RqC31S-b1PXMtd=8sypSLhTrSgRD9hbpSqOphoQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vcd4t=RqC31S-b1PXMtd=8sypSLhTrSgRD9hbpSqOphoQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 27 Nov 2020 16:23:40 +0200
+Message-ID: <CAHp75VctXhpyBVB7Zw+SB5LiGcj6r850x+ehL7u2H0R4=y5rVw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] spi: Add SPI_NO_TX/RX support
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09:46-20201124, Sekhar Nori wrote:
-> On 24/11/20 6:51 AM, Nishanth Menon wrote:
-> > On 09:45-20201123, Sekhar Nori wrote:
-> >>>> The main reason I commented - is hope to get some clarification from DT maintainers.
-> >>>> 90% of interrupt-controller nodes do not have #address-cells and I never seen in in GPIO nodes
-> >>>> (most often is present in PCI and GIC nodes).
-> >>>> and nobody seems fixing it. So, if we are going to move this direction it's reasonable to get clarification to be sure.
-> >>>>
-> >>>> And there is no "never" here - #address-cells always can be added if really required.
-> >>>
-> >>>
-> >>> OK - as a GPIO node, but as an interrupt-controller node, I was
-> >>> looking at [1] and wondering if that was the precedence.
-> >>>
-> >>> Yes, will be good to get direction from the DT maintainers on this
-> >>> topic.
-> >>
-> >> Shall I respin this series with 2/4 dropped while we wait for decision
-> >> on this?
-> >>
-> >> #address-cells warnings on interrupt controller can perhaps be handled
-> >> all at once (there are many of those in existing DT anyway).
-> >>
-> >> GPIO is basic support and holds up many other modules (like MMC/SD).
-> > 
-> > 
-> > There are'nt too many new patches in my queue that depends on GPIO, I'd
-> > rather not introduce new warnings unless we are completely at a
-> > stalemate. I'd rather use this opportunity to understand where what we
-> > need to be doing.
-> GPIO was originally submitted as part of 8  patch series titled "[PATCH
-> 0/8] Add support for UHS modes in TI's J721e and J7200 boards"
-> 
-> Rest of those patches need to be resubmitted after GPIO is accepted.
-> 
-> Can you apply patch 1/4 at least. Its fairly non-controversial. It will
-> help reduce patch backlog and fix some warnings too.
+On Fri, Nov 27, 2020 at 4:22 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Fri, Nov 27, 2020 at 3:08 PM Alexandru Ardelean
+> <alexandru.ardelean@analog.com> wrote:
 
-I see that Grygorii is suggesting 1,3,4 to be pulled in. can you repost
-with just the required patches alone and pick up the reviewed-bys?
+...
+
+> > --- a/include/uapi/linux/spi/spi.h
+> > +++ b/include/uapi/linux/spi/spi.h
+> > @@ -43,5 +43,7 @@
+> >  #define        SPI_TX_OCTAL            0x2000          /* transmit with 8 wires */
+> >  #define        SPI_RX_OCTAL            0x4000          /* receive with 8 wires */
+> >  #define        SPI_3WIRE_HIZ           0x8000          /* high impedance turnaround */
+> > +#define        SPI_NO_TX               0x10000         /* no transmit wire */
+> > +#define        SPI_NO_RX               0x20000         /* no receive wire */
+>
+> Is it really material for uAPI?
+> Perhaps we may have something like
+> SPI_MODE_USER_MASK in uAPI and
+> in internal headers
+>
+> SPI_MODE_KERNEL_MASK with
+> static_assert(_USER_MASK & _KERNEL_MASK); // check conditional
+>
+> ?
+
+And logically start bits for the kernel from the end (31, 30, ...).
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+With Best Regards,
+Andy Shevchenko
