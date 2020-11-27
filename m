@@ -2,125 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178BB2C5E93
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 02:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95D52C5E98
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 02:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392144AbgK0Brv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 20:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727441AbgK0Bru (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 20:47:50 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911E3C0613D4;
-        Thu, 26 Nov 2020 17:47:50 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id lt17so5421390ejb.3;
-        Thu, 26 Nov 2020 17:47:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TH1ugCiizifOLOya1BWGmhh3l5zdn0yT/6/5FRCAhqM=;
-        b=LsycItdgqAudg+ZZyX4TzvWnfqwoBxg5TiM7PFZbr7EVt+T0mze5yYEi1tvqwPpNqk
-         2cB+6xwRR4H2oNK3lbLxHwuVC7uVJspP5Z4tl23P1LayAMbqqA8WX4tgB3n6Q4luH9e6
-         J5xWyn3MLgx4KuwNA4ema750bSJ0GJR0FMzbq656+CRehO2iSR5GTVRu5QNdgLskpjKq
-         OFPXyOOYlngIVFRT8G5syxQgYAyShH+Xnmj1RG1sop14W4pIts+fFz0AUnVow15aV5Ic
-         D0LRtgbEi+0WwGopFl5ZGmS2Fu2mYyQmHKlvm1jVrqudsyG22qGfjdUUzZ1awTlQgjCF
-         fG9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TH1ugCiizifOLOya1BWGmhh3l5zdn0yT/6/5FRCAhqM=;
-        b=U/woaoeFwzogZwQ2LEJOydtNATfbjRhenBA7X2vCQhBA/rmekzaq88qXMEtdQ0uFyu
-         sakNW/0g2QQFp7eM8PA8deeTGcu80A68UZCBS8JDQIsMHnzdcQB+RZWNaS1Vz++KYyC0
-         jkP4CKkS97rejQgvY6NmBmc+5m6uyM3UWNpo+hrRwKGbcXLDnMMjUyRgyhAGM53JBbCa
-         8Odn1Y/zc59R3r61wWAZrbHdX1jwoNWUh/N4sgEd3aX7UhSTMfVdFliqJI8KhoMtOkGp
-         yx1yRMYB6toplZTgYDyWb1JjbSjpZwiWmJMpJsUAkh1vdwG++WcXExTdDfIDncusNco5
-         eIAg==
-X-Gm-Message-State: AOAM530jZr10AB2lXr8sXf6Fn0lhwEdE7hPgFZDhUXDvvAJrB69mGxSR
-        7cb8HsPmlrFEnUR1BeI2OrbS6cTCHzn25cH8VN0=
-X-Google-Smtp-Source: ABdhPJzQATMFG/XfORq7/Zk2KQzfa7mmP89oZeVU4Vs6Fq5jyM8zgUdiaPNGHBYzVpGYEwYughHTEvtUDQoDO6MEGTg=
-X-Received: by 2002:a17:906:94ca:: with SMTP id d10mr3805902ejy.62.1606441669237;
- Thu, 26 Nov 2020 17:47:49 -0800 (PST)
+        id S2392153AbgK0Bvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 20:51:50 -0500
+Received: from mga05.intel.com ([192.55.52.43]:46124 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392146AbgK0Bvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 20:51:50 -0500
+IronPort-SDR: gz9JNOvJ4vBDN+YZnPbK+GXVVw0ymohfMk3A8b6f3I+/sBBYpFPL0V5ut3uDXhOUdDQA9ghvlQ
+ lZi6v1mUYhyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9817"; a="257047939"
+X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
+   d="scan'208";a="257047939"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 17:51:49 -0800
+IronPort-SDR: pzZfEjcbbXsj4s7s73nUVpfDvWKSmE07ZQjnjC23jff/Sz97bd5OoHA+DZZhEACrnr/8yzu93d
+ Hg7xkpQfTlFQ==
+X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
+   d="scan'208";a="547895306"
+Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 17:51:43 -0800
+Subject: Re: [Intel-gfx] [drm/i915/gem] 59dd13ad31:
+ phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second
+ -54.0% regression
+To:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oliver Sang <oliver.sang@intel.com>
+Cc:     feng.tang@intel.com, tiejun.li@intel.com, guangli.li@intel.com,
+        frank.du@intel.com, guobing.chen@intel.com, jiebin.sun@intel.com,
+        Shuhua.Fan@intel.com, Matthew Auld <matthew.auld@intel.com>,
+        fan.zhao@intel.com, ying.huang@intel.com, shan.kang@intel.com,
+        zhengjun.xing@intel.com, Wenhuan.Huang@intel.com,
+        intel-gfx@lists.freedesktop.org, lkp@lists.01.org,
+        ming.a.chen@intel.com, yu.ma@intel.com, jessica.ji@intel.com,
+        dapeng1.mi@intel.com, wangyang.guo@intel.com,
+        LKML <linux-kernel@vger.kernel.org>, gengxin.xie@intel.com
+References: <20201111155811.GB24657@xsang-OptiPlex-9020>
+ <160527763346.5566.3471508802857132043@jlahtine-mobl.ger.corp.intel.com>
+ <20201119072018.GA15197@xsang-OptiPlex-9020>
+ <160625087275.29168.7080737993781611765@build.alporthouse.com>
+ <ab9ebc5a-7d79-8003-c7bc-5cf0923983c6@linux.intel.com>
+ <160642644736.15379.9850669928715684163@build.alporthouse.com>
+From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Message-ID: <e14d546c-b1c6-448b-d8ac-50d072802c98@linux.intel.com>
+Date:   Fri, 27 Nov 2020 09:51:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <6349d22f-cf49-bab4-ad0f-a928e65622af@canonical.com>
-In-Reply-To: <6349d22f-cf49-bab4-ad0f-a928e65622af@canonical.com>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Fri, 27 Nov 2020 09:47:37 +0800
-Message-ID: <CAKF3qh11ZO75verB+SqefvCfPDPjee3f-1=GJZoR3CdkAtzH_g@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] PCI/ERR: Call pci_bus_reset() before calling
- ->slot_reset() callback
-To:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>, knsathya@kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Sinan Kaya <okaya@kernel.org>,
-        Ethan Zhao <haifeng.zhao@intel.com>,
-        chris.newcomer@canonical.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <160642644736.15379.9850669928715684163@build.alporthouse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 2:47 AM Guilherme G. Piccoli
-<gpiccoli@canonical.com> wrote:
->
-> Hi Kuppuswamy Sathyanarayanan (and all involved here), thanks for the
-> patch! I'd like to ask what is the status of this patchset - I just
-> "parachuted" in the issue, and by tracking the linux-pci ML, I found
-> this V7 (and all previous versions since V2). Also, noticed that Jay's
-> email might have gotten lost in translation (he's not CCed in latest
-> versions of the patchset).
->
-> I was able to find even another interesting thread that might be
-> related, Ethan's patchset. So, if any of the developers can clarify the
 
-Thank you for asking.
 
-> current status of this patchset or if the functionality hereby proposed
-> ended-up being implemented in another patch, I appreciate a lot.
->
-> Thanks in advance! Below, some references to lore archives.
-> Cheers,
->
->
-> Guilherme
->
->
-> References:
->
-> This V7 link:
-> https://lore.kernel.org/linux-pci/546d346644654915877365b19ea534378db0894d.1602788209.git.sathyanarayanan.kuppuswamy@linux.intel.com/
->
-> V6:
-> https://lore.kernel.org/linux-pci/546d346644654915877365b19ea534378db0894d.1602663397.git.sathyanarayanan.kuppuswamy@linux.intel.com/#t
->
-> V5:
-> https://lore.kernel.org/linux-pci/162495c76c391de6e021919e2b69c5cd2dbbc22a.1602632140.git.sathyanarayanan.kuppuswamy@linux.intel.com/
->
-> V4:
-> https://lore.kernel.org/linux-pci/5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com/
->
-> V3:
-> https://lore.kernel.org/linux-pci/cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com/
->
-> V2:
-> https://lore.kernel.org/linux-pci/ce417fbf81a8a46a89535f44b9224ee9fbb55a29.1591307288.git.sathyanarayanan.kuppuswamy@linux.intel.com/#t
->
-> Ethan's related(?) patchset, V8 :
-> https://lore.kernel.org/linux-pci/20201007113158.48933-1-haifeng.zhao@intel.com/#t
+On 11/27/2020 5:34 AM, Chris Wilson wrote:
+> Quoting Xing Zhengjun (2020-11-26 01:44:55)
+>>
+>>
+>> On 11/25/2020 4:47 AM, Chris Wilson wrote:
+>>> Quoting Oliver Sang (2020-11-19 07:20:18)
+>>>> On Fri, Nov 13, 2020 at 04:27:13PM +0200, Joonas Lahtinen wrote:
+>>>>> Hi,
+>>>>>
+>>>>> Could you add intel-gfx@lists.freedesktop.org into reports going
+>>>>> forward.
+>>>>>
+>>>>> Quoting kernel test robot (2020-11-11 17:58:11)
+>>>>>>
+>>>>>> Greeting,
+>>>>>>
+>>>>>> FYI, we noticed a -54.0% regression of phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second due to commit:
+>>>>>
+>>>>> How many runs are there on the bad version to ensure the bisect is
+>>>>> repeatable?
+>>>>
+>>>> test 4 times.
+>>>> zxing@inn:/result/phoronix-test-suite/performance-true-Radial_Gradient_Paint-1024x1024-jxrendermark-1.2.4-ucode=0xd6-monitor=da39a3ee/lkp-cfl-d1/debian-x86_64-phoronix/x86_64-rhel-8.3/gcc-9/59dd13ad310793757e34afa489dd6fc8544fc3da$ grep -r "operations_per_second" */stats.json
+>>>> 0/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4133.487932,
+>>>> 1/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4120.421503,
+>>>> 2/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4188.414835,
+>>>> 3/stats.json: "phoronix-test-suite.jxrendermark.RadialGradientPaint.1024x1024.operations_per_second": 4068.549514,
+>>>
+>>> a w/o revert (drm-tip)
+>>> b w/ revert
+>>> +mB----------------------------------------------------------------------------+
+>>> |                             ..b                                              |
+>>> |                             ..b.aa                                           |
+>>> |                             ....a.a                                          |
+>>> |                             ....a.a                                          |
+>>> |                      b  b  ........a                                         |
+>>> |                   b  b  b b......... a                                       |
+>>> |                   b  bb bbb...........                                       |
+>>> |b               ab bbab.bb.b............ba b a a            ab               a|
+>>> |                             |__A__|                                          |
+>>> |                             |MA_|                                            |
+>>> +------------------------------------------------------------------------------+
+>>>       N                Min           Max        Median           Avg        Stddev
+>>> a 120          3621.8761     7356.4442     4606.7895     4607.9132     156.17693
+>>> b 120          2664.0563     6359.9686     4519.5036     4534.4463     95.471121
+>>>
+>>> The patch is not expected to have any impact on the machine you are testing on.
+>>> -Chris
+>>>
+>>
+>> What's your code base?
+>> For my side:
+>> 1) sync the code to the head of Linux mainline
+>> 2) git reset --hard 59dd13ad31
+>> 3) git revert 59dd13ad3107
+>> We compare the test result of commit 59dd13ad3107 (step 2) and
+>> 2052847b06f8 (step 3, revert 59dd13ad3107), the regression should
+>> related with 59dd13ad3107. Each test case we run 5 times.
+> 
+> a 59dd13ad31
+> b revert
+> +mB----------------------------------------------------------------------------+
+> |                        a                                                     |
+> |                       aa                                                     |
+> |                     .b....ba                                                 |
+> |                     .b....baa    b                                           |
+> |                     .........b . b   b                                       |
+> |                a   b.......... ..bb  b        b                              |
+> |              b a   b.............b.a b        b                              |
+> |a    a  b.    .aaa..b.............b..b....ab   b     a                       .|
+> |                      |__A__|                                                 |
+> |                      |___A_____|                                             |
+> +------------------------------------------------------------------------------+
+>      N                Min           Max        Median           Avg        Stddev
+> a 120          3658.3435     6363.7812     4527.4406      4536.612     86.095459
+> b 120          3928.9643      6375.829     4576.0482     4585.4224      157.284
+> 
 
-This patchset I think need more discussion and maintainer's (Bjorn's)
-suggestion or advice.
-You are welcome to try it and give me the feedback.
-
-Thanks,
-Ethan
-
->
+Could you share with me your test commands and the hardware info, then I 
+can reproduce it on my side? Thanks.
+-- 
+Zhengjun Xing
