@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2B82C6DCA
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 00:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E5D2C6DC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 00:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732557AbgK0XtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 18:49:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
+        id S1731906AbgK0Xox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 18:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732670AbgK0XfX (ORCPT
+        with ESMTP id S1732070AbgK0Xfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 18:35:23 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75E1C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 15:35:22 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 1so7808102wme.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 15:35:22 -0800 (PST)
+        Fri, 27 Nov 2020 18:35:37 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB5AC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 15:35:36 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 10so6313508wml.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 15:35:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4F/42hYjyqyL+aZY2Lepn5obAALGh+LegP2VS6nWf7s=;
-        b=G1UcnmWnAQHFsBAZskAa4olwjSkYMi/D4LHXjWPn9C1QhmCdRTzoJfLpPuEaHQ4r+F
-         11mNqiw/uzcKu19G+VyXyS9xqAu52XloAZy+fcx9MZCmV5f2Fmkvvqc5TWQnVQGjzXNt
-         6q0sl2SBqvqUjZBE8xod9R9AeRfYV7/cThIoBt9bh0N7vrP6xDHJIX98FXYywmnPKHwa
-         YmulnIsv0S9bRy1utyPSV1bri8Tdtn/irRYMw5ZePwk/GfzKYirg0zsrmfcIVqVNNc5U
-         /D2Cz2cM9zULqQxJpbd6ZtSkIjs7Pn+CBspTC03nBwBLRfKQy/Y6052bq+r5JpCiuARi
-         wjbg==
+        bh=jVzhf/5meYw3rpw0SqzqfljLcT87jPxDXOiys7yFh2Q=;
+        b=INXbcUXnvCOogsFpX6GkV6j4Qjs9GR5/ZV/ui7/R/F6iLXbJIp7Dn7ZbQWoKlMEz/1
+         Ep4ijwz9l19P6hAp3utcfV0CzNStPymUpt5jGCYNWjzjqBU8xw/ce66aSGSe5bzpMLv6
+         Z7ZkWjeRMHxcGQPukqzPLZGFSiyl9IvZ2JnrzsYy6vxEl/rQo4GyB7uwwo+H5kZ7p1n1
+         4rZnuxJiTvAPyHZcK2eUhpy570UG/7FWd8QRpJEQIwP9gP/3tydCkuIOqDrRHdOwyMws
+         Ud+KKLlcqJ++fer4lfbXhUkJEJkQlmNVy1QSS6UI+sHqwSx0QT7Ru/lbNVYkta0RNTPz
+         7GvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=4F/42hYjyqyL+aZY2Lepn5obAALGh+LegP2VS6nWf7s=;
-        b=Rpm6BhXB6r05GzkXPoeZdx0te+Vv2yeDseWaDQ4yQZhkwVZC3Ww7Gnab2STPIbwnkZ
-         9NmP/PancQNQuxqLuyYLVE0GRuwMzIE/HbzaR7H7y+gGEmkSPiWxdKPDRu2AxI7fz75b
-         Hm7a8Np3nVXt2debIH8g6EuA6L38BnEOP6GzehIDJbKXrZoaHlQqlin22WdMAar2IPQJ
-         W/ER2aJCnUNYKCYck1k0DyP7OUQPwrcBZKky4K1QS2YBLLz0/aEdIoUfvhStsaXojcZQ
-         zkZ+cOlKcfzF4YNUEr+Ca0JIxFrjPZDOWaiEw7Va7+9H7APWGRHo5QIizK3JtHziEaKE
-         nJbA==
-X-Gm-Message-State: AOAM532vg9nDYHwYHsTOACfGw68ZXbtKHmeb+pbEt4y+AmtVu0DcqTKH
-        cIK+fUgvxJhsrraj/yfxlGs=
-X-Google-Smtp-Source: ABdhPJwft7Sf+k6f33QQ7aIuDGIaAlTA/RUoe+AlXUi5qgEUy4DOTmyQnKKGhy+g6qHsh7ZeOJz9ow==
-X-Received: by 2002:a1c:750f:: with SMTP id o15mr11782565wmc.144.1606520121447;
-        Fri, 27 Nov 2020 15:35:21 -0800 (PST)
+        bh=jVzhf/5meYw3rpw0SqzqfljLcT87jPxDXOiys7yFh2Q=;
+        b=A0KliNMNKw4wRs/BxyM7/Kv5eH3RDQztRv1y8DcwCcMS9e8rlWP4kKJxJ6DoADWDjp
+         E4CWInO2Har8A3EewyhMguKRMAvWwfRX5069RrL7T9yDubyq4uGnvPvTlbNmh7/ByOUX
+         21sc1ic4PXnESau6pTzWLR7W+1dbaUvwetRAgypv4JdHQ8WsQkqBF38Ujz+Gevh9HzxA
+         mCRSuFoVWgC7LP860lQO+g7Y+gncNdwXYpphrn0v3NSjAJK7/vb/4ChvWdvBjdcy84m5
+         R0nAgb1DMeq33UKGcMsBx720O2BmeCXlwO5g28wxoe5x6+0G//yeB/Q4Hb/VcuKlSGbS
+         QX5Q==
+X-Gm-Message-State: AOAM531KA6M5iTBg+fFA/9Ycq5E1KOeD7YugSKK0SGFgjMFkzwr2OD3t
+        3ayjDHdHxDycnP7F7oowANw=
+X-Google-Smtp-Source: ABdhPJxy+yLkwFNUsqIhZwIE0D69kMEePqUJFJh3gTpIXMyOQwY7iAM67O0D7S3/HIQtFqsy2GODFQ==
+X-Received: by 2002:a1c:ba56:: with SMTP id k83mr4899024wmf.57.1606520135049;
+        Fri, 27 Nov 2020 15:35:35 -0800 (PST)
 Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id w21sm15028929wmi.29.2020.11.27.15.35.18
+        by smtp.gmail.com with ESMTPSA id o5sm15036632wmh.8.2020.11.27.15.35.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 15:35:19 -0800 (PST)
-Subject: Re: [PATCH 1/4] soc / drm: mediatek: Move DDP component defines into
- mtk-mmsys.h
+        Fri, 27 Nov 2020 15:35:34 -0800 (PST)
+Subject: Re: [PATCH 2/4] soc: mediatek: mmsys: Use
+ devm_platform_ioremap_resource()
 To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         linux-kernel@vger.kernel.org
 Cc:     Collabora Kernel ML <kernel@collabora.com>,
         yongqiang.niu@mediatek.com, drinkcat@chromium.org,
         hsinyi@chromium.org, chunkuang.hu@kernel.org,
-        CK Hu <ck.hu@mediatek.com>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
 References: <20201006193320.405529-1-enric.balletbo@collabora.com>
- <20201006193320.405529-2-enric.balletbo@collabora.com>
+ <20201006193320.405529-3-enric.balletbo@collabora.com>
 From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <5b6816ca-f3c9-3048-57ca-f6af128fbb0b@gmail.com>
-Date:   Sat, 28 Nov 2020 00:35:17 +0100
+Message-ID: <188d0079-1fa8-8d43-97f1-33480ffc5c8e@gmail.com>
+Date:   Sat, 28 Nov 2020 00:35:33 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201006193320.405529-2-enric.balletbo@collabora.com>
+In-Reply-To: <20201006193320.405529-3-enric.balletbo@collabora.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -81,145 +77,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 06/10/2020 21:33, Enric Balletbo i Serra wrote:
-> From: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> For the common platform_get_resource()+devm_platform_ioremap() combination,
+> there is a helper, so use it and make the code a bit more compact.
 > 
-> MMSYS is the driver which controls the routing of these DDP components,
-> so the definition of the mtk_ddp_comp_id enum should be placed in mtk-mmsys.h
-> 
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
-> This patch was previously part of another series, but has no
-> dependencies and can be applied independently. As the latest version
-> sent is from two months ago, I resent this patch because the next patches
-> of this series depends on it to apply cleanly.
-> 
 
 Applied to v5.10-next/soc
 
-Thanks
+Thanks!
 
-> [1] https://patchwork.kernel.org/patch/11706243
+> ---
 > 
->   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h | 34 +--------------------
->   drivers/soc/mediatek/mtk-mmsys.c            |  4 +--
->   include/linux/soc/mediatek/mtk-mmsys.h      | 33 ++++++++++++++++++++
->   3 files changed, 35 insertions(+), 36 deletions(-)
+>   drivers/soc/mediatek/mtk-mmsys.c | 7 ++-----
+>   1 file changed, 2 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> index debe36395fe7..161201fe5179 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> @@ -7,6 +7,7 @@
->   #define MTK_DRM_DDP_COMP_H
->   
->   #include <linux/io.h>
-> +#include <linux/soc/mediatek/mtk-mmsys.h>
->   
->   struct device;
->   struct device_node;
-> @@ -35,39 +36,6 @@ enum mtk_ddp_comp_type {
->   	MTK_DDP_COMP_TYPE_MAX,
->   };
->   
-> -enum mtk_ddp_comp_id {
-> -	DDP_COMPONENT_AAL0,
-> -	DDP_COMPONENT_AAL1,
-> -	DDP_COMPONENT_BLS,
-> -	DDP_COMPONENT_CCORR,
-> -	DDP_COMPONENT_COLOR0,
-> -	DDP_COMPONENT_COLOR1,
-> -	DDP_COMPONENT_DITHER,
-> -	DDP_COMPONENT_DPI0,
-> -	DDP_COMPONENT_DPI1,
-> -	DDP_COMPONENT_DSI0,
-> -	DDP_COMPONENT_DSI1,
-> -	DDP_COMPONENT_DSI2,
-> -	DDP_COMPONENT_DSI3,
-> -	DDP_COMPONENT_GAMMA,
-> -	DDP_COMPONENT_OD0,
-> -	DDP_COMPONENT_OD1,
-> -	DDP_COMPONENT_OVL0,
-> -	DDP_COMPONENT_OVL_2L0,
-> -	DDP_COMPONENT_OVL_2L1,
-> -	DDP_COMPONENT_OVL1,
-> -	DDP_COMPONENT_PWM0,
-> -	DDP_COMPONENT_PWM1,
-> -	DDP_COMPONENT_PWM2,
-> -	DDP_COMPONENT_RDMA0,
-> -	DDP_COMPONENT_RDMA1,
-> -	DDP_COMPONENT_RDMA2,
-> -	DDP_COMPONENT_UFOE,
-> -	DDP_COMPONENT_WDMA0,
-> -	DDP_COMPONENT_WDMA1,
-> -	DDP_COMPONENT_ID_MAX,
-> -};
-> -
->   struct mtk_ddp_comp;
->   struct cmdq_pkt;
->   struct mtk_ddp_comp_funcs {
 > diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-> index a55f25511173..36ad66bb221b 100644
+> index 36ad66bb221b..18f93979e14a 100644
 > --- a/drivers/soc/mediatek/mtk-mmsys.c
 > +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -5,13 +5,11 @@
->    */
+> @@ -306,15 +306,12 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
+>   	struct platform_device *clks;
+>   	struct platform_device *drm;
+>   	void __iomem *config_regs;
+> -	struct resource *mem;
+>   	int ret;
 >   
->   #include <linux/device.h>
-> +#include <linux/io.h>
->   #include <linux/of_device.h>
->   #include <linux/platform_device.h>
->   #include <linux/soc/mediatek/mtk-mmsys.h>
+> -	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	config_regs = devm_ioremap_resource(dev, mem);
+> +	config_regs = devm_platform_ioremap_resource(pdev, 0);
+>   	if (IS_ERR(config_regs)) {
+>   		ret = PTR_ERR(config_regs);
+> -		dev_err(dev, "Failed to ioremap mmsys-config resource: %d\n",
+> -			ret);
+> +		dev_err(dev, "Failed to ioremap mmsys registers: %d\n", ret);
+>   		return ret;
+>   	}
 >   
-> -#include "../../gpu/drm/mediatek/mtk_drm_ddp.h"
-> -#include "../../gpu/drm/mediatek/mtk_drm_ddp_comp.h"
-> -
->   #define DISP_REG_CONFIG_DISP_OVL0_MOUT_EN	0x040
->   #define DISP_REG_CONFIG_DISP_OVL1_MOUT_EN	0x044
->   #define DISP_REG_CONFIG_DISP_OD_MOUT_EN		0x048
-> diff --git a/include/linux/soc/mediatek/mtk-mmsys.h b/include/linux/soc/mediatek/mtk-mmsys.h
-> index 7bab5d9a3d31..2228bf6133da 100644
-> --- a/include/linux/soc/mediatek/mtk-mmsys.h
-> +++ b/include/linux/soc/mediatek/mtk-mmsys.h
-> @@ -9,6 +9,39 @@
->   enum mtk_ddp_comp_id;
->   struct device;
->   
-> +enum mtk_ddp_comp_id {
-> +	DDP_COMPONENT_AAL0,
-> +	DDP_COMPONENT_AAL1,
-> +	DDP_COMPONENT_BLS,
-> +	DDP_COMPONENT_CCORR,
-> +	DDP_COMPONENT_COLOR0,
-> +	DDP_COMPONENT_COLOR1,
-> +	DDP_COMPONENT_DITHER,
-> +	DDP_COMPONENT_DPI0,
-> +	DDP_COMPONENT_DPI1,
-> +	DDP_COMPONENT_DSI0,
-> +	DDP_COMPONENT_DSI1,
-> +	DDP_COMPONENT_DSI2,
-> +	DDP_COMPONENT_DSI3,
-> +	DDP_COMPONENT_GAMMA,
-> +	DDP_COMPONENT_OD0,
-> +	DDP_COMPONENT_OD1,
-> +	DDP_COMPONENT_OVL0,
-> +	DDP_COMPONENT_OVL_2L0,
-> +	DDP_COMPONENT_OVL_2L1,
-> +	DDP_COMPONENT_OVL1,
-> +	DDP_COMPONENT_PWM0,
-> +	DDP_COMPONENT_PWM1,
-> +	DDP_COMPONENT_PWM2,
-> +	DDP_COMPONENT_RDMA0,
-> +	DDP_COMPONENT_RDMA1,
-> +	DDP_COMPONENT_RDMA2,
-> +	DDP_COMPONENT_UFOE,
-> +	DDP_COMPONENT_WDMA0,
-> +	DDP_COMPONENT_WDMA1,
-> +	DDP_COMPONENT_ID_MAX,
-> +};
-> +
->   void mtk_mmsys_ddp_connect(struct device *dev,
->   			   enum mtk_ddp_comp_id cur,
->   			   enum mtk_ddp_comp_id next);
 > 
