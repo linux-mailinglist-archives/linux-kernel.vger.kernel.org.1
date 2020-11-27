@@ -2,209 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB58C2C5F19
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D7A2C5F1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392377AbgK0Dxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 22:53:43 -0500
-Received: from mga11.intel.com ([192.55.52.93]:35589 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726908AbgK0Dxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 22:53:43 -0500
-IronPort-SDR: LR+0kKPDMj5bllNuAcdT5UrcbTI0DZDWelZRIRXoZbR08f+K726MmBJCHj/yhpwHJ1hsOiY2BD
- 3afOZje0JlMw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9817"; a="168846461"
-X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
-   d="scan'208";a="168846461"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 19:53:41 -0800
-IronPort-SDR: PDWKXGulJfBdxugdnRyel4ohEwnJXRGbAIqIgVbi6EFUzAKbj/ApUKl9U57dGHoooYYR2o3SuR
- goe97CCAk3Eg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,373,1599548400"; 
-   d="scan'208";a="363006640"
-Received: from unknown (HELO [10.239.160.22]) ([10.239.160.22])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Nov 2020 19:53:40 -0800
-Reply-To: Colin.Xu@intel.com
-Subject: Re: [RFC PATCH] vfio/pci: Allow force needs_pm_restore as specified
- by device:vendor
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Fonn, Swee Yee" <swee.yee.fonn@intel.com>
-References: <20201125021824.27411-1-colin.xu@intel.com>
- <20201125085312.63510f9f@w520.home>
-From:   Colin Xu <Colin.Xu@intel.com>
-Message-ID: <7e7a83ca-8530-1afa-4b85-2ef76fb99a5c@intel.com>
-Date:   Fri, 27 Nov 2020 11:53:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-MIME-Version: 1.0
-In-Reply-To: <20201125085312.63510f9f@w520.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S2392386AbgK0Dyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 22:54:36 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:51490 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726908AbgK0Dyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 22:54:35 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx79N3eMBflk8XAA--.47333S2;
+        Fri, 27 Nov 2020 11:54:32 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] alpha: ptrace generic requests
+Date:   Fri, 27 Nov 2020 11:54:31 +0800
+Message-Id: <1606449271-13922-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx79N3eMBflk8XAA--.47333S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gr15Kr43CF1DKr1DZr1xAFb_yoWftwc_XF
+        yaqw1kGFy5GrsrC3WY9w1xXr4Yyas5WFyYgasFkrZrJ3y3XFy5XrZxArnxuF1UZa1FgFs5
+        A34fGryUAF1SkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r48MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUs73vUUUUU
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This removes duplicated code by calling the generic ptrace_request
+function for the things they already handle.
 
-On 11/25/20 11:53 PM, Alex Williamson wrote:
-> On Wed, 25 Nov 2020 10:18:24 +0800
-> Colin Xu <colin.xu@intel.com> wrote:
->
->> Force specific device listed in params pm_restore_ids to follow
->> device state save/restore as needs_pm_restore.
->> Some device has NoSoftRst so will skip current state save/restore enabled
->> by needs_pm_restore. However once the device experienced power state
->> D3<->D0 transition, either by idle_d3 or the guest driver changes PM_CTL,
->> the guest driver won't get correct devie state although the configure
->> space doesn't change.
-> It sounds like you're describing a device that incorrectly exposes
-> NoSoftRst when there is in fact some sort of internal reset that
-> requires reprogramming config space.  What device requires this?  How
-> is a user to know when this option is required?  It seems like this
-> would be better handled via a quirk in PCI core that sets a device flag
-> that the NoSoftRst value is incorrect for the specific affected
-> devices.  Thanks,
->
-> Alex
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ arch/alpha/kernel/ptrace.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Thanks for the feedback.
-
-The device found are: Comet Lake PCH Serial IO I2C Controller
-[8086:06e8]
-[8086:06e9]
-
-Yes you're right, there is no straight way for user to know the device. 
-The above device I found is during pass through them to VM. Although 
-adding such param may help in certain scenario, it still too 
-device-specific but not common in most cases.
-
-I'll try the pci quirk way.
-
-Colin
-
->
->
->> Cc: Swee Yee Fonn <swee.yee.fonn@intel.com>
->> Signed-off-by: Colin Xu <colin.xu@intel.com>
->> ---
->>   drivers/vfio/pci/vfio_pci.c | 66 ++++++++++++++++++++++++++++++++++++-
->>   1 file changed, 65 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
->> index e6190173482c..50a4141c9e1d 100644
->> --- a/drivers/vfio/pci/vfio_pci.c
->> +++ b/drivers/vfio/pci/vfio_pci.c
->> @@ -34,6 +34,15 @@
->>   #define DRIVER_AUTHOR   "Alex Williamson <alex.williamson@redhat.com>"
->>   #define DRIVER_DESC     "VFIO PCI - User Level meta-driver"
->>   
->> +#define VFIO_MAX_PM_DEV 32
->> +struct vfio_pm_devs {
->> +	struct {
->> +		unsigned short  vendor;
->> +		unsigned short  device;
->> +	} ids[VFIO_MAX_PM_DEV];
->> +	u32 count;
->> +};
->> +
->>   static char ids[1024] __initdata;
->>   module_param_string(ids, ids, sizeof(ids), 0);
->>   MODULE_PARM_DESC(ids, "Initial PCI IDs to add to the vfio driver, format is \"vendor:device[:subvendor[:subdevice[:class[:class_mask]]]]\" and multiple comma separated entries can be specified");
->> @@ -64,6 +73,10 @@ static bool disable_denylist;
->>   module_param(disable_denylist, bool, 0444);
->>   MODULE_PARM_DESC(disable_denylist, "Disable use of device denylist. Disabling the denylist allows binding to devices with known errata that may lead to exploitable stability or security issues when accessed by untrusted users.");
->>   
->> +static char pm_restore_ids[1024] __initdata;
->> +module_param_string(pm_restore_ids, pm_restore_ids, sizeof(pm_restore_ids), 0);
->> +MODULE_PARM_DESC(pm_restore_ids, "comma separated device in format of \"vendor:device\"");
->> +
->>   static inline bool vfio_vga_disabled(void)
->>   {
->>   #ifdef CONFIG_VFIO_PCI_VGA
->> @@ -260,10 +273,50 @@ static bool vfio_pci_nointx(struct pci_dev *pdev)
->>   	return false;
->>   }
->>   
->> +static struct vfio_pm_devs pm_devs = {0};
->> +static void __init vfio_pci_fill_pm_ids(void)
->> +{
->> +	char *p, *id;
->> +	int idx = 0;
->> +
->> +	/* no ids passed actually */
->> +	if (pm_restore_ids[0] == '\0')
->> +		return;
->> +
->> +	/* add ids specified in the module parameter */
->> +	p = pm_restore_ids;
->> +	while ((id = strsep(&p, ","))) {
->> +		unsigned int vendor, device = PCI_ANY_ID;
->> +		int fields;
->> +
->> +		if (!strlen(id))
->> +			continue;
->> +
->> +		fields = sscanf(id, "%x:%x", &vendor, &device);
->> +
->> +		if (fields != 2) {
->> +			pr_warn("invalid vendor:device string \"%s\"\n", id);
->> +			continue;
->> +		}
->> +
->> +		if (idx < VFIO_MAX_PM_DEV) {
->> +			pm_devs.ids[idx].vendor = vendor;
->> +			pm_devs.ids[idx].device = device;
->> +			pm_devs.count++;
->> +			idx++;
->> +			pr_info("add [%04x:%04x] for needs_pm_restore\n",
->> +				vendor, device);
->> +		} else {
->> +			pr_warn("Exceed maximum %d, skip adding [%04x:%04x] for needs_pm_restore\n",
->> +				VFIO_MAX_PM_DEV, vendor, device);
->> +		}
->> +	}
->> +}
->> +
->>   static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
->>   {
->>   	struct pci_dev *pdev = vdev->pdev;
->> -	u16 pmcsr;
->> +	u16 pmcsr, idx;
->>   
->>   	if (!pdev->pm_cap)
->>   		return;
->> @@ -271,6 +324,16 @@ static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
->>   	pci_read_config_word(pdev, pdev->pm_cap + PCI_PM_CTRL, &pmcsr);
->>   
->>   	vdev->needs_pm_restore = !(pmcsr & PCI_PM_CTRL_NO_SOFT_RESET);
->> +
->> +	for (idx = 0; idx < pm_devs.count; idx++) {
->> +		if (vdev->pdev->vendor == pm_devs.ids[idx].vendor &&
->> +		    vdev->pdev->device == pm_devs.ids[idx].device) {
->> +			vdev->needs_pm_restore = true;
->> +			pr_info("force [%04x:%04x] to needs_pm_restore\n",
->> +				vdev->pdev->vendor, vdev->pdev->device);
->> +			break;
->> +		}
->> +	}
->>   }
->>   
->>   /*
->> @@ -2423,6 +2486,7 @@ static int __init vfio_pci_init(void)
->>   		goto out_driver;
->>   
->>   	vfio_pci_fill_ids();
->> +	vfio_pci_fill_pm_ids();
->>   
->>   	if (disable_denylist)
->>   		pr_warn("device denylist disabled.\n");
-
+diff --git a/arch/alpha/kernel/ptrace.c b/arch/alpha/kernel/ptrace.c
+index 8c43212..eb4d566 100644
+--- a/arch/alpha/kernel/ptrace.c
++++ b/arch/alpha/kernel/ptrace.c
+@@ -301,12 +301,6 @@ long arch_ptrace(struct task_struct *child, long request,
+ 		DBG(DBG_MEM, ("peek $%lu->%#lx\n", addr, ret));
+ 		break;
+ 
+-	/* When I and D space are separate, this will have to be fixed.  */
+-	case PTRACE_POKETEXT: /* write the word at location addr. */
+-	case PTRACE_POKEDATA:
+-		ret = generic_ptrace_pokedata(child, addr, data);
+-		break;
+-
+ 	case PTRACE_POKEUSR: /* write the specified register */
+ 		DBG(DBG_MEM, ("poke $%lu<-%#lx\n", addr, data));
+ 		ret = put_reg(child, addr, data);
 -- 
-Best Regards,
-Colin Xu
+2.1.0
 
