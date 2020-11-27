@@ -2,138 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93392C7189
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEE32C748A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391478AbgK1V6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:58:14 -0500
-Received: from mga11.intel.com ([192.55.52.93]:45311 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391431AbgK1V6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 16:58:08 -0500
-IronPort-SDR: QPxc2KfhL7zJsxy4ejqThiH+7qjG89vFDZFGu7g8HVnlEGC4VBo69v+iYMLVoIXEzSh/qlHV1C
- 3aq/Wg2VUf3w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9819"; a="169004412"
-X-IronPort-AV: E=Sophos;i="5.78,378,1599548400"; 
-   d="scan'208";a="169004412"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2020 13:56:27 -0800
-IronPort-SDR: keiUCRZk0TETNAPKJJJSCo/axBw1rmuISWUohGFmnDDMhsRYMrr4gG9xcfXYQDTHbDPnW1i1/x
- eoa/pPpHqc2g==
-X-IronPort-AV: E=Sophos;i="5.78,378,1599548400"; 
-   d="scan'208";a="334094934"
-Received: from chhaviga-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.150.149])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2020 13:56:26 -0800
-Subject: Re: [PATCH 1/5] PCI/DPC: Ignore devices with no AER Capability
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     ashok.raj@intel.com, knsathya@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Olof Johansson <olof@lixom.net>
-References: <20201128215318.GA924062@bjorn-Precision-5520>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <5646ac56-3b4a-d060-18ab-28722c337d00@linux.intel.com>
-Date:   Sat, 28 Nov 2020 13:56:23 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201128215318.GA924062@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2388214AbgK1Vtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22018 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729225AbgK0Ts2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 14:48:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606506502;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=/d0gr28L5usZ6CMCStP6D3CMWZKIP6JyYolWhvHhl68=;
+        b=Snf4FfF2F3eTsPq7xketrqoK+3H7ofBdKKmOHwraq0cYYWN13bds7ko8sWsrQrbStB2oxf
+        x68NxbW5Be6sKuh3TK1aj/FZK/npI3M3z9ZSM/2UeG024ftIxumlfb0u8bI3zGBcIEooBj
+        4mCSH8v5cJdoM56YyGNhJgBdd35+J6Y=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-150-mTLCH1OePi6wRVTEtlR36g-1; Fri, 27 Nov 2020 14:14:03 -0500
+X-MC-Unique: mTLCH1OePi6wRVTEtlR36g-1
+Received: by mail-qt1-f200.google.com with SMTP id i14so3736005qtq.18
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:14:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/d0gr28L5usZ6CMCStP6D3CMWZKIP6JyYolWhvHhl68=;
+        b=ugu7+9TRpnDPNKqlMFvZDgz6fjX3G7DYf4VlJ3w+HJ6pcJXuTiiMG2fdyMd2tv/aq9
+         n1w+RZwfxoE+rJZeT1KQs2vXp+LlwRRHQ4Di0TMNJfDEYUxoNzI/kytPBu0B7GwgDyGU
+         D2hEXdtSTED5yLUb+6omYiZcrXNILe1xGPUR48V1Exs7BX++85qt8zvBJegc6xWOd8MA
+         EFR2/mZ6vgwEC1bo6NJr831DbHEycATvX6/kNHmt5liop7R3j1W7o8g9F6trQTzpJl8V
+         wQLmtLcmcMIUsh+OrgjRpdYNY6jhe1COj+8VJDod3SJku/A82wRHdSNEInkhGZGJJVN2
+         60CA==
+X-Gm-Message-State: AOAM530/fK/rUaG4KZh63/Bt8/eiwx3wnuzP+a1tSGFs/xlK0zEBvIy4
+        v3gDqWA+PaqjAA5J+TJq9RpZGFQx7E45Ban8HSMoD0P6ORiUh2QD/ERpbKVUBNYOx7eG6E9z4vZ
+        /OEdSpMHL6E035mQT/KepGuV3
+X-Received: by 2002:a05:620a:48b:: with SMTP id 11mr10169623qkr.0.1606504442621;
+        Fri, 27 Nov 2020 11:14:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxmHKP07wAts1TRf4OZfzg/0usM+pvzZL055IEPgN96PXnE7spOh+01PIIHtFzGB/nP4UcOWQ==
+X-Received: by 2002:a05:620a:48b:: with SMTP id 11mr10169611qkr.0.1606504442440;
+        Fri, 27 Nov 2020 11:14:02 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id e131sm7210805qkb.101.2020.11.27.11.14.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 11:14:01 -0800 (PST)
+From:   trix@redhat.com
+To:     dwmw2@infradead.org, richard@nod.at, gustavoars@kernel.org
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] jffs2: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 11:13:57 -0800
+Message-Id: <20201127191357.2852751-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
+The macro use will already have a semicolon.
 
-On 11/28/20 1:53 PM, Bjorn Helgaas wrote:
-> On Sat, Nov 28, 2020 at 01:49:46PM -0800, Kuppuswamy, Sathyanarayanan wrote:
->> On 11/28/20 12:24 PM, Bjorn Helgaas wrote:
->>> On Wed, Nov 25, 2020 at 06:01:57PM -0800, Kuppuswamy, Sathyanarayanan wrote:
->>>> On 11/25/20 5:18 PM, Bjorn Helgaas wrote:
->>>>> From: Bjorn Helgaas <bhelgaas@google.com>
->>>>>
->>>>> Downstream Ports may support DPC regardless of whether they support AER
->>>>> (see PCIe r5.0, sec 6.2.10.2).  Previously, if the user booted with
->>>>> "pcie_ports=dpc-native", it was possible for dpc_probe() to succeed even if
->>>>> the device had no AER Capability, but dpc_get_aer_uncorrect_severity()
->>>>> depends on the AER Capability.
->>>>>
->>>>> dpc_probe() previously failed if:
->>>>>
->>>>>      !pcie_aer_is_native(pdev) && !pcie_ports_dpc_native
->>>>>      !(pcie_aer_is_native() || pcie_ports_dpc_native)    # by De Morgan's law
->>>>>
->>>>> so it succeeded if:
->>>>>
->>>>>      pcie_aer_is_native() || pcie_ports_dpc_native
->>>>>
->>>>> Fail dpc_probe() if the device has no AER Capability.
->>>>>
->>>>> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
->>>>> Cc: Olof Johansson <olof@lixom.net>
->>>>> ---
->>>>>     drivers/pci/pcie/dpc.c | 3 +++
->>>>>     1 file changed, 3 insertions(+)
->>>>>
->>>>> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
->>>>> index e05aba86a317..ed0dbc43d018 100644
->>>>> --- a/drivers/pci/pcie/dpc.c
->>>>> +++ b/drivers/pci/pcie/dpc.c
->>>>> @@ -287,6 +287,9 @@ static int dpc_probe(struct pcie_device *dev)
->>>>>     	int status;
->>>>>     	u16 ctl, cap;
->>>>> +	if (!pdev->aer_cap)
->>>>> +		return -ENOTSUPP;
->>>> Don't we check aer_cap support in drivers/pci/pcie/portdrv_core.c ?
->>>>
->>>> We don't enable DPC service, if AER service is not enabled. And AER
->>>> service is only enabled if AER capability is supported.
->>>>
->>>> So dpc_probe() should not happen if AER capability is not supported?
->>>
->>> I don't think that's always true.  If I'm reading this right, we have
->>> this:
->>>
->>>     get_port_device_capability(...)
->>>     {
->>>     #ifdef CONFIG_PCIEAER
->>>       if (dev->aer_cap && ...)
->>>         services |= PCIE_PORT_SERVICE_AER;
->>>     #endif
->>>
->>>       if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
->>>           pci_aer_available() &&
->>>           (pcie_ports_dpc_native || (services & PCIE_PORT_SERVICE_AER)))
->>>         services |= PCIE_PORT_SERVICE_DPC;
->>>     }
->>>
->>> and in the case where:
->>>
->>>     - CONFIG_PCIEAER=y
->>>     - booted with "pcie_ports=dpc-native" (pcie_ports_dpc_native is true)
->>>     - "dev" has no AER capability
->>>     - "dev" has DPC capability
->>>
->>> I think we do enable PCIE_PORT_SERVICE_DPC.
->> Got it. But further looking into it, I am wondering whether
->> we should keep this dependency? Currently we just use it to
->> dump the error information. Do we need to create dependency
->> between DPC and AER (which is functionality not dependent) just
->> to see more details about the error?
-> 
-> That's a good question, but I don't really want to get into the actual
-> operation of the AER and DPC drivers in this series, so maybe
-> something we should explore later.
-In that case, can you move this check to drivers/pci/pcie/portdrv_core.c?
-I don't see the point of distributed checks in both get_port_device_capability()
-and dpc_probe().
-> 
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ fs/jffs2/nodelist.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
+index 8ff4d1a1e774..2e98fa277dab 100644
+--- a/fs/jffs2/nodelist.h
++++ b/fs/jffs2/nodelist.h
+@@ -349,14 +349,14 @@ static inline struct jffs2_node_frag *frag_last(struct rb_root *root)
+ #define frag_parent(frag) rb_entry(rb_parent(&(frag)->rb), struct jffs2_node_frag, rb)
+ #define frag_left(frag) rb_entry((frag)->rb.rb_left, struct jffs2_node_frag, rb)
+ #define frag_right(frag) rb_entry((frag)->rb.rb_right, struct jffs2_node_frag, rb)
+-#define frag_erase(frag, list) rb_erase(&frag->rb, list);
++#define frag_erase(frag, list) rb_erase(&frag->rb, list)
+ 
+ #define tn_next(tn) rb_entry(rb_next(&(tn)->rb), struct jffs2_tmp_dnode_info, rb)
+ #define tn_prev(tn) rb_entry(rb_prev(&(tn)->rb), struct jffs2_tmp_dnode_info, rb)
+ #define tn_parent(tn) rb_entry(rb_parent(&(tn)->rb), struct jffs2_tmp_dnode_info, rb)
+ #define tn_left(tn) rb_entry((tn)->rb.rb_left, struct jffs2_tmp_dnode_info, rb)
+ #define tn_right(tn) rb_entry((tn)->rb.rb_right, struct jffs2_tmp_dnode_info, rb)
+-#define tn_erase(tn, list) rb_erase(&tn->rb, list);
++#define tn_erase(tn, list) rb_erase(&tn->rb, list)
+ #define tn_last(list) rb_entry(rb_last(list), struct jffs2_tmp_dnode_info, rb)
+ #define tn_first(list) rb_entry(rb_first(list), struct jffs2_tmp_dnode_info, rb)
+ 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.18.4
+
