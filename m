@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448CE2C6376
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 771862C6378
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgK0Kwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 05:52:43 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:61243 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbgK0Kwn (ORCPT
+        id S1727913AbgK0Kx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 05:53:27 -0500
+Received: from outbound-smtp01.blacknight.com ([81.17.249.7]:40142 "EHLO
+        outbound-smtp01.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726985AbgK0Kx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 05:52:43 -0500
-Received: from fsav110.sakura.ne.jp (fsav110.sakura.ne.jp [27.133.134.237])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0ARAqF1s032568;
-        Fri, 27 Nov 2020 19:52:15 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav110.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav110.sakura.ne.jp);
- Fri, 27 Nov 2020 19:52:15 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav110.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0ARAqEiA032564
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 27 Nov 2020 19:52:14 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH] tomoyo: Avoid potential null pointer access
-To:     Zheng Zengkai <zhengzengkai@huawei.com>
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jmorris@namei.org, serge@hallyn.com,
-        weiyongjun1@huawei.com
-References: <20201125121043.107662-1-zhengzengkai@huawei.com>
- <cfc96d99-adff-6eb9-9685-422587830eb8@i-love.sakura.ne.jp>
- <01d29bbf-9d77-c787-b2c2-d88a6a5047f7@huawei.com>
- <59e0abdd-88a9-6269-9cd1-0f65792784ec@i-love.sakura.ne.jp>
- <dfb6829e-0fb6-7dbc-5dfa-9707b2f0ae16@huawei.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <dc7db429-1461-a372-df09-cd6595fc2dd4@i-love.sakura.ne.jp>
-Date:   Fri, 27 Nov 2020 19:52:13 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 27 Nov 2020 05:53:27 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id 775B2C4BA3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:53:24 +0000 (GMT)
+Received: (qmail 14850 invoked from network); 27 Nov 2020 10:53:24 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 Nov 2020 10:53:24 -0000
+Date:   Fri, 27 Nov 2020 10:53:22 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH] cpuidle: Allow configuration of the polling interval
+ before cpuidle enters a c-state
+Message-ID: <20201127105322.GO3371@techsingularity.net>
+References: <20201126171824.GK3371@techsingularity.net>
+ <CAJZ5v0hz4dBzUcvoyLoJf8Fmajws-uP3MB-_4dmzEYvMDJwEwQ@mail.gmail.com>
+ <20201126203151.GM3371@techsingularity.net>
 MIME-Version: 1.0
-In-Reply-To: <dfb6829e-0fb6-7dbc-5dfa-9707b2f0ae16@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201126203151.GM3371@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/27 16:17, Zheng Zengkai wrote:
-> Hello Tetsuo,
->> On 2020/11/26 15:33, Zheng Zengkai wrote:
->>> As your say,  I found the function tomoyo_assign_namespace( )
->>>
->>> in security/tomoyo/domain.c has the similar situation,
->>>
->>> Can I add __GFP_NOWARN for both and remove the null check for _entry_ in tomoyo_assign_namespace( )?
->>>
->> Good catch. Yes, please send as a patch.
->> .
+On Thu, Nov 26, 2020 at 08:31:51PM +0000, Mel Gorman wrote:
+> > > and it is reasonable behaviour but it should be tunable.
+> > 
+> > Only if there is no way to cover all of the relevant use cases in a
+> > generally acceptable way without adding more module params etc.
+> > 
+> > In this particular case, it should be possible to determine a polling
+> > limit acceptable to everyone.
+> > 
 > 
-> I have resent a patch, thanks!
+> Potentially yes. cpuidle is not my strong suit but it could try being
+> adaptive the polling similar to how the menu governor tries to guess
+> the typical interval. Basically it would have to pick a polling internal
+> between 2 and TICK_NSEC. Superficially it a task is queued before polling
+> finishes, decrease the interval and increase it otherwise. That is a mess
+> though because then it may be polling for ages with nothing arriving. It
+> would have to start tracking when the CPU exited idle to see if polling
+> is even worthwhile. That
+> 
+> I felt that starting with anything that tried adapting the polling
+> interval based on heuristics would meet higher resistance than making it
+> tunable. Hence, make it tunable so at least the problem can be addressed
+> when it's encountered.
 > 
 
-Applied to tomoyo-test1.git tree. Thank you.
+I looked at this again and determining a "polling limit acceptable
+to everyone" looks like reimplementing haltpoll in the core or adding
+haltpoll-like logic to each governor. I doubt that'll be a popular
+approach.
 
-By the way, since some people automatically backport patches with Fixes: tag,
-I think we don't need to add Fixes: tag for patches like this one.
+The c1 exit latency as a hint is definitely too low though. I checked
+one of the test machines to double check what the granularity of the time
+checks in poll_idle() at boot time with something like this.
+
+        for (i = 0; i < POLL_IDLE_RELAX_COUNT; i++) {
+                cpu_relax();
+        }
+
+This takes roughly 1100ns on a test machine where the C1 exit latency is
+2000ns. Lets say you have a basic pair of tasks communicating over a pipe
+on the same machine (e.g. perf bench pipe). The time for a round-trip on
+the same machine is roughly 7000ns meaning that polling is almost never
+useful for a basic workload.
+
+
+-- 
+Mel Gorman
+SUSE Labs
