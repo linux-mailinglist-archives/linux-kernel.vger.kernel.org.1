@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F522C6B02
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 583C92C6B0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732725AbgK0RxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:53:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732686AbgK0RxN (ORCPT
+        id S1732800AbgK0Rxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:53:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54626 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732451AbgK0Rxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:53:13 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711F8C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:13 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id w202so5167145pff.10
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dNWv6jMtUXr1D5Ne1cJMYgh7oECpaBPZ9FSLHbHGa/E=;
-        b=FXr+FYJR7t7brym1d9qu5y9wAuLMmD0Zci/y7tFjqPd2Vg6nudIGMPNr8wbRBgoAjG
-         6tnvv3ZZP6i0ncvQn/ZJ8fymUIE3Ff/RU5e/FlrTXypLIquOMzqd5K77ExbtK/lQjBmR
-         bx4fjmLCYlzZw3yBaYKcK8vCIezlLyqL2HkMYeaUcM1Bj10F42vntfxqTQYW0FMRBa4L
-         rAxA5hMffk7LDMUcPR3tkEcYkWzuDKQd7SEPTi9y5piPEgFqdIf+BiH0WlDCoB6jFvgO
-         NVElnxXNwxV36WXf+28u2wI3/L24IDQu+pQj5GA9Gd80bYs3U3TQoJk8aUuHPY9M2YZB
-         4t8Q==
+        Fri, 27 Nov 2020 12:53:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606499626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=qO38NSfxZWa4WAPrmeDJabPo497l111qJuCqqB4b5gM=;
+        b=ilrzeF9L+hMVunmIDhikPz4N5ATQ0xoIInI71bkwLOu0cao+G4EHxes4fUvV1QbnNxmwEi
+        d2R+iCH8D3OdCnnZptEjrcUv9xeWNiZKDKd2sfSv9GwwcKVSdSjCyXZ9cgl3iXBKQZAKTW
+        R7D845PuDghDHLI3xruzkBAdlhaYSTw=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-2THvNVxcOn-wVgOmJPWQcA-1; Fri, 27 Nov 2020 12:53:42 -0500
+X-MC-Unique: 2THvNVxcOn-wVgOmJPWQcA-1
+Received: by mail-qv1-f69.google.com with SMTP id b9so3452759qvj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dNWv6jMtUXr1D5Ne1cJMYgh7oECpaBPZ9FSLHbHGa/E=;
-        b=qkopu7yPE6Jnqis+y3u11r1q7F/yDAM1UhSVKmF/8z+45VYtxep7yVPhrWOr5NUHAV
-         5vtye8YGhmDgZ2fcKGxWISzdovbexSw8x8BJYR5l3fsQczIXZ8L2a5Pv6WW6b6UJXQ4j
-         tCir5SpaDubJIt63dvS7UhgRXVoNpWG0/Lyn4WnlPWvSY5egHvuyIM9UVfjWdWJ4vwGK
-         /nonOVmBidEfXM49fqZv/320MU38+5bwHE9vdKMq3m5XUiHnOyeX5kB+VnwF2PPAhy16
-         nyTk8xZa4nyWmTSxoJXichnF8hHsW/tnHQxLZS7Hf2dx0xKOF0qvWZmtFX5xKIWTLgAB
-         sb2w==
-X-Gm-Message-State: AOAM531YSaIa2ZHXz17hVTw1DG51o4Rj2q3WB1NkUaMcd5OZKCmZZ9Z6
-        MOcelLvMPFl0AGRbPFdWdq2OOvVcmOk/fods
-X-Google-Smtp-Source: ABdhPJyH7OR3XRN+Sq52ZqjxSQ4hVx+Lqa517YDhoOS+AGPiiuSAVYu13cOiQJVP1sh0GDj23sFpXA==
-X-Received: by 2002:a17:90b:3011:: with SMTP id hg17mr7057002pjb.22.1606499593062;
-        Fri, 27 Nov 2020 09:53:13 -0800 (PST)
-Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id t18sm10536724pji.1.2020.11.27.09.53.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=qO38NSfxZWa4WAPrmeDJabPo497l111qJuCqqB4b5gM=;
+        b=FaLhN76TDLcdEAUEUvDqXVaX+NgqO52mEmaAOeBCEoJdvX4iadyDR5XiqIV0ANbGyY
+         BOz4yx6JnUAYGDQ/qjAXtEsOJ/5HM1Rlf2t+7WS6txy4Nh2BskWXSXwdyzs1ya/1+VeE
+         mqmKYneMI4KOlKQnOgj4yEVsA9bGnKDYObkI3Q26yhgIoAUz5l09dow+fz5ZLZ/8Fo1T
+         7EeskEn1mhP1wDfilbiPBUPEnfcTjknWnAoHHEDk3zrXSwhPxEPxczHT7UtPIwAltS89
+         qszmUw3TJv6URCB28Z5nVzqBs1pX9yPU7QYW758Py+SmQtOWr8dQL3aeF0Vt/nBbUGdz
+         Jw7g==
+X-Gm-Message-State: AOAM531C6kJOb2zWgZPP4H3z+ZxA5xN/5OtTdba+/2kMrJnr7IG0cAd+
+        EslmWnCXQPPN8hotTAE//DdtVLT/upuFaz0siHFXruGKqpPv7m+slRB0jzkjC1I/gpsK3YyPHJn
+        A9iUsF87NPPx4rTIUUbWtQqUO
+X-Received: by 2002:a05:6214:5cd:: with SMTP id t13mr9508299qvz.56.1606499622093;
+        Fri, 27 Nov 2020 09:53:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwfH2VXvTvUj9haJRf6OI04GWQ+Bz6Iu0NjOaH9CUGPlGii6j/onExY9XycfKuzXq4xhmDsZA==
+X-Received: by 2002:a05:6214:5cd:: with SMTP id t13mr9508283qvz.56.1606499621938;
+        Fri, 27 Nov 2020 09:53:41 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id t126sm6425935qkh.133.2020.11.27.09.53.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 09:53:12 -0800 (PST)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 15/15] coresight-stm: Fix W=1 warning in STM driver
-Date:   Fri, 27 Nov 2020 10:52:56 -0700
-Message-Id: <20201127175256.1092685-16-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201127175256.1092685-1-mathieu.poirier@linaro.org>
-References: <20201127175256.1092685-1-mathieu.poirier@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 27 Nov 2020 09:53:41 -0800 (PST)
+From:   trix@redhat.com
+To:     ath9k-devel@qca.qualcomm.com, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] net: ath9k: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 09:53:36 -0800
+Message-Id: <20201127175336.2752730-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  CC      drivers/hwtracing/coresight/coresight-cti-core.o
-  CC      drivers/hwtracing/coresight/coresight-cti-platform.o
-  CC      drivers/hwtracing/coresight/coresight-cti-sysfs.o
-drivers/hwtracing/coresight/coresight-stm.c:109: warning: Function parameter or member 'guaranteed' not described in 'channel_space'
+From: Tom Rix <trix@redhat.com>
 
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+The macro use will already have a semicolon.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/hwtracing/coresight/coresight-stm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath9k/common-debug.c | 2 +-
+ drivers/net/wireless/ath/ath9k/dfs_debug.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-index b0ad912651a9..32d29704206b 100644
---- a/drivers/hwtracing/coresight/coresight-stm.c
-+++ b/drivers/hwtracing/coresight/coresight-stm.c
-@@ -96,7 +96,7 @@ module_param_named(
- 	boot_nr_channel, boot_nr_channel, int, S_IRUGO
- );
+diff --git a/drivers/net/wireless/ath/ath9k/common-debug.c b/drivers/net/wireless/ath/ath9k/common-debug.c
+index 53ca4b063eb9..7aefb79f6bed 100644
+--- a/drivers/net/wireless/ath/ath9k/common-debug.c
++++ b/drivers/net/wireless/ath/ath9k/common-debug.c
+@@ -189,7 +189,7 @@ static ssize_t read_file_phy_err(struct file *file, char __user *user_buf,
+ {
+ #define PHY_ERR(s, p) \
+ 	len += scnprintf(buf + len, size - len, "%22s : %10u\n", s, \
+-			 rxstats->phy_err_stats[p]);
++			 rxstats->phy_err_stats[p])
  
--/**
-+/*
-  * struct channel_space - central management entity for extended ports
-  * @base:		memory mapped base address where channels start.
-  * @phys:		physical base address of channel region.
+ 	struct ath_rx_stats *rxstats = file->private_data;
+ 	char *buf;
+diff --git a/drivers/net/wireless/ath/ath9k/dfs_debug.c b/drivers/net/wireless/ath/ath9k/dfs_debug.c
+index 3251c9abe270..2a79c2fa8415 100644
+--- a/drivers/net/wireless/ath/ath9k/dfs_debug.c
++++ b/drivers/net/wireless/ath/ath9k/dfs_debug.c
+@@ -26,7 +26,7 @@ static struct ath_dfs_pool_stats dfs_pool_stats = { 0 };
+ 
+ #define ATH9K_DFS_STAT(s, p) \
+ 	len += scnprintf(buf + len, size - len, "%28s : %10u\n", s, \
+-			 sc->debug.stats.dfs_stats.p);
++			 sc->debug.stats.dfs_stats.p)
+ #define ATH9K_DFS_POOL_STAT(s, p) \
+ 	len += scnprintf(buf + len, size - len, "%28s : %10u\n", s, \
+ 			 dfs_pool_stats.p);
 -- 
-2.25.1
+2.18.4
 
