@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FA92C5FFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CCF2C5FFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389401AbgK0GR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 01:17:26 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:53130 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728043AbgK0GR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 01:17:26 -0500
-Received: from [10.130.0.193] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxmtHsmcBf1VsXAA--.51915S3;
-        Fri, 27 Nov 2020 14:17:16 +0800 (CST)
-Subject: Re: [PATCH v2] acpi: Fix use-after-free in acpi_ipmi.c
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-References: <1606353994-10348-1-git-send-email-tangyouling@loongson.cn>
- <CAJZ5v0hbLh3EKGmy-wCvE_z_BBnWBmnyN+5onL_n2R6VK3BDdg@mail.gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Youling Tang <tangyouling@loongson.cn>
-Message-ID: <cbb62360-4f3f-6b74-996f-478af0752894@loongson.cn>
-Date:   Fri, 27 Nov 2020 14:17:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S2392494AbgK0GSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 01:18:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728043AbgK0GSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 01:18:08 -0500
+Received: from localhost (unknown [122.167.146.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2ECBE221FD;
+        Fri, 27 Nov 2020 06:18:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606457888;
+        bh=Rdoi629DjicvHoCKKgi6+NxG/4/rdjkHZDIAQJ5MAJA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z/HoHHKFJX74NRjz9J8FtFtn84vPzICi+RbaYQdzpvSUqgbHYwOxh+oz1TQdL1Adn
+         TZI3vXKLc0HpZkba6veJrNtrtHL+8WIwPUBFm4aYFTUuToZg7lZL2ZHGpZAScxv8Xh
+         8WCY65V8QV7qgA+Yrj0CyoqHDtsjcPXrumrTjp3Q=
+Date:   Fri, 27 Nov 2020 11:47:58 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     "Liao, Bard" <bard.liao@intel.com>
+Cc:     "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "hui.wang@canonical.com" <hui.wang@canonical.com>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "jank@cadence.com" <jank@cadence.com>,
+        "Lin, Mengdong" <mengdong.lin@intel.com>,
+        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
+Subject: Re: [PATCH] soundwire: master: use pm_runtime_set_active() on add
+Message-ID: <20201127061758.GK8403@vkoul-mobl>
+References: <20201124130742.10986-1-yung-chuan.liao@linux.intel.com>
+ <20201125050528.GC8403@vkoul-mobl>
+ <DM6PR11MB4074BC35644527BA45C1CB3CFFF90@DM6PR11MB4074.namprd11.prod.outlook.com>
+ <20201126042222.GG8403@vkoul-mobl>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hbLh3EKGmy-wCvE_z_BBnWBmnyN+5onL_n2R6VK3BDdg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxmtHsmcBf1VsXAA--.51915S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wr1DAw1ftr45Kr17GFWkXrb_yoW8Jr1fpF
-        ZrJFWYvrW7tF1UGa1UZa4UWry8ta12v34S9r48K342kan09ryYkryrAF15GFy7XrykGr42
-        qFZxt3W8KFyUZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvqb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487
-        MxkIecxEwVAFwVW8AwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
-        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
-        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
-        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2
-        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
-        ZFpf9x07jIksgUUUUU=
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126042222.GG8403@vkoul-mobl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 26-11-20, 09:52, Vinod Koul wrote:
 
-On 11/26/2020 10:22 PM, Rafael J. Wysocki wrote:
-> On Thu, Nov 26, 2020 at 2:26 AM Youling Tang <tangyouling@loongson.cn> wrote:
->> kfree() has been called inside put_device so anther kfree would cause a
->> use-after-free bug.
->>
->> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
->> ---
->>   drivers/acpi/acpi_ipmi.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
->> index 9d6c0fc..18edf8b 100644
->> --- a/drivers/acpi/acpi_ipmi.c
->> +++ b/drivers/acpi/acpi_ipmi.c
->> @@ -142,7 +142,6 @@ static void ipmi_dev_release(struct acpi_ipmi_device *ipmi_device)
->>   {
->>          ipmi_destroy_user(ipmi_device->user_interface);
->>          put_device(ipmi_device->dev);
-> Does putting ipmi_device->dev (which is a different object than
-> ipmi_device itself) really cause ipmi_device to be freed
-> automatically?  If not, the change below will introduce a memory leak.
->
-ipmi_device will be free so that there is no memory leak.
-Similar to the following:
-https://lore.kernel.org/patchwork/patch/1342136/
+> > > > @@ -154,7 +163,12 @@ int sdw_master_device_add(struct sdw_bus *bus,
+> > > struct device *parent,
+> > > >  	bus->dev = &md->dev;
+> > > >  	bus->md = md;
+> > > >
+> > > > +	pm_runtime_set_autosuspend_delay(&bus->md->dev,
+> > > SDW_MASTER_SUSPEND_DELAY_MS);
+> > > > +	pm_runtime_use_autosuspend(&bus->md->dev);
+> > > > +	pm_runtime_mark_last_busy(&bus->md->dev);
+> > > > +	pm_runtime_set_active(&bus->md->dev);
+> > > >  	pm_runtime_enable(&bus->md->dev);
+> > > > +	pm_runtime_idle(&bus->md->dev);
+> > > 
+> > > I understand that this needs to be done somewhere but is the core the right
+> > > place. In intel case it maybe a dummy device but other controllers are real
+> > > devices and may not support pm.
+> > > 
+> > > I think better idea would be to do this in respective driver.. that way it
+> > > would be an opt-in for device supporting pm.
+> > 
+> > Should it be put in the same place as pm_runtime_enable?
+> > IMHO, pm_runtime_enable is in the core already and it seems to be harmless
+> > for devices which don't support pm. And pm can still be optional on md's
+> > parent device.
+> 
+> For intel case yes, but world is not only intel, there are md which do
+> not have a parent like sof. they are real sdw controller devices
 
-Thanks,
-Youling.
->> -       kfree(ipmi_device);
->>   }
->>
->>   static void ipmi_dev_release_kref(struct kref *kref)
->> --
+Sorry I confused md with real master device ;-) I guess this patch
+should be okay then.. As the real parent will control.
 
+Thanks
+-- 
+~Vinod
