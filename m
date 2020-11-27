@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B242C6A71
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B11BC2C6A75
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731749AbgK0RN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:13:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47566 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731582AbgK0RN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:13:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 08897AC0C;
-        Fri, 27 Nov 2020 17:13:26 +0000 (UTC)
-Subject: Re: [PATCH -next] mm/page_alloc: Mark some symbols with static
- keyword
-To:     Zou Wei <zou_wei@huawei.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <1605517365-65858-1-git-send-email-zou_wei@huawei.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <27899673-2d79-2a26-fc66-d2ecce9cb1b3@suse.cz>
-Date:   Fri, 27 Nov 2020 18:13:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1731990AbgK0ROS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:14:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33955 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731419AbgK0ROR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 12:14:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606497256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KIgiB7XwiEetdKIISGv2CypamLeOfEv8HOdOckyqc9M=;
+        b=CKTtCeMrqMcOv173J4MhCpD3MvSN5xFSYVbEhvM6MeHSz4H1IRN8SLLvoueA116dy88xfP
+        3pZlSiJfE8dwAWTe5LFUuQRbrkeDGN3LvLcCWZCX8CR4D5+ADydBk7FTeXWX1lmFWcGVoz
+        67FAsXzINMwOiXumWc/NrZd8ooCx27I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-o9IBtE9xOm26M_tKsJPzVQ-1; Fri, 27 Nov 2020 12:14:13 -0500
+X-MC-Unique: o9IBtE9xOm26M_tKsJPzVQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 171018042CC;
+        Fri, 27 Nov 2020 17:14:12 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E916B6085D;
+        Fri, 27 Nov 2020 17:14:09 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <5b8ce555-7451-d977-22e7-e5d080ef2e1a@kernel.dk>
+References: <5b8ce555-7451-d977-22e7-e5d080ef2e1a@kernel.dk> <74f6fb34-c4c2-6a7e-3614-78c34246c6bd@gmail.com> <20201123080506.GA30578@infradead.org> <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk> <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk> <516984.1606127474@warthog.procyon.org.uk> <1155891.1606222222@warthog.procyon.org.uk>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     dhowells@redhat.com, Pavel Begunkov <asml.silence@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
 MIME-Version: 1.0
-In-Reply-To: <1605517365-65858-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2791167.1606497249.1@warthog.procyon.org.uk>
+Date:   Fri, 27 Nov 2020 17:14:09 +0000
+Message-ID: <2791168.1606497249@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20 10:02 AM, Zou Wei wrote:
-> Fix the following sparse warnings:
-> 
-> mm/page_alloc.c:3040:6: warning: symbol '__drain_all_pages' was not declared. Should it be static?
-> mm/page_alloc.c:6349:6: warning: symbol '__zone_set_pageset_high_and_batch' was not declared. Should it be static?
-> 
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Jens Axboe <axboe@kernel.dk> wrote:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> which looks to be around a 6% drop.
 
-> ---
->   mm/page_alloc.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 63d8d8b..e7548344 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3037,7 +3037,7 @@ static void drain_local_pages_wq(struct work_struct *work)
->    * that need the guarantee that every CPU has drained can disable the
->    * optimizing racy check.
->    */
-> -void __drain_all_pages(struct zone *zone, bool force_all_cpus)
-> +static void __drain_all_pages(struct zone *zone, bool force_all_cpus)
->   {
->   	int cpu;
->   
-> @@ -6346,7 +6346,7 @@ static void pageset_init(struct per_cpu_pageset *p)
->   	pcp->batch = BOOT_PAGESET_BATCH;
->   }
->   
-> -void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long high,
-> +static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long high,
->   		unsigned long batch)
->   {
->   	struct per_cpu_pageset *p;
-> 
+That's quite a lot.
+
+> which looks to be around 2-3%, but we're also running at a much
+> slower rate (830K vs ~2.3M).
+
+That's still a lot.
+
+Thanks for having a look!
+
+David
 
