@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156AC2C6620
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E1C2C6622
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729734AbgK0Mz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:55:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgK0Mz4 (ORCPT
+        id S1729650AbgK0NAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 08:00:05 -0500
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:54515 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728404AbgK0NAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:55:56 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8910CC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:55:56 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id z188so4189748qke.9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:55:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SR0buUf6DCzAWU92G2HBvARJg34ZQtaAQdyvkGxwmHw=;
-        b=d3pQARZQzne4lvGIbtpPxP1Ngz44mhbQTwiD+ZRXLPeJlCrbsx/rqcKMN7q40lL6Jp
-         rX3akTMtl362x5JpWgDsx3FO2TPOX0t0UDcHtzZ0QXHQnog4WT2ngj77dN1Ig+hqWn7C
-         1bxyhC7h6M2Jm6j/R20590QYxRf6OjD2PTULAV8g1T8g189/6tmWPm9aJt3RYZnLh3k8
-         AwStSiFhWqXULNGbCsRfds/wnW0smGj2jqOcYiMr3/EffTZICkHU6q9EnmJAMQZrrm15
-         HQjsj0e8sjSKDPBMklC/aDJBq2Cs2RiCmvb/ZA7jullaZOG87K2iHBT3OsXBhd5d+63z
-         hg6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SR0buUf6DCzAWU92G2HBvARJg34ZQtaAQdyvkGxwmHw=;
-        b=AJwTvqCyBRcYYpjYV1LYq5iNgN4IPvEYe+G9nQaYst6FVlY0o699xTFfbKKGmSQ470
-         IXwUYgwuoSvC6if21ABzPnlLzxq0fjiPt1l/ciJXUF3FTMqG7VUP8FteoODahH+spGZ/
-         bNgG0PceGtc80qZD7VIIu7Zj2dTTpoHN6mEes/36LynAFeb1ucc6AC7Xi612edeGpxgt
-         TJW7Cqh/CqMUA5YRCRBtrSEAMsRoepqeSXsHhWmStMcXX45/XR3FiVrUiRoks3jL8cRX
-         5ijqwaWT7D5ktUGW2Kyn5osT2TkZ7PbRaKb8QYXvA87faXAgyDO+lt2p0cgLBpaOr7V0
-         kW9Q==
-X-Gm-Message-State: AOAM531HKU+fxbTC+ZH9dVkb/Inv7dOjH/3rIx/aFFivOb2RraUMZ9r5
-        jJ3rKY4YwngVWwvBaERFtTbRJxH9P2/XlpGmUKA=
-X-Google-Smtp-Source: ABdhPJz5XCY1HfjEjxSS3/+367IzKVw/fV+zyn+EUUOMXGBy667vJRPqWlzmQV7b5DHfXf9Lz5glKhf8p4fS9WuxwiU=
-X-Received: by 2002:a37:991:: with SMTP id 139mr8297156qkj.185.1606481755664;
- Fri, 27 Nov 2020 04:55:55 -0800 (PST)
+        Fri, 27 Nov 2020 08:00:04 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id idLykQ9HIDuFjidM2kqtAp; Fri, 27 Nov 2020 14:00:02 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1606482002; bh=HOMppZobt6qFRcDaM53vHK/IM1PaO9vvUi20G1XPmOw=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=YSJ5gwPmwaue9ecT8oxVpdRs0Byukek1K9Uuf3NMFbdaD/5KackXMAPdE2HqW5x5R
+         1mkLdiL34MJZD8CKuF3ZmVNwUhtIByWleBV6Y/iHPtPdQQ1dusgBOjC5X5Ponab6VX
+         rJfhIVBRQdOaFhIJnI23F38G74g11IK1GW6tsG4Pd671HC9NI81ZcXVYHJ5xSZKPDc
+         3BpYzYohujEc65TQfzpQwywuRWDUH7uvjzeYhkfDXIpsq1RkKtWvyTFl+jCA8LstYi
+         cm/sUeaufzsFF7zSqOBZZYiTU+WlnA7C3v1dShz4zdyyCAjQfNA8BC/Q7sDSLIyX+Y
+         QwasEP9UEeJOw==
+Subject: Re: [PATCH] media: vb2: always set buffer cache sync hints
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+References: <20201127094136.1051071-1-sergey.senozhatsky@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <0dbfa509-8c82-7470-c18b-24ab5c92dc4b@xs4all.nl>
+Date:   Fri, 27 Nov 2020 13:59:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201118182459.18197-1-p.yadav@ti.com> <20201124134619.2pbg7zejbvwc3e2w@ti.com>
-In-Reply-To: <20201124134619.2pbg7zejbvwc3e2w@ti.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Fri, 27 Nov 2020 13:55:44 +0100
-Message-ID: <CAFLxGvx=pKeLxq1yaruSK8qtodivX8TOFVyjF8sLrJQjdVT8Dw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] mtd: Make sure UBIFS does not do multi-pass page
- programming on flashes that don't support it
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201127094136.1051071-1-sergey.senozhatsky@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfF9WdxLsIljKXQ86VtwCHlJGUVW9BlpEOCet6vkdk1HOeJYbwsqj+ni99c22/uEahuaYHePbGdnzvrlzHNCTN8+qrE6EgCMWIRLUSnuLeXQoRN5/wgI6
+ QZC8ul1RjHRyzULD35ZdJLoegGBz0wAh97ZD/5M8mCa6GPepgeWV5x3lemSTblbts+Zkg+gp9YkvK7WG5qAZvTrqVZ0sYs1NbaDjoND17AgW9E9X+mVJsR6H
+ MXpz4uHWunGEG/TwtgUFiyJbek4EfcSMx51G8pZxajm+RqYjDoymHy6va2s7+j2Xt7ZoQaH5vOSECOq1iX7Jo8OPsNEjAet39cWGyAVDBP4JB734shO1mLA4
+ U8543Sejhz4cSs4RqyHhKxdF7CFugV3gnwfMRZto1q4C1JOeea/s6rhQYTzARghj2GrvAUxh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 2:58 PM Pratyush Yadav <p.yadav@ti.com> wrote:
->
-> Hi,
->
-> On 18/11/20 11:54PM, Pratyush Yadav wrote:
-> > Hi,
-> >
-> > The Cypress Semper S28 flash family uses 2-bit ECC by default. Under
-> > this ECC scheme, multi-pass page programs result in a program error.
-> > This means that unlike many other SPI NOR flashes, bit-walking cannot be
-> > done. In other words, once a page is programmed, its bits cannot then be
-> > flipped to 0 without an erase in between.
-> >
-> > This causes problems with UBIFS because it uses bit-walking to clear EC
-> > and VID magic numbers from a PEB before issuing an erase to preserve the
-> > file system correctness in case of power cuts.
-> >
-> > This series fixes that by setting mtd->writesize to the ECC block size
-> > (16) and making sure UBIFS does not try to do a multi-pass write on
-> > flashes with writesize > 1.
-> >
-> > It is based on the xSPI/8D series that adds support for Cypress S28
-> > flash [0] (it is in next now). The patches themselves are independent of
-> > that series in the sense that they don't rely on 8D support. But since
-> > S28 flash is not supported without that series, these patches don't make
-> > much sense without it.
-> >
-> > Tested on Cypress S28HS512T and MT35XU512ABA on J7200 and J721E
-> > respectively.
-> >
-> > [0] https://lore.kernel.org/linux-mtd/20201005153138.6437-1-p.yadav@ti.com/
->
-> Any comments on the series? If not, can it be picked up?
->
-> > Pratyush Yadav (3):
-> >   UBI: Do not zero out EC and VID on ECC-ed NOR flashes
-> >   mtd: spi-nor: core: Allow flashes to specify MTD writesize
-> >   mtd: spi-nor: spansion: Set ECC block size
-> >
-> >  drivers/mtd/spi-nor/core.c     | 4 +++-
-> >  drivers/mtd/spi-nor/core.h     | 3 +++
-> >  drivers/mtd/spi-nor/spansion.c | 1 +
-> >  drivers/mtd/ubi/build.c        | 4 +---
-> >  drivers/mtd/ubi/io.c           | 9 ++++++++-
-> >  5 files changed, 16 insertions(+), 5 deletions(-)
+On 27/11/2020 10:41, Sergey Senozhatsky wrote:
+> We need to always set ->need_cache_sync_on_prepare and
+> ->need_cache_sync_on_finish when we initialize vb2 buffer.
+> 
+> Currently these flags are set/adjusted only in V4L2's
+> vb2_queue_or_prepare_buf(), which means that for the code
+> paths that don't use V4L2 vb2 will always tell videobuf2
+> core to skip ->prepare() and ->finish() cache syncs/flushes.
+> 
+> This is a quick solution that should do the trick. The
+> proper fix, however, is much more complicated and requires
+> a rather big videobuf2 refactoring - we need to move cache
+> sync/flush decision making out of core videobuf2 to the
+> allocators.
+> 
+> Reported-by: Tomasz Figa <tfiga@chromium.org>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  drivers/media/common/videobuf2/videobuf2-core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index 5499013cf82e..14a26888a892 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -414,6 +414,8 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
+>  		vb->index = q->num_buffers + buffer;
+>  		vb->type = q->type;
+>  		vb->memory = memory;
+> +		vb->need_cache_sync_on_prepare = 1;
+> +		vb->need_cache_sync_on_finish = 1;
 
-Can we please have am ACK from NOR folks? :-)
+I think this needs a comment, basically explaining what you said in
+the commit log. It's not obvious from the code that this is a
+workaround.
 
--- 
-Thanks,
-//richard
+Regards,
+
+	Hans
+
+>  		for (plane = 0; plane < num_planes; ++plane) {
+>  			vb->planes[plane].length = plane_sizes[plane];
+>  			vb->planes[plane].min_length = plane_sizes[plane];
+> 
+
