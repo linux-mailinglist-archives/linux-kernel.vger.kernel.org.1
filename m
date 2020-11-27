@@ -2,59 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093842C6B69
+	by mail.lfdr.de (Postfix) with ESMTP id EB2142C6B6B
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733024AbgK0SL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 13:11:27 -0500
-Received: from smtprelay0139.hostedemail.com ([216.40.44.139]:49898 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732323AbgK0SL1 (ORCPT
+        id S1733076AbgK0SMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 13:12:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57438 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732788AbgK0SMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 13:11:27 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 152EB1801E323;
-        Fri, 27 Nov 2020 18:11:26 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3350:3622:3865:3866:3867:3871:3872:3874:4321:5007:9389:10004:10400:10848:11026:11232:11658:11914:12043:12048:12297:12438:12740:12895:13069:13161:13229:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:4,LUA_SUMMARY:none
-X-HE-Tag: town85_4e036de2738a
-X-Filterd-Recvd-Size: 1466
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 27 Nov 2020 18:11:24 +0000 (UTC)
-Message-ID: <3168a3aa5c4ac564340cba2a151359e8cd3dee5f.camel@perches.com>
-Subject: Re: [PATCH] eCryptfs: add a semicolon
-From:   Joe Perches <joe@perches.com>
-To:     trix@redhat.com, code@tyhicks.com, hannes@cmpxchg.org,
-        mhocko@suse.com, longman@redhat.com, herbert@gondor.apana.org.au,
-        ebiggers@google.com
-Cc:     ecryptfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 27 Nov 2020 10:11:23 -0800
-In-Reply-To: <20201127160513.2619747-1-trix@redhat.com>
-References: <20201127160513.2619747-1-trix@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 27 Nov 2020 13:12:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606500738;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PvVVh2WZkbAnSX5t/B+zX/WRWvJt82nXnXEMvGPZevw=;
+        b=ggsuuNciBXcWl6cOu0VynewOhZ5UZSpOcLeBgAAc/AhwEg2kD40wJMwistswKpQhaGs6gl
+        PfixS6RrCk7I67zaNcPqfGA6r1JKRzeZgkYDST49BwH8UhcszZRCnulQjOSJThVKWxVI0o
+        TdWOWSQ8bjbq5S6vx3VKKNS60F1EPYg=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-ZTBgglJBMcqFEmYkPNMthw-1; Fri, 27 Nov 2020 13:12:16 -0500
+X-MC-Unique: ZTBgglJBMcqFEmYkPNMthw-1
+Received: by mail-ed1-f69.google.com with SMTP id l24so2700610edt.16
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:12:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PvVVh2WZkbAnSX5t/B+zX/WRWvJt82nXnXEMvGPZevw=;
+        b=j0KBBFRNE5J13PCvKfGU7ODtye0qEqZcoAAPp9Mo7XuNNgMEwMCeILVa0TrGn8iLQp
+         c+q0bcWlDV/WUQvD1hFtDHdrE1+n/pXCTXF4jhQRoiqhJ2A2jbgn40XOvey3RE86nJCo
+         1XMWqyR9XV4j/iHnHtnjA4m+B6zE9zj5ajvzopkjz8XkiSmhYThszwiknePRdfoKBUH5
+         /urqZ599xv/IXc1BPrMEEjI30y3IWsW2oLiwoSkM0C749ipRps/EhoXvGD+ysTuw7BKj
+         vy3ItwXzi41oGv8qdZfaRC43Ew9RhaBkmbTvpxn8Pr4054SXLwArwW2g0XH7XFg5O+5/
+         dDvg==
+X-Gm-Message-State: AOAM531qNn97b0SvNgX/bR+cmP5v8sqktxXg6WUXQhYPe3ZYbhdkFbQQ
+        nXhBazn3FPRb4Hb7TlUJYUg4wu7F/Vs1wWtcMGA+Vhztlw7+9DS1IYNxz5gm6H4LI5eFqhxmZD7
+        SkoyN6a1/tw/qkd7su1RlUOt9
+X-Received: by 2002:a17:906:8617:: with SMTP id o23mr4696781ejx.274.1606500735282;
+        Fri, 27 Nov 2020 10:12:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwyZU3HmLRRmc6hevuC7dKusx9uLm+xbnlpO5CjCfhATeXbQ9o9xALNF+99u8lVyGz2dxLcYQ==
+X-Received: by 2002:a17:906:8617:: with SMTP id o23mr4696763ejx.274.1606500735127;
+        Fri, 27 Nov 2020 10:12:15 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id lc18sm1454700ejb.77.2020.11.27.10.12.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 10:12:14 -0800 (PST)
+Subject: Re: 5.10 regression caused by: "uas: fix sdev->host->dma_dev": many
+ XHCI swiotlb buffer is full / DMAR: Device bounce map failed errors on
+ thunderbolt connected XHCI controller
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Tom Yan <tom.ty89@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+References: <b046dd04-ac4f-3c69-0602-af810fb1b365@redhat.com>
+ <be031d15-201f-0e5c-8b0f-be030077141f@redhat.com>
+ <20201124102715.GA16983@lst.de>
+ <fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com>
+ <8a52e868-0ca1-55b7-5ad2-ddb0cbb5e45d@redhat.com>
+ <20201127161900.GA10986@lst.de>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <fded04e2-f2e9-de92-ab1f-5aa088904e90@redhat.com>
+Date:   Fri, 27 Nov 2020 19:12:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201127161900.GA10986@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-27 at 08:05 -0800, trix@redhat.com wrote:
-> Function like macros should have a semicolon.
-[]
-> diff --git a/fs/ecryptfs/keystore.c b/fs/ecryptfs/keystore.c
-[]
-> @@ -1172,7 +1172,7 @@ decrypt_pki_encrypted_session_key(struct ecryptfs_auth_tok *auth_tok,
->  	rc = ecryptfs_cipher_code_to_string(crypt_stat->cipher, cipher_code);
->  	if (rc) {
->  		ecryptfs_printk(KERN_ERR, "Cipher code [%d] is invalid\n",
-> -				cipher_code)
-> +				cipher_code);
+Hi,
 
-As this is the only use that does not have a semicolon,
-it'd be good to add the removal of the semicolon from
-the #define at the same time.
+On 11/27/20 5:19 PM, Christoph Hellwig wrote:
+> On Fri, Nov 27, 2020 at 01:32:16PM +0100, Hans de Goede wrote:
+>> I ran some more tests, I can confirm that reverting:
+>>
+>> 5df7ef7d32fe "uas: bump hw_max_sectors to 2048 blocks for SS or faster drives"
+>> 558033c2828f "uas: fix sdev->host->dma_dev"
+>>
+>> Makes the problem go away while running a 5.10 kernel. I also tried doubling
+>> the swiotlb size by adding: swiotlb=65536 to the kernel commandline but that
+>> does not help.
+>>
+>> Some more observations:
+>>
+>> 1. The usb-storage driver does not cause this issue, even though it has a
+>> very similar change.
+>>
+>> 2. The problem does not happen until I plug an UAS decvice into the dock.
+>>
+>> 3. The problem continues to happen even after I unplug the UAS device and
+>> rmmod the uas module
+>>
+>> 3. made me take a bit closer look to the troublesome commit, it passes:
+>> udev->bus->sysdev, which I assume is the XHCI controller itself as device
+>> to scsi_add_host_with_dma, which in turn seems to cause permanent changes
+>> to the dma settings for the XHCI controller. I'm not all that familiar with
+>> the DMA APIs but I'm getting the feeling that passing the actual XHCI-controller's
+>> device as dma-device to scsi_add_host_with_dma is simply the wrong thing to
+>> do; and that the intended effects (honor XHCI dma limits, but do not cause
+>> any changes the XHCI dma settings) should be achieved differently.
+>>
+>> Note that if this is indeed wrong, the matching usb-storage change should
+>> likely also be dropped.
+> 
+> One problem in this area is that the clamping of the DMA size through
+> dma_max_mapping_size mentioned in the commit log doesn't work when
+> swiotlb is called from intel-iommu. I think we need to wire up those
+> calls there as well.
 
+Ok, but that does not sound like a quick last minute fix for 5.10, so maybe
+for 5.10 we should just revert the uas and usb-storage changes which trigger
+this problem and then retry those for 5.11 ?
+
+Regards,
+
+Hans 
 
