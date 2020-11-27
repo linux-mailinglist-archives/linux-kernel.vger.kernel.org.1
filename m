@@ -2,128 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FBA42C6008
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E672C600A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392561AbgK0GXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 01:23:22 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:28946 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389406AbgK0GXW (ORCPT
+        id S2392568AbgK0GYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 01:24:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389400AbgK0GYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 01:23:22 -0500
-X-UUID: 1c604bebc27747fa8bfd2f20124312cf-20201127
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=OMqcICORIcAhhkjnMDt3nLKuOy2OfxolaCABKDolAkc=;
-        b=Ug/+xYELIK6kMlj3IIsEmoYCFqKuOLS6MwmyAURs1j9HDn6ltMCkA2jVyMZgFqEJyoN9g226OXa2a5V+TS02GlUMopl2T4iOOXAeFlEyN5khfsfH91I2DE9ILyUIg9ZpJOEYXhPUWgsF1lrUuJHNfsmbZXQL8pL11yy7fLGvL1s=;
-X-UUID: 1c604bebc27747fa8bfd2f20124312cf-20201127
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1465978574; Fri, 27 Nov 2020 14:23:16 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 27 Nov
- 2020 14:23:14 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 27 Nov 2020 14:23:13 +0800
-Message-ID: <1606458194.26323.193.camel@mhfsdcap03>
-Subject: Re: [PATCH v4 12/24] iommu/mediatek: Move hw_init into attach_device
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-CC:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Will Deacon <will@kernel.org>, <youlin.pei@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        <srv_heupstream@mediatek.com>, <chao.hao@mediatek.com>,
-        <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        "Tomasz Figa" <tfiga@google.com>,
-        <iommu@lists.linux-foundation.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>, <anan.sun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Fri, 27 Nov 2020 14:23:14 +0800
-In-Reply-To: <55bb14ef-f674-e55c-0803-43d91093eccb@arm.com>
-References: <20201111123838.15682-1-yong.wu@mediatek.com>
-         <20201111123838.15682-13-yong.wu@mediatek.com>
-         <55bb14ef-f674-e55c-0803-43d91093eccb@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Fri, 27 Nov 2020 01:24:02 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231E5C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 22:24:02 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id l14so3600754ybq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 22:24:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jYf2N8/ZVQCxQpjkikDPs3ZyvICDjudkUQ/29ylT6V0=;
+        b=xyYrQl6bZ2Slx7d1ZQB/h660xUsTBBuualrc11CKLOtTLNF+KWt+FlTyLYNgEDtYoR
+         58Oqkh9mZrI7KDvA9lDl0ACC55TS29I353L76UVn69EdS+oHkoiFjZCCTk6xoTnMx+LK
+         hOmF0vtlnbDQtmGLwxzvI1t0HdXK92tQBPfdxzN0qi6cfETq0G03YubgFk1NKQ80O+O0
+         gsZ2g1N09vheZ21vEOQTj4KbaH02/CIBwhlZuE4Dyq2edKjW2gKmVju9Iw11cDbKcD0C
+         UYv1HPXPUbWm3lSKwAIacjM2TFJCrs+bu/ujV3COqywYDiVCcEPM1bacsfGCy0udpS9i
+         8ahg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jYf2N8/ZVQCxQpjkikDPs3ZyvICDjudkUQ/29ylT6V0=;
+        b=DaFEuRa+MoF87JFYxSp0CIXdPdbhi5aCzguhsFUYzSpFL6wQ5JETkuB8Z73yRlWHo+
+         qdWBt/dhH1iCQ3srAz/x1VuABSwd3ZE+6rMJhQF2EDLdIqtzTgLWs5MhAtPHz2co3nzs
+         N3PvqXHr9zdc5Qf7yTJR/TxKUABqFqENBCvfYPCvRPD3YWg/VBqSEUDJ25AQ3Sb5T0w/
+         Ol/6OqFnHEf10peXH5v11/c/H3WeLUNTmosmHWh83fuYCsgC7G/udJGsvBbODAuUY+4i
+         pF3NKwVX0vgh/EwpHHjmRlW5Hs6/0oJTB27xnn6om/H/vF7YoLEUhaelnEfpOOIAxM1n
+         LRXg==
+X-Gm-Message-State: AOAM5330gGjnuzJ2DT8s81roBO60slnYqNHGXbPD5nMWcLs4xFBJ++C8
+        p4MF/KmdhaN2orpjvpG0TCDTF3O6VTc5mMmVSoWKaA==
+X-Google-Smtp-Source: ABdhPJxgKeEzmYJWN/P7AXqmnAfnEv7qlMNwtnwP4zB0FxPR5hP8RbtntlLfY/V83BMvhGieC4OAye+X9KBTl6djQyM=
+X-Received: by 2002:a25:d46:: with SMTP id 67mr6676204ybn.155.1606458241278;
+ Thu, 26 Nov 2020 22:24:01 -0800 (PST)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 8E4E74E78C2C0A3F2DB182D6E5EF394369AE6F486379FA945EA54C8360F9A0862000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20201028221302.66583-1-kholk11@gmail.com>
+In-Reply-To: <20201028221302.66583-1-kholk11@gmail.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Fri, 27 Nov 2020 11:53:25 +0530
+Message-ID: <CAMi1Hd00rPU2nUVxK000F=oP=33EKDKXLDymz9hbZT0XEGQZuw@mail.gmail.com>
+Subject: Re: [PATCH v9 0/3] Add Novatek NT36xxx touchscreen driver
+To:     kholk11@gmail.com
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, rydberg@bitmath.org,
+        priv.luk@gmail.com, linux-input@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>, marijns95@gmail.com,
+        Konrad Dybcio <konradybcio@gmail.com>, martin.botka1@gmail.com,
+        phone-devel@vger.kernel.org, dt <devicetree@vger.kernel.org>,
+        krzk@kernel.org, andy.shevchenko@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTExLTI2IGF0IDE2OjQzICswMDAwLCBSb2JpbiBNdXJwaHkgd3JvdGU6DQo+
-IE9uIDIwMjAtMTEtMTEgMTI6MzgsIFlvbmcgV3Ugd3JvdGU6DQo+ID4gSW4gYXR0YWNoIGRldmlj
-ZSwgaXQgd2lsbCB1cGRhdGUgdGhlIHBhZ2V0YWJsZSBiYXNlIGFkZHJlc3MgcmVnaXN0ZXIuDQo+
-ID4gTW92ZSB0aGUgaHdfaW5pdCBmdW5jdGlvbiBhbHNvIGhlcmUuIFRoZW4gaXQgb25seSBuZWVk
-IGNhbGwNCj4gPiBwbV9ydW50aW1lX2dldC9wdXQgb25lIHRpbWUgaGVyZSBpZiBtNHUgaGFzIHBv
-d2VyIGRvbWFpbi4NCj4gDQo+IERvZXNuJ3QgdGhhdCBtZWFuIHlvdSdsbCBlbmQgdXAgd3JpdGlu
-ZyBtb3N0IG9mIHRoZSByZWdpc3RlcnMgdHdpY2UgDQo+IGV2ZXJ5IHRpbWU/IChmaXJzdCBmcm9t
-IG10a19pb21tdV9yZXN1bWUoKSwgdGhlbiBhZ2FpbiBmcm9tIA0KPiBtdGtfaW9tbXVfaHdfaW5p
-dCgpKQ0KDQpJIGhhdmUgc2tpcHBlZCB0aGUgZmlyc3QgcmVzdW1lIGZyb20gbXRrX2lvbW11X3Jl
-c3VtZSB3aXRoIHRoZSBjb2RlIGluDQpbMTUvMjRdOg0KDQpAQCAtODI4LDYgKzg0OCw5IEBAIHN0
-YXRpYyBpbnQgX19tYXliZV91bnVzZWQNCm10a19pb21tdV9ydW50aW1lX3Jlc3VtZShzdHJ1Y3Qg
-ZGV2aWNlICpkZXYpDQoNCisvKiBBdm9pZCBmaXJzdCByZXN1bWUgdG8gYWZmZWN0IHRoZSBkZWZh
-dWx0IHZhbHVlIG9mIHJlZ2lzdGVycyBiZWxvdy4qLw0KK2lmICghbTR1X2RvbSkNCisgICByZXR1
-cm4gMDsNCg0KPiBJdCBtaWdodCBiZSBuZWF0ZXIgdG8gaGF2ZSBtdGtfaW9tbXVfaHdfaW5pdCgp
-IHNpbXBseSBwb3B1bGF0ZSB0aGUgDQo+IG10a19pb21tdV9zdXNwZW5kX3JlZyBkYXRhIHdpdGgg
-dGhlIGluaXRpYWwgdmFsdWVzIGF0IHByb2JlIHRpbWUgYW5kIA0KPiBtYW51YWxseSBjYWxsIG10
-a19pb21tdV9yZXN1bWUoKSBpZiB0aGUgaGFyZHdhcmUgaXMgYWxyZWFkeSBwb3dlcmVkIHVwIA0K
-PiBhdCB0aGF0IHBvaW50LiBPciBtYXliZSBqdXN0IGRvbid0IGJvdGhlciBzYXZpbmcgdGhvc2Ug
-cmVnaXN0ZXJzIG9uIA0KDQpZZXMuIEFsbCB0aGUgcG93ZXItZG9tYWlucyBhcmUgZW5hYmxlZCBp
-biBsayB3aGVuIGJvb3R1cC4NCg0KQWN0dWFsbHkgSSBoYXZlIHBsYW4gdG8gcmVtb3ZlIHRoZSBw
-bV9ydW50aW1lX2dldCBpbiB0aGlzIGF0dGFjaF9kZXZpY2UNCmluIHRoZSBsYXRlciBwYXRjaHNl
-dC4NCg0KVGhpcyBpcyBmb3IgZml4aW5nIGEgaXNzdWUgdGhhdCB0aGUgc2NyZWVuIGlzIHR1cm5l
-ZCBvZmYgd2hlbiBib290dXAuDQpJbiBhbmRyb2lkIHByb2plY3QuIHdlIGFsd2F5cyBzaG93IGJv
-b3QgaW1hZ2UuIElmIGlvbW11IGNhbGwNCnBtX3J1bnRpbWVfZ2V0L3B1dCBoZXJlLCB0aGUgZGlz
-cGxheSBwb3dlci1kb21haW4gd2lsbCBiZSB0dXJuZWQgb2ZmDQpoZXJlIGdpdmVuIHRoYXQgaW9t
-bXUgYWx3YXlzIHByb2JlIGJlZm9yZSBkaXNwbGF5IGRyaXZlcnMgYW5kIGlvbW11J3MNCnBvd2Vy
-LWRvbWFpbiBhbHdheXMgaXMgZGlzcGxheSdzIHBvd2VyLWRvbWFpbi4NCg0KRXZlbiBJIHBsYW4g
-dG8gbW92ZSB0aGUgZGV2aWNlJ3MgcG1fcnVudGltZV9lbmFibGUgaW50byB0aGlzDQphdHRhY2hf
-ZGV2aWNlIGluIHRoZSBjYXNlIGFsbCB0aGUgZHJpdmVycyhpb21tdSBhbmQgZGlzcGxheS4uLikg
-YnVpbGQgYXMNCm1vZHVsZXMuIGl0IGlzIGZvciBza2lwcGluZyB0dXJuIG9mZiBkaXNwbGF5J3Mg
-cG93ZXItZG9tYWluIGluDQpnZW5wZF9wb3dlcl9vZmZfdW51c2VkLg0KDQpUaGlzIGlzIG9ubHkg
-YSBwbGFuLCBJJ20gbm90IHN1cmUgaWYgcG93ZXItZG9tYWluIGNvdWxkIGZpeCBpdCBsaWtlWzFd
-Lg0KDQpJbiB0aGlzIHBhdGNoc2V0LCBJJ2QgbGlrZSB0byBrZWVwIGN1cnJlbnQgc3RhdHVzLg0K
-DQpbMV0NCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1jbGsvcGF0
-Y2gvMjAxOTA2MzAxNTAyMzAuNzg3OC0zLXJvYmRjbGFya0BnbWFpbC5jb20vDQoNCj4gc3VzcGVu
-ZCBhbmQgcHV0IHRoZSBpbml0aWFsaXNhdGlvbiBkaXJlY3RseSBpbiB0aGUgcmVzdW1lIHBhdGgu
-DQo+IA0KPiBSb2Jpbi4NCj4gDQo+ID4gU2lnbmVkLW9mZi1ieTogWW9uZyBXdSA8eW9uZy53dUBt
-ZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gICBkcml2ZXJzL2lvbW11L210a19pb21tdS5jIHwg
-MTAgKysrKysrLS0tLQ0KPiA+ICAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgNCBk
-ZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pb21tdS9tdGtfaW9t
-bXUuYyBiL2RyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmMNCj4gPiBpbmRleCA1NWY5YjMyOWU2Mzcu
-LmNmZGY1Y2U2OTZmZCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2lvbW11L210a19pb21tdS5j
-DQo+ID4gKysrIGIvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiA+IEBAIC0xMjUsNiArMTI1
-LDggQEAgc3RydWN0IG10a19pb21tdV9kb21haW4gew0KPiA+ICAgDQo+ID4gICBzdGF0aWMgY29u
-c3Qgc3RydWN0IGlvbW11X29wcyBtdGtfaW9tbXVfb3BzOw0KPiA+ICAgDQo+ID4gK3N0YXRpYyBp
-bnQgbXRrX2lvbW11X2h3X2luaXQoY29uc3Qgc3RydWN0IG10a19pb21tdV9kYXRhICpkYXRhKTsN
-Cj4gPiArDQo+ID4gICAvKg0KPiA+ICAgICogSW4gTTRVIDRHQiBtb2RlLCB0aGUgcGh5c2ljYWwg
-YWRkcmVzcyBpcyByZW1hcHBlZCBhcyBiZWxvdzoNCj4gPiAgICAqDQo+ID4gQEAgLTM4MCwxMiAr
-MzgyLDE2IEBAIHN0YXRpYyBpbnQgbXRrX2lvbW11X2F0dGFjaF9kZXZpY2Uoc3RydWN0IGlvbW11
-X2RvbWFpbiAqZG9tYWluLA0KPiA+ICAgew0KPiA+ICAgCXN0cnVjdCBtdGtfaW9tbXVfZGF0YSAq
-ZGF0YSA9IGRldl9pb21tdV9wcml2X2dldChkZXYpOw0KPiA+ICAgCXN0cnVjdCBtdGtfaW9tbXVf
-ZG9tYWluICpkb20gPSB0b19tdGtfZG9tYWluKGRvbWFpbik7DQo+ID4gKwlpbnQgcmV0Ow0KPiA+
-ICAgDQo+ID4gICAJaWYgKCFkYXRhKQ0KPiA+ICAgCQlyZXR1cm4gLUVOT0RFVjsNCj4gPiAgIA0K
-PiA+ICAgCS8qIFVwZGF0ZSB0aGUgcGd0YWJsZSBiYXNlIGFkZHJlc3MgcmVnaXN0ZXIgb2YgdGhl
-IE00VSBIVyAqLw0KPiA+ICAgCWlmICghZGF0YS0+bTR1X2RvbSkgew0KPiA+ICsJCXJldCA9IG10
-a19pb21tdV9od19pbml0KGRhdGEpOw0KPiA+ICsJCWlmIChyZXQpDQo+ID4gKwkJCXJldHVybiBy
-ZXQ7DQo+ID4gICAJCWRhdGEtPm00dV9kb20gPSBkb207DQo+ID4gICAJCXdyaXRlbChkb20tPmNm
-Zy5hcm1fdjdzX2NmZy50dGJyICYgTU1VX1BUX0FERFJfTUFTSywNCj4gPiAgIAkJICAgICAgIGRh
-dGEtPmJhc2UgKyBSRUdfTU1VX1BUX0JBU0VfQUREUik7DQo+ID4gQEAgLTcyOSwxMCArNzM1LDYg
-QEAgc3RhdGljIGludCBtdGtfaW9tbXVfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRl
-dikNCj4gPiAgIA0KPiA+ICAgCXBsYXRmb3JtX3NldF9kcnZkYXRhKHBkZXYsIGRhdGEpOw0KPiA+
-ICAgDQo+ID4gLQlyZXQgPSBtdGtfaW9tbXVfaHdfaW5pdChkYXRhKTsNCj4gPiAtCWlmIChyZXQp
-DQo+ID4gLQkJcmV0dXJuIHJldDsNCj4gPiAtDQo+ID4gICAJcmV0ID0gaW9tbXVfZGV2aWNlX3N5
-c2ZzX2FkZCgmZGF0YS0+aW9tbXUsIGRldiwgTlVMTCwNCj4gPiAgIAkJCQkgICAgICJtdGstaW9t
-bXUuJXBhIiwgJmlvYWRkcik7DQo+ID4gICAJaWYgKHJldCkNCj4gPiANCg0K
+On Thu, 29 Oct 2020 at 06:32, <kholk11@gmail.com> wrote:
+>
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+>
+> This patch series adds support for the Novatek NT36xxx Series' In-Cell
+> touchscreen (integrated into the DriverIC).
+>
+> This patch series has been tested against the following devices:
+>  - Sony Xperia 10        (SDM630 Ganges Kirin)
+>  - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
+>
 
+Tested the patch series on Xiaomi Poco F1 (SDM845 Beryllium, Novatek
+NT36672A IC).
+
+For the whole series:
+Tested-by: Amit Pundir <amit.pundir@linaro.org>
+
+Regards,
+Amit Pundir
+
+
+> Changes in v2:
+> - Fixed sparse warnings from lkp kernel test robot
+>
+> Changes in v3 (as requested by Dmitry Torokhov):
+> - Using shorthand u16/u32 (sorry for the overlook!)
+> - Now using more input and touchscreen APIs
+> - Fixed useless workqueue involvements
+> - Removed useless locking
+> - Switched reads and writes to use regmap
+> - Moved header contents to nt36xxx.c
+> - Fixed reset gpio handling
+> - Other cleanups
+> - P.S.: Thanks, Dmitry!
+>
+> Changes in v4:
+> - Fixed regmap read length for CRC_ERR_FLAG final check
+> - Fixed YAML binding, as requested by Krzysztof Kozlowski
+>
+> Changes in v5:
+> - Replaced subsystem maintainer's name with .. mine,
+>   usage of additionalProperties to unevaluatedProperties
+>   and a typo fix for reset-gpios as per Rob Herring's review
+> - Changed compatible string as per Krzysztof K. request
+> - Renamed the novatek,nt36xxx.yaml file to just nt36xxx.yaml
+>   in order to now reflect the driver name instead of the DT
+>   compatible
+> - Fixed blank line at EOF
+>
+> Changes in v6:
+> - Removed include of_gpio.h, added mod_devicetable.h and
+>   gpio/consumer.h
+> - Added kerneldoc to relevant functions/enum
+> - Used traditional patterns for error checking where possible
+> - Documented calls to usleep/msleep
+> - Using be16_to_cpu / get_unaligned_be16 where possible
+> - Added helper for CRC error check on retrieved buffer
+> - Decreased indentation in the CRC reboot recovery function
+> - Removed instances of error code sum
+> - Dropped all likely/unlikely optimization as per request
+> - Removed redundant reset_gpio checks
+> - Dropped of_match_ptr and ifdefs for CONFIG_OF
+>
+> Changes in v7:
+> - Fixed typo in nt36xxx.c
+>
+> Changes in v8:
+> - Fixed typo reset-gpio -> reset-gpios in dt-bindings
+>
+> Changes in v9:
+> - Includes are now sorted
+> - Used proposed sizeof variable instead of sizeof type
+> - Fixed a return value check for common pattern
+> - Added NULL check to devm_kasprintf call
+> - Returning ret on probe function to be consistent
+>
+> AngeloGioacchino Del Regno (3):
+>   dt-bindings: Add vendor prefix for Novatek Microelectronics Corp.
+>   Input: Add Novatek NT36xxx touchscreen driver
+>   dt-bindings: touchscreen: Add binding for Novatek NT36xxx series
+>     driver
+>
+>  .../bindings/input/touchscreen/nt36xxx.yaml   |  59 ++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+>  drivers/input/touchscreen/Kconfig             |  12 +
+>  drivers/input/touchscreen/Makefile            |   1 +
+>  drivers/input/touchscreen/nt36xxx.c           | 894 ++++++++++++++++++
+>  drivers/input/touchscreen/nt36xxx.h           | 122 +++
+>  6 files changed, 1090 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+>  create mode 100644 drivers/input/touchscreen/nt36xxx.c
+>  create mode 100644 drivers/input/touchscreen/nt36xxx.h
+>
+> --
+> 2.28.0
+>
