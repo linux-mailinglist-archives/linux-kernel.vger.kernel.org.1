@@ -2,135 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243F92C6C2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D05872C6C35
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730739AbgK0TxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 14:53:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730018AbgK0Trl (ORCPT
+        id S1730860AbgK0Tyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 14:54:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58956 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730326AbgK0Tt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:47:41 -0500
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CDEC0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:23:09 -0800 (PST)
-Received: by mail-ua1-x941.google.com with SMTP id a10so1798946uan.12
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:23:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lj/Md7KmedZSUw1wBs8z6JnileNDupkEL/4bRaDI8ME=;
-        b=qyoDSzbd6iG6EreTYzKr3BIzRhujEtYvEMyQrSIwnqgnZwGROdD6LQKm31ruyVQwyP
-         0qHpOkcfADz1VmJl3dvR+NLjr4WF3+bEFkMCidKE5nXlxo8XsIo0pQRE22kzUL5tSwXs
-         193UM4iyHr2Qbvp9Q6CLYS64VGTYBBKSwzTctbTSUyksEgs04Wamzuy6yCtxXQNnfDWp
-         CLMnx71bmnPx97iI1NDq/e77GgG/ofqZJ9YQvFLUSw9dc292nIEYgbulYXAqKn3owkc7
-         sEVYjdaAoAB9irQMSJSt5cu0jAYOF9JQfpX4M7aQ19f6K71itNJS8B0Eo75wp9YKmho5
-         oqzw==
+        Fri, 27 Nov 2020 14:49:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606506552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=9qJpD7PFdKgMu/xcOXN6q7idq5UlxcE8KGC0MQOhIgM=;
+        b=SVfRrTvl+6ngJZixTRJZdYyfmhlK14JbxvmwkRM7NzRX5RSkZW8Cyg//7TYVzta/OLM3XG
+        Ba1JM6wwFb8TtJIiGQTN46926TMJw69Tgcsmwh8QO2ouqBnu81Q+E2yP8fswIrOFELZAUE
+        cZCH/NQ32+98ut1AK6E8yhVglZb/XFI=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-74-X2ZdtNGuO1CDbDmM2ayIow-1; Fri, 27 Nov 2020 14:27:42 -0500
+X-MC-Unique: X2ZdtNGuO1CDbDmM2ayIow-1
+Received: by mail-qv1-f72.google.com with SMTP id i2so2355487qvb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:27:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lj/Md7KmedZSUw1wBs8z6JnileNDupkEL/4bRaDI8ME=;
-        b=AIbZlY8Q95cnwLyE9M2ToK3XGJAcT60VX6M6DFEPU5EHg6wGhoo0LEKvc9ip2ku8OH
-         vbRMBo9LM9YVthRc67i3uOmsUpA7wNXbGITkLLwgQ2WMWf+1ZBeGJvpul/OaxPRQYb5y
-         5rv2Ad2ODwvvxfYIlB4JJCy+vQxVt1hAP1CqMNGkWY2r/EpFYV4tV8ejMXUuvVCIuK/H
-         xN0Yt9kGloO/6rHafvN+eYo5Jgd1aI2wXcSGmi5Sonakws2ZiJ73r9VV7SKWKu/NMB0x
-         igJ4i1FshlVIm6FbW/jADFtRRWytkgmZJf9eVRHS5MW82XONgBkVm2J9wWUJkhuvpxrp
-         Q+5Q==
-X-Gm-Message-State: AOAM530OqiXU0XOoet1G2kQxxAA7eB8+wASeY+2y6hw4RGYtbdKGtK7h
-        Vbj+wtzEe9eutlwRhln+2iG76HOqOxSEyt10nso=
-X-Google-Smtp-Source: ABdhPJw5PL0NjJ+q+bKhtgVgiyH5lumDyAcOPabAX3a2Ivub98v2NL4GqQtf1FzjvWtW2+hs5GIQ5zZCbMX/bNMWVUA=
-X-Received: by 2002:ab0:2986:: with SMTP id u6mr7115267uap.118.1606504988446;
- Fri, 27 Nov 2020 11:23:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20201112184106.733-1-georgi.djakov@linaro.org>
- <20201112111436.c5deeadd3578877fc0b844a1@linux-foundation.org>
- <02f682e2-0e9b-76a8-04fa-487891e18bdf@suse.cz> <3ef3d770-d74b-5588-6672-f092c1526461@linaro.org>
- <bdf8727f-1191-34bd-d8ec-69b2a3d50c1b@suse.cz>
-In-Reply-To: <bdf8727f-1191-34bd-d8ec-69b2a3d50c1b@suse.cz>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat, 28 Nov 2020 00:53:11 +0530
-Message-ID: <CAFqt6zaZ8NCUUMpXA_-r2D-c_J99yrhjfRrpPFYhcebASeHebw@mail.gmail.com>
-Subject: Re: [PATCH] mm/page_owner: Record timestamp and pid
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        sudaraja@codeaurora.org, pratikp@codeaurora.org,
-        lmark@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9qJpD7PFdKgMu/xcOXN6q7idq5UlxcE8KGC0MQOhIgM=;
+        b=jnCZn3B1/m47s8CZmALZP6eWotnUYYD9VdPhuDrpsibQolJlWaMxjbvWe8NGehWU0o
+         /R5xr5n3DirHEXs8eUOtAp40iMYG2GPewFNN16bK/PVnmuiocsSqTHP5EQXGGXhInS+E
+         1FjlwLAkyLcOIIr7X5WNPbPhsZ/nEFjlQYVF7AOpeTybudl6G63TpElaITAOzft1ARPy
+         Mtj7u82MTk5JXZLa61sxx3+2j4klxkD2gQm109RZGoPCVVUUXBD4Z2JQij95giad48Us
+         zDs1pG4vakrbNmOZSKFT0Y70k428T2ZX8+idBdKuSFCGofCza6uzovvP8x893WwD7Za0
+         42Ww==
+X-Gm-Message-State: AOAM530XyIezMJHx92rPCqpxTpuF6nzh7leg6ow6XBren1Pa11bPN+W0
+        VVGwuZ1RAYFXDUt2Ad8SvKO0sjRISeFGJ2B8+LrQhildJ5bP8N+sRGfjLrFVLGre23/FrRUiiQn
+        JfxSLX+JrObENPXBYcQ/g5oEu
+X-Received: by 2002:ad4:5544:: with SMTP id v4mr9383598qvy.43.1606505261712;
+        Fri, 27 Nov 2020 11:27:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxuNWhcU9Ar3O10Wn0TX41HHp7RN7H86NAdJD2PtPOP28EoXt8oYhhMF7eDA1G5lCwZpeGCiA==
+X-Received: by 2002:ad4:5544:: with SMTP id v4mr9383569qvy.43.1606505261511;
+        Fri, 27 Nov 2020 11:27:41 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id w54sm7395471qtb.0.2020.11.27.11.27.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 11:27:40 -0800 (PST)
+From:   trix@redhat.com
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        rostedt@goodmis.org, mingo@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] bpf: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 11:27:34 -0800
+Message-Id: <20201127192734.2865832-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 12:36 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 11/27/20 7:57 PM, Georgi Djakov wrote:
-> > Hi Vlastimil,
-> >
-> > Thanks for the comment!
-> >
-> > On 11/27/20 19:52, Vlastimil Babka wrote:
-> >> On 11/12/20 8:14 PM, Andrew Morton wrote:
-> >>> On Thu, 12 Nov 2020 20:41:06 +0200 Georgi Djakov <georgi.djakov@linaro.org>
-> >>> wrote:
-> >>>
-> >>>> From: Liam Mark <lmark@codeaurora.org>
-> >>>>
-> >>>> Collect the time for each allocation recorded in page owner so that
-> >>>> allocation "surges" can be measured.
-> >>>>
-> >>>> Record the pid for each allocation recorded in page owner so that
-> >>>> the source of allocation "surges" can be better identified.
-> >>>
-> >>> Please provide a description of why this is considered useful.  What
-> >>> has it been used for, what problems has it been used to solve?
-> >>
-> >> Worth noting that on x86_64 it doubles the size of struct page_owner
-> >> from 16 bytes to 32, so it better be justified:
-> >
-> > Well, that's true. But for debug options there is almost always some penalty.
-> > The timestamp and pid information is very useful for me (and others, i believe)
-> > when doing memory analysis. On a crash for example, we can get this information
-> > from kdump (or RAM-dump) and look into it to catch memory allocation problems
-> > more easily.
->
-> Right. Btw, you should add printing the info to __dump_page_owner().
->
-> > If you find the above argument not strong enough, how about a separate config
-> > option for this? Maybe something like CONFIG_PAGE_OWNER_EXTENDED, which could
-> > be enabled in addition to CONFIG_PAGE_OWNER?
->
-> It might be strong enough if it's mentioned in changelog, and also what exactly
-> the space tradeoff is :)
+From: Tom Rix <trix@redhat.com>
 
-Just a thought ... putting it inside CONFIG_PAGE_OWNER_DEBUG might be
-better if it is used
-purely for debugging purposes.
+The macro use will already have a semicolon.
 
->
-> You can also mention that SLUB object tracking has also pid+timestamp.
->
-> > Thanks,
-> > Georgi
-> >
-> >>
-> >> struct page_owner {
-> >>          short unsigned int         order;                /*     0     2 */
-> >>          short int                  last_migrate_reason;  /*     2     2 */
-> >>          gfp_t                      gfp_mask;             /*     4     4 */
-> >>          depot_stack_handle_t       handle;               /*     8     4 */
-> >>          depot_stack_handle_t       free_handle;          /*    12     4 */
-> >>          u64                        ts_nsec;              /*    16     8 */
-> >>          int                        pid;                  /*    24     4 */
-> >>
-> >>          /* size: 32, cachelines: 1, members: 7 */
-> >>          /* padding: 4 */
-> >>          /* last cacheline: 32 bytes */
-> >> };
-> >>
-> >
->
->
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ include/trace/events/xdp.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
+index cd24e8a59529..65ffedf8386f 100644
+--- a/include/trace/events/xdp.h
++++ b/include/trace/events/xdp.h
+@@ -146,13 +146,13 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
+ );
+ 
+ #define _trace_xdp_redirect(dev, xdp, to)		\
+-	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to);
++	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to)
+ 
+ #define _trace_xdp_redirect_err(dev, xdp, to, err)	\
+ 	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to);
+ 
+ #define _trace_xdp_redirect_map(dev, xdp, to, map, index)		\
+-	 trace_xdp_redirect(dev, xdp, to, 0, map, index);
++	 trace_xdp_redirect(dev, xdp, to, 0, map, index)
+ 
+ #define _trace_xdp_redirect_map_err(dev, xdp, to, map, index, err)	\
+ 	 trace_xdp_redirect_err(dev, xdp, to, err, map, index);
+-- 
+2.18.4
+
