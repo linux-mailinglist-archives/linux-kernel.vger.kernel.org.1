@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2267F2C61EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD102C61E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgK0Jkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:40:53 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8130 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgK0Jkh (ORCPT
+        id S1726250AbgK0Jkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:40:49 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8601 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727913AbgK0Jkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:40:37 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cj8jy4B6mz15RV6;
-        Fri, 27 Nov 2020 17:40:06 +0800 (CST)
+        Fri, 27 Nov 2020 04:40:32 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cj8js0sJNzLt3L;
+        Fri, 27 Nov 2020 17:40:01 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 27 Nov 2020 17:40:19 +0800
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 27 Nov 2020 17:40:21 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -28,9 +28,9 @@ To:     Andrzej Hajda <a.hajda@samsung.com>,
         "Daniel Vetter" <daniel@ffwll.ch>
 CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] drm/bridge: cdns: fix reference leak in cdns_dsi_transfer
-Date:   Fri, 27 Nov 2020 17:44:35 +0800
-Message-ID: <20201127094435.120907-1-miaoqinglang@huawei.com>
+Subject: [PATCH] drm: bridge: cdns-mhdp8546: fix reference leak in cdns_mhdp_probe
+Date:   Fri, 27 Nov 2020 17:44:37 +0800
+Message-ID: <20201127094437.120952-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -51,26 +51,26 @@ leak by replacing it with new funtion.
 
 [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
 
-Fixes: e19233955d9e ("drm/bridge: Add Cadence DSI driver")
+Fixes: fb43aa0acdfd ("drm: bridge: Add support for Cadence MHDP8546 DPI/DP bridge")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/gpu/drm/bridge/cdns-dsi.c | 2 +-
+ drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/cdns-dsi.c b/drivers/gpu/drm/bridge/cdns-dsi.c
-index 76373e31d..b31281f76 100644
---- a/drivers/gpu/drm/bridge/cdns-dsi.c
-+++ b/drivers/gpu/drm/bridge/cdns-dsi.c
-@@ -1028,7 +1028,7 @@ static ssize_t cdns_dsi_transfer(struct mipi_dsi_host *host,
- 	struct mipi_dsi_packet packet;
- 	int ret, i, tx_len, rx_len;
+diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+index d0c65610e..3ee515d21 100644
+--- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
++++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+@@ -2369,7 +2369,7 @@ static int cdns_mhdp_probe(struct platform_device *pdev)
+ 	clk_prepare_enable(clk);
  
--	ret = pm_runtime_get_sync(host->dev);
-+	ret = pm_runtime_resume_and_get(host->dev);
- 	if (ret < 0)
- 		return ret;
- 
+ 	pm_runtime_enable(dev);
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0) {
+ 		dev_err(dev, "pm_runtime_get_sync failed\n");
+ 		pm_runtime_disable(dev);
 -- 
 2.23.0
 
