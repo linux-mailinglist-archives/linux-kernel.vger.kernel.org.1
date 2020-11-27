@@ -2,149 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33E72C74F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C222C7543
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388463AbgK1Vtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:49:39 -0500
-Received: from mout.gmx.net ([212.227.17.20]:52055 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730600AbgK0TwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:52:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606506732;
-        bh=cP8Vc+LHa/V15QYxylljboEO3n80kHSSWmsdd8Xkrx0=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=FrTlncnYjBnjDG7aUOtDIXME1tt4bd4CLDK9rZPn5+5aozVLyw0+Q96MTXV54GwKF
-         1/zzsNMchLsQUk59hN4WrHl5AFUa37MmcLrdNoaO468d0YArqNkO9vMdSsNB+1BqUa
-         KRS+OxiWwZKSp6mXdEOgYjjsixqJhEKrK4VePdaY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.123.83] ([62.143.246.89]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MEm27-1kyR270up1-00GGVj; Fri, 27
- Nov 2020 20:39:32 +0100
-Subject: Re: ACK: [PATCH 1/1] efi/efi_test: read RuntimeServicesSupported
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>
-Cc:     Ivan Hu <ivan.hu@canonical.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        fwts-devel@lists.ubuntu.com
-References: <20201127192051.1430-1-xypron.glpk@gmx.de>
- <98faddb2-5acc-c228-d002-71341d1c558e@canonical.com>
- <CAMj1kXFNtCJEvbhZpO9p96UNGuo-r2dXQPm0TRjmQuF4TLBUcg@mail.gmail.com>
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-Message-ID: <fac1a832-b5ce-8eea-d1aa-81a0f429d772@gmx.de>
-Date:   Fri, 27 Nov 2020 20:39:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <CAMj1kXFNtCJEvbhZpO9p96UNGuo-r2dXQPm0TRjmQuF4TLBUcg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9iTXzInqIWUycq2dboX2F7id15cW9lvKXH5lsQyiTkZBS+YwusP
- A/mBGeK0pltUyFlrfcbNvIt24ZQTn/e8LyMzpp2WKlIYs4Wcg1MGuD4UWkV/R8qdgiM43/m
- ojBFjtcpFqg9GC4DZe82pE2PMgnCTf887V8I1xXOugkHnmHkmhTJQLTspKDEWJP0A7sDfrS
- ZoVaZPNeUK3GeAUJNB3Hg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QAiyjbBXifo=:QkIV6T6CbrA41ZBAtWfX4S
- C5rJAk1eCoU7LPUAkrcQ+YeZA3mf3TB8n7uhJo2ZT/myIIinmBTYhxm/r1i7tcC/Z41oxqoDk
- VK9Byo9gZmMIdrw76h0S7GD2pkUvCViCzqiVFmWx9NoDLmab0qlkvxOxpL9lzEBZ4w/MWyG9W
- UYi1pNTpifRIRK/OhYIcWjXx0WFeiX/XQCfzUMzDkeL2b2Tjg3DNaHy2Xo/6Tff5rYhcxpcjO
- TDvsPVOC2p5zFCDTpM6i9CVDjYC+UuHqdvgglut9tjY/KEUq/yl7hbDEUpeGh/tp2K/rRiAfv
- LW7rzHJgVhxuAVUt3+doeKYmcfQdnmr7EQy2yR+m8Xclb30Cz1SrbnSW33o8kKV4F5jForT4p
- 9OuJdvd4J2Kh73uwUeST2UizHaqTsT9HZx0k71UqP36onlC46hHCkUswxPoyfGhMy0B1iw8Dj
- 2zcOks0E/xSOxhlNephVq9W8Ah2clC4TvhcKPtVocCF7Lq9GLWIS8L5QmVri0077ajftflNRg
- Mi3MUAaw9KgLfvsvVzLuJpx0y6IyDogX8VxryGIl7tQz4E/7eUI/lXDUFpQBls1pCCEt/C7Ca
- flXiln7vjKfdfCBnJL5xjJEvzBILKznFEcr5OLtCtFwr16Shwwi+dTQo11lVMzmO4BwFw8omI
- CVdoxhRJr62O3yP8YQ4AfI8DCo8zaTWThtaXPKAdVzG257llGqXQ5eyuLdTSKzYEXj2Nnj60b
- tKLweflPss2h+BM5bOLLHsxcA2RrQURvpVM/AN/AMm0uC19StFW6NP7ADN2Uwfztg4p3HJ2K4
- tTQiXT5uuDB9CjsJCEFT1+bWg37tUV0mx/1p5KIY2B9fHyK1e/SvgbmC0FUU0ziHRluKO3xre
- QSHGCouNlEoUjKuw7+vg==
+        id S1731950AbgK1VtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53015 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729741AbgK0TrO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 14:47:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606506421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=V+fxQ+9ZE4mMvoPeeRpISpaVS5sv+7iMxFHbjI4wlvg=;
+        b=Qt8Boa+UprtWzusbLN9qGVZmjCcM0FhlVinjmLaM/yfzqVnWfJ8v0yjr3UmpoQ6gagORjN
+        JUH0V5mgHXZyS4ACORArIZM9u14JASQoDGOjZey1lhzDBsOOzXIXbQPA+gdg2U9bJH5IGM
+        x10e+2mmfyL8afqaVqp3z67XHDwYgo0=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-SacEDdguM3efa66HEpDVdw-1; Fri, 27 Nov 2020 14:43:37 -0500
+X-MC-Unique: SacEDdguM3efa66HEpDVdw-1
+Received: by mail-qk1-f199.google.com with SMTP id s29so1525729qkm.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:43:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=V+fxQ+9ZE4mMvoPeeRpISpaVS5sv+7iMxFHbjI4wlvg=;
+        b=V9Q83lKsn1k2UaL5BcyB8EoG0vcYSiXRMygd5rMwGx0v3VVZED1414n80eniql+DUv
+         c9Cw9RzL97Rvek+Lu12RnQTC4kg1l8Y1wtsAXcxxmqC93//yZZbgH9y/8UI5V5fp6phX
+         lDTOL0miglPy5ZvFz3GgLGkc1nEBytYAoBDsrM8wUtnBC2HLusChJPWsBzz12GDcEbRH
+         Cep6o1s65Ieie6AQkW42hwlEpntSZvqCqy4Umi7eCcrJM9SBgeJdLWFi9XBAwVRv4zlY
+         S7HTxbvR3JZkf0X7fsWQgxpOq4oLCsKMh031ILmt2ITc2doX0/LTdSmilWnKQ5oT6D7P
+         YRvA==
+X-Gm-Message-State: AOAM530PlSg2AoBqMcc3487D6hvat8tRAxcTTVY7ebsiU/CDHdQJfVLA
+        r+FEakRU+DbnKuG1R3ltY68bTcsScARJAYgtx61DbWs81R893Cz+NyKqizkUZ9JZ40sp+zeJT17
+        Jxmx45D0F1VUVmCXj+qUBKoW5
+X-Received: by 2002:a05:620a:a90:: with SMTP id v16mr9957744qkg.479.1606506216891;
+        Fri, 27 Nov 2020 11:43:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw6lodK6voISGIkjg9/FPTLrFucmHCETDXMNpIo6ewNM+fOmDKlJ1dM4RCPu/VocOlLLHaAVg==
+X-Received: by 2002:a05:620a:a90:: with SMTP id v16mr9957714qkg.479.1606506216683;
+        Fri, 27 Nov 2020 11:43:36 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l7sm6906770qtp.19.2020.11.27.11.43.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 11:43:36 -0800 (PST)
+From:   trix@redhat.com
+To:     bfields@fieldses.org, chuck.lever@oracle.com,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] NFS: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 11:43:25 -0800
+Message-Id: <20201127194325.2881566-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/20 8:29 PM, Ard Biesheuvel wrote:
-> On Fri, 27 Nov 2020 at 20:28, Colin Ian King <colin.king@canonical.com> =
-wrote:
->>
->> On 27/11/2020 19:20, Heinrich Schuchardt wrote:
->>> Since the UEFI 2.8A specification the UEFI enabled firmware provides a
->>> configuration table EFI_RT_PROPERTIES_TABLE which indicates which runt=
-ime
->>> services are enabled. The EFI stub reads this table and saves the valu=
-e of
->>> the field RuntimeServicesSupported internally.
->>>
->>> The Firmware Test Suite requires the value to determine if UEFI runtim=
-e
->>> services are correctly implemented.
->>>
-<snip />
->> Looks good to me. Thanks Heinrich.
->>
->> The EFI driver needs to be also updated in the linux kernel - has that
->> fix been submitted or do you require the fwts team to do that?
->>
->
-> This /is/ the EFI driver.
->
-> I'll take this as an acked-by but I'd like Ivan to chime in as well.
->
+From: Tom Rix <trix@redhat.com>
 
-Hello Ard, hello Colin,
+The macro use will already have a semicolon.
 
-I have tested the patch with Linux 5.8.9.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ net/sunrpc/auth_gss/gss_generic_token.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Somehow Linux managed to break the kernel for my board between Linux
-5.8.9 and 5.8.18. It does not boot form iSCSI with a newer kernel.
+diff --git a/net/sunrpc/auth_gss/gss_generic_token.c b/net/sunrpc/auth_gss/gss_generic_token.c
+index fe97f3106536..9ae22d797390 100644
+--- a/net/sunrpc/auth_gss/gss_generic_token.c
++++ b/net/sunrpc/auth_gss/gss_generic_token.c
+@@ -46,7 +46,7 @@
+ /* TWRITE_STR from gssapiP_generic.h */
+ #define TWRITE_STR(ptr, str, len) \
+ 	memcpy((ptr), (char *) (str), (len)); \
+-	(ptr) += (len);
++	(ptr) += (len)
+ 
+ /* XXXX this code currently makes the assumption that a mech oid will
+    never be longer than 127 bytes.  This assumption is not inherent in
+-- 
+2.18.4
 
-You probably want to run a user program against your latest kernel. This
-is what I used:
-
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-
-#define EFI_RUNTIME_GET_SUPPORTED_MASK \
-         _IOR('p', 0x0C, unsigned int)
-
-int main()
-{
-         unsigned int i, flag;
-         int fd, ret;
-         unsigned int mask;
-
-         fd =3D open("/dev/efi_test", O_RDWR);
-         if (fd =3D=3D -1) {
-                 perror("open");
-                 return 1;
-         }
-
-         ret =3D ioctl(fd, EFI_RUNTIME_GET_SUPPORTED_MASK, &mask);
-         if (ret =3D=3D -1) {
-                 perror("ioctl");
-                 return 1;
-         }
-         printf("mask 0x%08x\n", mask);
-
-         flag =3D 1;
-         for (i =3D 0x80000000; i; i >>=3D 1) {
-                 if (i & mask) {
-                         printf("%4s 0x%08x\n", flag ? "=3D" : "|", i);
-                         flag =3D 0;
-                 }
-         }
-
-         close(fd);
-
-         return 0;
-}
-
-Best regards
-
-Heinrich
