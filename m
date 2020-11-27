@@ -2,194 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716F92C68DB
+	by mail.lfdr.de (Postfix) with ESMTP id DDEF72C68DC
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731072AbgK0Pjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 10:39:47 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39184 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730980AbgK0Pjr (ORCPT
+        id S1731128AbgK0Pjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 10:39:49 -0500
+Received: from gproxy2-pub.mail.unifiedlayer.com ([69.89.18.3]:57841 "EHLO
+        gproxy2-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730980AbgK0Pjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 10:39:47 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ARFaY8R172762;
-        Fri, 27 Nov 2020 10:39:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=Lz2OF5+glmzuXfMVNUgDbGV0LD7bAqYc2xcvVbIwa+o=;
- b=GYTuJLW3bmMdQedSOQToSF9mI1OoMTXCl60bMDApe6UnFs97O8BEMfuFlDAycyQonqM2
- Uql/cAEgHbMzw2fhEKuU/oPRyOTIht3Cv2ti3PDM0S2KfzbOo7TWsRT8tzjJe8maNeOP
- cKSLv0o3zKtY/NxGJCXwobqs5lukH8OQHSTpwCPz/q22rbValxg6nueNSMZUwzwyrpAC
- wfgoTOgg+b7V0r5h3QXSroP+ZVZMdKo0pnahOS8xFtHlgENii3Yu3qMWcHmb95yosOKI
- CNi40wL6/Va9iKVXSBG/NPyFmAPg8zkRFxRU6ObruVD80DsdlZp4RpWD657cpNRLZsZe Mw== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3533nc8wh7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Nov 2020 10:39:45 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ARFWsHb029657;
-        Fri, 27 Nov 2020 15:39:42 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma05fra.de.ibm.com with ESMTP id 352ww605f2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Nov 2020 15:39:41 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ARFdcKG54722988
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Nov 2020 15:39:39 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D976FAE051;
-        Fri, 27 Nov 2020 15:39:38 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8AF40AE057;
-        Fri, 27 Nov 2020 15:39:38 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.171.0.176])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri, 27 Nov 2020 15:39:38 +0000 (GMT)
-Date:   Fri, 27 Nov 2020 16:39:36 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] s390/pci: fix CPU address in MSI for directed IRQ
-Message-ID: <20201127163936.38a51c15.pasic@linux.ibm.com>
-In-Reply-To: <16fe9017-407f-1bb0-1599-fb46d93009fc@linux.ibm.com>
-References: <1606410037-11436-1-git-send-email-agordeev@linux.ibm.com>
-        <20201127095633.60f8a544.pasic@linux.ibm.com>
-        <16fe9017-407f-1bb0-1599-fb46d93009fc@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Fri, 27 Nov 2020 10:39:49 -0500
+Received: from cmgw12.unifiedlayer.com (unknown [10.9.0.12])
+        by gproxy2.mail.unifiedlayer.com (Postfix) with ESMTP id EA3AA1E075C
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:39:42 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id ifqYkAOKJeMJHifqYkHiYE; Fri, 27 Nov 2020 08:39:42 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=ad5PYygt c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=nNwsprhYR40A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=uChsZFC9AAAA:8
+ a=Ovdl18BBkjGoSiywgLoA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=ULtXvzFHYWHLyBAuiDia:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=hFn/RzVG2lFUyJJ+QRtM2nQrMEynjkjuLykqFCNHOBU=; b=068b0pIzmwIhU8w/Plq7VyPw/Y
+        qeTC4hbML/4kWBjLL0BZmzQs6BJwBYUrKW6UKVm0uzu66iCf9nK/ucDv4wlTW7YAW0i+OI0vtLxi2
+        T4ODoQq7GcfXXs3HrtYN1BHWRi1HpuyUi2RwdS57eHu4jQtr06ABcMzKLgggGjSqBFHrBJWqN4F0R
+        0qL/dmRUxRPrD6+edusn8NPTl0IOcv5d0FgW2Jm3CYt6k9mJ8R4UcfF01nSrVpYKPJIMpWMcJcQNI
+        zDE+FMTrhlHNwUCyHS3CugCRc2zTtcRm5l5IbIhlCxozxTaH3LfTF36JwpFCfdfmcZsyGhkQQ/mn1
+        3n7Gv4rA==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:43364 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kifqX-002axQ-TT; Fri, 27 Nov 2020 15:39:42 +0000
+Date:   Fri, 27 Nov 2020 07:39:41 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH] hwmon: corsair-psu: update supported devices
+Message-ID: <20201127153941.GA9158@roeck-us.net>
+References: <X7+T4aZSUuzfsf7H@monster.powergraphx.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-27_08:2020-11-26,2020-11-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 phishscore=0 malwarescore=0 adultscore=0
- impostorscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- priorityscore=1501 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011270092
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X7+T4aZSUuzfsf7H@monster.powergraphx.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kifqX-002axQ-TT
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:43364
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 4
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 11:08:10 +0100
-Niklas Schnelle <schnelle@linux.ibm.com> wrote:
-
+On Thu, Nov 26, 2020 at 12:40:16PM +0100, Wilken Gottwalt wrote:
+> Adds support for another Corsair PSUs series: AX760i, AX860i, AX1200i,
+> AX1500i and AX1600i. The first 3 power supplies are supported through
+> the Corsair Link USB Dongle which is some kind of USB/Serial/TTL
+> converter especially made for the COM ports of these power supplies.
+> There are 3 known revisions of these adapters. The AX1500i power supply
+> has revision 3 built into the case and AX1600i is the only one in that
+> series, which has an unique usb hid id like the RM/RX series.
 > 
+> The patch also changes the usb hid ids to use upper case letters to be
+> consistent with the rest of the hex numbers in the driver and updates
+> the hwmon documentation.
 > 
-> On 11/27/20 9:56 AM, Halil Pasic wrote:
-> > On Thu, 26 Nov 2020 18:00:37 +0100
-> > Alexander Gordeev <agordeev@linux.ibm.com> wrote:
-> > 
-> >> The directed MSIs are delivered to CPUs whose address is
-> >> written to the MSI message data. The current code assumes
-> >> that a CPU logical number (as it is seen by the kernel)
-> >> is also that CPU address.
-> >>
-> >> The above assumption is not correct, as the CPU address
-> >> is rather the value returned by STAP instruction. That
-> >> value does not necessarily match the kernel logical CPU
-> >> number.
-> >>
-> >> Fixes: e979ce7bced2 ("s390/pci: provide support for CPU directed interrupts")
-> >> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> >> ---
-> >>  arch/s390/pci/pci_irq.c | 14 +++++++++++---
-> >>  1 file changed, 11 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/arch/s390/pci/pci_irq.c b/arch/s390/pci/pci_irq.c
-> >> index 743f257cf2cb..75217fb63d7b 100644
-> >> --- a/arch/s390/pci/pci_irq.c
-> >> +++ b/arch/s390/pci/pci_irq.c
-> >> @@ -103,9 +103,10 @@ static int zpci_set_irq_affinity(struct irq_data *data, const struct cpumask *de
-> >>  {
-> >>  	struct msi_desc *entry = irq_get_msi_desc(data->irq);
-> >>  	struct msi_msg msg = entry->msg;
-> >> +	int cpu_addr = smp_cpu_get_cpu_address(cpumask_first(dest));
-> >>  
-> >>  	msg.address_lo &= 0xff0000ff;
-> >> -	msg.address_lo |= (cpumask_first(dest) << 8);
-> >> +	msg.address_lo |= (cpu_addr << 8);
-> >>  	pci_write_msi_msg(data->irq, &msg);
-> >>  
-> >>  	return IRQ_SET_MASK_OK;
-> >> @@ -238,6 +239,7 @@ int arch_setup_msi_irqs(struct pci_dev *pdev, int nvec, int type)
-> >>  	unsigned long bit;
-> >>  	struct msi_desc *msi;
-> >>  	struct msi_msg msg;
-> >> +	int cpu_addr;
-> >>  	int rc, irq;
-> >>  
-> >>  	zdev->aisb = -1UL;
-> >> @@ -287,9 +289,15 @@ int arch_setup_msi_irqs(struct pci_dev *pdev, int nvec, int type)
-> >>  					 handle_percpu_irq);
-> >>  		msg.data = hwirq - bit;
-> >>  		if (irq_delivery == DIRECTED) {
-> >> +			if (msi->affinity)
-> >> +				cpu = cpumask_first(&msi->affinity->mask);
-> >> +			else
-> >> +				cpu = 0;
-> >> +			cpu_addr = smp_cpu_get_cpu_address(cpu);
-> >> +
-> > 
-> > I thin style wise, I would prefer keeping the ternary operator instead
-> > of rewriting it as an if-then-else, i.e.:
-> >                         cpu_addr = smp_cpu_get_cpu_address(msi->affinity ?      
-> >                                 cpumask_first(&msi->affinity->mask) : 0);
-> > but either way:
-> > 
-> > Reviewed-by: Halil Pasic <pasic@linux.ibm.com> 
+> This patch adds:
+> - hwmon/corsair-psu documentation update
+> - corsair-psu driver update
 > 
-> Thanks for your review, lets keep the if/else its certainly not less
-> readable even if it may be less pretty.
+> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+
+Applied.
+
+Thanks,
+Guenter
+
+> ---
+>  Documentation/hwmon/corsair-psu.rst | 10 +++++++++
+>  drivers/hwmon/Kconfig               |  7 +++---
+>  drivers/hwmon/corsair-psu.c         | 33 +++++++++++++++++++----------
+>  3 files changed, 36 insertions(+), 14 deletions(-)
 > 
-> Found another thing (not directly in the touched code) but I'm now
-> wondering about. In zpci_handle_cpu_local_irq()
-> we do
-> 	struct airq_iv *dibv = zpci_ibv[smp_processor_id()];
-> 
-> does that also need to use some _address() variant? If it does that
-> then dicatates that the CPU addresses must start at 0.
-> 
-
-I didn't go to the bottom of this, but my understanding is that it
-does not need a _address() variant. What we need is, probably, the
-mapping between the 'id' and 'address' being a stable one.
-
-Please notice that cpu_enable_directed_irq() is called on each cpu. That
-establishes the mapping/relationship between the id and the address,
-as the machine cares for the address, and cpu_enable_directed_irq()
-cares for the id:
-static void __init cpu_enable_directed_irq(void *unused)                        
-{                                                                               
-        union zpci_sic_iib iib = {{0}};                                         
-                                                                                
-        iib.cdiib.dibv_addr = (u64) zpci_ibv[smp_processor_id()]->vector;       
-                                                                                
-        __zpci_set_irq_ctrl(SIC_IRQ_MODE_SET_CPU, 0, &iib);                     
-        zpci_set_irq_ctrl(SIC_IRQ_MODE_D_SINGLE, PCI_ISC);                      
-}
-
-Now were the id <-> address mapping to change, we would be in trouble. If
-that's possible, I don't know. My guess is that it would require cpu hot
-unplug. Niklas, are you familiar with that stuff? Should we ask, Heiko
-and Vasily?
-
-Regards,
-Halil
-
-> > 
-> >>  			msg.address_lo = zdev->msi_addr & 0xff0000ff;
-> >> -			msg.address_lo |= msi->affinity ?
-> >> -				(cpumask_first(&msi->affinity->mask) << 8) : 0;
-> >> +			msg.address_lo |= (cpu_addr << 8);
-> >> +
-> >>  			for_each_possible_cpu(cpu) {
-> >>  				airq_iv_set_data(zpci_ibv[cpu], hwirq, irq);
-> >>  			}
-> > 
-
+> diff --git a/Documentation/hwmon/corsair-psu.rst b/Documentation/hwmon/corsair-psu.rst
+> index 396b95c9a76a..6227e9046d73 100644
+> --- a/Documentation/hwmon/corsair-psu.rst
+> +++ b/Documentation/hwmon/corsair-psu.rst
+> @@ -7,6 +7,16 @@ Supported devices:
+>  
+>  * Corsair Power Supplies
+>  
+> +  Corsair AX760i (by Corsair Link USB Dongle)
+> +
+> +  Corsair AX860i (by Corsair Link USB Dongle)
+> +
+> +  Corsair AX1200i (by Corsair Link USB Dongle)
+> +
+> +  Corsair AX1500i (by builtin Corsair Link USB Dongle)
+> +
+> +  Corsair AX1600i
+> +
+>    Corsair HX550i
+>  
+>    Corsair HX650i
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 716df51edc87..3c059fc23cd6 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -453,11 +453,12 @@ config SENSORS_CORSAIR_PSU
+>  	tristate "Corsair PSU HID controller"
+>  	depends on HID
+>  	help
+> -	  If you say yes here you get support for Corsair PSUs with a HID
+> +	  If you say yes here you get support for Corsair PSUs with an USB HID
+>  	  interface.
+>  	  Currently this driver supports the (RM/HX)550i, (RM/HX)650i,
+> -	  (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i and HX1200i power supplies
+> -	  by Corsair.
+> +	  (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i, HX1200i and AX1600i power
+> +	  supplies by Corsair. The AX760i, AX860i, AX1200i and AX1500i
+> +	  power supplies are supported through the Corsair Link USB Dongle.
+>  
+>  	  This driver can also be built as a module. If so, the module
+>  	  will be called corsair-psu.
+> diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+> index 99494056f4bd..0146dda3e2c3 100644
+> --- a/drivers/hwmon/corsair-psu.c
+> +++ b/drivers/hwmon/corsair-psu.c
+> @@ -571,17 +571,28 @@ static int corsairpsu_raw_event(struct hid_device *hdev, struct hid_report *repo
+>  }
+>  
+>  static const struct hid_device_id corsairpsu_idtable[] = {
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c03) }, /* Corsair HX550i */
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c04) }, /* Corsair HX650i */
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c05) }, /* Corsair HX750i */
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c06) }, /* Corsair HX850i */
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c07) }, /* Corsair HX1000i */
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c08) }, /* Corsair HX1200i */
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c09) }, /* Corsair RM550i */
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c0a) }, /* Corsair RM650i */
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c0b) }, /* Corsair RM750i */
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c0c) }, /* Corsair RM850i */
+> -	{ HID_USB_DEVICE(0x1b1c, 0x1c0d) }, /* Corsair RM1000i */
+> +	/*
+> +	 * The Corsair USB/COM Dongles appear in at least 3 different revisions, where rev 1 and 2
+> +	 * are commonly used with the AX760i, AX860i and AX1200i, while rev3 is rarely seen with
+> +	 * these PSUs. Rev3 is also build into the AX1500i, while the AX1600i is the first PSU of
+> +	 * this series which has an unique usb hid id. Though, the actual device name is part of
+> +	 * the HID message protocol, so it doesn't matter which dongle is connected.
+> +	 */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C00) }, /* Corsair Link USB/COM Dongle rev1 */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C01) }, /* Corsair Link USB/COM Dongle rev2 */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C02) }, /* Corsair Link USB/COM Dongle rev3 (AX1500i) */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C03) }, /* Corsair HX550i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C04) }, /* Corsair HX650i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C05) }, /* Corsair HX750i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C06) }, /* Corsair HX850i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C07) }, /* Corsair HX1000i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C08) }, /* Corsair HX1200i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C09) }, /* Corsair RM550i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C0A) }, /* Corsair RM650i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C0B) }, /* Corsair RM750i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C0C) }, /* Corsair RM850i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C0D) }, /* Corsair RM1000i */
+> +	{ HID_USB_DEVICE(0x1B1C, 0x1C11) }, /* Corsair AX1600i */
+>  	{ },
+>  };
+>  MODULE_DEVICE_TABLE(hid, corsairpsu_idtable);
