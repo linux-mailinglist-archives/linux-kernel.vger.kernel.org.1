@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A352C6266
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4B52C6264
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:00:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729038AbgK0J7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:59:07 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41099 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727333AbgK0J7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:59:07 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cj97r4dSmz9sSn;
-        Fri, 27 Nov 2020 20:59:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606471144;
-        bh=eqHDEG6JivdMUU+NuY5cr8NAJONOziryFgLCr/k7Al4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fOBwhhK7r4JD4TZQ0EtyIlixV2HIiKcfgfDdC40wQaGlQ528IQ7pEPxESi57X43Oa
-         /65dPHHSbuebJ3AcVKHIIMm7HQ3xT7ZzK/f2kTNBLUmz+kk03ZLzfxqPrqmthePwKI
-         mV0ALu67dpqN/SwVEO9lyav4cM+4ZHUogQdZ4EVk8eM/cxYvrlUWBzQavZKun55Hu+
-         Phd0DZTqiEcFj49TsohP5wtIhN7Ku7XC0TI1BNaWVkrRY3S7wBfFTf/2RkegPEasWE
-         GeXXJ6rwkxN6fTOMI5gWGHyv6skubKgf2AFZGO15fXRMFgw6AZAB9uLohlCmQoRmh8
-         1BITBK5NwMCRw==
-Date:   Fri, 27 Nov 2020 20:59:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the dma-mapping tree
-Message-ID: <20201127205903.0e294acf@canb.auug.org.au>
-In-Reply-To: <20201127092137.GA14170@lst.de>
-References: <20201127175801.538fbb30@canb.auug.org.au>
-        <20201127092137.GA14170@lst.de>
+        id S1728998AbgK0J6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:58:53 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:35678 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725989AbgK0J6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:58:52 -0500
+Received: by mail-lf1-f66.google.com with SMTP id a9so6259787lfh.2;
+        Fri, 27 Nov 2020 01:58:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QFxWyGCwEG9dHTknWSJyal1SV6Bt5K2yI0VJthmQFnw=;
+        b=pXtwcYc+3CEzPbS+dwY1Fi4fgjPmm9edgxWWAaRCl4i3QswBMx37MqUOM0RmrzVihR
+         YQy1iGVMTiqmCCeLRib7j0kvJchYQjJwJSd6OiRZCo3Pydye6rQl0YmNNHmyWDAkDXml
+         Wm6NmSTYrsPj6dSwsX21FOn7aQlsFbxk4qYstQHaURoRaZbD8SWMZKIkESDYW7iDwn2u
+         aDwtHLVPPkaa9hNz/XBI9J0rVHEzjsuAvR1qP+ohfsKigexbBwGlMqVqQnB0xExTp7UF
+         eTyyo6mpsPRNWerTVviMLoGmXh12ZD+jblcZSqDbHJI4HSCnRXk9yq+XkhK3Qf0wIJHz
+         984g==
+X-Gm-Message-State: AOAM532VNAE/YZMdoJTzLrdEDV8UBs0mRkc6sK/uzopQbLHBTyLQbZyG
+        T6tWTlYbX1saJDZ+4rRD6lw=
+X-Google-Smtp-Source: ABdhPJwgTnVwwoTuZSvkK78CGSk4DXl6rgEsNNpexBOWzrdAyWlW88qOFs7rVjd5q8hT+i5EakbIzQ==
+X-Received: by 2002:a05:6512:6c3:: with SMTP id u3mr3370330lff.204.1606471130416;
+        Fri, 27 Nov 2020 01:58:50 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id v17sm630932lfp.169.2020.11.27.01.58.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 01:58:49 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kiaWz-0003Cz-Fi; Fri, 27 Nov 2020 10:59:10 +0100
+Date:   Fri, 27 Nov 2020 10:59:09 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
+Message-ID: <X8DN7b03/U2XDORg@localhost>
+References: <20201103175711.10731-1-johan@kernel.org>
+ <20201106160344.GA12184@linux-8ccs.fritz.box>
+ <20201106164537.GD4085@localhost>
+ <20201111154716.GB5304@linux-8ccs>
+ <X66VvI/M4GRDbiWM@localhost>
+ <X7uRZUY+2L9Yg9wt@localhost>
+ <20201125145118.GA32446@linux-8ccs>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/aDfh54.RuXidn9uULHvTIUe";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125145118.GA32446@linux-8ccs>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/aDfh54.RuXidn9uULHvTIUe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Nov 25, 2020 at 03:51:20PM +0100, Jessica Yu wrote:
 
-Hi Christoph,
+> I've queued up patches 3, 4, 6, 7, 8 for testing before pushing them
+> out to modules-next.
 
-On Fri, 27 Nov 2020 10:21:37 +0100 Christoph Hellwig <hch@lst.de> wrote:
->
-> On Fri, Nov 27, 2020 at 05:58:01PM +1100, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > After merging the dma-mapping tree, today's linux-next build (powerpc64
-> > allnoconfig) failed like this: =20
->=20
-> I'm looking into fixing this now, but how do you generate a powerpc64
-> allnoconfig?  My attempts so far either create a ppc32 one or fail entire=
-ly.
+Thanks, Jessica.
 
-        echo CONFIG_PPC64=3Dy >tmp_conf
-        KCONFIG_ALLCONFIG=3Dtmp_conf make ARCH=3Dpowerpc allnoconfig
+Perhaps you can consider taking also the one for setup parameters (patch
+5/8) through your tree since its related to the module-parameter one.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/aDfh54.RuXidn9uULHvTIUe
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/AzecACgkQAVBC80lX
-0GyoTwf9Edk7KrI3+hc6JLUxQAEjPI60TsbLnOFI0OwJQ/Vz4EF0craBmNIAUitF
-XqfY0cwk+YyUcgBzzC0Obk/+dh5jGwHp8GTG3hFAyfCNhxpeoRwL/xohi1HYH2tp
-pTTKaedvIw75ZGBykie9JIvYTwkVMPiQ1/nN4ALxJGN7/WG2ZyWthfJxnvps0wUq
-kiZj2pAT++WPTXMTk794OLPimhk5xCQkeztFepTczmk2PbkkPJ5XLCqNBxO8EsBO
-QTf57igssnxIsufVXKrnf3DwL+gKshqbZPeQTMSGdlSi2M+9sapFbwpDwcATAdoY
-lZ3wfqcJRfbWfJ/S9iYm2dUnpbfqGw==
-=fKB+
------END PGP SIGNATURE-----
-
---Sig_/aDfh54.RuXidn9uULHvTIUe--
+Johan
