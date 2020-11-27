@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6492C6696
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D64042C66A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730355AbgK0NTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 08:19:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730033AbgK0NTN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 08:19:13 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5081CC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 05:19:13 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id s8so5540165wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 05:19:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=cUssLBcwrnl4wS0sT7u1HD0EzT2Je15NNYiB1zueAPA=;
-        b=e3hd6rbMCkbStlgzWWHksKID1Wt/3RiCeCPnRx8E3TDI0swphfpcVEN9fRe7eJOjnc
-         vkcNMM8R6eKzT60PWSsAJcNhCgzr/n1vXy+on8eYLwYchmiGlTMPKFXy2KFvUmzipEoz
-         EkRzJJTXPVBkHasL/CZBV+Bx4hjAubRNZzWoNSaqj+JGmpEeFsk9qyEy0nStKIPbNa77
-         lWGt8RHFguietSlDluRo/iEdeuxORU1ih/+61/MMsQFTxltXIsYqdOs878VriuB+adf9
-         R28kVlzE+LRSTShL/XWOCVRPT3TXxoNutbOstlqtOUEYZGIPh+6nPhKDyEbqbd1I33WT
-         35+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=cUssLBcwrnl4wS0sT7u1HD0EzT2Je15NNYiB1zueAPA=;
-        b=fPLgaOQyBjuL1br5C3iwaJIf2LNGRgAyMcjq39qsf7mtuKEEUi99bL3p1uks9gmQfo
-         VD/Ag4rMsgmEW1KMCwsMJszS7P8P2L98IiYcdIG9QMTJNblfOC/qVtHQaTv3LbOqDbqI
-         G7fc3Z/mRnSOM3vHdfZoypMkZJdkfxHjqeUqsWbYU1QLDzUVjtBoRz6oCb2N2zPIxele
-         0tFGGDJEDzQhjS3PEJapxNQ4y243zF0UD7oS36hr4t5suObD1v24RyUYCyZm5yeu2lD/
-         fXG9cpgNJ9NxyExqGVxS7fs8qyKZsRg04V/f9YWFWYhBSwlAiYRmDg+oVLHfmp+vKeas
-         Sq6Q==
-X-Gm-Message-State: AOAM53101xLVxlG6eLF736qBhUNkUvzi1XzqKjd7k9i1qSjuOeYnBIsp
-        BVtwdfz+uiZb50Fgl++KciIrNA==
-X-Google-Smtp-Source: ABdhPJx8ccoTTjDG6yUPHYKFJmxXCc/FNOFN7yibNRVN7eMdfUHVq7mod2/HjJ/AgEegjRImUOxItQ==
-X-Received: by 2002:adf:b78d:: with SMTP id s13mr10305303wre.383.1606483152098;
-        Fri, 27 Nov 2020 05:19:12 -0800 (PST)
-Received: from dell ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id p4sm14915932wrm.51.2020.11.27.05.19.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 05:19:11 -0800 (PST)
-Date:   Fri, 27 Nov 2020 13:19:08 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Michael Klein <michael@fossekall.de>
-Cc:     Andrei Stefanescu <andrei.stefanescu@microchip.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        linux-kernel@vger.kernel.org, trivial@kernel.org
-Subject: Re: [PATCH v2 2/3] mfd: si476x-core.h: fix "regulator" spelling in
- comment
-Message-ID: <20201127131908.GT2455276@dell>
-References: <20201127093142.GP2455276@dell>
- <20201127125202.23917-1-michael@fossekall.de>
- <20201127125202.23917-2-michael@fossekall.de>
+        id S1730377AbgK0NTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 08:19:22 -0500
+Received: from foss.arm.com ([217.140.110.172]:41458 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730364AbgK0NTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 08:19:21 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 341AC31B;
+        Fri, 27 Nov 2020 05:19:21 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 011DA3F70D;
+        Fri, 27 Nov 2020 05:19:18 -0800 (PST)
+Date:   Fri, 27 Nov 2020 13:19:16 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 07/14] sched: Introduce restrict_cpus_allowed_ptr() to
+ limit task CPU affinity
+Message-ID: <20201127131916.ncoqmg62dselezyl@e107158-lin.cambridge.arm.com>
+References: <20201124155039.13804-1-will@kernel.org>
+ <20201124155039.13804-8-will@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201127125202.23917-2-michael@fossekall.de>
+In-Reply-To: <20201124155039.13804-8-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020, Michael Klein wrote:
+On 11/24/20 15:50, Will Deacon wrote:
 
-> "regualtor" -> "regulator"
-> 
-> Signed-off-by: Michael Klein <michael@fossekall.de>
-> ---
-> Changes in v2:
->   - split patch
->   - make subject line more forthcoming
-> 
->  include/linux/mfd/si476x-core.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+[...]
 
-Applied, thanks.
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index d2003a7d5ab5..818c8f7bdf2a 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1860,24 +1860,18 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
+>  }
+>  
+>  /*
+> - * Change a given task's CPU affinity. Migrate the thread to a
+> - * proper CPU and schedule it away if the CPU it's executing on
+> - * is removed from the allowed bitmask.
+> - *
+> - * NOTE: the caller must have a valid reference to the task, the
+> - * task must not exit() & deallocate itself prematurely. The
+> - * call is not atomic; no spinlocks may be held.
+> + * Called with both p->pi_lock and rq->lock held; drops both before returning.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+nit: wouldn't it be better for the caller to acquire and release the locks?
+Not a big deal but it's always confusing when half of the work done outside the
+function and the other half done inside.
+
+Thanks
+
+--
+Qais Yousef
+
+>   */
+> -static int __set_cpus_allowed_ptr(struct task_struct *p,
+> -				  const struct cpumask *new_mask, bool check)
+> +static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
+> +					 const struct cpumask *new_mask,
+> +					 bool check,
+> +					 struct rq *rq,
+> +					 struct rq_flags *rf)
+>  {
+>  	const struct cpumask *cpu_valid_mask = cpu_active_mask;
+>  	unsigned int dest_cpu;
+> -	struct rq_flags rf;
+> -	struct rq *rq;
+>  	int ret = 0;
+>  
+> -	rq = task_rq_lock(p, &rf);
+>  	update_rq_clock(rq);
+>  
+>  	if (p->flags & PF_KTHREAD) {
+> @@ -1929,7 +1923,7 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+>  	if (task_running(rq, p) || p->state == TASK_WAKING) {
+>  		struct migration_arg arg = { p, dest_cpu };
+>  		/* Need help from migration thread: drop lock and wait. */
+> -		task_rq_unlock(rq, p, &rf);
+> +		task_rq_unlock(rq, p, rf);
+>  		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
+>  		return 0;
+>  	} else if (task_on_rq_queued(p)) {
+> @@ -1937,20 +1931,69 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+>  		 * OK, since we're going to drop the lock immediately
+>  		 * afterwards anyway.
+>  		 */
+> -		rq = move_queued_task(rq, &rf, p, dest_cpu);
+> +		rq = move_queued_task(rq, rf, p, dest_cpu);
+>  	}
+>  out:
+> -	task_rq_unlock(rq, p, &rf);
+> +	task_rq_unlock(rq, p, rf);
+>  
+>  	return ret;
+>  }
