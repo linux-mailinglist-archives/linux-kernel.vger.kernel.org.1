@@ -2,129 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D201A2C6145
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 055902C6148
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgK0JBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:01:10 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:26395 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726127AbgK0JBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:01:09 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606467669; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=OIY56LGrXG7EOd8OdvHPbhXheV+DzCN0elNY5uozLLw=; b=qqPzeMYVr3IoPpjSzs3iE3xAbbhtgURBS0XdpeKxk2FkiwqaIV2gnl+qUJ6HpDZCPzufGfQi
- cROgMbL7kHzs5Le6oPhQdWWlR2b0xfstt0S8TMAfbrP45T9TdFQMfA3rwBWQ6R9S0uP+zEfc
- R0hfo6AmGEGEoSrFoKo53zHehcw=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5fc0c03a22377520ee56a32b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 09:00:42
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 233CCC433ED; Fri, 27 Nov 2020 09:00:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1726602AbgK0JBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:01:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60889 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726127AbgK0JBT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:01:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606467677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zcL80gC957ZXpCuzn/NTC84w2oGL6gfOZNF40t+NUkI=;
+        b=d22VxrujLmSEeFNrpbKZfiCCEWsoM1ZJ/+w1yZ50I92jT4QzZV7me3wOEvloC+GIJHo+9A
+        2KlKrYtfTojFR+2oFSNL+MHtnecVsIPz1Gpol2KsyRBOYHPhQbu5266tvu9p2Z6EfjKtMU
+        U1oJU8B9U8iL9U3uctWPSPS4XMJ9B7U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-247-TcUDHkY-O9uVveqd3xc41A-1; Fri, 27 Nov 2020 04:01:15 -0500
+X-MC-Unique: TcUDHkY-O9uVveqd3xc41A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EEA72C433C6;
-        Fri, 27 Nov 2020 09:00:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EEA72C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: [PATCH v2] Asoc: qcom: Fix plaback recover problem in suspend resume
-Date:   Fri, 27 Nov 2020 14:30:21 +0530
-Message-Id: <1606467622-11735-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56EF157203;
+        Fri, 27 Nov 2020 09:01:14 +0000 (UTC)
+Received: from [10.36.114.118] (ovpn-114-118.ams2.redhat.com [10.36.114.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 365235D9CC;
+        Fri, 27 Nov 2020 09:01:13 +0000 (UTC)
+Subject: Re: [RFC 1/3] mm/hotplug: Pre-validate the address range with
+ platform
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+References: <1606098529-7907-1-git-send-email-anshuman.khandual@arm.com>
+ <1606098529-7907-2-git-send-email-anshuman.khandual@arm.com>
+ <13392308-45a8-f85d-b25e-4a728e1e0730@redhat.com>
+ <0c13a221-570a-0d64-fce9-d28e52cbdd6c@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <8886f78e-28cf-ded0-1629-d4206205be96@redhat.com>
+Date:   Fri, 27 Nov 2020 10:01:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <0c13a221-570a-0d64-fce9-d28e52cbdd6c@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support playback continuation after hard suspend(bypass powerd)
- and resume:
-Prepare device in  platform trigger callback.
-Make I2s and DMA control registers as non volatile.
+>>
+>> "arch_get_mappable_range(void)" (or similar) ?
+> 
+> The current name seems bit better (I guess). Because we are asking for
+> max addressable range with or without the linear mapping.
+> 
+>>
+>> AFAIKs, both implementations (arm64/s390x) simply do the exact same
+>> thing as memhp_get_pluggable_range() for !need_mapping.
+> 
+> That is for now. Even the range without requiring linear mapping might not
+> be the same (like now) for every platform as some might have constraints.
+> So asking the platform ranges with or without linear mapping seems to be
+> better and could accommodate special cases going forward. Anyways, there
+> is an always an "all allowing" fallback option nonetheless.
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
-Changes Since v1:
-  -- Subject lines changed
+Let's keep it simple as long as we don't have a real scenario where this
+would apply.
 
- sound/soc/qcom/lpass-cpu.c      | 8 ++------
- sound/soc/qcom/lpass-platform.c | 5 +++--
- 2 files changed, 5 insertions(+), 8 deletions(-)
+[...]
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index af684fd..c99be03 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -454,20 +454,16 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
- 	struct lpass_variant *v = drvdata->variant;
- 	int i;
- 
--	for (i = 0; i < v->i2s_ports; ++i)
--		if (reg == LPAIF_I2SCTL_REG(v, i))
--			return true;
- 	for (i = 0; i < v->irq_ports; ++i)
- 		if (reg == LPAIF_IRQSTAT_REG(v, i))
- 			return true;
- 
- 	for (i = 0; i < v->rdma_channels; ++i)
--		if (reg == LPAIF_RDMACURR_REG(v, i) || reg == LPAIF_RDMACTL_REG(v, i))
-+		if (reg == LPAIF_RDMACURR_REG(v, i))
- 			return true;
- 
- 	for (i = 0; i < v->wrdma_channels; ++i)
--		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start) ||
--			reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
-+		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
- 			return true;
- 
- 	return false;
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 80b09de..2b0a7c1 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -481,8 +481,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 		return -ENOTRECOVERABLE;
- 	}
- 	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-+		lpass_platform_pcmops_prepare(component, substream);
-+	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		ret = regmap_fields_write(dmactl->enable, id,
- 						 LPAIF_DMACTL_ENABLE_ON);
-@@ -592,7 +593,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 		break;
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
+> 
+>>
+>>> +		return true;
+>>> +
+>>> +	WARN(1, "Hotplug memory [%#llx-%#llx] exceeds maximum addressable range [%#llx-%#llx]\n",
+>>> +		start, end, memhp_range.start, memhp_range.end);
+>>
+>> pr_warn() (or even pr_warn_once())
+>>
+>> while we're at it. No reason to eventually crash a system :)
+> 
+> Didn't quite get it. How could this crash the system ?
+
+With panic_on_warn, which some distributions started to enable.
+
+[...]
+
+>>>  		/*
+>>>  		 * Validate altmap is within bounds of the total request
+>>> @@ -1109,6 +1089,9 @@ int __ref __add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
+>>>  	struct resource *res;
+>>>  	int ret;
+>>>  
+>>> +	if (!memhp_range_allowed(start, size, 1))
+>>> +		return -ERANGE;
+>>
+>> We used to return -E2BIG, no? Maybe better keep that.
+> 
+> ERANGE seems to be better as the range can overrun on either side.
+
+Did you check all callers that they can handle it? Should mention that
+in the patch description then.
+
+> 
+>>
+>>> +
+>>>  	res = register_memory_resource(start, size, "System RAM");
+>>>  	if (IS_ERR(res))
+>>>  		return PTR_ERR(res);
+>>> @@ -1123,6 +1106,9 @@ int add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
+>>>  {
+>>>  	int rc;
+>>>  
+>>> +	if (!memhp_range_allowed(start, size, 1))
+>>> +		return -ERANGE;
+>>> +
+>>>  	lock_device_hotplug();
+>>>  	rc = __add_memory(nid, start, size, mhp_flags);
+>>>  	unlock_device_hotplug();
+>>> @@ -1163,6 +1149,9 @@ int add_memory_driver_managed(int nid, u64 start, u64 size,
+>>>  	    resource_name[strlen(resource_name) - 1] != ')')
+>>>  		return -EINVAL;
+>>>  
+>>> +	if (!memhp_range_allowed(start, size, 0))
+>>> +		return -ERANGE;
+>>> +
+>>>  	lock_device_hotplug();
+>>
+>> For all 3 cases, doing a single check in register_memory_resource() is
+>> sufficient.
+> 
+> Will replace with a single check in register_memory_resource(). But does
+> add_memory_driver_managed() always require linear mapping ? The proposed
+> check here did not ask for linear mapping in add_memory_driver_managed().
+
+Yes, in that regard, it behaves just like add_memory().
+
+
+
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Thanks,
+
+David / dhildenb
 
