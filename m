@@ -2,334 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1752C5FC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532B72C5FC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389155AbgK0Fhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 00:37:47 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:51466 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731606AbgK0Fhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 00:37:47 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 513DC1A0E74;
-        Fri, 27 Nov 2020 06:37:44 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0FFF91A0E79;
-        Fri, 27 Nov 2020 06:37:39 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E747D402D3;
-        Fri, 27 Nov 2020 06:37:31 +0100 (CET)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: fsl: Add imx-hdmi machine driver
-Date:   Fri, 27 Nov 2020 13:30:21 +0800
-Message-Id: <1606455021-18882-2-git-send-email-shengjiu.wang@nxp.com>
+        id S1730201AbgK0Fgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 00:36:46 -0500
+Received: from smtpbg702.qq.com ([203.205.195.102]:51315 "EHLO
+        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729830AbgK0Fgq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 00:36:46 -0500
+X-Greylist: delayed 78025 seconds by postgrey-1.27 at vger.kernel.org; Fri, 27 Nov 2020 00:36:45 EST
+X-QQ-mid: bizesmtp17t1606455382tq2xz4a8
+Received: from localhost.localdomain (unknown [115.238.52.186])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Fri, 27 Nov 2020 13:36:21 +0800 (CST)
+X-QQ-SSF: 0120000000800070B000B00A0000000
+X-QQ-FEAT: zN8aTbUO6yNNgGYJ4vOtjrU8x/KUgr9Mba0IGxwhgvtjzXkKwduROXQmvU9iv
+        m0Cp1K+6ryqXRSJyJ9qCR7eJYNhsiyKyz9a/qY4rIwi3S2hOH1MAaREoKEKCvuBe6qnlulr
+        zRB1XWX95icSf2tqZo9J79f7tdELdhMpGE2txZR84Vd27MTw/hOEBzyTqRrKYtqJcvsJAmC
+        DvZljsttQF31S4mTOlph2cdMRTslCPN4r0BlYzoJWN1/zMDqZIfJmt4BffcTeROUmmqPigF
+        bXrZe1CSF9sNbey6fI4b2X0avor/68/XRrEzqwGVeSW3OE75i8ow0LXo0=
+X-QQ-GoodBg: 0
+From:   linshenghuan@hangtu-china.com
+To:     linus.walleij@linaro.org, khilman@baylibre.com,
+        narmstrong@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, linshenghuan@hangtu-china.com
+Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lin shenghuan <linsheng_111@163.com>
+Subject: [PATCH] add amlogic gpio to irq
+Date:   Fri, 27 Nov 2020 13:36:19 +0800
+Message-Id: <1606455379-7236-1-git-send-email-linshenghuan@hangtu-china.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606455021-18882-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1606455021-18882-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+Signed-off-by: Lin shenghuan <linshenghuan@hangtu-china.com>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:hangtu-china.com:qybgforeign:qybgforeign5
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver is initially designed for sound card using HDMI
-interface on i.MX platform. There is internal HDMI IP or
-external HDMI modules connect with SAI or AUD2HTX interface.
-It supports both transmitter and receiver devices.
+From: Lin shenghuan <linsheng_111@163.com>
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/Kconfig    |  12 ++
- sound/soc/fsl/Makefile   |   2 +
- sound/soc/fsl/imx-hdmi.c | 235 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 249 insertions(+)
- create mode 100644 sound/soc/fsl/imx-hdmi.c
+ drivers/pinctrl/meson/pinctrl-meson.c | 36 +++++++++++++++++++++++++++++++++++
+ drivers/pinctrl/meson/pinctrl-meson.h |  1 +
+ 2 files changed, 37 insertions(+)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 24710decd38a..84db0b7b9d59 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -305,6 +305,18 @@ config SND_SOC_IMX_AUDMIX
- 	  Say Y if you want to add support for SoC audio on an i.MX board with
- 	  an Audio Mixer.
+diff --git a/drivers/pinctrl/meson/pinctrl-meson.c b/drivers/pinctrl/meson/pinctrl-meson.c
+index 20683cd..b91ff2c 100644
+--- a/drivers/pinctrl/meson/pinctrl-meson.c
++++ b/drivers/pinctrl/meson/pinctrl-meson.c
+@@ -51,6 +51,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/seq_file.h>
++#include <linux/of_irq.h>
  
-+config SND_SOC_IMX_HDMI
-+	tristate "SoC Audio support for i.MX boards with HDMI port"
-+	select SND_SOC_FSL_SAI
-+	select SND_SOC_FSL_AUD2HTX
-+	select SND_SOC_HDMI_CODEC
-+	help
-+	  ALSA SoC Audio support with HDMI feature for Freescale SoCs that have
-+	  SAI/AUD2HTX and connect with internal HDMI IP or external module
-+	  SII902X.
-+	  Say Y if you want to add support for SoC audio on an i.MX board with
-+	  IMX HDMI.
-+
- endif # SND_IMX_SOC
+ #include "../core.h"
+ #include "../pinctrl-utils.h"
+@@ -598,6 +599,34 @@ static int meson_gpio_get(struct gpio_chip *chip, unsigned gpio)
+ 	return !!(val & BIT(bit));
+ }
  
- endmenu
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 0b20e038b65b..8c5fa8a859c0 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -65,9 +65,11 @@ snd-soc-imx-es8328-objs := imx-es8328.o
- snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
- snd-soc-imx-spdif-objs := imx-spdif.o
- snd-soc-imx-audmix-objs := imx-audmix.o
-+snd-soc-imx-hdmi-objs := imx-hdmi.o
- 
- obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
- obj-$(CONFIG_SND_SOC_IMX_ES8328) += snd-soc-imx-es8328.o
- obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
- obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
- obj-$(CONFIG_SND_SOC_IMX_AUDMIX) += snd-soc-imx-audmix.o
-+obj-$(CONFIG_SND_SOC_IMX_HDMI) += snd-soc-imx-hdmi.o
-diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
-new file mode 100644
-index 000000000000..ac164514b1b2
---- /dev/null
-+++ b/sound/soc/fsl/imx-hdmi.c
-@@ -0,0 +1,235 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright 2017-2020 NXP
-+
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <sound/jack.h>
-+#include <sound/pcm_params.h>
-+#include <sound/hdmi-codec.h>
-+#include "fsl_sai.h"
-+
-+/**
-+ * struct cpu_priv - CPU private data
-+ * @sysclk_freq: SYSCLK rates for set_sysclk()
-+ * @sysclk_dir: SYSCLK directions for set_sysclk()
-+ * @sysclk_id: SYSCLK ids for set_sysclk()
-+ * @slot_width: Slot width of each frame
-+ *
-+ * Note: [1] for tx and [0] for rx
-+ */
-+struct cpu_priv {
-+	unsigned long sysclk_freq[2];
-+	u32 sysclk_dir[2];
-+	u32 sysclk_id[2];
-+	u32 slot_width;
-+};
-+
-+struct imx_hdmi_data {
-+	struct snd_soc_dai_link dai;
-+	struct snd_soc_card card;
-+	struct snd_soc_jack hdmi_jack;
-+	struct snd_soc_jack_pin hdmi_jack_pin;
-+	struct cpu_priv cpu_priv;
-+	u32 dai_fmt;
-+};
-+
-+static int imx_hdmi_hw_params(struct snd_pcm_substream *substream,
-+			      struct snd_pcm_hw_params *params)
++static int meson_gpio_to_irq(struct gpio_chip *chip, unsigned int gpio)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct imx_hdmi_data *data = snd_soc_card_get_drvdata(rtd->card);
-+	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_card *card = rtd->card;
-+	struct device *dev = card->dev;
-+	int ret;
++	struct meson_pinctrl *pc = gpiochip_get_data(chip);
++	struct meson_bank *bank;
++	struct irq_fwspec fwspec;
++	int hwirq;
 +
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, data->cpu_priv.sysclk_id[tx],
-+				     8 * data->cpu_priv.slot_width * params_rate(params),
-+				     tx ? SND_SOC_CLOCK_OUT : SND_SOC_CLOCK_IN);
-+	if (ret && ret != -ENOTSUPP) {
-+		dev_err(dev, "failed to set cpu sysclk: %d\n", ret);
-+		return ret;
++	if (meson_get_bank(pc, gpio, &bank))
++		return -EINVAL;
++
++	if (bank->irq_first < 0) {
++		dev_warn(pc->dev, "no support irq for pin[%d]\n", gpio);
++		return -EINVAL;
++	}
++	if (!pc->of_irq) {
++		dev_err(pc->dev, "invalid device node of gpio INTC\n");
++		return -EINVAL;
 +	}
 +
-+	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0, 2, data->cpu_priv.slot_width);
-+	if (ret && ret != -ENOTSUPP) {
-+		dev_err(dev, "failed to set cpu dai tdm slot: %d\n", ret);
-+		return ret;
-+	}
++	hwirq = gpio - bank->first + bank->irq_first;
++	fwspec.fwnode = of_node_to_fwnode(pc->of_irq);
++	fwspec.param_count = 2;
++	fwspec.param[0] = hwirq;
++	fwspec.param[1] = IRQ_TYPE_NONE;
 +
-+	return 0;
++	return irq_create_fwspec_mapping(&fwspec);
 +}
 +
-+static struct snd_soc_ops imx_hdmi_ops = {
-+	.hw_params = imx_hdmi_hw_params,
-+};
+ static int meson_gpiolib_register(struct meson_pinctrl *pc)
+ {
+ 	int ret;
+@@ -612,6 +641,7 @@ static int meson_gpiolib_register(struct meson_pinctrl *pc)
+ 	pc->chip.direction_output = meson_gpio_direction_output;
+ 	pc->chip.get = meson_gpio_get;
+ 	pc->chip.set = meson_gpio_set;
++	pc->chip.to_irq = meson_gpio_to_irq;
+ 	pc->chip.base = -1;
+ 	pc->chip.ngpio = pc->data->num_pins;
+ 	pc->chip.can_sleep = false;
+@@ -682,6 +712,12 @@ static int meson_pinctrl_parse_dt(struct meson_pinctrl *pc,
+ 
+ 	pc->of_node = gpio_np;
+ 
++	pc->of_irq = of_find_compatible_node(NULL,
++			NULL, "amlogic,meson-gpio-intc");
++	if (!pc->of_irq)
++		pc->of_irq = of_find_compatible_node(NULL,
++			NULL, "amlogic,meson-gpio-intc-ext");
 +
-+static const struct snd_soc_dapm_widget imx_hdmi_widgets[] = {
-+	SND_SOC_DAPM_LINE("HDMI Jack", NULL),
-+};
-+
-+static int imx_hdmi_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct imx_hdmi_data *data = snd_soc_card_get_drvdata(card);
-+	int ret;
-+
-+	data->hdmi_jack_pin.pin = "HDMI Jack";
-+	data->hdmi_jack_pin.mask = SND_JACK_LINEOUT;
-+	/* enable jack detection */
-+	ret = snd_soc_card_jack_new(card, "HDMI Jack", SND_JACK_LINEOUT,
-+				    &data->hdmi_jack, &data->hdmi_jack_pin, 1);
-+	if (ret) {
-+		dev_err(card->dev, "Can't new HDMI Jack %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_component_set_jack(component, &data->hdmi_jack, NULL);
-+	if (ret && ret != -EOPNOTSUPP) {
-+		dev_err(card->dev, "Can't set HDMI Jack %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+};
-+
-+static int imx_hdmi_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct snd_soc_dai_link_component *dlc;
-+	struct platform_device *cpu_pdev;
-+	struct device_node *cpu_np;
-+	struct imx_hdmi_data *data;
-+	int ret;
-+
-+	dlc = devm_kzalloc(&pdev->dev, 3 * sizeof(*dlc), GFP_KERNEL);
-+	if (!dlc)
-+		return -ENOMEM;
-+
-+	cpu_np = of_parse_phandle(np, "audio-cpu", 0);
-+	if (!cpu_np) {
-+		dev_err(&pdev->dev, "cpu dai phandle missing or invalid\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	cpu_pdev = of_find_device_by_node(cpu_np);
-+	if (!cpu_pdev) {
-+		dev_err(&pdev->dev, "failed to find SAI platform device\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	data->dai.cpus = &dlc[0];
-+	data->dai.num_cpus = 1;
-+	data->dai.platforms = &dlc[1];
-+	data->dai.num_platforms = 1;
-+	data->dai.codecs = &dlc[2];
-+	data->dai.num_codecs = 1;
-+
-+	data->dai.name = "i.MX HDMI";
-+	data->dai.stream_name = "i.MX HDMI";
-+	data->dai.cpus->dai_name = dev_name(&cpu_pdev->dev);
-+	data->dai.platforms->of_node = cpu_np;
-+	data->dai.ops = &imx_hdmi_ops;
-+	data->dai.playback_only = true;
-+	data->dai.capture_only = false;
-+	data->dai.init = imx_hdmi_init;
-+
-+	if (of_node_name_eq(cpu_np, "sai")) {
-+		data->cpu_priv.sysclk_id[1] = FSL_SAI_CLK_MAST1;
-+		data->cpu_priv.sysclk_id[0] = FSL_SAI_CLK_MAST1;
-+	}
-+
-+	if (of_device_is_compatible(np, "fsl,imx-audio-sii902x")) {
-+		data->dai_fmt = SND_SOC_DAIFMT_LEFT_J;
-+		data->cpu_priv.slot_width = 24;
-+	} else {
-+		data->dai_fmt = SND_SOC_DAIFMT_I2S;
-+		data->cpu_priv.slot_width = 32;
-+	}
-+
-+	if (of_property_read_bool(np, "hdmi-out")) {
-+		data->dai.playback_only = true;
-+		data->dai.capture_only = false;
-+		data->dai.codecs->dai_name = "i2s-hifi";
-+		data->dai.codecs->name = "hdmi-audio-codec.1";
-+		data->dai.dai_fmt = data->dai_fmt |
-+				    SND_SOC_DAIFMT_NB_NF |
-+				    SND_SOC_DAIFMT_CBS_CFS;
-+	}
-+
-+	if (of_property_read_bool(np, "hdmi-in")) {
-+		data->dai.playback_only = false;
-+		data->dai.capture_only = true;
-+		data->dai.codecs->dai_name = "i2s-hifi";
-+		data->dai.codecs->name = "hdmi-audio-codec.2";
-+		data->dai.dai_fmt = data->dai_fmt |
-+				    SND_SOC_DAIFMT_NB_NF |
-+				    SND_SOC_DAIFMT_CBM_CFM;
-+	}
-+
-+	if ((data->dai.playback_only && data->dai.capture_only) ||
-+	    (!data->dai.playback_only && !data->dai.capture_only)) {
-+		dev_err(&pdev->dev, "Wrongly enable HDMI DAI link\n");
-+		goto fail;
-+	}
-+
-+	data->card.dapm_widgets = imx_hdmi_widgets;
-+	data->card.num_dapm_widgets = ARRAY_SIZE(imx_hdmi_widgets);
-+	data->card.dev = &pdev->dev;
-+	data->card.owner = THIS_MODULE;
-+	ret = snd_soc_of_parse_card_name(&data->card, "model");
-+	if (ret)
-+		goto fail;
-+
-+	data->card.num_links = 1;
-+	data->card.dai_link = &data->dai;
-+
-+	platform_set_drvdata(pdev, &data->card);
-+	snd_soc_card_set_drvdata(&data->card, data);
-+	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		goto fail;
-+	}
-+
-+fail:
-+	if (cpu_np)
-+		of_node_put(cpu_np);
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id imx_hdmi_dt_ids[] = {
-+	{ .compatible = "fsl,imx-audio-hdmi", },
-+	{ .compatible = "fsl,imx-audio-sii902x", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, imx_hdmi_dt_ids);
-+
-+static struct platform_driver imx_hdmi_driver = {
-+	.driver = {
-+		.name = "imx-hdmi",
-+		.owner = THIS_MODULE,
-+		.pm = &snd_soc_pm_ops,
-+		.of_match_table = imx_hdmi_dt_ids,
-+	},
-+	.probe = imx_hdmi_probe,
-+};
-+module_platform_driver(imx_hdmi_driver);
-+
-+MODULE_AUTHOR("Freescale Semiconductor, Inc.");
-+MODULE_DESCRIPTION("Freescale i.MX hdmi audio ASoC machine driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:imx-hdmi");
+ 	pc->reg_mux = meson_map_resource(pc, gpio_np, "mux");
+ 	if (IS_ERR_OR_NULL(pc->reg_mux)) {
+ 		dev_err(pc->dev, "mux registers not found\n");
+diff --git a/drivers/pinctrl/meson/pinctrl-meson.h b/drivers/pinctrl/meson/pinctrl-meson.h
+index f8b0ff9..0f808bb 100644
+--- a/drivers/pinctrl/meson/pinctrl-meson.h
++++ b/drivers/pinctrl/meson/pinctrl-meson.h
+@@ -131,6 +131,7 @@ struct meson_pinctrl {
+ 	struct regmap *reg_ds;
+ 	struct gpio_chip chip;
+ 	struct device_node *of_node;
++	struct device_node *of_irq;
+ };
+ 
+ #define FUNCTION(fn)							\
 -- 
-2.27.0
+2.7.4
+
+
 
