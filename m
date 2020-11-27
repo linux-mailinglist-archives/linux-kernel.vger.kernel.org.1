@@ -2,317 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B2F2C6C9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 21:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4A72C6CA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 21:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732506AbgK0UgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 15:36:16 -0500
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:49703 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732423AbgK0Ue5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 15:34:57 -0500
-Received: from localhost.localdomain ([81.185.168.160])
-        by mwinf5d27 with ME
-        id xYag2300C3Tyla903YahlD; Fri, 27 Nov 2020 21:34:46 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 27 Nov 2020 21:34:46 +0100
-X-ME-IP: 81.185.168.160
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     maintainers@bluecherrydvr.com, anton@corp.bluecherry.net,
-        andrey_utkin@fastmail.com, ismael@iodev.co.uk, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: solo6x10: switch from 'pci_' to 'dma_' API
-Date:   Fri, 27 Nov 2020 21:34:40 +0100
-Message-Id: <20201127203440.1381359-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        id S1732601AbgK0UkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 15:40:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731306AbgK0Uhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 15:37:39 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2E1221D91;
+        Fri, 27 Nov 2020 20:37:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606509458;
+        bh=YWsjHyrke271+U3EUzV3UKVyqGIdKW7svcx7JBOPE8A=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=mC6g11kuuGnEKqMW2xSTV1gGlikn0ELuBruMaEQszHL0T59b0QyOQFgr0sP6xChj4
+         lktJmbYXY0I4qv2LVvAwmetU5xezaoCLQhMPOsjqPa7CRfrtgpMGB3MpLPGFaCeL0B
+         pz3bZ6sftlIKgPcoSIUabeclru6tetqAPTRZlyXo=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201126232400.15011-1-colin.king@canonical.com>
+References: <20201126232400.15011-1-colin.king@canonical.com>
+Subject: Re: [PATCH] clk: qcom: Kconfig: Fix spelling mistake "dyanmic" -> "dynamic"
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Colin King <colin.king@canonical.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org
+Date:   Fri, 27 Nov 2020 12:37:37 -0800
+Message-ID: <160650945731.2717324.4437128541458338825@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Quoting Colin King (2020-11-26 15:24:00)
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> There is a spelling mistake in the Kconfig help text. Fix it.
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
-
-When memory is allocated in 'snd_solo_pcm_open()' (solo6x10-g723.c)
-GFP_KERNEL can be used because this flag is already used jew a few lines
-above.
-
-When memory is allocated in 'solo_enc_alloc()' (solo6x10-v4l2-enc.c)
-GFP_KERNEL can be used because this flag is already used jew a few lines
-above.
-
-When memory is allocated in 'solo_enc_v4l2_init()' (solo6x10-v4l2-enc.c)
-GFP_KERNEL can be used because calls 'solo_enc_alloc()' which already uses
-this flag.
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/media/pci/solo6x10/solo6x10-g723.c    | 11 +++---
- drivers/media/pci/solo6x10/solo6x10-p2m.c     | 10 +++---
- .../media/pci/solo6x10/solo6x10-v4l2-enc.c    | 35 ++++++++++---------
- 3 files changed, 29 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/media/pci/solo6x10/solo6x10-g723.c b/drivers/media/pci/solo6x10/solo6x10-g723.c
-index d137b94869d8..6cebad665565 100644
---- a/drivers/media/pci/solo6x10/solo6x10-g723.c
-+++ b/drivers/media/pci/solo6x10/solo6x10-g723.c
-@@ -124,9 +124,10 @@ static int snd_solo_pcm_open(struct snd_pcm_substream *ss)
- 	if (solo_pcm == NULL)
- 		goto oom;
- 
--	solo_pcm->g723_buf = pci_alloc_consistent(solo_dev->pdev,
--						  G723_PERIOD_BYTES,
--						  &solo_pcm->g723_dma);
-+	solo_pcm->g723_buf = dma_alloc_coherent(&solo_dev->pdev->dev,
-+						G723_PERIOD_BYTES,
-+						&solo_pcm->g723_dma,
-+						GFP_KERNEL);
- 	if (solo_pcm->g723_buf == NULL)
- 		goto oom;
- 
-@@ -148,8 +149,8 @@ static int snd_solo_pcm_close(struct snd_pcm_substream *ss)
- 	struct solo_snd_pcm *solo_pcm = snd_pcm_substream_chip(ss);
- 
- 	snd_pcm_substream_chip(ss) = solo_pcm->solo_dev;
--	pci_free_consistent(solo_pcm->solo_dev->pdev, G723_PERIOD_BYTES,
--			    solo_pcm->g723_buf, solo_pcm->g723_dma);
-+	dma_free_coherent(&solo_pcm->solo_dev->pdev->dev, G723_PERIOD_BYTES,
-+			  solo_pcm->g723_buf, solo_pcm->g723_dma);
- 	kfree(solo_pcm);
- 
- 	return 0;
-diff --git a/drivers/media/pci/solo6x10/solo6x10-p2m.c b/drivers/media/pci/solo6x10/solo6x10-p2m.c
-index db2afc6a5fcb..ca70a864a3ef 100644
---- a/drivers/media/pci/solo6x10/solo6x10-p2m.c
-+++ b/drivers/media/pci/solo6x10/solo6x10-p2m.c
-@@ -37,16 +37,16 @@ int solo_p2m_dma(struct solo_dev *solo_dev, int wr,
- 	if (WARN_ON_ONCE(!size))
- 		return -EINVAL;
- 
--	dma_addr = pci_map_single(solo_dev->pdev, sys_addr, size,
--				  wr ? PCI_DMA_TODEVICE : PCI_DMA_FROMDEVICE);
--	if (pci_dma_mapping_error(solo_dev->pdev, dma_addr))
-+	dma_addr = dma_map_single(&solo_dev->pdev->dev, sys_addr, size,
-+				  wr ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
-+	if (dma_mapping_error(&solo_dev->pdev->dev, dma_addr))
- 		return -ENOMEM;
- 
- 	ret = solo_p2m_dma_t(solo_dev, wr, dma_addr, ext_addr, size,
- 			     repeat, ext_size);
- 
--	pci_unmap_single(solo_dev->pdev, dma_addr, size,
--			 wr ? PCI_DMA_TODEVICE : PCI_DMA_FROMDEVICE);
-+	dma_unmap_single(&solo_dev->pdev->dev, dma_addr, size,
-+			 wr ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
- 
- 	return ret;
- }
-diff --git a/drivers/media/pci/solo6x10/solo6x10-v4l2-enc.c b/drivers/media/pci/solo6x10/solo6x10-v4l2-enc.c
-index 3cf7bd6186aa..0abcad4e84fa 100644
---- a/drivers/media/pci/solo6x10/solo6x10-v4l2-enc.c
-+++ b/drivers/media/pci/solo6x10/solo6x10-v4l2-enc.c
-@@ -1286,10 +1286,11 @@ static struct solo_enc_dev *solo_enc_alloc(struct solo_dev *solo_dev,
- 	memcpy(solo_enc->jpeg_header, jpeg_header, solo_enc->jpeg_len);
- 
- 	solo_enc->desc_nelts = 32;
--	solo_enc->desc_items = pci_alloc_consistent(solo_dev->pdev,
--				      sizeof(struct solo_p2m_desc) *
--				      solo_enc->desc_nelts,
--				      &solo_enc->desc_dma);
-+	solo_enc->desc_items = dma_alloc_coherent(&solo_dev->pdev->dev,
-+						  sizeof(struct solo_p2m_desc) *
-+						  solo_enc->desc_nelts,
-+						  &solo_enc->desc_dma,
-+						  GFP_KERNEL);
- 	ret = -ENOMEM;
- 	if (solo_enc->desc_items == NULL)
- 		goto hdl_free;
-@@ -1317,9 +1318,9 @@ static struct solo_enc_dev *solo_enc_alloc(struct solo_dev *solo_dev,
- vdev_release:
- 	video_device_release(solo_enc->vfd);
- pci_free:
--	pci_free_consistent(solo_enc->solo_dev->pdev,
--			sizeof(struct solo_p2m_desc) * solo_enc->desc_nelts,
--			solo_enc->desc_items, solo_enc->desc_dma);
-+	dma_free_coherent(&solo_enc->solo_dev->pdev->dev,
-+			  sizeof(struct solo_p2m_desc) * solo_enc->desc_nelts,
-+			  solo_enc->desc_items, solo_enc->desc_dma);
- hdl_free:
- 	v4l2_ctrl_handler_free(hdl);
- 	kfree(solo_enc);
-@@ -1331,9 +1332,9 @@ static void solo_enc_free(struct solo_enc_dev *solo_enc)
- 	if (solo_enc == NULL)
- 		return;
- 
--	pci_free_consistent(solo_enc->solo_dev->pdev,
--			sizeof(struct solo_p2m_desc) * solo_enc->desc_nelts,
--			solo_enc->desc_items, solo_enc->desc_dma);
-+	dma_free_coherent(&solo_enc->solo_dev->pdev->dev,
-+			  sizeof(struct solo_p2m_desc) * solo_enc->desc_nelts,
-+			  solo_enc->desc_items, solo_enc->desc_dma);
- 	video_unregister_device(solo_enc->vfd);
- 	v4l2_ctrl_handler_free(&solo_enc->hdl);
- 	kfree(solo_enc);
-@@ -1346,9 +1347,9 @@ int solo_enc_v4l2_init(struct solo_dev *solo_dev, unsigned nr)
- 	init_waitqueue_head(&solo_dev->ring_thread_wait);
- 
- 	solo_dev->vh_size = sizeof(vop_header);
--	solo_dev->vh_buf = pci_alloc_consistent(solo_dev->pdev,
--						solo_dev->vh_size,
--						&solo_dev->vh_dma);
-+	solo_dev->vh_buf = dma_alloc_coherent(&solo_dev->pdev->dev,
-+					      solo_dev->vh_size,
-+					      &solo_dev->vh_dma, GFP_KERNEL);
- 	if (solo_dev->vh_buf == NULL)
- 		return -ENOMEM;
- 
-@@ -1363,8 +1364,8 @@ int solo_enc_v4l2_init(struct solo_dev *solo_dev, unsigned nr)
- 
- 		while (i--)
- 			solo_enc_free(solo_dev->v4l2_enc[i]);
--		pci_free_consistent(solo_dev->pdev, solo_dev->vh_size,
--				    solo_dev->vh_buf, solo_dev->vh_dma);
-+		dma_free_coherent(&solo_dev->pdev->dev, solo_dev->vh_size,
-+				  solo_dev->vh_buf, solo_dev->vh_dma);
- 		solo_dev->vh_buf = NULL;
- 		return ret;
- 	}
-@@ -1391,6 +1392,6 @@ void solo_enc_v4l2_exit(struct solo_dev *solo_dev)
- 		solo_enc_free(solo_dev->v4l2_enc[i]);
- 
- 	if (solo_dev->vh_buf)
--		pci_free_consistent(solo_dev->pdev, solo_dev->vh_size,
--			    solo_dev->vh_buf, solo_dev->vh_dma);
-+		dma_free_coherent(&solo_dev->pdev->dev, solo_dev->vh_size,
-+				  solo_dev->vh_buf, solo_dev->vh_dma);
- }
--- 
-2.27.0
-
+Applied to clk-next
