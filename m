@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDC62C6BD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 073592C6BDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730316AbgK0TJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 14:09:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48502 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730167AbgK0THG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:07:06 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7D4F5AC0C;
-        Fri, 27 Nov 2020 19:06:38 +0000 (UTC)
-Subject: Re: [PATCH] mm/page_owner: Record timestamp and pid
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        sudaraja@codeaurora.org, pratikp@codeaurora.org,
-        lmark@codeaurora.org
-References: <20201112184106.733-1-georgi.djakov@linaro.org>
- <20201112111436.c5deeadd3578877fc0b844a1@linux-foundation.org>
- <02f682e2-0e9b-76a8-04fa-487891e18bdf@suse.cz>
- <3ef3d770-d74b-5588-6672-f092c1526461@linaro.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <bdf8727f-1191-34bd-d8ec-69b2a3d50c1b@suse.cz>
-Date:   Fri, 27 Nov 2020 20:06:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <3ef3d770-d74b-5588-6672-f092c1526461@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1730306AbgK0TLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 14:11:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52215 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730231AbgK0TH4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 14:07:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606504035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=I6Zs1ppjgvsb9FmTfYHegzS9VUFA58Y2RT71kFALmk0=;
+        b=VBH9ASjJElAT9K/uFs6cuitbwv5K/cEyKjlvgkhrjxnQsqZLv2JA8ljIyAB5rc1nPMAOH5
+        m8WL9wsemYQ1OFnKXP5aTh0K+E9+XBajd7haIt8fQ8UQOpx9cN7FdqJfrcL4dQo0SYZQHp
+        8rWM2BUhHkEBmGCjIV0tm1L+q6fyDLA=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-cYbGYOlZM1OH88V7slaRTw-1; Fri, 27 Nov 2020 14:07:13 -0500
+X-MC-Unique: cYbGYOlZM1OH88V7slaRTw-1
+Received: by mail-qv1-f70.google.com with SMTP id i11so3539706qvo.11
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:07:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=I6Zs1ppjgvsb9FmTfYHegzS9VUFA58Y2RT71kFALmk0=;
+        b=ZNNtoYYWovh7wW9986iRiUNUxzs13BXHPq9grw7GVPga0XJNZBh9bmhEHrSDE3Jj8S
+         SYuhWogmKEblSoF+FbMWLf7x3jA5MyXHe2DM2Ku/xvX4uHPbx2Owf82mF5FeIAJ40Tsw
+         OYFoq8Y1FloaEygSE5t8HLj+OXTKn3ZB/KjVKQLqhzj+yZAS6fGkW+5gbalcTrrFlLYA
+         O7Kv87znEVakzl5MIhUXBmuwmvoyk0XA5TM4me4+j6smSn2mdci/0+TC4oDJkPQNGWwS
+         Hl4eagtkcQSOzF6Q1GtmdbdIwASBwHzYup1IuUmIiFm4PClZ6dKoKJdmJaX5eApgZsZl
+         Y/cQ==
+X-Gm-Message-State: AOAM531hC++a6LrWIrCifmGFTEv6FMfvYSQUH9BTf7FwGNqOe2Ku2G7p
+        xDqHMWU1tX8YWtLTkE4a4fKBv4Zd6H/dIyJxHp58CRzma2Ug5J4pIKgGTmZGE4OSaZbx6VudoQ3
+        AdMMsrTClcUXOMKtiKwmZcnIk
+X-Received: by 2002:a05:620a:b0e:: with SMTP id t14mr9965066qkg.484.1606504033304;
+        Fri, 27 Nov 2020 11:07:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzvj5eobwkEJNyqoVShHJCJxrseRSWu+CqEGkPc1azciUrLyazjZjBInigD5gj1nmHkBnKw5w==
+X-Received: by 2002:a05:620a:b0e:: with SMTP id t14mr9965049qkg.484.1606504033139;
+        Fri, 27 Nov 2020 11:07:13 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l10sm7065821qti.37.2020.11.27.11.07.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 11:07:12 -0800 (PST)
+From:   trix@redhat.com
+To:     jlayton@kernel.org, bfields@fieldses.org, viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] locks: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 11:07:07 -0800
+Message-Id: <20201127190707.2844580-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/20 7:57 PM, Georgi Djakov wrote:
-> Hi Vlastimil,
-> 
-> Thanks for the comment!
-> 
-> On 11/27/20 19:52, Vlastimil Babka wrote:
->> On 11/12/20 8:14 PM, Andrew Morton wrote:
->>> On Thu, 12 Nov 2020 20:41:06 +0200 Georgi Djakov <georgi.djakov@linaro.org> 
->>> wrote:
->>>
->>>> From: Liam Mark <lmark@codeaurora.org>
->>>>
->>>> Collect the time for each allocation recorded in page owner so that
->>>> allocation "surges" can be measured.
->>>>
->>>> Record the pid for each allocation recorded in page owner so that
->>>> the source of allocation "surges" can be better identified.
->>>
->>> Please provide a description of why this is considered useful.  What
->>> has it been used for, what problems has it been used to solve?
->> 
->> Worth noting that on x86_64 it doubles the size of struct page_owner
->> from 16 bytes to 32, so it better be justified:
-> 
-> Well, that's true. But for debug options there is almost always some penalty.
-> The timestamp and pid information is very useful for me (and others, i believe)
-> when doing memory analysis. On a crash for example, we can get this information
-> from kdump (or RAM-dump) and look into it to catch memory allocation problems
-> more easily.
+From: Tom Rix <trix@redhat.com>
 
-Right. Btw, you should add printing the info to __dump_page_owner().
+The macro use will already have a semicolon.
 
-> If you find the above argument not strong enough, how about a separate config
-> option for this? Maybe something like CONFIG_PAGE_OWNER_EXTENDED, which could
-> be enabled in addition to CONFIG_PAGE_OWNER?
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ fs/fcntl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It might be strong enough if it's mentioned in changelog, and also what exactly 
-the space tradeoff is :)
-
-You can also mention that SLUB object tracking has also pid+timestamp.
-
-> Thanks,
-> Georgi
-> 
->> 
->> struct page_owner {
->>          short unsigned int         order;                /*     0     2 */
->>          short int                  last_migrate_reason;  /*     2     2 */
->>          gfp_t                      gfp_mask;             /*     4     4 */
->>          depot_stack_handle_t       handle;               /*     8     4 */
->>          depot_stack_handle_t       free_handle;          /*    12     4 */
->>          u64                        ts_nsec;              /*    16     8 */
->>          int                        pid;                  /*    24     4 */
->> 
->>          /* size: 32, cachelines: 1, members: 7 */
->>          /* padding: 4 */
->>          /* last cacheline: 32 bytes */
->> };
->> 
-> 
+diff --git a/fs/fcntl.c b/fs/fcntl.c
+index 05b36b28f2e8..96a65758c498 100644
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -526,7 +526,7 @@ SYSCALL_DEFINE3(fcntl64, unsigned int, fd, unsigned int, cmd,
+ 	(dst)->l_whence = (src)->l_whence;	\
+ 	(dst)->l_start = (src)->l_start;	\
+ 	(dst)->l_len = (src)->l_len;		\
+-	(dst)->l_pid = (src)->l_pid;
++	(dst)->l_pid = (src)->l_pid
+ 
+ static int get_compat_flock(struct flock *kfl, const struct compat_flock __user *ufl)
+ {
+-- 
+2.18.4
 
