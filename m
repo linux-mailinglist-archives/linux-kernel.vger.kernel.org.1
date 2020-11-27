@@ -2,118 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3F92C6911
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 646192C6916
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731096AbgK0QDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:03:51 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11674 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727904AbgK0QDu (ORCPT
+        id S1731163AbgK0QFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:05:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60503 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730324AbgK0QFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:03:50 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc1236d0003>; Fri, 27 Nov 2020 08:03:57 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 27 Nov
- 2020 16:03:49 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 27 Nov 2020 16:03:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m2wBZd/5c+yRNALcknChB9vvDRMQDD9m8AGYxZ1DZjtHY7CgFI5sXHi3dpRoYlvls4HbPqBerqeu9NhSl0wiE8bR5YQqC3XG07Nhla/pszFXoBE5ehxJFYBUCxSM1hfr0sr0quJOIgU7g/vi6FZlij+ieodcz0f7dPy1mwGBx701ELubru46Y0xDQwW6CIFDN6wE6v8fpQQKqqaidQiOK4j7buz4um5XnlWLF8Ul/KZcbODsjq9WJGf6puLiA3wX3XVBP4bOP2NWugQR02nVIx+jb3LLPqKfG4N1vj1NYnpIbIqV2hX+yR/BxIBsN5E4Amk5corP6w9iAwHA/LYtSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A/Jpyt7K6cI5XO45AbJhk7guOYgAR5OkJvIZ6evQXEU=;
- b=DKDqO5i4SC7b4fKoQxn9JNlqNHYVuCFKFjA/Hso0o2PyoZXDqPN3T2MOzCCuBW7oz9jPr85ECCle9jKbzHIQJonxHD282HqDBrbd4wUKVGgbYCwfK9cm719o4slfs54cfeIKxoRX9+vnk+/IOB+LfAtvNu88Cuopk6QV4cI1hi91NFxBOMXjJE+icsVuOZCbyol8rsVo7VE6NuJc+3dps4nK7oB+DC2De9VwpcYKzNAaY1e2uNiwMEP5Q0z92GeELioFg25dM2UUvgBC07TF2eI3XJyRu3YgofOM3HEu5FGmB+cc5pR6bWsMU2qf7YfwEwISgc17IlPTg9rq6Aaisw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3116.namprd12.prod.outlook.com (2603:10b6:5:38::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Fri, 27 Nov
- 2020 16:03:47 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3611.025; Fri, 27 Nov 2020
- 16:03:46 +0000
-Date:   Fri, 27 Nov 2020 12:03:45 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Mark Zhang <markz@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH rdma-next v5 0/3] Track memory allocation with restrack
- DB help (Part II)
-Message-ID: <20201127160345.GA667848@nvidia.com>
-References: <20201117070148.1974114-1-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201117070148.1974114-1-leon@kernel.org>
-X-ClientProxiedBy: MN2PR04CA0019.namprd04.prod.outlook.com
- (2603:10b6:208:d4::32) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR04CA0019.namprd04.prod.outlook.com (2603:10b6:208:d4::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Fri, 27 Nov 2020 16:03:46 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kigDp-002nkT-8G; Fri, 27 Nov 2020 12:03:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606493037; bh=A/Jpyt7K6cI5XO45AbJhk7guOYgAR5OkJvIZ6evQXEU=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=HSmbXCBR6LwMu6LebsVTPJYbKIJJv2A80xshQrudrgPlOBLemgB/BEOYbDovGnzy7
-         SUxDI8vLqboEfn/nTxH0IWPdLj34xNZv2tipj/QPJQNZFy7vMmp/VlmNCLLhOt2oi5
-         Y5sjDOCU5p/dU6vv7vamlElY0YLHqrles8aVY+T7+EHuy8ZLT3uW5GRFT8z1uASc01
-         WXr/k3sDzJRtSfo9kGjxobb5s+xD8XZU8jtSIjrErcWaeKK8iL65Rpq23JZ+6tfCOb
-         Yta0o0a6qxkLpnHaBRmM7nKVAetN8gjIPI3EOu/NGypRB8CPKkc0xiH4SA2+/zxqgD
-         CQbINowf+pS7g==
+        Fri, 27 Nov 2020 11:05:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606493123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=Lx5QA+1c/hyrsXjP+K1B8IolDHDv6r6q6dP4B5qcGoc=;
+        b=RrWEF7SzNUJIpHic44l8ad6wqhoYKk0P8k9kz5fb7zcob2/l5jGMEeFBiLNr1vfUVnBfaJ
+        +2T+6kv0FYbit9XMPBnAr2EAQo8JC35bECWlJZyTENq0ubJ7VffdY6VEf8mASgEFwcVT6l
+        MXKg8HvGOeJf6Fj1oaNveqQmQajNgCY=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-AyujGbnnPvKxIL0ziAW1dg-1; Fri, 27 Nov 2020 11:05:20 -0500
+X-MC-Unique: AyujGbnnPvKxIL0ziAW1dg-1
+Received: by mail-qt1-f198.google.com with SMTP id r29so3484919qtu.21
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:05:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Lx5QA+1c/hyrsXjP+K1B8IolDHDv6r6q6dP4B5qcGoc=;
+        b=pnPXSl19jAtjRTy9FxLUyCqhlA4N9YfLWsV9z8cBRWcDBQPy2EjMdbbARe2JEGDck1
+         QEo67GtYbJ3pWK8q5PEmfwE2lPYEtdGaDbiowYVelQ14TA/PyUEFJkVBxglLsA9Xh/UC
+         mp2WXqMw5WbEQQFNoB7bCh4yZAL/A0twg3MBS+4RH+WvmT+CHIIbQHuEsCwX4RJz17lz
+         kD0uEW3PJ9UczHxiEFzkFUwITBdsKFhR9UDBdXHG50BKkr66i6lXZvlFUvaFEwnmy3QY
+         Ltr26UDkeqfYmUjZRdNgQyBAqNYKlF1WAsCClf/r5FmPPNlCrBDvuQvEoG+dNLslcNpG
+         /w7A==
+X-Gm-Message-State: AOAM532oNHYOljO9V85DRQQDsSYMl3709KIm2TYfMDZegFeC2fBkVWrN
+        Z9S1j0RSubtQEfY4ZPvZQYcrP7qzBnXIlMKoiESeQ4k0p0gX7MutoQfkqByxTgkVOlpkOGu/SLm
+        4Amhd8VawTYiS0P+hcXXSTOk4
+X-Received: by 2002:ac8:7651:: with SMTP id i17mr9095754qtr.248.1606493119662;
+        Fri, 27 Nov 2020 08:05:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwrS1i55kyNvlHzcDjmRasvRmA+DWO57YRKCEb4T+Hdkk6tGNT/JOTtakf7XgXiuVwklbeUHQ==
+X-Received: by 2002:ac8:7651:: with SMTP id i17mr9095725qtr.248.1606493119425;
+        Fri, 27 Nov 2020 08:05:19 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id c27sm6359681qkk.57.2020.11.27.08.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 08:05:18 -0800 (PST)
+From:   trix@redhat.com
+To:     code@tyhicks.com, hannes@cmpxchg.org, mhocko@suse.com,
+        longman@redhat.com, herbert@gondor.apana.org.au,
+        ebiggers@google.com
+Cc:     ecryptfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] eCryptfs: add a semicolon
+Date:   Fri, 27 Nov 2020 08:05:13 -0800
+Message-Id: <20201127160513.2619747-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 09:01:45AM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Changelog:
-> v5:
->  * Reorder patches to postpone changes in rdma_restrack_add to be in next series.
-> v4: https://lore.kernel.org/linux-rdma/20201104144008.3808124-1-leon@kernel.org/
->  * Rebased on latest for-upstream, all that time the patches were in
->  our regression and didn't introduce any issues.
->  * Took first five patches that hadn't any comments
-> v3: https://lore.kernel.org/lkml/20200926101938.2964394-1-leon@kernel.org
->  * Rebased on already accepted patches.
->  * Added mlx4 special QPs to the list of not-tracked QPs (dropped previous mlx4 special QP patch).
->  * Separated to two patches change in return value of cma_listen_* routines.
->  * Changed commit messages and added Fixes as Jason requested.
-> v2: https://lore.kernel.org/linux-rdma/20200907122156.478360-1-leon@kernel.org/
->  * Added new patch to fix mlx4 failure on SR-IOV, it didn't have port set.
->  * Changed "RDMA/cma: Delete from restrack DB after successful destroy" patch.
-> v1: https://lore.kernel.org/lkml/20200830101436.108487-1-leon@kernel.org
->  * Fixed rebase error, deleted second assignment of qp_type.
->  * Rebased code on latests rdma-next, the changes in cma.c caused to change
->    in patch "RDMA/cma: Delete from restrack DB after successful destroy".
->  * Dropped patch of port assignment, it is already done as part of this
->    series.
->  * I didn't add @calller description, regular users should not use _named() funciton.
-> v0: https://lore.kernel.org/lkml/20200824104415.1090901-1-leon@kernel.org
-> 
-> ----------------------------------------------------------------------------------
-> 
-> Leon Romanovsky (3):
->   RDMA/core: Track device memory MRs
->   RDMA/core: Allow drivers to disable restrack DB
->   RDMA/restrack: Support all QP types
+From: Tom Rix <trix@redhat.com>
 
-Applied to for-next, thanks
+Function like macros should have a semicolon.
 
-Jason
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ fs/ecryptfs/keystore.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ecryptfs/keystore.c b/fs/ecryptfs/keystore.c
+index f6a17d259db7..2abd219cfeec 100644
+--- a/fs/ecryptfs/keystore.c
++++ b/fs/ecryptfs/keystore.c
+@@ -1172,7 +1172,7 @@ decrypt_pki_encrypted_session_key(struct ecryptfs_auth_tok *auth_tok,
+ 	rc = ecryptfs_cipher_code_to_string(crypt_stat->cipher, cipher_code);
+ 	if (rc) {
+ 		ecryptfs_printk(KERN_ERR, "Cipher code [%d] is invalid\n",
+-				cipher_code)
++				cipher_code);
+ 		goto out;
+ 	}
+ 	crypt_stat->flags |= ECRYPTFS_KEY_VALID;
+-- 
+2.18.4
+
