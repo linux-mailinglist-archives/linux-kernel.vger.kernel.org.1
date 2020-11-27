@@ -2,3403 +2,724 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D55A2C6D17
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 23:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB7F2C6D11
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 23:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731854AbgK0VjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 16:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730732AbgK0Vep (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 16:34:45 -0500
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC79C0613D2;
-        Fri, 27 Nov 2020 13:34:41 -0800 (PST)
-Received: by mail-vk1-xa36.google.com with SMTP id e127so1418437vkb.5;
-        Fri, 27 Nov 2020 13:34:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZCddz7hlNMGAxeTs0nAaolm9jDveLlpkaYa+J2iG60s=;
-        b=G1B97szWpjYnQBOLa41O2qHoSynDhGD/1N7K8jRhrsh1rUUe7yyYZ8dPxmTDuxVeNF
-         gp61e3sUVya+dYws6tvyH9vZdjwKzEz3adxHi0sSBnBry1N/+77sNuQMT6cUDN2iK14M
-         W9Y2KKbIlH0wXQWqy28XwK83lphG02D1LCfZV0/mV3iqEwCSrGrtDNBu/tkYuLUute7F
-         viQ/Hp0Cem8Fv9TAkFHrfq+QlW/Ycn4C4+aMQ9wjBU2YfxM9Nd+Jj9hWS893w3ZRT5Po
-         VJPUMtv/tjpAjKbff9lZ9mACghKO9Fe9BSfF38m0GTSma98m9biKluizjafW54ODu+e5
-         ZeBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZCddz7hlNMGAxeTs0nAaolm9jDveLlpkaYa+J2iG60s=;
-        b=JN+a6pmq9mTT0iVEtc6eMK/dxrVNeM0wMN3jkRFpVqskkZvHaimuNImE4X9tKuoI97
-         CDIkcbEY4hUYjfF7YOJm/+zC/27ef6dY7b8zpCw2XhpHy6X0GLlDelqsXVKbtbjo3gLB
-         BW84J5kOuidVKR+tGQ5MPqcDGPolbOtR5dIzVT0/E8KThq1zg1PJ6mGjv4Tmg+N2YRuQ
-         pKPA5TcmhHfpYNgm+dZozApTKc7g4YJQtvKkravt57YP5uAgI5M0QEEfEsTVmURfjT2x
-         0Fz4mdVIKlinw0AZ0acP3N9IBbpL2PlhNACjxrPPIj6i2JleOVRaOFOQwY7BTw8d1rDU
-         MgoQ==
-X-Gm-Message-State: AOAM532zLztf6ofO2oTM3vXoS8P5YjUtPxu+zuQbcuFpZYMndsrq/k3R
-        vhk7JWHUxg4mLdP8xKDooLAOVgPcEbMlqSNw6vY=
-X-Google-Smtp-Source: ABdhPJzfad28gTXC1BRhjPtuECf9rmAUTbzjvUZUIjjXaC+U2511h4VSTKClyS+aDW2M2N6QZQfdisPuuSuapaEGHjU=
-X-Received: by 2002:a1f:d907:: with SMTP id q7mr8133689vkg.14.1606512879055;
- Fri, 27 Nov 2020 13:34:39 -0800 (PST)
+        id S1732277AbgK0V7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 16:59:44 -0500
+Received: from mga17.intel.com ([192.55.52.151]:38265 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731143AbgK0Vk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 16:40:27 -0500
+IronPort-SDR: /Czt0NNpUOBtVA2s5iBrHXGHkLBFhAMdrA8npn3EuWqzNthXy42A5NfokSh11v7Mo/PY8yhgx+
+ /iLOEtwXl1Tw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9818"; a="152268110"
+X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
+   d="gz'50?scan'50,208,50";a="152268110"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2020 13:39:59 -0800
+IronPort-SDR: l4f2N/16XXwGAU61wzLAz7HJHXyMem5+D+ypQNVC3yfTPQShbvoBANvjkgORh3J9d9hysNyb6i
+ U3fNO4YtqdXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
+   d="gz'50?scan'50,208,50";a="328750228"
+Received: from lkp-server01.sh.intel.com (HELO b5888d13d5a5) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 27 Nov 2020 13:39:55 -0800
+Received: from kbuild by b5888d13d5a5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kilT9-0000Au-18; Fri, 27 Nov 2020 21:39:55 +0000
+Date:   Sat, 28 Nov 2020 05:39:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Brendan Jackman <jackmanb@google.com>
+Subject: Re: [PATCH v2 bpf-next 10/13] bpf: Add instructions for
+ atomic[64]_[fetch_]sub
+Message-ID: <202011280519.anTnUCeP-lkp@intel.com>
+References: <20201127175738.1085417-11-jackmanb@google.com>
 MIME-Version: 1.0
-References: <20201029172947.34315-1-kholk11@gmail.com> <20201029172947.34315-2-kholk11@gmail.com>
- <20201126234306.GH4351@valkosipuli.retiisi.org.uk>
-In-Reply-To: <20201126234306.GH4351@valkosipuli.retiisi.org.uk>
-From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
-Date:   Fri, 27 Nov 2020 22:34:27 +0100
-Message-ID: <CAK7fi1Y=fe9fhqy7QEL7QvUJW+A+kNXE6VS8bdFV8sjFzJnHuA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] media: i2c: Add driver for the Sony Exmor-RS
- IMX300 camera sensor
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
-        Konrad Dybcio <konradybcio@gmail.com>, martin.botka1@gmail.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        phone-devel@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="FL5UXtIhxfXey3p5"
+Content-Disposition: inline
+In-Reply-To: <20201127175738.1085417-11-jackmanb@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno ven 27 nov 2020 alle ore 00:43 Sakari Ailus
-<sakari.ailus@iki.fi> ha scritto:
->
-> Hi AngeloGioacchino,
->
-> Thanks for the patchset.
->
-> On Thu, Oct 29, 2020 at 06:29:46PM +0100, kholk11@gmail.com wrote:
-> > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> >
-> > This is a custom multi-aspect 25MegaPixels sensor from Sony,
-> > found in many Sony Xperia smartphones from various eras.
-> >
-> > The camera assembly for this sensor usually (at least in Xperia
-> > phones) has a lens that does not cover the entire sensor area,
-> > which means that the real corners are blind and that, in many
-> > lighting conditions, some more pixels in the corners are very
-> > getting obscured (as no decent amount of light can get in)...
-> > so, the maximum resolution that can produce a good image is:
-> > - In 4:3 aspect ratio, 5520x4160 (23.0MP)
-> > - In 16:9 aspect ratio, 5984x3392 (20.3MP).
-> >
-> > This sensor supports high frame rates (>=60FPS) when in binning
-> > mode and both RAW8 and RAW10 output modes.
-> > In this version of the driver, support has been provided for the
-> > following resolutions:
-> >     W x H     SZ   MAX_FPS  BINNING
-> > - 5520x4160 23.0MP   23       No
-> > - 5984x3392 20.3MP   26       No
-> > - 2992x1696  3.8MP   60       Yes
-> > - 1424x800   1.2MP   120      Yes
-> >
-> > Note 1: The "standard" camera assy for IMX300 also contains an
-> > actuator (to focus the image), but this driver only manages the
-> > actual image sensor.
-> >
-> > Note 2: The command tables for this sensor were reverse
-> > engineered from a downstream "userspace driver" that has been
-> > released in various versions on various Xperia smartphones.
-> > Register layout seems to be only vaguely similar to IMX219,
-> > which has a public datasheet from where some names for the
-> > figured out registers were taken and added to the driver:
-> > these names are probably not the right ones, but they surely
-> > represent the intended thing.
->
-> Can I ask you have you tested the driver?
->
-A copy-paste from the cover letter for this patch series that I have
-sent already (but I can understand: you weren't in the cc list):
 
-"This camera sensor driver was tested with all the resolutions declared in
-it on two phones: Sony Xperia XA2 and XA2 Ultra, on a SDM630 SoC (camss
-patches for this SoC will come in a later series) and is working great"
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >
-> > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > ---
-> >  drivers/media/i2c/Kconfig  |   13 +
-> >  drivers/media/i2c/Makefile |    1 +
-> >  drivers/media/i2c/imx300.c | 3089 ++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 3103 insertions(+)
-> >  create mode 100644 drivers/media/i2c/imx300.c
-> >
-> > diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-> > index 878f66ef2719..032f45dfed16 100644
-> > --- a/drivers/media/i2c/Kconfig
-> > +++ b/drivers/media/i2c/Kconfig
-> > @@ -801,6 +801,19 @@ config VIDEO_IMX290
-> >         To compile this driver as a module, choose M here: the
-> >         module will be called imx290.
-> >
-> > +config VIDEO_IMX300
-> > +     tristate "Sony IMX300 Exmor RS sensor support"
-> > +     depends on I2C && VIDEO_V4L2
-> > +     select MEDIA_CONTROLLER
-> > +     select VIDEO_V4L2_SUBDEV_API
-> > +     select V4L2_FWNODE
-> > +     help
-> > +       This is a Video4Linux2 sensor driver for the Sony
-> > +       IMX300 Exmor RS multi-aspect sensor.
-> > +
-> > +       To compile this driver as a module, choose M here: the
-> > +       module will be called imx300.
-> > +
-> >  config VIDEO_IMX319
-> >       tristate "Sony IMX319 sensor support"
-> >       depends on I2C && VIDEO_V4L2
-> > diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
-> > index f0a77473979d..8a3e003dea45 100644
-> > --- a/drivers/media/i2c/Makefile
-> > +++ b/drivers/media/i2c/Makefile
-> > @@ -117,6 +117,7 @@ obj-$(CONFIG_VIDEO_IMX219)        += imx219.o
-> >  obj-$(CONFIG_VIDEO_IMX258)   += imx258.o
-> >  obj-$(CONFIG_VIDEO_IMX274)   += imx274.o
-> >  obj-$(CONFIG_VIDEO_IMX290)   += imx290.o
-> > +obj-$(CONFIG_VIDEO_IMX300)   += imx300.o
-> >  obj-$(CONFIG_VIDEO_IMX319)   += imx319.o
-> >  obj-$(CONFIG_VIDEO_IMX355)   += imx355.o
-> >  obj-$(CONFIG_VIDEO_MAX9286)  += max9286.o
-> > diff --git a/drivers/media/i2c/imx300.c b/drivers/media/i2c/imx300.c
-> > new file mode 100644
-> > index 000000000000..47de5fa3329c
-> > --- /dev/null
-> > +++ b/drivers/media/i2c/imx300.c
-> > @@ -0,0 +1,3089 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * A V4L2 driver for Sony IMX300 Exmor RS multi-aspect image sensors.
-> > + * Copyright (C) 2020, AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > + *
-> > + * Based on Sony imx219 camera driver
-> > + */
-> > +
-> > +#include <linux/clk.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/i2c.h>
-> > +#include <linux/module.h>
-> > +#include <linux/pm_runtime.h>
-> > +#include <linux/regulator/consumer.h>
-> > +#include <media/v4l2-ctrls.h>
-> > +#include <media/v4l2-device.h>
-> > +#include <media/v4l2-event.h>
-> > +#include <media/v4l2-fwnode.h>
-> > +#include <media/v4l2-mediabus.h>
-> > +#include <asm/unaligned.h>
-> > +
-> > +#define IMX300_REG_VALUE_08BIT               1
-> > +#define IMX300_REG_VALUE_16BIT               2
-> > +
-> > +/*
-> > + * Supported external clock frequency is from (around) 6 to 26MHz
-> > + * but there is no information about how to configure this sensor
-> > + * for anything else but 24MHz, since there is no datasheet...
-> > + */
-> > +#define IMX300_XCLK_FREQ_24M         24000000
-> > +
-> > +/* Delay after XCLK/RESET during power up for sensor boot/stabilization */
-> > +#define IMX300_XCLK_STABLE_DELAY_US  10000
-> > +#define IMX300_XCLK_DELAY_RANGE_US   1000
-> > +#define IMX300_XCLR_MIN_DELAY_US     25000
-> > +#define IMX300_XCLR_DELAY_RANGE_US   1000
-> > +
-> > +/*
-> > + * Pixel rates: max resolution + max FPS uses high bw; low resolution
-> > + * can use low bw in order to save power and limit sensor heating
-> > + */
-> > +#define IMX300_HIGH_BW_PIXEL_RATE    624000000
-> > +#define IMX300_LOW_BW_PIXEL_RATE     384000000
-> > +#define IMX300_HIGH_BW_LINK_FREQ     780000000
-> > +#define IMX300_LOW_BW_LINK_FREQ              480000000
-> > +
-> > +/*
-> > + * About the Chip ID:
-> > + *
-> > + * IMX300 seems to be sort of flawed... scanning the registers reveals
-> > + * that there's no reg having the expected 0x300 ChipID, like literally
-> > + * all of the other Sony IMX sensors.
-> > + * There seem to be no meaningful values and, even during reverse
-> > + * engineering of three "userspace drivers" for this sensor, found on
-> > + * three different series of smartphones, there is no trace of any ChipID.
-> > + * These userspace drivers seem to be reading the Sensor ID at register
-> > + * 0x0016 and comparing it to zero: it looks like being a dummy and not
-> > + * reliable at all, since I imagine that *many* camera sensors may contain
-> > + * zero at that register address, but that's still better than nothing...
->
-> Have you checked what's at 0x0 (16 bits)?
->
-I have checked from 0x0 to 0x100 and from 0x904 to the register space end,
-which I don't really remember what it was right now.
-Unfortunately, as I wrote in that comment, there are no meaningful values to
-compare. Even trying to compare the registers at power-on is of no use: I
-have verified that they change on at least a MSM8998 phone from Sony that
-uses the same camera sensor.
-I am a bit disappointed with Sony about this.. but there is no other way.
+Hi Brendan,
 
-After all, that's a "custom" sensor that is supposed to be used only from them,
-and only on their smartphones, so they may have a point for not adding any
-ID information in it.
+Thank you for the patch! Perhaps something to improve:
 
-> > + *
-> > + * After all, if you don't have this camera sensor attached to your board,
-> > + * you shouldn't be adding it in your DT... :(
-> > + */
-> > +#define IMX300_REG_CHIP_ID           0x0016
-> > +#define IMX300_CHIP_ID                       0x0
-> > +
-> > +#define IMX300_REG_MODE_SELECT               0x0100
-> > +#define IMX300_MODE_STANDBY          0x00
-> > +#define IMX300_MODE_STREAMING                0x01
-> > +
-> > +/* Orientation: changes bayer order */
-> > +#define IMX300_REG_ORIENTATION               0x0101
-> > +
-> > +/* SW Reset: set to 1 to reset. Gets automatically set back to 0. */
-> > +#define IMX300_REG_SW_RESET          0x0103
-> > +
-> > +/* Data format */
-> > +#define IMX300_REG_CSI_DATA_FORMAT_HI        0x0112
-> > +#define IMX300_REG_CSI_DATA_FORMAT_LO        0x0113
-> > +#define IMX300_CSI_DATA_FMT_8BIT     8
-> > +#define IMX300_CSI_DATA_FMT_10BIT    10
-> > +
-> > +/* Output Set-up */
-> > +#define IMX300_REG_CSI_LANE_MODE     0x0114
-> > +#define IMX300_CSI_LANE_MODE_2LANE   BIT(0)
-> > +#define IMX300_CSI_LANE_MODE_4LANE   (BIT(0) | BIT(1))
-> > +
-> > +/* EXCK: Min 6MHz, Max 27MHz */
-> > +#define IMX300_REG_EXCK_FREQ_MHZ     0x0136
-> > +
-> > +/* Exposure control */
-> > +#define IMX300_REG_EXPOSURE          0x0202
-> > +#define IMX300_EXPOSURE_MIN          4
-> > +#define IMX300_EXPOSURE_STEP         1
-> > +#define IMX300_EXPOSURE_DEFAULT              3556
-> > +#define IMX300_EXPOSURE_MAX          65535
-> > +
-> > +/* Analog gain control */
-> > +#define IMX300_REG_ANALOG_GAIN               0x0204
-> > +#define IMX300_ANA_GAIN_MIN          0
-> > +#define IMX300_ANA_GAIN_MAX          0x1fff
-> > +#define IMX300_ANA_GAIN_STEP         1
-> > +#define IMX300_ANA_GAIN_DEFAULT              0x0
-> > +
-> > +/* Digital gain control */
-> > +#define IMX300_REG_GR_DIGITAL_GAIN   0x020e
-> > +#define IMX300_REG_R_DIGITAL_GAIN    0x0210
-> > +#define IMX300_REG_B_DIGITAL_GAIN    0x0212
-> > +#define IMX300_REG_GB_DIGITAL_GAIN   0x0214
-> > +#define IMX300_DGTL_GAIN_MIN         0
-> > +#define IMX300_DGTL_GAIN_MAX         4095
-> > +#define IMX300_DGTL_GAIN_DEFAULT     1024
-> > +#define IMX300_DGTL_GAIN_STEP                1
-> > +
-> > +/* Clock generator */
-> > +#define IMX300_REG_OP_PIX_CLK_DIV    0x0309
-> > +#define IMX300_REG_OP_SYS_CLK_DIV    0x030b
-> > +
-> > +/* V_TIMING internal */
-> > +#define IMX300_REG_VTS                       0x0340
-> > +#define IMX300_VTS_MIN                       41
-> > +#define IMX300_VTS_MAX                       (131071 - IMX300_VTS_MIN)
-> > +
-> > +/* Line Length */
-> > +#define IMX300_REG_LINE_LEN_PCK              0x0342
-> > +#define IMX300_LINELEN_MIN           7000
-> > +#define IMX300_LINELEN_MAX           8230
-> > +#define IMX300_LINELEN_STEP          1
-> > +#define IMX300_LINELEN_DEFAULT               7096
-> > +
-> > +/* Output configuration */
-> > +#define IMX300_REG_X_ADDR_START              0x0344
-> > +#define IMX300_REG_Y_ADDR_START              0x0346
-> > +#define IMX300_REG_X_ADDR_END                0x0348
-> > +#define IMX300_REG_Y_ADDR_END                0x034a
-> > +#define IMX300_REG_X_OUTPUT_SIZE     0x034c
-> > +#define IMX300_REG_Y_OUTPUT_SIZE     0x034e
-> > +#define IMX300_REG_X_ODD_INC         0x0383
-> > +#define IMX300_REG_Y_ODD_INC         0x0387
-> > +
-> > +/* HBLANK control - read only */
-> > +#define IMX300_PPL_DEFAULT           8224
-> > +
-> > +/* Test Pattern Control */
-> > +#define IMX300_REG_TEST_PATTERN              0x0600
-> > +#define IMX300_REG_TEST_PATTERN_WIDTH        0x0624
-> > +#define IMX300_REG_TEST_PATTERN_HEIGHT       0x0626
-> > +#define IMX300_TEST_PATTERN_DISABLE  0
-> > +#define IMX300_TEST_PATTERN_SOLID_COLOR      1
-> > +#define IMX300_TEST_PATTERN_COLOR_BARS       2
-> > +#define IMX300_TEST_PATTERN_GREY_COLOR       3
-> > +#define IMX300_TEST_PATTERN_PN9              4
-> > +
-> > +/* Test pattern colour components */
-> > +#define IMX300_REG_TESTP_RED         0x0602
-> > +#define IMX300_REG_TESTP_GREENR              0x0604
-> > +#define IMX300_REG_TESTP_BLUE                0x0606
-> > +#define IMX300_REG_TESTP_GREENB              0x0608
-> > +#define IMX300_TESTP_COLOUR_MIN              0
-> > +#define IMX300_TESTP_COLOUR_MAX              0x03ff
-> > +#define IMX300_TESTP_COLOUR_STEP     1
-> > +#define IMX300_TESTP_RED_DEFAULT     IMX300_TESTP_COLOUR_MAX
-> > +#define IMX300_TESTP_GREENR_DEFAULT  0
-> > +#define IMX300_TESTP_BLUE_DEFAULT    0
-> > +#define IMX300_TESTP_GREENB_DEFAULT  0
-> > +
-> > +/* Binning */
-> > +#define IMX300_REG_BINNING_EN                0x0900
-> > +#define IMX300_REG_BINNING_TYPE              0x0902
-> > +
-> > +/*
-> > + * ** IMX300 native and active pixel array size **
-> > + *
-> > + * Being this a multi-aspect sensor, the following native W/H apply, but
-> > + * beware: the module assembly usually has a (round) lens that is shadowing
-> > + * or covering the corners of the (square) image sensor, so the maximum
-> > + * output resolution must be lower than the maximum sensor resolution
-> > + * otherwise we get something like a view from a porthole... :)
-> > + *
-> > + * For 4:3  aspect ratio, max is: 5984x4140 (25MP)
-> > + * For 16:9 aspect ratio, max is: 5984x3392 (20.3MP)
-> > + */
-> > +#define IMX300_NATIVE_WIDTH          5980U
-> > +#define IMX300_NATIVE_HEIGHT         4140U
-> > +#define IMX300_PIXEL_ARRAY_LEFT              0U
-> > +#define IMX300_PIXEL_ARRAY_TOP               0U
-> > +#define IMX300_PIXEL_ARRAY_WIDTH     5520U
-> > +#define IMX300_PIXEL_ARRAY_HEIGHT    4160U
-> > +
-> > +struct imx300_reg {
-> > +     u16 address;
-> > +     u16 val;
-> > +     u8 reg_len;
-> > +};
-> > +
-> > +struct imx300_reg_list {
-> > +     unsigned int num_of_regs;
-> > +     const struct imx300_reg *regs;
-> > +};
-> > +
-> > +/* Mode : resolution and related config&values */
-> > +struct imx300_mode {
-> > +     /* Frame width */
-> > +     unsigned int width;
-> > +     /* Frame height */
-> > +     unsigned int height;
-> > +     /* Maximum achievable FPS */
-> > +     unsigned int max_fps;
-> > +     /* Needs high data rate */
-> > +     bool high_bw;
-> > +     /* Needs binning setup */
-> > +     bool binned;
-> > +
-> > +     /* Analog crop rectangle. */
-> > +     struct v4l2_rect crop;
-> > +
-> > +     /* V-timing default */
-> > +     unsigned int vts_def;
-> > +
-> > +     /* Default register values */
-> > +     struct imx300_reg_list reg_list;
-> > +};
-> > +
-> > +/*
-> > + * I have no idea what this very long initialization sequence is for...
-> > + * but missing writes in this makes the sensor to output corrupted
-> > + * frames or nothing at all...
-> > + */
-> > +static const struct imx300_reg init_sequence[] = {
-> > +     { IMX300_REG_EXCK_FREQ_MHZ, 24, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0137, 0x00, IMX300_REG_VALUE_08BIT },
->
-> This is part of the same 16-bit register.
->
-I know, I know... But I did it like that to avoid doing bit shifting
-and such, so to
-simplify reading the already over-complicated table.
-Otherwise I would have to define a EXCK_FREQ_24MHZ and a
-EXCK_FREQ_8MHZ, then I would be out of the 80 cols, having to wrap-around
-and impact on the readability.
+[auto build test WARNING on bpf-next/master]
 
-> > +     { 0x0101, 0x03, IMX300_REG_VALUE_08BIT },
->
-> This enables horizontal and vertical flip. You could use the same macro for
-> the register address as in the common list.
->
-> What's the difference between the initial and common registers?
->
-If by initial you mean the initial value that the registers have at
-the first sensor
-power-on, then... it's like 95% different. I tried to yeet out that 5%
-but it seems
-that the sensor will lock up if I do. Some register is resetting some
-other as soon
-as it gets written, most probably.
+url:    https://github.com/0day-ci/linux/commits/Brendan-Jackman/Atomics-for-eBPF/20201128-020057
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: i386-randconfig-s001-20201127 (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.3-151-g540c2c4b-dirty
+        # https://github.com/0day-ci/linux/commit/8b1823a5cf4569c72046175d217e3e2ad68c6a05
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Brendan-Jackman/Atomics-for-eBPF/20201128-020057
+        git checkout 8b1823a5cf4569c72046175d217e3e2ad68c6a05
+        # save the attached .config to linux build tree
+        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=i386 
 
-I am sure that I can remove something like 3-4 entries from that magic sequence,
-but researching about this for days didn't seem to be worth it.
-I mean, if there was any way to shrink that list by something like even 25%, I
-would've lost more time on it but.. from my findings, that's a big no... :(
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-> > +     { 0x0138, 0x01, IMX300_REG_VALUE_08BIT },
->
-> And this one enables the temperature sensor.
->
-Are you *really* sure? Unless you have a datasheet for this specific sensor,
-I would be cautious about this. I have tried to cross-check this with others and
-sometimes they change, even if for just one bit.
-I have no way of testing the temperature sensor in there for the moment, so
-I also cannot verify that setting this to zero will stop the reading.
 
-I propose to leave it like this and get back to it when I will find a way (other
-than when I will find the time to - as that's obviously the main issue
--) to test
-the temp sensor and eventually even implement it....
+"sparse warnings: (new ones prefixed by >>)"
+>> kernel/bpf/disasm.c:83:12: sparse: sparse: symbol 'bpf_atomic_alu_string' was not declared. Should it be static?
 
-> > +     { 0x3154, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3155, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3156, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3157, 0x66, IMX300_REG_VALUE_08BIT },
-> > +     { 0x305d, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31b0, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3208, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3210, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x406c, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x406d, 0x39, IMX300_REG_VALUE_08BIT },
-> > +     { 0x430d, 0xaa, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4313, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x431e, 0x88, IMX300_REG_VALUE_08BIT },
-> > +     { 0x431f, 0x8f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4321, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4324, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4325, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4326, 0x28, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4328, 0x0d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4329, 0x5b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x432c, 0x06, IMX300_REG_VALUE_08BIT },
-> > +     { 0x432d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x432e, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4554, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4811, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4819, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x481d, 0x9d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x481f, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4838, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4839, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x483a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x483b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4871, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4877, 0x9b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x487d, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4883, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4891, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4893, 0x9d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48ad, 0x9d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48af, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48b1, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48b5, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48bb, 0x9b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48c1, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48c7, 0x9b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48c9, 0x95, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48cb, 0x94, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4bd7, 0x24, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48dd, 0x95, IMX300_REG_VALUE_08BIT },
-> > +     { 0x48e5, 0x97, IMX300_REG_VALUE_08BIT },
-> > +     { 0x49d1, 0x9a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a00, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a01, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a02, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a03, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a1d, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a1f, 0x9b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a27, 0x97, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a29, 0x12, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a2f, 0x97, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a4d, 0x9d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a4f, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a51, 0x9d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a53, 0x99, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a6d, 0x9e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4a6f, 0x9d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4be7, 0x24, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4c07, 0x24, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4c17, 0x24, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4c97, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4ca7, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4cc7, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4cd7, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4d57, 0x12, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4d67, 0x12, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4d87, 0x12, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4d97, 0x12, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4db7, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4dc7, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4de7, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4df7, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4e15, 0x43, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4e25, 0x43, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4e45, 0x43, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4e55, 0x43, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4f40, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4f42, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4f48, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4f4e, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x505c, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x505d, 0x36, IMX300_REG_VALUE_08BIT },
-> > +     { 0x505f, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x5069, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x5e6a, 0xfe, IMX300_REG_VALUE_08BIT },
-> > +     { 0x5e70, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6153, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6156, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x656a, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x656b, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7300, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9006, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb000, 0x6e, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb001, 0xfd, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb002, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb003, 0x2a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb004, 0x83, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb005, 0x41, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb006, 0x83, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb007, 0x43, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb008, 0x82, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb009, 0x49, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb00a, 0x82, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb00b, 0x4a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb00c, 0x6e, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb00d, 0x93, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb00e, 0x82, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb00f, 0x41, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb010, 0x82, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb011, 0x4b, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb100, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb101, 0x5e, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb102, 0x80, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb103, 0x9a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb104, 0xaf, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb105, 0xc0, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb106, 0xcd, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb107, 0xd7, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb123, 0x55, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb125, 0x55, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb127, 0x55, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb129, 0x55, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb12b, 0x55, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb136, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb137, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb138, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb139, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb13a, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb13b, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb13c, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb13d, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb13e, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb13f, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb140, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb141, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb142, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb143, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb144, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb145, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb146, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb147, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb148, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb149, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb14a, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb14b, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb14c, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb14d, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb14e, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb14f, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb150, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb151, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb152, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb153, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb154, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb155, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb156, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb157, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb158, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb159, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb15a, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb15b, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb15c, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb15d, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0xb210, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x313c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3198, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31a0, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31a1, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31a2, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31a3, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31a8, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3290, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6d20, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6d21, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6d22, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6d23, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6d26, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6d27, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6e07, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6e35, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6e55, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6e7c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6e93, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6efb, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7c68, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x845c, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x8469, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9257, 0x96, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9258, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x933a, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x933b, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x933d, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0x933e, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0x933f, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0x934b, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x934c, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9356, 0x8c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9357, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9358, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9359, 0x8c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x935a, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x935b, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9360, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9361, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9362, 0x8c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9363, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9364, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9365, 0x8c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9366, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9367, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x940d, 0x07, IMX300_REG_VALUE_08BIT },
-> > +     { 0x940e, 0x07, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9414, 0x06, IMX300_REG_VALUE_08BIT },
-> > +     { 0x942b, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x942c, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x942d, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x942e, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x942f, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9430, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9431, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9432, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9433, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9434, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9435, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9436, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9437, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9438, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9439, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x943b, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x943d, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x943f, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9441, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9443, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9445, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9447, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9449, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x944b, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x944d, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x944f, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9451, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9452, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9454, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9456, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9457, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9458, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9459, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x945a, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x945b, 0x07, IMX300_REG_VALUE_08BIT },
-> > +     { 0x945c, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x945d, 0x07, IMX300_REG_VALUE_08BIT },
-> > +     { 0x945e, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x945f, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9460, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9461, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9462, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9463, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9464, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9465, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9466, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x947c, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x947d, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9480, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9481, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9503, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9504, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9505, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9506, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9507, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9508, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9526, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9527, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9528, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9619, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x961b, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x961d, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x961f, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9621, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9623, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9625, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9627, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9629, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x962b, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x962d, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x962f, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9719, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x971b, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x971d, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x971f, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9721, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9723, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9725, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9727, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9729, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x972b, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x972d, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x972f, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9901, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9903, 0x23, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9905, 0x23, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9906, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9907, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9908, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9909, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x990a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x990b, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x990d, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x990f, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9911, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9913, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9915, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9917, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9919, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x991b, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x991d, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0x991f, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9921, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9923, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9925, 0x23, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9927, 0x23, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9929, 0x23, IMX300_REG_VALUE_08BIT },
-> > +     { 0x992b, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x992d, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x992f, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9931, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9933, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9935, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9937, 0x6b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9939, 0x7c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x993b, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9943, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9945, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9947, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9949, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x994b, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x994d, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x994f, 0x42, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9951, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9953, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9955, 0x5a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9957, 0x13, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9959, 0x0c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x995a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x995b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x995c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x996b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x996d, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x996f, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9971, 0xc8, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9973, 0x32, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9975, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9976, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9979, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x997a, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x997b, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9981, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9983, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9985, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99a4, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99a5, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99a6, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99a7, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99a8, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99a9, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99aa, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99ab, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99ac, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99ad, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99ae, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99af, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99b0, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99b1, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99b2, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99b3, 0x30, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99b4, 0x30, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99b5, 0x30, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99bb, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99bd, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99bf, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99c0, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99c1, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99c2, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99c6, 0x3c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99c7, 0x3c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99c8, 0x3c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99c9, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99ca, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x99cb, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a01, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a03, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a05, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a07, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a09, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a0b, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a0d, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a0f, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a11, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a13, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a15, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a17, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a19, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a1b, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a1d, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a1f, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a21, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a23, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a25, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a27, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a29, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a2b, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a2d, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a2f, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a31, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a33, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a35, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a37, 0x6b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a39, 0x7c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a3b, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a3d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a3f, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a41, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a4f, 0x42, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a51, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a53, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a55, 0x5a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a57, 0x13, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a59, 0x0c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a5a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a5b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a5c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a6b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a6d, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a6f, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a71, 0xc8, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a73, 0x32, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a75, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a79, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a7a, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a7b, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a81, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a83, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9a85, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aa4, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aa5, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aa6, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aa7, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aa8, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aa9, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aaa, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aab, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aac, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aad, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aae, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aaf, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ab0, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ab1, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ab2, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ab3, 0x30, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ab4, 0x30, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ab5, 0x30, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ab6, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ab7, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ab8, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9abb, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9abd, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9abf, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ac0, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ac1, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ac2, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ac6, 0x2d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ac7, 0x2d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ac8, 0x2d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ac9, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9aca, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9acb, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b01, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b03, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b05, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b07, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b08, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b09, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b0a, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b0b, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b0d, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b0f, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b11, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b13, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b15, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b17, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b19, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b1b, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b1d, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b1f, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b21, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b23, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b25, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b27, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b29, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b2b, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b2d, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b2f, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b31, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b33, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b35, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b37, 0x6b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b39, 0x7c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b3b, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b43, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b45, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b47, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b49, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b4b, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b4d, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b4f, 0x2d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b51, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b53, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b55, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b57, 0x0d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b59, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b5a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b5b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b5c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b5d, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b5e, 0x0e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b60, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b61, 0x0e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b6b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b6d, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b6f, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b71, 0xc8, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b73, 0x32, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b75, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b76, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b79, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b7a, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b7b, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b81, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b83, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9b85, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bb0, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bb1, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bb2, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bb3, 0x30, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bb4, 0x30, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bb5, 0x30, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bbb, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bbd, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bbf, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bc0, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bc1, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bc2, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bc6, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bc7, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bc8, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bc9, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bca, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bcb, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bcc, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bcd, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9bce, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c01, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c03, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c05, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c07, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c09, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c0b, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c0d, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c0f, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c11, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c13, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c15, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c17, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c19, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c1b, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c1d, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c1f, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c21, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c23, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c25, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c27, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c29, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c2b, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c2d, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c2f, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c31, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c33, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c35, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c37, 0x6b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c39, 0x7c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c3b, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c3d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c3f, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c41, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c4f, 0x42, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c51, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c53, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c55, 0x5a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c57, 0x0d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c59, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c5a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c5b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c5c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c6b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c6d, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c6f, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c71, 0xc8, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c73, 0x32, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c75, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c79, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c7a, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c7b, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c81, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c83, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c85, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c87, 0x48, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c89, 0x48, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9c8b, 0x48, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ca4, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ca5, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ca6, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ca7, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ca8, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ca9, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9caa, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cab, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cac, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cad, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cae, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9caf, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cb0, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cb1, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cb2, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cb3, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cb4, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cb5, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cbb, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cbd, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cbf, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cc0, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cc1, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cc2, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cc6, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cc7, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cc8, 0x18, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cc9, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9cca, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ccb, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d01, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d03, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d05, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d07, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d09, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d0b, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d0d, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d0f, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d11, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d13, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d15, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d17, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d19, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d1b, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d1d, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d1f, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d21, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d23, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d25, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d27, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d29, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d2b, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d2d, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d2f, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d31, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d33, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d35, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d37, 0x6b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d39, 0x7c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d3b, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d3d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d3f, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d41, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d4f, 0x42, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d50, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d51, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d53, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d55, 0x5a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d57, 0x13, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d59, 0x0c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d5b, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d5d, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d5f, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d61, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d63, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d65, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d67, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d69, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d6b, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d6d, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d6f, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d71, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d73, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d75, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d77, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d79, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d7b, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d7d, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d7f, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d81, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d83, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d85, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d87, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d89, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d8b, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d8d, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d8f, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d91, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d93, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d95, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d97, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d99, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d9b, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d9d, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9d9f, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9da1, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e01, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e03, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e05, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e07, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e09, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e0b, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e0d, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e0f, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e11, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e13, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e15, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e17, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e19, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e1b, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e1d, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e1f, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e21, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e23, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e25, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e27, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e29, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e2b, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e2d, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e2f, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e31, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e33, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e35, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e37, 0x6b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e39, 0x7c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e3b, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e3d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e3f, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e41, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e4f, 0x42, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e51, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e53, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e55, 0x5a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e57, 0x0d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e59, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e5b, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e5d, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e5f, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e61, 0x35, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e63, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e65, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e67, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e69, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e6b, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e6d, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e6f, 0x1b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e71, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e73, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e75, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e77, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e79, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e7b, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e7d, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e7f, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e81, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e83, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e85, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e87, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e89, 0x64, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e8b, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e8d, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e8f, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e91, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e93, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e95, 0x65, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e97, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e99, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e9b, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e9d, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9e9f, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9ea1, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f01, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f03, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f05, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f07, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f09, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f0b, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f0d, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f0f, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f11, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f13, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f15, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f17, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f19, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f1b, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f1d, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f1f, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f21, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f23, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f25, 0x6b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f27, 0x7c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f29, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f2b, 0x6b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f2d, 0x7c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f2f, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f31, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f33, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f35, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f37, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f39, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f3b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f3c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f3d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f3e, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f41, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f43, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f45, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f47, 0xc8, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f49, 0x32, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f4b, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f4d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f4f, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f51, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f53, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f55, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f57, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f59, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f5b, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f5d, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f5f, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f61, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f63, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f64, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f65, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f66, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f6a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f6b, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f6c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f6d, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f6e, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f6f, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f77, 0x42, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f78, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f79, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f7b, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f7d, 0x42, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f7e, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f7f, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f81, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f83, 0x5a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f85, 0x13, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f87, 0x0c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f89, 0x5a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f8b, 0x13, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f8d, 0x0c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9f8f, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9fa6, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9fa7, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9fa8, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9fa9, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9faa, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9fab, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9fac, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9fad, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9fae, 0x3f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9faf, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9fb0, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x9fb1, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa001, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa003, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa005, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa007, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa009, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa00b, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa00d, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa00f, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa011, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa013, 0x2f, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa015, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa017, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa019, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa01b, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa01d, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa01f, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa021, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa023, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa025, 0x6b, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa027, 0x7c, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa029, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa02b, 0x6b, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa02d, 0x7c, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa02f, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa031, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa033, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa035, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa037, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa039, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa03b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa03c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa03d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa03e, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa041, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa043, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa045, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa047, 0xc8, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa049, 0x32, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa04b, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa04d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa04f, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa051, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa053, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa055, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa057, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa059, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa05b, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa05d, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa05f, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa061, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa063, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa064, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa065, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa066, 0xe0, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa067, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa068, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa069, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa06b, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa06d, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa06f, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa071, 0x48, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa073, 0x48, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa075, 0x48, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa077, 0x42, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa079, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa07b, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa07d, 0x42, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa07f, 0x0b, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa081, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa083, 0x5a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa085, 0x0d, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa087, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa089, 0x5a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa08b, 0x0d, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa08d, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa08f, 0xa0, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa091, 0x3a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa093, 0x3a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa095, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa097, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa099, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa0a9, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa0aa, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa0ab, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa0af, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa0b0, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xa0b1, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf800, 0x5c, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf801, 0x5c, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf802, 0x92, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf803, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf804, 0x55, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf805, 0xbc, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf806, 0x22, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf807, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf808, 0x1c, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf809, 0x80, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf80a, 0xfa, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf80b, 0x21, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf80c, 0x55, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf80d, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf80e, 0xba, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf80f, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf810, 0x81, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf811, 0xd1, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf812, 0x31, IMX300_REG_VALUE_08BIT },
-> > +     { 0xf813, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x5869, 0x01, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +/*
-> > + * Magic registers sequence, common for all of the specified resolutions.
-> > + *
-> > + * Note: Binaries seem to send data to 0x0220, 0x0221 when enabling HDR mode...
-> > + */
-> > +static const struct imx300_reg mode_common_regs[] = {
-> > +     { IMX300_REG_ORIENTATION, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_CSI_DATA_FORMAT_HI, 10, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_CSI_DATA_FORMAT_LO, 10, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_CSI_LANE_MODE, IMX300_CSI_LANE_MODE_4LANE,
-> > +       IMX300_REG_VALUE_08BIT },
-> > +     { 0x0221, 0x11, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0381, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0383, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0385, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0387, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0401, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0404, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0405, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0408, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0409, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040c, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040d, 0x90, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040e, 0x10, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040f, 0x40, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30e4, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30e5, 0x90, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30e6, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30e7, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30e8, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30e9, 0x90, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30ea, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30eb, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30ec, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30ed, 0x90, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30ee, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30ef, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30f4, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30f5, 0x90, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30f6, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30f7, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3294, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3295, 0xe8, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3296, 0x16, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3297, 0x77, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0210, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0211, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0212, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0213, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0214, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0215, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0216, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0217, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3220, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3006, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3007, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31e0, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31e1, 0xff, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31e4, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4301, 0x94, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4302, 0x15, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4303, 0x44, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4304, 0x09, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4305, 0x07, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4306, 0x87, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4307, 0x88, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4308, 0xba, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4309, 0x21, IMX300_REG_VALUE_08BIT },
-> > +     { 0x4f7e, 0x12, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0220, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0222, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0224, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0225, 0xf4, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3000, 0x54, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3001, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0600, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0601, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3022, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b05, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b06, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3018, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3019, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x301a, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3025, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3130, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3004, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x30a2, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b00, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3250, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3251, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3011, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3013, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3129, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3125, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3127, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3140, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3141, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3142, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x314f, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b8e, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b8f, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b90, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b91, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b92, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b93, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b94, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0b95, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3121, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3123, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31b0, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3158, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3159, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x315a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x315b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x315c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x315d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x315e, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x315f, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3160, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3161, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3162, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3163, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3164, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3165, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3166, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3167, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3168, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3169, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x316a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x316b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x316c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x316d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x316e, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x316f, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3170, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3171, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3172, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3173, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3174, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3175, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3176, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3177, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3178, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3179, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x317a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x317b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x317c, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x317d, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x317e, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x317f, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3180, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3181, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3182, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3183, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3184, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3185, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3186, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3187, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31b4, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31b5, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31b6, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31b7, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31b8, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31b9, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31ba, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31bb, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3291, 0x01, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +/* Data rate configuration: HIGH (780MHz) */
-> > +static const struct imx300_reg mipi_data_rate_1560mbps[] = {
-> > +     { 0x0301, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0303, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0305, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0306, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0307, 0xbe, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_OP_PIX_CLK_DIV, 10, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_OP_SYS_CLK_DIV, 1, IMX300_REG_VALUE_08BIT },
-> > +     { 0x030d, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x030e, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x030f, 0xbb, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +/* Data rate configuration: LOW (480MHz) */
-> > +static const struct imx300_reg mipi_data_rate_960mbps[] = {
-> > +     { 0x0301, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0303, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0305, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0306, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0307, 0xbe, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_OP_PIX_CLK_DIV, 10, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_OP_SYS_CLK_DIV, 1, IMX300_REG_VALUE_08BIT },
-> > +     { 0x030d, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x030e, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x030f, 0x4b, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +static const struct imx300_reg binning_mode_off[] = {
-> > +     { IMX300_REG_BINNING_EN, 0, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0901, 0x11, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_BINNING_TYPE, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a00, 0x19, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a01, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a02, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a03, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a04, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a05, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a06, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a07, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a08, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dc2, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dc3, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dc4, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dc7, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dca, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dcb, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dcc, 0x01, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +static const struct imx300_reg binning_mode_2x2[] = {
-> > +     { IMX300_REG_BINNING_EN, 1, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0901, 0x22, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_BINNING_TYPE, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a00, 0x19, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a01, 0x0a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a02, 0x0c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a03, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a04, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a05, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a06, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a07, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3a08, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dc2, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dc3, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dc4, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dc7, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dca, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dcb, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x6dcc, 0x01, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +
-> > +/* Output resolution configuration */
-> > +static const struct imx300_reg mode_5520x4160[] = {
-> > +     { IMX300_REG_EXPOSURE, 4230, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_ANALOG_GAIN, 0, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { IMX300_REG_VTS, 4250, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_LINE_LEN_PCK, 8008, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_ADDR_START, 232, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_ADDR_START, 0, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_ADDR_END, 5751, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_ADDR_END, 4159, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_OUTPUT_SIZE, 5520, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_OUTPUT_SIZE, 4160, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { 0x0408, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0409, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x040c, 5520, IMX300_REG_VALUE_16BIT },
-> > +     { 0x040e, 4160, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { 0x3150, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3151, 0x49, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3152, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3153, 0x20, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3154, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3155, 0x9f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3156, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3157, 0xaa, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x31e8, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31e9, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31ec, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31f0, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31f1, 0xbc, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3221, 0x01, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x7ea0, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea3, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea5, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea6, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea8, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea9, 0x78, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eac, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb3, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb4, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb5, 0x00, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +
-> > +static const struct imx300_reg mode_5984x3392[] = {
-> > +     { IMX300_REG_EXPOSURE, 3556, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_ANALOG_GAIN, 0, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { IMX300_REG_VTS, 3576, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_LINE_LEN_PCK, 8224, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_ADDR_START, 0, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_ADDR_START, 384, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_ADDR_END, 5751, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_ADDR_END, 3775, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_OUTPUT_SIZE, 5984, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_OUTPUT_SIZE, 3392, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { 0x0408, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0409, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x040c, 5984, IMX300_REG_VALUE_16BIT },
-> > +     { 0x040e, 3392, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { 0x3150, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3151, 0x50, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3152, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3153, 0x1a, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3154, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3155, 0xd8, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3156, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3157, 0x2c, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x31e8, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31e9, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31ec, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31f0, 0x03, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31f1, 0x84, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3221, 0x00, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x7ea0, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea3, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea5, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea6, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea8, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea9, 0x78, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eac, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb3, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb4, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb5, 0x00, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +static const struct imx300_reg mode_2992x1696[] = {
-> > +     { IMX300_REG_EXPOSURE, 3566, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_ANALOG_GAIN, 0, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { IMX300_REG_VTS, 1772, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_LINE_LEN_PCK, 7064, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_ADDR_START, 0, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_ADDR_START, 384, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_ADDR_END, 5983, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_ADDR_END, 3775, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_OUTPUT_SIZE, 2992, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_OUTPUT_SIZE, 1696, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { 0x0408, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0409, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x040c, 2992, IMX300_REG_VALUE_16BIT },
-> > +     { 0x040e, 1696, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { 0x3150, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3151, 0x28, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3152, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3153, 0x0d, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3154, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3155, 0x6c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3156, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3157, 0x16, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x31e8, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31e9, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31ec, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31f0, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31f1, 0x14, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3221, 0x00, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x7ea0, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea3, 0x05, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea5, 0x1e, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea6, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea8, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea9, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eac, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb3, 0x04, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb4, 0x0c, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb5, 0x10, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +static const struct imx300_reg mode_1424x800[] = {
-> > +     { IMX300_REG_EXPOSURE, 3692, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_ANALOG_GAIN, 0, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { IMX300_REG_VTS, 3712, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_LINE_LEN_PCK, 7064, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_ADDR_START, 1568, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_ADDR_START, 1280, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_ADDR_END, 4415, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_ADDR_END, 2879, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_X_OUTPUT_SIZE, 1424, IMX300_REG_VALUE_16BIT },
-> > +     { IMX300_REG_Y_OUTPUT_SIZE, 800, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { 0x0408, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x0409, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040a, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x040b, 0x00, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x040c, 1424, IMX300_REG_VALUE_16BIT },
-> > +     { 0x040e, 800, IMX300_REG_VALUE_16BIT },
-> > +
-> > +     { 0x3150, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3151, 0x13, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3152, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3153, 0x06, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3154, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3155, 0xad, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3156, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3157, 0x83, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x31e8, 0x01, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31e9, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31ec, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31f0, 0x02, IMX300_REG_VALUE_08BIT },
-> > +     { 0x31f1, 0xbc, IMX300_REG_VALUE_08BIT },
-> > +     { 0x3221, 0x01, IMX300_REG_VALUE_08BIT },
-> > +
-> > +     { 0x7ea0, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea3, 0x08, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea5, 0x0f, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea6, 0x60, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea8, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7ea9, 0x78, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eac, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb3, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb4, 0x00, IMX300_REG_VALUE_08BIT },
-> > +     { 0x7eb5, 0x00, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +/* Output bits per sample: This sensor support RAW8 and RAW10 */
-> > +static const struct imx300_reg raw8_framefmt_regs[] = {
-> > +     { IMX300_REG_CSI_DATA_FORMAT_HI, 8, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_CSI_DATA_FORMAT_LO, 8, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_OP_PIX_CLK_DIV, 8, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +static const struct imx300_reg raw10_framefmt_regs[] = {
-> > +     { IMX300_REG_CSI_DATA_FORMAT_HI, 10, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_CSI_DATA_FORMAT_LO, 10, IMX300_REG_VALUE_08BIT },
-> > +     { IMX300_REG_OP_PIX_CLK_DIV, 10, IMX300_REG_VALUE_08BIT },
-> > +};
-> > +
-> > +static const char * const imx300_test_pattern_menu[] = {
-> > +     "Disabled",
-> > +     "Solid Color",
-> > +     "Color Bars Solid",
-> > +     "Color Bars Fade To Gray",
-> > +     "Pseudorandom Sequence (PN9)"
-> > +};
-> > +
-> > +static const int imx300_test_pattern_val[] = {
-> > +     IMX300_TEST_PATTERN_DISABLE,
-> > +     IMX300_TEST_PATTERN_SOLID_COLOR,
-> > +     IMX300_TEST_PATTERN_COLOR_BARS,
-> > +     IMX300_TEST_PATTERN_GREY_COLOR,
-> > +     IMX300_TEST_PATTERN_PN9,
-> > +};
-> > +
-> > +/* regulator supplies */
-> > +static const char * const imx300_supply_name[] = {
-> > +     /* Supplies can be enabled in any order */
-> > +     "vana",  /* Analog (2.2V) supply */
-> > +     "vdig",  /* Digital Core (1.15-1.20V) supply */
-> > +     "vddl",  /* IF (1.8V) supply */
-> > +};
-> > +
-> > +#define IMX300_NUM_SUPPLIES ARRAY_SIZE(imx300_supply_name)
-> > +
-> > +/*
-> > + * The supported formats.
-> > + * This table MUST contain 4 entries per format, to cover the various flip
-> > + * combinations in the order
-> > + * - no flip
-> > + * - h flip
-> > + * - v flip
-> > + * - h&v flips
-> > + */
-> > +static const u32 codes[] = {
-> > +     MEDIA_BUS_FMT_SRGGB10_1X10,
-> > +     MEDIA_BUS_FMT_SGRBG10_1X10,
-> > +     MEDIA_BUS_FMT_SGBRG10_1X10,
-> > +     MEDIA_BUS_FMT_SBGGR10_1X10,
-> > +
-> > +     MEDIA_BUS_FMT_SRGGB8_1X8,
-> > +     MEDIA_BUS_FMT_SGRBG8_1X8,
-> > +     MEDIA_BUS_FMT_SGBRG8_1X8,
-> > +     MEDIA_BUS_FMT_SBGGR8_1X8,
-> > +};
-> > +
-> > +/* Mode configs */
-> > +static const struct imx300_mode supported_modes[] = {
-> > +     {
-> > +             /* 23MP 23fps mode */
-> > +             .width = 5520,
-> > +             .height = 4160,
-> > +             .max_fps = 23,
-> > +             .crop = {
-> > +                     .left = 0,
-> > +                     .top = 0,
-> > +                     .width = 5520,
-> > +                     .height = 4160
-> > +             },
-> > +             .vts_def = 4250,
-> > +             .high_bw = true,
-> > +             .binned = false,
-> > +             .reg_list = {
-> > +                     .num_of_regs = ARRAY_SIZE(mode_5520x4160),
-> > +                     .regs = mode_5520x4160,
-> > +             },
-> > +     },
-> > +     {
-> > +             /* 20.3MP 26fps mode */
-> > +             .width = 5984,
-> > +             .height = 3392,
-> > +             .max_fps = 26,
-> > +             .crop = {
-> > +                     .left = 0,
-> > +                     .top = 384,
-> > +                     .width = 5984,
-> > +                     .height = 3392
-> > +             },
-> > +             .vts_def = 3576,
-> > +             .high_bw = true,
-> > +             .binned = false,
-> > +             .reg_list = {
-> > +                     .num_of_regs = ARRAY_SIZE(mode_5984x3392),
-> > +                     .regs = mode_5984x3392,
-> > +             },
-> > +     },
-> > +     {
-> > +             /* 3.8MP 60fps 2x2 binning */
-> > +             .width = 2992,
-> > +             .height = 1696,
-> > +             .max_fps = 60,
-> > +             .crop = {
-> > +                     .left = 0,
-> > +                     .top = 384,
-> > +                     .width = 2292,
-> > +                     .height = 1696
-> > +             },
-> > +             .vts_def = 1792,
-> > +             .high_bw = true,
-> > +             .binned = true,
-> > +             .reg_list = {
-> > +                     .num_of_regs =
-> > +                             ARRAY_SIZE(mode_2992x1696),
-> > +                     .regs = mode_2992x1696,
-> > +             },
-> > +     },
-> > +     {
-> > +             /* 1.2MP binned 120fps mode */
-> > +             .width = 1424,
-> > +             .height = 800,
-> > +             .max_fps = 120,
-> > +             .crop = {
-> > +                     .left = 0,
-> > +                     .top = 384,
-> > +                     .width = 1424,
-> > +                     .height = 800,
-> > +             },
-> > +             .vts_def = 896,
-> > +             .high_bw = false,
-> > +             .binned = true,
-> > +             .reg_list = {
-> > +                     .num_of_regs =
-> > +                             ARRAY_SIZE(mode_1424x800),
-> > +                     .regs = mode_1424x800,
-> > +             },
-> > +     },
-> > +};
-> > +
-> > +struct imx300 {
-> > +     struct v4l2_subdev sd;
-> > +     struct media_pad pad;
-> > +
-> > +     struct v4l2_mbus_framefmt fmt;
-> > +
-> > +     struct clk *xclk; /* system clock to IMX300 */
-> > +     u32 xclk_freq;
-> > +
-> > +     struct gpio_desc *reset_gpio;
-> > +     struct regulator_bulk_data supplies[IMX300_NUM_SUPPLIES];
-> > +
-> > +     struct v4l2_ctrl_handler ctrl_handler;
-> > +     /* V4L2 Controls */
-> > +     struct v4l2_ctrl *pixel_rate;
-> > +     struct v4l2_ctrl *exposure;
-> > +     struct v4l2_ctrl *vflip;
-> > +     struct v4l2_ctrl *hflip;
-> > +     struct v4l2_ctrl *vblank;
-> > +     struct v4l2_ctrl *hblank;
-> > +
-> > +     /* Frame rate */
-> > +     struct v4l2_fract frame_rate;
-> > +
-> > +     /* Current mode */
-> > +     const struct imx300_mode *mode;
-> > +     u32 cur_bps;
-> > +
-> > +     /*
-> > +      * Mutex for serialized access:
-> > +      * Protect sensor module set pad format and start/stop streaming safely.
-> > +      */
-> > +     struct mutex mutex;
-> > +
-> > +     /* Streaming on/off */
-> > +     bool streaming;
-> > +};
-> > +
-> > +static inline struct imx300 *to_imx300(struct v4l2_subdev *_sd)
-> > +{
-> > +     return container_of(_sd, struct imx300, sd);
-> > +}
-> > +
-> > +static s64 get_pixel_rate(struct imx300 *imx300)
-> > +{
-> > +     s64 prate;
-> > +
-> > +     if (imx300->mode->high_bw)
-> > +             prate = IMX300_HIGH_BW_PIXEL_RATE;
-> > +     else
-> > +             prate = IMX300_LOW_BW_PIXEL_RATE;
-> > +
-> > +     /* Satisfy the settle time for 8bits */
-> > +     if (imx300->cur_bps == 8) {
-> > +             do_div(prate, 10);
-> > +             prate *= 12;
-> > +     }
-> > +
-> > +     return prate;
-> > +}
-> > +
-> > +/* Read registers up to 2 at a time */
-> > +static int imx300_read_reg(struct imx300 *imx300, u16 reg, u32 len, u32 *val)
-> > +{
-> > +     struct i2c_client *client = v4l2_get_subdevdata(&imx300->sd);
-> > +     struct i2c_msg msgs[2];
-> > +     u8 addr_buf[2] = { reg >> 8, reg & 0xff };
-> > +     u8 data_buf[4] = { 0, };
-> > +     int ret;
-> > +
-> > +     if (len > 4)
-> > +             return -EINVAL;
-> > +
-> > +     /* Write register address */
-> > +     msgs[0].addr = client->addr;
-> > +     msgs[0].flags = 0;
-> > +     msgs[0].len = ARRAY_SIZE(addr_buf);
-> > +     msgs[0].buf = addr_buf;
-> > +
-> > +     /* Read data from register */
-> > +     msgs[1].addr = client->addr;
-> > +     msgs[1].flags = I2C_M_RD;
-> > +     msgs[1].len = len;
-> > +     msgs[1].buf = &data_buf[4 - len];
-> > +
-> > +     ret = i2c_transfer(client->adapter, msgs, ARRAY_SIZE(msgs));
-> > +     if (ret != ARRAY_SIZE(msgs))
-> > +             return -EIO;
-> > +
-> > +     *val = get_unaligned_be32(data_buf);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +/* Write registers up to 4 at a time */
-> > +static int imx300_write_reg(struct imx300 *imx300, u16 reg, u32 len, u32 val)
-> > +{
-> > +     struct i2c_client *client = v4l2_get_subdevdata(&imx300->sd);
-> > +     u8 buf[6];
-> > +
-> > +     if (len > 4)
-> > +             return -EINVAL;
-> > +
-> > +     put_unaligned_be16(reg, buf);
-> > +     put_unaligned_be32(val << (8 * (4 - len)), buf + 2);
-> > +     if (i2c_master_send(client, buf, len + 2) != len + 2)
-> > +             return -EIO;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +/* Write a list of registers */
-> > +static int imx300_write_regs(struct imx300 *imx300,
-> > +                          const struct imx300_reg *regs, u32 len)
-> > +{
-> > +     struct i2c_client *client = v4l2_get_subdevdata(&imx300->sd);
-> > +     unsigned int i;
-> > +     int ret;
-> > +
-> > +     for (i = 0; i < len; i++) {
-> > +             ret = imx300_write_reg(imx300, regs[i].address,
-> > +                                    regs[i].reg_len,
-> > +                                    regs[i].val);
-> > +             if (ret) {
-> > +                     dev_err_ratelimited(&client->dev,
-> > +                                         "Cannot write reg 0x%4.4x. (%d)\n",
-> > +                                         regs[i].address, ret);
-> > +
-> > +                     return ret;
-> > +             }
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +/* Get bayer order based on flip setting. */
-> > +static u32 imx300_get_format_code(struct imx300 *imx300, u32 code)
-> > +{
-> > +     unsigned int i;
-> > +
-> > +     lockdep_assert_held(&imx300->mutex);
-> > +
-> > +     for (i = 0; i < ARRAY_SIZE(codes); i++)
-> > +             if (codes[i] == code)
-> > +                     break;
-> > +
-> > +     if (i >= ARRAY_SIZE(codes))
-> > +             i = 0;
-> > +
-> > +     i = (i & ~3) | (imx300->vflip->val ? 2 : 0) |
-> > +         (imx300->hflip->val ? 1 : 0);
-> > +
-> > +     return codes[i];
-> > +}
-> > +
-> > +static void imx300_set_default_format(struct imx300 *imx300)
-> > +{
-> > +     struct v4l2_mbus_framefmt *fmt;
-> > +
-> > +     fmt = &imx300->fmt;
-> > +     fmt->code = MEDIA_BUS_FMT_SRGGB10_1X10;
-> > +     fmt->colorspace = V4L2_COLORSPACE_SRGB;
-> > +     fmt->ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(fmt->colorspace);
-> > +     fmt->quantization = V4L2_MAP_QUANTIZATION_DEFAULT(true,
-> > +                                                       fmt->colorspace,
-> > +                                                       fmt->ycbcr_enc);
-> > +     fmt->xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(fmt->colorspace);
-> > +     fmt->width = supported_modes[0].width;
-> > +     fmt->height = supported_modes[0].height;
-> > +     fmt->field = V4L2_FIELD_NONE;
-> > +}
-> > +
-> > +static int imx300_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
-> > +{
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +     struct v4l2_mbus_framefmt *try_fmt =
-> > +             v4l2_subdev_get_try_format(sd, fh->pad, 0);
-> > +     struct v4l2_rect *try_crop;
-> > +
-> > +     mutex_lock(&imx300->mutex);
-> > +
-> > +     /* Initialize try_fmt */
-> > +     try_fmt->width = supported_modes[0].width;
-> > +     try_fmt->height = supported_modes[0].height;
-> > +     try_fmt->code = imx300_get_format_code(imx300,
-> > +                                            MEDIA_BUS_FMT_SRGGB10_1X10);
-> > +     try_fmt->field = V4L2_FIELD_NONE;
-> > +
-> > +     /* Initialize try_crop rectangle. */
-> > +     try_crop = v4l2_subdev_get_try_crop(sd, fh->pad, 0);
-> > +     try_crop->top = IMX300_PIXEL_ARRAY_TOP;
-> > +     try_crop->left = IMX300_PIXEL_ARRAY_LEFT;
-> > +     try_crop->width = IMX300_PIXEL_ARRAY_WIDTH;
-> > +     try_crop->height = IMX300_PIXEL_ARRAY_HEIGHT;
-> > +
-> > +     mutex_unlock(&imx300->mutex);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int imx300_update_digital_gain(struct imx300 *imx300, u32 gain)
-> > +{
-> > +     int ret;
-> > +
-> > +     ret = imx300_write_reg(imx300, IMX300_REG_GR_DIGITAL_GAIN,
-> > +                             IMX300_REG_VALUE_16BIT,
-> > +                             gain);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret = imx300_write_reg(imx300, IMX300_REG_GB_DIGITAL_GAIN,
-> > +                             IMX300_REG_VALUE_16BIT,
-> > +                             gain);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret = imx300_write_reg(imx300, IMX300_REG_R_DIGITAL_GAIN,
-> > +                             IMX300_REG_VALUE_16BIT,
-> > +                             gain);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret = imx300_write_reg(imx300, IMX300_REG_B_DIGITAL_GAIN,
->
-> return ...
->
-I really don't like ending functions like that, as any possible
-addition at the end
-of that would then result in more line changes than necessary.
-But anyway, if it's *really* a necessity, I guess I can change it.......
+Please review and possibly fold the followup patch.
 
-> > +                             IMX300_REG_VALUE_16BIT,
-> > +                             gain);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int imx300_set_ctrl(struct v4l2_ctrl *ctrl)
-> > +{
-> > +     struct imx300 *imx300 =
-> > +             container_of(ctrl->handler, struct imx300, ctrl_handler);
-> > +     struct i2c_client *client = v4l2_get_subdevdata(&imx300->sd);
-> > +     int ret;
-> > +
-> > +     if (ctrl->id == V4L2_CID_VBLANK) {
-> > +             int exposure_max, exposure_def;
-> > +
-> > +             /* Update max exposure while meeting expected vblanking */
-> > +             exposure_max = imx300->mode->height + ctrl->val - 10;
-> > +             exposure_def = (exposure_max < IMX300_EXPOSURE_DEFAULT) ?
-> > +                     exposure_max : IMX300_EXPOSURE_DEFAULT;
-> > +             __v4l2_ctrl_modify_range(imx300->exposure,
-> > +                                      imx300->exposure->minimum,
-> > +                                      exposure_max, imx300->exposure->step,
-> > +                                      exposure_def);
-> > +     }
-> > +
-> > +     /*
-> > +      * Applying V4L2 control value only happens
-> > +      * when power is up for streaming
-> > +      */
-> > +     if (pm_runtime_get_if_in_use(&client->dev) == 0)
-> > +             return 0;
-> > +
-> > +     switch (ctrl->id) {
-> > +     case V4L2_CID_ANALOGUE_GAIN:
-> > +             ret = imx300_write_reg(imx300, IMX300_REG_ANALOG_GAIN,
-> > +                                           IMX300_REG_VALUE_16BIT,
-> > +                                           ctrl->val);
-> > +             break;
-> > +     case V4L2_CID_EXPOSURE:
-> > +             ret = imx300_write_reg(imx300, IMX300_REG_EXPOSURE,
-> > +                                           IMX300_REG_VALUE_16BIT,
-> > +                                           ctrl->val);
-> > +             break;
-> > +     case V4L2_CID_DIGITAL_GAIN:
-> > +             ret = imx300_update_digital_gain(imx300, ctrl->val);
-> > +             break;
-> > +     case V4L2_CID_TEST_PATTERN:
-> > +             ret = imx300_write_reg(imx300, IMX300_REG_TEST_PATTERN,
-> > +                                    IMX300_REG_VALUE_16BIT,
-> > +                                    imx300_test_pattern_val[ctrl->val]);
-> > +             break;
-> > +     case V4L2_CID_HFLIP:
-> > +     case V4L2_CID_VFLIP:
-> > +             ret = imx300_write_reg(imx300, IMX300_REG_ORIENTATION,
-> > +                                           IMX300_REG_VALUE_08BIT,
-> > +                                           imx300->hflip->val |
-> > +                                           imx300->vflip->val << 1);
-> > +             break;
-> > +     case V4L2_CID_VBLANK:
-> > +             ret = imx300_write_reg(imx300, IMX300_REG_VTS,
-> > +                                          IMX300_REG_VALUE_16BIT,
-> > +                                          imx300->mode->height + ctrl->val);
-> > +             break;
-> > +     case V4L2_CID_TEST_PATTERN_RED:
-> > +             ret = imx300_write_reg(imx300, IMX300_REG_TESTP_RED,
-> > +                                    IMX300_REG_VALUE_16BIT, ctrl->val);
-> > +             break;
-> > +     case V4L2_CID_TEST_PATTERN_GREENR:
-> > +             ret = imx300_write_reg(imx300, IMX300_REG_TESTP_GREENR,
-> > +                                    IMX300_REG_VALUE_16BIT, ctrl->val);
-> > +             break;
-> > +     case V4L2_CID_TEST_PATTERN_BLUE:
-> > +             ret = imx300_write_reg(imx300, IMX300_REG_TESTP_BLUE,
-> > +                                    IMX300_REG_VALUE_16BIT, ctrl->val);
-> > +             break;
-> > +     case V4L2_CID_TEST_PATTERN_GREENB:
-> > +             ret = imx300_write_reg(imx300, IMX300_REG_TESTP_GREENB,
-> > +                                    IMX300_REG_VALUE_16BIT, ctrl->val);
-> > +             break;
-> > +     default:
-> > +             dev_info(&client->dev,
-> > +                      "ctrl(id:0x%x,val:0x%x) is not handled\n",
-> > +                      ctrl->id, ctrl->val);
-> > +             ret = -EINVAL;
-> > +             break;
-> > +     }
-> > +
-> > +     pm_runtime_put(&client->dev);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static const struct v4l2_ctrl_ops imx300_ctrl_ops = {
-> > +     .s_ctrl = imx300_set_ctrl,
-> > +};
-> > +
-> > +static int imx300_enum_mbus_code(struct v4l2_subdev *sd,
-> > +                              struct v4l2_subdev_pad_config *cfg,
-> > +                              struct v4l2_subdev_mbus_code_enum *code)
-> > +{
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +
-> > +     if (code->index >= (ARRAY_SIZE(codes) / 4))
-> > +             return -EINVAL;
-> > +
-> > +     code->code = imx300_get_format_code(imx300, codes[code->index * 4]);
->
-> The should depend on the flip controls.
->
-This is actually also selecting 8/10bits codes, as there you have both
-supported.
-...So, should it?
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int imx300_enum_frame_size(struct v4l2_subdev *sd,
-> > +                               struct v4l2_subdev_pad_config *cfg,
-> > +                               struct v4l2_subdev_frame_size_enum *fse)
-> > +{
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +
-> > +     if (fse->index >= ARRAY_SIZE(supported_modes))
-> > +             return -EINVAL;
-> > +
-> > +     if (fse->code != imx300_get_format_code(imx300, fse->code))
-> > +             return -EINVAL;
-> > +
-> > +     fse->min_width = supported_modes[fse->index].width;
-> > +     fse->max_width = fse->min_width;
-> > +     fse->min_height = supported_modes[fse->index].height;
-> > +     fse->max_height = fse->min_height;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int imx300_enum_frame_interval(struct v4l2_subdev *sd,
-> > +                             struct v4l2_subdev_pad_config *cfg,
-> > +                             struct v4l2_subdev_frame_interval_enum *fie)
-> > +{
-> > +     unsigned int i;
-> > +
-> > +     if (fie->pad || fie->index >= ARRAY_SIZE(supported_modes))
-> > +             return -EINVAL;
-> > +
-> > +     for (i = 0; i < ARRAY_SIZE(supported_modes); i++)
-> > +             if (fie->width == supported_modes[i].width &&
-> > +                 fie->height == supported_modes[i].height)
-> > +                     break;
-> > +
-> > +     if (i == ARRAY_SIZE(supported_modes))
-> > +             return -EINVAL;
-> > +
-> > +     fie->interval.numerator = 1;
-> > +     fie->interval.denominator = supported_modes[i].max_fps;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int imx300_g_frame_interval(struct v4l2_subdev *sd,
-> > +                                struct v4l2_subdev_frame_interval *ival)
-> > +{
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +
-> > +     ival->interval.numerator = imx300->frame_rate.denominator;
-> > +     ival->interval.denominator = imx300->frame_rate.numerator;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int imx300_s_frame_interval(struct v4l2_subdev *sd,
-> > +                                struct v4l2_subdev_frame_interval *ival)
-> > +{
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +     const struct imx300_mode *cur_mode = imx300->mode;
-> > +     struct v4l2_fract *tpf = &ival->interval;
-> > +     int exposure_max, exposure_def;
-> > +     u32 new_vts;
-> > +     u32 vblank = 0;
-> > +
-> > +     if (tpf->numerator == 0 || tpf->denominator == 0 ||
-> > +         (tpf->denominator > tpf->numerator * cur_mode->max_fps)) {
-> > +             /* reset to max frame rate */
-> > +             tpf->numerator = 1;
-> > +             tpf->denominator = cur_mode->max_fps;
-> > +             new_vts = cur_mode->vts_def;
-> > +     } else {
-> > +             /* Approximation of new VTS: recalculate default vblank */
-> > +             vblank = cur_mode->vts_def - cur_mode->height;
-> > +
-> > +             /* Avoid floating point */
-> > +             new_vts = vblank * 1000;
-> > +             new_vts = new_vts / cur_mode->max_fps;
-> > +             new_vts = (new_vts * tpf->denominator) / 1000;
-> > +             new_vts += vblank + cur_mode->height;
-> > +     }
-> > +
-> > +     imx300->frame_rate.numerator = tpf->numerator;
-> > +     imx300->frame_rate.denominator = tpf->denominator;
-> > +
-> > +     /*
-> > +      * Note: VTS cannot be less than cur_mode->height, but that's useless
-> > +      * to check at this point, since we are surely complying here.
-> > +      *
-> > +      * Now that we've got a new VTS, let's update the exposure control
-> > +      * min/max in order to avoid impossible and/or useless combinations.
-> > +      */
-> > +     exposure_max = new_vts - 4;
-> > +     exposure_def = (exposure_max < IMX300_EXPOSURE_DEFAULT) ?
-> > +                     exposure_max : IMX300_EXPOSURE_DEFAULT;
-> > +     __v4l2_ctrl_modify_range(imx300->exposure,
-> > +                              imx300->exposure->minimum,
-> > +                              exposure_max, imx300->exposure->step,
-> > +                              exposure_def);
-> > +
-> > +     return imx300_write_reg(imx300, IMX300_REG_VTS,
-> > +                             IMX300_REG_VALUE_16BIT,
-> > +                             new_vts);
-> > +}
-> > +
-> > +static void imx300_reset_colorspace(struct v4l2_mbus_framefmt *fmt)
-> > +{
-> > +     fmt->colorspace = V4L2_COLORSPACE_SRGB;
-> > +     fmt->ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(fmt->colorspace);
-> > +     fmt->quantization = V4L2_MAP_QUANTIZATION_DEFAULT(true,
-> > +                                                       fmt->colorspace,
-> > +                                                       fmt->ycbcr_enc);
-> > +     fmt->xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(fmt->colorspace);
-> > +}
-> > +
-> > +static void imx300_update_pad_format(struct imx300 *imx300,
-> > +                                  const struct imx300_mode *mode,
-> > +                                  struct v4l2_subdev_format *fmt)
-> > +{
-> > +     fmt->format.width = mode->width;
-> > +     fmt->format.height = mode->height;
-> > +     fmt->format.field = V4L2_FIELD_NONE;
-> > +     imx300_reset_colorspace(&fmt->format);
-> > +}
-> > +
-> > +static int __imx300_get_pad_format(struct imx300 *imx300,
-> > +                                struct v4l2_subdev_pad_config *cfg,
-> > +                                struct v4l2_subdev_format *fmt)
-> > +{
-> > +     if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
-> > +             struct v4l2_mbus_framefmt *try_fmt =
-> > +                     v4l2_subdev_get_try_format(&imx300->sd, cfg, fmt->pad);
-> > +             /* update the code which could change due to vflip or hflip: */
-> > +             try_fmt->code = imx300_get_format_code(imx300, try_fmt->code);
-> > +             fmt->format = *try_fmt;
-> > +     } else {
-> > +             imx300_update_pad_format(imx300, imx300->mode, fmt);
-> > +             fmt->format.code = imx300_get_format_code(imx300,
-> > +                                                       imx300->fmt.code);
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int imx300_get_pad_format(struct v4l2_subdev *sd,
-> > +                              struct v4l2_subdev_pad_config *cfg,
-> > +                              struct v4l2_subdev_format *fmt)
-> > +{
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +     int ret;
-> > +
-> > +     mutex_lock(&imx300->mutex);
-> > +     ret = __imx300_get_pad_format(imx300, cfg, fmt);
-> > +     mutex_unlock(&imx300->mutex);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int imx300_set_pad_format(struct v4l2_subdev *sd,
-> > +                              struct v4l2_subdev_pad_config *cfg,
-> > +                              struct v4l2_subdev_format *fmt)
-> > +{
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +     const struct imx300_mode *mode;
-> > +     struct v4l2_mbus_framefmt *framefmt;
-> > +     int exposure_max, exposure_def, hblank;
-> > +     unsigned int i;
-> > +
-> > +     mutex_lock(&imx300->mutex);
-> > +
-> > +     for (i = 0; i < ARRAY_SIZE(codes); i++)
-> > +             if (codes[i] == fmt->format.code)
-> > +                     break;
-> > +     if (i >= ARRAY_SIZE(codes))
-> > +             i = 0;
-> > +
-> > +     /* Bayer order varies with flips */
-> > +     fmt->format.code = imx300_get_format_code(imx300, codes[i]);
-> > +
-> > +     mode = v4l2_find_nearest_size(supported_modes,
-> > +                                   ARRAY_SIZE(supported_modes),
-> > +                                   width, height,
-> > +                                   fmt->format.width, fmt->format.height);
-> > +     imx300_update_pad_format(imx300, mode, fmt);
-> > +     if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
-> > +             framefmt = v4l2_subdev_get_try_format(sd, cfg, fmt->pad);
-> > +             *framefmt = fmt->format;
-> > +     } else if (imx300->mode != mode ||
-> > +                imx300->fmt.code != fmt->format.code) {
-> > +             imx300->fmt = fmt->format;
-> > +             imx300->mode = mode;
-> > +             /* Update limits and set FPS to default */
-> > +             __v4l2_ctrl_modify_range(imx300->vblank, IMX300_VTS_MIN,
-> > +                                      IMX300_VTS_MAX - mode->height, 1,
-> > +                                      mode->vts_def - mode->height);
-> > +             __v4l2_ctrl_s_ctrl(imx300->vblank,
-> > +                                mode->vts_def - mode->height);
-> > +             /* Update max exposure while meeting expected vblanking */
-> > +             exposure_max = mode->vts_def - 4;
-> > +             exposure_def = (exposure_max < IMX300_EXPOSURE_DEFAULT) ?
-> > +                     exposure_max : IMX300_EXPOSURE_DEFAULT;
-> > +             __v4l2_ctrl_modify_range(imx300->exposure,
-> > +                                      imx300->exposure->minimum,
-> > +                                      exposure_max, imx300->exposure->step,
-> > +                                      exposure_def);
-> > +             /*
-> > +              * Currently PPL is fixed to IMX300_PPL_DEFAULT, so hblank
-> > +              * depends on mode->width only, and is not changeble in any
-> > +              * way other than changing the mode.
-> > +              */
-> > +             hblank = IMX300_PPL_DEFAULT - mode->width;
-> > +             __v4l2_ctrl_modify_range(imx300->hblank, hblank, hblank, 1,
-> > +                                      hblank);
-> > +     }
-> > +
-> > +     mutex_unlock(&imx300->mutex);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int imx300_set_framefmt(struct imx300 *imx300)
-> > +{
-> > +     int ret;
-> > +
-> > +     switch (imx300->fmt.code) {
-> > +     case MEDIA_BUS_FMT_SRGGB8_1X8:
-> > +             fallthrough;
->
-> You can omit fallthrough here and below.
->
-Let's remove it then :)
+--FL5UXtIhxfXey3p5
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-> > +     case MEDIA_BUS_FMT_SGRBG8_1X8:
-> > +             fallthrough;
-> > +     case MEDIA_BUS_FMT_SGBRG8_1X8:
-> > +             fallthrough;
-> > +     case MEDIA_BUS_FMT_SBGGR8_1X8:
-> > +             ret = imx300_write_regs(imx300, raw8_framefmt_regs,
-> > +                                     ARRAY_SIZE(raw8_framefmt_regs));
-> > +             if (ret)
-> > +                     return ret;
-> > +             imx300->cur_bps = 8;
-> > +             break;
-> > +     case MEDIA_BUS_FMT_SRGGB10_1X10:
-> > +             fallthrough;
-> > +     case MEDIA_BUS_FMT_SGRBG10_1X10:
-> > +             fallthrough;
-> > +     case MEDIA_BUS_FMT_SGBRG10_1X10:
-> > +             fallthrough;
-> > +     case MEDIA_BUS_FMT_SBGGR10_1X10:
-> > +             ret = imx300_write_regs(imx300, raw10_framefmt_regs,
-> > +                                     ARRAY_SIZE(raw10_framefmt_regs));
-> > +             if (ret)
-> > +                     return ret;
-> > +             imx300->cur_bps = 10;
-> > +             break;
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     /* Update the pixel rate to eventually save some power */
->
-> How is this related to any possible power savings?
->
-Depending on the target camera subsystem implementation, having a lower
-pixel rate will allow for scaling clocks lower, thus saving power.
-In any case, even if your camera subsystem does not allow it, then having
-this sensor outputting at a lower pixel rate will reduce the produced heat:
-you definitely know that more heat means more power going through.
+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
 
-So, well, here you get power saving twice, if your platform allows.
-
-> > +     __v4l2_ctrl_s_ctrl_int64(imx300->pixel_rate, get_pixel_rate(imx300));
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static const struct v4l2_rect *
-> > +__imx300_get_pad_crop(struct imx300 *imx300, struct v4l2_subdev_pad_config *cfg,
-> > +                   unsigned int pad, enum v4l2_subdev_format_whence which)
-> > +{
-> > +     switch (which) {
-> > +     case V4L2_SUBDEV_FORMAT_TRY:
-> > +             return v4l2_subdev_get_try_crop(&imx300->sd, cfg, pad);
-> > +     case V4L2_SUBDEV_FORMAT_ACTIVE:
-> > +             return &imx300->mode->crop;
-> > +     }
-> > +
-> > +     return NULL;
-> > +}
-> > +
-> > +static int imx300_get_selection(struct v4l2_subdev *sd,
-> > +                             struct v4l2_subdev_pad_config *cfg,
-> > +                             struct v4l2_subdev_selection *sel)
-> > +{
-> > +     switch (sel->target) {
-> > +     case V4L2_SEL_TGT_CROP: {
-> > +             struct imx300 *imx300 = to_imx300(sd);
-> > +
-> > +             mutex_lock(&imx300->mutex);
-> > +             sel->r = *__imx300_get_pad_crop(imx300, cfg, sel->pad,
-> > +                                             sel->which);
-> > +             mutex_unlock(&imx300->mutex);
-> > +
-> > +             return 0;
-> > +     }
-> > +
-> > +     case V4L2_SEL_TGT_NATIVE_SIZE:
-> > +             sel->r.top = 0;
-> > +             sel->r.left = 0;
-> > +             sel->r.width = IMX300_NATIVE_WIDTH;
-> > +             sel->r.height = IMX300_NATIVE_HEIGHT;
-> > +
-> > +             return 0;
-> > +
-> > +     case V4L2_SEL_TGT_CROP_DEFAULT:
-> > +             sel->r.top = IMX300_PIXEL_ARRAY_TOP;
-> > +             sel->r.left = IMX300_PIXEL_ARRAY_LEFT;
-> > +             sel->r.width = IMX300_PIXEL_ARRAY_WIDTH;
-> > +             sel->r.height = IMX300_PIXEL_ARRAY_HEIGHT;
-> > +
-> > +             return 0;
-> > +     }
-> > +
-> > +     return -EINVAL;
-> > +}
-> > +
-> > +static int imx300_start_streaming(struct imx300 *imx300)
-> > +{
-> > +     struct i2c_client *client = v4l2_get_subdevdata(&imx300->sd);
-> > +     const struct imx300_reg_list *reg_list;
-> > +     int ret;
-> > +
-> > +     ret = imx300_write_regs(imx300, init_sequence,
-> > +                             ARRAY_SIZE(init_sequence));
-> > +     if (ret) {
-> > +             dev_err(&client->dev,
-> > +                     "Cannot write init sequence\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     if (imx300->mode->high_bw)
-> > +             ret = imx300_write_regs(imx300, mipi_data_rate_1560mbps,
-> > +                                     ARRAY_SIZE(mipi_data_rate_1560mbps));
-> > +     else
-> > +             ret = imx300_write_regs(imx300, mipi_data_rate_960mbps,
-> > +                                     ARRAY_SIZE(mipi_data_rate_960mbps));
-> > +     if (ret) {
-> > +             dev_err(&client->dev, "Failed to set MIPI data rate\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     /* Common between all resolutions */
-> > +     ret = imx300_write_regs(imx300, mode_common_regs,
-> > +                             ARRAY_SIZE(mode_common_regs));
-> > +     if (ret) {
-> > +             dev_err(&client->dev,
-> > +                     "Cannot write init sequence\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     /* Apply default values of the selected mode */
-> > +     reg_list = &imx300->mode->reg_list;
-> > +     ret = imx300_write_regs(imx300, reg_list->regs, reg_list->num_of_regs);
-> > +     if (ret) {
-> > +             dev_err(&client->dev, "Failed to set resolution\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     if (imx300->mode->binned)
-> > +             ret = imx300_write_regs(imx300, binning_mode_2x2,
-> > +                                     ARRAY_SIZE(binning_mode_2x2));
-> > +     else
-> > +             ret = imx300_write_regs(imx300, binning_mode_off,
-> > +                                     ARRAY_SIZE(binning_mode_off));
-> > +     if (ret) {
-> > +             dev_err(&client->dev, "Failed to set binning mode\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret = imx300_set_framefmt(imx300);
-> > +     if (ret) {
-> > +             dev_err(&client->dev, "%s failed to set frame format: %d\n",
-> > +                     __func__, ret);
-> > +             return ret;
-> > +     }
-> > +
-> > +     /* Apply customized values from user */
-> > +     ret =  __v4l2_ctrl_handler_setup(imx300->sd.ctrl_handler);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* set stream on register */
-> > +     return imx300_write_reg(imx300, IMX300_REG_MODE_SELECT,
-> > +                             IMX300_REG_VALUE_08BIT, IMX300_MODE_STREAMING);
-> > +}
-> > +
-> > +static void imx300_stop_streaming(struct imx300 *imx300)
-> > +{
-> > +     struct i2c_client *client = v4l2_get_subdevdata(&imx300->sd);
-> > +     int ret;
-> > +
-> > +     /* set stream off register */
-> > +     ret = imx300_write_reg(imx300, IMX300_REG_MODE_SELECT,
-> > +                            IMX300_REG_VALUE_08BIT, IMX300_MODE_STANDBY);
-> > +     if (ret)
-> > +             dev_err(&client->dev, "%s failed to set stream\n", __func__);
-> > +}
-> > +
-> > +static int imx300_set_stream(struct v4l2_subdev *sd, int enable)
-> > +{
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +     struct i2c_client *client = v4l2_get_subdevdata(sd);
-> > +     int ret = 0;
-> > +
-> > +     mutex_lock(&imx300->mutex);
-> > +     if (imx300->streaming == enable) {
-> > +             mutex_unlock(&imx300->mutex);
-> > +             return 0;
-> > +     }
-> > +
-> > +     if (enable) {
-> > +             ret = pm_runtime_get_sync(&client->dev);
-> > +             if (ret < 0) {
-> > +                     pm_runtime_put_noidle(&client->dev);
-> > +                     goto err_unlock;
-> > +             }
-> > +
-> > +             /*
-> > +              * Apply default & customized values
-> > +              * and then start streaming.
-> > +              */
-> > +             ret = imx300_start_streaming(imx300);
-> > +             if (ret)
-> > +                     goto err_rpm_put;
-> > +     } else {
-> > +             imx300_stop_streaming(imx300);
-> > +             pm_runtime_put(&client->dev);
-> > +     }
-> > +
-> > +     imx300->streaming = enable;
-> > +
-> > +     /* vflip and hflip cannot change during streaming */
-> > +     __v4l2_ctrl_grab(imx300->vflip, enable);
-> > +     __v4l2_ctrl_grab(imx300->hflip, enable);
-> > +
-> > +     mutex_unlock(&imx300->mutex);
-> > +
-> > +     return ret;
-> > +
-> > +err_rpm_put:
-> > +     pm_runtime_put(&client->dev);
-> > +err_unlock:
-> > +     mutex_unlock(&imx300->mutex);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +/* Power/clock management functions */
-> > +static int imx300_power_on(struct device *dev)
-> > +{
-> > +     struct i2c_client *client = to_i2c_client(dev);
-> > +     struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +     int ret;
-> > +
-> > +     ret = regulator_bulk_enable(IMX300_NUM_SUPPLIES,
-> > +                                 imx300->supplies);
-> > +     if (ret) {
-> > +             dev_err(&client->dev, "%s: failed to enable regulators\n",
-> > +                     __func__);
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret = clk_prepare_enable(imx300->xclk);
-> > +     if (ret) {
-> > +             dev_err(&client->dev, "%s: failed to enable clock\n",
-> > +                     __func__);
-> > +             goto reg_off;
-> > +     }
-> > +
-> > +     /* Wait for the internal PLLs stabilization time */
-> > +     usleep_range(IMX300_XCLK_STABLE_DELAY_US,
-> > +                  IMX300_XCLK_STABLE_DELAY_US + IMX300_XCLK_DELAY_RANGE_US);
-> > +
-> > +     /* PLLs are stable now: get out of reset! */
-> > +     gpiod_set_value_cansleep(imx300->reset_gpio, 1);
-> > +     usleep_range(IMX300_XCLR_MIN_DELAY_US,
-> > +                  IMX300_XCLR_MIN_DELAY_US + IMX300_XCLR_DELAY_RANGE_US);
-> > +
-> > +     return 0;
-> > +
-> > +reg_off:
-> > +     regulator_bulk_disable(IMX300_NUM_SUPPLIES, imx300->supplies);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int imx300_power_off(struct device *dev)
-> > +{
-> > +     struct i2c_client *client = to_i2c_client(dev);
-> > +     struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +
-> > +     gpiod_set_value_cansleep(imx300->reset_gpio, 0);
-> > +     regulator_bulk_disable(IMX300_NUM_SUPPLIES, imx300->supplies);
-> > +     clk_disable_unprepare(imx300->xclk);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int __maybe_unused imx300_suspend(struct device *dev)
-> > +{
-> > +     struct i2c_client *client = to_i2c_client(dev);
-> > +     struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +
-> > +     if (imx300->streaming)
-> > +             imx300_stop_streaming(imx300);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int __maybe_unused imx300_resume(struct device *dev)
-> > +{
-> > +     struct i2c_client *client = to_i2c_client(dev);
-> > +     struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +     int ret;
-> > +
-> > +     if (imx300->streaming) {
-> > +             ret = imx300_start_streaming(imx300);
-> > +             if (ret)
-> > +                     goto error;
-> > +     }
-> > +
-> > +     return 0;
-> > +
-> > +error:
-> > +     imx300_stop_streaming(imx300);
-> > +     imx300->streaming = false;
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int imx300_get_regulators(struct imx300 *imx300)
-> > +{
-> > +     struct i2c_client *client = v4l2_get_subdevdata(&imx300->sd);
-> > +     unsigned int i;
-> > +
-> > +     for (i = 0; i < IMX300_NUM_SUPPLIES; i++)
-> > +             imx300->supplies[i].supply = imx300_supply_name[i];
-> > +
-> > +     return devm_regulator_bulk_get(&client->dev,
-> > +                                    IMX300_NUM_SUPPLIES,
-> > +                                    imx300->supplies);
-> > +}
-> > +
-> > +/* Verify chip ID */
-> > +static int imx300_identify_module(struct imx300 *imx300)
-> > +{
-> > +     struct i2c_client *client = v4l2_get_subdevdata(&imx300->sd);
-> > +     int ret;
-> > +     u32 val;
-> > +
-> > +     ret = imx300_read_reg(imx300, IMX300_REG_CHIP_ID,
-> > +                           IMX300_REG_VALUE_16BIT, &val);
-> > +     if (ret) {
-> > +             dev_err(&client->dev, "failed to read chip id %x\n",
-> > +                     IMX300_CHIP_ID);
-> > +             return ret;
-> > +     }
-> > +
-> > +     if (val != IMX300_CHIP_ID) {
-> > +             dev_err(&client->dev, "chip id mismatch: %x!=%x\n",
-> > +                     IMX300_CHIP_ID, val);
-> > +             return -EIO;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct v4l2_subdev_core_ops imx300_core_ops = {
-> > +     .subscribe_event = v4l2_ctrl_subdev_subscribe_event,
-> > +     .unsubscribe_event = v4l2_event_subdev_unsubscribe,
-> > +};
-> > +
-> > +static const struct v4l2_subdev_video_ops imx300_video_ops = {
-> > +     .s_stream = imx300_set_stream,
-> > +     .g_frame_interval = imx300_g_frame_interval,
-> > +     .s_frame_interval = imx300_s_frame_interval,
-> > +};
-> > +
-> > +static const struct v4l2_subdev_pad_ops imx300_pad_ops = {
-> > +     .enum_mbus_code = imx300_enum_mbus_code,
-> > +     .get_fmt = imx300_get_pad_format,
-> > +     .set_fmt = imx300_set_pad_format,
-> > +     .get_selection = imx300_get_selection,
-> > +     .enum_frame_size = imx300_enum_frame_size,
-> > +     .enum_frame_interval = imx300_enum_frame_interval,
-> > +};
-> > +
-> > +static const struct v4l2_subdev_ops imx300_subdev_ops = {
-> > +     .core = &imx300_core_ops,
-> > +     .video = &imx300_video_ops,
-> > +     .pad = &imx300_pad_ops,
-> > +};
-> > +
-> > +static const struct v4l2_subdev_internal_ops imx300_internal_ops = {
-> > +     .open = imx300_open,
-> > +};
-> > +
-> > +/* Initialize control handlers */
-> > +static int imx300_init_controls(struct imx300 *imx300)
-> > +{
-> > +     struct i2c_client *client = v4l2_get_subdevdata(&imx300->sd);
-> > +     struct v4l2_ctrl_handler *ctrl_hdlr;
-> > +     unsigned int height = imx300->mode->height;
-> > +     struct v4l2_fwnode_device_properties props;
-> > +     int exposure_max, exposure_def, hblank;
-> > +     int i, ret;
-> > +
-> > +     ctrl_hdlr = &imx300->ctrl_handler;
-> > +     ret = v4l2_ctrl_handler_init(ctrl_hdlr, 11);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     mutex_init(&imx300->mutex);
-> > +     ctrl_hdlr->lock = &imx300->mutex;
-> > +
-> > +     /* By default, PIXEL_RATE is read only */
-> > +     imx300->pixel_rate = v4l2_ctrl_new_std(ctrl_hdlr, &imx300_ctrl_ops,
-> > +                                            V4L2_CID_PIXEL_RATE,
-> > +                                            IMX300_LOW_BW_PIXEL_RATE,
-> > +                                            IMX300_HIGH_BW_PIXEL_RATE, 1,
-> > +                                            IMX300_HIGH_BW_PIXEL_RATE);
-> > +
-> > +     /* Initial vblank/hblank/exposure parameters based on current mode */
-> > +     imx300->vblank = v4l2_ctrl_new_std(ctrl_hdlr, &imx300_ctrl_ops,
-> > +                                        V4L2_CID_VBLANK, IMX300_VTS_MIN,
-> > +                                        IMX300_VTS_MAX - height, 1,
-> > +                                        imx300->mode->vts_def - height);
-> > +     hblank = IMX300_PPL_DEFAULT - imx300->mode->width;
-> > +     imx300->hblank = v4l2_ctrl_new_std(ctrl_hdlr, &imx300_ctrl_ops,
-> > +                                        V4L2_CID_HBLANK, hblank, hblank,
-> > +                                        1, hblank);
-> > +     if (imx300->hblank)
-> > +             imx300->hblank->flags |= V4L2_CTRL_FLAG_READ_ONLY;
-> > +     exposure_max = imx300->mode->vts_def - 4;
-> > +     exposure_def = (exposure_max < IMX300_EXPOSURE_DEFAULT) ?
-> > +             exposure_max : IMX300_EXPOSURE_DEFAULT;
-> > +     imx300->exposure = v4l2_ctrl_new_std(ctrl_hdlr, &imx300_ctrl_ops,
-> > +                                          V4L2_CID_EXPOSURE,
-> > +                                          IMX300_EXPOSURE_MIN, exposure_max,
-> > +                                          IMX300_EXPOSURE_STEP,
-> > +                                          exposure_def);
-> > +
-> > +     v4l2_ctrl_new_std(ctrl_hdlr, &imx300_ctrl_ops, V4L2_CID_ANALOGUE_GAIN,
-> > +                       IMX300_ANA_GAIN_MIN, IMX300_ANA_GAIN_MAX,
-> > +                       IMX300_ANA_GAIN_STEP, IMX300_ANA_GAIN_DEFAULT);
-> > +
-> > +     v4l2_ctrl_new_std(ctrl_hdlr, &imx300_ctrl_ops, V4L2_CID_DIGITAL_GAIN,
-> > +                       IMX300_DGTL_GAIN_MIN, IMX300_DGTL_GAIN_MAX,
-> > +                       IMX300_DGTL_GAIN_STEP, IMX300_DGTL_GAIN_DEFAULT);
-> > +
-> > +     imx300->hflip = v4l2_ctrl_new_std(ctrl_hdlr, &imx300_ctrl_ops,
-> > +                                       V4L2_CID_HFLIP, 0, 1, 1, 0);
-> > +     if (imx300->hflip)
-> > +             imx300->hflip->flags |= V4L2_CTRL_FLAG_MODIFY_LAYOUT;
-> > +
-> > +     imx300->vflip = v4l2_ctrl_new_std(ctrl_hdlr, &imx300_ctrl_ops,
-> > +                                       V4L2_CID_VFLIP, 0, 1, 1, 0);
-> > +     if (imx300->vflip)
-> > +             imx300->vflip->flags |= V4L2_CTRL_FLAG_MODIFY_LAYOUT;
-> > +
-> > +     v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &imx300_ctrl_ops,
-> > +                                  V4L2_CID_TEST_PATTERN,
-> > +                                  ARRAY_SIZE(imx300_test_pattern_menu) - 1,
-> > +                                  0, 0, imx300_test_pattern_menu);
-> > +     for (i = 0; i < 4; i++) {
-> > +             /*
-> > +              * The assumption is that
-> > +              * V4L2_CID_TEST_PATTERN_GREENR == V4L2_CID_TEST_PATTERN_RED + 1
-> > +              * V4L2_CID_TEST_PATTERN_BLUE   == V4L2_CID_TEST_PATTERN_RED + 2
-> > +              * V4L2_CID_TEST_PATTERN_GREENB == V4L2_CID_TEST_PATTERN_RED + 3
-> > +              */
-> > +             v4l2_ctrl_new_std(ctrl_hdlr, &imx300_ctrl_ops,
-> > +                               V4L2_CID_TEST_PATTERN_RED + i,
-> > +                               IMX300_TESTP_COLOUR_MIN,
-> > +                               IMX300_TESTP_COLOUR_MAX,
-> > +                               IMX300_TESTP_COLOUR_STEP,
-> > +                               IMX300_TESTP_COLOUR_MAX);
-> > +             /* The "Solid color" pattern is white by default */
-> > +     }
-> > +
-> > +     if (ctrl_hdlr->error) {
-> > +             ret = ctrl_hdlr->error;
-> > +             dev_err(&client->dev, "%s control init failed (%d)\n",
-> > +                     __func__, ret);
-> > +             goto error;
-> > +     }
-> > +
-> > +     ret = v4l2_fwnode_device_parse(&client->dev, &props);
-> > +     if (ret)
-> > +             goto error;
-> > +
-> > +     ret = v4l2_ctrl_new_fwnode_properties(ctrl_hdlr, &imx300_ctrl_ops,
-> > +                                           &props);
-> > +     if (ret)
-> > +             goto error;
-> > +
-> > +     imx300->sd.ctrl_handler = ctrl_hdlr;
-> > +
-> > +     return 0;
-> > +
-> > +error:
-> > +     v4l2_ctrl_handler_free(ctrl_hdlr);
-> > +     mutex_destroy(&imx300->mutex);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static void imx300_free_controls(struct imx300 *imx300)
-> > +{
-> > +     v4l2_ctrl_handler_free(imx300->sd.ctrl_handler);
-> > +     mutex_destroy(&imx300->mutex);
-> > +}
-> > +
-> > +static int imx300_match_link_freq(u64 link_freq)
-> > +{
-> > +     if (link_freq == IMX300_HIGH_BW_LINK_FREQ ||
-> > +         link_freq == IMX300_LOW_BW_LINK_FREQ)
-> > +             return 0;
-> > +
-> > +     return -EINVAL;
-> > +}
-> > +
-> > +static int imx300_check_hwcfg(struct device *dev, struct imx300 *imx300)
-> > +{
-> > +     struct fwnode_handle *endpoint;
-> > +     struct v4l2_fwnode_endpoint ep_cfg = {
-> > +             .bus_type = V4L2_MBUS_CSI2_DPHY
-> > +     };
-> > +     int ret = -EINVAL;
-> > +
-> > +     endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(dev), NULL);
-> > +     if (!endpoint) {
-> > +             dev_err(dev, "Endpoint node not found\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     if (v4l2_fwnode_endpoint_alloc_parse(endpoint, &ep_cfg)) {
-> > +             dev_err(dev, "Cannot parse endpoint\n");
-> > +             goto error_out;
-> > +     }
-> > +
-> > +     /* Check the link frequency set in device tree */
-> > +     if (ep_cfg.nr_of_link_frequencies != 2) {
-> > +             dev_err(dev, "This sensor uses two link frequencies.\n");
->
-> You could allow still using one frequency, assuming it's supported, but
-> that's checked below.
->
-Yes but I would have to rewrite the setting tables or cripple the output
-resolution if a device does not support the highest one.
-I am mostly sure that all modern SoCs (or even less modern) have the
-ability to use one link frequency at a time for a specific output mode.
-
-But then, that's also done to save power and to help preserving the
-camera sensor by lowering the heat (nah, it's never overheating but
-apparently if it stays hotter it's more likely to develop "black spots"
-sooner than a sensor that's kept "colder).
-
-Not to mention that I haven't got any datasheet for this sensor (but from
-the comments in the code .. I'm sure that's pretty clear) and rewriting
-the setup is basically impossible like this.
-I am totally sure you that you agree with me on that.
-
-> > +             goto error_out;
-> > +     }
-> > +
-> > +     /* Check the number of MIPI CSI2 data lanes */
-> > +     if (ep_cfg.bus.mipi_csi2.num_data_lanes != 4) {
-> > +             dev_err(dev, "This sensor needs 4 MIPI Lanes!\n");
-> > +             goto error_out;
-> > +     }
-> > +
-> > +     if (imx300_match_link_freq(ep_cfg.link_frequencies[0]) ||
-> > +         imx300_match_link_freq(ep_cfg.link_frequencies[1])) {
-> > +             dev_err(dev, "Unsupported link frequencies.\n");
-> > +             goto error_out;
-> > +     }
-> > +
-> > +     ret = 0;
-> > +
-> > +error_out:
-> > +     v4l2_fwnode_endpoint_free(&ep_cfg);
-> > +     fwnode_handle_put(endpoint);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int imx300_probe(struct i2c_client *client)
-> > +{
-> > +     struct device *dev = &client->dev;
-> > +     struct imx300 *imx300;
-> > +     int ret;
-> > +
-> > +     imx300 = devm_kzalloc(&client->dev, sizeof(*imx300), GFP_KERNEL);
-> > +     if (!imx300)
-> > +             return -ENOMEM;
-> > +
-> > +     v4l2_i2c_subdev_init(&imx300->sd, client, &imx300_subdev_ops);
-> > +
-> > +     /* Check the hardware configuration in device tree */
-> > +     if (imx300_check_hwcfg(dev, imx300))
-> > +             return -EINVAL;
-> > +
-> > +     /* Get system clock (xclk) */
-> > +     imx300->xclk = devm_clk_get(dev, NULL);
-> > +     if (IS_ERR(imx300->xclk)) {
-> > +             dev_err(dev, "failed to get xclk\n");
-> > +             return PTR_ERR(imx300->xclk);
-> > +     }
-> > +
-> > +     imx300->xclk_freq = clk_get_rate(imx300->xclk);
-> > +     if (imx300->xclk_freq != IMX300_XCLK_FREQ_24M) {
-> > +             dev_err(dev, "xclk frequency not supported: %d Hz\n",
-> > +                     imx300->xclk_freq);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     ret = imx300_get_regulators(imx300);
-> > +     if (ret) {
-> > +             dev_err(dev, "failed to get regulators\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     /* Request optional enable pin */
-> > +     imx300->reset_gpio = devm_gpiod_get_optional(dev, "reset",
-> > +                                                  GPIOD_OUT_HIGH);
-> > +
-> > +     /*
-> > +      * The sensor must be powered for imx300_identify_module()
-> > +      * to be able to read the CHIP_ID register
-> > +      */
-> > +     ret = imx300_power_on(dev);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret = imx300_identify_module(imx300);
-> > +     if (ret)
-> > +             goto error_power_off;
-> > +
-> > +     /* Set default mode to max resolution */
-> > +     imx300->mode = &supported_modes[0];
-> > +
-> > +     /* Default is 10 bits per sample */
-> > +     imx300->cur_bps = 10;
->
-> Could you move this information to the mode definition?
->
-I would have to de-constify the struct, as the cur_bps parameter is
-reassigned at every BPS change. It's also true that I can check the
-fmt.code instead, but doing one check instead of four everytime looks
-better to me.
-If you really wish to see such a check, then... even if it looks bad to
-me, I guess my keyboard won't refuse to...
-
-> > +
-> > +     /*
-> > +      * Sensor doesn't enter LP-11 state upon power up until and unless
-> > +      * streaming is started, so upon power up switch the modes to:
-> > +      * streaming -> standby
-> > +      */
-> > +     ret = imx300_write_reg(imx300, IMX300_REG_MODE_SELECT,
-> > +                            IMX300_REG_VALUE_08BIT, IMX300_MODE_STREAMING);
-> > +     if (ret < 0)
-> > +             goto error_power_off;
-> > +
-> > +     /* put sensor back to standby mode */
-> > +     ret = imx300_write_reg(imx300, IMX300_REG_MODE_SELECT,
-> > +                            IMX300_REG_VALUE_08BIT, IMX300_MODE_STANDBY);
-> > +     if (ret < 0)
-> > +             goto error_power_off;
-> > +
-> > +     ret = imx300_init_controls(imx300);
-> > +     if (ret)
-> > +             goto error_power_off;
-> > +
-> > +     /* Initialize subdev */
-> > +     imx300->sd.internal_ops = &imx300_internal_ops;
-> > +     imx300->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
-> > +     imx300->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
-> > +
-> > +     /* Initialize source pad */
-> > +     imx300->pad.flags = MEDIA_PAD_FL_SOURCE;
-> > +
-> > +     /* Initialize default format */
-> > +     imx300_set_default_format(imx300);
->
-> This is related to the mode set earlier. So please use either.
->
-Sorry, I have copied that from the IMX219 driver, assuming that it was right.
-If you're saying that's not, then we should fix that one as well some day...
-But hey, that's not a bad thing at all! I have some imx219 "things" here that
-I was planning to push as soon as possible. I will include that fix there too!
-
-> > +
-> > +     ret = media_entity_pads_init(&imx300->sd.entity, 1, &imx300->pad);
-> > +     if (ret) {
-> > +             dev_err(dev, "failed to init entity pads: %d\n", ret);
-> > +             goto error_handler_free;
-> > +     }
-> > +
-> > +     ret = v4l2_async_register_subdev_sensor_common(&imx300->sd);
-> > +     if (ret < 0) {
-> > +             dev_err(dev, "failed to register sensor subdevice: %d\n", ret);
-> > +             goto error_media_entity;
-> > +     }
-> > +
-> > +     /* Enable runtime PM and turn off the device */
-> > +     pm_runtime_set_active(dev);
-> > +     pm_runtime_enable(dev);
-> > +     pm_runtime_idle(dev);
-> > +
-> > +     /* Due to the sensor id being odd, let's inform about us... */
-> > +     dev_info(dev, "Sony Exmor-RS IMX300 camera sensor is up.\n");
->
-> I'd use dev_dbg().
->
-I chose to use dev_info because of the sensor ID issue. So I would be
-happy to keep it as dev_info. Is it that bad? I can surely change it, let
-me know.
-
-> > +
-> > +     return 0;
-> > +
-> > +error_media_entity:
-> > +     media_entity_cleanup(&imx300->sd.entity);
-> > +
-> > +error_handler_free:
-> > +     imx300_free_controls(imx300);
-> > +
-> > +error_power_off:
-> > +     imx300_power_off(dev);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int imx300_remove(struct i2c_client *client)
-> > +{
-> > +     struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > +     struct imx300 *imx300 = to_imx300(sd);
-> > +
-> > +     v4l2_async_unregister_subdev(sd);
-> > +     media_entity_cleanup(&sd->entity);
-> > +     imx300_free_controls(imx300);
-> > +
-> > +     pm_runtime_disable(&client->dev);
-> > +     if (!pm_runtime_status_suspended(&client->dev))
-> > +             imx300_power_off(&client->dev);
-> > +     pm_runtime_set_suspended(&client->dev);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct of_device_id imx300_dt_ids[] = {
-> > +     { .compatible = "sony,imx300" },
-> > +     { /* sentinel */ }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, imx300_dt_ids);
-> > +
-> > +static const struct dev_pm_ops imx300_pm_ops = {
-> > +     SET_SYSTEM_SLEEP_PM_OPS(imx300_suspend, imx300_resume)
-> > +     SET_RUNTIME_PM_OPS(imx300_power_off, imx300_power_on, NULL)
-> > +};
-> > +
-> > +static struct i2c_driver imx300_i2c_driver = {
-> > +     .driver = {
-> > +             .name = "imx300",
-> > +             .of_match_table = imx300_dt_ids,
-> > +             .pm = &imx300_pm_ops,
-> > +     },
-> > +     .probe_new = imx300_probe,
-> > +     .remove = imx300_remove,
-> > +};
-> > +
-> > +module_i2c_driver(imx300_i2c_driver);
-> > +
-> > +MODULE_AUTHOR("AngeloGioacchino Del Regno <kholk11@gmail.com>");
-> > +MODULE_DESCRIPTION("Sony Exmor-RS IMX300 camera sensor driver");
-> > +MODULE_LICENSE("GPL v2");
->
-> --
-> Kind regards,
->
-> Sakari Ailus
-
-Yours,
-Angelo
+--FL5UXtIhxfXey3p5--
