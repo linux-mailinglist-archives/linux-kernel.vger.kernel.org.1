@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C2E2C6AFE
+	by mail.lfdr.de (Postfix) with ESMTP id 73ADB2C6AFF
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732653AbgK0RxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36962 "EHLO
+        id S1732673AbgK0RxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:53:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732435AbgK0RxH (ORCPT
+        with ESMTP id S1732435AbgK0RxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:53:07 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7561DC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:07 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id w202so5166973pff.10
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:07 -0800 (PST)
+        Fri, 27 Nov 2020 12:53:08 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F694C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:08 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id s2so3011622plr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:53:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=EAfb3eu9PEwqw2acxzKnY+PHQEjWwXbjMesTIZeFnXs=;
-        b=ShMuYNe7NhTa0j4JWs6zezip9DKv/wVj3FWthKlbvsRE96DCXIFdx4dCxbB60K7vNM
-         aUU9k7Go0VsRUAwvUmwtIAVo5EDlXeaBQdxKIyi4NlNDu48/dpqJ9e3L4reVQo80YDi/
-         Gl+GrtSaX18zGIpvBhTtx4StM+nhxHS71vc7d7hnI3kdsWbAlRJpnxRWSc5CHNpk5z6e
-         XwNHJkJaJpRRTK6ijIjqH5A484Wo8DmiiAQpR3YfsHT73SISNbvYoGMuoPVpToDQz4VJ
-         uNMMW4mqSzmofEiw0DRXhQznPr0yItvpdHP2GbSS+OV06JFd7JHt+wdYRT/moGMX2LaE
-         NoHA==
+        bh=dIDb70TVBZgre0o2Y2c30VS9W3UnJeMILhzgcalu4cA=;
+        b=J9FseNlQZNBEdC9FggIZ/qXHGNym9mg9AX+5msPMwH9e7HGUSu9IfSodJSEBqDUSZP
+         FoIjq5CePZg7k1LRHI4QyWvq7zaxqSKNl/T8C0Oz33aXmmB0E9kXaNZQpiax6fGDbwvJ
+         jRHlTKTaDKmHlSCxWit0UD9nUSIFyn2/CuBfSt8e1ddMEU6IquwutTBSGpV7VgVmciyP
+         r/Ij+wodrM7Hby595ZoEsCrh/Ayf5AlaARywGLKRCfP8ZRdiK/g2WEijJ5PyWeuEBv9q
+         4MmF0wnyxQ7Gnd5kVpji9O7MFNcLzTQWv1Ug5xsR2BUG0tU4nVxxY1bnFVceeHUxU5pv
+         JjgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EAfb3eu9PEwqw2acxzKnY+PHQEjWwXbjMesTIZeFnXs=;
-        b=Ck2xAl7ksgLETgNivWNgekjbTqPpbeIJ9N+88XFeGquPIC/+GZWP375hz9Wldhsg4E
-         CNbQOLyxjfAQeFYE3npB1qRTo0JgLxlxBy/BVZ12KA/8nY9M33uamKHrMiagb3pFPaZO
-         VchUlGhXIZsdkmfmbokZnrLFhF0U0dx4HhglYh4lWP7zgKa8f8tsAVQN/Vc964VKWU7P
-         AyzRCXkgKRrQDFeihORs3Gd7UT47wMmwK4ko/EZ+mZXpIo36oeUSrRpFm1pgiSCwQacB
-         s8V3JWo3qWofmRLN8RrjPNsltUJBFmYc8obi8tchz00ZU/37q6QGqEfVpMKqDto2iKdj
-         5FYA==
-X-Gm-Message-State: AOAM532CZOKC4jWfjlAwroA2posl+/j1L75AIMXMyunwQ0V2p9/leyKS
-        vCI3BLr8KQwRMevf8PwF19/o0Q==
-X-Google-Smtp-Source: ABdhPJxRTKNZcLka4nx9t5gy6bRADeaKB53K/14ja9sOd/6VcaciKw9tgFpAgp+RNykqC8GhduOQzQ==
-X-Received: by 2002:a17:90b:1b52:: with SMTP id nv18mr11583917pjb.172.1606499587077;
-        Fri, 27 Nov 2020 09:53:07 -0800 (PST)
+        bh=dIDb70TVBZgre0o2Y2c30VS9W3UnJeMILhzgcalu4cA=;
+        b=S3fEbL5ppUHU4JLpImi80KiLbue60YrGGzxJN+ZFfTnRtii0VaYKSJozaa3PyZ+Fer
+         PFSH8hcm7lBuzKQCMrntf0KTHvtsHY8zJOhWKyqqr6ETC0T68GlBm/hBCDkZljlFoQy4
+         VlqcdPt8CuzTLqwTIuuQj3wbzVca/eSvKuXRY4ZzVivMwZWuTlgsxjRWBA2dNooseydr
+         TqBJvoP+PdM1r6iI4LftxSfwaipGvk4fdzcu7pwiqoUczgOJ7ljbmEyqxGVxncWxfuDz
+         hxNIkQewJOCc19dOGCJ+7+MUh4MUDjeHCpjYvfVwqG7fdmNpTxxyIOsI4rJaWCDACOV6
+         qfbQ==
+X-Gm-Message-State: AOAM533t1gB42XeRtCmL78qvQNB3lfwzDJViJ0ciDm3vljZGwqUL0+Xm
+        f8Epn2NtsUCL3hnTZ7eX6MTBHuywMauGqWUG
+X-Google-Smtp-Source: ABdhPJzY0T9kaV36mzn+aiwFbi8EdPqbuxEa3JPRgJg3WMBMK8Jp/vPOnd4oswyp7XIZWeNUi7ensA==
+X-Received: by 2002:a17:902:b182:b029:da:d0c:abac with SMTP id s2-20020a170902b182b02900da0d0cabacmr7817626plr.40.1606499588035;
+        Fri, 27 Nov 2020 09:53:08 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id t18sm10536724pji.1.2020.11.27.09.53.06
+        by smtp.gmail.com with ESMTPSA id t18sm10536724pji.1.2020.11.27.09.53.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 09:53:06 -0800 (PST)
+        Fri, 27 Nov 2020 09:53:07 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 09/15] coresight: tmc-etf: Fix NULL ptr dereference in tmc_enable_etf_sink_perf()
-Date:   Fri, 27 Nov 2020 10:52:50 -0700
-Message-Id: <20201127175256.1092685-10-mathieu.poirier@linaro.org>
+Subject: [PATCH 10/15] coresight: etb10: Fix possible NULL ptr dereference in etb_enable_perf()
+Date:   Fri, 27 Nov 2020 10:52:51 -0700
+Message-Id: <20201127175256.1092685-11-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201127175256.1092685-1-mathieu.poirier@linaro.org>
 References: <20201127175256.1092685-1-mathieu.poirier@linaro.org>
@@ -68,107 +68,47 @@ From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 There was a report of NULL pointer dereference in ETF enable
 path for perf CS mode with PID monitoring. It is almost 100%
 reproducible when the process to monitor is something very
-active such as chrome and with ETF as the sink and not ETR.
-Currently in a bid to find the pid, the owner is dereferenced
-via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
-owner being NULL, we get a NULL pointer dereference.
+active such as chrome and with ETF as the sink, not ETR.
 
-Looking at the ETR and other places in the kernel, ETF and the
-ETB are the only places trying to dereference the task(owner)
-in tmc_enable_etf_sink_perf() which is also called from the
-sched_in path as in the call trace. Owner(task) is NULL even
-in the case of ETR in tmc_enable_etr_sink_perf(), but since we
-cache the PID in alloc_buffer() callback and it is done as part
-of etm_setup_aux() when allocating buffer for ETR sink, we never
-dereference this NULL pointer and we are safe. So lets do the
-same thing with ETF and cache the PID to which the cs_buffer
-belongs in tmc_alloc_etf_buffer() as done for ETR. This will
-also remove the unnecessary function calls(task_pid_nr()) since
-we are caching the PID.
-
-Easily reproducible running below:
-
- perf record -e cs_etm/@tmc_etf0/ -N -p <pid>
-
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000548
-Mem abort info:
-  ESR = 0x96000006
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-Data abort info:
-  ISV = 0, ISS = 0x00000006
-  CM = 0, WnR = 0
-<snip>...
-Call trace:
- tmc_enable_etf_sink+0xe4/0x280
- coresight_enable_path+0x168/0x1fc
- etm_event_start+0x8c/0xf8
- etm_event_add+0x38/0x54
- event_sched_in+0x194/0x2ac
- group_sched_in+0x54/0x12c
- flexible_sched_in+0xd8/0x120
- visit_groups_merge+0x100/0x16c
- ctx_flexible_sched_in+0x50/0x74
- ctx_sched_in+0xa4/0xa8
- perf_event_sched_in+0x60/0x6c
- perf_event_context_sched_in+0x98/0xe0
- __perf_event_task_sched_in+0x5c/0xd8
- finish_task_switch+0x184/0x1cc
- schedule_tail+0x20/0xec
- ret_from_fork+0x4/0x18
+But code path shows that ETB has a similar path as ETF, so
+there could be possible NULL pointer dereference crash in
+ETB as well. Currently in a bid to find the pid, the owner
+is dereferenced via task_pid_nr() call in etb_enable_perf()
+and with owner being NULL, we can get a NULL pointer
+dereference, so have a similar fix as ETF where we cache PID
+in alloc_buffer() callback which is called as the part of
+etm_setup_aux().
 
 Cc: stable@vger.kernel.org
-Fixes: 880af782c6e8 ("coresight: tmc-etf: Add support for CPU-wide trace scenarios")
+Fixes: 75d7dbd38824 ("coresight: etb10: Add support for CPU-wide trace scenarios")
 Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight-priv.h    | 2 ++
- drivers/hwtracing/coresight/coresight-tmc-etf.c | 4 +++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ drivers/hwtracing/coresight/coresight-etb10.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-index 65a29293b6cb..f5f654ea2994 100644
---- a/drivers/hwtracing/coresight/coresight-priv.h
-+++ b/drivers/hwtracing/coresight/coresight-priv.h
-@@ -87,6 +87,7 @@ enum cs_mode {
-  * struct cs_buffer - keep track of a recording session' specifics
-  * @cur:	index of the current buffer
-  * @nr_pages:	max number of pages granted to us
-+ * @pid:	PID this cs_buffer belongs to
-  * @offset:	offset within the current buffer
-  * @data_size:	how much we collected in this run
-  * @snapshot:	is this run in snapshot mode
-@@ -95,6 +96,7 @@ enum cs_mode {
- struct cs_buffers {
- 	unsigned int		cur;
- 	unsigned int		nr_pages;
-+	pid_t			pid;
- 	unsigned long		offset;
- 	local_t			data_size;
- 	bool			snapshot;
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-index 44402d413ebb..989d965f3d90 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-@@ -227,6 +227,7 @@ static int tmc_enable_etf_sink_perf(struct coresight_device *csdev, void *data)
+diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
+index 248cc82c838e..1b320ab581ca 100644
+--- a/drivers/hwtracing/coresight/coresight-etb10.c
++++ b/drivers/hwtracing/coresight/coresight-etb10.c
+@@ -176,6 +176,7 @@ static int etb_enable_perf(struct coresight_device *csdev, void *data)
  	unsigned long flags;
- 	struct tmc_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+ 	struct etb_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
  	struct perf_output_handle *handle = data;
 +	struct cs_buffers *buf = etm_perf_sink_config(handle);
  
  	spin_lock_irqsave(&drvdata->spinlock, flags);
- 	do {
-@@ -243,7 +244,7 @@ static int tmc_enable_etf_sink_perf(struct coresight_device *csdev, void *data)
- 		}
  
- 		/* Get a handle on the pid of the process to monitor */
--		pid = task_pid_nr(handle->event->owner);
-+		pid = buf->pid;
+@@ -186,7 +187,7 @@ static int etb_enable_perf(struct coresight_device *csdev, void *data)
+ 	}
  
- 		if (drvdata->pid != -1 && drvdata->pid != pid) {
- 			ret = -EBUSY;
-@@ -399,6 +400,7 @@ static void *tmc_alloc_etf_buffer(struct coresight_device *csdev,
+ 	/* Get a handle on the pid of the process to monitor */
+-	pid = task_pid_nr(handle->event->owner);
++	pid = buf->pid;
+ 
+ 	if (drvdata->pid != -1 && drvdata->pid != pid) {
+ 		ret = -EBUSY;
+@@ -383,6 +384,7 @@ static void *etb_alloc_buffer(struct coresight_device *csdev,
  	if (!buf)
  		return NULL;
  
