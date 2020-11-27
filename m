@@ -2,96 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2132C6823
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4391A2C6825
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731049AbgK0Oqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 09:46:35 -0500
-Received: from mx.baikalchip.com ([94.125.187.42]:33606 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730696AbgK0Oqf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 09:46:35 -0500
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Mark Brown <broonie@kernel.org>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] spi: dw-bt1: Fix undefined devm_mux_control_get symbol
-Date:   Fri, 27 Nov 2020 17:46:11 +0300
-Message-ID: <20201127144612.4204-1-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201116040721.8001-1-rdunlap@infradead.org>
-References: 
+        id S1731069AbgK0Oro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 09:47:44 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:42800 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730908AbgK0Orn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 09:47:43 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606488463; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=HUJXvp284SgEwZROfQs9oj7GiVOC/2yMIUq8pK3JA5U=; b=EekN9MMhe1XylyED16a7HTPA2g+9KcsgfyVflkmfHxH3+QhFxreUmllaxMBPEHgibHY0Uw3V
+ Mtb9ggGun4MTuzCP8M5ydG+M6JAQNAnf/dI0Z5gQAN+cCXRDW3b+rror6w0bthzm8t1NyXCB
+ cW2/OI2Qqru8Rj7xpzBnlMMj4BY=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5fc1118c7f0cfa6a16f331c2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 14:47:40
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C3C3BC43464; Fri, 27 Nov 2020 14:47:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CEDF3C433C6;
+        Fri, 27 Nov 2020 14:47:38 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 27 Nov 2020 20:17:38 +0530
+From:   mdalam@codeaurora.org
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Md Sadre Alam <mdalam@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH 2/5] mtd: rawnand: qcom: Add initial support for qspi nand
+Message-ID: <885854a4765c302d86b0d482c2c45abc@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I mistakenly added the select attributes to the SPI_DW_BT1_DIRMAP config
-instead of having them defined in SPI_DW_BT1. If the kernel doesn't have
-the MULTIPLEXER and MUX_MMIO configs manually enabled and the
-SPI_DW_BT1_DIRMAP config hasn't been selected, Baikal-T1 SPI device will
-always fail to be probed by the driver. Fix that and the error reported by
-the test robot:
+On 2020-10-29 14:37, Boris Brezillon wrote:
+> Hello,
+> 
+> On Sat, 10 Oct 2020 11:01:39 +0530
+> Md Sadre Alam <mdalam@codeaurora.org> wrote:
+> 
+>> This change will add initial support for qspi (serial nand).
+>> 
+>> QPIC Version v.2.0 onwards supports serial nand as well so this
+>> change will initialize all required register to enable qspi (serial
+>> nand).
+>> 
+>> This change is supporting very basic functionality of qspi nand flash.
+>> 
+>> 1. Reset device (Reset QSPI NAND device).
+>> 
+>> 2. Device detection (Read id QSPI NAND device).
+> 
+> Unfortunately, that's not going to work in the long term. You're
+> basically hacking the raw NAND framework to make SPI NANDs fit. I do
+> understand the rationale behind this decision (re-using the code for
+> ECC and probably other things), but that's not going to work. So I'd
+> recommend doing the following instead:
+> 
+> 1/ implement a SPI-mem controller driver
+> 2/ implement an ECC engine driver so the ECC logic can be shared
+>    between the SPI controller and raw NAND controller drivers
+> 3/ convert the raw NAND driver to the exec_op() interface (none of
+>    this hack would have been possible if the driver was using the new
+>    API)
 
->> ld.lld: error: undefined symbol: devm_mux_control_get
-   >>> referenced by spi-dw-bt1.c
-   >>> spi/spi-dw-bt1.o:(dw_spi_bt1_sys_init) in archive drivers/built-in.a
+Sorry for late reply. I think I mixup the serial nand support and 
+QPIC_V2.0 support.
+Only patches [2/5] mtd: rawnand: qcom: Add initial support for qspi nand
+and [5/5] mtd: rawnand: qcom: Add support for serial training. are for 
+serial
+nand. Other patches [3/5] mtd: rawnand: qcom: Read QPIC version &
+[4/5] mtd: rawnand: qcom: Enable support for erase,read & write for 
+serial nand.
+are to support QPIC_V2.0. In QPIC_V2.0 onwards some additional registers 
+and features
+got added. QPIC_NAND_READ_LOCATION_LAST_CW_n register got added to read 
+last code word.
+Page scope read & multi page read feature got added to read single and 
+multiple
+pages. QPIC_NAND_AUTO_STATUS_EN register got added to read status in 
+page scope read
+& multi page read etc.
 
-by moving the MULTIPLEXER/MUX_MMIO configs selection to the SPI_DW_BT1
-config.
+I will take out QPIC_V2.0 support patches and will push it separately.
+For serial nand support few lines of codes are there around 50 lines
+to initalize QPIC serial block and serial training code. So can I put 
+this
+this as a separate file inside drivers/mtd/nand/raw/qpic_serial_nand.c. 
+Would it be ok ?
+Because there is no dedicated spi controller for serial nand. QPIC 
+controller having
+one serial interface block to deal with serial nand device.
 
-Link: https://lore.kernel.org/lkml/202011161745.uYRlekse-lkp@intel.com/
-Link: https://lore.kernel.org/linux-spi/20201116040721.8001-1-rdunlap@infradead.org/
-Fixes: abf00907538e ("spi: dw: Add Baikal-T1 SPI Controller glue driver")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-
----
-
-Mark, I see you haven't applied the previous version of the patch yet. So
-please replace it with this one.
-
-Randy, sorry for resending the patch. I've just realized that your
-solution doesn't completely fix the problem. Yeah, the kernel build won't
-fail to be linked after your patch being merged, but the driver still will
-fail to probe the device if the MULTIPLEXER and MUX_MMIO haven't been
-selected for the kernel. So the select attributes need to be moved from
-SPI_DW_BT1_DIRMAP to the SPI_DW_BT1 config.
----
- drivers/spi/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 415d57b2057f..0707068ffe47 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -255,6 +255,8 @@ config SPI_DW_MMIO
- config SPI_DW_BT1
- 	tristate "Baikal-T1 SPI driver for DW SPI core"
- 	depends on MIPS_BAIKAL_T1 || COMPILE_TEST
-+	select MULTIPLEXER
-+	select MUX_MMIO
- 	help
- 	  Baikal-T1 SoC is equipped with three DW APB SSI-based MMIO SPI
- 	  controllers. Two of them are pretty much normal: with IRQ, DMA,
-@@ -268,8 +270,6 @@ config SPI_DW_BT1
- config SPI_DW_BT1_DIRMAP
- 	bool "Directly mapped Baikal-T1 Boot SPI flash support"
- 	depends on SPI_DW_BT1
--	select MULTIPLEXER
--	select MUX_MMIO
- 	help
- 	  Directly mapped SPI flash memory is an interface specific to the
- 	  Baikal-T1 System Boot Controller. It is a 16MB MMIO region, which
--- 
-2.29.2
-
+> 
+> Regards,
+> 
+> Boris
