@@ -2,135 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501E42C5F93
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA182C5FCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729641AbgK0FWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 00:22:55 -0500
-Received: from m12-18.163.com ([220.181.12.18]:59772 "EHLO m12-18.163.com"
+        id S1732267AbgK0Fho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 00:37:44 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:51444 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729100AbgK0FWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 00:22:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=lmgddvHtAi5SdHCftt
-        KJz4DYN1iYMVB/xgJ/V1LKoCk=; b=R8BM8/vlkT+tsLpWQrvFzKdF3WjF4n60Kv
-        pDgJ4rg4HksCHlmGz8fJ7C/bgSmTepjx3bwZj1nEG9u6gNF3Hy71w4dTVRkszhn6
-        0xo7UAdPGgqokb1yuOKk27LwSOdEzi5qu8A4LuHMlbBpfRozMPvF5EaNWACTnUyv
-        myQwGWsTA=
-Received: from localhost.localdomain (unknown [115.238.52.186])
-        by smtp14 (Coremail) with SMTP id EsCowAB3t_6_jMBfeM8wGg--.52279S3;
-        Fri, 27 Nov 2020 13:21:04 +0800 (CST)
-From:   linsheng_111@163.com
-To:     linus.walleij@linaro.org, khilman@baylibre.com,
-        narmstrong@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, linshenghuan@hangtu-china.com
-Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lin shenghuan <linsheng_111@163.com>
-Subject: [PATCH] add amlogic gpio to irq
-Date:   Fri, 27 Nov 2020 13:21:02 +0800
-Message-Id: <1606454462-3826-1-git-send-email-linsheng_111@163.com>
+        id S1730324AbgK0Fho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 00:37:44 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4F6D71A0E73;
+        Fri, 27 Nov 2020 06:37:42 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 31B091A0793;
+        Fri, 27 Nov 2020 06:37:37 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EF3A14029B;
+        Fri, 27 Nov 2020 06:37:29 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] ASoC: dt-bindings: imx-hdmi: Add binding doc for hdmi machine driver
+Date:   Fri, 27 Nov 2020 13:30:20 +0800
+Message-Id: <1606455021-18882-1-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
-Signed-off-by: Lin shenghuan <linshenghuan@hangtu-china.com>
-X-CM-TRANSID: EsCowAB3t_6_jMBfeM8wGg--.52279S3
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJFy3Zr4xtw47Kr45Kr48WFg_yoW5WF45pF
-        43GFyYyr13JF47WryrAanrAFW3K3WxJFW2gay7Ka97uw13GFyDtFy29FW5Zrs8WrW5CF4r
-        Jr4rGFWUWr45AFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UlPfLUUUUU=
-X-Originating-IP: [115.238.52.186]
-X-CM-SenderInfo: polq2x5hqjsiirr6il2tof0z/1tbipADpOlr7rnYvbQAAsM
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin shenghuan <linsheng_111@163.com>
+Imx-hdmi is a new added machine driver for supporting hdmi devices
+on i.MX platforms. There is HDMI IP or external HDMI modules connect
+with SAI or AUD2HTX interface.
 
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- drivers/pinctrl/meson/pinctrl-meson.c | 36 +++++++++++++++++++++++++++++++++++
- drivers/pinctrl/meson/pinctrl-meson.h |  1 +
- 2 files changed, 37 insertions(+)
+ .../bindings/sound/imx-audio-hdmi.yaml        | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
 
-diff --git a/drivers/pinctrl/meson/pinctrl-meson.c b/drivers/pinctrl/meson/pinctrl-meson.c
-index 20683cd..b91ff2c 100644
---- a/drivers/pinctrl/meson/pinctrl-meson.c
-+++ b/drivers/pinctrl/meson/pinctrl-meson.c
-@@ -51,6 +51,7 @@
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/seq_file.h>
-+#include <linux/of_irq.h>
- 
- #include "../core.h"
- #include "../pinctrl-utils.h"
-@@ -598,6 +599,34 @@ static int meson_gpio_get(struct gpio_chip *chip, unsigned gpio)
- 	return !!(val & BIT(bit));
- }
- 
-+static int meson_gpio_to_irq(struct gpio_chip *chip, unsigned int gpio)
-+{
-+	struct meson_pinctrl *pc = gpiochip_get_data(chip);
-+	struct meson_bank *bank;
-+	struct irq_fwspec fwspec;
-+	int hwirq;
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml b/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
+new file mode 100644
+index 000000000000..d5474f83ac2c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
+@@ -0,0 +1,52 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/imx-audio-hdmi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	if (meson_get_bank(pc, gpio, &bank))
-+		return -EINVAL;
++title: NXP i.MX audio complex with HDMI
 +
-+	if (bank->irq_first < 0) {
-+		dev_warn(pc->dev, "no support irq for pin[%d]\n", gpio);
-+		return -EINVAL;
-+	}
-+	if (!pc->of_irq) {
-+		dev_err(pc->dev, "invalid device node of gpio INTC\n");
-+		return -EINVAL;
-+	}
++maintainers:
++  - Shengjiu Wang <shengjiu.wang@nxp.com>
 +
-+	hwirq = gpio - bank->first + bank->irq_first;
-+	fwspec.fwnode = of_node_to_fwnode(pc->of_irq);
-+	fwspec.param_count = 2;
-+	fwspec.param[0] = hwirq;
-+	fwspec.param[1] = IRQ_TYPE_NONE;
++properties:
++  compatible:
++    enum:
++      - fsl,imx-audio-hdmi
++      - fsl,imx-audio-sii902x
 +
-+	return irq_create_fwspec_mapping(&fwspec);
-+}
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: User specified audio sound card name
 +
- static int meson_gpiolib_register(struct meson_pinctrl *pc)
- {
- 	int ret;
-@@ -612,6 +641,7 @@ static int meson_gpiolib_register(struct meson_pinctrl *pc)
- 	pc->chip.direction_output = meson_gpio_direction_output;
- 	pc->chip.get = meson_gpio_get;
- 	pc->chip.set = meson_gpio_set;
-+	pc->chip.to_irq = meson_gpio_to_irq;
- 	pc->chip.base = -1;
- 	pc->chip.ngpio = pc->data->num_pins;
- 	pc->chip.can_sleep = false;
-@@ -682,6 +712,12 @@ static int meson_pinctrl_parse_dt(struct meson_pinctrl *pc,
- 
- 	pc->of_node = gpio_np;
- 
-+	pc->of_irq = of_find_compatible_node(NULL,
-+			NULL, "amlogic,meson-gpio-intc");
-+	if (!pc->of_irq)
-+		pc->of_irq = of_find_compatible_node(NULL,
-+			NULL, "amlogic,meson-gpio-intc-ext");
++  audio-cpu:
++    description: The phandle of an CPU DAI controller
 +
- 	pc->reg_mux = meson_map_resource(pc, gpio_np, "mux");
- 	if (IS_ERR_OR_NULL(pc->reg_mux)) {
- 		dev_err(pc->dev, "mux registers not found\n");
-diff --git a/drivers/pinctrl/meson/pinctrl-meson.h b/drivers/pinctrl/meson/pinctrl-meson.h
-index f8b0ff9..0f808bb 100644
---- a/drivers/pinctrl/meson/pinctrl-meson.h
-+++ b/drivers/pinctrl/meson/pinctrl-meson.h
-@@ -131,6 +131,7 @@ struct meson_pinctrl {
- 	struct regmap *reg_ds;
- 	struct gpio_chip chip;
- 	struct device_node *of_node;
-+	struct device_node *of_irq;
- };
- 
- #define FUNCTION(fn)							\
++  hdmi-out:
++    description: |
++      This is a boolean property. If present, the transmitting function
++      of HDMI will be enabled, indicating there's a physical HDMI out
++      connector or jack on the board or it's connecting to some other IP
++      block, such as an HDMI encoder or display-controller.
++
++  hdmi-in:
++    description: |
++      This is a boolean property. If present, the receiving function of
++      HDMI will be enabled, indicating there is a physical HDMI in
++      connector/jack on the board.
++
++required:
++  - compatible
++  - model
++  - audio-cpu
++
++additionalProperties: false
++
++examples:
++  - |
++    sound-hdmi {
++        compatible = "fsl,imx-audio-hdmi";
++        model = "audio-hdmi";
++        audio-cpu = <&aud2htx>;
++        hdmi-out;
++    };
 -- 
-2.7.4
-
+2.27.0
 
