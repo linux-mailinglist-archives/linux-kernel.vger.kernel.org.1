@@ -2,121 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CEB62C6BC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C1C2C6BCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 20:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729677AbgK0S7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 13:59:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729695AbgK0S5t (ORCPT
+        id S1730151AbgK0TFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 14:05:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55797 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729863AbgK0TD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 13:57:49 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF29C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:57:43 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id 64so6567260wra.11
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:57:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:references:from:subject:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=/aqzWfKAyZcFADuzDmYKakUb1PJhvmbjruHjYS0Occc=;
-        b=ih8vraZG1vXAUFx2hRFOZ5rIXLALstaSd60XXbEPnNEObAiJpUoNcFNLws29clecY/
-         6L2SgdyOSVIRG5ZIn/nHDAwEjwn2xE37bkPDpzoCPwXj108q4OukQ4lwjpxDI0y9v+ao
-         1MJTLrDRE5zLzFRfPaPrt29PzXThuIAfFHfCywcCmPVg7IeFuu0XPIwArUXcHe5rk1NY
-         mAYaW6ilg/ErRdbLbKvQuZOdrHeMUNfKh+q8NWwp71m3zyveas/5ijnzC3JI4lMgXz0J
-         wkCl9r5027lWbRqKFQREty2dSE/SnHjy9kRbN/o9kqsW+5hOZ6uzAzHuTx6B8sLfUPh3
-         rqwA==
+        Fri, 27 Nov 2020 14:03:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606503824;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=SSrIzS7r/paWjGOH1L5vmQ9YstvXK8FDDRGPD8Vs6h8=;
+        b=JkpGMi99ayjsIgcQt06Erjpu+qu7kzvRsdSqw0lWF4LDAcleMr+BAW1sT5N0KAGT2PYpof
+        pE9QNbBTeIcC/4E2SeMLlAWAcWcsu1/cRZe+USSx4XE/vXsKyoleWSLVT9Nw8F+q0e4f3e
+        NVrDp3S7NXDIU/72PdVDJn0yoQPr1es=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-132-nAx4Yq9iMnyyR97AXcS-MA-1; Fri, 27 Nov 2020 14:03:42 -0500
+X-MC-Unique: nAx4Yq9iMnyyR97AXcS-MA-1
+Received: by mail-qv1-f70.google.com with SMTP id cu18so3528641qvb.17
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 11:03:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/aqzWfKAyZcFADuzDmYKakUb1PJhvmbjruHjYS0Occc=;
-        b=pVnSqujhdJUDs6LbxN0XN9fmz/zYMnuFNveq4psinF2vdmLZTOYF+C5Li16tspWpXE
-         mkw/S14WTPRUOGULZoI5qZzj0z8ijqclur/S/r0HxbC21cDj8mJNeAgI3jDp8sLd/eQG
-         y6X7GMWQwxNTM7MvB+uE0ZOlQ3ULZf+8XEaCjzc+DV8l2HPSkm4IyvMX8XueVYIaCJ0r
-         spj8sKVdDT/meI4k2vCHz2si60M1lB1rcfuuwUuiSawoUakpuyoN+9AL7gvrPeaelm3v
-         JurhqZ2JrPkAu4+/O4TungWbXjrr/XjEuK0XmPKwDvObvOukK6Z8cHLzqLjuE7OfjN/I
-         ejjw==
-X-Gm-Message-State: AOAM530Yu9hxbCGoBdCO/E7vEbU4SUIqm6perz8/W66FQG3fJ2xnW0e8
-        A0IyFLrQxkA/adXhZrp8qjFiYQ==
-X-Google-Smtp-Source: ABdhPJx+duHZQPgeCnc5beDK7iVxL5nBamRt9QZ1E6W7obHe9ErS3aqVxolCuOOrGLrvs0CE36wddw==
-X-Received: by 2002:adf:a54d:: with SMTP id j13mr12679404wrb.132.1606503462658;
-        Fri, 27 Nov 2020 10:57:42 -0800 (PST)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id h4sm15769103wrq.3.2020.11.27.10.57.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 10:57:41 -0800 (PST)
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        sudaraja@codeaurora.org, pratikp@codeaurora.org,
-        lmark@codeaurora.org
-References: <20201112184106.733-1-georgi.djakov@linaro.org>
- <20201112111436.c5deeadd3578877fc0b844a1@linux-foundation.org>
- <02f682e2-0e9b-76a8-04fa-487891e18bdf@suse.cz>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Subject: Re: [PATCH] mm/page_owner: Record timestamp and pid
-Message-ID: <3ef3d770-d74b-5588-6672-f092c1526461@linaro.org>
-Date:   Fri, 27 Nov 2020 20:57:43 +0200
-MIME-Version: 1.0
-In-Reply-To: <02f682e2-0e9b-76a8-04fa-487891e18bdf@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SSrIzS7r/paWjGOH1L5vmQ9YstvXK8FDDRGPD8Vs6h8=;
+        b=gIvfRgBE1GSKazWtWvQJHzC2xEvugW7Auv1AsF5nLYZtODIrZ/RjkM797mxXS83TqG
+         s1BCUW5qcQmvo7i9H+c6ej30pLNgs/7s74jrDrMmbz+0WDvTwSm1KFsUNj7sCvcUfsjf
+         26xUNcDZfdeBPBA8+gfVJCYBAk2eEifdhJ3O+gh+Oy5I7Vd2M8dfHIUjJ9g7wW4n/CvR
+         KB5djs6ONo36zjr4mwm3v+twmvkCNRv82f1kdekG2wD7a+dzz5Et/NwxDH0lfoP4LnzZ
+         jwLos6SEFyLG0r4DgIrwQZWIFXWwFPJ/Mmjqb0F7rNcrHEOiZfv4A/rHvNiyKWYXw49s
+         re+w==
+X-Gm-Message-State: AOAM533XfavSYO1KCUAX6li1HlWjB+vhUE/eNoE6QqixRqrlPgUf4TCH
+        63sIFIAvo1NB6ZnldIPJsxN9sejKv89WS7cKoLRsyNeTmZt1eGDJJs6iXSjC/YRnzOMqkXFcN1h
+        nMdsXkzfavrBokh4yAPjc+GuI
+X-Received: by 2002:ac8:74c9:: with SMTP id j9mr9696547qtr.208.1606503822236;
+        Fri, 27 Nov 2020 11:03:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxZOX3Xfq5opRkDF0WduBCczfZ/YUzZsZsf270bfxvbDmNDp4Hho59ppUobLrdl7lPLDP7utQ==
+X-Received: by 2002:ac8:74c9:: with SMTP id j9mr9696524qtr.208.1606503821953;
+        Fri, 27 Nov 2020 11:03:41 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l28sm6192088qkl.7.2020.11.27.11.03.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 11:03:41 -0800 (PST)
+From:   trix@redhat.com
+To:     gregkh@linuxfoundation.org, madhuparnabhowmik10@gmail.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] USB: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 11:03:36 -0800
+Message-Id: <20201127190336.2841413-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vlastimil,
+From: Tom Rix <trix@redhat.com>
 
-Thanks for the comment!
+The macro use will already have a semicolon.
 
-On 11/27/20 19:52, Vlastimil Babka wrote:
-> On 11/12/20 8:14 PM, Andrew Morton wrote:
->> On Thu, 12 Nov 2020 20:41:06 +0200 Georgi Djakov <georgi.djakov@linaro.org> 
->> wrote:
->>
->>> From: Liam Mark <lmark@codeaurora.org>
->>>
->>> Collect the time for each allocation recorded in page owner so that
->>> allocation "surges" can be measured.
->>>
->>> Record the pid for each allocation recorded in page owner so that
->>> the source of allocation "surges" can be better identified.
->>
->> Please provide a description of why this is considered useful.  What
->> has it been used for, what problems has it been used to solve?
-> 
-> Worth noting that on x86_64 it doubles the size of struct page_owner
-> from 16 bytes to 32, so it better be justified:
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/usb/host/u132-hcd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Well, that's true. But for debug options there is almost always some penalty.
-The timestamp and pid information is very useful for me (and others, i believe)
-when doing memory analysis. On a crash for example, we can get this information
-from kdump (or RAM-dump) and look into it to catch memory allocation problems
-more easily.
+diff --git a/drivers/usb/host/u132-hcd.c b/drivers/usb/host/u132-hcd.c
+index 995bc52d2d22..eb96e1e15b71 100644
+--- a/drivers/usb/host/u132-hcd.c
++++ b/drivers/usb/host/u132-hcd.c
+@@ -208,13 +208,13 @@ struct u132 {
+ #define ftdi_read_pcimem(pdev, member, data) usb_ftdi_elan_read_pcimem(pdev, \
+ 	offsetof(struct ohci_regs, member), 0, data);
+ #define ftdi_write_pcimem(pdev, member, data) usb_ftdi_elan_write_pcimem(pdev, \
+-	offsetof(struct ohci_regs, member), 0, data);
++	offsetof(struct ohci_regs, member), 0, data)
+ #define u132_read_pcimem(u132, member, data) \
+ 	usb_ftdi_elan_read_pcimem(u132->platform_dev, offsetof(struct \
+-	ohci_regs, member), 0, data);
++	ohci_regs, member), 0, data)
+ #define u132_write_pcimem(u132, member, data) \
+ 	usb_ftdi_elan_write_pcimem(u132->platform_dev, offsetof(struct \
+-	ohci_regs, member), 0, data);
++	ohci_regs, member), 0, data)
+ static inline struct u132 *udev_to_u132(struct u132_udev *udev)
+ {
+ 	u8 udev_number = udev->udev_number;
+-- 
+2.18.4
 
-If you find the above argument not strong enough, how about a separate config 
-option for this? Maybe something like CONFIG_PAGE_OWNER_EXTENDED, which could
-be enabled in addition to CONFIG_PAGE_OWNER?
-
-Thanks,
-Georgi
-
-> 
-> struct page_owner {
->          short unsigned int         order;                /*     0     2 */
->          short int                  last_migrate_reason;  /*     2     2 */
->          gfp_t                      gfp_mask;             /*     4     4 */
->          depot_stack_handle_t       handle;               /*     8     4 */
->          depot_stack_handle_t       free_handle;          /*    12     4 */
->          u64                        ts_nsec;              /*    16     8 */
->          int                        pid;                  /*    24     4 */
-> 
->          /* size: 32, cachelines: 1, members: 7 */
->          /* padding: 4 */
->          /* last cacheline: 32 bytes */
-> };
-> 
