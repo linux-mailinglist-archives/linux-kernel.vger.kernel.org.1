@@ -2,117 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718832C60D8
+	by mail.lfdr.de (Postfix) with ESMTP id DE4D02C60D9
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgK0I0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 03:26:50 -0500
-Received: from ec2-3-21-30-127.us-east-2.compute.amazonaws.com ([3.21.30.127]:38948
-        "EHLO www.teo-en-ming.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726099AbgK0I0u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 03:26:50 -0500
-Received: from localhost (localhost [IPv6:::1])
-        by www.teo-en-ming.com (Postfix) with ESMTPA id 746CD448EE0;
-        Fri, 27 Nov 2020 16:26:49 +0800 (+08)
+        id S1728077AbgK0I12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 03:27:28 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:51262 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728007AbgK0I11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 03:27:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606465647; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=IWwasJt0tRMK1gc4MDCFwZQfJfjRy1hB6m5yMjEDyX8=; b=qYGp5ib75bjiTEWK9b8ykgXJbValRBBsRRI/3ZNnthvuowamG4Ar3U5nxLHxwgAclarBnypu
+ LQf68XPTHHMI3jMoaRqGRwEt3JgDglNM0VlQ6z9yg2v5nqGoMlaUS5eH+dlYZ+43EDGPHXuA
+ QOJCv3twgbbh6v4WU+G/n9Q3/QU=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fc0b869d64ea0b703db9c3f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 08:27:21
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 77B7BC4346D; Fri, 27 Nov 2020 08:27:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.105] (unknown [49.206.49.183])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E04EAC433C6;
+        Fri, 27 Nov 2020 08:27:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E04EAC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH v2 tip/core/rcu 6/6] srcu: Document polling interfaces for
+ Tree SRCU grace periods
+To:     paulmck@kernel.org, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, kent.overstreet@gmail.com
+References: <@@@> <20201121005919.17152-6-paulmck@kernel.org>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <4b803d78-7464-0ba7-450e-181928080956@codeaurora.org>
+Date:   Fri, 27 Nov 2020 13:57:10 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Date:   Fri, 27 Nov 2020 16:26:49 +0800
-From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ceo@teo-en-ming-corp.com
-Subject: How to Unblock IP Address of Email Client in Linux iptables Firewall
- in Linux Mail Server
-Message-ID: <841285c108f960bee81fd107dbc3798f@teo-en-ming.com>
-X-Sender: ceo@teo-en-ming.com
-User-Agent: Roundcube Webmail/1.2.3
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201121005919.17152-6-paulmck@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: How to Unblock IP Address of Email Client in Linux iptables 
-Firewall in Linux Mail Server
-
-Good day from Singapore,
-
-I am an IT consultant in Singapore. Today, Black Friday 27 November 
-2020, my client Donald Trump (fictitious name used) informed me that he 
-cannot send and receive emails using his home Wi-Fi connection. But he 
-could send and receive emails using his mobile phone 4G connection.
-
-Apparently, the public IP address of his home internet connection was 
-blocked. The IP address is 666.666.666.666 (fictitious IP address used).
-
-I checked the Fortigate 100D firewall but it was not blocked there.
-
-Then I proceed to check the Linux iptables firewall on my client's Linux 
-mail server. I login/putty/ssh into mail.teo-en-ming-corp.com.sg, which 
-is my client's Linux mail server.
-
-I executed the following command:
-
-# iptables -S | grep 666.666.666.666
-
-The output is:
-
--A DENYIN -s 666.666.666.666/32 ! -i lo -j DROP
--A DENYOUT -d 666.666.666.666/32 ! -o lo -j LOGDROPOUT
-
-I proceeded to delete the above 2 Linux iptables firewall rules which 
-blocked the IP address 666.666.666.666, using the following commands:
-
-# iptables -D DENYIN -s 666.666.666.666/32 ! -i lo -j DROP
-# iptables -D DENYOUT -d 666.666.666.666/32 ! -o lo -j LOGDROPOUT
-
-Then I run the following command again to make sure the IP address has 
-been unblocked.
-
-# iptables -S | grep 666.666.666.666
-
-There should be no output, confirming that the IP address has been 
-unblocked.
-
-Now my client Donald Trump is able to send and receive emails using his 
-home Wi-fi connection successfully.
-
-The author, Mr. Turritopsis Dohrnii Teo En Ming, 42 years as of 27 Nov 
-2020 Friday, is a TARGETED INDIVIDUAL (TI) living in Singapore.
-
-Reference Guide: How To List and Delete Iptables Firewall Rules
-Link: 
-https://www.digitalocean.com/community/tutorials/how-to-list-and-delete-iptables-firewall-rules
 
 
+On 11/21/2020 6:29 AM, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> This commit adds requirements documentation for the
+> get_state_synchronize_srcu(), start_poll_synchronize_srcu(), and
+> poll_state_synchronize_srcu() functions.
+> 
+> Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+> Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+
+Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 
 
+Thanks
+Neeraj
 
-
+>   Documentation/RCU/Design/Requirements/Requirements.rst | 18 ++++++++++++++++++
+>   1 file changed, 18 insertions(+)
+> 
+> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+> index 1e3df77..2dce79d 100644
+> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+> @@ -2600,6 +2600,24 @@ also includes DEFINE_SRCU(), DEFINE_STATIC_SRCU(), and
+>   init_srcu_struct() APIs for defining and initializing
+>   ``srcu_struct`` structures.
+>   
+> +More recently, the SRCU API has added polling interfaces:
+> +
+> +#. start_poll_synchronize_srcu() returns a cookie identifying
+> +   the completion of a future SRCU grace period and ensures
+> +   that this grace period will be started.
+> +#. poll_state_synchronize_srcu() returns ``true`` iff the
+> +   specified cookie corresponds to an already-completed
+> +   SRCU grace period.
+> +#. get_state_synchronize_srcu() returns a cookie just like
+> +   start_poll_synchronize_srcu() does, but differs in that
+> +   it does nothing to ensure that any future SRCU grace period
+> +   will be started.
+> +
+> +These functions are used to avoid unnecessary SRCU grace periods in
+> +certain types of buffer-cache algorithms having multi-stage age-out
+> +mechanisms.  The idea is that by the time the block has aged completely
+> +from the cache, an SRCU grace period will be very likely to have elapsed.
+> +
+>   Tasks RCU
+>   ~~~~~~~~~
+>   
+> 
 
 -- 
------BEGIN EMAIL SIGNATURE-----
-
-The Gospel for all Targeted Individuals (TIs):
-
-[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
-U.S. Embassy Workers
-
-Link: 
-https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
-
-********************************************************************************************
-
-Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's 
-Academic
-Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
-United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
-2019) and Australia (25 Dec 2019 to 9 Jan 2020):
-
-[1] https://tdtemcerts.wordpress.com/
-
-[2] https://tdtemcerts.blogspot.sg/
-
-[3] https://www.scribd.com/user/270125049/Teo-En-Ming
-
------END EMAIL SIGNATURE-----
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
