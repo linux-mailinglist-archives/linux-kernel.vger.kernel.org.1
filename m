@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26972C5EE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 409C42C5EEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392332AbgK0DRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 22:17:09 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:42082 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388759AbgK0DRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 22:17:08 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9Kqb8Bf+EsXAA--.52755S2;
-        Fri, 27 Nov 2020 11:16:58 +0800 (CST)
-From:   Xingxing Su <suxingxing@loongson.cn>
-To:     Christian Brauner <christian@brauner.io>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v2] selftests/clone3: Fix build error
-Date:   Fri, 27 Nov 2020 11:16:57 +0800
-Message-Id: <1606447017-10640-1-git-send-email-suxingxing@loongson.cn>
-X-Mailer: git-send-email 2.1.0
+        id S2392340AbgK0DSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 22:18:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388759AbgK0DSI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 22:18:08 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA0EC0613D1;
+        Thu, 26 Nov 2020 19:18:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=k5Qw/Urbgsr4b6oxTUWbMQah+Hz+m37ybtc8zTvtg3E=; b=U7nqK/EKDdovDwzz55RcS0ppju
+        I1Rf9vNOYrwUmXr4t5Y3j/ZD7P5gRokg7C/e31NQNhaYAODXPDsPVBwXKf0Wsb5HywMzv0c3eBYjH
+        ydfys6t3XpMJaNN3kTzteOasEn8Ylw857262ixWIXz8kJkjCF33eaYR8Z2mDCnbdnle/ekPQ6xhxM
+        8f8hntimMkj5vEbURPgsjywjdujWzqghuYDx4sgL3YNzIuVmaF8nEbnzMfiPBpVvUC7wPz87iyRK2
+        gMGci9WnsIPYsoWQeM3Wr3ADWKij5lq68ujDD4W0f/8dH93sPWQBpudP+TOtf/dN0piJpeptb6KOi
+        xCCuNI6A==;
+Received: from [2601:1c0:6280:3f0::cc1f] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kiUGm-0007TW-8s; Fri, 27 Nov 2020 03:18:00 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2] fbdev: aty: SPARC64 requires FB_ATY_CT
+Date:   Thu, 26 Nov 2020 19:17:52 -0800
+Message-Id: <20201127031752.10371-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dx_9Kqb8Bf+EsXAA--.52755S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFW3ur18ury8WryDZF1xGrg_yoWkAFXEkw
-        srKrn7u390va1kZr4SqFZ5Jryvyw4agrs8JF1YqF43Ja4DA3Z8G3WDXr1DAa18WwsIvryS
-        vFs5uF1fAr4jkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8GwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5_xhJUUUUU==
-X-CM-SenderInfo: pvx0x0xj0l0wo6or00hjvr0hdfq/1tbiAQANC13QvMr+VAAHsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling the selftests with the -std=gnu99 option the build can
-fail with.
+It looks like SPARC64 requires FB_ATY_CT to build without errors,
+so have FB_ATY select FB_ATY_CT if both SPARC64 and PCI are enabled
+instead of using "default y if SPARC64 && PCI", which is not strong
+enough to prevent build errors.
 
-Following build error:
+As it currently is, FB_ATY_CT can be disabled, resulting in build
+errors:
 
-  test_core.c: In function ‘test_cgcore_destroy’:
-  test_core.c:87:2: error: ‘for’ loop initial declarations are only
-  allowed in C99 mode
-    for (int i = 0; i < 10; i++) {
-    ^
-  test_core.c:87:2: note: use option -std=c99 or -std=gnu99 to compile
+ERROR: modpost: "aty_postdividers" [drivers/video/fbdev/aty/atyfb.ko] undefined!
+ERROR: modpost: "aty_ld_pll_ct" [drivers/video/fbdev/aty/atyfb.ko] undefined!
 
-Add -std=gnu99 to the clone3 selftest Makefile to fix this.
-
-Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: sparclinux@vger.kernel.org
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-fbdev@vger.kernel.org
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- tools/testing/selftests/clone3/Makefile | 2 +-
+v2: use select (suggested by Geert)
+
+ drivers/video/fbdev/Kconfig |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/clone3/Makefile b/tools/testing/selftests/clone3/Makefile
-index ef7564c..88354a8 100644
---- a/tools/testing/selftests/clone3/Makefile
-+++ b/tools/testing/selftests/clone3/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--CFLAGS += -g -I../../../../usr/include/
-+CFLAGS += -g -std=gnu99 -I../../../../usr/include/ 
- LDLIBS += -lcap
- 
- TEST_GEN_PROGS := clone3 clone3_clear_sighand clone3_set_tid \
--- 
-1.8.3.1
-
+--- linux-next-20201124.orig/drivers/video/fbdev/Kconfig
++++ linux-next-20201124/drivers/video/fbdev/Kconfig
+@@ -1269,6 +1269,7 @@ config FB_ATY
+ 	select FB_CFB_IMAGEBLIT
+ 	select FB_BACKLIGHT if FB_ATY_BACKLIGHT
+ 	select FB_MACMODES if PPC
++	select FB_ATY_CT if SPARC64 && PCI
+ 	help
+ 	  This driver supports graphics boards with the ATI Mach64 chips.
+ 	  Say Y if you have such a graphics board.
+@@ -1279,7 +1280,6 @@ config FB_ATY
+ config FB_ATY_CT
+ 	bool "Mach64 CT/VT/GT/LT (incl. 3D RAGE) support"
+ 	depends on PCI && FB_ATY
+-	default y if SPARC64 && PCI
+ 	help
+ 	  Say Y here to support use of ATI's 64-bit Rage boards (or other
+ 	  boards based on the Mach64 CT, VT, GT, and LT chipsets) as a
