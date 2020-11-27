@@ -2,31 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EA92C61EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1EF2C61F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729002AbgK0JlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:41:10 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7750 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728177AbgK0Jkf (ORCPT
+        id S1729059AbgK0JlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:41:15 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8049 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728056AbgK0Jkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:40:35 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cj8jq61XDzkdqx;
-        Fri, 27 Nov 2020 17:39:59 +0800 (CST)
+        Fri, 27 Nov 2020 04:40:32 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cj8k03kzqzhjJt;
+        Fri, 27 Nov 2020 17:40:08 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 27 Nov 2020 17:40:21 +0800
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 27 Nov 2020 17:40:23 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <lima@lists.freedesktop.org>,
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] drm/lima: fix reference leak in lima_pm_busy
-Date:   Fri, 27 Nov 2020 17:44:38 +0800
-Message-ID: <20201127094438.121003-1-miaoqinglang@huawei.com>
+Subject: [PATCH] drm/mediatek: fix reference leak in mtk_crtc_ddp_hw_init
+Date:   Fri, 27 Nov 2020 17:44:39 +0800
+Message-ID: <20201127094439.121049-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -47,26 +52,26 @@ leak by replacing it with new funtion.
 
 [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
 
-Fixes: 50de2e9ebbc0 ("drm/lima: enable runtime pm")
+Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/gpu/drm/lima/lima_sched.c | 2 +-
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/lima_sched.c
-index dc6df9e9a..f6e7a88a5 100644
---- a/drivers/gpu/drm/lima/lima_sched.c
-+++ b/drivers/gpu/drm/lima/lima_sched.c
-@@ -200,7 +200,7 @@ static int lima_pm_busy(struct lima_device *ldev)
- 	int ret;
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index ac0385721..dfd5ed15a 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -274,7 +274,7 @@ static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
+ 		drm_connector_list_iter_end(&conn_iter);
+ 	}
  
- 	/* resume GPU if it has been suspended by runtime PM */
--	ret = pm_runtime_get_sync(ldev->dev);
-+	ret = pm_runtime_resume_and_get(ldev->dev);
- 	if (ret < 0)
+-	ret = pm_runtime_get_sync(crtc->dev->dev);
++	ret = pm_runtime_resume_and_get(crtc->dev->dev);
+ 	if (ret < 0) {
+ 		DRM_ERROR("Failed to enable power domain: %d\n", ret);
  		return ret;
- 
 -- 
 2.23.0
 
