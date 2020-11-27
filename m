@@ -2,119 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0072C60B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1754E2C60B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389114AbgK0IEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 03:04:14 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:56075 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726408AbgK0IEN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 03:04:13 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9B5FC5C03E0;
-        Fri, 27 Nov 2020 03:04:12 -0500 (EST)
-Received: from imap10 ([10.202.2.60])
-  by compute2.internal (MEProxy); Fri, 27 Nov 2020 03:04:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dend.ro; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type:content-transfer-encoding; s=fm1; bh=wEAsi
-        aXOmsqZMNHYu69wrrLEe6FYIcAIgszXIHF3axQ=; b=GI4uweY3cXOaaYBkgPWFO
-        KuLg0NsyM8RJLtOMljTErOp6sGIb0k5k2ZgvYFUIXHl/XjN1wIXAAN/v1TQvEMxb
-        xChaUs0vQY2yxlnCpIXOTfQ/2hhT7g54svMRo+3QoKUiI7Ht8Fd68VJ8ka+M4b2c
-        mfFOx9dSEWpBDUhTi7z0kpDEe/AmG1716wiZ5zc1kKXUXlATngpLPxR8RNAo9XGO
-        31sl4hlMWnNkmPxt7M6Un3JQ67JyPnAbqcdcHczpElJIqE3zbAZuNl0p20t2dB5Z
-        EGMLopVUrDFXBizpSNyzN/6DS2GEkM0xSfTZC5jgYK0tEmq9UX+ozUdtIMqeNbEp
-        A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=wEAsiaXOmsqZMNHYu69wrrLEe6FYIcAIgszXIHF3a
-        xQ=; b=c9FggQhdEHRSZ4P1nHr9Ph+NN003DiDcfCN7o3sh+9smtok9KRvvk7Np+
-        Sj9XMIdb5KpPkXT5esM6XfyzM5D6Ee5m7vcK3+kF7IjF9MPNLM5w7hVL1/kE9kQH
-        KDFC+cWQn38XB4bO+gAMy8nEg2rzZ+vOtvNrPYL3vIJCM/QCB67s1GSG2eg4Kq62
-        nEI+qC4p9/0GhxdVK6yikK46PDsUgP+V8BijBGg1xGSxk7bHrsanJI0v1rsaDSlw
-        ycc4by+EycE140hrRia3TuCjxugI9CS0/CTQQNUvnw611eitpbM+4oLBZHoT4Lbl
-        6Y8UxBd07dKZd8FKzIRZEJlZwPdwQ==
-X-ME-Sender: <xms:-7LAX4Gd31dpor__ZQrNPUPY1e2T3OQZxG2bah4FDRGN3DRVLvLWMg>
-    <xme:-7LAXxUSmqoV95JGS8w8rim7ONIs9tdIuA17p78ftylevkQUCculgxRnI7L-lXDf3
-    f3cLcEQFsNYWriItQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudehfedgudduhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepofgfggfkjghffffhvffutgfgse
-    htqhertderreejnecuhfhrohhmpefnrghurhgvnhhtihhupgfpihgtohhlrgcuoehlnhhi
-    tgholhgrseguvghnugdrrhhoqeenucggtffrrghtthgvrhhnpeeigfejueegtdetgefftd
-    duieehiedvtdetgfdtjeevudeghedvtdeuuedvuddukeenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlnhhitgholhgrseguvghnugdrrhho
-X-ME-Proxy: <xmx:-7LAXyLplOh7pBcxEBwStboJqsx1sF4jGBiisfUaLuWEbZmG3-gYqQ>
-    <xmx:-7LAX6E7F31oGUmMMWxf75V2B5Q9B57rtv24bsGQKtFjsq7BJkpUrA>
-    <xmx:-7LAX-XNJvXR0XCmPWDtoGzTJe9pXdeS1ucrDjsabwhIh4k_yC8Atg>
-    <xmx:_LLAX9QRK1lV3lw5EEXGypWRGYET6IArNCtBJLYiDjv1qgFeaBhrsA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 49EAA201D9; Fri, 27 Nov 2020 03:04:11 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-622-g4a97c0b-fm-20201115.001-g4a97c0b3
-Mime-Version: 1.0
-Message-Id: <ea40c3e8-0be1-4783-ba1e-86c96cf8e4af@www.fastmail.com>
-In-Reply-To: <875z5rk68z.fsf@nanos.tec.linutronix.de>
-References: <20201126074734.12664-1-lnicola@dend.ro>
- <875z5rk68z.fsf@nanos.tec.linutronix.de>
-Date:   Fri, 27 Nov 2020 10:03:50 +0200
-From:   =?UTF-8?Q?Lauren=C8=9Biu_Nicola?= <lnicola@dend.ro>
-To:     "Thomas Gleixner" <tglx@linutronix.de>
-Cc:     mingo@redhat.com, bp@alien8.de, x86@kernel.org, trivial@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/irq: Lower unhandled irq error severity
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S1726039AbgK0IGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 03:06:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbgK0IGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 03:06:12 -0500
+Received: from kernel.org (unknown [77.125.7.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE707208CA;
+        Fri, 27 Nov 2020 08:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606464371;
+        bh=GGTofRdm/Erp0GIGGwK5gTXImKW1NVGj6YOURY+3mus=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FgwgKCuRDdAxuxKqZUo0IDf1Tn5z3zrUktz9jKaP797N7JINdQ9nWKhDwrn9N6SbU
+         nXgqukBK33w7drRoemVv5lqjebhhkEQyzHWqsDepkbXRYmfT6efKdYoEkQ1KbTaiYT
+         jsaqMKYtNkgJ/GHPOUeAuVs0wMMEGGv+CJ10VUDs=
+Date:   Fri, 27 Nov 2020 10:06:05 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Haitao Shi <shihaitao1@huawei.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, wangle6@huawei.com
+Subject: Re: [PATCH] mm: fix some spelling mistakes in comments
+Message-ID: <20201127080605.GA557259@kernel.org>
+References: <20201127011747.86005-1-shihaitao1@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201127011747.86005-1-shihaitao1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Nov 27, 2020 at 09:17:47AM +0800, Haitao Shi wrote:
+> Fix some spelling mistakes in comments:
+> 	udpate ==> update
+> 	succesful ==> successful
+> 	exmaple ==> example
+> 	unneccessary ==> unnecessary
+> 	stoping ==> stopping
+> 	uknown ==> unknown
+> 
+> Signed-off-by: Haitao Shi <shihaitao1@huawei.com>
 
-On Fri, Nov 27, 2020, at 02:12, Thomas Gleixner wrote:
-> On Thu, Nov 26 2020 at 09:47, Lauren=C8=9Biu Nicola wrote:
-> > These messages are described as warnings in the MSI code.
->=20
-> Where and what has MSI to do with these messages?
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 
-There's a comment referring to it as a warning, but an error seemed a mo=
-re appropriate severity:
+> ---
+>  mm/filemap.c     | 2 +-
+>  mm/huge_memory.c | 2 +-
+>  mm/khugepaged.c  | 2 +-
+>  mm/memblock.c    | 2 +-
+>  mm/migrate.c     | 2 +-
+>  mm/page_ext.c    | 2 +-
+>  6 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 3ebbe64..8826c48 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -1359,7 +1359,7 @@ static int __wait_on_page_locked_async(struct page *page,
+>  	else
+>  		ret = PageLocked(page);
+>  	/*
+> -	 * If we were succesful now, we know we're still on the
+> +	 * If we were successful now, we know we're still on the
+>  	 * waitqueue as we're still under the lock. This means it's
+>  	 * safe to remove and return success, we know the callback
+>  	 * isn't going to trigger.
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index ec2bb93..0fea0c2 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2356,7 +2356,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>  	 * Clone page flags before unfreezing refcount.
+>  	 *
+>  	 * After successful get_page_unless_zero() might follow flags change,
+> -	 * for exmaple lock_page() which set PG_waiters.
+> +	 * for example lock_page() which set PG_waiters.
+>  	 */
+>  	page_tail->flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
+>  	page_tail->flags |= (head->flags &
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index 4e3dff1..d6f7ede 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -1273,7 +1273,7 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+>  			 * PTEs are armed with uffd write protection.
+>  			 * Here we can also mark the new huge pmd as
+>  			 * write protected if any of the small ones is
+> -			 * marked but that could bring uknown
+> +			 * marked but that could bring unknown
+>  			 * userfault messages that falls outside of
+>  			 * the registered range.  So, just be simple.
+>  			 */
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index b68ee86..086662a 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -871,7 +871,7 @@ int __init_memblock memblock_physmem_add(phys_addr_t base, phys_addr_t size)
+>   * @base: base address of the region
+>   * @size: size of the region
+>   * @set: set or clear the flag
+> - * @flag: the flag to udpate
+> + * @flag: the flag to update
+>   *
+>   * This function isolates region [@base, @base + @size), and sets/clears flag
+>   *
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 5795cb8..8a3580c 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -2548,7 +2548,7 @@ static bool migrate_vma_check_page(struct page *page)
+>  		 * will bump the page reference count. Sadly there is no way to
+>  		 * differentiate a regular pin from migration wait. Hence to
+>  		 * avoid 2 racing thread trying to migrate back to CPU to enter
+> -		 * infinite loop (one stoping migration because the other is
+> +		 * infinite loop (one stopping migration because the other is
+>  		 * waiting on pte migration entry). We always return true here.
+>  		 *
+>  		 * FIXME proper solution is to rework migration_entry_wait() so
+> diff --git a/mm/page_ext.c b/mm/page_ext.c
+> index a3616f7..cf931eb 100644
+> --- a/mm/page_ext.c
+> +++ b/mm/page_ext.c
+> @@ -34,7 +34,7 @@
+>   *
+>   * The need callback is used to decide whether extended memory allocation is
+>   * needed or not. Sometimes users want to deactivate some features in this
+> - * boot and extra memory would be unneccessary. In this case, to avoid
+> + * boot and extra memory would be unnecessary. In this case, to avoid
+>   * allocating huge chunk of memory, each clients represent their need of
+>   * extra memory through the need callback. If one of the need callbacks
+>   * returns true, it means that someone needs extra memory so that
+> -- 
+> 2.10.1
+> 
 
-     * If the vector is unused, then it is marked so it won't
-     * trigger the 'No irq handler for vector' warning in
-     * common_interrupt().
-
-> > Spotted because they break quiet boot on a Ryzen 5000 CPU.
->=20
-> They don't break the boot.
->=20
-> The machine boots fine, but having interrupts raised on a vector which=
-
-> is unused is really bad.
-
-That's right, sorry. It still boots, but it's no longer "quiet", that's =
-what I meant.
-
-> Can you please provide the actual message from dmesg?
-
-Sure:
-
-[    0.316902] __common_interrupt: 1.55 No irq handler for vector
-[    0.316902] __common_interrupt: 2.55 No irq handler for vector
-[    0.316902] __common_interrupt: 3.55 No irq handler for vector
-[    0.316902] __common_interrupt: 4.55 No irq handler for vector
-[    0.316902] __common_interrupt: 5.55 No irq handler for vector
-[    0.316902] __common_interrupt: 6.55 No irq handler for vector
-[    0.316902] __common_interrupt: 7.55 No irq handler for vector
-[    0.316902] __common_interrupt: 8.55 No irq handler for vector
-[    0.316902] __common_interrupt: 9.55 No irq handler for vector
-[    0.316902] __common_interrupt: 10.55 No irq handler for vector
-
-These only show up during boot (and not e.g. when a disabling and enabli=
-ng again a CPU).
-
-Lauren=C8=9Biu
+-- 
+Sincerely yours,
+Mike.
