@@ -2,252 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E059B2C68A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3AA2C68B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731114AbgK0PVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 10:21:32 -0500
-Received: from foss.arm.com ([217.140.110.172]:44502 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731080AbgK0PVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 10:21:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CC951597;
-        Fri, 27 Nov 2020 07:21:31 -0800 (PST)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FC403F70D;
-        Fri, 27 Nov 2020 07:21:28 -0800 (PST)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: [PATCH v6 2/2] arm64: kvm: Introduce MTE VCPU feature
-Date:   Fri, 27 Nov 2020 15:21:13 +0000
-Message-Id: <20201127152113.13099-3-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201127152113.13099-1-steven.price@arm.com>
-References: <20201127152113.13099-1-steven.price@arm.com>
-MIME-Version: 1.0
+        id S1730418AbgK0PaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 10:30:02 -0500
+Received: from mail-eopbgr80095.outbound.protection.outlook.com ([40.107.8.95]:21383
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729113AbgK0PaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 10:30:01 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZqTMDr31EM+czyIzYDxvbAUaJc3gwH/H+mv4mLlts7fUVXUQ5wHxn76o7ipdhe2tcnXuAm47rG8B0szHxSx2MHO/mRpDdoICpbJpOeQ5WX3Ukd2uZbzO40UdhbKUjFQBsMKj0/1KcB0mZ35/vT4exrUBo5b1qy6sNSBvZfwmEzxQthzQioxKfPyi/on/HPS2VOGd6wZqnc+YCaRBXjldm02U6QT92S6x/6ItpL0jpRz0IlHhfGblToQMh1sTSb46SyzXFHgK1EjRzhdoGQ+oj0f6Up2PEFDp0ecOiQd19m38yd+gZ4BpKj8G8AlWwXyCZteqJdLdtrfjYJu7dCMA8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LyGT9oSTyzqXuGScKN1G+ssH23AhFvk1QMQMFBgjqE0=;
+ b=MSzamTLTLo9ykKtxWfmyFkqOOIiZUKlC80gY6kTEe6ac1ZvA+9M8lC/nrSdLzKvooUNtjCvXlmI9Ir2YV81phAQuVmAq1DJMBH9yn7PWGL+nSGr8xFK/Pp2/QLkbNp4P9FWZSJnJjQY5VrOU/EHLhIgpjQ9T/rlUJ/KsIHouS9OC2SBoHqEsQBVqynprAniMNRt5vNTS7idrOp78NzwF1Ne3PhhitmjE7n6ty0gRooMQi00pW6PrSVYl5WMn4T0Tv/+xo0U6K4DP51quA0ZfdBr8lz78oYDdsCP5rDsBuH0ngi/7Du2hvqujQVogevpj46zKyh3io10rj3/U1zMKkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LyGT9oSTyzqXuGScKN1G+ssH23AhFvk1QMQMFBgjqE0=;
+ b=aeyjn4gbJNUbZzo63c4NF+Q4qfoF+h+GP3kJYpNLvSmA8f4bsmDmZoyR7j/2t3cPDNRTjLDC/C8EYVlqhIMeLyD27aXnjN1hMsJBW5tfB2ceqfxuzuOIjRXhIh9Rx5T2RSCe9HNpdzRSbyfQ1s6/C3S0sZfuTJVJbR28+18pUzU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM8PR10MB4227.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1e1::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Fri, 27 Nov
+ 2020 15:29:57 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3611.025; Fri, 27 Nov 2020
+ 15:29:57 +0000
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] spi: fsl: fix use of spisel_boot signal on MPC8309
+Date:   Fri, 27 Nov 2020 16:29:47 +0100
+Message-Id: <20201127152947.376-1-rasmus.villemoes@prevas.dk>
+X-Mailer: git-send-email 2.23.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [81.216.59.226]
+X-ClientProxiedBy: HE1PR0401CA0080.eurprd04.prod.outlook.com
+ (2603:10a6:3:19::48) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:3f::10)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from prevas-ravi.prevas.se (81.216.59.226) by HE1PR0401CA0080.eurprd04.prod.outlook.com (2603:10a6:3:19::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22 via Frontend Transport; Fri, 27 Nov 2020 15:29:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 04330c99-a20e-4e76-2a1c-08d892e94ba6
+X-MS-TrafficTypeDiagnostic: AM8PR10MB4227:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM8PR10MB42275ECDB4B7CBB6E40B518393F80@AM8PR10MB4227.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:605;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FGgq/TJb+IZ5umO1NQm+RrXLwPF8fYK1q4RsBSrE+rEY0s9ZalGzhDDdOuko/1VbKrsOSUZgWsrBmTnjjUkeUDnK4FoyztE8aPdbqzXvgaz1JkpXxPt1/l12znpIMv1FNe2hOURB9hMPxBNrMoPDK6mYb/FDMixpBqaoVpQe50mBBEY0ChLAVTpjv64I9X+5P3SjuQ/6aGcU2WFN37dpaUL1+bL/DyBvC/YLEHF7SUl8ZJKnL8A7d7zmr8Kssxac25vGrPJWWhXLSePx7GdICU9V2Ge0SN6B5swj0mvmHlL2e8atIbWlJugL9ZpA0vtTAOfAbv9S/2wPcPa+gzErOdYR2t7YBBGUe8rWmo9TXpVtbmrx/u4zxJZ7OVctaqRCss3LBKIlU/3+YUVcmoSsZA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(396003)(39850400004)(136003)(66476007)(8976002)(2906002)(186003)(478600001)(8936002)(8676002)(16526019)(4326008)(5660300002)(44832011)(6486002)(6666004)(6506007)(956004)(83380400001)(966005)(316002)(26005)(1076003)(86362001)(66946007)(6512007)(66556008)(54906003)(52116002)(36756003)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?BPEyrAhJEKih1Iowueag0GXLD0ad1rRiwUNHd/Eh/UBvThKuHJxeVyXB8Mas?=
+ =?us-ascii?Q?SOgzMi9H9vT58IeM3IcMRG6/l/sxVUrn0zk+qMnlt+JZxxtIiBmhRQ02vazv?=
+ =?us-ascii?Q?mGSX4pScWYORzzKEYqMbVEyEVnXssEuYa1xPrl6NycF3emTKJ7/HQ4DXCPtl?=
+ =?us-ascii?Q?U5afRc6wF5q0nZgZpnl2liWqxqTCs2LND17cyv1dCKtSw/cdlz5kA9th5/Yx?=
+ =?us-ascii?Q?psnQr37GbCTsrZk8mwBHELy4oCVjSF+g9jTsMwG88ZJOMlTClXEXp8JC8ROS?=
+ =?us-ascii?Q?Djxh2V2SiixV1nnOimoz1qs8Cf++J9OWsA36cFxj2VKVtr2v/1NM4ItAr20h?=
+ =?us-ascii?Q?XN7QqXY0l+glHngMm+r92uhsN5fXJou1SRnYjnwgcfiJiehNNoJlIcSCN8Ct?=
+ =?us-ascii?Q?/iBvGpKL8JuwE7GcyU3NRNa7fTo4Tk27UEhUdTW6zRZND19enV3cXNObCGPV?=
+ =?us-ascii?Q?wRf7TT2PcIXeHL9PClh4FJntLWSEJeXtmOE6o72ss6x0MnOU6kGApTduwKyA?=
+ =?us-ascii?Q?42gFhhdcATRHNARz1JE5L34s7LHLnNL9Gn4XoLgrOktqeNwp9FbWy2OsS80A?=
+ =?us-ascii?Q?jVzWZ2zCwNfDkFVyp/g3h27EqP1bljnjX4mwR4UqC46zstllWBxlFQigR1wf?=
+ =?us-ascii?Q?xUQdX4g7FTkFCRA7d95McJIYO4jGe8Xkxi6kpe+kUFxrFJ9YKdDNtfmLGPQ6?=
+ =?us-ascii?Q?155dgAlGHAlNv3JUBiK8v4fv6+6sG5y1FtTg24KAhn1AB2Yfn7+CKapQxXCY?=
+ =?us-ascii?Q?SFAy3wFtjeWVBCda5mTAuj/01ceSV6aEDkRMWWHqrP6nyB+cGQfZtLJv7qj2?=
+ =?us-ascii?Q?fbPcsaTdvz0/dFShbRsMS+83acznVjf+WB2hHpSig+1gzyTvfkQu/gyFlYpa?=
+ =?us-ascii?Q?F72AFwGrETM2ugXHf2m9828WSeFeCUPLA5mGh36/ON8xxE7HuqiJQfr1q/oQ?=
+ =?us-ascii?Q?j/0iqpuuta8WJjcsi2SdJc9X+c3RkaboF6pWPuddFD14+B2QiVKXrGQZvu43?=
+ =?us-ascii?Q?y8/l?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04330c99-a20e-4e76-2a1c-08d892e94ba6
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2020 15:29:56.9490
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hZtCcEOqUOvKA55CFrbdiuF5An3Vubzpx+tDw+6lOS6PrTKkRtZf+Z41v2m+KBExa2VmENZDrSSiqCx4rUM9SupI287XQ+s/WELZOUR0jmk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB4227
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
-for a VM. This exposes the feature to the guest and automatically tags
-memory pages touched by the VM as PG_mte_tagged (and clears the tags
-storage) to ensure that the guest cannot see stale tags, and so that the
-tags are correctly saved/restored across swap.
+Commit 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
+broke the use of the SPISEL_BOOT signal as a chip select on the
+MPC8309.
 
-Signed-off-by: Steven Price <steven.price@arm.com>
+pdata->max_chipselect, which becomes master->num_chipselect, must be
+initialized to take into account the possibility that there's one more
+chip select in use than the number of GPIO chip selects.
+
+Cc: stable@vger.kernel.org # v5.4+
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 ---
- arch/arm64/include/asm/kvm_emulate.h |  3 +++
- arch/arm64/include/asm/kvm_host.h    |  4 ++++
- arch/arm64/include/asm/pgtable.h     |  2 +-
- arch/arm64/kernel/mte.c              | 18 +++++++++++++-----
- arch/arm64/kvm/arm.c                 |  9 +++++++++
- arch/arm64/kvm/mmu.c                 | 16 ++++++++++++++++
- arch/arm64/kvm/sys_regs.c            |  6 +++++-
- include/uapi/linux/kvm.h             |  1 +
- 8 files changed, 52 insertions(+), 7 deletions(-)
+Longer-term, it might be nicer to introduce a very trivial "gpiochip"
+with nr_gpios=1, which doesn't really implement neither the
+"general-purpose" nor the "input" part of the gpio acronym. That's how
+this ended up being handled in U-Boot, for example:
 
-diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
-index 5ef2669ccd6c..7791ef044b7f 100644
---- a/arch/arm64/include/asm/kvm_emulate.h
-+++ b/arch/arm64/include/asm/kvm_emulate.h
-@@ -79,6 +79,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
- 	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
- 	    vcpu_el1_is_32bit(vcpu))
- 		vcpu->arch.hcr_el2 |= HCR_TID2;
-+
-+	if (kvm_has_mte(vcpu->kvm))
-+		vcpu->arch.hcr_el2 |= HCR_ATA;
- }
+https://github.com/u-boot/u-boot/commit/3fb22bc2f825ea1b3326edc5b32d711a759a265f
+
+But for -stable, this is much simpler.
+
+ drivers/spi/spi-fsl-spi.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/spi/spi-fsl-spi.c b/drivers/spi/spi-fsl-spi.c
+index 299e9870cf58..9494257e1c33 100644
+--- a/drivers/spi/spi-fsl-spi.c
++++ b/drivers/spi/spi-fsl-spi.c
+@@ -716,10 +716,11 @@ static int of_fsl_spi_probe(struct platform_device *ofdev)
+ 	type = fsl_spi_get_type(&ofdev->dev);
+ 	if (type == TYPE_FSL) {
+ 		struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
++		bool spisel_boot = false;
+ #if IS_ENABLED(CONFIG_FSL_SOC)
+ 		struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(pdata);
+-		bool spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
  
- static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index d3e136343468..aeff10bc5b31 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -120,6 +120,8 @@ struct kvm_arch {
- 	unsigned int pmuver;
- 
- 	u8 pfr0_csv2;
-+	/* Memory Tagging Extension enabled for the guest */
-+	bool mte_enabled;
- };
- 
- struct kvm_vcpu_fault_info {
-@@ -658,4 +660,6 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
- #define kvm_arm_vcpu_sve_finalized(vcpu) \
- 	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
- 
-+#define kvm_has_mte(kvm) (system_supports_mte() && (kvm)->arch.mte_enabled)
-+
- #endif /* __ARM64_KVM_HOST_H__ */
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 4ff12a7adcfd..74dfd9df38fb 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -304,7 +304,7 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
- 		__sync_icache_dcache(pte);
- 
- 	if (system_supports_mte() &&
--	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
-+	    pte_present(pte) && pte_valid_user(pte) && !pte_special(pte))
- 		mte_sync_tags(ptep, pte);
- 
- 	__check_racy_pte_update(mm, ptep, pte);
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 52a0638ed967..e0c252de25cd 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -20,18 +20,24 @@
- #include <asm/ptrace.h>
- #include <asm/sysreg.h>
- 
--static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
-+static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap,
-+			       bool pte_is_tagged)
- {
- 	pte_t old_pte = READ_ONCE(*ptep);
- 
- 	if (check_swap && is_swap_pte(old_pte)) {
- 		swp_entry_t entry = pte_to_swp_entry(old_pte);
- 
--		if (!non_swap_entry(entry) && mte_restore_tags(entry, page))
-+		if (!non_swap_entry(entry) && mte_restore_tags(entry, page)) {
-+			set_bit(PG_mte_tagged, &page->flags);
- 			return;
-+		}
- 	}
- 
--	mte_clear_page_tags(page_address(page));
-+	if (pte_is_tagged) {
-+		set_bit(PG_mte_tagged, &page->flags);
-+		mte_clear_page_tags(page_address(page));
-+	}
- }
- 
- void mte_sync_tags(pte_t *ptep, pte_t pte)
-@@ -39,11 +45,13 @@ void mte_sync_tags(pte_t *ptep, pte_t pte)
- 	struct page *page = pte_page(pte);
- 	long i, nr_pages = compound_nr(page);
- 	bool check_swap = nr_pages == 1;
-+	bool pte_is_tagged = pte_tagged(pte);
- 
- 	/* if PG_mte_tagged is set, tags have already been initialised */
- 	for (i = 0; i < nr_pages; i++, page++) {
--		if (!test_and_set_bit(PG_mte_tagged, &page->flags))
--			mte_sync_page_tags(page, ptep, check_swap);
-+		if (!test_bit(PG_mte_tagged, &page->flags))
-+			mte_sync_page_tags(page, ptep, check_swap,
-+					   pte_is_tagged);
- 	}
- }
- 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index c0ffb019ca8b..da4aeba1855c 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -89,6 +89,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
- 		r = 0;
- 		kvm->arch.return_nisv_io_abort_to_user = true;
- 		break;
-+	case KVM_CAP_ARM_MTE:
-+		if (!system_supports_mte() || kvm->created_vcpus)
-+			return -EINVAL;
-+		r = 0;
-+		kvm->arch.mte_enabled = true;
-+		break;
- 	default:
- 		r = -EINVAL;
- 		break;
-@@ -226,6 +232,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
++		spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
+ 		if (spisel_boot) {
+ 			pinfo->immr_spi_cs = ioremap(get_immrbase() + IMMR_SPI_CS_OFFSET, 4);
+ 			if (!pinfo->immr_spi_cs)
+@@ -734,10 +735,14 @@ static int of_fsl_spi_probe(struct platform_device *ofdev)
+ 		 * supported on the GRLIB variant.
  		 */
- 		r = 1;
- 		break;
-+	case KVM_CAP_ARM_MTE:
-+		r = system_supports_mte();
-+		break;
- 	case KVM_CAP_STEAL_TIME:
- 		r = kvm_arm_pvtime_supported();
- 		break;
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 1a01da9fdc99..014a7ab7c2e7 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -877,6 +877,22 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	if (vma_pagesize == PAGE_SIZE && !force_pte)
- 		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
- 							   &pfn, &fault_ipa);
-+
-+	if (kvm_has_mte(kvm) && pfn_valid(pfn)) {
-+		/*
-+		 * VM will be able to see the page's tags, so we must ensure
-+		 * they have been initialised.
-+		 */
-+		struct page *page = pfn_to_page(pfn);
-+		long i, nr_pages = compound_nr(page);
-+
-+		/* if PG_mte_tagged is set, tags have already been initialised */
-+		for (i = 0; i < nr_pages; i++, page++) {
-+			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-+				mte_clear_page_tags(page_address(page));
+ 		ret = gpiod_count(dev, "cs");
+-		if (ret <= 0)
++		if (ret < 0)
++			ret = 0;
++		if (ret == 0 && !spisel_boot) {
+ 			pdata->max_chipselect = 1;
+-		else
++		} else {
++			pdata->max_chipselect = ret + spisel_boot;
+ 			pdata->cs_control = fsl_spi_cs_control;
 +		}
-+	}
-+
- 	if (writable) {
- 		prot |= KVM_PGTABLE_PROT_W;
- 		kvm_set_pfn_dirty(pfn);
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index 4792d5249f07..469b0ef3eb07 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1123,7 +1123,8 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
- 		val &= ~(0xfUL << ID_AA64PFR0_CSV2_SHIFT);
- 		val |= ((u64)vcpu->kvm->arch.pfr0_csv2 << ID_AA64PFR0_CSV2_SHIFT);
- 	} else if (id == SYS_ID_AA64PFR1_EL1) {
--		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
-+		if (!kvm_has_mte(vcpu->kvm))
-+			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
- 	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
- 		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
- 			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
-@@ -1369,6 +1370,9 @@ static bool access_ccsidr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
- 				   const struct sys_reg_desc *rd)
- {
-+	if (kvm_has_mte(vcpu->kvm))
-+		return 0;
-+
- 	return REG_HIDDEN;
- }
+ 	}
  
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index ca41220b40b8..3e6fb5b580a9 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1053,6 +1053,7 @@ struct kvm_ppc_resize_hpt {
- #define KVM_CAP_X86_USER_SPACE_MSR 188
- #define KVM_CAP_X86_MSR_FILTER 189
- #define KVM_CAP_ENFORCE_PV_FEATURE_CPUID 190
-+#define KVM_CAP_ARM_MTE 191
- 
- #ifdef KVM_CAP_IRQ_ROUTING
- 
+ 	ret = of_address_to_resource(np, 0, &mem);
 -- 
-2.20.1
+2.23.0
 
