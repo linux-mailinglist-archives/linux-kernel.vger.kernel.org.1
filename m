@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2B72C6B81
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC862C6B8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732260AbgK0SXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 13:23:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732241AbgK0SXW (ORCPT
+        id S1729460AbgK0SZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 13:25:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28745 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725980AbgK0SZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 13:23:22 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28B0C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:23:21 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id s9so6838887ljo.11
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:23:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e5KHpDtt5i2rR9LdUm+DCPfd8QCddCnGgU8lKoXRsc0=;
-        b=k13XGK60aqGF8P+LZ5njqN9LkrUfUD2db3KBZtvlM/8c/m+Ar7Iaj3L9tzWBo8M07X
-         SLsANqBnyZqRR6Y4soOGO3BasvLtrGteYICfbknYu6+sh6RI2ecZi3k8piaxa2oAkZ9r
-         3r0E9YxnkK40upO2J0VCON60VP9A2pQg8FXc5xnBv6kNKFodimMOFDHidiR6CzUsbEFR
-         loPKKh70S/Se5tUMMtUFbZCKu5Z+hj/H3WQX43nUvJytv6dzolyzWwSFRv5P6nDBJLoK
-         qXUUk5BYiEe7ku9T/ezKgm1a+BRdDMxdD7inERGIrtnl3U0qHDisct5Mn5LnHgoH6V+P
-         18tg==
+        Fri, 27 Nov 2020 13:25:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606501539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=Am+Wm5jC2GOijd2mNeO2v2NLrmRbuKRBi2OUboWUBjM=;
+        b=L6ti1MEPUup1qnGSvuP5i77ih6WJKTyUCTrk70U1h/PC/cow/ewQX1VRMPXX4aEWHRvFkd
+        x+4MJM5cojab2NBmAqFJ4zHCdqPA3MvKFaAUhgxo6K1MvWbEsrU2Ho3XtxfvJ2e4O0G9vc
+        s0HXaG1C2oGfyKfissW8ZSljNyo4JHc=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-G6SQlEcBNd6EhCbyae2W7A-1; Fri, 27 Nov 2020 13:25:37 -0500
+X-MC-Unique: G6SQlEcBNd6EhCbyae2W7A-1
+Received: by mail-qk1-f197.google.com with SMTP id b11so4177609qkk.10
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:25:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e5KHpDtt5i2rR9LdUm+DCPfd8QCddCnGgU8lKoXRsc0=;
-        b=hMvGIjV4LG/88tvaNoUrE9I3tNgcaTwa9xtcmZ8lhEewv1/kx2ggzqI3+Gweqrvvfa
-         yF3+X1Vq0BkWDlKvPJiiEHWy5jGgTZp5cLPaapKZme+0yC54C88P8xzIKHuPElnSFEdJ
-         VsnO4rUrtZOd7S8UAYZbDKHuZQKpFSOjBfM9UMw0ghrHjdwP4piYDaQArUxR8DIUaTMn
-         NJ/ilHgNzqf2A+wMTv5CttTT7+ve2LPjuJnztMEZRa91TogQBH3c2GmIaZVp7YI3brHz
-         lIYY91fVD0/EXDvpHdC7KYCzPLQP9T1chhzc1KyHvSlMBZzqn5hRgJptj9rLkAOTABSK
-         fh6A==
-X-Gm-Message-State: AOAM532ss04CTK/E8RKDD3Z+oGIOhCj3RDiaXB5Q9zx2QvYBWbHHezGN
-        5PlOSvJMbikkIPmQTRcZcFJYKopssQ+l3rTvcMyQXA==
-X-Google-Smtp-Source: ABdhPJws0SUY2VfCWZwO1KgOCMLdvLLRf++rtY0jADZAsBpXkmgj4FmHl+qbGYochUFxuoYBMzoAHyDIowR/TJhi40s=
-X-Received: by 2002:a2e:9216:: with SMTP id k22mr3959253ljg.138.1606501400078;
- Fri, 27 Nov 2020 10:23:20 -0800 (PST)
-MIME-Version: 1.0
-References: <3E05451B-A9CD-4719-99D0-72750A304044@amazon.com> <CAG48ez2VAu6oARGVZ+muDK9_6_38KVUTJf7utz5Nn=AsmN17nA@mail.gmail.com>
-In-Reply-To: <CAG48ez2VAu6oARGVZ+muDK9_6_38KVUTJf7utz5Nn=AsmN17nA@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 27 Nov 2020 19:22:53 +0100
-Message-ID: <CAG48ez13ZAAOVmA89PRKRqr9UezV2_bj8Q6_6sSPzcqfzbsuQQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drivers/virt: vmgenid: add vm generation id driver
-To:     "Catangiu, Adrian Costin" <acatan@amazon.com>
-Cc:     "Graf (AWS), Alexander" <graf@amazon.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Willy Tarreau <w@1wt.eu>,
-        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "bonzini@gnu.org" <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>,
-        "oridgar@gmail.com" <oridgar@gmail.com>,
-        "ghammer@redhat.com" <ghammer@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Qemu Developers <qemu-devel@nongnu.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux API <linux-api@vger.kernel.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "areber@redhat.com" <areber@redhat.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Andrey Vagin <avagin@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        "gil@azul.com" <gil@azul.com>,
-        "asmehra@redhat.com" <asmehra@redhat.com>,
-        "dgunigun@redhat.com" <dgunigun@redhat.com>,
-        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Am+Wm5jC2GOijd2mNeO2v2NLrmRbuKRBi2OUboWUBjM=;
+        b=NfD+cfa42nNtijBX80QPM9P3bSKGy77wYpp3r9L/f4H5UXECkgIWdBHyYnGoeIxs61
+         3558iSaGUkJXoWC5ABFz033GRPkjsAee2oGSOaEMwiR9MSiQgdgLbNaiI0cr9xcWM2B6
+         F7hYWfKquCuMbRVysNviRa8yXT3RnEYoE2tFD2xilra/5wTJXYvPETPAflDVUB1DGbAG
+         DK1raT6wVCEQBPoiMs01tQELgT2DJcKEFNXPqUHZmaUQ/e72dtaiEOz7yxluHD8FbDmP
+         RZx6M3Rke4GGwsVUY4taw1fj22zsqu6Mi1S4+7aOzCvGV7z63XScOYC7cEPWzp1mc22x
+         uYVw==
+X-Gm-Message-State: AOAM530Bu2++Jhsf96vMb4/NDax2496qK3XzhDyaUpvctGdnPtWMT2PR
+        Gmq2GKjFkUsLc9q2VYgxPaSX3TN8ohyBW2FtmuPCdy/iFFUBG2PP8ABnuJwuYqQSlrZ8flNWZor
+        tn7FTPfcaAc1QR2lvXjZK7Q63
+X-Received: by 2002:a05:622a:154:: with SMTP id v20mr9556421qtw.185.1606501536907;
+        Fri, 27 Nov 2020 10:25:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxE4SP5QlhkUVrLJ0zS6npRf76mLh15D+rJ3MesG6bzjI/RkuSvu6k4i+vIGjASO6sn0vTkaA==
+X-Received: by 2002:a05:622a:154:: with SMTP id v20mr9556406qtw.185.1606501536735;
+        Fri, 27 Nov 2020 10:25:36 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id v15sm6756334qti.92.2020.11.27.10.25.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 10:25:36 -0800 (PST)
+From:   trix@redhat.com
+To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] scsi: aic7xxx: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 10:25:31 -0800
+Message-Id: <20201127182531.2796882-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[resend in the hope that amazon will accept my mail this time instead
-of replying "550 Too many invalid recipients" again]
+From: Tom Rix <trix@redhat.com>
 
-On Fri, Nov 20, 2020 at 11:29 PM Jann Horn <jannh@google.com> wrote:
-> On Mon, Nov 16, 2020 at 4:35 PM Catangiu, Adrian Costin
-> <acatan@amazon.com> wrote:
-> > This patch is a driver that exposes a monotonic incremental Virtual
-> > Machine Generation u32 counter via a char-dev FS interface that
-> > provides sync and async VmGen counter updates notifications. It also
-> > provides VmGen counter retrieval and confirmation mechanisms.
-> >
-> > The hw provided UUID is not exposed to userspace, it is internally
-> > used by the driver to keep accounting for the exposed VmGen counter.
-> > The counter starts from zero when the driver is initialized and
-> > monotonically increments every time the hw UUID changes (the VM
-> > generation changes).
-> >
-> > On each hw UUID change, the new hypervisor-provided UUID is also fed
-> > to the kernel RNG.
->
-> As for v1:
->
-> Is there a reasonable usecase for the "confirmation" mechanism? It
-> doesn't seem very useful to me.
->
-> How do you envision integrating this with libraries that have to work
-> in restrictive seccomp sandboxes? If this was in the vDSO, that would
-> be much easier.
+The macro use will already have a semicolon.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/scsi/aic7xxx/aic79xx_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/aic7xxx/aic79xx_core.c b/drivers/scsi/aic7xxx/aic79xx_core.c
+index 98b02e7d38bb..ce8604d730d1 100644
+--- a/drivers/scsi/aic7xxx/aic79xx_core.c
++++ b/drivers/scsi/aic7xxx/aic79xx_core.c
+@@ -319,7 +319,7 @@ ahd_assert_modes(struct ahd_softc *ahd, ahd_mode srcmode,
+ }
+ 
+ #define AHD_ASSERT_MODES(ahd, source, dest) \
+-	ahd_assert_modes(ahd, source, dest, __FILE__, __LINE__);
++	ahd_assert_modes(ahd, source, dest, __FILE__, __LINE__)
+ 
+ ahd_mode_state
+ ahd_save_modes(struct ahd_softc *ahd)
+-- 
+2.18.4
+
