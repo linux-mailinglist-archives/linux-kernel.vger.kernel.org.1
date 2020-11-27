@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEBE2C6D08
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EBE2C6D09
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732495AbgK0VyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 16:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
+        id S1732179AbgK0VzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 16:55:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730732AbgK0Vus (ORCPT
+        with ESMTP id S1732307AbgK0Vxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 16:50:48 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CE5C0613D4;
-        Fri, 27 Nov 2020 13:50:48 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id f17so5265975pge.6;
-        Fri, 27 Nov 2020 13:50:48 -0800 (PST)
+        Fri, 27 Nov 2020 16:53:31 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830E7C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 13:53:30 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id l11so8932819lfg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 13:53:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Z2ig0YQSnUunmi3IX5y1I8JdsSlOi9idmsNtTiBo7ok=;
-        b=l2Q+nJPuH8NmB2PzY1VrPimThUwNcXTaaau4xpvXD74XejsIqKORZEnL4B38xx49mD
-         K8JEtwZykO/tjwfkL+2ChwaP699bdQW5TjaCwQd9gsXG++TC9jnQ84m+t+bMHFQ5rywT
-         5kr5Bib8Zk0mcP96Ql/0clgy8QGTIiKL6cO1e+SpyLFtpzaBo6QaQ1V0OJD7sc2ipEKT
-         u8eUiHBU6fMb+XCaYjuVMVsqxHd/FD7bX5s/OcPP9XEbwKE/zcEIoYxmU9F0I98CHxCD
-         YSQodiw2rBrb4u/K08nXay/H3aioN5jjURZ4gJmi1KtslmDucGBwdN4A3Tg+ipkqu1Jw
-         d3jw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gsiey81k8cDOQM+mj3b3JNwGZB94I/7Rb8Z0uInJpXg=;
+        b=fZeoWSDlbaaCaIlRt0xyf59srp3H2MK3FxnukZR3t/nMMyfQqQ5hZwbZRCfe5yqo66
+         roYxyLD/+NC37WEA+pod5zCYu0q4668ohY8T1lnzviXKDQneJXpTQxh/C47XunP20Aff
+         dOlT5BV54b/PzezOPbePMz5+KOpHsKzyC+a+Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Z2ig0YQSnUunmi3IX5y1I8JdsSlOi9idmsNtTiBo7ok=;
-        b=NAF8lVgAWGbMhGvBFOyCLNwLbatKdB5IqKS+kgTX9N2pRvIRNVKL0I5uN0aOzh2Huv
-         W9qh9MKufxEe9fxnMGcRedVSaaQS6H6cMf0pVYSFdLmfxrCkrcwXN1plmVgxX0y4xfcl
-         AFbXm3PesKAB9y1Z9C/weBZ6wxXesGm3q3mPLItr5EcviQFMzd6Tbb0J9nGd6/E4fKWo
-         QqXN8g/9/c4QaP5yt3ilG1u8EL9BpVxigZ+9FMdxZqzAXIPDSdll35/gPwVj2YSfy6mp
-         Nf4S1XqP+VTSgNobrbNCbyo5f39MitnpqjHRy/vx5WukRHEL2mWw8uHZRL+9iUV/2L0s
-         91ag==
-X-Gm-Message-State: AOAM530skfLNy6pkgZd1trLMrptUlKh3/4Vux121QVgbV9+bRIUfMh6m
-        Sp+Yv4gxfm16nhLDJSKb740=
-X-Google-Smtp-Source: ABdhPJyMU67Zli7Ek+SiL7ugkA0JFhHVA+oYndLCD2wsRVJhJtVJufk0Oif0dm6UmkXVakJsIe1CiA==
-X-Received: by 2002:aa7:91d2:0:b029:19a:8ccd:8b0 with SMTP id z18-20020aa791d20000b029019a8ccd08b0mr8730745pfa.40.1606513847674;
-        Fri, 27 Nov 2020 13:50:47 -0800 (PST)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.220.174])
-        by smtp.gmail.com with ESMTPSA id e141sm8545912pfh.13.2020.11.27.13.50.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 27 Nov 2020 13:50:47 -0800 (PST)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org, matthias.bgg@gmail.com
-Cc:     linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH] remoteproc/mediatek: Fix kernel test robot warning
-Date:   Sat, 28 Nov 2020 03:20:55 +0530
-Message-Id: <1606513855-21130-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gsiey81k8cDOQM+mj3b3JNwGZB94I/7Rb8Z0uInJpXg=;
+        b=lF7Dl4J9SpDoR9yk0RDfD/fdPhuGUCWuydq1UXo2ngVZCWWh/+3cTVjKpe3SZd0VMm
+         7SzWiSXo/y1ARnuwrDrglRSYuIawy3EYbqHK36wBzraO+EfTtJ8cmhLAo+LN5/SkpZcE
+         sXJcD+eksnIsJ5hnVMjTlvamWebWJu94qlqUJIrsIyMJ4wR/Uk46pv06VaRVQQ+hCTqA
+         EZT36XRdlWIWbywU3BqjmSQRfzlKUe8lwCo5LVnJ4Ix8OCcGTOp1UAxZ4X2sz5dsK05V
+         mi11lwM6/e3b4ByhSwmMZyDxXXyHHm5Naw8o5Wk+mK7TRFMFgqxvQfjYIJ/QcAAUMKC7
+         wRWQ==
+X-Gm-Message-State: AOAM533o4TrJLbYdhChzEulUf7e8QlFmT66nN6s3tXaTPEARltWCpunh
+        /6imnQ7d94pzTQso7qBRTEsb8fU8lZHyNQ==
+X-Google-Smtp-Source: ABdhPJyAKaMvEkT1GN6kng50hvQPx5CM+IzcmsioTspzwKXvAggYjlCPHaeZAOQzrXaV9dMH6Lzh3Q==
+X-Received: by 2002:a19:42cd:: with SMTP id p196mr4461618lfa.228.1606514008520;
+        Fri, 27 Nov 2020 13:53:28 -0800 (PST)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id i6sm863421lfo.70.2020.11.27.13.53.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 13:53:26 -0800 (PST)
+Received: by mail-lj1-f171.google.com with SMTP id r18so7405269ljc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 13:53:26 -0800 (PST)
+X-Received: by 2002:a2e:8e33:: with SMTP id r19mr4594670ljk.102.1606514005721;
+ Fri, 27 Nov 2020 13:53:25 -0800 (PST)
+MIME-Version: 1.0
+References: <CAK7LNASn4Si3=YhAPtc06wEqajpU0uBh46-4T10f=cHy=LY2iA@mail.gmail.com>
+ <CAHk-=wihYvkKOcXWPjY7wN13DXbh3k2YX_6JxK_1cQ=krbi9kg@mail.gmail.com> <CAHk-=wi86Eu8Whu66CVu+GVTxbuJG+QNvDuk-hXnWu+5q90Zeg@mail.gmail.com>
+In-Reply-To: <CAHk-=wi86Eu8Whu66CVu+GVTxbuJG+QNvDuk-hXnWu+5q90Zeg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 27 Nov 2020 13:53:09 -0800
+X-Gmail-Original-Message-ID: <CAHk-=winw=9xh6SmFJPZgi8ngVR-ECTA-kDAAU3DEPLMoUrzVA@mail.gmail.com>
+Message-ID: <CAHk-=winw=9xh6SmFJPZgi8ngVR-ECTA-kDAAU3DEPLMoUrzVA@mail.gmail.com>
+Subject: Re: [GIT PULL 2/2] Kconfig updates for v5.10-rc1
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel test robot throws below warning ->
+On Fri, Nov 27, 2020 at 1:15 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Oh, this is a red herring. It's "make" output being misleading, and it
+> just comes from the FORCE keyword.
+>
+> And no, those don't actually change the end result for me.
 
->> drivers/remoteproc/mtk_scp.c:755:37: warning: unused variable
->> 'mt8183_of_data' [-Wunused-const-variable]
-   static const struct mtk_scp_of_data mt8183_of_data = {
-                                       ^
->> drivers/remoteproc/mtk_scp.c:765:37: warning: unused variable
->> 'mt8192_of_data' [-Wunused-const-variable]
-   static const struct mtk_scp_of_data mt8192_of_data = {
-                                       ^
-As suggested by Bjorn, there's no harm in just dropping the
-of_match_ptr() wrapping of mtk_scp_of_match in the definition of
-mtk_scp_driver and we avoid this whole problem.
+.. and that red herring was what made me think that it always
+recompiles the 'conf' binary. But no, that's not what is going on.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
----
- drivers/remoteproc/mtk_scp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+profiling shows that it does spend a lot of time in the compiler
+(which was the other thing that made me incorrectly think it was the
+conf program getting recompiled every time), but it looks like maybe
+it's simply the cc-option testing that causes that:
 
-diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
-index 7e0f1e1..5f42b9c 100644
---- a/drivers/remoteproc/mtk_scp.c
-+++ b/drivers/remoteproc/mtk_scp.c
-@@ -772,21 +772,19 @@ static int scp_remove(struct platform_device *pdev)
- 	.host_to_scp_int_bit = MT8192_HOST_IPC_INT_BIT,
- };
- 
--#if defined(CONFIG_OF)
- static const struct of_device_id mtk_scp_of_match[] = {
- 	{ .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
- 	{ .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_scp_of_match);
--#endif
- 
- static struct platform_driver mtk_scp_driver = {
- 	.probe = scp_probe,
- 	.remove = scp_remove,
- 	.driver = {
- 		.name = "mtk-scp",
--		.of_match_table = of_match_ptr(mtk_scp_of_match),
-+		.of_match_table = mtk_scp_of_match,
- 	},
- };
- 
--- 
-1.9.1
+    33.68%  cc1plus
+    16.71%  cc1
+    14.75%  ld
+    11.36%  conf
+     7.51%  sh
+     7.21%  as
+     3.01%  gcc
+     2.44%  make
+     0.58%  mkdir
+     0.39%  rm
+     0.33%  gcc-version.sh
+     0.24%  collect2
+     0.23%  cat
+     0.22%  grep
+     0.20%  cc-can-link.sh
 
+Oh well, I clearly misread the problem. Maybe 1.5s is more reasonable
+than I really expected it to be.
+
+                  Linus
