@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB472C695E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:27:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803A92C6964
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731405AbgK0Q1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:27:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731300AbgK0Q1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:27:02 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 509E521D7A;
-        Fri, 27 Nov 2020 16:27:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606494421;
-        bh=2RXBZ7l1i3OanimKbEWfF/F9FByKTdx4MivKfCLvYJ8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p+69W7Ndi6d7uBkdXTFsN8h8sjZB/XaQdBbz75R3L6zqd76In1WaLvd0B4U4s0mQz
-         ty7cqgorPAveDSz5PqJmGLI+JSk/Id53KHnY1YCtRzmFfpSJnF2tkw54ZGpu6jfZIf
-         zmquQivOcWPsFg7MSu3HPaklzrqmJNiFWUe8/ApQ=
-Date:   Fri, 27 Nov 2020 08:27:00 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>, Dan Murphy <dmurphy@ti.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: Re: [RESEND PATCH v2] dt-bindings: net: correct interrupt flags in
- examples
-Message-ID: <20201127082700.4a218688@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <3fafb016-5d9e-5e0f-9e5a-2421fbde3eb1@pengutronix.de>
-References: <20201026153620.89268-1-krzk@kernel.org>
-        <3fafb016-5d9e-5e0f-9e5a-2421fbde3eb1@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1731458AbgK0Q2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:28:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59105 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727904AbgK0Q2i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 11:28:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606494517;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=hBK4rF+UUZqxXGARBNA3+k4KA9RCCq8gUWcN+N8wXLI=;
+        b=c67zXAifS2RbpBtxYNPhhbv/l1yZxILuMjdP5QkcpCrIxLNr6B4ShdEYLNqB7JnSlZuiyn
+        EcLQ198NpS3SkhBzFo5JDAtHFgJFAuk5Lrofjto4AdEHDHTddIiVQ6XRA/149qcsIVZIXx
+        fjea7Y0TOsEDM1nYaSR2Up8GzJUDxl0=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398-BWInmr-PPJGauWN1ecKvbw-1; Fri, 27 Nov 2020 11:28:35 -0500
+X-MC-Unique: BWInmr-PPJGauWN1ecKvbw-1
+Received: by mail-qv1-f71.google.com with SMTP id f2so329227qvb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:28:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hBK4rF+UUZqxXGARBNA3+k4KA9RCCq8gUWcN+N8wXLI=;
+        b=Umlm89MJ1mo1+CV7bVlaLRs0YOQHSKVvn4JcNCeG5TdXfv+MkZL3QnyIkbxDKQhaCE
+         LS4s5ympmaIrpQUFco7Q9CiynQDDeAwI7Kr/X/pAv8E1fR21Qa3hJ/QRT8mQ+RWS9bmV
+         VSOQ7Exn4rEbzrce3ktMVyhaWhVZp92SKYD1zAYivJmEUMQwJZUf2w0zYZ8ul32tDiKR
+         wWAk6K5XB1ZZyLPtNJQ1dcTJ4XRJzpwPAgvNmphoUzRgtP38K43u/OzR6fOmbPYuNPGB
+         HkA/Z6/Dz9UqHOjS7EX3J2Ty2XIsQX/wsQIe1C0s33ui5xsdaDOHNbN9WNUOT+ehhHEt
+         1qOg==
+X-Gm-Message-State: AOAM533N7un6JUTqoEln62TKzSBdoQP0pzJYkmUppNcGC8SXrVDm+qV/
+        DUiHlnY9E1mrSoyRr/I4ZJdpHq6rciYs+Qe27uCp5XoeuJhg3pTqw4JZz8tAdWeHK8+NZ0xDO2p
+        2cFv2689RmG6n1FOCw1csSPtr
+X-Received: by 2002:aed:3668:: with SMTP id e95mr8997840qtb.69.1606494514968;
+        Fri, 27 Nov 2020 08:28:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz3szdD1wWTn6Oo7LYsc3cKd7ZqSuuJJN25Ol+alAuJJ/qJilZvZbeVXDRkqjEGATTXuTCO6Q==
+X-Received: by 2002:aed:3668:: with SMTP id e95mr8997822qtb.69.1606494514757;
+        Fri, 27 Nov 2020 08:28:34 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 187sm6632673qki.38.2020.11.27.08.28.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 08:28:34 -0800 (PST)
+From:   trix@redhat.com
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] drm/i915: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 08:28:28 -0800
+Message-Id: <20201127162828.2660230-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 10:13:01 +0100 Marc Kleine-Budde wrote:
-> On 10/26/20 4:36 PM, Krzysztof Kozlowski wrote:
-> > GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
-> > These are simple defines so they could be used in DTS but they will not
-> > have the same meaning:
-> > 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
-> > 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
-> > 
-> > Correct the interrupt flags, assuming the author of the code wanted same
-> > logical behavior behind the name "ACTIVE_xxx", this is:
-> >   ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
-> >   ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for tcan4x5x.txt  
-> 
-> Jakub, can you queue this patch for net/master?
+From: Tom Rix <trix@redhat.com>
 
-Sure! Are these correct?
+The macro use will already have a semicolon.
 
-Fixes: a1a8b4594f8d ("NFC: pn544: i2c: Add DTS Documentation")
-Fixes: 6be88670fc59 ("NFC: nxp-nci_i2c: Add I2C support to NXP NCI driver")
-Fixes: e3b329221567 ("dt-bindings: can: tcan4x5x: Update binding to use interrupt property")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/gpu/drm/i915/intel_device_info.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/i915/intel_device_info.c b/drivers/gpu/drm/i915/intel_device_info.c
+index e67cec8fa2aa..ef767f04c37c 100644
+--- a/drivers/gpu/drm/i915/intel_device_info.c
++++ b/drivers/gpu/drm/i915/intel_device_info.c
+@@ -104,7 +104,7 @@ void intel_device_info_print_static(const struct intel_device_info *info,
+ 	drm_printf(p, "ppgtt-type: %d\n", info->ppgtt_type);
+ 	drm_printf(p, "dma_mask_size: %u\n", info->dma_mask_size);
+ 
+-#define PRINT_FLAG(name) drm_printf(p, "%s: %s\n", #name, yesno(info->name));
++#define PRINT_FLAG(name) drm_printf(p, "%s: %s\n", #name, yesno(info->name))
+ 	DEV_INFO_FOR_EACH_FLAG(PRINT_FLAG);
+ #undef PRINT_FLAG
+ 
+-- 
+2.18.4
+
