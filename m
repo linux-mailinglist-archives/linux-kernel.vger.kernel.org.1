@@ -2,169 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF50E2C63C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 12:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A84312C63C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 12:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgK0LT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 06:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
+        id S1729302AbgK0LUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 06:20:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727232AbgK0LT2 (ORCPT
+        with ESMTP id S1728451AbgK0LUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 06:19:28 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B93C0613D1;
-        Fri, 27 Nov 2020 03:19:27 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id x22so4794630wmc.5;
-        Fri, 27 Nov 2020 03:19:27 -0800 (PST)
+        Fri, 27 Nov 2020 06:20:13 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5D0C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 03:20:12 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id z1so5542474ljn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 03:20:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hF3SHuCCDkYVTDSR8oZnGZ27xoM5f8wfP/n6iXDukMs=;
-        b=Aqmp1axeCyL3KGHsKFnJB8UvWoStwHsnQkyozg0HJ+wMCo3j0hRI83VOBUExZ5Liin
-         A27HSOASw5jJH58GpxMvdRAcKM6OgstnO15YiL/BYJzqDc7dLrSWLtKH1Ywtb/UHH1ak
-         LxrcM6/caJXvcKhuS+lvUT2HDzjuHFfvp/wi8FP1AhJ85t7Y2sjBHB3uNdm9t8KNtdIt
-         EX6dMyfc90H0YNoKG6CrokhYcTboWGTB/gDvINUPCkZJHCh3ieYTyGYFzCsB/PLWZMXc
-         9H6uQkjUyMHr2bGR1PZ5LsH9KBLxCrxUO4rgDKdvw8y0SrNNFKPAJB0S+JlK3X+aB1rG
-         geOg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gx/sfWK7RQOwUhoWCcsjhmPBNWJ/nVv9as+ArKz2/0k=;
+        b=LpxDn9xb1o6vIwYbn0D7fOmklaeebC5h3J5u9lUnRCxHaOSgkhTx8JhUhFPPhKXna6
+         qAnKUmUv9r/Ocbld330pjSYhan9ZrBn90fMswzFFGkxl6YfvZ/V2AWVvIcmLQE8MUVOv
+         LKT/FpcvGCujzdg6GhWrQyzZLNI+5W3r10AGo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hF3SHuCCDkYVTDSR8oZnGZ27xoM5f8wfP/n6iXDukMs=;
-        b=be2s3GK6vxdgqo/20wkTg5FGt0VnI8l+4LIUILgsRfHlTI0ePcBg0HHI1bKg6k/oJn
-         Czcqf6bSCQPbodeZfx+yHn6VFz3C2YXIufbASw7futh3xGg6CzaXEJO/Lyuda6NxJgzx
-         Fx3JhhDp9K1l9R1KVDY985zvQJpudGSjqx7khDsO4u1yRd+2hD8EJsdnW8TrOcEFAaQH
-         HzxGyJnkIj1wSPJWPCtJjAUzyGWCIf7yBbOkhOEuABrmiElH8Btsfq8Am9a6BnXup30G
-         VBZqhL3Y5KKpjHU5SjKS2ZxGFaG4w3ytw0El9z5PrJeIc6pJy3eFfcEz1T59pIUqOXg4
-         RMxQ==
-X-Gm-Message-State: AOAM533hQ4P9ia2IHcDVaaZDbqz3LQmeQS7IMHiYasnLyZQHhej4Dgsb
-        FO0YJcQjn5ctIKMvnW+Gizo=
-X-Google-Smtp-Source: ABdhPJyOFM+XnfVxoasbZYT+/l65iZgIkXMlMnrGmRh9fJDIKbB0rxKSnpCMB4zLml/jlTVWsBCmPQ==
-X-Received: by 2002:a1c:790c:: with SMTP id l12mr8258870wme.47.1606475966436;
-        Fri, 27 Nov 2020 03:19:26 -0800 (PST)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id a18sm7718933wrr.20.2020.11.27.03.19.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 03:19:25 -0800 (PST)
-Subject: Re: [PATCH v4 00/16] soc: mediatek: pm-domains: Add new driver for
- SCPSYS power domains controller
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel@vger.kernel.org
-Cc:     drinkcat@chromium.org, hsinyi@chromium.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        weiyi.lu@mediatek.com, fparent@baylibre.com,
-        Joerg Roedel <jroedel@suse.de>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20201030113622.201188-1-enric.balletbo@collabora.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <855248fc-8c57-22c8-c5a6-bcff3a0edeab@gmail.com>
-Date:   Fri, 27 Nov 2020 12:19:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gx/sfWK7RQOwUhoWCcsjhmPBNWJ/nVv9as+ArKz2/0k=;
+        b=SCWEn+VXZ7KFkROARQlj1AJe/0Jq31GWzuRYG3g4KRgQM0J9jknSaQpYFnGmPOzB2B
+         nRtNZzKBbxbSWAlGhMI4w90qlKXW5PP/nNIuVpdhOhBWik9Z+JPCM0cbASiBYkz1zkZV
+         vSAYnmU0QnKaSLW7tN6FgrM807S2ERpafHcDlLxcBupY9xv7N0y8kKgA5bjuO9J/N4ka
+         w/kFhmBCL9CHz/h/41JOO5IShgpxU8ScQ9PJh1HQjWNdA61o0XqH0pCaLNaftBSziCS2
+         n/lo7/QcLBRhOlM5pvCKDqblLOPi6D1GOUYoPpY3GM1ZhzTqGTaDYc4/AcNLeno55wb1
+         9EtQ==
+X-Gm-Message-State: AOAM532d0jSa4mHK2USwEuE6dxn9I/mOK8KIarntxGGqIJcWWSWSdh7G
+        +G0wnsYEomy3MYaBh8Skl0NDs4dJnJvvD5rJCxxP3A==
+X-Google-Smtp-Source: ABdhPJyeArwArZ27qJf9UhZoBjPIOa9Awn/z/67I7KPm54UV3qp3Mt5NO+FBE+j9rYIkuGdT9jDKd2FZJyOmZcsrsWA=
+X-Received: by 2002:a2e:8e3b:: with SMTP id r27mr3217873ljk.466.1606476011042;
+ Fri, 27 Nov 2020 03:20:11 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201030113622.201188-1-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201126165748.1748417-1-revest@google.com> <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
+In-Reply-To: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Fri, 27 Nov 2020 12:20:00 +0100
+Message-ID: <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 27, 2020 at 8:35 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 11/26/20 8:57 AM, Florent Revest wrote:
+> > This helper exposes the kallsyms_lookup function to eBPF tracing
+> > programs. This can be used to retrieve the name of the symbol at an
+> > address. For example, when hooking into nf_register_net_hook, one can
+> > audit the name of the registered netfilter hook and potentially also
+> > the name of the module in which the symbol is located.
+> >
+> > Signed-off-by: Florent Revest <revest@google.com>
+> > ---
+> >   include/uapi/linux/bpf.h       | 16 +++++++++++++
+> >   kernel/trace/bpf_trace.c       | 41 ++++++++++++++++++++++++++++++++++
+> >   tools/include/uapi/linux/bpf.h | 16 +++++++++++++
+> >   3 files changed, 73 insertions(+)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index c3458ec1f30a..670998635eac 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3817,6 +3817,21 @@ union bpf_attr {
+> >    *          The **hash_algo** is returned on success,
+> >    *          **-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
+> >    *          invalid arguments are passed.
+> > + *
+> > + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
+> > + *   Description
+> > + *           Uses kallsyms to write the name of the symbol at *address*
+> > + *           into *symbol* of size *symbol_sz*. This is guaranteed to be
+> > + *           zero terminated.
+> > + *           If the symbol is in a module, up to *module_size* bytes of
+> > + *           the module name is written in *module*. This is also
+> > + *           guaranteed to be zero-terminated. Note: a module name
+> > + *           is always shorter than 64 bytes.
+> > + *   Return
+> > + *           On success, the strictly positive length of the full symbol
+> > + *           name, If this is greater than *symbol_size*, the written
+> > + *           symbol is truncated.
+> > + *           On error, a negative value.
+> >    */
+> >   #define __BPF_FUNC_MAPPER(FN)               \
+> >       FN(unspec),                     \
+> > @@ -3981,6 +3996,7 @@ union bpf_attr {
+> >       FN(bprm_opts_set),              \
+> >       FN(ktime_get_coarse_ns),        \
+> >       FN(ima_inode_hash),             \
+> > +     FN(kallsyms_lookup),    \
+> >       /* */
+> >
+> >   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index d255bc9b2bfa..9d86e20c2b13 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -17,6 +17,7 @@
+> >   #include <linux/error-injection.h>
+> >   #include <linux/btf_ids.h>
+> >   #include <linux/bpf_lsm.h>
+> > +#include <linux/kallsyms.h>
+> >
+> >   #include <net/bpf_sk_storage.h>
+> >
+> > @@ -1260,6 +1261,44 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+> >       .arg5_type      = ARG_ANYTHING,
+> >   };
+> >
+> > +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32, symbol_size,
+> > +        char *, module, u32, module_size)
+> > +{
+> > +     char buffer[KSYM_SYMBOL_LEN];
+> > +     unsigned long offset, size;
+> > +     const char *name;
+> > +     char *modname;
+> > +     long ret;
+> > +
+> > +     name = kallsyms_lookup(address, &size, &offset, &modname, buffer);
+> > +     if (!name)
+> > +             return -EINVAL;
+> > +
+> > +     ret = strlen(name) + 1;
+> > +     if (symbol_size) {
+> > +             strncpy(symbol, name, symbol_size);
+> > +             symbol[symbol_size - 1] = '\0';
+> > +     }
+> > +
+> > +     if (modname && module_size) {
+> > +             strncpy(module, modname, module_size);
+> > +             module[module_size - 1] = '\0';
+>
+> In this case, module name may be truncated and user did not get any
+> indication from return value. In the helper description, it is mentioned
+> that module name currently is most 64 bytes. But from UAPI perspective,
+> it may be still good to return something to let user know the name
+> is truncated.
+>
+> I do not know what is the best way to do this. One suggestion is
+> to break it into two helpers, one for symbol name and another
 
+I think it would be slightly preferable to have one helper though.
+maybe something like bpf_get_symbol_info (better names anyone? :))
+with flags to get the module name or the symbol name depending
+on the flag?
 
-On 30/10/2020 12:36, Enric Balletbo i Serra wrote:
-> Dear all,
-> 
-> This is a new driver with the aim to deprecate the mtk-scpsys driver.
-> The problem with that driver is that, in order to support more Mediatek
-> SoCs you need to add some logic to handle properly the power-up
-> sequence of newer Mediatek SoCs, doesn't handle parent-child power
-> domains and need to hardcode all the clocks in the driver itself. The
-> result is that the driver is getting bigger and bigger every time a
-> new SoC needs to be supported.
-> 
-> All this information can be getted from a properly defined binding, so
-> can be cleaner and smaller, hence, we implemented a new driver. For
-> now, only MT8173 and MT8183 is supported but should be fairly easy to
-> add support for new SoCs.
-> 
+> for module name. What is the use cases people want to get both
+> symbol name and module name and is it common?
 
-All patches are pushed:
-DT-bindings went to v5.10-next/pm-domains-stable as they are needed by both soc 
-and dts64 branch.
+The use case would be to disambiguate symbols in the
+kernel from the ones from a kernel module. Similar to what
+/proc/kallsyms does:
 
-Regards,
-Matthias
+T cpufreq_gov_powersave_init [cpufreq_powersave]
 
-> Three important notes:
-> 
-> 1. This patch depends now on [1] to build correctly.
-> 
-> 2. Support for MT8183 is not ready to land yet because has some
->     dependencies, i.e mmsys support is still missing.
-> 
-> 3. Support for MT8192. I picked the patches [2] from Weiyi Lu and
->     adapted to this new series. I posted only for reference due that this
->     new version has some changes that affects that patchset.
-> 
-> Only patches from 1 to 9 are ready, the others are provided for reference and test.
-> 
-> [1] https://lore.kernel.org/patchwork/patch/1328096/
-> [2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=368821
-> 
-> Best regards,
->    Enric
-> 
-> Enric Balletbo i Serra (5):
->    dt-bindings: power: Add bindings for the Mediatek SCPSYS power domains
->      controller
->    soc: mediatek: Add MediaTek SCPSYS power domains
->    arm64: dts: mediatek: Add mt8173 power domain controller
->    dt-bindings: power: Add MT8183 power domains
->    arm64: dts: mediatek: Add smi_common node for MT8183
-> 
-> Matthias Brugger (8):
->    soc: mediatek: pm-domains: Add bus protection protocol
->    soc: mediatek: pm_domains: Make bus protection generic
->    soc: mediatek: pm-domains: Add SMI block as bus protection block
->    soc: mediatek: pm-domains: Add extra sram control
->    soc: mediatek: pm-domains: Add subsystem clocks
->    soc: mediatek: pm-domains: Allow bus protection to ignore clear ack
->    soc: mediatek: pm-domains: Add support for mt8183
->    arm64: dts: mediatek: Add mt8183 power domains controller
-> 
-> Weiyi Lu (3):
->    dt-bindings: power: Add MT8192 power domains
->    soc: mediatek: pm-domains: Add default power off flag
->    soc: mediatek: pm-domains: Add support for mt8192
-> 
->   .../power/mediatek,power-controller.yaml      | 293 +++++++++
->   arch/arm64/boot/dts/mediatek/mt8173.dtsi      | 164 +++--
->   arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 172 +++++
->   drivers/soc/mediatek/Kconfig                  |  12 +
->   drivers/soc/mediatek/Makefile                 |   1 +
->   drivers/soc/mediatek/mt8173-pm-domains.h      |  94 +++
->   drivers/soc/mediatek/mt8183-pm-domains.h      | 221 +++++++
->   drivers/soc/mediatek/mt8192-pm-domains.h      | 292 +++++++++
->   drivers/soc/mediatek/mtk-infracfg.c           |   5 -
->   drivers/soc/mediatek/mtk-pm-domains.c         | 614 ++++++++++++++++++
->   drivers/soc/mediatek/mtk-pm-domains.h         | 102 +++
->   include/dt-bindings/power/mt8183-power.h      |  26 +
->   include/dt-bindings/power/mt8192-power.h      |  32 +
->   include/linux/soc/mediatek/infracfg.h         | 107 +++
->   14 files changed, 2081 insertions(+), 54 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
->   create mode 100644 drivers/soc/mediatek/mt8173-pm-domains.h
->   create mode 100644 drivers/soc/mediatek/mt8183-pm-domains.h
->   create mode 100644 drivers/soc/mediatek/mt8192-pm-domains.h
->   create mode 100644 drivers/soc/mediatek/mtk-pm-domains.c
->   create mode 100644 drivers/soc/mediatek/mtk-pm-domains.h
->   create mode 100644 include/dt-bindings/power/mt8183-power.h
->   create mode 100644 include/dt-bindings/power/mt8192-power.h
-> 
+>
+> > +     }
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +const struct bpf_func_proto bpf_kallsyms_lookup_proto = {
+> > +     .func           = bpf_kallsyms_lookup,
+> > +     .gpl_only       = false,
+> > +     .ret_type       = RET_INTEGER,
+> > +     .arg1_type      = ARG_ANYTHING,
+> > +     .arg2_type      = ARG_PTR_TO_MEM,
+> ARG_PTR_TO_UNINIT_MEM?
+>
+> > +     .arg3_type      = ARG_CONST_SIZE,
+> ARG_CONST_SIZE_OR_ZERO? This is especially true for current format
+> which tries to return both symbol name and module name and
+> user may just want to do one of them.
+>
+> > +     .arg4_type      = ARG_PTR_TO_MEM,
+> ARG_PTR_TO_UNINIT_MEM?
+>
+> > +     .arg5_type      = ARG_CONST_SIZE,
+> ARG_CONST_SIZE_OR_ZERO?
+>
+> > +};
+> > +
+> >   const struct bpf_func_proto *
+> >   bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >   {
+> > @@ -1356,6 +1395,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >               return &bpf_per_cpu_ptr_proto;
+> >       case BPF_FUNC_bpf_this_cpu_ptr:
+> >               return &bpf_this_cpu_ptr_proto;
+> > +     case BPF_FUNC_kallsyms_lookup:
+> > +             return &bpf_kallsyms_lookup_proto;
+> >       default:
+> >               return NULL;
+> >       }
+> [...]
