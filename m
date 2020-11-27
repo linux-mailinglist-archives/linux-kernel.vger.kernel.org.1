@@ -2,321 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483A62C6429
+	by mail.lfdr.de (Postfix) with ESMTP id C971F2C642A
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgK0MCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:02:09 -0500
-Received: from mx.socionext.com ([202.248.49.38]:52668 "EHLO mx.socionext.com"
+        id S1726961AbgK0MCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:02:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43236 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgK0MCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:02:09 -0500
-Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 27 Nov 2020 21:02:06 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 0187A60059;
-        Fri, 27 Nov 2020 21:02:07 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Fri, 27 Nov 2020 21:02:29 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by iyokan.css.socionext.com (Postfix) with ESMTP id B376E4037D;
-        Fri, 27 Nov 2020 21:02:06 +0900 (JST)
-Received: from [10.212.20.201] (unknown [10.212.20.201])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id 0BB9F12049C;
-        Fri, 27 Nov 2020 21:02:05 +0900 (JST)
-Subject: Re: [PATCH v8 3/3] PCI: uniphier: Add misc interrupt handler to
- invoke PME and AER
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        id S1725985AbgK0MCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 07:02:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606478540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0ir+fZ1vpLxN77bsJmTlTwj/0S0KwDvVdvck0JLdoI0=;
+        b=I+OVAhpK3SHqwZiBRFaCCCjvAeG94dfnbH7TE/Pb06/hEo+deFTpOXHFWgXoJJLh8T37bp
+        RxQif49zZonjEN/l9lmULZ8yoKquWsQhIHBRmBcVQKQdG9NNTILn/vRgdljiNHN0ahGL7g
+        1gEehDQElrbSqH0OAus4dkYyBiSlT9k=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DC060AC23;
+        Fri, 27 Nov 2020 12:02:19 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 13:02:19 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Charan Teja Kalla <charante@codeaurora.org>
+Cc:     akpm@linux-foundation.org, david@redhat.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <1603848703-21099-4-git-send-email-hayashi.kunihiko@socionext.com>
- <20201124232037.GA595463@bjorn-Precision-5520>
- <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <f49a236d-c5f8-c445-f74e-7aa4eea70c3a@socionext.com>
-Date:   Fri, 27 Nov 2020 21:02:05 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>
+Subject: Re: [PATCH] mm: memory_hotplug: put migration failure information
+ under DEBUG_VM
+Message-ID: <20201127120219.GQ31550@dhcp22.suse.cz>
+References: <1606140196-6053-1-git-send-email-charante@codeaurora.org>
+ <20201123141354.GQ27488@dhcp22.suse.cz>
+ <bfa430f6-a6a6-8b08-2776-cb62197619c0@codeaurora.org>
+ <20201124074141.GR27488@dhcp22.suse.cz>
+ <685882be-10d7-e313-cb6c-f3f45fc2dd08@codeaurora.org>
+ <20201126091822.GG31550@dhcp22.suse.cz>
+ <f5cbb856-9b61-bda3-fa44-a8befe8f30ff@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5cbb856-9b61-bda3-fa44-a8befe8f30ff@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn Lorenzo,
-
-On 2020/11/25 19:23, Lorenzo Pieralisi wrote:
-> On Tue, Nov 24, 2020 at 05:20:37PM -0600, Bjorn Helgaas wrote:
->> On Wed, Oct 28, 2020 at 10:31:43AM +0900, Kunihiko Hayashi wrote:
->>> This patch adds misc interrupt handler to detect and invoke PME/AER event.
->>>
->>> In UniPhier PCIe controller, PME/AER signals are assigned to the same
->>> signal as MSI by the internal logic. These signals should be detected by
->>> the internal register, however, DWC MSI handler can't handle these signals.
->>
->> I don't know what "PME/AER signals are assigned to the same signal as
->> MSI" means.
+On Fri 27-11-20 15:53:14, Charan Teja Kalla wrote:
+> Thanks Michal!!
 > 
-> The host controller embeds an interrupt-controller whose IRQ wire output
-> is cascaded into the main interrupt controller.
+> On 11/26/2020 2:48 PM, Michal Hocko wrote:
+> > On Wed 25-11-20 16:18:06, Charan Teja Kalla wrote:
+> >>
+> >>
+> >> On 11/24/2020 1:11 PM, Michal Hocko wrote:
+> >>> On Mon 23-11-20 20:40:40, Charan Teja Kalla wrote:
+> >>>>
+> >>>> Thanks Michal!
+> >>>> On 11/23/2020 7:43 PM, Michal Hocko wrote:
+> >>>>> On Mon 23-11-20 19:33:16, Charan Teja Reddy wrote:
+> >>>>>> When the pages are failed to get isolate or migrate, the page owner
+> >>>>>> information along with page info is dumped. If there are continuous
+> >>>>>> failures in migration(say page is pinned) or isolation, the log buffer
+> >>>>>> is simply getting flooded with the page owner information. As most of
+> >>>>>> the times page info is sufficient to know the causes for failures of
+> >>>>>> migration or isolation, place the page owner information under DEBUG_VM.
+> >>>>>
+> >>>>> I do not see why this path is any different from others that call
+> >>>>> dump_page. Page owner can add a very valuable information to debug
+> >>>>> the underlying reasons for failures here. It is an opt-in debugging
+> >>>>> feature which needs to be enabled explicitly. So I would argue users
+> >>>>> are ready to accept a lot of data in the kernel log.
+> >>>>
+> >>>> Just thinking how frequently failures can happen in those paths. In the
+> >>>> memory hotplug path, we can flood the page owner logs just by making one
+> >>>> page pinned.
+> >>>
+> >>> If you are operating on a movable zone then pages shouldn't be pinned
+> >>> for unbound amount of time. Yeah there are some ways to break this
+> >>> fundamental assumption but this is a bigger problem that needs a
+> >>> solution.
+> >>>
+> >>>> Say If it is anonymous page, the page owner information
+> >>>> shows is something like below, which is not really telling anything
+> >>>> other than how the pinned page is allocated.
+> >>>
+> >>> Well you can tell an anonymous page from __dump_page, all right, but
+> >>> this is not true universally.
+> >>>
+> >>>> page last allocated via order 0, migratetype Movable, gfp_mask
+> >>>> 0x100dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO)
+> >>>>   prep_new_page+0x7c/0x1a4
+> >>>>   get_page_from_freelist+0x1ac/0x1c4
+> >>>>   __alloc_pages_nodemask+0x12c/0x378
+> >>>>   do_anonymous_page+0xac/0x3b4
+> >>>>   handle_pte_fault+0x2a4/0x3bc
+> >>>>   __handle_speculative_fault+0x208/0x3c0
+> >>>>   do_page_fault+0x280/0x508
+> >>>>   do_translation_fault+0x3c/0x54
+> >>>>   do_mem_abort+0x64/0xf4
+> >>>>   el0_da+0x1c/0x20
+> >>>>  page last free stack trace:
+> >>>>   free_pcp_prepare+0x320/0x454
+> >>>>   free_unref_page_list+0x9c/0x2a4
+> >>>>   release_pages+0x370/0x3c8
+> >>>>   free_pages_and_swap_cache+0xdc/0x10c
+> >>>>   tlb_flush_mmu+0x110/0x134
+> >>>>   tlb_finish_mmu+0x48/0xc0
+> >>>>   unmap_region+0x104/0x138
+> >>>>   __do_munmap+0x2ec/0x3b4
+> >>>>   __arm64_sys_munmap+0x80/0xd8
+> >>>>
+> >>>> I see at some places in the kernel where they put the dump_page under
+> >>>> DEBUG_VM, but in the end I agree that it is up to the users need. Then
+> >>>> there are some users who don't care for these page owner logs.
+> >>>
+> >>> Well, as I've said page_owner requires an explicit enabling and I would
+> >>> expect that if somebody enables this tracking then it is expected to see
+> >>> the information when we dump a page state.
+> >>>
+> >>>> And an issue on Embedded systems with these continuous logs being
+> >>>> printed to the console is the watchdog timeouts, because console logging
+> >>>> happens by disabling the interrupts.
+> >>>
+> >>> Are you enabling page_owner on those systems unconditionally?
+> >>>
+> >>
+> >> Yes, We do always enable the page owner on just the internal debug
+> >> builds for memory analysis, But never on the production kernels. And on
+> >> these builds excessive logging, at times because of a pinned page,
+> >> causing the watchdog timeouts, is the problem.
+> > 
+> > OK, I see but I still believe that the debugging might be useful
+> > especially when the owner is not really obvious from the page state.
+> > I also agree that if the output is swapping the logs then the situation
+> > is not really great either. Would something like the below work for your
+> > situation?
+> > 
+> > MAGIC_NUMBER would need to be somehow figured but I would start with 10
+> > or so. 
+> > 
+> > diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> > index b44d4c7ba73b..3da5c434fb77 100644
+> > --- a/mm/memory_hotplug.c
+> > +++ b/mm/memory_hotplug.c
+> > @@ -1299,6 +1299,8 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+> >  	LIST_HEAD(source);
+> >  
+> >  	for (pfn = start_pfn; pfn < end_pfn; pfn++) {
+> > +		int dumped_page = MAGIC_NUMBER;
+> > +
+> >  		if (!pfn_valid(pfn))
+> >  			continue;
+> >  		page = pfn_to_page(pfn);
+> > @@ -1344,7 +1346,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+> >  
+> >  		} else {
+> >  			pr_warn("failed to isolate pfn %lx\n", pfn);
+> > -			dump_page(page, "isolation failed");
+> > +			if (dumped_page--) {
+> > +				dump_page(page, "isolation failed");
+> > +				dumped_page = true;
+> > +			}
+> >  		}
+> >  		put_page(page);
+> >  	}
+> > @@ -1372,10 +1377,14 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+> >  		ret = migrate_pages(&source, alloc_migration_target, NULL,
+> >  			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
+> >  		if (ret) {
+> > +			int dumped_page = MAGIC_NUMBER;
+> > +
+> >  			list_for_each_entry(page, &source, lru) {
+> >  				pr_warn("migrating pfn %lx failed ret:%d ",
+> >  				       page_to_pfn(page), ret);
+> > -				dump_page(page, "migration failure");
+> > +				if (dumped_page--) {
+> > +					dump_page(page, "migration failure");
+> > +				}
+> >  			}
+> >  			putback_movable_pages(&source);
+> >  		}
+> > 
 > 
-> The host-bridge embedded controller receives MSI writes from devices
-> and it turns them into an edge IRQ into the main interrupt controller.
-> 
-> To ack/mask the MSIs at host contoller interrupt controller level, there
-> is a control register in the host controller that needs handling upon
-> IRQ reception.
+> These are working. Rate limiting these logs with default rate limit
+> interval and burst also helping me.
 
-Thanks for explaining that.
-In my understanding, PME/AER signals are cascaded to MSI by embedded
-interrupt controller (not "assigned").
-
-
-> The *RP* (and AFAIU the RP *only*) signals the PME/AER MSI using the
-> same wire to the main interrupt controller but its ack/mask is handled
-> by a different bit in the host bridge control register above, therefore
-> the cascaded IRQ isr needs to know which virq it is actually handling
-> to ack/mask accordingly.
-
-Sorry what is RP? Root complex or something?
-
-
-> IMO this should be modelled with a separate IRQ domain and chip for
-> the root port (yes this implies describing the root port in the dts
-> file with a separate msi-parent).
-> 
-> This series as it stands is a kludge.
-
-I see. However I need some time to consider the way to separate IRQ domain.
-Is there any idea or example to handle PME/AER with IRQ domain?
-
-
->> I'm trying to figure out if this is talking about PME/AER MSI vector
->> numbers (probably not) or some internal wire that's not
->> architecturally visible or what.
->>
->> Probably also not related to the fact that PME, hotplug, and bandwidth
->> notifications share the same MSI/MSI-X vector.
->>
->> Is this something that's going to be applicable to all the DWC-based
->> drivers?
-
-I think that this feature depends on the vendor specification.
-At least, the registers to control or check these signals are implemented
-in the vendor's logic.
-
-
->>> DWC MSI handler calls .msi_host_isr() callback function, that detects
->>> PME/AER signals with the internal register and invokes the interrupt
->>> with PME/AER vIRQ numbers.
->>>
->>> These vIRQ numbers is obtained from portdrv in uniphier_add_pcie_port()
->>> function.
->>>
->>> Cc: Marc Zyngier <maz@kernel.org>
->>> Cc: Jingoo Han <jingoohan1@gmail.com>
->>> Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
->>> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
->>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
->>> Reviewed-by: Rob Herring <robh@kernel.org>
->>> ---
->>>   drivers/pci/controller/dwc/pcie-uniphier.c | 77 +++++++++++++++++++++++++-----
->>>   1 file changed, 66 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
->>> index 4817626..237537a 100644
->>> --- a/drivers/pci/controller/dwc/pcie-uniphier.c
->>> +++ b/drivers/pci/controller/dwc/pcie-uniphier.c
->>> @@ -21,6 +21,7 @@
->>>   #include <linux/reset.h>
->>>   
->>>   #include "pcie-designware.h"
->>> +#include "../../pcie/portdrv.h"
->>>   
->>>   #define PCL_PINCTRL0			0x002c
->>>   #define PCL_PERST_PLDN_REGEN		BIT(12)
->>> @@ -44,7 +45,9 @@
->>>   #define PCL_SYS_AUX_PWR_DET		BIT(8)
->>>   
->>>   #define PCL_RCV_INT			0x8108
->>> +#define PCL_RCV_INT_ALL_INT_MASK	GENMASK(28, 25)
->>>   #define PCL_RCV_INT_ALL_ENABLE		GENMASK(20, 17)
->>> +#define PCL_RCV_INT_ALL_MSI_MASK	GENMASK(12, 9)
->>>   #define PCL_CFG_BW_MGT_STATUS		BIT(4)
->>>   #define PCL_CFG_LINK_AUTO_BW_STATUS	BIT(3)
->>>   #define PCL_CFG_AER_RC_ERR_MSI_STATUS	BIT(2)
->>> @@ -68,6 +71,8 @@ struct uniphier_pcie_priv {
->>>   	struct reset_control *rst;
->>>   	struct phy *phy;
->>>   	struct irq_domain *legacy_irq_domain;
->>> +	int aer_irq;
->>> +	int pme_irq;
->>>   };
->>>   
->>>   #define to_uniphier_pcie(x)	dev_get_drvdata((x)->dev)
->>> @@ -167,7 +172,15 @@ static void uniphier_pcie_stop_link(struct dw_pcie *pci)
->>>   
->>>   static void uniphier_pcie_irq_enable(struct uniphier_pcie_priv *priv)
->>>   {
->>> -	writel(PCL_RCV_INT_ALL_ENABLE, priv->base + PCL_RCV_INT);
->>> +	u32 val;
->>> +
->>> +	val = PCL_RCV_INT_ALL_ENABLE;
->>> +	if (pci_msi_enabled())
->>> +		val |= PCL_RCV_INT_ALL_INT_MASK;
->>> +	else
->>> +		val |= PCL_RCV_INT_ALL_MSI_MASK;
->>
->> I'm confused about how this works.  Root Ports can signal AER errors
->> with either INTx or MSI.  This is controlled by the architected
->> Interrupt Disable bit and the MSI/MSI-X enable bits (I'm looking at
->> PCIe r5.0, sec 6.2.4.1.2).
->>
->> The code here doesn't look related to those bits.  Does this code mean
->> that if pci_msi_enabled(), the Root Port will always signal with MSI
->> (if MSI Enable is set) and will *never* signal with INTx?
-
-According to the spec sheet, we need to set interrupt enable bit for either
-INTx or MSI, the other bit should be reset. These bits are in config space
-and handled by the framework.
-
-The controller signals AER errors with the interrupt that is either INTx
-or MSI enabled. I think that the only way to know if MSI is enabled
-(and INTX is disabled) is to use pci_msi_enabled().
-
-
->>> +	writel(val, priv->base + PCL_RCV_INT);
->>>   	writel(PCL_RCV_INTX_ALL_ENABLE, priv->base + PCL_RCV_INTX);
->>>   }
->>>   
->>> @@ -231,28 +244,52 @@ static const struct irq_domain_ops uniphier_intx_domain_ops = {
->>>   	.map = uniphier_pcie_intx_map,
->>>   };
->>>   
->>> -static void uniphier_pcie_irq_handler(struct irq_desc *desc)
->>> +static void uniphier_pcie_misc_isr(struct pcie_port *pp, bool is_msi)
->>>   {
->>> -	struct pcie_port *pp = irq_desc_get_handler_data(desc);
->>>   	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->>>   	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
->>> -	struct irq_chip *chip = irq_desc_get_chip(desc);
->>> -	unsigned long reg;
->>> -	u32 val, bit, virq;
->>> +	u32 val;
->>>   
->>> -	/* INT for debug */
->>>   	val = readl(priv->base + PCL_RCV_INT);
->>>   
->>>   	if (val & PCL_CFG_BW_MGT_STATUS)
->>>   		dev_dbg(pci->dev, "Link Bandwidth Management Event\n");
->>> +
->>
->> Looks like a spurious whitespace change?
-
-Oops, I'll remove it.
-
-
->>>   	if (val & PCL_CFG_LINK_AUTO_BW_STATUS)
->>>   		dev_dbg(pci->dev, "Link Autonomous Bandwidth Event\n");
->>> -	if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS)
->>> -		dev_dbg(pci->dev, "Root Error\n");
->>> -	if (val & PCL_CFG_PME_MSI_STATUS)
->>> -		dev_dbg(pci->dev, "PME Interrupt\n");
->>> +
->>> +	if (is_msi) {
->>> +		if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS) {
->>> +			dev_dbg(pci->dev, "Root Error Status\n");
->>> +			if (priv->aer_irq)
->>> +				generic_handle_irq(priv->aer_irq);
->>> +		}
->>> +
->>> +		if (val & PCL_CFG_PME_MSI_STATUS) {
->>> +			dev_dbg(pci->dev, "PME Interrupt\n");
->>> +			if (priv->pme_irq)
->>> +				generic_handle_irq(priv->pme_irq);
->>> +		}
->>> +	}
->>>   
->>>   	writel(val, priv->base + PCL_RCV_INT);
->>> +}
->>> +
->>> +static void uniphier_pcie_msi_host_isr(struct pcie_port *pp)
->>> +{
->>> +	uniphier_pcie_misc_isr(pp, true);
->>> +}
->>> +
->>> +static void uniphier_pcie_irq_handler(struct irq_desc *desc)
->>> +{
->>> +	struct pcie_port *pp = irq_desc_get_handler_data(desc);
->>> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->>> +	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
->>> +	struct irq_chip *chip = irq_desc_get_chip(desc);
->>> +	unsigned long reg;
->>> +	u32 val, bit, virq;
->>> +
->>> +	uniphier_pcie_misc_isr(pp, false);
->>>   
->>>   	/* INTx */
->>>   	chained_irq_enter(chip, desc);
->>> @@ -329,6 +366,7 @@ static int uniphier_pcie_host_init(struct pcie_port *pp)
->>>   
->>>   static const struct dw_pcie_host_ops uniphier_pcie_host_ops = {
->>>   	.host_init = uniphier_pcie_host_init,
->>> +	.msi_host_isr = uniphier_pcie_msi_host_isr,
->>>   };
->>>   
->>>   static int uniphier_add_pcie_port(struct uniphier_pcie_priv *priv,
->>> @@ -337,6 +375,7 @@ static int uniphier_add_pcie_port(struct uniphier_pcie_priv *priv,
->>>   	struct dw_pcie *pci = &priv->pci;
->>>   	struct pcie_port *pp = &pci->pp;
->>>   	struct device *dev = &pdev->dev;
->>> +	struct pci_dev *pcidev;
->>>   	int ret;
->>>   
->>>   	pp->ops = &uniphier_pcie_host_ops;
->>> @@ -353,6 +392,22 @@ static int uniphier_add_pcie_port(struct uniphier_pcie_priv *priv,
->>>   		return ret;
->>>   	}
->>>   
->>> +	/* irq for PME */
->>> +	list_for_each_entry(pcidev, &pp->bridge->bus->devices, bus_list) {
->>> +		priv->pme_irq =
->>> +			pcie_port_service_get_irq(pcidev, PCIE_PORT_SERVICE_PME);
->>> +		if (priv->pme_irq)
->>> +			break;
->>
->> Does this mean that all Root Ports must use the same MSI vector?  I
->> don't think that's a PCIe spec requirement, though of course DWC may
->> have its own restrictions.
->>
-
-This controller has one port implementation only,
-so this assumes that there is one root port.
-
-
->> I don't think this depends on CONFIG_PCIEPORTBUS, so it looks like
->> it's possible to have
->>
->>    # CONFIG_PCIEPORTBUS is not set
->>    PCIE_UNIPHIER=y
->>
->> in which case I think you'll have a link error.
-
-Indeed. To use port functions needs to define PCIEPORTBUS.
-I'll update PCIE_UNIPHIER in Kconfig.
-
-
-Thank you,
-
----
-Best Regards
-Kunihiko Hayashi
+Whatever suits you better. I do not have any preference wrt rate
+limiting. Feel free to reuse the above.
+-- 
+Michal Hocko
+SUSE Labs
