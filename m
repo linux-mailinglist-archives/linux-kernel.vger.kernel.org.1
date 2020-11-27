@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6C42C61EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E94972C61E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728161AbgK0Jkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:40:51 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7751 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728252AbgK0Jkf (ORCPT
+        id S1728792AbgK0Jkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:40:52 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8434 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728561AbgK0Jki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:40:35 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cj8jx0G3Bzkh48;
-        Fri, 27 Nov 2020 17:40:05 +0800 (CST)
+        Fri, 27 Nov 2020 04:40:38 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cj8kD2RX9zhjSw;
+        Fri, 27 Nov 2020 17:40:20 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 27 Nov 2020 17:40:26 +0800
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 27 Nov 2020 17:40:27 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-renesas-soc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] drm: rcar-du: fix reference leak in amdgpu_debugfs_gfxoff_read
-Date:   Fri, 27 Nov 2020 17:44:42 +0800
-Message-ID: <20201127094442.121140-1-miaoqinglang@huawei.com>
+Subject: [PATCH] drm: rcar-du: fix reference leak in rcar_cmm_enable
+Date:   Fri, 27 Nov 2020 17:44:44 +0800
+Message-ID: <20201127094444.121186-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -53,21 +54,21 @@ Fixes: e08e934d6c28 ("drm: rcar-du: Add support for CMM")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 2 +-
+ drivers/gpu/drm/rcar-du/rcar_cmm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-index 2d125b8b1..05de69a97 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-@@ -1096,7 +1096,7 @@ static ssize_t amdgpu_debugfs_gfxoff_read(struct file *f, char __user *buf,
- 	if (size & 0x3 || *pos & 0x3)
- 		return -EINVAL;
+diff --git a/drivers/gpu/drm/rcar-du/rcar_cmm.c b/drivers/gpu/drm/rcar-du/rcar_cmm.c
+index c578095b0..382d53f8a 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_cmm.c
++++ b/drivers/gpu/drm/rcar-du/rcar_cmm.c
+@@ -122,7 +122,7 @@ int rcar_cmm_enable(struct platform_device *pdev)
+ {
+ 	int ret;
  
--	r = pm_runtime_get_sync(adev_to_drm(adev)->dev);
-+	r = pm_runtime_resume_and_get(adev_to_drm(adev)->dev);
- 	if (r < 0)
- 		return r;
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
+ 	if (ret < 0)
+ 		return ret;
  
 -- 
 2.23.0
