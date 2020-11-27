@@ -2,82 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEEC2C6CE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438742C6CF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730724AbgK0VYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 16:24:50 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:50523 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731500AbgK0VXd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 16:23:33 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 1BA0A1BF203;
-        Fri, 27 Nov 2020 21:23:24 +0000 (UTC)
-Date:   Fri, 27 Nov 2020 22:23:24 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        arm@kernel.org, soc@kernel.org
-Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] ARM: at91: Drivers for 5.11
-Message-ID: <20201127212324.GG1296649@piout.net>
-References: <20201127210844.GA1683573@piout.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127210844.GA1683573@piout.net>
+        id S1731807AbgK0Vfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 16:35:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729796AbgK0VWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 16:22:02 -0500
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606512112;
+        bh=a7/vPjZtYXMiC6pf660DUsi+yrWCfgWf3VKXcHUqL2A=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=iRrBCWIGBVJgGT7VMoxEGYoG9tiRnTwiz2GA6zYrHyy/Nrluv96jQNqMnMDcKMW17
+         /nYM56UdDsJzQ3d4YVXxqmcHezwiGNAO5I24Rg2clCd/AMYes1BTcqLbDSsrHrb1/W
+         3wvLhKsLo72glpgAV92NWU+i/2fI3nfDRXS0Usdc=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201127140052.GA644971@nvidia.com>
+References: <20201127140052.GA644971@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201127140052.GA644971@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 17475e104dcb74217c282781817f8f52b46130d3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d41e9b22eb871a7a7060964db9ce1ceb1c6e5b57
+Message-Id: <160651211232.4351.4971679892065189966.pr-tracker-bot@kernel.org>
+Date:   Fri, 27 Nov 2020 21:21:52 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please ignore that one, I'm going to merge my current at91-drivers and
-at91-soc branches and send you only one PR as this is what makes more
-sense.
+The pull request you sent on Fri, 27 Nov 2020 10:00:52 -0400:
 
-On 27/11/2020 22:08:46+0100, Alexandre Belloni wrote:
-> Arnd, Olof,
-> 
-> As discussed with Arnd, here are two cleanup patches for at91_cf. My end
-> goal is to get rid of include/linux/platform_data/atmel.h.
-> 
-> The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-> 
->   Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux tags/at91-drivers-5.11
-> 
-> for you to fetch changes up to 91be3e89f450aa738204f6629f06d8b0e3d8d77b:
-> 
->   pcmcia: at91_cf: remove platform data support (2020-11-24 12:05:24 +0100)
-> 
-> ----------------------------------------------------------------
-> AT91 drivers for 5.11:
-> 
->  - at91_cf cleanups
-> 
-> ----------------------------------------------------------------
-> Alexandre Belloni (2):
->       pcmcia: at91_cf: move definitions locally
->       pcmcia: at91_cf: remove platform data support
-> 
->  drivers/pcmcia/Kconfig              |  1 +
->  drivers/pcmcia/at91_cf.c            | 49 ++++++++++++++-----------------------
->  include/linux/platform_data/atmel.h | 12 ---------
->  3 files changed, 20 insertions(+), 42 deletions(-)
-> 
-> -- 
-> Alexandre Belloni, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d41e9b22eb871a7a7060964db9ce1ceb1c6e5b57
+
+Thank you!
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
