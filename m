@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A662F2C6313
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841402C6317
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbgK0K2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 05:28:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
+        id S1729383AbgK0K26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 05:28:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726952AbgK0K2s (ORCPT
+        with ESMTP id S1727558AbgK0K2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 05:28:48 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44151C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:28:48 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id x22so4662736wmc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:28:48 -0800 (PST)
+        Fri, 27 Nov 2020 05:28:49 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D7BC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:28:49 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id u12so5047768wrt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:28:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/rC09gIrypapoCcwPdjWBhbJDLPz5B+klYBvhYObmCo=;
-        b=BdOkXhzTvMgvwNx5koHf2OnRUXW9kZo7WNvQ8uyW44XluPh/WE43HN+vgbx/ZDU5rg
-         0gJZWNui8kGNbMKQbNFBmCzboL80eQ8sA0Jr92Ne63JgPas7YBH6WsM434OUyX24Q+7R
-         n0rqm3CcO2W9FsuKOnTtM/Q7E8tgGuCMW5orciCTQ+QolUyc3Y3/dwKfCOJ43znqlHFl
-         43SVyDspiWV6dnSesdxFYJK9GZ1gPECjVFwLJGjvZTch2WPSTVcXaZsJ4GZloLUAWfAR
-         BadKBCag6EJBGE8u35w3Fz+yJ5EosPiUtcTIt6U0iI18Xmwd0m81TmQyw5nLiuDI55X6
-         brQw==
+        bh=C8LfNjI2YK+QqbI1KrKFfCLd9R2a6y5l7Nv6AmHyNbg=;
+        b=FPQWfas3+gd7oeMfzwpBEsuUabIzYgRflvks6QfPgk0LN/kXoHYlgOmY8TI8roufT8
+         FwNidr1e4Lkoo56NZsZOU6PXw48MY+JiDuYtkaG4oiEX2ptgPcbnhqKbrh3M7q7+PnvP
+         jLQMTP2Nz3fAqgWdaF0p5UM7A4vT74pKogFeVi0EcjZU5sChJ1NvN+nreBGL7GMr/5cQ
+         fS6yNo/dr0rBzhoFyL3Bi9IRGxAXTHcPo1CRGQj67X+yARvQ1HqUATKTiDNl2vbf7nhc
+         ZClc00VVUlixFvXzbR0YDxquN20MkcnKsXCrZllBsNEvFv4rtycMnXatr42jGcx8ookk
+         Kodw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/rC09gIrypapoCcwPdjWBhbJDLPz5B+klYBvhYObmCo=;
-        b=GijzqlOY1KqkP6XbwxgHL5Im/VXPSS0p0pojHmeJrjsNfDxxu4eXbe8gKF19v7dCea
-         WDBaBophAwMZMqJwH9LxnN95r/1QbXGlQfmoBj8U9dGVeuD4wjFsGMNhGUWlQV6wnyHL
-         OtDGmr+nrv77/QUysCQ1y5q1siWYtkp4SK2W9g63/2/iOHONiqeMuPi2uQIRMP18/gSA
-         XjyHUYVhCnPM4+qnYHBqGog7rrdi4U5lXsrsa/7cSKZW7B8CXJZOeMcJam4u/WK5l4bC
-         koVdAwOl78kXOJSRIk9WUlBcwc/FruSQnScS5MSSosGJU+q5LPURVoOj7JrocWkff6Nf
-         j5gg==
-X-Gm-Message-State: AOAM532GpvLiwH6yj2b7ohTDLGRLAcuLYaeYjHKUbob0IELDW2ay0g9f
-        CLwW2th83vePS99ouJbk6F6Fvw==
-X-Google-Smtp-Source: ABdhPJxqaT1nXP7JezH/FJoEMYHyqZ6TiU56XwUl0cZc83fTHFn4DyFfKblJzlhDsMNoki8LqXNsVg==
-X-Received: by 2002:a1c:e0c3:: with SMTP id x186mr8145254wmg.21.1606472926908;
-        Fri, 27 Nov 2020 02:28:46 -0800 (PST)
+        bh=C8LfNjI2YK+QqbI1KrKFfCLd9R2a6y5l7Nv6AmHyNbg=;
+        b=itn4MR/vS5ezs1nKRhWDeUYKmo3U2NA+1OdiGYrAHBB/jrzGqp+2h7tICI7+pnJxF3
+         qX9Xw7MtraDPjn9F+pQwiy+e5kd05kSmHrOE2VkIgCcIt6uc999+3yMz6JkW2hZn/fT8
+         /TCVl5hQ8GC+VKnKc6j+td0zELMBpxMMNNsuGrZ4byXtXrBD9LH9hj7S6sVu08yeu9Wz
+         mXIO9P92ssNmpFZkcONFzTJ6CbjGfQQRQB65N5/HnECNEdhK5uOt/5rQHPoodyKu9oKR
+         xyWERjEf9friKrErYyNk5RP47SU9joco3g18FFj2kzU0uKXnb6Y9qIv/tIUEwQLsuTAD
+         oCnA==
+X-Gm-Message-State: AOAM531W8jmcnSTxIcwdDO9JZVHnLWu+UKILAVIqEtLfCmbnXZtZL3a7
+        OCihvI9kG+rAdJZLvxFzJJjG4Q==
+X-Google-Smtp-Source: ABdhPJyero0+06kXeC9FouNC33rRbaoQ/iCA+vrAmYZC7OO/Oa6WVjfabRZqAyDW9WAFb6bHOozXwg==
+X-Received: by 2002:adf:eb88:: with SMTP id t8mr920538wrn.105.1606472928061;
+        Fri, 27 Nov 2020 02:28:48 -0800 (PST)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id d8sm14073051wrp.44.2020.11.27.02.28.45
+        by smtp.gmail.com with ESMTPSA id d8sm14073051wrp.44.2020.11.27.02.28.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 02:28:46 -0800 (PST)
+        Fri, 27 Nov 2020 02:28:47 -0800 (PST)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Evan Green <evgreen@chromium.org>,
+        Rob Herring <robh@kernel.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/5] nvmem: core: Add support for keepout regions
-Date:   Fri, 27 Nov 2020 10:28:34 +0000
-Message-Id: <20201127102837.19366-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/5] dt-bindings: nvmem: Add soc qfprom compatible strings
+Date:   Fri, 27 Nov 2020 10:28:35 +0000
+Message-Id: <20201127102837.19366-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20201127102837.19366-1-srinivas.kandagatla@linaro.org>
 References: <20201127102837.19366-1-srinivas.kandagatla@linaro.org>
@@ -66,270 +67,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Evan Green <evgreen@chromium.org>
 
-Introduce support into the nvmem core for arrays of register ranges
-that should not result in actual device access. For these regions a
-constant byte (repeated) is returned instead on read, and writes are
-quietly ignored and returned as successful.
-
-This is useful for instance if certain efuse regions are protected
-from access by Linux because they contain secret info to another part
-of the system (like an integrated modem).
+Add SoC-specific compatible strings so that data can be attached
+to it in the driver.
 
 Signed-off-by: Evan Green <evgreen@chromium.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/nvmem/core.c           | 153 ++++++++++++++++++++++++++++++++-
- include/linux/nvmem-provider.h |  17 ++++
- 2 files changed, 166 insertions(+), 4 deletions(-)
+ .../devicetree/bindings/nvmem/qcom,qfprom.yaml  | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index a09ff8409f60..177f5bf27c6d 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -34,6 +34,8 @@ struct nvmem_device {
- 	struct bin_attribute	eeprom;
- 	struct device		*base_dev;
- 	struct list_head	cells;
-+	const struct nvmem_keepout *keepout;
-+	unsigned int		nkeepout;
- 	nvmem_reg_read_t	reg_read;
- 	nvmem_reg_write_t	reg_write;
- 	struct gpio_desc	*wp_gpio;
-@@ -66,8 +68,8 @@ static LIST_HEAD(nvmem_lookup_list);
+diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+index 1a18b6bab35e..992777c90a0b 100644
+--- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
++++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+@@ -14,7 +14,18 @@ allOf:
  
- static BLOCKING_NOTIFIER_HEAD(nvmem_notifier);
+ properties:
+   compatible:
+-    const: qcom,qfprom
++    items:
++      - enum:
++          - qcom,apq8064-qfprom
++          - qcom,apq8084-qfprom
++          - qcom,msm8974-qfprom
++          - qcom,msm8916-qfprom
++          - qcom,msm8996-qfprom
++          - qcom,msm8998-qfprom
++          - qcom,qcs404-qfprom
++          - qcom,sc7180-qfprom
++          - qcom,sdm845-qfprom
++      - const: qcom,qfprom
  
--static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
--			  void *val, size_t bytes)
-+static int __nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
-+			    void *val, size_t bytes)
- {
- 	if (nvmem->reg_read)
- 		return nvmem->reg_read(nvmem->priv, offset, val, bytes);
-@@ -75,8 +77,8 @@ static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
- 	return -EINVAL;
- }
+   reg:
+     # If the QFPROM is read-only OS image then only the corrected region
+@@ -60,7 +71,7 @@ examples:
+       #size-cells = <2>;
  
--static int nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
--			   void *val, size_t bytes)
-+static int __nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
-+			     void *val, size_t bytes)
- {
- 	int ret;
+       efuse@784000 {
+-        compatible = "qcom,qfprom";
++        compatible = "qcom,sc7180-qfprom", "qcom,qfprom";
+         reg = <0 0x00784000 0 0x8ff>,
+               <0 0x00780000 0 0x7a0>,
+               <0 0x00782000 0 0x100>,
+@@ -85,7 +96,7 @@ examples:
+       #size-cells = <2>;
  
-@@ -90,6 +92,88 @@ static int nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
- 	return -EINVAL;
- }
- 
-+static int nvmem_access_with_keepouts(struct nvmem_device *nvmem,
-+				      unsigned int offset, void *val,
-+				      size_t bytes, int write)
-+{
-+
-+	unsigned int end = offset + bytes;
-+	unsigned int kend, ksize;
-+	const struct nvmem_keepout *keepout = nvmem->keepout;
-+	const struct nvmem_keepout *keepoutend = keepout + nvmem->nkeepout;
-+	int rc;
-+
-+	/*
-+	 * Skip all keepouts before the range being accessed.
-+	 * Keepouts are sorted.
-+	 */
-+	while ((keepout < keepoutend) && (keepout->end <= offset))
-+		keepout++;
-+
-+	while ((offset < end) && (keepout < keepoutend)) {
-+		/* Access the valid portion before the keepout. */
-+		if (offset < keepout->start) {
-+			kend = min(end, keepout->start);
-+			ksize = kend - offset;
-+			if (write)
-+				rc = __nvmem_reg_write(nvmem, offset, val, ksize);
-+			else
-+				rc = __nvmem_reg_read(nvmem, offset, val, ksize);
-+
-+			if (rc)
-+				return rc;
-+
-+			offset += ksize;
-+			val += ksize;
-+		}
-+
-+		/*
-+		 * Now we're aligned to the start of this keepout zone. Go
-+		 * through it.
-+		 */
-+		kend = min(end, keepout->end);
-+		ksize = kend - offset;
-+		if (!write)
-+			memset(val, keepout->value, ksize);
-+
-+		val += ksize;
-+		offset += ksize;
-+		keepout++;
-+	}
-+
-+	/*
-+	 * If we ran out of keepouts but there's still stuff to do, send it
-+	 * down directly
-+	 */
-+	if (offset < end) {
-+		ksize = end - offset;
-+		if (write)
-+			return __nvmem_reg_write(nvmem, offset, val, ksize);
-+		else
-+			return __nvmem_reg_read(nvmem, offset, val, ksize);
-+	}
-+
-+	return 0;
-+}
-+
-+static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
-+			  void *val, size_t bytes)
-+{
-+	if (!nvmem->nkeepout)
-+		return __nvmem_reg_read(nvmem, offset, val, bytes);
-+
-+	return nvmem_access_with_keepouts(nvmem, offset, val, bytes, false);
-+}
-+
-+static int nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
-+			   void *val, size_t bytes)
-+{
-+	if (!nvmem->nkeepout)
-+		return __nvmem_reg_write(nvmem, offset, val, bytes);
-+
-+	return nvmem_access_with_keepouts(nvmem, offset, val, bytes, true);
-+}
-+
- #ifdef CONFIG_NVMEM_SYSFS
- static const char * const nvmem_type_str[] = {
- 	[NVMEM_TYPE_UNKNOWN] = "Unknown",
-@@ -533,6 +617,59 @@ nvmem_find_cell_by_name(struct nvmem_device *nvmem, const char *cell_id)
- 	return cell;
- }
- 
-+static int nvmem_validate_keepouts(struct nvmem_device *nvmem)
-+{
-+	unsigned int cur = 0;
-+	const struct nvmem_keepout *keepout = nvmem->keepout;
-+	const struct nvmem_keepout *keepoutend = keepout + nvmem->nkeepout;
-+
-+	while (keepout < keepoutend) {
-+		/* Ensure keepouts are sorted and don't overlap. */
-+		if (keepout->start < cur) {
-+			dev_err(&nvmem->dev,
-+				"Keepout regions aren't sorted or overlap.\n");
-+
-+			return -ERANGE;
-+		}
-+
-+		if (keepout->end < keepout->start) {
-+			dev_err(&nvmem->dev,
-+				"Invalid keepout region.\n");
-+
-+			return -EINVAL;
-+		}
-+
-+		/*
-+		 * Validate keepouts (and holes between) don't violate
-+		 * word_size constraints.
-+		 */
-+		if ((keepout->end - keepout->start < nvmem->word_size) ||
-+		    ((keepout->start != cur) &&
-+		     (keepout->start - cur < nvmem->word_size))) {
-+
-+			dev_err(&nvmem->dev,
-+				"Keepout regions violate word_size constraints.\n");
-+
-+			return -ERANGE;
-+		}
-+
-+		/* Validate keepouts don't violate stride (alignment). */
-+		if (!IS_ALIGNED(keepout->start, nvmem->stride) ||
-+		    !IS_ALIGNED(keepout->end, nvmem->stride)) {
-+
-+			dev_err(&nvmem->dev,
-+				"Keepout regions violate stride.\n");
-+
-+			return -EINVAL;
-+		}
-+
-+		cur = keepout->end;
-+		keepout++;
-+	}
-+
-+	return 0;
-+}
-+
- static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
- {
- 	struct device_node *parent, *child;
-@@ -647,6 +784,8 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	nvmem->type = config->type;
- 	nvmem->reg_read = config->reg_read;
- 	nvmem->reg_write = config->reg_write;
-+	nvmem->keepout = config->keepout;
-+	nvmem->nkeepout = config->nkeepout;
- 	if (!config->no_of_node)
- 		nvmem->dev.of_node = config->dev->of_node;
- 
-@@ -671,6 +810,12 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	nvmem->dev.groups = nvmem_dev_groups;
- #endif
- 
-+	if (nvmem->nkeepout) {
-+		rval = nvmem_validate_keepouts(nvmem);
-+		if (rval)
-+			goto err_put_device;
-+	}
-+
- 	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);
- 
- 	rval = device_register(&nvmem->dev);
-diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-index 06409a6c40bc..e162b757b6d5 100644
---- a/include/linux/nvmem-provider.h
-+++ b/include/linux/nvmem-provider.h
-@@ -30,6 +30,19 @@ enum nvmem_type {
- #define NVMEM_DEVID_NONE	(-1)
- #define NVMEM_DEVID_AUTO	(-2)
- 
-+/**
-+ * struct nvmem_keepout - NVMEM register keepout range.
-+ *
-+ * @start:	The first byte offset to avoid.
-+ * @end:	One beyond the last byte offset to avoid.
-+ * @value:	The byte to fill reads with for this region.
-+ */
-+struct nvmem_keepout {
-+	unsigned int start;
-+	unsigned int end;
-+	unsigned char value;
-+};
-+
- /**
-  * struct nvmem_config - NVMEM device configuration
-  *
-@@ -39,6 +52,8 @@ enum nvmem_type {
-  * @owner:	Pointer to exporter module. Used for refcounting.
-  * @cells:	Optional array of pre-defined NVMEM cells.
-  * @ncells:	Number of elements in cells.
-+ * @keepout:	Optional array of keepout ranges (sorted ascending by start).
-+ * @nkeepout:	Number of elements in the keepout array.
-  * @type:	Type of the nvmem storage
-  * @read_only:	Device is read-only.
-  * @root_only:	Device is accessibly to root only.
-@@ -66,6 +81,8 @@ struct nvmem_config {
- 	struct gpio_desc	*wp_gpio;
- 	const struct nvmem_cell_info	*cells;
- 	int			ncells;
-+	const struct nvmem_keepout *keepout;
-+	unsigned int		nkeepout;
- 	enum nvmem_type		type;
- 	bool			read_only;
- 	bool			root_only;
+       efuse@784000 {
+-        compatible = "qcom,qfprom";
++        compatible = "qcom,sdm845-qfprom", "qcom,qfprom";
+         reg = <0 0x00784000 0 0x8ff>;
+         #address-cells = <1>;
+         #size-cells = <1>;
 -- 
 2.21.0
 
