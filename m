@@ -2,142 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F31F2C6321
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 883A62C637B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727737AbgK0Kci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 05:32:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:37432 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgK0Kch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 05:32:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CDDF1516;
-        Fri, 27 Nov 2020 02:32:36 -0800 (PST)
-Received: from [10.57.56.151] (unknown [10.57.56.151])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 18CE03F71F;
-        Fri, 27 Nov 2020 02:32:33 -0800 (PST)
-Subject: Re: [RFC 09/11] coresight: etm-perf: Disable the path before
- capturing the trace data
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     linux-kernel@vger.kernel.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, Al Grant <Al.Grant@arm.com>
-References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
- <1605012309-24812-10-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <2019e06d-65e1-fee8-f75d-bfa5750d2458@arm.com>
-Date:   Fri, 27 Nov 2020 10:32:28 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1729180AbgK0KyO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Nov 2020 05:54:14 -0500
+Received: from mail11.digistar.vn ([103.254.14.161]:50528 "EHLO
+        mail11.digistar.vn" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726178AbgK0KyN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 05:54:13 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail11.digistar.vn (Postfix) with ESMTP id DFAA1121554;
+        Fri, 27 Nov 2020 17:48:24 +0700 (+07)
+Received: from mail11.digistar.vn ([103.254.14.161])
+        by localhost (mail11.digistar.vn [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id bPBRNcJHmhe9; Fri, 27 Nov 2020 17:48:24 +0700 (+07)
+Received: from localhost (localhost [127.0.0.1])
+        by mail11.digistar.vn (Postfix) with ESMTP id 66F411214FC;
+        Fri, 27 Nov 2020 17:48:24 +0700 (+07)
+X-Virus-Scanned: amavisd-new at mail11.digistar.vn
+Received: from mail11.digistar.vn ([103.254.14.161])
+        by localhost (mail11.digistar.vn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id BD6825ev-Y3x; Fri, 27 Nov 2020 17:48:24 +0700 (+07)
+Received: from DESKTOP-PESGS48.Dual-Band-Broadband-Modem (unknown [41.58.248.214])
+        by mail11.digistar.vn (Postfix) with ESMTPSA id 05415121554;
+        Fri, 27 Nov 2020 17:47:04 +0700 (+07)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <1605012309-24812-10-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Edullinen lainatarjous ..
+To:     Recipients <info@gmail.com>
+From:   FMI <info@gmail.com>
+Date:   Fri, 27 Nov 2020 11:36:33 +0100
+Reply-To: contact@freedommarketinvestments.com
+Message-Id: <20201127104708.05415121554@mail11.digistar.vn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/20 12:45 PM, Anshuman Khandual wrote:
-> perf handle structure needs to be shared with the TRBE IRQ handler for
-> capturing trace data and restarting the handle. There is a probability
-> of an undefined reference based crash when etm event is being stopped
-> while a TRBE IRQ also getting processed. This happens due the release
-> of perf handle via perf_aux_output_end(). This stops the sinks via the
-> link before releasing the handle, which will ensure that a simultaneous
-> TRBE IRQ could not happen.
+Hyvä asiakas
 
-Or in other words :
+Freedom Market Investments on erikoistunut minkä tahansa määrän lainojen järjestämiseen, joiden takaisinmaksuaika on pidempi. Tarjoamme yrityslainoja, asuntolainoja, henkilökohtaisia ??lainoja, autolainoja, opintolainoja, konsolidointiosastoa, Business Start -lainoja. Onko sinulla pieni tai suuri projekti rahoitettavaksi? liiketoiminnan laajentaminen, kiinteistö- ja asuntolainat 3 prosentin korolla kaikentyyppisille hakijoille.
 
-We now have :
+Tarjoamamme palvelu on nopeaa ja stressitöntä. Ensisijainen tavoitteemme on täydellinen tyytyväisyytesi! Tavoitteenamme on, että voit nauttia tarjoamastamme palvelusta alusta loppuun. Kiinnostuneiden uusien hakijoiden tulee ottaa meihin yhteyttä mahdollisimman pian.
 
-	update_buffer()
+LAINAN HAKEMUSLOMAKE
+(1) Koko nimi:
+(2) Koko osoite:
+(3) Maa:
+(4) Ikä:
+(5) Ammatti:
+(6) Puhelinnumero:
+(7) Sukupuoli:
+(8) Lainan määrä:
+(9) Lainan kesto:
+(10) Kuukausittaiset tulot:
 
-	perf_aux_output_end(handle)
-
-	...
-	disable_path()
-
-This is problematic due to various reasons :
-
-1) The semantics of update_buffer() is not clear. i.e, whether it
-    should leave the "sink" "stopped" or "disabled" or "active"
-
-2) This breaks the recommended trace collection sequence of
-    "flush" and "stop" from source to the sink for trace collection.
-     i.e, we stop the source now. But don't flush the components
-     from source to sink, rather we stop and flush from the sink.
-     And we flush and stop the path after we have collected the
-     trace data at sink, which is pointless.
-
-3) For a sink with IRQ handler, if we don't stop the sink with
-    update_buffer(), we could have a situation :
-
-    update_buffer()
-
-    perf_aux_outpuf_end(handle) # handle is invalid now
-
-  -----------------> IRQ    -> irq_handler()
-                                perf_aux_output_end(handle) # Wrong !
-
-
-    disable_path()
-
-The sysfs mode is fine, as we defer the trace collection to disable_path().
-
-The proposed patch is still racy, as we could still hit the problem.
-
-So, to avoid all of these situations, I think we should defer the the
-update_buffer() to sink_ops->disable(), when we have flushed and stopped
-the all the components upstream and avoid any races with the IRQ
-handler.
-
-i.e,
-
-	source_ops->stop(csdev);
-
-	disable_path(handle); // similar to the enable_path
-
-
-sink_ops->disable(csdev, handle)
-{
-   /* flush & stop */
-
-   /* collect trace */
-   perf_aux_output_end(handle, size);
-}
-
-
-Kind regards
-Suzuki
-
-
-
-> 
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This might cause problem with traditional sink devices which can be
-> operated in both sysfs and perf mode. This needs to be addressed
-> correctly. One option would be to move the update_buffer callback
-> into the respective sink devices. e.g, disable().
-> 
->   drivers/hwtracing/coresight/coresight-etm-perf.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> index 534e205..1a37991 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> @@ -429,7 +429,9 @@ static void etm_event_stop(struct perf_event *event, int mode)
->   
->   		size = sink_ops(sink)->update_buffer(sink, handle,
->   					      event_data->snk_config);
-> +		coresight_disable_path(path);
->   		perf_aux_output_end(handle, size);
-> +		return;
->   	}
->   
->   	/* Disabling the path make its elements available to other sessions */
-> 
-
+Vilpittömästi sinun.
+Vapausmarkkinainvestointi
+Sähköposti: contact@freedommarketinvestments.com
+Verkkosivusto: www.freedommarketinvestments.com
