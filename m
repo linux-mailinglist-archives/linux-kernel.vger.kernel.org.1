@@ -2,190 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A546D2C6168
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4FE2C616A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727247AbgK0JNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:13:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgK0JNV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:13:21 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E51B5C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:13:20 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kiZoS-0001Yq-C8; Fri, 27 Nov 2020 10:13:08 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:2ba:5988:109d:d012] (2a03-f580-87bc-d400-02ba-5988-109d-d012.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:2ba:5988:109d:d012])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 2188859DDCD;
-        Fri, 27 Nov 2020 09:13:05 +0000 (UTC)
-Subject: Re: [RESEND PATCH v2] dt-bindings: net: correct interrupt flags in
- examples
-To:     Krzysztof Kozlowski <krzk@kernel.org>, Dan Murphy <dmurphy@ti.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh@kernel.org>
-References: <20201026153620.89268-1-krzk@kernel.org>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
- zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
- QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
- 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
- Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
- XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
- nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
- Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
- eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
- kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
- ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
- CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJfEWX4BQkQo2czAAoJECte4hHF
- iupUvfMP/iNtiysSr5yU4tbMBzRkGov1/FjurfH1kPweLVHDwiQJOGBz9HgM5+n8boduRv36
- 0lU32g3PehN0UHZdHWhygUd6J09YUi2mJo1l2Fz1fQ8elUGUOXpT/xoxNQjslZjJGItCjza8
- +D1DO+0cNFgElcNPa7DFBnglatOCZRiMjo4Wx0i8njEVRU+4ySRU7rCI36KPts+uVmZAMD7V
- 3qiR1buYklJaPCJsnXURXYsilBIE9mZRmQjTDVqjLWAit++flqUVmDjaD/pj2AQe2Jcmd2gm
- sYW5P1moz7ACA1GzMjLDmeFtpJOIB7lnDX0F/vvsG3V713/701aOzrXqBcEZ0E4aWeZJzaXw
- n1zVIrl/F3RKrWDhMKTkjYy7HA8hQ9SJApFXsgP334Vo0ea82H3dOU755P89+Eoj0y44MbQX
- 7xUy4UTRAFydPl4pJskveHfg4dO6Yf0PGIvVWOY1K04T1C5dpnHAEMvVNBrfTA8qcahRN82V
- /iIGB+KSC2xR79q1kv1oYn0GOnWkvZmMhqGLhxIqHYitwH4Jn5uRfanKYWBk12LicsjRiTyW
- Z9cJf2RgAtQgvMPvmaOL8vB3U4ava48qsRdgxhXMagU618EszVdYRNxGLCqsKVYIDySTrVzu
- ZGs2ibcRhN4TiSZjztWBAe1MaaGk05Ce4h5IdDLbOOxhuQENBF8SDLABCADohJLQ5yffd8Sq
- 8Lo9ymzgaLcWboyZ46pY4CCCcAFDRh++QNOJ8l4mEJMNdEa/yrW4lDQDhBWV75VdBuapYoal
- LFrSzDzrqlHGG4Rt4/XOqMo6eSeSLipYBu4Xhg59S9wZOWbHVT/6vZNmiTa3d40+gBg68dQ8
- iqWSU5NhBJCJeLYdG6xxeUEtsq/25N1erxmhs/9TD0sIeX36rFgWldMwKmZPe8pgZEv39Sdd
- B+ykOlRuHag+ySJxwovfdVoWT0o0LrGlHzAYo6/ZSi/Iraa9R/7A1isWOBhw087BMNkRYx36
- B77E4KbyBPx9h3wVyD/R6T0Q3ZNPu6SQLnsWojMzABEBAAGJAjwEGAEKACYWIQTBQAugs5ie
- b7x9W1wrXuIRxYrqVAUCXxIMsAIbDAUJAucGAAAKCRArXuIRxYrqVOu0D/48xSLyVZ5NN2Bb
- yqo3zxdv/PMGJSzM3JqSv7hnMZPQGy9XJaTc5Iz/hyXaNRwpH5X0UNKqhQhlztChuAKZ7iu+
- 2VKzq4JJe9qmydRUwylluc4HmGwlIrDNvE0N66pRvC3h8tOVIsippAQlt5ciH74bJYXr0PYw
- Aksw1jugRxMbNRzgGECg4O6EBNaHwDzsVPX1tDj0d9t/7ClzJUy20gg8r9Wm/I/0rcNkQOpV
- RJLDtSbGSusKxor2XYmVtHGauag4YO6Vdq+2RjArB3oNLgSOGlYVpeqlut+YYHjWpaX/cTf8
- /BHtIQuSAEu/WnycpM3Z9aaLocYhbp5lQKL6/bcWQ3udd0RfFR/Gv7eR7rn3evfqNTtQdo4/
- YNmd7P8TS7ALQV/5bNRe+ROLquoAZvhaaa6SOvArcmFccnPeyluX8+o9K3BCdXPwONhsrxGO
- wrPI+7XKMlwWI3O076NqNshh6mm8NIC0mDUr7zBUITa67P3Q2VoPoiPkCL9RtsXdQx5BI9iI
- h/6QlzDxcBdw2TVWyGkVTCdeCBpuRndOMVmfjSWdCXXJCLXO6sYeculJyPkuNvumxgwUiK/H
- AqqdUfy1HqtzP2FVhG5Ce0TeMJepagR2CHPXNg88Xw3PDjzdo+zNpqPHOZVKpLUkCvRv1p1q
- m1qwQVWtAwMML/cuPga78rkBDQRfEXGWAQgAt0Cq8SRiLhWyTqkf16Zv/GLkUgN95RO5ntYM
- fnc2Tr3UlRq2Cqt+TAvB928lN3WHBZx6DkuxRM/Y/iSyMuhzL5FfhsICuyiBs5f3QG70eZx+
- Bdj4I7LpnIAzmBdNWxMHpt0m7UnkNVofA0yH6rcpCsPrdPRJNOLFI6ZqXDQk9VF+AB4HVAJY
- BDU3NAHoyVGdMlcxev0+gEXfBQswEcysAyvzcPVTAqmrDsupnIB2f0SDMROQCLO6F+/cLG4L
- Stbz+S6YFjESyXblhLckTiPURvDLTywyTOxJ7Mafz6ZCene9uEOqyd/h81nZOvRd1HrXjiTE
- 1CBw+Dbvbch1ZwGOTQARAQABiQNyBBgBCgAmFiEEwUALoLOYnm+8fVtcK17iEcWK6lQFAl8R
- cZYCGwIFCQLnoRoBQAkQK17iEcWK6lTAdCAEGQEKAB0WIQQreQhYm33JNgw/d6GpyVqK+u3v
- qQUCXxFxlgAKCRCpyVqK+u3vqatQCAC3QIk2Y0g/07xNLJwhWcD7JhIqfe7Qc5Vz9kf8ZpWr
- +6w4xwRfjUSmrXz3s6e/vrQsfdxjVMDFOkyG8c6DWJo0TVm6Ucrf9G06fsjjE/6cbE/gpBkk
- /hOVz/a7UIELT+HUf0zxhhu+C9hTSl8Nb0bwtm6JuoY5AW0LP2KoQ6LHXF9KNeiJZrSzG6WE
- h7nf3KRFS8cPKe+trbujXZRb36iIYUfXKiUqv5xamhohy1hw+7Sy8nLmw8rZPa40bDxX0/Gi
- 98eVyT4/vi+nUy1gF1jXgNBSkbTpbVwNuldBsGJsMEa8lXnYuLzn9frLdtufUjjCymdcV/iT
- sFKziU9AX7TLZ5AP/i1QMP9OlShRqERH34ufA8zTukNSBPIBfmSGUe6G2KEWjzzNPPgcPSZx
- Do4jfQ/m/CiiibM6YCa51Io72oq43vMeBwG9/vLdyev47bhSfMLTpxdlDJ7oXU9e8J61iAF7
- vBwerBZL94I3QuPLAHptgG8zPGVzNKoAzxjlaxI1MfqAD9XUM80MYBVjunIQlkU/AubdvmMY
- X7hY1oMkTkC5hZNHLgIsDvWUG0g3sACfqF6gtMHY2lhQ0RxgxAEx+ULrk/svF6XGDe6iveyc
- z5Mg5SUggw3rMotqgjMHHRtB3nct6XqgPXVDGYR7nAkXitG+nyG5zWhbhRDglVZ0mLlW9hij
- z3Emwa94FaDhN2+1VqLFNZXhLwrNC5mlA6LUjCwOL+zb9a07HyjekLyVAdA6bZJ5BkSXJ1CO
- 5YeYolFjr4YU7GXcSVfUR6fpxrb8N+yH+kJhY3LmS9vb2IXxneE/ESkXM6a2YAZWfW8sgwTm
- 0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
- HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
- xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Message-ID: <3fafb016-5d9e-5e0f-9e5a-2421fbde3eb1@pengutronix.de>
-Date:   Fri, 27 Nov 2020 10:13:01 +0100
+        id S1727652AbgK0JO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:14:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:35360 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726127AbgK0JO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:14:26 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 728C01478;
+        Fri, 27 Nov 2020 01:14:25 -0800 (PST)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2936B3F23F;
+        Fri, 27 Nov 2020 01:14:24 -0800 (PST)
+Subject: Re: [PATCH 2/2] mm/debug_vm_pgtable/basic: Iterate over entire
+ protection_map[]
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        christophe.leroy@csgroup.eu, gerald.schaefer@linux.ibm.com,
+        vgupta@synopsys.com, paul.walmsley@sifive.com
+References: <1606453584-15399-1-git-send-email-anshuman.khandual@arm.com>
+ <1606453584-15399-3-git-send-email-anshuman.khandual@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <4c3efec7-a454-951f-4f37-fd8ed1908b8c@arm.com>
+Date:   Fri, 27 Nov 2020 09:14:23 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201026153620.89268-1-krzk@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="WPNAdXqLcbuC1HxxVIpO2K9FStqHhECO9"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1606453584-15399-3-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---WPNAdXqLcbuC1HxxVIpO2K9FStqHhECO9
-Content-Type: multipart/mixed; boundary="nhIrz2JXk7IYKyJomWaiIUGCeZyqAnvWP";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Krzysztof Kozlowski <krzk@kernel.org>, Dan Murphy <dmurphy@ti.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Rob Herring <robh@kernel.org>
-Message-ID: <3fafb016-5d9e-5e0f-9e5a-2421fbde3eb1@pengutronix.de>
-Subject: Re: [RESEND PATCH v2] dt-bindings: net: correct interrupt flags in
- examples
-References: <20201026153620.89268-1-krzk@kernel.org>
-In-Reply-To: <20201026153620.89268-1-krzk@kernel.org>
+On 27/11/2020 05:06, Anshuman Khandual wrote:
+> Currently the basic tests just validate various page table transformations
+> after starting with vm_get_page_prot(VM_READ|VM_WRITE|VM_EXEC) protection.
+> Instead scan over the entire protection_map[] for better coverage. It also
+> makes sure that all these basic page table tranformations checks hold true
+> irrespective of the starting protection value for the page table entry.
+> There is also a slight change in the debug print format for basic tests to
+> capture the protection value it is being tested with. The modified output
+> looks something like
+> 
+> [pte_basic_tests          ]: Validating PTE basic ()
+> [pte_basic_tests          ]: Validating PTE basic (read)
+> [pte_basic_tests          ]: Validating PTE basic (write)
+> [pte_basic_tests          ]: Validating PTE basic (read|write)
+> [pte_basic_tests          ]: Validating PTE basic (exec)
+> [pte_basic_tests          ]: Validating PTE basic (read|exec)
+> [pte_basic_tests          ]: Validating PTE basic (write|exec)
+> [pte_basic_tests          ]: Validating PTE basic (read|write|exec)
+> [pte_basic_tests          ]: Validating PTE basic (shared)
+> [pte_basic_tests          ]: Validating PTE basic (read|shared)
+> [pte_basic_tests          ]: Validating PTE basic (write|shared)
+> [pte_basic_tests          ]: Validating PTE basic (read|write|shared)
+> [pte_basic_tests          ]: Validating PTE basic (exec|shared)
+> [pte_basic_tests          ]: Validating PTE basic (read|exec|shared)
+> [pte_basic_tests          ]: Validating PTE basic (write|exec|shared)
+> [pte_basic_tests          ]: Validating PTE basic (read|write|exec|shared)
+> 
+> This adds a missing argument 'struct mm_struct *' in pud_basic_tests() test
+> . This never got exposed before as PUD based THP is available only on X86
+> platform where mm_pmd_folded(mm) call gets macro replaced without requiring
+> the mm_struct i.e __is_defined(__PAGETABLE_PMD_FOLDED).
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
---nhIrz2JXk7IYKyJomWaiIUGCeZyqAnvWP
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Steven Price <steven.price@arm.com>
 
-On 10/26/20 4:36 PM, Krzysztof Kozlowski wrote:
-> GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
-> These are simple defines so they could be used in DTS but they will not=
+> ---
+>   mm/debug_vm_pgtable.c | 47 ++++++++++++++++++++++++++++++++-----------
+>   1 file changed, 35 insertions(+), 12 deletions(-)
+> 
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index a5be11210597..92b4a53d622b 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -58,11 +58,13 @@
+>   #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
+>   #define RANDOM_NZVALUE	GENMASK(7, 0)
+>   
+> -static void __init pte_basic_tests(unsigned long pfn, pgprot_t prot)
+> +static void __init pte_basic_tests(unsigned long pfn, int idx)
+>   {
+> +	pgprot_t prot = protection_map[idx];
+>   	pte_t pte = pfn_pte(pfn, prot);
+> +	unsigned long val = idx, *ptr = &val;
+>   
+> -	pr_debug("Validating PTE basic\n");
+> +	pr_debug("Validating PTE basic (%pGv)\n", ptr);
+>   	WARN_ON(!pte_same(pte, pte));
+>   	WARN_ON(!pte_young(pte_mkyoung(pte_mkold(pte))));
+>   	WARN_ON(!pte_dirty(pte_mkdirty(pte_mkclean(pte))));
+> @@ -130,14 +132,16 @@ static void __init pte_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+>   }
+>   
+>   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot)
+> +static void __init pmd_basic_tests(unsigned long pfn, int idx)
+>   {
+> +	pgprot_t prot = protection_map[idx];
+>   	pmd_t pmd = pfn_pmd(pfn, prot);
+> +	unsigned long val = idx, *ptr = &val;
+>   
+>   	if (!has_transparent_hugepage())
+>   		return;
+>   
+> -	pr_debug("Validating PMD basic\n");
+> +	pr_debug("Validating PMD basic (%pGv)\n", ptr);
+>   	WARN_ON(!pmd_same(pmd, pmd));
+>   	WARN_ON(!pmd_young(pmd_mkyoung(pmd_mkold(pmd))));
+>   	WARN_ON(!pmd_dirty(pmd_mkdirty(pmd_mkclean(pmd))));
+> @@ -251,14 +255,16 @@ static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+>   }
+>   
+>   #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+> -static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot)
+> +static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx)
+>   {
+> +	pgprot_t prot = protection_map[idx];
+>   	pud_t pud = pfn_pud(pfn, prot);
+> +	unsigned long val = idx, *ptr = &val;
+>   
+>   	if (!has_transparent_hugepage())
+>   		return;
+>   
+> -	pr_debug("Validating PUD basic\n");
+> +	pr_debug("Validating PUD basic (%pGv)\n", ptr);
+>   	WARN_ON(!pud_same(pud, pud));
+>   	WARN_ON(!pud_young(pud_mkyoung(pud_mkold(pud))));
+>   	WARN_ON(!pud_write(pud_mkwrite(pud_wrprotect(pud))));
+> @@ -362,7 +368,7 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+>   #endif /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
+>   
+>   #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+> -static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot) { }
+> +static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx) { }
+>   static void __init pud_advanced_tests(struct mm_struct *mm,
+>   				      struct vm_area_struct *vma, pud_t *pudp,
+>   				      unsigned long pfn, unsigned long vaddr,
+> @@ -375,8 +381,8 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+>   }
+>   #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+>   #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
+> -static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot) { }
+> -static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot) { }
+> +static void __init pmd_basic_tests(unsigned long pfn, int idx) { }
+> +static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx) { }
+>   static void __init pmd_advanced_tests(struct mm_struct *mm,
+>   				      struct vm_area_struct *vma, pmd_t *pmdp,
+>   				      unsigned long pfn, unsigned long vaddr,
+> @@ -902,6 +908,7 @@ static int __init debug_vm_pgtable(void)
+>   	unsigned long vaddr, pte_aligned, pmd_aligned;
+>   	unsigned long pud_aligned, p4d_aligned, pgd_aligned;
+>   	spinlock_t *ptl = NULL;
+> +	int idx;
+>   
+>   	pr_info("Validating architecture page table helpers\n");
+>   	prot = vm_get_page_prot(VMFLAGS);
+> @@ -966,9 +973,25 @@ static int __init debug_vm_pgtable(void)
+>   	saved_pmdp = pmd_offset(pudp, 0UL);
+>   	saved_ptep = pmd_pgtable(pmd);
+>   
+> -	pte_basic_tests(pte_aligned, prot);
+> -	pmd_basic_tests(pmd_aligned, prot);
+> -	pud_basic_tests(pud_aligned, prot);
+> +	/*
+> +	 * Iterate over the protection_map[] to make sure that all
+> +	 * the basic page table transformation validations just hold
+> +	 * true irrespective of the starting protection value for a
+> +	 * given page table entry.
+> +	 */
+> +	for (idx = 0; idx < ARRAY_SIZE(protection_map); idx++) {
+> +		pte_basic_tests(pte_aligned, idx);
+> +		pmd_basic_tests(pmd_aligned, idx);
+> +		pud_basic_tests(mm, pud_aligned, idx);
+> +	}
+> +
+> +	/*
+> +	 * Both P4D and PGD level tests are very basic which do not
+> +	 * involve creating page table entries from the protection
+> +	 * value and the given pfn. Hence just keep them out from
+> +	 * the above iteration for now to save some test execution
+> +	 * time.
+> +	 */
+>   	p4d_basic_tests(p4d_aligned, prot);
+>   	pgd_basic_tests(pgd_aligned, prot);
+>   
+> 
 
-> have the same meaning:
-> 1. GPIO_ACTIVE_HIGH =3D 0 =3D IRQ_TYPE_NONE
-> 2. GPIO_ACTIVE_LOW  =3D 1 =3D IRQ_TYPE_EDGE_RISING
->=20
-> Correct the interrupt flags, assuming the author of the code wanted sam=
-e
-> logical behavior behind the name "ACTIVE_xxx", this is:
->   ACTIVE_LOW  =3D> IRQ_TYPE_LEVEL_LOW
->   ACTIVE_HIGH =3D> IRQ_TYPE_LEVEL_HIGH
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for tcan4x5x.txt
-
-Jakub, can you queue this patch for net/master?
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---nhIrz2JXk7IYKyJomWaiIUGCeZyqAnvWP--
-
---WPNAdXqLcbuC1HxxVIpO2K9FStqHhECO9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl/Awx0ACgkQqclaivrt
-76kqeQf/c+UWn4j8Z/CpJL4/okK0YrYiMCB8p2PuVMu4YyjQzxLxhXUF61DlovKV
-LV5MbgX1ea/V+alNkFTjbPwV7WRmbUQ8YAMreT+c9LMGEyic+8VzqKSCN1/RNFfM
-9ZX1Ar21JHTXw4iD4QdqOYQ/3HijOoLWD/RQDoUbbFk+UvfSVZXDNCoRYUCeM6QH
-oTmh7Uw0XjtYCNjdsYOC6vDuvT/rzBshQw3t0tTpAsrKHYcpsZCH0K8Z056MRdJs
-HbH/OkzT6bkmmtDSSvtOcMdakIUuptNFV5SsF+GmEzsdpE2IGlCbQzzfzW5zVpgb
-tZ5z8NBpFrWdXhqoY7QWWrf6f3JNaA==
-=WvCQ
------END PGP SIGNATURE-----
-
---WPNAdXqLcbuC1HxxVIpO2K9FStqHhECO9--
