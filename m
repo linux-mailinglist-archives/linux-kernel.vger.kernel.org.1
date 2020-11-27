@@ -2,126 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C9A2C691E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 422872C6920
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731218AbgK0QH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:07:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
+        id S1731243AbgK0QHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730985AbgK0QH0 (ORCPT
+        with ESMTP id S1727281AbgK0QHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:07:26 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24AFC0613D1;
-        Fri, 27 Nov 2020 08:07:24 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id m6so6093173wrg.7;
-        Fri, 27 Nov 2020 08:07:24 -0800 (PST)
+        Fri, 27 Nov 2020 11:07:46 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C96C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:07:46 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id b10so3559791pfo.4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:07:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VtmKlc5l/pNObTu4OTm+GaZxDRv60yZmGnsF1o+ezX8=;
-        b=QV/bPxNQUyGThdVnks5FOF5dzJv1fUblWtU8smU0v+wvenV+D6DXnj62sXGiVR+dcc
-         D/bCLm3Ihx5alkaavz8ZfaVfqGdDwtsjTPMvvjp6uyndmOw08LKJIUFzObbwlypEEHCa
-         Q0pUxyv9mGpPGUI+LLOKrp7SpMDHACHqhFM4BgcXnJRKiE0bXjnkMrv/eeYrCQ7Wf68k
-         9jKoTSm8CcUOysgHPn//NDrjAyb3Af08LgIBkNKmyGrsLfOQugKDOE16Hh2G6bTWOHoB
-         9xLTWBXfpvRSk3dQ7shQIX7HrHyoTyxpN0QUxZOc4ftl6L0eCrR1rzELUxhMZWMo5q2S
-         JxzA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/RcIVEuZ0p0WXSlrm2oNGx9qDjqKX3QYfckT5rBSIOs=;
+        b=QNhAsdjQfW0KnU29XcaYjBqNQD7/LBvrP6G/blr6Qum/iP/cs8YKh5kJ7W6b9LeO0R
+         m/i+NUMnkmwa1KA1r07Oa0HbdpGTJv5s/fu30OyQ1gImUaSME73cMFbcQijxB1xBPgNA
+         Uuoul4A0OB6btQscWXF8uj6HS4eTrODZZAbGf8hk4nsG7XYSoiHTWJM7dAe4r4Ggo/tV
+         +KasgRHH2wy3u8osfn3UbcBD7l+m7nzsQENzagy7A93IOIsczzOVTPlwtFz/Lux3JyrZ
+         U2wr6jZQiQ2vXOMoUc4SQIzR+hPqL68EmN5xOEZKD7mGUEmslqObDrnsd2/wuan7vZQW
+         xrFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VtmKlc5l/pNObTu4OTm+GaZxDRv60yZmGnsF1o+ezX8=;
-        b=CIXGf7/ogSjjc1t4rxD2HRmG5QxOJCWY8aXIwzB7ezGcpoxvI1kPD8XX/ftNy6OhUL
-         7DP7NBdeWGKPF01crjD4RUgMREEmERUBr9k/Oi8oY2MkOHg6YZIQHrv3nFNLEL2n3ZQS
-         uBZa9XYl5Pok5Gwy2vA8Snx8n4izVliYZB6B9JSG1nZhg/B2myN0h5EarMoU7lfxChiN
-         Hgh/vyNXYdN8/AZGBXW3JHnzPP5fdXvH9Fb6WBORFgX8YEPhX76HLRrJYH2JLweY+Pwp
-         L5f+csB1bsxPKO+0crPem51Z9px2IAFigqLAfOAuq32Vua0+N5NImHEr1oGz9CrVlzpS
-         FkXA==
-X-Gm-Message-State: AOAM530uCfvVhTKXzn9qe4+tKvzhVln9MLrpWtsfQQ7rrXctIil6KE10
-        a9MoUK3ZTIsaBUTjttkae83vBcUt+oaIIA==
-X-Google-Smtp-Source: ABdhPJxmWVMnpP6RPhy8WzzK/a37799ZB7hvkB+DXcskQvASOZl8TlksZVEFOkbaTlU1kY5P+CsaXw==
-X-Received: by 2002:adf:f888:: with SMTP id u8mr11266010wrp.381.1606493243410;
-        Fri, 27 Nov 2020 08:07:23 -0800 (PST)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id c6sm17825734wrh.74.2020.11.27.08.07.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 08:07:22 -0800 (PST)
-Subject: Re: [RFC 1/3] dts64: mt7622: enable all pwm for bananapi r64
-To:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sean Wang <sean.wang@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org
-References: <20201016204019.2606-1-linux@fw-web.de>
- <20201016204019.2606-2-linux@fw-web.de>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <4568d457-50d6-924f-c2ad-d6e508a543e4@gmail.com>
-Date:   Fri, 27 Nov 2020 17:07:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/RcIVEuZ0p0WXSlrm2oNGx9qDjqKX3QYfckT5rBSIOs=;
+        b=sE1vr5oRTlmgwC4v6MTB4vZBTzMGmA+Ys67n1c4wQeHTzy9TUYWd5uKagmbmw207GH
+         0IHyOGCWzbiKDBqGRsPtvIlr7mh4F1+TaRXTGIdHZU+rNxeteE1W0aWPoxlm04q1pgKg
+         4zpP6GlEznEvn829HGwEAaJ43Dyom5BksMMMeLOrgyhC9++LSNcBh9e7znIEgLoaJ4XF
+         2ANDya0n56IdiK83dmUCI8JmFM53c8I0VLb214nu29UYdF0rbBNhiFTtqxmM2ThCsQGV
+         Um1qFFi+8JAsuG9gO8kk8Z7HnMgHwtkRLma3Q/gKaY+sRpwF/+E2S6mF/fwW2dlps6HJ
+         T1yQ==
+X-Gm-Message-State: AOAM531eZn477z3SsFOG3SdqCaVRmE0O3VinCXKMutNuvhqPRzFkt1kc
+        AT6evznQo6ajPMSIdQerVUYC
+X-Google-Smtp-Source: ABdhPJz+grLPox/xZsQ2YxHHafZ0p4ZdV8tNFaBfcsdA7Pz8u/xzijM9oxayAczogS3H7R6lsEukjg==
+X-Received: by 2002:a17:90a:4816:: with SMTP id a22mr10945398pjh.228.1606493265732;
+        Fri, 27 Nov 2020 08:07:45 -0800 (PST)
+Received: from thinkpad ([2409:4072:88d:6f0d:1941:b53e:6208:a8c9])
+        by smtp.gmail.com with ESMTPSA id r68sm8260574pfr.113.2020.11.27.08.07.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 08:07:44 -0800 (PST)
+Date:   Fri, 27 Nov 2020 21:37:37 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 3/3] soc: qcom: llcc-qcom: Add support for SM8250 SoC
+Message-ID: <20201127160737.GB3096@thinkpad>
+References: <20201127121127.158082-1-manivannan.sadhasivam@linaro.org>
+ <20201127121127.158082-4-manivannan.sadhasivam@linaro.org>
+ <9b7ed6f800980361dc216275fcf63b26@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20201016204019.2606-2-linux@fw-web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b7ed6f800980361dc216275fcf63b26@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sai,
 
+On Fri, Nov 27, 2020 at 07:09:09PM +0530, Sai Prakash Ranjan wrote:
+> Hi Mani,
+> 
+> On 2020-11-27 17:41, Manivannan Sadhasivam wrote:
+> > SM8250 SoC uses LLCC IP version 2. In this version, the WRSC_EN register
+> > needs to be written to enable the Write Sub Cache for each SCID. Hence,
+> > use a dedicated "write_scid_en" member with predefined values and write
+> > them for SoCs enabling the "llcc_v2" flag.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/soc/qcom/llcc-qcom.c       | 40 ++++++++++++++++++++++++++++++
+> >  include/linux/soc/qcom/llcc-qcom.h |  1 +
+> >  2 files changed, 41 insertions(+)
+> > 
+> > diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+> > index 16b421608e9c..3ec4cdffa852 100644
+> > --- a/drivers/soc/qcom/llcc-qcom.c
+> > +++ b/drivers/soc/qcom/llcc-qcom.c
+> > @@ -47,6 +47,7 @@
+> > 
+> >  #define LLCC_TRP_SCID_DIS_CAP_ALLOC   0x21f00
+> >  #define LLCC_TRP_PCB_ACT              0x21f04
+> > +#define LLCC_TRP_WRSC_EN              0x21f20
+> > 
+> >  #define BANK_OFFSET_STRIDE	      0x80000
+> > 
+> > @@ -73,6 +74,7 @@
+> >   *               then the ways assigned to this client are not flushed
+> > on power
+> >   *               collapse.
+> >   * @activate_on_init: Activate the slice immediately after it is
+> > programmed
+> > + * @write_scid_en: Bit enables write cache support for a given scid.
+> >   */
+> >  struct llcc_slice_config {
+> >  	u32 usecase_id;
+> > @@ -87,12 +89,14 @@ struct llcc_slice_config {
+> >  	bool dis_cap_alloc;
+> >  	bool retain_on_pc;
+> >  	bool activate_on_init;
+> > +	bool write_scid_en;
+> >  };
+> > 
+> >  struct qcom_llcc_config {
+> >  	const struct llcc_slice_config *sct_data;
+> >  	int size;
+> >  	bool need_llcc_cfg;
+> > +	bool llcc_v2;
+> >  };
+> 
+> We can extract the version from HW info register and so
+> would not have to maintain a flag for every new version
+> of LLCC. I had a patch to do that which I have sent to you
+> now, perhaps you can check if that works for you and take
+> it with this series?
+> 
 
-On 16/10/2020 22:40, Frank Wunderlich wrote:
-> From: Frank Wunderlich <frank-w@public-files.de>
-> 
-> mt7622 only supports 6 pwm-channels so drop pwm7
-> 
-> third pwm (pwm2) is inverted and connected to fan-socket
-> 
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+Yeah sure. Will do.
 
-Patch 1 and 2 now pushed to v5.10-next/dts64
+Thanks,
+Mani
 
-Thanks!
-
-> ---
->   .../boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts     | 11 ++++++++---
->   1 file changed, 8 insertions(+), 3 deletions(-)
+> Thanks,
+> Sai
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-> index 1cc4dcb0008c..ad5b1592182d 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-> @@ -414,10 +414,15 @@ mux {
->   		};
->   	};
->   
-> -	pwm7_pins: pwm1-2-pins {
-> +	pwm_pins: pwm-pins {
->   		mux {
->   			function = "pwm";
-> -			groups = "pwm_ch7_2";
-> +			groups = "pwm_ch1_0", /* mt7622_pwm_ch1_0_pins[] = { 51, }; */
-> +				 "pwm_ch2_0", /* mt7622_pwm_ch2_0_pins[] = { 52, }; */
-> +				 "pwm_ch3_2", /* mt7622_pwm_ch3_2_pins[] = { 97, }; */
-> +				 "pwm_ch4_1", /* mt7622_pwm_ch4_1_pins[] = { 67, }; */
-> +				 "pwm_ch5_0", /* mt7622_pwm_ch5_0_pins[] = { 68, }; */
-> +				 "pwm_ch6_0"; /* mt7622_pwm_ch6_0_pins[] = { 69, }; */
->   		};
->   	};
->   
-> @@ -537,7 +542,7 @@ mux {
->   
->   &pwm {
->   	pinctrl-names = "default";
-> -	pinctrl-0 = <&pwm7_pins>;
-> +	pinctrl-0 = <&pwm_pins>;
->   	status = "okay";
->   };
->   
-> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
