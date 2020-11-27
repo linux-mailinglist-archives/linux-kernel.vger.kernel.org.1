@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191072C668E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 880812C6691
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730168AbgK0NRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 08:17:43 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:63992 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729967AbgK0NRn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 08:17:43 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ARCSdO0007149;
-        Fri, 27 Nov 2020 14:17:37 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=XenMXX7jpB+ldiDL9YwCU3HGZQwucqgew9IYEnutEX4=;
- b=qPCKFoYVv9dt3F8SypMqylHcwU1r9jlPO4R9SGeixelEqb0Bmb9NYgzZ/kJOvBA/mIem
- fLYkPIVyThqISHF6t+gqJsEhwDw+HqFuPMp0WNuz7LMZgOU+d6b4XC9tFsvIkmBN6DyZ
- LKBV5MmQperULbaaB2B43f8z3UsjrBsT1IhagGmwNdLY+vdn3mHh/nYJm510AUaw0UXi
- ZQN6sQfZtaNLML6uqmdlNDUxSzDqEctfx8P+cwrCR+rjy5T9KGeJBoqji6MZCVS9rLRl
- UCilXFI/5tTgwGOTzjO4b+ubxv/3kDD37k3GE82jq5JLysSKKobsea0CQ7n60gwT8QMH Ew== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34y01d2r2g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Nov 2020 14:17:37 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EA05C10002A;
-        Fri, 27 Nov 2020 14:17:36 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B72C424A64B;
-        Fri, 27 Nov 2020 14:17:36 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 27 Nov 2020 14:17:36
- +0100
-From:   Amelie Delaunay <amelie.delaunay@st.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: [PATCH v5 1/1 RESEND] usb: typec: stusb160x: fix power-opmode property with typec-power-opmode
-Date:   Fri, 27 Nov 2020 14:17:35 +0100
-Message-ID: <20201127131735.28280-1-amelie.delaunay@st.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730284AbgK0NSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 08:18:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:41392 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730033AbgK0NSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 08:18:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B48B030E;
+        Fri, 27 Nov 2020 05:18:03 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FF3C3F70D;
+        Fri, 27 Nov 2020 05:18:01 -0800 (PST)
+Date:   Fri, 27 Nov 2020 13:17:59 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 06/14] arm64: Hook up cmdline parameter to allow
+ mismatched 32-bit EL0
+Message-ID: <20201127131759.5o5qiv2uwtb6qadl@e107158-lin.cambridge.arm.com>
+References: <20201124155039.13804-1-will@kernel.org>
+ <20201124155039.13804-7-will@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-27_06:2020-11-26,2020-11-27 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201124155039.13804-7-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device tree property is named typec-power-opmode, not power-opmode.
+On 11/24/20 15:50, Will Deacon wrote:
+> Allow systems with mismatched 32-bit support at EL0 to run 32-bit
+> applications based on a new kernel parameter.
+> 
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
+>  arch/arm64/kernel/cpufeature.c                  | 7 +++++++
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 526d65d8573a..f20188c44d83 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -289,6 +289,13 @@
+>  			do not want to use tracing_snapshot_alloc() as it needs
+>  			to be done where GFP_KERNEL allocations are allowed.
+>  
+> +	allow_mismatched_32bit_el0 [ARM64]
+> +			Allow execve() of 32-bit applications and setting of the
+> +			PER_LINUX32 personality on systems where only a strict
+> +			subset of the CPUs support 32-bit EL0. When this
+> +			parameter is present, the set of CPUs supporting 32-bit
+> +			EL0 is indicated by /sys/devices/system/cpu/aarch32_el0.
 
-Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/usb/typec/stusb160x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Shouldn't we document that a randomly selected 32-bit CPU will be prevented
+from being hotplugged out all the time to act as the last man standing for any
+currently running 32-bit application.
 
-diff --git a/drivers/usb/typec/stusb160x.c b/drivers/usb/typec/stusb160x.c
-index 2a618f02f4f1..d21750bbbb44 100644
---- a/drivers/usb/typec/stusb160x.c
-+++ b/drivers/usb/typec/stusb160x.c
-@@ -562,7 +562,7 @@ static int stusb160x_get_fw_caps(struct stusb160x *chip,
- 	 * Supported power operation mode can be configured through device tree
- 	 * else it is read from chip registers in stusb160x_get_caps.
- 	 */
--	ret = fwnode_property_read_string(fwnode, "power-opmode", &cap_str);
-+	ret = fwnode_property_read_string(fwnode, "typec-power-opmode", &cap_str);
- 	if (!ret) {
- 		ret = typec_find_pwr_opmode(cap_str);
- 		/* Power delivery not yet supported */
--- 
-2.17.1
+That was a mouthful! I'm sure you can phrase it better :-)
 
+If we make this the last patch as it was before adding affinity handling, we
+can drop patch 4 more easily I think?
+
+Thanks
+
+--
+Qais Yousef
