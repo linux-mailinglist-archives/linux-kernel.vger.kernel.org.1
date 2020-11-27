@@ -2,81 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB312C6D2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 23:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3562C6D2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 23:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731830AbgK0WRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 17:17:13 -0500
-Received: from smtprelay0128.hostedemail.com ([216.40.44.128]:59776 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731783AbgK0WLG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 17:11:06 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 1FCA218043D23;
-        Fri, 27 Nov 2020 22:10:49 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2198:2199:2200:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3653:3865:3867:3868:3870:3871:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:7576:7903:9010:9025:9108:10004:10400:10848:11232:11658:11914:12043:12048:12297:12740:12895:13018:13019:13069:13161:13229:13311:13357:13439:13894:14181:14659:14721:21080:21324:21627:21788:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: vase42_2916d252738b
-X-Filterd-Recvd-Size: 2116
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 27 Nov 2020 22:10:47 +0000 (UTC)
-Message-ID: <a4e796f8c0bfdb2c0a2816fa706d13cc0ae06d40.camel@perches.com>
-Subject: Re: [PATCH] MAINTAINERS add D: tag for subsystem commit prefix
-From:   Joe Perches <joe@perches.com>
-To:     trix@redhat.com, apw@canonical.com, nickhu@andestech.com,
-        green.hu@gmail.com, deanbo422@gmail.com
+        id S1732623AbgK0WTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 17:19:35 -0500
+Received: from mga02.intel.com ([134.134.136.20]:21532 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731681AbgK0WSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 17:18:11 -0500
+IronPort-SDR: G1QBZRUwNjUs1jVdkiVy0fvOIzkxQrGxV4ig7Seo7RFWONdW5Sk2eOSyubU+SWKB6GWj5QdK3U
+ tDRPYX/rGPKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9818"; a="159485610"
+X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
+   d="scan'208";a="159485610"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2020 14:17:57 -0800
+IronPort-SDR: qgx7WSv30RbFMFSp33BU5zNFv85jT2eU5P6q/aG25icSzLDsmAo3ii66Rr/raLfBDgsyVnOkFk
+ QXEJuJXVUtpg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
+   d="scan'208";a="366218920"
+Received: from lkp-server01.sh.intel.com (HELO b5888d13d5a5) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 27 Nov 2020 14:17:56 -0800
+Received: from kbuild by b5888d13d5a5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kim3v-0000BT-Fd; Fri, 27 Nov 2020 22:17:55 +0000
+Date:   Sat, 28 Nov 2020 06:17:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Date:   Fri, 27 Nov 2020 14:10:46 -0800
-In-Reply-To: <20201127214316.3045640-1-trix@redhat.com>
-References: <20201127214316.3045640-1-trix@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+Subject: [tip:sched/core] BUILD SUCCESS
+ a787bdaff83a085288b6fc607afb4bb648da3cc9
+Message-ID: <5fc17adf.eR/LzrbMqhbo8NCd%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-27 at 13:43 -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> From
-> RFC MAINTAINERS tag for cleanup robot
-> https://lkml.org/lkml/2020/11/21/190
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  sched/core
+branch HEAD: a787bdaff83a085288b6fc607afb4bb648da3cc9  Merge branch 'linus' into sched/core, to resolve semantic conflict
 
-I think this should be RFC.
-It looks as as if it's only for subsystems through A
+elapsed time: 723m
 
-> The prefix used by subsystems in their commit log is arbitrary.
-> To elimitate the time and effort to manually find a reasonable
-> prefix, store the preferred prefix in the MAINTAINERS file.
-> 
-> Populate with reasonable prefixes using this algorithm.
-> What did the maintainers use in their commits?
-> If there were no maintainers commits then what did everyone
-> else use in their commits.
+configs tested: 107
+configs skipped: 2
 
-The algorithm used to produce these prefixes should also be published.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> The results were manually reviewed and about 25% were rejected.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     tqm8541_defconfig
+arm                         lubbock_defconfig
+ia64                      gensparse_defconfig
+mips                          ath79_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                          rm200_defconfig
+arm                   milbeaut_m10v_defconfig
+mips                      pistachio_defconfig
+arm                         lpc18xx_defconfig
+m68k                        m5407c3_defconfig
+mips                     cu1000-neo_defconfig
+x86_64                           alldefconfig
+nds32                               defconfig
+riscv                    nommu_virt_defconfig
+powerpc                      ppc40x_defconfig
+arm                            dove_defconfig
+arm                      jornada720_defconfig
+powerpc                 mpc837x_rdb_defconfig
+mips                      malta_kvm_defconfig
+mips                           jazz_defconfig
+c6x                         dsk6455_defconfig
+arm                           h5000_defconfig
+powerpc                     ppa8548_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                      tqm8xx_defconfig
+mips                           ip27_defconfig
+powerpc64                           defconfig
+arm                          ep93xx_defconfig
+mips                          ath25_defconfig
+microblaze                      mmu_defconfig
+m68k                       m5208evb_defconfig
+arm                           h3600_defconfig
+sh                        edosk7760_defconfig
+powerpc                    klondike_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201127
+i386                 randconfig-a003-20201127
+i386                 randconfig-a002-20201127
+i386                 randconfig-a005-20201127
+i386                 randconfig-a001-20201127
+i386                 randconfig-a006-20201127
+x86_64               randconfig-a015-20201127
+x86_64               randconfig-a011-20201127
+x86_64               randconfig-a014-20201127
+x86_64               randconfig-a016-20201127
+x86_64               randconfig-a012-20201127
+x86_64               randconfig-a013-20201127
+i386                 randconfig-a012-20201127
+i386                 randconfig-a013-20201127
+i386                 randconfig-a011-20201127
+i386                 randconfig-a016-20201127
+i386                 randconfig-a014-20201127
+i386                 randconfig-a015-20201127
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Because this isn't necessarily the best option.
+clang tested configs:
+x86_64               randconfig-a006-20201127
+x86_64               randconfig-a003-20201127
+x86_64               randconfig-a004-20201127
+x86_64               randconfig-a005-20201127
+x86_64               randconfig-a002-20201127
+x86_64               randconfig-a001-20201127
 
-I think an exception mechanism would be better than a specific
-mechanism added to various entries.
-
->  # check MAINTAINERS entries for the right ordering too
-> -			my $preferred_order = 'MRLSWQBCPTFXNK';
-> +			my $preferred_order = 'MRLSWQBCPTFXNKD';
->  			if ($rawline =~ /^\+[A-Z]:/ &&
->  			    $prevrawline =~ /^[\+ ][A-Z]:/) {
->  				$rawline =~ /^\+([A-Z]):\s*(.*)/;
-
-I'd prefer to keep the file and keyword list last.
-
-
-
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
