@@ -2,85 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C36D22C61CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24E42C61CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727303AbgK0JeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:34:20 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:40435 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgK0JeT (ORCPT
+        id S1728542AbgK0Jeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:34:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgK0Jef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:34:19 -0500
-Received: by mail-oi1-f194.google.com with SMTP id a130so5201867oif.7;
-        Fri, 27 Nov 2020 01:34:18 -0800 (PST)
+        Fri, 27 Nov 2020 04:34:35 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA45C0613D1;
+        Fri, 27 Nov 2020 01:34:34 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id o9so6717181ejg.1;
+        Fri, 27 Nov 2020 01:34:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ocarC8hdvKNkrOHjjhwHdlA+zeKn5dsLCEZCQr6M228=;
+        b=PAGl8Tcbwzlwi5WLZGrU/PYAtwIAN4u4L5tE+8VGPFw6RRBbIdpSV5ai1sDksG6QGu
+         9O1qFyIqIZcBpygtk26GEO+CTdaCcTxo+3xcyAdvZreiDPOwR0k1FEWJYZPc4d9mH+Eb
+         aCHIKpb7iuC86Imr/pyNulDweglxYWYsJlmJpacjK672vlRR77dCINBHob9AQhECJD7m
+         1ZJ6vuHstdouROYY4y7Hnm8BkCmG7kTh6d4Al+CL+13uPZJki4LprDunAqhalE3VxK47
+         xYqzs+iqq5oYg+CITmNU64shY0VUav4JiwWOunP+4iNGzdGE/q3jpsocp0u2DhCGrZTO
+         nsPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+o1zY6oeZsDsItG8Zlzn8+hdL/E+Dvm6aLi6UCmULNY=;
-        b=iuxQtW3e9JZz/l0oiSiwFWm/H2uysEK/rorJ+p7ck0M1uyyBBv8oCETVLXcHliLgK6
-         OnMJLnT5u9SZsqnI1Ay9PAYH+hsKfZVirdXQAqXYupkBqCbqzQXCWKYPcewc8NYDHIlm
-         Odg+tDPfbHGblHWDeVkduw2vwkSB13PYS8y98tebZ2ZcowUlCWOm8KH4UG7KeYwL1Mnl
-         OZ11FC7Vjj8uUpKlq6LMRfIT4Tk8+cbMtgUGIMAzBrhADRQcrPPpVEzBA/sLYVOkx38s
-         tF3hWmDdLscpAORENx7y5Jar1bpOT25t+Y9KEAZBNGMTGnQVHxx+C8qcEn4Y1gKiPxxZ
-         bs7w==
-X-Gm-Message-State: AOAM5313zndwpO8VzQyQMgYBui+OWO/pfzOzpvZ7lFbHWQBb/1bvEkvg
-        +/dXUB0R6dS4z2R2kyldRzWYofLEORTLhV+IbvA=
-X-Google-Smtp-Source: ABdhPJypZau4G8SzRKhoEB8MnXbJ2NQjoa9bW01aaFTI6Gq5cOeHMzFtu7h3MBg9R2pYA0XiH2NAr2gRYk1zlk3GHN4=
-X-Received: by 2002:aca:c3c4:: with SMTP id t187mr4569554oif.148.1606469658632;
- Fri, 27 Nov 2020 01:34:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20201126191146.8753-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201126191146.8753-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20201126191146.8753-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 27 Nov 2020 10:34:07 +0100
-Message-ID: <CAMuHMdVfuJ79OR3mUPEux7JC0yDAbgnbx6wuyXMdBtJhHSSFEg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] memory: renesas-rpc-if: Return correct value to
- the caller of rpcif_manual_xfer()
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ocarC8hdvKNkrOHjjhwHdlA+zeKn5dsLCEZCQr6M228=;
+        b=Ed0AvmTnuDkRbeId60Da5AFx9XfburaBOKzGtbt/D50OC/S3PjmQ2dt+mkAbxFPxQ8
+         XDGk+rvkTwTxNlLbXUiiTvdcXjyj8EA/3EeirM6Z35z7LND/XSMx43c0Vnn1Geez9jMV
+         3TnCO8Hzpv5ChZe+BGoieBCri63lVW35E04qvDskCL6YPMU6+3Bo4iEmEEcBJnJouS/Y
+         lnlnnzCzQBo5fxxhB9g7b87d3d7g2XDw3vGGoR/8KDWsJTEofmA0fBsy1IPJO1uvHGK0
+         BH6pRFekXP0TfyxstE8dv3xADtwy8NRofN9VpFLIUyN2vVfxc/UC62hSGQAphpCwXoNp
+         uu1A==
+X-Gm-Message-State: AOAM533gpYlU0W7ubLFrOiydYi34pgMzzcq7hRnDpX0hoR+9Fn0HvYny
+        RRZm0anKe/PUosncy/8+Kv0=
+X-Google-Smtp-Source: ABdhPJwb0ldMHmgkYADzMIm7QGhxD9ojBKvlvxEUkaZWGdJfpwUdBoM8tx364zb/qd2KfkHlvmcn3A==
+X-Received: by 2002:a17:906:ca0b:: with SMTP id jt11mr6575848ejb.538.1606469673490;
+        Fri, 27 Nov 2020 01:34:33 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d2f:6900:c16c:e89c:9291:845f])
+        by smtp.gmail.com with ESMTPSA id w3sm4756079edt.84.2020.11.27.01.34.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 01:34:32 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] net/ipv6: propagate user pointer annotation
+Date:   Fri, 27 Nov 2020 10:34:21 +0100
+Message-Id: <20201127093421.21673-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 8:12 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> In the error path of rpcif_manual_xfer() the value of ret is overwritten
-> by value returned by reset_control_reset() function and thus returning
-> incorrect value to the caller.
->
-> This patch makes sure the correct value is returned to the caller of
-> rpcif_manual_xfer() by dropping the overwrite of ret in error path.
-> Also now we ignore the value returned by reset_control_reset() in the
-> error path and instead print a error message when it fails.
->
-> Fixes: ca7d8b980b67f ("memory: add Renesas RPC-IF driver")
-> Reported-by: Pavel Machek <pavel@denx.de>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+For IPV6_2292PKTOPTIONS, do_ipv6_getsockopt() stores the user pointer
+optval in the msg_control field of the msghdr.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Hence, sparse rightfully warns at ./net/ipv6/ipv6_sockglue.c:1151:33:
 
-Gr{oetje,eeting}s,
+  warning: incorrect type in assignment (different address spaces)
+      expected void *msg_control
+      got char [noderef] __user *optval
 
-                        Geert
+Since commit 1f466e1f15cf ("net: cleanly handle kernel vs user buffers for
+->msg_control"), user pointers shall be stored in the msg_control_user
+field, and kernel pointers in the msg_control field. This allows to
+propagate __user annotations nicely through this struct.
 
+Store optval in msg_control_user to properly record and propagate the
+memory space annotation of this pointer.
+
+Note that msg_control_is_user is set to true, so the key invariant, i.e.,
+use msg_control_user if and only if msg_control_is_user is true, holds.
+
+The msghdr is further used in the six alternative put_cmsg() calls, with
+msg_control_is_user being true, put_cmsg() picks msg_control_user
+preserving the __user annotation and passes that properly to
+copy_to_user().
+
+No functional change. No change in object code.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Christoph, please review and ack.
+
+David, Alexey, Hideaki-san, Jakub,
+  please pick this minor non-urgent clean-up patch.
+
+ net/ipv6/ipv6_sockglue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ipv6/ipv6_sockglue.c b/net/ipv6/ipv6_sockglue.c
+index 43a894bf9a1b..a6804a7e34c1 100644
+--- a/net/ipv6/ipv6_sockglue.c
++++ b/net/ipv6/ipv6_sockglue.c
+@@ -1148,7 +1148,7 @@ static int do_ipv6_getsockopt(struct sock *sk, int level, int optname,
+ 		if (sk->sk_type != SOCK_STREAM)
+ 			return -ENOPROTOOPT;
+ 
+-		msg.msg_control = optval;
++		msg.msg_control_user = optval;
+ 		msg.msg_controllen = len;
+ 		msg.msg_flags = flags;
+ 		msg.msg_control_is_user = true;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
