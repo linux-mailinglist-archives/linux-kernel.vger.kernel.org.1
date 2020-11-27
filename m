@@ -2,137 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DBF2C66FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687E32C6701
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730393AbgK0Nii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 08:38:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729762AbgK0Nih (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 08:38:37 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52088C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 05:38:36 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id l17so4399444pgk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 05:38:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BHAQM3gbyGwhXE/CkIZq3MYKF3CjSmKc6NmkE6A/KD8=;
-        b=HQsyzCOW6lrMVYUftuhnFNbIrnjBX4Qn7rk/0mUYyTP2ydEyAmevy6jObnBrjHsDCa
-         p1jujtG+16rNbXB2l56ZkswRy6i8LxNUZ1xCf6HhU9rsxKf16l603x8pTRS21eFm2CNk
-         R4jX08wA448hCp+VC7YaYh79x/nEF1BjT61WFn35SQzS95MWKoNIYoQ+oSauoL+HLbJW
-         eAQ5m4xJFsJj6hlUG5s/UOJI3cpOkNMoUBPJ0/CbuoRvLaqI2gJiwz6sy0X45EL5731I
-         Ew3PrXT1v73/JXGQ6aO3eIHqtSiZI8A600P/5KMDT0+n6Pejqf4nvqSqgk4RFLUk931i
-         zwiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BHAQM3gbyGwhXE/CkIZq3MYKF3CjSmKc6NmkE6A/KD8=;
-        b=ZGQrcqz8FXbVPKO0mSlMLC1tIjv58Hr+KWKu5sUn6cHKhISm85euos8sVs6oMoPFNx
-         hhxbzpDiI6YIcIsn4EeZsn3A4HBZYjDWae1jotsGsUGqJCRIOmlax9vkGltGdvIAJHBR
-         eccx0lTRJkiLIuoRrtywk3Yvy84MK9+uDv/ZGw7v3XSuBH/qfxSac0t/xxMuN0Ow+T4i
-         fhNw/msJRSHyfElwmQxI70jLAJKrQBMzMvHatxeNWr0O5PD9X0EfWv5pXsgNw/Uwq9JM
-         /bAPB3Orbxslm7o45je3ALMGOGxnNZXyPhcsNYBYyO2wTabFueV74BJqkoOJtE65jj+H
-         gGjQ==
-X-Gm-Message-State: AOAM531JtS4ca9RZgh76Fmw6t8ggxsjo2TDKjpJ5RJs2gaZ5NxAPhHMZ
-        o92SN0Fa4RI3AHuvDa2rZh8mh9jC87TSydNQsaja4w==
-X-Google-Smtp-Source: ABdhPJxIgmBiENGM0aRcDgRaqDEoKLP411fFBFZhwKYHUmRZmp8QBtnDEjJHRbwZQsu0PF+Ejnj3nowgX4qJLPMl7EI=
-X-Received: by 2002:a17:90a:fc92:: with SMTP id ci18mr10008326pjb.75.1606484315870;
- Fri, 27 Nov 2020 05:38:35 -0800 (PST)
+        id S1730411AbgK0NjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 08:39:18 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:62323 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729592AbgK0NjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 08:39:17 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606484357; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=8CY6rA1bX1wd5JOfrduQy972wRe+K2gtfAhU+3VG+18=;
+ b=iwzfcVpk0H2DGR45SqFRqCNLelK3g747kZl2ah3xSvLIS/iwLZbNDIIUvCp6zuSxCo5r+0Dt
+ IlBbp4IhBDuGKxNyB960OfS17EYK05gFMsTraYH0GIFd9sgU9OuwWdE/Nt00T0+qRq0WxGAM
+ LRfJdH1P4CKdp6AniCDjUq6l8uQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fc1017fb9b39088ed632f11 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 13:39:11
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3BB04C43461; Fri, 27 Nov 2020 13:39:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3443CC433ED;
+        Fri, 27 Nov 2020 13:39:09 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201116155008.118124-1-robert.foss@linaro.org>
- <cf0b935d-3ccd-8360-1b52-89fab0b181eb@linux.intel.com> <CAG3jFyssMMHpi4WgWmeDjuVYKz12UwJoBT0WoOsdB4PZxnuqSw@mail.gmail.com>
- <e132769f-cfb5-141a-6cd1-603d82a92b9e@linux.intel.com> <CAAFQd5A=kYufStO7ni4j6f+grDpsoigskcj1LdiG9NRN=cvviQ@mail.gmail.com>
- <CAG3jFyuzTPzgTWCHOc1cpXeSe7GyCET0cTYF9r3aOPXdCuZTsw@mail.gmail.com> <CAAFQd5AVs4EeV+q87SSdUW3uW_LComGV=HG5J2XaacDvbAgYXg@mail.gmail.com>
-In-Reply-To: <CAAFQd5AVs4EeV+q87SSdUW3uW_LComGV=HG5J2XaacDvbAgYXg@mail.gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 27 Nov 2020 14:38:24 +0100
-Message-ID: <CAG3jFyvxLCk=U7Dt8O3poja7yHiRR5B3jq9Xbh_Nsigrjrckcw@mail.gmail.com>
-Subject: Re: [PATCH] media: ov8856: Remove 3280x2464 mode
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Bingbu Cao <bingbu.cao@linux.intel.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Ben Kao <ben.kao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 27 Nov 2020 19:09:09 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 3/3] soc: qcom: llcc-qcom: Add support for SM8250 SoC
+In-Reply-To: <20201127121127.158082-4-manivannan.sadhasivam@linaro.org>
+References: <20201127121127.158082-1-manivannan.sadhasivam@linaro.org>
+ <20201127121127.158082-4-manivannan.sadhasivam@linaro.org>
+Message-ID: <9b7ed6f800980361dc216275fcf63b26@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for digging into this everyone!
+Hi Mani,
 
-Assuming Tomasz doesn't find any stretching, I think we can conclude
-that this mode works, and should be kept. Thanks Dongchun for parsing
-the datasheet and finding the Bayer mode issue for the two other
-recently added resolutions.
+On 2020-11-27 17:41, Manivannan Sadhasivam wrote:
+> SM8250 SoC uses LLCC IP version 2. In this version, the WRSC_EN 
+> register
+> needs to be written to enable the Write Sub Cache for each SCID. Hence,
+> use a dedicated "write_scid_en" member with predefined values and write
+> them for SoCs enabling the "llcc_v2" flag.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/soc/qcom/llcc-qcom.c       | 40 ++++++++++++++++++++++++++++++
+>  include/linux/soc/qcom/llcc-qcom.h |  1 +
+>  2 files changed, 41 insertions(+)
+> 
+> diff --git a/drivers/soc/qcom/llcc-qcom.c 
+> b/drivers/soc/qcom/llcc-qcom.c
+> index 16b421608e9c..3ec4cdffa852 100644
+> --- a/drivers/soc/qcom/llcc-qcom.c
+> +++ b/drivers/soc/qcom/llcc-qcom.c
+> @@ -47,6 +47,7 @@
+> 
+>  #define LLCC_TRP_SCID_DIS_CAP_ALLOC   0x21f00
+>  #define LLCC_TRP_PCB_ACT              0x21f04
+> +#define LLCC_TRP_WRSC_EN              0x21f20
+> 
+>  #define BANK_OFFSET_STRIDE	      0x80000
+> 
+> @@ -73,6 +74,7 @@
+>   *               then the ways assigned to this client are not flushed 
+> on power
+>   *               collapse.
+>   * @activate_on_init: Activate the slice immediately after it is 
+> programmed
+> + * @write_scid_en: Bit enables write cache support for a given scid.
+>   */
+>  struct llcc_slice_config {
+>  	u32 usecase_id;
+> @@ -87,12 +89,14 @@ struct llcc_slice_config {
+>  	bool dis_cap_alloc;
+>  	bool retain_on_pc;
+>  	bool activate_on_init;
+> +	bool write_scid_en;
+>  };
+> 
+>  struct qcom_llcc_config {
+>  	const struct llcc_slice_config *sct_data;
+>  	int size;
+>  	bool need_llcc_cfg;
+> +	bool llcc_v2;
+>  };
 
-On Fri, 27 Nov 2020 at 11:26, Tomasz Figa <tfiga@chromium.org> wrote:
->
-> On Thu, Nov 26, 2020 at 7:00 PM Robert Foss <robert.foss@linaro.org> wrote:
-> >
-> > On Wed, 25 Nov 2020 at 08:32, Tomasz Figa <tfiga@chromium.org> wrote:
-> > >
-> > > Hi Bingbu,
-> > >
-> > > On Wed, Nov 25, 2020 at 1:15 PM Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On 11/24/20 6:20 PM, Robert Foss wrote:
-> > > > > On Tue, 24 Nov 2020 at 10:42, Bingbu Cao <bingbu.cao@linux.intel.com> wrote:
-> > > > >>
-> > > > >> Hi, Robert
-> > > > >>
-> > > > >> I remember that the full size of ov8856 image sensor is 3296x2480 and we can get the 3280x2464
-> > > > >> frames based on current settings.
-> > > > >>
-> > > > >> Do you have any issues with this mode?
-> > > > >
-> > > > > As far as I can tell using the 3280x2464 mode actually yields an
-> > > > > output resolution that is 3264x2448.
-> > > > >
-> > > > > What does your hardware setup look like? And which revision of the
-> > > > > sensor are you using?
-> > > > >
-> > > >
-> > > > Robert, the sensor revision I am using is v1.1. I just checked the actual output pixels on our
-> > > > hardware, the output resolution with 2464 mode is 3280x2464, no black pixels.
-> > > >
-> > > > As Tomasz said, some ISP has the requirement of extra pixel padding, From the ov8856 datasheet,
-> > > > the central 3264x2448 pixels are *suggested* to be output from the pixel array and the boundary
-> > > > pixels can be used for additional processing. In my understanding, the 32 dummy lines are not
-> > > > black lines.
-> > >
-> > > The datasheet says that only 3264x2448 are active pixels. What pixel
-> > > values are you seeing outside of that central area? In the datasheet,
-> > > those look like "optically black" pixels, which are not 100% black,
-> > > but rather as if the sensor cells didn't receive any light - noise can
-> > > be still there.
-> > >
-> >
-> > I've been developing support for some Qcom ISP functionality, and
-> > during the course of this I ran into the issue I was describing, where
-> > the 3280x2464 mode actually outputs 3264x2448.
-> >
-> > I can think of two reasons for this, either ISP driver bugs on my end
-> > or the fact that the sensor is being run outside of the specification
-> > and which could be resulting in differences between how the ov8856
-> > sensors behave.
->
-> I just confirmed and we're indeed using this mode in a number of our
-> projects based on the Intel ISP and it seems to be producing a proper
-> image with all pixels of the 3280x2464 matrix having proper values.
-> I'm now double checking whether this isn't some processing done by the
-> ISP, but I suspect the quality would be bad if it stretched the
-> central 3264x2448 part into the 3280x2464 frame.
->
-> Best regards,
-> Tomasz
+We can extract the version from HW info register and so
+would not have to maintain a flag for every new version
+of LLCC. I had a patch to do that which I have sent to you
+now, perhaps you can check if that works for you and take
+it with this series?
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
