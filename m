@@ -2,112 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59302C660A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7376C2C6610
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729533AbgK0Mwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:52:51 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:26679 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727859AbgK0Mwu (ORCPT
+        id S1729843AbgK0MxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:53:15 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:52027 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgK0MxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:52:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606481568;
-        s=strato-dkim-0002; d=fossekall.de;
-        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=LRj+arvWbNcXJ39Wa8vMrS3smx7S5J/b8+NMY5zufsk=;
-        b=Jv7FwJ5P88CxuEdMb+wTfgAMXS63CCElWOEY91r5KvUjmdQIl8wRt5/R/921Z+xWtC
-        gHdTlAxLNME5z6Ukblu63X972W2WggYFWJARnD6yr8HmTaLr024u/etoQvGkoTN0IiDP
-        WkfnJu28nY74KQDQVz3ZhQRo3G80mUNOw5q8buHJsS0AxYzA+1WAJyzTupEUPDT8v1+w
-        lbTjExPD9MFybn/TiWY8XWgBVWJRUXOsom4srF98ilk84EZO2+SNhDZlV2nPY8WCEt4e
-        TSiYkURxlcwgxuajFYecGZ63Nar6gFH3pQD7hgEAu03SK4yiFvzaNPzPU2fz2z3k2gpp
-        qWLg==
-X-RZG-AUTH: ":O2kGeEG7b/pS1EzgE2y7nF0STYsSLflpbjNKxx7cGrBOdI6BL9pkS3QW19mO7I+/JwRspuzJFZuRzQ=="
-X-RZG-CLASS-ID: mo00
-Received: from aerfugl
-        by smtp.strato.de (RZmta 47.3.4 AUTH)
-        with ESMTPSA id g02087wARCqiaJa
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Fri, 27 Nov 2020 13:52:44 +0100 (CET)
-Received: from koltrast.a98shuttle.de ([192.168.1.27] helo=a98shuttle.de)
-        by aerfugl with smtp (Exim 4.89)
-        (envelope-from <michael@a98shuttle.de>)
-        id 1kidEu-0003pJ-FJ; Fri, 27 Nov 2020 13:52:40 +0100
-Received: (nullmailer pid 23980 invoked by uid 502);
-        Fri, 27 Nov 2020 12:52:40 -0000
-From:   Michael Klein <michael@fossekall.de>
-To:     Andrei Stefanescu <andrei.stefanescu@microchip.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org,
-        Michael Klein <michael@fossekall.de>
-Subject: [PATCH v2 3/3] mfd: da9055: fix "REGULATOR" spelling in register content macro
-Date:   Fri, 27 Nov 2020 13:52:02 +0100
-Message-Id: <20201127125202.23917-3-michael@fossekall.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201127125202.23917-1-michael@fossekall.de>
-References: <20201127093142.GP2455276@dell>
- <20201127125202.23917-1-michael@fossekall.de>
+        Fri, 27 Nov 2020 07:53:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1606481593; x=1638017593;
+  h=to:cc:references:from:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=YICXfL6svBU6bG6CQ76X+KCl2LIPHV6EUdh/cQgC3pw=;
+  b=bkyqeP26BmKTtFHWm3ee9SRZWiYdQ6xqijZbWHZHOSC8bwpcH2dXXkh/
+   zjbgCFzw20ZbJM7/kfeONOkbcHh1I9yiTk9dg7keZhN6mb5mEvjhk+/Xq
+   IHA1WFNxhDtXBQudiZk4JLUxbYcfxVbeu+oEVAkPDfp0GAFxOcstHT4Do
+   M=;
+X-IronPort-AV: E=Sophos;i="5.78,374,1599523200"; 
+   d="scan'208";a="98454197"
+Subject: Re: [PATCH 1/2] KVM: x86: handle !lapic_in_kernel case in kvm_cpu_*_extint
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 27 Nov 2020 12:53:05 +0000
+Received: from EX13D02EUB004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com (Postfix) with ESMTPS id 52F4BC063A;
+        Fri, 27 Nov 2020 12:53:04 +0000 (UTC)
+Received: from EX13MTAUWC001.ant.amazon.com (10.43.162.135) by
+ EX13D02EUB004.ant.amazon.com (10.43.166.221) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 27 Nov 2020 12:53:02 +0000
+Received: from u2196cf9297dc59.ant.amazon.com (10.95.77.210) by
+ mail-relay.amazon.com (10.43.162.232) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 27 Nov 2020 12:52:59 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>
+CC:     <seanjc@google.com>, <stable@vger.kernel.org>
+References: <20201127112114.3219360-1-pbonzini@redhat.com>
+ <20201127112114.3219360-2-pbonzini@redhat.com>
+From:   Filippo Sironi <sironi@amazon.de>
+Message-ID: <74ddc2da-3698-aef9-b90f-5ca55c2b0031@amazon.de>
+Date:   Fri, 27 Nov 2020 13:52:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201127112114.3219360-2-pbonzini@redhat.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"REGUALTOR" -> "REGULATOR"
-
-Signed-off-by: Michael Klein <michael@fossekall.de>
----
-Changes in v2:
-  - split patch
-  - make subject line more forthcoming
-
- drivers/regulator/da9055-regulator.c | 4 ++--
- include/linux/mfd/da9055/reg.h       | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/regulator/da9055-regulator.c b/drivers/regulator/da9055-regulator.c
-index 73ff5fc7d8d7..c0394ac5e60a 100644
---- a/drivers/regulator/da9055-regulator.c
-+++ b/drivers/regulator/da9055-regulator.c
-@@ -184,7 +184,7 @@ static int da9055_regulator_get_voltage_sel(struct regulator_dev *rdev)
- 	ret &= info->conf.sel_mask;
- 
- 	/* Get the voltage for the active register set A/B */
--	if (ret == DA9055_REGUALTOR_SET_A)
-+	if (ret == DA9055_REGULATOR_SET_A)
- 		ret = da9055_reg_read(regulator->da9055, volt.reg_a);
- 	else
- 		ret = da9055_reg_read(regulator->da9055, volt.reg_b);
-@@ -231,7 +231,7 @@ static int da9055_regulator_set_voltage_sel(struct regulator_dev *rdev,
- 	ret &= info->conf.sel_mask;
- 
- 	/* Set the voltage */
--	if (ret == DA9055_REGUALTOR_SET_A)
-+	if (ret == DA9055_REGULATOR_SET_A)
- 		return da9055_reg_update(regulator->da9055, info->volt.reg_a,
- 					 info->volt.v_mask, selector);
- 	else
-diff --git a/include/linux/mfd/da9055/reg.h b/include/linux/mfd/da9055/reg.h
-index 54a717b6c3de..1204e6b152d5 100644
---- a/include/linux/mfd/da9055/reg.h
-+++ b/include/linux/mfd/da9055/reg.h
-@@ -344,8 +344,8 @@
- #define	DA9055_VLDO_GPI_MASK		0x60
- #define	DA9055_LDO_CONF_SHIFT		0x07
- #define	DA9055_LDO_CONF_MASK		0x80
--#define	DA9055_REGUALTOR_SET_A		0x00
--#define	DA9055_REGUALTOR_SET_B		0x10
-+#define	DA9055_REGULATOR_SET_A		0x00
-+#define	DA9055_REGULATOR_SET_B		0x10
- 
- /* DA9055_REG_ADC_MAN (addr=0x1B) */
- #define	DA9055_ADC_MUX_SHIFT		0
--- 
-2.29.2
+T24gMTEvMjcvMjAgMTI6MjEgUE0sIFBhb2xvIEJvbnppbmkgd3JvdGU6Cj4gCj4gQ2VudHJhbGl6
+ZSBoYW5kbGluZyBvZiBpbnRlcnJ1cHRzIGZyb20gdGhlIHVzZXJzcGFjZSBBUElDCj4gaW4ga3Zt
+X2NwdV9oYXNfZXh0aW50IGFuZCBrdm1fY3B1X2dldF9leHRpbnQsIHNpbmNlCj4gdXNlcnNwYWNl
+IEFQSUMgaW50ZXJydXB0cyBhcmUgaGFuZGxlZCBtb3JlIG9yIGxlc3MgdGhlCj4gc2FtZSBhcyBF
+eHRJTlRzIGFyZSB3aXRoIHNwbGl0IGlycWNoaXAuICBUaGlzIHJlbW92ZXMKPiBkdXBsaWNhdGVk
+IGNvZGUgZnJvbSBrdm1fY3B1X2hhc19pbmplY3RhYmxlX2ludHIgYW5kCj4ga3ZtX2NwdV9oYXNf
+aW50ZXJydXB0LCBhbmQgbWFrZXMgdGhlIGNvZGUgbW9yZSBzaW1pbGFyCj4gYmV0d2VlbiBrdm1f
+Y3B1X2hhc197ZXh0aW50LGludGVycnVwdH0gb24gb25lIHNpZGUKPiBhbmQga3ZtX2NwdV9nZXRf
+e2V4dGludCxpbnRlcnJ1cHR9IG9uIHRoZSBvdGhlci4KPiAKPiBDYzogc3RhYmxlQHZnZXIua2Vy
+bmVsLm9yZwo+IFNpZ25lZC1vZmYtYnk6IFBhb2xvIEJvbnppbmkgPHBib256aW5pQHJlZGhhdC5j
+b20+Cj4gLS0tCj4gICBhcmNoL3g4Ni9rdm0vaXJxLmMgICB8IDg1ICsrKysrKysrKysrKysrKysr
+Ky0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gICBhcmNoL3g4Ni9rdm0vbGFwaWMuYyB8ICAy
+ICstCj4gICAyIGZpbGVzIGNoYW5nZWQsIDM1IGluc2VydGlvbnMoKyksIDUyIGRlbGV0aW9ucygt
+KQo+IAo+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9rdm0vaXJxLmMgYi9hcmNoL3g4Ni9rdm0vaXJx
+LmMKPiBpbmRleCA5OWQxMThmZmM2N2QuLmUyZDQ5YTUwNmU3ZiAxMDA2NDQKPiAtLS0gYS9hcmNo
+L3g4Ni9rdm0vaXJxLmMKPiArKysgYi9hcmNoL3g4Ni9rdm0vaXJxLmMKPiBAQCAtNDIsMTUgKzQy
+LDI3IEBAIHN0YXRpYyBpbnQgcGVuZGluZ191c2Vyc3BhY2VfZXh0aW50KHN0cnVjdCBrdm1fdmNw
+dSAqdikKPiAgICAqLwo+ICAgc3RhdGljIGludCBrdm1fY3B1X2hhc19leHRpbnQoc3RydWN0IGt2
+bV92Y3B1ICp2KQo+ICAgewo+IC0gICAgICAgdTggYWNjZXB0ID0ga3ZtX2FwaWNfYWNjZXB0X3Bp
+Y19pbnRyKHYpOwo+ICsgICAgICAgLyoKPiArICAgICAgICAqIEZJWE1FOiBpbnRlcnJ1cHQuaW5q
+ZWN0ZWQgcmVwcmVzZW50cyBhbiBpbnRlcnJ1cHQgdGhhdCBpdCdzCj4gKyAgICAgICAgKiBzaWRl
+LWVmZmVjdHMgaGF2ZSBhbHJlYWR5IGJlZW4gYXBwbGllZCAoZS5nLiBiaXQgZnJvbSBJUlIKPiAr
+ICAgICAgICAqIGFscmVhZHkgbW92ZWQgdG8gSVNSKS4gVGhlcmVmb3JlLCBpdCBpcyBpbmNvcnJl
+Y3QgdG8gcmVseQo+ICsgICAgICAgICogb24gaW50ZXJydXB0LmluamVjdGVkIHRvIGtub3cgaWYg
+dGhlcmUgaXMgYSBwZW5kaW5nCj4gKyAgICAgICAgKiBpbnRlcnJ1cHQgaW4gdGhlIHVzZXItbW9k
+ZSBMQVBJQy4KPiArICAgICAgICAqIFRoaXMgbGVhZHMgdG8gblZNWC9uU1ZNIG5vdCBiZSBhYmxl
+IHRvIGRpc3Rpbmd1aXNoCj4gKyAgICAgICAgKiBpZiBpdCBzaG91bGQgZXhpdCBmcm9tIEwyIHRv
+IEwxIG9uIEVYVEVSTkFMX0lOVEVSUlVQVCBvbgo+ICsgICAgICAgICogcGVuZGluZyBpbnRlcnJ1
+cHQgb3Igc2hvdWxkIHJlLWluamVjdCBhbiBpbmplY3RlZAo+ICsgICAgICAgICogaW50ZXJydXB0
+Lgo+ICsgICAgICAgICovCj4gKyAgICAgICBpZiAoIWxhcGljX2luX2tlcm5lbCh2KSkKPiArICAg
+ICAgICAgICAgICAgcmV0dXJuIHYtPmFyY2guaW50ZXJydXB0LmluamVjdGVkOwo+IAo+IC0gICAg
+ICAgaWYgKGFjY2VwdCkgewo+IC0gICAgICAgICAgICAgICBpZiAoaXJxY2hpcF9zcGxpdCh2LT5r
+dm0pKQo+IC0gICAgICAgICAgICAgICAgICAgICAgIHJldHVybiBwZW5kaW5nX3VzZXJzcGFjZV9l
+eHRpbnQodik7Cj4gLSAgICAgICAgICAgICAgIGVsc2UKPiAtICAgICAgICAgICAgICAgICAgICAg
+ICByZXR1cm4gdi0+a3ZtLT5hcmNoLnZwaWMtPm91dHB1dDsKPiAtICAgICAgIH0gZWxzZQo+ICsg
+ICAgICAgaWYgKCFrdm1fYXBpY19hY2NlcHRfcGljX2ludHIodikpCj4gICAgICAgICAgICAgICAg
+ICByZXR1cm4gMDsKPiArCj4gKyAgICAgICBpZiAoaXJxY2hpcF9zcGxpdCh2LT5rdm0pKQo+ICsg
+ICAgICAgICAgICAgICByZXR1cm4gcGVuZGluZ191c2Vyc3BhY2VfZXh0aW50KHYpOwo+ICsgICAg
+ICAgZWxzZQo+ICsgICAgICAgICAgICAgICByZXR1cm4gdi0+a3ZtLT5hcmNoLnZwaWMtPm91dHB1
+dDsKPiAgIH0KPiAKPiAgIC8qCj4gQEAgLTYxLDIwICs3Myw2IEBAIHN0YXRpYyBpbnQga3ZtX2Nw
+dV9oYXNfZXh0aW50KHN0cnVjdCBrdm1fdmNwdSAqdikKPiAgICAqLwo+ICAgaW50IGt2bV9jcHVf
+aGFzX2luamVjdGFibGVfaW50cihzdHJ1Y3Qga3ZtX3ZjcHUgKnYpCj4gICB7Cj4gLSAgICAgICAv
+Kgo+IC0gICAgICAgICogRklYTUU6IGludGVycnVwdC5pbmplY3RlZCByZXByZXNlbnRzIGFuIGlu
+dGVycnVwdCB0aGF0IGl0J3MKPiAtICAgICAgICAqIHNpZGUtZWZmZWN0cyBoYXZlIGFscmVhZHkg
+YmVlbiBhcHBsaWVkIChlLmcuIGJpdCBmcm9tIElSUgo+IC0gICAgICAgICogYWxyZWFkeSBtb3Zl
+ZCB0byBJU1IpLiBUaGVyZWZvcmUsIGl0IGlzIGluY29ycmVjdCB0byByZWx5Cj4gLSAgICAgICAg
+KiBvbiBpbnRlcnJ1cHQuaW5qZWN0ZWQgdG8ga25vdyBpZiB0aGVyZSBpcyBhIHBlbmRpbmcKPiAt
+ICAgICAgICAqIGludGVycnVwdCBpbiB0aGUgdXNlci1tb2RlIExBUElDLgo+IC0gICAgICAgICog
+VGhpcyBsZWFkcyB0byBuVk1YL25TVk0gbm90IGJlIGFibGUgdG8gZGlzdGluZ3Vpc2gKPiAtICAg
+ICAgICAqIGlmIGl0IHNob3VsZCBleGl0IGZyb20gTDIgdG8gTDEgb24gRVhURVJOQUxfSU5URVJS
+VVBUIG9uCj4gLSAgICAgICAgKiBwZW5kaW5nIGludGVycnVwdCBvciBzaG91bGQgcmUtaW5qZWN0
+IGFuIGluamVjdGVkCj4gLSAgICAgICAgKiBpbnRlcnJ1cHQuCj4gLSAgICAgICAgKi8KPiAtICAg
+ICAgIGlmICghbGFwaWNfaW5fa2VybmVsKHYpKQo+IC0gICAgICAgICAgICAgICByZXR1cm4gdi0+
+YXJjaC5pbnRlcnJ1cHQuaW5qZWN0ZWQ7Cj4gLQo+ICAgICAgICAgIGlmIChrdm1fY3B1X2hhc19l
+eHRpbnQodikpCj4gICAgICAgICAgICAgICAgICByZXR1cm4gMTsKPiAKPiBAQCAtOTEsMjAgKzg5
+LDYgQEAgRVhQT1JUX1NZTUJPTF9HUEwoa3ZtX2NwdV9oYXNfaW5qZWN0YWJsZV9pbnRyKTsKPiAg
+ICAqLwo+ICAgaW50IGt2bV9jcHVfaGFzX2ludGVycnVwdChzdHJ1Y3Qga3ZtX3ZjcHUgKnYpCj4g
+ICB7Cj4gLSAgICAgICAvKgo+IC0gICAgICAgICogRklYTUU6IGludGVycnVwdC5pbmplY3RlZCBy
+ZXByZXNlbnRzIGFuIGludGVycnVwdCB0aGF0IGl0J3MKPiAtICAgICAgICAqIHNpZGUtZWZmZWN0
+cyBoYXZlIGFscmVhZHkgYmVlbiBhcHBsaWVkIChlLmcuIGJpdCBmcm9tIElSUgo+IC0gICAgICAg
+ICogYWxyZWFkeSBtb3ZlZCB0byBJU1IpLiBUaGVyZWZvcmUsIGl0IGlzIGluY29ycmVjdCB0byBy
+ZWx5Cj4gLSAgICAgICAgKiBvbiBpbnRlcnJ1cHQuaW5qZWN0ZWQgdG8ga25vdyBpZiB0aGVyZSBp
+cyBhIHBlbmRpbmcKPiAtICAgICAgICAqIGludGVycnVwdCBpbiB0aGUgdXNlci1tb2RlIExBUElD
+Lgo+IC0gICAgICAgICogVGhpcyBsZWFkcyB0byBuVk1YL25TVk0gbm90IGJlIGFibGUgdG8gZGlz
+dGluZ3Vpc2gKPiAtICAgICAgICAqIGlmIGl0IHNob3VsZCBleGl0IGZyb20gTDIgdG8gTDEgb24g
+RVhURVJOQUxfSU5URVJSVVBUIG9uCj4gLSAgICAgICAgKiBwZW5kaW5nIGludGVycnVwdCBvciBz
+aG91bGQgcmUtaW5qZWN0IGFuIGluamVjdGVkCj4gLSAgICAgICAgKiBpbnRlcnJ1cHQuCj4gLSAg
+ICAgICAgKi8KPiAtICAgICAgIGlmICghbGFwaWNfaW5fa2VybmVsKHYpKQo+IC0gICAgICAgICAg
+ICAgICByZXR1cm4gdi0+YXJjaC5pbnRlcnJ1cHQuaW5qZWN0ZWQ7Cj4gLQo+ICAgICAgICAgIGlm
+IChrdm1fY3B1X2hhc19leHRpbnQodikpCj4gICAgICAgICAgICAgICAgICByZXR1cm4gMTsKPiAK
+PiBAQCAtMTE4LDE2ICsxMDIsMjEgQEAgRVhQT1JUX1NZTUJPTF9HUEwoa3ZtX2NwdV9oYXNfaW50
+ZXJydXB0KTsKPiAgICAqLwo+ICAgc3RhdGljIGludCBrdm1fY3B1X2dldF9leHRpbnQoc3RydWN0
+IGt2bV92Y3B1ICp2KQo+ICAgewo+IC0gICAgICAgaWYgKGt2bV9jcHVfaGFzX2V4dGludCh2KSkg
+ewo+IC0gICAgICAgICAgICAgICBpZiAoaXJxY2hpcF9zcGxpdCh2LT5rdm0pKSB7Cj4gLSAgICAg
+ICAgICAgICAgICAgICAgICAgaW50IHZlY3RvciA9IHYtPmFyY2gucGVuZGluZ19leHRlcm5hbF92
+ZWN0b3I7Cj4gLQo+IC0gICAgICAgICAgICAgICAgICAgICAgIHYtPmFyY2gucGVuZGluZ19leHRl
+cm5hbF92ZWN0b3IgPSAtMTsKPiAtICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gdmVjdG9y
+Owo+IC0gICAgICAgICAgICAgICB9IGVsc2UKPiAtICAgICAgICAgICAgICAgICAgICAgICByZXR1
+cm4ga3ZtX3BpY19yZWFkX2lycSh2LT5rdm0pOyAvKiBQSUMgKi8KPiAtICAgICAgIH0gZWxzZQo+
+ICsgICAgICAgaWYgKCFrdm1fY3B1X2hhc19leHRpbnQodikpIHsKPiArICAgICAgICAgICAgICAg
+V0FSTl9PTighbGFwaWNfaW5fa2VybmVsKHYpKTsKPiAgICAgICAgICAgICAgICAgIHJldHVybiAt
+MTsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICBpZiAoIWxhcGljX2luX2tlcm5lbCh2KSkKPiAr
+ICAgICAgICAgICAgICAgcmV0dXJuIHYtPmFyY2guaW50ZXJydXB0Lm5yOwo+ICsKPiArICAgICAg
+IGlmIChpcnFjaGlwX3NwbGl0KHYtPmt2bSkpIHsKPiArICAgICAgICAgICAgICAgaW50IHZlY3Rv
+ciA9IHYtPmFyY2gucGVuZGluZ19leHRlcm5hbF92ZWN0b3I7Cj4gKwo+ICsgICAgICAgICAgICAg
+ICB2LT5hcmNoLnBlbmRpbmdfZXh0ZXJuYWxfdmVjdG9yID0gLTE7Cj4gKyAgICAgICAgICAgICAg
+IHJldHVybiB2ZWN0b3I7Cj4gKyAgICAgICB9IGVsc2UKPiArICAgICAgICAgICAgICAgcmV0dXJu
+IGt2bV9waWNfcmVhZF9pcnEodi0+a3ZtKTsgLyogUElDICovCj4gICB9Cj4gCj4gICAvKgo+IEBA
+IC0xMzUsMTMgKzEyNCw3IEBAIHN0YXRpYyBpbnQga3ZtX2NwdV9nZXRfZXh0aW50KHN0cnVjdCBr
+dm1fdmNwdSAqdikKPiAgICAqLwo+ICAgaW50IGt2bV9jcHVfZ2V0X2ludGVycnVwdChzdHJ1Y3Qg
+a3ZtX3ZjcHUgKnYpCj4gICB7Cj4gLSAgICAgICBpbnQgdmVjdG9yOwo+IC0KPiAtICAgICAgIGlm
+ICghbGFwaWNfaW5fa2VybmVsKHYpKQo+IC0gICAgICAgICAgICAgICByZXR1cm4gdi0+YXJjaC5p
+bnRlcnJ1cHQubnI7Cj4gLQo+IC0gICAgICAgdmVjdG9yID0ga3ZtX2NwdV9nZXRfZXh0aW50KHYp
+Owo+IC0KPiArICAgICAgIGludCB2ZWN0b3IgPSBrdm1fY3B1X2dldF9leHRpbnQodik7Cj4gICAg
+ICAgICAgaWYgKHZlY3RvciAhPSAtMSkKPiAgICAgICAgICAgICAgICAgIHJldHVybiB2ZWN0b3I7
+ICAgICAgICAgICAgICAgICAgLyogUElDICovCj4gCj4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2t2
+bS9sYXBpYy5jIGIvYXJjaC94ODYva3ZtL2xhcGljLmMKPiBpbmRleCAxMDVlNzg1OWQxZjIuLmJi
+NWZmNzYxZDVlMiAxMDA2NDQKPiAtLS0gYS9hcmNoL3g4Ni9rdm0vbGFwaWMuYwo+ICsrKyBiL2Fy
+Y2gveDg2L2t2bS9sYXBpYy5jCj4gQEAgLTI0NjUsNyArMjQ2NSw3IEBAIGludCBrdm1fYXBpY19o
+YXNfaW50ZXJydXB0KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSkKPiAgICAgICAgICBzdHJ1Y3Qga3Zt
+X2xhcGljICphcGljID0gdmNwdS0+YXJjaC5hcGljOwo+ICAgICAgICAgIHUzMiBwcHI7Cj4gCj4g
+LSAgICAgICBpZiAoIWt2bV9hcGljX2h3X2VuYWJsZWQoYXBpYykpCj4gKyAgICAgICBpZiAoIWt2
+bV9hcGljX3ByZXNlbnQodmNwdSkpCj4gICAgICAgICAgICAgICAgICByZXR1cm4gLTE7Cj4gCj4g
+ICAgICAgICAgX19hcGljX3VwZGF0ZV9wcHIoYXBpYywgJnBwcik7Cj4gLS0KPiAyLjI4LjAKPiAK
+PiAKClJldmlld2VkLWJ5OiBGaWxpcHBvIFNpcm9uaSA8c2lyb25pQGFtYXpvbi5kZT4KCgoKQW1h
+em9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4gMzgKMTAxMTcg
+QmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9uYXRoYW4g
+V2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50ZXIgSFJC
+IDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
 
