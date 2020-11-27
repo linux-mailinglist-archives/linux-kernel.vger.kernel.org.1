@@ -2,138 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258382C61B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784A82C61B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgK0JaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:30:21 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:54552 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgK0JaU (ORCPT
+        id S1728429AbgK0Jav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:30:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725989AbgK0Jat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:30:20 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AR9UCLO048364;
-        Fri, 27 Nov 2020 03:30:12 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606469412;
-        bh=lHEin1UNZLFaGOvIOKjpzGEcFVTMutU0s11Moh+HW4Q=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ZN+ueHWpTTVoglr2FEsw+N+LvpC3bk5ZD8I0W3P+OBkcFqyW4i3a0RtH2OG95CsGj
-         GuP8mjyhQqf+63yKKucGUf8wELnfy6+keY6DDbNaJYYMbHXjHuSTLvTQ9omfKj1aIZ
-         NmGqu+Mg2VuVxBK8E1j+LNRXk20hvWPvNO4U4mIY=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AR9UCpb041067
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 27 Nov 2020 03:30:12 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 27
- Nov 2020 03:30:11 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 27 Nov 2020 03:30:11 -0600
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AR9U9W6019490;
-        Fri, 27 Nov 2020 03:30:10 -0600
-Subject: Re: [PATCH] usb: cdns3: Fix hardware based role switch
-To:     <peter.chen@nxp.com>, <pawell@cadence.com>
-CC:     <heikki.krogerus@linux.intel.com>, <gregkh@linuxfoundation.org>,
-        <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201125124936.5929-1-rogerq@ti.com>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <520dd6e0-d3d4-b471-6c65-143e094a4f74@ti.com>
-Date:   Fri, 27 Nov 2020 11:30:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 27 Nov 2020 04:30:49 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C047C0613D1;
+        Fri, 27 Nov 2020 01:30:49 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id w24so5886187wmi.0;
+        Fri, 27 Nov 2020 01:30:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nugmvnf9RyCLTrUTV0QpRDumZd95otaQgvkhBHEAu7E=;
+        b=NlBZ/29o2yYLP8MbXhcI0F/PK0kEPTH3DFAdsLeeBcKpyteYi9dRQF9ylidoQVa8mm
+         wDQo91JF0o+zGG+JQfgfK6BkZjX82P8EjLsRWx/5cqEzKRROufYECgf+j0pw6mGYPkUH
+         sR993CVob6DqaGsTSWrdsPcNVJRt4903vj/s1xKyfqcmpI+ndEIR6sAVLvmHTKwojyeS
+         1FmpUy0S5XSL/DisUf+Y50goYPvscoOF0CpFIXeENbqCBbwbUYP8yJGdaXkBr/PSGiuZ
+         bWXkBs0Zb29qWAvBFFe12QRmj0orYSJxdMIl6TUic2Kw6MKlS8ATWm/rFrS8g+sEJLvb
+         xCJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nugmvnf9RyCLTrUTV0QpRDumZd95otaQgvkhBHEAu7E=;
+        b=QGr3Y1ljEWL8CMjFMbMaoQa/PJKiiZlGdy6YdDPAnKnZ9sfM++T1aiMuNufnVV+y3k
+         8DryLpCibbrQbKKps2O+/lUX5YxmdzLjSa8HQdcRbBwDEEvrsUPw9Fk2zCngFmO2Outa
+         VjyBExtTOIzYxdUB1pkwREvOxvpcFATSAU9mwtfag6RKAAhRadr4VPMFdbtkqOQhSjlU
+         dJ8V2N+s0vbav1BeNWTJ3AhYGMwGr2byIESSeUaaZLkSAtIZYWDIxQNKw5BbaBYrsFcQ
+         pG5Elcvpx3PkFvwbgYfOWYsU/CMXdp59/a/081whZy27YWme5AjMsRnHn9zWApBOKX3b
+         dXdQ==
+X-Gm-Message-State: AOAM533MNR7rrOFmXawy8NpEUf/wpCn/dNbrdXPAyhjaAuXvqTJat8Q5
+        ls3i+OKuWM/uiFZc7ZuZ6GkqiHvPLO32KQ==
+X-Google-Smtp-Source: ABdhPJwBs+sLle0BSQ86bLNV9Pc6YbzoxSFdD/QjRGIfOKtQxVLou0Ml7WPz3t0ZVfryaCsqHyBg0Q==
+X-Received: by 2002:a7b:c34a:: with SMTP id l10mr7798201wmj.125.1606469446708;
+        Fri, 27 Nov 2020 01:30:46 -0800 (PST)
+Received: from ?IPv6:2001:a61:24b3:de01:7310:e730:497d:ea6a? ([2001:a61:24b3:de01:7310:e730:497d:ea6a])
+        by smtp.gmail.com with ESMTPSA id l23sm11535934wmh.40.2020.11.27.01.30.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 01:30:45 -0800 (PST)
+Cc:     mtk.manpages@gmail.com, tglx@linutronix.de, mingo@kernel.org,
+        luto@kernel.org, x86@kernel.org, len.brown@intel.com,
+        dave.hansen@intel.com, hjl.tools@gmail.com, Dave.Martin@arm.com,
+        mpe@ellerman.id.au, tony.luck@intel.com, ravi.v.shankar@intel.com,
+        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fenghua Yu <fenghua.yu@intel.com>
+Subject: Re: [PATCH v2 2/4] x86/elf: Support a new ELF aux vector
+ AT_MINSIGSTKSZ
+To:     Borislav Petkov <bp@suse.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>
+References: <20201119190237.626-1-chang.seok.bae@intel.com>
+ <20201119190237.626-3-chang.seok.bae@intel.com>
+ <20201126174418.GA29770@zn.tnic>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <7b2b1f7f-75e5-01ab-7571-71340825d299@gmail.com>
+Date:   Fri, 27 Nov 2020 10:30:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201125124936.5929-1-rogerq@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20201126174418.GA29770@zn.tnic>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hey Dave Marin,
 
-On 25/11/2020 14:49, Roger Quadros wrote:
-> Hardware based role switch is broken as the driver always skips it.
-> Fix this by registering for  SW role switch only if 'usb-role-switch'
-> property is present in the device tree.
+On 11/26/20 6:44 PM, Borislav Petkov wrote:
+> On Thu, Nov 19, 2020 at 11:02:35AM -0800, Chang S. Bae wrote:
+>> Historically, signal.h defines MINSIGSTKSZ (2KB) and SIGSTKSZ (8KB), for
+>> use by all architectures with sigaltstack(2). Over time, the hardware state
+>> size grew, but these constants did not evolve. Today, literal use of these
+>> constants on several architectures may result in signal stack overflow, and
+>> thus user data corruption.
+>>
+>> A few years ago, the ARM team addressed this issue by establishing
+>> getauxval(AT_MINSIGSTKSZ), such that the kernel can supply at runtime value
+>> that is an appropriate replacement on the current and future hardware.
+>>
+>> Add getauxval(AT_MINSIGSTKSZ) support to x86, analogous to the support
+>> added for ARM in commit 94b07c1f8c39 ("arm64: signal: Report signal frame
+>> size to userspace via auxv").
 > 
-> Fixes: 50642709f659 ("usb: cdns3: core: quit if it uses role switch class")
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
-
-Can you please pick this up for -rc cycle, else otg will be broken for us in v5.10 release.
-Thanks.
-
-cheers,
--roger
-
-> ---
->   drivers/usb/cdns3/core.c | 27 +++++++++++++++------------
->   1 file changed, 15 insertions(+), 12 deletions(-)
+> I don't see it documented here:
 > 
-> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-> index a0f73d4711ae..170deb3eacf0 100644
-> --- a/drivers/usb/cdns3/core.c
-> +++ b/drivers/usb/cdns3/core.c
-> @@ -427,7 +427,6 @@ static irqreturn_t cdns3_wakeup_irq(int irq, void *data)
->    */
->   static int cdns3_probe(struct platform_device *pdev)
->   {
-> -	struct usb_role_switch_desc sw_desc = { };
->   	struct device *dev = &pdev->dev;
->   	struct resource	*res;
->   	struct cdns3 *cdns;
-> @@ -529,18 +528,21 @@ static int cdns3_probe(struct platform_device *pdev)
->   	if (ret)
->   		goto err2;
->   
-> -	sw_desc.set = cdns3_role_set;
-> -	sw_desc.get = cdns3_role_get;
-> -	sw_desc.allow_userspace_control = true;
-> -	sw_desc.driver_data = cdns;
-> -	if (device_property_read_bool(dev, "usb-role-switch"))
-> +	if (device_property_read_bool(dev, "usb-role-switch")) {
-> +		struct usb_role_switch_desc sw_desc = { };
-> +
-> +		sw_desc.set = cdns3_role_set;
-> +		sw_desc.get = cdns3_role_get;
-> +		sw_desc.allow_userspace_control = true;
-> +		sw_desc.driver_data = cdns;
->   		sw_desc.fwnode = dev->fwnode;
->   
-> -	cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
-> -	if (IS_ERR(cdns->role_sw)) {
-> -		ret = PTR_ERR(cdns->role_sw);
-> -		dev_warn(dev, "Unable to register Role Switch\n");
-> -		goto err3;
-> +		cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
-> +		if (IS_ERR(cdns->role_sw)) {
-> +			ret = PTR_ERR(cdns->role_sw);
-> +			dev_warn(dev, "Unable to register Role Switch\n");
-> +			goto err3;
-> +		}
->   	}
->   
->   	if (cdns->wakeup_irq) {
-> @@ -582,7 +584,8 @@ static int cdns3_probe(struct platform_device *pdev)
->   	return 0;
->   err4:
->   	cdns3_drd_exit(cdns);
-> -	usb_role_switch_unregister(cdns->role_sw);
-> +	if (cdns->role_sw)
-> +		usb_role_switch_unregister(cdns->role_sw);
->   err3:
->   	set_phy_power_off(cdns);
->   err2:
+> https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/man3/getauxval.3
 > 
+> Dunno, now that two architectures will have it, maybe that is good
+> enough reason to document it.
+> 
+> Adding Michael.
+
+Commit 94b07c1f8c39 was your, Dave. Might I convince you to write a 
+patch for getauxval(3)?
+
+Thanks,
+
+
+Michael
+
 
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
