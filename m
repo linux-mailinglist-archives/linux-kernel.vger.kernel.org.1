@@ -2,130 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524A02C6B92
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FCC2C6B95
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 19:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727378AbgK0S1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 13:27:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726206AbgK0S1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 13:27:12 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0DDE121534;
-        Fri, 27 Nov 2020 18:27:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606501631;
-        bh=Lu84xRTk7cx2H7+emSh0+FVhYJQrZ8oQSXubGcw8RA4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FmJvBhHrSkTmADhmrlMCa8Zvvpo3z0Pfws8fPyf4dY8H4Y4SCaso+jZJTrGpL7jg9
-         3pEBem/Uk4xGgwdJQ/tuw+KOAswEdYapkHiNgrfPhksfp6HQix1o/rlIbbbB0g0OTx
-         o0NWifoGHWaVX9BLAi2xo8k1ChlBz7AsETYTlkrY=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kiiSb-00E8P8-1u; Fri, 27 Nov 2020 18:27:09 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 27 Nov 2020 18:27:08 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Hanks Chen <hanks.chen@mediatek.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        CC Hwang <cc.hwang@mediatek.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Loda Chou <loda.chou@mediatek.com>
-Subject: Re: [PATCH v1 3/3] arm64: disable irq on cpu shutdown flow
-In-Reply-To: <1606486531-25719-4-git-send-email-hanks.chen@mediatek.com>
-References: <1606486531-25719-1-git-send-email-hanks.chen@mediatek.com>
- <1606486531-25719-4-git-send-email-hanks.chen@mediatek.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <e0fb8fade871b08295ed2be488406ff3@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: hanks.chen@mediatek.com, tglx@linutronix.de, matthias.bgg@gmail.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, cc.hwang@mediatek.com, kuohong.wang@mediatek.com, loda.chou@mediatek.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1728862AbgK0S1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 13:27:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29316 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726316AbgK0S1u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 13:27:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606501668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=ivVfcziFHnEvcS5Bte7luvrxRDQJe1ZJdM0WYQjDTTA=;
+        b=NM9igEviGoRRu/M5b2Z16gStmwis1XI83RiAKNV+GakK8JgnjuiS++rXvSgQVtF8kvKkvu
+        YqX33Uq2fdFqBRVF2IaHuNs1xcYoIvDeeVJkMQtR0pC/HmahOT/fpd6ZRek5ByU7nmUlk4
+        HgpMiwZtXCqJeHWr9YtHRIicP9tWJGw=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-Q0EETJuXOSC5Dok5ys8luw-1; Fri, 27 Nov 2020 13:27:47 -0500
+X-MC-Unique: Q0EETJuXOSC5Dok5ys8luw-1
+Received: by mail-qv1-f72.google.com with SMTP id m45so3488385qvg.16
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 10:27:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ivVfcziFHnEvcS5Bte7luvrxRDQJe1ZJdM0WYQjDTTA=;
+        b=gP0L81UN4Bz3pmDtNjiK1/teWm6LWVkTujRRwgPeF9gP0xxBa3wjgKIwdMu4futJYu
+         ND54OMhrABVS8In/JzKJpSCBXIKjiTgrrG9b/b8YZL7hzUv5Kww/Vs+7J5UkJB9Sdxpn
+         D/QZgqyx4EElGLO7bAxU7Od8YhPQzxlWAfG4i4xHeMK7DAqxPSHvU6SxZQ05zei+/8tp
+         YyPM3y+Nb+GdunDtqKQ+tSWfmwMuXj6ofZrD6JcxGhPZStr7Nk32zb9eLeq642ybeEKv
+         sSHgBdyJeuagGVG9nwV2afJwKfEXyIdgxdFa1j9bVmWui7d7YhTNxzPThXhXgIxMUwSC
+         uYcA==
+X-Gm-Message-State: AOAM5323btAZKq7C+FEn2scVXYp457bdNf7bg616IPPZCfFTks+9Qz3i
+        U1B9XNxFul4sG8nfphMn43DUWzFPJ+QEP68NCyu6KqPdYHBejxrLC0gSZgcrLTSmLj327luSEqc
+        JOEgoEPiWqDoAGwZjKEX57ZYe
+X-Received: by 2002:a05:6214:1150:: with SMTP id b16mr9236311qvt.46.1606501666756;
+        Fri, 27 Nov 2020 10:27:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx5LBFW1XYMsGNH49WE9w7zTVsK3Xp4ZMYlvm2rn00CcrHZZTtmkUgDFpLEqHTZigDkV/pjzA==
+X-Received: by 2002:a05:6214:1150:: with SMTP id b16mr9236303qvt.46.1606501666568;
+        Fri, 27 Nov 2020 10:27:46 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id p73sm6497879qka.79.2020.11.27.10.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 10:27:45 -0800 (PST)
+From:   trix@redhat.com
+To:     njavali@marvell.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] scsi: qla2xxx: remove trailing semicolon in macro definition
+Date:   Fri, 27 Nov 2020 10:27:41 -0800
+Message-Id: <20201127182741.2801597-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-27 14:15, Hanks Chen wrote:
-> Disable irq on cpu shutdown flow to ensure interrupts
-> did not bother this cpu after status as offline.
-> 
-> To avoid suspicious RCU usage
-> (0)[0:swapper/0]RCU used illegally from offline CPU! ...
-> (0)[0:swapper/0]lockdep: [name:lockdep&]cpu_id = 0, cpu_is_offline = 1
+From: Tom Rix <trix@redhat.com>
 
-This needs to be explained *a lot* more .
+The macro use will already have a semicolon.
 
-My hunch is that because a CPU going offline can still receive 
-interrupts
-thanks to your interrupt broadcast hack, you break some the core 
-expectations,
-and RCU shouts at you.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/scsi/qla2xxx/qla_def.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If that's indeed the case, I don't think the architecture code needs 
-fixing
-(or at least, not for that).
-
-> 
-> Signed-off-by: Hanks Chen <hanks.chen@mediatek.com>
-> ---
->  arch/arm64/kernel/smp.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index 82e75fc2c903..27a6553fa86f 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -308,6 +308,12 @@ int __cpu_disable(void)
->  	remove_cpu_topology(cpu);
->  	numa_remove_cpu(cpu);
-> 
-> +	/*
-> +	 * we disable irq here to ensure interrupts
-> +	 * did not bother this cpu after status as offline.
-> +	 */
-> +	local_irq_disable();
-> +
->  	/*
->  	 * Take this CPU offline.  Once we clear this, we can't return,
->  	 * and we must not schedule until we're ready to give up the cpu.
-
-Conveniently, the code that takes care of migrating the interrupts is
-just below this comment.  Which strongly suggests that the interrupt
-migration is broken by your earlier patch.
-
-> @@ -842,9 +848,10 @@ void arch_irq_work_raise(void)
-> 
->  static void local_cpu_stop(void)
->  {
-> +	local_daif_mask();
-> +
->  	set_cpu_online(smp_processor_id(), false);
-> 
-> -	local_daif_mask();
->  	sdei_mask_local_cpu();
->  	cpu_park_loop();
->  }
-
-What problem are you addressing here?
-
-Thanks,
-
-         M.
+diff --git a/drivers/scsi/qla2xxx/qla_def.h b/drivers/scsi/qla2xxx/qla_def.h
+index ed9b10f8537d..86d249551b2d 100644
+--- a/drivers/scsi/qla2xxx/qla_def.h
++++ b/drivers/scsi/qla2xxx/qla_def.h
+@@ -4970,7 +4970,7 @@ struct secure_flash_update_block_pk {
+ } while (0)
+ 
+ #define QLA_QPAIR_MARK_NOT_BUSY(__qpair)		\
+-	atomic_dec(&__qpair->ref_count);		\
++	atomic_dec(&__qpair->ref_count)		\
+ 
+ 
+ #define QLA_ENA_CONF(_ha) {\
 -- 
-Jazz is not dead. It just smells funny...
+2.18.4
+
