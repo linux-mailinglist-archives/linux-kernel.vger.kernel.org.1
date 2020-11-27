@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3652C687D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BC82C6884
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 16:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729872AbgK0PLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 10:11:15 -0500
-Received: from mail-eopbgr40064.outbound.protection.outlook.com ([40.107.4.64]:44043
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729486AbgK0PLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 10:11:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H23bjh3CEbwBeSzFW3Wz4pJBTjOKgNlUYivHle/9kTdrEfOkOFtabfZyeflIIluUN/NkxTYPWa0zizFR7JGviwkbYJbWx7i7/qvIT/4CdTjcmepRheXP6x/vw7O1PHBuE61koJboM+4i8ph9iAHyGjWX0RqYhDaGEZk8xeuIlqpGub7RRAbwjVandLC6tvlDpcy5ujYyZCWsK8DGfuBoo2Vt964nIOt5ajUV1Tn0GONiMgeEG8UIcc5bOH44PHNSzn48Edz29jERMcGMQCn3lCfREiP3ncZu20m0IhTgwRqpACAjnPd4Dt+2fZtQjCLKS9kDBzOY1iYhI553R3yjsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6SiEvg7PoFQ6GXU9brqsbuBpHZNdJ5Ha5P2npYkbkkM=;
- b=irEYxHshm/AaZCw8rJYKy8BdSaB1dcmptlozxYP789Rj3mMSPAaTG35aKWmZDVSqxNY4MfabE/NJCbL+vSZh8NqdUkMGGiaioWvVrprGJbYHutUh/4ezCgkRrdEhIyand2P1EkxGw39O5+ome1/YZqmOiWHhzQ8glbbM64DaPyTRp7uVpgh/TdFDMGplJLqJhOY6lUGGWMTZ3JxzajX8+KsIPRLA9q8YK/vfJTZmV2zW5ZP27nsqR8m9eDhZyTHoYvaAyjvmep7Oua24lEKLP2URm4v6rZXYIkcoPYmtJG+MH3koYJot1cO8ytpWLXKcXVme+XBWSGeg462Hakc5Qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6SiEvg7PoFQ6GXU9brqsbuBpHZNdJ5Ha5P2npYkbkkM=;
- b=W6rt+l/y+hzuj5jAHzwfDCyVK2cHXA7lG9rioit53xD9q4JnYAObLPq65TTTGkKMR71Ttm3DtOJsFUsK3PXSQ8Ef9Vj8jJs4roC0G35ZuycrQqUJ+S5IIT7C7BGL2fesWpJmFcavjO1Ae9Z68VFwMnDZ0rez+OYGwWg3oBcoZjw=
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- (2603:10a6:803:16::14) by VI1PR04MB7103.eurprd04.prod.outlook.com
- (2603:10a6:800:123::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.21; Fri, 27 Nov
- 2020 15:11:10 +0000
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::607d:cbc4:9191:b324]) by VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::607d:cbc4:9191:b324%5]) with mapi id 15.20.3589.028; Fri, 27 Nov 2020
- 15:11:09 +0000
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: Re: [PATCH v1] net: phy: micrel: fix interrupt handling
-Thread-Topic: [PATCH v1] net: phy: micrel: fix interrupt handling
-Thread-Index: AQHWxLnwF6akl2sqgUyUFwR7MFquNKncDoWAgAAHFQA=
-Date:   Fri, 27 Nov 2020 15:11:08 +0000
-Message-ID: <20201127151106.y34rmjc6xysbv2re@skbuf>
-References: <20201127123621.31234-1-o.rempel@pengutronix.de>
- <20201127144545.GO2073444@lunn.ch>
-In-Reply-To: <20201127144545.GO2073444@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.2.120]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: a1d45395-fb09-40e2-0d65-08d892e6ab8b
-x-ms-traffictypediagnostic: VI1PR04MB7103:
-x-microsoft-antispam-prvs: <VI1PR04MB710391B05FDD101A63757FF3E0F80@VI1PR04MB7103.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KopvRVmSzVz0JZopBu9TX5nQkwCG1ziKhWe+0eLYkSxChP0xxx5DOAn3zmPkFrC4kIuh2lbJ6nDGYfadThqZgM8IM1m9rQlhYvgDFQunQCOynS+S/hoRMZNX402CXiwt0ADKqavX6YFq5XR+tac1Y8xCM7MK7nVrbxRyJY3d6rQPtnFOeXnOovizwI0++m7oNNYDtYefchiHALF7VWDk2UCcwU0kUG7g9xjRlTGI0kPScvWGIzE8sgwjsiIfqWnVJlQhmbGLrPUF/15NNmxLJA9fnSui7YMSmVO6B3/vmThamups6PYq2OSgpsOIIRaaAQjD2OnNSS+Fq+H2EijAFw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3871.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(136003)(39860400002)(346002)(376002)(396003)(86362001)(76116006)(66476007)(186003)(64756008)(66556008)(66446008)(4744005)(8936002)(8676002)(1076003)(4326008)(54906003)(6916009)(6486002)(5660300002)(66946007)(33716001)(6506007)(2906002)(26005)(6512007)(44832011)(71200400001)(316002)(9686003)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?3ufPRr0q9rHz/sZunRuJ0KzHoIGfC9hQKt5AUEZQBckDD27qjCywxQO6GNGt?=
- =?us-ascii?Q?BKw+dJ7HlB5+PuKZlBa6RQBjkkvTYHr16wuOn6hoqJUv8sNioRMaDVuXBM+R?=
- =?us-ascii?Q?BlLiyN2dLmmI0J4XKSbnEhIMgyaRL/9fGv4kEsr2DoBIfbCw1Rruyxxdwd/w?=
- =?us-ascii?Q?YImozOwPXBjkCBn4rH87R4sk+CgZtVq9hjfcgrNpNoEko7fUFcz7KhvyxIMA?=
- =?us-ascii?Q?q85rlmg027LC/4d0CgiBu5kmLoW7oi7XwDZpiYJZYjHp7koOHL4K+SraQxUq?=
- =?us-ascii?Q?El7zlse2iReKE9wbB65BWL2qGandoarQjLASkmwIhI7by2vd3C4cSwyKoSaF?=
- =?us-ascii?Q?3HZAlus3+9ukLz8KkmDcY1IHeSVOyq83DZBgw7wdQYFUo/82DIKgQol1pjca?=
- =?us-ascii?Q?sed60rpwgub8frJh5NiB5zsAqSh84ey1Sp/Egw3NtC3pfWahmht+L4PDCxoN?=
- =?us-ascii?Q?avf+Gv0Pt0s5sPeZAFcf+ZEioFUnecsHvaXoYCy2IKaedu7DKf3LLMy9Fmax?=
- =?us-ascii?Q?TC77xZ9Fn4ZWKSiqavvTdsQhthhvnxUEm0+59UOFyRV0miwrjrQlWLC8oS2M?=
- =?us-ascii?Q?T+xuPd4dF6Am1cZ+I5zhP85FvMZSMpKnM+26iWebmKCvcyyqn4zwZYBTUN7w?=
- =?us-ascii?Q?f/sWRgoEwqwhb1YMAQiCfHley5yw4L+njuWqZzRw3/0wfGPMWI2iyTAUlsZj?=
- =?us-ascii?Q?S0GMFtgz/j53GkCLrpEch2orhZbA5yyVjat30j87LQDhuhMTyHPSLiYs+SdO?=
- =?us-ascii?Q?fZnBrO/EBNrE5sxGZKrCuldAcGyxXPKyhX0YcABs+ZLEIc0KaXOO9kfmbrLN?=
- =?us-ascii?Q?Ids/2Tm1sgCKzsC873mV3Yek9peKATviLj5bMorcVtVY3CwgU4sO1wvXDSUh?=
- =?us-ascii?Q?6d3lJy2EcRgL3vgcACi9zyRKJ7JjwWRbXZ+zz5QPPC29+cy+gLIBEcjkOw/Q?=
- =?us-ascii?Q?E9uTELeubg3hkupzsGcujQNdDN10pcXgUikjzUcq1wlYFdVHlwqkyx3SUjJf?=
- =?us-ascii?Q?Ijk8?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9865C61E87C6154BBA98DC5D80FAC6ED@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1730352AbgK0PNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 10:13:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729113AbgK0PNO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 10:13:14 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76FDC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 07:13:12 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id l1so5911667wrb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 07:13:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jdic1AcrtNbfCiOP1a193foU7ToP7PxTGmucyyLllzY=;
+        b=eFkd8QxSc1ZwnhEaZi3HO0lu4NUyuYVEKihdUegxYkQ76EDIVKbAU6Bz62Y0Twd/D9
+         WkS/7z1edRNON6EjPBTY2oz0UK+fNJn9Pyyyy59BYkkszr1NG808l4n5I5/i4XFiGKGC
+         MOjfFf3mv5H8mY0U13jMLH9zHk5TEpaTJimLI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Jdic1AcrtNbfCiOP1a193foU7ToP7PxTGmucyyLllzY=;
+        b=CgKjx/9gE0Z4V51bMPMPN4qIX8/Wjgq5wmJx6EIDR6ulHu2SRyHxRB0tEg1jS18vbQ
+         B7EX1l/pIa/yC+eDUNtHz0K+0mLW4dvAFt5bPpj305b7gbYj6KoYhHbpxJfgpPfE5DhH
+         IO4eAFGVFZMY7RvL+8oEotZmPB7t143iGm17veD0StJx0nsE4SkBKSyng+zZhM3XjZRs
+         /PQ7wKvk3XYgtWH+/yQKVzdlmQW4jCUiLcXzojh/xJD8KTxiDfO7lSlsgv7AemMDQwUq
+         ph5Z+wc5h6aRBS7TQ0aeg3u4KzJcun23dUqvw1NK+fogVx3VTPAfHcLTrhorCHYlCCuC
+         1olw==
+X-Gm-Message-State: AOAM5319aqHRWUQRSOtUZjQGQwzeVknNsbVddvLAZiwkOqqwkxwf1mhJ
+        pJH9daXUTAYjwCYxtQ824xq70rvIydl6Qg==
+X-Google-Smtp-Source: ABdhPJxS76ox3RylPH7RNmHVGlgnXkh2eKF8FznVgSxfvwW00r3yeMyg8znwZMIDlZzB206zrP/Pkw==
+X-Received: by 2002:a5d:4c4a:: with SMTP id n10mr11257523wrt.54.1606489989868;
+        Fri, 27 Nov 2020 07:13:09 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f16sm13178895wmh.7.2020.11.27.07.13.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 07:13:09 -0800 (PST)
+Date:   Fri, 27 Nov 2020 16:13:07 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     hdegoede@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/vboxvideo: Used the vram helper
+Message-ID: <20201127151307.GG401619@phenom.ffwll.local>
+Mail-Followup-To: Tian Tao <tiantao6@hisilicon.com>, hdegoede@redhat.com,
+        airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <1606446882-36335-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3871.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1d45395-fb09-40e2-0d65-08d892e6ab8b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2020 15:11:08.9996
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gNPjEkskeHiw6FwrP9z50iuJEw5kgRmj2QfrW2fS00D1JZb9CBXYEfh3CGFGGRmBVOyHHim8F67/u9NF8dbEbg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7103
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606446882-36335-1-git-send-email-tiantao6@hisilicon.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 03:45:45PM +0100, Andrew Lunn wrote:
-> On Fri, Nov 27, 2020 at 01:36:21PM +0100, Oleksij Rempel wrote:
-> > After migration to the shared interrupt support, the KSZ8031 PHY with
-> > enabled interrupt support was not able to notify about link status
-> > change.
-> >=20
-> > Fixes: 59ca4e58b917 ("net: phy: micrel: implement generic .handle_inter=
-rupt() callback")
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
->=20
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
->=20
-> I took a quick look at all the other patches like this. I did not spot
-> any other missing the !
->=20
->     Andrew
+On Fri, Nov 27, 2020 at 11:14:42AM +0800, Tian Tao wrote:
+> if the driver uses drmm_vram_helper_init, there is no need to
+> call drm_vram_helper_release_mm when the drm module get unloaded,
+> as this will done automagically.
+> 
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
+>  drivers/gpu/drm/vboxvideo/vbox_ttm.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/vboxvideo/vbox_ttm.c b/drivers/gpu/drm/vboxvideo/vbox_ttm.c
+> index f5a0667..e1909a8 100644
+> --- a/drivers/gpu/drm/vboxvideo/vbox_ttm.c
+> +++ b/drivers/gpu/drm/vboxvideo/vbox_ttm.c
+> @@ -16,8 +16,8 @@ int vbox_mm_init(struct vbox_private *vbox)
+>  	int ret;
+>  	struct drm_device *dev = &vbox->ddev;
+>  
+> -	vmm = drm_vram_helper_alloc_mm(dev, pci_resource_start(dev->pdev, 0),
+> -				       vbox->available_vram_size);
+> +	vmm = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
+> +				    vbox->available_vram_size);
 
-Uhh, really sorry for this!
+Pretty sure this doesn't compile without warnings, since the return value
+changes. With that fixed lgtm.
 
-Thanks for double checking.
+Btw if you're bored, a devm_ version of arch_phys_wc_add is very much on
+the wishlist, and would allow us to complete remove vbox_mm_fini.
 
-Ioana
+Cheers, Daniel
+
+>  	if (IS_ERR(vmm)) {
+>  		ret = PTR_ERR(vmm);
+>  		DRM_ERROR("Error initializing VRAM MM; %d\n", ret);
+> @@ -32,5 +32,4 @@ int vbox_mm_init(struct vbox_private *vbox)
+>  void vbox_mm_fini(struct vbox_private *vbox)
+>  {
+>  	arch_phys_wc_del(vbox->fb_mtrr);
+> -	drm_vram_helper_release_mm(&vbox->ddev);
+>  }
+> -- 
+> 2.7.4
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
