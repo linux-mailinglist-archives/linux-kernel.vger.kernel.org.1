@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE4F2C62F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 794BF2C6306
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727303AbgK0KXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 05:23:34 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:39283 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgK0KXc (ORCPT
+        id S1728177AbgK0KZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 05:25:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgK0KZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 05:23:32 -0500
-Received: by mail-lf1-f67.google.com with SMTP id j205so6325313lfj.6;
-        Fri, 27 Nov 2020 02:23:31 -0800 (PST)
+        Fri, 27 Nov 2020 05:25:11 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D093C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:25:10 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id 23so5014104wrc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:25:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KY/9AzNvLjBeNPkcmQucef8Xz2kwdVf6AcgLBxqKhiY=;
+        b=QaTJM0SvRyVz1yHldqY++eki5EqL5gcfEajhCHMtawzJhH/xRcymfQQhOZcUcOE9Ue
+         mTolI6tctVdnOfyhCJfrqV5EhGSj9bn2EMfD+FIYP+IwFSUneadyWODSE5VnHkm+2BBA
+         t3krEhrpyh9bGrDpDEzMktN0hK0JqspVbBnqNBT9dl/QbNPSJlqtY3JM55Mkm1ITuvyi
+         mqSdLkcT/FWmARIxuS+BUasGvIlaeA4k1ON9KeKCKPhsw2353BdSuUU+ySQ+DerhK6Z2
+         X5xKtQeYt61tp8PM7RamfkLXpGo0tAJAqcm+UPHYhNcj62S3ybPwhZohOtVaVjcnI797
+         eREg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mumQ7Odfbg86UBYuc0aTTU7S0G45wmDkPgeyYwAnXzg=;
-        b=ZzJFtFckVcSUYKQiNQ6AEhn5MDPS295SQOJuj8eVclgXjE9qS/+iFTovNKHDKe2iaC
-         /4pT6sLglFMcKWXJj0zyPmyTdHkBl7sZepHkPdx8rNULrZDg6p2XTLTSOJ1ccTdCCMVa
-         AzZnjWBM7GJpREZtcTDvhWSSTh3wW9XrEMu1/aVI5j+6oBSCvW319lXc6ZqmEzSlF5A9
-         5UFftJkup2PAuzNcbFli2ph2GsHg3YBZeeLXqKsnXnLA1qWJYto8ZBQ/cvYs0i925VjZ
-         gBi9I/10oyBA9YEp9KxMOuR8ByKH87KzJ0ydjZpWHsIG9tIyW7+Flw1YaHjsbyArq7au
-         ohNQ==
-X-Gm-Message-State: AOAM5304lzGVEMXemnhZ2cQ+R9ONgmifvD4K4NaPxPyrwauS7+4x0YAi
-        sSbJ5bRladqm5q0yDVpZuPs=
-X-Google-Smtp-Source: ABdhPJxtoKbHxaWqHwQ0DvBt5n8YhAsWq3nmxDqiUw9AfygpwmAHdA8nk2zr2jY/+kqjrPrcUkQAsQ==
-X-Received: by 2002:ac2:428d:: with SMTP id m13mr2850555lfh.137.1606472610279;
-        Fri, 27 Nov 2020 02:23:30 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id c6sm908462ljj.140.2020.11.27.02.23.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KY/9AzNvLjBeNPkcmQucef8Xz2kwdVf6AcgLBxqKhiY=;
+        b=hroB28/j51rkZsA47bNchOeoLmDLPFZxOVSybNs3FmXigdOdlyI72iUwROMirc7kcM
+         QNPKSXcLvJFUjaiq6mtSzCYQIyl0OxQOuc+vin+ATZPYrLYno6BzPlmP+9nTeuPYdA5a
+         HlOP510au3Z+fWtZ1lerlxGI/xVrLYFM9Amva1bRTrEFqNjUBf7WAsgEdtK3hvntpsPZ
+         YQKjz2uFlUf5H918w4tHyGZ5dyRgDp3Ost+KKjB/lkH+LXTg4Osca36r37TGB5CODwMA
+         QpojVd0SR216xRzfK4wkF8jaAUbT7cLM1EUHyTX0HAgUzeDsp92rUIqVA861RXhsie8g
+         e0tw==
+X-Gm-Message-State: AOAM531+ke0LbF6dDzavli1vSQT4tkxoBTSR18BlOJvdsDn0Q3k85gnw
+        fPrwTATzVAtPrOrDwnBym8mDYA==
+X-Google-Smtp-Source: ABdhPJz06fPUB7ORova+v0J4ZICjciwoWqWvh2PRYYEouRLmOtNL2pkhpt+o0bN724MEDnIwuvn8TA==
+X-Received: by 2002:a5d:634b:: with SMTP id b11mr9663425wrw.97.1606472709386;
+        Fri, 27 Nov 2020 02:25:09 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id x4sm13942024wrv.81.2020.11.27.02.25.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 02:23:29 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kiaur-0006Qe-HY; Fri, 27 Nov 2020 11:23:50 +0100
-Date:   Fri, 27 Nov 2020 11:23:49 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     "Wang, Sheng Long" <shenglong.wang.ext@siemens.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Sheng Long Wang <china_shenglong@163.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lkp@intel.com" <lkp@intel.com>
-Subject: Re: [PATCH v6] usb-serial:cp210x: add support to software flow
- control
-Message-ID: <X8DTtVEzL4X8UJCH@localhost>
-References: <20201016022428.9671-1-china_shenglong@163.com>
- <X66l44MqSlj774DL@localhost>
- <520e730958174cb39561a94d03e4727e@siemens.com>
- <X7Kq6fJ/VMnB3Nt0@localhost>
- <496f2cc77b4d4c3a9b49410ac318b927@siemens.com>
+        Fri, 27 Nov 2020 02:25:08 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/7] slimbus: patches for 5.11
+Date:   Fri, 27 Nov 2020 10:24:44 +0000
+Message-Id: <20201127102451.17114-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <496f2cc77b4d4c3a9b49410ac318b927@siemens.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Again, please do not top-post. Quoting Greg:
+Hi Greg,
 
-  A: http://en.wikipedia.org/wiki/Top_post
-  Q: Were do I find info about this thing called top-posting?
-  A: Because it messes up the order in which people normally read text.
-  Q: Why is top-posting such a bad thing?
-  A: Top-posting.
-  Q: What is the most annoying thing in e-mail?
+Here are some slimbus patches for 5.11 which includes
+- ngd controller has added PDR and SSR support along with a trival fixes.
+- few doc and clang warning fixes in slimbus
 
-  A: No.
-  Q: Should I include quotations after my reply?
+Can you please queue them up for 5.11.
 
-  http://daringfireball.net/2007/07/on_top
-]
+thanks for you help,
+srini
 
-On Mon, Nov 23, 2020 at 01:11:24AM +0000, Wang, Sheng Long wrote:
-> Hi,  Johan
-> 
-> Do I add my  software flow control  patch directly to the branch you
-> gave me now ? 
-> https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/log/?h=cp210x-termios
+Bjorn Andersson (1):
+  slimbus: qcom-ngd-ctrl: Avoid sending power requests without QMI
 
-Yes, please rebase your work on top of that branch. I'll merge it to my
-usb-next branch before applying your patch.
+Gustavo A. R. Silva (1):
+  slimbus: messaging: Fix fall-through warnings for Clang
 
-> Then, I also need the cp210x_ get_ terminus()  add ixoff / iXon handling?
+Mauro Carvalho Chehab (1):
+  slimbus: fix a kernel-doc markup
 
-No, if you rebase your work on top of the above branch, you won't have
-to deal with cp210x_get_termios() which has now been removed.
+Rikard Falkeborn (1):
+  slimbus: qcom-ngd-ctrl: Constify static structs
 
-Just add support for software flow control to the new
-cp210x_set_flow_control() function (and cp210x_termios_change()).
+Srinivas Kandagatla (3):
+  slimbus: qcom-ngd-ctrl: add Sub System Restart support
+  slimbus: qcom-ngd-ctrl: add Protection Domain Restart Support
+  slimbus: qcom-ngd-ctrl: remove redundant out of memory messages
 
-I think you can even drop get_special_chars() and just leave the rest
-set as NUL, which appears to be the default.
+ drivers/slimbus/Kconfig         |   4 +-
+ drivers/slimbus/messaging.c     |   1 +
+ drivers/slimbus/qcom-ngd-ctrl.c | 133 ++++++++++++++++++++++++++++++--
+ drivers/slimbus/slimbus.h       |   2 +-
+ 4 files changed, 130 insertions(+), 10 deletions(-)
 
-Johan
+-- 
+2.21.0
+
