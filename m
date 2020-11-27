@@ -2,108 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19312C65B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851532C65BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728340AbgK0M0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:26:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgK0M0t (ORCPT
+        id S1728910AbgK0Mag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:30:36 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:54899 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727859AbgK0Maf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:26:49 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E492C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:26:48 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id f12so4518271oto.10
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:26:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=INnUE0sM05L2oreqITOkcAXoqFYcu3Qaos8NOOfhOTQ=;
-        b=RbEhXeDCcLG6KFDkofW6vC2lhXZqLixRKztRPhHHADZRxFmCHKdxew/X6buNWyeQPm
-         SYTCpiakjEpW+R8ggJqq0BhGj1sINRcXMaxNZK9Tk6K2uGLRZup8ZfiiYKo5zWSddhXs
-         ZkaMa3TBB4WEa3vG8H4QlHbg76bimbJQoWPGEYk33YfOdQ1tFIC0mZRG4eyAW1mh6P1T
-         kfYL+YsACuuilf3sSPfHlVGeAWtM+oyTeQkb3wiXYjHLho1D1p33cNvAaGnZapYl8OaB
-         X8jFOlYbYYiWOAx24QFMufWRlk5KCUEDVZhTzFQN0nL0KeuP9RNuurTu6UfQWwl0y9oc
-         hPdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=INnUE0sM05L2oreqITOkcAXoqFYcu3Qaos8NOOfhOTQ=;
-        b=R4T4BD2N6OgSkMDUu60hMZ/qeBkoEf8RrgwYzDYJOUkKLx7vy503wI96NsYQAG+YsO
-         C4hIN508+y6YQwMGZRoSKOzijdaI4Om/lB2FPr6JDPIQAmMNgrx78xF+nuls5B+o/ucl
-         d/k3Sxys3uxJ76sJrkVxryCZ32eLNHWTYy0zEV6pyGRiG7MmJOZufxsQL6p2aJVLV+Tx
-         uD4l7ubYnQVIUFEyJyQk2F1fn4Y2JGNQoINxPrgQneUfFrgErNTFv3Ttx9hG8ZmDZZip
-         Le5+4at5OLixfAaD4NJbb5bC/miOHTO6Xvb+zZXlevnzveMGbphkgBLcenKMn+LTE6hG
-         Yu1w==
-X-Gm-Message-State: AOAM53397OAoIOEhmEBgtq4CIZ9AJauKDtVm6+myreMEP/K9zaRHYfKM
-        o9vZx/n+nMfAf2jNSDqB/jQU5J0I1+9lG9CHuMmSqg==
-X-Google-Smtp-Source: ABdhPJwdkvpfZpec4AJHnHkvroUWUD22bNL8+btJPZre9LvmpggYaMzTkVMfQJdGNDxedL3NGUqUi0acSmkdra7e+ek=
-X-Received: by 2002:a9d:7d92:: with SMTP id j18mr5921417otn.17.1606480007166;
- Fri, 27 Nov 2020 04:26:47 -0800 (PST)
+        Fri, 27 Nov 2020 07:30:35 -0500
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 1443924000C;
+        Fri, 27 Nov 2020 12:30:32 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 1/2] dt-bindings: sound: adau1372: Add bindings documentation
+Date:   Fri, 27 Nov 2020 13:30:29 +0100
+Message-Id: <20201127123030.1610574-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201125173436.1894624-1-elver@google.com> <20201125124313.593fc2b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CANpmjNP_=Awx0-eZisMXzgXxKqf7hcrZYCYzFXuebPcwZtkoLw@mail.gmail.com> <CAF=yD-JtRUjmy+12kTL=YY8Cfi_c92GVbHZ647smWmasLYiNMg@mail.gmail.com>
-In-Reply-To: <CAF=yD-JtRUjmy+12kTL=YY8Cfi_c92GVbHZ647smWmasLYiNMg@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 27 Nov 2020 13:26:35 +0100
-Message-ID: <CANpmjNO8H9OJDTcKhg4PRVEV04Gxnb56mJY2cB9j4cH+4nznhQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: switch to storing KCOV handle directly in sk_buff
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Aleksandr Nogikh <a.nogikh@gmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Ido Schimmel <idosch@idosch.org>,
-        Florian Westphal <fw@strlen.de>,
-        Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 at 17:35, Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
-> On Thu, Nov 26, 2020 at 3:19 AM Marco Elver <elver@google.com> wrote:
-[...]
-> > Will send v2.
->
-> Does it make more sense to revert the patch that added the extensions
-> and the follow-on fixes and add a separate new patch instead?
+Add device tree binding documentation for Analog Devices ADAU1372.
 
-That doesn't work, because then we'll end up with a build-broken
-commit in between the reverts and the new version, because mac80211
-uses skb_get_kcov_handle().
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+Changes in v2:
+ - Added Rob's reviewed-by
 
-> If adding a new field to the skb, even if only in debug builds,
-> please check with pahole how it affects struct layout if you
-> haven't yet.
+ .../bindings/sound/adi,adau1372.yaml          | 67 +++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,adau1372.yaml
 
-Without KCOV:
+diff --git a/Documentation/devicetree/bindings/sound/adi,adau1372.yaml b/Documentation/devicetree/bindings/sound/adi,adau1372.yaml
+new file mode 100644
+index 000000000000..701449311fec
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/adi,adau1372.yaml
+@@ -0,0 +1,67 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/adi,adau1372.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++
++title: Analog Devices ADAU1372 CODEC
++
++maintainers:
++  - Alexandre Belloni <alexandre.belloni@bootlin.om>
++
++description: |
++  Analog Devices ADAU1372 four inputs and two outputs codec.
++  https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1372.pdf
++
++properties:
++  compatible:
++    enum:
++      - adi,adau1372
++
++  reg:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: "mclk"
++
++  powerdown-gpios:
++    description: GPIO used for hardware power-down.
++    maxItems: 1
++
++required:
++  - "#sound-dai-cells"
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        audio-codec@3c {
++                compatible = "adi,adau1372";
++                reg = <0x3c>;
++                #sound-dai-cells = <0>;
++                clock-names = "mclk";
++                clocks = <&adau1372z_xtal>;
++        };
++    };
++
++    adau1372z_xtal: clock {
++        compatible = "fixed-clock";
++        #clock-cells = <0>;
++        clock-frequency = <12288000>;
++    };
++...
++
+-- 
+2.28.0
 
-        /* size: 224, cachelines: 4, members: 72 */
-        /* sum members: 217, holes: 1, sum holes: 2 */
-        /* sum bitfield members: 36 bits, bit holes: 2, sum bit holes: 4 bits */
-        /* forced alignments: 2 */
-        /* last cacheline: 32 bytes */
-
-With KCOV:
-
-        /* size: 232, cachelines: 4, members: 73 */
-        /* sum members: 225, holes: 1, sum holes: 2 */
-        /* sum bitfield members: 36 bits, bit holes: 2, sum bit holes: 4 bits */
-        /* forced alignments: 2 */
-        /* last cacheline: 40 bytes */
-
-
-> The skb_extensions idea was mine. Apologies for steering
-> this into an apparently unsuccessful direction. Adding new fields
-> to skb is very rare because possibly problematic wrt allocation.
