@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905902C7560
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C704F2C7533
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729880AbgK1VtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:49:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38026 "EHLO
+        id S1730680AbgK1Vt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57946 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727455AbgK0Tp7 (ORCPT
+        by vger.kernel.org with ESMTP id S1729700AbgK0TrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:45:59 -0500
+        Fri, 27 Nov 2020 14:47:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606506349;
+        s=mimecast20190719; t=1606506421;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5gA9oQYSyBT4Z0vJhRDeAJKF5kHu/LWhQyfFb1ooOvQ=;
-        b=UzBGcVRF/atUJ5X3W1838AP1FQTJfw1+BMYQDY/1ngYHdndq92Ryz6B/gYEndA0g0+Bfmu
-        fDyHuz6zpoXv/PW5NqNuSCAuUWTpfv/BpGPf1qLRTszqiSXqUFYgsIILuZ3ZjJXdARrafv
-        4gKvwSJOF5hrCX6TiFbaE0H5+NtlgKQ=
+        bh=zLd+09Z4+69S8sedgdRcQGcUngaZ+JS9VltxdPK7hqU=;
+        b=SiuW2Uaa5VLLgR4HbLzlqAU5q8Ow7+ezskb1YS0L9hOJYHCpQibirjatajG+f6Tj5JgbRS
+        limucsXlRxKhTkarT/LpkZqtXHw8wor3C+fIeNjtyYAs2YEcTJvEBXwnIOqyriJqxkljvs
+        hV3ThWWkXWY1rmzvNrzo6GQ+rd/yIEY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-5Rvl11ApMEKCsSqgButfqw-1; Fri, 27 Nov 2020 14:45:45 -0500
-X-MC-Unique: 5Rvl11ApMEKCsSqgButfqw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-483-NnPuJUfEMSat1pPKTINTUA-1; Fri, 27 Nov 2020 14:46:57 -0500
+X-MC-Unique: NnPuJUfEMSat1pPKTINTUA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 349E01005D50;
-        Fri, 27 Nov 2020 19:45:43 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56A528049C3;
+        Fri, 27 Nov 2020 19:46:55 +0000 (UTC)
 Received: from krava (unknown [10.40.194.2])
-        by smtp.corp.redhat.com (Postfix) with SMTP id EE7DB60BD9;
-        Fri, 27 Nov 2020 19:45:39 +0000 (UTC)
-Date:   Fri, 27 Nov 2020 20:45:39 +0100
+        by smtp.corp.redhat.com (Postfix) with SMTP id 3887E5C1C2;
+        Fri, 27 Nov 2020 19:46:52 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 20:46:51 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
@@ -49,62 +49,86 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 09/25] perf tools: Add support to read build id from
- compressed elf
-Message-ID: <20201127194539.GA2788968@krava>
+Subject: Re: [PATCH 06/25] perf tools: Do not swap mmap2 fields in case it
+ contains build id
+Message-ID: <20201127194651.GB2788968@krava>
 References: <20201126170026.2619053-1-jolsa@kernel.org>
- <20201126170026.2619053-10-jolsa@kernel.org>
- <20201126174620.GA70905@kernel.org>
+ <20201126170026.2619053-7-jolsa@kernel.org>
+ <20201126173042.GF53384@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126174620.GA70905@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20201126173042.GF53384@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 02:46:20PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Nov 26, 2020 at 06:00:10PM +0100, Jiri Olsa escreveu:
-> > Adding support to decompress file before reading build id.
+On Thu, Nov 26, 2020 at 02:30:42PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Nov 26, 2020 at 06:00:07PM +0100, Jiri Olsa escreveu:
+> > If PERF_RECORD_MISC_MMAP_BUILD_ID misc bit is set,
+> > mmap2 event carries build id, placed in following union:
 > > 
-> > Adding filename__read_build_id and change its current
-> > versions to read_build_id.
-> > 
-> > Shutting down stderr output of perf list in the shell test:
-> >   82: Check open filename arg using perf trace + vfs_getname          : Ok
-> > 
-> > because with decompression code in the place we the
-> > filename__read_build_id function is more verbose in case
-> > of error and the test did not account for that.
+> >   union {
+> >           struct {
+> >                   u32       maj;
+> >                   u32       min;
+> >                   u64       ino;
+> >                   u64       ino_generation;
+> >           };
+> >           struct {
+> >                   u8        build_id[20];
+> >                   u8        build_id_size;
+> >                   u8        __reserved_1;
+> >                   u16       __reserved_2;
+> >           };
+> >   };
 > 
-> There are two patches here, right? Also the test output shows it after,
-> before is missing, showing what the test wasn't accounting for.
+> Did you forgot to update just this cset comment?
 
-hum, I'm not sure I understand, the test fails because the change
-introduced more terminal output, so I think it needs to be together
+ah yes, will fix
+
+thanks,
+jirka
 
 > 
 > - Arnaldo
 >  
+> > In this case we can't swap above fields.
+> > 
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  .../tests/shell/trace+probe_vfs_getname.sh    |  2 +-
-> >  tools/perf/util/symbol-elf.c                  | 37 ++++++++++++++++++-
-> >  2 files changed, 36 insertions(+), 3 deletions(-)
+> >  tools/perf/util/session.c | 11 +++++++----
+> >  1 file changed, 7 insertions(+), 4 deletions(-)
 > > 
-> > diff --git a/tools/perf/tests/shell/trace+probe_vfs_getname.sh b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-> > index 11cc2af13f2b..3660fcc02fef 100755
-> > --- a/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-> > +++ b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-> > @@ -20,7 +20,7 @@ skip_if_no_perf_trace || exit 2
-> >  file=$(mktemp /tmp/temporary_file.XXXXX)
+> > diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> > index 5cc722b6fe7c..cc1c11ca94fd 100644
+> > --- a/tools/perf/util/session.c
+> > +++ b/tools/perf/util/session.c
+> > @@ -592,10 +592,13 @@ static void perf_event__mmap2_swap(union perf_event *event,
+> >  	event->mmap2.start = bswap_64(event->mmap2.start);
+> >  	event->mmap2.len   = bswap_64(event->mmap2.len);
+> >  	event->mmap2.pgoff = bswap_64(event->mmap2.pgoff);
+> > -	event->mmap2.maj   = bswap_32(event->mmap2.maj);
+> > -	event->mmap2.min   = bswap_32(event->mmap2.min);
+> > -	event->mmap2.ino   = bswap_64(event->mmap2.ino);
+> > -	event->mmap2.ino_generation = bswap_64(event->mmap2.ino_generation);
+> > +
+> > +	if (!(event->header.misc & PERF_RECORD_MISC_MMAP_BUILD_ID)) {
+> > +		event->mmap2.maj   = bswap_32(event->mmap2.maj);
+> > +		event->mmap2.min   = bswap_32(event->mmap2.min);
+> > +		event->mmap2.ino   = bswap_64(event->mmap2.ino);
+> > +		event->mmap2.ino_generation = bswap_64(event->mmap2.ino_generation);
+> > +	}
 > >  
-> >  trace_open_vfs_getname() {
-> > -	evts=$(echo $(perf list syscalls:sys_enter_open* 2>&1 | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
-> > +	evts=$(echo $(perf list syscalls:sys_enter_open* >&1 2>/dev/nul | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
-
-and one extra 'l' missing in /dev/nul ;-) also perhaps the >&1 is superfluous
-
-jirka
+> >  	if (sample_id_all) {
+> >  		void *data = &event->mmap2.filename;
+> > -- 
+> > 2.26.2
+> > 
+> 
+> -- 
+> 
+> - Arnaldo
+> 
 
