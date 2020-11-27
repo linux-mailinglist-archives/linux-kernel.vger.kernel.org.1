@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35312C6D1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 23:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F632C6D1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 23:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730732AbgK0WGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 17:06:35 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:35509 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732220AbgK0WEF (ORCPT
+        id S1732220AbgK0WIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 17:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731252AbgK0WFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 17:04:05 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id A4EB4240002;
-        Fri, 27 Nov 2020 22:04:03 +0000 (UTC)
-Date:   Fri, 27 Nov 2020 23:04:03 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        arm@kernel.org, soc@kernel.org
-Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ARM: at91: DT for 5.11
-Message-ID: <20201127220403.GA1735041@piout.net>
+        Fri, 27 Nov 2020 17:05:53 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D20C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 14:05:52 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id j10so7435195lja.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 14:05:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KhQQTyukA0hBMXZZ9IFzOlq0mvJ89vDkRZ3YCulgyfQ=;
+        b=KslCAcATqBJOGXCSY+koKy4jqBiVmAo+dzC834xJuW1iV9pRl7H+bNhUXlI5qRk00l
+         C2YT5zjSYjfbrVnXH6zVAmSZondZmvx5rpc1jXSOl9dVtudU29NpJqElbfCJ+7pN28v2
+         uACCJ2w3EHGN++ZtcbrJ5jyVpAApKGIwkJJVk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KhQQTyukA0hBMXZZ9IFzOlq0mvJ89vDkRZ3YCulgyfQ=;
+        b=YpswI7rYTdFFS2LU1KV17o01Rh9Gr2vWeh+Kg3S6Ds3/Eibd8V2mNtdJCG9NhNWOxC
+         meaBBwCwFJKIjASV8x+Tjj3fhiaTzdudCTDBi/D4RLd7+i+Ien4VpXj1M8G2sKP7fDTr
+         pf701pPqeBbId92xplorxQ1YqZZYyIUmpju9D8R2vM/M3X/bcUJkGvN8zslk87TcogPE
+         WLPj9XYQpdc+gjMgI8PtFgsZC6sBEWaAYsJ+oEarwKOwjkg28JQeGo5LN6q/7gfYrEM3
+         G1l5IfF+Cxj+8MUgnJeb4cmLl//Bd91sO3ntzO9OiFyHvO0fSFvjtp5tFFs5432mXK+X
+         Vv/Q==
+X-Gm-Message-State: AOAM530fUwo3U+06RJGLj+4cbKcdOPewgjMbu7INlTiWd6zJDu54VEWg
+        hiBcjvsyyCDIznpLJ6MMxBBXpNqZQ7kNuQ==
+X-Google-Smtp-Source: ABdhPJymxPNep+MJ2/lqa6gSz53ID9Zb3UwKNO1STo0GxHeaXnvxavfjfhCWyINpDHt+dQRA92wWQw==
+X-Received: by 2002:a2e:8792:: with SMTP id n18mr4445256lji.417.1606514751060;
+        Fri, 27 Nov 2020 14:05:51 -0800 (PST)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id c17sm839788lfr.135.2020.11.27.14.05.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 14:05:50 -0800 (PST)
+Received: by mail-lf1-f44.google.com with SMTP id q13so8244896lfr.10
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 14:05:49 -0800 (PST)
+X-Received: by 2002:a19:c301:: with SMTP id t1mr4183355lff.105.1606514749548;
+ Fri, 27 Nov 2020 14:05:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CAK7LNASn4Si3=YhAPtc06wEqajpU0uBh46-4T10f=cHy=LY2iA@mail.gmail.com>
+ <CAHk-=wihYvkKOcXWPjY7wN13DXbh3k2YX_6JxK_1cQ=krbi9kg@mail.gmail.com>
+ <CAHk-=wi86Eu8Whu66CVu+GVTxbuJG+QNvDuk-hXnWu+5q90Zeg@mail.gmail.com> <CAHk-=winw=9xh6SmFJPZgi8ngVR-ECTA-kDAAU3DEPLMoUrzVA@mail.gmail.com>
+In-Reply-To: <CAHk-=winw=9xh6SmFJPZgi8ngVR-ECTA-kDAAU3DEPLMoUrzVA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 27 Nov 2020 14:05:33 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ@mail.gmail.com>
+Message-ID: <CAHk-=wjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ@mail.gmail.com>
+Subject: Re: [GIT PULL 2/2] Kconfig updates for v5.10-rc1
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Emese Revfy <re.emese@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd, Olof,
+On Fri, Nov 27, 2020 at 1:53 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+>     33.68%  cc1plus
 
-Here are the DT changes for 5.11 which contains non urgent fixes.
+So a third of the time is the _single_ invocation of cc1plus, which
+happens from scrips/gcc-plugin.sh doing that
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+     $HOSTCC -c -x c++ -std=gnu++98 - -fsyntax-only
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+thing. Which is purely to verify that plugins work.
 
-are available in the Git repository at:
+Ugh.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux tags/at91-dt-5.11
+Emese - I'm talking to myself while I'm looking at why "make
+allmodconfig" is so unbearably slow. This is part of it.
 
-for you to fetch changes up to e1062fa7292f1e3744db0a487c4ac0109e09b03d:
-
-  ARM: dts: at91: sama5d3_xplained: add pincontrol for USB Host (2020-11-24 12:11:27 +0100)
-
-----------------------------------------------------------------
-AT91 DT for 5.11:
-
- - fix USB host pinctrl
- - fix DT schema warnings
-
-----------------------------------------------------------------
-Alexander Dahl (2):
-      ARM: dts: at91: smartkiz: Reference led node directly
-      ARM: dts: at91: Fix schema warnings for pwm-leds
-
-Bartosz Golaszewski (1):
-      ARM: dts: at91: at91-sama5d27_som1: fix EEPROM compatible
-
-Cristian Birsan (3):
-      ARM: dts: at91: sam9x60: add pincontrol for USB Host
-      ARM: dts: at91: sama5d4_xplained: add pincontrol for USB Host
-      ARM: dts: at91: sama5d3_xplained: add pincontrol for USB Host
-
- arch/arm/boot/dts/at91-kizbox.dts             | 10 +++++-----
- arch/arm/boot/dts/at91-kizbox2-common.dtsi    |  8 ++++----
- arch/arm/boot/dts/at91-kizbox3-hs.dts         | 16 ++++++++--------
- arch/arm/boot/dts/at91-kizbox3_common.dtsi    | 10 +++++-----
- arch/arm/boot/dts/at91-kizboxmini-common.dtsi |  8 ++++----
- arch/arm/boot/dts/at91-sam9x60ek.dts          |  9 +++++++++
- arch/arm/boot/dts/at91-sama5d27_som1.dtsi     |  2 +-
- arch/arm/boot/dts/at91-sama5d3_xplained.dts   |  7 +++++++
- arch/arm/boot/dts/at91-sama5d4_xplained.dts   |  7 +++++++
- arch/arm/boot/dts/at91-smartkiz.dts           |  6 ++----
- arch/arm/boot/dts/at91sam9m10g45ek.dts        | 10 +++++-----
- arch/arm/boot/dts/at91sam9rlek.dts            | 10 +++++-----
- 12 files changed, 62 insertions(+), 41 deletions(-)
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+              Linus
