@@ -2,151 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1D92C62DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D972C62E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgK0KOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 05:14:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:36952 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725865AbgK0KOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 05:14:42 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D965E1516;
-        Fri, 27 Nov 2020 02:14:41 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A809E3F71F;
-        Fri, 27 Nov 2020 02:14:39 -0800 (PST)
-Date:   Fri, 27 Nov 2020 10:14:33 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 16/23] kvm: arm64: Forward safe PSCI SMCs coming from
- host
-Message-ID: <20201127101433.GA1061@e121166-lin.cambridge.arm.com>
-References: <20201126155421.14901-1-dbrazdil@google.com>
- <20201126155421.14901-17-dbrazdil@google.com>
+        id S1726802AbgK0KUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 05:20:15 -0500
+Received: from mail-eopbgr70138.outbound.protection.outlook.com ([40.107.7.138]:5895
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725616AbgK0KUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 05:20:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R+P9f5aVGIGjnhIbUlOyuw0vGT+8TeqBrqSMqjU2HegGOhrhTPhUqYGY79SQOD4Yudq/mgqOlmPXx9VdFMl5PQVHVqcZ/qwj1cxK6foQP7gbNeez96s+SQw5t3Urge9JxYGhvSk2qPwHovPHQA6i7z7tVY/6gLilGvsPzygCgFzQiklLpzWyJYpOH48PPHG03sEhBuLbS2LNn0kq52cHbOCX/coUJ37Ff0sJMmPXIrIS7CBNXqYQjcJi7E9v+rMrBi8bSD68aLGNlZzCs4e/NH8/ZD31nJIrfWWRXxZ+wjPjdDRml7T0uEToO/LLhMFUOEqXbnN8kzcoI98gsDOBTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WkwKw97yecCkhKDyKRsXe8bE2bT3G9X2MjZB8ZMSU8U=;
+ b=mm8t8r7HA2ZsVOJ9K0M1eVo6rs8CjYroagI/OZyjverRBqAB1Su21V7chIBvopri/bd4b01vsIgbuxbp5WVek0Y0ViTP3W0TPf4tX2IZttYSBC4nLRUnGLifdjMZr3i8pFa1JeVwM7ehFV5h27gPcfbk9WdPD+obi4Dl+QxyZXz2JjdbaCeJno+JCEuoYHlXxccaJdk/qbSVT4C1zoHnOxs7VSkaLwU+5iFWb7Sq5glHf5YJ+3Ce+kL553hIEOMg5GsExppRq1gzmBVvivN+jfTJ4f3id1ojogsetsD2XA6Aq+N10XI5RmhqaIn0G6DsolXicdDgkQYnDL5wSc3Duw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.8) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nokia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nokia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WkwKw97yecCkhKDyKRsXe8bE2bT3G9X2MjZB8ZMSU8U=;
+ b=JqlO0PTCacwGB20UYgLODgTcR1l1nUTciHHsloxTHMj652IfOqBW9FPMbxGKi5992WbCQN1WXZeVSDLikucU9Lh4qLzzek7+FxVi6DGasbM5Z1mocWLMlFQJapgPZqN3n+G7r6as6fIk7Le2pfR2G7pUuxL5fJ0L3R6TbVVlRvw=
+Received: from DU2PR04CA0027.eurprd04.prod.outlook.com (2603:10a6:10:3b::32)
+ by AM5PR0701MB2897.eurprd07.prod.outlook.com (2603:10a6:203:47::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.9; Fri, 27 Nov
+ 2020 10:20:11 +0000
+Received: from DB5EUR03FT009.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:10:3b:cafe::4a) by DU2PR04CA0027.outlook.office365.com
+ (2603:10a6:10:3b::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend
+ Transport; Fri, 27 Nov 2020 10:20:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.8)
+ smtp.mailfrom=nokia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nokia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
+ 131.228.2.8 as permitted sender) receiver=protection.outlook.com;
+ client-ip=131.228.2.8; helo=fihe3nok0734.emea.nsn-net.net;
+Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.8) by
+ DB5EUR03FT009.mail.protection.outlook.com (10.152.20.117) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3611.26 via Frontend Transport; Fri, 27 Nov 2020 10:20:10 +0000
+Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net [10.151.74.146])
+        by fihe3nok0734.emea.nsn-net.net (GMO) with ESMTP id 0ARAK9Mk015152;
+        Fri, 27 Nov 2020 10:20:09 GMT
+From:   Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+To:     linux-serial@vger.kernel.org
+Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Peter Korsgaard <jacmet@sunsite.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] tty: serial: uartlite: Support probe deferral
+Date:   Fri, 27 Nov 2020 11:19:53 +0100
+Message-Id: <20201127101953.23700-1-alexander.sverdlin@nokia.com>
+X-Mailer: git-send-email 2.10.2
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201126155421.14901-17-dbrazdil@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 94f57444-c3d5-40e5-61a8-08d892be05ac
+X-MS-TrafficTypeDiagnostic: AM5PR0701MB2897:
+X-Microsoft-Antispam-PRVS: <AM5PR0701MB2897750D8EE155FE985CEAD588F80@AM5PR0701MB2897.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uU6qGX0EWbS78JP7DftA7VlqeAXCjjvqcLA8P6ecSa2mj+1I4/z82tFgbhYB0XO3MO1OqfRvus2FjtCYsPGlvkh4vYrJ3I4kFvv3mqz/xnBECtAkuZb3MyWYJClC/2gd7wCANXS6rHj/wjWoD9BeOjGLNjcSzCPjDa3trJV2pF50ud93qCGxL6RFbB5qTXXk2BmZCSq2vNcRNhHSeFvKZsYiVbjHfo7x26v3FgcozEaysSZP1JDp/AqGED1lNbngR1AkoIx6NkfPJYlV127xpQLDSfgVcZ1ryrxRRXMU4/AQGv4PPBRSeHiY2vLigAukyYU3/REFGlmUBgu+AkpqCLi55JO+EZy35ZR+ssRDXI8q8GeSc3qSoCX95LHOn3WSqD32i3e47yu1lWKyBDmziA==
+X-Forefront-Antispam-Report: CIP:131.228.2.8;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0734.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(346002)(46966005)(70586007)(70206006)(26005)(82310400003)(478600001)(86362001)(4744005)(316002)(54906003)(6666004)(83380400001)(47076004)(2906002)(4326008)(8936002)(5660300002)(8676002)(6916009)(336012)(186003)(356005)(81166007)(82740400003)(2616005)(1076003)(36756003);DIR:OUT;SFP:1102;
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2020 10:20:10.8610
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94f57444-c3d5-40e5-61a8-08d892be05ac
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.8];Helo=[fihe3nok0734.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthSource: DB5EUR03FT009.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0701MB2897
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 03:54:14PM +0000, David Brazdil wrote:
-> Forward the following PSCI SMCs issued by host to EL3 as they do not
-> require the hypervisor's intervention. This assumes that EL3 correctly
-> implements the PSCI specification.
-> 
-> Only function IDs implemented in Linux are included.
-> 
-> Where both 32-bit and 64-bit variants exist, it is assumed that the host
-> will always use the 64-bit variant.
-> 
->  * SMCs that only return information about the system
->    * PSCI_VERSION        - PSCI version implemented by EL3
->    * PSCI_FEATURES       - optional features supported by EL3
->    * AFFINITY_INFO       - power state of core/cluster
->    * MIGRATE_INFO_TYPE   - whether Trusted OS can be migrated
->    * MIGRATE_INFO_UP_CPU - resident core of Trusted OS
->  * operations which do not affect the hypervisor
->    * MIGRATE             - migrate Trusted OS to a different core
->    * SET_SUSPEND_MODE    - toggle OS-initiated mode
->  * system shutdown/reset
->    * SYSTEM_OFF
->    * SYSTEM_RESET
->    * SYSTEM_RESET2
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-What about SYSTEM_SUSPEND ?
+Give uartlite a chance to be probed when IRQ controller will be finally
+available and return potential -EPROBE_DEFER as-is. The condition "<="
+has been changed to "<" to follow the recommendation in the header of
+platform_get_irq().
 
-Lorenzo
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+---
+ drivers/tty/serial/uartlite.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  arch/arm64/kvm/hyp/nvhe/psci-relay.c | 43 +++++++++++++++++++++++++++-
->  1 file changed, 42 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> index e7091d89f0fc..7aa87ab7f5ce 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> @@ -57,14 +57,51 @@ static bool is_psci_call(u64 func_id)
->  	}
->  }
->  
-> +static unsigned long psci_call(unsigned long fn, unsigned long arg0,
-> +			       unsigned long arg1, unsigned long arg2)
-> +{
-> +	struct arm_smccc_res res;
-> +
-> +	arm_smccc_1_1_smc(fn, arg0, arg1, arg2, &res);
-> +	return res.a0;
-> +}
-> +
-> +static unsigned long psci_forward(struct kvm_cpu_context *host_ctxt)
-> +{
-> +	return psci_call(cpu_reg(host_ctxt, 0), cpu_reg(host_ctxt, 1),
-> +			 cpu_reg(host_ctxt, 2), cpu_reg(host_ctxt, 3));
-> +}
-> +
-> +static __noreturn unsigned long psci_forward_noreturn(struct kvm_cpu_context *host_ctxt)
-> +{
-> +	psci_forward(host_ctxt);
-> +	hyp_panic(); /* unreachable */
-> +}
-> +
->  static unsigned long psci_0_1_handler(u64 func_id, struct kvm_cpu_context *host_ctxt)
->  {
-> -	return PSCI_RET_NOT_SUPPORTED;
-> +	if (func_id == kvm_host_psci_function_id[PSCI_FN_CPU_OFF])
-> +		return psci_forward(host_ctxt);
-> +	else if (func_id == kvm_host_psci_function_id[PSCI_FN_MIGRATE])
-> +		return psci_forward(host_ctxt);
-> +	else
-> +		return PSCI_RET_NOT_SUPPORTED;
->  }
->  
->  static unsigned long psci_0_2_handler(u64 func_id, struct kvm_cpu_context *host_ctxt)
->  {
->  	switch (func_id) {
-> +	case PSCI_0_2_FN_PSCI_VERSION:
-> +	case PSCI_0_2_FN_CPU_OFF:
-> +	case PSCI_0_2_FN64_AFFINITY_INFO:
-> +	case PSCI_0_2_FN64_MIGRATE:
-> +	case PSCI_0_2_FN_MIGRATE_INFO_TYPE:
-> +	case PSCI_0_2_FN64_MIGRATE_INFO_UP_CPU:
-> +		return psci_forward(host_ctxt);
-> +	case PSCI_0_2_FN_SYSTEM_OFF:
-> +	case PSCI_0_2_FN_SYSTEM_RESET:
-> +		psci_forward_noreturn(host_ctxt);
-> +		unreachable();
->  	default:
->  		return PSCI_RET_NOT_SUPPORTED;
->  	}
-> @@ -73,6 +110,10 @@ static unsigned long psci_0_2_handler(u64 func_id, struct kvm_cpu_context *host_
->  static unsigned long psci_1_0_handler(u64 func_id, struct kvm_cpu_context *host_ctxt)
->  {
->  	switch (func_id) {
-> +	case PSCI_1_0_FN_PSCI_FEATURES:
-> +	case PSCI_1_0_FN_SET_SUSPEND_MODE:
-> +	case PSCI_1_1_FN64_SYSTEM_RESET2:
-> +		return psci_forward(host_ctxt);
->  	default:
->  		return psci_0_2_handler(func_id, host_ctxt);
->  	}
-> -- 
-> 2.29.2.454.gaff20da3a2-goog
-> 
+diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
+index 09379db..f42ccc4 100644
+--- a/drivers/tty/serial/uartlite.c
++++ b/drivers/tty/serial/uartlite.c
+@@ -773,8 +773,8 @@ static int ulite_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0)
+-		return -ENXIO;
++	if (irq < 0)
++		return irq;
+ 
+ 	pdata->clk = devm_clk_get(&pdev->dev, "s_axi_aclk");
+ 	if (IS_ERR(pdata->clk)) {
+-- 
+2.10.2
+
