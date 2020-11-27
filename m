@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A522C619C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0EB2C619D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727440AbgK0JXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:23:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgK0JXh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:23:37 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7AFC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:23:35 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id n24so2865939edb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:23:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0DpItTEwRoT37q4YugTk/Cc30zbGqoSLcQiv1n2CIMU=;
-        b=fCdlfLtqLOkDWFQC9fi4o46nXKnrYNYqwvOA1LnGl24HuAuGVRtxn4zKR+VFTh8mRT
-         o7ao90MbkYXulnIz3nSoPLtSUnv3vE42BvoDQePZr0ASuoUuiAysIfQbV+MWWXTLSmZ/
-         XB5+X0hGZtHyE8ywXJDtg4Di/Hv1/xZ++C8JsHto2nuOENGD0/MDLGggmzn8+j5Zibhd
-         xWVFFLK8wa+tKaE2/BL5bInFUNTMIt6Wm5H2fiCtS4t0lwkY/5QsWTohTUFCk3GsCuNU
-         qPtNVFyxq/wedp3TCRC4TKik6VvgKMr82m79tY766+Ux9X6k8XbdPr6zJlv+WP3MflqF
-         t7+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0DpItTEwRoT37q4YugTk/Cc30zbGqoSLcQiv1n2CIMU=;
-        b=LQUDAYwQBcL1JTiCNGXSALgPN+nVFrcfrPrGMmkm3oaSAlQw/qajYQeOEiIm8JyZKb
-         AHYNtFAkPU/P8pDsktjpngxiAS9HbURVVDGQGrb2+nYr/1idIS+j81iSSkWYebpJwxsN
-         9UoKLLlCfFwXSRdijis6zrXTv24G8TmoztG6OwKtpDD1co6ruISpnQR1zKRhGTwX/wVy
-         0hkaR7maYFF4H4SZBKMTDhEiMk0IbTK2d4sdv8YDmLEvuorbeDQM3zcLv/dm/+0zcZBB
-         +JbBXGFTb5imMSJF4aSqWuOGPAOHqSgBn0itCY3qvtJ7wNI+N0nyXBMMz7o8Ch9FZ6xO
-         GJGQ==
-X-Gm-Message-State: AOAM533HK8Qs4gh+5o5pqPm9cdUMRpA+TS+9KmPbTgAYkJejBFolqJ5y
-        TQSw2X5OPx0YUU2TTrZp1AMBzP5wYk7gT1xLPllfye5orY8=
-X-Google-Smtp-Source: ABdhPJywcFbPMR7tanAmYG3sGRVp94wC+b8Z3sGPs+7QKFoKHkkKvNl4UFNEDpl5LzaPHcf2lRJdLwuH7n2x2x5NrkA=
-X-Received: by 2002:a05:6402:cb4:: with SMTP id cn20mr6823862edb.186.1606469014514;
- Fri, 27 Nov 2020 01:23:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201109163409.24301-1-brgl@bgdev.pl> <20201109163409.24301-8-brgl@bgdev.pl>
- <CAF2Aj3inp8=dn9xuc8f3uJbL+m5LH7W3BDoOeZyiiOupmbfgOw@mail.gmail.com>
-In-Reply-To: <CAF2Aj3inp8=dn9xuc8f3uJbL+m5LH7W3BDoOeZyiiOupmbfgOw@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 27 Nov 2020 10:23:23 +0100
-Message-ID: <CAMpxmJXa8L0TaeENeYsypmgfkabdP8pH6H6iniwmy0KJs8w4Pg@mail.gmail.com>
-Subject: Re: [PATCH 7/8] rtc: rework rtc_register_device() resource management
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727983AbgK0JYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:24:04 -0500
+Received: from smtp25.cstnet.cn ([159.226.251.25]:48184 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726736AbgK0JYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:24:03 -0500
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-05 (Coremail) with SMTP id zQCowAD3kgiWxcBfuYsQAA--.27737S2;
+        Fri, 27 Nov 2020 17:23:35 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
+        sam@ravnborg.org, boris.brezillon@collabora.com, victor.liu@nxp.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: bridge: dw-hdmi: Remove redundant null check before clk_disable_unprepare
+Date:   Fri, 27 Nov 2020 09:23:32 +0000
+Message-Id: <20201127092332.50879-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowAD3kgiWxcBfuYsQAA--.27737S2
+X-Coremail-Antispam: 1UD129KBjvJXoWrZFy8CFy7Ar4furyUCw18Grg_yoW8Jr4DpF
+        W7Jr4FvrWxXFWj93Z8ZF48tF90yrWDKayfXrW3Ga1fWr43Wry0vFWUA3WfZF1jyFn7Cw47
+        Xrn8trWrCF1jkF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxkIecxEwVAFwVW8uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07jztCwUUUUU=
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwoNA1z4jnGRGgAAsf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 10:16 AM Lee Jones <lee.jones@linaro.org> wrote:
->
->
->
-> On Mon, 9 Nov 2020 at 16:34, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->>
->> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>
->> rtc_register_device() is a managed interface but it doesn't use devres
->> by itself - instead it marks an rtc_device as "registered" and the devres
->> callback for devm_rtc_allocate_device() takes care of resource release.
->>
->> This doesn't correspond with the design behind devres where managed
->> structures should not be aware of being managed. The correct solution
->> here is to register a separate devres callback for unregistering the
->> device.
->>
->> While at it: rename rtc_register_device() to devm_rtc_register_device()
->> and add it to the list of managed interfaces in devres.rst. This way we
->> can avoid any potential confusion of driver developers who may expect
->> there to exist a corresponding unregister function.
->>
->> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->> ---
->>  .../driver-api/driver-model/devres.rst        |  1 +
->>  arch/alpha/kernel/rtc.c                       |  2 +-
->>  drivers/mfd/menelaus.c                        |  2 +-
->
->
-> This patch should have been sent to and Acked by MFD too.
->
+Because clk_disable_unprepare() already checked NULL clock parameter,
+so the additional check is unnecessary, just remove them.
 
-Sorry Lee, I missed the fact that there were changes outside of
-drivers/rtc/. Other than skipping the MFD maintainer - do you see
-anything wrong in that bit?
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Bartosz
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index 0c79a9ba48bb..dda4fa9a1a08 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -3440,8 +3440,7 @@ struct dw_hdmi *dw_hdmi_probe(struct platform_device *pdev,
+ 
+ err_iahb:
+ 	clk_disable_unprepare(hdmi->iahb_clk);
+-	if (hdmi->cec_clk)
+-		clk_disable_unprepare(hdmi->cec_clk);
++	clk_disable_unprepare(hdmi->cec_clk);
+ err_isfr:
+ 	clk_disable_unprepare(hdmi->isfr_clk);
+ err_res:
+@@ -3465,8 +3464,7 @@ void dw_hdmi_remove(struct dw_hdmi *hdmi)
+ 
+ 	clk_disable_unprepare(hdmi->iahb_clk);
+ 	clk_disable_unprepare(hdmi->isfr_clk);
+-	if (hdmi->cec_clk)
+-		clk_disable_unprepare(hdmi->cec_clk);
++	clk_disable_unprepare(hdmi->cec_clk);
+ 
+ 	if (hdmi->i2c)
+ 		i2c_del_adapter(&hdmi->i2c->adap);
+-- 
+2.17.1
+
