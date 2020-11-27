@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4542C5E9C
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB252C5E9B
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 02:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392163AbgK0B4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2392170AbgK0B4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 26 Nov 2020 20:56:11 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:38561 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2392146AbgK0B4K (ORCPT
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50049 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727441AbgK0B4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 26 Nov 2020 20:56:10 -0500
-X-UUID: 0f62a53ab5004a49a1ee2d9318ed2892-20201127
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=w8vnzPmIF9GP6qq9n7qD+b4xYK8LSksy/BEZVgo8LGA=;
-        b=lCtGEG1J6mQZdDPK9dH8MNUW8ZsiUsM+7eiY+F5nK91J/n0Wcwm+hEtdzLHW/DycWaIvbIZTAqhNX93MZWo/jQ8Sqg5YiHJ7YiXO4NyNU5NFvzr7LX9qeqZCwRu2uVQCmlnt/itC32z7hvJCZiBvJk2mELlmxaUH9Y4MV0kSb88=;
-X-UUID: 0f62a53ab5004a49a1ee2d9318ed2892-20201127
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 194068124; Fri, 27 Nov 2020 09:55:59 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 27 Nov 2020 09:55:28 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 27 Nov 2020 09:55:30 +0800
-Message-ID: <1606442130.8845.2.camel@mtkswgap22>
-Subject: Re: [RESEND PATCH v1] proc: use untagged_addr() for pagemap_read
- addresses
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-CC:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
-Date:   Fri, 27 Nov 2020 09:55:30 +0800
-In-Reply-To: <87lfeqsizr.fsf@x220.int.ebiederm.org>
-References: <20201123063835.18981-1-miles.chen@mediatek.com>
-         <87lfeqsizr.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UGdzEzw_1606442166;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGdzEzw_1606442166)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 27 Nov 2020 09:56:07 +0800
+Subject: Re: [PATCH next] mm/vmscan: __isolate_lru_page_prepare clean up
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>, Yu Zhao <yuzhao@google.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1605859413-53864-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201120151307.4d9e3ef092ba01a325db7ce2@linux-foundation.org>
+ <a355270e-5949-ebb2-30cb-a3723f6c93f8@linux.alibaba.com>
+ <20201122123552.GF4327@casper.infradead.org>
+ <728874d7-2d93-4049-68c1-dcc3b2d52ccd@linux.alibaba.com>
+ <46ad053f-1401-31e8-50cf-09acda588f6f@suse.cz>
+ <20201125154346.b2032c39cf3905bbebec3322@linux-foundation.org>
+ <ebbad64b-069a-26e0-ac0a-854649e20a97@linux.alibaba.com>
+ <2ba66325-e3c8-d809-a8dd-85af77c3904b@suse.cz>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <166d0496-a304-5005-e14d-1963389b558b@linux.alibaba.com>
+Date:   Fri, 27 Nov 2020 09:56:06 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <2ba66325-e3c8-d809-a8dd-85af77c3904b@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTExLTI0IGF0IDEyOjMyIC0wNjAwLCBFcmljIFcuIEJpZWRlcm1hbiB3cm90
-ZToNCj4gTWlsZXMgQ2hlbiA8bWlsZXMuY2hlbkBtZWRpYXRlay5jb20+IHdyaXRlczoNCj4gDQo+
-ID4gV2hlbiB3ZSB0cnkgdG8gdmlzaXQgdGhlIHBhZ2VtYXAgb2YgYSB0YWdnZWQgdXNlcnNwYWNl
-IHBvaW50ZXIsIHdlIGZpbmQNCj4gPiB0aGF0IHRoZSBzdGFydF92YWRkciBpcyBub3QgY29ycmVj
-dCBiZWNhdXNlIG9mIHRoZSB0YWcuDQo+ID4gVG8gZml4IGl0LCB3ZSBzaG91bGQgdW50YWcgdGhl
-IHVzZXNwYWNlIHBvaW50ZXJzIGluIHBhZ2VtYXBfcmVhZCgpLg0KPiA+DQo+ID4gSSB0ZXN0ZWQg
-d2l0aCA1LjEwLXJjNCBhbmQgdGhlIGlzc3VlIHJlbWFpbnMuDQo+ID4NCj4gPiBNeSB0ZXN0IGNv
-ZGUgaXMgYmFlZCBvbiBbMV06DQo+ID4NCj4gPiBBIHVzZXJzcGFjZSBwb2ludGVyIHdoaWNoIGhh
-cyBiZWVuIHRhZ2dlZCBieSAweGI0OiAweGI0MDAwMDc2NjJmNTQxYzgNCj4gDQo+IA0KPiBTaWdo
-IHRoaXMgcGF0Y2ggaXMgYnVnZ3kuDQo+IA0KPiA+ID09PSB1c2Vyc3BhY2UgcHJvZ3JhbSA9PT0N
-Cj4gPg0KPiA+IHVpbnQ2NCBPc0xheWVyOjpWaXJ0dWFsVG9QaHlzaWNhbCh2b2lkICp2YWRkcikg
-ew0KPiA+IAl1aW50NjQgZnJhbWUsIHBhZGRyLCBwZm5tYXNrLCBwYWdlbWFzazsNCj4gPiAJaW50
-IHBhZ2VzaXplID0gc3lzY29uZihfU0NfUEFHRVNJWkUpOw0KPiA+IAlvZmY2NF90IG9mZiA9ICgo
-dWludHB0cl90KXZhZGRyKSAvIHBhZ2VzaXplICogODsgLy8gb2ZmID0gMHhiNDAwMDA3NjYyZjU0
-MWM4IC8gcGFnZXNpemUgKiA4ID0gMHg1YTAwMDAzYjMxN2FhMA0KPiA+IAlpbnQgZmQgPSBvcGVu
-KGtQYWdlbWFwUGF0aCwgT19SRE9OTFkpOw0KPiA+IAkuLi4NCj4gPg0KPiA+IAlpZiAobHNlZWs2
-NChmZCwgb2ZmLCBTRUVLX1NFVCkgIT0gb2ZmIHx8IHJlYWQoZmQsICZmcmFtZSwgOCkgIT0gOCkg
-ew0KPiA+IAkJaW50IGVyciA9IGVycm5vOw0KPiA+IAkJc3RyaW5nIGVycnR4dCA9IEVycm9yU3Ry
-aW5nKGVycik7DQo+ID4gCQlpZiAoZmQgPj0gMCkNCj4gPiAJCQljbG9zZShmZCk7DQo+ID4gCQly
-ZXR1cm4gMDsNCj4gPiAJfQ0KPiA+IC4uLg0KPiA+IH0NCj4gPg0KPiA+ID09PSBrZXJuZWwgZnMv
-cHJvYy90YXNrX21tdS5jID09PQ0KPiA+DQo+ID4gc3RhdGljIHNzaXplX3QgcGFnZW1hcF9yZWFk
-KHN0cnVjdCBmaWxlICpmaWxlLCBjaGFyIF9fdXNlciAqYnVmLA0KPiA+IAkJc2l6ZV90IGNvdW50
-LCBsb2ZmX3QgKnBwb3MpDQo+ID4gew0KPiA+IAkuLi4NCj4gPiAJc3JjID0gKnBwb3M7DQo+ID4g
-CXN2cGZuID0gc3JjIC8gUE1fRU5UUllfQllURVM7IC8vIHN2cGZuID09IDB4YjQwMDAwNzY2MmY1
-NA0KPiA+IAlzdGFydF92YWRkciA9IHN2cGZuIDw8IFBBR0VfU0hJRlQ7IC8vIHN0YXJ0X3ZhZGRy
-ID09IDB4YjQwMDAwNzY2MmY1NDAwMA0KPiA+IAllbmRfdmFkZHIgPSBtbS0+dGFza19zaXplOw0K
-PiA+DQo+ID4gCS8qIHdhdGNoIG91dCBmb3Igd3JhcGFyb3VuZCAqLw0KPiA+IAkvLyBzdnBmbiA9
-PSAweGI0MDAwMDc2NjJmNTQNCj4gPiAJLy8gKG1tLT50YXNrX3NpemUgPj4gUEFHRSkgPT0gMHg4
-MDAwMDAwDQo+ID4gCWlmIChzdnBmbiA+IG1tLT50YXNrX3NpemUgPj4gUEFHRV9TSElGVCkgLy8g
-dGhlIGNvbmRpdGlvbiBpcyB0cnVlIGJlY2F1c2Ugb2YgdGhlIHRhZyAweGI0DQo+ID4gCQlzdGFy
-dF92YWRkciA9IGVuZF92YWRkcjsNCj4gPg0KPiA+IAlyZXQgPSAwOw0KPiA+IAl3aGlsZSAoY291
-bnQgJiYgKHN0YXJ0X3ZhZGRyIDwgZW5kX3ZhZGRyKSkgeyAvLyB3ZSBjYW5ub3QgdmlzaXQgY29y
-cmVjdCBlbnRyeSBiZWNhdXNlIHN0YXJ0X3ZhZGRyIGlzIHNldCB0byBlbmRfdmFkZHINCj4gPiAJ
-CWludCBsZW47DQo+ID4gCQl1bnNpZ25lZCBsb25nIGVuZDsNCj4gPiAJCS4uLg0KPiA+IAl9DQo+
-ID4gCS4uLg0KPiA+IH0NCj4gPg0KPiA+IFsxXSBodHRwczovL2dpdGh1Yi5jb20vc3RyZXNzYXBw
-dGVzdC9zdHJlc3NhcHB0ZXN0L2Jsb2IvbWFzdGVyL3NyYy9vcy5jYyNMMTU4DQo+ID4NCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBNaWxlcyBDaGVuIDxtaWxlcy5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gPiAt
-LS0NCj4gPiAgZnMvcHJvYy90YXNrX21tdS5jIHwgNCArKy0tDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
-LCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
-ZnMvcHJvYy90YXNrX21tdS5jIGIvZnMvcHJvYy90YXNrX21tdS5jDQo+ID4gaW5kZXggMjE3YWEy
-NzA1ZDVkLi5lOWE3MGY3ZWU1MTUgMTAwNjQ0DQo+ID4gLS0tIGEvZnMvcHJvYy90YXNrX21tdS5j
-DQo+ID4gKysrIGIvZnMvcHJvYy90YXNrX21tdS5jDQo+ID4gQEAgLTE1OTksMTEgKzE1OTksMTEg
-QEAgc3RhdGljIHNzaXplX3QgcGFnZW1hcF9yZWFkKHN0cnVjdCBmaWxlICpmaWxlLCBjaGFyIF9f
-dXNlciAqYnVmLA0KPiA+ICANCj4gPiAgCXNyYyA9ICpwcG9zOw0KPiA+ICAJc3ZwZm4gPSBzcmMg
-LyBQTV9FTlRSWV9CWVRFUzsNCj4gDQo+ID4gLQlzdGFydF92YWRkciA9IHN2cGZuIDw8IFBBR0Vf
-U0hJRlQ7DQo+ID4gKwlzdGFydF92YWRkciA9IHVudGFnZ2VkX2FkZHIoc3ZwZm4gPDwgUEFHRV9T
-SElGVCk7DQo+ICAgICAgICAgXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5e
-Xl5eXl5eXl5eXg0KPiANCj4gQXJndWFibHkgdGhlIGxpbmUgYWJvdmUgaXMgc2FmZSwgYnV0IHVu
-Zm9ydHVuYXRlbHkgaXQgaGFzIHRoZQ0KPiBwb3NzaWJpbGl0eSBvZiBzdWZmZXJpbmcgZnJvbSBv
-dmVyZmxvdy4NCj4gDQo+ID4gIAllbmRfdmFkZHIgPSBtbS0+dGFza19zaXplOw0KPiA+ICANCj4g
-PiAgCS8qIHdhdGNoIG91dCBmb3Igd3JhcGFyb3VuZCAqLw0KPiA+IC0JaWYgKHN2cGZuID4gbW0t
-PnRhc2tfc2l6ZSA+PiBQQUdFX1NISUZUKQ0KPiA+ICsJaWYgKHN0YXJ0X3ZhZGRyID4gbW0tPnRh
-c2tfc2l6ZSkNCj4gPiAgCQlzdGFydF92YWRkciA9IGVuZF92YWRkcjsNCj4gDQo+IE92ZXJmbG93
-IGhhbmRsaW5nIHlvdSBhcmUgcmVtb3ZpbmcgaGVyZS4NCj4gPiAgDQo+ID4gIAkvKg0KPiANCj4g
-DQo+IEkgc3VzcGVjdCB0aGUgcHJvcGVyIHdheSB0byBoYW5kbGUgdGhpcyBpcyB0byBtb3ZlIHRo
-ZSB0ZXN0IGZvcg0KPiBvdmVyZmxvdyBlYXJsaWVyIHNvIHRoZSBjb2RlIGxvb2tzIHNvbWV0aGlu
-ZyBsaWtlOg0KPiANCj4gCWVuZF92YWRkciA9IG1tLT50YXNrX3NpemU7DQo+IA0KPiAJc3JjID0g
-KnBwb3M7DQo+IAlzdnBmbiA9IHNyYyAvIFBNX0VOVFJZX0JZVEVTOw0KPiANCj4gCS8qIHdhdGNo
-IG91dCBmb3Igd3JhcGFyb3VuZCAqLw0KPiAgICAgICAgIHN0YXJ0X3ZhZGRyID0gZW5kX3ZhZGRy
-Ow0KPiAJaWYgKHN2cGZuIDwgKFVMT05HX01BWCA+PiBQQUdFX1NISUZUKSkNCj4gICAgICAgICAJ
-c3RhcnRfdmFkZHIgPSB1bnRhZ2dlZF9hZGRyKHN2cGZuIDw8IFBBR0VfU0hJRlQpOw0KPiANCj4g
-CS8qIEVuc3VyZSB0aGUgYWRkcmVzcyBpcyBpbnNpZGUgdGhlIHRhc2sgKi8NCj4gCWlmIChzdGFy
-dF92YWRkciA+IG1tLT50YXNrX3NpemUpDQo+ICAgICAgICAgCXN0YXJ0X3ZhZGRyID0gZW5kX3Zh
-ZGRyOw0KDQoNClRoYW5rcyBmb3IgdGhlIGNvbW1lbnQsIEkgd2lsbCBmaXggdGhhdCBpbiBwYXRj
-aCB2Mi4NCg0KTWlsZXMNCj4gDQo+IEVyaWMNCj4gDQoNCg==
 
+
+在 2020/11/26 下午11:23, Vlastimil Babka 写道:
+>>>
+>>> I tried that, and .text became significantly larger, for reasons which
+>>> I didn't investigate ;)
+> 
+> I found out that comparing whole .text doesn't often work as changes might be lost in alignment, or
+> once in a while cross the alignment boundary and become exagerated. bloat-o-meter works nice though.
+> 
+>> Uh, BTW, with the gcc 8.3.1 and centos 7, goto or continue version has same size
+>> on my side with or w/o DEBUG_LIST. But actually, this clean up patch could
+>> add 10 bytes also with or w/o DEDBUG_LIST.
+>>
+>> Maybe related with different compiler?
+> 
+> gcc (SUSE Linux) 10.2.1 20201117 [revision 98ba03ffe0b9f37b4916ce6238fad754e00d720b]
+> 
+> ./scripts/bloat-o-meter vmscan.o.before mm/vmscan.o
+> add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-1 (-1)
+> Function                                     old     new   delta
+> isolate_lru_pages                           1125    1124      -1
+> Total: Before=57283, After=57282, chg -0.00%
+> 
+> Not surprising, as I'd expect the compiler to figure out by itself that list_move + continue
+> repeats and can be unified.  The reason for goto to stay would be rather readability (subjective).
+
+Hi Vlastimil,
+
+Thanks for tool sharing! The gcc do give different.
+
+My data is read from 'size' tool and isolate_lru_pages text size from 'objdump -d'. Maybe a
+same way like bloat-o-meter. :)
+
+Thanks
+Alex
