@@ -2,126 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E13A2C641B
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9B42C641C
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 12:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgK0LxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 06:53:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60654 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgK0LxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727988AbgK0LxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 27 Nov 2020 06:53:13 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D728821D46;
-        Fri, 27 Nov 2020 11:53:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606477991;
-        bh=iRowjQfwiQpVHUf5+VNrejatl3jHns8UFqG/fY0lA64=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fDqlxhg0s8I0lbubTcM0KCHwdQ5Jm6b4//0Z144munNg+uAsO9SfKes4f3FiFafg6
-         lAjcNtv7ZpDmchUtH/zWKAHaB1tPAac0SuUp2XQbWK/yruSh3QdkHZDTae0hZhU55t
-         rH4IdTGP0Q4Y9DdwQ4WMRTRoLzqccezgT1m48lk8=
-Date:   Fri, 27 Nov 2020 11:53:05 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Received: from mga07.intel.com ([134.134.136.100]:48347 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726607AbgK0LxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 06:53:13 -0500
+IronPort-SDR: TzO67/01xOtaTwjpaEl9Hh0dIaA2vLJALHnp4/qqr1W3zMpgbc5e8RbdHdKXd32N9rqVsvX+cz
+ p9FP9yNXB7TQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9817"; a="236511423"
+X-IronPort-AV: E=Sophos;i="5.78,374,1599548400"; 
+   d="scan'208";a="236511423"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2020 03:53:12 -0800
+IronPort-SDR: bFTPw9H7yrLy64Kbw5KmlJpKb8cKbhk2p9wKsj3qG/dQSDzCCZxxpcD1npZicnpBgm/Xrzjf2h
+ RV497TweQwUA==
+X-IronPort-AV: E=Sophos;i="5.78,374,1599548400"; 
+   d="scan'208";a="363137400"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2020 03:53:10 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kicKJ-00ARXC-TX; Fri, 27 Nov 2020 13:54:11 +0200
+Date:   Fri, 27 Nov 2020 13:54:11 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 03/14] KVM: arm64: Kill 32-bit vCPUs on systems with
- mismatched EL0 support
-Message-ID: <20201127115304.GB20564@willie-the-truck>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-4-will@kernel.org>
- <9bd06b193e7fb859a1207bb1302b7597@kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the tip
+ tree
+Message-ID: <20201127115411.GF4077@smile.fi.intel.com>
+References: <20201127183924.36696fb0@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9bd06b193e7fb859a1207bb1302b7597@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201127183924.36696fb0@canb.auug.org.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 10:26:47AM +0000, Marc Zyngier wrote:
-> On 2020-11-24 15:50, Will Deacon wrote:
-> > If a vCPU is caught running 32-bit code on a system with mismatched
-> > support at EL0, then we should kill it.
-> > 
-> > Acked-by: Marc Zyngier <maz@kernel.org>
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> > ---
-> >  arch/arm64/kvm/arm.c | 11 ++++++++++-
-> >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> > index 5750ec34960e..d322ac0f4a8e 100644
-> > --- a/arch/arm64/kvm/arm.c
-> > +++ b/arch/arm64/kvm/arm.c
-> > @@ -633,6 +633,15 @@ static void check_vcpu_requests(struct kvm_vcpu
-> > *vcpu)
-> >  	}
-> >  }
-> > 
-> > +static bool vcpu_mode_is_bad_32bit(struct kvm_vcpu *vcpu)
-> > +{
-> > +	if (likely(!vcpu_mode_is_32bit(vcpu)))
-> > +		return false;
-> > +
-> > +	return !system_supports_32bit_el0() ||
-> > +		static_branch_unlikely(&arm64_mismatched_32bit_el0);
-> > +}
-> > +
-> >  /**
-> >   * kvm_arch_vcpu_ioctl_run - the main VCPU run function to execute
-> > guest code
-> >   * @vcpu:	The VCPU pointer
-> > @@ -816,7 +825,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
-> >  		 * with the asymmetric AArch32 case), return to userspace with
-> >  		 * a fatal error.
-> >  		 */
-> > -		if (!system_supports_32bit_el0() && vcpu_mode_is_32bit(vcpu)) {
-> > +		if (vcpu_mode_is_bad_32bit(vcpu)) {
-> >  			/*
-> >  			 * As we have caught the guest red-handed, decide that
-> >  			 * it isn't fit for purpose anymore by making the vcpu
+On Fri, Nov 27, 2020 at 06:39:24PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Given the new definition of system_supports_32bit_el0() in the previous
-> patch,
-> why do we need this patch at all?
+> Today's linux-next merge of the akpm-current tree got a conflict in:
+> 
+>   include/linux/kernel.h
+> 
+> between commit:
+> 
+>   74d862b682f5 ("sched: Make migrate_disable/enable() independent of RT")
+> 
+> from the tip tree and commit:
+> 
+>   761ace49e56f ("kernel.h: Split out mathematical helpers")
+> 
+> from the akpm-current tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-I think the check is still needed, as this is an unusual case where we
-want to reject the mismatched system. For example, imagine
-'arm64_mismatched_32bit_el0' is true and we're on a mismatched system: in
-this case system_supports_32bit_el0() will return 'true' because we
-allow 32-bit applications to run, we support the 32-bit personality etc.
+Thanks, from my perspective looks good, dunno if scheduler part is okay.
 
-However, we still want to terminate 32-bit vCPUs if we spot them in this
-situation, so we have to check for:
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc include/linux/kernel.h
+> index dbf6018fc312,f97ab3283a8b..000000000000
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@@ -272,48 -145,13 +159,6 @@@ extern void __cant_migrate(const char *
+>   
+>   #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
+>   
+> - /**
+> -  * abs - return absolute value of an argument
+> -  * @x: the value.  If it is unsigned type, it is converted to signed type first.
+> -  *     char is treated as if it was signed (regardless of whether it really is)
+> -  *     but the macro's return type is preserved as char.
+> -  *
+> -  * Return: an absolute value of x.
+> -  */
+> - #define abs(x)	__abs_choose_expr(x, long long,				\
+> - 		__abs_choose_expr(x, long,				\
+> - 		__abs_choose_expr(x, int,				\
+> - 		__abs_choose_expr(x, short,				\
+> - 		__abs_choose_expr(x, char,				\
+> - 		__builtin_choose_expr(					\
+> - 			__builtin_types_compatible_p(typeof(x), char),	\
+> - 			(char)({ signed char __x = (x); __x<0?-__x:__x; }), \
+> - 			((void)0)))))))
+> - 
+> - #define __abs_choose_expr(x, type, other) __builtin_choose_expr(	\
+> - 	__builtin_types_compatible_p(typeof(x),   signed type) ||	\
+> - 	__builtin_types_compatible_p(typeof(x), unsigned type),		\
+> - 	({ signed type __x = (x); __x < 0 ? -__x : __x; }), other)
+> - 
+> - /**
+> -  * reciprocal_scale - "scale" a value into range [0, ep_ro)
+> -  * @val: value
+> -  * @ep_ro: right open interval endpoint
+> -  *
+> -  * Perform a "reciprocal multiplication" in order to "scale" a value into
+> -  * range [0, @ep_ro), where the upper interval endpoint is right-open.
+> -  * This is useful, e.g. for accessing a index of an array containing
+> -  * @ep_ro elements, for example. Think of it as sort of modulus, only that
+> -  * the result isn't that of modulo. ;) Note that if initial input is a
+> -  * small value, then result will return 0.
+> -  *
+> -  * Return: a result based on @val in interval [0, @ep_ro).
+> -  */
+> - static inline u32 reciprocal_scale(u32 val, u32 ep_ro)
+> - {
+> - 	return (u32)(((u64) val * ep_ro) >> 32);
+> - }
+>  -#ifndef CONFIG_PREEMPT_RT
+>  -# define cant_migrate()		cant_sleep()
+>  -#else
+>  -  /* Placeholder for now */
+>  -# define cant_migrate()		do { } while (0)
+>  -#endif
+> --
+>   #if defined(CONFIG_MMU) && \
+>   	(defined(CONFIG_PROVE_LOCKING) || defined(CONFIG_DEBUG_ATOMIC_SLEEP))
+>   #define might_fault() __might_fault(__FILE__, __LINE__)
 
-	!system_supports_32bit_el0() ||
-	static_branch_unlikely(&arm64_mismatched_32bit_el0)
 
-so that we only allow 32-bit vCPUs when all of the physical CPUs support
-it at EL0.
 
-I could make this clearer either by adding a comment, or avoiding
-system_supports_32bit_el0() entirely here and just checking the
-sanitised SYS_ID_AA64PFR0_EL1 register directly instead.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-What do you prefer?
 
-Will
