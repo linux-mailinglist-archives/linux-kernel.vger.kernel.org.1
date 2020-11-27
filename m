@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C227D2C6DD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 00:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D742C6DB0
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 00:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732377AbgK0Xeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 18:34:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38654 "EHLO mail.kernel.org"
+        id S1731906AbgK0Xch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 18:32:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729680AbgK0XaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 18:30:02 -0500
-Subject: Re: [GIT PULL] SCSI fixes for 5.10-rc5
+        id S1729019AbgK0X3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 18:29:54 -0500
+Subject: Re: [GIT PULL] Networking
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606519795;
-        bh=MNPScZmsDoQ0QFjhBUeBawpjowMRQtBWCMi7VAqfbZo=;
+        s=default; t=1606519794;
+        bh=0YzhjTcS5pXbtEbVFsi2m0HAzyGtA2PU+pOoBzJ/vyo=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=LZSQYvQEzFxRDPLmE3Z9FhAvfFTpOInpOT5W6Ml8eD2jKpgSwYBGH3zFYEPxwtN0k
-         f7ryv85VBE/s0q5UeJJTcPNBoAGDb5H+VufRxpReE/CeUmDiud4+mdLLkHStWY2TcZ
-         UzgknFSHihzHI7+TlO0WL9C7bV5CfXw/mUyG218Q=
+        b=Pvl0jHaR/RE19awDGA74EtROevesaVjwvXYK8GIM7QfPHjC9ShDWnT+mkSvs3Enhz
+         uioaHECRABMEXMZdDCV37MQ9KNlXmYE1sZxmGQkhDc73K0n9ucH0M39qKzb+D+77Tb
+         129ol4s3Q1vJ0NEo0uuE8RFg9aafSs39FYJ6hclk=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <4340233ae5e105c5617401f84a5ed13c341f5ecf.camel@HansenPartnership.com>
-References: <4340233ae5e105c5617401f84a5ed13c341f5ecf.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <4340233ae5e105c5617401f84a5ed13c341f5ecf.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: e92643db514803c2c87d72caf5950b4c0a8faf4a
+In-Reply-To: <20201127200428.221620-1-kuba@kernel.org>
+References: <20201127200428.221620-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201127200428.221620-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc6
+X-PR-Tracked-Commit-Id: d0742c49cab58ee6e2de40f1958b736aedf779b6
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 80e1e1761d1a9eefda4d1545f8b6c0a2e46d4e3f
-Message-Id: <160651979499.32137.13667838574805022439.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 79c0c1f0389db60f3c83ec91585a39d16e036f21
+Message-Id: <160651979448.32137.13352759714617661612.pr-tracker-bot@kernel.org>
 Date:   Fri, 27 Nov 2020 23:29:54 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 27 Nov 2020 13:56:30 -0800:
+The pull request you sent on Fri, 27 Nov 2020 12:04:28 -0800:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.10-rc6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/80e1e1761d1a9eefda4d1545f8b6c0a2e46d4e3f
+https://git.kernel.org/torvalds/c/79c0c1f0389db60f3c83ec91585a39d16e036f21
 
 Thank you!
 
