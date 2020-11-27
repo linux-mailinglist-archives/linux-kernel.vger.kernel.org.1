@@ -2,222 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3ED32C6615
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92ADE2C661F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729906AbgK0Mxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:53:40 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:44206 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729859AbgK0Mxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:53:39 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 8879BFB04;
-        Fri, 27 Nov 2020 13:53:36 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Ec2rf0FGom9j; Fri, 27 Nov 2020 13:53:30 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 6DF224068D; Fri, 27 Nov 2020 13:53:29 +0100 (CET)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] usb: typec: tps6598x: Export some power supply properties
-Date:   Fri, 27 Nov 2020 13:53:29 +0100
-Message-Id: <91c27b323786445f6b33c6a7e89e93755d05e3a2.1606481420.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1606481420.git.agx@sigxcpu.org>
-References: <cover.1606481420.git.agx@sigxcpu.org>
+        id S1729983AbgK0MyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:54:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729956AbgK0MyP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 07:54:15 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8CEC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:54:15 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id f18so5802924ljg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:54:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vkFn5MkJ5eHFvGe+cSGhjvF50/P+N434NKcke2py+jk=;
+        b=AA2qPhXsKGN1XSpp/ecMKBH/+y59S29puXcMtCdXmxAihXLqjwAgcw+5ft/XbW4YFN
+         8C+p3hDTO9T3Ifp7WBMtU4I32Wo5endD2EwqljyadvpOG0HuVEBCW/FRbjxyEIJylCEE
+         iegsUHwBSZhI+NFU4S0QhGpnRnaZNfweDEbyBsO97S/c0eXCxpcvwF9M8aDMPXcRmDJF
+         y1L8rbs+j9Fp3OJBELKR46YO6UBjB+pTIGD/mRdms7u3Rnng302Mp6HrXri4e/RDiud9
+         HHdUjvfh9Pa+ap9QVh4+s1jSbQMHhoIH5slEaGNqixT4l2OtsDv+I4gU9UQb8glC0VDW
+         o/Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vkFn5MkJ5eHFvGe+cSGhjvF50/P+N434NKcke2py+jk=;
+        b=bg6bTXBIOyuU2w3wP57gHbqHqMPIrjiwKRHo9Jkfm/01lZCHPMtOusDAwo1wK4CV4p
+         FmOtGuqctzvNjJrFLsYHnHDg//aX6XKx6pZA6PKCQRm/6LRp0QQP7PO37y9nMh96ooOv
+         w8XI+hebwlswE9J1KWhL9Q48xCXNBzrmSpeR/7lQj2tSWuUocKJwCN1JojHhRtBOSUJO
+         Q+Mxa5xOqmyBUNscWkDgRKQtGnb9fsxZi4+2dgbvABSB97++OXl6QppThIiy1O7CNXJe
+         u52bstkexgiBQLad9Iik2UJWe+Wt/q9FcZfWLiDC6fffA9mbYYzCqaw171sWH4Jc1ECN
+         aUSw==
+X-Gm-Message-State: AOAM531ZQbopzXot6pvlGzPxuQs84B92XnzxLqZCLqzk89Q1UTehMuEt
+        C2ZaauGBG3VcRbGu8ECrnJBmZ7kKnCjzwatw7sry
+X-Google-Smtp-Source: ABdhPJxnpJuH1qCcyBG7IdsjjfT2699qABDMeft535WgILhcwKBQromZU8ced70LvOULG8f2QdwuKZNaKM5pVqsXHGQ=
+X-Received: by 2002:a2e:8910:: with SMTP id d16mr3480658lji.295.1606481653890;
+ Fri, 27 Nov 2020 04:54:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <1606479915-7259-1-git-send-email-ingleswapnil@gmail.com>
+In-Reply-To: <1606479915-7259-1-git-send-email-ingleswapnil@gmail.com>
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Date:   Fri, 27 Nov 2020 13:54:02 +0100
+Message-ID: <CAHg0HuzKb0e21bo3V53zskKtk+zaJXhxkU8m4w6Q2DWoWPkU6w@mail.gmail.com>
+Subject: Re: [PATCH] block/rnbd: Adding name to the Contributors List
+To:     Swapnil Ingle <ingleswapnil@gmail.com>
+Cc:     Jinpu Wang <jinpu.wang@cloud.ionos.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "open list:RNBD BLOCK DRIVERS" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows downstream supplies and userspace to detect
-whether external power is supplied.
+On Fri, Nov 27, 2020 at 1:31 PM Swapnil Ingle <ingleswapnil@gmail.com> wrote:
+>
+> Adding name to the Contributors List
+>
+> Signed-off-by: Swapnil Ingle <ingleswapnil@gmail.com>
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- drivers/usb/typec/Kconfig    |   1 +
- drivers/usb/typec/tps6598x.c | 105 +++++++++++++++++++++++++++++++++++
- 2 files changed, 106 insertions(+)
+Acked-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
 
-diff --git a/drivers/usb/typec/Kconfig b/drivers/usb/typec/Kconfig
-index 772b07e9f188..365f905a8e49 100644
---- a/drivers/usb/typec/Kconfig
-+++ b/drivers/usb/typec/Kconfig
-@@ -64,6 +64,7 @@ config TYPEC_HD3SS3220
- config TYPEC_TPS6598X
- 	tristate "TI TPS6598x USB Power Delivery controller driver"
- 	depends on I2C
-+	select POWER_SUPPLY
- 	select REGMAP_I2C
- 	select USB_ROLE_SWITCH
- 	help
-diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
-index 3db33bb622c3..8163306f849e 100644
---- a/drivers/usb/typec/tps6598x.c
-+++ b/drivers/usb/typec/tps6598x.c
-@@ -9,6 +9,7 @@
- #include <linux/i2c.h>
- #include <linux/acpi.h>
- #include <linux/module.h>
-+#include <linux/power_supply.h>
- #include <linux/regmap.h>
- #include <linux/interrupt.h>
- #include <linux/usb/typec.h>
-@@ -55,6 +56,7 @@ enum {
- };
- 
- /* TPS_REG_POWER_STATUS bits */
-+#define TPS_POWER_STATUS_CONNECTION	BIT(0)
- #define TPS_POWER_STATUS_SOURCESINK	BIT(1)
- #define TPS_POWER_STATUS_PWROPMODE(p)	(((p) & GENMASK(3, 2)) >> 2)
- 
-@@ -96,8 +98,25 @@ struct tps6598x {
- 	struct typec_partner *partner;
- 	struct usb_pd_identity partner_identity;
- 	struct usb_role_switch *role_sw;
-+	struct typec_capability typec_cap;
-+
-+	struct power_supply *psy;
-+	struct power_supply_desc psy_desc;
-+	enum power_supply_usb_type usb_type;
-+};
-+
-+static enum power_supply_property tps6598x_psy_props[] = {
-+	POWER_SUPPLY_PROP_USB_TYPE,
-+	POWER_SUPPLY_PROP_ONLINE,
- };
- 
-+static enum power_supply_usb_type tps6598x_psy_usb_types[] = {
-+	POWER_SUPPLY_USB_TYPE_C,
-+	POWER_SUPPLY_USB_TYPE_PD,
-+};
-+
-+static const char *tps6598x_psy_name_prefix = "tps6598x-source-psy-";
-+
- /*
-  * Max data bytes for Data1, Data2, and other registers. See ch 1.3.2:
-  * https://www.ti.com/lit/ug/slvuan1a/slvuan1a.pdf
-@@ -248,6 +267,8 @@ static int tps6598x_connect(struct tps6598x *tps, u32 status)
- 	if (desc.identity)
- 		typec_partner_set_identity(tps->partner);
- 
-+	power_supply_changed(tps->psy);
-+
- 	return 0;
- }
- 
-@@ -260,6 +281,7 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
- 	typec_set_pwr_role(tps->port, TPS_STATUS_PORTROLE(status));
- 	typec_set_vconn_role(tps->port, TPS_STATUS_VCONN(status));
- 	tps6598x_set_data_role(tps, TPS_STATUS_DATAROLE(status), false);
-+	power_supply_changed(tps->psy);
- }
- 
- static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
-@@ -467,6 +489,85 @@ static const struct regmap_config tps6598x_regmap_config = {
- 	.max_register = 0x7F,
- };
- 
-+static int tps6598x_psy_get_online(struct tps6598x *tps,
-+				   union power_supply_propval *val)
-+{
-+	int ret;
-+	u16 pwr_status;
-+
-+	ret = tps6598x_read16(tps, TPS_REG_POWER_STATUS, &pwr_status);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!(pwr_status & TPS_POWER_STATUS_CONNECTION) ||
-+	    !(pwr_status & TPS_POWER_STATUS_SOURCESINK)) {
-+		val->intval = 0;
-+	} else {
-+		val->intval = 1;
-+	}
-+	return 0;
-+}
-+
-+static int tps6598x_psy_get_prop(struct power_supply *psy,
-+				 enum power_supply_property psp,
-+				 union power_supply_propval *val)
-+{
-+	struct tps6598x *tps = power_supply_get_drvdata(psy);
-+	u16 pwr_status;
-+	int ret = 0;
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_USB_TYPE:
-+		ret = tps6598x_read16(tps, TPS_REG_POWER_STATUS, &pwr_status);
-+		if (ret < 0)
-+			return ret;
-+		if (TPS_POWER_STATUS_PWROPMODE(pwr_status) == TYPEC_PWR_MODE_PD)
-+			val->intval = POWER_SUPPLY_USB_TYPE_PD;
-+		else
-+			val->intval = POWER_SUPPLY_USB_TYPE_C;
-+		break;
-+	case POWER_SUPPLY_PROP_ONLINE:
-+		ret = tps6598x_psy_get_online(tps, val);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int devm_tps6598_psy_register(struct tps6598x *tps)
-+{
-+	struct power_supply_config psy_cfg = {};
-+	const char *port_dev_name = dev_name(tps->dev);
-+	size_t psy_name_len = strlen(tps6598x_psy_name_prefix) +
-+				     strlen(port_dev_name) + 1;
-+	char *psy_name;
-+
-+	psy_cfg.drv_data = tps;
-+	psy_cfg.fwnode = dev_fwnode(tps->dev);
-+	psy_name = devm_kzalloc(tps->dev, psy_name_len, GFP_KERNEL);
-+	if (!psy_name)
-+		return -ENOMEM;
-+
-+	snprintf(psy_name, psy_name_len, "%s%s", tps6598x_psy_name_prefix,
-+		 port_dev_name);
-+	tps->psy_desc.name = psy_name;
-+	tps->psy_desc.type = POWER_SUPPLY_TYPE_USB;
-+	tps->psy_desc.usb_types = tps6598x_psy_usb_types;
-+	tps->psy_desc.num_usb_types = ARRAY_SIZE(tps6598x_psy_usb_types);
-+	tps->psy_desc.properties = tps6598x_psy_props;
-+	tps->psy_desc.num_properties = ARRAY_SIZE(tps6598x_psy_props);
-+	tps->psy_desc.get_property = tps6598x_psy_get_prop;
-+
-+	tps->usb_type = POWER_SUPPLY_USB_TYPE_C;
-+
-+	tps->psy = devm_power_supply_register(tps->dev, &tps->psy_desc,
-+					       &psy_cfg);
-+	return PTR_ERR_OR_ZERO(tps->psy);
-+}
-+
- static int tps6598x_probe(struct i2c_client *client)
- {
- 	struct typec_capability typec_cap = { };
-@@ -560,6 +661,10 @@ static int tps6598x_probe(struct i2c_client *client)
- 		goto err_role_put;
- 	}
- 
-+	ret = devm_tps6598_psy_register(tps);
-+	if (ret)
-+		return ret;
-+
- 	tps->port = typec_register_port(&client->dev, &typec_cap);
- 	if (IS_ERR(tps->port)) {
- 		ret = PTR_ERR(tps->port);
--- 
-2.29.2
-
+> ---
+>  drivers/block/rnbd/README | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/block/rnbd/README b/drivers/block/rnbd/README
+> index 1773c0a..080f58a 100644
+> --- a/drivers/block/rnbd/README
+> +++ b/drivers/block/rnbd/README
+> @@ -90,3 +90,4 @@ Kleber Souza <kleber.souza@profitbricks.com>
+>  Lutz Pogrell <lutz.pogrell@cloud.ionos.com>
+>  Milind Dumbare <Milind.dumbare@gmail.com>
+>  Roman Penyaev <roman.penyaev@profitbricks.com>
+> +Swapnil Ingle <ingleswapnil@gmail.com>
+> --
+> 1.8.3.1
+>
