@@ -2,169 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E192C64D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F69E2C64F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgK0MJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 07:09:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
+        id S1728153AbgK0MLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbgK0MJ5 (ORCPT
+        with ESMTP id S1727455AbgK0MLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 07:09:57 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED616C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:09:55 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id t4so5315519wrr.12
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:09:55 -0800 (PST)
+        Fri, 27 Nov 2020 07:11:41 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9D4C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:11:41 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 34so4194480pgp.10
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 04:11:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Asqct0DSkmui/624U1aTT6HUn2Jr+y44t573X8ecn1I=;
-        b=HD0g/xb6TLZtBPVVfmoTpSeb1IQLHkmwP9ZMYhDyLk6bMzNQBR7yjV522waHdonR5d
-         eyUizTJEBAWsAIqaTrv0JY7FjHfAmsg/rozRl79/Y8wXJgfYFZhYsZACB1ZQNetmy2PE
-         R3x+O0etGRUdcC732kOXg630hGy5sOkpvMnYEn/whuIjuSTFCf34crBSbEX4aucH4t1c
-         F4yXxGxRFSEisgheuzx3ODNYfi83aUyhJJsF3pB7WkXVPh164D1zads/oTX0oDK5dQFG
-         zLj2vIzAE97wgmBEUK5BDPCLYC3dV9vYws8kzzjDyfzPA+bLkq8Vkk/dlhj1qemuMGdP
-         e8YA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L6K3HGsB5fYzmi80uscAmDSfDfhb1G9q5OZZtTycPRU=;
+        b=bZgTR4hbGBVByoNEoH+3NJBwGNqP/NoZtyTRJex65tXBta2OaScbN70Llcbgb3MIl7
+         yLk1jsNyDo/iCSzB00/9ePBC9GowZ74seWdGDVtMDuuWa0Bp7zJ9aAx0ESen79UR/0dI
+         IzO4QuUMd+m07aeaBk9Iy5lbR/+Tmofajr4jRmeszgpZXhshfbb4PIWOoKa6WDLkpmUr
+         FdAnG/cL8mr/1p+BudvSoOfpg5HhbZlqTrPvsiJ2qojVtn9OFXWKTtijLEHD/5b0fhRu
+         54OvYUCYwXioOjMf+OeUb/PgzZiwoNyUSybrJfwRAXD8dfDx5nAQqF6oatxOIV4HN6yh
+         LXcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Asqct0DSkmui/624U1aTT6HUn2Jr+y44t573X8ecn1I=;
-        b=A/PVBHehj13B55aMNMoyxL90I5s+CnRbS2IyEiylfYjbCm9pz7CBz3JK6I6RrPptCJ
-         C73mLm8SphGH8EgAqpItiCciw/rMwyu1+J1BH5w3fEalqCw7ezi/WlogWPhO3j8yjnQQ
-         Y9msapBNZ8PdTSjFri7vnRdmzYRsQfj+uVYBFbeBhZ+2cm/WIeKDS+HfMRzgIZ7DnlYr
-         V3IlGqVSixrLJnHGxMaGZFatlK2WH4ON3a2XUgf0A2fgFrLb51CUVVdIEoiskpwQan5o
-         /qOAc6oviMx2gPKbKxdP7noTHe9ibZ6giAemjRa+dsd2RXNuWapUV4NLvHON6QdQam3v
-         9WuQ==
-X-Gm-Message-State: AOAM532h1QBbtYyRRWaJ0+hcO2UvqlD5XjucHx7Tr7mZnKfmrVYjLn4R
-        GjpouBXgS+Jgq0BddxmrcdUqAg==
-X-Google-Smtp-Source: ABdhPJwk9Q/m7ZsZoPuHbodu+4dr0DtmJ92+OAyIXQLH3mTtHoc3PFsRMoMDRX7Ioh6bQJX2nHIWPg==
-X-Received: by 2002:adf:f0c2:: with SMTP id x2mr9907638wro.184.1606478994658;
-        Fri, 27 Nov 2020 04:09:54 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id t20sm13916831wmi.3.2020.11.27.04.09.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 27 Nov 2020 04:09:53 -0800 (PST)
-Subject: Re: [PATCH v3] ASoC: qcom: Fix playback recover problem in suspend
- resume
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1606470988-26965-1-git-send-email-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <1146040c-5559-f4bf-fafe-eb7468e577a0@linaro.org>
-Date:   Fri, 27 Nov 2020 12:09:51 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        bh=L6K3HGsB5fYzmi80uscAmDSfDfhb1G9q5OZZtTycPRU=;
+        b=Uc5PJwG29j0BuAf4vTIuUjuMw2P1BafqOub6waAd9ui05NQ4sAXrijA0A0oMZPLvLx
+         Gl1a31Tt3muDjpGtP1RfyX6IuFmOk/my3jThTGB2cklMWQS+UiRjtjp1cNHPTjOR5eWB
+         eEXkoZ7NAT1rmGvkT1/hjkagpkpXfGNXN7TKJBvKl1crjUZI49umPaCIGt2N/v06+dHN
+         33Ca1BPYiW6ahrYdCxU7WHckorHgkYWpHsHRWDLumx9/xySuzOBmA0Ef/geVtnpN8d/o
+         tqTH5WhEEUNYEsUJgf2/1EENXBssWcXEdyXRadP3hEkiv2yf8D2RIHmzL61K/0eY3KJg
+         gUWw==
+X-Gm-Message-State: AOAM532x2okprs5rKIId64QLfJXGZYkwj/ddyN/BUqfcaxn/lC/fycM/
+        PJU/YDK2QqjlPUrELxDqKx5R
+X-Google-Smtp-Source: ABdhPJycR732doYvrrRMGxKiyOaTTH2GJ9GSvAuBFPRqUp1dQoABDMGVOatJaNGV+Z8GShWGZp8WGQ==
+X-Received: by 2002:a17:90a:8b8b:: with SMTP id z11mr5515814pjn.117.1606479100679;
+        Fri, 27 Nov 2020 04:11:40 -0800 (PST)
+Received: from localhost.localdomain ([2409:4072:480:e2cd:2509:49c2:a270:1438])
+        by smtp.gmail.com with ESMTPSA id g8sm7318790pgn.47.2020.11.27.04.11.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 04:11:39 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/3] Add LLCC support for SM8250 SoC
+Date:   Fri, 27 Nov 2020 17:41:24 +0530
+Message-Id: <20201127121127.158082-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1606470988-26965-1-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+This series adds Last Level Cache Controller (LLCC) support for SM8250
+SoC from Qualcomm.
 
-On 27/11/2020 09:56, Srinivasa Rao Mandadapu wrote:
-> To support playback continuation after hard suspend(bypass powerd)
->   and resume:
-> Prepare device in  platform trigger callback.
-> Make I2s and DMA control registers as non volatile.
-Looks like there are two changes here, One is fixing the volatile registers!
+All 3 patches in this series are expected to go through arm-soc tree.
 
+Thanks,
+Mani
 
-Other is preparing device after suspend!
+Manivannan Sadhasivam (3):
+  dt-bindings: msm: Add LLCC for SM8250
+  arm64: dts: qcom: sm8250: Add support for LLCC block
+  soc: qcom: llcc-qcom: Add support for SM8250 SoC
 
-Consider splitting them!
+ .../bindings/arm/msm/qcom,llcc.yaml           |  1 +
+ arch/arm64/boot/dts/qcom/sm8250.dtsi          |  6 +++
+ drivers/soc/qcom/llcc-qcom.c                  | 40 +++++++++++++++++++
+ include/linux/soc/qcom/llcc-qcom.h            |  1 +
+ 4 files changed, 48 insertions(+)
 
-> 
+-- 
+2.25.1
 
-Fixes tag is missing here?
-
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
-> Changes Since v1 and v2:
->    -- Subject lines changed
-> 
->   sound/soc/qcom/lpass-cpu.c      | 8 ++------
->   sound/soc/qcom/lpass-platform.c | 5 +++--
->   2 files changed, 5 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index af684fd..c99be03 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -454,20 +454,16 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
->   	struct lpass_variant *v = drvdata->variant;
->   	int i;
->   
-> -	for (i = 0; i < v->i2s_ports; ++i)
-> -		if (reg == LPAIF_I2SCTL_REG(v, i))
-> -			return true;
->   	for (i = 0; i < v->irq_ports; ++i)
->   		if (reg == LPAIF_IRQSTAT_REG(v, i))
->   			return true;
->   
->   	for (i = 0; i < v->rdma_channels; ++i)
-> -		if (reg == LPAIF_RDMACURR_REG(v, i) || reg == LPAIF_RDMACTL_REG(v, i))
-> +		if (reg == LPAIF_RDMACURR_REG(v, i))
->   			return true;
->   
->   	for (i = 0; i < v->wrdma_channels; ++i)
-> -		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start) ||
-> -			reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
-> +		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
->   			return true;
->   
->   	return false;
-> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-> index 80b09de..2b0a7c1 100644
-> --- a/sound/soc/qcom/lpass-platform.c
-> +++ b/sound/soc/qcom/lpass-platform.c
-> @@ -481,8 +481,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
->   		return -ENOTRECOVERABLE;
->   	}
->   	switch (cmd) {
-> -	case SNDRV_PCM_TRIGGER_START:
->   	case SNDRV_PCM_TRIGGER_RESUME:
-> +		lpass_platform_pcmops_prepare(component, substream);
-
-Can you elaborate the actual issue here?
-
-Are any other registers needs to re-programmed??
-
-Does it make sense to use
-regcache_mark_dirty()
-regcache_sync() in pm suspend resume path,
-instead of calling prepare explicitly?
-
-
---srini
-
-
-> +	case SNDRV_PCM_TRIGGER_START:
->   	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
->   		ret = regmap_fields_write(dmactl->enable, id,
->   						 LPAIF_DMACTL_ENABLE_ON);
-> @@ -592,7 +593,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
->   		break;
->   	}
->   
-> -	return 0;
-> +	return ret;
->   }
->   
->   static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
-> 
