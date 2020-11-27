@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7962C61AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 337B82C61AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgK0J1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:27:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:35744 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726602AbgK0J1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:27:24 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 007CC1478;
-        Fri, 27 Nov 2020 01:27:24 -0800 (PST)
-Received: from [10.57.26.227] (unknown [10.57.26.227])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5176D3F71F;
-        Fri, 27 Nov 2020 01:27:21 -0800 (PST)
-Subject: Re: [RFC 1/2] dt-bindings: thermal: sprd: Add virtual thermal
- documentation
-To:     gao.yunxiao6@gmail.com, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, amitk@kernel.org, robh+dt@kernel.org,
-        javi.merino@kernel.org
-Cc:     linux-pm@vger.kernel.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        "jeson.gao" <jeson.gao@unisoc.com>
-References: <1606466112-31584-1-git-send-email-gao.yunxiao6@gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <724ddf78-483c-2cf3-441c-4885af8425a9@arm.com>
-Date:   Fri, 27 Nov 2020 09:27:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726515AbgK0J3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgK0J3L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:29:11 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C03C0613D1;
+        Fri, 27 Nov 2020 01:29:10 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id b6so4030157pfp.7;
+        Fri, 27 Nov 2020 01:29:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RD6BXGXgO5CkMS1mHQzAuQIHEBQtva6qzduS8cHE1ak=;
+        b=XZbRNFvMHGzqw3bLgf59ondA9kkygmg6jqtpAFk94WvpJxvJeldgSS5qJBzJ7C4lzP
+         qRp2k6/gop1vLoyCr9qV7cNTpTTYBfEDe1zkGvA9eTJZRzatLurVE/APAWoXPYi/kBR4
+         htmYkZF00nVDv/43zPiXOzETimbCd3M/EMLKx0VaxTeHfzreYrmWEcY1r6ZTztlDqk7f
+         yTkxytMYmyiXtA8nUokbc1LRilU6msBzwo7q0rB1hqwLqg3zifZCzQIc/Lyxp8HhGZoP
+         CRapDt2mr1c9OZQE39C2GAYex+HKILxTVbXlsZOOh70EDma1OswVCDZlkDX+kdIES4ZI
+         3DPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RD6BXGXgO5CkMS1mHQzAuQIHEBQtva6qzduS8cHE1ak=;
+        b=FD8Ydx4psHR9fmKORn0mmxg1SPO7YiYOkjSSFXz3oKgu6uAOv+gdcEBi3Oi6pJcf1e
+         anUuCe2grwIE2lHRIbJ08KHEXTyrnu67u0YoIBSEGfT0ry2FYNGhO4pzsadlAYqRyx2m
+         Dk+cGRf1JFkpuzCWS6fW+MrzTH6T+idXjj/TxaokQqxUh4bwe27jRVxemVpveGl8KBKj
+         NYcZal02BrSo4PMuziZ4SQBotJjhBS2uI5ss1h2HwvO+C2iN3rkEISny56B78QPaFZey
+         dRCM4HfssmwGI/8tyQmsTP9ugaa+cS0oLbfPKnE+a9c/nuFB0DQoH/sMsC1zV5v2QShy
+         IXMQ==
+X-Gm-Message-State: AOAM533QSy34aMmnqi3i8luxTJJmtm9oIS4KjvsSdnhDlTV+cJq9tGX1
+        qtU4ZCBl0uEs0LCoiEMaMug=
+X-Google-Smtp-Source: ABdhPJwKpcDRzKgCp6wpeBmbZQrSoxpmlCTjlyLLL8vBlwesx5hY7wWA+FRvpV0orAH0nIbVhvXmvw==
+X-Received: by 2002:a17:90a:c214:: with SMTP id e20mr8884618pjt.212.1606469350377;
+        Fri, 27 Nov 2020 01:29:10 -0800 (PST)
+Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
+        by smtp.gmail.com with ESMTPSA id gg22sm8983689pjb.7.2020.11.27.01.29.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 01:29:09 -0800 (PST)
+Date:   Fri, 27 Nov 2020 20:29:05 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v15 00/26] Control-flow Enforcement: Shadow Stack
+Message-ID: <20201127092905.GB473773@balbir-desktop>
+References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1606466112-31584-1-git-send-email-gao.yunxiao6@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110162211.9207-1-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/27/20 8:35 AM, gao.yunxiao6@gmail.com wrote:
-> From: "jeson.gao" <jeson.gao@unisoc.com>
+On Tue, Nov 10, 2020 at 08:21:45AM -0800, Yu-cheng Yu wrote:
+> Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+> return/jump-oriented programming attacks.  Details are in "Intel 64 and
+> IA-32 Architectures Software Developer's Manual" [1].
 > 
-> virtual thermal node definition description in dts file
+> CET can protect applications and the kernel.  This series enables only
+> application-level protection, and has three parts:
 > 
-> Signed-off-by: jeson.gao <jeson.gao@unisoc.com>
-> ---
->   .../thermal/sprd-virtual-thermal.yaml         | 38 +++++++++++++++++++
->   1 file changed, 38 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/thermal/sprd-virtual-thermal.yaml
+>   - Shadow stack [2],
+>   - Indirect branch tracking [3], and
+>   - Selftests [4].
 > 
-> diff --git a/Documentation/devicetree/bindings/thermal/sprd-virtual-thermal.yaml b/Documentation/devicetree/bindings/thermal/sprd-virtual-thermal.yaml
-> new file mode 100644
-> index 000000000000..3e3d2282e2a4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/thermal/sprd-virtual-thermal.yaml
-> @@ -0,0 +1,38 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/thermal/sprd-virtual-thermal.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Spreadtrum virtual thermal driver bindings
-> +
-> +maintainers:
-> +  - Yunxiao Gao <gao.yunxiao6@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: sprd,virtual-thermal
-> +
-> +  reg:
-> +    description: specify the virtual sensor id.
-> +    maxItems: 1
-> +
-> +  thmzone-names:
-> +    description: specify per-core thermal zone name.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - thmzone-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    virtual_sensor: virtual-sensor@1 {
-> +      compatible = "sprd,virtual-thermal";
-> +      reg = <1>;
-> +      thmzone-names = "ank0-thmzone","ank1-thmzone","ank2-thmzone",
-> +                      "ank3-thmzone","ank4-thmzone","ank5-thmzone","prometheus6-tzone0",
-> +                      "prometheus6-tzone1","prometheus7-thmzone";
-> +    };
-> 
+> I have run tests on these patches for quite some time, and they have been
+> very stable.  Linux distributions with CET are available now, and Intel
+> processors with CET are becoming available.  It would be nice if CET
+> support can be accepted into the kernel.  I will be working to address any
+> issues should they come up.
+>
 
-It's coming back. There were attempts to solve this problem.
-Javi tried to solved this using hierarchical thermal zones [1].
-It was even agreed (IIRC during LPC) but couldn't continue. Then Eduardo
-was going to continue this (last message at [3]). Unfortunately, 
-development stopped.
-
-I also have out-of-tree similar implementation for my Odroid-xu4,
-which does no have an 'SoC' sensor, but have CPU sensors and needs
-some aggregation function to get temperature.
-
-I can pick up Javi's patches and continue 'hierarchical thermal zones'
-approach.
-
-Javi, Daniel, Rui what do you think?
-
-Regards,
-Lukasz
-
-[1] https://lwn.net/Articles/666015/
-[2] 
-https://patchwork.kernel.org/project/linux-pm/patch/1448464186-26289-2-git-send-email-javi.merino@arm.com/
-[3] 
-https://patchwork.kernel.org/project/linux-pm/patch/1448464186-26289-3-git-send-email-javi.merino@arm.com/
-[4] 
-https://patchwork.kernel.org/project/linux-pm/patch/1448464186-26289-4-git-send-email-javi.merino@arm.com/
-[5] 
-https://patchwork.kernel.org/project/linux-pm/patch/1448464186-26289-5-git-send-email-javi.merino@arm.com/
+Is there a way to run these patches for testing? Bochs emulation or anything
+else? I presume you've been testing against violations of CET in user space?
+Can you share your testing?
+ 
+Balbir Singh.
