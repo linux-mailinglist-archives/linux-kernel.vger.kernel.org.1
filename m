@@ -2,59 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962262C6030
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9DA2C6033
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 07:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387774AbgK0Gh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 01:37:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387557AbgK0Gh3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 01:37:29 -0500
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4765CC0613D1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 22:37:29 -0800 (PST)
-Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=50933)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Bizz@ihsan-code.eu>)
-        id 1kiXNm-00038R-6s
-        for linux-kernel@vger.kernel.org; Fri, 27 Nov 2020 07:37:26 +0100
-Subject: Fair Pay - Guad - Correction for good word flow.
-References: <0cc3e3c3-cf47-dff1-b6c1-2ab562072a01@ihsan-code.eu>
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Bizz@ihsan-code.eu>
-To:     linux-kernel@vger.kernel.org
-Message-ID: <0523bdfb-7d1f-998b-b79e-13fc7f85b6a7@ihsan-code.eu>
-Date:   Fri, 27 Nov 2020 07:37:16 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S2387881AbgK0Gqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 01:46:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729688AbgK0Gqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 01:46:34 -0500
+Received: from mail.kernel.org (ip5f5ad5a6.dynamic.kabel-deutschland.de [95.90.213.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 419CB20665;
+        Fri, 27 Nov 2020 06:46:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606459594;
+        bh=vXhfPgW3IibTyXmRxFq3IfR9DsjEd1ueHgNWyhNMJew=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gAjGd3MXTxOyRJfI+sOkbOAv9TCGGrV6NUOfXynp8jNqUKCbAX7sT4kTdtC8PTkyB
+         +qVvO5vmvlZEkiUO0nUVkV5T0121gRPdF5YArLs3dvfBBAlmJUYM+Gr5Mea9Chlyn2
+         U0QCJh2DDL2bNNfmXVgoUYWnV0HE2MkRVDFA/C9E=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kiXWZ-006K7b-GL; Fri, 27 Nov 2020 07:46:31 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>
+Subject: [PATCH] media: gp8psk: initialize stats at power control logic
+Date:   Fri, 27 Nov 2020 07:46:25 +0100
+Message-Id: <d0ac1a26ed5943127cb0156148735f5f52a07075.1606459576.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <0cc3e3c3-cf47-dff1-b6c1-2ab562072a01@ihsan-code.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Analysing the arabic script written right to left "Al Ilah", we seem to 
-get La Guad, in latin.
+As reported on:
+	https://lore.kernel.org/linux-media/20190627222020.45909-1-willemdebruijn.kernel@gmail.com/
 
-Updated prayer translation. SINO is the only Guad.
+if gp8psk_usb_in_op() returns an error, the status var is not
+initialized. Yet, this var is used later on, in order to
+identify:
+	- if the device was already started;
+	- if firmware has loaded;
+	- if the LNBf was powered on.
 
-It should be a solid background for Fair Pay, and the needed step forward.
+Using status = 0 seems to ensure that everything will be
+properly powered up.
 
-https://www.youtube.com/watch?v=gQjHE0WnenA
+So, instead of the proposed solution, let's just set
+status = 0.
 
-And really necessary step. Looking at "Linux" history it might actually 
-seem it was not meant to be a success. But an abusers joke, where you 
-are "just a nerd", and no success at all. "Even with all the computers 
-in the world, you could not escape the evil agenda".
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Reported-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/usb/dvb-usb/gp8psk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I do not believe this to be true, and have corrected monotheism for 
-this. Based on many years of research!
+diff --git a/drivers/media/usb/dvb-usb/gp8psk.c b/drivers/media/usb/dvb-usb/gp8psk.c
+index c07f46f5176e..b4f661bb5648 100644
+--- a/drivers/media/usb/dvb-usb/gp8psk.c
++++ b/drivers/media/usb/dvb-usb/gp8psk.c
+@@ -182,7 +182,7 @@ static int gp8psk_load_bcm4500fw(struct dvb_usb_device *d)
+ 
+ static int gp8psk_power_ctrl(struct dvb_usb_device *d, int onoff)
+ {
+-	u8 status, buf;
++	u8 status = 0, buf;
+ 	int gp_product_id = le16_to_cpu(d->udev->descriptor.idProduct);
+ 
+ 	if (onoff) {
+-- 
+2.28.0
 
-Serenity,
-Ywe Cærlyn
-The Fair Pay Initiative.
-https://www.youtube.com/channel/UCqt17eaSO66UV4xvIYJvD4g
