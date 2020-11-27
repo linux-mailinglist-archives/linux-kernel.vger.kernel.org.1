@@ -2,331 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0812C60FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 909BD2C60FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbgK0Igy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 03:36:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        id S1728959AbgK0Ih3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 03:37:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727301AbgK0Igw (ORCPT
+        with ESMTP id S1727301AbgK0Ih1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 03:36:52 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA56BC0613D1;
-        Fri, 27 Nov 2020 00:36:52 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id t21so3798158pgl.3;
-        Fri, 27 Nov 2020 00:36:52 -0800 (PST)
+        Fri, 27 Nov 2020 03:37:27 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEFBC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 00:37:27 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id p8so4675744wrx.5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 00:37:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=3GI0yzxrLtNBSs7MmAql586m2mzfUCGcCSg0XwCpMJ0=;
-        b=l+6J5ABEraDSNC+g7EwHs4y4WtpVZE1Cgc2Gytzvj7s7NACvWVpYZATEFfsbLcLSO0
-         r5QZIPPCMnK3Vels1cFI+quKaIUFTY5b/MxvgCjqt6Ihp0hfo1fDuRDnaq+Wz9lWNNqr
-         iMOqsBVuXPT6qb0jfWPGwedUlCDPIerw6Va47O6DhLus1sxY3axIsAOekh8z9o+JAplK
-         kriDamKAn8+g/C0TiUJWwLHO350zWuFL6AORz7uHmYzlRl2GV5O70yf5Wna6Pa/eBGrd
-         TcJoJqTpKHXP/XducMvOjrqV0ZuLWLzXew+9xXWM7tblAaW0DRtHivejsUhyO0Q9kp0D
-         FedQ==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=NDd+7z81kqxX5piqbpfyRlic4o5pYUfJiTr8VIVMAwk=;
+        b=duqrO+slaSekFQIaVaefH/GoN5TBOwJkWFY6MwVBII6vbLTsHCcgeV8NS66cATVKBG
+         oScI8Og3cU2ukfP+0zzIf4Z2ENggjAHUF9ixd0TZs0CVJqwdb1g75VExz7pVw9Mht5oF
+         n0KU+Ze0fBIUXhJBffiRLgVKl7x3Qj4jIlDI3BJxONZFuczgqHK6tV4AZ2fF/I7S6nqT
+         nq4KNCWegjenqIkEDPuqe+v7qMFkURj8O+thUgl5uoJA27vJOrTZUz4oZv4bCX5JFyKd
+         XLzFsZKMeicljQ9trblr222HA6ug7sHvXvMXXzKhHAc/xyear/EFBUvKXlZjqEq702gP
+         RqhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3GI0yzxrLtNBSs7MmAql586m2mzfUCGcCSg0XwCpMJ0=;
-        b=RaRVGWU4VuE7Ogp0H5udHrudBr4OpLZp9dvdHzw0oVEiTIJBChlzzO8ab32p0O1KJu
-         21RWQa8zUgX2PWb1xSwm2MF+mdYWsDN1MLoRRCtS2i8GOjweHitRpPSG1eYyN72l1N5b
-         a9y7nvk8yM6EFWgI6zuH92ZQIapUdfy/XqeNH15B+V6dtKh1gj5mBdogfa8cdo1JiLMD
-         XsIdOkJfMjXTazhpj4426HX8l76RUwNeM7i+9XCvR6rb71AWGqUTRm+Rt6ya5QDB5FXy
-         7C9aicGMySug+UOzVqs2GJA37LWwHb+h3Lk77Z5vReTq5LfTk1n9c4zYl40lUItVJBfr
-         dsdQ==
-X-Gm-Message-State: AOAM533pNIqBFbVib3mRZb+L2Zcty3BjhBbfogUo5ZDK86+g/m5H0ffj
-        auXXsl/X7J7sULLzEY9MJhY=
-X-Google-Smtp-Source: ABdhPJw8k/laYHTH2PeO5VkzF9MUHLLLdjTEzK0lB5mThFAWE6Ub77vKuNoekmYFppfnjhVO/Yq4fQ==
-X-Received: by 2002:a65:608b:: with SMTP id t11mr5738678pgu.72.1606466212429;
-        Fri, 27 Nov 2020 00:36:52 -0800 (PST)
-Received: from bj04432pcu2.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id x7sm7009969pfn.85.2020.11.27.00.36.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 27 Nov 2020 00:36:52 -0800 (PST)
-From:   gao.yunxiao6@gmail.com
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
-        robh+dt@kernel.org, javi.merino@kernel.org
-Cc:     linux-pm@vger.kernel.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        "jeson.gao" <jeson.gao@unisoc.com>
-Subject: [RFC 2/2] thermal: sprd: Add virtual thermal driver
-Date:   Fri, 27 Nov 2020 16:36:44 +0800
-Message-Id: <1606466204-31657-1-git-send-email-gao.yunxiao6@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=NDd+7z81kqxX5piqbpfyRlic4o5pYUfJiTr8VIVMAwk=;
+        b=sARlSPzeA1NmphtK+uyWU0fYHWMYLMvqWl/Tb0lKjHBvYxFQKh3jo95UX51AeS7aJE
+         Q3vRexT4enFysR6SJpb9wM0qXnxYxc7L3aeiowCHtbPkbBHmfUD1gFCEpL7+YR7VnCuL
+         +J3x5ga60TO19lTJhho/QFd/7uXlZJ1doq0Kyk9mhExmVX8GN+uZU8+QBiMg6pTG5mmk
+         FArwJP0qsJuQcmGcA9sKOaEbgRpzZAp/E6lHPg8SGa6s0xhq4zBxhLgC7k7ry7anj+1K
+         HCNJQlfYbGdbzIM9IgGGlbunHWAGGORCu/ffm/DhxGA0sNrxvFG72TNMBFqOtLrV22le
+         kH3g==
+X-Gm-Message-State: AOAM530VBeoM5As1Lm4/K3yuFhLmaZd08mfecBnBqg951YTMMzz6s27K
+        StIthYlu/+CC1Oy4+XqO/wXcvneNbY+OwFmrAOU=
+X-Google-Smtp-Source: ABdhPJz0kKRrGagcl+ZuMZe7LxLu6jAumaDMp8wDkK9v5db2bkJAjMVfaZStb7FyftH259YqBWhjutzTNfO1Qb8E9Zs=
+X-Received: by 2002:adf:f9c6:: with SMTP id w6mr8856515wrr.273.1606466245972;
+ Fri, 27 Nov 2020 00:37:25 -0800 (PST)
+MIME-Version: 1.0
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 27 Nov 2020 18:37:15 +1000
+Message-ID: <CAPM=9twQYg5nf=wGOMm=i=++dZswSvpkV2txDnBYFmj=SRDx9A@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.10-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "jeson.gao" <jeson.gao@unisoc.com>
+Hi Linus,
 
-IPA need a temperature of the whole CPU zone for thermal-cpufreq-0
-and thermal-cpufreq-1 cooling device but the real sensor is placed
-near per-core on sprd platform,so adding this driver to register a
-virtual sensor,it will polling the temperature of per-core and find
-the highest temperature as the current temperature of the whole cpu
-zone for IPA using.
+Bit of a delay as fd.o anongit was acting up a bit today, hopefully it
+stays up this time. Unfortunately this has a bit of thanksgiving
+stuffing in it, as it a bit larger (at least the vc4 patches) than I
+like at this point in time.
 
-Signed-off-by: jeson.gao <jeson.gao@unisoc.com>
----
- drivers/thermal/Kconfig                |   9 ++
- drivers/thermal/Makefile               |   1 +
- drivers/thermal/sprd_virtual_thermal.c | 213 +++++++++++++++++++++++++
- 3 files changed, 223 insertions(+)
- create mode 100644 drivers/thermal/sprd_virtual_thermal.c
+The main thing is it has a bunch of regressions fixes for reports in
+the last  couple of weeks, ast, nouveau and the amdgpu ttm init fix,
+along with the usual selection of amdgpu and i915 fixes.
 
-diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
-index 7edc8dc6bbab..b3d392846f69 100644
---- a/drivers/thermal/Kconfig
-+++ b/drivers/thermal/Kconfig
-@@ -500,6 +500,15 @@ config SPRD_THERMAL
- 	  Support for the Spreadtrum thermal sensor driver in the Linux thermal
- 	  framework.
- 
-+config SPRD_VIRTUAL_THERMAL
-+	tristate "sprd virtual thermal"
-+	depends on ARCH_SPRD || COMPILE_TEST
-+	depends on SPRD_THERMAL
-+	help
-+	  Say Y here to support virtual thermal driver
-+	  We can use it to find the highest temperature from 8 per core sensor
-+	  as the current temperature of the whole cpu zone.
-+
- config KHADAS_MCU_FAN_THERMAL
- 	tristate "Khadas MCU controller FAN cooling support"
- 	depends on OF || COMPILE_TEST
-diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
-index b64dd50a6629..f4aecfff3703 100644
---- a/drivers/thermal/Makefile
-+++ b/drivers/thermal/Makefile
-@@ -61,4 +61,5 @@ obj-$(CONFIG_ZX2967_THERMAL)	+= zx2967_thermal.o
- obj-$(CONFIG_UNIPHIER_THERMAL)	+= uniphier_thermal.o
- obj-$(CONFIG_AMLOGIC_THERMAL)     += amlogic_thermal.o
- obj-$(CONFIG_SPRD_THERMAL)	+= sprd_thermal.o
-+obj-$(CONFIG_SPRD_VIRTUAL_THERMAL)	+= sprd_virtual_thermal.o
- obj-$(CONFIG_KHADAS_MCU_FAN_THERMAL)	+= khadas_mcu_fan.o
-diff --git a/drivers/thermal/sprd_virtual_thermal.c b/drivers/thermal/sprd_virtual_thermal.c
-new file mode 100644
-index 000000000000..db4d6eca2356
---- /dev/null
-+++ b/drivers/thermal/sprd_virtual_thermal.c
-@@ -0,0 +1,213 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2020 Unisoc Inc.
-+
-+#include <linux/cpu_cooling.h>
-+#include <linux/cpufreq.h>
-+#include <linux/cpumask.h>
-+#include <linux/debugfs.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/thermal.h>
-+#include <linux/of.h>
-+#include <linux/kernel.h>
-+
-+struct virtual_thm {
-+	int id;
-+	struct device *dev;
-+	struct thermal_zone_device *thm_dev;
-+};
-+
-+struct real_tz_list {
-+	int temp;
-+	struct thermal_zone_device *tz_dev;
-+};
-+
-+struct virtual_thm_data {
-+	int nr_thm;
-+	struct real_tz_list *tz_list;
-+	struct virtual_thm *vir_thm;
-+};
-+
-+static int virtual_thm_get_temp(void *devdata, int *temp)
-+{
-+	int i, ret = 0;
-+	int max_temp = 0;
-+	struct thermal_zone_device *tz = NULL;
-+	struct real_tz_list *tz_list = NULL;
-+	struct virtual_thm_data *thm_data = devdata;
-+	struct device *dev;
-+
-+	if (!thm_data || !temp)
-+		return -EINVAL;
-+
-+	dev = thm_data->vir_thm->dev;
-+	for (i = 0; i < thm_data->nr_thm; i++) {
-+		tz_list = &thm_data->tz_list[i];
-+		tz = tz_list->tz_dev;
-+		if (!tz || IS_ERR(tz) || !tz->ops->get_temp)
-+			return -EINVAL;
-+		ret = tz->ops->get_temp(tz, &tz_list->temp);
-+		if (ret) {
-+			dev_err(dev, "fail to get temp\n");
-+			return ret;
-+		}
-+		max_temp = max(max_temp, tz_list->temp);
-+	}
-+	*temp = max_temp;
-+
-+	return ret;
-+}
-+
-+static void virtual_thm_unregister(struct platform_device *pdev)
-+{
-+	struct virtual_thm_data *data = platform_get_drvdata(pdev);
-+	struct virtual_thm *vir_thm = data->vir_thm;
-+
-+	devm_thermal_zone_of_sensor_unregister(&pdev->dev, vir_thm->thm_dev);
-+}
-+
-+static const struct thermal_zone_of_device_ops virtual_thm_ops = {
-+	.get_temp = virtual_thm_get_temp,
-+};
-+
-+static int virtual_thm_register(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct virtual_thm_data *data = platform_get_drvdata(pdev);
-+	struct virtual_thm *vir_thm = data->vir_thm;
-+
-+	vir_thm->thm_dev = devm_thermal_zone_of_sensor_register(dev,
-+							   vir_thm->id, data,
-+							   &virtual_thm_ops);
-+	if (IS_ERR_OR_NULL(vir_thm->thm_dev))
-+		return -ENODEV;
-+	thermal_zone_device_update(vir_thm->thm_dev, THERMAL_EVENT_UNSPECIFIED);
-+
-+	return 0;
-+}
-+
-+static int get_thm_zone_counts(struct device *dev)
-+{
-+	int count;
-+	struct device_node *np = dev->of_node;
-+
-+	if (!np) {
-+		dev_err(dev, "device node not found\n");
-+		return -EINVAL;
-+	}
-+
-+	count = of_property_count_strings(np, "thmzone-names");
-+	if (count < 0) {
-+		dev_err(dev, "thmzone-names not found\n");
-+		return count;
-+	}
-+
-+	return count;
-+}
-+
-+static int get_thm_zone_device(struct platform_device *pdev)
-+{
-+	int i, ret = 0;
-+	const char *name;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+	struct real_tz_list *tz_list;
-+	struct virtual_thm_data *data = platform_get_drvdata(pdev);
-+
-+	for (i = 0; i < data->nr_thm; i++) {
-+		ret = of_property_read_string_index(np, "thmzone-names",
-+						    i, &name);
-+		if (ret) {
-+			dev_err(dev, "fail to get thmzone-names\n");
-+			return ret;
-+		}
-+		tz_list = &data->tz_list[i];
-+		tz_list->tz_dev = thermal_zone_get_zone_by_name(name);
-+		if (IS_ERR(tz_list->tz_dev)) {
-+			dev_err(dev, "failed to get thermal zone by name\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static int virtual_thm_probe(struct platform_device *pdev)
-+{
-+	int count = 0, ret = 0, id;
-+	struct virtual_thm_data *data;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = pdev->dev.of_node;
-+
-+	if (!np) {
-+		dev_err(dev, "device node not found\n");
-+		return -EINVAL;
-+	}
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	count = get_thm_zone_counts(dev);
-+	if (count < 0) {
-+		dev_err(dev, "failed to get thmzone count\n");
-+		return -EINVAL;
-+	}
-+	data->nr_thm = count;
-+	data->tz_list = devm_kzalloc(dev, sizeof(*data->tz_list) * data->nr_thm,
-+				     GFP_KERNEL);
-+	if (!data->tz_list)
-+		return -ENOMEM;
-+
-+	data->vir_thm = devm_kzalloc(dev, sizeof(*data->vir_thm), GFP_KERNEL);
-+	if (!data->vir_thm)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, data);
-+	ret = get_thm_zone_device(pdev);
-+	if (ret) {
-+		dev_err(dev, "failed to get thmzone device\n");
-+		return -EINVAL;
-+	}
-+	id = of_alias_get_id(np, "thm-sensor");
-+	if (id < 0) {
-+		dev_err(dev, "failed to get id\n");
-+		return -ENODEV;
-+	}
-+	data->vir_thm->id = id;
-+	data->vir_thm->dev = dev;
-+	ret = virtual_thm_register(pdev);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to register virtual thermal\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int virtual_thm_remove(struct platform_device *pdev)
-+{
-+	virtual_thm_unregister(pdev);
-+	return 0;
-+}
-+
-+static const struct of_device_id virtual_thermal_of_match[] = {
-+	{ .compatible = "sprd,virtual-thermal" },
-+	{},
-+};
-+
-+static struct platform_driver virtual_thermal_driver = {
-+	.probe = virtual_thm_probe,
-+	.remove = virtual_thm_remove,
-+	.driver = {
-+		   .owner = THIS_MODULE,
-+		   .name = "virtual_thermal",
-+		   .of_match_table = virtual_thermal_of_match,
-+	},
-+};
-+
-+module_platform_driver(virtual_thermal_driver);
-+
-+MODULE_AUTHOR("Jeson Gao <jeson.gao@unisoc.com>");
-+MODULE_DESCRIPTION("Unisoc virtual thermal driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.28.0
+The vc4 fixes are a few but they are fixes and the nastiest one is a
+fix for when you have a 2.4Ghz Wifi and a HDMI signal with a clock in
+that range and there isn't enough shielding and interference happen
+between the two, the fix adjusts the mode clock to try and avoid the
+wifi channels in that case.
 
+Hopefully you can merge this between turkey slices, and next week
+should be quieter.
+
+Dave.
+
+drm-fixes-2020-11-27-1:
+drm fixes for 5.10-rc6
+
+ast:
+- LUT loading regression fix
+
+nouveau:
+- relocations regression fix
+
+amdgpu:
+- ttm init oops fix
+- Runtime pm fix
+- SI UVD suspend/resume fix
+- HDCP fix for headless cards
+- Sienna Cichlid golden register update
+
+i915:
+- Fix Perf/OA workaround register corruption (Lionel)
+- Correct a comment statement in GVT (Yan)
+- Fix GT enable/disable iterrupts, including a race condition that
+prevented GPU to go idle (Chris)
+- Free stale request on destroying the virtual engine (Chris)
+
+exynos:
+- config dependency fix
+
+mediatek:
+- unused var removal
+- horizonal front/back porch formula fix
+
+vc4:
+- wifi and hdmi interference fix
+- mode rejection fixes
+- use after free fix
+- cleanup some code
+The following changes since commit 418baf2c28f3473039f2f7377760bd8f6897ae18:
+
+  Linux 5.10-rc5 (2020-11-22 15:36:08 -0800)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-11-27-1
+
+for you to fetch changes up to 9595930db4bb91433607441a5f26d90e9c6e34eb:
+
+  Merge tag 'drm-misc-fixes-2020-11-26' of
+ssh://git.freedesktop.org/git/drm/drm-misc into drm-fixes (2020-11-27
+09:39:51 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.10-rc6
+
+ast:
+- LUT loading regression fix
+
+nouveau:
+- relocations regression fix
+
+amdgpu:
+- ttm init oops fix
+- Runtime pm fix
+- SI UVD suspend/resume fix
+- HDCP fix for headless cards
+- Sienna Cichlid golden register update
+
+i915:
+- Fix Perf/OA workaround register corruption (Lionel)
+- Correct a comment statement in GVT (Yan)
+- Fix GT enable/disable iterrupts, including a race condition that
+prevented GPU to go idle (Chris)
+- Free stale request on destroying the virtual engine (Chris)
+
+exynos:
+- config dependency fix
+
+mediatek:
+- unused var removal
+- horizonal front/back porch formula fix
+
+vc4:
+- wifi and hdmi interference fix
+- mode rejection fixes
+- use after free fix
+- cleanup some code
+
+----------------------------------------------------------------
+CK Hu (1):
+      drm/mediatek: dsi: Modify horizontal front/back porch byte formula
+
+Chris Wilson (4):
+      drm/i915/gt: Defer enabling the breadcrumb interrupt to after submission
+      drm/i915/gt: Track signaled breadcrumbs outside of the breadcrumb spinlock
+      drm/i915/gt: Don't cancel the interrupt shadow too early
+      drm/i915/gt: Free stale request on destroying the virtual engine
+
+Dave Airlie (5):
+      Merge tag 'amd-drm-fixes-5.10-2020-11-25' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes
+      Merge tag 'drm-intel-fixes-2020-11-25' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'exynos-drm-fixes-for-v5.10-rc6' of
+git://git.kernel.org/.../daeinki/drm-exynos into drm-fixes
+      Merge tag 'mediatek-drm-fixes-5.10' of
+https://git.kernel.org/.../chunkuang.hu/linux into drm-fixes
+      Merge tag 'drm-misc-fixes-2020-11-26' of
+ssh://git.freedesktop.org/git/drm/drm-misc into drm-fixes
+
+Enric Balletbo i Serra (1):
+      drm/mediatek: mtk_dpi: Fix unused variable 'mtk_dpi_encoder_funcs'
+
+Kenneth Feng (1):
+      drm/amd/amdgpu: fix null pointer in runtime pm
+
+Krzysztof Kozlowski (1):
+      drm/exynos: depend on COMMON_CLK to fix compile tests
+
+Likun Gao (1):
+      drm/amdgpu: update golden setting for sienna_cichlid
+
+Lionel Landwerlin (1):
+      drm/i915/perf: workaround register corruption in OATAILPTR
+
+Matti Hamalainen (1):
+      drm/nouveau: fix relocations applying logic and a double-free
+
+Maxime Ripard (11):
+      drm/vc4: hdmi: Make sure our clock rate is within limits
+      drm/vc4: hdmi: Block odd horizontal timings
+      drm/vc4: kms: Switch to drmm_add_action_or_reset
+      drm/vc4: kms: Remove useless define
+      drm/vc4: kms: Rename NUM_CHANNELS
+      drm/vc4: kms: Split the HVS muxing check in a separate function
+      drm/vc4: kms: Document the muxing corner cases
+      dt-bindings: display: Add a property to deal with WiFi coexistence
+      drm/vc4: hdmi: Disable Wifi Frequencies
+      drm/vc4: kms: Store the unassigned channel list in the state
+      drm/vc4: kms: Don't disable the muxing of an active CRTC
+
+Rodrigo Siqueira (1):
+      drm/amd/display: Avoid HDCP initialization in devices without output
+
+Sonny Jiang (2):
+      drm/amdgpu: fix SI UVD firmware validate resume fail
+      drm/amdgpu: fix a page fault
+
+Thomas Zimmermann (1):
+      drm/ast: Reload gamma LUT after changing primary plane's color format
+
+Yan Zhao (1):
+      drm/i915/gvt: correct a false comment of flag F_UNALIGN
+
+xinhui pan (1):
+      drm/amdgpu: Fix size calculation when init onchip memory
+
+ .../bindings/display/brcm,bcm2711-hdmi.yaml        |   6 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.h            |   1 +
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c             |   2 +
+ drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c              |  20 +-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |   2 +-
+ drivers/gpu/drm/ast/ast_mode.c                     |  17 +-
+ drivers/gpu/drm/exynos/Kconfig                     |   3 +-
+ drivers/gpu/drm/i915/gt/intel_breadcrumbs.c        | 143 +++++++-----
+ drivers/gpu/drm/i915/gt/intel_breadcrumbs_types.h  |   2 +-
+ drivers/gpu/drm/i915/gt/intel_lrc.c                |  60 ++++-
+ drivers/gpu/drm/i915/gvt/gvt.h                     |   2 +-
+ drivers/gpu/drm/i915/i915_perf.c                   |   9 +-
+ drivers/gpu/drm/i915/i915_reg.h                    |   2 +
+ drivers/gpu/drm/i915/i915_request.h                |   6 +-
+ drivers/gpu/drm/mediatek/mtk_dpi.c                 |   9 -
+ drivers/gpu/drm/mediatek/mtk_dsi.c                 |  61 ++----
+ drivers/gpu/drm/nouveau/nouveau_gem.c              |   8 +-
+ drivers/gpu/drm/vc4/vc4_drv.h                      |   4 +
+ drivers/gpu/drm/vc4/vc4_hdmi.c                     |  48 ++++
+ drivers/gpu/drm/vc4/vc4_hdmi.h                     |  11 +
+ drivers/gpu/drm/vc4/vc4_kms.c                      | 244 +++++++++++++++------
+ 23 files changed, 475 insertions(+), 193 deletions(-)
