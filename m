@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047EC2C5EE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6172C5EE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 04:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392305AbgK0DOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 22:14:25 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8598 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730781AbgK0DOZ (ORCPT
+        id S2392312AbgK0DOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 22:14:53 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:39752 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388682AbgK0DOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 22:14:25 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cj08K4S4TzLt25;
-        Fri, 27 Nov 2020 11:13:53 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 27 Nov 2020 11:14:21 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <hdegoede@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/vboxvideo: Used the vram helper
-Date:   Fri, 27 Nov 2020 11:14:42 +0800
-Message-ID: <1606446882-36335-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 26 Nov 2020 22:14:53 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UGeo63._1606446889;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UGeo63._1606446889)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 27 Nov 2020 11:14:50 +0800
+Subject: Re: [PATCH next] mm/swap.c: reduce lock contention in lru_cache_add
+To:     Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Yu Zhao <yuzhao@google.com>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1605860847-47445-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201126045234.GA1014081@google.com>
+ <ed19e3f7-33cb-20ae-537e-a7ada2036895@linux.alibaba.com>
+ <20201126072402.GA1047005@google.com>
+ <464fa387-9dfd-a8c7-3d86-040f26fd4115@suse.cz>
+ <c3d53633-af28-79c1-f42c-d5b851af4d56@suse.cz>
+ <20201126155553.GT4327@casper.infradead.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <5f8300ea-2abc-5cee-d837-f20e535f19c2@linux.alibaba.com>
+Date:   Fri, 27 Nov 2020 11:14:49 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201126155553.GT4327@casper.infradead.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if the driver uses drmm_vram_helper_init, there is no need to
-call drm_vram_helper_release_mm when the drm module get unloaded,
-as this will done automagically.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/gpu/drm/vboxvideo/vbox_ttm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/vboxvideo/vbox_ttm.c b/drivers/gpu/drm/vboxvideo/vbox_ttm.c
-index f5a0667..e1909a8 100644
---- a/drivers/gpu/drm/vboxvideo/vbox_ttm.c
-+++ b/drivers/gpu/drm/vboxvideo/vbox_ttm.c
-@@ -16,8 +16,8 @@ int vbox_mm_init(struct vbox_private *vbox)
- 	int ret;
- 	struct drm_device *dev = &vbox->ddev;
- 
--	vmm = drm_vram_helper_alloc_mm(dev, pci_resource_start(dev->pdev, 0),
--				       vbox->available_vram_size);
-+	vmm = drmm_vram_helper_init(dev, pci_resource_start(dev->pdev, 0),
-+				    vbox->available_vram_size);
- 	if (IS_ERR(vmm)) {
- 		ret = PTR_ERR(vmm);
- 		DRM_ERROR("Error initializing VRAM MM; %d\n", ret);
-@@ -32,5 +32,4 @@ int vbox_mm_init(struct vbox_private *vbox)
- void vbox_mm_fini(struct vbox_private *vbox)
- {
- 	arch_phys_wc_del(vbox->fb_mtrr);
--	drm_vram_helper_release_mm(&vbox->ddev);
- }
--- 
-2.7.4
+ÔÚ 2020/11/26 ÏÂÎç11:55, Matthew Wilcox Ð´µÀ:
+> On Thu, Nov 26, 2020 at 04:44:04PM +0100, Vlastimil Babka wrote:
+>> However, Matthew wanted to increase pagevec size [1] and once 15^2 becomes
+>> 63^2, it starts to be somewhat more worrying.
+>>
+>> [1] https://lore.kernel.org/linux-mm/20201105172651.2455-1-willy@infradead.org/
+> 
+> Well, Tim wanted it ;-)
+> 
+> I would suggest that rather than an insertion sort (or was it a bubble
+> sort?), we should be using a Shell sort.  It's ideal for these kinds of
+> smallish arrays.
+> 
+> https://en.wikipedia.org/wiki/Shellsort
+> 
 
+Uh, looks perfect good!. I gonna look into it. :)
+
+Thanks!
