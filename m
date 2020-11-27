@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437202C610E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E482C6119
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729240AbgK0IkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 03:40:14 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7997 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728285AbgK0IkO (ORCPT
+        id S1728285AbgK0Inl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 03:43:41 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42812 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727742AbgK0Ink (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 03:40:14 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cj7NW0109zhjXC;
-        Fri, 27 Nov 2020 16:39:54 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.208) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 27 Nov 2020
- 16:40:08 +0800
-Subject: Re: [PATCH 1/1] perf diff: fix error return value in __cmd_diff()
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201124103652.438-1-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <bcd5f5f7-6d07-8cf8-8297-ff573bbded51@huawei.com>
-Date:   Fri, 27 Nov 2020 16:40:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 27 Nov 2020 03:43:40 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AR8hV57029011;
+        Fri, 27 Nov 2020 02:43:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606466611;
+        bh=aMzyk4R1VkVqE8u8Y1gkJ93UmYRtvSDrJWJA3BazLBI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=eiXc00S9zlRjJ3t94onJsSPWheIemhEs3ZquGJurOy7u+2xZxMdZvVDwcC0+0BbS2
+         9tWMA0iebJ8hkhpP0Gd21eyt3QU5bDfDuRlvjdXGmyINuF6++rk3DzMmp4ib7Q4KER
+         9tkvchaAGWRLc9y9XIg5N1PuEPGD56wlZrT9MdGw=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AR8hVom099118
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 27 Nov 2020 02:43:31 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 27
+ Nov 2020 02:43:30 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 27 Nov 2020 02:43:30 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AR8hSXW053143;
+        Fri, 27 Nov 2020 02:43:29 -0600
+Subject: Re: [REGRESSION] omapdrm/N900 display broken
+To:     Daniel Vetter <daniel@ffwll.ch>
+CC:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Tony Lindgren <tony@atomide.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200728181412.GA49617@darkstar.musicnaut.iki.fi>
+ <660b2fe1-343d-b83e-11d2-5a5eb530b83f@ti.com>
+ <448c1441-2cac-44ef-95ef-bb28b512297b@ti.com>
+ <20200823162625.GC4313@darkstar.musicnaut.iki.fi>
+ <ac42f7f9-2ac2-246e-69c1-3d56cea7e59b@ti.com>
+ <CAKMK7uEAaNhr__aYxWpNmUb1jTruf0FMoPwgn8_so9mGV=yAOQ@mail.gmail.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <6f7e2f5c-3e88-25c1-d46a-8c52c15527ce@ti.com>
+Date:   Fri, 27 Nov 2020 10:43:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201124103652.438-1-thunder.leizhen@huawei.com>
+In-Reply-To: <CAKMK7uEAaNhr__aYxWpNmUb1jTruf0FMoPwgn8_so9mGV=yAOQ@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-CFilter-Loop: Reflected
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everybody:
-  Can any one review it?
+On 25/11/2020 11:07, Daniel Vetter wrote:
 
+>> Laurent, does this ring any bells? The WARN comes in drm_atomic_bridge_chain_enable() when
+>> drm_atomic_get_old_bridge_state() returns null for (presumably) sdi bridge.
+>>
+>> I'm not sure why the bridge state would not be there.
+> 
+> Lack of state on first modeset usually means your
+> drm_mode_config_reset didn't create one. Or whatever it is you're
+> using. I didn't look whether you're wiring this up correctly or not.
+> We might even want to add a ->reset function to
+> drm_private_state_funcs to make this work for everyone.
 
-On 2020/11/24 18:36, Zhen Lei wrote:
-> An appropriate return value should be set on the failed path.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  tools/perf/builtin-diff.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
-> index 584e2e1a3793..cefc71506409 100644
-> --- a/tools/perf/builtin-diff.c
-> +++ b/tools/perf/builtin-diff.c
-> @@ -1222,8 +1222,10 @@ static int __cmd_diff(void)
->  		if (compute == COMPUTE_STREAM) {
->  			d->evlist_streams = evlist__create_streams(
->  						d->session->evlist, 5);
-> -			if (!d->evlist_streams)
-> +			if (!d->evlist_streams) {
-> +				ret = -ENOMEM;
->  				goto out_delete;
-> +			}
->  		}
->  	}
->  
-> 
+The bridge driver set atomic_enable and atomic_disable, but no other atomic funcs. It was supposed
+to set the legacy enable & disable.
 
+ Tomi
+
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
