@@ -2,241 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1D22C5F56
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 05:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9CC2C5F5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 05:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404641AbgK0Ex0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 23:53:26 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:35173 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731606AbgK0Ex0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 23:53:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606452804; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=xM24JflFy1SAsCAGU2vOf/vt49oiaZncEUPC7LPr8h0=; b=v/wxUnB+WpGXqFamh7n04VBJWtBuh9KDmMoEpRyg5EaqUhthJwa37USPOJtxR0PYJ3uQF1kG
- HfMEZEB/SAbt6wRwOYimffXcr2RcGYb2R/WMMhicpB6TVDdcggQcwNlI+UVoqpcYaYh3NshZ
- oRokKwrHAaeHu0wfe7jFbGCxfdw=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fc0863e4146c5eefdbfe31a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 04:53:18
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C2E33C43468; Fri, 27 Nov 2020 04:53:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.105] (unknown [49.206.49.183])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4BE12C433ED;
-        Fri, 27 Nov 2020 04:53:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4BE12C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH v2 tip/core/rcu 5/6] srcu: Provide polling interfaces for
- Tree SRCU grace periods
-To:     paulmck@kernel.org, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, kent.overstreet@gmail.com
-References: <@@@> <20201121005919.17152-5-paulmck@kernel.org>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <05712100-9f65-d81c-1eb0-671bc54f3baa@codeaurora.org>
-Date:   Fri, 27 Nov 2020 10:22:59 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20201121005919.17152-5-paulmck@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2404725AbgK0E4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 23:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731606AbgK0E4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 26 Nov 2020 23:56:33 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDAFC0613D1;
+        Thu, 26 Nov 2020 20:56:32 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id t4so4214484wrr.12;
+        Thu, 26 Nov 2020 20:56:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=6Cj/13aEZYs6bV9q9GcsmWru9cRPsDN5Amlb4LASu5I=;
+        b=KMZEyp4fZQhpFWUe2Pw/21tRJa5WcrJQ+T6u7Bh2/JvXkV4l0Ovvd5EHY3Sm9pRZY9
+         0EVcAfpw2cltJYhNmlcq9ksb0qO2ORJqRsVZwY41xPs4V2VAsX1E3cP6v+9qbhPXF0vZ
+         UKdd6OInyn3k0ZN3I1N6tE2EUZTxONsXzq1I3aYy5+XLTcy4rhd/XwEJb7GrJaPQt1HS
+         B0s9TFbY5O+WE09k8Jm8mEQBJUPdk1eeOwHsno/Ge1R5xC/mVFG2JaDczdzZB8RTUrNT
+         iWJBElCKMls8fKhKOVFiXCtMBCzhugccNI3VvwxmKl6njKMVJbteBfeDycMl73/DPRoH
+         hzoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6Cj/13aEZYs6bV9q9GcsmWru9cRPsDN5Amlb4LASu5I=;
+        b=dkpbRU02tBDILYuF1k0Fkv36H9Gjwm8JfNd+v7WmxII8P5PO4G/ex3MN5Va1lqT/TJ
+         f2hwUDa88fy1MCZ8FCXciH/3xN4SCM5rpyAlogHGOAz71iqww7qJwLFoLHpAXi/l76tQ
+         W4Jw0GN8kGutr8/GOxyWZsc9CDOMagKuiaYuvS57EMr/49aIYnH+rob3wzVKEFhg5ygr
+         c+Q7pisAngZrbyUK/8D7UVjZ5YrubYdSOH20wi/cx8VgIH5poUhFipy+/TzTMx3Jz8r5
+         V5rQwMVhgzMV9vJOU2/JBw1CSjU6ZJQn8YryugQiHWAlcmTYBMuftMUmpYvr7TyyCME8
+         hm4g==
+X-Gm-Message-State: AOAM531ENA7EEpyGC+iW8S+HNLoEm/kpN+PGNOpRaiRuczjVyw3zymmF
+        PvCGXBgwweRT9cv8M17xnCE=
+X-Google-Smtp-Source: ABdhPJyYxKDK/IzhE4SM9fqoP9FQdcEzJZ6qwWQ0Ehfii9mmW0tfHZagtsJ1dxEqFbBkSquqNfXs7w==
+X-Received: by 2002:adf:f349:: with SMTP id e9mr7875941wrp.110.1606452991403;
+        Thu, 26 Nov 2020 20:56:31 -0800 (PST)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id x13sm11023166wmi.20.2020.11.26.20.56.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 20:56:30 -0800 (PST)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>
+Subject: [PATCH v3] media: rc: add keymap for pine64 remote
+Date:   Fri, 27 Nov 2020 04:56:27 +0000
+Message-Id: <20201127045627.12882-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jonas Karlman <jonas@kwiboo.se>
 
+Add a keymap for the pine64 IR remote [0]. The mouse key has been mapped to
+KEY_EPG to provide a more useful remote.
 
-On 11/21/2020 6:29 AM, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> There is a need for a polling interface for SRCU grace
-> periods, so this commit supplies get_state_synchronize_srcu(),
-> start_poll_synchronize_srcu(), and poll_state_synchronize_srcu() for this
-> purpose.  The first can be used if future grace periods are inevitable
-> (perhaps due to a later call_srcu() invocation), the second if future
-> grace periods might not otherwise happen, and the third to check if a
-> grace period has elapsed since the corresponding call to either of the
-> first two.
-> 
-> As with get_state_synchronize_rcu() and cond_synchronize_rcu(),
-> the return value from either get_state_synchronize_srcu() or
-> start_poll_synchronize_srcu() must be passed in to a later call to
-> poll_state_synchronize_srcu().
-> 
-> Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-> Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-> [ paulmck: Add EXPORT_SYMBOL_GPL() per kernel test robot feedback. ]
-> [ paulmck: Apply feedback from Neeraj Upadhyay. ]
-> Link: https://lore.kernel.org/lkml/20201117004017.GA7444@paulmck-ThinkPad-P72/
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
+[0] http://files.pine64.org/doc/Pine%20A64%20Schematic/remote-wit-logo.jpg
 
-For version in -rcu dev
+Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+Changes since v2:
+- added missing rc-map.h change
 
-Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+Changes since v1 [1]:
+- reorder code to match the physical layout
+- assign KEY_EPG instead of KEY_CONTEXT_MENU
 
+KEY_CONTEXT_MENU duplicates KEY_MENU, and while Seans suggestion of BTN_LEFT
+visually matches the key, this duplicates KEY_OK in most GUI's designed for
+remote naviagation, e.g. Kodi and Plex. I've chosen to map KEY_EPG as this
+is a common tweak in user forums to extend IR remote functionality.
 
-Thanks
-Neeraj
+[1] https://patchwork.kernel.org/project/linux-media/patch/AM3PR03MB09661A45FEB90FFC3CB44508AC630@AM3PR03MB0966.eurprd03.prod.outlook.com/
 
->   kernel/rcu/srcutiny.c |  2 +-
->   kernel/rcu/srcutree.c | 67 ++++++++++++++++++++++++++++++++++++++++++++++++---
->   2 files changed, 64 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> index b073175..c8f4202 100644
-> --- a/kernel/rcu/srcutiny.c
-> +++ b/kernel/rcu/srcutiny.c
-> @@ -148,7 +148,7 @@ void srcu_drive_gp(struct work_struct *wp)
->   	 * straighten that out.
->   	 */
->   	WRITE_ONCE(ssp->srcu_gp_running, false);
-> -	if (USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
-> +	if (USHORT_CMP_LT(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
->   		schedule_work(&ssp->srcu_work);
->   }
->   EXPORT_SYMBOL_GPL(srcu_drive_gp);
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index d930ece..945c047 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -810,7 +810,8 @@ static void srcu_leak_callback(struct rcu_head *rhp)
->   /*
->    * Start an SRCU grace period, and also queue the callback if non-NULL.
->    */
-> -static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rhp, bool do_norm)
-> +static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> +					     struct rcu_head *rhp, bool do_norm)
->   {
->   	unsigned long flags;
->   	int idx;
-> @@ -819,10 +820,12 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
->   	unsigned long s;
->   	struct srcu_data *sdp;
->   
-> +	check_init_srcu_struct(ssp);
->   	idx = srcu_read_lock(ssp);
->   	sdp = raw_cpu_ptr(ssp->sda);
->   	spin_lock_irqsave_rcu_node(sdp, flags);
-> -	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-> +	if (rhp)
-> +		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
->   	rcu_segcblist_advance(&sdp->srcu_cblist,
->   			      rcu_seq_current(&ssp->srcu_gp_seq));
->   	s = rcu_seq_snap(&ssp->srcu_gp_seq);
-> @@ -841,6 +844,7 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
->   	else if (needexp)
->   		srcu_funnel_exp_start(ssp, sdp->mynode, s);
->   	srcu_read_unlock(ssp, idx);
-> +	return s;
->   }
->   
->   /*
-> @@ -874,7 +878,6 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
->   static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
->   			rcu_callback_t func, bool do_norm)
->   {
-> -	check_init_srcu_struct(ssp);
->   	if (debug_rcu_head_queue(rhp)) {
->   		/* Probable double call_srcu(), so leak the callback. */
->   		WRITE_ONCE(rhp->func, srcu_leak_callback);
-> @@ -882,7 +885,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
->   		return;
->   	}
->   	rhp->func = func;
-> -	srcu_gp_start_if_needed(ssp, rhp, do_norm);
-> +	(void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
->   }
->   
->   /**
-> @@ -1011,6 +1014,62 @@ void synchronize_srcu(struct srcu_struct *ssp)
->   }
->   EXPORT_SYMBOL_GPL(synchronize_srcu);
->   
-> +/**
-> + * get_state_synchronize_srcu - Provide an end-of-grace-period cookie
-> + * @ssp: srcu_struct to provide cookie for.
-> + *
-> + * This function returns a cookie that can be passed to
-> + * poll_state_synchronize_srcu(), which will return true if a full grace
-> + * period has elapsed in the meantime.  It is the caller's responsibility
-> + * to make sure that grace period happens, for example, by invoking
-> + * call_srcu() after return from get_state_synchronize_srcu().
-> + */
-> +unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp)
-> +{
-> +	// Any prior manipulation of SRCU-protected data must happen
-> +	// before the load from ->srcu_gp_seq.
-> +	smp_mb();
-> +	return rcu_seq_snap(&ssp->srcu_gp_seq);
-> +}
-> +EXPORT_SYMBOL_GPL(get_state_synchronize_srcu);
-> +
-> +/**
-> + * start_poll_synchronize_srcu - Provide cookie and start grace period
-> + * @ssp: srcu_struct to provide cookie for.
-> + *
-> + * This function returns a cookie that can be passed to
-> + * poll_state_synchronize_srcu(), which will return true if a full grace
-> + * period has elapsed in the meantime.  Unlike get_state_synchronize_srcu(),
-> + * this function also ensures that any needed SRCU grace period will be
-> + * started.  This convenience does come at a cost in terms of CPU overhead.
-> + */
-> +unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp)
-> +{
-> +	return srcu_gp_start_if_needed(ssp, NULL, true);
-> +}
-> +EXPORT_SYMBOL_GPL(start_poll_synchronize_srcu);
-> +
-> +/**
-> + * poll_state_synchronize_srcu - Has cookie's grace period ended?
-> + * @ssp: srcu_struct to provide cookie for.
-> + * @cookie: Return value from get_state_synchronize_srcu() or start_poll_synchronize_srcu().
-> + *
-> + * This function takes the cookie that was returned from either
-> + * get_state_synchronize_srcu() or start_poll_synchronize_srcu(), and
-> + * returns @true if an SRCU grace period elapsed since the time that the
-> + * cookie was created.
-> + */
-> +bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
-> +{
-> +	if (!rcu_seq_done(&ssp->srcu_gp_seq, cookie))
-> +		return false;
-> +	// Ensure that the end of the SRCU grace period happens before
-> +	// any subsequent code that the caller might execute.
-> +	smp_mb(); // ^^^
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_GPL(poll_state_synchronize_srcu);
-> +
->   /*
->    * Callback function for srcu_barrier() use.
->    */
-> 
+ .../devicetree/bindings/media/rc.yaml         |  1 +
+ drivers/media/rc/keymaps/Makefile             |  1 +
+ drivers/media/rc/keymaps/rc-pine64.c          | 65 +++++++++++++++++++
+ include/media/rc-map.h                        |  1 +
+ 4 files changed, 68 insertions(+)
+ create mode 100644 drivers/media/rc/keymaps/rc-pine64.c
 
+diff --git a/Documentation/devicetree/bindings/media/rc.yaml b/Documentation/devicetree/bindings/media/rc.yaml
+index 03cf40f91d6c..946441b4e1a5 100644
+--- a/Documentation/devicetree/bindings/media/rc.yaml
++++ b/Documentation/devicetree/bindings/media/rc.yaml
+@@ -103,6 +103,7 @@ properties:
+       - rc-npgtech
+       - rc-odroid
+       - rc-pctv-sedna
++      - rc-pine64
+       - rc-pinnacle-color
+       - rc-pinnacle-grey
+       - rc-pinnacle-pctv-hd
+diff --git a/drivers/media/rc/keymaps/Makefile b/drivers/media/rc/keymaps/Makefile
+index 1c4d6bec0ae4..b252a1d2ebd6 100644
+--- a/drivers/media/rc/keymaps/Makefile
++++ b/drivers/media/rc/keymaps/Makefile
+@@ -80,6 +80,7 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
+ 			rc-npgtech.o \
+ 			rc-odroid.o \
+ 			rc-pctv-sedna.o \
++			rc-pine64.o \
+ 			rc-pinnacle-color.o \
+ 			rc-pinnacle-grey.o \
+ 			rc-pinnacle-pctv-hd.o \
+diff --git a/drivers/media/rc/keymaps/rc-pine64.c b/drivers/media/rc/keymaps/rc-pine64.c
+new file mode 100644
+index 000000000000..9b2bdbbce04e
+--- /dev/null
++++ b/drivers/media/rc/keymaps/rc-pine64.c
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0+
++
++// Keytable for the Pine64 IR Remote Controller
++// Copyright (c) 2017 Jonas Karlman
++
++#include <media/rc-map.h>
++#include <linux/module.h>
++
++static struct rc_map_table pine64[] = {
++	{ 0x40404d, KEY_POWER },
++	{ 0x40401f, KEY_WWW },
++	{ 0x40400a, KEY_MUTE },
++
++	{ 0x404017, KEY_VOLUMEDOWN },
++	{ 0x404018, KEY_VOLUMEUP },
++
++	{ 0x404010, KEY_LEFT },
++	{ 0x404011, KEY_RIGHT },
++	{ 0x40400b, KEY_UP },
++	{ 0x40400e, KEY_DOWN },
++	{ 0x40400d, KEY_OK },
++
++	{ 0x40401d, KEY_MENU },
++	{ 0x40401a, KEY_HOME },
++
++	{ 0x404045, KEY_BACK },
++
++	{ 0x404001, KEY_NUMERIC_1 },
++	{ 0x404002, KEY_NUMERIC_2 },
++	{ 0x404003, KEY_NUMERIC_3 },
++	{ 0x404004, KEY_NUMERIC_4 },
++	{ 0x404005, KEY_NUMERIC_5 },
++	{ 0x404006, KEY_NUMERIC_6 },
++	{ 0x404007, KEY_NUMERIC_7 },
++	{ 0x404008, KEY_NUMERIC_8 },
++	{ 0x404009, KEY_NUMERIC_9 },
++	{ 0x40400c, KEY_BACKSPACE },
++	{ 0x404000, KEY_NUMERIC_0 },
++	{ 0x404047, KEY_EPG }, // mouse
++};
++
++static struct rc_map_list pine64_map = {
++	.map = {
++		.scan     = pine64,
++		.size     = ARRAY_SIZE(pine64),
++		.rc_proto = RC_PROTO_NECX,
++		.name     = RC_MAP_PINE64,
++	}
++};
++
++static int __init init_rc_map_pine64(void)
++{
++	return rc_map_register(&pine64_map);
++}
++
++static void __exit exit_rc_map_pine64(void)
++{
++	rc_map_unregister(&pine64_map);
++}
++
++module_init(init_rc_map_pine64)
++module_exit(exit_rc_map_pine64)
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Jonas Karlman");
+diff --git a/include/media/rc-map.h b/include/media/rc-map.h
+index fa270f16a97b..999b750bc6b8 100644
+--- a/include/media/rc-map.h
++++ b/include/media/rc-map.h
+@@ -283,6 +283,7 @@ struct rc_map *rc_map_get(const char *name);
+ #define RC_MAP_NPGTECH                   "rc-npgtech"
+ #define RC_MAP_ODROID                    "rc-odroid"
+ #define RC_MAP_PCTV_SEDNA                "rc-pctv-sedna"
++#define RC_MAP_PINE64                    "rc-pine64"
+ #define RC_MAP_PINNACLE_COLOR            "rc-pinnacle-color"
+ #define RC_MAP_PINNACLE_GREY             "rc-pinnacle-grey"
+ #define RC_MAP_PINNACLE_PCTV_HD          "rc-pinnacle-pctv-hd"
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+2.17.1
+
