@@ -2,140 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3169E2C6AAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26AB2C6AB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 18:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732283AbgK0Rf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 12:35:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731761AbgK0Rf2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:35:28 -0500
-X-Greylist: delayed 103329 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 Nov 2020 09:35:28 PST
-Received: from dvalin.narfation.org (dvalin.narfation.org [IPv6:2a00:17d8:100::8b1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473ACC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 09:35:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
-        s=20121; t=1606498525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TRZqemWaOhYT7No0jAIADxHkJYRzEpFq4s+Pznmd268=;
-        b=xnH3Mpdn/b9LKnKOH5BHXnlUFYof9GEI5VOcfPZs8EOKAP1mrSGJ54f7bHzd9WDOMBTQbo
-        LrPMEUAmBK6B+k0+fiB3oPc8ewU73hsByh7WN7PmxVSBJKN0TpR02DTa4ir6jR/XSaqRau
-        Jbhxa4sSUP1L/HRNPpcKfBgztnaX+4I=
-From:   Sven Eckelmann <sven@narfation.org>
-To:     ron minnich <rminnich@gmail.com>
-Cc:     linux-mtd@lists.infradead.org, John Audia <graysky@archlinux.us>,
-        Adrian Schmutzler <freifunk@adrianschmutzler.de>,
-        jstefek@datto.com, Richard Weinberger <richard@nod.at>,
-        Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ron Minnich <rminnich@google.com>,
-        Brian Norris <computersforpeace@gmail.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one or more colons
-Date:   Fri, 27 Nov 2020 18:35:18 +0100
-Message-ID: <2124367.HovnAMPojK@sven-edge>
-In-Reply-To: <CAP6exY+hHrVvaMcF2tWUUJT=JS_J9NHx=92DzO=GAN==ACSh1Q@mail.gmail.com>
-References: <20200429165347.48909-1-rminnich@google.com> <2666350.AiC22s8V5E@sven-edge> <CAP6exY+hHrVvaMcF2tWUUJT=JS_J9NHx=92DzO=GAN==ACSh1Q@mail.gmail.com>
+        id S1732304AbgK0Rgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 12:36:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730603AbgK0Rgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 12:36:32 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BDDC206CA;
+        Fri, 27 Nov 2020 17:36:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606498591;
+        bh=ZPPJbupxbpXsjev8DgFJhnZBqhC9z8zd29YDNWFaFpA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZOtUgtWWlFZtcTtJyKGU3EAbP4aeDSiMOErMV5bQGmN5S9i5MaqKSMkTjToA+uTUs
+         L/wqT3eKnl+1L/9iBsgVgwXwiHupJsXO5AYAB2uYevCnjbvQFwlVFLQZWLP0xICqLT
+         OZvTKbhdL0is8Tkjspl2fsLb0JuiBR4072dNop4Q=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 8599240D0D; Fri, 27 Nov 2020 14:36:29 -0300 (-03)
+Date:   Fri, 27 Nov 2020 14:36:29 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Thomas Richter <tmricht@linux.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>
+Subject: Re: [PATCH 2/2] perf-probe: Change function definition check due to
+ broken dwarf
+Message-ID: <20201127173629.GP70905@kernel.org>
+References: <20201126172849.GE53384@kernel.org>
+ <160645613571.2824037.7441351537890235895.stgit@devnote2>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3050561.0WQXIW03uk"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160645613571.2824037.7441351537890235895.stgit@devnote2>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart3050561.0WQXIW03uk
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Sven Eckelmann <sven@narfation.org>
-To: ron minnich <rminnich@gmail.com>
-Cc: linux-mtd@lists.infradead.org, John Audia <graysky@archlinux.us>, Adrian Schmutzler <freifunk@adrianschmutzler.de>, jstefek@datto.com, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Boris Brezillon <boris.brezillon@collabora.com>, Ron Minnich <rminnich@google.com>, Brian Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one or more colons
-Date: Fri, 27 Nov 2020 18:35:18 +0100
-Message-ID: <2124367.HovnAMPojK@sven-edge>
-In-Reply-To: <CAP6exY+hHrVvaMcF2tWUUJT=JS_J9NHx=92DzO=GAN==ACSh1Q@mail.gmail.com>
-References: <20200429165347.48909-1-rminnich@google.com> <2666350.AiC22s8V5E@sven-edge> <CAP6exY+hHrVvaMcF2tWUUJT=JS_J9NHx=92DzO=GAN==ACSh1Q@mail.gmail.com>
-
-On Friday, 27 November 2020 18:16:54 CET ron minnich wrote:
-> What none of the people involved in the original patch knew was that
-> there would be other ':' in use. Sorry!
+Em Fri, Nov 27, 2020 at 02:48:55PM +0900, Masami Hiramatsu escreveu:
+> Since some gcc generates a broken DWARF which lacks DW_AT_declaration
+> attribute from the subprogram DIE of function prototype.
+> (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060)
 > 
-> But you are right, my idea is a complete non-starter, don't know what
-> I was thinking.
+> So, in addition to the DW_AT_declaration check, we also check the
+> subprogram DIE has DW_AT_inline or actual entry pc.
 
-I am still not sure because I still didn't get what you actually wanted to 
-change. I first thought that you wanted to change
+Thanks, applied and tested both patches on a fedora 33 system where
+previously those tests were failing:
 
-    mtdparts=spi0.0:256k(0:SBL1)
+    Committer testing:
 
-to
+      # cat /etc/fedora-release
+      Fedora release 33 (Thirty Three)
+      #
 
-    mtdparts=spi0.0!256k(0:SBL1)
+    Before:
 
-which wouldn't work for me when ":" is not supported anymore. And it would 
-break a lot of already working installations.
+      # perf test vfs_getname
+      78: Use vfs_getname probe to get syscall args filenames             : FAILED!
+      79: Check open filename arg using perf trace + vfs_getname          : FAILED!
+      81: Add vfs_getname probe to get syscall args filenames             : FAILED!
+      #
 
-But maybe I completely misread it. Maybe you wanted to introduce an 
-optional(!!!) stop marker like !
+    After:
 
-    mtdparts=spi0.0!:256k(0:SBL1)
+      # perf test vfs_getname
+      78: Use vfs_getname probe to get syscall args filenames             : Ok
+      79: Check open filename arg using perf trace + vfs_getname          : Ok
+      81: Add vfs_getname probe to get syscall args filenames             : Ok
+      #
 
-to inform the parser that it doesn't have to search for : before the !. While 
-this could work for me, I am not qualified enough to say which character is 
-not yet used and can be utilized.
 
-But the note about [ and ] at least makes sense to me (if it is optional):
-
-    mtdparts=[spi0.0]:256k(0:SBL1)
-
-But I am not sure if this will be a problem for people which already adopted 
-PCI IDs inside the mtdparts without [ and ].
+- Arnaldo
  
-> So it seems your patch, if it works, is the way to go?
+> Reported-by: Thomas Richter <tmricht@linux.ibm.com>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  tools/perf/util/dwarf-aux.c    |   20 ++++++++++++++++++--
+>  tools/perf/util/probe-finder.c |    3 +--
+>  2 files changed, 19 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> index 03c1a39c312a..7b2d471a6419 100644
+> --- a/tools/perf/util/dwarf-aux.c
+> +++ b/tools/perf/util/dwarf-aux.c
+> @@ -356,9 +356,25 @@ bool die_is_signed_type(Dwarf_Die *tp_die)
+>  bool die_is_func_def(Dwarf_Die *dw_die)
+>  {
+>  	Dwarf_Attribute attr;
+> +	Dwarf_Addr addr = 0;
+> +
+> +	if (dwarf_tag(dw_die) != DW_TAG_subprogram)
+> +		return false;
+> +
+> +	if (dwarf_attr(dw_die, DW_AT_declaration, &attr))
+> +		return false;
+>  
+> -	return (dwarf_tag(dw_die) == DW_TAG_subprogram &&
+> -		dwarf_attr(dw_die, DW_AT_declaration, &attr) == NULL);
+> +	/*
+> +	 * DW_AT_declaration can be lost from function declaration
+> +	 * by gcc's bug #97060.
+> +	 * So we need to check this subprogram DIE has DW_AT_inline
+> +	 * or an entry address.
+> +	 */
+> +	if (!dwarf_attr(dw_die, DW_AT_inline, &attr) &&
+> +	    die_entrypc(dw_die, &addr) < 0)
+> +		return false;
+> +
+> +	return true;
+>  }
+>  
+>  /**
+> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+> index 2c4061035f77..76dd349aa48d 100644
+> --- a/tools/perf/util/probe-finder.c
+> +++ b/tools/perf/util/probe-finder.c
+> @@ -1885,8 +1885,7 @@ static int line_range_search_cb(Dwarf_Die *sp_die, void *data)
+>  	if (lr->file && strtailcmp(lr->file, dwarf_decl_file(sp_die)))
+>  		return DWARF_CB_OK;
+>  
+> -	if (die_is_func_def(sp_die) &&
+> -	    die_match_name(sp_die, lr->function)) {
+> +	if (die_match_name(sp_die, lr->function) && die_is_func_def(sp_die)) {
+>  		lf->fname = dwarf_decl_file(sp_die);
+>  		dwarf_decl_line(sp_die, &lr->offset);
+>  		pr_debug("fname: %s, lineno:%d\n", lf->fname, lr->offset);
+> 
 
-At least this is a workaround [1] which can be pushed to all the stable 
-kernels which broke with the "Support MTD names containing one or more colons" 
-patch. And the one which OpenWrt adopted now to get the devices booting again. 
-It is only waiting for a Tested-by from you.
+-- 
 
-> I can't think
-> of anything better that lets us preserve current behavior and support
-> PCI device specifiers?
-
-I am not that deep in this topic. So I am not sure what else could be done.
-
-Kind regards,
-	Sven
-
-[1] https://patchwork.ozlabs.org/project/linux-mtd/patch/20201124062506.185392-1-sven@narfation.org/
---nextPart3050561.0WQXIW03uk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl/BONYACgkQXYcKB8Em
-e0YqYQ//eZ0ELo+2rGIVY7/IGWv75TByV0jRWWSx4r+P86XbsVZ1m4wS0NV4c3+H
-3HbLgvNe3F3JNJLOusL86+ycVOXSmSSqNrFIv8wR/QJDGlMMNHfGX4f5pmFzx3Ut
-ubxOd2tKRKfvEjLhHllZPYyUU+xwMx2xm7KGS0A38+0g4M9KsWavXbbqOjK+c2hZ
-vEagwsFdGaogYQagv8qllAgJG+Qf/7e9azcFIXM9g6V1C4QpsodnpPZh8Ro7SG3r
-Ev4p4falqGb5jd0ajCNnVATpLvQCCSqEGf5UsdzcGd+kwMzYn+30lZe1Wo3eiwO9
-sEfnwdyJINTJu9uPQihuYd9V51uP2i0mnNBOEnrCTVMhEMV4gMFMNPUIgrj6vPQi
-YnPx4EbkRSeX1XESX5/crdTQTDrodfzHEXxcbuCEbJgMXOlF7F1gWiUlj+wTSXP5
-Zg08AeIFR0AM7lV2zLfNmxLQrF8kj4n3pCUfI3ArDYmqkw4VdUPkl0XSSmNZFcvQ
-e3NTslUuUtNk4Q/QD6746Ol8e0kIA88JR48RueRrtvy6AmYKN6I4ypoWrATpgsq1
-jt+ZNDXuaofGmsrPhqoBcAskat25ZRXCdr9MqD2TBoRLxkAsfmVrqEpS94WWejqe
-JRdTcZI8VHlP/agPF1FBnLOY5JkRt9tgBH7ma0jH2CEK+LrYEaE=
-=Yxrb
------END PGP SIGNATURE-----
-
---nextPart3050561.0WQXIW03uk--
-
-
-
+- Arnaldo
