@@ -2,148 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF042C6CE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A562C6D04
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 22:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731143AbgK0Vbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 16:31:36 -0500
-Received: from www62.your-server.de ([213.133.104.62]:36840 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727468AbgK0V37 (ORCPT
+        id S1731433AbgK0Vk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 16:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731821AbgK0Viw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 16:29:59 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kilJD-0003hM-2h; Fri, 27 Nov 2020 22:29:39 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kilJC-000JbS-Nu; Fri, 27 Nov 2020 22:29:38 +0100
-Subject: Re: [PATCH bpf v2 2/2] xsk: change the tx writeable condition
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, magnus.karlsson@gmail.com
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        "open list:XDP SOCKETS (AF_XDP)" <netdev@vger.kernel.org>,
-        "open list:XDP SOCKETS (AF_XDP)" <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <cover.1605686678.git.xuanzhuo@linux.alibaba.com>
- <cover.1606285978.git.xuanzhuo@linux.alibaba.com>
- <4fd58d473f4548dc6e9e24ea9876c802d5d584b4.1606285978.git.xuanzhuo@linux.alibaba.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <15bae73e-e753-123a-7535-0ab5c1178b40@iogearbox.net>
-Date:   Fri, 27 Nov 2020 22:29:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Fri, 27 Nov 2020 16:38:52 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD29CC0613D2;
+        Fri, 27 Nov 2020 13:38:26 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CjScL4Ktxz9s0b;
+        Sat, 28 Nov 2020 08:36:18 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606512979;
+        bh=o0+IfZo8Rl6NAGtgJmiPqX7WNynCiRbKDR1uYdZPUZc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LyTRzvyCfiNCTiUGie6PTN9vOzyQL68jmwhLmniHTof/VgtJAxn2RgIplM9elyM8c
+         9OULrOGybi1upcg/Mi+r455o2pSiTiqFqJvEDq6AZwV1E7+YRSrlr8Jm6NVp+HP+Ez
+         lxxPpk0GwbYhEejOMkKPdDZ5c//tN/1YSlbIKl3BXWxlzJxmgpVmkI9wk9cWgokc7V
+         OHBPpbMm93f+L8efXjqJ9jabNW3bx3iXrp0q6OhCJ2E9fLlBQPN8tqqYjscLE0/rDC
+         u28Kn6o7rFlny6HlJHMIymwMDj01kUnqd6B3W93dgpdsjc3VuO16VGgWTK/yjsg9eP
+         iD0W5/RUFE6Ug==
+Date:   Sat, 28 Nov 2020 08:36:17 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: linux-next: Tree for Nov 27 (drivers/idle/intel_idle.c)
+Message-ID: <20201128083617.50021fff@canb.auug.org.au>
+In-Reply-To: <0a6cc4c9-c48d-dbc4-6044-3b22cd133b76@infradead.org>
+References: <20201127200457.1ffb6aaf@canb.auug.org.au>
+        <0a6cc4c9-c48d-dbc4-6044-3b22cd133b76@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <4fd58d473f4548dc6e9e24ea9876c802d5d584b4.1606285978.git.xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26001/Fri Nov 27 14:45:56 2020)
+Content-Type: multipart/signed; boundary="Sig_/31YVpNr1WANzpnKYjLc7V_9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/20 7:48 AM, Xuan Zhuo wrote:
-> Modify the tx writeable condition from the queue is not full to the
-> number of present tx queues is less than the half of the total number
-> of queues. Because the tx queue not full is a very short time, this will
-> cause a large number of EPOLLOUT events, and cause a large number of
-> process wake up.
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+--Sig_/31YVpNr1WANzpnKYjLc7V_9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-This one doesn't apply cleanly against bpf tree, please rebase. Small comment
-inline while looking over the patch:
+Hi Randy,
 
-> ---
->   net/xdp/xsk.c       | 16 +++++++++++++---
->   net/xdp/xsk_queue.h |  6 ++++++
->   2 files changed, 19 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 0df8651..22e35e9 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -211,6 +211,14 @@ static int __xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len,
->   	return 0;
->   }
->   
-> +static bool xsk_tx_writeable(struct xdp_sock *xs)
-> +{
-> +	if (xskq_cons_present_entries(xs->tx) > xs->tx->nentries / 2)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->   static bool xsk_is_bound(struct xdp_sock *xs)
->   {
->   	if (READ_ONCE(xs->state) == XSK_BOUND) {
-> @@ -296,7 +304,8 @@ void xsk_tx_release(struct xsk_buff_pool *pool)
->   	rcu_read_lock();
->   	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
->   		__xskq_cons_release(xs->tx);
-> -		xs->sk.sk_write_space(&xs->sk);
-> +		if (xsk_tx_writeable(xs))
-> +			xs->sk.sk_write_space(&xs->sk);
->   	}
->   	rcu_read_unlock();
->   }
-> @@ -499,7 +508,8 @@ static int xsk_generic_xmit(struct sock *sk)
->   
->   out:
->   	if (sent_frame)
-> -		sk->sk_write_space(sk);
-> +		if (xsk_tx_writeable(xs))
-> +			sk->sk_write_space(sk);
->   
->   	mutex_unlock(&xs->mutex);
->   	return err;
-> @@ -556,7 +566,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
->   
->   	if (xs->rx && !xskq_prod_is_empty(xs->rx))
->   		mask |= EPOLLIN | EPOLLRDNORM;
-> -	if (xs->tx && !xskq_cons_is_full(xs->tx))
-> +	if (xs->tx && xsk_tx_writeable(xs))
->   		mask |= EPOLLOUT | EPOLLWRNORM;
->   
->   	return mask;
-> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> index b936c46..b655004 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -307,6 +307,12 @@ static inline bool xskq_cons_is_full(struct xsk_queue *q)
->   		q->nentries;
->   }
->   
-> +static inline __u64 xskq_cons_present_entries(struct xsk_queue *q)
+On Fri, 27 Nov 2020 07:57:32 -0800 Randy Dunlap <rdunlap@infradead.org> wro=
+te:
+>
+> On 11/27/20 1:04 AM, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > Changes since 20201126:
+> >  =20
+>=20
+> (This looks strange to me.)
+>=20
+>=20
+> on i386 or x86_64:
+>=20
+> # CONFIG_ACPI is not set
+>=20
+> ../drivers/idle/intel_idle.c: In function =E2=80=98intel_idle_init_cstate=
+s_icpu=E2=80=99:
+> ../drivers/idle/intel_idle.c:1510:7: error: implicit declaration of funct=
+ion =E2=80=98intel_idle_state_needs_timer_stop=E2=80=99; did you mean =E2=
+=80=98intel_idle_init_cstates_icpu=E2=80=99? [-Werror=3Dimplicit-function-d=
+eclaration]
+>    if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
+>        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Types prefixed with __ are mainly for user-space facing things like uapi headers,
-so in-kernel should be u64. Is there a reason this is not done as u32 (and thus
-same as producer and producer)?
+intel_idle_state_needs_timer_stop() is only defined when
+CONFIG_ACPI_PROCESSOR_CSTATE is set, but is used once where that is not
+necessarily set.  I assume CONFIG_ACPI_PROCESSOR_CSTATE is not set in
+your config?
 
-> +{
-> +	/* No barriers needed since data is not accessed */
-> +	return READ_ONCE(q->ring->producer) - READ_ONCE(q->ring->consumer);
-> +}
-> +
->   /* Functions for producers */
->   
->   static inline u32 xskq_prod_nb_free(struct xsk_queue *q, u32 max)
-> 
+Caused by commit
 
+  6e1d2bc675bd ("intel_idle: Fix intel_idle() vs tracing")
+
+from the tip tree.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/31YVpNr1WANzpnKYjLc7V_9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/BcVEACgkQAVBC80lX
+0GybVwf+OGdYU2psJs55vea312WYwrHhL1Ni9ijSaNnlGQJ1Dg6oGehdGuJb0yPL
+99kYJhcifueTn0UBGpnfjY28FGl4JRmF2UEoe8e0vhRL8jw9SPKCZnv36BQemf8H
+BvMdxpE7qBNh25yg2MbmxTqNIEBLvaTbabv+Ha+AqiTjR7EJxCnwbz5eVJBH0kls
+/xZzq74D+vWP8astH5zWzXCFnIhrlP6Bv6OP069E2dZWj2+QHneDY4HQYk1G+qrS
+4huBIJVh4mUYT28RHW0EqIo/7V2Dtx3/WYcGhZk8vBd+NS6KA3/glKGt5j/xXAiO
+YoV4gJaxAK79yWiaGtoQZXg0PBej+A==
+=STS/
+-----END PGP SIGNATURE-----
+
+--Sig_/31YVpNr1WANzpnKYjLc7V_9--
