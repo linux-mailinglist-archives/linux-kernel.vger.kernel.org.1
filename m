@@ -2,163 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAE12C6422
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 12:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483A62C6429
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 13:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgK0L4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 06:56:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgK0L4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 06:56:22 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24918C0613D1;
-        Fri, 27 Nov 2020 03:56:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5ohyWrmFf+k1KuXXUYFOJWvup45HiXzUKqvJ5kKjw3M=; b=wWCMgP5Phqg102tm8qBjEC8C/y
-        XloXtypuPFdAbGc5KXDWGw8FJtrCXYk/l7fbHhpY+jep334FlyclcVnCzRK6tsGjf/1/BYtVFOQ+0
-        q13z4aRdl8vDBiWqCsyj5bZF0OBi3e6AiJm0e7hMOP1iimyGaix5Zpe+Jfk/DvPKsyGFb91XrcfJW
-        4Xo2NRet34upzPIe6gvJJjkAb5WMB/3pwW4npWdu40WG5pJxRJr0iwyvotByVCK79WrD8KbR5ltH3
-        jPkK8Bj+N+XpQNCwFHnsaOewdwcvWODxMT6OPtjnEDbAlYXwEmk76OLiGJURu27pGsnMgbJ7Ijo/O
-        uPmbsUHQ==;
-Received: from [54.239.6.185] (helo=freeip.amazon.com)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kicMN-0005Um-49; Fri, 27 Nov 2020 11:56:19 +0000
-Message-ID: <e3ecab0dc08a40d9e04d5efd3a00194c7d64398b.camel@infradead.org>
-Subject: Re: [PATCH 1/2] KVM: x86: handle !lapic_in_kernel case in
- kvm_cpu_*_extint
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     seanjc@google.com, Filippo Sironi <sironi@amazon.de>,
-        stable@vger.kernel.org
-Date:   Fri, 27 Nov 2020 11:56:16 +0000
-In-Reply-To: <20201127112114.3219360-2-pbonzini@redhat.com>
-References: <20201127112114.3219360-1-pbonzini@redhat.com>
-         <20201127112114.3219360-2-pbonzini@redhat.com>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-GIyeztfU7Rp1Y43vkMTl"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+        id S1726477AbgK0MCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 07:02:09 -0500
+Received: from mx.socionext.com ([202.248.49.38]:52668 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725985AbgK0MCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 07:02:09 -0500
+Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 27 Nov 2020 21:02:06 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 0187A60059;
+        Fri, 27 Nov 2020 21:02:07 +0900 (JST)
+Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Fri, 27 Nov 2020 21:02:29 +0900
+Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
+        by iyokan.css.socionext.com (Postfix) with ESMTP id B376E4037D;
+        Fri, 27 Nov 2020 21:02:06 +0900 (JST)
+Received: from [10.212.20.201] (unknown [10.212.20.201])
+        by yuzu.css.socionext.com (Postfix) with ESMTP id 0BB9F12049C;
+        Fri, 27 Nov 2020 21:02:05 +0900 (JST)
+Subject: Re: [PATCH v8 3/3] PCI: uniphier: Add misc interrupt handler to
+ invoke PME and AER
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <1603848703-21099-4-git-send-email-hayashi.kunihiko@socionext.com>
+ <20201124232037.GA595463@bjorn-Precision-5520>
+ <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <f49a236d-c5f8-c445-f74e-7aa4eea70c3a@socionext.com>
+Date:   Fri, 27 Nov 2020 21:02:05 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Bjorn Lorenzo,
 
---=-GIyeztfU7Rp1Y43vkMTl
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 2020/11/25 19:23, Lorenzo Pieralisi wrote:
+> On Tue, Nov 24, 2020 at 05:20:37PM -0600, Bjorn Helgaas wrote:
+>> On Wed, Oct 28, 2020 at 10:31:43AM +0900, Kunihiko Hayashi wrote:
+>>> This patch adds misc interrupt handler to detect and invoke PME/AER event.
+>>>
+>>> In UniPhier PCIe controller, PME/AER signals are assigned to the same
+>>> signal as MSI by the internal logic. These signals should be detected by
+>>> the internal register, however, DWC MSI handler can't handle these signals.
+>>
+>> I don't know what "PME/AER signals are assigned to the same signal as
+>> MSI" means.
+> 
+> The host controller embeds an interrupt-controller whose IRQ wire output
+> is cascaded into the main interrupt controller.
+> 
+> The host-bridge embedded controller receives MSI writes from devices
+> and it turns them into an edge IRQ into the main interrupt controller.
+> 
+> To ack/mask the MSIs at host contoller interrupt controller level, there
+> is a control register in the host controller that needs handling upon
+> IRQ reception.
 
-On Fri, 2020-11-27 at 06:21 -0500, Paolo Bonzini wrote:
-> +        * FIXME: interrupt.injected represents an interrupt that it's
-
-You can drop the stray apostrophe from that "its" while you're moving
-it...
-
-
---=-GIyeztfU7Rp1Y43vkMTl
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
-MTI3MTE1NjE2WjAvBgkqhkiG9w0BCQQxIgQgTvbbRfhVAhzbfiNP+NkbXIIMj082980OiDz4+IsE
-aNEwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBADAEGnPIi0Ue0W2NuXyjriGN+t4r8EEMw53A2Atx95RfWZgkMpC1ZMeyRUYaN9k0
-d1zAY0nZI+aBf5e6spbB318CjOAKcG42qq7VqPPU4lnqjtrbQVK+ViygKU+GvLVhRcDG+ulxfRG4
-p/DfQAUJfaANIHmTjZ2E8IJIsTIXNai+5UZH3xAORQyvwfFO6hsocv4MmSQ1+LFzEkg5QaudlX0t
-ewuX+k/Hz84MzXDNWEwKNdVYzhOx4S5Q7MTnSqNfq1fEEQ97Gnmk32uoP61HUoOyunynj7+m3C1h
-vBQfDUBC8jS1eLbSU08U8A0FPc3TMFuZVVX+RKnWH5cJjhplP7oAAAAAAAA=
+Thanks for explaining that.
+In my understanding, PME/AER signals are cascaded to MSI by embedded
+interrupt controller (not "assigned").
 
 
---=-GIyeztfU7Rp1Y43vkMTl--
+> The *RP* (and AFAIU the RP *only*) signals the PME/AER MSI using the
+> same wire to the main interrupt controller but its ack/mask is handled
+> by a different bit in the host bridge control register above, therefore
+> the cascaded IRQ isr needs to know which virq it is actually handling
+> to ack/mask accordingly.
 
+Sorry what is RP? Root complex or something?
+
+
+> IMO this should be modelled with a separate IRQ domain and chip for
+> the root port (yes this implies describing the root port in the dts
+> file with a separate msi-parent).
+> 
+> This series as it stands is a kludge.
+
+I see. However I need some time to consider the way to separate IRQ domain.
+Is there any idea or example to handle PME/AER with IRQ domain?
+
+
+>> I'm trying to figure out if this is talking about PME/AER MSI vector
+>> numbers (probably not) or some internal wire that's not
+>> architecturally visible or what.
+>>
+>> Probably also not related to the fact that PME, hotplug, and bandwidth
+>> notifications share the same MSI/MSI-X vector.
+>>
+>> Is this something that's going to be applicable to all the DWC-based
+>> drivers?
+
+I think that this feature depends on the vendor specification.
+At least, the registers to control or check these signals are implemented
+in the vendor's logic.
+
+
+>>> DWC MSI handler calls .msi_host_isr() callback function, that detects
+>>> PME/AER signals with the internal register and invokes the interrupt
+>>> with PME/AER vIRQ numbers.
+>>>
+>>> These vIRQ numbers is obtained from portdrv in uniphier_add_pcie_port()
+>>> function.
+>>>
+>>> Cc: Marc Zyngier <maz@kernel.org>
+>>> Cc: Jingoo Han <jingoohan1@gmail.com>
+>>> Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+>>> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+>>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>>> Reviewed-by: Rob Herring <robh@kernel.org>
+>>> ---
+>>>   drivers/pci/controller/dwc/pcie-uniphier.c | 77 +++++++++++++++++++++++++-----
+>>>   1 file changed, 66 insertions(+), 11 deletions(-)
+>>>
+>>> diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
+>>> index 4817626..237537a 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-uniphier.c
+>>> +++ b/drivers/pci/controller/dwc/pcie-uniphier.c
+>>> @@ -21,6 +21,7 @@
+>>>   #include <linux/reset.h>
+>>>   
+>>>   #include "pcie-designware.h"
+>>> +#include "../../pcie/portdrv.h"
+>>>   
+>>>   #define PCL_PINCTRL0			0x002c
+>>>   #define PCL_PERST_PLDN_REGEN		BIT(12)
+>>> @@ -44,7 +45,9 @@
+>>>   #define PCL_SYS_AUX_PWR_DET		BIT(8)
+>>>   
+>>>   #define PCL_RCV_INT			0x8108
+>>> +#define PCL_RCV_INT_ALL_INT_MASK	GENMASK(28, 25)
+>>>   #define PCL_RCV_INT_ALL_ENABLE		GENMASK(20, 17)
+>>> +#define PCL_RCV_INT_ALL_MSI_MASK	GENMASK(12, 9)
+>>>   #define PCL_CFG_BW_MGT_STATUS		BIT(4)
+>>>   #define PCL_CFG_LINK_AUTO_BW_STATUS	BIT(3)
+>>>   #define PCL_CFG_AER_RC_ERR_MSI_STATUS	BIT(2)
+>>> @@ -68,6 +71,8 @@ struct uniphier_pcie_priv {
+>>>   	struct reset_control *rst;
+>>>   	struct phy *phy;
+>>>   	struct irq_domain *legacy_irq_domain;
+>>> +	int aer_irq;
+>>> +	int pme_irq;
+>>>   };
+>>>   
+>>>   #define to_uniphier_pcie(x)	dev_get_drvdata((x)->dev)
+>>> @@ -167,7 +172,15 @@ static void uniphier_pcie_stop_link(struct dw_pcie *pci)
+>>>   
+>>>   static void uniphier_pcie_irq_enable(struct uniphier_pcie_priv *priv)
+>>>   {
+>>> -	writel(PCL_RCV_INT_ALL_ENABLE, priv->base + PCL_RCV_INT);
+>>> +	u32 val;
+>>> +
+>>> +	val = PCL_RCV_INT_ALL_ENABLE;
+>>> +	if (pci_msi_enabled())
+>>> +		val |= PCL_RCV_INT_ALL_INT_MASK;
+>>> +	else
+>>> +		val |= PCL_RCV_INT_ALL_MSI_MASK;
+>>
+>> I'm confused about how this works.  Root Ports can signal AER errors
+>> with either INTx or MSI.  This is controlled by the architected
+>> Interrupt Disable bit and the MSI/MSI-X enable bits (I'm looking at
+>> PCIe r5.0, sec 6.2.4.1.2).
+>>
+>> The code here doesn't look related to those bits.  Does this code mean
+>> that if pci_msi_enabled(), the Root Port will always signal with MSI
+>> (if MSI Enable is set) and will *never* signal with INTx?
+
+According to the spec sheet, we need to set interrupt enable bit for either
+INTx or MSI, the other bit should be reset. These bits are in config space
+and handled by the framework.
+
+The controller signals AER errors with the interrupt that is either INTx
+or MSI enabled. I think that the only way to know if MSI is enabled
+(and INTX is disabled) is to use pci_msi_enabled().
+
+
+>>> +	writel(val, priv->base + PCL_RCV_INT);
+>>>   	writel(PCL_RCV_INTX_ALL_ENABLE, priv->base + PCL_RCV_INTX);
+>>>   }
+>>>   
+>>> @@ -231,28 +244,52 @@ static const struct irq_domain_ops uniphier_intx_domain_ops = {
+>>>   	.map = uniphier_pcie_intx_map,
+>>>   };
+>>>   
+>>> -static void uniphier_pcie_irq_handler(struct irq_desc *desc)
+>>> +static void uniphier_pcie_misc_isr(struct pcie_port *pp, bool is_msi)
+>>>   {
+>>> -	struct pcie_port *pp = irq_desc_get_handler_data(desc);
+>>>   	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>>>   	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
+>>> -	struct irq_chip *chip = irq_desc_get_chip(desc);
+>>> -	unsigned long reg;
+>>> -	u32 val, bit, virq;
+>>> +	u32 val;
+>>>   
+>>> -	/* INT for debug */
+>>>   	val = readl(priv->base + PCL_RCV_INT);
+>>>   
+>>>   	if (val & PCL_CFG_BW_MGT_STATUS)
+>>>   		dev_dbg(pci->dev, "Link Bandwidth Management Event\n");
+>>> +
+>>
+>> Looks like a spurious whitespace change?
+
+Oops, I'll remove it.
+
+
+>>>   	if (val & PCL_CFG_LINK_AUTO_BW_STATUS)
+>>>   		dev_dbg(pci->dev, "Link Autonomous Bandwidth Event\n");
+>>> -	if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS)
+>>> -		dev_dbg(pci->dev, "Root Error\n");
+>>> -	if (val & PCL_CFG_PME_MSI_STATUS)
+>>> -		dev_dbg(pci->dev, "PME Interrupt\n");
+>>> +
+>>> +	if (is_msi) {
+>>> +		if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS) {
+>>> +			dev_dbg(pci->dev, "Root Error Status\n");
+>>> +			if (priv->aer_irq)
+>>> +				generic_handle_irq(priv->aer_irq);
+>>> +		}
+>>> +
+>>> +		if (val & PCL_CFG_PME_MSI_STATUS) {
+>>> +			dev_dbg(pci->dev, "PME Interrupt\n");
+>>> +			if (priv->pme_irq)
+>>> +				generic_handle_irq(priv->pme_irq);
+>>> +		}
+>>> +	}
+>>>   
+>>>   	writel(val, priv->base + PCL_RCV_INT);
+>>> +}
+>>> +
+>>> +static void uniphier_pcie_msi_host_isr(struct pcie_port *pp)
+>>> +{
+>>> +	uniphier_pcie_misc_isr(pp, true);
+>>> +}
+>>> +
+>>> +static void uniphier_pcie_irq_handler(struct irq_desc *desc)
+>>> +{
+>>> +	struct pcie_port *pp = irq_desc_get_handler_data(desc);
+>>> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>>> +	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
+>>> +	struct irq_chip *chip = irq_desc_get_chip(desc);
+>>> +	unsigned long reg;
+>>> +	u32 val, bit, virq;
+>>> +
+>>> +	uniphier_pcie_misc_isr(pp, false);
+>>>   
+>>>   	/* INTx */
+>>>   	chained_irq_enter(chip, desc);
+>>> @@ -329,6 +366,7 @@ static int uniphier_pcie_host_init(struct pcie_port *pp)
+>>>   
+>>>   static const struct dw_pcie_host_ops uniphier_pcie_host_ops = {
+>>>   	.host_init = uniphier_pcie_host_init,
+>>> +	.msi_host_isr = uniphier_pcie_msi_host_isr,
+>>>   };
+>>>   
+>>>   static int uniphier_add_pcie_port(struct uniphier_pcie_priv *priv,
+>>> @@ -337,6 +375,7 @@ static int uniphier_add_pcie_port(struct uniphier_pcie_priv *priv,
+>>>   	struct dw_pcie *pci = &priv->pci;
+>>>   	struct pcie_port *pp = &pci->pp;
+>>>   	struct device *dev = &pdev->dev;
+>>> +	struct pci_dev *pcidev;
+>>>   	int ret;
+>>>   
+>>>   	pp->ops = &uniphier_pcie_host_ops;
+>>> @@ -353,6 +392,22 @@ static int uniphier_add_pcie_port(struct uniphier_pcie_priv *priv,
+>>>   		return ret;
+>>>   	}
+>>>   
+>>> +	/* irq for PME */
+>>> +	list_for_each_entry(pcidev, &pp->bridge->bus->devices, bus_list) {
+>>> +		priv->pme_irq =
+>>> +			pcie_port_service_get_irq(pcidev, PCIE_PORT_SERVICE_PME);
+>>> +		if (priv->pme_irq)
+>>> +			break;
+>>
+>> Does this mean that all Root Ports must use the same MSI vector?  I
+>> don't think that's a PCIe spec requirement, though of course DWC may
+>> have its own restrictions.
+>>
+
+This controller has one port implementation only,
+so this assumes that there is one root port.
+
+
+>> I don't think this depends on CONFIG_PCIEPORTBUS, so it looks like
+>> it's possible to have
+>>
+>>    # CONFIG_PCIEPORTBUS is not set
+>>    PCIE_UNIPHIER=y
+>>
+>> in which case I think you'll have a link error.
+
+Indeed. To use port functions needs to define PCIEPORTBUS.
+I'll update PCIE_UNIPHIER in Kconfig.
+
+
+Thank you,
+
+---
+Best Regards
+Kunihiko Hayashi
