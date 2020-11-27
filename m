@@ -2,113 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2766C2C6A24
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9C52C6A26
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 17:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731784AbgK0Qtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 11:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
+        id S1731876AbgK0Qu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 11:50:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731612AbgK0Qt2 (ORCPT
+        with ESMTP id S1731534AbgK0Qu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:49:28 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB10C0613D1;
-        Fri, 27 Nov 2020 08:49:28 -0800 (PST)
-Date:   Fri, 27 Nov 2020 16:49:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606495766;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hknGfpaZlk4fYNbaScezbL+jgcw5gCrH3olnhnnpX/A=;
-        b=yaXSBCoh6+4bhhdgb4AG5ubmnpqPLZkrbMVOLOI8soqlDlt7pTG2HROAq04fRJbB4Qn8e6
-        q4o8QQnugW+XwTlG7NZLgmtYyb+rJIqB7gOLq2FtENVFS5QU5O9GEOrc3FVRRbM75nOpEl
-        kbgTF3Ejnt/LWVRu/UZjIgPPYlya2rl/c+5oeGU8LS9kr2jT29OpGwpy//o8ZduJmCWBRi
-        Sgq1sEOK/pJx9Bxw1phVDoQeUjbs4IvC+tseFasVVT+UkeyNqvF7AOlcz0hCsINgjVO+q1
-        V9YpLrbmN2HCgaGgODlY6sudop5J/rVIAL9ITLQErKAX36pz/0FBQ00KHukKwg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606495766;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hknGfpaZlk4fYNbaScezbL+jgcw5gCrH3olnhnnpX/A=;
-        b=t6p9N56U6Vir9yJx1RV5bvXyJQJ/mz+SsILBX6fWS5dNsJcq2Ltw7kv28pxNcuk5Y9n8fP
-        N58ZcG3Xz3YQ+/DA==
-From:   tip-bot2 for Amadeusz =?utf-8?q?S=C5=82awi=C5=84ski?= 
-        <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/urgent] efi/efivars: Set generic ops before loading SSDT
-Cc:     amadeuszx.slawinski@linux.intel.com,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201123172817.124146-1-amadeuszx.slawinski@linux.intel.com>
-References: <20201123172817.124146-1-amadeuszx.slawinski@linux.intel.com>
+        Fri, 27 Nov 2020 11:50:28 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E40C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:50:26 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id hb22so8232963ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:50:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t1q1/SHKgIbW+C5B/mTAdQ8BsxcSyq0zUymWZe9rx3U=;
+        b=ge2XywzPkpdxv9n/Fbs5vWEHA989qR/8Yox1ZRHLfL1xJSVMaIqd7r2X0hfJqySlWl
+         MUDt/K1VtjFqQsHHOQBDcWjh9BqtMyF0ol3dlQdiybZobKY7sLJHvFb0vte1J1XIoGRz
+         juKlidqO/OxMgfrKNYLPFyQQExhPFDMupmdj8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t1q1/SHKgIbW+C5B/mTAdQ8BsxcSyq0zUymWZe9rx3U=;
+        b=GyKceZuQs7XKJ69ADjQhijwyb/ghU+wCuGmKcLisnpkpjuGtFMP/qsGH0Y1BwBFa7F
+         0XgTHbcG+e7fu2EXXSm32ZfYDsNvLQM3Hnl9hCQYZ8YPkdGLTFnNiaYTShnR3oIaMkqZ
+         JbvAl+XOhf9oehPrjYu+8hFjLAyn9jg9EInHEG5SvtzuTR31pnJ36iqj/4P7uVpPJH8Q
+         ZwNkjjbCB9txxjpeb6gPL9N8SNM9NK+nC903delwApl+7VS51sHo//wCm6YOtKChpY6Q
+         wYFXeqOGuJNEC+hOxf0f2nsdqBkrDfppm24khRP5Qa+cCycQUNorFRWfqYVrBolNv804
+         xiEA==
+X-Gm-Message-State: AOAM531Nupn90Yr6KSngJlfYXE4mo1WYg2Pz4WkcXqch8nWbq9L/tRJ2
+        uLgMnCBTkouBTj1oxN+ZZ7fIm6TQPqoG+w==
+X-Google-Smtp-Source: ABdhPJzyQ+YUJbcgGIzSxzlbdEeCAXeE44fVkNvbb94cquwVBDsBw4BIAMtjUZOcB4JxyFioKEf4RA==
+X-Received: by 2002:a17:906:f18f:: with SMTP id gs15mr9018653ejb.474.1606495825037;
+        Fri, 27 Nov 2020 08:50:25 -0800 (PST)
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
+        by smtp.gmail.com with ESMTPSA id v5sm5031314ejh.99.2020.11.27.08.50.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 08:50:24 -0800 (PST)
+Received: by mail-wr1-f53.google.com with SMTP id 64so6209959wra.11
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 08:50:24 -0800 (PST)
+X-Received: by 2002:adf:f542:: with SMTP id j2mr11727842wrp.32.1606495823649;
+ Fri, 27 Nov 2020 08:50:23 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <160649576626.3364.8890840511181549442.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20201127094136.1051071-1-sergey.senozhatsky@gmail.com>
+ <0dbfa509-8c82-7470-c18b-24ab5c92dc4b@xs4all.nl> <X8ENifLanjYuhF/r@jagdpanzerIV.localdomain>
+ <509cc69b-39d7-4b13-f392-ebf25530c8fe@xs4all.nl> <X8Eq4V++hRsKuYSF@jagdpanzerIV.localdomain>
+In-Reply-To: <X8Eq4V++hRsKuYSF@jagdpanzerIV.localdomain>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Sat, 28 Nov 2020 01:50:12 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5D7V8hbdZv_VxAUHUBsbknJsWMaU=h=5j19Z-J8FL27FQ@mail.gmail.com>
+Message-ID: <CAAFQd5D7V8hbdZv_VxAUHUBsbknJsWMaU=h=5j19Z-J8FL27FQ@mail.gmail.com>
+Subject: Re: [PATCH] media: vb2: always set buffer cache sync hints
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/urgent branch of tip:
+On Sat, Nov 28, 2020 at 1:35 AM Sergey Senozhatsky
+<sergey.senozhatsky@gmail.com> wrote:
+>
+> On (20/11/27 15:56), Hans Verkuil wrote:
+> > Yes.
+> >
+> > BTW, wouldn't it be sufficient to change this code to:
+> >
+> >       if (!q->allow_cache_hints && q->memory != VB2_MEMORY_DMABUF) {
+> >               vb->need_cache_sync_on_prepare = 1;
+> >               vb->need_cache_sync_on_finish = 1;
+> >       }
+>
+> I think it would be sufficient.
 
-Commit-ID:     50bdcf047503e30126327d0be4f0ad7337106d68
-Gitweb:        https://git.kernel.org/tip/50bdcf047503e30126327d0be4f0ad73371=
-06d68
-Author:        Amadeusz S=C5=82awi=C5=84ski <amadeuszx.slawinski@linux.intel.=
-com>
-AuthorDate:    Mon, 23 Nov 2020 12:28:17 -05:00
-Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Wed, 25 Nov 2020 16:55:02 +01:00
+Does it matter at this point if allow_cache_hints is set or not?
 
-efi/efivars: Set generic ops before loading SSDT
-
-Efivars allows for overriding of SSDT tables, however starting with
-commit
-
-  bf67fad19e493b ("efi: Use more granular check for availability for variable=
- services")
-
-this use case is broken. When loading SSDT generic ops should be set
-first, however mentioned commit reversed order of operations. Fix this
-by restoring original order of operations.
-
-Fixes: bf67fad19e493b ("efi: Use more granular check for availability for var=
-iable services")
-Signed-off-by: Amadeusz S=C5=82awi=C5=84ski <amadeuszx.slawinski@linux.intel.=
-com>
-Link: https://lore.kernel.org/r/20201123172817.124146-1-amadeuszx.slawinski@l=
-inux.intel.com
-Tested-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/firmware/efi/efi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 5e5480a..6c6eec0 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -390,10 +390,10 @@ static int __init efisubsys_init(void)
-=20
- 	if (efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE |
- 				      EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)) {
--		efivar_ssdt_load();
- 		error =3D generic_ops_register();
- 		if (error)
- 			goto err_put;
-+		efivar_ssdt_load();
- 		platform_device_register_simple("efivars", 0, NULL, 0);
- 	}
-=20
+Best regards,
+Tomasz
