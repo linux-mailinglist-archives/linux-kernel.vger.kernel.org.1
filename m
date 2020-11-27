@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5042B2C6677
+	by mail.lfdr.de (Postfix) with ESMTP id C6BE02C6678
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730122AbgK0NMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 08:12:23 -0500
-Received: from foss.arm.com ([217.140.110.172]:41224 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729913AbgK0NMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 08:12:22 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07A0C30E;
-        Fri, 27 Nov 2020 05:12:22 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C9A4E3F70D;
-        Fri, 27 Nov 2020 05:12:19 -0800 (PST)
-Date:   Fri, 27 Nov 2020 13:12:17 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 04/14] arm64: Kill 32-bit applications scheduled on
- 64-bit-only CPUs
-Message-ID: <20201127131217.skekrybqjdidm5ki@e107158-lin.cambridge.arm.com>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-5-will@kernel.org>
+        id S1730309AbgK0NM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 08:12:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729913AbgK0NM2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 08:12:28 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48175C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 05:12:28 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id e60so3184169qtd.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 05:12:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4mUb8VH3/zjOcaB0prxZNOCyhHeWL/oDXOLcVhlQukA=;
+        b=QeSI7USzNR/Hc9luEaErhq6plcg4go9/B0jTyGRabKffYek2H3en767PronC7EqjDo
+         tCgS7Jhbq/jTPd1JA2RC1+NR/OOvLrIacAkIJ8YKjPzi8TLM6jIUDyYleoGFJMsnGrIu
+         IkwSC4rBqYzreESJdoFCcmxCf1KhL7Q804smgB8quH8Lf/75GJJiLoa5Nyr5e5mYAfKc
+         BcJqfQSAdhbk0lurSwVxP1bn9QGb2WJl7XxF1jN6gZXVhgcnF3O6YoOPMR6yE6JH8Sn7
+         ++ZYzAAOIahg0CheN04AL1LTyUHtoiYaRgOesk1MY6c0vUqUuhIhc2liMY8W6WQhHlvA
+         76tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4mUb8VH3/zjOcaB0prxZNOCyhHeWL/oDXOLcVhlQukA=;
+        b=Lffpz6lJOr/6M/RNTj4Omd2TvIU8LEi68pfwZAYoNlmP3WSEZ7pdsz/n44agMPff5h
+         xgmwAsxoPT5e+5KTzURo6Ii2mYiQzFgTX5cqA8gRiGDjgIDQrQXNikkFULB9q+yev5kw
+         YsthlUUk/BbS6UMd34dmasBtiRwYPRktfBo1SIO9YaxMqvegFNnZZ5lACdifGMI6HXVU
+         JiVJYA99KeET4HYZdn6W1IeqGq/Eml3hzm2sdZGmuV8KX8BdhDSO0a6v3BjMr7U7S+OX
+         W1AVrP35zN2BIZEBk8MbmPwBQVq0bxxISKemGTYIP6O/C7y75K+1/QZeCRBpxiI6krup
+         hpCw==
+X-Gm-Message-State: AOAM532WfobcvQViDVK1x27Q+RxiXKN/zAPFnXfv9Ig9XU8z80p3c+op
+        9b7er6e3hol2ClI7NQZZ5LjNdg==
+X-Google-Smtp-Source: ABdhPJwdT9CaiC8171EVRdtYjL9xHQSUnZ3qtSTbobXQaW4gNhkgGlUa+eUk68y2VsuHP79oL1WzOg==
+X-Received: by 2002:ac8:130d:: with SMTP id e13mr8308084qtj.3.1606482747424;
+        Fri, 27 Nov 2020 05:12:27 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id t205sm6026453qke.35.2020.11.27.05.12.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 05:12:26 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kidY1-002Xfv-SN; Fri, 27 Nov 2020 09:12:25 -0400
+Date:   Fri, 27 Nov 2020 09:12:25 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v6 00/17] follow_pfn and other iomap races
+Message-ID: <20201127131225.GX5487@ziepe.ca>
+References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201124155039.13804-5-will@kernel.org>
+In-Reply-To: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/20 15:50, Will Deacon wrote:
-> Scheduling a 32-bit application on a 64-bit-only CPU is a bad idea.
-> 
-> Ensure that 32-bit applications always take the slow-path when returning
-> to userspace on a system with mismatched support at EL0, so that we can
-> avoid trying to run on a 64-bit-only CPU and force a SIGKILL instead.
-> 
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
+On Thu, Nov 19, 2020 at 03:41:29PM +0100, Daniel Vetter wrote:
+> I feel like this is ready for some wider soaking. Since the remaining bits
+> are all kinda connnected probably simplest if it all goes through -mm.
 
-nit: We drop this patch at the end. Can't we avoid it altogether instead?
+Did you figure out a sumbission plan for this stuff?
 
-[...]
+> Daniel Vetter (17):
+>   drm/exynos: Stop using frame_vector helpers
+>   drm/exynos: Use FOLL_LONGTERM for g2d cmdlists
+>   misc/habana: Stop using frame_vector helpers
+>   misc/habana: Use FOLL_LONGTERM for userptr
+>   mm/frame-vector: Use FOLL_LONGTERM
+>   media: videobuf2: Move frame_vector into media subsystem
 
-> diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-> index a8184cad8890..bcb6ca2d9a7c 100644
-> --- a/arch/arm64/kernel/signal.c
-> +++ b/arch/arm64/kernel/signal.c
-> @@ -911,6 +911,19 @@ static void do_signal(struct pt_regs *regs)
->  	restore_saved_sigmask();
->  }
->  
-> +static bool cpu_affinity_invalid(struct pt_regs *regs)
-> +{
-> +	if (!compat_user_mode(regs))
-> +		return false;
+At the very least it would be good to get those in right away.
 
-Silly question. Is there an advantage of using compat_user_mode() vs
-is_compat_task()? I see the latter used in the file although struct pt_regs
-*regs is passed to the functions calling it.
+>   mm: Add unsafe_follow_pfn
+>   media/videbuf1|2: Mark follow_pfn usage as unsafe
+>   vfio/type1: Mark follow_pfn as unsafe
 
-Nothing's wrong with it, just curious.
+I'm surprised nobody from VFIO has remarked on this, I think thety
+won't like it
 
-Thanks
+>   mm: Close race in generic_access_phys
+>   PCI: Obey iomem restrictions for procfs mmap
+>   /dev/mem: Only set filp->f_mapping
+>   resource: Move devmem revoke code to resource framework
+>   sysfs: Support zapping of binary attr mmaps
+>   PCI: Revoke mappings like devmem
 
---
-Qais Yousef
+This sequence seems fairly stand alone, and in good shape as well
 
-> +
-> +	/*
-> +	 * We're preemptible, but a reschedule will cause us to check the
-> +	 * affinity again.
-> +	 */
-> +	return !cpumask_test_cpu(raw_smp_processor_id(),
-> +				 system_32bit_el0_cpumask());
-> +}
+My advice is to put the done things on a branch and get Stephen to put
+them in linux-next. You can send a PR to Lins. There is very little mm
+stuff in here, and cross subsystem stuff works better in git land,
+IMHO.
+
+Jason
