@@ -2,128 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084142C60C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1982C60BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgK0IPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 03:15:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgK0IPH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 03:15:07 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8A9C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 00:15:05 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id 1so5665784wme.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 00:15:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NMhtxoOQO9MieYk5Rltrie3Vdx47/RH1jVgYv6FFhaQ=;
-        b=m18nERKWsFZ00KX/m38Vvp9IoTZj62sK5tPmNvoeLIbF/briBEzrkI4Hs/aP0+f5Dk
-         b6L6mUdr+pMsHGojOE1pYEaNg+qTaTwxdx3UC3m6PH7giJbpoICZWLUfN6McEJznQI0/
-         ADGFpQpnm3rro734UAHnBzt65wVTVP9BpbCXcx94t+MOoll+iCpnDcavAFcdF0+QDELM
-         12QxEZVpZX7d+cnirVswy7GSxpe3Mi/4Rk9WyUD/NhH36baHA//UTri8KODMTLjGwSZU
-         jLOOkQku0V93aTg4vi4zxvjXe+Whmc44JqBeo++EqL9Q/YPCtY5Ta5ONyPUR14qNpZId
-         wP5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NMhtxoOQO9MieYk5Rltrie3Vdx47/RH1jVgYv6FFhaQ=;
-        b=KhVyQscASaHMaInM0cT7fQJsT74pO+UuqoTepqnDUb0uWMULEB1C0Iim1PXNnRjv9g
-         JCUJrgyeKYzf2Vfwhv08S1gCpJi6APIaG5BKRICKVIZp20Xt/bpRxJoyzKvxv+GTiLTY
-         Y6DTbTdDFfK8M60uPvWmHe4ZDARrZyXp1ElCYi3P2B2H0Qeb4oSP8Tx1jyQiKun5gFvw
-         PST/XIuUtSiWmIpVKoAzGLKR6ZlLTMq6wbp7JafAbn5WZPZve2F99AY+6/Z9fH17WnQ7
-         FNqCQD8Sb+ajjTtlHhFW+JjWla7GznL2QX4LDUay5qr9RwlGWzLvn3QL/Zxpwzvm+xlr
-         IvOQ==
-X-Gm-Message-State: AOAM531ZfZ4YYcQPJZVIFo2ol4VMrqBEhKbNxl85hEG51UgVbTxhokbA
-        IVI3RplIK43MHojVxvNHeL5tt1qW9VH/ygp3+ExKZw==
-X-Google-Smtp-Source: ABdhPJyk6kMwRndUJx8qkTrZCUGCRggV1uLiA8zUdqoxIaXhDdJQV7aRToPt4xzAJtqmF1NyBDcB0fbNhk0qaRpavdQ=
-X-Received: by 2002:a05:600c:298:: with SMTP id 24mr121691wmk.157.1606464903925;
- Fri, 27 Nov 2020 00:15:03 -0800 (PST)
+        id S1726760AbgK0IPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 03:15:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39700 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbgK0IPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 03:15:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606464901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ip7MWk8vAkxs5znMPhTijonXmPq5zuvObTXdOJ83AZ0=;
+        b=LWUMFtM92bOPkMj8iQu+WhuRX5EiDjBI33xReqUFQQCXjM0NlNTjbufGXMUPAhO4thQphs
+        teQ4W9KgtNHBBBDc9pAXJakMcSi/E7DAlNemyfpVgeVo4DYLBkSO74L1BYUCPm68yNMCXa
+        pFCEJJAVFiXL+Z2b2FjKCbtzoMrMM3o=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C24F7AC2F;
+        Fri, 27 Nov 2020 08:15:01 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 09:15:00 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     hughd@google.com, xuyu@linux.alibaba.com,
+        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
+        willy@infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz
+Subject: Re: [PATCH 1/3] mm,thp,shmem: limit shmem THP alloc gfp_mask
+Message-ID: <20201127081500.GL31550@dhcp22.suse.cz>
+References: <20201124194925.623931-1-riel@surriel.com>
+ <20201124194925.623931-2-riel@surriel.com>
 MIME-Version: 1.0
-References: <20200803175846.26272-1-atish.patra@wdc.com>
-In-Reply-To: <20200803175846.26272-1-atish.patra@wdc.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 27 Nov 2020 13:44:52 +0530
-Message-ID: <CAAhSdy0hrKNwOA4428Vf4mf32gZSw1cKiSXhhXB1s==yq7jEpA@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Add SBI v0.2 support for KVM
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        KVM General <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Graf <graf@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124194925.623931-2-riel@surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 3, 2020 at 11:29 PM Atish Patra <atish.patra@wdc.com> wrote:
->
-> The Supervisor Binary Interface(SBI) specification[1] now defines a
-> base extension that provides extendability to add future extensions
-> while maintaining backward compatibility with previous versions.
-> The new version is defined as 0.2 and older version is marked as 0.1.
->
-> This series adds following features to RISC-V Linux KVM.
-> 1. Adds support for SBI v0.2 in KVM
-> 2. SBI Hart state management extension (HSM) in KVM
-> 3. Ordered booting of guest vcpus in guest Linux
->
-> This series depends on the base kvm support series[2].
->
-> Guest kernel needs to also support SBI v0.2 and HSM extension in Kernel
-> to boot multiple vcpus. Linux kernel supports both starting v5.7.
-> In absense of that, guest can only boot 1vcpu.
->
-> [1] https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc
-> [2] http://lists.infradead.org/pipermail/linux-riscv/2020-July/001028.html
->
-> Atish Patra (6):
-> RISC-V: Add a non-void return for sbi v02 functions
-> RISC-V: Mark the existing SBI v0.1 implementation as legacy
-> RISC-V: Reorganize SBI code by moving legacy SBI to its own file
-> RISC-V: Add SBI v0.2 base extension
-> RISC-V: Add v0.1 replacement SBI extensions defined in v02
-> RISC-V: Add SBI HSM extension in KVM
->
-> arch/riscv/include/asm/kvm_vcpu_sbi.h |  32 +++++
-> arch/riscv/include/asm/sbi.h          |  17 ++-
-> arch/riscv/kernel/sbi.c               |  32 ++---
-> arch/riscv/kvm/Makefile               |   4 +-
-> arch/riscv/kvm/vcpu.c                 |  19 +++
-> arch/riscv/kvm/vcpu_sbi.c             | 194 ++++++++++++--------------
-> arch/riscv/kvm/vcpu_sbi_base.c        |  73 ++++++++++
-> arch/riscv/kvm/vcpu_sbi_hsm.c         | 109 +++++++++++++++
-> arch/riscv/kvm/vcpu_sbi_legacy.c      | 129 +++++++++++++++++
-> arch/riscv/kvm/vcpu_sbi_replace.c     | 136 ++++++++++++++++++
-> 10 files changed, 619 insertions(+), 126 deletions(-)
-> create mode 100644 arch/riscv/include/asm/kvm_vcpu_sbi.h
-> create mode 100644 arch/riscv/kvm/vcpu_sbi_base.c
-> create mode 100644 arch/riscv/kvm/vcpu_sbi_hsm.c
-> create mode 100644 arch/riscv/kvm/vcpu_sbi_legacy.c
-> create mode 100644 arch/riscv/kvm/vcpu_sbi_replace.c
->
-> --
-> 2.24.0
->
+On Tue 24-11-20 14:49:23, Rik van Riel wrote:
+> The allocation flags of anonymous transparent huge pages can be controlled
+> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
+> help the system from getting bogged down in the page reclaim and compaction
+> code when many THPs are getting allocated simultaneously.
+> 
+> However, the gfp_mask for shmem THP allocations were not limited by those
+> configuration settings, and some workloads ended up with all CPUs stuck
+> on the LRU lock in the page reclaim code, trying to allocate dozens of
+> THPs simultaneously.
+> 
+> This patch applies the same configurated limitation of THPs to shmem
+> hugepage allocations, to prevent that from happening.
+> 
+> Controlling the gfp_mask of THP allocations through the knobs in
+> sysfs allows users to determine the balance between how aggressively
+> the system tries to allocate THPs at fault time, and how much the
+> application may end up stalling attempting those allocations.
+> 
+> This way a THP defrag setting of "never" or "defer+madvise" will result
+> in quick allocation failures without direct reclaim when no 2MB free
+> pages are available.
+> 
+> With this patch applied, THP allocations for tmpfs will be a little
+> more aggressive than today for files mmapped with MADV_HUGEPAGE,
+> and a little less aggressive for files that are not mmapped or
+> mapped without that flag.
 
-Please implement the SBI SRST extension in your series.
+As already said I am not against this unification. On the other I really
+hope that we will not hear about somebody really requesting a per mount
+control over this behavior because some might be benefiting from THPs
+more than others and the initial cost would pay off. This is not
+something we do care about now so this patch wouldn't regress in that
+aspect.
 
-Also, the PATCH1 can be merged separately so I would suggest
-you to send this patch separately.
+> Signed-off-by: Rik van Riel <riel@surriel.com>
 
-Regards,
-Anup
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Btw. Documentation/admin-guide/mm/transhuge.rst needs some update as
+well. What about the following?
+
+diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
+index b2acd0d395ca..41fe84c5b808 100644
+--- a/Documentation/admin-guide/mm/transhuge.rst
++++ b/Documentation/admin-guide/mm/transhuge.rst
+@@ -104,7 +104,7 @@ regions (to avoid the risk of consuming more memory resources) or enabled
+ 	echo never >/sys/kernel/mm/transparent_hugepage/enabled
+ 
+ It's also possible to limit defrag efforts in the VM to generate
+-anonymous hugepages in case they're not immediately free to madvise
++anonymous and shmem hugepages in case they're not immediately free to madvise
+ regions or to never try to defrag memory and simply fallback to regular
+ pages unless hugepages are immediately available. Clearly if we spend CPU
+ time to defrag memory, we would expect to gain even more by the fact we
+
+> ---
+>  include/linux/gfp.h | 2 ++
+>  mm/huge_memory.c    | 6 +++---
+>  mm/shmem.c          | 8 +++++---
+>  3 files changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index c603237e006c..c7615c9ba03c 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
+>  extern void pm_restrict_gfp_mask(void);
+>  extern void pm_restore_gfp_mask(void);
+>  
+> +extern gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma);
+> +
+>  #ifdef CONFIG_PM_SLEEP
+>  extern bool pm_suspended_storage(void);
+>  #else
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 9474dbc150ed..c5d03b2f2f2f 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -649,9 +649,9 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+>   *	    available
+>   * never: never stall for any thp allocation
+>   */
+> -static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
+> +gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma)
+>  {
+> -	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
+> +	const bool vma_madvised = vma && (vma->vm_flags & VM_HUGEPAGE);
+>  
+>  	/* Always do synchronous compaction */
+>  	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG, &transparent_hugepage_flags))
+> @@ -744,7 +744,7 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
+>  			pte_free(vma->vm_mm, pgtable);
+>  		return ret;
+>  	}
+> -	gfp = alloc_hugepage_direct_gfpmask(vma);
+> +	gfp = vma_thp_gfp_mask(vma);
+>  	page = alloc_hugepage_vma(gfp, vma, haddr, HPAGE_PMD_ORDER);
+>  	if (unlikely(!page)) {
+>  		count_vm_event(THP_FAULT_FALLBACK);
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 537c137698f8..6c3cb192a88d 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1545,8 +1545,8 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
+>  		return NULL;
+>  
+>  	shmem_pseudo_vma_init(&pvma, info, hindex);
+> -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
+> -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
+> +	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
+> +			       true);
+>  	shmem_pseudo_vma_destroy(&pvma);
+>  	if (page)
+>  		prep_transhuge_page(page);
+> @@ -1802,6 +1802,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>  	struct page *page;
+>  	enum sgp_type sgp_huge = sgp;
+>  	pgoff_t hindex = index;
+> +	gfp_t huge_gfp;
+>  	int error;
+>  	int once = 0;
+>  	int alloced = 0;
+> @@ -1887,7 +1888,8 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>  	}
+>  
+>  alloc_huge:
+> -	page = shmem_alloc_and_acct_page(gfp, inode, index, true);
+> +	huge_gfp = vma_thp_gfp_mask(vma);
+> +	page = shmem_alloc_and_acct_page(huge_gfp, inode, index, true);
+>  	if (IS_ERR(page)) {
+>  alloc_nohuge:
+>  		page = shmem_alloc_and_acct_page(gfp, inode,
+> -- 
+> 2.25.4
+
+-- 
+Michal Hocko
+SUSE Labs
