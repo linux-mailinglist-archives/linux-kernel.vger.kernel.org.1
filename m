@@ -2,206 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFB32C60AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 08:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4E22C60B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392750AbgK0H4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 02:56:45 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9928 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388928AbgK0H4o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 02:56:44 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AR7pdWd003973;
-        Thu, 26 Nov 2020 23:56:28 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=3DoH7ISfzxfzLmXh2YFRkReX7AKUmquRoBvNcoyT8Qk=;
- b=SV5O7EBr5c8QZDswm+t6lz5OsrhCy5NupWxHyOhrQ6qUEWL+wQ/936vJP8sVwv+rCQnD
- 8Ix5025QIxdlNMAVkVAZxzOO8hJc50qXT4exJH/+8g2WUNVi+36QPW0rAWf1GybiGhRf
- koXCIGcbG92ipG1EffuE5dlBI7HtLH9vmRo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 352s3n0s0e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 26 Nov 2020 23:56:28 -0800
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 26 Nov 2020 23:56:26 -0800
+        id S2389045AbgK0H6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 02:58:44 -0500
+Received: from mail-eopbgr70113.outbound.protection.outlook.com ([40.107.7.113]:39926
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729055AbgK0H6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 02:58:35 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i6dk6dY1cXc/p4TgIN/mI1pm0tWiAl+4oND3dJ2M9Qt/hdlMgvKIJxdSuXV7bZnxyXUdHgxnuV3l/UiLCeA5MZ2mRVCaxPL4glbpE0MsNvo0EvTOGbx91TSyCD1pMxpZZzbtNNL4GKVCBHeuH1I1i9anXU6suu9R4XM9XHdIhsyK2IYqQveWrqaAENRNsQ7nTFlhpmlEopF5588Gi8fdhr5zLuBqgbgb6V3EWuh9O5eAoXIFB4i/h1I5h2ButQyR6Fd8FS6FEFQZlH4lDe8MthNEBkvknQezZrx6LoMxpp+7Izi2J79W8dipCu1/f0RzYLjKqurCENLgSyDtuG3aaw==
+ b=mKU3CKUCUnNC996y2IbUdB5W1UyZVOCVDyisQ1JWNe6WIqWxl2PUXNpK8fxSL9McQzq1FrCdaYosKhtfD3swRoUwFrJ5zmt1tH2usoIwzxBqZx1uREGMynUHaYzh8CBGixxuKxbBZwbH7kEoYludC+0sDcw5GbzCbhzMSOp8Ax0411pacNmpxQTrNHzkqBdPLfdoPQ72f3UF4uo7PFLGCegcqOPDPJJxXeTKyHjSa0HkfGW69bMecr3Cs3S/dtlercbByletbKM/5ZFD+A4wr2vcCKHeH69+7KQvoO967RBaz9X1/NgEouKGx/ytydIEvltJLh8Q7QUaGd8pdoNgZA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3DoH7ISfzxfzLmXh2YFRkReX7AKUmquRoBvNcoyT8Qk=;
- b=IQAzBIwFqxh2HC+O5cOYZ8utUFCzFtC+t46KGTVpa6VggNaT7QngvdV52z2q9clO8sNwGlN3LEhTZk/JPInu5CPMVaq7z5CKE/EX/+Dr8lwwadfYaVFIQ7DK3RnJpRFEIkGoll5YejKkUPsCSV/tRBctTF9s8Qt8DVDodcp+s2JqAMLYAtZLlUzmV1tf6PXXQNzYX9vIM4SRFxQKXwIgnPUXZ+CiTDSg3Ofw67uW65KSMDtShau9x83roJocrOskbNGF1r5rusgUNyWPyvBqgt7aii0jy9Lwhf2WsAhrpPIFGLekJP9s5YfrUEsslIZznK9QdcyyQ81vmMrWPYhp4w==
+ bh=+04C944rPcBN+tJIr4271G3CMB90A9iHoDKuEi0vjv0=;
+ b=dj8zN3LOTIxBxDMEgXIDMPc8lCW7vNUn8hRXbcECkkMPwgPZJ4waVEaxeyOtiJDCoMbwGnmNF/qSJE4vQaefzeL9fXhIzJ11SRIlEy3Y+7y9bqhFQ12p79GtyfMoELwLFad8zOn2VC7VMLyEqmARupfVpb/cg+gxeiJQ53efsrjJFucrrVcvUpybjO4Uix/47RZSJeyDpxds3EJPjvYBU6ik+1q4oIF9rwrYd9gExMhCR3/eWIvJIASt9+7KPoEdLcKkCmGrcN9GE8YFP3uVr2IEkN8Uh3BNnyLoxGfwWV834J5cgx4BgA5ZUMjAmLFTfzL952DfKKJZcoN0Nd0zbw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3DoH7ISfzxfzLmXh2YFRkReX7AKUmquRoBvNcoyT8Qk=;
- b=QsK7Oy3Wu+rPLRcbJsPhxeki9G4XZj5/nNplA9doP6X8JTwu0Dx0dt+/eGnNqjnSaQonWkBDVRsFwINUhzCgrFGYSThN0oMo6nklBdKYM5WWtPP1StsqEFxLHKgTmvqZ+OfIvpzlCXjXX27ZV5jznFhbPTyD0AogD2GmgLTxK9A=
+ bh=+04C944rPcBN+tJIr4271G3CMB90A9iHoDKuEi0vjv0=;
+ b=Y8KP4XBEWXErqvCbzzczXhTM9BF+q9hucElJfcsF9LirEfut1s6yEx6z9KNJuRDwT7HSk/HNh40gK8fqq7Ifk2NtMjQwdRnpNeVjHJGmh5FYZ6B/LPxCJVfHgbbzxSJE5CvYjJ7cwwkLyE8eopvdXSOctPwZtJ+cjF3yi1CO/rU=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3511.namprd15.prod.outlook.com (2603:10b6:a03:10e::17) with
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
+ by AM0PR07MB6434.eurprd07.prod.outlook.com (2603:10a6:20b:15e::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.30; Fri, 27 Nov
- 2020 07:56:25 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3611.025; Fri, 27 Nov 2020
- 07:56:25 +0000
-Subject: Re: [PATCH bpf-next 2/2] bpf: Add a selftest for the tracing
- bpf_get_socket_cookie
-To:     Florent Revest <revest@chromium.org>, <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kpsingh@chromium.org>, <revest@google.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20201126170212.1749137-1-revest@google.com>
- <20201126170212.1749137-2-revest@google.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <8b0529f0-5f1e-b403-2772-7a56c44a3a55@fb.com>
-Date:   Thu, 26 Nov 2020 23:56:23 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
-In-Reply-To: <20201126170212.1749137-2-revest@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.6; Fri, 27 Nov
+ 2020 07:58:31 +0000
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::d527:e75b:546c:a85b]) by AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::d527:e75b:546c:a85b%6]) with mapi id 15.20.3564.039; Fri, 27 Nov 2020
+ 07:58:31 +0000
+Subject: Re: ks-sa-rng.c:undefined reference to
+ `devm_platform_ioremap_resource'
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+References: <202011132311.XmkAgWg0-lkp@intel.com>
+ <20201127054844.GB23521@gondor.apana.org.au>
+From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <c34d556c-bb44-1d7d-5207-ddd5ed81f18a@nokia.com>
+Date:   Fri, 27 Nov 2020 08:58:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+In-Reply-To: <20201127054844.GB23521@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:7e72]
-X-ClientProxiedBy: MWHPR1701CA0016.namprd17.prod.outlook.com
- (2603:10b6:301:14::26) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+X-Originating-IP: [131.228.32.166]
+X-ClientProxiedBy: AM3PR04CA0135.eurprd04.prod.outlook.com (2603:10a6:207::19)
+ To AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::1008] (2620:10d:c090:400::5:7e72) by MWHPR1701CA0016.namprd17.prod.outlook.com (2603:10b6:301:14::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Fri, 27 Nov 2020 07:56:24 +0000
+Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.166) by AM3PR04CA0135.eurprd04.prod.outlook.com (2603:10a6:207::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Fri, 27 Nov 2020 07:58:30 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0ab188ac-4c2d-42af-7ee9-08d892a9f073
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3511:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB351181944539A719FEC33EDBD3F80@BYAPR15MB3511.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 9d50434f-dc6b-4941-31cf-08d892aa3b17
+X-MS-TrafficTypeDiagnostic: AM0PR07MB6434:
+X-Microsoft-Antispam-PRVS: <AM0PR07MB64348FF5AB3C1C583F5E2A8688F80@AM0PR07MB6434.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:175;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LjQykDDkHQlR2TATz3zAcMKKZNEa+6YEzVvwEkdDI53K6dfqax3DH+rumtVrNjXkTYxWBuRbFNqODKiBJwtVu7BGHKlv3PNLbSyBB9HP6FlaGIfk5WgSb67OckQHPt/jx2TkJEhoN+UMfuKeAp67eF0Pbk/T3MaB/b8tqxXTwOCRzF1PYCGJETa+Hcm+IsWRV9D3M62uKHUeV9+JqFbZrecZVC1uJtFteuuZ0KecJpTVCEF9OKylhniHJUz/eN50yp4iTXHKX1MajNqclsZQ8MrKaneWgHrKPuQlW71of9s/znJ4dlRj+jz/yOfl9z0NuoPMeOWIEtTma3FN0ZJCfRh/9O1i3i0oiI1JqtN2hPy0ToX8vbBUmK9NGY6ZJH0/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(136003)(376002)(346002)(396003)(31686004)(2616005)(6486002)(2906002)(316002)(186003)(52116002)(53546011)(8936002)(4326008)(478600001)(16526019)(8676002)(86362001)(66476007)(66946007)(83380400001)(5660300002)(31696002)(36756003)(66556008)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?R1BxZzc4eXVqU21ZSGd2bFliVU5HdStLYXcyVG5xbGY0eDhpRGtXelpyMEZr?=
- =?utf-8?B?clI5UWUvSU1uV3pRWkVmQkNRV0FVQlhrcjRCQ2dNdE9VKzNoZENiNW5PLytw?=
- =?utf-8?B?dkdDcEJhZnVEMGwxRnl2ZVNtVE9qRGVMelgrT0h6NmlxbjBRMWlLMlRvRm50?=
- =?utf-8?B?NU1BTUIwbWpKdXJzRFV4ZWs0eUdWcUFiTXRmSVNhb1NGenN6UnFXWGVMLzdr?=
- =?utf-8?B?d0hienNqNWpVSXVIN3QwV1M0d3M1T0RILy83NzBCNGNnL1o2LzEzY3VwSjZj?=
- =?utf-8?B?RjUrTkhvNFZUNjdZOTViVlFFRXhiUmE5cGVTM01kdTd2OGZ3Z2xjdzdNQW5z?=
- =?utf-8?B?K2FmQ0xTQUtqWCtiVG1qWHVrcjN1MmR1SkpFRVJjSUVUWEszWWxKY1FQaUJX?=
- =?utf-8?B?Sk1xck04MkdVSkN4SmJEdDE5Z3BnOVZXQmJQWkx5VWVXU2pUVUVwc1crSU0x?=
- =?utf-8?B?QXlhZjg2d3FWdUcwM3c5c0JZWUZLTXJsZ3NPM1A1R2ZQNTJGQjdNaS83bU01?=
- =?utf-8?B?dUZQSlFpTzBZNVdyMWRXNVpqRjJSUHVKMEoxdXgrb0d0dDM4QjlkNVBXQ1B2?=
- =?utf-8?B?QTBvSjB6UUlKdm1KQjlqVGlXSk1ITms5WUlCWkxCeHJoT3UwUndYRFFSc1VL?=
- =?utf-8?B?TU0zUGRndU1lRDNvNFppODI4YVVmWHJESXdVRTcrSU4vYXp3SENRejd3MUl2?=
- =?utf-8?B?NFh2M3VkN092TlAvQ2hndlJCMWFvQURLVHllMTJoU1hVS2R1TzR6ZS9nL1Bu?=
- =?utf-8?B?ZFVYQzJsUzFzUGF2V0diMUpuQWFFR1B0Z1VEd3RSSk5TZVpFVm55d01DL2wx?=
- =?utf-8?B?SFBWWVloUEZmUmsxRmtIVWFBc3piMk1LZ1hyMXQ5V0xQRms3VWFuQm5ZU25L?=
- =?utf-8?B?Tm1OOWRmODdDZ09jWEpYeVFMbmt0R3J1RGpVY0RsRkpQNWgvV1FoR1ozNzND?=
- =?utf-8?B?Z2NKbWh4eTRWdzRKYWtiNjI1dWNQbDhDcklVWVlvMVVoNUFDamxPcldoeUZy?=
- =?utf-8?B?NTJKcW5pQ2JidVdRS092NXo3ajducTl1OFg0NnRsZUlHU1JXcnlBZjIwaEFT?=
- =?utf-8?B?S0cwaGRSaUtyeFhFdlcwdVRxaWFkQ3h1WW5seVB3TjFDd1NON1ExM0tlTlBC?=
- =?utf-8?B?eERtVFNOTXVTMTQ0Vm5PWlBDaGt1Yk83dEt2U1RybkJRKzBDWDY1a0VSZmY1?=
- =?utf-8?B?ZjRXNWc5cXJ6cUl5QWk2UlVRTm90T2oxaUpNZTIzdWRkUnA1RTRadmJPcVJr?=
- =?utf-8?B?UCt1bWo3UktaN0VNMXA3MVZUR0R0OXZ4Smx5Z25Fa2RhdFoxeXZheTVmbHFR?=
- =?utf-8?B?UWg0V0Y1aEVDNDhzWitMbHY0TW8wVTdVWnY2UHliVFBMWXpqampKQkMzZjVx?=
- =?utf-8?B?ZWpvbm1IQ2Mwb3c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ab188ac-4c2d-42af-7ee9-08d892a9f073
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: Dczfoz37+ZozImTpCrt0wHAarL1LNrqXqI4mSpQF4SeNlZ9XffcW+K6JCgKTv6VVh+JSlM2uf5vArj7iVrBVJAtgENTq6uwE2akZ6Zwa2O6Xrc82w+P35E5OA5gMClHhz/4uPOCPJwBRMFuHHFlpUf9/DbB0/O9W54coBftSm8QENHqwJ6UvPnt9IU+saTQooeKgeI0/yyT8G726lhbPlmwaQ0zxxXXq4lMZJpmQ6KO97WEncAi3Y9P+7aCGDd0K5G0ubBUuajjT+S5Sc4CAkgo7xb/5OrYxs2ZcxKaxXAElVif+2QmkyAM+vACStK11Hw9mg7tF66UZ+1GeY6ahKTW60WuTtIWPRDQuB+EJhQkyEx+lbdv+igOCPaZRzmC7oQJGkLB9W6lOsakRzf9OwGhkAni/bRjBnc63oBAv7wSmwcHAW89VBej7bgholwd1VEbl/LGiVnJETlHUkEoo+m9v9oCz08w1ph0emJq85pY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(366004)(376002)(16526019)(83380400001)(956004)(66476007)(66556008)(6506007)(31686004)(66946007)(8936002)(6486002)(316002)(53546011)(186003)(6512007)(44832011)(36756003)(86362001)(110136005)(966005)(478600001)(2906002)(26005)(52116002)(8676002)(5660300002)(4326008)(2616005)(31696002)(81973001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cUQ3RWp6MU51UDkwbzNVYlNCUG54NFBWdnlCL2RmaHJESk12L2JWZ1NFa2VP?=
+ =?utf-8?B?K0VYb3JEcE9MdnFSVVo3bm1qRGxEZUtUMzMwL1dxeGJNcHVDYVQ1MGdOdHU5?=
+ =?utf-8?B?eXZGQ05lUk9Rd3BuU1FueTV0Y2Y4OWtIYmxXSlAwckUrMTZlcFZSOFR3SDdl?=
+ =?utf-8?B?RDhVZ2hlSEZxMjlkSkNnZkRLcGVkL1N5czdWZmVaYmk3ZEdWQmkreGpsMytO?=
+ =?utf-8?B?aEpiVm9JanZvNHJyS3Y2K3lwY1ZaSURkOGd4c1NlK3p2cE9FaHU1cU90MFR3?=
+ =?utf-8?B?RDhMMkE3WFRVRHp2K1lyenNUc2xOWVpKcHhZYnVWMEZuZ01PQVh5YUtmS1lK?=
+ =?utf-8?B?R2ZUN0Q1aitMVVBsWWNONWJxUklGM1IvUytIVysrS2JJVnBPdkRnOVRxV2Zm?=
+ =?utf-8?B?R244QWVzbDM2MGVxQkY5ZGNmQ09rdk9yQjZyb1BYelgxNm5FY3FOZUxqWlUw?=
+ =?utf-8?B?V29GUVJVQ3VCUjVIQitlYkFpSzhRWE5panNGMGhqZHRGUVlwYjdMZTZMbUNQ?=
+ =?utf-8?B?ZDc5Ym5BZ2F4dmg0RUlnNnVRRHRQTmlBV2ovM3ZlMmRuVEZDVEVPbG9EM1pG?=
+ =?utf-8?B?VkdZclhGTlJiSkdxTGZKTWFOQ3BCMXZwellLZlBiN3RwWG5ZUkdLUURxVzdk?=
+ =?utf-8?B?UjZUWTViaXpUVEhwRFBnUWxtZjc1Z3BXSndNSnNSd3RLOUdSVkFtcXgzNTV6?=
+ =?utf-8?B?UGttVjZkZWlRU3BTZFUyeENaMmI3YUhlbTl0WHlPT29RcTBEMGV1U0lCU2th?=
+ =?utf-8?B?S3gxZTVsTVpJVG9SdXUydCtzclpmbjFOanlncXdmSThHRVR3S1d1WUZZZDds?=
+ =?utf-8?B?bkxPZUt6dnE4NmYrMkFGZXVxZnBhU3M2cVFlM1pDUGZYYXhCUnM1a2FwUlFR?=
+ =?utf-8?B?ekFtQlNVR0dRUGkvWSt5K3NMaXJjUSs0QUkwdVVqelhRcGhMbVkyRVJXcHZK?=
+ =?utf-8?B?Y2F2Tm44MDFFQzBaQ0MxaHJDRWNzTzJnWVhSTHZMNG8zSDFSU29LVzdpNDdL?=
+ =?utf-8?B?YUFyeXVhcTgzQWtJY0Q5bXRNT3lnb3RYRTF4eFIrUnVVcGRsa0VOUWNkYXBl?=
+ =?utf-8?B?WkQxRWhPVWxpeFhKYzkyaU10VmpoTUxIcktrMVAzdkNmZEF3RFJCWG1Uc1VI?=
+ =?utf-8?B?M3grWi9uZHdJR2V5NXFBNlppcU5RaEVVZFlhd0lCN1NpaCtUMCtONUxFZm0w?=
+ =?utf-8?B?RlBxL2JXWVRvNWhwOXRJSExBRnZHWnhXNzhneUQyRGdSTS9PbFZmZDk5Y3hq?=
+ =?utf-8?B?cnhXeHAyWUhVRGdwcXl3YTl6UUIxU2kwVWhUQUYxTDVDejdUWFE2QTJqSlVQ?=
+ =?utf-8?Q?ejB0bEdLpgFCj4KKzFTWfOSHAvy4j36fum?=
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d50434f-dc6b-4941-31cf-08d892aa3b17
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2020 07:56:25.5833
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2020 07:58:30.9684
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HfBNkZyIIEdGjdmbRGD4IPaN5QbLC0QA+lzbHBpOyoZPnsnGRmni9UMwcXrs7YAO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3511
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-27_04:2020-11-26,2020-11-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 clxscore=1015
- spamscore=0 mlxlogscore=999 impostorscore=0 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011270047
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6Dj8cQ6axe7JDZSXtce403Tr/hzD9FwYfBcwJwsBMxnNrEFDVmrIH5Q9382OQGlsCXKFwpWx1zq1vfw3f0jucuUDStxEYGMB5/WCnIaRwh8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB6434
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi!
 
+On 27/11/2020 06:48, Herbert Xu wrote:
+> On Fri, Nov 13, 2020 at 11:02:13PM +0800, kernel test robot wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+>> commit: 90c4b29eb1e555fee66f8329a18cb8a070090ad6 hwrng: ks-sa - Enable COMPILE_TEST
+>> date:   12 months ago
+>> config: s390-randconfig-r022-20201113 (attached as .config)
+>> compiler: s390-linux-gcc (GCC) 9.3.0
+>> reproduce (this is a W=1 build):
+>>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>         chmod +x ~/bin/make.cross
+>>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=90c4b29eb1e555fee66f8329a18cb8a070090ad6
+>>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>         git fetch --no-tags linus master
+>>         git checkout 90c4b29eb1e555fee66f8329a18cb8a070090ad6
+>>         # save the attached .config to linux build tree
+>>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390 
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+> 
+>>    s390-linux-ld: drivers/char/hw_random/ks-sa-rng.o: in function `ks_sa_rng_probe':
+>>>> ks-sa-rng.c:(.text+0x2fa): undefined reference to `devm_platform_ioremap_resource'
+> 
+> ---8<---
+> This patch adds a dependency for KEYSTONE on HAS_IOMEM and OF to
+> prevent COMPILE_TEST build failures.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-On 11/26/20 9:02 AM, Florent Revest wrote:
-> This builds up on the existing socket cookie test which checks whether
-> the bpf_get_socket_cookie helpers provide the same value in
-> cgroup/connect6 and sockops programs for a socket created by the
-> userspace part of the test.
-> 
-> Adding a tracing program to the existing objects requires a different
-> attachment strategy and different headers.
-> 
-> Signed-off-by: Florent Revest <revest@google.com>
-> ---
->   .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
->   .../selftests/bpf/test_socket_cookie.c        | 18 +++++---
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-Do you think it is possible to migrate test_socket_cookie.c to
-selftests/bpf/prog_tests so it can be part of test_progs so
-it will be regularly exercised?
+> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+> index ab33a2e17cdf..9ff4fb3236f7 100644
+> --- a/drivers/char/hw_random/Kconfig
+> +++ b/drivers/char/hw_random/Kconfig
+> @@ -508,6 +508,7 @@ config HW_RANDOM_NPCM
+>  
+>  config HW_RANDOM_KEYSTONE
+>  	depends on ARCH_KEYSTONE || COMPILE_TEST
+> +	depends on HAS_IOMEM && OF
+>  	default HW_RANDOM
+>  	tristate "TI Keystone NETCP SA Hardware random number generator"
+>  	help
+> 
 
->   2 files changed, 49 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-> index 0cb5656a22b0..a11026aeaaf1 100644
-> --- a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-> +++ b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-> @@ -1,11 +1,13 @@
->   // SPDX-License-Identifier: GPL-2.0
->   // Copyright (c) 2018 Facebook
->   
-[...]
-> diff --git a/tools/testing/selftests/bpf/test_socket_cookie.c b/tools/testing/selftests/bpf/test_socket_cookie.c
-> index ca7ca87e91aa..0d955c65a4f8 100644
-> --- a/tools/testing/selftests/bpf/test_socket_cookie.c
-> +++ b/tools/testing/selftests/bpf/test_socket_cookie.c
-> @@ -133,6 +133,7 @@ static int run_test(int cgfd)
->   	struct bpf_prog_load_attr attr;
->   	struct bpf_program *prog;
->   	struct bpf_object *pobj;
-> +	struct bpf_link *link;
->   	const char *prog_name;
->   	int server_fd = -1;
->   	int client_fd = -1;
-> @@ -153,11 +154,18 @@ static int run_test(int cgfd)
->   	bpf_object__for_each_program(prog, pobj) {
->   		prog_name = bpf_program__section_name(prog);
->   
-> -		if (libbpf_attach_type_by_name(prog_name, &attach_type))
-> -			goto err;
-> -
-> -		err = bpf_prog_attach(bpf_program__fd(prog), cgfd, attach_type,
-> -				      BPF_F_ALLOW_OVERRIDE);
-> +		if (bpf_program__is_tracing(prog)) {
-> +			link = bpf_program__attach(prog);
-> +			err = !link;
-> +			continue;
-> +		} else {
-> +			if (libbpf_attach_type_by_name(prog_name, &attach_type))
-> +				goto err;
-> +
-> +			err = bpf_prog_attach(bpf_program__fd(prog), cgfd,
-> +					      attach_type,
-> +					      BPF_F_ALLOW_OVERRIDE);
-> +		}
->   		if (err) {
->   			log_err("Failed to attach prog %s", prog_name);
->   			goto out;
-> 
+-- 
+Best regards,
+Alexander Sverdlin.
