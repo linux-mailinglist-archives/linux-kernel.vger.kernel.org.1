@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52562C6D2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 23:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE9F2C6D25
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 23:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731779AbgK0W0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 17:26:07 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52884 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732191AbgK0UJY (ORCPT
+        id S1732307AbgK0WNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 17:13:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731500AbgK0VeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 15:09:24 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C1A2D1C0BA1; Fri, 27 Nov 2020 21:09:08 +0100 (CET)
-Date:   Fri, 27 Nov 2020 21:09:08 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Walle <michael@walle.cc>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/1] arm64: defconfig: Enable Librem 5 hardware
-Message-ID: <20201127200908.GA1162@amd>
-References: <cover.1606495281.git.agx@sigxcpu.org>
+        Fri, 27 Nov 2020 16:34:08 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78AEC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 13:34:07 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kilNW-0004dl-AF; Fri, 27 Nov 2020 22:34:06 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kilNV-0002kF-V1; Fri, 27 Nov 2020 22:34:05 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: [PATCH] =?UTF-8?q?mailmap:=20add=20two=20more=20addresses=20of=20?= =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
+Date:   Fri, 27 Nov 2020 22:33:58 +0100
+Message-Id: <20201127213358.3440830-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
-Content-Disposition: inline
-In-Reply-To: <cover.1606495281.git.agx@sigxcpu.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This fixes attribution for the commits (among others)
 
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ - d4097456cd1d ("video/framebuffer: move the probe func into .devinit.text in Blackfin LCD driver")
+ - 0312e024d6cd ("mfd: mc13xxx: Add support for mc34708")
 
-Hi!
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello Andrew,
 
-> This series enables components found on Purism's Librem 5
-> that are available in mainline.
->=20
-> - changes from v1
->   - As per review comments from Krzysztof Kozlowski
->     https://lore.kernel.org/linux-arm-kernel/CAJKOXPdEwiSTg+cMes_wes5oz2F=
-1qEexsus6iHenuLs9SAXk6g@mail.gmail.com/
->     - Squash config changes into a single commit
->   - Add touch controller
->=20
-> Patches are on top of Shawn's imx/defconfig
+there is no explicit maintainer for .mailmap, but most of the last few
+patches went in through you, so I'm addressing you. If that's wrong,
+please advise who to bother instead.
 
-Thanks for bringing support for your hardware to the mainline.
+Thanks
+Uwe
 
-Can I ask phone-devel@vger.kernel.org to be cc-ed for phone-related
-changes?
+ .mailmap | 2 ++
+ 1 file changed, 2 insertions(+)
 
-How complete is the support?
+diff --git a/.mailmap b/.mailmap
+index d9fb83d67055..225546cc8028 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -322,6 +322,8 @@ TripleX Chung <xxx.phy@gmail.com> <zhongyu@18mail.cn>
+ Tsuneo Yoshioka <Tsuneo.Yoshioka@f-secure.com>
+ Tycho Andersen <tycho@tycho.pizza> <tycho@tycho.ws>
+ Uwe Kleine-König <ukleinek@informatik.uni-freiburg.de>
++Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
++Uwe Kleine-König <ukleinek@strlen.de>
+ Uwe Kleine-König <ukl@pengutronix.de>
+ Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
+ Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
 
-In particular, what interface do you use to configure audio routing
-for the modem?
+base-commit: 9223e74f9960778bd3edd39e15edd5532708b7fb
+-- 
+2.29.2
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---0OAP2g/MAC+5xKAE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl/BXOMACgkQMOfwapXb+vKMDwCfeVehz/dUwFZ6LGuqAeeai88m
-r0cAoKCFrcm01w2lifPIvevCXdBiKEN7
-=70XS
------END PGP SIGNATURE-----
-
---0OAP2g/MAC+5xKAE--
