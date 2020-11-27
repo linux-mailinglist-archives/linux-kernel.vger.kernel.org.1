@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE542C6732
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFFB2C6736
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 14:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730680AbgK0NtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 08:49:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41584 "EHLO mail.kernel.org"
+        id S1730713AbgK0Nul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 08:50:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730393AbgK0NtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 08:49:08 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        id S1730316AbgK0Nul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 08:50:41 -0500
+Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C8BA221EB;
-        Fri, 27 Nov 2020 13:49:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606484948;
-        bh=wTCBRUiihoT9q2ZS346JiZs8EzR20O9G2B8G/jSbqhc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FT1bXxIrqyHfuog/Z8RSPFDxhNVWm2AfZrcE/n7684DImVxnghyjJuSBpzyIGtzUO
-         qFTylBRVOMKxMgoi3HQBKy5x8669D55j6kA7ZvB78TmHxnhSnSWXjZxjkE+3z8ONxE
-         iX2h5k2DpcqqKK2f6iArx2mpGXYVseTX36Gk6MPE=
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v5.10-rc5
-Date:   Fri, 27 Nov 2020 13:48:29 +0000
-Message-Id: <20201127134907.9C8BA221EB@mail.kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id EA27F2224A;
+        Fri, 27 Nov 2020 13:50:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606485040;
+        bh=uxMc+v5y4/CAVDXdUUY5D5KHB8dWir/j+6ArLkukR9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oaq4mlruYrAHadOKy20SeMZh5bUP3ROfkvMrH9XFd86Tt9gOEDzVya9pXHn/umn/v
+         EuUOr/+e85Ffg0ARyJOHFd5sr7XQBqE4VoBTMZVOELk3rAiZQS32Ten1s08XyV211H
+         K/3Xjz9Wj41BAwR3H5iQ7HSg4YKJOmVr3BU/pIIg=
+Date:   Fri, 27 Nov 2020 14:50:37 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Peter Chen <peter.chen@nxp.com>
+Cc:     "balbi@kernel.org" <balbi@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "taehyun.cho" <taehyun.cho@samsung.com>,
+        stable <stable@vger.kernel.org>,
+        Will McVicker <willmcvicker@google.com>
+Subject: Re: [PATCH 3/4] USB: gadget: f_fs: add SuperSpeed Plus support
+Message-ID: <X8EELU42XwBV9UV5@kroah.com>
+References: <20201126180937.255892-1-gregkh@linuxfoundation.org>
+ <20201126180937.255892-3-gregkh@linuxfoundation.org>
+ <20201127025517.GA22238@b29397-desktop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201127025517.GA22238@b29397-desktop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 04a9cd51d3f3308a98cbc6adc07acb12fbade011:
+On Fri, Nov 27, 2020 at 02:55:47AM +0000, Peter Chen wrote:
+> On 20-11-26 19:09:36, Greg Kroah-Hartman wrote:
+> > From: "taehyun.cho" <taehyun.cho@samsung.com>
+> > 
+> > Setup the descriptors for SuperSpeed Plus for f_fs. This allows the
+> > gadget to work properly without crashing at SuperSpeed rates.
+> > 
+> > Cc: Felipe Balbi <balbi@kernel.org>
+> > Cc: Peter Chen <peter.chen@nxp.com>
+> > Cc: stable <stable@vger.kernel.org>
+> > Signed-off-by: taehyun.cho <taehyun.cho@samsung.com>
+> > Signed-off-by: Will McVicker <willmcvicker@google.com>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  drivers/usb/gadget/function/f_fs.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+> > index 046f770a76da..a34a7c96a1ab 100644
+> > --- a/drivers/usb/gadget/function/f_fs.c
+> > +++ b/drivers/usb/gadget/function/f_fs.c
+> > @@ -1327,6 +1327,7 @@ static long ffs_epfile_ioctl(struct file *file, unsigned code,
+> >  		struct usb_endpoint_descriptor *desc;
+> >  
+> >  		switch (epfile->ffs->gadget->speed) {
+> > +		case USB_SPEED_SUPER_PLUS:
+> >  		case USB_SPEED_SUPER:
+> >  			desc_idx = 2;
+> >  			break;
+> > @@ -3222,6 +3223,10 @@ static int _ffs_func_bind(struct usb_configuration *c,
+> >  	func->function.os_desc_n =
+> >  		c->cdev->use_os_string ? ffs->interfaces_count : 0;
+> >  
+> > +	if (likely(super)) {
+> 
+> Why likely is used? Currently, there are still lots of HS devices on market
+> or on the development.
 
-  spi: npcm-fiu: Don't leak SPI master in probe error path (2020-11-17 17:08:39 +0000)
+It looks to be a cut/paste of the other tests above, all of which say
+"likely" which we all know is not true at all.  I'll leave this now, and
+add a patch that removes them all as this is NOT a function where it
+should be used at all.
 
-are available in the Git repository at:
+thanks for the review.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.10-rc5
-
-for you to fetch changes up to 0abdb0fba07322ce960d32a92a64847b3009b2e2:
-
-  spi: dw: Fix spi registration for controllers overriding CS (2020-11-25 12:54:05 +0000)
-
-----------------------------------------------------------------
-spi: Fixes for v5.10
-
-A few fixes for v5.10, one for the core which fixes some potential races
-for controllers with multiple chip selects when configuration of the
-chip select for one client device races with the addition and initial
-setup of an additional client.
-
-----------------------------------------------------------------
-Clark Wang (1):
-      spi: imx: fix the unbalanced spi runtime pm management
-
-Lars Povlsen (1):
-      spi: dw: Fix spi registration for controllers overriding CS
-
-Ran Wang (1):
-      spi: spi-nxp-fspi: fix fspi panic by unexpected interrupts
-
-Serge Semin (1):
-      spi: Take the SPI IO-mutex in the spi_setup() method
-
- drivers/spi/spi-dw-core.c  | 3 ++-
- drivers/spi/spi-imx.c      | 1 +
- drivers/spi/spi-nxp-fspi.c | 7 +++++++
- drivers/spi/spi.c          | 5 +++++
- 4 files changed, 15 insertions(+), 1 deletion(-)
+greg k-h
