@@ -2,202 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4FE2C616A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A01712C616F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727652AbgK0JO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:14:27 -0500
-Received: from foss.arm.com ([217.140.110.172]:35360 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726127AbgK0JO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:14:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 728C01478;
-        Fri, 27 Nov 2020 01:14:25 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2936B3F23F;
-        Fri, 27 Nov 2020 01:14:24 -0800 (PST)
-Subject: Re: [PATCH 2/2] mm/debug_vm_pgtable/basic: Iterate over entire
- protection_map[]
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        christophe.leroy@csgroup.eu, gerald.schaefer@linux.ibm.com,
-        vgupta@synopsys.com, paul.walmsley@sifive.com
-References: <1606453584-15399-1-git-send-email-anshuman.khandual@arm.com>
- <1606453584-15399-3-git-send-email-anshuman.khandual@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <4c3efec7-a454-951f-4f37-fd8ed1908b8c@arm.com>
-Date:   Fri, 27 Nov 2020 09:14:23 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727107AbgK0JQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:16:01 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:45744 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725875AbgK0JQB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:16:01 -0500
+Received: by mail-oi1-f195.google.com with SMTP id l206so5124487oif.12;
+        Fri, 27 Nov 2020 01:16:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2bL4nt/v+u8bthLLcwo5vWoSSDUj230GtxR+dbDyinE=;
+        b=HdoQSg9+qYm9kBcD3ZXaFQpGTqrY0knhT2pE3Rd28f5yPsaHrGTgJsLotyx9YrvHCP
+         ziG/kd7YB+EVkWvewlrq6Bk67qXZUC7Ap+i8fixt2WRA5ErmcRCjY9Yug7tlfTjyQuA3
+         kilPsSKUpvrBmus+O1uQ89upnHRaQR2bw+q+sjVIH7Q1X5waexMbQA1ogJLQzCDqzugx
+         ZmTMc9bMNPZgMVD1pm3vyaItWwcZ2tonvIwytP677otkOWeyX0chP3lIpv9H2NXLqOm5
+         eKxgMcrD2Pqjhmdf1i1On5zzzqSyqbv+bF7C25ahP0Qxa7GG8z6/kQjSrybg/dJkR2HP
+         LlXA==
+X-Gm-Message-State: AOAM530rqAY+ru/C2OPzOeikNeVbpBPfp9H4+GftGvDYEBiKTNTnUBQX
+        NR801ei8LEUIWj7DDS5z0J4njNmArVOjcE1muWJFbPKTwAg=
+X-Google-Smtp-Source: ABdhPJwwc735j9DU3CQVssDzFK9RFomMYj2kdWdhsc0uJGwQtM3XHiZQkdCwKodyr/1M4ebapYD/57MTPsklQvOavoQ=
+X-Received: by 2002:aca:1c0f:: with SMTP id c15mr4721709oic.54.1606468560125;
+ Fri, 27 Nov 2020 01:16:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1606453584-15399-3-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20201127031752.10371-1-rdunlap@infradead.org>
+In-Reply-To: <20201127031752.10371-1-rdunlap@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 27 Nov 2020 10:15:49 +0100
+Message-ID: <CAMuHMdWup4D9A-giF9xDEhva8PPH4Yhg2NHYx3+0q_=Uoi+iRA@mail.gmail.com>
+Subject: Re: [PATCH v2] fbdev: aty: SPARC64 requires FB_ATY_CT
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2020 05:06, Anshuman Khandual wrote:
-> Currently the basic tests just validate various page table transformations
-> after starting with vm_get_page_prot(VM_READ|VM_WRITE|VM_EXEC) protection.
-> Instead scan over the entire protection_map[] for better coverage. It also
-> makes sure that all these basic page table tranformations checks hold true
-> irrespective of the starting protection value for the page table entry.
-> There is also a slight change in the debug print format for basic tests to
-> capture the protection value it is being tested with. The modified output
-> looks something like
-> 
-> [pte_basic_tests          ]: Validating PTE basic ()
-> [pte_basic_tests          ]: Validating PTE basic (read)
-> [pte_basic_tests          ]: Validating PTE basic (write)
-> [pte_basic_tests          ]: Validating PTE basic (read|write)
-> [pte_basic_tests          ]: Validating PTE basic (exec)
-> [pte_basic_tests          ]: Validating PTE basic (read|exec)
-> [pte_basic_tests          ]: Validating PTE basic (write|exec)
-> [pte_basic_tests          ]: Validating PTE basic (read|write|exec)
-> [pte_basic_tests          ]: Validating PTE basic (shared)
-> [pte_basic_tests          ]: Validating PTE basic (read|shared)
-> [pte_basic_tests          ]: Validating PTE basic (write|shared)
-> [pte_basic_tests          ]: Validating PTE basic (read|write|shared)
-> [pte_basic_tests          ]: Validating PTE basic (exec|shared)
-> [pte_basic_tests          ]: Validating PTE basic (read|exec|shared)
-> [pte_basic_tests          ]: Validating PTE basic (write|exec|shared)
-> [pte_basic_tests          ]: Validating PTE basic (read|write|exec|shared)
-> 
-> This adds a missing argument 'struct mm_struct *' in pud_basic_tests() test
-> . This never got exposed before as PUD based THP is available only on X86
-> platform where mm_pmd_folded(mm) call gets macro replaced without requiring
-> the mm_struct i.e __is_defined(__PAGETABLE_PMD_FOLDED).
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+On Fri, Nov 27, 2020 at 4:18 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> It looks like SPARC64 requires FB_ATY_CT to build without errors,
+> so have FB_ATY select FB_ATY_CT if both SPARC64 and PCI are enabled
+> instead of using "default y if SPARC64 && PCI", which is not strong
+> enough to prevent build errors.
+>
+> As it currently is, FB_ATY_CT can be disabled, resulting in build
+> errors:
+>
+> ERROR: modpost: "aty_postdividers" [drivers/video/fbdev/aty/atyfb.ko] undefined!
+> ERROR: modpost: "aty_ld_pll_ct" [drivers/video/fbdev/aty/atyfb.ko] undefined!
+>
+> Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> ---
->   mm/debug_vm_pgtable.c | 47 ++++++++++++++++++++++++++++++++-----------
->   1 file changed, 35 insertions(+), 12 deletions(-)
-> 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index a5be11210597..92b4a53d622b 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -58,11 +58,13 @@
->   #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
->   #define RANDOM_NZVALUE	GENMASK(7, 0)
->   
-> -static void __init pte_basic_tests(unsigned long pfn, pgprot_t prot)
-> +static void __init pte_basic_tests(unsigned long pfn, int idx)
->   {
-> +	pgprot_t prot = protection_map[idx];
->   	pte_t pte = pfn_pte(pfn, prot);
-> +	unsigned long val = idx, *ptr = &val;
->   
-> -	pr_debug("Validating PTE basic\n");
-> +	pr_debug("Validating PTE basic (%pGv)\n", ptr);
->   	WARN_ON(!pte_same(pte, pte));
->   	WARN_ON(!pte_young(pte_mkyoung(pte_mkold(pte))));
->   	WARN_ON(!pte_dirty(pte_mkdirty(pte_mkclean(pte))));
-> @@ -130,14 +132,16 @@ static void __init pte_savedwrite_tests(unsigned long pfn, pgprot_t prot)
->   }
->   
->   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot)
-> +static void __init pmd_basic_tests(unsigned long pfn, int idx)
->   {
-> +	pgprot_t prot = protection_map[idx];
->   	pmd_t pmd = pfn_pmd(pfn, prot);
-> +	unsigned long val = idx, *ptr = &val;
->   
->   	if (!has_transparent_hugepage())
->   		return;
->   
-> -	pr_debug("Validating PMD basic\n");
-> +	pr_debug("Validating PMD basic (%pGv)\n", ptr);
->   	WARN_ON(!pmd_same(pmd, pmd));
->   	WARN_ON(!pmd_young(pmd_mkyoung(pmd_mkold(pmd))));
->   	WARN_ON(!pmd_dirty(pmd_mkdirty(pmd_mkclean(pmd))));
-> @@ -251,14 +255,16 @@ static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
->   }
->   
->   #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
-> -static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot)
-> +static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx)
->   {
-> +	pgprot_t prot = protection_map[idx];
->   	pud_t pud = pfn_pud(pfn, prot);
-> +	unsigned long val = idx, *ptr = &val;
->   
->   	if (!has_transparent_hugepage())
->   		return;
->   
-> -	pr_debug("Validating PUD basic\n");
-> +	pr_debug("Validating PUD basic (%pGv)\n", ptr);
->   	WARN_ON(!pud_same(pud, pud));
->   	WARN_ON(!pud_young(pud_mkyoung(pud_mkold(pud))));
->   	WARN_ON(!pud_write(pud_mkwrite(pud_wrprotect(pud))));
-> @@ -362,7 +368,7 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
->   #endif /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
->   
->   #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
-> -static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot) { }
-> +static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx) { }
->   static void __init pud_advanced_tests(struct mm_struct *mm,
->   				      struct vm_area_struct *vma, pud_t *pudp,
->   				      unsigned long pfn, unsigned long vaddr,
-> @@ -375,8 +381,8 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
->   }
->   #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
->   #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
-> -static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot) { }
-> -static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot) { }
-> +static void __init pmd_basic_tests(unsigned long pfn, int idx) { }
-> +static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx) { }
->   static void __init pmd_advanced_tests(struct mm_struct *mm,
->   				      struct vm_area_struct *vma, pmd_t *pmdp,
->   				      unsigned long pfn, unsigned long vaddr,
-> @@ -902,6 +908,7 @@ static int __init debug_vm_pgtable(void)
->   	unsigned long vaddr, pte_aligned, pmd_aligned;
->   	unsigned long pud_aligned, p4d_aligned, pgd_aligned;
->   	spinlock_t *ptl = NULL;
-> +	int idx;
->   
->   	pr_info("Validating architecture page table helpers\n");
->   	prot = vm_get_page_prot(VMFLAGS);
-> @@ -966,9 +973,25 @@ static int __init debug_vm_pgtable(void)
->   	saved_pmdp = pmd_offset(pudp, 0UL);
->   	saved_ptep = pmd_pgtable(pmd);
->   
-> -	pte_basic_tests(pte_aligned, prot);
-> -	pmd_basic_tests(pmd_aligned, prot);
-> -	pud_basic_tests(pud_aligned, prot);
-> +	/*
-> +	 * Iterate over the protection_map[] to make sure that all
-> +	 * the basic page table transformation validations just hold
-> +	 * true irrespective of the starting protection value for a
-> +	 * given page table entry.
-> +	 */
-> +	for (idx = 0; idx < ARRAY_SIZE(protection_map); idx++) {
-> +		pte_basic_tests(pte_aligned, idx);
-> +		pmd_basic_tests(pmd_aligned, idx);
-> +		pud_basic_tests(mm, pud_aligned, idx);
-> +	}
-> +
-> +	/*
-> +	 * Both P4D and PGD level tests are very basic which do not
-> +	 * involve creating page table entries from the protection
-> +	 * value and the given pfn. Hence just keep them out from
-> +	 * the above iteration for now to save some test execution
-> +	 * time.
-> +	 */
->   	p4d_basic_tests(p4d_aligned, prot);
->   	pgd_basic_tests(pgd_aligned, prot);
->   
-> 
+Gr{oetje,eeting}s,
 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
