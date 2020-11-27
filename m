@@ -2,182 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1982C60BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30C72C60C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 09:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgK0IPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 03:15:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39700 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgK0IPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 03:15:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606464901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ip7MWk8vAkxs5znMPhTijonXmPq5zuvObTXdOJ83AZ0=;
-        b=LWUMFtM92bOPkMj8iQu+WhuRX5EiDjBI33xReqUFQQCXjM0NlNTjbufGXMUPAhO4thQphs
-        teQ4W9KgtNHBBBDc9pAXJakMcSi/E7DAlNemyfpVgeVo4DYLBkSO74L1BYUCPm68yNMCXa
-        pFCEJJAVFiXL+Z2b2FjKCbtzoMrMM3o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C24F7AC2F;
-        Fri, 27 Nov 2020 08:15:01 +0000 (UTC)
-Date:   Fri, 27 Nov 2020 09:15:00 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     hughd@google.com, xuyu@linux.alibaba.com,
-        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
-        willy@infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz
-Subject: Re: [PATCH 1/3] mm,thp,shmem: limit shmem THP alloc gfp_mask
-Message-ID: <20201127081500.GL31550@dhcp22.suse.cz>
-References: <20201124194925.623931-1-riel@surriel.com>
- <20201124194925.623931-2-riel@surriel.com>
+        id S1727071AbgK0IQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 03:16:17 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51254 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725616AbgK0IQQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 03:16:16 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AR7sfCQ181368;
+        Fri, 27 Nov 2020 03:16:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=vgymwzag5zA2fKbiNo8dCMHEWOwdEsBiUd4m3WTddlM=;
+ b=gvKrQcqglEtczT94oIXTY8qfMEqNHPxG90v+zRBo0I74++dvkYlVQiIh2KA3dW1cR9N6
+ KDHI+hISEt/aLF69+D70pYZsgG0aiuWlR1jb69kc/8+vFBCKHfWaoSDdXhbHNNZaeWvf
+ R7HkcVWFdxRHXCXjnR4d3eb2yydUBYhHvAfIbX0sUtbBRxkAnPi/v09ZxqKjCJIWwH8r
+ 0HVm5uU9LSe5CjNB+6a9goXEiAw3eK8yXIjyWXJ/tyYQiiPlUusM4WS0z1qBQQfYLRKb
+ RpYlzGWap0CdTlXEH1UaLc0+PW2JGIO4VorUZRBbELYsqFNtmywOAY7Vld4/3wx5vhJB dQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 352971vs8j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 03:16:13 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AR7tc0d185781;
+        Fri, 27 Nov 2020 03:16:13 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 352971vs7p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 03:16:13 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AR86C62028519;
+        Fri, 27 Nov 2020 08:16:10 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 34xth8edes-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 08:16:10 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AR8G8Pe8979118
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Nov 2020 08:16:08 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 73D6F11C069;
+        Fri, 27 Nov 2020 08:16:08 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BD55211C04C;
+        Fri, 27 Nov 2020 08:16:07 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.183.229])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 27 Nov 2020 08:16:07 +0000 (GMT)
+Date:   Fri, 27 Nov 2020 10:16:05 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH] mm: Don't fault around userfaultfd-registered regions on
+ reads
+Message-ID: <20201127081605.GX123287@linux.ibm.com>
+References: <20201126222359.8120-1-peterx@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201124194925.623931-2-riel@surriel.com>
+In-Reply-To: <20201126222359.8120-1-peterx@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-27_04:2020-11-26,2020-11-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 phishscore=0 clxscore=1015 impostorscore=0 malwarescore=0
+ mlxscore=0 bulkscore=0 priorityscore=1501 suspectscore=1 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011270040
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 24-11-20 14:49:23, Rik van Riel wrote:
-> The allocation flags of anonymous transparent huge pages can be controlled
-> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
-> help the system from getting bogged down in the page reclaim and compaction
-> code when many THPs are getting allocated simultaneously.
+On Thu, Nov 26, 2020 at 05:23:59PM -0500, Peter Xu wrote:
+> Faulting around for reads are in most cases helpful for the performance so that
+> continuous memory accesses may avoid another trip of page fault.  However it
+> may not always work as expected.
 > 
-> However, the gfp_mask for shmem THP allocations were not limited by those
-> configuration settings, and some workloads ended up with all CPUs stuck
-> on the LRU lock in the page reclaim code, trying to allocate dozens of
-> THPs simultaneously.
+> For example, userfaultfd registered regions may not be the best candidate for
+> pre-faults around the reads.
 > 
-> This patch applies the same configurated limitation of THPs to shmem
-> hugepage allocations, to prevent that from happening.
+> For missing mode uffds, fault around does not help because if the page cache
+> existed, then the page should be there already.  If the page cache is not
+> there, nothing else we can do, either.  If the fault-around code is destined to
+> be helpless for userfault-missing vmas, then ideally we can skip it.
 > 
-> Controlling the gfp_mask of THP allocations through the knobs in
-> sysfs allows users to determine the balance between how aggressively
-> the system tries to allocate THPs at fault time, and how much the
-> application may end up stalling attempting those allocations.
+> For wr-protected mode uffds, errornously fault in those pages around could lead
+> to threads accessing the pages without uffd server's awareness.  For example,
+> when punching holes on uffd-wp registered shmem regions, we'll first try to
+> unmap all the pages before evicting the page cache but without locking the
+> page (please refer to shmem_fallocate(), where unmap_mapping_range() is called
+> before shmem_truncate_range()).  When fault-around happens near a hole being
+> punched, we might errornously fault in the "holes" right before it will be
+> punched.  Then there's a small window before the page cache was finally
+> dropped, and after the page will be writable again (NOTE: the uffd-wp protect
+> information is totally lost due to the pre-unmap in shmem_fallocate(), so the
+> page can be writable within the small window).  That's severe data loss.
 > 
-> This way a THP defrag setting of "never" or "defer+madvise" will result
-> in quick allocation failures without direct reclaim when no 2MB free
-> pages are available.
+> Let's grant the userspace full control of the uffd-registered ranges, rather
+> than trying to do the tricks.
 > 
-> With this patch applied, THP allocations for tmpfs will be a little
-> more aggressive than today for files mmapped with MADV_HUGEPAGE,
-> and a little less aggressive for files that are not mmapped or
-> mapped without that flag.
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
 
-As already said I am not against this unification. On the other I really
-hope that we will not hear about somebody really requesting a per mount
-control over this behavior because some might be benefiting from THPs
-more than others and the initial cost would pay off. This is not
-something we do care about now so this patch wouldn't regress in that
-aspect.
+One nit below, except that
 
-> Signed-off-by: Rik van Riel <riel@surriel.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Btw. Documentation/admin-guide/mm/transhuge.rst needs some update as
-well. What about the following?
-
-diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
-index b2acd0d395ca..41fe84c5b808 100644
---- a/Documentation/admin-guide/mm/transhuge.rst
-+++ b/Documentation/admin-guide/mm/transhuge.rst
-@@ -104,7 +104,7 @@ regions (to avoid the risk of consuming more memory resources) or enabled
- 	echo never >/sys/kernel/mm/transparent_hugepage/enabled
- 
- It's also possible to limit defrag efforts in the VM to generate
--anonymous hugepages in case they're not immediately free to madvise
-+anonymous and shmem hugepages in case they're not immediately free to madvise
- regions or to never try to defrag memory and simply fallback to regular
- pages unless hugepages are immediately available. Clearly if we spend CPU
- time to defrag memory, we would expect to gain even more by the fact we
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 
 > ---
->  include/linux/gfp.h | 2 ++
->  mm/huge_memory.c    | 6 +++---
->  mm/shmem.c          | 8 +++++---
->  3 files changed, 10 insertions(+), 6 deletions(-)
 > 
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index c603237e006c..c7615c9ba03c 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
->  extern void pm_restrict_gfp_mask(void);
->  extern void pm_restore_gfp_mask(void);
->  
-> +extern gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma);
+> Note that since no file-backed uffd-wp support is there yet upstream, so the
+> uffd-wp check is actually not really functioning.  However since we have all
+> the necessary uffd-wp concepts already upstream, maybe it's better to do it
+> once and for all.
+> 
+> This patch comes from debugging a data loss issue when working on the uffd-wp
+> support on shmem/hugetlbfs.  I posted this out for early review and comments,
+> but also because it should already start to benefit missing mode userfaultfd to
+> avoid trying to fault around on reads.
+> ---
+>  include/linux/userfaultfd_k.h |  5 +++++
+>  mm/memory.c                   | 17 +++++++++++++++++
+>  2 files changed, 22 insertions(+)
+> 
+> diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+> index a8e5f3ea9bb2..451d99bb3a1a 100644
+> --- a/include/linux/userfaultfd_k.h
+> +++ b/include/linux/userfaultfd_k.h
+> @@ -62,6 +62,11 @@ static inline bool userfaultfd_wp(struct vm_area_struct *vma)
+>  	return vma->vm_flags & VM_UFFD_WP;
+>  }
+> 
+> +static inline bool vma_registered_userfaultfd(struct vm_area_struct *vma)
+> +{
+> +	return userfaultfd_missing(vma) || userfaultfd_wp(vma);
+> +}
+
+We have userfaultfd_armed() that does exectly this, don't we?
+
 > +
->  #ifdef CONFIG_PM_SLEEP
->  extern bool pm_suspended_storage(void);
->  #else
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 9474dbc150ed..c5d03b2f2f2f 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -649,9 +649,9 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
->   *	    available
->   * never: never stall for any thp allocation
->   */
-> -static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
-> +gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma)
+>  static inline bool userfaultfd_pte_wp(struct vm_area_struct *vma,
+>  				      pte_t pte)
 >  {
-> -	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
-> +	const bool vma_madvised = vma && (vma->vm_flags & VM_HUGEPAGE);
->  
->  	/* Always do synchronous compaction */
->  	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG, &transparent_hugepage_flags))
-> @@ -744,7 +744,7 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
->  			pte_free(vma->vm_mm, pgtable);
->  		return ret;
->  	}
-> -	gfp = alloc_hugepage_direct_gfpmask(vma);
-> +	gfp = vma_thp_gfp_mask(vma);
->  	page = alloc_hugepage_vma(gfp, vma, haddr, HPAGE_PMD_ORDER);
->  	if (unlikely(!page)) {
->  		count_vm_event(THP_FAULT_FALLBACK);
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 537c137698f8..6c3cb192a88d 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1545,8 +1545,8 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
->  		return NULL;
->  
->  	shmem_pseudo_vma_init(&pvma, info, hindex);
-> -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
-> -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
-> +	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
-> +			       true);
->  	shmem_pseudo_vma_destroy(&pvma);
->  	if (page)
->  		prep_transhuge_page(page);
-> @@ -1802,6 +1802,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->  	struct page *page;
->  	enum sgp_type sgp_huge = sgp;
->  	pgoff_t hindex = index;
-> +	gfp_t huge_gfp;
->  	int error;
->  	int once = 0;
->  	int alloced = 0;
-> @@ -1887,7 +1888,8 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->  	}
->  
->  alloc_huge:
-> -	page = shmem_alloc_and_acct_page(gfp, inode, index, true);
-> +	huge_gfp = vma_thp_gfp_mask(vma);
-> +	page = shmem_alloc_and_acct_page(huge_gfp, inode, index, true);
->  	if (IS_ERR(page)) {
->  alloc_nohuge:
->  		page = shmem_alloc_and_acct_page(gfp, inode,
+> diff --git a/mm/memory.c b/mm/memory.c
+> index eeae590e526a..ca58ada94c96 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3933,6 +3933,23 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
+>  	int off;
+>  	vm_fault_t ret = 0;
+> 
+> +	/*
+> +	 * Be extremely careful with uffd-armed regions.
+> +	 *
+> +	 * For missing mode uffds, fault around does not help because if the
+> +	 * page cache existed, then the page should be there already.  If the
+> +	 * page cache is not there, nothing else we can do either.
+> +	 *
+> +	 * For wr-protected mode uffds, errornously fault in those pages around
+> +	 * could lead to threads accessing the pages without uffd server's
+> +	 * awareness, finally it could cause ghostly data corruption.
+> +	 *
+> +	 * The idea is that, every single page of uffd regions should be
+> +	 * governed by the userspace on which page to fault in.
+> +	 */
+> +	if (unlikely(vma_registered_userfaultfd(vmf->vma)))
+> +		return 0;
+> +
+>  	nr_pages = READ_ONCE(fault_around_bytes) >> PAGE_SHIFT;
+>  	mask = ~(nr_pages * PAGE_SIZE - 1) & PAGE_MASK;
+> 
 > -- 
-> 2.25.4
+> 2.26.2
+> 
 
 -- 
-Michal Hocko
-SUSE Labs
+Sincerely yours,
+Mike.
