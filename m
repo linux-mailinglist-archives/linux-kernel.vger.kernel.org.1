@@ -2,60 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B722C5FE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 648AE2C5FE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 06:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392500AbgK0Ftq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 00:49:46 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:33316 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389456AbgK0Ftp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 00:49:45 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kiWdY-0000ZR-ID; Fri, 27 Nov 2020 16:49:41 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 27 Nov 2020 16:49:40 +1100
-Date:   Fri, 27 Nov 2020 16:49:40 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [PATCH] hwrng: ks-sa - Add dependency on IOMEM and OF
-Message-ID: <20201127054940.GA29627@gondor.apana.org.au>
-References: <202011132311.XmkAgWg0-lkp@intel.com>
- <20201127054844.GB23521@gondor.apana.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127054844.GB23521@gondor.apana.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2392509AbgK0FuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 00:50:07 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:45814 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389456AbgK0FuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 00:50:07 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax6tCDk8BfNVkXAA--.44638S2;
+        Fri, 27 Nov 2020 13:49:56 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] tools: selftests: Add missing munmap() in check_error_paths()
+Date:   Fri, 27 Nov 2020 13:49:55 +0800
+Message-Id: <1606456195-23965-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Ax6tCDk8BfNVkXAA--.44638S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFWrJFy8ur1fJFyxKr17ZFb_yoW8XrW7p3
+        yIg34v9F4IgF12qF47tr4DWF4Y9ry7Jay7Gw1fKw1jyF1UAr9xXrWftFy0qr4fGrZ5X393
+        CFsrJayfAryUArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4rMxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU45l8UUUUU
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resent with fixed Subject line.
+Add the missing munmap(addr_ro, PAGE_SIZE) before return.
 
----8<---
-This patch adds a dependency for KEYSTONE on HAS_IOMEM and OF to
-prevent COMPILE_TEST build failures.
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ tools/testing/selftests/ptrace/peeksiginfo.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index ab33a2e17cdf..9ff4fb3236f7 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -508,6 +508,7 @@ config HW_RANDOM_NPCM
+diff --git a/tools/testing/selftests/ptrace/peeksiginfo.c b/tools/testing/selftests/ptrace/peeksiginfo.c
+index 5490065..3d64be4 100644
+--- a/tools/testing/selftests/ptrace/peeksiginfo.c
++++ b/tools/testing/selftests/ptrace/peeksiginfo.c
+@@ -62,7 +62,7 @@ static int check_error_paths(pid_t child)
+ 			MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED, -1, 0);
+ 	if (addr_ro == MAP_FAILED) {
+ 		err("mmap() failed: %m\n");
+-		goto out;
++		goto out_rw;
+ 	}
  
- config HW_RANDOM_KEYSTONE
- 	depends on ARCH_KEYSTONE || COMPILE_TEST
-+	depends on HAS_IOMEM && OF
- 	default HW_RANDOM
- 	tristate "TI Keystone NETCP SA Hardware random number generator"
- 	help
+ 	arg.nr = SIGNR;
+@@ -75,7 +75,7 @@ static int check_error_paths(pid_t child)
+ 		err("sys_ptrace() returns %d (expected -1),"
+ 				" errno %d (expected %d): %m\n",
+ 				ret, errno, EINVAL);
+-		goto out;
++		goto out_ro;
+ 	}
+ 	arg.flags = 0;
+ 
+@@ -84,7 +84,7 @@ static int check_error_paths(pid_t child)
+ 					addr_ro - sizeof(siginfo_t) * 2);
+ 	if (ret != 2) {
+ 		err("sys_ptrace() returns %d (expected 2): %m\n", ret);
+-		goto out;
++		goto out_ro;
+ 	}
+ 
+ 	/* Read-only buffer */
+@@ -93,11 +93,13 @@ static int check_error_paths(pid_t child)
+ 		err("sys_ptrace() returns %d (expected -1),"
+ 				" errno %d (expected %d): %m\n",
+ 				ret, errno, EFAULT);
+-		goto out;
++		goto out_ro;
+ 	}
+ 
+ 	exit_code = 0;
+-out:
++out_ro:
++	munmap(addr_ro, PAGE_SIZE);
++out_rw:
+ 	munmap(addr_rw, 2 * PAGE_SIZE);
+ 	return exit_code;
+ }
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.1.0
+
