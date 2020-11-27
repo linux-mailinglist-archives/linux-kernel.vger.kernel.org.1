@@ -2,150 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AC12C6087
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 08:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 679792C6090
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 08:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729248AbgK0HiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 02:38:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387909AbgK0HiV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 02:38:21 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511EEC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 23:38:21 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id t4so4493035wrr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 23:38:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=xhN+Y7X7T3hr9xnUPO5BFNWxespYdkDTx9HcEbrzWhM=;
-        b=beIM+9ahTQ1AqkPeAxt48OELKHMEyMjXVA/AEbv7IXZ6g0eF4UO9s/Bq6BFDgVUQcJ
-         LR/f0Zi4OsTSRb75ADfSbIf8pQ4ays4k79cBiW4NCefehZDgvjO54K/l33M59Id1zkW9
-         90vLD3k0V/rnVnKpl1GreKEN5gyVJh6U2b1vVCO38GFDmvAFgi4zIPhaNI8whsbzMEbo
-         Wx5NQSWG7FR2LX0F7hnu2SE4Csc1yGGt2NurIYbRgSe3Bxq4+Vrz3QsBSZAm9Ag4TsYY
-         TyX4//Hksp1MLJYBb7GHpSrDDj7RU2CgX+MnMK5tV3wZyAahvhf6p94P84zzRMnKYqIr
-         le5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xhN+Y7X7T3hr9xnUPO5BFNWxespYdkDTx9HcEbrzWhM=;
-        b=fnj06slssLL7yNfinfBvERl8lF06qgzxhanKi7kzJCHTRdn02u4Dk6X5By/EhNS+co
-         oSmuYetOvxqtwLtO1GJqoU+sJgb14VHeaPqNvHR1jRIuCKdHJ8D4JuzN79sLO+23ZjAE
-         6DbMIywLsngYFKtNbJShoEIUtxUt0eKx2hSiDFEuXXpjFornANlZz6KozVmHhqJjhlRs
-         p+wGrz5mHlR7pH/JBLSlhbZH43WugsZykccaBD4TTxsqCuq62QxlBydCIYWrUV+n3oQC
-         cIeNUxWpdUL0aN2MOnHJKHwXWYw91He0prikSqp3xw6xs1L2ShrMjjPbNebtj8/Zj/Gl
-         1Luw==
-X-Gm-Message-State: AOAM531lBgeM+X8BaiygWQWSuZhUNY4cK1AKa35lhloDHqufXZvbxg1u
-        rduBQirs3WRMR4ijrJdI/jcyNw==
-X-Google-Smtp-Source: ABdhPJyZ8f2wwkDP5ycrhe9Hsl8TbK+clrvhynd75HH+ayMXnM9WrqZww3nzZbp3r6Zve8DPd4zS3A==
-X-Received: by 2002:adf:ed11:: with SMTP id a17mr8760413wro.197.1606462699889;
-        Thu, 26 Nov 2020 23:38:19 -0800 (PST)
-Received: from dell ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id f18sm12912432wru.42.2020.11.26.23.38.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 23:38:19 -0800 (PST)
-Date:   Fri, 27 Nov 2020 07:38:16 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Pkshih <pkshih@realtek.com>
-Cc:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        Tony Chuang <yhchuang@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH 17/17] realtek: rtw88: pci: Add prototypes for .probe,
- .remove and .shutdown
-Message-ID: <20201127073816.GF2455276@dell>
-References: <20201126133152.3211309-1-lee.jones@linaro.org>
- <20201126133152.3211309-18-lee.jones@linaro.org>
- <1606448026.14483.4.camel@realtek.com>
+        id S2392740AbgK0Hja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 02:39:30 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:45887 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726408AbgK0Hja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 02:39:30 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cj62j2kXHz9sRR;
+        Fri, 27 Nov 2020 18:39:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606462767;
+        bh=XqstoATTx85DR373vr3xHTpQpMMloM7zoMkPbUSq8JA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=k5bTjA+5GkIELs+i16zbE4KZHqFsSRgf966aFjepL/enh8tTOgtlsisc/eMyClLUW
+         COm08kIB36MxpNzTtpFR56k6mxF74hzvDfttj8iyrTIXDK4zCkSVjkEIIRLxGEYV5o
+         Qz4ZH91yNybYBVKwNV9XRHrE7G+SL1nTp47eni1nh0O8g05WY/TYZR8/MYdaxuEr+I
+         0xRA+0eSgqazQiYrWa3lkFSlzyFAuxb4NeKPe+S4jMrpOv2vS37aT/bscTQ+zneUqp
+         u59Bh/tAZphze+tYTlOQum4YenArN7TZXCAkW/5BxvIR3+QSM3LIIwtXqmL1E0V2sk
+         T2puIzaMK2Bcw==
+Date:   Fri, 27 Nov 2020 18:39:24 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the akpm-current tree with the tip tree
+Message-ID: <20201127183924.36696fb0@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1606448026.14483.4.camel@realtek.com>
+Content-Type: multipart/signed; boundary="Sig_/JAcalZRK1OeJkm7R4ecfnAO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020, Pkshih wrote:
+--Sig_/JAcalZRK1OeJkm7R4ecfnAO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> The subject prefix doesn't need 'realtek:'; use 'rtw88:'.
-> 
-> On Thu, 2020-11-26 at 13:31 +0000, Lee Jones wrote:
-> > Also strip out other duplicates from driver specific headers.
-> > 
-> > Ensure 'main.h' is explicitly included in 'pci.h' since the latter
-> > uses some defines from the former.  It avoids issues like:
-> > 
-> >  from drivers/net/wireless/realtek/rtw88/rtw8822be.c:5:
-> >  drivers/net/wireless/realtek/rtw88/pci.h:209:28: error:
-> > ‘RTK_MAX_TX_QUEUE_NUM’ undeclared here (not in a function); did you mean
-> > ‘RTK_MAX_RX_DESC_NUM’?
-> >  209 | DECLARE_BITMAP(tx_queued, RTK_MAX_TX_QUEUE_NUM);
-> >  | ^~~~~~~~~~~~~~~~~~~~
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/net/wireless/realtek/rtw88/pci.c:1488:5: warning: no previous
-> > prototype for ‘rtw_pci_probe’ [-Wmissing-prototypes]
-> >  1488 | int rtw_pci_probe(struct pci_dev *pdev,
-> >  | ^~~~~~~~~~~~~
-> >  drivers/net/wireless/realtek/rtw88/pci.c:1568:6: warning: no previous
-> > prototype for ‘rtw_pci_remove’ [-Wmissing-prototypes]
-> >  1568 | void rtw_pci_remove(struct pci_dev *pdev)
-> >  | ^~~~~~~~~~~~~~
-> >  drivers/net/wireless/realtek/rtw88/pci.c:1590:6: warning: no previous
-> > prototype for ‘rtw_pci_shutdown’ [-Wmissing-prototypes]
-> >  1590 | void rtw_pci_shutdown(struct pci_dev *pdev)
-> >  | ^~~~~~~~~~~~~~~~
-> > 
-> > Cc: Yan-Hsuan Chuang <yhchuang@realtek.com>
-> > Cc: Kalle Valo <kvalo@codeaurora.org>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: linux-wireless@vger.kernel.org
-> > Cc: netdev@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/net/wireless/realtek/rtw88/pci.h       | 8 ++++++++
-> >  drivers/net/wireless/realtek/rtw88/rtw8723de.c | 1 +
-> >  drivers/net/wireless/realtek/rtw88/rtw8723de.h | 4 ----
-> >  drivers/net/wireless/realtek/rtw88/rtw8821ce.c | 1 +
-> >  drivers/net/wireless/realtek/rtw88/rtw8821ce.h | 4 ----
-> >  drivers/net/wireless/realtek/rtw88/rtw8822be.c | 1 +
-> >  drivers/net/wireless/realtek/rtw88/rtw8822be.h | 4 ----
-> >  drivers/net/wireless/realtek/rtw88/rtw8822ce.c | 1 +
-> >  drivers/net/wireless/realtek/rtw88/rtw8822ce.h | 4 ----
-> >  9 files changed, 12 insertions(+), 16 deletions(-)
-> > 
-> > diff --git a/drivers/net/wireless/realtek/rtw88/pci.h
-> > b/drivers/net/wireless/realtek/rtw88/pci.h
-> > index ca17aa9cf7dc7..cda56919a5f0f 100644
-> > --- a/drivers/net/wireless/realtek/rtw88/pci.h
-> > +++ b/drivers/net/wireless/realtek/rtw88/pci.h
-> > @@ -5,6 +5,8 @@
-> >  #ifndef __RTK_PCI_H_
-> >  #define __RTK_PCI_H_
-> >  
-> > +#include "main.h"
-> > +
-> 
-> Please #include "main.h" ahead of "pci.h" in each of rtw8xxxxe.c.
+Hi all,
 
-You mean instead of in pci.h?
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-Surely that's a hack.
+  include/linux/kernel.h
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+between commit:
+
+  74d862b682f5 ("sched: Make migrate_disable/enable() independent of RT")
+
+from the tip tree and commit:
+
+  761ace49e56f ("kernel.h: Split out mathematical helpers")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/kernel.h
+index dbf6018fc312,f97ab3283a8b..000000000000
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@@ -272,48 -145,13 +159,6 @@@ extern void __cant_migrate(const char *
+ =20
+  #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
+ =20
+- /**
+-  * abs - return absolute value of an argument
+-  * @x: the value.  If it is unsigned type, it is converted to signed type=
+ first.
+-  *     char is treated as if it was signed (regardless of whether it real=
+ly is)
+-  *     but the macro's return type is preserved as char.
+-  *
+-  * Return: an absolute value of x.
+-  */
+- #define abs(x)	__abs_choose_expr(x, long long,				\
+- 		__abs_choose_expr(x, long,				\
+- 		__abs_choose_expr(x, int,				\
+- 		__abs_choose_expr(x, short,				\
+- 		__abs_choose_expr(x, char,				\
+- 		__builtin_choose_expr(					\
+- 			__builtin_types_compatible_p(typeof(x), char),	\
+- 			(char)({ signed char __x =3D (x); __x<0?-__x:__x; }), \
+- 			((void)0)))))))
+-=20
+- #define __abs_choose_expr(x, type, other) __builtin_choose_expr(	\
+- 	__builtin_types_compatible_p(typeof(x),   signed type) ||	\
+- 	__builtin_types_compatible_p(typeof(x), unsigned type),		\
+- 	({ signed type __x =3D (x); __x < 0 ? -__x : __x; }), other)
+-=20
+- /**
+-  * reciprocal_scale - "scale" a value into range [0, ep_ro)
+-  * @val: value
+-  * @ep_ro: right open interval endpoint
+-  *
+-  * Perform a "reciprocal multiplication" in order to "scale" a value into
+-  * range [0, @ep_ro), where the upper interval endpoint is right-open.
+-  * This is useful, e.g. for accessing a index of an array containing
+-  * @ep_ro elements, for example. Think of it as sort of modulus, only that
+-  * the result isn't that of modulo. ;) Note that if initial input is a
+-  * small value, then result will return 0.
+-  *
+-  * Return: a result based on @val in interval [0, @ep_ro).
+-  */
+- static inline u32 reciprocal_scale(u32 val, u32 ep_ro)
+- {
+- 	return (u32)(((u64) val * ep_ro) >> 32);
+- }
+ -#ifndef CONFIG_PREEMPT_RT
+ -# define cant_migrate()		cant_sleep()
+ -#else
+ -  /* Placeholder for now */
+ -# define cant_migrate()		do { } while (0)
+ -#endif
+--
+  #if defined(CONFIG_MMU) && \
+  	(defined(CONFIG_PROVE_LOCKING) || defined(CONFIG_DEBUG_ATOMIC_SLEEP))
+  #define might_fault() __might_fault(__FILE__, __LINE__)
+
+--Sig_/JAcalZRK1OeJkm7R4ecfnAO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/ArSwACgkQAVBC80lX
+0Gy8fQf/WDYe2yptL2VPqJIj7xT2YgGxJKl0kcjtZNGs3uH6DzogOt/7ilIFr+o3
+VdCrMnF12y7gGYZ/VYBp5x0yFeWGBnANMoG9jsma1FL7+rja0w/66acjij3uAytX
+b3mA3qE32urhnHo4l9o/X5UbVcI3jtbxF66v/xjqO0P2soOihlCP1LPw5YJTzUca
+oPsA6ajacoVdmORvg7ZN8qpcyNqZeEJedXdApZK0brAxfDgVFAtShUTiYiKU/NFI
+wc5UOOmZnmddZDSXW+F0EpqwMWDMx5FoQ7yc2Y7hToimLWFVL5rLiv/+bBSxPx8q
+Quqj29BrEryZgFbDtYcwhQQhdW8TxQ==
+=BrHP
+-----END PGP SIGNATURE-----
+
+--Sig_/JAcalZRK1OeJkm7R4ecfnAO--
