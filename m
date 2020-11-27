@@ -2,230 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC882C6358
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB442C635D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 11:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgK0KnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 05:43:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        id S1728968AbgK0Kql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 05:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgK0KnN (ORCPT
+        with ESMTP id S1728294AbgK0Kqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 05:43:13 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD31C0613D1;
-        Fri, 27 Nov 2020 02:43:12 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id l1so5063753wrb.9;
-        Fri, 27 Nov 2020 02:43:12 -0800 (PST)
+        Fri, 27 Nov 2020 05:46:40 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7598AC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:46:40 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 3so2359877wmg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 02:46:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dh/M5eO4b6sQ8gjEaV1619EXSF306UzZNssTdgSzaoo=;
-        b=cqpoCXvCOKTffdIYPvma+YPQCYcKvsNafeZYeMrxGpJhhJKqdytF6VDyVDyg2NjTFY
-         ekO5p6EeOQr7eH8Is2xARhCY9rDo2El4eWrO4oMp3a6JMAZ1Avshgp1WUtwULIMs+56e
-         7GeJiOQW2pz0hJpulJPwaWtbjHRjXh5zMdmmJ55p2GcM2FoB7oc1Rm2ziSty8oW/7py6
-         aHhoZhlDolmH/WB9heuSJR8eax1HgujK3ztXmH8Or0Z7NjpM3UKN5KCB86FeHr8iBIa5
-         TcrBD8RKXZPYccHAB/jOf2XxetufI2kPJfVNi1iMi26zSG5rE9DZ2yb8M2PHEp3f9eiM
-         Mz5Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=maUAZkkcRtftX+bmS1QJvB6DjaFn1qmyf5on7huUx9k=;
+        b=Fhi4gVmJ2TjrJXtKJ9XNpfTeMm3bRo1hVJK8DDgeHMXcOtZRAnfD10NIvjLSdgnS+K
+         t7clGd0hsBaXNpMmBSXfFshBZZV+wpVOd29/n4Bkjag79JCqUNqxq32ZUEBq7Tk6jqhd
+         QeBU/If/jBUNCPEbfbhmHeutdOCGRpovZFe0cbDBGf5ssE4jdqFY+qzlQbhtvNzbr68C
+         MCeIPvKOssW/EX7msuQ+DRt5hIAcJ9i5sWZWigfuOIql412ofKHblI+Pp4SSDhISsAht
+         8JovAPxhRQ4vgeZClCIhY73YUx5awFHkztyPIqTF7La3NgODwyulySjxnGNgOV+jBfWa
+         SfFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=dh/M5eO4b6sQ8gjEaV1619EXSF306UzZNssTdgSzaoo=;
-        b=Hdj+WMehOspTg1cV6wcPxC4YCDhkWt01ScogFs4d877bMMJv0BRLIBSVwFf3JByZUw
-         GbqB6GUognAGc13hqrq6gWsOzQXeVkEnGTeEodZgkNc9xPNfc6tYJKGTH/FBrn1LLAgx
-         quhAFYloGdnSZ1iCAjNH9F2J3cTY3vauSumNgeZo5Pn3eVedrNXqTf7m30Inx2qEAkbH
-         nDOdGn1Dj1UEfmWqu65x1ag3xcpM3fKHgVh5jNwIRopP4jfSn5RVF3c1zVSVy045Pr06
-         pcxbdK7NIH/0pV7XpKESYBtvawJ7UKHytdqcY2GklQpJf1y4FRqcfpGSXDqhDVJ1KkMj
-         eWUw==
-X-Gm-Message-State: AOAM5337+X4LOUwCgVXw35AB06a7WF+DtI5ZIPVi0XohIc1zNay0S4W9
-        BoXhHBljbqGdnh2GsVaiv8lb8aQFyNftpA==
-X-Google-Smtp-Source: ABdhPJz0ah8qif/gvEFif1zC78TI/ZvQP4rFWZrNR/WqJo8gHnOszD1J029zdLdRbU7yyAEmxN08BA==
-X-Received: by 2002:adf:e5cb:: with SMTP id a11mr9723370wrn.15.1606473791236;
-        Fri, 27 Nov 2020 02:43:11 -0800 (PST)
-Received: from ?IPv6:2001:a61:24b3:de01:7310:e730:497d:ea6a? ([2001:a61:24b3:de01:7310:e730:497d:ea6a])
-        by smtp.gmail.com with ESMTPSA id g11sm14729748wrq.7.2020.11.27.02.43.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 02:43:10 -0800 (PST)
-Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spu_create.2: Clarify that one of the prototypes is the
- current one
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-References: <20201126183211.21857-1-alx.manpages@gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <e4802e90-75e5-caaa-ea53-bdbe3c6dd17a@gmail.com>
-Date:   Fri, 27 Nov 2020 11:43:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        bh=maUAZkkcRtftX+bmS1QJvB6DjaFn1qmyf5on7huUx9k=;
+        b=j4T1c3QnRyMoUasdeYHXwFZ0kp9Kb8doOP56KvsmkGv5NvY3TozrKF6t8LbdIlvOPL
+         SPIqxg8xMqonMcr0Ku3c5Qa1JAzvm6DnNHIV17V85MQe2rHSiulsLKUlvmZcfa1pHyQe
+         LId8byLc4Xr01286zw4xarcldKBfFKlS/Mnq5ljmWdj4U9yHhQJEC06wvOdlMrmg2avm
+         W627C9+6E0HRxz/SvGV0h2mO6TmspDi7uRz704DqssPOhyN3mBm4afbHT6qFOEkuVXOO
+         nkJnFPt248dPtq1mNBACwFE9nJKFD+Outq1QuqFEPVUuaPle0TzBG3E+YKVq7PlLgPU3
+         YL+w==
+X-Gm-Message-State: AOAM5303xHhuqiUkCvj87oGZ2kF5Y5kl8/JwcYzTsHdEHB+27Q+7Dhh8
+        vtAqoZxPvt35LoLq8YojXZo=
+X-Google-Smtp-Source: ABdhPJyVMPN9Huy8edhFeYp3Q4Hss9h+uwmhneTfG2Ok6Cuk/ArA6AAM8Fr5hwFBz6e1chrLEKEZgQ==
+X-Received: by 2002:a1c:2502:: with SMTP id l2mr1844322wml.40.1606473999084;
+        Fri, 27 Nov 2020 02:46:39 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id k81sm23454086wma.2.2020.11.27.02.46.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 02:46:37 -0800 (PST)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] driver core: Fix a couple of typos
+Date:   Fri, 27 Nov 2020 11:46:30 +0100
+Message-Id: <20201127104630.1839171-1-thierry.reding@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201126183211.21857-1-alx.manpages@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi ALex,
+From: Thierry Reding <treding@nvidia.com>
 
-On 11/26/20 7:32 PM, Alejandro Colomar wrote:
-> The current Linux kernel only provides a definition of 'spu_create()'.
-> It has 4 parameters, the last being 'int neighbor_fd'.
-> 
-> Before Linux 2.6.23, there was an older prototype,
-> which didn't have this last parameter.
-> 
-> Move that old prototype to VERSIONS,
-> and keep the current one in SYNOPSIS.
-> 
-> ......
-> 
-> $ grep -rn "SYSCALL_DEFINE.(spu_create"
-> arch/powerpc/platforms/cell/spu_syscalls.c:56:
-> SYSCALL_DEFINE4(spu_create, const char __user *, name, unsigned int, flags,
-> 
-> $ sed -n 56,/^}/p arch/powerpc/platforms/cell/spu_syscalls.c
-> SYSCALL_DEFINE4(spu_create, const char __user *, name, unsigned int, flags,
-> 	umode_t, mode, int, neighbor_fd)
-> {
-> 	long ret;
-> 	struct spufs_calls *calls;
-> 
-> 	calls = spufs_calls_get();
-> 	if (!calls)
-> 		return -ENOSYS;
-> 
-> 	if (flags & SPU_CREATE_AFFINITY_SPU) {
-> 		struct fd neighbor = fdget(neighbor_fd);
-> 		ret = -EBADF;
-> 		if (neighbor.file) {
-> 			ret = calls->create_thread(name, flags, mode, neighbor.file);
-> 			fdput(neighbor);
-> 		}
-> 	} else
-> 		ret = calls->create_thread(name, flags, mode, NULL);
-> 
-> 	spufs_calls_put(calls);
-> 	return ret;
-> }
-> 
-> $ git blame arch/powerpc/platforms/cell/spu_syscalls.c -L 56,/\)/
-> 1bc94226d5c64 (Al Viro 2011-07-26 16:50:23 -0400 56)
-> SYSCALL_DEFINE4(spu_create, const char __user *, name, unsigned int, flags,
-> 1bc94226d5c64 (Al Viro 2011-07-26 16:50:23 -0400 57)
->    umode_t, mode, int, neighbor_fd)
-> 
-> $ git checkout 1bc94226d5c64~1
-> $ git blame arch/powerpc/platforms/cell/spu_syscalls.c -L /spu_create/,/\)/
-> 67207b9664a8d (Arnd Bergmann 2005-11-15 15:53:48 -0500 68)
-> asmlinkage long sys_spu_create(const char __user *name,
-> 8e68e2f248332 (Arnd Bergmann 2007-07-20 21:39:47 +0200 69)
->              unsigned int flags, mode_t mode, int neighbor_fd)
-> 
-> $ git checkout 8e68e2f248332~1
-> $ git blame arch/powerpc/platforms/cell/spu_syscalls.c -L /spu_create/,/\)/
-> 67207b9664a8d (Arnd Bergmann 2005-11-15 15:53:48 -0500 36)
-> asmlinkage long sys_spu_create(const char __user *name,
-> 67207b9664a8d (Arnd Bergmann 2005-11-15 15:53:48 -0500 37)
->              unsigned int flags, mode_t mode)
-> 
-> $ git describe --contains 8e68e2f248332
-> v2.6.23-rc1~195^2~7
-> 
-> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
-> ---
->  man2/spu_create.2 | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/man2/spu_create.2 b/man2/spu_create.2
-> index 4e6f5d730..3eeafee56 100644
-> --- a/man2/spu_create.2
-> +++ b/man2/spu_create.2
-> @@ -30,9 +30,8 @@ spu_create \- create a new spu context
->  .B #include <sys/types.h>
->  .B #include <sys/spu.h>
->  .PP
-> -.BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode ");"
-> -.BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode ","
-> -.BI "               int " neighbor_fd ");"
-> +.BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode ,
-> +.BI "               int " neighbor_fd );
->  .fi
->  .PP
->  .IR Note :
-> @@ -247,6 +246,17 @@ By convention, it gets mounted in
->  The
->  .BR spu_create ()
->  system call was added to Linux in kernel 2.6.16.
-> +.PP
-> +.\" commit 8e68e2f248332a9c3fd4f08258f488c209bd3e0c
-> +Before Linux 2.6.23, the prototype for
-> +.BR spu_create ()
-> +was:
-> +.PP
-> +.in +4n
-> +.EX
-> +.BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode );
-> +.EE
-> +.in
->  .SH CONFORMING TO
->  This call is Linux-specific and implemented only on the PowerPC
->  architecture.
+These were just some minor typos that have crept in recently and are
+easily fixed.
 
-Thanks for the detailed research. The page was indeed a bit messy
-in explaining some details. I've instead opted for a different change;
-see below.
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+---
+ drivers/base/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-
-Michael
-
-diff --git a/man2/spu_create.2 b/man2/spu_create.2
-index 92f5fc304..f09d498ed 100644
---- a/man2/spu_create.2
-+++ b/man2/spu_create.2
-@@ -30,7 +30,6 @@ spu_create \- create a new spu context
- .B #include <sys/types.h>
- .B #include <sys/spu.h>
- .PP
--.BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode ");"
- .BI "int spu_create(const char *" pathname ", int " flags ", mode_t " mode ","
- .BI "               int " neighbor_fd ");"
- .fi
-@@ -89,6 +88,12 @@ for a full list of the possible
- values.
- .PP
- The
-+.I neighbor_fd
-+is used only when the
-+.B SPU_CREATE_AFFINITY_SPU
-+flag is specified; see below.
-+.PP
-+The
- .I flags
- argument can be zero or any bitwise OR-ed
- combination of the following constants:
-@@ -264,6 +269,14 @@ See
- .UR http://www.bsc.es\:/projects\:/deepcomputing\:/linuxoncell/
- .UE
- for the recommended libraries.
-+.PP
-+Prior to the addition of the
-+.B SPU_CREATE_AFFINITY_SPU
-+flag in Linux 2.6.23, the
-+.BR spu_create ()
-+system call took only three arguments (i.e., there was no
-+.I neighbor_fd
-+argument).
- .SH EXAMPLES
- See
- .BR spu_run (2)
-
-
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 1165a80f8010..5e3600eb3ab2 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -468,7 +468,7 @@ postcore_initcall(devlink_class_init);
+  * with runtime PM.  First, setting the DL_FLAG_PM_RUNTIME flag will cause the
+  * runtime PM framework to take the link into account.  Second, if the
+  * DL_FLAG_RPM_ACTIVE flag is set in addition to it, the supplier devices will
+- * be forced into the active metastate and reference-counted upon the creation
++ * be forced into the active meta state and reference-counted upon the creation
+  * of the link.  If DL_FLAG_PM_RUNTIME is not set, DL_FLAG_RPM_ACTIVE will be
+  * ignored.
+  *
+@@ -491,7 +491,7 @@ postcore_initcall(devlink_class_init);
+  * Also, if DL_FLAG_STATELESS, DL_FLAG_AUTOREMOVE_CONSUMER and
+  * DL_FLAG_AUTOREMOVE_SUPPLIER are not set in @flags (that is, a persistent
+  * managed device link is being added), the DL_FLAG_AUTOPROBE_CONSUMER flag can
+- * be used to request the driver core to automaticall probe for a consmer
++ * be used to request the driver core to automatically probe for a consumer
+  * driver after successfully binding a driver to the supplier device.
+  *
+  * The combination of DL_FLAG_STATELESS and one of DL_FLAG_AUTOREMOVE_CONSUMER,
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+2.29.2
+
