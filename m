@@ -2,153 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FCE2C6209
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA572C620B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbgK0Jl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:41:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37607 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729179AbgK0JlY (ORCPT
+        id S1729342AbgK0Jlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:41:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729299AbgK0Jln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:41:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606470082;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=IMBFuW1kwZcIfsQ9CTbuIBKuzaXOT1XTMro+WzbTZV8=;
-        b=NN//e77+7T4dcW6bT9JkWg0JeJbtcgY311+oNoisXflluXwn0d4yCEPeaMvb6eI+3RdeGT
-        u8rh7NQgfkqAffR9N7M3i7mzLmitTV7JhMrQeTy8sx0bZiO+rRfuuFTxjOmxCOaoHPaDyM
-        3yIqb2b+tuXEIuWZE7MmdmE9mCqqUvE=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-DWFR2m8MPNCDIQWdpaqcGg-1; Fri, 27 Nov 2020 04:41:20 -0500
-X-MC-Unique: DWFR2m8MPNCDIQWdpaqcGg-1
-Received: by mail-ej1-f72.google.com with SMTP id q2so1798512ejj.16
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:41:20 -0800 (PST)
+        Fri, 27 Nov 2020 04:41:43 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014C6C0613D4;
+        Fri, 27 Nov 2020 01:41:42 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id m9so3928813pgb.4;
+        Fri, 27 Nov 2020 01:41:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9b3DW2H2fIy5rHH49Dn8tazN9CD4QYpDJnWXSKIEJRg=;
+        b=WBVyXHKgyjXFVD0Y+NaG93/hlXgNLhM5WgR7iO//yZdwTGHUdrseX7CfxM0dxiIwRd
+         IDFWOc/7RjUMEYJMaHuYW16U9ybCU5QHAYDhuMHVzyhvlgRa3Y0Jei/d4gT+fORFrRGD
+         lsUYg/GKnkOgM/DyACdQXJuXSttYpcu/7GDaPbWJmGKdmJTVj1pWdVGO4zIXPmO5nUnF
+         ph2MJE9hXTYDcJcu2oMgf4e21hvzJYB5saFofKoGvp4L8Uj8M+1Kt0wD9XssSal9vteK
+         FW2OURGsIScHz4nCkPXLH9RHVbDbzq6may/dpCl+ba0oQ4wttuM6cEc00ODXFYcgh1fu
+         KzpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=IMBFuW1kwZcIfsQ9CTbuIBKuzaXOT1XTMro+WzbTZV8=;
-        b=M6MHwBxyU4tDLELbIAAtYPm0uD+6mlICyP6cg43j+McgAl87QNUoTFwxeezU94TKou
-         Vo7S0mH4DCS8qc0RSw/4eY7JRdMaovNRhpoiXpqLMOQ9KqjVN9vrpZTT9XTyjKRW5gQR
-         q/jo4umosK1CWPr4H0Hc50sz0HIrNlazvI+VwDLxC2avedrvxxrxDgkgvliKu6SRoYBn
-         DW1tJUzDwAwyS/NZtbtiqA16L3/ORMVejhAy/2jHRx3+Ru6PyGrD+7poo6gBswf46vn0
-         XRYrQSefaVLaBP7FrzMzPrmp+t8YgAslYJp2S5W2xZmHNFgOZbhZ2Gg/r4Q3n7ELy8jR
-         iOFQ==
-X-Gm-Message-State: AOAM530XW8rrNkmVm+2o71q92jhshuJbYuEfJeTu/S5GtN2YsbwoA81q
-        6S5o1+QoH/fR03w1GtYvGTjhgYtp6SsO15/JjxN3R3pSAW8uhutNTBfA0uwbeh3bw1NtTXmu53O
-        UdiSL4/RhQE3PbvixovUGksWq
-X-Received: by 2002:a17:906:2e55:: with SMTP id r21mr7093041eji.46.1606470079273;
-        Fri, 27 Nov 2020 01:41:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx1xcarjDCPCwzOKQRTlgF7I4yVz7qP0linSSpUxXJJBapznj0WdjI5PL2RriCwJz+eTWeiRg==
-X-Received: by 2002:a17:906:2e55:: with SMTP id r21mr7093026eji.46.1606470079062;
-        Fri, 27 Nov 2020 01:41:19 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id a3sm2514842edf.23.2020.11.27.01.41.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 01:41:18 -0800 (PST)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org
-From:   Hans de Goede <hdegoede@redhat.com>
-Subject: [GIT PULL] platform-drivers-x86 for 5.10-2
-Message-ID: <7fadb4fc-4e7f-e335-4c90-c09ee6aafeac@redhat.com>
-Date:   Fri, 27 Nov 2020 10:41:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9b3DW2H2fIy5rHH49Dn8tazN9CD4QYpDJnWXSKIEJRg=;
+        b=gdy9m5FwdXvQV6q/CzIvnuIgjLeC7q+emG1vEU7LfZvzB4VIj5xGpr/eYd5haZbBC4
+         KfEPg0VJ+mdOAsa+Ba+C0cWw2fRXV4B79RB1wt0W33N0J73xpjgONArWDA8zl8BsBEid
+         0e5QHQYnepy9YZHNuC97zTxNzmorRpdTzeD0o0oi9hw8A1EC/2bywKY6hmFPIYeVxAWJ
+         9NJ3kHqetMrMcNUw9gYytIb3IVAU2y6FBPA+n4Tpz/LzjbXkxK9uhvtGtCuDwrFYiNKe
+         iF3vYjkPqsSqtWZndwQWRMx4vupmM+46YzJ9lrCdmHR0uJC925patmJJjwqA5b1P33OT
+         LDlQ==
+X-Gm-Message-State: AOAM533axdGw5vCSUYCeiUNpsK6enS36vNwkj+ms/OgJ9v1E4h5HBd3A
+        vB8bsrhzbcTOgTDwBPCmIjM=
+X-Google-Smtp-Source: ABdhPJw/94xD49Tqe0zeIl775gnP9Lz9VeRJbWf9hNbVy3Cv6ss0njmbXSpCdExfb8x3T66vb1TFTg==
+X-Received: by 2002:a17:90a:940e:: with SMTP id r14mr9004730pjo.47.1606470102432;
+        Fri, 27 Nov 2020 01:41:42 -0800 (PST)
+Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id h7sm8120198pgi.90.2020.11.27.01.41.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 01:41:41 -0800 (PST)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCH] media: vb2: always set buffer cache sync hints
+Date:   Fri, 27 Nov 2020 18:41:36 +0900
+Message-Id: <20201127094136.1051071-1-sergey.senozhatsky@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+We need to always set ->need_cache_sync_on_prepare and
+->need_cache_sync_on_finish when we initialize vb2 buffer.
 
-Here is a set of small, straight-forward fixes for platform-drivers-x86 for 5.10:
- - thinkpad_acpi fixes: 2 bug-fixes and 3 model specific quirks
- - fixes for misc. other drivers: 2 bug-fixes and 3 model specific quirks
+Currently these flags are set/adjusted only in V4L2's
+vb2_queue_or_prepare_buf(), which means that for the code
+paths that don't use V4L2 vb2 will always tell videobuf2
+core to skip ->prepare() and ->finish() cache syncs/flushes.
 
-Regards,
+This is a quick solution that should do the trick. The
+proper fix, however, is much more complicated and requires
+a rather big videobuf2 refactoring - we need to move cache
+sync/flush decision making out of core videobuf2 to the
+allocators.
 
-Hans
+Reported-by: Tomasz Figa <tfiga@chromium.org>
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+---
+ drivers/media/common/videobuf2/videobuf2-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.10-2
-
-for you to fetch changes up to c9aa128080cbce92f8715a9328f88d8ca3134279:
-
-  platform/x86: touchscreen_dmi: Add info for the Irbis TW118 tablet (2020-11-26 15:49:16 +0100)
-
-----------------------------------------------------------------
-platform-drivers-x86 for v5.10-2
-
-Highlights:
- - thinkpad_acpi fixes: 2 bug-fixes and 3 model specific quirks
- - fixes for misc. other drivers: 2 bug-fixes and 3 model specific quirks
-
-The following is an automated git shortlog grouped by driver:
-
-acer-wmi:
- -  add automatic keyboard background light toggle key as KEY_LIGHTS_TOGGLE
-
-intel-vbtn:
- -  Support for tablet mode on HP Pavilion 13 x360 PC
-
-thinkpad_acpi:
- -  Whitelist P15 firmware for dual fan control
- -  Send tablet mode switch at wakeup time
- -  Add BAT1 is primary battery quirk for Thinkpad Yoga 11e 4th gen
- -  Do not report SW_TABLET_MODE on Yoga 11e
- -  add P1 gen3 second fan support
-
-toshiba_acpi:
- -  Fix the wrong variable assignment
-
-touchscreen_dmi:
- -  Add info for the Irbis TW118 tablet
- -  Add info for the Predia Basic tablet
-
-----------------------------------------------------------------
-Benjamin Berg (1):
-      platform/x86: thinkpad_acpi: Send tablet mode switch at wakeup time
-
-Hans de Goede (4):
-      platform/x86: thinkpad_acpi: Do not report SW_TABLET_MODE on Yoga 11e
-      platform/x86: thinkpad_acpi: Add BAT1 is primary battery quirk for Thinkpad Yoga 11e 4th gen
-      platform/x86: touchscreen_dmi: Add info for the Predia Basic tablet
-      platform/x86: touchscreen_dmi: Add info for the Irbis TW118 tablet
-
-Iakov 'Jake' Kirilenko (1):
-      platform/x86: thinkpad_acpi: add P1 gen3 second fan support
-
-Kaixu Xia (1):
-      platform/x86: toshiba_acpi: Fix the wrong variable assignment
-
-Matthias Maier (1):
-      platform/x86: thinkpad_acpi: Whitelist P15 firmware for dual fan control
-
-Max Verevkin (1):
-      platform/x86: intel-vbtn: Support for tablet mode on HP Pavilion 13 x360 PC
-
-Timo Witte (1):
-      platform/x86: acer-wmi: add automatic keyboard background light toggle key as KEY_LIGHTS_TOGGLE
-
- drivers/platform/x86/acer-wmi.c        |  1 +
- drivers/platform/x86/intel-vbtn.c      |  6 ++++
- drivers/platform/x86/thinkpad_acpi.c   | 13 ++++++++-
- drivers/platform/x86/toshiba_acpi.c    |  3 +-
- drivers/platform/x86/touchscreen_dmi.c | 50 ++++++++++++++++++++++++++++++++++
- 5 files changed, 70 insertions(+), 3 deletions(-)
+diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+index 5499013cf82e..14a26888a892 100644
+--- a/drivers/media/common/videobuf2/videobuf2-core.c
++++ b/drivers/media/common/videobuf2/videobuf2-core.c
+@@ -414,6 +414,8 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
+ 		vb->index = q->num_buffers + buffer;
+ 		vb->type = q->type;
+ 		vb->memory = memory;
++		vb->need_cache_sync_on_prepare = 1;
++		vb->need_cache_sync_on_finish = 1;
+ 		for (plane = 0; plane < num_planes; ++plane) {
+ 			vb->planes[plane].length = plane_sizes[plane];
+ 			vb->planes[plane].min_length = plane_sizes[plane];
+-- 
+2.29.2
 
