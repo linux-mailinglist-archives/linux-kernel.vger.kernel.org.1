@@ -2,51 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD3D2C6838
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5624B2C6839
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 15:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731013AbgK0Oun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 09:50:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730935AbgK0Oun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 09:50:43 -0500
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AAF0221EB;
-        Fri, 27 Nov 2020 14:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606488642;
-        bh=SqwkfWzTNnQQCwlRXK/BH4vTy85g339B51XDPUrpvL4=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=KC0PTcamUlxyFCrGUCrCaStWXSqoQub7m8wY8i99gjrKYtBMTIwHLgbVOQ5d+T7jS
-         ceITRcewrCJRk7ybV55CwXYwIO6vTlaPVHxRGyPKF3xRsHeDOEFYi0RLIPzm2aLMj7
-         av5PNgZ6fBIwjWM6x9UufyWkHjEh7WO4i1xE8MN0=
-Date:   Fri, 27 Nov 2020 15:50:39 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Pascal Giard <pascal.giard@etsmtl.ca>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sanjay Govind <sanjay.govind9@gmail.com>
-Subject: Re: [PATCH v3] HID: sony: support for ghlive ps3/wii u dongles
-In-Reply-To: <20201126030230.304940-1-pascal.giard@etsmtl.ca>
-Message-ID: <nycvar.YFH.7.76.2011271550230.3441@cbobk.fhfr.pm>
-References: <20201108013818.12214-1-pascal.giard@etsmtl.ca> <20201126030230.304940-1-pascal.giard@etsmtl.ca>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1731080AbgK0Ou5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 09:50:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730948AbgK0Ou5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 09:50:57 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E84C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 06:50:56 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id m6so5844065wrg.7
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 06:50:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=kQWV49pujlmRaIQ5jgnQgNVdngMEKYgj0984wCyTobw=;
+        b=htkftUcTu38rYgg+t8JxPCkONLao2x/5X3GVYqr8Ls8WHxCTkqn3L+nxYYamIEd/w5
+         D5YC8lCIyH6kzgTSL516AMymq5ltgH5rw8IMSmo7zMDxbrRl73yHxs/DZnGiKkp+QPOH
+         SxyUO9XTxbntJUPMw6ygrDhOonxhvnaqLXnh8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=kQWV49pujlmRaIQ5jgnQgNVdngMEKYgj0984wCyTobw=;
+        b=HcrpExilqucABLyM6VCGPSByNPFVZwHdMBsfCjraNiTktwS99CooRb5wLB8hZe+3sa
+         tUarmqgSnIQEv/EPBcRgkc+IDgd7GUe/5BB9xKhNR3rapboRQXPpKBnd8QXD2oaJwkvY
+         TIcw/CIe3ALxwp2VMlnClBOM5uHP0nd38b2NB0a9DSnRe3GxlfnvpLIMc2BiqeS9H+Vd
+         mkoLC+dBl0qb3Y3tQZEXppAp6eUfjd96pu4IZnPdriip8/YHzis4lcnBrOMYQYsiHOmj
+         bYaNT2lsd9RK8WtiR1suJIuzJWG40n/A9H8wdb1mi5bzpKQ1BPsav2ecmJxuhgdPl47j
+         I+qw==
+X-Gm-Message-State: AOAM530MTCvLhCvntYV7psHPlPeTr5Wb0cEhJm0eI6f2sBLlFndiatNk
+        /IL3SlxOyC5/ZwBafHDd2RfiXQ==
+X-Google-Smtp-Source: ABdhPJxfv14p/J2HUql3b5ucaZxqOHa7FV0VkwiEL/oC16P/Ik/Z8q1X1fpPwwAqz029oAzqwGl7rw==
+X-Received: by 2002:adf:b74d:: with SMTP id n13mr11127354wre.101.1606488655177;
+        Fri, 27 Nov 2020 06:50:55 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id w10sm14968203wra.34.2020.11.27.06.50.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 06:50:54 -0800 (PST)
+Date:   Fri, 27 Nov 2020 15:50:52 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     "Jonas Mark (BT-FIR/ENG1-Grb)" <Mark.Jonas@de.bosch.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "RUAN Tingquan (BT-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] drm: imx: Move fbdev setup to before output polling
+Message-ID: <20201127145052.GB401619@phenom.ffwll.local>
+Mail-Followup-To: "Jonas Mark (BT-FIR/ENG1-Grb)" <Mark.Jonas@de.bosch.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "RUAN Tingquan (BT-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        NXP Linux Team <linux-imx@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201117155229.9837-1-mark.jonas@de.bosch.com>
+ <e089d4d5-3bd8-c2cd-3011-ed87ae4284e8@suse.de>
+ <CAKMK7uEpEt4w4kVJLOd2Yw1MnsrCn-NMgT4TjcxROpZBa_xvYg@mail.gmail.com>
+ <68af913c-9f4e-73b5-a2cb-8692902a2847@suse.de>
+ <38c2d92ac5f04a228e55af43a12a4bd7@de.bosch.com>
+ <CAKMK7uFofJ2f4ozx=QMkfYHLAy0euOf6S0wou5qYC--QiEe5Qw@mail.gmail.com>
+ <98c874b923bd4e60bf2e727a29729dfc@de.bosch.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <98c874b923bd4e60bf2e727a29729dfc@de.bosch.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020, Pascal Giard wrote:
+On Thu, Nov 26, 2020 at 09:44:02AM +0000, Jonas Mark (BT-FIR/ENG1-Grb) wrote:
+> Hi Daniel,
+> 
+> > > Thank you very much for your feedback. We appreciate it.
+> > >
+> > > > >>> diff --git a/drivers/gpu/drm/imx/imx-drm-core.c
+> > > > >>> b/drivers/gpu/drm/imx/imx-drm-core.c
+> > > > >>> index 9bf5ad6d18a2..2665040e11c7 100644
+> > > > >>> --- a/drivers/gpu/drm/imx/imx-drm-core.c
+> > > > >>> +++ b/drivers/gpu/drm/imx/imx-drm-core.c
+> > > > >>> @@ -240,14 +240,18 @@ static int imx_drm_bind(struct device *dev)
+> > > > >>>                legacyfb_depth = 16;
+> > > > >>>        }
+> > > > >>>
+> > > > >>> +     /*
+> > > > >>> +      * The generic fbdev has to be setup before enabling output polling.
+> > > > >>> +      * Otherwise the fbdev client is not ready to handle delayed events.
+> > > > >>> +      */
+> > > > >>> +     drm_fbdev_generic_setup(drm, legacyfb_depth);
+> > > > >>> +
+> > > > >>>        drm_kms_helper_poll_init(drm);
+> > > > >>>
+> > > > >>>        ret = drm_dev_register(drm, 0);
+> > > > >>>        if (ret)
+> > > > >>>                goto err_poll_fini;
+> > > > >>>
+> > > > >>> -     drm_fbdev_generic_setup(drm, legacyfb_depth);
+> > > > >>> -
+> > > > >>
+> > > > >> This does not work well. fbdev is supposed to be another regular
+> > > > >> DRM client. It has to be enabled after registering the DRM device.
+> > > > >>
+> > > > >> I'd rather improve fbdev or the driver to handle this gracefully.
+> > > > >
+> > > > > Yeah I'm not understanding the point here. Once fbcon is running,
+> > > > > you have a screen. Any fbdev userspace client  also should do a
+> > > > > modeset first. And if they dont and it's expected uapi for fbdev
+> > > > > chardev that the display boots up enabled, then we need to fix
+> > > > > that in the fbdev helpers, not through clever reordering in
+> > > > > drivers so that a side-effect causes a modeset.
+> > > > >
+> > > > > Note that this is a bit tricky since fbdev shouldn't take over the
+> > > > > screen by default, so we'd need to delay this until first open of
+> > > > > /dev/fb0. And we should probably also delay the hotplug handling
+> > > > > until the first open. fbcon also fake-opens the fbdev file, so
+> > > > > it's the same code path.
+> > > >
+> > > > As far as I understand the commit message, the problem is that the
+> > > > display blanks out after registering the driver. And fbdev somewhat
+> > > > mitigates this by doing an early modeset. Users with fbdev disabled
+> > > > (most of them in embedded, I guess) would still run into the issue
+> > > > until userspace makes a modeset.
+> > > >
+> > > > Mark, if that's the case, an option might be to pick up the device
+> > > > settings instead of calling drm_mode_config_reset(). The driver
+> > > > would then continue to display whatever is on the screen.
+> > >
+> > > We are started using fbdev in our embedded application with Linux
+> > > 3.10, later updated to 4.14 and are now in the process of updating to
+> > > 5.4. So far the uapi appeared to us as if we could rely on an already
+> > > enabled fbdev. That is, none of our applications does a modeset.
+> > >
+> > > When switching to 5.4 we noticed that the fbdev uapi changed. That is,
+> > > the LCD is switched off until it is explicitly enabled. It could be
+> > > enabled by writing to /sys/class/graphics/fb0/blank.
+> > >
+> > > You are right, we are not using fbcon. fbcon will still enable the LCD
+> > > but in our embedded domain we have it disabled because we must not show a
+> > console.
+> > >
+> > > Do we understand your proposal correctly to replace the call to
+> > > drm_mode_config_reset() in imx_drm_bind() [imx-drm-core.c] with
+> > > picking up the device settings instead?
+> > >
+> > > https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Felix
+> > > ir.bootlin.com%2Flinux%2Fv5.10-
+> > rc4%2Fsource%2Fdrivers%2Fgpu%2Fdrm%2Fim
+> > > x%2Fimx-drm-
+> > core.c%23L231&amp;data=04%7C01%7CMark.Jonas%40de.bosch.com
+> > >
+> > %7C9bbf5ede27ed40be9aaa08d88bac0c53%7C0ae51e1907c84e4bbb6d648ee
+> > 58410f4
+> > >
+> > %7C0%7C0%7C637412918338819509%7CUnknown%7CTWFpbGZsb3d8eyJ
+> > WIjoiMC4wLjAw
+> > >
+> > MDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sd
+> > ata=68
+> > >
+> > 1kOSAs2XsI1l4sOJ7j5UAGkAMciR78ma%2FgbD5jR98%3D&amp;reserved=0
+> > >
+> > > We are a little clueless right now: How do we pick up the device settings?
+> > 
+> > Nope, not what I had in mind.
+> > 
+> > Instead intercept the fb_ops->open call and in there if it's a userspace open
+> > (user parameter of the callback tells you that) and kms is not in use, then try to
+> > light up the display for the fbdev userspace to use. drm fbdev helpers already
+> > have that callback as drm_fbdev_fb_open(). I think you could try and just call
+> > drm_fbdev_client_hotplug directly, that should do the trick. Or maybe calling
+> > drm_fb_helper_dpms is the better option, not sure. fbmem.c seems to not store
+> > any blanking state at all, so this is probably all ill-defined.
+> > 
+> > Important part is to do this only for the user fb_open case, since fbcon will do its
+> > own thing too.
+> > 
+> > Plus I guess we need to document that this is the uapi we're having for fbdev
+> > clients, so ideally this should be cc'ed widely so we can get some acks from
+> > former fbdev maintainers.
+> > 
+> > Also ideally we'd have an igt for this uapi to make sure it never breaks again.
+> > Something like:
+> > 1. open the kms driver for this, make sure display is completely off.
+> > 2. close kms file
+> > 3. open fbdev file
+> > 4. check (through opening kms side again) that the display has been enabled.
+> > 
+> > See
+> > https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fdri.freede
+> > sktop.org%2Fdocs%2Fdrm%2Fgpu%2Fdrm-uapi.html%23validating-changes-
+> > with-
+> > igt&amp;data=04%7C01%7CMark.Jonas%40de.bosch.com%7C9bbf5ede27ed4
+> > 0be9aaa08d88bac0c53%7C0ae51e1907c84e4bbb6d648ee58410f4%7C0%7C0
+> > %7C637412918338819509%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLj
+> > AwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&am
+> > p;sdata=tgdaOJP2wK7eXFmOQlVdUa%2B7CRwZxOx99BCCMNE8iD0%3D&a
+> > mp;reserved=0
+> > for some details on our validation testing, there's already a very basic fbdev
+> > testcase there.
+> 
+> We had a look into the topic and came to the conclusion that we cannot do it
+> right now. We are lacking experience in the field and need to keep driving our
+> application development.
+> 
+> Thus, with a heavy heart, we will instead implement a workaround which will
+> enable the LCD at boot time from user space. What works good for us is writing
+> to /sys/class/graphics/fb0/blank.
 
-> This commit adds support for the Guitar Hero Live PS3 and Wii U dongles.
+I think this makes sense, the uapi for fbdev isn't so firmly established
+anyway. And it definitely doesn't hurt (at least on drm-kms drivers, where
+we no-op out changes that change nothing).
 
-Applied, thanks Pascal.
+Just in general, if you hit something like this, we're definitely
+interested in making fbdev a more well-defined uapi that can be relied
+upon a bit more across drivers. 20+ years after it landed, but hey if it
+keeps userspace happy, it imo makes sense.
+-Daniel
+
+> 
+> Greetings,
+> Mark
+> 
+> Building Technologies, Panel Software Fire (BT-FIR/ENG1-Grb)
+> Bosch Sicherheitssysteme GmbH | Postfach 11 11 | 85626 Grasbrunn | GERMANY | www.boschsecurity.com
+> 
+> Sitz: Stuttgart, Registergericht: Amtsgericht Stuttgart HRB 23118
+> Aufsichtsratsvorsitzender: Christian Fischer; Geschäftsführung: Tanja Rückert, Andreas Bartz, Thomas Quante
+> 
+> 100 Years Bosch Building Technologies 1920-2020
 
 -- 
-Jiri Kosina
-SUSE Labs
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
