@@ -2,165 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7635E2C5EC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 03:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4B62C5EC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 03:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392253AbgK0CcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Nov 2020 21:32:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392216AbgK0CcR (ORCPT
+        id S2392258AbgK0ClJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Nov 2020 21:41:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29484 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728340AbgK0ClJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Nov 2020 21:32:17 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D28EC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 18:32:17 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id z21so4980968lfe.12
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Nov 2020 18:32:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=duKXrMXbO5x97/X4ifJt1mH4DWBuc4Xj0bBfthNtITo=;
-        b=RdVbIFRv325tEKb1KxuR884D6+sUO17uL5VDFRX/mMETlyh/rWSMLOOCkq4JwuwzIP
-         WjByKo44zmV0Uh8tYD/lm/SijRhTovN4/OE9s+UL6M2mNFT9OE0eTUSHz5wrS7h+Gfwe
-         4bRtAW8ynalT354yFwKhUOZudZHtMXtMZq92s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=duKXrMXbO5x97/X4ifJt1mH4DWBuc4Xj0bBfthNtITo=;
-        b=Dz0izlNYvUFBTs1Rfj258YfkE/G5JifsUJekY8/4UXbGQ9vau0x7gbwzWyovhOe58d
-         8hRutg0aSrgpLHZsx+wk76In2bUh76zoSehi/685gHSVEVs/ri6kMFaTizdBm+sG+bPA
-         WIVxttaGfKEpC7HlHMDOVMvcNjo/ZX7+JNzLUh5ZYMCi4cbKSAWgGBnrg6L8pNXZyrw2
-         U4IyrWLWba7f2plwW3GHxcKLpVqhICeE/m5RMmxQM9Fsjq3ZxQX7oKNgoYW5Cex6V3am
-         kBxvHwVJdxxAG5/qB3a3oHDHOIVZnKvOVyZEyeRXIYRFLCxip1COPZgASn5WBV3DZ1h2
-         xUpw==
-X-Gm-Message-State: AOAM533cCCFcCkSP1gch0Qa/bK7uzJFzS6t5lenKXIKUtHWszlnxco2b
-        re5gw+mS3V6eBcL5KsjduP7eU03DGkNTlYfP1sR54gyjQxINnglM
-X-Google-Smtp-Source: ABdhPJyRfHa59VPLJk9D5ukrU4+/2/Vx2g97em7FvUpGC0yhzfjdDvSvAvT99Qfioctitgy9S0KPwt8yv8ZyB1g1TJU=
-X-Received: by 2002:a05:6512:34d3:: with SMTP id w19mr2235358lfr.418.1606444335787;
- Thu, 26 Nov 2020 18:32:15 -0800 (PST)
+        Thu, 26 Nov 2020 21:41:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606444867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CGuxrkK2iZdB4UEGYj2iQ4NnbaMBbMY85hcPMYR8MBQ=;
+        b=hJ07LBPK6aOMffsSjpk9yNfN2rJ5yqivomKTC6wLsq0yGTDqAXtvAk34j3ics8Rl6SJrR9
+        sPQ5R/aTXogA5wylVerANw4aFt9YHMmIgpWdOcMsO5ZNrPJvatQLqIwz8nXGsWC+hwiFzw
+        4lONryBFrIs6mxBj1n+eXBOyzrw+tos=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-kITHRiolM6uqfv8pokK3Vw-1; Thu, 26 Nov 2020 21:41:04 -0500
+X-MC-Unique: kITHRiolM6uqfv8pokK3Vw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE3738049C3;
+        Fri, 27 Nov 2020 02:41:03 +0000 (UTC)
+Received: from T590 (ovpn-12-114.pek2.redhat.com [10.72.12.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1B52B1001281;
+        Fri, 27 Nov 2020 02:40:56 +0000 (UTC)
+Date:   Fri, 27 Nov 2020 10:40:52 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-mq: Make running from the wrong CPU less scary
+Message-ID: <20201127024052.GB126383@T590>
+References: <20201126095152.19151-1-dwagner@suse.de>
 MIME-Version: 1.0
-References: <20201126165748.1748417-1-revest@google.com>
-In-Reply-To: <20201126165748.1748417-1-revest@google.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Fri, 27 Nov 2020 03:32:04 +0100
-Message-ID: <CACYkzJ65P5fxW1bxVXm_ehLLE=gn6nuR+UVxYWjqSJfXoZd+8g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126095152.19151-1-dwagner@suse.de>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+On Thu, Nov 26, 2020 at 10:51:52AM +0100, Daniel Wagner wrote:
+> The current warning looks aweful like a proper crash. This is
+> confusing. There is not much information to gained from the stack
+> trace anyway, let's drop it.
+> 
+> While at it print the cpumask as there might be additial helpful
+> information when debugging the sitation.
+> 
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+> Hi,
+> 
+> We got a report from a customer because he was concerned about the log
+> entries. As it turns out, it fooled me too to be honest. What do you
+> think about making it a bit less look-a-like a kernel oops?
+> 
+> 
+>  smpboot: Booting Node 0 Processor 12 APIC 0x26                                                
+> WARNING, didn't collect load info for all cpus, balancing is broken                            
+>  run queue from wrong CPU 0, hctx active                                                       
+>  CPU: 0 PID: 42300 Comm: kworker/13:2H Kdump: loaded Tainted: G           OE  X    5.3.18-109.$
+>  Hardware name: IBM System x3650 M5 -[5462AC1]-/00KG915, BIOS -[TCE144J-3.11]- 12/03/2019      
+>  Workqueue: kblockd blk_mq_run_work_fn                                                         
+>  Call Trace:                                                                                   
+>   dump_stack+0x66/0x8b                                                                         
+>   __blk_mq_run_hw_queue+0xee/0x100                                                             
+>   process_one_work+0x1f4/0x3e0                                                                 
+>   worker_thread+0x2d/0x3e0                                                                     
+>   ? process_one_work+0x3e0/0x3e0                                                               
+>   kthread+0x10d/0x130                                                                          
+>   ? kthread_park+0xa0/0xa0                                                                     
+>   ret_from_fork+0x35/0x40                                                                      
+>  run queue from wrong CPU 0, hctx active                                                       
+>  CPU: 0 PID: 42300 Comm: kworker/13:2H Kdump: loaded Tainted: G           OE  X    5.3.18-109.$
+>  Hardware name: IBM System x3650 M5 -[5462AC1]-/00KG915, BIOS -[TCE144J-3.11]- 12/03/2019      
+>  Workqueue: kblockd blk_mq_run_work_fn    
+> 
+> 
+> Thanks,
+> Daniel
+> 
+>  block/blk-mq.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 55bcee5dc032..0427b719d9c4 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -1514,10 +1514,8 @@ static void __blk_mq_run_hw_queue(struct blk_mq_hw_ctx *hctx)
+>  	 */
+>  	if (!cpumask_test_cpu(raw_smp_processor_id(), hctx->cpumask) &&
+>  		cpu_online(hctx->next_cpu)) {
+> -		printk(KERN_WARNING "run queue from wrong CPU %d, hctx %s\n",
+> -			raw_smp_processor_id(),
+> -			cpumask_empty(hctx->cpumask) ? "inactive": "active");
+> -		dump_stack();
+> +		printk(KERN_WARNING "run queue from wrong CPU %d, hctx %*pbl\n",
+> +			raw_smp_processor_id(), cpumask_pr_args(hctx->cpumask));
+>  	}
 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index c3458ec1f30a..670998635eac 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3817,6 +3817,21 @@ union bpf_attr {
->   *             The **hash_algo** is returned on success,
->   *             **-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
->   *             invalid arguments are passed.
-> + *
-> + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
-> + *     Description
-> + *             Uses kallsyms to write the name of the symbol at *address*
-> + *             into *symbol* of size *symbol_sz*. This is guaranteed to be
-> + *             zero terminated.
-> + *             If the symbol is in a module, up to *module_size* bytes of
-> + *             the module name is written in *module*. This is also
-> + *             guaranteed to be zero-terminated. Note: a module name
-> + *             is always shorter than 64 bytes.
-> + *     Return
-> + *             On success, the strictly positive length of the full symbol
-> + *             name, If this is greater than *symbol_size*, the written
-> + *             symbol is truncated.
-> + *             On error, a negative value.
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3981,6 +3996,7 @@ union bpf_attr {
->         FN(bprm_opts_set),              \
->         FN(ktime_get_coarse_ns),        \
->         FN(ima_inode_hash),             \
-> +       FN(kallsyms_lookup),    \
->         /* */
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index d255bc9b2bfa..9d86e20c2b13 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -17,6 +17,7 @@
->  #include <linux/error-injection.h>
->  #include <linux/btf_ids.h>
->  #include <linux/bpf_lsm.h>
-> +#include <linux/kallsyms.h>
->
->  #include <net/bpf_sk_storage.h>
->
-> @@ -1260,6 +1261,44 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
->         .arg5_type      = ARG_ANYTHING,
->  };
->
-> +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32, symbol_size,
-> +          char *, module, u32, module_size)
-> +{
-> +       char buffer[KSYM_SYMBOL_LEN];
-> +       unsigned long offset, size;
-> +       const char *name;
-> +       char *modname;
-> +       long ret;
-> +
-> +       name = kallsyms_lookup(address, &size, &offset, &modname, buffer);
-> +       if (!name)
-> +               return -EINVAL;
-> +
-> +       ret = strlen(name) + 1;
-> +       if (symbol_size) {
-> +               strncpy(symbol, name, symbol_size);
-> +               symbol[symbol_size - 1] = '\0';
-> +       }
-> +
-> +       if (modname && module_size) {
-> +               strncpy(module, modname, module_size);
+Now we have guaranteed that no any requests originated from one hctx exists
+when this hctx is going to offline, which is strong enough for killing the check.
 
-The return value does not seem to be impacted by the truncation of the
-module name, I wonder if it is better to just use a single buffer.
+The reason why such warning is triggered is that wq's cpu hot unplug is
+handled before blk-mq's handling.
 
-For example, the proc kallsyms shows symbols as:
+I'd suggest to kill the whole branch in the fast path.
 
-<symbol_name> [module_name]
+Thanks,
+Ming
 
-https://github.com/torvalds/linux/blob/master/kernel/kallsyms.c#L648
-
-The square brackets do seem to be a waste here, so maybe we could use
-a single character as a separator?
-
-> +               module[module_size - 1] = '\0';
-> +       }
-> +
-> +       return ret;
-> +}
-> +
-> +const struct bpf_func_proto bpf_kallsyms_lookup_proto = {
-> +       .func           = bpf_kallsyms_lookup,
-> +       .gpl_only       = false,
-> +       .ret_type       = RET_INTEGER,
-> +       .arg1_type      = ARG_ANYTHING,
-> +       .arg2_type      = ARG_PTR_TO_MEM,
-> +       .arg3_type      = ARG_CONST_SIZE,
-> +       .arg4_type      = ARG_PTR_TO_MEM,
-> +       .arg5_type      = ARG_CONST_SIZE,
-> +};
-> +
-
-[...]
