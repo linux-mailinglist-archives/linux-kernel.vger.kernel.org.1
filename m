@@ -2,95 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717F92C61A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 563332C61A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Nov 2020 10:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgK0JZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 04:25:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727682AbgK0JZL (ORCPT
+        id S1728568AbgK0JZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 04:25:39 -0500
+Received: from mail-out.m-online.net ([212.18.0.9]:46839 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726479AbgK0JZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:25:11 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8281DC0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:25:11 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id l1so4812191wrb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 01:25:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=2toaXqO7eAxS52tJyQVRw0+GDwnYT0VbxjWaMoFUCXs=;
-        b=H6+N6X01Vadj6yEz/vyTZBJlPFNeSeyTwZbp25I+jgznlUMLg+Uv1tt2hXhU0Gsjcm
-         yDeSNT0BFQlnZ5LqTSU2Yk9nEHqzFOj6y5x/8R3ueWj/Vg8VJAxME/4p6Lol6T8X89t5
-         e2vN6Veae25EE3DAlBLexYGP8moLKXbm0+mSE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=2toaXqO7eAxS52tJyQVRw0+GDwnYT0VbxjWaMoFUCXs=;
-        b=o4kkkJflA1Rbzqo9T4QbqvArXM94dNFLfCOhVseY8R6aXm6Hz9XUuQiIWfWG1G+kVg
-         wwM/uIqZpGOKv2tKtxlGMCaMsQyYsmBe/bsnLLok1Se6+0kHXrRQ+YbzUHfcmSZhyehO
-         YhOJvxYBJlyxe2ZrzRgznv4thH5KzNqALUiVkGWGii8NK9fHA616WwwM5T5R1vwamhkN
-         DMG7M++DThcMAd+7iar8S2UAv/1a8j7p/aKrYWIpbBu/AL/QaLzojOC8t21h3Rj/Uwmz
-         eayNTCRYKX9TP7U46yTYVxbcz9oAzvlhBMdzM/nBephn1W+jUMjRSh2QxeBO6Xhc5UI1
-         KS6w==
-X-Gm-Message-State: AOAM532a+OTxR1d2pf6/VwZwA1xks8Qvx5ywdCBY2BMqKE5corRwfida
-        d2s7xv0kC3zGOhraCMo0lv3vXA==
-X-Google-Smtp-Source: ABdhPJzKxL8zJc8mDyenBRdO0D0lm7//PnKEqdv6S4iFuZ/vETNkOE1vuLBYTiDqbg7s7RP0pNyKUw==
-X-Received: by 2002:adf:f181:: with SMTP id h1mr9071711wro.267.1606469110310;
-        Fri, 27 Nov 2020 01:25:10 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id v7sm6326100wma.26.2020.11.27.01.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 01:25:09 -0800 (PST)
-Message-ID: <c5af620d027aba9c3cdf2d642c3611f908638a3c.camel@chromium.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-From:   Florent Revest <revest@chromium.org>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Fri, 27 Nov 2020 10:25:08 +0100
-In-Reply-To: <CACYkzJ65P5fxW1bxVXm_ehLLE=gn6nuR+UVxYWjqSJfXoZd+8g@mail.gmail.com>
-References: <20201126165748.1748417-1-revest@google.com>
-         <CACYkzJ65P5fxW1bxVXm_ehLLE=gn6nuR+UVxYWjqSJfXoZd+8g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        Fri, 27 Nov 2020 04:25:38 -0500
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4Cj8PD5Ps8z1qtdP;
+        Fri, 27 Nov 2020 10:25:36 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4Cj8PD3qWQz1sy8T;
+        Fri, 27 Nov 2020 10:25:36 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id wKFCwMyZBImG; Fri, 27 Nov 2020 10:25:34 +0100 (CET)
+X-Auth-Info: ianmljXdbQK85ES58zeJwixR/kDdN+OwoExd+bYP9O8=
+Received: from jawa (89-64-5-98.dynamic.chello.pl [89.64.5.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 27 Nov 2020 10:25:34 +0100 (CET)
+Date:   Fri, 27 Nov 2020 10:25:28 +0100
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>, stefan.agner@toradex.com,
+        krzk@kernel.org, Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [RFC 0/4] net: l2switch: Provide support for L2 switch on
+ i.MX28 SoC
+Message-ID: <20201127102528.33737ea4@jawa>
+In-Reply-To: <20201127010811.GR2075216@lunn.ch>
+References: <20201125232459.378-1-lukma@denx.de>
+        <20201126123027.ocsykutucnhpmqbt@skbuf>
+        <20201127003549.3753d64a@jawa>
+        <20201127010811.GR2075216@lunn.ch>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/ZUTcj07yviLAI8FZ6erwpu5"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-27 at 03:32 +0100, KP Singh wrote:
-> > +       ret = strlen(name) + 1;
-> > +       if (symbol_size) {
-> > +               strncpy(symbol, name, symbol_size);
-> > +               symbol[symbol_size - 1] = '\0';
-> > +       }
-> > +
-> > +       if (modname && module_size) {
-> > +               strncpy(module, modname, module_size);
-> 
-> The return value does not seem to be impacted by the truncation of
-> the module name, I wonder if it is better to just use a single
-> buffer.
-> 
-> For example, the proc kallsyms shows symbols as:
-> 
-> <symbol_name> [module_name]
-> 
-> https://github.com/torvalds/linux/blob/master/kernel/kallsyms.c#L648
-> 
-> The square brackets do seem to be a waste here, so maybe we could use
-> a single character as a separator?
+--Sig_/ZUTcj07yviLAI8FZ6erwpu5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I prefer Yongonhong's suggestion of having two helpers. This gives more
-control to the BPF program. For example, they could decide to audit
-only addresses coming from a module, and that would be easier to do
-with two helpers than by parsing a string in BPF.
+Hi Andrew,
 
+> > > I would push back and say that the switch offers bridge
+> > > acceleration for the FEC.  =20
+> >=20
+> > Am I correct, that the "bridge acceleration" means in-hardware
+> > support for L2 packet bridging?  =20
+>=20
+> You should think of the hardware as an accelerator, not a switch. The
+> hardware is there to accelerate what linux can already do. You setup a
+> software bridge in linux, and then offload L2 switching to the
+> accelerator. You setup vlans in linux, and then offload the filtering
+> of them to the accelerator. If there is something linux can do, but
+> the hardware cannot accelerate, you leave linux to do it in software.
+
+Ok.
+
+>=20
+> > Do you propose to catch some kind of notification when user calls:
+> >=20
+> > ip link add name br0 type bridge; ip link set br0 up;
+> > ip link set lan1 up; ip link set lan2 up;
+> > ip link set lan1 master br0; ip link set lan2 master br0;
+> > bridge link
+> >=20
+> > And then configure the FEC driver to use this L2 switch driver? =20
+>=20
+> That is what switchdev does. There are various hooks in the network
+> stack which call into switchdev to ask it to offload operations to the
+> accelerator.
+
+Ok.
+
+>=20
+> > The differences from "normal" DSA switches:
+> >=20
+> > 1. It uses mapped memory (for its register space) for
+> > configuration/statistics gathering (instead of e.g. SPI, I2C) =20
+>=20
+> That does not matter. And there are memory mapped DSA switches. The
+> DSA framework puts no restrictions on how the control plane works.
+>=20
+> > (Of course the "Section 32.5.8.2" is not available) =20
+>=20
+> It is in the Vybrid datasheet :-)
+
+Hmm...
+
+I cannot find such chapter in the official documentation from NXP:
+"VFxxx Controller Reference Manual, Rev. 0, 10/2016"
+
+Maybe you have more verbose version? Could you share how the document
+is named?
+
+>=20
+>    Andrew
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/ZUTcj07yviLAI8FZ6erwpu5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAl/AxggACgkQAR8vZIA0
+zr1hWwgAztQi95LdLdoifqpiMT0HJvIfQeEIBoYi1gdhVa6pKuuyoyAEEphKsLs+
+PXv0a85iBITwkbv28qBmF2K70mejPSe65JUUIllRzWuBVcZotACNIlNI8poI0SIW
+pCUsTZkxlPSXplQVyKs9c5YkY8KdGZvHdwZ55BITloHLwkngbIWC6f89Zb9mcgHb
+w480ibSeaSnCJRB4ZfD0b2+9w3LTqW4nG2SUc2a8fC5hDHzt5YL8rjG33T3Ok0r+
+L0PycPjKwA8ybHWduNmt5Ck4G9/AOsfXnWzXYDh7OKCWbz6TlRrQP1BxmIo3WTnU
+ZlKcRWcqX+19Itn8CYyHCP7mHZjxqw==
+=7wS1
+-----END PGP SIGNATURE-----
+
+--Sig_/ZUTcj07yviLAI8FZ6erwpu5--
