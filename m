@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7820A2C71E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 354CA2C7205
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389963AbgK1Vu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
+        id S2390051AbgK1Vuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731985AbgK1SPi (ORCPT
+        with ESMTP id S1733292AbgK1SRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:15:38 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614E2C02A185
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 04:16:34 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id t21so6437549pgl.3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 04:16:34 -0800 (PST)
+        Sat, 28 Nov 2020 13:17:53 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94805C02A187
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 04:21:40 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id d8so10940934lfa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 04:21:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=dFDolAZiGf4URri4VHKxX9kxJbVzHoUu314H0MoB7Dk=;
-        b=EwOHvZEMmGXuqNzhfAhHzZnEx6ZUMkbhcVqa72XlEuN/iZmAjYn1D0B5XEXRm8vOZL
-         /FD5op8rvtoDXff3mlfXhFcDuSeJLQUNn+fyXTkHtR9gK0lzcde+NfJzZfD1DM2IXNn4
-         8lNB+VoHf+tZ4zLtdg9jNV2KzVduLG6TdI5/3EVIiBnrD+YK94S/f1Vo80sYDZFg6RvZ
-         0fgVBZP2/W9eRsqXIEdMMV3ZooJZOiwMdogweWQYCy+N9P+t5y5QMyxoIeKUU+iFWx00
-         xi6zvWrrU7SYvc3LMFBD5Vg4bZJQcHnPpJKfF588/KFHQtHo1S8FffSfd5cLwZiaPF/K
-         Fyfw==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=dj3qfXJ4Iec3raMLz9uZPv/2iNP/sFcmUQrTQYmXPI4=;
+        b=o9vDpD1dqWWqph26Yhd4G7BcLVySzLILRkWBtHtyr40ZkF+2hDgeXlhMnEi8YqJ3ZJ
+         zGVuLOVLyWbqkHAvQjMUw08ohIScuoCAKEv0ni6llRgh659nNgNvfEBwOVpqGum5Wzuo
+         wV1sqyPYc3JabkbJWYwPkzzsTSk69pCQhXig4ONinKDfWjP1WelkF4VpEL5e5xNTj+LN
+         Dp5FmwKDfBWSNM88w1Vcd7aJ7GHTO56ehJ16PaCzHXpB3d95K3pamgfFBOMm5Kkjucqb
+         Y6cXJVHYrsjsYRJhUtcouQu6djD5oanSkaCHtBeOFolG4TcjsS5KsWdgM06kyuVb5ZRI
+         kakA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=dFDolAZiGf4URri4VHKxX9kxJbVzHoUu314H0MoB7Dk=;
-        b=Xv93eCLyrelrfM8zJLND6tfu9BAuILWfpTa+EBO85tP0yGVuwacwfxsq2yd0cFQehJ
-         5vWEjp2bBiDSNImDfllVLdAduiFJ8xFUvEId6YAWWp4bHZpUYZOo4I5jdcCA5CgrH3U6
-         0vB8u/hz9d3tT+ecGq8HHpulULpHUmYGtdcvyKMcfE8j7Qf7oPBk44emz4f+yYwnOJ49
-         prXdsiwNPB5LLRxwNwmi3ov+mXo4QciaKjn5Q7+yDmHiO83CWChbsSwQMspSkbaEKcTK
-         bhkiH601MufTYPIewJyBZDz8zRCejqtRxmivV7YSmEOT2rUbpageELvDLshN7YW56Zsa
-         ZlQg==
-X-Gm-Message-State: AOAM531H0h0zcB+m59JYj1d9vOEpnNDmClqhmYmQ0i87iPlTX2+czJg4
-        aDY0e9AIeKVOCcFV+Oljgik=
-X-Google-Smtp-Source: ABdhPJz7f37xy2ooexfQ2C9/O7rpdOWumaNVq1nqzbdziPFrPX/nJoL8M+6edZp8gvV9yfvowLTLZw==
-X-Received: by 2002:a17:90a:cb95:: with SMTP id a21mr9849898pju.38.1606565793817;
-        Sat, 28 Nov 2020 04:16:33 -0800 (PST)
-Received: from worker-node1 ([2401:4900:5198:5ee9:a3f:ebde:1df3:55f4])
-        by smtp.gmail.com with ESMTPSA id s15sm10240670pfd.33.2020.11.28.04.16.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 04:16:33 -0800 (PST)
-Date:   Sat, 28 Nov 2020 17:46:27 +0530
-From:   Vishawanath Jadhav <jvishwanath66@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, surenb@google.com
-Subject: [PATCH] Staging: android: ashmem: Fixed a coding style issue.
-Message-ID: <20201128121627.GA27317@worker-node1>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=dj3qfXJ4Iec3raMLz9uZPv/2iNP/sFcmUQrTQYmXPI4=;
+        b=LGjtHYVhHpt7kAQ7W3yoDCiYRYjE7wSHODeqeKhHvtYKf7tcTJxup8B5DA25iZUJDT
+         iNXtHXQzqHUh8R2yWdfQN+4DtBIpfRqM0gluGXlrWe0e8X1G9DrYwSpsYX6ERpQimLYw
+         4viKVS8C9TnQkKeA2VN31X4kSMxw8BdY8r+w+F+moAqW/40/dw99woomREIQ5M3ORK1v
+         2pFDvDkzWFLEkG/aCnIiB8/SZXRoEEeem0BS24KSdpBHccyuwiF1l3qag+V8R4KxOUUh
+         jBtEVJWHd8eo0by/GhOYwg0JbAoN3w8HCzwqUmpElFiHOVOHxTuAbLHa5oC7/Je6b/SL
+         4Jew==
+X-Gm-Message-State: AOAM531nYkQVzMUdnzITU14WLka0aKqI9kU914cDRLzqeg1v1KP2r3gQ
+        oAbBuYsFPcUCK76h+NY4YxW8GWoOKmgUCBBtziw=
+X-Google-Smtp-Source: ABdhPJzQk/S1nG9Ww17zUthK2VX/Fro867c/MtHdOqP1WGX1v96LoNLBYMuWViUbM4drVUlNfLKf7FtNjAxFlS2z8Ek=
+X-Received: by 2002:a19:c005:: with SMTP id q5mr5826183lff.400.1606566099003;
+ Sat, 28 Nov 2020 04:21:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Sender: alexanderluis646@gmail.com
+Received: by 2002:ab3:744c:0:0:0:0:0 with HTTP; Sat, 28 Nov 2020 04:21:38
+ -0800 (PST)
+From:   "Ms. Nadia Emaan" <mrsnadiaemaan50@gmail.com>
+Date:   Sat, 28 Nov 2020 12:21:38 +0000
+X-Google-Sender-Auth: vxnb54uxsdIMOWvAgf6_xRpDuvw
+Message-ID: <CALiTr0jj-iBjvt5sDGtBo7iEd6PHM8A=UxDd4ghnuNPfw+rXUg@mail.gmail.com>
+Subject: May the Peace of God be with You!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed a coding style issue, file_operations structure should be declared as a constant.
+May God Bless you My beloved,
 
-Signed-off-by: Vishawanath Jadhav <jvishwanath66@gmail.com>
----
- drivers/staging/android/ashmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am contacting you through this means because I need your urgent
+assistance and also help me to carry a charity project in your
+country. I found your email address as a true child of God for past
+few days now that I have been praying to know if you are really the
+chosen one for this great charity project, according to God's
+direction, after all prayers I am convinced, and I have decided to
+contact you. Please, i want you use the funds for the Lord's work,
+with confidence, read and respond now.
 
-diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
-index 10b4be1f3e78..d90fca07c17f 100644
---- a/drivers/staging/android/ashmem.c
-+++ b/drivers/staging/android/ashmem.c
-@@ -376,7 +376,7 @@ ashmem_vmfile_get_unmapped_area(struct file *file, unsigned long addr,
- 
- static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
- {
--	static struct file_operations vmfile_fops;
-+	static const struct file_operations vmfile_fops;
- 	struct ashmem_area *asma = file->private_data;
- 	int ret = 0;
- 
--- 
-2.20.1
 
+My name is Ms. Nadia Emaan , a widow, but currently based in West
+Africa since my life with my late husband, who was a businessman in
+this country before dying some years ago. We were married to many
+years without a child. He died after a brief illness that lasted only
+six days and I myself have been suffering from an ovarian cancer
+disease. At this moment I am about to finish the race in this way
+because the disease has reached a very bad stage, without any family
+member and without children. I hope you do not expose or betray this
+trust and I am sure that I am about to trust you for the mutual
+benefit of orphans and the less privileged. I have some funds that I
+inherited from my late husband, the total sum of ($ 12,500,000.00)
+deposited at a bank here in Burkina Faso. After knowing my current
+state of health, I decided to trust you with this fund, believing that
+you will use it in the way I will instruct here.
+
+
+you will use this $12.5 Million for public benefit as follows;
+
+1. Establish An Orphanage Home To Help The Orphanages Children.
+2. Build A Hospital To Help The Poor.
+3. Build A Nursing Home For Elderly People Need Care & Meal.
+
+You will named them after my late husband.Therefore, I need you to
+help me and claim this money and use it for charities, for orphanages
+and provide justice and help to the poor, needy and to promote the
+words of God and the effort to maintain the house of God, according to
+the bible in the book of. Jeremiah 22: 15-16.
+
+It will be a pleasure to compensate with 40% percent of the total
+money for your effort in handling the transaction, while 60% of the
+money will go to charity project.
+
+All I need from you is sincerity and ability to complete the task of
+God without any failure. It will be my pleasure to see that the bank
+has finally released and transferred the fund to your bank account in
+the country, even before I die here in the hospital, due to my current
+state of health, everything must be processed as soon as possible.
+
+ I am waiting for your immediate response, if you are only interested
+in obtaining more details about the transaction and execution of this
+humanitarian project for the glory and honor of God.
+
+Sorry if you received this letter in your spam, is due to recent
+connection/network error here in the country.
+
+Please I am waiting for your urgent reply now.
+
+May God Bless you,
+Ms Nadia Emaan .
