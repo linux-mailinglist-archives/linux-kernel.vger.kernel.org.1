@@ -2,145 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9352C6ECD
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481062C6ED0
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728995AbgK1Ecq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 23:32:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:59302 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731889AbgK1EWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 23:22:17 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 65013D6E;
-        Fri, 27 Nov 2020 20:21:47 -0800 (PST)
-Received: from [10.163.85.48] (unknown [10.163.85.48])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0B5113F23F;
-        Fri, 27 Nov 2020 20:21:45 -0800 (PST)
-Subject: Re: [RFC 1/3] mm/hotplug: Pre-validate the address range with
- platform
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1606098529-7907-1-git-send-email-anshuman.khandual@arm.com>
- <1606098529-7907-2-git-send-email-anshuman.khandual@arm.com>
- <13392308-45a8-f85d-b25e-4a728e1e0730@redhat.com>
- <0c13a221-570a-0d64-fce9-d28e52cbdd6c@arm.com>
- <8886f78e-28cf-ded0-1629-d4206205be96@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <1d0224a2-1edb-6a43-bf2d-0a6f3ef4746e@arm.com>
-Date:   Sat, 28 Nov 2020 09:51:41 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732611AbgK1Ej4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 23:39:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731889AbgK1Ee7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 23:34:59 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82DFC0613D1;
+        Fri, 27 Nov 2020 20:34:58 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id x24so6164660pfn.6;
+        Fri, 27 Nov 2020 20:34:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Oz3P6Bv01WMGgJrlQ1Jw9ujpaP6+pticwUV9K58yqjY=;
+        b=J6okCzp4hUpHZJ186CFTgeWSiK1YvwD2YbXrvdLbUNinTz8bTumrtLkXhqhXncBD/u
+         +EM0s9yzENGVXnskf54Sufspn4LHQURdvOI2eq+fyEvu8YprsBN1nzo5rBV34/kEfrRr
+         8RORIj/vA/U1IA5WXH0NKQfDknT/Mx7n4bFrbXst9kFve1l3oxTCtgNeuacAK3FYuzOI
+         4edCltvv7RnR+8LvyCOc/mmdyyNCGrBvDPYbf05Dg4nJmfuOp9gSAcaUJKlJ9X87Udez
+         Pzt9VhOTrgDh4mfg8jJkl4PuJDs6ZdeVBVt3+f7wKX9iyG64ORX5JPmMOpRvwNZd0Yt4
+         w4Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Oz3P6Bv01WMGgJrlQ1Jw9ujpaP6+pticwUV9K58yqjY=;
+        b=ctYv8PE4IJsclYyRAYRgq2rtzqiXxauTtK9JxDNrG8BcR/bFRSjU0KAH+a3tgL8axm
+         5PWlTOqSKt3REYa51SLia0+awMkl8eU3APVLyOC3PmWLHgFzgZGR6SNgfxq5LcEuTUT3
+         c4UtNf1BzHFpCuxOgBY5jOR2egEQwPH0Ix1M5lFHQDzpDfi5nkI/49jSbkmX618XogFa
+         QzJTYW97iLhLkTMVqG6Q+h/n4fpPSCWSqDJFw51iXJ7xfIqZtGTgnBpWZEvAFRBmqWxy
+         mgmnIKgtzfx00GkeNwgr1fFPBQ89wfs2zIDwU9WRuw+4JHUJm9pxA/reiA6DcT9FJ70J
+         26TQ==
+X-Gm-Message-State: AOAM531jzjuFKiERpHuroRARu8i8YAfxTs3jIa35lGIR7SUUB3cGIPGi
+        69hGiiTN+t8/6sG2zxs4soE=
+X-Google-Smtp-Source: ABdhPJy4QlBHTCzbZtvgcfWDfLIsNGiyIKLPMQfy2IYap8lT9sZ8DGje0DBAxVnQSJFSrzEzcfaTiw==
+X-Received: by 2002:a17:90b:891:: with SMTP id bj17mr13651734pjb.59.1606538097778;
+        Fri, 27 Nov 2020 20:34:57 -0800 (PST)
+Received: from [10.230.28.242] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id ev12sm2754038pjb.22.2020.11.27.20.34.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 20:34:57 -0800 (PST)
+To:     Lukasz Majewski <lukma@denx.de>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     Fugang Duan <fugang.duan@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Fabio Estevam <festevam@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>, stefan.agner@toradex.com,
+        krzk@kernel.org, Shawn Guo <shawnguo@kernel.org>
+References: <20201125232459.378-1-lukma@denx.de>
+ <20201126123027.ocsykutucnhpmqbt@skbuf> <20201127003549.3753d64a@jawa>
+ <20201127192931.4arbxkttmpfcqpz5@skbuf> <20201128013310.38ecf9c7@jawa>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [RFC 0/4] net: l2switch: Provide support for L2 switch on i.MX28
+ SoC
+Message-ID: <61fc64a6-a02b-3806-49fa-a916c6d9581a@gmail.com>
+Date:   Fri, 27 Nov 2020 20:34:55 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <8886f78e-28cf-ded0-1629-d4206205be96@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201128013310.38ecf9c7@jawa>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/27/20 2:31 PM, David Hildenbrand wrote:
->>>
->>> "arch_get_mappable_range(void)" (or similar) ?
->>
->> The current name seems bit better (I guess). Because we are asking for
->> max addressable range with or without the linear mapping.
->>
->>>
->>> AFAIKs, both implementations (arm64/s390x) simply do the exact same
->>> thing as memhp_get_pluggable_range() for !need_mapping.
->>
->> That is for now. Even the range without requiring linear mapping might not
->> be the same (like now) for every platform as some might have constraints.
->> So asking the platform ranges with or without linear mapping seems to be
->> better and could accommodate special cases going forward. Anyways, there
->> is an always an "all allowing" fallback option nonetheless.
+On 11/27/2020 4:33 PM, Lukasz Majewski wrote:
+>> So why use DSA at all? What benefit does it bring you? Why not do the
+>> entire switch configuration from within FEC, or a separate driver very
+>> closely related to it?
 > 
-> Let's keep it simple as long as we don't have a real scenario where this
-> would apply.
+> Mine rationale to use DSA and FEC:
+> - Make as little changes to FEC as possible
 
-Sure, will have the arch callback only when the range needs linear mapping.
-Otherwise, memhp_get_pluggable_range() can just fallback on [0...max_phys]
-for non linear mapping requests.
+Which is entirely possible if you stick to Vladimir suggestions of
+exporting services for the MTIP switch driver.
 
 > 
-> [...]
-> 
->>
->>>
->>>> +		return true;
->>>> +
->>>> +	WARN(1, "Hotplug memory [%#llx-%#llx] exceeds maximum addressable range [%#llx-%#llx]\n",
->>>> +		start, end, memhp_range.start, memhp_range.end);
->>>
->>> pr_warn() (or even pr_warn_once())
->>>
->>> while we're at it. No reason to eventually crash a system :)
->>
->> Didn't quite get it. How could this crash the system ?
-> 
-> With panic_on_warn, which some distributions started to enable.
+> - Provide separate driver to allow programming FDB, MDB, VLAN setup.
+>   This seems straightforward as MTIP has separate memory region (from
+>   FEC) for switch configuration, statistics, learning, static table
+>   programming. What is even more bizarre FEC and MTIP have the same 8
+>   registers (with different base address and +4 offset :-) ) as
+>   interface to handle DMA0 transfers.
 
-Okay, got it.
+OK, not sure how that is relevant here? The register organization should
+never ever dictate how to pick a particular subsystem.
 
 > 
-> [...]
-> 
->>>>  		/*
->>>>  		 * Validate altmap is within bounds of the total request
->>>> @@ -1109,6 +1089,9 @@ int __ref __add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
->>>>  	struct resource *res;
->>>>  	int ret;
->>>>  
->>>> +	if (!memhp_range_allowed(start, size, 1))
->>>> +		return -ERANGE;
->>>
->>> We used to return -E2BIG, no? Maybe better keep that.
->>
->> ERANGE seems to be better as the range can overrun on either side.
-> 
-> Did you check all callers that they can handle it? Should mention that
-> in the patch description then.
+> - According to MTIP description from NXP documentation, there is a
+>   separate register for frame forwarding, so it _shall_ also fit into
+>   DSA.
 
-Hmm, okay then. Lets keep -E2BIG to be less disruptive for the callers.
+And yet it does not, Vladimir went into great length into explaining
+what makes the MTIP + dual FEC different here and why it does not
+qualify for DSA. Basically any time you have DMA + integrated switch
+tightly coupled you have what we have coined a "pure switchdev" wrapper.
 
 > 
->>
->>>
->>>> +
->>>>  	res = register_memory_resource(start, size, "System RAM");
->>>>  	if (IS_ERR(res))
->>>>  		return PTR_ERR(res);
->>>> @@ -1123,6 +1106,9 @@ int add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
->>>>  {
->>>>  	int rc;
->>>>  
->>>> +	if (!memhp_range_allowed(start, size, 1))
->>>> +		return -ERANGE;
->>>> +
->>>>  	lock_device_hotplug();
->>>>  	rc = __add_memory(nid, start, size, mhp_flags);
->>>>  	unlock_device_hotplug();
->>>> @@ -1163,6 +1149,9 @@ int add_memory_driver_managed(int nid, u64 start, u64 size,
->>>>  	    resource_name[strlen(resource_name) - 1] != ')')
->>>>  		return -EINVAL;
->>>>  
->>>> +	if (!memhp_range_allowed(start, size, 0))
->>>> +		return -ERANGE;
->>>> +
->>>>  	lock_device_hotplug();
->>>
->>> For all 3 cases, doing a single check in register_memory_resource() is
->>> sufficient.
->>
->> Will replace with a single check in register_memory_resource(). But does
->> add_memory_driver_managed() always require linear mapping ? The proposed
->> check here did not ask for linear mapping in add_memory_driver_managed().
 > 
-> Yes, in that regard, it behaves just like add_memory().
+> For me it would be enough to have:
+> 
+> - lan{12} - so I could enable/disable it on demand (control when switch
+>   ports are passing or not packets).
+> 
+> - Use standard net tools (like bridge) to setup FDB/MDB, vlan 
+> 
+> - Read statistics from MTIP ports (all of them)
+> 
+> - I can use lan1 (bridged or not) to send data outside. It would be
+>   also correct to use eth0.
 
-Sure.
+You know you can do that without having DSA, right? Look at mlxsw, look
+at rocker. You can call multiple times register_netdevice() with custom
+network devices that behave differently whether HW bridging offload is
+offered or not, whether the switch is declared in Device Tree or not.
+
+> 
+> I'm for the most pragmatic (and simple) solution, which fulfill above
+> requirements.
+
+The most pragmatic solution is to implement switchdev operations to
+offer HW bridging offload, VLAN programming, FDB/MDB programming.
+
+It seems to me that you are trying to look for a framework to avoid
+doing a bit of middle layer work between switchdev and the FEC driver
+and that is not setting you for success.
+-- 
+Florian
