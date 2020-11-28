@@ -2,273 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F7C2C7294
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2062C734A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387776AbgK1VuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:11 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:56550 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732877AbgK1SJl (ORCPT
+        id S2389675AbgK1VuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732504AbgK1SH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:09:41 -0500
-Received: from relay1-d.mail.gandi.net (unknown [217.70.183.193])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 74FC73A21D5;
-        Sat, 28 Nov 2020 14:24:05 +0000 (UTC)
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 1F9A5240004;
-        Sat, 28 Nov 2020 14:23:42 +0000 (UTC)
-Date:   Sat, 28 Nov 2020 15:23:42 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/11] iio: adc: at91_adc: remove platform data
-Message-ID: <20201128142342.GJ1296649@piout.net>
-References: <20201117140656.1235055-1-alexandre.belloni@bootlin.com>
- <20201117140656.1235055-2-alexandre.belloni@bootlin.com>
- <20201128140427.61dbaceb@archlinux>
+        Sat, 28 Nov 2020 13:07:58 -0500
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49CFC02A1A7;
+        Sat, 28 Nov 2020 06:27:25 -0800 (PST)
+Received: from localhost (home.natalenko.name [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id A189A8B18C9;
+        Sat, 28 Nov 2020 15:27:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1606573643;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rk41III0tAkUh4u/hIKJEcn4ibWW3TcSORMYy2GTzN8=;
+        b=k7ihDQwCULTU9S/ikzBoxo1P0RtVceKrJkARHROduIcWV2nNClsB0dRBpUryKPk+QZYR7z
+        kMB/UMQqQz3n0IUfkabPbbhnE81kTeAMlEaclWEyzg7dxKAFjnX+Eq5UPEXfdpagu+EcPI
+        0FsVN+B8TZSEAlacTVifrcfQ64gsZ7o=
+Date:   Sat, 28 Nov 2020 15:27:23 +0100
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Subject: Re: scheduling while atomic in z3fold
+Message-ID: <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
+References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
+ <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201128140427.61dbaceb@archlinux>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 28/11/2020 14:04:27+0000, Jonathan Cameron wrote:
-> On Tue, 17 Nov 2020 15:06:46 +0100
-> Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
-> 
-> > The at91 platforms have been DT only for a while, remove platform data.
+On Sat, Nov 28, 2020 at 03:09:24PM +0100, Oleksandr Natalenko wrote:
+> > While running v5.10-rc5-rt11 I bumped into the following:
 > > 
-> > Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > Reviewed-by: Ludovic Desroches <ludovic.desroches@microchip.com>
-> 
-> Hi Alexandre,
-> 
-> I'd completely forgotten that we actually had a similar patch that
-> is already applied from Alexandru back in September.
-> 
-
-I actually have seen that yesterday too. I even reviewed them...
-
-> Given vast majority matched, I've just changed your patch into one
-> that drops the id_table (which Alexandru didn't do).
-> 
-> So with that tweak applied to the togreg branch of iio.git.
-> 
-
-Ok, thanks, I guess you didn't push yet, I wanted to check and I didn't
-find the patches on kernel.org.
-
-
-
-> Thanks,
-> 
-> Jonathan
-> 
-> > ---
-> >  drivers/iio/adc/at91_adc.c             | 80 +++++++-------------------
-> >  include/linux/platform_data/at91_adc.h | 49 ----------------
-> >  2 files changed, 22 insertions(+), 107 deletions(-)
-> >  delete mode 100644 include/linux/platform_data/at91_adc.h
+> > ```
+> > BUG: scheduling while atomic: git/18695/0x00000002
+> > Preemption disabled at:
+> > [<ffffffffbb93fcb3>] z3fold_zpool_malloc+0x463/0x6e0
+> > …
+> > Call Trace:
+> >  dump_stack+0x6d/0x88
+> >  __schedule_bug.cold+0x88/0x96
+> >  __schedule+0x69e/0x8c0
+> >  preempt_schedule_lock+0x51/0x150
+> >  rt_spin_lock_slowlock_locked+0x117/0x2c0
+> >  rt_spin_lock_slowlock+0x58/0x80
+> >  rt_spin_lock+0x2a/0x40
+> >  z3fold_zpool_malloc+0x4c1/0x6e0
+> >  zswap_frontswap_store+0x39c/0x980
+> >  __frontswap_store+0x6e/0xf0
+> >  swap_writepage+0x39/0x70
+> >  shmem_writepage+0x31b/0x490
+> >  pageout+0xf4/0x350
+> >  shrink_page_list+0xa28/0xcc0
+> >  shrink_inactive_list+0x300/0x690
+> >  shrink_lruvec+0x59a/0x770
+> >  shrink_node+0x2d6/0x8d0
+> >  do_try_to_free_pages+0xda/0x530
+> >  try_to_free_pages+0xff/0x260
+> >  __alloc_pages_slowpath.constprop.0+0x3d5/0x1230
+> >  __alloc_pages_nodemask+0x2f6/0x350
+> >  allocate_slab+0x3da/0x660
+> >  ___slab_alloc+0x4ff/0x760
+> >  __slab_alloc.constprop.0+0x7a/0x100
+> >  kmem_cache_alloc+0x27b/0x2c0
+> >  __d_alloc+0x22/0x230
+> >  d_alloc_parallel+0x67/0x5e0
+> >  __lookup_slow+0x5c/0x150
+> >  path_lookupat+0x2ea/0x4d0
+> >  filename_lookup+0xbf/0x210
+> >  vfs_statx.constprop.0+0x4d/0x110
+> >  __do_sys_newlstat+0x3d/0x80
+> >  do_syscall_64+0x33/0x40
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > ```
 > > 
-> > diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-> > index 9b2c548fae95..62bd35af8b13 100644
-> > --- a/drivers/iio/adc/at91_adc.c
-> > +++ b/drivers/iio/adc/at91_adc.c
-> > @@ -22,8 +22,6 @@
-> >  #include <linux/slab.h>
-> >  #include <linux/wait.h>
-> >  
-> > -#include <linux/platform_data/at91_adc.h>
-> > -
-> >  #include <linux/iio/iio.h>
-> >  #include <linux/iio/buffer.h>
-> >  #include <linux/iio/trigger.h>
-> > @@ -153,6 +151,25 @@
-> >  #define TOUCH_SHTIM                    0xa
-> >  #define TOUCH_SCTIM_US		10		/* 10us for the Touchscreen Switches Closure Time */
-> >  
-> > +enum atmel_adc_ts_type {
-> > +	ATMEL_ADC_TOUCHSCREEN_NONE = 0,
-> > +	ATMEL_ADC_TOUCHSCREEN_4WIRE = 4,
-> > +	ATMEL_ADC_TOUCHSCREEN_5WIRE = 5,
-> > +};
-> > +
-> > +/**
-> > + * struct at91_adc_trigger - description of triggers
-> > + * @name:		name of the trigger advertised to the user
-> > + * @value:		value to set in the ADC's trigger setup register
-> > + *			to enable the trigger
-> > + * @is_external:	Does the trigger rely on an external pin?
-> > + */
-> > +struct at91_adc_trigger {
-> > +	const char	*name;
-> > +	u8		value;
-> > +	bool		is_external;
-> > +};
-> > +
-> >  /**
-> >   * struct at91_adc_reg_desc - Various informations relative to registers
-> >   * @channel_base:	Base offset for the channel data registers
-> > @@ -875,9 +892,6 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
-> >  	int i = 0, ret;
-> >  	u32 prop;
-> >  
-> > -	if (!node)
-> > -		return -EINVAL;
-> > -
-> >  	st->caps = (struct at91_adc_caps *)
-> >  		of_match_device(at91_adc_dt_ids, &pdev->dev)->data;
-> >  
-> > @@ -960,30 +974,6 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
-> >  	return ret;
-> >  }
-> >  
-> > -static int at91_adc_probe_pdata(struct at91_adc_state *st,
-> > -				struct platform_device *pdev)
-> > -{
-> > -	struct at91_adc_data *pdata = pdev->dev.platform_data;
-> > -
-> > -	if (!pdata)
-> > -		return -EINVAL;
-> > -
-> > -	st->caps = (struct at91_adc_caps *)
-> > -			platform_get_device_id(pdev)->driver_data;
-> > -
-> > -	st->use_external = pdata->use_external_triggers;
-> > -	st->vref_mv = pdata->vref;
-> > -	st->channels_mask = pdata->channels_used;
-> > -	st->num_channels = st->caps->num_channels;
-> > -	st->startup_time = pdata->startup_time;
-> > -	st->trigger_number = pdata->trigger_number;
-> > -	st->trigger_list = pdata->trigger_list;
-> > -	st->registers = &st->caps->registers;
-> > -	st->touchscreen_type = pdata->touchscreen_type;
-> > -
-> > -	return 0;
-> > -}
-> > -
-> >  static const struct iio_info at91_adc_info = {
-> >  	.read_raw = &at91_adc_read_raw,
-> >  };
-> > @@ -1160,15 +1150,9 @@ static int at91_adc_probe(struct platform_device *pdev)
-> >  
-> >  	st = iio_priv(idev);
-> >  
-> > -	if (pdev->dev.of_node)
-> > -		ret = at91_adc_probe_dt(idev, pdev);
-> > -	else
-> > -		ret = at91_adc_probe_pdata(st, pdev);
-> > -
-> > -	if (ret) {
-> > -		dev_err(&pdev->dev, "No platform data available.\n");
-> > -		return -EINVAL;
-> > -	}
-> > +	ret = at91_adc_probe_dt(idev, pdev);
-> > +	if (ret)
-> > +		return ret;
-> >  
-> >  	platform_set_drvdata(pdev, idev);
-> >  
-> > @@ -1444,29 +1428,9 @@ static const struct of_device_id at91_adc_dt_ids[] = {
-> >  };
-> >  MODULE_DEVICE_TABLE(of, at91_adc_dt_ids);
-> >  
-> > -static const struct platform_device_id at91_adc_ids[] = {
-> > -	{
-> > -		.name = "at91sam9260-adc",
-> > -		.driver_data = (unsigned long)&at91sam9260_caps,
-> > -	}, {
-> > -		.name = "at91sam9rl-adc",
-> > -		.driver_data = (unsigned long)&at91sam9rl_caps,
-> > -	}, {
-> > -		.name = "at91sam9g45-adc",
-> > -		.driver_data = (unsigned long)&at91sam9g45_caps,
-> > -	}, {
-> > -		.name = "at91sam9x5-adc",
-> > -		.driver_data = (unsigned long)&at91sam9x5_caps,
-> > -	}, {
-> > -		/* terminator */
-> > -	}
-> > -};
-> > -MODULE_DEVICE_TABLE(platform, at91_adc_ids);
-> > -
-> >  static struct platform_driver at91_adc_driver = {
-> >  	.probe = at91_adc_probe,
-> >  	.remove = at91_adc_remove,
-> > -	.id_table = at91_adc_ids,
-> >  	.driver = {
-> >  		   .name = DRIVER_NAME,
-> >  		   .of_match_table = of_match_ptr(at91_adc_dt_ids),
-> > diff --git a/include/linux/platform_data/at91_adc.h b/include/linux/platform_data/at91_adc.h
-> > deleted file mode 100644
-> > index f20eaeb827ce..000000000000
-> > --- a/include/linux/platform_data/at91_adc.h
-> > +++ /dev/null
-> > @@ -1,49 +0,0 @@
-> > -/* SPDX-License-Identifier: GPL-2.0-or-later */
-> > -/*
-> > - * Copyright (C) 2011 Free Electrons
-> > - */
-> > -
-> > -#ifndef _AT91_ADC_H_
-> > -#define _AT91_ADC_H_
-> > -
-> > -enum atmel_adc_ts_type {
-> > -	ATMEL_ADC_TOUCHSCREEN_NONE = 0,
-> > -	ATMEL_ADC_TOUCHSCREEN_4WIRE = 4,
-> > -	ATMEL_ADC_TOUCHSCREEN_5WIRE = 5,
-> > -};
-> > -
-> > -/**
-> > - * struct at91_adc_trigger - description of triggers
-> > - * @name:		name of the trigger advertised to the user
-> > - * @value:		value to set in the ADC's trigger setup register
-> > -			to enable the trigger
-> > - * @is_external:	Does the trigger rely on an external pin?
-> > - */
-> > -struct at91_adc_trigger {
-> > -	const char	*name;
-> > -	u8		value;
-> > -	bool		is_external;
-> > -};
-> > -
-> > -/**
-> > - * struct at91_adc_data - platform data for ADC driver
-> > - * @channels_used:		channels in use on the board as a bitmask
-> > - * @startup_time:		startup time of the ADC in microseconds
-> > - * @trigger_list:		Triggers available in the ADC
-> > - * @trigger_number:		Number of triggers available in the ADC
-> > - * @use_external_triggers:	does the board has external triggers availables
-> > - * @vref:			Reference voltage for the ADC in millivolts
-> > - * @touchscreen_type:		If a touchscreen is connected, its type (4 or 5 wires)
-> > - */
-> > -struct at91_adc_data {
-> > -	unsigned long			channels_used;
-> > -	u8				startup_time;
-> > -	struct at91_adc_trigger		*trigger_list;
-> > -	u8				trigger_number;
-> > -	bool				use_external_triggers;
-> > -	u16				vref;
-> > -	enum atmel_adc_ts_type		touchscreen_type;
-> > -};
-> > -
-> > -extern void __init at91_add_device_adc(struct at91_adc_data *data);
-> > -#endif
-> 
+> > The preemption seems to be disabled here:
+> > 
+> > ```
+> > $ scripts/faddr2line mm/z3fold.o z3fold_zpool_malloc+0x463
+> > z3fold_zpool_malloc+0x463/0x6e0:
+> > add_to_unbuddied at mm/z3fold.c:645
+> > (inlined by) z3fold_alloc at mm/z3fold.c:1195
+> > (inlined by) z3fold_zpool_malloc at mm/z3fold.c:1737
+> > ```
+> > 
+> > The call to the rt_spin_lock() seems to be here:
+> > 
+> > ```
+> > $ scripts/faddr2line mm/z3fold.o z3fold_zpool_malloc+0x4c1
+> > z3fold_zpool_malloc+0x4c1/0x6e0:
+> > add_to_unbuddied at mm/z3fold.c:649
+> > (inlined by) z3fold_alloc at mm/z3fold.c:1195
+> > (inlined by) z3fold_zpool_malloc at mm/z3fold.c:1737
+> > ```
+> > 
+> > Or, in source code:
+> > 
+> > ```
+> >  639 /* Add to the appropriate unbuddied list */
+> >  640 static inline void add_to_unbuddied(struct z3fold_pool *pool,
+> >  641                 struct z3fold_header *zhdr)
+> >  642 {
+> >  643     if (zhdr->first_chunks == 0 || zhdr->last_chunks == 0 ||
+> >  644             zhdr->middle_chunks == 0) {
+> >  645         struct list_head *unbuddied = get_cpu_ptr(pool->unbuddied);
+> >  646
+> >  647         int freechunks = num_free_chunks(zhdr);
+> >  648         spin_lock(&pool->lock);
+> >  649         list_add(&zhdr->buddy, &unbuddied[freechunks]);
+> >  650         spin_unlock(&pool->lock);
+> >  651         zhdr->cpu = smp_processor_id();
+> >  652         put_cpu_ptr(pool->unbuddied);
+> >  653     }
+> >  654 }
+> > ```
+> > 
+> > Shouldn't the list manipulation be protected with
+> > local_lock+this_cpu_ptr instead of get_cpu_ptr+spin_lock?
+
+Totally untested:
+
+```
+diff --git a/mm/z3fold.c b/mm/z3fold.c
+index 18feaa0bc537..53fcb80c6167 100644
+--- a/mm/z3fold.c
++++ b/mm/z3fold.c
+@@ -41,6 +41,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
++#include <linux/local_lock.h>
+ #include <linux/zpool.h>
+ #include <linux/magic.h>
+ #include <linux/kmemleak.h>
+@@ -156,6 +157,7 @@ struct z3fold_pool {
+ 	const char *name;
+ 	spinlock_t lock;
+ 	spinlock_t stale_lock;
++	local_lock_t llock;
+ 	struct list_head *unbuddied;
+ 	struct list_head lru;
+ 	struct list_head stale;
+@@ -642,14 +644,17 @@ static inline void add_to_unbuddied(struct z3fold_pool *pool,
+ {
+ 	if (zhdr->first_chunks == 0 || zhdr->last_chunks == 0 ||
+ 			zhdr->middle_chunks == 0) {
+-		struct list_head *unbuddied = get_cpu_ptr(pool->unbuddied);
++		struct list_head *unbuddied;
++		int freechunks;
++		local_lock(&pool->llock);
++		unbuddied = *this_cpu_ptr(&pool->unbuddied);
+ 
+-		int freechunks = num_free_chunks(zhdr);
++		freechunks = num_free_chunks(zhdr);
+ 		spin_lock(&pool->lock);
+ 		list_add(&zhdr->buddy, &unbuddied[freechunks]);
+ 		spin_unlock(&pool->lock);
+ 		zhdr->cpu = smp_processor_id();
+-		put_cpu_ptr(pool->unbuddied);
++		local_unlock(&pool->llock);
+ 	}
+ }
+ 
+@@ -887,7 +892,8 @@ static inline struct z3fold_header *__z3fold_alloc(struct z3fold_pool *pool,
+ 
+ lookup:
+ 	/* First, try to find an unbuddied z3fold page. */
+-	unbuddied = get_cpu_ptr(pool->unbuddied);
++	local_lock(&pool->llock);
++	unbuddied = *this_cpu_ptr(&pool->unbuddied);
+ 	for_each_unbuddied_list(i, chunks) {
+ 		struct list_head *l = &unbuddied[i];
+ 
+@@ -905,7 +911,7 @@ static inline struct z3fold_header *__z3fold_alloc(struct z3fold_pool *pool,
+ 		    !z3fold_page_trylock(zhdr)) {
+ 			spin_unlock(&pool->lock);
+ 			zhdr = NULL;
+-			put_cpu_ptr(pool->unbuddied);
++			local_unlock(&pool->llock);
+ 			if (can_sleep)
+ 				cond_resched();
+ 			goto lookup;
+@@ -919,7 +925,7 @@ static inline struct z3fold_header *__z3fold_alloc(struct z3fold_pool *pool,
+ 		    test_bit(PAGE_CLAIMED, &page->private)) {
+ 			z3fold_page_unlock(zhdr);
+ 			zhdr = NULL;
+-			put_cpu_ptr(pool->unbuddied);
++			local_unlock(&pool->llock);
+ 			if (can_sleep)
+ 				cond_resched();
+ 			goto lookup;
+@@ -934,7 +940,7 @@ static inline struct z3fold_header *__z3fold_alloc(struct z3fold_pool *pool,
+ 		kref_get(&zhdr->refcount);
+ 		break;
+ 	}
+-	put_cpu_ptr(pool->unbuddied);
++	local_unlock(&pool->llock);
+ 
+ 	if (!zhdr) {
+ 		int cpu;
+@@ -1005,6 +1011,7 @@ static struct z3fold_pool *z3fold_create_pool(const char *name, gfp_t gfp,
+ 		goto out_c;
+ 	spin_lock_init(&pool->lock);
+ 	spin_lock_init(&pool->stale_lock);
++	local_lock_init(&pool->llock);
+ 	pool->unbuddied = __alloc_percpu(sizeof(struct list_head)*NCHUNKS, 2);
+ 	if (!pool->unbuddied)
+ 		goto out_pool;
+
+```
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+  Oleksandr Natalenko (post-factum)
