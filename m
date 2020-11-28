@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6842C6EBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B0E2C6EBF
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731507AbgK1EAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 23:00:01 -0500
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:49052 "EHLO
+        id S1730944AbgK1EEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 23:04:35 -0500
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:51911 "EHLO
         mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731499AbgK1Dnu (ORCPT
+        by vger.kernel.org with ESMTP id S1731107AbgK1Dnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 27 Nov 2020 22:43:50 -0500
-Received: from pps.filterd (m0150244.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AS3c44Z023890;
+Received: from pps.filterd (m0150245.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AS3d2P1011982;
         Sat, 28 Nov 2020 03:42:55 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pps0720;
- bh=+oQ5tDT0s75+3qBxLOfxh0HLP+klCcDrGLxiwEJJ1bs=;
- b=dEWCaPrRcnqVF5WzUf7nRab0JcD+4gRBfOAof95uUhcBkJ0FXEVa2yIdn0CG8GG5hdMJ
- 9Pm1MZcG5jqvq+B+wGrRCOat9TuyqoZkCwEP304ROSd4Ei1H/48QXLX8rgEAvTzVvd1d
- HdQH0ReFpraOTuUq4uDvoU9I7xPBvUa8NMUzliTUqyvari5WGiklKDEYyKO/I2N5E/Aw
- JTqU2HvA+hf9J4kRxuq9IHQYgILjlm5xUM9zgBGc2RKSwy8qwTtTGwdJzoSe4SmGE9gs
- 6sXQzqnQFAYJ/fWR7u0syvbN6mnWDRub/VgGLXircFpZqt+EMuE/3fyx7LjymGRL+PkV nw== 
+ bh=ec1ud86y8iyIGHtravApZVjgzjgBfBbVjx+9jw6dsmY=;
+ b=ftr8qI9bXSmIiVLBIstm67lvm2WipXRB082XuyzVZiVl4tPWjEX41gyrPlk0mONZchAL
+ pTdtr6XwWiGK8Cft/nyttOPZhFG/5hl7A/SMSnsBK/zzdtiNyQzo6QOKF8aRWr5kU3zq
+ 5MZW0ZbEWG6tNTT1uGJSiFvG3VBZ3H/yXqtFnb0ZlSIO4k1Gly1D84Ocz4COOL3G948z
+ cOSYatRsaW+YOE2Djx7r0Yryfkdj9+/T5G0k40UyBVbibmzDlhOP6ouasDHKn8AKlxrW
+ JGZ4ApwZGXREkfQWcYf6afCUFGl30F2gogNJjtYFaBu7Ws/Rw15Se6dJqF5JMLv57r7e Cw== 
 Received: from g9t5009.houston.hpe.com (g9t5009.houston.hpe.com [15.241.48.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 352h7ctnvn-1
+        by mx0b-002e3701.pphosted.com with ESMTP id 3532m2m0dd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Sat, 28 Nov 2020 03:42:55 +0000
 Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g9t5009.houston.hpe.com (Postfix) with ESMTP id 1B50855;
-        Sat, 28 Nov 2020 03:42:53 +0000 (UTC)
+        by g9t5009.houston.hpe.com (Postfix) with ESMTP id F30B651;
+        Sat, 28 Nov 2020 03:42:54 +0000 (UTC)
 Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id EC9AA48;
-        Sat, 28 Nov 2020 03:42:52 +0000 (UTC)
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 03D204A;
+        Sat, 28 Nov 2020 03:42:53 +0000 (UTC)
 From:   Mike Travis <mike.travis@hpe.com>
 To:     Hans de Goede <hdegoede@redhat.com>,
         Justin Ernst <justin.ernst@hpe.com>,
@@ -49,9 +49,9 @@ Cc:     Mike Travis <mike.travis@hpe.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         Ilya Dryomov <idryomov@gmail.com>,
         linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH v2 1/5] x86/platform/uv: Add kernel interfaces for obtaining system info.
-Date:   Fri, 27 Nov 2020 21:42:23 -0600
-Message-Id: <20201128034227.120869-2-mike.travis@hpe.com>
+Subject: [PATCH v2 2/5] x86/platform/uv: Add sysfs leaves to replace those in procfs
+Date:   Fri, 27 Nov 2020 21:42:24 -0600
+Message-Id: <20201128034227.120869-3-mike.travis@hpe.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20201128034227.120869-1-mike.travis@hpe.com>
 References: <20201128034227.120869-1-mike.travis@hpe.com>
@@ -60,61 +60,63 @@ Content-Transfer-Encoding: 8bit
 X-HPE-SCL: -1
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-28_02:2020-11-26,2020-11-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 spamscore=0 mlxscore=0 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ spamscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2011280025
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add kernel interfaces used to obtain info for the uv_sysfs driver
-to display.
+Add uv_sysfs leaves to display the info.
 
 Signed-off-by: Mike Travis <mike.travis@hpe.com>
 Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
 ---
- arch/x86/include/asm/uv/bios.h     |  2 ++
- arch/x86/kernel/apic/x2apic_uv_x.c | 12 ++++++++++++
- 2 files changed, 14 insertions(+)
+ drivers/platform/x86/uv_sysfs.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/arch/x86/include/asm/uv/bios.h b/arch/x86/include/asm/uv/bios.h
-index 01ba080887b3..1b6455f881f9 100644
---- a/arch/x86/include/asm/uv/bios.h
-+++ b/arch/x86/include/asm/uv/bios.h
-@@ -200,6 +200,8 @@ extern long sn_partition_id;
- extern long sn_coherency_id;
- extern long sn_region_size;
- extern long system_serial_number;
-+extern ssize_t uv_get_archtype(char *buf, int len);
-+extern int uv_get_hubless_system(void);
- 
- extern struct kobject *sgi_uv_kobj;	/* /sys/firmware/sgi_uv */
- 
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 1b98f8c12b96..48746031b39a 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -502,6 +502,18 @@ enum uv_system_type get_uv_system_type(void)
- 	return uv_system_type;
+diff --git a/drivers/platform/x86/uv_sysfs.c b/drivers/platform/x86/uv_sysfs.c
+index 54c342579f1c..115754cdcd89 100644
+--- a/drivers/platform/x86/uv_sysfs.c
++++ b/drivers/platform/x86/uv_sysfs.c
+@@ -735,17 +735,35 @@ static ssize_t uv_type_show(struct kobject *kobj,
+ 	return scnprintf(buf, PAGE_SIZE, "%s\n", uv_type_string());
  }
  
-+int uv_get_hubless_system(void)
++static ssize_t uv_archtype_show(struct kobject *kobj,
++			struct kobj_attribute *attr, char *buf)
 +{
-+	return uv_hubless_system;
++	return uv_get_archtype(buf, PAGE_SIZE);
 +}
-+EXPORT_SYMBOL_GPL(uv_get_hubless_system);
 +
-+ssize_t uv_get_archtype(char *buf, int len)
++static ssize_t uv_hub_type_show(struct kobject *kobj,
++			struct kobj_attribute *attr, char *buf)
 +{
-+	return scnprintf(buf, len, "%s/%s", uv_archtype, oem_table_id);
++	return scnprintf(buf, PAGE_SIZE, "0x%x\n", uv_hub_type());
 +}
-+EXPORT_SYMBOL_GPL(uv_get_archtype);
 +
- int is_uv_system(void)
- {
- 	return uv_system_type != UV_NONE;
+ static struct kobj_attribute partition_id_attr =
+ 	__ATTR(partition_id, 0444, partition_id_show, NULL);
+ static struct kobj_attribute coherence_id_attr =
+ 	__ATTR(coherence_id, 0444, coherence_id_show, NULL);
+ static struct kobj_attribute uv_type_attr =
+ 	__ATTR(uv_type, 0444, uv_type_show, NULL);
++static struct kobj_attribute uv_archtype_attr =
++	__ATTR(archtype, 0444, uv_archtype_show, NULL);
++static struct kobj_attribute uv_hub_type_attr =
++	__ATTR(hub_type, 0444, uv_hub_type_show, NULL);
+ 
+ static struct attribute *base_attrs[] = {
+ 	&partition_id_attr.attr,
+ 	&coherence_id_attr.attr,
+ 	&uv_type_attr.attr,
++	&uv_archtype_attr.attr,
++	&uv_hub_type_attr.attr,
+ 	NULL,
+ };
+ 
 -- 
 2.21.0
 
