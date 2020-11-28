@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FC92C7262
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E502C725B
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387609AbgK1VuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:18 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:43239 "EHLO
+        id S1732175AbgK1VuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:19 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:34293 "EHLO
         wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733136AbgK1SLr (ORCPT
+        by vger.kernel.org with ESMTP id S1733153AbgK1SLt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:11:47 -0500
+        Sat, 28 Nov 2020 13:11:49 -0500
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id DB920C0C;
-        Sat, 28 Nov 2020 05:38:30 -0500 (EST)
+        by mailout.west.internal (Postfix) with ESMTP id 3390A9BB;
+        Sat, 28 Nov 2020 05:40:00 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Sat, 28 Nov 2020 05:38:31 -0500
+  by compute6.internal (MEProxy); Sat, 28 Nov 2020 05:40:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=a6k8h7G8DbGWnMKaT2VTyNF8NDZ
-        ouXZ50EDpqHXOUU0=; b=nubncwe+PToM4qt1WkE4kZ3UpKtInXR5GXjcTcl1JiZ
-        YsBLwGE7NBlXsBStGoOCmV8ICqLoplLj7GJXU9zU0xNGve/S3ci379avO3qB8SeO
-        N7zk4ZMDfMjksFtzbehisI/gntkZCoTawoRfwD4cT4k7n0rB8ZGmONEh8z9oxvpe
-        3EUelJ8MKeuGzFH2rdx9uwzAjrgK2sJ7yLYTZR8Dp8tDNqZJQhbqIfEWgIKiZ9VA
-        ZEAGK5hgt/s8intBN5gdpR8Fm7F1GYXRCuqjgNAB92r5iMYq2OOl8sEj/AJIiLKr
-        VeFC3JGSrWgw3ukZNs5PsvE2zCT02XPcREsPVcWpdXw==
+        :content-type:in-reply-to; s=fm1; bh=Hq254jPPKxCC5RMUk78VI37BIcd
+        /Qc5Ug03wP6lEyP8=; b=N1JGwbtP9OsrqES3Fuqr59oHPuf4krVuOcTJMK/Djgo
+        Ul5GpbQZlByT0xPbgmQE/eWSHz64MtfB2sWF5CSXQwcqsFJWlcmuaY+4VWR1jknz
+        hdV9p0jGIxXWjOp91NkjXuJ/G+STUHkxARShHMVXjaL3TdU2TkfgB1j8EjwhstSV
+        erkWprwIXpIftvLDTSvSKQ4CzbmjtcHS6XK2kFHKk78ftqrtJuIrLtEuWk62VJuJ
+        sTi++bNmFSxlP3A2JAGdlJeut5KWr1etzfUAwwaleILMLC7yKw0yvvKxSEgvB5Ah
+        H+9lxv4IDAoOW/iJgX58mGBfKLOASbNzCdKBb5yMBUg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=a6k8h7
-        G8DbGWnMKaT2VTyNF8NDZouXZ50EDpqHXOUU0=; b=IQ6G7L4lPz+emL/XcxljQs
-        eK3gnZfkJJR5/CVEbNqTW9zsQsLogokMmoFUMbYBYKaL/8WAP12krwQ1c0sJeaaU
-        UzJrqiHbKKR/hItG9QX4LrDpYdcryZhobt6n8uEBFaRMhorDHCCFOFREmTAFpnmF
-        83aTiKTVp7zxchkZWEFvblB05ilvO7sndhN9/ZD0J2n16WB/AJut4R0OcXhDq18y
-        K/RsWIH/mZ1SEQPS5zUKfjRxFSjGX7NUV27haVLAutve5WdliQah9HqwMq8i2YS6
-        EliDJvkFKz0zK1YNqH2uLI9W2N2Cpd5hr2UGilm9k4C7RyRY3cE6WrsY678uThiw
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Hq254j
+        PPKxCC5RMUk78VI37BIcd/Qc5Ug03wP6lEyP8=; b=aIuexSNYLpnZb2jou1H6ih
+        geR+FWulciiYaJO1ufW8D0hvmdCF3WghzgmnJfKUx+6CoEaPy9i3GtKxRKudYdBS
+        bfjPaToT5SmiuPB67OL4pOWE5ZCYylpz2e8cnVYHgViG/BN/erXkDe9wPFS0Qyk0
+        shBoJA0R2YrhntEBoiAgfYzKzcaYNZqNqnKAxC1OX/L7u3m4P1P7mFlFfXzG8vE1
+        W7047cRX4IH5lRxXpbIB5qldnvi5T7tVf/PFJiluLRSMVSg9aqGVdpTdXzzh70p+
+        w6mLatlMgJ5PIi+Hp7ZGD55vYVRjeyUw212HjEIv+1omg95duUX89bqp9DCKyoQA
         ==
-X-ME-Sender: <xms:pSjCX2tdjXH_yoTpI1epKSrg3_fb0k64fY-M8gTB9UcOd4dHemDbOg>
-    <xme:pSjCX7cEuYtQeyd8yEJ3Q7CULobcl503vujolh25-chLY4PBaWUUxaQ2E-3tV-DfT
-    UgxRU75FgU71OXsGdo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudehiedgudekucetufdoteggodetrfdotf
+X-ME-Sender: <xms:_yjCXySR4Gdi1HC5V4PYhnZSNnL5oEZNqE3LVRztp1AbbODb_gx1cA>
+    <xme:_yjCX3xAKkrLnzi7lMRE-AwOMIor5CHKCLFGw-lwnr7Fds71UH9VcURQnw9ZOkPLZ
+    cdP54uyQZxhBQcyE_w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudehiedgudelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
@@ -48,93 +48,110 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudehiedgudekucetufdoteggod
     htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
     gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
     frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:pSjCXxzEF7rYHG4DZC1BaQbE2agDg5_uOWnNOkmEf1rA3HOBUlCCHQ>
-    <xmx:pSjCXxMUA-2OrW-z5dpWI7Kh3VZpjOj7ip_y-Ab1G2w84xD8MorM0g>
-    <xmx:pSjCX29iIOZKt-WpQIn3bM0Cw1gYjxf4fti0hrBCrOurqzpfIrKGlA>
-    <xmx:pijCX2zziA8mDQIWUBeVcWq1dFGnomMoBJybzo86C0nAq4_MJxcCyw>
+X-ME-Proxy: <xmx:_yjCX_00nXvlBjT2dkfVlC1-24nZhxEH38nTFqIU-nhv6w-c_RclLA>
+    <xmx:_yjCX-BJqmPMhtxqdQiKL6Owg035oKrrwpwt-GYZVjqxI2sufPiGKw>
+    <xmx:_yjCX7h4pAT0u09Uy2qHCqRVLWzcmDQk4FUEjbtzx6c_25zWeqpN7Q>
+    <xmx:_yjCX4uj_7d5oXgcg2GvTXdJloVywCeE0wg0yP_KWgN7glNusNXglA>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7728E3064AB2;
-        Sat, 28 Nov 2020 05:38:29 -0500 (EST)
-Date:   Sat, 28 Nov 2020 11:38:27 +0100
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1ABE53064AAA;
+        Sat, 28 Nov 2020 05:39:59 -0500 (EST)
+Date:   Sat, 28 Nov 2020 11:39:58 +0100
 From:   Maxime Ripard <maxime@cerno.tech>
-To:     Icenowy Zheng <icenowy@aosc.io>
-Cc:     Samuel Holland <samuel@sholland.org>, devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-sunxi@googlegroups.com, linux-kernel@vger.kernel.org,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [linux-sunxi] Re: [PATCH 3/3] arm64: allwinner: dts: a64: add DT
- for PineTab developer sample
-Message-ID: <20201128103827.d6sfc2eumli2betx@gilmour>
-References: <6175E674-E8BC-4199-8BE8-A983065C32D5@aosc.io>
- <20201116155508.364dg6ycklwylswe@gilmour.lan>
- <8FFC1A6C-9CA4-4F94-91C4-F111A7519979@aosc.io>
- <20201120155939.3ajmbny2pka2vsnf@gilmour>
- <A8E91BA0-22FD-47F4-A5B2-A80A38FE9A0E@aosc.io>
- <38ee5feb-e35d-801f-99a1-65e23618e73b@sholland.org>
- <20201123111512.y7lbwsipbkcpuleb@gilmour>
- <97E2037C-3C3C-4B0B-8462-39B9E38CB3BB@aosc.io>
- <20201123125332.2p5z3ew7svszvyfs@gilmour>
- <009A22D9-AF20-45C4-9674-13334B3EFFBA@aosc.io>
+To:     Michael Klein <michael@fossekall.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ARM: dts: sun8i-h2-plus-bananapi-m2-zero: add
+ poweroff node to DT
+Message-ID: <20201128103958.q6glewhhch7vtczr@gilmour>
+References: <20201124131933.2l2go6z6ltar5fpa@gilmour>
+ <20201124133633.672259-1-michael@fossekall.de>
+ <20201124142656.wz6ipwa2xayn433x@gilmour>
+ <20201124223159.GA2865084@a98shuttle.de>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rmpcrvovirbkiyir"
+        protocol="application/pgp-signature"; boundary="stejl7vgq72gqvys"
 Content-Disposition: inline
-In-Reply-To: <009A22D9-AF20-45C4-9674-13334B3EFFBA@aosc.io>
+In-Reply-To: <20201124223159.GA2865084@a98shuttle.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---rmpcrvovirbkiyir
+--stejl7vgq72gqvys
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 23, 2020 at 09:10:38PM +0800, Icenowy Zheng wrote:
-> >> >> > Okay. But I'm not satisfied with a non-public sample occupies
-> >> >> > the pinetab name. Is rename it to pinetab-dev and add a
-> >> >> > pinetab-retail okay?
-> >> >>
-> >> >> To me, naming the production version anything but "pinetab" isn't
-> >> >> satisfying either.
-> >> >
-> >> >I understand where you're coming from, but the point I was making my
-> >> >previous mail is precisely that it's not really possible.
-> >> >
-> >> >You want to name the early adopter version _the_ production
-> >> >version. Let's assume the hardware changes again between the early
-> >> >adopter and mass-production version. Which one will be _the_
-> >> >production version? The early-adopter or the mass-produced one?
-> >> >
-> >> >There's really no good answer here, and both would suck in their
-> >> >own way. The only way to deal with this is to simply avoid
-> >> >defining one version as the one true board, and just loading the
-> >> >proper DT in u-boot based on whatever clue we have of the hardware
-> >> >revision.
-> >
-> > > Then will it be okay to rename current pinetab DT to
-> > > pinetab-sample and then introduce new DTs all with suffixes?
-> >
-> > No. From my previous mail:
+On Tue, Nov 24, 2020 at 11:31:59PM +0100, Michael Klein wrote:
+> On Tue, Nov 24, 2020 at 03:26:56PM +0100, Maxime Ripard wrote:
+> > On Tue, Nov 24, 2020 at 02:36:33PM +0100, Michael Klein wrote:
+> > > Add poweroff node to allow the board to power itself off after shutdo=
+wn
+> > > by disabling the SYSTEM and CPUX regulators (U5 resp. U6).  The RST
+> > > button can be used to restart the board.
+> > >=20
+> > > Signed-off-by: Michael Klein <michael@fossekall.de>
+> > > ---
+> > >  arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> >=20
+> > You should have a summary of the changes between versions here
+> >=20
+> > > diff --git a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts b/a=
+rch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> > > index 4c6704e4c57e..ea2fa48a1647 100644
+> > > --- a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> > > +++ b/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> > > @@ -46,6 +46,11 @@ sw4 {
+> > >  		};
+> > >  	};
+> > >=20
+> > > +	poweroff {
+> > > +		compatible =3D "gpio-poweroff";
+> > > +		gpios =3D <&r_pio 0 8 GPIO_ACTIVE_LOW>; /* PL8 */
+> > > +	};
+> > > +
+> >=20
+> > Like I said in the previous version, this should really be modelled as a
+> > regulator instead of just a GPIO
 >=20
-> It can be seen as dropping the PineTab DT and introduce new DTs with
-> suffix.
+> Please excuse my ignorance, do you mean something like this?
 >=20
-> Do we have rule that we cannot drop boards?
+>        reg_vdd_sys: vdd-sys {
+>                compatible =3D "regulator-fixed";
+>                regulator-name =3D "vdd-sys";
+>                regulator-min-microvolt =3D <1200000>;
+>                regulator-max-microvolt =3D <1200000>;
+>                regulator-always-on;
+>                regulator-boot-on;
+>                enable-active-high;
+>                gpio =3D <&r_pio 0 8 GPIO_ACTIVE_HIGH>; /* PL8 */
+>                vin-supply =3D <&reg_vcc5v0>;
+>         };
+>=20
+> With this, the board still draws 60mA (cheap USB ampere meter) after
+> shutdown, presumably because of "regulator-always-on".  Without this
+> property the board powers off shortly after booting up.
 
-Are you really arguing that removing a DT and then adding an identical
-one under a different name is not renaming it?
+Yes, because you're only describing the regulator itself here, but
+you're not telling linux that it needs to shut it down to power-down the
+board.
 
---rmpcrvovirbkiyir
+You'd need a driver similar to gpio-poweroff, using a regulator instead,
+and calling regulator_force_disable to shut it down
+
+Maxime
+
+--stejl7vgq72gqvys
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8IoowAKCRDj7w1vZxhR
-xUVQAP9w4zKVWYrg14myVhyPLb+tvoKG3yXY0Mm7bfZ1HUpu4gD/Xku3FSK3YUYw
-azv2bYxaZ+A0ewygD1XDiQwVsLHGsw0=
-=em7W
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8Io/QAKCRDj7w1vZxhR
+xXyaAP9dhQ6ZoKWFbs6dcJc5Sqvox9mY6u0YvG1VjDCv//w7bgEAnAvV7LTYzXcP
+gvqQIqZAI1Y6fd0YSrdnwif+0yfjhgI=
+=lHji
 -----END PGP SIGNATURE-----
 
---rmpcrvovirbkiyir--
+--stejl7vgq72gqvys--
