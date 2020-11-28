@@ -2,68 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DDE2C7691
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 00:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9762C7695
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 00:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgK1XTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 18:19:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727468AbgK1XTj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 18:19:39 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44B2C0613D3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 15:18:59 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id q137so4558458iod.9
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 15:18:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xlJBza+nsMUN6XCjxCf8gkTWdhQOPOuHz9z3ags82xo=;
-        b=LyxmrO/4TJSEN+CysN3vTfl4WDdZzPqRaQmAe3lrshGDq9lhPInxNTdF4NpI+3gKlJ
-         H6qpGUHfGxMz4II6PMC7OIb0pmSNDWI4K5rpFbdP4UKDbTobDP5f5QPCbH4xHnN/HNVH
-         gK5nACVxVsR8rlYKBx6YgeyZNzPfYS8+bGJi+KZRjyM8exnGpbAn8Q4PYH95KXtAG+Xw
-         hKOhuCiLNFNovBZjHAt3y0ASee4NQp38be/aQzIisJnhipvNYEPtyukTj1a2sE/ZUmRl
-         MRvGDh3iYglhslOVSCsmvdmkEDr58I0izh89CtZWRXnBVPqwjOJSbAN+/CCaTibI3Op/
-         7PPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xlJBza+nsMUN6XCjxCf8gkTWdhQOPOuHz9z3ags82xo=;
-        b=loSiTIeYDCSs6vzTYRdYgVaN5AfWNe5noGAjhEzMZurE+Dsj5LFFKK7d0EthvX6fkG
-         Yui40oRNbZ1jvE606ThVygGXxD9d8ph7ATTJ0yP+DBvNAlo1LuR/AQ7IvZNZanByZuR0
-         zZiP56899cfNgx16rc23V/c/IKCmz62DWqpMSVjsh2OpZ9QdI1Eh9iLjPfv2DmsjchRd
-         X4CpJlBs/HY6VEkAzQt4MS5ZagjrOu+wK3z99qr9qWH/vfAmxRjWLMNMwZi1ctfi+jS1
-         TkpyDOh1pDs1nhx76gYywID/u0+RKHNZXtac0yjXVOnQJ2/PhnQqYOiyxNTYVPNaRvGR
-         y3vQ==
-X-Gm-Message-State: AOAM531O5sKirKytHFrX1Ff9PDAkJSf0ZBhGKaHU4TqmcTKzGtx55Ajx
-        YO19AbX0h10XvSz861kQ4ZIAjbCBzqLpDT7fG2Q=
-X-Google-Smtp-Source: ABdhPJwNNSyrg0Ta1ZZbiM5Zl6v+vQKky03rPsa8142hzfmO4tg2AozEYu7dsihbGpBLyfasDb2G55n3RuxPNI5ifWc=
-X-Received: by 2002:a6b:6c01:: with SMTP id a1mr10985811ioh.31.1606605539031;
- Sat, 28 Nov 2020 15:18:59 -0800 (PST)
+        id S1726903AbgK1XZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 18:25:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725844AbgK1XZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 18:25:42 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 500DD21973;
+        Sat, 28 Nov 2020 23:25:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606605901;
+        bh=hmGkZTYvkd/qqQZlybgJa7EXoilAdCnKXjGANKNqzj0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=zQMNEwvzY5WDM8mFJsegTA8jCeUPE82CbXvZ0yIYHSsTgZMyXKj5SvH8DKUxkTcKx
+         /jLXq6kOevPQKgi9DpOqVCL/bTiQ5z5XwCukSt2iGBlE1Pe6QdKUi/m8JZ0eNTkXm6
+         54HI+cS6nDBgitPoVfHgTgYOX/lHaGFFICTrHwQs=
+Date:   Sat, 28 Nov 2020 17:25:00 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     ashok.raj@intel.com, knsathya@kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH 1/5] PCI/DPC: Ignore devices with no AER Capability
+Message-ID: <20201128232500.GA929114@bjorn-Precision-5520>
 MIME-Version: 1.0
-Received: by 2002:a05:6602:111:0:0:0:0 with HTTP; Sat, 28 Nov 2020 15:18:58
- -0800 (PST)
-Reply-To: asamera950@gmail.com
-From:   samera ali <sameraa580@gmail.com>
-Date:   Sat, 28 Nov 2020 15:18:58 -0800
-Message-ID: <CA+EQ-Z3uSY1UdnfHb-XUNBdyrLjdJFt2A9=4YZ7dD1e3rxGLcg@mail.gmail.com>
-Subject: Hey dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5646ac56-3b4a-d060-18ab-28722c337d00@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey dear
+On Sat, Nov 28, 2020 at 01:56:23PM -0800, Kuppuswamy, Sathyanarayanan wrote:
+> On 11/28/20 1:53 PM, Bjorn Helgaas wrote:
+> > On Sat, Nov 28, 2020 at 01:49:46PM -0800, Kuppuswamy, Sathyanarayanan wrote:
+> > > On 11/28/20 12:24 PM, Bjorn Helgaas wrote:
+> > > > On Wed, Nov 25, 2020 at 06:01:57PM -0800, Kuppuswamy, Sathyanarayanan wrote:
+> > > > > On 11/25/20 5:18 PM, Bjorn Helgaas wrote:
+> > > > > > From: Bjorn Helgaas <bhelgaas@google.com>
+> > > > > > 
+> > > > > > Downstream Ports may support DPC regardless of whether they support AER
+> > > > > > (see PCIe r5.0, sec 6.2.10.2).  Previously, if the user booted with
+> > > > > > "pcie_ports=dpc-native", it was possible for dpc_probe() to succeed even if
+> > > > > > the device had no AER Capability, but dpc_get_aer_uncorrect_severity()
+> > > > > > depends on the AER Capability.
+> > > > > > 
+> > > > > > dpc_probe() previously failed if:
+> > > > > > 
+> > > > > >      !pcie_aer_is_native(pdev) && !pcie_ports_dpc_native
+> > > > > >      !(pcie_aer_is_native() || pcie_ports_dpc_native)    # by De Morgan's law
+> > > > > > 
+> > > > > > so it succeeded if:
+> > > > > > 
+> > > > > >      pcie_aer_is_native() || pcie_ports_dpc_native
+> > > > > > 
+> > > > > > Fail dpc_probe() if the device has no AER Capability.
+> > > > > > 
+> > > > > > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > > > > Cc: Olof Johansson <olof@lixom.net>
+> > > > > > ---
+> > > > > >     drivers/pci/pcie/dpc.c | 3 +++
+> > > > > >     1 file changed, 3 insertions(+)
+> > > > > > 
+> > > > > > diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> > > > > > index e05aba86a317..ed0dbc43d018 100644
+> > > > > > --- a/drivers/pci/pcie/dpc.c
+> > > > > > +++ b/drivers/pci/pcie/dpc.c
+> > > > > > @@ -287,6 +287,9 @@ static int dpc_probe(struct pcie_device *dev)
+> > > > > >     	int status;
+> > > > > >     	u16 ctl, cap;
+> > > > > > +	if (!pdev->aer_cap)
+> > > > > > +		return -ENOTSUPP;
+> > > > > Don't we check aer_cap support in drivers/pci/pcie/portdrv_core.c ?
+> > > > > 
+> > > > > We don't enable DPC service, if AER service is not enabled. And AER
+> > > > > service is only enabled if AER capability is supported.
+> > > > > 
+> > > > > So dpc_probe() should not happen if AER capability is not supported?
+> > > > 
+> > > > I don't think that's always true.  If I'm reading this right, we have
+> > > > this:
+> > > > 
+> > > >     get_port_device_capability(...)
+> > > >     {
+> > > >     #ifdef CONFIG_PCIEAER
+> > > >       if (dev->aer_cap && ...)
+> > > >         services |= PCIE_PORT_SERVICE_AER;
+> > > >     #endif
+> > > > 
+> > > >       if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+> > > >           pci_aer_available() &&
+> > > >           (pcie_ports_dpc_native || (services & PCIE_PORT_SERVICE_AER)))
+> > > >         services |= PCIE_PORT_SERVICE_DPC;
+> > > >     }
+> > > > 
+> > > > and in the case where:
+> > > > 
+> > > >     - CONFIG_PCIEAER=y
+> > > >     - booted with "pcie_ports=dpc-native" (pcie_ports_dpc_native is true)
+> > > >     - "dev" has no AER capability
+> > > >     - "dev" has DPC capability
+> > > > 
+> > > > I think we do enable PCIE_PORT_SERVICE_DPC.
+> > > Got it. But further looking into it, I am wondering whether
+> > > we should keep this dependency? Currently we just use it to
+> > > dump the error information. Do we need to create dependency
+> > > between DPC and AER (which is functionality not dependent) just
+> > > to see more details about the error?
+> > 
+> > That's a good question, but I don't really want to get into the actual
+> > operation of the AER and DPC drivers in this series, so maybe
+> > something we should explore later.
 
-Nice to meet you, Am Miss samera I found your email here in google
-search and I picked
-interest to contact you. I've something very important which I would like
-to discuss with you and I would appreciate if you respond back to me
-through my email address as to tell you more about me with my
-photos, my private email as fellows??  [ asamera950@gmail.com ]
+> In that case, can you move this check to
+> drivers/pci/pcie/portdrv_core.c?  I don't see the point of
+> distributed checks in both get_port_device_capability() and
+> dpc_probe().
 
-From, samera ali
+I totally agree that these distributed checks are terrible, but my
+long-term hope is to get rid of portdrv and handle these "services"
+more like we handle other capabilities.  For example, maybe we can
+squash dpc_probe() into pci_dpc_init(), so I'd actually like to move
+things from get_port_device_capability() into dpc_probe().
