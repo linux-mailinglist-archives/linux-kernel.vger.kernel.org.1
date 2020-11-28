@@ -2,82 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC172C6E4A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AF42C6E39
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:39:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730301AbgK1Bxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 20:53:45 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8441 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729872AbgK1BwI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 20:52:08 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CjYSg1Dcszhjwx;
-        Sat, 28 Nov 2020 09:14:59 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.208) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Sat, 28 Nov 2020
- 09:15:13 +0800
-Subject: Re: [PATCH 1/1] perf diff: fix error return value in __cmd_diff()
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Jin Yao <yao.jin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201124103652.438-1-thunder.leizhen@huawei.com>
- <CAM9d7cgKDMCst2jEmHMHT7MC0DaTg1naNTt3cZnRepiNkmF-VA@mail.gmail.com>
- <20201127172202.GL70905@kernel.org> <20201127172544.GM70905@kernel.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <2f491206-5f36-61c5-f133-03afe8234c0f@huawei.com>
-Date:   Sat, 28 Nov 2020 09:15:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1729796AbgK1BjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 20:39:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729460AbgK1BgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 20:36:17 -0500
+Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D098722255;
+        Sat, 28 Nov 2020 01:24:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606526681;
+        bh=JgqrGL8/UorpI7LvAq8W+1sAojiyvVrREeEuZFT14fw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZAqX/sBqi1R0zcXrG/cGib/dKN2yi31ki+lZdBIk+5iVZHmwtz4UQpgUVhPzcWnUM
+         eaJBvoACG8oPphkDg6B2utmIQm6SwaOV/BT3dRun+3c+T8V2IKcXv5A6Civ+t941J5
+         uqp3vc2zikhbDU59TUnrO662X4KeCaBAs/D56/tQ=
+Date:   Fri, 27 Nov 2020 17:24:39 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     andrew.hendry@gmail.com, davem@davemloft.net,
+        xie.he.0141@gmail.com, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v7 0/5] net/x25: netdev event handling
+Message-ID: <20201127172439.1c5c73a3@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201126063557.1283-1-ms@dev.tdt.de>
+References: <20201126063557.1283-1-ms@dev.tdt.de>
 MIME-Version: 1.0
-In-Reply-To: <20201127172544.GM70905@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 26 Nov 2020 07:35:52 +0100 Martin Schiller wrote:
+> Changes to v6:
+> o integrated some code styling suggestions by Jakub.
+> 
+> Changes to v5:
+> o fix numbering in commit message of patch 2/5.
+> 
+> Changes to v4:
+> o also establish layer2 (LAPB) on NETDEV_UP events, if the carrier is
+>   already UP.
+> 
+> Changes to v3:
+> o another complete rework of the patch-set to split event handling
+>   for layer2 (LAPB) and layer3 (X.25)
+> 
+> Changes to v2:
+> o restructure complete patch-set
+> o keep netdev event handling in layer3 (X.25)
+> o add patch to fix lapb_connect_request() for DCE
+> o add patch to handle carrier loss correctly in lapb
+> o drop patch for x25_neighbour param handling
+>   this may need fixes/cleanup and will be resubmitted later.
+> 
+> Changes to v1:
+> o fix 'subject_prefix' and 'checkpatch' warnings
 
-
-On 2020/11/28 1:25, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Nov 27, 2020 at 02:22:02PM -0300, Arnaldo Carvalho de Melo escreveu:
->> Em Fri, Nov 27, 2020 at 10:35:37PM +0900, Namhyung Kim escreveu:
->>> On Tue, Nov 24, 2020 at 7:37 PM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> 
->>>> An appropriate return value should be set on the failed path.
-> 
->>>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->  
->>> Acked-by: Namhyung Kim <namhyung@kernel.org>
->  
->> Thanks, applied.
-> 
-> I also added this:
-> 
-> Cc: Jin Yao <yao.jin@linux.intel.com>
-> Fixes: 2a09a84c720b436a ("perf diff: Support hot streams comparison")
-> 
-> Please add the fixes line and CC the author of the patch introducing the
-> bug next time,
-
-Okay, I'll do that next time. Thanks for the heads-up.
-
-> 
-> Thanks
-> 
-> - Arnaldo
-> 
-> .
-> 
-
+Applied, thank you!
