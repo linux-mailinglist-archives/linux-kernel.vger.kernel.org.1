@@ -2,99 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D9A2C733B
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB162C7445
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389607AbgK1VuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:03 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9067 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728452AbgK1SFo (ORCPT
+        id S1732434AbgK1Vtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:43 -0500
+Received: from condef-03.nifty.com ([202.248.20.68]:61803 "EHLO
+        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732673AbgK1RzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:05:44 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CjhC42BVqzLw1Z;
-        Sat, 28 Nov 2020 14:18:40 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 28 Nov 2020 14:19:04 +0800
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     <wangkefeng.wang@huawei.com>
-CC:     <akpm@linux-foundation.org>, <aou@eecs.berkeley.edu>,
-        <chenhuang5@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <palmer@dabbelt.com>,
-        <paul.walmsley@sifive.com>
-Subject: [PATCH v2] riscv: stacktrace: fix stackframe without ra on the top
-Date:   Sat, 28 Nov 2020 06:22:42 +0000
-Message-ID: <20201128062242.825448-1-chenhuang5@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <22dbe32a-0757-97ad-8885-0f2ba55bb743@huawei.com>
-References: <22dbe32a-0757-97ad-8885-0f2ba55bb743@huawei.com>
+        Sat, 28 Nov 2020 12:55:12 -0500
+Received: from conssluserg-05.nifty.com ([10.126.8.84])by condef-03.nifty.com with ESMTP id 0AS7598n011099;
+        Sat, 28 Nov 2020 16:05:09 +0900
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 0AS74obX013284;
+        Sat, 28 Nov 2020 16:04:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 0AS74obX013284
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606547091;
+        bh=PE39hdI/e7+EZBc7ywdHmRsFj/6iCzNiPht7cSP0zfw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oisVV3r5ysBMBGWOwAVbjJbHfbOgIv3VbZT4LEWZZQMqNI8e5bEz1MoRINUbV5F6E
+         j+v3cDS11iW4CfXpK9+8yFJViMXmLRQ++rHmFdqt31q7I8WEMxKZM6w9NTkbxEYTSO
+         mhxUthLTsPkzmEZSonXL7s/mew+HSo2iWVQn7ooqkTZ+Cp639rP/7+oGsqRoXS7fS+
+         96ZTqOni4JfYr8J9dWcM6ekydFEsBFaeMZQATYXjexfKrHZ2XSR5VP08sOxwwEOrh+
+         /TFu3eQ8AkSGqgn1oi1M9qKq61A5Ov42wsDW2TUanC0f2e7jaBJ5crNeUt0m3n2U4I
+         UULs77IScPSUg==
+X-Nifty-SrcIP: [209.85.210.173]
+Received: by mail-pf1-f173.google.com with SMTP id x24so6364889pfn.6;
+        Fri, 27 Nov 2020 23:04:51 -0800 (PST)
+X-Gm-Message-State: AOAM533jnjWbMXAaieLrFMyZPHFbj5ouFMszpEmlBptOWyJ7MjVNLO1Q
+        NBINUKNMDiVFhWDAmYp6pM2xISHYaLDuAd83iPI=
+X-Google-Smtp-Source: ABdhPJyEbE7fUISaIUmbRWAYArE+Qu8uv+lh7GUBnbnVkWeGUL6BRii61yVbTAjL74jQpHB7kYEDj3RRjnhV03dHmiQ=
+X-Received: by 2002:a63:3205:: with SMTP id y5mr9717508pgy.47.1606547090308;
+ Fri, 27 Nov 2020 23:04:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-CFilter-Loop: Reflected
+References: <CAK7LNASn4Si3=YhAPtc06wEqajpU0uBh46-4T10f=cHy=LY2iA@mail.gmail.com>
+ <CAHk-=wihYvkKOcXWPjY7wN13DXbh3k2YX_6JxK_1cQ=krbi9kg@mail.gmail.com>
+ <CAHk-=wi86Eu8Whu66CVu+GVTxbuJG+QNvDuk-hXnWu+5q90Zeg@mail.gmail.com>
+ <CAHk-=winw=9xh6SmFJPZgi8ngVR-ECTA-kDAAU3DEPLMoUrzVA@mail.gmail.com> <CAHk-=wjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 28 Nov 2020 16:04:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQtABssBH2LGThgv-F3_aSrz9Hd-ra9Yyu4-FFzY1nsUw@mail.gmail.com>
+Message-ID: <CAK7LNAQtABssBH2LGThgv-F3_aSrz9Hd-ra9Yyu4-FFzY1nsUw@mail.gmail.com>
+Subject: Re: [GIT PULL 2/2] Kconfig updates for v5.10-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Emese Revfy <re.emese@gmail.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a function doesn't have a callee, then it will not push ra
-into the stack, such as lkdtm_BUG() function:
+On Sat, Nov 28, 2020 at 7:05 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Fri, Nov 27, 2020 at 1:53 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> >     33.68%  cc1plus
+>
+> So a third of the time is the _single_ invocation of cc1plus, which
+> happens from scrips/gcc-plugin.sh doing that
+>
+>      $HOSTCC -c -x c++ -std=gnu++98 - -fsyntax-only
+>
+> thing. Which is purely to verify that plugins work.
+>
+> Ugh.
+>
+> Emese - I'm talking to myself while I'm looking at why "make
+> allmodconfig" is so unbearably slow. This is part of it.
+>
+>               Linus
 
-addi	sp,sp,-16
-sd		s0,8(sp)
-addi	s0,sp,16
-ebreak
 
-The struct stackframe use {fp,ra} to get information from
-stack, if walk_stackframe() with pr_regs, we will obtain
-wrong value and bad stacktrace,
+If you do 'make allmodconfig' from the clean source tree,
+some logs are displayed.
 
-[<ffffffe00066c56c>] lkdtm_BUG+0x6/0x8
----[ end trace 18da3fbdf08e25d5 ]---
+If you do that once again, no logs,
+which means no recompilation of the 'conf' binary.
 
-Correct the next fp and pc, after that, full stacktrace
-shown as expects,
+Of course, GNU Make evaluates some recipes due to the FORCE,
+but the costs are quite small.
 
-[<ffffffe00066c56c>] lkdtm_BUG+0x6/0x8
-[<ffffffe0008b24a4>] lkdtm_do_action+0x14/0x1c
-[<ffffffe00066c372>] direct_entry+0xc0/0x10a
-[<ffffffe000439f86>] full_proxy_write+0x42/0x6a
-[<ffffffe000309626>] vfs_write+0x7e/0x214
-[<ffffffe00030992a>] ksys_write+0x98/0xc0
-[<ffffffe000309960>] sys_write+0xe/0x16
-[<ffffffe0002014bc>] ret_from_syscall+0x0/0x2
----[ end trace 61917f3d9a9fadcd ]---
 
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- arch/riscv/kernel/stacktrace.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-index 595342910c3f..3842fac26e85 100644
---- a/arch/riscv/kernel/stacktrace.c
-+++ b/arch/riscv/kernel/stacktrace.c
-@@ -57,9 +57,14 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
- 		/* Unwind stack frame */
- 		frame = (struct stackframe *)fp - 1;
- 		sp = fp;
--		fp = frame->fp;
--		pc = ftrace_graph_ret_addr(current, NULL, frame->ra,
--					   (unsigned long *)(fp - 8));
-+		if (regs && (pc == regs->epc) && (frame->fp & 0x7)) {
-+			fp = frame->ra;
-+			pc = regs->ra;
-+		} else {
-+			fp = frame->fp;
-+			pc = ftrace_graph_ret_addr(current, NULL, frame->ra,
-+						(unsigned long *)(fp - 8));
-+		}
- 	}
- }
- 
+As for the cc1plus cost, I got a similar result.
+
+Running scripts/gcc-plugin.sh directly
+took me 0.5 sec, which is a fourth
+of the allmodconfig run-time.
+
+Actually, I did not know this shell script
+was so expensive to run...
+
+I also added Kees to CC.
+
+
+Even if we are able to manage this script somehow,
+Kconfig invocation still takes more than 1 sec
+due to the current design.
+
+
+
+masahiro@grover:~/workspace/linux$ make mrproper
+masahiro@grover:~/workspace/linux$ time make allmodconfig
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  LEX     scripts/kconfig/lexer.lex.c
+  YACC    scripts/kconfig/parser.tab.[ch]
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTCC  scripts/kconfig/util.o
+  HOSTLD  scripts/kconfig/conf
+#
+# configuration written to .config
+#
+
+real 0m4.415s
+user 0m3.686s
+sys 0m0.763s
+masahiro@grover:~/workspace/linux$ time make allmodconfig
+#
+# No change to .config
+#
+
+real 0m2.041s
+user 0m1.564s
+sys 0m0.519s
+
+masahiro@grover:~/workspace/linux$ export HOSTCC=gcc
+masahiro@grover:~/workspace/linux$ time  scripts/gcc-plugin.sh gcc
+
+real 0m0.560s
+user 0m0.512s
+sys 0m0.048s
+
+
+
+
+
 -- 
-2.17.1
-
+Best Regards
+Masahiro Yamada
