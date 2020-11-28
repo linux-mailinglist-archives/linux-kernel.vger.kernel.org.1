@@ -2,108 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C862C71D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EF82C7198
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390193AbgK1Vuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:52 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:34577 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727974AbgK1SXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:23:33 -0500
-Received: from [192.168.0.2] (ip5f5ae89d.dynamic.kabel-deutschland.de [95.90.232.157])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: buczek)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 485CB20643C62;
-        Sat, 28 Nov 2020 13:25:23 +0100 (CET)
-To:     Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+raid@molgen.mpg.de
-From:   Donald Buczek <buczek@molgen.mpg.de>
-Subject: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
- transition
-Message-ID: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
-Date:   Sat, 28 Nov 2020 13:25:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2390663AbgK1VvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730138AbgK1Sh7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:37:59 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378A9C02A190;
+        Sat, 28 Nov 2020 04:39:57 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id u10so3233609wmm.0;
+        Sat, 28 Nov 2020 04:39:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B3Vf9XYn//Fj5v4zXe+KRqjMj3t6Oew9GGBwAujZoyk=;
+        b=bnsf08Oj9hx8+v7iJPMuj5mv4FEH7MXsr3ol5Cbt7gbyaJ7ie/vZdCzhJX0vqZE+DV
+         Z0CjZmYpwPQymQsa7t/wEOV0BuAPGK5+plybf7IsKJPGhA46CKzH2TK0iR9PVCuTQpft
+         txKUQ/WA4b/g9ELUs4cQcQkTbIwRmMDikDyOolIwUHUnMB2YEc0h2iFgbXugV44jjsrQ
+         PY+OfEks6BTCh5cSUzcr/K87Vgt+8lfyqkLoUaLKBZZ1MevJNRkr433QOvgaMGuiqMTL
+         tvyU5Sesa1B9hHsz7OMgSQCBMiPiBQrnAJ8WsrULwwDOWc6v8xK11JXfucZCs9q7wieA
+         wrPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B3Vf9XYn//Fj5v4zXe+KRqjMj3t6Oew9GGBwAujZoyk=;
+        b=iVpmPEdAinD4Hu2Wy0rBS/LWHm7IKvVXtD6VP3yWXb/tBBlgbcXsIQlj4BFgwMVObq
+         1605GMGWm19U2p5nYNXszNWuAbgC0KDnIQVLXM1hd1zU38MJ3SjFbvpR8APP3ij/8wgk
+         Z8v0BTqzcfU28VlflCI6tjKop9twd2NkUvYAAYH2cgYA8OKEwX7mogmQ4cfQyWEXARER
+         opnpPRZKZreNAStGdija3kctrz3K28HkApVZcZssfLecrqayazUxbqMoH7aeUe2w7krT
+         NZFmu0r3KCfDw6lzOMDVlVS/Tcbb6FlyAKsS7KKupE+T8jhJpOCtiIRlhFybPz4COdna
+         IGyQ==
+X-Gm-Message-State: AOAM53295fEIBPZ1OGtaSwpkRIi26IDPOiMIp94/DfyhRIOh+u6p3Ny7
+        ETdGUOR8H/e+uy74AWEm+s4=
+X-Google-Smtp-Source: ABdhPJzBGFVCgjC1d/RIgLo0FZh3GOX+UyzrsNUJcNUxRkxwNbLpRRVDbNafzbG3zL7SwGtg695+7g==
+X-Received: by 2002:a7b:cb84:: with SMTP id m4mr14143078wmi.157.1606567195862;
+        Sat, 28 Nov 2020 04:39:55 -0800 (PST)
+Received: from localhost.localdomain ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id s4sm19887591wro.10.2020.11.28.04.39.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Nov 2020 04:39:55 -0800 (PST)
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-man@vger.kernel.org
+Subject: [PATCH] futex: Change 'utime' parameter to be 'const ... *'
+Date:   Sat, 28 Nov 2020 13:39:46 +0100
+Message-Id: <20201128123945.4592-1-alx.manpages@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Linux mdraid people,
+futex(2) says that 'utime' is a pointer to 'const'.
+The implementation doesn't use 'const';
+however, it _never_ modifies the contents of utime.
 
-we are using raid6 on several servers. Occasionally we had failures, where a mdX_raid6 process seems to go into a busy loop and all I/O to the md device blocks. We've seen this on various kernel versions.
+- futex() either uses 'utime' as a pointer to struct or as a 'u32'.
 
-The last time this happened (in this case with Linux 5.10.0-rc4), I took some data.
+- In case it's used as a 'u32', it makes a copy of it,
+  and of course it is not dereferenced.
 
-The triggering event seems to be the md_check cron job trying to pause the ongoing check operation in the morning with
+- In case it's used as a 'struct __kernel_timespec __user *',
+  the pointer is not dereferenced inside the futex() definition,
+  and it is only passed to a function: get_timespec64(),
+  which accepts a 'const struct __kernel_timespec __user *'.
 
-     echo idle > /sys/devices/virtual/block/md1/md/sync_action
+context:
+........
 
-This doesn't complete. Here's /proc/stack of this process:
+[[
+FUTEX(2)               Linux Programmer's Manual              FUTEX(2)
 
-     root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# ps -fp 23333
-     UID        PID  PPID  C STIME TTY          TIME CMD
-     root     23333 23331  0 02:00 ?        00:00:00 /bin/bash /usr/bin/mdcheck --continue --duration 06:00
-     root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# cat /proc/23333/stack
-     [<0>] kthread_stop+0x6e/0x150
-     [<0>] md_unregister_thread+0x3e/0x70
-     [<0>] md_reap_sync_thread+0x1f/0x1e0
-     [<0>] action_store+0x141/0x2b0
-     [<0>] md_attr_store+0x71/0xb0
-     [<0>] kernfs_fop_write+0x113/0x1a0
-     [<0>] vfs_write+0xbc/0x250
-     [<0>] ksys_write+0xa1/0xe0
-     [<0>] do_syscall_64+0x33/0x40
-     [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+NAME
+       futex - fast user-space locking
 
-Note, that md0 has been paused successfully just before.
+SYNOPSIS
+       #include <linux/futex.h>
+       #include <stdint.h>
+       #include <sys/time.h>
 
-     2020-11-27T02:00:01+01:00 done CROND[23333]: (root) CMD (/usr/bin/mdcheck --continue --duration "06:00")
-     2020-11-27T02:00:01+01:00 done root: mdcheck continue checking /dev/md0 from 10623180920
-     2020-11-27T02:00:01.382994+01:00 done kernel: [378596.606381] md: data-check of RAID array md0
-     2020-11-27T02:00:01+01:00 done root: mdcheck continue checking /dev/md1 from 11582849320
-     2020-11-27T02:00:01.437999+01:00 done kernel: [378596.661559] md: data-check of RAID array md1
-     
-     2020-11-27T06:00:01.842003+01:00 done kernel: [392996.625147] md: md0: data-check interrupted.
-     2020-11-27T06:00:02+01:00 done root: pause checking /dev/md0 at 13351127680
-     2020-11-27T06:00:02.338989+01:00 done kernel: [392997.122520] md: md1: data-check interrupted.
-     [ nothing related following.... ]
+       long futex(uint32_t *uaddr, int futex_op, uint32_t val,
+                 const struct timespec *timeout,   /* or: uint32_t val2 */
+                 uint32_t *uaddr2, uint32_t val3);
 
-After that, we see md1_raid6 in a busy loop:
+       Note:  There  is  no  glibc  wrapper  for this system call; see
+       NOTES.
+]]
 
-     PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
-     2376 root     20   0       0      0      0 R 100.0  0.0   1387:38 md1_raid6
+$ sed -n '/SYSCALL_DEFINE.(futex\>/,/^}/p' linux/kernel/futex.c
+SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
+		struct __kernel_timespec __user *, utime, u32 __user *, uaddr2,
+		u32, val3)
+{
+	struct timespec64 ts;
+	ktime_t t, *tp = NULL;
+	u32 val2 = 0;
+	int cmd = op & FUTEX_CMD_MASK;
 
-Also, all processes doing I/O do the md device block.
+	if (utime && (cmd == FUTEX_WAIT || cmd == FUTEX_LOCK_PI ||
+		      cmd == FUTEX_WAIT_BITSET ||
+		      cmd == FUTEX_WAIT_REQUEUE_PI)) {
+		if (unlikely(should_fail_futex(!(op & FUTEX_PRIVATE_FLAG))))
+			return -EFAULT;
+		if (get_timespec64(&ts, utime))
+			return -EFAULT;
+		if (!timespec64_valid(&ts))
+			return -EINVAL;
 
-This is /proc/mdstat:
+		t = timespec64_to_ktime(ts);
+		if (cmd == FUTEX_WAIT)
+			t = ktime_add_safe(ktime_get(), t);
+		else if (!(op & FUTEX_CLOCK_REALTIME))
+			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
+		tp = &t;
+	}
+	/*
+	 * requeue parameter in 'utime' if cmd == FUTEX_*_REQUEUE_*.
+	 * number of waiters to wake in 'utime' if cmd == FUTEX_WAKE_OP.
+	 */
+	if (cmd == FUTEX_REQUEUE || cmd == FUTEX_CMP_REQUEUE ||
+	    cmd == FUTEX_CMP_REQUEUE_PI || cmd == FUTEX_WAKE_OP)
+		val2 = (u32) (unsigned long) utime;
 
-     Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4] [multipath]
-     md1 : active raid6 sdk[0] sdj[15] sdi[14] sdh[13] sdg[12] sdf[11] sde[10] sdd[9] sdc[8] sdr[7] sdq[6] sdp[5] sdo[4] sdn[3] sdm[2] sdl[1]
-           109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
-           [==================>..]  check = 94.0% (7350290348/7813894144) finish=57189.3min speed=135K/sec
-           bitmap: 0/59 pages [0KB], 65536KB chunk
-     
-     md0 : active raid6 sds[0] sdah[15] sdag[16] sdaf[13] sdae[12] sdad[11] sdac[10] sdab[9] sdaa[8] sdz[7] sdy[6] sdx[17] sdw[4] sdv[3] sdu[2] sdt[1]
-           109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
-           bitmap: 0/59 pages [0KB], 65536KB chunk
+	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
+}
 
-There doesn't seem to be any further progress.
+$ sed -n '/get_timespec64(/,/;/p' linux/include/linux/time.h
+int get_timespec64(struct timespec64 *ts,
+		const struct __kernel_timespec __user *uts);
 
-I've taken a function_graph trace of the looping md1_raid6 process: https://owww.molgen.mpg.de/~buczek/2020-11-27_trace.txt (30 MB)
+...
 
-Maybe this helps to get an idea what might be going on?
+Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+---
 
-Best
-   Donald
+Hello Thomas & Ingo,
 
+I'm sorry I couldn't test the change in my computers,
+as there is a bug since Linux 5.7 where I can't boot
+(https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=974166).
+
+Alex
+
+ kernel/futex.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/futex.c b/kernel/futex.c
+index 00259c7e288e..28577c7d2805 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -3792,8 +3792,8 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+ 
+ 
+ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
+-		struct __kernel_timespec __user *, utime, u32 __user *, uaddr2,
+-		u32, val3)
++		const struct __kernel_timespec __user *, utime,
++		u32 __user *, uaddr2, u32, val3)
+ {
+ 	struct timespec64 ts;
+ 	ktime_t t, *tp = NULL;
 -- 
-Donald Buczek
-buczek@molgen.mpg.de
-Tel: +49 30 8413 1433
+2.29.2
+
