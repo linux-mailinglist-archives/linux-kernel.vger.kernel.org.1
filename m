@@ -2,149 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4195C2C6EA3
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 04:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDF72C6EA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 04:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731135AbgK1D2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 22:28:01 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8192 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726740AbgK1DWz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 22:22:55 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CjcHd27CLzkbkR;
-        Sat, 28 Nov 2020 11:22:21 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 28 Nov 2020 11:22:47 +0800
-Subject: Re: [PATCH] USB:ehci:fix an interrupt calltrace error
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1606361673-573-1-git-send-email-liulongfang@huawei.com>
- <20201126160830.GA827745@rowland.harvard.edu>
- <96b4d366-c94c-9708-da12-5693bf16b716@huawei.com>
- <20201127154718.GA861473@rowland.harvard.edu>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <3c2366c8-4b3e-dac0-48ad-6b33b6eed10e@huawei.com>
-Date:   Sat, 28 Nov 2020 11:22:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20201127154718.GA861473@rowland.harvard.edu>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
+        id S1731398AbgK1DaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 22:30:20 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:23329 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731037AbgK1D0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 22:26:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606533980; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=82RyCiKwAFMqEHLu7jQaIr6mzZ0JmGASM/p7IcuDeXU=; b=bH1MM+VKJok0pSvDMFqdg8RISOrq4IX7K0xh+CEAhO9L9y8aneRGgqPzzfue9AmriIuHddmt
+ xG6JA+eTQ/pAoC5oXe+kxGcM9M2gF+9UtaG6FriLzrYcVvmqKxN9Jzh/ujPGjHMtUoFDasap
+ eKlu5yagNfc7Iu2P++6aZAHuGh8=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fc1c359b9b39088ed90a406 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 28 Nov 2020 03:26:17
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4ADAAC433C6; Sat, 28 Nov 2020 03:26:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 23205C43462;
+        Sat, 28 Nov 2020 03:26:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 23205C43462
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>
+Subject: [PATCH v13 3/4] docs: Add documentation for userspace client interface
+Date:   Fri, 27 Nov 2020 19:26:05 -0800
+Message-Id: <1606533966-22821-4-git-send-email-hemantk@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
+References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/27 23:47, Alan Stern Wrote:
-> On Fri, Nov 27, 2020 at 10:29:03AM +0800, liulongfang wrote:
->> On 2020/11/27 0:08, Alan Stern Wrote:
->>> On Thu, Nov 26, 2020 at 11:34:33AM +0800, Longfang Liu wrote:
->>>> The system goes to suspend when using USB audio player. This causes
->>>> the USB device continuous send interrupt signal to system, When the
->>>> number of interrupts exceeds 100000, the system will forcibly close
->>>> the interrupts and output a calltrace error.
->>>
->>> This description is very confusing.  USB devices do not send interrupt 
->>> signals to the host.  Do you mean that the device sends a wakeup 
->>> request?  Or do you mean something else?
->> The irq type is IRQ_NONE，It's counted in the note_interrupt function.
->> From the analysis of the driver code, that are indeed  interrupt signals.
-> 
-> Above you wrote: "the USB device continuous send interrupt signal to 
-> system".  But that's not correct.  The interrupt signals are sent by the 
-> USB host controller, not by the USB audio device.
-> 
-OK, I will modify the description in the next patch.
-> The patch description should mention that this happens only with some 
-> Synopsys host controllers.
-> 
->>>> When the system goes to suspend, the last interrupt is reported to
->>>> the driver. At this time, the system has set the state to suspend.
->>>> This causes the last interrupt to not be processed by the system and
->>>> not clear the interrupt state flag. This uncleared interrupt flag
->>>> constantly triggers new interrupt event. This causing the driver to
->>>> receive more than 100,000 interrupts, which causes the system to
->>>> forcibly close the interrupt report and report the calltrace error.
->>>
->>> If the driver receives an interrupt, it is supposed to process the event 
->>> even if the host controller is suspended.  And when ehci_irq() runs, it 
->>> clears the bits that are set in the USBSYS register.
->> When the host controller is suspended, the ehci_suspend() will clear
->> the HCD_FLAG_HW_ACCESSIBLE, and then usb_hcd_irq() will return IRQ_NONE
->> directly without calling ehci_irq().
-> 
-> Yes.  But ehci_bus_suspend() runs _before_ the host controller is 
-> suspended.  While ehci_bus_suspend() is running, usb_hcd_irq() _will_ 
-> call ehci_irq(), and ehci_irq() _will_ clear the status bits.
-> 
-> After the host controller is suspended it is not supposed to generate 
-> any interrupt signals at all, because ehci_suspend() writes 0 to the 
-> USBINTR register, and it does this _before_ clearing 
-> HCD_FLAG_HW_ACCESSIBLE.
-> 
-According to this process, there should be no interruption storm problem,
-but the current fact is that the problem has occurred, so the actual
-execution process did not follow the correct process above.
+MHI userspace client driver is creating device file node
+for user application to perform file operations. File
+operations are handled by MHI core driver. Currently
+QMI MHI channel is supported by this driver.
 
->>> Why is your system getting interrupts?  That is, which bits are set in 
->>> the USBSTS register?
->> BIT(5) and BIT(3) are setted, STS_IAA and STS_FLR.
-> 
-> STS_FLR is not set in the USBINTR register, but STS_IAA is.  So that's 
-> the one which matters.
-> 
->>>> so, when the driver goes to sleep and changes the system state to
->>>> suspend, the interrupt flag needs to be cleared.
->>>>
->>>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
->>>> ---
->>>>  drivers/usb/host/ehci-hub.c | 5 +++++
->>>>  1 file changed, 5 insertions(+)
->>>>
->>>> diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
->>>> index ce0eaf7..5b13825 100644
->>>> --- a/drivers/usb/host/ehci-hub.c
->>>> +++ b/drivers/usb/host/ehci-hub.c
->>>> @@ -348,6 +348,11 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
->>>>  
->>>>  	/* Any IAA cycle that started before the suspend is now invalid */
->>>>  	end_iaa_cycle(ehci);
->>>> +
->>>> +	/* clear interrupt status */
->>>> +	if (ehci->has_synopsys_hc_bug)
->>>> +		ehci_writel(ehci, INTR_MASK | STS_FLR, &ehci->regs->status);
->>>
->>> This is a very strange place to add your new code -- right in the middle 
->>> of the IAA and unlink handling.  Why not put it in a more reasonable 
->>> place?After the IAA is processed, clear the STS_IAA interrupt state flag.
->>>
->>> Also, the patch description does not mention has_synopsys_hc_bug.  The 
->>> meaning of this flag has no connection with the interrupt status 
->>> register, so why do you use it here?
->> Because of our USB IP comes from Synopsys, and the uncleared flage is also caused by
->> special hardware design, in addition, we have not tested other manufacturers' USB
->> controllers.We don’t know if other manufacturers’ designs have this problem,
->> so this modification is only limited to this kind of design.
-> 
-> Clearing the STS_IAA flag won't hurt, no matter who manufactured the 
-> controller.  So your patch should look more like this:
-> 
-> +	/* Some Synopsys controllers mistakenly leave IAA turned on */
-> +	ehci_writel(ehci, STS_IAA, &ehci->regs->status);
-> 
-> And these lines should come before the "Any IAA cycle..." comment line.
-> Does that fix the problem?
-I will conduct a round of testing based on this modification
-and provide the test results.
-> 
-> Alan Stern
-> .
-> 
-Thanks.
-Longfang Liu
+Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+---
+ Documentation/mhi/index.rst |  1 +
+ Documentation/mhi/uci.rst   | 94 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 95 insertions(+)
+ create mode 100644 Documentation/mhi/uci.rst
+
+diff --git a/Documentation/mhi/index.rst b/Documentation/mhi/index.rst
+index 1d8dec3..c75a371 100644
+--- a/Documentation/mhi/index.rst
++++ b/Documentation/mhi/index.rst
+@@ -9,6 +9,7 @@ MHI
+ 
+    mhi
+    topology
++   uci
+ 
+ .. only::  subproject and html
+ 
+diff --git a/Documentation/mhi/uci.rst b/Documentation/mhi/uci.rst
+new file mode 100644
+index 0000000..ad22650
+--- /dev/null
++++ b/Documentation/mhi/uci.rst
+@@ -0,0 +1,94 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=================================
++Userspace Client Interface (UCI)
++=================================
++
++UCI driver enables userspace clients to communicate to external MHI devices
++like modem and WLAN. UCI driver probe creates standard character device file
++nodes for userspace clients to perform open, read, write, poll and release file
++operations. UCI device object represents UCI device file node which gets
++instantiated as part of MHI UCI driver probe. UCI channel object represents
++MHI uplink or downlink channel.
++
++Operations
++==========
++
++open
++----
++
++Instantiates UCI channel object and starts MHI channels to move it to running
++state. Inbound buffers are queued to downlink channel transfer ring. Every
++subsequent open() increments UCI device reference count as well as UCI channel
++reference count.
++
++read
++----
++
++When data transfer is completed on downlink channel, transfer ring element
++buffer is copied to pending list. Reader is unblocked and data is copied to
++userspace buffer. Transfer ring element buffer is queued back to downlink
++channel transfer ring.
++
++write
++-----
++
++Write buffer is queued to uplink channel transfer ring if ring is not full. Upon
++uplink transfer completion buffer is freed.
++
++poll
++----
++
++Returns EPOLLIN | EPOLLRDNORM mask if pending list has buffers to be read by
++userspace. Returns EPOLLOUT | EPOLLWRNORM mask if MHI uplink channel transfer
++ring is not empty. Returns EPOLLERR when UCI driver is removed.
++
++release
++-------
++
++Decrements UCI device reference count and UCI channel reference count upon last
++release(). UCI channel clean up is performed. MHI channel moves to disable
++state and inbound buffers are freed.
++
++Usage
++=====
++
++Device file node is created with format:-
++
++/dev/mhi_<mhi_device_name>
++
++mhi_device_name includes mhi controller name and the name of the MHI channel
++being used by MHI client in userspace to send or receive data using MHI
++protocol.
++
++There is a separate character device file node created for each channel
++specified in MHI device id table. MHI channels are statically defined by MHI
++specification. The list of supported channels is in the channel list variable
++of mhi_device_id table in UCI driver.
++
++Qualcomm MSM Interface(QMI) Channel
++-----------------------------------
++
++Qualcomm MSM Interface(QMI) is a modem control messaging protocol used to
++communicate between software components in the modem and other peripheral
++subsystems. QMI communication is of request/response type or an unsolicited
++event type. libqmi is userspace MHI client which communicates to a QMI service
++using UCI device. It sends a QMI request to a QMI service using MHI channel 14
++or 16. QMI response is received using MHI channel 15 or 17 respectively. libqmi
++is a glib-based library for talking to WWAN modems and devices which speaks QMI
++protocol. For more information about libqmi please refer
++https://www.freedesktop.org/wiki/Software/libqmi/
++
++Usage Example
++~~~~~~~~~~~~~
++
++QMI command to retrieve device mode
++$ sudo qmicli -d /dev/mhi_0000\:02\:00.0_QMI --dms-get-model
++[/dev/mhi_0000:02:00.0_QMI] Device model retrieved:
++    Model: 'FN980m'
++
++Other Use Cases
++---------------
++
++Getting MHI device specific diagnostics information to userspace MHI diagnostic
++client using DIAG channel 4 (Host to device) and 5 (Device to Host).
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
