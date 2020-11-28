@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648692C6EC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C1F2C6EC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732453AbgK1EWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 23:22:17 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8455 "EHLO
+        id S1731499AbgK1EYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 23:24:25 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8457 "EHLO
         szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731652AbgK1ENd (ORCPT
+        with ESMTP id S1731486AbgK1ENf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 23:13:33 -0500
+        Fri, 27 Nov 2020 23:13:35 -0500
 Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CjcxS2xGMzhhV5;
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CjcxS36hJzhhXK;
         Sat, 28 Nov 2020 11:51:40 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
@@ -24,10 +24,12 @@ CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
         <linuxarm@huawei.com>, <kuba@kernel.org>,
         Huazhong Tan <tanhuazhong@huawei.com>
-Subject: [PATCH V2 net-next 0/7] net: hns3: updates for -next
-Date:   Sat, 28 Nov 2020 11:51:43 +0800
-Message-ID: <1606535510-44346-1-git-send-email-tanhuazhong@huawei.com>
+Subject: [PATCH V2 net-next 1/7] net: hns3: add support for RX completion checksum
+Date:   Sat, 28 Nov 2020 11:51:44 +0800
+Message-ID: <1606535510-44346-2-git-send-email-tanhuazhong@huawei.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1606535510-44346-1-git-send-email-tanhuazhong@huawei.com>
+References: <1606535510-44346-1-git-send-email-tanhuazhong@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.56]
@@ -36,40 +38,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series includes some updates for the HNS3 ethernet driver.
+In some cases (for example ip fragment), hardware will
+calculate the checksum of whole packet in RX, and setup
+the HNS3_RXD_L2_CSUM_B flag in the descriptor, so add
+support to utilize this checksum.
 
-#1~#6: add some updates related to the checksum offload.
-#7: add support for multiple TCs' MAC pauce mode.
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+---
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 21 +++++++++++++++++++++
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  7 +++++++
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |  1 +
+ 3 files changed, 29 insertions(+)
 
-change log:
-V2: fixes some sparse errors in #1 & #5.
-
-previous version:
-V1: https://patchwork.kernel.org/project/netdevbpf/cover/1606466842-57749-1-git-send-email-tanhuazhong@huawei.com/
-
-Huazhong Tan (6):
-  net: hns3: add support for RX completion checksum
-  net: hns3: add support for TX hardware checksum offload
-  net: hns3: remove unsupported NETIF_F_GSO_UDP_TUNNEL_CSUM
-  net: hns3: add udp tunnel checksum segmentation support
-  net: hns3: add more info to hns3_dbg_bd_info()
-  net: hns3: add a check for devcie's verion in hns3_tunnel_csum_bug()
-
-Yonglong Liu (1):
-  net: hns3: keep MAC pause mode when multiple TCs are enabled
-
- drivers/net/ethernet/hisilicon/hns3/hnae3.h        |   7 +-
- drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c |  62 ++++++++--
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 131 ++++++++++++++++-----
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  21 +++-
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c |   4 +
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h |   3 +-
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c  |  23 +++-
- .../ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c   |   4 +
- .../ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h   |   3 +-
- 10 files changed, 207 insertions(+), 52 deletions(-)
-
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index 632ad42..1647877 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -2798,6 +2798,22 @@ static int hns3_gro_complete(struct sk_buff *skb, u32 l234info)
+ 	return 0;
+ }
+ 
++static void hns3_checksum_complete(struct hns3_enet_ring *ring,
++				   struct sk_buff *skb, u32 l234info)
++{
++	u32 lo, hi;
++
++	u64_stats_update_begin(&ring->syncp);
++	ring->stats.csum_complete++;
++	u64_stats_update_end(&ring->syncp);
++	skb->ip_summed = CHECKSUM_COMPLETE;
++	lo = hnae3_get_field(l234info, HNS3_RXD_L2_CSUM_L_M,
++			     HNS3_RXD_L2_CSUM_L_S);
++	hi = hnae3_get_field(l234info, HNS3_RXD_L2_CSUM_H_M,
++			     HNS3_RXD_L2_CSUM_H_S);
++	skb->csum = csum_unfold((__force __sum16)(lo | hi << 8));
++}
++
+ static void hns3_rx_checksum(struct hns3_enet_ring *ring, struct sk_buff *skb,
+ 			     u32 l234info, u32 bd_base_info, u32 ol_info)
+ {
+@@ -2812,6 +2828,11 @@ static void hns3_rx_checksum(struct hns3_enet_ring *ring, struct sk_buff *skb,
+ 	if (!(netdev->features & NETIF_F_RXCSUM))
+ 		return;
+ 
++	if (l234info & BIT(HNS3_RXD_L2_CSUM_B)) {
++		hns3_checksum_complete(ring, skb, l234info);
++		return;
++	}
++
+ 	/* check if hardware has done checksum */
+ 	if (!(bd_base_info & BIT(HNS3_RXD_L3L4P_B)))
+ 		return;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
+index 8d33652..40681a0 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
+@@ -82,6 +82,12 @@ enum hns3_nic_state {
+ #define HNS3_RXD_STRP_TAGP_S			13
+ #define HNS3_RXD_STRP_TAGP_M			(0x3 << HNS3_RXD_STRP_TAGP_S)
+ 
++#define HNS3_RXD_L2_CSUM_B			15
++#define HNS3_RXD_L2_CSUM_L_S			4
++#define HNS3_RXD_L2_CSUM_L_M			(0xff << HNS3_RXD_L2_CSUM_L_S)
++#define HNS3_RXD_L2_CSUM_H_S			24
++#define HNS3_RXD_L2_CSUM_H_M			(0xff << HNS3_RXD_L2_CSUM_H_S)
++
+ #define HNS3_RXD_L2E_B				16
+ #define HNS3_RXD_L3E_B				17
+ #define HNS3_RXD_L4E_B				18
+@@ -371,6 +377,7 @@ struct ring_stats {
+ 			u64 err_bd_num;
+ 			u64 l2_err;
+ 			u64 l3l4_csum_err;
++			u64 csum_complete;
+ 			u64 rx_multicast;
+ 			u64 non_reuse_pg;
+ 		};
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+index c30d5d3..3cca3c1 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+@@ -55,6 +55,7 @@ static const struct hns3_stats hns3_rxq_stats[] = {
+ 	HNS3_TQP_STAT("err_bd_num", err_bd_num),
+ 	HNS3_TQP_STAT("l2_err", l2_err),
+ 	HNS3_TQP_STAT("l3l4_csum_err", l3l4_csum_err),
++	HNS3_TQP_STAT("csum_complete", csum_complete),
+ 	HNS3_TQP_STAT("multicast", rx_multicast),
+ 	HNS3_TQP_STAT("non_reuse_pg", non_reuse_pg),
+ };
 -- 
 2.7.4
 
