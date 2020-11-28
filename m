@@ -2,110 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FFA2C7142
+	by mail.lfdr.de (Postfix) with ESMTP id A40442C7143
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404289AbgK1Vzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:55:33 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:50487 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387666AbgK1URz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 15:17:55 -0500
-Received: by mail-io1-f71.google.com with SMTP id l14so5157433ioj.17
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 12:17:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Ehas9/uWgezbAqUFc//OPdBHdsrnNi7OIOegc/dRGek=;
-        b=qoBmT8cRG8FbRLyp7G4nIELb0Kke+G/vEm4RAgtFUb+YvxfeMMLUoKCbEqvxIG8Feh
-         WaqMccZiknvKdWQVvE0/t7T7BB328O8b/a7BNoOghKkucbmHLW+pavYgyNyq6/YWZiLZ
-         MRXksNtCGjgu6/c6BkQi4bcnyVG6odIBXu00BPouv+HrUlvyEyiGVdq0gGHp8lhDscT2
-         bgr+H+VW9HHUP6ClNrU1+SS9jkBXtS0QfqGNAEqlUwEWm6f+AU/QvPcMmd14dapwMju0
-         CvKRNZKB3m7ajomqzDSgAERUR7bb2xvCBeqDJhZ0Ws6/c5oqwW10ynYQCpUzJdXGVXML
-         5KTA==
-X-Gm-Message-State: AOAM53150P2xTRm7wzNuNwkXVbZgs9HUhR3MKXiq7pxqCuIocNxCvs+R
-        f8vFvSO7pVMmawsjN7sLQijVdoz+QxWt989yCRquLntA7RNn
-X-Google-Smtp-Source: ABdhPJyD0/wX+ANrFMtDd3Yf5pSf6uf/lZR6CePpgor4Mu1tR5OUziyQ0h8k8j2aRLEF2VvAVAxg1Y2WLY/Q3/CIEW0lfSezo6x4
+        id S2391549AbgK1Vzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:55:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:37564 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387671AbgK1UTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 15:19:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14D4730E;
+        Sat, 28 Nov 2020 12:18:34 -0800 (PST)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9BD613F23F;
+        Sat, 28 Nov 2020 12:18:32 -0800 (PST)
+Subject: Re: [RESEND PATCH 12/19] dt-bindings: Add bindings for USB phy on
+ Allwinner A100
+To:     Rob Herring <robh@kernel.org>, Frank Lee <frank@allwinnertech.com>
+Cc:     devicetree@vger.kernel.org, tiny.windzz@gmail.com,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <cover.1604988979.git.frank@allwinnertech.com>
+ <1ce71bac2732620f8fe77b23ca84e062385e7e8a.1604988979.git.frank@allwinnertech.com>
+ <20201111225039.GA2185181@bogus>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <a52f7350-b7b5-290c-c43a-020fecd58874@arm.com>
+Date:   Sat, 28 Nov 2020 20:18:16 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:50b:: with SMTP id q11mr12684622ile.49.1606594634583;
- Sat, 28 Nov 2020 12:17:14 -0800 (PST)
-Date:   Sat, 28 Nov 2020 12:17:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007e15b505b530766d@google.com>
-Subject: WARNING in close_fs_devices (3)
-From:   syzbot <syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201111225039.GA2185181@bogus>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/11/2020 22:50, Rob Herring wrote:
 
-syzbot found the following issue on:
+Hi,
 
-HEAD commit:    d5beb314 Merge tag 'hyperv-fixes-signed' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1232777d500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7994ac0f2a9b95d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=a70e2ad0879f160b9217
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+> On Tue, Nov 10, 2020 at 02:39:42PM +0800, Frank Lee wrote:
+>> From: Yangtao Li <frank@allwinnertech.com>
+>>
+>> Add a device tree binding for the A100's USB PHY.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Not your fault, Yangto, but why do we actually have a separate binding
+document per SoC, when the differences between the PHYs are so minimal
+that we get away with some flags in the compatible match, in one driver
+file?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+For a start this file is basically identical to the A64 one (apart from
+the example), so can you just add the A100 compatible string to that
+one, instead?
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8484 at fs/btrfs/volumes.c:1160 close_fs_devices+0x71d/0x7b0 fs/btrfs/volumes.c:1160
-Modules linked in:
-CPU: 0 PID: 8484 Comm: syz-executor.3 Not tainted 5.10.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:close_fs_devices+0x71d/0x7b0 fs/btrfs/volumes.c:1160
-Code: c4 38 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 bb 5b 3f fe 0f 0b e9 6f f9 ff ff e8 af 5b 3f fe 0f 0b e9 3c ff ff ff e8 a3 5b 3f fe <0f> 0b e9 69 ff ff ff 48 c7 c1 24 64 0e 8d 80 e1 07 80 c1 03 38 c1
-RSP: 0018:ffffc900016dfc80 EFLAGS: 00010293
-RAX: ffffffff8335c3bd RBX: 0000000000000001 RCX: ffff888015323480
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffff888024b82108 R08: ffffffff8335c31f R09: ffffed10038cdd27
-R10: ffffed10038cdd27 R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff88801c66e860 R14: 1ffff110038cdd0c R15: 1ffff110038cdd0a
-FS:  0000000003329940(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055ad0a12280f CR3: 000000006814e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- btrfs_close_devices+0x8c/0x400 fs/btrfs/volumes.c:1172
- close_ctree+0x5bf/0x6ae fs/btrfs/disk-io.c:4152
- generic_shutdown_super+0x120/0x2a0 fs/super.c:464
- kill_anon_super+0x36/0x60 fs/super.c:1108
- btrfs_kill_super+0x3d/0x50 fs/btrfs/super.c:2263
- deactivate_locked_super+0xa7/0xf0 fs/super.c:335
- cleanup_mnt+0x462/0x510 fs/namespace.c:1118
- task_work_run+0x137/0x1c0 kernel/task_work.c:151
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
- exit_to_user_mode_prepare+0xe4/0x170 kernel/entry/common.c:191
- syscall_exit_to_user_mode+0x4a/0x170 kernel/entry/common.c:266
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4608e7
-Code: 64 89 04 25 d0 02 00 00 58 5f ff d0 48 89 c7 e8 2f be ff ff 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 ad 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe70ea1cb8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000004608e7
-RDX: 00000000004031f8 RSI: 0000000000000002 RDI: 00007ffe70ea1d60
-RBP: 0000000000000538 R08: 0000000000000000 R09: 000000000000000b
-R10: 0000000000000005 R11: 0000000000000246 R12: 00007ffe70ea2df0
-R13: 000000000332aa60 R14: 0000000000000000 R15: 00007ffe70ea2df0
+Cheers,
+Andre
 
+>>
+>> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+>> ---
+>>  .../phy/allwinner,sun50i-a100-usb-phy.yaml    | 105 ++++++++++++++++++
+>>  1 file changed, 105 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/phy/allwinner,sun50i-a100-usb-phy.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/phy/allwinner,sun50i-a100-usb-phy.yaml b/Documentation/devicetree/bindings/phy/allwinner,sun50i-a100-usb-phy.yaml
+>> new file mode 100644
+>> index 000000000000..cc9bbebe2bd7
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/phy/allwinner,sun50i-a100-usb-phy.yaml
+>> @@ -0,0 +1,105 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+> 
+> Dual license new bindings. checkpatch.pl will tell you which ones.
+> 
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/phy/allwinner,sun50i-a100-usb-phy.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Allwinner A100 USB PHY Device Tree Bindings
+>> +
+>> +maintainers:
+>> +  - Yangtao Li <tiny.windzz@gmail.com>
+>> +
+>> +properties:
+>> +  "#phy-cells":
+>> +    const: 1
+>> +
+>> +  compatible:
+>> +    const: allwinner,sun50i-a100-usb-phy
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: PHY Control registers
+>> +      - description: PHY PMU0 registers
+>> +      - description: PHY PMU1 registers
+>> +
+>> +  reg-names:
+>> +    items:
+>> +      - const: phy_ctrl
+>> +      - const: pmu0
+>> +      - const: pmu1
+>> +
+>> +  clocks:
+>> +    items:
+>> +      - description: USB OTG PHY bus clock
+>> +      - description: USB Host 0 PHY bus clock
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: usb0_phy
+>> +      - const: usb1_phy
+>> +
+>> +  resets:
+>> +    items:
+>> +      - description: USB OTG reset
+>> +      - description: USB Host 1 Controller reset
+>> +
+>> +  reset-names:
+>> +    items:
+>> +      - const: usb0_reset
+>> +      - const: usb1_reset
+>> +
+>> +  usb0_id_det-gpios:
+>> +    description: GPIO to the USB OTG ID pin
+> 
+> Needs 'maxItems: 1'
+> 
+>> +
+>> +  usb0_vbus_det-gpios:
+>> +    description: GPIO to the USB OTG VBUS detect pin
+>> +
+>> +  usb0_vbus_power-supply:
+>> +    description: Power supply to detect the USB OTG VBUS
+>> +
+>> +  usb0_vbus-supply:
+>> +    description: Regulator controlling USB OTG VBUS
+>> +
+>> +  usb1_vbus-supply:
+>> +    description: Regulator controlling USB1 Host controller
+> 
+> Are ID and VBus actually connected to the phy h/w? Really, all this 
+> should be in a USB connector node for which we have bindings.
+> 
+>> +
+>> +required:
+>> +  - "#phy-cells"
+>> +  - compatible
+>> +  - clocks
+>> +  - clock-names
+>> +  - reg
+>> +  - reg-names
+>> +  - resets
+>> +  - reset-names
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/gpio/gpio.h>
+>> +    #include <dt-bindings/clock/sun50i-a100-ccu.h>
+>> +    #include <dt-bindings/reset/sun50i-a100-ccu.h>
+>> +
+>> +    phy@5100400 {
+>> +        #phy-cells = <1>;
+>> +        compatible = "allwinner,sun50i-a100-usb-phy";
+>> +        reg = <0x05100400 0x14>,
+>> +              <0x05101800 0x4>,
+>> +              <0x05200800 0x4>;
+>> +        reg-names = "phy_ctrl",
+>> +                    "pmu0",
+>> +                    "pmu1";
+>> +        clocks = <&ccu CLK_USB_PHY0>,
+>> +                 <&ccu CLK_USB_PHY1>;
+>> +        clock-names = "usb0_phy",
+>> +                      "usb1_phy";
+>> +        resets = <&ccu RST_USB_PHY0>,
+>> +                 <&ccu RST_USB_PHY1>;
+>> +        reset-names = "usb0_reset",
+>> +                      "usb1_reset";
+>> +        usb0_id_det-gpios = <&pio 7 10 GPIO_ACTIVE_HIGH>; /* PH10 */
+>> +        usb0_vbus_power-supply = <&usb_power_supply>;
+>> +        usb0_vbus-supply = <&reg_drivevbus>;
+>> +        usb1_vbus-supply = <&reg_usb1_vbus>;
+>> +    };
+>> -- 
+>> 2.28.0
+>>
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
