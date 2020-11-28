@@ -2,97 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A182C71E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A622C71E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387766AbgK1Vu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
+        id S2389982AbgK1Vu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730942AbgK1SPi (ORCPT
+        with ESMTP id S1732358AbgK1SPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 28 Nov 2020 13:15:38 -0500
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAF4C0254A4;
-        Sat, 28 Nov 2020 08:54:25 -0800 (PST)
-Received: by mail-oo1-xc44.google.com with SMTP id i30so1765047ooh.9;
-        Sat, 28 Nov 2020 08:54:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eamRpZz1ZqJByTBkkjNUF2hDN29PEll052WwYiSB7Xc=;
-        b=gjCwHA9fn8Qb+x+7r9E/5GnJhCHU0XV8MNTyUQB5N0rbtpXy9bSq6PDT0ZxpnYl8MV
-         +HKUqgcKvk6dNqhTzWU9rFiLVLmdXi1lpcVOkiuKLhWOP4E/5t8z5augybhIfm9sESNZ
-         jAaqIzuTsA9XzZtLZCSajLVsThPuhoLURiPeq3IMn4MLl8JnF6Sc/ncrz6lUttNJZWBO
-         RRSX7wF2nMV54eIrqrf6nqzBTh++cY160NjF+Tvv+c22HtlAWZCi2TINFmOY3MMHIz/K
-         5kj404l0+RjW6GuZdq4EunZJSSe3O9pLhiYowp38I1kWo+50vUCZPnH8PhWOaCx8HDYV
-         KwUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eamRpZz1ZqJByTBkkjNUF2hDN29PEll052WwYiSB7Xc=;
-        b=pQFXmbLlsAjfhUV8miRVK965dI1+WprwikVdQ+WH7Yc7hokjGskQsUbwTCf7zt5u8Q
-         tyN7CmPzwmjYglG85hOao56zILr1H8crCy7zNW0flcCcPkQ01JPndus8gkkM+zIjTuMy
-         BIX+OZVw7A/KRRq2Qq/fHpXwZzjtfki+lymaQ7ontuS3KKTjGM0dcLK/cMHt38yQsRN0
-         ad73IpzWFWfJVhxscRaXyGxrvy4n6l0PzSSMPfp1FM68gBfvwTJ/QttvWlGf/Wrwz4k0
-         ayyWFAcHiRTdPXhrP9L8RBW3rmmLn0XhDh7nqsy9gC/EsK0OudkfFQYSvi/F/47xsxcn
-         4Yxg==
-X-Gm-Message-State: AOAM533NgwpbS1zaUHA3fhzNNw8yxaQ1XvmbtPhf0/veiMj0E2pgBXDe
-        Iz8fPhzIu1nv3F6/7j2RH/o/KUXnWwGLlZ1o
-X-Google-Smtp-Source: ABdhPJyVSwEiKmHcEOW7w27hGw6ZrHPriqTWxQxnHmXN5vsDzGP3WgfV/xDU0xCSP3Lc0nOdTrECcw==
-X-Received: by 2002:a4a:a8c8:: with SMTP id r8mr9944850oom.9.1606582464499;
-        Sat, 28 Nov 2020 08:54:24 -0800 (PST)
-Received: from DESKTOP-OG3B567.jamisontribe.com (cpe-173-174-149-136.satx.res.rr.com. [173.174.149.136])
-        by smtp.googlemail.com with ESMTPSA id 8sm6632306otv.26.2020.11.28.08.54.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 08:54:23 -0800 (PST)
-From:   Joe Jamison <joejamison717@gmail.com>
-X-Google-Original-From: Joe Jamison <joe@smaklab.com>
-To:     rydberg@bitmath.org, jdelvare@suse.com, linux@roeck-us.net,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     joe@smaklab.com, joeJamison717@gmail.com
-Subject: [PATCH] hwmon: (applesmc) Add DMI product matches for Intel-based Xserves (non-RackMac*)
-Date:   Sat, 28 Nov 2020 10:54:03 -0600
-Message-Id: <20201128165403.2075-1-joe@smaklab.com>
-X-Mailer: git-send-email 2.20.1
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E07C0254A6;
+        Sat, 28 Nov 2020 08:57:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=ubev1giHn2jmSzhtp/f94pjbxFaoCeWhmi4D5S6DRMQ=; b=kCmw1AxLSz9zAUV1hx0lxMwV1K
+        iHNuj/MU6Bqv/Rdf7HMk9MrKt3TjRtiRFu4DLkMgrYriTq0mvSfQBCT0dHzN3bple/c8tlOdVLjHc
+        UsVmctYTXxoPhP2N4b2ENuThOCVoN6iA0n4PJvijUiSwN98mADc/8pHk9g795HJTfE+XiXzEzWCyU
+        GELAuFvNBcyDSnCPsrzAVXb5iZeDMbTeyee5P2DD1312mI/qq0cZNXTXgBUZBaW8xf+yeAMYSY+w3
+        hcRx08LtEqG1kTGw9DIt+yDDfeDiY/plD9d6BlIrkTucYEnLAfGepv2jbVpLiRfTKE2mUzS0tj2qT
+        Y0QUyrag==;
+Received: from [2601:1c0:6280:3f0::cc1f]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kj3Wq-0005cP-OY; Sat, 28 Nov 2020 16:56:57 +0000
+Subject: Re: [PATCH 7/7] kbuild: doc: document subdir-y syntax
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201123045403.63402-1-masahiroy@kernel.org>
+ <20201123045403.63402-7-masahiroy@kernel.org>
+ <5c40293a-a24a-2c85-e7ef-a08a8c732d19@infradead.org>
+ <CAK7LNASZKsfyj9K_QxLoHZkSpfHvUHwgm5pwq=DJUnMCdczjPw@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f69d022b-a3a6-03e6-5ece-d5e6bd6d7035@infradead.org>
+Date:   Sat, 28 Nov 2020 08:56:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNASZKsfyj9K_QxLoHZkSpfHvUHwgm5pwq=DJUnMCdczjPw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the DMI Product ID for Intel-based Xserve machines.
-They use the same SMC accessible from the same data ports.
+On 11/28/20 12:58 AM, Masahiro Yamada wrote:
+> On Tue, Nov 24, 2020 at 3:03 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 11/22/20 8:54 PM, Masahiro Yamada wrote:
+>>> There is no explanation about subdir-y.
+>>>
+>>> Let's document it.
+>>>
+>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>>> ---
+>>>
+>>>  Documentation/kbuild/makefiles.rst | 14 ++++++++++++++
+>>>  1 file changed, 14 insertions(+)
+>>>
+>>> +
+>>> +     Unlike obj-y/m, subdir-y/m does not need the trailing slash since this
+>>> +     syntax is always used for directories.
+>>> +
+>>
+>> Just curious:  Is a trailing slash allowed here?  say for consistency?
+> 
+> 
+> If you use a trailing slash for the subdir-y syntax,
+> it will still work.
+> 
+> 
+> Only the problem I see is that the build log will look clumsy
+> due to the double slashes "//".
+> 
 
-The 'Xserve' product ID only resolves to SMC-containing
-Intel-based Xserves, as the PowerPC machines are identified
-by the 'RackMac' identifier.
+Yes, that does look odd.
 
-Tested on: Xserve3,1
+> For example, if you change scripts/Makefile as follows:
+> 
 
-Tested-by: Joe Jamison <joe@smaklab.com> # Xserve3,1
-Signed-off-by: Joe Jamison <joe@smaklab.com>
----
- drivers/hwmon/applesmc.c | 4 ++++
- 1 file changed, 4 insertions(+)
+...
 
-diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
-index 79b498f816fe..89207af81c48 100644
---- a/drivers/hwmon/applesmc.c
-+++ b/drivers/hwmon/applesmc.c
-@@ -1299,6 +1299,10 @@ static const struct dmi_system_id applesmc_whitelist[] __initconst = {
- 	  DMI_MATCH(DMI_BOARD_VENDOR, "Apple"),
- 	  DMI_MATCH(DMI_PRODUCT_NAME, "iMac") },
- 	},
-+	{ applesmc_dmi_match, "Apple Xserve", {
-+	  DMI_MATCH(DMI_BOARD_VENDOR, "Apple"),
-+	  DMI_MATCH(DMI_PRODUCT_NAME, "Xserve") },
-+	},
- 	{ .ident = NULL }
- };
- 
+> The build log will look like follows:
+> 
+> 
+> masahiro@grover:~/workspace/linux$ make allmodconfig; make scripts
+> #
+> # configuration written to .config
+> #
+>   SYNC    include/config/auto.conf
+>   HOSTCC  scripts/dtc/dtc.o
+>   HOSTCC  scripts/dtc/flattree.o
+>   HOSTCC  scripts/dtc/fstree.o
+>   HOSTCC  scripts/dtc/data.o
+>   HOSTCC  scripts/dtc/livetree.o
+>   HOSTCC  scripts/dtc/treesource.o
+>   HOSTCC  scripts/dtc/srcpos.o
+>   HOSTCC  scripts/dtc/checks.o
+>   HOSTCC  scripts/dtc/util.o
+>   LEX     scripts/dtc/dtc-lexer.lex.c
+>   YACC    scripts/dtc/dtc-parser.tab.[ch]
+>   HOSTCC  scripts/dtc/dtc-lexer.lex.o
+>   HOSTCC  scripts/dtc/dtc-parser.tab.o
+>   HOSTLD  scripts/dtc/dtc
+>   HOSTCXX scripts/gcc-plugins//latent_entropy_plugin.so
+>   GENSEED scripts/gcc-plugins//randomize_layout_seed.h
+>   HOSTCXX scripts/gcc-plugins//randomize_layout_plugin.so
+>   HOSTCXX scripts/gcc-plugins//stackleak_plugin.so
+>   HOSTCC  scripts/genksyms//genksyms.o
+>   YACC    scripts/genksyms//parse.tab.[ch]
+>   HOSTCC  scripts/genksyms//parse.tab.o
+>   LEX     scripts/genksyms//lex.lex.c
+>   HOSTCC  scripts/genksyms//lex.lex.o
+>   HOSTLD  scripts/genksyms//genksyms
+>   HOSTCC  scripts/selinux//genheaders/genheaders
+>   HOSTCC  scripts/selinux//mdp/mdp
+>   HOSTCC  scripts/kallsyms
+>   HOSTCC  scripts/sorttable
+>   HOSTCC  scripts/asn1_compiler
+>   HOSTCC  scripts/extract-cert
+>   HOSTCC  scripts/bin2c
+>   HOSTCC  scripts/recordmcount
+>   HOSTCC  scripts/sign-file
+>   HOSTCC  scripts/insert-sys-cert
+> 
+> 
+> 
+> 
+> I can fix Kbuild to avoid "//", but I do not want to support two ways.
+> 
+> So, I'd recommend not to add the trailing slash to subdir-y.
+OK, I agree. Thanks.
+
 -- 
-2.20.1
+~Randy
 
