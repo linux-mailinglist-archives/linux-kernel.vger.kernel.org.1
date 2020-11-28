@@ -2,266 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068962C71D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9AC62C71DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390290AbgK1Vu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:58 -0500
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:55940 "EHLO
+        id S1733219AbgK1Vup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:45 -0500
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:33374 "EHLO
         mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729400AbgK1S0i (ORCPT
+        by vger.kernel.org with ESMTP id S1726796AbgK1SVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:26:38 -0500
+        Sat, 28 Nov 2020 13:21:14 -0500
 Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ASEmAiC027106;
-        Sat, 28 Nov 2020 06:48:10 -0800
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ASElpkh027055;
+        Sat, 28 Nov 2020 06:48:26 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
  subject : date : message-id : mime-version : content-type; s=proofpoint;
- bh=QVLEsxpNGaMWv/9e6vww9tEBk/03TpXXpSZn2TUCTBo=;
- b=e0VtdVDac1yiNUtT5V4DQAlDGHnZZyQnWvRT9naYg8elSMQIc825HJkWpja9BokjfjRY
- dWfplo2G1hKfLUVFIIn/n3tASDelo4Hsmt9ViMSTC1u1imhVrn+yodG6sJdh/VaTe38J
- htZfdagKDgw9o2xzNXP/p5wNiepa4gWRlUHVCXAUQvqQ4uKJtGtlFJGwrl1TAq7b/ROb
- lezOccc9rqfg7NOf1HMh2Y6k/2ju5rC9ifKodPGG75lqkZpc8zqNxN5jh8987yYJMgnx
- TaSOGsytFYBiDqIrjf+Cvo5JLVIawfpA412AHoUCikR7yyJof623NxXCXxnWBQgpK+sA Sw== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 353m02rf5s-1
+ bh=6HLJSNbqupKDA6NkIIamnWz2e6tRBqh6fhldFQb6nC8=;
+ b=AHpGSN49JTwW9S/B1/bMgtqLVj3DPeJdF4w3FLfbG3f6ky3RBUXqKYMx7MIMWswpGxMB
+ qT2voof4f48wJDbWtnL9YBjOhjN4qW/R3oW8HTY1n27IHtZKS4Pgl9HS/ByPXyiCig7X
+ zaPyBmSYoqBF96Dv/Xa+imwmrcK07cFtVOD1ENDMStFwTbXWiyyNyw6yRjdHB0uzpNOi
+ 97NxbCKMUW3CYqLWbPOVDzB7p5Dw4LHUAIp5GJr/jo4cgEvp+TsHY+yjZ76gcrX75pFh
+ KMkWfx0MI2oYqK5vbg5luVSHrnxgZ3270ubIJdHHt0E/LL/xoutiFCXM9eoRm+Xy7SYj fw== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 353m02rf69-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 28 Nov 2020 06:48:10 -0800
+        Sat, 28 Nov 2020 06:48:26 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LHd4WqlEIxLUPO3gbU0+4WffwkjJkyHLTqcUU3wXi8zF14ZmjyoW+r0WBNANLkoRAheseC8LfBxwD0verszi4p32QTYGv4DiBk30pKI0IHjU5L8nuhJq+2SbEIk5TfZ7DE49OS0VCQH7ajUgiX8Mtx0g8q6VayPInTpupNDojvFdlpvdDXutemEG8O0E+abgaS0GrO0h871DBllFfaJbLwOutUyQdzLpByxciopuAVslRGHSs7Ib7sii9s5eP+MKKcYuPQW7PPHBjB9s5hcZPwQfb++5x/V+en+D6LWXuobTZuoTaOz5jk8J6jsRm+RjrhjMMtz3rCHvLR6RozwTzA==
+ b=ofajjO7oup6hcKSTRPzU2MJDn7Wys93jKQvT3pUR8sHStyv5wLGljPFu9ql4+Fee6M6ml+elatDszhk41uXQRiVuM/uYxQ84re1xoxYCjJUId9qNoUZ+sQVGHjXC+zAa/T0Nu7CxWhRiypNUBSFbisokG/M27SsqyXKlsW+pTOKJhzToD1pPSgZqLIjaHyfU6GvHpF2kJBrIohHXRqCpWpwPQTN8KD6oKUBfeZcpdUFDbCtduXDO4+HGVjSP9Nu/h1I2Xglm8FfnPDfufirTbb3//crJPh+kDIpoa1FlCCVn8Vb/IxU9LibPBEdZZnlVzD+4/vw6G3bUdZ5lrEUW1w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QVLEsxpNGaMWv/9e6vww9tEBk/03TpXXpSZn2TUCTBo=;
- b=JCfcycYLkUqFNyI3bqsnr15+QwgQ09uen0UnzdRWaUo/VJBXH7J4omCzoj9ENAsXrpFmZ50LULmoUWD+5JNrC0wdbjaEhuiZfpm/s2mY7YHhblVEEZLsMbhiGhYbt3l1LHnlaWlpRJ5Qx8PmTFYcS0yueA9SCor4IgK31E533SSTPg7r1lK8Ie+8wti0cepkxDTGnVK7UuapI27tuKLc7lZzH1tYiO6fKDPNjQ5+2D7/gR3iVnx1uVjj335gnmSyBAQvmuj1Wr7M0LrZrjAMBRZsrLREI/bxlMeCUwyzVqJdFmLwzKOBtPMYbfJTZ8RsqC70xe6j6i/1E5nc+IClOQ==
+ bh=6HLJSNbqupKDA6NkIIamnWz2e6tRBqh6fhldFQb6nC8=;
+ b=hH0OxfSfitTR8U58dZzXMW5cNV9PEiRWVF9J5eT8hGbIk1AzYA4TXktZwi0ejmosq90ERU9Tk/l3SfA+LEfNqejLPxSYP2CewC+qYidNibF218A1pSV5SFUejytccpzhQaJPkpKM6GqFvv33SK9mpJl6p/o9bYpPU350I7sxtEtRPDIEuzGO42xVRx0XbBhHa4yN2VLpwojbrBXV2qR7ZLrafiC0OW9+1kcZR2pmHwOXlq5kkpS53hBe4wbBML3Jh3jCw8yKdwif2GCCEWGxv1cwnjc6WjzZgkxECYwepXDCBuxWyXdqxeG28zrCfYYBknuy0hHK0zvC2oboIcI4Xw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 199.43.4.23) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
+ 158.140.1.147) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QVLEsxpNGaMWv/9e6vww9tEBk/03TpXXpSZn2TUCTBo=;
- b=UvE4G0klBsZsdvuhSeJOw7A+GrVW/f1LEGYy9PlgJIzgeSKEWp4piMGV9mkOLiDrzWc1G+VihPZb3Q7+zuJuPXXAHeRNJlGKOrzVCovAUO0K/tKe6hKjQYWy+3KgIR6MXQpqSWCIy3C/Bxf8mwLukiKNCGDBCGLW7yk7Qnt2Jag=
-Received: from DM5PR13CA0056.namprd13.prod.outlook.com (2603:10b6:3:117::18)
- by BYAPR07MB8007.namprd07.prod.outlook.com (2603:10b6:a03:111::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22; Sat, 28 Nov
- 2020 14:48:01 +0000
-Received: from DM6NAM12FT026.eop-nam12.prod.protection.outlook.com
- (2603:10b6:3:117:cafe::bf) by DM5PR13CA0056.outlook.office365.com
- (2603:10b6:3:117::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.7 via Frontend
- Transport; Sat, 28 Nov 2020 14:48:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
+ bh=6HLJSNbqupKDA6NkIIamnWz2e6tRBqh6fhldFQb6nC8=;
+ b=0dqPLMwLpJ4Nl2+Zjgyd+9oZftohmnQCDkuD+leGe+gt8Ktn2WkwcQWexNHGz8iyRdqDlAPnFE4owUAJeOahAITlWFEZ6Y5fqgmmWdSaXW89+LSSr4W9m44QA78/IEIOxWvNN9Sa7QgTIJQdEK2pf2q8UYk2NjJqoJPmFUk/bCw=
+Received: from MW2PR16CA0030.namprd16.prod.outlook.com (2603:10b6:907::43) by
+ MW2PR07MB7897.namprd07.prod.outlook.com (2603:10b6:302:6::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3589.30; Sat, 28 Nov 2020 14:48:24 +0000
+Received: from MW2NAM12FT033.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:907:0:cafe::dd) by MW2PR16CA0030.outlook.office365.com
+ (2603:10b6:907::43) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend
+ Transport; Sat, 28 Nov 2020 14:48:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
  smtp.mailfrom=cadence.com; synopsys.com; dkim=none (message not signed)
  header.d=none;synopsys.com; dmarc=pass action=none header.from=cadence.com;
 Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
- client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
-Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- DM6NAM12FT026.mail.protection.outlook.com (10.13.179.219) with Microsoft SMTP
+ 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
+Received: from sjmaillnx1.cadence.com (158.140.1.147) by
+ MW2NAM12FT033.mail.protection.outlook.com (10.13.181.41) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3611.11 via Frontend Transport; Sat, 28 Nov 2020 14:48:01 +0000
+ 15.20.3611.11 via Frontend Transport; Sat, 28 Nov 2020 14:48:23 +0000
 Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 0ASElwDl012515
+        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 0ASEmLjd013868
         (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Sat, 28 Nov 2020 09:47:59 -0500
+        Sat, 28 Nov 2020 06:48:22 -0800
 X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
 Received: from maileu3.global.cadence.com (10.160.88.99) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Sat, 28 Nov 2020 15:47:58 +0100
+ 15.0.1367.3; Sat, 28 Nov 2020 15:48:20 +0100
 Received: from vleu-orange.cadence.com (10.160.88.83) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Sat, 28 Nov 2020 15:47:58 +0100
+ 15.0.1367.3 via Frontend Transport; Sat, 28 Nov 2020 15:48:20 +0100
 Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0ASElwhR021422;
-        Sat, 28 Nov 2020 15:47:58 +0100
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0ASEmKiL021471;
+        Sat, 28 Nov 2020 15:48:20 +0100
 Received: (from pthombar@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0ASElvMH021421;
-        Sat, 28 Nov 2020 15:47:57 +0100
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0ASEmKHj021470;
+        Sat, 28 Nov 2020 15:48:20 +0100
 From:   Parshuram Thombare <pthombar@cadence.com>
 To:     <alexandre.belloni@bootlin.com>, <slongerbeam@gmail.com>,
         <vitor.soares@synopsys.com>
 CC:     <linux-i3c@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         <mparab@cadence.com>, <praneeth@ti.com>,
         Parshuram Thombare <pthombar@cadence.com>
-Subject: [PATCH v9 5/7] i3c: master: add defslvs processing
-Date:   Sat, 28 Nov 2020 15:47:56 +0100
-Message-ID: <1606574876-21386-1-git-send-email-pthombar@cadence.com>
+Subject: [PATCH v9 6/7] i3c: master: sysfs key for acquire bus
+Date:   Sat, 28 Nov 2020 15:48:19 +0100
+Message-ID: <1606574899-21433-1-git-send-email-pthombar@cadence.com>
 X-Mailer: git-send-email 2.2.2
 MIME-Version: 1.0
 Content-Type: text/plain
 X-OrganizationHeadersPreserved: maileu3.global.cadence.com
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8211a81e-a0b3-4f1e-2c27-08d893ac9aa9
-X-MS-TrafficTypeDiagnostic: BYAPR07MB8007:
-X-Microsoft-Antispam-PRVS: <BYAPR07MB8007141078F5872B74337BD2C1F70@BYAPR07MB8007.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 6864bc72-80ac-4e36-3491-08d893aca816
+X-MS-TrafficTypeDiagnostic: MW2PR07MB7897:
+X-Microsoft-Antispam-PRVS: <MW2PR07MB7897DA2141F0A1658D649ACBC1F70@MW2PR07MB7897.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:510;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mePDLxIlP3bCHEjHaTIv0JN5kNWkoxmrrDbG+enk5yTftTSlhEPUK2FpBWrP9wzfxClajK7+ERor/UpbwO8XxkCXZftuvMfJ+WvWfn/PCm0f+3fvqmpGlXK4sgj5j/psddciQI4qeZEW4mGU8AxIsgkKYkj6QPx4v5xhKtWDTI8MzSavIEImFVHMJPDEBDRsUiffdgibvd/Ypx6GXoeoUZqlJ3HGUJm4oWtFry2xX179oRr+jm+4eePdc8THrq0+GhlQy/g+QugxBOLBGoqqF5vrKKtWaByw9DmUW4jCWMyLVbcOP2s64XoGlQEQ1dGdZRrFtzl3gAIAQKgwU1KsZYeTKdQz45leBlQC0jgxR3LPTOyWCJCsdQxKWtZfN5+Z9DqTVEoN7CdbHOA5nWy/riCRrVvcmrQO5Ywrn+xyZYI=
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(376002)(36092001)(46966005)(426003)(82310400003)(83380400001)(70206006)(86362001)(356005)(5660300002)(81166007)(8676002)(47076004)(82740400003)(8936002)(36756003)(107886003)(336012)(2616005)(186003)(70586007)(478600001)(26005)(316002)(2906002)(110136005)(54906003)(42186006)(36906005)(4326008);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Mhq/6/V4eI40aYC4XDe92dtS0tbbuyBluTHxNBlui2gPQA+YQV7vANAreQ/FG+qf2vnp8BlJFx9gRHIu+NXqmrjOsAFO2aXoMD1ob3NMoqu4bwrCobWKAgXi0zly4SxAdsL0mFs8IRuzOj2omyPdmR6r9JwFc5w2Py1EA+OnkUAjWcXBjfTCn1omyi+/3JJnTOrZX0XAWDrSjnTdZu+WqhCGQVFoGeg8sU6t7RDZBL58hJa2RkAf3iR+hZ/xKYNbfR9tlJ5I+By/WZjX7QYVP8IRyBzIW/KDMANDSZosIvYahseZFxLhj2HgmQhouO1JtbLzYFUpC91Hzh1YrMFleHcxfK366bDRm6OlWfVXM+0/MqTXR3ogr2epP6KIHOoIjzY9UClAWPynpZcM6tW4HvQP1gDtY6BR/J5KjemGkyo=
+X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(346002)(376002)(36092001)(46966005)(5660300002)(54906003)(356005)(26005)(83380400001)(86362001)(7636003)(47076004)(8676002)(8936002)(478600001)(2616005)(4326008)(82740400003)(426003)(107886003)(316002)(36906005)(2906002)(82310400003)(110136005)(70206006)(186003)(70586007)(42186006)(336012)(36756003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2020 14:48:01.0641
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2020 14:48:23.6061
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8211a81e-a0b3-4f1e-2c27-08d893ac9aa9
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6864bc72-80ac-4e36-3491-08d893aca816
 X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT026.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT033.eop-nam12.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB8007
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR07MB7897
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-28_09:2020-11-26,2020-11-28 signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxscore=0
  malwarescore=0 bulkscore=0 priorityscore=1501 clxscore=1015
- impostorscore=0 adultscore=0 spamscore=0 suspectscore=0 mlxlogscore=999
+ impostorscore=0 adultscore=0 spamscore=0 suspectscore=0 mlxlogscore=918
  lowpriorityscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2009150000 definitions=main-2011280090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added defslvs processing code to the I3C master subsystem.
+Added support to acquire I3C bus through sysfs interface.
 
 Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
 ---
- drivers/i3c/master.c       |   68 ++++++++++++++++++++++++++++++++++++++++++-
- include/linux/i3c/master.h |    7 ++++
- 2 files changed, 73 insertions(+), 2 deletions(-)
+ drivers/i3c/master.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index 51ef706..c01ba00 100644
+index c01ba00..beb7495 100644
 --- a/drivers/i3c/master.c
 +++ b/drivers/i3c/master.c
-@@ -2172,7 +2172,7 @@ int i3c_master_add_i3c_dev_locked(struct i3c_master_controller *master,
- 	else
- 		expected_dyn_addr = newdev->info.dyn_addr;
- 
--	if (newdev->info.dyn_addr != expected_dyn_addr) {
-+	if (!master->secondary && newdev->info.dyn_addr != expected_dyn_addr) {
- 		/*
- 		 * Try to apply the expected dynamic address. If it fails, keep
- 		 * the address assigned by the master.
-@@ -2867,12 +2867,20 @@ int i3c_secondary_master_register(struct i3c_master_controller *master,
- 				  struct device *parent,
- 				  const struct i3c_master_controller_ops *ops)
- {
--	int ret;
-+	int ret, sz;
- 
- 	ret = i3c_master_init(master, parent, ops, true);
- 	if (ret)
- 		return ret;
- 
-+	sz = sizeof(struct i3c_ccc_dev_desc) * I3C_BUS_MAX_DEVS;
-+	master->defslvs_data.devs = devm_kzalloc(&master->dev, sz,
-+						 GFP_KERNEL);
-+	if (!master->defslvs_data.devs) {
-+		ret = -ENOMEM;
-+		goto err_cleanup_bus;
-+	}
-+
- 	ret = device_add(&master->dev);
- 	if (ret)
- 		goto err_cleanup_bus;
-@@ -2905,6 +2913,62 @@ int i3c_secondary_master_register(struct i3c_master_controller *master,
+@@ -581,6 +581,23 @@ static ssize_t i2c_scl_frequency_show(struct device *dev,
  }
- EXPORT_SYMBOL_GPL(i3c_secondary_master_register);
+ static DEVICE_ATTR_RO(i2c_scl_frequency);
  
-+static int
-+i3c_master_populate_bus(struct i3c_master_controller *master, u8 dyn_addr)
++static ssize_t i3c_acquire_bus_store(struct device *dev,
++				     struct device_attribute *attr,
++				     const char *buf, size_t count)
 +{
-+	struct i3c_dev_desc *olddev;
-+	struct i3c_ccc_dev_desc *desc;
-+	int ret, slot;
-+
-+	i3c_bus_for_each_i3cdev(&master->bus, olddev)
-+		i3c_master_put_i3c_addrs(olddev);
-+
-+	master->this->info.dyn_addr = dyn_addr;
-+	i3c_master_get_i3c_addrs(master->this);
-+
-+	desc = master->defslvs_data.devs;
-+	for (slot = 1; slot < master->defslvs_data.ndevs; slot++) {
-+		ret = i3c_master_add_i3c_dev_locked(master,
-+						    desc[slot].dyn_addr);
-+		if (ret)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * i3c_master_process_defslvs() - process I3C device list received in
-+ * DEFSLVS for device plug/unplug and address change.
-+ * @m: I3C master object
-+ * @dyn_addr: Current dynamic address of this device
-+ *
-+ * This function may sleep, so should not be called in the atomic context.
-+ */
-+int i3c_master_process_defslvs(struct i3c_master_controller *m, u8 dyn_addr)
-+{
++	struct i3c_master_controller *master = dev_to_i3cmaster(dev);
 +	int ret;
 +
-+	i3c_bus_normaluse_lock(&m->bus);
-+	ret = i3c_master_acquire_bus(m);
-+	i3c_bus_normaluse_unlock(&m->bus);
-+	if (ret)
-+		return ret;
++	i3c_bus_normaluse_lock(&master->bus);
++	ret = i3c_master_acquire_bus(master);
++	i3c_bus_normaluse_unlock(&master->bus);
++	if (!ret)
++		i3c_master_enable_mr_events(master);
 +
-+	i3c_bus_maintenance_lock(&m->bus);
-+	ret = i3c_master_populate_bus(m, dyn_addr);
-+	i3c_bus_maintenance_unlock(&m->bus);
-+	if (!ret) {
-+		i3c_bus_normaluse_lock(&m->bus);
-+		i3c_master_register_new_i3c_devs(m);
-+		i3c_bus_normaluse_unlock(&m->bus);
-+	}
-+	i3c_master_enable_mr_events(m);
-+
-+	return ret;
++	return ret ?: count;
 +}
-+EXPORT_SYMBOL_GPL(i3c_master_process_defslvs);
++static DEVICE_ATTR_WO(i3c_acquire_bus);
 +
- /**
-  * i3c_master_unregister() - unregister an I3C master
-  * @master: master used to send frames on the bus
-diff --git a/include/linux/i3c/master.h b/include/linux/i3c/master.h
-index 77c0422..835f823 100644
---- a/include/linux/i3c/master.h
-+++ b/include/linux/i3c/master.h
-@@ -478,6 +478,8 @@ struct i3c_master_controller_ops {
-  *	in a thread context. Typical examples are Hot Join processing which
-  *	requires taking the bus lock in maintenance, which in turn, can only
-  *	be done from a sleep-able context
-+ * @defslvs_data: list used to pass i3c device list received in DEFSLVS message,
-+ *	from DEFSLVS controller driver to I3C core
-  *
-  * A &struct i3c_master_controller has to be registered to the I3C subsystem
-  * through i3c_master_register(). None of &struct i3c_master_controller fields
-@@ -497,6 +499,10 @@ struct i3c_master_controller {
- 	} boardinfo;
- 	struct i3c_bus bus;
- 	struct workqueue_struct *wq;
-+	struct {
-+		u32 ndevs;
-+		struct i3c_ccc_dev_desc *devs;
-+	} defslvs_data;
+ static struct attribute *i3c_masterdev_attrs[] = {
+ 	&dev_attr_mode.attr,
+ 	&dev_attr_current_master.attr,
+@@ -591,6 +608,7 @@ static ssize_t i2c_scl_frequency_show(struct device *dev,
+ 	&dev_attr_pid.attr,
+ 	&dev_attr_dynamic_address.attr,
+ 	&dev_attr_hdrcap.attr,
++	&dev_attr_i3c_acquire_bus.attr,
+ 	NULL,
  };
- 
- /**
-@@ -523,6 +529,7 @@ struct i3c_master_controller {
- 
- void i3c_master_yield_bus(struct i3c_master_controller *m,
- 			  u8 sec_mst_dyn_addr);
-+int i3c_master_process_defslvs(struct i3c_master_controller *m, u8 dyn_addr);
- int i3c_master_do_i2c_xfers(struct i3c_master_controller *master,
- 			    const struct i2c_msg *xfers,
- 			    int nxfers);
+ ATTRIBUTE_GROUPS(i3c_masterdev);
 -- 
 1.7.1
 
