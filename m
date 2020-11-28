@@ -2,110 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776012C719F
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E26992C71E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390785AbgK1Vve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731047AbgK1Sq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:46:56 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C61A246A9;
-        Sat, 28 Nov 2020 15:30:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606577406;
-        bh=O39yi7SEtgCZUME53+1UXIWmQaTOOUivrKx4GEoZtcI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=l+1EVNhdNG3Iyh8ndDbs9yjTLna1dCgcqPZTjM2R/WOPu1V2oO1F5eul+X3/hgmQZ
-         LQYeADtKzj1NJZbE4aWxnPkkDxdh6lqiRWwGb+FraIOknikOAi1g6B6TzjUMc2k8gn
-         IRnmUg4V7brBQyYSEnBMjMWeLeKrH+T0RMdwjuhk=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Sam Xi <xyzsam@google.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [GIT PULL] perf tools fixes for v5.10: 4th batch
-Date:   Sat, 28 Nov 2020 12:30:05 -0300
-Message-Id: <20201128153005.21172-1-acme@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1732965AbgK1Vuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:44 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:54056 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726595AbgK1SUh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:20:37 -0500
+Received: by mail-il1-f198.google.com with SMTP id t9so6372709ilp.20
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 10:20:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=YA1jEZH9DUw8fd/5LkjY5oTcYXBqQ8fvTP8D6li4UzQ=;
+        b=EMnx2+pQ0qcUyj+IswVY6LgFvL0v2fWv+OchiENQWB+oKrw3UAoMJR4ehq1HnCiN1q
+         u4YlaA0lnvfMp+FKDraT0i+zbSmPenoiuceLan31rmglRilx9fVsB9ecdi79IG6OsnxJ
+         /Pf8B23BsM1kS1Ex42H337LUMTfR9YbT/NXerIQHiW58lSkxJsIIlSosE+sBwY4IKeaF
+         6J9P8Ypir3hx0SZt8fRze5BbUnVZ9vzzVXC4s/iqXSpED5XPeTBy06ovcQt3YrNxQ/yD
+         73qnQWVAoKaE//GhPRQOE78bP0vgA6W9UbAkRYIgrdmYCh8EZg4VxyfhpIftH/dYjaE9
+         wA9w==
+X-Gm-Message-State: AOAM533dhLwtCcP5caKNpfNm3u7MrcMeYDvvgT6egd7h2W5WyB9YIFAp
+        2UzSKBuYVQTSeOYFZZ96fnyb/CHT8ARfSSUr5mGwZajAQBMX
+X-Google-Smtp-Source: ABdhPJyji2gDC7WtN/ChYTST3Mwi2LaRMQWgD2FMydNRqtUmm2JR0gkHJNwTIteZk+3bc00MYoW0F50xK+J9dY8xnE7Lc3BcfgGg
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:358a:: with SMTP id c10mr12024363ilf.258.1606577833855;
+ Sat, 28 Nov 2020 07:37:13 -0800 (PST)
+Date:   Sat, 28 Nov 2020 07:37:13 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001750e305b52c8d02@google.com>
+Subject: KMSAN: uninit-value in validate_beacon_head
+From:   syzbot <syzbot+72b99dcf4607e8c770f3@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, johannes@sipsolutions.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hello,
 
-	Please consider pulling,
+syzbot found the following issue on:
 
-Best regards,
+HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=164bda95500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=eef728deea880383
+dashboard link: https://syzkaller.appspot.com/bug?extid=72b99dcf4607e8c770f3
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+userspace arch: i386
 
-- Arnaldo
+Unfortunately, I don't have any reproducer for this issue yet.
 
-The following changes since commit 85a2c56cb4454c73f56d3099d96942e7919b292f:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+72b99dcf4607e8c770f3@syzkaller.appspotmail.com
 
-  Merge tag 'pm-5.10-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm (2020-11-26 11:17:37 -0800)
+=====================================================
+BUG: KMSAN: uninit-value in validate_beacon_head+0x51e/0x5c0 net/wireless/nl80211.c:225
+CPU: 1 PID: 21060 Comm: syz-executor.4 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ validate_beacon_head+0x51e/0x5c0 net/wireless/nl80211.c:225
+ validate_nla lib/nlattr.c:544 [inline]
+ __nla_validate_parse+0x241a/0x4e00 lib/nlattr.c:588
+ __nla_parse+0x141/0x150 lib/nlattr.c:685
+ __nlmsg_parse include/net/netlink.h:733 [inline]
+ genl_family_rcv_msg_attrs_parse+0x417/0x5a0 net/netlink/genetlink.c:548
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:717 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0xbd9/0x1610 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x70a/0x820 net/netlink/af_netlink.c:2494
+ genl_rcv+0x63/0x80 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x11da/0x14b0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x173c/0x1840 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ ____sys_sendmsg+0xc7a/0x1240 net/socket.c:2353
+ ___sys_sendmsg net/socket.c:2407 [inline]
+ __sys_sendmsg+0x6d5/0x830 net/socket.c:2440
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fa8549
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000f55a20cc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000020000380
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
-are available in the Git repository at:
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8d/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2906 [inline]
+ __kmalloc_node_track_caller+0xc61/0x15f0 mm/slub.c:4512
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x309/0xae0 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1094 [inline]
+ netlink_alloc_large_skb net/netlink/af_netlink.c:1176 [inline]
+ netlink_sendmsg+0xdb8/0x1840 net/netlink/af_netlink.c:1894
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ ____sys_sendmsg+0xc7a/0x1240 net/socket.c:2353
+ ___sys_sendmsg net/socket.c:2407 [inline]
+ __sys_sendmsg+0x6d5/0x830 net/socket.c:2440
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+=====================================================
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.10-2020-11-28
 
-for you to fetch changes up to a9ffd0484eb4426e6befd07e7be6c01108716302:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-  perf probe: Change function definition check due to broken DWARF (2020-11-27 14:36:15 -0300)
-
-----------------------------------------------------------------
-perf tools for v5.10: 4th batch
-
-- Fix die_entrypc() when DW_AT_ranges DWARF attribute not available.
-
-- Cope with broken DWARF (missing DW_AT_declaration) generated by some recent
-  gcc versions.
-
-- Do not generate CGROUP metadata events when not asked to in 'perf record'.
-
-- Use proper CPU for shadow stats in 'perf stat'.
-
-- Update copy of libbpf's hashmap.c, silencing tools/perf build warning.
-
-- Fix return value in 'perf diff'.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tag/?h=perf-tools-fixes-for-v5.10-2020-11-28
-
-----------------------------------------------------------------
-Arnaldo Carvalho de Melo (1):
-      perf tools: Update copy of libbpf's hashmap.c
-
-Masami Hiramatsu (2):
-      perf probe: Fix to die_entrypc() returns error correctly
-      perf probe: Change function definition check due to broken DWARF
-
-Namhyung Kim (2):
-      perf record: Synthesize cgroup events only if needed
-      perf stat: Use proper cpu for shadow stats
-
-Zhen Lei (1):
-      perf diff: Fix error return value in __cmd_diff()
-
- tools/perf/builtin-diff.c          |  4 +++-
- tools/perf/util/dwarf-aux.c        | 28 ++++++++++++++++++++++++++--
- tools/perf/util/hashmap.h          | 15 +++++++++------
- tools/perf/util/probe-finder.c     |  3 +--
- tools/perf/util/stat-display.c     |  5 +----
- tools/perf/util/synthetic-events.c |  3 +++
- 6 files changed, 43 insertions(+), 15 deletions(-)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
