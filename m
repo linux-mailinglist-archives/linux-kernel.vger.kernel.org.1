@@ -2,374 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0430B2C712E
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842802C7124
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404128AbgK1Vyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:54:40 -0500
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:37752 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729437AbgK1TSD (ORCPT
+        id S2389313AbgK1Vxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:53:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387427AbgK1THa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:18:03 -0500
-Received: by mail-ej1-f68.google.com with SMTP id f9so10383618ejw.4;
-        Sat, 28 Nov 2020 11:17:45 -0800 (PST)
+        Sat, 28 Nov 2020 14:07:30 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE44C02A184;
+        Sat, 28 Nov 2020 03:54:17 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id d17so7156010ion.4;
+        Sat, 28 Nov 2020 03:54:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kMJjaDqWu8SIrRxN1/QhPBWAa69bgxwXfwhv5mcpQCg=;
+        b=tRxMJgXatjJlXrsne/uHFdIEERR3fjha/6l0gtIOY8lPlttwBGhFwS/7FOENu/bsS0
+         ARo6/UoEn1eJ8mk2iJM5fLTlnrJWnyg/FUpaifFDYkQ84uWFHS+fURml8iK6ePTBT4v4
+         7Ctm+ITLSylSWtsoUHBHLrOLLyjMhLyAZRQ44xLNCD5/36nC/1sBqFGWnzOOz28hVMJo
+         n7rZPv/hEFLVeQqac3TOy3j6mM4ouaVwtcgeYy4NzBiYID6n5TxzlLRs2ZK4rJGp9CqG
+         KbCybHEOp+YrautriY35UEXHVQ6tqiDzeZ+pi/TOjTUU9rvwTrEc+wqhlTLx8tC9kDFK
+         hWsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yusIMZ2Y3C0T1nr2J+PHt7ilVpsQQ+TaY1wBN9Xc7yY=;
-        b=K39xUJ+1/vprCqlQ2XcUQiiWtVOa3ivt1AAITwNtztOylpxBwkd33jLJ8GH587leAx
-         yvRslLArQH4T3hw+GqmbDwHZ/s6tpIzUhOLWMLoAVzGZSxk5vISaLg/2+6I83FRTcir8
-         CTOr/Haoavf5vyg/ANfstlLMBoS7YyToYH0pZNpU0+F/H1TyfzWJOUr30e8dewVrrzby
-         na7hAcO/lMV+GL03M/ItvW2fCmqJnmuqLQD0+1y+8XEXDJKKoGydgxfdckC7KRmOIF0R
-         qfEMOtiIoX8UjNtGbNC7kDk3cNlRQoNrfAuzDP4Sx3mY1glZ1+onIjmTwb6j0gl6bcPv
-         j7NA==
-X-Gm-Message-State: AOAM530HrpRTniUx2Hk/N2D9wdquSmtUNQpDpEmys90TlNZj6se0XsnI
-        xNtoV+sHukIqA7hcSlurfhEcJhm3zwU=
-X-Google-Smtp-Source: ABdhPJz8cXwM86QOXd98OGFI+SYT7WpBOhgx7KR7daHRAzVETjTOjLJuzF9P0ho183Rd1ulVJkC94g==
-X-Received: by 2002:a50:ab07:: with SMTP id s7mr12827539edc.374.1606563957702;
-        Sat, 28 Nov 2020 03:45:57 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id p20sm6081276ejd.78.2020.11.28.03.45.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 03:45:56 -0800 (PST)
-Date:   Sat, 28 Nov 2020 12:45:55 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     k.opasiak@samsung.com, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: Re: [PATCH net-next 3/3] nfc: s3fwrn5: extract the common phy blocks
-Message-ID: <20201128114555.GA6313@kozik-lap>
-References: <1606404819-30647-1-git-send-email-bongsu.jeon@samsung.com>
- <1606404819-30647-3-git-send-email-bongsu.jeon@samsung.com>
- <20201126171257.GC4978@kozik-lap>
- <CACwDmQAi+DfjWSzrWQd+EFDy+6Jk8VVCigpCcCC=OBg0m-PbXg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kMJjaDqWu8SIrRxN1/QhPBWAa69bgxwXfwhv5mcpQCg=;
+        b=jbZqK4D6mp1iyb8sqIW0bUVVNecBjnRbVKVs1pyZx8/miOHLsR35nnQ2WQ2f/Ax1c8
+         mYIHLp47Cq6U46BnShDNBKgSh3bVQlXojEGdlBhV4juf76ce/CFnB9TKJjkz0BOinIDM
+         ihPNB0nLr565UFxJcknPL7tPvDfP7neSoi20mYVPcSEt/78PdeEBdPiIOkmP3GXhsTYj
+         TS0xsS1I6sFTOskDsmdV6G6Kq6XUz34FD+mForQePN5t2ldOLcBwUFYeVblHGM/uGRIN
+         OwLx/ddhTCc+pWTsubVU9O4YFadZ8x9zz2cx+HHLoxCZd2tWT4TYP3+FrcfawXzsOlau
+         bi4Q==
+X-Gm-Message-State: AOAM533KpYvkrXxbhoX1WGHh/qZxU1MZJlMuDwkngfMhTzjVas3OwNp/
+        OnH9rA1d0lPpiMqXTRVAt9O3A1eXAhPUT9SY3LQ=
+X-Google-Smtp-Source: ABdhPJxO/gfRABaLOYVENcxLdVOY2/zhTsTuA6eQ4fSpbMgtZvmiiVoHbOJAH2fA/Gh/o3fyhNQZ8225h6K7iO7pqWE=
+X-Received: by 2002:a5d:9710:: with SMTP id h16mr3868396iol.123.1606564455484;
+ Sat, 28 Nov 2020 03:54:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CACwDmQAi+DfjWSzrWQd+EFDy+6Jk8VVCigpCcCC=OBg0m-PbXg@mail.gmail.com>
+References: <6175E674-E8BC-4199-8BE8-A983065C32D5@aosc.io> <20201116155508.364dg6ycklwylswe@gilmour.lan>
+ <8FFC1A6C-9CA4-4F94-91C4-F111A7519979@aosc.io> <20201120155939.3ajmbny2pka2vsnf@gilmour>
+ <A8E91BA0-22FD-47F4-A5B2-A80A38FE9A0E@aosc.io> <38ee5feb-e35d-801f-99a1-65e23618e73b@sholland.org>
+ <20201123111512.y7lbwsipbkcpuleb@gilmour> <97E2037C-3C3C-4B0B-8462-39B9E38CB3BB@aosc.io>
+ <20201123125332.2p5z3ew7svszvyfs@gilmour> <009A22D9-AF20-45C4-9674-13334B3EFFBA@aosc.io>
+ <20201128103827.d6sfc2eumli2betx@gilmour> <1666a61f6ea3e7d573795f9000a0b096c7b7dee0.camel@aosc.io>
+In-Reply-To: <1666a61f6ea3e7d573795f9000a0b096c7b7dee0.camel@aosc.io>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Sat, 28 Nov 2020 12:54:04 +0100
+Message-ID: <CAJiuCcfEcM+Dksm4uoRPCiRepDSnEmp7pr8Qk5EsFSH_zEOTYA@mail.gmail.com>
+Subject: Re: [linux-sunxi] Re: [PATCH 3/3] arm64: allwinner: dts: a64: add DT
+ for PineTab developer sample
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Samuel Holland <samuel@sholland.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 08:09:24AM +0900, Bongsu Jeon wrote:
-> On Fri, Nov 27, 2020 at 2:13 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> >
-> > On Fri, Nov 27, 2020 at 12:33:39AM +0900, bongsu.jeon2@gmail.com wrote:
-> > > From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> > >
-> > > Extract the common phy blocks to reuse it.
-> > > The UART module will use the common blocks.
-> >
-> >
-> > Hi,
-> >
-> > Thanks for the patch. Few comments below.
-> >
-> > > Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> > > ---
-> > >  drivers/nfc/s3fwrn5/i2c.c        | 111 ++++++++++++---------------------------
-> > >  drivers/nfc/s3fwrn5/phy_common.h |  86 ++++++++++++++++++++++++++++++
-> > >  2 files changed, 119 insertions(+), 78 deletions(-)
-> > >  create mode 100644 drivers/nfc/s3fwrn5/phy_common.h
-> > >
-> > > diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
-> > > index 9a64eea..cd1b2a7 100644
-> > > --- a/drivers/nfc/s3fwrn5/i2c.c
-> > > +++ b/drivers/nfc/s3fwrn5/i2c.c
-> > > @@ -15,75 +15,30 @@
-> > >
-> > >  #include <net/nfc/nfc.h>
-> > >
-> > > -#include "s3fwrn5.h"
-> > > +#include "phy_common.h"
-> > >
-> > >  #define S3FWRN5_I2C_DRIVER_NAME "s3fwrn5_i2c"
-> > >
-> > > -#define S3FWRN5_EN_WAIT_TIME 20
-> > > -
-> > >  struct s3fwrn5_i2c_phy {
-> > > +     struct phy_common common;
-> > >       struct i2c_client *i2c_dev;
-> > > -     struct nci_dev *ndev;
-> > > -
-> > > -     int gpio_en;
-> > > -     int gpio_fw_wake;
-> > > -
-> > > -     struct mutex mutex;
-> > >
-> > > -     enum s3fwrn5_mode mode;
-> > >       unsigned int irq_skip:1;
-> > >  };
-> > >
-> > > -static void s3fwrn5_i2c_set_wake(void *phy_id, bool wake)
-> > > -{
-> > > -     struct s3fwrn5_i2c_phy *phy = phy_id;
-> > > -
-> > > -     mutex_lock(&phy->mutex);
-> > > -     gpio_set_value(phy->gpio_fw_wake, wake);
-> > > -     msleep(S3FWRN5_EN_WAIT_TIME);
-> > > -     mutex_unlock(&phy->mutex);
-> > > -}
-> > > -
-> > >  static void s3fwrn5_i2c_set_mode(void *phy_id, enum s3fwrn5_mode mode)
-> > >  {
-> > >       struct s3fwrn5_i2c_phy *phy = phy_id;
-> > >
-> > > -     mutex_lock(&phy->mutex);
-> > > +     mutex_lock(&phy->common.mutex);
-> > >
-> > > -     if (phy->mode == mode)
-> > > +     if (s3fwrn5_phy_power_ctrl(&phy->common, mode) == false)
-> > >               goto out;
-> > >
-> > > -     phy->mode = mode;
-> > > -
-> > > -     gpio_set_value(phy->gpio_en, 1);
-> > > -     gpio_set_value(phy->gpio_fw_wake, 0);
-> > > -     if (mode == S3FWRN5_MODE_FW)
-> > > -             gpio_set_value(phy->gpio_fw_wake, 1);
-> > > -
-> > > -     if (mode != S3FWRN5_MODE_COLD) {
-> > > -             msleep(S3FWRN5_EN_WAIT_TIME);
-> > > -             gpio_set_value(phy->gpio_en, 0);
-> > > -             msleep(S3FWRN5_EN_WAIT_TIME);
-> > > -     }
-> > > -
-> > >       phy->irq_skip = true;
-> > >
-> > >  out:
-> > > -     mutex_unlock(&phy->mutex);
-> > > -}
-> > > -
-> > > -static enum s3fwrn5_mode s3fwrn5_i2c_get_mode(void *phy_id)
-> > > -{
-> > > -     struct s3fwrn5_i2c_phy *phy = phy_id;
-> > > -     enum s3fwrn5_mode mode;
-> > > -
-> > > -     mutex_lock(&phy->mutex);
-> > > -
-> > > -     mode = phy->mode;
-> > > -
-> > > -     mutex_unlock(&phy->mutex);
-> > > -
-> > > -     return mode;
-> > > +     mutex_unlock(&phy->common.mutex);
-> > >  }
-> > >
-> > >  static int s3fwrn5_i2c_write(void *phy_id, struct sk_buff *skb)
-> > > @@ -91,7 +46,7 @@ static int s3fwrn5_i2c_write(void *phy_id, struct sk_buff *skb)
-> > >       struct s3fwrn5_i2c_phy *phy = phy_id;
-> > >       int ret;
-> > >
-> > > -     mutex_lock(&phy->mutex);
-> > > +     mutex_lock(&phy->common.mutex);
-> > >
-> > >       phy->irq_skip = false;
-> > >
-> > > @@ -102,7 +57,7 @@ static int s3fwrn5_i2c_write(void *phy_id, struct sk_buff *skb)
-> > >               ret  = i2c_master_send(phy->i2c_dev, skb->data, skb->len);
-> > >       }
-> > >
-> > > -     mutex_unlock(&phy->mutex);
-> > > +     mutex_unlock(&phy->common.mutex);
-> > >
-> > >       if (ret < 0)
-> > >               return ret;
-> > > @@ -114,9 +69,9 @@ static int s3fwrn5_i2c_write(void *phy_id, struct sk_buff *skb)
-> > >  }
-> > >
-> > >  static const struct s3fwrn5_phy_ops i2c_phy_ops = {
-> > > -     .set_wake = s3fwrn5_i2c_set_wake,
-> > > +     .set_wake = s3fwrn5_phy_set_wake,
-> > >       .set_mode = s3fwrn5_i2c_set_mode,
-> > > -     .get_mode = s3fwrn5_i2c_get_mode,
-> > > +     .get_mode = s3fwrn5_phy_get_mode,
-> > >       .write = s3fwrn5_i2c_write,
-> > >  };
-> > >
-> > > @@ -128,7 +83,7 @@ static int s3fwrn5_i2c_read(struct s3fwrn5_i2c_phy *phy)
-> > >       char hdr[4];
-> > >       int ret;
-> > >
-> > > -     hdr_size = (phy->mode == S3FWRN5_MODE_NCI) ?
-> > > +     hdr_size = (phy->common.mode == S3FWRN5_MODE_NCI) ?
-> > >               NCI_CTRL_HDR_SIZE : S3FWRN5_FW_HDR_SIZE;
-> > >       ret = i2c_master_recv(phy->i2c_dev, hdr, hdr_size);
-> > >       if (ret < 0)
-> > > @@ -137,7 +92,7 @@ static int s3fwrn5_i2c_read(struct s3fwrn5_i2c_phy *phy)
-> > >       if (ret < hdr_size)
-> > >               return -EBADMSG;
-> > >
-> > > -     data_len = (phy->mode == S3FWRN5_MODE_NCI) ?
-> > > +     data_len = (phy->common.mode == S3FWRN5_MODE_NCI) ?
-> > >               ((struct nci_ctrl_hdr *)hdr)->plen :
-> > >               ((struct s3fwrn5_fw_header *)hdr)->len;
-> > >
-> > > @@ -157,24 +112,24 @@ static int s3fwrn5_i2c_read(struct s3fwrn5_i2c_phy *phy)
-> > >       }
-> > >
-> > >  out:
-> > > -     return s3fwrn5_recv_frame(phy->ndev, skb, phy->mode);
-> > > +     return s3fwrn5_recv_frame(phy->common.ndev, skb, phy->common.mode);
-> > >  }
-> > >
-> > >  static irqreturn_t s3fwrn5_i2c_irq_thread_fn(int irq, void *phy_id)
-> > >  {
-> > >       struct s3fwrn5_i2c_phy *phy = phy_id;
-> > >
-> > > -     if (!phy || !phy->ndev) {
-> > > +     if (!phy || !phy->common.ndev) {
-> > >               WARN_ON_ONCE(1);
-> > >               return IRQ_NONE;
-> > >       }
-> > >
-> > > -     mutex_lock(&phy->mutex);
-> > > +     mutex_lock(&phy->common.mutex);
-> > >
-> > >       if (phy->irq_skip)
-> > >               goto out;
-> > >
-> > > -     switch (phy->mode) {
-> > > +     switch (phy->common.mode) {
-> > >       case S3FWRN5_MODE_NCI:
-> > >       case S3FWRN5_MODE_FW:
-> > >               s3fwrn5_i2c_read(phy);
-> > > @@ -184,7 +139,7 @@ static irqreturn_t s3fwrn5_i2c_irq_thread_fn(int irq, void *phy_id)
-> > >       }
-> > >
-> > >  out:
-> > > -     mutex_unlock(&phy->mutex);
-> > > +     mutex_unlock(&phy->common.mutex);
-> > >
-> > >       return IRQ_HANDLED;
-> > >  }
-> > > @@ -197,19 +152,19 @@ static int s3fwrn5_i2c_parse_dt(struct i2c_client *client)
-> > >       if (!np)
-> > >               return -ENODEV;
-> > >
-> > > -     phy->gpio_en = of_get_named_gpio(np, "en-gpios", 0);
-> > > -     if (!gpio_is_valid(phy->gpio_en)) {
-> > > +     phy->common.gpio_en = of_get_named_gpio(np, "en-gpios", 0);
-> > > +     if (!gpio_is_valid(phy->common.gpio_en)) {
-> > >               /* Support also deprecated property */
-> > > -             phy->gpio_en = of_get_named_gpio(np, "s3fwrn5,en-gpios", 0);
-> > > -             if (!gpio_is_valid(phy->gpio_en))
-> > > +             phy->common.gpio_en = of_get_named_gpio(np, "s3fwrn5,en-gpios", 0);
-> > > +             if (!gpio_is_valid(phy->common.gpio_en))
-> > >                       return -ENODEV;
-> > >       }
-> > >
-> > > -     phy->gpio_fw_wake = of_get_named_gpio(np, "wake-gpios", 0);
-> > > -     if (!gpio_is_valid(phy->gpio_fw_wake)) {
-> > > +     phy->common.gpio_fw_wake = of_get_named_gpio(np, "wake-gpios", 0);
-> > > +     if (!gpio_is_valid(phy->common.gpio_fw_wake)) {
-> > >               /* Support also deprecated property */
-> > > -             phy->gpio_fw_wake = of_get_named_gpio(np, "s3fwrn5,fw-gpios", 0);
-> > > -             if (!gpio_is_valid(phy->gpio_fw_wake))
-> > > +             phy->common.gpio_fw_wake = of_get_named_gpio(np, "s3fwrn5,fw-gpios", 0);
-> >
-> > The lines here should wrap at 80 character.
-> >
-> > > +             if (!gpio_is_valid(phy->common.gpio_fw_wake))
-> > >                       return -ENODEV;
-> > >       }
-> > >
-> > > @@ -226,8 +181,8 @@ static int s3fwrn5_i2c_probe(struct i2c_client *client,
-> > >       if (!phy)
-> > >               return -ENOMEM;
-> > >
-> > > -     mutex_init(&phy->mutex);
-> > > -     phy->mode = S3FWRN5_MODE_COLD;
-> > > +     mutex_init(&phy->common.mutex);
-> > > +     phy->common.mode = S3FWRN5_MODE_COLD;
-> > >       phy->irq_skip = true;
-> > >
-> > >       phy->i2c_dev = client;
-> > > @@ -237,17 +192,17 @@ static int s3fwrn5_i2c_probe(struct i2c_client *client,
-> > >       if (ret < 0)
-> > >               return ret;
-> > >
-> > > -     ret = devm_gpio_request_one(&phy->i2c_dev->dev, phy->gpio_en,
-> > > -             GPIOF_OUT_INIT_HIGH, "s3fwrn5_en");
-> > > +     ret = devm_gpio_request_one(&phy->i2c_dev->dev, phy->common.gpio_en,
-> > > +                                 GPIOF_OUT_INIT_HIGH, "s3fwrn5_en");
-> > >       if (ret < 0)
-> > >               return ret;
-> > >
-> > > -     ret = devm_gpio_request_one(&phy->i2c_dev->dev, phy->gpio_fw_wake,
-> > > -             GPIOF_OUT_INIT_LOW, "s3fwrn5_fw_wake");
-> > > +     ret = devm_gpio_request_one(&phy->i2c_dev->dev, phy->common.gpio_fw_wake,
-> > > +                                 GPIOF_OUT_INIT_LOW, "s3fwrn5_fw_wake");
-> > >       if (ret < 0)
-> > >               return ret;
-> > >
-> > > -     ret = s3fwrn5_probe(&phy->ndev, phy, &phy->i2c_dev->dev, &i2c_phy_ops);
-> > > +     ret = s3fwrn5_probe(&phy->common.ndev, phy, &phy->i2c_dev->dev, &i2c_phy_ops);
-> >
-> > Please wrap the lines.
-> >
-> > >       if (ret < 0)
-> > >               return ret;
-> > >
-> > > @@ -255,7 +210,7 @@ static int s3fwrn5_i2c_probe(struct i2c_client *client,
-> > >               s3fwrn5_i2c_irq_thread_fn, IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-> > >               S3FWRN5_I2C_DRIVER_NAME, phy);
-> > >       if (ret)
-> > > -             s3fwrn5_remove(phy->ndev);
-> > > +             s3fwrn5_remove(phy->common.ndev);
-> > >
-> > >       return ret;
-> > >  }
-> > > @@ -264,7 +219,7 @@ static int s3fwrn5_i2c_remove(struct i2c_client *client)
-> > >  {
-> > >       struct s3fwrn5_i2c_phy *phy = i2c_get_clientdata(client);
-> > >
-> > > -     s3fwrn5_remove(phy->ndev);
-> > > +     s3fwrn5_remove(phy->common.ndev);
-> > >
-> > >       return 0;
-> > >  }
-> > > diff --git a/drivers/nfc/s3fwrn5/phy_common.h b/drivers/nfc/s3fwrn5/phy_common.h
-> > > new file mode 100644
-> > > index 0000000..14f7690
-> > > --- /dev/null
-> > > +++ b/drivers/nfc/s3fwrn5/phy_common.h
-> > > @@ -0,0 +1,86 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0-or-later
-> > > + *
-> > > + * Link Layer for Samsung S3FWRN5 NCI based Driver
-> > > + *
-> > > + * Copyright (C) 2015 Samsung Electrnoics
-> > > + * Robert Baldyga <r.baldyga@samsung.com>
-> > > + * Copyright (C) 2020 Samsung Electrnoics
-> > > + * Bongsu Jeon <bongsu.jeon@samsung.com>
-> > > + */
-> > > +
-> > > +#ifndef __LOCAL_PHY_COMMON_H
-> > > +#define __LOCAL_PHY_COMMON_H
-> >
-> > Header guard: __NFC_S3FWRN5_PHY_COMMON_H
-> >
-> > > +
-> > > +#include "s3fwrn5.h"
-> >
-> > This include should not be needed.
-> >
-> 
-> Actually, I included this because of enum s3fwrn5_mode.
-> Do you think the following structure is good?
-> 
-> 0. remove the '#include "s3fwrn5.h" and the common function's
-> definition in phy_common.h.
-> 1. make phy_common.c that includes the common function's definition
-> and "s3fwrn5.h , phy_common.h".
-> 2. i2c.c includes "s3fwrn5.h , phy_common.h".
+Hi Icenowy,
 
-It looks like you already sent v2... I'll skip answering here then.
+On Sat, 28 Nov 2020 at 12:28, Icenowy Zheng <icenowy@aosc.io> wrote:
+>
+> =E5=9C=A8 2020-11-28=E6=98=9F=E6=9C=9F=E5=85=AD=E7=9A=84 11:38 +0100=EF=
+=BC=8CMaxime Ripard=E5=86=99=E9=81=93=EF=BC=9A
+> > On Mon, Nov 23, 2020 at 09:10:38PM +0800, Icenowy Zheng wrote:
+> > > > > > > > Okay. But I'm not satisfied with a non-public sample
+> > > > > > > > occupies
+> > > > > > > > the pinetab name. Is rename it to pinetab-dev and add a
+> > > > > > > > pinetab-retail okay?
+> > > > > > >
+> > > > > > > To me, naming the production version anything but "pinetab"
+> > > > > > > isn't
+> > > > > > > satisfying either.
+> > > > > >
+> > > > > > I understand where you're coming from, but the point I was
+> > > > > > making my
+> > > > > > previous mail is precisely that it's not really possible.
+> > > > > >
+> > > > > > You want to name the early adopter version _the_ production
+> > > > > > version. Let's assume the hardware changes again between the
+> > > > > > early
+> > > > > > adopter and mass-production version. Which one will be _the_
+> > > > > > production version? The early-adopter or the mass-produced
+> > > > > > one?
+> > > > > >
+> > > > > > There's really no good answer here, and both would suck in
+> > > > > > their
+> > > > > > own way. The only way to deal with this is to simply avoid
+> > > > > > defining one version as the one true board, and just loading
+> > > > > > the
+> > > > > > proper DT in u-boot based on whatever clue we have of the
+> > > > > > hardware
+> > > > > > revision.
+> > > > > Then will it be okay to rename current pinetab DT to
+> > > > > pinetab-sample and then introduce new DTs all with suffixes?
+> > > >
+> > > > No. From my previous mail:
+> > >
+> > > It can be seen as dropping the PineTab DT and introduce new DTs
+> > > with
+> > > suffix.
+> > >
+> > > Do we have rule that we cannot drop boards?
+> >
+> > Are you really arguing that removing a DT and then adding an
+> > identical
+> > one under a different name is not renaming it?
+>
+> Then we can just keep confusing name?
 
-Best regards,
-Krzysztof
+Sorry maybe I missed some information
+But why don't you do like pinephone?
+sun50i-a64-pinetab-1.0.dts
+sun50i-a64-pinetab-1.1.dts
 
+-dev is also a confusing name I think, as the board has been already shippe=
+d.
+
+Regards,
+Clement
+
+
+>
+> If we do so, how can we mark the new DT as "the user should use this
+> one"?
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to linux-sunxi+unsubscribe@googlegroups.com.
+> To view this discussion on the web, visit https://groups.google.com/d/msg=
+id/linux-sunxi/1666a61f6ea3e7d573795f9000a0b096c7b7dee0.camel%40aosc.io.
