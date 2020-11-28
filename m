@@ -2,87 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3E32C6ECF
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9352C6ECD
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732557AbgK1EgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 23:36:19 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2317 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731107AbgK1EbZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 23:31:25 -0500
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CjdHN68zHz13NCK;
-        Sat, 28 Nov 2020 12:07:12 +0800 (CST)
-Received: from [10.140.157.68] (10.140.157.68) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Sat, 28 Nov 2020 12:07:52 +0800
-Subject: Re: [PATCH v5 0/4] Enable Hi3559A SOC clock and HiSilicon Hiedma
- Controller
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh+dt@kernel.org>, <vkoul@kernel.org>,
-        <dan.j.williams@intel.com>, <p.zabel@pengutronix.de>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>
-References: <20201119200129.28532-1-gengdongjiu@huawei.com>
-From:   Dongjiu Geng <gengdongjiu@huawei.com>
-Message-ID: <bac15a2e-b9db-b7b0-6004-ad76fa8c5be5@huawei.com>
-Date:   Sat, 28 Nov 2020 12:07:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.6.0
+        id S1728995AbgK1Ecq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 23:32:46 -0500
+Received: from foss.arm.com ([217.140.110.172]:59302 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731889AbgK1EWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 23:22:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 65013D6E;
+        Fri, 27 Nov 2020 20:21:47 -0800 (PST)
+Received: from [10.163.85.48] (unknown [10.163.85.48])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0B5113F23F;
+        Fri, 27 Nov 2020 20:21:45 -0800 (PST)
+Subject: Re: [RFC 1/3] mm/hotplug: Pre-validate the address range with
+ platform
+To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+References: <1606098529-7907-1-git-send-email-anshuman.khandual@arm.com>
+ <1606098529-7907-2-git-send-email-anshuman.khandual@arm.com>
+ <13392308-45a8-f85d-b25e-4a728e1e0730@redhat.com>
+ <0c13a221-570a-0d64-fce9-d28e52cbdd6c@arm.com>
+ <8886f78e-28cf-ded0-1629-d4206205be96@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <1d0224a2-1edb-6a43-bf2d-0a6f3ef4746e@arm.com>
+Date:   Sat, 28 Nov 2020 09:51:41 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201119200129.28532-1-gengdongjiu@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <8886f78e-28cf-ded0-1629-d4206205be96@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.140.157.68]
-X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping, sorry for the noise.
 
 
-On 2020/11/20 4:01, Dongjiu Geng wrote:
-> v4->v5:
-> 1. change the patch author mail name
+On 11/27/20 2:31 PM, David Hildenbrand wrote:
+>>>
+>>> "arch_get_mappable_range(void)" (or similar) ?
+>>
+>> The current name seems bit better (I guess). Because we are asking for
+>> max addressable range with or without the linear mapping.
+>>
+>>>
+>>> AFAIKs, both implementations (arm64/s390x) simply do the exact same
+>>> thing as memhp_get_pluggable_range() for !need_mapping.
+>>
+>> That is for now. Even the range without requiring linear mapping might not
+>> be the same (like now) for every platform as some might have constraints.
+>> So asking the platform ranges with or without linear mapping seems to be
+>> better and could accommodate special cases going forward. Anyways, there
+>> is an always an "all allowing" fallback option nonetheless.
 > 
-> v3->v4:
-> 1. fix the 'make dt_binding_check' issues.
-> 2. Combine the 'Enable HiSilicon Hiedma Controller' series patches to this series.
-> 3. fix the 'make dt_binding_check' issues in 'Enable HiSilicon Hiedma Controller' patchset
+> Let's keep it simple as long as we don't have a real scenario where this
+> would apply.
+
+Sure, will have the arch callback only when the range needs linear mapping.
+Otherwise, memhp_get_pluggable_range() can just fallback on [0...max_phys]
+for non linear mapping requests.
+
 > 
+> [...]
 > 
-> v2->v3:
-> 1. change dt-bindings documents from txt to yaml format.
-> 2. Add SHUB clock to access the devices of m7
+>>
+>>>
+>>>> +		return true;
+>>>> +
+>>>> +	WARN(1, "Hotplug memory [%#llx-%#llx] exceeds maximum addressable range [%#llx-%#llx]\n",
+>>>> +		start, end, memhp_range.start, memhp_range.end);
+>>>
+>>> pr_warn() (or even pr_warn_once())
+>>>
+>>> while we're at it. No reason to eventually crash a system :)
+>>
+>> Didn't quite get it. How could this crash the system ?
 > 
-> Dongjiu Geng (4):
->   dt-bindings: Document the hi3559a clock bindings
->   clk: hisilicon: Add clock driver for hi3559A SoC
->   dt: bindings: dma: Add DT bindings for HiSilicon Hiedma Controller
->   dmaengine: dma: Add Hiedma Controller v310 Device Driver
+> With panic_on_warn, which some distributions started to enable.
+
+Okay, got it.
+
 > 
->  .../clock/hisilicon,hi3559av100-clock.yaml    |   66 +
->  .../bindings/dma/hisilicon,hiedmacv310.yaml   |  103 ++
->  drivers/clk/hisilicon/Kconfig                 |    7 +
->  drivers/clk/hisilicon/Makefile                |    1 +
->  drivers/clk/hisilicon/clk-hi3559a.c           |  865 ++++++++++
->  drivers/dma/Kconfig                           |   14 +
->  drivers/dma/Makefile                          |    1 +
->  drivers/dma/hiedmacv310.c                     | 1441 +++++++++++++++++
->  drivers/dma/hiedmacv310.h                     |  136 ++
->  include/dt-bindings/clock/hi3559av100-clock.h |  165 ++
->  10 files changed, 2799 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
->  create mode 100644 Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
->  create mode 100644 drivers/clk/hisilicon/clk-hi3559a.c
->  create mode 100644 drivers/dma/hiedmacv310.c
->  create mode 100644 drivers/dma/hiedmacv310.h
->  create mode 100644 include/dt-bindings/clock/hi3559av100-clock.h
+> [...]
 > 
+>>>>  		/*
+>>>>  		 * Validate altmap is within bounds of the total request
+>>>> @@ -1109,6 +1089,9 @@ int __ref __add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
+>>>>  	struct resource *res;
+>>>>  	int ret;
+>>>>  
+>>>> +	if (!memhp_range_allowed(start, size, 1))
+>>>> +		return -ERANGE;
+>>>
+>>> We used to return -E2BIG, no? Maybe better keep that.
+>>
+>> ERANGE seems to be better as the range can overrun on either side.
+> 
+> Did you check all callers that they can handle it? Should mention that
+> in the patch description then.
+
+Hmm, okay then. Lets keep -E2BIG to be less disruptive for the callers.
+
+> 
+>>
+>>>
+>>>> +
+>>>>  	res = register_memory_resource(start, size, "System RAM");
+>>>>  	if (IS_ERR(res))
+>>>>  		return PTR_ERR(res);
+>>>> @@ -1123,6 +1106,9 @@ int add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags)
+>>>>  {
+>>>>  	int rc;
+>>>>  
+>>>> +	if (!memhp_range_allowed(start, size, 1))
+>>>> +		return -ERANGE;
+>>>> +
+>>>>  	lock_device_hotplug();
+>>>>  	rc = __add_memory(nid, start, size, mhp_flags);
+>>>>  	unlock_device_hotplug();
+>>>> @@ -1163,6 +1149,9 @@ int add_memory_driver_managed(int nid, u64 start, u64 size,
+>>>>  	    resource_name[strlen(resource_name) - 1] != ')')
+>>>>  		return -EINVAL;
+>>>>  
+>>>> +	if (!memhp_range_allowed(start, size, 0))
+>>>> +		return -ERANGE;
+>>>> +
+>>>>  	lock_device_hotplug();
+>>>
+>>> For all 3 cases, doing a single check in register_memory_resource() is
+>>> sufficient.
+>>
+>> Will replace with a single check in register_memory_resource(). But does
+>> add_memory_driver_managed() always require linear mapping ? The proposed
+>> check here did not ask for linear mapping in add_memory_driver_managed().
+> 
+> Yes, in that regard, it behaves just like add_memory().
+
+Sure.
