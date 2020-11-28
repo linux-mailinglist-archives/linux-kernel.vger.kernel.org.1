@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FD52C7401
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 426392C73B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:15:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732425AbgK1Vtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:49:45 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:50331 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732712AbgK1Rzo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 12:55:44 -0500
-Received: from 220-133-187-190.hinet-ip.hinet.net ([220.133.187.190] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kj4R0-0006RD-4E; Sat, 28 Nov 2020 17:54:58 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pm@vger.kernel.org (open list:THERMAL),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/3] thermal: core: Add indication for userspace usage
-Date:   Sun, 29 Nov 2020 01:54:48 +0800
-Message-Id: <20201128175450.12456-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        id S2387703AbgK1Vty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731889AbgK1SBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:01:55 -0500
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2C86246E5
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 17:55:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606586151;
+        bh=ZZhMRxdkDiUtjJhs9EzGkFNzkESkUN3IT5oRokS68Qo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=epX46Lo5gyxVc+A48tcBI9o2KY5N0B8LeGVmlne+5FIJLCKzXxKJbO8s5nD3xgFEq
+         X4i5sPbFp4pWFdxVxrkkA2Zo+E6LU8KzScdnd4wUs/DuAJxVyePHnhRMsXt1NPg65k
+         bczZ20BbxsSWXKhjoKXb+3UfQFkWGyoh+eDumXHw=
+Received: by mail-wm1-f50.google.com with SMTP id d3so4793886wmb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 09:55:50 -0800 (PST)
+X-Gm-Message-State: AOAM532Y5xjP9TT4k4IvUxR1ikzPpFtU8hPr+0nwqqdjicRQgZd9c1u/
+        5ReHxiPTvIWfM8V9AIBbSo0DCEmjUueTcHxFQZW2Eg==
+X-Google-Smtp-Source: ABdhPJzaqB8K8IiW/9cIJ/CJ9BqnrVUcLDZBaHBUttYrz8GGSHowF+hWwUHxhG80vPrg9fActeSCQFpfFgxQjqhRUUg=
+X-Received: by 2002:a1c:7e90:: with SMTP id z138mr436606wmc.49.1606586149355;
+ Sat, 28 Nov 2020 09:55:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201128160141.1003903-1-npiggin@gmail.com> <20201128160141.1003903-3-npiggin@gmail.com>
+In-Reply-To: <20201128160141.1003903-3-npiggin@gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 28 Nov 2020 09:55:37 -0800
+X-Gmail-Original-Message-ID: <CALCETrXYkbuJJnDv9ijfT+5tLQ2FOvvN1Ugoh5NwOy+zHp9HXA@mail.gmail.com>
+Message-ID: <CALCETrXYkbuJJnDv9ijfT+5tLQ2FOvvN1Ugoh5NwOy+zHp9HXA@mail.gmail.com>
+Subject: Re: [PATCH 2/8] x86: use exit_lazy_tlb rather than membarrier_mm_sync_core_before_usermode
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are seeing thermal shutdown on Intel based mobile workstations, the
-shutdown happens during the first trip handle in
-thermal_zone_device_register():
-kernel: thermal thermal_zone15: critical temperature reached (101 C), shutting down
+On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+>
+> And get rid of the generic sync_core_before_usermode facility. This is
+> functionally a no-op in the core scheduler code, but it also catches
+>
+> This helper is the wrong way around I think. The idea that membarrier
+> state requires a core sync before returning to user is the easy one
+> that does not need hiding behind membarrier calls. The gap in core
+> synchronization due to x86's sysret/sysexit and lazy tlb mode, is the
+> tricky detail that is better put in x86 lazy tlb code.
+>
+> Consider if an arch did not synchronize core in switch_mm either, then
+> membarrier_mm_sync_core_before_usermode would be in the wrong place
+> but arch specific mmu context functions would still be the right place.
+> There is also a exit_lazy_tlb case that is not covered by this call, which
+> could be a bugs (kthread use mm the membarrier process's mm then context
+> switch back to the process without switching mm or lazy mm switch).
+>
+> This makes lazy tlb code a bit more modular.
 
-However, we shouldn't do a thermal shutdown here, since
-1) We may want to use a dedicated daemon, Intel's thermald in this case,
-to handle thermal shutdown.
-
-2) For ACPI based system, _CRT doesn't mean shutdown unless it's inside
-ThermalZone. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
-"... If this object it present under a device, the device’s driver
-evaluates this object to determine the device’s critical cooling
-temperature trip point. This value may then be used by the device’s
-driver to program an internal device temperature sensor trip point."
-
-So a "critical trip" here merely means we should take a more aggressive
-cooling method.
-
-So add an indication to let thermal core know it should leave thermal
-device to userspace to handle.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/thermal/thermal_core.c | 3 +++
- include/linux/thermal.h        | 2 ++
- 2 files changed, 5 insertions(+)
-
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index c6d74bc1c90b..6561e3767529 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -1477,6 +1477,9 @@ thermal_zone_device_register(const char *type, int trips, int mask,
- 			goto unregister;
- 	}
- 
-+	if (tz->tzp && tz->tzp->userspace)
-+		thermal_zone_device_disable(tz);
-+
- 	mutex_lock(&thermal_list_lock);
- 	list_add_tail(&tz->node, &thermal_tz_list);
- 	mutex_unlock(&thermal_list_lock);
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index d07ea27e72a9..e8e8fac78fc8 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -247,6 +247,8 @@ struct thermal_zone_params {
- 	 */
- 	bool no_hwmon;
- 
-+	bool userspace;
-+
- 	int num_tbps;	/* Number of tbp entries */
- 	struct thermal_bind_params *tbp;
- 
--- 
-2.29.2
-
+I have a couple of membarrier fixes that I want to send out today or
+tomorrow, and they might eliminate the need for this patch.  Let me
+think about this a little bit.  I'll cc you.  The existing code is way
+to subtle and the comments are far too confusing for me to be quickly
+confident about any of my conclusions :)
