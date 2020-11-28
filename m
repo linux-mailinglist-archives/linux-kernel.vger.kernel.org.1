@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426392C73B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 120B02C742B
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387703AbgK1Vty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:49:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731889AbgK1SBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:01:55 -0500
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2C86246E5
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 17:55:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606586151;
-        bh=ZZhMRxdkDiUtjJhs9EzGkFNzkESkUN3IT5oRokS68Qo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=epX46Lo5gyxVc+A48tcBI9o2KY5N0B8LeGVmlne+5FIJLCKzXxKJbO8s5nD3xgFEq
-         X4i5sPbFp4pWFdxVxrkkA2Zo+E6LU8KzScdnd4wUs/DuAJxVyePHnhRMsXt1NPg65k
-         bczZ20BbxsSWXKhjoKXb+3UfQFkWGyoh+eDumXHw=
-Received: by mail-wm1-f50.google.com with SMTP id d3so4793886wmb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 09:55:50 -0800 (PST)
-X-Gm-Message-State: AOAM532Y5xjP9TT4k4IvUxR1ikzPpFtU8hPr+0nwqqdjicRQgZd9c1u/
-        5ReHxiPTvIWfM8V9AIBbSo0DCEmjUueTcHxFQZW2Eg==
-X-Google-Smtp-Source: ABdhPJzaqB8K8IiW/9cIJ/CJ9BqnrVUcLDZBaHBUttYrz8GGSHowF+hWwUHxhG80vPrg9fActeSCQFpfFgxQjqhRUUg=
-X-Received: by 2002:a1c:7e90:: with SMTP id z138mr436606wmc.49.1606586149355;
- Sat, 28 Nov 2020 09:55:49 -0800 (PST)
+        id S2388962AbgK1Vts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:48 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:40180 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733149AbgK1R7z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 12:59:55 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UGoMy0t_1606586341;
+Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UGoMy0t_1606586341)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 29 Nov 2020 01:59:12 +0800
+From:   Wen Yang <wenyang@linux.alibaba.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Christian Brauner <christian@brauner.io>, ebiederm@xmission.com
+Cc:     Wen Yang <wenyang@linux.alibaba.com>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] proc: add locking checks in proc_inode_is_dead
+Date:   Sun, 29 Nov 2020 01:58:50 +0800
+Message-Id: <20201128175850.19484-1-wenyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <20201128160141.1003903-1-npiggin@gmail.com> <20201128160141.1003903-3-npiggin@gmail.com>
-In-Reply-To: <20201128160141.1003903-3-npiggin@gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 28 Nov 2020 09:55:37 -0800
-X-Gmail-Original-Message-ID: <CALCETrXYkbuJJnDv9ijfT+5tLQ2FOvvN1Ugoh5NwOy+zHp9HXA@mail.gmail.com>
-Message-ID: <CALCETrXYkbuJJnDv9ijfT+5tLQ2FOvvN1Ugoh5NwOy+zHp9HXA@mail.gmail.com>
-Subject: Re: [PATCH 2/8] x86: use exit_lazy_tlb rather than membarrier_mm_sync_core_before_usermode
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wrote:
->
-> And get rid of the generic sync_core_before_usermode facility. This is
-> functionally a no-op in the core scheduler code, but it also catches
->
-> This helper is the wrong way around I think. The idea that membarrier
-> state requires a core sync before returning to user is the easy one
-> that does not need hiding behind membarrier calls. The gap in core
-> synchronization due to x86's sysret/sysexit and lazy tlb mode, is the
-> tricky detail that is better put in x86 lazy tlb code.
->
-> Consider if an arch did not synchronize core in switch_mm either, then
-> membarrier_mm_sync_core_before_usermode would be in the wrong place
-> but arch specific mmu context functions would still be the right place.
-> There is also a exit_lazy_tlb case that is not covered by this call, which
-> could be a bugs (kthread use mm the membarrier process's mm then context
-> switch back to the process without switching mm or lazy mm switch).
->
-> This makes lazy tlb code a bit more modular.
+The proc_inode_is_dead function might race with __unhash_process.
+This will result in a whole bunch of stale proc entries being cached.
+To prevent that, add the required locking.
 
-I have a couple of membarrier fixes that I want to send out today or
-tomorrow, and they might eliminate the need for this patch.  Let me
-think about this a little bit.  I'll cc you.  The existing code is way
-to subtle and the comments are far too confusing for me to be quickly
-confident about any of my conclusions :)
+Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Christian Brauner <christian@brauner.io>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+---
+ fs/proc/base.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 1bc9bcd..59720bc 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -1994,7 +1994,13 @@ static int pid_revalidate(struct dentry *dentry, unsigned int flags)
+ 
+ static inline bool proc_inode_is_dead(struct inode *inode)
+ {
+-	return !proc_pid(inode)->tasks[PIDTYPE_PID].first;
++	bool has_task;
++
++	read_lock(&tasklist_lock);
++	has_task = pid_has_task(proc_pid(inode), PIDTYPE_PID);
++	read_unlock(&tasklist_lock);
++
++	return !has_task;
+ }
+ 
+ int pid_delete_dentry(const struct dentry *dentry)
+-- 
+1.8.3.1
+
