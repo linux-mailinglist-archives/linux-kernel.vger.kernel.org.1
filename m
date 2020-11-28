@@ -2,83 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FDF2C6EEC
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 06:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 554D92C702C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 18:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729604AbgK1FPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 00:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgK1FN0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 00:13:26 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15771C0613D1;
-        Fri, 27 Nov 2020 21:12:48 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kisX4-00F0ax-Iz; Sat, 28 Nov 2020 05:12:26 +0000
-Date:   Sat, 28 Nov 2020 05:12:26 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, criu@openvz.org,
-        bpf <bpf@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH v2 00/24] exec: Move unshare_files and guarantee
- files_struct.count is correct
-Message-ID: <20201128051226.GA3577182@ZenIV.linux.org.uk>
-References: <87r1on1v62.fsf@x220.int.ebiederm.org>
- <CAHk-=wge0oJ3fbmNfVek101CO7hg1UfUHnBgxLB3Jmq6-hWLug@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wge0oJ3fbmNfVek101CO7hg1UfUHnBgxLB3Jmq6-hWLug@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        id S1730942AbgK1EMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 23:12:48 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:27011 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731937AbgK1Dhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 22:37:42 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606534647; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=SFCUp5f8CHLKiOLvv64/nYzMDo00/YTRM5OYAk3GCCg=; b=wuwaPeOBl6oTaSukmcowDQr1fePemxNOSFI8wAAY+Bt8zUcWXCEXZvb1FFpdjqZM04TiGCsD
+ QY5KY5bRIU/wZvK188w6GXMLnv5W1zfOtMaFkDjR1UbYEYPmaQLps58rTWg7+nMupHuaPjOQ
+ WP4mMJl+LrvLy92HeoFSw780y5s=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5fc1c357ba50d14f88303caa (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 28 Nov 2020 03:26:15
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4B44CC43461; Sat, 28 Nov 2020 03:26:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9129EC433ED;
+        Sat, 28 Nov 2020 03:26:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9129EC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>
+Subject: [PATCH v13 0/4] userspace MHI client interface driver
+Date:   Fri, 27 Nov 2020 19:26:02 -0800
+Message-Id: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 04:05:47PM -0800, Linus Torvalds wrote:
-> On Fri, Nov 20, 2020 at 3:11 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >
-> > This set of changes cleanups of the code in exec so hopefully this code
-> > will not regress again.  Then it adds helpers and fixes the users of
-> > files_struct so the reference count is only incremented if COPY_FILES is
-> > passed to clone (or if io_uring takes a reference).  Then it removes
-> > helpers (get_files_struct, __install_fd, __alloc_fd, __close_fd) that
-> > are no longer needed and if used would encourage code that increments
-> > the count of files_struct somewhere besides in clone when COPY_FILES is
-> > passed.
-> 
-> I'm not seeing anything that triggered me going "that looks dodgy". It
-> all looks like nice cleanups.
-> 
-> But that's just from reading the patches (and in some cases going and
-> looking at the context), so I didn't actually _test_ any of it. It all
-> looks sane to me, though, and the fact that it removes a fair number
-> of lines of code is always a good sign.
-> 
-> It would be good for people to review and test (Al? Oleg? others?),
-> but my gut feel is "this is good".
+This patch series adds support for UCI driver. UCI driver enables userspace
+clients to communicate to external MHI devices like modem and WLAN. UCI driver
+probe creates standard character device file nodes for userspace clients to
+perform open, read, write, poll and release file operations. These file
+operations call MHI core layer APIs to perform data transfer using MHI bus
+to communicate with MHI device. Patch is tested using arm64 based platform.
 
-Will check (sorry, the last couple of weeks had been bloody awful -
-off-net and very short on sleep); I'm digging through the piles of
-email right now.
+V13:
+- Removed LOOPBACK channel from mhi_device_id table from this patch series.
+Pushing a new patch series to add support for LOOPBACK channel and the user
+space test application. Also removed the description from kernel documentation.
+- Added QMI channel to mhi_device_id table. QMI channel has existing libqmi
+support from user space.
+- Updated kernel Documentation for QMI channel and provided external reference
+for libqmi.
+- Updated device file node name by appending mhi device name only, which already
+includes mhi controller device name.
+
+V12:
+- Added loopback test driver under selftest/drivers/mhi. Updated kernel
+  documentation for the usage of the loopback test application.
+- Addressed review comments for renaming variable names, updated inline
+  comments and removed two redundant dev_dbg.
+
+V11:
+- Fixed review comments for UCI documentation by expanding TLAs and rewording
+  some sentences.
+
+V10:
+- Replaced mutex_lock with mutex_lock_interruptible in read() and write() file
+  ops call back.
+
+V9:
+- Renamed dl_lock to dl_pending _lock and pending list to dl_pending for
+  clarity.
+- Used read lock to protect cur_buf.
+- Change transfer status check logic and only consider 0 and -EOVERFLOW as
+  only success.
+- Added __int to module init function.
+- Print channel name instead of minor number upon successful probe.
+
+V8:
+- Fixed kernel test robot compilation error by changing %lu to %zu for
+  size_t.
+- Replaced uci with UCI in Kconfig, commit text, and comments in driver
+  code.
+- Fixed minor style related comments.
+
+V7:
+- Decoupled uci device and uci channel objects. uci device is
+  associated with device file node. uci channel is associated
+  with MHI channels. uci device refers to uci channel to perform
+  MHI channel operations for device file operations like read()
+  and write(). uci device increments its reference count for
+  every open(). uci device calls mhi_uci_dev_start_chan() to start
+  the MHI channel. uci channel object is tracking number of times
+  MHI channel is referred. This allows to keep the MHI channel in
+  start state until last release() is called. After that uci channel
+  reference count goes to 0 and uci channel clean up is performed
+  which stops the MHI channel. After the last call to release() if
+  driver is removed uci reference count becomes 0 and uci object is
+  cleaned up.
+- Use separate uci channel read and write lock to fine grain locking
+  between reader and writer.
+- Use uci device lock to synchronize open, release and driver remove.
+- Optimize for downlink only or uplink only UCI device.
+
+V6:
+- Moved uci.c to mhi directory.
+- Updated Kconfig to add module information.
+- Updated Makefile to rename uci object file name as mhi_uci
+- Removed kref for open count
+
+V5:
+- Removed mhi_uci_drv structure.
+- Used idr instead of creating global list of uci devices.
+- Used kref instead of local ref counting for uci device and
+  open count.
+- Removed unlikely macro.
+
+V4:
+- Fix locking to protect proper struct members.
+- Updated documentation describing uci client driver use cases.
+- Fixed uci ref counting in mhi_uci_open for error case.
+- Addressed style related review comments.
+
+V3: Added documentation for MHI UCI driver.
+
+V2:
+- Added mutex lock to prevent multiple readers to access same
+- mhi buffer which can result into use after free.
+
+Hemant Kumar (4):
+  bus: mhi: core: Add helper API to return number of free TREs
+  bus: mhi: core: Move MHI_MAX_MTU to external header file
+  docs: Add documentation for userspace client interface
+  bus: mhi: Add userspace client interface driver
+
+ Documentation/mhi/index.rst     |   1 +
+ Documentation/mhi/uci.rst       |  94 ++++++
+ drivers/bus/mhi/Kconfig         |  13 +
+ drivers/bus/mhi/Makefile        |   3 +
+ drivers/bus/mhi/core/internal.h |   1 -
+ drivers/bus/mhi/core/main.c     |  12 +
+ drivers/bus/mhi/uci.c           | 665 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mhi.h             |  12 +
+ 8 files changed, 800 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/mhi/uci.rst
+ create mode 100644 drivers/bus/mhi/uci.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
