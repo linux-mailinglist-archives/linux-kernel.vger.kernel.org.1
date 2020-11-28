@@ -2,95 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8551A2C7083
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DBB2C7080
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733172AbgK1SAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 13:00:11 -0500
-Received: from condef-02.nifty.com ([202.248.20.67]:53986 "EHLO
-        condef-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728883AbgK1R6K (ORCPT
+        id S1733166AbgK1SAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 13:00:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732756AbgK1R56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 12:58:10 -0500
-Received: from conssluserg-01.nifty.com ([10.126.8.80])by condef-02.nifty.com with ESMTP id 0ASHOM2h010544;
-        Sun, 29 Nov 2020 02:24:22 +0900
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 0ASHO95r006960;
-        Sun, 29 Nov 2020 02:24:10 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 0ASHO95r006960
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606584250;
-        bh=et9lDT3Zpqsx6VK/dEHvLLo0NKfFOQL29WE+Sz7lk58=;
-        h=From:Date:Subject:To:Cc:From;
-        b=GwjqHarwhXQTBgBPTvxqaDZcU+1KyQgomjmdO90oheTSfyVB1m34A6hWPImIqz7de
-         DquFGpgfiZvQvBi+VZYtQM3Iy6E9hovq8Lv6JK70XUG+EoV8P6L0rucD8sb9hUqlUA
-         f3BygZ/egCeNJzXx+rHxjpdR/DVK2X55VhGiPdjEfAGm5cawWTMumdYNFdtUi/8zaT
-         frUeNA6K5JlCmT9xtFeb5VnwXRSJozsH7vNk7gY/UlFJEDQ+ED1xExzBrpFUn6KIa5
-         FKzUpsUM4qVOO6vgF1gesb/4a8k02vTMTnm8vc+F9w1d91Lv8TyOepy/At5f+/GuFA
-         0G4kLAjfuE16Q==
-X-Nifty-SrcIP: [209.85.210.178]
-Received: by mail-pf1-f178.google.com with SMTP id w6so7225178pfu.1;
-        Sat, 28 Nov 2020 09:24:10 -0800 (PST)
-X-Gm-Message-State: AOAM530Lk2M/cOxsOgGiMOgg5rtiTnnGVR32qO5d1JvtO2fA5oio1nRu
-        r+9aYsPuwIm+cxdxPazJJ3Y/ZIUWZLU3xqb8TTo=
-X-Google-Smtp-Source: ABdhPJxLHATCxDFthaPmyQHJk9ERgGmh0Nur7u/gWRJ8TdGHA0l5vscTGNmxHlIReTc2aAxvgWrQckwaoWTH7/QKUms=
-X-Received: by 2002:a17:90a:c209:: with SMTP id e9mr17248934pjt.87.1606584249298;
- Sat, 28 Nov 2020 09:24:09 -0800 (PST)
+        Sat, 28 Nov 2020 12:57:58 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47BEC0253F6;
+        Sat, 28 Nov 2020 09:40:26 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id l1so4206394pld.5;
+        Sat, 28 Nov 2020 09:40:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o5M0Qk5wHG2QacembzBg5VIheheEu3YBTN3db8gj6qY=;
+        b=XYeHz8VZPt56JJwlaQz3OfxTfaGeGURb9LOamoGaOMVgGH2KnHmYQLsFHcdEFvMqp+
+         Am4yPx1+MpmrIx6g+fOnTymqPMrPdw06+9sfQf3pyuNN/Jl6FqXSmHT4Ki7VhwPfrzNd
+         dbEny5yoS0sb3Nbt1Z/kxUC8m9LfFURHPgO5Z0mP+qyWWTJNOMhUmC/BfpRRU3dMF2IH
+         CBLFkvUmqgLTprY55NoNpggd0w9YlYdMB9fwb8jd9FwDnmOorvm1gOcG4+f+BAX36e29
+         Hugq3QIafEpOsIgEv86m4dFmz59ukcqc/YyyVLiPJcVaVytFl8LMLDdEkoxT64hCwKw2
+         c2bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o5M0Qk5wHG2QacembzBg5VIheheEu3YBTN3db8gj6qY=;
+        b=o6Xu54XK4P6tWis+oNRvN8JbPjDm/Vm2S3zVxVnRJ/OGqnRzVUcq7PAb3G+p7afqqa
+         S0BA/oOqhSxQNvIY/CxmXMXjxySDsL/NxEsu6K+n1PyNpVhCmhaBc5krp8n0ennATDrb
+         LdNiStV/HqS2mYVlBKhuujH9YQxlhsHQCW9q8Yb/vzR0Cx9a31hbCBsztUuY1CDO/iM4
+         dmPUvNsYE1FYygfwYwerImTVf0DWSyxsl6ZyhX6+d4M64R8HMTtHBIOZr0YH1ESQXWS/
+         X1c1zS0Z5vVHJLUIuPtGypdvPjXa90nUwFLGLL9gKxs9BsF9+W1ywXtQarjME6tS9oR1
+         DVdg==
+X-Gm-Message-State: AOAM532uZW8oONM5swL9iUAASNIHFkQfipcCcqOamEH5RVGHbPGMJdI5
+        guDJ9k3Vbwd5K16X088fAac=
+X-Google-Smtp-Source: ABdhPJwMyHd0UGC8sDAuAM35fHi+FccXiEOE281/CXiUDGgdd4ce+UAFHU0RhzQNrCMcLxc3By1INQ==
+X-Received: by 2002:a17:902:b408:b029:d6:d1e2:e1be with SMTP id x8-20020a170902b408b02900d6d1e2e1bemr11911471plr.34.1606585226332;
+        Sat, 28 Nov 2020 09:40:26 -0800 (PST)
+Received: from hpilion.hsd1.wa.comcast.net (50-47-105-203.evrt.wa.frontiernet.net. [50.47.105.203])
+        by smtp.gmail.com with ESMTPSA id y81sm11302246pfc.25.2020.11.28.09.40.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Nov 2020 09:40:25 -0800 (PST)
+From:   Shachar Raindel <shacharr@gmail.com>
+To:     jaegeuk@kernel.org, chao@kernel.org, ebiggers@google.com,
+        daehojeong@google.com, linux-f2fs-devel@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Shachar Raindel <shacharr@gmail.com>
+Subject: [PATCH] f2fs: Fix deadlock between f2fs_quota_sync and block_operation
+Date:   Sat, 28 Nov 2020 09:39:46 -0800
+Message-Id: <20201128173946.22340-1-shacharr@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 29 Nov 2020 02:23:31 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS-j7MqrpKnM_GQS9KfL_8Dw9NJrpaghRO9D637cqrnaA@mail.gmail.com>
-Message-ID: <CAK7LNAS-j7MqrpKnM_GQS9KfL_8Dw9NJrpaghRO9D637cqrnaA@mail.gmail.com>
-Subject: [GIT PULL] Kbuild fixes for v5.10-rc6
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+f2fs_quota_sync is calling f2fs_lock_op, in an attempt to prevent
+an AB/BA type deadlock with quota_sem locking in block_operation.
+However, rwsem in Linux is not recursive. As a result, the following
+deadlock may occur:
 
-Please pull Kbuild fixes for v5.10
-Thanks.
+f2fs_quota_sync
+down_read(cp_rwsem) // f2fs_lock_op
+filemap_fdatawrite
+f2fs_write_data_pages
+...
+                                       block_opertaion
+				       down_write(cp_rwsem) - marks rwsem as "writer pending"
+down_read_trylock(cp_rwsem) - fails as there is
+                              a writer pending.
+			      Code keeps on trying.
 
+We solve this by creating a new rwsem, used specifically to
+synchronize this case, instead of attempting to reuse an existing lock
+for this
+---
+ fs/f2fs/f2fs.h  |  3 +++
+ fs/f2fs/super.c | 13 +++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
-
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-fixes-v5.10
-
-for you to fetch changes up to d1889589a4f54b2d1d7075d608b596d6fcfd3d96:
-
-  builddeb: Fix rootless build in setuid/setgid directory (2020-11-02
-11:31:00 +0900)
-
-----------------------------------------------------------------
-Kbuild fixes for v5.10
-
- - Remove unused OBJSIZE variable.
-
- - Fix rootless deb-pkg build in a setgid directory.
-
-----------------------------------------------------------------
-Sven Joachim (1):
-      builddeb: Fix rootless build in setuid/setgid directory
-
-Vasily Gorbik (1):
-      kbuild: remove unused OBJSIZE
-
- Documentation/kbuild/llvm.rst | 5 ++---
- Makefile                      | 4 +---
- scripts/package/builddeb      | 2 ++
- 3 files changed, 5 insertions(+), 6 deletions(-)
-
-
-
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index cb700d797296..b3e55137be7f 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1448,6 +1448,7 @@ struct f2fs_sb_info {
+ 	struct inode *meta_inode;		/* cache meta blocks */
+ 	struct mutex cp_mutex;			/* checkpoint procedure lock */
+ 	struct rw_semaphore cp_rwsem;		/* blocking FS operations */
++	struct rw_semaphore cp_quota_rwsem;    	/* blocking quota sync operations */
+ 	struct rw_semaphore node_write;		/* locking node writes */
+ 	struct rw_semaphore node_change;	/* locking node change */
+ 	wait_queue_head_t cp_wait;
+@@ -1961,12 +1962,14 @@ static inline void f2fs_unlock_op(struct f2fs_sb_info *sbi)
+ 
+ static inline void f2fs_lock_all(struct f2fs_sb_info *sbi)
+ {
++	down_write(&sbi->cp_quota_rwsem);
+ 	down_write(&sbi->cp_rwsem);
+ }
+ 
+ static inline void f2fs_unlock_all(struct f2fs_sb_info *sbi)
+ {
+ 	up_write(&sbi->cp_rwsem);
++	up_write(&sbi->cp_quota_rwsem);
+ }
+ 
+ static inline int __get_cp_reason(struct f2fs_sb_info *sbi)
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 00eff2f51807..5ce61147d7e5 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2209,8 +2209,16 @@ int f2fs_quota_sync(struct super_block *sb, int type)
+ 	 *  f2fs_dquot_commit
+ 	 *                            block_operation
+ 	 *                            down_read(quota_sem)
++	 *
++	 * However, we cannot use the cp_rwsem to prevent this
++	 * deadlock, as the cp_rwsem is taken for read inside the
++	 * f2fs_dquot_commit code, and rwsem is not recursive.
++	 *
++	 * We therefore use a special lock to synchronize
++	 * f2fs_quota_sync with block_operations, as this is the only
++	 * place where such recurrsion occurs.
+ 	 */
+-	f2fs_lock_op(sbi);
++	down_read(&sbi->cp_quota_rwsem);
+ 
+ 	down_read(&sbi->quota_sem);
+ 	ret = dquot_writeback_dquots(sb, type);
+@@ -2251,7 +2259,7 @@ int f2fs_quota_sync(struct super_block *sb, int type)
+ 	if (ret)
+ 		set_sbi_flag(F2FS_SB(sb), SBI_QUOTA_NEED_REPAIR);
+ 	up_read(&sbi->quota_sem);
+-	f2fs_unlock_op(sbi);
++	up_read(&sbi->cp_quota_rwsem);
+ 	return ret;
+ }
+ 
+@@ -3599,6 +3607,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	init_rwsem(&sbi->cp_rwsem);
+ 	init_rwsem(&sbi->quota_sem);
++	init_rwsem(&sbi->cp_quota_rwsem);
+ 	init_waitqueue_head(&sbi->cp_wait);
+ 	init_sb_info(sbi);
+ 
 -- 
-Best Regards
-Masahiro Yamada
+2.29.2
+
