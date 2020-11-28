@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311A02C7176
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BA72C7178
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391035AbgK1Vvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
+        id S2391055AbgK1Vvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731744AbgK1SzO (ORCPT
+        with ESMTP id S1731878AbgK1S4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:55:14 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF51C08E862
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 22:29:56 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id l11so3690369plt.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 22:29:56 -0800 (PST)
+        Sat, 28 Nov 2020 13:56:42 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB12AC08E864
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 22:33:17 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id t8so6316501pfg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 22:33:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fxLPby2ZZgodvkrXj4LnH57tvC3m1/hCBnaMrcy2erY=;
-        b=Maq0zLzAFKaZtJb5ziGaiU0K/c0512l0OMyhPTXo+1u+9ueY1GnF8wtjs5FQ0SWwV6
-         2xtGinrvIRXyEO3ajKZ8cAzRwDYWEO3ryz4wOapI0fPtt/kSP10105xv9GMyClpgfeIX
-         Dgz35YyDxSlutSCtE5K/KBFXA+WH0yrKAPqAi+Mvs/CZzbqQ5RVDf/G81zuBQ/HIR0za
-         zc7KzMIUEVKfAyALYj3jK3dTb+C/P33cp341XFlgZRfMvE53emP6OexeDAA5BsRxzN92
-         A4EnXGE+FGX/BzNTMkuhqCJTWL019vmRo9ilUuzOHqGkr1teINtK8k4lQE/bmjcpLOJI
-         il9g==
+         :content-disposition:in-reply-to:user-agent;
+        bh=DUSXiXpwL9MYF0t7RCjJUFWrXmRSwKXVWWmDaBGz+RY=;
+        b=l0m95lfOh2p2gTNq86P9XdpQe4EgjiSgD+fMOwTWGe2MQSvXM1FxkNdJBDB23ey3h4
+         OjFd97Lnkuc7vKHajeA7Ynn/vLmCIHK6NqOhdUK6jWalkAc41MjLuoIArnqLyoP1Us+W
+         XpbfeNb1npDJix6WRqkgikX/xusLuWpbcezpWQYFqO5mS0/al9lR4x0T0X2RJbXG8xzr
+         C/e7vqsvVNNWYPBaMiSXkR2XTcKEqIzqtvlaLdBpdQwA00FUMpKQlsh+pRCgxEtC7aIH
+         ImrWerzMYm7z9XlZQmMxj54d1dOXN8E/aiPbF6zJb/ryL4D4D3NQux42IJ3uZWgNzkBd
+         gMNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fxLPby2ZZgodvkrXj4LnH57tvC3m1/hCBnaMrcy2erY=;
-        b=sxMnhvNClNwH1endQJ0XGOB0HeiGkO2NV6O1ecwaCr46kD+Jhj1ew5jVARylQx4Apr
-         XM1cHrup5aQcpQNPtSHE1z5BmwvJXwaAWLsyPeHv1hCZs9Gd3s4WF0i/tpk5uDpokyfx
-         K2DHEO9lOt+CckevGiiDJGxIakXSCg5AqehzWGbVM12MuQaMGrSP0Y++6ik/w9xoZDal
-         ksEImj7u0yyjWGwr0GIvdPWhIFo3J/J/k4O8Yjk+p3H0Uq+QxsngajJLOUI5iMADbyIn
-         ZrruhAoxB2/WHggrTL9KkSwh28lxbSXQnOJwFpT71jpZMohL0jZSJF64UQWpu10kvlhq
-         B5tQ==
-X-Gm-Message-State: AOAM532/KLLdolTI89lk5JwxLBoC7UpgCrcFIRijMdvajevad7v7hdOb
-        FSLqKQe0IlNmDO7pkPwcicxv
-X-Google-Smtp-Source: ABdhPJzL+9TYLmg5wLLh3tUlGf+9HH7pyl8RV8UiyqNjgLU2dLWcdjREM5ERAsARecGIt1q7+gp+6Q==
-X-Received: by 2002:a17:902:26a:b029:d6:caca:620a with SMTP id 97-20020a170902026ab02900d6caca620amr10394493plc.46.1606544995450;
-        Fri, 27 Nov 2020 22:29:55 -0800 (PST)
-Received: from thinkpad ([2409:4072:15:c612:48ab:f1cc:6b16:2820])
-        by smtp.gmail.com with ESMTPSA id m8sm9060249pgg.1.2020.11.27.22.29.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 22:29:54 -0800 (PST)
-Date:   Sat, 28 Nov 2020 11:59:46 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Loic Poulain <loic.poulain@linaro.org>
-Cc:     Hemant Kumar <hemantk@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>,
-        skhan@linuxfoundation.org
-Subject: Re: [PATCH v12 1/5] bus: mhi: core: Add helper API to return number
- of free TREs
-Message-ID: <20201128062946.GL3077@thinkpad>
-References: <1605566782-38013-1-git-send-email-hemantk@codeaurora.org>
- <1605566782-38013-2-git-send-email-hemantk@codeaurora.org>
- <CAMZdPi-qxKgs==kXXuSY3Y-GTfcGb7WjQuzn3tXMt2NZNuzriA@mail.gmail.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DUSXiXpwL9MYF0t7RCjJUFWrXmRSwKXVWWmDaBGz+RY=;
+        b=gmshn/fw2vCTF9pRtUugk6KkXzQkMY31AdqPjv6qz697epHLhihFJIT+N2cdKJuHHh
+         OOaZ7NXVPpZYMWB6cx2AiKlqwmg/P7t+z9TsLPqAnnwfa0FLrB+IUrXHP9AMdoZyoZZu
+         /00ACFgTsBI0apzG0h2kjkLbQktlRAjFaBLSUT8YHu0gH24joB5YeT8rxbGA5dOTJ1Tw
+         B1A8VN7zEZGEFsZgYYG/uiLl9ijnhSx0U9nDt0gsHXIJ/usxgzGW1rabfplELbsSRtrc
+         MnyjflZBOauEM5She6YHvPBD/3tIDFBZ4tqVKJZubYuh1HbU3op6b+o8a04rspF/rIBH
+         3BaQ==
+X-Gm-Message-State: AOAM530zQwXMzbjv6J6jRg/tYHB6dmD3SmTNWvTb4TSvile/Gpd7I0db
+        Zr7sLzQgj1eAPr+Ywtk3tqk=
+X-Google-Smtp-Source: ABdhPJxM/SXPGPZ5djj5fAwxjN+Jh9s7zxv9s3a25Ft18C879ZH9k1/q1oN6VZt3zBjJhQEIz/9luw==
+X-Received: by 2002:a17:90b:1888:: with SMTP id mn8mr15055780pjb.158.1606545197284;
+        Fri, 27 Nov 2020 22:33:17 -0800 (PST)
+Received: from localhost ([209.9.72.213])
+        by smtp.gmail.com with ESMTPSA id k21sm8730687pfu.7.2020.11.27.22.33.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 27 Nov 2020 22:33:16 -0800 (PST)
+Date:   Sat, 28 Nov 2020 14:33:13 +0800
+From:   sunjunyong <sunjy516@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     arnd@arndb.de, sunjunyong@xiaomi.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ttyprintk: optimize tpk_close flush code
+Message-ID: <20201128063313.GA31258@mi-OptiPlex-7050>
+References: <1605579667-16573-1-git-send-email-sunjunyong@xiaomi.com>
+ <X7N2A+i22d6sC0lH@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMZdPi-qxKgs==kXXuSY3Y-GTfcGb7WjQuzn3tXMt2NZNuzriA@mail.gmail.com>
+In-Reply-To: <X7N2A+i22d6sC0lH@kroah.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 10:32:45AM +0100, Loic Poulain wrote:
-> On Mon, 16 Nov 2020 at 23:46, Hemant Kumar <hemantk@codeaurora.org> wrote:
-> >
-> > Introduce mhi_get_free_desc_count() API to return number
-> > of TREs available to queue buffer. MHI clients can use this
-> > API to know before hand if ring is full without calling queue
-> > API.
-> >
-> > Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> > Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
-> > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Hi Greg:
+
+Sorry for the late reply.
+> Why did you not make the change to tpk_printk() as well that I asked you
+> to?
 > 
-> In case this series get new comments to address, I would suggest
-> merging that patch in mhi-next separately so that other drivers can
-> start benefiting this function (I would like to use it in mhi-net).
-> 
+> It is a static function, you control the callers, so the extra "is this
+> NULL, if so flush" logic makes no sense to keep around anymore, right?
+tpk_printk have logic to judge whether the input parameter is NULL.But for
+below removed line, we already have known the input parameter is null, so
+we don't need call logic of judge NULL, just call tpk_flush to flush is enough.
+This is just a little optimization.
+----------------------------
+-	tpk_printk(NULL, 0);
+----------------------------
 
-Greg doesn't like that. He asked me to pick APIs only when there an in-tree
-consumer available.
-
-Thanks,
-Mani
-
-> Regards,
-> Loic
+Brs.
+Junyong
