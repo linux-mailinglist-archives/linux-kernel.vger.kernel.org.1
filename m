@@ -2,154 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B7D2C710B
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B912C712A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391264AbgK1Vw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:52:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732538AbgK1TBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:01:54 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EE9824654;
-        Sat, 28 Nov 2020 13:04:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606568677;
-        bh=AS491kcEn7jKh+dTN2DjipJSCONVK9RI7M4QUO1+bWA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IiABbyqxpzx3IX+fmZnshBsjQyTtfEL2BZT8r5nxjhrwYN2CmVUrZzlXkCeAxFsdz
-         TeOviaUeTsmKofhuHdhRL9/WTruz3H8RKnC9hTVF/viFpir1/7xNx5sm93p2pYp1zb
-         8e3pcq3zoDwASCdjOGZFZ4Pyq6W3uf0yOhFclo9c=
-Date:   Sat, 28 Nov 2020 13:04:33 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <colin.king@canonical.com>
-Subject: Re: [PATCH 1/2] iio: adc: ad7298: convert probe to device-managed
- functions
-Message-ID: <20201128130433.320de46e@archlinux>
-In-Reply-To: <20201127094038.91714-1-alexandru.ardelean@analog.com>
-References: <20201127094038.91714-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S2391447AbgK1VyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387454AbgK1TJk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 14:09:40 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2472C02A198
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 05:05:12 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id t21so6502936pgl.3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 05:05:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Xj/wOuewoXtxSC2fvuTGoHr7LuRtI1vwyFKb4n55N8M=;
+        b=Vivdeg63zuyH99Tu6ZodGMLMs2snTtoCeMiCy8Iw9rO6bhqnszPnwStsH2mdk4IV98
+         QyuApsUzeJunT4wNwUC35Sk1Bo6Wx6BF3/3HOOFw0ZKFcecybeQ+ABdFE2dA6xqEVFHC
+         USZZ4VU+rbtr/kvs0HMJUhCmnPnhpyUn8CglSs7WWEozB9rPDprRML45TOErSPg/55Xg
+         VBI/fJtAZMmn9xhQ/e6NzD2TSMiyzihVVttv7sSxwp/YzXtQLpefHEsP7UjCL6YAugWf
+         wA3E+ZFtu8uJ2hQLVPKF9rYylSU1hUZZjQpQzGHrer6ftk2IPt8p6dWLRqRdf/rQJyd4
+         Uahg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Xj/wOuewoXtxSC2fvuTGoHr7LuRtI1vwyFKb4n55N8M=;
+        b=qOhnSyaNGiJoRXmVJoHzy46A9dBznf8oc7Hfq4Op3q7Mk8gN630vQth8Hm+JMyZOCw
+         jYLx6dTY/u+WaLvQZPrv8qucoJZZCpTT6Wgc85PBzNtKRkHTW+BBc24MHbfBRxaSrdFI
+         BkYTEh3S91sHWvBYYTEV88l2Inzlt7LxfnVtciHbdU/ZXLcid7f/HA7hZuVmeEaE4yr5
+         TWPTFh1JvLcuvouxGvVLdaN1oS4KJIQuyWUj5tO+Ubdl6QGKEerxoNwU1b+nzOEXCKfK
+         SFv9ZouiH9ANMEe7+cfd7lc4nM8gqZbsE+uTVUfySdY2apuIJl0bY55U5F09CpoHX5jj
+         iKWg==
+X-Gm-Message-State: AOAM531K2JsB/Q8TubJqIEzAF+RK4oWwNmNXJpnWpHxcLj0S2eqg+J6J
+        EkpyMg1GHDqJdDgK8dL1TuPssOoqVnhDQQ==
+X-Google-Smtp-Source: ABdhPJwSLoLLS/cP/1h1WGDVTAGN0DMvMaRmhps5HAWHQtXSEqmS5Io8bMox6NlIa+Cuagqra31G1g==
+X-Received: by 2002:a17:90a:c484:: with SMTP id j4mr11130527pjt.69.1606568712219;
+        Sat, 28 Nov 2020 05:05:12 -0800 (PST)
+Received: from localhost.localdomain ([2402:3a80:410:2e8b:3868:c1d5:d398:f361])
+        by smtp.googlemail.com with ESMTPSA id 84sm10472123pfu.53.2020.11.28.05.05.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Nov 2020 05:05:11 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     joe@perches.com
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] checkpatch: add fix and improve warning msg for non-standard signature
+Date:   Sat, 28 Nov 2020 18:35:01 +0530
+Message-Id: <20201128130501.23448-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 11:40:37 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+Currently checkpatch warns for BAD_SIGN_OFF on non-standard signature
+styles.
 
-> This change converts the probe of this driver to use device-managed
-> register functions, and a devm_add_action_or_reset() for the regulator
-> disable.
-> 
-> With this, the exit & error paths can be removed.
-> Another side-effect is that this should avoid some static-analyzer's check
-> with respect to a potential null dereference of the regulator. The null
-> dereference isn't likely to happen (under normal operation), so there isn't
-> a requirement to have this fixed/backported in other releases.
-> 
-> As a note: this is removing spi_set_drvdata() since there is no other
-> spi_get_drvdata() (or dev_get_drvdata()) call that need it.
-> 
-> Cc: Colin Ian King <colin.king@canonical.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Series applied to the togreg branch of iio.git and pushed out as testing
-for the autobuilders to work their magic.
+A large number of these warnings occur because of typo mistakes in
+signature tags. An evaluation over v4.13..v5.8 showed that out of 539
+warnings due to non-standard signatures, 87 are due to typo mistakes.
 
-Thanks,
+Following are the standard signature tags which are often incorrectly
+used, along with their individual counts of incorrect use (over
+v4.13..v5.8):
 
-Jonathan
+ Reviewed-by: 42
+ Signed-off-by: 25
+ Reported-by: 6
+ Acked-by: 4
+ Tested-by: 4
+ Suggested-by: 4
 
-> ---
->  drivers/iio/adc/ad7298.c | 46 +++++++++++++---------------------------
->  1 file changed, 15 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ad7298.c b/drivers/iio/adc/ad7298.c
-> index fa1047f74a1f..ecdb01bd5b2f 100644
-> --- a/drivers/iio/adc/ad7298.c
-> +++ b/drivers/iio/adc/ad7298.c
-> @@ -279,6 +279,13 @@ static const struct iio_info ad7298_info = {
->  	.update_scan_mode = ad7298_update_scan_mode,
->  };
->  
-> +static void ad7298_reg_disable(void *data)
-> +{
-> +	struct regulator *reg = data;
-> +
-> +	regulator_disable(reg);
-> +}
-> +
->  static int ad7298_probe(struct spi_device *spi)
->  {
->  	struct ad7298_state *st;
-> @@ -306,9 +313,12 @@ static int ad7298_probe(struct spi_device *spi)
->  		ret = regulator_enable(st->reg);
->  		if (ret)
->  			return ret;
-> -	}
->  
-> -	spi_set_drvdata(spi, indio_dev);
-> +		ret = devm_add_action_or_reset(&spi->dev, ad7298_reg_disable,
-> +					       st->reg);
-> +		if (ret)
-> +			return ret;
-> +	}
->  
->  	st->spi = spi;
->  
-> @@ -334,37 +344,12 @@ static int ad7298_probe(struct spi_device *spi)
->  	spi_message_add_tail(&st->scan_single_xfer[1], &st->scan_single_msg);
->  	spi_message_add_tail(&st->scan_single_xfer[2], &st->scan_single_msg);
->  
-> -	ret = iio_triggered_buffer_setup(indio_dev, NULL,
-> +	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev, NULL,
->  			&ad7298_trigger_handler, NULL);
->  	if (ret)
-> -		goto error_disable_reg;
-> -
-> -	ret = iio_device_register(indio_dev);
-> -	if (ret)
-> -		goto error_cleanup_ring;
-> -
-> -	return 0;
-> -
-> -error_cleanup_ring:
-> -	iio_triggered_buffer_cleanup(indio_dev);
-> -error_disable_reg:
-> -	if (st->ext_ref)
-> -		regulator_disable(st->reg);
-> -
-> -	return ret;
-> -}
-> -
-> -static int ad7298_remove(struct spi_device *spi)
-> -{
-> -	struct iio_dev *indio_dev = spi_get_drvdata(spi);
-> -	struct ad7298_state *st = iio_priv(indio_dev);
-> -
-> -	iio_device_unregister(indio_dev);
-> -	iio_triggered_buffer_cleanup(indio_dev);
-> -	if (st->ext_ref)
-> -		regulator_disable(st->reg);
-> +		return ret;
->  
-> -	return 0;
-> +	return devm_iio_device_register(&spi->dev, indio_dev);
->  }
->  
->  static const struct spi_device_id ad7298_id[] = {
-> @@ -378,7 +363,6 @@ static struct spi_driver ad7298_driver = {
->  		.name	= "ad7298",
->  	},
->  	.probe		= ad7298_probe,
-> -	.remove		= ad7298_remove,
->  	.id_table	= ad7298_id,
->  };
->  module_spi_driver(ad7298_driver);
+Provide a fix by calculating levenshtein distance for the signature tag
+with all the standard signatures and suggest a fix with a signature, whose
+edit distance is less than or equal to 2 with the misspelled signature.
+
+Out of the 86 mispelled signatures fixed with this approach, 85 were
+found to be good corrections and 1 was bad correction.
+
+Following was found to be a bad correction:
+ Tweeted-by (count: 1) => Tested-by
+
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+changes in v2: modify commit message: replace specific example with overall evaluation, minor changes
+
+changes in v3: summarize commit message
+
+changes in v4: improve commit message; remove signature suggestions of small length (ie 'cc' and 'to')
+
+ scripts/checkpatch.pl | 85 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 83 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fdfd5ec09be6..2b1afd763d8d 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -506,6 +506,77 @@ our $signature_tags = qr{(?xi:
+ 	Cc:
+ )};
+ 
++sub get_min {
++	my (@arr) = @_;
++	my $len = scalar @arr;
++	if((scalar @arr) < 1) {
++		# if underflow, return
++		return;
++	}
++	my $min = $arr[0];
++	for my $i (0 .. ($len-1)) {
++		if ($arr[$i] < $min) {
++			$min = $arr[$i];
++		}
++	}
++	return $min;
++}
++
++sub get_edit_distance {
++	my ($str1, $str2) = @_;
++	my $len1 = length($str1);
++	my $len2 = length($str2);
++	# two dimensional array storing minimum edit distance
++	my @distance;
++	for my $i (0 .. $len1) {
++		for my $j (0 .. $len2) {
++			if ($i == 0) {
++				$distance[$i][$j] = $j;
++			}
++			elsif ($j == 0) {
++				$distance[$i][$j] = $i;
++			}
++			elsif (substr($str1, $i-1, 1) eq substr($str2, $j-1, 1)) {
++				$distance[$i][$j] = $distance[$i - 1][$j - 1];
++			}
++			else {
++				my $dist1 = $distance[$i][$j - 1]; #insert distance
++				my $dist2 = $distance[$i - 1][$j]; # remove
++				my $dist3 = $distance[$i - 1][$j - 1]; #replace
++				$distance[$i][$j] = 1 + get_min($dist1, $dist2, $dist3);
++			}
++		}
++	}
++	return $distance[$len1][$len2];
++}
++
++sub get_standard_signature {
++	my ($sign_off) = @_;
++	$sign_off = lc($sign_off);
++	$sign_off =~ s/\-//g; # to match with formed hash
++	my @standard_signature_tags = (
++		'signed-off-by:', 'co-developed-by:', 'acked-by:', 'tested-by:',
++		'reviewed-by:', 'reported-by:', 'suggested-by:'
++	);
++	# setting default values
++	my $standard_signature = 'signed-off-by';
++	my $min_edit_distance = 20;
++	my $edit_distance;
++	foreach (@standard_signature_tags) {
++		my $signature = $_;
++		$_ =~ s/\-//g;
++		$edit_distance = get_edit_distance($sign_off, $_);
++		if ($edit_distance < $min_edit_distance) {
++			$min_edit_distance = $edit_distance;
++			$standard_signature = $signature;
++		}
++	}
++        if($min_edit_distance<=2) {
++		return ucfirst($standard_signature);
++        }
++	return "";
++}
++
+ our @typeListMisordered = (
+ 	qr{char\s+(?:un)?signed},
+ 	qr{int\s+(?:(?:un)?signed\s+)?short\s},
+@@ -2773,8 +2844,18 @@ sub process {
+ 			my $ucfirst_sign_off = ucfirst(lc($sign_off));
+ 
+ 			if ($sign_off !~ /$signature_tags/) {
+-				WARN("BAD_SIGN_OFF",
+-				     "Non-standard signature: $sign_off\n" . $herecurr);
++				my $suggested_signature = get_standard_signature($sign_off);
++				if ($suggested_signature eq "") {
++					WARN("BAD_SIGN_OFF",
++					"Non-standard signature: $sign_off\n" . $herecurr);
++				}
++				else {
++					if (WARN("BAD_SIGN_OFF",
++						 "Non-standard signature: $sign_off. Please use '$suggested_signature' instead\n" . $herecurr) &&
++					    $fix) {
++						$fixed[$fixlinenr] =~ s/$sign_off/$suggested_signature/;
++					}
++				}
+ 			}
+ 			if (defined $space_before && $space_before ne "") {
+ 				if (WARN("BAD_SIGN_OFF",
+-- 
+2.17.1
 
