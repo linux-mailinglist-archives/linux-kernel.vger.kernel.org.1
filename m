@@ -2,149 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5942C7137
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F342C7158
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:57:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404171AbgK1Vy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:54:56 -0500
-Received: from conuserg-09.nifty.com ([210.131.2.76]:40107 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387560AbgK1Tft (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:35:49 -0500
-Received: from grover.RMN.KIBA.LAB.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 0ASJXeQS028710;
-        Sun, 29 Nov 2020 04:33:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 0ASJXeQS028710
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606592021;
-        bh=jLumgvXrvZOXOwLum8VDFamzZ4g8hoOKUXqB+QzEoCA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=a03Y7n9C7d/dHHXZ1jz3AFYINn0HlDsQm2lJGA0pKZQ4bJCsNX99LqpbVopvMAFlX
-         hc/QOVEnWUjS8P3yUr2mzZqP4mfIfnygFf3Jt1kzXNlYc4alRYYc6DytXa6RVU+CYj
-         RoMovrncDjfucSCfllR9iOAVFgueYxy2XAPSOcEzUINlCE85RFG8b2YkvBQXrP/PVc
-         kDhXulbieo7rN6tYorDFy0Kjj6BQ2cglNu+VYzP9nzvvACYCz/lWzaT9JgSSL9yOpL
-         ndCCWdHK+L/gDNAF2U+HPGomEfrPFb5GWWcP6f67RKlsUSYS6xWprBhQ/m3zCRMOrt
-         QVyN+POsrIXmA==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        wireguard@lists.zx2c4.com
-Subject: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
-Date:   Sun, 29 Nov 2020 04:33:35 +0900
-Message-Id: <20201128193335.219395-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S2404193AbgK1VzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:55:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387567AbgK1Thg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 14:37:36 -0500
+Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E23021527;
+        Sat, 28 Nov 2020 19:36:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606592215;
+        bh=c1x2VcILF4zR3MrshwEk2bDeOnWYpbs+y6qDeQ6KUus=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GRfGr7Rsp5EHCuDMUjcuQXQrQzvJqpRDGPnYhTHYbAOwRTCvNbJzBPXJu5bIEY6hK
+         7O2kalbqiakzUmGjJE1vGxR5DkAUykD8ZOHG/s6+soZOg/4dEPffwYFvjInnOmbRbQ
+         J0Rk5Q6Dxsw+KJ9No3/jUm7AD25/v7CDQ9bxAVv4=
+Date:   Sat, 28 Nov 2020 11:36:54 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Daniel Axtens <dja@axtens.net>, Joel Stanley <joel@jms.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-renesas-soc@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>
+Subject: Re: [PATCH] powerpc: fix the allyesconfig build
+Message-ID: <20201128113654.4f2dcabe@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201128162054.575aea29@canb.auug.org.au>
+References: <20201128122819.32187696@canb.auug.org.au>
+        <20201127175642.45502b20@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        <20201128162054.575aea29@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Revert commit cebc04ba9aeb ("add CONFIG_ENABLE_MUST_CHECK").
+On Sat, 28 Nov 2020 16:20:54 +1100 Stephen Rothwell wrote:
+> On Fri, 27 Nov 2020 17:56:42 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > What's the offending structure in hisilicon? I'd rather have a look
+> > packing structs with pointers in 'em sounds questionable.
+> > 
+> > I only see these two:
+> > 
+> > $ git grep packed drivers/net/ethernet/hisilicon/
+> > drivers/net/ethernet/hisilicon/hns/hnae.h:struct __packed hnae_desc {
+> > drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:struct __packed hns3_desc {  
+> 
+> struct hclge_dbg_reg_type_info which is 28 bytes long due to the
+> included struct struct hclge_dbg_reg_common_msg (which is 12 bytes
+> long).  They are surrounded by #pragma pack(1)/pack().
+> 
+> This forces the 2 pointers in each second array element of
+> hclge_dbg_reg_info[] to be 4 byte aligned (where pointers are 8 bytes
+> long on PPC64).
 
-A lot of warn_unused_result warnings existed in 2006, but until now
-they have been fixed thanks to people doing allmodconfig tests.
+Ah! Thanks, I don't see a reason for these to be packed. 
+Looks  like an accident, there is no reason to pack anything 
+past struct hclge_dbg_reg_common_msg AFAICT.
 
-Our goal is to always enable __must_check where appropriate, so this
-CONFIG option is no longer needed.
-
-I see a lot of defconfig (arch/*/configs/*_defconfig) files having:
-
-    # CONFIG_ENABLE_MUST_CHECK is not set
-
-I did not touch them for now since it would be a big churn. If arch
-maintainers want to clean them up, please go ahead.
-
-While I was here, I also moved __must_check to compiler_attributes.h
-from compiler_types.h
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
-
-Changes in v3:
-  - Fix a typo
-
-Changes in v2:
-  - Move __must_check to compiler_attributes.h
-
- include/linux/compiler_attributes.h                 | 7 +++++++
- include/linux/compiler_types.h                      | 6 ------
- lib/Kconfig.debug                                   | 8 --------
- tools/testing/selftests/wireguard/qemu/debug.config | 1 -
- 4 files changed, 7 insertions(+), 15 deletions(-)
-
-diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-index b2a3f4f641a7..5f3b7edad1a7 100644
---- a/include/linux/compiler_attributes.h
-+++ b/include/linux/compiler_attributes.h
-@@ -171,6 +171,13 @@
-  */
- #define __mode(x)                       __attribute__((__mode__(x)))
- 
-+/*
-+ *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-warn_005funused_005fresult-function-attribute
-+ * clang: https://clang.llvm.org/docs/AttributeReference.html#nodiscard-warn-unused-result
-+ *
-+ */
-+#define __must_check                    __attribute__((__warn_unused_result__))
-+
- /*
-  * Optional: only supported since gcc >= 7
-  *
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index ac3fa37a84f9..7ef20d1a6c28 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -110,12 +110,6 @@ struct ftrace_likely_data {
- 	unsigned long			constant;
- };
- 
--#ifdef CONFIG_ENABLE_MUST_CHECK
--#define __must_check		__attribute__((__warn_unused_result__))
--#else
--#define __must_check
--#endif
--
- #if defined(CC_USING_HOTPATCH)
- #define notrace			__attribute__((hotpatch(0, 0)))
- #elif defined(CC_USING_PATCHABLE_FUNCTION_ENTRY)
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index c789b39ed527..cb8ef4fd0d02 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -286,14 +286,6 @@ config GDB_SCRIPTS
- 
- endif # DEBUG_INFO
- 
--config ENABLE_MUST_CHECK
--	bool "Enable __must_check logic"
--	default y
--	help
--	  Enable the __must_check logic in the kernel build.  Disable this to
--	  suppress the "warning: ignoring return value of 'foo', declared with
--	  attribute warn_unused_result" messages.
--
- config FRAME_WARN
- 	int "Warn for stack frames larger than"
- 	range 0 8192
-diff --git a/tools/testing/selftests/wireguard/qemu/debug.config b/tools/testing/selftests/wireguard/qemu/debug.config
-index b50c2085c1ac..fe07d97df9fa 100644
---- a/tools/testing/selftests/wireguard/qemu/debug.config
-+++ b/tools/testing/selftests/wireguard/qemu/debug.config
-@@ -1,5 +1,4 @@
- CONFIG_LOCALVERSION="-debug"
--CONFIG_ENABLE_MUST_CHECK=y
- CONFIG_FRAME_POINTER=y
- CONFIG_STACK_VALIDATION=y
- CONFIG_DEBUG_KERNEL=y
--- 
-2.27.0
-
+Huawei folks, would you mind sending a fix if the analysis is correct?
