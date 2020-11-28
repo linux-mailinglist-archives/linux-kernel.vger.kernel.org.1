@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C312C6ECE
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3E32C6ECF
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732514AbgK1Eat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 23:30:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731107AbgK1E0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 23:26:15 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE87822210;
-        Sat, 28 Nov 2020 04:02:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1606536139;
-        bh=cEMGKa+zaxvHsRTKQlwMDDceDlj0bM6QUnQtUx0U94c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JAALZCsu2JDfiEM8zsNRQXwSeYlLs10hrPu3LQgqgHaCQf7jTRXkxTF+UxLNcJQU9
-         fd83a8RvMdiCYjGXuARb2VEaYNdZKJrNzETQjq7U/saO8xsyVSdhWOHW38Cx+8Qmo8
-         E+ayM46ekK+b369uO9g7eeBP8IkN7SilD8RrPd1I=
-Date:   Fri, 27 Nov 2020 20:02:15 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/memcg: bail out early when !memcg in
- mem_cgroup_lruvec
-Message-Id: <20201127200215.dc96a839cdd816361e7093e6@linux-foundation.org>
-In-Reply-To: <1606446515-36069-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1606446515-36069-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1732557AbgK1EgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 23:36:19 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2317 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731107AbgK1EbZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 23:31:25 -0500
+Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CjdHN68zHz13NCK;
+        Sat, 28 Nov 2020 12:07:12 +0800 (CST)
+Received: from [10.140.157.68] (10.140.157.68) by
+ dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Sat, 28 Nov 2020 12:07:52 +0800
+Subject: Re: [PATCH v5 0/4] Enable Hi3559A SOC clock and HiSilicon Hiedma
+ Controller
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>,
+        <dan.j.williams@intel.com>, <p.zabel@pengutronix.de>,
+        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>
+References: <20201119200129.28532-1-gengdongjiu@huawei.com>
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+Message-ID: <bac15a2e-b9db-b7b0-6004-ad76fa8c5be5@huawei.com>
+Date:   Sat, 28 Nov 2020 12:07:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.6.0
+MIME-Version: 1.0
+In-Reply-To: <20201119200129.28532-1-gengdongjiu@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.140.157.68]
+X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
+ dggeme755-chm.china.huawei.com (10.3.19.101)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 11:08:35 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
+ping, sorry for the noise.
 
-> Sometime, we use NULL memcg in mem_cgroup_lruvec(memcg, pgdat)
-> so we could get out early in the situation to avoid useless checking.
+
+On 2020/11/20 4:01, Dongjiu Geng wrote:
+> v4->v5:
+> 1. change the patch author mail name
 > 
-> Also warning if both parameter are NULL.
-
-Why do you think a warning is needed here?
-
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -613,14 +613,13 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  	struct mem_cgroup_per_node *mz;
->  	struct lruvec *lruvec;
->  
-> -	if (mem_cgroup_disabled()) {
-> +	VM_WARN_ON_ONCE(!memcg && !pgdat);
-> +
-> +	if (mem_cgroup_disabled() || !memcg) {
->  		lruvec = &pgdat->__lruvec;
->  		goto out;
->  	}
->  
-> -	if (!memcg)
-> -		memcg = root_mem_cgroup;
-> -
-
-This change isn't obviously equivalent, is it?
-
->  	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
->  	lruvec = &mz->lruvec;
->  out:
-
-And the resulting code is awkward:
-
-	if (mem_cgroup_disabled() || !memcg) {
-		lruvec = &pgdat->__lruvec;
-		goto out;
-	}
-
-	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
-	lruvec = &mz->lruvec;
-out:
-
-
-could be
-
-	if (mem_cgroup_disabled() || !memcg) {
-		lruvec = &pgdat->__lruvec;
-	} else {
-		mem_cgroup_per_node mz;
-
-		mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
-		lruvec = &mz->lruvec;
-	}
-
+> v3->v4:
+> 1. fix the 'make dt_binding_check' issues.
+> 2. Combine the 'Enable HiSilicon Hiedma Controller' series patches to this series.
+> 3. fix the 'make dt_binding_check' issues in 'Enable HiSilicon Hiedma Controller' patchset
+> 
+> 
+> v2->v3:
+> 1. change dt-bindings documents from txt to yaml format.
+> 2. Add SHUB clock to access the devices of m7
+> 
+> Dongjiu Geng (4):
+>   dt-bindings: Document the hi3559a clock bindings
+>   clk: hisilicon: Add clock driver for hi3559A SoC
+>   dt: bindings: dma: Add DT bindings for HiSilicon Hiedma Controller
+>   dmaengine: dma: Add Hiedma Controller v310 Device Driver
+> 
+>  .../clock/hisilicon,hi3559av100-clock.yaml    |   66 +
+>  .../bindings/dma/hisilicon,hiedmacv310.yaml   |  103 ++
+>  drivers/clk/hisilicon/Kconfig                 |    7 +
+>  drivers/clk/hisilicon/Makefile                |    1 +
+>  drivers/clk/hisilicon/clk-hi3559a.c           |  865 ++++++++++
+>  drivers/dma/Kconfig                           |   14 +
+>  drivers/dma/Makefile                          |    1 +
+>  drivers/dma/hiedmacv310.c                     | 1441 +++++++++++++++++
+>  drivers/dma/hiedmacv310.h                     |  136 ++
+>  include/dt-bindings/clock/hi3559av100-clock.h |  165 ++
+>  10 files changed, 2799 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
+>  create mode 100644 Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
+>  create mode 100644 drivers/clk/hisilicon/clk-hi3559a.c
+>  create mode 100644 drivers/dma/hiedmacv310.c
+>  create mode 100644 drivers/dma/hiedmacv310.h
+>  create mode 100644 include/dt-bindings/clock/hi3559av100-clock.h
+> 
