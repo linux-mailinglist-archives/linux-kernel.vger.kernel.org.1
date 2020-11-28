@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1692C7087
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 311552C707A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733182AbgK1SAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 13:00:18 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:40566 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729781AbgK1R6Q (ORCPT
+        id S1732384AbgK1R7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 12:59:39 -0500
+Received: from condef-05.nifty.com ([202.248.20.70]:56476 "EHLO
+        condef-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728737AbgK1R5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 12:58:16 -0500
-Received: from relay7-d.mail.gandi.net (unknown [217.70.183.200])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 922D53A2CF0;
-        Sat, 28 Nov 2020 11:07:02 +0000 (UTC)
-X-Originating-IP: 93.29.109.196
-Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3FE4B20007;
-        Sat, 28 Nov 2020 11:06:39 +0000 (UTC)
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v3 0/2] media: i2c: OV5648 image sensor support
-Date:   Sat, 28 Nov 2020 12:06:24 +0100
-Message-Id: <20201128110626.456472-1-paul.kocialkowski@bootlin.com>
-X-Mailer: git-send-email 2.29.2
+        Sat, 28 Nov 2020 12:57:24 -0500
+Received: from conuserg-07.nifty.com ([10.126.8.70])by condef-05.nifty.com with ESMTP id 0ASBqO0J018974;
+        Sat, 28 Nov 2020 20:52:24 +0900
+Received: from grover.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 0ASBpD6A027804;
+        Sat, 28 Nov 2020 20:51:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 0ASBpD6A027804
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606564274;
+        bh=Oe2ZFAifC7/qdzprizr4QT5l0mFUMCDjLUG0sLhHkhg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=o/Sv0ww+iUid2SRO1Ut0r/Qraf8ys4jUb01lSJPxzQdd34OGGcSSDvc41ecS13u65
+         ftzx9V71JNYBIMe6xW8hXNZLuQVrI5Yzk6ieDq59ULTkLZDCH0PpPfLOwUUYJqLCwQ
+         A/fMn7R3hyRWzZWCeLmVOVLMQzYXrJrRO9ji0XBrRjamphfn5M7dbgvRGpgoBSzwXV
+         Vg6/0sZbSpSZkEWGxYt2ArS7oKd92YFcpU6A4Z1Q26EkPTwOsdCmquNFby3ez+iEHo
+         jBmWyreIHKSiXi2B8+oq2mp7HqwQXu+xMnf0FUjjKXVegC/FORiU4lgb201aO7gVwP
+         7UyPswJKyvQJQ==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/7] kbuild: doc: update the description about kbuild Makefiles
+Date:   Sat, 28 Nov 2020 20:51:02 +0900
+Message-Id: <20201128115108.179256-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for the OV5648 image sensor,
-as a V4L2 subdev driver.
+This line was written in 2003. Now we have much more Makefiles.
 
-Changes since v2:
-- Added link-frequencies endpoint property support;
-- Used NULL ctrl ops for pixel rate and link freq;
-- Extra cosmetic changes.
+The number of Makefiles is not important. The point is we have a
+Makefile in (almost) every directory.
 
-Changes since v1:
-- Used runtime pm;
-- Used assigned-clock-rate;
-- Removed clock name;
-- Returned closest size in set_fmt;
-- Removed unneeded references to v4l2 controls;
-- Removed i2c device table;
-- Dual-licensed bindings;
-- Used SPDX tags.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Paul Kocialkowski (2):
-  dt-bindings: media: i2c: Add OV5648 bindings documentation
-  media: i2c: Add support for the OV5648 image sensor
+(no changes since v1)
 
- .../bindings/media/i2c/ovti,ov5648.yaml       |  115 +
- drivers/media/i2c/Kconfig                     |   14 +
- drivers/media/i2c/Makefile                    |    1 +
- drivers/media/i2c/ov5648.c                    | 2715 +++++++++++++++++
- 4 files changed, 2845 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml
- create mode 100644 drivers/media/i2c/ov5648.c
+ Documentation/kbuild/makefiles.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
+index 0d5dd5413af0..a7b874097a91 100644
+--- a/Documentation/kbuild/makefiles.rst
++++ b/Documentation/kbuild/makefiles.rst
+@@ -71,7 +71,7 @@ The Makefiles have five parts::
+ 	.config			the kernel configuration file.
+ 	arch/$(ARCH)/Makefile	the arch Makefile.
+ 	scripts/Makefile.*	common rules etc. for all kbuild Makefiles.
+-	kbuild Makefiles	there are about 500 of these.
++	kbuild Makefiles	exist in every subdirectory
+ 
+ The top Makefile reads the .config file, which comes from the kernel
+ configuration process.
 -- 
-2.29.2
+2.27.0
 
