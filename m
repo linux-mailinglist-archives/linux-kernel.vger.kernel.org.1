@@ -2,120 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F6C2C6EBE
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 648692C6EC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731568AbgK1ECR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 23:02:17 -0500
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:43890 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730991AbgK1Dnu (ORCPT
+        id S1732453AbgK1EWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 23:22:17 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8455 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731652AbgK1ENd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 22:43:50 -0500
-Received: from pps.filterd (m0150245.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AS3cpFT011940;
-        Sat, 28 Nov 2020 03:42:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pps0720;
- bh=24akV8Ya8RoKe3CU3rPNfvY3ectYNJNlA27cMRIlZKw=;
- b=Ve3MwMhFi+0IRIWU7HJo7wg9e7J7Qj412TGMoC8zQZPH53IiphYDziwMX7Jabu5AEyiz
- vzZ4WbOy/Lrrlz5OdNkup+VPg/fH+2EbhW4q2K2lfuW6KR1KK1r7gtlRYi+eKkmDyaXL
- h7La55UmPRovWoCFrLgNsKADEUygRHYE/98J6i22rKk6VN3yNOF6xLtoJ7n7hvGUKwym
- 3mAyXoUaC9flpEwy7X6yinjtFaNftMTu+167ITmXMDwvd4ze/QJ7afPh4iLh0i0f3pke
- 1sfJbVl/UVuv4aEFOXoqDLdbthARkoVU0wNhLQCt2rcjfdWQR/E4CNfmCKHRdz0K5bUq ZQ== 
-Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 3532m2m0dg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 28 Nov 2020 03:42:57 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 1950766;
-        Sat, 28 Nov 2020 03:42:57 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 1BCA84A;
-        Sat, 28 Nov 2020 03:42:56 +0000 (UTC)
-From:   Mike Travis <mike.travis@hpe.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>
-Cc:     Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH v2 4/5] x86/platform/uv: Add deprecated messages to /proc info leaves
-Date:   Fri, 27 Nov 2020 21:42:26 -0600
-Message-Id: <20201128034227.120869-5-mike.travis@hpe.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201128034227.120869-1-mike.travis@hpe.com>
-References: <20201128034227.120869-1-mike.travis@hpe.com>
+        Fri, 27 Nov 2020 23:13:33 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CjcxS2xGMzhhV5;
+        Sat, 28 Nov 2020 11:51:40 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 28 Nov 2020 11:51:47 +0800
+From:   Huazhong Tan <tanhuazhong@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>, <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>
+Subject: [PATCH V2 net-next 0/7] net: hns3: updates for -next
+Date:   Sat, 28 Nov 2020 11:51:43 +0800
+Message-ID: <1606535510-44346-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-28_02:2020-11-26,2020-11-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- spamscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 impostorscore=0 phishscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011280025
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "deprecated" message to any access to old /proc/sgi_uv/* leaves.
+This series includes some updates for the HNS3 ethernet driver.
 
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
----
- arch/x86/kernel/apic/x2apic_uv_x.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+#1~#6: add some updates related to the checksum offload.
+#7: add support for multiple TCs' MAC pauce mode.
 
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 48746031b39a..4248579825fb 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -1615,21 +1615,33 @@ static void check_efi_reboot(void)
- 		reboot_type = BOOT_ACPI;
- }
- 
--/* Setup user proc fs files */
-+/*
-+ * User proc fs file handling now deprecated.
-+ * Recommend using /sys/firmware/sgi_uv/... instead.
-+ */
- static int __maybe_unused proc_hubbed_show(struct seq_file *file, void *data)
- {
-+	pr_notice_once(
-+		"%s: using deprecated /proc/sgi_uv/hubbed, use /sys/firmware/sgi_uv/hub_type\n",
-+		current->comm);
- 	seq_printf(file, "0x%x\n", uv_hubbed_system);
- 	return 0;
- }
- 
- static int __maybe_unused proc_hubless_show(struct seq_file *file, void *data)
- {
-+	pr_notice_once(
-+		"%s: using deprecated /proc/sgi_uv/hubless, use /sys/firmware/sgi_uv/hubless\n",
-+		current->comm);
- 	seq_printf(file, "0x%x\n", uv_hubless_system);
- 	return 0;
- }
- 
- static int __maybe_unused proc_archtype_show(struct seq_file *file, void *data)
- {
-+	pr_notice_once(
-+		"%s: using deprecated /proc/sgi_uv/archtype, use /sys/firmware/sgi_uv/archtype\n",
-+		current->comm);
- 	seq_printf(file, "%s/%s\n", uv_archtype, oem_table_id);
- 	return 0;
- }
+change log:
+V2: fixes some sparse errors in #1 & #5.
+
+previous version:
+V1: https://patchwork.kernel.org/project/netdevbpf/cover/1606466842-57749-1-git-send-email-tanhuazhong@huawei.com/
+
+Huazhong Tan (6):
+  net: hns3: add support for RX completion checksum
+  net: hns3: add support for TX hardware checksum offload
+  net: hns3: remove unsupported NETIF_F_GSO_UDP_TUNNEL_CSUM
+  net: hns3: add udp tunnel checksum segmentation support
+  net: hns3: add more info to hns3_dbg_bd_info()
+  net: hns3: add a check for devcie's verion in hns3_tunnel_csum_bug()
+
+Yonglong Liu (1):
+  net: hns3: keep MAC pause mode when multiple TCs are enabled
+
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |   7 +-
+ drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c |  62 ++++++++--
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 131 ++++++++++++++++-----
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  21 +++-
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c |   4 +
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h |   3 +-
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c  |  23 +++-
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c   |   4 +
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h   |   3 +-
+ 10 files changed, 207 insertions(+), 52 deletions(-)
+
 -- 
-2.21.0
+2.7.4
 
