@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FE12C741A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C672C71DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388938AbgK1Vtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:49:47 -0500
-Received: from condef-07.nifty.com ([202.248.20.72]:28339 "EHLO
-        condef-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731689AbgK1R7u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 12:59:50 -0500
-X-Greylist: delayed 332 seconds by postgrey-1.27 at vger.kernel.org; Sat, 28 Nov 2020 12:59:49 EST
-Received: from conuserg-07.nifty.com ([10.126.8.70])by condef-07.nifty.com with ESMTP id 0ASBqODC004562;
-        Sat, 28 Nov 2020 20:52:24 +0900
-Received: from grover.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 0ASBpD6G027804;
-        Sat, 28 Nov 2020 20:51:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 0ASBpD6G027804
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606564280;
-        bh=+Q9Bo6bhmRT3Oowam9MhLdZfQ4zpQ4qSQzfxJXEgOWc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0jcB4czYOgWJLr3rR6z21bKcQhXGtFQdrSGQ6S1g3aQbbQ6gDYCJg+ZksDhOP3VxG
-         CegtSWpWJzm+StBhptN6yL6HMFNnlLozKv85ktx+Ks2fwgbHI8gn3mFhswGzHaDVOQ
-         ehp9kb2+cdfSPzqDd+LfIUgbuw4J6RQdBcEEIhkXpr0TNcPCDqlb74XecTHzvebJLP
-         d1gAX0aPitxLi1Hpy7qPDIJ0wqxPz4bvpgWrvib06sM+rl0QsMSI2Uu4xcOrIubwoR
-         Jq446aY4JfrZeZKA81NxizPN2kTuLzkhnlpgHZUuigfZ0ccjSkl8vAUsaUyIfmiLsG
-         /XqnS8osD/kAQ==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7] kbuild: doc: document subdir-y syntax
-Date:   Sat, 28 Nov 2020 20:51:08 +0900
-Message-Id: <20201128115108.179256-7-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201128115108.179256-1-masahiroy@kernel.org>
-References: <20201128115108.179256-1-masahiroy@kernel.org>
+        id S2390314AbgK1Vu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:59 -0500
+Received: from mout.gmx.net ([212.227.17.21]:39991 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729523AbgK1S1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:27:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606587970;
+        bh=fTNcahD5C5mIibbD0BONpKqc5JTcNDDIjg8VN6MVM/A=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=gFbNIdOwltij+vHFkKwdItVku53ydIOJPgOeJ6PTFhl6VGuEqBPewC87VsbCi/A8t
+         n+4pPdJCVagLfbhnGTo6Eji5+4Po7ujwPOtxSy3yI6bRXH/JGReXhYovp+qtcOAj+D
+         zUEgBW5WDwD+ao6Vfo7FpOc95jCT9NxskkyCo77M=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MTzb8-1kZfWP46l8-00R1QV; Sat, 28
+ Nov 2020 13:02:16 +0100
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     thierry.reding@gmail.com
+Cc:     u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Subject: [PATCH v2] pwm: bcm2835: Support apply function for atomic configuration
+Date:   Sat, 28 Nov 2020 13:02:06 +0100
+Message-Id: <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <202011281128.54eLfMWr-lkp@intel.com>
+References: <202011281128.54eLfMWr-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:og7aglZ3Q+zHmb8EXfjZyCFzh8Ae5o38SlBuTifQqzoXN2JffJR
+ dqmvC5FywZBF4ubQoLkvsXZqbPjAbEKapFnoupSXKXcTlHvuAXXUvjmQ8pqiV4mL3WqHjF1
+ oXE5JpJErxtKwPFphUY1y30bdXGMo/vd6Eo2oGUcG/WKGGwPLkhMNEHw3bZSSTWk7gEJEqs
+ HHdyD/AJTIR5Ql0alVb7g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ryDjOyhw8zQ=:W/pMlI3oC5HBuQaB/Nt6zX
+ 8Gky4dp6vUJmx4ZgSagIn4kTBT1sFV5oWBjzHOSNTLUZlCkjUudWR4OKOyGyu2GSvLhrPGg3/
+ CAWw0YVP4SXUuIgxeNJf21PUg5qrShmeXcCXiDCH0IzJGimhtIttnbE0PgyCgCba4so5gthq5
+ xSykNEJ0q3cdg9werMu+EXRoZJcz1dW7uaBcJ2cmIRKSkP1r/KU53dVFdQXJyNgroFy8/1HAt
+ Ef2/GHrkzOUqs8c1CzLiSy1UDpfZm5fGZizwXH6uqCCTXdzzc7VoP5DbbWk1HQlik/+EeY1ht
+ j0HuCvyxnosGv7Z0mMILDAQ5/Rb3yjctGfWPgbG0IdFi+2XluMDVhXpQ+G1D7BeDd9UFYNSW+
+ y6v/Yv6fT2YIy3suYFyr8lLsQyMXF7/0noS179HVH2Cx2U+wWqfi9lnMX9tyjFXw4LSZoNrA2
+ KipLi70jcjUnoXiZ1HWo8qhRUijM9mQr9SCxiFbPPyMeWKospK2mvjbD+pbONoIpgGKK71VfR
+ BNqivL1nw3xkmIPFR/3p5wmV+ly3nuJzM/+fqSg0PSXjokgofNuj+KI4c7hQ8Fc+MTgWLd1Th
+ cJ7wfzpbKsgTLEaopgyuYEvL5Kppaq59rFv3hmIiYs7uyu7rMYw3INfNuTFzcVmXoflpJTw3A
+ NtkSseHQ0FzEaq7C3Cc4aE19QFhJT/Ee3Ym/gCe/MmMnEGzrYiWBePyY9KmRs+kUVaqYiHXOV
+ 0yD8LLvSYM8oDYWE2bc9hZ/+JCooFcNreOJ09KNDvs42BGH/UqqzRse38mzEq1E3K9ErkxSd7
+ G4sjKQns+yslosXtPIhScHtrMV4n76ZRUG1srMBshbfj1r+B/N5dgvWGKeArSz2He0RryIeg4
+ cWETfO4CHeyA2Wnr6CJA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no explanation about subdir-y.
-
-Let's document it.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
----
-
-(no changes since v1)
-
- Documentation/kbuild/makefiles.rst | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
-index 4fd6b327a19f..a276bfa93675 100644
---- a/Documentation/kbuild/makefiles.rst
-+++ b/Documentation/kbuild/makefiles.rst
-@@ -319,6 +319,21 @@ more details, with real examples.
- 	that directory specifies obj-y, those objects will be left orphan.
- 	It is very likely a bug of the Makefile or of dependencies in Kconfig.
- 
-+	Kbuild also supports dedicated syntax, subdir-y and subdir-m, for
-+	descending into subdirectories. It is a good fit when you know they
-+	do not contain kernel-space objects at all. A typical usage is to let
-+	Kbuild descend into subdirectories to build tools.
-+
-+	Examples::
-+
-+		# scripts/Makefile
-+		subdir-$(CONFIG_GCC_PLUGINS) += gcc-plugins
-+		subdir-$(CONFIG_MODVERSIONS) += genksyms
-+		subdir-$(CONFIG_SECURITY_SELINUX) += selinux
-+
-+	Unlike obj-y/m, subdir-y/m does not need the trailing slash since this
-+	syntax is always used for directories.
-+
- 	It is good practice to use a `CONFIG_` variable when assigning directory
- 	names. This allows kbuild to totally skip the directory if the
- 	corresponding `CONFIG_` option is neither 'y' nor 'm'.
--- 
-2.27.0
-
+VXNlIHRoZSBuZXdlciBhcHBseSBmdW5jdGlvbiBvZiBwd21fb3BzIGluc3RlYWQgb2YgY29uZmln
+LCBlbmFibGUsIGRpc2FibGUKYW5kIHNldF9wb2xhcml0eS4KClRoaXMgZ3VhcmFudGVlcyBhdG9t
+aWMgY2hhbmdlcyBvZiB0aGUgcHdtIGNvbnRyb2xsZXIgY29uZmlndXJhdGlvbi4gSXQgYWxzbwpy
+ZWR1Y2VzIHRoZSBzaXplIG9mIHRoZSBkcml2ZXIuCgpUaGlzIGhhcyBiZWVuIHRlc3RlZCBvbiBh
+IFJhc3BiZXJyeSBQSSA0LgoKdjI6IEZpeGVkIGNvbXBpbGVyIGVycm9yCgpTaWduZWQtb2ZmLWJ5
+OiBMaW5vIFNhbmZpbGlwcG8gPExpbm9TYW5maWxpcHBvQGdteC5kZT4KLS0tCiBkcml2ZXJzL3B3
+bS9wd20tYmNtMjgzNS5jIHwgNjQgKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyMSBpbnNlcnRpb25zKCspLCA0MyBkZWxldGlv
+bnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3B3bS9wd20tYmNtMjgzNS5jIGIvZHJpdmVycy9w
+d20vcHdtLWJjbTI4MzUuYwppbmRleCA2ODQxZGNmLi5kYWQ3NDQzIDEwMDY0NAotLS0gYS9kcml2
+ZXJzL3B3bS9wd20tYmNtMjgzNS5jCisrKyBiL2RyaXZlcnMvcHdtL3B3bS1iY20yODM1LmMKQEAg
+LTU4LDEzICs1OCwxNCBAQCBzdGF0aWMgdm9pZCBiY20yODM1X3B3bV9mcmVlKHN0cnVjdCBwd21f
+Y2hpcCAqY2hpcCwgc3RydWN0IHB3bV9kZXZpY2UgKnB3bSkKIAl3cml0ZWwodmFsdWUsIHBjLT5i
+YXNlICsgUFdNX0NPTlRST0wpOwogfQogCi1zdGF0aWMgaW50IGJjbTI4MzVfcHdtX2NvbmZpZyhz
+dHJ1Y3QgcHdtX2NoaXAgKmNoaXAsIHN0cnVjdCBwd21fZGV2aWNlICpwd20sCi0JCQkgICAgICBp
+bnQgZHV0eV9ucywgaW50IHBlcmlvZF9ucykKK3N0YXRpYyBpbnQgYmNtMjgzNV9wd21fYXBwbHko
+c3RydWN0IHB3bV9jaGlwICpjaGlwLCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLAorCQkJICAgICBj
+b25zdCBzdHJ1Y3QgcHdtX3N0YXRlICpzdGF0ZSkKIHsKKwogCXN0cnVjdCBiY20yODM1X3B3bSAq
+cGMgPSB0b19iY20yODM1X3B3bShjaGlwKTsKIAl1bnNpZ25lZCBsb25nIHJhdGUgPSBjbGtfZ2V0
+X3JhdGUocGMtPmNsayk7CiAJdW5zaWduZWQgbG9uZyBzY2FsZXI7Ci0JdTMyIHBlcmlvZDsKKwl1
+MzIgdmFsdWU7CiAKIAlpZiAoIXJhdGUpIHsKIAkJZGV2X2VycihwYy0+ZGV2LCAiZmFpbGVkIHRv
+IGdldCBjbG9jayByYXRlXG4iKTsKQEAgLTcyLDY1ICs3Myw0MiBAQCBzdGF0aWMgaW50IGJjbTI4
+MzVfcHdtX2NvbmZpZyhzdHJ1Y3QgcHdtX2NoaXAgKmNoaXAsIHN0cnVjdCBwd21fZGV2aWNlICpw
+d20sCiAJfQogCiAJc2NhbGVyID0gRElWX1JPVU5EX0NMT1NFU1QoTlNFQ19QRVJfU0VDLCByYXRl
+KTsKLQlwZXJpb2QgPSBESVZfUk9VTkRfQ0xPU0VTVChwZXJpb2RfbnMsIHNjYWxlcik7CisJLyog
+c2V0IHBlcmlvZCAqLworCXZhbHVlID0gRElWX1JPVU5EX0NMT1NFU1RfVUxMKHN0YXRlLT5wZXJp
+b2QsIHNjYWxlcik7CiAKLQlpZiAocGVyaW9kIDwgUEVSSU9EX01JTikKKwlpZiAodmFsdWUgPCBQ
+RVJJT0RfTUlOKQogCQlyZXR1cm4gLUVJTlZBTDsKIAotCXdyaXRlbChESVZfUk9VTkRfQ0xPU0VT
+VChkdXR5X25zLCBzY2FsZXIpLAotCSAgICAgICBwYy0+YmFzZSArIERVVFkocHdtLT5od3B3bSkp
+OwotCXdyaXRlbChwZXJpb2QsIHBjLT5iYXNlICsgUEVSSU9EKHB3bS0+aHdwd20pKTsKLQotCXJl
+dHVybiAwOwotfQorCXdyaXRlbCh2YWx1ZSwgcGMtPmJhc2UgKyBQRVJJT0QocHdtLT5od3B3bSkp
+OwogCi1zdGF0aWMgaW50IGJjbTI4MzVfcHdtX2VuYWJsZShzdHJ1Y3QgcHdtX2NoaXAgKmNoaXAs
+IHN0cnVjdCBwd21fZGV2aWNlICpwd20pCi17Ci0Jc3RydWN0IGJjbTI4MzVfcHdtICpwYyA9IHRv
+X2JjbTI4MzVfcHdtKGNoaXApOwotCXUzMiB2YWx1ZTsKKwkvKiBzZXQgZHV0eSBjeWNsZSAqLwor
+CXZhbHVlID0gRElWX1JPVU5EX0NMT1NFU1RfVUxMKHN0YXRlLT5kdXR5X2N5Y2xlLCBzY2FsZXIp
+OworCXdyaXRlbCh2YWx1ZSwgcGMtPmJhc2UgKyBEVVRZKHB3bS0+aHdwd20pKTsKIAorCS8qIHNl
+dCBwb2xhcml0eSAqLwogCXZhbHVlID0gcmVhZGwocGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7Ci0J
+dmFsdWUgfD0gUFdNX0VOQUJMRSA8PCBQV01fQ09OVFJPTF9TSElGVChwd20tPmh3cHdtKTsKLQl3
+cml0ZWwodmFsdWUsIHBjLT5iYXNlICsgUFdNX0NPTlRST0wpOwotCi0JcmV0dXJuIDA7Ci19CiAK
+LXN0YXRpYyB2b2lkIGJjbTI4MzVfcHdtX2Rpc2FibGUoc3RydWN0IHB3bV9jaGlwICpjaGlwLCBz
+dHJ1Y3QgcHdtX2RldmljZSAqcHdtKQotewotCXN0cnVjdCBiY20yODM1X3B3bSAqcGMgPSB0b19i
+Y20yODM1X3B3bShjaGlwKTsKLQl1MzIgdmFsdWU7Ci0KLQl2YWx1ZSA9IHJlYWRsKHBjLT5iYXNl
+ICsgUFdNX0NPTlRST0wpOwotCXZhbHVlICY9IH4oUFdNX0VOQUJMRSA8PCBQV01fQ09OVFJPTF9T
+SElGVChwd20tPmh3cHdtKSk7Ci0Jd3JpdGVsKHZhbHVlLCBwYy0+YmFzZSArIFBXTV9DT05UUk9M
+KTsKLX0KLQotc3RhdGljIGludCBiY20yODM1X3NldF9wb2xhcml0eShzdHJ1Y3QgcHdtX2NoaXAg
+KmNoaXAsIHN0cnVjdCBwd21fZGV2aWNlICpwd20sCi0JCQkJZW51bSBwd21fcG9sYXJpdHkgcG9s
+YXJpdHkpCi17Ci0Jc3RydWN0IGJjbTI4MzVfcHdtICpwYyA9IHRvX2JjbTI4MzVfcHdtKGNoaXAp
+OwotCXUzMiB2YWx1ZTsKLQotCXZhbHVlID0gcmVhZGwocGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7
+Ci0KLQlpZiAocG9sYXJpdHkgPT0gUFdNX1BPTEFSSVRZX05PUk1BTCkKKwlpZiAoc3RhdGUtPnBv
+bGFyaXR5ID09IFBXTV9QT0xBUklUWV9OT1JNQUwpCiAJCXZhbHVlICY9IH4oUFdNX1BPTEFSSVRZ
+IDw8IFBXTV9DT05UUk9MX1NISUZUKHB3bS0+aHdwd20pKTsKIAllbHNlCiAJCXZhbHVlIHw9IFBX
+TV9QT0xBUklUWSA8PCBQV01fQ09OVFJPTF9TSElGVChwd20tPmh3cHdtKTsKIAorCS8qIGVuYWJs
+ZS9kaXNhYmxlICovCisJaWYgKHN0YXRlLT5lbmFibGVkKQorCQl2YWx1ZSB8PSBQV01fRU5BQkxF
+IDw8IFBXTV9DT05UUk9MX1NISUZUKHB3bS0+aHdwd20pOworCWVsc2UKKwkJdmFsdWUgJj0gfihQ
+V01fRU5BQkxFIDw8IFBXTV9DT05UUk9MX1NISUZUKHB3bS0+aHdwd20pKTsKKwogCXdyaXRlbCh2
+YWx1ZSwgcGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7CiAKIAlyZXR1cm4gMDsKIH0KIAorCiBzdGF0
+aWMgY29uc3Qgc3RydWN0IHB3bV9vcHMgYmNtMjgzNV9wd21fb3BzID0gewogCS5yZXF1ZXN0ID0g
+YmNtMjgzNV9wd21fcmVxdWVzdCwKIAkuZnJlZSA9IGJjbTI4MzVfcHdtX2ZyZWUsCi0JLmNvbmZp
+ZyA9IGJjbTI4MzVfcHdtX2NvbmZpZywKLQkuZW5hYmxlID0gYmNtMjgzNV9wd21fZW5hYmxlLAot
+CS5kaXNhYmxlID0gYmNtMjgzNV9wd21fZGlzYWJsZSwKLQkuc2V0X3BvbGFyaXR5ID0gYmNtMjgz
+NV9zZXRfcG9sYXJpdHksCisJLmFwcGx5ID0gYmNtMjgzNV9wd21fYXBwbHksCiAJLm93bmVyID0g
+VEhJU19NT0RVTEUsCiB9OwogCi0tIAoyLjcuNAoK
