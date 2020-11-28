@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414132C7152
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487662C7105
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403932AbgK1VxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        id S2391118AbgK1VwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:52:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733088AbgK1TFV (ORCPT
+        with ESMTP id S1732007AbgK1S52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:05:21 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3CFC02B8DB
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:41:17 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id m9so6065796pgb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:41:17 -0800 (PST)
+        Sat, 28 Nov 2020 13:57:28 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE5CC02B8E4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:43:57 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id b23so3723688pls.11
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:43:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fiEKNoVjJnJUXQv73omVO0kLfIW0bUY/61VADsZy/nI=;
-        b=eCQ0W7dX01bjSdwiLwo7VSutmcdYA/WYg3R59Lfh59MLvgAH/uwC57Mo8greSAjQNJ
-         UAoWAmpfzgaj1GGBVwT7h4SWMMCecfYjtSOEcQJIKzsh5zh1LM3JeddqT4hdLz1zysPg
-         Idi5pK98gJPgMM5coEZUhDa3SeGLuCZrQTblcgWjDRIQnWZ9kvHL4VU+YP0IjoeiZ9+E
-         B+UCkS0JZsaaQbvM9jS9hsbfFj9ePjdry1IJZR6fLR73itjC4uzvOzOiIygHWrzoIxtx
-         xFP4hdNY7szqbxnTbgL2AQxjI5Gw347yRVhcfQk4bN9iboCZtaZA0GixTmS9qFZCUV8n
-         xqxw==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=BA6eIMkm9MQ4GTAVJrwtWOn+ULKRX86lln/0fo5tdB8=;
+        b=iCjV3xRN8G8M0lAA3Nf7UZ6p+W+MXYNiuaRfBAeA1khCH/RoUQCa1+W73y5B8j0Ehh
+         uS9xwrse7seGnrTgmihvfXKJTaPfknjaZPBNIrYEKBvXauTYcYKu9yyFJMF9se9egr0t
+         rxi8Lb4/2gW89NRU7r3KzBOFrM/gDRfP5tQxA6qIuLEQHJ3j6RTJRGynTUjRkF4Ru3Kt
+         Qz22XmECua7fHgtfvS1P+nNtZIk08B1jze0CvkNhzgNa3KnWyN1cTbsCc5K5UZ3ZTiMG
+         t7O/RiDO3uIGDTpKKQUyDHDoDCwrKt5geR9tKxSBpM8iIo1Kq6ugQBall6GgzEaTXZlr
+         TysA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fiEKNoVjJnJUXQv73omVO0kLfIW0bUY/61VADsZy/nI=;
-        b=cBX9Ix1tZkmY1hE6dz5B9Xk/NctZhDiLsZiXPKJMMBSQrnZkt9ED1YWykaJiAr7LUz
-         0um1JTuZpc8KHKBd2of9YOkI5B+5080rW5S6tJX52gbHYYAXYLgNG2E3aVvV3Vs8OgQi
-         QN+g38G5Ht9LrYg99TGxk1h+Rxd57Go7jrhiFY6wzhSuWq4svdJA+0nTmaloALPpE06k
-         I/BGLr5yyHNKErRIee+o7pLU8KlvgYw0n4XVBYwqU6f4qhZLrZrD6dtXfHXEdStk3JJF
-         rA20hg4TxMYepAYmhrSjx707xtq8L7NrXIUsXYNt+Gk0K/pkWAsrd0EE2ctCvb6f6Xa5
-         cU9A==
-X-Gm-Message-State: AOAM530NLgPTeL/BTSOR5BhIKMI2IQ9b3+Umr99z1vNuqAB9+up2MyRU
-        z/MOu3wk9OoyN5FaIQyHulKM
-X-Google-Smtp-Source: ABdhPJxqoZkRUVBdrARTuHH8eLsvzZgH4wa3wX3gt6FUglxdnv4nZr8gqiEHGuGnl5adYem9WJFv+Q==
-X-Received: by 2002:a17:90b:438a:: with SMTP id in10mr14303785pjb.27.1606549277113;
-        Fri, 27 Nov 2020 23:41:17 -0800 (PST)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=BA6eIMkm9MQ4GTAVJrwtWOn+ULKRX86lln/0fo5tdB8=;
+        b=p1KeJETF4gQu5ZQYGXMHsVE0y2wq9lOHhnyq19mYUalab8XXHv9Dp1QETFNOdtFNxB
+         8Rm9iy5YpEckMuQUChm/DlUsLBoUQhcQkvZh2boGx/Q/kVWWBapbeSeDn9Y8Pn+YtQAn
+         Hj6HM1rlxJqfuzTIylaOw5p3Pvn6C+4D4AgoRvfDizS3kSGfgIFGhIQcHqnS8hIjvzJD
+         E+kHAHakr6vfMYx7szFXrJ39a1iR6os1ISJBPcCFc5bSxfkEJM2EnVpQOXSUMtcqd0dh
+         yPvk7h5LCjS5G/SeADF4RfOPQH7WwYA8yjUybQjDgqsiPwcuxDl8CoFvF1WMNkCjwDf8
+         gx9Q==
+X-Gm-Message-State: AOAM531zPUc0xt3A9cn+TeeAxrb7DnERMes1uhulwkd64N3wqhEdgsTx
+        7TuhthSS2RwHgPwkkJU8R+ev
+X-Google-Smtp-Source: ABdhPJxBZ930/XEYxxp6E6/sKW+/GdIRK3+zgPDQf83pitm2fXz7YjvQlhypmi0/vcOQeLM5xzMB+A==
+X-Received: by 2002:a17:902:7e0d:b029:d9:ec82:2d24 with SMTP id b13-20020a1709027e0db02900d9ec822d24mr10693242plm.81.1606549437282;
+        Fri, 27 Nov 2020 23:43:57 -0800 (PST)
 Received: from thinkpad ([2409:4072:15:c612:48ab:f1cc:6b16:2820])
-        by smtp.gmail.com with ESMTPSA id e23sm9700492pfd.64.2020.11.27.23.41.11
+        by smtp.gmail.com with ESMTPSA id a16sm9975350pfl.125.2020.11.27.23.43.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 23:41:16 -0800 (PST)
-Date:   Sat, 28 Nov 2020 13:11:08 +0530
+        Fri, 27 Nov 2020 23:43:56 -0800 (PST)
+Date:   Sat, 28 Nov 2020 13:13:50 +0530
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
         linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 17/18] arm: dts: owl-s500-roseapplepi: Add I2C pinctrl
- configuration
-Message-ID: <20201128074108.GD3077@thinkpad>
+Subject: Re: [PATCH v2 18/18] MAINTAINERS: Add linux-actions ML for Actions
+ Semi Arch
+Message-ID: <20201128074350.GE3077@thinkpad>
 References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <f41e33b12d77e75246fa94ed6acc57fffe84aaa4.1605823502.git.cristian.ciocaltea@gmail.com>
+ <5845b7a323c65adaa1566c3bee68b5ca1f1bb17e.1605823502.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <f41e33b12d77e75246fa94ed6acc57fffe84aaa4.1605823502.git.cristian.ciocaltea@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5845b7a323c65adaa1566c3bee68b5ca1f1bb17e.1605823502.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 01:56:11AM +0200, Cristian Ciocaltea wrote:
-> Add pinctrl definitions for the I2C controllers used in RoseapplePi SBC.
-> For the moment enable only I2C0, which is used by the ATC2603C PMIC.
+On Fri, Nov 20, 2020 at 01:56:12AM +0200, Cristian Ciocaltea wrote:
+> Add the linux-actions mailing list for the Actions Semi architecture.
 > 
 > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-Earlier we used to add "_default" suffix for the pin groups to
-differentiate between active and sleep states. But I guess we can just
-keep the suffix away until we hit usecase.
+There was a patch from me for this change but I don't mind taking yours
+as long as we keep the list updated :)
+
+I have just one comment below, with that fixed:
 
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a85c1881cf07..8428aba52581 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1497,6 +1497,7 @@ ARM/ACTIONS SEMI ARCHITECTURE
+>  M:	Andreas Färber <afaerber@suse.de>
+>  M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+
+No need to keep the generic list, please remove.
 
 Thanks,
 Mani
 
-> ---
->  arch/arm/boot/dts/owl-s500-roseapplepi.dts | 44 ++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> index fe9ae3619422..ff91561ca99c 100644
-> --- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> +++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-> @@ -37,7 +37,51 @@ sd_vcc: sd-vcc {
->  	};
->  };
->  
-> +&i2c0 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c0_pins>;
-> +};
-> +
-> +&i2c1 {
-> +	status = "disabled";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c1_pins>;
-> +};
-> +
-> +&i2c2 {
-> +	status = "disabled";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c2_pins>;
-> +};
-> +
->  &pinctrl {
-> +	i2c0_pins: i2c0-pins {
-> +		pinmux {
-> +			groups = "i2c0_mfp";
-> +			function = "i2c0";
-> +		};
-> +
-> +		pinconf {
-> +			pins = "i2c0_sclk", "i2c0_sdata";
-> +			bias-pull-up;
-> +		};
-> +	};
-> +
-> +	i2c1_pins: i2c1-pins {
-> +		pinconf {
-> +			pins = "i2c1_sclk", "i2c1_sdata";
-> +			bias-pull-up;
-> +		};
-> +	};
-> +
-> +	i2c2_pins: i2c2-pins {
-> +		pinconf {
-> +			pins = "i2c2_sclk", "i2c2_sdata";
-> +			bias-pull-up;
-> +		};
-> +	};
-> +
->  	mmc0_pins: mmc0-pins {
->  		pinmux {
->  			groups = "sd0_d0_mfp", "sd0_d1_mfp", "sd0_d2_d3_mfp",
+> +L:	linux-actions@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/arm/actions.yaml
+>  F:	Documentation/devicetree/bindings/clock/actions,owl-cmu.txt
 > -- 
 > 2.29.2
 > 
