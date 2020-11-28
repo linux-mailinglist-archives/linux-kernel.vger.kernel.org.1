@@ -2,222 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01282C6EB8
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 04:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 810912C6EB7
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 04:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731493AbgK1Dq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 22:46:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731398AbgK1Dme (ORCPT
+        id S1730487AbgK1DxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 22:53:02 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:46395 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729604AbgK1Drf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 22:42:34 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA521C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 19:42:33 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id d9so7989711oib.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 19:42:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VLzI5Wn/zg0+hFTpN0tfFuoZOdepE3gNmagFCGpxFho=;
-        b=bsgMmnrdHRiS8lyAW0qKzwKxG7IRz0pyurV2KveZCcEjeBxdOlmGtxd/hBuyfNQxdk
-         RwbQWYud0LiVEAzDdapcxo62iiAF6Gy8kITq5elUQA8uzlDvaHxCzcMt0YjyoWXmdC61
-         VAl5S58kNSj6rTQvAUgOi0/Rew+c1jqVcR1dQHzUWixL+oEshV59MAxpLXMdxR+z77iY
-         gct/t/WuP52+IF2j1X3kfxCJ5jb/oPoq/GmwJIIuNCV7OOra8h58rtiwlO9wPjk+5J60
-         oDYCF0CjlhnNyPyK4dwLtMjud2fW7q4W0lw9vWEEEu2Zh7yU9lL17anVivo7Sz+vOtuG
-         lqMg==
+        Fri, 27 Nov 2020 22:47:35 -0500
+Received: by mail-il1-f198.google.com with SMTP id q5so5166213ilc.13
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 19:47:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VLzI5Wn/zg0+hFTpN0tfFuoZOdepE3gNmagFCGpxFho=;
-        b=ECb/mtxaOuJkxjnJ6EUYizexzz57rCSFqRv0KOu3gylGLOJQ9rSzHjp+j//ulkPedF
-         SG4jmFy715x9JIEccAwl2g3YYufThWu4Vb9bnj7W9/e97R2/6d0CU4ZYfvGrprj2w6Fs
-         ncY0spDdejkRGE/CA6QU007v0YS2mjslBENcRRSr+yHZ9wCC6IzRFxaOLoCHrpzaYdh9
-         sV0B0O7fDFkMzQO4pl9sS2l9k0yDtuw7OSqD0U6vU2zGeBuhDBqSu5gloNRD7Qwx5vJE
-         W3oSf+6j3y4hiFyFDs4EwUJqpucVGO9TNCsnDluXWK3b3S2dmBT2wOjcTGBy2TdJTS7f
-         ei2g==
-X-Gm-Message-State: AOAM532FavZUtRxaKfl9RqhamwXUdOFUwF7cZ9P2jKBWpwuHtooBBsZY
-        41bcNYWz4DC2rMNa2Js54wlZg1A9LWTEiw==
-X-Google-Smtp-Source: ABdhPJxYizHts0zDI4I57tR3Sgn1uC10yhK4HwAqDdm6kDXTWibGVghdEr4DZn0iT2eDvEOnDTVBZg==
-X-Received: by 2002:aca:570c:: with SMTP id l12mr7832632oib.105.1606534952912;
-        Fri, 27 Nov 2020 19:42:32 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t17sm6279198oie.57.2020.11.27.19.42.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 19:42:32 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Shawn Guo <shawn.guo@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: c630: Define eDP bridge and panel
-Date:   Fri, 27 Nov 2020 21:42:31 -0600
-Message-Id: <20201128034231.89750-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=/zKWIW/BGl+uP9uZHMF0DxwCcRQMsXce4lHe+wGoD1E=;
+        b=kdN7NyeDEphjqlhEkxx9za3+LsG9WayDv3TamkfiFF5YFVXNLOiGGkQyICnrHsR6LH
+         0kr4u+nATFRlIP44uRh0X/88r8MkVPPa7YHw6B3vK1ZQUxOYF0CvX/3VRgbZRl9GDKQ/
+         pebcvHLHAxc/YNpox2Y8gCszLu530JO+JCvJso7vouzV6QX5K+pCorgMoi7xaKnro3Ac
+         LQarzNFTTUW1KaDcCddLP2Gzfz7GYtSrsVzmQ+TzTkDUvAnpDpNaCSJ0Kn4OvFtqqN3h
+         os2HxOusirVX8QZvhRYttsSrluj4DH2RZsk3d1uvK4qKCcyPKkXavYUXsXQj+8S4Sny4
+         IBmA==
+X-Gm-Message-State: AOAM530K663iAbWe/VRsmz669QVuTYKYH1QRIbngTtLNY5/ouk0Q0dY9
+        E40o1YdSzsMFoui6191oqtUIxFJi1YFRltlmwocVWhRqqx/N
+X-Google-Smtp-Source: ABdhPJxKkDxzQmAMpUsJUp7TUtejlU2hrwuD/QS8APAIsKk+Bx85FOTqzjG1ov+w6kwNW3Tq2I6JI6FIQEMzi4TWaheCVRoJ9a/3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:2246:: with SMTP id o67mr10650480jao.52.1606535235649;
+ Fri, 27 Nov 2020 19:47:15 -0800 (PST)
+Date:   Fri, 27 Nov 2020 19:47:15 -0800
+In-Reply-To: <000000000000ca5cfb05ade37394@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000a440b05b522a284@google.com>
+Subject: Re: memory leak in prepare_creds
+From:   syzbot <syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bernd.edlinger@hotmail.de,
+        chris@chrisdown.name, dhowells@redhat.com, ebiederm@xmission.com,
+        guro@fb.com, keescook@chromium.org, linux-kernel@vger.kernel.org,
+        mhocko@suse.com, shakeelb@google.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Lenovo Yoga C630 drives the Boe NV133FHM-N61 eDP display from DSI
-using a TI SN65DSI86 bridge chip on I2C 10. Define the bridge and eDP
-panel and enable the display blocks.
+syzbot has found a reproducer for the following issue on:
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 100 ++++++++++++++++++
- 1 file changed, 100 insertions(+)
+HEAD commit:    99c710c4 Merge tag 'platform-drivers-x86-v5.10-2' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a77ddd500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c7a27a77f20fbc95
+dashboard link: https://syzkaller.appspot.com/bug?extid=71c4697e27c99fddcf17
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d6161d500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f15e65500000
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index f956dbf664c1..bdd5d92ee6c3 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -44,6 +44,26 @@ mode {
- 			linux,code = <SW_TABLET_MODE>;
- 		};
- 	};
-+
-+	panel {
-+		compatible = "boe,nv133fhm-n61";
-+		no-hpd;
-+
-+		ports {
-+			port {
-+				panel_in_edp: endpoint {
-+					remote-endpoint = <&sn65dsi86_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	sn65dsi86_refclk: sn65dsi86-refclk {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+
-+		clock-frequency = <19200000>;
-+	};
- };
- 
- &adsp_pas {
-@@ -260,6 +280,25 @@ &cdsp_pas {
- 	status = "okay";
- };
- 
-+&dsi0 {
-+	status = "okay";
-+	vdda-supply = <&vreg_l26a_1p2>;
-+
-+	ports {
-+		port@1 {
-+			endpoint {
-+				remote-endpoint = <&sn65dsi86_in_a>;
-+				data-lanes = <0 1 2 3>;
-+			};
-+		};
-+	};
-+};
-+
-+&dsi0_phy {
-+	status = "okay";
-+	vdds-supply = <&vreg_l1a_0p875>;
-+};
-+
- &gcc {
- 	protected-clocks = <GCC_QSPI_CORE_CLK>,
- 			   <GCC_QSPI_CORE_CLK_SRC>,
-@@ -328,6 +367,45 @@ tsc1: hid@10 {
- 	};
- };
- 
-+&i2c10 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	sn65dsi86: bridge@2c {
-+		compatible = "ti,sn65dsi86";
-+		reg = <0x2c>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&sn65dsi86_pin_active>;
-+
-+		enable-gpios = <&tlmm 96 GPIO_ACTIVE_HIGH>;
-+
-+		vpll-supply = <&vreg_l14a_1p88>;
-+		vccio-supply = <&vreg_l14a_1p88>;
-+
-+		clocks = <&sn65dsi86_refclk>;
-+		clock-names = "refclk";
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				sn65dsi86_in_a: endpoint {
-+					remote-endpoint = <&dsi0_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				sn65dsi86_out: endpoint {
-+					remote-endpoint = <&panel_in_edp>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
- &i2c11 {
- 	status = "okay";
- 	clock-frequency = <400000>;
-@@ -344,10 +422,26 @@ ecsh: hid@5c {
- 	};
- };
- 
-+&mdss {
-+	status = "okay";
-+};
-+
-+&mdss_mdp {
-+	status = "okay";
-+};
-+
- &mss_pil {
- 	firmware-name = "qcom/LENOVO/81JL/qcdsp1v2850.mbn", "qcom/LENOVO/81JL/qcdsp2850.mbn";
- };
- 
-+&qup_i2c10_default {
-+	pinconf {
-+		pins = "gpio55", "gpio56";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+};
-+
- &qup_i2c12_default {
- 	drive-strength = <2>;
- 	bias-disable;
-@@ -454,6 +548,12 @@ codec {
- &tlmm {
- 	gpio-reserved-ranges = <0 4>, <81 4>;
- 
-+	sn65dsi86_pin_active: sn65dsi86-enable {
-+		pins = "gpio96";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
- 	i2c3_hid_active: i2c2-hid-active {
- 		pins = "gpio37";
- 		function = "gpio";
--- 
-2.29.2
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff888101401300 (size 168):
+  comm "syz-executor355", pid 8461, jiffies 4294953658 (age 32.400s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000caa0de2b>] prepare_creds+0x25/0x390 kernel/cred.c:258
+    [<000000001821b99d>] copy_creds+0x3a/0x230 kernel/cred.c:358
+    [<0000000022c32914>] copy_process+0x661/0x24d0 kernel/fork.c:1971
+    [<00000000d3adca2d>] kernel_clone+0xf3/0x670 kernel/fork.c:2456
+    [<00000000d11b7286>] __do_sys_clone+0x76/0xa0 kernel/fork.c:2573
+    [<000000008280baad>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000685d8cf0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88810b0a6f20 (size 32):
+  comm "syz-executor355", pid 8461, jiffies 4294953658 (age 32.400s)
+  hex dump (first 32 bytes):
+    b0 6e 93 00 81 88 ff ff 00 00 00 00 00 00 00 00  .n..............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000007d750ba1>] kmalloc include/linux/slab.h:557 [inline]
+    [<000000007d750ba1>] kzalloc include/linux/slab.h:664 [inline]
+    [<000000007d750ba1>] lsm_cred_alloc security/security.c:533 [inline]
+    [<000000007d750ba1>] security_prepare_creds+0xa5/0xd0 security/security.c:1632
+    [<00000000ba63fcc7>] prepare_creds+0x277/0x390 kernel/cred.c:285
+    [<000000001821b99d>] copy_creds+0x3a/0x230 kernel/cred.c:358
+    [<0000000022c32914>] copy_process+0x661/0x24d0 kernel/fork.c:1971
+    [<00000000d3adca2d>] kernel_clone+0xf3/0x670 kernel/fork.c:2456
+    [<00000000d11b7286>] __do_sys_clone+0x76/0xa0 kernel/fork.c:2573
+    [<000000008280baad>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000685d8cf0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888101ea2200 (size 256):
+  comm "syz-executor355", pid 8470, jiffies 4294953658 (age 32.400s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    20 59 03 01 81 88 ff ff 80 87 a8 10 81 88 ff ff   Y..............
+  backtrace:
+    [<000000002e0a7c5f>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
+    [<000000002e0a7c5f>] __alloc_file+0x1f/0x130 fs/file_table.c:101
+    [<000000001a55b73a>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
+    [<00000000fb22349e>] alloc_file+0x33/0x1b0 fs/file_table.c:193
+    [<000000006e1465bb>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
+    [<000000007118092a>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
+    [<000000007118092a>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
+    [<000000002ae99012>] io_uring_get_fd fs/io_uring.c:9198 [inline]
+    [<000000002ae99012>] io_uring_create fs/io_uring.c:9377 [inline]
+    [<000000002ae99012>] io_uring_setup+0x1125/0x1630 fs/io_uring.c:9411
+    [<000000008280baad>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000685d8cf0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
 
