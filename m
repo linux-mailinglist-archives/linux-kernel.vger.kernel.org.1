@@ -2,302 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A3C2C717E
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B74702C7175
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391148AbgK1VwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:52:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732050AbgK1S53 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:57:29 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A28C02A1B1;
-        Sat, 28 Nov 2020 07:14:04 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id g14so8676071wrm.13;
-        Sat, 28 Nov 2020 07:14:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vcBAq8l9akkx7hiqsbsodZQlENoGjUTUGwJDEMJ5H5w=;
-        b=PUBeUmRMGX/Xbl+Ywb0x3hXxKJjlBdYKeJSfABQvEpkKvEZ/YkHwe6+ZSix190Qvne
-         Kk7uETaXo12l9CzUui/7kE2hzBbInTumJmXn4zyYCCo6ZjdpoBEH1MkXdNiJjdUqsM/+
-         tAu3jNzwnhbSKEIF+orqI8eBWQZX4RQhJAHfLZb1sJNqspByZ73zHgT7DRgYfrfKmRV2
-         Gz0uZh0cltQoA6ESbEyixJ/rN/MHgag1QXFJ6xmy3GA2QpJVYyU07odWFaURpJeUv2aG
-         WyDR7QPENB9cof90pqwiNa59DOKrhb1+4KnGLUye+hoyBFXNJHVwSPgTgNrHXoIarvdC
-         5Fgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vcBAq8l9akkx7hiqsbsodZQlENoGjUTUGwJDEMJ5H5w=;
-        b=RuBlZgh5825cetphVeSVWypg+82p3KxLYnfNEoDy8iiEvkVK13mE6I3kkUzsne4S0V
-         fsU/QOPuS3VpSLkE9BHG+UMkwLUKzVGZdxAZM6QZrSVlhUqlkTAvqUqbDudQcREHicWA
-         2OR6EyRzKF2Kaa1VnM7rL838U8/kISs4NHVQw/2atrZ5zGii6++qaknw6WmAwG7vS5sb
-         /GCBbuBqziQOvzMTqgVTN2lTMmcB3HPILoFzoSOhDuZTppoh52wE+GlwbFS8vzbLIJ7y
-         /mW6wPcJRjs6GvbdwMsLYVhbkZFkpdcuM1IkkqkPbMWwhJ2g27R9JxlbrK9Co+aEkE2O
-         5jgw==
-X-Gm-Message-State: AOAM532OBDXLZTyqP535KG31rhLP9yMmt8kxo58t9OSF5kcTFY+0Kz30
-        fgB+KYyaNkj0RLNIDcliFaQ=
-X-Google-Smtp-Source: ABdhPJw3WQq7/V2A0KHFajRCBx38ILUo9wCCsNh/EzXkokKCcgsZlrlARAHdzYhdLSpUMzF1aQnqgg==
-X-Received: by 2002:adf:f3d1:: with SMTP id g17mr18139379wrp.201.1606576442892;
-        Sat, 28 Nov 2020 07:14:02 -0800 (PST)
-Received: from ?IPv6:2a01:110f:b59:fd00:7c3e:7544:88c3:e387? ([2a01:110f:b59:fd00:7c3e:7544:88c3:e387])
-        by smtp.gmail.com with ESMTPSA id d17sm20079784wro.62.2020.11.28.07.14.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Nov 2020 07:14:02 -0800 (PST)
-Subject: Re: [PATCH v10 5/6] dt-bindings: leds: Add bindings for MT6360 LED
-To:     Gene Chen <gene.chen.richtek@gmail.com>, pavel@ucw.cz,
-        robh+dt@kernel.org, matthias.bgg@gmail.com
-Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-References: <1606447736-7944-1-git-send-email-gene.chen.richtek@gmail.com>
- <1606447736-7944-6-git-send-email-gene.chen.richtek@gmail.com>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <8a2f252a-7cbd-401f-75a3-f42bba93fdd7@gmail.com>
-Date:   Sat, 28 Nov 2020 16:13:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2391016AbgK1Vvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731638AbgK1Syn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:54:43 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC60A246A5;
+        Sat, 28 Nov 2020 15:21:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606576889;
+        bh=PCExNiiq4fod27qjBrU5G0fxl6mD7Tnj2BkBlUMMkX0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=THVq7GSb96d+mD5yk9ekV9dWY1FRMcJcEOS0Kn9T9rjbpRP4BeFSEWjEsXsOxVYg7
+         5DOqeAWeI+7QGg7JlphsJNRvUkOnVcK3ooXvHkVkrwMLRKWzmx1BGhcoaJFCM9XGoF
+         JhOGCf4vHUrsHlf7vCSeQTMP9JizTApG1X325GoI=
+Date:   Sat, 28 Nov 2020 15:21:24 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/11] iio: adc: at91_adc: merge at91_adc_probe_dt
+ back in at91_adc_probe
+Message-ID: <20201128152124.24d88b36@archlinux>
+In-Reply-To: <20201117140656.1235055-8-alexandre.belloni@bootlin.com>
+References: <20201117140656.1235055-1-alexandre.belloni@bootlin.com>
+        <20201117140656.1235055-8-alexandre.belloni@bootlin.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1606447736-7944-6-git-send-email-gene.chen.richtek@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gene,
+On Tue, 17 Nov 2020 15:06:52 +0100
+Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
 
-On 11/27/20 4:28 AM, Gene Chen wrote:
-> From: Gene Chen <gene_chen@richtek.com>
+> at91_adc_probe_dt is now small enough to be merged back in at91_adc_probe.
 > 
-> Add bindings document for LED support on MT6360 PMIC
-> 
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Reviewed-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+This proved a little more interesting to apply, but I think that is just
+down to Alexandru having already made the match_data related change.
+
+Please check I got it right!
+
+Thanks,
+
+Jonathan
+
 > ---
->   .../devicetree/bindings/leds/leds-mt6360.yaml      | 164 +++++++++++++++++++++
->   1 file changed, 164 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+>  drivers/iio/adc/at91_adc.c | 117 ++++++++++++++++---------------------
+>  1 file changed, 49 insertions(+), 68 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> new file mode 100644
-> index 0000000..b2ffbc6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> @@ -0,0 +1,164 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-mt6360.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
+> index 83539422b704..347464844263 100644
+> --- a/drivers/iio/adc/at91_adc.c
+> +++ b/drivers/iio/adc/at91_adc.c
+> @@ -833,70 +833,6 @@ static int at91_adc_probe_dt_ts(struct device_node *node,
+>  	}
+>  }
+>  
+> -static int at91_adc_probe_dt(struct iio_dev *idev,
+> -			     struct platform_device *pdev)
+> -{
+> -	struct at91_adc_state *st = iio_priv(idev);
+> -	struct device_node *node = pdev->dev.of_node;
+> -	int ret;
+> -	u32 prop;
+> -	char *s;
+> -
+> -	st->caps = (struct at91_adc_caps *)
+> -		of_match_device(at91_adc_dt_ids, &pdev->dev)->data;
+> -
+> -	st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
+> -
+> -	if (of_property_read_u32(node, "atmel,adc-channels-used", &prop)) {
+> -		dev_err(&idev->dev, "Missing adc-channels-used property in the DT.\n");
+> -		ret = -EINVAL;
+> -		goto error_ret;
+> -	}
+> -	st->channels_mask = prop;
+> -
+> -	st->sleep_mode = of_property_read_bool(node, "atmel,adc-sleep-mode");
+> -
+> -	if (of_property_read_u32(node, "atmel,adc-startup-time", &prop)) {
+> -		dev_err(&idev->dev, "Missing adc-startup-time property in the DT.\n");
+> -		ret = -EINVAL;
+> -		goto error_ret;
+> -	}
+> -	st->startup_time = prop;
+> -
+> -	prop = 0;
+> -	of_property_read_u32(node, "atmel,adc-sample-hold-time", &prop);
+> -	st->sample_hold_time = prop;
+> -
+> -	if (of_property_read_u32(node, "atmel,adc-vref", &prop)) {
+> -		dev_err(&idev->dev, "Missing adc-vref property in the DT.\n");
+> -		ret = -EINVAL;
+> -		goto error_ret;
+> -	}
+> -	st->vref_mv = prop;
+> -
+> -	st->res = st->caps->high_res_bits;
+> -	if (st->caps->low_res_bits &&
+> -	    !of_property_read_string(node, "atmel,adc-use-res", (const char **)&s)
+> -	    && !strcmp(s, "lowres"))
+> -		st->res = st->caps->low_res_bits;
+> -
+> -	dev_info(&idev->dev, "Resolution used: %u bits\n", st->res);
+> -
+> -	st->registers = &st->caps->registers;
+> -	st->num_channels = st->caps->num_channels;
+> -
+> -	/* Check if touchscreen is supported. */
+> -	if (st->caps->has_ts)
+> -		return at91_adc_probe_dt_ts(node, st, &idev->dev);
+> -	else
+> -		dev_info(&idev->dev, "not support touchscreen in the adc compatible string.\n");
+> -
+> -	return 0;
+> -
+> -error_ret:
+> -	return ret;
+> -}
+> -
+>  static const struct iio_info at91_adc_info = {
+>  	.read_raw = &at91_adc_read_raw,
+>  };
+> @@ -1062,10 +998,12 @@ static void at91_ts_unregister(struct at91_adc_state *st)
+>  static int at91_adc_probe(struct platform_device *pdev)
+>  {
+>  	unsigned int prsc, mstrclk, ticks, adc_clk, adc_clk_khz, shtim;
+> +	struct device_node *node = pdev->dev.of_node;
+>  	int ret;
+>  	struct iio_dev *idev;
+>  	struct at91_adc_state *st;
+> -	u32 reg;
+> +	u32 reg, prop;
+> +	char *s;
+>  
+>  	idev = devm_iio_device_alloc(&pdev->dev, sizeof(struct at91_adc_state));
+>  	if (!idev)
+> @@ -1073,9 +1011,52 @@ static int at91_adc_probe(struct platform_device *pdev)
+>  
+>  	st = iio_priv(idev);
+>  
+> -	ret = at91_adc_probe_dt(idev, pdev);
+> -	if (ret)
+> -		return ret;
+> +	st->caps = (struct at91_adc_caps *)
+> +		of_match_device(at91_adc_dt_ids, &pdev->dev)->data;
 > +
-> +title: LED driver for MT6360 PMIC from MediaTek Integrated.
+> +	st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
 > +
-> +maintainers:
-> +  - Gene Chen <gene_chen@richtek.com>
+> +	if (of_property_read_u32(node, "atmel,adc-channels-used", &prop)) {
+> +		dev_err(&idev->dev, "Missing adc-channels-used property in the DT.\n");
+> +		return -EINVAL;
+> +	}
+> +	st->channels_mask = prop;
 > +
-> +description: |
-> +  This module is part of the MT6360 MFD device.
-> +  see Documentation/devicetree/bindings/mfd/mt6360.yaml
-> +  Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
-> +  and 4-channel RGB LED support Register/Flash/Breath Mode
+> +	st->sleep_mode = of_property_read_bool(node, "atmel,adc-sleep-mode");
 > +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt6360-led
+> +	if (of_property_read_u32(node, "atmel,adc-startup-time", &prop)) {
+> +		dev_err(&idev->dev, "Missing adc-startup-time property in the DT.\n");
+> +		return -EINVAL;
+> +	}
+> +	st->startup_time = prop;
 > +
-> +  "#address-cells":
-> +    const: 1
+> +	prop = 0;
+> +	of_property_read_u32(node, "atmel,adc-sample-hold-time", &prop);
+> +	st->sample_hold_time = prop;
 > +
-> +  "#size-cells":
-> +    const: 0
+> +	if (of_property_read_u32(node, "atmel,adc-vref", &prop)) {
+> +		dev_err(&idev->dev, "Missing adc-vref property in the DT.\n");
+> +		return -EINVAL;
+> +	}
+> +	st->vref_mv = prop;
 > +
-> +patternProperties:
-> +  "^led@[0-6]$":
-> +    type: object
-> +    $ref: common.yaml#
-> +    description:
-> +      Properties for a single LED.
+> +	st->res = st->caps->high_res_bits;
+> +	if (st->caps->low_res_bits &&
+> +	    !of_property_read_string(node, "atmel,adc-use-res", (const char **)&s)
+> +	    && !strcmp(s, "lowres"))
+> +		st->res = st->caps->low_res_bits;
 > +
-> +    properties:
-> +      reg:
-> +        description: Index of the LED.
-> +        enum:
-> +          - 0 # LED output INDICATOR1_RED
-> +          - 1 # LED output INDICATOR1_GREEN
-> +          - 2 # LED output INDICATOR1_BLUE
-> +          - 3 # LED output INDICATOR2_
-These LED output descriptions look odd.
-In the driver you have:
-
-enum {
-     MT6360_LED_ISNK1 = 0,
-     MT6360_LED_ISNK2,
-     MT6360_LED_ISNK3,
-     MT6360_LED_ISNKML
-     ...
-
-I think the same names should be used for DT reg property documentation:
-
-- 0 # LED output ISNK1
-- 1 # LED output ISNK2
-- 2 # LED output ISNK3
-- 3 # LED output ISNKML
-
-Here you're describing hardware, i.e. current sinks as they are
-defined in the device documentation, and not the functions you're
-assigning in DT to the connected LEDs.
-
-> +          - 4 # LED output FLED1
-> +          - 5 # LED output FLED2
-> +          - 6 # LED output MULTICOLOR
-
-
-This last enum is also disputable, since it is driver specific, and not
-hardware specific. Actually you should rather check LED color id and
-basing on that treat the LED as multicolor (for LED_COLOR_ID_RGB).
-See drivers/leds/leds-lp55xx-common.c for a reference.
-
-> +unevaluatedProperties: false
+> +	dev_info(&idev->dev, "Resolution used: %u bits\n", st->res);
 > +
-> +required:
-> +  - compatible
-> +  - "#address-cells"
-> +  - "#size-cells"
+> +	st->registers = &st->caps->registers;
+> +	st->num_channels = st->caps->num_channels;
 > +
-> +additionalProperties: false
-> +
-> +examples:
-> + - |
-> +   #include <dt-bindings/leds/common.h>
-> +   led-controller {
-> +     compatible = "mediatek,mt6360-led";
-> +     #address-cells = <1>;
-> +     #size-cells = <0>;
-> +
-> +     led@3 {
-> +       reg = <3>;
-> +       function 
+> +	/* Check if touchscreen is supported. */
+> +	if (st->caps->has_ts) {
+> +		ret = at91_adc_probe_dt_ts(node, st, &idev->dev);
+> +		if (ret)
+> +			return ret;
+> +	}
+>  
+>  	platform_set_drvdata(pdev, idev);
+>  
 
-= LED_FUNCTION_MOONLIGHT;
-> +       color = <LED_COLOR_ID_WHITE>;
-> +       led-max-microamp = <150000>;
-> +     };
-> +     led@4 {
-> +       reg = <4>;
-> +       function = LED_FUNCTION_FLASH;
-> +       color = <LED_COLOR_ID_WHITE>;
-> +       function-enumerator = <1>;
-> +       led-max-microamp = <200000>;
-> +       flash-max-microamp = <500000>;
-> +       flash-max-timeout-us = <1024000>;
-> +     };
-> +     led@5 {
-> +       reg = <5>;
-> +       function = LED_FUNCTION_FLASH;
-> +       color = <LED_COLOR_ID_WHITE>;
-> +       function-enumerator = <2>;
-> +       led-max-microamp = <200000>;
-> +       flash-max-microamp = <500000>;
-> +       flash-max-timeout-us = <1024000>;
-> +     };
-> +     led@6 {
-> +       reg = <6>;
-> +       function = LED_FUNCTION_INDICATOR;
-> +       color = <LED_COLOR_ID_RGB>;
-> +       led-max-microamp = <24000>;
-> +       #address-cells = <1>;
-> +       #size-cells = <0>;
-> +
-> +       led@0 {
-> +         reg = <0>;
-> +         function = LED_FUNCTION_INDICATOR;
-
-The function is unused in case of the multicolor subleds.
-Please drop it from here.
-
-> +         color = <LED_COLOR_ID_RED>;
-> +       };
-> +       led@1 {
-> +         reg = <1>;
-> +         function = LED_FUNCTION_INDICATOR;
-
-Ditto.
-
-> +         color = <LED_COLOR_ID_GREEN>;
-> +       };
-> +       led@2 {
-> +         reg = <2>;
-> +         function = LED_FUNCTION_INDICATOR;
-
-Ditto.
-
-> +         color = <LED_COLOR_ID_BLUE>;
-> +       };
-> +     };
-> +   };
-> +
-> + - |
-> +
-> +   led-controller {
-> +     compatible = "mediatek,mt6360-led";
-> +     #address-cells = <1>;
-> +     #size-cells = <0>;
-> +
-> +     led@0 {
-> +       reg = <0>;
-> +       function = LED_FUNCTION_INDICATOR;
-> +       color = <LED_COLOR_ID_RED>;
-> +       led-max-microamp = <24000>;
-> +     };
-> +     led@1 {
-> +       reg = <1>;
-> +       function = LED_FUNCTION_INDICATOR;
-> +       color = <LED_COLOR_ID_GREEN>;
-> +       led-max-microamp = <24000>;
-> +     };
-> +     led@2 {
-> +       reg = <2>;
-> +       function = LED_FUNCTION_INDICATOR;
-> +       color = <LED_COLOR_ID_BLUE>;
-> +       led-max-microamp = <24000>;
-> +     };
-> +     led@3 {
-> +       reg = <3>;
-> +       function = LED_FUNCTION_MOONLIGHT;
-> +       color = <LED_COLOR_ID_WHITE>;
-> +       led-max-microamp = <150000>;
-> +     };
-> +     led@4 {
-> +       reg = <4>;
-> +       function = LED_FUNCTION_FLASH;
-> +       color = <LED_COLOR_ID_WHITE>;
-> +       function-enumerator = <1>;
-> +       led-max-microamp = <200000>;
-> +       flash-max-microamp = <500000>;
-> +       flash-max-timeout-us = <1024000>;
-> +     };
-> +     led@5 {
-> +       reg = <5>;
-> +       function = LED_FUNCTION_FLASH;
-> +       color = <LED_COLOR_ID_WHITE>;
-> +       function-enumerator = <2>;
-> +       led-max-microamp = <200000>;
-> +       flash-max-microamp = <500000>;
-> +       flash-max-timeout-us = <1024000>;
-> +     };
-> +   };
-> +...
-> 
-
--- 
-Best regards,
-Jacek Anaszewski
