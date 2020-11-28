@@ -2,276 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41BD2C7070
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4902C7090
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731971AbgK1R7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 12:59:00 -0500
-Received: from condef-03.nifty.com ([202.248.20.68]:62989 "EHLO
-        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725298AbgK1R4v (ORCPT
+        id S1732017AbgK1SBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 13:01:19 -0500
+Received: from relay-us1.mymailcheap.com ([51.81.35.219]:50994 "EHLO
+        relay-us1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727183AbgK1R7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 12:56:51 -0500
-Received: from conuserg-07.nifty.com ([10.126.8.70])by condef-03.nifty.com with ESMTP id 0ASBqOc6005313;
-        Sat, 28 Nov 2020 20:52:24 +0900
-Received: from grover.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 0ASBpD6B027804;
-        Sat, 28 Nov 2020 20:51:14 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 0ASBpD6B027804
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606564275;
-        bh=SE+omClH6XnEuelJQD2bhwlsfVM3XM0bJofbnY8BqgY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gmLhK6hp1RquRrDmk5oEh8bdInyfEKBEkoI0+vmKam3OnNtjz3da+NZ5O/ifmRHKm
-         XHEnX9XCxuNXPXB5eNqsRbPVUL5KwOj9+bdHUa/uigX4Rs1om1SjaRwb6kM4zVClj+
-         6Tp5dMdLpx6rJaUTdrlGaxPT/68X+YdnW8dDqql7xFZj2eQVIe1UkMtM3c3Y+/NgWQ
-         8AzsUBEz/ZRwkFcqwOsoLY3dpeCcDWCyPc2XuUgTzEuslQnV7TBU2PPu8n81yHHVVs
-         /q5cflOKHDz4fkCM/SGeaijgEo149mzdKTHXFTwo9wIS5ugmdOgLeK+kYut2MNCNXF
-         WukVC8qTycvcw==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/7] kbuild: doc: replace arch/$(ARCH)/ with arch/$(SRCARCH)/
-Date:   Sat, 28 Nov 2020 20:51:03 +0900
-Message-Id: <20201128115108.179256-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201128115108.179256-1-masahiroy@kernel.org>
-References: <20201128115108.179256-1-masahiroy@kernel.org>
+        Sat, 28 Nov 2020 12:59:13 -0500
+Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.241.64])
+        by relay-us1.mymailcheap.com (Postfix) with ESMTPS id 13EFA20E58;
+        Sat, 28 Nov 2020 11:59:35 +0000 (UTC)
+Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.80.156])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id D1276200FE;
+        Sat, 28 Nov 2020 11:59:32 +0000 (UTC)
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id AF5BF3F1CF;
+        Sat, 28 Nov 2020 12:59:31 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 7BED82A7DE;
+        Sat, 28 Nov 2020 12:59:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1606564771;
+        bh=qo4SLIZUrwY607yZrNGoWgTABuLweaoRjsorAWJWYK0=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=WrlOZhfCFe6awdoHTmhSt9pRWb88JZdpYCk8WGVWNLDQtKzheQ5emwezwR1naukIP
+         IuyH5HRmloWVaDxcoEOk/5p7oOOikpdDclkgWEgge9MbzrCoTpFPT/zHWSMDi+ScXa
+         lr1nwhHaSiRhnCup8qP9fZB/P9OLBlyciBmQCRhI=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id QqF36XvoeO0o; Sat, 28 Nov 2020 12:59:30 +0100 (CET)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Sat, 28 Nov 2020 12:59:30 +0100 (CET)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 9452741EAD;
+        Sat, 28 Nov 2020 11:59:29 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="ORvT/NQO";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [172.19.0.1] (unknown [64.225.114.122])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 8D0AC41EAD;
+        Sat, 28 Nov 2020 11:59:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1606564765; bh=qo4SLIZUrwY607yZrNGoWgTABuLweaoRjsorAWJWYK0=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=ORvT/NQO4+ANb6ekfq8QHmKcGHWGXzkkDE/31UbQgcFEXkv5N7IpQGe2Tih82zKEm
+         1gH41zIHXn91PB+w3vgXqUWjAaTA+4/s4w7yqtbz/s2I6SqGFNoHwY5YnoiuZtqUAk
+         B8gueg+ThLVHJ+5M7Di4kUf4APcVXxyy+hNCqcoM=
+Date:   Sat, 28 Nov 2020 19:59:17 +0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAJiuCcfEcM+Dksm4uoRPCiRepDSnEmp7pr8Qk5EsFSH_zEOTYA@mail.gmail.com>
+References: <6175E674-E8BC-4199-8BE8-A983065C32D5@aosc.io> <20201116155508.364dg6ycklwylswe@gilmour.lan> <8FFC1A6C-9CA4-4F94-91C4-F111A7519979@aosc.io> <20201120155939.3ajmbny2pka2vsnf@gilmour> <A8E91BA0-22FD-47F4-A5B2-A80A38FE9A0E@aosc.io> <38ee5feb-e35d-801f-99a1-65e23618e73b@sholland.org> <20201123111512.y7lbwsipbkcpuleb@gilmour> <97E2037C-3C3C-4B0B-8462-39B9E38CB3BB@aosc.io> <20201123125332.2p5z3ew7svszvyfs@gilmour> <009A22D9-AF20-45C4-9674-13334B3EFFBA@aosc.io> <20201128103827.d6sfc2eumli2betx@gilmour> <1666a61f6ea3e7d573795f9000a0b096c7b7dee0.camel@aosc.io> <CAJiuCcfEcM+Dksm4uoRPCiRepDSnEmp7pr8Qk5EsFSH_zEOTYA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [linux-sunxi] Re: [PATCH 3/3] arm64: allwinner: dts: a64: add DT for PineTab developer sample
+To:     =?ISO-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>
+CC:     Maxime Ripard <maxime@cerno.tech>,
+        Samuel Holland <samuel@sholland.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+From:   Icenowy Zheng <icenowy@aosc.io>
+Message-ID: <C8F86F90-14BF-4857-9DB8-7968A34E4656@aosc.io>
+X-Rspamd-Queue-Id: 9452741EAD
+X-Spamd-Result: default: False [1.40 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         TO_DN_ALL(0.00)[];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         FREEMAIL_TO(0.00)[gmail.com];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Precisely speaking, the arch directory is specified by $(SRCARCH),
-not $(ARCH).
 
-In old days, $(ARCH) actually matched to the arch directory because
-32-bit and 64-bit were supported as separate architectures.
 
-Most architectures (except arm/arm64) were unified like follows:
+=E4=BA=8E 2020=E5=B9=B411=E6=9C=8828=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=88=
+7:54:04, "Cl=C3=A9ment P=C3=A9ron" <peron=2Eclem@gmail=2Ecom> =E5=86=99=E5=
+=88=B0:
+>Hi Icenowy,
+>
+>On Sat, 28 Nov 2020 at 12:28, Icenowy Zheng <icenowy@aosc=2Eio> wrote:
+>>
+>> =E5=9C=A8 2020-11-28=E6=98=9F=E6=9C=9F=E5=85=AD=E7=9A=84 11:38 +0100=EF=
+=BC=8CMaxime Ripard=E5=86=99=E9=81=93=EF=BC=9A
+>> > On Mon, Nov 23, 2020 at 09:10:38PM +0800, Icenowy Zheng wrote:
+>> > > > > > > > Okay=2E But I'm not satisfied with a non-public sample
+>> > > > > > > > occupies
+>> > > > > > > > the pinetab name=2E Is rename it to pinetab-dev and add a
+>> > > > > > > > pinetab-retail okay?
+>> > > > > > >
+>> > > > > > > To me, naming the production version anything but
+>"pinetab"
+>> > > > > > > isn't
+>> > > > > > > satisfying either=2E
+>> > > > > >
+>> > > > > > I understand where you're coming from, but the point I was
+>> > > > > > making my
+>> > > > > > previous mail is precisely that it's not really possible=2E
+>> > > > > >
+>> > > > > > You want to name the early adopter version _the_ production
+>> > > > > > version=2E Let's assume the hardware changes again between
+>the
+>> > > > > > early
+>> > > > > > adopter and mass-production version=2E Which one will be
+>_the_
+>> > > > > > production version? The early-adopter or the mass-produced
+>> > > > > > one?
+>> > > > > >
+>> > > > > > There's really no good answer here, and both would suck in
+>> > > > > > their
+>> > > > > > own way=2E The only way to deal with this is to simply avoid
+>> > > > > > defining one version as the one true board, and just
+>loading
+>> > > > > > the
+>> > > > > > proper DT in u-boot based on whatever clue we have of the
+>> > > > > > hardware
+>> > > > > > revision=2E
+>> > > > > Then will it be okay to rename current pinetab DT to
+>> > > > > pinetab-sample and then introduce new DTs all with suffixes?
+>> > > >
+>> > > > No=2E From my previous mail:
+>> > >
+>> > > It can be seen as dropping the PineTab DT and introduce new DTs
+>> > > with
+>> > > suffix=2E
+>> > >
+>> > > Do we have rule that we cannot drop boards?
+>> >
+>> > Are you really arguing that removing a DT and then adding an
+>> > identical
+>> > one under a different name is not renaming it?
+>>
+>> Then we can just keep confusing name?
+>
+>Sorry maybe I missed some information
+>But why don't you do like pinephone?
 
-    arch/i386, arch/x86_64    ->  arch/x86
-    arch/sh, arch/sh64        ->  arch/sh
-    arch/sparc, arch/sparc64  ->  arch/sparc
+They're the same board revision with different LCD panels=2E
 
-To not break the user interface, commit 6752ed90da03 ("Kbuild: allow
-arch/xxx to use a different source path") introduced SRCARCH to point
-to the arch directory, still allowing to pass in the former ARCH=i386
-or ARCH=x86_64.
+And the major problem is that the DT for samples is already submitted
+under the name "PineTab"=2E
 
-Update the documents for preciseness, and add the explanation of SRCARCH.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
----
-
-Changes in v2:
- - Fix a typo
-
- Documentation/kbuild/makefiles.rst | 61 +++++++++++++++++-------------
- Documentation/kbuild/modules.rst   |  2 +-
- 2 files changed, 35 insertions(+), 28 deletions(-)
-
-diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
-index a7b874097a91..1d4335c7f496 100644
---- a/Documentation/kbuild/makefiles.rst
-+++ b/Documentation/kbuild/makefiles.rst
-@@ -67,11 +67,11 @@ This document describes the Linux kernel Makefiles.
- 
- The Makefiles have five parts::
- 
--	Makefile		the top Makefile.
--	.config			the kernel configuration file.
--	arch/$(ARCH)/Makefile	the arch Makefile.
--	scripts/Makefile.*	common rules etc. for all kbuild Makefiles.
--	kbuild Makefiles	exist in every subdirectory
-+	Makefile                    the top Makefile.
-+	.config                     the kernel configuration file.
-+	arch/$(SRCARCH)/Makefile    the arch Makefile.
-+	scripts/Makefile.*          common rules etc. for all kbuild Makefiles.
-+	kbuild Makefiles            exist in every subdirectory
- 
- The top Makefile reads the .config file, which comes from the kernel
- configuration process.
-@@ -82,7 +82,7 @@ It builds these goals by recursively descending into the subdirectories of
- the kernel source tree.
- The list of subdirectories which are visited depends upon the kernel
- configuration. The top Makefile textually includes an arch Makefile
--with the name arch/$(ARCH)/Makefile. The arch Makefile supplies
-+with the name arch/$(SRCARCH)/Makefile. The arch Makefile supplies
- architecture-specific information to the top Makefile.
- 
- Each subdirectory has a kbuild Makefile which carries out the commands
-@@ -933,7 +933,7 @@ When "make clean" is executed, make will descend down in arch/x86/boot,
- and clean as usual. The Makefile located in arch/x86/boot/ may use
- the subdir- trick to descend further down.
- 
--Note 1: arch/$(ARCH)/Makefile cannot use "subdir-", because that file is
-+Note 1: arch/$(SRCARCH)/Makefile cannot use "subdir-", because that file is
- included in the top level makefile, and the kbuild infrastructure
- is not operational at that point.
- 
-@@ -946,9 +946,9 @@ be visited during "make clean".
- The top level Makefile sets up the environment and does the preparation,
- before starting to descend down in the individual directories.
- The top level makefile contains the generic part, whereas
--arch/$(ARCH)/Makefile contains what is required to set up kbuild
-+arch/$(SRCARCH)/Makefile contains what is required to set up kbuild
- for said architecture.
--To do so, arch/$(ARCH)/Makefile sets up a number of variables and defines
-+To do so, arch/$(SRCARCH)/Makefile sets up a number of variables and defines
- a few targets.
- 
- When kbuild executes, the following steps are followed (roughly):
-@@ -956,14 +956,14 @@ When kbuild executes, the following steps are followed (roughly):
- 1) Configuration of the kernel => produce .config
- 2) Store kernel version in include/linux/version.h
- 3) Updating all other prerequisites to the target prepare:
--   - Additional prerequisites are specified in arch/$(ARCH)/Makefile
-+   - Additional prerequisites are specified in arch/$(SRCARCH)/Makefile
- 4) Recursively descend down in all directories listed in
-    init-* core* drivers-* net-* libs-* and build all targets.
--   - The values of the above variables are expanded in arch/$(ARCH)/Makefile.
-+   - The values of the above variables are expanded in arch/$(SRCARCH)/Makefile.
- 5) All object files are then linked and the resulting file vmlinux is
-    located at the root of the obj tree.
-    The very first objects linked are listed in head-y, assigned by
--   arch/$(ARCH)/Makefile.
-+   arch/$(SRCARCH)/Makefile.
- 6) Finally, the architecture-specific part does any required post processing
-    and builds the final bootimage.
-    - This includes building boot records
-@@ -1169,7 +1169,7 @@ When kbuild executes, the following steps are followed (roughly):
- 		$(core-y), $(libs-y), $(drivers-y) and $(net-y).
- 
- 	    The top level Makefile defines values for all generic directories,
--	    and arch/$(ARCH)/Makefile only adds architecture-specific
-+	    and arch/$(SRCARCH)/Makefile only adds architecture-specific
- 	    directories.
- 
- 	    Example::
-@@ -1189,15 +1189,15 @@ When kbuild executes, the following steps are followed (roughly):
- 	The actual goals are not standardized across architectures.
- 
- 	It is common to locate any additional processing in a boot/
--	directory below arch/$(ARCH)/.
-+	directory below arch/$(SRCARCH)/.
- 
- 	Kbuild does not provide any smart way to support building a
--	target specified in boot/. Therefore arch/$(ARCH)/Makefile shall
-+	target specified in boot/. Therefore arch/$(SRCARCH)/Makefile shall
- 	call make manually to build a target in boot/.
- 
- 	The recommended approach is to include shortcuts in
--	arch/$(ARCH)/Makefile, and use the full path when calling down
--	into the arch/$(ARCH)/boot/Makefile.
-+	arch/$(SRCARCH)/Makefile, and use the full path when calling down
-+	into the arch/$(SRCARCH)/boot/Makefile.
- 
- 	Example::
- 
-@@ -1217,7 +1217,7 @@ When kbuild executes, the following steps are followed (roughly):
- 
- 		#arch/x86/Makefile
- 		define archhelp
--		  echo  '* bzImage      - Image (arch/$(ARCH)/boot/bzImage)'
-+		  echo  '* bzImage      - Compressed kernel image (arch/x86/boot/bzImage)'
- 		endif
- 
- 	When make is executed without arguments, the first goal encountered
-@@ -1332,7 +1332,7 @@ When kbuild executes, the following steps are followed (roughly):
- 
-     objcopy
- 	Copy binary. Uses OBJCOPYFLAGS usually specified in
--	arch/$(ARCH)/Makefile.
-+	arch/$(SRCARCH)/Makefile.
- 	OBJCOPYFLAGS_$@ may be used to set additional options.
- 
-     gzip
-@@ -1395,7 +1395,7 @@ When kbuild executes, the following steps are followed (roughly):
- --------------------------------
- 
- 	When the vmlinux image is built, the linker script
--	arch/$(ARCH)/kernel/vmlinux.lds is used.
-+	arch/$(SRCARCH)/kernel/vmlinux.lds is used.
- 	The script is a preprocessed variant of the file vmlinux.lds.S
- 	located in the same directory.
- 	kbuild knows .lds files and includes a rule `*lds.S` -> `*lds`.
-@@ -1405,9 +1405,6 @@ When kbuild executes, the following steps are followed (roughly):
- 		#arch/x86/kernel/Makefile
- 		extra-y := vmlinux.lds
- 
--		#Makefile
--		export CPPFLAGS_vmlinux.lds += -P -C -U$(ARCH)
--
- 	The assignment to extra-y is used to tell kbuild to build the
- 	target vmlinux.lds.
- 	The assignment to $(CPPFLAGS_vmlinux.lds) tells kbuild to use the
-@@ -1481,7 +1478,7 @@ See subsequent chapter for the syntax of the Kbuild file.
- 
- 	If an architecture uses a verbatim copy of a header from
- 	include/asm-generic then this is listed in the file
--	arch/$(ARCH)/include/asm/Kbuild like this:
-+	arch/$(SRCARCH)/include/asm/Kbuild like this:
- 
- 		Example::
- 
-@@ -1492,7 +1489,7 @@ See subsequent chapter for the syntax of the Kbuild file.
- 	During the prepare phase of the build a wrapper include
- 	file is generated in the directory::
- 
--		arch/$(ARCH)/include/generated/asm
-+		arch/$(SRCARCH)/include/generated/asm
- 
- 	When a header is exported where the architecture uses
- 	the generic header a similar wrapper is generated as part
-@@ -1527,8 +1524,8 @@ See subsequent chapter for the syntax of the Kbuild file.
- 	to define the minimum set of ASM headers that all architectures must have.
- 
- 	This works like optional generic-y. If a mandatory header is missing
--	in arch/$(ARCH)/include/(uapi/)/asm, Kbuild will automatically generate
--	a wrapper of the asm-generic one.
-+	in arch/$(SRCARCH)/include/(uapi/)/asm, Kbuild will automatically
-+	generate a wrapper of the asm-generic one.
- 
- 9 Kbuild Variables
- ==================
-@@ -1564,6 +1561,16 @@ The top Makefile exports the following variables:
- 
- 	    make ARCH=m68k ...
- 
-+    SRCARCH
-+	This variable specifies the directory in arch/ to build.
-+
-+	ARCH and SRCARCH may not necessarily match. A couple of arch
-+	directories are biarch, that is, a single arch/*/ directory supports
-+	both 32-bit and 64-bit.
-+
-+	For example, you can pass in ARCH=i386, ARCH=x86_64, or ARCH=x86.
-+	For all of them, SRCARCH=x86 because arch/x86/ supports	both i386 and
-+	x86_64.
- 
-     INSTALL_PATH
- 	This variable defines a place for the arch Makefiles to install
-diff --git a/Documentation/kbuild/modules.rst b/Documentation/kbuild/modules.rst
-index 85ccc878895e..a1f3eb7a43e2 100644
---- a/Documentation/kbuild/modules.rst
-+++ b/Documentation/kbuild/modules.rst
-@@ -332,7 +332,7 @@ according to the following rule:
- 	      There are two notable exceptions to this rule: larger
- 	      subsystems have their own directory under include/, such as
- 	      include/scsi; and architecture specific headers are located
--	      under arch/$(ARCH)/include/.
-+	      under arch/$(SRCARCH)/include/.
- 
- 4.1 Kernel Includes
- -------------------
--- 
-2.27.0
-
+>sun50i-a64-pinetab-1=2E0=2Edts
+>sun50i-a64-pinetab-1=2E1=2Edts
+>
+>-dev is also a confusing name I think, as the board has been already
+>shipped=2E
+>
+>Regards,
+>Clement
+>
+>
+>>
+>> If we do so, how can we mark the new DT as "the user should use this
+>> one"?
+>>
+>> --
+>> You received this message because you are subscribed to the Google
+>Groups "linux-sunxi" group=2E
+>> To unsubscribe from this group and stop receiving emails from it,
+>send an email to linux-sunxi+unsubscribe@googlegroups=2Ecom=2E
+>> To view this discussion on the web, visit
+>https://groups=2Egoogle=2Ecom/d/msgid/linux-sunxi/1666a61f6ea3e7d573795f9=
+000a0b096c7b7dee0=2Ecamel%40aosc=2Eio=2E
