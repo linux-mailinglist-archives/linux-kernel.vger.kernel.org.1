@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D692C705A
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC452C7057
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732260AbgK1Rzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1733035AbgK1Rzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 28 Nov 2020 12:55:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730044AbgK1FK1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 00:10:27 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B638C0613D1;
-        Fri, 27 Nov 2020 21:10:24 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id s21so6188493pfu.13;
-        Fri, 27 Nov 2020 21:10:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=F0vFc3NvYkJ/R9GXcnF7D7uFfZEUtnoEPN18dRbTCIs=;
-        b=BkUIOa05Xxp/i2gv8hzMv3s3DF7vYjG5XEH1coC42F8iLecKWdgk+Tij35Y2xkA1op
-         ADEriz34wRXYEO0PxPYtAEBhrD5nixV+Ic6RpjfgwfNjgXaBBfVMTQqMp13LBUZh8205
-         eZD6daYOC8JL71kGt1CHxl8IjYVg977ExFtBR4YjGDVpnvxM0Pt135exiR9IkiPfiayk
-         R0obarrUGtxL/ld9ToTGnOSCZRHlrB9/RvjGvuLSWRanQUMnTW0lGgMScTnc+h5dbcYH
-         D5K8xD7PECmML7KX1CRzTtzLN1cuM77wL7jPwF45XmbvnNx2pBXEWv1UC5X+z1ofGU+g
-         DxMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F0vFc3NvYkJ/R9GXcnF7D7uFfZEUtnoEPN18dRbTCIs=;
-        b=nWHIk2ENCZ/kIF6nNlZUt65gIEHXtZ0EB95nUxIhf1QANUNOuQ9NbseOl7J0xoM+2T
-         CfuA2XEZ80DlE1ZeWkFic/R88yswtcyrXA+92yvVG8AKm+m0k06eiMDWOEJ1eS2RH6I8
-         I4H3ZcRM4u2/fSWFXdvBhs+WPrjapsNrUIFGRvdU/Nnqz13V8PFL7RxfPAlUDRW7pXhV
-         +TrCIhU/V917JuJQuIL96P8/9I0Xu5cNpkxAbdThlFp8ybWMFBY4anhBrE2mYzdkQNSk
-         f1Wcj157e5aPsvdOVzop6zKMypQmCwyhGaQYM8Dh8uhALEMYvmhy3j7ZezLR2Dw/jZ2c
-         dMAQ==
-X-Gm-Message-State: AOAM532li8Lnw1eBMHbpz17lGEgFIEOb2Oijc9RP/OeVea9QUfW2RyUg
-        dN4p6pE6P1GkPd/7Y3wXPHI=
-X-Google-Smtp-Source: ABdhPJx/u5upM3Ts10qWAJjCMXJXFdgrYrZNliTRrDifPLWk1kt7+xSML0mblu642DoH6AzAMt2rSw==
-X-Received: by 2002:a62:2947:0:b029:196:6931:572e with SMTP id p68-20020a6229470000b02901966931572emr9953790pfp.79.1606540224166;
-        Fri, 27 Nov 2020 21:10:24 -0800 (PST)
-Received: from [10.230.28.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id s18sm9473647pfc.5.2020.11.27.21.10.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 21:10:23 -0800 (PST)
-Subject: Re: [PATCH 2/2] reset: simple: add BCM4908 MISC PCIe reset controller
- support
-To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20201127111442.1096-1-zajec5@gmail.com>
- <20201127111442.1096-2-zajec5@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <81562023-d99b-4f60-212a-7cb3ee9661ed@gmail.com>
-Date:   Fri, 27 Nov 2020 21:10:21 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.0
+Received: from bilbo.ozlabs.org ([203.11.71.1]:48829 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731234AbgK1FVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 00:21:32 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CjfwR6yCVz9sRR;
+        Sat, 28 Nov 2020 16:20:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606540859;
+        bh=G/77mzVGVkJ1P21yhssVEcy7P8QkwU8Fmt2CZ6ER9dU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XHHWgToQWBNQiIj5urNkvUcFWLEOEOJr7nuz7VRQ0iudZqaDy2foY5rnPmU1x7WIF
+         UpApdenPnR3/MvtLskNqfM97OMZA+ugDgK1m/R5+u+vvOieWxikDpbyc5QnedfH9JX
+         izmbVDvMp9XH/BesR/Y6ODaLOu/90Tm/uqgffgdO/2lmCoRW01PGniSbfEIIdCCHJg
+         rYFT04geQrwr9JMJoPRpIoYuLJpA40+rZBh6xVs2S7rMk6cAPTWAaewj/gDRfyFg+1
+         1pBhzOkzE9SWGlnyydGHc1Cg0HQv4GJk8xu140490yXWa1WwkMvDZGEs3dGl9ABK1v
+         qQTEtn3a07sIw==
+Date:   Sat, 28 Nov 2020 16:20:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Daniel Axtens <dja@axtens.net>, Joel Stanley <joel@jms.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-renesas-soc@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH] powerpc: fix the allyesconfig build
+Message-ID: <20201128162054.575aea29@canb.auug.org.au>
+In-Reply-To: <20201127175642.45502b20@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+References: <20201128122819.32187696@canb.auug.org.au>
+        <20201127175642.45502b20@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20201127111442.1096-2-zajec5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/I=3tiLN0XLZrAWSSuz2Ag_u";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/I=3tiLN0XLZrAWSSuz2Ag_u
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi Jakub,
 
-On 11/27/2020 3:14 AM, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> It's a trivial reset controller. One register with bit per PCIe core.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+On Fri, 27 Nov 2020 17:56:42 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> What's the offending structure in hisilicon? I'd rather have a look
+> packing structs with pointers in 'em sounds questionable.
+>=20
+> I only see these two:
+>=20
+> $ git grep packed drivers/net/ethernet/hisilicon/
+> drivers/net/ethernet/hisilicon/hns/hnae.h:struct __packed hnae_desc {
+> drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:struct __packed hns3_desc=
+ {
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+struct hclge_dbg_reg_type_info which is 28 bytes long due to the
+included struct struct hclge_dbg_reg_common_msg (which is 12 bytes
+long).  They are surrounded by #pragma pack(1)/pack().
+
+This forces the 2 pointers in each second array element of
+hclge_dbg_reg_info[] to be 4 byte aligned (where pointers are 8 bytes
+long on PPC64).
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/I=3tiLN0XLZrAWSSuz2Ag_u
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/B3jYACgkQAVBC80lX
+0GwFIgf4pkvlqKpzmRgyqk+s0V1tc9Gl8zToJYwqce1hR4QciFVaTeVkvik1MpR5
+j6pW1eb5DB+1p7nDsEH9W2e/3Y8NZAH58xIuYz8DtoMhVFZC/ag/eQFeq8f7YPbG
+v1166AaoNoBmBQaFYuLk+3fBc5RsedFSRik82Lpkad24U2KpjkTuTxEh19er5/3y
+FKo5d37D1e2vSxwfggOJQ09Z1UsHU6RRb0V4vkLh9QI9h2bxzhiMmi6KvATA7Xg2
+ecqbSb9293xx2VWSSn8I8PYyyVgkt4N6AwMvCdrJG/wIPBljcTCSqVbuh3lnGUD7
+uz4kcTQF5VXbzVvq7Ph+kLFhBbnk
+=fRdP
+-----END PGP SIGNATURE-----
+
+--Sig_/I=3tiLN0XLZrAWSSuz2Ag_u--
