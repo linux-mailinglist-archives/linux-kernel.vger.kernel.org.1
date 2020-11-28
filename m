@@ -2,219 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666C92C6E98
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 04:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4195C2C6EA3
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 04:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728995AbgK1DNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 22:13:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729019AbgK1DJn (ORCPT
+        id S1731135AbgK1D2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 22:28:01 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8192 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726740AbgK1DWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 22:09:43 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B84C0613D1;
-        Fri, 27 Nov 2020 19:09:20 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id i9so6479718ioo.2;
-        Fri, 27 Nov 2020 19:09:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dbqk6fkQ9N7vOdYQCsQVKy+jkNB2WegUijRwuAKX+1I=;
-        b=QmbkriXetoIAO7mIOUOdfd38AMJXvvcNwuQbnT+Nf5lruzncsaknPJD7Ak6WQYEkya
-         0qprZbf8dvVUkJuPn8uxYflqfmykBQ9NRw1/GwPRv43RbRaCrANluOs7FQlFmtwq+6H1
-         BEEhSxz2Tn0KUoJ5f8yHH5V/DyWNho4NW2nEV3snGTGtQA/L2RYmd8SHpfLmRqWdzt7o
-         iYdGZkz2lP0Xvv8scOmTz9/MohfHND8DxzcNdXAcHLho3x1Mc+4hLvW+3CTa9ET1lDuK
-         aQERoog6kqrKew5qiaacfKQPfnlgpLS9qbYCwFFqS+Za68xg+blqDUSTn+JEn7/lroMF
-         laZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dbqk6fkQ9N7vOdYQCsQVKy+jkNB2WegUijRwuAKX+1I=;
-        b=c8GB+V0DZGXq8y2Mu4dzW+khVx1H61V1qurl7dcSd65UtB3TrWJY4YMRQMFlb7maVv
-         Pxe+Y/1WAGDjRI5qzb1wGHvEM6FhxSkrPaiOTMXN+DOi2gcefH6uBLzYPJBcPLBKcHT5
-         d39JUnC0NwhOu3LRH5uolmR9JeRQdmNl1pFXdjEHKjC2Sc+8mg29M2q+hqWRA0ZeUnjZ
-         H939kUQ7tZ6GzjFgBpSEG7L5aiXGF9J599XIEEk3/3wSvywIhUItqAsZJORJUjSxKCLM
-         QFuqC8Y0RkXw1Hh0ca7xRbKHPJ0ON0gJVjRQYd8XgnDWZp46bgT20WzV2dweqA1v2c4q
-         7vBw==
-X-Gm-Message-State: AOAM531fZYNwCzaDGqsMZqzCD0kCroN5Xkp73jKGJFA5a+o24hQELOj2
-        Xl63MVmtghK4IVPDr0LApgeLzedu4HkVlBJDfOg=
-X-Google-Smtp-Source: ABdhPJxGv5y6/ARIkZqD7n0LM/B9ZFgMkoh5jp0GqNCTFao+/cI+XrhX2niyJrrNlMEPcQBpku7sPBltflTjIQsJ2xY=
-X-Received: by 2002:a02:ccbc:: with SMTP id t28mr10016301jap.97.1606532959688;
- Fri, 27 Nov 2020 19:09:19 -0800 (PST)
+        Fri, 27 Nov 2020 22:22:55 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CjcHd27CLzkbkR;
+        Sat, 28 Nov 2020 11:22:21 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 28 Nov 2020 11:22:47 +0800
+Subject: Re: [PATCH] USB:ehci:fix an interrupt calltrace error
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1606361673-573-1-git-send-email-liulongfang@huawei.com>
+ <20201126160830.GA827745@rowland.harvard.edu>
+ <96b4d366-c94c-9708-da12-5693bf16b716@huawei.com>
+ <20201127154718.GA861473@rowland.harvard.edu>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <3c2366c8-4b3e-dac0-48ad-6b33b6eed10e@huawei.com>
+Date:   Sat, 28 Nov 2020 11:22:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20201127161229.19336-1-laoar.shao@gmail.com>
-In-Reply-To: <20201127161229.19336-1-laoar.shao@gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 28 Nov 2020 11:08:43 +0800
-Message-ID: <CALOAHbCF67J-NCsqN=ipym6pCRMLJfws9oiEaokOX6_BKx2xZQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/5] sched: support schedstats for RT sched class
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, bristot@redhat.com,
-        jun qian <qianjun.kernel@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-rt-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201127154718.GA861473@rowland.harvard.edu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 12:12 AM Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> We want to measure the latency of RT tasks in our production
-> environment with schedstats facility, but currently schedstats is only
-> supported for fair sched class. This patch enable it for RT sched class
-> as well.
->
-> - Structure
->
-> Before we make schedstats available for RT sched class, we should make
-> struct sched_statistics independent of fair sched class first.
->
->
-> The struct sched_statistics is the schedular statistics of a task_struct
-> or a task_group. So we can move it into struct task_struct and
-> struct task_group to achieve the goal.
->
-> Below is the detailed explaination of the change in the structs.
->
-> The struct before this patch:
->
-> struct task_struct {            |-> struct sched_entity {
->     ...                         |       ...
->     struct sched_entity *se; ---|       struct sched_statistics statistics;
->     struct sched_rt_entity *rt;         ...
->     ...                                 ...
-> };                                  };
->
-> struct task_group {             |--> se[0]->statistics : schedstats of CPU0
->     ...                         |
->  #ifdef CONFIG_FAIR_GROUP_SCHED |
->     struct sched_entity **se; --|--> se[1]->statistics : schedstats of CPU1
->                                 |
->  #endif                         |
->                                 |--> se[N]->statistics : schedstats of CPUn
->
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->     struct sched_rt_entity  **rt_se; (N/A)
->  #endif
->     ...
-> };
->
-> The '**se' in task_group is allocated in the fair sched class, which is
-> hard to be reused by other sched class.
->
-> The struct after this patch:
-> struct task_struct {
->     ...
->     struct sched_statistics statistics;
->     ...
->     struct sched_entity *se;
->     struct sched_rt_entity *rt;
->     ...
-> };
->
-> struct task_group {                    |---> stats[0] : of CPU0
->     ...                                |
->     struct sched_statistics **stats; --|---> stats[1] : of CPU1
->     ...                                |
->                                        |---> stats[n] : of CPUn
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->     struct sched_entity **se;
->  #endif
->  #ifdef CONFIG_RT_GROUP_SCHED
->     struct sched_rt_entity  **rt_se;
->  #endif
->     ...
-> };
->
-> After the patch it is clearly that both of se or rt_se can easily get the
-> sched_statistics by a task_struct or a task_group.
->
-> - Function Interface
->
-> The original prototype of the schedstats helpers are
->
-> update_stats_wait_*(struct cfs_rq *cfs_rq, struct sched_entity *se)
->
-> The cfs_rq in these helpers is used to get the rq_clock, and the se is
-> used to get the struct sched_statistics and the struct task_struct. In
-> order to make these helpers available by all sched classes, we can pass
-> the rq, sched_statistics and task_struct directly.
->
-> Then the new helpers are
->
-> update_stats_wait_*(struct rq *rq, struct task_struct *p,
->                     struct sched_statistics *stats)
->
-> which are independent of fair sched class.
->
-> To avoid vmlinux growing too large or introducing ovehead when
-> !schedstat_enabled(), some new helpers after schedstat_enabled() are also
-> introduced, Suggested by Mel. These helpers are in sched/stats.c,
->
-> __update_stats_wait_*(struct rq *rq, struct task_struct *p,
->                       struct sched_statistics *stats)
->
-> - Implementation
->
-> After we make the struct sched_statistics and the helpers of it
-> independent of fair sched class, we can easily use the schedstats
-> facility for RT sched class.
->
-> The schedstat usage in RT sched class is similar with fair sched class,
-> for example,
->                 fair                            RT
-> enqueue         update_stats_enqueue_fair       update_stats_enqueue_rt
-> dequeue         update_stats_dequeue_fair       update_stats_dequeue_rt
-> put_prev_task   update_stats_wait_start         update_stats_wait_start
-> set_next_task   update_stats_wait_end           update_stats_wait_end
->
-> - Usage
->
-> The user can get the schedstats information in the same way in fair sched
-> class. For example,
->                 fair                            RT
-> task show       /proc/[pid]/sched               /proc/[pid]/sched
-> group show      cpu.stat in cgroup              cpu.stat in cgroup
->
-> The sched:sched_stat_{wait, sleep, iowait, blocked} tracepoints can
-> be used to trace RT tasks as well. sched_stat_runtime can also be
-> supported in the future if it is helpful.
->
-> Yafang Shao (5):
->   sched: don't include stats.h in sched.h
->   sched, fair: use __schedstat_set() in set_next_entity()
->   sched: make struct sched_statistics independent of fair sched class
->   sched: make schedstats helpers independent of fair sched class
->   sched, rt: support schedstats for RT sched class
->
->  include/linux/sched.h    |   3 +-
->  kernel/sched/core.c      |  25 +++--
->  kernel/sched/deadline.c  |   5 +-
->  kernel/sched/debug.c     |  82 +++++++--------
->  kernel/sched/fair.c      | 209 +++++++++++++++------------------------
->  kernel/sched/idle.c      |   1 +
->  kernel/sched/rt.c        | 178 ++++++++++++++++++++++++++++++++-
->  kernel/sched/sched.h     |  13 ++-
->  kernel/sched/stats.c     | 105 ++++++++++++++++++++
->  kernel/sched/stats.h     |  80 +++++++++++++++
->  kernel/sched/stop_task.c |   5 +-
->  11 files changed, 517 insertions(+), 189 deletions(-)
->
-> --
-> 2.18.4
->
+On 2020/11/27 23:47, Alan Stern Wrote:
+> On Fri, Nov 27, 2020 at 10:29:03AM +0800, liulongfang wrote:
+>> On 2020/11/27 0:08, Alan Stern Wrote:
+>>> On Thu, Nov 26, 2020 at 11:34:33AM +0800, Longfang Liu wrote:
+>>>> The system goes to suspend when using USB audio player. This causes
+>>>> the USB device continuous send interrupt signal to system, When the
+>>>> number of interrupts exceeds 100000, the system will forcibly close
+>>>> the interrupts and output a calltrace error.
+>>>
+>>> This description is very confusing.  USB devices do not send interrupt 
+>>> signals to the host.  Do you mean that the device sends a wakeup 
+>>> request?  Or do you mean something else?
+>> The irq type is IRQ_NONE，It's counted in the note_interrupt function.
+>> From the analysis of the driver code, that are indeed  interrupt signals.
+> 
+> Above you wrote: "the USB device continuous send interrupt signal to 
+> system".  But that's not correct.  The interrupt signals are sent by the 
+> USB host controller, not by the USB audio device.
+> 
+OK, I will modify the description in the next patch.
+> The patch description should mention that this happens only with some 
+> Synopsys host controllers.
+> 
+>>>> When the system goes to suspend, the last interrupt is reported to
+>>>> the driver. At this time, the system has set the state to suspend.
+>>>> This causes the last interrupt to not be processed by the system and
+>>>> not clear the interrupt state flag. This uncleared interrupt flag
+>>>> constantly triggers new interrupt event. This causing the driver to
+>>>> receive more than 100,000 interrupts, which causes the system to
+>>>> forcibly close the interrupt report and report the calltrace error.
+>>>
+>>> If the driver receives an interrupt, it is supposed to process the event 
+>>> even if the host controller is suspended.  And when ehci_irq() runs, it 
+>>> clears the bits that are set in the USBSYS register.
+>> When the host controller is suspended, the ehci_suspend() will clear
+>> the HCD_FLAG_HW_ACCESSIBLE, and then usb_hcd_irq() will return IRQ_NONE
+>> directly without calling ehci_irq().
+> 
+> Yes.  But ehci_bus_suspend() runs _before_ the host controller is 
+> suspended.  While ehci_bus_suspend() is running, usb_hcd_irq() _will_ 
+> call ehci_irq(), and ehci_irq() _will_ clear the status bits.
+> 
+> After the host controller is suspended it is not supposed to generate 
+> any interrupt signals at all, because ehci_suspend() writes 0 to the 
+> USBINTR register, and it does this _before_ clearing 
+> HCD_FLAG_HW_ACCESSIBLE.
+> 
+According to this process, there should be no interruption storm problem,
+but the current fact is that the problem has occurred, so the actual
+execution process did not follow the correct process above.
 
-Ah, the patch #5 is missed,pls ignore this patchset. I will resend them.
-
--- 
-Thanks
-Yafang
+>>> Why is your system getting interrupts?  That is, which bits are set in 
+>>> the USBSTS register?
+>> BIT(5) and BIT(3) are setted, STS_IAA and STS_FLR.
+> 
+> STS_FLR is not set in the USBINTR register, but STS_IAA is.  So that's 
+> the one which matters.
+> 
+>>>> so, when the driver goes to sleep and changes the system state to
+>>>> suspend, the interrupt flag needs to be cleared.
+>>>>
+>>>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>>>> ---
+>>>>  drivers/usb/host/ehci-hub.c | 5 +++++
+>>>>  1 file changed, 5 insertions(+)
+>>>>
+>>>> diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
+>>>> index ce0eaf7..5b13825 100644
+>>>> --- a/drivers/usb/host/ehci-hub.c
+>>>> +++ b/drivers/usb/host/ehci-hub.c
+>>>> @@ -348,6 +348,11 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
+>>>>  
+>>>>  	/* Any IAA cycle that started before the suspend is now invalid */
+>>>>  	end_iaa_cycle(ehci);
+>>>> +
+>>>> +	/* clear interrupt status */
+>>>> +	if (ehci->has_synopsys_hc_bug)
+>>>> +		ehci_writel(ehci, INTR_MASK | STS_FLR, &ehci->regs->status);
+>>>
+>>> This is a very strange place to add your new code -- right in the middle 
+>>> of the IAA and unlink handling.  Why not put it in a more reasonable 
+>>> place?After the IAA is processed, clear the STS_IAA interrupt state flag.
+>>>
+>>> Also, the patch description does not mention has_synopsys_hc_bug.  The 
+>>> meaning of this flag has no connection with the interrupt status 
+>>> register, so why do you use it here?
+>> Because of our USB IP comes from Synopsys, and the uncleared flage is also caused by
+>> special hardware design, in addition, we have not tested other manufacturers' USB
+>> controllers.We don’t know if other manufacturers’ designs have this problem,
+>> so this modification is only limited to this kind of design.
+> 
+> Clearing the STS_IAA flag won't hurt, no matter who manufactured the 
+> controller.  So your patch should look more like this:
+> 
+> +	/* Some Synopsys controllers mistakenly leave IAA turned on */
+> +	ehci_writel(ehci, STS_IAA, &ehci->regs->status);
+> 
+> And these lines should come before the "Any IAA cycle..." comment line.
+> Does that fix the problem?
+I will conduct a round of testing based on this modification
+and provide the test results.
+> 
+> Alan Stern
+> .
+> 
+Thanks.
+Longfang Liu
