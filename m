@@ -2,120 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354CA2C7205
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C862C71D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390051AbgK1Vuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733292AbgK1SRx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:17:53 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94805C02A187
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 04:21:40 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id d8so10940934lfa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 04:21:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=dj3qfXJ4Iec3raMLz9uZPv/2iNP/sFcmUQrTQYmXPI4=;
-        b=o9vDpD1dqWWqph26Yhd4G7BcLVySzLILRkWBtHtyr40ZkF+2hDgeXlhMnEi8YqJ3ZJ
-         zGVuLOVLyWbqkHAvQjMUw08ohIScuoCAKEv0ni6llRgh659nNgNvfEBwOVpqGum5Wzuo
-         wV1sqyPYc3JabkbJWYwPkzzsTSk69pCQhXig4ONinKDfWjP1WelkF4VpEL5e5xNTj+LN
-         Dp5FmwKDfBWSNM88w1Vcd7aJ7GHTO56ehJ16PaCzHXpB3d95K3pamgfFBOMm5Kkjucqb
-         Y6cXJVHYrsjsYRJhUtcouQu6djD5oanSkaCHtBeOFolG4TcjsS5KsWdgM06kyuVb5ZRI
-         kakA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=dj3qfXJ4Iec3raMLz9uZPv/2iNP/sFcmUQrTQYmXPI4=;
-        b=LGjtHYVhHpt7kAQ7W3yoDCiYRYjE7wSHODeqeKhHvtYKf7tcTJxup8B5DA25iZUJDT
-         iNXtHXQzqHUh8R2yWdfQN+4DtBIpfRqM0gluGXlrWe0e8X1G9DrYwSpsYX6ERpQimLYw
-         4viKVS8C9TnQkKeA2VN31X4kSMxw8BdY8r+w+F+moAqW/40/dw99woomREIQ5M3ORK1v
-         2pFDvDkzWFLEkG/aCnIiB8/SZXRoEEeem0BS24KSdpBHccyuwiF1l3qag+V8R4KxOUUh
-         jBtEVJWHd8eo0by/GhOYwg0JbAoN3w8HCzwqUmpElFiHOVOHxTuAbLHa5oC7/Je6b/SL
-         4Jew==
-X-Gm-Message-State: AOAM531nYkQVzMUdnzITU14WLka0aKqI9kU914cDRLzqeg1v1KP2r3gQ
-        oAbBuYsFPcUCK76h+NY4YxW8GWoOKmgUCBBtziw=
-X-Google-Smtp-Source: ABdhPJzQk/S1nG9Ww17zUthK2VX/Fro867c/MtHdOqP1WGX1v96LoNLBYMuWViUbM4drVUlNfLKf7FtNjAxFlS2z8Ek=
-X-Received: by 2002:a19:c005:: with SMTP id q5mr5826183lff.400.1606566099003;
- Sat, 28 Nov 2020 04:21:39 -0800 (PST)
+        id S2390193AbgK1Vuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:52 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:34577 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727974AbgK1SXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:23:33 -0500
+Received: from [192.168.0.2] (ip5f5ae89d.dynamic.kabel-deutschland.de [95.90.232.157])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 485CB20643C62;
+        Sat, 28 Nov 2020 13:25:23 +0100 (CET)
+To:     Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+raid@molgen.mpg.de
+From:   Donald Buczek <buczek@molgen.mpg.de>
+Subject: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
+ transition
+Message-ID: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
+Date:   Sat, 28 Nov 2020 13:25:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Sender: alexanderluis646@gmail.com
-Received: by 2002:ab3:744c:0:0:0:0:0 with HTTP; Sat, 28 Nov 2020 04:21:38
- -0800 (PST)
-From:   "Ms. Nadia Emaan" <mrsnadiaemaan50@gmail.com>
-Date:   Sat, 28 Nov 2020 12:21:38 +0000
-X-Google-Sender-Auth: vxnb54uxsdIMOWvAgf6_xRpDuvw
-Message-ID: <CALiTr0jj-iBjvt5sDGtBo7iEd6PHM8A=UxDd4ghnuNPfw+rXUg@mail.gmail.com>
-Subject: May the Peace of God be with You!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-May God Bless you My beloved,
+Dear Linux mdraid people,
 
-I am contacting you through this means because I need your urgent
-assistance and also help me to carry a charity project in your
-country. I found your email address as a true child of God for past
-few days now that I have been praying to know if you are really the
-chosen one for this great charity project, according to God's
-direction, after all prayers I am convinced, and I have decided to
-contact you. Please, i want you use the funds for the Lord's work,
-with confidence, read and respond now.
+we are using raid6 on several servers. Occasionally we had failures, where a mdX_raid6 process seems to go into a busy loop and all I/O to the md device blocks. We've seen this on various kernel versions.
 
+The last time this happened (in this case with Linux 5.10.0-rc4), I took some data.
 
-My name is Ms. Nadia Emaan , a widow, but currently based in West
-Africa since my life with my late husband, who was a businessman in
-this country before dying some years ago. We were married to many
-years without a child. He died after a brief illness that lasted only
-six days and I myself have been suffering from an ovarian cancer
-disease. At this moment I am about to finish the race in this way
-because the disease has reached a very bad stage, without any family
-member and without children. I hope you do not expose or betray this
-trust and I am sure that I am about to trust you for the mutual
-benefit of orphans and the less privileged. I have some funds that I
-inherited from my late husband, the total sum of ($ 12,500,000.00)
-deposited at a bank here in Burkina Faso. After knowing my current
-state of health, I decided to trust you with this fund, believing that
-you will use it in the way I will instruct here.
+The triggering event seems to be the md_check cron job trying to pause the ongoing check operation in the morning with
 
+     echo idle > /sys/devices/virtual/block/md1/md/sync_action
 
-you will use this $12.5 Million for public benefit as follows;
+This doesn't complete. Here's /proc/stack of this process:
 
-1. Establish An Orphanage Home To Help The Orphanages Children.
-2. Build A Hospital To Help The Poor.
-3. Build A Nursing Home For Elderly People Need Care & Meal.
+     root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# ps -fp 23333
+     UID        PID  PPID  C STIME TTY          TIME CMD
+     root     23333 23331  0 02:00 ?        00:00:00 /bin/bash /usr/bin/mdcheck --continue --duration 06:00
+     root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# cat /proc/23333/stack
+     [<0>] kthread_stop+0x6e/0x150
+     [<0>] md_unregister_thread+0x3e/0x70
+     [<0>] md_reap_sync_thread+0x1f/0x1e0
+     [<0>] action_store+0x141/0x2b0
+     [<0>] md_attr_store+0x71/0xb0
+     [<0>] kernfs_fop_write+0x113/0x1a0
+     [<0>] vfs_write+0xbc/0x250
+     [<0>] ksys_write+0xa1/0xe0
+     [<0>] do_syscall_64+0x33/0x40
+     [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-You will named them after my late husband.Therefore, I need you to
-help me and claim this money and use it for charities, for orphanages
-and provide justice and help to the poor, needy and to promote the
-words of God and the effort to maintain the house of God, according to
-the bible in the book of. Jeremiah 22: 15-16.
+Note, that md0 has been paused successfully just before.
 
-It will be a pleasure to compensate with 40% percent of the total
-money for your effort in handling the transaction, while 60% of the
-money will go to charity project.
+     2020-11-27T02:00:01+01:00 done CROND[23333]: (root) CMD (/usr/bin/mdcheck --continue --duration "06:00")
+     2020-11-27T02:00:01+01:00 done root: mdcheck continue checking /dev/md0 from 10623180920
+     2020-11-27T02:00:01.382994+01:00 done kernel: [378596.606381] md: data-check of RAID array md0
+     2020-11-27T02:00:01+01:00 done root: mdcheck continue checking /dev/md1 from 11582849320
+     2020-11-27T02:00:01.437999+01:00 done kernel: [378596.661559] md: data-check of RAID array md1
+     
+     2020-11-27T06:00:01.842003+01:00 done kernel: [392996.625147] md: md0: data-check interrupted.
+     2020-11-27T06:00:02+01:00 done root: pause checking /dev/md0 at 13351127680
+     2020-11-27T06:00:02.338989+01:00 done kernel: [392997.122520] md: md1: data-check interrupted.
+     [ nothing related following.... ]
 
-All I need from you is sincerity and ability to complete the task of
-God without any failure. It will be my pleasure to see that the bank
-has finally released and transferred the fund to your bank account in
-the country, even before I die here in the hospital, due to my current
-state of health, everything must be processed as soon as possible.
+After that, we see md1_raid6 in a busy loop:
 
- I am waiting for your immediate response, if you are only interested
-in obtaining more details about the transaction and execution of this
-humanitarian project for the glory and honor of God.
+     PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+     2376 root     20   0       0      0      0 R 100.0  0.0   1387:38 md1_raid6
 
-Sorry if you received this letter in your spam, is due to recent
-connection/network error here in the country.
+Also, all processes doing I/O do the md device block.
 
-Please I am waiting for your urgent reply now.
+This is /proc/mdstat:
 
-May God Bless you,
-Ms Nadia Emaan .
+     Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4] [multipath]
+     md1 : active raid6 sdk[0] sdj[15] sdi[14] sdh[13] sdg[12] sdf[11] sde[10] sdd[9] sdc[8] sdr[7] sdq[6] sdp[5] sdo[4] sdn[3] sdm[2] sdl[1]
+           109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
+           [==================>..]  check = 94.0% (7350290348/7813894144) finish=57189.3min speed=135K/sec
+           bitmap: 0/59 pages [0KB], 65536KB chunk
+     
+     md0 : active raid6 sds[0] sdah[15] sdag[16] sdaf[13] sdae[12] sdad[11] sdac[10] sdab[9] sdaa[8] sdz[7] sdy[6] sdx[17] sdw[4] sdv[3] sdu[2] sdt[1]
+           109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
+           bitmap: 0/59 pages [0KB], 65536KB chunk
+
+There doesn't seem to be any further progress.
+
+I've taken a function_graph trace of the looping md1_raid6 process: https://owww.molgen.mpg.de/~buczek/2020-11-27_trace.txt (30 MB)
+
+Maybe this helps to get an idea what might be going on?
+
+Best
+   Donald
+
+-- 
+Donald Buczek
+buczek@molgen.mpg.de
+Tel: +49 30 8413 1433
