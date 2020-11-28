@@ -2,120 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC11D2C7100
+	by mail.lfdr.de (Postfix) with ESMTP id 131BF2C70FE
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733132AbgK1VvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26102 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730237AbgK1Sih (ORCPT
+        id S2390685AbgK1VvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730178AbgK1SiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:38:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606588630;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tHNQGQwYTjMfSeue4qgVHv6eIO5mWnflrkHSXDK1TeI=;
-        b=jI5xOwsjIf5vbTyC/QvkRc2Lx07qEmymLlupeATfZc3xKF23QK/+vGS8wBaQ9M1c9nb6rW
-        Hjc88ev0aPvO+Ho42NTyMNdTMqwPcl4CSRUzEKEDlMy5wSop3zPlDaZTWKHuwH7Vvd1JCv
-        cP2vcC3GKy9+lWbAwjERJSfjL31iycE=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-PVPalPGnOqOCfFvEZnnwVA-1; Sat, 28 Nov 2020 10:36:21 -0500
-X-MC-Unique: PVPalPGnOqOCfFvEZnnwVA-1
-Received: by mail-qv1-f69.google.com with SMTP id i11so4889299qvo.11
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 07:36:20 -0800 (PST)
+        Sat, 28 Nov 2020 13:38:05 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6F2C0258F4;
+        Sat, 28 Nov 2020 08:02:19 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id k11so6743747pgq.2;
+        Sat, 28 Nov 2020 08:02:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=65OkZBDz2HAL7Su3DQky7EvOLeinu5tb1gf0ETLWceY=;
+        b=u/jtzknFAd1tAacYeJoy/46zj5ChdFT3xU8MZDR6BV1HUVh/2VSorfp/+xqvPHsPkn
+         A5kWjznZ0r5vU8waxfe1mqVhtjhfYM+MaOz88K1WoNyQZyYjMWkiGLgwLA3xK3WSa6Gq
+         FrlTNGIlqHWCl/be5jqC8aVx2VyfAfrUaer6LZ0ZQ/nNbXgJa/VHWb+e2mFD1wW/jxDa
+         IfrRS5GIsGLweCb8HbxwZksrk0lJRMKAEcFqCQtSF2EBIi7qeHLU8MfKOOiNLtDuaQj9
+         FYq964XIIM+e/xk1kgqKRlfVu9uv/c3RzDRXUBD5Oi2Uu4QAgEoknC8D/6A6B7cDDFbc
+         ZOtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=tHNQGQwYTjMfSeue4qgVHv6eIO5mWnflrkHSXDK1TeI=;
-        b=bX+s+sSbSg5LEEC4I2Q1tcoidBK9oF6+zTJixNlSr5yDT1y2YXlTRy5F4oG1AjVcw5
-         64qYo6oB4pBliBmJRRfHi3LWTImeHgKifW5E6H11kz4C95MvIZBv1S+bf4HNCmQjYYmS
-         lSAHDpX7wjqiBZo4pxcBanXeOg5ILhJFz75/zdo8tp6IGrOqMH56w2hjT3jcRq45QpVi
-         NvkQfWY7iuahh+TyNGHqGA+hhkp9Ewxq/7iVR3R0M60vqH2mnxyflRNDwYOaV7epNcFF
-         0A8eXzoiS2CCPWjZrGebsPxl0K6onIQ0/XIfRhTfF3toPCDPY3xR1Fe0mOLRT4jmZ5Hu
-         jpSw==
-X-Gm-Message-State: AOAM5314j4Z1yvixunIDrBKBCJVEhyt3sgbHiLZKg2eD//cnY+IvdXhO
-        QLqj2Qg+CUD/D1pGSD1SRxEDjmeLQw9cSHMPBFG04eVcv1akClK2OVwYqLyg3Aadrx5VHWF1h8h
-        r8VW4ZygubzpmPIp8EvMD/D8IfMPywF9GeqpG7LQ8Uz0GPpVqRl3LgcHJJm9GmqeR+k/8DIo=
-X-Received: by 2002:ac8:5653:: with SMTP id 19mr13889254qtt.136.1606577780234;
-        Sat, 28 Nov 2020 07:36:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxeLj+ft0hyIu5tY+9IGU8mX5chSiE3HfiAHFqd3zePgTYRdxtLobWfv1YhFFOq9Ab/bUpgGA==
-X-Received: by 2002:ac8:5653:: with SMTP id 19mr13889230qtt.136.1606577779926;
-        Sat, 28 Nov 2020 07:36:19 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l28sm8681546qkl.7.2020.11.28.07.36.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Nov 2020 07:36:19 -0800 (PST)
-Subject: Re: [PATCH] MAINTAINERS add D: tag for subsystem commit prefix
-To:     Joe Perches <joe@perches.com>, apw@canonical.com,
-        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-References: <20201127214316.3045640-1-trix@redhat.com>
- <a4e796f8c0bfdb2c0a2816fa706d13cc0ae06d40.camel@perches.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <f96ff56c-7c39-2fed-dd8b-11971f8965bf@redhat.com>
-Date:   Sat, 28 Nov 2020 07:36:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=65OkZBDz2HAL7Su3DQky7EvOLeinu5tb1gf0ETLWceY=;
+        b=fywcnwGNuSGoBmm8r6woiizBRiZnVeS5MW0nB2HaLJsQAKwppQe7USHzMeYwd6Isep
+         Hzw40ojhHMya1LYFoL+huTV0BwaWaUX3MHkZY92X4ERAhrFSHOvXBekCPa1LTLSOKu4t
+         N0qTkyJhRo7zsvc+er89RqIfv1zGKJhLFbUogZzIBQpKx4O3COzjUAd8y+CcEmVDI+tH
+         fTAfG3zjCTgIsGMkzOiAnQPfGC6HjwpNl/DRGqLi7aomqMg7I3lzbBvpwa0tkGkqcNIE
+         yGoDoe+8CC2pe5FW3A1t1XS7YfVp0mRMyTEt5lt8H9JmKr9sXf9BUCAl0VRZVHU9H21j
+         Md3A==
+X-Gm-Message-State: AOAM530x0jL/zpcnX9vSFq46WlYli7l7QirXnvyYIDJOhw0uvM/UwrzN
+        jm99vRov4gwAwtkQTdTtE+rVzhSFAgg=
+X-Google-Smtp-Source: ABdhPJwsxob0WXTuSWwVF1+ay5qDAtrGlbPGBtoVsiaD1Lu41q7ZrRVVVOcfY+0p8Z91jyXmyn1W1w==
+X-Received: by 2002:a17:90b:8d8:: with SMTP id ds24mr6227490pjb.129.1606579338854;
+        Sat, 28 Nov 2020 08:02:18 -0800 (PST)
+Received: from bobo.ibm.com (193-116-103-132.tpgi.com.au. [193.116.103.132])
+        by smtp.gmail.com with ESMTPSA id d4sm9762607pjz.28.2020.11.28.08.02.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Nov 2020 08:02:17 -0800 (PST)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, x86@kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org, Anton Blanchard <anton@ozlabs.org>
+Subject: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb option
+Date:   Sun, 29 Nov 2020 02:01:39 +1000
+Message-Id: <20201128160141.1003903-7-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20201128160141.1003903-1-npiggin@gmail.com>
+References: <20201128160141.1003903-1-npiggin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <a4e796f8c0bfdb2c0a2816fa706d13cc0ae06d40.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On big systems, the mm refcount can become highly contented when doing
+a lot of context switching with threaded applications (particularly
+switching between the idle thread and an application thread).
 
-On 11/27/20 2:10 PM, Joe Perches wrote:
-> On Fri, 2020-11-27 at 13:43 -0800, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> From
->> RFC MAINTAINERS tag for cleanup robot
->> https://lkml.org/lkml/2020/11/21/190
-> I think this should be RFC.
-> It looks as as if it's only for subsystems through A
+Abandoning lazy tlb slows switching down quite a bit in the important
+user->idle->user cases, so so instead implement a non-refcounted scheme
+that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
+any remaining lazy ones.
 
-Yes only A, i wanted to show the direction in a subset.
+Shootdown IPIs are some concern, but they have not been observed to be
+a big problem with this scheme (the powerpc implementation generated
+314 additional interrupts on a 144 CPU system during a kernel compile).
+There are a number of strategies that could be employed to reduce IPIs
+if they turn out to be a problem for some workload.
 
->
->> The prefix used by subsystems in their commit log is arbitrary.
->> To elimitate the time and effort to manually find a reasonable
->> prefix, store the preferred prefix in the MAINTAINERS file.
->>
->> Populate with reasonable prefixes using this algorithm.
->> What did the maintainers use in their commits?
->> If there were no maintainers commits then what did everyone
->> else use in their commits.
-> The algorithm used to produce these prefixes should also be published.
-Ok.
->> The results were manually reviewed and about 25% were rejected.
-> Because this isn't necessarily the best option.
->
-> I think an exception mechanism would be better than a specific
-> mechanism added to various entries.
-Can you give an example of what you mean ?
->>  # check MAINTAINERS entries for the right ordering too
->> -			my $preferred_order = 'MRLSWQBCPTFXNK';
->> +			my $preferred_order = 'MRLSWQBCPTFXNKD';
->>  			if ($rawline =~ /^\+[A-Z]:/ &&
->>  			    $prevrawline =~ /^[\+ ][A-Z]:/) {
->>  				$rawline =~ /^\+([A-Z]):\s*(.*)/;
-> I'd prefer to keep the file and keyword list last.
->
-So change to
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+---
+ arch/Kconfig  | 13 +++++++++++++
+ kernel/fork.c | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 66 insertions(+)
 
-my $preferred_order = 'MRLSWQBCPTDFXNK'; 
-
-?
-
->
->
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 596bf589d74b..540e43aeefa4 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -440,6 +440,19 @@ config MMU_LAZY_TLB
+ config MMU_LAZY_TLB_REFCOUNT
+ 	def_bool y
+ 	depends on MMU_LAZY_TLB
++	depends on !MMU_LAZY_TLB_SHOOTDOWN
++
++config MMU_LAZY_TLB_SHOOTDOWN
++	bool
++	depends on MMU_LAZY_TLB
++	help
++	  Instead of refcounting the "lazy tlb" mm struct, which can cause
++	  contention with multi-threaded apps on large multiprocessor systems,
++	  this option causes __mmdrop to IPI all CPUs in the mm_cpumask and
++	  switch to init_mm if they were using the to-be-freed mm as the lazy
++	  tlb. To implement this, architectures must use _lazy_tlb variants of
++	  mm refcounting, and mm_cpumask must include at least all possible
++	  CPUs in which mm might be lazy.
+ 
+ config ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	bool
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 6d266388d380..e47312c2b48b 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -669,6 +669,54 @@ static void check_mm(struct mm_struct *mm)
+ #define allocate_mm()	(kmem_cache_alloc(mm_cachep, GFP_KERNEL))
+ #define free_mm(mm)	(kmem_cache_free(mm_cachep, (mm)))
+ 
++static void do_shoot_lazy_tlb(void *arg)
++{
++	struct mm_struct *mm = arg;
++
++	if (current->active_mm == mm) {
++		WARN_ON_ONCE(current->mm);
++		current->active_mm = &init_mm;
++		switch_mm(mm, &init_mm, current);
++		exit_lazy_tlb(mm, current);
++	}
++}
++
++static void do_check_lazy_tlb(void *arg)
++{
++	struct mm_struct *mm = arg;
++
++	WARN_ON_ONCE(current->active_mm == mm);
++}
++
++static void shoot_lazy_tlbs(struct mm_struct *mm)
++{
++	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_SHOOTDOWN)) {
++		/*
++		 * IPI overheads have not found to be expensive, but they could
++		 * be reduced in a number of possible ways, for example (in
++		 * roughly increasing order of complexity):
++		 * - A batch of mms requiring IPIs could be gathered and freed
++		 *   at once.
++		 * - CPUs could store their active mm somewhere that can be
++		 *   remotely checked without a lock, to filter out
++		 *   false-positives in the cpumask.
++		 * - After mm_users or mm_count reaches zero, switching away
++		 *   from the mm could clear mm_cpumask to reduce some IPIs
++		 *   (some batching or delaying would help).
++		 * - A delayed freeing and RCU-like quiescing sequence based on
++		 *   mm switching to avoid IPIs completely.
++		 */
++		on_each_cpu_mask(mm_cpumask(mm), do_shoot_lazy_tlb, (void *)mm, 1);
++		if (IS_ENABLED(CONFIG_DEBUG_VM))
++			on_each_cpu(do_check_lazy_tlb, (void *)mm, 1);
++	} else {
++		/*
++		 * In this case, lazy tlb mms are refounted and would not reach
++		 * __mmdrop until all CPUs have switched away and mmdrop()ed.
++		 */
++	}
++}
++
+ /*
+  * Called when the last reference to the mm
+  * is dropped: either by a lazy thread or by
+@@ -678,7 +726,12 @@ void __mmdrop(struct mm_struct *mm)
+ {
+ 	BUG_ON(mm == &init_mm);
+ 	WARN_ON_ONCE(mm == current->mm);
++
++	/* Ensure no CPUs are using this as their lazy tlb mm */
++	shoot_lazy_tlbs(mm);
++
+ 	WARN_ON_ONCE(mm == current->active_mm);
++
+ 	mm_free_pgd(mm);
+ 	destroy_context(mm);
+ 	mmu_notifier_subscriptions_destroy(mm);
+-- 
+2.23.0
 
