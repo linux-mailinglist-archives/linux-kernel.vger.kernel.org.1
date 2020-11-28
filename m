@@ -2,127 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC902C767E
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A34722C768A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 00:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732383AbgK1WzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 17:55:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
+        id S1727612AbgK1XB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 18:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgK1WzW (ORCPT
+        with ESMTP id S1726021AbgK1XB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 17:55:22 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2E0C0617A7;
-        Sat, 28 Nov 2020 14:54:41 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id e7so9790792wrv.6;
-        Sat, 28 Nov 2020 14:54:41 -0800 (PST)
+        Sat, 28 Nov 2020 18:01:28 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CECC0613D2
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 15:00:48 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id k5so4430190plt.6
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 15:00:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IRkMx7ynKm/yM0ch5pBsS12yNk9GRJdtum4GLiNHEJc=;
-        b=qm5mslSvMdUBojxedLrGXh1DWlvwNDRbalZDfnEgF6qgnev418PVBXJmKFVDXFPxqx
-         IPv3ddQ7g7/QV8tLpBVgV7O0f0IQlSWOcG9upCOk+PiOGM9L5azm6oMozbEgvwwdHk5F
-         WHE22H9/61e/g9JxY6dfUMpQkt3Yvi722RhMJtNwMTxe8m/zAVj/Z75gkeGIK7oUgsUu
-         UxmhdBkBRC9CFrivux/3tc3V8jy7FFwQaRjUmUbOuYYBeeWVYLK56PAhCPnFsGvLPvCL
-         T3I4FTaCt7OAp/UcS5qhqnPhgZpzVTyMy6pKSLvP332u3ms8jxJbR/C3q8zdQgLYv7rt
-         Cx8w==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=bYGsECF90NImwkerygnoxQ6S7S+NIVHNiaB71IEALrI=;
+        b=dLnnhRRrnb2fDKTKpUfA/12JuXtrM/C1zinrFTvi2DII2tNex1zZ6Y2bII5zhyPI8v
+         U99DCa11cDzk7RASpv7aqa1170YvejEcV5gbygzdDq246Z8ya62JyjMWMNVsY3US2o1d
+         DE8Oy1MFisSTaH++EQC/zSg18ARRhKCtsOIS2deh2mV4W1u47JirnT+DVsakH/UXIkgH
+         wy4fZaSt821xjrViOJQl4gcPqkTOwFpx8ZBPt4fExavMQxp3RTSmarT6aWt1m5GNJDGw
+         gMKTfTd7eV2wPij0OEhCuAhyxGmhZyupTmi62WhAbw6izy9vGUxC7ycdq/5JRwvcZHiL
+         gTeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IRkMx7ynKm/yM0ch5pBsS12yNk9GRJdtum4GLiNHEJc=;
-        b=DIWE7lEPPWx3cxr2oaXT4GwEdPQuRAuNRbdLwxxO1Xxw+yS0Pvi8odGuBmsARjj2YE
-         gqv4FUCSjDwai9mzuV2N/urp1mYWlSaC1UibQ7kb7mVDbAgSXHAeAIEXwO9oznQGBFts
-         mr3vPjmzmjoxlzuymAfv/9J4qPLByu2wgt2RBzq5F86D8v2G+JAcDbYryLXexs/QdaUH
-         fH3K1jaQkNXGJRoBM5zkauj13/L2uiCTgVoFqCliQLtNivrX3hrS+1as/UoiWd2Z0qU9
-         bSzJsSJLPdMb5Ef7LimcLdBm8gDmcLdh0+C0eM3AY1EuZoyKFLTozbNNJbloNXE6h7oj
-         SYlA==
-X-Gm-Message-State: AOAM5319QqZwX+j3JGHisiM24JO/HSxVbPAS/Rn4AalRpCJsgQQ6Bl0U
-        fe9/G9DpKB0T0O4czjXSMnk=
-X-Google-Smtp-Source: ABdhPJw/PY5xI6P8Zh3sO6jtAXPj7BSsmSNtXjs694JDjXR4kYu9nvTS8Z9JkGtgax+0rK4NWt8pjg==
-X-Received: by 2002:adf:b64f:: with SMTP id i15mr20021633wre.125.1606604080437;
-        Sat, 28 Nov 2020 14:54:40 -0800 (PST)
-Received: from adgra-XPS-15-9570.home (lfbn-idf1-1-1007-144.w86-238.abo.wanadoo.fr. [86.238.83.144])
-        by smtp.gmail.com with ESMTPSA id d13sm24231506wrb.39.2020.11.28.14.54.39
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=bYGsECF90NImwkerygnoxQ6S7S+NIVHNiaB71IEALrI=;
+        b=cLiAHFMB/W/UUdTYcUXhJe1bmAJqfZ6LvZSCjrrbokQ+e0b+OE5NfBDgWgSjL69xGg
+         3uxL7m/R9Hn78o638wiDXZtLMMdyji5u86GElAxC1wmn5BMu8DstWYnjpMNInzbYaDyh
+         15n4dxzSpGqmzvOGrF9DagVilCwMzmf4GHC9V2BuyDpwPp5fJ16P8bcKp7F4Qv77/dpV
+         sshHj0neY7c0UdfNjk9oUpv/WPoiJYiA2j8e95eUup7gBbfu1e5DQgsanrzaS1gAspXf
+         iVLGNjaqcJkbJhv+T4elnqgvEQ5mdxyOIqUfM5uoteFFObByVkcnNB2NfYQPMBAQn8tg
+         9x7w==
+X-Gm-Message-State: AOAM5315SdXBzezXoRDsL0/EXTK0mYik1r0AUuvV5/g9OvczL9zyMHur
+        vbG0ty3+d8s6YmdhRkXfAaQmXUNjuFukYvJd
+X-Google-Smtp-Source: ABdhPJyE/PRMJZpe9/YTUcQ9LwvZQrK/TOgHvGU7WipqPz6+HJ4UDhQxgUlWK1BXM/0c1dml/q9lLA==
+X-Received: by 2002:a17:902:7b90:b029:d6:ad06:d4c0 with SMTP id w16-20020a1709027b90b02900d6ad06d4c0mr12822055pll.35.1606604447877;
+        Sat, 28 Nov 2020 15:00:47 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id m3sm9666826pgh.5.2020.11.28.15.00.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 14:54:40 -0800 (PST)
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     fugang.duan@nxp.com, davem@davemloft.net, kuba@kernel.org,
-        robh+dt@kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH 3/3] net: fsl: fec: add imx8mq support.
-Date:   Sat, 28 Nov 2020 23:54:25 +0100
-Message-Id: <20201128225425.19300-3-adrien.grassein@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201128225425.19300-1-adrien.grassein@gmail.com>
-References: <20201128225425.19300-1-adrien.grassein@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        Sat, 28 Nov 2020 15:00:47 -0800 (PST)
+Date:   Sat, 28 Nov 2020 15:00:47 -0800 (PST)
+X-Google-Original-Date: Sat, 28 Nov 2020 15:00:45 PST (-0800)
+Subject: [GIT PULL] RISC-V Fixes for 5.10-rc6
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-a86b7c3c-7719-48e7-b6b3-5d7ec6b8933d@palmerdabbelt-glaptop1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the imx8mq support to the
-fsl fec driver.
-Quirks are extracted from the NXP driver (5.4).
+The following changes since commit 418baf2c28f3473039f2f7377760bd8f6897ae18:
 
-Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
----
- drivers/net/ethernet/freescale/fec_main.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+  Linux 5.10-rc5 (2020-11-22 15:36:08 -0800)
 
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index e5c0a5da9965..92ad5b86d31c 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -131,6 +131,14 @@ static const struct fec_devinfo fec_imx6ul_info = {
- 		  FEC_QUIRK_HAS_COALESCE | FEC_QUIRK_CLEAR_SETUP_MII,
- };
- 
-+static const struct fec_devinfo fec_imx8mq_info = {
-+	.quirks = FEC_QUIRK_ENET_MAC | FEC_QUIRK_HAS_GBIT |
-+		  FEC_QUIRK_HAS_BUFDESC_EX | FEC_QUIRK_HAS_CSUM |
-+		  FEC_QUIRK_HAS_VLAN | FEC_QUIRK_HAS_AVB |
-+		  FEC_QUIRK_ERR007885 | FEC_QUIRK_BUG_CAPTURE |
-+		  FEC_QUIRK_HAS_RACC | FEC_QUIRK_HAS_COALESCE
-+};
-+
- static struct platform_device_id fec_devtype[] = {
- 	{
- 		/* keep it for coldfire */
-@@ -158,6 +166,11 @@ static struct platform_device_id fec_devtype[] = {
- 		.name = "imx6ul-fec",
- 		.driver_data = (kernel_ulong_t)&fec_imx6ul_info,
- 	}, {
-+		.name = "imx8mq-fec",
-+		.driver_data = (kernel_ulong_t)&fec_imx8mq_info,
-+	},
-+
-+	{
- 		/* sentinel */
- 	}
- };
-@@ -171,6 +184,7 @@ enum imx_fec_type {
- 	MVF600_FEC,
- 	IMX6SX_FEC,
- 	IMX6UL_FEC,
-+	IMX8MQ_FEC,
- };
- 
- static const struct of_device_id fec_dt_ids[] = {
-@@ -181,6 +195,8 @@ static const struct of_device_id fec_dt_ids[] = {
- 	{ .compatible = "fsl,mvf600-fec", .data = &fec_devtype[MVF600_FEC], },
- 	{ .compatible = "fsl,imx6sx-fec", .data = &fec_devtype[IMX6SX_FEC], },
- 	{ .compatible = "fsl,imx6ul-fec", .data = &fec_devtype[IMX6UL_FEC], },
-+	{ .compatible = "fsl,imx8mq-fec", .data = &fec_devtype[IMX8MQ_FEC], },
-+
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, fec_dt_ids);
--- 
-2.20.1
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.10-rc6
+
+for you to fetch changes up to 30aca1bacb398dec6c1ed5eeca33f355bd7b6203:
+
+  RISC-V: fix barrier() use in <vdso/processor.h> (2020-11-25 09:44:27 -0800)
+
+----------------------------------------------------------------
+RISC-V Fixes for 5.10-rc6
+
+I've collected a handful of fixes over the past few weeks:
+
+* A fix to un-break the build-id argument to the vDSO build, which is necessary
+  for the LLVM linker.
+* A fix to initialize the jump label subsystem, without which it (and all the
+  stuff that uses it) doesn't actually function.
+* A fix to include <asm/barrier.h> from <vdso/processor.h>, without which some
+  drivers won't compile.
+
+I know it's the holidays, but I had some hiccups getting this tested earlier
+this week so it's just going out now.  None of these are tremendously urgent,
+so if they don't make rc6 it's not a big deal.  I'll have some more fixes
+coming next week either way.
+
+----------------------------------------------------------------
+Anup Patel (1):
+      RISC-V: Add missing jump label initialization
+
+Nathan Chancellor (1):
+      riscv: Explicitly specify the build id style in vDSO Makefile again
+
+Randy Dunlap (1):
+      RISC-V: fix barrier() use in <vdso/processor.h>
+
+ arch/riscv/include/asm/vdso/processor.h | 2 ++
+ arch/riscv/kernel/setup.c               | 1 +
+ arch/riscv/kernel/vdso/Makefile         | 2 +-
+ 3 files changed, 4 insertions(+), 1 deletion(-)
