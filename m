@@ -2,75 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD412C740F
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74A12C744C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388871AbgK1Vtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:49:46 -0500
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:38297 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgK1R6W (ORCPT
+        id S1732084AbgK1Vtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:43 -0500
+Received: from condef-08.nifty.com ([202.248.20.73]:24420 "EHLO
+        condef-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732603AbgK1RyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 12:58:22 -0500
-Received: by mail-ej1-f68.google.com with SMTP id a16so12329220ejj.5;
-        Sat, 28 Nov 2020 09:58:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b3PkWaxGX1Yw85E1ROLgKHpFTieUWrW10D2VLTpUXOk=;
-        b=uXAAbLqisv7CUv6C/EsIR3Ub2k/WZNEfhg1oE2wDwIeME4vkiK5emofXFcd5lIFcrK
-         kN/z5K5vvwTwJ0YAiHcbtT4HU/iJyTHG9jmxEn0IcLM+TyYKoDJplnVg151G3yKEEnR2
-         oOx522qSAkCOMpTHRUwkE0PvGKC8QGegIVsOXw6EbceX+/X3yNMtZSQZOrRqF+/Q2lYK
-         5WA5DLr0wihBp3surPbBbAG5PqH2bil4BIeldCY21daXaqwvtZB1LUPDwYHiETA4zxG3
-         sTOkiEZU5Pq0OTMboDHStpI5/2L+bjPUtB6oBdKB+aimNmnMJxB6Y36MWG3NMLP4kczn
-         4odA==
-X-Gm-Message-State: AOAM531GYNQjNcNsu0UDFMqrvuizPS7BvIzRw075KnCqxq+cSaXLWJ5H
-        P8k8JLkcjaX164lQ6ZxbuC9frsG01Mk=
-X-Google-Smtp-Source: ABdhPJxDN5OZMJGs3CQ0uJdvOaswkMowAP8VqYfiNYAIxczYzNDxr0mhzorM5u8dolxGTT2y0fMYWw==
-X-Received: by 2002:a17:906:fcc4:: with SMTP id qx4mr12439380ejb.5.1606563462751;
-        Sat, 28 Nov 2020 03:37:42 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id k16sm4140753ejv.93.2020.11.28.03.37.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 03:37:41 -0800 (PST)
-Date:   Sat, 28 Nov 2020 12:37:40 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, Pavel Machek <pavel@denx.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v2 4/5] memory: renesas-rpc-if: Make
- rpcif_enable/disable_rpm() as static inline
-Message-ID: <20201128113740.GD4761@kozik-lap>
-References: <20201126191146.8753-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201126191146.8753-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Sat, 28 Nov 2020 12:54:18 -0500
+Received: from conuserg-07.nifty.com ([10.126.8.70])by condef-08.nifty.com with ESMTP id 0ASBqZ1a006246;
+        Sat, 28 Nov 2020 20:52:35 +0900
+Received: from grover.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 0ASBpD6C027804;
+        Sat, 28 Nov 2020 20:51:15 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 0ASBpD6C027804
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606564276;
+        bh=rX5Xp2DQ7Fb1cQZ9EkV0O0kQNgRf2+LwScKyCXET4yg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nWR2a++IXEGtghjl9z0jqeZ7+BR6ExiUmTDFhWNvckXgvnD4xiZM0KCHJtGJmY70l
+         BK99VIcJMVGgI95LumCd4Vis5hmm3ntDOuHlAq9lgPbj3ofXTJ6KfCXAFWecQyStJ4
+         Ge6EMu9V63gbYdf6TzXq7B4zvutNDOoKU0pemzt+dV8a3sFKQBy0r71a5lVwIcGpKY
+         E7u6uKFIE4+ytW0tPEpTUbIGO2CUMdNxiicjqJhxg/eyBRHfZ7mWBf+M+bePrZDPAH
+         U987raOwJ0+ETcOrjmu9CkbcKaPMbwm4MV6fDUcGsIvUk+fzvmlFx5moA7L0wSEX9v
+         7OVE8uI+DEt5A==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 3/7] kbuild: doc: fix 'List directories to visit when descending' section
+Date:   Sat, 28 Nov 2020 20:51:04 +0900
+Message-Id: <20201128115108.179256-3-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201128115108.179256-1-masahiroy@kernel.org>
+References: <20201128115108.179256-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201126191146.8753-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 07:11:45PM +0000, Lad Prabhakar wrote:
-> Define rpcif_enable_rpm() and rpcif_disable_rpm() as static
-> inline in the header instead of exporting them.
-> 
-> Suggested-by: Pavel Machek <pavel@denx.de>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  drivers/memory/renesas-rpc-if.c | 13 -------------
->  include/memory/renesas-rpc-if.h | 13 +++++++++++--
->  2 files changed, 11 insertions(+), 15 deletions(-)
+Fix stale information:
 
-Thanks, applied.
+ - Fix the section number in the reference from 6.4 to 7.4.
 
-Best regards,
-Krzysztof
+ - Remove init-y and net-y. They were removed by commit 23febe375d94
+   ("kbuild: merge init-y into core-y") and commit 95fb6317b3ab
+   ("kbuild: merge net-y and virt-y into drivers-y"), respectively.
+
+ - Update the example because arch/sparc64/Makefile does not exit.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+(no changes since v1)
+
+ Documentation/kbuild/makefiles.rst | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
+index 1d4335c7f496..283ccfec7613 100644
+--- a/Documentation/kbuild/makefiles.rst
++++ b/Documentation/kbuild/makefiles.rst
+@@ -278,7 +278,7 @@ more details, with real examples.
+ 	actually recognize that there is a lib.a being built, the directory
+ 	shall be listed in libs-y.
+ 
+-	See also "6.4 List directories to visit when descending".
++	See also "7.4 List directories to visit when descending".
+ 
+ 	Use of lib-y is normally restricted to `lib/` and `arch/*/lib`.
+ 
+@@ -1154,7 +1154,7 @@ When kbuild executes, the following steps are followed (roughly):
+ 	machinery is all architecture-independent.
+ 
+ 
+-	head-y, init-y, core-y, libs-y, drivers-y, net-y
++	head-y, core-y, libs-y, drivers-y
+ 	    $(head-y) lists objects to be linked first in vmlinux.
+ 
+ 	    $(libs-y) lists directories where a lib.a archive can be located.
+@@ -1162,11 +1162,9 @@ When kbuild executes, the following steps are followed (roughly):
+ 	    The rest list directories where a built-in.a object file can be
+ 	    located.
+ 
+-	    $(init-y) objects will be located after $(head-y).
+-
+ 	    Then the rest follows in this order:
+ 
+-		$(core-y), $(libs-y), $(drivers-y) and $(net-y).
++		$(core-y), $(libs-y), $(drivers-y)
+ 
+ 	    The top level Makefile defines values for all generic directories,
+ 	    and arch/$(SRCARCH)/Makefile only adds architecture-specific
+@@ -1174,11 +1172,14 @@ When kbuild executes, the following steps are followed (roughly):
+ 
+ 	    Example::
+ 
+-		#arch/sparc64/Makefile
+-		core-y += arch/sparc64/kernel/
+-		libs-y += arch/sparc64/prom/ arch/sparc64/lib/
+-		drivers-$(CONFIG_OPROFILE)  += arch/sparc64/oprofile/
++		# arch/sparc/Makefile
++		core-y                 += arch/sparc/
++
++		libs-y                 += arch/sparc/prom/
++		libs-y                 += arch/sparc/lib/
+ 
++		drivers-$(CONFIG_PM) += arch/sparc/power/
++		drivers-$(CONFIG_OPROFILE)	+= arch/sparc/oprofile/
+ 
+ 7.5 Architecture-specific boot images
+ -------------------------------------
+-- 
+2.27.0
 
