@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5B72C6EE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 06:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECE62C6EE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 06:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbgK1FE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729162AbgK1FJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 00:09:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgK1FE6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 28 Nov 2020 00:04:58 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:63800 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732738AbgK1FA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 00:00:28 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606539593; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=OiSamD4FX8ODABpnJw+lOaeR/Fh5FfWT/1adTfIH7Zw=; b=ozcqbjmJCxuAoOSRAoYbAxNNRu4nhfFALVCsGNP0Tl07r1DHX0H3OglaV/YK7Xa3068Jih+J
- 0z7ED4QxYVUP4Z+NRsIBs5AmmpHPHZ1CaGsQbNpUwfKaS/HCqS82dniMo3LG8S4ZYBkZ62ct
- 2b7nOk+7VgV6PpV1VlAccz4nmOc=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5fc1d9447e9d874dfc1704c5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 28 Nov 2020 04:59:48
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E3241C433C6; Sat, 28 Nov 2020 04:59:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93EF6C433ED;
-        Sat, 28 Nov 2020 04:59:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 93EF6C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: [PATCH v4 2/2] ASoC: qcom: Add support for playback recover after resume
-Date:   Sat, 28 Nov 2020 10:29:19 +0530
-Message-Id: <1606539559-4277-3-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
-References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830AEC0613D1;
+        Fri, 27 Nov 2020 21:04:46 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t37so5829175pga.7;
+        Fri, 27 Nov 2020 21:04:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1wR2Kvfb5vjG8T/PCijsWnV5/Q6MbpEzV8Vjtc0CiDc=;
+        b=aHPcBfuVBnDc/UEbN7yMv5xeqS+GxfQGwavrxwH6cH4XS0raWlwle2tQKxQSUKmkN+
+         ovcJzX6Y4PIz6fLFX2fxop62ys7QHTYbs/aY0kduavQ4HiA+m210l88xCcG0TrY0B0Xm
+         lmQmrOENCW7G94Z2pZ765mi4uQqb1a7HPz8pyLn5vMtocTqCSfmnnk/Qri7m5VnMkItZ
+         ovINqEOaUi17LvC+LfoKIOhByqt8svCwXXmEgQ6cvZdzzygDmK09fMWf0iGCniTz4F8e
+         rHIvaVcboSMS+SweQeAfQOyp0TC1iUkw4teva/lt5tG2QUOiG9S7raHKEdoWNtD4Rv8D
+         7onA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1wR2Kvfb5vjG8T/PCijsWnV5/Q6MbpEzV8Vjtc0CiDc=;
+        b=VCaUBwWUK4LqxWUIkXjKGsHDLPvhoYrPqfdef8hP2ypjX0Pawy0Ft1NgWklxM/XSTi
+         lZzCSRSrbJmghyX6PUjpzhQqzHk1zMN9HX3YvtUZ+iU4bRtnPANREHeIAPiUZ3UXTN6u
+         bN7XnpdVIFuD4hDf/yJnSByNUwxDAfmXV6j6wXMQ7T/+xMfbPFeWzxsuwkQAmQ3AO+jM
+         IhEaP9i3+iwXozU4O5gW9O8jYwGN/yyKreIAqfzkxe+ryapyagmH2lXz1rE7cESgj96W
+         zVoj4jklusQtKxSFDp90Q35uJF/I53/HujNXshyOBAtoLKY/dCRN8kdw6PdfWa4bCTyO
+         YDFw==
+X-Gm-Message-State: AOAM530K1J7lQ2Tx+wX7980RyoNr8EY/htsoFgq8sZ3gsocogCLgjQx0
+        qOTyeT0h/OvnjBFRLK9be+s=
+X-Google-Smtp-Source: ABdhPJzsOXkBhwfr1TmkLRRXWfCd9IStAbkq9v8eVF37jWLr9Az9kmV3sWjW4/TAXnLRPPc+Up7oCQ==
+X-Received: by 2002:a17:90a:e386:: with SMTP id b6mr2978528pjz.134.1606539886076;
+        Fri, 27 Nov 2020 21:04:46 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id p14sm13192489pjo.53.2020.11.27.21.04.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 21:04:44 -0800 (PST)
+Date:   Sat, 28 Nov 2020 14:04:42 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH] media: vb2: always set buffer cache sync hints
+Message-ID: <X8HaalHqzUYiopAn@jagdpanzerIV.localdomain>
+References: <20201127094136.1051071-1-sergey.senozhatsky@gmail.com>
+ <0dbfa509-8c82-7470-c18b-24ab5c92dc4b@xs4all.nl>
+ <X8ENifLanjYuhF/r@jagdpanzerIV.localdomain>
+ <509cc69b-39d7-4b13-f392-ebf25530c8fe@xs4all.nl>
+ <X8Eq4V++hRsKuYSF@jagdpanzerIV.localdomain>
+ <CAAFQd5D7V8hbdZv_VxAUHUBsbknJsWMaU=h=5j19Z-J8FL27FQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAFQd5D7V8hbdZv_VxAUHUBsbknJsWMaU=h=5j19Z-J8FL27FQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support playback continuation after hard suspend(bypass powerd)
-and resume add component driver ops and do regcache sync.
+On (20/11/28 01:50), Tomasz Figa wrote:
+> On Sat, Nov 28, 2020 at 1:35 AM Sergey Senozhatsky
+> <sergey.senozhatsky@gmail.com> wrote:
+> >
+> > On (20/11/27 15:56), Hans Verkuil wrote:
+> > > Yes.
+> > >
+> > > BTW, wouldn't it be sufficient to change this code to:
+> > >
+> > >       if (!q->allow_cache_hints && q->memory != VB2_MEMORY_DMABUF) {
+> > >               vb->need_cache_sync_on_prepare = 1;
+> > >               vb->need_cache_sync_on_finish = 1;
+> > >       }
+> >
+> > I think it would be sufficient.
+> 
+> Does it matter at this point if allow_cache_hints is set or not?
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-platform.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+That's a good question. I'd say that it'll probably make sense to set
+need_cache_sync for as many buffers as possible, regardless the queue
+configuration (except for ->memory type), just to stay on the safe side.
+I can spin another patch version.
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 0e71899..12764a8 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -827,6 +827,39 @@ static void lpass_platform_pcm_free(struct snd_soc_component *component,
- 	}
- }
- 
-+static int lpass_platform_pcmops_suspend(struct snd_soc_component *component)
-+{
-+	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
-+	struct regmap *map;
-+	unsigned int dai_id = component->id;
-+
-+	if (dai_id == LPASS_DP_RX)
-+		map = drvdata->hdmiif_map;
-+	else
-+		map = drvdata->lpaif_map;
-+
-+	regcache_cache_only(map, true);
-+	regcache_mark_dirty(map);
-+
-+	return 0;
-+}
-+
-+static int lpass_platform_pcmops_resume(struct snd_soc_component *component)
-+{
-+	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
-+	struct regmap *map;
-+	unsigned int dai_id = component->id;
-+
-+	if (dai_id == LPASS_DP_RX)
-+		map = drvdata->hdmiif_map;
-+	else
-+		map = drvdata->lpaif_map;
-+
-+	regcache_cache_only(map, false);
-+	return regcache_sync(map);
-+}
-+
-+
- static const struct snd_soc_component_driver lpass_component_driver = {
- 	.name		= DRV_NAME,
- 	.open		= lpass_platform_pcmops_open,
-@@ -839,6 +872,8 @@ static const struct snd_soc_component_driver lpass_component_driver = {
- 	.mmap		= lpass_platform_pcmops_mmap,
- 	.pcm_construct	= lpass_platform_pcm_new,
- 	.pcm_destruct	= lpass_platform_pcm_free,
-+	.suspend		= lpass_platform_pcmops_suspend,
-+	.resume			= lpass_platform_pcmops_resume,
- 
- };
- 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+	-ss
