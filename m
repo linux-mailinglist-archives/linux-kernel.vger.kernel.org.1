@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810912C6EB7
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 04:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1232C6EC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 05:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730487AbgK1DxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 22:53:02 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:46395 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729604AbgK1Drf (ORCPT
+        id S1730920AbgK1EKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 23:10:41 -0500
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:16262 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728995AbgK1Dnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 22:47:35 -0500
-Received: by mail-il1-f198.google.com with SMTP id q5so5166213ilc.13
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 19:47:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=/zKWIW/BGl+uP9uZHMF0DxwCcRQMsXce4lHe+wGoD1E=;
-        b=kdN7NyeDEphjqlhEkxx9za3+LsG9WayDv3TamkfiFF5YFVXNLOiGGkQyICnrHsR6LH
-         0kr4u+nATFRlIP44uRh0X/88r8MkVPPa7YHw6B3vK1ZQUxOYF0CvX/3VRgbZRl9GDKQ/
-         pebcvHLHAxc/YNpox2Y8gCszLu530JO+JCvJso7vouzV6QX5K+pCorgMoi7xaKnro3Ac
-         LQarzNFTTUW1KaDcCddLP2Gzfz7GYtSrsVzmQ+TzTkDUvAnpDpNaCSJ0Kn4OvFtqqN3h
-         os2HxOusirVX8QZvhRYttsSrluj4DH2RZsk3d1uvK4qKCcyPKkXavYUXsXQj+8S4Sny4
-         IBmA==
-X-Gm-Message-State: AOAM530K663iAbWe/VRsmz669QVuTYKYH1QRIbngTtLNY5/ouk0Q0dY9
-        E40o1YdSzsMFoui6191oqtUIxFJi1YFRltlmwocVWhRqqx/N
-X-Google-Smtp-Source: ABdhPJxKkDxzQmAMpUsJUp7TUtejlU2hrwuD/QS8APAIsKk+Bx85FOTqzjG1ov+w6kwNW3Tq2I6JI6FIQEMzi4TWaheCVRoJ9a/3
+        Fri, 27 Nov 2020 22:43:45 -0500
+Received: from pps.filterd (m0134422.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AS3gjfk012056;
+        Sat, 28 Nov 2020 03:42:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=Hq7vVDkPopPOQ+EyapHllM/37K3mdzGlZN6i17/WXlQ=;
+ b=UHLaadvF5zMzLxgtaaEHiy+p04XtzTts1wJBB42QB0Q+2ZkpkjcpWqfr/b3EWRYoPLW+
+ Z4yZaspyV4crW7/j4ndfGG+duQxpcYGLWO5dA31HAu3QTQW9krECYhmVlweeJ6a0KGaa
+ mMKGe+Npot2V0FeXCO1I3ulXi7M2w/QDJ6p9OkEzEkmuiDEJqcWviScaVXRgyHh1EUJp
+ H20fRww1ehiENGlh+q3WgIPMoItDGhNGYMa7jOVJgQGhVGiflKVqI7d9HjLcdbuXiMOZ
+ 36fRolf7EzZYOSDr/edG+tJ3qX+g0BxfLUISnLnwSqbQqaOAjg/dWvQFz+vaPCCiCziF xA== 
+Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
+        by mx0b-002e3701.pphosted.com with ESMTP id 351hp4r5mh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 28 Nov 2020 03:42:52 +0000
+Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
+        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 411F05C;
+        Sat, 28 Nov 2020 03:42:51 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id C4A704A;
+        Sat, 28 Nov 2020 03:42:49 +0000 (UTC)
+From:   Mike Travis <mike.travis@hpe.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>
+Cc:     Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH v2 0/5] x86/platform/uv: Move UV procfs leaves to sysfs
+Date:   Fri, 27 Nov 2020 21:42:22 -0600
+Message-Id: <20201128034227.120869-1-mike.travis@hpe.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:2246:: with SMTP id o67mr10650480jao.52.1606535235649;
- Fri, 27 Nov 2020 19:47:15 -0800 (PST)
-Date:   Fri, 27 Nov 2020 19:47:15 -0800
-In-Reply-To: <000000000000ca5cfb05ade37394@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000a440b05b522a284@google.com>
-Subject: Re: memory leak in prepare_creds
-From:   syzbot <syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bernd.edlinger@hotmail.de,
-        chris@chrisdown.name, dhowells@redhat.com, ebiederm@xmission.com,
-        guro@fb.com, keescook@chromium.org, linux-kernel@vger.kernel.org,
-        mhocko@suse.com, shakeelb@google.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-28_02:2020-11-26,2020-11-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ clxscore=1015 adultscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=897 bulkscore=0 phishscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011280025
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    99c710c4 Merge tag 'platform-drivers-x86-v5.10-2' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12a77ddd500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c7a27a77f20fbc95
-dashboard link: https://syzkaller.appspot.com/bug?extid=71c4697e27c99fddcf17
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d6161d500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f15e65500000
+Duplicate the current UV procfs leaves to the uv_sysfs driver so they show
+up under /sys/firmware/sgi_uv.  Show a 'deprecated' warning message if
+any of the old /proc/sgi_uv leaves are used.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com
+These patches depend on the prior v3 patchset sent by Justin Ernst <justin.ernst@hpe.com>
+	x86/platform/uv: Remove existing /sys/firmware/sgi_uv/ interface
+	x86/platform/uv: Add and export uv_bios_* functions
+	x86/platform/uv: Add new uv_sysfs platform driver
+	x86/platform/uv: Update ABI documentation of /sys/firmware/sgi_uv/
+	x86/platform/uv: Update MAINTAINERS for uv_sysfs driver
 
-BUG: memory leak
-unreferenced object 0xffff888101401300 (size 168):
-  comm "syz-executor355", pid 8461, jiffies 4294953658 (age 32.400s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000caa0de2b>] prepare_creds+0x25/0x390 kernel/cred.c:258
-    [<000000001821b99d>] copy_creds+0x3a/0x230 kernel/cred.c:358
-    [<0000000022c32914>] copy_process+0x661/0x24d0 kernel/fork.c:1971
-    [<00000000d3adca2d>] kernel_clone+0xf3/0x670 kernel/fork.c:2456
-    [<00000000d11b7286>] __do_sys_clone+0x76/0xa0 kernel/fork.c:2573
-    [<000000008280baad>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000685d8cf0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+v2: Updated to apply to v3 of dependency patch set listed above.
 
-BUG: memory leak
-unreferenced object 0xffff88810b0a6f20 (size 32):
-  comm "syz-executor355", pid 8461, jiffies 4294953658 (age 32.400s)
-  hex dump (first 32 bytes):
-    b0 6e 93 00 81 88 ff ff 00 00 00 00 00 00 00 00  .n..............
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000007d750ba1>] kmalloc include/linux/slab.h:557 [inline]
-    [<000000007d750ba1>] kzalloc include/linux/slab.h:664 [inline]
-    [<000000007d750ba1>] lsm_cred_alloc security/security.c:533 [inline]
-    [<000000007d750ba1>] security_prepare_creds+0xa5/0xd0 security/security.c:1632
-    [<00000000ba63fcc7>] prepare_creds+0x277/0x390 kernel/cred.c:285
-    [<000000001821b99d>] copy_creds+0x3a/0x230 kernel/cred.c:358
-    [<0000000022c32914>] copy_process+0x661/0x24d0 kernel/fork.c:1971
-    [<00000000d3adca2d>] kernel_clone+0xf3/0x670 kernel/fork.c:2456
-    [<00000000d11b7286>] __do_sys_clone+0x76/0xa0 kernel/fork.c:2573
-    [<000000008280baad>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000685d8cf0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Mike Travis (5):
+  x86/platform/uv: Add kernel interfaces for obtaining system info.
+  x86/platform/uv: Add sysfs leaves to replace those in procfs
+  x86/platform/uv: Add sysfs hubless leaves
+  x86/platform/uv: Add deprecated messages to /proc info leaves
+  x86/platform/uv: Update sysfs document file
 
-BUG: memory leak
-unreferenced object 0xffff888101ea2200 (size 256):
-  comm "syz-executor355", pid 8470, jiffies 4294953658 (age 32.400s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    20 59 03 01 81 88 ff ff 80 87 a8 10 81 88 ff ff   Y..............
-  backtrace:
-    [<000000002e0a7c5f>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
-    [<000000002e0a7c5f>] __alloc_file+0x1f/0x130 fs/file_table.c:101
-    [<000000001a55b73a>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
-    [<00000000fb22349e>] alloc_file+0x33/0x1b0 fs/file_table.c:193
-    [<000000006e1465bb>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
-    [<000000007118092a>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
-    [<000000007118092a>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
-    [<000000002ae99012>] io_uring_get_fd fs/io_uring.c:9198 [inline]
-    [<000000002ae99012>] io_uring_create fs/io_uring.c:9377 [inline]
-    [<000000002ae99012>] io_uring_setup+0x1125/0x1630 fs/io_uring.c:9411
-    [<000000008280baad>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000685d8cf0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ .../ABI/testing/sysfs-firmware-sgi_uv         | 16 +++++
+ arch/x86/include/asm/uv/bios.h                |  2 +
+ arch/x86/kernel/apic/x2apic_uv_x.c            | 26 ++++++-
+ drivers/platform/x86/uv_sysfs.c               | 70 ++++++++++++++++++-
+ 4 files changed, 111 insertions(+), 3 deletions(-)
 
+-- 
+2.21.0
 
