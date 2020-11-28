@@ -2,51 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CF72C7117
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E04D32C7170
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403876AbgK1VxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:53:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733004AbgK1TEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:04:52 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF2872222C;
-        Sat, 28 Nov 2020 08:05:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606550716;
-        bh=xgpytsXqKonReZKhzxLAJZZKiKMBFEPhCby0SWDwuwo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xp+aYzegVXIkxISk86zPKj9sSPj7VJY11XWZKmhgHKDHozxAWYECu5jSd9tA7y/o5
-         JwaVB3LVeadt4zZwZcnPXgThXBcDvZV5Lf+X6UUX81q0LPXKwdqHry0M0Tx/JDxnLR
-         bRqm5Jz6wLi8rlClQo+ulfhKtePnk5FiaScKGOm8=
-Date:   Sat, 28 Nov 2020 09:06:24 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Wen Yang <wenyang@linux.alibaba.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, stable@vger.kernel.org
-Subject: Re: [PATCH] exit: fix a race in release_task when flushing the dentry
-Message-ID: <X8IFADugB450PHp8@kroah.com>
-References: <20201128064722.9106-1-wenyang@linux.alibaba.com>
+        id S2391244AbgK1VwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:52:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732454AbgK1TA3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 14:00:29 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E46C02B8EE;
+        Sat, 28 Nov 2020 00:57:02 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id v14so1301992wml.1;
+        Sat, 28 Nov 2020 00:57:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jSwglpibr8SD4xYQvu/kD8qx3bDD7ljk9nmPcuPEoLI=;
+        b=iQUGvVBiJ1OEcrN0h4BcsOFX+VzWhBwlRLV3YgaK9QHGIy2jw+a6vcw/KiYYuISKLx
+         QxB/wWLfTmuNKdBEFPCM76+MoFETMx1N/EotrwsWO24XcD5+3ByLJep/wroZrsYxdD03
+         8sdAXv8B85sSpqk2c5tmSyFHZkVyxMqKKFeYkCnUfDLlVEvKI2rFnh5ZbliFxOiINDsr
+         Wo2BBFPpvLw3o79Q2sgHe31ItZDBlouyUO+6GavX3zs+wMQu9uiJeJ3x7Yd5dF+gfsz1
+         +l/fq2OYk8Q77zWV+rGwyokRaN22yn1BYNAx5+ydeJNq/8OrthKZmjHmf5604v6m3PZ/
+         sIzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jSwglpibr8SD4xYQvu/kD8qx3bDD7ljk9nmPcuPEoLI=;
+        b=goC9IV9+ROoloCCPTCFOMlKtvcNKjTPFoOcDUTuhKH1mSWIhegchtvOUYfHr2U788i
+         ZzAjd3nvQWHUoB5BbGYoSfDI6gtkMlyqmHc2OnT5Uh8kIJSYAGuLGIBcOAXquE6HPEFV
+         4TWATQVFSlrKEbSurb8a7aZDYXrQf0ngJ6wrMT7hcVxb+2HVWsa7vj5guiQ3I5yzhqKH
+         D+gMKttoV+Vt6PWtfqDwHv9W82N6ziJLDAUOd8MLjoy17oe0XMgIJALUKqfH35zHeA4z
+         OpPxGRwDYTmsAGRjSrv7xpzOJUCFPCaK+vrB30XsSSzH3Nc6U0jUvAa8pT5MPvUGNHM4
+         DrJA==
+X-Gm-Message-State: AOAM530MKAlzu8c2Ng/p/pRhxKkFWWzc8roL1wNSyEcicxOeUrkfA6H5
+        woK19t/zv1Z5zlXTAq5QU5JrCOOqBHdgpg==
+X-Google-Smtp-Source: ABdhPJw2X2rXk1TOS9fObhj6bjUpTvwyjqHToCFaW9jW95QaKGK4aKVddKC88UJRed6quWoYdBWntg==
+X-Received: by 2002:a7b:c19a:: with SMTP id y26mr13609321wmi.88.1606553820930;
+        Sat, 28 Nov 2020 00:57:00 -0800 (PST)
+Received: from ?IPv6:2001:a61:24b3:de01:7310:e730:497d:ea6a? ([2001:a61:24b3:de01:7310:e730:497d:ea6a])
+        by smtp.gmail.com with ESMTPSA id m4sm492142wmi.41.2020.11.28.00.56.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 28 Nov 2020 00:56:59 -0800 (PST)
+Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] subpage_prot.2: SYNOPSIS: Fix return type: s/long/int/
+To:     Alejandro Colomar <alx.manpages@gmail.com>
+References: <20201127234417.26257-1-alx.manpages@gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <f61b365a-19b7-8dbc-e714-7c55d192d469@gmail.com>
+Date:   Sat, 28 Nov 2020 09:56:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201128064722.9106-1-wenyang@linux.alibaba.com>
+In-Reply-To: <20201127234417.26257-1-alx.manpages@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 02:47:22PM +0800, Wen Yang wrote:
-> [ Upstream commit 7bc3e6e55acf065500a24621f3b313e7e5998acf ]
+Hi Alex,
 
-No, that is not this commit at all.
+On 11/28/20 12:44 AM, Alejandro Colomar wrote:
+> The Linux kernel uses 'int' instead of 'long' for the return type.
+> As glibc provides no wrapper, use the same type the kernel uses.
 
-What are you wanting to have happen here?
+Thanks. Patch applied.
 
-confused,
+Cheers,
 
-greg k-h
+Michael
+
+> ......
+> 
+> $ grep -n wrapper man-pages/man2/subpage_prot.2
+> 40:There is no glibc wrapper for this system call; see NOTES.
+> 99:Glibc does not provide a wrapper for this system call; call it using
+> 
+> $ grep -rn SYSCALL_DEFINE.*subpage_prot linux/;
+> linux/arch/powerpc/mm/book3s64/subpage_prot.c:190:
+> SYSCALL_DEFINE3(subpage_prot, unsigned long, addr,
+> 
+> $ sed -n /SYSCALL.*subpage_prot/,/^}/p \
+>   linux/arch/powerpc/mm/book3s64/subpage_prot.c \
+>   |grep return;
+> 		return -ENOENT;
+> 		return -EINVAL;
+> 		return -EINVAL;
+> 		return 0;
+> 		return -EFAULT;
+> 			return -EFAULT;
+> 	return err;
+> 
+> $ sed -n /SYSCALL.*subpage_prot/,/^}/p \
+>   linux/arch/powerpc/mm/book3s64/subpage_prot.c \
+>   |grep '\<err\>';
+> 	int err;
+> 			err = -ENOMEM;
+> 		err = -ENOMEM;
+> 	err = 0;
+> 	return err;
+> 
+> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+> ---
+>  man2/subpage_prot.2 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/man2/subpage_prot.2 b/man2/subpage_prot.2
+> index b38ba718f..d6f016665 100644
+> --- a/man2/subpage_prot.2
+> +++ b/man2/subpage_prot.2
+> @@ -32,7 +32,7 @@
+>  subpage_prot \- define a subpage protection for an address range
+>  .SH SYNOPSIS
+>  .nf
+> -.BI "long subpage_prot(unsigned long " addr ", unsigned long " len ,
+> +.BI "int subpage_prot(unsigned long " addr ", unsigned long " len ,
+>  .BI "                  uint32_t *" map );
+>  .fi
+>  .PP
+> 
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
