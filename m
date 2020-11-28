@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775392C74C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADA22C7458
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388381AbgK1Vtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:49:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55360 "EHLO mx2.suse.de"
+        id S2388618AbgK1Vtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:42 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:56852 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730513AbgK0TwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:52:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 37E66AD1E;
-        Fri, 27 Nov 2020 19:51:25 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 25CACDA7D9; Fri, 27 Nov 2020 20:49:55 +0100 (CET)
-Date:   Fri, 27 Nov 2020 20:49:55 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] btrfs: remove unused variable
-Message-ID: <20201127194954.GF6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Zou Wei <zou_wei@huawei.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1605606463-78936-1-git-send-email-zou_wei@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1605606463-78936-1-git-send-email-zou_wei@huawei.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S1731072AbgK1D1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 22:27:05 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606533985; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=Ul3sdJOhbR5MhmdCIpjJXQ9zPYU8fu4qGUttAl0RL0g=; b=B4BC7uMIKmqs1wgkMgvjiN6ZnJOmnMBiSYyAH6/ZO2+Gm+JABLYpsVeAHSt+uLaOQ92ouM6p
+ 8lg0UqqMZ6UdYVYl9Ha+gnbdBNb5GoAvzBxdvyIgu1+ptYDeDnqzy3s6AE5wPrw/4zgaCChZ
+ KemH+Yn3gQRQ4Ts+Ak4XQLhEbvg=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fc1c358fa67d9becfba08ac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 28 Nov 2020 03:26:16
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 902D9C433ED; Sat, 28 Nov 2020 03:26:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6794DC43463;
+        Sat, 28 Nov 2020 03:26:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6794DC43463
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>
+Subject: [PATCH v13 2/4] bus: mhi: core: Move MHI_MAX_MTU to external header file
+Date:   Fri, 27 Nov 2020 19:26:04 -0800
+Message-Id: <1606533966-22821-3-git-send-email-hemantk@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
+References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 05:47:43PM +0800, Zou Wei wrote:
-> Fix variable set but not used compilation warnings:
-> 
-> fs/btrfs/ctree.c:1581:6: warning: variable ‘parent_level’ set but not used [-Wunused-but-set-variable]
->   int parent_level;
->       ^~~~~~~~~~~~
-> 
-> fs/btrfs/zoned.c:503:6: warning: variable ‘zone_size’ set but not used [-Wunused-but-set-variable]
->   u64 zone_size;
->       ^~~~~~~~~
-> 
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Currently this macro is defined in internal MHI header as
+a TRE length mask. Moving it to external header allows MHI
+client drivers to set this upper bound for the transmit
+buffer size.
 
-> ---
->  fs/btrfs/ctree.c | 3 ---
->  fs/btrfs/zoned.c | 2 --
->  2 files changed, 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 32a57a7..e5a0941 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -1578,13 +1578,10 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
->  	int end_slot;
->  	int i;
->  	int err = 0;
-> -	int parent_level;
->  	u32 blocksize;
->  	int progress_passed = 0;
->  	struct btrfs_disk_key disk_key;
->  
-> -	parent_level = btrfs_header_level(parent);
+Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/bus/mhi/core/internal.h | 1 -
+ include/linux/mhi.h             | 3 +++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-That one folded to the patch, thanks.
+diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+index 6f80ec3..2b9c063 100644
+--- a/drivers/bus/mhi/core/internal.h
++++ b/drivers/bus/mhi/core/internal.h
+@@ -453,7 +453,6 @@ enum mhi_pm_state {
+ #define CMD_EL_PER_RING			128
+ #define PRIMARY_CMD_RING		0
+ #define MHI_DEV_WAKE_DB			127
+-#define MHI_MAX_MTU			0xffff
+ #define MHI_RANDOM_U32_NONZERO(bmsk)	(prandom_u32_max(bmsk) + 1)
+ 
+ enum mhi_er_type {
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index b3bc966..fc903b2 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -15,6 +15,9 @@
+ #include <linux/wait.h>
+ #include <linux/workqueue.h>
+ 
++/* MHI client drivers to set this upper bound for tx buffer */
++#define MHI_MAX_MTU 0xffff
++
+ #define MHI_MAX_OEM_PK_HASH_SEGMENTS 16
+ 
+ struct mhi_chan;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> -
->  	WARN_ON(trans->transaction != fs_info->running_transaction);
->  	WARN_ON(trans->transid != fs_info->generation);
->  
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index fa9cc61..742f088 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -500,7 +500,6 @@ int btrfs_sb_log_location_bdev(struct block_device *bdev, int mirror, int rw,
->  	unsigned int zone_sectors;
->  	u32 sb_zone;
->  	int ret;
-> -	u64 zone_size;
->  	u8 zone_sectors_shift;
->  	sector_t nr_sectors = bdev->bd_part->nr_sects;
->  	u32 nr_zones;
-> @@ -515,7 +514,6 @@ int btrfs_sb_log_location_bdev(struct block_device *bdev, int mirror, int rw,
->  	zone_sectors = bdev_zone_sectors(bdev);
->  	if (!is_power_of_2(zone_sectors))
->  		return -EINVAL;
-> -	zone_size = zone_sectors << SECTOR_SHIFT;
-
-That was intended to be used a few lines below, so that's not for
-removal.
-
->  	zone_sectors_shift = ilog2(zone_sectors);
->  	nr_zones = nr_sectors >> zone_sectors_shift;
->  
-> -- 
-> 2.6.2
