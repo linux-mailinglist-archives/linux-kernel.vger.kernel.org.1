@@ -2,165 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C052C743F
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0F22C73F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389068AbgK1Vtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
+        id S2389139AbgK1Vtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729846AbgK1SAi (ORCPT
+        with ESMTP id S1732402AbgK1SAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:00:38 -0500
-Received: from mail-pl1-x648.google.com (mail-pl1-x648.google.com [IPv6:2607:f8b0:4864:20::648])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C57C0A3BE6
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 09:50:54 -0800 (PST)
-Received: by mail-pl1-x648.google.com with SMTP id t13so5304051plo.16
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 09:50:54 -0800 (PST)
+        Sat, 28 Nov 2020 13:00:44 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1837C0253F4
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 09:39:01 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id f17so6855553pge.6
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 09:39:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/lr0Q5Uwc3CpXfcZqNsuuT98OLf5ZKK5wEqy52e9CRk=;
+        b=BHoZStE5yUD85I3A7PXIN9sCE5AeRtlgGZZx9Crxq5C48tz3dcWRIYTIUwZvKOeymW
+         zd5/d7HS/W8gjM5NlP14Fp0eLgfgYo4iuE2zfXG1V+F6MBo7Mpr89AwvahVBsQKmbpn6
+         DoT/agWf2RFU7VbCG/vZKxlGQ7QELbAGQ4I2EP+6Vh0HKOy65kaki9w9ezl9EPrpgYJu
+         UHx8vMG1ccrpznSVTBADc2YaYF36KAFiR+guF6d8biH9WYJIbn/hQggCvxp4HXvAFyaL
+         fx5oBebd2XN5dHl1K2QxQLNUEd71o0xIan1jV4VaZeE8UjFqenmCmKkbIqkEKtJvg9UX
+         WRwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=IdtRM5LrnYpqJx63YO+4L7WfBjCJ1sZ5owKnOBZSeYA=;
-        b=akB5vpEltxQqR1vyWCR99cdyCIMnkf86d0Iwd4RTQ+SLtpxUh6v6Yc8/QApFG3Byd3
-         wdQeKm1Kf9feiZ8yUQszaF8fmqT83bDeltrPBGpE8VOlsy38iQiGrIirg8n3VtQbZ4fm
-         jKjK1GuDaCGGWJ9ay7bBwnraVzdBnXo/AFfNSPkwEj/9ePKUk7d2AxYTef1S1g655xxX
-         8cl6MdhOMTchqvnS2RwKJf1Nd01NWrrm44LzFzrT4ok1eQ5Syjwqp3ypVlmt/+NYsvs1
-         m1mI1H3Yb2sG1ze2SjxLWgEhT8GrdDaYkM4GtYav4u7f1P0KexjZqFG7R+SnIzufZYvo
-         hMCA==
-X-Gm-Message-State: AOAM5327ei2zxFEqX1RJy5G/VUU+GIzYhCiNkLlZhSwK1UM5gKm92uzU
-        /Ya0BO1B0wE+No/5dIgo2iFD2xDeECbRNAfIwEh1cbl1r7th
-X-Google-Smtp-Source: ABdhPJz0twx/ERLu8vV0pfhcwHMmna3D6hskeh50+HELIC20hC0+lwy1vzueUzf+ib9P2UraQP8BsL+qPNUJSaBdZF9HgjnobplI
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/lr0Q5Uwc3CpXfcZqNsuuT98OLf5ZKK5wEqy52e9CRk=;
+        b=RQhkW+GWKb614xnB9IZ7foc/W7oNu7L4m/9sZnN0TWf/gS0hodgNceBoL3O5IvwrXQ
+         mIpD5hII6tui1jxePWB/9L8sZqMYEq0l6EnaO1HI4faTPjy0/T2kYsMnBPC9J6wTrjry
+         mnt2NmLJI6G166gpuytM1VkZAGwRhZsyeEp5nPmtLX/O5s+HbdDHteKeeU/Fm7NTmDe5
+         W3LhdKtxKFV0vGfWBqk7L9YLq9IPJ65MlIVoI1ytAifhmDqx82A7USC1jt5Gtx/VS5kT
+         hnj59LGVkXmR3VVtvztDPn10CMNlHEFkMhGLez0TZikDUznlCsxhJ2wJGqymtypdJpau
+         TqmQ==
+X-Gm-Message-State: AOAM531jGwz6Xs+pu9J6WPsPM6aBG5V8QJ93csN8wk01YbRQgrUag/1t
+        YgBds5OwA8NowaEjb1viYI8=
+X-Google-Smtp-Source: ABdhPJypXtG+f192A1K6LnjTqSc6pl0yRhSWq+anfN/4Vy1n/09H8nwnmCnm2Yw7rOLgPTNV4LUNjg==
+X-Received: by 2002:a63:cb47:: with SMTP id m7mr10941883pgi.395.1606585141088;
+        Sat, 28 Nov 2020 09:39:01 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:60e2:4a86:2299:c009:477b])
+        by smtp.gmail.com with ESMTPSA id q14sm11653885pfl.163.2020.11.28.09.38.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Nov 2020 09:39:00 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com
+Subject: [PATCH v3] checkpatch: add warning for unnecessary use of %h[xudi] and %hh[xudi]
+Date:   Sat, 28 Nov 2020 23:08:50 +0530
+Message-Id: <20201128173850.66509-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8793:: with SMTP id f19mr2289851ion.106.1606583961435;
- Sat, 28 Nov 2020 09:19:21 -0800 (PST)
-Date:   Sat, 28 Nov 2020 09:19:21 -0800
-In-Reply-To: <000000000000ca835605b0e8a723@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000052c1e805b52dfa16@google.com>
-Subject: Re: KASAN: use-after-free Read in idr_for_each (2)
-From:   syzbot <syzbot+12056a09a0311d758e60@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Modifiers %h and %hh should never be used.
 
-HEAD commit:    c84e1efa Merge tag 'asm-generic-fixes-5.10-2' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1251d759500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cb8d1a3819ba4356
-dashboard link: https://syzkaller.appspot.com/bug?extid=12056a09a0311d758e60
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1126cce9500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1173d2e9500000
+Commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use
+of unnecessary %h[xudi] and %hh[xudi]") specifies that:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+12056a09a0311d758e60@syzkaller.appspotmail.com
+"Standard integer promotion is already done and %hx and %hhx is useless
+so do not encourage the use of %hh[xudi] or %h[xudi]."
 
-==================================================================
-BUG: KASAN: use-after-free in radix_tree_next_slot include/linux/radix-tree.h:422 [inline]
-BUG: KASAN: use-after-free in idr_for_each+0x206/0x220 lib/idr.c:202
-Read of size 8 at addr ffff888032eb2c40 by task kworker/u4:4/186
+"The "h" and "hh" things should never be used. The only reason for them
+being used if you have an "int", but you want to print it out as a
+"char" (and honestly, that is a really bad reason, you'd be better off
+just using a proper cast to make the code more obvious)."
 
-CPU: 1 PID: 186 Comm: kworker/u4:4 Not tainted 5.10.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound io_ring_exit_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- radix_tree_next_slot include/linux/radix-tree.h:422 [inline]
- idr_for_each+0x206/0x220 lib/idr.c:202
- io_destroy_buffers fs/io_uring.c:8275 [inline]
- io_ring_ctx_free fs/io_uring.c:8298 [inline]
- io_ring_exit_work+0x3f7/0x7a0 fs/io_uring.c:8375
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Add a new check to emit a warning on finding an unneeded use of %h or
+%hh modifier.
 
-Allocated by task 10961:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
- slab_post_alloc_hook mm/slab.h:526 [inline]
- slab_alloc_node mm/slub.c:2891 [inline]
- slab_alloc mm/slub.c:2899 [inline]
- kmem_cache_alloc+0x122/0x460 mm/slub.c:2904
- radix_tree_node_alloc.constprop.0+0x7c/0x350 lib/radix-tree.c:274
- idr_get_free+0x4c5/0x940 lib/radix-tree.c:1504
- idr_alloc_u32+0x170/0x2d0 lib/idr.c:46
- idr_alloc+0xc2/0x130 lib/idr.c:87
- io_provide_buffers fs/io_uring.c:4032 [inline]
- io_issue_sqe+0x2fc4/0x3d10 fs/io_uring.c:6012
- __io_queue_sqe+0x132/0xda0 fs/io_uring.c:6232
- io_queue_sqe+0x623/0x11f0 fs/io_uring.c:6298
- io_submit_sqe fs/io_uring.c:6367 [inline]
- io_submit_sqes+0x15e1/0x28a0 fs/io_uring.c:6596
- __do_sys_io_uring_enter+0xc90/0x1ab0 fs/io_uring.c:8983
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Also add a fix option to the check.
 
-Freed by task 8546:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
- slab_free_hook mm/slub.c:1544 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
- slab_free mm/slub.c:3142 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3158
- rcu_do_batch kernel/rcu/tree.c:2476 [inline]
- rcu_core+0x5df/0xe80 kernel/rcu/tree.c:2711
- __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
+Link: https://lore.kernel.org/lkml/4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com/
 
-Last call_rcu():
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_record_aux_stack+0xc0/0xf0 mm/kasan/generic.c:346
- __call_rcu kernel/rcu/tree.c:2953 [inline]
- call_rcu+0xbb/0x700 kernel/rcu/tree.c:3027
- radix_tree_node_free lib/radix-tree.c:308 [inline]
- delete_node+0x591/0x8c0 lib/radix-tree.c:571
- __radix_tree_delete+0x190/0x370 lib/radix-tree.c:1377
- radix_tree_delete_item+0xe7/0x230 lib/radix-tree.c:1428
- __io_remove_buffers fs/io_uring.c:3930 [inline]
- __io_remove_buffers fs/io_uring.c:3909 [inline]
- __io_destroy_buffers+0x161/0x200 fs/io_uring.c:8269
- idr_for_each+0x113/0x220 lib/idr.c:208
- io_destroy_buffers fs/io_uring.c:8275 [inline]
- io_ring_ctx_free fs/io_uring.c:8298 [inline]
- io_ring_exit_work+0x3f7/0x7a0 fs/io_uring.c:8375
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Suggested-by: Joe Perches <joe@perches.com>
+Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+Changes in v3:
+- Change warning message
+- Fix regex match to include capture group
+- Warn on every unnecesary use of %h on a line
+- Add fix option when the format line matches current line
 
-The buggy address belongs to the object at ffff888032eb2c00
- which belongs to the cache radix_tree_node of size 576
-The buggy address is located 64 bytes inside of
- 576-byte region [ffff888032eb2c00, ffff888032eb2e40)
-The buggy address belongs to the page:
-page:00000000102f3139 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x32eb0
-head:00000000102f3139 order:2 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff88801004db40
-raw: 0000000000000000 0000000000170017 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+Changes in v2:
+- Use $logFunctions instead of the manual list.
+- Relocate the check to after logging continuations check.
+- Remove perl_version_ok check
 
-Memory state around the buggy address:
- ffff888032eb2b00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888032eb2b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888032eb2c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                           ^
- ffff888032eb2c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888032eb2d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+ scripts/checkpatch.pl | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7dc094445d83..dc25d32f0c5f 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6027,6 +6027,22 @@ sub process {
+ 			     "Avoid logging continuation uses where feasible\n" . $herecurr);
+ 		}
+ 
++# check for unnecessary use of %h[xudi] and %hh[xudi] in logging functions
++		if (defined $stat &&
++		    $line =~ /\b$logFunctions\s*\(/) {
++			my $lc = $stat =~ tr@\n@@;
++			for (my $cur_ln = $linenr; $cur_ln <= $linenr + $lc; $cur_ln++) {
++				my $cur_rawline = raw_line($cur_ln, 0);
++				while ($cur_rawline =~ /^\+.*\"[^\"]*(%[\d\.\*\-]*h+[idux])/g) {
++					if (WARN("INTEGER_PROMOTION",
++						 "Using 'h' in $1 is unnecessary\n" . "$cur_rawline\n") &&
++					    $fix && ($cur_ln == $linenr)) {
++						$fixed[$fixlinenr] =~ s/(\"[^\"]*%[\d\.\*\-]*)h+([idux])/$1$2/;
++					}
++				}
++			}
++		}
++
+ # check for mask then right shift without a parentheses
+ 		if ($perl_version_ok &&
+ 		    $line =~ /$LvalOrFunc\s*\&\s*($LvalOrFunc)\s*>>/ &&
+-- 
+2.27.0
 
