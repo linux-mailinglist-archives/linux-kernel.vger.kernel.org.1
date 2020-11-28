@@ -2,153 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EF92C711C
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2FB2C70FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403915AbgK1VxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:53:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733094AbgK1TFV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:05:21 -0500
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8910AC02A1A3;
-        Sat, 28 Nov 2020 06:09:26 -0800 (PST)
-Received: from localhost (home.natalenko.name [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 53C758B184D;
-        Sat, 28 Nov 2020 15:09:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1606572564;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=80LrCKLmbaN4QFAd+vAXkfzcVSLmNqUxi0hyFB1oaKE=;
-        b=sqowTDwTj1W5XbWiqI0623pVVQO38XYLOBRIRNl+gdmzR8jFUrNYeWQWVm54Q+/eAwhGnl
-        5a0Yx0jJ4a5lPrhepGYlGvSmITmWYokq661Wy5yPYSHTmuHS1Pbxqdgy3pS/x9C0eGZFMm
-        pe8RxWxCp5ZqWNgwXgE5NFEcuQ+H7fY=
-Date:   Sat, 28 Nov 2020 15:09:24 +0100
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Subject: Re: scheduling while atomic in z3fold
-Message-ID: <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
-References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
+        id S2390697AbgK1VvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:22 -0500
+Received: from mout.gmx.net ([212.227.17.22]:35055 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730190AbgK1SiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:38:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606588597;
+        bh=Ny6QiCeDGCHORJw/C9YOctxdZUt6ZvDA6fGQCcljyN0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=WlTOQ+NkbLdBgSNORp5fpuwhhKm7qBNH6ySFjoii7hAUCJfDW19T8zZ20DPjiXPQM
+         wHl9T1Pt9tNYqNXDec5gLsLOcnYU6ekqxuwzfBV3d7d73qvRbeX1yl0e9Jed00jCl3
+         SwllQcHM2qkuNM2d8ChspZBoOZ0SwuM60FUSUpFA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MNKlu-1kXNLN1jJK-00OscU; Sat, 28
+ Nov 2020 15:22:19 +0100
+Subject: Re: [RESEND PATCH 1/2] iio:core: Introduce unlocked version of
+ iio_map_array_unregister()
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     andy.shevchenko@gmail.com, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1606571059-13974-1-git-send-email-LinoSanfilippo@gmx.de>
+ <20201128135435.33e9f6ee@archlinux>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <b933efbe-133e-bece-5516-2ecf3dc120b0@gmx.de>
+Date:   Sat, 28 Nov 2020 15:22:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201128135435.33e9f6ee@archlinux>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:m9O8j4/8mg+rIr3+prbSb7yN17fxaCU/Do7u/j+zRcFxJBMD0bG
+ keUQDyNgemlmt0XKzy+qoKlmENEULv+teVdTv0r150XuMKtQqXIqNiXbv11Y3flCp7CLJCE
+ MJXiVd1AxfBATs+I35l2Nw3fIq41lX0ebpjA2aw7kfdnanbdLH9KQ8YnAQsNveqlBM2zfxL
+ s/MPw9cBfyYD53SbxOMVA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bEX+KW+AGfM=:SSimNFa5PcAcZfer8COmcP
+ G63OTDw1NhrmF28v7DcvDazdkVPgDFxG7320IEdazX44y6yuip3KeKNsPdwTKT/BRWdQLNRDF
+ SJHWYF70XHudPoiZytJ1CYystiQEwbPK+HAiuevtI8wWyjtKFRzBWcaxGJGBjdywotndaCdiL
+ rU1F6x9fndO8wrn/MTeKmKDPqAqT8KLi9V9kWpDl+rjgba2QNB/KF1Ny4gO6msNkFzUzqnUpA
+ urmekwgB+3gZPj3cq9D5v2cJ7KocaxtI5heMqkMjFU+bK8Y579ogU0c6ppiWruBs2D7h4h0YW
+ FbsWPbVN0UVsGrXJROEBd3K+2rpxW+I9YLS17tszKUBhPFemjj6c5in5wMXrJBIpIPmXDd6Nk
+ kKeDADQOvDFcLsPbW9eJwwRdOkmeyoOLKISeNwFq7XmU5IuTF2FOwjl2ncBCeH0YeFEeo4WYD
+ 3NCkNliAl/b3pqXYpym9p5HeQAaeHWpKDRyI1OC7sj7yHcShLS7R6u+/9pPujMzTSz22/hZS8
+ 7PsYQPgaUHAH9l/L1GRDN6r7595Y4wRNBryUFxMN18ePRg5BEvOHNV6iakvRFDyq1rvGWa2r4
+ kdHh9/b2PPp9CiTaFR2jO4HiRmY0ePTIAlrOzq4nbDSnKrCpvtH/TncjSBWvUQi39vKUBf1Uo
+ Cp6202SWXbpYlHB37drgDqinWYzmBuO/k9xCcM6xTPGhzPgSvbuXY+n7CR6Sz7x9GdcBCXmNN
+ 34BN1y5MH62svLXa4igZXemxku3TQ9NsYPSrceDIRa7co/z8bsqFb6oGwkiwdTm2CM/GRGS9a
+ XaGTkSlP8mf1oX7Pce8RXwoyrTzgAcFYVJ61SiVlWMuWKamFYB6HnwJsJIKpsZPZPhFl+Ciy1
+ 2Z1mxBUWXB36dGyoUlwA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 03:05:24PM +0100, Oleksandr Natalenko wrote:
-> Hi.
-> 
-> While running v5.10-rc5-rt11 I bumped into the following:
-> 
-> ```
-> BUG: scheduling while atomic: git/18695/0x00000002
-> Preemption disabled at:
-> [<ffffffffbb93fcb3>] z3fold_zpool_malloc+0x463/0x6e0
-> …
-> Call Trace:
->  dump_stack+0x6d/0x88
->  __schedule_bug.cold+0x88/0x96
->  __schedule+0x69e/0x8c0
->  preempt_schedule_lock+0x51/0x150
->  rt_spin_lock_slowlock_locked+0x117/0x2c0
->  rt_spin_lock_slowlock+0x58/0x80
->  rt_spin_lock+0x2a/0x40
->  z3fold_zpool_malloc+0x4c1/0x6e0
->  zswap_frontswap_store+0x39c/0x980
->  __frontswap_store+0x6e/0xf0
->  swap_writepage+0x39/0x70
->  shmem_writepage+0x31b/0x490
->  pageout+0xf4/0x350
->  shrink_page_list+0xa28/0xcc0
->  shrink_inactive_list+0x300/0x690
->  shrink_lruvec+0x59a/0x770
->  shrink_node+0x2d6/0x8d0
->  do_try_to_free_pages+0xda/0x530
->  try_to_free_pages+0xff/0x260
->  __alloc_pages_slowpath.constprop.0+0x3d5/0x1230
->  __alloc_pages_nodemask+0x2f6/0x350
->  allocate_slab+0x3da/0x660
->  ___slab_alloc+0x4ff/0x760
->  __slab_alloc.constprop.0+0x7a/0x100
->  kmem_cache_alloc+0x27b/0x2c0
->  __d_alloc+0x22/0x230
->  d_alloc_parallel+0x67/0x5e0
->  __lookup_slow+0x5c/0x150
->  path_lookupat+0x2ea/0x4d0
->  filename_lookup+0xbf/0x210
->  vfs_statx.constprop.0+0x4d/0x110
->  __do_sys_newlstat+0x3d/0x80
->  do_syscall_64+0x33/0x40
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> ```
-> 
-> The preemption seems to be disabled here:
-> 
-> ```
-> $ scripts/faddr2line mm/z3fold.o z3fold_zpool_malloc+0x463
-> z3fold_zpool_malloc+0x463/0x6e0:
-> add_to_unbuddied at mm/z3fold.c:645
-> (inlined by) z3fold_alloc at mm/z3fold.c:1195
-> (inlined by) z3fold_zpool_malloc at mm/z3fold.c:1737
-> ```
-> 
-> The call to the rt_spin_lock() seems to be here:
-> 
-> ```
-> $ scripts/faddr2line mm/z3fold.o z3fold_zpool_malloc+0x4c1
-> z3fold_zpool_malloc+0x4c1/0x6e0:
-> add_to_unbuddied at mm/z3fold.c:649
-> (inlined by) z3fold_alloc at mm/z3fold.c:1195
-> (inlined by) z3fold_zpool_malloc at mm/z3fold.c:1737
-> ```
-> 
-> Or, in source code:
-> 
-> ```
->  639 /* Add to the appropriate unbuddied list */
->  640 static inline void add_to_unbuddied(struct z3fold_pool *pool,
->  641                 struct z3fold_header *zhdr)
->  642 {
->  643     if (zhdr->first_chunks == 0 || zhdr->last_chunks == 0 ||
->  644             zhdr->middle_chunks == 0) {
->  645         struct list_head *unbuddied = get_cpu_ptr(pool->unbuddied);
->  646
->  647         int freechunks = num_free_chunks(zhdr);
->  648         spin_lock(&pool->lock);
->  649         list_add(&zhdr->buddy, &unbuddied[freechunks]);
->  650         spin_unlock(&pool->lock);
->  651         zhdr->cpu = smp_processor_id();
->  652         put_cpu_ptr(pool->unbuddied);
->  653     }
->  654 }
-> ```
-> 
-> Shouldn't the list manipulation be protected with
-> local_lock+this_cpu_ptr instead of get_cpu_ptr+spin_lock?
-> 
-> Thanks.
-> 
-> -- 
->   Oleksandr Natalenko (post-factum)
+Hi Jonathan,
 
-Forgot to Cc linux-rt-users@, sorry.
+On 28.11.20 at 14:54, Jonathan Cameron wrote:
 
--- 
-  Oleksandr Natalenko (post-factum)
+> A few notes to make it harder for people to do that in future.
+> 1. Don't send patch series (or new versions of older patches) in reply
+>    to an existing thread.   They get lost and difficult to pull out.
+>    b4 can't automatically figure out which patches to pull from that
+>    original thread for example.
+> 2. Always version number whole series with same number, even if some pat=
+ches
+>    are new.   So this should be v3.
+>
+
+Thanks for these hints, I will keep it in mind for future patch submission=
+s.
+
+Regards,
+Lino
+
