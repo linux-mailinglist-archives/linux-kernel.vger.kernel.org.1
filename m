@@ -2,69 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5C52C7144
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACBA2C7146
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732717AbgK1Vzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:55:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59612 "EHLO mail.kernel.org"
+        id S1732736AbgK1Vzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:55:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:37590 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387679AbgK1UUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 15:20:38 -0500
-Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C743A221FF;
-        Sat, 28 Nov 2020 20:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606594798;
-        bh=C+efOhsgaww9VfIMDKFKC2yxzNAzm2et1F/UUofnQik=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dl+V9HVI//UFtwgBJj4Ux6Vh/X2yiKvJoRUMWwsulWrEVf5UPB6oPuDqx8PZZgXS6
-         OtCCEPsIJYtxRv3qnrIUT6pE0KjwFf9jEqTSiIxL19FrBLD+ifG/K87upvMJNxbaXs
-         l8NZITp5gbUL15AjnYyxjDLwzpfmvfhBZTPu8QD8=
-Date:   Sat, 28 Nov 2020 12:19:57 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/6] net: ipa: start adding IPA v4.5 support
-Message-ID: <20201128121957.133f7893@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201125204522.5884-1-elder@linaro.org>
-References: <20201125204522.5884-1-elder@linaro.org>
+        id S2387686AbgK1UWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 15:22:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6D7F1042;
+        Sat, 28 Nov 2020 12:21:14 -0800 (PST)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4CE53F23F;
+        Sat, 28 Nov 2020 12:21:13 -0800 (PST)
+Subject: Re: [RESEND PATCH 11/19] arm64: dts: allwinner: a100: add watchdog
+ node
+To:     Frank Lee <frank@allwinnertech.com>, tiny.windzz@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <cover.1604988979.git.frank@allwinnertech.com>
+ <7a7fc132cf3fa07f069d473d4600ec1449fb45ff.1604988979.git.frank@allwinnertech.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <197ac654-7258-205c-c34f-2559d2ff5010@arm.com>
+Date:   Sat, 28 Nov 2020 20:20:58 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <7a7fc132cf3fa07f069d473d4600ec1449fb45ff.1604988979.git.frank@allwinnertech.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Nov 2020 14:45:16 -0600 Alex Elder wrote:
-> This series starts updating the IPA code to support IPA hardware
-> version 4.5.
+On 10/11/2020 06:38, Frank Lee wrote:
+> From: Yangtao Li <frank@allwinnertech.com>
 > 
-> The first patch fixes a problem found while preparing these updates.
-> Testing shows the code works with or without the change, and with
-> the fix the code matches "downstream" Qualcomm code.
+> Declare A100's watchdog in the device-tree.
 > 
-> The second patch updates the definitions for IPA register offsets
-> and field masks to reflect the changes that come with IPA v4.5.  A
-> few register updates have been deferred until later, because making
-> use of them involves some nontrivial code updates.
-> 
-> One type of change that IPA v4.5 brings is expanding the range of
-> certain configuration values.  High-order bits are added in a few
-> cases, and the third patch implements the code changes necessary to
-> use those newly available bits.
-> 
-> The fourth patch implements several fairly minor changes to the code
-> required for IPA v4.5 support.
-> 
-> The last two patches implement changes to the GSI registers used for
-> IPA.  Almost none of the registers change, but the range of memory
-> in which most of the GSI registers is located is shifted by a fixed
-> amount.  The fifth patch updates the GSI register definitions, and
-> the last patch implements the memory shift for IPA v4.5.
+> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
 
-Applied, thanks!
+I don't have any manual nor hardware, but this node looks alright, when
+compared to the H6 one.
+
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+
+Cheers,
+Andre
+
+> ---
+>  arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
+> index 01ff53b5a7a8..6aa3337ce0e9 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
+> @@ -144,6 +144,14 @@ ths_calibration: calib@14 {
+>  			};
+>  		};
+>  
+> +		watchdog@30090a0 {
+> +			compatible = "allwinner,sun50i-a100-wdt",
+> +				     "allwinner,sun6i-a31-wdt";
+> +			reg = <0x030090a0 0x20>;
+> +			interrupts = <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&dcxo24M>;
+> +		};
+> +
+>  		pio: pinctrl@300b000 {
+>  			compatible = "allwinner,sun50i-a100-pinctrl";
+>  			reg = <0x0300b000 0x400>;
+> 
+
