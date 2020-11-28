@@ -2,288 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44EC2C71A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88182C71B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390795AbgK1Vvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731039AbgK1Sq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:46:56 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9EBF246A7;
-        Sat, 28 Nov 2020 15:26:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606577210;
-        bh=qPBrPmLwaSNVKpA1tKKhEp22LNFlPYTeLeRg1o4+Kbk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bTqju6rlhAxbIszR0SemxWgC0lYMHEHsrXjwKsjg86hDqFLK1fORldQq/PhAT7dzp
-         QPjaTDb+uaCvH1HwPF3AvotxnazXLNnP2Ks6FvlOyJ3D1cAjfJn2xoxNXBDX/RmumC
-         bWUsw+Lari6vZscVJkMDJN/ReUCSJuxah5+8ZdyA=
-Date:   Sat, 28 Nov 2020 15:26:45 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/11] iio: adc: at91_adc: remove platform data
-Message-ID: <20201128152645.0e0a7e4a@archlinux>
-In-Reply-To: <20201128142342.GJ1296649@piout.net>
-References: <20201117140656.1235055-1-alexandre.belloni@bootlin.com>
-        <20201117140656.1235055-2-alexandre.belloni@bootlin.com>
-        <20201128140427.61dbaceb@archlinux>
-        <20201128142342.GJ1296649@piout.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2390502AbgK1VvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29853 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729913AbgK1Scc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:32:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606588264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EGfZka8PHnD4/7sEZdIEHQXZ+bWPmZHPE5/C9A6phNE=;
+        b=HXJdCv8GH00eI3GRYodbhyThjEVw5sxOAMRoJbJ2tmVXfmlVxlMN2iNe5g/BCrAFN/HOyT
+        hvjBbNVyUZV5tcNwAGlovmfeff0pTMwUPLBmJruPyLey4c6s+azf0ciKi0jVOOweOalG9O
+        6SLOGkQC2KvCa1rE/27lIaJW1ZQ7H5o=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-XcBU6ZQLOLqsDlWW9oQ_Ew-1; Sat, 28 Nov 2020 10:29:07 -0500
+X-MC-Unique: XcBU6ZQLOLqsDlWW9oQ_Ew-1
+Received: by mail-qv1-f70.google.com with SMTP id fb9so863280qvb.21
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 07:29:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EGfZka8PHnD4/7sEZdIEHQXZ+bWPmZHPE5/C9A6phNE=;
+        b=sdGtGfsFMRTZnckAbLhxf9DEDoLkutuK047Q0TG3ZeRu1h2sZYEM3ROQdevOg+OZuP
+         QRV+Xb5o+vI6qo2Ar6OuI0vfwVtL16z4UvAyFCfy78gEGNYlybDktsq7TDJtBU5KVy2s
+         W0AKP7YhRzczfrfpASmO95nG+s2ZiYoZn0J3zASugzfzKGWu/FRG21cYu68RQb55fk2w
+         81/Z3w5w5sbOGy52iIcLzkhSK0qI+y2wNFcZLEN6ZBQEEm121arsXyh7Yf658rbm2sxu
+         OwFiT0I/1iQ3cMcL/7GG3brHU325vflQVGUlVBzcqfj21UiNsgNKp5deFCsjU0gu/Kfs
+         acKA==
+X-Gm-Message-State: AOAM5320dHpBraBBoarphT2EHwHHRWh9Lut/mOZ8DE5OgYz2vKmX8vuG
+        hilkRAfN0/rsMaAhA6+BvX3MsgQbe05AVLhRAcdvJZPQEolXNJcsJmfiQjiqcetK5VWmN0zA2bN
+        biME9X5/Fboyxcn/AtAjyRd3A
+X-Received: by 2002:a37:480f:: with SMTP id v15mr14458573qka.30.1606577346450;
+        Sat, 28 Nov 2020 07:29:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx4jHhU5kclGOD32m4Jejkvmj4OtHLwvjVfJKi+O1q7aFAcxD/GZihwEeHTOOwPvxy/pQCSOw==
+X-Received: by 2002:a37:480f:: with SMTP id v15mr14458538qka.30.1606577346124;
+        Sat, 28 Nov 2020 07:29:06 -0800 (PST)
+Received: from xz-x1 ([142.126.81.247])
+        by smtp.gmail.com with ESMTPSA id g11sm8961329qkk.72.2020.11.28.07.29.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Nov 2020 07:29:05 -0800 (PST)
+Date:   Sat, 28 Nov 2020 10:29:03 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH] mm: Don't fault around userfaultfd-registered regions on
+ reads
+Message-ID: <20201128152903.GK6573@xz-x1>
+References: <20201126222359.8120-1-peterx@redhat.com>
+ <20201127122224.GX4327@casper.infradead.org>
+ <X8Ga44uXHmzn/vB9@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <X8Ga44uXHmzn/vB9@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 28 Nov 2020 15:23:42 +0100
-Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+On Fri, Nov 27, 2020 at 07:33:39PM -0500, Andrea Arcangeli wrote:
+> Hello,
 
-> Hi,
+Hi, Andrea!
+
 > 
-> On 28/11/2020 14:04:27+0000, Jonathan Cameron wrote:
-> > On Tue, 17 Nov 2020 15:06:46 +0100
-> > Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
-> >   
-> > > The at91 platforms have been DT only for a while, remove platform data.
-> > > 
-> > > Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > > Reviewed-by: Ludovic Desroches <ludovic.desroches@microchip.com>  
+> On Fri, Nov 27, 2020 at 12:22:24PM +0000, Matthew Wilcox wrote:
+> > On Thu, Nov 26, 2020 at 05:23:59PM -0500, Peter Xu wrote:
+> > > For wr-protected mode uffds, errornously fault in those pages around could lead
+> > > to threads accessing the pages without uffd server's awareness.  For example,
+> > > when punching holes on uffd-wp registered shmem regions, we'll first try to
+> > > unmap all the pages before evicting the page cache but without locking the
+> > > page (please refer to shmem_fallocate(), where unmap_mapping_range() is called
+> > > before shmem_truncate_range()).  When fault-around happens near a hole being
+> > > punched, we might errornously fault in the "holes" right before it will be
+> > > punched.  Then there's a small window before the page cache was finally
+> > > dropped, and after the page will be writable again (NOTE: the uffd-wp protect
+> > > information is totally lost due to the pre-unmap in shmem_fallocate(), so the
+> > > page can be writable within the small window).  That's severe data loss.
 > > 
-> > Hi Alexandre,
-> > 
-> > I'd completely forgotten that we actually had a similar patch that
-> > is already applied from Alexandru back in September.
-> >   
+> > Sounds like you have a missing page_mkwrite implementation.
 > 
-> I actually have seen that yesterday too. I even reviewed them...
+> If the real fault happened through the pagetable (which got dropped by
+> the hole punching), a "missing type" userfault would be delivered to
+> userland (because the pte would be none). Userland would invoke
+> UFFDIO_COPY with the UFFDIO_COPY_MODE_WP flag. Such flag would then
+> map the filled shmem page (not necessarily all zero and not
+> necessarily the old content before the hole punch) with _PAGE_RW not
+> set and _PAGE_UFFD_WP set, so the next write would also trigger a
+> wrprotect userfault (this is what the uffd-wp app expects).
 > 
-> > Given vast majority matched, I've just changed your patch into one
-> > that drops the id_table (which Alexandru didn't do).
-> > 
-> > So with that tweak applied to the togreg branch of iio.git.
-> >   
-> 
-> Ok, thanks, I guess you didn't push yet, I wanted to check and I didn't
-> find the patches on kernel.org.
+> filemap_map_pages doesn't notify userland when it fills a pte and it
+> will map again the page read-write.
 
-I've actually just backed my try at this out.  It gets a bit messy around
-patch 6-7 so I'd rather you did a rebase.
-
-Please rebase on current togreg branch.
-
-Thanks,
-
-Jonathan
+Yes.  A trivial supplementary detail is that filemap_map_pages() will only set
+it read-only since alloc_set_pte() will only set write bit if it's a write.  In
+our case it's read fault-around so without it.  However it'll be quickly marked
+as writable as long as the thread quickly writes to it again.
 
 > 
+> However filemap_map_pages isn't capable to fill a hole and to undo the
+> hole punch, all it can do are minor faults to re-fill the ptes from a
+> not-yet-truncated inode page.
+> 
+> Now it would be ok if filemap_map_pages re-filled the ptes, after they
+> were zapped the first time by fallocate, and then the fallocate would
+> zap them again before truncating the page, but I don't see a second
+> pte zap... there's just the below single call of unmap_mapping_range:
+> 
+> 		if ((u64)unmap_end > (u64)unmap_start)
+> 			unmap_mapping_range(mapping, unmap_start,
+> 					    1 + unmap_end - unmap_start, 0);
+> 		shmem_truncate_range(inode, offset, offset + len - 1);
+
+IMHO the 2nd pte zap is inside shmem_truncate_range(), where we will call
+truncate_inode_page() then onto truncate_cleanup_page().
+
+Since we're at it, some more context: this is actually where I started to
+notice the issue, that we'll try to pre-unmap the whole region first before
+shmem_truncate_range().  The thing is shmem_truncate_range() will zap the ptes
+too, in an even safer way (with page lock held).  So before I came up with the
+current patch, I also tried below patch, and it also fixes the data corrupt
+issue:
+
+-----8<-----
+diff --git a/mm/shmem.c b/mm/shmem.c
+index efa19e33e470..b275f401fe1f 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2777,7 +2777,6 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+        inode_lock(inode);
+ 
+        if (mode & FALLOC_FL_PUNCH_HOLE) {
+-               struct address_space *mapping = file->f_mapping;
+                loff_t unmap_start = round_up(offset, PAGE_SIZE);
+                loff_t unmap_end = round_down(offset + len, PAGE_SIZE) - 1;
+                DECLARE_WAIT_QUEUE_HEAD_ONSTACK(shmem_falloc_waitq);
+@@ -2795,9 +2794,6 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+                inode->i_private = &shmem_falloc;
+                spin_unlock(&inode->i_lock);
+ 
+-               if ((u64)unmap_end > (u64)unmap_start)
+-                       unmap_mapping_range(mapping, unmap_start,
+-                                           1 + unmap_end - unmap_start, 0);
+                shmem_truncate_range(inode, offset, offset + len - 1);
+                /* No need to unmap again: hole-punching leaves COWed pages */
+-----8<-----
+ 
+Above code existed starting from the 1st day of shmem fallocate code, so I was
+thinking why we did that.  One reason could be for performance, since this
+pre-unmap of explicit unmap_mapping_range() will try to walk the page tables
+once rather than walking for every single page, so when the hole is huge it
+could benefit us since truncate_cleanup_page() is able to avoid those per-page
+walks then because page_mapped() could be more likely to be zero:
+
+	if (page_mapped(page)) {
+		pgoff_t nr = PageTransHuge(page) ? HPAGE_PMD_NR : 1;
+		unmap_mapping_pages(mapping, page->index, nr, false);
+	}
+
+It would be good if Hugh can help confirm whether my understanding is correct,
+though..
+
+As a summary, that's why I didn't try to remove the optimization (which fixes
+the issue too) but instead I tried to dissable fault around instead for uffd,
+which sounds a better thing to do.
+
+> 
+> So looking at filemap_map_pages in shmem, I'm really wondering if the
+> non-uffd case is correct or not.
+> 
+> Do we end up with ptes pointing to non pagecache, so then the virtual
+> mapping is out of sync also with read/write syscalls that will then
+> allocate another shmem page out of sync of the ptes?
+> 
+> If a real page fault happened instead of filemap_map_pages, the
+> shmem_fault() would block during fallocate punch hole by checking
+> inode->i_private, as the comment says:
+> 
+> 	 * So refrain from
+> 	 * faulting pages into the hole while it's being punched.
+> 
+> It's not immediately clear where filemap_map_pages refrains from
+> faulting pages into the hole while it's being punched... given it's
+> ignoring inode->i_private.
+> 
+> So I'm not exactly sure how shmem can safely faulted in through
+> filemap_map_pages, without going through shmem_fault... I suppose
+> shmem simply is unsafe to use filemap_map_pages and it'd require
+> a specific shmem_map_pages?
+> 
+> If only filemap_map_pages was refraining re-faulting ptes of a shmem
+> page that is about to be truncated (whose original ptes had _PAGE_RW
+> unset and _PAGE_UFFD_WP set) there would be no problem with the uffd
+> interaction. So a proper shmem_map_pages could co-exist with uffd, the
+> userfaultfd_armed check would be only an optimization but it wouldn't
+> be required to avoid userland memory corruption?
+
+So far I still think it's necessary to have this patch or equivilant to avoid
+fault-around.
+
+As discussed above, current map_pages of shmem (which is the general
+filemap_map_pages) should be safe without uffd as long as we'll remove ptes
+correctly, but also with page lock held (that should be exactly what we do
+right now in shmem_truncate_range).
+
+But since we have that optimization on pre-unmap, then uffd-wp is not safe any
+more, because of the race that this patch tries to avoid.
+
+And if my understanding above is correct, we may still want to keep shmem fault
+around logic, however it just may not suitable for uffd-wp, or uffd in general.
+
+Thanks!
+
+> 
+> From 8c6fb1b7dde309f0c8b5666a8e13557ae46369b4 Mon Sep 17 00:00:00 2001
+> From: Andrea Arcangeli <aarcange@redhat.com>
+> Date: Fri, 27 Nov 2020 19:12:44 -0500
+> Subject: [PATCH 1/1] shmem: stop faulting in pages without checking
+>  inode->i_private
+> 
+> Per shmem_fault comment shmem need to "refrain from faulting pages
+> into the hole while it's being punched" and to do so it must check
+> inode->i_private, which filemap_map_pages won't so it's unsafe to use
+> in shmem because it can leave ptes pointing to non-pagecache pages in
+> shmem backed vmas.
+> 
+> Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+> ---
+>  mm/shmem.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 8e2b35ba93ad..f6f29b3e67c6 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -3942,7 +3942,6 @@ static const struct super_operations shmem_ops = {
+>  
+>  static const struct vm_operations_struct shmem_vm_ops = {
+>  	.fault		= shmem_fault,
+> -	.map_pages	= filemap_map_pages,
+>  #ifdef CONFIG_NUMA
+>  	.set_policy     = shmem_set_policy,
+>  	.get_policy     = shmem_get_policy,
 > 
 > 
-> > Thanks,
-> > 
-> > Jonathan
-> >   
-> > > ---
-> > >  drivers/iio/adc/at91_adc.c             | 80 +++++++-------------------
-> > >  include/linux/platform_data/at91_adc.h | 49 ----------------
-> > >  2 files changed, 22 insertions(+), 107 deletions(-)
-> > >  delete mode 100644 include/linux/platform_data/at91_adc.h
-> > > 
-> > > diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-> > > index 9b2c548fae95..62bd35af8b13 100644
-> > > --- a/drivers/iio/adc/at91_adc.c
-> > > +++ b/drivers/iio/adc/at91_adc.c
-> > > @@ -22,8 +22,6 @@
-> > >  #include <linux/slab.h>
-> > >  #include <linux/wait.h>
-> > >  
-> > > -#include <linux/platform_data/at91_adc.h>
-> > > -
-> > >  #include <linux/iio/iio.h>
-> > >  #include <linux/iio/buffer.h>
-> > >  #include <linux/iio/trigger.h>
-> > > @@ -153,6 +151,25 @@
-> > >  #define TOUCH_SHTIM                    0xa
-> > >  #define TOUCH_SCTIM_US		10		/* 10us for the Touchscreen Switches Closure Time */
-> > >  
-> > > +enum atmel_adc_ts_type {
-> > > +	ATMEL_ADC_TOUCHSCREEN_NONE = 0,
-> > > +	ATMEL_ADC_TOUCHSCREEN_4WIRE = 4,
-> > > +	ATMEL_ADC_TOUCHSCREEN_5WIRE = 5,
-> > > +};
-> > > +
-> > > +/**
-> > > + * struct at91_adc_trigger - description of triggers
-> > > + * @name:		name of the trigger advertised to the user
-> > > + * @value:		value to set in the ADC's trigger setup register
-> > > + *			to enable the trigger
-> > > + * @is_external:	Does the trigger rely on an external pin?
-> > > + */
-> > > +struct at91_adc_trigger {
-> > > +	const char	*name;
-> > > +	u8		value;
-> > > +	bool		is_external;
-> > > +};
-> > > +
-> > >  /**
-> > >   * struct at91_adc_reg_desc - Various informations relative to registers
-> > >   * @channel_base:	Base offset for the channel data registers
-> > > @@ -875,9 +892,6 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
-> > >  	int i = 0, ret;
-> > >  	u32 prop;
-> > >  
-> > > -	if (!node)
-> > > -		return -EINVAL;
-> > > -
-> > >  	st->caps = (struct at91_adc_caps *)
-> > >  		of_match_device(at91_adc_dt_ids, &pdev->dev)->data;
-> > >  
-> > > @@ -960,30 +974,6 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
-> > >  	return ret;
-> > >  }
-> > >  
-> > > -static int at91_adc_probe_pdata(struct at91_adc_state *st,
-> > > -				struct platform_device *pdev)
-> > > -{
-> > > -	struct at91_adc_data *pdata = pdev->dev.platform_data;
-> > > -
-> > > -	if (!pdata)
-> > > -		return -EINVAL;
-> > > -
-> > > -	st->caps = (struct at91_adc_caps *)
-> > > -			platform_get_device_id(pdev)->driver_data;
-> > > -
-> > > -	st->use_external = pdata->use_external_triggers;
-> > > -	st->vref_mv = pdata->vref;
-> > > -	st->channels_mask = pdata->channels_used;
-> > > -	st->num_channels = st->caps->num_channels;
-> > > -	st->startup_time = pdata->startup_time;
-> > > -	st->trigger_number = pdata->trigger_number;
-> > > -	st->trigger_list = pdata->trigger_list;
-> > > -	st->registers = &st->caps->registers;
-> > > -	st->touchscreen_type = pdata->touchscreen_type;
-> > > -
-> > > -	return 0;
-> > > -}
-> > > -
-> > >  static const struct iio_info at91_adc_info = {
-> > >  	.read_raw = &at91_adc_read_raw,
-> > >  };
-> > > @@ -1160,15 +1150,9 @@ static int at91_adc_probe(struct platform_device *pdev)
-> > >  
-> > >  	st = iio_priv(idev);
-> > >  
-> > > -	if (pdev->dev.of_node)
-> > > -		ret = at91_adc_probe_dt(idev, pdev);
-> > > -	else
-> > > -		ret = at91_adc_probe_pdata(st, pdev);
-> > > -
-> > > -	if (ret) {
-> > > -		dev_err(&pdev->dev, "No platform data available.\n");
-> > > -		return -EINVAL;
-> > > -	}
-> > > +	ret = at91_adc_probe_dt(idev, pdev);
-> > > +	if (ret)
-> > > +		return ret;
-> > >  
-> > >  	platform_set_drvdata(pdev, idev);
-> > >  
-> > > @@ -1444,29 +1428,9 @@ static const struct of_device_id at91_adc_dt_ids[] = {
-> > >  };
-> > >  MODULE_DEVICE_TABLE(of, at91_adc_dt_ids);
-> > >  
-> > > -static const struct platform_device_id at91_adc_ids[] = {
-> > > -	{
-> > > -		.name = "at91sam9260-adc",
-> > > -		.driver_data = (unsigned long)&at91sam9260_caps,
-> > > -	}, {
-> > > -		.name = "at91sam9rl-adc",
-> > > -		.driver_data = (unsigned long)&at91sam9rl_caps,
-> > > -	}, {
-> > > -		.name = "at91sam9g45-adc",
-> > > -		.driver_data = (unsigned long)&at91sam9g45_caps,
-> > > -	}, {
-> > > -		.name = "at91sam9x5-adc",
-> > > -		.driver_data = (unsigned long)&at91sam9x5_caps,
-> > > -	}, {
-> > > -		/* terminator */
-> > > -	}
-> > > -};
-> > > -MODULE_DEVICE_TABLE(platform, at91_adc_ids);
-> > > -
-> > >  static struct platform_driver at91_adc_driver = {
-> > >  	.probe = at91_adc_probe,
-> > >  	.remove = at91_adc_remove,
-> > > -	.id_table = at91_adc_ids,
-> > >  	.driver = {
-> > >  		   .name = DRIVER_NAME,
-> > >  		   .of_match_table = of_match_ptr(at91_adc_dt_ids),
-> > > diff --git a/include/linux/platform_data/at91_adc.h b/include/linux/platform_data/at91_adc.h
-> > > deleted file mode 100644
-> > > index f20eaeb827ce..000000000000
-> > > --- a/include/linux/platform_data/at91_adc.h
-> > > +++ /dev/null
-> > > @@ -1,49 +0,0 @@
-> > > -/* SPDX-License-Identifier: GPL-2.0-or-later */
-> > > -/*
-> > > - * Copyright (C) 2011 Free Electrons
-> > > - */
-> > > -
-> > > -#ifndef _AT91_ADC_H_
-> > > -#define _AT91_ADC_H_
-> > > -
-> > > -enum atmel_adc_ts_type {
-> > > -	ATMEL_ADC_TOUCHSCREEN_NONE = 0,
-> > > -	ATMEL_ADC_TOUCHSCREEN_4WIRE = 4,
-> > > -	ATMEL_ADC_TOUCHSCREEN_5WIRE = 5,
-> > > -};
-> > > -
-> > > -/**
-> > > - * struct at91_adc_trigger - description of triggers
-> > > - * @name:		name of the trigger advertised to the user
-> > > - * @value:		value to set in the ADC's trigger setup register
-> > > -			to enable the trigger
-> > > - * @is_external:	Does the trigger rely on an external pin?
-> > > - */
-> > > -struct at91_adc_trigger {
-> > > -	const char	*name;
-> > > -	u8		value;
-> > > -	bool		is_external;
-> > > -};
-> > > -
-> > > -/**
-> > > - * struct at91_adc_data - platform data for ADC driver
-> > > - * @channels_used:		channels in use on the board as a bitmask
-> > > - * @startup_time:		startup time of the ADC in microseconds
-> > > - * @trigger_list:		Triggers available in the ADC
-> > > - * @trigger_number:		Number of triggers available in the ADC
-> > > - * @use_external_triggers:	does the board has external triggers availables
-> > > - * @vref:			Reference voltage for the ADC in millivolts
-> > > - * @touchscreen_type:		If a touchscreen is connected, its type (4 or 5 wires)
-> > > - */
-> > > -struct at91_adc_data {
-> > > -	unsigned long			channels_used;
-> > > -	u8				startup_time;
-> > > -	struct at91_adc_trigger		*trigger_list;
-> > > -	u8				trigger_number;
-> > > -	bool				use_external_triggers;
-> > > -	u16				vref;
-> > > -	enum atmel_adc_ts_type		touchscreen_type;
-> > > -};
-> > > -
-> > > -extern void __init at91_add_device_adc(struct at91_adc_data *data);
-> > > -#endif  
-> >   
+> Thanks,
+> Andrea
 > 
+
+-- 
+Peter Xu
 
