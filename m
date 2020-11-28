@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECE62C6EE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 06:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB762C6EEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 06:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729162AbgK1FJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 00:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
+        id S1731447AbgK1FM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 00:12:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgK1FE6 (ORCPT
+        with ESMTP id S1726152AbgK1FKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 00:04:58 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830AEC0613D1;
-        Fri, 27 Nov 2020 21:04:46 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id t37so5829175pga.7;
-        Fri, 27 Nov 2020 21:04:46 -0800 (PST)
+        Sat, 28 Nov 2020 00:10:00 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D8AC0613D1;
+        Fri, 27 Nov 2020 21:10:00 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id x24so6211398pfn.6;
+        Fri, 27 Nov 2020 21:10:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1wR2Kvfb5vjG8T/PCijsWnV5/Q6MbpEzV8Vjtc0CiDc=;
-        b=aHPcBfuVBnDc/UEbN7yMv5xeqS+GxfQGwavrxwH6cH4XS0raWlwle2tQKxQSUKmkN+
-         ovcJzX6Y4PIz6fLFX2fxop62ys7QHTYbs/aY0kduavQ4HiA+m210l88xCcG0TrY0B0Xm
-         lmQmrOENCW7G94Z2pZ765mi4uQqb1a7HPz8pyLn5vMtocTqCSfmnnk/Qri7m5VnMkItZ
-         ovINqEOaUi17LvC+LfoKIOhByqt8svCwXXmEgQ6cvZdzzygDmK09fMWf0iGCniTz4F8e
-         rHIvaVcboSMS+SweQeAfQOyp0TC1iUkw4teva/lt5tG2QUOiG9S7raHKEdoWNtD4Rv8D
-         7onA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ekzVp0S27wCY2zcIgfKwKMVRvUi5oxvr2OBxMCOWQKI=;
+        b=dEL5T16yjEZQq2c5q2zB6DIA4WKyN5a1oyo2WdIb43UA4kCURXPDfJ738Tek7LStLW
+         1Cag+zdkx60hhRJtZRFS3EB9b/424vQmfmRSWMdY+hDUvFNQY3ecgx5B6FMmu/uBnc5C
+         IBcXpwLVNnkgXYLTuZjZUq+x1lNlACkeUpMwrWgr4pIIibc/RoX/J7gfoTC9j0aPF8pL
+         oWirBx42wvte7w3cu+W3nmaPIGbVaybgp3zkalSXDub7PNh8k2n/N9KyAA54hGfKHNXO
+         z517GYlILLiVeakta0XHXOG9ky5SAHZzycqav8a0tTOZMLzB351aCDhepgaoiGDpxs8H
+         ILPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1wR2Kvfb5vjG8T/PCijsWnV5/Q6MbpEzV8Vjtc0CiDc=;
-        b=VCaUBwWUK4LqxWUIkXjKGsHDLPvhoYrPqfdef8hP2ypjX0Pawy0Ft1NgWklxM/XSTi
-         lZzCSRSrbJmghyX6PUjpzhQqzHk1zMN9HX3YvtUZ+iU4bRtnPANREHeIAPiUZ3UXTN6u
-         bN7XnpdVIFuD4hDf/yJnSByNUwxDAfmXV6j6wXMQ7T/+xMfbPFeWzxsuwkQAmQ3AO+jM
-         IhEaP9i3+iwXozU4O5gW9O8jYwGN/yyKreIAqfzkxe+ryapyagmH2lXz1rE7cESgj96W
-         zVoj4jklusQtKxSFDp90Q35uJF/I53/HujNXshyOBAtoLKY/dCRN8kdw6PdfWa4bCTyO
-         YDFw==
-X-Gm-Message-State: AOAM530K1J7lQ2Tx+wX7980RyoNr8EY/htsoFgq8sZ3gsocogCLgjQx0
-        qOTyeT0h/OvnjBFRLK9be+s=
-X-Google-Smtp-Source: ABdhPJzsOXkBhwfr1TmkLRRXWfCd9IStAbkq9v8eVF37jWLr9Az9kmV3sWjW4/TAXnLRPPc+Up7oCQ==
-X-Received: by 2002:a17:90a:e386:: with SMTP id b6mr2978528pjz.134.1606539886076;
-        Fri, 27 Nov 2020 21:04:46 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id p14sm13192489pjo.53.2020.11.27.21.04.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 21:04:44 -0800 (PST)
-Date:   Sat, 28 Nov 2020 14:04:42 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH] media: vb2: always set buffer cache sync hints
-Message-ID: <X8HaalHqzUYiopAn@jagdpanzerIV.localdomain>
-References: <20201127094136.1051071-1-sergey.senozhatsky@gmail.com>
- <0dbfa509-8c82-7470-c18b-24ab5c92dc4b@xs4all.nl>
- <X8ENifLanjYuhF/r@jagdpanzerIV.localdomain>
- <509cc69b-39d7-4b13-f392-ebf25530c8fe@xs4all.nl>
- <X8Eq4V++hRsKuYSF@jagdpanzerIV.localdomain>
- <CAAFQd5D7V8hbdZv_VxAUHUBsbknJsWMaU=h=5j19Z-J8FL27FQ@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ekzVp0S27wCY2zcIgfKwKMVRvUi5oxvr2OBxMCOWQKI=;
+        b=U08hhD/1O7YHnKthsX0fXYTq1kEUfI5ZfRxjzKQVwAsmSpIsNJfOb8hCIE1qpXKUhG
+         lYKyUI4nr1Qxn+HPiKaAJIoJhjK3Hkwl3uHlhMOEqLZnKzM3deDTXWG0LVTZLcrYbwhZ
+         FZA6EmW/adyLJzkH0n9J82UXxKD3EJj4giLcrBIZJ57nSTEGghX9MJKjF5R1nAfL0HOR
+         THKqnvq52QbbcwnU9ehrI2yA1lRGBPr5hqA0vT//F7A7A5oOPjmxQhRTZVpZj22BQNsO
+         IIUYovV5HbCQekmsdS3XgHIRswYXDChPfydD4rV9Dvgb6OgWWWId7bK2zRJP+v/iz1v7
+         Sicg==
+X-Gm-Message-State: AOAM531nEcmeaY0OMxUzFAU+ne0PNb01OVU/adjbWBw+8I9ybwXPJ1Js
+        sEs1Yi5oYbiTdZqSB6qlDlU=
+X-Google-Smtp-Source: ABdhPJxpn7ppkDtFo0P6hf/73q9kv63y9JBYmKvD6AHWiy79S5ovjWP66I8+GCkDqnumKMPHBvc77g==
+X-Received: by 2002:a62:a11a:0:b029:18a:df9e:f537 with SMTP id b26-20020a62a11a0000b029018adf9ef537mr10055925pff.29.1606540199913;
+        Fri, 27 Nov 2020 21:09:59 -0800 (PST)
+Received: from [10.230.28.242] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 22sm12520904pjw.56.2020.11.27.21.09.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 21:09:59 -0800 (PST)
+Subject: Re: [PATCH 1/2] dt-bindings: reset: document Broadcom's BCM4908 PCIe
+ reset binding
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20201127111442.1096-1-zajec5@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <f8447728-5b05-a6b9-fa5c-233625046a9c@gmail.com>
+Date:   Fri, 27 Nov 2020 21:09:57 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAFQd5D7V8hbdZv_VxAUHUBsbknJsWMaU=h=5j19Z-J8FL27FQ@mail.gmail.com>
+In-Reply-To: <20201127111442.1096-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/11/28 01:50), Tomasz Figa wrote:
-> On Sat, Nov 28, 2020 at 1:35 AM Sergey Senozhatsky
-> <sergey.senozhatsky@gmail.com> wrote:
-> >
-> > On (20/11/27 15:56), Hans Verkuil wrote:
-> > > Yes.
-> > >
-> > > BTW, wouldn't it be sufficient to change this code to:
-> > >
-> > >       if (!q->allow_cache_hints && q->memory != VB2_MEMORY_DMABUF) {
-> > >               vb->need_cache_sync_on_prepare = 1;
-> > >               vb->need_cache_sync_on_finish = 1;
-> > >       }
-> >
-> > I think it would be sufficient.
+
+
+On 11/27/2020 3:14 AM, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> Does it matter at this point if allow_cache_hints is set or not?
+> BCM4908 was built using older PCIe hardware block that requires using
+> external reset block controlling PERST# signals.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 
-That's a good question. I'd say that it'll probably make sense to set
-need_cache_sync for as many buffers as possible, regardless the queue
-configuration (except for ->memory type), just to stay on the safe side.
-I can spin another patch version.
-
-	-ss
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
