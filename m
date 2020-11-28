@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DBA2C7054
+	by mail.lfdr.de (Postfix) with ESMTP id 59E6F2C7052
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732854AbgK1Rzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 12:55:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732523AbgK1Ewi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 23:52:38 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AFCC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 20:52:37 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w187so6195446pfd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 20:52:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PyIFSwXL6dQs+sHD60V3IkBS0j8n2afG7+mouz+Gpko=;
-        b=anLdFmZvKYAMGR5SKXOXOrxgIi11X1hfQ1Qa2zYYx/0iy9cMZIdQb5tTiIX7Ll1wVh
-         KkyiHarp2wmVIYCfT9LcGGbyYVt2fb9Zxn5pVIsc/8YUHI1DGJkErZh/79FdJvHGumaM
-         41bQjMFPXCD08eP5OemqgU2QlOJSsbjlVxSnCLeufOg34Sl7pBeOeT7XzZx/laAdjdTK
-         1COF2NwXCUAACxZhZf415WbnnXC6fwcwlJ+30aWv+dX09FjciyvAw/zeKxugztNFPmgZ
-         RyJWbglEKq9wskEcMeddC2c2Z6VrYCi0ga95VU67NU3N8XeUS6cg/bp7e2AMwbaESb/d
-         Lmog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PyIFSwXL6dQs+sHD60V3IkBS0j8n2afG7+mouz+Gpko=;
-        b=p/h+pbEn7S24Fv045BVQjk1anNFjE7O6v7KT2qpSPbu1vnst2cgHcuuSaMSUR2Zqib
-         RAufRqLPCw9O4u9JaQLUluys4bSv6aJ1KTjCqiz+H5J6UlLdyUY5mnZt7V6+VHyEzpo1
-         wWaZDSncaF3y6tUYtmZHnsWnIG38QZxgFX/2lsu4n4ZeK0fkih+K/GPwq0ATl3/Iy9b0
-         UxxWne0sQHXNfeiupAEHy3+zASzhlcQfH0T5oyG/IN3D+ig7swKWcA1uSLzduxoHcCb7
-         yNYww9UnMmjvx3OZL7MlmcDwhavBzUGyRrmXJJ4M1sbJ/IQ2j2U70QOC6dEelblCQaM8
-         qlpg==
-X-Gm-Message-State: AOAM533mb9Rj2FGsWeJJKY6P1gwE6hIkpQbdODZCcg9fLphnuerkH9d9
-        uWCMmx/JDOdDAWlPTEy3lwi0PlvRVOo=
-X-Google-Smtp-Source: ABdhPJyopXH2XnQ4hsAvJISp+m/sSAsjl663rach5Z3nHOfRajzybVSeHLgVl8qcr7J+5SMchR1rDA==
-X-Received: by 2002:a17:90b:1811:: with SMTP id lw17mr14153546pjb.105.1606539156882;
-        Fri, 27 Nov 2020 20:52:36 -0800 (PST)
-Received: from [10.230.28.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id m11sm9494868pfa.24.2020.11.27.20.52.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 20:52:36 -0800 (PST)
-Subject: Re: [PATCH 0/2] ARM/ARM64: Enable SCMI in default configurations
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Li Yang <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201109044228.6836-1-f.fainelli@gmail.com>
- <20201109095659.js52qlukfw5dasvq@bogus>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <1fcc0b8d-c6c8-4184-78b3-4f68e377990b@gmail.com>
-Date:   Fri, 27 Nov 2020 20:52:33 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201109095659.js52qlukfw5dasvq@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1732896AbgK1Rzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 12:55:52 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:47908 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732711AbgK1FAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 00:00:05 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606539583; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=wcqjI/+rINfs3XtVEJAhIWB2xeJ2hiBW8kM8a+M17/w=; b=w3RgVVJcAw77gOAUSAhuD3lKzv/lcy3+uvAyCyIGzV85WDmELtrNM9RYPkMQSlC5q6tUCFSg
+ jskDDQnJJlr9LfIx1UP+/Ok8+aoDvi+XC3bf8AfkaWrw/iGI4wD0cGI53D55O2DM3N4MPpDy
+ QqiJT7cJrUlm+6yJ3I7XVjtELwk=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fc1d9391b731a5d9c7e61e0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 28 Nov 2020 04:59:37
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0195EC43465; Sat, 28 Nov 2020 04:59:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8F938C433C6;
+        Sat, 28 Nov 2020 04:59:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8F938C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v4 0/2] Platform driver update to support playback recover after resume
+Date:   Sat, 28 Nov 2020 10:29:17 +0530
+Message-Id: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch set is to add support for playback recover after hard suspend and resume.
+It includes:
+1. Reverting part of previous commit, which is for handling registers invalid state
+after hard suspend.
+2. Adding pm ops in component driver and do regcache sync.
 
+Srinivasa Rao Mandadapu (2):
+  Partially revert ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF
+    invalid state
+  ASoC: qcom: Add support for playback recover after resume
 
-On 11/9/2020 1:57 AM, Sudeep Holla wrote:
-> On Sun, Nov 08, 2020 at 08:42:26PM -0800, Florian Fainelli wrote:
->> This patch series enables support for the ARM SCMI and the various
->> drivers provided (cpufreq, clock, sensors, reset) since these are
->> utilized by Broadcom STB platforms.
->>
->> Please let me know if you would like me to carry those patches through
->> the ARM SoC pull requests for v5.11 or if you would like to see those
->> applied differently.
-> 
-> Both looks fine to me.
-> 
-> Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+ sound/soc/qcom/lpass-cpu.c      | 20 ++----------------
+ sound/soc/qcom/lpass-platform.c | 46 +++++++++++++++++++++++++++++++----------
+ 2 files changed, 37 insertions(+), 29 deletions(-)
 
-Series applied, thanks!
 -- 
-Florian
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
