@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB762C6EEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 06:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FDF2C6EEC
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 06:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731447AbgK1FM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 00:12:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
+        id S1729604AbgK1FPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 00:15:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgK1FKA (ORCPT
+        with ESMTP id S1726152AbgK1FN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 00:10:00 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D8AC0613D1;
-        Fri, 27 Nov 2020 21:10:00 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id x24so6211398pfn.6;
-        Fri, 27 Nov 2020 21:10:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ekzVp0S27wCY2zcIgfKwKMVRvUi5oxvr2OBxMCOWQKI=;
-        b=dEL5T16yjEZQq2c5q2zB6DIA4WKyN5a1oyo2WdIb43UA4kCURXPDfJ738Tek7LStLW
-         1Cag+zdkx60hhRJtZRFS3EB9b/424vQmfmRSWMdY+hDUvFNQY3ecgx5B6FMmu/uBnc5C
-         IBcXpwLVNnkgXYLTuZjZUq+x1lNlACkeUpMwrWgr4pIIibc/RoX/J7gfoTC9j0aPF8pL
-         oWirBx42wvte7w3cu+W3nmaPIGbVaybgp3zkalSXDub7PNh8k2n/N9KyAA54hGfKHNXO
-         z517GYlILLiVeakta0XHXOG9ky5SAHZzycqav8a0tTOZMLzB351aCDhepgaoiGDpxs8H
-         ILPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ekzVp0S27wCY2zcIgfKwKMVRvUi5oxvr2OBxMCOWQKI=;
-        b=U08hhD/1O7YHnKthsX0fXYTq1kEUfI5ZfRxjzKQVwAsmSpIsNJfOb8hCIE1qpXKUhG
-         lYKyUI4nr1Qxn+HPiKaAJIoJhjK3Hkwl3uHlhMOEqLZnKzM3deDTXWG0LVTZLcrYbwhZ
-         FZA6EmW/adyLJzkH0n9J82UXxKD3EJj4giLcrBIZJ57nSTEGghX9MJKjF5R1nAfL0HOR
-         THKqnvq52QbbcwnU9ehrI2yA1lRGBPr5hqA0vT//F7A7A5oOPjmxQhRTZVpZj22BQNsO
-         IIUYovV5HbCQekmsdS3XgHIRswYXDChPfydD4rV9Dvgb6OgWWWId7bK2zRJP+v/iz1v7
-         Sicg==
-X-Gm-Message-State: AOAM531nEcmeaY0OMxUzFAU+ne0PNb01OVU/adjbWBw+8I9ybwXPJ1Js
-        sEs1Yi5oYbiTdZqSB6qlDlU=
-X-Google-Smtp-Source: ABdhPJxpn7ppkDtFo0P6hf/73q9kv63y9JBYmKvD6AHWiy79S5ovjWP66I8+GCkDqnumKMPHBvc77g==
-X-Received: by 2002:a62:a11a:0:b029:18a:df9e:f537 with SMTP id b26-20020a62a11a0000b029018adf9ef537mr10055925pff.29.1606540199913;
-        Fri, 27 Nov 2020 21:09:59 -0800 (PST)
-Received: from [10.230.28.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 22sm12520904pjw.56.2020.11.27.21.09.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Nov 2020 21:09:59 -0800 (PST)
-Subject: Re: [PATCH 1/2] dt-bindings: reset: document Broadcom's BCM4908 PCIe
- reset binding
-To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20201127111442.1096-1-zajec5@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f8447728-5b05-a6b9-fa5c-233625046a9c@gmail.com>
-Date:   Fri, 27 Nov 2020 21:09:57 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.0
+        Sat, 28 Nov 2020 00:13:26 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15771C0613D1;
+        Fri, 27 Nov 2020 21:12:48 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kisX4-00F0ax-Iz; Sat, 28 Nov 2020 05:12:26 +0000
+Date:   Sat, 28 Nov 2020 05:12:26 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>, criu@openvz.org,
+        bpf <bpf@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
+        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Chris Wright <chrisw@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH v2 00/24] exec: Move unshare_files and guarantee
+ files_struct.count is correct
+Message-ID: <20201128051226.GA3577182@ZenIV.linux.org.uk>
+References: <87r1on1v62.fsf@x220.int.ebiederm.org>
+ <CAHk-=wge0oJ3fbmNfVek101CO7hg1UfUHnBgxLB3Jmq6-hWLug@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201127111442.1096-1-zajec5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wge0oJ3fbmNfVek101CO7hg1UfUHnBgxLB3Jmq6-hWLug@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/27/2020 3:14 AM, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Fri, Nov 20, 2020 at 04:05:47PM -0800, Linus Torvalds wrote:
+> On Fri, Nov 20, 2020 at 3:11 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> >
+> > This set of changes cleanups of the code in exec so hopefully this code
+> > will not regress again.  Then it adds helpers and fixes the users of
+> > files_struct so the reference count is only incremented if COPY_FILES is
+> > passed to clone (or if io_uring takes a reference).  Then it removes
+> > helpers (get_files_struct, __install_fd, __alloc_fd, __close_fd) that
+> > are no longer needed and if used would encourage code that increments
+> > the count of files_struct somewhere besides in clone when COPY_FILES is
+> > passed.
 > 
-> BCM4908 was built using older PCIe hardware block that requires using
-> external reset block controlling PERST# signals.
+> I'm not seeing anything that triggered me going "that looks dodgy". It
+> all looks like nice cleanups.
 > 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> But that's just from reading the patches (and in some cases going and
+> looking at the context), so I didn't actually _test_ any of it. It all
+> looks sane to me, though, and the fact that it removes a fair number
+> of lines of code is always a good sign.
+> 
+> It would be good for people to review and test (Al? Oleg? others?),
+> but my gut feel is "this is good".
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Will check (sorry, the last couple of weeks had been bloody awful -
+off-net and very short on sleep); I'm digging through the piles of
+email right now.
