@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684372C6E05
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 01:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D227B2C6E08
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732142AbgK1Ayb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 19:54:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731947AbgK1AwU (ORCPT
+        id S1730134AbgK1A4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 19:56:06 -0500
+Received: from www62.your-server.de ([213.133.104.62]:53678 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732191AbgK1AzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 19:52:20 -0500
-Received: from mail-oi1-x261.google.com (mail-oi1-x261.google.com [IPv6:2607:f8b0:4864:20::261])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7DDC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 16:45:32 -0800 (PST)
-Received: by mail-oi1-x261.google.com with SMTP id v202so7617956oia.9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 16:45:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=J/RUqOLrtG/yyp8LIFv88+rY6UY1ibdpQZmu4ra8MIc=;
-        b=NwcWu3Dn+7J31LulCNEb8sfGRew7LV15BVccEBmzBPELzHoQ5PetqiagK3Qfu/Sn6A
-         vHiKKWfgnUrCy+eYmTaBnJvuFMvzfU7Bta1y9gbIodIefPoJZ24Xs/JIiZL7ajtlvt7N
-         Q1bT6Fsdn3l30EDxKo2oI1d1TSXF24SgUq/bo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=J/RUqOLrtG/yyp8LIFv88+rY6UY1ibdpQZmu4ra8MIc=;
-        b=JT2iQkwFy6Dg5K6/lMhLZPNuiVv8x099PJPZ3vpMIHMs+5RS0XPLH8iRCMLjpnwFeJ
-         N0WmSs9TTmHyC2TC7/mqobz2qDL+SbzBOL4HNEg41nLIwKDr1mbe+SKdXRjkJGzbzf1T
-         onxGhX++jtI8XDT6ST10V9ILNYyI0ERyJB4FidS2QDRXoVWFvduxQ/7CqBq05C6iHW6F
-         JJsyIVnkj/mvv270gLDY9JBTb/4akrgMrQAuttaSt0hE8A4VbFWD/hfZv/ulXEhjer6W
-         ktK/xwyi6bVDpwJUk1OP0LNHtR2Z/LDvUhOtdFu9I9LLC8GGUA4jV2PrlIc/rWnlK6lN
-         gW3w==
-X-Gm-Message-State: AOAM532XJ895sRfnhsxnFooTx39Bn+Gw709E0V8i9/eCuhmzeljj88Fs
-        Pf/OCp22lVVUVbNmaYJHHrpmF9AClpCfAxeU3xJwELjXq+fT
-X-Google-Smtp-Source: ABdhPJwN+hE5UZQLPsQy5ABrV6RyrZ19iaTfdyCDSc1RUvOwSOWWyBjQETK4623l5Z/bNJWP+c+XgjUCHRZu
-X-Received: by 2002:aca:f03:: with SMTP id 3mr7552629oip.92.1606524331466;
-        Fri, 27 Nov 2020 16:45:31 -0800 (PST)
-Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp-relay.gmail.com with ESMTPS id v26sm1302459oth.8.2020.11.27.16.45.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 16:45:31 -0800 (PST)
-X-Relaying-Domain: broadcom.com
-From:   Scott Branden <scott.branden@broadcom.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, bruce.ashfield@gmail.com,
-        Bruce Ashfield <bruce.ashfield@windriver.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Michal Marek <mmarek@suse.cz>,
-        Scott Branden <scott.branden@broadcom.com>
-Subject: [PATCH] menuconfig,mconf-cfg: Allow specification of ncurses location
-Date:   Fri, 27 Nov 2020 16:45:05 -0800
-Message-Id: <20201128004505.27619-1-scott.branden@broadcom.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 27 Nov 2020 19:55:04 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kioV9-0004XD-ON; Sat, 28 Nov 2020 01:54:11 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kioV9-0006Jr-Dx; Sat, 28 Nov 2020 01:54:11 +0100
+Subject: Re: [PATCH] bpf: remove trailing semicolon in macro definition
+To:     trix@redhat.com, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, rostedt@goodmis.org, mingo@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201127192734.2865832-1-trix@redhat.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d7168ec4-040c-851d-f294-709315d13a2f@iogearbox.net>
+Date:   Sat, 28 Nov 2020 01:54:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20201127192734.2865832-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26001/Fri Nov 27 14:45:56 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bruce Ashfield <bruce.ashfield@windriver.com>
+On 11/27/20 8:27 PM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> The macro use will already have a semicolon.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>   include/trace/events/xdp.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
+> index cd24e8a59529..65ffedf8386f 100644
+> --- a/include/trace/events/xdp.h
+> +++ b/include/trace/events/xdp.h
+> @@ -146,13 +146,13 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
+>   );
+>   
+>   #define _trace_xdp_redirect(dev, xdp, to)		\
+> -	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to);
+> +	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to)
+>   
+>   #define _trace_xdp_redirect_err(dev, xdp, to, err)	\
+>   	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to);
+>   
+>   #define _trace_xdp_redirect_map(dev, xdp, to, map, index)		\
+> -	 trace_xdp_redirect(dev, xdp, to, 0, map, index);
+> +	 trace_xdp_redirect(dev, xdp, to, 0, map, index)
+>   
+>   #define _trace_xdp_redirect_map_err(dev, xdp, to, map, index, err)	\
+>   	 trace_xdp_redirect_err(dev, xdp, to, err, map, index);
+> 
 
-In some cross build environments such as the Yocto Project build
-environment it provides an ncurses library that is compiled
-differently than the host's version.  This causes display corruption
-problems when the host's curses includes are used instead of the
-includes from the provided compiler are overridden.  There is a second
-case where there is no curses libraries at all on the host system and
-menuconfig will just fail entirely.
+This looks random, why those but not other locations ?
 
-The solution is simply to allow an override variable in
-check-lxdialog.sh for environments such as the Yocto Project.  Adding
-a CROSS_CURSES_LIB and CROSS_CURSES_INC solves the issue and allowing
-compiling and linking against the right headers and libraries.
-
-Signed-off-by: Jason Wessel <jason.wessel@windriver.com>
-cc: Michal Marek <mmarek@suse.cz>
-cc: linux-kbuild@vger.kernel.org
-Signed-off-by: Bruce Ashfield <bruce.ashfield@windriver.com>
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
----
- scripts/kconfig/mconf-cfg.sh | 8 ++++++++
- 1 file changed, 8 insertions(+)
- mode change 100755 => 100644 scripts/kconfig/mconf-cfg.sh
-
-diff --git a/scripts/kconfig/mconf-cfg.sh b/scripts/kconfig/mconf-cfg.sh
-old mode 100755
-new mode 100644
-index aa68ec95620d..32448bc198a5
---- a/scripts/kconfig/mconf-cfg.sh
-+++ b/scripts/kconfig/mconf-cfg.sh
-@@ -4,6 +4,14 @@
- PKG="ncursesw"
- PKG2="ncurses"
- 
-+if [ "$CROSS_CURSES_LIB" != "" ]; then
-+    echo libs=\'$CROSS_CURSES_LIB\'
-+    if [ x"$CROSS_CURSES_INC" != x ]; then
-+	echo cflags=\'$CROSS_CURSES_INC\'
-+    fi
-+    exit 0
-+fi
-+
- if [ -n "$(command -v pkg-config)" ]; then
- 	if pkg-config --exists $PKG; then
- 		echo cflags=\"$(pkg-config --cflags $PKG)\"
--- 
-2.17.1
-
+Thanks,
+Daniel
