@@ -2,135 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE00D2C70EC
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CC72C7191
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388021AbgK1VtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:49:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730016AbgK0Tpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:45:47 -0500
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D2EC24124;
-        Fri, 27 Nov 2020 19:29:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606505378;
-        bh=8QymvV5Hnh6tFqtBLh0j3rJoBCVR1S8omUbfnSVDUeg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oLLIUYhA6GpbhNj2qR7MD4psdVtsmBPseexX/GY2TFosrpuEPbpwsT2G0SCF4846R
-         Fptt4olt4YE28inoYnnVg6/DEtn4trVGGQNAp603+RsVNAoJ4QhA39uLlqt7dI8bM/
-         rS1NkODIQ8Hn+pojhY6qo7/a4/UnN0VzVz4jzdRI=
-Received: by mail-ot1-f49.google.com with SMTP id h39so5566433otb.5;
-        Fri, 27 Nov 2020 11:29:38 -0800 (PST)
-X-Gm-Message-State: AOAM532J6wv/fAkAQt3OlFPnQ7oVWzTxSPjY/bWmQoOGhKNrK+uiXj+S
-        bGskCWazF8d9afIPY/udXMs1WWcV3MDwp3yBXgU=
-X-Google-Smtp-Source: ABdhPJxcQfyG8b5MTqOyTrK4rfOhSVdRZ+KuSazB0xNflwCE1YFEDJEnpF1r+2Dxy4l8nzC63Zt0IswN/eMtn4GNX2M=
-X-Received: by 2002:a05:6830:214c:: with SMTP id r12mr7274707otd.90.1606505377691;
- Fri, 27 Nov 2020 11:29:37 -0800 (PST)
+        id S2390922AbgK1Vvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731510AbgK1Sw6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:52:58 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE14DC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 21:23:41 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kishZ-00F0hc-Ex; Sat, 28 Nov 2020 05:23:17 +0000
+Date:   Sat, 28 Nov 2020 05:23:17 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Walt Drummond <walt@drummond.us>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, brgerst@gmail.com, linux@dominikbrodowski.net,
+        gustavoars@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/signals: Fix save/restore signal stack to correctly
+ support sigset_t
+Message-ID: <20201128052317.GY3576660@ZenIV.linux.org.uk>
+References: <20201119221132.1515696-1-walt@drummond.us>
 MIME-Version: 1.0
-References: <20201127192051.1430-1-xypron.glpk@gmx.de> <98faddb2-5acc-c228-d002-71341d1c558e@canonical.com>
-In-Reply-To: <98faddb2-5acc-c228-d002-71341d1c558e@canonical.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 27 Nov 2020 20:29:26 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFNtCJEvbhZpO9p96UNGuo-r2dXQPm0TRjmQuF4TLBUcg@mail.gmail.com>
-Message-ID: <CAMj1kXFNtCJEvbhZpO9p96UNGuo-r2dXQPm0TRjmQuF4TLBUcg@mail.gmail.com>
-Subject: Re: ACK: [PATCH 1/1] efi/efi_test: read RuntimeServicesSupported
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Ivan Hu <ivan.hu@canonical.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        fwts-devel@lists.ubuntu.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119221132.1515696-1-walt@drummond.us>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 at 20:28, Colin Ian King <colin.king@canonical.com> wrote:
->
-> On 27/11/2020 19:20, Heinrich Schuchardt wrote:
-> > Since the UEFI 2.8A specification the UEFI enabled firmware provides a
-> > configuration table EFI_RT_PROPERTIES_TABLE which indicates which runtime
-> > services are enabled. The EFI stub reads this table and saves the value of
-> > the field RuntimeServicesSupported internally.
-> >
-> > The Firmware Test Suite requires the value to determine if UEFI runtime
-> > services are correctly implemented.
-> >
-> > With this patch an IOCTL call is provided to read the value of the field
-> > RuntimeServicesSupported, e.g.
-> >
-> >     #define EFI_RUNTIME_GET_SUPPORTED_MASK \
-> >             _IOR('p', 0x0C, unsigned int)
-> >     unsigned int mask;
-> >     fd = open("/dev/efi_test", O_RDWR);
-> >     ret = ioctl(fd, EFI_RUNTIME_GET_SUPPORTED_MASK, &mask);
-> >
-> > Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-> > ---
-> >  drivers/firmware/efi/test/efi_test.c | 16 ++++++++++++++++
-> >  drivers/firmware/efi/test/efi_test.h |  3 +++
-> >  2 files changed, 19 insertions(+)
-> >
-> > diff --git a/drivers/firmware/efi/test/efi_test.c b/drivers/firmware/efi/test/efi_test.c
-> > index ddf9eae396fe..47d67bb0a516 100644
-> > --- a/drivers/firmware/efi/test/efi_test.c
-> > +++ b/drivers/firmware/efi/test/efi_test.c
-> > @@ -663,6 +663,19 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
-> >       return rv;
-> >  }
-> >
-> > +static long efi_runtime_get_supported_mask(unsigned long arg)
-> > +{
-> > +     unsigned int __user *supported_mask;
-> > +     int rv = 0;
-> > +
-> > +     supported_mask = (unsigned int *)arg;
-> > +
-> > +     if (put_user(efi.runtime_supported_mask, supported_mask))
-> > +             rv = -EFAULT;
-> > +
-> > +     return rv;
-> > +}
-> > +
-> >  static long efi_test_ioctl(struct file *file, unsigned int cmd,
-> >                                                       unsigned long arg)
-> >  {
-> > @@ -699,6 +712,9 @@ static long efi_test_ioctl(struct file *file, unsigned int cmd,
-> >
-> >       case EFI_RUNTIME_RESET_SYSTEM:
-> >               return efi_runtime_reset_system(arg);
-> > +
-> > +     case EFI_RUNTIME_GET_SUPPORTED_MASK:
-> > +             return efi_runtime_get_supported_mask(arg);
-> >       }
-> >
-> >       return -ENOTTY;
-> > diff --git a/drivers/firmware/efi/test/efi_test.h b/drivers/firmware/efi/test/efi_test.h
-> > index f2446aa1c2e3..117349e57993 100644
-> > --- a/drivers/firmware/efi/test/efi_test.h
-> > +++ b/drivers/firmware/efi/test/efi_test.h
-> > @@ -118,4 +118,7 @@ struct efi_resetsystem {
-> >  #define EFI_RUNTIME_RESET_SYSTEM \
-> >       _IOW('p', 0x0B, struct efi_resetsystem)
-> >
-> > +#define EFI_RUNTIME_GET_SUPPORTED_MASK \
-> > +     _IOR('p', 0x0C, unsigned int)
-> > +
-> >  #endif /* _DRIVERS_FIRMWARE_EFI_TEST_H_ */
-> > --
-> > 2.29.2
-> >
->
-> Looks good to me. Thanks Heinrich.
->
-> The EFI driver needs to be also updated in the linux kernel - has that
-> fix been submitted or do you require the fwts team to do that?
->
+On Thu, Nov 19, 2020 at 02:11:33PM -0800, Walt Drummond wrote:
+> The macro unsafe_put_sigmask() only handles the first 64 bits of the
+> sigmask_t, which works today.  However, if the definition of the
+> sigset_t structure ever changed,
 
-This /is/ the EFI driver.
+... existing userland would get fucked over, since sigset_t is
+present in user-visible data structures.  Including the ones
+we are using that thing for - struct rt_sigframe, for starters.
 
-I'll take this as an acked-by but I'd like Ivan to chime in as well.
+Layout of those suckers is very much cast in stone.  We *can't*
+change it, no matter what we do kernel-side.
+
+NAKed-by: Al Viro <viro@zeniv.linux.org.uk>
