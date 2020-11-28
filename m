@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838672C7149
+	by mail.lfdr.de (Postfix) with ESMTP id F0D902C714A
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391219AbgK1Vzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:55:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60200 "EHLO mail.kernel.org"
+        id S2391565AbgK1Vz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:55:58 -0500
+Received: from foss.arm.com ([217.140.110.172]:37658 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387702AbgK1UYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 15:24:50 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67F4A221FF;
-        Sat, 28 Nov 2020 20:24:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606595049;
-        bh=E49hKc+1y6WaIR/Qb6drfyORL/uB/ZiPhHUqAJ719KU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=vmwtmNgQNK2nXsoGGnNi1czXRcUDlthO2xuuZzDmNFUGMVeAlVlR3BAGZwzKb9c+4
-         F1IqQ+Thro6qy4k3L14Zr5vjkfKrQ6ylBURMvkaIBf3ULCDNuO6Jyhjby1CcgQzzWc
-         6IWVYFetXgeJKe8qD0jztCVLjTHTk0WcRgrA6vOc=
-Date:   Sat, 28 Nov 2020 14:24:08 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     ashok.raj@intel.com, knsathya@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH 1/5] PCI/DPC: Ignore devices with no AER Capability
-Message-ID: <20201128202408.GA906784@bjorn-Precision-5520>
+        id S2387707AbgK1Ucz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 15:32:55 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6043730E;
+        Sat, 28 Nov 2020 12:32:09 -0800 (PST)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D7793F23F;
+        Sat, 28 Nov 2020 12:32:07 -0800 (PST)
+Subject: Re: [RESEND PATCH 05/19] dmaengine: sun6i: Add support for A100 DMA
+To:     Frank Lee <frank@allwinnertech.com>, tiny.windzz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <cover.1604988979.git.frank@allwinnertech.com>
+ <719852c6a9a597bd2e82d01a268ca02b9dee826c.1604988979.git.frank@allwinnertech.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <29e575b6-14cb-73f1-512d-9f0f934490ea@arm.com>
+Date:   Sat, 28 Nov 2020 20:31:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45dc5ef5-bfb4-6c0b-88c7-55a904f82965@linux.intel.com>
+In-Reply-To: <719852c6a9a597bd2e82d01a268ca02b9dee826c.1604988979.git.frank@allwinnertech.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 06:01:57PM -0800, Kuppuswamy, Sathyanarayanan wrote:
-> On 11/25/20 5:18 PM, Bjorn Helgaas wrote:
-> > From: Bjorn Helgaas <bhelgaas@google.com>
-> > 
-> > Downstream Ports may support DPC regardless of whether they support AER
-> > (see PCIe r5.0, sec 6.2.10.2).  Previously, if the user booted with
-> > "pcie_ports=dpc-native", it was possible for dpc_probe() to succeed even if
-> > the device had no AER Capability, but dpc_get_aer_uncorrect_severity()
-> > depends on the AER Capability.
-> > 
-> > dpc_probe() previously failed if:
-> > 
-> >    !pcie_aer_is_native(pdev) && !pcie_ports_dpc_native
-> >    !(pcie_aer_is_native() || pcie_ports_dpc_native)    # by De Morgan's law
-> > 
-> > so it succeeded if:
-> > 
-> >    pcie_aer_is_native() || pcie_ports_dpc_native
-> > 
-> > Fail dpc_probe() if the device has no AER Capability.
-> > 
-> > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: Olof Johansson <olof@lixom.net>
-> > ---
-> >   drivers/pci/pcie/dpc.c | 3 +++
-> >   1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-> > index e05aba86a317..ed0dbc43d018 100644
-> > --- a/drivers/pci/pcie/dpc.c
-> > +++ b/drivers/pci/pcie/dpc.c
-> > @@ -287,6 +287,9 @@ static int dpc_probe(struct pcie_device *dev)
-> >   	int status;
-> >   	u16 ctl, cap;
-> > +	if (!pdev->aer_cap)
-> > +		return -ENOTSUPP;
-> Don't we check aer_cap support in drivers/pci/pcie/portdrv_core.c ?
+On 10/11/2020 06:28, Frank Lee wrote:
+
+Hi,
+
+> From: Yangtao Li <frank@allwinnertech.com>
 > 
-> We don't enable DPC service, if AER service is not enabled. And AER
-> service is only enabled if AER capability is supported.
+> The dma of a100 is similar to h6, with some minor changes to
+> support greater addressing capabilities.
+
+So apparently those changes are backwards compatible, right?
+Why do we need then a new struct now, when this is actually identical to
+the existing H6 one?
+
+So as this seems to work with the same settings as the H6, I think we
+don't need any change in the driver at the moment, just using the H6
+compatible as a fallback in the .dtsi.
+
+Cheers,
+Andre
+
+P.S. I understand that Vinod already applied it, and it doesn't hurt to
+have that in at the moment, if we fix the compatible usage.
+
 > 
-> So dpc_probe() should not happen if AER capability is not supported?
-
-I don't think that's always true.  If I'm reading this right, we have
-this:
-
-  get_port_device_capability(...)
-  {
-  #ifdef CONFIG_PCIEAER
-    if (dev->aer_cap && ...)
-      services |= PCIE_PORT_SERVICE_AER;
-  #endif
-
-    if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
-        pci_aer_available() &&
-        (pcie_ports_dpc_native || (services & PCIE_PORT_SERVICE_AER)))
-      services |= PCIE_PORT_SERVICE_DPC;
-  }
-
-and in the case where:
-
-  - CONFIG_PCIEAER=y
-  - booted with "pcie_ports=dpc-native" (pcie_ports_dpc_native is true)
-  - "dev" has no AER capability
-  - "dev" has DPC capability
-
-I think we do enable PCIE_PORT_SERVICE_DPC.
-
-> 206 static int get_port_device_capability(struct pci_dev *dev)
-> ...
-> ...
-> 251         if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
-> 252             host->native_dpc &&
-> 253             (host->native_dpc || (services & PCIE_PORT_SERVICE_AER)))
-> 254                 services |= PCIE_PORT_SERVICE_DPC;
-> 255
+> Add support for it.>
+> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> ---
+>  drivers/dma/sun6i-dma.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
 > 
-> > +
-> >   	if (!pcie_aer_is_native(pdev) && !pcie_ports_dpc_native)
-> >   		return -ENOTSUPP;
-> > 
+> diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
+> index f5f9c86c50bc..5cadd4d2b824 100644
+> --- a/drivers/dma/sun6i-dma.c
+> +++ b/drivers/dma/sun6i-dma.c
+> @@ -1173,6 +1173,30 @@ static struct sun6i_dma_config sun50i_a64_dma_cfg = {
+>  			     BIT(DMA_SLAVE_BUSWIDTH_8_BYTES),
+>  };
+>  
+> +/*
+> + * TODO: Add support for more than 4g physical addressing.
+> + *
+> + * The A100 binding uses the number of dma channels from the
+> + * device tree node.
+> + */
+> +static struct sun6i_dma_config sun50i_a100_dma_cfg = {
+> +	.clock_autogate_enable = sun6i_enable_clock_autogate_h3,
+> +	.set_burst_length = sun6i_set_burst_length_h3,
+> +	.set_drq          = sun6i_set_drq_h6,
+> +	.set_mode         = sun6i_set_mode_h6,
+> +	.src_burst_lengths = BIT(1) | BIT(4) | BIT(8) | BIT(16),
+> +	.dst_burst_lengths = BIT(1) | BIT(4) | BIT(8) | BIT(16),
+> +	.src_addr_widths   = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
+> +			     BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
+> +			     BIT(DMA_SLAVE_BUSWIDTH_4_BYTES) |
+> +			     BIT(DMA_SLAVE_BUSWIDTH_8_BYTES),
+> +	.dst_addr_widths   = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
+> +			     BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
+> +			     BIT(DMA_SLAVE_BUSWIDTH_4_BYTES) |
+> +			     BIT(DMA_SLAVE_BUSWIDTH_8_BYTES),
+> +	.has_mbus_clk = true,
+> +};
+> +
+>  /*
+>   * The H6 binding uses the number of dma channels from the
+>   * device tree node.
+> @@ -1225,6 +1249,7 @@ static const struct of_device_id sun6i_dma_match[] = {
+>  	{ .compatible = "allwinner,sun8i-h3-dma", .data = &sun8i_h3_dma_cfg },
+>  	{ .compatible = "allwinner,sun8i-v3s-dma", .data = &sun8i_v3s_dma_cfg },
+>  	{ .compatible = "allwinner,sun50i-a64-dma", .data = &sun50i_a64_dma_cfg },
+> +	{ .compatible = "allwinner,sun50i-a100-dma", .data = &sun50i_a100_dma_cfg },
+>  	{ .compatible = "allwinner,sun50i-h6-dma", .data = &sun50i_h6_dma_cfg },
+>  	{ /* sentinel */ }
+>  };
 > 
-> -- 
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
+
