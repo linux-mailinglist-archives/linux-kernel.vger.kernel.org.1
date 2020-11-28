@@ -2,51 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9415A2C71BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F002C7452
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390588AbgK1VvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:13 -0500
-Received: from verein.lst.de ([213.95.11.211]:40023 "EHLO verein.lst.de"
+        id S2388647AbgK1Vtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:42 -0500
+Received: from aposti.net ([89.234.176.197]:45422 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729983AbgK1Sdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:33:42 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9163A68AFE; Sat, 28 Nov 2020 18:15:01 +0100 (CET)
-Date:   Sat, 28 Nov 2020 18:15:00 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Tom Yan <tom.ty89@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: 5.10 regression caused by: "uas: fix sdev->host->dma_dev":
- many XHCI swiotlb buffer is full / DMAR: Device bounce map failed
- errors on thunderbolt connected XHCI controller
-Message-ID: <20201128171500.GA3550@lst.de>
-References: <b046dd04-ac4f-3c69-0602-af810fb1b365@redhat.com> <be031d15-201f-0e5c-8b0f-be030077141f@redhat.com> <20201124102715.GA16983@lst.de> <fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com> <8a52e868-0ca1-55b7-5ad2-ddb0cbb5e45d@redhat.com> <20201127161900.GA10986@lst.de> <fded04e2-f2e9-de92-ab1f-5aa088904e90@redhat.com>
+        id S1726152AbgK1RyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 12:54:12 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH] drm/ingenic: Add basic PM support
+Date:   Sat, 28 Nov 2020 17:16:06 +0000
+Message-Id: <20201128171606.132830-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fded04e2-f2e9-de92-ab1f-5aa088904e90@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can you give this one-liner a spin?
+Call drm_mode_config_helper_suspend() and
+drm_mode_config_helper_resume() on suspend and resume, respectively.
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index c6622011d4938c..e889111b55c71d 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -4007,6 +4007,7 @@ static const struct dma_map_ops bounce_dma_ops = {
- 	.alloc_pages		= dma_common_alloc_pages,
- 	.free_pages		= dma_common_free_pages,
- 	.dma_supported		= dma_direct_supported,
-+	.max_mapping_size	= swiotlb_max_mapping_size,
- };
+This makes sure that the display stack is properly disabled when the
+hardware is put to sleep.
+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index 368bfef8b340..818a0e4f5bfe 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -14,6 +14,7 @@
+ #include <linux/of_device.h>
+ #include <linux/of_reserved_mem.h>
+ #include <linux/platform_device.h>
++#include <linux/pm.h>
+ #include <linux/regmap.h>
  
- static inline int iommu_domain_cache_init(void)
+ #include <drm/drm_atomic.h>
+@@ -1167,6 +1168,24 @@ static int ingenic_drm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int __maybe_unused ingenic_drm_suspend(struct device *dev)
++{
++	struct ingenic_drm *priv = dev_get_drvdata(dev);
++
++	return drm_mode_config_helper_suspend(&priv->drm);
++}
++
++static int __maybe_unused ingenic_drm_resume(struct device *dev)
++{
++	struct ingenic_drm *priv = dev_get_drvdata(dev);
++
++	drm_mode_config_helper_resume(&priv->drm);
++
++	return 0;
++}
++
++static SIMPLE_DEV_PM_OPS(ingenic_drm_pm_ops, ingenic_drm_suspend, ingenic_drm_resume);
++
+ static const u32 jz4740_formats[] = {
+ 	DRM_FORMAT_XRGB1555,
+ 	DRM_FORMAT_RGB565,
+@@ -1246,6 +1265,7 @@ MODULE_DEVICE_TABLE(of, ingenic_drm_of_match);
+ static struct platform_driver ingenic_drm_driver = {
+ 	.driver = {
+ 		.name = "ingenic-drm",
++		.pm = pm_ptr(&ingenic_drm_pm_ops),
+ 		.of_match_table = of_match_ptr(ingenic_drm_of_match),
+ 	},
+ 	.probe = ingenic_drm_probe,
+-- 
+2.29.2
+
