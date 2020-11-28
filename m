@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A992C7108
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578072C7115
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391170AbgK1VwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:52:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
+        id S2403850AbgK1Vw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:52:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732081AbgK1S57 (ORCPT
+        with ESMTP id S1732906AbgK1TEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:57:59 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5DCC094260
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:26:00 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id w6so6419192pfu.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:26:00 -0800 (PST)
+        Sat, 28 Nov 2020 14:04:38 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7F0C094265
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:29:12 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id o4so3768545pgj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:29:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=+ML44tgllE4GhZ96NC55829R7slIU4zlvmTfo9Y5Ub4=;
-        b=CtUTtxibbbngBmaMGzF/xBSmCb34Lme4TIY/m+4cay6AaANrJmvTxg0I/EWkxqUCXi
-         JeimiBP1WQkI9Sgfxt2lMyjvgtlDpAxLTEGOau90a/m62KI4+6Jq9g91ZHRF/2wQ0NM9
-         FlfyzUdWZBLbX4xZypY+TgGwMwyTzO3Ig8Su+lFDYyxtvXRTqCEeF2kY9Ur+7fO3lWFh
-         dIub9/3pKICDanyhPA2dwMFecUDlSCo3skYuITqqD1Ux4hRuAeamw5auZEfxC53sRFSO
-         FjQNNSalcmGUbgiFq0xns/eEUG7xmAS5mHP23s8eqRfaS/22Wc8x5LAAYmoHuik6Ec0S
-         RILg==
+        bh=PNFbFA5RGzfZOj+MBiAXZSekQwevqv53Dq3RaeUKuto=;
+        b=NWTqQMufLvI4eZFxM1vC2tffYMvnOJQF6SGj73jnc6k0oZCgkSas51hrL2wE2nvXVk
+         +nTu2HoQ1QB8mB71Gj7BdmNnXJadESrIgWmGHpI73m9q9cFsRFRJL87+D5U1nndMnXye
+         B7GrlYWdxERU1M1whEkxxtrLXPcKzxaplz1pTgr6/NB0d8rUfvedbrHyOIsRhsIqp0Sv
+         CB180mCtLyX0o9boUhsuYOXkSf1sid+jw2a0Pl5krHMkZ/FlqVArZtq3NlJXaWsyJ3Nd
+         CfGenel5ksl8D44rcPCYOn/izFRTCxBn+3l5ydVBh4GfdA0aW+WaadcrR6v+Dky0In2a
+         ehGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=+ML44tgllE4GhZ96NC55829R7slIU4zlvmTfo9Y5Ub4=;
-        b=Z4oHupI+Ld440u6eGKaKDjhspXNvbQeURoRiaQC/oGn49nwh5jtHPLbo0cNBSepV2v
-         UTHebj8guITL3ESS39PNEfjpshz8v6MtPOJBPbnxFe1ELiwumchzmTPdmc0hVJqxnNLj
-         i22GXo3lk//O9W2wLgMIBW/lT+32VDE3KI3zYD/Jjld9h91ByIwqryvsYAbm/gZM5Nyf
-         F10jpMUySuIL1O+QhGhXrLn53ltXYXtHHFG+HG1KJE6LY0av5rINeH78Fozp5OTafUWR
-         aqE0gCfch7WZJ+akzXyykheAdxF71n0lxRKweM83UYHNrqkmE2V4As5P9LmTGdZCd6eZ
-         IOOw==
-X-Gm-Message-State: AOAM531T5H6DcbR2wXyI+/yIvIXdLPgUcT0OzFQC3SsqCCzzerPiRGQp
-        j5mmzWx0JDwZiARP+qrqZ0lf
-X-Google-Smtp-Source: ABdhPJzGMn39e/JsDN4rfXOqDkjg/hDUA+55auPmhInOZcR/LM1+cJY+cKYT+YsuhazfPWEZWyWRAA==
-X-Received: by 2002:a63:1349:: with SMTP id 9mr88511pgt.107.1606548360444;
-        Fri, 27 Nov 2020 23:26:00 -0800 (PST)
+        bh=PNFbFA5RGzfZOj+MBiAXZSekQwevqv53Dq3RaeUKuto=;
+        b=j9rWtHcwT4iqUwGU/2dM4EJ+akuQSOKAbyDBI5xRJBntVjGJfbqGLqm/6nVbFT1XzD
+         uRQwpjgh8ZbG4z6ACVdkdDLt3i0yonNIUSONW/DufNHzmsr12yt6WVGCWHW3B30sNcFI
+         V9HCy4ni0V+/ee8U9ZPDE7kwfdFwTFihwzj2+kV+9lTrsFM4RMlJ/MK43ELnj+ks/jqY
+         D/DiouKi6PpEIa6egAto46K+YeUpfBIwnH/3TuimFfb+nit4IACfasLqylGo5wkPUuzH
+         PaS1OPLHHvYqTOYp1GfBGhPRQCaUl/BAM4rYcPOlOijzhCeYpn4/GCVy/gvImqfzmavn
+         UYnA==
+X-Gm-Message-State: AOAM533uPkEYomUVbbXZDWQdXDrIzQXpJYBFmpgKU3ZYwuC1BEXGMFae
+        W+JJdvBNI93VDxsLJABhmQMC
+X-Google-Smtp-Source: ABdhPJwsU9/nHpLX4mcKfP6FAuf9e9r7zGbuaF+oP1qRuDhyqZOqBmn1/nntCcQ4J8BLW4TRC/GVyg==
+X-Received: by 2002:a17:90b:224a:: with SMTP id hk10mr14386423pjb.81.1606548551916;
+        Fri, 27 Nov 2020 23:29:11 -0800 (PST)
 Received: from thinkpad ([2409:4072:15:c612:48ab:f1cc:6b16:2820])
-        by smtp.gmail.com with ESMTPSA id u1sm9630216pfn.181.2020.11.27.23.25.55
+        by smtp.gmail.com with ESMTPSA id 12sm13431696pjn.19.2020.11.27.23.29.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 23:25:59 -0800 (PST)
-Date:   Sat, 28 Nov 2020 12:55:52 +0530
+        Fri, 27 Nov 2020 23:29:11 -0800 (PST)
+Date:   Sat, 28 Nov 2020 12:59:02 +0530
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+Cc:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
         Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
         linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/18] arm: dts: owl-s500: Add Reset controller
-Message-ID: <20201128072552.GR3077@thinkpad>
+Subject: Re: [PATCH v2 04/18] dt-bindings: dma: owl: Add compatible string
+ for Actions Semi S500 SoC
+Message-ID: <20201128072902.GS3077@thinkpad>
 References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <29caef019fc29a62e77e59f537f6caa03597cac8.1605823502.git.cristian.ciocaltea@gmail.com>
+ <0e79dffdf105ded2bb336ab38dc39b4986667683.1605823502.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <29caef019fc29a62e77e59f537f6caa03597cac8.1605823502.git.cristian.ciocaltea@gmail.com>
+In-Reply-To: <0e79dffdf105ded2bb336ab38dc39b4986667683.1605823502.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 01:55:57AM +0200, Cristian Ciocaltea wrote:
-> Add reset controller property and bindings header for the
-> Actions Semi S500 SoC DTS.
+On Fri, Nov 20, 2020 at 01:55:58AM +0200, Cristian Ciocaltea wrote:
+> Add a new compatible string corresponding to the DMA controller found
+> in the S500 variant of the Actions Semi Owl SoCs family.
 > 
 > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
@@ -79,29 +81,32 @@ Thanks,
 Mani
 
 > ---
->  arch/arm/boot/dts/owl-s500.dtsi | 2 ++
->  1 file changed, 2 insertions(+)
+>  Documentation/devicetree/bindings/dma/owl-dma.yaml | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-> index ac3d04c75dd5..a57ce7d6d745 100644
-> --- a/arch/arm/boot/dts/owl-s500.dtsi
-> +++ b/arch/arm/boot/dts/owl-s500.dtsi
-> @@ -8,6 +8,7 @@
->  #include <dt-bindings/clock/actions,s500-cmu.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/power/owl-s500-powergate.h>
-> +#include <dt-bindings/reset/actions,s500-reset.h>
+> diff --git a/Documentation/devicetree/bindings/dma/owl-dma.yaml b/Documentation/devicetree/bindings/dma/owl-dma.yaml
+> index 256d62af2c64..f085f0e42d2c 100644
+> --- a/Documentation/devicetree/bindings/dma/owl-dma.yaml
+> +++ b/Documentation/devicetree/bindings/dma/owl-dma.yaml
+> @@ -8,8 +8,8 @@ title: Actions Semi Owl SoCs DMA controller
 >  
->  / {
->  	compatible = "actions,s500";
-> @@ -188,6 +189,7 @@ cmu: clock-controller@b0160000 {
->  			reg = <0xb0160000 0x8000>;
->  			clocks = <&hosc>, <&losc>;
->  			#clock-cells = <1>;
-> +			#reset-cells = <1>;
->  		};
+>  description: |
+>    The OWL DMA is a general-purpose direct memory access controller capable of
+> -  supporting 10 and 12 independent DMA channels for S700 and S900 SoCs
+> -  respectively.
+> +  supporting 10 independent DMA channels for the Actions Semi S700 SoC and 12
+> +  independent DMA channels for the S500 and S900 SoC variants.
 >  
->  		timer: timer@b0168000 {
+>  maintainers:
+>    - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> @@ -22,6 +22,7 @@ properties:
+>      enum:
+>        - actions,s900-dma
+>        - actions,s700-dma
+> +      - actions,s500-dma
+>  
+>    reg:
+>      maxItems: 1
 > -- 
 > 2.29.2
 > 
