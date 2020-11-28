@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631AD2C7225
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1412C71A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732384AbgK1VuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:25 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:40397 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733260AbgK1SOz (ORCPT
+        id S2390836AbgK1Vvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:37 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:35201 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731299AbgK1Sto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:14:55 -0500
-Received: by mail-wm1-f66.google.com with SMTP id a3so9996792wmb.5;
-        Sat, 28 Nov 2020 10:14:32 -0800 (PST)
+        Sat, 28 Nov 2020 13:49:44 -0500
+Received: by mail-lf1-f68.google.com with SMTP id a9so12059741lfh.2;
+        Sat, 28 Nov 2020 10:49:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Pg/nt8j3UsZLPLuK400Pi+qxlfumMxN5pMJ4xzsHKD0=;
-        b=C4DZWlgYO5BMiHy2j75e5hBXaieD6pWYNGLV6hqIPpVOdZACjPqVTWqiiDoN78y+eJ
-         14h/x9XxWX5WzIOUdjbIAdRAUu6u8D236w9XprO+LiK67wfrImach1NSg3exjCtMEuBh
-         LAKrfvW8kUT6+ofzye8GDdtE6fRHT7vY8QlsPf+M39XuukQw/sh0nyVARm/8v0tTyur4
-         YCfowVmS/mbCma5bguSTs3VIyraRUw3k1sFyCIlMrFHUAMtd+sV4Q9x+goqGQGcaNVuL
-         MGb2rWWt6dDS7Ur6TDzNxAZbtTKNjlRGVKcz+HO9DOhyGRIcb1P/PnXexjkoztARe8XN
-         btKg==
-X-Gm-Message-State: AOAM531TQ/Vn89oGX7L/ldQbqxFKdba+0lh0xFDoyAhBsYEt4R192gxi
-        O31Zw4GYekS65wXH9rGWkkDzS4v0Xkw=
-X-Google-Smtp-Source: ABdhPJz/PCvfia1c/gUxPgGhj8H8KA5LOUSuktM0+eZN4vEtuQ7jVxt3+ndRTOX5Y8UnjqAfaT6NUA==
-X-Received: by 2002:a7b:c0c9:: with SMTP id s9mr1761933wmh.175.1606563134029;
-        Sat, 28 Nov 2020 03:32:14 -0800 (PST)
+        bh=94w+w4q2DL8CfQBxAM1xY8lwOUr+KvOfw3ByQOJVKuk=;
+        b=knwr6FWiDspxB0X1Culaha/p7eb3xJfHmACgGn7ReKXwwN0GGq4cIvMN5nhzJnGPQp
+         iBC30DtrWtA5J7PtG5CVaMDQ3kgJ9ZNQtVudKLiK8b+ho3bmlYHLEYPHsaB4ZXXrcD6A
+         gpE4X+fdY7dSzrKZODKjwSZDqcIK7nxHWKkxH4+kPM1GPZpgqAYIWnGiOcA0o294xzfs
+         zmre0zb1bwYef/gWreJpoCCNdHIIaSs6snkeRjUEV7rHgl2xrCC5CyIz4sG5v1wgipch
+         92vj0HfzhENyaCji6X6v9QnwncnyLUCGhQ4V2gx/armh+b4ikysbN02WCWEPAOWnLaBG
+         dZPw==
+X-Gm-Message-State: AOAM530UZra3eEh2LEKqwiesxNUOz8P2+4eV5kMxYCLX9TEP07GnLkHP
+        DrKFWXUSCHLj69uto9geQZc3sNlUgvA=
+X-Google-Smtp-Source: ABdhPJyLh6B3nxSjRDcChAYngodNGnYIRfHxi//tXNNB+WXdMW2TXjVSZwSmgZwBFnUYvUFPYdEs3g==
+X-Received: by 2002:a17:906:7c56:: with SMTP id g22mr12023158ejp.282.1606563360738;
+        Sat, 28 Nov 2020 03:36:00 -0800 (PST)
 Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id o4sm16925991wmh.33.2020.11.28.03.32.12
+        by smtp.googlemail.com with ESMTPSA id a12sm6295814edu.89.2020.11.28.03.35.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 03:32:12 -0800 (PST)
-Date:   Sat, 28 Nov 2020 12:32:11 +0100
+        Sat, 28 Nov 2020 03:35:59 -0800 (PST)
+Date:   Sat, 28 Nov 2020 12:35:58 +0100
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Jiri Kosina <trivial@kernel.org>,
         Mark Brown <broonie@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, Pavel Machek <pavel@denx.de>,
+        linux-renesas-soc@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         linux-kernel@vger.kernel.org,
         Prabhakar <prabhakar.csengg@gmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] memory: renesas-rpc-if: Return correct value to
- the caller of rpcif_manual_xfer()
-Message-ID: <20201128113211.GA4761@kozik-lap>
+Subject: Re: [PATCH v2 3/5] memory: renesas-rpc-if: Fix a reference leak in
+ rpcif_probe()
+Message-ID: <20201128113558.GC4761@kozik-lap>
 References: <20201126191146.8753-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201126191146.8753-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201126191146.8753-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201127224114.GB19743@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201126191146.8753-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201127224114.GB19743@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 07:11:42PM +0000, Lad Prabhakar wrote:
-> In the error path of rpcif_manual_xfer() the value of ret is overwritten
-> by value returned by reset_control_reset() function and thus returning
-> incorrect value to the caller.
+On Fri, Nov 27, 2020 at 11:41:14PM +0100, Pavel Machek wrote:
+> On Thu 2020-11-26 19:11:44, Lad Prabhakar wrote:
+> > Release the node reference by calling of_node_put(flash) in the probe.
+> > 
+> > Fixes: ca7d8b980b67f ("memory: add Renesas RPC-IF driver")
+> > Reported-by: Pavel Machek <pavel@denx.de>
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Cc: stable@vger.kernel.org
+> > Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
 > 
-> This patch makes sure the correct value is returned to the caller of
-> rpcif_manual_xfer() by dropping the overwrite of ret in error path.
-> Also now we ignore the value returned by reset_control_reset() in the
-> error path and instead print a error message when it fails.
-> 
-> Fixes: ca7d8b980b67f ("memory: add Renesas RPC-IF driver")
-> Reported-by: Pavel Machek <pavel@denx.de>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-> ---
->  drivers/memory/renesas-rpc-if.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Reviewed-by: Pavel Machek (CIP)< <pavel@denx.de>
 
-Thanks, applied to mem-ctrl tree.
+This breaks b4. Corrected and applied.
 
 Best regards,
 Krzysztof
-
