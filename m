@@ -2,71 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1622C73CC
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:15:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E5B2C7199
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733197AbgK1Vtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:49:53 -0500
-Received: from mout.gmx.net ([212.227.15.19]:42797 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728495AbgK1SBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:01:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606586410;
-        bh=llOEp7TKQR/EGzhXDacWl6woOORc2KNFI1XW/Ng1WBE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=DJ/nfbKGA6OwjBY2mp6hbCcOIirJNfKNpSO7kJn1PuSzwvcjqecLXZTAjrFoQ1VMx
-         CBQMAUjjJXiXKF3bY3ZyVdNQHACYvU2zzn7vKRVKgPzxkX8bfEfxgvnb8aB8XM7Nxm
-         cxOX42gAEFQFRlCuQDmnlYVKPTm7T9j3JY7wKJdE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N4QsO-1k1f4F49ag-011S5k; Sat, 28
- Nov 2020 14:45:42 +0100
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     jic23@kernel.org
-Cc:     andy.shevchenko@gmail.com, lars@metafoo.de, pmeerw@pmeerw.net,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Subject: [RESEND PATCH 2/2] io:core: In iio_map_array_register() cleanup in case of error
-Date:   Sat, 28 Nov 2020 14:44:19 +0100
-Message-Id: <1606571059-13974-2-git-send-email-LinoSanfilippo@gmx.de>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606571059-13974-1-git-send-email-LinoSanfilippo@gmx.de>
-References: <1606571059-13974-1-git-send-email-LinoSanfilippo@gmx.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:42saRdxZ6O4sXs+ITGkakIE0b5eMR+hUo7mlPXHk4FtfBar2KNJ
- TqMXXQOA/UYgWTjPDT8zT05SLCRCfXUBA0s0Ss+thXqER5ZeLG4DYrCx2dkC6truEyGznp6
- vClgHCNLnSe62YVHnDEBZlgxQzg+fCqezVMpOvH+P0hrWkx0KOgsRRPj2NjoDkX7fWAgVC4
- JvqZPRYgT/rzIqCvLbUFQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:g9bbeuahMiQ=:ssS7esfd+e8zblSYq5aV44
- 2ckzlX5Ha/IjZ/jI5KpM7aNqIZUNH6ZHhaZt8MjXBT1/ESZ/4t/c8/JJXyz3IWUK300mZE2hV
- OOfieIqXmzyw7xTZwkga4P5HcVEdd40avx2+rc64saYPXVq1kyfZHj1ZPnSMaEwjWpuxefGgy
- aQF3gVLlDRlhtZxIF9Rz2EGKYzpBTj2KfO8yywlmvjAsA7Y9jOmsnOLWnVMKcbPcLYbSf5CXT
- E1ctokGfs1V1QfQujR5u/pnjCpLixXXd+B5jkc4BrTHAVS8031Fb3OpZnbSWiFHY5GM070lMN
- DMu9eCewgtIKMwbWOz7dyq5I8oCqPWFKZWTLEIHZ5UDA9kD/2U6tXQanh9YnWhOmk+H08aTE5
- 4JIfK4DVBMNV7WiID8aoa/D93fclGkqgdJs+0m4g/pEwRUpEahptav/wtcaNieI5sgm4qWxkt
- uTeLh+ayDsIgVPkwFl406No678sWPhK9soHnBet71tFukXRDcaUiY4zQuP8RPmg1J3o+0NDpL
- EdYCMUJN2C4HzIZDm4msMJTePFLiER3MXBNnyPkv/wN7gtyEZkKZtxbR8piMoer5bhhujFQVI
- jK2X1quyuqQ3Ip6QdoGMN0aHvbcvtq9ONDJb2fG3uOeo2+tn+jULHQkljy1LWKBvv8Fzkrkq6
- nxUMn3c0zkiOxnFB1/S4OKgYPBL8DelTmcjuHbLO4XOAdym7T7K9k5OVkTevTkofYEvFDOXup
- MiRRH6lhN+EmiS281CmslUEm/fQszY3BiJUt/RxGl21plrxulAHkpUX23GeIZ8JGOzzWDJo6e
- LjwBOP3rfHkoqWqfRnphPaObfHv10y5UrKxbs2vXOhbkvjz4XKLcvgHx0BjVjMKYnjLlJadIP
- F24gpLOFcn4cs6U/C5qg==
+        id S2390675AbgK1VvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730149AbgK1Sh7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:37:59 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32027C02A1A0;
+        Sat, 28 Nov 2020 05:50:59 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id u2so4001067pls.10;
+        Sat, 28 Nov 2020 05:50:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=NAaKMiO3+eNR4sgSR3sGVZDQoceEJQzQRN6qUQNwYCU=;
+        b=F1MwlJUVPCdrfSPBqGl/h5JdLKUPgahWOy5Sm4oa3ZsAC9TstDAhSsAQh0vRiCDcI1
+         yA1+oUeK8ABjlWraDuX8EG7wl+MaUyrwGkLeE6ilk5JeihD8d0Iq11HpfL8ydxWDefe5
+         Ye7w06MvsBycYVtAC8CnzTrB0fpfcBqUZ8lQDEcmGfxvJlDGqbtyhoQseoKB0UdYuVSi
+         sBH0Vm++TscbVYJ3fmisT3IsL/e8m4R8yiH2M4Up7V6lKGTtYZAYB07WintI/PzwKeRN
+         860bstwPjq41NXvyb4PohFWQW2ElklIUM7fueZoBPQhcvCkV50ehRmWSaAs/gQYXjJyU
+         ZP8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NAaKMiO3+eNR4sgSR3sGVZDQoceEJQzQRN6qUQNwYCU=;
+        b=fosyIs3q+Rt/K3WQBQGVe//9D8EgOIUPDw6ljFDJrIQ2DIxbKRVEmZXSaRWmuAJn7D
+         shGuTD/tVEj61Wlo2CYS+ZfKSwVFnoHKS/x6B3RmVNPRtOtzn9zo1LF/eEz/DFssJjf1
+         x9tanWtr9z5zbj/Vfea6YbX4D5f9ZVqAoyzXLBOO2Ei5F955OUIOQ1rrO2Nh2O24EFnK
+         xX0pW3WlXGsNfUnek3iG+KjH2ekVnasQm3C0Fc7k/K10QkZ91Ai2riT4FzckjNwTGEg7
+         GkHJgcH++uRJjMeY4rsP+VN9Pjm+2LxjV9GZoeNN2Bsergx0CvXbRB8alGvRL+TkrETZ
+         csBw==
+X-Gm-Message-State: AOAM530ispzGWwHDls8AB4gVrvVFKmm7sP2lGlxBd/xq4ytV8/+oONCl
+        uFhxqlzvBcm91y9nk0kwEgjZiR1eASJwHQ==
+X-Google-Smtp-Source: ABdhPJy69mn4Wl+YKc9TEvM+9ZzjAeoDT83i1CjHOOHqcWxQqrpoafrTCNZ26a4HY64a7Zjf8xSFFQ==
+X-Received: by 2002:a17:902:eb0c:b029:da:51da:cdac with SMTP id l12-20020a170902eb0cb02900da51dacdacmr6451087plb.4.1606571458474;
+        Sat, 28 Nov 2020 05:50:58 -0800 (PST)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.220.174])
+        by smtp.gmail.com with ESMTPSA id e17sm10414159pfm.155.2020.11.28.05.50.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 28 Nov 2020 05:50:57 -0800 (PST)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     bfields@fieldses.org, chuck.lever@oracle.com
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] nfsd: Fix kernel test robot warning
+Date:   Sat, 28 Nov 2020 19:20:51 +0530
+Message-Id: <1606571451-3655-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SW4gZnVuY3Rpb24gaWlvX21hcF9hcnJheV9yZWdpc3RlcigpIHByb3Blcmx5IHJld2luZCBpbiBj
-YXNlIG9mIGVycm9yLgoKU2lnbmVkLW9mZi1ieTogTGlubyBTYW5maWxpcHBvIDxMaW5vU2FuZmls
-aXBwb0BnbXguZGU+ClJldmlld2VkLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHkuc2hldmNoZW5r
-b0BnbWFpbC5jb20+Ci0tLQogZHJpdmVycy9paW8vaW5rZXJuLmMgfCAyICsrCiAxIGZpbGUgY2hh
-bmdlZCwgMiBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9paW8vaW5rZXJuLmMg
-Yi9kcml2ZXJzL2lpby9pbmtlcm4uYwppbmRleCAzOWMxZDYzLi5mZTMwYmNiIDEwMDY0NAotLS0g
-YS9kcml2ZXJzL2lpby9pbmtlcm4uYworKysgYi9kcml2ZXJzL2lpby9pbmtlcm4uYwpAQCAtNjAs
-NiArNjAsOCBAQCBpbnQgaWlvX21hcF9hcnJheV9yZWdpc3RlcihzdHJ1Y3QgaWlvX2RldiAqaW5k
-aW9fZGV2LCBzdHJ1Y3QgaWlvX21hcCAqbWFwcykKIAkJaSsrOwogCX0KIGVycm9yX3JldDoKKwlp
-ZiAocmV0KQorCQlpaW9fbWFwX2FycmF5X3VucmVnaXN0ZXJfbG9ja2VkKGluZGlvX2Rldik7CiAJ
-bXV0ZXhfdW5sb2NrKCZpaW9fbWFwX2xpc3RfbG9jayk7CiAKIAlyZXR1cm4gcmV0OwotLSAKMi43
-LjQKCg==
+Kernel test robot throws below warning -
+
+>> fs/nfsd/nfs3xdr.c:299:6: warning: variable 'err' is used
+>> uninitialized whenever 'if' condition is false
+>> [-Wsometimes-uninitialized]
+           if (!v4 || !inode->i_sb->s_export_op->fetch_iversion)
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/nfsd/nfs3xdr.c:304:6: note: uninitialized use occurs here
+           if (err) {
+               ^~~
+   fs/nfsd/nfs3xdr.c:299:2: note: remove the 'if' if its condition is
+always true
+           if (!v4 || !inode->i_sb->s_export_op->fetch_iversion)
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/nfsd/nfs3xdr.c:293:12: note: initialize the variable 'err' to
+silence this warning
+           __be32 err;
+                     ^
+                      = 0
+   1 warning generated.
+
+Initialize err = 0 to silence this warning.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+---
+ fs/nfsd/nfs3xdr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/nfsd/nfs3xdr.c b/fs/nfsd/nfs3xdr.c
+index abb1608..47aeaee 100644
+--- a/fs/nfsd/nfs3xdr.c
++++ b/fs/nfsd/nfs3xdr.c
+@@ -290,7 +290,7 @@ void fill_post_wcc(struct svc_fh *fhp)
+ {
+ 	bool v4 = (fhp->fh_maxsize == NFS4_FHSIZE);
+ 	struct inode *inode = d_inode(fhp->fh_dentry);
+-	__be32 err;
++	__be32 err = 0;
+ 
+ 	if (fhp->fh_post_saved)
+ 		printk("nfsd: inode locked twice during operation.\n");
+-- 
+1.9.1
+
