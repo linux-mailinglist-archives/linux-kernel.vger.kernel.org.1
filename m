@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578072C7115
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F84B2C710A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403850AbgK1Vw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:52:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43502 "EHLO
+        id S2391232AbgK1VwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:52:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732906AbgK1TEi (ORCPT
+        with ESMTP id S1732423AbgK1TAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:04:38 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7F0C094265
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:29:12 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id o4so3768545pgj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:29:12 -0800 (PST)
+        Sat, 28 Nov 2020 14:00:20 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636F1C094269
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:29:54 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id x4so1989036pln.8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:29:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=PNFbFA5RGzfZOj+MBiAXZSekQwevqv53Dq3RaeUKuto=;
-        b=NWTqQMufLvI4eZFxM1vC2tffYMvnOJQF6SGj73jnc6k0oZCgkSas51hrL2wE2nvXVk
-         +nTu2HoQ1QB8mB71Gj7BdmNnXJadESrIgWmGHpI73m9q9cFsRFRJL87+D5U1nndMnXye
-         B7GrlYWdxERU1M1whEkxxtrLXPcKzxaplz1pTgr6/NB0d8rUfvedbrHyOIsRhsIqp0Sv
-         CB180mCtLyX0o9boUhsuYOXkSf1sid+jw2a0Pl5krHMkZ/FlqVArZtq3NlJXaWsyJ3Nd
-         CfGenel5ksl8D44rcPCYOn/izFRTCxBn+3l5ydVBh4GfdA0aW+WaadcrR6v+Dky0In2a
-         ehGA==
+        bh=WGKj1IfcrEj7NHZycKjkVZobn+jBjIFjVn+ZsQVanao=;
+        b=J5ihOfoFgimbDpqbPMgUF0DzsQ5JHfFZi6ghTBd9NOIQ9ROMWQ1bll6AadCueUdZ2p
+         oMpX3NODVKLeTuIGGiCA9VTlJ0l/I7ODvlDnQdmIlaNEWsLuNuXF18bJng8qkL58yyp7
+         mkyaBdkHblcxZv3EGzNhsdXVnHcWrFNuCSaJDkZITuZU8+t+x6B7qERTyF/MCiyWLmAV
+         IcfTn/u5qN8Of8uY3fGu7jSHVq08LFjRL+P1Ps3xS8k7/ME2dTjOl5+pYCfR9Yt8xgmF
+         7uKQ80DfRPw5j0ZLHLUBWNbM8wuNn2SZmsT9iTYXiUERebhxnZ9Y0Pt3BY8Q9Vk3XUu3
+         GUjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=PNFbFA5RGzfZOj+MBiAXZSekQwevqv53Dq3RaeUKuto=;
-        b=j9rWtHcwT4iqUwGU/2dM4EJ+akuQSOKAbyDBI5xRJBntVjGJfbqGLqm/6nVbFT1XzD
-         uRQwpjgh8ZbG4z6ACVdkdDLt3i0yonNIUSONW/DufNHzmsr12yt6WVGCWHW3B30sNcFI
-         V9HCy4ni0V+/ee8U9ZPDE7kwfdFwTFihwzj2+kV+9lTrsFM4RMlJ/MK43ELnj+ks/jqY
-         D/DiouKi6PpEIa6egAto46K+YeUpfBIwnH/3TuimFfb+nit4IACfasLqylGo5wkPUuzH
-         PaS1OPLHHvYqTOYp1GfBGhPRQCaUl/BAM4rYcPOlOijzhCeYpn4/GCVy/gvImqfzmavn
-         UYnA==
-X-Gm-Message-State: AOAM533uPkEYomUVbbXZDWQdXDrIzQXpJYBFmpgKU3ZYwuC1BEXGMFae
-        W+JJdvBNI93VDxsLJABhmQMC
-X-Google-Smtp-Source: ABdhPJwsU9/nHpLX4mcKfP6FAuf9e9r7zGbuaF+oP1qRuDhyqZOqBmn1/nntCcQ4J8BLW4TRC/GVyg==
-X-Received: by 2002:a17:90b:224a:: with SMTP id hk10mr14386423pjb.81.1606548551916;
-        Fri, 27 Nov 2020 23:29:11 -0800 (PST)
+        bh=WGKj1IfcrEj7NHZycKjkVZobn+jBjIFjVn+ZsQVanao=;
+        b=iVwww6VgTudRmUoxrO2g3MOVruuF2d4bULeFfsEek7HK6fO4l1GF9zDy8I7XS7AFfg
+         ml3ppb+booVX9kdJJItZsa6ql+0ZLzDL1C4jO02yWI4yf5L9J0esJqocd/D4A145G8v4
+         GmLcTXwzsm9T3aHiJs04GTYaueN5dEn2j5Ao6Xqy6oAZIaAYXOpsW3X2OS0jp12lCRnU
+         hQojQiMWoCUHtdVnrHKEfjQfWjeTmugqxCK8p3spFaTtQ19xL184cGquOELgoVOBRXZm
+         KBADdgQLo+rAx3YA/Xa0oTMZI9QWfBCqU6W71xFzHHDHv/1jbqmNeIr0w//lfwk9GRKG
+         nE5A==
+X-Gm-Message-State: AOAM532uDyZHrqTodSHnBryC7bIJiiTFCfNW8V/5l5NEKCealyvXl7av
+        uxZQ42oSQo5TpJLl2vB9Hl4e
+X-Google-Smtp-Source: ABdhPJzRX52ukzfEsqSGexNjKoFSbiZSGU8BsPO1JkZ5EFIrpK2FYXNVPaw6j6bb1dMs/lYcLdGB1A==
+X-Received: by 2002:a17:902:8f82:b029:da:23e0:17d7 with SMTP id z2-20020a1709028f82b02900da23e017d7mr10409200plo.37.1606548593900;
+        Fri, 27 Nov 2020 23:29:53 -0800 (PST)
 Received: from thinkpad ([2409:4072:15:c612:48ab:f1cc:6b16:2820])
-        by smtp.gmail.com with ESMTPSA id 12sm13431696pjn.19.2020.11.27.23.29.05
+        by smtp.gmail.com with ESMTPSA id p15sm13528590pjg.21.2020.11.27.23.29.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 23:29:11 -0800 (PST)
-Date:   Sat, 28 Nov 2020 12:59:02 +0530
+        Fri, 27 Nov 2020 23:29:53 -0800 (PST)
+Date:   Sat, 28 Nov 2020 12:59:45 +0530
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 Cc:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
@@ -58,7 +58,7 @@ Cc:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
         linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2 04/18] dt-bindings: dma: owl: Add compatible string
  for Actions Semi S500 SoC
-Message-ID: <20201128072902.GS3077@thinkpad>
+Message-ID: <20201128072945.GT3077@thinkpad>
 References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
  <0e79dffdf105ded2bb336ab38dc39b4986667683.1605823502.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
@@ -74,12 +74,6 @@ On Fri, Nov 20, 2020 at 01:55:58AM +0200, Cristian Ciocaltea wrote:
 > in the S500 variant of the Actions Semi Owl SoCs family.
 > 
 > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
 > ---
 >  Documentation/devicetree/bindings/dma/owl-dma.yaml | 5 +++--
 >  1 file changed, 3 insertions(+), 2 deletions(-)
@@ -104,6 +98,9 @@ Mani
 >        - actions,s900-dma
 >        - actions,s700-dma
 > +      - actions,s500-dma
+
+I think we should order the entries now...
+
 >  
 >    reg:
 >      maxItems: 1
