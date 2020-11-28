@@ -2,137 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2818B2C7311
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D9A2C733B
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389455AbgK1VuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:00 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8214 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730482AbgK1SEI (ORCPT
+        id S2389607AbgK1VuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:03 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9067 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728452AbgK1SFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:04:08 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cjh6s0k8SzkhJb;
-        Sat, 28 Nov 2020 14:15:01 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 28 Nov 2020 14:15:20 +0800
-From:   Chiqijun <chiqijun@huawei.com>
-To:     <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
-        <zengweiliang.zengweiliang@huawei.com>, <chenlizhong@huawei.com>
-Subject: [PATCH] PCI: Add pci reset quirk for Huawei Intelligent NIC virtual function
-Date:   Sat, 28 Nov 2020 14:18:25 +0800
-Message-ID: <20201128061825.2629-1-chiqijun@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 28 Nov 2020 13:05:44 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CjhC42BVqzLw1Z;
+        Sat, 28 Nov 2020 14:18:40 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 28 Nov 2020 14:19:04 +0800
+From:   Chen Huang <chenhuang5@huawei.com>
+To:     <wangkefeng.wang@huawei.com>
+CC:     <akpm@linux-foundation.org>, <aou@eecs.berkeley.edu>,
+        <chenhuang5@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <palmer@dabbelt.com>,
+        <paul.walmsley@sifive.com>
+Subject: [PATCH v2] riscv: stacktrace: fix stackframe without ra on the top
+Date:   Sat, 28 Nov 2020 06:22:42 +0000
+Message-ID: <20201128062242.825448-1-chenhuang5@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <22dbe32a-0757-97ad-8885-0f2ba55bb743@huawei.com>
+References: <22dbe32a-0757-97ad-8885-0f2ba55bb743@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When multiple VFs do FLR at the same time, the firmware is
-processed serially, resulting in some VF FLRs being delayed more
-than 100ms, when the virtual machine restarts and the device
-driver is loaded, the firmware is doing the corresponding VF
-FLR, causing the driver to fail to load.
+When a function doesn't have a callee, then it will not push ra
+into the stack, such as lkdtm_BUG() function:
 
-To solve this problem, add host and firmware status synchronization
-during FLR.
+addi	sp,sp,-16
+sd		s0,8(sp)
+addi	s0,sp,16
+ebreak
 
-Signed-off-by: Chiqijun <chiqijun@huawei.com>
+The struct stackframe use {fp,ra} to get information from
+stack, if walk_stackframe() with pr_regs, we will obtain
+wrong value and bad stacktrace,
+
+[<ffffffe00066c56c>] lkdtm_BUG+0x6/0x8
+---[ end trace 18da3fbdf08e25d5 ]---
+
+Correct the next fp and pc, after that, full stacktrace
+shown as expects,
+
+[<ffffffe00066c56c>] lkdtm_BUG+0x6/0x8
+[<ffffffe0008b24a4>] lkdtm_do_action+0x14/0x1c
+[<ffffffe00066c372>] direct_entry+0xc0/0x10a
+[<ffffffe000439f86>] full_proxy_write+0x42/0x6a
+[<ffffffe000309626>] vfs_write+0x7e/0x214
+[<ffffffe00030992a>] ksys_write+0x98/0xc0
+[<ffffffe000309960>] sys_write+0xe/0x16
+[<ffffffe0002014bc>] ret_from_syscall+0x0/0x2
+---[ end trace 61917f3d9a9fadcd ]---
+
+Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- drivers/pci/quirks.c | 67 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+ arch/riscv/kernel/stacktrace.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index f70692ac79c5..bd6236ea9064 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3912,6 +3912,71 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
- 	return 0;
+diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
+index 595342910c3f..3842fac26e85 100644
+--- a/arch/riscv/kernel/stacktrace.c
++++ b/arch/riscv/kernel/stacktrace.c
+@@ -57,9 +57,14 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
+ 		/* Unwind stack frame */
+ 		frame = (struct stackframe *)fp - 1;
+ 		sp = fp;
+-		fp = frame->fp;
+-		pc = ftrace_graph_ret_addr(current, NULL, frame->ra,
+-					   (unsigned long *)(fp - 8));
++		if (regs && (pc == regs->epc) && (frame->fp & 0x7)) {
++			fp = frame->ra;
++			pc = regs->ra;
++		} else {
++			fp = frame->fp;
++			pc = ftrace_graph_ret_addr(current, NULL, frame->ra,
++						(unsigned long *)(fp - 8));
++		}
+ 	}
  }
- 
-+#define PCI_DEVICE_ID_HINIC_VF  0x375E
-+#define HINIC_VF_FLR_TYPE       0x1000
-+#define HINIC_VF_OP             0xE80
-+#define HINIC_OPERATION_TIMEOUT 15000
-+
-+/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
-+static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
-+{
-+	unsigned long timeout;
-+	void __iomem *bar;
-+	u16 old_command;
-+	u32 val;
-+
-+	if (probe)
-+		return 0;
-+
-+	bar = pci_iomap(pdev, 0, 0);
-+	if (!bar)
-+		return -ENOTTY;
-+
-+	pci_read_config_word(pdev, PCI_COMMAND, &old_command);
-+
-+	/*
-+	 * FLR cap bit bit30, FLR ACK bit: bit18, to avoid big-endian conversion
-+	 * the big-endian bit6, bit10 is directly operated here
-+	 */
-+	val = readl(bar + HINIC_VF_FLR_TYPE);
-+	if (!(val & (1UL << 6))) {
-+		pci_iounmap(pdev, bar);
-+		return -ENOTTY;
-+	}
-+
-+	val = readl(bar + HINIC_VF_OP);
-+	val = val | (1UL << 10);
-+	writel(val, bar + HINIC_VF_OP);
-+
-+	/* Perform the actual device function reset */
-+	pcie_flr(pdev);
-+
-+	pci_write_config_word(pdev, PCI_COMMAND,
-+			      old_command | PCI_COMMAND_MEMORY);
-+
-+	/* Waiting for device reset complete */
-+	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);
-+	do {
-+		val = readl(bar + HINIC_VF_OP);
-+		if (!(val & (1UL << 10)))
-+			goto reset_complete;
-+		msleep(20);
-+	} while (time_before(jiffies, timeout));
-+
-+	val = readl(bar + HINIC_VF_OP);
-+	if (!(val & (1UL << 10)))
-+		goto reset_complete;
-+
-+	pci_warn(pdev, "Reset dev timeout, flr ack reg: %x\n",
-+		 be32_to_cpu(val));
-+
-+reset_complete:
-+	pci_write_config_word(pdev, PCI_COMMAND, old_command);
-+	pci_iounmap(pdev, bar);
-+
-+	return 0;
-+}
-+
- static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
- 	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
- 		 reset_intel_82599_sfp_virtfn },
-@@ -3923,6 +3988,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
- 	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
- 	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
- 		reset_chelsio_generic_dev },
-+	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
-+		reset_hinic_vf_dev },
- 	{ 0 }
- };
  
 -- 
 2.17.1
