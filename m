@@ -2,101 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC452C7057
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2F82C706E
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733035AbgK1Rzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 12:55:53 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48829 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731234AbgK1FVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 00:21:32 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CjfwR6yCVz9sRR;
-        Sat, 28 Nov 2020 16:20:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606540859;
-        bh=G/77mzVGVkJ1P21yhssVEcy7P8QkwU8Fmt2CZ6ER9dU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XHHWgToQWBNQiIj5urNkvUcFWLEOEOJr7nuz7VRQ0iudZqaDy2foY5rnPmU1x7WIF
-         UpApdenPnR3/MvtLskNqfM97OMZA+ugDgK1m/R5+u+vvOieWxikDpbyc5QnedfH9JX
-         izmbVDvMp9XH/BesR/Y6ODaLOu/90Tm/uqgffgdO/2lmCoRW01PGniSbfEIIdCCHJg
-         rYFT04geQrwr9JMJoPRpIoYuLJpA40+rZBh6xVs2S7rMk6cAPTWAaewj/gDRfyFg+1
-         1pBhzOkzE9SWGlnyydGHc1Cg0HQv4GJk8xu140490yXWa1WwkMvDZGEs3dGl9ABK1v
-         qQTEtn3a07sIw==
-Date:   Sat, 28 Nov 2020 16:20:54 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Daniel Axtens <dja@axtens.net>, Joel Stanley <joel@jms.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-renesas-soc@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH] powerpc: fix the allyesconfig build
-Message-ID: <20201128162054.575aea29@canb.auug.org.au>
-In-Reply-To: <20201127175642.45502b20@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-References: <20201128122819.32187696@canb.auug.org.au>
-        <20201127175642.45502b20@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        id S1732430AbgK1R7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 12:59:00 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8525 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733142AbgK1R4k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 12:56:40 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CjjYP0G0Lzhgks;
+        Sat, 28 Nov 2020 15:19:37 +0800 (CST)
+Received: from [127.0.0.1] (10.57.22.126) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Sat, 28 Nov 2020
+ 15:19:49 +0800
+Subject: Re: [RFC PATCH v1 1/4] irqchip/gic-v4.1: Plumb get_irqchip_state VLPI
+ callback
+To:     Shenming Lu <lushenming@huawei.com>, Marc Zyngier <maz@kernel.org>,
+        "James Morse" <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Christoffer Dall <christoffer.dall@arm.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-2-lushenming@huawei.com>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <869dbc36-c510-fd00-407a-b05e068537c8@huawei.com>
+Date:   Sat, 28 Nov 2020 15:19:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I=3tiLN0XLZrAWSSuz2Ag_u";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201123065410.1915-2-lushenming@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.57.22.126]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/I=3tiLN0XLZrAWSSuz2Ag_u
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi, shenming
 
-Hi Jakub,
 
-On Fri, 27 Nov 2020 17:56:42 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
+I got few questions about this patch.
+
+Although it's a bit late and not very appropriate, I'd like to ask 
+before you send next version.
+
+On 2020/11/23 14:54, Shenming Lu wrote:
+> From: Zenghui Yu <yuzenghui@huawei.com>
 >
-> What's the offending structure in hisilicon? I'd rather have a look
-> packing structs with pointers in 'em sounds questionable.
->=20
-> I only see these two:
->=20
-> $ git grep packed drivers/net/ethernet/hisilicon/
-> drivers/net/ethernet/hisilicon/hns/hnae.h:struct __packed hnae_desc {
-> drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:struct __packed hns3_desc=
- {
+> Up to now, the irq_get_irqchip_state() callback of its_irq_chip
+> leaves unimplemented since there is no architectural way to get
+> the VLPI's pending state before GICv4.1. Yeah, there has one in
+> v4.1 for VLPIs.
 
-struct hclge_dbg_reg_type_info which is 28 bytes long due to the
-included struct struct hclge_dbg_reg_common_msg (which is 12 bytes
-long).  They are surrounded by #pragma pack(1)/pack().
 
-This forces the 2 pointers in each second array element of
-hclge_dbg_reg_info[] to be 4 byte aligned (where pointers are 8 bytes
-long on PPC64).
---=20
-Cheers,
-Stephen Rothwell
+I checked the invoking scenario of irq_get_irqchip_state and found no 
+scenario related to vLPI.
 
---Sig_/I=3tiLN0XLZrAWSSuz2Ag_u
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+For example, synchronize_irq(), it pass IRQCHIP_STATE_ACTIVE to which, 
+so in your patch, you will directly return and other is for vSGI, 
+GICD_ISPENDR, GICD_ICPENDR and so on.
 
------BEGIN PGP SIGNATURE-----
+The only one I am not sure is vgic_get_phys_line_level(), is it your 
+purpose to fill this callback, or some scenarios I don't know about that 
+use this callback.
 
-iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/B3jYACgkQAVBC80lX
-0GwFIgf4pkvlqKpzmRgyqk+s0V1tc9Gl8zToJYwqce1hR4QciFVaTeVkvik1MpR5
-j6pW1eb5DB+1p7nDsEH9W2e/3Y8NZAH58xIuYz8DtoMhVFZC/ag/eQFeq8f7YPbG
-v1166AaoNoBmBQaFYuLk+3fBc5RsedFSRik82Lpkad24U2KpjkTuTxEh19er5/3y
-FKo5d37D1e2vSxwfggOJQ09Z1UsHU6RRb0V4vkLh9QI9h2bxzhiMmi6KvATA7Xg2
-ecqbSb9293xx2VWSSn8I8PYyyVgkt4N6AwMvCdrJG/wIPBljcTCSqVbuh3lnGUD7
-uz4kcTQF5VXbzVvq7Ph+kLFhBbnk
-=fRdP
------END PGP SIGNATURE-----
 
---Sig_/I=3tiLN0XLZrAWSSuz2Ag_u--
+>
+> With GICv4.1, after unmapping the vPE, which cleans and invalidates
+> any caching of the VPT, we can get the VLPI's pending state by
+> peeking at the VPT. So we implement the irq_get_irqchip_state()
+> callback of its_irq_chip to do it.
+>
+> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+> ---
+>   drivers/irqchip/irq-gic-v3-its.c | 38 ++++++++++++++++++++++++++++++++
+>   1 file changed, 38 insertions(+)
+>
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index 0fec31931e11..287003cacac7 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -1695,6 +1695,43 @@ static void its_irq_compose_msi_msg(struct irq_data *d, struct msi_msg *msg)
+>   	iommu_dma_compose_msi_msg(irq_data_get_msi_desc(d), msg);
+>   }
+>   
+> +static bool its_peek_vpt(struct its_vpe *vpe, irq_hw_number_t hwirq)
+> +{
+> +	int mask = hwirq % BITS_PER_BYTE;
+> +	void *va;
+> +	u8 *pt;
+> +
+> +	va = page_address(vpe->vpt_page);
+> +	pt = va + hwirq / BITS_PER_BYTE;
+> +
+> +	return !!(*pt & (1U << mask));
+
+
+How can you confirm that the interrupt pending status is the latest? Is 
+it possible that the interrupt pending status is still cached in the 
+GICR but not synchronized to the memory.
+
+
+Thanks
+
+Jiaxing
+
+
+> +}
+> +
+> +static int its_irq_get_irqchip_state(struct irq_data *d,
+> +				     enum irqchip_irq_state which, bool *val)
+> +{
+> +	struct its_device *its_dev = irq_data_get_irq_chip_data(d);
+> +	struct its_vlpi_map *map = get_vlpi_map(d);
+> +
+> +	if (which != IRQCHIP_STATE_PENDING)
+> +		return -EINVAL;
+> +
+> +	/* not intended for physical LPI's pending state */
+> +	if (!map)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * In GICv4.1, a VMAPP with {V,Alloc}=={0,1} cleans and invalidates
+> +	 * any caching of the VPT associated with the vPEID held in the GIC.
+> +	 */
+> +	if (!is_v4_1(its_dev->its) || atomic_read(&map->vpe->vmapp_count))
+> +		return -EACCES;
+> +
+> +	*val = its_peek_vpt(map->vpe, map->vintid);
+> +
+> +	return 0;
+> +}
+> +
+>   static int its_irq_set_irqchip_state(struct irq_data *d,
+>   				     enum irqchip_irq_state which,
+>   				     bool state)
+> @@ -1975,6 +2012,7 @@ static struct irq_chip its_irq_chip = {
+>   	.irq_eoi		= irq_chip_eoi_parent,
+>   	.irq_set_affinity	= its_set_affinity,
+>   	.irq_compose_msi_msg	= its_irq_compose_msi_msg,
+> +	.irq_get_irqchip_state	= its_irq_get_irqchip_state,
+>   	.irq_set_irqchip_state	= its_irq_set_irqchip_state,
+>   	.irq_retrigger		= its_irq_retrigger,
+>   	.irq_set_vcpu_affinity	= its_irq_set_vcpu_affinity,
+
