@@ -2,134 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E22D2C719A
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2BC2C719B
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390724AbgK1Vv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:27 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:35944 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730572AbgK1SmR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:42:17 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ASIeNnm056892;
-        Sat, 28 Nov 2020 18:41:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=PqZnLoBYIXrmlOxFoC5hoP7Cwqsbnc9iJzNAuuV8ylI=;
- b=EmosImKEnAVUOaKvSB50+AmiZlaKJFUltKroUOe6tWZ8dT0IfbGFvn9hG+9iYM79x2AQ
- OwV2FwQLs61+SwfmNjsHC9nyqDHajU74d8UA8r+BweTA3ccIYt0U6UUy8l8FXwD+Pykp
- w87oem0Ww/TuCjINZ/S3gmoMWqFafQgYqCPUd0t/eNgKgTWqYz3r7Ewd3sieJLABXdaA
- 2esisvspmIseCxZ9+3E3BgJW6IoYpipKH6bvquR4refHEZINsemYKnxAbdnLQ6+rdigt
- cHylzxPmvBEj7krt7unjXlvRcVrgZO5zoO6sNNWx0wU9tqnpjyol74XLDaF/xjGGe788 sA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 353egk94yc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 28 Nov 2020 18:41:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ASIe4Tr062624;
-        Sat, 28 Nov 2020 18:41:29 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 353ec0e3v3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 28 Nov 2020 18:41:29 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0ASIfPc2019459;
-        Sat, 28 Nov 2020 18:41:28 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 28 Nov 2020 10:41:24 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] nfsd: Fix kernel test robot warning
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <1606571451-3655-1-git-send-email-jrdr.linux@gmail.com>
-Date:   Sat, 28 Nov 2020 13:41:23 -0500
-Cc:     Bruce Fields <bfields@fieldses.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <F1972C21-8C1A-4B93-868F-2B849D224D0C@oracle.com>
-References: <1606571451-3655-1-git-send-email-jrdr.linux@gmail.com>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9819 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 bulkscore=0
- mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011280117
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9819 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011280117
+        id S2390742AbgK1Vva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:30 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:54538 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730912AbgK1SqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:46:03 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kj5De-009HGC-O0; Sat, 28 Nov 2020 19:45:14 +0100
+Date:   Sat, 28 Nov 2020 19:45:14 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
+Message-ID: <20201128184514.GD2191767@lunn.ch>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-3-steen.hegelund@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201127133307.2969817-3-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Souptick-
+> +/* Add a potentially wrapping 32 bit value to a 64 bit counter */
+> +static inline void sparx5_update_counter(u64 *cnt, u32 val)
+> +{
+> +	if (val < (*cnt & U32_MAX))
+> +		*cnt += (u64)1 << 32; /* value has wrapped */
+> +
+> +	*cnt = (*cnt & ~(u64)U32_MAX) + val;
+> +}
 
-This looks like the same error that Coverity caught earlier this
-week. AFAIK Bruce intends to address this issue with a replacement
-patch:
+I don't follow what this is doing. Could you give some examples?
 
-https://lore.kernel.org/linux-nfs/20201125164738.GA7049@fieldses.org/
+> +static const char *const sparx5_stats_layout[] = {
+> +	"rx_in_bytes",
+> +	"rx_symbol_err",
+> +	"rx_pause",
+> +	"rx_unsup_opcode",
 
+> +static void sparx5_update_port_stats(struct sparx5 *sparx5, int portno)
+> +{
+> +	struct sparx5_port *spx5_port = sparx5->ports[portno];
+> +	bool high_speed_dev = sparx5_is_high_speed_device(&spx5_port->conf);
 
-> On Nov 28, 2020, at 8:50 AM, Souptick Joarder <jrdr.linux@gmail.com> wrote:
-> 
-> Kernel test robot throws below warning -
-> 
->>> fs/nfsd/nfs3xdr.c:299:6: warning: variable 'err' is used
->>> uninitialized whenever 'if' condition is false
->>> [-Wsometimes-uninitialized]
->           if (!v4 || !inode->i_sb->s_export_op->fetch_iversion)
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   fs/nfsd/nfs3xdr.c:304:6: note: uninitialized use occurs here
->           if (err) {
->               ^~~
->   fs/nfsd/nfs3xdr.c:299:2: note: remove the 'if' if its condition is
-> always true
->           if (!v4 || !inode->i_sb->s_export_op->fetch_iversion)
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   fs/nfsd/nfs3xdr.c:293:12: note: initialize the variable 'err' to
-> silence this warning
->           __be32 err;
->                     ^
->                      = 0
->   1 warning generated.
-> 
-> Initialize err = 0 to silence this warning.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> ---
-> fs/nfsd/nfs3xdr.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/nfsd/nfs3xdr.c b/fs/nfsd/nfs3xdr.c
-> index abb1608..47aeaee 100644
-> --- a/fs/nfsd/nfs3xdr.c
-> +++ b/fs/nfsd/nfs3xdr.c
-> @@ -290,7 +290,7 @@ void fill_post_wcc(struct svc_fh *fhp)
-> {
-> 	bool v4 = (fhp->fh_maxsize == NFS4_FHSIZE);
-> 	struct inode *inode = d_inode(fhp->fh_dentry);
-> -	__be32 err;
-> +	__be32 err = 0;
-> 
-> 	if (fhp->fh_post_saved)
-> 		printk("nfsd: inode locked twice during operation.\n");
-> -- 
-> 1.9.1
-> 
+Reverse christmas tree. Which in this case, means you need to move the
+assignment into the body of the code.
 
---
-Chuck Lever
+> +static void sparx5_get_sset_strings(struct net_device *ndev, u32 sset, u8 *data)
+> +{
+> +	struct sparx5_port *port = netdev_priv(ndev);
+> +	struct sparx5  *sparx5 = port->sparx5;
+> +	int idx;
+> +
+> +	if (sset != ETH_SS_STATS)
+> +		return;
+> +
+> +	for (idx = 0; idx < sparx5->num_stats; idx++)
+> +		memcpy(data + idx * ETH_GSTRING_LEN,
+> +		       sparx5->stats_layout[idx], ETH_GSTRING_LEN);
 
+You cannot use memcpy here, because the strings you have defined are
+not ETH_GSTRING_LEN long. We once had a driver which happened to have
+its strings at the end of a page. The memcpy would copy the string,
+but keep going passed the end of string, over the page boundary, and
+trigger a segmentation fault.
 
-
+	Andrew
