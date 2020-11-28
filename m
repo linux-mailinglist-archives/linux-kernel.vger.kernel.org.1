@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73002C715A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1602C715C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391598AbgK1V4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:56:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387814AbgK1VkC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 16:40:02 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17028C0613D1;
-        Sat, 28 Nov 2020 13:39:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=cLViv87Sd5/WI1F3sh0RUkFslM622GS1dHyu4cz2mHc=; b=RmXEmFKUkit0IQMFSSYtrynDQV
-        x0Kb0z1oiAxxbC7tWYH0UmZyPJlUUPrmg1ciyyWuHgVnxtDIe8hQuX1ArHBGOT1DQvgraRCLbZulU
-        ZNVmxJLVEyFCsFUB/l4aQF4HPHBcBZyACeMi0PsDo01RPMH7FVwofJtGZzWhlzTUMGutYz6YxV7ko
-        a6YUYBkcFBBv1IF2b2r+0b4rSYLCCwfWXHknuGSrliO9b2ZPJzpVw7AU9vbLe97TGaJBtwQl67X/Y
-        W/CoZbOyJwDDvoxyruHZkNrZP765HhUgQ3rBCcrYdhAfsIxttZgr1czN+GkD3KPmKqu7ggsqe75yx
-        rTmydCAQ==;
-Received: from [2601:1c0:6280:3f0::cc1f] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kj7vz-0002PT-6P; Sat, 28 Nov 2020 21:39:11 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Eli Cohen <eli@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org
-Subject: [PATCH v4] vdpa: mlx5: fix vdpa/vhost dependencies
-Date:   Sat, 28 Nov 2020 13:39:05 -0800
-Message-Id: <20201128213905.27409-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S2391301AbgK1V45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:56:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391367AbgK1VyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 16:54:01 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4125320857;
+        Sat, 28 Nov 2020 21:53:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606600400;
+        bh=cb7v+yyp8V0gUPgw13jOGxbQanmZsArHbf9RhiLHmkQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=v/I6BXQISl6Ls7lROR48qKflb9h8GOYNGn01hBKIQPrdztEdaDhr5HlS+t27DcZiJ
+         F1tVSOJ7zOgvAqv/wdpRPqgzienFknj8JPkuEaK9ruE4kjEs3lHZ5CkLluihUBP5zy
+         d/ur7M3eZOJF8fMdp7O/v/O1UxTISSiv7FqsZZK0=
+Date:   Sat, 28 Nov 2020 15:53:18 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     ashok.raj@intel.com, knsathya@kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH 1/5] PCI/DPC: Ignore devices with no AER Capability
+Message-ID: <20201128215318.GA924062@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2a7c9e6-8916-2c14-4968-a963266e6c53@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/vdpa/mlx5/ uses vhost_iotlb*() interfaces, so select
-VHOST_IOTLB to make them be built.
+On Sat, Nov 28, 2020 at 01:49:46PM -0800, Kuppuswamy, Sathyanarayanan wrote:
+> On 11/28/20 12:24 PM, Bjorn Helgaas wrote:
+> > On Wed, Nov 25, 2020 at 06:01:57PM -0800, Kuppuswamy, Sathyanarayanan wrote:
+> > > On 11/25/20 5:18 PM, Bjorn Helgaas wrote:
+> > > > From: Bjorn Helgaas <bhelgaas@google.com>
+> > > > 
+> > > > Downstream Ports may support DPC regardless of whether they support AER
+> > > > (see PCIe r5.0, sec 6.2.10.2).  Previously, if the user booted with
+> > > > "pcie_ports=dpc-native", it was possible for dpc_probe() to succeed even if
+> > > > the device had no AER Capability, but dpc_get_aer_uncorrect_severity()
+> > > > depends on the AER Capability.
+> > > > 
+> > > > dpc_probe() previously failed if:
+> > > > 
+> > > >     !pcie_aer_is_native(pdev) && !pcie_ports_dpc_native
+> > > >     !(pcie_aer_is_native() || pcie_ports_dpc_native)    # by De Morgan's law
+> > > > 
+> > > > so it succeeded if:
+> > > > 
+> > > >     pcie_aer_is_native() || pcie_ports_dpc_native
+> > > > 
+> > > > Fail dpc_probe() if the device has no AER Capability.
+> > > > 
+> > > > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > > Cc: Olof Johansson <olof@lixom.net>
+> > > > ---
+> > > >    drivers/pci/pcie/dpc.c | 3 +++
+> > > >    1 file changed, 3 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> > > > index e05aba86a317..ed0dbc43d018 100644
+> > > > --- a/drivers/pci/pcie/dpc.c
+> > > > +++ b/drivers/pci/pcie/dpc.c
+> > > > @@ -287,6 +287,9 @@ static int dpc_probe(struct pcie_device *dev)
+> > > >    	int status;
+> > > >    	u16 ctl, cap;
+> > > > +	if (!pdev->aer_cap)
+> > > > +		return -ENOTSUPP;
+> > > Don't we check aer_cap support in drivers/pci/pcie/portdrv_core.c ?
+> > > 
+> > > We don't enable DPC service, if AER service is not enabled. And AER
+> > > service is only enabled if AER capability is supported.
+> > > 
+> > > So dpc_probe() should not happen if AER capability is not supported?
+> > 
+> > I don't think that's always true.  If I'm reading this right, we have
+> > this:
+> > 
+> >    get_port_device_capability(...)
+> >    {
+> >    #ifdef CONFIG_PCIEAER
+> >      if (dev->aer_cap && ...)
+> >        services |= PCIE_PORT_SERVICE_AER;
+> >    #endif
+> > 
+> >      if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+> >          pci_aer_available() &&
+> >          (pcie_ports_dpc_native || (services & PCIE_PORT_SERVICE_AER)))
+> >        services |= PCIE_PORT_SERVICE_DPC;
+> >    }
+> > 
+> > and in the case where:
+> > 
+> >    - CONFIG_PCIEAER=y
+> >    - booted with "pcie_ports=dpc-native" (pcie_ports_dpc_native is true)
+> >    - "dev" has no AER capability
+> >    - "dev" has DPC capability
+> > 
+> > I think we do enable PCIE_PORT_SERVICE_DPC.
+> Got it. But further looking into it, I am wondering whether
+> we should keep this dependency? Currently we just use it to
+> dump the error information. Do we need to create dependency
+> between DPC and AER (which is functionality not dependent) just
+> to see more details about the error?
 
-However, if VHOST_IOTLB is the only VHOST symbol that is
-set/enabled, the object file still won't be built because
-drivers/Makefile won't descend into drivers/vhost/ to build it,
-so make drivers/Makefile build the needed binary whenever
-VHOST_IOTLB is set, like it does for VHOST_RING.
-
-Fixes these build errors:
-ERROR: modpost: "vhost_iotlb_itree_next" [drivers/vdpa/mlx5/mlx5_vdpa.ko] undefined!
-ERROR: modpost: "vhost_iotlb_itree_first" [drivers/vdpa/mlx5/mlx5_vdpa.ko] undefined!
-
-Fixes: 29064bfdabd5 ("vdpa/mlx5: Add support library for mlx5 VDPA implementation")
-Fixes: aff90770e54c ("vdpa/mlx5: Fix dependency on MLX5_CORE")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Eli Cohen <eli@mellanox.com>
-Cc: Parav Pandit <parav@mellanox.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: virtualization@lists.linux-foundation.org
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leonro@nvidia.com>
-Cc: netdev@vger.kernel.org
----
-v2: change from select to depends on VHOST (Saeed)
-v3: change to depends on VHOST_IOTLB (Jason)
-v4: use select VHOST_IOTLB (Michael); also add to drivers/Makefile
-
- drivers/Makefile     |    1 +
- drivers/vdpa/Kconfig |    1 +
- 2 files changed, 2 insertions(+)
-
---- linux-next-20201127.orig/drivers/vdpa/Kconfig
-+++ linux-next-20201127/drivers/vdpa/Kconfig
-@@ -32,6 +32,7 @@ config IFCVF
- 
- config MLX5_VDPA
- 	bool
-+	select VHOST_IOTLB
- 	help
- 	  Support library for Mellanox VDPA drivers. Provides code that is
- 	  common for all types of VDPA drivers. The following drivers are planned:
---- linux-next-20201127.orig/drivers/Makefile
-+++ linux-next-20201127/drivers/Makefile
-@@ -143,6 +143,7 @@ obj-$(CONFIG_OF)		+= of/
- obj-$(CONFIG_SSB)		+= ssb/
- obj-$(CONFIG_BCMA)		+= bcma/
- obj-$(CONFIG_VHOST_RING)	+= vhost/
-+obj-$(CONFIG_VHOST_IOTLB)	+= vhost/
- obj-$(CONFIG_VHOST)		+= vhost/
- obj-$(CONFIG_VLYNQ)		+= vlynq/
- obj-$(CONFIG_GREYBUS)		+= greybus/
+That's a good question, but I don't really want to get into the actual
+operation of the AER and DPC drivers in this series, so maybe
+something we should explore later.
