@@ -2,162 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2F82C706E
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BAFE2C708E
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 19:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732430AbgK1R7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 12:59:00 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8525 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733142AbgK1R4k (ORCPT
+        id S1731740AbgK1SAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 13:00:30 -0500
+Received: from condef-03.nifty.com ([202.248.20.68]:63837 "EHLO
+        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729846AbgK1R6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 12:56:40 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CjjYP0G0Lzhgks;
-        Sat, 28 Nov 2020 15:19:37 +0800 (CST)
-Received: from [127.0.0.1] (10.57.22.126) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Sat, 28 Nov 2020
- 15:19:49 +0800
-Subject: Re: [RFC PATCH v1 1/4] irqchip/gic-v4.1: Plumb get_irqchip_state VLPI
- callback
-To:     Shenming Lu <lushenming@huawei.com>, Marc Zyngier <maz@kernel.org>,
-        "James Morse" <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Christoffer Dall <christoffer.dall@arm.com>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-2-lushenming@huawei.com>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <869dbc36-c510-fd00-407a-b05e068537c8@huawei.com>
-Date:   Sat, 28 Nov 2020 15:19:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Sat, 28 Nov 2020 12:58:17 -0500
+Received: from conuserg-08.nifty.com ([10.126.8.71])by condef-03.nifty.com with ESMTP id 0AS8lwls020580;
+        Sat, 28 Nov 2020 17:48:24 +0900
+Received: from localhost.localdomain (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 0AS8klCf024281;
+        Sat, 28 Nov 2020 17:46:47 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 0AS8klCf024281
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606553208;
+        bh=3ZxQhTM55h3T1rci5XqtW4G9136NvehcsYvGcG3kcgc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SElIFciYjQNJuulProNcUJ6g9mjA6O9qq6ZNcU+lGQxM4xJ2H6GbcjQChrwQVdtMy
+         43+MEC/tZn52+NUzUIE+ZDL1Cw8daDnSbuD+PgRrWJADV7BHkydbLYUfzOWruBqV56
+         Vhf4Hes+x+8MiHQxt2sU5gyJMHCYXBwmEulcrBlxZaqCA61wi+yO7X9URuIez0xvwu
+         kdGZNqcJ8SGzfFt0E0i9BVkt1t+vMk/FuamGdUGmFlHBuC6fnWAGf7gS1t2qNTF0PH
+         pvten505D/ZiSdoqoEPIG4NNVRLMudKUr6O1qbSoZ4zLx2t8m2rp2X3Ktut9GMNRh3
+         7sqLNV4Grz0eA==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        wireguard@lists.zx2c4.com
+Subject: [PATCH v2] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
+Date:   Sat, 28 Nov 2020 17:46:39 +0900
+Message-Id: <20201128084639.149153-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201123065410.1915-2-lushenming@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.57.22.126]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, shenming
+Revert commit cebc04ba9aeb ("add CONFIG_ENABLE_MUST_CHECK").
 
+A lot of warn_unused_result wearings existed in 2006, but until now
+they have been fixed thanks to people doing allmodconfig tests.
 
-I got few questions about this patch.
+Our goal is to always enable __must_check where appropriate, so this
+CONFIG option is no longer needed.
 
-Although it's a bit late and not very appropriate, I'd like to ask 
-before you send next version.
+I see a lot of defconfig (arch/*/configs/*_defconfig) files having:
 
-On 2020/11/23 14:54, Shenming Lu wrote:
-> From: Zenghui Yu <yuzenghui@huawei.com>
->
-> Up to now, the irq_get_irqchip_state() callback of its_irq_chip
-> leaves unimplemented since there is no architectural way to get
-> the VLPI's pending state before GICv4.1. Yeah, there has one in
-> v4.1 for VLPIs.
+    # CONFIG_ENABLE_MUST_CHECK is not set
 
+I did not touch them for now since it would be a big churn. If arch
+maintainers want to clean them up, please go ahead.
 
-I checked the invoking scenario of irq_get_irqchip_state and found no 
-scenario related to vLPI.
+While I was here, I also moved __must_check to compiler_attributes.h
+from compiler_types.h
 
-For example, synchronize_irq(), it pass IRQCHIP_STATE_ACTIVE to which, 
-so in your patch, you will directly return and other is for vSGI, 
-GICD_ISPENDR, GICD_ICPENDR and so on.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-The only one I am not sure is vgic_get_phys_line_level(), is it your 
-purpose to fill this callback, or some scenarios I don't know about that 
-use this callback.
+Changes in v2:
+  - Move __must_check to compiler_attributes.h
 
+ include/linux/compiler_attributes.h                 | 7 +++++++
+ include/linux/compiler_types.h                      | 6 ------
+ lib/Kconfig.debug                                   | 8 --------
+ tools/testing/selftests/wireguard/qemu/debug.config | 1 -
+ 4 files changed, 7 insertions(+), 15 deletions(-)
 
->
-> With GICv4.1, after unmapping the vPE, which cleans and invalidates
-> any caching of the VPT, we can get the VLPI's pending state by
-> peeking at the VPT. So we implement the irq_get_irqchip_state()
-> callback of its_irq_chip to do it.
->
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> Signed-off-by: Shenming Lu <lushenming@huawei.com>
-> ---
->   drivers/irqchip/irq-gic-v3-its.c | 38 ++++++++++++++++++++++++++++++++
->   1 file changed, 38 insertions(+)
->
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index 0fec31931e11..287003cacac7 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -1695,6 +1695,43 @@ static void its_irq_compose_msi_msg(struct irq_data *d, struct msi_msg *msg)
->   	iommu_dma_compose_msi_msg(irq_data_get_msi_desc(d), msg);
->   }
->   
-> +static bool its_peek_vpt(struct its_vpe *vpe, irq_hw_number_t hwirq)
-> +{
-> +	int mask = hwirq % BITS_PER_BYTE;
-> +	void *va;
-> +	u8 *pt;
-> +
-> +	va = page_address(vpe->vpt_page);
-> +	pt = va + hwirq / BITS_PER_BYTE;
-> +
-> +	return !!(*pt & (1U << mask));
-
-
-How can you confirm that the interrupt pending status is the latest? Is 
-it possible that the interrupt pending status is still cached in the 
-GICR but not synchronized to the memory.
-
-
-Thanks
-
-Jiaxing
-
-
-> +}
-> +
-> +static int its_irq_get_irqchip_state(struct irq_data *d,
-> +				     enum irqchip_irq_state which, bool *val)
-> +{
-> +	struct its_device *its_dev = irq_data_get_irq_chip_data(d);
-> +	struct its_vlpi_map *map = get_vlpi_map(d);
-> +
-> +	if (which != IRQCHIP_STATE_PENDING)
-> +		return -EINVAL;
-> +
-> +	/* not intended for physical LPI's pending state */
-> +	if (!map)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * In GICv4.1, a VMAPP with {V,Alloc}=={0,1} cleans and invalidates
-> +	 * any caching of the VPT associated with the vPEID held in the GIC.
-> +	 */
-> +	if (!is_v4_1(its_dev->its) || atomic_read(&map->vpe->vmapp_count))
-> +		return -EACCES;
-> +
-> +	*val = its_peek_vpt(map->vpe, map->vintid);
-> +
-> +	return 0;
-> +}
-> +
->   static int its_irq_set_irqchip_state(struct irq_data *d,
->   				     enum irqchip_irq_state which,
->   				     bool state)
-> @@ -1975,6 +2012,7 @@ static struct irq_chip its_irq_chip = {
->   	.irq_eoi		= irq_chip_eoi_parent,
->   	.irq_set_affinity	= its_set_affinity,
->   	.irq_compose_msi_msg	= its_irq_compose_msi_msg,
-> +	.irq_get_irqchip_state	= its_irq_get_irqchip_state,
->   	.irq_set_irqchip_state	= its_irq_set_irqchip_state,
->   	.irq_retrigger		= its_irq_retrigger,
->   	.irq_set_vcpu_affinity	= its_irq_set_vcpu_affinity,
+diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+index b2a3f4f641a7..5f3b7edad1a7 100644
+--- a/include/linux/compiler_attributes.h
++++ b/include/linux/compiler_attributes.h
+@@ -171,6 +171,13 @@
+  */
+ #define __mode(x)                       __attribute__((__mode__(x)))
+ 
++/*
++ *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-warn_005funused_005fresult-function-attribute
++ * clang: https://clang.llvm.org/docs/AttributeReference.html#nodiscard-warn-unused-result
++ *
++ */
++#define __must_check                    __attribute__((__warn_unused_result__))
++
+ /*
+  * Optional: only supported since gcc >= 7
+  *
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index ac3fa37a84f9..7ef20d1a6c28 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -110,12 +110,6 @@ struct ftrace_likely_data {
+ 	unsigned long			constant;
+ };
+ 
+-#ifdef CONFIG_ENABLE_MUST_CHECK
+-#define __must_check		__attribute__((__warn_unused_result__))
+-#else
+-#define __must_check
+-#endif
+-
+ #if defined(CC_USING_HOTPATCH)
+ #define notrace			__attribute__((hotpatch(0, 0)))
+ #elif defined(CC_USING_PATCHABLE_FUNCTION_ENTRY)
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index c789b39ed527..cb8ef4fd0d02 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -286,14 +286,6 @@ config GDB_SCRIPTS
+ 
+ endif # DEBUG_INFO
+ 
+-config ENABLE_MUST_CHECK
+-	bool "Enable __must_check logic"
+-	default y
+-	help
+-	  Enable the __must_check logic in the kernel build.  Disable this to
+-	  suppress the "warning: ignoring return value of 'foo', declared with
+-	  attribute warn_unused_result" messages.
+-
+ config FRAME_WARN
+ 	int "Warn for stack frames larger than"
+ 	range 0 8192
+diff --git a/tools/testing/selftests/wireguard/qemu/debug.config b/tools/testing/selftests/wireguard/qemu/debug.config
+index b50c2085c1ac..fe07d97df9fa 100644
+--- a/tools/testing/selftests/wireguard/qemu/debug.config
++++ b/tools/testing/selftests/wireguard/qemu/debug.config
+@@ -1,5 +1,4 @@
+ CONFIG_LOCALVERSION="-debug"
+-CONFIG_ENABLE_MUST_CHECK=y
+ CONFIG_FRAME_POINTER=y
+ CONFIG_STACK_VALIDATION=y
+ CONFIG_DEBUG_KERNEL=y
+-- 
+2.27.0
 
