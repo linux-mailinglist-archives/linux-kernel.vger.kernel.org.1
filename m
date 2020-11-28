@@ -2,84 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BA72C7178
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751E82C7193
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391055AbgK1Vvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
+        id S2390894AbgK1Vvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731878AbgK1S4m (ORCPT
+        with ESMTP id S1731486AbgK1Sw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:56:42 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB12AC08E864
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 22:33:17 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id t8so6316501pfg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 22:33:17 -0800 (PST)
+        Sat, 28 Nov 2020 13:52:58 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE4BC09425A
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:19:45 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id x24so6385955pfn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 23:19:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DUSXiXpwL9MYF0t7RCjJUFWrXmRSwKXVWWmDaBGz+RY=;
-        b=l0m95lfOh2p2gTNq86P9XdpQe4EgjiSgD+fMOwTWGe2MQSvXM1FxkNdJBDB23ey3h4
-         OjFd97Lnkuc7vKHajeA7Ynn/vLmCIHK6NqOhdUK6jWalkAc41MjLuoIArnqLyoP1Us+W
-         XpbfeNb1npDJix6WRqkgikX/xusLuWpbcezpWQYFqO5mS0/al9lR4x0T0X2RJbXG8xzr
-         C/e7vqsvVNNWYPBaMiSXkR2XTcKEqIzqtvlaLdBpdQwA00FUMpKQlsh+pRCgxEtC7aIH
-         ImrWerzMYm7z9XlZQmMxj54d1dOXN8E/aiPbF6zJb/ryL4D4D3NQux42IJ3uZWgNzkBd
-         gMNA==
+         :content-disposition:in-reply-to;
+        bh=l0rVIvtsW51c7Ccpavw8OYRMig1yB9jbJuctIw5klvQ=;
+        b=a8MF0bjLIbRnZCU6cEhLaXXy/AdUPSVvanp4o0/1hi8wmw5J7mKuIF7siw8NwZvyxr
+         xRYuu3GHvBbNgi3fuXWBtftW4qXdGaKsdmV4wH88qsJDf4HmtAQbYmFAOJRTUw4O8S3W
+         t+OPQKZHl8h/2cJwuIefVv2dz8HtotHGPZsdAhqaLr3RBwhCskY/x87YpfQHR+vrnwiH
+         +85jBGxnZO8viJQ5LcWLwvKY9ltqUJw/HSnTI6vhXk0jx/Ds+23gpA83hStzH2xHHslj
+         130VE+5eYKmP+v51iwyVnj+wB1aqXWiwqRTK/UWdnuCGC69KAHZCpq/rIpeBdlPAsbkG
+         WFrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DUSXiXpwL9MYF0t7RCjJUFWrXmRSwKXVWWmDaBGz+RY=;
-        b=gmshn/fw2vCTF9pRtUugk6KkXzQkMY31AdqPjv6qz697epHLhihFJIT+N2cdKJuHHh
-         OOaZ7NXVPpZYMWB6cx2AiKlqwmg/P7t+z9TsLPqAnnwfa0FLrB+IUrXHP9AMdoZyoZZu
-         /00ACFgTsBI0apzG0h2kjkLbQktlRAjFaBLSUT8YHu0gH24joB5YeT8rxbGA5dOTJ1Tw
-         B1A8VN7zEZGEFsZgYYG/uiLl9ijnhSx0U9nDt0gsHXIJ/usxgzGW1rabfplELbsSRtrc
-         MnyjflZBOauEM5She6YHvPBD/3tIDFBZ4tqVKJZubYuh1HbU3op6b+o8a04rspF/rIBH
-         3BaQ==
-X-Gm-Message-State: AOAM530zQwXMzbjv6J6jRg/tYHB6dmD3SmTNWvTb4TSvile/Gpd7I0db
-        Zr7sLzQgj1eAPr+Ywtk3tqk=
-X-Google-Smtp-Source: ABdhPJxM/SXPGPZ5djj5fAwxjN+Jh9s7zxv9s3a25Ft18C879ZH9k1/q1oN6VZt3zBjJhQEIz/9luw==
-X-Received: by 2002:a17:90b:1888:: with SMTP id mn8mr15055780pjb.158.1606545197284;
-        Fri, 27 Nov 2020 22:33:17 -0800 (PST)
-Received: from localhost ([209.9.72.213])
-        by smtp.gmail.com with ESMTPSA id k21sm8730687pfu.7.2020.11.27.22.33.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 27 Nov 2020 22:33:16 -0800 (PST)
-Date:   Sat, 28 Nov 2020 14:33:13 +0800
-From:   sunjunyong <sunjy516@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     arnd@arndb.de, sunjunyong@xiaomi.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ttyprintk: optimize tpk_close flush code
-Message-ID: <20201128063313.GA31258@mi-OptiPlex-7050>
-References: <1605579667-16573-1-git-send-email-sunjunyong@xiaomi.com>
- <X7N2A+i22d6sC0lH@kroah.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=l0rVIvtsW51c7Ccpavw8OYRMig1yB9jbJuctIw5klvQ=;
+        b=d4c7XGR8+uMZczLbFgM2XRqSklOaYVfSGtvdEV5oP+yBZJuPtoXzF/m87IvgXviqgE
+         i3qurKLkDgl8Xf2CP6xK+gW2SM+HNQpzQVinIHKOznrOUaS06O4klxVtWFes2UH0FBo4
+         jKr8gigPqxIPhU+7dha9ANjYF+9WqxrPpZgU+31AAc2y2bdbAGJZuxtHiIsR+PEhceOY
+         1p2yCPVm8ANpSGrlk87EK7Pvo0amMZw/5x5dhA4PkHhFyQVDgPodR40TwblWXYM7EprT
+         nmM76a6MwBtBDP+jZdIBdbJalUWL2vKoPHvuUCyBMBNzW6SBgvID+8LEqGvP5NC/3mAT
+         IGpw==
+X-Gm-Message-State: AOAM531aIL4FyYRDgFXXlEJxPoVwT4DzNeB9bXa/yy7UvEfDv0JUgyDx
+        FhtNxCkv8ozwGjCeCwhm54Y7gqfwolaK
+X-Google-Smtp-Source: ABdhPJxiSQxBSKdCIpK8nSHxvobIsO698gvNKn20ieEzGCwZ0w6ro0EVK2rwIIa4sxlnKCkO0kMGsA==
+X-Received: by 2002:a63:5126:: with SMTP id f38mr9722126pgb.11.1606547985296;
+        Fri, 27 Nov 2020 23:19:45 -0800 (PST)
+Received: from thinkpad ([2409:4072:15:c612:48ab:f1cc:6b16:2820])
+        by smtp.gmail.com with ESMTPSA id c22sm9383950pfo.211.2020.11.27.23.19.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 23:19:44 -0800 (PST)
+Date:   Sat, 28 Nov 2020 12:49:37 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Wolfram Sang <wsa@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v2 12/18] i2c: owl: Add compatible for the Actions Semi
+ S500 I2C controller
+Message-ID: <20201128071937.GO3077@thinkpad>
+References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+ <7622fae80d12d7f423fc25190159af494c359200.1605823502.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X7N2A+i22d6sC0lH@kroah.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <7622fae80d12d7f423fc25190159af494c359200.1605823502.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg:
-
-Sorry for the late reply.
-> Why did you not make the change to tpk_printk() as well that I asked you
-> to?
+On Fri, Nov 20, 2020 at 01:56:06AM +0200, Cristian Ciocaltea wrote:
+> Add S500 variant to the list of devices supported by the Actions Semi
+> Owl I2C driver.
 > 
-> It is a static function, you control the callers, so the extra "is this
-> NULL, if so flush" logic makes no sense to keep around anymore, right?
-tpk_printk have logic to judge whether the input parameter is NULL.But for
-below removed line, we already have known the input parameter is null, so
-we don't need call logic of judge NULL, just call tpk_flush to flush is enough.
-This is just a little optimization.
-----------------------------
--	tpk_printk(NULL, 0);
-----------------------------
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-Brs.
-Junyong
+Ah, I thought S500 support needs some change...
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
+
+> ---
+>  drivers/i2c/busses/i2c-owl.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/i2c/busses/i2c-owl.c b/drivers/i2c/busses/i2c-owl.c
+> index 5cf5a119a6ad..98882fe4e965 100644
+> --- a/drivers/i2c/busses/i2c-owl.c
+> +++ b/drivers/i2c/busses/i2c-owl.c
+> @@ -508,6 +508,7 @@ static int owl_i2c_probe(struct platform_device *pdev)
+>  }
+>  
+>  static const struct of_device_id owl_i2c_of_match[] = {
+> +	{ .compatible = "actions,s500-i2c" },
+>  	{ .compatible = "actions,s700-i2c" },
+>  	{ .compatible = "actions,s900-i2c" },
+>  	{ /* sentinel */ }
+> -- 
+> 2.29.2
+> 
