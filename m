@@ -2,186 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EC62C6EB5
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 04:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B01282C6EB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 04:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729425AbgK1Dsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 22:48:52 -0500
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:13710 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731486AbgK1Dnu (ORCPT
+        id S1731493AbgK1Dq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 22:46:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731398AbgK1Dme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 22:43:50 -0500
-Received: from pps.filterd (m0150245.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AS3cGPL009688;
-        Sat, 28 Nov 2020 03:42:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pps0720;
- bh=+goaEceT8gHIrp4fdfliMHkFZeekO0OtEE+BxP3MIA4=;
- b=VLEHYa8fEgo9F1YHURg0YOwkuet9DlJuwX2XiRZ2mSQeqv8AzRTX1zaT/xoCofs8OGeb
- ZH4ae6xabxm9YNNoxPL+3l8wK8/FbRWmRluqRciqBplucA8Kdl7D9jGehpuB5GDfaR3p
- e7gfKPoWgUo/HIE9WQ1qQ5B4+GIRzPu4fIO4zkAf3XBSdQmb+lHp+Tm+bTn6P3U2ioE4
- D+3qmwpdGhIbMHvgH4LxPJKSFDAGs4nzcoris3WpR7+70QkZMwYBXxbnxmLY8DNdhoLn
- rQBNgAN9QlnCnb19fCNKUvnGMRu8AJzQ+1/Kji9McJqNeq8h8lgqnuCVovx8aS4FI35D yw== 
-Received: from g4t3425.houston.hpe.com (g4t3425.houston.hpe.com [15.241.140.78])
-        by mx0b-002e3701.pphosted.com with ESMTP id 3532m2m0df-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 28 Nov 2020 03:42:56 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3425.houston.hpe.com (Postfix) with ESMTP id 0B57E9D;
-        Sat, 28 Nov 2020 03:42:56 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 0F5EF48;
-        Sat, 28 Nov 2020 03:42:55 +0000 (UTC)
-From:   Mike Travis <mike.travis@hpe.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>
-Cc:     Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH v2 3/5] x86/platform/uv: Add sysfs hubless leaves
-Date:   Fri, 27 Nov 2020 21:42:25 -0600
-Message-Id: <20201128034227.120869-4-mike.travis@hpe.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201128034227.120869-1-mike.travis@hpe.com>
-References: <20201128034227.120869-1-mike.travis@hpe.com>
+        Fri, 27 Nov 2020 22:42:34 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA521C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 19:42:33 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id d9so7989711oib.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 19:42:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VLzI5Wn/zg0+hFTpN0tfFuoZOdepE3gNmagFCGpxFho=;
+        b=bsgMmnrdHRiS8lyAW0qKzwKxG7IRz0pyurV2KveZCcEjeBxdOlmGtxd/hBuyfNQxdk
+         RwbQWYud0LiVEAzDdapcxo62iiAF6Gy8kITq5elUQA8uzlDvaHxCzcMt0YjyoWXmdC61
+         VAl5S58kNSj6rTQvAUgOi0/Rew+c1jqVcR1dQHzUWixL+oEshV59MAxpLXMdxR+z77iY
+         gct/t/WuP52+IF2j1X3kfxCJ5jb/oPoq/GmwJIIuNCV7OOra8h58rtiwlO9wPjk+5J60
+         oDYCF0CjlhnNyPyK4dwLtMjud2fW7q4W0lw9vWEEEu2Zh7yU9lL17anVivo7Sz+vOtuG
+         lqMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VLzI5Wn/zg0+hFTpN0tfFuoZOdepE3gNmagFCGpxFho=;
+        b=ECb/mtxaOuJkxjnJ6EUYizexzz57rCSFqRv0KOu3gylGLOJQ9rSzHjp+j//ulkPedF
+         SG4jmFy715x9JIEccAwl2g3YYufThWu4Vb9bnj7W9/e97R2/6d0CU4ZYfvGrprj2w6Fs
+         ncY0spDdejkRGE/CA6QU007v0YS2mjslBENcRRSr+yHZ9wCC6IzRFxaOLoCHrpzaYdh9
+         sV0B0O7fDFkMzQO4pl9sS2l9k0yDtuw7OSqD0U6vU2zGeBuhDBqSu5gloNRD7Qwx5vJE
+         W3oSf+6j3y4hiFyFDs4EwUJqpucVGO9TNCsnDluXWK3b3S2dmBT2wOjcTGBy2TdJTS7f
+         ei2g==
+X-Gm-Message-State: AOAM532FavZUtRxaKfl9RqhamwXUdOFUwF7cZ9P2jKBWpwuHtooBBsZY
+        41bcNYWz4DC2rMNa2Js54wlZg1A9LWTEiw==
+X-Google-Smtp-Source: ABdhPJxYizHts0zDI4I57tR3Sgn1uC10yhK4HwAqDdm6kDXTWibGVghdEr4DZn0iT2eDvEOnDTVBZg==
+X-Received: by 2002:aca:570c:: with SMTP id l12mr7832632oib.105.1606534952912;
+        Fri, 27 Nov 2020 19:42:32 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t17sm6279198oie.57.2020.11.27.19.42.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 19:42:32 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Shawn Guo <shawn.guo@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: c630: Define eDP bridge and panel
+Date:   Fri, 27 Nov 2020 21:42:31 -0600
+Message-Id: <20201128034231.89750-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-28_02:2020-11-26,2020-11-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- spamscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 impostorscore=0 phishscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011280025
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add uv_sysfs hubless leaves for UV hubless systems.
+The Lenovo Yoga C630 drives the Boe NV133FHM-N61 eDP display from DSI
+using a TI SN65DSI86 bridge chip on I2C 10. Define the bridge and eDP
+panel and enable the display blocks.
 
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- drivers/platform/x86/uv_sysfs.c | 52 +++++++++++++++++++++++++++++++--
- 1 file changed, 50 insertions(+), 2 deletions(-)
+ .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 100 ++++++++++++++++++
+ 1 file changed, 100 insertions(+)
 
-diff --git a/drivers/platform/x86/uv_sysfs.c b/drivers/platform/x86/uv_sysfs.c
-index 115754cdcd89..913559797ba4 100644
---- a/drivers/platform/x86/uv_sysfs.c
-+++ b/drivers/platform/x86/uv_sysfs.c
-@@ -44,6 +44,8 @@ static const char *uv_type_string(void)
- 		return "5.0";
- 	else if (is_uv2_hub())
- 		return "3.0";
-+	else if (uv_get_hubless_system())
-+		return "0.1";
- 	else
- 		return "unknown";
- }
-@@ -747,6 +749,12 @@ static ssize_t uv_hub_type_show(struct kobject *kobj,
- 	return scnprintf(buf, PAGE_SIZE, "0x%x\n", uv_hub_type());
- }
- 
-+static ssize_t uv_hubless_show(struct kobject *kobj,
-+			struct kobj_attribute *attr, char *buf)
-+{
-+	return scnprintf(buf, PAGE_SIZE, "0x%x\n", uv_get_hubless_system());
-+}
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index f956dbf664c1..bdd5d92ee6c3 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -44,6 +44,26 @@ mode {
+ 			linux,code = <SW_TABLET_MODE>;
+ 		};
+ 	};
 +
- static struct kobj_attribute partition_id_attr =
- 	__ATTR(partition_id, 0444, partition_id_show, NULL);
- static struct kobj_attribute coherence_id_attr =
-@@ -757,6 +765,8 @@ static struct kobj_attribute uv_archtype_attr =
- 	__ATTR(archtype, 0444, uv_archtype_show, NULL);
- static struct kobj_attribute uv_hub_type_attr =
- 	__ATTR(hub_type, 0444, uv_hub_type_show, NULL);
-+static struct kobj_attribute uv_hubless_attr =
-+	__ATTR(hubless, 0444, uv_hubless_show, NULL);
++	panel {
++		compatible = "boe,nv133fhm-n61";
++		no-hpd;
++
++		ports {
++			port {
++				panel_in_edp: endpoint {
++					remote-endpoint = <&sn65dsi86_out>;
++				};
++			};
++		};
++	};
++
++	sn65dsi86_refclk: sn65dsi86-refclk {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++
++		clock-frequency = <19200000>;
++	};
+ };
  
- static struct attribute *base_attrs[] = {
- 	&partition_id_attr.attr,
-@@ -804,11 +814,36 @@ static int initial_bios_setup(void)
- 	return 0;
- }
+ &adsp_pas {
+@@ -260,6 +280,25 @@ &cdsp_pas {
+ 	status = "okay";
+ };
  
-+static struct attribute *hubless_base_attrs[] = {
-+	&partition_id_attr.attr,
-+	&uv_type_attr.attr,
-+	&uv_archtype_attr.attr,
-+	&uv_hubless_attr.attr,
-+	NULL,
++&dsi0 {
++	status = "okay";
++	vdda-supply = <&vreg_l26a_1p2>;
++
++	ports {
++		port@1 {
++			endpoint {
++				remote-endpoint = <&sn65dsi86_in_a>;
++				data-lanes = <0 1 2 3>;
++			};
++		};
++	};
 +};
 +
-+static struct attribute_group hubless_base_attr_group = {
-+	.attrs = hubless_base_attrs
++&dsi0_phy {
++	status = "okay";
++	vdds-supply = <&vreg_l1a_0p875>;
 +};
 +
-+
-+static int __init uv_sysfs_hubless_init(void)
-+{
-+	int ret;
-+
-+	ret = sysfs_create_group(sgi_uv_kobj, &hubless_base_attr_group);
-+	if (ret) {
-+		pr_warn("sysfs_create_group hubless_base_attr_group failed\n");
-+		kobject_put(sgi_uv_kobj);
-+	}
-+	return ret;
-+}
-+
- static int __init uv_sysfs_init(void)
- {
- 	int ret = 0;
+ &gcc {
+ 	protected-clocks = <GCC_QSPI_CORE_CLK>,
+ 			   <GCC_QSPI_CORE_CLK_SRC>,
+@@ -328,6 +367,45 @@ tsc1: hid@10 {
+ 	};
+ };
  
--	if (!is_uv_system())
-+	if (!is_uv_system() && !uv_get_hubless_system())
- 		return -ENODEV;
- 
- 	num_cnodes = uv_num_possible_blades();
-@@ -819,6 +854,10 @@ static int __init uv_sysfs_init(void)
- 		pr_warn("kobject_create_and_add sgi_uv failed\n");
- 		return -EINVAL;
- 	}
++&i2c10 {
++	status = "okay";
++	clock-frequency = <400000>;
 +
-+	if (uv_get_hubless_system())
-+		return uv_sysfs_hubless_init();
++	sn65dsi86: bridge@2c {
++		compatible = "ti,sn65dsi86";
++		reg = <0x2c>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&sn65dsi86_pin_active>;
 +
- 	ret = sysfs_create_group(sgi_uv_kobj, &base_attr_group);
- 	if (ret) {
- 		pr_warn("sysfs_create_group base_attr_group failed\n");
-@@ -856,10 +895,19 @@ static int __init uv_sysfs_init(void)
- 	return ret;
- }
- 
-+static void __exit uv_sysfs_hubless_exit(void)
-+{
-+	sysfs_remove_group(sgi_uv_kobj, &hubless_base_attr_group);
-+	kobject_put(sgi_uv_kobj);
-+}
++		enable-gpios = <&tlmm 96 GPIO_ACTIVE_HIGH>;
 +
- static void __exit uv_sysfs_exit(void)
- {
--	if (!is_uv_system())
-+	if (!is_uv_system()) {
-+		if (uv_get_hubless_system())
-+			uv_sysfs_hubless_exit();
- 		return;
-+	}
++		vpll-supply = <&vreg_l14a_1p88>;
++		vccio-supply = <&vreg_l14a_1p88>;
++
++		clocks = <&sn65dsi86_refclk>;
++		clock-names = "refclk";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				sn65dsi86_in_a: endpoint {
++					remote-endpoint = <&dsi0_out>;
++				};
++			};
++
++			port@1 {
++				reg = <1>;
++				sn65dsi86_out: endpoint {
++					remote-endpoint = <&panel_in_edp>;
++				};
++			};
++		};
++	};
++};
++
+ &i2c11 {
+ 	status = "okay";
+ 	clock-frequency = <400000>;
+@@ -344,10 +422,26 @@ ecsh: hid@5c {
+ 	};
+ };
  
- 	pci_topology_exit();
- 	uv_ports_exit();
++&mdss {
++	status = "okay";
++};
++
++&mdss_mdp {
++	status = "okay";
++};
++
+ &mss_pil {
+ 	firmware-name = "qcom/LENOVO/81JL/qcdsp1v2850.mbn", "qcom/LENOVO/81JL/qcdsp2850.mbn";
+ };
+ 
++&qup_i2c10_default {
++	pinconf {
++		pins = "gpio55", "gpio56";
++		drive-strength = <2>;
++		bias-disable;
++	};
++};
++
+ &qup_i2c12_default {
+ 	drive-strength = <2>;
+ 	bias-disable;
+@@ -454,6 +548,12 @@ codec {
+ &tlmm {
+ 	gpio-reserved-ranges = <0 4>, <81 4>;
+ 
++	sn65dsi86_pin_active: sn65dsi86-enable {
++		pins = "gpio96";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
+ 	i2c3_hid_active: i2c2-hid-active {
+ 		pins = "gpio37";
+ 		function = "gpio";
 -- 
-2.21.0
+2.29.2
 
