@@ -2,189 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131BF2C70FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 580BC2C7103
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390685AbgK1VvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730178AbgK1SiF (ORCPT
+        id S2390808AbgK1Vvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:35 -0500
+Received: from smtprelay0197.hostedemail.com ([216.40.44.197]:38522 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731051AbgK1Sre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:38:05 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6F2C0258F4;
-        Sat, 28 Nov 2020 08:02:19 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id k11so6743747pgq.2;
-        Sat, 28 Nov 2020 08:02:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=65OkZBDz2HAL7Su3DQky7EvOLeinu5tb1gf0ETLWceY=;
-        b=u/jtzknFAd1tAacYeJoy/46zj5ChdFT3xU8MZDR6BV1HUVh/2VSorfp/+xqvPHsPkn
-         A5kWjznZ0r5vU8waxfe1mqVhtjhfYM+MaOz88K1WoNyQZyYjMWkiGLgwLA3xK3WSa6Gq
-         FrlTNGIlqHWCl/be5jqC8aVx2VyfAfrUaer6LZ0ZQ/nNbXgJa/VHWb+e2mFD1wW/jxDa
-         IfrRS5GIsGLweCb8HbxwZksrk0lJRMKAEcFqCQtSF2EBIi7qeHLU8MfKOOiNLtDuaQj9
-         FYq964XIIM+e/xk1kgqKRlfVu9uv/c3RzDRXUBD5Oi2Uu4QAgEoknC8D/6A6B7cDDFbc
-         ZOtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=65OkZBDz2HAL7Su3DQky7EvOLeinu5tb1gf0ETLWceY=;
-        b=fywcnwGNuSGoBmm8r6woiizBRiZnVeS5MW0nB2HaLJsQAKwppQe7USHzMeYwd6Isep
-         Hzw40ojhHMya1LYFoL+huTV0BwaWaUX3MHkZY92X4ERAhrFSHOvXBekCPa1LTLSOKu4t
-         N0qTkyJhRo7zsvc+er89RqIfv1zGKJhLFbUogZzIBQpKx4O3COzjUAd8y+CcEmVDI+tH
-         fTAfG3zjCTgIsGMkzOiAnQPfGC6HjwpNl/DRGqLi7aomqMg7I3lzbBvpwa0tkGkqcNIE
-         yGoDoe+8CC2pe5FW3A1t1XS7YfVp0mRMyTEt5lt8H9JmKr9sXf9BUCAl0VRZVHU9H21j
-         Md3A==
-X-Gm-Message-State: AOAM530x0jL/zpcnX9vSFq46WlYli7l7QirXnvyYIDJOhw0uvM/UwrzN
-        jm99vRov4gwAwtkQTdTtE+rVzhSFAgg=
-X-Google-Smtp-Source: ABdhPJwsxob0WXTuSWwVF1+ay5qDAtrGlbPGBtoVsiaD1Lu41q7ZrRVVVOcfY+0p8Z91jyXmyn1W1w==
-X-Received: by 2002:a17:90b:8d8:: with SMTP id ds24mr6227490pjb.129.1606579338854;
-        Sat, 28 Nov 2020 08:02:18 -0800 (PST)
-Received: from bobo.ibm.com (193-116-103-132.tpgi.com.au. [193.116.103.132])
-        by smtp.gmail.com with ESMTPSA id d4sm9762607pjz.28.2020.11.28.08.02.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 08:02:17 -0800 (PST)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, x86@kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org, Anton Blanchard <anton@ozlabs.org>
-Subject: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb option
-Date:   Sun, 29 Nov 2020 02:01:39 +1000
-Message-Id: <20201128160141.1003903-7-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20201128160141.1003903-1-npiggin@gmail.com>
-References: <20201128160141.1003903-1-npiggin@gmail.com>
+        Sat, 28 Nov 2020 13:47:34 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 37034180206ED;
+        Sat, 28 Nov 2020 18:46:52 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:559:599:800:960:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2525:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:6235:7514:7557:7875:8957:9010:9025:9036:10004:10400:10848:11026:11232:11658:11914:12043:12291:12294:12297:12438:12555:12740:12895:12986:13095:13161:13229:13255:13439:13894:14181:14659:14721:21063:21080:21221:21324:21433:21451:21627:21660:21811:21939:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: board30_171438327392
+X-Filterd-Recvd-Size: 4846
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 28 Nov 2020 18:46:51 +0000 (UTC)
+Message-ID: <55d38c770a3316a3c67f5380ffb8ed37540900da.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: add warning for unnecessary use of
+ %h[xudi] and %hh[xudi]
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Sat, 28 Nov 2020 10:46:50 -0800
+In-Reply-To: <20201128173850.66509-1-dwaipayanray1@gmail.com>
+References: <20201128173850.66509-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On big systems, the mm refcount can become highly contented when doing
-a lot of context switching with threaded applications (particularly
-switching between the idle thread and an application thread).
+On Sat, 2020-11-28 at 23:08 +0530, Dwaipayan Ray wrote:
+> Modifiers %h and %hh should never be used.
+> 
+> Commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use
+> of unnecessary %h[xudi] and %hh[xudi]") specifies that:
+> 
+> "Standard integer promotion is already done and %hx and %hhx is useless
+> so do not encourage the use of %hh[xudi] or %h[xudi]."
+> 
+> "The "h" and "hh" things should never be used. The only reason for them
+> being used if you have an "int", but you want to print it out as a
+> "char" (and honestly, that is a really bad reason, you'd be better off
+> just using a proper cast to make the code more obvious)."
+> 
+> Add a new check to emit a warning on finding an unneeded use of %h or
+> %hh modifier.
+> 
+> Also add a fix option to the check.
+> 
+> Link: https://lore.kernel.org/lkml/4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com/
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> ---
+> Changes in v3:
+> - Change warning message
+> - Fix regex match to include capture group
+> - Warn on every unnecesary use of %h on a line
+> - Add fix option when the format line matches current line
+> 
+> Changes in v2:
+> - Use $logFunctions instead of the manual list.
+> - Relocate the check to after logging continuations check.
+> - Remove perl_version_ok check
+> 
+>  scripts/checkpatch.pl | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 7dc094445d83..dc25d32f0c5f 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -6027,6 +6027,22 @@ sub process {
+>  			     "Avoid logging continuation uses where feasible\n" . $herecurr);
+>  		}
+>  
+> 
+> +# check for unnecessary use of %h[xudi] and %hh[xudi] in logging functions
+> +		if (defined $stat &&
+> +		    $line =~ /\b$logFunctions\s*\(/) {
+> +			my $lc = $stat =~ tr@\n@@;
+> +			for (my $cur_ln = $linenr; $cur_ln <= $linenr + $lc; $cur_ln++) {
+> +				my $cur_rawline = raw_line($cur_ln, 0);
+> +				while ($cur_rawline =~ /^\+.*\"[^\"]*(%[\d\.\*\-]*h+[idux])/g) {
+> +					if (WARN("INTEGER_PROMOTION",
+> +						 "Using 'h' in $1 is unnecessary\n" . "$cur_rawline\n") &&
+> +					    $fix && ($cur_ln == $linenr)) {
+> +						$fixed[$fixlinenr] =~ s/(\"[^\"]*%[\d\.\*\-]*)h+([idux])/$1$2/;
+> +					}
+> +				}
+> +			}
+> +		}
+> +
 
-Abandoning lazy tlb slows switching down quite a bit in the important
-user->idle->user cases, so so instead implement a non-refcounted scheme
-that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
-any remaining lazy ones.
+Here was what I tried:
 
-Shootdown IPIs are some concern, but they have not been observed to be
-a big problem with this scheme (the powerpc implementation generated
-314 additional interrupts on a 144 CPU system during a kernel compile).
-There are a number of strategies that could be employed to reduce IPIs
-if they turn out to be a problem for some workload.
+There are uses like %#06hh", so # was addedto the format block
+and multiple line uses were also inspected.
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- arch/Kconfig  | 13 +++++++++++++
- kernel/fork.c | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 66 insertions(+)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 596bf589d74b..540e43aeefa4 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -440,6 +440,19 @@ config MMU_LAZY_TLB
- config MMU_LAZY_TLB_REFCOUNT
- 	def_bool y
- 	depends on MMU_LAZY_TLB
-+	depends on !MMU_LAZY_TLB_SHOOTDOWN
-+
-+config MMU_LAZY_TLB_SHOOTDOWN
-+	bool
-+	depends on MMU_LAZY_TLB
-+	help
-+	  Instead of refcounting the "lazy tlb" mm struct, which can cause
-+	  contention with multi-threaded apps on large multiprocessor systems,
-+	  this option causes __mmdrop to IPI all CPUs in the mm_cpumask and
-+	  switch to init_mm if they were using the to-be-freed mm as the lazy
-+	  tlb. To implement this, architectures must use _lazy_tlb variants of
-+	  mm refcounting, and mm_cpumask must include at least all possible
-+	  CPUs in which mm might be lazy.
+ scripts/checkpatch.pl | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7dc094445d83..b985b6b37ba8 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6027,6 +6027,29 @@ sub process {
+ 			     "Avoid logging continuation uses where feasible\n" . $herecurr);
+ 		}
  
- config ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	bool
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 6d266388d380..e47312c2b48b 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -669,6 +669,54 @@ static void check_mm(struct mm_struct *mm)
- #define allocate_mm()	(kmem_cache_alloc(mm_cachep, GFP_KERNEL))
- #define free_mm(mm)	(kmem_cache_free(mm_cachep, (mm)))
- 
-+static void do_shoot_lazy_tlb(void *arg)
-+{
-+	struct mm_struct *mm = arg;
++# check for unnecessary use of %h[xudi] and %hh[xudi] in logging functions
++		if (defined $stat &&
++		    $line =~ /\b$logFunctions\s*\(/ &&
++		    index($stat, '"') >= 0) {
++			my $lc = $stat =~ tr@\n@@;
++			$lc = $lc + $linenr;
++			my $stat_real = get_stat_real($linenr, $lc);
++			pos($stat_real) = index($stat_real, '"');
++			my $lineoff = substr($stat_real, 0, pos($stat_real)) =~ tr/\n//;
++			while ($stat_real =~ /[^"%]*(%[#\d\.\*\-]*(h+)[idux])/g) {
++				my $pspec = $1;
++				my $h = $2;
++				if (WARN("UNNECESSARY_MODIFIER",
++					 "Integer promotion: '$h' use in '$pspec' is unnecessary\n" . "$here\n$stat_real\n") &&
++				    $fix &&
++				    $fixed[$fixlinenr + $lineoff] =~ /^\+/) {
++					my $nspec = $pspec;
++					$nspec =~ s/h//g;
++					$fixed[$fixlinenr + $lineoff] =~ s/\Q$pspec\E/$nspec/;
++				}
++			}
++		}
 +
-+	if (current->active_mm == mm) {
-+		WARN_ON_ONCE(current->mm);
-+		current->active_mm = &init_mm;
-+		switch_mm(mm, &init_mm, current);
-+		exit_lazy_tlb(mm, current);
-+	}
-+}
-+
-+static void do_check_lazy_tlb(void *arg)
-+{
-+	struct mm_struct *mm = arg;
-+
-+	WARN_ON_ONCE(current->active_mm == mm);
-+}
-+
-+static void shoot_lazy_tlbs(struct mm_struct *mm)
-+{
-+	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_SHOOTDOWN)) {
-+		/*
-+		 * IPI overheads have not found to be expensive, but they could
-+		 * be reduced in a number of possible ways, for example (in
-+		 * roughly increasing order of complexity):
-+		 * - A batch of mms requiring IPIs could be gathered and freed
-+		 *   at once.
-+		 * - CPUs could store their active mm somewhere that can be
-+		 *   remotely checked without a lock, to filter out
-+		 *   false-positives in the cpumask.
-+		 * - After mm_users or mm_count reaches zero, switching away
-+		 *   from the mm could clear mm_cpumask to reduce some IPIs
-+		 *   (some batching or delaying would help).
-+		 * - A delayed freeing and RCU-like quiescing sequence based on
-+		 *   mm switching to avoid IPIs completely.
-+		 */
-+		on_each_cpu_mask(mm_cpumask(mm), do_shoot_lazy_tlb, (void *)mm, 1);
-+		if (IS_ENABLED(CONFIG_DEBUG_VM))
-+			on_each_cpu(do_check_lazy_tlb, (void *)mm, 1);
-+	} else {
-+		/*
-+		 * In this case, lazy tlb mms are refounted and would not reach
-+		 * __mmdrop until all CPUs have switched away and mmdrop()ed.
-+		 */
-+	}
-+}
-+
- /*
-  * Called when the last reference to the mm
-  * is dropped: either by a lazy thread or by
-@@ -678,7 +726,12 @@ void __mmdrop(struct mm_struct *mm)
- {
- 	BUG_ON(mm == &init_mm);
- 	WARN_ON_ONCE(mm == current->mm);
-+
-+	/* Ensure no CPUs are using this as their lazy tlb mm */
-+	shoot_lazy_tlbs(mm);
-+
- 	WARN_ON_ONCE(mm == current->active_mm);
-+
- 	mm_free_pgd(mm);
- 	destroy_context(mm);
- 	mmu_notifier_subscriptions_destroy(mm);
--- 
-2.23.0
+ # check for mask then right shift without a parentheses
+ 		if ($perl_version_ok &&
+ 		    $line =~ /$LvalOrFunc\s*\&\s*($LvalOrFunc)\s*>>/ &&
+
 
