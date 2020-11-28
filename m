@@ -2,52 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F3F2C6E0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 238412C6E10
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732207AbgK1BBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 20:01:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729320AbgK1AwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 19:52:20 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4C6221D46;
-        Sat, 28 Nov 2020 00:51:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1606524705;
-        bh=seZSPmfrCgEO+88cDvs7ZWc7qrlgqROHVINfZRZbMJQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=O5fvwfuzd9cCkdEsEN+NRjVe9YKj573Wl3xmz9mDfhcj+ND+jUwkm9QADhzzFDBwR
-         C/GK312geG1WK7yZCCwl6wPbg/9MuPdMxOGNMFOCTYJfPhgdPs/1YVOA/2aP1tTY3O
-         VvHpJlAtPQTmgzUrvQ6QdsalvFK21wVFEBYwX2gk=
-Date:   Fri, 27 Nov 2020 16:51:44 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Oscar Salvador <osalvador@suse.de>, n-horiguchi@ah.jp.nec.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] mm,hwpoison: Disable pcplists before grabbing a
- refcount
-Message-Id: <20201127165144.3d788c7dc806788d05157f26@linux-foundation.org>
-In-Reply-To: <5512967d-a96a-c94e-7442-e5e71baa7b19@suse.cz>
-References: <20201119105716.5962-1-osalvador@suse.de>
-        <20201119105716.5962-7-osalvador@suse.de>
-        <5512967d-a96a-c94e-7442-e5e71baa7b19@suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1731632AbgK1BD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 20:03:29 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8421 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731202AbgK1BAM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 20:00:12 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CjY6k2Ymjz73GH;
+        Sat, 28 Nov 2020 08:59:26 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 28 Nov 2020 08:59:46 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <kamil@wypas.org>, <b.zolnierkie@samsung.com>, <jdelvare@suse.com>,
+        <linux@roeck-us.net>, <thierry.reding@gmail.com>,
+        <u.kleine-koenig@pengutronix.de>, <lee.jones@linaro.org>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>
+CC:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pwm@vger.kernel.org>
+Subject: [PATCH] hwmon: (pwm-fan): Switch to using the new API kobj_to_dev()
+Date:   Sat, 28 Nov 2020 09:00:06 +0800
+Message-ID: <1606525206-22154-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 14:45:30 +0100 Vlastimil Babka <vbabka@suse.cz> wrote:
+fixed the following coccicheck:
+drivers/hwmon//pwm-fan.c:152:60-61: WARNING opportunity for kobj_to_dev().
 
-> Note as you say the series should go after [1] above, which means after 
-> mm-page_alloc-disable-pcplists-during-memory-offline.patch in mmots, but 
-> currently it's ordered before, where zone_pcp_disable() etc doesn't yet exist. 
-> Found out as I review using checked out this commit from -next.
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/hwmon/pwm-fan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks, I reordered them.
+diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c
+index 1f63807..7849011 100644
+--- a/drivers/hwmon/pwm-fan.c
++++ b/drivers/hwmon/pwm-fan.c
+@@ -149,7 +149,7 @@ static struct attribute *pwm_fan_attrs[] = {
+ static umode_t pwm_fan_attrs_visible(struct kobject *kobj, struct attribute *a,
+ 				     int n)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct pwm_fan_ctx *ctx = dev_get_drvdata(dev);
+ 
+ 	/* Hide fan_input in case no interrupt is available  */
+-- 
+2.7.4
+
