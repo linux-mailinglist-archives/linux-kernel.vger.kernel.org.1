@@ -2,206 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38742C71A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E22D2C719A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390656AbgK1VvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730093AbgK1Sf6 (ORCPT
+        id S2390724AbgK1Vv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:27 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:35944 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730572AbgK1SmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:35:58 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBAFC02B8F6
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 10:35:18 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id b6so7297677pfp.7
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 10:35:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=sEQdz9uSskRiHZY3IQdor2sMJ0r9SD+WlRGWjHXAxZw=;
-        b=Qah7uiKXtdD1l0TnfPtl9lfHgVl8ySFwXc3E3YovT4OgVb42RsITGjxStCRquMMi6E
-         Qt8x4lbM9kElwkC1h1RiRxe41tHmEjm0MLSarBfLDva8ygxPxXRZX5tDc8k5rHbKirys
-         YRjpsvHKnoloReivk6rUyAlDIHO7mlyWnvLP8WVfFgkxwSDSdS7rlufKCTzqMu2KqwFa
-         XDZ+mpVBvHvDSJ9hZmvXs3dacBTSXO7L20nsq1mnJbGv1PLlgzhu3MEjkaD79+9yLYxN
-         paMKtkL3R8QbzJ7T5Av/SPQrHe2VhPZKKJ0EIrTXqtz+uahJeR+h0W8JmAQnmmzRQWIh
-         dVJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=sEQdz9uSskRiHZY3IQdor2sMJ0r9SD+WlRGWjHXAxZw=;
-        b=kPRVlZLYD3oJwLCXOE1x17eqmUH0Bvp+TkCP2qIzkCjP9LQwMziRJV5Y63dTqBNSVw
-         cHhwwzH7MPOmfZ2dNUEkaFoUMxegMO7MBxYeJrDZ66Y5pocoRuefzTuLUSL2DssAVBEp
-         Sc5CPkaRkAAWR/oWLzKBkecRBePll7hY1NIiOASPpOVaNkJnNXvaA1ZAKWJ84vQkmg0x
-         DPWco8RQ/TdVE9NHigAMm8ZQ2uo7fPzY6ZAIxNY88HcHfvHYGWX9sc1X4lerkS5GcySE
-         x7RpwgGd1DKpGptCJV9gjddncy9wz6Ihr0duQgvdkZ1LB/vuCRTGHsDi6JKlEJf+hLF9
-         cBfQ==
-X-Gm-Message-State: AOAM5328xIbWyHUzmJNFsKGIl2WxB9V8CiQZ/Z4THib8kymtZMBOm3oy
-        uQuViFwEDIkg6bW0B2SsMtSsxk3eMPwXKA==
-X-Google-Smtp-Source: ABdhPJx4+N0Q/c3bwyVOJvP6Q2rLu/5CHZta8m/VYPSbf6OAX1AsOz5GcQ6a/W4eElx4t9fCAXfHFA==
-X-Received: by 2002:a17:90a:3902:: with SMTP id y2mr17499994pjb.126.1606588518051;
-        Sat, 28 Nov 2020 10:35:18 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:410:2e8b:3868:c1d5:d398:f361])
-        by smtp.googlemail.com with ESMTPSA id h18sm11443469pfk.17.2020.11.28.10.35.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 10:35:17 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     joe@perches.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH v5] checkpatch: add fix and improve warning msg for non-standard signature
-Date:   Sun, 29 Nov 2020 00:05:08 +0530
-Message-Id: <20201128183508.1195-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <2f5c625f5f342042ab55902fe4b808bff8dd297b.camel@perches.com>
-References: <2f5c625f5f342042ab55902fe4b808bff8dd297b.camel@perches.com>
+        Sat, 28 Nov 2020 13:42:17 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ASIeNnm056892;
+        Sat, 28 Nov 2020 18:41:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=PqZnLoBYIXrmlOxFoC5hoP7Cwqsbnc9iJzNAuuV8ylI=;
+ b=EmosImKEnAVUOaKvSB50+AmiZlaKJFUltKroUOe6tWZ8dT0IfbGFvn9hG+9iYM79x2AQ
+ OwV2FwQLs61+SwfmNjsHC9nyqDHajU74d8UA8r+BweTA3ccIYt0U6UUy8l8FXwD+Pykp
+ w87oem0Ww/TuCjINZ/S3gmoMWqFafQgYqCPUd0t/eNgKgTWqYz3r7Ewd3sieJLABXdaA
+ 2esisvspmIseCxZ9+3E3BgJW6IoYpipKH6bvquR4refHEZINsemYKnxAbdnLQ6+rdigt
+ cHylzxPmvBEj7krt7unjXlvRcVrgZO5zoO6sNNWx0wU9tqnpjyol74XLDaF/xjGGe788 sA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 353egk94yc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 28 Nov 2020 18:41:29 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ASIe4Tr062624;
+        Sat, 28 Nov 2020 18:41:29 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 353ec0e3v3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 28 Nov 2020 18:41:29 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0ASIfPc2019459;
+        Sat, 28 Nov 2020 18:41:28 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 28 Nov 2020 10:41:24 -0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] nfsd: Fix kernel test robot warning
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <1606571451-3655-1-git-send-email-jrdr.linux@gmail.com>
+Date:   Sat, 28 Nov 2020 13:41:23 -0500
+Cc:     Bruce Fields <bfields@fieldses.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <F1972C21-8C1A-4B93-868F-2B849D224D0C@oracle.com>
+References: <1606571451-3655-1-git-send-email-jrdr.linux@gmail.com>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9819 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011280117
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9819 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011280117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently checkpatch warns for BAD_SIGN_OFF on non-standard signature
-styles.
+Hello Souptick-
 
-A large number of these warnings occur because of typo mistakes in
-signature tags. An evaluation over v4.13..v5.8 showed that out of 539
-warnings due to non-standard signatures, 87 are due to typo mistakes.
+This looks like the same error that Coverity caught earlier this
+week. AFAIK Bruce intends to address this issue with a replacement
+patch:
 
-Following are the standard signature tags which are often incorrectly
-used, along with their individual counts of incorrect use (over
-v4.13..v5.8):
+https://lore.kernel.org/linux-nfs/20201125164738.GA7049@fieldses.org/
 
- Reviewed-by: 42
- Signed-off-by: 25
- Reported-by: 6
- Acked-by: 4
- Tested-by: 4
- Suggested-by: 4
 
-Provide a fix by calculating levenshtein distance for the signature tag
-with all the standard signatures and suggest a fix with a signature, whose
-edit distance is less than or equal to 2 with the misspelled signature.
+> On Nov 28, 2020, at 8:50 AM, Souptick Joarder <jrdr.linux@gmail.com> wrote:
+> 
+> Kernel test robot throws below warning -
+> 
+>>> fs/nfsd/nfs3xdr.c:299:6: warning: variable 'err' is used
+>>> uninitialized whenever 'if' condition is false
+>>> [-Wsometimes-uninitialized]
+>           if (!v4 || !inode->i_sb->s_export_op->fetch_iversion)
+>               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   fs/nfsd/nfs3xdr.c:304:6: note: uninitialized use occurs here
+>           if (err) {
+>               ^~~
+>   fs/nfsd/nfs3xdr.c:299:2: note: remove the 'if' if its condition is
+> always true
+>           if (!v4 || !inode->i_sb->s_export_op->fetch_iversion)
+>           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   fs/nfsd/nfs3xdr.c:293:12: note: initialize the variable 'err' to
+> silence this warning
+>           __be32 err;
+>                     ^
+>                      = 0
+>   1 warning generated.
+> 
+> Initialize err = 0 to silence this warning.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> ---
+> fs/nfsd/nfs3xdr.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/nfsd/nfs3xdr.c b/fs/nfsd/nfs3xdr.c
+> index abb1608..47aeaee 100644
+> --- a/fs/nfsd/nfs3xdr.c
+> +++ b/fs/nfsd/nfs3xdr.c
+> @@ -290,7 +290,7 @@ void fill_post_wcc(struct svc_fh *fhp)
+> {
+> 	bool v4 = (fhp->fh_maxsize == NFS4_FHSIZE);
+> 	struct inode *inode = d_inode(fhp->fh_dentry);
+> -	__be32 err;
+> +	__be32 err = 0;
+> 
+> 	if (fhp->fh_post_saved)
+> 		printk("nfsd: inode locked twice during operation.\n");
+> -- 
+> 1.9.1
+> 
 
-Out of the 86 mispelled signatures fixed with this approach, 85 were
-found to be good corrections and 1 was bad correction.
+--
+Chuck Lever
 
-Following was found to be a bad correction:
- Tweeted-by (count: 1) => Tested-by
 
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-applies on next-20201120
-
-changes in v2: modify commit message: replace specific example with overall evaluation, minor changes
-
-changes in v3: summarize commit message
-
-changes in v4: improve commit message; remove signature suggestions of small length (ie 'cc' and 'to')
-
-changes in v5: modify coding styles: improve function names, whitespaces
-
- scripts/checkpatch.pl | 79 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 77 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fdfd5ec09be6..e372d26d03dc 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -506,6 +506,72 @@ our $signature_tags = qr{(?xi:
- 	Cc:
- )};
- 
-+sub edit_distance_min {
-+	my (@arr) = @_;
-+	my $len = scalar @arr;
-+	if ((scalar @arr) < 1) {
-+		# if underflow, return
-+		return;
-+	}
-+	my $min = $arr[0];
-+	for my $i (0 .. ($len-1)) {
-+		if ($arr[$i] < $min) {
-+			$min = $arr[$i];
-+		}
-+	}
-+	return $min;
-+}
-+
-+sub get_edit_distance {
-+	my ($str1, $str2) = @_;
-+	$str1 = lc($str1);
-+	$str1 =~ s/-//g;
-+	$str2 =~ s/-//g;
-+	my $len1 = length($str1);
-+	my $len2 = length($str2);
-+	# two dimensional array storing minimum edit distance
-+	my @distance;
-+	for my $i (0 .. $len1) {
-+		for my $j (0 .. $len2) {
-+			if ($i == 0) {
-+				$distance[$i][$j] = $j;
-+			} elsif ($j == 0) {
-+				$distance[$i][$j] = $i;
-+			} elsif (substr($str1, $i-1, 1) eq substr($str2, $j-1, 1)) {
-+				$distance[$i][$j] = $distance[$i - 1][$j - 1];
-+			} else {
-+				my $dist1 = $distance[$i][$j - 1]; #insert distance
-+				my $dist2 = $distance[$i - 1][$j]; # remove
-+				my $dist3 = $distance[$i - 1][$j - 1]; #replace
-+				$distance[$i][$j] = 1 + edit_distance_min($dist1, $dist2, $dist3);
-+			}
-+		}
-+	}
-+	return $distance[$len1][$len2];
-+}
-+
-+sub find_standard_signature {
-+	my ($sign_off) = @_;
-+	my @standard_signature_tags = (
-+		'signed-off-by:', 'co-developed-by:', 'acked-by:', 'tested-by:',
-+		'reviewed-by:', 'reported-by:', 'suggested-by:'
-+	);
-+	my $standard_signature;
-+	my $min_edit_distance = 20; # setting default value
-+	my $edit_distance;
-+	foreach (@standard_signature_tags) {
-+		$edit_distance = get_edit_distance($sign_off, $_);
-+		if ($edit_distance < $min_edit_distance) {
-+			$min_edit_distance = $edit_distance;
-+			$standard_signature = $_;
-+		}
-+	}
-+        if ($min_edit_distance <= 2) {
-+		return ucfirst($standard_signature);
-+	}
-+	return "";
-+}
-+
- our @typeListMisordered = (
- 	qr{char\s+(?:un)?signed},
- 	qr{int\s+(?:(?:un)?signed\s+)?short\s},
-@@ -2773,8 +2839,17 @@ sub process {
- 			my $ucfirst_sign_off = ucfirst(lc($sign_off));
- 
- 			if ($sign_off !~ /$signature_tags/) {
--				WARN("BAD_SIGN_OFF",
--				     "Non-standard signature: $sign_off\n" . $herecurr);
-+				my $suggested_signature = find_standard_signature($sign_off);
-+				if ($suggested_signature eq "") {
-+					WARN("BAD_SIGN_OFF",
-+					     "Non-standard signature: $sign_off\n" . $herecurr);
-+				} else {
-+					if (WARN("BAD_SIGN_OFF",
-+						 "Non-standard signature: $sign_off. Perhaps '$suggested_signature'\n" . $herecurr) &&
-+					    $fix) {
-+						$fixed[$fixlinenr] =~ s/$sign_off/$suggested_signature/;
-+					}
-+				}
- 			}
- 			if (defined $space_before && $space_before ne "") {
- 				if (WARN("BAD_SIGN_OFF",
--- 
-2.17.1
 
