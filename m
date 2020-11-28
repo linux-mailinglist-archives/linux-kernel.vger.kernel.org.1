@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF55A2C7629
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 797162C7675
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388725AbgK1W3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 17:29:46 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:42045 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388667AbgK1W3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 17:29:46 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id F4074240002;
-        Sat, 28 Nov 2020 22:28:59 +0000 (UTC)
-Date:   Sat, 28 Nov 2020 23:28:59 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/11] iio: adc: at91_adc: remove platform data
-Message-ID: <20201128222859.GL1296649@piout.net>
-References: <20201117140656.1235055-1-alexandre.belloni@bootlin.com>
- <20201117140656.1235055-2-alexandre.belloni@bootlin.com>
- <20201128140427.61dbaceb@archlinux>
- <20201128142342.GJ1296649@piout.net>
- <20201128152645.0e0a7e4a@archlinux>
+        id S1731687AbgK1Wty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 17:49:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729763AbgK1Wty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 17:49:54 -0500
+Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DDA6207CD;
+        Sat, 28 Nov 2020 22:49:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606603754;
+        bh=nTcYVx1CXNipNWJj1PJLSt1g2sysd3r+3pEQrzOYWgg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iNZYP58ddvMEZPGU4oCTS8Kev4laQhA5Pl2zkv27rXKDPXiBcDUg8y0GIp08axExQ
+         /IOfOU/Qso78Wva603mnbHLMEkv1udfRjGHQoSgzjm3d58aO0U5vcR3ziHVrcl9WDz
+         s6H4LvC2bH8cmoti6oYa5Coa3X9KgS58sB+eK93k=
+Date:   Sat, 28 Nov 2020 14:49:12 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>, Dan Murphy <dmurphy@ti.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: Re: [RESEND PATCH v2] dt-bindings: net: correct interrupt flags in
+ examples
+Message-ID: <20201128144912.5d5a9430@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <4fe99bbc-4037-8542-449c-86a30fb1190a@pengutronix.de>
+References: <20201026153620.89268-1-krzk@kernel.org>
+        <3fafb016-5d9e-5e0f-9e5a-2421fbde3eb1@pengutronix.de>
+        <20201127082700.4a218688@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <4fe99bbc-4037-8542-449c-86a30fb1190a@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201128152645.0e0a7e4a@archlinux>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2020 15:26:45+0000, Jonathan Cameron wrote:
-> On Sat, 28 Nov 2020 15:23:42 +0100
-> Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+On Fri, 27 Nov 2020 20:35:55 +0100 Marc Kleine-Budde wrote:
+> On 11/27/20 5:27 PM, Jakub Kicinski wrote:
+> > On Fri, 27 Nov 2020 10:13:01 +0100 Marc Kleine-Budde wrote:  
+> >> On 10/26/20 4:36 PM, Krzysztof Kozlowski wrote:  
+> >>> GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+> >>> These are simple defines so they could be used in DTS but they will not
+> >>> have the same meaning:
+> >>> 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+> >>> 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
+> >>>
+> >>> Correct the interrupt flags, assuming the author of the code wanted same
+> >>> logical behavior behind the name "ACTIVE_xxx", this is:
+> >>>   ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
+> >>>   ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
+> >>>
+> >>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> >>> Acked-by: Rob Herring <robh@kernel.org>
+> >>> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for tcan4x5x.txt    
+> >>
+> >> Jakub, can you queue this patch for net/master?  
+> > 
+> > Sure! Are these correct?
+> > 
+> > Fixes: a1a8b4594f8d ("NFC: pn544: i2c: Add DTS Documentation")
+> > Fixes: 6be88670fc59 ("NFC: nxp-nci_i2c: Add I2C support to NXP NCI driver")  
 > 
-> > Hi,
-> > 
-> > On 28/11/2020 14:04:27+0000, Jonathan Cameron wrote:
-> > > On Tue, 17 Nov 2020 15:06:46 +0100
-> > > Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
-> > >   
-> > > > The at91 platforms have been DT only for a while, remove platform data.
-> > > > 
-> > > > Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > > > Reviewed-by: Ludovic Desroches <ludovic.desroches@microchip.com>  
-> > > 
-> > > Hi Alexandre,
-> > > 
-> > > I'd completely forgotten that we actually had a similar patch that
-> > > is already applied from Alexandru back in September.
-> > >   
-> > 
-> > I actually have seen that yesterday too. I even reviewed them...
-> > 
-> > > Given vast majority matched, I've just changed your patch into one
-> > > that drops the id_table (which Alexandru didn't do).
-> > > 
-> > > So with that tweak applied to the togreg branch of iio.git.
-> > >   
-> > 
-> > Ok, thanks, I guess you didn't push yet, I wanted to check and I didn't
-> > find the patches on kernel.org.
-> 
-> I've actually just backed my try at this out.  It gets a bit messy around
-> patch 6-7 so I'd rather you did a rebase.
-> 
-> Please rebase on current togreg branch.
+> ACK:
 
-Done!
-
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Applied to net and queued for stable, thanks!
