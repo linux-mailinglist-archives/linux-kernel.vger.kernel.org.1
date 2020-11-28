@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3512C714E
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 642FC2C7172
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391584AbgK1V4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:56:18 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:52857 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387745AbgK1U5d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 15:57:33 -0500
-Received: from mail-wr1-f71.google.com ([209.85.221.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1kiwK8-0007lg-OT
-        for linux-kernel@vger.kernel.org; Sat, 28 Nov 2020 09:15:20 +0000
-Received: by mail-wr1-f71.google.com with SMTP id u8so2696551wrq.6
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 01:15:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=L1ZVOdz/CkW3cEUwY2qKMVfD+NLZGHncisYT77s+qT8=;
-        b=oVYRQuWltJcTTmumydnIY27G1Jv5lZtBHd+byVayls/ztLJo2MYbz/gRB94lPMskyh
-         wVkvGnmYoENThOlwtUWh+rdqeV2xFevaAFFfLzYKHBvHtPF+UTC+BPXHKEYxSG8oLAda
-         mn9kmh9nIrK8bIPHkthPEyviXufy0Ljnt20uGU/Hn/Rjalslygqnr8/cj5dLapUxC0xY
-         jZ7/MB2OoIiReI7ELCXY9NqtomFHPPECqjbI/xLhx7v27KSVmZWIaZNqfqTo95HzBDta
-         kL1aqgOdflH1wHzbeXvhE584xz22/UIxKZ01+9xD77gzp/OkTWRwc8sDMSmQxBXOSpNS
-         8Jbw==
-X-Gm-Message-State: AOAM530/rAslLfHFhJRKSbCv8reMVzVMr8Rl8D/coY/xj2DGWHxCETgU
-        JnidtR+b6lvs81A8lSskFjFUdqS3Fx4w40XbKtMg64VfRSIk7Bs7tQ40tZ2XqrW/Sgj1AiVlWaJ
-        648opJIM6zgwz3pj20UUMWdM6Cbe+QnUXl6h9GWa1nw==
-X-Received: by 2002:adf:a451:: with SMTP id e17mr15976269wra.99.1606554920349;
-        Sat, 28 Nov 2020 01:15:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxnKnNbHi8CC875wCyQhrcSim8L++P0BQn8wvxEhd6w3P0570zKFSnlyCCs+yqoJ1SS3sWyYQ==
-X-Received: by 2002:adf:a451:: with SMTP id e17mr15976260wra.99.1606554920140;
-        Sat, 28 Nov 2020 01:15:20 -0800 (PST)
-Received: from localhost (host-79-35-122-236.retail.telecomitalia.it. [79.35.122.236])
-        by smtp.gmail.com with ESMTPSA id d16sm20573195wrw.17.2020.11.28.01.15.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 01:15:19 -0800 (PST)
-Date:   Sat, 28 Nov 2020 10:15:17 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ring-buffer: set the right timestamp in the slow path of
- __rb_reserve_next()
-Message-ID: <X8IVJcp1gRE+FJCJ@xps-13-7390>
+        id S2391008AbgK1Vvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731614AbgK1Syg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:54:36 -0500
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1056421D7F;
+        Sat, 28 Nov 2020 09:58:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606557535;
+        bh=IV7SKkTEc9uVMaziNS3MY2bbX2PI+wASsFkaPqx7XFY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YYiDQv9kz4m3Kpob/hfPm4MKiHYe/aOK4W63bLieTTH4rlm+wPA0MmEWZXz33kBxq
+         krhPvcxzeJoMQ6ewyc0CnEu9w4eUaiEiXt3o44rZPqjjW4GpmVl4zICkvuLvn7di6y
+         U32a3mZA5cqfmCsJTIfURM7rqg4Pyh3eyaqf6+UI=
+Received: by mail-ot1-f49.google.com with SMTP id h19so6817308otr.1;
+        Sat, 28 Nov 2020 01:58:55 -0800 (PST)
+X-Gm-Message-State: AOAM531md5B8MYK6aAaumsYtjyvHRuN4anFakQFqFjNQOS8bGz50lDtH
+        pDF8lwbDBNLBg5mOozXEBK7MoD8/GO75DbbjpF8=
+X-Google-Smtp-Source: ABdhPJzwDIV2KH6ZUTuUCcaFbI59yHKYPRCBFYR0DnN7sy7J13urjT30Lbs97ypWwEBR/lTvSTpao8LQsEN4NpyzRk0=
+X-Received: by 2002:a9d:be1:: with SMTP id 88mr9531159oth.210.1606557534394;
+ Sat, 28 Nov 2020 01:58:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
+ <20201016090833.1892-2-thunder.leizhen@huawei.com> <20201128045328.2411772-1-f.fainelli@gmail.com>
+In-Reply-To: <20201128045328.2411772-1-f.fainelli@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 28 Nov 2020 10:58:38 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1_5RgcPz+bgo1bbUBk8NTJd=1-Y5-=CsQYkFgLfTE3_A@mail.gmail.com>
+Message-ID: <CAK8P3a1_5RgcPz+bgo1bbUBk8NTJd=1-Y5-=CsQYkFgLfTE3_A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
+ empty dma-ranges
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the slow path of __rb_reserve_next() a nested event(s) can happen
-between evaluating the timestamp delta of the current event and updating
-write_stamp via local_cmpxchg(); in this case the delta is not valid
-anymore and it should be set to 0 (same timestamp as the interrupting
-event), since the event that we are currently processing is not the last
-event in the buffer.
+On Sat, Nov 28, 2020 at 5:53 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> On Fri, 16 Oct 2020 17:08:32 +0800, Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> > The scripts/dtc/checks.c requires that the node have empty "dma-ranges"
+> > property must have the same "#address-cells" and "#size-cells" values as
+> > the parent node. Otherwise, the following warnings is reported:
+> >
+> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+> > (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+> > its #address-cells (1) differs from / (2)
+> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+> > (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+> > its #size-cells (1) differs from / (2)
+> >
+> > Arnd Bergmann figured out why it's necessary:
+> > Also note that the #address-cells=<1> means that any device under
+> > this bus is assumed to only support 32-bit addressing, and DMA will
+> > have to go through a slow swiotlb in the absence of an IOMMU.
+> >
+> > Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> > ---
+>
+> Applied to devicetree-arm64/next, thanks!
 
-Link: https://lwn.net/Articles/831207
-Fixes: a389d86f7fd0 ("ring-buffer: Have nested events still record running time stamp")
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
----
- kernel/trace/ring_buffer.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The notification may have gone missing, but I had merged it into v5.10-fixes
+already, and as of today, it's in mainline, so you can drop it from your
+next branch, or just leave it in if you want to avoid taking things out of
+your tree.
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index dc83b3fa9fe7..5e30e0cdb6ce 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3287,11 +3287,11 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 		ts = rb_time_stamp(cpu_buffer->buffer);
- 		barrier();
-  /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
--		    info->after < ts) {
-+		    info->after < ts &&
-+		    rb_time_cmpxchg(&cpu_buffer->write_stamp,
-+				    info->after, info->ts)) {
- 			/* Nothing came after this event between C and E */
- 			info->delta = ts - info->after;
--			(void)rb_time_cmpxchg(&cpu_buffer->write_stamp,
--					      info->after, info->ts);
- 			info->ts = ts;
- 		} else {
- 			/*
--- 
-2.29.2
-
+      Arnd
