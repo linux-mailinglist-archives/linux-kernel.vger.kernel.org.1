@@ -2,77 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697162C7101
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 342262C716A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390714AbgK1Vv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:26 -0500
-Received: from mail.zx2c4.com ([192.95.5.64]:36441 "EHLO mail.zx2c4.com"
+        id S2403819AbgK1Vwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:52:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730532AbgK1Slo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:41:44 -0500
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id ca0b12c3;
-        Sat, 28 Nov 2020 13:09:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=VxXDsIepi+eAd4xKb3U67HkBsHg=; b=Yc0hZL
-        6jx7GcAZ9Zc+ZKaMPi/AwDBReO8Kg+hbdIgLsby4m64EpN3IWfCCrjhNVSk/Rqev
-        Mu9gByATG7yn1gtWEPBID+O8VbrVX/+2dgeEpvHOMJmXEblJu8Zufa+7aKVcJ/Iw
-        +ChYqqi9xZzzLuPixz/5crETi0eRgJqPmr+NRFY+w+srP/78zIoQjerKkLqf9w24
-        vuHzu2YvtC+w0iklspKkcMmk0uv2wqYkn2ll3i4jBXnXAsrzW46JViHc/1zhf38Y
-        rKanxXX6hhpSRPtuSU+K26h67XWsFWkW5Ct6dTO3qhxZaUsftO5j7INFdtqiFhpY
-        rIlTnLtW7m6z2q7w==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 4a4d0eca (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Sat, 28 Nov 2020 13:09:04 +0000 (UTC)
-Received: by mail-yb1-f180.google.com with SMTP id e81so7011644ybc.1;
-        Sat, 28 Nov 2020 05:14:20 -0800 (PST)
-X-Gm-Message-State: AOAM530qYvHsg2yrzSbMCAgkDFxCj2TATba1Pgw2Kpa36AjhdIHCJzfC
-        7kubtgYf9lP3f6oOnnKfwS+jnV0TI9AHhEfPXCM=
-X-Google-Smtp-Source: ABdhPJzhpzpgqWtgM7qicLRbtzJzCdlKXMymfS4WuyC7aFryeXdSo+3zP9Yndl2qJmFaSFc5yZt4Oub26GQMTcJIL6U=
-X-Received: by 2002:a5b:2c6:: with SMTP id h6mr14695421ybp.306.1606569259874;
- Sat, 28 Nov 2020 05:14:19 -0800 (PST)
+        id S1732792AbgK1TEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 14:04:09 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E85A2416E;
+        Sat, 28 Nov 2020 13:21:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606569687;
+        bh=BEbazqnQY0Q+zPCFq93FKOdbGtMxOu48qu9LcX+1SbI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NhQ1GXIC0a66nw7tGFNJv86lJuqGr9AI50bUM1ovXaAZr0aKWn+MJpid8Daw2KEnq
+         aZkHGxFSHG48CaCVlnJv8/RQgydwWfLQiy3uJC45DwKaAVNEI5XDaQzRq1SkUYswdg
+         oTbQLSC6ZwJMI5DNMI6sasagVsF57IUzZVocYagc=
+Date:   Sat, 28 Nov 2020 13:21:22 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Nicolas.Ferre@microchip.com, kamel.bouhara@bootlin.com,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joe@perches.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3] MAINTAINERS: Add Kamel Bouhara as TCB counter driver
+ maintainer
+Message-ID: <20201128132047.224081a3@archlinux>
+In-Reply-To: <20201123205737.4f5f06b3@archlinux>
+References: <20201121185824.451477-1-vilhelm.gray@gmail.com>
+        <df14f643-e80e-6ae6-dcef-90adefe6d733@microchip.com>
+        <X7uragBU7qwcs62L@shinobu>
+        <20201123205737.4f5f06b3@archlinux>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201128084639.149153-1-masahiroy@kernel.org>
-In-Reply-To: <20201128084639.149153-1-masahiroy@kernel.org>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Sat, 28 Nov 2020 14:14:09 +0100
-X-Gmail-Original-Message-ID: <CAHmME9o7uLRRD91nAie48nM=ogNuV9-cwwQcW1dSVSXhjCfWsw@mail.gmail.com>
-Message-ID: <CAHmME9o7uLRRD91nAie48nM=ogNuV9-cwwQcW1dSVSXhjCfWsw@mail.gmail.com>
-Subject: Re: [PATCH v2] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        WireGuard mailing list <wireguard@lists.zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 9:48 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Revert commit cebc04ba9aeb ("add CONFIG_ENABLE_MUST_CHECK").
->
-> A lot of warn_unused_result wearings existed in 2006, but until now
-> they have been fixed thanks to people doing allmodconfig tests.
->
-> Our goal is to always enable __must_check where appropriate, so this
-> CONFIG option is no longer needed.
->
-> I see a lot of defconfig (arch/*/configs/*_defconfig) files having:
->
->     # CONFIG_ENABLE_MUST_CHECK is not set
->
-> I did not touch them for now since it would be a big churn. If arch
-> maintainers want to clean them up, please go ahead.
->
-> While I was here, I also moved __must_check to compiler_attributes.h
-> from compiler_types.h
+On Mon, 23 Nov 2020 20:57:37 +0000
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-For the wireguard test harness change:
+> On Mon, 23 Nov 2020 07:30:34 -0500
+> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+> 
+> > On Mon, Nov 23, 2020 at 09:50:34AM +0000, Nicolas.Ferre@microchip.com wrote:  
+> > > On 21/11/2020 at 19:58, William Breathitt Gray wrote:    
+> > > > Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > > > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > > > ---
+> > > >   Changes in v3:
+> > > >    - Reorder entries to match preferred MAINTAINERS ordering
+> > > > 
+> > > >   MAINTAINERS | 7 +++++++
+> > > >   1 file changed, 7 insertions(+)
+> > > > 
+> > > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > > index 913b5eb64e44..1ee380dfe189 100644
+> > > > --- a/MAINTAINERS
+> > > > +++ b/MAINTAINERS
+> > > > @@ -2104,6 +2104,13 @@ S:       Supported
+> > > >   F:     arch/arm64/boot/dts/microchip/
+> > > >   N:     sparx5
+> > > > 
+> > > > +ARM/Microchip Timer Counter Block (TCB) Capture Driver    
+> > > 
+> > > Nit: we don't use the ARM/Microchip string for drivers which could be 
+> > > multi-architecture. Only AT91 and Sparx5 families have these entries.
+> > > 
+> > > I'm not holding the patch for this:
+> > > Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>    
+> > 
+> > Jonathan,
+> > 
+> > If you would like me to submit a v4 with the "ARM/" string removed, just
+> > let me know. Otherwise, feel free to make an adjustment if you want when
+> > you merge this.  
+> 
+> No problem, I'll tweak it when I pick it up.
+Applied to the togreg branch of iio.git and pushed out as testing to be completely
+ignored (other stuff on the branch obvious might get tested ;)
 
-Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Jonathan
+
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+> > 
+> > Thanks,
+> > 
+> > William Breathitt Gray
+> >   
+> > > > +M:     Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > > > +L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> > > > +L:     linux-iio@vger.kernel.org
+> > > > +S:     Maintained
+> > > > +F:     drivers/counter/microchip-tcb-capture.c
+> > > > +
+> > > >   ARM/MIOA701 MACHINE SUPPORT
+> > > >   M:     Robert Jarzmik <robert.jarzmik@free.fr>
+> > > >   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> > > > --
+> > > > 2.29.2
+> > > > 
+> > > > 
+> > > > _______________________________________________
+> > > > linux-arm-kernel mailing list
+> > > > linux-arm-kernel@lists.infradead.org
+> > > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> > > >     
+> > > 
+> > > 
+> > > -- 
+> > > Nicolas Ferre    
+> 
+
