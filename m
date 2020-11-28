@@ -2,132 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0F22C73F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41C52C73F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389139AbgK1Vtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2389159AbgK1Vtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 28 Nov 2020 16:49:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732402AbgK1SAo (ORCPT
+        with ESMTP id S1731869AbgK1SAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 28 Nov 2020 13:00:44 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1837C0253F4
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 09:39:01 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id f17so6855553pge.6
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 09:39:01 -0800 (PST)
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA86DC0253F7;
+        Sat, 28 Nov 2020 09:41:30 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id t18so4217664plo.0;
+        Sat, 28 Nov 2020 09:41:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/lr0Q5Uwc3CpXfcZqNsuuT98OLf5ZKK5wEqy52e9CRk=;
-        b=BHoZStE5yUD85I3A7PXIN9sCE5AeRtlgGZZx9Crxq5C48tz3dcWRIYTIUwZvKOeymW
-         zd5/d7HS/W8gjM5NlP14Fp0eLgfgYo4iuE2zfXG1V+F6MBo7Mpr89AwvahVBsQKmbpn6
-         DoT/agWf2RFU7VbCG/vZKxlGQ7QELbAGQ4I2EP+6Vh0HKOy65kaki9w9ezl9EPrpgYJu
-         UHx8vMG1ccrpznSVTBADc2YaYF36KAFiR+guF6d8biH9WYJIbn/hQggCvxp4HXvAFyaL
-         fx5oBebd2XN5dHl1K2QxQLNUEd71o0xIan1jV4VaZeE8UjFqenmCmKkbIqkEKtJvg9UX
-         WRwA==
+        bh=40L//mR7mpkTS3t1iaELnVbQvjPoARioHELJuLQ1ZOA=;
+        b=pgCPDm1rOx/KGw+G2zsZ96CTC3/SsDRwhMm57nw4knrqMFbvKIDkQEzD0bDuGjFg06
+         qrAQNqeRfIYRbWlprQf5fc3bWlgjxUPQIw1Sk5AbWwdhsu2VlbbYM7VFBBHKm90qyWzJ
+         k8Dzm7PH1tvsACKQ48DXq/iB0GLHIzc5v0QPZipTdYGw9mxzBEdQnb2ckuV50+asQp15
+         apeu0PQFPCRM6SUup8X+yJXrtjkUzrsmm4y7/vMa/YKAKb5u27GXWfLpnXkpHeqfk515
+         opvXeZRjKkiRhDMm484VO1f0KKmdYKDb8nUujZ8DhFGoJ6p/USH8SB4BZh/j1YQfGDFw
+         eTOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/lr0Q5Uwc3CpXfcZqNsuuT98OLf5ZKK5wEqy52e9CRk=;
-        b=RQhkW+GWKb614xnB9IZ7foc/W7oNu7L4m/9sZnN0TWf/gS0hodgNceBoL3O5IvwrXQ
-         mIpD5hII6tui1jxePWB/9L8sZqMYEq0l6EnaO1HI4faTPjy0/T2kYsMnBPC9J6wTrjry
-         mnt2NmLJI6G166gpuytM1VkZAGwRhZsyeEp5nPmtLX/O5s+HbdDHteKeeU/Fm7NTmDe5
-         W3LhdKtxKFV0vGfWBqk7L9YLq9IPJ65MlIVoI1ytAifhmDqx82A7USC1jt5Gtx/VS5kT
-         hnj59LGVkXmR3VVtvztDPn10CMNlHEFkMhGLez0TZikDUznlCsxhJ2wJGqymtypdJpau
-         TqmQ==
-X-Gm-Message-State: AOAM531jGwz6Xs+pu9J6WPsPM6aBG5V8QJ93csN8wk01YbRQgrUag/1t
-        YgBds5OwA8NowaEjb1viYI8=
-X-Google-Smtp-Source: ABdhPJypXtG+f192A1K6LnjTqSc6pl0yRhSWq+anfN/4Vy1n/09H8nwnmCnm2Yw7rOLgPTNV4LUNjg==
-X-Received: by 2002:a63:cb47:: with SMTP id m7mr10941883pgi.395.1606585141088;
-        Sat, 28 Nov 2020 09:39:01 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:9004:60e2:4a86:2299:c009:477b])
-        by smtp.gmail.com with ESMTPSA id q14sm11653885pfl.163.2020.11.28.09.38.58
+        bh=40L//mR7mpkTS3t1iaELnVbQvjPoARioHELJuLQ1ZOA=;
+        b=MGizZ4gs/wtZQcvJG0UMP1kcyo93PYoewJhBquUeto3h6d1ZXfc8lhh2ozwMmxzQrV
+         9NGzlcJqNVh6JB7nLm6ijmiaiRd/hhsvuIeL9Iry0TjEh1GhyxoYd1wRwTw+yM6bqrpA
+         ucg+xO1aMsE1wYzd7B6sWCOPuqYc9R4ICRc0eKbc+s+He8oFeU1cDlyzjloKDsChVRwB
+         1KRNJtjfyIrYe/2hDQbcbGQHPrZvXSwu24WTbrwwPnM4gc/HylM1/vKD0auJYm8JWKzi
+         j72MIW/iGggutCaJ2F+mI/W2pEIfYwdUTj0vKyGY3jW+eY+C9a+yMbkg3h1TLC6kgSu5
+         NfnQ==
+X-Gm-Message-State: AOAM530D3QYPjLQ8LfHygY8meDLLJ+1IGS7IcAemVVN7rLkcjc6cJoAO
+        rF8iVVi+DcgNRYhE/Dx0cfA=
+X-Google-Smtp-Source: ABdhPJwPOscNvx1pSiNFc6Cpt1i7blHZkozSHzGjS9avpj0QcYGA1CLtmW6e+ZzXXJU5kXMuNPx8ww==
+X-Received: by 2002:a17:902:32d:b029:d9:d8a9:11e4 with SMTP id 42-20020a170902032db02900d9d8a911e4mr11883997pld.6.1606585290184;
+        Sat, 28 Nov 2020 09:41:30 -0800 (PST)
+Received: from hpilion.hsd1.wa.comcast.net (50-47-105-203.evrt.wa.frontiernet.net. [50.47.105.203])
+        by smtp.gmail.com with ESMTPSA id gb4sm15610246pjb.30.2020.11.28.09.41.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 09:39:00 -0800 (PST)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com
-Subject: [PATCH v3] checkpatch: add warning for unnecessary use of %h[xudi] and %hh[xudi]
-Date:   Sat, 28 Nov 2020 23:08:50 +0530
-Message-Id: <20201128173850.66509-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Sat, 28 Nov 2020 09:41:29 -0800 (PST)
+From:   Shachar Raindel <shacharr@gmail.com>
+To:     jaegeuk@kernel.org, chao@kernel.org, ebiggers@google.com,
+        daehojeong@google.com, linux-f2fs-devel@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Shachar Raindel <shacharr@gmail.com>
+Subject: [PATCH] f2fs: Fix deadlock between f2fs_quota_sync and block_operation
+Date:   Sat, 28 Nov 2020 09:41:24 -0800
+Message-Id: <20201128174124.22397-1-shacharr@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modifiers %h and %hh should never be used.
+This deadlock is hitting Android users (Pixel 3/3a/4) with Magisk, due
+to frequent umount/mount operations that trigger quota_sync, hitting
+the race. See https://github.com/topjohnwu/Magisk/issues/3171 for
+additional impact discussion.
 
-Commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use
-of unnecessary %h[xudi] and %hh[xudi]") specifies that:
+In commit db6ec53b7e03, we added a semaphore to protect quota flags.
+As part of this commit, we changed f2fs_quota_sync to call
+f2fs_lock_op, in an attempt to prevent an AB/BA type deadlock with
+quota_sem locking in block_operation.  However, rwsem in Linux is not
+recursive. Therefore, the following deadlock can occur:
 
-"Standard integer promotion is already done and %hx and %hhx is useless
-so do not encourage the use of %hh[xudi] or %h[xudi]."
+f2fs_quota_sync
+down_read(cp_rwsem) // f2fs_lock_op
+filemap_fdatawrite
+f2fs_write_data_pages
+...
+                                   block_opertaion
+				   down_write(cp_rwsem) - marks rwsem as
+				                          "writer pending"
+down_read_trylock(cp_rwsem) - fails as there is
+                              a writer pending.
+			      Code keeps on trying,
+			      live-locking the filesystem.
 
-"The "h" and "hh" things should never be used. The only reason for them
-being used if you have an "int", but you want to print it out as a
-"char" (and honestly, that is a really bad reason, you'd be better off
-just using a proper cast to make the code more obvious)."
+We solve this by creating a new rwsem, used specifically to
+synchronize this case, instead of attempting to reuse an existing
+lock.
 
-Add a new check to emit a warning on finding an unneeded use of %h or
-%hh modifier.
+Signed-off-by: Shachar Raindel <shacharr@gmail.com>
 
-Also add a fix option to the check.
-
-Link: https://lore.kernel.org/lkml/4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com/
-
-Suggested-by: Joe Perches <joe@perches.com>
-Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Fixes: db6ec53b7e03 f2fs: add a rw_sem to cover quota flag changes
 ---
-Changes in v3:
-- Change warning message
-- Fix regex match to include capture group
-- Warn on every unnecesary use of %h on a line
-- Add fix option when the format line matches current line
+ fs/f2fs/f2fs.h  |  3 +++
+ fs/f2fs/super.c | 13 +++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-Changes in v2:
-- Use $logFunctions instead of the manual list.
-- Relocate the check to after logging continuations check.
-- Remove perl_version_ok check
-
- scripts/checkpatch.pl | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7dc094445d83..dc25d32f0c5f 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6027,6 +6027,22 @@ sub process {
- 			     "Avoid logging continuation uses where feasible\n" . $herecurr);
- 		}
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index cb700d797296..b3e55137be7f 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1448,6 +1448,7 @@ struct f2fs_sb_info {
+ 	struct inode *meta_inode;		/* cache meta blocks */
+ 	struct mutex cp_mutex;			/* checkpoint procedure lock */
+ 	struct rw_semaphore cp_rwsem;		/* blocking FS operations */
++	struct rw_semaphore cp_quota_rwsem;    	/* blocking quota sync operations */
+ 	struct rw_semaphore node_write;		/* locking node writes */
+ 	struct rw_semaphore node_change;	/* locking node change */
+ 	wait_queue_head_t cp_wait;
+@@ -1961,12 +1962,14 @@ static inline void f2fs_unlock_op(struct f2fs_sb_info *sbi)
  
-+# check for unnecessary use of %h[xudi] and %hh[xudi] in logging functions
-+		if (defined $stat &&
-+		    $line =~ /\b$logFunctions\s*\(/) {
-+			my $lc = $stat =~ tr@\n@@;
-+			for (my $cur_ln = $linenr; $cur_ln <= $linenr + $lc; $cur_ln++) {
-+				my $cur_rawline = raw_line($cur_ln, 0);
-+				while ($cur_rawline =~ /^\+.*\"[^\"]*(%[\d\.\*\-]*h+[idux])/g) {
-+					if (WARN("INTEGER_PROMOTION",
-+						 "Using 'h' in $1 is unnecessary\n" . "$cur_rawline\n") &&
-+					    $fix && ($cur_ln == $linenr)) {
-+						$fixed[$fixlinenr] =~ s/(\"[^\"]*%[\d\.\*\-]*)h+([idux])/$1$2/;
-+					}
-+				}
-+			}
-+		}
-+
- # check for mask then right shift without a parentheses
- 		if ($perl_version_ok &&
- 		    $line =~ /$LvalOrFunc\s*\&\s*($LvalOrFunc)\s*>>/ &&
+ static inline void f2fs_lock_all(struct f2fs_sb_info *sbi)
+ {
++	down_write(&sbi->cp_quota_rwsem);
+ 	down_write(&sbi->cp_rwsem);
+ }
+ 
+ static inline void f2fs_unlock_all(struct f2fs_sb_info *sbi)
+ {
+ 	up_write(&sbi->cp_rwsem);
++	up_write(&sbi->cp_quota_rwsem);
+ }
+ 
+ static inline int __get_cp_reason(struct f2fs_sb_info *sbi)
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 00eff2f51807..5ce61147d7e5 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2209,8 +2209,16 @@ int f2fs_quota_sync(struct super_block *sb, int type)
+ 	 *  f2fs_dquot_commit
+ 	 *                            block_operation
+ 	 *                            down_read(quota_sem)
++	 *
++	 * However, we cannot use the cp_rwsem to prevent this
++	 * deadlock, as the cp_rwsem is taken for read inside the
++	 * f2fs_dquot_commit code, and rwsem is not recursive.
++	 *
++	 * We therefore use a special lock to synchronize
++	 * f2fs_quota_sync with block_operations, as this is the only
++	 * place where such recursion occurs.
+ 	 */
+-	f2fs_lock_op(sbi);
++	down_read(&sbi->cp_quota_rwsem);
+ 
+ 	down_read(&sbi->quota_sem);
+ 	ret = dquot_writeback_dquots(sb, type);
+@@ -2251,7 +2259,7 @@ int f2fs_quota_sync(struct super_block *sb, int type)
+ 	if (ret)
+ 		set_sbi_flag(F2FS_SB(sb), SBI_QUOTA_NEED_REPAIR);
+ 	up_read(&sbi->quota_sem);
+-	f2fs_unlock_op(sbi);
++	up_read(&sbi->cp_quota_rwsem);
+ 	return ret;
+ }
+ 
+@@ -3599,6 +3607,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	init_rwsem(&sbi->cp_rwsem);
+ 	init_rwsem(&sbi->quota_sem);
++	init_rwsem(&sbi->cp_quota_rwsem);
+ 	init_waitqueue_head(&sbi->cp_wait);
+ 	init_sb_info(sbi);
+ 
 -- 
-2.27.0
+2.29.2
 
