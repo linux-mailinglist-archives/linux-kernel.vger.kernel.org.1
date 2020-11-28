@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E5B2C7199
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0772C7408
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390675AbgK1VvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730149AbgK1Sh7 (ORCPT
+        id S2388825AbgK1Vtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:49:45 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9066 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732698AbgK1Rzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:37:59 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32027C02A1A0;
-        Sat, 28 Nov 2020 05:50:59 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id u2so4001067pls.10;
-        Sat, 28 Nov 2020 05:50:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=NAaKMiO3+eNR4sgSR3sGVZDQoceEJQzQRN6qUQNwYCU=;
-        b=F1MwlJUVPCdrfSPBqGl/h5JdLKUPgahWOy5Sm4oa3ZsAC9TstDAhSsAQh0vRiCDcI1
-         yA1+oUeK8ABjlWraDuX8EG7wl+MaUyrwGkLeE6ilk5JeihD8d0Iq11HpfL8ydxWDefe5
-         Ye7w06MvsBycYVtAC8CnzTrB0fpfcBqUZ8lQDEcmGfxvJlDGqbtyhoQseoKB0UdYuVSi
-         sBH0Vm++TscbVYJ3fmisT3IsL/e8m4R8yiH2M4Up7V6lKGTtYZAYB07WintI/PzwKeRN
-         860bstwPjq41NXvyb4PohFWQW2ElklIUM7fueZoBPQhcvCkV50ehRmWSaAs/gQYXjJyU
-         ZP8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=NAaKMiO3+eNR4sgSR3sGVZDQoceEJQzQRN6qUQNwYCU=;
-        b=fosyIs3q+Rt/K3WQBQGVe//9D8EgOIUPDw6ljFDJrIQ2DIxbKRVEmZXSaRWmuAJn7D
-         shGuTD/tVEj61Wlo2CYS+ZfKSwVFnoHKS/x6B3RmVNPRtOtzn9zo1LF/eEz/DFssJjf1
-         x9tanWtr9z5zbj/Vfea6YbX4D5f9ZVqAoyzXLBOO2Ei5F955OUIOQ1rrO2Nh2O24EFnK
-         xX0pW3WlXGsNfUnek3iG+KjH2ekVnasQm3C0Fc7k/K10QkZ91Ai2riT4FzckjNwTGEg7
-         GkHJgcH++uRJjMeY4rsP+VN9Pjm+2LxjV9GZoeNN2Bsergx0CvXbRB8alGvRL+TkrETZ
-         csBw==
-X-Gm-Message-State: AOAM530ispzGWwHDls8AB4gVrvVFKmm7sP2lGlxBd/xq4ytV8/+oONCl
-        uFhxqlzvBcm91y9nk0kwEgjZiR1eASJwHQ==
-X-Google-Smtp-Source: ABdhPJy69mn4Wl+YKc9TEvM+9ZzjAeoDT83i1CjHOOHqcWxQqrpoafrTCNZ26a4HY64a7Zjf8xSFFQ==
-X-Received: by 2002:a17:902:eb0c:b029:da:51da:cdac with SMTP id l12-20020a170902eb0cb02900da51dacdacmr6451087plb.4.1606571458474;
-        Sat, 28 Nov 2020 05:50:58 -0800 (PST)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.220.174])
-        by smtp.gmail.com with ESMTPSA id e17sm10414159pfm.155.2020.11.28.05.50.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 28 Nov 2020 05:50:57 -0800 (PST)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     bfields@fieldses.org, chuck.lever@oracle.com
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH] nfsd: Fix kernel test robot warning
-Date:   Sat, 28 Nov 2020 19:20:51 +0530
-Message-Id: <1606571451-3655-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Sat, 28 Nov 2020 12:55:43 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CjtsL68GZzLwH9;
+        Sat, 28 Nov 2020 22:19:02 +0800 (CST)
+Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.187.74) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 28 Nov 2020 22:19:24 +0800
+From:   Shenming Lu <lushenming@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Jason Cooper" <jason@lakedaemon.net>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Christoffer Dall <christoffer.dall@arm.com>
+CC:     <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        <lushenming@huawei.com>
+Subject: [PATCH v2 0/2] KVM: arm64: Optimize the wait for the completion of the VPT analysis
+Date:   Sat, 28 Nov 2020 22:18:55 +0800
+Message-ID: <20201128141857.983-1-lushenming@huawei.com>
+X-Mailer: git-send-email 2.27.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.187.74]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel test robot throws below warning -
+Right after a vPE is made resident, the code starts polling the
+GICR_VPENDBASER.Dirty bit until it becomes 0, where the delay_us
+is set to 10. But in our measurement, it takes only hundreds of
+nanoseconds, or 1~2 microseconds, to finish parsing the VPT in most
+cases. What's more, we found that the MMIO delay on GICv4.1 system
+(HiSilicon) is about 10 times higher than that on GICv4.0 system in
+kvm-unit-tests (the specific data is as follows).
 
->> fs/nfsd/nfs3xdr.c:299:6: warning: variable 'err' is used
->> uninitialized whenever 'if' condition is false
->> [-Wsometimes-uninitialized]
-           if (!v4 || !inode->i_sb->s_export_op->fetch_iversion)
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   fs/nfsd/nfs3xdr.c:304:6: note: uninitialized use occurs here
-           if (err) {
-               ^~~
-   fs/nfsd/nfs3xdr.c:299:2: note: remove the 'if' if its condition is
-always true
-           if (!v4 || !inode->i_sb->s_export_op->fetch_iversion)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   fs/nfsd/nfs3xdr.c:293:12: note: initialize the variable 'err' to
-silence this warning
-           __be32 err;
-                     ^
-                      = 0
-   1 warning generated.
+                        |   GICv4.1 emulator   |  GICv4.0 emulator
+mmio_read_user (ns)     |        12811         |        1598
 
-Initialize err = 0 to silence this warning.
+After analysis, this is mainly caused by the 10 delay_us, so it might
+really hurt performance.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
----
- fs/nfsd/nfs3xdr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+To avoid this, we can set the delay_us to 1, which is more appropriate
+in this situation and universal. Besides, we can delay the execution
+of the polling, giving the GIC a chance to work in parallel with the CPU
+on the entry path.
 
-diff --git a/fs/nfsd/nfs3xdr.c b/fs/nfsd/nfs3xdr.c
-index abb1608..47aeaee 100644
---- a/fs/nfsd/nfs3xdr.c
-+++ b/fs/nfsd/nfs3xdr.c
-@@ -290,7 +290,7 @@ void fill_post_wcc(struct svc_fh *fhp)
- {
- 	bool v4 = (fhp->fh_maxsize == NFS4_FHSIZE);
- 	struct inode *inode = d_inode(fhp->fh_dentry);
--	__be32 err;
-+	__be32 err = 0;
- 
- 	if (fhp->fh_post_saved)
- 		printk("nfsd: inode locked twice during operation.\n");
+Shenming Lu (2):
+  irqchip/gic-v4.1: Reduce the delay time of the poll on the
+    GICR_VPENDBASER.Dirty bit
+  KVM: arm64: Delay the execution of the polling on the
+    GICR_VPENDBASER.Dirty bit
+
+ arch/arm64/kvm/vgic/vgic-v4.c      | 16 ++++++++++++++++
+ arch/arm64/kvm/vgic/vgic.c         |  3 +++
+ drivers/irqchip/irq-gic-v3-its.c   | 18 +++++++++++++-----
+ drivers/irqchip/irq-gic-v4.c       | 11 +++++++++++
+ include/kvm/arm_vgic.h             |  3 +++
+ include/linux/irqchip/arm-gic-v4.h |  4 ++++
+ 6 files changed, 50 insertions(+), 5 deletions(-)
+
 -- 
-1.9.1
+2.23.0
 
