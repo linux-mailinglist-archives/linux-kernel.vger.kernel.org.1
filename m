@@ -2,160 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC582C720A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5287A2C71F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732653AbgK1Vuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733298AbgK1SR6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:17:58 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E583AC0258E3;
-        Sat, 28 Nov 2020 07:49:07 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id w6so7091854pfu.1;
-        Sat, 28 Nov 2020 07:49:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NbAVYycY6YOfQw07HUrLEWpQeZLRTY8vh8sqwjHNiYY=;
-        b=DtROul4bAe96EerB/u5UR8/qYs4S5tUL/0CAxmjLJHQNZu7mtMPSnynDuIWhq7jz6M
-         MEpzCCOV5BDoML+9aa4z8ZDgQVrrVZIq6A8S+inZtG2XWw4AF5dHQ+iwbSjZRo2HMtw8
-         kNw52H7bxje5MRPxTo/J1uOUaCGhIN/Xekmn0Eg6XeDKOM5U98+tlsGv7RmwbVoaGc2n
-         OovuXXNsucrO5GEQxA2bGRyfo0SoTyir4sLw9QrJTxcHNsyRsayfhr30k22vxg7NTle6
-         kI3Mmh0bkUc1wrwFaBWvbRfJS/eF2q7EjrDdWk0cojd6jDhcGZVWRqaXrua0iT+AwAah
-         IKCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NbAVYycY6YOfQw07HUrLEWpQeZLRTY8vh8sqwjHNiYY=;
-        b=pHmxm4GNnfs8alFm/TurbqONhVx5U7bl6/bLUJlU630HxXHFlgm1sf1LQqPd5uHvsw
-         /2uy1JfE8cfPntEkSWv/pfsCnPOqWxCePnbQQTeX8hdt8gUOqnQGnXica5y4UJWAF4pt
-         7yS0qf53Lq9pcne8CTyrQg2borV91Pmj5ZHqfJcunS0fV58FbnSBjeAfaWesEW10/XkJ
-         ujtFV1/H1KO3xhxgYziIMJ4YURDy7qZtO5D10JQ7tLxNT2FZrfbr6ZPGUIUN3ZHAwCM6
-         P8Kn5auFlf6TwhpqVc8dFN4LYsKOa33SFCo57kameDbzrgFCVt4+mc7e3HeWBsV2VjLf
-         lpew==
-X-Gm-Message-State: AOAM531q0jMeBTZLK5yeNLyI1n+5HlK8gO0tXVvJIO0590Xjc7h1H2dK
-        5giUPlbKjby5UBTMAdI/h30=
-X-Google-Smtp-Source: ABdhPJyqCBQR8A2d6dk1sHRfwPArNMLZS2bh0nKxDeJ2+RQ3RuWqznNT1xQ4Bg05XoqYbGq8pU3+SQ==
-X-Received: by 2002:a17:90a:bc83:: with SMTP id x3mr16905963pjr.90.1606578547558;
-        Sat, 28 Nov 2020 07:49:07 -0800 (PST)
-Received: from localhost.localdomain ([161.81.68.216])
-        by smtp.gmail.com with ESMTPSA id r15sm15633028pjp.51.2020.11.28.07.49.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 07:49:06 -0800 (PST)
-From:   Tom Yan <tom.ty89@gmail.com>
-To:     hdegoede@redhat.com, hch@lst.de, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org
-Cc:     mathias.nyman@intel.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, baolu.lu@linux.intel.com,
-        Tom Yan <tom.ty89@gmail.com>
-Subject: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to scsi_add_host()
-Date:   Sat, 28 Nov 2020 23:48:49 +0800
-Message-Id: <20201128154849.3193-2-tom.ty89@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201128154849.3193-1-tom.ty89@gmail.com>
-References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
- <20201128154849.3193-1-tom.ty89@gmail.com>
+        id S2390015AbgK1Vub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732723AbgK1SQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:16:56 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E766C246BC;
+        Sat, 28 Nov 2020 16:00:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606579205;
+        bh=tIKRhWls3YzYhbVGldXSkrWMmSCjQfXBQFEelNA1aWM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Rnm00mPizeX5NU8jciZzzV3em6AJ98QA8A5sG7mzGPah20ZRauHQ6W6P5B05yGeqh
+         C0EyTSQjMtntaUCjrRaWhI+gtvOU07+MWkkFUSZnfCKj8G7zBaBgJ5wzIMA09DGmwi
+         Cqi36nVkWJEB9aDGNWyJwHlTNVCU+5QquZH7qYBw=
+Date:   Sat, 28 Nov 2020 16:00:00 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/4] device: provide devm_krealloc_array()
+Message-ID: <20201128160000.5ac0ddc6@archlinux>
+In-Reply-To: <CAMRc=Mfa2Y65CW8YO_poRgrN9aPjLz=MXYrn7OPUEfwB3mnZvA@mail.gmail.com>
+References: <20201102142228.14949-1-brgl@bgdev.pl>
+        <20201102142228.14949-2-brgl@bgdev.pl>
+        <20201114154641.0258f4ee@archlinux>
+        <X7ADFLwEpUHkTiT+@kroah.com>
+        <CAMpxmJUHiNqKNVDxaWLeDja6huR78u1Hp7JHF_aP5L_UgjYzbg@mail.gmail.com>
+        <CAMRc=Mfa2Y65CW8YO_poRgrN9aPjLz=MXYrn7OPUEfwB3mnZvA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While the change only seemed to have caused issue on uas drives, we
-probably want to avoid it in the usb-storage driver as well, until
-we are sure it is the right thing to do.
+On Mon, 23 Nov 2020 12:38:26 +0100
+Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 
-Signed-off-by: Tom Yan <tom.ty89@gmail.com>
----
- drivers/usb/storage/scsiglue.c | 40 +++++++++++++++++-----------------
- drivers/usb/storage/usb.c      |  3 +--
- 2 files changed, 21 insertions(+), 22 deletions(-)
+> On Mon, Nov 16, 2020 at 11:18 AM Bartosz Golaszewski
+> <bgolaszewski@baylibre.com> wrote:
+> >
+> > On Sat, Nov 14, 2020 at 5:16 PM Greg KH <gregkh@linuxfoundation.org> wrote:  
+> > >
+> > > On Sat, Nov 14, 2020 at 03:46:41PM +0000, Jonathan Cameron wrote:  
+> > > > On Mon,  2 Nov 2020 15:22:25 +0100
+> > > > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > > >  
+> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > > >
+> > > > > When allocating an array of elements, users should check for
+> > > > > multiplication overflow or preferably use one of the provided helpers
+> > > > > like: devm_kmalloc_array().
+> > > > >
+> > > > > This provides devm_krealloc_array() for users who want to reallocate
+> > > > > managed arrays.
+> > > > >
+> > > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>  
+> > > >
+> > > > +CC Greg KH.
+> > > >
+> > > > As this is going into a very generic place I'd like a relevant ack.
+> > > > That file is a bit of a wild west for acks, but Greg seems most
+> > > > appropriate person.
+> > > >
+> > > > So Greg, any comments on this one?  
+> > >
+> > > As there is only 1 user of this function in the patch series, you don't
+> > > save any extra code space here, I don't think this is worth it.
+> > >  
+> >
+> > It's worth it in that the overflow check before allocation doesn't
+> > seem to belong in a driver IMO but is a general check that should live
+> > in common code.
+> >  
+> > > We are seeing less and less gains from these new devm_* additions, and
+> > > only more confusion and problems with them.  So perhaps don't add this?
+> > > I don't think it is needed.
+> > >  
+> >
+> > I think you're referring to the discussion on
+> > devm_platform_ioremap_resource()? I would argue that consolidation of
+> > common operations in helpers is rarely a bad thing but it's a
+> > discussion for another thread.
+> >
+> > I'm not too attached to this patch - if you think this should be
+> > dropped then fine, but I don't see how the name devm_krealloc_array()
+> > can confuse anyone.
+> >  
+> 
+> Greg: what's the final call on this?
 
-diff --git a/drivers/usb/storage/scsiglue.c b/drivers/usb/storage/scsiglue.c
-index 560efd1479ba..6539bae1c188 100644
---- a/drivers/usb/storage/scsiglue.c
-+++ b/drivers/usb/storage/scsiglue.c
-@@ -92,7 +92,7 @@ static int slave_alloc (struct scsi_device *sdev)
- static int slave_configure(struct scsi_device *sdev)
- {
- 	struct us_data *us = host_to_us(sdev->host);
--	struct device *dev = sdev->host->dma_dev;
-+	struct device *dev = us->pusb_dev->bus->sysdev;
- 
- 	/*
- 	 * Many devices have trouble transferring more than 32KB at a time,
-@@ -120,6 +120,25 @@ static int slave_configure(struct scsi_device *sdev)
- 		 * better throughput on most devices.
- 		 */
- 		blk_queue_max_hw_sectors(sdev->request_queue, 2048);
-+	} else {
-+		/*
-+		 * Limit the total size of a transfer to 120 KB.
-+		 *
-+		 * Some devices are known to choke with anything larger. It seems like
-+		 * the problem stems from the fact that original IDE controllers had
-+		 * only an 8-bit register to hold the number of sectors in one transfer
-+		 * and even those couldn't handle a full 256 sectors.
-+		 *
-+		 * Because we want to make sure we interoperate with as many devices as
-+		 * possible, we will maintain a 240 sector transfer size limit for USB
-+		 * Mass Storage devices.
-+		 *
-+		 * Tests show that other operating have similar limits with Microsoft
-+		 * Windows 7 limiting transfers to 128 sectors for both USB2 and USB3
-+		 * and Apple Mac OS X 10.11 limiting transfers to 256 sectors for USB2
-+		 * and 2048 for USB3 devices.
-+		 */
-+		blk_queue_max_hw_sectors(sdev->request_queue, 240);
- 	}
- 
- 	/*
-@@ -627,25 +646,6 @@ static const struct scsi_host_template usb_stor_host_template = {
- 	.sg_tablesize =			SG_MAX_SEGMENTS,
- 
- 
--	/*
--	 * Limit the total size of a transfer to 120 KB.
--	 *
--	 * Some devices are known to choke with anything larger. It seems like
--	 * the problem stems from the fact that original IDE controllers had
--	 * only an 8-bit register to hold the number of sectors in one transfer
--	 * and even those couldn't handle a full 256 sectors.
--	 *
--	 * Because we want to make sure we interoperate with as many devices as
--	 * possible, we will maintain a 240 sector transfer size limit for USB
--	 * Mass Storage devices.
--	 *
--	 * Tests show that other operating have similar limits with Microsoft
--	 * Windows 7 limiting transfers to 128 sectors for both USB2 and USB3
--	 * and Apple Mac OS X 10.11 limiting transfers to 256 sectors for USB2
--	 * and 2048 for USB3 devices.
--	 */
--	.max_sectors =                  240,
--
- 	/* emulated HBA */
- 	.emulated =			1,
- 
-diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
-index c2ef367cf257..f177da4ff1bc 100644
---- a/drivers/usb/storage/usb.c
-+++ b/drivers/usb/storage/usb.c
-@@ -1050,8 +1050,7 @@ int usb_stor_probe2(struct us_data *us)
- 	usb_autopm_get_interface_no_resume(us->pusb_intf);
- 	snprintf(us->scsi_name, sizeof(us->scsi_name), "usb-storage %s",
- 					dev_name(dev));
--	result = scsi_add_host_with_dma(us_to_host(us), dev,
--					us->pusb_dev->bus->sysdev);
-+	result = scsi_add_host(us_to_host(us), dev);
- 	if (result) {
- 		dev_warn(dev,
- 				"Unable to add the scsi host\n");
--- 
-2.29.2
+Reroll the series without this patch.  If it turns out to be a good idea
+in the long run we can always bring it back, but for now it's blocking
+the rest of the series.
+
+Thanks,
+
+Jonathan
+
+> 
+> Bartosz
 
