@@ -2,174 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAC42C6E63
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 03:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E11D2C6E6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 03:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730366AbgK1CNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 21:13:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728558AbgK1CKt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 21:10:49 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3EC7C0613D1;
-        Fri, 27 Nov 2020 18:10:48 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id e8so5986659pfh.2;
-        Fri, 27 Nov 2020 18:10:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7FacVR3V/WCEQ1CgCqyN6BOceGSQR7vhqJHiXGCEHWI=;
-        b=PViRMpuuI4eSXEfb51qD0D+pcYok8I/rhmStXFBTFj3IPF6V/SEoRXQv/TBup1azDC
-         hjHyNx2mApNmhLCf9Zyz95b6hiJYJGPjTJxKWjHBV0FrkhCSRKfUOLqV1605foMyGhaL
-         3kqCzZrB4I05I5JRfvEh3ci+GEIC/gM6KW/VhCi+cpn0oTFhGM4+C58/w06d4tBKFQnv
-         TAWroBz+1qLFoLIuj4DqzEmKTFdDLOe2sad/9hav4SQDjKZXqsmDrxu9/lxhK9oSMtDr
-         8M8m7zu1dYHTGZFlo8e/FXG+aWvfmtIojHDJv/r7e5z+Rh3RwjBjiLJMWei0FoJ4CPut
-         OytA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7FacVR3V/WCEQ1CgCqyN6BOceGSQR7vhqJHiXGCEHWI=;
-        b=FdU1Ua1u97h1DtGHoZZd+NPEE4rD12xbrej3czAtEE0UlHTEBp/TJtqP6mG/de4W8Q
-         qvQSjKTuBgFgzBsHP6GmAspgtsySABN0dg5K80DkZngA2SmsQ/ZSlTIR0E70Lcse//IE
-         71MVrRN/mRe/DIWasiwqMW1XHlFgaDQlYRcxDi6lUBTche+DYy86QPIRmij5z+VYMjdV
-         0GflECnzkFYmiA5GZIy4LIZPpPiF05+9uh6q78S5Cbe4rz/LLNYhYZhh493KaRghVuNE
-         UQ87iDnWpSZfsVrGxFVfDEO1f5mTioPB3B2xvefpW9eJEVpPFiMb37vrHBIsZBq0TCSr
-         bd5g==
-X-Gm-Message-State: AOAM531x0gS/My+fwhZ7MwmMG76eneok3Wup+Ji3tXK0mGmPLlMffokW
-        tDAYRgJKsZC1i3Fh9ZRSO2KFgUv1trxSx33gd7M=
-X-Google-Smtp-Source: ABdhPJwJzWeiq3C0co0/Pz4JEuuWQjID47IeRj592IOrxEVg6lIroPDYvpR9G1i2693CxUvn4SeCeqwdNUJi9gJ1RlE=
-X-Received: by 2002:a17:90a:5d8c:: with SMTP id t12mr13721302pji.156.1606529448409;
- Fri, 27 Nov 2020 18:10:48 -0800 (PST)
+        id S1731732AbgK1CST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 21:18:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731126AbgK1CQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 21:16:31 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 019DE2075E;
+        Sat, 28 Nov 2020 02:16:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606529770;
+        bh=h2+SFNoZGvVhLeY8MFKtlEPg7MZ1iL3X0MusYLz4qn0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=f7VJC0J0pYZrKxpgXOx0HVrRno2QpDiPqyy2jXU+mnZ/Z6kCpBll2bvLrM58p9Wa4
+         +lkLQjdOO3RV6vAJse0K9eUz/ycFqwJfTbz/o/ICTySx/331kpbYZFA7NmDNPmRnW5
+         CY1LelRZiPleLq2Kqbltdur6dB23MH6OKcBBZagc=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C1BA435225F1; Fri, 27 Nov 2020 18:16:09 -0800 (PST)
+Date:   Fri, 27 Nov 2020 18:16:09 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        kent.overstreet@gmail.com
+Subject: Re: [PATCH v2 tip/core/rcu 1/6] srcu: Make Tiny SRCU use multi-bit
+ grace-period counter
+Message-ID: <20201128021609.GX1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <@@@>
+ <20201121005919.17152-1-paulmck@kernel.org>
+ <f70d1032-8e0f-37bf-9ab0-33e85bc8643c@codeaurora.org>
+ <20201123195543.GC1437@paulmck-ThinkPad-P72>
+ <46f5137b-2450-2478-6274-157367264ce4@codeaurora.org>
+ <28a22477-9fbd-603a-404c-1cf6e7cc18b5@codeaurora.org>
 MIME-Version: 1.0
-References: <20201026125016.1905945-1-balsini@android.com>
-In-Reply-To: <20201026125016.1905945-1-balsini@android.com>
-From:   Peng Tao <bergwolf@gmail.com>
-Date:   Sat, 28 Nov 2020 10:10:37 +0800
-Message-ID: <CA+a=Yy76W4Xob6UVXsPLA_FKF_8+QFQSEF98yALjRmuOhnVOdw@mail.gmail.com>
-Subject: Re: [PATCH V10 0/5] fuse: Add support for passthrough read/write
-To:     Alessio Balsini <balsini@android.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <28a22477-9fbd-603a-404c-1cf6e7cc18b5@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 1:00 AM Alessio Balsini <balsini@android.com> wrote:
->
-> This is the 10th version of the series. Please find the changelog at the
-> bottom of this cover letter.
->
-> Add support for file system passthrough read/write of files when enabled in
-> userspace through the option FUSE_PASSTHROUGH.
->
-> There are file systems based on FUSE that are intended to enforce special
-> policies or trigger complicated decision makings at the file operations
-> level. Android, for example, uses FUSE to enforce fine-grained access
-> policies that also depend on the file contents.
-> Sometimes it happens that at open or create time a file is identified as
-> not requiring additional checks for consequent reads/writes, thus FUSE
-> would simply act as a passive bridge between the process accessing the FUSE
-> file system and the lower file system. Splicing and caching help reduce the
-> FUSE overhead, but there are still read/write operations forwarded to the
-> userspace FUSE daemon that could be avoided.
->
-> This series has been inspired by the original patches from Nikhilesh Reddy,
-> the idea and code of which has been elaborated and improved thanks to the
-> community support.
->
-> When the FUSE_PASSTHROUGH capability is enabled, the FUSE daemon may decide
-> while handling the open/create operations, if the given file can be
-> accessed in passthrough mode. This means that all the further read and
-> write operations would be forwarded by the kernel directly to the lower
-> file system using the VFS layer rather than to the FUSE daemon.
-> All the requests other than reads or writes are still handled by the
-> userspace FUSE daemon.
-> This allows for improved performance on reads and writes, especially in the
-> case of reads at random offsets, for which no (readahead) caching mechanism
-> would help.
-> Benchmarks show improved performance that is close to native file system
-> access when doing massive manipulations on a single opened file, especially
-> in the case of random reads, for which the bandwidth increased by almost 2X
-> or sequential writes for which the improvement is close to 3X.
->
-> The creation of this direct connection (passthrough) between FUSE file
-> objects and file objects in the lower file system happens in a way that
-> reminds of passing file descriptors via sockets:
-> - a process requests the opening of a file handled by FUSE, so the kernel
->   forwards the request to the FUSE daemon;
-> - the FUSE daemon opens the target file in the lower file system, getting
->   its file descriptor;
-> - the FUSE daemon also decides according to its internal policies if
->   passthrough can be enabled for that file, and, if so, can perform a
->   FUSE_DEV_IOC_PASSTHROUGH_OPEN ioctl() on /dev/fuse, passing the file
->   descriptor obtained at the previous step and the fuse_req unique
->   identifier;
-> - the kernel translates the file descriptor to the file pointer navigating
->   through the opened files of the "current" process and temporarily stores
->   it in the associated open/create fuse_req's passthrough_filp;
-> - when the FUSE daemon has done with the request and it's time for the
->   kernel to close it, it checks if the passthrough_filp is available and in
->   case updates the additional field in the fuse_file owned by the process
->   accessing the FUSE file system.
-> From now on, all the read/write operations performed by that process will
-> be redirected to the corresponding lower file system file by creating new
-> VFS requests.
-> Since the read/write operation to the lower file system is executed with
-> the current process's credentials, it might happen that it does not have
-> enough privileges to succeed. For this reason, the process temporarily
-> receives the same credentials as the FUSE daemon, that are reverted as soon
-> as the read/write operation completes, emulating the behavior of the
-> request to be performed by the FUSE daemon itself. This solution has been
-> inspired by the way overlayfs handles read/write operations.
-> Asynchronous IO is supported as well, handled by creating separate AIO
-> requests for the lower file system that will be internally tracked by FUSE,
-> that intercepts and propagates their completion through an internal
-> ki_completed callback similar to the current implementation of overlayfs.
-> The ioctl() has been designed taking as a reference and trying to converge
-> to the fuse2 implementation. For example, the fuse_passthrough_out data
-> structure has extra fields that will allow for further extensions of the
-> feature.
->
->
->     Performance on SSD
->
-> What follows has been performed with this change [V6] rebased on top of
-> vanilla v5.8 Linux kernel, using a custom passthrough_hp FUSE daemon that
-> enables pass-through for each file that is opened during both "open" and
-> "create". Tests were run on an Intel Xeon E5-2678V3, 32GiB of RAM, with an
-> ext4-formatted SSD as the lower file system, with no special tuning, e.g.,
-> all the involved processes are SCHED_OTHER, ondemand is the frequency
-> governor with no frequency restrictions, and turbo-boost, as well as
-> p-state, are active. This is because I noticed that, for such high-level
-> benchmarks, results consistency was minimally affected by these features.
-> The source code of the updated libfuse library and passthrough_hp is shared
-> at the following repository:
->
->     https://github.com/balsini/libfuse/tree/fuse-passthrough-stable-v.3.9.4
-The libfuse changes are not updated with the latest ioctl UAPI change yet.
+On Wed, Nov 25, 2020 at 10:03:26AM +0530, Neeraj Upadhyay wrote:
+> 
+> 
+> On 11/24/2020 10:48 AM, Neeraj Upadhyay wrote:
+> > 
+> > 
+> > On 11/24/2020 1:25 AM, Paul E. McKenney wrote:
+> > > On Mon, Nov 23, 2020 at 10:01:13AM +0530, Neeraj Upadhyay wrote:
+> > > > On 11/21/2020 6:29 AM, paulmck@kernel.org wrote:
+> > > > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > > > > 
+> > > > > There is a need for a polling interface for SRCU grace periods.  This
+> > > > > polling needs to distinguish between an SRCU instance being idle on the
+> > > > > one hand or in the middle of a grace period on the other.  This commit
+> > > > > therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
+> > > > > a defacto boolean to a free-running counter, using the bottom bit to
+> > > > > indicate that a grace period is in progress.  The second-from-bottom
+> > > > > bit is thus used as the index returned by srcu_read_lock().
+> > > > > 
+> > > > > Link:
+> > > > > https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+> > > > > Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+> > > > > [ paulmck: Fix __srcu_read_lock() idx computation Neeraj per
+> > > > > Upadhyay. ]
+> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > > ---
+> > > > >    include/linux/srcutiny.h | 4 ++--
+> > > > >    kernel/rcu/srcutiny.c    | 5 +++--
+> > > > >    2 files changed, 5 insertions(+), 4 deletions(-)
+> > > > > 
+> > > > > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+> > > > > index 5a5a194..d9edb67 100644
+> > > > > --- a/include/linux/srcutiny.h
+> > > > > +++ b/include/linux/srcutiny.h
+> > > > > @@ -15,7 +15,7 @@
+> > > > >    struct srcu_struct {
+> > > > >        short srcu_lock_nesting[2];    /* srcu_read_lock()
+> > > > > nesting depth. */
+> > > > > -    short srcu_idx;            /* Current reader array element. */
+> > > > > +    unsigned short srcu_idx;    /* Current reader array
+> > > > > element in bit 0x2. */
+> > > > >        u8 srcu_gp_running;        /* GP workqueue running? */
+> > > > >        u8 srcu_gp_waiting;        /* GP waiting for readers? */
+> > > > >        struct swait_queue_head srcu_wq;
+> > > > > @@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struct
+> > > > > srcu_struct *ssp)
+> > > > >    {
+> > > > >        int idx;
+> > > > > -    idx = READ_ONCE(ssp->srcu_idx);
+> > > > > +    idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+> > > > >        WRITE_ONCE(ssp->srcu_lock_nesting[idx],
+> > > > > ssp->srcu_lock_nesting[idx] + 1);
+> > > > >        return idx;
+> > > > >    }
+> > > > 
+> > > > Need change in idx calcultion in srcu_torture_stats_print() ?
+> > > > 
+> > > > static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+> > > >    idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+> > > 
+> > > Excellent point!  It should match the calculation in __srcu_read_lock(),
+> > > shouldn't it?  I have updated this, thank you!
+> > > 
+> > >                             Thanx, Paul
+> > > 
+> > 
+> > Updated version looks good!
+> > 
+> > 
+> > Thanks
+> > Neeraj
+> > 
+> 
+> For the version in rcu -dev:
+> 
+> Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 
-> * UAPI updated: ioctl() now returns an ID that will be used at
->   open/create response time to reference the passthrough file
+I applied all of these, thank you very much!
 
-Cheers,
-Tao
--- 
-Into Sth. Rich & Strange
+> Only minor point which I have is, the idx calculation can be made an inline
+> func (though srcu_drive_gp() does not require a READ_ONCE for ->srcu_idx):
+> 
+> __srcu_read_lock() and srcu_torture_stats_print() are using
+> 
+> idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+> 
+> whereas srcu_drive_gp() uses:
+> 
+> idx = (ssp->srcu_idx & 0x2) / 2;
+
+They do work on different elements of the various arrays.  Or do you
+believe that the srcu_drive_gp() use needs adjusting?
+
+Either way, the overhead of READ_ONCE() is absolutely not at all
+a problem.  Would you like to put together a patch so that I can see
+exactly what you are suggesting?
+
+							Thanx, Paul
+
+> Thanks
+> Neeraj
+> 
+> > > > Thanks
+> > > > Neeraj
+> > > > 
+> > > > > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> > > > > index 6208c1d..5598cf6 100644
+> > > > > --- a/kernel/rcu/srcutiny.c
+> > > > > +++ b/kernel/rcu/srcutiny.c
+> > > > > @@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *wp)
+> > > > >        ssp->srcu_cb_head = NULL;
+> > > > >        ssp->srcu_cb_tail = &ssp->srcu_cb_head;
+> > > > >        local_irq_enable();
+> > > > > -    idx = ssp->srcu_idx;
+> > > > > -    WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
+> > > > > +    idx = (ssp->srcu_idx & 0x2) / 2;
+> > > > > +    WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+> > > > >        WRITE_ONCE(ssp->srcu_gp_waiting, true);  /*
+> > > > > srcu_read_unlock() wakes! */
+> > > > >        swait_event_exclusive(ssp->srcu_wq,
+> > > > > !READ_ONCE(ssp->srcu_lock_nesting[idx]));
+> > > > >        WRITE_ONCE(ssp->srcu_gp_waiting, false); /*
+> > > > > srcu_read_unlock() cheap. */
+> > > > > +    WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+> > > > >        /* Invoke the callbacks we removed above. */
+> > > > >        while (lh) {
+> > > > > 
+> > > > 
+> > > > -- 
+> > > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is
+> > > > a member of
+> > > > the Code Aurora Forum, hosted by The Linux Foundation
+> > 
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
+> the Code Aurora Forum, hosted by The Linux Foundation
