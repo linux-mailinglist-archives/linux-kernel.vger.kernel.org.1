@@ -2,128 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0727A2C71C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4B32C71C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390392AbgK1VvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:03 -0500
-Received: from smtprelay0175.hostedemail.com ([216.40.44.175]:36666 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729662AbgK1S2m (ORCPT
+        id S2390407AbgK1VvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729747AbgK1S3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:28:42 -0500
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id D848918020B0F
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 16:00:10 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id D2046181D3028;
-        Sat, 28 Nov 2020 16:00:07 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1981:2194:2198:2199:2200:2393:2525:2540:2565:2612:2682:2685:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3000:3022:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:7809:7903:9010:9025:9388:10004:10049:10400:10848:11232:11657:11658:11914:12043:12048:12296:12297:12679:12740:12895:13019:13439:13894:14093:14097:14106:14181:14659:14721:14822:21080:21451:21627:21691:21740:21773:21781:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:245,LUA_SUMMARY:none
-X-HE-Tag: rub33_0c07f4a27391
-X-Filterd-Recvd-Size: 3363
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 28 Nov 2020 16:00:06 +0000 (UTC)
-Message-ID: <6e9917257cfd6774066446014051d39b784ba497.camel@perches.com>
-Subject: Re: [PATCH] MAINTAINERS add D: tag for subsystem commit prefix
-From:   Joe Perches <joe@perches.com>
-To:     Tom Rix <trix@redhat.com>, apw@canonical.com, nickhu@andestech.com,
-        green.hu@gmail.com, deanbo422@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-Date:   Sat, 28 Nov 2020 08:00:04 -0800
-In-Reply-To: <f96ff56c-7c39-2fed-dd8b-11971f8965bf@redhat.com>
-References: <20201127214316.3045640-1-trix@redhat.com>
-         <a4e796f8c0bfdb2c0a2816fa706d13cc0ae06d40.camel@perches.com>
-         <f96ff56c-7c39-2fed-dd8b-11971f8965bf@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 28 Nov 2020 13:29:40 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B34C0258EE;
+        Sat, 28 Nov 2020 08:01:51 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id e8so7097822pfh.2;
+        Sat, 28 Nov 2020 08:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2O6qcQHJ1HIADKlavbzosnF3a3wMtszkYQ/PuPl66qI=;
+        b=CgE6KOyTfg3utDcRpZdx3wNg5OyhBXbYyc7PH8oa6j60BTtpQLlHDpvZodUSgtskAv
+         kqzv+kzRC8gJVu60u38BrPXBYCz+1pEo0KvxCwXjcwsZBMYy4UyOWOY3pEIZ4CakN9AD
+         IlOOeUveQZn2f5Ib6HdtyeE6Xd8O/3Ajz61BxBQaI2kgQLf9g57ysabjeDv/7CTlsJSV
+         6GIrzobXL4pzBVG6qscprgZn16B+G8oGEPy3hSkuzq1R6I3T2JlwKWSi3WfN7MY57x/P
+         zPH8/jK+/t1BSRextQVoRrJHkVB9PMJuGQ9K8ajrDnT+LwE9dGk9paNd5x5WY4BqSCif
+         XnDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2O6qcQHJ1HIADKlavbzosnF3a3wMtszkYQ/PuPl66qI=;
+        b=sdnVo1Y4H/oHWneo5uGHyD9ra7RcE7/+VdI98aGK3dZWNbw3Bs46Ta7iBy1Ku0I84s
+         w97ejLL2WE0iIaY4pTmXA3aY6BeJp3xs7WanNEpMaS45qfabQLCLcatYe98NAct3fm1m
+         opuxTHND7DaKJAXJAExjvwCOGyjMkpIXKfJRT4dooWBEl6Mn0miQkmPExxYqN4CHk2WB
+         +3HwKrY0ZhSvr6JlThziiG1CxDkgqgNWfhsByKEauQOWgv2CMDahdOz2ulkrsx7IBbtx
+         u3MSTXUDzDDIHMQtPDIWV9tVEORlq4gC0hFHsv4vDP1egcJqClba+fyiO9p6BfCj/1zQ
+         GLjQ==
+X-Gm-Message-State: AOAM531NEUKXjc/wpmaX3r8IKsB4MCELi32eX7rhufAxiVzOTxSRvIZZ
+        2aITcwaBGyjCwp8Rop0U9UaO6gVxi7k=
+X-Google-Smtp-Source: ABdhPJwuiEos39Kd+yWnNTMmDC8yimmI7zJPon0FpMljcy6a+V40CGpf8EDqJAwgKioFXcJ84fR1pw==
+X-Received: by 2002:a17:90a:f695:: with SMTP id cl21mr16872124pjb.137.1606579310741;
+        Sat, 28 Nov 2020 08:01:50 -0800 (PST)
+Received: from bobo.ibm.com (193-116-103-132.tpgi.com.au. [193.116.103.132])
+        by smtp.gmail.com with ESMTPSA id d4sm9762607pjz.28.2020.11.28.08.01.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Nov 2020 08:01:50 -0800 (PST)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, x86@kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org, Anton Blanchard <anton@ozlabs.org>
+Subject: [PATCH 0/8] shoot lazy tlbs
+Date:   Sun, 29 Nov 2020 02:01:33 +1000
+Message-Id: <20201128160141.1003903-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-11-28 at 07:36 -0800, Tom Rix wrote:
-> On 11/27/20 2:10 PM, Joe Perches wrote:
-[]
-> > I think an exception mechanism would be better than a specific
-> > mechanism added to various entries.
-> Can you give an example of what you mean ?
+This is a rebase now on top of Arnd's asm-generic tree, which has
+reduced most of the fluff from this patch series.
 
-Inherit the parent prefix then add the basename(dirname) as a default.
+The x86 refactoring is still in the way a bit, I hope to get some
+movement on that rather than rebase the main patches off it, because
+I think it's a good cleanup. I think it could go in a generic
+mm/scheduler series if we get arch acks because it's really just
+refactoring wrappers.
 
-For instance, changes to any subsystem of drivers/staging starts as
-"staging: " and with "$basename(path): " appended.
+The main result is reduced contention on lazy tlb mm refcount that
+helps very big systems.
 
-So the MAINTAINERS entry for staging could be:
+Thanks,
+Nick
 
-STAGING SUBSYSTEM
-M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-L:	devel@driverdev.osuosl.org
-S:	Supported
-T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git
-D:	"staging: "
-F:	drivers/staging/
+Nicholas Piggin (8):
+  lazy tlb: introduce exit_lazy_tlb
+  x86: use exit_lazy_tlb rather than
+    membarrier_mm_sync_core_before_usermode
+  x86: remove ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
+  lazy tlb: introduce lazy mm refcount helper functions
+  lazy tlb: allow lazy tlb mm switching to be configurable
+  lazy tlb: shoot lazies, a non-refcounting lazy tlb option
+  powerpc: use lazy mm refcount helper functions
+  powerpc/64s: enable MMU_LAZY_TLB_SHOOTDOWN
 
-Any specified D: use would override the generic form.
+ .../membarrier-sync-core/arch-support.txt     |  6 +-
+ arch/Kconfig                                  | 24 +++++
+ arch/arm/mach-rpc/ecard.c                     |  3 +-
+ arch/powerpc/Kconfig                          |  1 +
+ arch/powerpc/kernel/smp.c                     |  2 +-
+ arch/powerpc/mm/book3s64/radix_tlb.c          |  5 +-
+ arch/x86/Kconfig                              |  1 -
+ arch/x86/include/asm/mmu_context.h            | 27 ++++++
+ arch/x86/kernel/alternative.c                 |  2 +-
+ arch/x86/kernel/cpu/mce/core.c                |  2 +-
+ drivers/misc/sgi-gru/grufault.c               |  2 +-
+ drivers/misc/sgi-gru/gruhandles.c             |  2 +-
+ drivers/misc/sgi-gru/grukservices.c           |  2 +-
+ fs/exec.c                                     |  6 +-
+ include/asm-generic/mmu_context.h             | 21 ++++
+ include/linux/sched/mm.h                      | 34 ++++---
+ include/linux/sync_core.h                     | 21 ----
+ init/Kconfig                                  |  3 -
+ kernel/cpu.c                                  |  6 +-
+ kernel/exit.c                                 |  2 +-
+ kernel/fork.c                                 | 53 ++++++++++
+ kernel/kthread.c                              | 12 ++-
+ kernel/sched/core.c                           | 97 +++++++++++++------
+ kernel/sched/sched.h                          |  4 +-
+ 24 files changed, 247 insertions(+), 91 deletions(-)
+ delete mode 100644 include/linux/sync_core.h
 
-And generic ARM changes could use the same mechanism with:
-
-ARM PORT
-M:	Russell King <linux@armlinux.org.uk>
-L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-S:	Odd Fixes
-W:	http://www.armlinux.org.uk/
-T:	git git://git.armlinux.org.uk/~rmk/linux-arm.git
-D:	"ARM: "
-F:	arch/arm/
-X:	arch/arm/boot/dts/
-
-And media likewise:
-
-MEDIA INPUT INFRASTRUCTURE (V4L/DVB)
-M:	Mauro Carvalho Chehab <mchehab@kernel.org>
-L:	linux-media@vger.kernel.org
-S:	Maintained
-W:	https://linuxtv.org
-Q:	http://patchwork.kernel.org/project/linux-media/list/
-T:	git git://linuxtv.org/media_tree.git
-D:	"media: "
-F:	Documentation/admin-guide/media/
-F:	Documentation/devicetree/bindings/media/
-F:	Documentation/driver-api/media/
-F:	Documentation/userspace-api/media/
-F:	drivers/media/
-F:	drivers/staging/media/
-F:	include/linux/platform_data/media/
-F:	include/media/
-F:	include/uapi/linux/dvb/
-F:	include/uapi/linux/ivtv*
-F:	include/uapi/linux/media.h
-F:	include/uapi/linux/meye.h
-F:	include/uapi/linux/uvcvideo.h
-F:	include/uapi/linux/v4l2-*
-F:	include/uapi/linux/videodev2.h
-
-etc...
-
-> > >  # check MAINTAINERS entries for the right ordering too
-> > > -			my $preferred_order = 'MRLSWQBCPTFXNK';
-> > > +			my $preferred_order = 'MRLSWQBCPTFXNKD';
-> > >  			if ($rawline =~ /^\+[A-Z]:/ &&
-> > >  			    $prevrawline =~ /^[\+ ][A-Z]:/) {
-> > >  				$rawline =~ /^\+([A-Z]):\s*(.*)/;
-> > I'd prefer to keep the file and keyword list last.
-> > 
-> So change to
-> 
-> my $preferred_order = 'MRLSWQBCPTDFXNK'; 
-> 
-> ?
-
-Right.  And update the preferred_order in scripts/parse-maintainers.pl too.
-
-
+-- 
+2.23.0
 
