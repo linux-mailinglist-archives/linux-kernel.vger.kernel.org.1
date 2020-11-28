@@ -2,94 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A252C712F
+	by mail.lfdr.de (Postfix) with ESMTP id DDEF42C7130
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404152AbgK1Vyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:54:44 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:54606 "EHLO vps0.lunn.ch"
+        id S2391489AbgK1Vyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:54:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387519AbgK1TY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:24:56 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kj5pK-009HRH-ID; Sat, 28 Nov 2020 20:24:10 +0100
-Date:   Sat, 28 Nov 2020 20:24:10 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
-Message-ID: <20201128192410.GG2191767@lunn.ch>
-References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
- <20201127133307.2969817-3-steen.hegelund@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127133307.2969817-3-steen.hegelund@microchip.com>
+        id S2387527AbgK1T2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 14:28:41 -0500
+Subject: Re: [GIT PULL] Kbuild fixes for v5.10-rc6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606591680;
+        bh=tHJyQQystzCWA98RDu3H8yU7/xnhIHrHoYWdgmpJkb0=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=SzPQw+Fw4MMi8JBJf7DEWA8O6CdbwcTkp1P15zv/nSLOq4SpJCo17RGH8qR7ffKUl
+         pEHzWX8GCTH3Cnwbote8XsclJ+BOImvKKLTwnf9UQkV+O+eYqaYtWv2powze3zy9cJ
+         EFKZaeII26TyWnPPcDTAGl8fNC1JLtJd/VQjydWo=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAK7LNAS-j7MqrpKnM_GQS9KfL_8Dw9NJrpaghRO9D637cqrnaA@mail.gmail.com>
+References: <CAK7LNAS-j7MqrpKnM_GQS9KfL_8Dw9NJrpaghRO9D637cqrnaA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAK7LNAS-j7MqrpKnM_GQS9KfL_8Dw9NJrpaghRO9D637cqrnaA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.10
+X-PR-Tracked-Commit-Id: d1889589a4f54b2d1d7075d608b596d6fcfd3d96
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 45e885c439e825c19f3a51e46ef8210984bc0a9c
+Message-Id: <160659168088.23349.13299569846302026493.pr-tracker-bot@kernel.org>
+Date:   Sat, 28 Nov 2020 19:28:00 +0000
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static void sparx5_attr_stp_state_set(struct sparx5_port *port,
-> +				      struct switchdev_trans *trans,
-> +				      u8 state)
-> +{
-> +	struct sparx5 *sparx5 = port->sparx5;
-> +
-> +	if (!test_bit(port->portno, sparx5->bridge_mask)) {
-> +		netdev_err(port->ndev,
-> +			   "Controlling non-bridged port %d?\n", port->portno);
-> +		return;
-> +	}
-> +
-> +	switch (state) {
-> +	case BR_STATE_FORWARDING:
-> +		set_bit(port->portno, sparx5->bridge_fwd_mask);
-> +		break;
-> +	default:
-> +		clear_bit(port->portno, sparx5->bridge_fwd_mask);
-> +		break;
-> +	}
+The pull request you sent on Sun, 29 Nov 2020 02:23:31 +0900:
 
-That is pretty odd. What about listening, learning, blocking?
+> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.10
 
-> +static int sparx5_port_bridge_join(struct sparx5_port *port,
-> +				   struct net_device *bridge)
-> +{
-> +	struct sparx5 *sparx5 = port->sparx5;
-> +
-> +	if (bitmap_empty(sparx5->bridge_mask, SPX5_PORTS))
-> +		/* First bridged port */
-> +		sparx5->hw_bridge_dev = bridge;
-> +	else
-> +		if (sparx5->hw_bridge_dev != bridge)
-> +			/* This is adding the port to a second bridge, this is
-> +			 * unsupported
-> +			 */
-> +			return -ENODEV;
-> +
-> +	set_bit(port->portno, sparx5->bridge_mask);
-> +
-> +	/* Port enters in bridge mode therefor don't need to copy to CPU
-> +	 * frames for multicast in case the bridge is not requesting them
-> +	 */
-> +	__dev_mc_unsync(port->ndev, sparx5_mc_unsync);
-> +
-> +	return 0;
-> +}
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/45e885c439e825c19f3a51e46ef8210984bc0a9c
 
-This looks suspiciously empty? Don't you need to tell the hardware
-which ports this port is bridges to? Normally you see some code which
-walks all the ports and finds those in the same bridge, and sets a bit
-which allows these ports to talk to each other. Is that code somewhere
-else?
+Thank you!
 
-	Andrew
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
