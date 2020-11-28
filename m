@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2BC2C719B
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6332C75D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 23:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390742AbgK1Vva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:30 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:54538 "EHLO vps0.lunn.ch"
+        id S2388276AbgK1WY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 17:24:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730912AbgK1SqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:46:03 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kj5De-009HGC-O0; Sat, 28 Nov 2020 19:45:14 +0100
-Date:   Sat, 28 Nov 2020 19:45:14 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
-Message-ID: <20201128184514.GD2191767@lunn.ch>
-References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
- <20201127133307.2969817-3-steen.hegelund@microchip.com>
+        id S2387837AbgK1Vqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 16:46:35 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A074020857;
+        Sat, 28 Nov 2020 21:45:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606599953;
+        bh=5bQO897GCWtzWi0kmP4gvDPngkZBXj4MeZpDPJPZ96w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HGw3AiJdbZf9XG2h/WAOQHMhhrWvVn1T8cEJSkOJCmf2RYmGlONA4P/5Udcqx0+7f
+         sz5+uvOE+ZyDR516fq3x/o2NNFpRHZjnKXevCT5BRm4HoAvUX1tuMwguQ0u0Wz9ufx
+         t55Urtcgv4Yac4Pj9IRYBK38hSpNSQvY7XV8+0MU=
+Date:   Sat, 28 Nov 2020 15:45:52 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     ashok.raj@intel.com, knsathya@kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 4/5] PCI/ACPI: Centralize pcie_ports_native checking
+Message-ID: <20201128214552.GA907628@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201127133307.2969817-3-steen.hegelund@microchip.com>
+In-Reply-To: <0c7eb524-ff3a-d3ec-f9e6-7656e75b3437@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/* Add a potentially wrapping 32 bit value to a 64 bit counter */
-> +static inline void sparx5_update_counter(u64 *cnt, u32 val)
-> +{
-> +	if (val < (*cnt & U32_MAX))
-> +		*cnt += (u64)1 << 32; /* value has wrapped */
-> +
-> +	*cnt = (*cnt & ~(u64)U32_MAX) + val;
-> +}
+On Wed, Nov 25, 2020 at 07:20:53PM -0800, Kuppuswamy, Sathyanarayanan wrote:
+> On 11/25/20 5:18 PM, Bjorn Helgaas wrote:
+> > From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > 
+> > If the user booted with "pcie_ports=native", we take control of the PCIe
+> > features unconditionally, regardless of what _OSC says.
+> > 
+> > Centralize the testing of pcie_ports_native in acpi_pci_root_create(),
+> > where we interpret the _OSC results, so other places only have to check
+> > host_bridge->native_X and we don't have to sprinkle tests of
+> > pcie_ports_native everywhere.
+> > 
+> > [bhelgaas: commit log, rework OSC_PCI_EXPRESS_CONTROL_MASKS, logging]
+> > Link: https://lore.kernel.org/r/bc87c9e675118960949043a832bed86bc22becbd.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com
+> > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> > ---
+> >   drivers/acpi/pci_root.c           | 19 +++++++++++++++++++
+> >   drivers/pci/hotplug/pciehp_core.c |  2 +-
+> >   drivers/pci/pci-acpi.c            |  3 ---
+> >   drivers/pci/pcie/aer.c            |  2 +-
+> >   drivers/pci/pcie/portdrv_core.c   |  9 +++------
+> >   5 files changed, 24 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+> > index 6db071038fd5..36142ed7b8f8 100644
+> > --- a/drivers/acpi/pci_root.c
+> > +++ b/drivers/acpi/pci_root.c
+> > @@ -882,6 +882,8 @@ static void acpi_pci_root_release_info(struct pci_host_bridge *bridge)
+> >   			flag = 0;	\
+> >   	} while (0)
+> > +#define FLAG(x)		((x) ? '+' : '-')
+> > +
+> >   struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+> >   				     struct acpi_pci_root_ops *ops,
+> >   				     struct acpi_pci_root_info *info,
+> > @@ -930,6 +932,23 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+> >   	OSC_OWNER(ctrl, OSC_PCI_EXPRESS_LTR_CONTROL, host_bridge->native_ltr);
+> >   	OSC_OWNER(ctrl, OSC_PCI_EXPRESS_DPC_CONTROL, host_bridge->native_dpc);
+> > +	if (pcie_ports_native) {
+> > +		dev_info(&root->device->dev, "Taking control of PCIe-related features because \"pcie_ports=native\" specified; may conflict with firmware\n");
+> > +		host_bridge->native_pcie_hotplug = 1;
+> > +		host_bridge->native_aer = 1;
+> > +		host_bridge->native_pme = 1;
+> > +		host_bridge->native_ltr = 1;
+> > +		host_bridge->native_dpc = 1;
+> > +	}
+> Won't it be better if its merged with above OSC_OWNER() calls? If
+> pcie_ports_native is set, then above OSC_OWNER() calls for PCIe
+> related features are redundant. Let me know.
 
-I don't follow what this is doing. Could you give some examples?
+Yes, I think you're right.  I think it would also be nice to know
+exactly which services we're overriding _OSC for, i.e., when we turn
+native_aer from 0 to 1 and so on.  If we merge this back in, we'll
+have a way to keep track of those.
 
-> +static const char *const sparx5_stats_layout[] = {
-> +	"rx_in_bytes",
-> +	"rx_symbol_err",
-> +	"rx_pause",
-> +	"rx_unsup_opcode",
+> > @@ -208,8 +208,7 @@ static int get_port_device_capability(struct pci_dev *dev)
+> >   	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
+> >   	int services = 0;
+> > -	if (dev->is_hotplug_bridge &&
+> > -	    (pcie_ports_native || host->native_pcie_hotplug)) {
+> > +	if (host->native_pcie_hotplug && dev->is_hotplug_bridge) {
+> May be this reordering can be split into a different patch ?
 
-> +static void sparx5_update_port_stats(struct sparx5 *sparx5, int portno)
-> +{
-> +	struct sparx5_port *spx5_port = sparx5->ports[portno];
-> +	bool high_speed_dev = sparx5_is_high_speed_device(&spx5_port->conf);
-
-Reverse christmas tree. Which in this case, means you need to move the
-assignment into the body of the code.
-
-> +static void sparx5_get_sset_strings(struct net_device *ndev, u32 sset, u8 *data)
-> +{
-> +	struct sparx5_port *port = netdev_priv(ndev);
-> +	struct sparx5  *sparx5 = port->sparx5;
-> +	int idx;
-> +
-> +	if (sset != ETH_SS_STATS)
-> +		return;
-> +
-> +	for (idx = 0; idx < sparx5->num_stats; idx++)
-> +		memcpy(data + idx * ETH_GSTRING_LEN,
-> +		       sparx5->stats_layout[idx], ETH_GSTRING_LEN);
-
-You cannot use memcpy here, because the strings you have defined are
-not ETH_GSTRING_LEN long. We once had a driver which happened to have
-its strings at the end of a page. The memcpy would copy the string,
-but keep going passed the end of string, over the page boundary, and
-trigger a segmentation fault.
-
-	Andrew
+Good point, that makes the diff a little easier to read, thanks!
