@@ -2,50 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9D02C7179
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 199742C7190
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391067AbgK1Vvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:51:53 -0500
-Received: from smtp.rcn.com ([69.168.97.78]:13018 "EHLO smtp.rcn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731961AbgK1S5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 13:57:03 -0500
-DKIM-Signature: v=1; a=rsa-sha1; d=rcn.com; s=20180516; c=relaxed/simple;
-        q=dns/txt; i=@rcn.com; t=1606542143;
-        h=From:Subject:Date:To:MIME-Version:Content-Type;
-        bh=Gacled+1ZcOkHIa2Ym0TMjXUFjE=;
-        b=Aod6MZEobnDSv0JJMPFlVdBfCH7JvnD44X3PoenEVLyiiSPsnQQCDSjOhXMA8vI0
-        opWSSPG4FcWUA4mBBElhJbKYcQCx7Jifu1RWH665qbM9xAChaUJIvEv7iiGOzmN/
-        prtAGgsfsedkDdR/0zwcvkxIS/qD+DPWQqbkWB2i/RZoQIGrqjGT4PfVscEUitav
-        C6EsPwj3X+17fjgg2IOW1PgwFwJDw8SgshuwOsV1nSYp//3X/43+cOSgZm2E6iJ3
-        mj3i66o0G2TiMvYs3nlenBmAq601+L0dX1xIQJDQE5951Ju8zU8So1AxJ3uWtWL8
-        qSLQwQmGSxq9sn0+xdJwhw==;
-X_CMAE_Category: , ,
-X-CNFS-Analysis: v=2.3 cv=V78DLtvi c=1 sm=1 tr=0 cx=a_idp_x a=x1h0AhohGG/RTEN8nKxOCg==:117 a=KGjhK52YXX0A:10 a=FKkrIqjQGGEA:10 a=1WDA-QxeRGsA:10 a=W5BJtwN0xDwA:10 a=IkcTkHD0fZMA:10 a=nNwsprhYR40A:10 a=Ir7O1_NEF1oA:10 a=0WYdKK0VqUMA:10 a=x7bEGLp0ZPQA:10 a=9QNezWJC30XR_Y52R3YA:9 a=QEXdDO2ut3YA:10 a=6eowmQOpeEM8kEjBgIya:22
-X-CM-Score: 0
-X-Scanned-by: Cloudmark Authority Engine
-X-Authed-Username: anJzNEByY24uY29t
-Authentication-Results: smtp01.rcn.cmh.synacor.com header.from=jrs4@rcn.com; sender-id=softfail
-Authentication-Results: smtp01.rcn.cmh.synacor.com smtp.mail=jrs4@rcn.com; spf=softfail; sender-id=softfail
-Received: from [10.33.66.7] ([10.33.66.7:45036] helo=md04.rcn.cmh.synacor.com)
-        by smtp.rcn.com (envelope-from <jrs4@rcn.com>)
-        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
-        id 73/10-06584-E33E1CF5; Sat, 28 Nov 2020 00:42:22 -0500
-Date:   Sat, 28 Nov 2020 00:42:22 -0500 (EST)
-From:   rani nagarajan <jrs4@rcn.com>
-Reply-To: rani nagarajan <rng93737@gmail.com>
-To:     rani nagarajan <rng93737@gmail.com>
-Message-ID: <341318927.38295853.1606542142059.JavaMail.root@rcn.com>
-In-Reply-To: <919587760.38278225.1606541691163.JavaMail.root@rcn.com>
-Subject: ??
+        id S2390934AbgK1Vvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731556AbgK1Sw7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 13:52:59 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8179FC061A4F;
+        Fri, 27 Nov 2020 21:57:01 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id t3so5892903pgi.11;
+        Fri, 27 Nov 2020 21:57:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9pljJYqBFFJMT23aRvOkmjosrfPaZRUoII94EEjK9qU=;
+        b=pAWIgWzJiDXbACtUw0Rf9V31klbqZp0donc49T3DevUTgr5yZc7iqIvDFEwKYQ19yX
+         YzR6RuMRHh/QbKr75FfabgQCEuRWVuYDyMXcsJaHZ9bm6HrGaZuPDO9pw7UWKR4n6tDm
+         fXg/8UpA3r6drmwFG5YN7M0kk6TDwLaVQ8j6IqnUqhvRQICO9/XSElMRefZKgYnFLxsq
+         4UdGXA8XtmKglxID6DMAtZuulzWC7KD5+bd7Lcbo+q1LleNMFOBE2brIQRZSnhL2jz4s
+         7ozmachgSuSCf4E5p1X9njmjDhVSiesKbXHXfVW51ZbpXRjalYE+Ywbd3ETl5b7A8Of1
+         7P6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9pljJYqBFFJMT23aRvOkmjosrfPaZRUoII94EEjK9qU=;
+        b=eQrBrVL8QMoXzuivbWVaC1jTAmh4vH2XPLGt67h9Ojqs6veFDwV7NRwpD/OQydBeF9
+         WWRpt0I6pI9ucPXH2iOdP5NI+8SsPZ9icgYg9Z7/ZyijaS/MG7QEbX6rubntm5bB+4tA
+         L7AlzoepWqLrzWBrDFipr4n1iliK1b3vSRAS00bxBee/uF7bfcFvtknEMZ1WppP+fyH5
+         luZ32SXyeUS0G9waC+lO8LhmzsXqL2YrSIfqMvsZr50uTQvWpS1xyyoW6OBSXaw+4G3n
+         znjTwP8F5cbqBA2KLCjU9j8jxe/UCh9Kl4xB8gQrP9LtP3OBTvOnYoL9jgpXYT4Ked2m
+         8bKQ==
+X-Gm-Message-State: AOAM531f1slpq8YO3ZK/VEdqANfsJaspVuitMGEJNcWeQY/CaLDjIreg
+        xAK8Y1vzG4gfvFbLLBSF/xU=
+X-Google-Smtp-Source: ABdhPJzalDvif4YtaXVkhN9LAKKZUXXwCXAnRSqCKLQYo2zGE3B4VQsH2gjUeE+MBVvy3uCxJ8WVtw==
+X-Received: by 2002:a17:90b:1811:: with SMTP id lw17mr14391926pjb.105.1606543020911;
+        Fri, 27 Nov 2020 21:57:00 -0800 (PST)
+Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id i10sm9550637pfk.206.2020.11.27.21.56.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 21:57:00 -0800 (PST)
+Subject: Re: [PATCH memory-model 6/8] tools/memory-model: Add types to litmus
+ tests
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
+ <20201105220017.15410-6-paulmck@kernel.org>
+ <12e0baf4-b1c9-d674-1d4c-310e0a9b6343@gmail.com>
+ <20201105225605.GQ3249@paulmck-ThinkPad-P72>
+ <2acf8de5-efe9-a205-cb62-04c4774008c0@gmail.com>
+ <20201127154652.GU1437@paulmck-ThinkPad-P72>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <78e1ccaf-9d35-b2a5-1865-fb0a76b3e57e@gmail.com>
+Date:   Sat, 28 Nov 2020 14:56:55 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201127154652.GU1437@paulmck-ThinkPad-P72>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [23.105.177.121]
-X-Mailer: Zimbra 7.2.7_GA_2942 (zclient/7.2.7_GA_2942)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-G:MG
+On Fri, 27 Nov 2020 07:46:52 -0800, Paul E. McKenney wrote:
+> On Wed, Nov 25, 2020 at 08:34:47PM +0900, Akira Yokosawa wrote:
+[...]
+>> Hi Paul,
+>>
+>> I'm seeing this patch still alive in the updated for-mingo-lkmm branch.
+>> Have you got some objection?
+> 
+> From git, which was not able to trivially revert.
+
+;-) ;-)
+
+>                                                   If you send me a
+> patch on top that removes the uneeded declarations and if someone
+> tests it with a klitmus run, I will take it for the merge window
+> following the upcoming one.
+
+Got it!
+I'm submitting a patch set in reply to this mail.
+
+1/2 is the removal of those redundant type declarations.
+2/2 is an obvious fix of typo I made in the klitmus7 compat table.
+
+        Thanks, Akira
+
+> 
+> 							Thanx, Paul
+> 
+>>         Thanks, Akira
+>>
+
