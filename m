@@ -2,164 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125CA2C6E01
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 01:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 684372C6E05
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 01:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732175AbgK1Aqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 19:46:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56666 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730991AbgK1AeG (ORCPT
+        id S1732142AbgK1Ayb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 19:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731947AbgK1AwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 19:34:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606523626;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KFfdlT9oNUwho2w5XQHB2zyqSSAHo4d/LdFWl9C4gCA=;
-        b=YsXt0CXwQ1CHO72X73KBCShx4OYl15OWyrrKkt0JbcXIgUBnrXF+3njlsvWhG5z1JhJ9d1
-        a051cdOZM9Ir9lHjDZvCw7Ty3npyS9bje6zCDCSBdxDcOnqtjtPci3+WjKgULVH+y4kOYA
-        nSyN5ChLTSxPIGbmzxnmYfEexW7J6Tw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-489-Kqd8r88RMNacv7rPCQ94aA-1; Fri, 27 Nov 2020 19:33:45 -0500
-X-MC-Unique: Kqd8r88RMNacv7rPCQ94aA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7607F10059A2;
-        Sat, 28 Nov 2020 00:33:43 +0000 (UTC)
-Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3D5A96085D;
-        Sat, 28 Nov 2020 00:33:40 +0000 (UTC)
-Date:   Fri, 27 Nov 2020 19:33:39 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH] mm: Don't fault around userfaultfd-registered regions on
- reads
-Message-ID: <X8Ga44uXHmzn/vB9@redhat.com>
-References: <20201126222359.8120-1-peterx@redhat.com>
- <20201127122224.GX4327@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127122224.GX4327@casper.infradead.org>
-User-Agent: Mutt/2.0.2 (2020-11-20)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Fri, 27 Nov 2020 19:52:20 -0500
+Received: from mail-oi1-x261.google.com (mail-oi1-x261.google.com [IPv6:2607:f8b0:4864:20::261])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7DDC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 16:45:32 -0800 (PST)
+Received: by mail-oi1-x261.google.com with SMTP id v202so7617956oia.9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Nov 2020 16:45:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=J/RUqOLrtG/yyp8LIFv88+rY6UY1ibdpQZmu4ra8MIc=;
+        b=NwcWu3Dn+7J31LulCNEb8sfGRew7LV15BVccEBmzBPELzHoQ5PetqiagK3Qfu/Sn6A
+         vHiKKWfgnUrCy+eYmTaBnJvuFMvzfU7Bta1y9gbIodIefPoJZ24Xs/JIiZL7ajtlvt7N
+         Q1bT6Fsdn3l30EDxKo2oI1d1TSXF24SgUq/bo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=J/RUqOLrtG/yyp8LIFv88+rY6UY1ibdpQZmu4ra8MIc=;
+        b=JT2iQkwFy6Dg5K6/lMhLZPNuiVv8x099PJPZ3vpMIHMs+5RS0XPLH8iRCMLjpnwFeJ
+         N0WmSs9TTmHyC2TC7/mqobz2qDL+SbzBOL4HNEg41nLIwKDr1mbe+SKdXRjkJGzbzf1T
+         onxGhX++jtI8XDT6ST10V9ILNYyI0ERyJB4FidS2QDRXoVWFvduxQ/7CqBq05C6iHW6F
+         JJsyIVnkj/mvv270gLDY9JBTb/4akrgMrQAuttaSt0hE8A4VbFWD/hfZv/ulXEhjer6W
+         ktK/xwyi6bVDpwJUk1OP0LNHtR2Z/LDvUhOtdFu9I9LLC8GGUA4jV2PrlIc/rWnlK6lN
+         gW3w==
+X-Gm-Message-State: AOAM532XJ895sRfnhsxnFooTx39Bn+Gw709E0V8i9/eCuhmzeljj88Fs
+        Pf/OCp22lVVUVbNmaYJHHrpmF9AClpCfAxeU3xJwELjXq+fT
+X-Google-Smtp-Source: ABdhPJwN+hE5UZQLPsQy5ABrV6RyrZ19iaTfdyCDSc1RUvOwSOWWyBjQETK4623l5Z/bNJWP+c+XgjUCHRZu
+X-Received: by 2002:aca:f03:: with SMTP id 3mr7552629oip.92.1606524331466;
+        Fri, 27 Nov 2020 16:45:31 -0800 (PST)
+Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
+        by smtp-relay.gmail.com with ESMTPS id v26sm1302459oth.8.2020.11.27.16.45.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2020 16:45:31 -0800 (PST)
+X-Relaying-Domain: broadcom.com
+From:   Scott Branden <scott.branden@broadcom.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, bruce.ashfield@gmail.com,
+        Bruce Ashfield <bruce.ashfield@windriver.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Michal Marek <mmarek@suse.cz>,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: [PATCH] menuconfig,mconf-cfg: Allow specification of ncurses location
+Date:   Fri, 27 Nov 2020 16:45:05 -0800
+Message-Id: <20201128004505.27619-1-scott.branden@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Bruce Ashfield <bruce.ashfield@windriver.com>
 
-On Fri, Nov 27, 2020 at 12:22:24PM +0000, Matthew Wilcox wrote:
-> On Thu, Nov 26, 2020 at 05:23:59PM -0500, Peter Xu wrote:
-> > For wr-protected mode uffds, errornously fault in those pages around could lead
-> > to threads accessing the pages without uffd server's awareness.  For example,
-> > when punching holes on uffd-wp registered shmem regions, we'll first try to
-> > unmap all the pages before evicting the page cache but without locking the
-> > page (please refer to shmem_fallocate(), where unmap_mapping_range() is called
-> > before shmem_truncate_range()).  When fault-around happens near a hole being
-> > punched, we might errornously fault in the "holes" right before it will be
-> > punched.  Then there's a small window before the page cache was finally
-> > dropped, and after the page will be writable again (NOTE: the uffd-wp protect
-> > information is totally lost due to the pre-unmap in shmem_fallocate(), so the
-> > page can be writable within the small window).  That's severe data loss.
-> 
-> Sounds like you have a missing page_mkwrite implementation.
+In some cross build environments such as the Yocto Project build
+environment it provides an ncurses library that is compiled
+differently than the host's version.  This causes display corruption
+problems when the host's curses includes are used instead of the
+includes from the provided compiler are overridden.  There is a second
+case where there is no curses libraries at all on the host system and
+menuconfig will just fail entirely.
 
-If the real fault happened through the pagetable (which got dropped by
-the hole punching), a "missing type" userfault would be delivered to
-userland (because the pte would be none). Userland would invoke
-UFFDIO_COPY with the UFFDIO_COPY_MODE_WP flag. Such flag would then
-map the filled shmem page (not necessarily all zero and not
-necessarily the old content before the hole punch) with _PAGE_RW not
-set and _PAGE_UFFD_WP set, so the next write would also trigger a
-wrprotect userfault (this is what the uffd-wp app expects).
+The solution is simply to allow an override variable in
+check-lxdialog.sh for environments such as the Yocto Project.  Adding
+a CROSS_CURSES_LIB and CROSS_CURSES_INC solves the issue and allowing
+compiling and linking against the right headers and libraries.
 
-filemap_map_pages doesn't notify userland when it fills a pte and it
-will map again the page read-write.
-
-However filemap_map_pages isn't capable to fill a hole and to undo the
-hole punch, all it can do are minor faults to re-fill the ptes from a
-not-yet-truncated inode page.
-
-Now it would be ok if filemap_map_pages re-filled the ptes, after they
-were zapped the first time by fallocate, and then the fallocate would
-zap them again before truncating the page, but I don't see a second
-pte zap... there's just the below single call of unmap_mapping_range:
-
-		if ((u64)unmap_end > (u64)unmap_start)
-			unmap_mapping_range(mapping, unmap_start,
-					    1 + unmap_end - unmap_start, 0);
-		shmem_truncate_range(inode, offset, offset + len - 1);
-
-So looking at filemap_map_pages in shmem, I'm really wondering if the
-non-uffd case is correct or not.
-
-Do we end up with ptes pointing to non pagecache, so then the virtual
-mapping is out of sync also with read/write syscalls that will then
-allocate another shmem page out of sync of the ptes?
-
-If a real page fault happened instead of filemap_map_pages, the
-shmem_fault() would block during fallocate punch hole by checking
-inode->i_private, as the comment says:
-
-	 * So refrain from
-	 * faulting pages into the hole while it's being punched.
-
-It's not immediately clear where filemap_map_pages refrains from
-faulting pages into the hole while it's being punched... given it's
-ignoring inode->i_private.
-
-So I'm not exactly sure how shmem can safely faulted in through
-filemap_map_pages, without going through shmem_fault... I suppose
-shmem simply is unsafe to use filemap_map_pages and it'd require
-a specific shmem_map_pages?
-
-If only filemap_map_pages was refraining re-faulting ptes of a shmem
-page that is about to be truncated (whose original ptes had _PAGE_RW
-unset and _PAGE_UFFD_WP set) there would be no problem with the uffd
-interaction. So a proper shmem_map_pages could co-exist with uffd, the
-userfaultfd_armed check would be only an optimization but it wouldn't
-be required to avoid userland memory corruption?
-
-From 8c6fb1b7dde309f0c8b5666a8e13557ae46369b4 Mon Sep 17 00:00:00 2001
-From: Andrea Arcangeli <aarcange@redhat.com>
-Date: Fri, 27 Nov 2020 19:12:44 -0500
-Subject: [PATCH 1/1] shmem: stop faulting in pages without checking
- inode->i_private
-
-Per shmem_fault comment shmem need to "refrain from faulting pages
-into the hole while it's being punched" and to do so it must check
-inode->i_private, which filemap_map_pages won't so it's unsafe to use
-in shmem because it can leave ptes pointing to non-pagecache pages in
-shmem backed vmas.
-
-Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+Signed-off-by: Jason Wessel <jason.wessel@windriver.com>
+cc: Michal Marek <mmarek@suse.cz>
+cc: linux-kbuild@vger.kernel.org
+Signed-off-by: Bruce Ashfield <bruce.ashfield@windriver.com>
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 ---
- mm/shmem.c | 1 -
- 1 file changed, 1 deletion(-)
+ scripts/kconfig/mconf-cfg.sh | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+ mode change 100755 => 100644 scripts/kconfig/mconf-cfg.sh
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 8e2b35ba93ad..f6f29b3e67c6 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -3942,7 +3942,6 @@ static const struct super_operations shmem_ops = {
+diff --git a/scripts/kconfig/mconf-cfg.sh b/scripts/kconfig/mconf-cfg.sh
+old mode 100755
+new mode 100644
+index aa68ec95620d..32448bc198a5
+--- a/scripts/kconfig/mconf-cfg.sh
++++ b/scripts/kconfig/mconf-cfg.sh
+@@ -4,6 +4,14 @@
+ PKG="ncursesw"
+ PKG2="ncurses"
  
- static const struct vm_operations_struct shmem_vm_ops = {
- 	.fault		= shmem_fault,
--	.map_pages	= filemap_map_pages,
- #ifdef CONFIG_NUMA
- 	.set_policy     = shmem_set_policy,
- 	.get_policy     = shmem_get_policy,
-
-
-Thanks,
-Andrea
++if [ "$CROSS_CURSES_LIB" != "" ]; then
++    echo libs=\'$CROSS_CURSES_LIB\'
++    if [ x"$CROSS_CURSES_INC" != x ]; then
++	echo cflags=\'$CROSS_CURSES_INC\'
++    fi
++    exit 0
++fi
++
+ if [ -n "$(command -v pkg-config)" ]; then
+ 	if pkg-config --exists $PKG; then
+ 		echo cflags=\"$(pkg-config --cflags $PKG)\"
+-- 
+2.17.1
 
