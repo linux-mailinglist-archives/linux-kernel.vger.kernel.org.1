@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 303D42C6E24
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F3F2C6E0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 02:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729460AbgK0UBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 15:01:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35050 "EHLO mail.kernel.org"
+        id S1732207AbgK1BBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 20:01:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730653AbgK0T5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:57:09 -0500
-Received: from kernel.org (unknown [104.132.1.79])
+        id S1729320AbgK1AwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 27 Nov 2020 19:52:20 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D9F9208B3;
-        Fri, 27 Nov 2020 19:56:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606507008;
-        bh=hD40k2v78JS8MUejTYj7Rnup4W4KIqn/L63Q/BBpWx0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=bppiD1tl2IfBfd/S0pS5kJoI93oBhxGkdXrQ/F4bUT0hr5RkAqGvm52w3yYnlzMVQ
-         u/PqofDiI2tV0gN2fSoYn2RgEFEqXsqWrgorEakjRjhld+mr5LLjyyV7PIRrrdPZKC
-         JnH3U8NAVSA34TzND4TC0oT48JAF5Q9NdqypK3OE=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201127090551.50254-1-vulab@iscas.ac.cn>
-References: <20201127090551.50254-1-vulab@iscas.ac.cn>
-Subject: Re: [PATCH] clk: rockchip: Remove redundant null check before clk_prepare_enable
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-To:     Xu Wang <vulab@iscas.ac.cn>, heiko@sntech.de,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, mturquette@baylibre.com
-Date:   Fri, 27 Nov 2020 11:56:47 -0800
-Message-ID: <160650700726.2717324.52988673805116278@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        by mail.kernel.org (Postfix) with ESMTPSA id D4C6221D46;
+        Sat, 28 Nov 2020 00:51:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1606524705;
+        bh=seZSPmfrCgEO+88cDvs7ZWc7qrlgqROHVINfZRZbMJQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=O5fvwfuzd9cCkdEsEN+NRjVe9YKj573Wl3xmz9mDfhcj+ND+jUwkm9QADhzzFDBwR
+         C/GK312geG1WK7yZCCwl6wPbg/9MuPdMxOGNMFOCTYJfPhgdPs/1YVOA/2aP1tTY3O
+         VvHpJlAtPQTmgzUrvQ6QdsalvFK21wVFEBYwX2gk=
+Date:   Fri, 27 Nov 2020 16:51:44 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Oscar Salvador <osalvador@suse.de>, n-horiguchi@ah.jp.nec.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/7] mm,hwpoison: Disable pcplists before grabbing a
+ refcount
+Message-Id: <20201127165144.3d788c7dc806788d05157f26@linux-foundation.org>
+In-Reply-To: <5512967d-a96a-c94e-7442-e5e71baa7b19@suse.cz>
+References: <20201119105716.5962-1-osalvador@suse.de>
+        <20201119105716.5962-7-osalvador@suse.de>
+        <5512967d-a96a-c94e-7442-e5e71baa7b19@suse.cz>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Xu Wang (2020-11-27 01:05:51)
-> Because clk_prepare_enable() already checked NULL clock parameter,
-> so the additional check is unnecessary, just remove it.
->=20
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
-> ---
+On Thu, 26 Nov 2020 14:45:30 +0100 Vlastimil Babka <vbabka@suse.cz> wrote:
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+> Note as you say the series should go after [1] above, which means after 
+> mm-page_alloc-disable-pcplists-during-memory-offline.patch in mmots, but 
+> currently it's ordered before, where zone_pcp_disable() etc doesn't yet exist. 
+> Found out as I review using checked out this commit from -next.
+
+Thanks, I reordered them.
