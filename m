@@ -2,148 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 842802C7124
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D979F2C711D
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389313AbgK1Vxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:53:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387427AbgK1THa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:07:30 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE44C02A184;
-        Sat, 28 Nov 2020 03:54:17 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id d17so7156010ion.4;
-        Sat, 28 Nov 2020 03:54:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kMJjaDqWu8SIrRxN1/QhPBWAa69bgxwXfwhv5mcpQCg=;
-        b=tRxMJgXatjJlXrsne/uHFdIEERR3fjha/6l0gtIOY8lPlttwBGhFwS/7FOENu/bsS0
-         ARo6/UoEn1eJ8mk2iJM5fLTlnrJWnyg/FUpaifFDYkQ84uWFHS+fURml8iK6ePTBT4v4
-         7Ctm+ITLSylSWtsoUHBHLrOLLyjMhLyAZRQ44xLNCD5/36nC/1sBqFGWnzOOz28hVMJo
-         n7rZPv/hEFLVeQqac3TOy3j6mM4ouaVwtcgeYy4NzBiYID6n5TxzlLRs2ZK4rJGp9CqG
-         KbCybHEOp+YrautriY35UEXHVQ6tqiDzeZ+pi/TOjTUU9rvwTrEc+wqhlTLx8tC9kDFK
-         hWsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kMJjaDqWu8SIrRxN1/QhPBWAa69bgxwXfwhv5mcpQCg=;
-        b=jbZqK4D6mp1iyb8sqIW0bUVVNecBjnRbVKVs1pyZx8/miOHLsR35nnQ2WQ2f/Ax1c8
-         mYIHLp47Cq6U46BnShDNBKgSh3bVQlXojEGdlBhV4juf76ce/CFnB9TKJjkz0BOinIDM
-         ihPNB0nLr565UFxJcknPL7tPvDfP7neSoi20mYVPcSEt/78PdeEBdPiIOkmP3GXhsTYj
-         TS0xsS1I6sFTOskDsmdV6G6Kq6XUz34FD+mForQePN5t2ldOLcBwUFYeVblHGM/uGRIN
-         OwLx/ddhTCc+pWTsubVU9O4YFadZ8x9zz2cx+HHLoxCZd2tWT4TYP3+FrcfawXzsOlau
-         bi4Q==
-X-Gm-Message-State: AOAM533KpYvkrXxbhoX1WGHh/qZxU1MZJlMuDwkngfMhTzjVas3OwNp/
-        OnH9rA1d0lPpiMqXTRVAt9O3A1eXAhPUT9SY3LQ=
-X-Google-Smtp-Source: ABdhPJxO/gfRABaLOYVENcxLdVOY2/zhTsTuA6eQ4fSpbMgtZvmiiVoHbOJAH2fA/Gh/o3fyhNQZ8225h6K7iO7pqWE=
-X-Received: by 2002:a5d:9710:: with SMTP id h16mr3868396iol.123.1606564455484;
- Sat, 28 Nov 2020 03:54:15 -0800 (PST)
+        id S2403950AbgK1VxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:53:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733182AbgK1TGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 14:06:31 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47686206D8;
+        Sat, 28 Nov 2020 12:21:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606566088;
+        bh=XDJGm6jyXN7vWcHuXHNiBeLAICRudsN8dmuONp9fM7M=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NQw58DwE3qrzs73npw8q4vq95nSJJ2DMOtQDeTWUlgmpRjfE9w1YmrwCxyqDLppOJ
+         EyFtCn0aItNeKG6fiIJseLdYuurfhFmbO7/Q0iY3pj3RhwhVz+hi86BQvLBmJvotxv
+         mJvIAnrNUMsNUTcorIOk4E+RnNazrR1jkIUAe7bc=
+Date:   Sat, 28 Nov 2020 13:22:36 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Char/Misc driver fixes for 5.10-rc6
+Message-ID: <X8JBDK8P6ZiKrvav@kroah.com>
 MIME-Version: 1.0
-References: <6175E674-E8BC-4199-8BE8-A983065C32D5@aosc.io> <20201116155508.364dg6ycklwylswe@gilmour.lan>
- <8FFC1A6C-9CA4-4F94-91C4-F111A7519979@aosc.io> <20201120155939.3ajmbny2pka2vsnf@gilmour>
- <A8E91BA0-22FD-47F4-A5B2-A80A38FE9A0E@aosc.io> <38ee5feb-e35d-801f-99a1-65e23618e73b@sholland.org>
- <20201123111512.y7lbwsipbkcpuleb@gilmour> <97E2037C-3C3C-4B0B-8462-39B9E38CB3BB@aosc.io>
- <20201123125332.2p5z3ew7svszvyfs@gilmour> <009A22D9-AF20-45C4-9674-13334B3EFFBA@aosc.io>
- <20201128103827.d6sfc2eumli2betx@gilmour> <1666a61f6ea3e7d573795f9000a0b096c7b7dee0.camel@aosc.io>
-In-Reply-To: <1666a61f6ea3e7d573795f9000a0b096c7b7dee0.camel@aosc.io>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Sat, 28 Nov 2020 12:54:04 +0100
-Message-ID: <CAJiuCcfEcM+Dksm4uoRPCiRepDSnEmp7pr8Qk5EsFSH_zEOTYA@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH 3/3] arm64: allwinner: dts: a64: add DT
- for PineTab developer sample
-To:     Icenowy Zheng <icenowy@aosc.io>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        Samuel Holland <samuel@sholland.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Icenowy,
+The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576:
 
-On Sat, 28 Nov 2020 at 12:28, Icenowy Zheng <icenowy@aosc.io> wrote:
->
-> =E5=9C=A8 2020-11-28=E6=98=9F=E6=9C=9F=E5=85=AD=E7=9A=84 11:38 +0100=EF=
-=BC=8CMaxime Ripard=E5=86=99=E9=81=93=EF=BC=9A
-> > On Mon, Nov 23, 2020 at 09:10:38PM +0800, Icenowy Zheng wrote:
-> > > > > > > > Okay. But I'm not satisfied with a non-public sample
-> > > > > > > > occupies
-> > > > > > > > the pinetab name. Is rename it to pinetab-dev and add a
-> > > > > > > > pinetab-retail okay?
-> > > > > > >
-> > > > > > > To me, naming the production version anything but "pinetab"
-> > > > > > > isn't
-> > > > > > > satisfying either.
-> > > > > >
-> > > > > > I understand where you're coming from, but the point I was
-> > > > > > making my
-> > > > > > previous mail is precisely that it's not really possible.
-> > > > > >
-> > > > > > You want to name the early adopter version _the_ production
-> > > > > > version. Let's assume the hardware changes again between the
-> > > > > > early
-> > > > > > adopter and mass-production version. Which one will be _the_
-> > > > > > production version? The early-adopter or the mass-produced
-> > > > > > one?
-> > > > > >
-> > > > > > There's really no good answer here, and both would suck in
-> > > > > > their
-> > > > > > own way. The only way to deal with this is to simply avoid
-> > > > > > defining one version as the one true board, and just loading
-> > > > > > the
-> > > > > > proper DT in u-boot based on whatever clue we have of the
-> > > > > > hardware
-> > > > > > revision.
-> > > > > Then will it be okay to rename current pinetab DT to
-> > > > > pinetab-sample and then introduce new DTs all with suffixes?
-> > > >
-> > > > No. From my previous mail:
-> > >
-> > > It can be seen as dropping the PineTab DT and introduce new DTs
-> > > with
-> > > suffix.
-> > >
-> > > Do we have rule that we cannot drop boards?
-> >
-> > Are you really arguing that removing a DT and then adding an
-> > identical
-> > one under a different name is not renaming it?
->
-> Then we can just keep confusing name?
+  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
 
-Sorry maybe I missed some information
-But why don't you do like pinephone?
-sun50i-a64-pinetab-1.0.dts
-sun50i-a64-pinetab-1.1.dts
+are available in the Git repository at:
 
--dev is also a confusing name I think, as the board has been already shippe=
-d.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.10-rc6
 
-Regards,
-Clement
+for you to fetch changes up to c7acb6b9c07b4b75dffadc3b6466b1b43b3fda21:
 
+  MAINTAINERS: Adding help for coresight subsystem (2020-11-26 09:09:18 +0100)
 
->
-> If we do so, how can we mark the new DT as "the user should use this
-> one"?
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to linux-sunxi+unsubscribe@googlegroups.com.
-> To view this discussion on the web, visit https://groups.google.com/d/msg=
-id/linux-sunxi/1666a61f6ea3e7d573795f9000a0b096c7b7dee0.camel%40aosc.io.
+----------------------------------------------------------------
+Char/misc driver fixes for 5.10-rc6
+
+Here are some small misc driver fixes for 5.10-rc6.  They include:
+  - interconnect fixes for reported problems
+  - habanalabs bugfix for found issue when doing the switch fallthrough
+    patches.
+  - MAINTINERS file update for coresight reviewers/maintainers
+
+All have been in linux-next with no reported issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Georgi Djakov (4):
+      interconnect: qcom: msm8974: Prevent integer overflow in rate
+      interconnect: qcom: msm8974: Don't boost the NoC rate during boot
+      interconnect: qcom: msm8916: Remove rpm-ids from non-RPM nodes
+      interconnect: qcom: qcs404: Remove GPU and display RPM IDs
+
+Greg Kroah-Hartman (2):
+      Merge tag 'icc-5.10-rc6' of git://git.kernel.org/.../djakov/icc into char-misc-linus
+      Merge tag 'misc-habanalabs-fixes-2020-11-23' of ssh://gitolite.kernel.org/.../ogabbay/linux into char-misc-linus
+
+Marek Szyprowski (1):
+      interconnect: fix memory trashing in of_count_icc_providers()
+
+Mathieu Poirier (1):
+      MAINTAINERS: Adding help for coresight subsystem
+
+Oded Gabbay (1):
+      habanalabs/gaudi: fix missing code in ECC handling
+
+ MAINTAINERS                           |  4 +++-
+ drivers/interconnect/core.c           |  1 -
+ drivers/interconnect/qcom/msm8916.c   | 12 ++++++------
+ drivers/interconnect/qcom/msm8974.c   | 12 ++++++++++++
+ drivers/interconnect/qcom/qcs404.c    |  4 ++--
+ drivers/misc/habanalabs/gaudi/gaudi.c |  2 ++
+ 6 files changed, 25 insertions(+), 10 deletions(-)
