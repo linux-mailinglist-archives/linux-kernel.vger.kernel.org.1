@@ -2,133 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA432C712D
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A252C712F
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391480AbgK1Vyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:54:37 -0500
-Received: from smtprelay0114.hostedemail.com ([216.40.44.114]:38122 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387479AbgK1TNn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:13:43 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id B4C1B100E7B48;
-        Sat, 28 Nov 2020 19:13:01 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:305:355:379:599:960:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:4321:4605:5007:6120:7875:7901:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12740:12895:13161:13229:13255:13439:13894:14181:14659:14721:21080:21212:21324:21451:21627:21660:21990:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:22,LUA_SUMMARY:none
-X-HE-Tag: food23_5907ea127393
-X-Filterd-Recvd-Size: 3656
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 28 Nov 2020 19:13:00 +0000 (UTC)
-Message-ID: <c2087e41b85c3d45f1d224373b36ecff88d80298.camel@perches.com>
-Subject: Re: [PATCH v5] checkpatch: add fix and improve warning msg for
- non-standard signature
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Sat, 28 Nov 2020 11:12:59 -0800
-In-Reply-To: <20201128183508.1195-1-yashsri421@gmail.com>
-References: <2f5c625f5f342042ab55902fe4b808bff8dd297b.camel@perches.com>
-         <20201128183508.1195-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S2404152AbgK1Vyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:54:44 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:54606 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387519AbgK1TY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 14:24:56 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kj5pK-009HRH-ID; Sat, 28 Nov 2020 20:24:10 +0100
+Date:   Sat, 28 Nov 2020 20:24:10 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
+Message-ID: <20201128192410.GG2191767@lunn.ch>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-3-steen.hegelund@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201127133307.2969817-3-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-11-29 at 00:05 +0530, Aditya Srivastava wrote:
-> Currently checkpatch warns for BAD_SIGN_OFF on non-standard signature
-> styles.
-
-Seems OK, but here are some last trivial notes:
-
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> +sub find_standard_signature {
-> +	my ($sign_off) = @_;
-> +	my @standard_signature_tags = (
-> +		'signed-off-by:', 'co-developed-by:', 'acked-by:', 'tested-by:',
-> +		'reviewed-by:', 'reported-by:', 'suggested-by:'
-
-I would change this to the normal signatures:
-
-	my @standard_signature_tags = (
-		'Signed-off-by:', 'Co-developed-by:', 'Acked-by:', 'Tested-by:',
-		'Reviewed-by:', 'Reported-by:', 'Suggested-by:'
-
-> +	);
-> +	my $standard_signature;
-> +	my $min_edit_distance = 20; # setting default value
-
-20 seems arbitrary, maybe (~0 << 1) ?
-
-> +	my $edit_distance;
-
-move this into the foreach (or maybe not use this at all)
-
-> +	foreach (@standard_signature_tags) {
-
-foreach style in this code uses foreach my $<something> and not $_
-
-	foreach my $standard (@standard_signature_tags) {
-
-> +		$edit_distance = get_edit_distance($sign_off, $_);
-
-So:
-
-		my $edit_distance = get_edit_distance($sign_off, $standard);
-
-> +		if ($edit_distance < $min_edit_distance) {
-> +			$min_edit_distance = $edit_distance;
-> +			$standard_signature = $_;
-> +		}
+> +static void sparx5_attr_stp_state_set(struct sparx5_port *port,
+> +				      struct switchdev_trans *trans,
+> +				      u8 state)
+> +{
+> +	struct sparx5 *sparx5 = port->sparx5;
+> +
+> +	if (!test_bit(port->portno, sparx5->bridge_mask)) {
+> +		netdev_err(port->ndev,
+> +			   "Controlling non-bridged port %d?\n", port->portno);
+> +		return;
 > +	}
-> +        if ($min_edit_distance <= 2) {
-> +		return ucfirst($standard_signature);
+> +
+> +	switch (state) {
+> +	case BR_STATE_FORWARDING:
+> +		set_bit(port->portno, sparx5->bridge_fwd_mask);
+> +		break;
+> +	default:
+> +		clear_bit(port->portno, sparx5->bridge_fwd_mask);
+> +		break;
+> +	}
 
-	return $standard;
+That is pretty odd. What about listening, learning, blocking?
 
-Though maybe it's simpler to test in the loop if it's <= 2 as
-the lowercase and dash strip is done inside get_edit_distance
-so this seems rather simpler:
+> +static int sparx5_port_bridge_join(struct sparx5_port *port,
+> +				   struct net_device *bridge)
+> +{
+> +	struct sparx5 *sparx5 = port->sparx5;
+> +
+> +	if (bitmap_empty(sparx5->bridge_mask, SPX5_PORTS))
+> +		/* First bridged port */
+> +		sparx5->hw_bridge_dev = bridge;
+> +	else
+> +		if (sparx5->hw_bridge_dev != bridge)
+> +			/* This is adding the port to a second bridge, this is
+> +			 * unsupported
+> +			 */
+> +			return -ENODEV;
+> +
+> +	set_bit(port->portno, sparx5->bridge_mask);
+> +
+> +	/* Port enters in bridge mode therefor don't need to copy to CPU
+> +	 * frames for multicast in case the bridge is not requesting them
+> +	 */
+> +	__dev_mc_unsync(port->ndev, sparx5_mc_unsync);
+> +
+> +	return 0;
+> +}
 
-	foreach my $standard (@standard_signature_tags) {
-		return $standard if (get_edit_distance($sign_off, $standard) <= 2);
-	}
+This looks suspiciously empty? Don't you need to tell the hardware
+which ports this port is bridges to? Normally you see some code which
+walks all the ports and finds those in the same bridge, and sets a bit
+which allows these ports to talk to each other. Is that code somewhere
+else?
 
-	return "";
-
-> @@ -2773,8 +2839,17 @@ sub process {
->  			my $ucfirst_sign_off = ucfirst(lc($sign_off));
->  
-> 
->  			if ($sign_off !~ /$signature_tags/) {
-> -				WARN("BAD_SIGN_OFF",
-> -				     "Non-standard signature: $sign_off\n" . $herecurr);
-> +				my $suggested_signature = find_standard_signature($sign_off);
-> +				if ($suggested_signature eq "") {
-> +					WARN("BAD_SIGN_OFF",
-> +					     "Non-standard signature: $sign_off\n" . $herecurr);
-> +				} else {
-> +					if (WARN("BAD_SIGN_OFF",
-> +						 "Non-standard signature: $sign_off. Perhaps '$suggested_signature'\n" . $herecurr) &&
-
-Please use consistent '' or nothing around signatures:
-
-						"Non-standard signature: '$sign_off' - likely typo of '$suggested_signature'\n" . $herecurr) &&
-
-> +					    $fix) {
-> +						$fixed[$fixlinenr] =~ s/$sign_off/$suggested_signature/;
-> +					}
-> +				}
->  			}
->  			if (defined $space_before && $space_before ne "") {
->  				if (WARN("BAD_SIGN_OFF",
-
-
+	Andrew
