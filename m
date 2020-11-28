@@ -2,162 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2506D2C6E5C
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 03:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAC42C6E63
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 03:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731565AbgK1CF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Nov 2020 21:05:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        id S1730366AbgK1CNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Nov 2020 21:13:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731924AbgK1CEN (ORCPT
+        with ESMTP id S1728558AbgK1CKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Nov 2020 21:04:13 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB31DC0613D2;
-        Fri, 27 Nov 2020 18:04:12 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id k8so6127551ilr.4;
-        Fri, 27 Nov 2020 18:04:12 -0800 (PST)
+        Fri, 27 Nov 2020 21:10:49 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3EC7C0613D1;
+        Fri, 27 Nov 2020 18:10:48 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id e8so5986659pfh.2;
+        Fri, 27 Nov 2020 18:10:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wflFfmV0h+VkTUXw4dnigENEr6YKI+GTw63N8b+QamM=;
-        b=mNfLDr8I9YeJdrdKv9F6I2Zuhv9FHtA6r2AZHsGp+2pPMuEfy9Ob0fu32gixgrtCcT
-         dqvxAqzOprHP7/6v3STPI+0mn/kDPaHQiDMUO20yTQHT5vf8s8Nd0rL2wuWbkDHvkNkx
-         fs05uG0otO2eFZoS0qwsRoxQG/QUKSRUGIj//Y/D5XTyIphSgpXw6ftfGRxqlFmYypBy
-         4dcE1xOU9rdOKIKezK7u57EDjXR3WaI2NbrbCi7M4y6RAXXscBur+g/lpwHtmGwxe8xg
-         QnOLBrqbZz480OcvPFlY0OGFglqdJvKgm01RHslBzVKcOXBCZ3hKL/1Tljla7+VPLQRd
-         DBWQ==
+        bh=7FacVR3V/WCEQ1CgCqyN6BOceGSQR7vhqJHiXGCEHWI=;
+        b=PViRMpuuI4eSXEfb51qD0D+pcYok8I/rhmStXFBTFj3IPF6V/SEoRXQv/TBup1azDC
+         hjHyNx2mApNmhLCf9Zyz95b6hiJYJGPjTJxKWjHBV0FrkhCSRKfUOLqV1605foMyGhaL
+         3kqCzZrB4I05I5JRfvEh3ci+GEIC/gM6KW/VhCi+cpn0oTFhGM4+C58/w06d4tBKFQnv
+         TAWroBz+1qLFoLIuj4DqzEmKTFdDLOe2sad/9hav4SQDjKZXqsmDrxu9/lxhK9oSMtDr
+         8M8m7zu1dYHTGZFlo8e/FXG+aWvfmtIojHDJv/r7e5z+Rh3RwjBjiLJMWei0FoJ4CPut
+         OytA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wflFfmV0h+VkTUXw4dnigENEr6YKI+GTw63N8b+QamM=;
-        b=J+Gb+XqxZYhm3vwYbFFPrfJlpIFwt1aqnEAMHs8qJZW+sdmxFQGZxH4QbD+GZ6j9h4
-         rjLsK19qVFIRWdIh7YjHWfZMaJ1pOA3yrkTHJ3VT6Z04pv1T/7seaHvCJ3INc1i1Mphm
-         G+m6V6F9pvs+VF5cDQfxan5mKFwY4bm5P4BudNgzQJINW05Rl0ZLUwAylPx8WBdsFwLb
-         RB+L+JZt1OuaDpNWYp63vM6inK7rQ4WjlxFLgahD9cJaoC9yXF0SLRUnDTcnl3eXRPjK
-         p897wVtSmh5/2ltHsP0GYKS6nZfp28SSPwDLzskJg8/wg5+yqi+Zqk2G9VeX9+nYfLVs
-         Z2Cg==
-X-Gm-Message-State: AOAM5335h2/p0m0yBfHVHZMY8hysIdrsNVCjOnbI3Ll2QIHSXloLtogB
-        VdwWoSslPh7Jp9/0adhcxzZK5eqTxHnH+Jbc74Y=
-X-Google-Smtp-Source: ABdhPJysEVNq2gbUDgAqedaN0LFcXc+rap6lS2RKie2goF+k5/FfA5oVVSUVK9/bh741Gi8IvF6RpD3kTV799ulv5Qk=
-X-Received: by 2002:a92:ae0e:: with SMTP id s14mr9068421ilh.94.1606529052081;
- Fri, 27 Nov 2020 18:04:12 -0800 (PST)
+        bh=7FacVR3V/WCEQ1CgCqyN6BOceGSQR7vhqJHiXGCEHWI=;
+        b=FdU1Ua1u97h1DtGHoZZd+NPEE4rD12xbrej3czAtEE0UlHTEBp/TJtqP6mG/de4W8Q
+         qvQSjKTuBgFgzBsHP6GmAspgtsySABN0dg5K80DkZngA2SmsQ/ZSlTIR0E70Lcse//IE
+         71MVrRN/mRe/DIWasiwqMW1XHlFgaDQlYRcxDi6lUBTche+DYy86QPIRmij5z+VYMjdV
+         0GflECnzkFYmiA5GZIy4LIZPpPiF05+9uh6q78S5Cbe4rz/LLNYhYZhh493KaRghVuNE
+         UQ87iDnWpSZfsVrGxFVfDEO1f5mTioPB3B2xvefpW9eJEVpPFiMb37vrHBIsZBq0TCSr
+         bd5g==
+X-Gm-Message-State: AOAM531x0gS/My+fwhZ7MwmMG76eneok3Wup+Ji3tXK0mGmPLlMffokW
+        tDAYRgJKsZC1i3Fh9ZRSO2KFgUv1trxSx33gd7M=
+X-Google-Smtp-Source: ABdhPJwJzWeiq3C0co0/Pz4JEuuWQjID47IeRj592IOrxEVg6lIroPDYvpR9G1i2693CxUvn4SeCeqwdNUJi9gJ1RlE=
+X-Received: by 2002:a17:90a:5d8c:: with SMTP id t12mr13721302pji.156.1606529448409;
+ Fri, 27 Nov 2020 18:10:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20201120095517.19211-1-jiangshanlai@gmail.com>
- <20201126000549.GC450871@google.com> <0724aeb9-3466-5505-8f12-a5899144e68f@redhat.com>
-In-Reply-To: <0724aeb9-3466-5505-8f12-a5899144e68f@redhat.com>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Sat, 28 Nov 2020 10:04:01 +0800
-Message-ID: <CAJhGHyApvmQk4bxxK2rJKzyAShFSXyEb2W0qyFcVoUEcsMKs_w@mail.gmail.com>
-Subject: Re: [PATCH] kvm/x86/mmu: use the correct inherited permissions to get
- shadow page
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Avi Kivity <avi@qumranet.com>, linux-doc@vger.kernel.org
+References: <20201026125016.1905945-1-balsini@android.com>
+In-Reply-To: <20201026125016.1905945-1-balsini@android.com>
+From:   Peng Tao <bergwolf@gmail.com>
+Date:   Sat, 28 Nov 2020 10:10:37 +0800
+Message-ID: <CA+a=Yy76W4Xob6UVXsPLA_FKF_8+QFQSEF98yALjRmuOhnVOdw@mail.gmail.com>
+Subject: Re: [PATCH V10 0/5] fuse: Add support for passthrough read/write
+To:     Alessio Balsini <balsini@android.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 12:48 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Tue, Oct 27, 2020 at 1:00 AM Alessio Balsini <balsini@android.com> wrote:
 >
-> On 26/11/20 01:05, Sean Christopherson wrote:
-> > On Fri, Nov 20, 2020, Lai Jiangshan wrote:
-> >> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> >>
-> >> Commit 41074d07c78b ("KVM: MMU: Fix inherited permissions for emulated
-> >> guest pte updates") said role.access is common access permissions for
-> >> all ptes in this shadow page, which is the inherited permissions from
-> >> the parent ptes.
-> >>
-> >> But the commit did not enforce this definition when kvm_mmu_get_page()
-> >> is called in FNAME(fetch). Rather, it uses a random (last level pte's
-> >> combined) access permissions.
-> >
-> > I wouldn't say it's random, the issue is specifically that all shadow pages end
-> > up using the combined set of permissions of the entire walk, as opposed to the
-> > only combined permissions of its parents.
-> >
-> >> And the permissions won't be checked again in next FNAME(fetch) since the
-> >> spte is present. It might fail to meet guest's expectation when guest sets up
-> >> spaghetti pagetables.
-> >
-> > Can you provide details on the exact failure scenario?  It would be very helpful
-> > for documentation and understanding.  I can see how using the full combined
-> > permissions will cause weirdness for upper level SPs in kvm_mmu_get_page(), but
-> > I'm struggling to connect the dots to understand how that will cause incorrect
-> > behavior for the guest.  AFAICT, outside of the SP cache, KVM only consumes
-> > role.access for the final/last SP.
-> >
+> This is the 10th version of the series. Please find the changelog at the
+> bottom of this cover letter.
 >
-> Agreed, a unit test would be even better, but just a description in the
-> commit message would be enough.
+> Add support for file system passthrough read/write of files when enabled in
+> userspace through the option FUSE_PASSTHROUGH.
 >
-> Paolo
+> There are file systems based on FUSE that are intended to enforce special
+> policies or trigger complicated decision makings at the file operations
+> level. Android, for example, uses FUSE to enforce fine-grained access
+> policies that also depend on the file contents.
+> Sometimes it happens that at open or create time a file is identified as
+> not requiring additional checks for consequent reads/writes, thus FUSE
+> would simply act as a passive bridge between the process accessing the FUSE
+> file system and the lower file system. Splicing and caching help reduce the
+> FUSE overhead, but there are still read/write operations forwarded to the
+> userspace FUSE daemon that could be avoided.
 >
+> This series has been inspired by the original patches from Nikhilesh Reddy,
+> the idea and code of which has been elaborated and improved thanks to the
+> community support.
+>
+> When the FUSE_PASSTHROUGH capability is enabled, the FUSE daemon may decide
+> while handling the open/create operations, if the given file can be
+> accessed in passthrough mode. This means that all the further read and
+> write operations would be forwarded by the kernel directly to the lower
+> file system using the VFS layer rather than to the FUSE daemon.
+> All the requests other than reads or writes are still handled by the
+> userspace FUSE daemon.
+> This allows for improved performance on reads and writes, especially in the
+> case of reads at random offsets, for which no (readahead) caching mechanism
+> would help.
+> Benchmarks show improved performance that is close to native file system
+> access when doing massive manipulations on a single opened file, especially
+> in the case of random reads, for which the bandwidth increased by almost 2X
+> or sequential writes for which the improvement is close to 3X.
+>
+> The creation of this direct connection (passthrough) between FUSE file
+> objects and file objects in the lower file system happens in a way that
+> reminds of passing file descriptors via sockets:
+> - a process requests the opening of a file handled by FUSE, so the kernel
+>   forwards the request to the FUSE daemon;
+> - the FUSE daemon opens the target file in the lower file system, getting
+>   its file descriptor;
+> - the FUSE daemon also decides according to its internal policies if
+>   passthrough can be enabled for that file, and, if so, can perform a
+>   FUSE_DEV_IOC_PASSTHROUGH_OPEN ioctl() on /dev/fuse, passing the file
+>   descriptor obtained at the previous step and the fuse_req unique
+>   identifier;
+> - the kernel translates the file descriptor to the file pointer navigating
+>   through the opened files of the "current" process and temporarily stores
+>   it in the associated open/create fuse_req's passthrough_filp;
+> - when the FUSE daemon has done with the request and it's time for the
+>   kernel to close it, it checks if the passthrough_filp is available and in
+>   case updates the additional field in the fuse_file owned by the process
+>   accessing the FUSE file system.
+> From now on, all the read/write operations performed by that process will
+> be redirected to the corresponding lower file system file by creating new
+> VFS requests.
+> Since the read/write operation to the lower file system is executed with
+> the current process's credentials, it might happen that it does not have
+> enough privileges to succeed. For this reason, the process temporarily
+> receives the same credentials as the FUSE daemon, that are reverted as soon
+> as the read/write operation completes, emulating the behavior of the
+> request to be performed by the FUSE daemon itself. This solution has been
+> inspired by the way overlayfs handles read/write operations.
+> Asynchronous IO is supported as well, handled by creating separate AIO
+> requests for the lower file system that will be internally tracked by FUSE,
+> that intercepts and propagates their completion through an internal
+> ki_completed callback similar to the current implementation of overlayfs.
+> The ioctl() has been designed taking as a reference and trying to converge
+> to the fuse2 implementation. For example, the fuse_passthrough_out data
+> structure has extra fields that will allow for further extensions of the
+> feature.
+>
+>
+>     Performance on SSD
+>
+> What follows has been performed with this change [V6] rebased on top of
+> vanilla v5.8 Linux kernel, using a custom passthrough_hp FUSE daemon that
+> enables pass-through for each file that is opened during both "open" and
+> "create". Tests were run on an Intel Xeon E5-2678V3, 32GiB of RAM, with an
+> ext4-formatted SSD as the lower file system, with no special tuning, e.g.,
+> all the involved processes are SCHED_OTHER, ondemand is the frequency
+> governor with no frequency restrictions, and turbo-boost, as well as
+> p-state, are active. This is because I noticed that, for such high-level
+> benchmarks, results consistency was minimally affected by these features.
+> The source code of the updated libfuse library and passthrough_hp is shared
+> at the following repository:
+>
+>     https://github.com/balsini/libfuse/tree/fuse-passthrough-stable-v.3.9.4
+The libfuse changes are not updated with the latest ioctl UAPI change yet.
 
-Something in my mind, but I haven't test it:
+> * UAPI updated: ioctl() now returns an ID that will be used at
+>   open/create response time to reference the passthrough file
 
-pgd[]pud[]  pmd[]        pte[]            virtual address pointers
- (same hpa as pmd2\)  /->pte1(u--)->page1 <- ptr1 (u--)
-         /->pmd1(uw-)--->pte2(uw-)->page2 <- ptr2 (uw-)
-pgd->pud-|           (shared pte[] as above)
-         \->pmd2(u--)--->pte1(u--)->page1 <- ptr3 (u--)
- (same hpa as pmd1/)  \->pte2(uw-)->page2 <- ptr4 (u--)
-
-
-pmd1 and pmd2 point to the same pte table, so:
-ptr1 and ptr3 points to the same page.
-ptr2 and ptr4 points to the same page.
-
-  The guess read-accesses to ptr1 first. So the hypervisor gets the
-shadow pte page table with role.access=u-- among other things.
-   (Note the shadowed pmd1's access is uwx)
-
-  And then the guest write-accesses to ptr2, and the hypervisor
-set up shadow page for ptr2.
-   (Note the hypervisor silencely accepts the role.access=u--
-    shadow pte page table in FNAME(fetch))
-
-  After that, the guess read-accesses to ptr3, the hypervisor
-reused the same shadow pte page table as above.
-
-  At last, the guest writes to ptr4 without vmexit nor pagefault,
-Which should cause vmexit as the guest expects.
-
-In theory, guest userspace can trick the guest kernel if the guest
-kernel sets up page table like this.
-
-Such spaghetti pagetables are unlikely to be seen in the guest.
-
-But when the guest is using KPTI and not using SMEP. KPTI means
-all pgd entries are marked NX on the lower/userspace part of
-the kernel pagetable. Which means SMEP is not needed.
-(see arch/x86/mm/pti.c)
-
-Assume the guest does disable SMEP and the guest has the flaw
-that the guest user can trick guest kernel to execute on lower
-part of the address space.
-
-Normally, NX bit marked on the kernel pagetable's lower pgd
-entries can help in this case. But when in guest with shadowpage
-in hypervisor, the guest user can make those NX bit useless.
-
-Again, I haven't tested it neither. I will try it later and
-update the patch including adding some more checks in the mmu.c.
-
-Thanks,
-Lai
+Cheers,
+Tao
+-- 
+Into Sth. Rich & Strange
