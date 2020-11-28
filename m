@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FF62C7139
+	by mail.lfdr.de (Postfix) with ESMTP id 7269A2C713A
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404201AbgK1VzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:55:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387569AbgK1TiR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:38:17 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CD3C0613D2;
-        Sat, 28 Nov 2020 11:37:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=wczN6AriNJ48tQCol4hNOpUdpRZo/jTKX5QpnKikbMM=; b=fzrIFQEgpsI4IkWcnrednf//C
-        U1nzyLcWD9ZNOKkXYoAgj+MoJ53wfhfrjVqrIQdwNj6H6UbE0IX/Ah/k/GoYr7Ide01g9xMbX4bi1
-        VoYP1856qOKgotp/7iUVrKYmfspgtF6T3H6TmGsRZwKlUbeW6IODzaz1GFa6b7KlQKgme5FTv2DPM
-        IOXR639W0GO24JtUBpncCl8B+MQ8m4kUf3w2OgGdqaf6Apm9tgbIf+oLom3adOD3UMgT2uQjCM30h
-        RbjRUlN758qzJ3G6OEBi9Osr+fLAMtuOhl41ShLq8nogxJKiLdf+hUxa3whuR1YkBZumVk6yFRXE9
-        bQELxf3hA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37272)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kj61t-0004vk-EC; Sat, 28 Nov 2020 19:37:09 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kj61r-0003EP-Mv; Sat, 28 Nov 2020 19:37:07 +0000
-Date:   Sat, 28 Nov 2020 19:37:07 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Steen Hegelund <steen.hegelund@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
-Message-ID: <20201128193707.GP1551@shell.armlinux.org.uk>
-References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
- <20201127133307.2969817-3-steen.hegelund@microchip.com>
- <20201128190616.GF2191767@lunn.ch>
+        id S2391518AbgK1VzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:55:06 -0500
+Received: from foss.arm.com ([217.140.110.172]:37318 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387575AbgK1TkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 14:40:10 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A75D30E;
+        Sat, 28 Nov 2020 11:39:24 -0800 (PST)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 916ED3F23F;
+        Sat, 28 Nov 2020 11:39:22 -0800 (PST)
+Subject: Re: [RESEND PATCH 13/19] phy: sun4i-usb: add support for A100 USB PHY
+To:     Frank Lee <frank@allwinnertech.com>, tiny.windzz@gmail.com
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <cover.1604988979.git.frank@allwinnertech.com>
+ <b323d8c7ea4eb6bc325f6a6465cb2547cc6be757.1604988979.git.frank@allwinnertech.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <ba05fb05-f1de-8a8f-c771-f82f25ad4da5@arm.com>
+Date:   Sat, 28 Nov 2020 19:39:02 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201128190616.GF2191767@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <b323d8c7ea4eb6bc325f6a6465cb2547cc6be757.1604988979.git.frank@allwinnertech.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 08:06:16PM +0100, Andrew Lunn wrote:
-> > +static void sparx5_phylink_mac_config(struct phylink_config *config,
-> > +				      unsigned int mode,
-> > +				      const struct phylink_link_state *state)
-> > +{
-> > +	struct sparx5_port *port = netdev_priv(to_net_dev(config->dev));
-> > +	struct sparx5_port_config conf;
-> > +	int err = 0;
-> > +
-> > +	conf = port->conf;
-> > +	conf.autoneg = state->an_enabled;
-> > +	conf.pause = state->pause;
-> > +	conf.duplex = state->duplex;
-> > +	conf.power_down = false;
-> > +	conf.portmode = state->interface;
-> > +
-> > +	if (state->speed == SPEED_UNKNOWN) {
-> > +		/* When a SFP is plugged in we use capabilities to
-> > +		 * default to the highest supported speed
-> > +		 */
+On 10/11/2020 06:40, Frank Lee wrote:
+
+Hi,
+
+> From: Yangtao Li <frank@allwinnertech.com>
 > 
-> This looks suspicious.
+> Add support for a100's usb phy, which with 2 PHYs.
 > 
-> Russell, please could you look through this?
+> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> ---
+>  drivers/phy/allwinner/phy-sun4i-usb.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+> index a6900495baa5..1a0e403131e7 100644
+> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
+> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+> @@ -107,6 +107,7 @@ enum sun4i_usb_phy_type {
+>  	sun8i_r40_phy,
+>  	sun8i_v3s_phy,
+>  	sun50i_a64_phy,
+> +	sun50i_a100_phy,
 
-Maybe if I was copied on the patch submission... I don't have the
-patches, and searching google for them is a faff, especially
-when
+But with that patch fixing the H6 support you don't need a new name, do you?
+Because below you just add the sun50i_a100_phy name next to every place
+with a sun50i_h6_phy check.
 
-site:kernel.org 20201127133307.2969817-1-steen.hegelund@microchip.com
+>  	sun50i_h6_phy,
+>  };
+>  
+> @@ -289,7 +290,13 @@ static int sun4i_usb_phy_init(struct phy *_phy)
+>  	}
+>  
+>  	if (data->cfg->type == sun8i_a83t_phy ||
+> +	    data->cfg->type == sun50i_a100_phy ||
+>  	    data->cfg->type == sun50i_h6_phy) {
+> +		if (phy->pmu && data->cfg->enable_pmu_unk1) {
+> +			val = readl(phy->pmu + REG_PMU_UNK1);
+> +			writel(val & ~BIT(3), phy->pmu + REG_PMU_UNK1);
+> +		}
+> +
+>  		if (phy->index == 0) {
+>  			val = readl(data->base + data->cfg->phyctl_offset);
+>  			val |= PHY_CTL_VBUSVLDEXT;
+> @@ -339,6 +346,7 @@ static int sun4i_usb_phy_exit(struct phy *_phy)
+>  
+>  	if (phy->index == 0) {
+>  		if (data->cfg->type == sun8i_a83t_phy ||
+> +		    data->cfg->type == sun50i_a100_phy ||
+>  		    data->cfg->type == sun50i_h6_phy) {
+>  			void __iomem *phyctl = data->base +
+>  				data->cfg->phyctl_offset;
+> @@ -960,6 +968,16 @@ static const struct sun4i_usb_phy_cfg sun50i_a64_cfg = {
+>  	.phy0_dual_route = true,
+>  };
+>  
+> +static const struct sun4i_usb_phy_cfg sun50i_a100_cfg = {
+> +	.num_phys = 2,
+> +	.type = sun50i_a100_phy,
 
-gives:
+So you could just use the sun50i_h6_phy type here.
 
-   Your search - site:kernel.org
-   20201127133307.2969817-1-steen.hegelund@microchip.com - did not
-   match any documents. Suggestions: Make sure that all words are
-   spelled correctly. Try different keywords. Try more general
-   keywords.
+Cheers,
+Andre
 
-It seems that the modified MAINTAINERS entry is now annoyingly
-missing stuff. I don't know what the solution is - either I get
-irrelevant stuff or I don't get stuff I should.
+> +	.disc_thresh = 3,
+> +	.phyctl_offset = REG_PHYCTL_A33,
+> +	.dedicated_clocks = true,
+> +	.enable_pmu_unk1 = true,
+> +	.phy0_dual_route = true,
+> +};
+> +
+>  static const struct sun4i_usb_phy_cfg sun50i_h6_cfg = {
+>  	.num_phys = 4,
+>  	.type = sun50i_h6_phy,
+> @@ -983,6 +1001,7 @@ static const struct of_device_id sun4i_usb_phy_of_match[] = {
+>  	{ .compatible = "allwinner,sun8i-v3s-usb-phy", .data = &sun8i_v3s_cfg },
+>  	{ .compatible = "allwinner,sun50i-a64-usb-phy",
+>  	  .data = &sun50i_a64_cfg},
+> +	{ .compatible = "allwinner,sun50i-a100-usb-phy", .data = &sun50i_a100_cfg },
+>  	{ .compatible = "allwinner,sun50i-h6-usb-phy", .data = &sun50i_h6_cfg },
+>  	{ },
+>  };
+> 
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
