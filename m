@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D8F2C7128
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC11D2C7100
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Nov 2020 22:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390084AbgK1VyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 16:54:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387441AbgK1TIH (ORCPT
+        id S1733132AbgK1VvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 16:51:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26102 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730237AbgK1Sih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:08:07 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E77C09B04E;
-        Sat, 28 Nov 2020 07:27:10 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id w187so7047718pfd.5;
-        Sat, 28 Nov 2020 07:27:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DNjSlcfmF+OHlo4gVLmadoYUI7t/ZPA6392s3YiGIWc=;
-        b=ZhyQyF3xqUCTfNzTWjnt5F47H7u0baAN9fFtRmD3iym4ZXUMOqum0cQhh3hWOctZwj
-         gPht2kBh0BvlDlTsq8TVE/kd5SPzqm9X89p6ZfrT7H3C/ioyQY5tgO574Ym+INLe4FYc
-         s21mRxDd6DGVyMY1fWbws1Pq/YhrjXB32LaWupdtbDbaxsW0QfJbAiHeuVFfQKfuXwL4
-         4JshxsnUfWHqQSkk+FnO+m1Flu7Wg1g/bOkeKaOJwHSdKSQC2TLM6Ybi/1wfBU+oOXqX
-         Ncoe8p+vMg2cCr2cs0+3oYuDvraNpEh/P6BLPY5BbX1hBeAPkFfbcGcv4oiBi8Qqp35b
-         wWXg==
+        Sat, 28 Nov 2020 13:38:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606588630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tHNQGQwYTjMfSeue4qgVHv6eIO5mWnflrkHSXDK1TeI=;
+        b=jI5xOwsjIf5vbTyC/QvkRc2Lx07qEmymLlupeATfZc3xKF23QK/+vGS8wBaQ9M1c9nb6rW
+        Hjc88ev0aPvO+Ho42NTyMNdTMqwPcl4CSRUzEKEDlMy5wSop3zPlDaZTWKHuwH7Vvd1JCv
+        cP2vcC3GKy9+lWbAwjERJSfjL31iycE=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-PVPalPGnOqOCfFvEZnnwVA-1; Sat, 28 Nov 2020 10:36:21 -0500
+X-MC-Unique: PVPalPGnOqOCfFvEZnnwVA-1
+Received: by mail-qv1-f69.google.com with SMTP id i11so4889299qvo.11
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 07:36:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DNjSlcfmF+OHlo4gVLmadoYUI7t/ZPA6392s3YiGIWc=;
-        b=hpToaxFilG1HP9rpvu+QEXihaYA2Dqt9DGAVkoZzIu2pn/yYfAUoPT8ZXo0WfyQghJ
-         hX1tcyngkhKr7WNfis+eV5lS5qSQ8fhdZ4Bk33ZnSurvD+YgX6IYXkFcyxwJdxZ2r5p/
-         kqgpZ10f+GNHetZeErewPDUSg4DUX31wsbTuRVFTJmals/Oth4yGj9S2JhLnE1vvheZ3
-         kBdIsMHDVdsz/RgbQd+rZpxwkAIvhZSpugSqE2oN/6rfZOcqhr65ykHFNnNHGhkUOGba
-         UGVb+6XummAzCO4r5YgOW4xvke0qo1gKHWVHNVCvAx4p0th3F0eiIkl5/TO1sg4+8p9n
-         +fcg==
-X-Gm-Message-State: AOAM531iEzUzXwbwSgjsnu54tpYm8RppwKSvXC62Sxatp3V7NjNjc/W0
-        y10AZn8k2fmK4olBI1zOIP4=
-X-Google-Smtp-Source: ABdhPJyr33fJ1cRT/CXJUB52w14TzTSG2z78e+wqJpSmyHM7mMK5eJZP/z+qSOVYdPM5WOeIlQODnQ==
-X-Received: by 2002:a17:90a:1b6f:: with SMTP id q102mr16974828pjq.9.1606577229927;
-        Sat, 28 Nov 2020 07:27:09 -0800 (PST)
-Received: from bobo.ibm.com (193-116-103-132.tpgi.com.au. [193.116.103.132])
-        by smtp.gmail.com with ESMTPSA id d22sm15500173pjw.11.2020.11.28.07.27.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 07:27:09 -0800 (PST)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Zefan Li <lizefan@huawei.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v8 12/12] powerpc/64s/radix: Enable huge vmalloc mappings
-Date:   Sun, 29 Nov 2020 01:25:59 +1000
-Message-Id: <20201128152559.999540-13-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20201128152559.999540-1-npiggin@gmail.com>
-References: <20201128152559.999540-1-npiggin@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tHNQGQwYTjMfSeue4qgVHv6eIO5mWnflrkHSXDK1TeI=;
+        b=bX+s+sSbSg5LEEC4I2Q1tcoidBK9oF6+zTJixNlSr5yDT1y2YXlTRy5F4oG1AjVcw5
+         64qYo6oB4pBliBmJRRfHi3LWTImeHgKifW5E6H11kz4C95MvIZBv1S+bf4HNCmQjYYmS
+         lSAHDpX7wjqiBZo4pxcBanXeOg5ILhJFz75/zdo8tp6IGrOqMH56w2hjT3jcRq45QpVi
+         NvkQfWY7iuahh+TyNGHqGA+hhkp9Ewxq/7iVR3R0M60vqH2mnxyflRNDwYOaV7epNcFF
+         0A8eXzoiS2CCPWjZrGebsPxl0K6onIQ0/XIfRhTfF3toPCDPY3xR1Fe0mOLRT4jmZ5Hu
+         jpSw==
+X-Gm-Message-State: AOAM5314j4Z1yvixunIDrBKBCJVEhyt3sgbHiLZKg2eD//cnY+IvdXhO
+        QLqj2Qg+CUD/D1pGSD1SRxEDjmeLQw9cSHMPBFG04eVcv1akClK2OVwYqLyg3Aadrx5VHWF1h8h
+        r8VW4ZygubzpmPIp8EvMD/D8IfMPywF9GeqpG7LQ8Uz0GPpVqRl3LgcHJJm9GmqeR+k/8DIo=
+X-Received: by 2002:ac8:5653:: with SMTP id 19mr13889254qtt.136.1606577780234;
+        Sat, 28 Nov 2020 07:36:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxeLj+ft0hyIu5tY+9IGU8mX5chSiE3HfiAHFqd3zePgTYRdxtLobWfv1YhFFOq9Ab/bUpgGA==
+X-Received: by 2002:ac8:5653:: with SMTP id 19mr13889230qtt.136.1606577779926;
+        Sat, 28 Nov 2020 07:36:19 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l28sm8681546qkl.7.2020.11.28.07.36.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 28 Nov 2020 07:36:19 -0800 (PST)
+Subject: Re: [PATCH] MAINTAINERS add D: tag for subsystem commit prefix
+To:     Joe Perches <joe@perches.com>, apw@canonical.com,
+        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+References: <20201127214316.3045640-1-trix@redhat.com>
+ <a4e796f8c0bfdb2c0a2816fa706d13cc0ae06d40.camel@perches.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <f96ff56c-7c39-2fed-dd8b-11971f8965bf@redhat.com>
+Date:   Sat, 28 Nov 2020 07:36:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <a4e796f8c0bfdb2c0a2816fa706d13cc0ae06d40.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- Documentation/admin-guide/kernel-parameters.txt | 2 ++
- arch/powerpc/Kconfig                            | 1 +
- 2 files changed, 3 insertions(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 44fde25bb221..3538c750c583 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3220,6 +3220,8 @@
- 
- 	nohugeiomap	[KNL,X86,PPC,ARM64] Disable kernel huge I/O mappings.
- 
-+	nohugevmalloc	[PPC] Disable kernel huge vmalloc mappings.
-+
- 	nosmt		[KNL,S390] Disable symmetric multithreading (SMT).
- 			Equivalent to smt=1.
- 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index e9f13fe08492..ae10381dd324 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -178,6 +178,7 @@ config PPC
- 	select GENERIC_TIME_VSYSCALL
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
-+	select HAVE_ARCH_HUGE_VMALLOC		if HAVE_ARCH_HUGE_VMAP
- 	select HAVE_ARCH_JUMP_LABEL
- 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
- 	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
--- 
-2.23.0
+On 11/27/20 2:10 PM, Joe Perches wrote:
+> On Fri, 2020-11-27 at 13:43 -0800, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> From
+>> RFC MAINTAINERS tag for cleanup robot
+>> https://lkml.org/lkml/2020/11/21/190
+> I think this should be RFC.
+> It looks as as if it's only for subsystems through A
+
+Yes only A, i wanted to show the direction in a subset.
+
+>
+>> The prefix used by subsystems in their commit log is arbitrary.
+>> To elimitate the time and effort to manually find a reasonable
+>> prefix, store the preferred prefix in the MAINTAINERS file.
+>>
+>> Populate with reasonable prefixes using this algorithm.
+>> What did the maintainers use in their commits?
+>> If there were no maintainers commits then what did everyone
+>> else use in their commits.
+> The algorithm used to produce these prefixes should also be published.
+Ok.
+>> The results were manually reviewed and about 25% were rejected.
+> Because this isn't necessarily the best option.
+>
+> I think an exception mechanism would be better than a specific
+> mechanism added to various entries.
+Can you give an example of what you mean ?
+>>  # check MAINTAINERS entries for the right ordering too
+>> -			my $preferred_order = 'MRLSWQBCPTFXNK';
+>> +			my $preferred_order = 'MRLSWQBCPTFXNKD';
+>>  			if ($rawline =~ /^\+[A-Z]:/ &&
+>>  			    $prevrawline =~ /^[\+ ][A-Z]:/) {
+>>  				$rawline =~ /^\+([A-Z]):\s*(.*)/;
+> I'd prefer to keep the file and keyword list last.
+>
+So change to
+
+my $preferred_order = 'MRLSWQBCPTDFXNK'; 
+
+?
+
+>
+>
 
