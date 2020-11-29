@@ -2,52 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE602C7B81
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 22:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24CA2C7B86
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 23:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727920AbgK2VzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 16:55:08 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:40296 "EHLO
+        id S1727282AbgK2WAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 17:00:15 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:40618 "EHLO
         asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726512AbgK2VzI (ORCPT
+        with ESMTP id S1726293AbgK2WAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 16:55:08 -0500
+        Sun, 29 Nov 2020 17:00:15 -0500
 Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 61BBD2002C;
-        Sun, 29 Nov 2020 22:54:21 +0100 (CET)
-Date:   Sun, 29 Nov 2020 22:54:20 +0100
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 9B40C20034;
+        Sun, 29 Nov 2020 22:59:27 +0100 (CET)
+Date:   Sun, 29 Nov 2020 22:59:26 +0100
 From:   Sam Ravnborg <sam@ravnborg.org>
-To:     trix@redhat.com
-Cc:     b.zolnierkie@samsung.com, pakki001@umn.edu,
-        linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] omapfb: fbcon: remove trailing semicolon in macro
- definition
-Message-ID: <20201129215420.GE1162850@ravnborg.org>
-References: <20201127190508.2842786-1-trix@redhat.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        od@zcrc.me, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 0/3] drm/ingenic: Add support for delta-RGB panels
+Message-ID: <20201129215926.GF1162850@ravnborg.org>
+References: <20201119155559.14112-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201127190508.2842786-1-trix@redhat.com>
+In-Reply-To: <20201119155559.14112-1-paul@crapouillou.net>
 X-CMAE-Score: 0
 X-CMAE-Analysis: v=2.3 cv=Ibmpp1ia c=1 sm=1 tr=0
         a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=20KFwNOVAAAA:8 a=lSec57_JDs9yAHf9QvQA:9
-        a=CjuIK1q_8ugA:10 a=HngZt1h-djAA:10
+        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=jAYXITO5OE7wJCMQ_rkA:9
+        a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
-On Fri, Nov 27, 2020 at 11:05:08AM -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> The macro use will already have a semicolon.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+Hi Paul.
 
-Thanks, applied to drm-misc-next.
+On Thu, Nov 19, 2020 at 03:55:56PM +0000, Paul Cercueil wrote:
+> Hi,
+> 
+> This patchset adds support for delta-RGB panels to the ingenic-drm
+> driver. Delta-RGB panels have diamond-pattern subpixel layout, and
+> expect odd lines to have RGB subpixel ordering, and even lines to have
+> GBR subpixel ordering.
+> 
+> Such panel is used in the YLM (aka. Anbernic) RG-99, RG-300, RG-280M
+> and RG-280V handheld gaming consoles.
+> 
+> Cheers,
+> -Paul
+> 
+> Paul Cercueil (3):
+>   drm/ingenic: Compute timings according to adjusted_mode->crtc_*
+>   drm/ingenic: Properly compute timings when using a 3x8-bit panel
+>   drm/ingenic: Add support for serial 8-bit delta-RGB panels
 
-	Sam
+Strange panel, at least strange bit order.
+Patches looks good and are all:
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
