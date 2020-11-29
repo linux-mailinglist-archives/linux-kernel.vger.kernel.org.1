@@ -2,147 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C250D2C79FA
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 17:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A2A2C79FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 17:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727892AbgK2Q24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 11:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42462 "EHLO
+        id S1728083AbgK2Q3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 11:29:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgK2Q24 (ORCPT
+        with ESMTP id S1725830AbgK2Q3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 11:28:56 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4289C0613D2
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 08:28:15 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id f190so14430816wme.1
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 08:28:15 -0800 (PST)
+        Sun, 29 Nov 2020 11:29:30 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFC3C0613CF;
+        Sun, 29 Nov 2020 08:28:50 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id v14so7724579wml.1;
+        Sun, 29 Nov 2020 08:28:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nVmMpj1hqEAblmsM0FlTKIQm84iwL+6VPpnSTrXXJRQ=;
-        b=lm5N0KlxF1pfVVTpgnYXTlRL12WzH3txR+Yx0j9t68KIilNu0TVGrvro8yk7aEfD2W
-         ozKBRkdGdojWyjPP1t4DNF0xdY/ZrZKHaOjYHIzXmknIwB8sl48HAY6VtiJHGf18cUBF
-         X0PMZK86i5l6ETs43l+/del1DK2sHbyC+EJGyWuenlQ8JEjVlZY7BWcgf7dJpRCC4BNK
-         LNRQk+OL7kSnXy+/MDe/lFSCaWMPuw8FSrlvJhFu/Jg0lHMsZYUNk4QAEvv+DDAyuPcg
-         pZvgHq4bsd+9qf/5HVo3vXGihZSzPYh7Kz5ljoGqyKlbXuwk+L/b70JTLBmNNAzUz/CH
-         spjw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TltC2PWtsn2vLklBGm2EarhUufc2HeBfxICO+b5w0hE=;
+        b=syxCMDtpjFxQe9C8gESgHY+NEuimyGDPhqsEJ9BtEpQL6venr72AQDbb8egNFH22O1
+         1aMSX7iZNBR67pMrgaKcePMhJ421U9pbRLIHJ6snTZTdhiKiXgDVFm/FZbivb+6Vg2+9
+         aGfgs+zU5VLmX7vINq1Pb9nwrN8lA4tSo6Xt2NBE4HVbp+okpN7s0Xn/BvEOEk5FR+nq
+         E6VVyOorMZ4oTFyRobY+tqsNLvwakjYTmDIXnqrbxrqRn2W3D2CF/uROA12hWiQlpZzv
+         ORj+XDD5ptSRbYR3L5uAJB1f+/aIgfTvi8Kry4C1tDV0Zs3hUsu/NN+71SxQEO23Ff2Z
+         0uGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nVmMpj1hqEAblmsM0FlTKIQm84iwL+6VPpnSTrXXJRQ=;
-        b=cnLfQRvkR92kUbYU+/z8LzxrCDBlG9ZAi1v3/vFzM08tKzKuNxLHXZrLNM3QgxX5lZ
-         65IAgIHSdmdhfr/Amh8RDa1AcHpPlkFZ9u0iXFScKbirLZFBkp7cwLdl5o7lw83/TVAh
-         euTbwxmGp7YZBBrH2ks+RBoSqL8lHakZ33FD/8IYqo38w4uSSVsAHglGIHLbyReTKyy2
-         tYLvDvPj0rjAw6fuNaTy3mR6fk8D6zKgBi/Wxjp4WfBZ/f0K6SRTQC+lznfD0lwTEvTd
-         0H3YF90pG/pJ84p4shmACPYLRF5XnVyNqEpV2HU4orW/GblFcPFBO19k+poqZH3jiumj
-         JqFg==
-X-Gm-Message-State: AOAM533VegU2k/UbhE+j9WiSAQssVr1ciICW8vg53xQWqYOMVUhiNXiO
-        0Fx6rAuo2PzStHbrExymzDk=
-X-Google-Smtp-Source: ABdhPJwS1UVkn2ZZQVfJ2EDRGhDSVky5GtMZhkcNZ0AmP5ebcFPTwEDKOGjc9wva0RCVqkaxjiZ0BA==
-X-Received: by 2002:a1c:6008:: with SMTP id u8mr3272101wmb.173.1606667294500;
-        Sun, 29 Nov 2020 08:28:14 -0800 (PST)
-Received: from unjustified.home ([2a00:23c5:31b:1:320d:9008:393b:5754])
-        by smtp.gmail.com with ESMTPSA id f16sm20475608wmh.7.2020.11.29.08.28.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TltC2PWtsn2vLklBGm2EarhUufc2HeBfxICO+b5w0hE=;
+        b=Qi22JqX40ngFC0zouB5HwNouApi8RsBQqNQiaImz1MfOzDIGz8s1KwH6Bb7uZwSsQz
+         EmWJroTYJLdzVtdVpIMsUrkDsFrTUyqzlGiFe4mVHEsq2P6MwYb3CC7BtbjXEITtC+bV
+         xZYpbMRIa27Ohru3Dtqj9i0JFpX1YflTcioqBBsJHHfpMC8VgcCO6If+9tXieTQeavs5
+         JWGVgQ6xH3MNib4rZ2J7xJsFa9hNcV/1U33zg/LMUCOOcnxPb/WgqgBklIgp5UpLaB5x
+         qWdkUQmTikq84dc6anUGRGunfd/ecxwNMym8ToQpiHmlZeliMbUbG9Thae+L87GJRJjJ
+         MGsA==
+X-Gm-Message-State: AOAM531qLy8RB9o8xcKtulkF9F+A86H6vhD51VJ0RRCL33Tj3jREOjBz
+        5rLxME+4UVHlnUjJqNaCx/M=
+X-Google-Smtp-Source: ABdhPJyzGEHUzHmTeg3bViEWVcWLy5cWDNOx94VFuf6TUL03gPSEK4YitJDZgwj5/l9OPlU/WU0kBw==
+X-Received: by 2002:a05:600c:286:: with SMTP id 6mr18874664wmk.125.1606667328742;
+        Sun, 29 Nov 2020 08:28:48 -0800 (PST)
+Received: from ansuel-xps20.localdomain (host-82-53-191-46.retail.telecomitalia.it. [82.53.191.46])
+        by smtp.gmail.com with ESMTPSA id f17sm20197686wmh.10.2020.11.29.08.28.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 08:28:13 -0800 (PST)
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>, Michal Hocko <mhocko@suse.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Lorenzo Stoakes <lstoakes@gmail.com>
-Subject: [PATCH] mm: page_alloc: refactor setup_per_zone_lowmem_reserve()
-Date:   Sun, 29 Nov 2020 16:27:58 +0000
-Message-Id: <20201129162758.115907-1-lstoakes@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Sun, 29 Nov 2020 08:28:47 -0800 (PST)
+Date:   Sun, 29 Nov 2020 17:28:46 +0100
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Amit Kucheria <amitk@kernel.org>
+Cc:     Amit Kucheria <amit.kucheria@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v6 2/8] drivers: thermal: tsens: Add VER_0 tsens
+ version
+Message-ID: <X8PMPnx+RmjyZyrJ@ansuel-xps20.localdomain>
+References: <20200814134123.14566-1-ansuelsmth@gmail.com>
+ <20200814134123.14566-3-ansuelsmth@gmail.com>
+ <CAHLCerMArOceCFQ1XFbsZCAnUdKVX3TVnAb502w+kxmO97bdJg@mail.gmail.com>
+ <20201125122228.GB23592@ansuel-xps20.localdomain>
+ <CAHLCerNTNpEGiGT6Veroeh1b8pOCiYYFhpnj5YqZcFZxAXGB-A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHLCerNTNpEGiGT6Veroeh1b8pOCiYYFhpnj5YqZcFZxAXGB-A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-setup_per_zone_lowmem_reserve() iterates through each zone setting
-zone->lowmem_reserve[j] = 0 (where j is the zone's index) then
-iterates backwards through all proceeding zones, setting
-lower_zone->lowmem_reserve[j] = sum(managed pages of higher zones) /
-lowmem_reserve_ratio[idx] for each (where idx is the lower zone's
-index).
+On Sun, Nov 29, 2020 at 06:28:01PM +0530, Amit Kucheria wrote:
+> On Thu, Nov 26, 2020 at 2:16 AM Ansuel Smith <ansuelsmth@gmail.com> wrote:
+> 
+> > > >  };
+> > > > @@ -441,6 +442,10 @@ enum regfield_ids {
+> > > >         CRIT_THRESH_14,
+> > > >         CRIT_THRESH_15,
+> > > >
+> > > > +       /* VER_0 MIN MAX THRESH */
+> > > > +       MIN_THRESH_0,
+> > > > +       MAX_THRESH_0,
+> > > > +
+> > >
+> > > Consider reusing LOW_THRESH_0 and UP_THRESH_0 for these?
+> > >
+> >
+> > As we already have defined LOW_THRESH and UP how can we reuse that
+> > regfield to define MIN and MAX?
+> >
+> 
+> We are using MIN and MAX THRESH on the apq8064 to mean LOW and UP
+> THRESOLD, isn't it? IIUC, It was just named differently earlier.
+> 
+> When the driver is loaded on the apq8064, only that one field will be
+> use since v0 has a single threshold for all sensors. When the driver
+> is loaded on new IPs, all fields will be used.
 
-If the lower zone has no managed pages or its ratio is 0 then all of its
-lowmem_reserve[] entries are effectively zeroed.
+Let's sum up things and take a decision about this. On V_0 the original
+driver have a special implementation that has a 4 trips point, one
+critical high (that should be MAX_THRESH), one critical low (that should
+be MIN_THRESH), one configurabile hi and one configurable low.
 
-As these arrays are only assigned here and all lowmem_reserve[] entries
-for index < this zone's index are implicitly assumed to be 0 (as these
-are specifically output in show_free_areas() and zoneinfo_show_print()
-for example) there is no need to additionally zero index == this zone's
-index too. This patch avoids zeroing unnecessarily.
+This is the regfiled
+[LOW_THRESH_0]   = REG_FIELD(THRESHOLD_ADDR,  0,  7),
+[UP_THRESH_0]    = REG_FIELD(THRESHOLD_ADDR,  8, 15),
+[MIN_THRESH_0]   = REG_FIELD(THRESHOLD_ADDR, 16, 23),
+[MAX_THRESH_0]   = REG_FIELD(THRESHOLD_ADDR, 24, 31),
+and we have the regfiled to check if the threshold is violated.
 
-Rather than iterating through zones and setting lowmem_reserve[j] for
-each lower zone this patch reverse the process and populates each zone's
-lowmem_reserve[] values in ascending order.
+Looking at the set trips code, since V_0 doesn't have critical
+interrupt, we only set the uplow interrupt. Now the current code only
+check the LOW and UP regfield and V_0. The original code also check MIN
+and MAX (that are set to 125 C and 0 C, that should be the critical trip
+point). Should we:
+1. drop the MIN and MAX THRESH and keep them unconfigured (and make the
+interrupt set only to the UP/LOW trips) or
+2. add the missing code to set_trips
 
-This clarifies what is going on especially in the case of zero managed
-pages or ratio which is now explicitly shown to clear these values.
-
-Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
----
- mm/page_alloc.c | 35 ++++++++++++++---------------------
- 1 file changed, 14 insertions(+), 21 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index f91df593bf71..39f92de1228f 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7862,31 +7862,24 @@ static void calculate_totalreserve_pages(void)
- static void setup_per_zone_lowmem_reserve(void)
- {
- 	struct pglist_data *pgdat;
--	enum zone_type j, idx;
-+	enum zone_type i, j;
- 
- 	for_each_online_pgdat(pgdat) {
--		for (j = 0; j < MAX_NR_ZONES; j++) {
--			struct zone *zone = pgdat->node_zones + j;
--			unsigned long managed_pages = zone_managed_pages(zone);
--
--			zone->lowmem_reserve[j] = 0;
--
--			idx = j;
--			while (idx) {
--				struct zone *lower_zone;
--
--				idx--;
--				lower_zone = pgdat->node_zones + idx;
--
--				if (!sysctl_lowmem_reserve_ratio[idx] ||
--				    !zone_managed_pages(lower_zone)) {
--					lower_zone->lowmem_reserve[j] = 0;
--					continue;
-+		for (i = 0; i < MAX_NR_ZONES - 1; i++) {
-+			struct zone *zone = &pgdat->node_zones[i];
-+			int ratio = sysctl_lowmem_reserve_ratio[i];
-+			bool clear = !ratio || !zone_managed_pages(zone);
-+			unsigned long managed_pages = 0;
-+
-+			for (j = i + 1; j < MAX_NR_ZONES; j++) {
-+				if (clear) {
-+					zone->lowmem_reserve[j] = 0;
- 				} else {
--					lower_zone->lowmem_reserve[j] =
--						managed_pages / sysctl_lowmem_reserve_ratio[idx];
-+					struct zone *upper_zone = &pgdat->node_zones[j];
-+
-+					managed_pages += zone_managed_pages(upper_zone);
-+					zone->lowmem_reserve[j] = managed_pages / ratio;
- 				}
--				managed_pages += zone_managed_pages(lower_zone);
- 			}
- 		}
- 	}
--- 
-2.29.2
+Honestrly I'm more with the first approach. I also sent v7 that should
+address all the other request. As always thanks for the attention.
 
