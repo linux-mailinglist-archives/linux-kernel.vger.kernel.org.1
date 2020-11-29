@@ -2,209 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71FD2C7838
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 07:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1A92C7843
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 07:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725949AbgK2GNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 01:13:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgK2GNA (ORCPT
+        id S1726031AbgK2G0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 01:26:41 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40334 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725828AbgK2G0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 01:13:00 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03EEDC0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:12:20 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id bo9so14278783ejb.13
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c9wTU9wEjbp/1E7ua+WrSBOxafo4H65ItS3T6AdDsh0=;
-        b=NvfhufPwbp7lWu4WJTjA8zzjpv3w+MZoTm0bkSEA8Lb8cf8YdESE+z8JUFBlAa16UW
-         NimLjX46+ZPY6EYZbXx26ptvIa5ZuYuugki9pGiGGMVIW/ZIpXPGoUJJQwBdQfRQ5SFc
-         VSceKLtDdUKsPWCFBuZ1wEXsQXXeSQ4FsyNKY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c9wTU9wEjbp/1E7ua+WrSBOxafo4H65ItS3T6AdDsh0=;
-        b=ALyOvc8/UHHgxsb3Gn8sMvj0a8sMKkozypyZIVA1UPCPOu2hdN5aVjVYZNHa05UbXH
-         bud9bJqhE+40Zo0cnSXAzPZRODuXkY3U/a1AXiHDavS/le6OGWVuVrxtSxVhyijVUzZY
-         xdyqyACsxMjt3NzNwBi16LZcBsSR67utDjG7wvhwzDSMCVONgIO6FpmteHdqUtuVWJFj
-         EFick9ZcxywizqTRDm3JckvGgnMubru0DGUhkIBUqqIkNok7i8y5KDvbMcWBkDljXkmg
-         s1JmW2ZzWIAt3teHg1VL+bfYzIPTNbohFnxy9NNRCUz7876fqoe6JeYV/sASGob8Cuuy
-         qVKA==
-X-Gm-Message-State: AOAM533cagrCx8O74R9s15OnAqxyBaNoaSCCNXIXMTxpTAapsEq3nP8L
-        QEX0XJ5n73S0zDz+/wxqKtB+1PC87055Ow==
-X-Google-Smtp-Source: ABdhPJxlonPDf+L936rdSTYlEggKGHb3DQaLCW6iC5c8KsBLf4JCqCA63V0dyKXu4nJYl/YfxTcTpg==
-X-Received: by 2002:a17:906:fa13:: with SMTP id lo19mr12915529ejb.455.1606630338600;
-        Sat, 28 Nov 2020 22:12:18 -0800 (PST)
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
-        by smtp.gmail.com with ESMTPSA id s5sm4853876eju.98.2020.11.28.22.12.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Nov 2020 22:12:18 -0800 (PST)
-Received: by mail-wm1-f54.google.com with SMTP id h21so14730008wmb.2
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:12:17 -0800 (PST)
-X-Received: by 2002:a1c:1d85:: with SMTP id d127mr754444wmd.39.1606630337573;
- Sat, 28 Nov 2020 22:12:17 -0800 (PST)
+        Sun, 29 Nov 2020 01:26:40 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AT61WI7040454;
+        Sun, 29 Nov 2020 01:25:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Vx3+odqLNbSmQOXdPvF8nHQCSkbccA4Esdo5aoY8BJY=;
+ b=ZfzfIQr8VDbW00gp443Qt7cV20dBjVBG4JcVlxl4ZG6kHYGMp9AKqwX1qzlfc1FJNys9
+ w6FQ3/cMZgAhZkollBmfbhnV/hYOAz1y0/vbjEwvO+m6hUvF3bWeXsR907iGvVTIjJ4k
+ dwMYC1ASR8mbUv6kcmvkrpsLWcwts0UXYuSjpNtB8VzHnM4g9oaQ5ZDeGdP1AMZ3IcfC
+ qPjzR9uVLlZCilI6gokFPlmcI9DJOd1PFzFoQC9AnGFPSuOy27QpV0JTebIMBsCF5hrz
+ zVsFyIIyPUpxAxWtS6N/moY+0aKSfcQSSLYGXdP5yNEOFzrYfbOjQ1nxB6paqHCUg+op VQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3544atsvq7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Nov 2020 01:25:11 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AT6P57m104823;
+        Sun, 29 Nov 2020 01:25:10 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3544atsvpt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Nov 2020 01:25:10 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AT6CVNK004095;
+        Sun, 29 Nov 2020 06:25:09 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma04dal.us.ibm.com with ESMTP id 353e68gt92-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Nov 2020 06:25:09 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AT6P9oS10224156
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 29 Nov 2020 06:25:09 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 22E68B2064;
+        Sun, 29 Nov 2020 06:25:09 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3C51BB2066;
+        Sun, 29 Nov 2020 06:25:03 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.35.123])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sun, 29 Nov 2020 06:25:02 +0000 (GMT)
+Subject: Re: [PATCH RFC v5 00/13] perf pmu-events: Support event aliasing for
+ system PMUs
+To:     John Garry <john.garry@huawei.com>, acme@kernel.org,
+        will@kernel.org, mark.rutland@arm.com, jolsa@redhat.com,
+        irogers@google.com, leo.yan@linaro.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, mathieu.poirier@linaro.org
+Cc:     linuxarm@huawei.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, qiangqing.zhang@nxp.com,
+        zhangshaokun@hisilicon.com, linux-imx@nxp.com
+References: <1604666153-4187-1-git-send-email-john.garry@huawei.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <23b8827c-2341-c8c8-dfef-6e2089876eb8@linux.ibm.com>
+Date:   Sun, 29 Nov 2020 11:55:01 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201111143755.24541-1-stanimir.varbanov@linaro.org> <20201111143755.24541-7-stanimir.varbanov@linaro.org>
-In-Reply-To: <20201111143755.24541-7-stanimir.varbanov@linaro.org>
-From:   Fritz Koenig <frkoenig@chromium.org>
-Date:   Sat, 28 Nov 2020 22:12:05 -0800
-X-Gmail-Original-Message-ID: <CAMfZQbzWgOvwupXyuzSbn8dWrbgyDEt2mV-SJLwxUkWGXWs7sQ@mail.gmail.com>
-Message-ID: <CAMfZQbzWgOvwupXyuzSbn8dWrbgyDEt2mV-SJLwxUkWGXWs7sQ@mail.gmail.com>
-Subject: Re: [PATCH v2 6/8] venus: venc: add handling for VIDIOC_ENCODER_CMD
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1604666153-4187-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-29_02:2020-11-26,2020-11-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ phishscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0 priorityscore=1501
+ adultscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011290037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 6:38 AM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
-> From: Dikshita Agarwal <dikshita@codeaurora.org>
->
-> Add handling for below commands in encoder:
-> 1. V4L2_ENC_CMD_STOP
-> 2. V4L2_ENC_CMD_START
->
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  drivers/media/platform/qcom/venus/venc.c | 77 +++++++++++++++++++++++-
->  1 file changed, 76 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-> index 99bfabf90bd2..7512e4a16270 100644
-> --- a/drivers/media/platform/qcom/venus/venc.c
-> +++ b/drivers/media/platform/qcom/venus/venc.c
-> @@ -507,6 +507,59 @@ static int venc_enum_frameintervals(struct file *file, void *fh,
->         return 0;
->  }
->
-> +static int venc_encoder_cmd(struct file *file, void *fh,
-> +                           struct v4l2_encoder_cmd *ec)
-> +{
-> +       struct venus_inst *inst = to_inst(file);
-> +       struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
-> +       struct hfi_frame_data fdata = {0};
-> +       int ret = 0;
-> +
-> +       ret = v4l2_m2m_ioctl_try_encoder_cmd(file, fh, ec);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       mutex_lock(&inst->lock);
-> +
-> +       if (!vb2_is_streaming(&m2m_ctx->cap_q_ctx.q) ||
-> +           !vb2_is_streaming(&m2m_ctx->out_q_ctx.q))
-> +               goto unlock;
-> +
-> +       if (m2m_ctx->is_draining) {
-> +               ret = -EBUSY;
-> +               goto unlock;
-> +       }
-> +
-> +       if (ec->cmd == V4L2_ENC_CMD_STOP) {
-> +               if (v4l2_m2m_has_stopped(m2m_ctx)) {
-> +                       ret = 0;
-> +                       goto unlock;
-> +               }
-> +
-> +               m2m_ctx->is_draining = true;
-> +
-> +               fdata.buffer_type = HFI_BUFFER_INPUT;
-> +               fdata.flags |= HFI_BUFFERFLAG_EOS;
-> +               fdata.device_addr = 0;
-> +               fdata.clnt_data = (u32)-1;
-> +
-> +               ret = hfi_session_process_buf(inst, &fdata);
-> +               if (ret)
-> +                       goto unlock;
-> +       }
-> +
-> +       if (ec->cmd == V4L2_ENC_CMD_START && v4l2_m2m_has_stopped(m2m_ctx)) {
-> +               vb2_clear_last_buffer_dequeued(&m2m_ctx->cap_q_ctx.q);
-> +               inst->m2m_ctx->has_stopped = false;
-> +               venus_helper_process_initial_out_bufs(inst);
-> +               venus_helper_process_initial_cap_bufs(inst);
-> +       }
-> +
-> +unlock:
-> +       mutex_unlock(&inst->lock);
-> +       return ret;
-> +}
-> +
->  static const struct v4l2_ioctl_ops venc_ioctl_ops = {
->         .vidioc_querycap = venc_querycap,
->         .vidioc_enum_fmt_vid_cap = venc_enum_fmt,
-> @@ -534,6 +587,8 @@ static const struct v4l2_ioctl_ops venc_ioctl_ops = {
->         .vidioc_enum_frameintervals = venc_enum_frameintervals,
->         .vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
->         .vidioc_unsubscribe_event = v4l2_event_unsubscribe,
-> +       .vidioc_try_encoder_cmd = v4l2_m2m_ioctl_try_encoder_cmd,
-> +       .vidioc_encoder_cmd = venc_encoder_cmd,
->  };
->
->  static int venc_set_properties(struct venus_inst *inst)
-> @@ -946,9 +1001,22 @@ static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
->  static void venc_vb2_buf_queue(struct vb2_buffer *vb)
->  {
->         struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
-> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-> +       struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
->
->         mutex_lock(&inst->lock);
-> -       venus_helper_vb2_buf_queue(vb);
-> +
-> +       v4l2_m2m_buf_queue(m2m_ctx, vbuf);
-> +
-> +       if (!(inst->streamon_out && inst->streamon_cap))
-> +               goto unlock;
-> +
-> +       if (v4l2_m2m_has_stopped(m2m_ctx))
-> +               goto unlock;
-> +
-> +       venus_helper_process_buf(vb);
-> +
-> +unlock:
->         mutex_unlock(&inst->lock);
->  }
->
-> @@ -968,6 +1036,7 @@ static void venc_buf_done(struct venus_inst *inst, unsigned int buf_type,
->         struct vb2_v4l2_buffer *vbuf;
->         struct vb2_buffer *vb;
->         unsigned int type;
-> +       struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
->
->         if (buf_type == HFI_BUFFER_INPUT)
->                 type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
-> @@ -986,6 +1055,12 @@ static void venc_buf_done(struct venus_inst *inst, unsigned int buf_type,
->                 vb->planes[0].data_offset = data_offset;
->                 vb->timestamp = timestamp_us * NSEC_PER_USEC;
->                 vbuf->sequence = inst->sequence_cap++;
-> +
-> +               if ((!bytesused && m2m_ctx->is_draining) ||
-> +                   (vbuf->flags & V4L2_BUF_FLAG_LAST)) {
-> +                       vbuf->flags |= V4L2_BUF_FLAG_LAST;
-> +                       v4l2_m2m_mark_stopped(inst->m2m_ctx);
-> +               }
->         } else {
->                 vbuf->sequence = inst->sequence_out++;
->         }
-> --
-> 2.17.1
->
 
-Reviewed-by: Fritz Koenig <frkoenig@chromium.org>
+
+On 11/6/20 6:05 PM, John Garry wrote:
+> Currently event aliasing and metrics for only CPU and uncore PMUs is
+> supported. In fact, only uncore PMUs aliasing is supported for when the
+> uncore PMUs are fixed for a CPU, which may not always be the case for
+> certain architectures.
+> 
+> This series adds support for PMU event aliasing and metrics for system and
+> other uncore PMUs which are not tied to a specific CPU.
+> 
+> For this, we introduce system event tables in generated pmu-events.c,
+> which contain a per-SoC table of events of all its system PMUs. Each
+> per-PMU event is matched by a "COMPAT" property.
+> 
+> When creating aliased and metrics PMUs, we treat core/uncore and
+> system PMUs differently:
+> 
+> - For CPU PMUs, we always match for the event mapfile based on the CPUID.
+>   This has not changed.
+> 
+> - For an system PMUs, we iterate through all the events in all the system
+>   PMU tables.
+> 
+>   Matches are based on the "COMPAT" property matching the PMU sysfs
+>   identifier contents, in /sys/bus/event_source/devices/<PMU>/identifier
+> 
+>   Uncore PMUs, may be matched via CPUID or same as system PMU, depending
+>   on whether the uncore PMU is tied to a specific CPUID.
+> 
+> Initial reference support is also added for ARM SMMUv3 PMCG (Performance
+> Monitor Event Group) PMU for HiSilicon hip09 platform with only a single
+> event so far - see driver in drivers/perf/arm_smmuv3_pmu.c reference.
+> 
+> Here is a sample output with this series on Huawei D06CS board:
+> 
+> root@ubuntu:/# ./perf list
+>    [...]
+> 
+> smmu v3 pmcg:
+>    smmuv3_pmcg.config_cache_miss
+>         [Configuration cache miss caused by transaction or(ATS or
+>         non-ATS)translation request. Unit: smmuv3_pmcg]
+>    smmuv3_pmcg.config_struct_access
+>         [Configuration structure access. Unit: smmuv3_pmcg]
+>    smmuv3_pmcg.cycles
+>         [Clock cycles. Unit: smmuv3_pmcg]
+>    smmuv3_pmcg.l1_tlb
+>         [SMMUv3 PMCG L1 TABLE transation. Unit: smmuv3_pmcg]
+>    smmuv3_pmcg.pcie_ats_trans_passed
+>         [PCIe ATS Translated Transaction passed through SMMU. Unit:
+> smmuv3_pmcg]
+>    smmuv3_pmcg.pcie_ats_trans_rq
+>         [PCIe ATS Translation Request received. Unit: smmuv3_pmcg]
+>    smmuv3_pmcg.tlb_miss
+>         [TLB miss caused by incoming transaction or (ATS or non-ATS) 
+> translation request. Unit: smmuv3_pmcg]
+>    smmuv3_pmcg.trans_table_walk_access
+>         [Translation table walk access. Unit: smmuv3_pmcg]
+>    smmuv3_pmcg.transaction
+>         [Transaction. Unit: smmuv3_pmcg]
+> 
+> root@ubuntu:/# ./perf stat -v -e smmuv3_pmcg.l1_tlb sleep 1
+> Using CPUID 0x00000000480fd010
+> -> smmuv3_pmcg_200100020/event=0x8a/
+> -> smmuv3_pmcg_200140020/event=0x8a/
+> -> smmuv3_pmcg_100020/event=0x8a/
+> -> smmuv3_pmcg_140020/event=0x8a/
+> -> smmuv3_pmcg_200148020/event=0x8a/
+> -> smmuv3_pmcg_148020/event=0x8a/
+> smmuv3_pmcg.l1_tlb: 0 1001221690 1001221690
+> smmuv3_pmcg.l1_tlb: 0 1001220090 1001220090
+> smmuv3_pmcg.l1_tlb: 101 1001219660 1001219660
+> smmuv3_pmcg.l1_tlb: 0 1001219010 1001219010
+> smmuv3_pmcg.l1_tlb: 0 1001218360 1001218360
+> smmuv3_pmcg.l1_tlb: 134 1001217850 1001217850
+> 
+> Performance counter stats for 'system wide':
+> 
+>                 235      smmuv3_pmcg.l1_tlb 
+> 
+>         1.001263128 seconds time elapsed
+> 
+> root@ubuntu:/#
+> 
+> Support is also added for imx8mm DDR PMU and HiSilicon hip09 uncore events.
+> Some events for hip09 may not be accurate at the moment.
+> 
+> Series is here:
+> https://github.com/hisilicon/kernel-dev/tree/private-topic-perf-5.10-sys-pmu-events-v5
+> 
+> Kernel part is here:
+> https://lore.kernel.org/lkml/1602149181-237415-1-git-send-email-john.garry@huawei.com/T/#mc34f758ab72f3d4a90d854b9bda7e6bbb90835b2
+> 
+> Differences to v4:
+> - Drop hack for fixing metrics containing aliases which match multiple
+>   PMUs, and add a proper fix attempt
+> - Rebase to acme perf/core from 30 Oct
+> - Fix up imx8 event names according to request from Joakim
+> 
+> Differences to v3:
+> - Rebase to v5.9-rc7
+> - Includes Ian's uncore metric expressions Fix and another fix
+> - Add hip09 uncore events
+> - Tidy jevents.c changes a bit
+> 
+> Differences to v2:
+> - fixups for imx8mm JSONs
+> - fix for metrics being repeated per PMU
+> - use sysfs__read_str()
+> - fix typo in PMCG JSON
+> - drop evsel fix, which someone else fixed
+> 
+> Differences to v1:
+> - Stop using SoC id and use a per-PMU identifier instead
+> - Add metric group sys events support
+>    - This is a bit hacky
+> - Add imx8mm DDR Perf support
+> - Add fix for parse events sel
+> 	- without it, I get this spewed for metric event:
+> 
+> 	assertion failed at util/parse-events.c:1637
+> 
+> Joakim Zhang (1):
+>   perf vendor events: Add JSON metrics for imx8mm DDR Perf
+> 
+> John Garry (12):
+>   perf jevents: Add support for an extra directory level
+>   perf jevents: Add support for system events tables
+>   perf pmu: Add pmu_id()
+>   perf pmu: Add pmu_add_sys_aliases()
+>   perf vendor events arm64: Add Architected events smmuv3-pmcg.json
+>   perf vendor events arm64: Add hip09 SMMUv3 PMCG events
+>   perf vendor events arm64: Add hip09 uncore events
+>   perf evlist: Change perf_evlist__splice_list_tail() ordering
+>   perf metricgroup: Fix metrics using aliases covering multiple PMUs
+>   perf metricgroup: Split up metricgroup__print()
+>   perf metricgroup: Support printing metric groups for system PMUs
+>   perf metricgroup: Support adding metrics for system PMUs
+
+Patchset looks good to me.
+
+Acked-By: Kajol Jain<kjain@linux.ibm.com>
+
+Thanks,
+Kajol Jain
+
+> 
+>  .../arch/arm64/freescale/imx8mm/sys/ddrc.json |  39 +++
+>  .../arm64/freescale/imx8mm/sys/metrics.json   |  18 ++
+>  .../hisilicon/hip09/sys/smmu-v3-pmcg.json     |  42 +++
+>  .../hisilicon/hip09/sys/uncore-ddrc.json      |  58 ++++
+>  .../arm64/hisilicon/hip09/sys/uncore-hha.json |  82 ++++++
+>  .../arm64/hisilicon/hip09/sys/uncore-l3c.json | 106 ++++++++
+>  .../pmu-events/arch/arm64/smmuv3-pmcg.json    |  58 ++++
+>  tools/perf/pmu-events/jevents.c               |  88 ++++++-
+>  tools/perf/pmu-events/pmu-events.h            |   6 +
+>  tools/perf/util/evlist.c                      |  19 +-
+>  tools/perf/util/metricgroup.c                 | 247 +++++++++++++-----
+>  tools/perf/util/pmu.c                         |  96 +++++++
+>  tools/perf/util/pmu.h                         |   3 +
+>  13 files changed, 794 insertions(+), 68 deletions(-)
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/smmu-v3-pmcg.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-ddrc.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-hha.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-l3c.json
+>  create mode 100644 tools/perf/pmu-events/arch/arm64/smmuv3-pmcg.json
+> 
