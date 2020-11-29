@@ -2,137 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41452C79D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 17:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DF32C79D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 17:09:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727566AbgK2QHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 11:07:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
+        id S1727960AbgK2QHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 11:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgK2QHM (ORCPT
+        with ESMTP id S1725468AbgK2QHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 11:07:12 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E3AC0613CF;
-        Sun, 29 Nov 2020 08:06:32 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id t3so8394513pgi.11;
-        Sun, 29 Nov 2020 08:06:32 -0800 (PST)
+        Sun, 29 Nov 2020 11:07:25 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED922C0613D2;
+        Sun, 29 Nov 2020 08:06:44 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 131so8706465pfb.9;
+        Sun, 29 Nov 2020 08:06:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ALXc7Qe3C+ECWCLA5rktXhPD6AeZz9/f+AYmP6J+Vt8=;
-        b=sTynAWyUtWwL/d3vDk5zw41PYTBK9FCyUHdlkoYPNtuThJP2wcn+UXaGNH3aXnpzfu
-         TvyNCSQLIJ9tWQaNjeTr4dk6wuukzZO6Nc9o/wGh/R2QKLo5ftL74DnSmJUjPhP21QKq
-         v4zwI8oS5lnzyhJ65kY+/pameNzrSc9h/Ky8W+hylha6+gl3SB4p28ejhzfNFPdouB+L
-         IDk2LbHb8wYfNbKxpJHLJ7zPA6zckQF+Fsssnj+qBijjAtw+sToNv9r1U5u9MFG7vH+R
-         J5j6aqNF/fW+j599Y8w1hhq0xw4BxuTnuTERG/fw+6cwpNvUSAe0P96VhsUIckPCDgTp
-         yFCg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=cBTsPIheAREODwP7ehxYmG/rqbt0+8mgZWOAMNTxbTk=;
+        b=qydIOokw2Re/YuYWXJauusN5uESxZCIIW6aCdBgluPCoWysPPFDeGn3FlZcfzyCLX5
+         aBNJ3nK59ovgVNLhlg0Ppmn0nCSAQ9Kx7PvaVr2rHCRreye7HOMhKCO11kzgvRYHX3t+
+         z0yva3s2q+AwLtqO+SdmvWQiqSwXzzJ20TheK6yBIMMp+F7An0M6X4nSzrVil8/edjos
+         60jYMDO3TYNWS5TwNVGS5cTJL5pTgfVbQq0oUDYcDIuKeOF3DzVyO5bsOeuV7EIQZIAT
+         e1gnP8bxX8pe84RO40bup8SGMi0jJpDCGar+/g+lMTclN6ymr5niTcPeJRMhU7BT1HLI
+         oSVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ALXc7Qe3C+ECWCLA5rktXhPD6AeZz9/f+AYmP6J+Vt8=;
-        b=aTxGE2NntcUD7cO9324qaIYGTeDuStgqxzo1GvQQqyh0W9/KM6i/APrB04W5VOkkTm
-         I2AHkwWPW6BHMuQMo2vNsoU5T2/HWmM6QjyaMlKBOwSDLypgLHq7PYL1SXssi5o7OWTW
-         dnapN/iovsEKSZmYvy35iLLl7eMPBKg6pe1SSWYcpu+hud3pJLS+HmLInlwSTuPwMjnC
-         ANiCgBDY4spDEMQNoezYBtXoN3T4aexOyurE1DsqB+MtbnLuww6iRwV5+3PXxeA/0l3E
-         OKluOWv8qOUhRrItNo+VNsB3KAiqFj6+i6XXB7maHvyW4VNke92Py9sWSdPnttAysrzM
-         h/bQ==
-X-Gm-Message-State: AOAM530NP6Nhb7pu4QernO+c434y5ZEamKOP/SXK5Giy/0p3CsddEe1W
-        6ihWLPg2OOVERz/IDjJFXgo=
-X-Google-Smtp-Source: ABdhPJz5LSVSwgMMUQ4+CLBco7tWDqMUukYtlB/zr1LasR2Q3+m+66oVmJPVr52SzwS3ITOXdjNX6g==
-X-Received: by 2002:a63:484d:: with SMTP id x13mr13699870pgk.301.1606665990252;
-        Sun, 29 Nov 2020 08:06:30 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=cBTsPIheAREODwP7ehxYmG/rqbt0+8mgZWOAMNTxbTk=;
+        b=jtwquaSeyLHS054R0R83EedB1EiUim+bS7wgpn0XhwTEda9dlUzn0qeKnWEfSBGeNR
+         BLTqYoE/71a57qvb0fsgUB2EOU671b0nSJrXKjb9DG7wliyk5dThnemFvszCaUI1UuVe
+         SvmuTAl3kThrKZMSp2+AnhmZqtA3hlyVhlAdOzGZmZCw5KImx6DzXDzSGd8w07XfRB8w
+         ysK4JNSpb4P2COIg9Si0kg+Bsj8xlMqIHv/Fy5Q+0TOg+eYbOlftv4huwaCl6lT0KoKz
+         Z6BxVBRZkuD8uhCAKsbvJ3gaFoPZXcw8dU59CPGDjRy+dHPESGyuSBMN4YzRjLosrgNv
+         7ncQ==
+X-Gm-Message-State: AOAM531CR+PnRO3sZCXTIgEa4wE0XVbtlxiMrkGCmPdvv/ZPN3EwmG4H
+        NZaCPNOHBqZG7Nd1TPYVjSk=
+X-Google-Smtp-Source: ABdhPJwQtNEjxcK454KvvMov3fJIFKaXWf6eIuD+5dUDh+BSyS1tPQhWEsFWe0MmlydSZkGlI9+xRQ==
+X-Received: by 2002:a17:90a:178b:: with SMTP id q11mr21178239pja.132.1606666004396;
+        Sun, 29 Nov 2020 08:06:44 -0800 (PST)
 Received: from localhost.localdomain ([49.207.196.188])
-        by smtp.gmail.com with ESMTPSA id u3sm13496837pfu.47.2020.11.29.08.06.26
+        by smtp.gmail.com with ESMTPSA id u3sm13496837pfu.47.2020.11.29.08.06.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 08:06:29 -0800 (PST)
+        Sun, 29 Nov 2020 08:06:43 -0800 (PST)
 From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH 00/15] drivers: usb: misc: update to use usb_control_msg_{send|recv}()
-Date:   Sun, 29 Nov 2020 21:35:57 +0530
-Message-Id: <20201129160612.1908074-1-anant.thazhemadam@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Xu Wang <vulab@iscas.ac.cn>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 01/15] usb: misc: appledisplay: update to use the usb_control_msg_{send|recv}() API
+Date:   Sun, 29 Nov 2020 21:35:58 +0530
+Message-Id: <20201129160612.1908074-2-anant.thazhemadam@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201129160612.1908074-1-anant.thazhemadam@gmail.com>
+References: <20201129160612.1908074-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The newer usb_control_msg_{send|recv}() API are an improvement on the
+existing usb_control_msg() as it ensures that a short read/write is treated
+as an error, data can be used off the stack, and raw usb pipes need not be
+created in the calling functions.
+For this reason, instances of usb_control_msg() have been replaced with
+usb_control_msg_{recv|send}(), and all return value checking
+conditions have also been modified appropriately.
 
-The new usb_control_msg_{send|recv}() API provides an improved way of 
-using usb_control_msg(). Using this, short reads/writes are considered
-as errors, data can be used off the stack, and the need for the calling
-function to create a raw usb pipe is eliminated.
-This patch series aims to update existing instances of usb_control_msg() 
-in drivers/usb/misc to usb_control_msg_{send|recv}() appropriately, and
-also update the return value checking mechanisms in place (if any), as
-necessary so nothing breaks.
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+---
+ drivers/usb/misc/appledisplay.c | 46 ++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 27 deletions(-)
 
-I was however unable to update one instance of usb_control_msg() in 
-drivers/usb/misc/apple-mfi-fastcharge.c.
-
-The return value checking mechanism present here, is as follows.
-	if (retval) {
-		dev_dbg(&mfi->udev->dev, "retval = %d\n", retval);
-		return retval;
-	}
-
-	mfi->charge_type = val->intval;
-
-	return 0;
-
-This implies that mfi->charge_type = val->intval only when number of
-bytes transferred = 0, and the return value is directly returned 
-otherwise. Since the new API doesn't return the number of bytes 
-transferred, I wasn't quite sure how this instance could be updated.
-In case this check is logically incorrect, a patch with a fix 
-can be sent in as well.
-
-
-Anant Thazhemadam (15):
-  usb: misc: appledisplay: update to use the
-    usb_control_msg_{send|recv}() API
-  usb: misc: cypress_cy7c63: update to use usb_control_msg_recv()
-  usb: misc: cytherm: update to use usb_control_msg_recv()
-  usb: misc: ehset: update to use the usb_control_msg_{send|recv}() API
-  usb: misc: emi26: update to use usb_control_msg_send()
-  usb: misc: emi62: update to use usb_control_msg_send()
-  usb: misc: ezusb: update to use usb_control_msg_send()
-  usb: misc: idmouse: update to use usb_control_msg_send()
-  usb: misc: iowarrior: update to use the usb_control_msg_{send|recv}()
-    API
-  usb: misc: isight_firmware: update to use usb_control_msg_send()
-  usb: misc: ldusb: update to use usb_control_msg_send()
-  usb: misc: lvstest: update to use the usb_control_msg_{send|recv}()
-    API
-  usb: misc: trancevibrator: update to use usb_control_msg_send()
-  usb: misc: usbsevseg: update to use usb_control_msg_send()
-  usb: misc: usbtest: update to use the usb_control_msg_{send|recv}()
-    API
-
- drivers/usb/misc/appledisplay.c    | 46 ++++++++------------
- drivers/usb/misc/cypress_cy7c63.c  | 10 ++---
- drivers/usb/misc/cytherm.c         | 42 +++++++++---------
- drivers/usb/misc/ehset.c           | 70 +++++++++++++-----------------
- drivers/usb/misc/emi26.c           | 14 +-----
- drivers/usb/misc/emi62.c           | 14 +-----
- drivers/usb/misc/ezusb.c           | 16 +------
- drivers/usb/misc/idmouse.c         |  5 ++-
- drivers/usb/misc/iowarrior.c       | 34 +++++++--------
- drivers/usb/misc/isight_firmware.c | 22 +++++-----
- drivers/usb/misc/ldusb.c           |  8 ++--
- drivers/usb/misc/lvstest.c         | 30 ++++++-------
- drivers/usb/misc/trancevibrator.c  |  6 +--
- drivers/usb/misc/usbsevseg.c       | 52 +++++++---------------
- drivers/usb/misc/usbtest.c         | 63 +++++++++++++--------------
- 15 files changed, 180 insertions(+), 252 deletions(-)
-
+diff --git a/drivers/usb/misc/appledisplay.c b/drivers/usb/misc/appledisplay.c
+index c8098e9b432e..117deb2fdc29 100644
+--- a/drivers/usb/misc/appledisplay.c
++++ b/drivers/usb/misc/appledisplay.c
+@@ -132,21 +132,17 @@ static int appledisplay_bl_update_status(struct backlight_device *bd)
+ 	pdata->msgdata[0] = 0x10;
+ 	pdata->msgdata[1] = bd->props.brightness;
+ 
+-	retval = usb_control_msg(
+-		pdata->udev,
+-		usb_sndctrlpipe(pdata->udev, 0),
+-		USB_REQ_SET_REPORT,
+-		USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+-		ACD_USB_BRIGHTNESS,
+-		0,
+-		pdata->msgdata, 2,
+-		ACD_USB_TIMEOUT);
++	retval = usb_control_msg_send(pdata->udev,
++				      0,
++				      USB_REQ_SET_REPORT,
++				      USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
++				      ACD_USB_BRIGHTNESS,
++				      0,
++				      pdata->msgdata, 2,
++				      ACD_USB_TIMEOUT, GFP_KERNEL);
+ 	mutex_unlock(&pdata->sysfslock);
+ 
+-	if (retval < 0)
+-		return retval;
+-	else
+-		return 0;
++	return retval;
+ }
+ 
+ static int appledisplay_bl_get_brightness(struct backlight_device *bd)
+@@ -155,21 +151,17 @@ static int appledisplay_bl_get_brightness(struct backlight_device *bd)
+ 	int retval, brightness;
+ 
+ 	mutex_lock(&pdata->sysfslock);
+-	retval = usb_control_msg(
+-		pdata->udev,
+-		usb_rcvctrlpipe(pdata->udev, 0),
+-		USB_REQ_GET_REPORT,
+-		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+-		ACD_USB_BRIGHTNESS,
+-		0,
+-		pdata->msgdata, 2,
+-		ACD_USB_TIMEOUT);
+-	if (retval < 2) {
+-		if (retval >= 0)
+-			retval = -EMSGSIZE;
+-	} else {
++	retval = usb_control_msg_recv(pdata->udev,
++				      0,
++				      USB_REQ_GET_REPORT,
++				      USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
++				      ACD_USB_BRIGHTNESS,
++				      0,
++				      pdata->msgdata, 2,
++				      ACD_USB_TIMEOUT, GFP_KERNEL);
++	if (retval == 0)
+ 		brightness = pdata->msgdata[1];
+-	}
++
+ 	mutex_unlock(&pdata->sysfslock);
+ 
+ 	if (retval < 0)
 -- 
 2.25.1
 
