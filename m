@@ -2,283 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CD42C7989
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 15:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3717E2C798B
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 15:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgK2OWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 09:22:39 -0500
-Received: from mail.v3.sk ([167.172.186.51]:56916 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727676AbgK2OWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 09:22:38 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 499EBDF887;
-        Sun, 29 Nov 2020 14:19:02 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id oWM5rMAvEjYo; Sun, 29 Nov 2020 14:19:01 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 9D46BE06C5;
-        Sun, 29 Nov 2020 14:19:01 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id IdLlscF9W8UV; Sun, 29 Nov 2020 14:19:01 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id 4C7A8DF932;
-        Sun, 29 Nov 2020 14:19:01 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v2 2/2] Input: add driver for power button on Dell Wyse 3020
-Date:   Sun, 29 Nov 2020 15:21:45 +0100
-Message-Id: <20201129142145.1526022-3-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201129142145.1526022-1-lkundrak@v3.sk>
-References: <20201129142145.1526022-1-lkundrak@v3.sk>
+        id S1728050AbgK2OXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 09:23:46 -0500
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:50076 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728025AbgK2OXp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 09:23:45 -0500
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+        by mx0b-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0ATEKKR4010861;
+        Sun, 29 Nov 2020 06:22:34 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=proofpoint;
+ bh=ruawUC7L5j1CY4fCnDgudQjMdcRdTHF3WLOvJVbTgJA=;
+ b=WviHwpT3l688K2j//JPLqlui7UBNETF9Wi/v4V1mhsBcmS2AlRWzwWmWdv5TUt+Y17nE
+ W/V2An1s7o/WwfzJI8SYXJUISDfohSNjbalJ9XNOgGR0M2SRgCQ0NmGM8D1Lom406oHZ
+ 7CqBwRduEVNXgDhIjrtfPQAwPrJEu4Liu4kq+Uh8WdVZ8Mw+0WWBxuhTwcCO7tfaEfi3
+ iCz38sYO/C8fZLAWj0YogFRyRbtckS89oOaBdHWR5H/zi/mOLn6aSq/PblPMMaKIyidW
+ NkRnFRISpxv25LXaeo2OXLAQsfHB+doUE6qsIaKlQgyM/uksGvEy3NGNIHljhg1ZTatz hw== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 353k12jj6x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Nov 2020 06:22:34 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DIUtbUPiEnOcLAU+WrNTA9o7lC8rgz5Z/nLz5tVJI4sUTEMk43XsPgi89ZhQcDUOtTz2cTn6ThXZmMZFNpxQt3yMHjTDGj+qGMe4N5ZfysEzXDRGAVgElJ/gJFrjzZdZw/6hG0sEn/bmkpRjHUTRhOEFQBxxoeUHd8vTexGZdLeKGDKlcd6/7izYnnVSSk/Dv6uKdJQYUp0jZA8zBsOckIgWxwTc1UV5fxwFlZr0V5ZswW17NOMct46oYjoGvOcwvXMfT8yh37y/k0ayyWid9pqoYPapvRv/Wt1foidNZNYo9qrZHT3PgsjXSU4ff6frQcf6sBXNnAo55sg+Znt86Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ruawUC7L5j1CY4fCnDgudQjMdcRdTHF3WLOvJVbTgJA=;
+ b=LybipwvUOL8JA4JvfTmlS7Mp95SoKnrF5uFNaDJKiEOJKEvaHilTRzryhpxl19UEHSU7rIaatdM2IcoclLPmJHPLaHbxjbA1BvT0VrQJAIZX3VmUK2r/O7/qvUbyx7GkYWsajsdGMT0Z2/3/pKE/UhnJfQW57qbnP+H3K+851T0RwVv2tbmo/qqbTgSZqPu5g6a+n5CvceRqCbFPY0msienVfMY5BDJDl/yZ/KAzoTHsa95aOwlXrzOcIXm/KxYya+Qd5rpbkSdDYohUhAuRnrw1gixCrDM12qOGzKkHO8C8I8tSZMzCBYXR/HzivTGiVJ7atF8pXs9OYXXc7fkFTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.147) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ruawUC7L5j1CY4fCnDgudQjMdcRdTHF3WLOvJVbTgJA=;
+ b=LYX6xE8vSGlSVUZqhY393A23hU9qBxCWDAXhWI7ZuIJoNsR+Uu6SWgf6S05Y82jUCcrjiqV8MYK3tDtX+9XIYnz9Tyk9c7ZKBob7DYa98Eza9mjM8Nl4AFxwu6QwojnC+EvrQWxZx2PuNxfkGnpiL4XOrXWr3wyCkkQXpqT9tkE=
+Received: from BN1PR14CA0018.namprd14.prod.outlook.com (2603:10b6:408:e3::23)
+ by BYAPR07MB5173.namprd07.prod.outlook.com (2603:10b6:a03:6c::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.24; Sun, 29 Nov
+ 2020 14:22:31 +0000
+Received: from BN8NAM12FT059.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:408:e3:cafe::90) by BN1PR14CA0018.outlook.office365.com
+ (2603:10b6:408:e3::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend
+ Transport; Sun, 29 Nov 2020 14:22:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
+ smtp.mailfrom=cadence.com; synopsys.com; dkim=none (message not signed)
+ header.d=none;synopsys.com; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
+Received: from sjmaillnx1.cadence.com (158.140.1.147) by
+ BN8NAM12FT059.mail.protection.outlook.com (10.13.183.55) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3611.11 via Frontend Transport; Sun, 29 Nov 2020 14:22:30 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 0ATEMSZp021259
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+        Sun, 29 Nov 2020 06:22:29 -0800
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Sun, 29 Nov 2020 15:22:26 +0100
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Sun, 29 Nov 2020 15:22:26 +0100
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0ATEMQA8019461;
+        Sun, 29 Nov 2020 15:22:26 +0100
+Received: (from pthombar@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0ATEMQkC019459;
+        Sun, 29 Nov 2020 15:22:26 +0100
+From:   Parshuram Thombare <pthombar@cadence.com>
+To:     <alexandre.belloni@bootlin.com>, <slongerbeam@gmail.com>,
+        <vitor.soares@synopsys.com>
+CC:     <linux-i3c@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <mparab@cadence.com>, <praneeth@ti.com>,
+        Parshuram Thombare <pthombar@cadence.com>
+Subject: [PATCH v9 2/7] i3c: master: use i3c_master_register only for main master
+Date:   Sun, 29 Nov 2020 15:22:25 +0100
+Message-ID: <1606659745-19420-1-git-send-email-pthombar@cadence.com>
+X-Mailer: git-send-email 2.2.2
+In-Reply-To: <1606659554-19229-1-git-send-email-pthombar@cadence.com>
+References: <1606659554-19229-1-git-send-email-pthombar@cadence.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 10119bd2-09fa-4981-f347-08d894723516
+X-MS-TrafficTypeDiagnostic: BYAPR07MB5173:
+X-Microsoft-Antispam-PRVS: <BYAPR07MB517397ABF7CEB90F88A9355EC1F60@BYAPR07MB5173.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i2wZtiu4bab5wzHX4PEGZBs8h0gAA8DjaEJ/g52RNLxPseAYkCd55lWPxKatw8LDjbK8XMromOamzhALhJLEVe4ppfrgaxcqV7EMBBappAOj3NY8unCvlGM2CYHD9tERjoIZ49ZkZh8zzDUf27qCF6iIAEoq0Mj9sKawJh+4pcgUah210xVPkB6PsRCPHFt8NRE3ZBoo3AD3YlbmLKZfiYUeDnLDGgUKlyENIeo7Wj/WrmBOy+PXMLgHs0PMrzMSnxLPyRP7mWQ2LsrRinHdSoLRKuzuzuYtiHdEfT2pNihhktytatpw36D7SsW+KdWMcaKLQhjvupmNZEvaned87Eo3v5qhsH5g6xIRsLdMiU1PLuv8Wfpc5K3ub0ND8H2Etl5jFlmI29cT/xGbet/SJKD87EPz0tEaXBmLe4bsLEI=
+X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(396003)(36092001)(46966005)(36756003)(2616005)(8936002)(42186006)(356005)(8676002)(316002)(110136005)(107886003)(336012)(478600001)(54906003)(82740400003)(7636003)(426003)(186003)(36906005)(2906002)(4326008)(26005)(47076004)(86362001)(5660300002)(70586007)(82310400003)(83380400001)(70206006);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2020 14:22:30.9495
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10119bd2-09fa-4981-f347-08d894723516
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT059.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB5173
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-29_07:2020-11-26,2020-11-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 bulkscore=0
+ impostorscore=0 spamscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 malwarescore=0 phishscore=0 suspectscore=2 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011290097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for the power button attached to the Embedded Controlle=
-r
-on a Dell Wyse 3020 "Ariel" board.
+Removed last argument 'secondary' and restructured
+i3c_master_register to move code that can be common
+to i3c_secondary_master_register to separate function
+i3c_master_init.
 
-The Embedded Controller's SPI interface is actually capable sending and
-receiving the PS/2 keyboard and mouse protocol data, which looks like
-a good fit for a serio driver. Howerver, I don't know of any machines whe=
-re
-this is actually used.
-
-My board only has a single power button and no way to connect an actual
-keyboard or a mouse. Using the atkbd driver with serio would be an overki=
-ll
-and would be inconvenient for the userspace. Therefore this driver
-registers an input device that is only capable of reporting the power
-button presses and releases.
-
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-
+Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
 ---
-Changes since v1:
-- Do away bitfields in order to be endian independent
+ drivers/i3c/master.c                 |   78 ++++++++++++++++++++-------------
+ drivers/i3c/master/dw-i3c-master.c   |    4 +-
+ drivers/i3c/master/i3c-master-cdns.c |    4 +-
+ include/linux/i3c/master.h           |    7 +--
+ 4 files changed, 54 insertions(+), 39 deletions(-)
 
- drivers/input/misc/Kconfig           |  11 ++
- drivers/input/misc/Makefile          |   1 +
- drivers/input/misc/ariel-pwrbutton.c | 165 +++++++++++++++++++++++++++
- 3 files changed, 177 insertions(+)
- create mode 100644 drivers/input/misc/ariel-pwrbutton.c
-
-diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-index 362e8a01980cd..e7bb572e15182 100644
---- a/drivers/input/misc/Kconfig
-+++ b/drivers/input/misc/Kconfig
-@@ -73,6 +73,17 @@ config INPUT_AD714X_SPI
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called ad714x-spi.
-=20
-+config INPUT_ARIEL_PWRBUTTON
-+	tristate "Dell Wyse 3020 Power Button Driver"
-+	depends on SPI
-+	depends on MACH_MMP3_DT || COMPILE_TEST
-+	help
-+	  Say Y to enable support for reporting power button status on
-+	  on Dell Wyse 3020 ("Ariel") thin client.
+diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
+index b61bf53..56e8fe4 100644
+--- a/drivers/i3c/master.c
++++ b/drivers/i3c/master.c
+@@ -1637,7 +1637,7 @@ static void i3c_master_detach_free_devs(struct i3c_master_controller *master)
+ }
+ 
+ /**
+- * i3c_master_bus_init() - initialize an I3C bus
++ * i3c_primary_master_bus_init() - initialize an I3C bus
+  * @master: main master initializing the bus
+  *
+  * This function is following all initialisation steps described in the I3C
+@@ -1668,7 +1668,7 @@ static void i3c_master_detach_free_devs(struct i3c_master_controller *master)
+  *
+  * Return: a 0 in case of success, an negative error code otherwise.
+  */
+-static int i3c_master_bus_init(struct i3c_master_controller *master)
++static int i3c_primary_master_bus_init(struct i3c_master_controller *master)
+ {
+ 	enum i3c_addr_slot_status status;
+ 	struct i2c_dev_boardinfo *i2cboardinfo;
+@@ -2441,31 +2441,10 @@ static int i3c_master_check_ops(const struct i3c_master_controller_ops *ops)
+ 	return 0;
+ }
+ 
+-/**
+- * i3c_master_register() - register an I3C master
+- * @master: master used to send frames on the bus
+- * @parent: the parent device (the one that provides this I3C master
+- *	    controller)
+- * @ops: the master controller operations
+- * @secondary: true if you are registering a secondary master. Will return
+- *	       -ENOTSUPP if set to true since secondary masters are not yet
+- *	       supported
+- *
+- * This function takes care of everything for you:
+- *
+- * - creates and initializes the I3C bus
+- * - populates the bus with static I2C devs if @parent->of_node is not
+- *   NULL
+- * - registers all I3C devices added by the controller during bus
+- *   initialization
+- * - registers the I2C adapter and all I2C devices
+- *
+- * Return: 0 in case of success, a negative error code otherwise.
+- */
+-int i3c_master_register(struct i3c_master_controller *master,
+-			struct device *parent,
+-			const struct i3c_master_controller_ops *ops,
+-			bool secondary)
++static int i3c_master_init(struct i3c_master_controller *master,
++			   struct device *parent,
++			   const struct i3c_master_controller_ops *ops,
++			   bool secondary)
+ {
+ 	unsigned long i2c_scl_rate = I3C_BUS_I2C_FM_PLUS_SCL_RATE;
+ 	struct i3c_bus *i3cbus = i3c_master_get_bus(master);
+@@ -2535,10 +2514,49 @@ int i3c_master_register(struct i3c_master_controller *master,
+ 		goto err_put_dev;
+ 	}
+ 
+-	ret = i3c_master_bus_init(master);
++	ret = i3c_primary_master_bus_init(master);
+ 	if (ret)
+ 		goto err_destroy_wq;
+ 
++	return 0;
 +
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called ariel-pwrbutton.
++err_destroy_wq:
++	destroy_workqueue(master->wq);
 +
- config INPUT_ARIZONA_HAPTICS
- 	tristate "Arizona haptics support"
- 	depends on MFD_ARIZONA && SND_SOC
-diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
-index a48e5f2d859d4..062cea9f181c9 100644
---- a/drivers/input/misc/Makefile
-+++ b/drivers/input/misc/Makefile
-@@ -15,6 +15,7 @@ obj-$(CONFIG_INPUT_ADXL34X)		+=3D adxl34x.o
- obj-$(CONFIG_INPUT_ADXL34X_I2C)		+=3D adxl34x-i2c.o
- obj-$(CONFIG_INPUT_ADXL34X_SPI)		+=3D adxl34x-spi.o
- obj-$(CONFIG_INPUT_APANEL)		+=3D apanel.o
-+obj-$(CONFIG_INPUT_ARIEL_PWRBUTTON)	+=3D ariel-pwrbutton.o
- obj-$(CONFIG_INPUT_ARIZONA_HAPTICS)	+=3D arizona-haptics.o
- obj-$(CONFIG_INPUT_ATI_REMOTE2)		+=3D ati_remote2.o
- obj-$(CONFIG_INPUT_ATLAS_BTNS)		+=3D atlas_btns.o
-diff --git a/drivers/input/misc/ariel-pwrbutton.c b/drivers/input/misc/ar=
-iel-pwrbutton.c
-new file mode 100644
-index 0000000000000..502bc6a65f657
---- /dev/null
-+++ b/drivers/input/misc/ariel-pwrbutton.c
-@@ -0,0 +1,165 @@
-+// SPDX-License-Identifier: BSD-2-Clause OR GPL-2.0-or-later
-+/*
-+ * Dell Wyse 3020 a.k.a. "Ariel" Power Button Driver
++err_put_dev:
++	put_device(&master->dev);
++
++	return ret;
++}
++
++/**
++ * i3c_primary_master_register() - register an I3C master
++ * @master: master used to send frames on the bus
++ * @parent: the parent device (the one that provides this I3C master
++ *	    controller)
++ * @ops: the master controller operations
 + *
-+ * Copyright (C) 2020 Lubomir Rintel
++ * This function takes care of everything for you:
++ *
++ * - creates and initializes the I3C bus
++ * - populates the bus with static I2C devs if @parent->of_node is not
++ *   NULL
++ * - registers all I3C devices added by the controller during bus
++ *   initialization
++ * - registers the I2C adapter and all I2C devices
++ *
++ * Return: 0 in case of success, a negative error code otherwise.
 + */
-+
-+#include <linux/module.h>
-+#include <linux/spi/spi.h>
-+#include <linux/interrupt.h>
-+#include <linux/input.h>
-+
-+#define RESP_COUNTER(response)	(response.header & 0x3)
-+#define RESP_SIZE(response)	((response.header >> 2) & 0x3)
-+#define RESP_TYPE(response)	((response.header >> 4) & 0xf)
-+
-+struct ec_input_response {
-+	u8 reserved;
-+	u8 header;
-+	u8 data[3];
-+} __packed;
-+
-+struct ariel_pwrbutton {
-+	struct spi_device *client;
-+	struct input_dev *input;
-+	u8 msg_counter:2;
-+};
-+
-+static int ec_input_read(struct ariel_pwrbutton *priv,
-+		      struct ec_input_response *response)
++int i3c_primary_master_register(struct i3c_master_controller *master,
++				struct device *parent,
++				const struct i3c_master_controller_ops *ops)
 +{
-+	u8 read_request[] =3D { 0x00, 0x5a, 0xa5, 0x00, 0x00 };
-+	struct spi_device *spi =3D priv->client;
-+	struct spi_transfer t =3D {
-+		.tx_buf =3D read_request,
-+		.rx_buf =3D response,
-+		.len =3D sizeof(read_request),
-+	};
-+
-+	compiletime_assert(sizeof(read_request) =3D=3D sizeof(*response),
-+			   "SPI xfer request/response size mismatch");
-+
-+	return spi_sync_transfer(spi, &t, 1);
-+}
-+
-+static irqreturn_t ec_input_interrupt(int irq, void *dev_id)
-+{
-+	struct ariel_pwrbutton *priv =3D dev_id;
-+	struct spi_device *spi =3D priv->client;
-+	struct ec_input_response response;
-+	int i;
-+
-+	if (ec_input_read(priv, &response) < 0) {
-+		dev_err(&spi->dev, "EC read failed.\n");
-+		return IRQ_HANDLED;
-+	}
-+
-+	if (priv->msg_counter =3D=3D RESP_COUNTER(response)) {
-+		dev_warn(&spi->dev, "No new data to read?\n");
-+		return IRQ_HANDLED;
-+	}
-+
-+	priv->msg_counter =3D RESP_COUNTER(response);
-+
-+	if (RESP_TYPE(response) !=3D 0x3 && RESP_TYPE(response) !=3D 0xc) {
-+		dev_dbg(&spi->dev, "Ignoring message that's not kbd data\n");
-+		return IRQ_HANDLED;
-+	}
-+
-+	for (i =3D 0; i < RESP_SIZE(response); i++) {
-+		dev_err(&spi->dev, "scan code %02x\n", response.data[i]);
-+		switch (response.data[i]) {
-+		case 0x74:
-+			input_report_key(priv->input, KEY_POWER, 1);
-+			input_sync(priv->input);
-+			break;
-+		case 0xf4:
-+			input_report_key(priv->input, KEY_POWER, 0);
-+			input_sync(priv->input);
-+			break;
-+		default:
-+			dev_dbg(&spi->dev, "Unknown scan code: %02x\n",
-+				response.data[i]);
-+		}
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int ariel_pwrbutton_probe(struct spi_device *spi)
-+{
-+	struct ec_input_response response;
-+	struct ariel_pwrbutton *priv;
 +	int ret;
 +
-+	if (!spi->irq) {
-+		dev_err(&spi->dev, "Missing IRQ.\n");
-+		return -ENXIO;
-+	}
-+
-+	priv =3D devm_kzalloc(&spi->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->client =3D spi;
-+	spi_set_drvdata(spi, priv);
-+
-+	priv->input =3D devm_input_allocate_device(&spi->dev);
-+	if (!priv->input)
-+		return -ENOMEM;
-+	priv->input->name =3D "Power Button";
-+	priv->input->dev.parent =3D &spi->dev;
-+	input_set_capability(priv->input, EV_KEY, KEY_POWER);
-+	ret =3D input_register_device(priv->input);
-+	if (ret) {
-+		dev_err(&spi->dev, "error registering input device: %d\n", ret);
++	ret = i3c_master_init(master, parent, ops, false);
++	if (ret)
 +		return ret;
-+	}
 +
-+	ret =3D ec_input_read(priv, &response);
-+	if (ret < 0) {
-+		dev_err(&spi->dev, "EC read failed: %d\n", ret);
-+		return ret;
-+	}
-+	priv->msg_counter =3D RESP_COUNTER(response);
-+
-+	ret =3D devm_request_threaded_irq(&spi->dev, spi->irq, NULL,
-+					ec_input_interrupt,
-+					IRQF_TRIGGER_RISING | IRQF_ONESHOT,
-+					"Ariel EC Input", priv);
-+
-+	if (ret) {
-+		dev_err(&spi->dev, "Failed to request IRQ %d: %d\n",
-+			spi->irq, ret);
-+		return ret;
-+	}
-+
-+	dev_info(&spi->dev, "Dell Wyse 3020 Power Button\n");
-+	return 0;
-+}
-+
-+static const struct of_device_id ariel_pwrbutton_of_match[] =3D {
-+	{ .compatible =3D "dell,wyse-ariel-ec-input" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ariel_pwrbutton_of_match);
-+
-+static const struct spi_device_id ariel_pwrbutton_id_table[] =3D {
-+	{ "wyse-ariel-ec-input", 0 },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(spi, ariel_pwrbutton_id_table);
-+
-+static struct spi_driver ariel_pwrbutton_driver =3D {
-+	.driver =3D {
-+		.name =3D "dell-wyse-ariel-ec-input",
-+		.of_match_table =3D ariel_pwrbutton_of_match,
-+	},
-+	.probe =3D ariel_pwrbutton_probe,
-+};
-+module_spi_driver(ariel_pwrbutton_driver);
-+
-+MODULE_AUTHOR("Lubomir Rintel <lkundrak@v3.sk>");
-+MODULE_DESCRIPTION("Dell Wyse 3020 Power Button Input Driver");
-+MODULE_LICENSE("Dual BSD/GPL");
---=20
-2.28.0
+ 	ret = device_add(&master->dev);
+ 	if (ret)
+ 		goto err_cleanup_bus;
+@@ -2568,15 +2586,13 @@ int i3c_master_register(struct i3c_master_controller *master,
+ err_cleanup_bus:
+ 	i3c_master_bus_cleanup(master);
+ 
+-err_destroy_wq:
+ 	destroy_workqueue(master->wq);
+ 
+-err_put_dev:
+ 	put_device(&master->dev);
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(i3c_master_register);
++EXPORT_SYMBOL_GPL(i3c_primary_master_register);
+ 
+ /**
+  * i3c_master_unregister() - unregister an I3C master
+diff --git a/drivers/i3c/master/dw-i3c-master.c b/drivers/i3c/master/dw-i3c-master.c
+index 8513bd3..4f4d41f 100644
+--- a/drivers/i3c/master/dw-i3c-master.c
++++ b/drivers/i3c/master/dw-i3c-master.c
+@@ -1166,8 +1166,8 @@ static int dw_i3c_probe(struct platform_device *pdev)
+ 	master->maxdevs = ret >> 16;
+ 	master->free_pos = GENMASK(master->maxdevs - 1, 0);
+ 
+-	ret = i3c_master_register(&master->base, &pdev->dev,
+-				  &dw_mipi_i3c_ops, false);
++	ret = i3c_primary_master_register(&master->base, &pdev->dev,
++					  &dw_mipi_i3c_ops);
+ 	if (ret)
+ 		goto err_assert_rst;
+ 
+diff --git a/drivers/i3c/master/i3c-master-cdns.c b/drivers/i3c/master/i3c-master-cdns.c
+index 3f22269..f1d6d68 100644
+--- a/drivers/i3c/master/i3c-master-cdns.c
++++ b/drivers/i3c/master/i3c-master-cdns.c
+@@ -1644,8 +1644,8 @@ static int cdns_i3c_master_probe(struct platform_device *pdev)
+ 	writel(MST_INT_IBIR_THR, master->regs + MST_IER);
+ 	writel(DEVS_CTRL_DEV_CLR_ALL, master->regs + DEVS_CTRL);
+ 
+-	ret = i3c_master_register(&master->base, &pdev->dev,
+-				  &cdns_i3c_master_ops, false);
++	ret = i3c_primary_master_register(&master->base, &pdev->dev,
++					  &cdns_i3c_master_ops);
+ 	if (ret)
+ 		goto err_disable_sysclk;
+ 
+diff --git a/include/linux/i3c/master.h b/include/linux/i3c/master.h
+index 9cb39d9..e543f68 100644
+--- a/include/linux/i3c/master.h
++++ b/include/linux/i3c/master.h
+@@ -538,10 +538,9 @@ int i3c_master_add_i3c_dev_locked(struct i3c_master_controller *master,
+ int i3c_master_set_info(struct i3c_master_controller *master,
+ 			const struct i3c_device_info *info);
+ 
+-int i3c_master_register(struct i3c_master_controller *master,
+-			struct device *parent,
+-			const struct i3c_master_controller_ops *ops,
+-			bool secondary);
++int i3c_primary_master_register(struct i3c_master_controller *master,
++				struct device *parent,
++				const struct i3c_master_controller_ops *ops);
+ int i3c_master_unregister(struct i3c_master_controller *master);
+ 
+ /**
+-- 
+1.7.1
 
