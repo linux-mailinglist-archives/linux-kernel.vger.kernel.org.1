@@ -2,140 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C6F2C779B
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 06:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CA62C7798
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 06:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgK2FNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 00:13:22 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:4637 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726076AbgK2FNV (ORCPT
+        id S1725939AbgK2FNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 00:13:05 -0500
+Received: from mail-1.ca.inter.net ([208.85.220.69]:40795 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgK2FNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 00:13:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1606626800; x=1638162800;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=Q+9wc14wfuQMmnGUaM9/mziQvC1sLY7wMPn3qSE38LY=;
-  b=Ya6lrH4KRDaucDc3wZQY9WJoSBNWfabZJloM4G6KWKqh9ygJHezjC6wf
-   zzQ6OjaQf/jpmUwxkekFm0wa96NXEl8XnGaM23VxgYNSe5EClqr+mr7rW
-   ZxI++QeiFRpqdHNPaoE3gxE7SeS2Nz1jAzkO545X3Pcgy6+16N3al9RUx
-   ImkxUZ9JCRujQz/wvu4OFIb3C72nRRCW2FoWo07oQJPCF3CIXAcUke8SA
-   ck49sJ12Qs8wa0eFUxgRu/mmPbKc5vUVJXPNlTNqIDS3Ak69JLUkJ1ht3
-   A/+smZTDWwMxhpfj8jzQ/IfhsucW2HkbC2+dbr2Z7jNYqCGxI85h7v2Nb
-   A==;
-IronPort-SDR: QpFT9fdXxa/REvwLe7IFHzZW5O6yCn45WhqmlHD4wt0FI6DGEbNVGcru4mYNDe6cT5vzAemGC2
- GjPggiZFUz52+10ca2ss+kIJQzYXiONYvmLKCHPFp69RHSvyMqClvthOZmj5ZnCOyDqSj793jE
- qZ/qYNCcQmeAveeVfaUdMIGQYz+DsqC2WxzrYw9W83hsZpiUfUcpJJHn/8YBGpHj97xgRuQXIU
- pxCU0VJgWe51pTtW8aifllCiUnmvZLYm3T0WEbCjUFVQT/j1hFvwdjankBDal++fsPKFrPxu0q
- XNo=
-X-IronPort-AV: E=Sophos;i="5.78,378,1599494400"; 
-   d="scan'208";a="263842854"
-Received: from mail-dm6nam08lp2042.outbound.protection.outlook.com (HELO NAM04-DM6-obe.outbound.protection.outlook.com) ([104.47.73.42])
-  by ob1.hgst.iphmx.com with ESMTP; 29 Nov 2020 13:12:13 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eZqpk8uWm1RlvVcHfmvpn7IAW/hpqAz+OzZiETMZxt3cdpYRBSIUh6PSEO2KmJF8Id4ZjdpWtFYvDan2q8e3gvD3g+C0hyONtH48OLrWHS4xwzIfwOtv9PsmrHjHXLc2f+/ESAulSFz8B/TzrAoTjCZ6fbA2UHuZnogpFrIp9IAi9zJ9gQAAaA4YwMwCQIlTP3pfs3yuGlUHFg3xLFMWxkdXwyC8BsixZjItteFatBHR0w/f1d7Ya5CLUza1Oask6EZzK3sW+YyEM4CxiFYbn6L4k4AtC3hezZ/Lvk8M/Wl9xC+hE8e5MbyUlNBVN4vJE8esvyU9i70tLCLFTDSs3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q+9wc14wfuQMmnGUaM9/mziQvC1sLY7wMPn3qSE38LY=;
- b=hDMNPF3z1yXU0LDUaXSmqRw3/AAxbsM1h4fRI+qHci9E6oDQ+41QY6cft+ssHgUGWns78zPCJh0jGVkaZyVagnc8d1Rwq3O2PpFQfedGCylGaAu3IZ/mbg+XzqVg8Nt6edTykPogYRds4mxLFsWVHbRSlTV7d6aD7fPl0889gc8yIRZmryBdDRytsGb964AyyCrHPBd870hh4mCpwPdxuEtOS8hM1OqqACRbX25Drr2pPGtWpvyx1X3+fSSsnTXVlh7HnHg/38l8BwjPbok7h1JNTIYyHLbGtj/HFuUEeiEN4JHppy3jA8LwHo7i3L5KhyrpR6GcQkA/t+532mSZYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q+9wc14wfuQMmnGUaM9/mziQvC1sLY7wMPn3qSE38LY=;
- b=VOe0JD2jBGsMED3wg6HXBWpBH+zQN8kKTQ3VvZsR4BpO1XU7jbt0T4oitVZzejaMq2CmhsFBg0ZZSp3qpEcJUP9lq59lN9VZIQS5VPz2TU640b01xRVxSlP8fsCEr7WplIQE4xBwjkG2PjS37iemR2jC3t2UDZqtg49by5dGh2w=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB4104.namprd04.prod.outlook.com (2603:10b6:a02:b0::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Sun, 29 Nov
- 2020 05:12:10 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::99ae:ab95:7c27:99e4]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::99ae:ab95:7c27:99e4%7]) with mapi id 15.20.3589.032; Sun, 29 Nov 2020
- 05:12:10 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Colin King <colin.king@canonical.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] nvmet: Kconfig: Fix spelling mistake "incuding" ->
- "including"
-Thread-Topic: [PATCH] nvmet: Kconfig: Fix spelling mistake "incuding" ->
- "including"
-Thread-Index: AQHWxEUozpSyZKKBoUa2H0DZ/NMn0A==
-Date:   Sun, 29 Nov 2020 05:12:10 +0000
-Message-ID: <BYAPR04MB496572FCDC8EEC3B232497F186F60@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20201126224029.13527-1-colin.king@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 710fbae2-b44e-42ce-e852-08d894255370
-x-ms-traffictypediagnostic: BYAPR04MB4104:
-x-microsoft-antispam-prvs: <BYAPR04MB410423EE69A955BB4713F04786F60@BYAPR04MB4104.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:2449;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8Pa2cG9xz21wpi4ZWIM+vL3XAqzNb875ue0GGKcF0fMBkvmlBH2OJjFiGJolGY/iHMVsbTaEmrJ1Bp0Cgva552uTSh1dbjtYuXsg9hV9h+1hlXUzU0HWlEM8KfvPrZwQxdX/Vl3KdBlpNqQ0voQ54eA7g9pylPQ8k8jO7tMIllkuVgUbA01gfkRN5//QqS5OY8mlbI5fyZ9Ebwrr9g/6jZfmBtbROn3GE/8VUelsMduAU/7QlAQtKUSaDjQJZbuL1LOnjhLs/7xYse/s86bwZS+e63iomrG+fg7V9CWn45Ls+fQi3nrulycwmYryxp1T
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(396003)(39850400004)(376002)(71200400001)(8676002)(86362001)(8936002)(9686003)(558084003)(54906003)(5660300002)(110136005)(316002)(4326008)(33656002)(55016002)(478600001)(7696005)(186003)(53546011)(66446008)(64756008)(2906002)(6506007)(66476007)(66556008)(26005)(76116006)(66946007)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ipJ/FzY3miFTVtC/EjPmU38RiWt622noEhx0eboQ2MtDfthSCb5j6WESQt/w?=
- =?us-ascii?Q?NHohaC7CBOa58/ljdYcqRtfcrTHpxkbnqu3mYTcCPjpYZ2jmCIZLizx32JGl?=
- =?us-ascii?Q?NtIUlW7EAh1tEwC0l2dqRWK0Tk0aJbuFlA2iatYZLavWUZkCMuQVE0t1R4Ib?=
- =?us-ascii?Q?VTE7vs8sK/jfuMhK2j3DvO0o6yJxRFD4zBrCKa+owIO+wZQAMGldxB2Vv8C5?=
- =?us-ascii?Q?LGhMbV6231LtL+0y2SSQFTzgHt1b1hhBqOaJ6eaVH1nKXHKpZ8J2QQqc6uRf?=
- =?us-ascii?Q?FqYOYXZbcKA2QCnSidiBCEKTa2jmPBchODYQylDCABXELv2hhpqMLU/qY72A?=
- =?us-ascii?Q?a0poJxGdtgWOJUszkvb6QXfc8sFYuPRvP6hMtJ6LGpn8lQ6wCBgEwHxKC3lG?=
- =?us-ascii?Q?EDBp0KKd/C713jRKQ93SC9XVSeX5H9/t7YrgIrSO8C05KW1xzUytJ2taxyKV?=
- =?us-ascii?Q?eiXck2xO2uWdJdjSr48hdJZsuPmXKFaauY+bNFt7jwXJAu6CyMcTlJpHPiwv?=
- =?us-ascii?Q?4S6oM8dChIAyK101gt9Lbw1HIOechPehEPVddSYFu8T7LBWnqgUUo+LHa+GG?=
- =?us-ascii?Q?DhZqgIwBB1uhHUWS2F1jbkfFvWQGKhh9eycpd2RKW20zZMxxWwanmJKHFsfD?=
- =?us-ascii?Q?NhRcTVnN3yGz/ta5e7xVItNX6ou0q+UUfohys/2wHMBLaxZn0eHbEa0dpIAQ?=
- =?us-ascii?Q?j96YY4oCiRFAlh6RcRJGX10VJZYEp60BrOv9CwvzeIOSMk3mXYMMS9b9+SfL?=
- =?us-ascii?Q?SKKNHM24TjtIZdmWGu1nXHNl4vg1OCcsWdYNpQ9N3UY1Tr/uDujpn+1MMw9g?=
- =?us-ascii?Q?VinX9LEY39CLiSlp12L/iJEKD6WNZeFWcZVHpr+wPUePPDz60XdrsIyTiMVf?=
- =?us-ascii?Q?qdDtWnQ9+PUTpK/2jsteuN4VvXrlhiTljd8S694wVf9CMjoYWq6Zgxrx63Qx?=
- =?us-ascii?Q?hW0mIVvsNt7KHdAYkL6JwjyOj9MIF2rJnsc1cJ09hVfj1oSZDhQlL9zmt+E8?=
- =?us-ascii?Q?O23I?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 29 Nov 2020 00:13:04 -0500
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id 1157F2EA00C;
+        Sun, 29 Nov 2020 00:12:23 -0500 (EST)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id OpmIgPKamWzG; Sun, 29 Nov 2020 00:02:10 -0500 (EST)
+Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 865D72EA01E;
+        Sun, 29 Nov 2020 00:12:21 -0500 (EST)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH] scsi: ses: Fix crash caused by kfree an invalid pointer
+To:     jejb@linux.ibm.com, Ding Hui <dinghui@sangfor.com.cn>,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable <stable@vger.kernel.org>
+References: <20201128122302.9490-1-dinghui@sangfor.com.cn>
+ <c5deac044ac409e32d9ad9968ce0dcbc996bfc7a.camel@linux.ibm.com>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <4b83e264-2a7e-e877-5f52-16b14b563a87@interlog.com>
+Date:   Sun, 29 Nov 2020 00:12:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 710fbae2-b44e-42ce-e852-08d894255370
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Nov 2020 05:12:10.6654
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Vom28RUGtZUAbLnkEVbIz1QhBwyAWUlU0x8CPoHDrL2OXGjCO20q7KPLC/hHFzWmTUuSlvOTCOMdfcPkzrkYn840Dh0d4O6hwPBaWqmLRAU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4104
+In-Reply-To: <c5deac044ac409e32d9ad9968ce0dcbc996bfc7a.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/20 14:40, Colin King wrote:=0A=
-> From: Colin Ian King <colin.king@canonical.com>=0A=
->=0A=
-> There is a spelling mistake in the Kconfig help text. Fix it.=0A=
->=0A=
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>=0A=
-Looks good.=0A=
-=0A=
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
-=0A=
-=0A=
+On 2020-11-28 6:27 p.m., James Bottomley wrote:
+> On Sat, 2020-11-28 at 20:23 +0800, Ding Hui wrote:
+>> We can get a crash when disconnecting the iSCSI session,
+>> the call trace like this:
+>>
+>>    [ffff00002a00fb70] kfree at ffff00000830e224
+>>    [ffff00002a00fba0] ses_intf_remove at ffff000001f200e4
+>>    [ffff00002a00fbd0] device_del at ffff0000086b6a98
+>>    [ffff00002a00fc50] device_unregister at ffff0000086b6d58
+>>    [ffff00002a00fc70] __scsi_remove_device at ffff00000870608c
+>>    [ffff00002a00fca0] scsi_remove_device at ffff000008706134
+>>    [ffff00002a00fcc0] __scsi_remove_target at ffff0000087062e4
+>>    [ffff00002a00fd10] scsi_remove_target at ffff0000087064c0
+>>    [ffff00002a00fd70] __iscsi_unbind_session at ffff000001c872c4
+>>    [ffff00002a00fdb0] process_one_work at ffff00000810f35c
+>>    [ffff00002a00fe00] worker_thread at ffff00000810f648
+>>    [ffff00002a00fe70] kthread at ffff000008116e98
+>>
+>> In ses_intf_add, components count could be 0, and kcalloc 0 size
+>> scomp,
+>> but not saved in edev->component[i].scratch
+>>
+>> In this situation, edev->component[0].scratch is an invalid pointer,
+>> when kfree it in ses_intf_remove_enclosure, a crash like above would
+>> happen
+>> The call trace also could be other random cases when kfree cannot
+>> catch
+>> the invalid pointer
+>>
+>> We should not use edev->component[] array when the components count
+>> is 0
+>> We also need check index when use edev->component[] array in
+>> ses_enclosure_data_process
+>>
+>> Tested-by: Zeng Zhicong <timmyzeng@163.com>
+>> Cc: stable <stable@vger.kernel.org> # 2.6.25+
+>> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+> 
+> This doesn't really look to be the right thing to do: an enclosure
+> which has no component can't usefully be controlled by the driver since
+> there's nothing for it to do, so what we should do in this situation is
+> refuse to attach like the proposed patch below.
+> 
+> It does seem a bit odd that someone would build an enclosure that
+> doesn't enclose anything, so would you mind running
+> 
+> sg_ses -e
+
+'-e' is the short form of '--enumerate'. That will report the names
+and abbreviations of the diagnostic pages that the utility itself
+knows about (and supports). It won't show anything specific about
+the environment that sg_ses is executed in.
+
+You probably meant:
+   sg_ses <ses_device>
+
+Examples of the likely forms are:
+   sg_ses /dev/bsg/1:0:0:0
+   sg_ses /dev/sg2
+   sg_ses /dev/ses0
+
+This from a nearby machine:
+
+$ lsscsi -gs
+[3:0:0:0]  disk  ATA      Samsung SSD 850  1B6Q  /dev/sda   /dev/sg0    120GB
+[4:0:0:0]  disk  IBM-207x HUSMM8020ASS20   J4B6  /dev/sdc   /dev/sg2    200GB
+[4:0:1:0]  disk  ATA      INTEL SSDSC2KW25 003C  /dev/sdd   /dev/sg3    256GB
+[4:0:2:0]  disk  SEAGATE  ST10000NM0096    E005  /dev/sde   /dev/sg4   10.0TB
+[4:0:3:0]  enclosu Areca Te ARC-802801.37.69 0137  -        /dev/sg5        -
+[4:0:4:0]  enclosu Intel    RES2SV240        0d00  -        /dev/sg6        -
+[7:0:0:0]  disk    Kingston DataTravelerMini PMAP  /dev/sdb /dev/sg1   1.03GB
+[N:0:0:1]  disk    WDC WDS256G1X0C-00ENX0__1       /dev/nvme0n1  -      256GB
+
+# sg_ses /dev/sg5
+   Areca Te  ARC-802801.37.69  0137
+Supported diagnostic pages:
+   Supported Diagnostic Pages [sdp] [0x0]
+   Configuration (SES) [cf] [0x1]
+   Enclosure Status/Control (SES) [ec,es] [0x2]
+   String In/Out (SES) [str] [0x4]
+   Threshold In/Out (SES) [th] [0x5]
+   Element Descriptor (SES) [ed] [0x7]
+   Additional Element Status (SES-2) [aes] [0xa]
+   Supported SES Diagnostic Pages (SES-2) [ssp] [0xd]
+   Download Microcode (SES-2) [dm] [0xe]
+   Subenclosure Nickname (SES-2) [snic] [0xf]
+   Protocol Specific (SAS transport) [] [0x3f]
+
+# sg_ses -p cf /dev/sg5
+   Areca Te  ARC-802801.37.69  0137
+Configuration diagnostic page:
+   number of secondary subenclosures: 0
+   generation code: 0x0
+   enclosure descriptor list
+     Subenclosure identifier: 0 [primary]
+       relative ES process id: 1, number of ES processes: 1
+       number of type descriptor headers: 9
+       enclosure logical identifier (hex): d5b401503fc0ec16
+       enclosure vendor: Areca Te  product: ARC-802801.37.69  rev: 0137
+       vendor-specific data:
+         11 22 33 44 55 00 00 00                             ."3DU...
+
+   type descriptor header and text list
+     Element type: Array device slot, subenclosure id: 0
+       number of possible elements: 24
+       text: ArrayDevicesInSubEnclsr0
+     Element type: Enclosure, subenclosure id: 0
+       number of possible elements: 1
+       text: EnclosureElementInSubEnclsr0
+     Element type: SAS expander, subenclosure id: 0
+       number of possible elements: 1
+       text: SAS Expander
+     Element type: Cooling, subenclosure id: 0
+       number of possible elements: 5
+       text: CoolingElementInSubEnclsr0
+     Element type: Temperature sensor, subenclosure id: 0
+       number of possible elements: 2
+       text: TempSensorsInSubEnclsr0
+     Element type: Voltage sensor, subenclosure id: 0
+       number of possible elements: 2
+       text: VoltageSensorsInSubEnclsr0
+     Element type: SAS connector, subenclosure id: 0
+       number of possible elements: 3
+       text: ConnectorsInSubEnclsr0
+     Element type: Power supply, subenclosure id: 0
+       number of possible elements: 2
+       text: PowerSupplyInSubEnclsr0
+     Element type: Audible alarm, subenclosure id: 0
+       number of possible elements: 1
+       text: AudibleAlarmInSubEnclsr0
+
+Doug Gilbert
+
+> on it and reporting back what it shows?  It's possible there's another
+> type that the enclosure device should be tracking.
+> 
+> Regards,
+> 
+> James
+> 
+> ---8>8>8><8<8<8--------
+> From: James Bottomley <James.Bottomley@HansenPartnership.com>
+> Subject: [PATCH] scsi: ses: don't attach if enclosure has no components
+> 
+> An enclosure with no components can't usefully be operated by the
+> driver (since effectively it has nothing to manage), so report the
+> problem and don't attach.  Not attaching also fixes an oops which
+> could occur if the driver tries to manage a zero component enclosure.
+> 
+> Reported-by: Ding Hui <dinghui@sangfor.com.cn>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+> ---
+>   drivers/scsi/ses.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/scsi/ses.c b/drivers/scsi/ses.c
+> index c2afba2a5414..9624298b9c89 100644
+> --- a/drivers/scsi/ses.c
+> +++ b/drivers/scsi/ses.c
+> @@ -690,6 +690,11 @@ static int ses_intf_add(struct device *cdev,
+>   		    type_ptr[0] == ENCLOSURE_COMPONENT_ARRAY_DEVICE)
+>   			components += type_ptr[1];
+>   	}
+> +	if (components == 0) {
+> +		sdev_printk(KERN_ERR, sdev, "enclosure has no enumerated components\n");
+> +		goto err_free;
+> +	}
+> +
+>   	ses_dev->page1 = buf;
+>   	ses_dev->page1_len = len;
+>   	buf = NULL;
+> 
+
