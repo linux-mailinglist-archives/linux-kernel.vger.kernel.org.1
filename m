@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62F82C79FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 17:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E662C79F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 17:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgK2Q3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 11:29:07 -0500
-Received: from mout.gmx.net ([212.227.15.19]:45949 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgK2Q3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 11:29:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606667218;
-        bh=ZdaS61ocSCTccgRlrvrlpB5FIH+3x7hg7zRIPHr6i34=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=MnFPXGPw2vku/BUV5OlPe3tvjko03/nSX6Y9E0lA/HPPZRuXPMRb7r7xNPJYKLUED
-         W7901hcYRBpMm/pLaniWoKE/QrVLD6tNQ+t8f4Nd32QTFAEgRu4sB/xOrlVZJM6w3J
-         wLRLW9gcz3YWbHPqgaObrbNDWv2HqB7qYJDVDVvE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from workstation5.fritz.box ([62.143.246.89]) by mail.gmx.com
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1Md6Qr-1k9FNB2fnH-00aD7G; Sun, 29 Nov 2020 17:26:58 +0100
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Willy Liu <willy.liu@realtek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-Subject: [PATCH 1/1] arm64: dts: allwinner: A64 Sopine: phy-mode rgmii-id
-Date:   Sun, 29 Nov 2020 17:26:27 +0100
-Message-Id: <20201129162627.1244808-1-xypron.glpk@gmx.de>
-X-Mailer: git-send-email 2.29.2
+        id S1727117AbgK2Q2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 11:28:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgK2Q2f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 11:28:35 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4339AC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 08:27:55 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id j205so15725955lfj.6
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 08:27:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=drummond.us; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tiJRMQRH4q3fKZnXwsXdsiQdiiHWVfi/e30ZlSZ5bA4=;
+        b=FpQCN7t3z5sxP2RvrV2gj1PsI8mRtSfsMUenJ0wVzH+8cOLDWD1rUeBjJOq3fiE1Xc
+         oX1LsaghcwoEiDq8MADfqR9ld4PT94vE2gbPLURuxqzRF86tQBHu7wPjnOSAs1222xHk
+         SB/7sV4kqzybbRItqi20ocuPu5peSzM0PKzGJAa/FXLh83+qTJvFAeCfbvTX9A8J5Q1Y
+         B26FvBEa/QYEwfM9Q6Q/VotU7HDNOco8tw4LTDi3gmN4hbsx4bBTpL3/Pn4wztcrM4Ql
+         YOA88jClX+ceaev86VmVP9HuMb1dAvfBmpXbOpyKPVEX5rmsVXahI52olSTSpftY/FxM
+         wqCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tiJRMQRH4q3fKZnXwsXdsiQdiiHWVfi/e30ZlSZ5bA4=;
+        b=mWqqwW36INhao7GYfXGBG1EKnJAkFRT9m0wpoeLvU7tZT4BTvYoblpxiL49AezKVow
+         c92toT1kishcs4TgPQKruPHb/zF45sWxeYaLsVkAFaGsQEMcYGagNXojzSKwKi5JVaWh
+         Tu5ApAevM4VUZ7L+Zeg8DlTDWhFn+gvXe1e2q9CZ6Kb0OUcGpweya8+NC/llqBb9jk/j
+         EQtSNuvPuHYOrXZoGfWZG9Wfzjd6WaPMjyygC+wH5o9wUiFKbuQ7oj/RhxrTP5Van0MQ
+         cCicWMSAZm+/8eBWLS4xnkY2/pMaC7aNEvnIBD8INP0LUbcW/px35P93M9VCd+ws9R/p
+         BMhg==
+X-Gm-Message-State: AOAM530c1BYprIYrDez1/uCM8MQbEyJp9+vi40JdugbqNTctfKGaddsl
+        +cfy3oyj8BBJNbwEfMhndHr1w12VPvJt2pMJgsSvng==
+X-Google-Smtp-Source: ABdhPJynoT0ee6fZ2hfZAEtQtmba84Bu6N9+Myxr9eQiSpf5ahGfldA70FE4iV+AybcUsIRhyBZKi+8g9j1WsGtaOQQ=
+X-Received: by 2002:a05:6512:34d3:: with SMTP id w19mr7027719lfr.418.1606667273429;
+ Sun, 29 Nov 2020 08:27:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SJLhc46VH/ADt0FelGIyVaiGRm2u274NfG2HIcI30sp4zMt0BoT
- NiUittyROSYnJO4ezFL9Zy3hpfNvULKc7uxbUFJ6nbLuBrBz7y4gL0XthVB9rhMCS0v5A+v
- HXFhg4Ml9plzM6fhDk8XSt9jiByaEYAXFbap1KXsZOslnV1Uh4nAxUT9m57lrb5EEqE1yHV
- uJ+0ooQSlIQyqcL0u5YKg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:I7nSpszWH+4=:f6RrG4/NKlDOKioxewIwUa
- XGLnOoUZkXKcb/KSsmV3tRydVDLllCr9Jqh368TOehshj3SpnpoY6k4PQvc9zZVY/LhwCDqvB
- 5yNbQou9DrKPp1Q8F7KL1YZvjtETyh0LEiqK+ea/SWUb/bOgEdRvtNcFWZThLEin2J7fp1h9T
- 8Mz62hNM9LAm/5G5wSTXVru8eMAJALGdnrTjRlIlij9worNJWe9Dcn3iFYIomzLGqFGEdrhsn
- +UjB9WusuwORp7XTLP3z9nL5H0Rkf5NKO9k2ODXfsXAmn/6s6HaOUJEgG5QrgSGAy0f7BRJWU
- OAMs2XCH9vdOGTELYfQTOt4uUk2+t6cQKh5hglzSkO6iqbgLAKYfiAVg5f1LpRQpxwjxj3elR
- IvNA54L0a4YLfXvEJ+Mym2Av+0tnOUw3RGz+OrTPHkeihoH8NFFclEP8mxosPvPpjTNR9c82C
- LUBRH6QIMpOlZFBQc7r5RaKH1NOcIJhFBZpaTUVE9wgYy8a5N1PhEKCXY2F94iIUJS6+xIKHp
- YD1hz6YdiAPGBhA8SDJAsgJrFUIxrJSNLCal937INnvFYMxWrLBA86kTLW7CoXER4c8cXAIC6
- m9knTCvyQW6gCytJPnvvaF7nqt3s2xG2SYUiqQCbpg8fup7/EKDMcpjjfWncojkJx+f9xMxHJ
- PgeyzoX4ru07njyddiXHFAD09EpVmyXIgwgZxDQs9oXKA8Rw/m5Ow4ntffD1So71w5VohpQUw
- PEIXFSfL02fxQSO8PmtdA8+pxedzhRBoZncH88FlIurebddv+RA5TKYgwG4QpfRxi3SF6DAR9
- wtGGmcnUHiLqw+aKe9m1ivzSogFZd7q05FN3awGuTeZ4YWZE77RLUWpebNXOZARwSYNnLexKb
- Ow138hjz+V1NDtUXU50A==
+References: <20201119221132.1515696-1-walt@drummond.us> <20201128052317.GY3576660@ZenIV.linux.org.uk>
+ <CADCN6nyGW0=QS=J+704n-mtAqTxgVrKZC=P8d01NZ_pjssptew@mail.gmail.com> <20201129032823.GA3579531@ZenIV.linux.org.uk>
+In-Reply-To: <20201129032823.GA3579531@ZenIV.linux.org.uk>
+From:   Walt Drummond <walt@drummond.us>
+Date:   Sun, 29 Nov 2020 08:27:42 -0800
+Message-ID: <CADCN6nx3oqNcYxa7xCAybK2Aygv1GugTnMxs=EO2bQMStiejzQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/signals: Fix save/restore signal stack to correctly
+ support sigset_t
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, brgerst@gmail.com, linux@dominikbrodowski.net,
+        gustavoars@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx
-delay config") iSCSI booting fails on the Pine A64 LTS.
+Got it.  Thanks again Al.
 
-This patch changes the phy-mode to use internal delays both for RX and TX
-as has been done for other boards affected by the same commit.
-
-Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
-Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-=2D--
- arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts=
- b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-index 9ebb9e07fae3..d4069749d721 100644
-=2D-- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-@@ -79,7 +79,7 @@ &ehci1 {
- &emac {
- 	pinctrl-names =3D "default";
- 	pinctrl-0 =3D <&rgmii_pins>;
--	phy-mode =3D "rgmii";
-+	phy-mode =3D "rgmii-id";
- 	phy-handle =3D <&ext_rgmii_phy>;
- 	phy-supply =3D <&reg_dc1sw>;
- 	status =3D "okay";
-=2D-
-2.29.2
-
+On Sat, Nov 28, 2020 at 7:28 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Sat, Nov 28, 2020 at 06:19:31PM -0800, Walt Drummond wrote:
+> > Thanks Al.  I want to understand the nuance, so please bear with me as I
+> > reason this out.   The cast in stone nature of this is due to both the need
+> > to keep userspace and kernel space in sync (ie, you'd have to coordinate
+> > libc and kernel changes super tightly to pull this off), and any change in
+> > the size of struct rt_sigframe would break backwards compatibility with
+> > older binaries, is that correct?
+>
+> Pretty much so.  I would expect gdb and friends to be very unhappy about
+> that, for starters, along with a bunch of fun stuff like JVM, etc.
+>
+> Ask the userland folks (libc, gdb, etc.) how would they feel about such
+> changes.  I'm fairly sure that it's _not_ going to be a matter of
+> changing _NSIG, rebuilding the kernel and living happily ever after.
