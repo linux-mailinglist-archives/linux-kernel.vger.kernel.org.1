@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2013A2C78AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 090E62C78AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgK2K7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 05:59:07 -0500
-Received: from mout.gmx.net ([212.227.17.20]:59021 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgK2K7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 05:59:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606647417;
-        bh=xuUwzZ7J2wadinLY3BrTlVoxFqhsceEnaYR1kreYZ6c=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=ePOGmg6cTvk3A8f3JZd4VecBJNrCkwo6OPUqccm9oqNbY6T1uiV+q9viKtl7pZGbI
-         /rOOoeC10vAZbnHJpxIF6c0OU3i53qRiZPbYIOaWaKKCxR/pVrqCYd5uIsrflslpWu
-         ++inwpavKK+DSrntZB32485YKrFTeQU2h2UqWvGM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.218.83]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N2V4J-1k3pH43EFj-013w5p; Sun, 29
- Nov 2020 11:56:57 +0100
-Message-ID: <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
-Subject: Re: scheduling while atomic in z3fold
-From:   Mike Galbraith <efault@gmx.de>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Date:   Sun, 29 Nov 2020 11:56:55 +0100
-In-Reply-To: <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
-References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
-         <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
-         <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
-         <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
-         <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
-         <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1727229AbgK2K7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 05:59:11 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:34695 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726934AbgK2K7K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 05:59:10 -0500
+Received: by mail-io1-f70.google.com with SMTP id q6so5537420iog.1
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 02:58:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+hSyrMmE7Jd1LFQtWNmFHjej4ynpvSMXHSpcTqGIDIU=;
+        b=f+EzhZJkHA0uF5QaTU1BR2HXlt8NrcsG8FvcQBQhI0H3kXgp/ofYXS/BI+J2aYbNQ5
+         l0c4sA8d7xDTtKB+Ixrn9J9BEe1/lqDxvelj4BPBgZRInwNj2pKkwnVUaP1IJw1H5MV7
+         IjgEgRXVG660KeO1Shrv+176G30MrwznYfKrMZKqIl8ErY+SD3KjjQlVI9CUoLbScd2b
+         qz3oA4qTqJMT/M0RYGh21Cb4VAivMnCAYNs7QMvDiWhn/UEFl0C5F+hQ/XbqR0HWNZTg
+         cEKfLIAMmv5JaCCEI7cEIiVmNdB7BUZlWFDRI3gtks7/Fsnfhn1ddxxs74iqvv2/XuR2
+         1OlA==
+X-Gm-Message-State: AOAM530Vv9vZ8ifutX6bfu2gz42YHdJWCVli7RtQyGXhiPUc8bwfB9Pt
+        13BYdTLgJFrz1dRfPn+UJXBzfzVUaFLfm3B6VggRHI0ek/F4
+X-Google-Smtp-Source: ABdhPJym2twyN3aJwoCGatFXC/ngKVVfc9dejgWUWmP75kZNzy85oqPEgVWX8GTcjTWzwrpaQYcCt0zR0lr3Izg3RP/p8ellEjPj
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0KkU+dO0CotFg8t98ZX+R+ppUKncpqsi1f3DNTFjPAkwxZI/cMf
- fOUGowMDXMp16ib7vCoLfW59yuQr1b+C8biP51nhq7Wm9UPGQ9uNYwvIW7qaoZUPzMhMFx9
- C9ad/1eVySHF7O0ptB5l8pIbT6f3bPNLJwiFzR4By1xjYM7STZanAP1fe7o/S0Atd1bVtYR
- sbD2N19+KbuWzaM4mss4w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3NxniihrIMQ=:NwxAzoQDYk6FvcXnaDATmx
- y2OKPHWUPRwKVmpCIKZmgKEsn3Jvmg1IWyji3F4EHzoqdSXW/mR/ofxTPbM2rW81GuIrbZruu
- n1I+wM4zcTqNOgs5QIRKoxtInhW1Bf5hl+d2SuaLF84WNCSslAXFe3Lwb0aP35/gfiQybNkmB
- BPqsB5sgwN5yDO/rI7xzReX8z72Y5/b1SDQ02b8u9lUJwjrHSVYrJ9WHxRszu5h5TDjSgeuBo
- lwznEaIE4EkCkdzrWkP/mvvAfAEm8opasML1q1u/VhpVm/cZTHuv1rx1XADDaHJ3ColoH0yfj
- Jl90CbCFjaplvNhsZsmmV3NLf2vwYMb1XusM4n66kxDSzCb8m7ZfkpDxV7MhjoNYdjiuhC6AM
- XT0sGcCzRRUGcUfur4IVgV9UDzsiLvTExgYolyDfLtzJOREXdWG3lbMoJR68oOiH0ijelYFIS
- BukCHpFBBIUa3VUC2kbKVtIbAExTYCslXTSg3EibM0rc4OVOcP2fy41vv2uT9cmqYpTuN7Lo4
- vlN6inPBjALISNSiiyXj1T1STX9Nw+S111a2oFFpErO7rNQyLLSjiWa96f7/9s+ZGIWl3dfXF
- T/0AzK/OGFLks/ac1oSPmrzV/MFvhd061Fstyj5AH7mgyOZL1K+CfWGNvk7wWVPxPXm/LJb4/
- zSy+AhGA/Exr90dVQ80YvOVm3Nw0wMuSgtpeu5POEcinjg4m1w44JPbIoRY7aS2c+VdKcl4KV
- ZhTQJWjBeGYVs5fa8arVRfSXeNQP+vc24GqKsOBvQwNazr3tcg0Kk8LgwAlypk707NC500nrF
- wGrqC/DfmZE54Zjrdr+Je66iFmredHbtba9LkITmwg2Xg9l3SfkkdMkBhjUDMEiqo8+pGhEk5
- QHE8ZmYOx7jK7RmriKAQ==
+X-Received: by 2002:a6b:ef11:: with SMTP id k17mr12098422ioh.210.1606647503166;
+ Sun, 29 Nov 2020 02:58:23 -0800 (PST)
+Date:   Sun, 29 Nov 2020 02:58:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b4a2c005b53cc5f2@google.com>
+Subject: WARNING: suspicious RCU usage in get_counters
+From:   syzbot <syzbot+5cfc290df4bbf069bc65@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-11-29 at 10:21 +0100, Mike Galbraith wrote:
-> On Sun, 2020-11-29 at 08:48 +0100, Mike Galbraith wrote:
-> > On Sun, 2020-11-29 at 07:41 +0100, Mike Galbraith wrote:
-> > > On Sat, 2020-11-28 at 15:27 +0100, Oleksandr Natalenko wrote:
-> > > >
-> > > > > > Shouldn't the list manipulation be protected with
-> > > > > > local_lock+this_cpu_ptr instead of get_cpu_ptr+spin_lock?
-> > > >
-> > > > Totally untested:
-> > >
-> > > Hrm, the thing doesn't seem to care deeply about preemption being
-> > > disabled, so adding another lock may be overkill.  It looks like you
-> > > could get the job done via migrate_disable()+this_cpu_ptr().
-> >
-> > There is however an ever so tiny chance that I'm wrong about that :)
->
-> Or not, your local_lock+this_cpu_ptr version exploded too.
->
-> Perhaps there's a bit of non-rt related racy racy going on in zswap
-> thingy that makes swap an even less wonderful idea for RT than usual.
+Hello,
 
-Raciness seems to be restricted to pool compressor.  "zbud" seems to be
-solid, virgin "zsmalloc" explodes, as does "z3fold" regardless which of
-us puts his grubby fingerprints on it.
+syzbot found the following issue on:
 
-Exploding compressors survived zero runs of runltp -f mm, I declared
-zbud to be at least kinda sorta stable after box survived five runs.
+HEAD commit:    127c501a Merge tag '5.10-rc5-smb3-fixes' of git://git.samb..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f4912d500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d1e98d0b97781e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=5cfc290df4bbf069bc65
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-	-Mike
+Unfortunately, I don't have any reproducer for this issue yet.
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5cfc290df4bbf069bc65@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+5.10.0-rc5-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+1 lock held by syz-executor.3/10331:
+ #0: ffff8880459f8308 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x41/0x540 net/netfilter/x_tables.c:1206
+
+stack backtrace:
+CPU: 3 PID: 10331 Comm: syz-executor.3 Not tainted 5.10.0-rc5-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7270
+ get_counters+0x2f5/0x520 net/ipv4/netfilter/ip_tables.c:765
+ do_ipt_get_ctl+0x634/0x9d0 net/ipv4/netfilter/ip_tables.c:805
+ nf_getsockopt+0x72/0xd0 net/netfilter/nf_sockopt.c:116
+ ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
+ ip_getsockopt+0x164/0x1c0 net/ipv4/ip_sockglue.c:1756
+ tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:3882
+ __sys_getsockopt+0x219/0x4c0 net/socket.c:2173
+ __do_sys_getsockopt net/socket.c:2188 [inline]
+ __se_sys_getsockopt net/socket.c:2185 [inline]
+ __x64_sys_getsockopt+0xba/0x150 net/socket.c:2185
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45ec3a
+Code: b8 34 01 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd 9f fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa 9f fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffccbec9f78 EFLAGS: 00000212 ORIG_RAX: 0000000000000037
+RAX: ffffffffffffffda RBX: 00007ffccbec9fb0 RCX: 000000000045ec3a
+RDX: 0000000000000041 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000734000 R08: 00007ffccbec9fac R09: 0000000000004000
+R10: 00007ffccbeca010 R11: 0000000000000212 R12: 00007ffccbeca010
+R13: 0000000000000003 R14: 0000000000732bc0 R15: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
