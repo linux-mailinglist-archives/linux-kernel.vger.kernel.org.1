@@ -2,112 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090E62C78AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 895452C78AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727229AbgK2K7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 05:59:11 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:34695 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726934AbgK2K7K (ORCPT
+        id S1726934AbgK2LCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 06:02:25 -0500
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:45799 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgK2LCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 05:59:10 -0500
-Received: by mail-io1-f70.google.com with SMTP id q6so5537420iog.1
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 02:58:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=+hSyrMmE7Jd1LFQtWNmFHjej4ynpvSMXHSpcTqGIDIU=;
-        b=f+EzhZJkHA0uF5QaTU1BR2HXlt8NrcsG8FvcQBQhI0H3kXgp/ofYXS/BI+J2aYbNQ5
-         l0c4sA8d7xDTtKB+Ixrn9J9BEe1/lqDxvelj4BPBgZRInwNj2pKkwnVUaP1IJw1H5MV7
-         IjgEgRXVG660KeO1Shrv+176G30MrwznYfKrMZKqIl8ErY+SD3KjjQlVI9CUoLbScd2b
-         qz3oA4qTqJMT/M0RYGh21Cb4VAivMnCAYNs7QMvDiWhn/UEFl0C5F+hQ/XbqR0HWNZTg
-         cEKfLIAMmv5JaCCEI7cEIiVmNdB7BUZlWFDRI3gtks7/Fsnfhn1ddxxs74iqvv2/XuR2
-         1OlA==
-X-Gm-Message-State: AOAM530Vv9vZ8ifutX6bfu2gz42YHdJWCVli7RtQyGXhiPUc8bwfB9Pt
-        13BYdTLgJFrz1dRfPn+UJXBzfzVUaFLfm3B6VggRHI0ek/F4
-X-Google-Smtp-Source: ABdhPJym2twyN3aJwoCGatFXC/ngKVVfc9dejgWUWmP75kZNzy85oqPEgVWX8GTcjTWzwrpaQYcCt0zR0lr3Izg3RP/p8ellEjPj
+        Sun, 29 Nov 2020 06:02:24 -0500
+X-Originating-IP: 91.175.115.186
+Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 6364320005;
+        Sun, 29 Nov 2020 11:01:41 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
+Cc:     kernel-team@android.com, Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH] MAINTAINERS: Move Jason Cooper to CREDITS
+In-Reply-To: <20201128103707.332874-1-maz@kernel.org>
+References: <20201128103707.332874-1-maz@kernel.org>
+Date:   Sun, 29 Nov 2020 12:01:41 +0100
+Message-ID: <871rgcl94a.fsf@BL-laptop>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:ef11:: with SMTP id k17mr12098422ioh.210.1606647503166;
- Sun, 29 Nov 2020 02:58:23 -0800 (PST)
-Date:   Sun, 29 Nov 2020 02:58:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b4a2c005b53cc5f2@google.com>
-Subject: WARNING: suspicious RCU usage in get_counters
-From:   syzbot <syzbot+5cfc290df4bbf069bc65@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Marc Zyngier <maz@kernel.org> writes:
 
-syzbot found the following issue on:
+> Jason's email address has now been bouncing for weeks, and no
+> reply was received when trying to reach out on other addresses.
+>
+> We really hope he is OK. But until we hear of his whereabouts,
+> let's move him to the CREDITS file so that people stop Cc-ing
+> him.
+>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> Cc: Gregory Clement <gregory.clement@bootlin.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-HEAD commit:    127c501a Merge tag '5.10-rc5-smb3-fixes' of git://git.samb..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f4912d500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6d1e98d0b97781e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=5cfc290df4bbf069bc65
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Acked-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Thanks,
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5cfc290df4bbf069bc65@syzkaller.appspotmail.com
-
-=============================
-WARNING: suspicious RCU usage
-5.10.0-rc5-syzkaller #0 Not tainted
------------------------------
-kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
-
-other info that might help us debug this:
+Gregory
 
 
-rcu_scheduler_active = 2, debug_locks = 0
-1 lock held by syz-executor.3/10331:
- #0: ffff8880459f8308 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x41/0x540 net/netfilter/x_tables.c:1206
+> ---
+>  CREDITS     | 5 +++++
+>  MAINTAINERS | 4 ----
+>  2 files changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/CREDITS b/CREDITS
+> index 8592e45e3932..cf112d3e9382 100644
+> --- a/CREDITS
+> +++ b/CREDITS
+> @@ -740,6 +740,11 @@ S: (ask for current address)
+>  S: Portland, Oregon
+>  S: USA
+>  
+> +N: Jason Cooper
+> +D: ARM/Marvell SOC co-maintainer
+> +D: irqchip co-maintainer
+> +D: MVEBU PCI DRIVER co-maintainer
+> +
+>  N: Robin Cornelius
+>  E: robincornelius@users.sourceforge.net
+>  D: Ralink rt2x00 WLAN driver
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e451dcce054f..7ba26942a573 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2012,7 +2012,6 @@ M:	Philipp Zabel <philipp.zabel@gmail.com>
+>  S:	Maintained
+>  
+>  ARM/Marvell Dove/MV78xx0/Orion SOC support
+> -M:	Jason Cooper <jason@lakedaemon.net>
+>  M:	Andrew Lunn <andrew@lunn.ch>
+>  M:	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+>  M:	Gregory Clement <gregory.clement@bootlin.com>
+> @@ -2029,7 +2028,6 @@ F:	arch/arm/plat-orion/
+>  F:	drivers/soc/dove/
+>  
+>  ARM/Marvell Kirkwood and Armada 370, 375, 38x, 39x, XP, 3700, 7K/8K, CN9130 SOC support
+> -M:	Jason Cooper <jason@lakedaemon.net>
+>  M:	Andrew Lunn <andrew@lunn.ch>
+>  M:	Gregory Clement <gregory.clement@bootlin.com>
+>  M:	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> @@ -9255,7 +9253,6 @@ F:	kernel/irq/
+>  
+>  IRQCHIP DRIVERS
+>  M:	Thomas Gleixner <tglx@linutronix.de>
+> -M:	Jason Cooper <jason@lakedaemon.net>
+>  M:	Marc Zyngier <maz@kernel.org>
+>  L:	linux-kernel@vger.kernel.org
+>  S:	Maintained
+> @@ -13405,7 +13402,6 @@ F:	drivers/pci/controller/mobiveil/pcie-mobiveil*
+>  
+>  PCI DRIVER FOR MVEBU (Marvell Armada 370 and Armada XP SOC support)
+>  M:	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> -M:	Jason Cooper <jason@lakedaemon.net>
+>  L:	linux-pci@vger.kernel.org
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+> -- 
+> 2.29.2
+>
 
-stack backtrace:
-CPU: 3 PID: 10331 Comm: syz-executor.3 Not tainted 5.10.0-rc5-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7270
- get_counters+0x2f5/0x520 net/ipv4/netfilter/ip_tables.c:765
- do_ipt_get_ctl+0x634/0x9d0 net/ipv4/netfilter/ip_tables.c:805
- nf_getsockopt+0x72/0xd0 net/netfilter/nf_sockopt.c:116
- ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
- ip_getsockopt+0x164/0x1c0 net/ipv4/ip_sockglue.c:1756
- tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:3882
- __sys_getsockopt+0x219/0x4c0 net/socket.c:2173
- __do_sys_getsockopt net/socket.c:2188 [inline]
- __se_sys_getsockopt net/socket.c:2185 [inline]
- __x64_sys_getsockopt+0xba/0x150 net/socket.c:2185
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45ec3a
-Code: b8 34 01 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd 9f fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa 9f fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007ffccbec9f78 EFLAGS: 00000212 ORIG_RAX: 0000000000000037
-RAX: ffffffffffffffda RBX: 00007ffccbec9fb0 RCX: 000000000045ec3a
-RDX: 0000000000000041 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000734000 R08: 00007ffccbec9fac R09: 0000000000004000
-R10: 00007ffccbeca010 R11: 0000000000000212 R12: 00007ffccbeca010
-R13: 0000000000000003 R14: 0000000000732bc0 R15: 0000000000000000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
