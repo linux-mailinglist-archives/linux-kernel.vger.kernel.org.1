@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BD62C7849
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 07:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D73E02C7853
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 08:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgK2Goy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 01:44:54 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7168 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgK2Goy (ORCPT
+        id S1726126AbgK2HJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 02:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725908AbgK2HJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 01:44:54 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc3433b0001>; Sat, 28 Nov 2020 22:44:11 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 29 Nov
- 2020 06:44:14 +0000
-Received: from vdi.nvidia.com (10.124.1.5) by mail.nvidia.com (172.20.187.18)
- with Microsoft SMTP Server id 15.0.1473.3 via Frontend Transport; Sun, 29 Nov
- 2020 06:44:12 +0000
-From:   Eli Cohen <elic@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <lulu@redhat.com>, Eli Cohen <elic@nvidia.com>
-Subject: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
-Date:   Sun, 29 Nov 2020 08:43:51 +0200
-Message-ID: <20201129064351.63618-1-elic@nvidia.com>
+        Sun, 29 Nov 2020 02:09:40 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EDEC0613D1;
+        Sat, 28 Nov 2020 23:08:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=/VfyYMSWkCiTjH/4fgwEeNSmCGIBTTRwuFF3f5NLpso=; b=yqx1DtQBYmuvECtUrLL0tUYXtF
+        Lk0XtAmVa9wYSzXsGzJlwf47/4xo5QIkKNh4PIKjvkMOtpr0RaubSUwqeqHvMXQOytf8GNO9C499Q
+        oLr21dbrt3sOwuro//XxPv8G1GKGSm1heoHROn6ANfKkVAdKAwtklymXQosrhNRv1JpJWvjdilJbh
+        3iGt+utRLPXV58h8Jrs4oUCo4gjnqOshM3lrtlaIYveT4niSJbOo18sTGvgCOF6oBizt8wEkkpKf7
+        m6qdlhMUBXjKTxkLipQqbsU8Qet8LwhzuDseMx12DOwo+a9MpiEYBAheZRMV1dccsLlAHnP1+dC/3
+        /2lVJGKw==;
+Received: from [2601:1c0:6280:3f0::cc1f] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kjGpG-0000LW-O0; Sun, 29 Nov 2020 07:08:51 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Rasesh Mody <rmody@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH] net: broadcom CNIC: requires MMU
+Date:   Sat, 28 Nov 2020 23:08:43 -0800
+Message-Id: <20201129070843.3859-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606632252; bh=vnx+QKCDfGuWiwXTibE49Afola6Whl8yGwIrV5dy/uA=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         Content-Transfer-Encoding:Content-Type;
-        b=fXiCQCeiyS6nAjQgtUHmkwRkMBMlfVprpksS0XQUtspFr+f6FsLMoSXlGKAdVCCAI
-         zFT6TvXLDgOVOW8IMGaBbjm9oMwC58a/rXwt32AWY+BXRWSevOBq+VSEqv2r9tg5fF
-         lL5lQwvtlbCJL9qskJ4DU2OwHDrRBL8e/bgvyuaYVQeJ/uMXC+7l/ZYsTDqmmYNxjC
-         SpwMBlcU7ukSlqGRNvZh/XHZ0JIo6WYY7lDXpMnDqrIBtpkY/s+vzKXdcDIl3j8nQe
-         fHx/NUGii82jw2k5tYvYU4jc4R6MbNZiS1WZbCAz2Rt3BfUlN0jRiebQDzGmDuYYLn
-         lvO+GIQDC29wg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should not try to use the VF MAC address as that is used by the
-regular (e.g. mlx5_core) NIC implementation. Instead, use a random
-generated MAC address.
+The CNIC kconfig symbol selects UIO and UIO depends on MMU.
+Since 'select' does not follow dependency chains, add the same MMU
+dependency to CNIC.
 
-Suggested by: Cindy Lu <lulu@redhat.com>
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices=
-")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
+Quietens this kconfig warning:
+
+WARNING: unmet direct dependencies detected for UIO
+  Depends on [n]: MMU [=n]
+  Selected by [m]:
+  - CNIC [=m] && NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_BROADCOM [=y] && PCI [=y] && (IPV6 [=m] || IPV6 [=m]=n)
+
+Fixes: adfc5217e9db ("broadcom: Move the Broadcom drivers")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc: Rasesh Mody <rmody@marvell.com>
+Cc: GR-Linux-NIC-Dev@marvell.com
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
 ---
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+This isn't really the correct Fixes: tag, but I don't know how to go
+backwards in git history to find it. :(
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5=
-_vnet.c
-index 1fa6fcac8299..80d06d958b8b 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -1955,10 +1955,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
- 	if (err)
- 		goto err_mtu;
-=20
--	err =3D mlx5_query_nic_vport_mac_address(mdev, 0, 0, config->mac);
--	if (err)
--		goto err_mtu;
--
-+	eth_random_addr(config->mac);
- 	mvdev->vdev.dma_dev =3D mdev->device;
- 	err =3D mlx5_vdpa_alloc_resources(&ndev->mvdev);
- 	if (err)
---=20
-2.26.2
+ drivers/net/ethernet/broadcom/Kconfig |    1 +
+ 1 file changed, 1 insertions(+)
 
+--- linux-next-20201125.orig/drivers/net/ethernet/broadcom/Kconfig
++++ linux-next-20201125/drivers/net/ethernet/broadcom/Kconfig
+@@ -88,6 +88,7 @@ config BNX2
+ config CNIC
+ 	tristate "QLogic CNIC support"
+ 	depends on PCI && (IPV6 || IPV6=n)
++	depends on MMU
+ 	select BNX2
+ 	select UIO
+ 	help
