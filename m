@@ -2,127 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED532C78C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B05F2C78C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727073AbgK2LMH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 29 Nov 2020 06:12:07 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:34165 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgK2LMH (ORCPT
+        id S1726635AbgK2LSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 06:18:12 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:57049 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgK2LSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 06:12:07 -0500
+        Sun, 29 Nov 2020 06:18:11 -0500
+X-Originating-IP: 91.175.115.186
 Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
         (Authenticated sender: gregory.clement@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 9535D240006;
-        Sun, 29 Nov 2020 11:11:24 +0000 (UTC)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 264EEE0006;
+        Sun, 29 Nov 2020 11:17:27 +0000 (UTC)
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andre Heider <a.heider@gmail.com>,
-        =?utf-8?Q?G=C3=A9rald?= Kerma <gerald@gk2.net>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add support for LED2
-In-Reply-To: <20201006124455.16617-1-pali@kernel.org>
-References: <20201006124455.16617-1-pali@kernel.org>
-Date:   Sun, 29 Nov 2020 12:11:24 +0100
-Message-ID: <87v9doju3n.fsf@BL-laptop>
+To:     Vladimir Vid <vladimir.vid@sartura.hr>, devicetree@vger.kernel.org
+Cc:     pali@kernel.org, a.heider@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tmn505@gmail.com,
+        sebastian.hesselbarth@gmail.com, andrew@lunn.ch,
+        jason@lakedaemon.net, robh+dt@kernel.org,
+        Vladimir Vid <vladimir.vid@sartura.hr>
+Subject: Re: [PATCH v5] arm64: dts: marvell: add DT for ESPRESSObin-Ultra
+In-Reply-To: <20201026184441.96395-1-vladimir.vid@sartura.hr>
+References: <20201026184441.96395-1-vladimir.vid@sartura.hr>
+Date:   Sun, 29 Nov 2020 12:17:27 +0100
+Message-ID: <87sg8sjttk.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali,
+Hi Vladimir,
 
-> LED2 is connected to MPP1_2 pin. It is working only on V7 boards.
-> V5 boards have hw bug which cause that LED2 is non-working.
+> This adds support for ESPRESSObin-Ultra from Globalscale.
 >
-> So enable LED2 only for Espressobin V7 boards.
+> Specifications are similar to the base ESPRESSObin board, with main
+> difference being being WAN port with PoE capability and 2 additional ethernet ports.
 >
-> Note that LED1 is connected to LED_WLAN# pin on miniPCIe card and LED3 to
-> power supply. Therefore on Espressobin board only LED2 can be controlled
-> directly from the host. LED1 is possible to control via WiFi card inserted
-> in miniPCIe slot if driver for particular card supports it.
+> Full specifications:
 >
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Tested-by: Gérald Kerma <gerald@gk2.net>
+> 1x Marvell 64 bit Dual Core ARM A53 Armada 3700 SOC clocked up to 1.2Ghz
+> 1x Topaz 6341 Networking Switch
+> 1GB DDR4
+> 8GB eMMC
+> 1x WAN with 30W POE
+> 4x Gb LAN
+> 1x RTC Clock and battery
+> 1x DC Jack
+> 1x USB 3.0 Type A
+> 1x USB 2.0 Type A
+> 1x SIM NanoSIM card Slot
+> 1x Power Button
+> 4x LED
+> 1x Reset button
+> 1x microUSB for UART
+> 1x M.2 2280 slot for memory
+> 1x 2x2 802.11ac Wi-Fi
+> 1x MiniPCIE slot for Wi-Fi (PCIe interface)
+>
+> Signed-off-by: Vladimir Vid <vladimir.vid@sartura.hr>
 
 
 Applied on mvebu/dt64
+
+I know that usb3 node is not yet enabled but we are a really close to the
+end of the merge window for ARM so let's have this version in 5.11, and
+then we can improve it in future version.
 
 Thanks,
 
 Gregory
 
-
->
 > ---
 >
-> Previous version of this patch was sent by Uwe in March 2018, but it did
-> not work on any tested V5 board. Now we know it was due to V5 HW bug.
+> v5 changes:
+> - update ethernet-phy@1 to match reg value
 >
-> https://lore.kernel.org/linux-arm-kernel/20180321105005.18426-3-u.kleine-koenig@pengutronix.de/
 > ---
->  .../dts/marvell/armada-3720-espressobin-v7-emmc.dts |  4 ++++
->  .../boot/dts/marvell/armada-3720-espressobin-v7.dts |  4 ++++
->  .../boot/dts/marvell/armada-3720-espressobin.dtsi   | 13 +++++++++++++
->  3 files changed, 21 insertions(+)
+>  arch/arm64/boot/dts/marvell/Makefile          |   1 +
+>  .../marvell/armada-3720-espressobin-ultra.dts | 165 ++++++++++++++++++
+>  2 files changed, 166 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
 >
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> index 4775a7eda481..75401eab4d42 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> @@ -39,3 +39,7 @@
->  &sdhci0 {
->  	status = "okay";
->  };
+> diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
+> index 3e5f2e7a040c..094f451fdd1d 100644
+> --- a/arch/arm64/boot/dts/marvell/Makefile
+> +++ b/arch/arm64/boot/dts/marvell/Makefile
+> @@ -3,6 +3,7 @@
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-db.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-emmc.dtb
+> +dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-ultra.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7-emmc.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> new file mode 100644
+> index 000000000000..c5eb3604dd5b
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> @@ -0,0 +1,165 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Device Tree file for ESPRESSObin-Ultra board.
+> + * Copyright (C) 2019 Globalscale technologies, Inc.
+> + *
+> + * Jason Hung <jhung@globalscaletechnologies.com>
+> + */
 > +
-> +&led2 {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> index c47a93978386..48a7f50fb427 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> @@ -34,3 +34,7 @@
->  &switch0port3 {
->  	label = "wan";
->  };
+> +/dts-v1/;
 > +
-> +&led2 {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> index 8a1c678bea5f..daffe136c523 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> @@ -41,6 +41,19 @@
->  			  3300000 0x0>;
->  		enable-active-high;
->  	};
+> +#include "armada-3720-espressobin.dtsi"
 > +
-> +	led2: gpio-led2 {
-> +		/* led2 is working only on v7 board */
-> +		status = "disabled";
+> +/ {
+> +	model = "Globalscale Marvell ESPRESSOBin Ultra Board";
+> +	compatible = "globalscale,espressobin-ultra", "marvell,armada3720",
+> +		     "marvell,armada3710";
 > +
+> +	aliases {
+> +		/* ethernet1 is WAN port */
+> +		ethernet1 = &switch0port5;
+> +		ethernet2 = &switch0port1;
+> +		ethernet3 = &switch0port2;
+> +		ethernet4 = &switch0port3;
+> +		ethernet5 = &switch0port4;
+> +	};
+> +
+> +	reg_usb3_vbus: usb3-vbus {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "usb3-vbus";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		enable-active-high;
+> +		gpio = <&gpionb 19 GPIO_ACTIVE_HIGH>;
+> +	};
+> +
+> +	usb3_phy: usb3-phy {
+> +		compatible = "usb-nop-xceiv";
+> +		vcc-supply = <&reg_usb3_vbus>;
+> +	};
+> +
+> +	gpio-leds {
+> +		pinctrl-names = "default";
 > +		compatible = "gpio-leds";
-> +
+> +		/* No assigned functions to the LEDs by default */
+> +		led1 {
+> +			label = "ebin-ultra:blue:led1";
+> +			gpios = <&gpionb 11 GPIO_ACTIVE_LOW>;
+> +		};
 > +		led2 {
-> +			label = "led2";
-> +			gpios = <&gpionb 2 GPIO_ACTIVE_LOW>;
-> +			default-state = "off";
+> +			label = "ebin-ultra:green:led2";
+> +			gpios = <&gpionb 12 GPIO_ACTIVE_LOW>;
+> +		};
+> +		led3 {
+> +			label = "ebin-ultra:red:led3";
+> +			gpios = <&gpionb 13 GPIO_ACTIVE_LOW>;
+> +		};
+> +		led4 {
+> +			label = "ebin-ultra:yellow:led4";
+> +			gpios = <&gpionb 14 GPIO_ACTIVE_LOW>;
 > +		};
 > +	};
->  };
->  
->  /* J9 */
+> +};
+> +
+> +&sdhci0 {
+> +	status = "okay";
+> +};
+> +
+> +&sdhci1 {
+> +	status = "disabled";
+> +};
+> +
+> +&spi0 {
+> +	flash@0 {
+> +		spi-max-frequency = <108000000>;
+> +		spi-rx-bus-width = <4>;
+> +		spi-tx-bus-width = <4>;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			partition@0 {
+> +				label = "firmware";
+> +				reg = <0x0 0x3e0000>;
+> +			};
+> +			partition@3e0000 {
+> +				label = "hw-info";
+> +				reg = <0x3e0000 0x10000>;
+> +				read-only;
+> +			};
+> +			partition@3f0000 {
+> +				label = "u-boot-env";
+> +				reg = <0x3f0000 0x10000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&i2c0 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c1_pins>;
+> +
+> +	clock-frequency = <100000>;
+> +
+> +	rtc@51 {
+> +		compatible = "nxp,pcf8563";
+> +		reg = <0x51>;
+> +	};
+> +};
+> +
+> +&usb3 {
+> +	usb-phy = <&usb3_phy>;
+> +	status = "disabled";
+> +};
+> +
+> +&mdio {
+> +	extphy: ethernet-phy@1 {
+> +		reg = <1>;
+> +	};
+> +};
+> +
+> +&switch0 {
+> +	reg = <3>;
+> +
+> +	ports {
+> +		switch0port1: port@1 {
+> +			reg = <1>;
+> +			label = "lan0";
+> +			phy-handle = <&switch0phy0>;
+> +		};
+> +
+> +		switch0port2: port@2 {
+> +			reg = <2>;
+> +			label = "lan1";
+> +			phy-handle = <&switch0phy1>;
+> +		};
+> +
+> +		switch0port3: port@3 {
+> +			reg = <3>;
+> +			label = "lan2";
+> +			phy-handle = <&switch0phy2>;
+> +		};
+> +
+> +		switch0port4: port@4 {
+> +			reg = <4>;
+> +			label = "lan3";
+> +			phy-handle = <&switch0phy3>;
+> +		};
+> +
+> +		switch0port5: port@5 {
+> +			reg = <5>;
+> +			label = "wan";
+> +			phy-handle = <&extphy>;
+> +			phy-mode = "sgmii";
+> +		};
+> +	};
+> +
+> +	mdio {
+> +		switch0phy3: switch0phy3@14 {
+> +			reg = <0x14>;
+> +		};
+> +	};
+> +};
 > -- 
-> 2.20.1
+> 2.27.0
 >
 
 -- 
