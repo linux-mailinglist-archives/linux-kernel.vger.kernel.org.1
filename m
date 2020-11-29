@@ -2,238 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AAB2C78D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6AC2C78DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgK2LgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 06:36:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46781 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725984AbgK2LgH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 06:36:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606649679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a7pdivYwmuluzLuX4DQHw7DgTDhJNY4YIm2K0L4xD34=;
-        b=SDVdsMYI7mcyGCynUvv0EM0AuYiXLctlYl21M3l+eBCaN7vgDrAJq9zJf809wAjW5JQ+zf
-        1H1jo0tg89T4iAeUUUWto8/d72bj46L/1nkI97gpAVvXVfa3OExdo3aJ90v5bn0I17KFEZ
-        5o0pSrCP7OOIFN8YFSOt9qdW/zNemy8=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-4cs6oE4uN8O8B_vbGiF2ow-1; Sun, 29 Nov 2020 06:34:37 -0500
-X-MC-Unique: 4cs6oE4uN8O8B_vbGiF2ow-1
-Received: by mail-ej1-f70.google.com with SMTP id p5so527762eji.20
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 03:34:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a7pdivYwmuluzLuX4DQHw7DgTDhJNY4YIm2K0L4xD34=;
-        b=P2vnN1ebQr/3ObbYOx0aZODOs1vSjO1SqS5xwQ1Z8HlkRFoY24pPyY5UJnBLwxSwxE
-         aQeAjkrdP6djq1vDt9NbWFrR8mwC12UWS4Yy0Dq5Gsw9Rdhn7wLqw0fCtgKt7VOUlwbN
-         StRqfqntOoANBUeGFSoHPn8scGmdD+T5zt/lOZMnRfVqTNYDp3RHzprAFGt1JH0SHM82
-         kcmPuMzEM+QUejSWRowgxQf3S5FdKZ7ranX9cy7WL3POlSJpFhrm4azCZvyVc6Ha00rF
-         iacwRDZm4sAIgMA3Ow+cpU4iMr9SNx0xXl/7mql/IDDjGycB9aRo//dtDLLtFTvkpTfr
-         Ja8Q==
-X-Gm-Message-State: AOAM532dKwfOfqBXiSXFo3129FXm/8jK4n4S6ctkiEB6FHDMhpxjEiBS
-        sANYQRYL9GqAk0HGqztESaDeUqZsDtoqk1GbegooCQ02pVj6V3D8W23bjUdVg19xPhLAq/K+/OS
-        O7ePEyc9eCqq5Eq6rPI2f+Oea
-X-Received: by 2002:a05:6402:1714:: with SMTP id y20mr16976167edu.306.1606649676193;
-        Sun, 29 Nov 2020 03:34:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyW1Qc7BCAJ9eJXg8zcEH7d2BLEKekmm+0/3NEpjn3XwfC8as6XmGkd4CWtLL4RFeSNRCLc6g==
-X-Received: by 2002:a05:6402:1714:: with SMTP id y20mr16976156edu.306.1606649675985;
-        Sun, 29 Nov 2020 03:34:35 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id i13sm7100763ejc.57.2020.11.29.03.34.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Nov 2020 03:34:35 -0800 (PST)
-Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jerry Snitselaar <jsnitsel@redhat.com>,
-        Matthew Garrett <mjg59@google.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-References: <20201015214430.17937-1-jsnitsel@redhat.com>
- <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
- <87d009c0pn.fsf@redhat.com> <20201124032623.GA40007@kernel.org>
- <871rgiod53.fsf@redhat.com> <7779bfbc-f96b-dd81-313f-36f451ce9c32@redhat.com>
- <20201129032306.GD39488@kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <7811f4fd-934b-e9f1-5712-7490409d6a7f@redhat.com>
-Date:   Sun, 29 Nov 2020 12:34:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726669AbgK2LnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 06:43:18 -0500
+Received: from mout.gmx.net ([212.227.17.20]:36811 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725852AbgK2LnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 06:43:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606650075;
+        bh=WmcG64mDXHDk2yl6iDH5tCKMTaugBSI42q6zqWIi9AE=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=SKaLSxruNri45j7qzlSfrGmT4xBYD+Y/g7taC4VG+WjqY1BiPXv5SPgW47j+wVvDC
+         Lzm2XMGDn9wt0S/f7/4yHlN0dChpx/oVVv9iCTKUofwVwiqCkbSHVW/Vt7o/kwch6j
+         OphuoYBa27u4ociPiHb7vEqQDslbYCETa87le7/s=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.83]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MysRu-1jwLFp12ig-00w0tQ; Sun, 29
+ Nov 2020 12:41:15 +0100
+Message-ID: <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+Subject: Re: scheduling while atomic in z3fold
+From:   Mike Galbraith <efault@gmx.de>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Date:   Sun, 29 Nov 2020 12:41:14 +0100
+In-Reply-To: <20201129112922.db53kmtpu76xxukj@spock.localdomain>
+References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
+         <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
+         <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
+         <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
+         <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
+         <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
+         <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
+         <20201129112922.db53kmtpu76xxukj@spock.localdomain>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <20201129032306.GD39488@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sO6Qx5UM7zKOh2smiB7GRniNeoqzkU1sDc4q9DIcJP47KkzumLR
+ 4w/WgO7IXVVX4MFmBccAjnuPtIeRRcyyQmlAmRSe11jwJ1YXoVgtenf9OHbSurrvk95ntLx
+ 8t05MLPNS0kQGxwyUhPnAqwmaaDbVHgB4LCPk4SlJw7rAQ2mvmUG3jIihNTdzpAiI3i+kQU
+ 6IkbVFybndMVOJWiFb57Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7Wn3izqMqyY=:rc4U4JxXWceknuW6uReS5M
+ tzTx8P1H91vW0w2CNm1uqr9ydVTIJXeYCJX3qiAT1wrbiLddrcQT1mvVtowVLg0yTKqSHXQWP
+ YBKC5qDL1aLNSxNQWw6bNUchWSCKxsKnVSB28WyEowUjXM/9JE4JY+XaduizVYxXSJ900h7Wu
+ xA0zjXtILvLeybKBdS+mXPSY17DKlDXA1USy5+eJudAno7MeTiH9ZtlMEyaPMIm4ms/6Odqbt
+ 9ESvuJzc5ZxZDLMFBlvytyUVB3OxBUsyplNDaKx9xtomtutWCv+VCleY95/qWJGTYzNQo/Svx
+ jIGJD59BO3Un0BaAfnQRGz1erlht6BDmU2H2UFhYw7PS1FGt2YFXcHXWHcXVzCPoi3YkYtMXW
+ 1LoQO5zX5W6QKHnHLKJQSATtzpxqY2j/amDs2xFKciluUHMPuzw0lgGitnf5o93/zNxGsbIlJ
+ s/NwtnSaTNXZkvrdU+3PbcXgfsf2nDTFZ1EX1F5NkyjyQLja8EPy1bvYlvuvuqvz3KGx7iToZ
+ WytlGoQGLKt6a2vwz6YfP60L0nvdV8Of/TRz50zGgAPTExk0fRK354m4jMlXZcmUHLJqRsh25
+ ZtuNY0Sz6c01t4S8Ub/dKfP+9Lo9fplwrnx/edSwRFMDfokceWyzBNZyD1/amXYW901fANVjj
+ 1lVklPKcP0WuoLl6M1LAKr9YbcTfKpj1Q/XMeN/ckjchaRJMcBs8OApr/+qJXNL60oBzC0iHx
+ IcEmezaiYf7yOZfu7TFMVFtpvlOTEPeRFcl0L0BraCg7pIgTI+7xlYlIEwceWGE0h49OoE3kV
+ wy+m7tDj7AJr9Khfql2hIHgrs7pyWEufyrS6P1GyVLIhgZYwcbY7jBP7l5pK3KeszA32NGc44
+ h+Wjby3EpT7JRrtTeQUw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On Sun, 2020-11-29 at 12:29 +0100, Oleksandr Natalenko wrote:
+>
+> Ummm so do compressors explode under non-rt kernel in your tests as
+> well, or it is just -rt that triggers this?
 
-On 11/29/20 4:23 AM, Jarkko Sakkinen wrote:
-> On Tue, Nov 24, 2020 at 10:45:01PM +0100, Hans de Goede wrote:
->> Hi,
->>
->> On 11/24/20 6:52 PM, Jerry Snitselaar wrote:
->>>
->>> Jarkko Sakkinen @ 2020-11-23 20:26 MST:
->>>
->>>> On Wed, Nov 18, 2020 at 11:36:20PM -0700, Jerry Snitselaar wrote:
->>>>>
->>>>> Matthew Garrett @ 2020-10-15 15:39 MST:
->>>>>
->>>>>> On Thu, Oct 15, 2020 at 2:44 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
->>>>>>>
->>>>>>> There is a misconfiguration in the bios of the gpio pin used for the
->>>>>>> interrupt in the T490s. When interrupts are enabled in the tpm_tis
->>>>>>> driver code this results in an interrupt storm. This was initially
->>>>>>> reported when we attempted to enable the interrupt code in the tpm_tis
->>>>>>> driver, which previously wasn't setting a flag to enable it. Due to
->>>>>>> the reports of the interrupt storm that code was reverted and we went back
->>>>>>> to polling instead of using interrupts. Now that we know the T490s problem
->>>>>>> is a firmware issue, add code to check if the system is a T490s and
->>>>>>> disable interrupts if that is the case. This will allow us to enable
->>>>>>> interrupts for everyone else. If the user has a fixed bios they can
->>>>>>> force the enabling of interrupts with tpm_tis.interrupts=1 on the
->>>>>>> kernel command line.
->>>>>>
->>>>>> I think an implication of this is that systems haven't been
->>>>>> well-tested with interrupts enabled. In general when we've found a
->>>>>> firmware issue in one place it ends up happening elsewhere as well, so
->>>>>> it wouldn't surprise me if there are other machines that will also be
->>>>>> unhappy with interrupts enabled. Would it be possible to automatically
->>>>>> detect this case (eg, if we get more than a certain number of
->>>>>> interrupts in a certain timeframe immediately after enabling the
->>>>>> interrupt) and automatically fall back to polling in that case? It
->>>>>> would also mean that users with fixed firmware wouldn't need to pass a
->>>>>> parameter.
->>>>>
->>>>> I believe Matthew is correct here. I found another system today
->>>>> with completely different vendor for both the system and the tpm chip.
->>>>> In addition another Lenovo model, the L490, has the issue.
->>>>>
->>>>> This initial attempt at a solution like Matthew suggested works on
->>>>> the system I found today, but I imagine it is all sorts of wrong.
->>>>> In the 2 systems where I've seen it, there are about 100000 interrupts
->>>>> in around 1.5 seconds, and then the irq code shuts down the interrupt
->>>>> because they aren't being handled.
->>>>>
->>>>>
->>>>> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
->>>>> index 49ae09ac604f..478e9d02a3fa 100644
->>>>> --- a/drivers/char/tpm/tpm_tis_core.c
->>>>> +++ b/drivers/char/tpm/tpm_tis_core.c
->>>>> @@ -27,6 +27,11 @@
->>>>>  #include "tpm.h"
->>>>>  #include "tpm_tis_core.h"
->>>>>
->>>>> +static unsigned int time_start = 0;
->>>>> +static bool storm_check = true;
->>>>> +static bool storm_killed = false;
->>>>> +static u32 irqs_fired = 0;
->>>>
->>>> Maybe kstat_irqs() would be a better idea than ad hoc stats.
->>>>
->>>
->>> Thanks, yes that would be better.
->>>
->>>>> +
->>>>>  static void tpm_tis_clkrun_enable(struct tpm_chip *chip, bool value);
->>>>>
->>>>>  static void tpm_tis_enable_interrupt(struct tpm_chip *chip, u8 mask)
->>>>> @@ -464,25 +469,31 @@ static int tpm_tis_send_data(struct tpm_chip *chip, const u8 *buf, size_t len)
->>>>>         return rc;
->>>>>  }
->>>>>
->>>>> -static void disable_interrupts(struct tpm_chip *chip)
->>>>> +static void __disable_interrupts(struct tpm_chip *chip)
->>>>>  {
->>>>>         struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
->>>>>         u32 intmask;
->>>>>         int rc;
->>>>>
->>>>> -       if (priv->irq == 0)
->>>>> -               return;
->>>>> -
->>>>>         rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
->>>>>         if (rc < 0)
->>>>>                 intmask = 0;
->>>>>
->>>>>         intmask &= ~TPM_GLOBAL_INT_ENABLE;
->>>>>         rc = tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality), intmask);
->>>>> +       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
->>>>> +}
->>>>> +
->>>>> +static void disable_interrupts(struct tpm_chip *chip)
->>>>> +{
->>>>> +       struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
->>>>>
->>>>> +       if (priv->irq == 0)
->>>>> +               return;
->>>>> +
->>>>> +       __disable_interrupts(chip);
->>>>>         devm_free_irq(chip->dev.parent, priv->irq, chip);
->>>>>         priv->irq = 0;
->>>>> -       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
->>>>>  }
->>>>>
->>>>>  /*
->>>>> @@ -528,6 +539,12 @@ static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
->>>>>         int rc, irq;
->>>>>         struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
->>>>>
->>>>> +       if (unlikely(storm_killed)) {
->>>>> +               devm_free_irq(chip->dev.parent, priv->irq, chip);
->>>>> +               priv->irq = 0;
->>>>> +               storm_killed = false;
->>>>> +       }
->>>>
->>>> OK this kind of bad solution because if tpm_tis_send() is not called,
->>>> then IRQ is never freed. AFAIK, devres_* do not sleep but use spin
->>>> lock, i.e. you could render out both storm_check and storm_killed.
->>>>
->>>
->>> Is there a way to flag it for freeing later while in an interrupt
->>> context? I'm not sure where to clean it up since devm_free_irq can't be
->>> called in tis_int_handler.
->>
->> You could add a workqueue work-struct just for this and queue that up
->> to do the free when you detect the storm. That will then run pretty much
->> immediately, avoiding the storm going on for (much) longer.
-> 
-> That's sounds feasible.
-> 
->>> Before diving further into that though, does anyone else have an opinion
->>> on ripping out the irq code, and just using polling? We've been only
->>> polling since 2015 anyways.
->>
->> Given James Bottomley's reply I guess it would be worthwhile to get the
->> storm detection to work.
-> 
-> OK, agreed. I take my words back from a response few minutes ago :-)
+I only tested a non-rt kernel with z3fold, which worked just fine.
 
-:)
-
-To be clear, I think we should give the storm detection a go. Especially
-given the problems which James has seen with polling on some TPMs.
-
-But if that turns out to not be feasible I agree we should just either
-disable IRQs by default on standard x86 platforms, or just remove the
-IRQ support all together.
-
-Regards,
-
-Hans
+	-Mike
 
