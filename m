@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20602C7911
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 13:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9262C7912
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 13:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727253AbgK2M2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 07:28:10 -0500
-Received: from static.214.254.202.116.clients.your-server.de ([116.202.254.214]:48590
-        "EHLO ciao.gmane.io" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgK2M2J (ORCPT
+        id S1727430AbgK2M3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 07:29:07 -0500
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:47291 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727332AbgK2M3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 07:28:09 -0500
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-        (envelope-from <glk-linux-kernel-4@m.gmane-mx.org>)
-        id 1kjLnb-0007Bb-F6
-        for linux-kernel@vger.kernel.org; Sun, 29 Nov 2020 13:27:27 +0100
-X-Injected-Via-Gmane: http://gmane.org/
-To:     linux-kernel@vger.kernel.org
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+        Sun, 29 Nov 2020 07:29:07 -0500
+Received: from [192.168.1.41] ([92.131.86.32])
+        by mwinf5d20 with ME
+        id yCTM230080hrljw03CTMce; Sun, 29 Nov 2020 13:27:22 +0100
+X-ME-Helo: [192.168.1.41]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 29 Nov 2020 13:27:22 +0100
+X-ME-IP: 92.131.86.32
 Subject: Re: [PATCH NACK] media: saa7146: switch from 'pci_' to 'dma_' API
-Date:   Sun, 29 Nov 2020 13:27:22 +0100
-Message-ID: <44336db8-2b17-1682-6c38-128ec7f8f7d1@wanadoo.fr>
+To:     hverkuil@xs4all.nl, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Newsgroups: gmane.linux.kernel,gmane.linux.drivers.video-input-infrastructure,gmane.linux.kernel.janitors
 References: <20201129073803.1443174-1-christophe.jaillet@wanadoo.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <44336db8-2b17-1682-6c38-128ec7f8f7d1@wanadoo.fr>
+Date:   Sun, 29 Nov 2020 13:27:22 +0100
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.0
+MIME-Version: 1.0
 In-Reply-To: <20201129073803.1443174-1-christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: fr
-Cc:     linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -77,5 +81,4 @@ I'll send a v2.
 Sorry for the noise.
 
 CJ
-
 
