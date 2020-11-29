@@ -2,203 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB61D2C7A3B
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 18:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97F82C7A41
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 18:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbgK2R1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 12:27:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbgK2R1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 12:27:22 -0500
-Received: from kernel.org (unknown [87.71.85.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 422E9206F4;
-        Sun, 29 Nov 2020 17:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606670801;
-        bh=193fTdj4a0UGUIyrwcsvt+1ylSiVDeNw4WwJgyyeI0o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VcPgX8dFSy9Ib9kWnBH2tRtaSziWbjbmm/b3KwtE1n5ZeUaApS9TIAbB17gPzKn16
-         16Tdha8Hm4Jgj6OkL5MJvDw7grmc3v+aPRxni9lGCOKPmW+seMn30mlZzbCH+CCfcq
-         1IVHreDWn8hVqwZBOZMP3h7CF/w11Dl4ALLVGb3o=
-Date:   Sun, 29 Nov 2020 19:26:25 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v12 07/10] secretmem: add memcg accounting
-Message-ID: <20201129172625.GD557259@kernel.org>
-References: <20201125092208.12544-1-rppt@kernel.org>
- <20201125092208.12544-8-rppt@kernel.org>
- <CALvZod4MoXod_YkbO+4k2=PS=xdMVbZa2HWWuUnMZ1G9hSr+Jw@mail.gmail.com>
+        id S1727482AbgK2RaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 12:30:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727902AbgK2RaC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 12:30:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606670916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tqPnwUYra61gpzARl2AFw49uis8H9NnqHQTo1GLvGnE=;
+        b=hc1HlVWt2q/Djqcw3400ri7YFcTaGIA6R1DMBNCNmpiyXKZbI/2VRv/CtFKbecFKRq3K09
+        pSoqT7acVCbOQoPbsJihrTbx2VDzm7DcN5hFFaLNYfbnHO16obG5ZvhoshexdV+DC7881H
+        h0woSR8u3okvGJb0u4bzFlnVCxxGRV0=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-GC09ZmsOPNCeXcllLIRu2A-1; Sun, 29 Nov 2020 12:28:34 -0500
+X-MC-Unique: GC09ZmsOPNCeXcllLIRu2A-1
+Received: by mail-qk1-f198.google.com with SMTP id 141so7815874qkh.18
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 09:28:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tqPnwUYra61gpzARl2AFw49uis8H9NnqHQTo1GLvGnE=;
+        b=ZhlVVgysS5Lh6dFzKRpdD8gJgJ6rijNJyzqE5H66+znktcf1k/EWylWJ65lW2M8vw5
+         ouhlh/il+AoTecND3pyWjQN931ecZLugSWt8LlDWQTo0bvDTN0dQdRnpwwnAHkw2PCOT
+         pjFq8YD87czzG8Q8mZRgPoVJeEynwSofaH9pw4aKZz5BKTnEt7KCnSxN9I5KTpKB1IBZ
+         QAFa2SKdz2CJvsDmiTz+2Z7ilO9MZiTIEWypG0MDQl2RzMB5L+jzd6eX36DvnBoV607d
+         pEJ/pekKHzT8kGm9HDFOhr+Lpqu3JH7aGQLnPXzJaAD2/9DzspwHh1qO7t3Dd1U9Vaam
+         gfvg==
+X-Gm-Message-State: AOAM533DnGPUtoN6MDjE4BDWgORB+7fRaBBHDxMIo5+wGukGwS2+hGuL
+        u2ZjL08NUG9sQRPZvXtz8Ify4tW9z3U7dHYXmlGxLmXCGbwWgnVyYFxODNySXtY/+CZDJXH0ixb
+        WRZEBijAjlwMVtEOfHU5ijlrXaXAHxrL7mF1q1RFo8qKXO0FxoWSCptLZxCzogBHuVsZYhNg=
+X-Received: by 2002:ac8:4a81:: with SMTP id l1mr18160341qtq.339.1606670913590;
+        Sun, 29 Nov 2020 09:28:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyv2HIz1VpM7CgtfJ/AZEnwrRYUL312dmdvF3YmM3OaFSePNWuey5uRslbqcmJM1eaMIBRayg==
+X-Received: by 2002:ac8:4a81:: with SMTP id l1mr18160310qtq.339.1606670913289;
+        Sun, 29 Nov 2020 09:28:33 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id y24sm11993386qtv.76.2020.11.29.09.28.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Nov 2020 09:28:32 -0800 (PST)
+Subject: Re: [PATCH] bpf: remove trailing semicolon in macro definition
+To:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        rostedt@goodmis.org, mingo@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201127192734.2865832-1-trix@redhat.com>
+ <d7168ec4-040c-851d-f294-709315d13a2f@iogearbox.net>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <4e9c057d-6aa9-e8d1-f84c-1112c509bb52@redhat.com>
+Date:   Sun, 29 Nov 2020 09:28:30 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod4MoXod_YkbO+4k2=PS=xdMVbZa2HWWuUnMZ1G9hSr+Jw@mail.gmail.com>
+In-Reply-To: <d7168ec4-040c-851d-f294-709315d13a2f@iogearbox.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 07:53:45AM -0800, Shakeel Butt wrote:
-> On Wed, Nov 25, 2020 at 1:51 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> >
-> > Account memory consumed by secretmem to memcg. The accounting is updated
-> > when the memory is actually allocated and freed.
-> >
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > Acked-by: Roman Gushchin <guro@fb.com>
-> > ---
-> >  mm/filemap.c   |  3 ++-
-> >  mm/secretmem.c | 36 +++++++++++++++++++++++++++++++++++-
-> >  2 files changed, 37 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/filemap.c b/mm/filemap.c
-> > index 249cf489f5df..cf7f1dc9f4b8 100644
-> > --- a/mm/filemap.c
-> > +++ b/mm/filemap.c
-> > @@ -42,6 +42,7 @@
-> >  #include <linux/psi.h>
-> >  #include <linux/ramfs.h>
-> >  #include <linux/page_idle.h>
-> > +#include <linux/secretmem.h>
-> >  #include "internal.h"
-> >
-> >  #define CREATE_TRACE_POINTS
-> > @@ -844,7 +845,7 @@ static noinline int __add_to_page_cache_locked(struct page *page,
-> >         page->mapping = mapping;
-> >         page->index = offset;
-> >
-> > -       if (!huge) {
-> > +       if (!huge && !page_is_secretmem(page)) {
-> >                 error = mem_cgroup_charge(page, current->mm, gfp);
-> >                 if (error)
-> >                         goto error;
-> > diff --git a/mm/secretmem.c b/mm/secretmem.c
-> > index 52a900a135a5..eb6628390444 100644
-> > --- a/mm/secretmem.c
-> > +++ b/mm/secretmem.c
-> > @@ -18,6 +18,7 @@
-> >  #include <linux/memblock.h>
-> >  #include <linux/pseudo_fs.h>
-> >  #include <linux/secretmem.h>
-> > +#include <linux/memcontrol.h>
-> >  #include <linux/set_memory.h>
-> >  #include <linux/sched/signal.h>
-> >
-> > @@ -44,6 +45,32 @@ struct secretmem_ctx {
-> >
-> >  static struct cma *secretmem_cma;
-> >
-> > +static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
-> > +{
-> > +       int err;
-> > +
-> > +       err = memcg_kmem_charge_page(page, gfp, order);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /*
-> > +        * seceremem caches are unreclaimable kernel allocations, so treat
-> > +        * them as unreclaimable slab memory for VM statistics purposes
-> > +        */
-> > +       mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
-> > +                           PAGE_SIZE << order);
-> 
-> Please use mod_lruvec_page_state() instead, so we get the memcg stats too.
 
-Ok
+On 11/27/20 4:54 PM, Daniel Borkmann wrote:
+> On 11/27/20 8:27 PM, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> The macro use will already have a semicolon.
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>   include/trace/events/xdp.h | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
+>> index cd24e8a59529..65ffedf8386f 100644
+>> --- a/include/trace/events/xdp.h
+>> +++ b/include/trace/events/xdp.h
+>> @@ -146,13 +146,13 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
+>>   );
+>>     #define _trace_xdp_redirect(dev, xdp, to)        \
+>> -     trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to);
+>> +     trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to)
+>>     #define _trace_xdp_redirect_err(dev, xdp, to, err)    \
+>>        trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to);
+>>     #define _trace_xdp_redirect_map(dev, xdp, to, map, index)        \
+>> -     trace_xdp_redirect(dev, xdp, to, 0, map, index);
+>> +     trace_xdp_redirect(dev, xdp, to, 0, map, index)
+>>     #define _trace_xdp_redirect_map_err(dev, xdp, to, map, index, err)    \
+>>        trace_xdp_redirect_err(dev, xdp, to, err, map, index);
+>>
+>
+> This looks random, why those but not other locations ?
 
-> BTW I think secretmem deserves a vmstat entry instead of overloading
-> NR_SLAB_UNRECLAIMABLE_B.
+Those other macros were never used.
 
-I'd prefer to wait with a dedicated vmstat for now. We can always add it
-later, once we have better picture of secremem usage.
+Tom
 
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static void secretmem_unaccount_pages(struct page *page, int order)
-> > +{
-> > +
-> > +       mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
-> > +                           -PAGE_SIZE << order);
-> > +       memcg_kmem_uncharge_page(page, order);
-> > +}
-> > +
-> >  static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
-> >  {
-> >         unsigned long nr_pages = (1 << PMD_PAGE_ORDER);
-> > @@ -56,10 +83,14 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
-> >         if (!page)
-> >                 return -ENOMEM;
-> >
-> > -       err = set_direct_map_invalid_noflush(page, nr_pages);
-> > +       err = secretmem_account_pages(page, gfp, PMD_PAGE_ORDER);
-> >         if (err)
-> >                 goto err_cma_release;
-> >
-> > +       err = set_direct_map_invalid_noflush(page, nr_pages);
-> > +       if (err)
-> > +               goto err_memcg_uncharge;
-> > +
-> >         addr = (unsigned long)page_address(page);
-> >         err = gen_pool_add(pool, addr, PMD_SIZE, NUMA_NO_NODE);
-> >         if (err)
-> > @@ -76,6 +107,8 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
-> >          * won't fail
-> >          */
-> >         set_direct_map_default_noflush(page, nr_pages);
-> > +err_memcg_uncharge:
-> > +       secretmem_unaccount_pages(page, PMD_PAGE_ORDER);
-> >  err_cma_release:
-> >         cma_release(secretmem_cma, page, nr_pages);
-> >         return err;
-> > @@ -302,6 +335,7 @@ static void secretmem_cleanup_chunk(struct gen_pool *pool,
-> >         int i;
-> >
-> >         set_direct_map_default_noflush(page, nr_pages);
-> > +       secretmem_unaccount_pages(page, PMD_PAGE_ORDER);
-> >
-> >         for (i = 0; i < nr_pages; i++)
-> >                 clear_highpage(page + i);
-> > --
-> > 2.28.0
-> >
+>
+> Thanks,
+> Daniel
+>
 
--- 
-Sincerely yours,
-Mike.
