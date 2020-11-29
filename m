@@ -2,145 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C3D2C76DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 01:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B78BD2C76E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 01:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgK2Aj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 19:39:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbgK2Aj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 19:39:28 -0500
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B06F521D40
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 00:38:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606610327;
-        bh=lWw5TMojtbxaKw7VvjVfQ7hiJVxsrMbwUI8CIDgcSZY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WVtkgyP8OloK1RwJ+YqKSu5oKax+RRL1+AJR51Y0WQreBY9iJn1tWopfHypmMY3k8
-         vnSsiTt2MGasSguv05k9yqT8GH6b+xAJNP45Msq4S8L9wX0fR0sbp4WGsxUZz5XvSi
-         qeJQ298aHjBSVhE/ZjLwsItYlW63Rhjkn16xSaWg=
-Received: by mail-wm1-f41.google.com with SMTP id 3so8868917wmg.4
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 16:38:46 -0800 (PST)
-X-Gm-Message-State: AOAM531nt5FdUQE4+PH3KwJvubhWtnfnjW9gwoCzAlYVLMkY4sR8MicU
-        j3QdkJwkBzEqDG53c6UoVSGkAV19ZiMXhPAJyMT6gw==
-X-Google-Smtp-Source: ABdhPJwLyYJ+CcbT9yQXWivpvUJZnHSwXyqV4grvoj5mlZ4cyzQ891rccLTwbv5dzdTuLdNLgiIWQRFmH9pj5WLHwsU=
-X-Received: by 2002:a7b:cb41:: with SMTP id v1mr4301883wmj.36.1606610325224;
- Sat, 28 Nov 2020 16:38:45 -0800 (PST)
+        id S1727892AbgK2Arc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 19:47:32 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47334 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725616AbgK2Arc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 19:47:32 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AT0VkVw140026;
+        Sat, 28 Nov 2020 19:46:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=AEu2YDydB/SF+5DWd+uZHgYYz+P4E6JaKj4SF/AC3wY=;
+ b=skVlZ8XtkXrvNgkj+OHqyrwev2g3q72g3qx7TRbwSc3i75f3RCs+SjWNsxiUqztkzho4
+ zkAtJa/kt6roUSUXxKQdO4jHdTnpPq2KUHMp9n0vLxP1o6o934JNq39ZmwhW+pHzvZV0
+ z2f6vCYNacmZTEGfVqiHemBzEGWjFIK/JC8irVTwjd8zgEbkIibA4Jm+4Wb5y3aQlS3B
+ fvftEVaBorz6oj+/fCYb4lUIxsLf3ri9FF0ttIXETM5JiBsDhWCDMQT4npeiv+BFzV0/
+ iiPputhAj52/wXdbJxXNBsE17n9nYw1PxLIHQAaz52oqOoXiIyZ9/W5fsBUpifV/8gpr Ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 353ybf1tw7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 28 Nov 2020 19:46:49 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AT0VpVV140112;
+        Sat, 28 Nov 2020 19:46:49 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 353ybf1tw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 28 Nov 2020 19:46:48 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AT0WS33008777;
+        Sun, 29 Nov 2020 00:46:47 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 353e6813yy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Nov 2020 00:46:47 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AT0iDol58524014
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 29 Nov 2020 00:44:14 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C80504C04E;
+        Sun, 29 Nov 2020 00:44:13 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 185774C04A;
+        Sun, 29 Nov 2020 00:44:13 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.47.217])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Sun, 29 Nov 2020 00:44:13 +0000 (GMT)
+Date:   Sun, 29 Nov 2020 01:44:11 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v12 08/17] s390/vfio-ap: introduce shadow APCB
+Message-ID: <20201129014411.19b24ee8.pasic@linux.ibm.com>
+In-Reply-To: <20201124214016.3013-9-akrowiak@linux.ibm.com>
+References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
+        <20201124214016.3013-9-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20201128160141.1003903-1-npiggin@gmail.com> <20201128160141.1003903-2-npiggin@gmail.com>
-In-Reply-To: <20201128160141.1003903-2-npiggin@gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 28 Nov 2020 16:38:33 -0800
-X-Gmail-Original-Message-ID: <CALCETrVbFm7gZ7G_5DWa6UGYtCzZTQvC_CPRVDZ0Lb-tiMnjSg@mail.gmail.com>
-Message-ID: <CALCETrVbFm7gZ7G_5DWa6UGYtCzZTQvC_CPRVDZ0Lb-tiMnjSg@mail.gmail.com>
-Subject: Re: [PATCH 1/8] lazy tlb: introduce exit_lazy_tlb
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-28_18:2020-11-26,2020-11-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ phishscore=0 mlxscore=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011280156
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 8:01 AM Nicholas Piggin <npiggin@gmail.com> wrote:
->
-> This is called at points where a lazy mm is switched away or made not
-> lazy (by its owner switching back).
->
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> ---
->  arch/arm/mach-rpc/ecard.c            |  1 +
->  arch/powerpc/mm/book3s64/radix_tlb.c |  1 +
->  fs/exec.c                            |  6 ++++--
->  include/asm-generic/mmu_context.h    | 21 +++++++++++++++++++++
->  kernel/kthread.c                     |  1 +
->  kernel/sched/core.c                  |  2 ++
->  6 files changed, 30 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm/mach-rpc/ecard.c b/arch/arm/mach-rpc/ecard.c
-> index 827b50f1c73e..43eb1bfba466 100644
-> --- a/arch/arm/mach-rpc/ecard.c
-> +++ b/arch/arm/mach-rpc/ecard.c
-> @@ -253,6 +253,7 @@ static int ecard_init_mm(void)
->         current->mm = mm;
->         current->active_mm = mm;
->         activate_mm(active_mm, mm);
-> +       exit_lazy_tlb(active_mm, current);
->         mmdrop(active_mm);
->         ecard_init_pgtables(mm);
->         return 0;
-> diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
-> index b487b489d4b6..ac3fec03926a 100644
-> --- a/arch/powerpc/mm/book3s64/radix_tlb.c
-> +++ b/arch/powerpc/mm/book3s64/radix_tlb.c
-> @@ -661,6 +661,7 @@ static void do_exit_flush_lazy_tlb(void *arg)
->                 mmgrab(&init_mm);
->                 current->active_mm = &init_mm;
->                 switch_mm_irqs_off(mm, &init_mm, current);
-> +               exit_lazy_tlb(mm, current);
->                 mmdrop(mm);
->         }
->
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 547a2390baf5..4b4dea1bb7ba 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1017,6 +1017,8 @@ static int exec_mmap(struct mm_struct *mm)
->         if (!IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
->                 local_irq_enable();
->         activate_mm(active_mm, mm);
-> +       if (!old_mm)
-> +               exit_lazy_tlb(active_mm, tsk);
->         if (IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
->                 local_irq_enable();
->         tsk->mm->vmacache_seqnum = 0;
-> @@ -1028,9 +1030,9 @@ static int exec_mmap(struct mm_struct *mm)
->                 setmax_mm_hiwater_rss(&tsk->signal->maxrss, old_mm);
->                 mm_update_next_owner(old_mm);
->                 mmput(old_mm);
-> -               return 0;
-> +       } else {
-> +               mmdrop(active_mm);
->         }
-> -       mmdrop(active_mm);
+On Tue, 24 Nov 2020 16:40:07 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-This looks like an unrelated change.
+> The APCB is a field within the CRYCB that provides the AP configuration
+> to a KVM guest. Let's introduce a shadow copy of the KVM guest's APCB and
+> maintain it for the lifespan of the guest.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
 
->         return 0;
->  }
->
-> diff --git a/include/asm-generic/mmu_context.h b/include/asm-generic/mmu_context.h
-> index 91727065bacb..4626d0020e65 100644
-> --- a/include/asm-generic/mmu_context.h
-> +++ b/include/asm-generic/mmu_context.h
-> @@ -24,6 +24,27 @@ static inline void enter_lazy_tlb(struct mm_struct *mm,
->  }
->  #endif
->
-> +/*
-> + * exit_lazy_tlb - Called after switching away from a lazy TLB mode mm.
-> + *
-> + * mm:  the lazy mm context that was switched
-> + * tsk: the task that was switched to (with a non-lazy mm)
-> + *
-> + * mm may equal tsk->mm.
-> + * mm and tsk->mm will not be NULL.
-> + *
-> + * Note this is not symmetrical to enter_lazy_tlb, this is not
-> + * called when tasks switch into the lazy mm, it's called after the
-> + * lazy mm becomes non-lazy (either switched to a different mm or the
-> + * owner of the mm returns).
-> + */
-> +#ifndef exit_lazy_tlb
-> +static inline void exit_lazy_tlb(struct mm_struct *mm,
-
-Maybe name this parameter prev_lazy_mm?
+Still LGTM
