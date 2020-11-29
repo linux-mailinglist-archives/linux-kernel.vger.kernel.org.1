@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80CE2C78D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5437D2C78D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727332AbgK2LaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 06:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53484 "EHLO
+        id S1727450AbgK2LbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 06:31:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgK2LaH (ORCPT
+        with ESMTP id S1725830AbgK2LbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 06:30:07 -0500
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CAFC0613CF;
-        Sun, 29 Nov 2020 03:29:26 -0800 (PST)
-Received: from localhost (home.natalenko.name [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 197798B3B96;
-        Sun, 29 Nov 2020 12:29:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1606649363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sF8XCvJqTkyy+3B7MTwnlGdMjCa6TL1aBnFxb7P7jys=;
-        b=pWeETqbI5g8QRDYwiq37mZkwL4JUnHA2rLrJ52YB8p5uBwt/wVaHqFaLTIC0MoO0cUWZvZ
-        v7QjUoHaVuQXkzomeVl87agmzkzVM2xJNm2BJXMDJ+Z9MFQYxSNBRLnQACvFgUbBwqEqct
-        h/E/TQpofgl189N0U6cY3X59Umx4l58=
-Date:   Sun, 29 Nov 2020 12:29:22 +0100
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Subject: Re: scheduling while atomic in z3fold
-Message-ID: <20201129112922.db53kmtpu76xxukj@spock.localdomain>
-References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
- <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
- <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
- <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
- <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
- <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
- <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
+        Sun, 29 Nov 2020 06:31:05 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BB0C0613CF;
+        Sun, 29 Nov 2020 03:30:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=QGqxcbLsjyEPen3iQTZ0RxUUyFbEosqdtxEiZVBNOQY=; b=o9DSjXLisplQ2VS/byxKhdRhg
+        f64c0/IAuqUvnOfYh4lpgkFcWki0xPSDe8JwjUuYYeIAYiH5IcoifyYuQG4whccYbRrDMHu1xfd2o
+        CGljGi+Ibdtia5qC3ZrHBrzcEZKz4ptgH3p1B45NirUXdbCO7+o20ej5RpoJR1o+EK7bcfVRbpp+0
+        pSCl8CW3GYnZIudVxaCt3qK5cbszBOmZO1xe4PJTvEj3yeVPp69JjTuUDVNyHKkL3iu/X6NeSADZT
+        sShDZU8Z3rXt5SrbTMNVilSf2W3F2pqReO7+qahwjhdHBaIP2Ss+4dOIwVwA8bURXqSrgKqWYjcYB
+        cTU8+METw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37554)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kjKuJ-0005YX-5I; Sun, 29 Nov 2020 11:30:19 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kjKuI-0003y6-TH; Sun, 29 Nov 2020 11:30:18 +0000
+Date:   Sun, 29 Nov 2020 11:30:18 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Steen Hegelund <steen.hegelund@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
+Message-ID: <20201129113018.GI1605@shell.armlinux.org.uk>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-3-steen.hegelund@microchip.com>
+ <20201128190616.GF2191767@lunn.ch>
+ <20201128222828.GQ1551@shell.armlinux.org.uk>
+ <20201129105245.GG1605@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
+In-Reply-To: <20201129105245.GG1605@shell.armlinux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 11:56:55AM +0100, Mike Galbraith wrote:
-> On Sun, 2020-11-29 at 10:21 +0100, Mike Galbraith wrote:
-> > On Sun, 2020-11-29 at 08:48 +0100, Mike Galbraith wrote:
-> > > On Sun, 2020-11-29 at 07:41 +0100, Mike Galbraith wrote:
-> > > > On Sat, 2020-11-28 at 15:27 +0100, Oleksandr Natalenko wrote:
-> > > > >
-> > > > > > > Shouldn't the list manipulation be protected with
-> > > > > > > local_lock+this_cpu_ptr instead of get_cpu_ptr+spin_lock?
-> > > > >
-> > > > > Totally untested:
-> > > >
-> > > > Hrm, the thing doesn't seem to care deeply about preemption being
-> > > > disabled, so adding another lock may be overkill.  It looks like you
-> > > > could get the job done via migrate_disable()+this_cpu_ptr().
-> > >
-> > > There is however an ever so tiny chance that I'm wrong about that :)
-> >
-> > Or not, your local_lock+this_cpu_ptr version exploded too.
-> >
-> > Perhaps there's a bit of non-rt related racy racy going on in zswap
-> > thingy that makes swap an even less wonderful idea for RT than usual.
-> 
-> Raciness seems to be restricted to pool compressor.  "zbud" seems to be
-> solid, virgin "zsmalloc" explodes, as does "z3fold" regardless which of
-> us puts his grubby fingerprints on it.
-> 
-> Exploding compressors survived zero runs of runltp -f mm, I declared
-> zbud to be at least kinda sorta stable after box survived five runs.
+On Sun, Nov 29, 2020 at 10:52:45AM +0000, Russell King - ARM Linux admin wrote:
+> There are other issues too.
 
-Ummm so do compressors explode under non-rt kernel in your tests as
-well, or it is just -rt that triggers this?
+This is also wrong:
 
-I've never seen that on both -rt and non-rt, thus asking.
++               if (port->ndev && port->ndev->phydev)
++                       status->link = port->ndev->phydev->link;
+
+phylink already deals with that situation.
 
 -- 
-  Oleksandr Natalenko (post-factum)
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
