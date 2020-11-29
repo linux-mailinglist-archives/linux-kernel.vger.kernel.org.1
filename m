@@ -2,141 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1082C7A7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 19:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B272C7A79
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 19:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728196AbgK2SLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 13:11:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58206 "EHLO
+        id S1728098AbgK2SL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 13:11:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728114AbgK2SLm (ORCPT
+        with ESMTP id S1727556AbgK2SL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 13:11:42 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C636C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 10:11:02 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kjR9z-0001or-Hl; Sun, 29 Nov 2020 19:10:55 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kjR9y-0004rr-Ee; Sun, 29 Nov 2020 19:10:54 +0100
-Date:   Sun, 29 Nov 2020 19:10:50 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
-References: <202011281128.54eLfMWr-lkp@intel.com>
- <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
+        Sun, 29 Nov 2020 13:11:27 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC16C0613CF;
+        Sun, 29 Nov 2020 10:10:47 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id w4so8549579pgg.13;
+        Sun, 29 Nov 2020 10:10:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EVR6Dei8Bnt3OCxC95LBwIuM/4G2sFcsm8vaAAg9zHw=;
+        b=pLbgtMYF6C4LhXbvtthI4VE4GeH7PSNJTDAReVjFExXzpHh9hosl9/odkNkV8cZcrw
+         h6VVppYcTosIljKdoD3kiKU0YX/qPgzuZfq7ZcDsj8bs7QE1RJngAiyvogjZ3sr7y0yL
+         xgWvv+MEQ/6UQGIrPoFDhBrqwtuGIJ1eAMWkrDMWc61qzy1vuYYyYU5tHe04T3jjSwER
+         kCBH5Ygx0/uKXWSKacL1u32RRU/DL4njb62ZAE7h5iX9tSeCjugKGn0/fsV4B1G89s+a
+         KMd0FnmXwMDszqCCl8iGZXB47Z6SQ6q9unAnX2/vRMolOwnjTD1W8BtTMxwimExAdjIe
+         LawQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EVR6Dei8Bnt3OCxC95LBwIuM/4G2sFcsm8vaAAg9zHw=;
+        b=t47M1GwdEAuXojhjowQmI5xc1Q13ctf7K9G0bDfow8MkahULgavb7SVAcJrQHI9RYd
+         kbBYZqeJ6K6sT6oRNDk8+X0nqUyIGh+lbPYheInZ9PkQWGLW86emNAzr3HeD7CAo0W3P
+         5S300Z2EFne5BGiRmm5nx6Hyeo+aQPobpN3wkDykef74LM1+hLCR7C7B69m1M7y4XkSr
+         sJ5tss6DzdnScpReBoiduBxvtry1YTLpbejEiK/1dEs2JN1JUpOf2LceedNoVw8iQpbZ
+         WZC6dOUcNQn+o57fUj59eSeC0A7aqD8ZR696DM/0dUq/Q9Z+7k9Yr7Xv+iowKhrKP6X9
+         flTw==
+X-Gm-Message-State: AOAM53133h9xvNv2U43wmm8sI55QChkFVqNcd6CaIBI0OCJ2rJJq2Zh5
+        vOp3cBW2X2w2Fp7ToZsuZxc=
+X-Google-Smtp-Source: ABdhPJzn7CuP2SUe4fgH+BNUk3eUTnzgiUKfmd5REq9zmWNXr/V2XilbUSU9UY5tJ6B4x0F0B4Y7rg==
+X-Received: by 2002:a17:90a:5905:: with SMTP id k5mr21915670pji.198.1606673446893;
+        Sun, 29 Nov 2020 10:10:46 -0800 (PST)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id bf3sm5142567pjb.45.2020.11.29.10.10.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Nov 2020 10:10:45 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] msm/mdp5: Fix some kernel-doc warnings
+Date:   Sun, 29 Nov 2020 10:12:40 -0800
+Message-Id: <20201129181243.1091742-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5swyij2tuuhknhdb"
-Content-Disposition: inline
-In-Reply-To: <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rob Clark <robdclark@chromium.org>
 
---5swyij2tuuhknhdb
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes the following W=1 kernel build warning(s):
 
-On Sat, Nov 28, 2020 at 01:02:06PM +0100, Lino Sanfilippo wrote:
-> Use the newer apply function of pwm_ops instead of config, enable, disable
-> and set_polarity.
->=20
-> This guarantees atomic changes of the pwm controller configuration. It al=
-so
-> reduces the size of the driver.
->=20
-> This has been tested on a Raspberry PI 4.
->=20
-> v2: Fixed compiler error
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'ctl' not described in 'mdp5_ctl_set_encoder_state'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'pipeline' not described in 'mdp5_ctl_set_encoder_state'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'enabled' not described in 'mdp5_ctl_set_encoder_state'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Excess function parameter 'enable' description in 'mdp5_ctl_set_encoder_state'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'ctl' not described in 'mdp5_ctl_commit'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'pipeline' not described in 'mdp5_ctl_commit'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'flush_mask' not described in 'mdp5_ctl_commit'
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'start' not described in 'mdp5_ctl_commit'
 
-Changelog between review rounds go to below the tripple-dash below.
+Cc: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-> ---
->  drivers/pwm/pwm-bcm2835.c | 64 ++++++++++++++++-------------------------=
-------
->  1 file changed, 21 insertions(+), 43 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-bcm2835.c b/drivers/pwm/pwm-bcm2835.c
-> index 6841dcf..dad7443 100644
-> --- a/drivers/pwm/pwm-bcm2835.c
-> +++ b/drivers/pwm/pwm-bcm2835.c
-> @@ -58,13 +58,14 @@ static void bcm2835_pwm_free(struct pwm_chip *chip, s=
-truct pwm_device *pwm)
->  	writel(value, pc->base + PWM_CONTROL);
->  }
-> =20
-> -static int bcm2835_pwm_config(struct pwm_chip *chip, struct pwm_device *=
-pwm,
-> -			      int duty_ns, int period_ns)
-> +static int bcm2835_pwm_apply(struct pwm_chip *chip, struct pwm_device *p=
-wm,
-> +			     const struct pwm_state *state)
->  {
-> +
->  	struct bcm2835_pwm *pc =3D to_bcm2835_pwm(chip);
->  	unsigned long rate =3D clk_get_rate(pc->clk);
->  	unsigned long scaler;
-> -	u32 period;
-> +	u32 value;
-> =20
->  	if (!rate) {
->  		dev_err(pc->dev, "failed to get clock rate\n");
-> @@ -72,65 +73,42 @@ static int bcm2835_pwm_config(struct pwm_chip *chip, =
-struct pwm_device *pwm,
->  	}
-> =20
->  	scaler =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, rate);
-> -	period =3D DIV_ROUND_CLOSEST(period_ns, scaler);
-> +	/* set period */
-> +	value =3D DIV_ROUND_CLOSEST_ULL(state->period, scaler);
+diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+index 030279d7b64b..81b0c7cf954e 100644
+--- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
++++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+@@ -216,7 +216,9 @@ static void send_start_signal(struct mdp5_ctl *ctl)
+ /**
+  * mdp5_ctl_set_encoder_state() - set the encoder state
+  *
+- * @enable: true, when encoder is ready for data streaming; false, otherwise.
++ * @ctl:      the CTL instance
++ * @pipeline: the encoder's INTF + MIXER configuration
++ * @enabled:  true, when encoder is ready for data streaming; false, otherwise.
+  *
+  * Note:
+  * This encoder state is needed to trigger START signal (data path kickoff).
+@@ -510,6 +512,13 @@ static void fix_for_single_flush(struct mdp5_ctl *ctl, u32 *flush_mask,
+ /**
+  * mdp5_ctl_commit() - Register Flush
+  *
++ * @ctl:        the CTL instance
++ * @pipeline:   the encoder's INTF + MIXER configuration
++ * @flush_mask: bitmask of display controller hw blocks to flush
++ * @start:      if true, immediately update flush registers and set START
++ *              bit, otherwise accumulate flush_mask bits until we are
++ *              ready to START
++ *
+  * The flush register is used to indicate several registers are all
+  * programmed, and are safe to update to the back copy of the double
+  * buffered registers.
+-- 
+2.28.0
 
-You're storing an unsigned long long (i.e. 64 bits) in an u32. If you
-are sure that this won't discard relevant bits, please explain this in a
-comment for the cursory reader.
-
-Also note that round_closed is probably wrong, as .apply() is supposed
-to round down the period to the next achievable period. (But fixing this
-has to do done in a separate patch.)
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---5swyij2tuuhknhdb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/D5CcACgkQwfwUeK3K
-7AnJDwf9E/ryrmjtun7VJxEEtA3dKXzqCwdvNxUnoWdwundHkyX78y8CpI5guv/w
-1LQrUnpqqVGCuLPihnF5cpjtcxprC2SbShCgZBErumoVoC0n4ZYb3j+z0ld/p9d6
-ff4VlBmYjf5Wpzoq347N5d0tTsq6M0+GknYOtc4SIuEDkOqoUhROg/+MkYvdMZES
-wBS/9vWTD6SX0OnXa7DPRon8P0INQmcCYcJkOHrIsQeUiTQJfh+Ux/McwmI9yxFv
-zXBL0vsViZ79V3U08p9XMQ+E7LCJMqfcqFQKlmuP1ARgo1Z5hxpnDQREaU9+rEaj
-5vJPYJlb7qFzisCGSkEpgY+Fjhw5KA==
-=T3ed
------END PGP SIGNATURE-----
-
---5swyij2tuuhknhdb--
