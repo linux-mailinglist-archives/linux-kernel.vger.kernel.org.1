@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F1D2C7B07
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 20:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0332C7B09
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 20:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgK2TtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 14:49:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45048 "EHLO
+        id S1728598AbgK2TtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 14:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbgK2TtI (ORCPT
+        with ESMTP id S1728293AbgK2TtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 14:49:08 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4B3C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 11:48:28 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id a16so16729641ejj.5
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 11:48:28 -0800 (PST)
+        Sun, 29 Nov 2020 14:49:23 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38ECCC0613D3
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 11:48:37 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id r9so9683059ioo.7
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 11:48:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Kc7ZFdSTRNe+vKgeFRwhLswnRflQtlt3+dVYxevKBAE=;
-        b=eVqYqkfCWptY03JO4+gyTrLnv85CO96dubZD4oYphS3xmgkO53/qxoTjaK9lkhUCKu
-         UZsDWjFSMSTvxNxh3UqLHV0Azsfq+g//f/0fNdY/FbNx8GxeW6PCveZWtjpWwzzFq+Gx
-         Alw/UUGV2n2M8gKSkTclAwXv1sBrEtRD3aLRPOeyqZ1FVHM5Xk2zu8T+prpYFHsCi15N
-         7AV6Idfo6/ZjlhV4PNnEpIBDdWuK46pJonco0AlN3DjUbctSQXsa3w9kyBSmGYpx1v2X
-         YRLAifIU+ZiL8oC0VcwsWeZzNoIogxebiAI6akZv3kA9ZJTdcYc6RsgmarBO+znj5hdW
-         m6aQ==
+        d=newoldbits-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FPVmvGLETfFsJB2bxLaRoGgeBKaIWmMhRnqAH6ezMAc=;
+        b=H+T+i92IFdlJiKZBjnc4EM0zlsqe8bUe9HBv0tElLLwVg/TixUCrOCqiZGPHy/f8Qa
+         ur7FJ8LqAtNkxNvmoim6tc3RQrODIIorOEHs7Md9TRWDwgz76dMq32nQ84ShOMpVxwl+
+         +qbe9zwLzZdhsa66wd+Ec2CmMdFzgFvgD1CRk2ZUEwVvVrqdiJG2KIAw+DdPRmqoGE7N
+         240BGnIQB3yi2yqgHXjSA2lZ0tIl2MRx4h04IWVMRBSu7DFKKGc/mGp6FtS28012hAzq
+         R0KV14l+CjJeY+YO8bHo4AGtPlK4dxVlMrk4zE8VPO025rOjPZZfgt2Q32swi/4w1mAj
+         O60Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Kc7ZFdSTRNe+vKgeFRwhLswnRflQtlt3+dVYxevKBAE=;
-        b=PiveccdGptYImgzaVny9G9mxxPOybEvHtR7i6Me6tH8hyaPsWOhQQotg/XKkLE7otN
-         iVX5R7FrCFDVlxezGTToSexJclUHXjTgQda3NRYkR7gZ2yDNR8XD8Zh/UqVcmTL4E31W
-         nDTVll0Z4I+MZ/5vCotSXNkErDE2CUzaKY6+Yd1x3IMpy0JmxZJG7Y4Vu/2tWgPgfQwt
-         TCmANK2awtrprBgLYlza9k+JFiTtZbsSyZMuzCgLm/6G3dMeFNGkbPL/erhuZuurP9Vq
-         QgKbjKmmE06TIb9vtYzJqZ9JjN4v1tCc52zjyzurHjO1ifW36YgsbGQXB1wqspsW0lVb
-         ixJw==
-X-Gm-Message-State: AOAM531K4YnVM0qTfbfiOFd5O/txo3iJ9xQiKiYbT4sU/v7KeIH8+2O/
-        Cz3K5GvMEm1WhLjnzBncV24=
-X-Google-Smtp-Source: ABdhPJwUBaNbWG35U4agCGBzgehxGVBk+UEqomHZRQDMudmmQDf7PLCwTWvgEaIsVYXbdItSGZEYqQ==
-X-Received: by 2002:a17:906:ae8d:: with SMTP id md13mr18396142ejb.300.1606679307037;
-        Sun, 29 Nov 2020 11:48:27 -0800 (PST)
-Received: from BV030612LT ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id w2sm7667017ejc.109.2020.11.29.11.48.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 11:48:26 -0800 (PST)
-Date:   Sun, 29 Nov 2020 21:48:24 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 18/18] MAINTAINERS: Add linux-actions ML for Actions
- Semi Arch
-Message-ID: <20201129194824.GC748744@BV030612LT>
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <5845b7a323c65adaa1566c3bee68b5ca1f1bb17e.1605823502.git.cristian.ciocaltea@gmail.com>
- <20201128074350.GE3077@thinkpad>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FPVmvGLETfFsJB2bxLaRoGgeBKaIWmMhRnqAH6ezMAc=;
+        b=OR4aDwOObCYEWfOTkGgxA2EAuJpzbYKpyCbpeCLp82vft3b+AX78U8gwTBVAIYV2wd
+         vmgbbOVEbL2c0X/QLMX/5oHF0iKo38f4W4iFFtMfSIBq2cMR4x/HuqH8fZneG0iYbctt
+         bVoigV0u4C062Hij6uTQ4cYFJNnI+Sd6DTt196tYDrC8sbLyV+3ROFOavMa7R8Wr39np
+         YtaYWKWmD2a4r5uJ549G+6vOPMg3JPyMWG24UCBmwKV3rJSFP2ymXUhHEjDfkNlWLc5u
+         eqCMkqgBzeeiy5IBm03Gvc3X/sxi8KVdIzbo+7CIebgGwFMgH+OlgMHYbtTRFubJydk3
+         m5pA==
+X-Gm-Message-State: AOAM533CMwrIxIatfnUBRjDwp7gug52lYiW5vjENhPN2qsXa4m7i5K0M
+        NuLCKbh9iaJYWeI28PL9n9HV+1eC2vXlW7ePra9QUw==
+X-Google-Smtp-Source: ABdhPJwI0NK/RFeSd2j+i/hflp834uzdZeBqDSHIW4OBRgMwCQW8k+riyNfPCLUY0BIaZdnasBWX60am7kA/gyeblXo=
+X-Received: by 2002:a5d:9042:: with SMTP id v2mr12402234ioq.98.1606679316572;
+ Sun, 29 Nov 2020 11:48:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201128074350.GE3077@thinkpad>
+References: <20201129102400.157786-1-jean.pihet@newoldbits.com>
+ <20201129165627.GA2234159@lunn.ch> <CAORVsuUez9qteuuqkGpQbU5yXjAFxcpRXGaXnKwqm-hKSKF6NQ@mail.gmail.com>
+ <20201129193822.GP2234159@lunn.ch>
+In-Reply-To: <20201129193822.GP2234159@lunn.ch>
+From:   Jean Pihet <jean.pihet@newoldbits.com>
+Date:   Sun, 29 Nov 2020 20:48:25 +0100
+Message-ID: <CAORVsuWKtdF8O9vXonamWEr0WcdoZiaeFhjP06Z8NV_wv3A=KQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] net: dsa: ksz: pad frame to 64 bytes for transmission
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ryan Barnett <ryan.barnett@rockwellcollins.com>,
+        Conrad Ratschan <conrad.ratschan@rockwellcollins.com>,
+        Hugo Cornelis <hugo.cornelis@essensium.com>,
+        Arnout Vandecappelle <arnout.vandecappelle@essensium.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 01:13:50PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Nov 20, 2020 at 01:56:12AM +0200, Cristian Ciocaltea wrote:
-> > Add the linux-actions mailing list for the Actions Semi architecture.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> 
-> There was a patch from me for this change but I don't mind taking yours
-> as long as we keep the list updated :)
+Andrew,
 
-Sorry about that, I often forget to manually append this mailing list
-before submitting related patches and therefore I considered this is
-a good opportunity to have this issue fixed once and for all.. :)
+On Sun, Nov 29, 2020 at 8:38 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Sun, Nov 29, 2020 at 08:34:27PM +0100, Jean Pihet wrote:
+> > Hi Andrew,
+> >
+> > On Sun, Nov 29, 2020 at 5:56 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> > >
+> > > On Sun, Nov 29, 2020 at 11:23:59AM +0100, Jean Pihet wrote:
+> > > > Some ethernet controllers (e.g. TI CPSW) pad the frames to a minimum
+> > > > of 64 bytes before the FCS is appended. This causes an issue with the
+> > > > KSZ tail tag which could not be the last byte before the FCS.
+> > > > Solve this by padding the frame to 64 bytes minus the tail tag size,
+> > > > before the tail tag is added and the frame is passed for transmission.
+> > >
+> > > Hi Jean
+> > >
+> > > what tree is this based on? Have you seen
+> > The patches are based on the latest mainline v5.10-rc5. Is this the
+> > recommended version to submit new patches?
+>
+> No, that is old. Please take a read of:
+>
+> https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html
 
-> I have just one comment below, with that fixed:
-> 
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> > ---
-> >  MAINTAINERS | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index a85c1881cf07..8428aba52581 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -1497,6 +1497,7 @@ ARM/ACTIONS SEMI ARCHITECTURE
-> >  M:	Andreas Färber <afaerber@suse.de>
-> >  M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> >  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> 
-> No need to keep the generic list, please remove.
+Ok got it, thx!
 
-Done, thanks!
+Found the commit 88fda8ee and its parent [1] with the following
+comment, which seems to indicate that my patch is not needed anymore.
+Can you confirm?
 
-> Thanks,
-> Mani
-> 
-> > +L:	linux-actions@lists.infradead.org (moderated for non-subscribers)
-> >  S:	Maintained
-> >  F:	Documentation/devicetree/bindings/arm/actions.yaml
-> >  F:	Documentation/devicetree/bindings/clock/actions,owl-cmu.txt
-> > -- 
-> > 2.29.2
-> > 
+/* For tail taggers, we need to pad short frames ourselves, to ensure
++ * that the tail tag does not fail at its role of being at the end of
++ * the packet, once the master interface pads the frame. Account for
++ * that pad length here, and pad later.
+...
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=a3b0b6479700a5b0af2c631cb2ec0fb7a0d978f2
+
+Thx,
+Jean
+
+>
+>         Andrew
