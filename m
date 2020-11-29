@@ -2,345 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D587E2C7862
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 08:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B692C7865
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 08:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgK2Hj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 02:39:56 -0500
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:38119 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725916AbgK2Hjz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 02:39:55 -0500
-Received: from localhost.localdomain ([81.185.163.10])
-        by mwinf5d13 with ME
-        id y7e72300A0DmPsp037e8rz; Sun, 29 Nov 2020 08:38:09 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 29 Nov 2020 08:38:09 +0100
-X-ME-IP: 81.185.163.10
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     hverkuil@xs4all.nl, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: saa7146: switch from 'pci_' to 'dma_' API
-Date:   Sun, 29 Nov 2020 08:38:03 +0100
-Message-Id: <20201129073803.1443174-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        id S1726462AbgK2HvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 02:51:13 -0500
+Received: from mout.gmx.net ([212.227.17.20]:55057 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725468AbgK2HvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 02:51:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606636136;
+        bh=nNgEG9W3/dgKx7pGvBI1VNzAAdYXJJj4vN/rQUPGggg=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=ew/PvgT/S8d7o33a2NMGzGkmsX3A+wG2snNirwEUedpXleVKRMb6AYb1Ts7IDDp1y
+         AKzA0KQeWLgdqrmRzmaBQJaU2ARMN5zxjyiqrAXrVCqxglVnmHLO7KXJGpX3aMWe1D
+         Fv8NUKAxRYCHegz4efA0rAymXbD8Gl6pbGQB5CA4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.83]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MKKYx-1kU6DP1cmV-00Lpna; Sun, 29
+ Nov 2020 08:48:56 +0100
+Message-ID: <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
+Subject: Re: scheduling while atomic in z3fold
+From:   Mike Galbraith <efault@gmx.de>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Date:   Sun, 29 Nov 2020 08:48:55 +0100
+In-Reply-To: <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
+References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
+         <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
+         <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
+         <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:2s2Ig5gRyWZy9b0M8Nd1i3yTCSuJCmVCkdV7N2Z1b+QZR6GlNCQ
+ gYAi3mUoJbjb3TE9YiiZCziwoCmVnPjsGQFWCIbl9BW0D04w8yYvhwNKN/zDEgWdTXtgutW
+ 10uw5I2Xe76rH+HAyGS53pLOhykN2pql+ZF//2+Yi0KDN8voHlBE8szwq/Oxpa/4giljffj
+ J7J3KsvHPuoJbN/JpE2Sg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9bhgqDbcMzo=:p1nEDMgaPH73Vojta/5ixz
+ oyfuwXPYpqOBa89CLx7Ki3+q4Ev3LsOYA3QFsiduk8+rmcjuoVsC/n37MoJqhhLavZcUgdnpm
+ 09Pb/r9LDlEWqacAqgutumMICTFZfYh0v1M4Vg3AUGnxcwOISXFZxicLzmsXWrpBYnzEay+n1
+ 6gmA3QlE3mSpLEHpjKSvRHpzsPAhTUhRcv+Pv73/T6m8SEp2endrIiZUsa9OpacTc5SDRf9zo
+ 95F2H+o53FY2GwOPQmV4w2WzF5AIGVxpvJ+Q4DHHOF2f3oWI1gvzP1jhns6tKHxPFBYbL+Pwv
+ F9AIbnADBJchPxwU0c6o7zW96plrpbztcDIIJYFIqKA7djcbvtmXSWR+Ev8flxvAyFjpvz580
+ faEcaksNXzz4s1YtN9tM/LKilBudJKy0vmuZfmCHZtdNvi9Szf2CqMBPuwCEkvdYcP70PPhCS
+ S6cQBMgYcojKCc5ZdxwU4kkFXMZACkki6XZhM+ka0Ww7AOCUB+fj1A09itKShsV3G7Rg6IUPY
+ 5wKOy1QX8bBFXdhN/If1aS1fgl/NggWYvoSv/cKhXbBaKBd6dSJZWc17eZZrQhe1RgbO2gFcd
+ 9LZd8jVXMpT8Db76/Swzc7KSTdFrVoTo9LbK4h+7LqfIQKUuL4GY+cCWOKQ7k+W6KfhSOY+e7
+ LKl3k2CXLNyUVE/aLtbFqfUQrrcmnfNEa0IVyT5108TQDhBqvF8/CQNeEqBiRtGwm7w1Ukd8M
+ LtD5TO/KVdcp12uERJaOpPdSdey7cwAYYumx/1NAtFu5FzSYzNH5BK5szjqOn2A4RwhZFNKOx
+ zlPCr9jTridCrnw59252CFQSrn05sMh+sGnHQO9lsAqbJdtTseFGbanAldjWTY4oh6A1cA3ZH
+ qxLzqMjHnIIOPeUMhLQw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On Sun, 2020-11-29 at 07:41 +0100, Mike Galbraith wrote:
+> On Sat, 2020-11-28 at 15:27 +0100, Oleksandr Natalenko wrote:
+> >
+> > > > Shouldn't the list manipulation be protected with
+> > > > local_lock+this_cpu_ptr instead of get_cpu_ptr+spin_lock?
+> >
+> > Totally untested:
+>
+> Hrm, the thing doesn't seem to care deeply about preemption being
+> disabled, so adding another lock may be overkill.  It looks like you
+> could get the job done via migrate_disable()+this_cpu_ptr().
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+There is however an ever so tiny chance that I'm wrong about that :)
 
-When memory is allocated in 'saa7146_pgtable_alloc()' GFP_KERNEL can be
-used because the callers are either .buf_prepare functions or function that
-already use GFP_KERNEL (hidden in a 'vmalloc_32()' call).
+crash.rt> bt -s
+PID: 6699   TASK: ffff913c464b5640  CPU: 0   COMMAND: "oom01"
+ #0 [ffffb6b94adff6f0] machine_kexec+366 at ffffffffbd05f87e
+ #1 [ffffb6b94adff738] __crash_kexec+210 at ffffffffbd14c052
+ #2 [ffffb6b94adff7f8] crash_kexec+48 at ffffffffbd14d240
+ #3 [ffffb6b94adff808] oops_end+202 at ffffffffbd02680a
+ #4 [ffffb6b94adff828] no_context+333 at ffffffffbd06d7ed
+ #5 [ffffb6b94adff888] exc_page_fault+696 at ffffffffbd8c0b68
+ #6 [ffffb6b94adff8e0] asm_exc_page_fault+30 at ffffffffbda00ace
+ #7 [ffffb6b94adff968] mark_wakeup_next_waiter+81 at ffffffffbd0ea1e1
+ #8 [ffffb6b94adff9c8] rt_mutex_futex_unlock+79 at ffffffffbd8cc3cf
+ #9 [ffffb6b94adffa08] z3fold_zpool_free+1319 at ffffffffbd2b6b17
+#10 [ffffb6b94adffa68] zswap_free_entry+67 at ffffffffbd27c6f3
+#11 [ffffb6b94adffa78] zswap_frontswap_invalidate_page+138 at ffffffffbd27=
+c7fa
+#12 [ffffb6b94adffaa0] __frontswap_invalidate_page+72 at ffffffffbd27bee8
+#13 [ffffb6b94adffac8] swapcache_free_entries+494 at ffffffffbd276e1e
+#14 [ffffb6b94adffb10] free_swap_slot+173 at ffffffffbd27b7dd
+#15 [ffffb6b94adffb30] __swap_entry_free+112 at ffffffffbd2768d0
+#16 [ffffb6b94adffb58] free_swap_and_cache+57 at ffffffffbd278939
+#17 [ffffb6b94adffb80] unmap_page_range+1485 at ffffffffbd24c52d
+#18 [ffffb6b94adffc40] __oom_reap_task_mm+178 at ffffffffbd218f02
+#19 [ffffb6b94adffd10] exit_mmap+339 at ffffffffbd257da3
+#20 [ffffb6b94adffdb0] mmput+78 at ffffffffbd07fe7e
+#21 [ffffb6b94adffdc0] do_exit+822 at ffffffffbd089bc6
+#22 [ffffb6b94adffe28] do_group_exit+71 at ffffffffbd08a547
+#23 [ffffb6b94adffe50] get_signal+319 at ffffffffbd0979ff
+#24 [ffffb6b94adffe98] arch_do_signal+30 at ffffffffbd022cbe
+#25 [ffffb6b94adfff28] exit_to_user_mode_prepare+293 at ffffffffbd1223e5
+#26 [ffffb6b94adfff48] irqentry_exit_to_user_mode+5 at ffffffffbd8c1675
+#27 [ffffb6b94adfff50] asm_exc_page_fault+30 at ffffffffbda00ace
+    RIP: 0000000000414300  RSP: 00007f5ddf065ec0  RFLAGS: 00010206
+    RAX: 0000000000001000  RBX: 00000000c0000000  RCX: 00000000adf28000
+    RDX: 00007f5d0bf8d000  RSI: 00000000c0000000  RDI: 0000000000000000
+    RBP: 00007f5c5e065000   R8: ffffffffffffffff   R9: 0000000000000000
+    R10: 0000000000000022  R11: 0000000000000246  R12: 0000000000001000
+    R13: 0000000000000001  R14: 0000000000000001  R15: 00007ffc953ebcd0
+    ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
+crash.rt>
 
-When memory is allocated in 'saa7146_init_one()' GFP_KERNEL can be used
-because it is probe function and no lock is taken in the between.
-
-When memory is allocated in 'saa7146_vv_init()' GFP_KERNEL can be used
-because this function already uses GFP_KERNEL and no lock is taken in the
-between.
-
-When memory is allocated in 'vbi_workaround()' GFP_KERNEL can be used
-because it is only called from a .open function.
-
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/media/common/saa7146/saa7146_core.c | 39 +++++++++++----------
- drivers/media/common/saa7146/saa7146_fops.c |  7 ++--
- drivers/media/common/saa7146/saa7146_vbi.c  |  6 ++--
- 3 files changed, 28 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/media/common/saa7146/saa7146_core.c b/drivers/media/common/saa7146/saa7146_core.c
-index 21fb16cc5ca1..f2d13b71416c 100644
---- a/drivers/media/common/saa7146/saa7146_core.c
-+++ b/drivers/media/common/saa7146/saa7146_core.c
-@@ -177,7 +177,7 @@ void *saa7146_vmalloc_build_pgtable(struct pci_dev *pci, long length, struct saa
- 		goto err_free_slist;
- 
- 	pt->nents = pages;
--	slen = pci_map_sg(pci,pt->slist,pt->nents,PCI_DMA_FROMDEVICE);
-+	slen = dma_map_sg(&pci->dev, pt->slist, pt->nents, DMA_FROM_DEVICE);
- 	if (0 == slen)
- 		goto err_free_pgtable;
- 
-@@ -187,7 +187,7 @@ void *saa7146_vmalloc_build_pgtable(struct pci_dev *pci, long length, struct saa
- 	return mem;
- 
- err_unmap_sg:
--	pci_unmap_sg(pci, pt->slist, pt->nents, PCI_DMA_FROMDEVICE);
-+	dma_unmap_sg(&pci->dev, pt->slist, pt->nents, DMA_FROM_DEVICE);
- err_free_pgtable:
- 	saa7146_pgtable_free(pci, pt);
- err_free_slist:
-@@ -201,7 +201,7 @@ void *saa7146_vmalloc_build_pgtable(struct pci_dev *pci, long length, struct saa
- 
- void saa7146_vfree_destroy_pgtable(struct pci_dev *pci, void *mem, struct saa7146_pgtable *pt)
- {
--	pci_unmap_sg(pci, pt->slist, pt->nents, PCI_DMA_FROMDEVICE);
-+	dma_unmap_sg(&pci->dev, pt->slist, pt->nents, DMA_FROM_DEVICE);
- 	saa7146_pgtable_free(pci, pt);
- 	kfree(pt->slist);
- 	pt->slist = NULL;
-@@ -212,7 +212,7 @@ void saa7146_pgtable_free(struct pci_dev *pci, struct saa7146_pgtable *pt)
- {
- 	if (NULL == pt->cpu)
- 		return;
--	pci_free_consistent(pci, pt->size, pt->cpu, pt->dma);
-+	dma_free_coherent(&pci->dev, pt->size, pt->cpu, pt->dma);
- 	pt->cpu = NULL;
- }
- 
-@@ -221,7 +221,7 @@ int saa7146_pgtable_alloc(struct pci_dev *pci, struct saa7146_pgtable *pt)
- 	__le32       *cpu;
- 	dma_addr_t   dma_addr = 0;
- 
--	cpu = pci_alloc_consistent(pci, PAGE_SIZE, &dma_addr);
-+	cpu = dma_alloc_coherent(&pci->dev, PAGE_SIZE, &dma_addr, GFP_KERNEL);
- 	if (NULL == cpu) {
- 		return -ENOMEM;
- 	}
-@@ -412,18 +412,20 @@ static int saa7146_init_one(struct pci_dev *pci, const struct pci_device_id *ent
- 	err = -ENOMEM;
- 
- 	/* get memory for various stuff */
--	dev->d_rps0.cpu_addr = pci_zalloc_consistent(pci, SAA7146_RPS_MEM,
--						     &dev->d_rps0.dma_handle);
-+	dev->d_rps0.cpu_addr = dma_alloc_coherent(&pci->dev, SAA7146_RPS_MEM,
-+						  &dev->d_rps0.dma_handle,
-+						  GFP_KERNEL);
- 	if (!dev->d_rps0.cpu_addr)
- 		goto err_free_irq;
- 
--	dev->d_rps1.cpu_addr = pci_zalloc_consistent(pci, SAA7146_RPS_MEM,
--						     &dev->d_rps1.dma_handle);
-+	dev->d_rps1.cpu_addr = dma_alloc_coherent(&pci->dev, SAA7146_RPS_MEM,
-+						  &dev->d_rps1.dma_handle,
-+						  GFP_KERNEL);
- 	if (!dev->d_rps1.cpu_addr)
- 		goto err_free_rps0;
- 
--	dev->d_i2c.cpu_addr = pci_zalloc_consistent(pci, SAA7146_RPS_MEM,
--						    &dev->d_i2c.dma_handle);
-+	dev->d_i2c.cpu_addr = dma_alloc_coherent(&pci->dev, SAA7146_RPS_MEM,
-+						 &dev->d_i2c.dma_handle, GFP_KERNEL);
- 	if (!dev->d_i2c.cpu_addr)
- 		goto err_free_rps1;
- 
-@@ -471,14 +473,14 @@ static int saa7146_init_one(struct pci_dev *pci, const struct pci_device_id *ent
- 	return err;
- 
- err_free_i2c:
--	pci_free_consistent(pci, SAA7146_RPS_MEM, dev->d_i2c.cpu_addr,
--			    dev->d_i2c.dma_handle);
-+	dma_free_coherent(&pci->dev, SAA7146_RPS_MEM, dev->d_i2c.cpu_addr,
-+			  dev->d_i2c.dma_handle);
- err_free_rps1:
--	pci_free_consistent(pci, SAA7146_RPS_MEM, dev->d_rps1.cpu_addr,
--			    dev->d_rps1.dma_handle);
-+	dma_free_coherent(&pci->dev, SAA7146_RPS_MEM, dev->d_rps1.cpu_addr,
-+			  dev->d_rps1.dma_handle);
- err_free_rps0:
--	pci_free_consistent(pci, SAA7146_RPS_MEM, dev->d_rps0.cpu_addr,
--			    dev->d_rps0.dma_handle);
-+	dma_free_coherent(&pci->dev, SAA7146_RPS_MEM, dev->d_rps0.cpu_addr,
-+			  dev->d_rps0.dma_handle);
- err_free_irq:
- 	free_irq(pci->irq, (void *)dev);
- err_unmap:
-@@ -519,7 +521,8 @@ static void saa7146_remove_one(struct pci_dev *pdev)
- 	free_irq(pdev->irq, dev);
- 
- 	for (p = dev_map; p->addr; p++)
--		pci_free_consistent(pdev, SAA7146_RPS_MEM, p->addr, p->dma);
-+		dma_free_coherent(&pdev->dev, SAA7146_RPS_MEM, p->addr,
-+				  p->dma);
- 
- 	iounmap(dev->mem);
- 	pci_release_region(pdev, 0);
-diff --git a/drivers/media/common/saa7146/saa7146_fops.c b/drivers/media/common/saa7146/saa7146_fops.c
-index e936c56b0378..7b1840cad278 100644
---- a/drivers/media/common/saa7146/saa7146_fops.c
-+++ b/drivers/media/common/saa7146/saa7146_fops.c
-@@ -515,8 +515,8 @@ int saa7146_vv_init(struct saa7146_dev* dev, struct saa7146_ext_vv *ext_vv)
- 	dev->ext_vv_data = ext_vv;
- 
- 	vv->d_clipping.cpu_addr =
--		pci_zalloc_consistent(dev->pci, SAA7146_CLIPPING_MEM,
--				      &vv->d_clipping.dma_handle);
-+		dma_alloc_coherent(&dev->pci->dev, SAA7146_CLIPPING_MEM,
-+				   &vv->d_clipping.dma_handle, GFP_);
- 	if( NULL == vv->d_clipping.cpu_addr ) {
- 		ERR("out of memory. aborting.\n");
- 		kfree(vv);
-@@ -574,7 +574,8 @@ int saa7146_vv_release(struct saa7146_dev* dev)
- 	DEB_EE("dev:%p\n", dev);
- 
- 	v4l2_device_unregister(&dev->v4l2_dev);
--	pci_free_consistent(dev->pci, SAA7146_CLIPPING_MEM, vv->d_clipping.cpu_addr, vv->d_clipping.dma_handle);
-+	dma_free_coherent(&dev->pci->dev, SAA7146_CLIPPING_MEM,
-+			  vv->d_clipping.cpu_addr, vv->d_clipping.dma_handle);
- 	v4l2_ctrl_handler_free(&dev->ctrl_handler);
- 	kfree(vv);
- 	dev->vv_data = NULL;
-diff --git a/drivers/media/common/saa7146/saa7146_vbi.c b/drivers/media/common/saa7146/saa7146_vbi.c
-index e1d369b976ed..e140d4a5aeb2 100644
---- a/drivers/media/common/saa7146/saa7146_vbi.c
-+++ b/drivers/media/common/saa7146/saa7146_vbi.c
-@@ -22,7 +22,7 @@ static int vbi_workaround(struct saa7146_dev *dev)
- 	   as specified. there is this workaround, but please
- 	   don't let me explain it. ;-) */
- 
--	cpu = pci_alloc_consistent(dev->pci, 4096, &dma_addr);
-+	cpu = dma_alloc_coherent(&dev->pci->dev, 4096, &dma_addr, GFP_);
- 	if (NULL == cpu)
- 		return -ENOMEM;
- 
-@@ -123,12 +123,12 @@ static int vbi_workaround(struct saa7146_dev *dev)
- 			/* stop rps1 for sure */
- 			saa7146_write(dev, MC1, MASK_29);
- 
--			pci_free_consistent(dev->pci, 4096, cpu, dma_addr);
-+			dma_free_coherent(&dev->pci->dev, 4096, cpu, dma_addr);
- 			return -EINTR;
- 		}
- 	}
- 
--	pci_free_consistent(dev->pci, 4096, cpu, dma_addr);
-+	dma_free_coherent(&dev->pci->dev, 4096, cpu, dma_addr);
- 	return 0;
- }
- 
--- 
-2.27.0
 
