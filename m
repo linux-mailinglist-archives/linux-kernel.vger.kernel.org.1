@@ -2,157 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242C42C7BF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 00:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4442C7BF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 00:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728293AbgK2XMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 18:12:53 -0500
-Received: from mga14.intel.com ([192.55.52.115]:60165 "EHLO mga14.intel.com"
+        id S1727691AbgK2XSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 18:18:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726304AbgK2XMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 18:12:52 -0500
-IronPort-SDR: OvId0Jh7CePkakjAyeCY/iKeklhycBWcahCRyCoxv5Y5cHo0GcfNxCJf4m/e7wqEfrVp3f93S3
- ksk00WCkbhPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9820"; a="171775440"
-X-IronPort-AV: E=Sophos;i="5.78,379,1599548400"; 
-   d="scan'208";a="171775440"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2020 15:12:12 -0800
-IronPort-SDR: LQ+1gjr2xmz8TUAqWwoUmZMrCyfpnxEfVJzJGsrHuaUpxt0N7a/GdFvrKqtcUdauigk8EtnT5W
- WXqjl5/17iPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,379,1599548400"; 
-   d="scan'208";a="315010321"
-Received: from lkp-server01.sh.intel.com (HELO 3082e074203f) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 29 Nov 2020 15:12:09 -0800
-Received: from kbuild by 3082e074203f with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kjVrV-0000I1-6Z; Sun, 29 Nov 2020 23:12:09 +0000
-Date:   Mon, 30 Nov 2020 07:11:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- bd4d2b7839cffa929d076cfb62562f5edb8e1b14
-Message-ID: <5fc42a8f.A0B1of7wacDPYOKF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726304AbgK2XSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 18:18:24 -0500
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 112912076C;
+        Sun, 29 Nov 2020 23:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606691864;
+        bh=UvFn/A9Lhl6h/HurzfA5JdUxziEQn3qtGTpb20WsY6I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bspa2U/Ap8tZ1jfyB6+xdKT/lg5kDu6sDGQLH0q4VS62XFvpkOjWDiBN3VlbFEL9g
+         TtcfJviWttGWpimnhVB8Tt3rBmdbwehLOUXkZRIsS+4isIH5pdxhDyln4rsZMADUsA
+         lpYLW1cHwg3cUr9Ac2j7JMhbgyzeUX7ch/EInZT0=
+Received: by pali.im (Postfix)
+        id E048B765; Mon, 30 Nov 2020 00:17:41 +0100 (CET)
+Date:   Mon, 30 Nov 2020 00:17:41 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: aardvark: Update comment about disabling link
+ training
+Message-ID: <20201129231741.yfhf3y42mfnbp4xb@pali>
+References: <20200924084618.12442-1-pali@kernel.org>
+ <20200924151106.GA2319992@bjorn-Precision-5520>
+ <20200924152232.ecoxpmxdc5iyrz76@pali>
+ <20201011172149.x7crspugv2xne6ui@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201011172149.x7crspugv2xne6ui@pali>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: bd4d2b7839cffa929d076cfb62562f5edb8e1b14  Merge branch 'linus'
+On Sunday 11 October 2020 19:21:49 Pali Rohár wrote:
+> On Thursday 24 September 2020 17:22:32 Pali Rohár wrote:
+> > On Thursday 24 September 2020 10:11:06 Bjorn Helgaas wrote:
+> > > On Thu, Sep 24, 2020 at 10:46:18AM +0200, Pali Rohár wrote:
+> > > > It is not HW bug or workaround for some cards but it is requirement by PCI
+> > > > Express spec. After fundamental reset is needed 100ms delay prior enabling
+> > > > link training. So update comment in code to reflect this requirement.
+> > > > 
+> > > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > > ---
+> > > >  drivers/pci/controller/pci-aardvark.c | 7 ++++++-
+> > > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > > > index 50ab6d7519ae..19b9b79226e5 100644
+> > > > --- a/drivers/pci/controller/pci-aardvark.c
+> > > > +++ b/drivers/pci/controller/pci-aardvark.c
+> > > > @@ -259,7 +259,12 @@ static void advk_pcie_issue_perst(struct advk_pcie *pcie)
+> > > >  	if (!pcie->reset_gpio)
+> > > >  		return;
+> > > >  
+> > > > -	/* PERST does not work for some cards when link training is enabled */
+> > > > +	/*
+> > > > +	 * As required by PCI Express spec a delay for at least 100ms after
+> > > > +	 * de-asserting PERST# signal is needed before link training is enabled.
+> > > > +	 * So ensure that link training is disabled prior de-asserting PERST#
+> > > > +	 * signal to fulfill that PCI Express spec requirement.
+> > > 
+> > > Can you please include the spec citation here?  In the PCIe base spec,
+> > > PERST# is only mentioned in PCIe r5.0, sec 6.6.1, and I don't see the
+> > > connection there to 100ms between de-assert of PERST# and enabling
+> > > link training.
+> > 
+> > Hello! I copied this "comment" from other place in pci-aardvark.c where
+> > that timeout 100ms is already applied. Timeout with explanation comment
+> > was introduced in following commit:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f4c7d053d7f7
+> > 
+> > Here are links to discussions about that patch:
+> > 
+> > https://lore.kernel.org/linux-pci/20190313213752.1246-1-repk@triplefau.lt/T/#u
+> > https://lore.kernel.org/linux-pci/20190522213351.21366-2-repk@triplefau.lt/T/#u
+> 
+> Bjorn or Lorenzo, do you need something else for this patch? It just
+> updates comment and basically clarify why PERST does not work for some
+> cards when link training is enabled.
 
-elapsed time: 723m
+PING?
 
-configs tested: 93
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc8540_ads_defconfig
-m68k                       m5275evb_defconfig
-arm                         lpc32xx_defconfig
-xtensa                              defconfig
-mips                        vocore2_defconfig
-sh                   sh7724_generic_defconfig
-mips                     loongson1c_defconfig
-powerpc64                        alldefconfig
-mips                       lemote2f_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                      pcm030_defconfig
-powerpc                    gamecube_defconfig
-arm                  colibri_pxa270_defconfig
-arm                         hackkit_defconfig
-powerpc                       eiger_defconfig
-mips                      pistachio_defconfig
-powerpc                     kilauea_defconfig
-mips                           ip22_defconfig
-arm                        trizeps4_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201129
-i386                 randconfig-a003-20201129
-i386                 randconfig-a002-20201129
-i386                 randconfig-a005-20201129
-i386                 randconfig-a001-20201129
-i386                 randconfig-a006-20201129
-x86_64               randconfig-a015-20201129
-x86_64               randconfig-a011-20201129
-x86_64               randconfig-a016-20201129
-x86_64               randconfig-a014-20201129
-x86_64               randconfig-a012-20201129
-x86_64               randconfig-a013-20201129
-i386                 randconfig-a012-20201129
-i386                 randconfig-a013-20201129
-i386                 randconfig-a011-20201129
-i386                 randconfig-a016-20201129
-i386                 randconfig-a014-20201129
-i386                 randconfig-a015-20201129
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20201129
-x86_64               randconfig-a006-20201129
-x86_64               randconfig-a004-20201129
-x86_64               randconfig-a005-20201129
-x86_64               randconfig-a002-20201129
-x86_64               randconfig-a001-20201129
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > > Sec 6.1.1 does talk about 100ms before sending config requests (for
+> > > ports that support <= 5 GT/s), and 100ms after link training completes
+> > > (for ports that support > 5 GT/s).
+> > > 
+> > > Maybe there's more language in a form-factor spec or something?
+> > > 
+> > > > +	 */
+> > > >  	reg = advk_readl(pcie, PCIE_CORE_CTRL0_REG);
+> > > >  	reg &= ~LINK_TRAINING_EN;
+> > > >  	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
+> > > > -- 
+> > > > 2.20.1
+> > > > 
