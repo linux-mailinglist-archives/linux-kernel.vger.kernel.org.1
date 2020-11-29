@@ -2,154 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DC22C7848
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 07:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BD62C7849
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 07:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725984AbgK2Gnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 01:43:43 -0500
-Received: from mout.gmx.net ([212.227.17.21]:33173 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgK2Gnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 01:43:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606632088;
-        bh=fCWPWMom4CBnkfFlttg3JFbO+85K6yihPMP/Yycb3Mc=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=FPEJN+1jSmXd6xpA9SmN6wsIXPYCa/6dPwz/g97heECAairmWv1SoiCwnEwYSnC4l
-         nZqhCqoUjHtwzaovXHEam7hCL7uSjlccUe3UbxfgG07QlXC+NXMgjg+YTTHjR78gvI
-         XcvAL5lEAHb3B4Rn2vKnM6THBT8B5lL9MVjAxKyM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.218.83]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MjjCF-1kKQ2l0S0x-00lAJD; Sun, 29
- Nov 2020 07:41:28 +0100
-Message-ID: <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
-Subject: Re: scheduling while atomic in z3fold
-From:   Mike Galbraith <efault@gmx.de>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Date:   Sun, 29 Nov 2020 07:41:26 +0100
-In-Reply-To: <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
-References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
-         <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
-         <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1726136AbgK2Goy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 01:44:54 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7168 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgK2Goy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 01:44:54 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fc3433b0001>; Sat, 28 Nov 2020 22:44:11 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 29 Nov
+ 2020 06:44:14 +0000
+Received: from vdi.nvidia.com (10.124.1.5) by mail.nvidia.com (172.20.187.18)
+ with Microsoft SMTP Server id 15.0.1473.3 via Frontend Transport; Sun, 29 Nov
+ 2020 06:44:12 +0000
+From:   Eli Cohen <elic@nvidia.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <lulu@redhat.com>, Eli Cohen <elic@nvidia.com>
+Subject: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
+Date:   Sun, 29 Nov 2020 08:43:51 +0200
+Message-ID: <20201129064351.63618-1-elic@nvidia.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vQVwnfLQ7SUFijawEudOBEUX2bvdX0ddMTBTNZH9SYYoeDo3IsB
- lxcV+LFrl4+hDqi3ethkrXpsFraWP6fYogvnMRdqTUvD1SwOeIaKfLGZcAknGitv0S6qTAM
- tjXQpeyfLiCqgrlyohEAruKGwWRF1kmTqFXd5bpEmUJSU4hU6oFZTm1o5lA4C5aERkvEYhk
- +z9pL4oOaRvGye3ncvwXg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:803a9b8iOAI=:fMQ3UE+K1ja4qAdVdstH2e
- fs+VCZbD2lyDg3IEOrdGviXq3sGR5lOQp2lPpV+J5i9xMrtYAbC5F9UuESVG+b9FJHyMT16IB
- X3FmK2NPIVcPUJG4ox0PYdGLZ+oXkRz7dTGwzECAigUhWNw2qZycK/HewK6UK6PhRdKApzTxG
- ZbOU+lWv3FVv5aIHpVqJ7+0cqidBbacwmi8ZnUZzn0gyXc7eQX2CVH1Te8r8bRxut2mDBYFvF
- HA/vttloh/KEkXeJoKBmHfyD+svxFBIisp6jBptah0qi0lsrwmSMupfo4Q9AJTeR2yMUp5ViP
- ebGcvB6EpPd9C6yGNvDnXz6Pb/jOvNidxxFzMyXhlt7R5B2mAvHzTuWNYLmf0a1SWgXT0X54y
- mBW6H3jaZRF0uq+ugy1GG6cytAAiI+QXYwRS4udWjlTvRnbYKN+pu8yOc7fxVPApfZeOCkOWV
- zdsLJFmQXH51GtiAxkCAWKDhoJ7G9Sv/BiFqNzP7Bilcd/F48i4pBaE9ZrTDadGN/jzmg3T1J
- hgeS/BM4aUYY3/cDdsZ2QxyVUfbeqShMGlikuFtgon59YcZNO+vFidKKbBKofg6lk0W3EnpXt
- ksCd9Wwy+/Vv8HSKFFkyVaBZs5N/A/+SmCzKXAlBzV4zlONpMg3Nu+zhPCFuuu2UTSIPZbTXh
- AVazuER1mvdvWP+j7qY+SAK7PJYv2eeK4mLzksWZQ57sTp6ckblkFH3L52JYwFMcYMvYrWo4N
- 74JRxOtjDbUzNPUXADhmjhmY7XOpUq4lt8FwLcQv+w7eoGzIJtZx8JKeLurjvdSbuYd724oXC
- w92C/xgcnbPBjnNw+hdBfDmkMzy3RF0TfUBVjpW49T/q94ZhuDOgoVL+skv7crkTiMDm1jGhQ
- PbeJJuNTlh8rYyhVMcGQ==
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606632252; bh=vnx+QKCDfGuWiwXTibE49Afola6Whl8yGwIrV5dy/uA=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Transfer-Encoding:Content-Type;
+        b=fXiCQCeiyS6nAjQgtUHmkwRkMBMlfVprpksS0XQUtspFr+f6FsLMoSXlGKAdVCCAI
+         zFT6TvXLDgOVOW8IMGaBbjm9oMwC58a/rXwt32AWY+BXRWSevOBq+VSEqv2r9tg5fF
+         lL5lQwvtlbCJL9qskJ4DU2OwHDrRBL8e/bgvyuaYVQeJ/uMXC+7l/ZYsTDqmmYNxjC
+         SpwMBlcU7ukSlqGRNvZh/XHZ0JIo6WYY7lDXpMnDqrIBtpkY/s+vzKXdcDIl3j8nQe
+         fHx/NUGii82jw2k5tYvYU4jc4R6MbNZiS1WZbCAz2Rt3BfUlN0jRiebQDzGmDuYYLn
+         lvO+GIQDC29wg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-11-28 at 15:27 +0100, Oleksandr Natalenko wrote:
->
-> > > Shouldn't the list manipulation be protected with
-> > > local_lock+this_cpu_ptr instead of get_cpu_ptr+spin_lock?
->
-> Totally untested:
+We should not try to use the VF MAC address as that is used by the
+regular (e.g. mlx5_core) NIC implementation. Instead, use a random
+generated MAC address.
 
-Hrm, the thing doesn't seem to care deeply about preemption being
-disabled, so adding another lock may be overkill.  It looks like you
-could get the job done via migrate_disable()+this_cpu_ptr().
+Suggested by: Cindy Lu <lulu@redhat.com>
+Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices=
+")
+Signed-off-by: Eli Cohen <elic@nvidia.com>
+---
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-In the case of the list in __z3fold_alloc(), after the unlocked peek,
-it double checks under the existing lock.  There's not a whole lot of
-difference between another cpu a few lines down in the same function
-diddling the list and a preemption doing the same, so why bother?
-
-Ditto add_to_unbuddied().  Flow decisions are being made based on zhdr-
->first/middle/last_chunks state prior to preemption being disabled as
-the thing sits, so presumably their stability is not dependent thereon,
-while the list is protected by the already existing lock, making the
-preempt_disable() look more incidental than intentional.
-
-Equally untested :)
-
-=2D--
- mm/z3fold.c |   17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
-
-=2D-- a/mm/z3fold.c
-+++ b/mm/z3fold.c
-@@ -642,14 +642,16 @@ static inline void add_to_unbuddied(stru
- {
- 	if (zhdr->first_chunks =3D=3D 0 || zhdr->last_chunks =3D=3D 0 ||
- 			zhdr->middle_chunks =3D=3D 0) {
--		struct list_head *unbuddied =3D get_cpu_ptr(pool->unbuddied);
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5=
+_vnet.c
+index 1fa6fcac8299..80d06d958b8b 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -1955,10 +1955,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
+ 	if (err)
+ 		goto err_mtu;
+=20
+-	err =3D mlx5_query_nic_vport_mac_address(mdev, 0, 0, config->mac);
+-	if (err)
+-		goto err_mtu;
 -
-+		struct list_head *unbuddied;
- 		int freechunks =3D num_free_chunks(zhdr);
-+
-+		migrate_disable();
-+		unbuddied =3D this_cpu_ptr(pool->unbuddied);
- 		spin_lock(&pool->lock);
- 		list_add(&zhdr->buddy, &unbuddied[freechunks]);
- 		spin_unlock(&pool->lock);
- 		zhdr->cpu =3D smp_processor_id();
--		put_cpu_ptr(pool->unbuddied);
-+		migrate_enable();
- 	}
- }
-
-@@ -886,8 +888,9 @@ static inline struct z3fold_header *__z3
- 	int chunks =3D size_to_chunks(size), i;
-
- lookup:
-+	migrate_disable();
- 	/* First, try to find an unbuddied z3fold page. */
--	unbuddied =3D get_cpu_ptr(pool->unbuddied);
-+	unbuddied =3D this_cpu_ptr(pool->unbuddied);
- 	for_each_unbuddied_list(i, chunks) {
- 		struct list_head *l =3D &unbuddied[i];
-
-@@ -905,7 +908,7 @@ static inline struct z3fold_header *__z3
- 		    !z3fold_page_trylock(zhdr)) {
- 			spin_unlock(&pool->lock);
- 			zhdr =3D NULL;
--			put_cpu_ptr(pool->unbuddied);
-+			migrate_enable();
- 			if (can_sleep)
- 				cond_resched();
- 			goto lookup;
-@@ -919,7 +922,7 @@ static inline struct z3fold_header *__z3
- 		    test_bit(PAGE_CLAIMED, &page->private)) {
- 			z3fold_page_unlock(zhdr);
- 			zhdr =3D NULL;
--			put_cpu_ptr(pool->unbuddied);
-+			migrate_enable();
- 			if (can_sleep)
- 				cond_resched();
- 			goto lookup;
-@@ -934,7 +937,7 @@ static inline struct z3fold_header *__z3
- 		kref_get(&zhdr->refcount);
- 		break;
- 	}
--	put_cpu_ptr(pool->unbuddied);
-+	migrate_enable();
-
- 	if (!zhdr) {
- 		int cpu;
++	eth_random_addr(config->mac);
+ 	mvdev->vdev.dma_dev =3D mdev->device;
+ 	err =3D mlx5_vdpa_alloc_resources(&ndev->mvdev);
+ 	if (err)
+--=20
+2.26.2
 
