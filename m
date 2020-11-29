@@ -2,313 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65B42C79D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 16:56:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F41452C79D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 17:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgK2Pzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 10:55:48 -0500
-Received: from mout01.posteo.de ([185.67.36.65]:35440 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727357AbgK2Pzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 10:55:47 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id D9C2816006C
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 16:54:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1606665286; bh=DUktSWeBkRcQjmy8lE/9yXehjpzS9dnTghZ+sTz2URs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=f+1Hf3R+Xsn4A8DTvRP7EPu2iqnYbSo35JyZnTZkqEnMsR21hhTAx/jn9/0SLhIpa
-         /HglSztoLzBAOHT2ht+doyz4xOBRkbCWOdMUvFuTSj2AK0mVLToEbCM6tbSYWUdESv
-         ASVDhGsZcYIgaykfv55TgnJVzCaCGmLMsBiMKCMvZHjPe309TKYkiL00YFORSGIu3b
-         F0OFhoNIUh/USPvRyIl1HQyHltwlbkxKT4l0NyMYoFoP3FwauvXRjGi0ee80NcpgeU
-         LPh8rr1RPKX415/79V80sgaYFBfZwgAb8CQBctrNmElFdX/3Djbz259EZanvzKJA1V
-         R1FtKGn+0QLxQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4CkXxK458jz6tmL;
-        Sun, 29 Nov 2020 16:54:45 +0100 (CET)
-Date:   Sun, 29 Nov 2020 16:54:43 +0100
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jonas Malaco <jonas@protocubo.io>, linux-kernel@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH] hwmon: corsair-psu: update supported devices
-Message-ID: <20201129165443.51d22225@monster.powergraphx.local>
-In-Reply-To: <20201129130049.GB120875@roeck-us.net>
-References: <X7+T4aZSUuzfsf7H@monster.powergraphx.local>
-        <CANS_-EN8rgFEyE5rDw3=JLUYNwLQexafn7efvMC_=+4s2h1R6Q@mail.gmail.com>
-        <20201128113524.24f4f56f@monster.powergraphx.local>
-        <CANS_-EPK75zrVRtBKxO-00RZD-XWrixJD8DH1_d=80rbazXQng@mail.gmail.com>
-        <20201129073618.082c2291@monster.powergraphx.local>
-        <20201129130049.GB120875@roeck-us.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727566AbgK2QHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 11:07:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgK2QHM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 11:07:12 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E3AC0613CF;
+        Sun, 29 Nov 2020 08:06:32 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id t3so8394513pgi.11;
+        Sun, 29 Nov 2020 08:06:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ALXc7Qe3C+ECWCLA5rktXhPD6AeZz9/f+AYmP6J+Vt8=;
+        b=sTynAWyUtWwL/d3vDk5zw41PYTBK9FCyUHdlkoYPNtuThJP2wcn+UXaGNH3aXnpzfu
+         TvyNCSQLIJ9tWQaNjeTr4dk6wuukzZO6Nc9o/wGh/R2QKLo5ftL74DnSmJUjPhP21QKq
+         v4zwI8oS5lnzyhJ65kY+/pameNzrSc9h/Ky8W+hylha6+gl3SB4p28ejhzfNFPdouB+L
+         IDk2LbHb8wYfNbKxpJHLJ7zPA6zckQF+Fsssnj+qBijjAtw+sToNv9r1U5u9MFG7vH+R
+         J5j6aqNF/fW+j599Y8w1hhq0xw4BxuTnuTERG/fw+6cwpNvUSAe0P96VhsUIckPCDgTp
+         yFCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ALXc7Qe3C+ECWCLA5rktXhPD6AeZz9/f+AYmP6J+Vt8=;
+        b=aTxGE2NntcUD7cO9324qaIYGTeDuStgqxzo1GvQQqyh0W9/KM6i/APrB04W5VOkkTm
+         I2AHkwWPW6BHMuQMo2vNsoU5T2/HWmM6QjyaMlKBOwSDLypgLHq7PYL1SXssi5o7OWTW
+         dnapN/iovsEKSZmYvy35iLLl7eMPBKg6pe1SSWYcpu+hud3pJLS+HmLInlwSTuPwMjnC
+         ANiCgBDY4spDEMQNoezYBtXoN3T4aexOyurE1DsqB+MtbnLuww6iRwV5+3PXxeA/0l3E
+         OKluOWv8qOUhRrItNo+VNsB3KAiqFj6+i6XXB7maHvyW4VNke92Py9sWSdPnttAysrzM
+         h/bQ==
+X-Gm-Message-State: AOAM530NP6Nhb7pu4QernO+c434y5ZEamKOP/SXK5Giy/0p3CsddEe1W
+        6ihWLPg2OOVERz/IDjJFXgo=
+X-Google-Smtp-Source: ABdhPJz5LSVSwgMMUQ4+CLBco7tWDqMUukYtlB/zr1LasR2Q3+m+66oVmJPVr52SzwS3ITOXdjNX6g==
+X-Received: by 2002:a63:484d:: with SMTP id x13mr13699870pgk.301.1606665990252;
+        Sun, 29 Nov 2020 08:06:30 -0800 (PST)
+Received: from localhost.localdomain ([49.207.196.188])
+        by smtp.gmail.com with ESMTPSA id u3sm13496837pfu.47.2020.11.29.08.06.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Nov 2020 08:06:29 -0800 (PST)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 00/15] drivers: usb: misc: update to use usb_control_msg_{send|recv}()
+Date:   Sun, 29 Nov 2020 21:35:57 +0530
+Message-Id: <20201129160612.1908074-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Nov 2020 05:00:49 -0800
-Guenter Roeck <linux@roeck-us.net> wrote:
 
-> On Sun, Nov 29, 2020 at 07:36:18AM +0100, Wilken Gottwalt wrote:
-> > On Sat, 28 Nov 2020 17:21:40 -0300
-> > Jonas Malaco <jonas@protocubo.io> wrote:
-> > 
-> > > On Sat, Nov 28, 2020 at 7:35 AM Wilken Gottwalt
-> > > <wilken.gottwalt@posteo.net> wrote:
-> > > >
-> > > > On Sat, 28 Nov 2020 02:37:38 -0300
-> > > > Jonas Malaco <jonas@protocubo.io> wrote:
-> > > >
-> > > > > On Thu, Nov 26, 2020 at 8:43 AM Wilken Gottwalt
-> > > > > <wilken.gottwalt@posteo.net> wrote:
-> > > > > >
-> > > > > > Adds support for another Corsair PSUs series: AX760i, AX860i, AX1200i,
-> > > > > > AX1500i and AX1600i. The first 3 power supplies are supported through
-> > > > > > the Corsair Link USB Dongle which is some kind of USB/Serial/TTL
-> > > > > > converter especially made for the COM ports of these power supplies.
-> > > > > > There are 3 known revisions of these adapters. The AX1500i power supply
-> > > > > > has revision 3 built into the case and AX1600i is the only one in that
-> > > > > > series, which has an unique usb hid id like the RM/RX series.
-> > > > >
-> > > > > Can I ask what AXi power supplies were tested?
-> > > > >
-> > > > > I ask because, based on the user-space implementations I am aware of,
-> > > > > the AXi dongle protocol appears to be different from the RMi/HXi series.
-> > > >
-> > > > I was not able to test this against the AX power supplies, they are really
-> > > > hard to find (and are far to expensive). But I went through all these tools
-> > > > and stuck to the most common commands, which all 3 series support. Not every
-> > > > series supports all commands (there also seem to be different firmwares in
-> > > > the micro-conrollers). But this is fine, some sensors will show up as N/A.
-> > > > Even my HX850i does not support all commands covered in this driver.
-> > > 
-> > > I think the similarities come from all using wrappers over the PMBus
-> > > interface to the voltage controller.  But I am not sure the wrapping
-> > > protocols are identical.
-> > > 
-> > > For example, cpsumon shows significantly more things going on during a
-> > > read than what is needed for the RMi/HXi series.[1]
-> > > 
-> > > [1] https://github.com/ka87/cpsumon/blob/fd639684d7f9/libcpsumon/src/cpsumon.c#L213-L231
-> > > 
-> > > 
-> > > >
-> > > > > AXi dongle:
-> > > > >  - https://github.com/ka87/cpsumon
-> > > >
-> > > > This tool made me to consider including the AX series, because it uses some
-> > > > of the same commands on the AX760i, AX860i, AX1200i and AX1500i. But it is
-> > > > a usb-serial tool only. But it was nice to know, that the commands are mostly
-> > > > the same. I left out all the commands for configuring, PCIe power rails,
-> > > > efficiency and others which do not really belong into hwmon.
-> > > >
-> > > > > RMi/HXi:
-> > > > >  - https://github.com/jonasmalacofilho/liquidctl
-> > > > >  - https://github.com/audiohacked/OpenCorsairLink
-> > > >
-> > > > This tool made me include the AX series, because it uses the rmi protocol
-> > > > component for the rmi driver (RM/HX series) and the corsair dongles.
-> > > 
-> > > The corsairlink_driver_dongle has no implementations for reading sensor
-> > > data (compare that with the corsairlink_driver_rmi).[2][3]  There is
-> > > also no code that actually tries to read (write) from (to) the device
-> > > using that dongle driver.[4]
-> > > 
-> > > I also looked at a few of the issues, and all of the ones I read
-> > > mentioned AXi support being under development, and the hypothesis of the
-> > > AXi series being compatible with the RMi/HXi code still remaining to be
-> > > confirmed.
-> > > 
-> > > [2] https://github.com/audiohacked/OpenCorsairLink/blob/61d336a61b85/drivers/dongle.c#L33-L39
-> > > [3] https://github.com/audiohacked/OpenCorsairLink/blob/61d336a61b85/drivers/rmi.c#L33-L57
-> > > [4] https://github.com/audiohacked/OpenCorsairLink/blob/61d336a61b85/main.c#L106
-> > > 
-> > > 
-> > > >
-> > > > >  - https://github.com/notaz/corsairmi
-> > > >
-> > > > This one covers only some HX/RM PSUs, but is uses the rawhid access which
-> > > > made me looking up the actual usb chips/bridges Corsair uses.
-> > > >
-> > > > >
-> > > > > One additional concern is that the non-HID AXi dongles may only have bulk
-> > > > > USB endpoints, and this is a HID driver.[1]
-> > > >
-> > > > You are right, in the case of the dongles it could be different. But I did
-> > > > some research on Corsair usb driven devices and they really like to stick to
-> > > > the cp210x, which is an usb hid bridge. The commit
-> > > > b9326057a3d8447f5d2e74a7b521ccf21add2ec0 actually covers two Corsair USB
-> > > > dongles as a cp210x device. So it is very likely that all Corsair PSUs with
-> > > > such an interface/dongle use usb hid. But I'm completely open to get proven
-> > > > wrong. Actually I really would like to see this tested by people who have
-> > > > access to the more rare devices.
-> > > 
-> > > I could be wrong (and I am sorry for the noise if that is the case), but
-> > > as far as I can see the cp210x does not create a HID device.
-> > 
-> > No no, this is fine. It really helps if some more people are looking into this.
-> > I wish I had access to at least one of the later models (AX1500i/AX1600i), I
-> > make mistakes from time to time. And it really doesn't help that Corsair changes
-> > single devices in the same product line by firmware update. The AX1600i seems to
-> > be the only one, which uses exactly the same protocol like the RM/HX series, but
-> > is missing the actual usb hid part. But there seems to be a firmware where the
-> > usb hid part was available for a short time. So, what to do? Remove the AXi part
-> > completely or keep only the AX1600i?
-> > 
-> > Guenter, what would you suggest?
-> > 
-> I'd suggest to remove it completely, and explain the reason. Anything else will
-> just create trouble with people demanding to know why their power supply is not
-> supported even though it is listed as supported. And, believe me, you don't want
-> to be on the receiving side of those complaints. The Internet is much less
-> friendly nowadays than it used to be.
+The new usb_control_msg_{send|recv}() API provides an improved way of 
+using usb_control_msg(). Using this, short reads/writes are considered
+as errors, data can be used off the stack, and the need for the calling
+function to create a raw usb pipe is eliminated.
+This patch series aims to update existing instances of usb_control_msg() 
+in drivers/usb/misc to usb_control_msg_{send|recv}() appropriately, and
+also update the return value checking mechanisms in place (if any), as
+necessary so nothing breaks.
 
-So how is the procedure for this? Just revert it and make a common patch out of
-it with a proper explanation?
+I was however unable to update one instance of usb_control_msg() in 
+drivers/usb/misc/apple-mfi-fastcharge.c.
 
-And yeah, I know exactly what you mean. I remember very well how the "internet"
-got it first ugly hit in the 90s with the upcoming of Flash ... and then the
-"social media". :D Thanks for your help.
+The return value checking mechanism present here, is as follows.
+	if (retval) {
+		dev_dbg(&mfi->udev->dev, "retval = %d\n", retval);
+		return retval;
+	}
 
-greetings,
-Wilken
+	mfi->charge_type = val->intval;
 
-> Guenter
-> 
-> > > Thanks again,
-> > > Jonas
-> > > 
-> > > 
-> > > >
-> > > > > Thanks,
-> > > > > Jonas
-> > > > >
-> > > > > [1] https://github.com/ka87/cpsumon/issues/4
-> > > >
-> > > > Yes ... that one. The last revision of the dongle could indeed be a problem.
-> > > > But I'm not really sure what is described here. The last commenter is actually
-> > > > the one who provided the cp210x patch mentioned up there. The problem here is,
-> > > > the AX1500i has both connectors, USB and that other one. I call it the other
-> > > > one because it is the only PSU where it is labeled I2C COMM instead of COMM
-> > > > only. But at the same time this tools uses the same commands for this PSU.
-> > > >
-> > > > So, only some real hardware tests will show.
-> > > >
-> > > > Greetings,
-> > > > Wilken
-> > > >
-> > > > > >
-> > > > > > The patch also changes the usb hid ids to use upper case letters to be
-> > > > > > consistent with the rest of the hex numbers in the driver and updates
-> > > > > > the hwmon documentation.
-> > > > > >
-> > > > > > This patch adds:
-> > > > > > - hwmon/corsair-psu documentation update
-> > > > > > - corsair-psu driver update
-> > > > > >
-> > > > > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> > > > > > ---
-> > > > > >  Documentation/hwmon/corsair-psu.rst | 10 +++++++++
-> > > > > >  drivers/hwmon/Kconfig               |  7 +++---
-> > > > > >  drivers/hwmon/corsair-psu.c         | 33 +++++++++++++++++++----------
-> > > > > >  3 files changed, 36 insertions(+), 14 deletions(-)
-> > > > > >
-> > > > > > diff --git a/Documentation/hwmon/corsair-psu.rst b/Documentation/hwmon/corsair-psu.rst
-> > > > > > index 396b95c9a76a..6227e9046d73 100644
-> > > > > > --- a/Documentation/hwmon/corsair-psu.rst
-> > > > > > +++ b/Documentation/hwmon/corsair-psu.rst
-> > > > > > @@ -7,6 +7,16 @@ Supported devices:
-> > > > > >
-> > > > > >  * Corsair Power Supplies
-> > > > > >
-> > > > > > +  Corsair AX760i (by Corsair Link USB Dongle)
-> > > > > > +
-> > > > > > +  Corsair AX860i (by Corsair Link USB Dongle)
-> > > > > > +
-> > > > > > +  Corsair AX1200i (by Corsair Link USB Dongle)
-> > > > > > +
-> > > > > > +  Corsair AX1500i (by builtin Corsair Link USB Dongle)
-> > > > > > +
-> > > > > > +  Corsair AX1600i
-> > > > > > +
-> > > > > >    Corsair HX550i
-> > > > > >
-> > > > > >    Corsair HX650i
-> > > > > > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> > > > > > index 716df51edc87..3c059fc23cd6 100644
-> > > > > > --- a/drivers/hwmon/Kconfig
-> > > > > > +++ b/drivers/hwmon/Kconfig
-> > > > > > @@ -453,11 +453,12 @@ config SENSORS_CORSAIR_PSU
-> > > > > >         tristate "Corsair PSU HID controller"
-> > > > > >         depends on HID
-> > > > > >         help
-> > > > > > -         If you say yes here you get support for Corsair PSUs with a HID
-> > > > > > +         If you say yes here you get support for Corsair PSUs with an USB HID
-> > > > > >           interface.
-> > > > > >           Currently this driver supports the (RM/HX)550i, (RM/HX)650i,
-> > > > > > -         (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i and HX1200i power supplies
-> > > > > > -         by Corsair.
-> > > > > > +         (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i, HX1200i and AX1600i power
-> > > > > > +         supplies by Corsair. The AX760i, AX860i, AX1200i and AX1500i
-> > > > > > +         power supplies are supported through the Corsair Link USB Dongle.
-> > > > > >
-> > > > > >           This driver can also be built as a module. If so, the module
-> > > > > >           will be called corsair-psu.
-> > > > > > diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
-> > > > > > index 99494056f4bd..0146dda3e2c3 100644
-> > > > > > --- a/drivers/hwmon/corsair-psu.c
-> > > > > > +++ b/drivers/hwmon/corsair-psu.c
-> > > > > > @@ -571,17 +571,28 @@ static int corsairpsu_raw_event(struct hid_device *hdev, struct
-> > > > > > hid_report *repo }
-> > > > > >
-> > > > > >  static const struct hid_device_id corsairpsu_idtable[] = {
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c03) }, /* Corsair HX550i */
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c04) }, /* Corsair HX650i */
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c05) }, /* Corsair HX750i */
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c06) }, /* Corsair HX850i */
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c07) }, /* Corsair HX1000i */
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c08) }, /* Corsair HX1200i */
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c09) }, /* Corsair RM550i */
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0a) }, /* Corsair RM650i */
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0b) }, /* Corsair RM750i */
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0c) }, /* Corsair RM850i */
-> > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0d) }, /* Corsair RM1000i */
-> > > > > > +       /*
-> > > > > > +        * The Corsair USB/COM Dongles appear in at least 3 different revisions, where
-> > > > > > rev 1 and 2
-> > > > > > +        * are commonly used with the AX760i, AX860i and AX1200i, while rev3 is rarely
-> > > > > > seen with
-> > > > > > +        * these PSUs. Rev3 is also build into the AX1500i, while the AX1600i is the
-> > > > > > first PSU of
-> > > > > > +        * this series which has an unique usb hid id. Though, the actual device name is
-> > > > > > part of
-> > > > > > +        * the HID message protocol, so it doesn't matter which dongle is connected.
-> > > > > > +        */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C00) }, /* Corsair Link USB/COM Dongle rev1 */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C01) }, /* Corsair Link USB/COM Dongle rev2 */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C02) }, /* Corsair Link USB/COM Dongle rev3
-> > > > > > (AX1500i) */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C03) }, /* Corsair HX550i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C04) }, /* Corsair HX650i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C05) }, /* Corsair HX750i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C06) }, /* Corsair HX850i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C07) }, /* Corsair HX1000i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C08) }, /* Corsair HX1200i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C09) }, /* Corsair RM550i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0A) }, /* Corsair RM650i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0B) }, /* Corsair RM750i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0C) }, /* Corsair RM850i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0D) }, /* Corsair RM1000i */
-> > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C11) }, /* Corsair AX1600i */
-> > > > > >         { },
-> > > > > >  };
-> > > > > >  MODULE_DEVICE_TABLE(hid, corsairpsu_idtable);
-> > > > > > --
-> > > > > > 2.29.2
-> > > > > >
-> > > >
-> > 
+	return 0;
+
+This implies that mfi->charge_type = val->intval only when number of
+bytes transferred = 0, and the return value is directly returned 
+otherwise. Since the new API doesn't return the number of bytes 
+transferred, I wasn't quite sure how this instance could be updated.
+In case this check is logically incorrect, a patch with a fix 
+can be sent in as well.
+
+
+Anant Thazhemadam (15):
+  usb: misc: appledisplay: update to use the
+    usb_control_msg_{send|recv}() API
+  usb: misc: cypress_cy7c63: update to use usb_control_msg_recv()
+  usb: misc: cytherm: update to use usb_control_msg_recv()
+  usb: misc: ehset: update to use the usb_control_msg_{send|recv}() API
+  usb: misc: emi26: update to use usb_control_msg_send()
+  usb: misc: emi62: update to use usb_control_msg_send()
+  usb: misc: ezusb: update to use usb_control_msg_send()
+  usb: misc: idmouse: update to use usb_control_msg_send()
+  usb: misc: iowarrior: update to use the usb_control_msg_{send|recv}()
+    API
+  usb: misc: isight_firmware: update to use usb_control_msg_send()
+  usb: misc: ldusb: update to use usb_control_msg_send()
+  usb: misc: lvstest: update to use the usb_control_msg_{send|recv}()
+    API
+  usb: misc: trancevibrator: update to use usb_control_msg_send()
+  usb: misc: usbsevseg: update to use usb_control_msg_send()
+  usb: misc: usbtest: update to use the usb_control_msg_{send|recv}()
+    API
+
+ drivers/usb/misc/appledisplay.c    | 46 ++++++++------------
+ drivers/usb/misc/cypress_cy7c63.c  | 10 ++---
+ drivers/usb/misc/cytherm.c         | 42 +++++++++---------
+ drivers/usb/misc/ehset.c           | 70 +++++++++++++-----------------
+ drivers/usb/misc/emi26.c           | 14 +-----
+ drivers/usb/misc/emi62.c           | 14 +-----
+ drivers/usb/misc/ezusb.c           | 16 +------
+ drivers/usb/misc/idmouse.c         |  5 ++-
+ drivers/usb/misc/iowarrior.c       | 34 +++++++--------
+ drivers/usb/misc/isight_firmware.c | 22 +++++-----
+ drivers/usb/misc/ldusb.c           |  8 ++--
+ drivers/usb/misc/lvstest.c         | 30 ++++++-------
+ drivers/usb/misc/trancevibrator.c  |  6 +--
+ drivers/usb/misc/usbsevseg.c       | 52 +++++++---------------
+ drivers/usb/misc/usbtest.c         | 63 +++++++++++++--------------
+ 15 files changed, 180 insertions(+), 252 deletions(-)
+
+-- 
+2.25.1
 
