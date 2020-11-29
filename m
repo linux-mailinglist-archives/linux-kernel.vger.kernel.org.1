@@ -2,110 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D402C7717
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 02:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E68C22C7719
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 02:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727210AbgK2BHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 20:07:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgK2BHt (ORCPT
+        id S1728538AbgK2BKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 20:10:16 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16334 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725862AbgK2BKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 20:07:49 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C22C0613D2;
-        Sat, 28 Nov 2020 17:07:09 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id s63so7387631pgc.8;
-        Sat, 28 Nov 2020 17:07:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yhpJsuB2XchhEKb/EAYyLqgLN0ibLc1dc4vULmZ0Dnc=;
-        b=GYh7mRnY5RiTPQOgim5X/KaU7jNy2fRb0+sKX6RtqFEAshyxe49p9/vcSx7mIElqFd
-         HiIax09hHeB1VCTE2vbdJ+cVbhg7o2hnyXerWuN35xhD7hMO+p979kX/uflOqYkEaKOC
-         r0YTLl/kh/KgvDuSrH7e3MTOq9vfH8mKyQVe5FJsGRUoKtbQ3c41Ocjc4WItbkN8mGnV
-         9byIEYSRVtPFrOAPQvFBV+u6DrnYAXaOaluw1HivG4/2QAcT8dgUMuYbRjIbdCk6eBhn
-         8zHMuCCoHwcKVjAaXdNTKDvape5ZIWHNelH+sB8ftedg9rUiGoZykh3DGA6QplRyNOIX
-         gVCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yhpJsuB2XchhEKb/EAYyLqgLN0ibLc1dc4vULmZ0Dnc=;
-        b=S9gY4baMK60PoFjwB5GnO698N9feRCITDMijPqbecrCFxnVxsu7yJ8+rQMnyvp3cGL
-         YhFvkNkblbTMQFIC4lG8d3fav1m18YrgYa5m+NOa8fYn2CUcwtltGmjwPBx01Xz7ribC
-         w2yr84qppZBk/t8J7PIXqurKAQUYX8HqahgBCpkGP3IHoFn/YpH1A5iTMYEL17ywws5p
-         ao89/I8QvItbfPMI0J6gGFFvqw5insXgAii/SQPlZTp48WyuxJNJsFG5RWKS58EKVAJE
-         grCOtweEKGdBiBBRx3IwpXXMU0bmDjQ4wYCPY+ij5D2e/CP6f9z2t9OH01LnCfoZsrQw
-         ikfw==
-X-Gm-Message-State: AOAM533IqClNsqkeu6XHwAez3Mh3XiIR3m9JgcAZI4bKlLrRcB32xhNs
-        gjreL6mkQtFReXEopVukIFQ=
-X-Google-Smtp-Source: ABdhPJxQkkMqMR2Ln+1hgeRSlgKBZBp/fhRNQrJPfG9XDrFVn5fHfsLQbMFY3WHyIwxteaUeU+cs5A==
-X-Received: by 2002:a17:90a:aa0f:: with SMTP id k15mr18904581pjq.171.1606612029145;
-        Sat, 28 Nov 2020 17:07:09 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:5925])
-        by smtp.gmail.com with ESMTPSA id y1sm11366929pfe.80.2020.11.28.17.07.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 17:07:08 -0800 (PST)
-Date:   Sat, 28 Nov 2020 17:07:05 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-Message-ID: <20201129010705.7djnqmztkjhqlrdt@ast-mbp>
-References: <20201126165748.1748417-1-revest@google.com>
+        Sat, 28 Nov 2020 20:10:16 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AT13SKX140324;
+        Sat, 28 Nov 2020 20:09:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=UDOXAYojWMGEmAUf2mXBo4TfALKrwni4+uI6zmb0F40=;
+ b=qtFr31GEnos0/XgBZaxCKVZhbc9gzeXtDIRlTkuas8tJhM3yZTUOH2YBi2xkTU6azbfO
+ KQRXc5X972S9EbrtNrO6mmaUNOKs1OYeo9XRVLDQ0Y1vuHcYhmLiRRZRzK90vuv/7eu6
+ w518u+/pDSOw9d7IeDtLb0YeMZFZIgN62KTScGthvENK28om7QZjU0YQbDiTFoF3I+9r
+ fOoV1OfK5ITY0AD1eiU6OXvE50q6wdTsZX/Fz849opOBqNQemWUKjzcCYcMJZiBKt6BU
+ v5AuUMlf7/LQgle/s4q2eiH4y3Y6mlQWKnfEa6fnq/1YXw53xrTSBFBVVWaRTj3FlefW xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 353yq21rqk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 28 Nov 2020 20:09:31 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AT13lek140999;
+        Sat, 28 Nov 2020 20:09:31 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 353yq21rpx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 28 Nov 2020 20:09:31 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AT11YIS029303;
+        Sun, 29 Nov 2020 01:09:29 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 353e680rre-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Nov 2020 01:09:29 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AT19Qbv11338324
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 29 Nov 2020 01:09:26 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1A362A4054;
+        Sun, 29 Nov 2020 01:09:26 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5803FA405C;
+        Sun, 29 Nov 2020 01:09:25 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.47.217])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Sun, 29 Nov 2020 01:09:25 +0000 (GMT)
+Date:   Sun, 29 Nov 2020 02:09:23 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v12 10/17] s390/vfio-ap: initialize the guest apcb
+Message-ID: <20201129020923.6c470310.pasic@linux.ibm.com>
+In-Reply-To: <20201124214016.3013-11-akrowiak@linux.ibm.com>
+References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
+        <20201124214016.3013-11-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201126165748.1748417-1-revest@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-28_18:2020-11-26,2020-11-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ suspectscore=0 priorityscore=1501 adultscore=0 clxscore=1015
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 impostorscore=0
+ bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011290003
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 05:57:47PM +0100, Florent Revest wrote:
-> This helper exposes the kallsyms_lookup function to eBPF tracing
-> programs. This can be used to retrieve the name of the symbol at an
-> address. For example, when hooking into nf_register_net_hook, one can
-> audit the name of the registered netfilter hook and potentially also
-> the name of the module in which the symbol is located.
-> 
-> Signed-off-by: Florent Revest <revest@google.com>
-> ---
->  include/uapi/linux/bpf.h       | 16 +++++++++++++
->  kernel/trace/bpf_trace.c       | 41 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 16 +++++++++++++
->  3 files changed, 73 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index c3458ec1f30a..670998635eac 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3817,6 +3817,21 @@ union bpf_attr {
->   *		The **hash_algo** is returned on success,
->   *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
->   *		invalid arguments are passed.
-> + *
-> + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
-> + *	Description
-> + *		Uses kallsyms to write the name of the symbol at *address*
-> + *		into *symbol* of size *symbol_sz*. This is guaranteed to be
-> + *		zero terminated.
-> + *		If the symbol is in a module, up to *module_size* bytes of
-> + *		the module name is written in *module*. This is also
-> + *		guaranteed to be zero-terminated. Note: a module name
-> + *		is always shorter than 64 bytes.
-> + *	Return
-> + *		On success, the strictly positive length of the full symbol
-> + *		name, If this is greater than *symbol_size*, the written
-> + *		symbol is truncated.
-> + *		On error, a negative value.
+On Tue, 24 Nov 2020 16:40:09 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Looks like debug-only helper.
-I cannot think of a way to use in production code.
-What program suppose to do with that string?
-Do string compare? BPF side doesn't have a good way to do string manipulations.
-If you really need to print a symbolic name for a given address
-I'd rather extend bpf_trace_printk() to support %pS
+> The APCB is a control block containing the masks that specify the adapters,
+> domains and control domains to which a KVM guest is granted access. When
+> the vfio_ap device driver is notified that the KVM pointer has been set,
+> the guest's APCB is initialized from the AP configuration of adapters,
+> domains and control domains assigned to the matrix mdev. The linux device
+> model, however, precludes passing through to a guest any devices that
+> are not bound to the device driver facilitating the pass-through.
+> Consequently, APQNs assigned to the matrix mdev that do not reference
+> AP queue devices must be filtered before assigning them to the KVM guest's
+> APCB; however, the AP architecture precludes filtering individual APQNs, so
+> the APQNs will be filtered by APID. That is, if a given APQN does not
+> reference a queue device bound to the vfio_ap driver, its APID will not
+> get assigned to the guest's APCB. For example:
+> 
+> Queues bound to vfio_ap:
+> 04.0004
+> 04.0022
+> 04.0035
+> 05.0004
+> 05.0022
+> 
+> Adapters/domains assigned to the matrix mdev:
+> 04 0004
+>    0022
+>    0035
+> 05 0004
+>    0022
+>    0035
+> 
+> APQNs assigned to APCB:
+> 04.0004
+> 04.0022
+> 04.0035
+> 
+> The APID 05 was filtered from the matrix mdev's matrix because
+> queue device 05.0035 is not bound to the vfio_ap device driver.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+
+This adds filtering. So from here guest_matrix may be different
+than matrix also for an mdev that is associated with a guest. I'm still
+grappling with the big picture. Have you thought about testability?
+How is a testcase supposed to figure out which behavior is
+to be deemed correct?
+
+I don't like the title line. It implies that guest apcb was
+uninitialized before. Which is not the case.
+
+
+
+
