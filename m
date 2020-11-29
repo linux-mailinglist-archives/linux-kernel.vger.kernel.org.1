@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD8F2C7A5B
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 18:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5CA2C7A5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 18:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgK2RoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 12:44:15 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39511 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgK2RoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 12:44:15 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CkbLs04Zyz9s0b;
-        Mon, 30 Nov 2020 04:43:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606671813;
-        bh=12TB8Tot1UPqqko9B8n/QXPyID7KflY+Z8Ky2Sj5JXk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=vDHT41Y6tHfAjLyPJp9uwCMX6rM7GzRjBVU4fZkn7gYYfA9CLDH0pw/7A06YrVWo0
-         5tHhCLA+iNrESccMsMJgzhZtMMMpg7ydsEjucIm8avss1H/NRslNBR10QWCZsjLS0f
-         uLsU+Grvpk3hxlsvtq6Y1C9OJWQPQ03e+KV0uVdKSFvOziEFsuwKbfy2nbieL/hKJ5
-         1Cyc8qAgQbJ28XYl9WHfymldkm8aoZHdYyXAczWEWlM7winQBrLJ5mdaiKyFxhdUKy
-         OVHNLcahuI1bRpclymA5YbSHmXi7Szdn3jR/h7t58Ur1150/Q36ZqKo/4MSrxFiLXJ
-         crkSkfW8KLoxw==
-Date:   Mon, 30 Nov 2020 04:43:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Vadim Pasternak <vadimp@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the drivers-x86 tree
-Message-ID: <20201130044331.4abf7b91@canb.auug.org.au>
+        id S1727973AbgK2Rsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 12:48:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24725 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725830AbgK2Rst (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 12:48:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606672043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SrWAJHUZ40Lonyn1Q/nX2kCT++1DHjrIAsCFRqELYdU=;
+        b=Cg4+kG8oHvTNl5+X/rRzyjTaTMDx1SKM5lRQ+rgijw4t5Pal2x/8e4+o8olaqkLfu4yVtj
+        xuUKeS2eUb6dtPUHKv1Ni428lPWuD0TNzUEKhgvLToJKy17Zh8y5beIokLc6eC0DEdlOBW
+        Zg+RkDGfGz2ZIuDTbYZ6+zvhHWYFk+s=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-212-LZ9tK50uNgK4KEOjMjQH3A-1; Sun, 29 Nov 2020 12:47:21 -0500
+X-MC-Unique: LZ9tK50uNgK4KEOjMjQH3A-1
+Received: by mail-qt1-f200.google.com with SMTP id v18so6717825qta.22
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 09:47:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=SrWAJHUZ40Lonyn1Q/nX2kCT++1DHjrIAsCFRqELYdU=;
+        b=E1hSgJURdGpQFCmNIER4R78wefH9Q8yF4PeGxcREXG4K3xjp9MlPaEmctYNi9uBk4H
+         OKe2y6x0FPWlTSG38uDR+uZdvnWaVrvOXnyztbxFtjeQVPxiDhOZmvfxWmvyevAcuHdU
+         lFtaLi4cDlGg9wxrBO7FKIL5vsu+EkoNV3vzkrw5slLtjyD9rfstQ9yDyWM2l9F6irE2
+         Mkf46m8ynGIsTRkE6H+FUb++vK7geoK0tXd9CYu75um9Mtk6Tl2tC8MZtv2sgT/mkTVy
+         +r5z7Vs7rw33JnAXh+0A9wEa9cupjcp8cFgmdjwAQALgdjRvb6w09Urw016e/U7SOfRe
+         9MAA==
+X-Gm-Message-State: AOAM532nyWa63JXjnCtwPIZbUIATfMCI43ZP1qCYpeXx2Q3ghP36usaf
+        RoQY1N+1aYJjhFiwl1kJOKtqUrT1VvbrMpbjGQOz4zUOUok1G4yLOjDEWm0qUL4foJT1RR+jR/C
+        t45EMKFek+Cdl7nenDNAIuwsAA0Yd7uOIv7BAQMLDeayQycBjrg+LfIw04UNmPvvIJEPCUbA=
+X-Received: by 2002:a37:d8a:: with SMTP id 132mr18865361qkn.332.1606672040726;
+        Sun, 29 Nov 2020 09:47:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzn0xr4NyRhZFuipBRx/ScZBKeoKjxhE39f7KA13T6baPcGbruIJugXlMTwBH68yZ5MAhJD3A==
+X-Received: by 2002:a37:d8a:: with SMTP id 132mr18865344qkn.332.1606672040491;
+        Sun, 29 Nov 2020 09:47:20 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 14sm1559247qkk.128.2020.11.29.09.47.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Nov 2020 09:47:19 -0800 (PST)
+Subject: Re: [PATCH] locks: remove trailing semicolon in macro definition
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     jlayton@kernel.org, bfields@fieldses.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201127190707.2844580-1-trix@redhat.com>
+ <20201127195323.GZ4327@casper.infradead.org>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <8e7c0d56-64f3-d0b6-c1cf-9f285c59f169@redhat.com>
+Date:   Sun, 29 Nov 2020 09:47:18 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/f2Ah4giIT/Ac1VanpFLq_RC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201127195323.GZ4327@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/f2Ah4giIT/Ac1VanpFLq_RC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 11/27/20 11:53 AM, Matthew Wilcox wrote:
+> On Fri, Nov 27, 2020 at 11:07:07AM -0800, trix@redhat.com wrote:
+>> +++ b/fs/fcntl.c
+>> @@ -526,7 +526,7 @@ SYSCALL_DEFINE3(fcntl64, unsigned int, fd, unsigned int, cmd,
+>>  	(dst)->l_whence = (src)->l_whence;	\
+>>  	(dst)->l_start = (src)->l_start;	\
+>>  	(dst)->l_len = (src)->l_len;		\
+>> -	(dst)->l_pid = (src)->l_pid;
+>> +	(dst)->l_pid = (src)->l_pid
+> This should be wrapped in a do { } while (0).
+>
+> Look, this warning is clearly great at finding smelly code, but the
+> fixes being generated to shut up the warning are low quality.
+>
+Multiline macros not following the do {} while (0) pattern are likely a larger problem.
 
-In commit
+I'll take a look.
 
-  912b341585e3 ("platform/x86: mlx-platform: Remove PSU EEPROM from MSN274x=
- platform configuration")
+Thanks,
 
-Fixes tag
+Tom
 
-  Fixes: ef08e14a3 ("platform/x86: mlx-platform: Add support for new msn274=
-x system type")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-In commit
-
-  2bf5046bdb64 ("platform/x86: mlx-platform: Remove PSU EEPROM from default=
- platform configuration")
-
-Fixes tags
-
-  Fixes: c6acad68e ("platform/mellanox: mlxreg-hotplug: Modify to use a reg=
-map interface")
-  Fixes: ba814fdd0 ("platform/x86: mlx-platform: Use defines for bus assign=
-ment")
-
-have these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-These can be fixed in the future by setting core.abbrev to 12 (or more)
-or (for git v2.11 or later) just making sure it is not set (or set to
-"auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/f2Ah4giIT/Ac1VanpFLq_RC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/D3cMACgkQAVBC80lX
-0Gx0KAf/VQfKN9RXzb6f0FlJ8YhbzZ2XufoKPzOYxL1Ib3+K/z10NfH+yL1S2v8V
-6CULo0thM5UO1Rww7gr65jfE//1yBXDmWuHblVgNW8j+OqtR5SvfxylEMIZyAho+
-1WMjlGYYcDgsOP06gXOg8x5/YMZNkXjcPkmzVOsSeqPPdOcITw9QEsdhoxqt6bEX
-ZNJ6dVevEs409tPMfUPbfa34dfaEbOP6jUNbGjdDgLi6QylsvqNTcPoZZVNhw7Y/
-59346uhJxok5CEB+S8DoTBnJodfTwNKfxBTmzRlzXsPakJAWDx+6CRKu5rvdYsb4
-ctLTk8Z0TWIeyoofTnP7ctubx4ZZWA==
-=NLTe
------END PGP SIGNATURE-----
-
---Sig_/f2Ah4giIT/Ac1VanpFLq_RC--
