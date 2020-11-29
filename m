@@ -2,102 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2FD2C7A7F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 19:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1082C7A92
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 19:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgK2SQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 13:16:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58902 "EHLO
+        id S1728294AbgK2SZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 13:25:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgK2SQR (ORCPT
+        with ESMTP id S1726309AbgK2SZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 13:16:17 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D39C0613D2;
-        Sun, 29 Nov 2020 10:15:36 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id E8E62128098B;
-        Sun, 29 Nov 2020 10:15:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1606673733;
-        bh=KQfMF1A2OIPPAOwzmMPIGnkshCqrekjHxY7nCeJhFhQ=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=N6BgciTrlrM/EIZ+6zPwCOWWFEj3JSAEbIY3sehF2hTbXB2/aBJhqnMZkYI23mTjv
-         VpZKx8cegIzteHmno+VPPspd4uDPnpEPODiNq8L9uOzDhMn2zOLqAy0BWuACHottKY
-         PzqsDFGhye6i05zSr5ujFPw8kTQfrhDbSMLwBubc=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8Valpx4ImvwB; Sun, 29 Nov 2020 10:15:33 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 60BC7128098A;
-        Sun, 29 Nov 2020 10:15:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1606673733;
-        bh=KQfMF1A2OIPPAOwzmMPIGnkshCqrekjHxY7nCeJhFhQ=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=N6BgciTrlrM/EIZ+6zPwCOWWFEj3JSAEbIY3sehF2hTbXB2/aBJhqnMZkYI23mTjv
-         VpZKx8cegIzteHmno+VPPspd4uDPnpEPODiNq8L9uOzDhMn2zOLqAy0BWuACHottKY
-         PzqsDFGhye6i05zSr5ujFPw8kTQfrhDbSMLwBubc=
-Message-ID: <ec43cf0faa4bfeaa4495b4e1f1c61e617d468591.camel@HansenPartnership.com>
-Subject: Re: [PATCH] locks: remove trailing semicolon in macro definition
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, Tom Rix <trix@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     jlayton@kernel.org, bfields@fieldses.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sun, 29 Nov 2020 10:15:32 -0800
-In-Reply-To: <d65cd737-61a5-4b31-7f25-e72f0a7f4ec2@infradead.org>
-References: <20201127190707.2844580-1-trix@redhat.com>
-         <20201127195323.GZ4327@casper.infradead.org>
-         <8e7c0d56-64f3-d0b6-c1cf-9f285c59f169@redhat.com>
-         <d65cd737-61a5-4b31-7f25-e72f0a7f4ec2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Sun, 29 Nov 2020 13:25:06 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FCFC0613CF;
+        Sun, 29 Nov 2020 10:24:25 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id m16so12201827edr.3;
+        Sun, 29 Nov 2020 10:24:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+TaHdEkXgCN7CkQQ251SzNfRN/Dkm6ksvaE3LxK1LzI=;
+        b=bh0AQJXBSiA1fclqsj04XWp10nlZW3rQzm2mlHEK+u9ZlMBldHI9IV7PXYBkyWVb7h
+         2i8/H4EIcd3GCzU0Xo0NvEOzlGFd5FJWC20SDHDmRDrNenCO0l6RduZ5gOASwPfiVn30
+         29C8bGSIO5XiXfvMRfS2wtXww+KVY4sPRvIOeQW/pfsY+o+6MvQ2XyhF8WhLY9dt6316
+         FCv3yjyNFu7q8iPE5Ax0nDU+3whXo+72UE8c8jlIBbCVz85I9Xvl7r7gNqh0oJ5kCVVJ
+         8TeOuVoZgT3kzDTMOCcUFdjgtTVqjAY1VuvVunwOEj54AdzPzA6ei1EBR1Eu3MDQOjVE
+         htaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+TaHdEkXgCN7CkQQ251SzNfRN/Dkm6ksvaE3LxK1LzI=;
+        b=W9VIRB5gnmFhXmvQtMIsUPsV4Q8l8dI1BoKrf4E6ssS6VxDFEbYVa4Ifjn/wGPn/7u
+         tyn6147IFvRUnjs9B/4mE3nxMk9aenv5M2on55E9mXZgEBqcRee2Y99fiLg4wyO7ZIDg
+         1B9w027YdluNp6cI/Z045BMdiio1cKjefMEhc6gCmEcDvQsWeA505GxFnEmmt9D5MjHN
+         4ftgrQTYCUK+yVwg3ShBibO2UaTDXY5duJIydX27SPNnp5hnuR8wSLLYYRjck4EcRbk+
+         ywdck1ZaGA5ye7SJjyUPH4iNKV3ij2vVcnNbThKRrCW4rPE9GQMfqelFneOZVJAiN92l
+         5ToA==
+X-Gm-Message-State: AOAM5334FVeaPGomldRPGSKcvqtLBzGrQM7nrUfj+dycJPjnlEiCnj4c
+        MXvbSoTzd+5aG35ZXbvcuW66FN/Dqvc=
+X-Google-Smtp-Source: ABdhPJzQPimJ/g3YVN+L+ev4PqPO1ywE7NRbKa2WC+6fa6XWlkqPDvydKX8AsN3kFf0HE0y8mTOyJQ==
+X-Received: by 2002:a50:f082:: with SMTP id v2mr12973840edl.276.1606674264456;
+        Sun, 29 Nov 2020 10:24:24 -0800 (PST)
+Received: from BV030612LT ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id s15sm8145744edj.75.2020.11.29.10.24.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Nov 2020 10:24:23 -0800 (PST)
+Date:   Sun, 29 Nov 2020 20:24:21 +0200
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Rob Herring <robh+dt@kernel.org>, dmaengine@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 05/18] dmaengine: owl: Add compatible for the Actions
+ Semi S500 DMA controller
+Message-ID: <20201129182421.GD696261@BV030612LT>
+References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+ <f2e9f718eb8c7279127086795a4ef5047fc186d5.1605823502.git.cristian.ciocaltea@gmail.com>
+ <20201128073045.GU3077@thinkpad>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201128073045.GU3077@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-11-29 at 09:52 -0800, Randy Dunlap wrote:
-> On 11/29/20 9:47 AM, Tom Rix wrote:
-> > On 11/27/20 11:53 AM, Matthew Wilcox wrote:
-> > > On Fri, Nov 27, 2020 at 11:07:07AM -0800, trix@redhat.com wrote:
-> > > > +++ b/fs/fcntl.c
-> > > > @@ -526,7 +526,7 @@ SYSCALL_DEFINE3(fcntl64, unsigned int, fd,
-> > > > unsigned int, cmd,
-> > > >  	(dst)->l_whence = (src)->l_whence;	\
-> > > >  	(dst)->l_start = (src)->l_start;	\
-> > > >  	(dst)->l_len = (src)->l_len;		\
-> > > > -	(dst)->l_pid = (src)->l_pid;
-> > > > +	(dst)->l_pid = (src)->l_pid
-> > > This should be wrapped in a do { } while (0).
-> > > 
-> > > Look, this warning is clearly great at finding smelly code, but
-> > > the
-> > > fixes being generated to shut up the warning are low quality.
-> > > 
-> > Multiline macros not following the do {} while (0) pattern are
-> > likely a larger problem.
+On Sat, Nov 28, 2020 at 01:00:45PM +0530, Manivannan Sadhasivam wrote:
+> On Fri, Nov 20, 2020 at 01:55:59AM +0200, Cristian Ciocaltea wrote:
+> > The DMA controller present on the Actions Semi S500 SoC is compatible
+> > with the S900 variant, so add it to the list of devices supported by
+> > the Actions Semi Owl DMA driver.
 > > 
-> > I'll take a look.
+> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 > 
-> Could it become a static inline function instead?
-> or that might expand its scope too much?
+> I hope that you have verified both Memcpy and Slave transfers...
 
-I think nowadays we should always use static inlines for argument
-checking unless we're capturing debug information like __FILE__ or
-__LINE__ or something that a static inline can't.  Even in the latter
-case the pattern should probably be single line #define that captures
-the information and passes it to a static inline.
+I have been using 'dmatest' module as documented in:
+https://www.kernel.org/doc/html/latest/driver-api/dmaengine/dmatest.html
 
-There was a time when we had problems with compiler expansion of static
-inlines, so we shouldn't go back and churn the code base to change it
-because there's thousands of these and possibly some old compiler used
-for an obscure architecture that still needs the define.
+I tested all the available channels and could not find any signs of
+possible issues. Bellow is an excerpt from the kernel ring buffer:
 
-James
+[ 2661.884680] dmatest: dma0chan1-copy0: summary 300 tests, 0 failures 1653.48 iops 13249 KB/s (0)
+[ 2661.886567] dmatest: dma0chan2-copy0: summary 300 tests, 0 failures 1684.40 iops 12846 KB/s (0)
+[ 2661.888448] dmatest: dma0chan3-copy0: summary 300 tests, 0 failures 1730.62 iops 13648 KB/s (0)
 
+Should I perform some additional tests?
 
+Thanks,
+Cristi
+
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> 
+> Thanks,
+> Mani
+> 
+> > ---
+> >  drivers/dma/owl-dma.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/dma/owl-dma.c b/drivers/dma/owl-dma.c
+> > index 9fede32641e9..54e509de66e2 100644
+> > --- a/drivers/dma/owl-dma.c
+> > +++ b/drivers/dma/owl-dma.c
+> > @@ -1082,6 +1082,7 @@ static struct dma_chan *owl_dma_of_xlate(struct of_phandle_args *dma_spec,
+> >  static const struct of_device_id owl_dma_match[] = {
+> >  	{ .compatible = "actions,s900-dma", .data = (void *)S900_DMA,},
+> >  	{ .compatible = "actions,s700-dma", .data = (void *)S700_DMA,},
+> > +	{ .compatible = "actions,s500-dma", .data = (void *)S900_DMA,},
+> >  	{ /* sentinel */ },
+> >  };
+> >  MODULE_DEVICE_TABLE(of, owl_dma_match);
+> > -- 
+> > 2.29.2
+> > 
