@@ -2,133 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3ADB2C7963
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 14:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 225D02C796F
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 14:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgK2NSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 08:18:31 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25372 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727073AbgK2NSa (ORCPT
+        id S1727210AbgK2NjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 08:39:06 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:43340 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgK2NjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 08:18:30 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ATD2Yb7009442;
-        Sun, 29 Nov 2020 08:17:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=RET6IEGV68d1uV4rz0SlQt3ZjlfobHeZrj6jvGCfiKE=;
- b=W40tMc3Qrq+LHzjaQ3hAZ+7kBNUWb98bsvqczXv4rmBCigQfNLpxlccYYtNdgR7uB2+c
- 7DgpZp9Xe7FSFiynXiTjOgHR0HBnFQECcXX4SdCd24kiiuO7dVOTuXWOGAGaOZVI5O2p
- 5Gb3VoQLQT6lh77aDjb6fwe5Ib1uOEjSJT/dBXUIaNykHGpHrU15/JLcxoOtwjDgvbxe
- dLqH6A3cT4nSORiSGfqdKIxmN8JzT56ZsMEyD/4qg96u0Jl55FnFJxSWGqpTcbfy70wz
- cSaAGY9sxNG1tqv272x5WbRsbffMf/1zTHPtRpBVG6PFySqH9T+y1Cs+ZwKlH6q6ZYbt 3Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3544deynbk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 29 Nov 2020 08:17:48 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ATD2cMb009724;
-        Sun, 29 Nov 2020 08:17:47 -0500
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3544deyn7j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 29 Nov 2020 08:17:47 -0500
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ATDH1s5028058;
-        Sun, 29 Nov 2020 13:17:42 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 353e688jvh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 29 Nov 2020 13:17:42 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ATDHeAC59441586
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 29 Nov 2020 13:17:40 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 889D811C04C;
-        Sun, 29 Nov 2020 13:17:40 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E48011C04A;
-        Sun, 29 Nov 2020 13:17:39 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.20.242])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun, 29 Nov 2020 13:17:38 +0000 (GMT)
-Message-ID: <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
-Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with
- kernel measurements
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Maurizio Drocco <maurizio.drocco@ibm.com>,
-        Bruno Meneguele <bmeneg@redhat.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Date:   Sun, 29 Nov 2020 08:17:38 -0500
-In-Reply-To: <20200709012735.GX2722994@sasha-vm>
-References: <20200708154116.3199728-1-sashal@kernel.org>
-         <20200708154116.3199728-3-sashal@kernel.org>
-         <1594224793.23056.251.camel@linux.ibm.com>
-         <20200709012735.GX2722994@sasha-vm>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-29_07:2020-11-26,2020-11-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- clxscore=1031 mlxlogscore=999 spamscore=0 phishscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011290087
+        Sun, 29 Nov 2020 08:39:06 -0500
+Date:   Sun, 29 Nov 2020 13:37:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606657103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4M/usYIBH/1K7GIp/mAlVHgdWbH0i60lH29P4fz+KGg=;
+        b=hV6sn1SycCEKXXaHU+lcd9vx4E8asD1ZZJf3taL1iSwuDN8A0yOmguwcXVE/0MuIvvmMrp
+        LePqasUPgpSJwWFuTaShDEY0pXvONhB5MJ/qbialplh16hkusvC/0qPYIbsL/IuswoZBCJ
+        Y3k9h4IkmKcvyeheGDV4w/r8QdiPrM/aPWJaSDejbUt75C/vX8u3iVYH+oqv0ZlhMRt4e+
+        +R+vT1oZyA05GEfwT08G64g+T4BrJKD66ip9NpxOpv7f0NUesZWZ6cAtQ2C9MEry7S6Eb7
+        FrslWoqdMJ/l4rJJlv8AOY2/NiIf9FdmgkUGtDl26cYXcgzJhuzze8n9IWS08Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606657103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4M/usYIBH/1K7GIp/mAlVHgdWbH0i60lH29P4fz+KGg=;
+        b=E0x27bGNVSDMzsdlh50BtWpkFLqijP58w8G81ILJQTZR8wXS8aLD22WSbT2Do1b3LxMIMv
+        mgCocEzX4GXe6IDw==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] irq/urgent for v5.10-rc6
+Message-ID: <160665707945.2808.5384034634184489471.tglx@nanos>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha,
+Linus,
 
-On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
-> On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
-> >Hi Sasha,
-> >
-> >On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
-> >> From: Maurizio Drocco <maurizio.drocco@ibm.com>
-> >>
-> >> [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
-> >>
-> >> Registers 8-9 are used to store measurements of the kernel and its
-> >> command line (e.g., grub2 bootloader with tpm module enabled). IMA
-> >> should include them in the boot aggregate. Registers 8-9 should be
-> >> only included in non-SHA1 digests to avoid ambiguity.
-> >
-> >Prior to Linux 5.8, the SHA1 template data hashes were padded before
-> >being extended into the TPM.  Support for calculating and extending
-> >the per TPM bank template data digests is only being upstreamed in
-> >Linux 5.8.
-> >
-> >How will attestation servers know whether to include PCRs 8 & 9 in the
-> >the boot_aggregate calculation?  Now, there is a direct relationship
-> >between the template data SHA1 padded digest not including PCRs 8 & 9,
-> >and the new per TPM bank template data digest including them.
-> 
-> Got it, I'll drop it then, thank you!
+please pull the latest irq/urgent branch from:
 
-After re-thinking this over, I realized that the attestation server can
-verify the "boot_aggregate" based on the quoted PCRs without knowing
-whether padded SHA1 hashes or per TPM bank hash values were extended
-into the TPM[1], but non-SHA1 boot aggregate values [2] should always
-include PCRs 8 & 9.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-urgent-2020-11-29
 
-Any place commit 6f1a1d103b48 was backported [2], this commit
-20c59ce010f8 ("ima: extend boot_aggregate with kernel measurements")
-should be backported as well.
+up to:  7032908cd584: Merge tag 'irqchip-fixes-5.10-2' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
 
-thanks,
 
-Mimi
+Two fixes for irqchip drivers:
 
-[1] commit 1ea973df6e21 ("ima: Calculate and extend PCR with digests in ima_template_entry")
-[2] commit 6f1a1d103b48 ("ima: Switch to ima_hash_algo for boot aggregate")
+  - Save and restore the GICV3 ITS state unconditionally on suspend/resume
+    to handle firmware which fails to do so.
+
+  - Use the correct index into the fwspec parameters to read the irq
+    trigger type in the EXIU chip driver.
+
+Thanks,
+
+	tglx
+
+------------------>
+Chen Baozi (1):
+      irqchip/exiu: Fix the index of fwspec for IRQ type
+
+Xu Qiang (1):
+      irqchip/gic-v3-its: Unconditionally save/restore the ITS state on suspend
+
+
+ drivers/irqchip/irq-gic-v3-its.c | 16 +++-------------
+ drivers/irqchip/irq-sni-exiu.c   |  2 +-
+ 2 files changed, 4 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 0fec31931e11..4069c215328b 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -42,7 +42,6 @@
+ #define ITS_FLAGS_CMDQ_NEEDS_FLUSHING		(1ULL << 0)
+ #define ITS_FLAGS_WORKAROUND_CAVIUM_22375	(1ULL << 1)
+ #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
+-#define ITS_FLAGS_SAVE_SUSPEND_STATE		(1ULL << 3)
+ 
+ #define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
+ #define RDIST_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
+@@ -4741,9 +4740,6 @@ static int its_save_disable(void)
+ 	list_for_each_entry(its, &its_nodes, entry) {
+ 		void __iomem *base;
+ 
+-		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+-			continue;
+-
+ 		base = its->base;
+ 		its->ctlr_save = readl_relaxed(base + GITS_CTLR);
+ 		err = its_force_quiescent(base);
+@@ -4762,9 +4758,6 @@ static int its_save_disable(void)
+ 		list_for_each_entry_continue_reverse(its, &its_nodes, entry) {
+ 			void __iomem *base;
+ 
+-			if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+-				continue;
+-
+ 			base = its->base;
+ 			writel_relaxed(its->ctlr_save, base + GITS_CTLR);
+ 		}
+@@ -4784,9 +4777,6 @@ static void its_restore_enable(void)
+ 		void __iomem *base;
+ 		int i;
+ 
+-		if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+-			continue;
+-
+ 		base = its->base;
+ 
+ 		/*
+@@ -4794,7 +4784,10 @@ static void its_restore_enable(void)
+ 		 * don't restore it since writing to CBASER or BASER<n>
+ 		 * registers is undefined according to the GIC v3 ITS
+ 		 * Specification.
++		 *
++		 * Firmware resuming with the ITS enabled is terminally broken.
+ 		 */
++		WARN_ON(readl_relaxed(base + GITS_CTLR) & GITS_CTLR_ENABLE);
+ 		ret = its_force_quiescent(base);
+ 		if (ret) {
+ 			pr_err("ITS@%pa: failed to quiesce on resume: %d\n",
+@@ -5074,9 +5067,6 @@ static int __init its_probe_one(struct resource *res,
+ 		ctlr |= GITS_CTLR_ImDe;
+ 	writel_relaxed(ctlr, its->base + GITS_CTLR);
+ 
+-	if (GITS_TYPER_HCC(typer))
+-		its->flags |= ITS_FLAGS_SAVE_SUSPEND_STATE;
+-
+ 	err = its_init_domain(handle, its);
+ 	if (err)
+ 		goto out_free_tables;
+diff --git a/drivers/irqchip/irq-sni-exiu.c b/drivers/irqchip/irq-sni-exiu.c
+index 1d027623c776..abd011fcecf4 100644
+--- a/drivers/irqchip/irq-sni-exiu.c
++++ b/drivers/irqchip/irq-sni-exiu.c
+@@ -136,7 +136,7 @@ static int exiu_domain_translate(struct irq_domain *domain,
+ 		if (fwspec->param_count != 2)
+ 			return -EINVAL;
+ 		*hwirq = fwspec->param[0];
+-		*type = fwspec->param[2] & IRQ_TYPE_SENSE_MASK;
++		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+ 	}
+ 	return 0;
+ }
 
