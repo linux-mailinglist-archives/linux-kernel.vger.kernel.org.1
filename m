@@ -2,157 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703B92C7A74
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 19:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1082C7A7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 19:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727406AbgK2SJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 13:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
+        id S1728196AbgK2SLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 13:11:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgK2SJ6 (ORCPT
+        with ESMTP id S1728114AbgK2SLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 13:09:58 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91831C0613CF;
-        Sun, 29 Nov 2020 10:09:17 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id c7so4377705edv.6;
-        Sun, 29 Nov 2020 10:09:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jh1ddfH82M+9/9xGKQsswipTVir4/HTDEBDiLjn68GM=;
-        b=SpxjyzZ6/fD06lDe+qFMlwuvVS491FihDSROoCRT2Wl7ZwXcmFUuS3XAW1MYad3Q/t
-         YGnsnVYUwnxQfrcgHPl4vfUnnc6CzAUQNTuiN3s4pHJlcNNUnPCorE08Ua/44uNoF0PC
-         XBYLrX1As3fmmhZCzyzimaUyeZAc7+DDPuWehvV4wHHfclOPdgkrxgqEQdnCYqy0k5XT
-         d8n48p08g2+VLfGuqKEVz3ECus/ON59cbstF/fBqA+fH3YdJANikdxbtWbg48/7DW2TS
-         2OItQXACw69Q+AJI0fgWdUI2r13Pr+nsBkO2zZvCsnYP83EY+5BUK7U5/i8hGq9H58nj
-         2lrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jh1ddfH82M+9/9xGKQsswipTVir4/HTDEBDiLjn68GM=;
-        b=oh2PLqBsTOCojiv5IDbm0aRXA2XNU1EyrC+pPH39YUSqe+G6heAl3PhFC26kqNc5YK
-         ieSBceH2OHUBs41hTDt68ahpGLeZE3lHoieGxVrl3hwXpzOEMTW4kj+SwPgCfKlC+oYU
-         10bihLTdbQZgYAo1sclL64RBBQ20nYRn/HPOud42viYRmEaxLPJA459kYdU74wq4ZVtx
-         9yR290poMJug2GiiOyyfCmxclOizPiPkuDiDMVvPybBN1H2J8cyGBqtYMJ1lq9Cobvxl
-         rOT2dtyHOfq7yDeUnreZQp0HIVTYuDoZ8fxCpoJrcqL4UJKkHmY5VHfjcIorbjH+/NYM
-         HLqw==
-X-Gm-Message-State: AOAM530uRj59zB8bUqSnl5OpzrtJCoWUKHfoe2vs+udFey//icXeMkPX
-        EuvykVUCarVGjF+j0LM9zYII2d+vTWA=
-X-Google-Smtp-Source: ABdhPJxYX+oymAv34vK4CtkFageiJknB5F2rWappb7IyDCv7PiMs6gHF0gDZ+54yWSL+E17qaG6wXA==
-X-Received: by 2002:a05:6402:1115:: with SMTP id u21mr18150115edv.148.1606673356059;
-        Sun, 29 Nov 2020 10:09:16 -0800 (PST)
-Received: from BV030612LT ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id op24sm7639858ejb.56.2020.11.29.10.09.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 10:09:15 -0800 (PST)
-Date:   Sun, 29 Nov 2020 20:09:13 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/18] arm: dts: owl-s500: Set CMU clocks for UARTs
-Message-ID: <20201129180913.GB696261@BV030612LT>
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <1bd42cf44e5aaef1bb7e97e4e344444ddbfbb091.1605823502.git.cristian.ciocaltea@gmail.com>
- <20201128072513.GQ3077@thinkpad>
+        Sun, 29 Nov 2020 13:11:42 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C636C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 10:11:02 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kjR9z-0001or-Hl; Sun, 29 Nov 2020 19:10:55 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kjR9y-0004rr-Ee; Sun, 29 Nov 2020 19:10:54 +0100
+Date:   Sun, 29 Nov 2020 19:10:50 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
+References: <202011281128.54eLfMWr-lkp@intel.com>
+ <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5swyij2tuuhknhdb"
 Content-Disposition: inline
-In-Reply-To: <20201128072513.GQ3077@thinkpad>
+In-Reply-To: <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 12:55:13PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Nov 20, 2020 at 01:55:56AM +0200, Cristian Ciocaltea wrote:
-> > Set Clock Management Unit clocks for the UART nodes of Actions Semi
-> > S500 SoCs.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> 
-> Also in this patch itself, you need to remove the dummy "uart3_clk" from
-> S500 dts. With that,
 
-I have prepared the updated patch with the requested changes, including
-also the merge of the RoseapplePi related patch (no. 15 in this series).
+--5swyij2tuuhknhdb
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Cristi
+On Sat, Nov 28, 2020 at 01:02:06PM +0100, Lino Sanfilippo wrote:
+> Use the newer apply function of pwm_ops instead of config, enable, disable
+> and set_polarity.
+>=20
+> This guarantees atomic changes of the pwm controller configuration. It al=
+so
+> reduces the size of the driver.
+>=20
+> This has been tested on a Raspberry PI 4.
+>=20
+> v2: Fixed compiler error
 
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> Thanks,
-> Mani
-> 
-> > ---
-> >  arch/arm/boot/dts/owl-s500.dtsi | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-> > index 5d5ad9db549b..ac3d04c75dd5 100644
-> > --- a/arch/arm/boot/dts/owl-s500.dtsi
-> > +++ b/arch/arm/boot/dts/owl-s500.dtsi
-> > @@ -131,6 +131,7 @@ uart0: serial@b0120000 {
-> >  			compatible = "actions,s500-uart", "actions,owl-uart";
-> >  			reg = <0xb0120000 0x2000>;
-> >  			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cmu CLK_UART0>;
-> >  			status = "disabled";
-> >  		};
-> >  
-> > @@ -138,6 +139,7 @@ uart1: serial@b0122000 {
-> >  			compatible = "actions,s500-uart", "actions,owl-uart";
-> >  			reg = <0xb0122000 0x2000>;
-> >  			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cmu CLK_UART1>;
-> >  			status = "disabled";
-> >  		};
-> >  
-> > @@ -145,6 +147,7 @@ uart2: serial@b0124000 {
-> >  			compatible = "actions,s500-uart", "actions,owl-uart";
-> >  			reg = <0xb0124000 0x2000>;
-> >  			interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cmu CLK_UART2>;
-> >  			status = "disabled";
-> >  		};
-> >  
-> > @@ -152,6 +155,7 @@ uart3: serial@b0126000 {
-> >  			compatible = "actions,s500-uart", "actions,owl-uart";
-> >  			reg = <0xb0126000 0x2000>;
-> >  			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cmu CLK_UART3>;
-> >  			status = "disabled";
-> >  		};
-> >  
-> > @@ -159,6 +163,7 @@ uart4: serial@b0128000 {
-> >  			compatible = "actions,s500-uart", "actions,owl-uart";
-> >  			reg = <0xb0128000 0x2000>;
-> >  			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cmu CLK_UART4>;
-> >  			status = "disabled";
-> >  		};
-> >  
-> > @@ -166,6 +171,7 @@ uart5: serial@b012a000 {
-> >  			compatible = "actions,s500-uart", "actions,owl-uart";
-> >  			reg = <0xb012a000 0x2000>;
-> >  			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cmu CLK_UART5>;
-> >  			status = "disabled";
-> >  		};
-> >  
-> > @@ -173,6 +179,7 @@ uart6: serial@b012c000 {
-> >  			compatible = "actions,s500-uart", "actions,owl-uart";
-> >  			reg = <0xb012c000 0x2000>;
-> >  			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cmu CLK_UART6>;
-> >  			status = "disabled";
-> >  		};
-> >  
-> > -- 
-> > 2.29.2
-> > 
+Changelog between review rounds go to below the tripple-dash below.
+
+> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+> ---
+>  drivers/pwm/pwm-bcm2835.c | 64 ++++++++++++++++-------------------------=
+------
+>  1 file changed, 21 insertions(+), 43 deletions(-)
+>=20
+> diff --git a/drivers/pwm/pwm-bcm2835.c b/drivers/pwm/pwm-bcm2835.c
+> index 6841dcf..dad7443 100644
+> --- a/drivers/pwm/pwm-bcm2835.c
+> +++ b/drivers/pwm/pwm-bcm2835.c
+> @@ -58,13 +58,14 @@ static void bcm2835_pwm_free(struct pwm_chip *chip, s=
+truct pwm_device *pwm)
+>  	writel(value, pc->base + PWM_CONTROL);
+>  }
+> =20
+> -static int bcm2835_pwm_config(struct pwm_chip *chip, struct pwm_device *=
+pwm,
+> -			      int duty_ns, int period_ns)
+> +static int bcm2835_pwm_apply(struct pwm_chip *chip, struct pwm_device *p=
+wm,
+> +			     const struct pwm_state *state)
+>  {
+> +
+>  	struct bcm2835_pwm *pc =3D to_bcm2835_pwm(chip);
+>  	unsigned long rate =3D clk_get_rate(pc->clk);
+>  	unsigned long scaler;
+> -	u32 period;
+> +	u32 value;
+> =20
+>  	if (!rate) {
+>  		dev_err(pc->dev, "failed to get clock rate\n");
+> @@ -72,65 +73,42 @@ static int bcm2835_pwm_config(struct pwm_chip *chip, =
+struct pwm_device *pwm,
+>  	}
+> =20
+>  	scaler =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, rate);
+> -	period =3D DIV_ROUND_CLOSEST(period_ns, scaler);
+> +	/* set period */
+> +	value =3D DIV_ROUND_CLOSEST_ULL(state->period, scaler);
+
+You're storing an unsigned long long (i.e. 64 bits) in an u32. If you
+are sure that this won't discard relevant bits, please explain this in a
+comment for the cursory reader.
+
+Also note that round_closed is probably wrong, as .apply() is supposed
+to round down the period to the next achievable period. (But fixing this
+has to do done in a separate patch.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--5swyij2tuuhknhdb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/D5CcACgkQwfwUeK3K
+7AnJDwf9E/ryrmjtun7VJxEEtA3dKXzqCwdvNxUnoWdwundHkyX78y8CpI5guv/w
+1LQrUnpqqVGCuLPihnF5cpjtcxprC2SbShCgZBErumoVoC0n4ZYb3j+z0ld/p9d6
+ff4VlBmYjf5Wpzoq347N5d0tTsq6M0+GknYOtc4SIuEDkOqoUhROg/+MkYvdMZES
+wBS/9vWTD6SX0OnXa7DPRon8P0INQmcCYcJkOHrIsQeUiTQJfh+Ux/McwmI9yxFv
+zXBL0vsViZ79V3U08p9XMQ+E7LCJMqfcqFQKlmuP1ARgo1Z5hxpnDQREaU9+rEaj
+5vJPYJlb7qFzisCGSkEpgY+Fjhw5KA==
+=T3ed
+-----END PGP SIGNATURE-----
+
+--5swyij2tuuhknhdb--
