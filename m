@@ -2,88 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CE12C7B22
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 21:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD942C7B3B
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 21:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727473AbgK2URV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 15:17:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727144AbgK2URU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 15:17:20 -0500
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2147208D5
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 20:16:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606681000;
-        bh=N/5rjQqJanCNkJazZn/cQ2aPW49EUqzYQDUy+Xdcge0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KiuuWU0bKgXhfhotWCf0rYVtbTbBbphVh4LCZHE/dCR9NBCC8GcNZooNBZ5Gi5zU9
-         PctBfFUnw2EWNN1FkCP1+deRAWJ7usmjY0l2u58A5HXfyVqqdZ5I3lzOC6Z+jAOlZG
-         E77lUb1oMr2CSCePllItgypJ/5XR6/HfDF5zPFlc=
-Received: by mail-wr1-f45.google.com with SMTP id m6so12509003wrg.7
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 12:16:39 -0800 (PST)
-X-Gm-Message-State: AOAM533NfObG2631iwpAtTfSHhXHpib/Jf+FNyN2TNaHDpTYGn9imBsa
-        inp0lbgpj3czKYIUxeyzap2CFuKTatBL1sz7564DjQ==
-X-Google-Smtp-Source: ABdhPJwYikNyF98Tybzh36itlesMK1rlfrvxImOMUWZkk0NuWSWbLwn6lWsiusLeR7vr43/6ZfjVImZ+tuEfqHGf3aM=
-X-Received: by 2002:a5d:49ce:: with SMTP id t14mr24072262wrs.75.1606680998232;
- Sun, 29 Nov 2020 12:16:38 -0800 (PST)
+        id S1726987AbgK2Uwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 15:52:45 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54226 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgK2Uwp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 15:52:45 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 727651C0B7C; Sun, 29 Nov 2020 21:51:45 +0100 (CET)
+Date:   Sun, 29 Nov 2020 21:51:45 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
+        Lee Jones <lee.jones@linaro.org>, Jiri Slaby <jslaby@suse.cz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH 1/6] tty: n_gsm: Add support for serdev drivers
+Message-ID: <20201129205144.GA15038@duo.ucw.cz>
+References: <20200512214713.40501-1-tony@atomide.com>
+ <20200512214713.40501-2-tony@atomide.com>
+ <20200528093102.GC10358@localhost>
 MIME-Version: 1.0
-References: <20201128160141.1003903-1-npiggin@gmail.com> <20201128160141.1003903-7-npiggin@gmail.com>
- <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com>
-In-Reply-To: <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sun, 29 Nov 2020 12:16:26 -0800
-X-Gmail-Original-Message-ID: <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
-Message-ID: <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
-Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb option
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
+Content-Disposition: inline
+In-Reply-To: <20200528093102.GC10358@localhost>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 7:54 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wrote:
-> >
-> > On big systems, the mm refcount can become highly contented when doing
-> > a lot of context switching with threaded applications (particularly
-> > switching between the idle thread and an application thread).
-> >
-> > Abandoning lazy tlb slows switching down quite a bit in the important
-> > user->idle->user cases, so so instead implement a non-refcounted scheme
-> > that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
-> > any remaining lazy ones.
-> >
-> > Shootdown IPIs are some concern, but they have not been observed to be
-> > a big problem with this scheme (the powerpc implementation generated
-> > 314 additional interrupts on a 144 CPU system during a kernel compile).
-> > There are a number of strategies that could be employed to reduce IPIs
-> > if they turn out to be a problem for some workload.
->
-> I'm still wondering whether we can do even better.
->
 
-Hold on a sec.. __mmput() unmaps VMAs, frees pagetables, and flushes
-the TLB.  On x86, this will shoot down all lazies as long as even a
-single pagetable was freed.  (Or at least it will if we don't have a
-serious bug, but the code seems okay.  We'll hit pmd_free_tlb, which
-sets tlb->freed_tables, which will trigger the IPI.)  So, on
-architectures like x86, the shootdown approach should be free.  The
-only way it ought to have any excess IPIs is if we have CPUs in
-mm_cpumask() that don't need IPI to free pagetables, which could
-happen on paravirt.
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Can you try to figure out why you saw any increase in IPIs?  It would
-be nice if we can make the new code unconditional.
+Hi!
+
+This is neccessary for having useful Droid 4 support, so let me try to
+ressurect this.
+
+If there's newer version (I took mine from for-5.7 branch), let me
+know.
+
+On Thu 2020-05-28 11:31:02, Johan Hovold wrote:
+> On Tue, May 12, 2020 at 02:47:08PM -0700, Tony Lindgren wrote:
+> > I initially though about adding the serdev support into a separate file,
+> > but that will take some refactoring of n_gsm.c. And I'd like to have
+> > things working first. Then later on we might want to consider splitting
+> > n_gsm.c into three pieces for core, tty and serdev parts. And then maybe
+> > the serdev related parts can be just moved to live under something like
+> > drivers/tty/serdev/protocol/ngsm.c.
+>=20
+> Yeah, perhaps see where this lands first, but it should probably be done
+> before merging anything.
+
+Is drivers/tty/serdev/protocol/ngsm.c acceptable place for you?
+
+> And it doesn't really make sense exporting these interfaces without the
+> actual serdev driver as they are closely tied and cannot be reviewed
+> separately anyway.
+
+Ok, I guess keeping this in series with gnss driver makes sense? That
+one should be good example.
+
+> > @@ -150,6 +152,7 @@ struct gsm_dlci {
+> >  	/* Data handling callback */
+> >  	void (*data)(struct gsm_dlci *dlci, const u8 *data, int len);
+> >  	void (*prev_data)(struct gsm_dlci *dlci, const u8 *data, int len);
+> > +	struct gsm_serdev_dlci *ops; /* serdev dlci ops, if used */
+>=20
+> Please rename the struct with a "_operations" suffix as you refer to
+> this as "ops" throughout.
+
+"struct gsm_serdev_dlci_operations" is rather long, but I can do
+that; unless there's better idea? ...OTOH... yes, "ops" variable is
+used for this, but it is more than "operations" structure, so the new
+name is misleading. I may have to rename it back.
+
+> > +/**
+> > + * gsm_serdev_get_config - read ts 27.010 config
+> > + * @gsd:	serdev-gsm instance
+> > + * @c:		ts 27.010 config data
+> > + *
+> > + * See gsm_copy_config_values() for more information.
+>=20
+> Please document this properly since you're exporting these
+> interfaces.
+
+Actually, let me drop this for now.
+
+> > +/**
+> > + * gsm_serdev_set_config - set ts 27.010 config
+> > + * @gsd:	serdev-gsm instance
+> > + * @c:		ts 27.010 config data
+> > + *
+> > + * See gsm_config() for more information.
+> > + */
+> > +int gsm_serdev_set_config(struct gsm_serdev *gsd, struct gsm_config *c)
+> > +{
+> > +	struct gsm_mux *gsm;
+> > +
+> > +	if (!gsd || !gsd->serdev || !gsd->gsm)
+> > +		return -ENODEV;
+>=20
+> And why check for serdev here?
+
+Having exported interfaces somehow robust looks like good thing. Do
+you want me to remove it?
+
+> > +	gsm =3D gsd->gsm;
+> > +
+> > +	if (line < 1 || line >=3D 63)
+>=20
+> Line 62 is reserved as well.
+
+Thanks, fixed.
+
+> > +static int gsd_dlci_receive_buf(struct gsm_serdev_dlci *ops,
+> > +				const unsigned char *buf,
+> > +				size_t len)
+> > +{
+> > +	struct gsm_serdev *gsd =3D ops->gsd;
+>=20
+> This looks backwards, why not pass in gsd instead?
+
+gsm_serdev does not specify concrete dlci; we can go from dlci to gsd
+but not the other way around.
+
+=2E..which shows that gsm_serdev_dlci is not really "operations"
+structure and should not be named as such.
+
+> > +	struct gsm_mux *gsm =3D dlci->gsm;
+> > +	struct gsm_serdev *gsd =3D gsm->gsd;
+> > +
+> > +	if (!gsd || !dlci->ops)
+> > +		return;
+> > +
+> > +	switch (dlci->adaption) {
+> > +	case 0:
+>=20
+> 0 isn't valid, right?
+>=20
+> > +	case 1:
+> > +		if (dlci->ops->receive_buf)
+> > +			dlci->ops->receive_buf(dlci->ops, buf, len);
+> > +		break;
+>=20
+> What about adaption 2 with modem status? Why are you not reusing
+> gsm_dlci_data()?
+
+It is not needed in my application, I guess, so it would be difficult
+to test.
+
+> > +	default:
+> > +		pr_warn("dlci%i adaption %i not yet implemented\n",
+> > +			dlci->addr, dlci->adaption);
+>=20
+> This needs to be rate limited. Use the dev_ versions when you can.
+
+Ok.
+
+> > +	mutex_lock(&dlci->mutex);
+> > +	ops->gsd =3D gsd;
+> > +	dlci->ops =3D ops;
+> > +	dlci->modem_rx =3D 0;
+> > +	dlci->prev_data =3D dlci->data;
+>=20
+> I think this one is only used when bringing up a network interface.
+
+prev_data is used to store data pointer, so that it can be restored on
+unregister. Are you saying it is not neccessary?
+
+> > +	dlci->data =3D gsd_dlci_data;
+> > +	mutex_unlock(&dlci->mutex);
+> > +
+> > +	gsm_dlci_begin_open(dlci);
+>=20
+> Why is this here? This should be handled when opening the serial device
+> (i.e. by gsmtty_open()).
+
+This is for in-kernel users. When gnss device is opened, this is called.
+
+> > +	/*
+> > +	 * Allow some time for dlci to move to DLCI_OPEN state. Otherwise
+> > +	 * the serdev consumer driver can start sending data too early during
+> > +	 * the setup, and the response will be missed by gms_queue() if we
+> > +	 * still have DLCI_CLOSED state.
+> > +	 */
+> > +	for (retries =3D 10; retries > 0; retries--) {
+> > +		if (dlci->state =3D=3D DLCI_OPEN)
+> > +			break;
+> > +		msleep(100);
+> > +	}
+>=20
+> What if you time out? This should be handled properly.
+
+Ok.
+
+> > +static int gsd_receive_buf(struct serdev_device *serdev, const u8 *dat=
+a,
+> > +			   size_t count)
+> > +{
+> > +	struct gsm_serdev *gsd =3D serdev_device_get_drvdata(serdev);
+> > +	struct gsm_mux *gsm;
+> > +	const unsigned char *dp;
+> > +	int i;
+> > +
+> > +	if (WARN_ON(!gsd))
+> > +		return 0;
+>=20
+> Probably better to take the NULL-deref. Can this ever happen?
+
+Well, with warn_on we continue, so easier debugging. It obviously
+should not happen.
+
+> > +int gsm_serdev_register_tty_port(struct gsm_serdev *gsd, int line)
+> > +{
+> > +	struct gsm_serdev_dlci *ops;
+> > +	unsigned int base;
+> > +	int error;
+> > +
+> > +	if (line < 1)
+> > +		return -EINVAL;
+>=20
+> Upper limit?
+
+Actually, check should not be needed, as gsd_dlci_get() will check
+both limits for us. Let me remove it.
+
+> > +	ops =3D kzalloc(sizeof(*ops), GFP_KERNEL);
+> > +	if (!ops)
+> > +		return -ENOMEM;
+> > +
+> > +	ops->line =3D line;
+> > +	ops->receive_buf =3D gsd_dlci_receive_buf;
+> > +
+> > +	error =3D gsm_serdev_register_dlci(gsd, ops);
+> > +	if (error) {
+> > +		kfree(ops);
+> > +
+> > +		return error;
+> > +	}
+> > +
+> > +	base =3D mux_num_to_base(gsd->gsm);
+> > +	tty_register_device(gsm_tty_driver, base + ops->line, NULL);
+>=20
+> I would expect this to be tty_port_register_device_serdev() so that
+> serdev gets initialised properly for any client devices (e.g. gnss).
+>=20
+
+> > +void gsm_serdev_unregister_tty_port(struct gsm_serdev *gsd, int line)
+> > +{
+> > +	struct gsm_dlci *dlci;
+> > +	unsigned int base;
+> > +
+> > +	if (line < 1)
+> > +		return;
+>=20
+> As above.
+
+Ok.
+
+> > +int gsm_serdev_register_device(struct gsm_serdev *gsd)
+> > +{
+> > +	struct gsm_mux *gsm;
+> > +	int error;
+> > +
+> > +	if (WARN(!gsd || !gsd->serdev || !gsd->output,
+> > +		 "serdev and output must be initialized\n"))
+> > +		return -EINVAL;
+>=20
+> Just oops if the driver is buggy and fails to set essential fields.
+
+I find such robustness helpful, but I can remove it if you insist.
+
+> > +void gsm_serdev_unregister_device(struct gsm_serdev *gsd)
+> > +{
+> > +	gsm_cleanup_mux(gsd->gsm);
+> > +	mux_put(gsd->gsm);
+> > +	gsd->gsm =3D NULL;
+> > +}
+> > +EXPORT_SYMBOL_GPL(gsm_serdev_unregister_device);
+> > +
+> > +#endif	/* CONFIG_SERIAL_DEV_BUS */
+>=20
+> It looks like you may also have a problem with tty hangups, which serdev
+> does not support currently. There are multiple paths in n_gsm which can
+> trigger a hangup (e.g. based on remote input) and would likely lead to a
+> crash
+
+I don't believe we need to support hangups for the Droid 4, but
+obviously it would be good not to crash. But I don't know where to
+start looking, do you have any hints?
+
+Best regards,
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--ReaqsoxgOBHFXBhH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX8QJ4AAKCRAw5/Bqldv6
+8ktlAJ4m4hfWc5FzWTdYyw0pcc2XZ1mn4QCgm/mP6cPGLsq7dSJVn1zYcUbKyv8=
+=cPhV
+-----END PGP SIGNATURE-----
+
+--ReaqsoxgOBHFXBhH--
