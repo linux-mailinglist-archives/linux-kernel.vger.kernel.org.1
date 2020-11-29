@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652D42C774F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 03:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471132C7754
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 04:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgK2Cxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 21:53:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
+        id S1726186AbgK2DAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 22:00:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgK2Cxu (ORCPT
+        with ESMTP id S1725294AbgK2DAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 21:53:50 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E16C0613D1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 18:53:09 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id f18so11152938ljg.9
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 18:53:09 -0800 (PST)
+        Sat, 28 Nov 2020 22:00:00 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EEFC0613D1;
+        Sat, 28 Nov 2020 18:59:20 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id bj5so4594600plb.4;
+        Sat, 28 Nov 2020 18:59:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=drummond.us; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z0lqPkiUKcw4hoWEb756wuRPxVLj2QZ6yrKh9T2kOgI=;
-        b=X/bkx06YJ3v398ihXZjgVhDZnmGs9qoPF2jx2MPLzwQS8kEfGrj9Pu48mEj2DNtE0V
-         79bFSnZfzr19HDT/cMKNMesFey32MGn59mJdbEjJwqsTUKIntj2CBjgCADfKrgZbl6tM
-         hplxd3adosuecyMlyhisyZ4oOsiXMB0dHjZuw4r8kQ5c1Ar+60d8htYEGw25qu++xZI0
-         obKvB53JK6XggA0taW3TS3zoSjP2gg32Yk5joNJDGml/619etKHB9m1Zcfyo0Jy4uOF+
-         Xn3zbWxid1ICt2tdlq1a2fCAor5m1RJ0NZ/BXwfFc09RgetnxiHiQpXpa5fG8nUW0Rt+
-         cLpw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Q3b1sQJCxI5XmG09fBg4TUi3YzBpki4VHQf63SVwQ3g=;
+        b=bNzd4MeLKYn/aUZ15PYil7zQwTrrBxCwX8XkIDGiazwQINvfY9DuJEXKPTC8rdAYQK
+         ZTgF+2moFdCFvvR8Wns5Vmj0nouhniHWkmyIHfjhSvyV1RqPH8rpAy3MiMpNCuk+B58O
+         RFj2IhpvETRlF4PL6aq7x2GD1jYb9vtyOdSagVaGR42l+4IP17uZnDrHNhR8wobEYiAI
+         gWRTjqSpSQ6VhUpI6aIe+P2K/crbTGrZsrFqZaB7KxuLfX6YDbxiDoaUC8gGDOM3Rmig
+         rqC4AvZoG5UqJlI3GYHWHkS8HVSXo2lu9RfdfBhbu5zI6m0b99jlCd4AB5r0oQVcJr+b
+         NozQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z0lqPkiUKcw4hoWEb756wuRPxVLj2QZ6yrKh9T2kOgI=;
-        b=NbeS/2pzFGXzLEmC/U4S7yAx/TA/Z50ePCkiKsmxJF9YLhMCZ2IgtIz5yWW3uxUwoT
-         BsBIM7fV8UpG7tkF2fkTo0gUZfBdFHk7GhyURIJnPZrjpfpas8cT1d4LONiupYvLnDCU
-         7DRc+KFWLY/eN2lnNvnqL0Uar5az8F39KAq/76zVlPTRWI4FJ2YQ/pU0ooGFeNk6ljCJ
-         rDACXff+BSjO7+Z1WyzFiUrBM421JZ83KAvombKoETIjt9uEx8e+f/I6joZGL5WzbrF2
-         eSzyxUTjyFb1QrzeblahwzlTKjDDgdCiEbpcHOC3qjZUjpzB1PxlBGESzfo6JKuodD8y
-         Qlpg==
-X-Gm-Message-State: AOAM533Y5vcP4fRISsM64kbzRgZAFYSmX2vJMTABBk6PKybuOcpzox1R
-        JGaz3aNn5qGI5/hjc0ax+HYwlnQ0X5naHPXPF+Sssw==
-X-Google-Smtp-Source: ABdhPJwUmF6td/ePH5sIY/3U2r3PRVBkTd++J+PTy4VNsptfvM1GpidEl1sPiKDcxErrrG7KCTSxOKxhd1e01fPdiPE=
-X-Received: by 2002:a05:651c:1195:: with SMTP id w21mr6591270ljo.427.1606618388217;
- Sat, 28 Nov 2020 18:53:08 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Q3b1sQJCxI5XmG09fBg4TUi3YzBpki4VHQf63SVwQ3g=;
+        b=W4dj73Ahfe7v8VvJ2smKi56udHqKBvUjL1NFk18cHcwEpRgHogumlkJRgCDVtNue0v
+         mDirFQX80Kv303nMfd24B62uPyGgItoRGSz7/cR43KbnuNDidX6+2Z6nW2Mi2WcV3psY
+         5q41NhWcleYb2FpUg0uMTYIoXD87auaBWyX3rnZLf5QCAAVOXcVm+V+ugRs271T0y7rX
+         DkbAXaqQKBQrSWySf+6ZKbnYU/UaqMJt3z21Gt34lrvj4itDFB7QdYi3av+SvvTu7Fje
+         9g6V5GBUC+rmKxHEgMAyU/Z8qOmZ7/76/QYi7cp6liyFT609Tu6nSbc2lZWKkVTKU04U
+         JUBA==
+X-Gm-Message-State: AOAM533fWNisDFk/mexbwCTebOY0WREP1ZgwAupAYdVA/8cb0eEEI+f5
+        Q6v10k2EKMXX/hdnU7p+bhwojGRqmxw=
+X-Google-Smtp-Source: ABdhPJzpV7xAcwqi3GsTAKfGt+3pHFiyFfF8DTODZP//N4Qs0dvV0PvMV48QSM8g688vN/9LN7WKGQ==
+X-Received: by 2002:a17:902:bf0b:b029:da:274:c754 with SMTP id bi11-20020a170902bf0bb02900da0274c754mr13101439plb.43.1606618759462;
+        Sat, 28 Nov 2020 18:59:19 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id i6sm15781824pjt.49.2020.11.28.18.59.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Nov 2020 18:59:18 -0800 (PST)
+Date:   Sat, 28 Nov 2020 18:59:16 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Sangwon Jee <jeesw@melfas.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] input: touchscreen: melfas_mip4: Remove a bunch
+ of unused variables
+Message-ID: <20201129025916.GI2034289@dtor-ws>
+References: <20201126133607.3212484-1-lee.jones@linaro.org>
+ <20201126133607.3212484-3-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <20201119221132.1515696-1-walt@drummond.us> <20201128052317.GY3576660@ZenIV.linux.org.uk>
- <CADCN6nyGW0=QS=J+704n-mtAqTxgVrKZC=P8d01NZ_pjssptew@mail.gmail.com>
-In-Reply-To: <CADCN6nyGW0=QS=J+704n-mtAqTxgVrKZC=P8d01NZ_pjssptew@mail.gmail.com>
-From:   Walt Drummond <walt@drummond.us>
-Date:   Sat, 28 Nov 2020 18:52:57 -0800
-Message-ID: <CADCN6nzdJom0DazzvnRREDKAjRBoNAVhNiQrL3hAXvU-=i4mpg@mail.gmail.com>
-Subject: Re: [PATCH] x86/signals: Fix save/restore signal stack to correctly
- support sigset_t
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, brgerst@gmail.com, linux@dominikbrodowski.net,
-        gustavoars@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201126133607.3212484-3-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Sorry, resending as Gmail decided to ignore "Plaintext mode")
+Hi Lee,
 
-Thanks Al.  I want to understand the nuance, so please bear with me as
-I reason this out.   The cast in stone nature of this is due to both
-the need to keep userspace and kernel space in sync (ie, you'd have to
-coordinate libc and kernel changes super tightly to pull this off),
-and any change in the size of struct rt_sigframe would break backwards
-compatibility with older binaries, is that correct?
+On Thu, Nov 26, 2020 at 01:36:05PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/input/touchscreen/melfas_mip4.c: In function ‘mip4_report_touch’:
+>  drivers/input/touchscreen/melfas_mip4.c:474:5: warning: variable ‘size’ set but not used [-Wunused-but-set-variable]
+>  drivers/input/touchscreen/melfas_mip4.c:472:5: warning: variable ‘pressure_stage’ set but not used [-Wunused-but-set-variable]
+>  drivers/input/touchscreen/melfas_mip4.c:469:7: warning: variable ‘palm’ set but not used [-Wunused-but-set-variable]
+>  drivers/input/touchscreen/melfas_mip4.c:468:7: warning: variable ‘hover’ set but not used [-Wunused-but-set-variable]
+> 
+> Cc: Sangwon Jee <jeesw@melfas.com>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Henrik Rydberg <rydberg@bitmath.org>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/input/touchscreen/melfas_mip4.c | 11 -----------
+>  1 file changed, 11 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/melfas_mip4.c b/drivers/input/touchscreen/melfas_mip4.c
+> index f67efdd040b24..9c98759098c7a 100644
+> --- a/drivers/input/touchscreen/melfas_mip4.c
+> +++ b/drivers/input/touchscreen/melfas_mip4.c
+> @@ -465,13 +465,9 @@ static void mip4_report_keys(struct mip4_ts *ts, u8 *packet)
+>  static void mip4_report_touch(struct mip4_ts *ts, u8 *packet)
+>  {
+>  	int id;
+> -	bool hover;
+> -	bool palm;
 
-Thanks, appreciate the help here.
---Walt
+So __always_unused did not work?
 
-
-On Sat, Nov 28, 2020 at 6:19 PM Walt Drummond <walt@drummond.us> wrote:
->
-> Thanks Al.  I want to understand the nuance, so please bear with me as I =
-reason this out.   The cast in stone nature of this is due to both the need=
- to keep userspace and kernel space in sync (ie, you'd have to coordinate l=
-ibc and kernel changes super tightly to pull this off), and any change in t=
-he size of struct rt_sigframe would break backwards compatibility with olde=
-r binaries, is that correct?
->
-> Thanks, appreciate the help here.
-> --Walt
->
->
-> On Fri, Nov 27, 2020 at 9:23 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->>
->> On Thu, Nov 19, 2020 at 02:11:33PM -0800, Walt Drummond wrote:
->> > The macro unsafe_put_sigmask() only handles the first 64 bits of the
->> > sigmask_t, which works today.  However, if the definition of the
->> > sigset_t structure ever changed,
->>
->> ... existing userland would get fucked over, since sigset_t is
->> present in user-visible data structures.  Including the ones
->> we are using that thing for - struct rt_sigframe, for starters.
->>
->> Layout of those suckers is very much cast in stone.  We *can't*
->> change it, no matter what we do kernel-side.
->>
->> NAKed-by: Al Viro <viro@zeniv.linux.org.uk>
+-- 
+Dmitry
