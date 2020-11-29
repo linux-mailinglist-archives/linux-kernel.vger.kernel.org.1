@@ -2,341 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A6C2C7904
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 13:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F292C7910
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 13:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727253AbgK2MB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 07:01:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725867AbgK2MB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 07:01:57 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3622A206E3;
-        Sun, 29 Nov 2020 12:01:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606651277;
-        bh=BM1fJjvWFnC/h/MGGYVv0WCzCfMU5A/DDQ2MnbGTWUg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mBhHWuHPAi1Q8XD4u+U7fvH5VL3vcSz90rkOwaR30nl2mFm+mF/OxqP1rg05z0lIO
-         AQWXXkb5cdQFphQWAkJPvVDTdJQbzzlKo/Pbh5BA8eiGWJFm5eMQohol+p1kV0vEPg
-         QIbFkOPO7+tO0T7U+Qv1BUaMO8t5rh8P1MpFvV0s=
-Date:   Sun, 29 Nov 2020 12:01:11 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 04/10] dt-bindings:iio:adc:atmel,sama9260-adc:
- conversion to yaml from at91_adc.txt
-Message-ID: <20201129120111.2ba047c9@archlinux>
-In-Reply-To: <20201128222818.1910764-5-alexandre.belloni@bootlin.com>
-References: <20201128222818.1910764-1-alexandre.belloni@bootlin.com>
-        <20201128222818.1910764-5-alexandre.belloni@bootlin.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726961AbgK2M0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 07:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgK2M0y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 07:26:54 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4389C0613CF;
+        Sun, 29 Nov 2020 04:26:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3+rYoc55tiwS75r5UCguG8RQp9uhLP5n17rDjyfEd7Y=; b=tLLVBytJxX+unnNEkq5U+SIOYx
+        D4HQ1CXpb70Mxz8rmgaygXLoT0KibBXJymI6seriwwVWnh/2ChpV1RtHW6b1QBcBt5T8/Qxlqghzs
+        diinud7/xixia1gJpwtMyIJkL1B9hxeggd+BARYKh+RSqldsepas95dZbi2zBvin+MLTaXrTTiPvM
+        MZ9pAfDG9iN8EYHr0Lh3wfm7B2s7uEPZjRxaw0KnT+ENxu5IbsDl4+XhYRGBaWrcnIJVaWldnYFdg
+        e46aNbywYl5kNGnRGs34OTfqQbDkn+FP0F7bpOe24kSr8kpXcRsSGQn2xbLMmWu0IHKwFBc2Idg0K
+        BtVVVOyg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kjLmC-0000Dl-Da; Sun, 29 Nov 2020 12:26:00 +0000
+Date:   Sun, 29 Nov 2020 12:26:00 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+12056a09a0311d758e60@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: use-after-free Read in idr_for_each (2)
+Message-ID: <20201129122600.GA4327@casper.infradead.org>
+References: <000000000000ca835605b0e8a723@google.com>
+ <20201129113429.13660-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201129113429.13660-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 28 Nov 2020 23:28:12 +0100
-Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
-
-> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+On Sun, Nov 29, 2020 at 07:34:29PM +0800, Hillf Danton wrote:
+> >  radix_tree_next_slot include/linux/radix-tree.h:422 [inline]
+> >  idr_for_each+0x206/0x220 lib/idr.c:202
+> >  io_destroy_buffers fs/io_uring.c:8275 [inline]
 > 
-> There are a few things we would do differently in an ADC binding if we
-> were starting from scratch but we are stuck with what we have (which
-> made sense back when this was written!)
-> 
-> We may be able to tighten up some elements of this binding in the future
-> by careful checking of what values properties can actually take.
-> 
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> [Alexandre Belloni: add sama5d3, remove atmel,adc-res and atmel,adc-res-names]
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+> Matthew, can you shed any light on the link between the use of idr
+> routines and the UAF reported?
 
-So this one is interesting from the question of what the right tag chain is.
-I've signed-off on it again whilst applying but also added a note to make
-it clear the two sign offs are actually for different things.
+I presume it's some misuse of IDR by io_uring.  I'd rather io_uring
+didn't use the IDR at all.  This compiles; I promise no more than that.
 
-Jonathan
-
-> ---
->  .../devicetree/bindings/iio/adc/at91_adc.txt  |  78 --------
->  .../bindings/iio/adc/atmel,sama9260-adc.yaml  | 167 ++++++++++++++++++
->  2 files changed, 167 insertions(+), 78 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/iio/adc/at91_adc.txt
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/atmel,sama9260-adc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/at91_adc.txt b/Documentation/devicetree/bindings/iio/adc/at91_adc.txt
-> deleted file mode 100644
-> index da393ac5c05f..000000000000
-> --- a/Documentation/devicetree/bindings/iio/adc/at91_adc.txt
-> +++ /dev/null
-> @@ -1,78 +0,0 @@
-> -* AT91's Analog to Digital Converter (ADC)
-> -
-> -Required properties:
-> -  - compatible: Should be "atmel,<chip>-adc"
-> -    <chip> can be "at91sam9260", "at91sam9g45", "at91sam9x5" or "sama5d3"
-> -  - reg: Should contain ADC registers location and length
-> -  - interrupts: Should contain the IRQ line for the ADC
-> -  - clock-names: tuple listing input clock names.
-> -	Required elements: "adc_clk", "adc_op_clk".
-> -  - clocks: phandles to input clocks.
-> -  - atmel,adc-channels-used: Bitmask of the channels muxed and enabled for this
-> -    device
-> -  - atmel,adc-startup-time: Startup Time of the ADC in microseconds as
-> -    defined in the datasheet
-> -  - atmel,adc-vref: Reference voltage in millivolts for the conversions
-> -
-> -Optional properties:
-> -  - atmel,adc-use-external-triggers: Boolean to enable the external triggers
-> -  - atmel,adc-use-res: String selecting the resolution, can be "lowres" or
-> -		       "highres". If not specified, the highest resolution will
-> -		       be used.
-> -  - atmel,adc-sleep-mode: Boolean to enable sleep mode when no conversion
-> -  - atmel,adc-sample-hold-time: Sample and Hold Time in microseconds
-> -  - atmel,adc-ts-wires: Number of touchscreen wires. Should be 4 or 5. If this
-> -                        value is set, then the adc driver will enable touchscreen
-> -                        support.
-> -    NOTE: when adc touchscreen is enabled, the adc hardware trigger will be
-> -          disabled. Since touchscreen will occupy the trigger register.
-> -  - atmel,adc-ts-pressure-threshold: a pressure threshold for touchscreen. It
-> -                                     makes touch detection more precise.
-> -
-> -Optional trigger Nodes:
-> -  - Required properties:
-> -    * trigger-name: Name of the trigger exposed to the user
-> -    * trigger-value: Value to put in the Trigger register
-> -      to activate this trigger
-> -  - Optional properties:
-> -    * trigger-external: Is the trigger an external trigger?
-> -
-> -Examples:
-> -adc0: adc@fffb0000 {
-> -	#address-cells = <1>;
-> -	#size-cells = <0>;
-> -	compatible = "atmel,at91sam9260-adc";
-> -	reg = <0xfffb0000 0x100>;
-> -	interrupts = <20 IRQ_TYPE_LEVEL_HIGH 0>;
-> -	clocks = <&adc_clk>, <&adc_op_clk>;
-> -	clock-names = "adc_clk", "adc_op_clk";
-> -	atmel,adc-channels-used = <0xff>;
-> -	atmel,adc-startup-time = <40>;
-> -	atmel,adc-use-external-triggers;
-> -	atmel,adc-vref = <3300>;
-> -	atmel,adc-res = <8 10>;
-> -	atmel,adc-res-names = "lowres", "highres";
-> -	atmel,adc-use-res = "lowres";
-> -
-> -	trigger0 {
-> -		trigger-name = "external-rising";
-> -		trigger-value = <0x1>;
-> -		trigger-external;
-> -	};
-> -	trigger1 {
-> -		trigger-name = "external-falling";
-> -		trigger-value = <0x2>;
-> -		trigger-external;
-> -	};
-> -
-> -	trigger2 {
-> -		trigger-name = "external-any";
-> -		trigger-value = <0x3>;
-> -		trigger-external;
-> -	};
-> -
-> -	trigger3 {
-> -		trigger-name = "continuous";
-> -		trigger-value = <0x6>;
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/iio/adc/atmel,sama9260-adc.yaml b/Documentation/devicetree/bindings/iio/adc/atmel,sama9260-adc.yaml
-> new file mode 100644
-> index 000000000000..9b0ff59e75de
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/atmel,sama9260-adc.yaml
-> @@ -0,0 +1,167 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/atmel,sama9260-adc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: AT91 sama9260 and similar Analog to Digital Converter (ADC)
-> +
-> +maintainers:
-> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - atmel,at91sam9260-adc
-> +      - atmel,at91sam9rl-adc
-> +      - atmel,at91sam9g45-adc
-> +      - atmel,at91sam9x5-adc
-> +      - atmel,at91sama5d3-adc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 2
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    items:
-> +      - const: adc_clk
-> +      - const: adc_op_clk
-> +
-> +  atmel,adc-channels-used:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Bitmask of the channels muxed and enabled for this device
-> +
-> +  atmel,adc-startup-time:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Startup Time of the ADC in microseconds as defined in the datasheet
-> +
-> +  atmel,adc-vref:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Reference voltage in millivolts for the conversions
-> +
-> +  atmel,adc-use-external-triggers:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: Enable the external triggers
-> +
-> +  atmel,adc-use-res:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description:
-> +      String corresponding to an identifier from atmel,adc-res-names property.
-> +      If not specified, the highest resolution will be used.
-> +    enum:
-> +      - "lowres"
-> +      - "highres"
-> +
-> +  atmel,adc-sleep-mode:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: Enable sleep mode when no conversion
-> +
-> +  atmel,adc-sample-hold-time:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Sample and Hold Time in microseconds
-> +
-> +  atmel,adc-ts-wires:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      Number of touchscreen wires. Must be set to enable touchscreen.
-> +      NOTE: when adc touchscreen is enabled, the adc hardware trigger will be
-> +      disabled. Since touchscreen will occupy the trigger register.
-> +    enum:
-> +      - 4
-> +      - 5
-> +
-> +  atmel,adc-ts-pressure-threshold:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Pressure threshold for touchscreen.
-> +
-> +  "#io-channel-cells":
-> +    const: 1
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - atmel,adc-channels-used
-> +  - atmel,adc-startup-time
-> +  - atmel,adc-vref
-> +
-> +patternProperties:
-> +  "^(trigger)[0-9]$":
-> +    type: object
-> +    description: Child node to describe a trigger exposed to the user.
-> +    properties:
-> +      trigger-name:
-> +        $ref: /schemas/types.yaml#/definitions/string
-> +        description: Identifying name.
-> +
-> +      trigger-value:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          Value to put in the Trigger register to activate this trigger
-> +
-> +      trigger-external:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: This trigger is provided from an external pin.
-> +
-> +    additionalProperties: false
-> +    required:
-> +      - trigger-name
-> +      - trigger-value
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/dma/at91.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    soc {
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        adc@fffb0000 {
-> +            compatible = "atmel,at91sam9260-adc";
-> +            reg = <0xfffb0000 0x100>;
-> +            interrupts = <20 IRQ_TYPE_LEVEL_HIGH 0>;
-> +            clocks = <&adc_clk>, <&adc_op_clk>;
-> +            clock-names = "adc_clk", "adc_op_clk";
-> +            atmel,adc-channels-used = <0xff>;
-> +            atmel,adc-startup-time = <40>;
-> +            atmel,adc-use-external-triggers;
-> +            atmel,adc-vref = <3300>;
-> +            atmel,adc-use-res = "lowres";
-> +
-> +            trigger0 {
-> +                trigger-name = "external-rising";
-> +                trigger-value = <0x1>;
-> +                trigger-external;
-> +            };
-> +
-> +            trigger1 {
-> +                trigger-name = "external-falling";
-> +                trigger-value = <0x2>;
-> +                trigger-external;
-> +            };
-> +
-> +            trigger2 {
-> +                trigger-name = "external-any";
-> +                trigger-value = <0x3>;
-> +                trigger-external;
-> +            };
-> +
-> +            trigger3 {
-> +                trigger-name = "continuous";
-> +                trigger-value = <0x6>;
-> +            };
-> +        };
-> +    };
-> +...
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index ef3cd7fe4416..2fcf196bb3c3 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -344,7 +344,7 @@ struct io_ring_ctx {
+ 	struct socket		*ring_sock;
+ #endif
+ 
+-	struct idr		io_buffer_idr;
++	struct xarray		io_buffers;
+ 
+ 	struct idr		personality_idr;
+ 
+@@ -1298,7 +1298,7 @@ static struct io_ring_ctx *io_ring_ctx_alloc(struct io_uring_params *p)
+ 	INIT_LIST_HEAD(&ctx->cq_overflow_list);
+ 	init_completion(&ctx->ref_comp);
+ 	init_completion(&ctx->sq_thread_comp);
+-	idr_init(&ctx->io_buffer_idr);
++	xa_init(&ctx->io_buffers);
+ 	idr_init(&ctx->personality_idr);
+ 	mutex_init(&ctx->uring_lock);
+ 	init_waitqueue_head(&ctx->wait);
+@@ -3042,7 +3042,7 @@ static struct io_buffer *io_buffer_select(struct io_kiocb *req, size_t *len,
+ 
+ 	lockdep_assert_held(&req->ctx->uring_lock);
+ 
+-	head = idr_find(&req->ctx->io_buffer_idr, bgid);
++	head = xa_load(&req->ctx->io_buffers, bgid);
+ 	if (head) {
+ 		if (!list_empty(&head->list)) {
+ 			kbuf = list_last_entry(&head->list, struct io_buffer,
+@@ -3050,7 +3050,7 @@ static struct io_buffer *io_buffer_select(struct io_kiocb *req, size_t *len,
+ 			list_del(&kbuf->list);
+ 		} else {
+ 			kbuf = head;
+-			idr_remove(&req->ctx->io_buffer_idr, bgid);
++			xa_erase(&req->ctx->io_buffers, bgid);
+ 		}
+ 		if (*len > kbuf->len)
+ 			*len = kbuf->len;
+@@ -4130,7 +4130,8 @@ static int __io_remove_buffers(struct io_ring_ctx *ctx, struct io_buffer *buf,
+ 	}
+ 	i++;
+ 	kfree(buf);
+-	idr_remove(&ctx->io_buffer_idr, bgid);
++	if (nbufs != -1U)
++		xa_erase(&ctx->io_buffers, bgid);
+ 
+ 	return i;
+ }
+@@ -4148,7 +4149,7 @@ static int io_remove_buffers(struct io_kiocb *req, bool force_nonblock,
+ 	lockdep_assert_held(&ctx->uring_lock);
+ 
+ 	ret = -ENOENT;
+-	head = idr_find(&ctx->io_buffer_idr, p->bgid);
++	head = xa_load(&ctx->io_buffers, p->bgid);
+ 	if (head)
+ 		ret = __io_remove_buffers(ctx, head, p->bgid, p->nbufs);
+ 
+@@ -4225,15 +4226,15 @@ static int io_provide_buffers(struct io_kiocb *req, bool force_nonblock,
+ 
+ 	lockdep_assert_held(&ctx->uring_lock);
+ 
+-	list = head = idr_find(&ctx->io_buffer_idr, p->bgid);
++	list = head = xa_load(&ctx->io_buffers, p->bgid);
+ 
+ 	ret = io_add_buffers(p, &head);
+ 	if (ret < 0)
+ 		goto out;
+ 
+ 	if (!list) {
+-		ret = idr_alloc(&ctx->io_buffer_idr, head, p->bgid, p->bgid + 1,
+-					GFP_KERNEL);
++		ret = xa_err(xa_store(&ctx->io_buffers, p->bgid, head,
++					GFP_KERNEL));
+ 		if (ret < 0) {
+ 			__io_remove_buffers(ctx, head, p->bgid, -1U);
+ 			goto out;
+@@ -8468,19 +8469,15 @@ static int io_eventfd_unregister(struct io_ring_ctx *ctx)
+ 	return -ENXIO;
+ }
+ 
+-static int __io_destroy_buffers(int id, void *p, void *data)
+-{
+-	struct io_ring_ctx *ctx = data;
+-	struct io_buffer *buf = p;
+-
+-	__io_remove_buffers(ctx, buf, id, -1U);
+-	return 0;
+-}
+-
+ static void io_destroy_buffers(struct io_ring_ctx *ctx)
+ {
+-	idr_for_each(&ctx->io_buffer_idr, __io_destroy_buffers, ctx);
+-	idr_destroy(&ctx->io_buffer_idr);
++	unsigned long pgid;
++	struct io_buffer *buf;
++
++	xa_for_each(&ctx->io_buffers, pgid, buf) {
++		xa_erase(&ctx->io_buffers, pgid);
++		__io_remove_buffers(ctx, buf, pgid, -1U);
++	}
+ }
+ 
+ static void io_ring_ctx_free(struct io_ring_ctx *ctx)
 
