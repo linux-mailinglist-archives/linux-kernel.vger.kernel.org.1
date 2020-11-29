@@ -2,72 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8587B2C792F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 13:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13F22C7932
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 13:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387464AbgK2M5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 07:57:01 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:29701 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727058AbgK2M5B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 07:57:01 -0500
-Received: from localhost.localdomain ([92.131.86.32])
-        by mwinf5d20 with ME
-        id yCvE230080hrljw03CvER4; Sun, 29 Nov 2020 13:55:17 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 29 Nov 2020 13:55:17 +0100
-X-ME-IP: 92.131.86.32
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mst@redhat.com, jasowang@redhat.com, lingshan.zhu@intel.com,
-        eli@mellanox.com, parav@mellanox.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] vdpa: ifcvf: Use dma_set_mask_and_coherent to simplify code
-Date:   Sun, 29 Nov 2020 13:54:34 +0100
-Message-Id: <20201129125434.1462638-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        id S2387479AbgK2M6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 07:58:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727073AbgK2M6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 07:58:54 -0500
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B3EC2085B
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 12:58:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606654693;
+        bh=ELHNBHt4EqshhUGNuAZ5/xfd1MTVG6aw9M7tUezJtcw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lUSUlXk7ni4Qqk6/GO9uT9RLb9C5iar9YSvOCMP0dsEiOe4Y/pgDquhrtfDKXxuYK
+         /QrbLJEnAhyNpDv3JXiIf5sq0w5jq8QqwKvjvP4zwRa8hpG21qVSLkGxCle5Ebhw6j
+         Ldud0ctji2XFmdAof/2QF5pjW0PIkwMKE75WiLd0=
+Received: by mail-vs1-f49.google.com with SMTP id z16so501557vsp.5
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 04:58:13 -0800 (PST)
+X-Gm-Message-State: AOAM531Rzj+Sev+YrU/TwZhXdDIpVemdlffJnyZIx6r1D9wjZyFLpWMf
+        D6qO+36vv6cKp4ailLP+B4kNicHt2nYnfCJpmdMypQ==
+X-Google-Smtp-Source: ABdhPJzhn1fsp9EHXvRGhpUoP1eGJoSFTv0W/yDjP/8SVVYy5I7YyO+aQKszItKWdNicTfimgy14oUOjpOK0S4oleTM=
+X-Received: by 2002:a67:ce1a:: with SMTP id s26mr12147763vsl.0.1606654692685;
+ Sun, 29 Nov 2020 04:58:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200814134123.14566-1-ansuelsmth@gmail.com> <20200814134123.14566-3-ansuelsmth@gmail.com>
+ <CAHLCerMArOceCFQ1XFbsZCAnUdKVX3TVnAb502w+kxmO97bdJg@mail.gmail.com> <20201125122228.GB23592@ansuel-xps20.localdomain>
+In-Reply-To: <20201125122228.GB23592@ansuel-xps20.localdomain>
+From:   Amit Kucheria <amitk@kernel.org>
+Date:   Sun, 29 Nov 2020 18:28:01 +0530
+X-Gmail-Original-Message-ID: <CAHLCerNTNpEGiGT6Veroeh1b8pOCiYYFhpnj5YqZcFZxAXGB-A@mail.gmail.com>
+Message-ID: <CAHLCerNTNpEGiGT6Veroeh1b8pOCiYYFhpnj5YqZcFZxAXGB-A@mail.gmail.com>
+Subject: Re: [RFC PATCH v6 2/8] drivers: thermal: tsens: Add VER_0 tsens version
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Amit Kucheria <amit.kucheria@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
+On Thu, Nov 26, 2020 at 2:16 AM Ansuel Smith <ansuelsmth@gmail.com> wrote:
 
-While at it, fix a typo (s/confiugration/configuration)
+> > >  };
+> > > @@ -441,6 +442,10 @@ enum regfield_ids {
+> > >         CRIT_THRESH_14,
+> > >         CRIT_THRESH_15,
+> > >
+> > > +       /* VER_0 MIN MAX THRESH */
+> > > +       MIN_THRESH_0,
+> > > +       MAX_THRESH_0,
+> > > +
+> >
+> > Consider reusing LOW_THRESH_0 and UP_THRESH_0 for these?
+> >
+>
+> As we already have defined LOW_THRESH and UP how can we reuse that
+> regfield to define MIN and MAX?
+>
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/vdpa/ifcvf/ifcvf_main.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+We are using MIN and MAX THRESH on the apq8064 to mean LOW and UP
+THRESOLD, isn't it? IIUC, It was just named differently earlier.
 
-diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-index 8b4028556cb6..fa1af301cf55 100644
---- a/drivers/vdpa/ifcvf/ifcvf_main.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-@@ -417,16 +417,9 @@ static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		return ret;
- 	}
- 
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
- 	if (ret) {
--		IFCVF_ERR(pdev, "No usable DMA confiugration\n");
--		return ret;
--	}
--
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (ret) {
--		IFCVF_ERR(pdev,
--			  "No usable coherent DMA confiugration\n");
-+		IFCVF_ERR(pdev, "No usable DMA configuration\n");
- 		return ret;
- 	}
- 
--- 
-2.27.0
-
+When the driver is loaded on the apq8064, only that one field will be
+use since v0 has a single threshold for all sensors. When the driver
+is loaded on new IPs, all fields will be used.
