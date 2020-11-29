@@ -2,137 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED6C2C7877
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 09:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F452C787B
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 10:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbgK2I4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 03:56:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgK2I4D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 03:56:03 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3325BC0613D1
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 00:55:17 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id o4so5634627pgj.0
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 00:55:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=asdqBoIk1ZdzjfqdX/jQ+vQPjLAQMqzWC0xNbHtbH/M=;
-        b=RG7aCMZCbbpDxaV4pWpEo01Q/1oq0fy8d7t/whwLwnwkmEhpEcXuZHhE086oRR/+do
-         bl3+Hl1jjuqKGCLXqxAxaKtxOiIP4+A9dZ2vsTJsNxX2BPHVkVgLVYVj0jb2vexkCId+
-         x5xQmuOCddJe9NVF+ITdnVofNmSwbhhhookzEIuGeiw2dXzfoTEVVQYWca+FaCQDX8AN
-         Nby53fbLjf1c8ZiWewkVPhqgYUDWvZIF6eiVBIBi++bb1MyF4Qh++8hICTkS3mbqXFXQ
-         9/CpOPZm510m89YQB/fVyFCiuOhj4ykbYxkW5fkrTd3kcxb3adMJP3bcTlXO1eyTtNGR
-         BwjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=asdqBoIk1ZdzjfqdX/jQ+vQPjLAQMqzWC0xNbHtbH/M=;
-        b=PR+NKOrusSbjMLmVqWNUO8vTx2hGVLAJYafhRjX9jcfn2kQK27JNrGGQvzIPhQya5j
-         BP0V2X1RQeIqHSYOCsESsxH3vRzhEdl/FYNjwdOVELJfnGc7afe1VX5vg6UJKEG5kWqh
-         cluZ9+Fvgc+IqKIU0GsxrRrjvgV5aEXsgLUzfNA+akbjQ4bkg4UxoMg1QmIxcNq4xqen
-         6aJmBRxyyXZu86ccqyYv3rHQoZd9yQjZ6fqYc9ThgUfSTD5KBXwhKXhTBGU28NX5qdiZ
-         Ft53pQGEs19/ussmhpzI521MD0LMenT3w73lGVMXbOUH1REIhZGIDtXj1qLrXfJiFt5m
-         QvpQ==
-X-Gm-Message-State: AOAM531A90B1TIwY2ttYxnKJdaSBsoZRU7OOUuqQmSRW+uRjodkNsKIJ
-        pvJWlb9GLk5BVtKT6V9RKnl6xziljQYULw==
-X-Google-Smtp-Source: ABdhPJyIk08effv0WRJDXi9p8cYwoDb4KiIBSTOMrIW6LBoPezP0AjX81vOC1ix5VdHIfSHU7qLZ8g==
-X-Received: by 2002:a17:90a:2b0b:: with SMTP id x11mr20233613pjc.65.1606640116459;
-        Sun, 29 Nov 2020 00:55:16 -0800 (PST)
-Received: from ?IPv6:2402:3a80:43d:11a0:15a2:ad13:ec3b:4e56? ([2402:3a80:43d:11a0:15a2:ad13:ec3b:4e56])
-        by smtp.gmail.com with ESMTPSA id h4sm11513617pgp.8.2020.11.29.00.55.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Nov 2020 00:55:15 -0800 (PST)
-Subject: Re: [PATCH v7] checkpatch: add fix option for LOGICAL_CONTINUATIONS
-To:     joe@perches.com
-Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <afaa79a6d86a4184878595ced3f2de1a92a4058c.camel@perches.com>
- <20201123102818.24364-1-yashsri421@gmail.com>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <a0f6479e-0c1b-a2f8-a265-32cc31313870@gmail.com>
-Date:   Sun, 29 Nov 2020 14:25:09 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726470AbgK2JXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 04:23:50 -0500
+Received: from mout.gmx.net ([212.227.15.19]:40403 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725830AbgK2JXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 04:23:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606641695;
+        bh=PMGPeOb1/+9oXMNrHGoQTO0jg3TCyx67VHl7NFtKus0=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=eRZqg7hLaT1s3VIVbvd972ldV11SR3w7pOQ9lwgpHQLQeRFubYLjBEw4HeWYPHBcF
+         XSM5UJ1RVPhgTLerJlYxeZPVczKAkVkXRNb7YBGU0NL4IRfSjokLfZtAKvjAiLxpiM
+         am7lLQJGchxbJQwllcPJoKWyWa12X+kqVCPeUuCg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.83]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M7Jza-1kr13j1k5s-007l3b; Sun, 29
+ Nov 2020 10:21:35 +0100
+Message-ID: <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
+Subject: Re: scheduling while atomic in z3fold
+From:   Mike Galbraith <efault@gmx.de>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Date:   Sun, 29 Nov 2020 10:21:33 +0100
+In-Reply-To: <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
+References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
+         <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
+         <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
+         <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
+         <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <20201123102818.24364-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:GmjNT2HpE8rDEjh+40luuj9gtoGfFGc/krPqBwIyo9L7eaDBkFF
+ Ics5SkMg1EIhV5O7dlW/B98VQ7By2dq/APUs8DZbzN5MF2gylQM0hbg7dNnRYYfKfQSLCFW
+ NYtynQp+b4rcBHP1TVlcMQjgwCpekr3TY0sT20hfAwW9XtJkXjRildmYHuxQ3ZRJ7lfa0KX
+ B/SUN/Udfk1HqGpUn7fnw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BWqesIVaxb0=:2frNT0KDmeX30q+FDpL1FF
+ 7chXWWXp180O05kHQ68cuDh1XuLSQXk8+zYg3DA7N0iMXuoGiBuCU7MMx6CH6trfdEE5tBfkn
+ mf45fVgV8EnPV3IXRNStiCggi1s11BBeCs7QJPJMY/pA0dH7avNd1iTROXkjxW1NP0fdq7mJg
+ EbIFEuiNChvdY0ZX/DIpUvrZHK7YK6gJNndCayM1Uy/drmNJ377+5ISQ0NpFQImvkRqlZmNqS
+ G0cQnMfRGP8Yaxx5ZZa0o/UBIRB0xuz3A3BKnueXqSASUy1zmAu8v9Sgwynv11OZ95YaKwb8o
+ nXZJJWM4YU3rU4EqEmMVrjxVz3Xd2TYwcKZn3UBsUEZbJAQe787svrpPEK0dgRJBGD8ghfgwb
+ imfEhScejPGA57SKELh28Du3svhVdIy6zb4gugaUYhHaqoN3nKD3f1exLuwnyeYh1Eayp0k1n
+ SNMgcYqM+gyGX2vagk3Dcns8Mc0juZiZV2tqaKZJhYMEQt+8e8Bp76PwgPj4j86A9S8ciJcBd
+ /QBirQizcrI0XLrUvZq58ROOAxNmeewJQ8uI6jHoDLE4N3KGbqJOoGGKAEDCwvmaGkD2IY3eX
+ NbkzMzicT5V0zsqGMdWV3xDirlIKyuffzhBGCAuGI0Kub3tIFmt9tF6s7/lwHnAofbBTmxaKq
+ RDTb9AOEedgcz+9z4c3EEr40RIdwApQFwKH7+Z4/Wj9QY1rZ8oTJuRk78a1DVyyafKcFjCmLG
+ PHFEO/hZFnCdjPF+HAt2rIZtO9nkCsc8LUpF38hfF5DeFj892Ke31eXlBOqv1P7jZsiImPV+5
+ Td/5HBzvzC4yqm2Ej9fkvplJfkdsrDJWSJKWwSL2yQ4KAC/jmTz6nK/5rYrJvTjnnJsoyMTjA
+ X2jqkPefddy1J+kdwR4g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/20 3:58 pm, Aditya Srivastava wrote:
-> Currently, checkpatch warns if logical continuations are placed at the
-> start of a line and not at the end of previous line.
-> 
-> E.g., running checkpatch on commit 3485507fc272 ("staging:
-> bcm2835-camera: Reduce length of enum names") reports:
-> 
-> CHECK:LOGICAL_CONTINUATIONS: Logical continuations should be on the
-> previous line
-> +	if (!ret
-> +	    && camera_port ==
-> 
-> Provide a simple fix by inserting logical operator at the last
-> non-comment, non-whitespace char of the previous line and removing from
-> current line, if both the lines are additions(ie start with '+')
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
-> changes in v2: quote $operator at substitution
-> 
-> changes in v3: add a check for previous line ending with comment;
-> If so, insert $operator at the last non-comment, non-whitespace char of the previous line
-> 
-> changes in v4: improve the matching mechanism by matching line termination at comment or white space;
-> insert the operator before comments (if any) separated by a whitespace;
-> append the comment and its pre-whitespace after the inserted operator (if comment was present),
-> ie if no comment was present nothing will be inserted after the operator
-> 
-> changes in v5: improve regex for comment and line end with '$;'
-> 
-> changes in v6: remove if-check; modify commit message
-> 
-> changes in v7: add an extra '$' symbol at '$fixed[$fixlinenr - 1]' regex substitution to ensure match at line end
-> 
->  scripts/checkpatch.pl | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 5b1a5a65e69a..fb3c50e0bde2 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3553,8 +3553,16 @@ sub process {
->  
->  # check for && or || at the start of a line
->  		if ($rawline =~ /^\+\s*(&&|\|\|)/) {
-> -			CHK("LOGICAL_CONTINUATIONS",
-> -			    "Logical continuations should be on the previous line\n" . $hereprev);
-> +			my $operator = $1;
-> +			if (CHK("LOGICAL_CONTINUATIONS",
-> +				"Logical continuations should be on the previous line\n" . $hereprev) &&
-> +			    $fix && $prevrawline =~ /^\+/) {
-> +				# insert logical operator at last non-comment, non-whitepsace char on previous line
-> +				$prevline =~ /[\s$;]*$/;
-> +				my $line_end = substr($prevrawline, $-[0]);
-> +				$fixed[$fixlinenr - 1] =~ s/\Q$line_end\E$/ $operator$line_end/;
-> +				$fixed[$fixlinenr] =~ s/\Q$operator\E\s*//;
-> +			}
->  		}
->  
->  # check indentation starts on a tab stop
-> 
+On Sun, 2020-11-29 at 08:48 +0100, Mike Galbraith wrote:
+> On Sun, 2020-11-29 at 07:41 +0100, Mike Galbraith wrote:
+> > On Sat, 2020-11-28 at 15:27 +0100, Oleksandr Natalenko wrote:
+> > >
+> > > > > Shouldn't the list manipulation be protected with
+> > > > > local_lock+this_cpu_ptr instead of get_cpu_ptr+spin_lock?
+> > >
+> > > Totally untested:
+> >
+> > Hrm, the thing doesn't seem to care deeply about preemption being
+> > disabled, so adding another lock may be overkill.  It looks like you
+> > could get the job done via migrate_disable()+this_cpu_ptr().
+>
+> There is however an ever so tiny chance that I'm wrong about that :)
 
-Hi Joe
-You probably missed this patch. Please review :)
+Or not, your local_lock+this_cpu_ptr version exploded too.
 
-Thanks
-Aditya
+Perhaps there's a bit of non-rt related racy racy going on in zswap
+thingy that makes swap an even less wonderful idea for RT than usual.
+
+crash.rt> bt -s
+PID: 32399  TASK: ffff8e4528cd8000  CPU: 4   COMMAND: "cc1"
+ #0 [ffff9f0f1228f488] machine_kexec+366 at ffffffff8c05f87e
+ #1 [ffff9f0f1228f4d0] __crash_kexec+210 at ffffffff8c14c052
+ #2 [ffff9f0f1228f590] crash_kexec+48 at ffffffff8c14d240
+ #3 [ffff9f0f1228f5a0] oops_end+202 at ffffffff8c02680a
+ #4 [ffff9f0f1228f5c0] exc_general_protection+403 at ffffffff8c8be413
+ #5 [ffff9f0f1228f650] asm_exc_general_protection+30 at ffffffff8ca00a0e
+ #6 [ffff9f0f1228f6d8] __z3fold_alloc+118 at ffffffff8c2b4ea6
+ #7 [ffff9f0f1228f760] z3fold_zpool_malloc+115 at ffffffff8c2b56c3
+ #8 [ffff9f0f1228f7c8] zswap_frontswap_store+789 at ffffffff8c27d335
+ #9 [ffff9f0f1228f828] __frontswap_store+110 at ffffffff8c27bafe
+#10 [ffff9f0f1228f858] swap_writepage+55 at ffffffff8c273b17
+#11 [ffff9f0f1228f870] shmem_writepage+612 at ffffffff8c232964
+#12 [ffff9f0f1228f8a8] pageout+210 at ffffffff8c225f12
+#13 [ffff9f0f1228f928] shrink_page_list+2428 at ffffffff8c22744c
+#14 [ffff9f0f1228f9c0] shrink_inactive_list+534 at ffffffff8c229746
+#15 [ffff9f0f1228fa68] shrink_lruvec+927 at ffffffff8c22a35f
+#16 [ffff9f0f1228fb78] shrink_node+567 at ffffffff8c22a7d7
+#17 [ffff9f0f1228fbf8] do_try_to_free_pages+185 at ffffffff8c22ad39
+#18 [ffff9f0f1228fc40] try_to_free_pages+201 at ffffffff8c22c239
+#19 [ffff9f0f1228fcd0] __alloc_pages_slowpath.constprop.111+1056 at ffffff=
+ff8c26eb70
+#20 [ffff9f0f1228fda8] __alloc_pages_nodemask+786 at ffffffff8c26f7e2
+#21 [ffff9f0f1228fe00] alloc_pages_vma+309 at ffffffff8c288f15
+#22 [ffff9f0f1228fe40] handle_mm_fault+1687 at ffffffff8c24ee97
+#23 [ffff9f0f1228fef8] exc_page_fault+821 at ffffffff8c8c1be5
+#24 [ffff9f0f1228ff50] asm_exc_page_fault+30 at ffffffff8ca00ace
+    RIP: 00000000010fea3b  RSP: 00007ffc88ad5a50  RFLAGS: 00010206
+    RAX: 00007f4a548d1638  RBX: 00007f4a5c0c5000  RCX: 0000000000000000
+    RDX: 0000000000020000  RSI: 000000000000000f  RDI: 0000000000018001
+    RBP: 00007f4a5547a000   R8: 0000000000018000   R9: 0000000000240000
+    R10: 00007f4a5523a000  R11: 0000000000098628  R12: 00007f4a548d1638
+    R13: 00007f4a54ab1478  R14: 000000005002ac29  R15: 0000000000000000
+    ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
+crash.rt>
+
+
