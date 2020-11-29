@@ -2,136 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127D32C7828
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC512C7829
 	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 07:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgK2GFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 01:05:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726076AbgK2GFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 01:05:48 -0500
-Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 044D82076A;
-        Sun, 29 Nov 2020 06:05:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606629907;
-        bh=5aWFhJgbKoTM+X/d62wGGVwXdEBsZBjLZrpbYO/sMMM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=btwmUo94iBlYyhWD1fTlXmn98jsamsV6RyJnoykDVKGjXFeVmQzCFPfIwaK7bMCd8
-         3RbgANHJlIc7OLY1Rg+wfSBdAjCMASEWnIlHyJAVDd4nOb3TcoKwo28SPXKN2gm9rQ
-         bylgmH2XYJfCnW5H3z4RBjDrC43Yaf4NzZPs+o6I=
-Date:   Sun, 29 Nov 2020 07:05:03 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Wen Yang <wenyang@linux.alibaba.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, stable@vger.kernel.org
-Subject: Re: [PATCH] exit: fix a race in release_task when flushing the dentry
-Message-ID: <X8M6D7M6Rn4f0C9j@kroah.com>
-References: <20201128064722.9106-1-wenyang@linux.alibaba.com>
- <X8IFADugB450PHp8@kroah.com>
- <24bd714d-f598-c7c6-6821-38fd9c1f4d2b@linux.alibaba.com>
- <X8JZJGG67tE4jngE@kroah.com>
- <b73daaf0-bd6d-5153-9155-ef3a8568a6f2@linux.alibaba.com>
+        id S1726351AbgK2GGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 01:06:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgK2GGK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 01:06:10 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200DBC0613D1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:05:30 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id w6so8103993pfu.1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:05:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AP1He76mSIpMJ7kjPnH8UBYNbpoUWQOGvAFw0wjETBU=;
+        b=AuYlyvsbuCxBGS6m3QFCQKhe5yg7MLKYCz9120Im5R3hmszQkNuAqnXMxZkbuHEZYW
+         PKgtLlMUnVrxJtBNwhNg2oGZ2MH3FHHj/f6ZaaYd+RjtqR1po1Ppi7vF8z1nRUOBclTW
+         MNSS5sVphuQkf5qh/RMTMXW3FGCgEhuBjgMjQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AP1He76mSIpMJ7kjPnH8UBYNbpoUWQOGvAFw0wjETBU=;
+        b=rcdxmKXjNixCec5wyjxWiJuo+hSt2Fh5bsiYkPvSBZPQZBZiNAsDKjikI9ZjD0xb6n
+         ibGIx8vo6Gtp4LysqK7a/QcPPSJX/N6INEsieQTQFaCAQiEBXhqrH8sBg4G0mSlvYjN7
+         Rmh0K8T8FlnedoO69ZRWqLknj7Cmml8U/9JzfhViGYbbI0vwTjt/TMSUyZNTx0f30J9q
+         ZkUBkH+4Py/LRxdvz8nKQR5o4c5dj2k5SE2o10tvUXsFpZLSoQAooyFhZW3LuaEBKkbG
+         eDdr9lTti8xFH8dO1xSLYzh9bCuOuqpXIL/bIUDpBZoLAnm5DEGu+6qHP+EBt481KCt7
+         DhCQ==
+X-Gm-Message-State: AOAM531EAAkBESS+cUg9LU6tbA/hzjOpu5rEFm5v/XfqsRKEAXW11yDV
+        eXXhOBIbpNm5dl1YtFXbH7QbIg==
+X-Google-Smtp-Source: ABdhPJwGbVaKeNQPzHDymfV6x9Nb27z0MQSqwKBXslQZGoMB9tfF+MSanOfoMzKnWKUxh8dBdE8tHw==
+X-Received: by 2002:a17:90a:4405:: with SMTP id s5mr19544319pjg.219.1606629929757;
+        Sat, 28 Nov 2020 22:05:29 -0800 (PST)
+Received: from localhost (56.72.82.34.bc.googleusercontent.com. [34.82.72.56])
+        by smtp.gmail.com with ESMTPSA id 65sm12273232pfd.184.2020.11.28.22.05.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 28 Nov 2020 22:05:29 -0800 (PST)
+From:   Fritz Koenig <frkoenig@chromium.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stanimir.varbanov@linaro.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org,
+        acourbot@chromium.org
+Cc:     Fritz Koenig <frkoenig@chromium.org>
+Subject: [PATCH] venus: venc: Add VIDIOC_TRY_ENCODER_CMD support
+Date:   Sun, 29 Nov 2020 06:05:18 +0000
+Message-Id: <20201129060517.2029659-1-frkoenig@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b73daaf0-bd6d-5153-9155-ef3a8568a6f2@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 11:28:53PM +0800, Wen Yang wrote:
-> 
-> 
-> 在 2020/11/28 下午10:05, Greg Kroah-Hartman 写道:
-> > On Sat, Nov 28, 2020 at 09:59:09PM +0800, Wen Yang wrote:
-> > > 
-> > > 
-> > > 在 2020/11/28 下午4:06, Greg Kroah-Hartman 写道:
-> > > > On Sat, Nov 28, 2020 at 02:47:22PM +0800, Wen Yang wrote:
-> > > > > [ Upstream commit 7bc3e6e55acf065500a24621f3b313e7e5998acf ]
-> > > > 
-> > > > No, that is not this commit at all.
-> > > > 
-> > > > What are you wanting to have happen here?
-> > > > 
-> > > > confused,
-> > > > 
-> > > > greg k-h
-> > > > 
-> > > 
-> > > Thanks.
-> > > Let's explain it briefly:
-> > > 
-> > > The dentries such as /proc/<pid>/ns/ipc have the DCACHE_OP_DELETE flag, they
-> > > should be deleted when the process exits.
-> > > Suppose the following race appears：
-> > > 
-> > > release_task                dput
-> > > -> proc_flush_task
-> > >                              ->  dentry->d_op->d_delete(dentry)
-> > > -> __exit_signal
-> > >                              -> dentry->d_lockref.count--  and return.
-> > > 
-> > > 
-> > > In the proc_flush_task function, because another processe is using this
-> > > dentry, it cannot be deleted;
-> > > In the dput function, d_delete may be executed before __exit_signal (the pid
-> > > has not been unhashed), so that d_delete returns false and the dentry can
-> > > not be deleted.
-> > > 
-> > > So this dentry is still caches (count is 0), and its parent dentries are
-> > > also caches, and those dentries can only be deleted when drop_caches is
-> > > manually triggered.
-> > > 
-> > > 
-> > > In the release_task function, we should move proc_flush_task after the
-> > > tasklist_lock is released（Just like the commit
-> > > 7bc3e6e55acf065500a24621f3b313e7e5998acf did).
-> > 
-> > I do not understand, is this a patch being submitted for the main kernel
-> > tree, or for a stable kernel release?
-> > 
-> > If stable, please read:
-> >      https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> > for how to do this properly.
-> > 
-> > If main kernel tree, you can't have the "Upstream commit" line in the
-> > changelog text as that makes no sense at all.
-> 
-> 
-> Hi,
-> This patch is submitted to the stable branches (from 4.9.y
-> to 5.6.y).
-> 
-> This problem can also be solved if the following patch could be ported to
-> the stable branch:
-> 7bc3e6e55acf ("proc: Use a list of inodes to flush from proc")
-> 26dbc60f385f ("proc: Generalize proc_sys_prune_dcache into
-> proc_prune_siblings_dcache")
-> f90f3cafe8d5 ("proc: Use d_invalidate in proc_prune_siblings_dcache")
-> 
-> However, the above-mentioned patches modify too much code (more than 100
-> lines), and there may also be some undiscovered bugs.
-> 
-> So the safer method may be to apply this small patch（also ported from the
-> equivalent fix already exist in Linus’ tree）.
-> 
-> We will reformat the patch later.
+V4L2_ENC_CMD_STOP and V4L2_ENC_CMD_START are already
+supported.  Add a way to query for support.
 
-We always prefer to take the original, upstream patches, instead of
-one-off changes as almost always, those one-off changes end up being
-wrong and hard to work with over time.
+---
+ drivers/media/platform/qcom/venus/venc.c | 26 ++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-So if we need more than one patch to solve this reported problem, that's
-fine, can you test the above series of patches and provide a backported
-set of them that we can use for this?
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 2ddfeddf98514..e05db3c4bfb24 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -507,6 +507,27 @@ static int venc_enum_frameintervals(struct file *file, void *fh,
+ 	return 0;
+ }
+ 
++static int
++venc_try_encoder_cmd(struct file *file, void *fh, struct v4l2_encoder_cmd *cmd)
++{
++	struct venus_inst *inst = to_inst(file);
++	struct device *dev = inst->core->dev_dec;
++
++	switch (cmd->cmd) {
++	case V4L2_ENC_CMD_STOP:
++	case V4L2_ENC_CMD_START:
++		if (cmd->flags != 0) {
++			dev_dbg(dev, "flags=%u are not supported", cmd->flags);
++			return -EINVAL;
++		}
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int
+ venc_encoder_cmd(struct file *file, void *fh, struct v4l2_encoder_cmd *cmd)
+ {
+@@ -514,6 +535,10 @@ venc_encoder_cmd(struct file *file, void *fh, struct v4l2_encoder_cmd *cmd)
+ 	struct hfi_frame_data fdata = {0};
+ 	int ret = 0;
+ 
++	ret = venc_try_encoder_cmd(file, fh, cmd);
++	if (ret < 0)
++		return ret;
++
+ 	ret = v4l2_m2m_ioctl_try_encoder_cmd(file, fh, cmd);
+ 	if (ret)
+ 		return ret;
+@@ -575,6 +600,7 @@ static const struct v4l2_ioctl_ops venc_ioctl_ops = {
+ 	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
+ 	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
+ 	.vidioc_encoder_cmd = venc_encoder_cmd,
++	.vidioc_try_encoder_cmd = venc_try_encoder_cmd,
+ };
+ 
+ static int venc_set_properties(struct venus_inst *inst)
+-- 
+2.29.2.454.gaff20da3a2-goog
 
-thanks,
-
-gre gk-h
