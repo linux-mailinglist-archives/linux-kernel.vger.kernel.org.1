@@ -2,95 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECD52C7736
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 02:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D7B2C773A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 02:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729265AbgK2BhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 20:37:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgK2BhE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 20:37:04 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6771AC0613D1;
-        Sat, 28 Nov 2020 17:36:18 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id x15so4544898pll.2;
-        Sat, 28 Nov 2020 17:36:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=60Q/WxdzYXfrMFof+jYtWlTA1Q7rDWZ0ufHoBpi8ZDg=;
-        b=C7xpg0ykCSA277GMibjvIfc36U2xgyiTkbXG+jihQydcPIxxr6tsDMsCbuGzj9OGqU
-         YIGPgH2NfMEGRlWUNUrVvHaB2GCmPgyyikKvERx8mZAgT0HTMJJ/S25LyBzRZDCcs/5K
-         h8a5EKIrYramDmcCw1sNJolM8LoO0DzQ9KOAGH7v99cdkdR7Kq17KyAok9yBBCI1mEkq
-         pSvNZ9a0xMiUAcVjpS1eBJbnmGvI32z+TatqbS6iXQBSWiNK0HFU4pIzBdi3d+Gm0W8q
-         6SZl7zaqqBCYvTGI5wBsnibLNvdllKz5uhW3joKhFPeB5Nci6x2KYoO84Hb9vJRBHWtp
-         0Zaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=60Q/WxdzYXfrMFof+jYtWlTA1Q7rDWZ0ufHoBpi8ZDg=;
-        b=Ush8AVKqJtoWwY9iey2L+6kRH8FlTrFcs+WoWwL5TUx5OKfcWH6sm1UDW/Z8NTbSgZ
-         ToRbLON3VpoZJvULcZ3tHt7RuPGq42sLflg9zICI3eCZiqrj0NMtC8F31UlGekPD1KLo
-         Cu0ErcFdirUYnDS6i8iLBAd1vYdmGKmmbvbxlKFKiwGl2yenUnH47gXkgrLVmeVqDUSi
-         OTxivJsKc1GUfUH8B9FhhJ3DG+JQBT9QkR0nfPup6ZykBYmIIjToTYcTutXyHueL8reE
-         7Qm8LDJ37C+6tp0k810VNBjGRLqTtkz84vg1Ld3pVHXOv5Jw6Kq6jLWgP4MeWb5ge8BG
-         jC0w==
-X-Gm-Message-State: AOAM533XL92BKxCT7p6sobY3D3ql+8wW+1LworYRzR9sFUHB/LcCbbpK
-        ClZGcd+nfR+oYeKktpppJdI=
-X-Google-Smtp-Source: ABdhPJxHIh/LWp8HhZp++xQDggXAolqmMXFNh69L8KUUZERMy7v0jlmWcMbOH8nV7q/YNY17BQxMjg==
-X-Received: by 2002:a17:902:8c8a:b029:d6:d1e7:e78e with SMTP id t10-20020a1709028c8ab02900d6d1e7e78emr12795086plo.39.1606613778009;
-        Sat, 28 Nov 2020 17:36:18 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:5925])
-        by smtp.gmail.com with ESMTPSA id b21sm15953801pji.24.2020.11.28.17.36.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 17:36:17 -0800 (PST)
-Date:   Sat, 28 Nov 2020 17:36:15 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2 bpf-next 11/13] bpf: Add bitwise atomic instructions
-Message-ID: <20201129013615.mf45ihcio2abuvlu@ast-mbp>
-References: <20201127175738.1085417-1-jackmanb@google.com>
- <20201127175738.1085417-12-jackmanb@google.com>
- <d2e093c3-79bc-0a6b-8919-c5a07667926a@fb.com>
+        id S1729309AbgK2BkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 20:40:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:40062 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726472AbgK2BkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 20:40:01 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 140E61FB;
+        Sat, 28 Nov 2020 17:39:15 -0800 (PST)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 643A63F71F;
+        Sat, 28 Nov 2020 17:39:13 -0800 (PST)
+Subject: Re: [RESEND PATCH 17/19] mmc: sunxi: add support for A100 mmc
+ controller
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+To:     Frank Lee <frank@allwinnertech.com>, tiny.windzz@gmail.com
+Cc:     Marek Vasut <marex@denx.de>, Ulf Hansson <ulf.hansson@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <cover.1604988979.git.frank@allwinnertech.com>
+ <de4c37ee3a0f1734c4ae035c37b8a2c34b9641ca.1604988979.git.frank@allwinnertech.com>
+ <65401815-cb2e-58ec-7653-f09d6a25804c@arm.com>
+Organization: ARM Ltd.
+Message-ID: <3cda0b82-81fe-1f1b-ae8b-609f525f64cb@arm.com>
+Date:   Sun, 29 Nov 2020 01:38:57 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d2e093c3-79bc-0a6b-8919-c5a07667926a@fb.com>
+In-Reply-To: <65401815-cb2e-58ec-7653-f09d6a25804c@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 09:39:10PM -0800, Yonghong Song wrote:
-> 
-> 
-> On 11/27/20 9:57 AM, Brendan Jackman wrote:
-> > This adds instructions for
-> > 
-> > atomic[64]_[fetch_]and
-> > atomic[64]_[fetch_]or
-> > atomic[64]_[fetch_]xor
-> > 
-> > All these operations are isomorphic enough to implement with the same
-> > verifier, interpreter, and x86 JIT code, hence being a single commit.
-> > 
-> > The main interesting thing here is that x86 doesn't directly support
-> > the fetch_ version these operations, so we need to generate a CMPXCHG
-> > loop in the JIT. This requires the use of two temporary registers,
-> > IIUC it's safe to use BPF_REG_AX and x86's AUX_REG for this purpose.
-> 
-> similar to previous xsub (atomic[64]_sub), should we implement
-> xand, xor, xxor in llvm?
+On 28/11/2020 19:56, André Przywara wrote:
+> On 10/11/2020 06:46, Frank Lee wrote:
 
-yes. please. Unlike atomic_fetch_sub that can be handled by llvm.
-atomic_fetch_or/xor/and has to be seen as separate instructions
-because JITs will translate them as loop.
+Hi,
+
+one more thing below ...
+
+>> From: Yangtao Li <frank@allwinnertech.com>
+>>
+>> This patch adds support for A100 MMC controller, which use word address
+>> for internal dma.
+>>
+>> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+>> ---
+>>  drivers/mmc/host/sunxi-mmc.c | 28 +++++++++++++++++++++++++---
+>>  1 file changed, 25 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mmc/host/sunxi-mmc.c b/drivers/mmc/host/sunxi-mmc.c
+>> index fc62773602ec..1518b64112b7 100644
+>> --- a/drivers/mmc/host/sunxi-mmc.c
+>> +++ b/drivers/mmc/host/sunxi-mmc.c
+>> @@ -244,6 +244,7 @@ struct sunxi_idma_des {
+>>  
+>>  struct sunxi_mmc_cfg {
+>>  	u32 idma_des_size_bits;
+>> +	u32 idma_des_shift;
+>>  	const struct sunxi_mmc_clk_delay *clk_delays;
+>>  
+>>  	/* does the IP block support autocalibration? */
+>> @@ -343,7 +344,7 @@ static int sunxi_mmc_init_host(struct sunxi_mmc_host *host)
+>>  	/* Enable CEATA support */
+>>  	mmc_writel(host, REG_FUNS, SDXC_CEATA_ON);
+>>  	/* Set DMA descriptor list base address */
+>> -	mmc_writel(host, REG_DLBA, host->sg_dma);
+>> +	mmc_writel(host, REG_DLBA, host->sg_dma >> host->cfg->idma_des_shift);
+>>  
+>>  	rval = mmc_readl(host, REG_GCTRL);
+>>  	rval |= SDXC_INTERRUPT_ENABLE_BIT;
+>> @@ -373,8 +374,10 @@ static void sunxi_mmc_init_idma_des(struct sunxi_mmc_host *host,
+>>  
+>>  		next_desc += sizeof(struct sunxi_idma_des);
+>>  		pdes[i].buf_addr_ptr1 =
+>> -			cpu_to_le32(sg_dma_address(&data->sg[i]));
+>> -		pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc);
+>> +			cpu_to_le32(sg_dma_address(&data->sg[i]) >>
+>> +				    host->cfg->idma_des_shift);
+>> +		pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc >>
+>> +						    host->cfg->idma_des_shift);
+> 
+> I think you should cast after the shift, otherwise you lose the ability
+> to run above 4 GB. This won't be a problem at the moment, since we still
+> use the default 32-bit DMA mask, but might bite us later.
+> 
+> Otherwise this patch looks fine, and works on the H616 as well.
+> 
+> Cheers,
+> Andre
+> 
+>>  	}
+>>  
+>>  	pdes[0].config |= cpu_to_le32(SDXC_IDMAC_DES0_FD);
+>> @@ -1178,6 +1181,23 @@ static const struct sunxi_mmc_cfg sun50i_a64_emmc_cfg = {
+>>  	.needs_new_timings = true,
+>>  };
+>>  
+>> +static const struct sunxi_mmc_cfg sun50i_a100_cfg = {
+>> +	.idma_des_size_bits = 16,
+>> +	.idma_des_shift = 2,
+>> +	.clk_delays = NULL,
+>> +	.can_calibrate = true,
+>> +	.mask_data0 = true,
+>> +	.needs_new_timings = true,
+>> +};
+>> +
+>> +static const struct sunxi_mmc_cfg sun50i_a100_emmc_cfg = {
+>> +	.idma_des_size_bits = 13,
+>> +	.idma_des_shift = 2,
+
+Is that actually true? Don't know about the A100, but the H616 manual
+mentions that "SMHC2" deals with byte addresses, in contrast to the
+other two ones. So MMC2 would be compatible with the a64_emmc_cfg?
+
+Cheers,
+Andre
+
+>> +	.clk_delays = NULL,
+>> +	.can_calibrate = true,
+>> +	.needs_new_timings = true,
+>> +};
+>> +
+>>  static const struct of_device_id sunxi_mmc_of_match[] = {
+>>  	{ .compatible = "allwinner,sun4i-a10-mmc", .data = &sun4i_a10_cfg },
+>>  	{ .compatible = "allwinner,sun5i-a13-mmc", .data = &sun5i_a13_cfg },
+>> @@ -1186,6 +1206,8 @@ static const struct of_device_id sunxi_mmc_of_match[] = {
+>>  	{ .compatible = "allwinner,sun9i-a80-mmc", .data = &sun9i_a80_cfg },
+>>  	{ .compatible = "allwinner,sun50i-a64-mmc", .data = &sun50i_a64_cfg },
+>>  	{ .compatible = "allwinner,sun50i-a64-emmc", .data = &sun50i_a64_emmc_cfg },
+>> +	{ .compatible = "allwinner,sun50i-a100-mmc", .data = &sun50i_a100_cfg },
+>> +	{ .compatible = "allwinner,sun50i-a100-emmc", .data = &sun50i_a100_emmc_cfg },
+>>  	{ /* sentinel */ }
+>>  };
+>>  MODULE_DEVICE_TABLE(of, sunxi_mmc_of_match);
+>>
+> 
+
