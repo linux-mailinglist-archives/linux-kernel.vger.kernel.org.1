@@ -2,108 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A646A2C7B19
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 21:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 208172C7B1A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 21:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgK2UJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 15:09:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44247 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727695AbgK2UJ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 15:09:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606680509;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QxI+akPL+TVvqGXQqCSO9a4+uClCIKdg0MUm21BHJok=;
-        b=fWVt2NsAHcLuzsadOASqsYvAmXmTPltVxpvhyU6ozjAa/7gUDL1bj3V90yofo4AIIWdrua
-        DXSQCZHE4E+CuOjQIOHwaOzemu6GnZPR09YKuzGmCaTWPS6UQ9hY5OaDzEZiRLmwio8TBx
-        EMXgMCVC0feLxSNChrZZ9rhzuYpGV4k=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-CIB60TtIPPOVr8v9PUMeEA-1; Sun, 29 Nov 2020 15:08:27 -0500
-X-MC-Unique: CIB60TtIPPOVr8v9PUMeEA-1
-Received: by mail-wr1-f70.google.com with SMTP id w17so7076036wrp.11
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 12:08:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QxI+akPL+TVvqGXQqCSO9a4+uClCIKdg0MUm21BHJok=;
-        b=OLCG/hcMfS2jPlBJUl2B58Z/GRltCSQnNRvqIW+wlHDWGanzf0exNJ9oJDqdPwEe5I
-         9K2lt3HdqCGokihyek6zM+Vfk6VNx8MdUyCudcMA8HMiSQbaLuSRGfJxTl/jn3jpv2pz
-         WIHNBc/mS9TM6zmvtoM+S59xM8aYoNnNulVElUzES6l04m4krFF5j5WAEbjt0jB3fbhv
-         SOG95BPvVdxfcJ+uUOqzQiKXu0tOi9z3g4UWxrm8MSE03udHUNHs4RNsW84sVStOpcYF
-         BlA46IxtBpQhuA0RMNYgjU3Cxebh2VZLYjQ8EbnbeqNWbI+71GbhOpkJresGIjF9b704
-         FIvA==
-X-Gm-Message-State: AOAM530a9pE+nR3Vv/mk1nv6uiLqqpPSvQPJ8zZiuwlXyHkT8VHLM6wy
-        TbHQXVSTYmUSYsVRU9lZ7iguuO//XOVN5ExQ0WAjQsvW5jV64OA12Gftwc3iTrvvKpmY1ldhdiU
-        PsP6PBpdq7AuP3iBTvuw94d5M
-X-Received: by 2002:a5d:40cd:: with SMTP id b13mr24089357wrq.52.1606680506281;
-        Sun, 29 Nov 2020 12:08:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw4Zj8VIghM/MlJoqfcfMhVOHFZnrUyaoXQhAaYqwHPALiKJBGd4W7o8bomBMGnHNhTo+rlKg==
-X-Received: by 2002:a5d:40cd:: with SMTP id b13mr24089338wrq.52.1606680506079;
-        Sun, 29 Nov 2020 12:08:26 -0800 (PST)
-Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
-        by smtp.gmail.com with ESMTPSA id 34sm24064412wrh.78.2020.11.29.12.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 12:08:25 -0800 (PST)
-Date:   Sun, 29 Nov 2020 15:08:22 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com
-Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
-Message-ID: <20201129150505-mutt-send-email-mst@kernel.org>
-References: <20201129064351.63618-1-elic@nvidia.com>
+        id S1728182AbgK2UKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 15:10:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727695AbgK2UKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 15:10:12 -0500
+Received: from threadripper.lan (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 685F320756;
+        Sun, 29 Nov 2020 20:09:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606680572;
+        bh=rQ5NWEEEPU4g45U80zBfT28KT/fxWWNh4bB2Arjzahk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HaBHq0rmQ3UUakU8auzk6mvEnyoOY5gHkt7DdwdL+XdzKV4NuuddNb01IJWJSZQ7J
+         RF7AkL64t8au1LQVxNjL5/nfsTs4eLh3WIfmKxRJZ66nNDHIxVPhiIDTA8E3g446/P
+         TJjkOnrB9/JVN2YyxvcrYkxABSRqQaYcsRJbBcKY=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Edmund Dea <edmund.j.dea@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/kmb: fix array bounds warning
+Date:   Sun, 29 Nov 2020 21:09:08 +0100
+Message-Id: <20201129200927.1854104-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201129064351.63618-1-elic@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Cohen wrote:
-> We should not try to use the VF MAC address as that is used by the
-> regular (e.g. mlx5_core) NIC implementation. Instead, use a random
-> generated MAC address.
-> 
-> Suggested by: Cindy Lu <lulu@redhat.com>
-> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-I didn't realise it's possible to use VF in two ways
-with and without vdpa.
-Could you include a bit more description on the failure
-mode?
-Is switching to a random mac for such an unusual
-configuration really justified?
-It looks like changing a MAC could break some guests,
-can it not?
+gcc warns about an out-of-bounds access when the using nonzero
+values for 'plane_id' on kmb->plane_status:
 
-> ---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 1fa6fcac8299..80d06d958b8b 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1955,10 +1955,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
->  	if (err)
->  		goto err_mtu;
->  
-> -	err = mlx5_query_nic_vport_mac_address(mdev, 0, 0, config->mac);
-> -	if (err)
-> -		goto err_mtu;
-> -
-> +	eth_random_addr(config->mac);
->  	mvdev->vdev.dma_dev = mdev->device;
->  	err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
->  	if (err)
-> -- 
-> 2.26.2
+drivers/gpu/drm/kmb/kmb_plane.c: In function 'kmb_plane_atomic_disable':
+drivers/gpu/drm/kmb/kmb_plane.c:128:20: warning: array subscript 3 is above array bounds of 'struct layer_status[1]' [-Warray-bounds]
+  128 |   kmb->plane_status[plane_id].ctrl = LCD_CTRL_GL2_ENABLE;
+      |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+drivers/gpu/drm/kmb/kmb_plane.c:125:20: warning: array subscript 2 is above array bounds of 'struct layer_status[1]' [-Warray-bounds]
+  125 |   kmb->plane_status[plane_id].ctrl = LCD_CTRL_GL1_ENABLE;
+      |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+drivers/gpu/drm/kmb/kmb_plane.c:122:20: warning: array subscript 1 is above array bounds of 'struct layer_status[1]' [-Warray-bounds]
+  122 |   kmb->plane_status[plane_id].ctrl = LCD_CTRL_VL2_ENABLE;
+
+Having the array truncated to one entry seems intentional, so add
+a range check before indexing it to make it clearer what is going
+on and shut up the warning.
+
+I received the warning from the kernel test robot after a private
+patch that turns on Warray-bounds unconditionally.
+
+Fixes: 7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/kmb/kmb_plane.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/kmb/kmb_plane.c b/drivers/gpu/drm/kmb/kmb_plane.c
+index 8448d1edb553..be8eea3830c1 100644
+--- a/drivers/gpu/drm/kmb/kmb_plane.c
++++ b/drivers/gpu/drm/kmb/kmb_plane.c
+@@ -114,6 +114,9 @@ static void kmb_plane_atomic_disable(struct drm_plane *plane,
+ 
+ 	kmb = to_kmb(plane->dev);
+ 
++	if (WARN_ON(plane_id >= KMB_MAX_PLANES))
++		return;
++
+ 	switch (plane_id) {
+ 	case LAYER_0:
+ 		kmb->plane_status[plane_id].ctrl = LCD_CTRL_VL1_ENABLE;
+-- 
+2.27.0
 
