@@ -2,260 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD082C7769
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 04:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 632E82C776C
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 04:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgK2DaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 22:30:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43574 "EHLO mail.kernel.org"
+        id S1726360AbgK2Dd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 22:33:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgK2DaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 22:30:20 -0500
-Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        id S1725616AbgK2Dd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 22:33:58 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 746912080D;
-        Sun, 29 Nov 2020 03:29:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3FA82065C;
+        Sun, 29 Nov 2020 03:33:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606620579;
-        bh=72TodPAIlIa4JUl4YdHHD3J7JAjew3h7a3MJtL/4TFs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lMrDZ3lxAfYNvC/R6ZI4w+Vt9io/Qw16LQBRW7oKZRAGLPA+aQ4qx7vP0+eq0uknk
-         3alVfpmQEiS4VqlQuUMXC6pU2RvDLDsLmiydaP9+7XUXT+zoviqRw8zHzsEVh68/yM
-         VB4BttGeTrC2ZV/Lbvsp5CtIykOyVS0c8hvaGVbo=
-Date:   Sun, 29 Nov 2020 05:29:33 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Adrian Ratiu <adrian.ratiu@collabora.com>,
-        linux-integrity@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Helen Koike <helen.koike@collabora.com>,
-        Duncan Laurie <dlaurie@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>, kernel@collabora.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] char: tpm: add i2c driver for cr50
-Message-ID: <20201129032933.GE39488@kernel.org>
-References: <20201120172345.4040187-1-adrian.ratiu@collabora.com>
- <20201123220643.GA16777@kernel.org>
- <f36c43f81968a9ce2f3342e5c2c069722d8bfc7f.camel@collabora.com>
- <7edf80b70e4dd67d6f95c796c1ae26df9e51ba8d.camel@kernel.org>
- <6409c32842ab080d91d1851a58f7ec7bb4524336.camel@collabora.com>
+        s=default; t=1606620798;
+        bh=c+2OdbKbduuehb88A5gHc1LV8eJcBLMOoGx1EaPeJEU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=llP0iKdkTCaCKX7mRMd2cthOvfPgvrtdM8s3J+GJRHb02OrnQtSOD00ilBFUZ8ovv
+         A1bxZzzmoHLgZiNS5h3+yaa2MraNZSSHnIN0w4U0E3LTh8bo0CMWUXopFCUT51iUor
+         j9WbDSz6A3uqTKGorAjhGb/PY66eFcOItaE1bAMY=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C11633522D27; Sat, 28 Nov 2020 19:33:17 -0800 (PST)
+Date:   Sat, 28 Nov 2020 19:33:17 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr
+Subject: Re: [PATCH 2/2] tools/memory-model: Fix typo in klitmus7
+ compatibility table
+Message-ID: <20201129033317.GA1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201105215953.GA15309@paulmck-ThinkPad-P72>
+ <20201105220017.15410-6-paulmck@kernel.org>
+ <12e0baf4-b1c9-d674-1d4c-310e0a9b6343@gmail.com>
+ <20201105225605.GQ3249@paulmck-ThinkPad-P72>
+ <2acf8de5-efe9-a205-cb62-04c4774008c0@gmail.com>
+ <20201127154652.GU1437@paulmck-ThinkPad-P72>
+ <78e1ccaf-9d35-b2a5-1865-fb0a76b3e57e@gmail.com>
+ <0f7b4255-cb68-bb1e-6717-3b60a3020c36@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6409c32842ab080d91d1851a58f7ec7bb4524336.camel@collabora.com>
+In-Reply-To: <0f7b4255-cb68-bb1e-6717-3b60a3020c36@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 03:19:24AM -0300, Ezequiel Garcia wrote:
-> On Thu, 2020-11-26 at 05:30 +0200, Jarkko Sakkinen wrote:
-> > On Tue, 2020-11-24 at 10:14 -0300, Ezequiel Garcia wrote:
-> > > Hi Jarkko,
-> > > 
-> > > Thanks for your review.
-> > > 
-> > > On Tue, 2020-11-24 at 00:06 +0200, Jarkko Sakkinen wrote:
-> > > > On Fri, Nov 20, 2020 at 07:23:45PM +0200, Adrian Ratiu wrote:
-> > > > > From: "dlaurie@chromium.org" <dlaurie@chromium.org>
-> > > > > 
-> > > > > Add TPM 2.0 compatible I2C interface for chips with cr50
-> > > > > firmware.
-> > > > > 
-> > > > > The firmware running on the currently supported H1 MCU requires a
-> > > > > special driver to handle its specific protocol, and this makes it
-> > > > > unsuitable to use tpm_tis_core_* and instead it must implement
-> > > > > the
-> > > > > underlying TPM protocol similar to the other I2C TPM drivers.
-> > > > > 
-> > > > > - All 4 byes of status register must be read/written at once.
-> > > > > - FIFO and burst count is limited to 63 and must be drained by
-> > > > > AP.
-> > > > > - Provides an interrupt to indicate when read response data is
-> > > > > ready
-> > > > > and when the TPM is finished processing write data.
-> > > > > 
-> > > > > This driver is based on the existing infineon I2C TPM driver,
-> > > > > which
-> > > > > most closely matches the cr50 i2c protocol behavior.
-> > > > > 
-> > > > > Cc: Helen Koike <helen.koike@collabora.com>
-> > > > > Signed-off-by: Duncan Laurie <dlaurie@chromium.org>
-> > > > > [swboyd@chromium.org: Depend on i2c even if it's a module,
-> > > > > replace
-> > > > > boilier plate with SPDX tag, drop asm/byteorder.h include,
-> > > > > simplify
-> > > > > return from probe]
-> > > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > > > > Signed-off-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
-> > > > > Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> > > > > ---
-> > > > > Changes in v2:
-> > > > >   - Various small fixes all over (reorder includes, MAX_BUFSIZE,
-> > > > > comments, etc)
-> > > > >   - Reworked return values of i2c_wait_tpm_ready() to fix timeout
-> > > > > mis-handling
-> > > > > so ret == 0 now means success, the wait period jiffies is ignored
-> > > > > because that
-> > > > > number is meaningless and return a proper timeout error in case
-> > > > > jiffies == 0.
-> > > > >   - Make i2c default to 1 message per transfer (requested by
-> > > > > Helen)
-> > > > >   - Move -EIO error reporting to transfer function to cleanup
-> > > > > transfer() itself
-> > > > > and its R/W callers
-> > > > >   - Remove magic value hardcodings and introduce enum
-> > > > > force_release.
-> > > > > 
-> > > > > v1 posted at https://lkml.org/lkml/2020/2/25/349
-> > > > > 
-> > > > > Applies on next-20201120, tested on Chromebook EVE.
-> > > > > ---
-> > > > >  drivers/char/tpm/Kconfig            |  10 +
-> > > > >  drivers/char/tpm/Makefile           |   2 +
-> > > > >  drivers/char/tpm/tpm_tis_i2c_cr50.c | 768
-> > > > > ++++++++++++++++++++++++++++
-> > > > >  3 files changed, 780 insertions(+)
-> > > > >  create mode 100644 drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > > > 
-> > > > > diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
-> > > > > index a18c314da211..4308f9ca7a43 100644
-> > > > > --- a/drivers/char/tpm/Kconfig
-> > > > > +++ b/drivers/char/tpm/Kconfig
-> > > > > @@ -86,6 +86,16 @@ config TCG_TIS_SYNQUACER
-> > > > >           To compile this driver as a module, choose  M here;
-> > > > >           the module will be called tpm_tis_synquacer.
-> > > > >  
-> > > > > +config TCG_TIS_I2C_CR50
-> > > > > +       tristate "TPM Interface Specification 2.0 Interface (I2C
-> > > > > - CR50)"
-> > > > > +       depends on I2C
-> > > > > +       select TCG_CR50
-> > > > > +       help
-> > > > > +         This is a driver for the Google cr50 I2C TPM interface
-> > > > > which is a
-> > > > > +         custom microcontroller and requires a custom i2c
-> > > > > protocol interface
-> > > > > +         to handle the limitations of the hardware.  To compile
-> > > > > this driver
-> > > > > +         as a module, choose M here; the module will be called
-> > > > > tcg_tis_i2c_cr50.
-> > > > > +
-> > > > >  config TCG_TIS_I2C_ATMEL
-> > > > >         tristate "TPM Interface Specification 1.2 Interface (I2C
-> > > > > - Atmel)"
-> > > > >         depends on I2C
-> > > > > diff --git a/drivers/char/tpm/Makefile
-> > > > > b/drivers/char/tpm/Makefile
-> > > > > index 84db4fb3a9c9..66d39ea6bd10 100644
-> > > > > --- a/drivers/char/tpm/Makefile
-> > > > > +++ b/drivers/char/tpm/Makefile
-> > > > > @@ -27,6 +27,8 @@ obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o
-> > > > >  tpm_tis_spi-y := tpm_tis_spi_main.o
-> > > > >  tpm_tis_spi-$(CONFIG_TCG_TIS_SPI_CR50) += tpm_tis_spi_cr50.o
-> > > > >  
-> > > > > +obj-$(CONFIG_TCG_TIS_I2C_CR50) += tpm_tis_i2c_cr50.o
-> > > > > +
-> > > > >  obj-$(CONFIG_TCG_TIS_I2C_ATMEL) += tpm_i2c_atmel.o
-> > > > >  obj-$(CONFIG_TCG_TIS_I2C_INFINEON) += tpm_i2c_infineon.o
-> > > > >  obj-$(CONFIG_TCG_TIS_I2C_NUVOTON) += tpm_i2c_nuvoton.o
-> > > > > diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > > > b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..37555dafdca0
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-> > > > > @@ -0,0 +1,768 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > > +/*
-> > > > > + * Copyright 2016 Google Inc.
-> > > > > + *
-> > > > > + * Based on Linux Kernel TPM driver by
-> > > > > + * Peter Huewe <peter.huewe@infineon.com>
-> > > > > + * Copyright (C) 2011 Infineon Technologies
-> > > > > + */
-> > > > > +
-> > > > > +/*
-> > > > > + * cr50 is a firmware for H1 secure modules that requires
-> > > > > special
-> > > > > + * handling for the I2C interface.
-> > > > > + *
-> > > > > + * - Use an interrupt for transaction status instead of
-> > > > > hardcoded delays
-> > > > > + * - Must use write+wait+read read protocol
-> > > > > + * - All 4 bytes of status register must be read/written at once
-> > > > > + * - Burst count max is 63 bytes, and burst count behaves
-> > > > > + *   slightly differently than other I2C TPMs
-> > > > > + * - When reading from FIFO the full burstcnt must be read
-> > > > > + *   instead of just reading header and determining the
-> > > > > remainder
-> > > > > + */
-> > > > > +
-> > > > > +#include <linux/acpi.h>
-> > > > > +#include <linux/completion.h>
-> > > > > +#include <linux/i2c.h>
-> > > > > +#include <linux/interrupt.h>
-> > > > > +#include <linux/module.h>
-> > > > > +#include <linux/pm.h>
-> > > > > +#include <linux/slab.h>
-> > > > > +#include <linux/wait.h>
-> > > > > +
-> > > > > +#include "tpm_tis_core.h"
-> > > > > +
-> > > > > +#define CR50_MAX_BUFSIZE       64
-> > > > > +#define CR50_TIMEOUT_SHORT_MS  2       /* Short timeout during
-> > > > > transactions */
-> > > > > +#define CR50_TIMEOUT_NOIRQ_MS  20      /* Timeout for TPM ready
-> > > > > without IRQ */
-> > > > > +#define CR50_I2C_DID_VID       0x00281ae0L
-> > > > > +#define CR50_I2C_MAX_RETRIES   3       /* Max retries due to I2C
-> > > > > errors */
-> > > > > +#define CR50_I2C_RETRY_DELAY_LO        55      /* Min usecs
-> > > > > between retries on I2C */
-> > > > > +#define CR50_I2C_RETRY_DELAY_HI        65      /* Max usecs
-> > > > > between retries on I2C */
-> > > > 
-> > > > CR50_ -> TPM_CR50_
-> > > > 
-> > > > > +
-> > > > > +#define TPM_I2C_ACCESS(l)      (0x0000 | ((l) << 4))
-> > > > > +#define TPM_I2C_STS(l)         (0x0001 | ((l) << 4))
-> > > > > +#define TPM_I2C_DATA_FIFO(l)   (0x0005 | ((l) << 4))
-> > > > > +#define TPM_I2C_DID_VID(l)     (0x0006 | ((l) << 4))
-> > > > > +
-> > > > > +struct priv_data {
-> > > > > +       int irq;
-> > > > > +       int locality;
-> > > > > +       struct completion tpm_ready;
-> > > > > +       u8 buf[CR50_MAX_BUFSIZE];
-> > > > > +};
-> > > > 
-> > > > tpm_i2c_cr50_priv_data
-> > > > 
-> > > > > +
-> > > > > +enum force_release {
-> > > > > +       CR50_NO_FORCE = 0x0,
-> > > > > +       CR50_FORCE = 0x1,
-> > > > > +};
-> > > > 
-> > > > I'd just 
-> > > > 
-> > > > #define TPM_I2C_CR50_NO_FORCE   0
-> > > > #define TPM_I2C_CR50_FORCE      1
-> > > > 
-> > > 
-> > > A proper enumerated type has advantages over a preprocessor macro:
-> > > even if the compiler won't warn you, static analyzers can warn
-> > > about a misuse.
-> > 
-> > Why don't you just use "bool", "true" and "false"? I ignored that
-> > this has nothing to do with the hardware last time.
-> > 
+On Sat, Nov 28, 2020 at 03:01:49PM +0900, Akira Yokosawa wrote:
+> >From 4f577823fa60e14ae58caa2d3c0b2ced64e6eb43 Mon Sep 17 00:00:00 2001
+> From: Akira Yokosawa <akiyks@gmail.com>
+> Date: Sat, 28 Nov 2020 14:32:15 +0900
+> Subject: [PATCH 2/2] tools/memory-model: Fix typo in klitmus7 compatibility table
 > 
-> Well, boolean parameters are a known anti-pattern [1].
+> klitmus7 of herdtools7 7.48 or earlier depends on ACCESS_ONCE(),
+> which was removed in Linux v4.15.
+> Fix the obvious typo in the table.
 > 
-> [1] https://people.mpi-inf.mpg.de/~jblanche/api-design.pdf
+> Fixes: d075a78a5ab1 ("tools/memory-model/README: Expand dependency of klitmus7")
+> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 
-It's an internal function to begin with.
+Both queued for review and further testing, thank you!
 
-/Jarkko
+							Thanx, Paul
+
+> ---
+>  tools/memory-model/README | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/memory-model/README b/tools/memory-model/README
+> index 39d08d1f0443..9a84c45504ab 100644
+> --- a/tools/memory-model/README
+> +++ b/tools/memory-model/README
+> @@ -51,7 +51,7 @@ klitmus7 Compatibility Table
+>  	============  ==========
+>  	target Linux  herdtools7
+>  	------------  ----------
+> -	     -- 4.18  7.48 --
+> +	     -- 4.14  7.48 --
+>  	4.15 -- 4.19  7.49 --
+>  	4.20 -- 5.5   7.54 --
+>  	5.6  --       7.56 --
+> -- 
+> 2.17.1
+> 
+> 
