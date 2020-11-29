@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6AC2C78DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6002C78DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 12:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726669AbgK2LnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 06:43:18 -0500
-Received: from mout.gmx.net ([212.227.17.20]:36811 "EHLO mout.gmx.net"
+        id S1727210AbgK2Lnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 06:43:46 -0500
+Received: from mga07.intel.com ([134.134.136.100]:8057 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgK2LnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 06:43:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606650075;
-        bh=WmcG64mDXHDk2yl6iDH5tCKMTaugBSI42q6zqWIi9AE=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=SKaLSxruNri45j7qzlSfrGmT4xBYD+Y/g7taC4VG+WjqY1BiPXv5SPgW47j+wVvDC
-         Lzm2XMGDn9wt0S/f7/4yHlN0dChpx/oVVv9iCTKUofwVwiqCkbSHVW/Vt7o/kwch6j
-         OphuoYBa27u4ociPiHb7vEqQDslbYCETa87le7/s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.218.83]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MysRu-1jwLFp12ig-00w0tQ; Sun, 29
- Nov 2020 12:41:15 +0100
-Message-ID: <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
-Subject: Re: scheduling while atomic in z3fold
-From:   Mike Galbraith <efault@gmx.de>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Date:   Sun, 29 Nov 2020 12:41:14 +0100
-In-Reply-To: <20201129112922.db53kmtpu76xxukj@spock.localdomain>
-References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
-         <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
-         <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
-         <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
-         <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
-         <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
-         <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
-         <20201129112922.db53kmtpu76xxukj@spock.localdomain>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sO6Qx5UM7zKOh2smiB7GRniNeoqzkU1sDc4q9DIcJP47KkzumLR
- 4w/WgO7IXVVX4MFmBccAjnuPtIeRRcyyQmlAmRSe11jwJ1YXoVgtenf9OHbSurrvk95ntLx
- 8t05MLPNS0kQGxwyUhPnAqwmaaDbVHgB4LCPk4SlJw7rAQ2mvmUG3jIihNTdzpAiI3i+kQU
- 6IkbVFybndMVOJWiFb57Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7Wn3izqMqyY=:rc4U4JxXWceknuW6uReS5M
- tzTx8P1H91vW0w2CNm1uqr9ydVTIJXeYCJX3qiAT1wrbiLddrcQT1mvVtowVLg0yTKqSHXQWP
- YBKC5qDL1aLNSxNQWw6bNUchWSCKxsKnVSB28WyEowUjXM/9JE4JY+XaduizVYxXSJ900h7Wu
- xA0zjXtILvLeybKBdS+mXPSY17DKlDXA1USy5+eJudAno7MeTiH9ZtlMEyaPMIm4ms/6Odqbt
- 9ESvuJzc5ZxZDLMFBlvytyUVB3OxBUsyplNDaKx9xtomtutWCv+VCleY95/qWJGTYzNQo/Svx
- jIGJD59BO3Un0BaAfnQRGz1erlht6BDmU2H2UFhYw7PS1FGt2YFXcHXWHcXVzCPoi3YkYtMXW
- 1LoQO5zX5W6QKHnHLKJQSATtzpxqY2j/amDs2xFKciluUHMPuzw0lgGitnf5o93/zNxGsbIlJ
- s/NwtnSaTNXZkvrdU+3PbcXgfsf2nDTFZ1EX1F5NkyjyQLja8EPy1bvYlvuvuqvz3KGx7iToZ
- WytlGoQGLKt6a2vwz6YfP60L0nvdV8Of/TRz50zGgAPTExk0fRK354m4jMlXZcmUHLJqRsh25
- ZtuNY0Sz6c01t4S8Ub/dKfP+9Lo9fplwrnx/edSwRFMDfokceWyzBNZyD1/amXYW901fANVjj
- 1lVklPKcP0WuoLl6M1LAKr9YbcTfKpj1Q/XMeN/ckjchaRJMcBs8OApr/+qJXNL60oBzC0iHx
- IcEmezaiYf7yOZfu7TFMVFtpvlOTEPeRFcl0L0BraCg7pIgTI+7xlYlIEwceWGE0h49OoE3kV
- wy+m7tDj7AJr9Khfql2hIHgrs7pyWEufyrS6P1GyVLIhgZYwcbY7jBP7l5pK3KeszA32NGc44
- h+Wjby3EpT7JRrtTeQUw==
+        id S1726780AbgK2Lnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 06:43:45 -0500
+IronPort-SDR: pBJ0TVgvZqVk9urzFqyT96IGg/nOqhrRrtgFM/LF1VkoFLZ63w1c7+gk7xUDTynIXaifBjI37Z
+ 8hZV40/pKqbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9819"; a="236654204"
+X-IronPort-AV: E=Sophos;i="5.78,379,1599548400"; 
+   d="scan'208";a="236654204"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2020 03:43:03 -0800
+IronPort-SDR: Qawjd+88XOYqtTuNMLZWEm7RyUEyTqRN6yUAYibYEj99MFt03UzyyPEBblOZx9Z7JtRdn+riqY
+ BOF/w1uTvs5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,379,1599548400"; 
+   d="scan'208";a="480261576"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+  by orsmga004.jf.intel.com with ESMTP; 29 Nov 2020 03:43:01 -0800
+From:   Cezary Rojewski <cezary.rojewski@intel.com>
+To:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com,
+        pierre-louis.bossart@linux.intel.com,
+        mateusz.gorski@linux.intel.com,
+        Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH 0/8] ASoC: Intel: Skylake: Fix HDAudio and DMIC for v5.4
+Date:   Sun, 29 Nov 2020 12:41:40 +0100
+Message-Id: <20201129114148.13772-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-11-29 at 12:29 +0100, Oleksandr Natalenko wrote:
->
-> Ummm so do compressors explode under non-rt kernel in your tests as
-> well, or it is just -rt that triggers this?
+First six of the backport address numerous problems troubling HDAudio
+configuration users for Skylake driver. Upstream series:
+"ASoC: Intel: Skylake: Fix HDaudio and Dmic" [1] provides the
+explanation and reasoning behind it. These have been initialy pushed
+into v5.7-rc1 via: "sound updates for 5.7-rc1" [2] by Takashi.
 
-I only tested a non-rt kernel with z3fold, which worked just fine.
+Last two patches are from: "Add support for different DMIC
+configurations" [3] which focuses on HDAudio with DMIC configuration.
+Patch: "ASoC: Intel: Skylake: Add alternative topology binary name"
+of the mentioned series has already been merged to v5.4.y -stable and
+thus it's not included here.
 
-	-Mike
+Fixes target mainly Skylake and Kabylake based platforms, released
+in 2015-2016 period.
+
+[1]: https://lore.kernel.org/alsa-devel/20200305145314.32579-1-cezary.rojewski@intel.com/
+[2]: https://lore.kernel.org/lkml/s5htv22uso8.wl-tiwai@suse.de/
+[3]: https://lore.kernel.org/alsa-devel/20200427132727.24942-1-mateusz.gorski@linux.intel.com/
+
+Cezary Rojewski (6):
+  ASoC: Intel: Skylake: Remove superfluous chip initialization
+  ASoC: Intel: Skylake: Select hda configuration permissively
+  ASoC: Intel: Skylake: Enable codec wakeup during chip init
+  ASoC: Intel: Skylake: Shield against no-NHLT configurations
+  ASoC: Intel: Allow for ROM init retry on CNL platforms
+  ASoC: Intel: Skylake: Await purge request ack on CNL
+
+Mateusz Gorski (2):
+  ASoC: Intel: Multiple I/O PCM format support for pipe
+  ASoC: Intel: Skylake: Automatic DMIC format configuration according to
+    information from NHLT
+
+ include/uapi/sound/skl-tplg-interface.h |   2 +
+ sound/soc/intel/skylake/bxt-sst.c       |   3 -
+ sound/soc/intel/skylake/cnl-sst.c       |  35 ++++--
+ sound/soc/intel/skylake/skl-nhlt.c      |   3 +-
+ sound/soc/intel/skylake/skl-sst-dsp.h   |   2 +
+ sound/soc/intel/skylake/skl-topology.c  | 159 +++++++++++++++++++++++-
+ sound/soc/intel/skylake/skl-topology.h  |   1 +
+ sound/soc/intel/skylake/skl.c           |  29 ++---
+ 8 files changed, 204 insertions(+), 30 deletions(-)
+
+-- 
+2.17.1
 
