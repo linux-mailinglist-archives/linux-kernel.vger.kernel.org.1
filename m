@@ -2,125 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F452C787B
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 10:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E646B2C787F
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 10:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgK2JXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 04:23:50 -0500
-Received: from mout.gmx.net ([212.227.15.19]:40403 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgK2JXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 04:23:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606641695;
-        bh=PMGPeOb1/+9oXMNrHGoQTO0jg3TCyx67VHl7NFtKus0=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=eRZqg7hLaT1s3VIVbvd972ldV11SR3w7pOQ9lwgpHQLQeRFubYLjBEw4HeWYPHBcF
-         XSM5UJ1RVPhgTLerJlYxeZPVczKAkVkXRNb7YBGU0NL4IRfSjokLfZtAKvjAiLxpiM
-         am7lLQJGchxbJQwllcPJoKWyWa12X+kqVCPeUuCg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.218.83]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M7Jza-1kr13j1k5s-007l3b; Sun, 29
- Nov 2020 10:21:35 +0100
-Message-ID: <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
-Subject: Re: scheduling while atomic in z3fold
-From:   Mike Galbraith <efault@gmx.de>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Date:   Sun, 29 Nov 2020 10:21:33 +0100
-In-Reply-To: <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
-References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
-         <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
-         <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
-         <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
-         <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1726688AbgK2JmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 04:42:14 -0500
+Received: from mail-mw2nam10on2063.outbound.protection.outlook.com ([40.107.94.63]:58529
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725830AbgK2JmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 04:42:13 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KsBfmlPio0Ue0/wjxTPsTPhcyC3juwT5BWh/BpgP9pT3op+GVf3mLh+SeCFivXX7+ISh3VfV+78aU/JvA/+l7v5d16PYcf1Gr2/eZdoKKNZpcbU5TxVV2LbPT4DcpsDLYhZnYE7hCFiQKBgev8B0k41wD0fO+U7p5/gDyuZvXLVn/xwJ/xfr5qRR4hr4hX/D2bcO++7HUpqAXKMVW7vQmgauCcSHqrBx/vVLRddbD5pD4Fuze9c8OQhuIzeDqzEu7KeXACR6rH9Vl75xmg+qr/mhcAlZ7nTOk9p1vBgEd2GHDFC2WjlWxI1uBJfHyyuJiTwWRby3onZqVvQb00yc9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t5S0XRocYnepAjR/HKPUrV9v0NhzfgBxxlezRszIWXE=;
+ b=AApftqcf77JA9K56u8w78HSoi6JbX97EJKBZFU1UOj5T+t7z09UM/d18caqn2W6+j77Rg0jYkAealE/apmKV3h1pwLfuiZi7d6AwUvMe6DKU+NR5hio8/9TSUgR9wcjfqOv3yheSb2eP19SIRlPjJDKmH2JIN26r7kD99MPR7vOfTQLQWIo+KBCvADIUSqkOC4WeheuoGwjML2Ah9z13VjR/LH+wLnpdDZMH+HENjCAK0nD4Lw/nUVnMyxWRTJ7rEexZDGSmR+BW0eQw90l1GkjwfWyyh4XCVFGpoEQzbbE3PTGuwnvoP2/f+zKKJHQdnr0HZhucLFDBLmFhzi5I7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t5S0XRocYnepAjR/HKPUrV9v0NhzfgBxxlezRszIWXE=;
+ b=2oVvRN++Zi6t+Q0OBUQwVEgjkQ28SSlQ8InoIoKDoW5q98csTtCcsXENJo1Z7EoVJfP8LIz9/apnTFE+/YlAjgAXiGM4NDrh+fHEq3lF22Wpe10XxZpdAospV0hHlp/OrjQbBfluluSPRBXgcjRZJZTRL01cCppg5RRlOULRXFM=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SN1PR12MB2367.namprd12.prod.outlook.com (2603:10b6:802:26::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Sun, 29 Nov
+ 2020 09:41:20 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3611.025; Sun, 29 Nov 2020
+ 09:41:20 +0000
+From:   Ashish Kalra <Ashish.Kalra@amd.com>
+To:     pbonzini@redhat.com
+Cc:     cavery@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mlevitsk@redhat.com,
+        vkuznets@redhat.com, wei.huang2@amd.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com
+Subject: Re: [PATCH v2 1/2] KVM: SVM: Move asid to vcpu_svm
+Date:   Sun, 29 Nov 2020 09:41:09 +0000
+Message-Id: <20201129094109.32520-1-Ashish.Kalra@amd.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <aadb4690-9b2b-4801-f2fc-783cb4ae7f60@redhat.com>
+References: <aadb4690-9b2b-4801-f2fc-783cb4ae7f60@redhat.com>
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: DM5PR16CA0028.namprd16.prod.outlook.com
+ (2603:10b6:4:15::14) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GmjNT2HpE8rDEjh+40luuj9gtoGfFGc/krPqBwIyo9L7eaDBkFF
- Ics5SkMg1EIhV5O7dlW/B98VQ7By2dq/APUs8DZbzN5MF2gylQM0hbg7dNnRYYfKfQSLCFW
- NYtynQp+b4rcBHP1TVlcMQjgwCpekr3TY0sT20hfAwW9XtJkXjRildmYHuxQ3ZRJ7lfa0KX
- B/SUN/Udfk1HqGpUn7fnw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BWqesIVaxb0=:2frNT0KDmeX30q+FDpL1FF
- 7chXWWXp180O05kHQ68cuDh1XuLSQXk8+zYg3DA7N0iMXuoGiBuCU7MMx6CH6trfdEE5tBfkn
- mf45fVgV8EnPV3IXRNStiCggi1s11BBeCs7QJPJMY/pA0dH7avNd1iTROXkjxW1NP0fdq7mJg
- EbIFEuiNChvdY0ZX/DIpUvrZHK7YK6gJNndCayM1Uy/drmNJ377+5ISQ0NpFQImvkRqlZmNqS
- G0cQnMfRGP8Yaxx5ZZa0o/UBIRB0xuz3A3BKnueXqSASUy1zmAu8v9Sgwynv11OZ95YaKwb8o
- nXZJJWM4YU3rU4EqEmMVrjxVz3Xd2TYwcKZn3UBsUEZbJAQe787svrpPEK0dgRJBGD8ghfgwb
- imfEhScejPGA57SKELh28Du3svhVdIy6zb4gugaUYhHaqoN3nKD3f1exLuwnyeYh1Eayp0k1n
- SNMgcYqM+gyGX2vagk3Dcns8Mc0juZiZV2tqaKZJhYMEQt+8e8Bp76PwgPj4j86A9S8ciJcBd
- /QBirQizcrI0XLrUvZq58ROOAxNmeewJQ8uI6jHoDLE4N3KGbqJOoGGKAEDCwvmaGkD2IY3eX
- NbkzMzicT5V0zsqGMdWV3xDirlIKyuffzhBGCAuGI0Kub3tIFmt9tF6s7/lwHnAofbBTmxaKq
- RDTb9AOEedgcz+9z4c3EEr40RIdwApQFwKH7+Z4/Wj9QY1rZ8oTJuRk78a1DVyyafKcFjCmLG
- PHFEO/hZFnCdjPF+HAt2rIZtO9nkCsc8LUpF38hfF5DeFj892Ke31eXlBOqv1P7jZsiImPV+5
- Td/5HBzvzC4yqm2Ej9fkvplJfkdsrDJWSJKWwSL2yQ4KAC/jmTz6nK/5rYrJvTjnnJsoyMTjA
- X2jqkPefddy1J+kdwR4g==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by DM5PR16CA0028.namprd16.prod.outlook.com (2603:10b6:4:15::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Sun, 29 Nov 2020 09:41:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: f0d06a39-88ba-4ada-1a90-08d8944aecdf
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2367:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB23678B828A5655EF693609D28EF60@SN1PR12MB2367.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iJrEFcdvWqKTBxb0ZrmY/K8XGaCL0KWopxQMTyOCujNoMF9kSWR0tkyH2vIiSLkze0qZ52ZjBLgPjTr+aGoJNanwLr++6USxoV1hfz1R8Y/agJdBZWEDWtQAjds+H5s0kxbdkeIsRsx6B7Z0JVEhklbe7nxfq+ebIH/99ye1D4Imyhq4p4Ct+airMwnBayVdeecehbLLo0X9n3esqWkF//WA9Hi1IFlqf1mSgzY6vUQzqLewnDPiiIfjSdAemU5NTA4ZSGtO44YEkA5AXXIzEzvHrMhbF/3W20PJ97irQDijfd2IA7jet4NueNbWb3+1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(366004)(376002)(396003)(346002)(6486002)(4326008)(4744005)(52116002)(2616005)(956004)(5660300002)(1076003)(478600001)(86362001)(6916009)(8676002)(26005)(66946007)(16526019)(2906002)(83380400001)(66476007)(66556008)(36756003)(6666004)(316002)(186003)(7696005)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?f2LwPQfLhSsmmm6Vws5eCTxzt8DnBcE3TYO+KmBTjrZY4MhZ54oY3SoSHOry?=
+ =?us-ascii?Q?3gZgBK6Cl/QbyqnYToWJa/jO/ZwB4hIO3W001UzR7aS7L05Ow8OzytlsC7LK?=
+ =?us-ascii?Q?cWxOR8I6GALbzVw/9dLYYm6sj8XM6jSPvaf2ob7DJBNPjbjjLFbNrHwfW/nq?=
+ =?us-ascii?Q?J6U1pNAequyKgJb0ptcFwf+SAfQ0JA4bo/vICLo7od096LOGU2nbP2zprL97?=
+ =?us-ascii?Q?ld0jbKkl1OaQWBhCz2MQc8qDTenK+xw1riBIhxWBBPIu0SVHxx0prGI7b8P0?=
+ =?us-ascii?Q?t/gD+xuyt6foXxco/zBIc5bfrXjciEKbTl+Ghgyrsue4uROJBLY3F2UcCOL1?=
+ =?us-ascii?Q?ExOG4hZPgq/2FcshoRv5NeZtc5Y8dCV8y79493Edd+ik93ZDTy4jCsf0tp9y?=
+ =?us-ascii?Q?PqyF8sG7lM/tOzPiP8lguK629vHohC0QJ9V+bDBHDn2VoAYvcjjcysYiGIzB?=
+ =?us-ascii?Q?8Tzt4+vSrefg2ecDWZlHJX8Q1m2yueP11Ogy/qvDkfqsG2jld4YE2ACTREl4?=
+ =?us-ascii?Q?gPe3MdZXzkpzVstMxo1eEbhjd9g/5cUSd3paXPhMhosq52alkVYhKEGWvmUX?=
+ =?us-ascii?Q?vH6n/9UtlaHTTU5NkBgN6SDgIvrNnzfJGb9LZwCtI2xZSAOMN1kDxwsHXwz8?=
+ =?us-ascii?Q?D9tg1lKPzTA9QqxNn8zTyYf9G4HUWv8aAq6py4vSh+nwwcsAPuY5yCD5fmJU?=
+ =?us-ascii?Q?+pA1By7SBSuEmEex64PDLZzj3WfLl9P2FnuVX3uCqRg8MN87EgvdC9oJFIQZ?=
+ =?us-ascii?Q?3wzvekG+3u0lq9h0p38JYAC2hN09K5/x9qKR61yoliwUxBAsCiqBbi6qgwoB?=
+ =?us-ascii?Q?b291SHcyyu8T8QxW8dZhHQK51mOWlb5iiL7BE4gZPfhI9wML5MS9ONVXk1h5?=
+ =?us-ascii?Q?ZC3JVDJSk0k54yBr+p0aGzftCJbv7WOMEpVe54anOfJqMiApZER90yh0tGoR?=
+ =?us-ascii?Q?YBVywUrdltbTnaE00irlPW7FpeV2DFUsF4zeXWw3j7Q=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0d06a39-88ba-4ada-1a90-08d8944aecdf
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2020 09:41:20.2466
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +aPqeXtmlhSor5u4Rw7ve48GYx0cScaT4wOIDFFIZRaLBMsCF5WCLM8ZvuEaoYVg/CJVFeFrfdBY8OSEGzrYNQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2367
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-11-29 at 08:48 +0100, Mike Galbraith wrote:
-> On Sun, 2020-11-29 at 07:41 +0100, Mike Galbraith wrote:
-> > On Sat, 2020-11-28 at 15:27 +0100, Oleksandr Natalenko wrote:
-> > >
-> > > > > Shouldn't the list manipulation be protected with
-> > > > > local_lock+this_cpu_ptr instead of get_cpu_ptr+spin_lock?
-> > >
-> > > Totally untested:
-> >
-> > Hrm, the thing doesn't seem to care deeply about preemption being
-> > disabled, so adding another lock may be overkill.  It looks like you
-> > could get the job done via migrate_disable()+this_cpu_ptr().
->
-> There is however an ever so tiny chance that I'm wrong about that :)
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-Or not, your local_lock+this_cpu_ptr version exploded too.
+This patch breaks SEV guests. 
 
-Perhaps there's a bit of non-rt related racy racy going on in zswap
-thingy that makes swap an even less wonderful idea for RT than usual.
+The patch stores current ASID in struct vcpu_svm and only moves it to VMCB in
+svm_vcpu_run(), but by doing so, the ASID allocated for SEV guests and setup 
+in vmcb->control.asid by pre_sev_run() gets over-written by this ASID
+stored in struct vcpu_svm and hence, VMRUN fails as SEV guest is bound/activated
+on a different ASID then the one overwritten in vmcb->control.asid at VMRUN. 
 
-crash.rt> bt -s
-PID: 32399  TASK: ffff8e4528cd8000  CPU: 4   COMMAND: "cc1"
- #0 [ffff9f0f1228f488] machine_kexec+366 at ffffffff8c05f87e
- #1 [ffff9f0f1228f4d0] __crash_kexec+210 at ffffffff8c14c052
- #2 [ffff9f0f1228f590] crash_kexec+48 at ffffffff8c14d240
- #3 [ffff9f0f1228f5a0] oops_end+202 at ffffffff8c02680a
- #4 [ffff9f0f1228f5c0] exc_general_protection+403 at ffffffff8c8be413
- #5 [ffff9f0f1228f650] asm_exc_general_protection+30 at ffffffff8ca00a0e
- #6 [ffff9f0f1228f6d8] __z3fold_alloc+118 at ffffffff8c2b4ea6
- #7 [ffff9f0f1228f760] z3fold_zpool_malloc+115 at ffffffff8c2b56c3
- #8 [ffff9f0f1228f7c8] zswap_frontswap_store+789 at ffffffff8c27d335
- #9 [ffff9f0f1228f828] __frontswap_store+110 at ffffffff8c27bafe
-#10 [ffff9f0f1228f858] swap_writepage+55 at ffffffff8c273b17
-#11 [ffff9f0f1228f870] shmem_writepage+612 at ffffffff8c232964
-#12 [ffff9f0f1228f8a8] pageout+210 at ffffffff8c225f12
-#13 [ffff9f0f1228f928] shrink_page_list+2428 at ffffffff8c22744c
-#14 [ffff9f0f1228f9c0] shrink_inactive_list+534 at ffffffff8c229746
-#15 [ffff9f0f1228fa68] shrink_lruvec+927 at ffffffff8c22a35f
-#16 [ffff9f0f1228fb78] shrink_node+567 at ffffffff8c22a7d7
-#17 [ffff9f0f1228fbf8] do_try_to_free_pages+185 at ffffffff8c22ad39
-#18 [ffff9f0f1228fc40] try_to_free_pages+201 at ffffffff8c22c239
-#19 [ffff9f0f1228fcd0] __alloc_pages_slowpath.constprop.111+1056 at ffffff=
-ff8c26eb70
-#20 [ffff9f0f1228fda8] __alloc_pages_nodemask+786 at ffffffff8c26f7e2
-#21 [ffff9f0f1228fe00] alloc_pages_vma+309 at ffffffff8c288f15
-#22 [ffff9f0f1228fe40] handle_mm_fault+1687 at ffffffff8c24ee97
-#23 [ffff9f0f1228fef8] exc_page_fault+821 at ffffffff8c8c1be5
-#24 [ffff9f0f1228ff50] asm_exc_page_fault+30 at ffffffff8ca00ace
-    RIP: 00000000010fea3b  RSP: 00007ffc88ad5a50  RFLAGS: 00010206
-    RAX: 00007f4a548d1638  RBX: 00007f4a5c0c5000  RCX: 0000000000000000
-    RDX: 0000000000020000  RSI: 000000000000000f  RDI: 0000000000018001
-    RBP: 00007f4a5547a000   R8: 0000000000018000   R9: 0000000000240000
-    R10: 00007f4a5523a000  R11: 0000000000098628  R12: 00007f4a548d1638
-    R13: 00007f4a54ab1478  R14: 000000005002ac29  R15: 0000000000000000
-    ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
-crash.rt>
-
-
+For example, asid#1 was activated for SEV guest and then vmcb->control.asid is
+overwritten with asid#0 (svm->asid) as part of this patch in svm_vcpu_run() and
+hence VMRUN fails.
