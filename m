@@ -2,130 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3542C7824
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 07:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127D32C7828
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 07:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726021AbgK2GEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 01:04:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgK2GEO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 01:04:14 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8330C0613D3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:03:33 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id q16so10636681edv.10
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:03:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UQ9GbhiuAOXfXy14OxRHpp5YCBQqf+t+cOFg3gNWF/Q=;
-        b=ccN+q0jqNw3ubVJHKg8PRJD2j3vLir1lTOj7ni1yN0uFwFEjLQWhaZJPi3DkBqmSEq
-         k+LbIw8NUfGyDWNPCHEIz7v1nI5nd0xeiQ0J+xLlLEHybxBURMObPnBtxqfi+xqa2TCl
-         90ThtLBykbpNmgc1CqUeB8FVkiwdkrLYzLEmw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UQ9GbhiuAOXfXy14OxRHpp5YCBQqf+t+cOFg3gNWF/Q=;
-        b=bq6kXGmKG+ewqQJXtD14NMUotUS+8fwcPrepurqnt4GgChW8nsXJPg+dR9+t834Hzw
-         MrO6/5zl1jqpcTggefsEJv+j/n4PBU1q7/ee0utTYUBE5iEfLlL4niTv44O9EUurvz26
-         34kd1udCQSO2fqhOHRLePI5i32Dej9H+TXkPVvvfgtL/7cSOcron0pgpQVSxtgv/eUr0
-         RQXHWa1YgnnC4264DJHLkLvGS5y02QPSaHRn2dw2ezC7pgKeK2d5oDNwxEJo5MgyDj5o
-         Y1HedG731AP0ezo7g0DTpHWZ3stC18oCCJ6QBjSIY/ctCsSn8yLvgRKz7u44IY5IaHg5
-         Jqpw==
-X-Gm-Message-State: AOAM532yUPBqvCOa4LndYJ3FiQUyIyBzL/5stJ5vKMhoQMSUWynMWdK7
-        hXrItb29DECQEFuMPMTof110dcrrzvFFvg==
-X-Google-Smtp-Source: ABdhPJyCZR/eBY6hgwqLokQLO8sxczAxJfMLBuXg0VU7KkhZMvr4AUNpFM0HHZaDcVRRwEQfrQW9yQ==
-X-Received: by 2002:a50:da84:: with SMTP id q4mr15445154edj.377.1606629812409;
-        Sat, 28 Nov 2020 22:03:32 -0800 (PST)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
-        by smtp.gmail.com with ESMTPSA id r7sm2320494eda.23.2020.11.28.22.03.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Nov 2020 22:03:31 -0800 (PST)
-Received: by mail-wr1-f54.google.com with SMTP id l1so10591283wrb.9
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:03:31 -0800 (PST)
-X-Received: by 2002:adf:e9cb:: with SMTP id l11mr20463647wrn.320.1606629811269;
- Sat, 28 Nov 2020 22:03:31 -0800 (PST)
+        id S1726294AbgK2GFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 01:05:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726076AbgK2GFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 01:05:48 -0500
+Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl [82.217.20.185])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 044D82076A;
+        Sun, 29 Nov 2020 06:05:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606629907;
+        bh=5aWFhJgbKoTM+X/d62wGGVwXdEBsZBjLZrpbYO/sMMM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=btwmUo94iBlYyhWD1fTlXmn98jsamsV6RyJnoykDVKGjXFeVmQzCFPfIwaK7bMCd8
+         3RbgANHJlIc7OLY1Rg+wfSBdAjCMASEWnIlHyJAVDd4nOb3TcoKwo28SPXKN2gm9rQ
+         bylgmH2XYJfCnW5H3z4RBjDrC43Yaf4NzZPs+o6I=
+Date:   Sun, 29 Nov 2020 07:05:03 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Wen Yang <wenyang@linux.alibaba.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, stable@vger.kernel.org
+Subject: Re: [PATCH] exit: fix a race in release_task when flushing the dentry
+Message-ID: <X8M6D7M6Rn4f0C9j@kroah.com>
+References: <20201128064722.9106-1-wenyang@linux.alibaba.com>
+ <X8IFADugB450PHp8@kroah.com>
+ <24bd714d-f598-c7c6-6821-38fd9c1f4d2b@linux.alibaba.com>
+ <X8JZJGG67tE4jngE@kroah.com>
+ <b73daaf0-bd6d-5153-9155-ef3a8568a6f2@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20201111143755.24541-1-stanimir.varbanov@linaro.org> <20201111143755.24541-3-stanimir.varbanov@linaro.org>
-In-Reply-To: <20201111143755.24541-3-stanimir.varbanov@linaro.org>
-From:   Fritz Koenig <frkoenig@chromium.org>
-Date:   Sat, 28 Nov 2020 22:03:18 -0800
-X-Gmail-Original-Message-ID: <CAMfZQbyqLNrY_to-cJP1tLWk-6n4L57kQUcg-+x4rOhE4UP1Ng@mail.gmail.com>
-Message-ID: <CAMfZQbyqLNrY_to-cJP1tLWk-6n4L57kQUcg-+x4rOhE4UP1Ng@mail.gmail.com>
-Subject: Re: [PATCH v2 2/8] venus: helpers: Add a new helper for buffer processing
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b73daaf0-bd6d-5153-9155-ef3a8568a6f2@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 6:38 AM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
-> The new helper will be used from encoder and decoder drivers
-> to enqueue buffers for processing by firmware.
->
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  drivers/media/platform/qcom/venus/helpers.c | 20 ++++++++++++++++++++
->  drivers/media/platform/qcom/venus/helpers.h |  1 +
->  2 files changed, 21 insertions(+)
->
-> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-> index efa2781d6f55..688e3e3e8362 100644
-> --- a/drivers/media/platform/qcom/venus/helpers.c
-> +++ b/drivers/media/platform/qcom/venus/helpers.c
-> @@ -1369,6 +1369,26 @@ void venus_helper_vb2_buf_queue(struct vb2_buffer *vb)
->  }
->  EXPORT_SYMBOL_GPL(venus_helper_vb2_buf_queue);
->
-> +void venus_helper_process_buf(struct vb2_buffer *vb)
-> +{
-> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
-> +       int ret;
-> +
-> +       cache_payload(inst, vb);
-> +
-> +       if (vb2_start_streaming_called(vb->vb2_queue)) {
-> +               ret = is_buf_refed(inst, vbuf);
-> +               if (ret)
-> +                       return;
-> +
-> +               ret = session_process_buf(inst, vbuf);
-> +               if (ret)
-> +                       return_buf_error(inst, vbuf);
-> +       }
-> +}
-> +EXPORT_SYMBOL_GPL(venus_helper_process_buf);
-> +
->  void venus_helper_buffers_done(struct venus_inst *inst, unsigned int type,
->                                enum vb2_buffer_state state)
->  {
-> diff --git a/drivers/media/platform/qcom/venus/helpers.h b/drivers/media/platform/qcom/venus/helpers.h
-> index f36c9f717798..231af29667e7 100644
-> --- a/drivers/media/platform/qcom/venus/helpers.h
-> +++ b/drivers/media/platform/qcom/venus/helpers.h
-> @@ -19,6 +19,7 @@ void venus_helper_buffers_done(struct venus_inst *inst, unsigned int type,
->  int venus_helper_vb2_buf_init(struct vb2_buffer *vb);
->  int venus_helper_vb2_buf_prepare(struct vb2_buffer *vb);
->  void venus_helper_vb2_buf_queue(struct vb2_buffer *vb);
-> +void venus_helper_process_buf(struct vb2_buffer *vb);
->  void venus_helper_vb2_stop_streaming(struct vb2_queue *q);
->  int venus_helper_vb2_start_streaming(struct venus_inst *inst);
->  void venus_helper_m2m_device_run(void *priv);
-> --
-> 2.17.1
->
+On Sat, Nov 28, 2020 at 11:28:53PM +0800, Wen Yang wrote:
+> 
+> 
+> 在 2020/11/28 下午10:05, Greg Kroah-Hartman 写道:
+> > On Sat, Nov 28, 2020 at 09:59:09PM +0800, Wen Yang wrote:
+> > > 
+> > > 
+> > > 在 2020/11/28 下午4:06, Greg Kroah-Hartman 写道:
+> > > > On Sat, Nov 28, 2020 at 02:47:22PM +0800, Wen Yang wrote:
+> > > > > [ Upstream commit 7bc3e6e55acf065500a24621f3b313e7e5998acf ]
+> > > > 
+> > > > No, that is not this commit at all.
+> > > > 
+> > > > What are you wanting to have happen here?
+> > > > 
+> > > > confused,
+> > > > 
+> > > > greg k-h
+> > > > 
+> > > 
+> > > Thanks.
+> > > Let's explain it briefly:
+> > > 
+> > > The dentries such as /proc/<pid>/ns/ipc have the DCACHE_OP_DELETE flag, they
+> > > should be deleted when the process exits.
+> > > Suppose the following race appears：
+> > > 
+> > > release_task                dput
+> > > -> proc_flush_task
+> > >                              ->  dentry->d_op->d_delete(dentry)
+> > > -> __exit_signal
+> > >                              -> dentry->d_lockref.count--  and return.
+> > > 
+> > > 
+> > > In the proc_flush_task function, because another processe is using this
+> > > dentry, it cannot be deleted;
+> > > In the dput function, d_delete may be executed before __exit_signal (the pid
+> > > has not been unhashed), so that d_delete returns false and the dentry can
+> > > not be deleted.
+> > > 
+> > > So this dentry is still caches (count is 0), and its parent dentries are
+> > > also caches, and those dentries can only be deleted when drop_caches is
+> > > manually triggered.
+> > > 
+> > > 
+> > > In the release_task function, we should move proc_flush_task after the
+> > > tasklist_lock is released（Just like the commit
+> > > 7bc3e6e55acf065500a24621f3b313e7e5998acf did).
+> > 
+> > I do not understand, is this a patch being submitted for the main kernel
+> > tree, or for a stable kernel release?
+> > 
+> > If stable, please read:
+> >      https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> > for how to do this properly.
+> > 
+> > If main kernel tree, you can't have the "Upstream commit" line in the
+> > changelog text as that makes no sense at all.
+> 
+> 
+> Hi,
+> This patch is submitted to the stable branches (from 4.9.y
+> to 5.6.y).
+> 
+> This problem can also be solved if the following patch could be ported to
+> the stable branch:
+> 7bc3e6e55acf ("proc: Use a list of inodes to flush from proc")
+> 26dbc60f385f ("proc: Generalize proc_sys_prune_dcache into
+> proc_prune_siblings_dcache")
+> f90f3cafe8d5 ("proc: Use d_invalidate in proc_prune_siblings_dcache")
+> 
+> However, the above-mentioned patches modify too much code (more than 100
+> lines), and there may also be some undiscovered bugs.
+> 
+> So the safer method may be to apply this small patch（also ported from the
+> equivalent fix already exist in Linus’ tree）.
+> 
+> We will reformat the patch later.
 
-Reviewed-by: Fritz Koenig <frkoenig@chromium.org>
+We always prefer to take the original, upstream patches, instead of
+one-off changes as almost always, those one-off changes end up being
+wrong and hard to work with over time.
+
+So if we need more than one patch to solve this reported problem, that's
+fine, can you test the above series of patches and provide a backported
+set of them that we can use for this?
+
+thanks,
+
+gre gk-h
