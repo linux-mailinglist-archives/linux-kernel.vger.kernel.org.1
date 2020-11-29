@@ -2,119 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8BD2C775E
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 04:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C302C7761
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 04:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726186AbgK2DQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 22:16:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725839AbgK2DQs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 22:16:48 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E41FC0613D1;
-        Sat, 28 Nov 2020 19:16:08 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id k11so7556441pgq.2;
-        Sat, 28 Nov 2020 19:16:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4oxlPetDGevWx8+PQ3DS/1BMJ6iQVMJPTwtu8ujLY9A=;
-        b=TFfMQNP1P/S3YgjCDCeHh71YYglw/gd4jOOyJlZImA7y0RPlDyPccwu4w1acxobGs7
-         uq+eyld/IVrlg1y/O87Qzp4aDodrJvB9llrU+yrz+5OcEsH137O2RvTHP5eqJW+MYSLO
-         hRp2/zUO45VrG8HUgehYLpcQZhXYt5Ca3Uv0dYa0Y5KxMLN8iccxnu1ShwmBC2Q+LbCG
-         CWJPKXvAyAtjUysv900cfGsyqgytkgl1Rh58HT5Ac+u8O23qn4woRrpVT5BeO0D+xXAp
-         llL2PmfvzScfiUtPAigXWcUbb9pBr7jZDRyVtjtxiWjs7NbIxGYrQBuBaYoTLbEKPB1n
-         74Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4oxlPetDGevWx8+PQ3DS/1BMJ6iQVMJPTwtu8ujLY9A=;
-        b=NGQvOMn5JAYKIjbvD3rxCbAd3qV2E3A+jI4JJTeh3OYsoMv7n5lfT3CK6Ylk13GjBp
-         IpjgZ7eHYE+SOxRESKXxuP0uGYnOqPqYBzVEUXDU4utK8wv0HS6Op0cFt9cwNqHQ5j6r
-         aN1FVFzuC4+1wcHoV0Kr3DRhfyVcFXWn9RSKf2ZY0RzqUNNzdHZETT3X0MH83qK2KM6q
-         cIgbmw11NO4TXTO23AxfcMflTYdMIhukO0svgyU3/Inx49QTOyrObx/k1t8aUphSuXGV
-         eO/6WocFoZkYFAlmt53c21XTsU5C4+On88uB/YoW2lKN/I+YaoXYGRumgXmKj1CDEnYs
-         e7EQ==
-X-Gm-Message-State: AOAM532npDykgh4/0tG9OUjcq2FuAwgOoxpMoqgeKjOxrxdSAGPl5x9r
-        QnA07p76eY8A+20Sp1WGG/4=
-X-Google-Smtp-Source: ABdhPJwVPgU5BbOpeTTgEl5gFr/10QrTtdq3OMFltN/wju6Id6EufrlFsZSTvTJ3QsdzcCJLN3TmBw==
-X-Received: by 2002:a17:90a:c092:: with SMTP id o18mr6218541pjs.141.1606619767967;
-        Sat, 28 Nov 2020 19:16:07 -0800 (PST)
-Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id q200sm11895156pfq.95.2020.11.28.19.16.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 19:16:06 -0800 (PST)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv3] media: vb2: always set buffer cache sync hints
-Date:   Sun, 29 Nov 2020 12:15:45 +0900
-Message-Id: <20201129031545.557586-1-sergey.senozhatsky@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1726737AbgK2DTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 22:19:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726635AbgK2DTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 22:19:45 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41EF5206CB;
+        Sun, 29 Nov 2020 03:19:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606619943;
+        bh=pbRFxDArwnCUPLUu+gm70WqV0swkIAzhjUz7Jp3Uybs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=msK2tFihoSFUEIZt2fDS/vBnWZH3cS/bev+RgqwZXSy1bTF5k19bcs5aK57FnmlmW
+         g+HDBn4fGID5bSxgs6agjj8E8goyhASV1E1LjrUhEw7Y/hGFF3RfzX0H/NU8U6cFnx
+         b5QHZsKmpIXwe411uoCyNkFdQvYB0xZNlQZCXQc8=
+Date:   Sun, 29 Nov 2020 05:18:58 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jerry Snitselaar <jsnitsel@redhat.com>
+Cc:     Matthew Garrett <mjg59@google.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
+Message-ID: <20201129031858.GB39488@kernel.org>
+References: <20201015214430.17937-1-jsnitsel@redhat.com>
+ <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
+ <87d009c0pn.fsf@redhat.com>
+ <20201124032623.GA40007@kernel.org>
+ <871rgiod53.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871rgiod53.fsf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to always set ->need_cache_sync_on_prepare and
-->need_cache_sync_on_finish when we initialize vb2 buffer.
+On Tue, Nov 24, 2020 at 10:52:56AM -0700, Jerry Snitselaar wrote:
+> 
+> Jarkko Sakkinen @ 2020-11-23 20:26 MST:
+> 
+> > On Wed, Nov 18, 2020 at 11:36:20PM -0700, Jerry Snitselaar wrote:
+> >> 
+> >> Matthew Garrett @ 2020-10-15 15:39 MST:
+> >> 
+> >> > On Thu, Oct 15, 2020 at 2:44 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
+> >> >>
+> >> >> There is a misconfiguration in the bios of the gpio pin used for the
+> >> >> interrupt in the T490s. When interrupts are enabled in the tpm_tis
+> >> >> driver code this results in an interrupt storm. This was initially
+> >> >> reported when we attempted to enable the interrupt code in the tpm_tis
+> >> >> driver, which previously wasn't setting a flag to enable it. Due to
+> >> >> the reports of the interrupt storm that code was reverted and we went back
+> >> >> to polling instead of using interrupts. Now that we know the T490s problem
+> >> >> is a firmware issue, add code to check if the system is a T490s and
+> >> >> disable interrupts if that is the case. This will allow us to enable
+> >> >> interrupts for everyone else. If the user has a fixed bios they can
+> >> >> force the enabling of interrupts with tpm_tis.interrupts=1 on the
+> >> >> kernel command line.
+> >> >
+> >> > I think an implication of this is that systems haven't been
+> >> > well-tested with interrupts enabled. In general when we've found a
+> >> > firmware issue in one place it ends up happening elsewhere as well, so
+> >> > it wouldn't surprise me if there are other machines that will also be
+> >> > unhappy with interrupts enabled. Would it be possible to automatically
+> >> > detect this case (eg, if we get more than a certain number of
+> >> > interrupts in a certain timeframe immediately after enabling the
+> >> > interrupt) and automatically fall back to polling in that case? It
+> >> > would also mean that users with fixed firmware wouldn't need to pass a
+> >> > parameter.
+> >> 
+> >> I believe Matthew is correct here. I found another system today
+> >> with completely different vendor for both the system and the tpm chip.
+> >> In addition another Lenovo model, the L490, has the issue.
+> >> 
+> >> This initial attempt at a solution like Matthew suggested works on
+> >> the system I found today, but I imagine it is all sorts of wrong.
+> >> In the 2 systems where I've seen it, there are about 100000 interrupts
+> >> in around 1.5 seconds, and then the irq code shuts down the interrupt
+> >> because they aren't being handled.
+> >> 
+> >> 
+> >> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+> >> index 49ae09ac604f..478e9d02a3fa 100644
+> >> --- a/drivers/char/tpm/tpm_tis_core.c
+> >> +++ b/drivers/char/tpm/tpm_tis_core.c
+> >> @@ -27,6 +27,11 @@
+> >>  #include "tpm.h"
+> >>  #include "tpm_tis_core.h"
+> >> 
+> >> +static unsigned int time_start = 0;
+> >> +static bool storm_check = true;
+> >> +static bool storm_killed = false;
+> >> +static u32 irqs_fired = 0;
+> >
+> > Maybe kstat_irqs() would be a better idea than ad hoc stats.
+> >
+> 
+> Thanks, yes that would be better.
+> 
+> >> +
+> >>  static void tpm_tis_clkrun_enable(struct tpm_chip *chip, bool value);
+> >> 
+> >>  static void tpm_tis_enable_interrupt(struct tpm_chip *chip, u8 mask)
+> >> @@ -464,25 +469,31 @@ static int tpm_tis_send_data(struct tpm_chip *chip, const u8 *buf, size_t len)
+> >>         return rc;
+> >>  }
+> >> 
+> >> -static void disable_interrupts(struct tpm_chip *chip)
+> >> +static void __disable_interrupts(struct tpm_chip *chip)
+> >>  {
+> >>         struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+> >>         u32 intmask;
+> >>         int rc;
+> >> 
+> >> -       if (priv->irq == 0)
+> >> -               return;
+> >> -
+> >>         rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
+> >>         if (rc < 0)
+> >>                 intmask = 0;
+> >> 
+> >>         intmask &= ~TPM_GLOBAL_INT_ENABLE;
+> >>         rc = tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality), intmask);
+> >> +       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
+> >> +}
+> >> +
+> >> +static void disable_interrupts(struct tpm_chip *chip)
+> >> +{
+> >> +       struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+> >> 
+> >> +       if (priv->irq == 0)
+> >> +               return;
+> >> +
+> >> +       __disable_interrupts(chip);
+> >>         devm_free_irq(chip->dev.parent, priv->irq, chip);
+> >>         priv->irq = 0;
+> >> -       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
+> >>  }
+> >> 
+> >>  /*
+> >> @@ -528,6 +539,12 @@ static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
+> >>         int rc, irq;
+> >>         struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+> >> 
+> >> +       if (unlikely(storm_killed)) {
+> >> +               devm_free_irq(chip->dev.parent, priv->irq, chip);
+> >> +               priv->irq = 0;
+> >> +               storm_killed = false;
+> >> +       }
+> >
+> > OK this kind of bad solution because if tpm_tis_send() is not called,
+> > then IRQ is never freed. AFAIK, devres_* do not sleep but use spin
+> > lock, i.e. you could render out both storm_check and storm_killed.
+> >
+> 
+> Is there a way to flag it for freeing later while in an interrupt
+> context? I'm not sure where to clean it up since devm_free_irq can't be
+> called in tis_int_handler.
+> 
+> Before diving further into that though, does anyone else have an opinion
+> on ripping out the irq code, and just using polling? We've been only
+> polling since 2015 anyways.
 
-Currently these flags are set/adjusted only in V4L2's
-vb2_queue_or_prepare_buf(), which means that for the code
-paths that don't use V4L2 vb2 will always tell videobuf2
-core to skip ->prepare() and ->finish() cache syncs/flushes.
+Given these all these issues, it's quite obvious that Windows side is
+just polling. I'll ack a patch that removes the IRQ code for sure.
 
-This is a quick solution that should do the trick. The
-proper fix, however, is much more complicated and requires
-a rather big videobuf2 refactoring - we need to move cache
-sync/flush decision making out of core videobuf2 to the
-allocators.
-
-Fixes: f5f5fa73fbfb ("media: videobuf2: handle V4L2 buffer cache flags")
-Reported-by: Tomasz Figa <tfiga@chromium.org>
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- drivers/media/common/videobuf2/videobuf2-core.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-v3: Improved code comment and dropped queue allow_cache_hints check (Tomasz)
-v2: Added a comment and set cache sync flags only for specific buffers (Hans)
-
-diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index 5499013cf82e..3f11fc5b5d9a 100644
---- a/drivers/media/common/videobuf2/videobuf2-core.c
-+++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -414,6 +414,20 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
- 		vb->index = q->num_buffers + buffer;
- 		vb->type = q->type;
- 		vb->memory = memory;
-+		/*
-+		 * A workaround fix. We need to set these flags here so that
-+		 * videobuf2 core will call ->prepare()/->finish() cache
-+		 * sync/flush on vb2 buffers when appropriate. Otherwise, for
-+		 * backends that don't rely on V4L2 (perhaps dvb) these flags
-+		 * will always be false and, hence, videobuf2 core will skip
-+		 * cache sync/flush operations. However, we can avoid explicit
-+		 * ->prepare() and ->finish() cache sync for DMABUF buffers,
-+		 * because DMA exporter takes care of it.
-+		 */
-+		if (q->memory != VB2_MEMORY_DMABUF) {
-+			vb->need_cache_sync_on_prepare = 1;
-+			vb->need_cache_sync_on_finish = 1;
-+		}
- 		for (plane = 0; plane < num_planes; ++plane) {
- 			vb->planes[plane].length = plane_sizes[plane];
- 			vb->planes[plane].min_length = plane_sizes[plane];
--- 
-2.29.2
-
+/Jarkko
