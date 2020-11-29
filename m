@@ -2,153 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D7B2C773A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 02:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9990E2C773C
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 02:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgK2BkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 20:40:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:40062 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726472AbgK2BkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 20:40:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 140E61FB;
-        Sat, 28 Nov 2020 17:39:15 -0800 (PST)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 643A63F71F;
-        Sat, 28 Nov 2020 17:39:13 -0800 (PST)
-Subject: Re: [RESEND PATCH 17/19] mmc: sunxi: add support for A100 mmc
- controller
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-To:     Frank Lee <frank@allwinnertech.com>, tiny.windzz@gmail.com
-Cc:     Marek Vasut <marex@denx.de>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-References: <cover.1604988979.git.frank@allwinnertech.com>
- <de4c37ee3a0f1734c4ae035c37b8a2c34b9641ca.1604988979.git.frank@allwinnertech.com>
- <65401815-cb2e-58ec-7653-f09d6a25804c@arm.com>
-Organization: ARM Ltd.
-Message-ID: <3cda0b82-81fe-1f1b-ae8b-609f525f64cb@arm.com>
-Date:   Sun, 29 Nov 2020 01:38:57 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729397AbgK2Bko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 20:40:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgK2Bkn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Nov 2020 20:40:43 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E098C0613D1;
+        Sat, 28 Nov 2020 17:40:03 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id f17so7435498pge.6;
+        Sat, 28 Nov 2020 17:40:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OV7WYEaflJOvgC9Fvl1UU2JUGsbbYuQ370UuXwYxItc=;
+        b=Y4k7Jbb7fHBAw0t67D+eHqnUZFbT5hsvuPIbNtQtaayFcscU2H920TBEryoZLG8W56
+         JIazFBmJUjgLD7a+FHcpIT7BbOBIIXUnjyL7A662jqFfSamFHOXHlRt1JUKt9ni+7VHR
+         xbhcn1e4dxGZd/JOQNqxkFqn6V6OQrXGYB6JHqHTpkIOZNkiLgigALQIOitxQEdZnULj
+         2sCiKjEOYDMnZ3PS8iikpBzxa0VbYF76zXGOdrsNv34A03FulLmuQSVIJ4nUxyEboqql
+         87HkAmk3B+UscrsE/T7si+NYyUXQAcdb5Qc65niMudfsbskHz6GXTEWTqcq2jW+nDk14
+         A6iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OV7WYEaflJOvgC9Fvl1UU2JUGsbbYuQ370UuXwYxItc=;
+        b=U4FYrNEtr6NJyNNGMcL6TbXJKk4weL7W9BuiRYx6dnd3fevVPHOVStybVcC2TAhoQL
+         JcU/3F2du2SxFtybnhVNM7077tsf215GFYvQeAJbhVuKzq2Bb+T7Xvnv2Xn0eDtnwOuW
+         yvTO0lpgsTM70Jmud9/zmohg180ktXaGQs3pxBVziNkcNqHnmzGwOe3HnW5goKOZGEVa
+         7SHNsvzRHwd1MYtBL0t140YpVMHeWfNcMbUnBMTEdd8n/vQOviX0kLwpgkG57Wv6gOJg
+         YtBgOsEbp2H2IemPFMcJT7qwGPkNIozAA8+QJ445NAv//cH1YmfXGItf1gjr2QDFLSrv
+         Zegw==
+X-Gm-Message-State: AOAM531Zi043OR5a9/HF350py8NUKdVzu/uPMXUHXYsgCbicZ+4XIOKh
+        Tm4iUs791SbLdSFd+++PJh0=
+X-Google-Smtp-Source: ABdhPJxQ/GkFirMu4p5sPpUl7buWyBE7wW0lCE7RI3hVykNxRenF3+1rfyC5D47SF0J8UuooGgb/5g==
+X-Received: by 2002:a17:90a:ca93:: with SMTP id y19mr18103215pjt.71.1606614002978;
+        Sat, 28 Nov 2020 17:40:02 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:5925])
+        by smtp.gmail.com with ESMTPSA id i10sm11995276pfk.206.2020.11.28.17.40.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Nov 2020 17:40:02 -0800 (PST)
+Date:   Sat, 28 Nov 2020 17:40:00 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v2 bpf-next 00/13] Atomics for eBPF
+Message-ID: <20201129014000.3z6eua5pcz3jxmtk@ast-mbp>
+References: <20201127175738.1085417-1-jackmanb@google.com>
+ <829353e6-d90a-a91a-418b-3c2556061cda@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <65401815-cb2e-58ec-7653-f09d6a25804c@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <829353e6-d90a-a91a-418b-3c2556061cda@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2020 19:56, André Przywara wrote:
-> On 10/11/2020 06:46, Frank Lee wrote:
-
-Hi,
-
-one more thing below ...
-
->> From: Yangtao Li <frank@allwinnertech.com>
->>
->> This patch adds support for A100 MMC controller, which use word address
->> for internal dma.
->>
->> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
->> ---
->>  drivers/mmc/host/sunxi-mmc.c | 28 +++++++++++++++++++++++++---
->>  1 file changed, 25 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/mmc/host/sunxi-mmc.c b/drivers/mmc/host/sunxi-mmc.c
->> index fc62773602ec..1518b64112b7 100644
->> --- a/drivers/mmc/host/sunxi-mmc.c
->> +++ b/drivers/mmc/host/sunxi-mmc.c
->> @@ -244,6 +244,7 @@ struct sunxi_idma_des {
->>  
->>  struct sunxi_mmc_cfg {
->>  	u32 idma_des_size_bits;
->> +	u32 idma_des_shift;
->>  	const struct sunxi_mmc_clk_delay *clk_delays;
->>  
->>  	/* does the IP block support autocalibration? */
->> @@ -343,7 +344,7 @@ static int sunxi_mmc_init_host(struct sunxi_mmc_host *host)
->>  	/* Enable CEATA support */
->>  	mmc_writel(host, REG_FUNS, SDXC_CEATA_ON);
->>  	/* Set DMA descriptor list base address */
->> -	mmc_writel(host, REG_DLBA, host->sg_dma);
->> +	mmc_writel(host, REG_DLBA, host->sg_dma >> host->cfg->idma_des_shift);
->>  
->>  	rval = mmc_readl(host, REG_GCTRL);
->>  	rval |= SDXC_INTERRUPT_ENABLE_BIT;
->> @@ -373,8 +374,10 @@ static void sunxi_mmc_init_idma_des(struct sunxi_mmc_host *host,
->>  
->>  		next_desc += sizeof(struct sunxi_idma_des);
->>  		pdes[i].buf_addr_ptr1 =
->> -			cpu_to_le32(sg_dma_address(&data->sg[i]));
->> -		pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc);
->> +			cpu_to_le32(sg_dma_address(&data->sg[i]) >>
->> +				    host->cfg->idma_des_shift);
->> +		pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc >>
->> +						    host->cfg->idma_des_shift);
+On Fri, Nov 27, 2020 at 09:53:05PM -0800, Yonghong Song wrote:
 > 
-> I think you should cast after the shift, otherwise you lose the ability
-> to run above 4 GB. This won't be a problem at the moment, since we still
-> use the default 32-bit DMA mask, but might bite us later.
 > 
-> Otherwise this patch looks fine, and works on the H616 as well.
+> On 11/27/20 9:57 AM, Brendan Jackman wrote:
+> > Status of the patches
+> > =====================
+> > 
+> > Thanks for the reviews! Differences from v1->v2 [1]:
+> > 
+> > * Fixed mistakes in the netronome driver
+> > 
+> > * Addd sub, add, or, xor operations
+> > 
+> > * The above led to some refactors to keep things readable. (Maybe I
+> >    should have just waited until I'd implemented these before starting
+> >    the review...)
+> > 
+> > * Replaced BPF_[CMP]SET | BPF_FETCH with just BPF_[CMP]XCHG, which
+> >    include the BPF_FETCH flag
+> > 
+> > * Added a bit of documentation. Suggestions welcome for more places
+> >    to dump this info...
+> > 
+> > The prog_test that's added depends on Clang/LLVM features added by
+> > Yonghong in https://reviews.llvm.org/D72184
+> > 
+> > This only includes a JIT implementation for x86_64 - I don't plan to
+> > implement JIT support myself for other architectures.
+> > 
+> > Operations
+> > ==========
+> > 
+> > This patchset adds atomic operations to the eBPF instruction set. The
+> > use-case that motivated this work was a trivial and efficient way to
+> > generate globally-unique cookies in BPF progs, but I think it's
+> > obvious that these features are pretty widely applicable.  The
+> > instructions that are added here can be summarised with this list of
+> > kernel operations:
+> > 
+> > * atomic[64]_[fetch_]add
+> > * atomic[64]_[fetch_]sub
+> > * atomic[64]_[fetch_]and
+> > * atomic[64]_[fetch_]or
 > 
-> Cheers,
-> Andre
+> * atomic[64]_[fetch_]xor
 > 
->>  	}
->>  
->>  	pdes[0].config |= cpu_to_le32(SDXC_IDMAC_DES0_FD);
->> @@ -1178,6 +1181,23 @@ static const struct sunxi_mmc_cfg sun50i_a64_emmc_cfg = {
->>  	.needs_new_timings = true,
->>  };
->>  
->> +static const struct sunxi_mmc_cfg sun50i_a100_cfg = {
->> +	.idma_des_size_bits = 16,
->> +	.idma_des_shift = 2,
->> +	.clk_delays = NULL,
->> +	.can_calibrate = true,
->> +	.mask_data0 = true,
->> +	.needs_new_timings = true,
->> +};
->> +
->> +static const struct sunxi_mmc_cfg sun50i_a100_emmc_cfg = {
->> +	.idma_des_size_bits = 13,
->> +	.idma_des_shift = 2,
-
-Is that actually true? Don't know about the A100, but the H616 manual
-mentions that "SMHC2" deals with byte addresses, in contrast to the
-other two ones. So MMC2 would be compatible with the a64_emmc_cfg?
-
-Cheers,
-Andre
-
->> +	.clk_delays = NULL,
->> +	.can_calibrate = true,
->> +	.needs_new_timings = true,
->> +};
->> +
->>  static const struct of_device_id sunxi_mmc_of_match[] = {
->>  	{ .compatible = "allwinner,sun4i-a10-mmc", .data = &sun4i_a10_cfg },
->>  	{ .compatible = "allwinner,sun5i-a13-mmc", .data = &sun5i_a13_cfg },
->> @@ -1186,6 +1206,8 @@ static const struct of_device_id sunxi_mmc_of_match[] = {
->>  	{ .compatible = "allwinner,sun9i-a80-mmc", .data = &sun9i_a80_cfg },
->>  	{ .compatible = "allwinner,sun50i-a64-mmc", .data = &sun50i_a64_cfg },
->>  	{ .compatible = "allwinner,sun50i-a64-emmc", .data = &sun50i_a64_emmc_cfg },
->> +	{ .compatible = "allwinner,sun50i-a100-mmc", .data = &sun50i_a100_cfg },
->> +	{ .compatible = "allwinner,sun50i-a100-emmc", .data = &sun50i_a100_emmc_cfg },
->>  	{ /* sentinel */ }
->>  };
->>  MODULE_DEVICE_TABLE(of, sunxi_mmc_of_match);
->>
+> > * atomic[64]_xchg
+> > * atomic[64]_cmpxchg
 > 
+> Thanks. Overall looks good to me but I did not check carefully
+> on jit part as I am not an expert in x64 assembly...
+> 
+> This patch also introduced atomic[64]_{sub,and,or,xor}, similar to
+> xadd. I am not sure whether it is necessary. For one thing,
+> users can just use atomic[64]_fetch_{sub,and,or,xor} to ignore
+> return value and they will achieve the same result, right?
+> From llvm side, there is no ready-to-use gcc builtin matching
+> atomic[64]_{sub,and,or,xor} which does not have return values.
+> If we go this route, we will need to invent additional bpf
+> specific builtins.
 
+I think bpf specific builtins are overkill.
+As you said the users can use atomic_fetch_xor() and ignore
+return value. I think llvm backend should be smart enough to use
+BPF_ATOMIC | BPF_XOR insn without BPF_FETCH bit in such case.
+But if it's too cumbersome to do at the moment we skip this
+optimization for now.
