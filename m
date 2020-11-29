@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0332C7B09
+	by mail.lfdr.de (Postfix) with ESMTP id 9645D2C7B0A
 	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 20:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728598AbgK2TtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 14:49:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
+        id S1728662AbgK2TuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 14:50:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728293AbgK2TtX (ORCPT
+        with ESMTP id S1726540AbgK2TuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 14:49:23 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38ECCC0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 11:48:37 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id r9so9683059ioo.7
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 11:48:37 -0800 (PST)
+        Sun, 29 Nov 2020 14:50:01 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8793C0613CF;
+        Sun, 29 Nov 2020 11:49:21 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id l17so8714581pgk.1;
+        Sun, 29 Nov 2020 11:49:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=newoldbits-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FPVmvGLETfFsJB2bxLaRoGgeBKaIWmMhRnqAH6ezMAc=;
-        b=H+T+i92IFdlJiKZBjnc4EM0zlsqe8bUe9HBv0tElLLwVg/TixUCrOCqiZGPHy/f8Qa
-         ur7FJ8LqAtNkxNvmoim6tc3RQrODIIorOEHs7Md9TRWDwgz76dMq32nQ84ShOMpVxwl+
-         +qbe9zwLzZdhsa66wd+Ec2CmMdFzgFvgD1CRk2ZUEwVvVrqdiJG2KIAw+DdPRmqoGE7N
-         240BGnIQB3yi2yqgHXjSA2lZ0tIl2MRx4h04IWVMRBSu7DFKKGc/mGp6FtS28012hAzq
-         R0KV14l+CjJeY+YO8bHo4AGtPlK4dxVlMrk4zE8VPO025rOjPZZfgt2Q32swi/4w1mAj
-         O60Q==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=I3KveSvae9r2Mljk9CE74sucWwHOgjMQdiykVHcGb+k=;
+        b=k/NQNLrvCzRF3uUQg5uQrZgJnVjM97Ze/YdIkrWztTigS5yalzaOVfgfpOv7kmAAgi
+         CTouRapTJWY2yuKr5v2Sb1JEofdCgQCflJM7yQ0ogudoTqIU08Oumb8/TT4Yv9tS2UTz
+         lemJfrc/dM+5seBxS4b7Bm4BRJXAxNhs90QU1mLFAeg/enkuY/pRdkw375iNyPXZbvIP
+         WL8faAUbwUC5wvOJwnq1PDjX0vAk9GU+HWyB5EzgoqoQce6KMl0IE2TB9kfH+QRcTB4k
+         TMacG9ZCTKSPM6PsI0dz6vwcOMfkOyevshiZx7yfG3f+qQ6c7I3xzpAAuSkUo8pc7xaj
+         jjnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FPVmvGLETfFsJB2bxLaRoGgeBKaIWmMhRnqAH6ezMAc=;
-        b=OR4aDwOObCYEWfOTkGgxA2EAuJpzbYKpyCbpeCLp82vft3b+AX78U8gwTBVAIYV2wd
-         vmgbbOVEbL2c0X/QLMX/5oHF0iKo38f4W4iFFtMfSIBq2cMR4x/HuqH8fZneG0iYbctt
-         bVoigV0u4C062Hij6uTQ4cYFJNnI+Sd6DTt196tYDrC8sbLyV+3ROFOavMa7R8Wr39np
-         YtaYWKWmD2a4r5uJ549G+6vOPMg3JPyMWG24UCBmwKV3rJSFP2ymXUhHEjDfkNlWLc5u
-         eqCMkqgBzeeiy5IBm03Gvc3X/sxi8KVdIzbo+7CIebgGwFMgH+OlgMHYbtTRFubJydk3
-         m5pA==
-X-Gm-Message-State: AOAM533CMwrIxIatfnUBRjDwp7gug52lYiW5vjENhPN2qsXa4m7i5K0M
-        NuLCKbh9iaJYWeI28PL9n9HV+1eC2vXlW7ePra9QUw==
-X-Google-Smtp-Source: ABdhPJwI0NK/RFeSd2j+i/hflp834uzdZeBqDSHIW4OBRgMwCQW8k+riyNfPCLUY0BIaZdnasBWX60am7kA/gyeblXo=
-X-Received: by 2002:a5d:9042:: with SMTP id v2mr12402234ioq.98.1606679316572;
- Sun, 29 Nov 2020 11:48:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I3KveSvae9r2Mljk9CE74sucWwHOgjMQdiykVHcGb+k=;
+        b=DfG62ppNYS3jQkHllzodqqJnAL28ZQvsASfHTXZBD5vn93Ly6cjRbbdL13oT0V8L9+
+         4kVd/6mrVsM257RQx5GIMI2LAIeLSXCFLXCMdnd6RLhzjqOCvUB1p8cr+yG7Jsinzhtr
+         HEbNFMVXT0HMQ2n1/d1EOZO1LlWGQDahs1+yH0l+/SSIaE/8CS1OZImS/ti3RR7AC5XA
+         zR/MuzzA5xszduuG3B1amoX9lzcrtmAsvn69AsQHY4o0/IWvwq8I2NJ3uyShPkYdaN82
+         a+vlJ+nNpZkcNJF0XO2id1mZUQdPf+M3PPve69jER+nH+QEtTEGe/7fiWjJBomIyVmpx
+         C1yg==
+X-Gm-Message-State: AOAM5311m1LyvCi4WDslrTSMtHM9/3jf1uO7psVha8yu42HELgAAYP1P
+        ssVjemcDLnwigZpR5F//jQIxuLBHNzM=
+X-Google-Smtp-Source: ABdhPJz8E9vT9STIVYy33P5qD/nWgPymc0zVaWRM+vWOhQUGYMdkS78S+GcMGrfqwZYJET2oXQl9hA==
+X-Received: by 2002:a17:90a:5d0e:: with SMTP id s14mr22547724pji.53.1606679361234;
+        Sun, 29 Nov 2020 11:49:21 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id a2sm14360876pfo.117.2020.11.29.11.49.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Nov 2020 11:49:20 -0800 (PST)
+Date:   Sun, 29 Nov 2020 11:49:18 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     rydberg@euromail.se, tj@kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] Input: Fix a ref counting issue
+Message-ID: <20201129194918.GL2034289@dtor-ws>
+References: <20201129084516.1456099-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-References: <20201129102400.157786-1-jean.pihet@newoldbits.com>
- <20201129165627.GA2234159@lunn.ch> <CAORVsuUez9qteuuqkGpQbU5yXjAFxcpRXGaXnKwqm-hKSKF6NQ@mail.gmail.com>
- <20201129193822.GP2234159@lunn.ch>
-In-Reply-To: <20201129193822.GP2234159@lunn.ch>
-From:   Jean Pihet <jean.pihet@newoldbits.com>
-Date:   Sun, 29 Nov 2020 20:48:25 +0100
-Message-ID: <CAORVsuWKtdF8O9vXonamWEr0WcdoZiaeFhjP06Z8NV_wv3A=KQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] net: dsa: ksz: pad frame to 64 bytes for transmission
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ryan Barnett <ryan.barnett@rockwellcollins.com>,
-        Conrad Ratschan <conrad.ratschan@rockwellcollins.com>,
-        Hugo Cornelis <hugo.cornelis@essensium.com>,
-        Arnout Vandecappelle <arnout.vandecappelle@essensium.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201129084516.1456099-1-christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew,
+Hi Christophe,
 
-On Sun, Nov 29, 2020 at 8:38 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Sun, Nov 29, 2020 at 08:34:27PM +0100, Jean Pihet wrote:
-> > Hi Andrew,
-> >
-> > On Sun, Nov 29, 2020 at 5:56 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> > >
-> > > On Sun, Nov 29, 2020 at 11:23:59AM +0100, Jean Pihet wrote:
-> > > > Some ethernet controllers (e.g. TI CPSW) pad the frames to a minimum
-> > > > of 64 bytes before the FCS is appended. This causes an issue with the
-> > > > KSZ tail tag which could not be the last byte before the FCS.
-> > > > Solve this by padding the frame to 64 bytes minus the tail tag size,
-> > > > before the tail tag is added and the frame is passed for transmission.
-> > >
-> > > Hi Jean
-> > >
-> > > what tree is this based on? Have you seen
-> > The patches are based on the latest mainline v5.10-rc5. Is this the
-> > recommended version to submit new patches?
->
-> No, that is old. Please take a read of:
->
-> https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html
+On Sun, Nov 29, 2020 at 09:45:16AM +0100, Christophe JAILLET wrote:
+> In case of a managed resource, 'devm_input_device_release()' already has a
+> 'input_put_device(dev)' call.
+> 
+> Avoid a double reference decrement by explicitly calling
+> 'input_put_device()' only on non-managed input device.
 
-Ok got it, thx!
+This patch is incorrect, as devres_destroy() that is used in
+input_free_device(), unlike devres_releasde(), does not actually call
+the "release" function. It simply destroys the devres object, but does
+not clear associated resources.
 
-Found the commit 88fda8ee and its parent [1] with the following
-comment, which seems to indicate that my patch is not needed anymore.
-Can you confirm?
+> 
+> Fixes: 2be975c6d920 ("Input: introduce managed input devices (add devres support)")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> This patch is completely speculative and compile tested only.
+> ---
+>  drivers/input/input.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/input.c b/drivers/input/input.c
+> index 3cfd2c18eebd..c09c9f020667 100644
+> --- a/drivers/input/input.c
+> +++ b/drivers/input/input.c
+> @@ -1920,7 +1920,8 @@ void input_free_device(struct input_dev *dev)
+>  						devm_input_device_release,
+>  						devm_input_device_match,
+>  						dev));
+> -		input_put_device(dev);
+> +		else
+> +			input_put_device(dev);
+>  	}
+>  }
+>  EXPORT_SYMBOL(input_free_device);
+> -- 
+> 2.27.0
+> 
 
-/* For tail taggers, we need to pad short frames ourselves, to ensure
-+ * that the tail tag does not fail at its role of being at the end of
-+ * the packet, once the master interface pads the frame. Account for
-+ * that pad length here, and pad later.
-...
+Thanks.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=a3b0b6479700a5b0af2c631cb2ec0fb7a0d978f2
-
-Thx,
-Jean
-
->
->         Andrew
+-- 
+Dmitry
