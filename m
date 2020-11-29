@@ -2,51 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6E42C774E
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 03:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 318E22C774D
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 03:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgK2Cqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 21:46:38 -0500
-Received: from lafhis-server.dc.uba.ar ([157.92.26.92]:48638 "EHLO
-        lafhis-server.wifi.inv.dc.uba.ar" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725294AbgK2Cqi (ORCPT
+        id S1726316AbgK2Ci2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 21:38:28 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:36002 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725294AbgK2Ci1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 21:46:38 -0500
-X-Greylist: delayed 758 seconds by postgrey-1.27 at vger.kernel.org; Sat, 28 Nov 2020 21:46:36 EST
-Received: from User (localhost [127.0.0.1])
-        by lafhis-server.wifi.inv.dc.uba.ar (8.15.2/8.15.2/Debian-10) with SMTP id 0AR2M8VU014878;
-        Thu, 26 Nov 2020 23:22:11 -0300
-Message-Id: <202011270222.0AR2M8VU014878@lafhis-server.wifi.inv.dc.uba.ar>
-Reply-To: <mrsmariesmith1@citromail.hu>
-From:   "Mrs Marie Smith" <dfslezak@dc.uba.ar>
-Subject: From Mrs Marie Smith
-Date:   Thu, 26 Nov 2020 18:23:06 -0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     unlisted-recipients:; (no To-header on input)
+        Sat, 28 Nov 2020 21:38:27 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UGpYhm1_1606617444;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UGpYhm1_1606617444)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 29 Nov 2020 10:37:24 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     axboe@kernel.dk, tj@kernel.org
+Cc:     baolin.wang@linux.alibaba.com, baolin.wang7@gmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] blk-iocost: Optimize the ioc_refreash_vrate() function
+Date:   Sun, 29 Nov 2020 10:37:18 +0800
+Message-Id: <071dbbbdfecaebf9e850e622c52dd591969e21ab.1606617087.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, With Due Respect,
+The ioc_refreash_vrate() will only be called in ioc_timer_fn() after
+starting a new period or stopping the period.
 
-My name is Mrs Marie Smith, I am an Canadian, was married to Late Dr. IDRISU Smith , We were married for 32 years without a child. My late husband was a businessman and Gold merchant but he was poisoned by his business partners. And Recently, My Doctor told me that I will undergo a Surgery (Cancer ) and I may not survive it or live longer than required due to my health condition. I inherited a total sum funds from my late husband, which is deposited in a bank . Having known my condition, I decided to donate this fund to any God fearing man or woman who will use the money the way I am going to instruct. I want somebody who will fulfill the desire of I and my late husband to help the less privileged people, orphanages and the widows in our society. I took this decision because according to my history, I was once an orphan who was raised from orphanage home in Canada .
+So when starting a new period, the variable 'pleft' in ioc_refreash_vrate()
+is always the period's time, which means if the abs(ioc->vtime_err)
+is less than the period's time, the vcomp is 0, and we do not need
+compensate the vtime_rate in this case, just set it as the base vrate
+and return.
 
-This is why I am taking this decision to hand over this fund to you in good faith and measure to help the less privileged by opening a foundation you will call "MARIE FOUNDATION". If you are interested in to handle this project, please give me your, name, address, profession and telephone numbers for me to get the inheritance letter for you as soon as possible. I have a limited time to live, I am not afraid of death, hence I know where I am going. I want you to always remember me in your daily prayers because of my upcoming Cancer Surgery. Kindly contact me if you are interested to carry out this humanitarian 
-duty. 
+When stopping the period, the ioc->vtime_err will be cleared to 0,
+and we also do not need to compensate the vtime_rate, just set it as
+the base vrate and return.
 
-Please give me your below details
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ block/blk-iocost.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-Your Full name
-Your Address
-Occupation
-Phone No
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 8348db4..58c9533 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -943,30 +943,29 @@ static bool ioc_refresh_params(struct ioc *ioc, bool force)
+  */
+ static void ioc_refresh_vrate(struct ioc *ioc, struct ioc_now *now)
+ {
+-	s64 pleft = ioc->period_at + ioc->period_us - now->now;
+ 	s64 vperiod = ioc->period_us * ioc->vtime_base_rate;
+ 	s64 vcomp, vcomp_min, vcomp_max;
+ 
+ 	lockdep_assert_held(&ioc->lock);
+ 
+-	/* we need some time left in this period */
+-	if (pleft <= 0)
+-		goto done;
++	if (abs(ioc->vtime_err) < ioc->period_us) {
++		atomic64_set(&ioc->vtime_rate, ioc->vtime_base_rate);
++		return;
++	}
+ 
+ 	/*
+ 	 * Calculate how much vrate should be adjusted to offset the error.
+ 	 * Limit the amount of adjustment and deduct the adjusted amount from
+ 	 * the error.
+ 	 */
+-	vcomp = -div64_s64(ioc->vtime_err, pleft);
++	vcomp = -div64_s64(ioc->vtime_err, ioc->period_us);
+ 	vcomp_min = -(ioc->vtime_base_rate >> 1);
+ 	vcomp_max = ioc->vtime_base_rate;
+ 	vcomp = clamp(vcomp, vcomp_min, vcomp_max);
+ 
+-	ioc->vtime_err += vcomp * pleft;
++	ioc->vtime_err += vcomp * ioc->period_us;
+ 
+ 	atomic64_set(&ioc->vtime_rate, ioc->vtime_base_rate + vcomp);
+-done:
+ 	/* bound how much error can accumulate */
+ 	ioc->vtime_err = clamp(ioc->vtime_err, -vperiod, vperiod);
+ }
+-- 
+1.8.3.1
 
-Write me on my private email: mrsmariesmith111@hotmail.com  
-Mrs Marie Smith
