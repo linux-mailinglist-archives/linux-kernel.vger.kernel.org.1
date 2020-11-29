@@ -2,157 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5B82C781D
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 06:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 107F02C7821
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 07:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725895AbgK2F6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 00:58:14 -0500
-Received: from mga11.intel.com ([192.55.52.93]:61686 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbgK2F6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 00:58:14 -0500
-IronPort-SDR: Jmu7BQ7tANWcg9Ns2UrLkH0ss79WMF2OxSW7TyVpFr4HWgWcggbRZyK96e5bEn1REthD32qxz6
- 6ZxNd2rrbydQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9819"; a="169016915"
-X-IronPort-AV: E=Sophos;i="5.78,378,1599548400"; 
-   d="scan'208";a="169016915"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2020 21:57:33 -0800
-IronPort-SDR: 8BjIMrBsyU+5IzFJIVhtn1Fre6MquGL+3OuynYwCF7L7nYDbtI8SPdDa8zVX41I3JWpwZHSr/l
- rl85meoP4e2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,378,1599548400"; 
-   d="scan'208";a="480158233"
-Received: from lkp-server01.sh.intel.com (HELO 3082e074203f) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 28 Nov 2020 21:57:32 -0800
-Received: from kbuild by 3082e074203f with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kjFiF-000012-2l; Sun, 29 Nov 2020 05:57:31 +0000
-Date:   Sun, 29 Nov 2020 13:57:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- c1c38fd953ac77525dc0f302c9f69749ce4832d7
-Message-ID: <5fc33845.pAiafxmnjW4LQmSo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1725925AbgK2GDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 01:03:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgK2GDE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 01:03:04 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80C6C0613D2
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:02:23 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id jx16so13730243ejb.10
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eOJePbnIwaExU9jLd03lUnaNrDCMN/HWo7t0wyAP25E=;
+        b=Rd3ipsa2AJM+7Qvi713J8i3+10Ej8rUhIQAfk9VjpyZdAWjDKjkv9jIE9iOHnaNKS1
+         bz20a7/h6+adkm79yT/9z0YJtUBEa0QwBWky2MW0i6Wo1ErCpoHL9fZXKnhJO8AVeNyr
+         u0l+uPxqOUiaN3Ku2GQubMqPZshP7Y9i/9rHc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eOJePbnIwaExU9jLd03lUnaNrDCMN/HWo7t0wyAP25E=;
+        b=sVqArooCehta3y5BHvZencVK/fa4+dt4aTY1EYBvW7kNfRJyCuwxCXDj5G4B37M7xg
+         RqbFBSjyB98hawdKlqf8ohIP0mqRw31B4aVe7P3NR9gMQZMQ81hhucYgMCIQpP3FlJES
+         0Pdjse2An7ZPZEVKkNYJOrdpfIkobIIJUpyZJ12oc6+IrT0DLK65Bfqhc5ZtnFYP1R3G
+         8ppP4h2n21P/5T4xqe230ErS4Colky60DiMyKR3twCR8t0xR1KRm8wetswOI3Uolf6ar
+         4R0FbWFiIlGqBMQiqZ9EHHPpFmP1ecOPYBfUgvT3aAxn5a8s8bygamdLMtZF6dVy/KDV
+         4LMw==
+X-Gm-Message-State: AOAM532lZX1CqShoIOlWm3N5YazcW7Vixt0g0Ee/6c7UmOwoHfatUYoM
+        +IJ6/6YZBqv0/bs4BQJQ/0mjOfzxftfktA==
+X-Google-Smtp-Source: ABdhPJyRzdZaEbNfW1ab4Qfybgq2ltex6/H7oQtPa6Ba/AgqEtguKhNy+5q/HIaJzDMRvJjPvfAl7g==
+X-Received: by 2002:a17:906:b745:: with SMTP id fx5mr14914346ejb.103.1606629742358;
+        Sat, 28 Nov 2020 22:02:22 -0800 (PST)
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
+        by smtp.gmail.com with ESMTPSA id t19sm6906491eje.86.2020.11.28.22.02.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 28 Nov 2020 22:02:21 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id 23so10615578wrc.8
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 22:02:21 -0800 (PST)
+X-Received: by 2002:adf:e607:: with SMTP id p7mr20639872wrm.93.1606629740798;
+ Sat, 28 Nov 2020 22:02:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201111143755.24541-1-stanimir.varbanov@linaro.org> <20201111143755.24541-2-stanimir.varbanov@linaro.org>
+In-Reply-To: <20201111143755.24541-2-stanimir.varbanov@linaro.org>
+From:   Fritz Koenig <frkoenig@chromium.org>
+Date:   Sat, 28 Nov 2020 22:02:08 -0800
+X-Gmail-Original-Message-ID: <CAMfZQbx5j+c3HQBjaT45ur_6r6Nm3tsRji8D0f_EtLJF_CFiyw@mail.gmail.com>
+Message-ID: <CAMfZQbx5j+c3HQBjaT45ur_6r6Nm3tsRji8D0f_EtLJF_CFiyw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] venus: hfi: Use correct state in unload resources
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: c1c38fd953ac77525dc0f302c9f69749ce4832d7  Merge branch 'core/entry'
+On Wed, Nov 11, 2020 at 6:38 AM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
+>
+> INST_RELEASE_RESOURCES state is set but not used, correct this
+> by enter into INIT state once the unload resources is done.
+>
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/hfi.c | 2 +-
+>  drivers/media/platform/qcom/venus/hfi.h | 1 -
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/venus/hfi.c b/drivers/media/platform/qcom/venus/hfi.c
+> index 638ed5cfe05e..4c87228e8e1d 100644
+> --- a/drivers/media/platform/qcom/venus/hfi.c
+> +++ b/drivers/media/platform/qcom/venus/hfi.c
+> @@ -388,7 +388,7 @@ int hfi_session_unload_res(struct venus_inst *inst)
+>         if (ret)
+>                 return ret;
+>
+> -       inst->state = INST_RELEASE_RESOURCES;
+> +       inst->state = INST_INIT;
+>
+>         return 0;
+>  }
+> diff --git a/drivers/media/platform/qcom/venus/hfi.h b/drivers/media/platform/qcom/venus/hfi.h
+> index f25d412d6553..e9c944271cc1 100644
+> --- a/drivers/media/platform/qcom/venus/hfi.h
+> +++ b/drivers/media/platform/qcom/venus/hfi.h
+> @@ -87,7 +87,6 @@ struct hfi_event_data {
+>  #define INST_LOAD_RESOURCES                    4
+>  #define INST_START                             5
+>  #define INST_STOP                              6
+> -#define INST_RELEASE_RESOURCES                 7
+>
+>  struct venus_core;
+>  struct venus_inst;
+> --
+> 2.17.1
+>
 
-elapsed time: 724m
-
-configs tested: 93
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                        m5307c3_defconfig
-arm                         palmz72_defconfig
-arm                        cerfcube_defconfig
-sh                         ecovec24_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                      chrp32_defconfig
-openrisc                         alldefconfig
-um                           x86_64_defconfig
-arm                          tango4_defconfig
-um                            kunit_defconfig
-arm                         ebsa110_defconfig
-mips                          rm200_defconfig
-arm                        magician_defconfig
-arm                          exynos_defconfig
-c6x                        evmc6457_defconfig
-powerpc                 xes_mpc85xx_defconfig
-riscv                            alldefconfig
-um                             i386_defconfig
-powerpc                      ppc6xx_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201129
-i386                 randconfig-a003-20201129
-i386                 randconfig-a002-20201129
-i386                 randconfig-a005-20201129
-i386                 randconfig-a001-20201129
-i386                 randconfig-a006-20201129
-x86_64               randconfig-a015-20201129
-x86_64               randconfig-a011-20201129
-x86_64               randconfig-a016-20201129
-x86_64               randconfig-a014-20201129
-x86_64               randconfig-a012-20201129
-x86_64               randconfig-a013-20201129
-i386                 randconfig-a012-20201129
-i386                 randconfig-a013-20201129
-i386                 randconfig-a011-20201129
-i386                 randconfig-a016-20201129
-i386                 randconfig-a014-20201129
-i386                 randconfig-a015-20201129
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20201129
-x86_64               randconfig-a006-20201129
-x86_64               randconfig-a004-20201129
-x86_64               randconfig-a005-20201129
-x86_64               randconfig-a002-20201129
-x86_64               randconfig-a001-20201129
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Reviewed-by: Fritz Koenig <frkoenig@chromium.org>
