@@ -2,98 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78BD2C76E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 01:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB652C76E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 01:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727892AbgK2Arc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 19:47:32 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47334 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725616AbgK2Arc (ORCPT
+        id S1729031AbgK2AuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 19:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgK2AuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 19:47:32 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AT0VkVw140026;
-        Sat, 28 Nov 2020 19:46:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=AEu2YDydB/SF+5DWd+uZHgYYz+P4E6JaKj4SF/AC3wY=;
- b=skVlZ8XtkXrvNgkj+OHqyrwev2g3q72g3qx7TRbwSc3i75f3RCs+SjWNsxiUqztkzho4
- zkAtJa/kt6roUSUXxKQdO4jHdTnpPq2KUHMp9n0vLxP1o6o934JNq39ZmwhW+pHzvZV0
- z2f6vCYNacmZTEGfVqiHemBzEGWjFIK/JC8irVTwjd8zgEbkIibA4Jm+4Wb5y3aQlS3B
- fvftEVaBorz6oj+/fCYb4lUIxsLf3ri9FF0ttIXETM5JiBsDhWCDMQT4npeiv+BFzV0/
- iiPputhAj52/wXdbJxXNBsE17n9nYw1PxLIHQAaz52oqOoXiIyZ9/W5fsBUpifV/8gpr Ig== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 353ybf1tw7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 28 Nov 2020 19:46:49 -0500
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AT0VpVV140112;
-        Sat, 28 Nov 2020 19:46:49 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 353ybf1tw0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 28 Nov 2020 19:46:48 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AT0WS33008777;
-        Sun, 29 Nov 2020 00:46:47 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 353e6813yy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 29 Nov 2020 00:46:47 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AT0iDol58524014
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 29 Nov 2020 00:44:14 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C80504C04E;
-        Sun, 29 Nov 2020 00:44:13 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 185774C04A;
-        Sun, 29 Nov 2020 00:44:13 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.171.47.217])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Sun, 29 Nov 2020 00:44:13 +0000 (GMT)
-Date:   Sun, 29 Nov 2020 01:44:11 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v12 08/17] s390/vfio-ap: introduce shadow APCB
-Message-ID: <20201129014411.19b24ee8.pasic@linux.ibm.com>
-In-Reply-To: <20201124214016.3013-9-akrowiak@linux.ibm.com>
-References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
-        <20201124214016.3013-9-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Sat, 28 Nov 2020 19:50:20 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDC2C0613D1;
+        Sat, 28 Nov 2020 16:49:55 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id u2so4493025pls.10;
+        Sat, 28 Nov 2020 16:49:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=83/pAMCHdug8q8KigZ36pmo9dSTEa8sHBk2e7NUwP3o=;
+        b=bCpV6IgtHQXk2QH2Zlsg3vh2B7/GfpfNHPlsnAma2TRGOcvHcbjlz+xl7io++EOCWk
+         jdLLzMbmhRktYiF/6eME+TN8jJuGMsxFMDFibSsOpxO9SMC2Q1cGds5hrDAGfW4Z14wU
+         fNU7LsprK26F1GnVYtoKHv8mpt0IxTA0A2CTkx9Ob4JKAQ5EQ7zwW0ipW6JDzXyNcHae
+         CdweGA+A3jU+sEHEmYlbZo/t3Y7A6eCl1mh5scSrAfb0VwzMb9bys+e3mdDNKpAA2MV/
+         PTgyilLJa2jm3vdaPgOua3PVsz/wY7F6wgB+XeV3AEuh9T7zQeuRAFdb136eWDZRC41y
+         niMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=83/pAMCHdug8q8KigZ36pmo9dSTEa8sHBk2e7NUwP3o=;
+        b=QMXpSiHwD4vz2KjJISZokpBjCQt1Iy/g1n6oDn0dC9a6qszFLUpdpCqKrNcvcfkkyQ
+         0OJ49g/v70Ui7D0qYan+IVXe8l9Qcw6ABBivJ3JZuLXgyVhosg+qReRaIsLOk0PiAV6F
+         NR0Otl0tt+3WOnQnXVVGb1/Xd8TaFCS1sLMkRWHGgKJwzd+K3SHIbWgiw9kBoDxVOWyB
+         ssLmvaLfeFuHYoogzPE2mDheM7+gpFTQxHgK5Y9vmCDVwCCMnQdvcf+0m8Dhv9gHmJz6
+         jP57K5okn3XKvyRcPWjCOV6t6dtV1cQIR7Xxt+W2gQ4wzwp4+Y+7B5u1HOG1LUr/6hJ0
+         bhew==
+X-Gm-Message-State: AOAM533tQLILIHoB80BJJsnS8dH54Ow/BN07rMI85dQwV+uMyeN8gZpe
+        5N+78bQ/TliKadRDBEWyT9UV4ik4mJaF0w==
+X-Google-Smtp-Source: ABdhPJwssGQhlhKBeDInAf63q82cFfSyhEr5h2dKa38xdU3BGUUE7ohK+TqMxjkvOwaD6/IEaP4B/g==
+X-Received: by 2002:a17:902:bd8c:b029:d8:db1d:2a35 with SMTP id q12-20020a170902bd8cb02900d8db1d2a35mr12843288pls.66.1606610994387;
+        Sat, 28 Nov 2020 16:49:54 -0800 (PST)
+Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id gg19sm16444871pjb.21.2020.11.28.16.49.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Nov 2020 16:49:53 -0800 (PST)
+From:   Nadav Amit <nadav.amit@gmail.com>
+X-Google-Original-From: Nadav Amit
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Nadav Amit <namit@vmware.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [RFC PATCH 00/13] fs/userfaultfd: support iouring and polling
+Date:   Sat, 28 Nov 2020 16:45:35 -0800
+Message-Id: <20201129004548.1619714-1-namit@vmware.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-28_18:2020-11-26,2020-11-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- phishscore=0 mlxscore=0 adultscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 impostorscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011280156
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 16:40:07 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+From: Nadav Amit <namit@vmware.com>
 
-> The APCB is a field within the CRYCB that provides the AP configuration
-> to a KVM guest. Let's introduce a shadow copy of the KVM guest's APCB and
-> maintain it for the lifespan of the guest.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+While the overhead of userfaultfd is usually reasonable, this overhead
+can still be prohibitive for low-latency backing storage, such as RDMA,
+persistent memory or in-memory compression. In such cases the overhead
+of scheduling and entering/exiting the kernel becomes dominant.
 
-Still LGTM
+The natural solution for this problem is to use iouring with
+userfaultfd. But besides one bug, this does not provide sufficient
+performance improvement and the use of ioctls for zero/copy limits the
+use of iouring for synchronous "reads" (reporting of faults/events).
+This patch-set provides four solutions for this overhead:
+
+1. Userfaultfd "polling" mode, in which the faulting thread polls after
+reporting the fault instead of being de-scheduled. This fits cases in
+which the handler is expected to poll for page-faults on a different
+thread.
+
+2. Asynchronous-reads, in which the faulting thread reports page-faults
+(and other events) directly to the userspace handler thread. For this
+matter asynchronous read completions are being introduced.
+
+3. Write interface, which provides similar services to the zero/copy
+ioctls. This allows the use of iouring for zero/copy without changing
+the iouring code or making it to be userfaultfd-aware. The low bits of
+the "position" are being used to encode the requested operation
+(zero/cop/wp/etc).
+
+4. Async-writes, in which the zero/copy is performed by the faulting
+thread instead of the iouring thread. This reduces caching effects as
+the data is likely to be used by the faulting thread and find_vma()
+cannot use its cache on the iouring worker.
+
+I will provide some benchmark results later, but some initial results
+show that these patches reduce the overhead of handling a user
+page-fault by over 50%.
+
+The patches require a bit more cleanup but seem to pass the tests.
+
+Note that the first three patches are bug fixes. I did not Cc them to
+stable yet.
+
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: io-uring@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
+
+Nadav Amit (13):
+  fs/userfaultfd: fix wrong error code on WP & !VM_MAYWRITE
+  fs/userfaultfd: fix wrong file usage with iouring
+  selftests/vm/userfaultfd: wake after copy failure
+  fs/userfaultfd: simplify locks in userfaultfd_ctx_read
+  fs/userfaultfd: introduce UFFD_FEATURE_POLL
+  iov_iter: support atomic copy_page_from_iter_iovec()
+  fs/userfaultfd: support read_iter to use io_uring
+  fs/userfaultfd: complete reads asynchronously
+  fs/userfaultfd: use iov_iter for copy/zero
+  fs/userfaultfd: add write_iter() interface
+  fs/userfaultfd: complete write asynchronously
+  fs/userfaultfd: kmem-cache for wait-queue objects
+  selftests/vm/userfaultfd: iouring and polling tests
+
+ fs/userfaultfd.c                         | 740 ++++++++++++++++----
+ include/linux/hugetlb.h                  |   4 +-
+ include/linux/mm.h                       |   6 +-
+ include/linux/shmem_fs.h                 |   2 +-
+ include/linux/uio.h                      |   3 +
+ include/linux/userfaultfd_k.h            |  10 +-
+ include/uapi/linux/userfaultfd.h         |  21 +-
+ lib/iov_iter.c                           |  23 +-
+ mm/hugetlb.c                             |  12 +-
+ mm/memory.c                              |  36 +-
+ mm/shmem.c                               |  17 +-
+ mm/userfaultfd.c                         |  96 ++-
+ tools/testing/selftests/vm/Makefile      |   2 +-
+ tools/testing/selftests/vm/userfaultfd.c | 835 +++++++++++++++++++++--
+ 14 files changed, 1506 insertions(+), 301 deletions(-)
+
+-- 
+2.25.1
+
