@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853412C7921
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 13:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8587B2C792F
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 13:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727332AbgK2Mww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 07:52:52 -0500
-Received: from mga03.intel.com ([134.134.136.65]:27078 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725882AbgK2Mwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 07:52:51 -0500
-IronPort-SDR: h0DjLgOn0MKkv0cwMqUEeLfbqvrZ5wq6KcfO1uaGtWwRJMFxbo3p1JK5Tmqw+BkaOFZ8fPYzTR
- 1pBOriRFRfvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9819"; a="172632659"
-X-IronPort-AV: E=Sophos;i="5.78,379,1599548400"; 
-   d="scan'208";a="172632659"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2020 04:52:09 -0800
-IronPort-SDR: 7VJLYYFQ88L5YzSYwivPtSQbJxk59BrWNa5j0rhwbx2C9RI3vBAkEMmIxy5n9p6kuB98/2me4o
- I6/X36dwa4Fw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,379,1599548400"; 
-   d="scan'208";a="366746471"
-Received: from lkp-server01.sh.intel.com (HELO 3082e074203f) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Nov 2020 04:52:07 -0800
-Received: from kbuild by 3082e074203f with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kjMBS-00006R-OZ; Sun, 29 Nov 2020 12:52:06 +0000
-Date:   Sun, 29 Nov 2020 20:51:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jean Pihet <jean.pihet@newoldbits.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org,
-        Ryan Barnett <ryan.barnett@rockwellcollins.com>,
-        Conrad Ratschan <conrad.ratschan@rockwellcollins.com>,
-        Hugo Cornelis <hugo.cornelis@essensium.com>,
-        Arnout Vandecappelle <arnout.vandecappelle@essensium.com>,
-        Jean Pihet <jean.pihet@newoldbits.com>
-Subject: [RFC PATCH] net: dsa: ksz8795: ksz8795_adjust_link() can be static
-Message-ID: <20201129125159.GA24820@45a3048463a8>
-References: <20201129102400.157786-2-jean.pihet@newoldbits.com>
+        id S2387464AbgK2M5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 07:57:01 -0500
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:29701 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727058AbgK2M5B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 07:57:01 -0500
+Received: from localhost.localdomain ([92.131.86.32])
+        by mwinf5d20 with ME
+        id yCvE230080hrljw03CvER4; Sun, 29 Nov 2020 13:55:17 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 29 Nov 2020 13:55:17 +0100
+X-ME-IP: 92.131.86.32
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mst@redhat.com, jasowang@redhat.com, lingshan.zhu@intel.com,
+        eli@mellanox.com, parav@mellanox.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] vdpa: ifcvf: Use dma_set_mask_and_coherent to simplify code
+Date:   Sun, 29 Nov 2020 13:54:34 +0100
+Message-Id: <20201129125434.1462638-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201129102400.157786-2-jean.pihet@newoldbits.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
+an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
+While at it, fix a typo (s/confiugration/configuration)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- ksz8795.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/vdpa/ifcvf/ifcvf_main.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index 09c1173cc6073c..834a8dc251adba 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -1111,7 +1111,7 @@ static int ksz8795_setup(struct dsa_switch *ds)
- 	return 0;
- }
+diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+index 8b4028556cb6..fa1af301cf55 100644
+--- a/drivers/vdpa/ifcvf/ifcvf_main.c
++++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+@@ -417,16 +417,9 @@ static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		return ret;
+ 	}
  
--void ksz8795_adjust_link(struct dsa_switch *ds, int port,
-+static void ksz8795_adjust_link(struct dsa_switch *ds, int port,
- 						 struct phy_device *phydev)
- {
- 	struct ksz_device *dev = ds->priv;
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
+ 	if (ret) {
+-		IFCVF_ERR(pdev, "No usable DMA confiugration\n");
+-		return ret;
+-	}
+-
+-	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+-	if (ret) {
+-		IFCVF_ERR(pdev,
+-			  "No usable coherent DMA confiugration\n");
++		IFCVF_ERR(pdev, "No usable DMA configuration\n");
+ 		return ret;
+ 	}
+ 
+-- 
+2.27.0
+
