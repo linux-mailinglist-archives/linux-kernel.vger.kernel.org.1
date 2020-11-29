@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318E22C774D
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 03:39:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 652D42C774F
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 03:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgK2Ci2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Nov 2020 21:38:28 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:36002 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725294AbgK2Ci1 (ORCPT
+        id S1726265AbgK2Cxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Nov 2020 21:53:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725294AbgK2Cxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Nov 2020 21:38:27 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UGpYhm1_1606617444;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UGpYhm1_1606617444)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 29 Nov 2020 10:37:24 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     axboe@kernel.dk, tj@kernel.org
-Cc:     baolin.wang@linux.alibaba.com, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] blk-iocost: Optimize the ioc_refreash_vrate() function
-Date:   Sun, 29 Nov 2020 10:37:18 +0800
-Message-Id: <071dbbbdfecaebf9e850e622c52dd591969e21ab.1606617087.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 28 Nov 2020 21:53:50 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E16C0613D1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 18:53:09 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id f18so11152938ljg.9
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Nov 2020 18:53:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=drummond.us; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Z0lqPkiUKcw4hoWEb756wuRPxVLj2QZ6yrKh9T2kOgI=;
+        b=X/bkx06YJ3v398ihXZjgVhDZnmGs9qoPF2jx2MPLzwQS8kEfGrj9Pu48mEj2DNtE0V
+         79bFSnZfzr19HDT/cMKNMesFey32MGn59mJdbEjJwqsTUKIntj2CBjgCADfKrgZbl6tM
+         hplxd3adosuecyMlyhisyZ4oOsiXMB0dHjZuw4r8kQ5c1Ar+60d8htYEGw25qu++xZI0
+         obKvB53JK6XggA0taW3TS3zoSjP2gg32Yk5joNJDGml/619etKHB9m1Zcfyo0Jy4uOF+
+         Xn3zbWxid1ICt2tdlq1a2fCAor5m1RJ0NZ/BXwfFc09RgetnxiHiQpXpa5fG8nUW0Rt+
+         cLpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Z0lqPkiUKcw4hoWEb756wuRPxVLj2QZ6yrKh9T2kOgI=;
+        b=NbeS/2pzFGXzLEmC/U4S7yAx/TA/Z50ePCkiKsmxJF9YLhMCZ2IgtIz5yWW3uxUwoT
+         BsBIM7fV8UpG7tkF2fkTo0gUZfBdFHk7GhyURIJnPZrjpfpas8cT1d4LONiupYvLnDCU
+         7DRc+KFWLY/eN2lnNvnqL0Uar5az8F39KAq/76zVlPTRWI4FJ2YQ/pU0ooGFeNk6ljCJ
+         rDACXff+BSjO7+Z1WyzFiUrBM421JZ83KAvombKoETIjt9uEx8e+f/I6joZGL5WzbrF2
+         eSzyxUTjyFb1QrzeblahwzlTKjDDgdCiEbpcHOC3qjZUjpzB1PxlBGESzfo6JKuodD8y
+         Qlpg==
+X-Gm-Message-State: AOAM533Y5vcP4fRISsM64kbzRgZAFYSmX2vJMTABBk6PKybuOcpzox1R
+        JGaz3aNn5qGI5/hjc0ax+HYwlnQ0X5naHPXPF+Sssw==
+X-Google-Smtp-Source: ABdhPJwUmF6td/ePH5sIY/3U2r3PRVBkTd++J+PTy4VNsptfvM1GpidEl1sPiKDcxErrrG7KCTSxOKxhd1e01fPdiPE=
+X-Received: by 2002:a05:651c:1195:: with SMTP id w21mr6591270ljo.427.1606618388217;
+ Sat, 28 Nov 2020 18:53:08 -0800 (PST)
+MIME-Version: 1.0
+References: <20201119221132.1515696-1-walt@drummond.us> <20201128052317.GY3576660@ZenIV.linux.org.uk>
+ <CADCN6nyGW0=QS=J+704n-mtAqTxgVrKZC=P8d01NZ_pjssptew@mail.gmail.com>
+In-Reply-To: <CADCN6nyGW0=QS=J+704n-mtAqTxgVrKZC=P8d01NZ_pjssptew@mail.gmail.com>
+From:   Walt Drummond <walt@drummond.us>
+Date:   Sat, 28 Nov 2020 18:52:57 -0800
+Message-ID: <CADCN6nzdJom0DazzvnRREDKAjRBoNAVhNiQrL3hAXvU-=i4mpg@mail.gmail.com>
+Subject: Re: [PATCH] x86/signals: Fix save/restore signal stack to correctly
+ support sigset_t
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, brgerst@gmail.com, linux@dominikbrodowski.net,
+        gustavoars@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ioc_refreash_vrate() will only be called in ioc_timer_fn() after
-starting a new period or stopping the period.
+(Sorry, resending as Gmail decided to ignore "Plaintext mode")
 
-So when starting a new period, the variable 'pleft' in ioc_refreash_vrate()
-is always the period's time, which means if the abs(ioc->vtime_err)
-is less than the period's time, the vcomp is 0, and we do not need
-compensate the vtime_rate in this case, just set it as the base vrate
-and return.
+Thanks Al.  I want to understand the nuance, so please bear with me as
+I reason this out.   The cast in stone nature of this is due to both
+the need to keep userspace and kernel space in sync (ie, you'd have to
+coordinate libc and kernel changes super tightly to pull this off),
+and any change in the size of struct rt_sigframe would break backwards
+compatibility with older binaries, is that correct?
 
-When stopping the period, the ioc->vtime_err will be cleared to 0,
-and we also do not need to compensate the vtime_rate, just set it as
-the base vrate and return.
+Thanks, appreciate the help here.
+--Walt
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- block/blk-iocost.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 8348db4..58c9533 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -943,30 +943,29 @@ static bool ioc_refresh_params(struct ioc *ioc, bool force)
-  */
- static void ioc_refresh_vrate(struct ioc *ioc, struct ioc_now *now)
- {
--	s64 pleft = ioc->period_at + ioc->period_us - now->now;
- 	s64 vperiod = ioc->period_us * ioc->vtime_base_rate;
- 	s64 vcomp, vcomp_min, vcomp_max;
- 
- 	lockdep_assert_held(&ioc->lock);
- 
--	/* we need some time left in this period */
--	if (pleft <= 0)
--		goto done;
-+	if (abs(ioc->vtime_err) < ioc->period_us) {
-+		atomic64_set(&ioc->vtime_rate, ioc->vtime_base_rate);
-+		return;
-+	}
- 
- 	/*
- 	 * Calculate how much vrate should be adjusted to offset the error.
- 	 * Limit the amount of adjustment and deduct the adjusted amount from
- 	 * the error.
- 	 */
--	vcomp = -div64_s64(ioc->vtime_err, pleft);
-+	vcomp = -div64_s64(ioc->vtime_err, ioc->period_us);
- 	vcomp_min = -(ioc->vtime_base_rate >> 1);
- 	vcomp_max = ioc->vtime_base_rate;
- 	vcomp = clamp(vcomp, vcomp_min, vcomp_max);
- 
--	ioc->vtime_err += vcomp * pleft;
-+	ioc->vtime_err += vcomp * ioc->period_us;
- 
- 	atomic64_set(&ioc->vtime_rate, ioc->vtime_base_rate + vcomp);
--done:
- 	/* bound how much error can accumulate */
- 	ioc->vtime_err = clamp(ioc->vtime_err, -vperiod, vperiod);
- }
--- 
-1.8.3.1
-
+On Sat, Nov 28, 2020 at 6:19 PM Walt Drummond <walt@drummond.us> wrote:
+>
+> Thanks Al.  I want to understand the nuance, so please bear with me as I =
+reason this out.   The cast in stone nature of this is due to both the need=
+ to keep userspace and kernel space in sync (ie, you'd have to coordinate l=
+ibc and kernel changes super tightly to pull this off), and any change in t=
+he size of struct rt_sigframe would break backwards compatibility with olde=
+r binaries, is that correct?
+>
+> Thanks, appreciate the help here.
+> --Walt
+>
+>
+> On Fri, Nov 27, 2020 at 9:23 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>>
+>> On Thu, Nov 19, 2020 at 02:11:33PM -0800, Walt Drummond wrote:
+>> > The macro unsafe_put_sigmask() only handles the first 64 bits of the
+>> > sigmask_t, which works today.  However, if the definition of the
+>> > sigset_t structure ever changed,
+>>
+>> ... existing userland would get fucked over, since sigset_t is
+>> present in user-visible data structures.  Including the ones
+>> we are using that thing for - struct rt_sigframe, for starters.
+>>
+>> Layout of those suckers is very much cast in stone.  We *can't*
+>> change it, no matter what we do kernel-side.
+>>
+>> NAKed-by: Al Viro <viro@zeniv.linux.org.uk>
