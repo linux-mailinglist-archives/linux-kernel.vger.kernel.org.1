@@ -2,112 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E7D2C7A7E
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 19:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C25ED2C7A81
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Nov 2020 19:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgK2SQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 13:16:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgK2SQM (ORCPT
+        id S1728340AbgK2SQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 13:16:21 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:52694 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728226AbgK2SQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 13:16:12 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D08BC0613CF;
-        Sun, 29 Nov 2020 10:15:32 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id l5so12140462edq.11;
-        Sun, 29 Nov 2020 10:15:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UROWP8DCGmWhVwQsCC8h2As9ZxZGQSky9i20Gey0Ido=;
-        b=j0KFJ4xVFp4NC4WM62GakLO1fZKpiWbDq91qtHs3es1t3S+hxd81W2POHXZ9q7ejaH
-         0q1XIHjqPvySc7Y7XrEA4QhTBoyQtopzTL5AeurZEms0/Oj9ld6nVWeaklnRir+C3cj2
-         Qh3aRYUtd0KHGimvAjQNt7ITzmEfzqB6hrn5iCPNvbW5uv/28c7Y8ym8eQpBKGlDpkoC
-         Ua0gfQ4FzGjk1HaWIAEUCWY03SzpLCdd/it/QA8vzBFsEQJNMXkM6nYS0CAwlLFwWkKn
-         kNHlxAToZdbfXNNaJ49cBEFLPaiGgljrWdNWTn1lFxVZDZq/vGoU8BBy7jawENEmCmvs
-         NnKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UROWP8DCGmWhVwQsCC8h2As9ZxZGQSky9i20Gey0Ido=;
-        b=szpP4laApo84zyWOGcdcojG9pQItrQqQu0tIfi9urbOnGNmMqd6wp30G1A0IkS2s9i
-         M4ZkvLGobX7QxLll4ItN046oHHhV6uMm8mRrA9OU4CPOXx0xjNw9+9Ub20QX4uCs8gmj
-         u9A7qaW0Lbp99+Vv0pgBc98qxA4UF78UoJQ0Cm3gHpG+6pHd3ATIu8v3N6nfhmn5+GPR
-         /jLgxl//1fvVk+SjCl4MV463Akc5OWYeHmSqL/20U/hixPIrfrKJTs7240eeUNzE6Ajn
-         Y9SOMQ2Yz4ArWTKpUjmWUuSg8vXSacZvAsnuu820gHjtsMLi699otW0E57iEM/FpM8RE
-         TVww==
-X-Gm-Message-State: AOAM533Si1b7JmQ6rXmPmfaLwnpQbmvEDaSFu4Z2g7+55CzgpYM0ha1o
-        3AumNb/lKBTWyFtD3utR9gc=
-X-Google-Smtp-Source: ABdhPJz/uzcYLzKhtpNOcOpAVXt/4u4Hf0bEUq9k0+3ONJkOQZta1Kwsu1fRVLNS8II8ISavlTSNRw==
-X-Received: by 2002:a50:d884:: with SMTP id p4mr952137edj.120.1606673730918;
-        Sun, 29 Nov 2020 10:15:30 -0800 (PST)
-Received: from BV030612LT ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id n14sm8018943edw.38.2020.11.29.10.15.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 10:15:30 -0800 (PST)
-Date:   Sun, 29 Nov 2020 20:15:27 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/18] dt-bindings: dma: owl: Add compatible string
- for Actions Semi S500 SoC
-Message-ID: <20201129181527.GC696261@BV030612LT>
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <0e79dffdf105ded2bb336ab38dc39b4986667683.1605823502.git.cristian.ciocaltea@gmail.com>
- <20201128072945.GT3077@thinkpad>
+        Sun, 29 Nov 2020 13:16:20 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 571012002C;
+        Sun, 29 Nov 2020 19:15:32 +0100 (CET)
+Date:   Sun, 29 Nov 2020 19:15:30 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        Lee Jones <lee.jones@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH] msm/mdp5: Fix some kernel-doc warnings
+Message-ID: <20201129181530.GA1144063@ravnborg.org>
+References: <20201129181243.1091742-1-robdclark@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201128072945.GT3077@thinkpad>
+In-Reply-To: <20201129181243.1091742-1-robdclark@gmail.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=Ibmpp1ia c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=cm27Pg_UAAAA:8 a=KKAkSRfTAAAA:8 a=7gkXJVJtAAAA:8
+        a=trakgP1J0JoVuHfyZN0A:9 a=CjuIK1q_8ugA:10 a=xmb-EsYY8bH0VWELuYED:22
+        a=cvBusfyB2V15izCimMoJ:22 a=E9Po1WZjFZOl8hwRPBS3:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 12:59:45PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Nov 20, 2020 at 01:55:58AM +0200, Cristian Ciocaltea wrote:
-> > Add a new compatible string corresponding to the DMA controller found
-> > in the S500 variant of the Actions Semi Owl SoCs family.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/dma/owl-dma.yaml | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/dma/owl-dma.yaml b/Documentation/devicetree/bindings/dma/owl-dma.yaml
-> > index 256d62af2c64..f085f0e42d2c 100644
-> > --- a/Documentation/devicetree/bindings/dma/owl-dma.yaml
-> > +++ b/Documentation/devicetree/bindings/dma/owl-dma.yaml
-> > @@ -8,8 +8,8 @@ title: Actions Semi Owl SoCs DMA controller
-> >  
-> >  description: |
-> >    The OWL DMA is a general-purpose direct memory access controller capable of
-> > -  supporting 10 and 12 independent DMA channels for S700 and S900 SoCs
-> > -  respectively.
-> > +  supporting 10 independent DMA channels for the Actions Semi S700 SoC and 12
-> > +  independent DMA channels for the S500 and S900 SoC variants.
-> >  
-> >  maintainers:
-> >    - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > @@ -22,6 +22,7 @@ properties:
-> >      enum:
-> >        - actions,s900-dma
-> >        - actions,s700-dma
-> > +      - actions,s500-dma
+Hi Rob,
+On Sun, Nov 29, 2020 at 10:12:40AM -0800, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> I think we should order the entries now...
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'ctl' not described in 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'pipeline' not described in 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'enabled' not described in 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Excess function parameter 'enable' description in 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'ctl' not described in 'mdp5_ctl_commit'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'pipeline' not described in 'mdp5_ctl_commit'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'flush_mask' not described in 'mdp5_ctl_commit'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'start' not described in 'mdp5_ctl_commit'
+> 
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
-Right, I will provide the reordered list in the upcoming revision.
-
-> >  
-> >    reg:
-> >      maxItems: 1
-> > -- 
-> > 2.29.2
-> > 
+Looks fine,
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
