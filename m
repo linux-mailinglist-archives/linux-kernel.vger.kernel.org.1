@@ -2,120 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D56D2C7DDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 06:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992C12C7DDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 06:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgK3FhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 00:37:12 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:31683 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgK3FhM (ORCPT
+        id S1726085AbgK3Fhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 00:37:32 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:58765 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgK3Fhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 00:37:12 -0500
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 29 Nov 2020 21:36:31 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 29 Nov 2020 21:36:30 -0800
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 30 Nov 2020 11:06:16 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id B3AB62128A; Mon, 30 Nov 2020 11:06:15 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH] venus: core: add support to dump FW region
-Date:   Mon, 30 Nov 2020 11:06:12 +0530
-Message-Id: <1606714572-1113-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 30 Nov 2020 00:37:31 -0500
+Received: from 220-133-187-190.hinet-ip.hinet.net ([220.133.187.190] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kjbrh-0002xu-Kv; Mon, 30 Nov 2020 05:36:46 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
+Cc:     andrzej.p@collabora.com, mjg59@google.com,
+        srinivas.pandruvada@linux.intel.com,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-pm@vger.kernel.org (open list:THERMAL),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/3] thermal: core: Add indication for userspace usage
+Date:   Mon, 30 Nov 2020 13:36:38 +0800
+Message-Id: <20201130053640.54608-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to dump video FW region during FW crash
-using devcoredump helpers.
+We are seeing thermal shutdown on Intel based mobile workstations, the
+shutdown happens during the first trip handle in
+thermal_zone_device_register():
+kernel: thermal thermal_zone15: critical temperature reached (101 C), shutting down
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+However, we shouldn't do a thermal shutdown here, since
+1) We may want to use a dedicated daemon, Intel's thermald in this case,
+to handle thermal shutdown.
+
+2) For ACPI based system, _CRT doesn't mean shutdown unless it's inside
+ThermalZone. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
+"... If this object it present under a device, the device’s driver
+evaluates this object to determine the device’s critical cooling
+temperature trip point. This value may then be used by the device’s
+driver to program an internal device temperature sensor trip point."
+
+So a "critical trip" here merely means we should take a more aggressive
+cooling method.
+
+So add an indication to let thermal core know it should leave thermal
+device to userspace to handle.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
- drivers/media/platform/qcom/venus/core.c | 47 ++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ drivers/thermal/thermal_core.c | 3 +++
+ include/linux/thermal.h        | 2 ++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 6103aaf..01a0cfe 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -7,8 +7,10 @@
- #include <linux/interconnect.h>
- #include <linux/ioctl.h>
- #include <linux/delay.h>
-+#include <linux/devcoredump.h>
- #include <linux/list.h>
- #include <linux/module.h>
-+#include <linux/of_address.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-@@ -22,6 +24,48 @@
- #include "firmware.h"
- #include "pm_helpers.h"
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index c6d74bc1c90b..6561e3767529 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -1477,6 +1477,9 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+ 			goto unregister;
+ 	}
  
-+static int subsystem_dump(struct venus_core *core)
-+{
-+	struct device_node *node;
-+	struct device *dev;
-+	struct resource r;
-+	void *mem_va;
-+	size_t mem_size;
-+	void *data;
-+	int ret;
++	if (tz->tzp && tz->tzp->userspace)
++		thermal_zone_device_disable(tz);
 +
-+	dev = core->dev;
-+	node = of_parse_phandle(dev->of_node, "memory-region", 0);
-+	if (!node)
-+		return -EINVAL;
-+
-+	ret = of_address_to_resource(node, 0, &r);
-+	if (ret)
-+		goto err_put_node;
-+
-+	mem_size = resource_size(&r);
-+
-+	mem_va = memremap(r.start, mem_size, MEMREMAP_WC);
-+	if (!mem_va) {
-+		ret = -ENOMEM;
-+		goto err_put_node;
-+	}
-+
-+	data = vmalloc(mem_size);
-+	if (!data) {
-+		ret = -EINVAL;
-+		goto err_unmap;
-+	}
-+
-+	memcpy(data, mem_va, mem_size);
-+
-+	dev_coredumpv(dev, data, mem_size, GFP_KERNEL);
-+err_unmap:
-+	memunmap(mem_va);
-+err_put_node:
-+	of_node_put(node);
-+	return ret;
-+}
- static void venus_event_notify(struct venus_core *core, u32 event)
- {
- 	struct venus_inst *inst;
-@@ -67,6 +111,9 @@ static void venus_sys_error_handler(struct work_struct *work)
+ 	mutex_lock(&thermal_list_lock);
+ 	list_add_tail(&tz->node, &thermal_tz_list);
+ 	mutex_unlock(&thermal_list_lock);
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index d07ea27e72a9..e8e8fac78fc8 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -247,6 +247,8 @@ struct thermal_zone_params {
+ 	 */
+ 	bool no_hwmon;
  
- 	venus_shutdown(core);
- 
-+	dev_warn(core->dev, "dumping FW region!\n");
-+	subsystem_dump(core);
++	bool userspace;
 +
- 	pm_runtime_put_sync(core->dev);
+ 	int num_tbps;	/* Number of tbp entries */
+ 	struct thermal_bind_params *tbp;
  
- 	while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]))
 -- 
-2.7.4
+2.29.2
 
