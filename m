@@ -2,152 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DCC2C84FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A072C84FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgK3NU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:20:59 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:48632 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgK3NU6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:20:58 -0500
-Date:   Mon, 30 Nov 2020 14:20:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606742416;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uFMc1nju8Vt+w/vefCY3bj1WY0IJrNxSDeMxCywROQg=;
-        b=1uWmTfu4E+nW1ShlsxD9EkPl+HtTbSBaXRGNfYqW2y9EyghV7JUsbVjNZF15dUXCEttzV1
-        pfOPiYaDf1CEwvcv+kqAmYmfcFrF287JLC+YT7XxeIXlku5VmpZTJNaFdtoDdtp0ir43Vb
-        +U1zk6nHHmUjIL1Xkjg+WxxxgPhApKGAsa9dkDQGPvXraCQd9dcv3N7EQLE1tXKIdK9aZB
-        e6CT95tMIJr4ZkD2F/eeOFPTg9rCTRJsSRopfXKVrUhnm9aa8IHxc8Q/8l6DG0zdc7Rpel
-        0t65oJm9U6bwr4XfAHjlKrpeDe/ukeCZiFxw/5XyMM/4TdzblbAqKR0Wd3QPGQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606742416;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uFMc1nju8Vt+w/vefCY3bj1WY0IJrNxSDeMxCywROQg=;
-        b=VEiRQK1ouW5vtsrgyZZddGP84TQY04+uKfrJtsrO3P/CUbab6habOZQ14lnCtRu6k8CY+f
-        B41PZuPoziCLTWBQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Subject: Re: scheduling while atomic in z3fold
-Message-ID: <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
-References: <20201128140523.ovmqon5fjetvpby4@spock.localdomain>
- <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
- <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
- <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
- <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
- <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
- <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
- <20201129112922.db53kmtpu76xxukj@spock.localdomain>
- <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+        id S1726602AbgK3NVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:21:07 -0500
+Received: from mail-eopbgr1390077.outbound.protection.outlook.com ([40.107.139.77]:19184
+        "EHLO IND01-BO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726162AbgK3NVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:21:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fxp2UkhFL8p+8XWfc7pcL0i09p3+Lf69/YkkG0Qi05c4eQcI5W1xDXJwoqy8FDztjibanmU9UkgmDfI9JJnBVE1EYzfFaUNq6ZCWFcUHW4w7rzSjtr3MhnDMCerg7CY1trWZaLbMZuP8TcT1I6fBVRvr5WFLjko1xwG4ue4XLBf8FWUW/Lcek5ejbIw/CvFbkdQqvd9yzpbvW8nMZq9fHdAZnmL5tKaaTB+0Z4v0gTKqRgAXcUm+hnTAvyOaukU4eOFTNySB0HKg/9o9lbJcwntSj+dVOzym0FrXBn7BrnMJu7o+9QnDhF9fC1rHo6x4bRu55kuLKxNE1Lqd1aJfMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KPRwZt6GqYm2jyGU2M5K4xYjiWNUjYFUMf+WjtuM35k=;
+ b=baLmuMDievLGPvvxYE6+ERMp+T0lqSpgVfusy6wPNMaZNkmwM5128C5qa1Dmm0fBSB1gQvyXuBtg82w7zhhtHpWnwDkVFf4BqAgxeMwHmCooEHpXxUDNTSQmyleUeZITueOaddE2XfqKBn3cUygyXZ3Zhqc9yFNvSLbQRslA6nD5GtpxyOPcCfY1Vm9Hby31xelmBG5aINH8AXpzCzzga/3qOtcV0HTlE8Wqr2lrzIzZIMFqrNye2D8aglWDVTXzyPkw9gT1oJay4D8xqQmcTLs2wM/w+jSdZ/2dkX4zoNJdEbqxDL+8HoQL/tFMXkJIue9icupL836Xrz66Bl98Pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolrdvisiondata.com; dmarc=pass action=none
+ header.from=wolrdvisiondata.com; dkim=pass header.d=wolrdvisiondata.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=NETORGFT6437635.onmicrosoft.com;
+ s=selector1-NETORGFT6437635-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KPRwZt6GqYm2jyGU2M5K4xYjiWNUjYFUMf+WjtuM35k=;
+ b=n5UeBdPwz3rhwtDrwrHk59RRKKbkYS8wGO84MP+P2arxeJR2oP80R8QipWFJ0zaKKQZTpsFoDeRDTVBMJ+B+TY/qRsPAN7DejlSjOVVGv82+2EfilEvRqVlX/QxM7v8f3UUaXlAXNWx0nP659LOaJuAhuZ+L65k9dYQhI+hLXfgWnNw6rdkBSLgqHAhEP1ZxBzWWL+fra0aV6/I7WqJOwZYnZZ6NLIIZO7xDhnc88pyp1PWK4tRhPQJSoWtnu65pDnMu9y8sOMzaWA/5vSqPFo3MLyWWp1oGttcj6rQHZQjL/AjeHUkeCEuO762TmgwkS0OqjMj67ZMdzouuyhzu6Q==
+Received: from MAXPR01MB3471.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:6f::22)
+ by MA1PR0101MB1207.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:2d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Mon, 30 Nov
+ 2020 13:20:16 +0000
+Received: from MAXPR01MB3471.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::2898:2472:50ad:c3c0]) by MAXPR01MB3471.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::2898:2472:50ad:c3c0%6]) with mapi id 15.20.3611.025; Mon, 30 Nov 2020
+ 13:20:16 +0000
+From:   brenda taylor <brenda.taylor@wolrdvisiondata.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Visitors List - Gulfood 2021
+Thread-Topic: Visitors List - Gulfood 2021
+Thread-Index: AdbHG4m9HVd6cWwsQUiQ1+KLxV66Xg==
+Importance: high
+X-Priority: 1
+Sensitivity: private
+Date:   Mon, 30 Nov 2020 13:20:16 +0000
+Message-ID: <MAXPR01MB347153AD9D5508688505BA39EEF50@MAXPR01MB3471.INDPRD01.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=wolrdvisiondata.com;
+x-originating-ip: [103.91.180.122]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 318329cd-5e0e-42f1-ce01-08d89532ad6b
+x-ms-traffictypediagnostic: MA1PR0101MB1207:
+x-microsoft-antispam-prvs: <MA1PR0101MB12077517A12F254232A0A93DEEF50@MA1PR0101MB1207.INDPRD01.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fojn8ZCrg/iypLdC62AwC4m68olYHn4QcK2jnn6Nk2uoC7s7pHOFkehDmTjjC7XWViwPQjVpzHokPEOrmzTxV5hc/1apIysIwbcxCqeOg1lhL3PNNJD0FsOD/9bsT5B0/YCDrVRM69gAW1cNmhgblKLe9mUbfSxF24PWBMEAGLecyPeBBCSL3HDcSddvBatyJHn641ELjIjxkbcu9KSpWRSgKB1hVZ21Go76LHBN9EoBaGhW13QoYF3+pg0bPJrploT0vHIEmb68dfeSDNDqyArY2QbKqkeIHC5eZ7Hf/WM/vCcadsZ8CLAA/ljQw+xi
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MAXPR01MB3471.INDPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(39850400004)(136003)(376002)(478600001)(186003)(5660300002)(83380400001)(7696005)(2906002)(26005)(6506007)(71200400001)(8936002)(6916009)(86362001)(55016002)(76116006)(66476007)(52536014)(64756008)(316002)(8676002)(9686003)(33656002)(66556008)(66946007)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: UhW22fwlvepNOb1LTpkIHjO+JmURoSe+iZHptHbObE6uTFaMMp1wIuFfpUbNidkwxUybFBHAJup8s1/57teSkFxMbVSh0d0oKovmweXSj9hP+1fBsOkdODNPOSaqfYlc1oAjYbiPMSA4a+roUODyRmbY1ZaMlKxqMfKnlrTDOP5FX4aI1k3LeBCpCwfsuHG8orlUWW6g/2gDK/io4iAwCr0fZovphbE7eWWd+W5eXUQDGE+zqYEHyJ0/EgFfuSIf4fxYvGEKR4e0W4HFxpf/5Jw9CYCzqaahq/0f8AvaLnUUz2cA3rVD9SrVCUweA6P3a0aRzea7KasdsnPTqc/rqOoK+rXRSczb7DMtUROTFgcVybEMUSIoUR5h3c2cVc1dZX4KJziIl+yvUahCLSvy7kCUN1JWkWDLcuZRtAnfkcA8AwYcUUM42KcXu0Vo3grftNPKC+clHTplzZT/2AX3WxvrSWeRj22YeV3g7VoWzhT9AMql5RqypmIZdiXMG8qy5rTBz5DjxpKZCAeRk4vH3W8HyvBkp//tU+QmQWm57yuzon8Kl1+K5+QzgIlvyxLseXxj91mIEmW0yQFmxZnzXAPOMyMr5z2Ic9qNPUIM4h6RhZt70/+1hDbcqzu4K5EduR3gsUbfeeqTC5gEW2WKcmK74Mrk5dlmD2e+pZxS0IzLDC/hPA7DZqVM4DazmC9mTA42su+axmmpI5f86g+8Gnrxc9z7kpKCp/MSAp6uSlU=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+X-OriginatorOrg: wolrdvisiondata.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MAXPR01MB3471.INDPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 318329cd-5e0e-42f1-ce01-08d89532ad6b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2020 13:20:16.2302
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 446afebd-6727-459a-9f99-49f9f43d6b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gGLgNj69pbTl4xLCScifyj1/qwWXGXoVq168rq4/cVdvgLlHNcOHb8xWcs6OW3Ef0o81pIJ6oxVlxTWJCp1AneswLTl0Hmhe3WiPBj7hzx+9w+/992SXmJjX2vX/eZJF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MA1PR0101MB1207
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-29 12:41:14 [+0100], Mike Galbraith wrote:
-> On Sun, 2020-11-29 at 12:29 +0100, Oleksandr Natalenko wrote:
-> >
-> > Ummm so do compressors explode under non-rt kernel in your tests as
-> > well, or it is just -rt that triggers this?
-> 
-> I only tested a non-rt kernel with z3fold, which worked just fine.
 
-I tried this and it did not not explode yet. Mike, can you please
-confirm?
+Greetings,
 
-diff --git a/mm/z3fold.c b/mm/z3fold.c
-index 18feaa0bc5377..0bf70f624a4bd 100644
---- a/mm/z3fold.c
-+++ b/mm/z3fold.c
-@@ -642,14 +642,17 @@ static inline void add_to_unbuddied(struct z3fold_pool *pool,
- {
- 	if (zhdr->first_chunks == 0 || zhdr->last_chunks == 0 ||
- 			zhdr->middle_chunks == 0) {
--		struct list_head *unbuddied = get_cpu_ptr(pool->unbuddied);
--
-+		struct list_head *unbuddied;
- 		int freechunks = num_free_chunks(zhdr);
-+
-+		migrate_disable();
-+		unbuddied = this_cpu_ptr(pool->unbuddied);
-+
- 		spin_lock(&pool->lock);
- 		list_add(&zhdr->buddy, &unbuddied[freechunks]);
- 		spin_unlock(&pool->lock);
- 		zhdr->cpu = smp_processor_id();
--		put_cpu_ptr(pool->unbuddied);
-+		migrate_enable();
- 	}
- }
- 
-@@ -887,7 +890,8 @@ static inline struct z3fold_header *__z3fold_alloc(struct z3fold_pool *pool,
- 
- lookup:
- 	/* First, try to find an unbuddied z3fold page. */
--	unbuddied = get_cpu_ptr(pool->unbuddied);
-+	migrate_disable();
-+	unbuddied = this_cpu_ptr(pool->unbuddied);
- 	for_each_unbuddied_list(i, chunks) {
- 		struct list_head *l = &unbuddied[i];
- 
-@@ -905,7 +909,7 @@ static inline struct z3fold_header *__z3fold_alloc(struct z3fold_pool *pool,
- 		    !z3fold_page_trylock(zhdr)) {
- 			spin_unlock(&pool->lock);
- 			zhdr = NULL;
--			put_cpu_ptr(pool->unbuddied);
-+			migrate_enable();
- 			if (can_sleep)
- 				cond_resched();
- 			goto lookup;
-@@ -919,7 +923,7 @@ static inline struct z3fold_header *__z3fold_alloc(struct z3fold_pool *pool,
- 		    test_bit(PAGE_CLAIMED, &page->private)) {
- 			z3fold_page_unlock(zhdr);
- 			zhdr = NULL;
--			put_cpu_ptr(pool->unbuddied);
-+			migrate_enable();
- 			if (can_sleep)
- 				cond_resched();
- 			goto lookup;
-@@ -934,7 +938,7 @@ static inline struct z3fold_header *__z3fold_alloc(struct z3fold_pool *pool,
- 		kref_get(&zhdr->refcount);
- 		break;
- 	}
--	put_cpu_ptr(pool->unbuddied);
-+	migrate_enable();
- 
- 	if (!zhdr) {
- 		int cpu;
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 78a20f7b00f2c..b24f761b9241c 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -394,7 +394,9 @@ struct zswap_comp {
- 	u8 *dstmem;
- };
- 
--static DEFINE_PER_CPU(struct zswap_comp, zswap_comp);
-+static DEFINE_PER_CPU(struct zswap_comp, zswap_comp) = {
-+	.lock = INIT_LOCAL_LOCK(lock),
-+};
- 
- static int zswap_dstmem_prepare(unsigned int cpu)
- {
+Hope this email finds you well.
 
-> 	-Mike
+I do see you were exhibiting at Gulfood 2021 (International Trade Show For =
+Food And Beverage, Grocery, Bakery, Cafe, Supermarket and Restaurant) and w=
+as wondering if you would be Interested in acquire Attendee Companies List =
+for your business needs.
+We have the most updated records of past/current Attendee Companies who are=
+ participating in these events.
 
-Sebastian
+Information Provided: Company name, URL, Contact name, Job title, number, f=
+ax number, physical address, Company size, Email address etc.
+
+Date    :  21 - 25 Feb 2021
+Venue :  Dubai, UAE
+
+Our list is the best source for awareness and can be used for Booth Invites=
+ -Industry initiatives - Product launch - Brand awareness - increase in rev=
+enue etc.
+
+We also provide customized lists as per your target audience.=20
+
+Kindly confirm and let me know if I can share Proposal for your approval.
+
+Many thanks,
+Brenda Taylor
+B2B investigation & Tradeshow Specialist
+=20
+If you're not interested kindly reply with the subject line "Opt-Out.
+
+
