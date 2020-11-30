@@ -2,117 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8DE2C8036
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781BD2C803D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgK3Ios (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:44:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgK3Ior (ORCPT
+        id S1727238AbgK3Ipa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:45:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27307 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726298AbgK3Ipa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:44:47 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5C6C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:44:07 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id z3so7594639qtw.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:44:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o0mUEi/28IkQVF9GAuCUSVe7UjITAIqbPHEi3fCie7U=;
-        b=OqDFyGzJbim4+/PMzWDu/FCXoZpTcdIsTWUJ2ioXOCp+8p/UsYtxU/hTLg2zchqzJK
-         x/vrCIR8CcTO6G/D5kLqPxriVOlAi2M874fZwX9Qp001mcm4qjLKtQs0VmGlsDlpWo3Y
-         g3s08bKIQRmAZ5mpUnx55Jgox1mZQ/fePup2/o/iDwx/nXF0QgYfhwcWUrzrDaeQIL73
-         76kRJRUol7Bc3CQ4a2srOQ2d+6vxnV+L17NebmM8Xw99eTDeg0EoNqgLpfEptu9OJaPB
-         whgvCTjQBt1bWNzFXPB/EIaxhjS6vJrFS5mLSEXbV+4d/54oa4+SEo1Tl1Ki8HXR3sAl
-         p2eg==
+        Mon, 30 Nov 2020 03:45:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606725843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ey1C0d9PZ+jC1SeRokoRwtQYfI7PDl+5m30mISh+nx8=;
+        b=N5ElSh6l3ue4g9AV/+pJ2f21bcxjeWXkMvMb7HleWN/CpBVHo+iO+LzcruagBRkIpQuMH/
+        aI3H4YwulFfYiNdCGcZ/f30lNfHyRQNm85SKWUh35z0UPXWplGWwwJVLQHsGR3n9BY9qKE
+        DAEBuuSF4QbOsuVb//CSfxtCGqZtBoY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-499-0aEoM6iuO5yMiWc7A36dFQ-1; Mon, 30 Nov 2020 03:44:01 -0500
+X-MC-Unique: 0aEoM6iuO5yMiWc7A36dFQ-1
+Received: by mail-ej1-f70.google.com with SMTP id e7so5426019eja.15
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:44:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o0mUEi/28IkQVF9GAuCUSVe7UjITAIqbPHEi3fCie7U=;
-        b=Pf8m+WhNXwnttG20c1tzwBaqZk99bqcdxTyWTYpIBIz6KfJ3n+BC/sia+0RWOqJTZb
-         IrKAFt72TTCTMtlpc06TUyK6xIQ0iv4I8VIHcypWOmxS9W8IXuLhOOSuFcHxMqq8+YHR
-         FPDM5yKHMFvv0qLJppftbtZLVGPxDYE/3G8NTB9asdP7IJWG9zVeXXyqirjOnjn0jufl
-         qSD3AM7UKLjAx6jAUFNP1CdyNPYBu6Kh9E4uXez79Wt7JMU/M4hzVdiF8tcULbJ71lZG
-         j3ipLiF4LGOzRWHYpFSuoDbaIJY17oBRucZCG84dOE8xhPTvxuECFvqrsztmfyO/IXZB
-         umew==
-X-Gm-Message-State: AOAM530c/xg8aK+sBVSq5kPuDYpgACEUdKk0ocSOaUtNLe+AjuA7NKO1
-        MiGiwantrb5xgrbsxJOSGj4V0eimOW57N+LnOUAEtA==
-X-Google-Smtp-Source: ABdhPJxr3v+5lkkSQJiv8LJioPufqGocTYhVIVmZq0VchgmlkTN7puCihgK/5VFKT7lvUrDR+o/gFktdcbSfAc4eTnA=
-X-Received: by 2002:aed:2744:: with SMTP id n62mr20847079qtd.67.1606725846523;
- Mon, 30 Nov 2020 00:44:06 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ey1C0d9PZ+jC1SeRokoRwtQYfI7PDl+5m30mISh+nx8=;
+        b=HQ3PilWVxEHamLNyLnLF5QuS4c0ED2NZRZay1uZ3PVarxQmGQYVSqdEogmaVSH2rbx
+         j+x8ldhb1n96ooFHOOQh1Jt5AaWLbNtuyMLZfHUYo07jbrJ73hXec5ny5cf/Bz+A8qyx
+         zVXoPUs5qoagsbZUKoxIoe06e3LQZ9fOaOcICQXkWN6vjx7WOkFJz+UTeAe8TpAd7NaT
+         9dvZ0MXBG5Hs4aGuh6PgB7qbQoo0qLbXTu7XtNRfMa4ttOSXCQ+jpuM/eESJzsUZChx4
+         kNPaCNJ1IWVUO9uTxHkN1zdPWyrx7p6FXV5IW7PT4uDCA18NYp5TcAwcOt0gBnRelXgC
+         EnbA==
+X-Gm-Message-State: AOAM532587VbiBKboyhVYU4JOjvPqajnVoZ/gO3aDFrvfS195BebZMcw
+        mnfstzvwLxM+dmtvbF8OzlxvDuF570Ghn/B3E4X6aLKcOvHFV4c5eAbQTRJ+WbE9QckuEJIhORt
+        UTadtfp2YTt9mIRhajTOjGtO4
+X-Received: by 2002:a17:906:aac1:: with SMTP id kt1mr567768ejb.329.1606725840170;
+        Mon, 30 Nov 2020 00:44:00 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxs3ln5Efn41CjmIOtYUTR38V2LHcxx3XUgPY7qefkj2/Jh8zpB5MhDtTGr1Nse7RBqGNLFPA==
+X-Received: by 2002:a17:906:aac1:: with SMTP id kt1mr567760ejb.329.1606725840030;
+        Mon, 30 Nov 2020 00:44:00 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id d10sm7897462ejc.39.2020.11.30.00.43.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 00:43:59 -0800 (PST)
+Subject: Re: 5.10 regression caused by: "uas: fix sdev->host->dma_dev": many
+ XHCI swiotlb buffer is full / DMAR: Device bounce map failed errors on
+ thunderbolt connected XHCI controller
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Tom Yan <tom.ty89@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+References: <b046dd04-ac4f-3c69-0602-af810fb1b365@redhat.com>
+ <be031d15-201f-0e5c-8b0f-be030077141f@redhat.com>
+ <20201124102715.GA16983@lst.de>
+ <fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com>
+ <8a52e868-0ca1-55b7-5ad2-ddb0cbb5e45d@redhat.com>
+ <20201127161900.GA10986@lst.de>
+ <fded04e2-f2e9-de92-ab1f-5aa088904e90@redhat.com>
+ <20201128171500.GA3550@lst.de>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a84974a8-514b-690b-480b-c82c0617fec0@redhat.com>
+Date:   Mon, 30 Nov 2020 09:43:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <00000000000019cd7c05b515da9a@google.com> <7e108ab1-0b07-50dd-5862-a5121eab6094@infradead.org>
-In-Reply-To: <7e108ab1-0b07-50dd-5862-a5121eab6094@infradead.org>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 30 Nov 2020 09:43:55 +0100
-Message-ID: <CACT4Y+YkH042G=+ErWY+dRLs5H0i1ao1xnSeHvGx8x=dn5KH1A@mail.gmail.com>
-Subject: Re: WARNING: filesystem loop5 was created with 512 inodes, the real
- maximum is 511, mounting anyway
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     syzbot <syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201128171500.GA3550@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 5:29 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 11/27/20 4:32 AM, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    418baf2c Linux 5.10-rc5
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=171555b9500000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=b81aff78c272da44
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3fd34060f26e766536ff
-> > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com
-> >
-> > BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
-> > BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
-> > BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
-> > BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
-> > BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
-> > BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
->
-> Hi,
-> Can you provide the BFS image file that is being mounted?
-> (./file0 I think.)
->
-> --
-> ~Randy
+Hi,
 
+On 11/28/20 6:15 PM, Christoph Hellwig wrote:
+> Can you give this one-liner a spin?
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index c6622011d4938c..e889111b55c71d 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -4007,6 +4007,7 @@ static const struct dma_map_ops bounce_dma_ops = {
+>  	.alloc_pages		= dma_common_alloc_pages,
+>  	.free_pages		= dma_common_free_pages,
+>  	.dma_supported		= dma_direct_supported,
+> +	.max_mapping_size	= swiotlb_max_mapping_size,
+>  };
+>  
+>  static inline int iommu_domain_cache_init(void)
+> 
 
-Hi Randy,
+I'm afraid that this does not help.
 
-I see this bug was reported with a reproducer:
-https://syzkaller.appspot.com/bug?id=a32ebd5db2f7c957b82cf54b97bdecf367bf0421
-I assume it's a dup of this one.
+Also I still find it somewhat wrong that the use of scsi_add_host_with_dma()
+in uas.c, which then passed the XHCI controller as dma-dev is causing changes
+to the DMA settings of the XHCI controller, impacting *other* USB devices
+and these changes also are permanent, they stay around even after unbinding
+the uas driver.
 
-If you need the image itself, you can dump it to a file in the C
-reproducer inside of syz_mount_image before mount call.
+This just feels wrong on many levels. If some changes to the XHCI controllers
+DMA settings are necessary for better uas performance then these changes
+really should be made inside the XHCI driver, so that they always apply and
+not have this weirdness going on where binding one USB driver permanently
+changes the behavior of the entire USB bus (until rebooted).
 
-Thanks
+Querying the DMA settings of the XHCI controller in the uas driver is fine,
+but changing them seems like a big nono to me.
+
+Regards,
+
+Hans
+
