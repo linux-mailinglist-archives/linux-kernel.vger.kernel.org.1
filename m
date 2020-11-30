@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA242C7EA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D272C7EB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgK3H3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:29:24 -0500
-Received: from ozlabs.org ([203.11.71.1]:50095 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725920AbgK3H3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:29:24 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ckxfx3VDYz9sVD;
-        Mon, 30 Nov 2020 18:28:41 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606721322;
-        bh=xH6zmF9WrynSxw8iWL7nHWWK9P7ueOEeVHeyhYESor0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YIksfZ+RvcytlA4xbGp/n6qmSPlnBdQlHb9RDn4b9SmU7gX0DWQLXREZUg+AltTMb
-         Uvx/g0VBJc0GfBdjar98V7qyf1M8JVdVil2LjLkrV4PhPNvrO51BB3HRYUgLA59ouE
-         BqWDH2OdPwtqrRGbEcc5KsGs3IPKMMT1MG85lomgH6CXV4i+RO+ixY3Eokwec9gGyP
-         bHGimcbv02zjIeUsH5ywv/l1AkHIugjdkUixQz4d9P9HUPig1lQQxFUebV/bc4CISI
-         NIXDw4mCtOrOSHNTqxL6sOM2avUDRZ+ke9J9TGut3tg8zFmDzzOQX7IsXfQZfCqgAa
-         VLlehUCloXjJg==
-Date:   Mon, 30 Nov 2020 18:28:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: linux-next: manual merge of the akpm tree with the arm64 tree
-Message-ID: <20201130182840.02a96a67@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qH6fjUvUTJbDbzafN9ywPF+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726998AbgK3HbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 02:31:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgK3HbN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 02:31:13 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19754C0613CF;
+        Sun, 29 Nov 2020 23:30:33 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id iq13so798275pjb.3;
+        Sun, 29 Nov 2020 23:30:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=EsNXvlnoUKD2pZSzgAC0fLx5VDJnXOdVhqeYF4VM7gs=;
+        b=JOEzDc6okElYcSppns7/WVjH1la6U1Bw5p7qhSK0IJqmEaHqwuh9tFG2B5MMVggN0H
+         AmTQrBI2OitGu8CMagBVTdT2EPudPSyFSGN+VrG0gJUCJnUk9vmEIDwEAyMuFFCzGbAa
+         hhC/Y0udAf5zmNB+72YR2M6Ul+0mq9nvGjd/kRL0aV8fMaLGkH6j1s+lEKYnASjexezc
+         mP8PAoia/TsrQ6EU45f/rLpdoQehPJCTbfIXrqH1qG49XXlpKUa55ya/my27DwkVwcSi
+         0hRhl8ZOkziZrkaYb9DGb/2/oGVvWD9I7tgvY9cY7ucO3d03TOhOpqc0A2zdPdZlcfCr
+         iweg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=EsNXvlnoUKD2pZSzgAC0fLx5VDJnXOdVhqeYF4VM7gs=;
+        b=oROou3c4jPd3r80MAZrj71YA+3bj1Ea4SC2Xp7jeZK6mwwt5iFtRCbeAICjk/3lwSu
+         iELH9pDcyg8dYeiNdvvlSGfOtrU6lJHV7nhadJu/wGx9ehVZiEBfAafsVh/Xwug/0g5L
+         o7JxlPpJuabhB+DYtnp8pRWKqD0rbv5JkiBqjQ7Ozx9ThN+zZ5NIYihUIKNr0FTFbqgP
+         kq2VdQrFoxuLDkKALMVo45R6tq3/LlNc6JqkMQQTdqm4VovpouhrRdER6XQJaRONtG8N
+         epH249n66WOj5uS7u9RzklnyzQp0/27m0yCcg4bEectYql2EgQ8TCQ8d3IvM4BUJNDfc
+         8k0Q==
+X-Gm-Message-State: AOAM530kzZIq0gzMwA+VO9F6aJfYesR1fofOtHVxx404rKL2LpJXXOnC
+        ft4MKIFfNT/+wIh8/TqRCH4=
+X-Google-Smtp-Source: ABdhPJzmeWSfnybsAR3n/WvwFdQBAK5VqwyTCok3n0nJ50h0iqqlR5YIDKGqPhzhritbLkwzXAAP4Q==
+X-Received: by 2002:a17:90a:7f93:: with SMTP id m19mr45747pjl.61.1606721432729;
+        Sun, 29 Nov 2020 23:30:32 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id l76sm16006710pfd.82.2020.11.29.23.30.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 29 Nov 2020 23:30:32 -0800 (PST)
+From:   chenlei0x@gmail.com
+X-Google-Original-From: lennychen@tencent.com
+To:     hch@infradead.org, darrick.wong@oracle.com
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lei Chen <lennychen@tencent.com>
+Subject: [PATCH] fs: iomap: Replace bio_add_page with __bio_add_page in iomap_add_to_ioend
+Date:   Mon, 30 Nov 2020 15:28:51 +0800
+Message-Id: <1606721331-4211-1-git-send-email-lennychen@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qH6fjUvUTJbDbzafN9ywPF+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Lei Chen <lennychen@tencent.com>
 
-Hi all,
+iomap_add_to_ioend append page on wpc->ioend->io_bio. If io_bio is full,
+iomap_chain_bio will allocate a new bio. So when bio_add_page is called,
+pages is guaranteed to be appended into wpc->ioend->io_bio. So we do not
+need to check if page can be merged. Thus it's a faster way to directly
+call __bio_add_page.
 
-Today's linux-next merge of the akpm tree got a conflict in:
+Signed-off-by: Lei Chen <lennychen@tencent.com>
+---
+ fs/iomap/buffered-io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  arch/arm64/kernel/mte.c
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 10cc797..7a0631a 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -1310,7 +1310,7 @@ static void iomap_writepage_end_bio(struct bio *bio)
+ 			wpc->ioend->io_bio =
+ 				iomap_chain_bio(wpc->ioend->io_bio);
+ 		}
+-		bio_add_page(wpc->ioend->io_bio, page, len, poff);
++		__bio_add_page(wpc->ioend->io_bio, page, len, poff);
+ 	}
+ 
+ 	wpc->ioend->io_size += len;
+-- 
+1.8.3.1
 
-between commit:
-
-  e710c29e0177 ("arm64: mte: make the per-task SCTLR_EL1 field usable elsew=
-here")
-
-from the arm64 tree and commit:
-
-  44a7127eb3a4 ("arm64: mte: add in-kernel MTE helpers")
-
-from the akpm tree.
-
-I fixed it up (the former just removed some of the context for what the
-latter added) and can carry the fix as necessary. This is now fixed as
-far as linux-next is concerned, but any non trivial conflicts should be
-mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/qH6fjUvUTJbDbzafN9ywPF+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/EnygACgkQAVBC80lX
-0GzwVwf+MxQSiu/KDppEYRVrwL21mxBd+jx48O4YRhrXX5JeVNgdUW+5qZ2lNl9f
-tO2UIQ7IT/sBiG8wj70Km/iZa+J23oi6f4fW7ytfqqoSHUKAIUd9yo82sVHD54rv
-CrmGk1/RVaM1JlE8pDLidHk8NO0pDYmjTwRUJzsSjXVBJYZcvV4uuE7I/CRQ0K/y
-d5jIdc26GYJi95aMaSwO/b294oP9tVBTlc/IV5WluWs4o3jg1pu8xMedMjbiTeBh
-CGYgR8FbWYRZoz2E8qaM2M3Qg0+h+9CHDndz1+BO5ZAz0uW8P/90mZI6gv1pWLRz
-XlXGeCjHeRCWF6dizr+w5/k0pnAMYg==
-=b5V/
------END PGP SIGNATURE-----
-
---Sig_/qH6fjUvUTJbDbzafN9ywPF+--
