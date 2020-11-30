@@ -2,346 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC652C7F16
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948642C7F20
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727233AbgK3HtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgK3HtN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:49:13 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC96C0613CF;
-        Sun, 29 Nov 2020 23:48:33 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w187so9876611pfd.5;
-        Sun, 29 Nov 2020 23:48:33 -0800 (PST)
+        id S1727414AbgK3Ht2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 02:49:28 -0500
+Received: from mail-dm6nam12on2052.outbound.protection.outlook.com ([40.107.243.52]:23776
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726671AbgK3Ht0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 02:49:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LQi0t2cA3Sn6lTgSfbV6JEUm+caV034YVPWT9dY5D1p7hGG2FBaRmTYhF7ura5N9WFaT3UhYOkC9ulREJqIi+RSt37aheU7SB8WxrPKfIU2zaVgXLSloE0ATICM2d4FL6ayMzF/xooXDCk1CVz6Oo92S2mHgxbcch2yUB4d1MALUdE/RJU9ennfnszVfPkDglCkMnsHMjUkrtMamn6aWabpy5i0QIgYUXdWTuRGLVzU8uqtzCRArcZfPD1hrzq0JlC9KZJbS/DTlGKyrQ0BgD4Sv/A4xg61aJfCCSz7jJKMM1QD6iEW3ElWWCWEs7C7d6+AO1UYK2kX46bDsoxpWWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xZK2pzjRvi4T7bRyKSpPaWs/p3o+GWQR8in59XQqeb0=;
+ b=kq8uZtqVMCGpqpqglbP5x3jW4CFKWMN+fFKX+U/qp1MMqzInktCDeJieMDuoe7O5/cQ7+xAN/wrYM7ODYqhL3ATs6rMaZN/WRwfCWRDuszDCn8iM/D94491vkMQJaHILKcN95EGz9bv8e83a1pzBQFvvPMnzMgHBPMxFRPGB+28BGHIV0ZwdEyv37DwGjif7c+y/7M/s8bwshfG3viIq6wMe2yJdiKNxI8vMKvvvBDCmmbFqTh33+huQFXqhnB6OIntcICIoT9cjOOJSfPsslJO/HgRAwjHlmeeAS4WXqvA2kirgJ0T14E5xRUcb72hecvQpx1hHI+n3xgNzxvz37A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=zAjHSZn5y902wry3Iep1PIFrktIPXS71UwHnv6V3yTI=;
-        b=FOTAc2NLM9A6Ifh4MjFtESDZoVa6bbTGHJ+gCvRRvdlVpxN7xMo15JEa+OVULEY8GF
-         eGAPzNzsL8wkiia/MlZNblwTZTTMBli3ouw04oaRjZuK6tj/HK68GrtOgmysg1yonJlO
-         d/V3d7wG+cgNZrwjWcoRDesD5+4YgW96hiq7HustcH2nTSzwq7/IJD3zB5n0B4xTPt6A
-         /DU9jmGmqunGMhapo7yWEGtGiyAiXut3sFREezXLlNRbMR3IBID5I68BfAgYJUXyr33y
-         esWC1nq3C17jYr6rLmt1EUJofURUNY6aKa+t87LT+vN6KO3CFWyJ/ehTpri5EHWVtAbb
-         HA/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=zAjHSZn5y902wry3Iep1PIFrktIPXS71UwHnv6V3yTI=;
-        b=CnAx5t6BQ94kaVkytrOO0RKbzet9vL3mIjo/F00/d01qpdyW/IKpTqAndhxZ5cRXgj
-         vGT7vxwChpe71atLpG6s06yV4KKUXTEKrtiK59DbmIT5mk/yiIOorPsfCiGwHVkQUJiu
-         Es30nWCDZ344YQzJUjVa61y0YY8Pg6+EGksYYrMpp26Dr2jBJadbtIUS+5Hng9iaaOYG
-         O1mz/fKh1IvOjLQG2tapalHgF+0WO4vqcm22nQG1ha4VTAQsldWpSh4NGFmdxWuy/r4e
-         lGtLrOHHwdZXd6BfqehBv8aZ5V8EmaklyNuoZ5L2qp9uSVySKxsfCiG2/N4wRlUNUb/H
-         BKJw==
-X-Gm-Message-State: AOAM531uRlQRzich45/ejtOLTGzx6np4OSykY2zRNCOSOQUjqibP1vLc
-        786LRi321Qa4JEqq/y/kaNSieSxMgrinDQ==
-X-Google-Smtp-Source: ABdhPJyXSNKpPVDV+6mARxn1QiRP2ZQlUREol3iTnXbRV9QwHSpd3oXC/66Rw55LlAPPaRvtgwc1jg==
-X-Received: by 2002:a63:b516:: with SMTP id y22mr16636909pge.140.1606722512822;
-        Sun, 29 Nov 2020 23:48:32 -0800 (PST)
-Received: from [10.10.15.233] (220-135-135-179.HINET-IP.hinet.net. [220.135.135.179])
-        by smtp.gmail.com with ESMTPSA id s21sm14704699pgk.52.2020.11.29.23.48.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Nov 2020 23:48:32 -0800 (PST)
-Subject: Re: [PATCH v5] hwmon: Add driver for STMicroelectronics PM6764
- Voltage Regulator
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        alan@redhat.com
-References: <f8766ea1-b4ee-f298-a5a4-dc83f9a54617@gmail.com>
- <20201127161051.GA9881@roeck-us.net>
-From:   Charles <hsu.yungteng@gmail.com>
-Message-ID: <5c78a15e-4c4a-992c-ff5b-7bb709057871@gmail.com>
-Date:   Mon, 30 Nov 2020 15:46:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xZK2pzjRvi4T7bRyKSpPaWs/p3o+GWQR8in59XQqeb0=;
+ b=ORW+z8K/FXcstpmwAKGB9hn4hOVr0J0n1QYr+THH5ynFvhq1+sm7RhmlXQdvfG0H/+smU3rgX9GPBciizsbbNLVfC0mQ6jc/RuF7twrnnipCVDQ04RkSIJ4moKlr5DKyrseJrUmrwM1hXJzO1pKsbDX0Z7bQQ/N/SU6DSAjIZq8=
+Received: from SA9PR10CA0023.namprd10.prod.outlook.com (2603:10b6:806:a7::28)
+ by CY4PR02MB3270.namprd02.prod.outlook.com (2603:10b6:910:78::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Mon, 30 Nov
+ 2020 07:48:33 +0000
+Received: from SN1NAM02FT057.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:a7:cafe::d7) by SA9PR10CA0023.outlook.office365.com
+ (2603:10b6:806:a7::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25 via Frontend
+ Transport; Mon, 30 Nov 2020 07:48:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT057.mail.protection.outlook.com (10.152.73.105) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3611.27 via Frontend Transport; Mon, 30 Nov 2020 07:48:31 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Sun, 29 Nov 2020 23:48:30 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Sun, 29 Nov 2020 23:48:30 -0800
+Envelope-to: michal.simek@xilinx.com,
+ derek.kiernan@xilinx.com,
+ dragan.cvetic@xilinx.com,
+ rajan.vaja@xilinx.com,
+ tejas.patel@xilinx.com,
+ manish.narani@xilinx.com,
+ ravi.patel@xilinx.com,
+ wendy.liang@xilinx.com,
+ robh+dt@kernel.org,
+ arnd@arndb.de,
+ gregkh@linuxfoundation.org,
+ sumit.semwal@linaro.org,
+ christian.koenig@amd.com,
+ devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+Received: from [172.19.2.167] (port=48528 helo=xsjjliang50.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <wendy.liang@xilinx.com>)
+        id 1kjdvC-0006Pm-PN; Sun, 29 Nov 2020 23:48:30 -0800
+From:   Wendy Liang <wendy.liang@xilinx.com>
+To:     <robh+dt@kernel.org>, <michal.simek@xilinx.com>, <arnd@arndb.de>,
+        <gregkh@linuxfoundation.org>, <sumit.semwal@linaro.org>,
+        <christian.koenig@amd.com>, <derek.kiernan@xilinx.com>,
+        <dragan.cvetic@xilinx.com>, <rajan.vaja@xilinx.com>,
+        <tejas.patel@xilinx.com>, <manish.narani@xilinx.com>,
+        <ravi.patel@xilinx.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        Wendy Liang <wendy.liang@xilinx.com>
+Subject: [PATCH v3 0/9] Xilinx AI engine kernel driver
+Date:   Sun, 29 Nov 2020 23:48:16 -0800
+Message-ID: <1606722505-16194-1-git-send-email-wendy.liang@xilinx.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20201127161051.GA9881@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8fbdbc71-c7b9-41a8-a8e1-08d895045559
+X-MS-TrafficTypeDiagnostic: CY4PR02MB3270:
+X-Microsoft-Antispam-PRVS: <CY4PR02MB327096F9DA961D8506073E74B0F50@CY4PR02MB3270.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:348;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YKByB0YPIy92Mt++5bSfrg6Ho+2vFwc3lwFc9jNLcEN0VWPj3Y5Fs9rjy6xjXIfMfyhd6mIg78BsFvPx+LeSuNBXY8wECoNT3c+eShe/2yb0nJ2trUcIKoPzQ4XX0HrbEk2oo2n12cJkgoCpoL2pMFH6V704dkIYLQqCfCWgJESKBkIO8dvOw9yEoKbYTaJ02UDxH9qCBJ+ANQjJ65S1Ut1duo2NiL69XjYsJ5Ax8KX96kc0L8WObmkn1Ha4V528QB6sVGxAkBXZ8Y43zwJSc50pzzHDEwXNz4HeN31iXj1zoGj5F+H380DA7kEa1Cvuo9cdRPBZKvSz62TSmXnGlQ72Qd6f3Kr9J+WVNeVWoX8m8IrNrIvSZkuMi1xppYgC4RIBY8VkVNlxY1PqKBXgBL0nhVlm+lCvvJtU9NmhT7BjXI4q07m7QFJ23QUU/euPEIe7lm3hRse7b9370+kSoOhEFiEFC40CPDmi+itK7fFkNWNx2I9r/5IeOVRM6/HOEWK5xEeUsm4AcLQztvVtTQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(39850400004)(136003)(346002)(396003)(46966005)(2616005)(82740400003)(9786002)(7636003)(83380400001)(36906005)(6666004)(4326008)(36756003)(921005)(316002)(107886003)(336012)(54906003)(356005)(5660300002)(8676002)(82310400003)(7696005)(70586007)(7416002)(47076004)(70206006)(186003)(8936002)(26005)(478600001)(426003)(966005)(6636002)(44832011)(2906002)(110136005)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 07:48:31.6462
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8fbdbc71-c7b9-41a8-a8e1-08d895045559
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT057.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR02MB3270
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2020 上午12:10, Guenter Roeck wrote:
-> On Fri, Nov 27, 2020 at 09:59:01AM +0800, Charles wrote:
->> Add the pmbus driver for the STMicroelectronics pm6764 voltage regulator.
->>
->> the output voltage use the MFR_READ_VOUT 0xD4
->> vout value returned is linear11
->>
->> Signed-off-by: Charles Hsu <hsu.yungteng@gmail.com>
-> This patch (again) didn't make it to any of the mailing lists.
-> Please try to find out why this is the case. I usually pick up
-> patches from https://patchwork.kernel.org/project/linux-hwmon/list/,
-> and may easily miss a patch if I can't find it there.
->
->> ---
->>
->> v5:
->>   - Add MAINTAINERS
->>   - Add a reference into trivial-devices.yaml
->> v4:
->>   - Add pm6764tr to Documentation/hwmon/index.rst.
->> v3:
->>   - Add Documentation(Documentation/hwmon/pm6764tr.rst).
->>   - Fix include order.
->> v2:
->>   - Fix formatting.
->>   - Remove pmbus_do_remove.
->>   - Change from .probe to .probe_new.
->> v1:
->>   - Initial patchset.
->>
->> ---
->>
->>   .../devicetree/bindings/trivial-devices.yaml  |  2 +
->>   Documentation/hwmon/index.rst                 |  1 +
->>   Documentation/hwmon/pm6764tr.rst              | 33 ++++++++
->>   MAINTAINERS                                   |  7 ++
->>   drivers/hwmon/pmbus/Kconfig                   |  9 +++
->>   drivers/hwmon/pmbus/Makefile                  |  1 +
->>   drivers/hwmon/pmbus/pm6764tr.c                | 76 +++++++++++++++++++
->>   7 files changed, 129 insertions(+)
->>   create mode 100644 Documentation/hwmon/pm6764tr.rst
->>   create mode 100644 drivers/hwmon/pmbus/pm6764tr.c
->>
->> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
->> index ab623ba930d5..cdd7bdb6abbb 100644
->> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
->> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
->> @@ -348,6 +348,8 @@ properties:
->>             - socionext,synquacer-tpm-mmio
->>               # i2c serial eeprom  (24cxx)
->>             - st,24c256
->> +            # SMBus/I2C Voltage Regulator
->> +          - st,pm6764tr
->>               # Ambient Light Sensor with SMBUS/Two Wire Serial Interface
->>             - taos,tsl2550
->>               # 8-Channels, 12-bit ADC
-> This, like all devicetre changes, needs to be a separate patch.
-> Also, please make sure to copy dt maintainers and the dt mailing list
-> when you send that patch.
+AI engine is the acceleration engine provided by Xilinx. These engines
+provide high compute density for vector-based algorithms, and flexible
+custom compute and data movement. It has core tiles for compute and
+shim tiles to interface the FPGA fabric.
+
+You can check the AI engine architecture document for more hardware details:
+https://www.xilinx.com/support/documentation/architecture-manuals/am009-versal-ai-engine.pdf
+
+This patch series adds a Linux kernel driver to manage the Xilinx AI
+engine array device and AI engine partitions (groups of AI engine tiles
+dedicated to an application).
+
+v3:
+* unlock AIE dev mutex after failed to gain the partition lock in
+  errors handing
+* replace pointer with __u64 and enum with __u32 in ioctl
+
+v2:
+* Fix dtschema check errors
+* Fix test bot warning on interrupt implementation. Removed set but
+  unused  varaible.
+* Fix compilation unused function warning of firmware change in case
+  ZynqMP firmware is not configured
+* There are other warning on ZynqMP firmware reported from testbot
+  which is not introduced by this patch set.
+  "[PATCH] firmware: xlnx-zynqmp: fix compilation warning" is submitted
+  for those fixes.
 
 
-Thank you for your suggestions.
+Izhar Ameer Shaikh (1):
+  firmware: xilinx: Add IOCTL support for AIE ISR Clear
 
-I will send that patch as soon as possible.
+Nishad Saraf (2):
+  misc: xilinx-ai-engine: Add support to request device management
+    services
+  misc: xilinx-ai-engine: Add support for servicing error interrupts
 
+Wendy Liang (6):
+  dt-binding: soc: xilinx: ai-engine: Add AI engine binding
+  misc: Add Xilinx AI engine device driver
+  misc: xilinx-ai-engine: Implement AI engine cleanup sequence
+  misc: xilinx-ai-engine: expose AI engine tile memories to userspace
+  misc: xilinx-ai-engine: add setting shim dma bd operation
+  misc: xilinx-ai-engine: add request and release tiles
 
->> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
->> index b797db738225..1bbd05e41de4 100644
->> --- a/Documentation/hwmon/index.rst
->> +++ b/Documentation/hwmon/index.rst
->> @@ -144,6 +144,7 @@ Hardware Monitoring Kernel Drivers
->>      pc87360
->>      pc87427
->>      pcf8591
->> +   pm6764tr
->>      pmbus
->>      powr1220
->>      pxe1610
->> diff --git a/Documentation/hwmon/pm6764tr.rst b/Documentation/hwmon/pm6764tr.rst
->> new file mode 100644
->> index 000000000000..5e8092e39297
->> --- /dev/null
->> +++ b/Documentation/hwmon/pm6764tr.rst
->> @@ -0,0 +1,33 @@
->> +.. SPDX-License-Identifier: GPL-2.0-only
->> +
->> +Kernel driver pm6764tr
->> +======================
->> +
->> +Supported chips:
->> +
->> +  * ST PM6764TR
->> +
->> +    Prefix: 'pm6764tr'
->> +
->> +    Addresses scanned: -
->> +
->> +    Datasheet: http://www.st.com/resource/en/data_brief/pm6764.pdf
->> +
->> +Authors:
->> +	<hsu.yungteng@gmail.com>
->> +
->> +Description:
->> +------------
->> +
->> +This driver supports the STMicroelectronics PM6764TR chip. The PM6764TR is a high
->> +performance digital controller designed to power Intel’s VR12.5 processors and memories.
->> +
-> Unrelated side note: I understand this means that you are forced to keep the
-> datasheet under wraps, which in turn means I can not suggest functionality
-> improvements since I don't have access to it. If the chip happens to support
-> per-rail telemetry, you might want to consider adding support for that in a
-> follow-up patch.
->
->> +The device utilizes digital technology to implement all control and power management
->> +functions to provide maximum flexibility and performance. The NVM is embedded to store
->> +custom configurations. The PM6764TR device features up to 4-phase programmable operation.
->> +
->> +The PM6764TR supports power state transitions featuring VFDE, and programmable DPM
->> +maintaining the best efficiency over all loading conditions without compromising transient
->> +response. The device assures fast and independent protectionagainstload overcurrent,
-> "protectionagainstload" -> "protection against load"
->
->> +under/overvoltage and feedback disconnections.
->> +
-> Drop empty line at end.
->
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 94ac10a153c7..a3fea132c4ed 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -13904,6 +13904,13 @@ M:	Logan Gunthorpe <logang@deltatee.com>
->>   S:	Maintained
->>   F:	drivers/dma/plx_dma.c
-> Add empty line.
+ .../bindings/soc/xilinx/xlnx,ai-engine.yaml        | 126 ++++
+ MAINTAINERS                                        |   8 +
+ drivers/firmware/xilinx/zynqmp.c                   |  14 +
+ drivers/misc/Kconfig                               |  12 +
+ drivers/misc/Makefile                              |   1 +
+ drivers/misc/xilinx-ai-engine/Makefile             |  16 +
+ drivers/misc/xilinx-ai-engine/ai-engine-aie.c      | 608 +++++++++++++++++++
+ drivers/misc/xilinx-ai-engine/ai-engine-clock.c    | 245 ++++++++
+ drivers/misc/xilinx-ai-engine/ai-engine-dev.c      | 496 ++++++++++++++++
+ drivers/misc/xilinx-ai-engine/ai-engine-dma.c      | 481 +++++++++++++++
+ drivers/misc/xilinx-ai-engine/ai-engine-internal.h | 519 ++++++++++++++++
+ .../misc/xilinx-ai-engine/ai-engine-interrupt.c    | 659 +++++++++++++++++++++
+ drivers/misc/xilinx-ai-engine/ai-engine-mem.c      | 275 +++++++++
+ drivers/misc/xilinx-ai-engine/ai-engine-part.c     | 635 ++++++++++++++++++++
+ drivers/misc/xilinx-ai-engine/ai-engine-res.c      | 219 +++++++
+ drivers/misc/xilinx-ai-engine/ai-engine-reset.c    | 159 +++++
+ include/linux/firmware/xlnx-zynqmp.h               |   8 +
+ include/uapi/linux/xlnx-ai-engine.h                | 238 ++++++++
+ 18 files changed, 4719 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
+ create mode 100644 drivers/misc/xilinx-ai-engine/Makefile
+ create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-aie.c
+ create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-clock.c
+ create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-dev.c
+ create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-dma.c
+ create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-internal.h
+ create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-interrupt.c
+ create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-mem.c
+ create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-part.c
+ create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-res.c
+ create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-reset.c
+ create mode 100644 include/uapi/linux/xlnx-ai-engine.h
 
-
-There is an empty line here,
-
-Should I add one more empty line?
-
-
->> +PM6764TR DRIVER
->> +M:	Charles Hsu	<hsu.yungteng@gmail.com>
->> +L:	linux-hwmon@vger.kernel.org
->> +S:	Maintained
->> +F:	Documentation/hwmon/pm6764tr.rst
->> +F:	drivers/hwmon/pmbus/pm6764tr.c
->> +
->>   PM-GRAPH UTILITY
->>   M:	"Todd E Brandt" <todd.e.brandt@linux.intel.com>
->>   L:	linux-pm@vger.kernel.org
->> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
->> index a25faf69fce3..9c846facce9f 100644
->> --- a/drivers/hwmon/pmbus/Kconfig
->> +++ b/drivers/hwmon/pmbus/Kconfig
->> @@ -220,6 +220,15 @@ config SENSORS_MP2975
->>   	  This driver can also be built as a module. If so, the module will
->>   	  be called mp2975.
-> Add empty line.
-
-
-Same as above.
-
-
->> +config SENSORS_PM6764TR
->> +	tristate "ST PM6764TR"
->> +	help
->> +	  If you say yes here you get hardware monitoring support for ST
->> +	  PM6764TR.
->> +
->> +	  This driver can also be built as a module. If so, the module will
->> +	  be called pm6764tr.
->> +
->>   config SENSORS_PXE1610
->>   	tristate "Infineon PXE1610"
->>   	help
->> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
->> index 4c97ad0bd791..31ebdef5d4a6 100644
->> --- a/drivers/hwmon/pmbus/Makefile
->> +++ b/drivers/hwmon/pmbus/Makefile
->> @@ -25,6 +25,7 @@ obj-$(CONFIG_SENSORS_MAX31785)	+= max31785.o
->>   obj-$(CONFIG_SENSORS_MAX34440)	+= max34440.o
->>   obj-$(CONFIG_SENSORS_MAX8688)	+= max8688.o
->>   obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
->> +obj-$(CONFIG_SENSORS_PM6764TR)	+= pm6764tr.o
->>   obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
->>   obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
->>   obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
->> diff --git a/drivers/hwmon/pmbus/pm6764tr.c b/drivers/hwmon/pmbus/pm6764tr.c
->> new file mode 100644
->> index 000000000000..70747c21c66e
->> --- /dev/null
->> +++ b/drivers/hwmon/pmbus/pm6764tr.c
->> @@ -0,0 +1,76 @@
->> +// SPDX-License-Identifier: GPL-2.0+
->> +/*
->> + * Hardware monitoring driver for STMicroelectronics digital controller PM6764TR
->> + */
->> +
->> +#include <linux/err.h>
->> +#include <linux/i2c.h>
->> +#include <linux/init.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/pmbus.h>
->> +#include "pmbus.h"
->> +
->> +#define PM6764TR_PMBUS_READ_VOUT	0xD4
->> +
->> +static int pm6764tr_read_word_data(struct i2c_client *client, int page, int reg)
->> +{
->> +	int ret;
->> +
->> +	switch (reg) {
->> +	case PMBUS_VIRT_READ_VMON:
->> +		ret = pmbus_read_word_data(client, page, PM6764TR_PMBUS_READ_VOUT);
->> +		break;
->> +	default:
->> +		ret = -ENODATA;
->> +		break;
->> +	}
->> +	return ret;
->> +}
->> +
->> +static struct pmbus_driver_info pm6764tr_info = {
->> +	.pages = 1,
->> +	.format[PSC_VOLTAGE_IN] = linear,
->> +	.format[PSC_VOLTAGE_OUT] = vid,
->> +	.format[PSC_TEMPERATURE] = linear,
->> +	.format[PSC_CURRENT_OUT] = linear,
->> +	.format[PSC_POWER] = linear,
->> +	.func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN |  PMBUS_HAVE_PIN |
->> +	    PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT | PMBUS_HAVE_VMON |
->> +		PMBUS_HAVE_STATUS_IOUT | PMBUS_HAVE_STATUS_VOUT |
->> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
->> +	.read_word_data = pm6764tr_read_word_data,
->> +};
->> +
->> +static int pm6764tr_probe(struct i2c_client *client,
->> +			  const struct i2c_device_id *id)
->> +{
->> +	return pmbus_do_probe(client, id, &pm6764tr_info);
->> +}
->> +
->> +static const struct i2c_device_id pm6764tr_id[] = {
->> +	{"pm6764tr", 0},
->> +	{}
->> +};
->> +MODULE_DEVICE_TABLE(i2c, pm6764tr_id);
->> +
->> +static const struct of_device_id pm6764tr_of_match[] = {
->> +	{.compatible = "st,pm6764tr"},
->> +	{}
->> +};
->> +
->> +/* This is the driver that will be inserted */
->> +static struct i2c_driver pm6764tr_driver = {
->> +	.driver = {
->> +		   .name = "pm6764tr",
->> +		   .of_match_table = of_match_ptr(pm6764tr_of_match),
->> +		   },
->> +	.probe_new = pm6764tr_probe,
->> +	.id_table = pm6764tr_id,
->> +};
->> +
->> +module_i2c_driver(pm6764tr_driver);
->> +
->> +MODULE_AUTHOR("Charles Hsu");
->> +MODULE_DESCRIPTION("PMBus driver for  ST PM6764TR");
->> +MODULE_LICENSE("GPL");
->> -- 
->> 2.25.1
->>
+-- 
+2.7.4
 
