@@ -2,120 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F03C2C8532
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AB52C852C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgK3NcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:32:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49441 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725859AbgK3NcQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:32:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606743049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uFI50pysPtLDcbBO0F/EBWr/g7sPZm/GGocK9h6QMHo=;
-        b=P2mVcIuQo+zzmfE11CFsobSJF5BHStwQH1ISZ/Eff+ZVJVEXoLeaML4IdVF1qiABnbZm5d
-        4uS/ItwKgPalA0oCNZMp5sPnQWZ/hdxECg8kirBBZlPTPNU74h+mYYDt6oBUxz8fKC0l8A
-        fLe5OBwNNSAyA2fUVQtXhJx035fRXRA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-532-lLWWIwohPi6XsRPNL9cSGw-1; Mon, 30 Nov 2020 08:30:48 -0500
-X-MC-Unique: lLWWIwohPi6XsRPNL9cSGw-1
-Received: by mail-ed1-f69.google.com with SMTP id c24so6759114edx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:30:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uFI50pysPtLDcbBO0F/EBWr/g7sPZm/GGocK9h6QMHo=;
-        b=S5dc73Nl8OSFs3TPoCSF9lmRFwGkqAnBgX3IyFwKw989X8L3EdumlFfE/fEnLJlHEB
-         ub286REv5oOW6NiSqofOSNfhrjkoTRnLL6e21oV6uTW7eILLr/vDxwdnKMt0p4TxmSB0
-         saDeHscug4K8q0SR6v14bIfprxXjfz/CYd5Ha9tS6tCSMbdR0MqDmTExndKIb3HYNZZC
-         hVbc7fvN00/rnLTHdGU4ELXv5Az4Yjyi/XmGVbf8q924EPPY16qeME42sLKuW+S7Ho/g
-         hNh5bV/anhORCSZphuoiJKPBTMx+TlDx3nEkwsPThGBOrfhxMw3ENzTxwznzhJmFkM1x
-         EeVw==
-X-Gm-Message-State: AOAM530RUOFrZhSvn9ZPMJCJB8v1sxRGiaW0hkjRoID2i0iZivdNhuM4
-        bbqwkXd9kMmhzfJPS0DwAzCYkt8A6M+PkeczSLawax+D+MnqwvjDbrm42hXA5iKmZIbzU+Lx6hB
-        pCdlXg/Jf+L2cHDkjzCiOxFAH
-X-Received: by 2002:a17:906:b847:: with SMTP id ga7mr21231514ejb.200.1606743044801;
-        Mon, 30 Nov 2020 05:30:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwWfrETdz0fyA5rejX4p0uGY0CZmUOqPJZp556YEBoJVQ1EwdC/eVxo5hjPz4wNn2qj8edhxQ==
-X-Received: by 2002:a17:906:b847:: with SMTP id ga7mr21231226ejb.200.1606743041998;
-        Mon, 30 Nov 2020 05:30:41 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id da9sm433255edb.13.2020.11.30.05.30.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 05:30:41 -0800 (PST)
-Subject: Re: [PATCH -next] x86/platform/uv: Mark some symbols with static
- keyword
-To:     Zou Wei <zou_wei@huawei.com>, justin.ernst@hpe.com,
-        mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-References: <1606734713-43919-1-git-send-email-zou_wei@huawei.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <55abc980-2493-5c29-da80-4bb1446fa37d@redhat.com>
-Date:   Mon, 30 Nov 2020 14:30:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726472AbgK3Nbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:31:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725859AbgK3Nbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:31:44 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60F7D20727;
+        Mon, 30 Nov 2020 13:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606743063;
+        bh=XcnPXOe8sjPcRLzr5vKedm1gJ1QNOZxUftS9chmu0ow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gvkhBxq765He/EQ2Mt0iyTLMmU1CAsdO6nJayKBdBRKySfVh6EKIuw4KGh2Q4kbMb
+         /OVqBWz5hoNuctTrlinjQXbLlRgYXSuaz2/X/KHi/5LZEfgA5RRcICexEVm1yGeHyG
+         mHZUWgJYnWgo4ONKRaM7tWtfhpc9OgPvkczZfPvc=
+Date:   Mon, 30 Nov 2020 14:30:59 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Tom Yan <tom.ty89@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to
+ scsi_add_host()
+Message-ID: <X8T0E2qvF2cgADl+@kroah.com>
+References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
+ <20201128154849.3193-1-tom.ty89@gmail.com>
+ <20201128154849.3193-2-tom.ty89@gmail.com>
+ <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com>
+ <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com>
+ <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1606734713-43919-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-+Cc x86 folks
-
-On 11/30/20 12:11 PM, Zou Wei wrote:
-> Fix the following sparse warnings:
+On Mon, Nov 30, 2020 at 02:23:48PM +0100, Hans de Goede wrote:
+> Hi,
 > 
-> drivers/platform/x86/uv_sysfs.c:22:13: warning: symbol 'uv_pcibus_kset' was not declared. Should it be static?
-> drivers/platform/x86/uv_sysfs.c:23:13: warning: symbol 'uv_hubs_kset' was not declared. Should it be static?
+> On 11/30/20 1:58 PM, Tom Yan wrote:
+> > It's merely a moving of comment moving for/and a no-behavioral-change
+> > adaptation for the reversion.>
 > 
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> IMHO the revert of the troublesome commit and the other/new changes really
+> should be 2 separate commits. But I will let Alan and Greg have the final
+> verdict on this.
 
-Since this is a fix to a series merged through the x86/tip tree, this should be merged
-to the x86/tip tree too (or I can pick it up after 5.11-rc1).
+I would prefer to just revert the commits and not do anything
+different/special here so late in the release cycle.
 
-Here is my ack for merging this through the x86/tip tree:
+So, if Alan agrees, I'll be glad to do them on my end, I just need the
+commit ids for them.
 
-Acked-by: Hans de Goede <hdegoede@redhat.com>
+thanks,
 
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/platform/x86/uv_sysfs.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/uv_sysfs.c b/drivers/platform/x86/uv_sysfs.c
-> index 54c3425..c780a4b 100644
-> --- a/drivers/platform/x86/uv_sysfs.c
-> +++ b/drivers/platform/x86/uv_sysfs.c
-> @@ -19,8 +19,8 @@
->  #define INVALID_CNODE -1
->  
->  struct kobject *sgi_uv_kobj;
-> -struct kset *uv_pcibus_kset;
-> -struct kset *uv_hubs_kset;
-> +static struct kset *uv_pcibus_kset;
-> +static struct kset *uv_hubs_kset;
->  static struct uv_bios_hub_info *hub_buf;
->  static struct uv_bios_port_info **port_buf;
->  static struct uv_hub **uv_hubs;
-> 
-
+greg k-h
