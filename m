@@ -2,125 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344532C81A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB112C81AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbgK3KDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:03:20 -0500
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:59217 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726158AbgK3KDT (ORCPT
+        id S1727320AbgK3KFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:05:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35969 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725965AbgK3KFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:03:19 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id jg0tku31zN7Xgjg0xki5vo; Mon, 30 Nov 2020 11:02:36 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1606730556; bh=HLkBIGFl/i78UMPfgNYy6/oMgvF3eWKw4fQKQ09bjvc=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=buZmtTVwV0mS8o1RFeStGSD1fNJ2tKgs3DmiB0cwR53W81gHLgbwaOE9fC+ErbjTv
-         3n6a0yT18zpG2cQkUWJjkliNUjYX7BWd1OMMLhm2k7na6h46XGKGPsWNiploMldETS
-         tJaI/h809cemT1AUSjJplk0FlYZAmcmWHz3DIIiE893H+fNH3ouAOhc9nirgAXOBkJ
-         HE1//JHJREWOsm2ieNkxlZbRL+2W3UNIWyMiLQTTk3qouM0Z4759o4HhDxzITyR+2Y
-         BjT74pd/gd7ZSkIBZ8LeLEWZ/Zd1Be6hS4eWlnCfAYUH2f/OZHkLokQU/95WQ5GJlr
-         OBUVWS7Zs4y9w==
-Subject: Re: [PATCHv3] media: vb2: always set buffer cache sync hints
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-References: <20201129031545.557586-1-sergey.senozhatsky@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <6cf9bf76-3875-5c89-cebe-a4e44ee1f326@xs4all.nl>
-Date:   Mon, 30 Nov 2020 11:02:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 30 Nov 2020 05:05:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606730663;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2HTRFOjw+TomkdVoKhsPrdh28bt5QNRrLXAeIOSfBdY=;
+        b=GYYUTumLplVNmG4MYvwAsua3cLbAbHSLx8DRz0+XP60paCyU6JcMAxQT0AdeyOnhdytK7L
+        8mHTYZ8A6Wri2M8C01HIxS1UvY4etIxj0UuIsrr4T0zRFv2YsTM62l3gnMv2BBiPstFHPz
+        dWVlZQj7VZTxNPXi9s6GQ0kqA4qQ1oE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-ZeSccZCNPKqUNquGz1m8ow-1; Mon, 30 Nov 2020 05:04:21 -0500
+X-MC-Unique: ZeSccZCNPKqUNquGz1m8ow-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BC7F1009466;
+        Mon, 30 Nov 2020 10:04:20 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5195C5D9D2;
+        Mon, 30 Nov 2020 10:04:19 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <1604673513-29088-1-git-send-email-alex.shi@linux.alibaba.com>
+References: <1604673513-29088-1-git-send-email-alex.shi@linux.alibaba.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] certs/blacklist: fix kernel doc interface issue
 MIME-Version: 1.0
-In-Reply-To: <20201129031545.557586-1-sergey.senozhatsky@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfOiQvc2nbyS6U+M1bgIqf61hGg43WAo6LQRcSNiX1GIRQDhycHx16qF22RVofvymMGpal6e1dhn9OUqnj1zEWUCduyQ/Zfz13dmI24DPP/WqcD63727j
- 78mNxFszxEZAqWUVRHLqrX8WhZqeREbwQiZja7O9HajluVNf92BBUEyzw4j7+8dkJleD2zTPfkER7sAk4U7UDcU0cSt1DXA7lyecfvn+2Hh9Wf97hJvAajTF
- FinpBH6y2zicBJ89BD9CZeO55AN3BXjV/MfADY64rWUIiFe4AenXV7mujynZA100Hpj3Ygc4NULasr0BGLD5eNGfMDqAZbaRfnnMicRsl+q6nUmwye64Zo64
- POJD4qVLI08blPiPaC9RgyHcqklN6hQ1F9bV1hMiZLhSA6GbFrYczAheBSK78cz6qmjrxlST
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3096974.1606730658.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 30 Nov 2020 10:04:18 +0000
+Message-ID: <3096975.1606730658@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2020 04:15, Sergey Senozhatsky wrote:
-> We need to always set ->need_cache_sync_on_prepare and
-> ->need_cache_sync_on_finish when we initialize vb2 buffer.
-> 
-> Currently these flags are set/adjusted only in V4L2's
-> vb2_queue_or_prepare_buf(), which means that for the code
-> paths that don't use V4L2 vb2 will always tell videobuf2
-> core to skip ->prepare() and ->finish() cache syncs/flushes.
-> 
-> This is a quick solution that should do the trick. The
-> proper fix, however, is much more complicated and requires
-> a rather big videobuf2 refactoring - we need to move cache
-> sync/flush decision making out of core videobuf2 to the
-> allocators.
-> 
-> Fixes: f5f5fa73fbfb ("media: videobuf2: handle V4L2 buffer cache flags")
-> Reported-by: Tomasz Figa <tfiga@chromium.org>
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  drivers/media/common/videobuf2/videobuf2-core.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> v3: Improved code comment and dropped queue allow_cache_hints check (Tomasz)
-> v2: Added a comment and set cache sync flags only for specific buffers (Hans)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index 5499013cf82e..3f11fc5b5d9a 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> @@ -414,6 +414,20 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->  		vb->index = q->num_buffers + buffer;
->  		vb->type = q->type;
->  		vb->memory = memory;
-> +		/*
-> +		 * A workaround fix. We need to set these flags here so that
-> +		 * videobuf2 core will call ->prepare()/->finish() cache
-> +		 * sync/flush on vb2 buffers when appropriate. Otherwise, for
-> +		 * backends that don't rely on V4L2 (perhaps dvb) these flags
-> +		 * will always be false and, hence, videobuf2 core will skip
-> +		 * cache sync/flush operations. However, we can avoid explicit
-> +		 * ->prepare() and ->finish() cache sync for DMABUF buffers,
-> +		 * because DMA exporter takes care of it.
-> +		 */
-> +		if (q->memory != VB2_MEMORY_DMABUF) {
-> +			vb->need_cache_sync_on_prepare = 1;
-> +			vb->need_cache_sync_on_finish = 1;
-> +		}
+Alex Shi <alex.shi@linux.alibaba.com> wrote:
 
-Is this a work-around fix? Isn't this just a bug fix? It seems reasonable
-to always set this when allocating buffers for a queue. And for v4l2 these
-values can be changed if supported by the driver (allow_cache_hints is set).
+>  /**
+>   * mark_hash_blacklisted - Add a hash to the system blacklist
+> - * @hash - The hash as a hex string with a type prefix (eg. "tbs:23aa42=
+9783")
+> + * @hash: - The hash as a hex string with a type prefix (eg. "tbs:23aa4=
+29783")
 
-So the comment would be:
+You should remove the dash when making this change.  I'll do that for you.
 
-	/*
-	 * We need to set these flags here so that the videobuf2 core
-	 * will call ->prepare()/->finish() cache sync/flush on vb2
-	 * buffers when appropriate. However, we can avoid explicit
-	 * ->prepare() and ->finish() cache sync for DMABUF buffers,
-	 * because DMA exporter takes care of it.
-	 */
-
-The commit message would need to be modified as well.
-
-Regards,
-
-	Hans
-
->  		for (plane = 0; plane < num_planes; ++plane) {
->  			vb->planes[plane].length = plane_sizes[plane];
->  			vb->planes[plane].min_length = plane_sizes[plane];
-> 
+David
 
