@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258F32C81D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D802C81E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728313AbgK3KKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:10:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:51594 "EHLO foss.arm.com"
+        id S1727768AbgK3KMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:12:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727714AbgK3KKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:10:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A044930E;
-        Mon, 30 Nov 2020 02:09:50 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB0003F23F;
-        Mon, 30 Nov 2020 02:09:47 -0800 (PST)
-References: <20201122201904.30940-1-valentin.schneider@arm.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
-Cc:     peterz@infradead.org, rostedt@goodmis.org, mhiramat@kernel.org,
-        bristot@redhat.com, jbaron@akamai.com,
-        torvalds@linux-foundation.org, tglx@linutronix.de,
-        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
-        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
-        pbonzini@redhat.com, mathieu.desnoyers@efficios.com,
-        linux@rasmusvillemoes.dk,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Alex Shi <alex.shi@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Vincenzo Frascino <Vincenzo.Frascino@arm.com>
-Subject: Re: [PATCH] notifier: Make atomic_notifiers use raw_spinlock
-In-reply-to: <20201122201904.30940-1-valentin.schneider@arm.com>
-Date:   Mon, 30 Nov 2020 10:09:41 +0000
-Message-ID: <jhj4kl7upei.mognet@arm.com>
+        id S1725965AbgK3KMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 05:12:45 -0500
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4930C2084C
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606731124;
+        bh=OUoOtW4lBenGi23Wz7t8BDhA9SuUIWePJByVutkXN2M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=yB06povjZQQt7022LVGtINtLDKdT7KyFGXk3ka8wvFUcrYh8xnQyoTy/Sf82vAuK4
+         JLCk6shAh+aJVelfnOvKmA9O4FqTsGhBkKPAJVCPJoRWk4Pg+kp8xOVKN9pTNEtbfT
+         y9TsehasTDOotUaaj9FIiCmocC4fnyTM5m2BSGmg=
+Received: by mail-oi1-f182.google.com with SMTP id c80so13604575oib.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:12:04 -0800 (PST)
+X-Gm-Message-State: AOAM531k/3PEf2fdVh7yxXrSWzqua+LsGUxklbRf+y94d1MqlFN0xkuH
+        2/jWWfXc2twSoeLjUYepEHtJtJLsR5teRovLnJ4=
+X-Google-Smtp-Source: ABdhPJyeCz2B+eaeR1po/79yPrzNZYkGlD6jbwJa0EhpzVynm1nd+4smoBxo1z+I6bxdb6BwG+a2jQ1c+GlrVzGE+FY=
+X-Received: by 2002:aca:c657:: with SMTP id w84mr13797116oif.47.1606731123515;
+ Mon, 30 Nov 2020 02:12:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201123073634.6854-1-swpenim@gmail.com>
+In-Reply-To: <20201123073634.6854-1-swpenim@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 30 Nov 2020 11:11:52 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGsQ9K57SvZ74pmD+_=338sGXjc_t+hCXMh-9BPanXnhA@mail.gmail.com>
+Message-ID: <CAMj1kXGsQ9K57SvZ74pmD+_=338sGXjc_t+hCXMh-9BPanXnhA@mail.gmail.com>
+Subject: Re: [RESEND,PATCH] ARM: fix __div64_32() error when compiling with clang
+To:     Antony Yu <swpenim@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 22/11/20 20:19, Valentin Schneider wrote:
-> Booting a recent PREEMPT_RT kernel (v5.10-rc3-rt7-rebase) on my arm64 Juno
-> leads to the idle task blocking on an RT sleeping spinlock down some
-> notifier path:
+On Mon, 23 Nov 2020 at 08:39, Antony Yu <swpenim@gmail.com> wrote:
 >
->   [    1.809101] BUG: scheduling while atomic: swapper/5/0/0x00000002
->   [    1.809116] Modules linked in:
->   [    1.809123] Preemption disabled at:
->   [    1.809125] secondary_start_kernel (arch/arm64/kernel/smp.c:227)
->   [    1.809146] CPU: 5 PID: 0 Comm: swapper/5 Tainted: G        W         5.10.0-rc3-rt7 #168
->   [    1.809153] Hardware name: ARM Juno development board (r0) (DT)
->   [    1.809158] Call trace:
->   [    1.809160] dump_backtrace (arch/arm64/kernel/stacktrace.c:100 (discriminator 1))
->   [    1.809170] show_stack (arch/arm64/kernel/stacktrace.c:198)
->   [    1.809178] dump_stack (lib/dump_stack.c:122)
->   [    1.809188] __schedule_bug (kernel/sched/core.c:4886)
->   [    1.809197] __schedule (./arch/arm64/include/asm/preempt.h:18 kernel/sched/core.c:4913 kernel/sched/core.c:5040)
->   [    1.809204] preempt_schedule_lock (kernel/sched/core.c:5365 (discriminator 1))
->   [    1.809210] rt_spin_lock_slowlock_locked (kernel/locking/rtmutex.c:1072)
->   [    1.809217] rt_spin_lock_slowlock (kernel/locking/rtmutex.c:1110)
->   [    1.809224] rt_spin_lock (./include/linux/rcupdate.h:647 kernel/locking/rtmutex.c:1139)
->   [    1.809231] atomic_notifier_call_chain_robust (kernel/notifier.c:71 kernel/notifier.c:118 kernel/notifier.c:186)
->   [    1.809240] cpu_pm_enter (kernel/cpu_pm.c:39 kernel/cpu_pm.c:93)
->   [    1.809249] psci_enter_idle_state (drivers/cpuidle/cpuidle-psci.c:52 drivers/cpuidle/cpuidle-psci.c:129)
->   [    1.809258] cpuidle_enter_state (drivers/cpuidle/cpuidle.c:238)
->   [    1.809267] cpuidle_enter (drivers/cpuidle/cpuidle.c:353)
->   [    1.809275] do_idle (kernel/sched/idle.c:132 kernel/sched/idle.c:213 kernel/sched/idle.c:273)
->   [    1.809282] cpu_startup_entry (kernel/sched/idle.c:368 (discriminator 1))
->   [    1.809288] secondary_start_kernel (arch/arm64/kernel/smp.c:273)
+> __do_div64 clobbers the input register r0 in little endian system.
+> According to the inline assembly document, if an input operand is
+> modified, it should be tied to a output operand. This patch can
+> prevent compilers from reusing r0 register after asm statements.
+>
+> Signed-off-by: Antony Yu <swpenim@gmail.com>
+> ---
+>  arch/arm/include/asm/div64.h | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/arm/include/asm/div64.h b/arch/arm/include/asm/div64.h
+> index 898e9c78a7e7..809efc51e90f 100644
+> --- a/arch/arm/include/asm/div64.h
+> +++ b/arch/arm/include/asm/div64.h
+> @@ -39,9 +39,10 @@ static inline uint32_t __div64_32(uint64_t *n, uint32_t base)
+>         asm(    __asmeq("%0", __xh)
+>                 __asmeq("%1", "r2")
+>                 __asmeq("%2", "r0")
+> -               __asmeq("%3", "r4")
+> +               __asmeq("%3", "r0")
+> +               __asmeq("%4", "r4")
+>                 "bl     __do_div64"
+> -               : "=r" (__rem), "=r" (__res)
+> +               : "=r" (__rem), "=r" (__res), "=r" (__n)
+>                 : "r" (__n), "r" (__base)
+>                 : "ip", "lr", "cc");
+>         *n = __res;
+> --
+> 2.23.0
 >
 
-FWIW, still squealing under v5.10-rc5-rt11.
+Agree that using r0 as an input operand only is incorrect, and not
+only on Clang. The compiler might assume that r0 will retain its value
+across the asm() block, which is obviously not the case.
+
+However, your patch will likely break big-endian, since in that case,
+__xh == r0, and so it will appear twice.
+
+Perhaps it would be better to change the type of __rem to unsigned
+long long as well?
