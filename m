@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6902C8D1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F7E2C8D1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388184AbgK3SnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:43:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
+        id S1729791AbgK3SnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:43:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727626AbgK3SnE (ORCPT
+        with ESMTP id S1727626AbgK3SnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:43:04 -0500
-Received: from mail-ot1-x364.google.com (mail-ot1-x364.google.com [IPv6:2607:f8b0:4864:20::364])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E47C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:42:23 -0800 (PST)
-Received: by mail-ot1-x364.google.com with SMTP id h19so12351154otr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:42:23 -0800 (PST)
+        Mon, 30 Nov 2020 13:43:09 -0500
+Received: from mail-oi1-x264.google.com (mail-oi1-x264.google.com [IPv6:2607:f8b0:4864:20::264])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BACAC0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:42:29 -0800 (PST)
+Received: by mail-oi1-x264.google.com with SMTP id h3so15257228oie.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:42:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=e9eQlY82KL0yKDJVMFW8y+YLSKwzABIVbbo4HIFaL/c=;
-        b=CqXuyyzYsDMqk4dQM9ckn+GyNOoelzNTKBhWivnVD3zoeNs79dKjBuaeQ72u9MAoRZ
-         ZsDQeRE3CLZ73Whe8x4nQtCtq+/+y8a8qvUlv53gTXN/lJE65xK2+zG4AS2Yka+K+dzW
-         UI7kTXpqkjXWFVze2TPtcADHNSbfpmdLccnsQ=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=5ttrytKrDltyetQ23KnDSb5EbKfcjrjhXOBSWCLEssE=;
+        b=h0d2a4vnL57sKltgwLEIhN11kVn+kxXcJcQsv94ULhdDI+823fDasug9NPl0sJIvLz
+         awB8KRqnnEcc9sfLjuTIEfGHXjo/7oKI1C4cDlb9fMEdlK+YcULIt99vl1BLtm1uK8jK
+         9dl71Jf793BRwUtdtsfh5U7zgoZitca79Z/Is=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=e9eQlY82KL0yKDJVMFW8y+YLSKwzABIVbbo4HIFaL/c=;
-        b=Ihgq2mj352vbEBY3/bp3EmDzBryqsyh9zYFeJESvNWpw6zjiznIul9wcJhffZC8qPv
-         pPO/nJM4geQwx3nBbJtN04O4wOlsIQ4gcRz7TZKBYnNZTYdLl7TIdtnkzmzOZtDWxagI
-         KN7HFU2ejBsEm6LffB+LHpLtOBNHcf99Itwj3nbBDLEkVnl5w+igvwllEvxF9v8wXDQk
-         k0iSp+2WgaZu0RQVgrBI/17jVX0tmzR7BNqSAt+7AvSoiqOMYaYwP3V0cpdK0DrakAtd
-         EMZzU/rm0jV5QbpsIFCJzt6TJLGx0AB4rGHKKB0MicMbOnoXiVIb0B97EDi2tdJY0akx
-         3/uQ==
-X-Gm-Message-State: AOAM531jZrnMY0WLE5fqj+rX/bzAsvPwpMfy6U6RUiDZ9XRoHK56z9im
-        V9/mdCvrtHF2MpnT81AR/hf4iNaVbZUhLbLlzrnLO1Mzu7tv
-X-Google-Smtp-Source: ABdhPJxeRG40CbMCDBExQfL5te/WzkW54Gpcgqo6/YPv9133uoUYuygtY8sbqgzaIHYuUxvwHvVS3XdLm9Ay
-X-Received: by 2002:a05:6830:1d8f:: with SMTP id y15mr18582685oti.332.1606761743152;
-        Mon, 30 Nov 2020 10:42:23 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=5ttrytKrDltyetQ23KnDSb5EbKfcjrjhXOBSWCLEssE=;
+        b=P/aZUz6aJUDwiS1CBmAFR3CCO2ZPkjZRJUlB0nB6RNN72srRuwrc65u8OimYh4pRjv
+         GxLpTlYWqnS9w7t7AnXYvbIHh9ynUrFOY7aQ3tanvbG8cQxjf1x84mZg/6YXNJmGKKcM
+         jo9VcIXVQfyd/MX/kwBZbujoVDU0bfWESLrxZqIirvNCC3NRH2COTg98OAJ8If5fkcD9
+         ArbtJjcUehSJX2f0EqgsYT9yF6si2rKOBnwdH0VekojfRHG8/HGadxpIdp7IDFN03NiU
+         WcTwY1bJC4CHypqQEihvaaUeYLpqduXrA5Q4qOSYwv1dHRkfXmEgEb8Udi7Q7jvreoNQ
+         3ZqA==
+X-Gm-Message-State: AOAM532qhzCS8AopOsXuJIUxaKWuumaXpDVGf2fDsL6AtGznCiCocliT
+        wbofx9WDMAD3OCCPDAHlYATs5cmquCUot2jqDGpGRuKR9JET
+X-Google-Smtp-Source: ABdhPJwkujaoIe9YyoW+VRvGbWRE4zYaeQizRY54lYaHEGxlzPMEhbQeYmhLyj6fg/xWFiPpUtg59hdDnCqw
+X-Received: by 2002:aca:2311:: with SMTP id e17mr192366oie.50.1606761748371;
+        Mon, 30 Nov 2020 10:42:28 -0800 (PST)
 Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp-relay.gmail.com with ESMTPS id z21sm1909069ooe.19.2020.11.30.10.42.18
+        by smtp-relay.gmail.com with ESMTPS id z21sm1909069ooe.19.2020.11.30.10.42.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 10:42:23 -0800 (PST)
+        Mon, 30 Nov 2020 10:42:28 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 From:   Scott Branden <scott.branden@broadcom.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
@@ -52,100 +53,119 @@ To:     Arnd Bergmann <arnd@arndb.de>,
 Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com,
         Olof Johansson <olof@lixom.net>
-Subject: [PATCH v8 00/13] Add Broadcom VK driver
-Date:   Mon, 30 Nov 2020 10:41:47 -0800
-Message-Id: <20201130184200.5095-1-scott.branden@broadcom.com>
+Subject: [PATCH v8 01/13] bcm-vk: add bcm_vk UAPI
+Date:   Mon, 30 Nov 2020 10:41:48 -0800
+Message-Id: <20201130184200.5095-2-scott.branden@broadcom.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201130184200.5095-1-scott.branden@broadcom.com>
+References: <20201130184200.5095-1-scott.branden@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series drops previous patches in [1]
-that were incorporated by Kees Cook into patch series
-"Introduce partial kernel_read_file() support" [2].
+Add user space api for bcm-vk driver.
 
-Remaining patches are contained in this series to add Broadcom VK driver.
-(which depends on request_firmware_into_buf API addition which has
-now been accepted into the upstream kernel as of v5.10-rc1).
+Provide ioctl api to load images and issue reset command to card.
+FW status registers in PCI BAR space also defined as part
+of API so that user space is able to interpret these memory locations
+as needed via direct PCIe access.
 
-[1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
-[2] https://lore.kernel.org/lkml/20201002173828.2099543-1-keescook@chromium.org/
-
-Changes from v7:
- - add more information in Kconfig help description
-Changes from v6:
- - drop QSTATS patch as it needs to be reviewed if trace_printk makes sense
- - add wdog and IPC interface alerts
- - add boundary check to msgq and peerlog
- - clear additional registers on reset
-Changes from v5:
- - dropped sysfs patch from series for now as rework to use hwmon
- - tty patch still at end of series to drop if another solution available
- - updated cover letter commit to point to Kees' latest patch submission in [2]
- - specified --base with Kees' patches applied (kernel branches don't have these yet)
- - removed trivial comment
- - moved location of const to before the struct in two declarations
- - changed dev_info to dev_warn and only print when irq don't match expected
- - changed dev_info to dev_dbg when printing debug QSTATS
- - removed unnecessary %p print
-Changes from v4:
- - fixed memory leak in probe function on failure
- - changed -1 to -EBUSY in bcm_vk_tty return code
- - move bcm_vk_tty patch to end of patch series so it
-   can be dropped from current patch series if needed
-   and rearchitected if needed.
-Changes from v3:
- - split driver into more incremental commits for acceptance/review
- - lowered some dev_info to dev_dbg
- - remove ANSI stdint types and replace with linux u8, etc types
- - changed an EIO return to EPFNOSUPPORT
- - move vk_msg_cmd internal to driver to not expose to UAPI at this time
-Changes from v2:
- - open code BIT macro in uapi header
- - A0/B0 boot improvements
-Changes from v1:
- - declare bcm_vk_intf_ver_chk as static
-
-Scott Branden (13):
-  bcm-vk: add bcm_vk UAPI
-  misc: bcm-vk: add Broadcom VK driver
-  misc: bcm-vk: add autoload support
-  misc: bcm-vk: add misc device to Broadcom VK driver
-  misc: bcm-vk: add triggers when host panic or reboots to notify card
-  misc: bcm-vk: add open/release
-  misc: bcm-vk: add ioctl load_image
-  misc: bcm-vk: add get_card_info, peerlog_info, and proc_mon_info
-  misc: bcm-vk: add VK messaging support
-  misc: bcm-vk: reset_pid support
-  misc: bcm-vk: add mmap function for exposing BAR2
-  MAINTAINERS: bcm-vk: add maintainer for Broadcom VK Driver
-  misc: bcm-vk: add ttyVK support
-
- MAINTAINERS                      |    7 +
- drivers/misc/Kconfig             |    1 +
- drivers/misc/Makefile            |    1 +
- drivers/misc/bcm-vk/Kconfig      |   17 +
- drivers/misc/bcm-vk/Makefile     |   12 +
- drivers/misc/bcm-vk/bcm_vk.h     |  513 ++++++++++
- drivers/misc/bcm-vk/bcm_vk_dev.c | 1651 ++++++++++++++++++++++++++++++
- drivers/misc/bcm-vk/bcm_vk_msg.c | 1350 ++++++++++++++++++++++++
- drivers/misc/bcm-vk/bcm_vk_msg.h |  163 +++
- drivers/misc/bcm-vk/bcm_vk_sg.c  |  275 +++++
- drivers/misc/bcm-vk/bcm_vk_sg.h  |   61 ++
- drivers/misc/bcm-vk/bcm_vk_tty.c |  333 ++++++
- include/uapi/linux/misc/bcm_vk.h |   84 ++
- 13 files changed, 4468 insertions(+)
- create mode 100644 drivers/misc/bcm-vk/Kconfig
- create mode 100644 drivers/misc/bcm-vk/Makefile
- create mode 100644 drivers/misc/bcm-vk/bcm_vk.h
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_dev.c
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.c
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.h
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_sg.c
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_sg.h
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_tty.c
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+---
+ include/uapi/linux/misc/bcm_vk.h | 84 ++++++++++++++++++++++++++++++++
+ 1 file changed, 84 insertions(+)
  create mode 100644 include/uapi/linux/misc/bcm_vk.h
 
+diff --git a/include/uapi/linux/misc/bcm_vk.h b/include/uapi/linux/misc/bcm_vk.h
+new file mode 100644
+index 000000000000..ec28e0bd46a9
+--- /dev/null
++++ b/include/uapi/linux/misc/bcm_vk.h
+@@ -0,0 +1,84 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Copyright 2018-2020 Broadcom.
++ */
++
++#ifndef __UAPI_LINUX_MISC_BCM_VK_H
++#define __UAPI_LINUX_MISC_BCM_VK_H
++
++#include <linux/ioctl.h>
++#include <linux/types.h>
++
++#define BCM_VK_MAX_FILENAME 64
++
++struct vk_image {
++	__u32 type; /* Type of image */
++#define VK_IMAGE_TYPE_BOOT1 1 /* 1st stage (load to SRAM) */
++#define VK_IMAGE_TYPE_BOOT2 2 /* 2nd stage (load to DDR) */
++	__u8 filename[BCM_VK_MAX_FILENAME]; /* Filename of image */
++};
++
++struct vk_reset {
++	__u32 arg1;
++	__u32 arg2;
++};
++
++#define VK_MAGIC		0x5e
++
++/* Load image to Valkyrie */
++#define VK_IOCTL_LOAD_IMAGE	_IOW(VK_MAGIC, 0x2, struct vk_image)
++
++/* Send Reset to Valkyrie */
++#define VK_IOCTL_RESET		_IOW(VK_MAGIC, 0x4, struct vk_reset)
++
++/*
++ * Firmware Status accessed directly via BAR space
++ */
++#define VK_BAR_FWSTS			0x41c
++#define VK_BAR_COP_FWSTS		0x428
++/* VK_FWSTS definitions */
++#define VK_FWSTS_RELOCATION_ENTRY	(1UL << 0)
++#define VK_FWSTS_RELOCATION_EXIT	(1UL << 1)
++#define VK_FWSTS_INIT_START		(1UL << 2)
++#define VK_FWSTS_ARCH_INIT_DONE		(1UL << 3)
++#define VK_FWSTS_PRE_KNL1_INIT_DONE	(1UL << 4)
++#define VK_FWSTS_PRE_KNL2_INIT_DONE	(1UL << 5)
++#define VK_FWSTS_POST_KNL_INIT_DONE	(1UL << 6)
++#define VK_FWSTS_INIT_DONE		(1UL << 7)
++#define VK_FWSTS_APP_INIT_START		(1UL << 8)
++#define VK_FWSTS_APP_INIT_DONE		(1UL << 9)
++#define VK_FWSTS_MASK			0xffffffff
++#define VK_FWSTS_READY			(VK_FWSTS_INIT_START | \
++					 VK_FWSTS_ARCH_INIT_DONE | \
++					 VK_FWSTS_PRE_KNL1_INIT_DONE | \
++					 VK_FWSTS_PRE_KNL2_INIT_DONE | \
++					 VK_FWSTS_POST_KNL_INIT_DONE | \
++					 VK_FWSTS_INIT_DONE | \
++					 VK_FWSTS_APP_INIT_START | \
++					 VK_FWSTS_APP_INIT_DONE)
++/* Deinit */
++#define VK_FWSTS_APP_DEINIT_START	(1UL << 23)
++#define VK_FWSTS_APP_DEINIT_DONE	(1UL << 24)
++#define VK_FWSTS_DRV_DEINIT_START	(1UL << 25)
++#define VK_FWSTS_DRV_DEINIT_DONE	(1UL << 26)
++#define VK_FWSTS_RESET_DONE		(1UL << 27)
++#define VK_FWSTS_DEINIT_TRIGGERED	(VK_FWSTS_APP_DEINIT_START | \
++					 VK_FWSTS_APP_DEINIT_DONE  | \
++					 VK_FWSTS_DRV_DEINIT_START | \
++					 VK_FWSTS_DRV_DEINIT_DONE)
++/* Last nibble for reboot reason */
++#define VK_FWSTS_RESET_REASON_SHIFT	28
++#define VK_FWSTS_RESET_REASON_MASK	(0xf << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_SYS_PWRUP	(0x0 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_MBOX_DB		(0x1 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_M7_WDOG		(0x2 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_TEMP		(0x3 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_PCI_FLR		(0x4 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_PCI_HOT		(0x5 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_PCI_WARM		(0x6 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_PCI_COLD		(0x7 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_L1		(0x8 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_L0		(0x9 << VK_FWSTS_RESET_REASON_SHIFT)
++#define VK_FWSTS_RESET_UNKNOWN		(0xf << VK_FWSTS_RESET_REASON_SHIFT)
++
++#endif /* __UAPI_LINUX_MISC_BCM_VK_H */
 -- 
 2.17.1
 
