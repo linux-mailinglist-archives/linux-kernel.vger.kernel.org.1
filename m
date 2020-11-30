@@ -2,109 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A022C8EA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F162C8EB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388253AbgK3UEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgK3UE3 (ORCPT
+        id S1730011AbgK3UIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:08:14 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:33196 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729004AbgK3UIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:04:29 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4328DC061A48;
-        Mon, 30 Nov 2020 12:03:49 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id q8so10919021ljc.12;
-        Mon, 30 Nov 2020 12:03:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vEhR+Du89PZ5uHlmTZPVOeMBpk4ZhmnPvG7++GYzT48=;
-        b=nBOB4vH5fDSmMiI/v/KOP5Ztcc6gTG6ASlCRAPZhAb9QgYDhofOwwasWO/d1BRsUkk
-         Cnupc2ovJEBaBFe93fntQP+ZixTtvkH5q6FIHboY6BK87SY4WkJ9fFWtR9ZFnw1dj+Sf
-         J4ys4VkWRj+fnHA8vvebgnOgB0bML3F69nf786Y/dESEr9E6R9oVuV213MrxeuGCkMDN
-         QLcHFPwJgjO9/9+MHinqfxKIJmcmWdFOlYB5/N1bMSPckEB1yIP5Ye/GlqAwp7GiTNPU
-         NPUIIzw57SzwVWTkj5WmK1U8g4O1qfaIUQE6qimGPW4DPikyT7bO5mbHN2ckFEAqX2jQ
-         DWHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vEhR+Du89PZ5uHlmTZPVOeMBpk4ZhmnPvG7++GYzT48=;
-        b=AuzXTAJsAhKhMFVqZpJqg/hNvK9MS/9lOILWZ5UBaTc9ylg6FxQdHVGXmkXy+NHQgD
-         RiIrTC7jQqkdBteqruvjaqj3OXuDPB0fB5Myrq/CRxsK0ZUKvNwNy3PNN1wXInfixZqU
-         a17oV53tY4qcJi6zlBtkqLgmrYiVWDdT5jwzwLcxhAJPvpITF7fWdCsvyiZfnb5eGki9
-         RU58nZKBJvW5SjjzM9INCwg1dctwn3OnF4M2UwUMUN6tSffnNgvw7ZUWmi/M2a2EWyJn
-         KKTKdkhSiEOdjEPO+g2R6KTDfJLNMdOotK5CcW4Se/j9RIbOY/+i1SS9m4OftMr9/2cx
-         /Xvw==
-X-Gm-Message-State: AOAM531GlsEPj1VczE1o7RmRrwpGLHdY+9d5RpdhmGIdCN2yKEJ6juR+
-        qGOsW3Yi835jjiF117vK9+s=
-X-Google-Smtp-Source: ABdhPJwUMn+ecDX4H4n6Wk18z6ki+FFE/Gwq+LcNPFp5nQTq6WKmEZqr7eMcBen1vKLu0kYmPs69jA==
-X-Received: by 2002:a2e:b386:: with SMTP id f6mr10398273lje.320.1606766627766;
-        Mon, 30 Nov 2020 12:03:47 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id l6sm2606668lfk.150.2020.11.30.12.03.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 12:03:46 -0800 (PST)
-Subject: Re: [PATCH v10 01/19] dt-bindings: memory: tegra20: emc: Document
- opp-supported-hw property
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201123002723.28463-1-digetx@gmail.com>
- <20201123002723.28463-2-digetx@gmail.com>
- <46b3bab7-1c2c-2f50-6e41-f411e532357b@linaro.org>
- <20201130182345.GA28450@kozik-lap>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <4ff3fe7f-ec17-dd89-3cde-d677b3a92104@gmail.com>
-Date:   Mon, 30 Nov 2020 23:03:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Mon, 30 Nov 2020 15:08:12 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUK5N3t124928;
+        Mon, 30 Nov 2020 20:07:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=vV22iuphH7okguNUcjnpFoN+hxHfHxrPfWxv3vHOUxs=;
+ b=KnQigUcFSOWX44ycxctXGqjVgCpkPDtBJ7gd6wuK1BkqY+m5zNscp43AkEsU9fhcI46W
+ btuSRy9Kn7yQ1mtach9QIAakp2Iirb2CK/Oay07+hTYZ0rOigP7pXPUOZDjc8EA3u3g3
+ gs0TQEDipbbLsws8nbE1lzh6xUvMEhu3wDQux5Y1DDEWOPodYUFbLKZQefmc07hwDyJF
+ ans0T21Trk9q8NA+c6l5QJl0fYQlUQht5g6gjSHWfrQl3VdpZPUrsYrt+49uBLoYb9Hn
+ H+lsCf/+PrrDhsTRRABdebI+0diOPjrdDqiL2g0GQyW4dquDAKH4YV4q6EHzjz05eANx vw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 353dyqf3ur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 30 Nov 2020 20:07:06 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUJk4j9163488;
+        Mon, 30 Nov 2020 20:07:06 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 3540ex0hk9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Nov 2020 20:07:06 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AUK6xA2020566;
+        Mon, 30 Nov 2020 20:07:01 GMT
+Received: from localhost (/10.159.146.239)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 12:06:59 -0800
+From:   Stephen Brennan <stephen.s.brennan@oracle.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Stephen Brennan <stephen.s.brennan@oracle.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH] proc: Allow pid_revalidate() during LOOKUP_RCU
+Date:   Mon, 30 Nov 2020 12:06:19 -0800
+Message-Id: <20201130200619.84819-1-stephen.s.brennan@oracle.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201130182345.GA28450@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011300128
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011300129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.11.2020 21:23, Krzysztof Kozlowski пишет:
-> On Mon, Nov 30, 2020 at 11:48:18AM +0200, Georgi Djakov wrote:
->> On 23.11.20 2:27, Dmitry Osipenko wrote:
->>> Document opp-supported-hw property, which is not strictly necessary to
->>> have on Tegra20, but it's very convenient to have because all other SoC
->>> core devices will use hardware versioning, and thus, it's good to maintain
->>> the consistency.
->>
->> Hi Dmitry,
->>
->> I believe Krzysztof is waiting for Ack on the binding before merging
->> this patch (and the rest), but unfortunately it was not sent to the
->> DT mailing list for review.
+The pid_revalidate() function requires dropping from RCU into REF lookup
+mode. When many threads are resolving paths within /proc in parallel,
+this can result in heavy spinlock contention as each thread tries to
+grab a reference to the /proc dentry (and drop it shortly thereafter).
 
-Good catch, thank you.
+Allow the pid_revalidate() function to execute under LOOKUP_RCU. When
+updates must be made to the inode due to the owning task performing
+setuid(), drop out of RCU and into REF mode.
 
-> Indeed I am still waiting for Rob's and Thierry's acks for this and the
-> following patches.  It has been just a week so I'll give it few more
-> days.
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+---
 
-Rob doesn't review patches which aren't sent to the DT ML, which isn't
-cc'ed in v10 by accident. I'll make v11.
+I'd like to use this patch as an RFC on this approach for reducing spinlock
+contention during many parallel path lookups in the /proc filesystem. The
+contention can be triggered by, for example, running ~100 parallel instances of
+"TZ=/etc/localtime ps -fe >/dev/null" on a 100CPU machine. The %sys utilization
+in such a case reaches around 90%, and profiles show two code paths with high
+utilization:
+
+    walk_component
+      lookup_fast
+        unlazy_child
+          legitimize_root
+            __legitimize_path
+              lockref_get_not_dead
+
+    terminate_walk
+      dput
+        dput
+
+By applying this patch, %sys utilization falls to around 60% under the same
+workload.
+
+One item I'd like to highlight about this patch is that the
+security_task_to_inode() hook is called less frequently as a result. I don't
+know whether this is a major concern, which is why I've included security
+reviewers as well.
+
+ fs/proc/base.c      | 50 ++++++++++++++++++++++++++++++++-------------
+ fs/proc/internal.h  |  5 +++++
+ include/linux/pid.h |  2 ++
+ kernel/pid.c        | 12 +++++++++++
+ 4 files changed, 55 insertions(+), 14 deletions(-)
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index ebea9501afb8..038056f94ed0 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -1813,12 +1813,29 @@ int pid_getattr(const struct path *path, struct kstat *stat,
+ /*
+  * Set <pid>/... inode ownership (can change due to setuid(), etc.)
+  */
+-void pid_update_inode(struct task_struct *task, struct inode *inode)
++static int do_pid_update_inode(struct task_struct *task, struct inode *inode,
++							   unsigned int flags)
+ {
+-	task_dump_owner(task, inode->i_mode, &inode->i_uid, &inode->i_gid);
++	kuid_t uid;
++	kgid_t gid;
++
++	task_dump_owner(task, inode->i_mode, &uid, &gid);
++	if (uid_eq(uid, inode->i_uid) && gid_eq(gid, inode->i_gid) &&
++			!(inode->i_mode & (S_ISUID | S_ISGID)))
++		return 1;
++	if (flags & LOOKUP_RCU)
++		return -ECHILD;
+ 
++	inode->i_uid = uid;
++	inode->i_gid = gid;
+ 	inode->i_mode &= ~(S_ISUID | S_ISGID);
+ 	security_task_to_inode(task, inode);
++	return 1;
++}
++
++void pid_update_inode(struct task_struct *task, struct inode *inode)
++{
++	do_pid_update_inode(task, inode, 0);
+ }
+ 
+ /*
+@@ -1830,19 +1847,24 @@ static int pid_revalidate(struct dentry *dentry, unsigned int flags)
+ {
+ 	struct inode *inode;
+ 	struct task_struct *task;
+-
+-	if (flags & LOOKUP_RCU)
+-		return -ECHILD;
+-
+-	inode = d_inode(dentry);
+-	task = get_proc_task(inode);
+-
+-	if (task) {
+-		pid_update_inode(task, inode);
+-		put_task_struct(task);
+-		return 1;
++	int rv = 0;
++
++	if (flags & LOOKUP_RCU) {
++		inode = d_inode_rcu(dentry);
++		task = get_proc_task_rcu(inode);
++		if (task) {
++			rv = do_pid_update_inode(task, inode, flags);
++			put_task_struct_rcu_user(task);
++		}
++	} else {
++		inode = d_inode(dentry);
++		task = get_proc_task(inode);
++		if (task) {
++			rv = do_pid_update_inode(task, inode, flags);
++			put_task_struct(task);
++		}
+ 	}
+-	return 0;
++	return rv;
+ }
+ 
+ static inline bool proc_inode_is_dead(struct inode *inode)
+diff --git a/fs/proc/internal.h b/fs/proc/internal.h
+index cd0c8d5ce9a1..aa6df65ad3eb 100644
+--- a/fs/proc/internal.h
++++ b/fs/proc/internal.h
+@@ -121,6 +121,11 @@ static inline struct task_struct *get_proc_task(const struct inode *inode)
+ 	return get_pid_task(proc_pid(inode), PIDTYPE_PID);
+ }
+ 
++static inline struct task_struct *get_proc_task_rcu(const struct inode *inode)
++{
++	return get_pid_task_rcu_user(proc_pid(inode), PIDTYPE_PID);
++}
++
+ void task_dump_owner(struct task_struct *task, umode_t mode,
+ 		     kuid_t *ruid, kgid_t *rgid);
+ 
+diff --git a/include/linux/pid.h b/include/linux/pid.h
+index 9645b1194c98..0b2c54f85e6d 100644
+--- a/include/linux/pid.h
++++ b/include/linux/pid.h
+@@ -86,6 +86,8 @@ static inline struct pid *get_pid(struct pid *pid)
+ extern void put_pid(struct pid *pid);
+ extern struct task_struct *pid_task(struct pid *pid, enum pid_type);
+ extern struct task_struct *get_pid_task(struct pid *pid, enum pid_type);
++extern struct task_struct *get_pid_task_rcu_user(struct pid *pid,
++						 enum pid_type type);
+ 
+ extern struct pid *get_task_pid(struct task_struct *task, enum pid_type type);
+ 
+diff --git a/kernel/pid.c b/kernel/pid.c
+index 0a9f2e437217..05acbd15cfa6 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -390,6 +390,18 @@ struct task_struct *get_pid_task(struct pid *pid, enum pid_type type)
+ }
+ EXPORT_SYMBOL_GPL(get_pid_task);
+ 
++struct task_struct *get_pid_task_rcu_user(struct pid *pid, enum pid_type type)
++{
++	struct task_struct *task;
++
++	task = pid_task(pid, type);
++	if (task && refcount_inc_not_zero(&task->rcu_users))
++		return task;
++
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(get_pid_task_rcu_user);
++
+ struct pid *find_get_pid(pid_t nr)
+ {
+ 	struct pid *pid;
+-- 
+2.25.1
+
