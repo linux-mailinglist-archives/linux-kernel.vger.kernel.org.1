@@ -2,130 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6E92C9072
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 392B62C9076
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730344AbgK3WBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:01:40 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:39435 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgK3WBj (ORCPT
+        id S2388232AbgK3WCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:02:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729456AbgK3WCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:01:39 -0500
-Received: by mail-io1-f68.google.com with SMTP id j23so13459879iog.6;
-        Mon, 30 Nov 2020 14:01:18 -0800 (PST)
+        Mon, 30 Nov 2020 17:02:35 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B885C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:01:46 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id y7so11290906pfq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:01:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OjB582WxI6/wJAaTwVSd/LBGicJY2Z97GbRpBZXLi6E=;
+        b=qjhRHIc2Q2c59qrtjaOO0xaBOf0HWT5ja8LeUMZ/pgVJl+M8mSUyqR6vezP+Ndp8k9
+         1kODoO5ILq5qEzXRJPhp91+F/VCIuiR+wW/S6j2hBPZ0itZOhyl6oE6aD3r2d3GLjEUn
+         nB2okAYbnl571e5kG8Ja1LM6+gcghzkhC7r6P9uTnHxSJAlg8cPiZyKU2NkUoNsTbaDX
+         lF3fP23FhXdZ9ahkNphIfwrcH+hXrSNLfyWzmyxxsIenqIbMfbHc+id+n07PLyFQBpFz
+         AvaBxUDN/zzYOqohh4+e+IYwofH1zvNmdiq8pjYoxr5vbUJr8G9YP+lVYpj4wVSALQg0
+         WebA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ffuQXfxj9ttApqDQouaRNFwUbz09D8Tq1jiRM6FWfMg=;
-        b=q6LqRfdA4ekfH5vxTYQFpcaDYCLU3XqQ6byUrhQxAOfTAet701s0q/XePLxzov8uwE
-         MMoVUyC31TNaU51GNLUc4yY8H20IHVfFZTg52UvDxlb2xr6RFzRTicuHnyejEes7eGiN
-         pNq65WOH0enTLycu7ojKLFTTuZU4ZWN+XFRBgDQfjJtF04cPVmAAVZv2xmJcXFPt0nV9
-         1T6GKnzpnZkN8tRnm7sWl3ec3OcJeULvCgTE8Dx4I/CEDsScAFjVRTEwWJ8+LJekuLVe
-         XpkwRdSxlyvcDos7uQ7B+KoxjTYgnuaS8sBylfPpGTdEHkN7nZfr69OGson6vz4u+E06
-         ZWeQ==
-X-Gm-Message-State: AOAM530pjkaNELOeczaLbC5PWwtTzqCEh1Wo4fMcT4gow1+vSWp3MDxg
-        NLw8pflZjGS/ncCWEEAqIZ65vpuidQ==
-X-Google-Smtp-Source: ABdhPJxiaNzQxKcsJ+2ju8yv8UTh5NosHoYLiQSGl/ZBfcKv//ZlASW+xpxCOe4xrbnIpEdt5dBHKw==
-X-Received: by 2002:a5d:9a03:: with SMTP id s3mr17782095iol.20.1606773652684;
-        Mon, 30 Nov 2020 14:00:52 -0800 (PST)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id o195sm11503722ila.38.2020.11.30.14.00.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 14:00:51 -0800 (PST)
-Received: (nullmailer pid 3106913 invoked by uid 1000);
-        Mon, 30 Nov 2020 22:00:48 -0000
-Date:   Mon, 30 Nov 2020 15:00:48 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        sergei.shtylyov@gmail.com
-Subject: Re: [PATCH v5 2/8] dt-bindings: media: max9286: Document
- 'maxim,initial-reverse-channel-mV'
-Message-ID: <20201130220048.GA3104550@robh.at.kernel.org>
-References: <20201116135305.81319-1-jacopo+renesas@jmondi.org>
- <20201116135305.81319-3-jacopo+renesas@jmondi.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OjB582WxI6/wJAaTwVSd/LBGicJY2Z97GbRpBZXLi6E=;
+        b=HotHO7hGJwRTkrtJbjnyBycIKUkna2/1plgTOChadEJPEex9mzTGffpsyIcvZsEai7
+         IXWJAURSkUKsWE8Mh+Jroc3i0itj38R9JjQWWacjYpgrS6riX/xyKFfGC+UoqXQQ2+nB
+         KkOitpkY+BbvRHu3XIcyvouH/YlQnctSlE1qnaUhH4qxOzjWA+AxwBaZjJl7ydaU2cWW
+         qJlHQTK5YaplCvos+IG8hK+OGdb+i2tsan2Jp7/Gxcvhh5IR0uYeMq8fKSpGUwDUv/sb
+         pQygtXWasAtvQ6Hh8qm+ieLKWv/Y/mHVOb/z7rTH6WYZ2IGS6knW0LKjGMDahpcFFQCe
+         19wQ==
+X-Gm-Message-State: AOAM532SLzSrpowmNuefyvfQYAW1UoT4yeDqrx/+yU0L0IlvgUD2855T
+        HA0h3l5Sn0MvJzMM4k+7XrWBBB7p/vyFvYfXET9s7g==
+X-Google-Smtp-Source: ABdhPJwTqsmR9/VAzC66+aTccouqJa1CkIfZylvRSLe1ExSH5ZMoXzGvmhZcRIkqLfSWSOZfcvRwmRb3vP4giGwr3js=
+X-Received: by 2002:a63:f317:: with SMTP id l23mr19508824pgh.384.1606773705383;
+ Mon, 30 Nov 2020 14:01:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116135305.81319-3-jacopo+renesas@jmondi.org>
+References: <20201110072936.1380718-1-davidgow@google.com>
+In-Reply-To: <20201110072936.1380718-1-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 30 Nov 2020 14:01:34 -0800
+Message-ID: <CAFd5g47w3eqqZD6iC-HtpbLtYEgmN_oYwD5W37b2h59NEz3kkw@mail.gmail.com>
+Subject: Re: [PATCH] kunit: kunit_tool: Correctly parse diagnostic messages
+To:     David Gow <davidgow@google.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Marco Elver <elver@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 02:52:59PM +0100, Jacopo Mondi wrote:
-> Document the 'initial-reverse-channel-mV' vendor property in the
-> bindings document of the max9286 driver.
-> 
-> The newly introduced property allows to specifying the initial
-> configuration of the GMSL reverse control channel to accommodate
-> remote serializers pre-programmed with the high threshold power
-> supply noise immunity enabled.
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  .../bindings/media/i2c/maxim,max9286.yaml     | 23 +++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> index 9ea827092fdd..f61234d204fa 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> @@ -51,6 +51,26 @@ properties:
->    '#gpio-cells':
->      const: 2
-> 
-> +  maxim,initial-reverse-channel-mV:
+On Mon, Nov 9, 2020 at 11:29 PM David Gow <davidgow@google.com> wrote:
+>
+> Currently, kunit_tool expects all diagnostic lines in test results to
+> contain ": " somewhere, as both the subtest header and the crash report
+> do. Fix this to accept any line starting with (minus indent) "# " as
+> being a valid diagnostic line.
+>
+> This matches what the TAP spec[1] and the draft KTAP spec[2] are
+> expecting.
+>
+> [1]: http://testanything.org/tap-specification.html
+> [2]: https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-Use standard unit suffix.
-
-> +    $ref: '/schemas/types.yaml#/definitions/uint32'
-> +    minimum: 30
-> +    maximum: 200
-> +    default: 170
-> +    description: |
-> +      Initial amplitude of the reverse control channel, in millivolts.
-> +
-> +      The initial amplitude shall be adjusted to a value compatible with the
-> +      configuration of the connected remote serializer.
-> +
-> +      Some camera modules (for example RDACM20) include an on-board MCU that
-> +      pre-programs the embedded serializer with power supply noise immunity
-> +      (high-threshold) enabled. A typical value of the deserializer's reverse
-> +      channel amplitude to communicate with pre-programmed serializers is 170mV.
-> +
-> +      A typical value for the reverse channel amplitude to communicate with
-> +      a remote serializer whose high-threshold noise immunity is not enabled
-> +      is 100mV.
-> +
->    ports:
->      type: object
->      description: |
-> @@ -221,6 +241,7 @@ required:
->    - ports
->    - i2c-mux
->    - gpio-controller
-> +  - maxim,initial-reverse-channel-mV
-> 
->  additionalProperties: false
-> 
-> @@ -243,6 +264,8 @@ examples:
->          gpio-controller;
->          #gpio-cells = <2>;
-> 
-> +        maxim,initial-reverse-channel-mV = <170>;
-> +
->          ports {
->            #address-cells = <1>;
->            #size-cells = <0>;
-> --
-> 2.29.1
-> 
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
