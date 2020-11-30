@@ -2,263 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0BC2C7FF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E162C8044
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgK3Iaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:30:52 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:64368 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbgK3Iav (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:30:51 -0500
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201130083006epoutp034f79f1f868a8b88207835f044b5ea814~MO_F0bzIz1442714427epoutp03Y
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:30:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201130083006epoutp034f79f1f868a8b88207835f044b5ea814~MO_F0bzIz1442714427epoutp03Y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1606725006;
-        bh=Mt/gdIsFl1M12MFRytnwm1abg7voXmSQOUlTijrF/j0=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=c0tNLxwRL6vnJ4bVraRUOGFIW9tS1CI4ZkPOkDqhPU0HyxViSVDAN0V5iteGeupAa
-         kdYvZdlaaUlnCIrY4ye0HFg38Np30JFL62smFYrzL3orB+aEsCZ5dIaLYJAEIxhykH
-         pv5LR0yBMkvPcPpk1+ePrDoQyHUHYOtegcJ7lG7g=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20201130083005epcas1p480f9d22c867543847495688f7331db92~MO_E2dxFa0894908949epcas1p4p;
-        Mon, 30 Nov 2020 08:30:05 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.156]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4Ckz1l1yvtz4x9QC; Mon, 30 Nov
-        2020 08:30:03 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BF.F7.63458.B8DA4CF5; Mon, 30 Nov 2020 17:30:03 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201130083001epcas1p22f14f300f10546db02dc53183e8c196c~MO_BcgFtV1026010260epcas1p2r;
-        Mon, 30 Nov 2020 08:30:01 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201130083001epsmtrp12bba35f31748f0e58ac47cddc8699ce0~MO_BaMzuj3161831618epsmtrp1Y;
-        Mon, 30 Nov 2020 08:30:01 +0000 (GMT)
-X-AuditID: b6c32a36-6dfff7000000f7e2-a0-5fc4ad8b140e
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B8.54.13470.98DA4CF5; Mon, 30 Nov 2020 17:30:01 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201130083001epsmtip1b15540c60c5e93579b52f1ed5fe124d5~MO_Ay9IdD3262532625epsmtip1X;
-        Mon, 30 Nov 2020 08:30:01 +0000 (GMT)
-Subject: Re: [PATCH v10 00/19] Introduce memory interconnect for NVIDIA
- Tegra SoCs
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <d12880ba-6780-cfee-7667-3723fcad9f3a@samsung.com>
-Date:   Mon, 30 Nov 2020 17:44:39 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S1727026AbgK3ItI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:49:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33348 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726578AbgK3ItI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 03:49:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606726101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ts1SlZ5Kb9agqt+MNolM33QUi9fKSB+A4isf8i7vob4=;
+        b=sxT61S95dX4v0Rxx7yRNohGN8JYykb2qodCV0vNL1NBr1J1bYuqL6h5tZWj4AjgXULtN79
+        V8DzWHIkfFr6co9IBCU1ym2qKY29LMgbmnxSeS1rfBhj3942plZuKYy+a4E4dRbWDvbNxb
+        XBmDv4/zIjR2DoxoTVcqU7huHVm9AaM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 935D1AC95;
+        Mon, 30 Nov 2020 08:48:21 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 09:48:20 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Waiman Long <longman@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, zhengjun.xing@intel.com, ying.huang@intel.com,
+        andi.kleen@intel.com
+Subject: Re: [LKP] Re: [mm/memcg] bd0b230fe1: will-it-scale.per_process_ops
+ -22.7% regression
+Message-ID: <20201130084820.GB17338@dhcp22.suse.cz>
+References: <20201102092754.GD22613@dhcp22.suse.cz>
+ <82d73ebb-a31e-4766-35b8-82afa85aa047@intel.com>
+ <20201102100247.GF22613@dhcp22.suse.cz>
+ <bd87e8bd-c918-3f41-0cc5-e2927d91625f@linux.intel.com>
+ <20201104081546.GB10052@dhcp22.suse.cz>
+ <20201112122844.GA11000@shbuild999.sh.intel.com>
+ <20201112141654.GC12240@dhcp22.suse.cz>
+ <20201113073436.GA113119@shbuild999.sh.intel.com>
+ <20201120114424.GA103521@shbuild999.sh.intel.com>
+ <20201125062445.GA51005@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201123002723.28463-1-digetx@gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOJsWRmVeSWpSXmKPExsWy7bCmvm732iPxBu9WcFq8+/SU1WL1x8eM
-        Fle+vmezmL53E5tFy6xFLBbnz29gt9j6dA2TxdmmN+wWl3fNYbP43HuE0aLzyyw2i4unXC1u
-        N65gs5i0diqjxdln3hate4+wW/y7tpHF4ueueSwWmx8cY3MQ9nh/o5XdY+esu+wel879YfbY
-        tKqTzePOtT1sHve7jzN59Da/Y/Po27KK0ePzJrkAzqhsm4zUxJTUIoXUvOT8lMy8dFsl7+B4
-        53hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygp5QUyhJzSoFCAYnFxUr6djZF+aUlqQoZ+cUl
-        tkqpBSk5BZYFesWJucWleel6yfm5VoYGBkamQIUJ2Rl/W66zFuwxrzh7YRNLA+NyzS5GTg4J
-        AROJb3NXsnUxcnEICexglHjxaB4LhPOJUeLJtm4o5xujxOydF9lgWtZvXMUKkdjLKPFtRxMj
-        hPOeUWLJ7DUsIFXCAiESd/+8BqsSEbjJIrF8xT+gdg4OZoEqiU1/vEFq2AS0JPa/uAE2lV9A
-        UeLqj8eMIDavgJ1E45QTTCA2i4CqxK8ri8FsUYEwiZPbWqBqBCVOznwCtotTwEzi5+GjYDaz
-        gLjErSfzmSBseYntb+cwg9wgIdDPKXFpyj9miBdcJFbNmghlC0u8Or6FHcKWknjZ3wZlV0us
-        PHmEDaK5g1Fiy/4LrBAJY4n9SyczQTyjKbF+lz5EWFFi5++5jBCL+STefe1hBSmREOCV6GgT
-        gihRlrj84C4ThC0psbi9k20Co9IsJO/MQvLCLCQvzEJYtoCRZRWjWGpBcW56arFhgRFydG9i
-        BKd4LbMdjJPeftA7xMjEwXiIUYKDWUmEN4PjYLwQb0piZVVqUX58UWlOavEhRlNgAE9klhJN
-        zgdmmbySeENTI2NjYwsTQzNTQ0Mlcd4/2h3xQgLpiSWp2ampBalFMH1MHJxSDUxy7tfXVRZO
-        WnV33a2YCY8PpxXIeaUHpHDlf0t8sPNSeM2JlYltSoX/7OpOFv588HK1x8PJ3w/t6Z2p+LVv
-        RV3kR6sj08MPCD+rMDgZ5/84QXi3YoWLbv724vh9W7TfxKiFla75tm/JvG92qUs/3ZV+n7h+
-        tWD8tdQK5aMBWxdaC9xfU7H9bc2DLoaIhmvbg06yrNZ48Nq0aPKFAnvvu4wRix5n7zyuNtvn
-        v2bB+bu257+yxYkzCr6J1vM8Zbq479OKyyUNtbF2D1p/3DGSm9xtzr9lxezgtZ8yVmz4lvjh
-        07En2xiilibbTbiX9Izv0yNzGT22nq9mNUEC6aF7pXqeyc+Rt3XSF9lRK/a6572KEktxRqKh
-        FnNRcSIAjXo+K3oEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsWy7bCSnG7n2iPxBque6Vi8+/SU1WL1x8eM
-        Fle+vmezmL53E5tFy6xFLBbnz29gt9j6dA2TxdmmN+wWl3fNYbP43HuE0aLzyyw2i4unXC1u
-        N65gs5i0diqjxdln3hate4+wW/y7tpHF4ueueSwWmx8cY3MQ9nh/o5XdY+esu+wel879YfbY
-        tKqTzePOtT1sHve7jzN59Da/Y/Po27KK0ePzJrkAzigum5TUnMyy1CJ9uwSujL8t11kL9phX
-        nL2wiaWBcblmFyMnh4SAicT6jatYQWwhgd2MEhPfWEPEJSWmXTzK3MXIAWQLSxw+XNzFyAVU
-        8pZRYun5JrB6YYEQiWk3PjGDJEQE7rJITPpxiw0kwSxQJbFw7WI2iI5ORon2hqOMIAk2AS2J
-        /S9ugBXxCyhKXP3xGCzOK2An0TjlBBOIzSKgKvHrymIwW1QgTGLnksdMEDWCEidnPmEBsTkF
-        zCR+Hj7KArFMXeLPvEvMELa4xK0n85kgbHmJ7W/nME9gFJ6FpH0WkpZZSFpmIWlZwMiyilEy
-        taA4Nz232LDAMC+1XK84Mbe4NC9dLzk/dxMjONa1NHcwbl/1Qe8QIxMH4yFGCQ5mJRHeDI6D
-        8UK8KYmVValF+fFFpTmpxYcYpTlYlMR5bxQujBMSSE8sSc1OTS1ILYLJMnFwSjUwJQrLxCjf
-        2mfh4JjsG2A2IfRLBpu+XduNphWrtW45y59/nTsnVGKOsKWPa6NY2Z/k+Gb2sy0iXzbHPLg9
-        5ew9i4sn3f6pG7xp2iL31iIy3eSe1OcXhb8+HvmywSx3o+Hq/cz5ZbG/LYWTNHT+v1jecXnn
-        j1krpIMr56lauH/xNbxq0Fl7+tg9Zseij6fSn/AWLQ9alFfTsOuHhrGkrPTT3ubFTrKzjRKe
-        yJ/LSL/hGcd/Sm2h6c0vvB2lGd9WbxVk22xxuGHNJq8Qf446Q1n1rHfMYuuf//W5bzn9S9cZ
-        +Qh+2cyUOfN4NWI0mOJ9L5RUHfmxJDE12mDT0anl/5T3t9yXPDttsY7d/DMGPySVWIozEg21
-        mIuKEwGzxjm4ZAMAAA==
-X-CMS-MailID: 20201130083001epcas1p22f14f300f10546db02dc53183e8c196c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201123003254epcas1p1763e1ce693d7cb8e2f20d521e701ad5f
-References: <CGME20201123003254epcas1p1763e1ce693d7cb8e2f20d521e701ad5f@epcas1p1.samsung.com>
-        <20201123002723.28463-1-digetx@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125062445.GA51005@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+On Wed 25-11-20 14:24:45, Feng Tang wrote:
+[...]
+> I think we finally found the trick :), further debugging shows it
+> is not related to the alignment inside one cacheline, but the
+> adjacency of 2 adjacent cacheliens (2N and 2N+1, one pair of 128 bytes).
+> 
+> For structure mem_cgroup, member 'vmstats_local', 'vmstats_percpu'
+> sit in one cacheline, while 'vmstats[]' sits in the next cacheline,
+> and when 'adjacent cacheline prefetch" is enabled, if these 2 lines
+> sit in one pair (128 btyes), say 2N and 2N+1, then there seems to
+> be some kind of false sharing, and if they sit in 2 pairs, say
+> 2N-1 and 2N then it's fine.
+> 
+> And with the following patch to relayout these members, the regression
+> is restored and event better. while reducing 64 bytes of sizeof
+> 'struct mem_cgroup'
+> 
+> 	parent_commit	Waiman's_commit		+relayout patch
+> 
+> result	187K		145K			200K
+> 
+> Also, if we disable the hw prefetch feature, the Waiman's commit
+> and its parent commit will have no performance difference.
+> 
+> Thanks,
+> Feng
+> 
+> >From 2e63af34fa4853b2dd9669867c37a3cf07f7a505 Mon Sep 17 00:00:00 2001
+> From: Feng Tang <feng.tang@intel.com>
+> Date: Wed, 25 Nov 2020 13:22:21 +0800
+> Subject: [PATCH] mm: memcg: relayout structure mem_cgroup to avoid cache
+>  interfereing
+> 
+> 0day reported one -22.7% regression for will-it-scale page_fault2
+> case [1] on a 4 sockets 144 CPU platform, and bisected to it to be
+> caused by Waiman's optimization (commit bd0b230fe1) of saving one
+> 'struct page_counter' space for 'struct mem_cgroup'.
+> 
+> Initially we thought it was due to the cache alignment change introduced
+> by the patch, but further debug shows that it is due to some hot data
+> members ('vmstats_local', 'vmstats_percpu', 'vmstats') sit in 2 adjacent
+> cacheline (2N and 2N+1 cacheline), and when adjacent cache line prefetch
+> is enabled, it triggers an "extended level" of cache false sharing for
+> 2 adjacent cache lines.
+> 
+> So exchange the 2 member blocks, while keeping mostly the original
+> cache alignment, which can restore and even enhance the performance,
+> and save 64 bytes of space for 'struct mem_cgroup' (from 2880 to 2816,
+> with 0day's default RHEL-8.3 kernel config)
+> 
+> [1]. https://lore.kernel.org/lkml/20201102091543.GM31092@shao2-debian/
+> 
+> Fixes: bd0b230fe145 ("mm/memcg: unify swap and memsw page counters")
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
 
-The v5.10-rc6 was released from linus git tree.
-Generally, I will send the pull-quest about devfreq to linux-pm.git maintainer
-after releasing the v5.1-rc7 for the integration test on linux-pm.git.
+Sorry for a late reply. This is indeed surprising! I was really
+expecting page counter to be the culprit. Anyway this rearrangement 
+looks ok as well. moving_account related stuff is still after padding
+which is good because this rare operation shouldn't really interfere
+with the rest of the structure. Btw. now you made me look into the
+history and I have noticed e81bf9793b18 ("mem_cgroup: make sure
+moving_account, move_lock_task and stat_cpu in the same cacheline") so
+this is not the first time we are dealing with a regression here.
 
-The icc patches in this patch have not yet merged. If these patches
-are not merged before v5.10-rc7, Maybe, I'll apply the devfreq patches
-for v5.12-rc1.
+Linus has already merged the patch but for the record
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Best Regards,
-Chanwoo Choi
+Thanks a lot for pursuing this!
 
-
-On 11/23/20 9:27 AM, Dmitry Osipenko wrote:
-> This series brings initial support for memory interconnect to Tegra20,
-> Tegra30 and Tegra124 SoCs.
-> 
-> For the starter only display controllers and devfreq devices are getting
-> interconnect API support, others could be supported later on. The display
-> controllers have the biggest demand for interconnect API right now because
-> dynamic memory frequency scaling can't be done safely without taking into
-> account bandwidth requirement from the displays. In particular this series
-> fixes distorted display output on T30 Ouya and T124 TK1 devices.
-> 
-> Changelog:
-> 
-> v10 - In a longer run it will be much nicer if we could support EMC
->       hardware versioning on Tegra20 and it's not late to support it now.
->       Hence I added these new patches:
-> 
->         dt-bindings: memory: tegra20: emc: Document opp-supported-hw property
->         memory: tegra20: Support hardware versioning and clean up OPP table initialization
-> 
->     - Removed error message from tegra30-devfreq driver about missing OPP
->       properties in a device-tree because EMC driver already prints that
->       message and it uses OPP API error code instead of checking DT directly,
->       which is a more correct way of doing that.
-> 
-> v9: - Squashed "memory: tegra30-emc: Factor out clk initialization" into
->       patch "tegra30: Support interconnect framework".
->       Suggested by Krzysztof Kozlowski.
-> 
->     - Improved Kconfig in the patch "memory: tegra124-emc: Make driver modular"
->       by adding CONFIG_TEGRA124_CLK_EMC entry, which makes clk-driver changes
->       to look a bit more cleaner. Suggested by Krzysztof Kozlowski.
-> 
->     - Dropped voltage regulator support from ICC and DT patches for now
->       because there is a new discussion about using a power domain abstraction
->       for controlling the regulator, which is likely to happen.
-> 
->     - Replaced direct "operating-points-v2" property checking in EMC drivers
->       with checking of a returned error code from dev_pm_opp_of_add_table().
->       Note that I haven't touched T20 EMC driver because it's very likely
->       that we'll replace that code with a common helper soon anyways.
->       Suggested by Viresh Kumar.
-> 
->     - The T30 DT patches now include EMC OPP changes for Ouya board, which
->       is available now in linux-next.
-> 
-> Dmitry Osipenko (19):
->   dt-bindings: memory: tegra20: emc: Document opp-supported-hw property
->   memory: tegra20: Support hardware versioning and clean up OPP table
->     initialization
->   memory: tegra30: Support interconnect framework
->   memory: tegra124-emc: Make driver modular
->   memory: tegra124-emc: Continue probing if timings are missing in
->     device-tree
->   memory: tegra124: Support interconnect framework
->   drm/tegra: dc: Support memory bandwidth management
->   drm/tegra: dc: Extend debug stats with total number of events
->   PM / devfreq: tegra30: Support interconnect and OPPs from device-tree
->   PM / devfreq: tegra30: Separate configurations per-SoC generation
->   PM / devfreq: tegra20: Deprecate in a favor of emc-stat based driver
->   ARM: tegra: Correct EMC registers size in Tegra20 device-tree
->   ARM: tegra: Add interconnect properties to Tegra20 device-tree
->   ARM: tegra: Add interconnect properties to Tegra30 device-tree
->   ARM: tegra: Add interconnect properties to Tegra124 device-tree
->   ARM: tegra: Add nvidia,memory-controller phandle to Tegra20 EMC
->     device-tree
->   ARM: tegra: Add EMC OPP properties to Tegra20 device-trees
->   ARM: tegra: Add EMC OPP and ICC properties to Tegra30 EMC and ACTMON
->     device-tree nodes
->   ARM: tegra: Add EMC OPP and ICC properties to Tegra124 EMC and ACTMON
->     device-tree nodes
-> 
->  .../memory-controllers/nvidia,tegra20-emc.txt |   6 +
->  MAINTAINERS                                   |   1 -
->  arch/arm/boot/dts/tegra124-apalis-emc.dtsi    |   8 +
->  .../arm/boot/dts/tegra124-jetson-tk1-emc.dtsi |   8 +
->  arch/arm/boot/dts/tegra124-nyan-big-emc.dtsi  |  10 +
->  .../arm/boot/dts/tegra124-nyan-blaze-emc.dtsi |  10 +
->  .../boot/dts/tegra124-peripherals-opp.dtsi    | 419 ++++++++++++++++++
->  arch/arm/boot/dts/tegra124.dtsi               |  31 ++
->  .../boot/dts/tegra20-acer-a500-picasso.dts    |   5 +
->  arch/arm/boot/dts/tegra20-colibri.dtsi        |   4 +
->  arch/arm/boot/dts/tegra20-paz00.dts           |   4 +
->  .../arm/boot/dts/tegra20-peripherals-opp.dtsi | 109 +++++
->  arch/arm/boot/dts/tegra20.dtsi                |  33 +-
->  ...30-asus-nexus7-grouper-memory-timings.dtsi |  12 +
->  arch/arm/boot/dts/tegra30-ouya.dts            |   8 +
->  .../arm/boot/dts/tegra30-peripherals-opp.dtsi | 383 ++++++++++++++++
->  arch/arm/boot/dts/tegra30.dtsi                |  33 +-
->  drivers/clk/tegra/Kconfig                     |   3 +
->  drivers/clk/tegra/Makefile                    |   2 +-
->  drivers/clk/tegra/clk-tegra124-emc.c          |  41 +-
->  drivers/clk/tegra/clk-tegra124.c              |  26 +-
->  drivers/clk/tegra/clk.h                       |  18 +-
->  drivers/devfreq/Kconfig                       |  10 -
->  drivers/devfreq/Makefile                      |   1 -
->  drivers/devfreq/tegra20-devfreq.c             | 210 ---------
->  drivers/devfreq/tegra30-devfreq.c             | 147 +++---
->  drivers/gpu/drm/tegra/Kconfig                 |   1 +
->  drivers/gpu/drm/tegra/dc.c                    | 359 +++++++++++++++
->  drivers/gpu/drm/tegra/dc.h                    |  19 +
->  drivers/gpu/drm/tegra/drm.c                   |  14 +
->  drivers/gpu/drm/tegra/hub.c                   |   3 +
->  drivers/gpu/drm/tegra/plane.c                 | 121 +++++
->  drivers/gpu/drm/tegra/plane.h                 |  15 +
->  drivers/memory/tegra/Kconfig                  |   5 +-
->  drivers/memory/tegra/tegra124-emc.c           | 377 ++++++++++++++--
->  drivers/memory/tegra/tegra124.c               |  82 +++-
->  drivers/memory/tegra/tegra20-emc.c            |  48 +-
->  drivers/memory/tegra/tegra30-emc.c            | 344 +++++++++++++-
->  drivers/memory/tegra/tegra30.c                | 173 +++++++-
->  include/linux/clk/tegra.h                     |   8 +
->  include/soc/tegra/emc.h                       |  16 -
->  41 files changed, 2725 insertions(+), 402 deletions(-)
->  create mode 100644 arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
->  create mode 100644 arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
->  create mode 100644 arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
->  delete mode 100644 drivers/devfreq/tegra20-devfreq.c
->  delete mode 100644 include/soc/tegra/emc.h
-> 
+-- 
+Michal Hocko
+SUSE Labs
