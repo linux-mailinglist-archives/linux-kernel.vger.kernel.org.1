@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4826F2C8609
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007DE2C8611
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727394AbgK3N47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:56:59 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:48874 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgK3N47 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:56:59 -0500
-Date:   Mon, 30 Nov 2020 13:56:16 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606744577;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wOc56v3Po34nSJCF8myJonWEzsvj5LWUJzUmKQLEWls=;
-        b=cjHhI9u45ddxYWLUKYui0ZZmMco8cPeBG2+FtU+CrzG/l5LUV79JsY3c33PNTU7MvKeD4R
-        wW/ZS5eMfgHkqX4MONYzV1HrJbDDSnGitAh9FRDTFI2bXaIzTxJAqOnad3CF6xKVP9HIaN
-        ssR+x7EHeVskI4Jp1JRQ+ATKpj6QYs2k5roNJSWGR9JvQnLuxxUu5qodXEKpXvIfLn5ifu
-        m3HSy8l4vlTDQfO3607Hz5qdZsr9QSLHy0Mos7e1WByoDIgB9BaD7phM4k27buCwvFv/JG
-        kfhCyOL8dsnofthGxAtUboxJDM8EMik58rDJ02WLsTvcnm3pNsPhFMdxmeyu6g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606744577;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wOc56v3Po34nSJCF8myJonWEzsvj5LWUJzUmKQLEWls=;
-        b=t2nWVJ6k7qsrqrKkb9DwM2lFOuEtSyvAPURVtPLFbGDwRhVbSbFph9AznRiux445ZKML1i
-        TXuDNfM8Y7CyXnCg==
-From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq/irqdomain: Don't try to free an interrupt that
- has no mapping
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201129135551.396777-1-maz@kernel.org>
-References: <20201129135551.396777-1-maz@kernel.org>
+        id S1727427AbgK3N6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:58:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725859AbgK3N6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:58:11 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 205312076E;
+        Mon, 30 Nov 2020 13:57:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606744650;
+        bh=iyc/zT3Z69BkU1MFcgEbohwAlNY5zEcNlqG/+vhqKxo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cdxfjIdnmP3FHAVkDnr/b4mnJNr3fwiHX+Tf6PDk2ypzF0IXTO17jp+lfmKKerS+X
+         pZEOGQZ91YVEhY6YgPUJrxgbKxC0nZKHeb5/oWxPk3j5DlRjOR/LSKz9RK/D/eLRSc
+         WUKfIHUgVOQ+94hDTyZ5Vq0EOtYRz3MeKKkyUc6k=
+Date:   Mon, 30 Nov 2020 14:57:25 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
+Message-ID: <X8T6RWHOhgxW3tRK@kroah.com>
+References: <20201125153550.810101-22-sashal@kernel.org>
+ <25cd0d64-bffc-9506-c148-11583fed897c@redhat.com>
+ <20201125180102.GL643756@sasha-vm>
+ <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
+ <20201129041314.GO643756@sasha-vm>
+ <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
+ <20201129210650.GP643756@sasha-vm>
+ <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
+ <X8TzeoIlR3G5awC6@kroah.com>
+ <17481d8c-c19d-69e3-653d-63a9efec2591@redhat.com>
 MIME-Version: 1.0
-Message-ID: <160674457627.3364.6530359983188105313.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17481d8c-c19d-69e3-653d-63a9efec2591@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Mon, Nov 30, 2020 at 02:52:11PM +0100, Paolo Bonzini wrote:
+> On 30/11/20 14:28, Greg KH wrote:
+> > > > Lines of code is not everything. If you think that this needs additional
+> > > > testing then that's fine and we can drop it, but not picking up a fix
+> > > > just because it's 120 lines is not something we'd do.
+> > > Starting with the first two steps in stable-kernel-rules.rst:
+> > > 
+> > > Rules on what kind of patches are accepted, and which ones are not, into the
+> > > "-stable" tree:
+> > > 
+> > >   - It must be obviously correct and tested.
+> > >   - It cannot be bigger than 100 lines, with context.
+> > We do obviously take patches that are bigger than 100 lines, as there
+> > are always exceptions to the rules here.  Look at all of the
+> > spectre/meltdown patches as one such example.  Should we refuse a patch
+> > just because it fixes a real issue yet is 101 lines long?
+> 
+> Every patch should be "fixing a real issue"---even a new feature.  But the
+> larger the patch, the more the submitters and maintainers should be trusted
+> rather than a bot.  The line between feature and bugfix _sometimes_ is
+> blurry, I would say that in this case it's not, and it makes me question how
+> the bot decided that this patch would be acceptable for stable (which AFAIK
+> is not something that can be answered).
 
-Commit-ID:     4615fbc3788ddc8e7c6d697714ad35a53729aa2c
-Gitweb:        https://git.kernel.org/tip/4615fbc3788ddc8e7c6d697714ad35a53729aa2c
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Sun, 29 Nov 2020 13:55:51 
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 30 Nov 2020 14:50:21 +01:00
+I thought that earlier Sasha said that this patch was needed as a
+prerequisite patch for a later fix, right?  If not, sorry, I've lost the
+train of thought in this thread...
 
-genirq/irqdomain: Don't try to free an interrupt that has no mapping
+thanks,
 
-When an interrupt allocation fails for N interrupts, it is pretty
-common for the error handling code to free the same number of interrupts,
-no matter how many interrupts have actually been allocated.
-
-This may result in the domain freeing code to be unexpectedly called
-for interrupts that have no mapping in that domain. Things end pretty
-badly.
-
-Instead, add some checks to irq_domain_free_irqs_hierarchy() to make sure
-that thiss does not follow the hierarchy if no mapping exists for a given
-interrupt.
-
-Fixes: 6a6544e520abe ("genirq/irqdomain: Remove auto-recursive hierarchy support")
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201129135551.396777-1-maz@kernel.org
-
----
- kernel/irq/irqdomain.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 3d7463f..30a7887 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -1381,8 +1381,15 @@ static void irq_domain_free_irqs_hierarchy(struct irq_domain *domain,
- 					   unsigned int irq_base,
- 					   unsigned int nr_irqs)
- {
--	if (domain->ops->free)
--		domain->ops->free(domain, irq_base, nr_irqs);
-+	unsigned int i;
-+
-+	if (!domain->ops->free)
-+		return;
-+
-+	for (i = 0; i < nr_irqs; i++) {
-+		if (irq_domain_get_irq_data(domain, irq_base + i))
-+			domain->ops->free(domain, irq_base + i, 1);
-+	}
- }
- 
- int irq_domain_alloc_irqs_hierarchy(struct irq_domain *domain,
+greg k-h
