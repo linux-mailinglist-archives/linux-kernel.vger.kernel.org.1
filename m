@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3862C8A3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DF92C8A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729167AbgK3RAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:00:16 -0500
-Received: from mail-am6eur05on2060.outbound.protection.outlook.com ([40.107.22.60]:45027
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        id S1729182AbgK3RAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:00:20 -0500
+Received: from mail-eopbgr60082.outbound.protection.outlook.com ([40.107.6.82]:23522
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729125AbgK3RAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:00:15 -0500
+        id S1729163AbgK3RAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:00:18 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f5t3qOLrxi4wCtTpCS/yoqL3ZLAzML1JttHXfXBCmZDH4G0OZ1KX2RYIVRUkbjsNNC61Wpx9mkPjjMospkJSC/IZQM40cAxkPfKg++CMUVvatgon+c/UT9bpd7hOonMr74KQiT6F4ghwTgji9VVLSPhh7WmrZwL33akTBn5ZPayPNUWYnAUvfprLe65ZPsNlywl6Rpi5Jjv8D1PWHGHmAOK+Bd0JXq6rxzt7tz1AOiwBr5sNmPJ7DfFDG1ZlmPpgQxl9tQvNMRvVpqdweOjFhQ2jW7YAn0G0FCu4sB2tCPWlekGtvN308XVLYXAneBe3vSLljcTDLO8xIpAEO7Ji0A==
+ b=OnQ7+jzJhoUI7cHQC+nmRFXgR5cDImGFUT0VjA7hWNWnvkzNV08iLqPKbpO+zhfLjLyis6qfTe3Pm9/aW7B1JVi/dSZeYU9kSpadGX6y+zNFsKve32BtdXTvamOP99LQ2s+0Si16T1FcUpDv6v89p81q+haI9vE7DUQ06Oz3AlVkaTKqBRpYKbxkmkJKypclH4bUSj9QaGn2uYSf7nu4pee+1ZmUdwz0FWPmsPbxKmWr6S4/41NBfQ2Tdp6WHD9i4WA1fx7xltzXP/XZqFCpS/yABb7R56GDpTJqEX5R1cYey36lqDJgOyV84es2joBAsll3hrbgRjIcQc1IVNtXMQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x3Rz7gkA29ruS8+JleO8Njw7VhFMISC57K6StK9FDxU=;
- b=WQDJXxf18RMrsSWBBgMfkkQQ2rOyxYXP7OqBQnI+OAWznySvcrRArVPuxjO4jta7uMHOBD9cHxcxBGbf0M37GeO7KtoKDB7LO91vJBYrJgzsH7AOioiMJ/HrYZFrqnIBPqxvrTUH1lL3d1EjZNW65zS9++hT5wF976JrtcPPL7FxByoZfkFakBXfICsISyt1D7xP/4tBDnAgYZBBpgAnZRDmdTpVZDNNuViOZO2KwrdvZseyn3IgaIHBBgv5XKxIwIcVZ4AAF9xps1yEiZe5DEX39J2yHZlpcxzc/vtwg8PjUCO9iv4lPgc/J91SrxJjv5ZtDUNvW6+wAzKQ76+GBQ==
+ bh=1Iu5vBZ2IKzXq4kU2cYnFP2z+9G3FMC2RJvR97rsxuc=;
+ b=Q9M1Bl/6J1Ye0yfOMT4aIO0S35DPp5U0yloJJlRn8OJQ0Fb95CF4V3DG1jsfmuoko0EV+1t7RXjCih3VHnVWE9KVINTJ37qoPrh17LNqEuGN0rOXEJb6BDgfWd5N9Vf/OLSwKKBSV4n6QFZWQndVsNZ+9Q5h5YRcWkQx7cHtVkUdqvzyDKKSttqCipqi5yvU5opOurRGteOfFEh35NgC8DtA1x0Dvn4MoHamioICryvbU5KoLTGc//Iwp/aK5HZabEe5uyvQpzervaStrEq5pjwV6vX+wP62tVMZ/Ex3J6r5Wtkc3v0+mWWAmXnxE/YYelocKJ+Onvk/3K2HHM3NDQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
  is 193.240.239.45) smtp.rcpttodomain=kernel.org smtp.mailfrom=diasemi.com;
  dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
@@ -27,18 +27,18 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=dialogsemiconductor.onmicrosoft.com;
  s=selector1-dialogsemiconductor-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x3Rz7gkA29ruS8+JleO8Njw7VhFMISC57K6StK9FDxU=;
- b=JCa8q5ipiMjaTw9BbooJ8c0eYV3CJvwvMwHCaiEHt0NMc3TRUl1ea/vqe2Iw9KkOmMrSMyKBBntJmKzti+PBSwjUYZrmlnVS1fcj7rgNrJ+J8jx1kJw+Ix5KHL9eb6lyHJESXCQiO1KSoOwbHYDT4cSRmnt9j2TIey/pRhXsi7c=
-Received: from AM6PR0502CA0063.eurprd05.prod.outlook.com
- (2603:10a6:20b:56::40) by AM0PR10MB3442.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:163::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Mon, 30 Nov
- 2020 16:59:25 +0000
+ bh=1Iu5vBZ2IKzXq4kU2cYnFP2z+9G3FMC2RJvR97rsxuc=;
+ b=XQRY+RLXbIt0HZ8X3PzcRK9N6mcxd3GfmJ2IySq7+FC/mFeiuvV10BfhABMCsljxIqATGTfudDzhKKTJSFXyAugMOuvKqgunODEgGolmlItevQDyBEpnIyK9UoZT++txC8eC7sWXjdoldATh7U2kLB7+gatB42yT5iB9iz6qqgE=
+Received: from AM6PR0502CA0042.eurprd05.prod.outlook.com
+ (2603:10a6:20b:56::19) by PR3PR10MB4046.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:a3::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.24; Mon, 30 Nov
+ 2020 16:59:29 +0000
 Received: from VE1EUR02FT054.eop-EUR02.prod.protection.outlook.com
- (2603:10a6:20b:56:cafe::2b) by AM6PR0502CA0063.outlook.office365.com
- (2603:10a6:20b:56::40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22 via Frontend
- Transport; Mon, 30 Nov 2020 16:59:25 +0000
+ (2603:10a6:20b:56:cafe::50) by AM6PR0502CA0042.outlook.office365.com
+ (2603:10a6:20b:56::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend
+ Transport; Mon, 30 Nov 2020 16:59:29 +0000
 X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
  193.240.239.45) smtp.mailfrom=diasemi.com; kernel.org; dkim=none (message not
  signed) header.d=none;kernel.org; dmarc=fail action=none
@@ -48,19 +48,19 @@ Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
 Received: from mailrelay1.diasemi.com (193.240.239.45) by
  VE1EUR02FT054.mail.protection.outlook.com (10.152.13.218) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3611.23 via Frontend Transport; Mon, 30 Nov 2020 16:59:24 +0000
+ 15.20.3611.23 via Frontend Transport; Mon, 30 Nov 2020 16:59:29 +0000
 Received: from swsrvapps-01.diasemi.com (10.20.28.141) by
  NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
- 14.3.468.0; Mon, 30 Nov 2020 17:59:10 +0100
+ 14.3.468.0; Mon, 30 Nov 2020 17:59:12 +0100
 Received: by swsrvapps-01.diasemi.com (Postfix, from userid 23378)      id
- C2B0B3FC0E; Mon, 30 Nov 2020 16:59:10 +0000 (GMT)
-Message-ID: <5849ce60595aef1018bdde7dcfb54a7397597545.1606755367.git.Adam.Ward.opensource@diasemi.com>
+ C65C13FBD8; Mon, 30 Nov 2020 16:59:11 +0000 (GMT)
+Message-ID: <1fd53c3ab032ef3c8a92f80a2247381db1c09ced.1606755367.git.Adam.Ward.opensource@diasemi.com>
 In-Reply-To: <cover.1606755367.git.Adam.Ward.opensource@diasemi.com>
 References: <cover.1606755367.git.Adam.Ward.opensource@diasemi.com>
 From:   Adam Ward <Adam.Ward.opensource@diasemi.com>
-Date:   Mon, 30 Nov 2020 16:59:10 +0000
-Subject: [PATCH V3 06/10] regulator: da9121: Add support for device variants
- via devicetree
+Date:   Mon, 30 Nov 2020 16:59:11 +0000
+Subject: [PATCH V3 07/10] regulator: da9121: Update registration to support
+ multiple buck variants
 To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
 CC:     Liam Girdwood <lgirdwood@gmail.com>,
         Vincent Whitchurch <vincent.whitchurch@axis.com>,
@@ -70,267 +70,112 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e5a18772-26e6-4d66-898d-08d895514a96
-X-MS-TrafficTypeDiagnostic: AM0PR10MB3442:
-X-Microsoft-Antispam-PRVS: <AM0PR10MB3442CDA1836E182AC4FBC257CBF50@AM0PR10MB3442.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Office365-Filtering-Correlation-Id: 157bab08-a95c-4090-d8b1-08d895514d56
+X-MS-TrafficTypeDiagnostic: PR3PR10MB4046:
+X-Microsoft-Antispam-PRVS: <PR3PR10MB4046C626EBECDB52F1CDB5D9CBF50@PR3PR10MB4046.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aL+/NTkh4jW7yXaqldhae7wtPjGFCukYdq/WzSPkWpbjFREeJ4U+PH75hNSDzsFbq0X8edbDs0kHNLVw2ZX4UWtESo/xXBWplXMOfmggHlqDjkiHiivwxLaEm+IkTpZKOxwxXl4lJNEqMwZV11GGm0O2Dig4yH7nfnNaUP6C4N/auztYYTpVdu/kfGhmfujeaeTGnfWMAVH2PB3SxGQ0Hn8t6QU0cReGC+hYPHJjazfQw3aBi9z/RatUo0JzhE/7WdH05gOgCfSxy/9Rzz7EC+aMjPEAkMAtUC3oqIGshNzvwfLV4napRzrcGa1MaD4CG5H9RMXsAv544yhHN1mRfqM3ShjtuC7U15o7WCcxQ48WV7Y1qdYjk57nZYbrmfG5Wi28jOzzKZLK7zqDI+b1EA==
-X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(346002)(46966005)(6266002)(8676002)(54906003)(110136005)(42186006)(2906002)(316002)(82310400003)(8936002)(107886003)(4326008)(36756003)(356005)(81166007)(70586007)(86362001)(478600001)(5660300002)(47076004)(70206006)(83380400001)(82740400003)(26005)(186003)(426003)(336012)(2616005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: SKuyikjl0mouczsi89jCmOVrsrH2jSyO9c5VcJs5EJffYE/udRVcUgOaaZAqe8Awh8p8Aou8EtsTweM4jeJdVZryhsl5T6SpHTNI5ESQGuMEIg6FKbeQ6V1z9tgV4QZMHx62ITeR2PBXDL3HMLgTmgrbmXh+nVwzG8BwUnNNtyRg7cCt7hpufl1Ndzim0FFqZLLFzZ9ZGbKSpgIaEfXm04DspD1DQWcSMW5Rhp+RnAg3Tw82f8WVH1UnuZ8noeNRmaMO2NP73cxmpaeKXhvE3PXux13yuO1Yd02+sJ2IUNLeVI5m4uLUF8mzYelyICbfbd2mnteZt3/EfE/hFSKJ+NUXuUjxzuf9jj/aOXEAP2m0+4+6UHw7k3R4h7qWHxyLJ505jewbSjvuhzxZ0U+Tdw==
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(376002)(46966005)(107886003)(82740400003)(8676002)(8936002)(70206006)(6266002)(356005)(36756003)(2906002)(81166007)(5660300002)(82310400003)(86362001)(47076004)(478600001)(186003)(54906003)(70586007)(110136005)(83380400001)(336012)(42186006)(26005)(316002)(4326008)(426003)(2616005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 16:59:24.6515
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 16:59:29.2623
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5a18772-26e6-4d66-898d-08d895514a96
+X-MS-Exchange-CrossTenant-Network-Message-Id: 157bab08-a95c-4090-d8b1-08d895514d56
 X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
 X-MS-Exchange-CrossTenant-AuthSource: VE1EUR02FT054.eop-EUR02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3442
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR10MB4046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree configuration and device variant parameters. Use the latter
-to enable the check and use of parameters specific to dual buck variants.
+Add function which iterates the regulator descriptors for the confirmed
+variant ID and registers each buck.
 
 Signed-off-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
 ---
- drivers/regulator/da9121-regulator.c | 119 +++++++++++++++++++++++++++++++++++
- include/linux/regulator/da9121.h     |  11 ++++
- 2 files changed, 130 insertions(+)
+ drivers/regulator/da9121-regulator.c | 44 +++++++++++++++++++++++++-----------
+ 1 file changed, 31 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/regulator/da9121-regulator.c b/drivers/regulator/da9121-regulator.c
-index a717e2b..1f74371 100644
+index 1f74371..6c82441 100644
 --- a/drivers/regulator/da9121-regulator.c
 +++ b/drivers/regulator/da9121-regulator.c
-@@ -14,6 +14,7 @@
- // Copyright (C) 2020 Dialog Semiconductor
- 
- #include <linux/of_device.h>
-+#include <linux/of_gpio.h>
- #include <linux/regulator/of_regulator.h>
- #include <linux/regulator/machine.h>
- #include <linux/regulator/driver.h>
-@@ -28,10 +29,67 @@
- /* Chip data */
- struct da9121 {
+@@ -31,6 +31,7 @@ struct da9121 {
  	struct device *dev;
-+	struct da9121_pdata *pdata;
+ 	struct da9121_pdata *pdata;
  	struct regmap *regmap;
++	struct regulator_dev *rdev[DA9121_IDX_MAX];
  	int variant_id;
  };
  
-+/* Define ranges for different variants, enabling translation to/from
-+ * registers. Maximums give scope to allow for transients.
-+ */
-+struct da9121_range {
-+	int val_min;
-+	int val_max;
-+	int val_stp;
-+	int reg_min;
-+	int reg_max;
-+};
-+
-+struct da9121_range da9121_10A_2phase_current = {
-+	.val_min =  7000000,
-+	.val_max = 20000000,
-+	.val_stp =  1000000,
-+	.reg_min = 1,
-+	.reg_max = 14,
-+};
-+
-+struct da9121_range da9121_6A_2phase_current = {
-+	.val_min =  7000000,
-+	.val_max = 12000000,
-+	.val_stp =  1000000,
-+	.reg_min = 1,
-+	.reg_max = 6,
-+};
-+
-+struct da9121_range da9121_5A_1phase_current = {
-+	.val_min =  3500000,
-+	.val_max = 10000000,
-+	.val_stp =   500000,
-+	.reg_min = 1,
-+	.reg_max = 14,
-+};
-+
-+struct da9121_range da9121_3A_1phase_current = {
-+	.val_min = 3500000,
-+	.val_max = 6000000,
-+	.val_stp =  500000,
-+	.reg_min = 1,
-+	.reg_max = 6,
-+};
-+
-+struct da9121_variant_info {
-+	int num_bucks;
-+	int num_phases;
-+	struct da9121_range *current_range;
-+};
-+
-+static const struct da9121_variant_info variant_parameters[] = {
-+	{ 1, 2, &da9121_10A_2phase_current },	//DA9121_TYPE_DA9121_DA9130
-+	{ 2, 1, &da9121_3A_1phase_current  },	//DA9121_TYPE_DA9220_DA9132
-+	{ 2, 1, &da9121_5A_1phase_current  },	//DA9121_TYPE_DA9122_DA9131
-+	{ 1, 2, &da9121_6A_2phase_current  },	//DA9121_TYPE_DA9217
-+};
-+
- static const struct regulator_ops da9121_buck_ops = {
- 	.enable = regulator_enable_regmap,
- 	.disable = regulator_disable_regmap,
-@@ -46,6 +104,59 @@ struct da9121 {
- 	[DA9121_IDX_BUCK2] = { .name = "buck2" },
+@@ -291,6 +292,35 @@ static int da9121_of_parse_cb(struct device_node *np,
+ 	[DA9121_TYPE_DA9217] = { &da9217_reg, NULL },
  };
  
-+static int da9121_of_parse_cb(struct device_node *np,
-+				const struct regulator_desc *desc,
-+				struct regulator_config *config)
++static int da9121_set_regulator_config(struct da9121 *chip)
 +{
-+	struct da9121 *chip = config->driver_data;
-+	struct da9121_pdata *pdata;
-+	struct gpio_desc *ena_gpiod;
++	struct regulator_config config = { };
++	unsigned int max_matches = variant_parameters[chip->variant_id].num_bucks;
++	int ret = 0;
++	int i;
 +
-+	if (chip->pdata == NULL) {
-+		pdata = devm_kzalloc(chip->dev, sizeof(*pdata), GFP_KERNEL);
-+		if (!pdata)
-+			return -ENOMEM;
-+	} else {
-+		pdata = chip->pdata;
-+	}
++	for (i = 0; i < max_matches; i++) {
++		const struct regulator_desc *regl_desc =
++			local_da9121_regulators[chip->variant_id][i];
 +
-+	pdata->num_buck++;
++		config.dev = chip->dev;
++		config.driver_data = chip;
++		config.regmap = chip->regmap;
 +
-+	if (pdata->num_buck > variant_parameters[chip->variant_id].num_bucks) {
-+		dev_err(chip->dev, "Error: excessive regulators for device\n");
-+		return -ENODEV;
-+	}
-+
-+	ena_gpiod = fwnode_gpiod_get_index(of_fwnode_handle(np), "enable", 0,
-+						GPIOD_OUT_HIGH |
-+						GPIOD_FLAGS_BIT_NONEXCLUSIVE,
-+						"da9121-enable");
-+	if (!IS_ERR(ena_gpiod))
-+		config->ena_gpiod = ena_gpiod;
-+
-+	if (variant_parameters[chip->variant_id].num_bucks == 2) {
-+		uint32_t ripple_cancel;
-+		uint32_t ripple_reg;
-+		int ret;
-+
-+		if (of_property_read_u32(da9121_matches[pdata->num_buck].of_node,
-+				"dlg,ripple-cancel", &ripple_cancel)) {
-+			if (pdata->num_buck > 1)
-+				ripple_reg = DA9xxx_REG_BUCK_BUCK2_7;
-+			else
-+				ripple_reg = DA9121_REG_BUCK_BUCK1_7;
-+
-+			ret = regmap_update_bits(chip->regmap, ripple_reg,
-+				DA9xxx_MASK_BUCK_BUCKx_7_CHx_RIPPLE_CANCEL,
-+				ripple_cancel);
-+			if (ret < 0)
-+				dev_err(chip->dev, "Cannot set ripple mode, err: %d\n", ret);
++		chip->rdev[i] = devm_regulator_register(chip->dev,
++					regl_desc, &config);
++		if (IS_ERR(chip->rdev[i])) {
++			dev_err(chip->dev, "Failed to register regulator %s, %d/%d\n",
++				regl_desc->name, (i+1), max_matches);
++			ret = PTR_ERR(chip->rdev[i]);
++			goto error;
 +		}
 +	}
 +
-+	return 0;
++error:
++	return ret;
 +}
 +
- #define DA9121_MIN_MV		300
- #define DA9121_MAX_MV		1900
- #define DA9121_STEP_MV		10
-@@ -57,6 +168,7 @@ struct da9121 {
- 	.id = DA9121_IDX_BUCK1,
- 	.name = "da9121",
- 	.of_match = "buck1",
-+	.of_parse_cb = da9121_of_parse_cb,
- 	.owner = THIS_MODULE,
- 	.regulators_node = of_match_ptr("regulators"),
- 	.ops = &da9121_buck_ops,
-@@ -80,6 +192,7 @@ struct da9121 {
- 		.id = DA9121_IDX_BUCK1,
- 		.name = "DA9220/DA9132 BUCK1",
- 		.of_match = "buck1",
-+		.of_parse_cb = da9121_of_parse_cb,
- 		.owner = THIS_MODULE,
- 		.regulators_node = of_match_ptr("regulators"),
- 		.ops = &da9121_buck_ops,
-@@ -97,6 +210,7 @@ struct da9121 {
- 		.id = DA9121_IDX_BUCK2,
- 		.name = "DA9220/DA9132 BUCK2",
- 		.of_match = "buck2",
-+		.of_parse_cb = da9121_of_parse_cb,
- 		.owner = THIS_MODULE,
- 		.regulators_node = of_match_ptr("regulators"),
- 		.ops = &da9121_buck_ops,
-@@ -117,6 +231,7 @@ struct da9121 {
- 		.id = DA9121_IDX_BUCK1,
- 		.name = "DA9122/DA9131 BUCK1",
- 		.of_match = "buck1",
-+		.of_parse_cb = da9121_of_parse_cb,
- 		.owner = THIS_MODULE,
- 		.regulators_node = of_match_ptr("regulators"),
- 		.ops = &da9121_buck_ops,
-@@ -134,6 +249,7 @@ struct da9121 {
- 		.id = DA9121_IDX_BUCK2,
- 		.name = "DA9122/DA9131 BUCK2",
- 		.of_match = "buck2",
-+		.of_parse_cb = da9121_of_parse_cb,
- 		.owner = THIS_MODULE,
- 		.regulators_node = of_match_ptr("regulators"),
- 		.ops = &da9121_buck_ops,
-@@ -153,6 +269,7 @@ struct da9121 {
- 	.id = DA9121_IDX_BUCK1,
- 	.name = "DA9217 BUCK1",
- 	.of_match = "buck1",
-+	.of_parse_cb = da9121_of_parse_cb,
- 	.owner = THIS_MODULE,
- 	.regulators_node = of_match_ptr("regulators"),
- 	.ops = &da9121_buck_ops,
-@@ -415,6 +532,7 @@ static int da9121_i2c_probe(struct i2c_client *i2c,
- 		goto error;
- 	}
+ /* DA9121 chip register model */
+ static const struct regmap_range da9121_1ch_readable_ranges[] = {
+ 	regmap_reg_range(DA9121_REG_SYS_STATUS_0, DA9121_REG_SYS_MASK_3),
+@@ -522,9 +552,6 @@ static int da9121_i2c_probe(struct i2c_client *i2c,
+ {
+ 	struct da9121 *chip;
+ 	int ret = 0;
+-	struct device *dev = &i2c->dev;
+-	struct regulator_config config = {};
+-	struct regulator_dev *rdev;
  
-+	chip->pdata = i2c->dev.platform_data;
- 	chip->variant_id = da9121_of_get_id(&i2c->dev);
- 
- 	ret = da9121_assign_chip_model(i2c, chip);
-@@ -422,6 +540,7 @@ static int da9121_i2c_probe(struct i2c_client *i2c,
+ 	chip = devm_kzalloc(&i2c->dev, sizeof(struct da9121), GFP_KERNEL);
+ 	if (!chip) {
+@@ -539,16 +566,7 @@ static int da9121_i2c_probe(struct i2c_client *i2c,
+ 	if (ret < 0)
  		goto error;
  
- 	config.dev = &i2c->dev;
-+	config.driver_data = chip;
- 	config.of_node = dev->of_node;
- 	config.regmap = chip->regmap;
+-	config.dev = &i2c->dev;
+-	config.driver_data = chip;
+-	config.of_node = dev->of_node;
+-	config.regmap = chip->regmap;
+-
+-	rdev = devm_regulator_register(&i2c->dev, &da9121_reg, &config);
+-	if (IS_ERR(rdev)) {
+-		dev_err(&i2c->dev, "Failed to register da9121 regulator\n");
+-		return PTR_ERR(rdev);
+-	}
++	ret = da9121_set_regulator_config(chip);
  
-diff --git a/include/linux/regulator/da9121.h b/include/linux/regulator/da9121.h
-index c31180d..62d9d257 100644
---- a/include/linux/regulator/da9121.h
-+++ b/include/linux/regulator/da9121.h
-@@ -16,10 +16,21 @@
- #ifndef __LINUX_REGULATOR_DA9121_H
- #define __LINUX_REGULATOR_DA9121_H
- 
-+#include <linux/regulator/machine.h>
-+
-+struct gpio_desc;
-+
- enum {
- 	DA9121_IDX_BUCK1,
- 	DA9121_IDX_BUCK2,
- 	DA9121_IDX_MAX
- };
- 
-+struct da9121_pdata {
-+	int num_buck;
-+	struct gpio_desc *gpiod_ren[DA9121_IDX_MAX];
-+	struct device_node *reg_node[DA9121_IDX_MAX];
-+	struct regulator_init_data *init_data[DA9121_IDX_MAX];
-+};
-+
- #endif
+ error:
+ 	return ret;
 -- 
 1.9.1
 
