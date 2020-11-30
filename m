@@ -2,89 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A992C8180
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFC22C8184
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgK3Jz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:55:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgK3Jz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:55:59 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 073F7206D5;
-        Mon, 30 Nov 2020 09:55:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606730118;
-        bh=VJxe+aZIiySmBjnGlaSzQW1nZfVZVMjYsyKKXY2wN24=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nTc/MyMDZGaQb1aWyIXJO7isKzXuHw9n3D796W6lqshME6XMC6XtpUiAnp9oTN8ip
-         cH6isvEIFEg0WYo/rfqT9aJcJliG5TrjVweoLcpc6YnZ9bX+xzWRFovsqcybXekYST
-         b1V+2pDOrKh4pwVV+MgOPI2lm1HSsKdhW9PYoz+E=
-Date:   Mon, 30 Nov 2020 09:55:12 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Wei Li <liwei391@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        guohanjun@huawei.com
-Subject: Re: [PATCH v3] drivers/perf: Add support for ARMv8.3-SPE
-Message-ID: <20201130095512.GA24098@willie-the-truck>
-References: <20201127060322.29025-1-liwei391@huawei.com>
- <861cf678-3e6f-7627-8d41-b9395cb6e5e0@arm.com>
+        id S1727873AbgK3J5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:57:44 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:47668 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725976AbgK3J5n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 04:57:43 -0500
+Date:   Mon, 30 Nov 2020 10:57:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606730222;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tflltwWoQDFzEIAZfxQcqqkmminXYJhABukrplz/Nbw=;
+        b=UNrg2wsOoE0VrcMOyXLbIjYA1kJQXs2k1tIhahGql5cbUAaPMgRvL5a4KIwBKwEs3VgQpE
+        pZ6kRE1DqfqDN/pcpticnMSoRLz0ULSxi06mXw5/+Eg1DDdv6qSfuvj8kzLLs2cOuu312/
+        T3TxcV/ZduYDC3do6Q+KenlqzxEICy54ZLO+foKmdEa+1yVO93JzBih8xzlTzApzIECb70
+        QDI7o4MxgihJi4Cynu90SdurZBBCynouvVvybdTUnlcmGTuMW53vPOYYZ+wy+7dshfIlJS
+        ZogN59xsm+Y3g0tNtLJZX65O9dDzHwWxO0SWObDE8cnLcBKb4yGqlP2Eqi6PHA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606730222;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tflltwWoQDFzEIAZfxQcqqkmminXYJhABukrplz/Nbw=;
+        b=s7Mxhqsz3VUZ8tm5TlB2PJ2nMBYxo12kkCdZnTRRtOl7lZrnDgbEwDSL8RchAMuyFvM7fu
+        Yl+HKAeHbI2LyeAw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.10-rc5-rt11
+Message-ID: <20201130095700.btb5fgzn4k3st52c@linutronix.de>
+References: <20201127165957.eukejthckysmjk76@linutronix.de>
+ <20201128143651.wjxajv5yrkjv2q4w@spock.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <861cf678-3e6f-7627-8d41-b9395cb6e5e0@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201128143651.wjxajv5yrkjv2q4w@spock.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 12:03:35PM +0000, Suzuki K Poulose wrote:
-> On 11/27/20 6:03 AM, Wei Li wrote:
-> > Armv8.3 extends the SPE by adding:
-> > - Alignment field in the Events packet, and filtering on this event
-> >    using PMSEVFR_EL1.
-> > - Support for the Scalable Vector Extension (SVE).
-> > 
-> > The main additions for SVE are:
-> > - Recording the vector length for SVE operations in the Operation Type
-> >    packet. It is not possible to filter on vector length.
-> > - Incomplete predicate and empty predicate fields in the Events packet,
-> >    and filtering on these events using PMSEVFR_EL1.
-> > 
-> > Update the check of pmsevfr for empty/partial predicated SVE and
-> > alignment event in SPE driver. For adaption by the version of SPE,
-> > expose 'pmsver' as cap attribute to userspace.
-> > 
-> > Signed-off-by: Wei Li <liwei391@huawei.com>
-> 
-> nit: Do we need to update the Kconfig help text too ? Right now that says :
-> 
-> --
-> 
-> 
-> tristate "Enable support for the ARMv8.2 Statistical Profiling Extension""
-> ....
-> 
-> help
->   Enable perf support for the ARMv8.2 Statistical Profiling
->   Extension, which provides periodic sampling of operations in
+On 2020-11-28 15:36:51 [+0100], Oleksandr Natalenko wrote:
+> Hi.
+Hi,
 
-I think it's ok as-is, to be honest. It identifies the version of the
-architecture when the feature was introduced, and I think it's only
-reasonable to assume that subsequent versions of the architecture might
-add extensions.
+> It seems that the v5.10-rc5-rt11 tag was not pushed:
 
-Will
+Indeed. Just pushed it.
+
+Sebastian
