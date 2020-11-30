@@ -2,184 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53CD2C824F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA012C8250
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728766AbgK3Kf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:35:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
+        id S1728791AbgK3KgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:36:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728748AbgK3Kf4 (ORCPT
+        with ESMTP id S1725902AbgK3KgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:35:56 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB9FC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:35:10 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id l23so173849pjg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:35:10 -0800 (PST)
+        Mon, 30 Nov 2020 05:36:08 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D0CC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:35:28 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id q13so19927777lfr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:35:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JhpB/t5kCjjYRTw+xINHPebhKoCjmMuMSHZrMIpoK54=;
-        b=ZurS9jYa+SkfPr8aONBeaAoWbwdGYcdP319Zi7pFHcGkGWQD6suhIhZiM6hdXlNYJX
-         NLWoXceltubUgVj5mFTsaGcWP+mqyNizBlqC3MjekPidqQ16FKtKMupb5yuJhRnsJcCc
-         HgqlZGwdWIfHqbGt8E0uja48kJ+L7QIVOuj5o=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1efkswn4cUycQKBASwkUtMVwPaZz3RLBqwkA/yVPN2Y=;
+        b=EjYOkUfDu7eW0Hd51AwmPtk74cTG0Ks5QPrXW6VSvqKwZGGbs8I80+8IfhoqxNOL3z
+         RMAa25jUYC3mFzUkCq6m4KbVPvMyN63z70cVkEIxPunkyTeMA8vMxgPtb4J+INJf9+pE
+         wx736R1hYMc+g2UumGJnFxPeCUQU7U3/+g/FNY4mRGQO3/F7GcAc0IBs43gsyU9X2GMd
+         wU6ELTYYyULMmTrCc6+qyI7CM+4yXJJ+sfxysvEAG/Ch3uBS9WQOpRXb98iu+QjIz6yd
+         4E8Qj0+Ty5m1ePO9Akp1J3acjuDaWOMKUmzgM01xeIN9eKjkcjLNnBxNVd8XtaxieG0o
+         wR8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JhpB/t5kCjjYRTw+xINHPebhKoCjmMuMSHZrMIpoK54=;
-        b=qD3jkfgOlacBenGHHkTQWfuCApOQwKXzQm1Lq8or0XMwcUqb/em7BUw9UMdBxFM7Th
-         5vRe3ANLSFt+815Z2nmMp5hU/pJlJ8fAnxPd3Fd3gNjNsDkgH5m/1mIpkDrWkqYW3CbF
-         FvqNzFls0Pag/Pz2WuoVZy51BHIyMCs2qFUiH/U8WNXO4CoxhzkCnNfzxRFpcm2+nFFN
-         wsEQ43gD/jJ8KOyWKqfU8Usg3SiJMwhZO2G197v718qog0+xv3S/W3F8TxrfWn37V4bv
-         kkQX6xDr/OZUMT6G1DpA54+LDraBD9fAW0c5N2WbVHC2iF4jZjYk94yFERRE3EhMgMRH
-         5wkA==
-X-Gm-Message-State: AOAM532OkTaWvowVNcKGflgZymKr4GRuY7Pq6o4k3p9F//Iiss02pRW1
-        hZUtJ7DqKd6r0yrHzUQc2GmAqQ==
-X-Google-Smtp-Source: ABdhPJyV9225G6GhzTbG4x8q6OQiHe5mbw2XjxdHxilInipa53F7zqsr/KwXrSFQ1pK695aHz1Bf/Q==
-X-Received: by 2002:a17:90a:3d0c:: with SMTP id h12mr26010674pjc.177.1606732510116;
-        Mon, 30 Nov 2020 02:35:10 -0800 (PST)
-Received: from chromium.org ([2401:fa00:1:b:f693:9fff:fef4:a8fc])
-        by smtp.gmail.com with ESMTPSA id m18sm21844330pjl.41.2020.11.30.02.35.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 02:35:09 -0800 (PST)
-Date:   Mon, 30 Nov 2020 18:35:05 +0800
-From:   Ikjoon Jang <ikjn@chromium.org>
-To:     Crystal Guo <crystal.guo@mediatek.com>
-Cc:     p.zabel@pengutronix.de, robh+dt@kernel.org, matthias.bgg@gmail.com,
-        devicetree@vger.kernel.org, yong.liang@mediatek.com,
-        stanley.chu@mediatek.com, srv_heupstream@mediatek.com,
-        seiya.wang@mediatek.com, linux-kernel@vger.kernel.org,
-        fan.chen@mediatek.com, linux-mediatek@lists.infradead.org,
-        yingjoe.chen@mediatek.com, s-anna@ti.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [v6,2/3] reset-controller: ti: introduce a new reset handler
-Message-ID: <20201130103505.GA3019533@chromium.org>
-References: <20200930022159.5559-1-crystal.guo@mediatek.com>
- <20200930022159.5559-3-crystal.guo@mediatek.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1efkswn4cUycQKBASwkUtMVwPaZz3RLBqwkA/yVPN2Y=;
+        b=k4nTSUrpIOE1TA5Wg1XP+jLYlz66pFrgPHzmMoDYJzdSeqDqQP0ozbNq3gyfn8V98+
+         DcdnOVJGICxZqyl1BGhI/ZdELB42cCFOG2Ug6Lft8WxstHdtjW4eDT60KUf+RMdmHI7F
+         GEIn98oJjkeyS0m7rNfMRDqWyFCcFc6BL306u8KQ4UJo3YshsCtV16pjOin0SaFmeqvZ
+         jN6x/ul6KbdjkomoDPO/tck5ZFfvQ9iOrKXuQR4tNeOEwcEOqCrlSqbf+jF+zvOE+vOe
+         ITpSMUhxCWgk2uaQ/itautVKI5DUOdrx0j55AbssXZMZLmuZniEiV8RXyvl7TKcDLucY
+         uEPw==
+X-Gm-Message-State: AOAM532CQIUhjLkn4axyGpXLC5fkSyVspYSWi+KzTCqry498NFXk7p/q
+        MqiuI8EzYn620RlCGtshlo8Yy93Gnx52uG5T47du/A==
+X-Google-Smtp-Source: ABdhPJy/cDd7cSD+3NnLHGJtfwf72cutGWqAHZMYaXiKl6y4iCLcHSfnIFbnpKyq8BQTm+Glxw/0BT1fbSCt8a6lnKw=
+X-Received: by 2002:a19:8347:: with SMTP id f68mr9106032lfd.83.1606732526677;
+ Mon, 30 Nov 2020 02:35:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930022159.5559-3-crystal.guo@mediatek.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org> <20201117232003.3580179-15-joel@joelfernandes.org>
+In-Reply-To: <20201117232003.3580179-15-joel@joelfernandes.org>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 30 Nov 2020 11:35:15 +0100
+Message-ID: <CAKfTPtC1VvON-Q6RrEXUkkURbY14b=nEAzGdXwCbWdqNiOz5yg@mail.gmail.com>
+Subject: Re: [PATCH -tip 14/32] sched: migration changes for core scheduling
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>,
+        Jiang Biao <benbjiang@tencent.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        OWeisse@umich.edu, Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:21:58AM +0800, Crystal Guo wrote:
-> Introduce ti_syscon_reset() to integrate assert and deassert together.
-> If some modules need do serialized assert and deassert operations
-> to reset itself, reset_control_reset can be called for convenience.
-> 
-> Such as reset-qcom-aoss.c, it integrates assert and deassert together
-> by 'reset' method. MTK Socs also need this method to perform reset.
-> 
-> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
-
-Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
-
+On Wed, 18 Nov 2020 at 00:20, Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> From: Aubrey Li <aubrey.li@intel.com>
+>
+>  - Don't migrate if there is a cookie mismatch
+>      Load balance tries to move task from busiest CPU to the
+>      destination CPU. When core scheduling is enabled, if the
+>      task's cookie does not match with the destination CPU's
+>      core cookie, this task will be skipped by this CPU. This
+>      mitigates the forced idle time on the destination CPU.
+>
+>  - Select cookie matched idle CPU
+>      In the fast path of task wakeup, select the first cookie matched
+>      idle CPU instead of the first idle CPU.
+>
+>  - Find cookie matched idlest CPU
+>      In the slow path of task wakeup, find the idlest CPU whose core
+>      cookie matches with task's cookie
+>
+>  - Don't migrate task if cookie not match
+>      For the NUMA load balance, don't migrate task to the CPU whose
+>      core cookie does not match with task's cookie
+>
+> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
+> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> Signed-off-by: Vineeth Remanan Pillai <viremana@linux.microsoft.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > ---
->  drivers/reset/reset-ti-syscon.c | 40 ++++++++++++++++++++++++++++++++-
->  1 file changed, 39 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/reset/reset-ti-syscon.c b/drivers/reset/reset-ti-syscon.c
-> index a2635c21db7f..5d1f8306cd4f 100644
-> --- a/drivers/reset/reset-ti-syscon.c
-> +++ b/drivers/reset/reset-ti-syscon.c
-> @@ -15,15 +15,22 @@
->   * GNU General Public License for more details.
->   */
->  
-> +#include <linux/delay.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> +#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
->  #include <linux/reset-controller.h>
->  
->  #include <dt-bindings/reset/ti-syscon.h>
->  
-> +struct mediatek_reset_data {
-> +	unsigned char *reset_bits;
-> +	unsigned int reset_duration_us;
-> +};
+>  kernel/sched/fair.c  | 64 ++++++++++++++++++++++++++++++++++++++++----
+>  kernel/sched/sched.h | 29 ++++++++++++++++++++
+>  2 files changed, 88 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index de82f88ba98c..ceb3906c9a8a 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -1921,6 +1921,15 @@ static void task_numa_find_cpu(struct task_numa_env *env,
+>                 if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
+>                         continue;
+>
+> +#ifdef CONFIG_SCHED_CORE
+> +               /*
+> +                * Skip this cpu if source task's cookie does not match
+> +                * with CPU's core cookie.
+> +                */
+> +               if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
+> +                       continue;
+> +#endif
 > +
->  /**
->   * struct ti_syscon_reset_control - reset control structure
->   * @assert_offset: reset assert control register offset from syscon base
-> @@ -56,6 +63,7 @@ struct ti_syscon_reset_data {
->  	struct regmap *regmap;
->  	struct ti_syscon_reset_control *controls;
->  	unsigned int nr_controls;
-> +	const struct mediatek_reset_data *reset_data;
->  };
->  
->  #define to_ti_syscon_reset_data(rcdev)	\
-> @@ -158,9 +166,29 @@ static int ti_syscon_reset_status(struct reset_controller_dev *rcdev,
->  		!(control->flags & STATUS_SET);
->  }
->  
-> +static int ti_syscon_reset(struct reset_controller_dev *rcdev,
-> +				  unsigned long id)
+>                 env->dst_cpu = cpu;
+>                 if (task_numa_compare(env, taskimp, groupimp, maymove))
+>                         break;
+> @@ -5867,11 +5876,17 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
+>
+>         /* Traverse only the allowed CPUs */
+>         for_each_cpu_and(i, sched_group_span(group), p->cpus_ptr) {
+> +               struct rq *rq = cpu_rq(i);
+> +
+> +#ifdef CONFIG_SCHED_CORE
+> +               if (!sched_core_cookie_match(rq, p))
+> +                       continue;
+> +#endif
+> +
+>                 if (sched_idle_cpu(i))
+>                         return i;
+>
+>                 if (available_idle_cpu(i)) {
+> -                       struct rq *rq = cpu_rq(i);
+>                         struct cpuidle_state *idle = idle_get_state(rq);
+>                         if (idle && idle->exit_latency < min_exit_latency) {
+>                                 /*
+> @@ -6129,8 +6144,18 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>         for_each_cpu_wrap(cpu, cpus, target) {
+>                 if (!--nr)
+>                         return -1;
+> -               if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> -                       break;
+> +
+> +               if (available_idle_cpu(cpu) || sched_idle_cpu(cpu)) {
+> +#ifdef CONFIG_SCHED_CORE
+> +                       /*
+> +                        * If Core Scheduling is enabled, select this cpu
+> +                        * only if the process cookie matches core cookie.
+> +                        */
+> +                       if (sched_core_enabled(cpu_rq(cpu)) &&
+> +                           p->core_cookie == cpu_rq(cpu)->core->core_cookie)
+> +#endif
+> +                               break;
+> +               }
+
+This makes code unreadable.
+Put this coresched specific stuff in an inline function; You can have
+a look at what is done with asym_fits_capacity()
+
+>         }
+>
+>         time = cpu_clock(this) - time;
+> @@ -7530,8 +7555,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+>          * We do not migrate tasks that are:
+>          * 1) throttled_lb_pair, or
+>          * 2) cannot be migrated to this CPU due to cpus_ptr, or
+> -        * 3) running (obviously), or
+> -        * 4) are cache-hot on their current CPU.
+> +        * 3) task's cookie does not match with this CPU's core cookie
+> +        * 4) running (obviously), or
+> +        * 5) are cache-hot on their current CPU.
+>          */
+>         if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
+>                 return 0;
+> @@ -7566,6 +7592,15 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+>                 return 0;
+>         }
+>
+> +#ifdef CONFIG_SCHED_CORE
+> +       /*
+> +        * Don't migrate task if the task's cookie does not match
+> +        * with the destination CPU's core cookie.
+> +        */
+> +       if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
+> +               return 0;
+> +#endif
+> +
+>         /* Record that we found atleast one task that could run on dst_cpu */
+>         env->flags &= ~LBF_ALL_PINNED;
+>
+> @@ -8792,6 +8827,25 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+>                                         p->cpus_ptr))
+>                         continue;
+>
+> +#ifdef CONFIG_SCHED_CORE
+> +               if (sched_core_enabled(cpu_rq(this_cpu))) {
+> +                       int i = 0;
+> +                       bool cookie_match = false;
+> +
+> +                       for_each_cpu(i, sched_group_span(group)) {
+> +                               struct rq *rq = cpu_rq(i);
+> +
+> +                               if (sched_core_cookie_match(rq, p)) {
+> +                                       cookie_match = true;
+> +                                       break;
+> +                               }
+> +                       }
+> +                       /* Skip over this group if no cookie matched */
+> +                       if (!cookie_match)
+> +                               continue;
+> +               }
+> +#endif
+
+same here, encapsulate this to keep find_idlest_group readable
+
+> +
+>                 local_group = cpumask_test_cpu(this_cpu,
+>                                                sched_group_span(group));
+>
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index e72942a9ee11..de553d39aa40 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1135,6 +1135,35 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
+>
+>  bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
+>
+> +/*
+> + * Helper to check if the CPU's core cookie matches with the task's cookie
+> + * when core scheduling is enabled.
+> + * A special case is that the task's cookie always matches with CPU's core
+> + * cookie if the CPU is in an idle core.
+> + */
+> +static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
 > +{
-> +	struct ti_syscon_reset_data *data = to_ti_syscon_reset_data(rcdev);
-> +	int ret;
+> +       bool idle_core = true;
+> +       int cpu;
 > +
-> +	if (data->reset_data) {
-> +		ret = ti_syscon_reset_assert(rcdev, id);
-> +		if (ret)
-> +			return ret;
-> +		usleep_range(data->reset_data->reset_duration_us,
-> +			data->reset_data->reset_duration_us * 2);
+> +       /* Ignore cookie match if core scheduler is not enabled on the CPU. */
+> +       if (!sched_core_enabled(rq))
+> +               return true;
 > +
-
-There are many users using assert() and deassert() seperately
-without any delay between them.
-
-If there's a timing requirement between assertion and deassertion,
-shouldn't there be a same amount of delay in assert?
-
-> +		return ti_syscon_reset_deassert(rcdev, id);
-> +	} else {
-> +		return -ENOTSUPP;
-> +	}
+> +       for_each_cpu(cpu, cpu_smt_mask(cpu_of(rq))) {
+> +               if (!available_idle_cpu(cpu)) {
+> +                       idle_core = false;
+> +                       break;
+> +               }
+> +       }
+> +
+> +       /*
+> +        * A CPU in an idle core is always the best choice for tasks with
+> +        * cookies.
+> +        */
+> +       return idle_core || rq->core->core_cookie == p->core_cookie;
 > +}
 > +
->  static const struct reset_control_ops ti_syscon_reset_ops = {
->  	.assert		= ti_syscon_reset_assert,
->  	.deassert	= ti_syscon_reset_deassert,
-> +	.reset		= ti_syscon_reset,
->  	.status		= ti_syscon_reset_status,
->  };
->  
-> @@ -182,7 +210,11 @@ static int ti_syscon_reset_probe(struct platform_device *pdev)
->  	if (IS_ERR(regmap))
->  		return PTR_ERR(regmap);
->  
-> -	list = of_get_property(np, "ti,reset-bits", &size);
-> +	data->reset_data = of_device_get_match_data(&pdev->dev);
-> +	if (data->reset_data)
-> +		list = of_get_property(np, data->reset_data->reset_bits, &size);
-> +	else
-> +		list = of_get_property(np, "ti,reset-bits", &size);
->  	if (!list || (size / sizeof(*list)) % 7 != 0) {
->  		dev_err(dev, "invalid DT reset description\n");
->  		return -EINVAL;
-> @@ -217,8 +249,14 @@ static int ti_syscon_reset_probe(struct platform_device *pdev)
->  	return devm_reset_controller_register(dev, &data->rcdev);
->  }
->  
-> +static const struct mediatek_reset_data mtk_reset_data = {
-> +	.reset_bits = "mediatek,reset-bits",
-> +	.reset_duration_us = 10,
-> +};
-> +
->  static const struct of_device_id ti_syscon_reset_of_match[] = {
->  	{ .compatible = "ti,syscon-reset", },
-> +	{ .compatible = "mediatek,syscon-reset", .data = &mtk_reset_data},
->  	{ /* sentinel */ },
->  };
->  MODULE_DEVICE_TABLE(of, ti_syscon_reset_of_match);
+>  extern void queue_core_balance(struct rq *rq);
+>
+>  #else /* !CONFIG_SCHED_CORE */
+> --
+> 2.29.2.299.gdc1121823c-goog
+>
