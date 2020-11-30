@@ -2,100 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DEA2C8ADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0832C8AE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387495AbgK3RYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:24:20 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:36326 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387484AbgK3RYT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:24:19 -0500
-Received: by mail-io1-f65.google.com with SMTP id z136so12606269iof.3;
-        Mon, 30 Nov 2020 09:24:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cPMxZlQxoYwbe5rNwYcUWeT/RRRCVfvUlWJa6gfqm9M=;
-        b=Zv4rCEMQU0PvnMGsoqhaf+VW4Nh2cDag1d855c2OcfghSRcqZ5tf6Jbu2sgFpAUrtl
-         4qQ9Kqw3/wq/qGQ6wMjd85lRC+iMdF2qFE4iphQE5aUt9UxZgbHAZqItIjMx6jNCTQab
-         P/lK+v3F0ZDo68m4Oql6sD5VL54+6k9G7mDeecXHjYgWU1D4GvQXydvj4vQ14H4P0NQ/
-         5Y8fddhZuh1OrrfTuQ1Bk/uitHR9IBG8pcFBSmRPIKhyHmvm7aCGfNxU0AkyUJmBe8If
-         2hsDSvJwffwJ2+CxSvz38p2+SUz22EyYPfrR5rZHtJ3pFGF5YV3lFTUHyfKu3siwaw3N
-         JsPQ==
-X-Gm-Message-State: AOAM530veDz1caqdxeIEegw11T9NMZKI98+Mxu8372USnPUvxm9/Q5Pv
-        KOR39GBgNZBYZSTPHahg4w==
-X-Google-Smtp-Source: ABdhPJxScbSfxfcljRrtXVcqlG+VUieO2t0Nb+zeF5cTM0gGDWnks5RgDuVjKDALYx3iQTodfW8HVQ==
-X-Received: by 2002:a5e:de08:: with SMTP id e8mr7962278iok.203.1606757018516;
-        Mon, 30 Nov 2020 09:23:38 -0800 (PST)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l6sm11721464ili.78.2020.11.30.09.23.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 09:23:37 -0800 (PST)
-Received: (nullmailer pid 2663209 invoked by uid 1000);
-        Mon, 30 Nov 2020 17:23:35 -0000
-Date:   Mon, 30 Nov 2020 10:23:35 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
-        ohad@wizery.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 01/15] dt-bindings: remoteproc: Add bindind to support
- autonomous processors
-Message-ID: <20201130172335.GA2662913@robh.at.kernel.org>
-References: <20201126210642.897302-1-mathieu.poirier@linaro.org>
- <20201126210642.897302-2-mathieu.poirier@linaro.org>
+        id S2387507AbgK3RYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:24:45 -0500
+Received: from verein.lst.de ([213.95.11.211]:45231 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387484AbgK3RYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:24:44 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id BA34C6736F; Mon, 30 Nov 2020 18:24:01 +0100 (CET)
+Date:   Mon, 30 Nov 2020 18:24:01 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Tom Yan <tom.ty89@gmail.com>, Christoph Hellwig <hch@lst.de>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma()
+ to scsi_add_host()
+Message-ID: <20201130172401.GA1735@lst.de>
+References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com> <20201128154849.3193-1-tom.ty89@gmail.com> <20201128154849.3193-2-tom.ty89@gmail.com> <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com> <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com> <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com> <X8T0E2qvF2cgADl+@kroah.com> <dd557c38-a919-5e5e-ab3b-17a235f17139@redhat.com> <20201130172004.GA966032@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126210642.897302-2-mathieu.poirier@linaro.org>
+In-Reply-To: <20201130172004.GA966032@rowland.harvard.edu>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 14:06:28 -0700, Mathieu Poirier wrote:
-> This patch adds a binding to guide the remoteproc core on how to deal with
-> remote processors in two cases:
+On Mon, Nov 30, 2020 at 12:20:04PM -0500, Alan Stern wrote:
+> > https://lore.kernel.org/linux-usb/fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com/T/#t
 > 
-> 1) When an application holding a reference to a remote processor character
->    device interface crashes.
+> It's hard to go wrong with reverting, so it's okay with me.
 > 
-> 2) when the platform driver for a remote processor is removed.
+> Still, Hans, have you checked out the difference between the 
+> scsi_add_host() and scsi_add_host_with_dma() calls?  It's just a matter 
+> of using dev vs. sysdev.  In particular, have you checked to see what 
+> those two devices are on your system?
 > 
-> In both cases if "autonomous-on-core-reboot" is specified in the remote
-> processor DT node, the remoteproc core will detach the remote processor
-> rather than switching it off.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  .../bindings/remoteproc/remoteproc-core.yaml  | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
-> 
+> It seems likely that if one of those calls messes up some DMA settings, 
+> the other one does too -- just maybe not settings that matter much.
 
+The effects from scsi_add_host_with_dma should be:
 
-My bot found errors running 'make dt_binding_check' on your patch:
+ (1) picking which device is used for the SCSI dma map helpers
+ (2) use dma_max_mapping_size() to limite the I/O size
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml: 'additionalProperties' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1406889
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+The helpers affected by (1) are not used by UAS (or usb-storage for that
+matter), while we do have a real bug in the intel-iommu with bounce
+buffering implementation used in the bug report.  So my clear bet is on
+(2) not limiting the size, but the patch that would have fixed this
+did not make a different for Hans, which leaves me a little confused.
