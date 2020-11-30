@@ -2,124 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15782C8BC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6268E2C8BCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387836AbgK3RxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:53:13 -0500
-Received: from pb-smtp21.pobox.com ([173.228.157.53]:60668 "EHLO
-        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387401AbgK3RxM (ORCPT
+        id S2387850AbgK3Ryc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:54:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56487 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726505AbgK3Ryb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:53:12 -0500
-Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 09CEF10B342;
-        Mon, 30 Nov 2020 12:52:31 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=5R1AupPP2LzuDU3f4TF51/Ai7fs=; b=tWINt5
-        TuU3Rap+niKJ9lle7repEoceiqf7JDzzpoIJB4hzSfW4TcHpF4juMuMnMRzDSxQE
-        vUfe04DZX2t888QhdqdZLFyVli6Ty+UZj9JX1/hzXNaHoGltgZDrrNze5SQKRUf1
-        H+AOJRE2U1O5kg9n6x10fFkV6lyZ0yzVAf4t8=
-Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 0221210B341;
-        Mon, 30 Nov 2020 12:52:31 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=U80uzZV27XkAzKFLC71qRcAEY0mzyiAxcmoCHHmvgNc=; b=DVPLUnJeaS3e08/wQQWgU2E+BdrRMQtEuIsmviBBd8lQACuA79tsRjWt1uW++qQK9Ys8XuzlNwCoiJn1HjvDLMI6Nop5Imq95ZQighmY3gnp1AfjzBIfO2UIniRAv2jlZbzl/dHCixF3gpU6i6l9cf51nE0q3/VCSdKeMDuIn0w=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id ECD6710B340;
-        Mon, 30 Nov 2020 12:52:27 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 1A1B92DA09EC;
-        Mon, 30 Nov 2020 12:52:26 -0500 (EST)
-Date:   Mon, 30 Nov 2020 12:52:25 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Ard Biesheuvel <ardb@kernel.org>
-cc:     Antony Yu <swpenim@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RESEND,PATCH] ARM: fix __div64_32() error when compiling with
- clang
-In-Reply-To: <CAMj1kXGuHw+p5=YPrVwaHjp5hQ9uxsp7hbA0Vk-ppZ3_qHDVrA@mail.gmail.com>
-Message-ID: <85p0oop-5pq-p6o-7560-297sn1np3os@syhkavp.arg>
-References: <20201123073634.6854-1-swpenim@gmail.com> <CAMj1kXGsQ9K57SvZ74pmD+_=338sGXjc_t+hCXMh-9BPanXnhA@mail.gmail.com> <CAMj1kXGs-woGGnM2QkhY5NbRRKP8_N4BY9ScBtga8mcyHoK2+A@mail.gmail.com> <89n4o5sp-4432-7r33-r9s-54po13q25pnp@syhkavp.arg>
- <CAMj1kXGuHw+p5=YPrVwaHjp5hQ9uxsp7hbA0Vk-ppZ3_qHDVrA@mail.gmail.com>
+        Mon, 30 Nov 2020 12:54:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606758785;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XZHdMrptq2/rYXjufX3+GIBx1xnGVoh3uBEQ7r4wKDM=;
+        b=E3ILZUTwwinvQZ7+YTUqQbAYEHuWm2OmnznwRmHQK8xQBBtupL5SNd+i9j9E+KamHGtkWn
+        CFRwsKxA+W3RHiqHzi31NEPjrFODObN0W1DXOdrRnRW3YaUtgThWkg5OqV3JRncBsPlUp0
+        tPfWjwF7uAlU9AW0YnHiaNrh5ZoaZOc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-awqIamcHN0aE1UzudDVo3w-1; Mon, 30 Nov 2020 12:53:03 -0500
+X-MC-Unique: awqIamcHN0aE1UzudDVo3w-1
+Received: by mail-ej1-f72.google.com with SMTP id dc13so6120285ejb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:53:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XZHdMrptq2/rYXjufX3+GIBx1xnGVoh3uBEQ7r4wKDM=;
+        b=Ms2tw7DrW9c8tuzpTbIoXnb9z2OQyVmofMnmuhYjrjCIqeiwD7G9YKoc/NXmb8UEiH
+         Ajq7r/9D6qupiakwCn8yxtAVRWfBaj+JxzsIGAUcq5hHt8x1UqslC/ItZAfHl79A86Fs
+         4Hu3wxqepLnnavyCVsnfF+BjaSsZZ/VC5SWZy+ZfFCpHUY1M7XYbxdSb5H0rkClUqJcN
+         8CIXAKtmQNY7kbJu09HG/7OF+irB6V/MI2BlgKR4UqwyTgtBXdzNvk5HkyLEQTDVsG7x
+         JPDg0VWPsJqzSiAr/235uI9U1O4GB2Lc7a0ZXCqrxVh6cUlgmoyUK+6yIQNkwVJYC8iv
+         0OjQ==
+X-Gm-Message-State: AOAM533KJwG/x5VBPH5YmnJ7S8Q5yVPg00ryY/py+/1ZhU/b+rAmtyaA
+        rbWs4AFZ5Rd9/eIuIUXpOYEilrWlt7DKAi0ZelvcpJm8UKaeLDF4aiiqT6lllUj+jk3VOLxv2M7
+        Ku4yU9QM6GQjS9uwaf4OxfShw
+X-Received: by 2002:aa7:d2c9:: with SMTP id k9mr18165156edr.74.1606758781770;
+        Mon, 30 Nov 2020 09:53:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzr0C3ztJydvyz+oFfxr6BS9zKoQLZ9ul0+KLwEWxb/tzWQGQh/4ALcMPa0sNYIu2m1iyoA+g==
+X-Received: by 2002:aa7:d2c9:: with SMTP id k9mr18165131edr.74.1606758781630;
+        Mon, 30 Nov 2020 09:53:01 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id k17sm8657435ejh.103.2020.11.30.09.53.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 09:53:00 -0800 (PST)
+Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20201125153550.810101-1-sashal@kernel.org>
+ <20201125153550.810101-22-sashal@kernel.org>
+ <25cd0d64-bffc-9506-c148-11583fed897c@redhat.com>
+ <20201125180102.GL643756@sasha-vm>
+ <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
+ <20201129041314.GO643756@sasha-vm>
+ <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
+ <20201129210650.GP643756@sasha-vm>
+ <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
+ <20201130173832.GR643756@sasha-vm>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <238cbdd1-dabc-d1c1-cff8-c9604a0c9b95@redhat.com>
+Date:   Mon, 30 Nov 2020 18:52:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: CFA3A43E-3334-11EB-831A-D609E328BF65-78420484!pb-smtp21.pobox.com
+In-Reply-To: <20201130173832.GR643756@sasha-vm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020, Ard Biesheuvel wrote:
-
-> On Mon, 30 Nov 2020 at 16:51, Nicolas Pitre <nico@fluxnic.net> wrote:
+On 30/11/20 18:38, Sasha Levin wrote:
+>> I am not aware of any public CI being done _at all_ done on 
+>> vhost-scsi, by CKI or everyone else.  So autoselection should be done 
+>> only on subsystems that have very high coverage in CI.
 > 
-> > Here's my version of the fix which should be correct. Warning: this
-> > is completely untested, but should in theory produce the same code on
-> > modern gcc.
-> >
-> > diff --git a/arch/arm/include/asm/div64.h b/arch/arm/include/asm/div64.h
-> > index 898e9c78a7..595e538f5b 100644
-> > --- a/arch/arm/include/asm/div64.h
-> > +++ b/arch/arm/include/asm/div64.h
-> > @@ -21,29 +21,20 @@
-> >   * assembly implementation with completely non standard calling convention
-> >   * for arguments and results (beware).
-> >   */
-> > -
-> > -#ifdef __ARMEB__
-> > -#define __xh "r0"
-> > -#define __xl "r1"
-> > -#else
-> > -#define __xl "r0"
-> > -#define __xh "r1"
-> > -#endif
-> > -
-> >  static inline uint32_t __div64_32(uint64_t *n, uint32_t base)
-> >  {
-> >         register unsigned int __base      asm("r4") = base;
-> >         register unsigned long long __n   asm("r0") = *n;
-> >         register unsigned long long __res asm("r2");
-> > -       register unsigned int __rem       asm(__xh);
-> > -       asm(    __asmeq("%0", __xh)
-> > +       unsigned int __rem;
-> > +       asm(    __asmeq("%0", "r0")
-> >                 __asmeq("%1", "r2")
-> > -               __asmeq("%2", "r0")
-> > -               __asmeq("%3", "r4")
-> > +               __asmeq("%2", "r4")
-> >                 "bl     __do_div64"
-> > -               : "=r" (__rem), "=r" (__res)
-> > -               : "r" (__n), "r" (__base)
-> > +               : "+r" (__n), "=r" (__res)
-> > +               : "r" (__base)
-> >                 : "ip", "lr", "cc");
-> > +       __rem = __n >> 32;
-> 
-> This treats {r0, r1} as a {low, high} pair, regardless of endianness,
-> and so it puts the value of r0 into r1. Doesn't that mean the shift
-> should only be done on little endian?
+> Where can I find a testsuite for virtio/vhost? I see one for KVM, but
+> where is the one that the maintainers of virtio/vhost run on patches
+> that come in?
 
-Not quite. r0-r1 = low-high is for little endian. Then "__n >> 32" is 
-actually translated into "mov r0, r1" to move it into __rem and returned 
-through r0.
+I don't know of any, especially for vhost-scsi.  MikeC?
 
-On big endial it is r0-r1 = high-low. Here "__n >> 32" picks r0 and 
-moves it to __rem which is returned through r0 so no extra instruction 
-needed.
+Paolo
 
-Of course the function is inlined so r0 can be anything, or optimized 
-away if__rem is not used.
-
-
-Nicolas
