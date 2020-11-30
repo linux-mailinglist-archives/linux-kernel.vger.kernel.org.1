@@ -2,191 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98182C9154
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C342C9157
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgK3Wm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:42:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39734 "EHLO
+        id S2388237AbgK3Wm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:42:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726715AbgK3Wm3 (ORCPT
+        with ESMTP id S1726304AbgK3Wm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:42:29 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3A3C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:41:48 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id y24so12986450otk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:41:48 -0800 (PST)
+        Mon, 30 Nov 2020 17:42:57 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52507C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:42:17 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id b63so11358785pfg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:42:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cffxSMp/tqz/8dS/QJHaqWHBLSeQ1Bh+L4mSuRlC9KQ=;
-        b=XxbLp+dE7ThVntrw76R8GDuw2aYCdf1M0rowUeGSoDltF2E2f+eI17Jc8HV5Cl0PJb
-         inYi3gBagNBdHPopQZDTTroh1uFxElUa7bA6ermpb5wc3nZWyu9+NdIVnPPcpmJjdWHM
-         pbAb8/AutyNR6PTwiNggUW6XHusnR9LQ8ALs/2vDqB7+sqF3zP9skLkYrIyOrtr5huWq
-         nzxa3a2f+Al1g5g8HxOJBOFDuhRqNi7Q7R0ew//BEv7x8X7fxqogAEyjTrScBGwjgPjN
-         iDB2h6+di/yh9i4CHOHqmKvAODzczCpL5Bht7omX3A1np5FsPsfYNo/aFVfxgnW/tHmH
-         N2JQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jU2fyM0lZB1mWD112XT0MzePw1IcvoPEr8FjSNN3GVc=;
+        b=d/L7bjhpvlqbSpSiVZevXSgcedQhlGt5uyWgzdEQAaniYUTBj/VsH48ccMyHDRRXPs
+         B6xvUL3Sua3vcR02NeAf15w5INoh7Rl5tuS43cWotBCyKJchxdKcis6vjCJZrTnPF5fI
+         Pb68Iwm5BMEX+8bZLJS8yKgc378S/uhf7tnpCjUqktQUL27LDwY9/tYasPN/fY8jaHGi
+         fjO0eEW0jpX227WVC2zhjJBp/cRCTFO6vAKBisKcFDjbXpX7Il5hWhgug5b9KS9jhXcO
+         4WiIS8NpOOKJsREthNVMmbP8zecPGZLm16ubwdRg3ZIoyNTDz+9CFDKaYMknw41OFs1X
+         2sXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cffxSMp/tqz/8dS/QJHaqWHBLSeQ1Bh+L4mSuRlC9KQ=;
-        b=o8eGe1zDq6lNnAh/blhXN1y+rmZ7v2X6SE6LxD7IL9Z0Yj/z1i56XjEb/4m2EK+Php
-         Mj6jB8R4chjqFanjiHY+wcsN4NJ8ARxpRMzXc2dWrQ0MeqWC+QDvZuE5Zu4SwfM8a1Kq
-         byhAJ21GmWcLPhl140DGe2HK8Xit8yyLRhbanBoE1WQ+EfX8LnX1O8SLwROUgtrvcHO9
-         b1vbGyiJj51zdJ2f3c6laVPFtJtQiWVsfE1YG6GZpb/y8y+H8cORABPsAvUhZfhC5Pfh
-         4Kj7psjpwaZI/FpNg0d4FITz3dsJaa+dnkIazJzW7DSvZuWZ2Gau+iLJTS7efC/mDMOi
-         PP+g==
-X-Gm-Message-State: AOAM533xb1CV6ihVSXFGyVH3PnEd09TrlIxRWqXVL42UrOkfwabBko4p
-        Gz72cvcJhIeAjwsKKPJQoerhnxb779hsu55TRVI=
-X-Google-Smtp-Source: ABdhPJxQObIZqEQzrYyJNyLOSlwaGlT6oG/gi0of7EFIb3bqwmShNujaPgIuvQhIDmBGsNmmf89T2gkZqt+A5PIxe/I=
-X-Received: by 2002:a9d:4713:: with SMTP id a19mr19239286otf.132.1606776106727;
- Mon, 30 Nov 2020 14:41:46 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jU2fyM0lZB1mWD112XT0MzePw1IcvoPEr8FjSNN3GVc=;
+        b=EhE4Vou9WrKSx+I2ifKj78rfvJYK5CRGOZ33d0yeTteKPV7f6xwE1eis4XY8frHN8y
+         0BnbIE8GjbD1rRb5WOKrewFDfgVI3QX8mSgdlbPt9gvztpQAwEZwNQGNag+4SEnSNhH3
+         vCS/Zs45z3nBkPqZ8eUGNrU2eQS2Re09o1j/K2DDd2AADjEYEndnpq3j4NHp1qechG4h
+         VJefqjHAuO9uLUr8ywraXPD1mnP5a342e9J8N8/O51ul7r1fW0YycN55iR9BXQDL6U6x
+         5RbaQ15tlC3GkdVeE0cNgSo3nxfWx+dyfh4AuyM+0y+fgfMj6TWKDRKmjbPfMSmofhZL
+         5Dyg==
+X-Gm-Message-State: AOAM533exjKUn/A3lGlmllwVTLKivurD158LV9jOTMu9YcgXAl+0LVEB
+        LM1CDIsLe1yTA+2X+2IgYsAGpg==
+X-Google-Smtp-Source: ABdhPJwH1L6Y4ECljQI3VNFAMDdmvzfXlcEdtckdXik+6mI6dg1wPGHhjA4wAQaVfJVD+ZTR71ZcLQ==
+X-Received: by 2002:a63:da0a:: with SMTP id c10mr20184407pgh.145.1606776136873;
+        Mon, 30 Nov 2020 14:42:16 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id r11sm509642pjd.52.2020.11.30.14.42.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 14:42:16 -0800 (PST)
+Date:   Mon, 30 Nov 2020 15:42:14 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
+        linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        jonathan.zhouwen@huawei.com, coresight@lists.linaro.org
+Subject: Re: [PATCH v4 18/25] coresight: etm4x: Expose trcdevarch via trcidr
+Message-ID: <20201130224214.GL1092947@xps15>
+References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
+ <20201119164547.2982871-19-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-30-lee.jones@linaro.org>
-In-Reply-To: <20201124193824.1118741-30-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 17:41:35 -0500
-Message-ID: <CADnq5_NoskERy7y6rN6VFKo71AW+C1s+Zy8CBm8Z_rLzLdaBYA@mail.gmail.com>
-Subject: Re: [PATCH 29/40] drm/amd/amdgpu/vcn_v1_0: Fix a few kernel-doc misdemeanours
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119164547.2982871-19-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 2:45 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:439: warning: Excess function para=
-meter 'sw' description in 'vcn_v1_0_disable_clock_gating'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:566: warning: Excess function para=
-meter 'sw' description in 'vcn_v1_0_enable_clock_gating'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1454: warning: Function parameter =
-or member 'addr' not described in 'vcn_v1_0_dec_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1454: warning: Function parameter =
-or member 'seq' not described in 'vcn_v1_0_dec_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1454: warning: Function parameter =
-or member 'flags' not described in 'vcn_v1_0_dec_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1454: warning: Excess function par=
-ameter 'fence' description in 'vcn_v1_0_dec_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1495: warning: Function parameter =
-or member 'job' not described in 'vcn_v1_0_dec_ring_emit_ib'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1495: warning: Function parameter =
-or member 'flags' not described in 'vcn_v1_0_dec_ring_emit_ib'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1628: warning: Function parameter =
-or member 'addr' not described in 'vcn_v1_0_enc_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1628: warning: Function parameter =
-or member 'seq' not described in 'vcn_v1_0_enc_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1628: warning: Function parameter =
-or member 'flags' not described in 'vcn_v1_0_enc_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1628: warning: Excess function par=
-ameter 'fence' description in 'vcn_v1_0_enc_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1655: warning: Function parameter =
-or member 'job' not described in 'vcn_v1_0_enc_ring_emit_ib'
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1655: warning: Function parameter =
-or member 'flags' not described in 'vcn_v1_0_enc_ring_emit_ib'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-Applied with minor fixes.  Thanks!
-
-Alex
-
+On Thu, Nov 19, 2020 at 04:45:40PM +0000, Suzuki K Poulose wrote:
+> Expose the TRCDEVARCH register via the sysfs for component
+> detection. Given that the TRCIDR1 may not completely identify
+> the ETM component and instead need to use TRCDEVARCH, expose
+> this via sysfs for tools to use it for identification.
+> 
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c b/drivers/gpu/drm/amd/=
-amdgpu/vcn_v1_0.c
-> index 86e1ef732ebec..72148f3b27d04 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
-> @@ -431,7 +431,6 @@ static void vcn_v1_0_mc_resume_dpg_mode(struct amdgpu=
-_device *adev)
->   * vcn_v1_0_disable_clock_gating - disable VCN clock gating
->   *
->   * @adev: amdgpu_device pointer
-> - * @sw: enable SW clock gating
->   *
->   * Disable clock gating for VCN block
->   */
-> @@ -558,7 +557,6 @@ static void vcn_v1_0_disable_clock_gating(struct amdg=
-pu_device *adev)
->   * vcn_v1_0_enable_clock_gating - enable VCN clock gating
->   *
->   * @adev: amdgpu_device pointer
-> - * @sw: enable SW clock gating
->   *
->   * Enable clock gating for VCN block
->   */
-> @@ -1445,7 +1443,9 @@ static void vcn_v1_0_dec_ring_insert_end(struct amd=
-gpu_ring *ring)
->   * vcn_v1_0_dec_ring_emit_fence - emit an fence & trap command
->   *
->   * @ring: amdgpu_ring pointer
-> - * @fence: fence to emit
-> + * @addr: address
-> + * @seq: sequence number
-> + * @flags: fence related flags
->   *
->   * Write a fence and a trap command to the ring.
->   */
-> @@ -1484,7 +1484,9 @@ static void vcn_v1_0_dec_ring_emit_fence(struct amd=
-gpu_ring *ring, u64 addr, u64
->   * vcn_v1_0_dec_ring_emit_ib - execute indirect buffer
->   *
->   * @ring: amdgpu_ring pointer
-> + * @job: job to retrive vmid from
->   * @ib: indirect buffer to execute
-> + * @flags: unused
->   *
->   * Write ring commands to execute the indirect buffer
->   */
-> @@ -1619,7 +1621,9 @@ static void vcn_v1_0_enc_ring_set_wptr(struct amdgp=
-u_ring *ring)
->   * vcn_v1_0_enc_ring_emit_fence - emit an enc fence & trap command
->   *
->   * @ring: amdgpu_ring pointer
-> - * @fence: fence to emit
-> + * @addr: address
-> + * @seq: sequence number
-> + * @flags: fence related flags
->   *
->   * Write enc a fence and a trap command to the ring.
->   */
-> @@ -1644,7 +1648,9 @@ static void vcn_v1_0_enc_ring_insert_end(struct amd=
-gpu_ring *ring)
->   * vcn_v1_0_enc_ring_emit_ib - enc execute indirect buffer
->   *
->   * @ring: amdgpu_ring pointer
-> + * @job: job to retrive vmid from
->   * @ib: indirect buffer to execute
-> + * @flags: unused
->   *
->   * Write enc ring commands to execute the indirect buffer
->   */
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  drivers/hwtracing/coresight/coresight-etm4x-sysfs.c | 2 ++
+>  1 file changed, 2 insertions(+)
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> index 009818675928..277fd5bff811 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> @@ -2395,6 +2395,7 @@ coresight_etm4x_cross_read(trcidr10, TRCIDR10);
+>  coresight_etm4x_cross_read(trcidr11, TRCIDR11);
+>  coresight_etm4x_cross_read(trcidr12, TRCIDR12);
+>  coresight_etm4x_cross_read(trcidr13, TRCIDR13);
+> +coresight_etm4x_cross_read(trcdevarch, TRCDEVARCH);
+>  
+>  static struct attribute *coresight_etmv4_trcidr_attrs[] = {
+>  	&dev_attr_trcidr0.attr,
+> @@ -2410,6 +2411,7 @@ static struct attribute *coresight_etmv4_trcidr_attrs[] = {
+>  	&dev_attr_trcidr11.attr,
+>  	&dev_attr_trcidr12.attr,
+>  	&dev_attr_trcidr13.attr,
+> +	&dev_attr_trcdevarch.attr,
+>  	NULL,
+>  };
+>  
+> -- 
+> 2.24.1
+> 
