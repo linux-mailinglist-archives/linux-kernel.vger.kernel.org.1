@@ -2,45 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F194D2C8F6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32892C8F38
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730086AbgK3UvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:51:03 -0500
-Received: from mga11.intel.com ([192.55.52.93]:60991 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728337AbgK3UvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:51:02 -0500
-IronPort-SDR: yvFIJimU7A/Scfus2zvlQyQy4ZJ+Bez2gYnBxBN1LYRwIr7hK1UFX24Zcp1CCySvCOoJrAZpVa
- KSfOF2q8MfPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="169210056"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="169210056"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 12:49:21 -0800
-IronPort-SDR: l56Kv88FxBl/g7uL0cUWjbZXa/xxgbrCaAcsyNjw772ia5128r3FdUn8oR744As54N2C3ch1GM
- 22LAH4UIVNVw==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="480800565"
-Received: from whsiao-mobl.amr.corp.intel.com (HELO [10.209.17.17]) ([10.209.17.17])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 12:49:21 -0800
-Subject: Re: [PATCH] soundwire: Fix error return code in
- sdw_compute_port_params
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20201125065035.154262-1-miaoqinglang@huawei.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <fc8ffb8c-955e-ddf3-3113-52c8b7329696@linux.intel.com>
-Date:   Mon, 30 Nov 2020 11:35:34 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388510AbgK3Uag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:30:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48225 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388446AbgK3Uag (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 15:30:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606768149;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dEMeF3AMNMcYI65aSQplkoFbo+sAWz3Tjmr7jvdlwP0=;
+        b=Oopktu6MWTE5iy6vwQ6V3b/xmWBqM7bK7nGmbD3MWgTvjuJmsSb9+mt6WKiG9JkOnyCR7z
+        66Nel0mvmaZYv7GCpuUvu2ZoecTMND4eF4P5T62779kp30DuLX//v2c3hR4cvdUkfFhLnh
+        UlyMzQfuQJbobJmyfqFF1+cGYXYhDUk=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-YminHN6DPKq7VfB4tNHwaA-1; Mon, 30 Nov 2020 15:29:05 -0500
+X-MC-Unique: YminHN6DPKq7VfB4tNHwaA-1
+Received: by mail-ej1-f72.google.com with SMTP id t4so4646972eju.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:29:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dEMeF3AMNMcYI65aSQplkoFbo+sAWz3Tjmr7jvdlwP0=;
+        b=RLqaDRrvGj61+1MhdJml/Q9Uz2C3f1iPhU0JQhg+CEhIyFOIyPh2HFs5N5KEXTdiL6
+         +osy4FEfX2GGTPNoUn3glzvRKpQGk0Sp/GFa5tTKcrmwEDjA/LIiSOElP5Qc8jVuJfGT
+         iIuUfyY8CEPsADs+10ONOtD6KDpjU5ZB+eYCcTwYnO3EsSv9myeZZww9mg6rbuqW6hau
+         2iWi7yJpRlGR76YPhlWJjmq+BUcZC/SnepT0M5rKv6S0lfyHq/PezgCQBQBY0tHgjcxq
+         LFunXGq4H3aGy7T3beqYjq/MWubaLXRxwCwCrQ46h2JEHlofjeLKS3LH45j+x0qjt7ld
+         tI2g==
+X-Gm-Message-State: AOAM532CaFOHKEsgBZJPnae0xhwCGsMuqs4WvB096QfFjekpyXvKjHgZ
+        giFEabhPCCMuDSb2/7L8Iyu8PW7zrPXUDFTxAccfK9FmAdyj3rh2nF4XI2djrnV003Vzqnu+KSN
+        WyRsOssbaZO6bR9ElJNCPdPj3
+X-Received: by 2002:a05:6402:2070:: with SMTP id bd16mr11170015edb.107.1606768144731;
+        Mon, 30 Nov 2020 12:29:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxg9IglFIMQ0ZSm6k1KLj+p3mu5WZxF5QG0J+89nlaTxpR4umWpnoGsGHhv67ElcSjdL8GU8g==
+X-Received: by 2002:a05:6402:2070:: with SMTP id bd16mr11169987edb.107.1606768144486;
+        Mon, 30 Nov 2020 12:29:04 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id a13sm2400959edb.76.2020.11.30.12.29.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 12:29:03 -0800 (PST)
+Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
+To:     Mike Christie <michael.christie@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20201125153550.810101-1-sashal@kernel.org>
+ <20201125153550.810101-22-sashal@kernel.org>
+ <25cd0d64-bffc-9506-c148-11583fed897c@redhat.com>
+ <20201125180102.GL643756@sasha-vm>
+ <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
+ <20201129041314.GO643756@sasha-vm>
+ <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
+ <20201129210650.GP643756@sasha-vm>
+ <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
+ <20201130173832.GR643756@sasha-vm>
+ <238cbdd1-dabc-d1c1-cff8-c9604a0c9b95@redhat.com>
+ <9ec7dff6-d679-ce19-5e77-f7bcb5a63442@oracle.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <4c1b2bc7-cf50-4dcd-bfd4-be07e515de2a@redhat.com>
+Date:   Mon, 30 Nov 2020 21:29:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201125065035.154262-1-miaoqinglang@huawei.com>
+In-Reply-To: <9ec7dff6-d679-ce19-5e77-f7bcb5a63442@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,40 +87,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/25/20 12:50 AM, Qinglang Miao wrote:
-> Fix to return the error code -EINVAL in sdw_compute_port_params
-> instead of 0.
+On 30/11/20 20:44, Mike Christie wrote:
+> I have never seen a public/open-source vhost-scsi testsuite.
 > 
-> Fixes: 9026118f20e2 ("soundwire: Add generic bandwidth allocation algorithm")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-
-Thanks for the patch.
-The test covers a very unlikely error scenario but nevertheless not a 
-zero probability so the suggested fix makes sense to me.
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->   drivers/soundwire/generic_bandwidth_allocation.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
+> For patch 23 (the one that adds the lun reset support which is built on
+> patch 22), we can't add it to stable right now if you wanted to, because
+> it has a bug in it. Michael T, sent the fix:
 > 
-> diff --git a/drivers/soundwire/generic_bandwidth_allocation.c b/drivers/soundwire/generic_bandwidth_allocation.c
-> index 0bdef38c9..ad857ac62 100644
-> --- a/drivers/soundwire/generic_bandwidth_allocation.c
-> +++ b/drivers/soundwire/generic_bandwidth_allocation.c
-> @@ -283,8 +283,10 @@ static int sdw_compute_port_params(struct sdw_bus *bus)
->   	if (ret < 0)
->   		return ret;
->   
-> -	if (group.count == 0)
-> +	if (group.count == 0) {
-> +		ret = -EINVAL;
->   		goto out;
-> +	}
->   
->   	params = kcalloc(group.count, sizeof(*params), GFP_KERNEL);
->   	if (!params) {
+> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git/commit/?h=linux-next&id=b4fffc177fad3c99ee049611a508ca9561bb6871
 > 
+> to Linus today.
+
+Ok, so at least it was only a close call and anyway not for something 
+that most people would be running on their machines.  But it still seems 
+to me that the state of CI in Linux is abysmal compared to what is 
+needed to arbitrarily(*) pick up patches and commit them to "stable" trees.
+
+Paolo
+
+(*) A ML bot is an arbitrary choice as far as we are concerned since we 
+cannot know how it makes a decision.
+
