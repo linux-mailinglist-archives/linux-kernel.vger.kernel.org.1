@@ -2,144 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD742C9198
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C432C919E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388714AbgK3WwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:52:12 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:10604 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388678AbgK3WwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:52:12 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606776707; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=ZVEZKMnlUjxdknwjGy+ozC0BlpkDw8uMu1j2bLYVZe0=; b=oo3A6DqN8Wdgf/PUKjqLWRPFzrF3F+leKPqYKUQJgJzBT5TCjlV8EEIjFMuXTHkf0L7BbOle
- EILOGoY+1pt7UwhurUAMCjdxjCGFvTGupPwaakXwiq42p1ACR0+mbKzUWIhn7kCO5/PuB203
- 2O9vPB1Lf7ixutURGjFoHxECq3Y=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fc57782edac2724d815e5c6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Nov 2020 22:51:46
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4CE4DC43466; Mon, 30 Nov 2020 22:51:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B1786C433C6;
-        Mon, 30 Nov 2020 22:51:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B1786C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage
- values
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
-Cc:     beanhuo@micron.com, cang@codeaurora.org, matthias.bgg@gmail.com,
-        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nguyenb@codeaurora.org, bjorn.andersson@linaro.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com, alice.chao@mediatek.com
-References: <20201130091610.2752-1-stanley.chu@mediatek.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <568660cd-80e6-1b8f-d426-4614c9159ff4@codeaurora.org>
-Date:   Mon, 30 Nov 2020 14:51:41 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S2388753AbgK3WxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:53:00 -0500
+Received: from mail-io1-f66.google.com ([209.85.166.66]:34739 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388678AbgK3WxA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 17:53:00 -0500
+Received: by mail-io1-f66.google.com with SMTP id d7so4745978iok.1;
+        Mon, 30 Nov 2020 14:52:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wWycfNfrJ5ZK6TZY8fbaI347ZRv8m3YTXMAovYgi++c=;
+        b=ez9RQ7PgmCU9/D1Kfh03ibDErL2NXXFsZD5xowMYjF1UyhnUnRJJVfZ7/A3dHa0kAY
+         938/wpKwVpWZoemyC1finzWzuG815JkHKpyqLFldzkyHSNse+GmTXlzuWSv9Kb8PO14Y
+         x3/nl3lJqXVSPjyjeqkyLAGY6FydXvxFTppW6reBQzk144WZ8grcjOp5D2fQr8doXu/V
+         W+C2pmokAiqE841aGYqb6ylWeHQdkDCdZ1LeXHvnYfPSKHBMUjtjgC4SOCyh4E4O1Zmb
+         lPcDcbg2WTtopJjFqqwRcCbhCopyRtlSh/GxH14+DSaR4U2gb/MY0gOlHqojpyOEr4GX
+         0rHg==
+X-Gm-Message-State: AOAM530qh1HDTUKpAvBgO1l88yzJev3+jSC6os5jeuE8rRH+ahz9vp+s
+        9KwMYMv9nRTCl9JA7famBA==
+X-Google-Smtp-Source: ABdhPJyQ1ZXqiV4yaJOC93Dr0wDJ5SFdMvFloAIEDZChWTL3f24lm2l3O11BGfrAT5ZegOdzKjQzGQ==
+X-Received: by 2002:a05:6638:c4c:: with SMTP id g12mr57222jal.82.1606776739239;
+        Mon, 30 Nov 2020 14:52:19 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id d7sm1248765iod.45.2020.11.30.14.52.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 14:52:18 -0800 (PST)
+Received: (nullmailer pid 3187439 invoked by uid 1000);
+        Mon, 30 Nov 2020 22:52:16 -0000
+Date:   Mon, 30 Nov 2020 15:52:16 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen.Hegelund@microchip.com, Thomas Gleixner <tglx@linutronix.de>,
+        devicetree@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>
+Subject: Re: [PATCH v5 1/6] dt-bindings: interrupt-controller: convert icpu
+ intr bindings to json-schema
+Message-ID: <20201130225216.GA3187386@robh.at.kernel.org>
+References: <20201125103206.136498-1-gregory.clement@bootlin.com>
+ <20201125103206.136498-2-gregory.clement@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <20201130091610.2752-1-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125103206.136498-2-gregory.clement@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/2020 1:16 AM, Stanley Chu wrote:
-> UFS specficication allows different VCC configurations for UFS devices,
-> for example,
-> 	(1). 2.70V - 3.60V (By default)
-> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
->                            device tree)
-> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
+On Wed, 25 Nov 2020 11:32:01 +0100, Gregory CLEMENT wrote:
+> Convert device tree bindings for Microsemi Ocelot SoC ICPU Interrupt
+> Controller to YAML format
 > 
-> With the introduction of UFS 3.x products, an issue is happening that
-> UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
-> regulator on UFU 3.x products with VCC configuration (3) used.
-> 
-> To solve this issue, we simply remove pre-defined initial VCC voltage
-> values in UFS driver with below reasons,
-> 
-> 1. UFS specifications do not define how to detect the VCC configuration
->     supported by attached device.
-> 
-> 2. Device tree already supports standard regulator properties.
-> 
-> Therefore VCC voltage shall be defined correctly in device tree, and
-> shall not be changed by UFS driver. What UFS driver needs to do is simply
-> enabling or disabling the VCC regulator only.
-> 
-> This is a RFC conceptional patch. Please help review this and feel
-> free to feedback any ideas. Once this concept is accepted, and then
-> I would post a more completed patch series to fix this issue.
-> 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 > ---
->   drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
->   1 file changed, 1 insertion(+), 9 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> index a6f76399b3ae..3965be03c136 100644
-> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> @@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
->   		vreg->max_uA = 0;
->   	}
->   
-> -	if (!strcmp(name, "vcc")) {
-> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
-> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
-> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
-> -		} else {
-> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
-> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
-> -		}
-> -	} else if (!strcmp(name, "vccq")) {
-> +	if (!strcmp(name, "vccq")) {
->   		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
->   		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
->   	} else if (!strcmp(name, "vccq2")) {
+>  .../mscc,ocelot-icpu-intr.txt                 | 21 -------
+>  .../mscc,ocelot-icpu-intr.yaml                | 60 +++++++++++++++++++
+>  2 files changed, 60 insertions(+), 21 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.txt
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml
 > 
 
-Hi Stanley
-
-Thanks for the patch. Bao (nguyenb) was also working towards something 
-similar.
-Would it be possible for you to take into account the scenario in which 
-the same platform supports both 2.x and 3.x UFS devices?
-
-These've different voltage requirements, 2.4v-3.6v.
-I'm not sure if standard dts regulator properties can support this.
-
--asd
-
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+Reviewed-by: Rob Herring <robh@kernel.org>
