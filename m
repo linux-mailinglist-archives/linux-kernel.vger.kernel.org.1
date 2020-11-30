@@ -2,146 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625912C838B
+	by mail.lfdr.de (Postfix) with ESMTP id CEEDD2C838C
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727663AbgK3Lvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:51:39 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8474 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgK3Lvj (ORCPT
+        id S1729192AbgK3Lvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:51:53 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16985 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgK3Lvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:51:39 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cl3T85PZXzhknh;
-        Mon, 30 Nov 2020 19:50:36 +0800 (CST)
-Received: from [10.174.185.179] (10.174.185.179) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 30 Nov 2020 19:50:47 +0800
-Subject: Re: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
-To:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <maz@kernel.org>, <linuxarm@huawei.com>, <eric.auger@redhat.com>
-References: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <f6e8ee71-f76b-428c-cd56-5bc93b1afafe@huawei.com>
-Date:   Mon, 30 Nov 2020 19:50:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 30 Nov 2020 06:51:52 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fc4dcb80000>; Mon, 30 Nov 2020 03:51:20 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 30 Nov
+ 2020 11:51:10 +0000
+Date:   Mon, 30 Nov 2020 13:51:06 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     <jasowang@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <lulu@redhat.com>
+Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
+Message-ID: <20201130115106.GC99449@mtl-vdi-166.wap.labs.mlnx>
+References: <20201129064351.63618-1-elic@nvidia.com>
+ <20201129150505-mutt-send-email-mst@kernel.org>
+ <20201130062746.GA99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130035147-mutt-send-email-mst@kernel.org>
+ <20201130092759.GB99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130043050-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.185.179]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201130043050-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606737080; bh=3Yjm2rXCYlzW1B54g8g6dZvWZtd9aaatA3YiUa/pRD8=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=CyW/2lnhXTVaFPN4wgHeQVVFEfwTaybHzWlrbm2nyyF8j1PnCB0UgGxb3hbXTJ9LN
+         4s35cGBRJz0nlnahh77YIj89nQPqOGM8e15o4vC2otzEssKQH0qm4NG7AqAGt/zjlB
+         zeuOVhtZPkE4xSMWW4O80upiB89k8P6xCjVeCPHEK0puFpoNqNWD0Q1I5teA3yHY4F
+         uIC34f08MLTnCKgMWf08sJwD3a5dxHrvm0EYpTENc6UGay3girXBqWw5M78lyIWZre
+         ndFRwsdcnp/F14BFaV/kGD0EcPZTCZVqjX/c9FM/Z1hlh8QO4lFrCzuKZ/rcRJpK+V
+         cH3NhSiugTxvA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shameer,
-
-On 2020/11/30 18:26, Shameer Kolothum wrote:
-> At present, the support for GICv2 backward compatibility on GICv3/v4
-> hardware is determined based on whether DT/ACPI provides a memory
-> mapped phys base address for GIC virtual CPU interface register(GICV).
-> This creates a problem that a Qemu guest boot with default GIC(GICv2)
-> hangs when firmware falsely reports this address on systems that don't
-> have support for legacy mode.
-
-So the problem is that BIOS has provided us a bogus GICC Structure.
-
-> As per GICv3/v4 spec, in an implementation that does not support legacy
-> operation, affinity routing and system register access are permanently
-> enabled. This means that the associated control bits are RAO/WI. Hence
-> use the ICC_SRE_EL1.SRE bit to decide whether hardware supports GICv2
-> mode in addition to the above firmware based check.
+On Mon, Nov 30, 2020 at 04:33:09AM -0500, Michael S. Tsirkin wrote:
+> On Mon, Nov 30, 2020 at 11:27:59AM +0200, Eli Cohen wrote:
+> > On Mon, Nov 30, 2020 at 04:00:51AM -0500, Michael S. Tsirkin wrote:
+> > > On Mon, Nov 30, 2020 at 08:27:46AM +0200, Eli Cohen wrote:
+> > > > On Sun, Nov 29, 2020 at 03:08:22PM -0500, Michael S. Tsirkin wrote:
+> > > > > On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Cohen wrote:
+> > > > > > We should not try to use the VF MAC address as that is used by the
+> > > > > > regular (e.g. mlx5_core) NIC implementation. Instead, use a random
+> > > > > > generated MAC address.
+> > > > > > 
+> > > > > > Suggested by: Cindy Lu <lulu@redhat.com>
+> > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> > > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > > 
+> > > > > I didn't realise it's possible to use VF in two ways
+> > > > > with and without vdpa.
+> > > > 
+> > > > Using a VF you can create quite a few resources, e.g. send queues
+> > > > recieve queues, virtio_net queues etc. So you can possibly create
+> > > > several instances of vdpa net devices and nic net devices.
+> > > > 
+> > > > > Could you include a bit more description on the failure
+> > > > > mode?
+> > > > 
+> > > > Well, using the MAC address of the nic vport is wrong since that is the
+> > > > MAC of the regular NIC implementation of mlx5_core.
+> > > 
+> > > Right but ATM it doesn't coexist with vdpa so what's the problem?
+> > > 
+> > 
+> > This call is wrong:  mlx5_query_nic_vport_mac_address()
+> > 
+> > > > > Is switching to a random mac for such an unusual
+> > > > > configuration really justified?
+> > > > 
+> > > > Since I can't use the NIC's MAC address, I have two options:
+> > > > 1. To get the MAC address as was chosen by the user administering the
+> > > >    NIC. This should invoke the set_config callback. Unfortunately this
+> > > >    is not implemented yet.
+> > > > 
+> > > > 2. Use a random MAC address. This is OK since if (1) is implemented it
+> > > >    can always override this random configuration.
+> > > > 
+> > > > > It looks like changing a MAC could break some guests,
+> > > > > can it not?
+> > > > >
+> > > > 
+> > > > No, it will not. The current version of mlx5 VDPA does not allow regular
+> > > > NIC driver and VDPA to co-exist. I have patches ready that enable that
+> > > > from steering point of view. I will post them here once other patches on
+> > > > which they depend will be merged.
+> > > > 
+> > > > https://patchwork.ozlabs.org/project/netdev/patch/20201120230339.651609-12-saeedm@nvidia.com/
+> > > 
+> > > Could you be more explicit on the following points:
+> > > - which configuration is broken ATM (as in, two device have identical
+> > >   macs? any other issues)?
+> > 
+> > The only wrong thing is the call to  mlx5_query_nic_vport_mac_address().
+> > It's not breaking anything yet is wrong. The random MAC address setting
+> > is required for the steering patches.
 > 
-> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-> ---
-> On Hisilicon D06, UEFI sets the GIC MADT GICC gicv_base_address but the
-> GIC implementation on these boards doesn't have the GICv2 legacy support.
-> This results in, Guest boot hang when Qemu uses the default GIC option.
+> Okay so I'm not sure the Fixes tag at least is appropriate if it's a
+> dependency of a new feature.
 > 
-> With this patch, the Qemu Guest with GICv2 now gracefully exits,
->   "qemu-system-aarch64: host does not support in-kernel GICv2 emulation"
+
+OK, let's leave it for now. I will push along with the steering patches.
+The meaning is the the VDPA net device instance is create with a MAC of
+all zeros which also mean the link is down. You can set a MAC which will
+let the link come up. The vdpa driver will not get a callback as I
+stated but since current mode of steering directs all traffic to the
+vdpa instance it will work. In the future this must be fixed.
+
+> > > - why won't device MAC change from guest point of view?
+> > > 
+> > 
+> > It's lack of implementation in qemu as far as I know.
 > 
-> Not very sure there is a better way to detect this other than checking
-> the SRE bit as done in this patch(Of course, we will be fixing the UEFI
-> going forward).
-
-Yes, I had seen the same problem on the D06. But I *do* think it's the
-firmware that actually needs to be fixed.
-
-> Thanks,
-> Shameer
+> Sorry not sure I understand. What's not implemented in QEMU?
 > 
-> ---
->   drivers/irqchip/irq-gic-v3.c | 33 ++++++++++++++++++++++++++++-----
->   1 file changed, 28 insertions(+), 5 deletions(-)
+
+vdpa config operation set_config() should be called whenever the MAC is
+changed, e.g. when administrator of the vdpa net device changes the mac.
+This does not happen which is a bug.
+
+> > > 
+> > > > > > ---
+> > > > > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +----
+> > > > > >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > index 1fa6fcac8299..80d06d958b8b 100644
+> > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > @@ -1955,10 +1955,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
+> > > > > >  	if (err)
+> > > > > >  		goto err_mtu;
+> > > > > >  
+> > > > > > -	err = mlx5_query_nic_vport_mac_address(mdev, 0, 0, config->mac);
+> > > > > > -	if (err)
+> > > > > > -		goto err_mtu;
+> > > > > > -
+> > > > > > +	eth_random_addr(config->mac);
+> > > > > >  	mvdev->vdev.dma_dev = mdev->device;
+> > > > > >  	err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
+> > > > > >  	if (err)
+> > > > > > -- 
+> > > > > > 2.26.2
+> > > > > 
+> > > 
 > 
-> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> index 16fecc0febe8..15fa1eea45e4 100644
-> --- a/drivers/irqchip/irq-gic-v3.c
-> +++ b/drivers/irqchip/irq-gic-v3.c
-> @@ -1835,6 +1835,27 @@ static void __init gic_populate_ppi_partitions(struct device_node *gic_node)
->   	of_node_put(parts_node);
->   }
->   
-> +/* SRE bit being RAO/WI implies no GICv2 legacy mode support */
-
-I'm wondering if this is a mandate of the architecture.
-
-> +static bool __init gic_gicv2_compatible(void)
-> +{
-> +	u32 org, val;
-> +
-> +	org = gic_read_sre();
-> +	if (!(org & ICC_SRE_EL1_SRE))
-> +		return true;
-> +
-> +	val = org & ~ICC_SRE_EL1_SRE;
-> +	gic_write_sre(val);
-> +
-> +	val = gic_read_sre();
-> +	gic_write_sre(org);
-> +
-> +	if (val & ICC_SRE_EL1_SRE)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->   static void __init gic_of_setup_kvm_info(struct device_node *node)
->   {
->   	int ret;
-> @@ -1851,10 +1872,12 @@ static void __init gic_of_setup_kvm_info(struct device_node *node)
->   				 &gicv_idx))
->   		gicv_idx = 1;
->   
-> -	gicv_idx += 3;	/* Also skip GICD, GICC, GICH */
-> -	ret = of_address_to_resource(node, gicv_idx, &r);
-> -	if (!ret)
-> -		gic_v3_kvm_info.vcpu = r;
-> +	if (gic_gicv2_compatible()) {
-> +		gicv_idx += 3;	/* Also skip GICD, GICC, GICH */
-> +		ret = of_address_to_resource(node, gicv_idx, &r);
-> +		if (!ret)
-> +			gic_v3_kvm_info.vcpu = r;
-> +	}
->   
->   	gic_v3_kvm_info.has_v4 = gic_data.rdists.has_vlpis;
->   	gic_v3_kvm_info.has_v4_1 = gic_data.rdists.has_rvpeid;
-> @@ -2164,7 +2187,7 @@ static void __init gic_acpi_setup_kvm_info(void)
->   
->   	gic_v3_kvm_info.maint_irq = irq;
->   
-> -	if (acpi_data.vcpu_base) {
-> +	if (gic_gicv2_compatible() && acpi_data.vcpu_base) {
->   		struct resource *vcpu = &gic_v3_kvm_info.vcpu;
->   
->   		vcpu->flags = IORESOURCE_MEM;
-
-Thanks,
-Zenghui
