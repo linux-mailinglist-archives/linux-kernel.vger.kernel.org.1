@@ -2,168 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AA42C7E2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B892C7E2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727402AbgK3GW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 01:22:28 -0500
-Received: from mga17.intel.com ([192.55.52.151]:54715 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726658AbgK3GW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 01:22:27 -0500
-IronPort-SDR: 2VSjGSOs/S2KyzIfmfjFoLpDD9my70Slsi5Rwdu2yX77N5+QbTwrTUpimfuOoSs8S2V8zhjg8k
- nL8jiyp6T9Rw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9820"; a="152420868"
-X-IronPort-AV: E=Sophos;i="5.78,379,1599548400"; 
-   d="scan'208";a="152420868"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2020 22:20:46 -0800
-IronPort-SDR: Krr3AKvXUs6qVabHOv/HaoRzR7w2qTJsFvdlnWhM04sWM4Jo9AVdwY2UiUjIzukiSF1COyQXA6
- 1NR05iQ6DQjw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,379,1599548400"; 
-   d="scan'208";a="314458633"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Nov 2020 22:20:46 -0800
-Received: from [10.215.249.62] (mreddy3x-MOBL.gar.corp.intel.com [10.215.249.62])
-        by linux.intel.com (Postfix) with ESMTP id 74B8A580515;
-        Sun, 29 Nov 2020 22:20:43 -0800 (PST)
-Subject: Re: [PATCH v9 2/2] Add Intel LGM SoC DMA support.
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@intel.com, chuanhua.lei@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
-References: <cover.1605158930.git.mallikarjunax.reddy@linux.intel.com>
- <67be905aa3bcb9faac424f2a134e88d076700419.1605158930.git.mallikarjunax.reddy@linux.intel.com>
- <20201118173840.GW50232@vkoul-mobl>
- <a4ea240f-b121-5bc9-a046-95bbcff87553@linux.intel.com>
- <20201121121701.GB8403@vkoul-mobl>
- <dc8c5f27-bce6-d276-af0b-93c6e63e85a1@linux.intel.com>
- <20201124172149.GT8403@vkoul-mobl>
- <ee275d37-5dda-205a-a897-7a61ad13b536@linux.intel.com>
- <20201126045035.GI8403@vkoul-mobl>
-From:   "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
-Message-ID: <1900dc8f-acd1-54a2-1666-cd73bdc4888b@linux.intel.com>
-Date:   Mon, 30 Nov 2020 14:20:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727370AbgK3GVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 01:21:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726883AbgK3GVw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 01:21:52 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B75C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 22:21:06 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w6so9773501pfu.1
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 22:21:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tJt3eN48isJilaS1ahARMF9GPFqfU0k4n50AceeXDAw=;
+        b=wW+2tGVErsweFt+fZEph8cmeFwpim2d4BByDlcLfO4dN+uPkH637cYHksoqfrgSleH
+         zW0tE/fQ/amRVA/xp52KCELkP0uXpyQOsUyufXYtFDGbCKcBH2q0lCU0GTBPgLXe0ZiP
+         e3LPiibpLcLMAMyjaJGbfqlc/pVFDJCtIpmpHOnW3eSd9zW3RYD9QWVe+Vscx4/+NkhQ
+         aTSpDfXGT3YGZZ1S2A3uoY2+RhI2seTPrLJt+7uII/YH2P7eI0HZaRQ+N8gqaF/NfMMw
+         BZJ1U1qxxC1aHYzT+a3IJQHQGFnwcifSxBS7MED07zS0hOO7UwejYgyOVgkOtfgDKJV3
+         /1ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tJt3eN48isJilaS1ahARMF9GPFqfU0k4n50AceeXDAw=;
+        b=LHXoq9UP09niz5tuaDZUaFP301k2YwvqyYdUatk7eEqywNxGxm5Eyzcwe8o3iYUYV1
+         2Ijz7XySBCXGZrKQm8SjCXeMDOICoWy7Vvl1k8JpZA8emU/+K0ormoPXxVLY7/Hvhi5i
+         PupZqu+WaQTQanPn8GMjN4uULB3z8amis0s910ImRBjIl34gxJ1nQdRkIlnCXot2HhUT
+         h4575X+eWrwKxtvcehJMVkm5I7LwmZRmlRSJh78F49UWTcuFUlhmw9+vVbxCaKBgZr/a
+         7vOwliezYJg9nczVe4d1IzHckg/1jWQ8o0dYBYrFghEBYeXg33kZJ/d2VoXOW6dEGqW7
+         Kwzw==
+X-Gm-Message-State: AOAM532reHxddnuYyZUI5RwFpa/ZDvo0C6Ag0ilEvpm3AT6W0kSx8yAc
+        JbYY4N2P/LykB+gDegGY5H24cQ==
+X-Google-Smtp-Source: ABdhPJzJv3njLVM85xPP/sDPlG5OCeIEuWGjYboKMdtuxHH6YzpB0WEbgWXFIjxRONNYVQlOSl1kjw==
+X-Received: by 2002:a05:6a00:16c4:b029:198:a95:a2ef with SMTP id l4-20020a056a0016c4b02901980a95a2efmr17357326pfc.43.1606717265948;
+        Sun, 29 Nov 2020 22:21:05 -0800 (PST)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id o198sm14830393pfg.102.2020.11.29.22.21.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 29 Nov 2020 22:21:05 -0800 (PST)
+Date:   Mon, 30 Nov 2020 14:20:58 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: c630: Expose LID events
+Message-ID: <20201130062057.GC28578@dragon>
+References: <20201125060838.165576-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20201126045035.GI8403@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125060838.165576-1-bjorn.andersson@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On Wed, Nov 25, 2020 at 12:08:38AM -0600, Bjorn Andersson wrote:
+> The LID state can be read from GPIO 124 and the "tablet mode" from GPIO
+> 95, expose these to the system using gpio-keys and mark the falling edge
+> of the LID state as a wakeup-source - to wake the system from suspend.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Thanks for your valuable comments. My reply inline.
-
-On 11/26/2020 12:50 PM, Vinod Koul wrote:
-> On 25-11-20, 18:39, Reddy, MallikarjunaX wrote:
->
->>>>>> desc needs to be configure for each dma channel and the remapped address of
->>>>>> the IGP & EGP is desc base adress.
->>>>> Why should this address not passed as src_addr/dst_addr?
->>>> src_addr/dst_addr is the data pointer. Data pointer indicates address
->>>> pointer of data buffer.
->>>>
->>>> ldma_chan_desc_cfg() carries the descriptor address.
->>>>
->>>> The descriptor list entry contains the data pointer, which points to the
->>>> data section in the memory.
->>>>
->>>> So we should not use src_addr/dst_addr as desc base address.
->>> Okay sounds reasonable. why is this using in API here?
->> descriptor base address needs to be write into the dma register (DMA_CDBA).
-> Why cant descriptor be allocated by damenegine driver, passed to client
-> as we normally do in prep_* callbacks ? Why do you need a custom API
-1)
-client needs to set the descriptor base address and also number of 
-descriptors used in the descriptor list.
-reg DMA_CDBA used to configure descriptor base address and reg DMA_CDLEN 
-used to configure number of descriptors used in the descriptor list.
-
-In case of (ver > DMA_VER22) all descriptor fields and data pointer will 
-be set by client, so we just need to write desc base and num desc length 
-in to corresponding registers from the driver side.
-
-dma_async_tx_descriptor * data is not really needed from driver to 
-client side , so i am not planned to return 'struct 
-dma_async_tx_descriptor *'.
-
-because of this reason i used custom API (return -Ve for error and ZERO 
-for success) instead of standard dmaengine_prep_slave_sg() callback 
-(return 'struct dma_async_tx_descriptor *' descriptor)
-
-2)
-We can also use the dmaengine_prep_slave_sg( ) to pass desc base addr & 
-desc number from client.
-In that case we have to use (sg)->dma_address as desc base address and 
-(sg)->length as desc length.
-
-dmaengine prep_* callback return 'struct dma_async_tx_descriptor *, this 
-can be used on client side as to check  prep_* callback SUCCESS/FAIL.
-
-Example:
-/* code snippet */
-
-static struct dma_async_tx_descriptor *
-ldma_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
-                   unsigned int sglen, enum dma_transfer_direction dir,
-                   unsigned long flags, void *context)
-{
-
-.....
-
-     if (d->ver > DMA_VER22)
-         return ldma_chan_desc_cfg(chan, sgl->dma_address, sglen);
-
-.....
-
-}
-
-static struct dma_async_tx_descriptor *
-ldma_chan_desc_cfg(struct dma_chan *chan, dma_addr_t desc_base, int 
-desc_num)
-{
-         struct ldma_chan *c = to_ldma_chan(chan);
-         struct ldma_dev *d = to_ldma_dev(c->vchan.chan.device);
-         struct dma_async_tx_descriptor *tx;
-         struct dw2_desc_sw *ds;
-
-         if (!desc_num) {
-                 dev_err(d->dev, "Channel %d must allocate descriptor 
-first\n",
-                         c->nr);
-                 return NULL;
-         }
-
-         if (desc_num > DMA_MAX_DESC_NUM) {
-                 dev_err(d->dev, "Channel %d descriptor number out of 
-range %d\n",
-                         c->nr, desc_num);
-                 return NULL;
-         }
-
-         ldma_chan_desc_hw_cfg(c, desc_base, desc_num);
-         c->flags |= DMA_HW_DESC;
-         c->desc_cnt = desc_num;
-         c->desc_phys = desc_base;
-
-         ds = kzalloc(sizeof(*ds), GFP_NOWAIT);
-         if (!ds)
-                 return NULL;
-
-         tx = &ds->vdesc.tx;
-         dma_async_tx_descriptor_init(tx, chan);
-
-         return tx;
-}
-Please let me know if this is OK, So that i will include in the next patch.
->
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
