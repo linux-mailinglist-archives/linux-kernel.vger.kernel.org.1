@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DE22C8ACE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FC22C8ACA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729353AbgK3RWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:22:32 -0500
-Received: from mga07.intel.com ([134.134.136.100]:11911 "EHLO mga07.intel.com"
+        id S1729340AbgK3RW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:22:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728162AbgK3RWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:22:31 -0500
-IronPort-SDR: FKjhZb9tWijHWBMln/M8zRWAGbWNZAh9zAjDc7priTsgLezm88/siB4SXHiy+gSMpsQMtZaW55
- 38y28s+qSHtA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="236798629"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="236798629"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:20:50 -0800
-IronPort-SDR: Wgc4eitWPb8ak9rBnCRxJRjmebpIANdJt+sJjkBY00GVzV8i1uJR1XAEsze0/PmfGtMltoW4AD
- yemmCWnOj8JQ==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="372571889"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:20:43 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kjmrv-00B5tW-Pp; Mon, 30 Nov 2020 19:21:43 +0200
-Date:   Mon, 30 Nov 2020 19:21:43 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 01/18] property: Return true in
- fwnode_device_is_available for node types that do not implement this
- operation
-Message-ID: <20201130172143.GL4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-2-djrscally@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130133129.1024662-2-djrscally@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1728162AbgK3RW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:22:29 -0500
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FCB32076E;
+        Mon, 30 Nov 2020 17:21:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606756908;
+        bh=QNg0HIqrl2SacuY5OJOkhMYSmUV1XLVccyq57deq/Ac=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ht/C38nCF6UF6Gc3zw2DUABciLcDajHefjDTRDbpmOs6yE6RV1DzqI6H/075J+gO1
+         rwWwFryGL6Xsn7HbZ/fRm8AOOrDh8w6a55wy7uUbVy9pxE/ED+Uayb1bP6M+FDLqhR
+         m1zAGaJYFgFStT5kXgDNtB8ffwf/MqFSftaC9kjI=
+Date:   Tue, 1 Dec 2020 02:21:45 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v0 00/19] x86/insn: Add an insn_decode() API
+Message-Id: <20201201022145.48201fe165a28cb0e1f042ae@kernel.org>
+In-Reply-To: <20201130134442.GB6019@zn.tnic>
+References: <20201124101952.7909-1-bp@alien8.de>
+        <20201124174647.GI4009@zn.tnic>
+        <CALCETrXXuUmM6LPj36h2KLw5zuKUPnmrACcOq2-8XfXzWXQt7Q@mail.gmail.com>
+        <20201129175005.7e07a9f799e888ffd5f4ed67@kernel.org>
+        <20201130134442.GB6019@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 01:31:12PM +0000, Daniel Scally wrote:
-> Some types of fwnode_handle do not implement the device_is_available()
-> check, such as those created by software_nodes. There isn't really a
-> meaningful way to check for the availability of a device that doesn't
-> actually exist, so if the check isn't implemented just assume that the
-> "device" is present.
+On Mon, 30 Nov 2020 14:44:42 +0100
+Borislav Petkov <bp@alien8.de> wrote:
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> On Sun, Nov 29, 2020 at 05:50:05PM +0900, Masami Hiramatsu wrote:
+> > Good point. I think we can return, e.g. -EFAULT if we failed in
+> > get_next(). Then, we can read out next page, for example.
+> 
+> Why -EFAULT?
 
-> Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes since RFC v3:
+Because it overruns the buffer. Maybe -E2BIG/ENODATA or any other
+error (except for -EINVAL) is OK :)
+ 
+> Running this
 > 
-> 	patch introduced
+>         size = 1;
+>         ret = insn_decode(&insn, b, size, INSN_MODE_64)
 > 
->  drivers/base/property.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> i.e., buffer size is 1:
 > 
-> diff --git a/drivers/base/property.c b/drivers/base/property.c
-> index 4c43d30145c6..a5ca2306796f 100644
-> --- a/drivers/base/property.c
-> +++ b/drivers/base/property.c
-> @@ -785,9 +785,14 @@ EXPORT_SYMBOL_GPL(fwnode_handle_put);
->  /**
->   * fwnode_device_is_available - check if a device is available for use
->   * @fwnode: Pointer to the fwnode of the device.
-> + *
-> + * For fwnode node types that don't implement the .device_is_available()
-> + * operation, this function returns true.
->   */
->  bool fwnode_device_is_available(const struct fwnode_handle *fwnode)
->  {
-> +	if (!fwnode_has_op(fwnode, device_is_available))
-> +		return true;
->  	return fwnode_call_bool_op(fwnode, device_is_available);
->  }
->  EXPORT_SYMBOL_GPL(fwnode_device_is_available);
+> ./arch/x86/tools/insn_sanity: Success: decoded and checked 10000 random instructions with 0 errors (seed:0x9994a137)
+> insn buffer:
+> 0x48 0xcf 0x48 0x83 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 
+> supplied buf size: 15, ret 0
+> supplied buf size: 2, ret 0
+> supplied buf size: 3, ret 0
+> supplied buf size: 4, ret 0
+> insn_decode: entry
+> insn_decode: will get_length
+> insn_get_immediate: getting immediate
+> insn_get_displacement: getting displacement
+> insn_get_sib: getting sib
+> insn_get_modrm: entry
+> insn_get_opcode: entry
+> insn_get_prefixes: entry, prefixes->got: 0
+> insn_get_prefixes: 1
+> insn_get_prefixes: REX
+> insn_get_prefixes: VEX
+> insn_get_prefixes: validate_next: 0
+> insn_get_prefixes: insn->next_byte: 0x7ffec297c3e1, insn->end_kaddr: 0x7ffec297c3e1
+> insn_get_prefixes: errored out
+> supplied buf size: 1, ret -22
+> 
+> is caught in validate_next() where ->next_byte == ->end_kaddr.
+> 
+> I'm thinking we should return EOF here, to denote that we're reached the
+> end and then propagate that error up the callchain.
+
+EOF means the end of file and it is not an error. Here, since the
+decoder fails to decode the data, so it should return an error code.
+
+> 
+> We don't have "define EOF" in the kernel but we can designate one for
+> the insn decoder, perhaps
+> 
+> #define EOF      -1
+> 
+> as stdio.h does:
+> 
+> /* The value returned by fgetc and similar functions to indicate the
+>    end of the file.  */
+> #define EOF (-1)
+
+It is because libc fgetc() returns -1 in any error case...
+
+> 
+> Hmm, but then the callers would need to know EOF too so maybe EIO or
+> something.
+> 
+> In any case, it should be a value which callers should be able to use to
+> get told that input buffer is truncated...
+
+Yes!
+
+Thank you,
+
+> 
+> Thx.
+> 
 > -- 
-> 2.25.1
+> Regards/Gruss,
+>     Boris.
 > 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Masami Hiramatsu <mhiramat@kernel.org>
