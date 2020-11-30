@@ -2,520 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E502C7DA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 06:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0701A2C7DA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 06:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbgK3FWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 00:22:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbgK3FWG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 00:22:06 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EDFC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 21:21:26 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id o4so7122774pgj.0
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 21:21:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7JLYYFzxREC1WBko2X/nMDVWEGotFBXYoCzM6OOAv6Y=;
-        b=ZwwldkKy6GkeV/CfWY5ePcrPZXjLE66wWkN5zU0NPhCEAOyzti2oPwnPLCfCii6yNy
-         qPuTgFZnbZDe/e0jrk3UfjCdNcC+a2MD0vcQBqzfZdxv5mcu3Cs5difg+gdSMJj4Wz4d
-         sJeRLVlIcBkracSPBa3P9CTQ1XxhBz2rURQsdDvl6Rr+7HZQeyspCKm/JmaxRECQfzGa
-         XPXHUhCX1Wlweye6DXKgudBYSribguhE/FYfxEcPwaDnZWjCpXIuKOMO6xQlh+PPxNBn
-         Vl6si5WUmWtPoZ4zx5Hit+SoX3NxLZ3FqHWlet2BTm9f9kp7s7zq3zRSAAU/KEXrrnTf
-         Q2Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=7JLYYFzxREC1WBko2X/nMDVWEGotFBXYoCzM6OOAv6Y=;
-        b=AGI8EJ/dQrssStCy17spGbX8fGvxVgF2fYjlfyeQUIx6kIcozelxJ0t4zp1G1m8mqn
-         QQu4P/KnRqxK9J+1i2wlqAcPQRx578X4/FeckkGhYLqf0Zo0KQ6MMlGvmb0Ch60gUdza
-         XopClD6DabOPK69tRmNIOS3cxWJ+r3D6e82yXaSO5FxUHWdrxkrtSpTrA3CYS5N1JtR2
-         3EiCNLTLyffIQ38hSR/49KyIkOy01MJIkUNDVdCTIozMEc/0ZhPmR3zFioAjMwE+2xgg
-         ddWR+YxvVqGxq7/w8Qc0yLGnclKl1eiPTnOHWNDG07sDZJoVD0Ji1hBXmDT3MGPp4mjw
-         Y5ww==
-X-Gm-Message-State: AOAM533Tju5FWiR6tJBDuub8cAPRAcWjNMEjQs9hs9yG1KD/iALM9on2
-        4pwyAYV5daFzdwzyZMjNWTCELQ==
-X-Google-Smtp-Source: ABdhPJzZp83OBVyoXzxwEoZb51Fxf5UQXbVSKBJBUjNR4V2s90Re+QQyBHZdDqlRiL3uTtwyEgOwAw==
-X-Received: by 2002:a63:805:: with SMTP id 5mr151251pgi.160.1606713685462;
-        Sun, 29 Nov 2020 21:21:25 -0800 (PST)
-Received: from laputa (p784a5642.tkyea130.ap.so-net.ne.jp. [120.74.86.66])
-        by smtp.gmail.com with ESMTPSA id c20sm14908059pfb.133.2020.11.29.21.21.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 21:21:24 -0800 (PST)
-Date:   Mon, 30 Nov 2020 14:21:20 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
-        greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH v3.1 09/27] mmc: sdhci: add UHS-II related
- definitions in headers
-Message-ID: <20201130052120.GB48535@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
- <20201106022726.19831-10-takahiro.akashi@linaro.org>
- <aa8b2aab-51c0-9757-276b-f36dd5d33679@intel.com>
+        id S1726063AbgK3FXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 00:23:34 -0500
+Received: from mout02.posteo.de ([185.67.36.66]:42701 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725884AbgK3FXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 00:23:34 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 75EBB2400FC
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:22:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1606713754; bh=cHy6v5M4vlXdjZSZ5DtHaayJitURiqSEjOoiQbRF8uI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LaTqCdxXXTg9P8+Wy3VlW5dNZy4d20ld3SQcy/ZJx4VE3r7dj0WmXHgy2xab9IHgY
+         eZyKafgq1oxltwVqX5Hlw8A3OE91ZmOsP8YdWSO12gjdjJcM/M9fckwzJBmAE2L7wA
+         yL55BoN3YNWD6deO5DDGuVZrlyFIfOVLdrMHMguFQFoGVkoJF/gJs/IZdnsfjvFc5y
+         pQyXbpCQi7GYVPTXKdzsI76CzyzaAW227FCkFIFTlflFHct7rDHWWyajZluwQaCoe+
+         WXKNs1DOm+PtksAcMU0+hnO12BmpasNFp5+74oEzfZXGysCyjoS5hkv5IscdBjbvTG
+         neiCKFmwG5IKA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4CktsP2bthz9rxB;
+        Mon, 30 Nov 2020 06:22:33 +0100 (CET)
+Date:   Mon, 30 Nov 2020 06:22:30 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jonas Malaco <jonas@protocubo.io>, linux-kernel@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH] hwmon: corsair-psu: update supported devices
+Message-ID: <20201130062230.2141750a@monster.powergraphx.local>
+In-Reply-To: <20201129215933.GA131003@roeck-us.net>
+References: <X7+T4aZSUuzfsf7H@monster.powergraphx.local>
+        <CANS_-EN8rgFEyE5rDw3=JLUYNwLQexafn7efvMC_=+4s2h1R6Q@mail.gmail.com>
+        <20201128113524.24f4f56f@monster.powergraphx.local>
+        <CANS_-EPK75zrVRtBKxO-00RZD-XWrixJD8DH1_d=80rbazXQng@mail.gmail.com>
+        <20201129073618.082c2291@monster.powergraphx.local>
+        <20201129130049.GB120875@roeck-us.net>
+        <20201129165443.51d22225@monster.powergraphx.local>
+        <20201129215933.GA131003@roeck-us.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa8b2aab-51c0-9757-276b-f36dd5d33679@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 10:15:29AM +0200, Adrian Hunter wrote:
-> On 6/11/20 4:27 am, AKASHI Takahiro wrote:
-> > Add UHS-II related definitions in shdci.h and sdhci-uhs2.h.
+On Sun, 29 Nov 2020 13:59:33 -0800
+Guenter Roeck <linux@roeck-us.net> wrote:
+
+> On Sun, Nov 29, 2020 at 04:54:43PM +0100, Wilken Gottwalt wrote:
+> > On Sun, 29 Nov 2020 05:00:49 -0800
+> > Guenter Roeck <linux@roeck-us.net> wrote:
 > > 
-> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > ---
-> >  drivers/mmc/host/sdhci-uhs2.h | 210 ++++++++++++++++++++++++++++++++++
-> >  drivers/mmc/host/sdhci.h      |  73 +++++++++++-
-> >  2 files changed, 282 insertions(+), 1 deletion(-)
-> >  create mode 100644 drivers/mmc/host/sdhci-uhs2.h
+> > > On Sun, Nov 29, 2020 at 07:36:18AM +0100, Wilken Gottwalt wrote:
+> > > > On Sat, 28 Nov 2020 17:21:40 -0300
+> > > > Jonas Malaco <jonas@protocubo.io> wrote:
+> > > > 
+> > > > > On Sat, Nov 28, 2020 at 7:35 AM Wilken Gottwalt
+> > > > > <wilken.gottwalt@posteo.net> wrote:
+> > > > > >
+> > > > > > On Sat, 28 Nov 2020 02:37:38 -0300
+> > > > > > Jonas Malaco <jonas@protocubo.io> wrote:
+> > > > > >
+> > > > > > > On Thu, Nov 26, 2020 at 8:43 AM Wilken Gottwalt
+> > > > > > > <wilken.gottwalt@posteo.net> wrote:
+> > > > > > > >
+> > > > > > > > Adds support for another Corsair PSUs series: AX760i, AX860i, AX1200i,
+> > > > > > > > AX1500i and AX1600i. The first 3 power supplies are supported through
+> > > > > > > > the Corsair Link USB Dongle which is some kind of USB/Serial/TTL
+> > > > > > > > converter especially made for the COM ports of these power supplies.
+> > > > > > > > There are 3 known revisions of these adapters. The AX1500i power supply
+> > > > > > > > has revision 3 built into the case and AX1600i is the only one in that
+> > > > > > > > series, which has an unique usb hid id like the RM/RX series.
+> > > > > > >
+> > > > > > > Can I ask what AXi power supplies were tested?
+> > > > > > >
+> > > > > > > I ask because, based on the user-space implementations I am aware of,
+> > > > > > > the AXi dongle protocol appears to be different from the RMi/HXi series.
+> > > > > >
+> > > > > > I was not able to test this against the AX power supplies, they are really
+> > > > > > hard to find (and are far to expensive). But I went through all these tools
+> > > > > > and stuck to the most common commands, which all 3 series support. Not every
+> > > > > > series supports all commands (there also seem to be different firmwares in
+> > > > > > the micro-conrollers). But this is fine, some sensors will show up as N/A.
+> > > > > > Even my HX850i does not support all commands covered in this driver.
+> > > > > 
+> > > > > I think the similarities come from all using wrappers over the PMBus
+> > > > > interface to the voltage controller.  But I am not sure the wrapping
+> > > > > protocols are identical.
+> > > > > 
+> > > > > For example, cpsumon shows significantly more things going on during a
+> > > > > read than what is needed for the RMi/HXi series.[1]
+> > > > > 
+> > > > > [1] https://github.com/ka87/cpsumon/blob/fd639684d7f9/libcpsumon/src/cpsumon.c#L213-L231
+> > > > > 
+> > > > > 
+> > > > > >
+> > > > > > > AXi dongle:
+> > > > > > >  - https://github.com/ka87/cpsumon
+> > > > > >
+> > > > > > This tool made me to consider including the AX series, because it uses some
+> > > > > > of the same commands on the AX760i, AX860i, AX1200i and AX1500i. But it is
+> > > > > > a usb-serial tool only. But it was nice to know, that the commands are mostly
+> > > > > > the same. I left out all the commands for configuring, PCIe power rails,
+> > > > > > efficiency and others which do not really belong into hwmon.
+> > > > > >
+> > > > > > > RMi/HXi:
+> > > > > > >  - https://github.com/jonasmalacofilho/liquidctl
+> > > > > > >  - https://github.com/audiohacked/OpenCorsairLink
+> > > > > >
+> > > > > > This tool made me include the AX series, because it uses the rmi protocol
+> > > > > > component for the rmi driver (RM/HX series) and the corsair dongles.
+> > > > > 
+> > > > > The corsairlink_driver_dongle has no implementations for reading sensor
+> > > > > data (compare that with the corsairlink_driver_rmi).[2][3]  There is
+> > > > > also no code that actually tries to read (write) from (to) the device
+> > > > > using that dongle driver.[4]
+> > > > > 
+> > > > > I also looked at a few of the issues, and all of the ones I read
+> > > > > mentioned AXi support being under development, and the hypothesis of the
+> > > > > AXi series being compatible with the RMi/HXi code still remaining to be
+> > > > > confirmed.
+> > > > > 
+> > > > > [2]
+> > > > > https://github.com/audiohacked/OpenCorsairLink/blob/61d336a61b85/drivers/dongle.c#L33-L39
+> > > > > [3]
+> > > > > https://github.com/audiohacked/OpenCorsairLink/blob/61d336a61b85/drivers/rmi.c#L33-L57
+> > > > > [4] https://github.com/audiohacked/OpenCorsairLink/blob/61d336a61b85/main.c#L106
+> > > > > 
+> > > > > 
+> > > > > >
+> > > > > > >  - https://github.com/notaz/corsairmi
+> > > > > >
+> > > > > > This one covers only some HX/RM PSUs, but is uses the rawhid access which
+> > > > > > made me looking up the actual usb chips/bridges Corsair uses.
+> > > > > >
+> > > > > > >
+> > > > > > > One additional concern is that the non-HID AXi dongles may only have bulk
+> > > > > > > USB endpoints, and this is a HID driver.[1]
+> > > > > >
+> > > > > > You are right, in the case of the dongles it could be different. But I did
+> > > > > > some research on Corsair usb driven devices and they really like to stick to
+> > > > > > the cp210x, which is an usb hid bridge. The commit
+> > > > > > b9326057a3d8447f5d2e74a7b521ccf21add2ec0 actually covers two Corsair USB
+> > > > > > dongles as a cp210x device. So it is very likely that all Corsair PSUs with
+> > > > > > such an interface/dongle use usb hid. But I'm completely open to get proven
+> > > > > > wrong. Actually I really would like to see this tested by people who have
+> > > > > > access to the more rare devices.
+> > > > > 
+> > > > > I could be wrong (and I am sorry for the noise if that is the case), but
+> > > > > as far as I can see the cp210x does not create a HID device.
+> > > > 
+> > > > No no, this is fine. It really helps if some more people are looking into this.
+> > > > I wish I had access to at least one of the later models (AX1500i/AX1600i), I
+> > > > make mistakes from time to time. And it really doesn't help that Corsair changes
+> > > > single devices in the same product line by firmware update. The AX1600i seems to
+> > > > be the only one, which uses exactly the same protocol like the RM/HX series, but
+> > > > is missing the actual usb hid part. But there seems to be a firmware where the
+> > > > usb hid part was available for a short time. So, what to do? Remove the AXi part
+> > > > completely or keep only the AX1600i?
+> > > > 
+> > > > Guenter, what would you suggest?
+> > > > 
+> > > I'd suggest to remove it completely, and explain the reason. Anything else will
+> > > just create trouble with people demanding to know why their power supply is not
+> > > supported even though it is listed as supported. And, believe me, you don't want
+> > > to be on the receiving side of those complaints. The Internet is much less
+> > > friendly nowadays than it used to be.
 > > 
-> > diff --git a/drivers/mmc/host/sdhci-uhs2.h b/drivers/mmc/host/sdhci-uhs2.h
-> > new file mode 100644
-> > index 000000000000..3b157df9c89c
-> > --- /dev/null
-> > +++ b/drivers/mmc/host/sdhci-uhs2.h
-> > @@ -0,0 +1,210 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> > +/*
-> > + *  linux/drivers/mmc/host/sdhci-uhs2.h - Secure Digital Host Controller
-> > + *  Interface driver
-> > + *
-> > + * Header file for Host Controller UHS2 related registers and I/O accessors.
-> > + *
-> > + *  Copyright (C) 2014 Intel Corp, All Rights Reserved.
-> > + */
-> > +#ifndef __SDHCI_UHS2_H
-> > +#define __SDHCI_UHS2_H
-> > +
-> > +#include <linux/bits.h>
-> > +
-> > +/*
-> > + * UHS-II Controller registers
-> > + * 0x74 preset in sdhci.h
-> > + * 0x80
-> > + * 0x84-0xB4
-> > + * 0xB8-0xCF
-> > + * 0xE0-0xE7
-> > + */
-> > +/* UHS2 */
-> > +#define SDHCI_UHS2_BLOCK_SIZE	0x80
-> > +#define  SDHCI_UHS2_MAKE_BLKSZ(dma, blksz) \
-> > +	((((dma) & 0x7) << 12) | ((blksz) & 0xFFF))
-> > +
-> > +#define SDHCI_UHS2_BLOCK_COUNT	0x84
-> > +
-> > +#define SDHCI_UHS2_CMD_PACKET	0x88
-> > +#define  SDHCI_UHS2_CMD_PACK_MAX_LEN	20
-> > +
-> > +#define SDHCI_UHS2_TRANS_MODE	0x9C
-> > +#define  SDHCI_UHS2_TRNS_DMA		BIT(0)
-> > +#define  SDHCI_UHS2_TRNS_BLK_CNT_EN	BIT(1)
-> > +#define  SDHCI_UHS2_TRNS_DATA_TRNS_WRT	BIT(4)
-> > +#define  SDHCI_UHS2_TRNS_BLK_BYTE_MODE	BIT(5)
-> > +#define  SDHCI_UHS2_TRNS_RES_R5		BIT(6)
-> > +#define  SDHCI_UHS2_TRNS_RES_ERR_CHECK_EN	BIT(7)
-> > +#define  SDHCI_UHS2_TRNS_RES_INT_DIS	BIT(8)
-> > +#define  SDHCI_UHS2_TRNS_WAIT_EBSY	BIT(14)
-> > +#define  SDHCI_UHS2_TRNS_2L_HD		BIT(15)
-> > +
-> > +#define SDHCI_UHS2_COMMAND	0x9E
-> > +#define  SDHCI_UHS2_COMMAND_SUB_CMD	0x0004
-> > +#define  SDHCI_UHS2_COMMAND_DATA	0x0020
-> > +#define  SDHCI_UHS2_COMMAND_TRNS_ABORT	0x0040
-> > +#define  SDHCI_UHS2_COMMAND_CMD12	0x0080
-> > +#define  SDHCI_UHS2_COMMAND_DORMANT	0x00C0
-> > +#define  SDHCI_UHS2_COMMAND_PACK_LEN_MASK	GENMASK(12,8)
-> > +#define  SDHCI_UHS2_COMMAND_PACK_LEN_SHIFT	8
-> > +
-> > +#define SDHCI_UHS2_RESPONSE	0xA0
-> > +#define  SDHCI_UHS2_RESPONSE_MAX_LEN	20
-> > +
-> > +#define SDHCI_UHS2_MSG_SELECT	0xB4
-> > +#define SDHCI_UHS2_MSG_SELECT_CURR	0x0
-> > +#define SDHCI_UHS2_MSG_SELECT_ONE	0x1
-> > +#define SDHCI_UHS2_MSG_SELECT_TWO	0x2
-> > +#define SDHCI_UHS2_MSG_SELECT_THREE	0x3
-> > +
-> > +#define SDHCI_UHS2_MSG		0xB8
-> > +
-> > +#define SDHCI_UHS2_DEV_INT_STATUS	0xBC
-> > +
-> > +#define SDHCI_UHS2_DEV_SELECT	0xBE
-> > +#define SDHCI_UHS2_DEV_SELECT_DEV_SEL_MASK	GENMASK(3,0)
-> > +#define SDHCI_UHS2_DEV_SELECT_INT_MSG_EN	BIT(7)
-> > +
-> > +#define SDHCI_UHS2_DEV_INT_CODE	0xBF
-> > +
-> > +#define SDHCI_UHS2_SW_RESET	0xC0
-> > +#define SDHCI_UHS2_SW_RESET_FULL	0x0001
-> > +#define SDHCI_UHS2_SW_RESET_SD		0x0002
-> > +
-> > +#define SDHCI_UHS2_TIMER_CTRL	0xC2
-> > +#define SDHCI_UHS2_TIMER_CTRL_DEADLOCK_SHIFT	4
-> > +
-> > +#define SDHCI_UHS2_ERR_INT_STATUS		0xC4
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_EN		0xC8
-> > +#define SDHCI_UHS2_ERR_INT_SIG_EN		0xCC
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_HEADER	BIT(0)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_RES		BIT(1)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_RETRY_EXP	BIT(2)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_CRC		BIT(3)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_FRAME		BIT(4)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_TID		BIT(5)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_UNRECOVER	BIT(7)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_EBUSY		BIT(8)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_ADMA		BIT(15)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_RES_TIMEOUT	BIT(16)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_DEADLOCK_TIMEOUT	BIT(17)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_VENDOR	BIT(27)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_MASK	\
-> > +		(SDHCI_UHS2_ERR_INT_STATUS_HEADER |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_RES |		\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_RETRY_EXP |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_CRC |		\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_FRAME |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_TID |		\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_UNRECOVER |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_EBUSY |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_ADMA |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_RES_TIMEOUT |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_DEADLOCK_TIMEOUT)
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_CMD_MASK	\
-> > +		(SDHCI_UHS2_ERR_INT_STATUS_HEADER |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_RES |		\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_FRAME |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_TID |		\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_RES_TIMEOUT)
-> > +/* CRC Error occurs during a packet receiving */
-> > +#define SDHCI_UHS2_ERR_INT_STATUS_DATA_MASK	\
-> > +		(SDHCI_UHS2_ERR_INT_STATUS_RETRY_EXP |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_CRC |		\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_UNRECOVER |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_EBUSY |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_ADMA |	\
-> > +		SDHCI_UHS2_ERR_INT_STATUS_DEADLOCK_TIMEOUT)
-> > +
-> > +#define SDHCI_UHS2_SET_PTR	0xE0
-> > +#define   SDHCI_UHS2_GEN_SET_POWER_LOW		0x0001
-> > +#define   SDHCI_UHS2_GEN_SET_N_LANES_POS	8
-> > +#define   SDHCI_UHS2_GEN_SET_2L_FD_HD		0x0
-> > +#define   SDHCI_UHS2_GEN_SET_2D1U_FD		0x2
-> > +#define   SDHCI_UHS2_GEN_SET_1D2U_FD		0x3
-> > +#define   SDHCI_UHS2_GEN_SET_2D2U_FD		0x4
-> > +
-> > +#define   SDHCI_UHS2_PHY_SET_SPEED_POS		6
-> > +#define   SDHCI_UHS2_PHY_SET_HIBER_EN		BIT(12)
-> > +#define   SDHCI_UHS2_PHY_SET_N_LSS_SYN_MASK	GENMASK(19,16)
-> > +#define   SDHCI_UHS2_PHY_SET_N_LSS_SYN_POS	16
-> > +#define   SDHCI_UHS2_PHY_SET_N_LSS_DIR_MASK	GENMASK(23,20)
-> > +#define   SDHCI_UHS2_PHY_SET_N_LSS_DIR_POS	20
-> > +
-> > +#define   SDHCI_UHS2_TRAN_SET_N_FCU_MASK	GENMASK(15,8)
-> > +#define   SDHCI_UHS2_TRAN_SET_N_FCU_POS		8
-> > +#define   SDHCI_UHS2_TRAN_SET_RETRY_CNT_MASK	GENMASK(17,16)
-> > +#define   SDHCI_UHS2_TRAN_SET_RETRY_CNT_POS	16
-> > +
-> > +#define   SDHCI_UHS2_TRAN_SET_1_N_DAT_GAP_MASK	GENMASK(7,0)
-> > +
-> > +#define SDHCI_UHS2_HOST_CAPS_PTR	0xE2
-> > +#define  SDHCI_UHS2_HOST_CAPS_GEN_OFFSET	0
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_DAP_MASK	GENMASK(3,0)
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_GAP_MASK	GENMASK(7,4)
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_GAP(gap)	((gap) * 360)
-> > +#define SDHCI_UHS2_HOST_CAPS_GEN_GAP_SHIFT 4
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_LANE_MASK	GENMASK(13,8)
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_LANE_SHIFT	8
-> > +#define    SDHCI_UHS2_HOST_CAPS_GEN_2L_HD_FD	1
-> > +#define    SDHCI_UHS2_HOST_CAPS_GEN_2D1U_FD	2
-> > +#define    SDHCI_UHS2_HOST_CAPS_GEN_1D2U_FD	4
-> > +#define    SDHCI_UHS2_HOST_CAPS_GEN_2D2U_FD	8
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_ADDR_64	BIT(14)
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_BOOT		BIT(15)
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_DEV_TYPE_MASK	GENMASK(17,16)
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_DEV_TYPE_SHIFT	16
-> > +#define    SDHCI_UHS2_HOST_CAPS_GEN_DEV_TYPE_RMV	0
-> > +#define    SDHCI_UHS2_HOST_CAPS_GEN_DEV_TYPE_EMB	1
-> > +#define    SDHCI_UHS2_HOST_CAPS_GEN_DEV_TYPE_EMB_RMV	2
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_NUM_DEV_MASK		GENMASK(21,18)
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_NUM_DEV_SHIFT	18
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_MASK	GENMASK(23,22)
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_SHIFT	22
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_P2P		0
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_RING	1
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_HUB		2
-> > +#define   SDHCI_UHS2_HOST_CAPS_GEN_BUS_TOPO_HUB_RING	3
-> > +
-> > +#define  SDHCI_UHS2_HOST_CAPS_PHY_OFFSET	4
-> > +#define   SDHCI_UHS2_HOST_CAPS_PHY_REV_MASK		GENMASK(5,0)
-> > +#define   SDHCI_UHS2_HOST_CAPS_PHY_RANGE_MASK		GENMASK(7,6)
-> > +#define   SDHCI_UHS2_HOST_CAPS_PHY_RANGE_SHIFT		6
-> > +#define   SDHCI_UHS2_HOST_CAPS_PHY_RANGE_A		0
-> > +#define   SDHCI_UHS2_HOST_CAPS_PHY_RANGE_B		1
-> > +#define   SDHCI_UHS2_HOST_CAPS_PHY_N_LSS_SYN_MASK	GENMASK(19,16)
-> > +#define   SDHCI_UHS2_HOST_CAPS_PHY_N_LSS_SYN_SHIFT	16
-> > +#define   SDHCI_UHS2_HOST_CAPS_PHY_N_LSS_DIR_MASK	GENMASK(23,20)
-> > +#define   SDHCI_UHS2_HOST_CAPS_PHY_N_LSS_DIR_SHIFT	20
-> > +#define  SDHCI_UHS2_HOST_CAPS_TRAN_OFFSET	8
-> > +#define   SDHCI_UHS2_HOST_CAPS_TRAN_LINK_REV_MASK	GENMASK(5,0)
-> > +#define   SDHCI_UHS2_HOST_CAPS_TRAN_N_FCU_MASK		GENMASK(15,8)
-> > +#define   SDHCI_UHS2_HOST_CAPS_TRAN_N_FCU_SHIFT		8
-> > +#define   SDHCI_UHS2_HOST_CAPS_TRAN_HOST_TYPE_MASK	GENMASK(18,16)
-> > +#define   SDHCI_UHS2_HOST_CAPS_TRAN_HOST_TYPE_SHIFT	16
-> > +#define   SDHCI_UHS2_HOST_CAPS_TRAN_BLK_LEN_MASK	GENMASK(31,20)
-> > +#define   SDHCI_UHS2_HOST_CAPS_TRAN_BLK_LEN_SHIFT	20
-> > +
-> > +#define  SDHCI_UHS2_HOST_CAPS_TRAN_1_OFFSET	12
-> > +#define  SDHCI_UHS2_HOST_CAPS_TRAN_1_N_DATA_GAP_MASK	GENMASK(7,0)
-> > +
-> > +#define SDHCI_UHS2_TEST_PTR	0xE4
-> > +#define  SDHCI_UHS2_TEST_ERR_HEADER	BIT(0)
-> > +#define  SDHCI_UHS2_TEST_ERR_RES	BIT(1)
-> > +#define  SDHCI_UHS2_TEST_ERR_RETRY_EXP	BIT(2)
-> > +#define  SDHCI_UHS2_TEST_ERR_CRC	BIT(3)
-> > +#define  SDHCI_UHS2_TEST_ERR_FRAME	BIT(4)
-> > +#define  SDHCI_UHS2_TEST_ERR_TID	BIT(5)
-> > +#define  SDHCI_UHS2_TEST_ERR_UNRECOVER	BIT(7)
-> > +#define  SDHCI_UHS2_TEST_ERR_EBUSY	BIT(8)
-> > +#define  SDHCI_UHS2_TEST_ERR_ADMA	BIT(15)
-> > +#define  SDHCI_UHS2_TEST_ERR_RES_TIMEOUT	BIT(16)
-> > +#define  SDHCI_UHS2_TEST_ERR_DEADLOCK_TIMEOUT	BIT(17)
-> > +#define  SDHCI_UHS2_TEST_ERR_VENDOR	BIT(27)
-> > +
-> > +#define SDHCI_UHS2_EMBED_CTRL	0xE6
-> > +#define SDHCI_UHS2_VENDOR	0xE8
-> > +
-> > +#endif /* __SDHCI_UHS2_H */
-> > diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-> > index 0770c036e2ff..d9d7a76cedc1 100644
-> > --- a/drivers/mmc/host/sdhci.h
-> > +++ b/drivers/mmc/host/sdhci.h
-> > @@ -43,8 +43,27 @@
-> >  #define  SDHCI_TRNS_READ	0x10
-> >  #define  SDHCI_TRNS_MULTI	0x20
-> >  
-> > +/*
-> > + * Defined in Host Version 4.10.
-> > + * 1 - R5 (SDIO)
-> > + * 0 - R1 (Memory)
-> > + */
-> > +#define  SDHCI_TRNS_RES_TYPE		0x40
-> > +#define  SDHCI_TRNS_RES_ERR_CHECK	0x80
-> > +#define  SDHCI_TRNS_RES_INT_DIS		0x0100
-> > +
-> >  #define SDHCI_COMMAND		0x0E
-> >  #define  SDHCI_CMD_RESP_MASK	0x03
-> > +
-> > +/*
-> > + * Host Version 4.10 adds this bit to distinguish a main command or
-> > + * sub command.
-> > + * CMD53(SDIO) - main command
-> > + * CMD52(SDIO) - sub command which doesn't have data block or doesn't
-> > + * indicate busy.
-> > + */
-> > +#define  SDHCI_CMD_SUB_CMD	0x04
-> > +
-> >  #define  SDHCI_CMD_CRC		0x08
-> >  #define  SDHCI_CMD_INDEX	0x10
-> >  #define  SDHCI_CMD_DATA		0x20
-> > @@ -60,11 +79,19 @@
-> >  
-> >  #define SDHCI_RESPONSE		0x10
-> >  
-> > +#define  SDHCI_RESPONSE_CM_TRAN_ABORT_OFFSET	0x10
-> > +#define  SDHCI_RESPONSE_CM_TRAN_ABORT_SIZE	4
-> > +#define  SDHCI_RESPONSE_SD_TRAN_ABORT_OFFSET	0x18
-> > +#define  SDHCI_RESPONSE_SD_TRAN_ABORT_SIZE	8
-> 
-> I would prefer to have all the UHS2 definitions in sdhci-uhs2.  If they
-> belong to an existing register, just put a comment saying what register.
-
-I would disagree, but if you really want, I'd defer to you.
-
--Takahiro Akashi
-
-> 
-> > +
-> >  #define SDHCI_BUFFER		0x20
-> >  
-> >  #define SDHCI_PRESENT_STATE	0x24
-> >  #define  SDHCI_CMD_INHIBIT	0x00000001
-> >  #define  SDHCI_DATA_INHIBIT	0x00000002
-> > +
-> > +#define  SDHCI_DATA_HIGH_LVL_MASK	0x000000F0
-> > +
-> >  #define  SDHCI_DOING_WRITE	0x00000100
-> >  #define  SDHCI_DOING_READ	0x00000200
-> >  #define  SDHCI_SPACE_AVAILABLE	0x00000400
-> > @@ -80,6 +107,13 @@
-> >  #define   SDHCI_DATA_0_LVL_MASK	0x00100000
-> >  #define  SDHCI_CMD_LVL		0x01000000
-> >  
-> > +#define  SDHCI_HOST_REGULATOR_STABLE	0x02000000
-> > +#define  SDHCI_CMD_NOT_ISSUE_ERR	0x08000000
-> > +#define  SDHCI_SUB_CMD_STATUS		0x10000000
-> > +#define  SDHCI_UHS2_IN_DORMANT_STATE	0x20000000
-> > +#define  SDHCI_UHS2_LANE_SYNC		0x40000000
-> > +#define  SDHCI_UHS2_IF_DETECT		0x80000000
-> > +
-> >  #define SDHCI_HOST_CONTROL	0x28
-> >  #define  SDHCI_CTRL_LED		0x01
-> >  #define  SDHCI_CTRL_4BITBUS	0x02
-> > @@ -100,6 +134,11 @@
-> >  #define  SDHCI_POWER_300	0x0C
-> >  #define  SDHCI_POWER_330	0x0E
-> >  
-> > +/* VDD2 - UHS2 */
-> > +#define  SDHCI_VDD2_POWER_ON		0x10
-> > +#define  SDHCI_VDD2_POWER_180		0xA0
-> > +#define  SDHCI_VDD2_POWER_120		0x80
-> > +
-> >  #define SDHCI_BLOCK_GAP_CONTROL	0x2A
-> >  
-> >  #define SDHCI_WAKE_UP_CONTROL	0x2B
-> > @@ -110,7 +149,7 @@
-> >  #define SDHCI_CLOCK_CONTROL	0x2C
-> >  #define  SDHCI_DIVIDER_SHIFT	8
-> >  #define  SDHCI_DIVIDER_HI_SHIFT	6
-> > -#define  SDHCI_DIV_MASK	0xFF
-> > +#define  SDHCI_DIV_MASK		0xFF
-> >  #define  SDHCI_DIV_MASK_LEN	8
-> >  #define  SDHCI_DIV_HI_MASK	0x300
-> >  #define  SDHCI_PROG_CLOCK_MODE	0x0020
-> > @@ -139,6 +178,10 @@
-> >  #define  SDHCI_INT_CARD_REMOVE	0x00000080
-> >  #define  SDHCI_INT_CARD_INT	0x00000100
-> >  #define  SDHCI_INT_RETUNE	0x00001000
-> > +
-> > +/* Host Version 4.10 */
-> > +#define  SDHCI_INT_FX_EVENT	0x00002000
-> > +
-> >  #define  SDHCI_INT_CQE		0x00004000
-> >  #define  SDHCI_INT_ERROR	0x00008000
-> >  #define  SDHCI_INT_TIMEOUT	0x00010000
-> > @@ -152,6 +195,9 @@
-> >  #define  SDHCI_INT_AUTO_CMD_ERR	0x01000000
-> >  #define  SDHCI_INT_ADMA_ERROR	0x02000000
-> >  
-> > +/* Host Version 4.0 */
-> > +#define  SDHCI_INT_RESPONSE_ERROR	0x08000000
-> > +
-> >  #define  SDHCI_INT_NORMAL_MASK	0x00007FFF
-> >  #define  SDHCI_INT_ERROR_MASK	0xFFFF8000
-> >  
-> > @@ -178,6 +224,9 @@
-> >  #define  SDHCI_AUTO_CMD_END_BIT	0x00000008
-> >  #define  SDHCI_AUTO_CMD_INDEX	0x00000010
-> >  
-> > +/* Host Version 4.10 */
-> > +#define  SDHCI_ACMD_RESPONSE_ERROR	0x0020
-> > +
-> >  #define SDHCI_HOST_CONTROL2		0x3E
-> >  #define  SDHCI_CTRL_UHS_MASK		0x0007
-> >  #define   SDHCI_CTRL_UHS_SDR12		0x0000
-> > @@ -186,6 +235,7 @@
-> >  #define   SDHCI_CTRL_UHS_SDR104		0x0003
-> >  #define   SDHCI_CTRL_UHS_DDR50		0x0004
-> >  #define   SDHCI_CTRL_HS400		0x0005 /* Non-standard */
-> > +#define   SDHCI_CTRL_UHS_2		0x0007 /* UHS-2 */
-> >  #define  SDHCI_CTRL_VDD_180		0x0008
-> >  #define  SDHCI_CTRL_DRV_TYPE_MASK	0x0030
-> >  #define   SDHCI_CTRL_DRV_TYPE_B		0x0000
-> > @@ -194,9 +244,12 @@
-> >  #define   SDHCI_CTRL_DRV_TYPE_D		0x0030
-> >  #define  SDHCI_CTRL_EXEC_TUNING		0x0040
-> >  #define  SDHCI_CTRL_TUNED_CLK		0x0080
-> > +#define  SDHCI_CTRL_UHS2_INTERFACE_EN	0x0100 /* UHS-2 */
-> > +#define  SDHCI_CTRL_ADMA2_LEN_MODE	0x0400
-> >  #define  SDHCI_CMD23_ENABLE		0x0800
-> >  #define  SDHCI_CTRL_V4_MODE		0x1000
-> >  #define  SDHCI_CTRL_64BIT_ADDR		0x2000
-> > +#define  SDHCI_CTRL_ASYNC_INT_EN	0x4000
-> >  #define  SDHCI_CTRL_PRESET_VAL_ENABLE	0x8000
-> >  
-> >  #define SDHCI_CAPABILITIES	0x40
-> > @@ -217,11 +270,13 @@
-> >  #define  SDHCI_CAN_VDD_180	0x04000000
-> >  #define  SDHCI_CAN_64BIT_V4	0x08000000
-> >  #define  SDHCI_CAN_64BIT	0x10000000
-> > +#define  SDHCI_CAN_ASYNC_INT	0x20000000
-> >  
-> >  #define SDHCI_CAPABILITIES_1	0x44
-> >  #define  SDHCI_SUPPORT_SDR50	0x00000001
-> >  #define  SDHCI_SUPPORT_SDR104	0x00000002
-> >  #define  SDHCI_SUPPORT_DDR50	0x00000004
-> > +#define  SDHCI_SUPPORT_UHS2	0x00000008 /* UHS-2 support */
-> >  #define  SDHCI_DRIVER_TYPE_A	0x00000010
-> >  #define  SDHCI_DRIVER_TYPE_C	0x00000020
-> >  #define  SDHCI_DRIVER_TYPE_D	0x00000040
-> > @@ -230,19 +285,28 @@
-> >  #define  SDHCI_RETUNING_MODE_MASK		GENMASK(15, 14)
-> >  #define  SDHCI_CLOCK_MUL_MASK			GENMASK(23, 16)
-> >  #define  SDHCI_CAN_DO_ADMA3	0x08000000
-> > +#define  SDHCI_SUPPORT_VDD2_180	0x10000000 /* UHS-2 1.8V VDD2 */
-> > +#define  SDHCI_RSVD_FOR_VDD2    0x20000000 /* Rsvd for future VDD2 */
-> >  #define  SDHCI_SUPPORT_HS400	0x80000000 /* Non-standard */
-> >  
-> >  #define SDHCI_MAX_CURRENT		0x48
-> > +#define SDHCI_MAX_CURRENT_1		0x4C
-> >  #define  SDHCI_MAX_CURRENT_LIMIT	GENMASK(7, 0)
-> >  #define  SDHCI_MAX_CURRENT_330_MASK	GENMASK(7, 0)
-> >  #define  SDHCI_MAX_CURRENT_300_MASK	GENMASK(15, 8)
-> >  #define  SDHCI_MAX_CURRENT_180_MASK	GENMASK(23, 16)
-> > +#define  SDHCI_MAX_CURRENT_VDD2_180_MASK	GENMASK(7, 0) /* UHS2 */
-> >  #define   SDHCI_MAX_CURRENT_MULTIPLIER	4
-> >  
-> >  /* 4C-4F reserved for more max current */
-> >  
-> >  #define SDHCI_SET_ACMD12_ERROR	0x50
-> > +/* Host Version 4.10 */
-> > +#define SDHCI_SET_ACMD_RESPONSE_ERROR	0x20
-> >  #define SDHCI_SET_INT_ERROR	0x52
-> > +/* Host Version 4.10 */
-> > +#define SDHCI_SET_INT_TUNING_ERROR	0x0400
-> > +#define SDHCI_SET_INT_RESPONSE_ERROR	0x0800
-> >  
-> >  #define SDHCI_ADMA_ERROR	0x54
-> >  
-> > @@ -259,10 +323,16 @@
-> >  #define SDHCI_PRESET_FOR_SDR104        0x6C
-> >  #define SDHCI_PRESET_FOR_DDR50 0x6E
-> >  #define SDHCI_PRESET_FOR_HS400 0x74 /* Non-standard */
-> > +
-> > +/* TODO: 0x74 is used for UHS2 in 4.10. How about HS400? */
-> > +/* UHS2 */
-> > +#define SDHCI_PRESET_FOR_UHS2  0x74
-> >  #define SDHCI_PRESET_DRV_MASK		GENMASK(15, 14)
-> >  #define SDHCI_PRESET_CLKGEN_SEL		BIT(10)
-> >  #define SDHCI_PRESET_SDCLK_FREQ_MASK	GENMASK(9, 0)
-> >  
-> > +#define SDHCI_ADMA3_ADDRESS	0x78
-> > +
-> >  #define SDHCI_SLOT_INT_STATUS	0xFC
-> >  
-> >  #define SDHCI_HOST_VERSION	0xFE
-> > @@ -652,6 +722,7 @@ struct sdhci_ops {
-> >  	void	(*request_done)(struct sdhci_host *host,
-> >  				struct mmc_request *mrq);
-> >  	void    (*dump_vendor_regs)(struct sdhci_host *host);
-> > +	void	(*dump_uhs2_regs)(struct sdhci_host *host);
-> >  };
-> >  
-> >  #ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
+> > So how is the procedure for this? Just revert it and make a common patch out of
+> > it with a proper explanation?
+> > 
+> > And yeah, I know exactly what you mean. I remember very well how the "internet"
+> > got it first ugly hit in the 90s with the upcoming of Flash ... and then the
+> > "social media". :D Thanks for your help.
 > > 
 > 
+> Can I just drop your previous patch and you send me another - more restrictive -
+> one ?
+
+Yeah, dropping is fine. There is no need for another patch after that, this was
+a patch only dealing with the AXi series.
+
+greetings,
+Wilken
+
+> Thanks,
+> Guenter
+> 
+> > greetings,
+> > Wilken
+> > 
+> > > Guenter
+> > > 
+> > > > > Thanks again,
+> > > > > Jonas
+> > > > > 
+> > > > > 
+> > > > > >
+> > > > > > > Thanks,
+> > > > > > > Jonas
+> > > > > > >
+> > > > > > > [1] https://github.com/ka87/cpsumon/issues/4
+> > > > > >
+> > > > > > Yes ... that one. The last revision of the dongle could indeed be a problem.
+> > > > > > But I'm not really sure what is described here. The last commenter is actually
+> > > > > > the one who provided the cp210x patch mentioned up there. The problem here is,
+> > > > > > the AX1500i has both connectors, USB and that other one. I call it the other
+> > > > > > one because it is the only PSU where it is labeled I2C COMM instead of COMM
+> > > > > > only. But at the same time this tools uses the same commands for this PSU.
+> > > > > >
+> > > > > > So, only some real hardware tests will show.
+> > > > > >
+> > > > > > Greetings,
+> > > > > > Wilken
+> > > > > >
+> > > > > > > >
+> > > > > > > > The patch also changes the usb hid ids to use upper case letters to be
+> > > > > > > > consistent with the rest of the hex numbers in the driver and updates
+> > > > > > > > the hwmon documentation.
+> > > > > > > >
+> > > > > > > > This patch adds:
+> > > > > > > > - hwmon/corsair-psu documentation update
+> > > > > > > > - corsair-psu driver update
+> > > > > > > >
+> > > > > > > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+> > > > > > > > ---
+> > > > > > > >  Documentation/hwmon/corsair-psu.rst | 10 +++++++++
+> > > > > > > >  drivers/hwmon/Kconfig               |  7 +++---
+> > > > > > > >  drivers/hwmon/corsair-psu.c         | 33 +++++++++++++++++++----------
+> > > > > > > >  3 files changed, 36 insertions(+), 14 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/Documentation/hwmon/corsair-psu.rst
+> > > > > > > > b/Documentation/hwmon/corsair-psu.rst index 396b95c9a76a..6227e9046d73 100644
+> > > > > > > > --- a/Documentation/hwmon/corsair-psu.rst
+> > > > > > > > +++ b/Documentation/hwmon/corsair-psu.rst
+> > > > > > > > @@ -7,6 +7,16 @@ Supported devices:
+> > > > > > > >
+> > > > > > > >  * Corsair Power Supplies
+> > > > > > > >
+> > > > > > > > +  Corsair AX760i (by Corsair Link USB Dongle)
+> > > > > > > > +
+> > > > > > > > +  Corsair AX860i (by Corsair Link USB Dongle)
+> > > > > > > > +
+> > > > > > > > +  Corsair AX1200i (by Corsair Link USB Dongle)
+> > > > > > > > +
+> > > > > > > > +  Corsair AX1500i (by builtin Corsair Link USB Dongle)
+> > > > > > > > +
+> > > > > > > > +  Corsair AX1600i
+> > > > > > > > +
+> > > > > > > >    Corsair HX550i
+> > > > > > > >
+> > > > > > > >    Corsair HX650i
+> > > > > > > > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> > > > > > > > index 716df51edc87..3c059fc23cd6 100644
+> > > > > > > > --- a/drivers/hwmon/Kconfig
+> > > > > > > > +++ b/drivers/hwmon/Kconfig
+> > > > > > > > @@ -453,11 +453,12 @@ config SENSORS_CORSAIR_PSU
+> > > > > > > >         tristate "Corsair PSU HID controller"
+> > > > > > > >         depends on HID
+> > > > > > > >         help
+> > > > > > > > -         If you say yes here you get support for Corsair PSUs with a HID
+> > > > > > > > +         If you say yes here you get support for Corsair PSUs with an USB HID
+> > > > > > > >           interface.
+> > > > > > > >           Currently this driver supports the (RM/HX)550i, (RM/HX)650i,
+> > > > > > > > -         (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i and HX1200i power supplies
+> > > > > > > > -         by Corsair.
+> > > > > > > > +         (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i, HX1200i and AX1600i power
+> > > > > > > > +         supplies by Corsair. The AX760i, AX860i, AX1200i and AX1500i
+> > > > > > > > +         power supplies are supported through the Corsair Link USB Dongle.
+> > > > > > > >
+> > > > > > > >           This driver can also be built as a module. If so, the module
+> > > > > > > >           will be called corsair-psu.
+> > > > > > > > diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+> > > > > > > > index 99494056f4bd..0146dda3e2c3 100644
+> > > > > > > > --- a/drivers/hwmon/corsair-psu.c
+> > > > > > > > +++ b/drivers/hwmon/corsair-psu.c
+> > > > > > > > @@ -571,17 +571,28 @@ static int corsairpsu_raw_event(struct hid_device *hdev,
+> > > > > > > > struct hid_report *repo }
+> > > > > > > >
+> > > > > > > >  static const struct hid_device_id corsairpsu_idtable[] = {
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c03) }, /* Corsair HX550i */
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c04) }, /* Corsair HX650i */
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c05) }, /* Corsair HX750i */
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c06) }, /* Corsair HX850i */
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c07) }, /* Corsair HX1000i */
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c08) }, /* Corsair HX1200i */
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c09) }, /* Corsair RM550i */
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0a) }, /* Corsair RM650i */
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0b) }, /* Corsair RM750i */
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0c) }, /* Corsair RM850i */
+> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0d) }, /* Corsair RM1000i */
+> > > > > > > > +       /*
+> > > > > > > > +        * The Corsair USB/COM Dongles appear in at least 3 different revisions,
+> > > > > > > > where rev 1 and 2
+> > > > > > > > +        * are commonly used with the AX760i, AX860i and AX1200i, while rev3 is
+> > > > > > > > rarely seen with
+> > > > > > > > +        * these PSUs. Rev3 is also build into the AX1500i, while the AX1600i is the
+> > > > > > > > first PSU of
+> > > > > > > > +        * this series which has an unique usb hid id. Though, the actual device
+> > > > > > > > name is part of
+> > > > > > > > +        * the HID message protocol, so it doesn't matter which dongle is connected.
+> > > > > > > > +        */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C00) }, /* Corsair Link USB/COM Dongle rev1 */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C01) }, /* Corsair Link USB/COM Dongle rev2 */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C02) }, /* Corsair Link USB/COM Dongle rev3
+> > > > > > > > (AX1500i) */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C03) }, /* Corsair HX550i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C04) }, /* Corsair HX650i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C05) }, /* Corsair HX750i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C06) }, /* Corsair HX850i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C07) }, /* Corsair HX1000i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C08) }, /* Corsair HX1200i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C09) }, /* Corsair RM550i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0A) }, /* Corsair RM650i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0B) }, /* Corsair RM750i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0C) }, /* Corsair RM850i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0D) }, /* Corsair RM1000i */
+> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C11) }, /* Corsair AX1600i */
+> > > > > > > >         { },
+> > > > > > > >  };
+> > > > > > > >  MODULE_DEVICE_TABLE(hid, corsairpsu_idtable);
+> > > > > > > > --
+> > > > > > > > 2.29.2
+> > > > > > > >
+> > > > > >
+> > > > 
+> > 
+
