@@ -2,90 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980372C8B46
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A033E2C8B4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387735AbgK3RgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:36:20 -0500
-Received: from mga05.intel.com ([192.55.52.43]:16886 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387579AbgK3RgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:36:19 -0500
-IronPort-SDR: VFI9a2jaQ1qkLsL4ay+s+CIPEYmoLu57QZ61C9EKfWPAv+VQs9X3AlBCyaloENj/jCkPk5sWF6
- XgZnLhaVIrFg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="257383370"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="257383370"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:34:37 -0800
-IronPort-SDR: xKJUjQ8laE51Ag27+DBSeh0uh0HukOeHAEfSp51gl9McS9F+Dcgy9QWC1bmPWGjS3LXy8cShle
- kv0Rpm1rzH7Q==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="345143661"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:34:30 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kjn5G-00B62N-Dw; Mon, 30 Nov 2020 19:35:30 +0200
-Date:   Mon, 30 Nov 2020 19:35:30 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 04/18] software_node: Enforce parent before child
- ordering of nodes array for software_node_register_nodes()
-Message-ID: <20201130173530.GO4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-5-djrscally@gmail.com>
+        id S2387743AbgK3Rg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:36:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387579AbgK3Rg0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:36:26 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABECCC0613CF;
+        Mon, 30 Nov 2020 09:35:46 -0800 (PST)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 6336C2BA;
+        Mon, 30 Nov 2020 17:35:46 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 10:35:45 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH v2] Documentation/admin-guide: mark memmap parameter is
+ supported by a few architectures
+Message-ID: <20201130103545.3fde4e8f@lwn.net>
+In-Reply-To: <20201128195121.2556-1-song.bao.hua@hisilicon.com>
+References: <20201128195121.2556-1-song.bao.hua@hisilicon.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130133129.1024662-5-djrscally@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 01:31:15PM +0000, Daniel Scally wrote:
-> Registering software_nodes with the .parent member set to point to a
-> currently unregistered software_node has the potential for problems,
-> so enforce parent -> child ordering in arrays passed to this function.
+On Sun, 29 Nov 2020 08:51:21 +1300
+Barry Song <song.bao.hua@hisilicon.com> wrote:
 
-I agree with Laurent.
+> early_param memmap is only implemented on X86, MIPS and XTENSA. To avoid
+> wasting users’ time on trying this on platform like ARM, mark it clearly.
+> 
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  -v2:
+>  * add reviewed-by of Mike, thanks!
+> 
+>  Documentation/admin-guide/kernel-parameters.rst | 1 +
+>  Documentation/admin-guide/kernel-parameters.txt | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 
-...
+Applied, thanks.
 
->  	for (i = 0; nodes[i].name; i++) {
-> +		if (nodes[i].parent)
-> +			if (!software_node_to_swnode(nodes[i].parent)) {
-> +				ret = -EINVAL;
-> +				goto err_unregister_nodes;
-> +			}
-> +
-
-Besides that can we pack these conditionals together?
-
-		if (nodes[i].parent && !software_node_to_swnode(nodes[i].parent)) {
-
-
-Do we have sane ordering in software_node_unregister_nodes()?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+jon
