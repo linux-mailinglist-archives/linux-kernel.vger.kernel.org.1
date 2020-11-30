@@ -2,374 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841132C8F83
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A522C8F8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730215AbgK3U4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:56:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729822AbgK3U4o (ORCPT
+        id S1730231AbgK3U7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:59:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45660 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726716AbgK3U7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:56:44 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6350AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:55:58 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id ms7so343128pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:55:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hwtGH00RadsJGka+CvwFq98EpWOxKlBzeXN72ZDqO1k=;
-        b=Zf3jA60c4Yh6fHTgD1C8f/VTqjKa+5KFN3A5U1IoXY4xcv0cpDhnuoWyom3ruTEky6
-         +GpiXMnH+aJaOc7hoJ2x1kWLqWubTFS0BdEEIJQxof1k9Xi3vSHWy81dFHNYFfRr2NQg
-         /0+AMHZ4xI1foU2xwtct5kCSUgmBuwUGuc/3lUf3iuPYvjcQgcev333zfrAbLkbVIYlQ
-         axKkjfCBLWe+XjgcOHMPvYAJOxCF6WGkCkiE/8pItqpVhW3mGwMcOzGkV9Ka2rmPHoCa
-         rnXsVxwqmOe++yoyNDLdHeE+kOQmXysyuKvQa5VdPhYmKEBqf61LaUCCsucdqjAAAXeD
-         eBQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hwtGH00RadsJGka+CvwFq98EpWOxKlBzeXN72ZDqO1k=;
-        b=D7h7SMkEaWks8zT3soRIx7S6iEHOtyyikjYciI1TRhIrfpjlyX1Fw0DTC/TvYr8Xy2
-         Ous/Tpcgpwju6hRQ2laAgrSsLwkjldckWMP4k4EXjFl3DEsLwnnpGMKh5mQah9H2e/1Y
-         epPF001N74i5cWdefpfLu41zC+LxRnmIy7+IoYRUMNGOOmUFgeYe46C+Qdx4l8e9k7wD
-         Nr6ZrFjmtVPgY40P4jb4BESUn5v0F7+eyxJ0+h3rBTr18bP1btJUw8jOUW2JJtLMA+fP
-         RiFde/VE9LElDvY9ExpiqpL8MW37hgya2zQ/nN5O/qeRj0e3h0nZdbUrFqi2/9Esxbm9
-         k7Gg==
-X-Gm-Message-State: AOAM530y/0M90zOyghvEVXqWVH+fs/HSGSGMenlrZ/fygRL/+98yydvS
-        hRBinuAc4mTa4GzmZtTqoEONnw==
-X-Google-Smtp-Source: ABdhPJwaP207mHL86RDUj+mpq4nX8FN+pZ818dcHT5nDZeFZWwxq3EiP1qGxl1MR1bC409nPLXXvIg==
-X-Received: by 2002:a17:90a:7e95:: with SMTP id j21mr728492pjl.217.1606769757741;
-        Mon, 30 Nov 2020 12:55:57 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id gz2sm383252pjb.2.2020.11.30.12.55.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 12:55:57 -0800 (PST)
-Date:   Mon, 30 Nov 2020 13:55:54 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
-        jonathan.zhouwen@huawei.com, coresight@lists.linaro.org
-Subject: Re: [PATCH v4 05/25] coresight: Convert coresight_timeout to use
- access abstraction
-Message-ID: <20201130205554.GE1092947@xps15>
-References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
- <20201119164547.2982871-6-suzuki.poulose@arm.com>
+        Mon, 30 Nov 2020 15:59:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606769856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cq1No4dPtLmGbI2mqBJ+VtaVWU0d8csbHMbJytzQmX0=;
+        b=U4qTdxW9R2WIenKyHG3fA3rQwjgHR9DhF/lj6hdKGvqtiTrUYpjJSjDhgWKAiKD2yXwTis
+        I2cMsuax1/gxZFQCpxcPp0YfB+RHI+YB6l6DvQVp2SucOoMYwFCIWbxXLbfKgYlOjoW2su
+        mNfb1Cfz4hpNnkVBZ+eOMK/LM3VRnd8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-268-Y7lpk6YDNsqnK6zdensHaA-1; Mon, 30 Nov 2020 15:57:29 -0500
+X-MC-Unique: Y7lpk6YDNsqnK6zdensHaA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71B6E1005D59;
+        Mon, 30 Nov 2020 20:57:27 +0000 (UTC)
+Received: from w520.home (ovpn-112-10.phx2.redhat.com [10.3.112.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 656B219C71;
+        Mon, 30 Nov 2020 20:57:26 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 13:57:25 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] vfio/type1: Add vfio_group_domain()
+Message-ID: <20201130135725.70fdf17f@w520.home>
+In-Reply-To: <20201126012726.1185171-1-baolu.lu@linux.intel.com>
+References: <20201126012726.1185171-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119164547.2982871-6-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 04:45:27PM +0000, Suzuki K Poulose wrote:
-> Convert the generic routines to use the new access abstraction layer
-> gradually, starting with coresigth_timeout.
-> 
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Changes since v3:
->  - Fix style : stacking of parameters (Mathieu)
+On Thu, 26 Nov 2020 09:27:26 +0800
+Lu Baolu <baolu.lu@linux.intel.com> wrote:
 
-There is some stacking left in coresight.h
-
-> ---
->  drivers/hwtracing/coresight/coresight-catu.c  |  5 ++--
->  drivers/hwtracing/coresight/coresight-core.c  | 13 ++++----
->  drivers/hwtracing/coresight/coresight-etb10.c |  5 ++--
->  .../coresight/coresight-etm4x-core.c          | 30 ++++++++++++-------
->  drivers/hwtracing/coresight/coresight-stm.c   |  3 +-
->  .../hwtracing/coresight/coresight-tmc-core.c  | 15 ++++++----
->  drivers/hwtracing/coresight/coresight-tpiu.c  |  4 +--
->  include/linux/coresight.h                     | 13 ++++++--
->  8 files changed, 56 insertions(+), 32 deletions(-)
+> Add the API for getting the domain from a vfio group. This could be used
+> by the physical device drivers which rely on the vfio/mdev framework for
+> mediated device user level access. The typical use case like below:
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
-> index 5baf29510f1b..34c74b05c542 100644
-> --- a/drivers/hwtracing/coresight/coresight-catu.c
-> +++ b/drivers/hwtracing/coresight/coresight-catu.c
-> @@ -401,8 +401,9 @@ static const struct attribute_group *catu_groups[] = {
->  
->  static inline int catu_wait_for_ready(struct catu_drvdata *drvdata)
->  {
-> -	return coresight_timeout(drvdata->base,
-> -				 CATU_STATUS, CATU_STATUS_READY, 1);
-> +	struct csdev_access *csa = &drvdata->csdev->access;
-> +
-> +	return coresight_timeout(csa, CATU_STATUS, CATU_STATUS_READY, 1);
+> 	unsigned int pasid;
+> 	struct vfio_group *vfio_group;
+> 	struct iommu_domain *iommu_domain;
+> 	struct device *dev = mdev_dev(mdev);
+> 	struct device *iommu_device = mdev_get_iommu_device(dev);
+> 
+> 	if (!iommu_device ||
+> 	    !iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX))
+> 		return -EINVAL;
+> 
+> 	vfio_group = vfio_group_get_external_user_from_dev(dev);(dev);
+> 	if (IS_ERR_OR_NULL(vfio_group))
+> 		return -EFAULT;
+> 
+> 	iommu_domain = vfio_group_domain(vfio_group);
+> 	if (IS_ERR_OR_NULL(iommu_domain)) {
+> 		vfio_group_put_external_user(vfio_group);
+> 		return -EFAULT;
+> 	}
+> 
+> 	pasid = iommu_aux_get_pasid(iommu_domain, iommu_device);
+> 	if (pasid < 0) {
+> 		vfio_group_put_external_user(vfio_group);
+> 		return -EFAULT;
+> 	}
+> 
+> 	/* Program device context with pasid value. */
+> 	...
+> 
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/vfio/vfio.c             | 18 ++++++++++++++++++
+>  drivers/vfio/vfio_iommu_type1.c | 23 +++++++++++++++++++++++
+>  include/linux/vfio.h            |  3 +++
+>  3 files changed, 44 insertions(+)
+> 
+> Change log:
+>  - v1: https://lore.kernel.org/linux-iommu/20201112022407.2063896-1-baolu.lu@linux.intel.com/
+>  - Changed according to comments @ https://lore.kernel.org/linux-iommu/20201116125631.2d043fcd@w520.home/
+> 
+> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+> index 2151bc7f87ab..62c652111c88 100644
+> --- a/drivers/vfio/vfio.c
+> +++ b/drivers/vfio/vfio.c
+> @@ -2331,6 +2331,24 @@ int vfio_unregister_notifier(struct device *dev, enum vfio_notify_type type,
 >  }
+>  EXPORT_SYMBOL(vfio_unregister_notifier);
 >  
->  static int catu_enable_hw(struct catu_drvdata *drvdata, void *data)
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 0d6697f1d58f..f8fa53490753 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -1412,23 +1412,24 @@ static void coresight_remove_conns(struct coresight_device *csdev)
->  }
->  
->  /**
-> - * coresight_timeout - loop until a bit has changed to a specific state.
-> - * @addr: base address of the area of interest.
-> - * @offset: address of a register, starting from @addr.
-> + * coresight_timeout - loop until a bit has changed to a specific register
-> + *			state.
-> + * @csa: coresight device access for the device
-> + * @offset: Offset of the register from the base of the device.
->   * @position: the position of the bit of interest.
->   * @value: the value the bit should have.
->   *
->   * Return: 0 as soon as the bit has taken the desired state or -EAGAIN if
->   * TIMEOUT_US has elapsed, which ever happens first.
->   */
-> -
-> -int coresight_timeout(void __iomem *addr, u32 offset, int position, int value)
-> +int coresight_timeout(struct csdev_access *csa, u32 offset,
-> +		      int position, int value)
->  {
->  	int i;
->  	u32 val;
->  
->  	for (i = TIMEOUT_US; i > 0; i--) {
-> -		val = __raw_readl(addr + offset);
-> +		val = csdev_access_read32(csa, offset);
->  		/* waiting on the bit to go from 0 to 1 */
->  		if (value) {
->  			if (val & BIT(position))
-> diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
-> index fec77a841f2c..f643e5bc3aa5 100644
-> --- a/drivers/hwtracing/coresight/coresight-etb10.c
-> +++ b/drivers/hwtracing/coresight/coresight-etb10.c
-> @@ -252,6 +252,7 @@ static void __etb_disable_hw(struct etb_drvdata *drvdata)
->  {
->  	u32 ffcr;
->  	struct device *dev = &drvdata->csdev->dev;
-> +	struct csdev_access *csa = &drvdata->csdev->access;
->  
->  	CS_UNLOCK(drvdata->base);
->  
-> @@ -263,7 +264,7 @@ static void __etb_disable_hw(struct etb_drvdata *drvdata)
->  	ffcr |= ETB_FFCR_FON_MAN;
->  	writel_relaxed(ffcr, drvdata->base + ETB_FFCR);
->  
-> -	if (coresight_timeout(drvdata->base, ETB_FFCR, ETB_FFCR_BIT, 0)) {
-> +	if (coresight_timeout(csa, ETB_FFCR, ETB_FFCR_BIT, 0)) {
->  		dev_err(dev,
->  		"timeout while waiting for completion of Manual Flush\n");
->  	}
-> @@ -271,7 +272,7 @@ static void __etb_disable_hw(struct etb_drvdata *drvdata)
->  	/* disable trace capture */
->  	writel_relaxed(0x0, drvdata->base + ETB_CTL_REG);
->  
-> -	if (coresight_timeout(drvdata->base, ETB_FFSR, ETB_FFSR_BIT, 1)) {
-> +	if (coresight_timeout(csa, ETB_FFSR, ETB_FFSR_BIT, 1)) {
->  		dev_err(dev,
->  			"timeout while waiting for Formatter to Stop\n");
->  	}
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 6448ce69be63..4335ed97f9c7 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -123,7 +123,9 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
->  {
->  	int i, rc;
->  	struct etmv4_config *config = &drvdata->config;
-> -	struct device *etm_dev = &drvdata->csdev->dev;
-> +	struct coresight_device *csdev = drvdata->csdev;
-> +	struct device *etm_dev = &csdev->dev;
-> +	struct csdev_access *csa = &csdev->access;
->  
->  	CS_UNLOCK(drvdata->base);
->  
-> @@ -137,7 +139,7 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
->  	writel_relaxed(0, drvdata->base + TRCPRGCTLR);
->  
->  	/* wait for TRCSTATR.IDLE to go up */
-> -	if (coresight_timeout(drvdata->base, TRCSTATR, TRCSTATR_IDLE_BIT, 1))
-> +	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 1))
->  		dev_err(etm_dev,
->  			"timeout while waiting for Idle Trace Status\n");
->  	if (drvdata->nr_pe)
-> @@ -228,7 +230,7 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
->  	writel_relaxed(1, drvdata->base + TRCPRGCTLR);
->  
->  	/* wait for TRCSTATR.IDLE to go back down to '0' */
-> -	if (coresight_timeout(drvdata->base, TRCSTATR, TRCSTATR_IDLE_BIT, 0))
-> +	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 0))
->  		dev_err(etm_dev,
->  			"timeout while waiting for Idle Trace Status\n");
->  
-> @@ -492,7 +494,9 @@ static void etm4_disable_hw(void *info)
->  	u32 control;
->  	struct etmv4_drvdata *drvdata = info;
->  	struct etmv4_config *config = &drvdata->config;
-> -	struct device *etm_dev = &drvdata->csdev->dev;
-> +	struct coresight_device *csdev = drvdata->csdev;
-> +	struct device *etm_dev = &csdev->dev;
-> +	struct csdev_access *csa = &csdev->access;
->  	int i;
->  
->  	CS_UNLOCK(drvdata->base);
-> @@ -519,8 +523,7 @@ static void etm4_disable_hw(void *info)
->  	writel_relaxed(control, drvdata->base + TRCPRGCTLR);
->  
->  	/* wait for TRCSTATR.PMSTABLE to go to '1' */
-> -	if (coresight_timeout(drvdata->base, TRCSTATR,
-> -			      TRCSTATR_PMSTABLE_BIT, 1))
-> +	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_PMSTABLE_BIT, 1))
->  		dev_err(etm_dev,
->  			"timeout while waiting for PM stable Trace Status\n");
->  
-> @@ -1176,7 +1179,15 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
->  {
->  	int i, ret = 0;
->  	struct etmv4_save_state *state;
-> -	struct device *etm_dev = &drvdata->csdev->dev;
-> +	struct coresight_device *csdev = drvdata->csdev;
-> +	struct csdev_access *csa;
-> +	struct device *etm_dev;
-> +
-> +	if (WARN_ON(!csdev))
-> +		return -ENODEV;
-> +
-> +	etm_dev = &csdev->dev;
-> +	csa = &csdev->access;
->  
->  	/*
->  	 * As recommended by 3.4.1 ("The procedure when powering down the PE")
-> @@ -1191,8 +1202,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
->  	etm4_os_lock(drvdata);
->  
->  	/* wait for TRCSTATR.PMSTABLE to go up */
-> -	if (coresight_timeout(drvdata->base, TRCSTATR,
-> -			      TRCSTATR_PMSTABLE_BIT, 1)) {
-> +	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_PMSTABLE_BIT, 1)) {
->  		dev_err(etm_dev,
->  			"timeout while waiting for PM Stable Status\n");
->  		etm4_os_unlock(drvdata);
-> @@ -1281,7 +1291,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
->  		state->trcpdcr = readl(drvdata->base + TRCPDCR);
->  
->  	/* wait for TRCSTATR.IDLE to go up */
-> -	if (coresight_timeout(drvdata->base, TRCSTATR, TRCSTATR_IDLE_BIT, 1)) {
-> +	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 1)) {
->  		dev_err(etm_dev,
->  			"timeout while waiting for Idle Trace Status\n");
->  		etm4_os_unlock(drvdata);
-> diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-> index 315500b7763f..9cba67b27586 100644
-> --- a/drivers/hwtracing/coresight/coresight-stm.c
-> +++ b/drivers/hwtracing/coresight/coresight-stm.c
-> @@ -258,6 +258,7 @@ static void stm_disable(struct coresight_device *csdev,
->  			struct perf_event *event)
->  {
->  	struct stm_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
-> +	struct csdev_access *csa = &csdev->access;
->  
->  	/*
->  	 * For as long as the tracer isn't disabled another entity can't
-> @@ -270,7 +271,7 @@ static void stm_disable(struct coresight_device *csdev,
->  		spin_unlock(&drvdata->spinlock);
->  
->  		/* Wait until the engine has completely stopped */
-> -		coresight_timeout(drvdata->base, STMTCSR, STMTCSR_BUSY_BIT, 0);
-> +		coresight_timeout(csa, STMTCSR, STMTCSR_BUSY_BIT, 0);
->  
->  		pm_runtime_put(csdev->dev.parent);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> index 8fd640d41e1b..572f4b316798 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> @@ -33,16 +33,20 @@ DEFINE_CORESIGHT_DEVLIST(etr_devs, "tmc_etr");
->  
->  void tmc_wait_for_tmcready(struct tmc_drvdata *drvdata)
->  {
-> +	struct coresight_device *csdev = drvdata->csdev;
-> +	struct csdev_access *csa = &csdev->access;
-> +
->  	/* Ensure formatter, unformatter and hardware fifo are empty */
-> -	if (coresight_timeout(drvdata->base,
-> -			      TMC_STS, TMC_STS_TMCREADY_BIT, 1)) {
-> -		dev_err(&drvdata->csdev->dev,
-> +	if (coresight_timeout(csa, TMC_STS, TMC_STS_TMCREADY_BIT, 1)) {
-> +		dev_err(&csdev->dev,
->  			"timeout while waiting for TMC to be Ready\n");
->  	}
->  }
->  
->  void tmc_flush_and_stop(struct tmc_drvdata *drvdata)
->  {
-> +	struct coresight_device *csdev = drvdata->csdev;
-> +	struct csdev_access *csa = &csdev->access;
->  	u32 ffcr;
->  
->  	ffcr = readl_relaxed(drvdata->base + TMC_FFCR);
-> @@ -51,9 +55,8 @@ void tmc_flush_and_stop(struct tmc_drvdata *drvdata)
->  	ffcr |= BIT(TMC_FFCR_FLUSHMAN_BIT);
->  	writel_relaxed(ffcr, drvdata->base + TMC_FFCR);
->  	/* Ensure flush completes */
-> -	if (coresight_timeout(drvdata->base,
-> -			      TMC_FFCR, TMC_FFCR_FLUSHMAN_BIT, 0)) {
-> -		dev_err(&drvdata->csdev->dev,
-> +	if (coresight_timeout(csa, TMC_FFCR, TMC_FFCR_FLUSHMAN_BIT, 0)) {
-> +		dev_err(&csdev->dev,
->  		"timeout while waiting for completion of Manual Flush\n");
->  	}
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-tpiu.c b/drivers/hwtracing/coresight/coresight-tpiu.c
-> index 98c4a029854c..1e92c76d9656 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpiu.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpiu.c
-> @@ -86,9 +86,9 @@ static void tpiu_disable_hw(struct csdev_access *csa)
->  	/* Generate manual flush */
->  	csdev_access_relaxed_write32(csa, FFCR_STOP_FI | FFCR_FON_MAN, TPIU_FFCR);
->  	/* Wait for flush to complete */
-> -	coresight_timeout(csa->base, TPIU_FFCR, FFCR_FON_MAN_BIT, 0);
-> +	coresight_timeout(csa, TPIU_FFCR, FFCR_FON_MAN_BIT, 0);
->  	/* Wait for formatter to stop */
-> -	coresight_timeout(csa->base, TPIU_FFSR, FFSR_FT_STOPPED_BIT, 1);
-> +	coresight_timeout(csa, TPIU_FFSR, FFSR_FT_STOPPED_BIT, 1);
->  
->  	CS_LOCK(csa->base);
->  }
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index d3aa328639cd..595ceb5f8d53 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -464,7 +464,7 @@ coresight_register(struct coresight_desc *desc);
->  extern void coresight_unregister(struct coresight_device *csdev);
->  extern int coresight_enable(struct coresight_device *csdev);
->  extern void coresight_disable(struct coresight_device *csdev);
-> -extern int coresight_timeout(void __iomem *addr, u32 offset,
-> +extern int coresight_timeout(struct csdev_access *csa, u32 offset,
->  			     int position, int value);
->  
->  extern int coresight_claim_device(void __iomem *base);
-> @@ -497,8 +497,15 @@ static inline void coresight_unregister(struct coresight_device *csdev) {}
->  static inline int
->  coresight_enable(struct coresight_device *csdev) { return -ENOSYS; }
->  static inline void coresight_disable(struct coresight_device *csdev) {}
-> -static inline int coresight_timeout(void __iomem *addr, u32 offset,
-> -				     int position, int value) { return 1; }
-> +
-> +static inline int coresight_timeout(struct csdev_access *csa,
-> +				    u32 offset,
-> +				    int position,
-> +				    int value)
+> +struct iommu_domain *vfio_group_domain(struct vfio_group *group)
 > +{
-> +	return 1;
-> +}
+> +	struct vfio_container *container;
+> +	struct vfio_iommu_driver *driver;
 > +
->  static inline int coresight_claim_device_unlocked(void __iomem *base)
->  {
->  	return -EINVAL;
-> -- 
-> 2.24.1
-> 
+> +	if (!group)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	container = group->container;
+> +	driver = container->iommu_driver;
+> +	if (likely(driver && driver->ops->group_domain))
+> +		return driver->ops->group_domain(container->iommu_data,
+> +						 group->iommu_group);
+> +	else
+> +		return ERR_PTR(-ENOTTY);
+> +}
+> +EXPORT_SYMBOL(vfio_group_domain);
+
+
+_GPL?  I don't see that there's a way for a driver to get the
+vfio_group pointer that's not already _GPL.
+
+
+> +
+>  /**
+>   * Module/class support
+>   */
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 67e827638995..783f18f21b95 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -2980,6 +2980,28 @@ static int vfio_iommu_type1_dma_rw(void *iommu_data, dma_addr_t user_iova,
+>  	return ret;
+>  }
+>  
+> +static void *vfio_iommu_type1_group_domain(void *iommu_data,
+> +					   struct iommu_group *iommu_group)
+> +{
+> +	struct vfio_iommu *iommu = iommu_data;
+> +	struct iommu_domain *domain = NULL;
+> +	struct vfio_domain *d;
+> +
+> +	if (!iommu || !iommu_group)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	mutex_lock(&iommu->lock);
+> +	list_for_each_entry(d, &iommu->domain_list, next) {
+> +		if (find_iommu_group(d, iommu_group)) {
+> +			domain = d->domain;
+> +			break;
+> +		}
+> +	}
+> +	mutex_unlock(&iommu->lock);
+> +
+> +	return domain;
+> +}
+
+
+Why does this return void* rather than struct iommu_domain*, and why
+does the error case return an ERR_PTR but the not-found case returns
+NULL?  Thanks,
+
+Alex
+
+
+> +
+>  static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
+>  	.name			= "vfio-iommu-type1",
+>  	.owner			= THIS_MODULE,
+> @@ -2993,6 +3015,7 @@ static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
+>  	.register_notifier	= vfio_iommu_type1_register_notifier,
+>  	.unregister_notifier	= vfio_iommu_type1_unregister_notifier,
+>  	.dma_rw			= vfio_iommu_type1_dma_rw,
+> +	.group_domain		= vfio_iommu_type1_group_domain,
+>  };
+>  
+>  static int __init vfio_iommu_type1_init(void)
+> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+> index 38d3c6a8dc7e..a0613a6f21cc 100644
+> --- a/include/linux/vfio.h
+> +++ b/include/linux/vfio.h
+> @@ -90,6 +90,7 @@ struct vfio_iommu_driver_ops {
+>  					       struct notifier_block *nb);
+>  	int		(*dma_rw)(void *iommu_data, dma_addr_t user_iova,
+>  				  void *data, size_t count, bool write);
+> +	void		*(*group_domain)(void *iommu_data, struct iommu_group *group);
+>  };
+>  
+>  extern int vfio_register_iommu_driver(const struct vfio_iommu_driver_ops *ops);
+> @@ -126,6 +127,8 @@ extern int vfio_group_unpin_pages(struct vfio_group *group,
+>  extern int vfio_dma_rw(struct vfio_group *group, dma_addr_t user_iova,
+>  		       void *data, size_t len, bool write);
+>  
+> +extern struct iommu_domain *vfio_group_domain(struct vfio_group *group);
+> +
+>  /* each type has independent events */
+>  enum vfio_notify_type {
+>  	VFIO_IOMMU_NOTIFY = 0,
+
