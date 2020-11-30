@@ -2,150 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8AA2C7F6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E212C7F73
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbgK3H6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727007AbgK3H6i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:58:38 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B2BC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 23:57:58 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id k10so10754407wmi.3
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 23:57:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V0CDXKuLozXjhXcBQBmMbRd7ZZ/O71fg8ffP+P4Shm4=;
-        b=LJJsVkD4/qL3CwL+0yuRVvBg2cAb8AkbAIXghbYWrbazovXABi5ROy6IA+QjqmSmen
-         WyrgQMABKv0loc8sz90wxLE3WFRaZ+M+Bxt+TrecekfYFsXGYE+fLNCGWvsV6vO/Rfn7
-         CB1iS0xR98BBOLCkgw+MGUzoB4Ii9bfhZpsUnKfSL08sPtMQlOswQxGjR+jAkykyf61Q
-         w91Fx1Qe7KBoeYkpXQ+e7Fz2XyDuT3Df/6ri4uZ+rhngSkQ2mon6ULnw0EsZ1LdFOYSe
-         Yia8bWpN1Ay/oe9v6fjIi2FplY3aJSMqRr4OpXJCgod4ika8/tIewOhu9Z6J5CT3uOp9
-         7qDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V0CDXKuLozXjhXcBQBmMbRd7ZZ/O71fg8ffP+P4Shm4=;
-        b=PvRr5R0czn3OHl5bEf4nuMw1nN/mwhdPAX9UdDdd58fbMGzpcMZI8bnW/xaTa/XL6W
-         EQ7UNcAH7OA5oSVJCow0+1kr8nJPZbfn/ST6t/0KHu+B0H+O3hvyMM0awy92iAgDHTI+
-         hyDKX3XoIDwTC2a9LnVQyT+VpM4JM8Sof4wfT9XuQibgxM9Gta+KGZGirwsA8Wli16ko
-         Zy8Lq/pgOh49+jEJgR5I6W0jDbReZ/OETYjHYh4+GzF1wFXndgtdk4nGyrThR49gFY6p
-         kZplFE4UV8lXirUT2GZmi3lQgGXzZTGejJnbxT9LF2/Os1fKtyVNjWXzE/oyvtJrep6l
-         3OfA==
-X-Gm-Message-State: AOAM530lDyIbbSzzNS6TwjWYoXjvZzz4ohNsZqwmBW1kufzLtHkdbZSK
-        gIeCyA4v9T3jB65cbgUTx+if6qitc4eu3A==
-X-Google-Smtp-Source: ABdhPJysnaWKPrsGc5wrxoxN1GbeW452RPruvjezGfpM4trTqIm1yehTdfcSSlrI19JZE0KBGKJsGw==
-X-Received: by 2002:a1c:1dd4:: with SMTP id d203mr3904405wmd.118.1606723076938;
-        Sun, 29 Nov 2020 23:57:56 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:a9e1:bc04:469:f21b? ([2a01:e34:ed2f:f020:a9e1:bc04:469:f21b])
-        by smtp.googlemail.com with ESMTPSA id w15sm26834820wrp.52.2020.11.29.23.57.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Nov 2020 23:57:56 -0800 (PST)
-Subject: Re: [PATCH 1/3] thermal: core: Add indication for userspace usage
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, rui.zhang@intel.com,
-        amitk@kernel.org
-Cc:     "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
-Date:   Mon, 30 Nov 2020 08:57:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727846AbgK3H7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 02:59:34 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57997 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727803AbgK3H7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 02:59:34 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CkyKm1T6Bz9sTc;
+        Mon, 30 Nov 2020 18:58:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606723132;
+        bh=n9SzWS71AWCel52eHVFJAmlub4wFDrpbx/ATuVM+pc4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=l0fUyLjuk0haBCPmnfcLOlogoNxc1n+ptkyw0ZugeAoCYBfWqcWHyQr2d75W120tC
+         B4eORP51UVmb9X4hOSOIa/52TIedgCfncGCcCcS4m6EYirqYgftuyR3xk7OrFmGlk8
+         6A50TSKeuaOqQ3HvKm0qKkg1eAJAnUiigqyprEVpakYmFHZmazyx1rS+LHOhN641+X
+         iDFW59w0JUty1I+H3VDraPEFoGAMBirltDkkmbtPfGJEMgddvuWJRu6eYBvIzXkmyz
+         jd7ajuwR+Ao9AFsDFCUsMoSYQJJA/aDvwMI3hDiIwjjul5wjxGm+2FG/YSLrxcnF5M
+         VU6wdqA7KFDGQ==
+Date:   Mon, 30 Nov 2020 18:58:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Mark Gross <mark.gross@intel.com>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the drivers-x86 tree
+Message-ID: <20201130185851.0884bd9f@canb.auug.org.au>
+In-Reply-To: <ae231b40-e1c8-6995-d45b-ddab6a04810e@redhat.com>
+References: <20201130044331.4abf7b91@canb.auug.org.au>
+        <ae231b40-e1c8-6995-d45b-ddab6a04810e@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201128175450.12456-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/FkNt36fslEzBP.Nr_GkVXAH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/FkNt36fslEzBP.Nr_GkVXAH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[Added Srinivas]
+Hi Hans,
 
-On 28/11/2020 18:54, Kai-Heng Feng wrote:
-> We are seeing thermal shutdown on Intel based mobile workstations, the
-> shutdown happens during the first trip handle in
-> thermal_zone_device_register():
-> kernel: thermal thermal_zone15: critical temperature reached (101 C), shutting down
-> 
-> However, we shouldn't do a thermal shutdown here, since
-> 1) We may want to use a dedicated daemon, Intel's thermald in this case,
-> to handle thermal shutdown.
-> 
-> 2) For ACPI based system, _CRT doesn't mean shutdown unless it's inside
-> ThermalZone. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
-> "... If this object it present under a device, the device’s driver
-> evaluates this object to determine the device’s critical cooling
-> temperature trip point. This value may then be used by the device’s
-> driver to program an internal device temperature sensor trip point."
-> 
-> So a "critical trip" here merely means we should take a more aggressive
-> cooling method.
+On Mon, 30 Nov 2020 08:43:21 +0100 Hans de Goede <hdegoede@redhat.com> wrot=
+e:
+>
+> Question, how important is it to fix these ? I normally never do forced p=
+ushes
+> to the for-next branch. But if this is considered important to fix I gues=
+s I
+> can make an exception.
 
-Well, actually it is stated before:
+I think it is fine to leave these, but to try to not have more in the futur=
+e.
 
-"This object, when defined under a thermal zone, returns the critical
-temperature at which OSPM must shutdown the system".
+> Will git rewrite the commit msg when this is set ?  I'm at 2.28 and don't
+> have core.abbrev set. But I guess this needs to be set in the gitconfig
+> of the creator of the patch; and this has no impact on "git am" ?
 
-That is what does the thermal subsystem, no ?
+It will not rewrite the commit message.
 
-> So add an indication to let thermal core know it should leave thermal
-> device to userspace to handle.
+--=20
+Cheers,
+Stephen Rothwell
 
-You may want to check the 'HOT' trip point and then use the notification
-mechanism to get notified in userspace and take action from there (eg.
-offline some CPUs).
+--Sig_/FkNt36fslEzBP.Nr_GkVXAH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->  drivers/thermal/thermal_core.c | 3 +++
->  include/linux/thermal.h        | 2 ++
->  2 files changed, 5 insertions(+)
-> 
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index c6d74bc1c90b..6561e3767529 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -1477,6 +1477,9 @@ thermal_zone_device_register(const char *type, int trips, int mask,
->  			goto unregister;
->  	}
->  
-> +	if (tz->tzp && tz->tzp->userspace)
-> +		thermal_zone_device_disable(tz);
-> +
->  	mutex_lock(&thermal_list_lock);
->  	list_add_tail(&tz->node, &thermal_tz_list);
->  	mutex_unlock(&thermal_list_lock);
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index d07ea27e72a9..e8e8fac78fc8 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -247,6 +247,8 @@ struct thermal_zone_params {
->  	 */
->  	bool no_hwmon;
->  
-> +	bool userspace;
-> +
->  	int num_tbps;	/* Number of tbp entries */
->  	struct thermal_bind_params *tbp;
->  
-> 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/EpjsACgkQAVBC80lX
+0GzG4Qf/Y6deDl6OJZ6SW/trKbrYKWbq2PEZy1IvUxPJPPFcCNiXCAX1ut05GspM
+azjHY3Qtv5Aok+F4ARQLNCeE6AjO+eCF/6FDFkfgYJZgT1N7c/lDyJd0sdPKw8dN
+NrUfJj5pA7DeHKvLah8hnJiu+f+RbctIitMQv+IRoNbOetyb9Z7s1Ga/PDb+1FN+
+DvryKIoHA153wxVDNffQn96cGxn+gmCo+8bTT3yw5JfGppxLniu4AcVMs+Zwezia
+qPLFg6emVyPM0EHECfGpeKHUzT/06sbxaDaeRSB+M4/TS/aJJM3gmDlL1GkgorOn
+BV3ICE2UUbPII7rp/i0ZJTjt8WKluA==
+=Pzc2
+-----END PGP SIGNATURE-----
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+--Sig_/FkNt36fslEzBP.Nr_GkVXAH--
