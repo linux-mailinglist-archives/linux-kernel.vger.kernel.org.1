@@ -2,114 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65F92C7E48
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2918B2C7E4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgK3GlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 01:41:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725860AbgK3GlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 01:41:25 -0500
-Received: from localhost.localdomain (unknown [122.171.214.243])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CADC920706;
-        Mon, 30 Nov 2020 06:40:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606718444;
-        bh=J1UF39D+chbn29LO6iNyuiTYT+j76GHB5xvKmN3e6K0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=k2g1A/Spr0hKI8mR45iRCmLhU3kOHxafpBgJ2+mMx3WFrQCi089F561BlaSbn5bU0
-         dlWYECyFfsAY4vdSeyeEGVYJT2FPDtui0DnQcfayNStA3lPGeql5LgbOdQsBQUpLty
-         LHQXx3a8CGRFpGHJ7C1pwKm+FA3+48kTFc/O9dmg=
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sdm845: Add gpi dma node
-Date:   Mon, 30 Nov 2020 12:09:46 +0530
-Message-Id: <20201130063946.2060317-1-vkoul@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726045AbgK3GzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 01:55:05 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:50550 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725884AbgK3GzF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 01:55:05 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UGwypdg_1606719263;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UGwypdg_1606719263)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 30 Nov 2020 14:54:23 +0800
+Subject: Re: [PATCH] crypto: ecrdsa - use subsys_initcall instead of
+ module_init
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Vitaly Chikunov <vt@altlinux.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201015110241.89676-1-tianjia.zhang@linux.alibaba.com>
+ <20201015120504.GA12976@gondor.apana.org.au>
+ <f6d98764-dde8-6f40-c0e7-9eb5b087d713@linux.alibaba.com>
+ <20201130022422.GA21049@gondor.apana.org.au>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <df22e694-0a2e-811a-412e-269303c5d27d@linux.alibaba.com>
+Date:   Mon, 30 Nov 2020 14:54:23 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.3
 MIME-Version: 1.0
+In-Reply-To: <20201130022422.GA21049@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This add the device node for gpi_dma0 and gpi_dma1 instances found in
-sdm845.
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
----
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 45 ++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 6465a6653ad9..a6f41678794c 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -1114,6 +1114,28 @@ opp-128000000 {
- 			};
- 		};
- 
-+		gpi_dma0: dma-controller@800000 {
-+			#dma-cells = <3>;
-+			compatible = "qcom,sdm845-gpi-dma";
-+			reg = <0 0x00800000 0 0x60000>;
-+			interrupts = <GIC_SPI 244 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 251 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 252 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 253 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>;
-+			dma-channels = <13>;
-+			dma-channel-mask = <0xfa>;
-+			iommus = <&apps_smmu 0x0016 0x0>;
-+		};
-+
- 		qupv3_id_0: geniqup@8c0000 {
- 			compatible = "qcom,geni-se-qup";
- 			reg = <0 0x008c0000 0 0x6000>;
-@@ -1454,6 +1476,29 @@ uart7: serial@89c000 {
- 			};
- 		};
- 
-+		gpi_dma1: dma-controller@0xa00000 {
-+			#dma-cells = <3>;
-+			compatible = "qcom,sdm845-gpi-dma";
-+			reg = <0 0x00a00000 0 0x60000>;
-+			interrupts = <GIC_SPI 279 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 280 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 281 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 293 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 294 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 295 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 296 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 297 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 298 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 299 IRQ_TYPE_LEVEL_HIGH>;
-+			dma-channels = <13>;
-+			dma-channel-mask = <0xfa>;
-+			iommus = <&apps_smmu 0x06d6 0x0>;
-+			status = "disabled";
-+		};
-+
- 		qupv3_id_1: geniqup@ac0000 {
- 			compatible = "qcom,geni-se-qup";
- 			reg = <0 0x00ac0000 0 0x6000>;
--- 
-2.26.2
+On 11/30/20 10:24 AM, Herbert Xu wrote:
+> On Mon, Nov 30, 2020 at 10:21:56AM +0800, Tianjia Zhang wrote:
+>>
+>>> That is true only if there are non-generic implementations of
+>>> the algorithms, which is not the case here.  Please explain the
+>>> real reason why this is needed.
+>>
+>> This is a generic algorithm, the author Vitaly Chikunov has also confirmed
+>> it, please consider this patch again.
+> 
+> As I said, the generic algorithm only needs to be loaded early *if*
+> there are non-generic implementations.
+> 
+> Cheers,
+> 
 
+For ecrdsa, there is no reason to advance the initialization to 
+subsys_init, this is just to make code clean up to have algorithm 
+initialization uniform with other implementations.
+
+It’s just that I think that in the commit c4741b230597 ("crypto: run 
+initcalls for generic implementations earlier"), the modification to 
+ecrdsa happened to be omitted, because from the point of commit time, it 
+was submitted at the same time as the ecrdsa commits, and it may happen 
+to be omitted for ecrdsa.
+
+Best regards,
+Tianjia
