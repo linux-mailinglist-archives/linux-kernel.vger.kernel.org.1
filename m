@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05452C8A67
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA662C8A63
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729299AbgK3REW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:04:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729292AbgK3REW (ORCPT
+        id S1729271AbgK3RD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:03:56 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:38390 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727936AbgK3RD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:04:22 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48F1C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:03:35 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id q8so10006942ljc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:03:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=50weI0bYloddYiv+R6W9ImnCSftRMUprlRnSViTP+Fs=;
-        b=GOW82eGekEAExilGvS1tivJ+ROVME0C8tukpZ5zxI6/JJYCM7rzPM8zlhqszWzdJiU
-         Ir5BpAyChcBZjIlei63NiuPOg14sjP+zzqyOJldQyHm4CtMkGQLeayYkyN/hakmyH0zs
-         HdD8xeYeZZ+jRZhw/+lS2QVbkUgUeEg3e4gOEFXoMj24M7F7SUNYfEA4yi5d5tzhORR2
-         GW2cfU4XoAGHWLpMElbR1KowZmrSp4Wxb7NHUK/3r8FyFf0fQlrzuU9Coqm4lV2wzmDb
-         ot/Vrbr60ohAN0KSVYjiiF9v6iMgQ24NUIyfJez7yjviCmUxnJ2P7XPTHw+qrRdWefkj
-         cXkw==
+        Mon, 30 Nov 2020 12:03:56 -0500
+Received: by mail-io1-f65.google.com with SMTP id y5so11443257iow.5;
+        Mon, 30 Nov 2020 09:03:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=50weI0bYloddYiv+R6W9ImnCSftRMUprlRnSViTP+Fs=;
-        b=T2Jth3Ru7ZC/u21KSTp+kD6F9HaK16Mk4HJU+sM0w/3c/iwy6ibt9/3MuUOKLvlqeQ
-         Rk8cIXL/qkXNbM/hq/CJhK6nhNLdRQOYz6XI8XgmhcBhRms4+EU5IVjtK7AoLTdGmzrO
-         C6rry0fBFWKjLP868TdsYf0Copk4+bKymoAFHCif8W/2+9B//K/+Uc0IWpkzr6h4mmbl
-         A3Z5oqdqpDJNHmiBQOF1MEyo2/m3HOdWplscnJ4rUW2oc0qHQNutfiH6PKVxaR7otX15
-         Oz+PEKFtBXDMrP5CCe1QwnQcMlruVvn2jXXNyWHiaiPbGCtVQ4Hv5MhYole0STur+IRV
-         tfNA==
-X-Gm-Message-State: AOAM532CWwlLxwX6M1q9zM+ZykXx64uEbVlfMguf6rqlRxlvWCuZLzb1
-        3Y9vjcCpKceMWxbM+ktb7tJC/Dz9sgAHKuIwqyw=
-X-Google-Smtp-Source: ABdhPJyFHR69kHKYran2WCfbGm0UB93xIcfyege3Y/0ePkkwMxnRYkRkTeajxnmBq+B7k8csZr7aiWPCIvbbzMdpqXU=
-X-Received: by 2002:a2e:3210:: with SMTP id y16mr10171277ljy.395.1606755814157;
- Mon, 30 Nov 2020 09:03:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZVRcg2DyYnY2T86oR8Te89KJ9jB7+OaNC7lMLPrhpP8=;
+        b=ahmXBkPUBEU9PzW+agYRUZ498p92yF8F3lYqdX9XwtbaVVkuEdalYc03l2nK+eKt9L
+         xJ2s14a/VuBPS7DsdSe3c1MCp6kXu9ITEEAIYfZh0KL74rjbgZrfN/h6IytLT36VybOs
+         7u4xMVLn9+vRBDMaltPyniZ89Qr3fH/IrWqjv+iXk3B+ZEClLJ96l1u5nnTlXAjJVCJQ
+         QTdVvLYftHt3UBo6w94BRuTcsZsdHAQcVer8eT9lEQ9blCDUw87dBbfKsHhT1JlN40OL
+         hO3KfGS4e6GVOvMFNzsKuqt6xG5Po1UBJfAic1ksh1hf342w+OK9nOSgoTGrdJopQ9yb
+         ADnQ==
+X-Gm-Message-State: AOAM530t0+PA0vKX/pCVj4Zu5ZGBPAiiPfuSR5RPBpB6qy96u8laYSgG
+        HyQqwERvHmOsBivEVsQq+w==
+X-Google-Smtp-Source: ABdhPJyjovkgkPmew9hFyzwW0sWCRJdcvlG4zeJ8246X7c+JB13zmvU3zgYWciFKeDBC2ZGXUfxVAQ==
+X-Received: by 2002:a5e:d717:: with SMTP id v23mr12204718iom.60.1606755794761;
+        Mon, 30 Nov 2020 09:03:14 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id t12sm8339755ilu.46.2020.11.30.09.03.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 09:03:13 -0800 (PST)
+Received: (nullmailer pid 2631520 invoked by uid 1000);
+        Mon, 30 Nov 2020 17:03:11 -0000
+Date:   Mon, 30 Nov 2020 10:03:11 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     linux-pm@vger.kernel.org, viresh.kumar@linaro.org,
+        linux-kernel@vger.kernel.org, martin.botka@somainline.org,
+        rjw@rjwysocki.net, phone-devel@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-arm-msm@vger.kernel.org,
+        marijn.suijten@somainline.org, jorge.ramirez-ortiz@linaro.org,
+        agross@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        lgirdwood@gmail.com, nks@flawful.org, konrad.dybcio@somainline.org,
+        daniel.lezcano@linaro.org, bjorn.andersson@linaro.org,
+        broonie@kernel.org
+Subject: Re: [PATCH 07/13] dt-bindings: avs: cpr: Convert binding to YAML
+ schema
+Message-ID: <20201130170311.GA2630904@robh.at.kernel.org>
+References: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
+ <20201126184559.3052375-8-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-References: <20201130144515.8320-1-dwaipayanray1@gmail.com> <c8eeab847fc09368ce270ea3e06ea0bbbd7d1b7f.camel@perches.com>
-In-Reply-To: <c8eeab847fc09368ce270ea3e06ea0bbbd7d1b7f.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Mon, 30 Nov 2020 22:33:06 +0530
-Message-ID: <CABJPP5BLjbx3FbvB3nAOiHfkRLUo7s0n-vboE+AXJqrZXseUNQ@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: fix TYPO_SPELLING check for words with apostrophe
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126184559.3052375-8-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 10:13 PM Joe Perches <joe@perches.com> wrote:
->
-> On Mon, 2020-11-30 at 20:15 +0530, Dwaipayan Ray wrote:
-> > checkpatch reports a false TYPO_SPELLING warning for some words
-> > containing an apostrophe.
-> >
-> > A false positive is "doesn't". Occurrence of the word causes
-> > checkpatch to emit the following warning:
-> >
-> > "WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?"
-> >
-> > Check the word boundary for such cases so that words like
-> > "doesn't", "zig-zag", etc. aren't misinterpreted due to wrong
-> > splitting of the word by the \b regex metacharacter.
-> []
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > @@ -3106,7 +3106,7 @@ sub process {
-> >  # Check for various typo / spelling mistakes
-> >               if (defined($misspellings) &&
-> >                   ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
-> > -                     while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
-> > +                     while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b(?![^\w]?[a-z@]+)|$|[^a-z@])/gi) {
->
-> Wouldn't it be simpler to change the existing [^a-z@] blocks to [^a-z@'-] ?
->
-Hi,
-I tried it and it doesn't seem to work. Probably because the first
-group already causes the
-word to be captured. In this case `doesn'` was already captured
-because of the \b group.
+On Thu, 26 Nov 2020 19:45:53 +0100, AngeloGioacchino Del Regno wrote:
+> Convert the qcom,cpr.txt document to YAML schema and place it in the
+> appropriate directory, since commit a7305e684fc moves this driver
+> from power/avs to soc/qcom, but forgets to move the documentation.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  .../bindings/power/avs/qcom,cpr.txt           | 131 +-----------------
+>  .../bindings/soc/qcom/qcom,cpr.yaml           | 115 +++++++++++++++
+>  MAINTAINERS                                   |   2 +-
+>  3 files changed, 117 insertions(+), 131 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml
+> 
 
-Is the first group modification perhaps okay? Or would you suggest
-something else?
 
-Thank you,
-Dwaipayan.
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml: properties:clock-names: [{'const': 'ref'}] is not of type 'object', 'boolean'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml: ignoring, error in schema: properties: clock-names
+warning: no schema found in file: ./Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1406855
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
