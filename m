@@ -2,113 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C2D2C8A00
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF662C8A07
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728981AbgK3QzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:55:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33736 "EHLO mail.kernel.org"
+        id S1728913AbgK3Q4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:56:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728454AbgK3QzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:55:16 -0500
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726505AbgK3Q4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 11:56:18 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C824E20C56
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:54:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F5B32067C;
+        Mon, 30 Nov 2020 16:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606755275;
-        bh=xKjPWiR+gY9KXoWm0aX1KhLNswrvDKRDlo9bp5YXtCk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ndxg+hCQk/Sj/KPi4tI4cXPYaxWHRfFwCYYNoYYOB6hxuSmCMEP2NOpNxW1ZEzLKf
-         gzcrmfHMBHUpnErnTsSP54i292jiBs6L4M/k3GaaCqbLvszpgDr7ZKNX24FniqI+Hg
-         JgJy2iB0YA53q7hKOptl5/Qk1vCK0tmSLbfQp94o=
-Received: by mail-wm1-f44.google.com with SMTP id k10so12768107wmi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:54:34 -0800 (PST)
-X-Gm-Message-State: AOAM531DC52aa3brFU66SWGYfuin2+x9dvxxV3BCdoit8UUaCSySydPL
-        e2IIIJ+LiALc8FceaeI9yuX5XaH1sjMzTsa1qKpICQ==
-X-Google-Smtp-Source: ABdhPJxvQRXAXTceQEJTk6eeenanqlUfupxFXmGtTKuBJRp7BePCnRp4Qgf0q/CJ2FQvEGbVK5BGZlC2FWzoi5XyQb0=
-X-Received: by 2002:a1c:1d85:: with SMTP id d127mr6905343wmd.49.1606755272947;
- Mon, 30 Nov 2020 08:54:32 -0800 (PST)
+        s=default; t=1606755337;
+        bh=rBr8YtlXc+2AXACTkB4gNA9wQVJzRxTliFY7C0TWO3Y=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=1gCl4bVsz5iftTDm64p7k6IURVp2RgRve+bOgK/DBo4xevhr7NIzgXtej2qZQJfwM
+         GPPYTBZhO5S0Q/XX6Z62Rxv4PP7SfbDXImKraW1l5ZSOaAhJXBobxuw2t7J+FUxJKr
+         DJayfl8cMfhjddchVTvz2N1C3x1pkcluDlicuAGo=
+Date:   Mon, 30 Nov 2020 16:55:09 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20201104201209.907018-1-alexandre.belloni@bootlin.com>
+References: <20201104201209.907018-1-alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH 1/2] dt-bindings: sound: adau1372: Add bindings documentation
+Message-Id: <160675530954.30326.371904938338211202.b4-ty@kernel.org>
 MIME-Version: 1.0
-References: <20201130133559.233242-1-mlevitsk@redhat.com>
-In-Reply-To: <20201130133559.233242-1-mlevitsk@redhat.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 30 Nov 2020 08:54:19 -0800
-X-Gmail-Original-Message-ID: <CALCETrVr2bM4yJTVpQULN+EYVQJuWGCvjX0SMFsCRy6BwqZc0w@mail.gmail.com>
-Message-ID: <CALCETrVr2bM4yJTVpQULN+EYVQJuWGCvjX0SMFsCRy6BwqZc0w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] RFC: Precise TSC migration
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 5:36 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
->
-> Hi!
->
-> This is the first version of the work to make TSC migration more accurate,
-> as was defined by Paulo at:
-> https://www.spinics.net/lists/kvm/msg225525.html
->
-> I have a few thoughts about the kvm masterclock synchronization,
-> which relate to the Paulo's proposal that I implemented.
->
-> The idea of masterclock is that when the host TSC is synchronized
-> (or as kernel call it, stable), and the guest TSC is synchronized as well,
-> then we can base the kvmclock, on the same pair of
-> (host time in nsec, host tsc value), for all vCPUs.
->
-> This makes the random error in calculation of this value invariant
-> across vCPUS, and allows the guest to do kvmclock calculation in userspace
-> (vDSO) since kvmclock parameters are vCPU invariant.
->
-> To ensure that the guest tsc is synchronized we currently track host/guest tsc
-> writes, and enable the master clock only when roughly the same guest's TSC value
-> was written across all vCPUs.
->
-> Recently this was disabled by Paulo and I agree with this, because I think
-> that we indeed should only make the guest TSC synchronized by default
-> (including new hotplugged vCPUs) and not do any tsc synchronization beyond that.
-> (Trying to guess when the guest syncs the TSC can cause more harm that good).
->
-> Besides, Linux guests don't sync the TSC via IA32_TSC write,
-> but rather use IA32_TSC_ADJUST which currently doesn't participate
-> in the tsc sync heruistics.
-> And as far as I know, Linux guest is the primary (only?) user of the kvmclock.
->
-> I *do think* however that we should redefine KVM_CLOCK_TSC_STABLE
-> in the documentation to state that it only guarantees invariance if the guest
-> doesn't mess with its own TSC.
->
-> Also I think we should consider enabling the X86_FEATURE_TSC_RELIABLE
-> in the guest kernel, when kvm is detected to avoid the guest even from trying
-> to sync TSC on newly hotplugged vCPUs.
->
-> (The guest doesn't end up touching TSC_ADJUST usually, but it still might
-> in some cases due to scheduling of guest vCPUs)
->
-> (X86_FEATURE_TSC_RELIABLE short circuits tsc synchronization on CPU hotplug,
-> and TSC clocksource watchdog, and the later we might want to keep).
+On Wed, 4 Nov 2020 21:12:08 +0100, Alexandre Belloni wrote:
+> Add device tree binding documentation for Analog Devices ADAU1372.
 
-If you're going to change the guest behavior to be more trusting of
-the host, I think
-the host should probably signal this to the guest using a new bit.
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/2] ASoC: adau1372: Add bindings documentation
+      commit: 32025c7c50c602a6c0bc3bef0e9a774003e2e7ae
+[2/2] ASoC: Add ADAU1372 audio CODEC support
+      commit: 6cd4c6459e47402ab90802eca61a18b231434053
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
