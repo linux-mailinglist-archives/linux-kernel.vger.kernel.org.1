@@ -2,271 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB66C2C92C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E712C929C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389025AbgK3XfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:35:18 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19410 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389009AbgK3XfQ (ORCPT
+        id S2388790AbgK3XdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:33:25 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:34630 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388510AbgK3XdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:35:16 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AUNYHkw071058;
-        Mon, 30 Nov 2020 18:34:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=kVqkkqol21M5O2VZ4tPALbjqKaclMGkgBCURMKttYLM=;
- b=AqFE2zShuWkrs5n22OhHqZzdjN224FsgtG5kyVEE9y7qSzf6yJpWLT7ugAFh3n1iGDU0
- hfDyfrqMLJmJSVqP1Ja6Li7lWS3DxLLzyR8rJB+KLX3QuQMOt4QO/GNJXkoVTqmuFXr9
- aXBg+7TfjVFe+Ujv/AJHn69KoKyukAvlQkjqNx1qp1GCihHnkLorQhGfG+5T4ZZ550x/
- 91bRSBxcvgIvwGH4HtqZqE0goHZk4VMT0bra1HXfISrYUJt3ivgxuON/xbfb9jBH4jzV
- QO2i3X30Lk6sjxAKjwB8DQQ39gzDl4s01GRFybDWquZXuThJFR81iAa0D939DrTR3ELv 3Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35585w3rjg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 18:34:34 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AUNYXuN072690;
-        Mon, 30 Nov 2020 18:34:33 -0500
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35585w3qqn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 18:34:32 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AUNNQJN013612;
-        Mon, 30 Nov 2020 23:32:33 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 353e689a94-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 23:32:33 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AUNWUHA58982796
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 23:32:30 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 568F94204C;
-        Mon, 30 Nov 2020 23:32:30 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 967D74203F;
-        Mon, 30 Nov 2020 23:32:29 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.171.74.188])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon, 30 Nov 2020 23:32:29 +0000 (GMT)
-Date:   Tue, 1 Dec 2020 00:32:27 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v12 12/17] s390/vfio-ap: allow hot plug/unplug of AP
- resources using mdev device
-Message-ID: <20201201003227.0c3696fc.pasic@linux.ibm.com>
-In-Reply-To: <103cbe02-2093-c950-8d65-d3dc385942ce@linux.ibm.com>
-References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
-        <20201124214016.3013-13-akrowiak@linux.ibm.com>
-        <20201129025250.16eb8355.pasic@linux.ibm.com>
-        <103cbe02-2093-c950-8d65-d3dc385942ce@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Mon, 30 Nov 2020 18:33:24 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7A5492A4;
+        Tue,  1 Dec 2020 00:32:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1606779160;
+        bh=lU++4kSerLSCK/Ovv5NuVq0+EwNTdVJlezIWcTkIZMQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GG7828EkJ8QIL1QEhX2jJjrzRw3jyotgA+MjJt/uTn2BlTK1hgjH7u9tktQAkPq6g
+         g9+FalPvL0BiMojlELCObp2xQaDntR+srQL0Y1lPJKqYC0W6L4EMrhnTa1wBevRSQg
+         IFFVxyQf+z4NWjzOKkdX+hbiRRoD1nX1fxRUhuSo=
+Date:   Tue, 1 Dec 2020 01:32:32 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
+Message-ID: <20201130233232.GD25713@pendragon.ideasonboard.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-19-djrscally@gmail.com>
+ <20201130200719.GB4077@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-30_12:2020-11-30,2020-11-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- clxscore=1015 priorityscore=1501 impostorscore=0 spamscore=0 mlxscore=0
- bulkscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300146
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201130200719.GB4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020 14:36:10 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+Hi Andy,
 
+On Mon, Nov 30, 2020 at 10:07:19PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 30, 2020 at 01:31:29PM +0000, Daniel Scally wrote:
+> > On platforms where ACPI is designed for use with Windows, resources
+> > that are intended to be consumed by sensor devices are sometimes in
+> > the _CRS of a dummy INT3472 device upon which the sensor depends. This
+> > driver binds to the dummy acpi device (which does not represent a
 > 
+> acpi device -> acpi_device
 > 
-> On 11/28/20 8:52 PM, Halil Pasic wrote:
-[..]
-> >> * Unassign adapter from mdev's matrix:
-> >>
-> >>    The domain will be hot unplugged from the KVM guest if it is
-> >>    assigned to the guest's matrix.
-> >>
-> >> * Assign a control domain:
-> >>
-> >>    The control domain will be hot plugged into the KVM guest if it is not
-> >>    assigned to the guest's APCB. The AP architecture ensures a guest will
-> >>    only get access to the control domain if it is in the host's AP
-> >>    configuration, so there is no risk in hot plugging it; however, it will
-> >>    become automatically available to the guest when it is added to the host
-> >>    configuration.
-> >>
-> >> * Unassign a control domain:
-> >>
-> >>    The control domain will be hot unplugged from the KVM guest if it is
-> >>    assigned to the guest's APCB.
-> > This is where things start getting tricky. E.g. do we need to revise
-> > filtering after an unassign? (For example an assign_adapter X didn't
-> > change the shadow, because queue XY was missing, but now we unplug domain
-> > Y. Should the adapter X pop up? I guess it should.)
+> > physical PMIC) and maps them into GPIO lines and regulators for use by
+> > the sensor device instead.
 > 
-> I suppose that makes sense at the expense of making the code
-> more complex. It is essentially what we had in the prior version
-> which used the same filtering code for assignment as well as
-> host AP configuration changes.
+> ...
 > 
-
-Will have to think about it some more. Making the user unplug and
-replug an adapter because at some point it got filtered, but there
-is no need to filter it does not feel right. On the other hand, I'm
-afraid I'm complaining in circles. 
-
-> >
-> >
-> >> Note: Now that hot plug/unplug is implemented, there is the possibility
-> >>        that an assignment/unassignment of an adapter, domain or control
-> >>        domain could be initiated while the guest is starting, so the
-> >>        matrix device lock will be taken for the group notification callback
-> >>        that initializes the guest's APCB when the KVM pointer is made
-> >>        available to the vfio_ap device driver.
-> >>
-> >> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> >> ---
-> >>   drivers/s390/crypto/vfio_ap_ops.c | 190 +++++++++++++++++++++++++-----
-> >>   1 file changed, 159 insertions(+), 31 deletions(-)
-> >>
-> >> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> >> index 586ec5776693..4f96b7861607 100644
-> >> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> >> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> >> @@ -631,6 +631,60 @@ static void vfio_ap_mdev_manage_qlinks(struct ap_matrix_mdev *matrix_mdev,
-> >>   	}
-> >>   }
-> >>   
-> >> +static bool vfio_ap_assign_apid_to_apcb(struct ap_matrix_mdev *matrix_mdev,
-> >> +					unsigned long apid)
-> >> +{
-> >> +	unsigned long apqi, apqn;
-> >> +	unsigned long *aqm = matrix_mdev->shadow_apcb.aqm;
-> >> +
-> >> +	/*
-> >> +	 * If the APID is already assigned to the guest's shadow APCB, there is
-> >> +	 * no need to assign it.
-> >> +	 */
-> >> +	if (test_bit_inv(apid, matrix_mdev->shadow_apcb.apm))
-> >> +		return false;
-> >> +
-> >> +	/*
-> >> +	 * If no domains have yet been assigned to the shadow APCB and one or
-> >> +	 * more domains have been assigned to the matrix mdev, then use
-> >> +	 * the domains assigned to the matrix mdev; otherwise, there is nothing
-> >> +	 * to assign to the shadow APCB.
-> >> +	 */
-> >> +	if (bitmap_empty(matrix_mdev->shadow_apcb.aqm, AP_DOMAINS)) {
-> >> +		if (bitmap_empty(matrix_mdev->matrix.aqm, AP_DOMAINS))
-> >> +			return false;
-> >> +
-> >> +		aqm = matrix_mdev->matrix.aqm;
-> >> +	}
-> >> +
-> >> +	/* Make sure all APQNs are bound to the vfio_ap driver */
-> >> +	for_each_set_bit_inv(apqi, aqm, AP_DOMAINS) {
-> >> +		apqn = AP_MKQID(apid, apqi);
-> >> +
-> >> +		if (vfio_ap_mdev_get_queue(matrix_mdev, apqn) == NULL)
-> >> +			return false;
-> >> +	}
-> >> +
-> >> +	set_bit_inv(apid, matrix_mdev->shadow_apcb.apm);
-> >> +
-> >> +	/*
-> >> +	 * If we verified APQNs using the domains assigned to the matrix mdev,
-> >> +	 * then copy the APQIs of those domains into the guest's APCB
-> >> +	 */
-> >> +	if (bitmap_empty(matrix_mdev->shadow_apcb.aqm, AP_DOMAINS))
-> >> +		bitmap_copy(matrix_mdev->shadow_apcb.aqm,
-> >> +			    matrix_mdev->matrix.aqm, AP_DOMAINS);
-> >> +
-> >> +	return true;
-> >> +}
-> > What is the rationale behind the shadow aqm empty special handling?
-> 
-> The rationale was to avoid taking the VCPUs
-> out of SIE in order to make an update to the guest's APCB
-> unnecessarily. For example, suppose the guest is started
-> without access to any APQNs (i.e., all matrix and shadow_apcb
-> masks are zeros). Now suppose the administrator proceeds to
-> start assigning AP resources to the mdev. Let's say he starts
-> by assigning adapters 1 through 100. The code below will return
-> true indicating the shadow_apcb was updated. Consequently,
-> the calling code will commit the changes to the guest's
-> APCB. The problem there is that in order to update the guest's
-> VCPUs, they will have to be taken out of SIE, yet the guest will
-> not get access to the adapter since no domains have yet been
-> assigned to the APCB. Doing this 100 times - once for each
-> adapter 1-100 - is probably a bad idea.
->
-
-Not yanking the VCPUs out of SIE does make a lot of sense. At least
-I understand your motivation now. I will think some more about this,
-but in the meanwhile, please try to answer one more question (see
-below).
- 
-> >   I.e.
-> > why not simply:
-> >
-> >
-> > static bool vfio_ap_assign_apid_to_apcb(struct ap_matrix_mdev *matrix_mdev,
-> >                                          unsigned long apid)
+> > This patch contains the bits of this process that we're least sure about.
+> > The sensors in scope for this work are called out as dependent (in their
+> > DSDT entry's _DEP) on a device with _HID INT3472. These come in at least
+> > 2 kinds; those with an I2cSerialBusV2 entry (which we presume therefore
+> > are legitimate tps68470 PMICs that need handling by those drivers - work
+> > on that in the future). And those without an I2C device. For those without
+> > an I2C device they instead have an array of GPIO pins defined in _CRS. So
+> > for example, my Lenovo Miix 510's OVTI2680 sensor is dependent on one of
+> > the _latter_ kind of INT3472 devices, with this _CRS:
+> > 
+> > Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
 > > {
-> >          unsigned long apqi, apqn;
-> >          unsigned long *aqm = matrix_mdev->shadow_apcb.aqm;
-> >                                                                                  
-> >          /*
-> >           * If the APID is already assigned to the guest's shadow APCB, there is
-> >           * no need to assign it.
-> >           */
-> >          if (test_bit_inv(apid, matrix_mdev->shadow_apcb.apm))
-> >                  return false;
-> >                                                                                  
-> >          /* Make sure all APQNs are bound to the vfio_ap driver */
-> >          for_each_set_bit_inv(apqi, aqm, AP_DOMAINS) {
-> >                  apqn = AP_MKQID(apid, apqi);
-> >                                                                                  
-> >                  if (vfio_ap_mdev_get_queue(matrix_mdev, apqn) == NULL)
-> >                          return false;
-> >          }
-> >                                                                                  
-> >          set_bit_inv(apid, matrix_mdev->shadow_apcb.apm);
-> >                                                                                  
-> >          return true;
+> >     Name (SBUF, ResourceTemplate ()
+> >     {
+> >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
+> > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
+> > 	    0x00, ResourceConsumer, ,
+> >             )
+> >             {   // Pin list
+> >                 0x0079
+> >             }
+> >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
+> > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
+> > 	    0x00, ResourceConsumer, ,
+> >             )
+> >             {   // Pin list
+> >                 0x007A
+> >             }
+> >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
+> > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
+> > 	    0x00, ResourceConsumer, ,
+> >             )
+> >             {   // Pin list
+> >                 0x008F
+> >             }
+> >     })
+> >     Return (SBUF) /* \_SB_.PCI0.PMI1._CRS.SBUF */
+> > }
+> > 
+> > and the same device has a _DSM Method, which returns 32-bit ints where
+> > the second lowest byte we noticed to match the pin numbers of the GPIO
+> > lines:
+> > 
+> > Method (_DSM, 4, NotSerialized)  // _DSM: Device-Specific Method
+> > {
+> >     If ((Arg0 == ToUUID ("79234640-9e10-4fea-a5c1-b5aa8b19756f")))
+> >     {
+> >         If ((Arg2 == One))
+> >         {
+> >             Return (0x03)
+> >         }
+> > 
+> >         If ((Arg2 == 0x02))
+> >         {
+> >             Return (0x01007900)
+> >         }
+> > 
+> >         If ((Arg2 == 0x03))
+> >         {
+> >             Return (0x01007A0C)
+> >         }
+> > 
+> >         If ((Arg2 == 0x04))
+> >         {
+> >             Return (0x01008F01)
+> >         }
+> >     }
+> > 
+> >     Return (Zero)
+> > }
+> > 
+> > We know that at least some of those pins have to be toggled active for the
+> > sensor devices to be available in i2c, so the conclusion we came to was
+> > that those GPIO entries assigned to the INT3472 device actually represent
+> > GPIOs and regulators to be consumed by the sensors themselves. Tsuchiya
+> > noticed that the lowest byte in the return values of the _DSM method
+> > seemed to represent the type or function of the GPIO line, and we
+> > confirmed that by testing on each surface device that GPIO lines where the
+> > low byte in the _DSM entry for that pin was 0x0d controlled the privacy
+> > LED of the cameras.
+> > 
+> > We're guessing as to the exact meaning of the function byte, but I
+> > conclude they're something like this:
+> > 
+> > 0x00 - probably a reset GPIO
+> > 0x01 - regulator for the sensor
+> > 0x0c - regulator for the sensor
+> > 0x0b - regulator again, but for a VCM or EEPROM
+> > 0x0d - privacy led (only one we're totally confident of since we can see
+> >        it happen!)
+> 
+> It's solely Windows driver design...
+> Luckily I found some information and can clarify above table:
+> 
+> 0x00 Reset
+> 0x01 Power down
+> 0x0b Power enable
+> 0x0c Clock enable
+> 0x0d LED (active high)
 
-Would
-s/return true/return !bitmap_empty(matrix_mdev->shadow_apcb.aqm,
-AP_DOMAINS)/ 
-do the trick?
+That's very useful information ! Thank you.
 
-I mean if empty, then we would not commit the APCB, so we would
-not take the vCPUs out of SIE -- see below.
+> The above text perhaps should go somewhere under Documentation.
 
-> >> +
-> >> +static void vfio_ap_mdev_hot_plug_adapter(struct ap_matrix_mdev *matrix_mdev,
-> >> +					  unsigned long apid)
-> >> +{
-> >> +	if (vfio_ap_assign_apid_to_apcb(matrix_mdev, apid))
-> >> +		vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
-> >> +}
-> >> +
-[..]
+Or in the driver source code, but definitely somewhere else than in the
+commit message.
 
+> > After much internal debate I decided to write this as a standalone
+> > acpi_driver. Alternative options we considered:
+> > 
+> > 1. Squash all this into the cio2-bridge code, which I did originally write
+> > but decided I didn't like.
+> > 2. Extend the existing tps68470 mfd driver...they share an ACPI ID so this
+> > kinda makes sense, but ultimately given there is no actual physical
+> > tps68470 in the scenario this patch handles I decided I didn't like this
+> > either.
+> 
+> Looking to this I think the best is to create a module that can be consumed by tps68470 and separately.
+> So, something near to it rather than under ipu3 hood.
+> 
+> You may use same ID's in both drivers (in PMIC less case it can be simple
+> platform and thus they won't conflict), but both of them should provide GPIO
+> resources for consumption.
+> 
+> So, something like
+> 
+>  tps68470.h with API to consume
+>  split tps68470 to -core, -i2c parts
+>  add int3472, which will serve for above and be standalone platform driver
+>  update cio2-bridge accordingly
+> 
+> Would it be feasible?
+
+Given that INT3472 means Intel camera power management device (that's
+more or less the wording in Windows, I can double-check), would the
+following make sense ?
+
+A top-level module named intel-camera-pmic (or int3472, or ...) would
+register two drivers, a platform driver and an I2C driver, to
+accommodate for both cases ("discrete PMIC" that doesn't have an
+I2cSerialBusV2, and TPS64870 or uP6641Q that are I2C devices). The probe
+function would perform the following:
+
+- If there's no CLDB, then the device uses the Chrome OS "ACPI
+  bindings", and refers to a TPS64870. The code that exists in the
+  kernel today (registering GPIOs, and registering an OpRegion to
+  communicate with the power management code in the DSDT) would be
+  activated.
+
+- If there's a CLDB, then the device type would be retrieved from it:
+
+  - If the device is a "discrete PMIC", the driver would register clocks
+    and regulators controlled by GPIOs, and create clock, regulator and
+    GPIO lookup entries for the sensor device that references the PMIC.
+
+  - If the device is a TPS64870, the code that exists in the kernel
+    today to register GPIOs would be activated, and new code would need
+    to be written to register regulators and clocks.
+
+  - If the device is a uP6641Q, a new driver will need to be written (I
+    don't know on which devices this PMIC is used, so this can probably
+    be deferred).
+
+We can split this in multiple files and/or modules.
+
+> ...
+> 
+> > +	table_entry = (struct gpiod_lookup)GPIO_LOOKUP_IDX(acpi_dev_name(adev),
+> > +							   ares->data.gpio.pin_table[0],
+> > +							   func, 0, GPIO_ACTIVE_HIGH);
+> 
+> You won't need this if you have regular INT3472 platform driver.
+> Simple call there _DSM to map resources to the type and use devm_gpiod_get on
+> consumer behalf. Thus, previous patch is not needed.
+
+How does the consumer (the camera sensor) retrieve the GPIO though ? The
+_DSM is in the PMIC device object, while the real consumer is the camera
+sensor.
+
+> ...
+> 
+> > +	case 0x01: /* Power regulators (we think) */
+> > +	case 0x0c:
+> > +	case 0x0b: /* Power regulators, but to a device separate to sensor */
+> > +	case 0x0d: /* Indicator LEDs */
+> 
+> 
+> Give names to those constants.
+> 
+> 	#define INT3472_GPIO_TYPE_RESET 0x00
+> 	...
+> 
+> 
+> > +static struct acpi_driver int3472_driver = {
+> 
+> No acpi_driver! Use platform_driver instead with plenty of examples all over
+> the kernel.
+> 
+> > +	.name = "int3472",
+> > +	.ids = int3472_device_id,
+> > +	.ops = {
+> > +		.add = int3472_add,
+> > +		.remove = int3472_remove,
+> > +	},
+> 
+> > +	.owner = THIS_MODULE,
+> 
+> No need
+> 
+> > +};
+> 
+> ...
+> 
+> > +const guid_t int3472_gpio_guid = GUID_INIT(0x79234640, 0x9e10, 0x4fea,
+> > +					     0xa5, 0xc1, 0xb5, 0xaa, 0x8b,
+> > +					     0x19, 0x75, 0x6f);
+> > +
+> > +const guid_t cio2_sensor_module_guid = GUID_INIT(0x822ace8f, 0x2814, 0x4174,
+> > +						 0xa5, 0x6b, 0x5f, 0x02, 0x9f,
+> > +						 0xe0, 0x79, 0xee);
+> 
+> Use more or less standard pattern for these, like
+> 
+> /* 79234640-9e10-4fea-a5c1b5aa8b19756f */
+> const guid_t int3472_gpio_guid =
+> 	GUID_INIT(0x79234640, 0x9e10, 0x4fea,
+> 		  0xa5, 0xc1, 0xb5, 0xaa, 0x8b, 0x19, 0x75, 0x6f);
+> 
+> ...
+> 
+> > +static struct regulator_consumer_supply miix_510_ov2680[] = {
+> > +	{ "i2c-OVTI2680:00", "avdd" },
+> > +	{ "i2c-OVTI2680:00", "dovdd" },
+> > +};
+> 
+> Can we use acpi_dev_first_match_dev() to get instance name out of their HIDs?
+> 
+> > +static struct regulator_consumer_supply surface_go2_ov5693[] = {
+> > +	{ "i2c-INT33BE:00", "avdd" },
+> > +	{ "i2c-INT33BE:00", "dovdd" },
+> > +};
+> > +
+> > +static struct regulator_consumer_supply surface_book_ov5693[] = {
+> > +	{ "i2c-INT33BE:00", "avdd" },
+> > +	{ "i2c-INT33BE:00", "dovdd" },
+> > +};
+> 
+> Ditto.
+> 
+> ...
+> 
+> > +static struct int3472_sensor_regulator_map int3472_sensor_regulator_maps[] = {
+> > +	{ "GNDF140809R", 2, miix_510_ov2680 },
+> > +	{ "YHCU", 2, surface_go2_ov5693 },
+> > +	{ "MSHW0070", 2, surface_book_ov5693 },
+> > +};
+> 
+> Hmm... Usual way is to use DMI for that. I'm not sure above will not give us
+> false positive matches.
+
+-- 
 Regards,
-Halil
+
+Laurent Pinchart
