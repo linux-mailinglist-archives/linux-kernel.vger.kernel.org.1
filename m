@@ -2,112 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0BA2C850E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B20822C8511
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgK3NYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:24:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60050 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726539AbgK3NYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:24:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606742627; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S1726725AbgK3NZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:25:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54998 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725897AbgK3NZU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:25:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606742633;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TN6v/OxH2OCtpqDqCR+fNEKl5rFIXLW24KeSiZIJqiY=;
-        b=RW6digj3PddxPw8W2vUmwPfX8SzTgA6ZQWwm9a1rvExLhiwTyCWILAl7bYZK2AX7y2pt6m
-        IQWh8cOAapkpMr3xBVHD4QDFBzygXraCpsg+nrxzGr3kPVNV1f4OSH04kZHBLxGUC1zRoN
-        2n2yYDl6nW0HwaVcneleQRL3f0Sa1SY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 62D52AD19;
-        Mon, 30 Nov 2020 13:23:47 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 14:23:45 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, shakeelb@google.com,
-        guro@fb.com, sfr@canb.auug.org.au, alex.shi@linux.alibaba.com,
-        alexander.h.duyck@linux.intel.com, laoar.shao@gmail.com,
-        richard.weiyang@gmail.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm/memcg: fix NULL pointer dereference at
- workingset_eviction
-Message-ID: <20201130132345.GJ17338@dhcp22.suse.cz>
-References: <20201130131512.6043-1-songmuchun@bytedance.com>
+        bh=ZsiKz3Xb8yRkj2RReFaObIjO2mMfX4sg9c9Ok14EKbg=;
+        b=PhMUuaGJ/btvYSFnFl3Il8CKYMdSTYYd9GzPxlCtgx7Ki0Gj96WxioN8aAyZP/OSB91h+T
+        n5yK3sMjc+DiNCVW0jM+yZREMCw19i5S1Vcs2pDOca/3dkiz+l167FJHRrMjEwTj7xsSNi
+        OQnQb3249xQXuqIrwduJYbmOXErAOV8=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-xhxAjyhAMdm1Ry59Y7T_vw-1; Mon, 30 Nov 2020 08:23:51 -0500
+X-MC-Unique: xhxAjyhAMdm1Ry59Y7T_vw-1
+Received: by mail-ed1-f72.google.com with SMTP id bt2so6790240edb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:23:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZsiKz3Xb8yRkj2RReFaObIjO2mMfX4sg9c9Ok14EKbg=;
+        b=iF78Fi6fxq2UUCw4ssnwP7lo5D52G8GU/3SpoXysIdntGWfh9TdaxTqQzTDtyrzQZv
+         HWBFiYLOZ6H7GN9sTcOtHoUZ+BzwjlL9nPs4keg9u3WVYpQKn3FqJv0AvMDdQzXqe3hj
+         lIa8js8NDc3yQ4u5SRDOdk0hhFOGXppx/+fDGSu50NYzGYCDiGQrh/UkgJJtZdcJZ0y4
+         z4T1Sd9n4q6oluPPy0l9LnItMumpvLUArJtJ/UA7Vh7bhTRhmfLGZR+hCMCa+cIPEkNS
+         jvJV/vrQbOqsVylG+RJbGZwoaWnii2cIraf8quDR4Ya/HPgD7HfYNJGnB+jUivBVf6UN
+         suRQ==
+X-Gm-Message-State: AOAM530r0Rc/EWu72B4kUomcrMHmK7ytVfqnZ6pq/zVgwAns+gAUc/2b
+        kWdB0NuFDLnvyyOVDr/o6rodzvtF6qm+Pkbp8HuvLyhLu4MO9ubdjFNpvOpnp2vizmc15baAGEx
+        ya9dhPtLgPF5cZXhBb64YhwuK
+X-Received: by 2002:a17:906:268c:: with SMTP id t12mr19940779ejc.377.1606742630062;
+        Mon, 30 Nov 2020 05:23:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy0mhUguurWclQROXLkEBg+lQAvc3kUqgpjbQwR2khKLUk11zC6+rWkh31c/R7eBzaFpfgDzg==
+X-Received: by 2002:a17:906:268c:: with SMTP id t12mr19940744ejc.377.1606742629777;
+        Mon, 30 Nov 2020 05:23:49 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id zn5sm1696069ejb.111.2020.11.30.05.23.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 05:23:49 -0800 (PST)
+Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to
+ scsi_add_host()
+To:     Tom Yan <tom.ty89@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
+ <20201128154849.3193-1-tom.ty89@gmail.com>
+ <20201128154849.3193-2-tom.ty89@gmail.com>
+ <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com>
+ <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com>
+Date:   Mon, 30 Nov 2020 14:23:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130131512.6043-1-songmuchun@bytedance.com>
+In-Reply-To: <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 30-11-20 21:15:12, Muchun Song wrote:
-> We found a case of kernel panic. The stack trace is as follows
-> (omit some irrelevant information):
-> 
->     BUG: kernel NULL pointer dereference, address: 00000000000000c8
->     RIP: 0010:workingset_eviction+0x26b/0x450
->     Call Trace:
->      __remove_mapping+0x224/0x2b0
->      shrink_page_list+0x8c2/0x14e0
->      shrink_inactive_list+0x1bf/0x3f0
->      ? do_raw_spin_unlock+0x49/0xc0
->      ? _raw_spin_unlock+0xa/0x20
->      shrink_lruvec+0x401/0x640
-> 
-> This was caused by commit 76761ffa9ea1 ("mm/memcg: bail out early when
-> !memcg in mem_cgroup_lruvec"). When the parameter of memcg is NULL, we
-> should not use the &pgdat->__lruvec. So this just reverts commit
-> 76761ffa9ea1 to fix it.
-> 
-> Fixes: 76761ffa9ea1 ("mm/memcg: bail out early when !memcg in mem_cgroup_lruvec")
+Hi,
 
-I do not see any commits like that in the current Linus tree. Is this a
-commit id from the linux-next? If yes, can we just fold it into the
-respective patch in mmotm tree please?
+On 11/30/20 1:58 PM, Tom Yan wrote:
+> It's merely a moving of comment moving for/and a no-behavioral-change
+> adaptation for the reversion.>
 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  include/linux/memcontrol.h | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
+IMHO the revert of the troublesome commit and the other/new changes really
+should be 2 separate commits. But I will let Alan and Greg have the final
+verdict on this.
+
+p.s. Why did you not send this patch-series to Alan Stern, the maintainer of
+the usb-storage driver?
+
+> Similar has been done in the equivalent
+> patch for the UAS driver (and the reason is stated there).
+
+In the UAS driver the code setting max-hw-sectors was already moved to its
+new place and another patch was added on top, so that is different.
+
+Regards,
+
+Hans
+
+
 > 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index f9a496c4eac7..a1416205507c 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -610,17 +610,20 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
->  static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  					       struct pglist_data *pgdat)
->  {
-> +	struct mem_cgroup_per_node *mz;
->  	struct lruvec *lruvec;
->  
-> -	if (mem_cgroup_disabled() || !memcg) {
-> +	if (mem_cgroup_disabled()) {
->  		lruvec = &pgdat->__lruvec;
-> -	} else {
-> -		struct mem_cgroup_per_node *mz;
-> -
-> -		mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
-> -		lruvec = &mz->lruvec;
-> +		goto out;
->  	}
->  
-> +	if (!memcg)
-> +		memcg = root_mem_cgroup;
-> +
-> +	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
-> +	lruvec = &mz->lruvec;
-> +out:
->  	/*
->  	 * Since a node can be onlined after the mem_cgroup was created,
->  	 * we have to be prepared to initialize lruvec->pgdat here;
-> -- 
-> 2.11.0
+> On Mon, 30 Nov 2020 at 17:50, Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi,
+>>
+>> On 11/28/20 4:48 PM, Tom Yan wrote:
+>>> While the change only seemed to have caused issue on uas drives, we
+>>> probably want to avoid it in the usb-storage driver as well, until
+>>> we are sure it is the right thing to do.
+>>>
+>>> Signed-off-by: Tom Yan <tom.ty89@gmail.com>
+>>
+>> This seems to do a whole lot more then just dropping back from
+>>  scsi_add_host_with_dma() to scsi_add_host(). This has way more
+>> lines then the orginal commit.
+>>
+>> IMHO it would be best to just revert commit 0154012f8018bba4d9971d1007c12ffd48539ddb
+>> and then submit these changes as a separate patch (which would be
+>> 5.11 material then).
+>>
+>> That separate patch could then also have a proper commit message
+>> explaining the other changes you are making, which is also not
+>> unimportant.
+>>
+>> Regards,
+>>
+>> Hans
+>>
+>>
+>>
+>>
+>>> ---
+>>>  drivers/usb/storage/scsiglue.c | 40 +++++++++++++++++-----------------
+>>>  drivers/usb/storage/usb.c      |  3 +--
+>>>  2 files changed, 21 insertions(+), 22 deletions(-)
+>>>
+>>> diff --git a/drivers/usb/storage/scsiglue.c b/drivers/usb/storage/scsiglue.c
+>>> index 560efd1479ba..6539bae1c188 100644
+>>> --- a/drivers/usb/storage/scsiglue.c
+>>> +++ b/drivers/usb/storage/scsiglue.c
+>>> @@ -92,7 +92,7 @@ static int slave_alloc (struct scsi_device *sdev)
+>>>  static int slave_configure(struct scsi_device *sdev)
+>>>  {
+>>>       struct us_data *us = host_to_us(sdev->host);
+>>> -     struct device *dev = sdev->host->dma_dev;
+>>> +     struct device *dev = us->pusb_dev->bus->sysdev;
+>>>
+>>>       /*
+>>>        * Many devices have trouble transferring more than 32KB at a time,
+>>> @@ -120,6 +120,25 @@ static int slave_configure(struct scsi_device *sdev)
+>>>                * better throughput on most devices.
+>>>                */
+>>>               blk_queue_max_hw_sectors(sdev->request_queue, 2048);
+>>> +     } else {
+>>> +             /*
+>>> +              * Limit the total size of a transfer to 120 KB.
+>>> +              *
+>>> +              * Some devices are known to choke with anything larger. It seems like
+>>> +              * the problem stems from the fact that original IDE controllers had
+>>> +              * only an 8-bit register to hold the number of sectors in one transfer
+>>> +              * and even those couldn't handle a full 256 sectors.
+>>> +              *
+>>> +              * Because we want to make sure we interoperate with as many devices as
+>>> +              * possible, we will maintain a 240 sector transfer size limit for USB
+>>> +              * Mass Storage devices.
+>>> +              *
+>>> +              * Tests show that other operating have similar limits with Microsoft
+>>> +              * Windows 7 limiting transfers to 128 sectors for both USB2 and USB3
+>>> +              * and Apple Mac OS X 10.11 limiting transfers to 256 sectors for USB2
+>>> +              * and 2048 for USB3 devices.
+>>> +              */
+>>> +             blk_queue_max_hw_sectors(sdev->request_queue, 240);
+>>>       }
+>>>
+>>>       /*
+>>> @@ -627,25 +646,6 @@ static const struct scsi_host_template usb_stor_host_template = {
+>>>       .sg_tablesize =                 SG_MAX_SEGMENTS,
+>>>
+>>>
+>>> -     /*
+>>> -      * Limit the total size of a transfer to 120 KB.
+>>> -      *
+>>> -      * Some devices are known to choke with anything larger. It seems like
+>>> -      * the problem stems from the fact that original IDE controllers had
+>>> -      * only an 8-bit register to hold the number of sectors in one transfer
+>>> -      * and even those couldn't handle a full 256 sectors.
+>>> -      *
+>>> -      * Because we want to make sure we interoperate with as many devices as
+>>> -      * possible, we will maintain a 240 sector transfer size limit for USB
+>>> -      * Mass Storage devices.
+>>> -      *
+>>> -      * Tests show that other operating have similar limits with Microsoft
+>>> -      * Windows 7 limiting transfers to 128 sectors for both USB2 and USB3
+>>> -      * and Apple Mac OS X 10.11 limiting transfers to 256 sectors for USB2
+>>> -      * and 2048 for USB3 devices.
+>>> -      */
+>>> -     .max_sectors =                  240,
+>>> -
+>>>       /* emulated HBA */
+>>>       .emulated =                     1,
+>>>
+>>> diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
+>>> index c2ef367cf257..f177da4ff1bc 100644
+>>> --- a/drivers/usb/storage/usb.c
+>>> +++ b/drivers/usb/storage/usb.c
+>>> @@ -1050,8 +1050,7 @@ int usb_stor_probe2(struct us_data *us)
+>>>       usb_autopm_get_interface_no_resume(us->pusb_intf);
+>>>       snprintf(us->scsi_name, sizeof(us->scsi_name), "usb-storage %s",
+>>>                                       dev_name(dev));
+>>> -     result = scsi_add_host_with_dma(us_to_host(us), dev,
+>>> -                                     us->pusb_dev->bus->sysdev);
+>>> +     result = scsi_add_host(us_to_host(us), dev);
+>>>       if (result) {
+>>>               dev_warn(dev,
+>>>                               "Unable to add the scsi host\n");
+>>>
+>>
 > 
 
--- 
-Michal Hocko
-SUSE Labs
