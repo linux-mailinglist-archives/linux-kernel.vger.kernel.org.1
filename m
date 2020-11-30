@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E10F2C872C
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4DC2C872D
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727786AbgK3OxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:53:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727151AbgK3OxF (ORCPT
+        id S1727684AbgK3OxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:53:13 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:49240 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727113AbgK3OxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:53:05 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0566C0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:52:19 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 3so21759779wmg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:52:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=xRnSTPJtYHlLo5f9Pcsa1HU4sAtrN1byx2aGSuuHdV8=;
-        b=KN3UUO6NsVuwUQVEDTZ2eiYecoqvNhR/NsquvyGZPENcBLAyo8q/C4dYMO+H+VQ96t
-         5h9oUwxaBfOaLvuQ0L6H5f+d+IFUQEoUu1ofoqdOG/b9fvX7vUCmEyny6PlmOwJSQW3v
-         AuI3AqTN2jX/dBo9wJwQMxb8MU8C63QRPm6wrG05BXMo4no3DMFCJosPhHrn+eKzznQO
-         HI9tXsU0w7Z69+PrGI3zDrz9SK8Co0CXu+NmXIifeWxOWSCVo8lgXrvezUV5WGTw6Y76
-         h80FhNNmb9WkXBX/jH2mGOv9iABOrVq11bdvGVIpU3ZsseaaIAt++1dt/x4ZgoaIFFgE
-         LLwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xRnSTPJtYHlLo5f9Pcsa1HU4sAtrN1byx2aGSuuHdV8=;
-        b=aBavXzwN2jNSlds6wpxh2RwYxX4W5aDCTOTAb3qSnjhpt51MvsgdQWM1E/msBDrdhI
-         3Exw4LDs3ltJLHhPhjL9DtbgGMJHtDxY5bjRKyG4cH1OkH2Or8sawOPt/3NdZr0DaGeR
-         sx4Mz652v2hgJqfqjyLWKSy07/CT0YsfV3Q83RQPY+0fIo75rtTuXHPRD0NATDGbZjDm
-         MAgWX5RfeQ9vuk8b0r+ktyyJZRvlGwcYtpZD26EyuWJOyspIRZ6rnxxMCNSX0x8J+1QE
-         vgt+s1fI9WPpcS6oBMtaGyjsGYoBkiFmxXMkhe9TYD+G/B8NGeejgolRTisYENlQj28d
-         elRQ==
-X-Gm-Message-State: AOAM533TwT/StUfEtogQpdEkYqzK75WJYYRdHJ0lScZBwTgJY7BW293L
-        NQ+3Qq6AOsOct4dRG6KynKIOuA==
-X-Google-Smtp-Source: ABdhPJzh786ywQLuYKfZnHtZFKJOE4q0GObaoeKTiokZ7B8y0EIQtjGY+u9FB3q3p8aiNx3HcptlMg==
-X-Received: by 2002:a1c:a9cc:: with SMTP id s195mr1189482wme.97.1606747938163;
-        Mon, 30 Nov 2020 06:52:18 -0800 (PST)
-Received: from MacBook-Pro.local ([212.45.64.13])
-        by smtp.googlemail.com with ESMTPSA id n189sm1072983wmf.20.2020.11.30.06.52.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 06:52:17 -0800 (PST)
-Subject: Re: [PATCH v4 1/2] dt-bindings: interconnect: Add bindings for
- Qualcomm SDM660 NoC
-To:     Rob Herring <robh@kernel.org>,
-        Martin Botka <martin.botka1@gmail.com>
-Cc:     AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>, marijns95@gmail.com,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        phone-devel@vger.kernel.org,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-References: <20201017133718.31327-1-kholk11@gmail.com>
- <20201017133718.31327-2-kholk11@gmail.com> <20201019195807.GA3508546@bogus>
- <CADQ2G_HZ9nt88vW9MNiC-+Rdjzsu-hSHoqmqLC75vyiG2JKpQQ@mail.gmail.com>
- <CAL_Jsq+ZsOP1=+N0yu1Dc+2ZpkJic8XSGhTf0H8yRzYfbk1T9g@mail.gmail.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <f9096036-b47a-bc0e-af32-041d800b19e1@linaro.org>
-Date:   Mon, 30 Nov 2020 16:52:15 +0200
+        Mon, 30 Nov 2020 09:53:12 -0500
+Date:   Mon, 30 Nov 2020 15:52:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606747950;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FqYOmy7AsvS+8wcOaYtUA3RjkAkwu7jtiKhNU8ZLeAc=;
+        b=C3HNtI8Z0c+cX8DT+3eM0ZoKKBwdXq/0KEAJ7AfOtNKL21z77XU+8noKwyurjwWnsYWjRp
+        Sokk6MwgmagA+OtiJ1RTJSAB2Ev3Jy9Xo+K4Owy41kLPI/y0/XaHqU3B8XR1ziD0Jj45OC
+        PJLGogsQOTkOn27yr3zo2jERYoOs8OsWgPdH7FN1XzA+8fWIYiuaY73ismRAIPeUn8FYuy
+        A5RQfIIs5LZeo+X6RADmR2xdmtB6QHL9n0O8RxkodBt6sxHJKcKWg8i1T2DPnfhBS8BAPe
+        VoefZiLFXRTRqAYUHR6u6GFtg+k+obiotrgLzQ0hIACfpbmwPuqTsfkkXeuHZQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606747950;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FqYOmy7AsvS+8wcOaYtUA3RjkAkwu7jtiKhNU8ZLeAc=;
+        b=N7PVC7972LE2ln4ZEUrhBw/GJV2UZWO7V0X0J6JqMaC/SJfqQPaU4LLT+eZpWMUWIYCkhG
+        o8hAloiZt+T8dlDw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Subject: Re: scheduling while atomic in z3fold
+Message-ID: <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
+References: <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
+ <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
+ <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
+ <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
+ <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
+ <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
+ <20201129112922.db53kmtpu76xxukj@spock.localdomain>
+ <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+ <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
+ <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+ZsOP1=+N0yu1Dc+2ZpkJic8XSGhTf0H8yRzYfbk1T9g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.11.20 16:29, Rob Herring wrote:
-> On Mon, Oct 19, 2020 at 2:45 PM Martin Botka <martin.botka1@gmail.com> wrote:
->>
->>> Documentation/devicetree/bindings/interconnect/qcom,sdm660.example.dts:20:18: fatal error: dt-bindings/clock/qcom,mmcc-sdm660.h: No such file or directory
->>>     20 |         #include <dt-bindings/clock/qcom,mmcc-sdm660.h>
->>>        |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> This patch depends on my MMCC patch (sent by angelo).
-> 
-> Seems this landed in linux-next now and the dependency is not there.
-> Revert, drop, or fix the dependency please.
-> 
+On 2020-11-30 15:42:46 [+0100], Mike Galbraith wrote:
+> This explodes in write_unlock() as mine did.   Oleksandr's local_lock()
+> variant explodes in the lock he added.  (ew, corruption)
+>=20
+> I think I'll try a stable-rt tree.  This master tree _should_ be fine
+> given it seems to work just peachy for everything else, but my box is
+> the only one making boom... and also NOT making boom with the zbud
+> compressor.  Hrmph.
 
-Thanks Rob. I'll drop it for now.
+How do you test this? I triggered a few oom-killer and I have here git
+gc running for a few hours now=E2=80=A6 Everything is fine.
 
-BR,
-Georgi
+Sebastian
