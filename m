@@ -2,111 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8002C917B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393512C917F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388605AbgK3WtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:49:03 -0500
-Received: from mga05.intel.com ([192.55.52.43]:46892 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729392AbgK3Wsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:48:52 -0500
-IronPort-SDR: g13egRQdLtV+Yhrv0gnFase0h4G3sN3HK9XEH1dlgYHiStplNP17DOC+jet0Ky01PdNhlXguaZ
- u5h3/enR6IXQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="257434948"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="257434948"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 14:48:11 -0800
-IronPort-SDR: gGmBV20c4rH3tKsfMA6R/DzXOXz5E14WS3EFzsab7Ro/qdraHqv2e0F0knX05IFHfHG/BGFvSw
- NZ7MQjWMozHA==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="404888251"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.122.22]) ([10.212.122.22])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 14:48:10 -0800
-Subject: Re: [PATCH v15 05/26] x86/cet/shstk: Add Kconfig option for user-mode
- Shadow Stack
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-6-yu-cheng.yu@intel.com>
- <20201127171012.GD13163@zn.tnic>
- <98e1b159-bf32-5c67-455b-f798023770ef@intel.com>
- <20201130181500.GH6019@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <1db3d369-734e-9925-fa14-e799a19ac30c@intel.com>
-Date:   Mon, 30 Nov 2020 14:48:09 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S2388728AbgK3WuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:50:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388721AbgK3WuF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 17:50:05 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47D2C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:49:25 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id e105so967765ote.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:49:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bzJwkZIz7kl6fhYUImeAIlsAKf62NSFlF6oC5OffnRw=;
+        b=HatqDxz4UFz+rfmzrNA2CN47GpWWN0jcH2jAKj6hlFoKnrNJ5JchjzYzOYlQ4F98Iu
+         /y1vrjuPsDdMbUfOgSOhjjkf15NolmEeeeE8kwcIw0UxgNQ5lrSPnbnHw+Z1JR7K3rjU
+         4W8RHh8ogH2UfYaDYkE0oaM1alUZq6N3iL2/UTpaEJdX2Objl7WrY9b5RcaUbATGhC53
+         msgmLtetVPgjVRYgX9SRvlxuJnGwwlPBFGZh/qXGBpyM01kRbLg9ORdztYCk8W5Sl4Li
+         5a733ICe5hl8rYrtsm7L++R1NWC+Dg5kPneiDHL/U5aQMlPxey3dXnYI2GEjBzSdFP+F
+         N/wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bzJwkZIz7kl6fhYUImeAIlsAKf62NSFlF6oC5OffnRw=;
+        b=e5nmioQdzjZs76yjXzIv1ApmzGVxBIaUpf0Q73qCIqliVhzL+Py4FT5aS7dimMv8Od
+         v+y1zISzdpsoTg4aRb4mH5tXh8X6dVMI3kwzAEGJ010RIhsxVXTCbsedJqxC+CO5ggQ8
+         j7dahAjVcj2786G63ZymBWpdaVe9DK6/7VWSsPc/dC9tRCT1W/Epdb6Y2lKGo/OXLlqB
+         jMK/0CunGJ7fEqevDniHYXdR04uhOLT5GwFro5LXAtZcvvb49GMRmzOirjXso//US+zw
+         eAkSkn6TenphokFKfVsTQ+XNu6GsYsEEoz2ZOpsgnATJV+NSK0kl1LaH8UucuGf1VeVK
+         LEew==
+X-Gm-Message-State: AOAM5310yHdfRKFUpQX8iHypeWWUS8g2yaM4lB7W5OzCUtTSISp7asb3
+        6TqyNZuhHodgzQIGJMUvLG3MFFx2LHDowiu6k+A=
+X-Google-Smtp-Source: ABdhPJxa/myszQklUKIl9V0fscEIrdxL5Ryo54OSBNEgXsCa/Tqn04ZVbGs3Dp98BBxFZq6wEAvDl4w+G4/PwZ8UMy4=
+X-Received: by 2002:a05:6830:22e4:: with SMTP id t4mr19081521otc.23.1606776565150;
+ Mon, 30 Nov 2020 14:49:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201130181500.GH6019@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-34-lee.jones@linaro.org>
+In-Reply-To: <20201124193824.1118741-34-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 30 Nov 2020 17:49:14 -0500
+Message-ID: <CADnq5_PW+aNfEskumWeChATQwvXOOdXVXQRixMvBh3WJhaBekQ@mail.gmail.com>
+Subject: Re: [PATCH 33/40] drm/amd/amdgpu/vcn_v3_0: Remove unused variable
+ 'direct_poll' from 'vcn_v3_0_start_sriov()'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/2020 10:15 AM, Borislav Petkov wrote:
-> On Sat, Nov 28, 2020 at 08:23:59AM -0800, Yu, Yu-cheng wrote:
->> We have X86_BRANCH_TRACKING_USER too.  My thought was, X86_CET means any of
->> kernel/user shadow stack/ibt.
-> 
-> It is not about what it means - it is what you're going to use/need. You have
-> ifdeffery both with X86_CET and X86_SHADOW_STACK_USER.
-> 
-> This one
-> 
-> +#ifdef CONFIG_X86_SHADOW_STACK_USER
-> +#define DISABLE_SHSTK	0
-> +#else
-> +#define DISABLE_SHSTK	(1 << (X86_FEATURE_SHSTK & 31))
-> +#endif
-> 
-> for example, is clearly wrong and wants to be #ifdef CONFIG_X86_CET, for
-> example. Unless I'm missing something totally obvious.
+On Tue, Nov 24, 2020 at 2:45 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c: In function =E2=80=98vcn_v3_0_sta=
+rt_sriov=E2=80=99:
+>  drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c:1242:3: warning: variable =E2=80=
+=98direct_poll=E2=80=99 set but not used [-Wunused-but-set-variable]
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Logically, enabling IBT without shadow stack does not make sense, but 
-these features have different CPUIDs, and CONFIG_X86_SHADOW_STACK_USER 
-and CONFIG_X86_BRANCH_TRACKING_USER can be selected separately.
+Applied.  Thanks!
 
-Do we want to have only one selection for both features?  In other 
-words, we turn on both or neither.
+Alex
 
-Thanks,
-Yu-cheng
-
-> 
-> In any case, you need to analyze what Kconfig defines the code will
-> need and to what they belong and add only the minimal subset needed.
-> Our Kconfig symbols space is already nuts so adding more needs to be
-> absolutely justified.
-> 
-> Thx.
-> 
+> ---
+>  drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c b/drivers/gpu/drm/amd/=
+amdgpu/vcn_v3_0.c
+> index c5e0a531cabaf..e05af69651723 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+> @@ -1238,8 +1238,6 @@ static int vcn_v3_0_start_sriov(struct amdgpu_devic=
+e *adev)
+>                 direct_wt =3D { {0} };
+>         struct mmsch_v3_0_cmd_direct_read_modify_write
+>                 direct_rd_mod_wt =3D { {0} };
+> -       struct mmsch_v3_0_cmd_direct_polling
+> -               direct_poll =3D { {0} };
+>         struct mmsch_v3_0_cmd_end end =3D { {0} };
+>         struct mmsch_v3_0_init_header header;
+>
+> @@ -1247,8 +1245,6 @@ static int vcn_v3_0_start_sriov(struct amdgpu_devic=
+e *adev)
+>                 MMSCH_COMMAND__DIRECT_REG_WRITE;
+>         direct_rd_mod_wt.cmd_header.command_type =3D
+>                 MMSCH_COMMAND__DIRECT_REG_READ_MODIFY_WRITE;
+> -       direct_poll.cmd_header.command_type =3D
+> -               MMSCH_COMMAND__DIRECT_REG_POLLING;
+>         end.cmd_header.command_type =3D
+>                 MMSCH_COMMAND__END;
+>
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
