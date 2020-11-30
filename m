@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32902C8500
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD312C8509
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgK3NWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:22:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725861AbgK3NWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:22:21 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48334206F9;
-        Mon, 30 Nov 2020 13:21:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606742500;
-        bh=gp/c1E7Z/fJDz9MSxVD5z46kbUzUAVwzY3qc3WzdfAw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o1NC+rnv0ct8v2OvLOXV/3bHWyPXa1peKB6ER4KOtm7UqFOxIhAhpuXKIqRi8NAdb
-         pMM18yWdbu20bY679BQLRr69tRIT6UVJcvY88CM9WJMv+7OOV9XyoGeBE+KcYXYU2j
-         WId7gM2IrW69ZGYIT4hh3nForfeKOmmxKV7nqxWg=
-Date:   Mon, 30 Nov 2020 13:21:33 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
-        zhukeqian1@huawei.com, yuzenghui@huawei.com,
-        jiangkunkun@huawei.com, wangjingyi11@huawei.com,
-        lushenming@huawei.com
-Subject: Re: [RFC PATCH 1/3] KVM: arm64: Fix possible memory leak in kvm
- stage2
-Message-ID: <20201130132133.GA24837@willie-the-truck>
-References: <20201130121847.91808-1-wangyanan55@huawei.com>
- <20201130121847.91808-2-wangyanan55@huawei.com>
+        id S1726607AbgK3NXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725298AbgK3NXb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:23:31 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC86C0613D2;
+        Mon, 30 Nov 2020 05:22:51 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id v14so21609753lfo.3;
+        Mon, 30 Nov 2020 05:22:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Udf4EL7k79IQTzHQv/izcaa4PNNrQbAoqpJGLzAXG/M=;
+        b=icinteIM4YPB7xRZSAsL/hXHkGgZYEblrhSh/Z6HY6dbMFdYiM4qAjmt+M/WPghk5F
+         KGhoe1vaxwuT5GMzMr5j0CoUHhcx++IzkIcB/hCjWldXRJkvBmecCuLqPiFUMSaxF6g2
+         D9hj9fA9PlM4ug7pUSZeCHISKFvq2Ei4w0TEdPUOcPeCn9v09T6Gw1n0C018o5ww8OHY
+         /h3KYyZhzQIyHVwAHk8ZDfsmjMZ23FJn3aEVhM55raxjFQSpcHdYi3kXy+1BZg+uE3GN
+         Uc/WmDwUhQFPP5B1Ur2LjTcNC634cmBrk/Eyrc/sFpcLCPqcVH+sFrZzCwgRLRtM6xMe
+         l+0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Udf4EL7k79IQTzHQv/izcaa4PNNrQbAoqpJGLzAXG/M=;
+        b=RPDhl6XL+IQPsp8GC/IdMGqACyPaO47h9h+U7LpqZv6lVjOLOkV6Nzz+mf0vCqHoxY
+         HiLy/LTer8weQ63/08UWefIig1ZymhpJ+SXCGJGKH9q07StTPR8zRJYVsfJGSCwDEq33
+         nk+HtknwqYPOzvkLFU+lVSF8gCkWb96PwoKC+Ld4mxLLKaj8Q3MAa4OPCSbe+d5/6gVd
+         rQZ3J1hHl4hJUE5c6pYdcqtM7bN+9gLiuGjwyIzXIoiYVflb91lzuTtwaRWmbTXuXsr6
+         ZFu9C9R7L11121lhvW8WDP+ka63lFzRkuCdDQ3JRNKzv2EMP02DPYOv7VkaAXXG+/j/D
+         UV+A==
+X-Gm-Message-State: AOAM530s4GAZYuuRTu8ilMbwTLIJpEG1yxBhDVVhDc4bRimaQe9EbUDl
+        GM6L0jGg67SPiymMjnyTlmXUvMoF7O12mJ6SjY4=
+X-Google-Smtp-Source: ABdhPJxSJNmEg+DsZXDfJdG9Djvx2jKaHfDAVxIsDTzWbOF0I9lFsVrpiy8SwFysszJkMOQZa5dGNMHhZEDyeddnodQ=
+X-Received: by 2002:a19:8686:: with SMTP id i128mr9292847lfd.333.1606742569638;
+ Mon, 30 Nov 2020 05:22:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130121847.91808-2-wangyanan55@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201130131406.10925-1-o.rempel@pengutronix.de> <20201130131406.10925-2-o.rempel@pengutronix.de>
+In-Reply-To: <20201130131406.10925-2-o.rempel@pengutronix.de>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 30 Nov 2020 10:22:38 -0300
+Message-ID: <CAOMZO5DM8aToy_PRrY2cW5zbZf0xjfN9H4PrYTy+9Mq0NRii7w@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] ARM: dts: add Protonic MVT board
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 08:18:45PM +0800, Yanan Wang wrote:
-> When installing a new leaf pte onto an invalid ptep, we need to get_page(ptep).
-> When just updating a valid leaf ptep, we shouldn't get_page(ptep).
-> Incorrect page_count of translation tables might lead to memory leak,
-> when unmapping a stage 2 memory range.
+Hi Oleksij,
 
-Did you find this by inspection, or did you hit this in practice? I'd be
-interested to see the backtrace for mapping over an existing mapping.
+On Mon, Nov 30, 2020 at 10:14 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> ---
->  arch/arm64/kvm/hyp/pgtable.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 0271b4a3b9fe..696b6aa83faf 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -186,6 +186,7 @@ static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
->  		return old == pte;
->  
->  	smp_store_release(ptep, pte);
-> +	get_page(virt_to_page(ptep));
+> +&ecspi1 {
+> +       cs-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
 
-This is also used for the hypervisor stage-1 page-table, so I'd prefer to
-leave this function as-is.
-
->  	return true;
->  }
->  
-> @@ -476,6 +477,7 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->  	/* There's an existing valid leaf entry, so perform break-before-make */
->  	kvm_set_invalid_pte(ptep);
->  	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
-> +	put_page(virt_to_page(ptep));
->  	kvm_set_valid_leaf_pte(ptep, phys, data->attr, level);
->  out:
->  	data->phys += granule;
-
-Isn't this hunk alone sufficient to solve the problem?
-
-Will
+Shouldn't this be GPIO_ACTIVE_LOW instead?
