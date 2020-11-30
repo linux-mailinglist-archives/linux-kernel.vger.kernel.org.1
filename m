@@ -2,147 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD732C901C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4179C2C901E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388481AbgK3VdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 16:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387576AbgK3VdL (ORCPT
+        id S1729148AbgK3VjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 16:39:00 -0500
+Received: from out02.mta.xmission.com ([166.70.13.232]:50834 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725995AbgK3Vi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 16:33:11 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E32C0613CF;
-        Mon, 30 Nov 2020 13:32:31 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id n137so11284287pfd.3;
-        Mon, 30 Nov 2020 13:32:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DctpeWixZedWLIe9T1LbBcTwsFUdxzd0r0hcVxTsfr4=;
-        b=fhDgfe13+5vMBwPhR0Nm2sF7yPR7/+YZoRNFjaqMM7xSuS4dxZAZkL8BAxiJPjw7Uz
-         muVv/yv9OoAvarZvE2MaNg7uRQZhilkPFRchY7flcG/cBaJQonzi6nvEYXn7CqYyhmJI
-         5WPQOU73USzJSQGTE7FPg9jZhFYsmHw7dJzYvXElsfHM84oiht/u0v55r0X+o3p1ZwWf
-         OKUk3nR9c41R6ZOrfVOAIjvHuuwXW7SG2vvxjzKoupv9CFkc4mwEFjZEXW0FouVgdoVV
-         x9TNy5PFJt1srUFgIRosrbsEQQInyQYEN028L/Y3WG0UmUnpX4vaMBbeoy5GsdgrN6VY
-         lKbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DctpeWixZedWLIe9T1LbBcTwsFUdxzd0r0hcVxTsfr4=;
-        b=Zlg3ZnJMLlta7BbC3YHMGDcROqn//TFuPqG9sVf5JFxvcrYIPeBhBDhRb21PDpCWyc
-         M/c53GIEg3qTVPM858HxQiAUleYiMwo7a7j1UQcYqsd09uj0obebvxbsCRiJ1Dfy/y9m
-         zIlU9guDIuIuaVYnM6lt7OQ6Sx2qBDJOxA0exmbIK/kR/pLs9KlXe8ohoxP3vbMdY2MS
-         uPogD5hEvIjbAyj17b4zzN0BetJvAQLS4+FuJ+ZAcAKWFFphELP6h3TJur14CSVvBPbp
-         7yVz+qF0e2Z+ahzd6dXCmWmRpRKMj5w/GYm7Bb8Pd3D44bIni3LhAW1HtGB874L2zDiZ
-         KJUA==
-X-Gm-Message-State: AOAM533IdwJz5DvGwghCAyzlQzm6fIf1xxtU1XXDqOEgSzUtXXf8zt9K
-        XSL21tpknBHv8VdY1LfzY1iAm66mTGE=
-X-Google-Smtp-Source: ABdhPJxfDZPbPmlCJKGaCYMq+K75fM2nT/D47wgF9HTC6Hmxau6KgM2AqO9qnbgPZgA1WpXm9fCSIw==
-X-Received: by 2002:a63:c944:: with SMTP id y4mr19792249pgg.435.1606771950226;
-        Mon, 30 Nov 2020 13:32:30 -0800 (PST)
-Received: from [10.230.28.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id i13sm17470708pfo.139.2020.11.30.13.32.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 13:32:29 -0800 (PST)
-Subject: Re: [PATCH v2 2/6] PCI: brcmstb: Add control of EP voltage
- regulator(s)
-To:     Jim Quinlan <james.quinlan@broadcom.com>,
-        linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        broonie@kernel.org, bcm-kernel-feedback-list@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201130211145.3012-1-james.quinlan@broadcom.com>
- <20201130211145.3012-3-james.quinlan@broadcom.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <154a809d-9320-f0a1-45ad-78af0303a9ac@gmail.com>
-Date:   Mon, 30 Nov 2020 13:32:26 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.0
+        Mon, 30 Nov 2020 16:38:59 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kjqsC-001UG6-3z; Mon, 30 Nov 2020 14:38:16 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kjqsB-002aGy-5i; Mon, 30 Nov 2020 14:38:15 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Geoff Levand <geoff@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <87r1on1v62.fsf@x220.int.ebiederm.org>
+        <20201120231441.29911-2-ebiederm@xmission.com>
+        <20201123175052.GA20279@redhat.com>
+        <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com>
+        <87im9vx08i.fsf@x220.int.ebiederm.org>
+        <87pn42r0n7.fsf@x220.int.ebiederm.org>
+        <CAHk-=wi-h8y5MK83DA6Vz2TDSQf4eEadddhWLTT_94bP996=Ug@mail.gmail.com>
+        <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com>
+        <ed83033f-80af-5be0-ecbe-f2bf5c2075e9@infradead.org>
+        <877dqap76p.fsf@x220.int.ebiederm.org>
+        <CAK8P3a0hPG1cTxksTBCJHkAV_=TLZLCi2pZYMk2Dc2-kLzD3rg@mail.gmail.com>
+Date:   Mon, 30 Nov 2020 15:37:45 -0600
+In-Reply-To: <CAK8P3a0hPG1cTxksTBCJHkAV_=TLZLCi2pZYMk2Dc2-kLzD3rg@mail.gmail.com>
+        (Arnd Bergmann's message of "Fri, 27 Nov 2020 21:29:33 +0100")
+Message-ID: <87o8jeh6fq.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20201130211145.3012-3-james.quinlan@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1kjqsB-002aGy-5i;;;mid=<87o8jeh6fq.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/cLPgLNNg/8c6pqCnXbBCnlUkV3ILlp1o=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        XM_B_SpammyWords autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Arnd Bergmann <arnd@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 412 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.8 (0.9%), b_tie_ro: 2.6 (0.6%), parse: 0.71
+        (0.2%), extract_message_metadata: 9 (2.1%), get_uri_detail_list: 1.82
+        (0.4%), tests_pri_-1000: 10 (2.5%), tests_pri_-950: 1.00 (0.2%),
+        tests_pri_-900: 0.82 (0.2%), tests_pri_-90: 65 (15.7%), check_bayes:
+        64 (15.4%), b_tokenize: 7 (1.6%), b_tok_get_all: 9 (2.1%),
+        b_comp_prob: 2.3 (0.5%), b_tok_touch_all: 43 (10.5%), b_finish: 0.66
+        (0.2%), tests_pri_0: 310 (75.1%), check_dkim_signature: 0.39 (0.1%),
+        check_dkim_adsp: 2.2 (0.5%), poll_dns_idle: 0.84 (0.2%), tests_pri_10:
+        2.7 (0.6%), tests_pri_500: 8 (1.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 02/24] exec: Simplify unshare_files
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Arnd Bergmann <arnd@kernel.org> writes:
 
+> On Wed, Nov 25, 2020 at 2:16 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>> > On 11/24/20 12:14 PM, Arnd Bergmann wrote:
+>> >
+>> > There are still PS3-Linux users out there.  They use 'Homebrew' firmware
+>> > released through 'Hacker' forums that allow them to run Linux on
+>> > non-supported systems.  They are generally hobbies who don't post to
+>> > Linux kernel mailing lists.  I get direct inquiries regularly asking
+>> > about how to update to a recent kernel.  One of the things that attract
+>> > them to the PS3 is the Cell processor and either using or programming
+>> > the SPUs.
+>> >
+>> > It is difficult to judge how much use the SPU core dump support gets,
+>> > but if it is not a cause of major problems I feel we should consider
+>> > keeping it.
+>>
+>> I just took a quick look to get a sense how much tool support there is.
+>>
+>> In the gdb tree I found this 2019 commit abf516c6931a ("Remove Cell
+>> Broadband Engine debugging support").  Which basically removes the code
+>> in gdb that made sense of the spu coredumps.
+>
+> Ah, I had not realized this was gone already. The code in gdb for
+> seamlessly debugging programs across CPU and SPU was clearly
+> more complex than the kernel portion for the coredump, so it makes
+> sense this was removed eventually.
+>
+>> I would not say the coredump support is a source major problems, but it
+>> is a challenge to understand.  One of the pieces of code in there that
+>> is necessary to make the coredump support work reliable, a call to
+>> unshare_files, Oleg whole essentially maintains the ptrace and coredump
+>> support did not know why it was there, and it was not at all obvious
+>> when I looked at the code.
+>>
+>> So we are certainly in maintainers loosing hours of time figuring out
+>> what is going on and spending time fixing fuzzer bugs related to the
+>> code.
+>
+> I also spent some amount of time on this code earlier this year Christoph
+> did some refactoring, and we could both have used that time better.
+>
+>> At the minimum I will add a few more comments so people reading the code
+>> can realize why it is there.   Perhaps putting the relevant code behind
+>> a Kconfig so it is only built into the kernel when spufs is present.
+>>
+>> I think we are at a point we we can start planning on removing the
+>> coredump support.  The tools to read it are going away.  None of what is
+>> there is bad, but it is definitely a special case, and it definitely has
+>> a maintenance cost.
+>
+> How about adding a comment in the coredump code so it can get
+> removed the next time someone comes across it during refactoring,
+> or when they find a bug that can't easily be worked around?
 
-On 11/30/2020 1:11 PM, Jim Quinlan wrote:
-> Control of EP regulators by the RC is needed because of the chicken-and-egg
-> situation: although the regulator is "owned" by the EP and would be best
-> handled on its driver, the EP cannot be discovered and probed unless its
-> regulator is already turned on.
-> 
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 38 ++++++++++++++++++++++++++-
->  1 file changed, 37 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> index bea86899bd5d..9d4ac42b3bee 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -23,6 +23,7 @@
->  #include <linux/of_platform.h>
->  #include <linux/pci.h>
->  #include <linux/printk.h>
-> +#include <linux/regulator/consumer.h>
->  #include <linux/reset.h>
->  #include <linux/sizes.h>
->  #include <linux/slab.h>
-> @@ -210,6 +211,10 @@ enum pcie_type {
->  	BCM2711,
->  };
->  
-> +static const char * const ep_regulator_names[] = {
-> +	"vpcie12v", "vpcie3v3", "vpcie1v8", "vpcie0v9",
+Did my proposed patch look ok?
 
-Only if you need to re-spin this patch series, I would be keen on
-putting each string on its own line, that way when adding a subsequent
-regulator name, it is just a matter of an one line d
+> That way there is still a chance of using it where needed, but
+> hopefully it won't waste anyone's time when it gets in the way.
 
-> +};
-> +
->  struct pcie_cfg_data {
->  	const int *offsets;
->  	const enum pcie_type type;
-> @@ -287,8 +292,25 @@ struct brcm_pcie {
->  	u32			hw_rev;
->  	void			(*perst_set)(struct brcm_pcie *pcie, u32 val);
->  	void			(*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
-> +	struct regulator_bulk_data supplies[ARRAY_SIZE(ep_regulator_names)];
->  };
->  
-> +static void brcm_set_regulators(struct brcm_pcie *pcie, bool on)
-> +{
-> +	struct device *dev = pcie->dev;
-> +	int ret;
-> +
-> +	if (on)
-> +		ret = regulator_bulk_enable(ARRAY_SIZE(ep_regulator_names),
-> +					    pcie->supplies);
-> +	else
-> +		ret = regulator_bulk_disable(ARRAY_SIZE(ep_regulator_names),
-> +					     pcie->supplies);
-> +	if (ret)
-> +		dev_err(dev, "failed to %s EP regulators\n",
-> +			on ? "enable" : "disable");
+Sounds good to me.
 
-Should not you propagate the return value to the caller here?
--- 
-Florian
+> If there are no objections, I can also send a patch to remove
+> CONFIG_PPC_CELL_NATIVE, PPC_IBM_CELL_BLADE and
+> everything that depends on those symbols, leaving only the
+> bits needed by ps3 in the arch/powerpc/platforms/cell directory.
+
+That also seems reasonable.  My read of the history suggests that
+code has been out of commission for a decade or so, and not having it to
+trip over (just present in the history) seems very reasonable.
+
+Eric
