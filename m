@@ -2,294 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC222C820E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF8A2C8218
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728660AbgK3KWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:22:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
+        id S1728065AbgK3K0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:26:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727571AbgK3KWZ (ORCPT
+        with ESMTP id S1726498AbgK3K0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:22:25 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A3DC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:21:44 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a6so4316171wmc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:21:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fClK9dYPgSK1URS64wSbMulejn6T5yvpN8jKUjDOmSs=;
-        b=VDQYTXZA9JFPGhZ+UKdSNhvFmqlc/Lc5kkB3FkebjR6HzNooh88aluRs6YSmHfsBcI
-         Kgxj1m8crgwwpPEWkBssWVhXvuL54FcDlf/uu65aH9JbMQ7Zdk7ObiptMwd+/TcbfX6v
-         cHD1y9SFGO1h3i/lY4cKPEv8xUiFGYTnRhd0Vhvtl6JZ0WzYrGWYHbcvgUk75FtfJZU8
-         0m4QsIF7NpfLKUdoiwnYdjV2s/PV75ReEQOIEmZUvJOFBFfS5mqIBglFGsQP51cMOO9o
-         AoXAwFIiwF2AOyfdXvfs7jy3cq5K2R0luMhl+t32By/ye7m0I06pkouc9hgDpFL4b/4M
-         hwtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fClK9dYPgSK1URS64wSbMulejn6T5yvpN8jKUjDOmSs=;
-        b=R1nGZF4TFps14+S6ijiVNSS5PoknqxO1DA8VDPF0wtA5HCFdAb2y+2BrUnV/D1fiyx
-         xkqsTRR6UQglgfGihcB/5gcfqP/9ggkssn/FTYQjGYqhBx1Z/iLnqPt9FXgSw2svxUnd
-         hOVIcyLHNNX/IqQwI0s03atpJkAhcoBeUxyEqC7irvLTUb/b2ePtNGHVySo9hVo20fjD
-         7B+D6Gn9cZPA0HMzBYXrEfPZ+nClbbUKQFxWBI4ASdogiEsR8NayBhVmAMTC/3aR0Vsp
-         fNAlboZls05Zxk2xjrlJeIT8aOqA0xa2LCXyaB630eUB3sr7LbaQwMyqHhZeMPGOOIDh
-         Lopg==
-X-Gm-Message-State: AOAM533fVzPS2tDsdWAJ1/eblTyWBiCzxFO/aWp7FRdioT9Q4q3KdtCa
-        2/YczvhdXAlN9aAHi0AnFDcm1vEgJH6JizobHq+PHQ==
-X-Google-Smtp-Source: ABdhPJzib+BpTbU31xlUoWNFiPqoHFb5TY4jwtgOrWeTXAM7S/LG4dEzhQ2uSNYnr4smOgLLxmVzcrTTZd50LNIwqzU=
-X-Received: by 2002:a1c:1fc2:: with SMTP id f185mr4115261wmf.134.1606731703433;
- Mon, 30 Nov 2020 02:21:43 -0800 (PST)
+        Mon, 30 Nov 2020 05:26:40 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB9BC0613CF;
+        Mon, 30 Nov 2020 02:26:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=vEW1++ZGtkTahDMwrYyBH6nvIhUYOGLhVMOksh4ZP+I=; b=mQTfXfm4g4w+luNlPlFzp1/Ri
+        EqaXltUc9BwMansy2Kg861bA+07iAU1sH5E8mWceS0ed/5IlK+OBfDaRLO6fkisGFbc3NbusPs+w1
+        35iux4THBzPdFVgQAvG1Z5IOjgR8DI2cUHoDl3pJoD7r1rRE0JD0kRpU12bLulgPxgNftbEdoKvA5
+        ul9E7CUIF8eL2Fg95KlZP16IUQG4ORg/Mxz8cIoGFKkL8WJHuzq5iUwHInVyw85X7h8x2zMVq/gkZ
+        uePwUpFzk5IoSJUA6XrPbUKd8d/r/kOBiJzurPjNXY2vReS4gSpAI56jQRbUhUge3X6T4sgGnNA3H
+        tTZoVp79Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37950)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kjgNZ-0006Zb-KR; Mon, 30 Nov 2020 10:25:57 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kjgNY-0004vj-CH; Mon, 30 Nov 2020 10:25:56 +0000
+Date:   Mon, 30 Nov 2020 10:25:56 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: marvell: replace __phy_modify()
+Message-ID: <20201130102556.GU1551@shell.armlinux.org.uk>
+References: <1606731399-8772-1-git-send-email-yejune.deng@gmail.com>
 MIME-Version: 1.0
-References: <20201109113240.3733496-1-anup.patel@wdc.com> <20201109113240.3733496-11-anup.patel@wdc.com>
- <186ade3c372b44ef8ca1830da8c5002b@huawei.com> <CAAhSdy1sx_oLGGoGjzr5ZrPStwCyFF4mBDEBw5zpsbSGcCRJjg@mail.gmail.com>
-In-Reply-To: <CAAhSdy1sx_oLGGoGjzr5ZrPStwCyFF4mBDEBw5zpsbSGcCRJjg@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 30 Nov 2020 15:51:31 +0530
-Message-ID: <CAAhSdy13nQqzfK-Voz-aBtGzEfjw_0V1fOrydijc3FLWy_W4nw@mail.gmail.com>
-Subject: Re: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table programming
-To:     Jiangyifei <jiangyifei@huawei.com>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>,
-        "Wubin (H)" <wu.wubin@huawei.com>,
-        "dengkai (A)" <dengkai1@huawei.com>,
-        yinyipeng <yinyipeng1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606731399-8772-1-git-send-email-yejune.deng@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 2:56 PM Anup Patel <anup@brainfault.org> wrote:
->
-> On Mon, Nov 16, 2020 at 2:59 PM Jiangyifei <jiangyifei@huawei.com> wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Anup Patel [mailto:anup.patel@wdc.com]
-> > > Sent: Monday, November 9, 2020 7:33 PM
-> > > To: Palmer Dabbelt <palmer@dabbelt.com>; Palmer Dabbelt
-> > > <palmerdabbelt@google.com>; Paul Walmsley <paul.walmsley@sifive.com>;
-> > > Albert Ou <aou@eecs.berkeley.edu>; Paolo Bonzini <pbonzini@redhat.com>
-> > > Cc: Alexander Graf <graf@amazon.com>; Atish Patra <atish.patra@wdc.com>;
-> > > Alistair Francis <Alistair.Francis@wdc.com>; Damien Le Moal
-> > > <damien.lemoal@wdc.com>; Anup Patel <anup@brainfault.org>;
-> > > kvm@vger.kernel.org; kvm-riscv@lists.infradead.org;
-> > > linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Anup Patel
-> > > <anup.patel@wdc.com>; Jiangyifei <jiangyifei@huawei.com>
-> > > Subject: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table
-> > > programming
-> > >
-> > > This patch implements all required functions for programming the stage2 page
-> > > table for each Guest/VM.
-> > >
-> > > At high-level, the flow of stage2 related functions is similar from KVM
-> > > ARM/ARM64 implementation but the stage2 page table format is quite
-> > > different for KVM RISC-V.
-> > >
-> > > [jiangyifei: stage2 dirty log support]
-> > > Signed-off-by: Yifei Jiang <jiangyifei@huawei.com>
-> > > Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> > > Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-> > > Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> > > ---
-> > >  arch/riscv/include/asm/kvm_host.h     |  12 +
-> > >  arch/riscv/include/asm/pgtable-bits.h |   1 +
-> > >  arch/riscv/kvm/Kconfig                |   1 +
-> > >  arch/riscv/kvm/main.c                 |  19 +
-> > >  arch/riscv/kvm/mmu.c                  | 649
-> > > +++++++++++++++++++++++++-
-> > >  arch/riscv/kvm/vm.c                   |   6 -
-> > >  6 files changed, 672 insertions(+), 16 deletions(-)
-> > >
-> >
-> > ......
-> >
-> > >
-> > >  int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu, @@ -69,27 +562,163 @@
-> > > int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
-> > >                        gpa_t gpa, unsigned long hva,
-> > >                        bool writeable, bool is_write)
-> > >  {
-> > > -     /* TODO: */
-> > > -     return 0;
-> > > +     int ret;
-> > > +     kvm_pfn_t hfn;
-> > > +     short vma_pageshift;
-> > > +     gfn_t gfn = gpa >> PAGE_SHIFT;
-> > > +     struct vm_area_struct *vma;
-> > > +     struct kvm *kvm = vcpu->kvm;
-> > > +     struct kvm_mmu_page_cache *pcache = &vcpu->arch.mmu_page_cache;
-> > > +     bool logging = (memslot->dirty_bitmap &&
-> > > +                     !(memslot->flags & KVM_MEM_READONLY)) ? true : false;
-> > > +     unsigned long vma_pagesize;
-> > > +
-> > > +     mmap_read_lock(current->mm);
-> > > +
-> > > +     vma = find_vma_intersection(current->mm, hva, hva + 1);
-> > > +     if (unlikely(!vma)) {
-> > > +             kvm_err("Failed to find VMA for hva 0x%lx\n", hva);
-> > > +             mmap_read_unlock(current->mm);
-> > > +             return -EFAULT;
-> > > +     }
-> > > +
-> > > +     if (is_vm_hugetlb_page(vma))
-> > > +             vma_pageshift = huge_page_shift(hstate_vma(vma));
-> > > +     else
-> > > +             vma_pageshift = PAGE_SHIFT;
-> > > +     vma_pagesize = 1ULL << vma_pageshift;
-> > > +     if (logging || (vma->vm_flags & VM_PFNMAP))
-> > > +             vma_pagesize = PAGE_SIZE;
-> > > +
-> > > +     if (vma_pagesize == PMD_SIZE || vma_pagesize == PGDIR_SIZE)
-> > > +             gfn = (gpa & huge_page_mask(hstate_vma(vma))) >> PAGE_SHIFT;
-> > > +
-> > > +     mmap_read_unlock(current->mm);
-> > > +
-> > > +     if (vma_pagesize != PGDIR_SIZE &&
-> > > +         vma_pagesize != PMD_SIZE &&
-> > > +         vma_pagesize != PAGE_SIZE) {
-> > > +             kvm_err("Invalid VMA page size 0x%lx\n", vma_pagesize);
-> > > +             return -EFAULT;
-> > > +     }
-> > > +
-> > > +     /* We need minimum second+third level pages */
-> > > +     ret = stage2_cache_topup(pcache, stage2_pgd_levels,
-> > > +                              KVM_MMU_PAGE_CACHE_NR_OBJS);
-> > > +     if (ret) {
-> > > +             kvm_err("Failed to topup stage2 cache\n");
-> > > +             return ret;
-> > > +     }
-> > > +
-> > > +     hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
-> > > +     if (hfn == KVM_PFN_ERR_HWPOISON) {
-> > > +             send_sig_mceerr(BUS_MCEERR_AR, (void __user *)hva,
-> > > +                             vma_pageshift, current);
-> > > +             return 0;
-> > > +     }
-> > > +     if (is_error_noslot_pfn(hfn))
-> > > +             return -EFAULT;
-> > > +
-> > > +     /*
-> > > +      * If logging is active then we allow writable pages only
-> > > +      * for write faults.
-> > > +      */
-> > > +     if (logging && !is_write)
-> > > +             writeable = false;
-> > > +
-> > > +     spin_lock(&kvm->mmu_lock);
-> > > +
-> > > +     if (writeable) {
-> >
-> > Hi Anup,
-> >
-> > What is the purpose of "writable = !memslot_is_readonly(slot)" in this series?
->
-> Where ? I don't see this line in any of the patches.
->
-> >
-> > When mapping the HVA to HPA above, it doesn't know that the PTE writeable of stage2 is "!memslot_is_readonly(slot)".
-> > This may causes the difference between the writability of HVA->HPA and GPA->HPA.
-> > For example, GPA->HPA is writeable, but HVA->HPA is not writeable.
->
-> Yes, this is possible particularly when Host kernel is updating writability
-> of HVA->HPA mappings for swapping in/out pages.
->
-> >
-> > Is it better that the writability of HVA->HPA is also determined by whether the memslot is readonly in this change?
-> > Like this:
-> > -    hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
-> > +    hfn = gfn_to_pfn_prot(kvm, gfn, writeable, NULL);
->
-> The gfn_to_pfn_prot() needs to know what type of fault we
-> got (i.e read/write fault). Rest of the information (such as whether
-> slot is writable or not) is already available to gfn_to_pfn_prot().
->
-> The question here is should we pass "&writeable" or NULL as
-> last parameter to gfn_to_pfn_prot(). The recent JUMP label
-> support in Linux RISC-V causes problem on HW where PTE
-> 'A' and 'D' bits are not updated by HW so I have to change
-> last parameter of gfn_to_pfn_prot() from "&writeable" to NULL.
->
-> I am still investigating this.
+On Mon, Nov 30, 2020 at 06:16:39PM +0800, Yejune Deng wrote:
+> a set of phy_set_bits() looks more neater
+> 
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
 
-This turned-out to be a bug in Spike which is not fixed.
+Sorry, but NAK. You seem to be doing a mechanical code change without
+first understanding the code, as the patch shows no sign of an
+understanding of the difference between phy_modify() and __phy_modify().
+This means you are introducing new bugs with this change.
 
-I will include following change in v16 patch series:
+Please investigate the differences between the two variants of
+phy_modify() and post a more correct patch.
 
+Thanks.
 
-diff --git a/arch/riscv/include/asm/kvm_host.h
-b/arch/riscv/include/asm/kvm_host.h
-index 241030956d47..dc2666b4180b 100644
---- a/arch/riscv/include/asm/kvm_host.h
-+++ b/arch/riscv/include/asm/kvm_host.h
-@@ -232,8 +232,7 @@ void __kvm_riscv_hfence_gvma_all(void);
+> ---
+>  drivers/net/phy/marvell.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
+> index 587930a..f402e7f 100644
+> --- a/drivers/net/phy/marvell.c
+> +++ b/drivers/net/phy/marvell.c
+> @@ -1132,8 +1132,8 @@ static int m88e1510_config_init(struct phy_device *phydev)
+>  			return err;
+>  
+>  		/* PHY reset is necessary after changing MODE[2:0] */
+> -		err = phy_modify(phydev, MII_88E1510_GEN_CTRL_REG_1, 0,
+> -				 MII_88E1510_GEN_CTRL_REG_1_RESET);
+> +		err = phy_set_bits(phydev, MII_88E1510_GEN_CTRL_REG_1,
+> +				   MII_88E1510_GEN_CTRL_REG_1_RESET);
+>  		if (err < 0)
+>  			return err;
+>  
+> @@ -1725,7 +1725,7 @@ static int m88e1318_set_wol(struct phy_device *phydev,
+>  			__phy_read(phydev, MII_M1011_IEVENT);
+>  
+>  		/* Enable the WOL interrupt */
+> -		err = __phy_modify(phydev, MII_88E1318S_PHY_CSIER, 0,
+> +		err = phy_set_bits(phydev, MII_88E1318S_PHY_CSIER,
+>  				   MII_88E1318S_PHY_CSIER_WOL_EIE);
+>  		if (err < 0)
+>  			goto error;
+> @@ -1735,10 +1735,10 @@ static int m88e1318_set_wol(struct phy_device *phydev,
+>  			goto error;
+>  
+>  		/* Setup LED[2] as interrupt pin (active low) */
+> -		err = __phy_modify(phydev, MII_88E1318S_PHY_LED_TCR,
+> -				   MII_88E1318S_PHY_LED_TCR_FORCE_INT,
+> -				   MII_88E1318S_PHY_LED_TCR_INTn_ENABLE |
+> -				   MII_88E1318S_PHY_LED_TCR_INT_ACTIVE_LOW);
+> +		err = phy_modify(phydev, MII_88E1318S_PHY_LED_TCR,
+> +				 MII_88E1318S_PHY_LED_TCR_FORCE_INT,
+> +				 MII_88E1318S_PHY_LED_TCR_INTn_ENABLE |
+> +				 MII_88E1318S_PHY_LED_TCR_INT_ACTIVE_LOW);
+>  		if (err < 0)
+>  			goto error;
+>  
+> @@ -1764,7 +1764,7 @@ static int m88e1318_set_wol(struct phy_device *phydev,
+>  			goto error;
+>  
+>  		/* Clear WOL status and enable magic packet matching */
+> -		err = __phy_modify(phydev, MII_88E1318S_PHY_WOL_CTRL, 0,
+> +		err = phy_set_bits(phydev, MII_88E1318S_PHY_WOL_CTRL,
+>  				   MII_88E1318S_PHY_WOL_CTRL_CLEAR_WOL_STATUS |
+>  				   MII_88E1318S_PHY_WOL_CTRL_MAGIC_PACKET_MATCH_ENABLE);
+>  		if (err < 0)
+> @@ -1775,9 +1775,9 @@ static int m88e1318_set_wol(struct phy_device *phydev,
+>  			goto error;
+>  
+>  		/* Clear WOL status and disable magic packet matching */
+> -		err = __phy_modify(phydev, MII_88E1318S_PHY_WOL_CTRL,
+> -				   MII_88E1318S_PHY_WOL_CTRL_MAGIC_PACKET_MATCH_ENABLE,
+> -				   MII_88E1318S_PHY_WOL_CTRL_CLEAR_WOL_STATUS);
+> +		err = phy_modify(phydev, MII_88E1318S_PHY_WOL_CTRL,
+> +				 MII_88E1318S_PHY_WOL_CTRL_MAGIC_PACKET_MATCH_ENABLE,
+> +				 MII_88E1318S_PHY_WOL_CTRL_CLEAR_WOL_STATUS);
+>  		if (err < 0)
+>  			goto error;
+>  	}
+> @@ -1995,7 +1995,7 @@ static int marvell_cable_test_start_common(struct phy_device *phydev)
+>  		return bmsr;
+>  
+>  	if (bmcr & BMCR_ANENABLE) {
+> -		ret =  phy_modify(phydev, MII_BMCR, BMCR_ANENABLE, 0);
+> +		ret =  phy_clear_bits(phydev, MII_BMCR, BMCR_ANENABLE);
+>  		if (ret < 0)
+>  			return ret;
+>  		ret = genphy_soft_reset(phydev);
+> -- 
+> 1.9.1
+> 
+> 
 
- int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
-              struct kvm_memory_slot *memslot,
--             gpa_t gpa, unsigned long hva,
--             bool writeable, bool is_write);
-+             gpa_t gpa, unsigned long hva, bool is_write);
- void kvm_riscv_stage2_flush_cache(struct kvm_vcpu *vcpu);
- int kvm_riscv_stage2_alloc_pgd(struct kvm *kvm);
- void kvm_riscv_stage2_free_pgd(struct kvm *kvm);
-diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
-index fcaeadc9b34d..56fda9ef70fd 100644
---- a/arch/riscv/kvm/mmu.c
-+++ b/arch/riscv/kvm/mmu.c
-@@ -689,11 +689,11 @@ int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
-
- int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
-              struct kvm_memory_slot *memslot,
--             gpa_t gpa, unsigned long hva,
--             bool writeable, bool is_write)
-+             gpa_t gpa, unsigned long hva, bool is_write)
- {
-     int ret;
-     kvm_pfn_t hfn;
-+    bool writeable;
-     short vma_pageshift;
-     gfn_t gfn = gpa >> PAGE_SHIFT;
-     struct vm_area_struct *vma;
-@@ -742,7 +742,7 @@ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
-
-     mmu_seq = kvm->mmu_notifier_seq;
-
--    hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
-+    hfn = gfn_to_pfn_prot(kvm, gfn, is_write, &writeable);
-     if (hfn == KVM_PFN_ERR_HWPOISON) {
-         send_sig_mceerr(BUS_MCEERR_AR, (void __user *)hva,
-                 vma_pageshift, current);
-diff --git a/arch/riscv/kvm/vcpu_exit.c b/arch/riscv/kvm/vcpu_exit.c
-index f054406792a6..058cfa168abe 100644
---- a/arch/riscv/kvm/vcpu_exit.c
-+++ b/arch/riscv/kvm/vcpu_exit.c
-@@ -445,7 +445,7 @@ static int stage2_page_fault(struct kvm_vcpu
-*vcpu, struct kvm_run *run,
-         };
-     }
-
--    ret = kvm_riscv_stage2_map(vcpu, memslot, fault_addr, hva, writeable,
-+    ret = kvm_riscv_stage2_map(vcpu, memslot, fault_addr, hva,
-         (trap->scause == EXC_STORE_GUEST_PAGE_FAULT) ? true : false);
-     if (ret < 0)
-         return ret;
-
-Regards,
-Anup
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
