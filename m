@@ -2,81 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F2C2C8626
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02732C862B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725929AbgK3ODF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:03:05 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:45810 "EHLO mail.skyhub.de"
+        id S1726188AbgK3OGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:06:07 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:57300 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726935AbgK3ODE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:03:04 -0500
-Received: from zn.tnic (p200300ec2f0c0400b0063e9f0046aa3d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:400:b006:3e9f:46:aa3d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 749601EC0473;
-        Mon, 30 Nov 2020 15:02:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606744943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=hbVilBsYbgMVMYEltX7p8R2H84M0rXfY7mrsu4hQtgI=;
-        b=pIF6MUQHFwCKW2n6rOdNkhMQyndiabB32fJyFcn+0FW1CFAjOmX6YFky3LtrZgx/ie50Xv
-        2T5kb+Dwwo1kwQzD6h5aFBAZDZzDe6PX5jsUhCKCJ3ad9/dQkjbulWyzCej0ALyOFG+UDN
-        +sSWNUD1BXc5TjEQYSHliKdftXH/loU=
-Date:   Mon, 30 Nov 2020 15:02:24 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Punit Agrawal <punitagrawal@gmail.com>
-Cc:     rjw@rjwysocki.net, wei.huang2@amd.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [RFC PATCH 4/4] cpufreq: acpi-cpufreq: Use identifiers for AMD
- processor family
-Message-ID: <20201130140224.GD6019@zn.tnic>
-References: <20201125144847.3920-1-punitagrawal@gmail.com>
- <20201125144847.3920-5-punitagrawal@gmail.com>
+        id S1725859AbgK3OGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 09:06:07 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kjjno-009Vq6-RZ; Mon, 30 Nov 2020 15:05:16 +0100
+Date:   Mon, 30 Nov 2020 15:05:16 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 1/3] dt-bindings: net: sparx5: Add sparx5-switch
+ bindings
+Message-ID: <20201130140516.GC2073444@lunn.ch>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-2-steen.hegelund@microchip.com>
+ <20201127170052.GV2073444@lunn.ch>
+ <20201130130934.o47mdjiqidtznm2t@mchp-dev-shegelun>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201125144847.3920-5-punitagrawal@gmail.com>
+In-Reply-To: <20201130130934.o47mdjiqidtznm2t@mchp-dev-shegelun>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 11:48:47PM +0900, Punit Agrawal wrote:
-> Replace the raw values for AMD processor family with recently
-> introduced identifier macros to improve code readability and
-> maintainability.
+On Mon, Nov 30, 2020 at 02:09:34PM +0100, Steen Hegelund wrote:
+> On 27.11.2020 18:00, Andrew Lunn wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > > +  reg-names:
+> > > +    minItems: 153
+> > > +    items:
+> > > +      - const: dev2g5_0
+> > > +      - const: dev5g_0
+> > > +      - const: pcs5g_br_0
+> > > +      - const: dev2g5_1
+> > > +      - const: dev5g_1
+> > ...
+> > > +      - const: ana_ac
+> > > +      - const: vop
+> > 
+> > > +    switch: switch@600000000 {
+> > > +      compatible = "microchip,sparx5-switch";
+> > > +      reg = <0x10004000 0x4000>, /* dev2g5_0 */
+> > > +        <0x10008000 0x4000>, /* dev5g_0 */
+> > > +        <0x1000c000 0x4000>, /* pcs5g_br_0 */
+> > > +        <0x10010000 0x4000>, /* dev2g5_1 */
+> > > +        <0x10014000 0x4000>, /* dev5g_1 */
+> > 
+> > ...
+> > 
+> > > +        <0x11800000 0x100000>, /* ana_l2 */
+> > > +        <0x11900000 0x100000>, /* ana_ac */
+> > > +        <0x11a00000 0x100000>; /* vop */
+> > 
+> > This is a pretty unusual binding.
+> > 
+> > Why is it not
+> > 
+> > reg = <0x10004000 0x1af8000>
+> > 
+> > and the driver can then break up the memory into its sub ranges?
+> > 
+> >    Andrew
+> Hi Andrew,
 > 
-> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-> ---
->  drivers/cpufreq/acpi-cpufreq.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-> index 29f1cd93541e..d8b8300ae9e0 100644
-> --- a/drivers/cpufreq/acpi-cpufreq.c
-> +++ b/drivers/cpufreq/acpi-cpufreq.c
-> @@ -202,8 +202,8 @@ static int override_acpi_psd(unsigned int cpu_id)
->  		 * CPU's before Zen3 (except some Zen2) need the
->  		 * override.
->  		 */
-> -		return (c->x86 < 0x19) &&
-> -			!(c->x86 == 0x17 && c->x86_model == 0x60 &&
-> +		return (c->x86 < AMD_FAM_ZEN3) &&
-> +			!(c->x86 == AMD_FAM_ZEN && c->x86_model == 0x60 &&
+> Since the targets used by the driver is not always in the natural
+> address order (e.g. the dev2g5_x targets), I thought it best to let the DT
+> take care of this since this cannot be probed.  I am aware that this causes
+> extra mappings compared to the one-range strategy, but this layout seems more
+> transparent to me, also when mapped over PCIe.
 
-This is what I mean - that's Zen2 as the comment above says so having
+The question is, do you have a device tree usage for this? Are there
+devices in the family which have the regions in a different order?
 
-		c->x86 == AMD_FAM_ZEN
+You can easily move this table into the driver, and let the driver
+break the region up. That would be normal.
 
-is not enough. And you have a comment above it stating which CPUs are
-matched here so I'm not sure those family defines make it any better...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+      Andrew
