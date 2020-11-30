@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1AE2C8323
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D29A52C8326
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728851AbgK3LYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:24:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
+        id S1728989AbgK3LYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:24:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728544AbgK3LYb (ORCPT
+        with ESMTP id S1728919AbgK3LYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:24:31 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3A2C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:23:50 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id b12so1176299pjl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:23:50 -0800 (PST)
+        Mon, 30 Nov 2020 06:24:40 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDF1C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:23:54 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id k5so6309845plt.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:23:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5KQEYcp6l6dBFn1raevTr29TeoPJz8nJ6f6yY9EnMeE=;
-        b=c3Y5DGTqRSegKH/Wo4ABWzvfq7RxsnyYIx8B7v8xobbvKb66SB8rBO0w8hXYuKkItB
-         muDZA+nshAnhkHJmWg44802W6iE8REMKvEIC4SzIquVSP6nR+9jMPm+iRMuP2hAiXIEe
-         uPD/iILXOc3Ey5btuRWXZr9WjbVrhisMoUp3g=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WEVKA+HKdskJpksOSQtSWPJ1drGbAXfjj0S4n2wVczE=;
+        b=bs1mdREzFyLIQikrdUPE/oVw222lxDB7SYnwYfU/Gux2rfxV6uvaTxwZ/3gZ0OHkRm
+         l9sEiXfPI7oPYYsVJRAhBluJExv+kLrLD7UKvde+iwEGoh6y16+kobTOFX5h61eVX6Ua
+         Ei0zkOaIczpsz2kSL+0sUhylyePaDG8BwbSSs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5KQEYcp6l6dBFn1raevTr29TeoPJz8nJ6f6yY9EnMeE=;
-        b=UUyirCpNV/lcuYUG3bKuTS5Fa45QlP4uJLHccGxLFRYE+ajqSrzKsjR1g6/mJJHqWA
-         pX7jWHXZaBiLXD8slkFuIOReyxQNqD7hbgg7JyK+S9Z+tggG+i57vv0H+hFS7s9Onzsy
-         KdMqi22lUHAU8xWf66N36ScSzkcyOu2L2ij60EF/6YI/FSDrHUureq6d2tQU+5xjubny
-         xVFM2LeUp8K3RdPoj1I41aD5L+WsZ/g8fq6Udo77SW3Qs6e4zXZwFhKGkp6Zy4UERGUn
-         QfnDXQeOUQuCndisT9B19Cdm8lOcHb/1VlRRtXr5v8DCfWOa6hVQnGkTz4V83R2Pc0LD
-         W0MA==
-X-Gm-Message-State: AOAM533IYUTRB31PNgVG7WQY/9a/klAaXTbrHsqWCDBkDIV9I8gTGf7G
-        2JIacRwek9ywF1M5aj22z+86PWcskZj11BOk
-X-Google-Smtp-Source: ABdhPJzgaq+7GVK8vXDvTehlFsfhsh/zRT+j1VOIpCOeuDHv3wSCATz00rLvomKzjQP3aybSXjjEBA==
-X-Received: by 2002:a17:902:a5c1:b029:d8:d387:3c23 with SMTP id t1-20020a170902a5c1b02900d8d3873c23mr18245054plq.22.1606735430157;
-        Mon, 30 Nov 2020 03:23:50 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WEVKA+HKdskJpksOSQtSWPJ1drGbAXfjj0S4n2wVczE=;
+        b=dOxSwTOxH4y7ApZhYlf0wpuHcyTAsZT4RJObgZTwc6fAyt0Ew8qxKlusKCIVvijKum
+         a5G/Xzrplx4gle4uvB8X9Glnn8M+Rdm2aeztDRCIrs7nON7e1khjzwpU4ODyUDeDXFN1
+         0dwqI/mrQMHKcC2d6hgiFZSUsvT5MBNUdHJsF17yCwJV8yzUIgDnsoW9dd6IgdNqxUA0
+         c7en5hq7WiS96NIX4YWRSmafEYDt2hdWCEEzlPB1sfVc9tgeGheKNIcbNz4cXJ/Y/4o5
+         hYGV81D16PqDRrDbpoUO6o91oOJTeJgpu8WhmYg8lBcx7G5+6uR7A9aAjshCokBHyBGl
+         8dEA==
+X-Gm-Message-State: AOAM530m+sgg1/2sz8u9Lg0imrXfb8lLVCRzR5fPRbl4baUAfTArHonA
+        eB73AIyhwVyG8VwqpJlR/hOIDw==
+X-Google-Smtp-Source: ABdhPJzDLLIAlgbORQPGdQ9g2N15Uj6+pFoGcZNf89SphLCmDs6yQKHVmny4vK97sYnD+LR3eN4Cfw==
+X-Received: by 2002:a17:90b:1b43:: with SMTP id nv3mr26507364pjb.67.1606735434261;
+        Mon, 30 Nov 2020 03:23:54 -0800 (PST)
 Received: from localhost.localdomain ([2405:201:c00a:a884:741b:45e2:5211:48e3])
-        by smtp.gmail.com with ESMTPSA id d19sm22438326pjs.0.2020.11.30.03.23.46
+        by smtp.gmail.com with ESMTPSA id d19sm22438326pjs.0.2020.11.30.03.23.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 03:23:49 -0800 (PST)
+        Mon, 30 Nov 2020 03:23:53 -0800 (PST)
 From:   Jagan Teki <jagan@amarulasolutions.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
@@ -52,241 +52,590 @@ To:     Rob Herring <robh+dt@kernel.org>,
 Cc:     Troy Kisky <troy.kisky@boundarydevices.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH 1/2] dt-bindings: regulator: Add pf8x00 regulator bindings
-Date:   Mon, 30 Nov 2020 16:53:28 +0530
-Message-Id: <20201130112329.104614-1-jagan@amarulasolutions.com>
+Subject: [PATCH 2/2] regulator: Add NXP PF8X00 regulator driver
+Date:   Mon, 30 Nov 2020 16:53:29 +0530
+Message-Id: <20201130112329.104614-2-jagan@amarulasolutions.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201130112329.104614-1-jagan@amarulasolutions.com>
+References: <20201130112329.104614-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add NXP PF8100/PF8121A/PF8200 regulators bindings.
+Add NXP PF8100/PF8121A/PF8200 regulator driver.
 
+PF8100/PF8121A/PF8200 is PMIC designed for highperformance
+consumer applications. It features seven high efficiency buck,
+four linear and one vsnvs regulators.
+
+Tested in Engicam i.Core MX8M Mini SOM platform boards.
+
+Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
 Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 ---
- .../regulator/nxp,pf8x00-regulator.yaml       | 211 ++++++++++++++++++
- 1 file changed, 211 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+Note: driver referenced from nxp sources, so I kept the initial 
+author and licence as it is. any comments on this regard would
+appreciated?
 
-diff --git a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+ MAINTAINERS                          |   6 +
+ drivers/regulator/Kconfig            |   8 +
+ drivers/regulator/Makefile           |   1 +
+ drivers/regulator/pf8x00-regulator.c | 496 +++++++++++++++++++++++++++
+ 4 files changed, 511 insertions(+)
+ create mode 100644 drivers/regulator/pf8x00-regulator.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6d24bd30b99e..e9d79df57278 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12672,6 +12672,12 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/display/imx/nxp,imx8mq-dcss.yaml
+ F:	drivers/gpu/drm/imx/dcss/
+ 
++NXP PF8100/PF8121A/PF8200 PMIC REGULATOR DEVICE DRIVER
++M:	Jagan Teki <jagan@amarulasolutions.com>
++S:	Maintained
++F:	Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
++F:	drivers/regulator/pf8x00-regulator.c
++
+ NXP PTN5150A CC LOGIC AND EXTCON DRIVER
+ M:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	linux-kernel@vger.kernel.org
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index ca908bd6999b..88b27c25c476 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -812,6 +812,14 @@ config REGULATOR_PCF50633
+ 	 Say Y here to support the voltage regulators and converters
+ 	 on PCF50633
+ 
++config REGULATOR_PF8X00
++	tristate "NXP PF8100/PF8121A/PF8200 regulator driver"
++	depends on I2C && OF
++	select REGMAP_I2C
++	help
++	  Say y here to support the regulators found on the NXP
++	  PF8100/PF8121A/PF8200 PMIC.
++
+ config REGULATOR_PFUZE100
+ 	tristate "Freescale PFUZE100/200/3000/3001 regulator driver"
+ 	depends on I2C
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 4e5a06f82de6..680e539f6579 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -102,6 +102,7 @@ obj-$(CONFIG_REGULATOR_QCOM_SPMI) += qcom_spmi-regulator.o
+ obj-$(CONFIG_REGULATOR_QCOM_USB_VBUS) += qcom_usb_vbus-regulator.o
+ obj-$(CONFIG_REGULATOR_PALMAS) += palmas-regulator.o
+ obj-$(CONFIG_REGULATOR_PCA9450) += pca9450-regulator.o
++obj-$(CONFIG_REGULATOR_PF8X00) += pf8x00-regulator.o
+ obj-$(CONFIG_REGULATOR_PFUZE100) += pfuze100-regulator.o
+ obj-$(CONFIG_REGULATOR_PV88060) += pv88060-regulator.o
+ obj-$(CONFIG_REGULATOR_PV88080) += pv88080-regulator.o
+diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
 new file mode 100644
-index 000000000000..a6c259ce9785
+index 000000000000..308c27fa6ea8
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-@@ -0,0 +1,211 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/nxp,pf8x00-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/regulator/pf8x00-regulator.c
+@@ -0,0 +1,496 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2017 NXP
++ * Copyright (C) 2019 Boundary Devices
++ * Copyright (C) 2020 Amarula Solutions(India)
++ */
 +
-+title: NXP PF8100/PF8121A/PF8200 PMIC regulators
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/regulator/driver.h>
++#include <linux/regulator/machine.h>
 +
-+maintainers:
-+  - Jagan Teki <jagan@amarulasolutions.com>
-+  - Troy Kisky <troy.kisky@boundarydevices.com>
++/* registers */
++#define PF8X00_DEVICEID			0x00
++#define PF8X00_REVID			0x01
++#define PF8X00_EMREV			0x02
++#define PF8X00_PROGID			0x03
++#define PF8X00_IMS_INT			0x04
++#define PF8X00_IMS_THERM		0x07
++#define PF8X00_SW_MODE_INT		0x0a
++#define PF8X00_SW_MODE_MASK		0x0b
++#define PF8X00_IMS_SW_ILIM		0x12
++#define PF8X00_IMS_LDO_ILIM		0x15
++#define PF8X00_IMS_SW_UV		0x18
++#define PF8X00_IMS_SW_OV		0x1b
++#define PF8X00_IMS_LDO_UV		0x1e
++#define PF8X00_IMS_LDO_OV		0x21
++#define PF8X00_IMS_PWRON		0x24
++#define PF8X00_SYS_INT			0x27
++#define PF8X00_HARD_FAULT		0x29
++#define PF8X00_FSOB_FLAGS		0x2a
++#define PF8X00_FSOB_SELECT		0x2b
++#define PF8X00_ABIST_OV1		0x2c
++#define PF8X00_ABIST_OV2		0x2d
++#define PF8X00_ABIST_UV1		0x2e
++#define PF8X00_ABIST_UV2		0x2f
++#define PF8X00_TEST_FLAGS		0x30
++#define PF8X00_ABIST_RUN		0x31
++#define PF8X00_RANDOM_GEN		0x33
++#define PF8X00_RANDOM_CHK		0x34
++#define PF8X00_VMONEN1			0x35
++#define PF8X00_VMONEN2			0x36
++#define PF8X00_CTRL1			0x37
++#define PF8X00_CTRL2			0x38
++#define PF8X00_CTRL3			0x39
++#define PF8X00_PWRUP_CTRL		0x3a
++#define PF8X00_RESETBMCU		0x3c
++#define PF8X00_PGOOD			0x3d
++#define PF8X00_PWRDN_DLY1		0x3e
++#define PF8X00_PWRDN_DLY2		0x3f
++#define PF8X00_FREQ_CTRL		0x40
++#define PF8X00_COINCELL_CTRL		0x41
++#define PF8X00_PWRON			0x42
++#define PF8X00_WD_CONFIG		0x43
++#define PF8X00_WD_CLEAR			0x44
++#define PF8X00_WD_EXPIRE		0x45
++#define PF8X00_WD_COUNTER		0x46
++#define PF8X00_FAULT_COUNTER		0x47
++#define PF8X00_FSAFE_COUNTER		0x48
++#define PF8X00_FAULT_TIMER		0x49
++#define PF8X00_AMUX			0x4a
++#define PF8X00_SW1_CONFIG1		0x4d
++#define PF8X00_LDO1_CONFIG1		0x85
++#define PF8X00_VSNVS_CONFIG1		0x9d
++#define PF8X00_PAGE_SELECT		0x9f
 +
-+description: |
-+  PF8100/PF8121A/PF8200 is a PMIC designed for highperformance consumer
-+  applications. It features seven high efficiency buck converters, four
-+  linear and one vsnvs regulators. It has built-in one time programmable
-+  fuse bank for device configurations.
++/* regulators */
++enum pf8x00_regulators {
++	PF8X00_LDO1,
++	PF8X00_LDO2,
++	PF8X00_LDO3,
++	PF8X00_LDO4,
++	PF8X00_BUCK1,
++	PF8X00_BUCK2,
++	PF8X00_BUCK3,
++	PF8X00_BUCK4,
++	PF8X00_BUCK5,
++	PF8X00_BUCK6,
++	PF8X00_BUCK7,
++	PF8X00_VSNVS,
 +
-+properties:
-+  compatible:
-+    enum:
-+      - nxp,pf8x00
++	PF8X00_MAX_REGULATORS,
++};
 +
-+  reg:
-+    maxItems: 1
++enum pf8x00_buck_states {
++	SW_CONFIG1,
++	SW_CONFIG2,
++	SW_PWRUP,
++	SW_MODE1,
++	SW_RUN_VOLT,
++	SW_STBY_VOLT,
++};
++#define PF8X00_SW_BASE(i)		(8 * (i - PF8X00_BUCK1) + PF8X00_SW1_CONFIG1)
 +
-+  regulators:
-+    type: object
-+    description: |
-+      list of regulators provided by this controller
++enum pf8x00_ldo_states {
++	LDO_CONFIG1,
++	LDO_CONFIG2,
++	LDO_PWRUP,
++	LDO_RUN_VOLT,
++	LDO_STBY_VOLT,
++};
++#define PF8X00_LDO_BASE(i)		(6 * (i - PF8X00_LDO1) + PF8X00_LDO1_CONFIG1)
 +
-+    patternProperties:
-+      "^ldo[1-4]$":
-+        type: object
-+        $ref: regulator.yaml#
-+        description:
-+          Properties for single LDO regulator.
++enum swxilim_bits {
++	SWXILIM_2100_MA,
++	SWXILIM_2600_MA,
++	SWXILIM_3000_MA,
++	SWXILIM_4500_MA,
++};
++#define PF8X00_SWXILIM_SHIFT		3
++#define PF8X00_SWXILIM_MASK		GENMASK(4, 3)
++#define PF8X00_SWXPHASE_MASK		GENMASK(2, 0)
++#define PF8X00_SWXPHASE_DEFAULT		0
++#define PF8X00_SWXPHASE_SHIFT		7
 +
-+        properties:
-+          regulator-name:
-+            pattern: "^ldo[1-4]$"
-+            description:
-+              should be "ldo1", ..., "ldo4"
++enum pf8x00_devid {
++	PF8100			= 0x0,
++	PF8121A			= BIT(1),
++	PF8200			= BIT(3),
++};
++#define PF8X00_FAM			BIT(6)
++#define PF8X00_DEVICE_FAM_MASK		GENMASK(7, 4)
++#define PF8X00_DEVICE_ID_MASK		GENMASK(3, 0)
 +
-+        unevaluatedProperties: false
++struct pf8x00_regulator {
++	struct regulator_desc desc;
++	u8 ilim;
++	u8 phase_shift;
++};
 +
-+      "^buck[1-7]$":
-+        type: object
-+        $ref: regulator.yaml#
-+        description:
-+          Properties for single BUCK regulator.
++struct pf8x00_chip {
++	struct regmap *regmap;
++	struct device *dev;
++};
 +
-+        properties:
-+          regulator-name:
-+            pattern: "^buck[1-7]$"
-+            description:
-+              should be "buck1", ..., "buck7"
++static const struct regmap_config pf8x00_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.max_register = PF8X00_PAGE_SELECT,
++	.cache_type = REGCACHE_RBTREE,
++};
 +
-+          nxp,ilim-ma:
-+            $ref: "/schemas/types.yaml#/definitions/uint32"
-+            minimum: 2100
-+            maximum: 4500
-+            description:
-+              BUCK regulators current limit in mA.
++/* VLDOx output: 1.5V to 5.0V */
++static const int pf8x00_ldo_voltages[] = {
++	1500000, 1600000, 1800000, 1850000, 2150000, 2500000, 2800000, 3000000,
++	3100000, 3150000, 3200000, 3300000, 3350000, 1650000, 1700000, 5000000,
++};
 +
-+              Listed current limits in mA are,
-+              2100 (default)
-+              2600
-+              3000
-+              4500
++#define SWV(i)		(6250 * i + 400000)
++#define SWV_LINE(i)	SWV(i*8+0), SWV(i*8+1), SWV(i*8+2), SWV(i*8+3), \
++			SWV(i*8+4), SWV(i*8+5), SWV(i*8+6), SWV(i*8+7)
 +
-+          nxp,phase-shift:
-+            $ref: "/schemas/types.yaml#/definitions/uint32"
-+            minimum: 45
-+            maximum: 0
-+            description:
-+              BUCK regulators phase shift control in degrees.
++/* Output: 0.4V to 1.8V */
++static const int pf8x00_sw1_to_6_voltages[] = {
++	SWV_LINE(0),
++	SWV_LINE(1),
++	SWV_LINE(2),
++	SWV_LINE(3),
++	SWV_LINE(4),
++	SWV_LINE(5),
++	SWV_LINE(6),
++	SWV_LINE(7),
++	SWV_LINE(8),
++	SWV_LINE(9),
++	SWV_LINE(10),
++	SWV_LINE(11),
++	SWV_LINE(12),
++	SWV_LINE(13),
++	SWV_LINE(14),
++	SWV_LINE(15),
++	SWV_LINE(16),
++	SWV_LINE(17),
++	SWV_LINE(18),
++	SWV_LINE(19),
++	SWV_LINE(20),
++	SWV_LINE(21),
++	1500000, 1800000,
++};
 +
-+              Listed phase shift control values in degrees are,
-+              45
-+              90
-+              135
-+              180
-+              225
-+              270
-+              315
-+              0 (default)
++/* Output: 1.0V to 4.1V */
++static const int pf8x00_sw7_voltages[] = {
++	1000000, 1100000, 1200000, 1250000, 1300000, 1350000, 1500000, 1600000,
++	1800000, 1850000, 2000000, 2100000, 2150000, 2250000, 2300000, 2400000,
++	2500000, 2800000, 3150000, 3200000, 3250000, 3300000, 3350000, 3400000,
++	3500000, 3800000, 4000000, 4100000, 4100000, 4100000, 4100000, 4100000,
++};
 +
-+        unevaluatedProperties: false
++/* Output: 1.8V, 3.0V, or 3.3V */
++static const int pf8x00_vsnvs_voltages[] = {
++	0, 1800000, 3000000, 3300000,
++};
 +
-+      "^vsnvs$":
-+        type: object
-+        $ref: regulator.yaml#
-+        description:
-+          Properties for single VSNVS regulator.
++static struct pf8x00_regulator *desc_to_regulator(const struct regulator_desc *desc)
++{
++	return container_of(desc, struct pf8x00_regulator, desc);
++}
 +
-+        properties:
-+          regulator-name:
-+            pattern: "^vsnvs$"
-+            description:
-+              should be "vsnvs"
++static void swxilim_select(const struct regulator_desc *desc, int ilim)
++{
++	struct pf8x00_regulator *data = desc_to_regulator(desc);
++	u8 ilim_sel;
 +
-+        unevaluatedProperties: false
++	switch (ilim) {
++	case 2100:
++		ilim_sel = SWXILIM_2100_MA;
++		break;
++	case 2600:
++		ilim_sel = SWXILIM_2600_MA;
++		break;
++	case 3000:
++		ilim_sel = SWXILIM_3000_MA;
++		break;
++	case 4500:
++		ilim_sel = SWXILIM_4500_MA;
++		break;
++	default:
++		ilim_sel = SWXILIM_2100_MA;
++		break;
++	}
 +
-+    additionalProperties: false
++	data->ilim = ilim_sel;
++}
 +
-+required:
-+  - compatible
-+  - reg
-+  - regulators
++static int pf8x00_of_parse_cb(struct device_node *np,
++			      const struct regulator_desc *desc,
++			      struct regulator_config *config)
++{
++	struct pf8x00_regulator *data = desc_to_regulator(desc);
++	struct pf8x00_chip *chip = config->driver_data;
++	int phase;
++	int val;
++	int ret;
 +
-+additionalProperties: false
++	ret = of_property_read_u32(np, "nxp,ilim-ma", &val);
++	if (ret)
++		dev_dbg(chip->dev, "unspecified ilim for BUCK%d, use 2100 mA\n",
++			desc->id - PF8X00_LDO4);
 +
-+examples:
-+  - |
-+    i2c1 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
++	swxilim_select(desc, val);
 +
-+        pmic@8 {
-+            compatible = "nxp,pf8x00";
-+            reg = <0x08>;
++	ret = of_property_read_u32(np, "nxp,phase-shift", &val);
++	if (ret) {
++		dev_dbg(chip->dev,
++			"unspecified phase-shift for BUCK%d, use 0 degrees\n",
++			desc->id - PF8X00_LDO4);
++		val = PF8X00_SWXPHASE_DEFAULT;
++	}
 +
-+            regulators {
-+                reg_ldo1: ldo1 {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <5000000>;
-+                    regulator-min-microvolt = <1500000>;
-+                };
++	phase = val / 45;
++	if ((phase * 45) != val) {
++		dev_warn(config->dev,
++			 "invalid phase_shift %d for BUCK%d, use 0 degrees\n",
++			 (phase * 45), desc->id - PF8X00_LDO4);
++		phase = PF8X00_SWXPHASE_SHIFT;
++	}
 +
-+                reg_ldo2: ldo2 {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <5000000>;
-+                    regulator-min-microvolt = <1500000>;
-+                };
++	data->phase_shift = (phase >= 1) ? phase - 1 : PF8X00_SWXPHASE_SHIFT;
 +
-+                reg_ldo3: ldo3 {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <5000000>;
-+                    regulator-min-microvolt = <1500000>;
-+                };
++	return 0;
++}
 +
-+                reg_ldo4: ldo4 {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <5000000>;
-+                    regulator-min-microvolt = <1500000>;
-+                };
++static const struct regulator_ops pf8x00_ldo_ops = {
++	.enable = regulator_enable_regmap,
++	.disable = regulator_disable_regmap,
++	.is_enabled = regulator_is_enabled_regmap,
++	.list_voltage = regulator_list_voltage_table,
++	.set_voltage_sel = regulator_set_voltage_sel_regmap,
++	.get_voltage_sel = regulator_get_voltage_sel_regmap,
++};
 +
-+                reg_buck1: buck1 {
-+                    nxp,ilim-ma = <4500>;
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <1800000>;
-+                    regulator-min-microvolt =  <400000>;
-+                };
++static const struct regulator_ops pf8x00_buck_ops = {
++	.enable = regulator_enable_regmap,
++	.disable = regulator_disable_regmap,
++	.is_enabled = regulator_is_enabled_regmap,
++	.list_voltage = regulator_list_voltage_table,
++	.set_voltage_sel = regulator_set_voltage_sel_regmap,
++	.get_voltage_sel = regulator_get_voltage_sel_regmap,
++};
 +
-+                reg_buck2: buck2 {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <1800000>;
-+                    regulator-min-microvolt =  <400000>;
-+                };
++static const struct regulator_ops pf8x00_vsnvs_ops = {
++	.enable = regulator_enable_regmap,
++	.disable = regulator_disable_regmap,
++	.is_enabled = regulator_is_enabled_regmap,
++	.list_voltage = regulator_list_voltage_table,
++	.map_voltage = regulator_map_voltage_ascend,
++	.set_voltage_sel = regulator_set_voltage_sel_regmap,
++	.get_voltage_sel = regulator_get_voltage_sel_regmap,
++};
 +
-+                reg_buck3: buck3 {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <1800000>;
-+                    regulator-min-microvolt =  <400000>;
-+                };
++#define PF8X00LDO(_id, _name, base, voltages)			\
++	[PF8X00_LDO ## _id] = {					\
++		.desc = {					\
++			.name = _name,				\
++			.of_match = _name,			\
++			.regulators_node = "regulators",	\
++			.n_voltages = ARRAY_SIZE(voltages),	\
++			.ops = &pf8x00_ldo_ops,			\
++			.type = REGULATOR_VOLTAGE,		\
++			.id = PF8X00_LDO ## _id,		\
++			.owner = THIS_MODULE,			\
++			.volt_table = voltages,			\
++			.vsel_reg = (base) + LDO_RUN_VOLT,	\
++			.vsel_mask = 0xff,			\
++			.enable_reg = (base) + LDO_CONFIG2,	\
++			.enable_val = 0x2,			\
++			.disable_val = 0x0,			\
++			.enable_mask = 2,			\
++		},						\
++	}
 +
-+                reg_buck4: buck4 {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <1800000>;
-+                    regulator-min-microvolt =  <400000>;
-+                };
++#define PF8X00BUCK(_id, _name, base, voltages)			\
++	[PF8X00_BUCK ## _id] = {				\
++		.desc = {					\
++			.name = _name,				\
++			.of_match = _name,			\
++			.regulators_node = "regulators",	\
++			.of_parse_cb = pf8x00_of_parse_cb,	\
++			.n_voltages = ARRAY_SIZE(voltages),	\
++			.ops = &pf8x00_buck_ops,		\
++			.type = REGULATOR_VOLTAGE,		\
++			.id = PF8X00_BUCK ## _id,		\
++			.owner = THIS_MODULE,			\
++			.volt_table = voltages,			\
++			.vsel_reg = (base) + SW_RUN_VOLT,	\
++			.vsel_mask = 0xff,			\
++			.enable_reg = (base) + SW_MODE1,	\
++			.enable_val = 0x3,			\
++			.disable_val = 0x0,			\
++			.enable_mask = 0x3,			\
++			.enable_time = 500,			\
++		},						\
++	}
 +
-+                reg_buck5: buck5 {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <1800000>;
-+                    regulator-min-microvolt =  <400000>;
-+                };
++#define PF8X00VSNVS(_name, base, voltages)			\
++	[PF8X00_VSNVS] = {					\
++		.desc = {					\
++			.name = _name,				\
++			.of_match = _name,			\
++			.regulators_node = "regulators",	\
++			.n_voltages = ARRAY_SIZE(voltages),	\
++			.ops = &pf8x00_vsnvs_ops,		\
++			.type = REGULATOR_VOLTAGE,		\
++			.id = PF8X00_VSNVS,			\
++			.owner = THIS_MODULE,			\
++			.volt_table = voltages,			\
++			.vsel_reg = (base),			\
++			.vsel_mask = 0x3,			\
++		},						\
++	}
 +
-+                reg_buck6: buck6 {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <1800000>;
-+                    regulator-min-microvolt =  <400000>;
-+                };
++static struct pf8x00_regulator pf8x00_regulators_data[PF8X00_MAX_REGULATORS] = {
++	PF8X00LDO(1, "ldo1", PF8X00_LDO_BASE(PF8X00_LDO1), pf8x00_ldo_voltages),
++	PF8X00LDO(2, "ldo2", PF8X00_LDO_BASE(PF8X00_LDO2), pf8x00_ldo_voltages),
++	PF8X00LDO(3, "ldo3", PF8X00_LDO_BASE(PF8X00_LDO3), pf8x00_ldo_voltages),
++	PF8X00LDO(4, "ldo4", PF8X00_LDO_BASE(PF8X00_LDO4), pf8x00_ldo_voltages),
++	PF8X00BUCK(1, "buck1", PF8X00_SW_BASE(PF8X00_BUCK1), pf8x00_sw1_to_6_voltages),
++	PF8X00BUCK(2, "buck2", PF8X00_SW_BASE(PF8X00_BUCK2), pf8x00_sw1_to_6_voltages),
++	PF8X00BUCK(3, "buck3", PF8X00_SW_BASE(PF8X00_BUCK3), pf8x00_sw1_to_6_voltages),
++	PF8X00BUCK(4, "buck4", PF8X00_SW_BASE(PF8X00_BUCK4), pf8x00_sw1_to_6_voltages),
++	PF8X00BUCK(5, "buck5", PF8X00_SW_BASE(PF8X00_BUCK5), pf8x00_sw1_to_6_voltages),
++	PF8X00BUCK(6, "buck6", PF8X00_SW_BASE(PF8X00_BUCK6), pf8x00_sw1_to_6_voltages),
++	PF8X00BUCK(7, "buck7", PF8X00_SW_BASE(PF8X00_BUCK7), pf8x00_sw7_voltages),
++	PF8X00VSNVS("vsnvs", PF8X00_VSNVS_CONFIG1, pf8x00_vsnvs_voltages),
++};
 +
-+                reg_buck7: buck7 {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <3300000>;
-+                    regulator-min-microvolt = <3300000>;
-+                };
++static int pf8x00_identify(struct pf8x00_chip *chip)
++{
++	unsigned int value;
++	u8 dev_fam, dev_id;
++	const char *name = NULL;
++	int ret;
 +
-+                reg_vsnvs: vsnvs {
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-max-microvolt = <3300000>;
-+                    regulator-min-microvolt = <1800000>;
-+                };
-+            };
-+        };
-+    };
++	ret = regmap_read(chip->regmap, PF8X00_DEVICEID, &value);
++	if (ret) {
++		dev_err(chip->dev, "failed to read chip family\n");
++		return ret;
++	}
++
++	dev_fam = value & PF8X00_DEVICE_FAM_MASK;
++	switch (dev_fam) {
++	case PF8X00_FAM:
++		break;
++	default:
++		dev_err(chip->dev,
++			"Chip 0x%x is not from PF8X00 family\n", dev_fam);
++		return ret;
++	}
++
++	dev_id = value & PF8X00_DEVICE_ID_MASK;
++	switch (dev_id) {
++	case PF8100:
++		name = "PF8100";
++		break;
++	case PF8121A:
++		name = "PF8121A";
++		break;
++	case PF8200:
++		name = "PF8100";
++		break;
++	default:
++		dev_err(chip->dev, "Unknown pf8x00 device id 0x%x\n", dev_id);
++		return -ENODEV;
++	}
++
++	dev_info(chip->dev, "%s PMIC found.\n", name);
++
++	return 0;
++}
++
++static int pf8x00_i2c_probe(struct i2c_client *client)
++{
++	struct regulator_config config = { NULL, };
++	struct pf8x00_chip *chip;
++	int id;
++	int ret;
++
++	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
++	if (!chip)
++		return -ENOMEM;
++
++	i2c_set_clientdata(client, chip);
++	chip->dev = &client->dev;
++
++	chip->regmap = devm_regmap_init_i2c(client, &pf8x00_regmap_config);
++	if (IS_ERR(chip->regmap)) {
++		ret = PTR_ERR(chip->regmap);
++		dev_err(&client->dev,
++			"regmap allocation failed with err %d\n", ret);
++		return ret;
++	}
++
++	ret = pf8x00_identify(chip);
++	if (ret)
++		return ret;
++
++	for (id = 0; id < ARRAY_SIZE(pf8x00_regulators_data); id++) {
++		struct pf8x00_regulator *data = &pf8x00_regulators_data[id];
++		struct regulator_dev *rdev;
++
++		config.dev = chip->dev;
++		config.driver_data = chip;
++		config.regmap = chip->regmap;
++
++		rdev = devm_regulator_register(&client->dev, &data->desc, &config);
++		if (IS_ERR(rdev)) {
++			dev_err(&client->dev,
++				"failed to register %s regulator\n", data->desc.name);
++			return PTR_ERR(rdev);
++		}
++
++		if ((id >= PF8X00_BUCK1) && (id <= PF8X00_BUCK7)) {
++			u8 reg = PF8X00_SW_BASE(id) + SW_CONFIG2;
++
++			regmap_update_bits(chip->regmap, reg,
++					   PF8X00_SWXPHASE_MASK,
++					   data->phase_shift);
++
++			regmap_update_bits(chip->regmap, reg,
++					   PF8X00_SWXILIM_MASK,
++					   data->ilim << PF8X00_SWXILIM_SHIFT);
++		}
++	}
++
++	return 0;
++}
++
++static const struct of_device_id pf8x00_dt_ids[] = {
++	{ .compatible = "nxp,pf8x00",},
++	{ }
++};
++MODULE_DEVICE_TABLE(of, pf8x00_dt_ids);
++
++static const struct i2c_device_id pf8x00_i2c_id[] = {
++	{ "pf8x00", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(i2c, pf8x00_i2c_id);
++
++static struct i2c_driver pf8x00_regulator_driver = {
++	.id_table = pf8x00_i2c_id,
++	.driver = {
++		.name = "pf8x00",
++		.of_match_table = pf8x00_dt_ids,
++	},
++	.probe_new = pf8x00_i2c_probe,
++};
++module_i2c_driver(pf8x00_regulator_driver);
++
++MODULE_AUTHOR("Jagan Teki <jagan@amarulasolutions.com>");
++MODULE_AUTHOR("Troy Kisky <troy.kisky@boundarydevices.com>");
++MODULE_DESCRIPTION("Regulator Driver for NXP's PF8100/PF8121A/PF8200 PMIC");
++MODULE_LICENSE("GPL v2");
 -- 
 2.25.1
 
