@@ -2,73 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B7B2C8395
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2932C83A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728241AbgK3L6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:58:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34252 "EHLO mail.kernel.org"
+        id S1728632AbgK3L7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:59:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbgK3L6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:58:50 -0500
-Received: from gaia (unknown [95.146.230.165])
+        id S1728039AbgK3L7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 06:59:50 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0AF72073C;
-        Mon, 30 Nov 2020 11:58:07 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 11:58:05 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: linux-next: manual merge of the akpm tree with the arm64 tree
-Message-ID: <20201130115804.GC3902@gaia>
-References: <20201130182840.02a96a67@canb.auug.org.au>
- <20201130184835.18b5f4de@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id D62772073C;
+        Mon, 30 Nov 2020 11:59:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606737549;
+        bh=jcKRnTY2A7tTxLUEBA4FhjDB78+vG8Uu58hBCNu3Qs8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XbGPLq/Gdk/ASCNBy/7/E3wrn5zqLDESpvoy2UNHGZHuuXFZQPCXO7FbliCo+KTjL
+         dcpgEk4JxaUXIYiMKN86igCiutZADLzLXf9whER7tpQ4rNqnS6qJKWRrApd0RwpCLA
+         mDCVfehaZ+02umT+yBR6tKxGFcK/pkEQRrCuPSVg=
+Date:   Mon, 30 Nov 2020 11:59:03 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v7 16/17] arm64: disable recordmcount with
+ DYNAMIC_FTRACE_WITH_REGS
+Message-ID: <20201130115902.GD24563@willie-the-truck>
+References: <20201118220731.925424-1-samitolvanen@google.com>
+ <20201118220731.925424-17-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201130184835.18b5f4de@canb.auug.org.au>
+In-Reply-To: <20201118220731.925424-17-samitolvanen@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 06:48:35PM +1100, Stephen Rothwell wrote:
-> On Mon, 30 Nov 2020 18:28:40 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > Today's linux-next merge of the akpm tree got a conflict in:
-> > 
-> >   arch/arm64/kernel/mte.c
-> > 
-> > between commit:
-> > 
-> >   e710c29e0177 ("arm64: mte: make the per-task SCTLR_EL1 field usable elsewhere")
-> > 
-> > from the arm64 tree and commit:
-> > 
-> >   44a7127eb3a4 ("arm64: mte: add in-kernel MTE helpers")
-> > 
-> > from the akpm tree.
-> > 
-> > I fixed it up (the former just removed some of the context for what the
-> > latter added) and can carry the fix as necessary. This is now fixed as
-> > far as linux-next is concerned, but any non trivial conflicts should be
-> > mentioned to your upstream maintainer when your tree is submitted for
-> > merging.  You may also want to consider cooperating with the maintainer
-> > of the conflicting tree to minimise any particularly complex conflicts.
+On Wed, Nov 18, 2020 at 02:07:30PM -0800, Sami Tolvanen wrote:
+> DYNAMIC_FTRACE_WITH_REGS uses -fpatchable-function-entry, which makes
+> running recordmcount unnecessary as there are no mcount calls in object
+> files, and __mcount_loc doesn't need to be generated.
 > 
-> A couple of the following patches in the akpm tree also conflicted with
-> the arm64 tree.
+> While there's normally no harm in running recordmcount even when it's
+> not strictly needed, this won't work with LTO as we have LLVM bitcode
+> instead of ELF objects.
+> 
+> This change selects FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY, which
+> disables recordmcount when patchable function entries are used instead.
+> 
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> ---
+>  arch/arm64/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 1515f6f153a0..c7f07978f5b6 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -158,6 +158,8 @@ config ARM64
+>  	select HAVE_DYNAMIC_FTRACE
+>  	select HAVE_DYNAMIC_FTRACE_WITH_REGS \
+>  		if $(cc-option,-fpatchable-function-entry=2)
+> +	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+> +		if DYNAMIC_FTRACE_WITH_REGS
 
-Thanks Stephen. While the conflicts are not too bad, the variable
-renaming (e.g. gcr_incl -> gcr_excl) makes them look pretty messy. I'll
-drop commit e710c29e0177 and the subsequent one from the arm64 tree and
-either merge them via akpm or defer to 5.12.
+I don't really understand why this is in the arch header file, rather
+than have the core code check for "fpatchable-function-entry=2" and expose
+a CC_HAS_PATCHABLE_FUNCTION_ENTRY, but in the interest of making some
+progress on this series:
 
--- 
-Catalin
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
