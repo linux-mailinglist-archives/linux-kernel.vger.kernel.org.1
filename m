@@ -2,173 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8332C7D39
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5DD2C7D38
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:18:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbgK3DQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 22:16:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41217 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726299AbgK3DQj (ORCPT
+        id S1726637AbgK3DQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 22:16:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgK3DQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 22:16:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606706112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/l6cTsAZGusKnRzEZB3ltcVErk8W3qbT7pUDiDkWwTQ=;
-        b=OXe4lhv6Ss0BTekKtynB5S3BUm4ElImAKBGabYhqiY7YmdGIaPeyF3RhVvywLZqQOLDGMD
-        bQy5Ny7ZO1vT47YbtQ72+aA6RueJEdN0xRjv9jBfcKhh+FXjhJGeJ7+8n+focMoWdnRhq/
-        Iap6qbo48kYTDTkox/rGPsyJ7CRcai0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-xs5qnsXROniOU2OAnwE0Hw-1; Sun, 29 Nov 2020 22:15:10 -0500
-X-MC-Unique: xs5qnsXROniOU2OAnwE0Hw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC5DC1E7ED;
-        Mon, 30 Nov 2020 03:15:08 +0000 (UTC)
-Received: from [10.72.13.173] (ovpn-13-173.pek2.redhat.com [10.72.13.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0EBED277C3;
-        Mon, 30 Nov 2020 03:14:56 +0000 (UTC)
-Subject: Re: [PATCH v2 08/17] vdpa_sim: add supported_features field in
- vdpasim_dev_attr
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
-References: <20201126144950.92850-1-sgarzare@redhat.com>
- <20201126144950.92850-9-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <5ad77c37-7de5-4df2-ff2d-70952d103640@redhat.com>
-Date:   Mon, 30 Nov 2020 11:14:55 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 29 Nov 2020 22:16:20 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84157C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 19:15:34 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id b6so9515701pfp.7
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 19:15:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WcD2TXtNvBqCQJM+oUDlJOGA3SSu2z0ypxmyhQD/cv0=;
+        b=SO4my8/fI4PBGLCHXwpf1XmmECok6zuisqWt6lgKXSSszaXcYMLY0hwTv5rlROkURD
+         dZaBxb0nBwbpgaJb79KxP5yZ2KbqAN4EBkabfizS1M5kr4ZoQ/f8sfLl6mIFazWvJmWj
+         Bg2RoCg0astOyIup6Z6Detrd4o4waFN2NozSNrNFGVXBvMQhJPARE94n5K0wyeL9YM4k
+         t6egXCgAbjwbzBLaoovXfjg9s0KrU/ukvjgNcFkdAMeQ28v8BqIPL8B8jB6zvcs3+v35
+         zghL1MTp/iksJ+uFVn7H5RRMARxIlkLky0HiGnexLTPHA81CyNPdgqs0b94CQmTCQ8TC
+         HlSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WcD2TXtNvBqCQJM+oUDlJOGA3SSu2z0ypxmyhQD/cv0=;
+        b=SnzpNhbawLj8TSrwGISwDGBL+TzyVa/o6E/MIHy2DM6mp9uuiQVwqjxLEeZxMAfQ6+
+         XgQagfWOHV19dpAbcPpWpBspcqMaieS9l1rl64Nk5Kw+9oYJ//qMdDw2TkdiccEm3X7b
+         euzaONZF0hDY06Nuqpj4IR9QT/M51KXcDXGRC8cVKY4hGA391fhZja08CFT6YoO4khjx
+         eICZdLVdRAuT9H6hD99ct9MmAT5ctiGzgidJFsNRfyTb8dNAahwXgXz+IZ/uUOAxO3Fz
+         3qNDM5lLVz4C6D/AEgF7Tq5qf55QnqsAUIXQpCku9/dvjtJqod/XyqOdlDFQclmi9ToS
+         fBxw==
+X-Gm-Message-State: AOAM530/IBNLy0DAWqPhMw1jfLiq79T7SrkQfPm5RdNf479pCDyIjBis
+        ZAuoKH+lDagaI+lfhWyk5aw=
+X-Google-Smtp-Source: ABdhPJyDh4I45ZpZB7TqMZZ2nkrWIPOJ9GUGAG8vX0JRwABeCZ6hBDDxEe6I2ygYo9fx8UX6nmvPcA==
+X-Received: by 2002:aa7:969d:0:b029:196:59ad:ab93 with SMTP id f29-20020aa7969d0000b029019659adab93mr16248914pfk.16.1606706133836;
+        Sun, 29 Nov 2020 19:15:33 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id h7sm16390346pgi.90.2020.11.29.19.15.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Nov 2020 19:15:32 -0800 (PST)
+Date:   Mon, 30 Nov 2020 12:15:30 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] posix_acl.h: define missing ACL functions on
+ non-posix-acl build
+Message-ID: <X8Rj0s/Emv9Qmv3d@jagdpanzerIV.localdomain>
+References: <20201130014404.36904-1-sergey.senozhatsky@gmail.com>
+ <5b015b83-f183-526a-94e7-029f4c98b30b@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20201126144950.92850-9-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b015b83-f183-526a-94e7-029f4c98b30b@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (20/11/29 18:00), Randy Dunlap wrote:
+> On 11/29/20 5:44 PM, Sergey Senozhatsky wrote:
+> > Some functions that are declared when CONFIG_POSIX_ACL is defined
+> > are not declared when CONFIG_POSIX_ACL is not defined. Add the
+> > missing ones:
+> >   set_posix_acl(), posix_acl_update_mode(), get_cached_acl(),
+> >   get_cached_acl_rcu(), set_cached_acl(), forget_cached_acl().
+> > 
+> > Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> 
+> Hi,
+> 
+> I can't find CONFIG_POSIX_ACL in the kernel source tree.
+> Should it be CONFIG_FS_POSIX_ACL ?
 
-On 2020/11/26 下午10:49, Stefano Garzarella wrote:
-> Introduce a new VDPASIM_FEATURES macro with the generic features
-> supported by the vDPA simulator, and VDPASIM_NET_FEATURES macro with
-> vDPA-net features.
->
-> Add 'supported_features' field in vdpasim_dev_attr, to allow devices
-> to specify their features.
->
-> Co-developed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.c | 29 ++++++++++++++++++-----------
->   1 file changed, 18 insertions(+), 11 deletions(-)
+Oh, yes, CONFIG_POSIX_ACL. My bad.
 
+> How did you test this?
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+You know what - scratch this patch. Sorry for the noise.
 
+Some of the posix_acl.h functions are guarded by ifdef/ifndef
+CONFIG_FS_POSIX_ACL, and some are not. This can break the build
+if the code in question doesn't use ifdef CONFIG_FS_POSIX_ACL
+(which happens with our code). But this patch is not enough,
+apparently, we need to add ifdef CONFIG_FS_POSIX_ACL to our
+code anyway, because of, for instance, posix_acl_alloc() which
+is undefined for !FS_POSIX_ACL builds. Sorry for the noise.
 
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index 393b54a9f0e4..36677fc3631b 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -49,12 +49,15 @@ struct vdpasim_virtqueue {
->   #define VDPASIM_VQ_NUM 0x2
->   #define VDPASIM_NAME "vdpasim-netdev"
->   
-> -static u64 vdpasim_features = (1ULL << VIRTIO_F_ANY_LAYOUT) |
-> -			      (1ULL << VIRTIO_F_VERSION_1)  |
-> -			      (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
-> -			      (1ULL << VIRTIO_NET_F_MAC);
-> +#define VDPASIM_FEATURES	((1ULL << VIRTIO_F_ANY_LAYOUT) | \
-> +				 (1ULL << VIRTIO_F_VERSION_1)  | \
-> +				 (1ULL << VIRTIO_F_ACCESS_PLATFORM))
-> +
-> +#define VDPASIM_NET_FEATURES	(VDPASIM_FEATURES | \
-> +				 (1ULL << VIRTIO_NET_F_MAC))
->   
->   struct vdpasim_dev_attr {
-> +	u64 supported_features;
->   	int nvqs;
->   	u32 id;
->   };
-> @@ -112,7 +115,7 @@ static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
->   {
->   	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
->   
-> -	vringh_init_iotlb(&vq->vring, vdpasim_features,
-> +	vringh_init_iotlb(&vq->vring, vdpasim->dev_attr.supported_features,
->   			  VDPASIM_QUEUE_MAX, false,
->   			  (struct vring_desc *)(uintptr_t)vq->desc_addr,
->   			  (struct vring_avail *)
-> @@ -121,7 +124,8 @@ static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
->   			  (uintptr_t)vq->device_addr);
->   }
->   
-> -static void vdpasim_vq_reset(struct vdpasim_virtqueue *vq)
-> +static void vdpasim_vq_reset(struct vdpasim *vdpasim,
-> +			     struct vdpasim_virtqueue *vq)
->   {
->   	vq->ready = false;
->   	vq->desc_addr = 0;
-> @@ -129,8 +133,8 @@ static void vdpasim_vq_reset(struct vdpasim_virtqueue *vq)
->   	vq->device_addr = 0;
->   	vq->cb = NULL;
->   	vq->private = NULL;
-> -	vringh_init_iotlb(&vq->vring, vdpasim_features, VDPASIM_QUEUE_MAX,
-> -			  false, NULL, NULL, NULL);
-> +	vringh_init_iotlb(&vq->vring, vdpasim->dev_attr.supported_features,
-> +			  VDPASIM_QUEUE_MAX, false, NULL, NULL, NULL);
->   }
->   
->   static void vdpasim_reset(struct vdpasim *vdpasim)
-> @@ -138,7 +142,7 @@ static void vdpasim_reset(struct vdpasim *vdpasim)
->   	int i;
->   
->   	for (i = 0; i < vdpasim->dev_attr.nvqs; i++)
-> -		vdpasim_vq_reset(&vdpasim->vqs[i]);
-> +		vdpasim_vq_reset(vdpasim, &vdpasim->vqs[i]);
->   
->   	spin_lock(&vdpasim->iommu_lock);
->   	vhost_iotlb_reset(vdpasim->iommu);
-> @@ -498,7 +502,9 @@ static u32 vdpasim_get_vq_align(struct vdpa_device *vdpa)
->   
->   static u64 vdpasim_get_features(struct vdpa_device *vdpa)
->   {
-> -	return vdpasim_features;
-> +	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
-> +
-> +	return vdpasim->dev_attr.supported_features;
->   }
->   
->   static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
-> @@ -510,7 +516,7 @@ static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
->   	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
->   		return -EINVAL;
->   
-> -	vdpasim->features = features & vdpasim_features;
-> +	vdpasim->features = features & vdpasim->dev_attr.supported_features;
->   
->   	/* We generally only know whether guest is using the legacy interface
->   	 * here, so generally that's the earliest we can set config fields.
-> @@ -722,6 +728,7 @@ static int __init vdpasim_dev_init(void)
->   	struct vdpasim_dev_attr dev_attr = {};
->   
->   	dev_attr.id = VIRTIO_ID_NET;
-> +	dev_attr.supported_features = VDPASIM_NET_FEATURES;
->   	dev_attr.nvqs = VDPASIM_VQ_NUM;
->   
->   	vdpasim_dev = vdpasim_create(&dev_attr);
-
+	-ss
