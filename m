@@ -2,72 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABB82C88AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6982C88B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727719AbgK3Pzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:55:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:57016 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725870AbgK3Pzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:55:45 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1540BD6E;
-        Mon, 30 Nov 2020 07:55:00 -0800 (PST)
-Received: from [10.57.27.168] (unknown [10.57.27.168])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECE973F718;
-        Mon, 30 Nov 2020 07:54:58 -0800 (PST)
-Subject: Re: [PATCH] perf tools: add aarch64 registers to --user-regs
-To:     Alexandre Truong <alexandre.truong@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     John Garry <john.garry@huawei.com>, Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-References: <20201127153923.26717-1-alexandre.truong@arm.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <cd0592be-68d2-c88d-ff18-05f7d3ba8cc2@arm.com>
-Date:   Mon, 30 Nov 2020 17:54:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727997AbgK3P4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:56:30 -0500
+Received: from mail.v3.sk ([167.172.186.51]:47258 "EHLO shell.v3.sk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727379AbgK3P42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 10:56:28 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id AF5A1DF357;
+        Mon, 30 Nov 2020 15:52:51 +0000 (UTC)
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id GBIBxC4YvjUp; Mon, 30 Nov 2020 15:52:51 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 29E54E06E1;
+        Mon, 30 Nov 2020 15:52:51 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at zimbra.v3.sk
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id uI9NoU0PHTqJ; Mon, 30 Nov 2020 15:52:51 +0000 (UTC)
+Received: from localhost (unknown [109.183.109.54])
+        by zimbra.v3.sk (Postfix) with ESMTPSA id E121BE06C5;
+        Mon, 30 Nov 2020 15:52:50 +0000 (UTC)
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] Add driver for power button on Dell Wyse 3020
+Date:   Mon, 30 Nov 2020 16:55:35 +0100
+Message-Id: <20201130155537.1665091-1-lkundrak@v3.sk>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201127153923.26717-1-alexandre.truong@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 27/11/2020 17:39, Alexandre Truong wrote:
-> Previously, this command returns no help message on aarch64:
-> 
->   -> ./perf record --user-regs=?
-> 
->   available registers:
->   Usage: perf record [<options>] [<command>]
->       or: perf record [<options>] -- <command> [<options>]
-> 
-> With this change, the registers are listed.
-> 
->   -> ./perf record --user-regs=?
-> 
->   available registers: x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 x29 lr sp pc
-> 
-> It's also now possible to record subsets of registers on aarch64:
-> 
->   -> ./perf record --user-regs=x4,x5 ls
->   -> ./perf report --dump-raw-trace
-> 
->   12801163749305260 0xc70 [0x40]: PERF_RECORD_SAMPLE(IP, 0x2): 51956/51956: 0xffffaa6571f0 period: 145785 addr: 0
->   ... user regs: mask 0x30 ABI 64-bit
->   .... x4    0x000000000000006c
->   .... x5    0x0000001001000001
->    ... thread: ls:51956
->     ...... dso: /usr/lib64/ld-2.17.so
-> 
+please consider applying the patches chained to this message. It's a
+rather simple driver for a power button on Dell Ariel board along with
+the Device Tree binding document.
 
-Checked that the registers can be listed with =? and that recording different combinations of registers works as expected.
+Compared to previous version, issues pointed out in the review by
+Dmitry Torokhov have been addressed. Change logs are present in
+individual patches.
 
-Tested-by: James Clark <james.clark@arm.com>
+Thank you
+Lubo
+
+
