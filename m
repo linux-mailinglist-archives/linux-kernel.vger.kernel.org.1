@@ -2,140 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4282C9241
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E28E42C9249
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731254AbgK3XLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:11:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
+        id S1730727AbgK3XO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:14:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730540AbgK3XLT (ORCPT
+        with ESMTP id S1726737AbgK3XO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:11:19 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CB2C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:10:39 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id l11so19282plt.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:10:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aYm3p0jj0sVkrKj/bgD7NF1z8jv/Uy3ub0YZDSBHR1k=;
-        b=bhfuwapsRiIEuUZn44jGMBQy5mdjGqflyjT/VJspv8bM+eZJELH98LLWw35xfA3RzG
-         9oIbCpG88nBDv1HTY3Mtd/Uzdlr2gulcs5NOhwWpLyvQIm3a88khs3A/5JSm+zkTAi+C
-         H++CFP/tLOt2ycvlQ20uqeJB+0X4CV0m78LlTTjJfhzpqyfczntZc0KZ/rVBesbm7NZQ
-         MgbCsoiq3UAh2hz6lOVT55EVWER5yUtSOu39Guelo5OkJ1o23sBBmP9TDN+EoQRcGYL2
-         3+G0+KrbN56KVoBuYjmttnS9/Oj3bsSWDyCwnpy1O6BF8R0YBSn3597leSxEU6kTa0pu
-         fCtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aYm3p0jj0sVkrKj/bgD7NF1z8jv/Uy3ub0YZDSBHR1k=;
-        b=lfJQy2haY2LQ8QpGLrrK1k6Uvyh5aANgiqxjAX0oSksjfvzjtglXPrTnLqj3u/fv7T
-         FgJYjebPWHo+KaiKKskts4MoI85ShxVeOezKEYFkVzPMVHZ/0pJlE59A3i+ZsQQErmmu
-         NH387G5TV5+7tfs9hRe/ziN1lXE3cr86zol5sVAuyXdvVQ7VI4jjqQ9Vblfrj+0B1Jf/
-         d5rsp1Q+5RNHN0S7Wu2OTavB9hPEGF7QvIXpjXMEUz8HFXCD7GWai3ZR+mEyW5YEAXHD
-         kPhdW+pIxRnNsRJ4fi1xeIMspc/QYHseAYMzcHB1vSjAgZ38uF9POrZxnvPss6oJLrQ/
-         0q8A==
-X-Gm-Message-State: AOAM532/4m4+ATXMJKUW7zxihC6SR6CnNuEYkxsUC+PGpbvYfXg2ZTvz
-        qKfUIYHnNfzG/lacti8TMVc=
-X-Google-Smtp-Source: ABdhPJwBPdpAIryvVStwofSzNkKPyurPV69Nf+Dj6qCm3AijHsFH+VF4PejkGmbtb/1KmtLtLAQVJQ==
-X-Received: by 2002:a17:90b:b15:: with SMTP id bf21mr114253pjb.21.1606777838904;
-        Mon, 30 Nov 2020 15:10:38 -0800 (PST)
-Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
-        by smtp.gmail.com with ESMTPSA id m9sm12438pfh.94.2020.11.30.15.10.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 15:10:37 -0800 (PST)
-Date:   Tue, 1 Dec 2020 10:10:34 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 26/32] sched: Add a second-level tag for nested
- CGroup usecase
-Message-ID: <20201130231034.GF473773@balbir-desktop>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-27-joel@joelfernandes.org>
- <20201125134237.GZ2414@hirez.programming.kicks-ass.net>
+        Mon, 30 Nov 2020 18:14:26 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7A1C0613D2;
+        Mon, 30 Nov 2020 15:13:45 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606778024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DcIojZeNBXirIxPuzck5gKL+B2GaAAVvbLMSbnv7A4o=;
+        b=TErIi0LRzrxWtp2w0jaDbQs3wM0sxhxyGGuNXb8yCoSc19jwyWuTOLBKnvHCQCuVB92XB7
+        U8bleVUuBzWgRMnH9UGQbNX9UJU1aATJ3/YACH9xpT2TQ28H7n6zBeosQVWyUDwLhsclsu
+        iBmtG3PLr6EVBA9vzkJ2dN2nxSoEl77RRKFyUPL1iJRoLiXoQE/hvD7OuotKPcwa+Lvy9V
+        GkYyESZNsVaNTsQHjBmTN/OSf4JuKlnUIPkFLAl5f1dQHxjSPXt8xoGGv0afpOS0RoEDrL
+        vkEM6fM2/ruRi/txjDpqSV9joZSgnJFSMw6uQvHtLX2JLfic/ZSKE2dJ5uRKuQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606778024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DcIojZeNBXirIxPuzck5gKL+B2GaAAVvbLMSbnv7A4o=;
+        b=OBqVQNWAecaT77Y/D1j/uIFIdsyYMUuCsILx3O7iOBPONrreeEGV9ZZIdUy8tDebOhwOw5
+        JTAGOz1sV1hhrSCQ==
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>, linux-kernel@vger.kernel.org
+Cc:     =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH kernel v4 6/8] genirq/irqdomain: Move hierarchical IRQ cleanup to kobject_release
+In-Reply-To: <20201124061720.86766-7-aik@ozlabs.ru>
+References: <20201124061720.86766-1-aik@ozlabs.ru> <20201124061720.86766-7-aik@ozlabs.ru>
+Date:   Tue, 01 Dec 2020 00:13:44 +0100
+Message-ID: <871rgaigk7.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125134237.GZ2414@hirez.programming.kicks-ass.net>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 02:42:37PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 17, 2020 at 06:19:56PM -0500, Joel Fernandes (Google) wrote:
-> > From: Josh Don <joshdon@google.com>
-> > 
-> > Google has a usecase where the first level tag to tag a CGroup is not
-> > sufficient. So, a patch is carried for years where a second tag is added which
-> > is writeable by unprivileged users.
-> > 
-> > Google uses DAC controls to make the 'tag' possible to set only by root while
-> > the second-level 'color' can be changed by anyone. The actual names that
-> > Google uses is different, but the concept is the same.
-> > 
-> > The hierarchy looks like:
-> > 
-> > Root group
-> >    / \
-> >   A   B    (These are created by the root daemon - borglet).
-> >  / \   \
-> > C   D   E  (These are created by AppEngine within the container).
-> > 
-> > The reason why Google has two parts is that AppEngine wants to allow a subset of
-> > subcgroups within a parent tagged cgroup sharing execution. Think of these
-> > subcgroups belong to the same customer or project. Because these subcgroups are
-> > created by AppEngine, they are not tracked by borglet (the root daemon),
-> > therefore borglet won't have a chance to set a color for them. That's where
-> > 'color' file comes from. Color could be set by AppEngine, and once set, the
-> > normal tasks within the subcgroup would not be able to overwrite it. This is
-> > enforced by promoting the permission of the color file in cgroupfs.
-> 
-> Why can't the above work by setting 'tag' (that's a terrible name, why
-> does that still live) in CDE? Have the most specific tag live. Same with
-> that thread stuff.
-> 
-> All this API stuff here is a complete and utter trainwreck. Please just
-> delete the patches and start over. Hint: if you use stop_machine(),
-> you're doing it wrong.
-> 
-> At best you now have the requirements sorted.
+Alexey,
 
-+1, just remove this patch from the series so as to unblock the series.
+On Tue, Nov 24 2020 at 17:17, Alexey Kardashevskiy wrote:
+> This moves hierarchical domain's irqs cleanup into the kobject release
+> hook to make irq_domain_free_irqs() as simple as kobject_put.
 
-Balbir Singh.
+Truly simple: Simply broken in multiple ways.
+
+CONFIG_SPARSE_IRQ=n is now completely buggered. It does not even compile
+anymore. Running core code changes through a larger set of cross
+compilers is neither rocket science nor optional.
+
+For CONFIG_SPARSE_IRQ=y, see below.
+
+> @@ -1675,14 +1679,11 @@ void irq_domain_free_irqs(unsigned int virq, unsigned int nr_irqs)
+>  		 "NULL pointer, cannot free irq\n"))
+>  		return;
+>  
+> -	mutex_lock(&irq_domain_mutex);
+> -	for (i = 0; i < nr_irqs; i++)
+> -		irq_domain_remove_irq(virq + i);
+> -	irq_domain_free_irqs_hierarchy(data->domain, virq, nr_irqs);
+> -	mutex_unlock(&irq_domain_mutex);
+> +	for (i = 0; i < nr_irqs; i++) {
+> +		struct irq_desc *desc = irq_to_desc(virq + i);
+>  
+> -	irq_domain_free_irq_data(virq, nr_irqs);
+> -	irq_free_descs(virq, nr_irqs);
+> +		kobject_put(&desc->kobj);
+
+So up to this point both irq_dispose_mapping() _and_
+irq_domain_free_irqs() invoked irq_free_descs().
+
+Let's look at the call chains:
+
+   irq_domain_free_irqs()
+     irq_free_descs()
+       mutex_lock(&sparse_irq_lock);
+         for (i...)
+           free_desc(from + i)
+             irq_remove_debugfs_entry();
+             unregister_irq_proc();
+             irq_sysfs_del();
+             delete_irq_desc();
+             call_rcu();
+       bitmap_clear(allocated_irqs, ...);
+       mutex_unlock(&sparse_irq_lock);
+
+with your modifications it does:
+
+   irq_domain_free_irqs()
+     for (i...)
+          kobject_put(&desc->kobj)
+            irq_kobj_release()
+              if (desc->free_irq)
+                desc->free_irq(desc);
+              irq_remove_debugfs_entry();
+              unregister_irq_proc();
+              delete_irq_desc();
+              call_rcu();
+
+Can you spot the wreckage? It's not even subtle, it's more than obvious.
+
+    1) None of the operations in irq_kobj_release() is protected by
+       sparse_irq_lock anymore. There was a comment in free_desc() which
+       explained what is protected. You removed parts of that comment
+       and just left the sysfs portion of it above delete_irq_desc()
+       which is completely bogus because you removed the irq_sysfs_del()
+       call.
+
+    2) Nothing removes the freed interrupts from the allocation
+       bitmap. Run this often enough and you exhausted the interrupt
+       space.
+
+And no, you cannot just go and invoke irq_free_descs() instead of
+kobject_put(), simply because you'd create lock order inversion vs. the
+free_irq() callback.
+
+So no, it's not that simple and I'm not at all interested in another
+respin of this with some more duct tape applied.
+
+It can be done, but that needs way more thought, a proper design which
+preserves the existing semantics completely and wants to be a fine
+grained series where each patch does exactly ONE small thing which is
+reviewable and testable on _ALL_ users of this code, i.e. _ALL_
+architectures and irq chip implementations.  
+
+Thanks,
+
+        tglx
