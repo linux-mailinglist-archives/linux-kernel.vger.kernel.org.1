@@ -2,100 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E652C7D6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:35:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BE32C7D73
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgK3DdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 22:33:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41533 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727387AbgK3DdX (ORCPT
+        id S1727307AbgK3Din (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 22:38:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbgK3Dim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 22:33:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606707117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I0HRTFCFoP29oy6MJspA5BbLf81O/XKx0AAg815vRN8=;
-        b=PD3GIFW2NQOq5dkQdsyWJinlG2bIlQixXO4aYhykWZYmpho+BkRz/O9iEyfZXmbGLv9fEl
-        EaHHxooQQylCavhZE1MEM1RMQz1ZGvUP0deAWG8kBT3WvJpc70JXKzbzyLEuk8Yikqzetj
-        OxEOZaJNmqNeIvaTHR2UYUvjpVLhpVg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-wqITtZ1iMMKoCD3kiCzHrA-1; Sun, 29 Nov 2020 22:31:55 -0500
-X-MC-Unique: wqITtZ1iMMKoCD3kiCzHrA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2215880EDB5;
-        Mon, 30 Nov 2020 03:31:54 +0000 (UTC)
-Received: from [10.72.13.173] (ovpn-13-173.pek2.redhat.com [10.72.13.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 36A6710016F4;
-        Mon, 30 Nov 2020 03:31:44 +0000 (UTC)
-Subject: Re: [PATCH v2 17/17] vdpa: split vdpasim to core and net modules
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
-References: <20201126144950.92850-1-sgarzare@redhat.com>
- <20201126144950.92850-18-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <ce5f1f8b-a0e2-5c3f-2e49-48e0379d1bba@redhat.com>
-Date:   Mon, 30 Nov 2020 11:31:43 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 29 Nov 2020 22:38:42 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD43FC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 19:38:02 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id o4so6989609pgj.0
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 19:38:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Jhc+lVkqsX84CmnCJgcMdvNeWtYbhuxZA6U1hGDfCGs=;
+        b=sr5bOr50tz6ihMGBHJWaQvOhIk8Bg1X0QcALns6jQeSuYfKCKOwkjys6p28+ANBkXs
+         sPXVqph13y9tIu1ymUSN+KlVm/FbyHUf7sjCI7xgjyQQPNJOFjg6TVwThUHrF6fvV1bf
+         9VLjExX0ZVuWmHE/jaXZzP1e5nMwsCvvIi6l1PoClPWxVMafi1PloU85hdqCBxIB8ZwZ
+         hiToySufRSkARd/n87MR0F5wClOVoWgHn9DQ4xUtwAlfYo8z5RSIPDU+TABG4GitgXMV
+         6aeklxLi6g4D7HvLUasFZpsWa6pfM+uy2VXLpu4E/BTjBepw3CQGB276F343u1K5xrK7
+         TBuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jhc+lVkqsX84CmnCJgcMdvNeWtYbhuxZA6U1hGDfCGs=;
+        b=OF+nQ1SrOcQjtPJlHw/hlTvC8fLgmODJkfj9MPnAWQbs5GRVEvZjO/WzwNMWLLaRKF
+         8sWiZUWWSv92Jkt9KeZNdE2wwHRAZO8bQZkA3poigEKHwLuEk/qanReeFSOAvQlH8SrY
+         Xm+qUl5lM5w8KOvJHazBeIMg3YgGnGsUrE2u3xNPh0CGG0nqkKTZuP9nuvThKHeoYsp0
+         PYKITPQVCyU11sOWL15Vfygz25/XeX8Adu95GnjoU0y+W1fljReH8U5AoHzbju0G5C88
+         EFQ+M+IcTtUXRyQx4Wov9jAYdj+r5w+hV5zaNVaZCC3FBdaW5cCLHRfWpZR+V81+2GNE
+         Ln8Q==
+X-Gm-Message-State: AOAM530v21lHgV5TL6VrRRv5Cw0LGOa9mGK+dC/G6pL3LgY+XbXO9Vrp
+        F4MZPGHU4m813QKmrf3qyYU=
+X-Google-Smtp-Source: ABdhPJyqzPJpZ/psYEclGIIReWuFuHpYksWS8s0+fPSMVKqj2yfAaEieMi6Hmk4iHLZM5oIFsl9moA==
+X-Received: by 2002:a63:5664:: with SMTP id g36mr15874386pgm.33.1606707481029;
+        Sun, 29 Nov 2020 19:38:01 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id f18sm14786936pfa.167.2020.11.29.19.37.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Nov 2020 19:38:00 -0800 (PST)
+Date:   Mon, 30 Nov 2020 12:37:58 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCH] posix_acl.h: define missing ACL functions on
+ non-posix-acl build
+Message-ID: <X8RpFo+5m1i4L5Gn@jagdpanzerIV.localdomain>
+References: <20201130014404.36904-1-sergey.senozhatsky@gmail.com>
+ <5b015b83-f183-526a-94e7-029f4c98b30b@infradead.org>
+ <X8Rj0s/Emv9Qmv3d@jagdpanzerIV.localdomain>
+ <X8RkVIxou1D1YfEb@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20201126144950.92850-18-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8RkVIxou1D1YfEb@jagdpanzerIV.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A quick question, shouldn't there be dummy definitions for
+the EXPORT_SYMBOL-s? So that external modules can be modprobed
+and used.
 
-On 2020/11/26 下午10:49, Stefano Garzarella wrote:
-> From: Max Gurtovoy<mgurtovoy@nvidia.com>
->
-> Introduce new vdpa_sim_net and vdpa_sim (core) drivers. This is a
-> preparation for adding a vdpa simulator module for block devices.
->
-> Signed-off-by: Max Gurtovoy<mgurtovoy@nvidia.com>
-> [sgarzare: various cleanups/fixes]
-> Signed-off-by: Stefano Garzarella<sgarzare@redhat.com>
-> ---
-> v2:
-> - Fixed "warning: variable 'dev' is used uninitialized" reported by
->    'kernel test robot' and Dan Carpenter
-> - rebased on top of other changes (dev_attr, get_config(), notify(), etc.)
-> - left batch_mapping module parameter in the core [Jason]
->
-> v1:
-> - Removed unused headers
-> - Removed empty module_init() module_exit()
-> - Moved vdpasim_is_little_endian() in vdpa_sim.h
-> - Moved vdpasim16_to_cpu/cpu_to_vdpasim16() in vdpa_sim.h
-> - Added vdpasim*_to_cpu/cpu_to_vdpasim*() also for 32 and 64
-> - Replaced 'select VDPA_SIM' with 'depends on VDPA_SIM' since selected
->    option can not depend on other [Jason]
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.h     | 103 +++++++++++++
->   drivers/vdpa/vdpa_sim/vdpa_sim.c     | 222 +--------------------------
->   drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 171 +++++++++++++++++++++
->   drivers/vdpa/Kconfig                 |  13 +-
->   drivers/vdpa/vdpa_sim/Makefile       |   1 +
->   5 files changed, 290 insertions(+), 220 deletions(-)
->   create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim.h
->   create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+Some of posix_acl exported symbols have dummy definitions,
+others don't.
 
+E.g. posix_acl_create() is exported symbol and it's defined for
+both FS_POSIX_ACL and !FS_POSIX_ACL. While exported set_posix_acl()
+is defined only for FS_POSIX_ACL config.
 
-Looks good, consider there are some still some questions left. I will 
-probably ack for the next version.
+---
 
-Thanks
-
+diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+index 90797f1b421d..8a6c77a69761 100644
+--- a/include/linux/posix_acl.h
++++ b/include/linux/posix_acl.h
+@@ -59,19 +59,19 @@ posix_acl_release(struct posix_acl *acl)
+ 
+ /* posix_acl.c */
+ 
++extern int posix_acl_permission(struct inode *, const struct posix_acl *, int);
++
++extern struct posix_acl *get_posix_acl(struct inode *, int);
++
++#ifdef CONFIG_FS_POSIX_ACL
+ extern void posix_acl_init(struct posix_acl *, int);
+ extern struct posix_acl *posix_acl_alloc(int, gfp_t);
+-extern int posix_acl_valid(struct user_namespace *, const struct posix_acl *);
+-extern int posix_acl_permission(struct inode *, const struct posix_acl *, int);
+-extern struct posix_acl *posix_acl_from_mode(umode_t, gfp_t);
+ extern int posix_acl_equiv_mode(const struct posix_acl *, umode_t *);
++extern struct posix_acl *posix_acl_from_mode(umode_t, gfp_t);
+ extern int __posix_acl_create(struct posix_acl **, gfp_t, umode_t *);
+ extern int __posix_acl_chmod(struct posix_acl **, gfp_t, umode_t);
+-
+-extern struct posix_acl *get_posix_acl(struct inode *, int);
+ extern int set_posix_acl(struct inode *, int, struct posix_acl *);
+-
+-#ifdef CONFIG_FS_POSIX_ACL
++extern int posix_acl_valid(struct user_namespace *, const struct posix_acl *);
+ extern int posix_acl_chmod(struct inode *, umode_t);
+ extern int posix_acl_create(struct inode *, umode_t *, struct posix_acl **,
+ 		struct posix_acl **);
+@@ -91,18 +91,61 @@ static inline void cache_no_acl(struct inode *inode)
+ 	inode->i_acl = NULL;
+ 	inode->i_default_acl = NULL;
+ }
++
++struct posix_acl *get_acl(struct inode *inode, int type);
+ #else
++static inline void posix_acl_init(struct posix_acl *, int)
++{
++}
++
++static inline struct posix_acl *posix_acl_alloc(int, gfp_t)
++{
++	return NULL;
++}
++
++static inline int posix_acl_valid(struct user_namespace *,
++				  const struct posix_acl *)
++{
++	return 0;
++}
++
++static inline int posix_acl_equiv_mode(const struct posix_acl *, umode_t *)
++{
++	return 0;
++}
++
++static inline struct posix_acl *posix_acl_from_mode(umode_t, gfp_t)
++{
++	return NULL;
++}
++
+ static inline int posix_acl_chmod(struct inode *inode, umode_t mode)
+ {
+ 	return 0;
+ }
+ 
++static inline int set_posix_acl(struct inode *, int, struct posix_acl *)
++{
++	return 0;
++}
++
+ #define simple_set_acl		NULL
+ 
+ static inline int simple_acl_create(struct inode *dir, struct inode *inode)
+ {
+ 	return 0;
+ }
++
++static inline int __posix_acl_create(struct posix_acl **, gfp_t, umode_t *)
++{
++	return 0;
++}
++
++static inline int __posix_acl_chmod(struct posix_acl **, gfp_t, umode_t)
++{
++	return 0;
++}
++
+ static inline void cache_no_acl(struct inode *inode)
+ {
+ }
+@@ -117,8 +160,38 @@ static inline int posix_acl_create(struct inode *inode, umode_t *mode,
+ static inline void forget_all_cached_acls(struct inode *inode)
+ {
+ }
++
++static inline struct posix_acl *get_cached_acl(struct inode *inode, int type)
++{
++	return NULL;
++}
++
++static inline struct posix_acl *get_cached_acl_rcu(struct inode *inode,
++						   int type)
++{
++	return NULL;
++}
++
++static inline void set_cached_acl(struct inode *inode, int type,
++				  struct posix_acl *acl)
++{
++}
++
++static inline void forget_cached_acl(struct inode *inode, int type)
++{
++}
++
++static inline struct posix_acl *get_acl(struct inode *inode, int type)
++{
++	return NULL;
++}
++
++static inline int posix_acl_update_mode(struct inode *, umode_t *,
++					struct posix_acl **)
++{
++	return 0;
++}
+ #endif /* CONFIG_FS_POSIX_ACL */
+ 
+-struct posix_acl *get_acl(struct inode *inode, int type);
+ 
+ #endif  /* __LINUX_POSIX_ACL_H */
