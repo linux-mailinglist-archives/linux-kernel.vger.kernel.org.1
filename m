@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2332C8C6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F80C2C8C70
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388020AbgK3SPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:15:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54706 "EHLO
+        id S2388028AbgK3SPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:15:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388014AbgK3SPS (ORCPT
+        with ESMTP id S1726376AbgK3SPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:15:18 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281A4C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:14:32 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id e5so81878pjt.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:14:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Qxg9fj+0XCIGonLy291dTMO3lLUWRmtT3yL5N2eRulk=;
-        b=pxwOMjeOK6XW/T0vsBXN9b4un8VB0QjBPH+3KbpEs7wEDpetbEvfGEBtN+T8eTjB78
-         jABD75yAkF33MXZVRACJUvelYVjEbwB5rHV4+ik0GMOlFGO1Yn/Dn1cNoprvwrUjnlKD
-         RQ35XzWl96elMe70F0KpoZ4PweCTg9UNfI8Wixfuc7dQvMaikI5qXCE1uLFIomcaUrQ2
-         r5lhPZdLjJ8g38g2ScLXWr5KHEpk4ub8yAGlWQ+h7g6X7TNxC3kzsub602ei+2ejxpSA
-         OSF3hvLFxE1au2XKip/+jWaiUQeHsRs/FwEkDgp2sVOFXGSoZT1HbcwyX7lUhS9BenYk
-         UD2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qxg9fj+0XCIGonLy291dTMO3lLUWRmtT3yL5N2eRulk=;
-        b=fsuxyk72MJFuKLdbLAlzGdAOayCM6lrtuin3M5cHMB+kXI2NDeT0TiBjCrIxrsAwV3
-         fIxuOFESiIeHGbGf5sMu2EWsLEEPQckkfvtnAt+l9/HVTGBqeOCUQnxzxz7kCsWJVAZs
-         ztYuYNpBErAbUFmuUfnGKYzJZx5P/T6t3rEx8tqbuMDoUvO2k5O1f31sg0HhEiWhQUX6
-         HhGE20VFcYOPRxj6t808sYDYUCQQDMWxM0rYgCRLNBXnvLY7ffBCKt5B8VgNLj7X7WyT
-         7vPbQP+H5g7i0H8rrDpeQsOOPL9FwDQ3AyXDLVxO4iIkbxi0mYNWu2gVPdiM3z1H001L
-         63fQ==
-X-Gm-Message-State: AOAM531waXx6kECKmMh5ZdA3LGxI1Dv2DeEb0oaeAnsNJk9DdR+xotT+
-        ouBIr9zKwnuJCl3lR5puQmBMxA==
-X-Google-Smtp-Source: ABdhPJxsiGez54cXtvJTSfM4mSqrojbwclgxTWEK85ewxR6VjTuZCPGNGA2WawCselj+Ut48pFI8sA==
-X-Received: by 2002:a17:90b:19cf:: with SMTP id nm15mr35878pjb.63.1606760071602;
-        Mon, 30 Nov 2020 10:14:31 -0800 (PST)
-Received: from google.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
-        by smtp.gmail.com with ESMTPSA id e1sm17255827pfi.158.2020.11.30.10.14.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 10:14:30 -0800 (PST)
-Date:   Mon, 30 Nov 2020 18:14:27 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Mon, 30 Nov 2020 13:15:41 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D534CC0613D4;
+        Mon, 30 Nov 2020 10:15:00 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0c0400dc0f4426b730eaa1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:400:dc0f:4426:b730:eaa1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 382831EC0249;
+        Mon, 30 Nov 2020 19:14:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606760099;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=DsIkyRDqsHAg65QslwmCp09JK5IjAEIZ6mx1FlBzzao=;
+        b=cYDnN961MFrBT2jgiFz98Jd1x2JPsKSatoVYE6Ap3wX8nWbvd9+BnwaGXSppVat3ie+7Pi
+        4M3BhZGFiVKezT3prSdk2+xQZivfw0GqWSQ6QMI/IL1S8vhW1jUqZE0+8bZfSt56qp4ZcU
+        4ImngURjhKH93VTjAU3Fj/J8Y+wUYtw=
+Date:   Mon, 30 Nov 2020 19:15:00 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 00/35] SEV-ES hypervisor support
-Message-ID: <X8U2gyj7F2wFU3JI@google.com>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <20200914225951.GM7192@sjchrist-ice>
- <bee6fdda-d548-8af5-f029-25c22165bf84@amd.com>
- <20200916001925.GL8420@sjchrist-ice>
- <60cbddaf-50f3-72ca-f673-ff0b421db3ad@redhat.com>
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v15 05/26] x86/cet/shstk: Add Kconfig option for
+ user-mode Shadow Stack
+Message-ID: <20201130181500.GH6019@zn.tnic>
+References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
+ <20201110162211.9207-6-yu-cheng.yu@intel.com>
+ <20201127171012.GD13163@zn.tnic>
+ <98e1b159-bf32-5c67-455b-f798023770ef@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <60cbddaf-50f3-72ca-f673-ff0b421db3ad@redhat.com>
+In-Reply-To: <98e1b159-bf32-5c67-455b-f798023770ef@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020, Paolo Bonzini wrote:
-> On 16/09/20 02:19, Sean Christopherson wrote:
-> > 
-> > TDX also selectively blocks/skips portions of other ioctl()s so that the
-> > TDX code itself can yell loudly if e.g. .get_cpl() is invoked.  The event
-> > injection restrictions are due to direct injection not being allowed (except
-> > for NMIs); all IRQs have to be routed through APICv (posted interrupts) and
-> > exception injection is completely disallowed.
-> > 
-> >    kvm_vcpu_ioctl_x86_get_vcpu_events:
-> > 	if (!vcpu->kvm->arch.guest_state_protected)
-> >          	events->interrupt.shadow = kvm_x86_ops.get_interrupt_shadow(vcpu);
-> 
-> Perhaps an alternative implementation can enter the vCPU with immediate exit
-> until no events are pending, and then return all zeroes?
+On Sat, Nov 28, 2020 at 08:23:59AM -0800, Yu, Yu-cheng wrote:
+> We have X86_BRANCH_TRACKING_USER too.  My thought was, X86_CET means any of
+> kernel/user shadow stack/ibt.
 
-This can't work.  If the guest has STI blocking, e.g. it did STI->TDVMCALL with
-a valid vIRQ in GUEST_RVI, then events->interrupt.shadow should technically be
-non-zero to reflect the STI blocking.  But, the immediate exit (a hardware IRQ
-for TDX guests) will cause VM-Exit before the guest can execute any instructions
-and thus the guest will never clear STI blocking and never consume the pending
-event.  Or there could be a valid vIRQ, but GUEST_RFLAGS.IF=0, in which case KVM
-would need to run the guest for an indeterminate amount of time to wait for the
-vIRQ to be consumed.
+It is not about what it means - it is what you're going to use/need. You have
+ifdeffery both with X86_CET and X86_SHADOW_STACK_USER.
 
-Tangentially related, I haven't looked through the official external TDX docs,
-but I suspect that vmcs.GUEST_RVI is listed as inaccessible for production TDs.
-This will be changed as the VMM needs access to GUEST_RVI to handle
-STI->TDVMCALL(HLT), otherwise the VMM may incorrectly put the vCPU into a
-blocked (not runnable) state even though it has a pending wake event.
+This one
+
++#ifdef CONFIG_X86_SHADOW_STACK_USER
++#define DISABLE_SHSTK	0
++#else
++#define DISABLE_SHSTK	(1 << (X86_FEATURE_SHSTK & 31))
++#endif
+
+for example, is clearly wrong and wants to be #ifdef CONFIG_X86_CET, for
+example. Unless I'm missing something totally obvious.
+
+In any case, you need to analyze what Kconfig defines the code will
+need and to what they belong and add only the minimal subset needed.
+Our Kconfig symbols space is already nuts so adding more needs to be
+absolutely justified.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
