@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7C32C7F7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 555252C7F81
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgK3IBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:01:49 -0500
-Received: from mail-dm6nam12on2079.outbound.protection.outlook.com ([40.107.243.79]:24576
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725965AbgK3IBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:01:49 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B7uxUGi9LXG9dzEOBd6HocWdI/TGlF5faNOctynci1QlbRRKiW9YyrsbBMk5CVBOPlgZCelHtD6gImwdew/PEH8BgqXoGZis+8FdxtjP+UNwkSYJLaM3ZMijLbMTR8cIkN/MGBs0DiO96/sgffvFZHw2Nlizb/f+BO7TkC1/StA/co0lE8HRCxidxCPqIpBty9BNB3iLdiYcokfsEHIfowQwLLQW/cjIhVcedgazGoWaMMQ39HddDj31oJpvLJMd4SgPsdH+7y+JqG30EDQLa0ZW1oD7Do1n50u9fu8UyyQoNw8PK34+CFzDEJFTHK58QT/7Ad2yAyDG/J8rgtFlAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dfT098x6O37EqXhhFT76Up+MyHdvzkyDgWcTTtSfE60=;
- b=FbWOHpRk7fNahIQOBrBkb0G3eV8y7JHNXjFoGoAmzZp5a+xz1fpyP5KBd/X+Vz6Yaq1Yjctsm2qAT09jl7K5hGtU5c1GnE6ib/NrBvpwVOeA8tPbsbShVUm4zYgOZEvMHWw04Rfn6mcDuFQoZlnev2ALMxZVAwB4+rqVdjaeN2weNGJNGkYKbgMSbzlbezpJWwh5BN8mC6vo68j5k+4FiFdCZGrHJCJlBiczVQOyvru3dBlAMZgkMpO5AF0bKiSD0IA9rJqY/eic68+tW2bPPnBX2suErGnK7OhztImP8T31JoDOFXe0VJMFCIh0Ie8UW57Pd9vvWko7qgI0IG9q7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1726137AbgK3III (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:08:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgK3III (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 03:08:08 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AD2C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:07:21 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id f9so17699373ejw.4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:07:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dfT098x6O37EqXhhFT76Up+MyHdvzkyDgWcTTtSfE60=;
- b=V5UzsppR/V1fWiL6/tFkX1gpG92WQkq5MCbJIyyQRbwJHxaedV8bJ4MGemSEL4TTXeqZ6MafZoBPpwu9hs/sM8/a3shuA9NxDGLdnQu9vwqD+RT5Ljey7rLWvrnqzqTcZ/hsNdDZ+whPTirptql6XbFti/83NehZYkpgdrzWTi8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB4755.namprd12.prod.outlook.com (2603:10b6:208:82::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Mon, 30 Nov
- 2020 08:00:56 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::1ccc:8a9a:45d3:dd31]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::1ccc:8a9a:45d3:dd31%7]) with mapi id 15.20.3611.025; Mon, 30 Nov 2020
- 08:00:56 +0000
-Subject: Re: [PATCH] drm/amdgpu/display: remove trailing semicolon in macro
- definition
-To:     trix@redhat.com, alexander.deucher@amd.com, airlied@linux.ie,
-        daniel@ffwll.ch, Hawking.Zhang@amd.com, evan.quan@amd.com,
-        Felix.Kuehling@amd.com, luben.tuikov@amd.com, Dennis.Li@amd.com,
-        andrey.grodzovsky@amd.com, Joseph.Greathouse@amd.com,
-        jonathan.kim@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20201127162607.2656353-1-trix@redhat.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <01583ef8-4d70-82b2-a643-754d95d47a0a@amd.com>
-Date:   Mon, 30 Nov 2020 09:00:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201127162607.2656353-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM0PR04CA0062.eurprd04.prod.outlook.com
- (2603:10a6:208:1::39) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/sejjbzH1VPFW9nCTItPee2k0fSpsfkmZsIeiucrGOg=;
+        b=SVdLFF7xWJW5PzYeW9PtVHqnHFgfFlnAz3/olfCk/llK8OyX90C4rRBhMB3CYrHmOe
+         A7EpvTlnGEtmlofIG8Hgiq9r91C59oqB8tfqi1kuujktvDkKf8o7UlUTtlV1hf36aIoP
+         ifQTGBWYcYhMS1ppQN/oUk/Q35LyHErN3ZSnwtDCCK6SIZsnvGj2bTD7P+hoviTsF/5M
+         TNrdCHepOsPVkyAfaNLGCfPri1BI1J3qlk+oXe01glbyFhcSWSuN6NzPZkz75KIHLrxp
+         5DU+d17e4kxx+hktfZ+VSAu9y6z9tVRrCQXh7mWdaQvVr/DNys2HPes/DASFldyXZ/Gd
+         N/1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/sejjbzH1VPFW9nCTItPee2k0fSpsfkmZsIeiucrGOg=;
+        b=r+sP4SyyRsKCL1/wehQjR5EjVfByZF/wt3Nikgn/EJ15stDedT5F0eOcRvSYdVli6u
+         bbfHzDwVfQql75Tj3m0b63HJeRwJkfBwp2WbCrY1c5P9S4sadyJrJOWjXmpEH9TzgK+o
+         uWweQ2EqzL1mldWT4f9ZyL6SEWc6nw9SAnc4x2EwrQ2GksN9Zbr2DFkS25mbHa2y/c1v
+         6fTYnjiICJggxPwN+tXbW5FDxGUzpYZF8jgEb0aQPCeNPMquQpLI9gRgA63B1uVZFaxQ
+         egCQ1ZPomslJ4MCfnejalZV4B+t3eVyhaKACo7feAsVVh1qf8J1QkOxPr2eLL19ksUv9
+         envQ==
+X-Gm-Message-State: AOAM530WA8Pky+mbphLe8CQ5gStboHojEWR7SKqg7t8h3Ho0be9GotRl
+        SCvr7fwlTINnTw9JKMqnvnC2giY57++7GHF68uc=
+X-Google-Smtp-Source: ABdhPJzbpC2c788iOfFVJUuzN0hpuqAqFwFMRkrHuYn24eb+BC3ZwkiRkTEK0k9onIQ08SzxIQAQ7/HQE38FSorlRm0=
+X-Received: by 2002:a17:906:d8a9:: with SMTP id qc9mr19435353ejb.482.1606723640479;
+ Mon, 30 Nov 2020 00:07:20 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR04CA0062.eurprd04.prod.outlook.com (2603:10a6:208:1::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Mon, 30 Nov 2020 08:00:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ca18d484-b665-48e2-d41b-08d8950610d7
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4755:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB4755650B209323F158BB7D8683F50@BL0PR12MB4755.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:363;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Xcd7qts3TEJ44tPQD1rQXLTfHykQ7E6k0Pz52K6e5xHmcTHZOQUmbJkx+AeZ4xZOc23/672pOlUmUHQyWY3JDIotQwbU7Ox5RuvjfOR7ZVHHUPCvm0cY/jrdwjasA/SOpDG4rOuLG3Y3SEPOP/kCgJJpg5OLkfwMbPdn5jcmtV9VyAVj47aCIptscbRdZ/qS3PaQ5wfMq+c4gATj+44jfCba5G6MRnyWTVBLRxlHsYkGgHncvkJftCdP4BJgPkqOeDuXMxTy2AGbhSkCLUvaIFjMVylVZFote8Fda0vXrnY5y9FvaEh5Q9Scqm2APztmGrZ2s0oXJvnsquFaaaTJH81ABNUR4QEBTxAwGxrFi91svv3X5qp7l67Hh+JkvJlw6F0p0aAWh6MxHb118gpHOw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(366004)(39860400002)(136003)(8676002)(2616005)(316002)(66574015)(66556008)(6666004)(478600001)(6636002)(66946007)(36756003)(83380400001)(31696002)(186003)(2906002)(8936002)(66476007)(921005)(5660300002)(52116002)(16526019)(31686004)(4326008)(6486002)(86362001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?K05kWmx5WlBHa01OZU5xRU9VRHQyc0JvZWFJb0l6TnJ6Y1l6a09MNkdIZXRS?=
- =?utf-8?B?YzhiRUo5WGVMQ1J2OHc4VGx5NjRTQzlZTG0yQnFrbUd4SkRKVVlIWDlJOWpz?=
- =?utf-8?B?R1B5eHlqM1JVVUFhQXVnRlJob2FEb0xpRTc5Y0VqeEZUVE0xV1pKRVJ6eTM1?=
- =?utf-8?B?d0xONEN5YXRkK2FtVVVqa2xHaTVmVno1KzR5QzBRaUhVYkc0UFJaYU5WSlJ6?=
- =?utf-8?B?WFN4aGpoVzJuY3Y4cjVNWk5Lb0psc2Fnc3Jtcm1GUHRFUS9DeFNhekwyQ3Y2?=
- =?utf-8?B?OXErMHcrb21NMTFRUURWeUxpVEx1dmQ4d3Vaak1zVXFkc3hRM3lmUGJVRS8r?=
- =?utf-8?B?c1JyT25SZFZxeElYV3I3b2N3SmJBTWlTUnBhcFJVRm5SYk45anRRZCtxeUg2?=
- =?utf-8?B?cERMbUhmR21hRnJrNkg3K1BJZ0lFbHYwSTMvc0JLNUJZQ3pEN25qMWh1NDY1?=
- =?utf-8?B?akhzcUdNK3BkT1YzRjlxRTQzaktlWnE2YzlmRStqNlpPNXkzSjFFTng3WjFD?=
- =?utf-8?B?YUhHVmI5bWoxZ3RTNHU0eHJ4ZlprbG9HVnd3RDZkdGhMRCt5cGEzNmRFcWhl?=
- =?utf-8?B?eERIL04yenZiaVZuWFNubDl4YlU4dWxIZzI3UzJmNE9neEJvWWFUM3pieEda?=
- =?utf-8?B?enE3M2lPNHlXNUlBb1l3RVNXckxIYy9uQTFvNFRjU0NndHEydHRBcUtyODlw?=
- =?utf-8?B?VHkxSXdtS3VqOTAzcUVUVGlMbHJ2cVVnZ29ucmZENnhBRkpVN0ZiYnN0dnRM?=
- =?utf-8?B?Zlg1U2NXaXhXcXkvTTVoODI1enBhdFkvSzRQR09VbmtMdzQwNzdSandVZTFj?=
- =?utf-8?B?WUJSWm1Tamt4R3ZSRjlyeVhvV3hxd2FIVXdBZC9oZE15OWNCbkdzL2laTEQv?=
- =?utf-8?B?NVdua3ZzU2xQTTBtejBlUTQzbUoxTW9YajB1Rnlxa2dMSmdCTndaa0t4RWRi?=
- =?utf-8?B?N0pjVzR5UURxZlBpYWszTi9NUFVNNjFRNTlaSlBjdXFLdWRHWWFVZWFidjd1?=
- =?utf-8?B?MFpiT0lsVEpydWVZd3pod2phVUdwK2NEcDlQZGxUREh5K1RlTzNvL2FlTDM3?=
- =?utf-8?B?Rzg4a2lUaEN6ZUN1NTY3ZjQ5blpUd2pIcE01THgrcTJPcE9rekN0SzFnQklY?=
- =?utf-8?B?L3puQ2FOODhMRi83WCtTSW1BbHJrWUlsRW1JL3V5L1lBa0JmeWNINWpEWHB5?=
- =?utf-8?B?Ulh3M3JVZlV1M1ZFemZjMklDL2JjdjA5eS9JSnZ0UVVaeVY0L2c0dytLYkU2?=
- =?utf-8?B?dEpuaVNPdEpXb1hnYTRCMk5qZ1pXTSsxNkViUW1tZlVjVTk4V2c0djlrZHlG?=
- =?utf-8?B?Q0VpTHZOSGUzQTBML0JYam9ZMTBIM0hLTUF3RVB1OS9GNWNhQ0NQdTJjeVVF?=
- =?utf-8?B?ZEpiMWJMNUJrQUdYcFdhZWZCQ0k3QU50cFRjaHhWSDR4STR2c0k1L2U5UXhX?=
- =?utf-8?Q?sD1MxzJB?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ca18d484-b665-48e2-d41b-08d8950610d7
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 08:00:56.3804
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TguXV0qTTwX7Hs1+JPWK0ZATnH7k7Tp0SXp5B9RtnDEy5qHWWf+fbJqwkB+bAu9f
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4755
+References: <20201130053037.27006-1-tesheng@andestech.com>
+In-Reply-To: <20201130053037.27006-1-tesheng@andestech.com>
+From:   Pekka Enberg <penberg@gmail.com>
+Date:   Mon, 30 Nov 2020 10:07:03 +0200
+Message-ID: <CAOJsxLH-tCyvydX_+djXNMpOAxW2Zr7rAZizLUwQVNyU8YreBg@mail.gmail.com>
+Subject: Re: [PATCH] riscv/mm: Prevent kernel module access user-space memory
+ without uaccess routines
+To:     Eric Lin <tesheng@andestech.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>, dslin1010@gmail.com,
+        Alan Kao <alankao@andestech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 27.11.20 um 17:26 schrieb trix@redhat.com:
-> From: Tom Rix <trix@redhat.com>
+On Mon, Nov 30, 2020 at 7:33 AM Eric Lin <tesheng@andestech.com> wrote:
 >
-> The macro use will already have a semicolon.
+> In the page fault handler, an access to user-space memory
+> without get/put_user() or copy_from/to_user() routines is
+> not resolved properly. Like arm and other architectures,
+> we need to let it die earlier in page fault handler.
+
+Fix looks good to me. Can you elaborate on how you found the issue and
+how the bug manifests itself?
+
 >
-> Signed-off-by: Tom Rix <trix@redhat.com>
-
-Reviewed-by: Christian König <christian.koenig@amd.com>
-
+> Signed-off-by: Eric Lin <tesheng@andestech.com>
+> Cc: Alan Kao <alankao@andestech.com>
 > ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/riscv/mm/fault.c | 3 +++
+>  1 file changed, 3 insertions(+)
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> index f9c81bc21ba4..301e93c9e72a 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> @@ -1213,7 +1213,7 @@ int emu_soc_asic_init(struct amdgpu_device *adev);
->   #define amdgpu_asic_update_umd_stable_pstate(adev, enter) \
->   	((adev)->asic_funcs->update_umd_stable_pstate ? (adev)->asic_funcs->update_umd_stable_pstate((adev), (enter)) : 0)
->   
-> -#define amdgpu_inc_vram_lost(adev) atomic_inc(&((adev)->vram_lost_counter));
-> +#define amdgpu_inc_vram_lost(adev) atomic_inc(&((adev)->vram_lost_counter))
->   
->   /* Common functions */
->   bool amdgpu_device_has_job_running(struct amdgpu_device *adev);
+> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+> index 3c8b9e433c67..a452cfa266a2 100644
+> --- a/arch/riscv/mm/fault.c
+> +++ b/arch/riscv/mm/fault.c
+> @@ -232,6 +232,9 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+>         if (user_mode(regs))
+>                 flags |= FAULT_FLAG_USER;
+>
+> +       if (!user_mode(regs) && addr < TASK_SIZE && unlikely(!(regs->status & SR_SUM)))
+> +               die(regs, "Accessing user space memory without uaccess routines\n");
 
+Let's introduce a die_kernel_fault() helper (similar to arm64, for
+example) to ensure same semantics for the different kernel faults. You
+can extract the helper from no_context().
+
+> +
+>         perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
+>
+>         if (cause == EXC_STORE_PAGE_FAULT)
+> --
+> 2.17.0
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
