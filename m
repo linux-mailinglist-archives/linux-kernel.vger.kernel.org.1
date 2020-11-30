@@ -2,229 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D3C2C8753
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 752F42C8757
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727886AbgK3O75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:59:57 -0500
-Received: from gproxy4-pub.mail.unifiedlayer.com ([69.89.23.142]:53283 "EHLO
-        gproxy4-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726885AbgK3O74 (ORCPT
+        id S1727890AbgK3PBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:01:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727001AbgK3PBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:59:56 -0500
-Received: from cmgw10.unifiedlayer.com (unknown [10.9.0.10])
-        by gproxy4.mail.unifiedlayer.com (Postfix) with ESMTP id B37B0175A37
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 07:59:13 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id jke1kjcR7Dlydjke1kXQmS; Mon, 30 Nov 2020 07:59:13 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=CakmGojl c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10:nop_charset_1
- a=nNwsprhYR40A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=pGLkceISAAAA:8
- a=VwQbUJbxAAAA:8 a=8b9GpE9nAAAA:8 a=gXLdhW2jAAAA:8 a=YfHuQ6WfqXg4DGKjl5kA:9
- a=QEXdDO2ut3YA:10:nop_charset_2 a=AjGcO6oz07-iQ99wixmX:22
- a=T3LWEMljR5ZiDmsYVIUa:22 a=Dn9eIPSr_RzuO0KTJioD:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=PhxDst6bxvMrZJlbqwjEwlHuP3jCoB2Pdz3+Y0YB6RM=; b=liZ32ShVXOHVTGVczaXGId4W7/
-        T3VVC9AoHCm3eYIlMk91os4YjU2uHpPSK6wLAJj7R+NU4e+JeS0iWHbttOKFNOpMlzILudIBTXJ3N
-        xEteaLC9ZhYiU+h+Z7djCn66dWjE85BGYr6K9kO5Pc0dZwS95SsoJQ7ZALn00HgjH5/rPrt9lHq1H
-        JsT+GUdXFUW147kth5F6mL26hKhZWzUAD3BdO/UOD1gJruwkXaHYXEAEzOMhxGJlBmLnz8IwirVl6
-        ApGAUHaBGNkA4LEMuWfzrgIcUVDxMzti+QAHW6Vx0wKvT2vhVNwRhUqAtSKmWsXD+ApOZfzljrEAP
-        KFwqFZSw==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:55722 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kjke0-0034uB-PF; Mon, 30 Nov 2020 14:59:12 +0000
-Date:   Mon, 30 Nov 2020 06:59:12 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Charles <hsu.yungteng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        alan@redhat.com
-Subject: Re: [PATCH v5] hwmon: Add driver for STMicroelectronics PM6764
- Voltage Regulator
-Message-ID: <20201130145912.GA17093@roeck-us.net>
-References: <f8766ea1-b4ee-f298-a5a4-dc83f9a54617@gmail.com>
- <20201127161051.GA9881@roeck-us.net>
- <5c78a15e-4c4a-992c-ff5b-7bb709057871@gmail.com>
+        Mon, 30 Nov 2020 10:01:41 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FB5C0613D2;
+        Mon, 30 Nov 2020 07:01:01 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id r9so1494187pjl.5;
+        Mon, 30 Nov 2020 07:01:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fnosl3bdoEpn6KZdMia0NkyW51N5t/HDyZii5SlByRo=;
+        b=sTKdupZ7LQ2c7vdCI3T62xVeLTMZs1zjI66FTrsZD5Kx3fQYlENu/yrxp7kl8x4fL2
+         anGx5SnYbNzc/3qoBEfoc6Mqd7KPWN1jLFRxHEGNbkSL6NLDMFo6TbRJ+NaAP836mmxD
+         oJCmFDNVkkwFnUpNyuGPJkm0xJ7jQajt1Z0YP9/Bki3P1z7oPqrxBvRSul88ECzKwC9r
+         tuEg+1t/A8ElYhahjCDU9Iz3nxMgHf6cnn9GPkbBEpyixLd7tlnQ57DPzjEVhGmqz55w
+         VvwChVyyPpy2NzBXle39e4ixUN3iUoB+gh7CmTnONWPHu5U0/Akm1Fav3wqdt1ShrLnQ
+         skBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fnosl3bdoEpn6KZdMia0NkyW51N5t/HDyZii5SlByRo=;
+        b=iqeW2hD/F6sW0K6JLR4TkrGVIJmMgmPO1dd2ZyGfnKYZdHMcQadSrf8llfGaGMDwcD
+         PvfVjjsMULMOuhXmKdluWucSjHlYfMuvCvNW0jA02besa5FOnZn6MOwjFCW4tFLFGriL
+         myEXLm24Pdcpfk9DusJgYkCp7/KuBKmhThLyAz7Xwpw4dUZyLcvsejekkEZvS4eXEKvl
+         hdgyp3RlH4xdh1JUJAXoDM3RohPlX21Es7ylvi1ev62v3owAuzx18XO+5NpkYSSOT38c
+         X+hgvK0tCNh+fdBJezDSAzV3ZhgDwTd9VgRRph5ZeIMfy6w7QLSimu70QzpwRubpKeQt
+         fV4A==
+X-Gm-Message-State: AOAM530i50+TvNEpB//549qFfvaiW4iXF3Gg98EBS1RTfksDLLLurVHL
+        myPED+FbjdBlGvf0Dl/JTgg=
+X-Google-Smtp-Source: ABdhPJzPjgP6w9OXYy++kPS2cEagt1D72A4JkKBgBgnQ8Mqf1j/IoW6H1JfT5OFVf3oy5Ts8BGbAIA==
+X-Received: by 2002:a17:90a:d307:: with SMTP id p7mr3665258pju.214.1606748461103;
+        Mon, 30 Nov 2020 07:01:01 -0800 (PST)
+Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id i13sm16765339pfo.139.2020.11.30.07.00.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 07:00:59 -0800 (PST)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCHv4] media: vb2: set cache sync hints when init buffers
+Date:   Tue,  1 Dec 2020 00:00:54 +0900
+Message-Id: <20201130150054.688003-1-sergey.senozhatsky@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5c78a15e-4c4a-992c-ff5b-7bb709057871@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kjke0-0034uB-PF
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:55722
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 13
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 03:46:19PM +0800, Charles wrote:
-> On 28/11/2020 上午12:10, Guenter Roeck wrote:
-> > On Fri, Nov 27, 2020 at 09:59:01AM +0800, Charles wrote:
-> > > Add the pmbus driver for the STMicroelectronics pm6764 voltage regulator.
-> > > 
-> > > the output voltage use the MFR_READ_VOUT 0xD4
-> > > vout value returned is linear11
-> > > 
-> > > Signed-off-by: Charles Hsu <hsu.yungteng@gmail.com>
-> > This patch (again) didn't make it to any of the mailing lists.
-> > Please try to find out why this is the case. I usually pick up
-> > patches from https://patchwork.kernel.org/project/linux-hwmon/list/,
-> > and may easily miss a patch if I can't find it there.
-> > 
-> > > ---
-> > > 
-> > > v5:
-> > >   - Add MAINTAINERS
-> > >   - Add a reference into trivial-devices.yaml
-> > > v4:
-> > >   - Add pm6764tr to Documentation/hwmon/index.rst.
-> > > v3:
-> > >   - Add Documentation(Documentation/hwmon/pm6764tr.rst).
-> > >   - Fix include order.
-> > > v2:
-> > >   - Fix formatting.
-> > >   - Remove pmbus_do_remove.
-> > >   - Change from .probe to .probe_new.
-> > > v1:
-> > >   - Initial patchset.
-> > > 
-> > > ---
-> > > 
-> > >   .../devicetree/bindings/trivial-devices.yaml  |  2 +
-> > >   Documentation/hwmon/index.rst                 |  1 +
-> > >   Documentation/hwmon/pm6764tr.rst              | 33 ++++++++
-> > >   MAINTAINERS                                   |  7 ++
-> > >   drivers/hwmon/pmbus/Kconfig                   |  9 +++
-> > >   drivers/hwmon/pmbus/Makefile                  |  1 +
-> > >   drivers/hwmon/pmbus/pm6764tr.c                | 76 +++++++++++++++++++
-> > >   7 files changed, 129 insertions(+)
-> > >   create mode 100644 Documentation/hwmon/pm6764tr.rst
-> > >   create mode 100644 drivers/hwmon/pmbus/pm6764tr.c
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-> > > index ab623ba930d5..cdd7bdb6abbb 100644
-> > > --- a/Documentation/devicetree/bindings/trivial-devices.yaml
-> > > +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-> > > @@ -348,6 +348,8 @@ properties:
-> > >             - socionext,synquacer-tpm-mmio
-> > >               # i2c serial eeprom  (24cxx)
-> > >             - st,24c256
-> > > +            # SMBus/I2C Voltage Regulator
-> > > +          - st,pm6764tr
-> > >               # Ambient Light Sensor with SMBUS/Two Wire Serial Interface
-> > >             - taos,tsl2550
-> > >               # 8-Channels, 12-bit ADC
-> > This, like all devicetre changes, needs to be a separate patch.
-> > Also, please make sure to copy dt maintainers and the dt mailing list
-> > when you send that patch.
-> 
-> 
-> Thank you for your suggestions.
-> 
-> I will send that patch as soon as possible.
-> 
-> 
-> > > diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> > > index b797db738225..1bbd05e41de4 100644
-> > > --- a/Documentation/hwmon/index.rst
-> > > +++ b/Documentation/hwmon/index.rst
-> > > @@ -144,6 +144,7 @@ Hardware Monitoring Kernel Drivers
-> > >      pc87360
-> > >      pc87427
-> > >      pcf8591
-> > > +   pm6764tr
-> > >      pmbus
-> > >      powr1220
-> > >      pxe1610
-> > > diff --git a/Documentation/hwmon/pm6764tr.rst b/Documentation/hwmon/pm6764tr.rst
-> > > new file mode 100644
-> > > index 000000000000..5e8092e39297
-> > > --- /dev/null
-> > > +++ b/Documentation/hwmon/pm6764tr.rst
-> > > @@ -0,0 +1,33 @@
-> > > +.. SPDX-License-Identifier: GPL-2.0-only
-> > > +
-> > > +Kernel driver pm6764tr
-> > > +======================
-> > > +
-> > > +Supported chips:
-> > > +
-> > > +  * ST PM6764TR
-> > > +
-> > > +    Prefix: 'pm6764tr'
-> > > +
-> > > +    Addresses scanned: -
-> > > +
-> > > +    Datasheet: http://www.st.com/resource/en/data_brief/pm6764.pdf
-> > > +
-> > > +Authors:
-> > > +	<hsu.yungteng@gmail.com>
-> > > +
-> > > +Description:
-> > > +------------
-> > > +
-> > > +This driver supports the STMicroelectronics PM6764TR chip. The PM6764TR is a high
-> > > +performance digital controller designed to power Intel’s VR12.5 processors and memories.
-> > > +
-> > Unrelated side note: I understand this means that you are forced to keep the
-> > datasheet under wraps, which in turn means I can not suggest functionality
-> > improvements since I don't have access to it. If the chip happens to support
-> > per-rail telemetry, you might want to consider adding support for that in a
-> > follow-up patch.
-> > 
-> > > +The device utilizes digital technology to implement all control and power management
-> > > +functions to provide maximum flexibility and performance. The NVM is embedded to store
-> > > +custom configurations. The PM6764TR device features up to 4-phase programmable operation.
-> > > +
-> > > +The PM6764TR supports power state transitions featuring VFDE, and programmable DPM
-> > > +maintaining the best efficiency over all loading conditions without compromising transient
-> > > +response. The device assures fast and independent protectionagainstload overcurrent,
-> > "protectionagainstload" -> "protection against load"
-> > 
-> > > +under/overvoltage and feedback disconnections.
-> > > +
-> > Drop empty line at end.
-> > 
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index 94ac10a153c7..a3fea132c4ed 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -13904,6 +13904,13 @@ M:	Logan Gunthorpe <logang@deltatee.com>
-> > >   S:	Maintained
-> > >   F:	drivers/dma/plx_dma.c
-> > Add empty line.
-> 
-> 
-> There is an empty line here,
-> 
-> Should I add one more empty line?
-> 
-One empty line is needed. Maybe I missed it. I am looking forward to the
-next version of your patch; then we'll see.
+We need to set ->need_cache_sync_on_prepare and
+->need_cache_sync_on_finish when we initialize vb2 buffer.
 
-Thanks,
-Guenter
+Currently these flags are set/adjusted only in V4L2's
+vb2_queue_or_prepare_buf(), which means that for the code
+paths that don't use V4L2 vb2 will always tell videobuf2
+core to skip ->prepare() and ->finish() cache syncs/flushes.
+Fix this by setting cache sync hints for new buffers; except
+VB2_MEMORY_DMABUF buffers, for which DMA exporter syncs
+caches.
+
+Fixes: f5f5fa73fbfb ("media: videobuf2: handle V4L2 buffer cache flags")
+Reported-by: Tomasz Figa <tfiga@chromium.org>
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+---
+ drivers/media/common/videobuf2/videobuf2-core.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+index 4eab6d81cce1..89e38392509c 100644
+--- a/drivers/media/common/videobuf2/videobuf2-core.c
++++ b/drivers/media/common/videobuf2/videobuf2-core.c
+@@ -414,6 +414,17 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
+ 		vb->index = q->num_buffers + buffer;
+ 		vb->type = q->type;
+ 		vb->memory = memory;
++		/*
++		 * We need to set these flags here so that the videobuf2 core
++		 * will call ->prepare()/->finish() cache sync/flush on vb2
++		 * buffers when appropriate. However, we can avoid explicit
++		 * ->prepare() and ->finish() cache sync for DMABUF buffers,
++		 * because DMA exporter takes care of it.
++		 */
++		if (q->memory != VB2_MEMORY_DMABUF) {
++			vb->need_cache_sync_on_prepare = 1;
++			vb->need_cache_sync_on_finish = 1;
++		}
+ 		for (plane = 0; plane < num_planes; ++plane) {
+ 			vb->planes[plane].length = plane_sizes[plane];
+ 			vb->planes[plane].min_length = plane_sizes[plane];
+-- 
+2.29.2
+
