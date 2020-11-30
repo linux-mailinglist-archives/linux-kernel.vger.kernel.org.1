@@ -2,162 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125512C9111
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:29:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1142C9113
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730690AbgK3W2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:28:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
+        id S1730809AbgK3W3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:29:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730640AbgK3W2l (ORCPT
+        with ESMTP id S1730795AbgK3W3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:28:41 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1EAC0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:28:00 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id f48so4434528otf.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:28:00 -0800 (PST)
+        Mon, 30 Nov 2020 17:29:33 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 713A7C0613D2;
+        Mon, 30 Nov 2020 14:28:53 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id s21so11328201pfu.13;
+        Mon, 30 Nov 2020 14:28:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xuRtX6/QiaNBrOSJvmHFpdILv2m6h3ItAI8etLSug9U=;
-        b=Mo2J2scHtsnoTZFWYGhE2uXgYqBTvm9E3lZMPEU0ZVHhNVT0CrkmVWj66h4usWZ0Nc
-         z1npRNGi4I4TtXoo1vAwFLj5NUCOI0EW9T+g/RtOlH3pzFj1E4e+E6O+sjvcmljF7uXf
-         JFhPMsOWUFvVdWG3DYYS2ocMiS7uuWNjcYmsgyDU2AEyay6wtOze/XdTymR9YxfIi//8
-         gCFAADaQlvpmzXHAn+m5WaLE4Bd0LIbVWFBxa66vgWtfO3AfDqKYgvHhDYTdOI/w9IEL
-         Ej666kK4WSD7J1XxYBLgryYUnc5nQYRkZjB54xTbTrlvaYU+njufh77czUen2hiW7EPH
-         S2JQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nAzMv+/mbuFFwiCCS8n8Lid+mXMaJezVpww5GEW5pks=;
+        b=Rh32vFtSY9kOOzSQwr/MEikm0hFOOuBIJRtIQtPsSTbcOcszdF0z19YKABUFn2fAp9
+         KWSKvWMZZpm2qlcEbhMEPVymnXlLNOzy4hP6gD7HrfhVmTxA2BUleON9EuePDlbGOd2R
+         TDSUG7BrzUcPYt1skK5dOh++5Ye65kNGtV4wYvpQXJla7uQN9MJ6fzMo+8IpcQZm5EPs
+         nCLqIkM7kNNJaNop4BWPSBieztKg6H+fQnxvrsWdD0WWVyUr5OwhoQJ8g5zuUC+WQoZZ
+         0dn6jA/0/py9d7iw5ObZCNgN+AWsBPLgqMSr2IQZJxMfJYpr8evUfesz61g/Mvcu0g6O
+         m1BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xuRtX6/QiaNBrOSJvmHFpdILv2m6h3ItAI8etLSug9U=;
-        b=cUEkKZpBY8/FaNxWV30Bo2P43pFVKDhGWOlEt/pxeCovPE347sfDIQ/fII8Sm+9kBH
-         55ZI1vPyRbzVnh9I+jprXnognO+CB6XgTs1pQdJm2/H90AHI4eqvNUjAuQP2we3pqG79
-         ocgQjHA7WBE79JwrLxr3CkUrcyIurkvkvYGSAso9X6unXYVFMTrWba4gh+cwQZiW87oP
-         OkgAni9eywFwgz9ZOBSuyCOkiEixH1PUCOafzlz1Zb/F/srnyBy4Usx84yP42BNMbQrE
-         z8J075ACnV7YJaZNPNMo+B/vHBcUtgsiGBRlE/FP+60uIJnfUSt9BIpZIL8BAyiHQlTv
-         MZ6Q==
-X-Gm-Message-State: AOAM5312QKMXGbMwGki9QkgMc36W8eg8vIbokgB2HFWo1HluUkUEfAlm
-        EMj4dfdV8ZkjgeX5Z4j/6oCYZqe8xfQwOJb7dKS8w5yv
-X-Google-Smtp-Source: ABdhPJy0KwDsxXP6JRVNfDVpAEFaTtaZkp9jq6qZhHXUijRsOTzPSOs6EA+yOy2zvn/Vm7oqTG3k8RZxDzhYX2QgcHg=
-X-Received: by 2002:a9d:5388:: with SMTP id w8mr18762365otg.311.1606775278931;
- Mon, 30 Nov 2020 14:27:58 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nAzMv+/mbuFFwiCCS8n8Lid+mXMaJezVpww5GEW5pks=;
+        b=GeXNvoHl8++zV6tAlsYxFRX/bJfFkeItLAi2yWLGdYcoR/c+2CD7uwtU48gQxiZajL
+         DCSe8x3Mqizu4P7tF95cKEEgosFn6f8DS6tq8cpn0oFTY3xsE/qar5dK/PBOR3xFnwMc
+         MjM46m0IBSm70Ta92bczwFRSQPRHB86qZpsidoxMgcpBIqQAV6Ar2HgVhFbVbc8h+u3u
+         Xh5LKREQN5OsmBCjB8RsQNT3UZJxt8iwBg2xFBEMKTCfJeGdyg/jP0IRC39bR324Ucmg
+         KR0TZ4Mn8a/EhJhS8+XTC8FjcS9fYxibf3cse3kve0VlrXaJ32OQoS0S1Q4hKSlaJD2O
+         Fk6g==
+X-Gm-Message-State: AOAM533B2y/dZogCutb5wPGhWpXwvsCw5nXeH158+zM9LMMhATVoH5T3
+        B6qqHGcdWQbQSPr+fBo12XU=
+X-Google-Smtp-Source: ABdhPJzzpe28kQxnUbOfIXqOIH22llwJqZR6vl/8YLOpl9d27sgWgHFaTKyh1Cj2B+RhQT1AK9LEiA==
+X-Received: by 2002:aa7:9597:0:b029:198:50a8:a6cf with SMTP id z23-20020aa795970000b029019850a8a6cfmr20899478pfj.40.1606775333056;
+        Mon, 30 Nov 2020 14:28:53 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id h16sm474871pjt.43.2020.11.30.14.28.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 14:28:52 -0800 (PST)
+Date:   Mon, 30 Nov 2020 14:28:48 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Tristram.Ha@microchip.com
+Cc:     ceggers@arri.de, olteanv@gmail.com, kuba@kernel.org,
+        andrew@lunn.ch, robh+dt@kernel.org, vivien.didelot@gmail.com,
+        davem@davemloft.net, kurt.kanzenbach@linutronix.de,
+        george.mccollister@gmail.com, marex@denx.de,
+        helmut.grohne@intenta.de, pbarker@konsulko.com,
+        Codrin.Ciubotariu@microchip.com, Woojung.Huh@microchip.com,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 00/12] net: dsa: microchip: PTP support for
+ KSZ956x
+Message-ID: <20201130222848.GA5215@hoboy.vegasvil.org>
+References: <20201118203013.5077-1-ceggers@arri.de>
+ <BYAPR11MB35582F880B533EB2EE0CDD1DECE00@BYAPR11MB3558.namprd11.prod.outlook.com>
+ <3569829.EPWo3g8d0Q@n95hx1g2>
+ <12878838.xADNQ6XqJ4@n95hx1g2>
+ <BYAPR11MB355857CFE8E9DA29BDAA900AECF50@BYAPR11MB3558.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-21-lee.jones@linaro.org>
-In-Reply-To: <20201124193824.1118741-21-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 17:27:47 -0500
-Message-ID: <CADnq5_PFn-H0qEp60sBA2mUQufGnhn5awYrLRi7hfT58sJdE0w@mail.gmail.com>
-Subject: Re: [PATCH 20/40] drm/amd/amdgpu/uvd_v5_0: Fix a bunch of kernel-doc
- function documentation issues
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Nirmoy Das <nirmoy.das@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR11MB355857CFE8E9DA29BDAA900AECF50@BYAPR11MB3558.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 2:44 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:153: warning: Function parameter o=
-r member 'handle' not described in 'uvd_v5_0_hw_init'
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:153: warning: Excess function para=
-meter 'adev' description in 'uvd_v5_0_hw_init'
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:210: warning: Function parameter o=
-r member 'handle' not described in 'uvd_v5_0_hw_fini'
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:210: warning: Excess function para=
-meter 'adev' description in 'uvd_v5_0_hw_fini'
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:463: warning: Function parameter o=
-r member 'addr' not described in 'uvd_v5_0_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:463: warning: Function parameter o=
-r member 'seq' not described in 'uvd_v5_0_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:463: warning: Function parameter o=
-r member 'flags' not described in 'uvd_v5_0_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:463: warning: Excess function para=
-meter 'fence' description in 'uvd_v5_0_ring_emit_fence'
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:529: warning: Function parameter o=
-r member 'job' not described in 'uvd_v5_0_ring_emit_ib'
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:529: warning: Function parameter o=
-r member 'flags' not described in 'uvd_v5_0_ring_emit_ib'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Nirmoy Das <nirmoy.das@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Mon, Nov 30, 2020 at 09:01:25PM +0000, Tristram.Ha@microchip.com wrote:
+> The 1588 PTP engine in the KSZ switches was designed to be controlled closely by
+> a PTP stack, so it is a little difficult to use when there is a layer of kernel support
+> between the application and the driver.
 
-Applied with minor fixes.  Thanks!
+Are you saying that linuxptp is not a PTP stack?
 
-Alex
+Maybe it would be wiser to design your HW so that it can work under Linux?
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c b/drivers/gpu/drm/amd/=
-amdgpu/uvd_v5_0.c
-> index 6e57001f6d0ac..3a748ec58bec5 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c
-> @@ -145,7 +145,7 @@ static int uvd_v5_0_sw_fini(void *handle)
->  /**
->   * uvd_v5_0_hw_init - start and test UVD block
->   *
-> - * @adev: amdgpu_device pointer
-> + * @handle: handle used to pass amdgpu_device pointer
->   *
->   * Initialize the hardware, boot up the VCPU and do some testing
->   */
-> @@ -202,7 +202,7 @@ static int uvd_v5_0_hw_init(void *handle)
->  /**
->   * uvd_v5_0_hw_fini - stop the hardware block
->   *
-> - * @adev: amdgpu_device pointer
-> + * @handle: handle used to pass amdgpu_device pointer
->   *
->   * Stop the UVD block, mark ring as not ready any more
->   */
-> @@ -454,7 +454,9 @@ static void uvd_v5_0_stop(struct amdgpu_device *adev)
->   * uvd_v5_0_ring_emit_fence - emit an fence & trap command
->   *
->   * @ring: amdgpu_ring pointer
-> - * @fence: fence to emit
-> + * @addr: address
-> + * @seq: sequence number
-> + * @flags: fence related flags
->   *
->   * Write a fence and a trap command to the ring.
->   */
-> @@ -518,7 +520,9 @@ static int uvd_v5_0_ring_test_ring(struct amdgpu_ring=
- *ring)
->   * uvd_v5_0_ring_emit_ib - execute indirect buffer
->   *
->   * @ring: amdgpu_ring pointer
-> + * @job: job to retrive vmid from
->   * @ib: indirect buffer to execute
-> + * @flags: unused
->   *
->   * Write ring commands to execute the indirect buffer
->   */
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Nah, nobody cares about Linux support these days.
