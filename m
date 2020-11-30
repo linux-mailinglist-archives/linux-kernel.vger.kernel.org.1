@@ -2,153 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B052C8FEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBB82C8FED
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388556AbgK3VWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 16:22:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387531AbgK3VWt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 16:22:49 -0500
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9C8C0613D2;
-        Mon, 30 Nov 2020 13:22:09 -0800 (PST)
-Received: by mail-vs1-xe43.google.com with SMTP id k17so7120458vsp.13;
-        Mon, 30 Nov 2020 13:22:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=BA9WuBIxyQk+4n/puy9O59CDd70ZfBaz5viH95nnWs4=;
-        b=t6LKW3glQoMpja4iCdfaIijiPAdNwa0Ew+dwHC/qtp3GENalFciab3yQxZdXL/hMXz
-         VzYUMTzhYdIFFUygNk2tt6TNge/hwXCuD6CfokGXQajUiFlyiBxsleFXaJY6xxLb5Kgr
-         fK2CEl2kdb4hjX1iUjWsxFH7m5HxkSDLgqZtSUCq0LEbUou92kmNhlowY1gclfsrBh8m
-         1fZ+/jpYfXT6RbcfN7HTnKCyLDLiBqoSBCAlKGKLenPlZuqb/jkpR11IL2h2bvVx9qjO
-         e3lV1x5ZdREhS0AJo04YeGsM3lKfqmjicZIaioTExcf1UXN6mcT2ZlkMiUCuwUPVxVCU
-         mOug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=BA9WuBIxyQk+4n/puy9O59CDd70ZfBaz5viH95nnWs4=;
-        b=JtPMZSn42qm0mtmshUL8vkpbofCvXjFVpifuD3D5ZGbF4XVwAvbSjvagas0WCR6jGO
-         Oo8xd4Sa0FDQdkywmHnfaSOwVEVIXlfk58JLYNjJCPDmgyqBirMRTfD4WbT4W8BqAHnK
-         4DcYUL84hKdfTBN3QrapbkRn2PvB2fcOmpTjvy0UFTfrhwB9XUk7S4XKLjN2MdTLJAzG
-         Q66UzcWYwB8wmNUweVaogDARSH5UgyxK+LxShMd6gcjXApWRmCRUNVuUPEHCTAef44BT
-         8yPdX5rePWn9lXmIgtQKWc/BtZUwO63PN0emill8F8LkUl7aW1Z6rJbiq08umhE+YtYW
-         HWRQ==
-X-Gm-Message-State: AOAM530cTphHmk+mUcqXnfVgwqo4ZGRcTjT0q7Ad+hUbZ99HpsD3+lHc
-        fdjLUUUIAeG9Rac/KBmN1KCa7fF1frRFEjSABIizgSM+qvo=
-X-Google-Smtp-Source: ABdhPJxUnwG28U4x2TJF1H+XUZg6igju8tZHdlidMvSYFb6mYkxwU91jI9HPvsWClBG0KG6pytABKZPVyHx1apFqRr0=
-X-Received: by 2002:a67:b347:: with SMTP id b7mr18370082vsm.15.1606771327575;
- Mon, 30 Nov 2020 13:22:07 -0800 (PST)
+        id S2388564AbgK3VXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 16:23:03 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:14297 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387531AbgK3VXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 16:23:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606771359; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=jNW1t6Se5Ktv+ohrHgjF3LLGgAEq4iiGmKww3uVyBZQ=;
+ b=EIvxwYF+3+noXnNkTxOiRFHJdSuG2nsaTUY63e0MarpAZOLS2qc9OBn6eGpz8ylhcGU9WSv0
+ mJO4/E2dkKxEFae2U6CxzFLNcfJpPpd+SimUMO0AeB3AOOChWwHxMyZMiQEaOCCskdw6lvPN
+ s0KVINw8vy0/AKhzRFkfTkR1HDs=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fc5629951762b188667f333 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Nov 2020 21:22:33
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 85142C43463; Mon, 30 Nov 2020 21:22:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 81D48C433C6;
+        Mon, 30 Nov 2020 21:22:31 +0000 (UTC)
 MIME-Version: 1.0
-Received: by 2002:ab0:6ecb:0:0:0:0:0 with HTTP; Mon, 30 Nov 2020 13:22:07
- -0800 (PST)
-In-Reply-To: <20201130153742.9163-1-johan@kernel.org>
-References: <20201130153742.9163-1-johan@kernel.org>
-From:   Mychaela Falconia <mychaela.falconia@gmail.com>
-Date:   Mon, 30 Nov 2020 13:22:07 -0800
-Message-ID: <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
-Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 30 Nov 2020 13:22:31 -0800
+From:   abhinavk@codeaurora.org
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] msm/mdp5: Fix some kernel-doc warnings
+In-Reply-To: <20201129181243.1091742-1-robdclark@gmail.com>
+References: <20201129181243.1091742-1-robdclark@gmail.com>
+Message-ID: <2a4ac82e8f904e2b8aeee0d6718a1ac0@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A quick background for Greg and others who haven't seen the Sept-Oct
-discussion between me and Johan on the linux-usb ML: I am the hardware
-engineer who designed the FT2232D-based DUART28C adapter board, and it
-was my desire to have this custom FT2232D adapter supported in mainline
-Linux that triggered the chain of discussions and patch revisions that
-led to the present patch series by Johan.
-
-My FTDI-based USB to dual UART adapter is special in that the DTR &
-RTS signals on one of the two UART channels (FT2232D Channel B
-specifically) have been repurposed for a non-serial, non-modem-control
-use: they control open drain drivers (a Nexperia 74LVC2G07 buffer IC)
-which drive PWON & RESET control signals that would otherwise be
-driven by short-to-ground human-finger-operated pushbutton switches.
-The standard Unix/POSIX/Linux behaviour (going all the way back to
-1970s Original UNIX) of automatically asserting DTR & RTS on serial
-port open is a killer for custom hw in which these signals have been
-repurposed, thus I need some way to suppress this automatic DTR & RTS
-assertion on tty device open.  With automatic assertion on open
-suppressed, these two signals can then be freely manipulated by
-userspace via TIOCMBIS and TIOCMBIC.
-
-There have certainly been other serial devices in the past (whether
-true RS-232 or USB-serial) in which DTR and/or RTS has been repurposed
-for some non-standard use that does not tolerate unwanted auto-assert
-on every device open, and to the best of my knowledge this problem
-does not occur on Windows - thus it is quite possible that some other
-hw engineer somewhere out there could design and build a custom serial
-or USB-serial device with repurposed DTR/RTS that works fine under
-Windows, but the moment someone in Linux community tries to get it
-working under our free OS, they will run into the problem of unwanted
-DTR & RTS auto-assertion on device open.
-
-In our previous discussion Johan said "this has come up the in past",
-referring to repurposed DTR and/or RTS signals doing non-standard
-things, thus I find it a little surprising that this issue hasn't been
-solved long before my time - but I guess I must be the first to
-complain loudly enough to get something done about it, and someone
-always has to be the first...
-
-Johan's patch series provides two workable solutions to the problem of
-unwanted DTR & RTS auto-assertion:
-
-1) For hardware engineers like me who design and build their own
-boards with the USB-serial chip fully embedded and who have their own
-custom USB IDs, a driver quirk can be applied (as part of adding
-support for the new USB ID) that sets the new tty port flag upon
-detecting the USB ID of the custom hw device for which it is required
-- this approach provides the highest level of friendliness to the
-ultimate end user of the finished hardware product.
-
-2) For situations in which the luxury of a custom USB ID is not
-available, e.g., a situation where the device that does not tolerate
-automatic DTR/RTS assertion on open is a physical RS-232 device that
-can be connected to "any" serial port, the new sysfs attribute comes
-to the rescue.
-
-Johan's patch comments say that the new flag can also be brought out
-to termios in the future, similarly to HUPCL, but I question the
-usefulness of doing so, as it is a chicken and egg problem: one needs
-to open the tty device in order to do termios ioctls on it, and if
-that initial open triggers DTR/RTS hardware actions, then the end user
-is still screwed.  If Johan or someone else can see a potential use
-case for manipulating this new flag via termios (as opposed to sysfs
-or USB-ID-based driver quirks), perhaps you could elaborate on it?
-
-Andy Shevchenko wrote:
-
-> > Add a nordy sysfs attribute to suppress raising the modem-control lines
-> > on open to signal DTE readiness.
->
-> Why not call it nomctrl ?
-
-I have no opinion one way or another as to what the new sysfs attribute
-should be called - my use case won't involve this sysfs mechanism at
-all, instead I care much more about the path where the tty port flag
-gets set via a driver quirk upon seeing my custom USB ID. :)
-
-The naming of the internal tty port flag is likewise a matter which I
-gladly leave to more qualified kernel developers like Johan and Greg.
-
-In any case, it would be really awesome if this patch series (with or
-without further modifications) can make it into 5.10 - any chance of
-such happening, or will it have to be pushed out to 5.11?
-
-Sincerely,
-Mychaela,
-freelance hardware and software engineer,
-she/her/hers
+On 2020-11-29 10:12, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function
+> parameter or member 'ctl' not described in
+> 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function
+> parameter or member 'pipeline' not described in
+> 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function
+> parameter or member 'enabled' not described in
+> 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Excess
+> function parameter 'enable' description in
+> 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function
+> parameter or member 'ctl' not described in 'mdp5_ctl_commit'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function
+> parameter or member 'pipeline' not described in 'mdp5_ctl_commit'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function
+> parameter or member 'flush_mask' not described in 'mdp5_ctl_commit'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function
+> parameter or member 'start' not described in 'mdp5_ctl_commit'
+> 
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+> b/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+> index 030279d7b64b..81b0c7cf954e 100644
+> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+> @@ -216,7 +216,9 @@ static void send_start_signal(struct mdp5_ctl *ctl)
+>  /**
+>   * mdp5_ctl_set_encoder_state() - set the encoder state
+>   *
+> - * @enable: true, when encoder is ready for data streaming; false, 
+> otherwise.
+> + * @ctl:      the CTL instance
+> + * @pipeline: the encoder's INTF + MIXER configuration
+> + * @enabled:  true, when encoder is ready for data streaming; false, 
+> otherwise.
+>   *
+>   * Note:
+>   * This encoder state is needed to trigger START signal (data path 
+> kickoff).
+> @@ -510,6 +512,13 @@ static void fix_for_single_flush(struct mdp5_ctl
+> *ctl, u32 *flush_mask,
+>  /**
+>   * mdp5_ctl_commit() - Register Flush
+>   *
+> + * @ctl:        the CTL instance
+> + * @pipeline:   the encoder's INTF + MIXER configuration
+> + * @flush_mask: bitmask of display controller hw blocks to flush
+> + * @start:      if true, immediately update flush registers and set 
+> START
+> + *              bit, otherwise accumulate flush_mask bits until we are
+> + *              ready to START
+> + *
+>   * The flush register is used to indicate several registers are all
+>   * programmed, and are safe to update to the back copy of the double
+>   * buffered registers.
