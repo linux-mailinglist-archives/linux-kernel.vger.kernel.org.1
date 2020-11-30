@@ -2,147 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325EB2C8AF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9962C8AFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbgK3R2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:28:38 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8874 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728321AbgK3R2h (ORCPT
+        id S1729358AbgK3R25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:28:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727522AbgK3R24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:28:37 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AUH2Rri118560;
-        Mon, 30 Nov 2020 12:27:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=SOb54gOUrXdaoshbmRHGoBHrf3L6hsCVBJGLbwhOI5I=;
- b=ft3qdr5K4TYSFfiAO33vzEVoyweJfdW45POl7ZCpg61jVVRcA+egPLOIWXP+95cjDTfs
- /2bGaCnztpcXiSBsP2RbLMGtDgtwUTlNfoVJe+JVvVK+D0VqYgudd3/dyy0yZMdR0+B4
- tY5avFMTjN6kPlN8TqGyxwFnPGbtPVbl1rskXChNBKVamRnbC5Hb3YuPmabWG8ZAIMmH
- V52OPjalJtu18YRXMxfAjl+XYioqU3uIbMJ33wlHu51gnY3Kqb7tUM9ch34OH9rYEnIn
- o67u9BaPJiISJSCcYuAm1oyxkUPn9tBVvxkZC2Z39ibCXp8cVnbGvKT5CxmqMiGOKavv KA== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3552dc6jey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 12:27:51 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHM3ix012951;
-        Mon, 30 Nov 2020 17:27:50 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma01dal.us.ibm.com with ESMTP id 353e68wnd9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 17:27:50 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AUHRnZo16646542
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 17:27:49 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8815211207A;
-        Mon, 30 Nov 2020 17:27:49 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D021112087;
-        Mon, 30 Nov 2020 17:27:46 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 30 Nov 2020 17:27:46 +0000 (GMT)
-Subject: Re: [PATCH 06/13] ibmvfc: add handlers to drain and complete Sub-CRQ
- responses
-To:     Brian King <brking@linux.vnet.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201126014824.123831-1-tyreld@linux.ibm.com>
- <20201126014824.123831-7-tyreld@linux.ibm.com>
- <b3737660-4e13-8675-b4be-71283e2dcf99@linux.vnet.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <1a9ae9b7-819e-4fd2-e31f-64c4d3bd7882@linux.ibm.com>
-Date:   Mon, 30 Nov 2020 09:27:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 30 Nov 2020 12:28:56 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FB6C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:28:16 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id x16so16156448ejj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:28:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PNJtXeIQ4f3R+VvAdqoPimuHtvgktQwuiAbQpV/HFWE=;
+        b=nnD8YalHuDD166RYZ7ZmNsq84+NXsmwg6T/7MDxEnhlfxG4rh9jUy4xcWgiSfZk27C
+         eB3r3mmzY+kwTQ8VYdoV/nHd6ek0ozoHWXqTEA+IcyUwzIBjoB5wud/vDD3i0SrNd+Wc
+         LuiYSF6xTNWIaexrVY7ur/r7WghcatYI1Wfsk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PNJtXeIQ4f3R+VvAdqoPimuHtvgktQwuiAbQpV/HFWE=;
+        b=ZW5Yn7K+1+5V9U6tQXqdYwaefH1s63ybZZ26dLsMaukeJSF5UjYEweajUHmlSYv+vM
+         uuu8Ch2wZ1GdMUAmyb1XfrZbg/hz70fRh/GFAYDxUb03xSq7ejdQbWG5uzlS4C6WIf4R
+         ghlGPaLWUCJFgom0U9c540Q2hB8/zbyyeLik6NHh2kuxhz5gMf77hCx42/JE+1jPvatc
+         PTKIOLQYBBERjhBgfZ9rLeEQ025p8QpmqPkkzwsZQmrNZurUFzeJiYm0fuPjWfD9azL0
+         isAVPNJlW9vDgn34rJTukFfV6Ej7uJRW9/QLPIvLz1mWeafBIEu1kXCqPP0eAR5klTgj
+         VgxQ==
+X-Gm-Message-State: AOAM5320UZ+6DTPDLF+tUEfRSXHazxfYa2p1BENVIN4kT1/wiQFHvrjB
+        Xb/L3bDUaGGal3hytCoKLvTxBuR01FtrdQ==
+X-Google-Smtp-Source: ABdhPJwdsqfEcWgKqbGt/YUvOZsAvDBMokDYO1xxwzC+C5cu/k2ycoCD/ty4iNlFK3FHT1t1HwMsrA==
+X-Received: by 2002:a17:906:6414:: with SMTP id d20mr21870310ejm.82.1606757294452;
+        Mon, 30 Nov 2020 09:28:14 -0800 (PST)
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
+        by smtp.gmail.com with ESMTPSA id d1sm8695122eje.82.2020.11.30.09.28.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 09:28:14 -0800 (PST)
+Received: by mail-wr1-f45.google.com with SMTP id p8so17268263wrx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:28:13 -0800 (PST)
+X-Received: by 2002:adf:e9cb:: with SMTP id l11mr28993514wrn.320.1606757293076;
+ Mon, 30 Nov 2020 09:28:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <b3737660-4e13-8675-b4be-71283e2dcf99@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-30_06:2020-11-30,2020-11-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- phishscore=0 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1015
- priorityscore=1501 bulkscore=0 suspectscore=2 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011300106
+References: <20201111143755.24541-1-stanimir.varbanov@linaro.org>
+ <CAMfZQbxV4CuZ57kv1Nu=VTdd-eK2opMqnduxGGa+KvptaFL7=A@mail.gmail.com> <d539ab91-da28-e8b3-6b39-d5564eb6f22a@linaro.org>
+In-Reply-To: <d539ab91-da28-e8b3-6b39-d5564eb6f22a@linaro.org>
+From:   Fritz Koenig <frkoenig@chromium.org>
+Date:   Mon, 30 Nov 2020 09:28:00 -0800
+X-Gmail-Original-Message-ID: <CAMfZQbyZcS_fygWKBOr1xxUdfM-KsuTEt=VucPGf-JkM5+YzxA@mail.gmail.com>
+Message-ID: <CAMfZQbyZcS_fygWKBOr1xxUdfM-KsuTEt=VucPGf-JkM5+YzxA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/8] Venus stateful encoder compliance
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Fritz Koenig <frkoenig@chromium.org>, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Alexandre Courbot <acourbot@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/20 9:47 AM, Brian King wrote:
-> On 11/25/20 7:48 PM, Tyrel Datwyler wrote:
->> The logic for iterating over the Sub-CRQ responses is similiar to that
->> of the primary CRQ. Add the necessary handlers for processing those
->> responses.
->>
->> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->> ---
->>  drivers/scsi/ibmvscsi/ibmvfc.c | 72 ++++++++++++++++++++++++++++++++++
->>  1 file changed, 72 insertions(+)
->>
->> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
->> index 6eaedda4917a..a8730522920e 100644
->> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
->> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
->> @@ -3371,6 +3371,78 @@ static int ibmvfc_toggle_scrq_irq(struct ibmvfc_sub_queue *scrq, int enable)
->>  	return rc;
->>  }
->>  
->> +static void ibmvfc_handle_scrq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
->> +{
->> +	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
->> +
->> +	switch (crq->valid) {
->> +	case IBMVFC_CRQ_CMD_RSP:
->> +		break;
->> +	default:
->> +		dev_err(vhost->dev, "Got and invalid message type 0x%02x\n", crq->valid);
-> 
-> Is this correct? Can't we get transport events here as well?
+On Sun, Nov 29, 2020 at 11:55 PM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
+>
+> Hi Fritz,
+>
+> On 11/29/20 9:17 PM, Fritz Koenig wrote:
+> > Since this patchset adds support for V4L2_ENC_CMD_STOP and
+> > VENUS_ENC_STATE_ENCODING it should also add support for
+> > VIDIOC_TRY_ENCODER_CMD so that those commands are discoverable.  I've
+>
+> 6/8 is adding it:
+>
+> +       .vidioc_try_encoder_cmd = v4l2_m2m_ioctl_try_encoder_cmd,
+>
 
-Yes we can. We still handle them in the primary CRQ so at least for the time
-being we can ignore them, but yeah we shouldn't log scary messages about them.
+Ahh, thanks.  I need to work on my reading comprehension.
 
--Tyrel
-
-> 
->> +		return;
->> +	}
->> +
->> +	/* The only kind of payload CRQs we should get are responses to
->> +	 * things we send. Make sure this response is to something we
->> +	 * actually sent
->> +	 */
->> +	if (unlikely(!ibmvfc_valid_event(&vhost->pool, evt))) {
->> +		dev_err(vhost->dev, "Returned correlation_token 0x%08llx is invalid!\n",
->> +			crq->ioba);
->> +		return;
->> +	}
->> +
->> +	if (unlikely(atomic_read(&evt->free))) {
->> +		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
->> +			crq->ioba);
->> +		return;
->> +	}
->> +
->> +	del_timer(&evt->timer);
->> +	list_del(&evt->queue);
->> +	ibmvfc_trc_end(evt);
->> +	evt->done(evt);
->> +}
->> +
-> 
-> 
-> 
-
+> > made an attempt at that here:
+> > https://www.spinics.net/lists/linux-media/msg182319.html
+> >
+> > On Wed, Nov 11, 2020 at 6:38 AM Stanimir Varbanov
+> > <stanimir.varbanov@linaro.org> wrote:
+> >>
+> >> Hello,
+> >>
+> >> Here is v2 of the subject patchset.
+> >>
+> >> The patchset starts with few small preparation and fix patches, 1/8 to 5/8.
+> >> 6/8 is redesigned Dikshita's patch and 7/8 add Reset encoder state handling.
+> >> The last 8/8 just delete not needed helper function.
+> >>
+> >> The major changes are:
+> >>  * An attempt to reuse m2m helpers for drain and reset state in 6/8 and 7/8.
+> >>  * Use null encoder buffer to signal end-of-stream in 6/8.
+> >>
+> >> Comments are welcome!
+> >>
+> >> regards,
+> >> Stan
+> >>
+> >> Dikshita Agarwal (1):
+> >>   venus: venc: add handling for VIDIOC_ENCODER_CMD
+> >>
+> >> Stanimir Varbanov (7):
+> >>   venus: hfi: Use correct state in unload resources
+> >>   venus: helpers: Add a new helper for buffer processing
+> >>   venus: hfi_cmds: Allow null buffer address on encoder input
+> >>   venus: helpers: Calculate properly compressed buffer size
+> >>   venus: pm_helpers: Check instance state when calculate instance
+> >>     frequency
+> >>   venus: venc: Handle reset encoder state
+> >>   venus: helpers: Delete unused stop streaming helper
+> >>
+> >>  drivers/media/platform/qcom/venus/helpers.c   |  65 ++---
+> >>  drivers/media/platform/qcom/venus/helpers.h   |   2 +-
+> >>  drivers/media/platform/qcom/venus/hfi.c       |   2 +-
+> >>  drivers/media/platform/qcom/venus/hfi.h       |   1 -
+> >>  drivers/media/platform/qcom/venus/hfi_cmds.c  |   2 +-
+> >>  .../media/platform/qcom/venus/pm_helpers.c    |   3 +
+> >>  drivers/media/platform/qcom/venus/venc.c      | 232 +++++++++++++++---
+> >>  7 files changed, 226 insertions(+), 81 deletions(-)
+> >>
+> >> --
+> >> 2.17.1
+> >>
+>
+> --
+> regards,
+> Stan
