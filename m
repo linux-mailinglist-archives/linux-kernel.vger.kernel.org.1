@@ -2,331 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7412C903A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:48:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068AA2C9043
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730283AbgK3Vr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 16:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
+        id S1730316AbgK3Vth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 16:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730086AbgK3Vr5 (ORCPT
+        with ESMTP id S1727807AbgK3Vth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 16:47:57 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83824C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:47:17 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id z10so4395166ilu.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:47:17 -0800 (PST)
+        Mon, 30 Nov 2020 16:49:37 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415C5C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:48:57 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id w6so11321555pfu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:48:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=uHRoGKduNYCTLt7Vm4EAKOpPL4O7JjlLpBK56fqQN0Q=;
-        b=TLq0Uz0hvBOy5MVW4qn1la3qCiMJ0YiY2P2Ggtj5mq4PHCaEHStJ8H2aZcazb507Zk
-         E7npXccwPvM13WNbUOAWKQp9ovKoxYdjlBpStSNleGUIo4JqB79xASY1p5sd+WxReynN
-         W0FoWbk4ZkH2kpZrCHlN4vAEkUxary+iumVmc=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HLPise+xDw+yK9QnQOiR2ANB+NOTo6DEjG9AcXclvyk=;
+        b=x1OItiVHmQKGJLCloT6tA+ReWGLJAjXpLu3p6OnS4384c98gapnRUEO8PGyqYHny2i
+         uc8bEIABzSNuGFTirg+JuM2gfnOoxzGPMzDx2DuWMo1qL0ei75pW7S/6ogo5CJ5FGGEQ
+         Agq/Do6j7KfJr5jD89WtthZYPMoYROoF7knzxdx+kv9aG9U1pAcqnXqR4hHfoVgtiq22
+         KjVRwoCzhi86l6NvKsVdnOluGbOjwtHg+1NAzLEZOMVdl0QiZ/WCYeiWYU0VTTSyIm5K
+         oz1HjNR2d6CqJ0Cr6I1/PB9hOLMeJgLwM2Nkt14sE+b0AOXO9NGxpoTn1QGjwDjj6uEr
+         ahlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=uHRoGKduNYCTLt7Vm4EAKOpPL4O7JjlLpBK56fqQN0Q=;
-        b=R4WcYs6M948EhsslxAtMo9n2NUqr5TIhq4iPhjFuEsmJUI4jSyiBev5Y+YgrHNU++i
-         2EI4aieRAutLu6ES/9ls6imkPXY/DBLDb/PyLTReIvABt6BjceVDfdAotI55mPFWhSen
-         eWUsLdimx31t/lcz/cL8J3HVWjSNRwCpk7UR/gr8iMAL2L0w5ESZ2qH+IQVAYXttVmRk
-         QyUVO1GCKCX8H5R/nGT28ZeVpyQdi5tJ9gbjKpenAKXxS8X9KZKAcXXzzLVIU1FWb+jh
-         H8U0zQ93xS2DaYuVhbkS3cfeh5r2CfQcJ46C3aTzo/vuMaD+8aBPHymUcpUuWNmy0OD5
-         88ZQ==
-X-Gm-Message-State: AOAM533jjd5d7GFiM8Ow0+XUnUiDk4qUQvOu6AW3quBsiTddT8HJmNP1
-        6+EZjgE1Ftff9qVHfSD34lw7Kg==
-X-Google-Smtp-Source: ABdhPJx8yd5rux/e9hDpT9d54zZ0nKJZa5TbSt6OG5JCokrW8T7dUYmL+ORuGC6Gqb57ZeSKgN1WZw==
-X-Received: by 2002:a92:b008:: with SMTP id x8mr14468700ilh.297.1606772836854;
-        Mon, 30 Nov 2020 13:47:16 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r4sm5175822iop.24.2020.11.30.13.47.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 13:47:16 -0800 (PST)
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] cpupower update for Linux 5.11-rc1
-Message-ID: <a3689b5f-2835-066c-dcb5-6103a0e09f89@linuxfoundation.org>
-Date:   Mon, 30 Nov 2020 14:47:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HLPise+xDw+yK9QnQOiR2ANB+NOTo6DEjG9AcXclvyk=;
+        b=GQKVNB7+g20y6jcEAFo/dplQq4y9Fi6VHv9340vDypwM9N4TKA8nsxFE/wcQJDoZ1U
+         h4ZBB+AXvBdNLoCuSI44T0q1GgcPTw4zbefBKvSz+4tB4/FTP57rYgfS/nYKAvA6R+q5
+         DvlUsRrR4JgsXP0cmqgaKQcjKVGDM1Eb2syb7PL1+FWAwUZdlostmbie9y0d+ZeL9D39
+         GYssI8ASo4LMhxIpkCICsUY95Zl2ZWwmg6B8lEOriKbt9mxFkaKQUDKqbvZuxPnGQ21q
+         OVwImmEIqTdf/TeeRdsskusVYDZEPd2JKNHxMpKoNBihg2q+LCoB12JLYUZ+ogljO6ZX
+         7b8g==
+X-Gm-Message-State: AOAM533pTAop1BTXAhUS2TzSt0pt4LAuinRdo7tMJU+liczzvPH5M1Lg
+        15QsNnpi2RBCwJ1CM6jH7n0LGA==
+X-Google-Smtp-Source: ABdhPJyUiT5ii71Ra24pG9+x9ADvwWktNvrZz6TF2Q/wQnUrimKh8f9LjEHprtpQuWCCbKaL/xoUKw==
+X-Received: by 2002:a63:cc01:: with SMTP id x1mr19948678pgf.15.1606772936779;
+        Mon, 30 Nov 2020 13:48:56 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id q14sm18465758pfl.163.2020.11.30.13.48.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 13:48:55 -0800 (PST)
+Date:   Mon, 30 Nov 2020 14:48:54 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
+        linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        jonathan.zhouwen@huawei.com, coresight@lists.linaro.org
+Subject: Re: [PATCH v4 15/25] coresight: etm4x: Handle ETM architecture
+ version
+Message-ID: <20201130214854.GJ1092947@xps15>
+References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
+ <20201119164547.2982871-16-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------2CC919BA1B70204064BE1A20"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119164547.2982871-16-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------2CC919BA1B70204064BE1A20
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thu, Nov 19, 2020 at 04:45:37PM +0000, Suzuki K Poulose wrote:
+> We are about to rely on TRCDEVARCH for detecting the ETM
+> and its architecture version, falling back to TRCIDR1 if
+> the former is not implemented (in older broken implementations).
+> 
+> Also, we use the architecture version information to do
+> make some decisions. Streamline the architecture version
 
-Hi Rafael,
+s/to do make/to make
 
-Please pull the following cpupower update for Linux 5.11-rc1.
+> handling by adding helpers.
+> 
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  .../coresight/coresight-etm4x-core.c          |  2 +-
+>  drivers/hwtracing/coresight/coresight-etm4x.h | 60 ++++++++++++++++++-
+>  2 files changed, 58 insertions(+), 4 deletions(-)
 
-This cpupower update for Linux 5.11-rc1 consists of a change to provide
-online and offline CPU information. This change makes it easier to keep
-track of offline cpus whose cpuidle or cpufreq property aren't changed
-when updates are made to online cpus.
+With the above:
 
-Please note that there is a conflict in
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-tools/power/cpupower/utils/helpers/misc.c
-
-between commit:
-
-   748f0d70087c ("cpupower: Provide online and offline CPU information")
-
-from the cpupower tree and commit:
-
-   8113ab20e850 ("tools/power/cpupower: Read energy_perf_bias from sysfs")
-
-from the tip tree.
-
-Stephen fixed it up and can carry the fix. Hope this works.
-
-diff is attached.
-
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-
-   Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux 
-tags/linux-cpupower-5.11-rc1
-
-for you to fetch changes up to 748f0d70087c56226bf1df1f91a00b7ab4c8f883:
-
-   cpupower: Provide online and offline CPU information (2020-10-26 
-13:36:24 -0600)
-
-----------------------------------------------------------------
-linux-cpupower-5.11-rc1
-
-This cpupower update for Linux 5.11-rc1 consists of a change to provide
-online and offline CPU information. This change makes it easier to keep
-track of offline cpus whose cpuidle or cpufreq property aren't changed
-when updates are made to online cpus.
-
-----------------------------------------------------------------
-Brahadambal Srinivasan (1):
-       cpupower: Provide online and offline CPU information
-
-  tools/power/cpupower/utils/cpufreq-set.c     |  3 ++
-  tools/power/cpupower/utils/cpuidle-set.c     |  4 ++
-  tools/power/cpupower/utils/cpupower.c        |  8 ++++
-  tools/power/cpupower/utils/helpers/helpers.h | 12 +++++
-  tools/power/cpupower/utils/helpers/misc.c    | 66 
-+++++++++++++++++++++++++++-
-  5 files changed, 92 insertions(+), 1 deletion(-)
-----------------------------------------------------------------
-
---------------2CC919BA1B70204064BE1A20
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-cpupower-5.11-rc1.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-cpupower-5.11-rc1.diff"
-
-diff --git a/tools/power/cpupower/utils/cpufreq-set.c b/tools/power/cpupower/utils/cpufreq-set.c
-index 7b2164e07057..c5e60a39cfa6 100644
---- a/tools/power/cpupower/utils/cpufreq-set.c
-+++ b/tools/power/cpupower/utils/cpufreq-set.c
-@@ -315,6 +315,7 @@ int cmd_freq_set(int argc, char **argv)
- 		}
- 	}
- 
-+	get_cpustate();
- 
- 	/* loop over CPUs */
- 	for (cpu = bitmask_first(cpus_chosen);
-@@ -332,5 +333,7 @@ int cmd_freq_set(int argc, char **argv)
- 		}
- 	}
- 
-+	print_offline_cpus();
-+
- 	return 0;
- }
-diff --git a/tools/power/cpupower/utils/cpuidle-set.c b/tools/power/cpupower/utils/cpuidle-set.c
-index 569f268f4c7f..46158928f9ad 100644
---- a/tools/power/cpupower/utils/cpuidle-set.c
-+++ b/tools/power/cpupower/utils/cpuidle-set.c
-@@ -95,6 +95,8 @@ int cmd_idle_set(int argc, char **argv)
- 		exit(EXIT_FAILURE);
- 	}
- 
-+	get_cpustate();
-+
- 	/* Default is: set all CPUs */
- 	if (bitmask_isallclear(cpus_chosen))
- 		bitmask_setall(cpus_chosen);
-@@ -181,5 +183,7 @@ int cmd_idle_set(int argc, char **argv)
- 			break;
- 		}
- 	}
-+
-+	print_offline_cpus();
- 	return EXIT_SUCCESS;
- }
-diff --git a/tools/power/cpupower/utils/cpupower.c b/tools/power/cpupower/utils/cpupower.c
-index 8e3d08042825..8ac3304a9957 100644
---- a/tools/power/cpupower/utils/cpupower.c
-+++ b/tools/power/cpupower/utils/cpupower.c
-@@ -34,6 +34,8 @@ int run_as_root;
- int base_cpu;
- /* Affected cpus chosen by -c/--cpu param */
- struct bitmask *cpus_chosen;
-+struct bitmask *online_cpus;
-+struct bitmask *offline_cpus;
- 
- #ifdef DEBUG
- int be_verbose;
-@@ -178,6 +180,8 @@ int main(int argc, const char *argv[])
- 	char pathname[32];
- 
- 	cpus_chosen = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
-+	online_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
-+	offline_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
- 
- 	argc--;
- 	argv += 1;
-@@ -230,6 +234,10 @@ int main(int argc, const char *argv[])
- 		ret = p->main(argc, argv);
- 		if (cpus_chosen)
- 			bitmask_free(cpus_chosen);
-+		if (online_cpus)
-+			bitmask_free(online_cpus);
-+		if (offline_cpus)
-+			bitmask_free(offline_cpus);
- 		return ret;
- 	}
- 	print_help();
-diff --git a/tools/power/cpupower/utils/helpers/helpers.h b/tools/power/cpupower/utils/helpers/helpers.h
-index c258eeccd05f..d5799aa71e1f 100644
---- a/tools/power/cpupower/utils/helpers/helpers.h
-+++ b/tools/power/cpupower/utils/helpers/helpers.h
-@@ -94,6 +94,8 @@ struct cpupower_cpu_info {
-  */
- extern int get_cpu_info(struct cpupower_cpu_info *cpu_info);
- extern struct cpupower_cpu_info cpupower_cpu_info;
-+
-+
- /* cpuid and cpuinfo helpers  **************************/
- 
- /* X86 ONLY ****************************************/
-@@ -171,4 +173,14 @@ static inline unsigned int cpuid_ecx(unsigned int op) { return 0; };
- static inline unsigned int cpuid_edx(unsigned int op) { return 0; };
- #endif /* defined(__i386__) || defined(__x86_64__) */
- 
-+/*
-+ * CPU State related functions
-+ */
-+extern struct bitmask *online_cpus;
-+extern struct bitmask *offline_cpus;
-+
-+void get_cpustate(void);
-+void print_online_cpus(void);
-+void print_offline_cpus(void);
-+
- #endif /* __CPUPOWERUTILS_HELPERS__ */
-diff --git a/tools/power/cpupower/utils/helpers/misc.c b/tools/power/cpupower/utils/helpers/misc.c
-index f406adc40bad..2ead98169cf5 100644
---- a/tools/power/cpupower/utils/helpers/misc.c
-+++ b/tools/power/cpupower/utils/helpers/misc.c
-@@ -1,8 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0
--#if defined(__i386__) || defined(__x86_64__)
-+
-+#include <stdio.h>
-+#include <stdlib.h>
- 
- #include "helpers/helpers.h"
- 
-+#if defined(__i386__) || defined(__x86_64__)
-+
- #define MSR_AMD_HWCR	0xc0010015
- 
- int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
-@@ -41,3 +45,63 @@ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
- 	return 0;
- }
- #endif /* #if defined(__i386__) || defined(__x86_64__) */
-+
-+/* get_cpustate
-+ *
-+ * Gather the information of all online CPUs into bitmask struct
-+ */
-+void get_cpustate(void)
-+{
-+	unsigned int cpu = 0;
-+
-+	bitmask_clearall(online_cpus);
-+	bitmask_clearall(offline_cpus);
-+
-+	for (cpu = bitmask_first(cpus_chosen);
-+		cpu <= bitmask_last(cpus_chosen); cpu++) {
-+
-+		if (cpupower_is_cpu_online(cpu) == 1)
-+			bitmask_setbit(online_cpus, cpu);
-+		else
-+			bitmask_setbit(offline_cpus, cpu);
-+
-+		continue;
-+	}
-+}
-+
-+/* print_online_cpus
-+ *
-+ * Print the CPU numbers of all CPUs that are online currently
-+ */
-+void print_online_cpus(void)
-+{
-+	int str_len = 0;
-+	char *online_cpus_str = NULL;
-+
-+	str_len = online_cpus->size * 5;
-+	online_cpus_str = (void *)malloc(sizeof(char) * str_len);
-+
-+	if (!bitmask_isallclear(online_cpus)) {
-+		bitmask_displaylist(online_cpus_str, str_len, online_cpus);
-+		printf(_("Following CPUs are online:\n%s\n"), online_cpus_str);
-+	}
-+}
-+
-+/* print_offline_cpus
-+ *
-+ * Print the CPU numbers of all CPUs that are offline currently
-+ */
-+void print_offline_cpus(void)
-+{
-+	int str_len = 0;
-+	char *offline_cpus_str = NULL;
-+
-+	str_len = offline_cpus->size * 5;
-+	offline_cpus_str = (void *)malloc(sizeof(char) * str_len);
-+
-+	if (!bitmask_isallclear(offline_cpus)) {
-+		bitmask_displaylist(offline_cpus_str, str_len, offline_cpus);
-+		printf(_("Following CPUs are offline:\n%s\n"), offline_cpus_str);
-+		printf(_("cpupower set operation was not performed on them\n"));
-+	}
-+}
-
---------------2CC919BA1B70204064BE1A20--
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 2342e72c5016..a91e7de77ab9 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -819,7 +819,7 @@ static void etm4_init_arch_data(void *info)
+>  	 * Otherwise for values 0x1 and above the number is N + 1 as per v4.2.
+>  	 */
+>  	drvdata->nr_resource = BMVAL(etmidr4, 16, 19);
+> -	if ((drvdata->arch < ETM4X_ARCH_4V3) || (drvdata->nr_resource > 0))
+> +	if ((drvdata->arch < ETM_ARCH_V4_3) || (drvdata->nr_resource > 0))
+>  		drvdata->nr_resource += 1;
+>  	/*
+>  	 * NUMSSCC, bits[23:20] the number of single-shot
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+> index 173ea7445c29..7a6e3cd34d58 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+> @@ -460,7 +460,6 @@
+>  #define ETM_MAX_RES_SEL			32
+>  #define ETM_MAX_SS_CMP			8
+>  
+> -#define ETM_ARCH_V4			0x40
+>  #define ETMv4_SYNC_MASK			0x1F
+>  #define ETM_CYC_THRESHOLD_MASK		0xFFF
+>  #define ETM_CYC_THRESHOLD_DEFAULT       0x100
+> @@ -585,8 +584,63 @@
+>  #define TRCVICTLR_EXLEVEL_S_MASK	(ETM_EXLEVEL_S_MASK << TRCVICTLR_EXLEVEL_SHIFT)
+>  #define TRCVICTLR_EXLEVEL_NS_MASK	(ETM_EXLEVEL_NS_MASK << TRCVICTLR_EXLEVEL_SHIFT)
+>  
+> +#define ETM_TRCIDR1_ARCH_MAJOR_SHIFT	8
+> +#define ETM_TRCIDR1_ARCH_MAJOR_MASK	(0xfU << ETM_TRCIDR1_ARCH_MAJOR_SHIFT)
+> +#define ETM_TRCIDR1_ARCH_MAJOR(x)	\
+> +	(((x) & ETM_TRCIDR1_ARCH_MAJOR_MASK) >> ETM_TRCIDR1_ARCH_MAJOR_SHIFT)
+> +#define ETM_TRCIDR1_ARCH_MINOR_SHIFT	4
+> +#define ETM_TRCIDR1_ARCH_MINOR_MASK	(0xfU << ETM_TRCIDR1_ARCH_MINOR_SHIFT)
+> +#define ETM_TRCIDR1_ARCH_MINOR(x)	\
+> +	(((x) & ETM_TRCIDR1_ARCH_MINOR_MASK) >> ETM_TRCIDR1_ARCH_MINOR_SHIFT)
+> +#define ETM_TRCIDR1_ARCH_SHIFT		ETM_TRCIDR1_ARCH_MINOR_SHIFT
+> +#define ETM_TRCIDR1_ARCH_MASK		\
+> +	(ETM_TRCIDR1_ARCH_MAJOR_MASK | ETM_TRCIDR1_ARCH_MINOR_MASK)
+> +
+> +#define ETM_TRCIDR1_ARCH_ETMv4		0x4
+> +
+> +/*
+> + * Driver representation of the ETM architecture.
+> + * The version of an ETM component can be detected from
+> + *
+> + * TRCDEVARCH	- CoreSight architected register
+> + *                - Bits[15:12] - Major version
+> + *                - Bits[19:16] - Minor version
+> + * TRCIDR1	- ETM architected register
+> + *                - Bits[11:8] - Major version
+> + *                - Bits[7:4]  - Minor version
+> + * We must rely on TRCDEVARCH for the version information,
+> + * however we don't want to break the support for potential
+> + * old implementations which might not implement it. Thus
+> + * we fall back to TRCIDR1 if TRCDEVARCH is not implemented
+> + * for memory mapped components.
+> + * Now to make certain decisions easier based on the version
+> + * we use an internal representation of the version in the
+> + * driver, as follows :
+> + *
+> + * ETM_ARCH_VERSION[7:0], where :
+> + *      Bits[7:4] - Major version
+> + *      Bits[3:0] - Minro version
+> + */
+> +#define ETM_ARCH_VERSION(major, minor)		\
+> +	((((major) & 0xfU) << 4) | (((minor) & 0xfU)))
+> +#define ETM_ARCH_MAJOR_VERSION(arch)	(((arch) >> 4) & 0xfU)
+> +#define ETM_ARCH_MINOR_VERSION(arch)	((arch) & 0xfU)
+> +
+> +#define ETM_ARCH_V4	ETM_ARCH_VERSION(4, 0)
+>  /* Interpretation of resource numbers change at ETM v4.3 architecture */
+> -#define ETM4X_ARCH_4V3	0x43
+> +#define ETM_ARCH_V4_3	ETM_ARCH_VERSION(4, 3)
+> +
+> +static inline u8 etm_devarch_to_arch(u32 devarch)
+> +{
+> +	return ETM_ARCH_VERSION(ETM_DEVARCH_ARCHID_ARCH_VER(devarch),
+> +				ETM_DEVARCH_REVISION(devarch));
+> +}
+> +
+> +static inline u8 etm_trcidr_to_arch(u32 trcidr1)
+> +{
+> +	return ETM_ARCH_VERSION(ETM_TRCIDR1_ARCH_MAJOR(trcidr1),
+> +				ETM_TRCIDR1_ARCH_MINOR(trcidr1));
+> +}
+>  
+>  /**
+>   * struct etmv4_config - configuration information related to an ETMv4
+> @@ -748,7 +802,7 @@ struct etmv4_save_state {
+>   * @spinlock:   Only one at a time pls.
+>   * @mode:	This tracer's mode, i.e sysFS, Perf or disabled.
+>   * @cpu:        The cpu this component is affined to.
+> - * @arch:       ETM version number.
+> + * @arch:       ETM architecture version.
+>   * @nr_pe:	The number of processing entity available for tracing.
+>   * @nr_pe_cmp:	The number of processing entity comparator inputs that are
+>   *		available for tracing.
+> -- 
+> 2.24.1
+> 
