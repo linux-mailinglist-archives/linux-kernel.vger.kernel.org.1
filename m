@@ -2,119 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E87D2C7D2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 963D82C7D2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgK3DMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 22:12:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52176 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726332AbgK3DMW (ORCPT
+        id S1726988AbgK3DMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 22:12:18 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:33730 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726332AbgK3DMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 22:12:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606705855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4KewpQpJ2xxc8QiHxV7xo3WlelLLRPqTYNLbo5LfcAc=;
-        b=ChVcprNsLfIZ6uSVX21L+WqmhilLTM2J5wtkUmzGTSvFOSAXEa1RtR7a2t9kIAu+1iY7A/
-        HHE7f664VfdZAJF+Hoe5uyjJhXvZ6vYbwuf+nEvYiit0BUgGtubSN1973ZF4pMNJjSkEKd
-        CtNdaaPXDJGCPScJuuOID0jBieorCbQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-C6Wd65HPOQ-cARkVP5vysw-1; Sun, 29 Nov 2020 22:10:51 -0500
-X-MC-Unique: C6Wd65HPOQ-cARkVP5vysw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BFD957202;
-        Mon, 30 Nov 2020 03:10:50 +0000 (UTC)
-Received: from [10.72.13.173] (ovpn-13-173.pek2.redhat.com [10.72.13.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D2E727C26;
-        Mon, 30 Nov 2020 03:10:39 +0000 (UTC)
-Subject: Re: [PATCH v2 07/17] vdpa_sim: add device id field in
- vdpasim_dev_attr
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
-References: <20201126144950.92850-1-sgarzare@redhat.com>
- <20201126144950.92850-8-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <0fb8b4be-4287-6bff-e430-3c9e8aae0daa@redhat.com>
-Date:   Mon, 30 Nov 2020 11:10:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 29 Nov 2020 22:12:18 -0500
+X-UUID: 6c9316236f4c4bcbaddb16bff1161f5a-20201130
+X-UUID: 6c9316236f4c4bcbaddb16bff1161f5a-20201130
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <lumi.lee@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1355198473; Mon, 30 Nov 2020 11:11:32 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 30 Nov 2020 11:11:31 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 30 Nov 2020 11:11:30 +0800
+From:   Lumi Lee <Lumi.Lee@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <wsd_upstream@mediatek.com>,
+        <jiaxin.yu@mediatek.com>, <eason.yen@mediatek.com>,
+        <Shane.Chien@mediatek.com>, Lumi Lee <lumi.lee@mediatek.com>
+Subject: [PATCH] ASoC: mediatek: btcvsd fix tx stream assign
+Date:   Mon, 30 Nov 2020 11:11:15 +0800
+Message-ID: <1606705875-1940-1-git-send-email-Lumi.Lee@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-In-Reply-To: <20201126144950.92850-8-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Lumi Lee <lumi.lee@mediatek.com>
 
-On 2020/11/26 下午10:49, Stefano Garzarella wrote:
-> Remove VDPASIM_DEVICE_ID macro and add 'id' field in vdpasim_dev_attr,
-> that will be returned by vdpasim_get_device_id().
->
-> Use VIRTIO_ID_NET for vDPA-net simulator device id.
->
-> Co-developed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
+Fix tx/rx stream assign in write.
+Write should use tx instead of rx.
 
+Signed-off-by: Lumi Lee <lumi.lee@mediatek.com>
+---
+ sound/soc/mediatek/common/mtk-btcvsd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index f98262add0e1..393b54a9f0e4 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -44,7 +44,6 @@ struct vdpasim_virtqueue {
->   
->   #define VDPASIM_QUEUE_ALIGN PAGE_SIZE
->   #define VDPASIM_QUEUE_MAX 256
-> -#define VDPASIM_DEVICE_ID 0x1
->   #define VDPASIM_VENDOR_ID 0
->   #define VDPASIM_IOTLB_LIMIT 0 /* unlimited */
->   #define VDPASIM_VQ_NUM 0x2
-> @@ -57,6 +56,7 @@ static u64 vdpasim_features = (1ULL << VIRTIO_F_ANY_LAYOUT) |
->   
->   struct vdpasim_dev_attr {
->   	int nvqs;
-> +	u32 id;
->   };
->   
->   /* State of each vdpasim device */
-> @@ -536,7 +536,9 @@ static u16 vdpasim_get_vq_num_max(struct vdpa_device *vdpa)
->   
->   static u32 vdpasim_get_device_id(struct vdpa_device *vdpa)
->   {
-> -	return VDPASIM_DEVICE_ID;
-> +	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
-> +
-> +	return vdpasim->dev_attr.id;
->   }
->   
->   static u32 vdpasim_get_vendor_id(struct vdpa_device *vdpa)
-> @@ -719,6 +721,7 @@ static int __init vdpasim_dev_init(void)
->   {
->   	struct vdpasim_dev_attr dev_attr = {};
->   
-> +	dev_attr.id = VIRTIO_ID_NET;
->   	dev_attr.nvqs = VDPASIM_VQ_NUM;
->   
->   	vdpasim_dev = vdpasim_create(&dev_attr);
+diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
+index 668fef3..a554c57 100644
+--- a/sound/soc/mediatek/common/mtk-btcvsd.c
++++ b/sound/soc/mediatek/common/mtk-btcvsd.c
+@@ -808,7 +808,7 @@ static ssize_t mtk_btcvsd_snd_write(struct mtk_btcvsd_snd *bt,
+ 		spin_unlock_irqrestore(&bt->tx_lock, flags);
+ 
+ 		if (!avail) {
+-			int ret = wait_for_bt_irq(bt, bt->rx);
++			int ret = wait_for_bt_irq(bt, bt->tx);
+ 
+ 			if (ret)
+ 				return written_size;
+-- 
+1.7.9.5
 
