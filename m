@@ -2,63 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510412C81F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:18:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DFB2C81FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727474AbgK3KS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:18:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57668 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726828AbgK3KS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:18:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2CBF6AC6A;
-        Mon, 30 Nov 2020 10:17:46 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 11:17:33 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Justin Ernst <justin.ernst@hpe.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the tip tree
-Message-ID: <20201130101733.GA6586@zn.tnic>
-References: <20201130180503.5c173e05@canb.auug.org.au>
+        id S1727767AbgK3KSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:18:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727534AbgK3KSw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 05:18:52 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1598C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:18:06 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id u12so15398689wrt.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:18:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xH7vKwH75HQqDx86IPkYSGMZHwM3mrlZlWhRbG+87CQ=;
+        b=N3svmperiaqvbJV6FavHC8Mhwdny4JUatn5EMlCXuafLWAwx+evti/oLhbQm4Yi8pR
+         p8gkhAukBsT5IMdq15tLEcAG49wfdXszuQDPAJzSPR1sj9aEL01uoG8Sju/iJfEuGaMz
+         5U0oSHtLLmm1Ec54Gd/PflqR28XwtlUvw+Bg+w+8MSVtEa0X5kJ+Tmi1auYo7bKeLGDr
+         vXjYlFcTV5hzKB8yZlNT9ykvxffQ6uNoeRXb/Z4SLQr0FV8IH6uNVyRLh0mPzM/tFtGR
+         j1K/T7FSUsxTVEgIcMayCPeRknu2cNtE/oR2w98lfguav/s57qXUWJACkuF9eMroDoJ1
+         cKuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xH7vKwH75HQqDx86IPkYSGMZHwM3mrlZlWhRbG+87CQ=;
+        b=XccYLPR77mAxEqUB/Usejv2phb7JGl7JTYr08hRsZ3cTc1W9jh60K4a5WXZqmaTaoF
+         CTBHKWcr6lohcG352rtsVDLjOMode1mqEf4qD7e2MZ34/cA+wj/TnlIH5JrUGOOVqX+S
+         3EUgeN7rCcmW2Nsd5KO9WUZzC2ByUT+gp7exY6raMAUOcXHHps+qNywu/eTI7SuUsaxV
+         GRf1UNEWZzB1Cdm49wB6U+UFjbeQl+KA/v0xBWeIoTl5UDB6LYTvQmtBjH81h6eAFird
+         PlfO/hht83ctx/Hc9OeSDtUdaMP4S4+05/wTolVqbNJm2iqAP4p6vT1pNbrAyEUSFfLT
+         qvtw==
+X-Gm-Message-State: AOAM530qeKhuu0Nqw0ySsQqisq14ST2taHNgiYXiP1jzE/Hnefm3Z2za
+        oCeV/mK9kzvodS+oHuEJCeyZUg==
+X-Google-Smtp-Source: ABdhPJxUNYEOhK0O6gGMmBtoyWg32TgxkmM6YEBt/x1eXrX47R9T0/Ya6bhpTmRYzOBDkzeQQ4xdEg==
+X-Received: by 2002:adf:f0c3:: with SMTP id x3mr19495602wro.327.1606731485408;
+        Mon, 30 Nov 2020 02:18:05 -0800 (PST)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id c187sm26314234wmd.23.2020.11.30.02.18.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 02:18:04 -0800 (PST)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     kholk11@gmail.com
+Cc:     bjorn.andersson@linaro.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org
+Subject: [PATCH 1/2] interconnect: qcom: sdm660: Fix the kerneldoc for qcom_icc_provider
+Date:   Mon, 30 Nov 2020 12:18:07 +0200
+Message-Id: <20201130101808.26472-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201130180503.5c173e05@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 06:05:03PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the tip tree, today's linux-next build (htmldocs) produced
-> these warnings:
-> 
-> Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected indentation.
-> Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected indentation.
-> Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected indentation.
-> 
-> Introduced by commit
-> 
->   7ac2f1017115 ("x86/platform/uv: Update ABI documentation of /sys/firmware/sgi_uv/")
+Fix the following warning by documenting the regmap field:
 
-Yah, I can reproduce but I have no clue what sphinx wants from me. Line
-2 looks ok which could mean that the warning line it points to is bogus.
+sdm660.c:191: warning: Function parameter or member 'regmap' not
+	described in 'qcom_icc_provider'
 
-Justin, this is all yours. :)
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+---
+ drivers/interconnect/qcom/sdm660.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+diff --git a/drivers/interconnect/qcom/sdm660.c b/drivers/interconnect/qcom/sdm660.c
+index 6953d6d99a11..dbcfc8f15738 100644
+--- a/drivers/interconnect/qcom/sdm660.c
++++ b/drivers/interconnect/qcom/sdm660.c
+@@ -179,6 +179,7 @@ static const struct clk_bulk_data bus_mm_clocks[] = {
+  * @bus_clks: the clk_bulk_data table of bus clocks
+  * @num_clks: the total number of clk_bulk_data entries
+  * @is_bimc_node: indicates whether to use bimc specific setting
++ * @regmap: regmap for accessing the QoS registers
+  * @mmio: NoC base iospace
+  */
+ struct qcom_icc_provider {
