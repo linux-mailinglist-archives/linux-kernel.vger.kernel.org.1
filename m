@@ -2,187 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503DB2C9123
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEBF2C9129
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730687AbgK3Wbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:31:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728255AbgK3Wbw (ORCPT
+        id S1730719AbgK3Wc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:32:58 -0500
+Received: from outbound-smtp10.blacknight.com ([46.22.139.15]:55945 "EHLO
+        outbound-smtp10.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728255AbgK3Wc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:31:52 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976FCC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:31:06 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id h20so12554483qkk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:31:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hAr6JwF6AekV3yhx2WDmthNLSoew16r1A09CfZoaUHI=;
-        b=Pq+D6S0O+5mXy5MgzWCX9a0Ttm3FqSpFEG6IABqGgN12k1KYBq/QkcaliX3juqreMn
-         yjZB99YdUtbILI8nzntGluOTOyHKNuqXTClOuErCKERBzmR15tdsgLPEF7IdLohJ+XhT
-         Gvr4/LNGu91Pegu5UaLSMnYqBrs+0kYVRfelVlRuuHPFRGfESYVUChIz23H5GBOWTlo3
-         xpqm+pZbEkGyACgqg8Hybuk3SV7q+E2zs3C2gG0es9f25/RfUSCOY6eke0bOPrWOI9Bk
-         EZtQWOvG8p8SCCoBMjbtswoLZgPAL+1miTvi3ZgivXuRe5/rai7J6kAIrSfyFjxj0Bjj
-         c/8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hAr6JwF6AekV3yhx2WDmthNLSoew16r1A09CfZoaUHI=;
-        b=KCBELR7oCqFM4CHV+ZKoL++Y6+oS7n32t1adjwBQw/ltO8y7qgxWeHIobgH6UKLoo0
-         LnznMjeJXE1LpRrquOcvVv/N3QQY8uZNgSSS5o95/1HG9eGZOUqWaXrlIjJpXSOmuPeY
-         6XyFMAtC1pvEy5taq03IqOMlbvKGCgwSAPXsarDityPy6iBLGp9C3AMJreP2chubreox
-         jr8wdQ/0ffxbeoti/tq4tdgdDxZIl5Uzth4040vd9MeDORhtMpezurOJKxR4rw4o16Yg
-         5txR7JlxHsWoPggVzzx7iR32h74SKTwg2ecPINlhegwajcZyrn5GjteWTfOkHdb5EJF/
-         bRrQ==
-X-Gm-Message-State: AOAM531nWkTLD0IWLyga1M18mU4rDPPbkZO/uorm8ODmdP9cgwp7amVm
-        pw9UcNjlTkwYwQoYgmVTM8jpc1aRZg==
-X-Google-Smtp-Source: ABdhPJxOkeQW7xaACUz9QlFFUPHVDXMImeRroGy+mmmVcvciDQaTiQMGxrMkGucIIVrMHylrxo8jHQ==
-X-Received: by 2002:a05:620a:5a6:: with SMTP id q6mr25657683qkq.80.1606775465664;
-        Mon, 30 Nov 2020 14:31:05 -0800 (PST)
-Received: from localhost.localdomain (174-084-153-250.res.spectrum.com. [174.84.153.250])
-        by smtp.gmail.com with ESMTPSA id q123sm16859861qke.28.2020.11.30.14.31.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 14:31:05 -0800 (PST)
-From:   Brian Gerst <brgerst@gmail.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
-        Brian Gerst <brgerst@gmail.com>,
-        =?UTF-8?q?Pawe=C5=82=20Jasiak?= <pawel@jasiak.xyz>
-Subject: [PATCH] fanotify: Fix sys_fanotify_mark() on native x86-32
-Date:   Mon, 30 Nov 2020 17:30:59 -0500
-Message-Id: <20201130223059.101286-1-brgerst@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 30 Nov 2020 17:32:57 -0500
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp10.blacknight.com (Postfix) with ESMTPS id 316321C4602
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 22:32:04 +0000 (GMT)
+Received: (qmail 23074 invoked from network); 30 Nov 2020 22:32:04 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 30 Nov 2020 22:32:04 -0000
+Date:   Mon, 30 Nov 2020 22:32:02 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH] cpuidle: Select polling interval based on a c-state with
+ a longer target residency
+Message-ID: <20201130223202.GT3371@techsingularity.net>
+References: <20201130092241.GR3371@techsingularity.net>
+ <CAJZ5v0h-ZBUMKqP5om7h67iMTe87GUf2Bw5dJ9tQN6MKwaTWzA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0h-ZBUMKqP5om7h67iMTe87GUf2Bw5dJ9tQN6MKwaTWzA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 121b32a58a3a converted native x86-32 which take 64-bit arguments to
-use the compat handlers to allow conversion to passing args via pt_regs.
-sys_fanotify_mark() was however missed, as it has a general compat handler.
-Add a config option that will use the syscall wrapper that takes the split
-args for native 32-bit.
+On Mon, Nov 30, 2020 at 08:06:44PM +0100, Rafael J. Wysocki wrote:
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 526d65d8573a..5b8545022564 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -719,6 +719,24 @@
+> >                         policy to use. This governor must be registered in the
+> >                         kernel before the cpufreq driver probes.
+> >
+> > +       cpuidle.poll=
+> > +                       [CPU_IDLE]
+> > +                       Format: <int>
+> > +                       Set the time in microseconds a CPU should poll in
+> > +                       cpuidle for a new task before entering a sleep
+> > +                       state. The default is determined by either the
+> > +                       tick or the enabled c-state latencies. Tuning is
+> > +                       not generally recommended but it may be needed
+> > +                       for workloads that are both latency-sensitive
+> > +                       and idling rapidly for short durations. Limiting
+> > +                       c-states can be insufficient if the polling
+> > +                       time is still too short, the application has no
+> > +                       knowledge of /dev/cpu_dma_latency, there are
+> > +                       multiple applications or the environment does
+> > +                       not allow the installation of a userspace tool
+> > +                       that controls cpu_dma_latency. This value may
+> > +                       be ignored by the idle governor (e.g. haltpoll).
+> 
+> OK, we can do this, but I'd use a shorter different description here
+> and a more detailed one in the admin-guide documentation.
+> 
+> Also this is about certain drivers only which support the "polling
+> idle state" (the ACPI one and intel_idle only AFAICS).  So I'm not
+> sure about the framework-level tunable here.
+> 
+> Moreover, to be precise, that value is the maximum time to do the
+> polling (in one go) in the case when requesting any "physical" idle
+> states is likely to hurt energy-efficiency or latency.  In particular,
+> it doesn't mean that idle CPUs will do the idle polling every time.
+> 
 
-Reported-by: Paweł Jasiak <pawel@jasiak.xyz>
-Fixes: 121b32a58a3a ("x86/entry/32: Use IA32-specific wrappers for syscalls taking 64-bit arguments")
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
+At first I was nodding along and thinking "sure". Then I started
+thinking about what the configuration space then looks like and how a
+user might reasonably interpret it. You were right during the review of
+the first version, it's a mess because it's driver specific and difficult
+to interpret even on a per-driver basis because there is no control of
+when a rescheduling event may occur.
+
+You suggest making poll=0 would be valid but that might be interpreted
+as being equivalent to idle=poll on x86 which is not the same thing.
+processor_idle and intel_idle would have understandable semantics if the
+parameter was maxpoll but it's not as understandable for haltpoll.
+
+Finally, the parameter partially ties us into the current
+implementation. For example, the polling loop is based on clock time but
+we know looking up the clock is costly in itself so it's very granular
+based on the magic "check every 200 loops" logic meaning we can go over
+the expected maxiumum polling inverval. If we ever changed that into a
+calibration loop to estimate the number of loops then the polling interval
+changes slightly even for the same parameter as we no longer depend on the
+granularity of calling local_clock. If we ever decided to use adaptive
+polling similar to haltpoll then the behaviour changes again resulting
+in bugs because the driver.poll parameter means something new.
+
+Using min_cstate was definitely a hazard because it showed up in both
+microbenchmarks and real workloads but you were right, lets only
+introduce a tunable when and if there is no other choice in the matter.
+
+So, informally the following patch is the next candidate. I'm happy to
+resend it as a separate mail if you prefer and think the patch is ok.
+
+--8<--
+cpuidle: Select polling interval based on a c-state with a longer target residency
+
+It was noted that a few workloads that idle rapidly regressed when commit
+36fcb4292473 ("cpuidle: use first valid target residency as poll time")
+was merged. The workloads in question were heavy communicators that idle
+rapidly and were impacted by the c-state exit latency as the active CPUs
+were not polling at the time of wakeup. As they were not particularly
+realistic workloads, it was not considered to be a major problem.
+
+Unfortunately, a bug was reported for a real workload in a production
+environment that relied on large numbers of threads operating in a worker
+pool pattern. These threads would idle for periods of time longer than the
+C1 target residency and so incurred the c-state exit latency penalty. The
+application is very sensitive to wakeup latency and indirectly relying
+on behaviour prior to commit on a37b969a61c1 ("cpuidle: poll_state: Add
+time limit to poll_idle()") to poll for long enough to avoid the exit
+latency cost.
+
+The target residency of C1 is typically very short. On some x86 machines,
+it can be as low as 2 microseconds. In poll_idle(), the clock is checked
+every POLL_IDLE_RELAX_COUNT interations of cpu_relax() and even one
+iteration of that loop can be over 1 microsecond so the polling interval is
+very close to the granularity of what poll_idle() can detect. Furthermore,
+a basic ping pong workload like perf bench pipe has a longer round-trip
+time than the 2 microseconds meaning that the CPU will almost certainly
+not be polling when the ping-pong completes.
+
+This patch selects a polling interval based on an enabled c-state that
+has an target residency longer than 10usec. If there is no enabled-cstate
+then polling will be up to a TICK_NSEC/16 similar to what it was up until
+kernel 4.20. Polling for a full tick is unlikely (rescheduling event)
+and is much longer than the existing target residencies for a deep c-state.
+
+As an example, consider a CPU with the following c-state information from
+an Intel CPU;
+
+	residency	exit_latency
+C1	2		2
+C1E	20		10
+C3	100		33
+C6	400		133
+
+The polling interval selected is 20usec. If booted with
+intel_idle.max_cstate=1 then the polling interval is 250usec as the deeper
+c-states were not available.
+
+On an AMD EPYC machine, the c-state information is more limited and
+looks like
+
+	residency	exit_latency
+C1	2		1
+C2	800		400
+
+The polling interval selected is 250usec. While C2 was considered, the
+polling interval was clamped by CPUIDLE_POLL_MAX.
+
+Note that it is not expected that polling will be a universal win. As
+well as potentially trading power for performance, the performance is not
+guaranteed if the extra polling prevented a turbo state being reached.
+Making it a tunable was considered but it's driver-specific, may be
+overridden by a governor and is not a guaranteed polling interval making
+it difficult to describe without knowledge of the implementation.
+
+tbench4
+			     vanilla		    polling
+Hmean     1        497.89 (   0.00%)      543.15 *   9.09%*
+Hmean     2        975.88 (   0.00%)     1059.73 *   8.59%*
+Hmean     4       1953.97 (   0.00%)     2081.37 *   6.52%*
+Hmean     8       3645.76 (   0.00%)     4052.95 *  11.17%*
+Hmean     16      6882.21 (   0.00%)     6995.93 *   1.65%*
+Hmean     32     10752.20 (   0.00%)    10731.53 *  -0.19%*
+Hmean     64     12875.08 (   0.00%)    12478.13 *  -3.08%*
+Hmean     128    21500.54 (   0.00%)    21098.60 *  -1.87%*
+Hmean     256    21253.70 (   0.00%)    21027.18 *  -1.07%*
+Hmean     320    20813.50 (   0.00%)    20580.64 *  -1.12%*
+
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- arch/Kconfig                       |  6 ++++++
- arch/x86/Kconfig                   |  1 +
- fs/notify/fanotify/fanotify_user.c | 17 +++++++----------
- include/linux/syscalls.h           | 24 ++++++++++++++++++++++++
- 4 files changed, 38 insertions(+), 10 deletions(-)
+ drivers/cpuidle/cpuidle.c | 25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 090ef3566c56..452cc127c285 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1045,6 +1045,12 @@ config HAVE_STATIC_CALL_INLINE
- 	bool
- 	depends on HAVE_STATIC_CALL
- 
-+config ARCH_SPLIT_ARG64
-+	bool
-+	help
-+	   If a 32-bit architecture requires 64-bit arguments to be split into
-+	   pairs of 32-bit arguemtns, select this option.
-+
- source "kernel/gcov/Kconfig"
- 
- source "scripts/gcc-plugins/Kconfig"
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index e4499b01ae9a..41189d3de9fb 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -19,6 +19,7 @@ config X86_32
- 	select KMAP_LOCAL
- 	select MODULES_USE_ELF_REL
- 	select OLD_SIGACTION
-+	select ARCH_SPLIT_ARG64
- 
- config X86_64
- 	def_bool y
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 3e01d8f2ab90..dcab112e1f00 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -1285,26 +1285,23 @@ static int do_fanotify_mark(int fanotify_fd, unsigned int flags, __u64 mask,
- 	return ret;
+diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
+index 83af15f77f66..ef2ea1b12cd8 100644
+--- a/drivers/cpuidle/cpuidle.c
++++ b/drivers/cpuidle/cpuidle.c
+@@ -368,6 +368,19 @@ void cpuidle_reflect(struct cpuidle_device *dev, int index)
+ 		cpuidle_curr_governor->reflect(dev, index);
  }
  
-+#ifndef CONFIG_ARCH_SPLIT_ARG64
- SYSCALL_DEFINE5(fanotify_mark, int, fanotify_fd, unsigned int, flags,
- 			      __u64, mask, int, dfd,
- 			      const char  __user *, pathname)
- {
- 	return do_fanotify_mark(fanotify_fd, flags, mask, dfd, pathname);
- }
-+#endif
- 
--#ifdef CONFIG_COMPAT
--COMPAT_SYSCALL_DEFINE6(fanotify_mark,
-+#if defined(CONFIG_ARCH_SPLIT_ARG64) || defined(CONFIG_COMPAT)
-+SYSCALL32_DEFINE6(fanotify_mark,
- 				int, fanotify_fd, unsigned int, flags,
--				__u32, mask0, __u32, mask1, int, dfd,
-+				SC_ARG64(mask), int, dfd,
- 				const char  __user *, pathname)
- {
--	return do_fanotify_mark(fanotify_fd, flags,
--#ifdef __BIG_ENDIAN
--				((__u64)mask0 << 32) | mask1,
--#else
--				((__u64)mask1 << 32) | mask0,
--#endif
--				 dfd, pathname);
-+	return do_fanotify_mark(fanotify_fd, flags, SC_VAL64(__u64, mask),
-+				dfd, pathname);
- }
- #endif
- 
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 37bea07c12f2..aea0ce9f3b74 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -251,6 +251,30 @@ static inline int is_syscall_trace_event(struct trace_event_call *tp_event)
- 	static inline long __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))
- #endif /* __SYSCALL_DEFINEx */
- 
-+/* For split 64-bit arguments on 32-bit architectures */
-+#ifdef __LITTLE_ENDIAN
-+#define SC_ARG64(name) u32, name##_lo, u32, name##_hi
-+#else
-+#define SC_ARG64(name) u32, name##_hi, u32, name##_lo
-+#endif
-+#define SC_VAL64(type, name) ((type) name##_hi << 32 | name##_lo)
++/*
++ * Min polling interval of 10usec is a guess. It is assuming that
++ * for most users, the time for a single ping-pong workload like
++ * perf bench pipe would generally complete within 10usec but
++ * this is hardware dependant. Actual time can be estimated with
++ *
++ * perf bench sched pipe -l 10000
++ *
++ * Run multiple times to avoid cpufreq effects.
++ */
++#define CPUIDLE_POLL_MIN 10000
++#define CPUIDLE_POLL_MAX (TICK_NSEC / 16)
 +
-+#ifdef CONFIG_COMPAT
-+#define SYSCALL32_DEFINE1 COMPAT_SYSCALL_DEFINE1
-+#define SYSCALL32_DEFINE2 COMPAT_SYSCALL_DEFINE2
-+#define SYSCALL32_DEFINE3 COMPAT_SYSCALL_DEFINE3
-+#define SYSCALL32_DEFINE4 COMPAT_SYSCALL_DEFINE4
-+#define SYSCALL32_DEFINE5 COMPAT_SYSCALL_DEFINE5
-+#define SYSCALL32_DEFINE6 COMPAT_SYSCALL_DEFINE6
-+#else
-+#define SYSCALL32_DEFINE1 SYSCALL_DEFINE1
-+#define SYSCALL32_DEFINE2 SYSCALL_DEFINE2
-+#define SYSCALL32_DEFINE3 SYSCALL_DEFINE3
-+#define SYSCALL32_DEFINE4 SYSCALL_DEFINE4
-+#define SYSCALL32_DEFINE5 SYSCALL_DEFINE5
-+#define SYSCALL32_DEFINE6 SYSCALL_DEFINE6
-+#endif
+ /**
+  * cpuidle_poll_time - return amount of time to poll for,
+  * governors can override dev->poll_limit_ns if necessary
+@@ -382,15 +395,23 @@ u64 cpuidle_poll_time(struct cpuidle_driver *drv,
+ 	int i;
+ 	u64 limit_ns;
+ 
++	BUILD_BUG_ON(CPUIDLE_POLL_MIN > CPUIDLE_POLL_MAX);
 +
- /*
-  * Called before coming back to user-mode. Returning to user-mode with an
-  * address limit different than USER_DS can allow to overwrite kernel memory.
--- 
-2.26.2
-
+ 	if (dev->poll_limit_ns)
+ 		return dev->poll_limit_ns;
+ 
+-	limit_ns = TICK_NSEC;
++	limit_ns = CPUIDLE_POLL_MAX;
+ 	for (i = 1; i < drv->state_count; i++) {
++		u64 state_limit;
++
+ 		if (dev->states_usage[i].disable)
+ 			continue;
+ 
+-		limit_ns = drv->states[i].target_residency_ns;
++		state_limit = drv->states[i].target_residency_ns;
++		if (state_limit < CPUIDLE_POLL_MIN)
++			continue;
++
++		limit_ns = min_t(u64, state_limit, CPUIDLE_POLL_MAX);
+ 		break;
+ 	}
+ 
