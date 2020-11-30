@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7452F2C9349
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30532C9359
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389071AbgK3Xw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:52:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
+        id S1729789AbgK3XxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:53:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389020AbgK3Xw0 (ORCPT
+        with ESMTP id S1726863AbgK3XxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:52:26 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCB1C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:51:46 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id c80so16250336oib.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:51:46 -0800 (PST)
+        Mon, 30 Nov 2020 18:53:18 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62D4C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:52:32 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id t18so4676158otk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:52:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=dqtZVKDF+iOHb6i9HnsWKEOoMGpzp8HRWPSLoRBVdcI=;
-        b=MhcYx68pv85thC3M2kbt6MwMV2rnoK8Jym2ftuEvJnOcSk+CdTsi3LDJUQpvn3eUDZ
-         vRXkTuOoUk/s8nIODWCZ/11lZF/zyl1qxHrA3rU9AkQBgsdSTWFkjV/pNG+NTCUyuuYm
-         YCT4W+S4o91XwIptI0ezXBboSFTQWwaxlwy8RUfSegR3Hcu2v4Iu60aYejdJak8NpVcP
-         85UMA8ZYw6Ercnn5M7kVMnnOr6Qm1bFlbvK2odoFZcRn3vXD/za9Gnybajb+RmDHAzOp
-         wreHXc5cL8BnrENuHw8dPMRWAoE5U1qoxvhDrjjTsdxSLoDw6WTYof5f30t2IFGoax9n
-         atWw==
+        bh=/E3CsLk3n2X4/o/h00UqiQ4R0nAVrxg+YFVRXYha1do=;
+        b=a2kQ6YQ+qwmy0Ls1xBAe0hNSftutzIkTHBVO4NcjyPfO1kHD/f1RwnxGyTemQ0N8Y7
+         hoSSwOPugh449L9vG5d6i/gnLxIj1nYlhL2I8GFn/4FlSzrEspS9yyHtu8Th6gmZu4v/
+         3zn6/flt/yE3ZQXwPivuf5kpW4yWdzVFIeNq1Y+ukm53KQkQhwDW+jnip61/1kxqyDo+
+         uFnfLbiKZ+O9qHyYrPeA5e2+82D68tpOH1ooJNUN21g92LxVe7AilCkZ/IYLvMtCWo5f
+         JQXsjmgSVXNX9gOu68gkp+UViUbCYNxQ4RB1AJULoGmZlH3KX3bvarEehRq+CBomQ8Q8
+         sU+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dqtZVKDF+iOHb6i9HnsWKEOoMGpzp8HRWPSLoRBVdcI=;
-        b=iMkQcQ94xigfZPGncUfoJvbAb0LE4E1xdxAt1ic6rHmSImlK2p1RCsbPkFJ6ayHj3b
-         ASJHYB/hcLMdXxTmwioGwS/scpNCnd+JYZYUiDFM7YWI0ooIOLQiLOeuXYMWice8HK7d
-         KX6rEAQsYjWtM7fTePnFsjPyfP5zzZNjBc3/ENZ8iuRdYSNBut7UaO/+u9HPSfXArLWq
-         /0o4IXR92uvKoJtmaEW1bjRaSRAldRr+cKffO8NxKiRcGIsDTMtqqvUjewHZYlCI5wRx
-         UXLNNhOOluKDuXRY7Yto7Y9F5BSEW4RUEJ9wRgLw20bgXqhIr5W6dea7uCOyW7C2UsId
-         7tKQ==
-X-Gm-Message-State: AOAM533jU8cvjis8pRiGoJ6bHYkNkM3FsMAnaYXaJ4FcuiHYJSlJpi6k
-        p+Hpu7oEid5MVHu7dm5o1XncApfMh9CaEnGgGxc=
-X-Google-Smtp-Source: ABdhPJxNbLaWtxU5KsFyyPyYENrktI33lsyQ8g6VQKzB5NZEqc8up8dmIs2gDA6INhVOZD+ex3RL6AdLHEUBsE77RBY=
-X-Received: by 2002:a54:4608:: with SMTP id p8mr5127oip.5.1606780306154; Mon,
- 30 Nov 2020 15:51:46 -0800 (PST)
+        bh=/E3CsLk3n2X4/o/h00UqiQ4R0nAVrxg+YFVRXYha1do=;
+        b=Cxt9KFz4nviu8ApHRIBfAVsDas1sflHW5Ql3dIWnYT0OyBFd74/8gK4XPRWb7o+cCi
+         6HXm1DHOkYeWp1kOl2DV8s/dSLrLhc/pWslZxPexb0hkznxyHUicujEgz0jLQ/L8gHpH
+         B1ZthcfpN3fOQpGPQO24PScrrAtq5wESvuVLAIeJo4BTrp/mh5W4Wib+HJXHUV5du28v
+         b0TtnkaZ+axk0vDwpdg3Rh7ark+3vsBUe479jiHtF/BErlICA6SSksWIUvbp/l9zv17o
+         yWKHsmlKfD/Q4ueZsJxYr0vUsmKxuC5KVb/dRYNwg9HIyptWLua7iR9DIRB4jyN219g+
+         aCdQ==
+X-Gm-Message-State: AOAM531otcfpOiwI9dJyNHFIBicuc9MOWfv9iHUNYXjBW5ofdJyiHiy6
+        AUeU//hYzwMCqV6FaADpUo8TE25gpq2NOts3+mg=
+X-Google-Smtp-Source: ABdhPJzlB2LN4ZKpJ+zOqCDoj1z5pw3qiPOkr7hybeT2yqGjUq0PlG0wdnev+MFvbRO52K2QcZ4KPPTjV1riW26i2Cw=
+X-Received: by 2002:a05:6830:22e4:: with SMTP id t4mr19276171otc.23.1606780352124;
+ Mon, 30 Nov 2020 15:52:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-28-lee.jones@linaro.org>
-In-Reply-To: <20201126134240.3214176-28-lee.jones@linaro.org>
+References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-29-lee.jones@linaro.org>
+In-Reply-To: <20201126134240.3214176-29-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 18:51:34 -0500
-Message-ID: <CADnq5_PgX6b24aEntKQccUzD=CkQpf2pz09rwLebeYsnB3gd-Q@mail.gmail.com>
-Subject: Re: [PATCH 27/40] drm/amd/pm/powerplay/hwmgr/hwmgr: Move
- 'vega20_hwmgr_init()'s prototype to shared header
+Date:   Mon, 30 Nov 2020 18:52:20 -0500
+Message-ID: <CADnq5_O8E5mfdbpeqXDovWCCFfjMchVfwt60uStL34LT=zdV6g@mail.gmail.com>
+Subject: Re: [PATCH 28/40] drm/amd/pm/powerplay/hwmgr/smu_helper: Demote or
+ fix kernel-doc headers
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -71,11 +71,36 @@ On Thu, Nov 26, 2020 at 8:43 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega20_hwmgr.c:4403:5: =
-warning: no previous prototype for =E2=80=98vega20_hwmgr_init=E2=80=99 [-Wm=
-issing-prototypes]
->  4403 | int vega20_hwmgr_init(struct pp_hwmgr *hwmgr)
->  | ^~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu_helper.c:112: warni=
+ng: Function parameter or member 'hwmgr' not described in 'phm_wait_on_regi=
+ster'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu_helper.c:112: warni=
+ng: Function parameter or member 'index' not described in 'phm_wait_on_regi=
+ster'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu_helper.c:112: warni=
+ng: Function parameter or member 'value' not described in 'phm_wait_on_regi=
+ster'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu_helper.c:112: warni=
+ng: Function parameter or member 'mask' not described in 'phm_wait_on_regis=
+ter'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu_helper.c:145: warni=
+ng: Function parameter or member 'hwmgr' not described in 'phm_wait_on_indi=
+rect_register'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu_helper.c:145: warni=
+ng: Function parameter or member 'indirect_port' not described in 'phm_wait=
+_on_indirect_register'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu_helper.c:145: warni=
+ng: Function parameter or member 'index' not described in 'phm_wait_on_indi=
+rect_register'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu_helper.c:145: warni=
+ng: Function parameter or member 'value' not described in 'phm_wait_on_indi=
+rect_register'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu_helper.c:145: warni=
+ng: Function parameter or member 'mask' not described in 'phm_wait_on_indir=
+ect_register'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu_helper.c:494: warni=
+ng: Function parameter or member 'hwmgr' not described in 'phm_initializa_d=
+ynamic_state_adjustment_rule_settings'
 >
 > Cc: Evan Quan <evan.quan@amd.com>
 > Cc: Alex Deucher <alexander.deucher@amd.com>
@@ -91,35 +116,49 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/amd/pm/inc/hwmgr.h             | 1 +
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c | 1 -
->  2 files changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/inc/hwmgr.h b/drivers/gpu/drm/amd/pm/=
-inc/hwmgr.h
-> index 499f2520b1aa3..490371bd25201 100644
-> --- a/drivers/gpu/drm/amd/pm/inc/hwmgr.h
-> +++ b/drivers/gpu/drm/amd/pm/inc/hwmgr.h
-> @@ -831,5 +831,6 @@ int hwmgr_handle_task(struct pp_hwmgr *hwmgr,
->  int smu7_init_function_pointers(struct pp_hwmgr *hwmgr);
->  int smu8_init_function_pointers(struct pp_hwmgr *hwmgr);
->  int vega12_hwmgr_init(struct pp_hwmgr *hwmgr);
-> +int vega20_hwmgr_init(struct pp_hwmgr *hwmgr);
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.c b/driver=
+s/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.c
+> index 2a0ca5194bbe9..bfe80ac0ad8c8 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.c
+> @@ -103,7 +103,7 @@ uint32_t phm_set_field_to_u32(u32 offset, u32 origina=
+l_data, u32 field, u32 size
+>         return original_data;
+>  }
 >
->  #endif /* _HWMGR_H_ */
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c b/drivers/gpu=
-/drm/amd/pm/powerplay/hwmgr/hwmgr.c
-> index 49f8a331eb02e..6a7de8b898faf 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
-> @@ -47,7 +47,6 @@ extern const struct pp_smumgr_func smu10_smu_funcs;
->  extern const struct pp_smumgr_func vega20_smu_funcs;
+> -/**
+> +/*
+>   * Returns once the part of the register indicated by the mask has
+>   * reached the given value.
+>   */
+> @@ -132,7 +132,7 @@ int phm_wait_on_register(struct pp_hwmgr *hwmgr, uint=
+32_t index,
+>  }
 >
->  extern int vega10_hwmgr_init(struct pp_hwmgr *hwmgr);
-> -extern int vega20_hwmgr_init(struct pp_hwmgr *hwmgr);
->  extern int smu10_init_function_pointers(struct pp_hwmgr *hwmgr);
 >
->  static int polaris_set_asic_special_caps(struct pp_hwmgr *hwmgr);
+> -/**
+> +/*
+>   * Returns once the part of the register indicated by the mask has
+>   * reached the given value.The indirect space is described by giving
+>   * the memory-mapped index of the indirect index register.
+> @@ -486,9 +486,9 @@ int phm_get_sclk_for_voltage_evv(struct pp_hwmgr *hwm=
+gr,
+>  }
+>
+>  /**
+> - * Initialize Dynamic State Adjustment Rule Settings
+> + * phm_initializa_dynamic_state_adjustment_rule_settings - Initialize Dy=
+namic State Adjustment Rule Settings
+>   *
+> - * @param    hwmgr  the address of the powerplay hardware manager.
+> + * @hwmgr:  the address of the powerplay hardware manager.
+>   */
+>  int phm_initializa_dynamic_state_adjustment_rule_settings(struct pp_hwmg=
+r *hwmgr)
+>  {
 > --
 > 2.25.1
 >
