@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A6E2C850F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 378E92C8514
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbgK3NYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:24:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
+        id S1726736AbgK3N0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:26:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726670AbgK3NYj (ORCPT
+        with ESMTP id S1725900AbgK3N0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:24:39 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417EDC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:23:53 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id z7so16191145wrn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:23:53 -0800 (PST)
+        Mon, 30 Nov 2020 08:26:08 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2560BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:25:28 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 3so21421313wmg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:25:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:autocrypt:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=1UzOgQJZ21QpvvYxGtqBU6A9dkhs5QGCec/90ZMZG7U=;
-        b=jhLQqBzLTZ+63wrjJjpRuK05OzGQBfgHNNZe4F9IN5lN08dsSiWdCLPOvXd5n93Iuu
-         SGbhOb9bsXMy7W+9HkYOL51Qw+Dv0GJbOCzaDOYp07v6JnnbDGfk0FX+aA2Y7dz4ksxg
-         CUnYWNLGL8m7FZ4W8mGMnpI8p1IZPatP+iKqOTygwulnqStF+HM/JwYWXA2+A/NF7Z4L
-         moAzG7VNwLmIcp0dUgrxuGKaNfq/7o9MyxQyJpRgLv3GJk0rWQa4eYbFP+wLgAbfJG/q
-         GEKkYkqGS8Wf0YibI+P185e53d7CKtYwJnBk3GFdqi47Kq8uu2mH0QBr2Hxs8Q0W28PM
-         CgDQ==
+        bh=l0shX+sCSeRMp58xcC0HzGwE/yEJsp/smhugW9tOkWE=;
+        b=GrNypqsZNHs6S+K/VGLpnBipUOS4+z9xAkrGsnGW3SEN0NiY2b9jwWucqK4GLK9QFE
+         LpY3RsnMLzZdz70wALryWDpC3/SdkiidudQZe8OxaUrzFeyDnc5T7IwP0FWdq5C+da+R
+         UhQn168bkRxzz7PyO3ByCdBqXf844hSrXB2inj5N4Hkz+6cip5LoOMHZT3s30cc2Q1JO
+         Mx/DExkWE6A3YmgMTLaH0TJx2a9qtmhPRvhcZtnBq3+8otlzDla4h9FiU+nWeISkmnV+
+         cuJFHkC64LLMltZ6LmXhYVrHieRQxzoWWt1UHK7YRrfpXogXhWS+iQvzUUwKJ7cK8Fo7
+         FNSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=1UzOgQJZ21QpvvYxGtqBU6A9dkhs5QGCec/90ZMZG7U=;
-        b=pNwUS+m8ovT3xmcxcJxYtGqr5700sUcTuy3zCISnjfQpK7M30DBYL2W62m9YdtH3Nd
-         IbGlwclmBzx98xtlUzPXKDr69t6XF1s3SujU1sXMHV6v7b7UbIpHoja2VKujkgrBzt0W
-         1t6wDYcD2pGpZ2/t9NPNJvvxWXetu7lJUgw0c6nOdgDS3iI8icjs2mangEzXGFsqT2LW
-         AjV8xMq5oqP0p8L63+7jSVwoOw14CLVBB2bUzP30p9Zl9JdN+zxAw70U0JCyJJ3qoc4D
-         d+RK3mGmksC3h8s+j0sw0V6LOW7/kbT1rH77VMIm28sxaDSkLIO8GjgqMMsVdU0WBrc5
-         ibAQ==
-X-Gm-Message-State: AOAM530ikbFoMOLGtp2Bg+ovCYTzTUJYUzlXQD5MnUvTxXiE0U4y53ea
-        91+pieHXZ4UUXZ/NSdphN8QngyzlUQfEMGvL
-X-Google-Smtp-Source: ABdhPJyNbxM4tIOtcSTacPrOaM7iBy4WCWLMhioMMLX3KB6UqH08UEiXuRYXiPlkBFgezSf0rS+FlA==
-X-Received: by 2002:adf:f14e:: with SMTP id y14mr28990860wro.19.1606742631435;
-        Mon, 30 Nov 2020 05:23:51 -0800 (PST)
+        bh=l0shX+sCSeRMp58xcC0HzGwE/yEJsp/smhugW9tOkWE=;
+        b=afMWKmitIFRbaWwjjribgqqexh3NTYljipNlaTRH+e/XGdPHwjJwfKmIoX77K7VJle
+         njDynycAcO4yLd7J3L85ypg8EJRVA/tiQ1THmm60FyPoQ8iehOV+0cUT4MKXsYTeaSaV
+         Wg5qG1HbcPQgRQPcxICgfUPbagdhNMg3tzJ9mbDCbzDduVpS812yGhnRiVViM25b2c3n
+         zav8PJXHmdQlk1qWkP/iUhhGt0biWwRDepsMC1vJzljQHvNnUQsjQFCZdwCmd9Pcl/+2
+         dJHgcV1YbcdTRuThBDwmpYhERHKGqIzsdWeTY9LAWRnUC/fry3gLsxuY0OI3VGy+Tzjo
+         6sfA==
+X-Gm-Message-State: AOAM532ZT98XIbNd6nV8Hp5VqQ6y09wNuGv+ymQ5+Npup2R43nZdracU
+        8v9ekg7+0snegbk0Gehq9bWsWQ==
+X-Google-Smtp-Source: ABdhPJwgDQaUobvgZCuGcqI//qWBkfw+ORVRmtt5yv6AuOdTGVJ0gNsOxyZNof+YUbkPwRyp44UODQ==
+X-Received: by 2002:a7b:c954:: with SMTP id i20mr23289319wml.56.1606742726690;
+        Mon, 30 Nov 2020 05:25:26 -0800 (PST)
 Received: from [10.1.3.24] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id v6sm30862297wrb.53.2020.11.30.05.23.50
+        by smtp.gmail.com with ESMTPSA id q17sm32327983wro.36.2020.11.30.05.25.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 05:23:50 -0800 (PST)
-Subject: Re: [PATCH v2] arm64: dts: meson-sm1: fix typo in opp table
-To:     Dongjin Kim <tobetter@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        Mon, 30 Nov 2020 05:25:25 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: meson: update the Khadas VIM3/3L LED bindings
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Kevin Hilman <khilman@baylibre.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20201130060320.GA30098@anyang-linuxfactory-or-kr>
+Cc:     Artem Lapkin <art@khadas.com>
+References: <20201125052914.4092-1-christianshewitt@gmail.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  mQENBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -107,12 +110,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  VsbXrP9BZ6snXyHfebPnno/te5XRqZTL9aJOytB/1iUna+1MAwBxGFPvqeEUUyT+gx1l3Acl
  ZaTUOEkgIor5losDrePdPgE=
 Organization: Baylibre
-Message-ID: <9d2735a7-0195-c7c0-74ce-483212d47858@baylibre.com>
-Date:   Mon, 30 Nov 2020 14:23:50 +0100
+Message-ID: <d481a9f0-1d9c-2989-edd3-83f7c549f228@baylibre.com>
+Date:   Mon, 30 Nov 2020 14:25:25 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201130060320.GA30098@anyang-linuxfactory-or-kr>
+In-Reply-To: <20201125052914.4092-1-christianshewitt@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -120,36 +123,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/2020 07:03, Dongjin Kim wrote:
-> The freqency 1512000000 should be 1500000000.
+On 25/11/2020 06:29, Christian Hewitt wrote:
+> Update the VIM3/3L common dtsi to use the new function/color bindings.
 > 
-
-Fixes: 3d9e76483049 ("arm64: dts: meson-sm1-sei610: enable DVFS")
-
-> Signed-off-by: Dongjin Kim <tobetter@gmail.com>
+> Suggested-by: Artem Lapkin <art@khadas.com>
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
 > ---
+> This supersedes a previous submission from Art [0] and uses the updated
+> LED bindings suggested by Neil.
 > 
-> Change in v2:
->   - wrong fix in the previous patch.
->     https://patchwork.kernel.org/project/linux-amlogic/patch/20201130054221.GA25448@anyang-linuxfactory-or-kr/ 
+> [0] https://patchwork.kernel.org/project/linux-amlogic/patch/20200925033017.1790973-4-art@khadas.com/
 > 
-> ---
->  arch/arm64/boot/dts/amlogic/meson-sm1.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-> index 71317f5aada1..c309517abae3 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-> @@ -130,7 +130,7 @@
->  			opp-microvolt = <790000>;
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> index 87bd8c9516f2..8f8656262ae7 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> @@ -6,6 +6,7 @@
+>   */
+>  
+>  #include <dt-bindings/input/input.h>
+> +#include <dt-bindings/leds/common.h>
+>  #include <dt-bindings/gpio/meson-g12a-gpio.h>
+>  #include <dt-bindings/sound/meson-g12a-tohdmitx.h>
+>  
+> @@ -42,14 +43,16 @@
+>  	leds {
+>  		compatible = "gpio-leds";
+>  
+> -		led-white {
+> -			label = "vim3:white:sys";
+> +		white {
+> +			color = <LED_COLOR_ID_WHITE>;
+> +			function = LED_FUNCTION_STATUS;
+>  			gpios = <&gpio_ao GPIOAO_4 GPIO_ACTIVE_HIGH>;
+>  			linux,default-trigger = "heartbeat";
 >  		};
 >  
-> -		opp-1512000000 {
-> +		opp-1500000000 {
->  			opp-hz = /bits/ 64 <1500000000>;
->  			opp-microvolt = <800000>;
+> -		led-red {
+> -			label = "vim3:red";
+> +		red {
+> +			color = <LED_COLOR_ID_RED>;
+> +			function = LED_FUNCTION_STATUS;
+>  			gpios = <&gpio_expander 5 GPIO_ACTIVE_HIGH>;
 >  		};
+>  	};
 > 
 
 Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
