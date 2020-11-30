@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B092C8ECA
+	by mail.lfdr.de (Postfix) with ESMTP id DC40D2C8ECB
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgK3UNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:13:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
+        id S1730020AbgK3UNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:13:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727936AbgK3UNb (ORCPT
+        with ESMTP id S1729952AbgK3UNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:13:31 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B6DC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:12:51 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id p21so386068pjv.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:12:51 -0800 (PST)
+        Mon, 30 Nov 2020 15:13:54 -0500
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A540CC0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:13:14 -0800 (PST)
+Received: by mail-vk1-xa43.google.com with SMTP id m6so3028969vkl.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:13:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xdK8+qkc2rtuVSy5z4KzKkg6o06W3+GbexGx9SBitVM=;
-        b=wK3ShHoBqxgZvGL9tz2LsiHza2V8Qq+i1MrEAA82aXcHCURZHT48vMhRLfCutCkbbR
-         tAGnm1mcR0StRiQCdYH9CLtC9NeL81DgDQyBCIoS5Hzm5YBTPEqXF34iGGbE2z91z/7E
-         myw7BuRoKXDtncCCJqTZDw8Y4Y2rucIu5M2Km60H8Mzrq34xnoCKSZ6IAfYoTudcV+N6
-         CNX5glIymgl1eVnYSHqP8oldWqjXhIqds4IN5qgRNysQkRpvd8qqBG0z7M0BOxfTUFj8
-         b1LCYg1p4TftgKSKQMB2nE0H5NXPcorXOww8cIFLpg2R5uaO72Te+WHM9hd+JctzpyaI
-         /IDA==
+        bh=KNqM/C8eL45x9LNKyk86/gn0/dc3HpN6rTLp60H8hWQ=;
+        b=Vq0OS8S8QXQplFzhvSngxUne0rTUSvj1r2no9nGC+YhPX4w6H1iUWzAStM2+tXFEul
+         Ted40Zr5ZUL53ooRcvb7OpxTEa1IFf53x9Ws6GL/leS2QM7IpV5dSjc5XCN3cKZPuDZk
+         iAi4CapWv33D/JN77dul4CJkEzcdZado6aqqIZHKdiKwnBv150EAX7D1eqebmdjLwGW4
+         yZ4TP7GYG32knC9mGosk6flndLsv63NLToCtjnU/NVoNzGdvNor/VSU52ZxsKwc2HgFz
+         ZW0Fw3ZBRqZUNYI/GDcooKzYl2NzIGP6oxQVsSAbEY3DrYn804UU8kUa8MozfAuJ3UZr
+         52Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xdK8+qkc2rtuVSy5z4KzKkg6o06W3+GbexGx9SBitVM=;
-        b=f3DSJSmRR5jDfUa6fGxaMCmAy8eKrU/wo1YoLesPduClXoNh+rrNaBRuAK5Zc3q4cH
-         SRj4wBD8MR0YQsRGCnOItgfQv5MwJMrCo4k/Id4A2rZKjQIcLaFL/4NxX+Pebi7Nt1Lb
-         CYyBoO5M60ablFc8/DbNUzinfqfw7xe32YWncztgqmc0uEGFj8UTrS2TTMk6nDAzEQ/v
-         m8ZyYlwxEzbhcrk88Xm3dO+FJosYtAkprE/6YvLR/tkH++a/5XA1sgfwb+tHRUqbK6f4
-         S7b8AvmZjXruOlABv5WBqFevCq02iqPRpSz3MCcfbyxYIMJm0rTX/XOXyzg5uthjOVWD
-         2HNw==
-X-Gm-Message-State: AOAM530CquCrfzHVUVcijIfFYR2Ds2b7v5DzsLjcxvLHLhsXq7JMEHeK
-        OjAMyBgtU+ZjfbML8kj3w63Vd/4X5Ojrn0BY92mPPA==
-X-Google-Smtp-Source: ABdhPJy2yJpznno2UNGOaFhGigmzH2+/QnBPutAyxmqWdT9JN+hxh1ZKo5pJKmX/+BSK3ZR5qbTSWgDkYkoKYx+uAHY=
-X-Received: by 2002:a17:90a:dc16:: with SMTP id i22mr654696pjv.32.1606767170547;
- Mon, 30 Nov 2020 12:12:50 -0800 (PST)
+        bh=KNqM/C8eL45x9LNKyk86/gn0/dc3HpN6rTLp60H8hWQ=;
+        b=kfPSg5b5RGfo7QGLbYdrKNUjtgQj6ooRCzW5RhLU6+zU8Ei9kL8ifqMPCXro9drG5M
+         U01RpbA/sjn0ZA6/+T48OyF/M+qBM1IM8FLb+uGPqZw3O9m1kbbxjjTq/JCW5wyzlF8/
+         WRI4Wjbji6IuO5SViS1eo2/f4n6tK+ZDi1+rQ5ff4YYVk8mQpuwEBm3Z3yvDuI5Y98pl
+         FzdYg7jJ8zgDzdxbbR2KXc91DNOdxHU7T2jsQ4bHwB+1/phW8VCV0kWJT/RFeyRblhY4
+         B9kgAFCiqRJhnGtEtCuBq0Lo6NM/VLUEPTHCeU0sVLsQBvFG4MOFQcVox5KKvizkWshU
+         n/uw==
+X-Gm-Message-State: AOAM532mUB5DZqfTd5AFr+m0OSAKbBsjNXuZ/gTTIwMG5NTffIJ69av1
+        MCGksZPLii7UHHhdUFIAKFh2h/AX7BadfZT+3M3cY6nGVQo=
+X-Google-Smtp-Source: ABdhPJwMscxJgygcIsM3wT+PFwQPqfG1eCy0/h5Ayg+R+9IUU+MAAapyxsntsMpYxTXYJsBv2oOK4VciBcgXSAM+nAw=
+X-Received: by 2002:a1f:5587:: with SMTP id j129mr17952226vkb.0.1606767193811;
+ Mon, 30 Nov 2020 12:13:13 -0800 (PST)
 MIME-Version: 1.0
-References: <CA+G9fYt0qHxUty2qt7_9_YTOZamdtknhddbsi5gc3PDy0PvZ5A@mail.gmail.com>
- <X79NpRIqAHEp2Lym@kroah.com>
-In-Reply-To: <X79NpRIqAHEp2Lym@kroah.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 30 Nov 2020 12:12:39 -0800
-Message-ID: <CAKwvOdmfEY6fnNFUUzLvN9bKyeTt7OMc-Uvx=YqTuMR2BuD5XA@mail.gmail.com>
-Subject: Re: [stable 4.9] PANIC: double fault, error_code: 0x0 - clang boot
- failed on x86_64
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Sasha Levin <sashal@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        x86@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
+References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
+In-Reply-To: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Mon, 30 Nov 2020 15:13:02 -0500
+Message-ID: <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
+Subject: Re: [BUG] SPI broken for SPI based panel drivers
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 10:38 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi Nikolaus, thank you for reaching out !
+
+On Mon, Nov 30, 2020 at 2:06 PM H. Nikolaus Schaller <hns@goldelico.com> wrote:
 >
-> Is the mainline 4.9 tree supposed to work with clang?  I didn't think
-> that upstream effort started until 4.19 or so.
+> But reverting your patch brings back the display. So it appears as if it does not
+> fix a breakage, rather breaks a previously working setup.
 
-(For historical records, separate from the initial bug report that
-started this thread)
+The patch in question fixes an important breakage: before the patch, literally
+hundreds of SPI drivers no longer worked - only if the SPI bus master
+driver was using gpio descriptors.
 
-I consider 785f11aa595b ("kbuild: Add better clang cross build
-support") to be the starting point of a renewed effort to upstream
-clang support. 785f11aa595b landed in v4.12-rc1.  I think most patches
-landed between there and 4.15 (would have been my guess).  From there,
-support was backported to 4.14, 4.9, and 4.4 for x86_64 and aarch64.
-We still have CI coverage of those branches+arches with Clang today.
-Pixel 2 shipped with 4.4+clang, Pixel 3 and 3a with 4.9+clang, Pixel 4
-and 4a with 4.14+clang.  CrOS has also shipped clang built kernels
-since 4.4+.
--- 
-Thanks,
-~Nick Desaulniers
+We knew that there was a chance that our fix would break something else.
+But hopefully "it fixes more than it breaks"
+
+>
+> What should we do?
+>
+
+Can you try the following patch ?
+
+diff --git a/drivers/spi/spi-gpio.c b/drivers/spi/spi-gpio.c
+index 7ceb0ba27b75..c173d7de73b3 100644
+--- a/drivers/spi/spi-gpio.c
++++ b/drivers/spi/spi-gpio.c
+@@ -208,8 +208,8 @@ static void spi_gpio_chipselect(struct spi_device
+*spi, int is_active)
+        if (spi_gpio->cs_gpios) {
+                struct gpio_desc *cs = spi_gpio->cs_gpios[spi->chip_select];
+
+-               /* SPI chip selects are normally active-low */
+-               gpiod_set_value_cansleep(cs, (spi->mode & SPI_CS_HIGH)
+? is_active : !is_active);
++               /* SPI chip select polarity handled by gpiolib*/
++               gpiod_set_value_cansleep(cs, is_active);
+        }
+ }
