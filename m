@@ -2,177 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7ED2C7E14
+	by mail.lfdr.de (Postfix) with ESMTP id B4D7A2C7E15
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgK3GRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 01:17:17 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:56032 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725884AbgK3GRQ (ORCPT
+        id S1726151AbgK3GRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 01:17:49 -0500
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:7548 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725860AbgK3GRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 01:17:16 -0500
-Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id B32FCC0119;
-        Mon, 30 Nov 2020 06:16:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1606716975; bh=a9e+XExR4neOd+D4KoRKJev1DhkT3kIGSHIap217VRM=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=QC1SZY5anQd4xzCbFQ3PNpAIjdd1wS8YqC3e61FN0rrKY5m5ZJuzonJkN2cKAc/T9
-         j03wUGKhNilDndzpKAmTr1TThCoeNH8tNegnavtQaFwNovlEZCOrEQKcPb45jguSQu
-         6TNVUrLHaYep/2CjGuuqryPd8ZE3MYCPHCv9XSJmjRzbo6kJjPLMwag9AGugUu6f5k
-         iWehDE7oesbVWMK7nAh6KX5mzVipDnKPK/Fn3Gzc0x5o/xXWa1QtGQdi6KSKq6CEyS
-         M/sUZ+gwU5jpdOOeulTrNFOG8LeaHO/TQZ7woZfrDcq55J1cNztEws3ugN+g5SoHhf
-         BXeYaKgBGceUQ==
-Received: from o365relay-in.synopsys.com (us03-o365relay1.synopsys.com [10.4.161.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPS id D0DC1A006F;
-        Mon, 30 Nov 2020 06:16:13 +0000 (UTC)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 44DAD80214;
-        Mon, 30 Nov 2020 06:16:12 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=hminas@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="D/vdQuUr";
-        dkim-atps=neutral
+        Mon, 30 Nov 2020 01:17:49 -0500
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AU684hb014074;
+        Sun, 29 Nov 2020 22:16:35 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=mCAQLHWOrs1dH1GZeiTwr/Xps97gDnT+aFrWmpEJy1E=;
+ b=dZqWih467QZheN+jIHVkhGNFfbrez+dnhJCt6J3uyuykNvtXxTOvycGl/sOCX0m4fwLT
+ ABDG0iPPFJJ08Zru01uGL2j+wbOlccviHE1pBkZexPE+nS13pQo5Undihp6+UWADQyoL
+ Lwd164E83dLwTmoTR0kmiXQa6dlrAE3h10dxyLgCks7ufv4CWRpLtQhdKGaR7/blaep5
+ w0yrNPu9GeDW11Hg17VRXun550ILrI5oaiD3nqciFtWbqvmPBg50a/hYY42gLAoF1iBH
+ GHH0IIa8MH+E6xHbXMitroGlUjkTpijXTaNYJGX8zEyakcybbqCquhwbszmndAJm4zOo sQ== 
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2045.outbound.protection.outlook.com [104.47.73.45])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 353m02v1sp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Nov 2020 22:16:35 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WVY/hLh6ezwe8BrVyE2zfclSlaHgCFvfXhvJOPFss/IhMOMt/kCVOhqbYX+JLCnCNx6K+TSK7pYqN7JVj/eW36AeGVXSSGBEubR7keGhKkxFezSzi7q8pBq8hAt/WOY4J7/rYR1Ed3Dhp9xdmt/Al3ZiYQJY9E1lbtkSY3E2WVx3o3fyRDr5ntJncwPljsqUSxk6A36Own4a3roFoB6u6PDWxPTfDTjZ2TaOZpQsdw6XRdBUAjP82/QcxZaUSbugqmgkTBkOABncT8fXvhOcU+47YxApvLMkMcFYqu6Mzc1dNbLsx8nRXgWWB70ZK/UiCGSuRCtk+siqnoPTmcdjGA==
+ b=Kl+T8XESsaE7zn7AxFIJtgABdDJy1Tsu85YGcQekEdqjNAi83yon0m/vlP7Odv2I13gCODgzKFxLk4/yLhphkHKD8JGWgWdKDJiFyL1iptRgKUQS79ZIwGaNM2Xz8G7cSPf9lT5lusmiTFqrBj8LflV+zoNGMQ4ATE46o08pEUPQbP2MO7siIEGD19QWy3Z40so6sqfNZJ9eCmgImXAOWS1wwddeaIqkl0/ruP96wx2PS68MIGX4IdsXsuHNyj1qN1g9IE0rNJFDasKWOSJ+hRd1GgKnxoILfgsGRy/V/LUfz7y6MwRGKNvHrjQAuqgSSMcW3aeQMx5TxMyZ+qn21A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a9e+XExR4neOd+D4KoRKJev1DhkT3kIGSHIap217VRM=;
- b=F0GwNb5tTVkXaljeflY347WeSTGgBfNyrSZ7OK2YKnsyQN/I+/hyFBQbK8ElAh6p0G30pIpYzfYj7/76QRw4I6DfJP35voImy2jqn06rHYB87GsyhtkkSCTpf2NMv7CQx0OHxds+gkDG7JLwj6Kz0vHJXh1x7ZTi/lR//WbMm3sGF4OqZPo1PIMTn21wU5C6hGHmLYzDCsoneW2wRzWdgXQ0NxC3e9JGhgpH7EjE8uBkhUBRmSBV0314f2LozsMR6v/2FIygRtJuyBb6nvDTufCkDHObctmFQiIp1LIRqyZFLDwpq7T+kS3fiF5x5ahV7ZY0MgnWknJpdjwh7CwlPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
+ bh=mCAQLHWOrs1dH1GZeiTwr/Xps97gDnT+aFrWmpEJy1E=;
+ b=X8pmNGYdpWbc486SoRj8S6hg5NdLMwERtk+WoZFilFwjsH6bvpV+noifobmWd0/ajcM3ZmiBsWfSGMmgOCC1tJwDnpcVGnnSdMapDd1IfRAF6n1Sr1SF+L75PH3gZ4/5P+jHiPtvzRotOBmCImZQsO3W08r+6JBl4wz/XV99Zq7lYL3RpEkg3WPfhXgbEolf4StW33ltgqEAiY+uyActf0cYB365XsOzz4fyjHP/CfICwBmKMlm77U5jHauIZyP5rc+fcgQqUIJzNUR7Cj3fOlnMGMFb7zrQ080hYeYe4sMF2fPj3+9a6VSghzXfC2mwTS9DMJqlL0qJInj/WOcTtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 199.43.4.23) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a9e+XExR4neOd+D4KoRKJev1DhkT3kIGSHIap217VRM=;
- b=D/vdQuUrLEjmxB0UUkcr+PSeX7s7bIAV2gkbfLliKDGBpy2xEffx9rEcNTcdKYuXAjA4RpPfI0wb8ZhkgqQdqTpQ29vi/xasETkr5qfpyA3EOIfOvfbYUwMz1lEWA2akO1WSzwKuiPVTjZ0FO0JtxvYat/dc9FrxzEElKQouJ4g=
-Received: from BY5PR12MB3777.namprd12.prod.outlook.com (2603:10b6:a03:1a9::14)
- by BY5PR12MB4997.namprd12.prod.outlook.com (2603:10b6:a03:1d6::13) with
+ bh=mCAQLHWOrs1dH1GZeiTwr/Xps97gDnT+aFrWmpEJy1E=;
+ b=5Wnw3ZPNxFHQAocgkBpdOlXbFYwW0idH9JwU2pSqNmxlV8nOiy32SYOvuhGC8bvipsOwkgPVFfoB71P/acDqq+Lxq1VOkAor3HskL12MaNSfcYVsI9sXZ0inje8dtr13WleBHmMkkcyaBYahBSrPe/jdhf4LJySwsDo3vz+CCiQ=
+Received: from DM6PR03CA0092.namprd03.prod.outlook.com (2603:10b6:5:333::25)
+ by MN2PR07MB7102.namprd07.prod.outlook.com (2603:10b6:208:115::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.31; Mon, 30 Nov
- 2020 06:16:09 +0000
-Received: from BY5PR12MB3777.namprd12.prod.outlook.com
- ([fe80::f90b:950d:63c:37c2]) by BY5PR12MB3777.namprd12.prod.outlook.com
- ([fe80::f90b:950d:63c:37c2%7]) with mapi id 15.20.3611.023; Mon, 30 Nov 2020
- 06:16:09 +0000
-X-SNPS-Relay: synopsys.com
-From:   Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-To:     Amelie Delaunay <amelie.delaunay@st.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: Re: [PATCH 1/3] usb: dwc2: set ahbcfg parameter for STM32MP15 OTG HS
- and FS
-Thread-Topic: [PATCH 1/3] usb: dwc2: set ahbcfg parameter for STM32MP15 OTG HS
- and FS
-Thread-Index: AQHWwXdaFMe2+oRc70i5cWxSkuJD26ngPaWA
-Date:   Mon, 30 Nov 2020 06:16:09 +0000
-Message-ID: <6c67ae2f-a172-e82a-1891-ec8e3c548491@synopsys.com>
-References: <20201123090114.12641-1-amelie.delaunay@st.com>
- <20201123090114.12641-2-amelie.delaunay@st.com>
-In-Reply-To: <20201123090114.12641-2-amelie.delaunay@st.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-authentication-results: st.com; dkim=none (message not signed)
- header.d=none;st.com; dmarc=none action=none header.from=synopsys.com;
-x-originating-ip: [37.252.92.220]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b66025a4-f256-44b9-def5-08d894f76dd6
-x-ms-traffictypediagnostic: BY5PR12MB4997:
-x-microsoft-antispam-prvs: <BY5PR12MB4997F08D40D8903384780198A7F50@BY5PR12MB4997.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:457;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /BGaP5Qr/AX2xbiH+tut1dcdkOD4U8JE6HjYXCrRV3IeiF6/agNP+nMNcIHCB/R3f9iMm88/AQsH6Qzyr1UHlgwAFQqGkYh3soXzbc4gEUTIZS5ltdGyBveAB6loYrmkbcLtCkdKt60BSCiUSQlGwkOdWMSv6NodQZ91ZEER9zihAw3dwVGVFsRzt04ymMxB95XX47VWxFlpLUDbHOWp1l2TxTZcIFppq7COMtOR7iZgWMHaCbEouKUBSusnVd6cYne9l1Ei1VzYMKUcikkGMOHF6Y3hHMfP84Q/yAISF9jf/OWSIL9nFjWW3kk+4kT99EPSADVVubXi+gZoSgC1gSd+5VAE/2GACWbZyBF9j/5YZgSPTjRVizodge95JCeNMujycP3yfEvulrWk0JOisvbdvNH5uN0XE80ubhNQvQ9Ze9QdQIUakj1va1nySg1PlCdOgIeV4PeOw1nOwVgQJg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3777.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(136003)(346002)(366004)(376002)(966005)(54906003)(76116006)(91956017)(86362001)(5660300002)(4326008)(66476007)(83380400001)(110136005)(316002)(66946007)(66556008)(478600001)(64756008)(66446008)(8676002)(71200400001)(8936002)(31686004)(26005)(53546011)(6512007)(2616005)(36756003)(186003)(2906002)(6506007)(31696002)(6486002)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?cjFXTHNsVndmTGYwSTdZK1N6ZDczRnRZZXphNmxrYWt0RGdzMmkyYzd6WDFV?=
- =?utf-8?B?WU5vNzZlSXNLSXlTMEZaNGFCUFhjSlJoNTFHTmg1TkVXeEdPb0F2Qyt6YWNH?=
- =?utf-8?B?RXViR0tSU051aWJMbGc1bERvTlVDWnZUMFZMYURSZmhYYmdNbEh0VWFnblhB?=
- =?utf-8?B?aWttbS90UXZOQjErdXo1dVlJT01wMWVuM1lSSlJIbFB5L2hyREJka2tQUkZw?=
- =?utf-8?B?VS9YdFFiMkU1eStOZG1GNkxlY0NVUXFFdTl3SXFIOWVlZ3czSTRscTM0S2hU?=
- =?utf-8?B?bUNKbDZGQ1NsTjYwSnNsRThUTUZ5SjZUVU85ai9wSStjRDJwMlgxSmFmNkNL?=
- =?utf-8?B?eDVjclBaK2hHWVZ4ZjVTN3hIaGtrbGRHQUh5K0xHUFA0N3VicGtLL0JWL2M2?=
- =?utf-8?B?dWFza2VlV2k0eHR3cllQL2RqSHVEQ3laaHhkTUthVGpCbzl6RHJSMHh4YW5r?=
- =?utf-8?B?dTRJVXVVUFhXWkJSYTMvSUJOaXkzT00vaE9wWEhFYnF6dmJ0NnNSL1lHNHFj?=
- =?utf-8?B?K0NDSzhPais0dGQ4SlFUUi9ZVkhIU2hCRE51UWYzdmhRMHJpZFh3LzladlNC?=
- =?utf-8?B?V3oybmJKQnRYTzZ2bGpSTVViU3cwL3BGN3JFZ3pGTElESzhMWWJmUTBvellG?=
- =?utf-8?B?LytKQWZOaXFVRVU4U1hKVmd0U0xKOTNSL0tWc3pIcUxxcVl6MTFCV3hzZ3Nv?=
- =?utf-8?B?NE1FSE9hL3d6ODNXK08xRC8rWTNIOGduK0U5UVRHbS9LZ1g0cUxPUkxHa2Ev?=
- =?utf-8?B?RVRQeUlRM0Jldm9jbU10VW53ekxObnVaaGUzdFZSWHFpQitHczB4Y3RzRE1Z?=
- =?utf-8?B?MWFZVU9ncWFZVzRIR1owdTdxS3dQbFJUQldyYVpnWkxHZ1JHODdjY3RaNERt?=
- =?utf-8?B?MDMrbUwwY1hFdzIrMVh5a3BLNW1VeXN5cVcyNzBnbWZxTlA0RU9kdWwvY2Vw?=
- =?utf-8?B?a0h5NlBmaUlyMGcwVEdGMWRuZTdwdWFIeng3Q1I5dlFBbnVZQzIzOWthRVNk?=
- =?utf-8?B?alQ2b1VhMDhMVWxmYzJqdldWVWRYMEFYN29JNDBObDdtaVoxMGRhMnh6Um1I?=
- =?utf-8?B?NnhKdEJUUk01RDU3ZmNDQmNWV096SHExSm5ueEZmSUcyVzcxNXRYTzlkZi9S?=
- =?utf-8?B?ZlJka2ZGZGY4b05LQlpqSUNNQmJjYzFUcVUvTWYwSWZwNW4xVlFJZ3ZEYzFM?=
- =?utf-8?B?VGFMaGZRR2RySXpENzZ6cTZzd0dReEZya1hjTEMwYWlaUTI1K1pHZ2JWeW42?=
- =?utf-8?B?VDE3OCt5QWVTRzJXVU1yU1Fxalh5Tyt2dDdFd08rSFpmNjFES0ZhTDdDNWJh?=
- =?utf-8?Q?pmp9CU9BBOuko=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <298AFD7379C3CC4BB61D735F2E447F15@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Mon, 30 Nov
+ 2020 06:16:32 +0000
+Received: from DM6NAM12FT016.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:5:333:cafe::6) by DM6PR03CA0092.outlook.office365.com
+ (2603:10b6:5:333::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend
+ Transport; Mon, 30 Nov 2020 06:16:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
+ smtp.mailfrom=cadence.com; synopsys.com; dkim=none (message not signed)
+ header.d=none;synopsys.com; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
+ client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
+Received: from rmmaillnx1.cadence.com (199.43.4.23) by
+ DM6NAM12FT016.mail.protection.outlook.com (10.13.178.217) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3589.12 via Frontend Transport; Mon, 30 Nov 2020 06:16:32 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 0AU6GSGC032690
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+        Mon, 30 Nov 2020 01:16:30 -0500
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Mon, 30 Nov 2020 07:16:28 +0100
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Mon, 30 Nov 2020 07:16:28 +0100
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0AU6GS6T003683;
+        Mon, 30 Nov 2020 07:16:28 +0100
+Received: (from pthombar@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0AU6GPuO003681;
+        Mon, 30 Nov 2020 07:16:25 +0100
+From:   Parshuram Thombare <pthombar@cadence.com>
+To:     <alexandre.belloni@bootlin.com>, <slongerbeam@gmail.com>,
+        <vitor.soares@synopsys.com>
+CC:     <linux-i3c@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <mparab@cadence.com>, <praneeth@ti.com>,
+        Parshuram Thombare <pthombar@cadence.com>
+Subject: [PATCH v10 0/7] I3C mastership handover support
+Date:   Mon, 30 Nov 2020 07:16:23 +0100
+Message-ID: <1606716983-3645-1-git-send-email-pthombar@cadence.com>
+X-Mailer: git-send-email 2.2.2
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3777.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b66025a4-f256-44b9-def5-08d894f76dd6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2020 06:16:09.2597
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 77331739-b1cf-4f99-5aaf-08d894f77b96
+X-MS-TrafficTypeDiagnostic: MN2PR07MB7102:
+X-Microsoft-Antispam-PRVS: <MN2PR07MB710291E3AB1EC9918F812FD7C1F50@MN2PR07MB7102.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YvXHM7HM1N6BrmLEuw9bD+IzLGZ5VXAXlHl8kIfzsIzdHpj0p/6KcTwvzoJJPnVMiKzKfGtEQ1+G/Li3CtHM/Zw3CfoNPkR8I2MnBfyTWgtC0n6TJ7rs+6WqycnyyBHPBZG8hKcpPwzxuhMyr4HKb/Gycb/q+ry9FEjcej1+yYAWrWAewAXAwFAfkuZK2N0qRcuSnyG6AN10L/3Kdjp4mQHeUcMBGQLIbXIgIP42Q9EqAJFN4ZQFrA96IK/GAWaclUtrttEMVf3FEd5TXKlm0AlTWz4k5qpxZtXlveOPSbDE9bNR3iEwlcMCMO9Uy9+0NKa55gKlNzvC8jnP+XVe++NPut5j5W0xUgXvfvQG2tPZazwrLsz5HtwNuR+bp8Qr/gWYn2DDrnaVe1VTlL4JsIdjD380C2Y3lFLpGDXzGho=
+X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(376002)(136003)(36092001)(46966005)(107886003)(83380400001)(426003)(70206006)(42186006)(478600001)(82310400003)(110136005)(336012)(4326008)(26005)(2906002)(70586007)(8936002)(36756003)(316002)(186003)(2616005)(356005)(36906005)(5660300002)(8676002)(47076004)(82740400003)(81166007)(54906003)(86362001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 06:16:32.3179
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AH2K2GkDz8lcD+q6qnz1M9KWt4MtAXmq+3leBRUwU8OQD+rFXB0sVIMXaHWYqY0cLh7YvtUX3PjplZAsGlZ60w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4997
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77331739-b1cf-4f99-5aaf-08d894f77b96
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT016.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR07MB7102
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-30_01:2020-11-26,2020-11-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxscore=0
+ malwarescore=0 bulkscore=0 priorityscore=1501 clxscore=1015
+ impostorscore=0 adultscore=0 spamscore=0 suspectscore=2 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011300041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTEvMjMvMjAyMCAxOjAxIFBNLCBBbWVsaWUgRGVsYXVuYXkgd3JvdGU6DQo+IFNUTTMyTVAx
-NSBhaGJjZmcgcmVnaXN0ZXIgZGVmYXVsdCB2YWx1ZSBzZXRzIEJ1cnN0IGxlbmd0aC90eXBlIChI
-QlNUTEVOKQ0KPiB0byBTaW5nbGUgKDMyLWJpdCBhY2Nlc3NlcyBvbiBBSEIpLCB3aGljaCBpcyBu
-b3QgcmVjb21tZW5kZWQsIGFjY29yZGluZw0KPiB0byBTVE0zMk1QMTU3IFJlZmVyZW5jZSBtYW51
-YWwgWzFdLg0KPiBUaGlzIHBhdGNoIHNldHMgQnVyc3QgbGVuZ3RoL3R5cGUgKEhCU1RMRU4pIHNv
-IHRoYXQgYnVzIHRyYW5zYWN0aW9ucw0KPiB0YXJnZXQgMTZ4MzIgYml0IGFjY2Vzc2VzLiBUaGlz
-IGltcHJvdmVzIE9URyBjb250cm9sbGVyIHBlcmZvcm1hbmNlLg0KPiANCj4gWzFdIGh0dHBzOi8v
-dXJsZGVmZW5zZS5jb20vdjMvX19odHRwczovL3d3dy5zdC5jb20vcmVzb3VyY2UvZW4vcmVmZXJl
-bmNlX21hbnVhbC9kbTAwMzI3NjU5LnBkZl9fOyEhQTRGMlI5R19wZyFKMUhUczNrb2J2WWZTNDUz
-aHRvSWRueGhlajRfb3M1WTV4d01mUnRmaHB0RV9RU2VWdzNPMW1velktdjRBdkUkICwgcC4zMTQ5
-DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBBbWVsaWUgRGVsYXVuYXkgPGFtZWxpZS5kZWxhdW5heUBz
-dC5jb20+DQoNCkFja2VkLWJ5OiBNaW5hcyBIYXJ1dHl1bnlhbiA8TWluYXMuSGFydXR5dW55YW5A
-c3lub3BzeXMuY29tPg0KDQo+IC0tLQ0KPiAgIGRyaXZlcnMvdXNiL2R3YzIvcGFyYW1zLmMgfCAy
-ICsrDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvdXNiL2R3YzIvcGFyYW1zLmMgYi9kcml2ZXJzL3VzYi9kd2MyL3BhcmFtcy5j
-DQo+IGluZGV4IDI2NzU0M2MzZGMzOC4uMGRmNjkzMzE5ZjBhIDEwMDY0NA0KPiAtLS0gYS9kcml2
-ZXJzL3VzYi9kd2MyL3BhcmFtcy5jDQo+ICsrKyBiL2RyaXZlcnMvdXNiL2R3YzIvcGFyYW1zLmMN
-Cj4gQEAgLTE3Nyw2ICsxNzcsNyBAQCBzdGF0aWMgdm9pZCBkd2MyX3NldF9zdG0zMm1wMTVfZnNv
-dGdfcGFyYW1zKHN0cnVjdCBkd2MyX2hzb3RnICpoc290ZykNCj4gICAJcC0+aTJjX2VuYWJsZSA9
-IGZhbHNlOw0KPiAgIAlwLT5hY3RpdmF0ZV9zdG1fZnNfdHJhbnNjZWl2ZXIgPSB0cnVlOw0KPiAg
-IAlwLT5hY3RpdmF0ZV9zdG1faWRfdmJfZGV0ZWN0aW9uID0gdHJ1ZTsNCj4gKwlwLT5haGJjZmcg
-PSBHQUhCQ0ZHX0hCU1RMRU5fSU5DUjE2IDw8IEdBSEJDRkdfSEJTVExFTl9TSElGVDsNCj4gICAJ
-cC0+cG93ZXJfZG93biA9IERXQzJfUE9XRVJfRE9XTl9QQVJBTV9OT05FOw0KPiAgIH0NCj4gICAN
-Cj4gQEAgLTE4OSw2ICsxOTAsNyBAQCBzdGF0aWMgdm9pZCBkd2MyX3NldF9zdG0zMm1wMTVfaHNv
-dGdfcGFyYW1zKHN0cnVjdCBkd2MyX2hzb3RnICpoc290ZykNCj4gICAJcC0+aG9zdF9yeF9maWZv
-X3NpemUgPSA0NDA7DQo+ICAgCXAtPmhvc3RfbnBlcmlvX3R4X2ZpZm9fc2l6ZSA9IDI1NjsNCj4g
-ICAJcC0+aG9zdF9wZXJpb190eF9maWZvX3NpemUgPSAyNTY7DQo+ICsJcC0+YWhiY2ZnID0gR0FI
-QkNGR19IQlNUTEVOX0lOQ1IxNiA8PCBHQUhCQ0ZHX0hCU1RMRU5fU0hJRlQ7DQo+ICAgCXAtPnBv
-d2VyX2Rvd24gPSBEV0MyX1BPV0VSX0RPV05fUEFSQU1fTk9ORTsNCj4gICB9DQo+ICAgDQo+IA0K
-DQo=
+Main changes between v9 and v10 are:
+- Fix build failure reported by kernel test robot
+
+Main changes between v8 and v9 are:
+- Fix NULL dereference issue in current_master_show when
+  cat'ing sysfs key current_master for secondary master
+  before primary master gets initialized.
+
+Main changes between v7 and v8 are:
+- Document format changed from table to DOT diagram
+- Appropriate names for few functions
+- Moved mastership request process entirely to the driver
+- Reuse of i3c_master_add_i3c_dev_locked in core defslvs
+  processing
+
+Main changes between v6 and v7 are:
+- Added separate functions for main and secondary
+  master initialization
+- Secondary master initialization don't wait for
+  DEFSLSVS.
+- Change to use I2C device information from DTS,
+  and corresponding changes in controller driver
+  and I3C core DEFSLVS processing to ignore I2C
+  devices received in DEFSLVS
+- Reverted bus_init split
+- Fixed formatting issues in document
+
+Main changes between v5 and v6 are:
+- Moved populate_bus() hook to master subsystem code.
+- For secondary master initialization i3c_master_register
+  spawan separate threads, as secondary master may have to
+  wait for DEFSLVS and bus mastership.
+- Populate bus info is based on DEFSLVS data and take care
+  of hot plugged / unplugged I3C devices.
+- Split bus_init into bus_init and master_set_info callbacks
+- Moved mastership aquire and handover to separate state 
+  machines.
+- Added DEFSLVS processing code.
+- Moved back all locks in side the subsystem code.
+- Secondary mastership support to Cadence I3C master
+  controller driver
+- Sysfs key 'i3c_acquire_bus' to acauire bus.
+- NULL check for pool pointer in i3c_generic_ibi_free_pool.
+
+Main changes between v4 and v5 are:
+- Add populate_bus() hook
+- Split i3c_master_register into init and register pair
+- Split device information retrieval, let add partialy discovered devices
+- Make i3c_master_set_info private
+- Add separate function to register secondary master
+- Reworked secondary master register in CDNS driver
+- Export i3c_bus_set_mode
+
+Main changes between v3 and v4 are:
+- Reworked acquire bus ownership
+- Refactored the code
+
+Main changes between v2 and v3 are:
+- Added DEFSLVS devices are registered from master driver
+- Reworked I2C registering on secondary master side
+- Reworked Mastership event is enabled/disabled globally (for all devices)
+
+Main changes between initial version and v2 are:
+- Reworked devices registration on secondary master side
+- Reworked mastership event disabling/enabling
+- Reworked bus locking during mastership takeover process
+- Added DEFSLVS devices registration during initialization
+- Fixed style issues
+
+Parshuram Thombare (7):
+  i3c: master: master initialization flow document
+  i3c: master: use i3c_master_register only for main master
+  i3c: master: add i3c_secondary_master_register
+  i3c: master: add mastership handover support
+  i3c: master: add defslvs processing
+  i3c: master: sysfs key for acquire bus
+  i3c: master: mastership handover, defslvs processing in cdns
+    controller driver
+
+ Documentation/driver-api/i3c/index.rst             |    1 +
+ .../driver-api/i3c/master-initialization-flow.rst  |  187 ++++++++
+ drivers/i3c/master.c                               |  497 ++++++++++++++++++--
+ drivers/i3c/master/dw-i3c-master.c                 |    4 +-
+ drivers/i3c/master/i3c-master-cdns.c               |  329 ++++++++++++-
+ drivers/i3c/master/mipi-i3c-hci/core.c             |    4 +-
+ include/linux/i3c/master.h                         |   23 +-
+ 7 files changed, 970 insertions(+), 75 deletions(-)
+ create mode 100644 Documentation/driver-api/i3c/master-initialization-flow.rst
+
