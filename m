@@ -2,116 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACC02C8C19
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A272C8C23
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387939AbgK3SFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:05:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387933AbgK3SFe (ORCPT
+        id S1729545AbgK3SGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:06:35 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:28492 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728359AbgK3SGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:05:34 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27195C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:04:48 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id z1so19351139ljn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:04:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9JuVKWRtZEgKpwFbHP3K2SoaXzCRmKF5M5FbK+j5HJ8=;
-        b=M57ZRtiqbxbjwJNhj18+/nizGqp5PJ9YQYutq26hu7gjlHrxXrY5bPRF1nL1lp+f3m
-         WT5SMjItB4Kqnyu+A8+8sb1TEo6/QtxbK2qkxvg0hA0iMMcPyG3Lmf8Mv/NVLobqXju9
-         YPy/+XF74KBQ6KNp/PnFtUcs8+U7bI0wDaAU4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9JuVKWRtZEgKpwFbHP3K2SoaXzCRmKF5M5FbK+j5HJ8=;
-        b=ZIY2oTeUWu9klbAh5vfZI2EF+oJyTicVdxdbLnAXpkkXOVMXiBEXrnCWSPAkxrB4/4
-         OI5dBX3KKGkZGLm31KwKlfRUdHlsbkWKMoSjEYtwdSntOYKdwEM46wct2iG4+i+tGV++
-         T55aDISJqqh1GTSpVYMhMctEOh3ans7Ooy9mJldOPMKuP6T+3ni2IXqCt02wBAezEwyP
-         WxY3ZDXUOgdOkay7Kbe5fvvyNo8dBV0WtnFPkS0f1eMnbLZvBZPxo7jv7NWiUuDTXEcF
-         udzWpCmd8cpAOpJBH4FbYTLOV9Yk+h7P7RCFEENeuEWWQDVk8zYIezYy5P2vNe99zQYa
-         iieQ==
-X-Gm-Message-State: AOAM5318R40PSvA23pdjk2b4pktS4aLLMJTQPhLi1/7iHJVd4swkqN5c
-        R2jVTX376rYmY3LAG2mzVXPbowH0h7Q4WA==
-X-Google-Smtp-Source: ABdhPJyOH9tKFaGC3CutaOrIL6VO/1rfQQCegVVEndeHFiec9Jr7i72I7cmXvpt+uPtMjcxJUMTJiw==
-X-Received: by 2002:a2e:a404:: with SMTP id p4mr10342006ljn.420.1606759486072;
-        Mon, 30 Nov 2020 10:04:46 -0800 (PST)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id n130sm2492032lfd.213.2020.11.30.10.04.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 10:04:45 -0800 (PST)
-Received: by mail-lf1-f53.google.com with SMTP id z21so23334214lfe.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:04:44 -0800 (PST)
-X-Received: by 2002:a19:ed0f:: with SMTP id y15mr9299477lfy.352.1606759484151;
- Mon, 30 Nov 2020 10:04:44 -0800 (PST)
+        Mon, 30 Nov 2020 13:06:34 -0500
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 0AUI5Udq000564;
+        Tue, 1 Dec 2020 03:05:30 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 0AUI5Udq000564
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606759531;
+        bh=Uh4bIgW4sNgrSBi12OkKecL/ZclO6A0g1hh7lFN2Jko=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=M/a6eVu8pHfFZeJlahUIEmCpqOBR2YwmkiKpa56CXrbjGlXbIVh/q/cGzHEl3y3JZ
+         b95udOb7WzeBSgoG8f7b76dQbQl4Lm0zZYH5+ogoUgxgQ3LOjeZumQakqWqE6m+e0E
+         mkItlKcl60ANX+oZNbtbOlsFQ4rACo78+89E6QoJ21IgsYIwkVucRJPA8yYHX6D73j
+         jTwa4KrSiojCFHzW/teMheezkj3C9Ffy75427zvfI15YkhCbfF58tLJJ8tyGigjsgF
+         /9obuBZrJZBa4GldoK8tlPDhg597z8MJ5HmRCSF9btfUkULRqVo7W6Ru8OapEbj6NI
+         BB8D1wBQY03DQ==
+X-Nifty-SrcIP: [209.85.216.44]
+Received: by mail-pj1-f44.google.com with SMTP id r9so48722pjl.5;
+        Mon, 30 Nov 2020 10:05:30 -0800 (PST)
+X-Gm-Message-State: AOAM531cD/b1W4+wxeZofTX0pUDqlrNead1peZYYsWUyhW15xz4mP7A5
+        t79Fsl4/uSHaSAxyl9lizWhtd89fCD2SbejoZk0=
+X-Google-Smtp-Source: ABdhPJw1yBQ+OjoG4aqEDV/okFiCVTmc526vsm2/CdKpMW7Nxrp9CZ6Z2BiW9LeBm1Bo+suMp+4xSEhr/ZXxP5MUjHg=
+X-Received: by 2002:a17:90a:c209:: with SMTP id e9mr27829261pjt.87.1606759529929;
+ Mon, 30 Nov 2020 10:05:29 -0800 (PST)
 MIME-Version: 1.0
-References: <160665707945.2808.5384034634184489471.tglx@nanos>
- <160665708065.2808.15317906761841446715.tglx@nanos> <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
- <20201130075651.GJ2414@hirez.programming.kicks-ass.net> <yt9dh7p78d8l.fsf@linux.ibm.com>
- <yt9dpn3v3u1m.fsf@linux.ibm.com> <20201130125211.GN2414@hirez.programming.kicks-ass.net>
- <20201130130315.GJ3092@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201130130315.GJ3092@hirez.programming.kicks-ass.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 30 Nov 2020 10:04:27 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
-Message-ID: <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
+ <20201104005343.4192504-1-ndesaulniers@google.com> <20201104005343.4192504-4-ndesaulniers@google.com>
+In-Reply-To: <20201104005343.4192504-4-ndesaulniers@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 1 Dec 2020 03:04:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT5MQqUddv+QbFu5ToLBK3eUPArHSBR=5AOS3ONtMqKaw@mail.gmail.com>
+Message-ID: <CAK7LNAT5MQqUddv+QbFu5ToLBK3eUPArHSBR=5AOS3ONtMqKaw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] Kbuild: make DWARF version a choice
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jakub Jelinek <jakub@redhat.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
+        linux-toolchains@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Alistair Delva <adelva@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 5:03 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, Nov 4, 2020 at 9:53 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
 >
-> > But but but...
-> >
-> >   do_idle()                   # IRQs on
-> >     local_irq_disable();      # IRQs off
-> >     defaul_idle_call()        # IRQs off
->         lockdep_hardirqs_on();  # IRQs off, but lockdep things they're on
-> >       arch_cpu_idle()         # IRQs off
-> >         enabled_wait()        # IRQs off
-> >         raw_local_save()      # still off
-> >         psw_idle()            # very much off
-> >           ext_int_handler     # get an interrupt ?!?!
->               rcu_irq_enter()   # lockdep thinks IRQs are on <- FAIL
+> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
+> explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
+> way that's forward compatible with existing configs, and makes adding
+> future versions more straightforward.
 >
-> I can't much read s390 assembler, but ext_int_handler() has a
-> TRACE_IRQS_OFF, which would be sufficient to re-align the lockdep state
-> with the actual state, but there's some condition before it, what's that
-> test and is that right?
+> Suggested-by: Fangrui Song <maskray@google.com>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  Makefile          | 14 ++++++++------
+>  lib/Kconfig.debug | 19 +++++++++++++++----
+>  2 files changed, 23 insertions(+), 10 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 75b1a3dcbf30..e23786a4c1c7 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -826,12 +826,14 @@ else
+>  DEBUG_CFLAGS   += -g
+>  endif
+>
+> -ifndef LLVM_IAS
+> -KBUILD_AFLAGS  += -Wa,-gdwarf-2
+> -endif
+> -
+> -ifdef CONFIG_DEBUG_INFO_DWARF4
+> -DEBUG_CFLAGS   += -gdwarf-4
+> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
+> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> +DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
+> +ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
+> +# Binutils 2.35+ required for -gdwarf-4+ support.
+> +dwarf-aflag    := $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
+> +DEBUG_CFLAGS   += $(dwarf-aflag)
 
-I think that "psw_idle()" enables interrupts, exactly like x86 does.
-See my previous email.
+This changes the behavior.
 
-But no, I can't read s390 asm either. IBM is notorious for making up
-odd IBM-only incomprehensible names. When "oi" means "or immediate", I
-personally start suspecting that there were some "happy drugs"
-involved.
+For the Dwarf-2 case,
 
-To make matters worse, some of the assembly code in psw_idle isn't
-even assembly code, it's machine code, with "BPON" being an
-alternative instruction definition with just the hex encoding for the
-machine code instruction rather than any actual human-legible
-instruction encoding.
+Previously, -gdwarf-2 was passed to $(CC),
+so the debug info was generated by gcc.
 
-Of course, when the "human-legible" instructions are "oi", I guess hex
-codes aren't all that much less legible..
+Now, -Wa,-gdwarf-2 is passed to $(CC).
+-gdwarf-2 is handled by GNU as.
+So, the source info points to /tmp/<hash>.s
+instead of the original .c file.
 
-s390 programmers must be some super-human breed. Or, alternatively,
-they are munching happy pills by the truck-load to get over the pain
-;)
 
-           Linus
+
+Handling the Dwarf capability is very complicated.
+
+Are you still working for v3?
+
+
+
+> +KBUILD_AFLAGS  += $(dwarf-aflag)
+>  endif
+>
+>  ifdef CONFIG_DEBUG_INFO_REDUCED
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 83a860126897..03c494eefabd 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -256,14 +256,25 @@ config DEBUG_INFO_SPLIT
+>           to know about the .dwo files and include them.
+>           Incompatible with older versions of ccache.
+>
+> +choice
+> +       prompt "DWARF version"
+> +       help
+> +         Which version of DWARF debug info to emit.
+> +
+> +config DEBUG_INFO_DWARF2
+> +       bool "Generate DWARF v2 debuginfo"
+> +       help
+> +         Generate DWARF v2 debug info.
+> +
+>  config DEBUG_INFO_DWARF4
+>         bool "Generate dwarf4 debuginfo"
+>         depends on $(cc-option,-gdwarf-4)
+>         help
+> -         Generate dwarf4 debug info. This requires recent versions
+> -         of gcc and gdb. It makes the debug information larger.
+> -         But it significantly improves the success of resolving
+> -         variables in gdb on optimized code.
+> +         Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
+> +         It makes the debug information larger, but it significantly
+> +         improves the success of resolving variables in gdb on optimized code.
+> +
+> +endchoice # "DWARF version"
+>
+>  config DEBUG_INFO_BTF
+>         bool "Generate BTF typeinfo"
+> --
+> 2.29.1.341.ge80a0c044ae-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20201104005343.4192504-4-ndesaulniers%40google.com.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
