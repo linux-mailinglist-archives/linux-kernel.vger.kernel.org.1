@@ -2,144 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB182C91DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BCA2C91DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388920AbgK3W7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:59:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388913AbgK3W72 (ORCPT
+        id S2388638AbgK3W76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:59:58 -0500
+Received: from out02.mta.xmission.com ([166.70.13.232]:40542 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727125AbgK3W76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:59:28 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8512C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:58:36 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id x16so289715oic.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:58:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AFKS8AJu+Fj+MZmOUNhw1ND9mL6dIAAw6BtuS0oHe6E=;
-        b=UaiIA6Sjv4FXSOCMWBm3hHKel0jzdCXcIJIacC1DYcQINH/Lyt0t33lU7IxE4CTk8j
-         zIPqZznn5SqovEBZvr1IVYKAsoYiohNUEpRIrJpSmMJ46fOAw3u5NBnpzUKoEpr3jc/J
-         WuDg0xU7X0njIN6IBWGcA/Rld47I7z5NhJ4w2Sd+voJmWv+XnCMOmJRICEJfWKshpn36
-         tv+rds1+EWC8kd2QrQr93YQY1zJd1+fPwcEVV7KAZ/rE/GDFt9T+c5PUOkFihfzG1CFD
-         10y0NfpIPIeQ3lWVTzQaQ2geFSZtSnhy7Vs+JhuK+Ij77U04W+qPvNFCfyKN9gEF/kkB
-         bIjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AFKS8AJu+Fj+MZmOUNhw1ND9mL6dIAAw6BtuS0oHe6E=;
-        b=pDvzzSIZmB+E75qr05o4Q6lwgxLsXLs0kKvSxnkwpewPmj8RH0G4NVfOpUx3uWLUMw
-         svGvesN561QOsOs8HwqGsBWigKjc3XhiO647hqwlPGtfL6IRmG2d+tnOTH9EADWQenw6
-         Hua+ZmGrCxxv7FP3TiLYGWaMmbIqfc82biy5ws20e/FXyt48j5Cs7J5GaNHNrprEOnd1
-         yc2xJkQgFrqmqRKm170HVayvNZhRoU34yPxXkRZhlox8jEIzOi9t0UefohRFoMOTRPdt
-         oYwrQNU9H8t8qceK0+BCKaKD/ihXK1oxJabSJWMFDOa4b4BqyVwriDBh6d/pwY9dGGli
-         KAzQ==
-X-Gm-Message-State: AOAM532h1oPj67lrk2NWq+1xrhMC2X6oNS6+2CtboBIBGWdTRVIpQ43V
-        HcQIXSMf40UIxiNtc6hZJ0ZRHz75K8GbMLDDLdA=
-X-Google-Smtp-Source: ABdhPJyNBowr50AMEKIoDeQpkyqZuKZ4limvURq/g3IpLqTRRmsU3Prk3PIRibfwhOfSYmywxOxWp9KDfcXUv9jdmV8=
-X-Received: by 2002:aca:f50e:: with SMTP id t14mr29155oih.123.1606777116254;
- Mon, 30 Nov 2020 14:58:36 -0800 (PST)
+        Mon, 30 Nov 2020 17:59:58 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kjs8Z-001bqu-Ue; Mon, 30 Nov 2020 15:59:15 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kjs8Z-0008Jw-B6; Mon, 30 Nov 2020 15:59:15 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     <linux-kernel@vger.kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>, Jens Axboe <axboe@kernel.dk>
+Date:   Mon, 30 Nov 2020 16:58:46 -0600
+Message-ID: <878saih2op.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-36-lee.jones@linaro.org>
-In-Reply-To: <20201124193824.1118741-36-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 17:58:25 -0500
-Message-ID: <CADnq5_OKkW3MvjAK4eziMPJyZ-D4vYT0VnCJk2BpX9szKY4edA@mail.gmail.com>
-Subject: Re: [PATCH 35/40] drm/amd/pm/swsmu/smu11/vangogh_ppt: Make local
- function 'vangogh_set_default_dpm_tables()' static
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Xiaojian Du <Xiaojian.Du@amd.com>, David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-XM-SPF: eid=1kjs8Z-0008Jw-B6;;;mid=<878saih2op.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19Y6q1ezVHxrrwTupDQXlbLEG2XON0U6dQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,XMGappySubj_01,XMSubLong,XM_B_SpammyWords
+        autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4996]
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  0.7 XMSubLong Long Subject
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;<linux-kernel@vger.kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 253 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.0 (1.6%), b_tie_ro: 2.7 (1.1%), parse: 0.59
+        (0.2%), extract_message_metadata: 7 (2.9%), get_uri_detail_list: 0.64
+        (0.3%), tests_pri_-1000: 10 (4.0%), tests_pri_-950: 0.97 (0.4%),
+        tests_pri_-900: 0.78 (0.3%), tests_pri_-90: 70 (27.4%), check_bayes:
+        68 (26.9%), b_tokenize: 3.7 (1.4%), b_tok_get_all: 5 (2.0%),
+        b_comp_prob: 1.13 (0.4%), b_tok_touch_all: 55 (21.9%), b_finish: 0.73
+        (0.3%), tests_pri_0: 149 (58.7%), check_dkim_signature: 0.36 (0.1%),
+        check_dkim_adsp: 2.4 (1.0%), poll_dns_idle: 0.97 (0.4%), tests_pri_10:
+        2.6 (1.0%), tests_pri_500: 7 (2.6%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH] exec: Move io_uring_task_cancel after the point of no return
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 2:45 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c: At top level=
-:
->  drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:764:5: warnin=
-g: no previous prototype for =E2=80=98vangogh_set_default_dpm_tables=E2=80=
-=99 [-Wmissing-prototypes]
->  764 | int vangogh_set_default_dpm_tables(struct smu_context *smu)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Xiaojian Du <Xiaojian.Du@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-This code has changed a bit and I've just sent out a patch to handle
-this slightly differently.  Thanks!
+Now that unshare_files happens in begin_new_exec after the point of no
+return, io_uring_task_cancel can also happen later.
 
-Alex
+Effectively this means io_uring activities for a task are only canceled
+when exec succeeds.
 
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+---
 
-> ---
->  drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/g=
-pu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> index 9a2f72f21ed86..05c32be3a7496 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> @@ -400,16 +400,13 @@ static int vangogh_get_current_activity_percent(str=
-uct smu_context *smu,
->                                                enum amd_pp_sensors sensor=
-,
->                                                uint32_t *value)
->  {
-> -       int ret =3D 0;
-> -
->         if (!value)
->                 return -EINVAL;
->
->         switch (sensor) {
->         case AMDGPU_PP_SENSOR_GPU_LOAD:
-> -               ret =3D vangogh_get_smu_metrics_data(smu,
-> -                                                 METRICS_AVERAGE_GFXACTI=
-VITY,
-> -                                                 value);
-> +               vangogh_get_smu_metrics_data(smu, METRICS_AVERAGE_GFXACTI=
-VITY,
-> +                                            value);
->                 break;
->         default:
->                 dev_err(smu->adev->dev, "Invalid sensor for retrieving cl=
-ock activity\n");
-> @@ -761,7 +758,7 @@ static int vangogh_od_edit_dpm_table(struct smu_conte=
-xt *smu, enum PP_OD_DPM_TAB
->         return ret;
->  }
->
-> -int vangogh_set_default_dpm_tables(struct smu_context *smu)
-> +static int vangogh_set_default_dpm_tables(struct smu_context *smu)
->  {
->         struct smu_table_context *smu_table =3D &smu->smu_table;
->
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+This is against my exec-for-v5.11 branch
+
+ fs/exec.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/fs/exec.c b/fs/exec.c
+index 14fae2ec1c9d..9e9368603168 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1257,6 +1257,11 @@ int begin_new_exec(struct linux_binprm * bprm)
+ 	if (retval)
+ 		goto out;
+ 
++	/*
++	 * Cancel any io_uring activity across execve
++	 */
++	io_uring_task_cancel();
++
+ 	/* Ensure the files table is not shared. */
+ 	retval = unshare_files();
+ 	if (retval)
+@@ -1783,11 +1788,6 @@ static int bprm_execve(struct linux_binprm *bprm,
+ 	struct file *file;
+ 	int retval;
+ 
+-	/*
+-	 * Cancel any io_uring activity across execve
+-	 */
+-	io_uring_task_cancel();
+-
+ 	retval = prepare_bprm_creds(bprm);
+ 	if (retval)
+ 		return retval;
+-- 
+2.20.1
+
