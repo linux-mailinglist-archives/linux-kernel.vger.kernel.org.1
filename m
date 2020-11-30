@@ -2,59 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA662C8B64
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41E92C8B66
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387649AbgK3Rin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:38:43 -0500
-Received: from ms.lwn.net ([45.79.88.28]:54598 "EHLO ms.lwn.net"
+        id S1729423AbgK3RjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:39:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726970AbgK3Rim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:38:42 -0500
-Received: from lwn.net (localhost [127.0.0.1])
+        id S1726897AbgK3RjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:39:14 -0500
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id B1F2B2BA;
-        Mon, 30 Nov 2020 17:38:01 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 10:38:00 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Bailu Lin <bailu.lin@vivo.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@vivo.com
-Subject: Re: [PATCH] Documentation: Chinese translation of 
- Documentation/arm64/elf_hwcaps.rst
-Message-ID: <20201130103800.7175bb67@lwn.net>
-In-Reply-To: <20201124023846.34826-1-bailu.lin@vivo.com>
-References: <20201124023846.34826-1-bailu.lin@vivo.com>
-Organization: LWN.net
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EB02206DF;
+        Mon, 30 Nov 2020 17:38:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606757913;
+        bh=HFFjE9XmgSSYVer9/aKugIZ6a6/sln2JoPbC+j0PUD8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J8EVOor3Z/1QL0gF/GLTYCJqXzHEzoF/l+jyxZ9BfaFOAJoHzWvOOisIDGTcn3q/g
+         phDt6DHOyqNWDt4rpr4f04fx1qNrd8hOyEG2KO18yGM6hKJdN8u9vLkQ6yhfcStZWc
+         umau9hTezF1Hr/jTOaC0vv7PsApzQsyAKP7j1gEw=
+Date:   Mon, 30 Nov 2020 12:38:32 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
+Message-ID: <20201130173832.GR643756@sasha-vm>
+References: <20201125153550.810101-1-sashal@kernel.org>
+ <20201125153550.810101-22-sashal@kernel.org>
+ <25cd0d64-bffc-9506-c148-11583fed897c@redhat.com>
+ <20201125180102.GL643756@sasha-vm>
+ <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
+ <20201129041314.GO643756@sasha-vm>
+ <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
+ <20201129210650.GP643756@sasha-vm>
+ <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 18:38:14 -0800
-Bailu Lin <bailu.lin@vivo.com> wrote:
+On Mon, Nov 30, 2020 at 09:33:46AM +0100, Paolo Bonzini wrote:
+>On 29/11/20 22:06, Sasha Levin wrote:
+>>Plus all the testing we have for the stable trees, yes. It goes beyond
+>>just compiling at this point.
+>>
+>>Your very own co-workers (https://cki-project.org/) are pushing hard on
+>>this effort around stable kernel testing, and statements like these
+>>aren't helping anyone.
+>
+>I am not aware of any public CI being done _at all_ done on 
+>vhost-scsi, by CKI or everyone else.  So autoselection should be done 
+>only on subsystems that have very high coverage in CI.
 
-> This is a Chinese translated version of
->  Documentation/arm64/elf_hwcaps.rst
-> 
-> Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
-> ---
-> Changes in v2:
->  - Modify five translation issues as Alex sugguested.
-> ---
->  Documentation/arm64/elf_hwcaps.rst            |   2 +
->  .../translations/zh_CN/arm64/elf_hwcaps.rst   | 240 ++++++++++++++++++
->  .../translations/zh_CN/arm64/index.rst        |   1 +
->  3 files changed, 243 insertions(+)
->  create mode 100644 Documentation/translations/zh_CN/arm64/elf_hwcaps.rst
+Where can I find a testsuite for virtio/vhost? I see one for KVM, but
+where is the one that the maintainers of virtio/vhost run on patches
+that come in?
 
-Applied, thanks.
-
-jon
+-- 
+Thanks,
+Sasha
