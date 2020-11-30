@@ -2,154 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1552C85AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3902C859B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727289AbgK3Nh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:37:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59131 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727199AbgK3Nh5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:37:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606743390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hk5OFvWNHbg5hVN0Ht1zaSz7OJS2S2+j4P4NifxDXl0=;
-        b=KJ6xmX0Kk0a7mDsevd2DdI6jhNWfs7YJ4zjCadyROnTLBg0iHmORe/lDW9y/mV4QGWiTWS
-        0kGYkbP/2GjK/lSpgQJvVoaIXf3ZR+wfpxA7aS+cIAKT/pyf976sgcuEYxSLh7Ukd5+pED
-        qPh/19AoQadCTtxEgk+gif0klRsj31A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-383-Fc7cNOVpOU2PP00_SseBIg-1; Mon, 30 Nov 2020 08:36:26 -0500
-X-MC-Unique: Fc7cNOVpOU2PP00_SseBIg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA8F48144E5;
-        Mon, 30 Nov 2020 13:36:24 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.90])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B84C060C62;
-        Mon, 30 Nov 2020 13:36:18 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org (open list),
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        Joerg Roedel <joro@8bytes.org>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 2/2] KVM: x86: introduce KVM_X86_QUIRK_TSC_HOST_ACCESS
-Date:   Mon, 30 Nov 2020 15:35:59 +0200
-Message-Id: <20201130133559.233242-3-mlevitsk@redhat.com>
-In-Reply-To: <20201130133559.233242-1-mlevitsk@redhat.com>
-References: <20201130133559.233242-1-mlevitsk@redhat.com>
+        id S1726663AbgK3NhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:37:03 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:44296 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726410AbgK3NhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:37:02 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kjjLi-0002T6-9n; Mon, 30 Nov 2020 14:36:14 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Katsuhiro Suzuki <katsuhiro@katsuster.net>,
+        linux-rockchip@lists.infradead.org,
+        Johan Jonker <jbx6244@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] arm64: dts: rockchip: add SPDIF node for rk3399-rockpro64
+Date:   Mon, 30 Nov 2020 14:36:12 +0100
+Message-ID: <2753094.YVpnkQH3Kb@diego>
+In-Reply-To: <e5ab2c62-ad00-4cdf-8b0a-24fda59c980b@gmail.com>
+References: <20201005140311.2507530-1-katsuhiro@katsuster.net> <e5ab2c62-ad00-4cdf-8b0a-24fda59c980b@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This quirk reflects the fact that we currently treat MSR_IA32_TSC
-and MSR_TSC_ADJUST access by the host (e.g qemu) in a way that is different
-compared to an access from the guest.
+Am Dienstag, 6. Oktober 2020, 11:51:58 CET schrieb Johan Jonker:
+> Hi Katsuhiro, Heiko,
+> 
+> Question for the maintainer:
+> Should we add a SPDIF node if the connector is not physical on a board,
+> only a header?
 
-For host's MSR_IA32_TSC read we currently always return L1 TSC value, and for
-host's write we do the tsc synchronization.
+I think so ... the connector always is just like n-pins on a board,
+only "sometimes" someone solders a fancy jack to it ;-)
 
-For host's MSR_TSC_ADJUST write, we don't make the tsc 'jump' as we should
-for this msr.
 
-When the hypervisor uses the new TSC GET/SET state ioctls, all of this is no
-longer needed, thus leave this enabled only with a quirk
-which the hypervisor can disable.
+Heiko
 
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/include/uapi/asm/kvm.h |  1 +
- arch/x86/kvm/x86.c              | 19 ++++++++++++++-----
- 2 files changed, 15 insertions(+), 5 deletions(-)
+> 
+> Thanks Katsuhiro for the "aplay -l" screen print.
+> 
+> **** List of PLAYBACK Hardware Devices ****
+> card 0: hdmisound [hdmi-sound], device 0: ff8a0000.i2s-i2s-hifi
+> i2s-hifi-0 [ff8a0000.i2s-i2s-hifi i2s-hifi-0]
+>   Subdevices: 1/1
+>   Subdevice #0: subdevice #0
+> card 1: rockchiprk3399 [rockchip,rk3399], device 0: ff890000.i2s-ES8316
+> HiFi ES8316 HiFi-0 [ff890000.i2s-ES8316 HiFi ES8316 HiFi-0]
+>   Subdevices: 1/1
+>   Subdevice #0: subdevice #0
+> card 2: rockchiprk339_1 [rockchip,rk3399], device 0:
+> ff870000.spdif-dit-hifi dit-hifi-0 [ff870000.spdif-dit-hifi dit-hifi-0]
+>   Subdevices: 1/1
+>   Subdevice #0: subdevice #0
+> 
+> 
+> On 10/5/20 4:03 PM, Katsuhiro Suzuki wrote:
+> > This patch adds 'disabled' SPDIF sound node and related settings
+> > of SPDIF for rk3399-rockpro64.
+> > 
+> > RockPro64 has output pins for SPDIF Tx. But RK3399 does not have
+> > enough DMA channel for enabling SPDIF tx. Current settings are:
+> > 
+> >   - I2S0     (Req num 0, 1): Enabled : Output to 40pins header CON40
+> >   - I2S1     (Req num 2, 3): Enabled : Output to ES8316 on board
+> >   - I2S2     (Req num 4, 5): Enabled : Output to internal HDMI core
+> >   - SPDIF Tx (Req num 7)   : Disabled: Output to connector J10
+> > 
+> > If users want to enable ALL sound I/Os, we need 7 DMA channels for
+> > it. But unfortunately, RK3399 has only 6 DMA channels. So users have
+> > to choose from the following:
+> > 
+> >   - Disable one of I2S (Ex. I2S0) and enable SPDIF tx
+> >   - Keep enable I2S0/1/2 and disable SPDIF tx
+> > 
+> > Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+> > 
+> > ---
+> > 
+> > Changes in v3:
+> >   - Refine commit description why adding disabled node
+> > 
+> > Changes in v2:
+> >   - Remove redundant status property
+> > ---
+> >  .../boot/dts/rockchip/rk3399-rockpro64.dtsi   | 27 +++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> > index 6e553ff47534..58097245994a 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> > @@ -76,6 +76,23 @@ sound {
+> >  		dais = <&i2s1_p0>;
+> >  	};
+> >  
+> 
+> 
+> 	hdmi_sound: hdmi-sound {
+> 		compatible = "simple-audio-card";
+> 		simple-audio-card,name = "hdmi-sound";
+> 
+> Maybe rename to "HDMI"?
+> 
+> [..]
+> 	};
+> 
+> 	sound {
+> 		compatible = "audio-graph-card";
+> 		label = "rockchip,rk3399";
+> 
+> Maybe change this to "ES8316" to prevent confusion?
+> 
+> 		dais = <&i2s1_p0>;
+> 	};
+> 
+> 
+> > +	sound-dit {
+> > +		compatible = "audio-graph-card"
+> > +		label = "rockchip,rk3399";
+> 
+> This would be the second sound card with the same label.
+> It seems that aplay/linux? adds "-1" to it and removes the comma, so we get:
+> 
+> hdmisound
+> rockchiprk3399
+> rockchiprk339_1
+> 
+> Shouldn't we label it with something that reflect the function/output.
+> Shouldn't we standardize to SPDIF, HDMI and Analog similar to rk3318/rk3328?
+> Make a shorter label without spaces or special chars, so that chars
+> don't get removed?
+> 
+> Proposal:
+> 
+> HDMI
+> ES8316
+> SPDIF
+> 
+> > +		dais = <&spdif_p0>;
+> 
+> Maybe disable too?
+> 
+> The "sound-dit" node is standard enabled and will start some process
+> with a dia in a node that is disabled.
+> 
+> 
+> > +	};
+> > +
+> > +	spdif-dit {
+> > +		compatible = "linux,spdif-dit";
+> > +		#sound-dai-cells = <0>;
+> 
+> Maybe disable too?
+> 
+> > +
+> > +		port {
+> > +			dit_p0_0: endpoint {
+> 
+> > +				remote-endpoint = <&spdif_p0_0>;
+> 
+> This also points to something that's disabled.
+> 
+> > +			};
+> > +		};
+> > +	};
+> > +
+> >  	vcc12v_dcin: vcc12v-dcin {
+> >  		compatible = "regulator-fixed";
+> >  		regulator-name = "vcc12v_dcin";
+> > @@ -698,6 +715,16 @@ &sdhci {
+> >  	status = "okay";
+> >  };
+> >  
+> > +&spdif {
+> > +	pinctrl-0 = <&spdif_bus_1>;
+> 
+> This node is disabled.
+> 
+> > +
+> > +	spdif_p0: port {
+> > +		spdif_p0_0: endpoint {
+> > +			remote-endpoint = <&dit_p0_0>;
+> > +		};
+> > +	};
+> > +};
+> > +
+> >  &spi1 {
+> >  	status = "okay";
+> >  
+> > 
+> 
+> 
 
-diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-index 8e76d3701db3f..2a60fc6674164 100644
---- a/arch/x86/include/uapi/asm/kvm.h
-+++ b/arch/x86/include/uapi/asm/kvm.h
-@@ -404,6 +404,7 @@ struct kvm_sync_regs {
- #define KVM_X86_QUIRK_LAPIC_MMIO_HOLE	   (1 << 2)
- #define KVM_X86_QUIRK_OUT_7E_INC_RIP	   (1 << 3)
- #define KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT (1 << 4)
-+#define KVM_X86_QUIRK_TSC_HOST_ACCESS      (1 << 5)
- 
- #define KVM_STATE_NESTED_FORMAT_VMX	0
- #define KVM_STATE_NESTED_FORMAT_SVM	1
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 4f0ae9cb14b8a..46a2111d54840 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3091,7 +3091,8 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		break;
- 	case MSR_IA32_TSC_ADJUST:
- 		if (guest_cpuid_has(vcpu, X86_FEATURE_TSC_ADJUST)) {
--			if (!msr_info->host_initiated) {
-+			if (!msr_info->host_initiated ||
-+			    !kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_TSC_HOST_ACCESS)) {
- 				s64 adj = data - vcpu->arch.ia32_tsc_adjust_msr;
- 				adjust_tsc_offset_guest(vcpu, adj);
- 			}
-@@ -3118,7 +3119,8 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		vcpu->arch.msr_ia32_power_ctl = data;
- 		break;
- 	case MSR_IA32_TSC:
--		if (msr_info->host_initiated) {
-+		if (msr_info->host_initiated &&
-+		    kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_TSC_HOST_ACCESS)) {
- 			kvm_synchronize_tsc(vcpu, data);
- 		} else {
- 			u64 adj = kvm_compute_tsc_offset(vcpu, data) - vcpu->arch.l1_tsc_offset;
-@@ -3409,17 +3411,24 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		msr_info->data = vcpu->arch.msr_ia32_power_ctl;
- 		break;
- 	case MSR_IA32_TSC: {
-+		u64 tsc_offset;
-+
- 		/*
- 		 * Intel SDM states that MSR_IA32_TSC read adds the TSC offset
- 		 * even when not intercepted. AMD manual doesn't explicitly
- 		 * state this but appears to behave the same.
- 		 *
--		 * On userspace reads and writes, however, we unconditionally
-+		 * On userspace reads and writes, when KVM_X86_QUIRK_SPECIAL_TSC_READ
-+		 * is present, however, we unconditionally
- 		 * return L1's TSC value to ensure backwards-compatible
- 		 * behavior for migration.
- 		 */
--		u64 tsc_offset = msr_info->host_initiated ? vcpu->arch.l1_tsc_offset :
--							    vcpu->arch.tsc_offset;
-+
-+		if (msr_info->host_initiated &&
-+		    kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_TSC_HOST_ACCESS))
-+			tsc_offset = vcpu->arch.l1_tsc_offset;
-+		else
-+			tsc_offset = vcpu->arch.tsc_offset;
- 
- 		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + tsc_offset;
- 		break;
--- 
-2.26.2
+
+
 
