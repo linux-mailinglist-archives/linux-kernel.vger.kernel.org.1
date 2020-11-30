@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BDE2C8057
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFC72C8055
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727513AbgK3IyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:54:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S1727402AbgK3Ix7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:53:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726363AbgK3IyA (ORCPT
+        with ESMTP id S1726762AbgK3Ix6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:54:00 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82875C0613D4;
-        Mon, 30 Nov 2020 00:53:20 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id b63so9947332pfg.12;
-        Mon, 30 Nov 2020 00:53:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=UKBkSD6v63vR2xw4n2OFGPSxFTTo4opuha2BS8j1btE=;
-        b=MNZe4pvMXob+x871SJIO/R+A8ND+7heg97BgMOlG5p0VQ0uSeeJtkaOcg5OsmD2JxL
-         SmNdZzgSjcZQwM+ypVRfLUrXN3NW2Y9QN5f1uNXTG+zexo1t9Y4TZjX7jCeXEZuYUuwk
-         4kvqlLoHZQPYDgLAU8h+SgutPrNJhdTGrLZH/21ouT8+7P6ybS1HT9Hq47LdgHbbiT1Q
-         OKIzfuRvXh5pA70OtgQaLpts1oXEu9c/u1gnlRi23raBKQAsUISybo8xj0zf7xRWjkG6
-         mWmrhadEI+2KoUATQsLNt33ZZz6iT5Ji+8aDB16yjkwS/pjcy6tPMmG0YNr/7auB2NBr
-         mGWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UKBkSD6v63vR2xw4n2OFGPSxFTTo4opuha2BS8j1btE=;
-        b=kFP3sSTyNAKtRgUrDHpWyvPzkspFxfOs1XmdsXltg8Rqse2zrAF4cmnS1LWWoYtcKi
-         JjcYaZgLl/Im0sQcMyHwNxA0yFKUEjgNUMi/s5F+Y6wUd++FS5vt2q5eKH1BujuONdjN
-         f/Qy4M8RkDBBYeSdL83EAnfv60V9KhfUYfM42CVAe4mlYL328hFB+rZVpFlHpWBOXrh3
-         ZiMbFIKxz/rCe7CVVdMBasyJoh0yohzlUbARvW+NKUZnQZ1Wi8Y1mU+frJxEqGeMdbsa
-         d0mnQgAcUvTa2KpBDehJt7niJB/szaBRLWl9j0t3oVtZm0/o+U0OT6xjJMP7GgmLk3YH
-         5dhA==
-X-Gm-Message-State: AOAM530tbvOcCOgaIh/9XIAcMj00vbplnYklEbZvr7BHlFxuMrCl+W8l
-        m6S8snpBDoqD6moX5fWn9cI=
-X-Google-Smtp-Source: ABdhPJwhuf3HBs3oocbNkAep5NfesI0ggJIaGFmAwNjaBzYI1bWgGNSbzn6/ce7af0v/J3XVkqRutQ==
-X-Received: by 2002:a65:460f:: with SMTP id v15mr17068970pgq.406.1606726400118;
-        Mon, 30 Nov 2020 00:53:20 -0800 (PST)
-Received: from localhost.localdomain ([8.210.202.142])
-        by smtp.gmail.com with ESMTPSA id 85sm15697784pfv.197.2020.11.30.00.53.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Nov 2020 00:53:19 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     faisal.latif@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yejune.deng@gmail.com
-Subject: [PATCH] infiniband: i40iw: replace atomic_add_return()
-Date:   Mon, 30 Nov 2020 16:52:56 +0800
-Message-Id: <1606726376-7675-1-git-send-email-yejune.deng@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Mon, 30 Nov 2020 03:53:58 -0500
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A23C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:53:18 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by andre.telenet-ops.be with bizsmtp
+        id yYt92300d4C55Sk01Yt99w; Mon, 30 Nov 2020 09:53:13 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kjevl-006uxW-He; Mon, 30 Nov 2020 09:53:09 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kjevl-006a5y-0Z; Mon, 30 Nov 2020 09:53:09 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     Gareth Williams <gareth.williams.jx@renesas.com>,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] clk: renesas: r9a06g032: Drop __packed for portability
+Date:   Mon, 30 Nov 2020 09:53:03 +0100
+Message-Id: <20201130085303.1566901-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-atomic_inc_return() is a little neater
+The R9A06G032 clock driver uses an array of packed structures to reduce
+kernel size.  However, this array contains pointers, which are no longer
+aligned naturally, and cannot be relocated on PPC64.  Hence when
+compile-testing this driver on PPC64 with CONFIG_RELOCATABLE=y (e.g.
+PowerPC allyesconfig), the following warnings are produced:
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+    WARNING: 136 bad relocations
+    c000000000616be3 R_PPC64_UADDR64   .rodata+0x00000000000cf338
+    c000000000616bfe R_PPC64_UADDR64   .rodata+0x00000000000cf370
+    ...
+
+Fix this by dropping the __packed attribute from the r9a06g032_clkdesc
+definition, trading a small size increase for portability.
+
+This increases the 156-entry clock table by 1 byte per entry, but due to
+the compiler generating more efficient code for unpacked accesses, the
+net size increase is only 76 bytes (gcc 9.3.0 on arm32).
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 4c3d88526eba2143 ("clk: renesas: Renesas R9A06G032 clock driver")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/infiniband/hw/i40iw/i40iw_cm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Please take directly (ppc or clk), as this is a build fix.
+https://lore.kernel.org/linux-clk/20201128122819.32187696@canb.auug.org.au/
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-index 3053c345..26e92ae 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-@@ -2426,7 +2426,7 @@ static void i40iw_handle_rst_pkt(struct i40iw_cm_node *cm_node,
- 		}
- 		break;
- 	case I40IW_CM_STATE_MPAREQ_RCVD:
--		atomic_add_return(1, &cm_node->passive_state);
-+		atomic_inc_return(&cm_node->passive_state);
- 		break;
- 	case I40IW_CM_STATE_ESTABLISHED:
- 	case I40IW_CM_STATE_SYN_RCVD:
-@@ -3020,7 +3020,7 @@ static int i40iw_cm_reject(struct i40iw_cm_node *cm_node, const void *pdata, u8
- 	i40iw_cleanup_retrans_entry(cm_node);
+Compile-tested only due to lack of hardware.
+
+ drivers/clk/renesas/r9a06g032-clocks.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas/r9a06g032-clocks.c
+index d900f6bf53d0b944..892e91b92f2c80f5 100644
+--- a/drivers/clk/renesas/r9a06g032-clocks.c
++++ b/drivers/clk/renesas/r9a06g032-clocks.c
+@@ -55,7 +55,7 @@ struct r9a06g032_clkdesc {
+ 			u16 sel, g1, r1, g2, r2;
+ 		} dual;
+ 	};
+-} __packed;
++};
  
- 	if (!loopback) {
--		passive_state = atomic_add_return(1, &cm_node->passive_state);
-+		passive_state = atomic_inc_return(&cm_node->passive_state);
- 		if (passive_state == I40IW_SEND_RESET_EVENT) {
- 			cm_node->state = I40IW_CM_STATE_CLOSED;
- 			i40iw_rem_ref_cm_node(cm_node);
-@@ -3678,7 +3678,7 @@ int i40iw_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 		return -EINVAL;
- 	}
- 
--	passive_state = atomic_add_return(1, &cm_node->passive_state);
-+	passive_state = atomic_inc_return(&cm_node->passive_state);
- 	if (passive_state == I40IW_SEND_RESET_EVENT) {
- 		i40iw_rem_ref_cm_node(cm_node);
- 		return -ECONNRESET;
+ #define I_GATE(_clk, _rst, _rdy, _midle, _scon, _mirack, _mistat) \
+ 	{ .gate = _clk, .reset = _rst, \
 -- 
-1.9.1
+2.25.1
 
