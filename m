@@ -2,86 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23DF2C89DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 176872C89E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgK3Qri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:47:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgK3Qrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:47:37 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4696B2067C;
-        Mon, 30 Nov 2020 16:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606754817;
-        bh=PBQifm6DraFNejjKgt0IKbv0mnlfO+5mof3SFPnhpQU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ikl7B+DnVwstqClfpP0q/Fquj3ruBoS1ZKuF7gfnl/X1ekHtUWtafmtU9kSJjR3by
-         2Qc0owC0FKifGosDMbYAooeLvRoNLfOB44jmw4uWZws5jsfr99kCN+nBi18jrnWugW
-         zo6aDJjYasN1Iim/fQAtoYN8SOxK+WOWyY15KfHc=
-Date:   Mon, 30 Nov 2020 16:46:51 +0000
-From:   Will Deacon <will@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Al Grant <al.grant@arm.com>, Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: Re: [PATCH] drivers/perf: Enable PID_IN_CONTEXTIDR with SPE
-Message-ID: <20201130164650.GA25187@willie-the-truck>
-References: <20201130162454.28255-1-james.clark@arm.com>
+        id S1728255AbgK3Qr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728053AbgK3Qr5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 11:47:57 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B32C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:47:11 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id z7so17074757wrn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:47:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gxmBi2j3Zu/diNdwa9NP5Pzem+6qya5Hy2+e8magSPM=;
+        b=ivWWB7L33Sv7AncDB32Vi6gvAlkNjnnIN86KjUbdC3b8MvOo1shukfaxQKM40lqZZY
+         PCbUAZZMVU7GAlRLTgVguDGiGWfauolu0l5hfIFUXAi5KtOfSBVPFMG4MMrqx8t85Ssv
+         IvcBn91erDzU2POwcYgheC1F7O96B5xQvW6Irta4efM+DoHIOnDYD0KsSpdWyO8EwVGr
+         ak1mBbvkii7LQx6U1gZ6PD+LsjbLv3wuJCjXzp05wvq2DBFK3FTqbRcbO9CMyltMJHos
+         IUhc0pQ7n7Ptn1cs6mx74XFcbvbrsbsnDAcmD/OeIoZaCDlgIXhvRKo5Oz+i9TFzNl6W
+         wTaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gxmBi2j3Zu/diNdwa9NP5Pzem+6qya5Hy2+e8magSPM=;
+        b=sCg+E0G+N3f90m6WQrP9N9EEZ40pZp+YcUltM9U0KMVlbQhSqQOBaDGsdWV8cOj+Yj
+         T89k9fEfAXO7z7tTDxw+ejfc+pOOV7IRRL3/hrRn4QKvst4iFEgqJ5fNs4WFqcY0PmB5
+         uSvDODCH4WJoI86CMDZVf7yrBOWERXjVVmotDxbhKe8pckM4ALJ7jGTwZso217ppRk6T
+         xttqsbouqGn+lgsmXozNcFjyNFYhDIF/y+bV93GqgY+7U1WUV+Yt+bmoSFSUSuYdQOlZ
+         /I+Gj1geM3pLowIcxoNSP67RB+JNUoYUWlkMAUof998otKcCXlYH4fN5A3kS6rbi8WIO
+         DL6w==
+X-Gm-Message-State: AOAM530Ru3BqHKq9zKqnkuEmxs8BEf0+0SPPE87zj+Mlkhbu6uJMkaFS
+        W4qdZ40AmJQOatiW8ELmhpfuDA==
+X-Google-Smtp-Source: ABdhPJzXdR0RmiNzosMsDwvDJRs/h650LcA8WFFqbcRTQ/E2ynYgo3kqGzMzanLq1DpQT6emPCCaQw==
+X-Received: by 2002:adf:f9cb:: with SMTP id w11mr30586128wrr.1.1606754829840;
+        Mon, 30 Nov 2020 08:47:09 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id b4sm8400805wrr.30.2020.11.30.08.47.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 08:47:09 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v2 0/4] configfs: implement committable items and add sample code
+Date:   Mon, 30 Nov 2020 17:47:00 +0100
+Message-Id: <20201130164704.22991-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130162454.28255-1-james.clark@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 06:24:54PM +0200, James Clark wrote:
-> Enable PID_IN_CONTEXTIDR by default when Arm SPE is enabled.
-> This flag is required to get PID data in the SPE trace. Without
-> it the perf tool will report 0 for PID which isn't very useful,
-> especially when doing system wide profiling or profiling
-> applications that fork.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Can perf not figure out the pid some other way? (e.g. by tracing context
-switches and correlating that with the SPE data?). Also, how does this
-work with pid namespaces?
+Committable items in configfs are well defined and documented but unfortunately
+so far never implemented.
 
-> There is a small performance overhead when enabling
-> PID_IN_CONTEXTIDR, but SPE itself is optional and not enabled by
-> default so the impact is minimised.
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Al Grant <al.grant@arm.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: John Garry <john.garry@huawei.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->  drivers/perf/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
-> index 130327ff0b0e..47ede46c3d57 100644
-> --- a/drivers/perf/Kconfig
-> +++ b/drivers/perf/Kconfig
-> @@ -125,6 +125,7 @@ config XGENE_PMU
->  config ARM_SPE_PMU
->  	tristate "Enable support for the ARMv8.2 Statistical Profiling Extension"
->  	depends on ARM64
-> +	select PID_IN_CONTEXTIDR
+The use-case we have over at the GPIO subsystem is using configfs in
+conjunction with sysfs to replace our current gpio-mockup testing module
+with one that will be much more flexible and will allow complete coverage
+of the GPIO uAPI.
 
-Probably better to make PID_IN_CONTEXTIDR 'default y' if SPE is enabled,
-rather than selecting it directly. That way, at least people can turn it
-off if they don't want it.
+The current gpio-mockup module is controlled using module parameters which
+forces the user to reload it everytime they need to change the chip
+configuration or layout and makes it difficult to extend its functionality.
 
-Will
+Testing module based on configfs would allow fine-grained control over dummy
+GPIO chips but since GPIO devices must be configured before they are
+instantiated, we need committable items.
+
+This implements them and adds code examples to configfs_sample module. The
+first two patches are just cosmetic.
+
+v1 -> v2:
+- fix a 'set but not used' build warning reported by kernel test robot
+
+Bartosz Golaszewski (4):
+  configfs: increase the item name length
+  configfs: use BIT() for internal flags
+  configfs: implement committable items
+  samples: configfs: add a committable group
+
+ Documentation/filesystems/configfs.rst |   6 +-
+ fs/configfs/configfs_internal.h        |  22 +--
+ fs/configfs/dir.c                      | 237 ++++++++++++++++++++++++-
+ fs/configfs/file.c                     |   8 +
+ include/linux/configfs.h               |   3 +-
+ samples/configfs/configfs_sample.c     | 150 ++++++++++++++++
+ 6 files changed, 406 insertions(+), 20 deletions(-)
+
+-- 
+2.29.1
+
