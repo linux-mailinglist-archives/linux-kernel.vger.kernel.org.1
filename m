@@ -2,137 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096382C8AD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EFB2C8AD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387411AbgK3RXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:23:20 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5244 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727444AbgK3RXT (ORCPT
+        id S2387443AbgK3RXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:23:22 -0500
+Received: from mail-il1-f196.google.com ([209.85.166.196]:43013 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387405AbgK3RXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:23:19 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHJY7Y039595;
-        Mon, 30 Nov 2020 12:22:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=LCS14rAVrx6siTkz3By+UZK64chWUDEhtThWX6d7LTM=;
- b=Pw8DfjCVCBCQdo5nAZtVDdlQo7f3H2SoHelKmFx4Mqp5LIzNQTE0SvqKbsuchawCtczv
- kfd1jVVVbmjFmSbl+ALej83Src4ZyS8wcHg7zHKTIVX1vbYVXi6LAJcwmq229nz7YjQ+
- fLb5XzvATFTNNThWoKN3oNqL9qgWQDwd9XuwEZT3YfFtjd1XoMmSIGC5M3sUGJg9ifAd
- L+Ml97zDA4PtiXzoU1UoO60yvBx5JA9oQR6nlpnWc4+dBvoAZNYkqAfTwU3qj5XOjVtz
- k6C+PAyHVXmHSsetPQLqiduEz3uIhpo+wJLoC9QZaNe9VwV7YhIg93yoVZNswRQIsGnQ tg== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35551s83c0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 12:22:26 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHM54O013021;
-        Mon, 30 Nov 2020 17:22:25 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma01dal.us.ibm.com with ESMTP id 353e68wm2c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 17:22:25 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AUHMOKM56099190
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 17:22:24 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AC59811207C;
-        Mon, 30 Nov 2020 17:22:24 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A1450112075;
-        Mon, 30 Nov 2020 17:22:22 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 30 Nov 2020 17:22:22 +0000 (GMT)
-Subject: Re: [PATCH 01/13] ibmvfc: add vhost fields and defaults for MQ
- enablement
-To:     Brian King <brking@linux.vnet.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201126014824.123831-1-tyreld@linux.ibm.com>
- <20201126014824.123831-2-tyreld@linux.ibm.com>
- <97e577a0-50f5-3ade-a377-7479f0f1c890@linux.vnet.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <8f637bcf-c9b4-9bf3-08a9-b3fdf3b7cf40@linux.ibm.com>
-Date:   Mon, 30 Nov 2020 09:22:21 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 30 Nov 2020 12:23:21 -0500
+Received: by mail-il1-f196.google.com with SMTP id z14so12040644ilm.10;
+        Mon, 30 Nov 2020 09:23:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RNwNXHiMSvl/K6oiBYfJxFqVm8j0n5Lsk6okDP6sH6A=;
+        b=O8zpTmbbL3EBJGboEGNxzAxCdbYiKQHuKvMFESdJ4VAFbbFYmn6uMmcf0lkycnbFvK
+         qxvz03Iarx3XV+U84GQ4s+on3DESgP4d4/LKeSL3N68BzI/77shOSo7bGdLJgMk66Rce
+         Vx+rmiVmw88qgsrtCkjUUG/yyLVXycjFPSrtdSV5yFTRJujHvzNB+KKeK+lWpC3Io7Bo
+         5eKHb6QDI3bR+PxOpzqbApY8Sqm9A1SrFxhhwOO/LodeFi1AbPC0vmVdwyXOGQXutESW
+         5PEEC7Tj7d7D7hYoCcM6XA1uvW8BUR0JctsJ1OKTuM0zXvgFSQ+jNWp5V3Q/2oHZ7xND
+         zXNw==
+X-Gm-Message-State: AOAM531WTsABfp7DqtAEUdW+2Xufuhn5PaObDQ6nsAWwoyeBWjjXUmzf
+        /rtxCZ7/Iw/F91ZHBVJpzA==
+X-Google-Smtp-Source: ABdhPJyxOgCeh5UJ2Rz+bXXFA5rO7bJACGQH+2r2cRBJsEAoNdeLMl0fJVX7ojwx/t9Z3kZZxmNgYA==
+X-Received: by 2002:a92:444e:: with SMTP id a14mr2292924ilm.129.1606756959820;
+        Mon, 30 Nov 2020 09:22:39 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id o11sm8443319ioa.37.2020.11.30.09.22.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 09:22:38 -0800 (PST)
+Received: (nullmailer pid 2661469 invoked by uid 1000);
+        Mon, 30 Nov 2020 17:22:36 -0000
+Date:   Mon, 30 Nov 2020 10:22:36 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     jorge.ramirez-ortiz@linaro.org, agross@kernel.org,
+        daniel.lezcano@linaro.org, robh+dt@kernel.org, rjw@rjwysocki.net,
+        devicetree@vger.kernel.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org, broonie@kernel.org,
+        konrad.dybcio@somainline.org, bjorn.andersson@linaro.org,
+        marijn.suijten@somainline.org, nks@flawful.org,
+        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, ulf.hansson@linaro.org,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/13] dt-bindings: soc: qcom: cpr3: Add bindings for
+ CPR3 driver
+Message-ID: <20201130172236.GA2632683@robh.at.kernel.org>
+References: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
+ <20201126184559.3052375-11-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <97e577a0-50f5-3ade-a377-7479f0f1c890@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-30_06:2020-11-30,2020-11-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- phishscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
- adultscore=0 priorityscore=1501 clxscore=1015 mlxscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300110
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126184559.3052375-11-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/20 9:45 AM, Brian King wrote:
-> On 11/25/20 7:48 PM, Tyrel Datwyler wrote:
->> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.h b/drivers/scsi/ibmvscsi/ibmvfc.h
->> index 9d58cfd774d3..8225bdbb127e 100644
->> --- a/drivers/scsi/ibmvscsi/ibmvfc.h
->> +++ b/drivers/scsi/ibmvscsi/ibmvfc.h
->> @@ -41,6 +41,11 @@
->>  #define IBMVFC_DEFAULT_LOG_LEVEL	2
->>  #define IBMVFC_MAX_CDB_LEN		16
->>  #define IBMVFC_CLS3_ERROR		0
->> +#define IBMVFC_MQ			0
+On Thu, 26 Nov 2020 19:45:56 +0100, AngeloGioacchino Del Regno wrote:
+> Add the bindings for the CPR3 driver to the documentation.
 > 
-> Given that IBMVFC_MQ is getting set to 0 here, that means mq_enabled is also
-> always zero, so am I correct that a lot of this code being added is not
-> yet capable of being executed?
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  .../bindings/soc/qcom/qcom,cpr3.yaml          | 226 ++++++++++++++++++
+>  1 file changed, 226 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.yaml
+> 
 
-Not with out a direct intervention from a hard coding a different value when
-building the code. See comment below.
 
-> 
->> +#define IBMVFC_SCSI_CHANNELS		0
-> 
-> Similar comment here...
-> 
->> +#define IBMVFC_SCSI_HW_QUEUES		1
-> 
-> I don't see any subsequent patches in this series that would ever result
-> in nr_hw_queues getting set to anything other than 1. Is that future work
-> planned or am I missing something?
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Yes, there is still some changes to EH that need to be included before those
-values are safe to be set to anything else by the average user.
+yamllint warnings/errors:
 
--Tyrel
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.yaml: properties:clock-names: [{'const': 'ref'}] is not of type 'object', 'boolean'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.yaml: ignoring, error in schema: properties: clock-names
+warning: no schema found in file: ./Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.yaml
+Error: Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.example.dts:39.9-30 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1364: dt_binding_check] Error 2
 
-> 
->> +#define IBMVFC_MIG_NO_SUB_TO_CRQ	0
->> +#define IBMVFC_MIG_NO_N_TO_M		0
->>  
->>  /*
->>   * Ensure we have resources for ERP and initialization:
->> @@ -826,6 +831,10 @@ struct ibmvfc_host {
->>  	int delay_init;
->>  	int scan_complete;
->>  	int logged_in;
->> +	int mq_enabled;
->> +	int using_channels;
->> +	int do_enquiry;
->> +	int client_scsi_channels;
->>  	int aborting_passthru;
->>  	int events_to_log;
->>  #define IBMVFC_AE_LINKUP	0x0001
->>
-> 
-> 
+
+See https://patchwork.ozlabs.org/patch/1406856
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
