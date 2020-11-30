@@ -2,93 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B032C7F5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578DB2C7F68
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727370AbgK3H4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:56:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
+        id S1727529AbgK3H5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 02:57:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbgK3H4M (ORCPT
+        with ESMTP id S1726299AbgK3H5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:56:12 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9E5C0613D4;
-        Sun, 29 Nov 2020 23:55:32 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id l4so3527022pgu.5;
-        Sun, 29 Nov 2020 23:55:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tlhpps4VXXl1XVzMESkL1pdScpF5cYOHwICDcu9T2Cg=;
-        b=sA9vLnPEqzbO/Va1VEUMLXFZk5ZL3hBoR/BOLWSzDzRi1uR7Pr5g4lg+XTjp1cb60J
-         /o1MB01lyNYSwVlzoZiYPBY+Zme3w2wmRNZoe4J1N6Zt27VzX4VVeRfZyn+4019BSiw+
-         nTmray+pYly5NQI7ajGnpaxFNepGs5q0m48fZxSCteue8bglLQAoEFZ0z4Ex/JvUtpdz
-         2jziJXX/ZXok0uSn1+LjDlFEn99wpiZA841Af0CVJKD8tzPv4tiuhFHobXjxLuGVHmRS
-         SFO42UjtsOQa6kONtOmHsZ8WzOE/KXgV4ez3dDGH2bO6ByHyNXXrAY3jfSzcqoBhvHZW
-         e7pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tlhpps4VXXl1XVzMESkL1pdScpF5cYOHwICDcu9T2Cg=;
-        b=Ff9mtUIH3VhwJI2Aod3kUzZE3joe2PMVE2qP87TUaAY02UHMdDSTlD/3IXQff8NUiq
-         sF6nF+Ixo5RTplYIYH4yLr6rJTREHtJ+tq2YKIelYfxXN8xG6GcjGdPCRFOLXv3uluv0
-         ojwYV3BqpWH3c8Z1Xox3S2NqCBTGk1OZl37HJPIPnFCFdMA6KTQKXtcCaGz0KfQdPiBm
-         VQssDSgni/hTOR7HWpDfp1U1iib39iEGjZia/EEFVgiV03PnsyRYpJSUKkh40vkBUtu9
-         ot3aAGzuuZOwjotN8uY4XIQTm3dBE+fjof8y9cyE5xyuHy5IT9tjkG+o7D8fDk28vdx4
-         /vkg==
-X-Gm-Message-State: AOAM530V7DQ2+O68o134X5Ajb06Mv3YR7Mhu1iIUbOOU2LuEUCENaIGT
-        xOHvYFdh2TGDwaiJysKoiXc=
-X-Google-Smtp-Source: ABdhPJyClsOt6799GnriPA/SIYXhMhfjVIdMRJ7PfCG8Sb8dUNWxEjGgKwivKSTxh9slkfSyK+zniw==
-X-Received: by 2002:a62:5293:0:b029:18b:5c86:7ad0 with SMTP id g141-20020a6252930000b029018b5c867ad0mr17779615pfb.51.1606722932101;
-        Sun, 29 Nov 2020 23:55:32 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id oc13sm20427278pjb.5.2020.11.29.23.55.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 23:55:31 -0800 (PST)
-Date:   Sun, 29 Nov 2020 23:55:28 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Roy Im <roy.im.opensource@diasemi.com>
-Cc:     Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Brian Masney <masneyb@onstation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>, Luca Weiss <luca@z3ntu.xyz>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Pascal PAILLET-LME <p.paillet@st.com>,
-        Rob Herring <robh@kernel.org>,
-        Samuel Ortiz <sameo@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Support Opensource <support.opensource@diasemi.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [RESEND PATCH V20 3/3] Input: new da7280 haptic driver
-Message-ID: <20201130075528.GM2034289@dtor-ws>
-References: <cover.1606320459.git.Roy.Im@diasemi.com>
- <1e293e8c4830b09255af3b7e1721b73afaefdfa3.1606320459.git.Roy.Im@diasemi.com>
+        Mon, 30 Nov 2020 02:57:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F53C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 23:57:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8bZkvwy3CFq9HwUxMeKMBaZFd0BWaHfOhGOX+0uRRCM=; b=NZPsNqlwvQUBjI4w2ECBxEef8U
+        6sv3uPKoxMeORZjb4/ab0zds+sZcx1EDLsAXX18q9fRmY9tVyZntPIxgjt3xEmlKSiYn+o7IOo7Nu
+        ZOMkiJeaUeAUmKEuG9hJDlr2FhN/8btubYewT7Ap4zNzSYEzPH1bsiKABGOsrDcqSy/pfqC6llEuu
+        UDikT1DcoHapgONCFHR19Nu+6fYnNKwtNnzgJNxceU2lppmsHm+n/dMlQK8af5CG793PoD5SpHo9b
+        /bFDEDlqauE1gvmklqQtQIwuc3J89JB/uk364++iRqLGemnCwTQE7KztUByRAHylTAaF0H4CZQF4i
+        6MjEi9fQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kje3L-00024v-RG; Mon, 30 Nov 2020 07:56:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C082A301179;
+        Mon, 30 Nov 2020 08:56:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2AD242018E5B6; Mon, 30 Nov 2020 08:56:51 +0100 (CET)
+Date:   Mon, 30 Nov 2020 08:56:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
+Message-ID: <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
+References: <160665707945.2808.5384034634184489471.tglx@nanos>
+ <160665708065.2808.15317906761841446715.tglx@nanos>
+ <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1e293e8c4830b09255af3b7e1721b73afaefdfa3.1606320459.git.Roy.Im@diasemi.com>
+In-Reply-To: <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roy,
+On Sun, Nov 29, 2020 at 11:31:41AM -0800, Linus Torvalds wrote:
+> On Sun, Nov 29, 2020 at 5:38 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> > Yet two more places which invoke tracing from RCU disabled regions in the
+> > idle path. Similar to the entry path the low level idle functions have to
+> > be non-instrumentable.
+> 
+> This really seems less than optimal.
+> 
+> In particular, lookie here:
+> 
+> > @@ -94,9 +94,35 @@ void __cpuidle default_idle_call(void)
+> >
+> >                 trace_cpu_idle(1, smp_processor_id());
+> >                 stop_critical_timings();
+> > +
+> > +               /*
+> > +                * arch_cpu_idle() is supposed to enable IRQs, however
+> > +                * we can't do that because of RCU and tracing.
+> > +                *
+> > +                * Trace IRQs enable here, then switch off RCU, and have
+> > +                * arch_cpu_idle() use raw_local_irq_enable(). Note that
+> > +                * rcu_idle_enter() relies on lockdep IRQ state, so switch that
+> > +                * last -- this is very similar to the entry code.
+> > +                */
+> > +               trace_hardirqs_on_prepare();
+> > +               lockdep_hardirqs_on_prepare(_THIS_IP_);
+> >                 rcu_idle_enter();
+> > +               lockdep_hardirqs_on(_THIS_IP_);
+> > +
+> >                 arch_cpu_idle();
+> > +
+> > +               /*
+> > +                * OK, so IRQs are enabled here, but RCU needs them disabled to
+> > +                * turn itself back on.. funny thing is that disabling IRQs
+> > +                * will cause tracing, which needs RCU. Jump through hoops to
+> > +                * make it 'work'.
+> > +                */
+> > +               raw_local_irq_disable();
+> > +               lockdep_hardirqs_off(_THIS_IP_);
+> >                 rcu_idle_exit();
+> > +               lockdep_hardirqs_on(_THIS_IP_);
+> > +               raw_local_irq_enable();
+> > +
+> >                 start_critical_timings();
+> >                 trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
+> >         }
+> 
+> And look at what the code generation for the idle exit path is when
+> lockdep isn't even on.
 
-On Thu, Nov 26, 2020 at 01:07:39AM +0900, Roy Im wrote:
-> Adds support for the Dialog DA7280 LRA/ERM Haptic Driver with
-> multiple mode and integrated waveform memory and wideband support.
-> It communicates via an I2C bus to the device.
+Agreed.
 
-I am looking at the driver and should finish review tomorrow. If you do
-not hear from me by Wednesday please poke me again - I want to get the
-driver into the upcoming merge window.
+The idea was to flip all of arch_cpu_idle() to not enable interrupts.
 
-Thanks!
+This is suboptimal for things like x86 where arch_cpu_idle() is
+basically STI;HLT, but x86 isn't likely to actually use this code path
+anyway, given all the various cpuidle drivers it has.
 
--- 
-Dmitry
+Many of the other archs are now doing things like arm's:
+wfi();raw_local_irq_enable().
+
+Doing that tree-wide interrupt-state flip was something I didn't want to
+do at this late a stage, the chanse of messing that up is just too high.
+
+After that I need to go look at flipping cpuidle, which is even more
+'interesting'. cpuidle_enter() has the exact same semantics, and this is
+the code path that x86 actually uses, and here it's inconsitent at best.
