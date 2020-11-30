@@ -2,126 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F6B2C8AE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE9D2C8AEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387518AbgK3RZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:25:20 -0500
-Received: from smtprelay0248.hostedemail.com ([216.40.44.248]:44760 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387510AbgK3RZT (ORCPT
+        id S2387484AbgK3R0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387405AbgK3R0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:25:19 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 8B5CF8384367;
-        Mon, 30 Nov 2020 17:24:38 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:1801:2197:2199:2393:2553:2559:2562:2828:2911:3138:3139:3140:3141:3142:3355:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4184:4250:4321:4425:4605:5007:7875:7903:7974:8531:9545:10004:10400:11026:11232:11658:11783:11914:12043:12296:12297:12555:12679:12740:12895:13019:13180:13229:13439:13894:14093:14097:14180:14181:14659:14721:21060:21080:21221:21433:21451:21627:21740:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: skirt20_52007ab273a3
-X-Filterd-Recvd-Size: 4104
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 30 Nov 2020 17:24:37 +0000 (UTC)
-Message-ID: <070109a56817288562a91dfeec74359eb948234e.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: fix TYPO_SPELLING check for words with
- apostrophe
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Date:   Mon, 30 Nov 2020 09:24:36 -0800
-In-Reply-To: <CABJPP5BLjbx3FbvB3nAOiHfkRLUo7s0n-vboE+AXJqrZXseUNQ@mail.gmail.com>
-References: <20201130144515.8320-1-dwaipayanray1@gmail.com>
-         <c8eeab847fc09368ce270ea3e06ea0bbbd7d1b7f.camel@perches.com>
-         <CABJPP5BLjbx3FbvB3nAOiHfkRLUo7s0n-vboE+AXJqrZXseUNQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 30 Nov 2020 12:26:35 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688D8C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:25:49 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id o25so15004641oie.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:25:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=HUd80TJAPN0HNUfyfM/cXlZWa0/zIVrHS2ar/oipCTA=;
+        b=cORfdEM6mWVLRHnCBqW4tOax3URrJ09Zr1dd8Lm14bBFPkmy1/jM3FVqVsiptOtCru
+         C/orLmR/loHRkh5nVBhk9J63TiGQ0ff+KzvjTkggpkQlTMDmbx5ZCD9iCLdpP/rIPTxX
+         ekHJb1+4+T2Hf3SGN2cy69u8U5qPmqbmRjlSKbBSNVWiqc5WJETza0p+/CRYZ/JgIv3f
+         HFgkJzQQc5L75zu/Mn/hNCNRQy6GZY466aVbCkEVlZ4/7QMtlmI3Lbn+cNxHaleKqvE1
+         HYVLSn9Hly3NNLTVOcszeA9M/Fax7QjF2NXK3jJq1cTVxujjlIybIIg+EZ3wkBNznAnw
+         H1PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HUd80TJAPN0HNUfyfM/cXlZWa0/zIVrHS2ar/oipCTA=;
+        b=k1Q0uNr8qOeBsrJBT3iEJFXXHdxGo7WisdI4HARpGMjA10iGObI2QuNUeg9hMMIcgK
+         NCMSK23bG4qkbUhrsc2Gr5f+a/OhN5C5ks1iSHYMmhVvq1NYTytxBTwECB6ykN5cwMRQ
+         vIdbwcJWDnwGxXOgPYvlS+ZT9x3Kj+DY48YW5Z9cCMriLlgRSWiGKEwrOKBE75UrUEE/
+         wT3YyzYk6BCflIFheyNlUGwp8PpL74Gb0BHCtpxX58brvM0fTemJP53GyjzSJZ9RsDtZ
+         q4wK/Cm2Jx3ZFLvo99dWUO5stmgWBoj8InpcgaoC2TGIw2ze+MlDPEwBkcD+meAdsz2B
+         X7rg==
+X-Gm-Message-State: AOAM531uX0FAAlwZ37GpehAFQCD1eGl32o3Ck3VuzkLFvAp2X5u/Beq3
+        t5o6VV9LeVmSWSN34bj1/Yk6pIlyyBqL6yo1GTA=
+X-Google-Smtp-Source: ABdhPJxJwcInRruKgImZGDpJhn258QZyowR+W944kJ48BLOe+t+aFrBC3nAuZQ4N4NIUDkonajH/9w==
+X-Received: by 2002:a05:6808:562:: with SMTP id j2mr15682595oig.1.1606757148425;
+        Mon, 30 Nov 2020 09:25:48 -0800 (PST)
+Received: from Steevs-MBP.hackershack.net (cpe-173-175-113-3.satx.res.rr.com. [173.175.113.3])
+        by smtp.gmail.com with ESMTPSA id s28sm9000438otr.4.2020.11.30.09.25.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 09:25:47 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: qcom: c630: Polish i2c-hid devices
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Shawn Guo <shawn.guo@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201130165924.319708-1-bjorn.andersson@linaro.org>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <77abcac1-daf6-adbd-7d02-00cd9b4ddf99@kali.org>
+Date:   Mon, 30 Nov 2020 11:25:45 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201130165924.319708-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-30 at 22:33 +0530, Dwaipayan Ray wrote:
-> On Mon, Nov 30, 2020 at 10:13 PM Joe Perches <joe@perches.com> wrote:
-> > 
-> > On Mon, 2020-11-30 at 20:15 +0530, Dwaipayan Ray wrote:
-> > > checkpatch reports a false TYPO_SPELLING warning for some words
-> > > containing an apostrophe.
-> > > 
-> > > A false positive is "doesn't". Occurrence of the word causes
-> > > checkpatch to emit the following warning:
-> > > 
-> > > "WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?"
-> > > 
-> > > Check the word boundary for such cases so that words like
-> > > "doesn't", "zig-zag", etc. aren't misinterpreted due to wrong
-> > > splitting of the word by the \b regex metacharacter.
-> > []
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > []
-> > > @@ -3106,7 +3106,7 @@ sub process {
-> > >  # Check for various typo / spelling mistakes
-> > >               if (defined($misspellings) &&
-> > >                   ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
-> > > -                     while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
-> > > +                     while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b(?![^\w]?[a-z@]+)|$|[^a-z@])/gi) {
-> > 
-> > Wouldn't it be simpler to change the existing [^a-z@] blocks to [^a-z@'-] ?
-> > 
-> Hi,
-> I tried it and it doesn't seem to work. Probably because the first
-> group already causes the
-> word to be captured. In this case `doesn'` was already captured
-> because of the \b group.
-> 
-> Is the first group modification perhaps okay? Or would you suggest
-> something else?
 
-Seems to work for me:
+On 11/30/20 10:59 AM, Bjorn Andersson wrote:
+> The numbering of the i2c busses differs from ACPI and a number of typos
+> was made in the original patch. Further more the irq flags for the
+> various resources was not correct and i2c3 only has one of the two
+> client devices active in any one device.
+>
+> Also label the various devices, for easier comparison with the ACPI
+> tables.
+>
+> Fixes: 44acee207844 ("arm64: dts: qcom: Add Lenovo Yoga C630")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 31 +++++++++++--------
+>  1 file changed, 18 insertions(+), 13 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> index 047ac9c16874..399aef2a0951 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> @@ -264,23 +264,28 @@ &i2c3 {
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+>  
+> -	hid@15 {
+> +	tsel: hid@15 {
+>  		compatible = "hid-over-i2c";
+>  		reg = <0x15>;
+>  		hid-descr-addr = <0x1>;
+>  
+> -		interrupts-extended = <&tlmm 37 IRQ_TYPE_EDGE_RISING>;
+> +		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&i2c3_hid_active>;
+>  	};
+>  
+> -	hid@2c {
+> +	tsc2: hid@2c {
+>  		compatible = "hid-over-i2c";
+>  		reg = <0x2c>;
+>  		hid-descr-addr = <0x20>;
+>  
+> -		interrupts-extended = <&tlmm 37 IRQ_TYPE_EDGE_RISING>;
+> +		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
+>  
+>  		pinctrl-names = "default";
+> -		pinctrl-0 = <&i2c2_hid_active>;
+> +		pinctrl-0 = <&i2c3_hid_active>;
+> +
+> +		status = "disabled";
+>  	};
+>  };
+>  
+> @@ -288,15 +293,15 @@ &i2c5 {
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+>  
+> -	hid@10 {
+> +	tsc1: hid@10 {
+>  		compatible = "hid-over-i2c";
+>  		reg = <0x10>;
+>  		hid-descr-addr = <0x1>;
+>  
+> -		interrupts-extended = <&tlmm 125 IRQ_TYPE_EDGE_FALLING>;
+> +		interrupts-extended = <&tlmm 125 IRQ_TYPE_LEVEL_LOW>;
+>  
+>  		pinctrl-names = "default";
+> -		pinctrl-0 = <&i2c6_hid_active>;
+> +		pinctrl-0 = <&i2c5_hid_active>;
+>  	};
+>  };
+>  
+> @@ -304,7 +309,7 @@ &i2c11 {
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+>  
+> -	hid@5c {
+> +	ecsh: hid@5c {
+>  		compatible = "hid-over-i2c";
+>  		reg = <0x5c>;
+>  		hid-descr-addr = <0x1>;
+> @@ -312,7 +317,7 @@ hid@5c {
+>  		interrupts-extended = <&tlmm 92 IRQ_TYPE_LEVEL_LOW>;
+>  
+>  		pinctrl-names = "default";
+> -		pinctrl-0 = <&i2c12_hid_active>;
+> +		pinctrl-0 = <&i2c11_hid_active>;
+>  	};
+>  };
+>  
+> @@ -426,7 +431,7 @@ codec {
+>  &tlmm {
+>  	gpio-reserved-ranges = <0 4>, <81 4>;
+>  
+> -	i2c2_hid_active: i2c2-hid-active {
+> +	i2c3_hid_active: i2c2-hid-active {
+>  		pins = <37>;
+>  		function = "gpio";
+>  
+> @@ -435,7 +440,7 @@ i2c2_hid_active: i2c2-hid-active {
+>  		drive-strength = <2>;
+>  	};
+>  
+> -	i2c6_hid_active: i2c6-hid-active {
+> +	i2c5_hid_active: i2c5-hid-active {
+>  		pins = <125>;
+>  		function = "gpio";
+>  
+> @@ -444,7 +449,7 @@ i2c6_hid_active: i2c6-hid-active {
+>  		drive-strength = <2>;
+>  	};
+>  
+> -	i2c12_hid_active: i2c12-hid-active {
+> +	i2c11_hid_active: i2c11-hid-active {
+>  		pins = <92>;
+>  		function = "gpio";
+>  
 
-$ git diff --stat -p scripts/checkpatch.pl
- scripts/checkpatch.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7dc094445d83..a6d4d524ae66 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3106,7 +3106,7 @@ sub process {
- # Check for various typo / spelling mistakes
- 		if (defined($misspellings) &&
- 		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
--			while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
-+			while ($rawline =~ /(?:^|[^a-z@'-])($misspellings)(?:\b|$|[^a-z@'-])/gi) {
- 				my $typo = $1;
- 				my $typo_fix = $spelling_fix{lc($typo)};
- 				$typo_fix = ucfirst($typo_fix) if ($typo =~ /^[A-Z]/);
-
-$ cat t_spell.c
-// SPDX-License-Identifier: GPL-2.0-only
-void foo(void)
-{
-	//misspelled arne't word
-}
-
-$ ./scripts/checkpatch.pl -f --strict t_spell.c
-CHECK: 'arne't' may be misspelled - perhaps 'aren't'?
-#4: FILE: t_spell.c:4:
-+	//misspelled arne't word
-
-total: 0 errors, 0 warnings, 1 checks, 5 lines checked
-
-NOTE: For some of the reported defects, checkpatch may be able to
-      mechanically convert to the typical style using --fix or --fix-inplace.
-
-t_spell.c has style problems, please review.
-
-NOTE: If any of the errors are false positives, please report
-      them to the maintainer, see CHECKPATCH in MAINTAINERS.
-
+Tested-by: Steev Klimaszewski <steev@kali.org>
 
 
