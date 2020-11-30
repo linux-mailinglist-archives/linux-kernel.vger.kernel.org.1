@@ -2,86 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F382C7C84
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 02:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89502C7C87
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 02:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbgK3Blo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 20:41:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
+        id S1727125AbgK3Bou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 20:44:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbgK3Bln (ORCPT
+        with ESMTP id S1726755AbgK3Bou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 20:41:43 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378B8C0613D2
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 17:41:03 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id m19so12492461ejl.11
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 17:41:03 -0800 (PST)
+        Sun, 29 Nov 2020 20:44:50 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C8FC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 17:44:10 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id t21so340790pjw.2
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 17:44:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YNYyQoH11Uy49BqvFcvhTDHG+XYaaGyowBqhzVBSUAY=;
-        b=WwNrl0Ybr20BSwcEyIynEsdNTjjydkiaOOK+8xaxlNamiVtWQDFg4dSjd7crFvEsFa
-         0hUWJGsxkcsFjLP18+Kcky7cgJGqLjlr/e1HCFaCSXVnMX3gNDW8vDsvNNbpM8YXCB6P
-         eKBamIGx4Oi7tF70nS13vGryycE4zosApoI4ZLqtutxVBbGt+1t4q5zfjkQrJWlTF86Q
-         e7PbXx5U6mpoMEl1gbMbd0o7wo8juA3U4/yO1goCXLEyaEan2jY+uYjt0tEaMwMSRuwo
-         S8NGrNH+N/A5k8yAKdnmicNWjDMCtR4/HbVPVQzcNmniBbtYNs9AagYYNd9f+F9Pgk1l
-         wQpA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0AN3HoLklghH6G8u0k3IsJXj4kaG/6hWtQpUEebx624=;
+        b=bJ4NeL1F1HUuWUXg46EF0dbZ8bZxbbF2dT0fbc49F94fE8oPholtAsRnTvVlGIJzev
+         Md3E1HRJKTOhvqPOltP5gT/WmFTQ670fWFXfFMByZQt7TM80Iziez+9S0YwubhoLce/W
+         qyg+Ucne3+RZT1orCxClteKC8+p0VKvfQsAVV9yYgi6r/GpH/dJykGJLVb9t6qcDIEm1
+         Hgy5C3DwSLuC8GBz3wLg1ouon1w4ns0D4fg2c97NVB/dUaSWoiNqSdtPbxtgcyVBHL2p
+         AcO/81zUyhBdBBXcop/fA4BZV0qTbfCOgLouDo84ZRE9cXOtlFZJjB9UzHoqwRBN1xeN
+         OMHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YNYyQoH11Uy49BqvFcvhTDHG+XYaaGyowBqhzVBSUAY=;
-        b=DF6m18WxbkTqsj4U/VQwrti8dQ4vI41atr4OQiBYC2MotGLqwGkiZ0w9g0M1Y4Mtkx
-         ZJ+LbVDEaDPAbXa4/5nJvHeXjgrO1oZR1x+iok+Vpodhcp3s2Sn9WihRjfWZOGf/h/I3
-         z9zgoYTrAykCZFDELt5IwNnu0eHHJqDm2zwId8BRqAPHqk3vcPoDLy+pCJYOXqRBe1pW
-         s/8n8C1UL42yde/8/Y6q6jOxW/yESfGDiTDQfe1uTpq3dZk4pokhCsuzYenS9sMn5Kp5
-         7hgumuoZh8IY029J1vzcuundb7RpW9X0B5nHRBfYoC5G3LxYi60vkcIbdH0D5kjOrhX5
-         uRHA==
-X-Gm-Message-State: AOAM532BLTMLdu2N17VhsficXmknKeHBdDBKQxLtN+5A2DpVbvn/7IqM
-        SMaMKVYr5hSGrTthNbJO8mQCP968EHR8gzsfsE3ryA==
-X-Google-Smtp-Source: ABdhPJyI8iq9Qcoh9z+BgQGsOaQVWGtfyNzvOoKL5oqxj8FOxSgc4pj2PZ1+KU9i112A2dmNHWlk9d0rgvij/Qc7bQE=
-X-Received: by 2002:a17:907:3f93:: with SMTP id hr19mr18726449ejc.235.1606700461879;
- Sun, 29 Nov 2020 17:41:01 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0AN3HoLklghH6G8u0k3IsJXj4kaG/6hWtQpUEebx624=;
+        b=twOtM4UvijyhI3PWHk6dRglDgJBGLnAYPkotbq9bSn3P4u5RfEjWVO9F8O56wp4csj
+         Cq63SxA7mOpnskUJ9aGfY5a2937TuXUlPy73Twu+S/Rzjnpsg0rhqQdZkD44MHI7BZXr
+         DZvKcdKCMAqQU9cxC+wvgFLjXyZp/gf1W4RZm1QZWxIF1TD8bKuVSfaUyJ9P6Wii4Io7
+         uDAQu98gF9KD5ifTbmG1ZEx6f2H4KcnDWVsCwrZ1n0COpyxzmTHfmLHN6lPh71Y1kZmH
+         T8suR6nNM3nJj5n9xeerfxXNYRHg60BXdlq2hX/n1J67T2RtbSzaCnxaNJTxkGVS0URm
+         cBHQ==
+X-Gm-Message-State: AOAM532xls+3m11Mv0XBiBlrlNeiFyB50waOMqsYrlO9sEedeDS3EHS9
+        gaUD1wmsxRdrSFZej7eL7BU=
+X-Google-Smtp-Source: ABdhPJywH0uelXjY+4lbFJAVcLwEC1HQ01A8hljq52bzes7ZPHtw2EY+uCz0j9mMp5tW9FXMpOyRUA==
+X-Received: by 2002:a17:90b:110:: with SMTP id p16mr24296413pjz.54.1606700649865;
+        Sun, 29 Nov 2020 17:44:09 -0800 (PST)
+Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id a2sm14825602pfo.117.2020.11.29.17.44.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Nov 2020 17:44:09 -0800 (PST)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Namjae Jeon <linkinjeon@kernel.org>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: [PATCH] posix_acl.h: define missing ACL functions on non-posix-acl build
+Date:   Mon, 30 Nov 2020 10:44:04 +0900
+Message-Id: <20201130014404.36904-1-sergey.senozhatsky@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20200930081645.3434-1-jun.nie@linaro.org> <43318c75-cfe2-d219-2ea4-7a130ea5883b@linaro.org>
-In-Reply-To: <43318c75-cfe2-d219-2ea4-7a130ea5883b@linaro.org>
-From:   Jun Nie <jun.nie@linaro.org>
-Date:   Mon, 30 Nov 2020 09:40:50 +0800
-Message-ID: <CABymUCOjh0BEwaZsFO6YzbMskeNnhPCDLAOhzU8Civ_3JM0yrw@mail.gmail.com>
-Subject: Re: [PATCH 0/5] Consolidate RPM interconnect and support to MSM8939
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        agross@kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, Shawn Guo <shawn.guo@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Georgi Djakov <georgi.djakov@linaro.org> =E4=BA=8E2020=E5=B9=B411=E6=9C=882=
-6=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=888:20=E5=86=99=E9=81=93=EF=BC=
-=9A
->
-> On 9/30/20 11:16, Jun Nie wrote:
-> > This patch set split shared RPM based interconnect operation code and a=
-dd
-> > support to MSM8939 interconnect.
-> >
->
-> Hi Jun,
->
-> Are you planning to refresh this patchset?
+Some functions that are declared when CONFIG_POSIX_ACL is defined
+are not declared when CONFIG_POSIX_ACL is not defined. Add the
+missing ones:
+  set_posix_acl(), posix_acl_update_mode(), get_cached_acl(),
+  get_cached_acl_rcu(), set_cached_acl(), forget_cached_acl().
 
-Yes. Just come back from a long vocation. Thanks for reminder!
+Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+---
+ include/linux/posix_acl.h | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-Jun
+diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+index 90797f1b421d..f6d206359da5 100644
+--- a/include/linux/posix_acl.h
++++ b/include/linux/posix_acl.h
+@@ -117,6 +117,39 @@ static inline int posix_acl_create(struct inode *inode, umode_t *mode,
+ static inline void forget_all_cached_acls(struct inode *inode)
+ {
+ }
++
++static inline int set_posix_acl(struct inode *inode, int type,
++				struct posix_acl *acl)
++{
++	return 0;
++}
++
++static inline int posix_acl_update_mode(struct inode *, umode_t *,
++					struct posix_acl **)
++{
++	return 0;
++}
++
++static inline struct posix_acl *get_cached_acl(struct inode *inode,
++					       int type)
++{
++	return NULL;
++}
++
++static inline struct posix_acl *get_cached_acl_rcu(struct inode *inode,
++						   int type)
++{
++	return NULL;
++}
++
++static inline void set_cached_acl(struct inode *inode, int type,
++				  struct posix_acl *acl)
++{
++}
++
++static inline void forget_cached_acl(struct inode *inode, int type)
++{
++}
+ #endif /* CONFIG_FS_POSIX_ACL */
+ 
+ struct posix_acl *get_acl(struct inode *inode, int type);
+-- 
+2.29.2
 
->
-> Thanks,
-> Georgi
