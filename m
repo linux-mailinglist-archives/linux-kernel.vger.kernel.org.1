@@ -2,237 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566EA2C92BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B842C92C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389006AbgK3XfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:35:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387996AbgK3XfJ (ORCPT
+        id S2389031AbgK3XfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:35:24 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:51682 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387996AbgK3XfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:35:09 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99700C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:34:48 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id k196so158123ybf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:34:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=6uc7ZLqzr9oyVU4hbwFSRyKi3sFmVrBfBXorh1eNGEA=;
-        b=BzEa4nkfxkMZKW7cseeSx8SY164/h+h2hni0VDyb30y/8QyxSnxAAC/8I5vwNG5bDl
-         x3ysxxGDHBf00/s/nMUPoWxxLvs8FwoestNcKA0ujwnqwcG/4ZyQ0f5FcCDieuDRQNkC
-         uEVy/uQgvIxxhGyKofDgNF+8FXmpI8SfoaBqtyerD/NwAl2kJJQf6s0FOFhrxW+IDqs4
-         vbkegF3NlvkROTGReHHpanIl0Hs7vPBwEJTpch37KtUSdqYR+7NSCHSzfphI2nkMsAYR
-         MBMAxZUX+O0cJ8IBDpCeAWWKkN59Zt6yB7YimTU276QaGRZoQGvpHZyLzYqhMwmS63R0
-         YI2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=6uc7ZLqzr9oyVU4hbwFSRyKi3sFmVrBfBXorh1eNGEA=;
-        b=XVbYYGzxTVlWP79MC2GEYnU4AbJdKufShRiEJQqopRcIVvWVdepU268LcrtIoke6li
-         kAO8irvyxgGGbyyE4UGRXoM/NJktUxbJjZ8yMZlbvyo47gkDeUPsuDsVwwoC1jAQ7itg
-         YJfIW8z66vXl67p4M979mBbPpheX4Hx8jpaPimIfRUBGkTkiznHQOj7XKW87G7dcql8y
-         LXRO31fvOq665gisNr74ZFn9dRAU87X14xRjZJ+oEZ4O2xvczq022To/0LvUi+LyNIRU
-         ACya3KtFog0ndWSv4TK18tQFxcgPcfRCuyqJvsxJDnxBxWFzRQPur8FMLKNsFVlerQa/
-         Bchg==
-X-Gm-Message-State: AOAM530SLDPzFoL0jHnKBuqtD1KRrqEWdO1WNNQ3UqEl5PzGKKONPnzR
-        MdSBLnHs69HfbhzozDDfeJtZEZcL9PzjFrKviio=
-X-Google-Smtp-Source: ABdhPJzGaieQ6MZgiNyXIW04eO8Ne+Y0K0jSiE+cKMV1SV2mjmeHFdgilfGi5zMqufWZUY5o2g/uoghZ3ShEg81gf1k=
-Sender: "samitolvanen via sendgmr" 
-        <samitolvanen@samitolvanen1.mtv.corp.google.com>
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:a25:884:: with SMTP id
- 126mr26559330ybi.154.1606779287851; Mon, 30 Nov 2020 15:34:47 -0800 (PST)
-Date:   Mon, 30 Nov 2020 15:34:41 -0800
-In-Reply-To: <20201130233442.2562064-1-samitolvanen@google.com>
-Message-Id: <20201130233442.2562064-2-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20201130233442.2562064-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v3 1/2] scs: switch to vmapped shadow stacks
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 30 Nov 2020 18:35:23 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606779281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cWqrd7D5KtHqCCDcNt0m/1cG6lF+gTcc+y6LmaQsPCs=;
+        b=Q8eS/aywmVHlVBwJ9CSF95kC2S+nvgXhRKulapBPDkZZrkvJime3JM+lT9XlKeTWDQjA7o
+        lTIgounmEbPlRArtLHND9DmYVneO3P72XYr+hxC907ZtPR7VC/KTnEosgyD9YykIqegz7P
+        vvs/A+yUbkqsquF4KtTlkLgrd6iuZEcjCNFch+08KwwKGN5/vldDgWwRowbnJ6CzRt0iUR
+        JW5q1J5sI7zQ8CAym6UZ6VNPatGbCgnF365+hGukU8cNL17NCovap0oU9EEi1cAbSgEeYS
+        wJU7vxyNxch5qeuwK+ACGtcrVCRAiB9kqiz9fN/IevfRhmMBi4QPYBt5enIAfA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606779281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cWqrd7D5KtHqCCDcNt0m/1cG6lF+gTcc+y6LmaQsPCs=;
+        b=knVZEamVvMEGLGFFzdQ4PlG3kA9f3hvR0z1vcoYZyPFK8/0KRTDWk51OdIvKECD6f6dwxL
+        vjUfc6uYhDWomsDg==
+To:     =?utf-8?Q?Lauren=C8=9Biu?= Nicola <lnicola@dend.ro>
+Cc:     mingo@kernel.org, bp@alien8.de, x86@kernel.org, trivial@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH] x86/irq: Lower unhandled irq error severity
+In-Reply-To: <96085c8a-b144-4fd3-b1fb-45763b5b64a4@www.fastmail.com>
+References: <20201126074734.12664-1-lnicola@dend.ro> <875z5rk68z.fsf@nanos.tec.linutronix.de> <ea40c3e8-0be1-4783-ba1e-86c96cf8e4af@www.fastmail.com> <87lfeiiy10.fsf@nanos.tec.linutronix.de> <96085c8a-b144-4fd3-b1fb-45763b5b64a4@www.fastmail.com>
+Date:   Tue, 01 Dec 2020 00:34:41 +0100
+Message-ID: <87tut6h10u.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel currently uses kmem_cache to allocate shadow call stacks,
-which means an overflows may not be immediately detected and can
-potentially result in another task's shadow stack to be overwritten.
+On Mon, Nov 30 2020 at 19:22, Lauren=C8=9Biu Nicola wrote:
+> On Mon, Nov 30, 2020, at 18:56, Thomas Gleixner wrote:
+>> > That's right, sorry. It still boots, but it's no longer "quiet",
+>> > that's what I meant.
+>>=20
+>> Right, but surpressing that is not a solution.
+>
+> I'm just downgrading it from "emergency" to "error". It will still be
+> displayed for most users snd anyone looking in dmesg. But I'm unlikely
+> to convince my motherboard manufacturer to fix this in the BIOS, and
+> the errors are basically unactionable and uninformative (unlike say
+> "can't set up page mappings" or "your CPU might be on fire" which
+> would really imply a crash soon).
 
-This change switches SCS to use virtually mapped shadow stacks for
-tasks, which increases shadow stack size to a full page and provides
-more robust overflow detection, similarly to VMAP_STACK.
+The point is that for some cases this can result in a non working
+machine which just hangs and if it's below the usual loglevel cutoff,
+then it's not visible, which is more annoying than a non-quiet boot if
+you're affected.
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Acked-by: Will Deacon <will@kernel.org>
----
- include/linux/scs.h | 12 ++++----
- kernel/scs.c        | 71 ++++++++++++++++++++++++++++++++++++++-------
- 2 files changed, 66 insertions(+), 17 deletions(-)
+We are looking into a way to mitigate that AMD wreckage, but so far we
+don't even know where exactly this comes from. The reason why we are
+pretty sure that it is a BIOS/Firmware issue is that some people
+reported it to be gone after a BIOS update and quite some machines do
+not have this issue at all.
 
-diff --git a/include/linux/scs.h b/include/linux/scs.h
-index 6dec390cf154..2a506c2a16f4 100644
---- a/include/linux/scs.h
-+++ b/include/linux/scs.h
-@@ -15,12 +15,8 @@
- 
- #ifdef CONFIG_SHADOW_CALL_STACK
- 
--/*
-- * In testing, 1 KiB shadow stack size (i.e. 128 stack frames on a 64-bit
-- * architecture) provided ~40% safety margin on stack usage while keeping
-- * memory allocation overhead reasonable.
-- */
--#define SCS_SIZE		SZ_1K
-+#define SCS_ORDER		0
-+#define SCS_SIZE		(PAGE_SIZE << SCS_ORDER)
- #define GFP_SCS			(GFP_KERNEL | __GFP_ZERO)
- 
- /* An illegal pointer value to mark the end of the shadow stack. */
-@@ -33,6 +29,8 @@
- #define task_scs(tsk)		(task_thread_info(tsk)->scs_base)
- #define task_scs_sp(tsk)	(task_thread_info(tsk)->scs_sp)
- 
-+void *scs_alloc(int node);
-+void scs_free(void *s);
- void scs_init(void);
- int scs_prepare(struct task_struct *tsk, int node);
- void scs_release(struct task_struct *tsk);
-@@ -61,6 +59,8 @@ static inline bool task_scs_end_corrupted(struct task_struct *tsk)
- 
- #else /* CONFIG_SHADOW_CALL_STACK */
- 
-+static inline void *scs_alloc(int node) { return NULL; }
-+static inline void scs_free(void *s) {}
- static inline void scs_init(void) {}
- static inline void scs_task_reset(struct task_struct *tsk) {}
- static inline int scs_prepare(struct task_struct *tsk, int node) { return 0; }
-diff --git a/kernel/scs.c b/kernel/scs.c
-index 4ff4a7ba0094..e2a71fc82fa0 100644
---- a/kernel/scs.c
-+++ b/kernel/scs.c
-@@ -5,26 +5,49 @@
-  * Copyright (C) 2019 Google LLC
-  */
- 
-+#include <linux/cpuhotplug.h>
- #include <linux/kasan.h>
- #include <linux/mm.h>
- #include <linux/scs.h>
--#include <linux/slab.h>
-+#include <linux/vmalloc.h>
- #include <linux/vmstat.h>
- 
--static struct kmem_cache *scs_cache;
--
- static void __scs_account(void *s, int account)
- {
--	struct page *scs_page = virt_to_page(s);
-+	struct page *scs_page = vmalloc_to_page(s);
- 
- 	mod_node_page_state(page_pgdat(scs_page), NR_KERNEL_SCS_KB,
- 			    account * (SCS_SIZE / SZ_1K));
- }
- 
--static void *scs_alloc(int node)
-+/* Matches NR_CACHED_STACKS for VMAP_STACK */
-+#define NR_CACHED_SCS 2
-+static DEFINE_PER_CPU(void *, scs_cache[NR_CACHED_SCS]);
-+
-+static void *__scs_alloc(int node)
- {
--	void *s = kmem_cache_alloc_node(scs_cache, GFP_SCS, node);
-+	int i;
-+	void *s;
-+
-+	for (i = 0; i < NR_CACHED_SCS; i++) {
-+		s = this_cpu_xchg(scs_cache[i], NULL);
-+		if (s) {
-+			kasan_unpoison_vmalloc(s, SCS_SIZE);
-+			memset(s, 0, SCS_SIZE);
-+			return s;
-+		}
-+	}
-+
-+	return __vmalloc_node_range(SCS_SIZE, 1, VMALLOC_START, VMALLOC_END,
-+				    GFP_SCS, PAGE_KERNEL, 0, node,
-+				    __builtin_return_address(0));
-+}
- 
-+void *scs_alloc(int node)
-+{
-+	void *s;
-+
-+	s = __scs_alloc(node);
- 	if (!s)
- 		return NULL;
- 
-@@ -34,21 +57,47 @@ static void *scs_alloc(int node)
- 	 * Poison the allocation to catch unintentional accesses to
- 	 * the shadow stack when KASAN is enabled.
- 	 */
--	kasan_poison_object_data(scs_cache, s);
-+	kasan_poison_vmalloc(s, SCS_SIZE);
- 	__scs_account(s, 1);
- 	return s;
- }
- 
--static void scs_free(void *s)
-+void scs_free(void *s)
- {
-+	int i;
-+
- 	__scs_account(s, -1);
--	kasan_unpoison_object_data(scs_cache, s);
--	kmem_cache_free(scs_cache, s);
-+
-+	/*
-+	 * We cannot sleep as this can be called in interrupt context,
-+	 * so use this_cpu_cmpxchg to update the cache, and vfree_atomic
-+	 * to free the stack.
-+	 */
-+
-+	for (i = 0; i < NR_CACHED_SCS; i++)
-+		if (this_cpu_cmpxchg(scs_cache[i], 0, s) == NULL)
-+			return;
-+
-+	vfree_atomic(s);
-+}
-+
-+static int scs_cleanup(unsigned int cpu)
-+{
-+	int i;
-+	void **cache = per_cpu_ptr(scs_cache, cpu);
-+
-+	for (i = 0; i < NR_CACHED_SCS; i++) {
-+		vfree(cache[i]);
-+		cache[i] = NULL;
-+	}
-+
-+	return 0;
- }
- 
- void __init scs_init(void)
- {
--	scs_cache = kmem_cache_create("scs_cache", SCS_SIZE, 0, 0, NULL);
-+	cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "scs:scs_cache", NULL,
-+			  scs_cleanup);
- }
- 
- int scs_prepare(struct task_struct *tsk, int node)
--- 
-2.29.2.454.gaff20da3a2-goog
+Just for completeness sake. Can you provide the line in /proc/interrupts
+for irq 7 on that machine?
 
+Thanks,
+
+        tglx
