@@ -2,62 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE97A2C8211
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC222C820E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728687AbgK3KXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:23:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59509 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727991AbgK3KXB (ORCPT
+        id S1728660AbgK3KWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:22:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727571AbgK3KWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:23:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606731695;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AD2cHtU+nv97QOLLerTjSbz8BIGM/wyOf+Qai5nwNQE=;
-        b=bBp6x9G7syyTym0v2WTXlbkejTm8EIlg1oAu4lDp1xL+zZagRPPr6uhoWHw6IMmqkfQKMA
-        Hb49t7+B76Zd3BjsZdq6rztmsaXMbn1Ysx6CB32OA1GDUsnMnm0h3PbEdB6gZx/lirvo9N
-        kkn4gsZaglIXAQcX0hPH63SbLDY56Ys=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-1o6NwjXwMqWdAqkgnQxPyg-1; Mon, 30 Nov 2020 05:21:31 -0500
-X-MC-Unique: 1o6NwjXwMqWdAqkgnQxPyg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF1911842141;
-        Mon, 30 Nov 2020 10:21:29 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0993B60657;
-        Mon, 30 Nov 2020 10:21:27 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201109135650.31831-1-dawning.pang@gmail.com>
-References: <20201109135650.31831-1-dawning.pang@gmail.com>
-To:     Dawning <dawning.pang@gmail.com>
-Cc:     dhowells@redhat.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, tianjia.zhang@linux.alibaba.com,
-        gilad@benyossef.com, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] include: crypto - remove the unused include
+        Mon, 30 Nov 2020 05:22:25 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A3DC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:21:44 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a6so4316171wmc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:21:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fClK9dYPgSK1URS64wSbMulejn6T5yvpN8jKUjDOmSs=;
+        b=VDQYTXZA9JFPGhZ+UKdSNhvFmqlc/Lc5kkB3FkebjR6HzNooh88aluRs6YSmHfsBcI
+         Kgxj1m8crgwwpPEWkBssWVhXvuL54FcDlf/uu65aH9JbMQ7Zdk7ObiptMwd+/TcbfX6v
+         cHD1y9SFGO1h3i/lY4cKPEv8xUiFGYTnRhd0Vhvtl6JZ0WzYrGWYHbcvgUk75FtfJZU8
+         0m4QsIF7NpfLKUdoiwnYdjV2s/PV75ReEQOIEmZUvJOFBFfS5mqIBglFGsQP51cMOO9o
+         AoXAwFIiwF2AOyfdXvfs7jy3cq5K2R0luMhl+t32By/ye7m0I06pkouc9hgDpFL4b/4M
+         hwtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fClK9dYPgSK1URS64wSbMulejn6T5yvpN8jKUjDOmSs=;
+        b=R1nGZF4TFps14+S6ijiVNSS5PoknqxO1DA8VDPF0wtA5HCFdAb2y+2BrUnV/D1fiyx
+         xkqsTRR6UQglgfGihcB/5gcfqP/9ggkssn/FTYQjGYqhBx1Z/iLnqPt9FXgSw2svxUnd
+         hOVIcyLHNNX/IqQwI0s03atpJkAhcoBeUxyEqC7irvLTUb/b2ePtNGHVySo9hVo20fjD
+         7B+D6Gn9cZPA0HMzBYXrEfPZ+nClbbUKQFxWBI4ASdogiEsR8NayBhVmAMTC/3aR0Vsp
+         fNAlboZls05Zxk2xjrlJeIT8aOqA0xa2LCXyaB630eUB3sr7LbaQwMyqHhZeMPGOOIDh
+         Lopg==
+X-Gm-Message-State: AOAM533fVzPS2tDsdWAJ1/eblTyWBiCzxFO/aWp7FRdioT9Q4q3KdtCa
+        2/YczvhdXAlN9aAHi0AnFDcm1vEgJH6JizobHq+PHQ==
+X-Google-Smtp-Source: ABdhPJzib+BpTbU31xlUoWNFiPqoHFb5TY4jwtgOrWeTXAM7S/LG4dEzhQ2uSNYnr4smOgLLxmVzcrTTZd50LNIwqzU=
+X-Received: by 2002:a1c:1fc2:: with SMTP id f185mr4115261wmf.134.1606731703433;
+ Mon, 30 Nov 2020 02:21:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3102891.1606731687.1@warthog.procyon.org.uk>
-Date:   Mon, 30 Nov 2020 10:21:27 +0000
-Message-ID: <3102892.1606731687@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20201109113240.3733496-1-anup.patel@wdc.com> <20201109113240.3733496-11-anup.patel@wdc.com>
+ <186ade3c372b44ef8ca1830da8c5002b@huawei.com> <CAAhSdy1sx_oLGGoGjzr5ZrPStwCyFF4mBDEBw5zpsbSGcCRJjg@mail.gmail.com>
+In-Reply-To: <CAAhSdy1sx_oLGGoGjzr5ZrPStwCyFF4mBDEBw5zpsbSGcCRJjg@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 30 Nov 2020 15:51:31 +0530
+Message-ID: <CAAhSdy13nQqzfK-Voz-aBtGzEfjw_0V1fOrydijc3FLWy_W4nw@mail.gmail.com>
+Subject: Re: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table programming
+To:     Jiangyifei <jiangyifei@huawei.com>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Alexander Graf <graf@amazon.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>,
+        "Wubin (H)" <wu.wubin@huawei.com>,
+        "dengkai (A)" <dengkai1@huawei.com>,
+        yinyipeng <yinyipeng1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've taken Tianjia Zhang's patch for this.
+On Tue, Nov 24, 2020 at 2:56 PM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Mon, Nov 16, 2020 at 2:59 PM Jiangyifei <jiangyifei@huawei.com> wrote:
+> >
+> >
+> > > -----Original Message-----
+> > > From: Anup Patel [mailto:anup.patel@wdc.com]
+> > > Sent: Monday, November 9, 2020 7:33 PM
+> > > To: Palmer Dabbelt <palmer@dabbelt.com>; Palmer Dabbelt
+> > > <palmerdabbelt@google.com>; Paul Walmsley <paul.walmsley@sifive.com>;
+> > > Albert Ou <aou@eecs.berkeley.edu>; Paolo Bonzini <pbonzini@redhat.com>
+> > > Cc: Alexander Graf <graf@amazon.com>; Atish Patra <atish.patra@wdc.com>;
+> > > Alistair Francis <Alistair.Francis@wdc.com>; Damien Le Moal
+> > > <damien.lemoal@wdc.com>; Anup Patel <anup@brainfault.org>;
+> > > kvm@vger.kernel.org; kvm-riscv@lists.infradead.org;
+> > > linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Anup Patel
+> > > <anup.patel@wdc.com>; Jiangyifei <jiangyifei@huawei.com>
+> > > Subject: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table
+> > > programming
+> > >
+> > > This patch implements all required functions for programming the stage2 page
+> > > table for each Guest/VM.
+> > >
+> > > At high-level, the flow of stage2 related functions is similar from KVM
+> > > ARM/ARM64 implementation but the stage2 page table format is quite
+> > > different for KVM RISC-V.
+> > >
+> > > [jiangyifei: stage2 dirty log support]
+> > > Signed-off-by: Yifei Jiang <jiangyifei@huawei.com>
+> > > Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> > > Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+> > > Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> > > ---
+> > >  arch/riscv/include/asm/kvm_host.h     |  12 +
+> > >  arch/riscv/include/asm/pgtable-bits.h |   1 +
+> > >  arch/riscv/kvm/Kconfig                |   1 +
+> > >  arch/riscv/kvm/main.c                 |  19 +
+> > >  arch/riscv/kvm/mmu.c                  | 649
+> > > +++++++++++++++++++++++++-
+> > >  arch/riscv/kvm/vm.c                   |   6 -
+> > >  6 files changed, 672 insertions(+), 16 deletions(-)
+> > >
+> >
+> > ......
+> >
+> > >
+> > >  int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu, @@ -69,27 +562,163 @@
+> > > int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+> > >                        gpa_t gpa, unsigned long hva,
+> > >                        bool writeable, bool is_write)
+> > >  {
+> > > -     /* TODO: */
+> > > -     return 0;
+> > > +     int ret;
+> > > +     kvm_pfn_t hfn;
+> > > +     short vma_pageshift;
+> > > +     gfn_t gfn = gpa >> PAGE_SHIFT;
+> > > +     struct vm_area_struct *vma;
+> > > +     struct kvm *kvm = vcpu->kvm;
+> > > +     struct kvm_mmu_page_cache *pcache = &vcpu->arch.mmu_page_cache;
+> > > +     bool logging = (memslot->dirty_bitmap &&
+> > > +                     !(memslot->flags & KVM_MEM_READONLY)) ? true : false;
+> > > +     unsigned long vma_pagesize;
+> > > +
+> > > +     mmap_read_lock(current->mm);
+> > > +
+> > > +     vma = find_vma_intersection(current->mm, hva, hva + 1);
+> > > +     if (unlikely(!vma)) {
+> > > +             kvm_err("Failed to find VMA for hva 0x%lx\n", hva);
+> > > +             mmap_read_unlock(current->mm);
+> > > +             return -EFAULT;
+> > > +     }
+> > > +
+> > > +     if (is_vm_hugetlb_page(vma))
+> > > +             vma_pageshift = huge_page_shift(hstate_vma(vma));
+> > > +     else
+> > > +             vma_pageshift = PAGE_SHIFT;
+> > > +     vma_pagesize = 1ULL << vma_pageshift;
+> > > +     if (logging || (vma->vm_flags & VM_PFNMAP))
+> > > +             vma_pagesize = PAGE_SIZE;
+> > > +
+> > > +     if (vma_pagesize == PMD_SIZE || vma_pagesize == PGDIR_SIZE)
+> > > +             gfn = (gpa & huge_page_mask(hstate_vma(vma))) >> PAGE_SHIFT;
+> > > +
+> > > +     mmap_read_unlock(current->mm);
+> > > +
+> > > +     if (vma_pagesize != PGDIR_SIZE &&
+> > > +         vma_pagesize != PMD_SIZE &&
+> > > +         vma_pagesize != PAGE_SIZE) {
+> > > +             kvm_err("Invalid VMA page size 0x%lx\n", vma_pagesize);
+> > > +             return -EFAULT;
+> > > +     }
+> > > +
+> > > +     /* We need minimum second+third level pages */
+> > > +     ret = stage2_cache_topup(pcache, stage2_pgd_levels,
+> > > +                              KVM_MMU_PAGE_CACHE_NR_OBJS);
+> > > +     if (ret) {
+> > > +             kvm_err("Failed to topup stage2 cache\n");
+> > > +             return ret;
+> > > +     }
+> > > +
+> > > +     hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
+> > > +     if (hfn == KVM_PFN_ERR_HWPOISON) {
+> > > +             send_sig_mceerr(BUS_MCEERR_AR, (void __user *)hva,
+> > > +                             vma_pageshift, current);
+> > > +             return 0;
+> > > +     }
+> > > +     if (is_error_noslot_pfn(hfn))
+> > > +             return -EFAULT;
+> > > +
+> > > +     /*
+> > > +      * If logging is active then we allow writable pages only
+> > > +      * for write faults.
+> > > +      */
+> > > +     if (logging && !is_write)
+> > > +             writeable = false;
+> > > +
+> > > +     spin_lock(&kvm->mmu_lock);
+> > > +
+> > > +     if (writeable) {
+> >
+> > Hi Anup,
+> >
+> > What is the purpose of "writable = !memslot_is_readonly(slot)" in this series?
+>
+> Where ? I don't see this line in any of the patches.
+>
+> >
+> > When mapping the HVA to HPA above, it doesn't know that the PTE writeable of stage2 is "!memslot_is_readonly(slot)".
+> > This may causes the difference between the writability of HVA->HPA and GPA->HPA.
+> > For example, GPA->HPA is writeable, but HVA->HPA is not writeable.
+>
+> Yes, this is possible particularly when Host kernel is updating writability
+> of HVA->HPA mappings for swapping in/out pages.
+>
+> >
+> > Is it better that the writability of HVA->HPA is also determined by whether the memslot is readonly in this change?
+> > Like this:
+> > -    hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
+> > +    hfn = gfn_to_pfn_prot(kvm, gfn, writeable, NULL);
+>
+> The gfn_to_pfn_prot() needs to know what type of fault we
+> got (i.e read/write fault). Rest of the information (such as whether
+> slot is writable or not) is already available to gfn_to_pfn_prot().
+>
+> The question here is should we pass "&writeable" or NULL as
+> last parameter to gfn_to_pfn_prot(). The recent JUMP label
+> support in Linux RISC-V causes problem on HW where PTE
+> 'A' and 'D' bits are not updated by HW so I have to change
+> last parameter of gfn_to_pfn_prot() from "&writeable" to NULL.
+>
+> I am still investigating this.
 
-Thanks,
-David
+This turned-out to be a bug in Spike which is not fixed.
 
+I will include following change in v16 patch series:
+
+
+diff --git a/arch/riscv/include/asm/kvm_host.h
+b/arch/riscv/include/asm/kvm_host.h
+index 241030956d47..dc2666b4180b 100644
+--- a/arch/riscv/include/asm/kvm_host.h
++++ b/arch/riscv/include/asm/kvm_host.h
+@@ -232,8 +232,7 @@ void __kvm_riscv_hfence_gvma_all(void);
+
+ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+              struct kvm_memory_slot *memslot,
+-             gpa_t gpa, unsigned long hva,
+-             bool writeable, bool is_write);
++             gpa_t gpa, unsigned long hva, bool is_write);
+ void kvm_riscv_stage2_flush_cache(struct kvm_vcpu *vcpu);
+ int kvm_riscv_stage2_alloc_pgd(struct kvm *kvm);
+ void kvm_riscv_stage2_free_pgd(struct kvm *kvm);
+diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
+index fcaeadc9b34d..56fda9ef70fd 100644
+--- a/arch/riscv/kvm/mmu.c
++++ b/arch/riscv/kvm/mmu.c
+@@ -689,11 +689,11 @@ int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
+
+ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+              struct kvm_memory_slot *memslot,
+-             gpa_t gpa, unsigned long hva,
+-             bool writeable, bool is_write)
++             gpa_t gpa, unsigned long hva, bool is_write)
+ {
+     int ret;
+     kvm_pfn_t hfn;
++    bool writeable;
+     short vma_pageshift;
+     gfn_t gfn = gpa >> PAGE_SHIFT;
+     struct vm_area_struct *vma;
+@@ -742,7 +742,7 @@ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+
+     mmu_seq = kvm->mmu_notifier_seq;
+
+-    hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
++    hfn = gfn_to_pfn_prot(kvm, gfn, is_write, &writeable);
+     if (hfn == KVM_PFN_ERR_HWPOISON) {
+         send_sig_mceerr(BUS_MCEERR_AR, (void __user *)hva,
+                 vma_pageshift, current);
+diff --git a/arch/riscv/kvm/vcpu_exit.c b/arch/riscv/kvm/vcpu_exit.c
+index f054406792a6..058cfa168abe 100644
+--- a/arch/riscv/kvm/vcpu_exit.c
++++ b/arch/riscv/kvm/vcpu_exit.c
+@@ -445,7 +445,7 @@ static int stage2_page_fault(struct kvm_vcpu
+*vcpu, struct kvm_run *run,
+         };
+     }
+
+-    ret = kvm_riscv_stage2_map(vcpu, memslot, fault_addr, hva, writeable,
++    ret = kvm_riscv_stage2_map(vcpu, memslot, fault_addr, hva,
+         (trap->scause == EXC_STORE_GUEST_PAGE_FAULT) ? true : false);
+     if (ret < 0)
+         return ret;
+
+Regards,
+Anup
