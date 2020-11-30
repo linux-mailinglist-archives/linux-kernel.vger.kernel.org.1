@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6276F2C8CA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03B92C8CAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387959AbgK3SYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:24:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727125AbgK3SYE (ORCPT
+        id S2388100AbgK3SYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:24:19 -0500
+Received: from relay06.th.seeweb.it ([5.144.164.167]:55127 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726977AbgK3SYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:24:04 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97833C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:23:18 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id u19so23507328lfr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:23:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3wsPs7gnC3/t/rTahaWNN74dCjJuviyFHSHKHhvgoAY=;
-        b=T3JHFa6MTkq+VOk0GAbb3Hdo++K9Cf6gCbjyoUak9gPGSfjnbUXNChVlLfPmr6VD80
-         sx+p1+g3CNmEyeSgqaqqDxjcC3VE6QGe9DAfNtjRjGt8UgxptHZBv2aWCdpfx1MX9Bof
-         wglxUVF2HbnRMwq1on9b36hH9zdcb3fjSSpE4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3wsPs7gnC3/t/rTahaWNN74dCjJuviyFHSHKHhvgoAY=;
-        b=UwS74kIgtmL73swKh4nwGQkHaRt0KPngTDtY7p+PDMtkj0pnjKCdx7e87ggSVH+9S2
-         AN//AGxRLRYSHE+vzcd/yPP43RA/gOZK/9b64090ovNMhDAr9+NNCfcGFBVXvgwWuk/1
-         Huk1ByvUrekJG+NSjY+19RSqgW4cGGUHw7GPl36lbhGxVlTD0P20l4v9tWMC1Ur4PWZW
-         pdUINAgC/i//OQ1jvSTmz74gJ4cxptaVFfuaOSffQe/l64FW3+Kg6ofo8gmtHedx8nyJ
-         RJOeqvexVaacq9VzZZZV+2oeEhZ0UCYVF3SpoLRjIOLDHnG6mQq2S5DiWaAIJOk0Uvji
-         Sykw==
-X-Gm-Message-State: AOAM531E4EJtMq7nVW/Z+0/+4qbLNv7vbVTb7Hkt2vcLUap9XCoRetA+
-        JSjgUMJNOP7r5SIbSGId+RDNc2llyW2osw==
-X-Google-Smtp-Source: ABdhPJxrTM2qbC0NHwmpg9XeUjY6z1nk1ToAa6Vvb1ur54CWdJy5WzHYfvpTZHPJFygSe/yFXv+Ugw==
-X-Received: by 2002:a19:857:: with SMTP id 84mr10935359lfi.235.1606760596601;
-        Mon, 30 Nov 2020 10:23:16 -0800 (PST)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id u21sm2611948lfq.90.2020.11.30.10.23.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 10:23:15 -0800 (PST)
-Received: by mail-lf1-f49.google.com with SMTP id d8so23521663lfa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:23:15 -0800 (PST)
-X-Received: by 2002:a19:c301:: with SMTP id t1mr9587473lff.105.1606760594943;
- Mon, 30 Nov 2020 10:23:14 -0800 (PST)
+        Mon, 30 Nov 2020 13:24:19 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 2858E40266;
+        Mon, 30 Nov 2020 19:23:21 +0100 (CET)
+Subject: Re: [PATCH 11/13] dt-bindings: cpufreq: Convert qcom-cpufreq-hw to
+ YAML binding
+To:     Rob Herring <robh@kernel.org>
+Cc:     viresh.kumar@linaro.org, rjw@rjwysocki.net,
+        jorge.ramirez-ortiz@linaro.org, robh+dt@kernel.org,
+        konrad.dybcio@somainline.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ulf.hansson@linaro.org,
+        nks@flawful.org, lgirdwood@gmail.com, daniel.lezcano@linaro.org,
+        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
+        phone-devel@vger.kernel.org, broonie@kernel.org,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org
+References: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
+ <20201126184559.3052375-12-angelogioacchino.delregno@somainline.org>
+ <20201130172305.GA2661895@robh.at.kernel.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <9fc67c3f-4753-fe4f-ca1b-7faeee2abe7d@somainline.org>
+Date:   Mon, 30 Nov 2020 19:23:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <CAK8P3a2Habmz95y+J+-4NiT5SGYhO_Fia-SHhapX-3NYRbEMmw@mail.gmail.com>
- <CAHk-=wjA2Der39e_SWZ6S-DoVCJTu-Zwf6jn2wxmGTKzNPV1Dw@mail.gmail.com>
- <CAD=FV=Vow5_jv=-O=f2v4_5Nb4DiOUB1sQUx6r=-y5A-6rP4hw@mail.gmail.com>
- <CAHk-=whtySEgkH+VFy9oW8Q-+iuivGBo0hOUcee3DvrsBAQUrA@mail.gmail.com> <CAD=FV=Up-JW8RtMLQ_pAG3e0d8NnpT+rDiguxcz3DnVUz_7Jbw@mail.gmail.com>
-In-Reply-To: <CAD=FV=Up-JW8RtMLQ_pAG3e0d8NnpT+rDiguxcz3DnVUz_7Jbw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 30 Nov 2020 10:22:58 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi2CQwAnKucLwE8vNZgXxyRy6L+DcgjGqxKHwbacKgaMQ@mail.gmail.com>
-Message-ID: <CAHk-=wi2CQwAnKucLwE8vNZgXxyRy6L+DcgjGqxKHwbacKgaMQ@mail.gmail.com>
-Subject: Re: [GIT PULL] ARM: SoC fixes for v5.10, part 3
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201130172305.GA2661895@robh.at.kernel.org>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 10:11 AM Doug Anderson <dianders@chromium.org> wrote:
->
-> So I guess the answer here is: strive very hard but you don't have to
-> guarantee that every corner case is covered?
+Il 30/11/20 18:23, Rob Herring ha scritto:
+> On Thu, 26 Nov 2020 19:45:57 +0100, AngeloGioacchino Del Regno wrote:
+>> Convert the qcom-cpufreq-hw documentation to YAML binding as
+>> qcom,cpufreq-hw.yaml.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   .../bindings/cpufreq/cpufreq-qcom-hw.txt      | 173 +---------------
+>>   .../bindings/cpufreq/qcom,cpufreq-hw.yaml     | 196 ++++++++++++++++++
+>>   2 files changed, 197 insertions(+), 172 deletions(-)
+>>   create mode 100644 Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
+>>
+> 
+> 
+> My bot found errors running 'make dt_binding_check' on your patch:
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: properties:clock-names: [{'const': 'xo'}, {'const': 'ref'}] is not of type 'object', 'boolean'
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: maintainers:0: 'TBD' is not a 'email'
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: ignoring, error in schema: properties: clock-names
+> warning: no schema found in file: ./Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
+> Error: Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.example.dts:150.3-151.1 syntax error
+> FATAL ERROR: Unable to parse input tree
+> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.example.dt.yaml] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1364: dt_binding_check] Error 2
+> 
+> 
+> See https://patchwork.ozlabs.org/patch/1406857
+> 
+> The base for the patch is generally the last rc1. Any dependencies
+> should be noted.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
+> 
 
-Yes. Covering every possible theoretical case is basically impossible.
-I mean, it can be something like "the firmware glitched for whatever
-reason, and didn't set up a device, and it didn't show up at boot at
-all until you did something explicit".
+Hello!
+All the errors that you've pointed out have been fixed on both the CPR,
+CPR3 and cpufreq-hw, but before pushing a V2 of this patch series...
 
-(Example: airplane mode wireless switches, but also possibly things
-like just slightly unreliable USB hubs etc - I bet we've all seen
-those).
+Well, I have a question: the qcom-cpufreq-hw driver has no MAINTAINERS
+entry and there was no maintainer for this driver specified in the old
+txt format binding.
 
-So the rule should be that you strive very hard to make boots have
-reproducible behavior as far as practically necessary, and avoid
-obvious timing-induced ordering issues.
+What should I write in the "maintainers" field of the YAML binding for
+this driver?
+Should I assign it to the subsystem maintainer?
 
-> In a traditional PC I think there are fewer dependencies?
-
-I'd say that they were "different", not necessarily "fewer".
-
-> I guess the question is: why is static assignment of numbers not an
-> acceptable solution to the problem?  It gives us the desired fixed
-> numbers and automatically avoids all weird probe ordering / dependency
-> problems.
-
-I think that if this had been done originally, it would probably be fine.
-
-But I still have this - possibly unreasonable - expectation that the
-promise of DT was that it wouldn't be 1:1 tied to the kernel all the
-time. That was always the promise, after all.
-
-So the whole "add DT markers because the subsystem now screws up
-ordering" smells really bad to me.
-
-             Linus
+Thanks,
+- Angelo
