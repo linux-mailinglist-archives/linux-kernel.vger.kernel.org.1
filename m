@@ -2,105 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE802C8620
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A348A2C861C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbgK3OB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:01:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55448 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726822AbgK3OBz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:01:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606744829;
+        id S1727378AbgK3OBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:01:06 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:45154 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726932AbgK3OBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 09:01:05 -0500
+Received: from zn.tnic (p200300ec2f0c0400b0063e9f0046aa3d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:400:b006:3e9f:46:aa3d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E46041EC04A9;
+        Mon, 30 Nov 2020 15:00:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606744823;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z1V5TP+t4YgIIKSdanYDtXXCORZzAdrzBJD0xz3ZJJ4=;
-        b=SuHIjvdeFRWWvfKZjk2vgFB2VaI92+X7aOVamwDnXIZ1Va0LvI9ci4m4WIXrgem1WRVnel
-        WmiYMtO2pzJwzRf7gztzj1P9CqghTaKu3uqiP58nr4njV17AKDw1yNuC+GXOOwPDi1Frfo
-        csq5zGwH28BtTS0NBbcrFUD2fqqVJ+M=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-259-20lmt-NTPEqYINshFkpYcA-1; Mon, 30 Nov 2020 09:00:21 -0500
-X-MC-Unique: 20lmt-NTPEqYINshFkpYcA-1
-Received: by mail-ej1-f72.google.com with SMTP id t4so4119317eju.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:00:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Z1V5TP+t4YgIIKSdanYDtXXCORZzAdrzBJD0xz3ZJJ4=;
-        b=PjsfncGkj0M84PIFH4BURma5PGv8b/fipjS4NgW4MwSnxg8p10ld38LHDfh9G1Kocq
-         t5kPqF7WOXamGhFqJhpkryf2vihs6gRw+gItUtvBiTPFcq5ycdpFAiGWnizHXBP/DmnN
-         tTsTV9e21r2i0GKuI3x/zvy2glk2Is6WjSl9YrsKSKP5Jm0+0W8kBuWPpuD8Eoq2+De9
-         xZuen4VeuWkhj+n0GXcAEXNjxsfKcJS7DLb1DH93fp2FozTYEZWL6aZc6rogSyIupArg
-         8zE/9EXqKkA3L7p09rQRnzqCSf82hIg8YLNSxHbNJ2HsL6gKgzckSySOVGOH07pSLcfU
-         TTMA==
-X-Gm-Message-State: AOAM533n55Iqmj5Rq+fCallXoyCw+EoMm4iS40B2XqaGLEzXjDI2ZmYZ
-        PKfbe8Wq7cYPsT5MUuGCNGsmGXB7d2K4lSacedqILzbahXtukY4FttNNUPfkV5VEN/nDOf5jwa/
-        jfmMIN2jJibGuQxOZ2sfImib4
-X-Received: by 2002:a17:906:e093:: with SMTP id gh19mr16467838ejb.510.1606744817460;
-        Mon, 30 Nov 2020 06:00:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxPMhCAxuB2B/TcTZz4LyxRjBTd2O6WcbKZeK0qo3nFya2kmMSturj18lyD86gg2TrlnvR3iQ==
-X-Received: by 2002:a17:906:e093:: with SMTP id gh19mr16467362ejb.510.1606744815303;
-        Mon, 30 Nov 2020 06:00:15 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f25sm8943114edr.53.2020.11.30.06.00.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 06:00:14 -0800 (PST)
-Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20201125153550.810101-22-sashal@kernel.org>
- <25cd0d64-bffc-9506-c148-11583fed897c@redhat.com>
- <20201125180102.GL643756@sasha-vm>
- <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
- <20201129041314.GO643756@sasha-vm>
- <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
- <20201129210650.GP643756@sasha-vm>
- <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
- <X8TzeoIlR3G5awC6@kroah.com>
- <17481d8c-c19d-69e3-653d-63a9efec2591@redhat.com>
- <X8T6RWHOhgxW3tRK@kroah.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8809319f-7c5b-1e85-f77c-bbc3f22951e4@redhat.com>
-Date:   Mon, 30 Nov 2020 15:00:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Xj2jygsCeX42+vFyods3vwWNbd1IGvv+nMyXKR9Pfz0=;
+        b=Tsy7npY3a8YC+RV/vZhRSz8qTprIVhuW0z/j3J5RdqdoEtYTpYYYvyG2W2fw0Ub4jA/4Te
+        6JKLJ6MFeF2mkrzMFHe83MYBafaVxcrGhJhyWobyIgfhQz89XB98OeXji+bqwIQkLPhEHB
+        3ZkN/7HSMe7PyMkP+h9ylm6JG6edChQ=
+Date:   Mon, 30 Nov 2020 15:00:18 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     rjw@rjwysocki.net, wei.huang2@amd.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [RFC PATCH 3/4] x86/cpu: amd: Define processor families
+Message-ID: <20201130140018.GC6019@zn.tnic>
+References: <20201125144847.3920-1-punitagrawal@gmail.com>
+ <20201125144847.3920-4-punitagrawal@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <X8T6RWHOhgxW3tRK@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201125144847.3920-4-punitagrawal@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/20 14:57, Greg KH wrote:
->> Every patch should be "fixing a real issue"---even a new feature.  But the
->> larger the patch, the more the submitters and maintainers should be trusted
->> rather than a bot.  The line between feature and bugfix_sometimes_  is
->> blurry, I would say that in this case it's not, and it makes me question how
->> the bot decided that this patch would be acceptable for stable (which AFAIK
->> is not something that can be answered).
-> I thought that earlier Sasha said that this patch was needed as a
-> prerequisite patch for a later fix, right?  If not, sorry, I've lost the
-> train of thought in this thread...
+On Wed, Nov 25, 2020 at 11:48:46PM +0900, Punit Agrawal wrote:
+> So far, the AMD processor identifier (family, models, stepping) are
+> referred to by raw values making it easy to make mistakes. It is also
+> harder to read and maintain. Additionally, these values are also being
+> used in subsystems outside the arch code where not everybody maybe be
+> as familiar with the processor identifiers.
+> 
+> As a first step towards improving the status quo, add macros for the
+> AMD processor families and propagate them through the existing
+> cpu_device_id.h header used for this purpose.
+> 
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> ---
+>  arch/x86/include/asm/amd-family.h    | 18 ++++++++++++++++++
+>  arch/x86/include/asm/cpu_device_id.h |  2 ++
+>  2 files changed, 20 insertions(+)
+>  create mode 100644 arch/x86/include/asm/amd-family.h
+> 
+> diff --git a/arch/x86/include/asm/amd-family.h b/arch/x86/include/asm/amd-family.h
+> new file mode 100644
+> index 000000000000..dff4d13b8e74
+> --- /dev/null
+> +++ b/arch/x86/include/asm/amd-family.h
+> @@ -0,0 +1,18 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_X86_AMD_FAMILY_H
+> +#define _ASM_X86_AMD_FAMILY_H
+> +
+> +#define AMD_FAM_K5			0x04
+> +#define AMD_FAM_K6			0x05
+> +#define AMD_FAM_K7			0x06
+> +#define AMD_FAM_K8			0x0F
+> +#define AMD_FAM_K10			0x10
 
-Yeah---sorry I am replying to 22/33 but referring to 23/33, which is the 
-one that in my opinion should not be blindly accepted for stable kernels 
-without the agreement of the submitter or maintainer.
+Fam 0x10 is Greyhound and a lot more core names. I'd let the AMD folks
+on Cc say what they wanna call it but I don't think K10 was used
+anywhere except outside of AMD. :)
 
-Paolo
+> +#define AMD_FAM_K8_K10_HYBRID		0x11
 
+That was called Griffin so AMD_FAM_GRIFFIN I guess. If not used anywhere
+in the tree, no need to add the define. Same holds true for the rest of
+the defines - add them only when they're used.
+
+> +#define AMD_FAM_LLANO			0x12
+> +#define AMD_FAM_BOBCAT			0x14
+> +#define AMD_FAM_BULLDOZER		0x15
+> +#define AMD_FAM_JAGUAR			0x16
+> +#define AMD_FAM_ZEN			0x17
+
+ZEN2 is also 0x17 but different models so this is where the family
+matching scheme doesn't work - you'd need the models too.
+
+0x18 is HYGON
+
+> +#define AMD_FAM_ZEN3			0x19
+> +
+> +#endif /* _ASM_X86_AMD_FAMILY_H */
+> diff --git a/arch/x86/include/asm/cpu_device_id.h b/arch/x86/include/asm/cpu_device_id.h
+> index eb8fcede9e3b..bbb48ba4c7ff 100644
+> --- a/arch/x86/include/asm/cpu_device_id.h
+> +++ b/arch/x86/include/asm/cpu_device_id.h
+> @@ -12,6 +12,8 @@
+>  #include <linux/mod_devicetable.h>
+>  /* Get the INTEL_FAM* model defines */
+>  #include <asm/intel-family.h>
+> +/* Get the AMD model defines */
+> +#include <asm/amd-family.h>
+>  /* And the X86_VENDOR_* ones */
+>  #include <asm/processor.h>
+>  
+> -- 
+> 2.29.2
+> 
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
