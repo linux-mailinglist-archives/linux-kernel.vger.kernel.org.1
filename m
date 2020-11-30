@@ -2,54 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F5E2C8963
+	by mail.lfdr.de (Postfix) with ESMTP id F1AB12C8964
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728586AbgK3QZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:25:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55216 "EHLO mail.kernel.org"
+        id S1728683AbgK3QZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:25:56 -0500
+Received: from foss.arm.com ([217.140.110.172]:57494 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgK3QZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:25:31 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AD8D206E3;
-        Mon, 30 Nov 2020 16:24:50 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 11:24:48 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH 0/3] clear_warn_once: add timed interval resetting
-Message-ID: <20201130112448.5a356ff3@gandalf.local.home>
-In-Reply-To: <X8ElwBh9tw+OLHF+@alley>
-References: <20201126063029.2030-1-paul.gortmaker@windriver.com>
-        <X8ElwBh9tw+OLHF+@alley>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725859AbgK3QZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 11:25:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E02C1042;
+        Mon, 30 Nov 2020 08:25:10 -0800 (PST)
+Received: from e121896.arm.com (unknown [10.57.27.168])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 01FC33F718;
+        Mon, 30 Nov 2020 08:25:08 -0800 (PST)
+From:   James Clark <james.clark@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Cc:     James Clark <james.clark@arm.com>, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Al Grant <al.grant@arm.com>, Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH] drivers/perf: Enable PID_IN_CONTEXTIDR with SPE
+Date:   Mon, 30 Nov 2020 18:24:54 +0200
+Message-Id: <20201130162454.28255-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 17:13:52 +0100
-Petr Mladek <pmladek@suse.com> wrote:
+Enable PID_IN_CONTEXTIDR by default when Arm SPE is enabled.
+This flag is required to get PID data in the SPE trace. Without
+it the perf tool will report 0 for PID which isn't very useful,
+especially when doing system wide profiling or profiling
+applications that fork.
 
-> I do not know. Maybe I am just too paranoid today. Anyway, there
-> are other possibilities:
+There is a small performance overhead when enabling
+PID_IN_CONTEXTIDR, but SPE itself is optional and not enabled by
+default so the impact is minimised.
 
-This is another reason I think the resolution should be in minutes and not
-seconds. It would be less of an issue if it could dump all warnings only
-once a minute than once every two seconds.
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Al Grant <al.grant@arm.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: James Clark <james.clark@arm.com>
+---
+ drivers/perf/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> + Move clear_warn_once from debugfs to a location that is always
->   available. For example, into /proc
+diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+index 130327ff0b0e..47ede46c3d57 100644
+--- a/drivers/perf/Kconfig
++++ b/drivers/perf/Kconfig
+@@ -125,6 +125,7 @@ config XGENE_PMU
+ config ARM_SPE_PMU
+ 	tristate "Enable support for the ARMv8.2 Statistical Profiling Extension"
+ 	depends on ARM64
++	select PID_IN_CONTEXTIDR
+ 	help
+ 	  Enable perf support for the ARMv8.2 Statistical Profiling
+ 	  Extension, which provides periodic sampling of operations in
+-- 
+2.28.0
 
-I was thinking of /proc/sys/ as well.
-
--- Steve
