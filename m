@@ -2,304 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8712C8E43
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD6E2C8E4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730007AbgK3Tka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:40:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729915AbgK3Tk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:40:29 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67F6820709;
-        Mon, 30 Nov 2020 19:39:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606765188;
-        bh=BWcYsJPYjLHPBXxuOJgo/q65lIh28JQBq6wuw8SzUgw=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=ti0uX6Ibl0e/PzdlzWVffXK3KCO8tUcKV3Ic2gpiV/sL5ah7pzM3WSP3Mj4YgINe7
-         ql2vsWdLcEAt6act5voW+WVOPyB1mdbfqcWnl09cspo8w+ZyLXHtveX3Igziwqq0tZ
-         jKj9CtoUAJRebGNFtGATrIpuoGEpVUnDPUnGMIAI=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 121173522B57; Mon, 30 Nov 2020 11:39:48 -0800 (PST)
-Date:   Mon, 30 Nov 2020 11:39:48 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     mingo@kernel.org
-Cc:     tglx@linutronix.de, stern@rowland.harvard.edu,
-        anna-maria@linutronix.de, b00073877@aus.edu, unixbhaskar@gmail.com,
-        foxhlchen@gmail.com, frederic@kernel.org, houtao1@huawei.com,
-        sh_def@163.com, kuba@kernel.org, joe@perches.com,
-        joel@joelfernandes.org, elver@google.com,
-        mchehab+huawei@kernel.org, neeraju@codeaurora.org,
-        peterz@infradead.org, sam.hernandez.amador@gmail.com,
-        urezki@gmail.com, zhouzhouyi@gmail.com, chao@eero.com,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: [GIT PULL tip/core/rcu] RCU, LKMM, and KCSAN commits for v5.11
-Message-ID: <20201130193948.GA21812@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S1728888AbgK3Toz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:44:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726364AbgK3Toy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 14:44:54 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EE7C0613CF;
+        Mon, 30 Nov 2020 11:44:07 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id k11so10724109pgq.2;
+        Mon, 30 Nov 2020 11:44:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aYXZYz7t8iKyLXm09G0wi2yo2X7rJ2ES4ZGNlSW38fQ=;
+        b=GoxIhQfMJRIk0oY4XBWN6+7MQWtlUQXogv4yqnRE82NdIFV2JwCP4TZTkKpIgWOpBj
+         ks6Heak+Yzhq0bSADfoMvFriJ8j/PLctPH+xq3nG2RsC8+D7aMc81DNq3WWXY5CDPCUR
+         WlMBC5XAkW19YJu2Q2+qPYCYCG1Zixr/ZigjDgYoGmhxLG0VxtbSMd+0Rj1PsHqQGWAm
+         FuulMoggcUBr14Ny6y148XFbc29qS0pj4lDwpSx2DTKA/2JMKX0GGFPBfxAasi7S3AgK
+         SX/CO+rKIQpeG0JOw3rhJjNuQvfxYWFvfagwJiizSkz6zhtVJY87iWGPK2kLN/ziBOtd
+         XCBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aYXZYz7t8iKyLXm09G0wi2yo2X7rJ2ES4ZGNlSW38fQ=;
+        b=qYlcUlhYfVA/5NEUydqxak8+SjA6QUNCy17T5R7/2kd0sy4/awOdxOmXsfaCJT+yra
+         BS6VbLJPZmxi2twCemMEwKBjgwoTgwrMZd2RI/3tdXVILe1miudzY0VJ7qRmjEefssyx
+         pNM+0b9z1E3qGVKxdPi4eJSJo4RYxlRzP3BahczunRzulx53z/v8LA4MWdIrq/j6cRmC
+         DduD4hB3thYpbt8ivH1lKAcyoG72zfI4ZJdEs/xvlJ8nIp3mx03eN7Bi5QyZHfNzoL2Y
+         qMLI8trB2MfbYbTRt6nsE3yv6Opa2WsSM1StEGYHG7g/cvB1+a5gTc69TIFaxJbuurxz
+         46bA==
+X-Gm-Message-State: AOAM533bZhfy0O/ZkTdfi4TGtgyHcxR7NofEwr1nMY+GS7fMtAfVVcpz
+        2Wy+gemDjbwJ9rwjASKLmcs=
+X-Google-Smtp-Source: ABdhPJzjAptZ9d9FazY901gm/gg5JD4GwqG0LgMjDZEEudgRoUQIudAATHudvkwQj6YFpcwXGS3sKg==
+X-Received: by 2002:a63:545:: with SMTP id 66mr6329239pgf.220.1606765447060;
+        Mon, 30 Nov 2020 11:44:07 -0800 (PST)
+Received: from archlinux.forge.wetaworkshop.co.nz ([2407:7000:aa27:b302:92e6:aee5:1373:39cd])
+        by smtp.gmail.com with ESMTPSA id m14sm17186913pgu.0.2020.11.30.11.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 11:44:06 -0800 (PST)
+From:   sanjay.govind9@gmail.com
+To:     jikos@kernel.org
+Cc:     Sanjay Govind <sanjay.govind9@gmail.com>,
+        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pascal.Giard@etsmtl.ca
+Subject: [PATCH] HID: sony: Add support for tilt on guitar hero guitars
+Date:   Tue,  1 Dec 2020 08:43:15 +1300
+Message-Id: <20201130194314.89509-1-sanjay.govind9@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Ingo!
+From: Sanjay Govind <sanjay.govind9@gmail.com>
 
-This pull request contains changes for RCU, KCSAN, and LKMM.  You can pull
-the group using branch for-mingo.  Or, if you prefer, you can pull them
-separately, using for-mingo-rcu to pull the RCU changes, for-mingo-kcsan
-to pull the KCSAN changes, and for-mingo-lkmm to pull the LKMM changes.
+This commit adds support for tilt on Standard Guitar Hero PS3 Guitars, and GH3 PC Guitars, mapping it to ABS_RY.
 
-The changes are as follows:
+Note that GH3 PC Guitars are identical, only they use different VID and PIDs.
+Also note that vendor id 0x12ba is used by a variety of different rhythm controllers on the ps3.
 
-1.	RCU updates (for-mingo-rcu):
+Signed-off-by: Sanjay Govind <sanjay.govind9@gmail.com>
+---
+ drivers/hid/Kconfig    |  1 +
+ drivers/hid/hid-ids.h  |  6 +++++-
+ drivers/hid/hid-sony.c | 18 +++++++++++++-----
+ 3 files changed, 19 insertions(+), 6 deletions(-)
 
-	a.	Avoid cpuinfo-induced IPI pileups and idle-CPU IPIs.
+diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+index 18b3ad50e1ca..02124c2c4b2e 100644
+--- a/drivers/hid/Kconfig
++++ b/drivers/hid/Kconfig
+@@ -908,6 +908,7 @@ config HID_SONY
+ 	  * Sony PS3 Blue-ray Disk Remote Control (Bluetooth)
+ 	  * Logitech Harmony adapter for Sony Playstation 3 (Bluetooth)
+ 	  * Guitar Hero Live PS3 and Wii U guitar dongles
++	  * Guitar Hero PS3 and PC guitar dongles
+ 
+ config SONY_FF
+ 	bool "Sony PS2/3/4 accessories force feedback support" 
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index eee6e27d5f1e..3479ae7dd651 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -40,6 +40,9 @@
+ #define USB_VENDOR_ID_ACTIONSTAR	0x2101
+ #define USB_DEVICE_ID_ACTIONSTAR_1011	0x1011
+ 
++#define USB_VENDOR_ID_ACTIVISION	0x1430
++#define USB_DEVICE_ID_ACTIVISION_GUITAR_DONGLE	0x474c
++
+ #define USB_VENDOR_ID_ADS_TECH		0x06e1
+ #define USB_DEVICE_ID_ADS_TECH_RADIO_SI470X	0xa155
+ 
+@@ -1074,8 +1077,9 @@
+ #define USB_DEVICE_ID_SONY_BUZZ_CONTROLLER		0x0002
+ #define USB_DEVICE_ID_SONY_WIRELESS_BUZZ_CONTROLLER	0x1000
+ 
+-#define USB_VENDOR_ID_SONY_GHLIVE			0x12ba
++#define USB_VENDOR_ID_SONY_RHYTHM	0x12ba
+ #define USB_DEVICE_ID_SONY_PS3WIIU_GHLIVE_DONGLE	0x074b
++#define USB_DEVICE_ID_SONY_PS3_GUITAR_DONGLE	0x0100
+ 
+ #define USB_VENDOR_ID_SINO_LITE			0x1345
+ #define USB_DEVICE_ID_SINO_LITE_CONTROLLER	0x3008
+diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
+index 326c4bdbd0ea..94dca5a5d361 100644
+--- a/drivers/hid/hid-sony.c
++++ b/drivers/hid/hid-sony.c
+@@ -12,6 +12,7 @@
+  *  Copyright (c) 2014-2016 Frank Praznik <frank.praznik@gmail.com>
+  *  Copyright (c) 2018 Todd Kelner
+  *  Copyright (c) 2020 Pascal Giard <pascal.giard@etsmtl.ca>
++ *  Copyright (c) 2020 Sanjay Govind <sanjay.govind9@gmail.com>
+  */
+ 
+ /*
+@@ -59,7 +60,8 @@
+ #define NSG_MR5U_REMOTE_BT        BIT(14)
+ #define NSG_MR7U_REMOTE_BT        BIT(15)
+ #define SHANWAN_GAMEPAD           BIT(16)
+-#define GHL_GUITAR_PS3WIIU        BIT(17)
++#define GH_GUITAR_CONTROLLER      BIT(17)
++#define GHL_GUITAR_PS3WIIU        BIT(18)
+ 
+ #define SIXAXIS_CONTROLLER (SIXAXIS_CONTROLLER_USB | SIXAXIS_CONTROLLER_BT)
+ #define MOTION_CONTROLLER (MOTION_CONTROLLER_USB | MOTION_CONTROLLER_BT)
+@@ -84,7 +86,7 @@
+ #define NSG_MRXU_MAX_Y 1868
+ 
+ #define GHL_GUITAR_POKE_INTERVAL 10 /* In seconds */
+-#define GHL_GUITAR_TILT_USAGE 44
++#define GUITAR_TILT_USAGE 44
+ 
+ /* Magic value and data taken from GHLtarUtility:
+  * https://github.com/ghlre/GHLtarUtility/blob/master/PS3Guitar.cs
+@@ -692,7 +694,7 @@ static int guitar_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_MSVENDOR) {
+ 		unsigned int abs = usage->hid & HID_USAGE;
+ 
+-		if (abs == GHL_GUITAR_TILT_USAGE) {
++		if (abs == GUITAR_TILT_USAGE) {
+ 			hid_map_usage_clear(hi, usage, bit, max, EV_ABS, ABS_RY);
+ 			return 1;
+ 		}
+@@ -1481,7 +1483,7 @@ static int sony_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 	if (sc->quirks & DUALSHOCK4_CONTROLLER)
+ 		return ds4_mapping(hdev, hi, field, usage, bit, max);
+ 
+-	if (sc->quirks & GHL_GUITAR_PS3WIIU)
++	if (sc->quirks & GH_GUITAR_CONTROLLER)
+ 		return guitar_mapping(hdev, hi, field, usage, bit, max);
+ 
+ 	/* Let hid-core decide for the others */
+@@ -3146,7 +3148,13 @@ static const struct hid_device_id sony_devices[] = {
+ 		.driver_data = NSG_MR7U_REMOTE_BT },
+ 	/* Guitar Hero Live PS3 and Wii U guitar dongles */
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SONY_GHLIVE, USB_DEVICE_ID_SONY_PS3WIIU_GHLIVE_DONGLE),
+-		.driver_data = GHL_GUITAR_PS3WIIU},
++		.driver_data = GHL_GUITAR_PS3WIIU | GH_GUITAR_CONTROLLER },
++	/* Guitar Hero PC Guitar Dongle */
++	{ HID_USB_DEVICE(USB_VENDOR_ID_ACTIVISION, USB_DEVICE_ID_ACTIVISION_GUITAR),
++		.driver_data = GH_GUITAR_CONTROLLER },
++	/* Guitar Hero PS3 World Tour Guitar Dongle */
++	{ HID_USB_DEVICE(USB_VENDOR_ID_SONY_RHYTHM, USB_DEVICE_ID_SONY_PS3_GUITAR_DONGLE),
++		.driver_data = GH_GUITAR_CONTROLLER },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(hid, sony_devices);
+-- 
+2.29.2
 
-	b.	Documentation updates.
-
-	c.	Miscellaneous fixes.  These include a long-awaited fix
-		for that bug reported by Sebastian Andrzej Siewior, which
-		has been since pulled into mainline.  (But mentioned
-		here in case you thought that I had forgotten about it.)
-
-	d.	Lockdep-RCU updates reducing the need for __maybe_unused.
-
-	e.	Tasks-RCU updates.
-
-	f.	Torture-test updates.
-
-2.	KCSAN updates (for-mingo-kcsan) for selftests, avoiding setting
-	watchpoints on NULL pointers, and a fix to watchpoint encoding.
-
-3.	LKMM updates (for-mingo-lkmm) for documentation along with some
-	updates to example-code litmus tests.
-
-All of the commits in this pull request have been subjected to subjected
-to the kbuild test robot and -next testing, and are available in the
-git repository based on 5.10-rc1 at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
-
-for you to fetch changes up to 50df51d12c3175573de9c94968639bdd625ec549:
-
-  Merge branch 'lkmm.2020.11.06a' into HEAD (2020-11-19 19:38:53 -0800)
-
-----------------------------------------------------------------
-Alan Stern (1):
-      tools: memory-model: Document that the LKMM can easily miss control dependencies
-
-Anna-Maria Behnsen (1):
-      tools/rcutorture: Fix BUG parsing of console.log
-
-Asif Rasheed (1):
-      list.h: Update comment to explicitly note circular lists
-
-Bhaskar Chowdhury (1):
-      tools/nolibc:  Fix a spelling error in a comment
-
-Fox Chen (1):
-      docs/memory-barriers.txt: Fix a typo in CPU MEMORY BARRIERS section
-
-Frederic Weisbecker (1):
-      rcu: Implement rcu_segcblist_is_offloaded() config dependent
-
-Hou Tao (2):
-      locktorture: Ignore nreaders_stress if no readlock support
-      locktorture: Invoke percpu_free_rwsem() to do percpu-rwsem cleanup
-
-Hui Su (1):
-      docs/rcu: Update the call_rcu() API
-
-Jakub Kicinski (7):
-      sched: Un-hide lockdep_tasklist_lock_is_held() for !LOCKDEP
-      rcu: Un-hide lockdep maps for !LOCKDEP
-      net: Un-hide lockdep_sock_is_held() for !LOCKDEP
-      net: sched: Remove broken definitions and un-hide for !LOCKDEP
-      srcu: Use a more appropriate lockdep helper
-      lockdep: Provide dummy forward declaration of *_is_held() helpers
-      rcu: Prevent RCU_LOCKDEP_WARN() from swallowing the condition
-
-Joe Perches (1):
-      rcu/tree: Make struct kernel_param_ops definitions const
-
-Joel Fernandes (Google) (3):
-      docs: Update RCU's hotplug requirements with a bit about design
-      rcu/tree: Add a warning if CPU being onlined did not report QS already
-      rcu/tree: nocb: Avoid raising softirq for offloaded ready-to-execute CBs
-
-Marco Elver (3):
-      kcsan: selftest: Ensure that address is at least PAGE_SIZE
-      kcsan: Never set up watchpoints on NULL pointers
-      kcsan: Fix encoding masks and regain address bit
-
-Mauro Carvalho Chehab (1):
-      docs: RCU: Requirements.rst: Fix a list block
-
-Neeraj Upadhyay (2):
-      rcu: Fix single-CPU check in rcu_blocking_is_gp()
-      rcu: Clarify nocb kthreads naming in RCU_NOCB_CPU config
-
-Paul E. McKenney (44):
-      tools/memory-model: Move Documentation description to Documentation/README
-      doc: Present the role of READ_ONCE()
-      rcutorture: Make preemptible TRACE02 enable lockdep
-      rcu-tasks: Convert rcu_tasks_wait_gp() for-loop to while-loop
-      rcutorture: Make grace-period kthread report match RCU flavor being tested
-      refscale: Bounds-check module parameters
-      torture: Don't kill gdb sessions
-      x86/cpu: Avoid cpuinfo-induced IPI pileups
-      x86/cpu: Avoid cpuinfo-induced IPIing of idle CPUs
-      locktorture: Track time of last ->writeunlock()
-      torture: Periodically pause in stutter_wait()
-      torture: Make torture_stutter() use hrtimer
-      scftorture: Add an alternative IPI vector
-      rcuscale: Add RCU Tasks Trace
-      rcuscale: Avoid divide by zero
-      torture: Exclude "NOHZ tick-stop error" from fatal errors
-      rcuscale: Prevent hangs for invalid arguments
-      refscale: Prevent hangs for invalid arguments
-      rcutorture: Adjust scenarios SRCU-t and SRCU-u to make kconfig happy
-      locktorture: Prevent hangs for invalid arguments
-      torture: Prevent jitter processes from delaying failed run
-      rcutorture: Prevent hangs for invalid arguments
-      torture: Force weak-hashed pointers on console log
-      rcutorture:  Make stutter_wait() caller restore priority
-      torture: Accept time units on kvm.sh --duration argument
-      rcutorture: Small code cleanups
-      torture: Allow alternative forms of kvm.sh command-line arguments
-      scftorture: Add full-test stutter capability
-      rcutorture: Don't do need_resched() testing if ->sync is NULL
-      torture: Make kvm-check-branches.sh use --allcpus
-      rcu-tasks: Make the units of ->init_fract be jiffies
-      tools/memory-model: Document categories of ordering primitives
-      tools/memory-model: Add a glossary of LKMM terms
-      tools/memory-model: Add types to litmus tests
-      tools/memory-model: Use "buf" and "flag" for message-passing tests
-      tools/memory-model: Label MP tests' producers and consumers
-      rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
-      x86/smpboot:  Move rcu_cpu_starting() earlier
-      rcu: Prevent lockdep-RCU splats on lock acquisition/release
-      rcu: Do not report strict GPs for outgoing CPUs
-      srcu: Take early exit on memory-allocation failure
-      Merge branches 'cpuinfo.2020.11.06a', 'doc.2020.11.06a', 'fixes.2020.11.19b', 'lockdep.2020.11.02a', 'tasks.2020.11.06a' and 'torture.2020.11.06a' into HEAD
-      Merge branch 'kcsan.2020.11.06a' into HEAD
-      Merge branch 'lkmm.2020.11.06a' into HEAD
-
-Peter Zijlstra (2):
-      rcu: Allow rcu_irq_enter_check_tick() from NMI
-      rcu,ftrace: Fix ftrace recursion
-
-Samuel Hernandez (1):
-      rcutorture/nolibc: Fix a typo in header file
-
-Uladzislau Rezki (Sony) (1):
-      rcu/tree: Defer kvfree_rcu() allocation to a clean context
-
-Zhouyi Zhou (1):
-      rcu: Fix a typo in rcu_blocking_is_gp() header comment
-
-chao (1):
-      rcu: Panic after fixed number of stalls
-
- .../RCU/Design/Requirements/Requirements.rst       |  50 +-
- Documentation/RCU/checklist.rst                    |   7 +
- Documentation/RCU/rcu_dereference.rst              |   6 +
- Documentation/RCU/whatisRCU.rst                    |   3 +-
- Documentation/memory-barriers.txt                  |   2 +-
- arch/x86/kernel/cpu/aperfmperf.c                   |  16 +-
- arch/x86/kernel/cpu/mtrr/mtrr.c                    |   2 -
- arch/x86/kernel/smpboot.c                          |   1 +
- include/linux/kernel.h                             |   1 +
- include/linux/list.h                               |   2 +-
- include/linux/lockdep.h                            |   6 +
- include/linux/rcupdate.h                           |  11 +-
- include/linux/rcupdate_trace.h                     |   4 +-
- include/linux/rcutiny.h                            |   2 +
- include/linux/rcutree.h                            |   1 +
- include/linux/sched/task.h                         |   2 -
- include/net/sch_generic.h                          |  12 -
- include/net/sock.h                                 |   2 -
- kernel/kcsan/encoding.h                            |  20 +-
- kernel/kcsan/selftest.c                            |   3 +
- kernel/locking/locktorture.c                       |  36 +-
- kernel/rcu/Kconfig                                 |  20 +-
- kernel/rcu/rcu.h                                   |  16 +
- kernel/rcu/rcu_segcblist.h                         |   2 +-
- kernel/rcu/rcuscale.c                              |  37 +-
- kernel/rcu/rcutorture.c                            |  52 +-
- kernel/rcu/refscale.c                              |  11 +-
- kernel/rcu/srcutree.c                              |   6 +-
- kernel/rcu/tasks.h                                 |  49 +-
- kernel/rcu/tree.c                                  | 200 +++++---
- kernel/rcu/tree.h                                  |   2 +
- kernel/rcu/tree_plugin.h                           |   2 +-
- kernel/rcu/tree_stall.h                            |  28 +-
- kernel/scftorture.c                                |  49 +-
- kernel/sysctl.c                                    |  11 +
- kernel/torture.c                                   |  34 +-
- tools/include/nolibc/nolibc.h                      |   4 +-
- tools/memory-model/Documentation/README            |  76 +++
- .../Documentation/control-dependencies.txt         | 258 ++++++++++
- tools/memory-model/Documentation/glossary.txt      | 172 +++++++
- tools/memory-model/Documentation/litmus-tests.txt  |  17 +
- tools/memory-model/Documentation/ordering.txt      | 556 +++++++++++++++++++++
- tools/memory-model/README                          |  22 +-
- .../litmus-tests/CoRR+poonceonce+Once.litmus       |   4 +-
- .../litmus-tests/CoRW+poonceonce+Once.litmus       |   4 +-
- .../litmus-tests/CoWR+poonceonce+Once.litmus       |   4 +-
- .../litmus-tests/CoWW+poonceonce.litmus            |   4 +-
- .../IRIW+fencembonceonces+OnceOnce.litmus          |   5 +-
- .../litmus-tests/IRIW+poonceonces+OnceOnce.litmus  |   5 +-
- .../ISA2+pooncelock+pooncelock+pombonce.litmus     |   7 +-
- .../litmus-tests/ISA2+poonceonces.litmus           |   6 +-
- ...cerelease+poacquirerelease+poacquireonce.litmus |   6 +-
- .../LB+fencembonceonce+ctrlonceonce.litmus         |   5 +-
- .../LB+poacquireonce+pooncerelease.litmus          |   5 +-
- .../litmus-tests/LB+poonceonces.litmus             |   5 +-
- .../MP+fencewmbonceonce+fencermbonceonce.litmus    |  19 +-
- .../litmus-tests/MP+onceassign+derefonce.litmus    |  15 +-
- .../MP+polockmbonce+poacquiresilsil.litmus         |   8 +-
- .../MP+polockonce+poacquiresilsil.litmus           |   8 +-
- tools/memory-model/litmus-tests/MP+polocks.litmus  |  20 +-
- .../litmus-tests/MP+poonceonces.litmus             |  19 +-
- .../MP+pooncerelease+poacquireonce.litmus          |  19 +-
- .../memory-model/litmus-tests/MP+porevlocks.litmus |  20 +-
- .../litmus-tests/R+fencembonceonces.litmus         |   5 +-
- .../memory-model/litmus-tests/R+poonceonces.litmus |   5 +-
- .../S+fencewmbonceonce+poacquireonce.litmus        |   5 +-
- .../memory-model/litmus-tests/S+poonceonces.litmus |   5 +-
- .../litmus-tests/SB+fencembonceonces.litmus        |   5 +-
- .../litmus-tests/SB+poonceonces.litmus             |   5 +-
- .../litmus-tests/SB+rfionceonce-poonceonces.litmus |   5 +-
- .../litmus-tests/WRC+poonceonces+Once.litmus       |   5 +-
- .../WRC+pooncerelease+fencermbonceonce+Once.litmus |   5 +-
- .../Z6.0+pooncelock+poonceLock+pombonce.litmus     |   7 +-
- .../Z6.0+pooncelock+pooncelock+pombonce.litmus     |   7 +-
- ...release+poacquirerelease+fencembonceonce.litmus |   6 +-
- .../selftests/rcutorture/bin/console-badness.sh    |   3 +-
- .../testing/selftests/rcutorture/bin/functions.sh  |   1 +
- .../selftests/rcutorture/bin/kvm-check-branches.sh |   5 +-
- .../rcutorture/bin/kvm-recheck-rcuscale.sh         |   2 +-
- .../selftests/rcutorture/bin/kvm-test-1-run.sh     |  19 +-
- tools/testing/selftests/rcutorture/bin/kvm.sh      |  29 +-
- .../selftests/rcutorture/bin/parse-console.sh      |   2 +-
- .../selftests/rcutorture/configs/rcu/SRCU-t        |   3 +-
- .../selftests/rcutorture/configs/rcu/SRCU-u        |   3 +-
- .../selftests/rcutorture/configs/rcu/TRACE01       |   6 +-
- .../selftests/rcutorture/configs/rcu/TRACE02       |   6 +-
- .../selftests/rcutorture/configs/rcuscale/CFcommon |   3 +
- .../selftests/rcutorture/configs/rcuscale/TRACE01  |  15 +
- .../rcutorture/configs/rcuscale/TRACE01.boot       |   1 +
- 89 files changed, 1839 insertions(+), 325 deletions(-)
- create mode 100644 tools/memory-model/Documentation/README
- create mode 100644 tools/memory-model/Documentation/control-dependencies.txt
- create mode 100644 tools/memory-model/Documentation/glossary.txt
- create mode 100644 tools/memory-model/Documentation/ordering.txt
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01.boot
