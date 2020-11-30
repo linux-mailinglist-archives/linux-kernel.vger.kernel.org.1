@@ -2,117 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5D92C8A23
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7D02C8A27
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729076AbgK3Q6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728053AbgK3Q6N (ORCPT
+        id S1729090AbgK3Q6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:58:40 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40350 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728053AbgK3Q6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:58:13 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4401C0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:57:32 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id l206so14842393oif.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:57:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xkrbT0g+1vl9dk2t4xOaB+m0Vzv0qAIq0iOp6VSOsTU=;
-        b=UC72rtlezumGLo5wevy9zR/ykzlD6jgpFRmHB+87/2TAZUKC3TcQCdwXpI6HJbPgG3
-         cNtXI3x7duK2es1P7psyGUop9bHnQf4s3rTsu2gd8gEdVVKr7SOKLDsu/AWB8irxpVlE
-         wOehuyOToysiRrhox/9rT19cpQhbvW+ghVSyIGamEW1GEDxzrj3tzrIWy+IDIldRvx56
-         N026Ck5S7NgMWlTsBbDl7d4HqfTPiKG4NvTsWqR0+HEV51HTO9nHvdIelxtlxnMspKPP
-         kb/z7eUPoVN3p+3ubooPva3B9X3AgPaN7hrvm5gqoJKXxL8mTOmrL0w+kBrQcvh+aq0i
-         zg8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xkrbT0g+1vl9dk2t4xOaB+m0Vzv0qAIq0iOp6VSOsTU=;
-        b=nan3N92ZajzYVlslA6lTIr8EdjlC6cAb1j+ME7Y6pr6xyR4HEYuYI4nm7++4D58Lxq
-         L4M60u/flIugrS+PEZhTIR+5bbHMwF3rkJ9lKNGrUPJm+ymOdimY4Ffe4IJ31XNLSssY
-         2bfLx2JfMqEgdrjd09G1z20EAUpWt3hXIzFOS0MVeYkV8c2bN0mv0GtA8anOXqwOZ83C
-         CQMHzhJnbE/CpEH3w+RuWT9v08HZY7ZmJb1FjUUgIWcyGNBj9ZpYWu/BmLMe3GVNrZ6z
-         RAyteWqIf93Oek/bK+Ono8r4n6YlG2UJkuAr1uHX31mtZFQhsDcy1KKLXXb9tw3SIh5d
-         QWLw==
-X-Gm-Message-State: AOAM530dV+fEaVcoJks9X7+vMtQpqHfBy7IRVxXVQhS6l8/KoSkkzgWI
-        nO7c8FXpjvwOMbjcxAbt/HsREA==
-X-Google-Smtp-Source: ABdhPJxSK/LvT1BKNuMz8SbQClIWNSLqy74oqZ5Oic5ab8jAH3aOGnqDGelBe9x31aqvC7Ix5oXLVQ==
-X-Received: by 2002:aca:b256:: with SMTP id b83mr15879955oif.77.1606755452201;
-        Mon, 30 Nov 2020 08:57:32 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id a4sm10071141oot.6.2020.11.30.08.57.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 08:57:30 -0800 (PST)
-Date:   Mon, 30 Nov 2020 10:57:29 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stanimir Varbanov <svarbanov@mm-sol.com>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 15/17] arm64: dts: sdm845: Add interconnect properties
- for Venus
-Message-ID: <X8UkeXhwDbA74GIq@builder.lan>
-References: <20201102113529.16152-1-stanimir.varbanov@linaro.org>
- <04afbbe2-0e31-1ca1-8215-504e64186969@linaro.org>
- <cf5470a8-d810-6b08-9490-a9036eeef938@mm-sol.com>
+        Mon, 30 Nov 2020 11:58:39 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AUGvfe1047924;
+        Mon, 30 Nov 2020 10:57:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606755461;
+        bh=gNrJH9LatK/TB9QXpNOyePdcdm5KvLQAOw2GWVuZR7k=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=vMzBA7E7D8WiTNE2j9XJD8Qnw+Nl0PpmalzczB8uss8R4HzHbCw0QwYyO0877j59M
+         R++stf+HjFugyp9GrtNkt8xsN19V9oyxYSwP8hi7EkPT2a4anwVM89dR79QIwrnJx6
+         iZM0dSi6ZOQUzW6BoRIY2j5IOxBQr1DyopcmEUBY=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AUGvggS046975
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 30 Nov 2020 10:57:42 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 30
+ Nov 2020 10:57:41 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 30 Nov 2020 10:57:41 -0600
+Received: from [10.250.40.192] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AUGvf1a004085;
+        Mon, 30 Nov 2020 10:57:41 -0600
+Subject: Re: [PATCH net-next v4 4/4] net: phy: dp83td510: Add support for the
+ DP83TD510 Ethernet PHY
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
+        <hkallweit1@gmail.com>, <robh@kernel.org>,
+        <ciorneiioana@gmail.com>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201117201555.26723-1-dmurphy@ti.com>
+ <20201117201555.26723-5-dmurphy@ti.com> <20201120014919.GB1804098@lunn.ch>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <f1b24f86-7445-9d54-873c-192ddb0dfeb7@ti.com>
+Date:   Mon, 30 Nov 2020 10:57:36 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf5470a8-d810-6b08-9490-a9036eeef938@mm-sol.com>
+In-Reply-To: <20201120014919.GB1804098@lunn.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 30 Nov 04:34 CST 2020, Stanimir Varbanov wrote:
+Andrew
 
-> Bjorn, could you take this for v5.11.
-> 
+On 11/19/20 7:49 PM, Andrew Lunn wrote:
+>> +static int dp83td510_config_init(struct phy_device *phydev)
+>> +{
+>> +	struct dp83td510_private *dp83td510 = phydev->priv;
+>> +	int ret = 0;
+>> +
+>> +	if (phy_interface_is_rgmii(phydev)) {
+>> +		if (dp83td510->rgmii_delay) {
+>> +			ret = phy_set_bits_mmd(phydev, DP83TD510_DEVADDR,
+>> +					       DP83TD510_MAC_CFG_1,
+>> +					       dp83td510->rgmii_delay);
+> Just to be safe, you should always write rgmii_delay, even if it is
+> zero. We have had too many bugs with RGMII delays which cause bad
+> backwards compatibility problems, so i would prefer to do a write
+> which might be unneeded, that find a bug here in a few years time.
 
-I did apply it a few weeks back, but seems I forgot to reply (and it was
-before I asked patchwork-bot to do so for me).
+OK.
 
-Regards,
-Bjorn
 
-> On 11/2/20 2:07 PM, Georgi Djakov wrote:
-> > Hi Stan,
-> > 
-> > On 11/2/20 13:35, Stanimir Varbanov wrote:
-> >> Populate Venus DT node with interconnect properties.
-> >>
-> >> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> > 
-> > Reviewed-by: Georgi Djakov <georgi.djakov@linaro.org>
-> > 
-> > Thanks!
-> > Georgi
-> > 
-> >> ---
-> >>  arch/arm64/boot/dts/qcom/sdm845.dtsi | 3 +++
-> >>  1 file changed, 3 insertions(+)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> >> index 40e8c11f23ab..aca7e9c954e0 100644
-> >> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> >> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> >> @@ -3661,6 +3661,9 @@
-> >>  			iommus = <&apps_smmu 0x10a0 0x8>,
-> >>  				 <&apps_smmu 0x10b0 0x0>;
-> >>  			memory-region = <&venus_mem>;
-> >> +			interconnects = <&mmss_noc MASTER_VIDEO_P0 0 &mem_noc SLAVE_EBI1 0>,
-> >> +					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_VENUS_CFG 0>;
-> >> +			interconnect-names = "video-mem", "cpu-cfg";
-> >>  
-> >>  			video-core0 {
-> >>  				compatible = "venus-decoder";
-> >>
-> 
-> -- 
-> regards,
-> Stan
+>
+>> +			if (ret)
+>> +				return ret;
+>> +		}
+>> +	}
+>> +
+>> +	if (phydev->interface == PHY_INTERFACE_MODE_RMII) {
+>> +		ret = phy_modify(phydev, DP83TD510_GEN_CFG,
+>> +				 DP83TD510_FIFO_DEPTH_MASK,
+>> +				 dp83td510->tx_fifo_depth);
+> So there is no need to set the FIFO depth for the other three RGMII
+> modes? Or should this also be phy_interface_is_rgmii(phydev)?
+
+According to the data sheet the FIFO depth is for RMII.
+
+"Fifo depth for RMII Tx fifo"
+
+But I will ask the HW team for clarification.
+
+
+>
+>> +#if IS_ENABLED(CONFIG_OF_MDIO)
+>> +static int dp83td510_of_init(struct phy_device *phydev)
+>> +{
+>> +	struct dp83td510_private *dp83td510 = phydev->priv;
+>> +	struct device *dev = &phydev->mdio.dev;
+>> +	struct device_node *of_node = dev->of_node;
+> You need to move this assignment to later in order to keep with
+> reverse christmas tree.
+Well this is only used once so I will just remove the of_node declaration
+>
+>> +#else
+>> +static int dp83869_of_init(struct phy_device *phydev)
+>> +{
+>> +	dp83td510->hi_diff_output = DP83TD510_2_4V_P2P
+>> +	dp83td510->tx_fifo_depth = DP83TD510_FIFO_DEPTH_5_B_NIB
+> You don't have DT, so there is no fine control, but you still need to
+> do the basic 2ns delay as indicated by the phydev->interface value. So
+> i think you still need to set dp83td510->rgmii_delay depending on
+> which RGMII mode is requested.
+
+The RGMII delay is fixed in the PHY.  The user can either turn it on or 
+off. The default is 'off' which is 0.
+
+I can explicitly set the rgmii_delay to 0 in non-OF cases.
+
+Dan
+
