@@ -2,202 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 874E12C86AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B362C86AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgK3O2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:28:33 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:33757 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgK3O2c (ORCPT
+        id S1727464AbgK3O2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:28:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727293AbgK3O2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:28:32 -0500
-X-Originating-IP: 91.175.115.186
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id A73B3E001D;
-        Mon, 30 Nov 2020 14:27:42 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
-        robh+dt@kernel.org, jason@lakedaemon.net, andrew@lunn.ch,
-        sebastian.hesselbarth@gmail.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: Re: [PATCH v2] ARM: dts: mvebu: Add device tree for
- RD-AC3X-48G4X2XL board
-In-Reply-To: <20201126044544.17829-1-aryan.srivastava@alliedtelesis.co.nz>
-References: <20201126044544.17829-1-aryan.srivastava@alliedtelesis.co.nz>
-Date:   Mon, 30 Nov 2020 15:27:41 +0100
-Message-ID: <87zh2yj4wy.fsf@BL-laptop>
+        Mon, 30 Nov 2020 09:28:51 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD52C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:28:11 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id i2so16477428wrs.4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:28:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QvXhZgU2xMEzW9xUafEpy+bHmn3Gc8NAD102F5oHAyA=;
+        b=1EcvxvJc4mbZdHxqfftJrVKOTIK9BH+eVgl5TW6c7R7lbRF0+OhsYHL1L0kYvA8TMv
+         Qlrg8Ct1Vd8H+6AgLIu3Tlr4p6ZfserFewRmMX59gDUoFzpqikZPd7M14D25TvT588b6
+         bCv1TSxGSOxIs0SYhrwQTiaR+cWLZLelbISBNasBqxPp7nLhcA7+l4T6yyUYRfPu3cVB
+         TJOPOPrqV/0JNmFtZN+P6rcx5sBVu2gNuJ7Bes6zHIv+dCAfJ9Ed4a8dJ1guN9MG9Eog
+         y21E9pkM6Jd8E1sb//+7xcvDw58/mMxxvkB104Y11UVYXgEtWxBT282XlWhk05E+uFC+
+         qsRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QvXhZgU2xMEzW9xUafEpy+bHmn3Gc8NAD102F5oHAyA=;
+        b=o/yw8N8xAegrUn7WJ3YvzPQAQjoWz3fMPXvNezRUrYrTbriR0VDQni9zDWSDzTPA4E
+         G3xmH3rCNMQ309Fo3Bet918uTa60stvxNKX2Py7HK63xh1LcPeyTpCaRgCOLqf+YXXK5
+         Zv5Hc0QxIXzqtWyTRRfyzMB3lydrGXokr0ZsfN81h5TNsGvlz7GO5pKzJkKa1tb9qAYT
+         3dkhe82+B2H/KVB79DPIfoPoQRq+gcXPdXfmTuD2pzgKsa2VhqUOZtBqlOUCErog2mVq
+         5V24nYEIPMBxbgg+CFatp7RpE2rz873B4oYrCw3/GHGE1NaD5pClfBr29h7QxhtFZZEw
+         Sd/A==
+X-Gm-Message-State: AOAM531gBASGuen3anETfEdrikhBoKRPhISr1H0YrePvIbuIkMHgJUWP
+        QP8BGMJivDNYloIIhxBAw4V2Mw==
+X-Google-Smtp-Source: ABdhPJzJyK1+fOpoEEjpFkrOW4BnKluQ8G36C3Y9PDwLN5GySBcQ+LJP4HL+Boasaj6KbkpQ1Fbnig==
+X-Received: by 2002:a5d:570d:: with SMTP id a13mr27858154wrv.193.1606746490088;
+        Mon, 30 Nov 2020 06:28:10 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id p19sm29446044wrg.18.2020.11.30.06.28.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 06:28:09 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATH v3 0/3] iio: adc: xilinx: use even more devres
+Date:   Mon, 30 Nov 2020 15:27:56 +0100
+Message-Id: <20201130142759.28216-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aryan,
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-> Add device tree for RD-AC3X-48G4X2XL board. This has a Armada 382 SoC on
-> a interposer board connected to a baseboard with a Prestera AC3X ASIC
-> connected via PCI.
->
-> Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
-> Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+This is a follow-up to commit 750628c79bb1 ("iio: adc: xilinx-xadc: use
+devm_krealloc()"). I noticed we can use even more devres helpers and entirely
+drop the remove() callback.
 
-Applied on mvebu/dt
+v1 -> v2:
+- squash three patches adding more devres calls into one for easier review
+- don't insist on the 80 characters limit
+- add a new helper: devm_krealloc_array() and use it
 
-Thanks,
+v2 -> v3:
+- drop the devm_krealloc_array() helper
 
-Gregory
+Bartosz Golaszewski (3):
+  iio: adc: xilinx: use helper variable for &pdev->dev
+  iio: adc: xilinx: use devm_krealloc() instead of kfree() + kcalloc()
+  iio: adc: xilinx: use more devres helpers and remove remove()
 
-> ---
->
-> Notes:
->     Changes in v2:
->     -Added comment for CPLD
->
->  arch/arm/boot/dts/Makefile                    |   1 +
->  .../boot/dts/armada-382-rd-ac3x-48g4x2xl.dts  | 112 ++++++++++++++++++
->  2 files changed, 113 insertions(+)
->  create mode 100644 arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
->
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index ce66ffd5a1bb..a60407ad7347 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -1319,6 +1319,7 @@ dtb-$(CONFIG_MACH_ARMADA_370) += \
->  dtb-$(CONFIG_MACH_ARMADA_375) += \
->  	armada-375-db.dtb
->  dtb-$(CONFIG_MACH_ARMADA_38X) += \
-> +	armada-382-rd-ac3x-48g4x2xl.dtb \
->  	armada-385-clearfog-gtr-s4.dtb \
->  	armada-385-clearfog-gtr-l8.dtb \
->  	armada-385-db-88f6820-amc.dtb \
-> diff --git a/arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts b/arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
-> new file mode 100644
-> index 000000000000..584f0d0398a5
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
-> @@ -0,0 +1,112 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Device Tree file for Marvell Armada 382 reference board
-> + * (RD-AC3X-48G4X2XL)
-> + *
-> + * Copyright (C) 2020 Allied Telesis Labs
-> + */
-> +
-> +/dts-v1/;
-> +#include "armada-385.dtsi"
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +
-> +/ {
-> +	model = "Marvell Armada 382 RD-AC3X";
-> +	compatible = "marvell,rd-ac3x-48g4x2xl", "marvell,rd-ac3x",
-> +			 "marvell,armada385", "marvell,armada380";
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	aliases {
-> +		ethernet0 = &eth1;
-> +	};
-> +
-> +	memory {
-> +		device_type = "memory";
-> +		reg = <0x00000000 0x20000000>; /* 512MB */
-> +	};
-> +
-> +	soc {
-> +		ranges = <MBUS_ID(0xf0, 0x01) 0 0xf1000000 0x100000
-> +			  MBUS_ID(0x01, 0x1d) 0 0xfff00000 0x100000>;
-> +	};
-> +};
-> +
-> +&i2c0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c0_pins>;
-> +	status = "okay";
-> +
-> +	eeprom@53{
-> +		compatible = "atmel,24c64";
-> +		reg = <0x53>;
-> +	};
-> +
-> +	/* CPLD device present at 0x3c. Function unknown */
-> +};
-> +
-> +&uart0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&uart0_pins>;
-> +	status = "okay";
-> +};
-> +
-> +&eth1 {
-> +	status = "okay";
-> +	phy = <&phy0>;
-> +	phy-mode = "rgmii-id";
-> +};
-> +
-> +&mdio {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mdio_pins>;
-> +
-> +	phy0: ethernet-phy@0 {
-> +		reg = <0>;
-> +	};
-> +};
-> +
-> +&pciec {
-> +	status = "okay";
-> +};
-> +
-> +&pcie1 {
-> +	/* Port 0, Lane 0 */
-> +	status = "okay";
-> +};
-> +
-> +&nand_controller {
-> +	status = "okay";
-> +
-> +	nand@0 {
-> +		reg = <0>;
-> +		label = "pxa3xx_nand-0";
-> +		nand-rb = <0>;
-> +		nand-on-flash-bbt;
-> +
-> +		partitions {
-> +			compatible = "fixed-partitions";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			partition@0 {
-> +				reg = <0x00000000 0x00500000>;
-> +				label = "u-boot";
-> +			};
-> +			partition@500000{
-> +				reg = <0x00500000 0x00400000>;
-> +				label = "u-boot env";
-> +			};
-> +			partition@900000{
-> +				reg = <0x00900000 0x3F700000>;
-> +				label = "user";
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&refclk {
-> +	clock-frequency = <200000000>;
-> +};
-> -- 
-> 2.29.2
->
+ drivers/iio/adc/xilinx-xadc-core.c | 157 ++++++++++++++---------------
+ 1 file changed, 74 insertions(+), 83 deletions(-)
 
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.29.1
+
