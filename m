@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82252C8946
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3182C894A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgK3QUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
+        id S1728787AbgK3QUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:20:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgK3QUj (ORCPT
+        with ESMTP id S1728774AbgK3QUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:20:39 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816C4C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:19:53 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id l206so14698094oif.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:19:53 -0800 (PST)
+        Mon, 30 Nov 2020 11:20:48 -0500
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECC1C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:20:08 -0800 (PST)
+Received: by mail-oo1-xc43.google.com with SMTP id t23so2800207oov.4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:20:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kali.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=BODYfYTeDSugp1RxBgS7anYBagSna9CL1uemvUvDkss=;
-        b=Z64+fGze7U4fK9y//5Jw+dCXti/GNHvXBUKcQ5kt7bBRn3l30mVR9h+HisK1syj/ag
-         q8cUQVjzMmRi35Nx4lDFD2rBEsLt5wAr16JA9xwke+XjnKg+RpdJqf6zQcbxtrOMXOHL
-         EIl9VtOIZTrgRty8fmpLST1u+bJwqYCUSmci5rIMaYnQKgraHvAeV99VESAS9E+VHjBN
-         UlFahOSzmKSwQuTaLzozKP+cuouHrtNvK7tr0AcmxLQoVwrKrzbYNodrVJH1/5f0z1YV
-         VrNzuK8U9A1GDdCamxsbu1k5ZaRcOJOtOGgUa6e3gwKQSW37geLZUEAyCOTaW1sDyg8N
-         a8Tg==
+        bh=6/QqV+qScQf8yEBLm8QpRM5cOd3tOhhuftKHu6gt0Mc=;
+        b=epdxklrskndzynEMVnfBtQ7G27/Zg2uCPbt0eg7pGzm8qithnD0hASriqjoj3En26t
+         Hf1C3ELHlCvVxdpar+YEIAY1fznKutR0una6jjGvj+ZI8i+WslUEtiX6hXFPOAzEaeAE
+         xAw+1nX1BwwZmUfUvZvDruE5DTnd6PBx1SD+Mc3nf4pOq7PDNRGEFaq7r++TO5TPZPn/
+         RAuj2QQ3fjhHJh1X/tCv3Wh3+uHEjjfTu6eEvPqPOhASZmrFANHRA1uyLeAxsY9+2E8s
+         BjUYwQZz3KCiEKTTbgtCoFFi1rcsZcXPyOPOlrrbhdxcG/EMP0JZuZAy1eUYgI5BaCQE
+         1+gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=BODYfYTeDSugp1RxBgS7anYBagSna9CL1uemvUvDkss=;
-        b=EGxFaatxCwE0Qnw+JtidGFIEbJwiOCfru3YrId9jnUXX36PLBI1anUAEJBAtovVJ2a
-         3pVQVM+lkeeljUoxHvemXmdRmf3I2RoMcUmeFgGRVexhf9ldmOVcbLQSESnG7YnZ8MdT
-         V8QiPrb7Artfiuzvc4hYbcS3JMFFCsfCxVz85KnOcWpDAidMaasCVXN6n8+qCFWlkQ03
-         Qi7hLtKy7W4oFwZA2X+5mNL+R7sR4CsEtQXMjxJHXHx++4NzCZXs9KUDVNROQrqX45dD
-         7FbjX9xkEISw5dLIO5R3SpCni9HG9e8ynjdrZ2BMXw+qZnlf57ubI86Qv+Q23WH/8iTj
-         EAyw==
-X-Gm-Message-State: AOAM532aXCbdiqERKI/iHKajgatmGYzRlb44AjBiThkW1D55DqK+xFq8
-        0ef6YnfDm0hj+quFRdGzqmeebA==
-X-Google-Smtp-Source: ABdhPJxbRslQGEjyt6Cd+u2rMfIzAuqSmYGsdkYghoA43A9HKWbbqhWgDXAW9Jxi8x9KxlLSfFqcdA==
-X-Received: by 2002:aca:90c:: with SMTP id 12mr15118936oij.15.1606753192894;
-        Mon, 30 Nov 2020 08:19:52 -0800 (PST)
+        bh=6/QqV+qScQf8yEBLm8QpRM5cOd3tOhhuftKHu6gt0Mc=;
+        b=q0U/Mu2BatTmSxQLiXJbCYx3DbvVduTs3mq3itpuvQNmiroUBED9KjgFpNHCpfTLuA
+         J/Lp9LgkCrdzjhvAmyBdomgj05Pmh2NdfMDHujguc9vmYS0JSJWOe5b0haLGMvp8kMmc
+         xu23xxgVU+G8FW376ams8MdNc9AmUkMJlXBoJ+9CW5ZxKYztX8ygZraUzjg9/QpD1h15
+         JKiu/Bh2nfNxO/S4m0csXPzUlAY8orObYDvHZOgtPEBijkvQlP4638Sy/mbu6Z9JWlbQ
+         vizEfJQuvwCZNFzAxvJRkDtOQYRrNfbzBm2WTfCTCrboo27kI52KV0VKz4/e6r//4MLs
+         CGYw==
+X-Gm-Message-State: AOAM532toPSMEetYtBOEimAX9Ie/WuYzVCi1EQNdaCtWH9dbvsqR0V58
+        fzYiIG2KMqYiSEX/uqbsjY2lGmeSTp9Olf0R8EQ=
+X-Google-Smtp-Source: ABdhPJx6oWZ0BY+u313rmb902xBs+1rUMx0SZL9sCGjki3dkplfDjrNjB8VOJyOddXdhZgJY7aNE9g==
+X-Received: by 2002:a4a:7b4b:: with SMTP id l72mr15716715ooc.45.1606753207698;
+        Mon, 30 Nov 2020 08:20:07 -0800 (PST)
 Received: from Steevs-MBP.hackershack.net (cpe-173-175-113-3.satx.res.rr.com. [173.175.113.3])
-        by smtp.gmail.com with ESMTPSA id a4sm10047503oot.6.2020.11.30.08.19.51
+        by smtp.gmail.com with ESMTPSA id w21sm9977846ooj.32.2020.11.30.08.20.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 08:19:52 -0800 (PST)
-Subject: Re: [PATCH] Revert "i2c: qcom-geni: Disable DMA processing on the
- Lenovo Yoga C630"
+        Mon, 30 Nov 2020 08:20:07 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: qcom: c630: Re-enable apps_smmu
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
         Andy Gross <agross@kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Wolfram Sang <wsa@kernel.org>, Shawn Guo <shawn.guo@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-References: <20201124185743.401946-1-bjorn.andersson@linaro.org>
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawn.guo@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201124184414.380796-1-bjorn.andersson@linaro.org>
 From:   Steev Klimaszewski <steev@kali.org>
-Message-ID: <f5aca410-f964-07d4-e18a-e438881e37cc@kali.org>
-Date:   Mon, 30 Nov 2020 10:19:51 -0600
+Message-ID: <9363e9ca-3b20-5b4b-a7cc-7c45a58faf20@kali.org>
+Date:   Mon, 30 Nov 2020 10:20:06 -0600
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
  Gecko/20100101 Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <20201124185743.401946-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20201124184414.380796-1-bjorn.andersson@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -77,53 +72,31 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 11/24/20 12:57 PM, Bjorn Andersson wrote:
-> A combination of recent bug fixes by Doug Anderson and the proper
-> definition of iommu streams means that this hack is no longer needed.
-> Let's clean up the code by reverting '127068abe85b ("i2c: qcom-geni:
-> Disable DMA processing on the Lenovo Yoga C630")'.
+On 11/24/20 12:44 PM, Bjorn Andersson wrote:
+> Re-enable the apps_smmu now that the arm-smmu driver supports stream
+> mapping handoff from firmware.
 >
 > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  drivers/i2c/busses/i2c-qcom-geni.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
+>  arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 5 -----
+>  1 file changed, 5 deletions(-)
 >
-> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-> index dce75b85253c..046d241183c5 100644
-> --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> @@ -353,13 +353,11 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->  {
->  	dma_addr_t rx_dma;
->  	unsigned long time_left;
-> -	void *dma_buf = NULL;
-> +	void *dma_buf;
->  	struct geni_se *se = &gi2c->se;
->  	size_t len = msg->len;
+> diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> index d03ca3190746..f5b98845fa90 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> @@ -232,11 +232,6 @@ vreg_lvs2a_1p8: lvs2 {
+>  	};
+>  };
 >  
-> -	if (!of_machine_is_compatible("lenovo,yoga-c630"))
-> -		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+> -&apps_smmu {
+> -	/* TODO: Figure out how to survive booting with this enabled */
+> -	status = "disabled";
+> -};
 > -
-> +	dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
->  	if (dma_buf)
->  		geni_se_select_mode(se, GENI_SE_DMA);
->  	else
-> @@ -394,13 +392,11 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->  {
->  	dma_addr_t tx_dma;
->  	unsigned long time_left;
-> -	void *dma_buf = NULL;
-> +	void *dma_buf;
->  	struct geni_se *se = &gi2c->se;
->  	size_t len = msg->len;
->  
-> -	if (!of_machine_is_compatible("lenovo,yoga-c630"))
-> -		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
-> -
-> +	dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
->  	if (dma_buf)
->  		geni_se_select_mode(se, GENI_SE_DMA);
->  	else
+>  &cdsp_pas {
+>  	firmware-name = "qcom/LENOVO/81JL/qccdsp850.mbn";
+>  	status = "okay";
 
 Tested-by: Steev Klimaszewski <steev@kali.org>
 
