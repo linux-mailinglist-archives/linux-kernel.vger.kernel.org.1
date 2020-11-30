@@ -2,101 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587F62C82D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8AC2C82DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbgK3LFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:05:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60068 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728681AbgK3LFC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:05:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606734216;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZM8hGmh0HYKlxLF1MQnAl60sUuzhNOm03zoIM5nbspw=;
-        b=Q2zjh7M4DM2jC2XKQ92cbJVqUI1SjUgT5w9CATvyyjQwEkEVjYvwa7KjkhV1K66O7h8QX4
-        M0PUrdw5OYj+c5I+cWmKwskecVPZPwQqbkdJmbNBjF2/23baJhKvm5EkSqfd7QscHopqKa
-        EJWx9TTEJiPDgrFCZAIP/VvnBiovtbg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-5sE5DlY4MN2XZBvqE28PTg-1; Mon, 30 Nov 2020 06:03:34 -0500
-X-MC-Unique: 5sE5DlY4MN2XZBvqE28PTg-1
-Received: by mail-ej1-f71.google.com with SMTP id g18so5597866eje.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:03:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZM8hGmh0HYKlxLF1MQnAl60sUuzhNOm03zoIM5nbspw=;
-        b=ccKuvdJIapK9OjpURQZn5dk1pW1FOoOx/2+QcO/n08jzTkuTJmk72XQ/95sMiC6Vs1
-         jzoR0rgqxJzFkmNkxRh7Rct2OZNBfl6jAggmpjC+aYVP8a010eoTTjJA+p+0d704uNS8
-         DXZP0WD7oRTlUPur0WwTgfvm4MCvJWDeotPeBUMZQIRr3uRcUQkGGdVFYE+BILW/RHLT
-         nx+xPDyd8Z2uQu2NKviXFCLKkY46gltq14KE/Z68yqDbm3CnQZkib+x3fXMzdHcU0UBx
-         pHCPA0P65b3G8yJ/famJ9oCWlG02wUZQiXSV2SF1zEMpsA2UyQnkuHHw4+AW33FlkB4L
-         JA5Q==
-X-Gm-Message-State: AOAM532N3NPj5waRNWIYLX/arIaHM2MoOwrXz7inZ2gkvVfvhBYCpOjG
-        wdxFcEkWuvdgRYlMpuaaNuZxKD0FW7XLAJH/YFXzNX8D6flEgCDvE65ydzG37NlEDTwmuAT1vti
-        HYyFRCW/MljHNBntIJHW+aaZg
-X-Received: by 2002:a17:906:4049:: with SMTP id y9mr9370138ejj.442.1606734212929;
-        Mon, 30 Nov 2020 03:03:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwk9wPoUjFt1o1YFgMXhH50p+0HXcZVHi6I26KKsHXbrcGubZdrjbVI/wFYANXa1rmhlF9rSQ==
-X-Received: by 2002:a17:906:4049:: with SMTP id y9mr9370101ejj.442.1606734212647;
-        Mon, 30 Nov 2020 03:03:32 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id da9sm270504edb.13.2020.11.30.03.03.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 03:03:31 -0800 (PST)
-Subject: Re: [PATCH RFC 01/39] KVM: x86: fix Xen hypercall page msr handling
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
- <20190220201609.28290-2-joao.m.martins@oracle.com>
- <20190222013008.GG7224@linux.intel.com>
- <44b102eb-ea74-7f19-3f4a-41dfc298d372@redhat.com>
- <188a300f8314dd30a3a71857f63f144a3ce69950.camel@infradead.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <51b7771a-0b76-37e3-a80b-e372a7467aca@redhat.com>
-Date:   Mon, 30 Nov 2020 12:03:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728742AbgK3LHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:07:03 -0500
+Received: from mail-eopbgr30136.outbound.protection.outlook.com ([40.107.3.136]:7771
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726345AbgK3LHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 06:07:02 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PIlVrFiUY7HY/pdZOd8lADotpjMIGAGML2Q2E2znlNIeGN8wgw6QZrIDdztipvBJrzYEmQtVwEZ0zo0Vg+53ht0Q2KAlf8wpGuj0LHxZaakuos4WZCfh+7H+AE8ZW429lT9iLIg/r6Ee3hEYDsDYuag9DJ7cZJ5R2mbrsMXTHy9ModLbMy0PzTtXnTkRk/LF9SiaYsYgb3fdpaPHX6qzskxH4gVSBMr4CHm60MZDAfHmvXwNolwcJeXDuYeL97iBxYoYwl0MEeRUUJ159vCdJaSFj0mOzBv1vMN3TwPZiGlQqCJO+/duQLw2frTMG0SemrktaYIaDF7/rs2Glf27jQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dUaJY7H2/xYjdqK7u0vsVk948Vdpp6mlyRYfIXVtwhs=;
+ b=bFqxq3rOVEansJa/ZQ/gX9FI1yxhJTnE2jweivyCqP1hR5FNLIdplj6D3wc4kiSvRQ7lTBKqeUEsQEBYfVeHA4oYXYzhygnFU/1nCHWcEXxXe5n2/CerTWSyGoWyJ0AiN3j5Xg1mx3/0ejvjpV3vtadnGUvdFhBPFfS3ZP2NRHWcwqd/U2mQcNfv+n8Zcf78wMIHSy3KJPYc+2jxHB/4U7ha7TiYiwianmfhuHSbANiNCVfFq23gl+rF07U9kvA8yzAWGXyF7yBuJyMxGAKVljMMVvZsQG3dzTLPM4MdDFNkMsyNPmuJOA2XX9yAZ+1LA7k6VhIU2PWnMhRd+L6MoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dUaJY7H2/xYjdqK7u0vsVk948Vdpp6mlyRYfIXVtwhs=;
+ b=bkaGmmrUbEX+GV8L0uWMSbguUTbeDT9MKVpqU+zUzqFiwpmA/6pIo3yphzZYvw1SjN+6XJiKA9cy1vLEBKxNp6S2bSlSFtEqFwxx+HfrvNPh1DMWdRkOj1T2mPvKPqy1TY6oSAJ2/B1HyrbJqCpz9Yc7qXGLqYrk7cR+o86rW6g=
+Authentication-Results: effinnov.com; dkim=none (message not signed)
+ header.d=none;effinnov.com; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM9PR10MB4402.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:269::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22; Mon, 30 Nov
+ 2020 11:06:12 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9d5:953d:42a3:f862]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9d5:953d:42a3:f862%7]) with mapi id 15.20.3611.031; Mon, 30 Nov 2020
+ 11:06:12 +0000
+From:   Schrempf Frieder <frieder.schrempf@kontron.de>
+To:     Charles Gorand <charles.gorand@effinnov.com>,
+        =?UTF-8?q?Cl=C3=A9ment=20Perrochaud?= 
+        <clement.perrochaud@effinnov.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH] NFC: nxp-nci: Make firmware GPIO pin optional
+Date:   Mon, 30 Nov 2020 12:04:42 +0100
+Message-Id: <20201130110447.16891-1-frieder.schrempf@kontron.de>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [46.142.77.113]
+X-ClientProxiedBy: AM7PR04CA0003.eurprd04.prod.outlook.com
+ (2603:10a6:20b:110::13) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
-In-Reply-To: <188a300f8314dd30a3a71857f63f144a3ce69950.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fs-work.localdomain (46.142.77.113) by AM7PR04CA0003.eurprd04.prod.outlook.com (2603:10a6:20b:110::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Mon, 30 Nov 2020 11:06:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d8cc93e9-0864-4d5a-bb01-08d8951ff274
+X-MS-TrafficTypeDiagnostic: AM9PR10MB4402:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM9PR10MB4402242ECB3AB4B4192B179FE9F50@AM9PR10MB4402.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sA19WqVjsjCsNjoq15JVXb4GvP63dViLXqDDFWfz8J7jWpA6RG8Fz1/Mwx+8qb+xjyWIusktL0ni3vc/wWATKH3+KWmhMLOMhv3WM+0eeeqbwgC7Kd9jfFR462hvo8LX9DjK7az/jqFTUe8ph4tymPtJH5vpO/KNZ3A84GFQNKosfU5u4eMoqh/gNHMsexJ8RYKksP/LJiGyn7ZyoivdPqgN8wn4KykWorO6TrWxb1oK3QQ0t9Zox8N/Dh3VifMIH3K4zAT+N1NigdN2wbCuVmGRTfWERw6bzfaqwwzMtEMB7g0IFkVrC/pMlw65DsAE2z/PoJRG7UWQy7v8EFdGzQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(396003)(346002)(376002)(2906002)(1076003)(6486002)(8936002)(478600001)(5660300002)(4326008)(8676002)(66946007)(86362001)(66476007)(66556008)(36756003)(52116002)(6666004)(6512007)(54906003)(83380400001)(16526019)(316002)(7049001)(110136005)(2616005)(186003)(26005)(6506007)(956004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Fa4jlFQVo4Oc7xoafkMIQKv/Ip6fckLJPJ2dKXDc7j1JnWjdkn4qS2jlMbRf?=
+ =?us-ascii?Q?cliZJ2qiLYtynmfLELinB+z1eCjKi9aO8V0iSapT14mr5Wd7vxfBofB8wygE?=
+ =?us-ascii?Q?tNlTVKtzNkCivZ2/ousY9xLoyuxDmp5kmvyZTfT/lvGEWO5oVtc+94vtC1Du?=
+ =?us-ascii?Q?Yt5QlJXE2g/YHfGbCtHDvgA34Kuhoaf39NsJeIHnGJs/yyAo+Wt06RhaPV3b?=
+ =?us-ascii?Q?KXaJBmHjYn2JaKu4/T4rTOfaIJ+3P8kbMfbyBfSagIuKlVHPe8sSVdY/rifV?=
+ =?us-ascii?Q?6jxP0qqDoidFi/5xRli2K4/VJvoo2wcnqvSftw8MHnLXz7CFY9OPUhbdzDBT?=
+ =?us-ascii?Q?TfXGDZDtW7svSXI5PcM7/nY4ideJdxyrquVp/ZQfOdqEl20BtNYLDF9EoBlR?=
+ =?us-ascii?Q?lowfoPVDptj3PyvJqbiFnWlbh9U6yYJsl6POLrYiBhoLh6MHcRMeoYdqk8MU?=
+ =?us-ascii?Q?TQip4aHwNtUZK1cR2ece8rxTYt57kY1nB+FmpIxuhLU1hckAgtbm9zy1p5u0?=
+ =?us-ascii?Q?CxyBSOg0HZZjvO4R35oGG13jRBGx/7A7KH4Q0NLciUV1aw7eHFObJBVoKRZj?=
+ =?us-ascii?Q?wnJVLHhb5vsSLsTiHHHAcknajVtwUYqoxY/XTCbTsiMV9Ne5S++Lg2ZCRE00?=
+ =?us-ascii?Q?LQxWzukVep80Bidl98UhXwYyiTBt91bXb3O/OVNsyAH7DtjI1xtaWaDt6yNx?=
+ =?us-ascii?Q?tCfL+2TuMcT4Sy1gWAkWfr4VHFk79fHULFsS+jDrlaz36ZA4pwToz8/I8om2?=
+ =?us-ascii?Q?1LmC+LQBfe/Mz8TxveOYWr8t1LwuJx5nlNYWK9EFbEQzXTuaWDe8JHvOKOWz?=
+ =?us-ascii?Q?yGqT+gLPflIYQBhbcg5UPH1Jf2Y2WGc5jLZeNwukjZWBm9YaFL86kRT8ymYQ?=
+ =?us-ascii?Q?P1m/1CMRRL69ESnyfZV1gHVN2HscYcBaXr0NG/i3V1qQo8F7FPx+iyqSCiop?=
+ =?us-ascii?Q?kLVUNTTI4M2uiDAWjVOaDIi/1YA0KhVXQxnli04FfstOxJIbR6SONKspZrm6?=
+ =?us-ascii?Q?lV3g?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8cc93e9-0864-4d5a-bb01-08d8951ff274
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 11:06:11.8765
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9vuSxMiZwSCNd+p++EIundfCdFlSCkTDjlzebHfwmauJnjt9WNalCLHonedwUN9wdnLehX34+ABU97mhRUW61O0ymT0qZxReZyii8MEkuUQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4402
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/20 11:39, David Woodhouse wrote:
-> ... except that's a bit icky because that trick of falling through to
-> the default case only works for *one* case statement. And more to the
-> point, the closest thing I can find to a 'kvm_hyperv_enabled()' flag is
-> what we do for setting the HV_X64_MSR_HYPERCALL_ENABLE flag... which is
-> based on whether the hv_guest_os_id is set, which in turn is done by
-> writing one of these MSRs 
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-You can use CPUID too (search for Hv#1 in leaf 0x40000000)?
+There are other NXP NCI compatible NFC controllers such as the PN7150
+that use an integrated firmware and therefore do not have a GPIO to
+select firmware downloading mode. To support these kind of chips,
+let's make the firmware GPIO optional.
 
-Paolo
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+---
+ Documentation/devicetree/bindings/net/nfc/nxp-nci.txt | 2 +-
+ drivers/nfc/nxp-nci/i2c.c                             | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-> I suppose we could disable them just by letting Xen take precedence, if
-> kvm->arch.xen_hvm_config.msr == HV_X64_MSR_GUEST_OS_ID. But that's
-> basically what Joao's patch already does. It doesn't disable the
-> *other* Hyper-V MSRs except for the one Xen 'conflicts' with, but I
-> don't think that matters.
+diff --git a/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt b/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+index cfaf88998918..cb2385c277d0 100644
+--- a/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
++++ b/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+@@ -6,11 +6,11 @@ Required properties:
+ - reg: address on the bus
+ - interrupts: GPIO interrupt to which the chip is connected
+ - enable-gpios: Output GPIO pin used for enabling/disabling the chip
+-- firmware-gpios: Output GPIO pin used to enter firmware download mode
+ 
+ Optional SoC Specific Properties:
+ - pinctrl-names: Contains only one value - "default".
+ - pintctrl-0: Specifies the pin control groups used for this controller.
++- firmware-gpios: Output GPIO pin used to enter firmware download mode
+ 
+ Example (for ARM-based BeagleBone with NPC100 NFC controller on I2C2):
+ 
+diff --git a/drivers/nfc/nxp-nci/i2c.c b/drivers/nfc/nxp-nci/i2c.c
+index 9f60e4dc5a90..528893686e18 100644
+--- a/drivers/nfc/nxp-nci/i2c.c
++++ b/drivers/nfc/nxp-nci/i2c.c
+@@ -47,7 +47,8 @@ static int nxp_nci_i2c_set_mode(void *phy_id,
+ {
+ 	struct nxp_nci_i2c_phy *phy = (struct nxp_nci_i2c_phy *) phy_id;
+ 
+-	gpiod_set_value(phy->gpiod_fw, (mode == NXP_NCI_MODE_FW) ? 1 : 0);
++	if (phy->gpiod_fw)
++		gpiod_set_value(phy->gpiod_fw, (mode == NXP_NCI_MODE_FW) ? 1 : 0);
+ 	gpiod_set_value(phy->gpiod_en, (mode != NXP_NCI_MODE_COLD) ? 1 : 0);
+ 	usleep_range(10000, 15000);
+ 
+@@ -286,7 +287,7 @@ static int nxp_nci_i2c_probe(struct i2c_client *client,
+ 		return PTR_ERR(phy->gpiod_en);
+ 	}
+ 
+-	phy->gpiod_fw = devm_gpiod_get(dev, "firmware", GPIOD_OUT_LOW);
++	phy->gpiod_fw = devm_gpiod_get_optional(dev, "firmware", GPIOD_OUT_LOW);
+ 	if (IS_ERR(phy->gpiod_fw)) {
+ 		nfc_err(dev, "Failed to get FW gpio\n");
+ 		return PTR_ERR(phy->gpiod_fw);
+-- 
+2.17.1
 
