@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98EB2C8624
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F2C2C8626
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727454AbgK3OCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:02:17 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:46333 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726779AbgK3OCR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:02:17 -0500
-Received: by mail-ot1-f65.google.com with SMTP id z23so7673044oti.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:02:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VpexAjBJAyZrDgAGfMwNi00O6hIz7S/DLY11+w4U+I0=;
-        b=l9dw5sxXWZHLmosMl7XTVGiw6sQtwHNKzJjLesrAHHaHpaXzNxGTvuyoXJCUQXLqIr
-         1BuKcSFS+oy7tXScnu9J5fcgl3RPRUYzNwPjpKpX6IxrogpJDS7oFGjCJ48mSX+znGFx
-         go5pT2nH3SUmdq3uLMakSZ8gU1C33O5nrt6JdY5Qzm1vcAv7K35nRjwKwHP0SJD6R+0U
-         /w4ztdTG8pHA4fY1o1YZ3Kw9UQOUbSkxOt5a6abffkLqqYcvO55xFRjQQzvSSISuqwmT
-         ZBBp2/Z7FExIX+EbY6gHap00vnOr9FbJKqDEcN+EMMNqF2jSEKI5mDAfHdtUNE+VkKiW
-         0Srg==
-X-Gm-Message-State: AOAM5316YTYBGZrVFisglYkcCccf1ZY7zZAAKTDKFy6DDqll0M6FBGeb
-        JUdogr0WNdttiqYvaHc02CJBTCZ1pcxgZSxhJSM=
-X-Google-Smtp-Source: ABdhPJxxi8NYNwOVXavihejz/dOZoI/4q3BrhEsZRPvZ2sv76AHB5tQ59KEKOyOAmkQr9gLfb8mLN+Bx4SctgV0K9E8=
-X-Received: by 2002:a9d:171a:: with SMTP id i26mr16679673ota.260.1606744894558;
- Mon, 30 Nov 2020 06:01:34 -0800 (PST)
+        id S1725929AbgK3ODF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:03:05 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:45810 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726935AbgK3ODE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 09:03:04 -0500
+Received: from zn.tnic (p200300ec2f0c0400b0063e9f0046aa3d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:400:b006:3e9f:46:aa3d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 749601EC0473;
+        Mon, 30 Nov 2020 15:02:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606744943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=hbVilBsYbgMVMYEltX7p8R2H84M0rXfY7mrsu4hQtgI=;
+        b=pIF6MUQHFwCKW2n6rOdNkhMQyndiabB32fJyFcn+0FW1CFAjOmX6YFky3LtrZgx/ie50Xv
+        2T5kb+Dwwo1kwQzD6h5aFBAZDZzDe6PX5jsUhCKCJ3ad9/dQkjbulWyzCej0ALyOFG+UDN
+        +sSWNUD1BXc5TjEQYSHliKdftXH/loU=
+Date:   Mon, 30 Nov 2020 15:02:24 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     rjw@rjwysocki.net, wei.huang2@amd.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [RFC PATCH 4/4] cpufreq: acpi-cpufreq: Use identifiers for AMD
+ processor family
+Message-ID: <20201130140224.GD6019@zn.tnic>
+References: <20201125144847.3920-1-punitagrawal@gmail.com>
+ <20201125144847.3920-5-punitagrawal@gmail.com>
 MIME-Version: 1.0
-References: <20201127104630.1839171-1-thierry.reding@gmail.com>
-In-Reply-To: <20201127104630.1839171-1-thierry.reding@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 30 Nov 2020 15:01:16 +0100
-Message-ID: <CAJZ5v0jGzLHD2vRYOvi=E3XjYuAH9+r8p46c+d1Ua7Uu6TZhOQ@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Fix a couple of typos
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201125144847.3920-5-punitagrawal@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 11:46 AM Thierry Reding
-<thierry.reding@gmail.com> wrote:
->
-> From: Thierry Reding <treding@nvidia.com>
->
-> These were just some minor typos that have crept in recently and are
-> easily fixed.
->
-> Signed-off-by: Thierry Reding <treding@nvidia.com>
-
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
+On Wed, Nov 25, 2020 at 11:48:47PM +0900, Punit Agrawal wrote:
+> Replace the raw values for AMD processor family with recently
+> introduced identifier macros to improve code readability and
+> maintainability.
+> 
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
 > ---
->  drivers/base/core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 1165a80f8010..5e3600eb3ab2 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -468,7 +468,7 @@ postcore_initcall(devlink_class_init);
->   * with runtime PM.  First, setting the DL_FLAG_PM_RUNTIME flag will cause the
->   * runtime PM framework to take the link into account.  Second, if the
->   * DL_FLAG_RPM_ACTIVE flag is set in addition to it, the supplier devices will
-> - * be forced into the active metastate and reference-counted upon the creation
-> + * be forced into the active meta state and reference-counted upon the creation
->   * of the link.  If DL_FLAG_PM_RUNTIME is not set, DL_FLAG_RPM_ACTIVE will be
->   * ignored.
->   *
-> @@ -491,7 +491,7 @@ postcore_initcall(devlink_class_init);
->   * Also, if DL_FLAG_STATELESS, DL_FLAG_AUTOREMOVE_CONSUMER and
->   * DL_FLAG_AUTOREMOVE_SUPPLIER are not set in @flags (that is, a persistent
->   * managed device link is being added), the DL_FLAG_AUTOPROBE_CONSUMER flag can
-> - * be used to request the driver core to automaticall probe for a consmer
-> + * be used to request the driver core to automatically probe for a consumer
->   * driver after successfully binding a driver to the supplier device.
->   *
->   * The combination of DL_FLAG_STATELESS and one of DL_FLAG_AUTOREMOVE_CONSUMER,
-> --
-> 2.29.2
->
+>  drivers/cpufreq/acpi-cpufreq.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+> index 29f1cd93541e..d8b8300ae9e0 100644
+> --- a/drivers/cpufreq/acpi-cpufreq.c
+> +++ b/drivers/cpufreq/acpi-cpufreq.c
+> @@ -202,8 +202,8 @@ static int override_acpi_psd(unsigned int cpu_id)
+>  		 * CPU's before Zen3 (except some Zen2) need the
+>  		 * override.
+>  		 */
+> -		return (c->x86 < 0x19) &&
+> -			!(c->x86 == 0x17 && c->x86_model == 0x60 &&
+> +		return (c->x86 < AMD_FAM_ZEN3) &&
+> +			!(c->x86 == AMD_FAM_ZEN && c->x86_model == 0x60 &&
+
+This is what I mean - that's Zen2 as the comment above says so having
+
+		c->x86 == AMD_FAM_ZEN
+
+is not enough. And you have a comment above it stating which CPUs are
+matched here so I'm not sure those family defines make it any better...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
