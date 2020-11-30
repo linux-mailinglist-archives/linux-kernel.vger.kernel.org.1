@@ -2,125 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9AC2C829C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E65A2C829D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728785AbgK3KuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:50:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41388 "EHLO
+        id S1728890AbgK3Kuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:50:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726828AbgK3KuC (ORCPT
+        with ESMTP id S1725842AbgK3Kup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:50:02 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70966C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:49:22 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id g1so10789331ilk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:49:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FrBQ+cllYh0Y6esR/SPkKcDu8fDsRwcNF9P9vUYZvL4=;
-        b=EqEeBGdID896KqQP2wGl3MacDZiftoQYvHOoa+q0ty3hiMysQXNvD+Cbzd5XWyH6oC
-         /R/jipmJirrS7xxuCq09QfhPWJ6BcZs6J5DXml/OSDTep21CZvCNfFppev46/gu0R/Dp
-         L8taqeCxff7s2jiuUfS1zwdg22lepLaEZGuQ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FrBQ+cllYh0Y6esR/SPkKcDu8fDsRwcNF9P9vUYZvL4=;
-        b=XxinWuqLrTGcr5iUaKDJrvVDkrj5KpI0g9/lGuVdAtvzXWfU1she21Zg7YwScsjyk9
-         rWb9a+nkM6PsKrAr2lBo8QY1ysCYSgKcAuMTdUXMbQJEMcNB4nivkjluDXgITq6v5YDH
-         jsfUEsYBumD9ZO6X2H6xCbmyCnuX5Cvgsx+EQvYuyvqcSP7tBX+mIk+em8WzORGLUsm2
-         4j4oPCageiHLxhpSFIlQl/7a3+mGCzM1NAczUxjYFbbYI4yrI/48qcaYXoBC3uZwm7DN
-         CZbJGv4nWfKILXg/rw0OtVXa6TDY3dTi1cuooDpXMYO25NVqwCF3Vn983P4Hu6ix13Fk
-         4W6Q==
-X-Gm-Message-State: AOAM532j9Co02zoZ2YX9nU6HKnA8xMWEIQ0J49XKRXjZlYWPblZKRd5m
-        7XJ+AeGWSH6uv5xSSX8hcb99zXUMcZQ8Bw==
-X-Google-Smtp-Source: ABdhPJwAdyUNm9zqa397pgYsGBFa2hTAggr5uA2hWSnfoNOxQCpPoawQDJ6rMI8SN05QCy32GepAKw==
-X-Received: by 2002:a92:dc07:: with SMTP id t7mr17148700iln.189.1606733361596;
-        Mon, 30 Nov 2020 02:49:21 -0800 (PST)
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com. [209.85.166.46])
-        by smtp.gmail.com with ESMTPSA id c14sm2762729ili.15.2020.11.30.02.49.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 02:49:20 -0800 (PST)
-Received: by mail-io1-f46.google.com with SMTP id z5so11222249iob.11
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:49:20 -0800 (PST)
-X-Received: by 2002:a02:c042:: with SMTP id u2mr12243455jam.32.1606733360204;
- Mon, 30 Nov 2020 02:49:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20201125221917.150463-1-ribalda@chromium.org> <20201130083410.GD32234@lst.de>
-In-Reply-To: <20201130083410.GD32234@lst.de>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Mon, 30 Nov 2020 11:49:09 +0100
-X-Gmail-Original-Message-ID: <CANiDSCtE3TqOK0cbw0SJ3LfqCsM3B8AFjBomfj4hcftyHXYXLg@mail.gmail.com>
-Message-ID: <CANiDSCtE3TqOK0cbw0SJ3LfqCsM3B8AFjBomfj4hcftyHXYXLg@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+        Mon, 30 Nov 2020 05:50:45 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0785C0613CF;
+        Mon, 30 Nov 2020 02:50:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AIVO2TFFZ6gXrvadr3YfinNxPmoHqYbfbKTZmCqeEyE=; b=ByhK66SAfuQQGbsjnwDNjfyO51
+        JXES2lYxiweMt0ZkAgHngwLEtOtKZumXWpW6m8wZH5zFdXgBhUer2KwKQLEcOnDac+xC3n/+l2ERM
+        Hdn7IwbXGj1b1zyB9fmevKxBSJ5OCNVjh/RQte91+nnZJ5D4bvpMybAieYJZtMBNdmWvnvkJn2K5l
+        ZVdG92/6zOOp1pl08bRiT5iX6x43fO8WZW3CMrMBME2jYtTvTgtwBGDDi0qy7sl+uFePrOpK93Riu
+        uUaL6/ZWWxPEdcD33h2pLbdOwU4j1l17lYakjltJnpvFXOIqkDttCAJa4GU7t+EGo1N8PEcpbPKPV
+        iRHa5wlA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kjgkT-0004V4-T2; Mon, 30 Nov 2020 10:49:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 490DD3003E1;
+        Mon, 30 Nov 2020 11:49:35 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 28645200D4EEA; Mon, 30 Nov 2020 11:49:35 +0100 (CET)
+Date:   Mon, 30 Nov 2020 11:49:35 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Xu, Like" <like.xu@intel.com>
+Cc:     Like Xu <like.xu@linux.intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
         Joerg Roedel <joro@8bytes.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kan Liang <kan.liang@linux.intel.com>, luwei.kang@intel.com,
+        Thomas Gleixner <tglx@linutronix.de>, wei.w.wang@intel.com,
+        Tony Luck <tony.luck@intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/17] perf: x86/ds: Handle guest PEBS overflow PMI
+ and inject it to guest
+Message-ID: <20201130104935.GN3040@hirez.programming.kicks-ass.net>
+References: <20201109021254.79755-1-like.xu@linux.intel.com>
+ <20201109021254.79755-5-like.xu@linux.intel.com>
+ <20201117143529.GJ3121406@hirez.programming.kicks-ass.net>
+ <b2c3f889-44dd-cadb-f225-a4c5db3a4447@linux.intel.com>
+ <20201118180721.GA3121392@hirez.programming.kicks-ass.net>
+ <682011d8-934f-4c76-69b0-788f71d91961@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <682011d8-934f-4c76-69b0-788f71d91961@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph
+On Fri, Nov 27, 2020 at 10:14:49AM +0800, Xu, Like wrote:
 
-On Mon, Nov 30, 2020 at 9:34 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> > +#ifndef CONFIG_DMA_NONCOHERENT
->
-> I think you need to drop this ifdef.  This code should work just fine
-> on noncoherent mips and sh platforms.
->
-> > +     uvc_urb->pages = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
-> > +                                              &uvc_urb->dma,
-> > +                                              gfp_flags | __GFP_NOWARN, 0);
-> > +     if (!uvc_urb->pages)
-> > +             return false;
-> > +
-> > +     uvc_urb->buffer = vmap(uvc_urb->pages,
-> > +                            PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT,
-> > +                            VM_DMA_COHERENT, PAGE_KERNEL);
-> > +     if (!uvc_urb->buffer) {
-> > +             dma_free_noncontiguous(dma_dev, stream->urb_size,
-> > +                                    uvc_urb->pages, uvc_urb->dma);
-> > +             return false;
-> > +     }
-> > +
-> > +     if (sg_alloc_table_from_pages(&uvc_urb->sgt, uvc_urb->pages,
-> > +                             PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT, 0,
-> > +                             stream->urb_size, GFP_KERNEL)) {
-> > +             vunmap(uvc_urb->buffer);
-> > +             dma_free_noncontiguous(dma_dev, stream->urb_size,
-> > +                                    uvc_urb->pages, uvc_urb->dma);
-> > +             return false;
-> > +     }
-> > +
-> > +     return true;
-> > +}
->
-> I wonder if we should lift this into a helper.  On the one hand I had
-> proliferating struct scatterlist usage, on the other hand it is all over
-> the media and drm code anyway, and duplicating this doesn't help anyone.
->
-> Possibly including the fallback to the coherent allocating.
+> > OK, but the code here wanted to inspect the guest DS from the host. It
+> > states this is somehow complicated/expensive. But surely we can at the
+> > very least map the first guest DS page somewhere so we can at least
+> > access the control bits without too much magic.
+> We note that the SDM has a contiguous present memory mapping
+> assumption about the DS save area and the PEBS buffer area.
+> 
+> Therefore, we revisit your suggestion here and move it a bit forward:
+> 
+> When the PEBS is enabled, KVM will cache the following values:
+> - gva ds_area (kvm msr trap)
+> - hva1 for "gva ds_area" (walk guest page table)
+> - hva2 for "gva pebs_buffer_base" via hva1 (walk guest page table)
 
-Probably Sergey has best opinion of this than mine. I only had to look
-into one driver, he has been working with the vb2, which uses the API
-much more.
+What this [gh]va? Guest/Host Virtual Address? I think you're assuming I
+know about all this virt crap,.. I don't.
 
+> if the "gva ds_area" cache hits,
 
+what?
 
--- 
-Ricardo Ribalda
+> - access PEBS "interrupt threshold" and "Counter Reset[]" via hva1
+> - get "gva2 pebs_buffer_base" via __copy_from_user(hva1)
+
+But you already had hva2, so what's the point?
+
+> if the "gva2 pebs_buffer_base" cache hits,
+
+What?
+
+> - we get "gva2 pebs_index" via __copy_from_user(hva2),
+
+pebs_index is in ds_are, which would be hva1
+
+> - rewrite the guest PEBS records via hva2 and pebs_index
+> 
+> If any cache misses, setup the cache values via walking tables again.
+> 
+> I wonder if you would agree with this optimization idea,
+> we look forward to your confirmation for the next step.
+
+I'm utterly confused. I really can't follow.
