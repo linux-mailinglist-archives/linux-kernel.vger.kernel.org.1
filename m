@@ -2,143 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923012C8D0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8D02C8D0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729776AbgK3Sl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:41:27 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:32962 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729717AbgK3Sl0 (ORCPT
+        id S1729762AbgK3Sl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:41:26 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:46811 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729740AbgK3Sl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Nov 2020 13:41:26 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D15E8B26;
-        Mon, 30 Nov 2020 19:40:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1606761643;
-        bh=FeJgv55ZQDGX5SC/a9GdqcQVulu7NByYBHSarUh+RDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TV/jfwfpKshB/m6EolPfZ4H+kgSJbZjpiHsjxU8moCRW2NlpV6DFp9AJVTfbDrJN+
-         S7ej31bt2N4KK3FotagOeQc/GAengfDIf6ISGFXeIxW8FzFyELeXHC/YvNzaHtIGx3
-         oCjJTeY8Agt8scqXAkl8GaBmLjbxH0j46YRzltM0=
-Date:   Mon, 30 Nov 2020 20:40:34 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 14/18] acpi: utils: Add function to fetch dependent
- acpi_devices
-Message-ID: <20201130184034.GW4141@pendragon.ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-15-djrscally@gmail.com>
- <20201130182354.GW4077@smile.fi.intel.com>
+Received: by mail-wr1-f66.google.com with SMTP id g14so17502998wrm.13;
+        Mon, 30 Nov 2020 10:41:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2ZOrDa6ldlj99dU4NwWopQDDabM2YX1J/bSlPxihqSc=;
+        b=tb9dsEBbAlbq5zXLrNCEwwMKbGcvpGiHDGphRfkDFMrmuFVWskOwDkXu9YkYzcJ6nS
+         5ssFd/NeMaBtwBouoHHwCwMNH0vVhEXZlxfsm9gAu7GhXyWUm0n0AhJs0uIYz8zucLTk
+         +LcHgIJYfdnC9JsfSv5ZXyjQjDBMmQFOr3I32vCKq9SA3ldhiE+lp5bpP7A5p+Uoe1IV
+         Lbt9zEwvheQWH6wF2UHnORwhDfiNEfLSvfI1f7NZUg5o53SoF8Yxyci2rchC9s8CIQu8
+         jWmwdZ5MUUJ5fv2VlcMMI1vHmcPvI5+NKdLVKZgcNxkICLvpaghWLtUgw3AJ9Ex7sjuG
+         0daQ==
+X-Gm-Message-State: AOAM532HqTsElQnVePLMHVwpzRQgMA+AYMIp2RgL4Lp5wJ6sZnBGnEP0
+        nvi7FlptLWGNJ2Q8U9ZPsUM=
+X-Google-Smtp-Source: ABdhPJx/ocpaaLADvVke5dqXezlyxFV2p7C5qdqnWe5pkBjHsJXNrEB1rkx5N13R+yVHQMZj0yCuBg==
+X-Received: by 2002:adf:fd0d:: with SMTP id e13mr29118129wrr.85.1606761643575;
+        Mon, 30 Nov 2020 10:40:43 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id e27sm33508526wrc.9.2020.11.30.10.40.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 10:40:42 -0800 (PST)
+Date:   Mon, 30 Nov 2020 20:40:41 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH net-next 2/4] nfc: s3fwrn5: reduce the EN_WAIT_TIME
+Message-ID: <20201130184041.GB28735@kozik-lap>
+References: <1606737750-29537-1-git-send-email-bongsu.jeon@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201130182354.GW4077@smile.fi.intel.com>
+In-Reply-To: <1606737750-29537-1-git-send-email-bongsu.jeon@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On Mon, Nov 30, 2020 at 08:23:54PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 30, 2020 at 01:31:25PM +0000, Daniel Scally wrote:
-> > ACPI devices declare themselves dependent on other devices via the _DEP
-> > buffer. Fetching the dependee from dependent is a matter of parsing
-> > _DEP, but currently there's no method to fetch dependent from dependee.
-> > Add one, so we can parse sensors dependent on a PMIC from the PMIC's
-> > acpi_driver.
+On Mon, Nov 30, 2020 at 09:02:30PM +0900, Bongsu Jeon wrote:
+> From: Bongsu Jeon <bongsu.jeon@samsung.com>
 > 
-> Do I understand correctly that it's an existing table provided by firmware that
-> (ab)uses _DEP in such way? Note, the specification doesn't tell we may use it
-> in this way, OTOH I don't remember if it strictly forbids such use.
-
-The ACPI "bindings" (I come from the DT world, is there a standard term
-to describe this in ACPI ?) for the camera in Windows-based Kaby Lake
-machines could be used as textbook examples of how to abuse ACPI, in
-many different ways :-) I'm sure that applies to ACPI in general
-though...
-
-Depending on the device, camera sensors are controlled by a PMIC that
-provides regulators, clocks and GPIOs (for the reset and power down
-signals), or directly by GPIOs that control discrete regulators and
-sensor signals. In the first case an INT3472 device models the
-regulator, which can be a TI TPS68470 or a uPI Semi uP6641Q (two
-completely different devices with a single HID...). The device model is
-specified in the CLDB, a custom data table for INT3472.
-
-In the latter case, Intel has created ACPI bindings for a "discrete
-PMIC". It uses an ACPI device object with HID set to INT3472 as well,
-also with a CLDB whose type field indicate the PMIC is "discrete". The
-ACPI device is only used to reference up to 4 GPIOs (provided by the
-Kaby Lake GPIO controller, the LPSS) in the _CRS. There's also a _DSM
-that reports, for each GPIO, its function. All this information should
-have been stored in the camera sensor ACPI device object, but that would
-have been too simple...
-
-In both cases, the PMIC device object is referenced by the _DEP data. We
-need to access it to dig up the GPIOs, look up their type, and register
-fixed regulators, supply mappings and GPIO mappings for the sensor.
-
-> So, please elaborate in the commit message why you need this and pint out to
-> the 6.5.8 "_DEP (Operation Region Dependencies)" which clearly says about
-> OpRegions and that part already supported by ACPI in the Linux, if I'm not
-> mistaken, need to refresh my memory.
+> The delay of 20ms is enough to enable and
+> wake up the Samsung's nfc chip.
 > 
-> ...
-> 
-> > +	handle = adev->handle;
-> > +
-> > +	if (!acpi_has_method(handle, "_DEP"))
-> > +		return 0;
-> > +
-> > +	status = acpi_evaluate_reference(handle, "_DEP", NULL, &dep_handles);
-> > +	if (ACPI_FAILURE(status))
-> > +		return 0;
-> > +
-> > +	for (i = 0; i < dep_handles.count; i++) {
-> > +		struct acpi_device_info *info;
-> > +
-> > +		status = acpi_get_object_info(dep_handles.handles[i], &info);
-> > +		if (ACPI_FAILURE(status))
-> > +			continue;
-> > +
-> > +		if (info->valid & ACPI_VALID_HID) {
-> > +			ret = acpi_bus_get_device(dep_handles.handles[i], &candidate);
-> > +			if (ret || !candidate) {
-> > +				kfree(info);
-> > +				continue;
-> > +			}
-> > +
-> > +			if (candidate == dependee) {
-> > +				acpi_dev_put(candidate);
-> > +				kfree(info);
-> > +				return 1;
-> > +			}
-> > +
-> > +			kfree(info);
-> > +		}
-> > +	}
-> 
-> Can you utilize (by moving to here and export for ACPI layer the
-> acpi_lpss_dep()?
+> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+> ---
+>  drivers/nfc/s3fwrn5/i2c.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
--- 
-Regards,
+It's really not easy to work with your way of sending the patches.
 
-Laurent Pinchart
+I am sorry but you have to adjust your style to the style of reviewers
+and the entire community.
+
+1. Again, you ignored/dropped my Ack.
+
+2. I asked you to send all patches referencing each other, which you can
+   achieve without any effort with git format-patch and send-email or
+   with in-reply-to.
+   Seriously, these tools work properly by default! You have to break
+   them on purpose - so stop.  Now, all your patches are scattered over
+   my mailbox. They are all over mailing list:
+   https://lore.kernel.org/lkml/?q=bongsu.jeon2%40gmail.com
+   Browsing this patchset is uncomfortable. It's a pain.
+
+Please, work on your workflow. Get help in that - there are plenty of
+open-source contributors in Samsung. Ask them how to do it. If you
+cannot, read the mailing lists and see how others do it.
+
+Recent example, one of thousands:
+https://lore.kernel.org/linux-arm-kernel/20201130131047.2648960-1-daniel@0x0f.com/T/#m4a9ed644869b8018b8286a6b229012278141cb66
+
+1. It comes with a cover letter,
+2. All emails are properly linked with each other (scroll to the bottom).
+
+Best regards,
+Krzysztof
