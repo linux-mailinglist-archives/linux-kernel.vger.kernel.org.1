@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF662C8B71
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF842C8B76
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729499AbgK3RkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:40:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729492AbgK3RkU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:40:20 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B78C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:39:39 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id f17so10504876pge.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:39:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=/yv51F3vwzB9OEqoFeaGWnr5PcKyz2F1XhnDGz2Gpz4=;
-        b=ukM8uaktLRjNipZsZvu48BAFpTz5vBLklrNhhmqy2NuzyUIH5LzWGuolzM59Ym2VSN
-         DqwJSTUVzRu7bmyC5tCnnYBKpoJTTynaolKHOMrZIS1lLYI2gh4TgvaZMGdm/FSM716B
-         fJze/olwqD1IRwlx5ZeofBGVq0BXLR6TCdHdNjHBVdKyPmTPo8tD12D7awmNy4iN+JoJ
-         CYkshEw1x/rjz0L0yRW9Ec+jlPGTa/G4uT3p3hZgEEI9QKSFhhLegMFEz1ZjK1Bp+WkY
-         AmQiYQrQHwahnQJUBwYRpyI38w1mpoROopd4qsrA/ndA8pdP2mnzz4Aks9ueNwSszq5S
-         cZQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=/yv51F3vwzB9OEqoFeaGWnr5PcKyz2F1XhnDGz2Gpz4=;
-        b=pA12SV5J8q3worMJt1sb4hyAFFSpNjOvmgjerHAvogbtIlpQzUA7g+xWFYMdXwThz6
-         3+xMMRFXLoMMNoYQCYM+qPuBGsN2oBsV7bvDstqscJ5BKUqdRdF0dUybrstE9rW+VgkH
-         /dbNOxbYJvAX7ahHyoYFuwaNJ66BuPPZh8PrpEsYZkv6IRM/KkA7dYQZMRQyDh/wr/xX
-         a/+Y78NHWv+PuMJbc2S9+GxwprLbnPvjgafmEn1LMhfd7qr9c27CAW6HNIeKv+bA+WUi
-         GdkweuS0LY+R6mCEKiZvY2r5L1F7UZ1B8xvzRoTcemxWyTOTKUUm4hBTk0xJgAstwJLO
-         LwXg==
-X-Gm-Message-State: AOAM531UCwjiBq4a25BLOFp7LgrEu0+ha7u6pFpL5ikOokGBNmvTCpds
-        ZsNKHMhxgX8nsG7a3s6g/Stopu8L/X9FuyDIEGY=
-X-Google-Smtp-Source: ABdhPJw4R+I9/22wT/3XcQBOhTgNoSJRsE7SL6jX0Uv25Y2N+GAGBTmO4HJKbleP09JCtc7q79oPEHnUQ3Zsf0202cU=
-X-Received: by 2002:a63:1a02:: with SMTP id a2mr18598413pga.359.1606757979386;
- Mon, 30 Nov 2020 09:39:39 -0800 (PST)
+        id S2387766AbgK3Rku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:40:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387585AbgK3Rkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:40:47 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F37720789;
+        Mon, 30 Nov 2020 17:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606758006;
+        bh=Po0Vni3vuUdizhdl3Kfio3Vs8WN0WIvGW+tvezPdIWM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VYO+8RMd1QSy/WXiWvosT497TGV+uAL9sNSFnR/1XRVx9xodVjlHd25Fm8lYoZrZz
+         ruJcQFINYTk8LOaj1lXFNHznM7c5lSFXJYU6Y4f5M0Thtc4MY4b/HpxZUIoLbUaWcn
+         /oXffkOiWW50cc+Xycx9i4+0K+AHoT19YuiShj7U=
+Date:   Mon, 30 Nov 2020 11:40:04 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the tip tree with the pci tree
+Message-ID: <20201130174004.GA1090686@bjorn-Precision-5520>
 MIME-Version: 1.0
-Sender: abdul.mariam69@gmail.com
-Received: by 2002:a17:90a:804c:0:0:0:0 with HTTP; Mon, 30 Nov 2020 09:39:38
- -0800 (PST)
-From:   Adams Elena <elenaadams577@gmail.com>
-Date:   Mon, 30 Nov 2020 11:39:38 -0600
-X-Google-Sender-Auth: 4_yCKVWpLKj_ENjtui3TUPPa6Ps
-Message-ID: <CADH3zX8PP5FoPN80uXhuzRKAPpCGmdSTCwPe2NTPBfeG5UN6ng@mail.gmail.com>
-Subject: URGENT RESPONSE NEEDED...
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201130102120.GB6586@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Donation To You in good faith.
+On Mon, Nov 30, 2020 at 11:21:20AM +0100, Borislav Petkov wrote:
+> On Mon, Nov 30, 2020 at 03:03:36PM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Today's linux-next merge of the tip tree got a conflict in:
+> > 
+> >   arch/x86/pci/i386.c
+> > 
+> > between commit:
+> > 
+> >   ace091d17272 ("x86/PCI: Fix kernel-doc markup")
+> > 
+> > from the pci tree and commit:
+> > 
+> >   638920a66a17 ("x86/PCI: Make a kernel-doc comment a normal one")
+> > 
+> > from the tip tree.
+> 
+> Bjorn, I fixed up the comment too, while picking up, see below. But I
+> don't care all that much which one to take so I leave it up to you to
+> decide. :-)
 
-May the peace of the Almighty God be with you and your Family,
+I dropped ace091d17272 ("x86/PCI: Fix kernel-doc markup") from my
+tree so we keep your comment improvements.  Thanks!
 
-With Due Respect and Humility, I was compelled to write you under
-humanitarian ground. My name is Mrs Elena Adams, the Wife of Engineer
-Ralph Alphonso Adams from United State Of America. I have took a
-personal decision to donate what I inherited from my late husband to
-the Charity, less privilege, I am 68 years old and I was diagnosed for
-Lung and bronchial cancer since the past 4 years, immediately after
-the death of my husband. We were both married for many years without a
-child, I took this decision because I don't have any child that will
-inherit this money  and rather to allow my husband relatives use my
-husband hard-earned funds  in ungodly ways  I have decided  to donate
-all I inherited from my late husband to you for good work of God.
-
-I and My late husband based here in Burkina Faso West Africa since
-eighteen years ago dealing with gold exportation and Sales. I have
-decided to donate a fund through Credit Account =E2=82=AC4.700.000.00 Four
-Million Seven Hundred Thousand Euros to you for this assignment,
-Charity, less privilege, building of schools, hospitals and also for
-the assistance of the poor widows, Motherless babies, Charity
-organization, CHRISTIAN OR MUSLIM, and orphans. I don't know you in
-person but God knows you, so contacting you for this assignment is a
-direction from the holy spirit of God to donate this fund outside this
-country through you as my late husband has already donated a lot in
-this country,
-
-so you have to make sure that you use this donation fund as I have
-directed so that the name of the Almighty God will be glorify forever.
-Your urgent response is required in this matter due to my present
-critical condition of my health, it was a Sister nurse working in this
-hospital that helped me to type this message, because I am loosing
-strength every minutes of the day. All I need from you is prayers that
-GOD will accept my soul in case I didn't survive this surgery. Also
-pray for the soul of my late Husband to rest in peace.
-
-Please always be prayerful all through your life, we are visitors on
-this earth and we must be very careful in whatever we do so that our
-soul will not be a waste. I wish you all the best and may God bless
-you abundantly.  I will give you more details about this orphanage
-home, as soon as i receive your reply in my private
-email(elenaadams577@gmail.com) to handle this project because I do not
-want to state all here until I see your reply, desire and commitment
-to handle this project. I AM WAITING FOR YOUR URGENT REPLY
-
-Remain blessed in God.
-
-Yours Sister.
-Mrs Elena Adams.
+> commit 638920a66a17c8e1f4415cbab0d49dc4a344c2a7
+> Author: Alex Shi <alex.shi@linux.alibaba.com>
+> Date:   Fri Nov 13 16:58:14 2020 +0800
+> 
+>     x86/PCI: Make a kernel-doc comment a normal one
+>     
+>     The comment is using kernel-doc markup but that comment isn't a
+>     kernel-doc comment so make it a normal one to avoid:
+>     
+>       arch/x86/pci/i386.c:373: warning: Function parameter or member \
+>               'pcibios_assign_resources' not described in 'fs_initcall'
+>     
+>      [ bp: Massage and fixup comment while at it. ]
+>     
+>     Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+>     Signed-off-by: Borislav Petkov <bp@suse.de>
+>     Link: https://lkml.kernel.org/r/1605257895-5536-5-git-send-email-alex.shi@linux.alibaba.com
+> 
+> diff --git a/arch/x86/pci/i386.c b/arch/x86/pci/i386.c
+> index fa855bbaebaf..f2f4a5d50b27 100644
+> --- a/arch/x86/pci/i386.c
+> +++ b/arch/x86/pci/i386.c
+> @@ -366,9 +366,9 @@ static int __init pcibios_assign_resources(void)
+>  	return 0;
+>  }
+>  
+> -/**
+> - * called in fs_initcall (one below subsys_initcall),
+> - * give a chance for motherboard reserve resources
+> +/*
+> + * This is an fs_initcall (one below subsys_initcall) in order to reserve
+> + * resources properly.
+>   */
+>  fs_initcall(pcibios_assign_resources);
+>  
+> 
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
