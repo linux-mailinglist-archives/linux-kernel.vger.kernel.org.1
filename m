@@ -2,117 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2292C8677
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD6D2C867B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727413AbgK3OQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:16:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29717 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727384AbgK3OQp (ORCPT
+        id S1725902AbgK3ORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:17:05 -0500
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:54960 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbgK3ORD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:16:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606745719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jy2WUd8qluzxUHyAVJZ0iTyH/i+egdeldCJel1aWn4Y=;
-        b=XDnqifpWWWmEqPhPm1iVO60/JIDzX23/GFgzXvTaYNfxFZgYPSNC5sQAO5VBUijHNwsnic
-        K2mqG1IwzrH+tQPdAwWpTuhZB5FMpgexKys2muyrOIuykIsqNRl6GrM9cAu+qNdsB0fOLJ
-        jXj01XFz0XF1nOG2guGgEuXuUfmhhew=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-CR_B_9FKOZmR61IWjvQYjQ-1; Mon, 30 Nov 2020 09:15:15 -0500
-X-MC-Unique: CR_B_9FKOZmR61IWjvQYjQ-1
-Received: by mail-wm1-f69.google.com with SMTP id b184so1120492wmh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:15:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jy2WUd8qluzxUHyAVJZ0iTyH/i+egdeldCJel1aWn4Y=;
-        b=R7/GFm4fU3KezCpZ473n36WE0ljSrILWE3rWL0sAGYDwpFsv2jRPynsJ3GrSqho7FV
-         3/c5YXwDO7vc2CTAIGYPDZ2o923gFXW+hyGjmLrjCkhKu2lUDTdNJD59H8vR0o2/c/1G
-         39CGTBjHORFojB6us/C7h4B9fN/nt/XKoF9TrC4Cvder4ohZXEHgzpybNre6pT6dwT1p
-         d4orOtMEyqKxcQk8oiTBbryKpUnOKkTinax6Aml2ZWkZ2f+DmDfRyeq1UaT9ZCRZiP8V
-         Wra7asxMtETkN/8zqZIeZkbA78t4kz1/3AHJV4lQoyXllwOv2jJ3uxtpQs1n0s+O1JjT
-         +/Hw==
-X-Gm-Message-State: AOAM532fASvkseE+yVWktydAH/+HoDidYRh+j0tQrVDLxNZjL5FdLOvs
-        frzqjto0axlwSohCBo3G9rZT4s08cn8x01BV8M4YdWauT5SsmbA05hm3u94WMJpYSyNWoWx1zWA
-        I72k34MZiWYJdvuLCOJZN0nu0
-X-Received: by 2002:a1c:e142:: with SMTP id y63mr10768881wmg.28.1606745714374;
-        Mon, 30 Nov 2020 06:15:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy4NO6q15SbHWukyBJ8MRyRFWENoejaNPVjxMUi4v5OO3B+V6ojxrsSeiVtMWCnB1wM/pytUg==
-X-Received: by 2002:a1c:e142:: with SMTP id y63mr10768795wmg.28.1606745713286;
-        Mon, 30 Nov 2020 06:15:13 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s2sm24357624wmh.37.2020.11.30.06.15.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 06:15:12 -0800 (PST)
-Subject: Re: [PATCH 2/2] KVM: x86: introduce KVM_X86_QUIRK_TSC_HOST_ACCESS
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Oliver Upton <oupton@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <20201130133559.233242-1-mlevitsk@redhat.com>
- <20201130133559.233242-3-mlevitsk@redhat.com>
- <c093973e-c8da-4d09-11f2-61cc0918f55f@redhat.com>
- <638a2919cf7c11c55108776beecafdd8e2da2995.camel@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5e77e912-893b-0c8f-a9a6-b43eaee24ed3@redhat.com>
-Date:   Mon, 30 Nov 2020 15:15:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 30 Nov 2020 09:17:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1606745823; x=1638281823;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gXJa2GLoR+9cQw6bzdTpZp8O02BmQweuLBOY+wsJ/pQ=;
+  b=uZINWAlAZm1e7aHX5ClttmGABeZNnoJYuQNnruF0lFfg2A8apEFEBUK9
+   e7UPeZGou7zVOlV41Y3TE8MuUgq98wYMBYbN9jcJXEnYyQwsy5A5+Zmth
+   zD/I655lnEEKcBEZe3ZqCQLqhaRwbpqymaLUYU+puAgR+7W9/jjaW4nKk
+   2y/VGJ6Uqqet3qM7zCV9HW99O+fS8LpeHSjTVT+CXk6OnjadCOtYWafaI
+   1UbZ2rfBBttLWkwCr7TTcFp9StRUbId+sp715PLDvOGILwkDcmrpYB+d1
+   LZhYLjkEKC14uQOw6UNJeGdWsQmRQ1p9GaGSNIg5/iIEyWwcWaCeY1cRE
+   g==;
+IronPort-SDR: UBpIndPWD+sPiPr1xAWrBjFrAw0jyatfCbO5eBHO4lhfJD0yqIlRCUdOKtoQEKPcca+rauqNjP
+ 5/b7fARWciTeOHhBPU1fc1Ln42oBCmAxrDFmXzXgPW6xhpmn5bqKjAXz0tJ05mu2kadvLOZ/eh
+ uxPoTxKEGIY//1VIcnM0SS76IPFUroR5ZQ8OZ+CIkrlkd5btOYmW/nLboe7QfTJeqaAzoJcORS
+ v6UxVFfVOk7CCG67IZy9YiarYs4CPKYXh0D66zGqMmg/+t1RbLA7130B4UMJXHxg6o7lwrkBPd
+ JY4=
+X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
+   d="scan'208";a="105475172"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Nov 2020 07:15:57 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 30 Nov 2020 07:15:57 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 30 Nov 2020 07:15:57 -0700
+Date:   Mon, 30 Nov 2020 15:15:56 +0100
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
+Message-ID: <20201130141556.o4vg32lr4uykwxmu@mchp-dev-shegelun>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-3-steen.hegelund@microchip.com>
+ <20201128190616.GF2191767@lunn.ch>
+ <20201128222828.GQ1551@shell.armlinux.org.uk>
+ <20201129105245.GG1605@shell.armlinux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <638a2919cf7c11c55108776beecafdd8e2da2995.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201129105245.GG1605@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/20 15:11, Maxim Levitsky wrote:
-> On Mon, 2020-11-30 at 14:54 +0100, Paolo Bonzini wrote:
->> On 30/11/20 14:35, Maxim Levitsky wrote:
->>> This quirk reflects the fact that we currently treat MSR_IA32_TSC
->>> and MSR_TSC_ADJUST access by the host (e.g qemu) in a way that is different
->>> compared to an access from the guest.
->>>
->>> For host's MSR_IA32_TSC read we currently always return L1 TSC value, and for
->>> host's write we do the tsc synchronization.
->>>
->>> For host's MSR_TSC_ADJUST write, we don't make the tsc 'jump' as we should
->>> for this msr.
->>>
->>> When the hypervisor uses the new TSC GET/SET state ioctls, all of this is no
->>> longer needed, thus leave this enabled only with a quirk
->>> which the hypervisor can disable.
->>>
->>> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
->>> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+On 29.11.2020 10:52, Russell King - ARM Linux admin wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>
+>On Sat, Nov 28, 2020 at 10:28:28PM +0000, Russell King - ARM Linux admin wrote:
+>> On Sat, Nov 28, 2020 at 08:06:16PM +0100, Andrew Lunn wrote:
+>> > > +static void sparx5_phylink_mac_config(struct phylink_config *config,
+>> > > +                               unsigned int mode,
+>> > > +                               const struct phylink_link_state *state)
+>> > > +{
+>> > > + struct sparx5_port *port = netdev_priv(to_net_dev(config->dev));
+>> > > + struct sparx5_port_config conf;
+>> > > + int err = 0;
+>> > > +
+>> > > + conf = port->conf;
+>> > > + conf.autoneg = state->an_enabled;
+>> > > + conf.pause = state->pause;
+>> > > + conf.duplex = state->duplex;
+>> > > + conf.power_down = false;
+>> > > + conf.portmode = state->interface;
+>> > > +
+>> > > + if (state->speed == SPEED_UNKNOWN) {
+>> > > +         /* When a SFP is plugged in we use capabilities to
+>> > > +          * default to the highest supported speed
+>> > > +          */
+>> >
+>> > This looks suspicious.
 >>
->> This needs to be covered by a variant of the existing selftests testcase
->> (running the same guest code, but different host code of course).
-> Do you think that the test should go to the kernel's kvm unit tests,
-> or to kvm-unit-tests project?
+>> Yes, it looks highly suspicious. The fact that
+>> sparx5_phylink_mac_link_up() is empty, and sparx5_phylink_mac_config()
+>> does all the work suggests that this was developed before the phylink
+>> re-organisation, and this code hasn't been updated for it.
+>>
+>> Any new code for the kernel really ought to be updated for the new
+>> phylink methodology before it is accepted.
+>>
+>> Looking at sparx5_port_config(), it also seems to use
+>> PHY_INTERFACE_MODE_1000BASEX for both 1000BASE-X and 2500BASE-X. All
+>> very well for the driver to do that internally, but it's confusing
+>> when it comes to reviewing this stuff, especially when people outside
+>> of the driver (such as myself) reviewing it need to understand what's
+>> going on with the configuration.
+>
 
-The latter already has x86_64/tsc_msrs_test.c (which I created in 
-preparation for this exact change :)).
+Hi Russell,
 
-Paolo
+>There are other issues too.
+>
+>Looking at sparx5_get_1000basex_status(), we have:
+>
+> +       status->link = DEV2G5_PCS1G_LINK_STATUS_LINK_STATUS_GET(value) |
+> +                      DEV2G5_PCS1G_LINK_STATUS_SYNC_STATUS_GET(value);
+>
 
+>Why is the link status the logical OR of these?
+
+Oops: It should have been AND. Well spotted.
+
+>
+> +                       if ((lp_abil >> 8) & 1) /* symmetric pause */
+> +                               status->pause = MLO_PAUSE_RX | MLO_PAUSE_TX;
+> +                       if (lp_abil & (1 << 7)) /* asymmetric pause */
+> +                               status->pause |= MLO_PAUSE_RX;
+>
+>is actually wrong, and I see I need to improve the documentation for
+>mac_pcs_get_state(). The intention in the documentation was concerning
+>hardware that indicated the _resolved_ status of pause modes. It was
+>not intended that drivers resolve the pause modes themselves.
+>
+>Even so, the above is still wrong; it takes no account of what is being
+>advertised at the local end. If one looks at the implementation in
+>phylink_decode_c37_word(), one will notice there is code to deal with
+>this.
+>
+>I think we ought to make phylink_decode_c37_word() and
+>phylink_decode_sgmii_word() public functions, and then this driver can
+>use these helpers to decode the link partner advertisement to the
+>phylink state.
+
+Should I remove the current implementation and use something like what
+is in phylink_decode_c37_word() and phylink_decode_sgmii_word() in the
+meantime?
+
+>
+>Does the driver need to provide an ethtool .get_link function? That
+>seems to bypass phylink. Why can't ethtool_op_get_link() be used?
+
+I think that I tried that earlier, but ran into problems.  I better
+revisit this, and try out your suggestion.
+
+>
+>I think if ethtool_op_get_link() is used, we then have just one caller
+>for sparx5_get_port_status(), which means "struct sparx5_port_status"
+>can be eliminated and the code cleaned up to use the phylink decoding
+>helpers.
+>
+>--
+>RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+>FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+
+Thanks for your comments.
+
+BR
+Steen
+
+---------------------------------------
+Steen Hegelund
+steen.hegelund@microchip.com
