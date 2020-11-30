@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAE72C8F25
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F194D2C8F6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730018AbgK3U2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:28:04 -0500
-Received: from pb-smtp1.pobox.com ([64.147.108.70]:62689 "EHLO
-        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbgK3U2E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:28:04 -0500
-Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id 0C2BE97546;
-        Mon, 30 Nov 2020 15:27:22 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=4UF4bH+bC1D+wSV00NU6P7r/a8k=; b=tIYZEf
-        ERiRjvhpXPUlN+moKYFNMId1d6FbAO7Ap2U19oN6YpxEGSqBmQzajSv/IGUTvwQo
-        A48EQz4XNpf+ZE8RoeFPcJng7TjjUtE6pEnhK2mXwAnjV9oOITyet4jrxKRMUePs
-        Z9kn9tT+HvmpkCbEpJdnU9AOY/Y5wLnlaZU/g=
-Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id F286C97544;
-        Mon, 30 Nov 2020 15:27:21 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=WVu9/gmyv9KrvhY427JjOfrA+XHu7RboIqnSgXfUVos=; b=hPR4SYoTMcQfd+mANvYOSLMGe5bTckKACF6SmSmBF96FBcbA0seoHk7NCwO5g82Y1f3Fj70lUBp9NCU7T9CJ2NJwbfUN7uowkOfIbCUrkgwvEFr5MAY0PwhjzeMyapiNKYGJvLxOhTYe8JCRFKDUXIpXB3TKej8W+Q3gw5cbD38=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id 59FA297543;
-        Mon, 30 Nov 2020 15:27:21 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 569602DA09EC;
-        Mon, 30 Nov 2020 15:27:20 -0500 (EST)
-Date:   Mon, 30 Nov 2020 15:27:20 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-cc:     Ard Biesheuvel <ardb@kernel.org>, Antony Yu <swpenim@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] __div64_32(): straighten up inline asm constraints
-In-Reply-To: <CAKwvOdn1nCx354hkb15wBDH12aJgbObqPxa_neX5m71axaKRUw@mail.gmail.com>
-Message-ID: <44638q0-o866-2o6o-qsp2-q1q528o7o5s9@syhkavp.arg>
-References: <pr6q9q72-6n62-236q-s59n-7osq71o285r9@syhkavp.arg> <CAKwvOdn1nCx354hkb15wBDH12aJgbObqPxa_neX5m71axaKRUw@mail.gmail.com>
+        id S1730086AbgK3UvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:51:03 -0500
+Received: from mga11.intel.com ([192.55.52.93]:60991 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728337AbgK3UvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 15:51:02 -0500
+IronPort-SDR: yvFIJimU7A/Scfus2zvlQyQy4ZJ+Bez2gYnBxBN1LYRwIr7hK1UFX24Zcp1CCySvCOoJrAZpVa
+ KSfOF2q8MfPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="169210056"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="169210056"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 12:49:21 -0800
+IronPort-SDR: l56Kv88FxBl/g7uL0cUWjbZXa/xxgbrCaAcsyNjw772ia5128r3FdUn8oR744As54N2C3ch1GM
+ 22LAH4UIVNVw==
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="480800565"
+Received: from whsiao-mobl.amr.corp.intel.com (HELO [10.209.17.17]) ([10.209.17.17])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 12:49:21 -0800
+Subject: Re: [PATCH] soundwire: Fix error return code in
+ sdw_compute_port_params
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20201125065035.154262-1-miaoqinglang@huawei.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <fc8ffb8c-955e-ddf3-3113-52c8b7329696@linux.intel.com>
+Date:   Mon, 30 Nov 2020 11:35:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 72F09B28-334A-11EB-B458-D152C8D8090B-78420484!pb-smtp1.pobox.com
+In-Reply-To: <20201125065035.154262-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020, Nick Desaulniers wrote:
 
-> On Mon, Nov 30, 2020 at 11:05 AM Nicolas Pitre <nico@fluxnic.net> wrote:
+
+On 11/25/20 12:50 AM, Qinglang Miao wrote:
+> Fix to return the error code -EINVAL in sdw_compute_port_params
+> instead of 0.
 > 
-> > +       __rem = __n >> 32;
-> >         *n = __res;
-> >         return __rem;
+> Fixes: 9026118f20e2 ("soundwire: Add generic bandwidth allocation algorithm")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+
+Thanks for the patch.
+The test covers a very unlikely error scenario but nevertheless not a 
+zero probability so the suggested fix makes sense to me.
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> ---
+>   drivers/soundwire/generic_bandwidth_allocation.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> The above 3 statement could be:
+> diff --git a/drivers/soundwire/generic_bandwidth_allocation.c b/drivers/soundwire/generic_bandwidth_allocation.c
+> index 0bdef38c9..ad857ac62 100644
+> --- a/drivers/soundwire/generic_bandwidth_allocation.c
+> +++ b/drivers/soundwire/generic_bandwidth_allocation.c
+> @@ -283,8 +283,10 @@ static int sdw_compute_port_params(struct sdw_bus *bus)
+>   	if (ret < 0)
+>   		return ret;
+>   
+> -	if (group.count == 0)
+> +	if (group.count == 0) {
+> +		ret = -EINVAL;
+>   		goto out;
+> +	}
+>   
+>   	params = kcalloc(group.count, sizeof(*params), GFP_KERNEL);
+>   	if (!params) {
 > 
-> ```
-> *n = __res;
-> return __n >> 32;
-> ```
-
-They could. However the compiler doesn't care, and the extra line makes 
-it more obvious that the reminder is the high part of __n. So, 
-semantically the extra line has value.
-
-Thanks for the review.
-
-
-Nicolas
