@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3B12C8D3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CCF2C8D45
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387693AbgK3Svb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:51:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgK3Sva (ORCPT
+        id S1728840AbgK3SxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:53:15 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:33281 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727994AbgK3SxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:51:30 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D62C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:50:50 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id s21so10977295pfu.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:50:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HDV2ZTfnWFj2I1nMXs/QUKPdkXN+jw+xT8fcFlUSOVc=;
-        b=lA21FFs7fsI60sDfvj2gxU+FgPkbHvr1U9a3ONx/671C/3d/nKlJpnVk7IAlanZc2m
-         bwPmQnaTZX8tMGvHfKP1xSW0Nh1Er7MBelMPy9IB6NBnT4751YJQGutD4EqQmb4syZbd
-         CDFMa9xO18awbJw3S9r4cJsdGc1cP1OYBhZbjYphsxKLZ2+jRa6Ljlf80LB+1c8cpYMY
-         /tQxq/5EHr5/gGEX0FRYxIcVqbuvP1bp3ACYlmY5FiorxuFPC4xB8u37h/ZBxd/VJhkj
-         g/mywk0m80gfxjHgQikUFr9IlQUXoR1Xz1hAghWecDLYfn2TB11eD5PA+U9vrdMV0XxK
-         mdVA==
+        Mon, 30 Nov 2020 13:53:14 -0500
+Received: by mail-wr1-f68.google.com with SMTP id u12so17644296wrt.0;
+        Mon, 30 Nov 2020 10:52:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HDV2ZTfnWFj2I1nMXs/QUKPdkXN+jw+xT8fcFlUSOVc=;
-        b=Gjm0xABWXBUyNl29h/Cqj8AJ1CsAvNQ3tVMFRKtucZdU1tEXAPnw0tZPcmPH3Bx98K
-         pKuZVAktnrCW3xh1jm6AZOq2Y3++gZ7mHCUJ1c3S6Qo8eL/k16NtVaNQxZ2945ElqRuQ
-         pnTLDfBe7Xhry1bts+jg85WyYwlw0J29z1XKcPTKbUSxVh5O1breUwGTokwjIvFlLRvE
-         Az2gujgcquELWkAu2YT6FCE7xkJc2jnFXjxv7HgZeXDRBRXmd2vvpGaEphVzlo8T2qNR
-         gDeMD9kAXcUBNFUSV1VLttDlRqs1iNK2RwsKUzP/+x1bq96LXodkoE88wzOorGbgIqVD
-         UXRg==
-X-Gm-Message-State: AOAM53190dVDLteFkBGxf0FMQnQP6SuooyYoIGDry+fzr8/EyMB7MzDQ
-        wtt/6KYDdnqyZylwWH3yHcwOerFDioz3t2nW
-X-Google-Smtp-Source: ABdhPJwUbDjA9NQJXB5RYWAa+yeaMEvTqE2F9OISOPnqBFBf5Ppt4TbB/5X+E3Sfhk8mMDOYCPFfww==
-X-Received: by 2002:a62:1c93:0:b029:198:1c0a:ea71 with SMTP id c141-20020a621c930000b02901981c0aea71mr20104155pfc.22.1606762250026;
-        Mon, 30 Nov 2020 10:50:50 -0800 (PST)
-Received: from google.com ([2620:0:1008:11:7220:84ff:fe09:dc21])
-        by smtp.gmail.com with ESMTPSA id a6sm9159555pfo.194.2020.11.30.10.50.49
+        bh=GEH2GiLihB/we0wTKIA4s4JgPz0UXo9ohOBmB1H6nPM=;
+        b=V+rF0pza/okMpu2aZmpaMNubmUnOIFjkhuuyu1XDNgS6rguJEgw5LouLfCTDfBhCc2
+         k5sW/aEZBGG/L9nGxvhY+NLU2bi082eT9b9z5VqKZHrGhEMZd3UByx3dl5alrGd0Xlgr
+         9PKoUPCs5TpFq+bKYMpH1W4OvUi2U1U0e3FFkZ8MB6lKFiYjs8B+EXlVFGCGsdqKeKBC
+         9qp43T7E5PXarXuRVwlcaXtXGZ5LyeTuvp6GSMlLCNxLFHvedUtfEMaIQw3tRBK7cLnz
+         zfYsjSjAEj9LGXl9noORIy79oYyB0sNDdDbQ+L+kIR4tfVSuncns4AkRJiqIvtQ2nYGA
+         Gw3Q==
+X-Gm-Message-State: AOAM532ajNItpPPkE4KoCpgoqvJDnRGmEx3iBtblw9oHmuhKw/R/c3Yc
+        TGzufi6piJZ6byIDgjkjzdo=
+X-Google-Smtp-Source: ABdhPJz821U/zJI64E/s1m2nEjCfNrUEUrLV+rXCVRdKBs+Xe9IzhenHRej5zcolpGNDRBBoo4I2dA==
+X-Received: by 2002:adf:f9c4:: with SMTP id w4mr29689107wrr.64.1606762350398;
+        Mon, 30 Nov 2020 10:52:30 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id q25sm258812wmq.37.2020.11.30.10.52.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 10:50:49 -0800 (PST)
-Date:   Mon, 30 Nov 2020 10:50:45 -0800
-From:   Tom Roeder <tmroeder@google.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Peter Gonda <pgonda@google.com>,
-        Marios Pomonis <pomonis@google.com>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas.Lendacky@amd.com, David.Kaplan@amd.com
-Subject: Re: [PATCH v2] nvme: Cache DMA descriptors to prevent corruption.
-Message-ID: <20201130185045.GA744128@google.com>
-References: <20201120012738.2953282-1-tmroeder@google.com>
- <20201120080243.GA20463@lst.de>
+        Mon, 30 Nov 2020 10:52:29 -0800 (PST)
+Date:   Mon, 30 Nov 2020 20:52:27 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+Cc:     linux@armlinux.org.uk, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        tony@atomide.com, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
+        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, lee.jones@linaro.org, sam@ravnborg.org,
+        emil.l.velikov@gmail.com, daniel.thompson@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH 1/5] ARM: configs: drop unused BACKLIGHT_GENERIC option
+Message-ID: <20201130185227.GA29434@kozik-lap>
+References: <20201130152137.24909-1-andrey.zhizhikin@leica-geosystems.com>
+ <20201130152137.24909-2-andrey.zhizhikin@leica-geosystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201120080243.GA20463@lst.de>
+In-Reply-To: <20201130152137.24909-2-andrey.zhizhikin@leica-geosystems.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 09:02:43AM +0100, Christoph Hellwig wrote:
->On Thu, Nov 19, 2020 at 05:27:37PM -0800, Tom Roeder wrote:
->> This patch changes the NVMe PCI implementation to cache host_mem_descs
->> in non-DMA memory instead of depending on descriptors stored in DMA
->> memory. This change is needed under the malicious-hypervisor threat
->> model assumed by the AMD SEV and Intel TDX architectures, which encrypt
->> guest memory to make it unreadable. Some versions of these architectures
->> also make it cryptographically hard to modify guest memory without
->> detection.
->
->I don't think this is a useful threat model, and I've not seen a
->discussion on lkml where we had any discussion on this kind of threat
->model either.
+On Mon, Nov 30, 2020 at 03:21:33PM +0000, Andrey Zhizhikin wrote:
+> Commit 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
+> unused") removed geenric_bl driver from the tree, together with
+> corresponding config option.
+> 
+> Remove BACKLIGHT_GENERIC config item from all ARM configurations.
+> 
+> Fixes: 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is unused")
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+> ---
+>  arch/arm/configs/at91_dt_defconfig        | 1 -
+>  arch/arm/configs/cm_x300_defconfig        | 1 -
+>  arch/arm/configs/colibri_pxa300_defconfig | 1 -
+>  arch/arm/configs/jornada720_defconfig     | 1 -
+>  arch/arm/configs/magician_defconfig       | 1 -
+>  arch/arm/configs/mini2440_defconfig       | 1 -
+>  arch/arm/configs/omap2plus_defconfig      | 1 -
+>  arch/arm/configs/pxa3xx_defconfig         | 1 -
+>  arch/arm/configs/qcom_defconfig           | 1 -
+>  arch/arm/configs/sama5_defconfig          | 1 -
+>  arch/arm/configs/sunxi_defconfig          | 1 -
+>  arch/arm/configs/tegra_defconfig          | 1 -
+>  arch/arm/configs/u8500_defconfig          | 1 -
+>  13 files changed, 13 deletions(-)
 
-Thanks for the feedback and apologies for the lack of context.
+You need to send it to arm-soc maintainers, otherwise no one might feel
+responsible enough to pick it up.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-I was under the impression that support for AMD SEV SNP will start 
-showing up in KVM soon, and my understanding of SNP is that it 
-implies this threat model for the guest. See the patchset 
-for SEV-ES, which is the generation before SNP: 
-https://lkml.org/lkml/2020/9/14/1168. This doesn't get quite to the SNP 
-threat model, but it starts to assume more maliciousness on the part of 
-the hypervisor.
++CC Arnd and Olof,
 
-You can also see the talk from David Kaplan of AMD from the 2019 Linux 
-Security Summit for info about SNP: 
-https://www.youtube.com/watch?v=yr56SaJ_0QI.
+Dear Arnd and Olof,
 
->
->Before you start sending patches that regress optimizations in various
->drivers (and there will be lots with this model) we need to have a
->broader discussion first.
+Maybe it is worth to add arm-soc entry to the MAINTAINERS file?
+Otherwise how one could get your email address? Not mentioning the
+secret-soc address. :)
 
-I've added Tom Lendacky and David Kaplan from AMD on the thread now, 
-since I don't think I have enough context to say where this discussion 
-should take place or the degree to which they think it has or hasn't.
-
-Tom, David: can you please comment on this?
-
->
->And HMB support, which is for low-end consumer devices that are usually
->not directly assigned to VMs aren't a good starting point for this.
-
-I'm glad to hear that this case doesn't apply directly to cases we would 
-care about for assignment to guests. I'm not very familiar with this 
-codebase, unfortunately. Do the same kinds of issues apply for the kinds 
-of devices that would be assigned to guests?
+Best regards,
+Krzysztof
