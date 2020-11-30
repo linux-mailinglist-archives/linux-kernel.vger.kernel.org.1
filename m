@@ -2,155 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9C62C91B4
+	by mail.lfdr.de (Postfix) with ESMTP id 0E64A2C91B2
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730875AbgK3Wzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:55:53 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:29911 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730868AbgK3Wzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:55:51 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606776925; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=zDbLka9uUrfbZFvpBNQIhZzv3iWnZaNysnzWiwAqdzY=; b=S1nqbvv5Ru+9gePjUnEq3Xw9MdLLi/sT+zpnBMpYxWdt1V7c7FvSuerQs6ymhM2UEWWUIUKF
- TwnJqc9teg8y8VMxclEW6CoLfC5/mhmQYM2mU3NM/ZigBr3PGqm/gXqhYqb2U+EA9yrhZXL2
- i8WdtKyn91n4ThnO4guC3Dz76Cw=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5fc5783f0f9adc18c7fdbb95 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Nov 2020 22:54:55
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DFAB4C43465; Mon, 30 Nov 2020 22:54:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4516C433C6;
-        Mon, 30 Nov 2020 22:54:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D4516C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH 1/1] scsi: ufs: Remove scale down gear hard code
-To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1606442334-22641-1-git-send-email-cang@codeaurora.org>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <ce5e6132-8284-c2c5-3eaa-78d400763534@codeaurora.org>
-Date:   Mon, 30 Nov 2020 14:54:52 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S2388679AbgK3Wzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:55:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726520AbgK3Wzq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 17:55:46 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA745C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:55:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=FEehqEG1a1gUdHMKaEzZ631DuoSmxOdN1LmfoAyBjQc=; b=qBSfxuEsqEYHROB6wvqwA4hgO
+        EH2hU26Pr7z9GnAYVIIn9mZLTPMgCr80jon+Fr0Wc9uwnXJezF0D7E086/eiUchvt5UY7NycIpwWC
+        Untb1/3t8bDJt8i89ETNPxwwpmPOSSePmCN8OS6styfdvVLvio7JDgg3rXmO4R3X/O0i/tdSpSFUP
+        FiRgdUeiGh61K1S5OEcBXo9DNtwZclHGar/+lEZHvMdGrofmgdkt369aTppCIGFU88/2aFW1oQwT2
+        1kaFMSCn04TZahWY79POLyVmeGthGE6VQIZ2MDyX9X/7NgUS2VKKavDhVNKqO8PGnTDvrSqIkZO3o
+        yW14xwt6g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38174)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kjs4S-0007hl-FI; Mon, 30 Nov 2020 22:55:00 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kjs4R-0005Ol-Ns; Mon, 30 Nov 2020 22:54:59 +0000
+Date:   Mon, 30 Nov 2020 22:54:59 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Arnd Bergmann <arnd@kernel.org>, SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [GIT PULL] ARM: SoC fixes for v5.10, part 3
+Message-ID: <20201130225459.GB1551@shell.armlinux.org.uk>
+References: <CAK8P3a2Habmz95y+J+-4NiT5SGYhO_Fia-SHhapX-3NYRbEMmw@mail.gmail.com>
+ <CAHk-=wjA2Der39e_SWZ6S-DoVCJTu-Zwf6jn2wxmGTKzNPV1Dw@mail.gmail.com>
+ <CAD=FV=Vow5_jv=-O=f2v4_5Nb4DiOUB1sQUx6r=-y5A-6rP4hw@mail.gmail.com>
+ <CAHk-=whtySEgkH+VFy9oW8Q-+iuivGBo0hOUcee3DvrsBAQUrA@mail.gmail.com>
+ <CAD=FV=Up-JW8RtMLQ_pAG3e0d8NnpT+rDiguxcz3DnVUz_7Jbw@mail.gmail.com>
+ <CAHk-=wi2CQwAnKucLwE8vNZgXxyRy6L+DcgjGqxKHwbacKgaMQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1606442334-22641-1-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wi2CQwAnKucLwE8vNZgXxyRy6L+DcgjGqxKHwbacKgaMQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/2020 5:58 PM, Can Guo wrote:
-> Instead of making the scale down gear a hard code, make it a member of
-> ufs_clk_scaling struct.
+On Mon, Nov 30, 2020 at 10:22:58AM -0800, Linus Torvalds wrote:
+> > I guess the question is: why is static assignment of numbers not an
+> > acceptable solution to the problem?  It gives us the desired fixed
+> > numbers and automatically avoids all weird probe ordering / dependency
+> > problems.
 > 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
+> I think that if this had been done originally, it would probably be fine.
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+It was not done originally, because the original structure of the MMC
+bus was:
 
->   drivers/scsi/ufs/ufshcd.c | 12 +++++++-----
->   drivers/scsi/ufs/ufshcd.h |  2 ++
->   2 files changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 44254c9..1789df3 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1100,7 +1100,6 @@ static int ufshcd_wait_for_doorbell_clr(struct ufs_hba *hba,
->    */
->   static int ufshcd_scale_gear(struct ufs_hba *hba, bool scale_up)
->   {
-> -	#define UFS_MIN_GEAR_TO_SCALE_DOWN	UFS_HS_G1
->   	int ret = 0;
->   	struct ufs_pa_layer_attr new_pwr_info;
->   
-> @@ -1111,16 +1110,16 @@ static int ufshcd_scale_gear(struct ufs_hba *hba, bool scale_up)
->   		memcpy(&new_pwr_info, &hba->pwr_info,
->   		       sizeof(struct ufs_pa_layer_attr));
->   
-> -		if (hba->pwr_info.gear_tx > UFS_MIN_GEAR_TO_SCALE_DOWN
-> -		    || hba->pwr_info.gear_rx > UFS_MIN_GEAR_TO_SCALE_DOWN) {
-> +		if (hba->pwr_info.gear_tx > hba->clk_scaling.min_gear ||
-> +		    hba->pwr_info.gear_rx > hba->clk_scaling.min_gear) {
->   			/* save the current power mode */
->   			memcpy(&hba->clk_scaling.saved_pwr_info.info,
->   				&hba->pwr_info,
->   				sizeof(struct ufs_pa_layer_attr));
->   
->   			/* scale down gear */
-> -			new_pwr_info.gear_tx = UFS_MIN_GEAR_TO_SCALE_DOWN;
-> -			new_pwr_info.gear_rx = UFS_MIN_GEAR_TO_SCALE_DOWN;
-> +			new_pwr_info.gear_tx = hba->clk_scaling.min_gear;
-> +			new_pwr_info.gear_rx = hba->clk_scaling.min_gear;
->   		}
->   	}
->   
-> @@ -1824,6 +1823,9 @@ static void ufshcd_init_clk_scaling(struct ufs_hba *hba)
->   	if (!ufshcd_is_clkscaling_supported(hba))
->   		return;
->   
-> +	if (!hba->clk_scaling.min_gear)
-> +		hba->clk_scaling.min_gear = UFS_HS_G1;
-> +
->   	INIT_WORK(&hba->clk_scaling.suspend_work,
->   		  ufshcd_clk_scaling_suspend_work);
->   	INIT_WORK(&hba->clk_scaling.resume_work,
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 6f0f2d4..bdab23e 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -385,6 +385,7 @@ struct ufs_saved_pwr_info {
->    * @workq: workqueue to schedule devfreq suspend/resume work
->    * @suspend_work: worker to suspend devfreq
->    * @resume_work: worker to resume devfreq
-> + * @min_gear: lowest HS gear to scale down to
->    * @is_allowed: tracks if scaling is currently allowed or not
->    * @is_busy_started: tracks if busy period has started or not
->    * @is_suspended: tracks if devfreq is suspended or not
-> @@ -399,6 +400,7 @@ struct ufs_clk_scaling {
->   	struct workqueue_struct *workq;
->   	struct work_struct suspend_work;
->   	struct work_struct resume_work;
-> +	u32 min_gear;
->   	bool is_allowed;
->   	bool is_busy_started;
->   	bool is_suspended;
-> 
+host controller ---+--- card 1
+                   +--- card 2
+		   +--- card 3
+		   ...
 
+So one host controller could be connected to multiple different cards,
+and the bus has a way to detect each card individually. This means we
+had no idea how many cards would be connected to any one controller,
+and it was entirely sensible to allocate MMC block devices in the order
+we discovered the cards.
+
+The SD specification, this became limited to just one card per
+controller to allow for faster speeds.
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
