@@ -2,72 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0326C2C86FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948F42C86FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727630AbgK3Olc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:41:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37843 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726220AbgK3Olb (ORCPT
+        id S1727438AbgK3Ok4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:40:56 -0500
+Received: from shelob.surriel.com ([96.67.55.147]:54784 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbgK3Ok4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:41:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606747205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=cPuNmdbqLgkjH8YEAT3ik4nIW0hCX379Trx0CgGX7Vg=;
-        b=Htia6G0J2Q/IVBecxk4Vc/OJsEUmRUi9t2ATRNU4JTZoY1ATI5sVKz/qsUAxkir2JJnyMt
-        Eg03M79E6wVeT2ihQBOyJTcMkg9wPbslknlykcMr8no2FYGM1rYEvyzh1Zq5cwu3SlETJp
-        1nSBDvBo39PFTn7P28+NnDiqN7iZV0w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-f6kD4QFNNFq5arfZiyo9Bg-1; Mon, 30 Nov 2020 09:40:01 -0500
-X-MC-Unique: f6kD4QFNNFq5arfZiyo9Bg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76917107ACFA;
-        Mon, 30 Nov 2020 14:40:00 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 154D460C62;
-        Mon, 30 Nov 2020 14:40:00 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Ashish Kalra <Ashish.Kalra@amd.com>
-Subject: [PATCH] KVM: x86: adjust SEV for commit 7e8e6eed75e
-Date:   Mon, 30 Nov 2020 09:39:59 -0500
-Message-Id: <20201130143959.3636394-1-pbonzini@redhat.com>
+        Mon, 30 Nov 2020 09:40:56 -0500
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kjkLR-0000v7-Ii; Mon, 30 Nov 2020 09:40:01 -0500
+Message-ID: <0bf4037559563bd51f6ac68d659e9f886387fa7e.camel@surriel.com>
+Subject: Re: [PATCH 2/3] mm,thp,shm: limit gfp mask to no more than specified
+From:   Rik van Riel <riel@surriel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     hughd@google.com, xuyu@linux.alibaba.com,
+        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
+        willy@infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz
+Date:   Mon, 30 Nov 2020 09:40:01 -0500
+In-Reply-To: <20201130100053.GD17338@dhcp22.suse.cz>
+References: <20201124194925.623931-1-riel@surriel.com>
+         <20201124194925.623931-3-riel@surriel.com>
+         <20201126134034.GI31550@dhcp22.suse.cz>
+         <920c627330f3c7d295ab58edd1b62f28fdbd14bc.camel@surriel.com>
+         <20201127075214.GK31550@dhcp22.suse.cz>
+         <1f089a155d7501fb156da34744d282ae1f3d02f7.camel@surriel.com>
+         <20201130100053.GD17338@dhcp22.suse.cz>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-MwKFZQvAu7UAtgs7ip0f"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the ASID is now stored in svm->asid, pre_sev_run should also place
-it there and not directly in the VMCB control area.
 
-Reported-by: Ashish Kalra <Ashish.Kalra@amd.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/sev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--=-MwKFZQvAu7UAtgs7ip0f
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index c0b14106258a..3418bb18dae7 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1187,7 +1187,7 @@ void pre_sev_run(struct vcpu_svm *svm, int cpu)
- 	int asid = sev_get_asid(svm->vcpu.kvm);
- 
- 	/* Assign the asid allocated with this SEV guest */
--	svm->vmcb->control.asid = asid;
-+	svm->asid = asid;
- 
- 	/*
- 	 * Flush guest TLB:
--- 
-2.26.2
+On Mon, 2020-11-30 at 11:00 +0100, Michal Hocko wrote:
+> On Fri 27-11-20 14:03:39, Rik van Riel wrote:
+> > On Fri, 2020-11-27 at 08:52 +0100, Michal Hocko wrote:
+> > > On Thu 26-11-20 13:04:14, Rik van Riel wrote:
+> > > > I would be more than happy to implement things differently,
+> > > > but I am not sure what alternative you are suggesting.
+> > >=20
+> > > Simply do not alter gfp flags? Or warn in some cases of a serious
+> > > mismatch.
+> > > E.g. GFP_ZONEMASK mismatch because there are already GFP_KERNEL
+> > > users
+> > > of
+> > > shmem.
+> >=20
+> > Not altering the gfp flags is not really an option,
+> > because that would leads to attempting to allocate THPs
+> > with GFP_HIGHUSER, which is what is used to allocate
+> > regular tmpfs pages.
+>=20
+> Right but that is a completely different reason to alter the mask and
+> it
+> would be really great to know whether this is a theoretical concern
+> or
+> those users simply do not ever use THPs. Btw. should they be using
+> THPs
+> even if they opt themselves into GFP_KERNEL restriction?
+
+I suppose disabling THPs completely if the gfp_mask
+passed to shmem_getpage_gfp() is not GFP_HIGHUSER
+is another option.
+
+That seems like it might come with its own pitfalls,
+though, both functionality wise and maintenance wise.
+
+Does anyone have
+strong feelings between "limit gfp_mask"
+and "disable THP for !GFP_HIGHUSER"?
+
+--=20
+All Rights Reversed.
+
+--=-MwKFZQvAu7UAtgs7ip0f
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl/FBEEACgkQznnekoTE
+3oMGOAf/cwgErDAEtBf5TbUyPbr3g7+END1IDIIyQm7IAI7NhbuuikStX+3cDdEp
+FJPP/hOHqEj3+X9j6wFwovpsnhac8C/iuCoif5QJ+5HyJbDGCcK7EKxubdTHZMD0
+jyJG0U2M8XACDoXiImhfZ0P61mWeYAoOl7S+CLtAP/XcM067M2Jp+q5F+ARZRN94
+2pr4z+A2xHoShqWdG/BX6pOX5O27yggZaQejLLU0uPulbitd8WP4X0zY2h4IyKtL
+jD2p25Wcax8mvZJhNM/0V00/diPwI8nm6SgJIG4eGg1FKB+KkUhY9jzh8icE7vuO
+LKi4pLDIHziGqlsa1Cm1MLXbVj5F2Q==
+=a55D
+-----END PGP SIGNATURE-----
+
+--=-MwKFZQvAu7UAtgs7ip0f--
 
