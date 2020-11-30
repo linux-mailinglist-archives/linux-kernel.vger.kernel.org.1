@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC412C8F09
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8452C8F0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388397AbgK3UWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:22:02 -0500
-Received: from mga04.intel.com ([192.55.52.120]:60096 "EHLO mga04.intel.com"
+        id S2388407AbgK3UWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:22:04 -0500
+Received: from mga04.intel.com ([192.55.52.120]:60098 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387449AbgK3UWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388391AbgK3UWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Nov 2020 15:22:00 -0500
-IronPort-SDR: KF3JWiupJ1VHqTUNvOnWEY9zIBurFdvAN60/D33EfQLw2H/3nW4MH2jOYl4W980X4OdaWqqopi
- ZIEiiThT+HCg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="170140744"
+IronPort-SDR: +1OKuu8D9m9OAhlTFg/5dwxTWE3MY+tKJhp/TX1e1/keGVALelKbyd9k9uMTAKcfMsiyriJVV8
+ Kyz9EK6u1UlQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="170140747"
 X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="170140744"
+   d="scan'208";a="170140747"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 12:20:33 -0800
-IronPort-SDR: 1MVlcWBJXCAxU009y0pqK/reLjsx1gn6xnICB3M4prAPmI7Y1rXs1ibbgvyVpNW6FSjCuvtfqy
- NjtQ+qokyb5A==
+IronPort-SDR: Td1//O8BW1sPmNwO+wwNxsAnc/kvhgVxnrzk0xnB77AZPEwlbMIhWDSaQKVA44MDdYxSm3zyty
+ ZHuIxjoPpS/g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="480793794"
+   d="scan'208";a="480793798"
 Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
   by orsmga004.jf.intel.com with ESMTP; 30 Nov 2020 12:20:32 -0800
 From:   Fenghua Yu <fenghua.yu@intel.com>
@@ -36,9 +36,9 @@ To:     "Shuah Khan" <shuah@kernel.org>, "Tony Luck" <tony.luck@intel.com>,
         "Ravi V Shankar" <ravi.v.shankar@intel.com>
 Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
         Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v4 11/17] selftests/resctrl: Enable gcc checks to detect buffer overflows
-Date:   Mon, 30 Nov 2020 20:20:04 +0000
-Message-Id: <20201130202010.178373-12-fenghua.yu@intel.com>
+Subject: [PATCH v4 12/17] selftests/resctrl: Don't hard code value of "no_of_bits" variable
+Date:   Mon, 30 Nov 2020 20:20:05 +0000
+Message-Id: <20201130202010.178373-13-fenghua.yu@intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201130202010.178373-1-fenghua.yu@intel.com>
 References: <20201130202010.178373-1-fenghua.yu@intel.com>
@@ -48,71 +48,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David reported a buffer overflow error in the check_results() function of
-the cmt unit test and he suggested enabling _FORTIFY_SOURCE gcc compiler
-option to automatically detect any such errors.
+Cache related tests (like CAT and CMT) depend on a variable called
+no_of_bits to run. no_of_bits defines the number of contiguous bits
+that should be set in the CBM mask and a user can pass a value for
+no_of_bits using -n command line argument. If a user hasn't passed any
+value, it defaults to 5 (randomly chosen value).
 
-Feature Test Macros man page describes_FORTIFY_SOURCE as below
+Hard coding no_of_bits to 5 will make the cache tests fail to run on
+systems that support maximum cbm mask that is less than or equal to 5 bits.
+Hence, don't hard code no_of_bits value.
 
-"Defining this macro causes some lightweight checks to be performed to
-detect some buffer overflow errors when employing various string and memory
-manipulation functions (for example, memcpy, memset, stpcpy, strcpy,
-strncpy, strcat, strncat, sprintf, snprintf, vsprintf, vsnprintf, gets, and
-wide character variants thereof). For some functions, argument consistency
-is checked; for example, a check is made that open has been supplied with a
-mode argument when the specified flags include O_CREAT. Not all problems
-are detected, just some common cases.
+If a user passes a value for "no_of_bits" using -n option, use it.
+Otherwise, no_of_bits is equal to half of the maximum number of bits in
+the cbm mask.
 
-If _FORTIFY_SOURCE is set to 1, with compiler optimization level 1 (gcc
--O1) and above, checks that shouldn't change the behavior of conforming
-programs are performed.
+Please note that CMT test is still hard coded to 5 bits. It will change in
+subsequent patches that change CMT test.
 
-With _FORTIFY_SOURCE set to 2, some more checking is added, but some
-conforming programs might fail.
-
-Some of the checks can be performed at compile time (via macros logic
-implemented in header files), and result in compiler warnings; other checks
-take place at run time, and result in a run-time error if the check fails.
-
-Use of this macro requires compiler support, available with gcc since
-version 4.0."
-
-Fix the buffer overflow error in the check_results() function of the cmt
-unit test and enable _FORTIFY_SOURCE gcc check to catch any future buffer
-overflow errors.
-
-Reported-by: David Binderman <dcb314@hotmail.com>
-Suggested-by: David Binderman <dcb314@hotmail.com>
 Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
 ---
- tools/testing/selftests/resctrl/Makefile   | 2 +-
- tools/testing/selftests/resctrl/cmt_test.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/resctrl/cat_test.c      | 5 ++++-
+ tools/testing/selftests/resctrl/resctrl_tests.c | 8 ++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/resctrl/Makefile b/tools/testing/selftests/resctrl/Makefile
-index d585cc1948cc..6bcee2ec91a9 100644
---- a/tools/testing/selftests/resctrl/Makefile
-+++ b/tools/testing/selftests/resctrl/Makefile
-@@ -1,5 +1,5 @@
- CC = $(CROSS_COMPILE)gcc
--CFLAGS = -g -Wall
-+CFLAGS = -g -Wall -O2 -D_FORTIFY_SOURCE=2
- SRCS=$(wildcard *.c)
- OBJS=$(SRCS:.c=.o)
+diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
+index 6d9a41f3939a..6e935a6bb3e6 100644
+--- a/tools/testing/selftests/resctrl/cat_test.c
++++ b/tools/testing/selftests/resctrl/cat_test.c
+@@ -147,7 +147,10 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+ 	/* Get max number of bits from default-cabm mask */
+ 	count_of_bits = count_bits(long_mask);
  
-diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
-index 188b73b5a2cc..ac1a33d9ce12 100644
---- a/tools/testing/selftests/resctrl/cmt_test.c
-+++ b/tools/testing/selftests/resctrl/cmt_test.c
-@@ -81,7 +81,7 @@ static int check_results(struct resctrl_val_param *param, int no_of_bits)
- 		return errno;
- 	}
- 
--	while (fgets(temp, 1024, fp)) {
-+	while (fgets(temp, sizeof(temp), fp)) {
- 		char *token = strtok(temp, ":\t");
- 		int fields = 0;
- 
+-	if (n < 1 || n > count_of_bits - 1) {
++	if (!n)
++		n = count_of_bits / 2;
++
++	if (n > count_of_bits - 1) {
+ 		printf("Invalid input value for no_of_bits n!\n");
+ 		printf("Please Enter value in range 1 to %d\n",
+ 		       count_of_bits - 1);
+diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+index ef09e0ef2366..244f1beb75da 100644
+--- a/tools/testing/selftests/resctrl/resctrl_tests.c
++++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+@@ -57,7 +57,7 @@ void tests_cleanup(void)
+ int main(int argc, char **argv)
+ {
+ 	bool has_ben = false, mbm_test = true, mba_test = true, cmt_test = true;
+-	int res, c, cpu_no = 1, span = 250, argc_new = argc, i, no_of_bits = 5;
++	int res, c, cpu_no = 1, span = 250, argc_new = argc, i, no_of_bits = 0;
+ 	char *benchmark_cmd[BENCHMARK_ARGS], bw_report[64], bm_type[64];
+ 	char benchmark_cmd_area[BENCHMARK_ARGS][BENCHMARK_ARG_SIZE];
+ 	int ben_ind, ben_count;
+@@ -106,6 +106,10 @@ int main(int argc, char **argv)
+ 			break;
+ 		case 'n':
+ 			no_of_bits = atoi(optarg);
++			if (no_of_bits <= 0) {
++				printf("Bail out! invalid argument for no_of_bits\n");
++				return -1;
++			}
+ 			break;
+ 		case 'h':
+ 			cmd_help();
+@@ -188,7 +192,7 @@ int main(int argc, char **argv)
+ 		printf("# Starting CMT test ...\n");
+ 		if (!has_ben)
+ 			sprintf(benchmark_cmd[5], "%s", "cmt");
+-		res = cmt_resctrl_val(cpu_no, no_of_bits, benchmark_cmd);
++		res = cmt_resctrl_val(cpu_no, 5, benchmark_cmd);
+ 		printf("%sok CMT: test\n", res ? "not " : "");
+ 		cmt_test_cleanup();
+ 		tests_run++;
 -- 
 2.29.2
 
