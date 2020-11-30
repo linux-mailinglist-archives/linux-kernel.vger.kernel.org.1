@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37FD2C8B2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA3D2C8B32
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387651AbgK3Rd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:33:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387541AbgK3Rd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:33:56 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F5B72073C;
-        Mon, 30 Nov 2020 17:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606757595;
-        bh=ikmfcl+yhfQteajZFhY92J11QDZZNVTvlzcz3vXjLSQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=IRonN+uxEObiBxewJ3FtCeERf5C5Vssf2HsanHgq5cN7IowTUyfHIjn5T7mK+xoUn
-         dKVP6gDQ6WQLOjsPYiIPJixrBUsWHF48Ipky+v77OJJH56Hh6ditWIh14iGC9HqAcP
-         cAOiVssfWIISuNor3mDTMltNPmys0uvjIBeLtGFw=
-Date:   Mon, 30 Nov 2020 11:33:13 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Jianjun Wang <jianjun.wang@mediatek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        PCI <linux-pci@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Sj Huang <sj.huang@mediatek.com>,
-        Youlin Pei <youlin.pei@mediatek.com>,
-        Chuanjia Liu <chuanjia.liu@mediatek.com>,
-        qizhong.cheng@mediatek.com, sin_jieyang@mediatek.com
-Subject: Re: [v4,2/3] PCI: mediatek: Add new generation controller support
-Message-ID: <20201130173313.GA1089760@bjorn-Precision-5520>
+        id S2387661AbgK3ReG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:34:06 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:41039 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387541AbgK3ReF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:34:05 -0500
+Received: by mail-io1-f68.google.com with SMTP id t8so12598568iov.8;
+        Mon, 30 Nov 2020 09:33:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZgJEhYouUUwtea9Di+YMsFTNFwqfdZTzGiTGJ3yif0w=;
+        b=EuJNFRFdveodCitsNNFGDPsTU/vlWeqKGY9Gw+I2Vdh494YWBO49r70+8ynpO3YUKv
+         Y6Ow/QTA3xAWUV3+6huUUgkso/JEZDPecyqX6SisH1e9Y3QwDuKZr6UX+iqfAnFWAtud
+         r5dnmXkvKe/wapuwfSsVcnN7vJTniskm+vUIl8TubP33PJzaw9LKI+25pRDU5axwSOHS
+         riPkIUiF0rI0EZSD6WHQ44yESyR70+9w5rarkyquzDENni6Qs1OL/SoHE1bSk5wGDZTv
+         gwCTWGOEIp3oSFiP7i9dG5SoSGNMLCE3gGNxTl0hPqqjGH54M+8J5E40KetkJo4g5F3d
+         Jbeg==
+X-Gm-Message-State: AOAM532WxUvHid2+h/kkTunwkCFJVEvl2JeEDzek0zBAGvhSYA4aXfsG
+        RAqog8BBSPjUbepgpzwZL7i/rFTBhA==
+X-Google-Smtp-Source: ABdhPJyxxeep6gSaqmu7lJiU4Vhb2MK/YAjSV46S7x1f3PY5eDm2n0j2db1rSKaZE4MP6BXXAoaO2Q==
+X-Received: by 2002:a6b:6c01:: with SMTP id a1mr17056361ioh.31.1606757604877;
+        Mon, 30 Nov 2020 09:33:24 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id q14sm11206772ils.79.2020.11.30.09.33.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 09:33:24 -0800 (PST)
+Received: (nullmailer pid 2678419 invoked by uid 1000);
+        Mon, 30 Nov 2020 17:33:22 -0000
+Date:   Mon, 30 Nov 2020 10:33:21 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com
+Subject: Re: [PATCH v3 01/15] dt-bindings: remoteproc: Add bindind to support
+ autonomous processors
+Message-ID: <20201130173321.GB2662913@robh.at.kernel.org>
+References: <20201126210642.897302-1-mathieu.poirier@linaro.org>
+ <20201126210642.897302-2-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqLdqCE-sVb8T6p2E5Zf1b3pvPBtapZ8dsQGFDW3GsArjQ@mail.gmail.com>
+In-Reply-To: <20201126210642.897302-2-mathieu.poirier@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 09:05:48AM -0700, Rob Herring wrote:
-> On Sun, Nov 22, 2020 at 11:45 PM Jianjun Wang <jianjun.wang@mediatek.com> wrote:
-> > On Thu, 2020-11-19 at 14:28 -0600, Bjorn Helgaas wrote:
-> > > "Add new generation" really contains no information.  And "mediatek"
-> > > is already used for the pcie-mediatek.c driver, so we should have a
-> > > new tag for this new driver.  Include useful information in the
-> > > subject, e.g.,
-> > >
-> > >   PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
-
-> > > > +   writel(PCIE_CFG_HEADER_FORCE_BE(devfn, bus->number, bytes),
-> > > > +          port->base + PCIE_CFGNUM_REG);
-> > > > +
-> > > > +   *val = readl(port->base + PCIE_CFG_OFFSET_ADDR + (where & ~0x3));
-> > >
-> > > These look like they need to be atomic, since you need a writel()
-> > > followed by a readl().
-> > >
-> > > pci_lock_config() (used in pci_bus_read_config_*(), etc) uses the
-> > > global pci_lock for this unless CONFIG_PCI_LOCKLESS_CONFIG is set.
-> > >
-> > > But I would like to eventually move away from this implicit dependency
-> > > on pci_lock.  If you need to make this atomic, can you add the
-> > > explicit locking here, so there's a clear connection between the lock
-> > > and the things it protects?
-> >
-> > Sure, I will split it to a map_bus() function and use the standard
-> > pci_generic_config_read32/write32 functions as Rob's suggestion. I think
-> > the potential risks of atomic read/write can be avoided.
+On Thu, Nov 26, 2020 at 02:06:28PM -0700, Mathieu Poirier wrote:
+> This patch adds a binding to guide the remoteproc core on how to deal with
+> remote processors in two cases:
 > 
-> The generic functions have no effect on atomicity, but using them does
-> make it easier to find the non-atomic cases.
+> 1) When an application holding a reference to a remote processor character
+>    device interface crashes.
 > 
-> I'm not sure that having host drivers do their own locking is the best
-> approach. That's a recipe for more cleanups. It's a common enough
-> issue that I think it's better if we have locking done in 1 place.
-> Then host drivers can simply say if they need locking or not via some
-> bus flag.
+> 2) when the platform driver for a remote processor is removed.
+> 
+> In both cases if "autonomous-on-core-reboot" is specified in the remote
+> processor DT node, the remoteproc core will detach the remote processor
+> rather than switching it off.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  .../bindings/remoteproc/remoteproc-core.yaml  | 25 +++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml b/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
+> new file mode 100644
+> index 000000000000..3032734f42a3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
+> @@ -0,0 +1,25 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/remoteproc/remoteproc-core.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Binding for the remoteproc core applicable to all remote processors
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
+> +
+> +description:
+> +  This document defines the binding recognised by the remoteproc core that can
+> +  be used by any remote processor in the subsystem.
+> +
+> +properties:
+> +  autonomous-on-core-reboot:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Used in two situations, i.e when a user space application releases the
+> +      handle it has on the remote processor's character driver interface and
+> +      when a remote processor's platform driver is being removed.  If defined,
+> +      this flag instructs the remoteproc core to detach the remote processor
+> +      rather than turning it off.
 
-Yeah, you may be right.  I guess we don't have to make it an issue for
-this patch; we do have pci_lock that protects this, whether the
-write/read occurs in the driver or in
-pci_generic_config_read32/write32.
+Userspace? character driver? platform driver? remoteproc core? Please 
+explain this without OS specific terms.
 
-Bjorn
+Seems to me this would be implied by functionality the remote proc 
+provides.
+
+Rob
