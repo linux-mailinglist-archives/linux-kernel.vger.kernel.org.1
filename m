@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C343F2C9258
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4782C925A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728635AbgK3XRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:17:23 -0500
-Received: from mga03.intel.com ([134.134.136.65]:14641 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725980AbgK3XRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:17:23 -0500
-IronPort-SDR: 2M66a1CBDUX2xv1RrxEuV7pYVhO0OMukquy7cf1L3M9fl4zADSbLKV8BAfGdBFGNlBwNUm43EX
- MNPXFz8x/nOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="172827551"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="172827551"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 15:16:42 -0800
-IronPort-SDR: 8zNcFY7NhPl0VCOSeKl8PZxj5MKCbmm2A/J0IdXrJVCPnhKSv9Tcuho0ZMivcKfzjSj1RDIlJG
- /oGpjHi+WO/g==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="480848257"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.122.22]) ([10.212.122.22])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 15:16:40 -0800
-Subject: Re: [NEEDS-REVIEW] [PATCH v15 03/26] x86/fpu/xstate: Introduce CET
- MSR XSAVES supervisor states
-To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-4-yu-cheng.yu@intel.com>
- <cfbd90a8-6996-fa7b-a41a-54ff540f419c@intel.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <3b83517e-17d6-3b53-6dbf-8ad727707b16@intel.com>
-Date:   Mon, 30 Nov 2020 15:16:39 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1729078AbgK3XRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:17:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725980AbgK3XRs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 18:17:48 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEF5C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:17:07 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id v202so16110609oia.9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:17:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0z0SXE8CVPIChDmKOmwTsYRaoR8qX/fK8KklCW+N/l8=;
+        b=JToaLIuO/p7X7k6oHV5a/TjdCpmD6sO7yrjy4OYXDtYmvBFEzKGRTkTai2AYYp5Uyj
+         O9GYoPtFHbbzWe0Bg5PB652fZDDIljPi+i+9TcGPGu+VycL4NdjSlFY2ep7LWaa8nVur
+         8cheF6iw3PCN6TDwHzNVHmc06dCEDdjr3XHo2lnHn1OWiFAzTUuCPYpSok3qZb8ON0LB
+         3+lETbFpb01TlQIBTxDcbZpXCnPfHQ7JqL3XOE9i4f/eexcTjTXlhTAU3z4EQXtsO/Xa
+         ievk6N7AaqW57Mi0iSqU7Gumso8Ccs/XredO27WBg2E0pAAMvsOrSy9BijmNQDt/fUfj
+         U4yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0z0SXE8CVPIChDmKOmwTsYRaoR8qX/fK8KklCW+N/l8=;
+        b=egYVO8g3IW2XhwByr0GiIOtUq7IjMrFGPRunbeL8KPFYKyKXmfi2DUHjjvvXgeqduB
+         Q693rB5xKRIB7W1veptUmqc3+3EhnacqYJQFQrfncJfQWXD8Bgdh6BRFlW4/A3Rv3C5Y
+         d/g4prhTTp8AQjRfO6kQ6DbRAMJulruGri/2vzr15uS+v1faO+w2O//6ojEezzKB5l1U
+         6EOq8IgIhpCQOknZn3/u0xmJ8tEQDcRj1NtwhRoQlx+Qa4HkTNhT55rGDikjNgMYPFxc
+         Coy+kwUG1FK+4MKRKb6IRZKImMV+cqfj1mzLVCyHSotvY/GiIdrR40S4OLTehWfnqcDO
+         cqmw==
+X-Gm-Message-State: AOAM5315gSpI9E4knXE9UBEDIOeHCu0nPAu9lY0+a3Pag80je7YrF3uH
+        hKkOc5ir/POA1uANyK2f+r4jeCpAKEVXrROL49c=
+X-Google-Smtp-Source: ABdhPJwylG4/WrqmfM33rZKNpP1ekm16r2XICleifSiU/CfyOhbqgaz+wcFex7cFkK3t0YkVczLNTTDWgadxoyonD84=
+X-Received: by 2002:aca:4f53:: with SMTP id d80mr118887oib.120.1606778227470;
+ Mon, 30 Nov 2020 15:17:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cfbd90a8-6996-fa7b-a41a-54ff540f419c@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-6-lee.jones@linaro.org>
+In-Reply-To: <20201126134240.3214176-6-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 30 Nov 2020 18:16:56 -0500
+Message-ID: <CADnq5_MWwix=tbV_BZ-hrmVfYKw=xpXgUU2U2htL1roxvTbtYg@mail.gmail.com>
+Subject: Re: [PATCH 05/40] drm/amd/pm/powerplay/smumgr/vegam_smumgr: Make
+ function called by reference static
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/2020 9:45 AM, Dave Hansen wrote:
-> On 11/10/20 8:21 AM, Yu-cheng Yu wrote:
->> Control-flow Enforcement Technology (CET) adds five MSRs.  Introduce
->> them and their XSAVES supervisor states:
->>
->>      MSR_IA32_U_CET (user-mode CET settings),
->>      MSR_IA32_PL3_SSP (user-mode Shadow Stack pointer),
->>      MSR_IA32_PL0_SSP (kernel-mode Shadow Stack pointer),
->>      MSR_IA32_PL1_SSP (Privilege Level 1 Shadow Stack pointer),
->>      MSR_IA32_PL2_SSP (Privilege Level 2 Shadow Stack pointer).
-> 
-> This patch goes into a bunch of XSAVE work that this changelog only
-> briefly touches on.  I think it needs to be beefed up a bit.
-> 
-[...]
-> 
-> Do we have any other spots in the kernel where we care about:
-> 
-> 	boot_cpu_has(X86_FEATURE_SHSTK) ||
-> 	boot_cpu_has(X86_FEATURE_IBT)
-> 
-> ?  If so, we could also address this by declaring a software-defined
-> X86_FEATURE_CET and then setting it if SHSTK||IBT is supported, then we
-> just put that one feature in xsave_cpuid_features[].
-> 
+On Thu, Nov 26, 2020 at 8:43 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/vegam_smumgr.c:2249:5:=
+ warning: no previous prototype for =E2=80=98vegam_thermal_avfs_enable=E2=
+=80=99 [-Wmissing-prototypes]
+>
+> Cc: Evan Quan <evan.quan@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-These features have different CPUIDs but are complementary parts.  I 
-don't know if someday there will be shadow-stack-only CPUs, but an 
-IBT-only CPU is weird.  What if the kernel checks that the CPU has both 
-features and presents only one feature flag (X86_FEATURE_CET), no 
-X86_FEATURE_SHSTK or X86_FEATURE_IBT?
+Applied.  Thanks!
+
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/pm/powerplay/smumgr/vegam_smumgr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/vegam_smumgr.c b/dri=
+vers/gpu/drm/amd/pm/powerplay/smumgr/vegam_smumgr.c
+> index 38a5cdcf58967..7d024d3facef0 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/vegam_smumgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/vegam_smumgr.c
+> @@ -2246,7 +2246,7 @@ static int vegam_update_sclk_threshold(struct pp_hw=
+mgr *hwmgr)
+>         return result;
+>  }
+>
+> -int vegam_thermal_avfs_enable(struct pp_hwmgr *hwmgr)
+> +static int vegam_thermal_avfs_enable(struct pp_hwmgr *hwmgr)
+>  {
+>         struct smu7_hwmgr *data =3D (struct smu7_hwmgr *)(hwmgr->backend)=
+;
+>         int ret;
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
