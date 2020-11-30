@@ -2,157 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CFC2C8435
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EAD2C843B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:40:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725922AbgK3MiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 07:38:13 -0500
-Received: from mail-am6eur05on2116.outbound.protection.outlook.com ([40.107.22.116]:36961
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725861AbgK3MiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:38:13 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mZlO5W2gCEYwRiPoN+2zmEw6tOkirfZvPRFGsXeXZWWefPCSiPaowukTOHq2J3dGECGLy1NHkXhYa42RJeg4YHLg2iKFti7eBgstksFz5vD7A11WrOn48XnTvX/tvvVOsfVZFlyos+OH1vEFyy9XHQW99kfkFkPPpEf7T/qihjZ8WxWlR24I+wE6VZXQAdmraXYTf0TfSnsW9Z15G0I0lbvQ6BPRzDVdWc/dO6m2/IxzSboDvHLDxBnrFTWV46T/LMWKbj3+TUiBoFf5/AK6M6pXwsy2OLORYP4wutwBCvsr5lLLq/nIqUu717L38789BhBvIVoILzRhbxdcaOrRJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ENauT4lrIblSMvLdW8G2XjxqEilnFzIHE3gGagfSYxw=;
- b=QwSu0/hJ7NmpjgNkVDWMm3Th0xthhSONkD+/p5w/5DNGVv6hLAqJycewLDJIqNrrEqfT5peICpDV/B9IpvRxEvzlVGMoKU81b2ehaWmE5Ik5MD1bqqbjGF+h+9KDkqewd3TKzZNREuRP+cojkEGgpYBETuvApuRYrdd4nyEXYul5eRh0lcjaFIa5eLfiigl5fP1V9gxLbdkHG0fGrnrlVxIWHwZA5sH/kpn9aVOuz3sImdRRLqGQRobv3Rqoo+FgBqznABDJ+IfzbfiUstQ1cQ0q+qsOq3vSEc+2Zg2eCTIADmXt2ufNuImsQVaR+tdwHWuq+GAwYDCjxttFgnGlaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
- header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ENauT4lrIblSMvLdW8G2XjxqEilnFzIHE3gGagfSYxw=;
- b=I0IG1schPsk8CnUlvkyfsgKcp/GT14UmdvIBo6Z7XMAoRHxHYTyZJQ87hrVWUFjXNI25lTHKPrXUnD0EbsBNlcNDYTk7aV8QWfwIrxcQrxMAlyu2sW2JbYjHLvsAOkv/qJxlyfaGGloYNF90b0dyxGp0/gxTE+rbc7oxR2Jhqoo=
-Received: from AM6PR06MB4691.eurprd06.prod.outlook.com (2603:10a6:20b:37::25)
- by AM6PR0602MB3701.eurprd06.prod.outlook.com (2603:10a6:209:1d::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.31; Mon, 30 Nov
- 2020 12:37:23 +0000
-Received: from AM6PR06MB4691.eurprd06.prod.outlook.com
- ([fe80::b073:9747:410c:12c6]) by AM6PR06MB4691.eurprd06.prod.outlook.com
- ([fe80::b073:9747:410c:12c6%6]) with mapi id 15.20.3611.025; Mon, 30 Nov 2020
- 12:37:23 +0000
-From:   ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "leoyang.li@nxp.com" <leoyang.li@nxp.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "geert+renesas@glider.be" <geert+renesas@glider.be>,
-        "Anson.Huang@nxp.com" <Anson.Huang@nxp.com>,
-        "michael@walle.cc" <michael@walle.cc>,
-        "olof@lixom.net" <olof@lixom.net>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: RE: [PATCH 2/2] ARM: multi_v7_defconfig: drop unused POWER_AVS option
-Thread-Topic: [PATCH 2/2] ARM: multi_v7_defconfig: drop unused POWER_AVS
- option
-Thread-Index: AQHWxwvRwTWzvnw3x0+tW66xX+DegqngmOuAgAADAzA=
-Date:   Mon, 30 Nov 2020 12:37:23 +0000
-Message-ID: <AM6PR06MB469188E766DAA99591B14280A6F50@AM6PR06MB4691.eurprd06.prod.outlook.com>
-References: <20201130112731.30599-1-andrey.zhizhikin@leica-geosystems.com>
- <20201130112731.30599-3-andrey.zhizhikin@leica-geosystems.com>
- <20201130122245.GB22590@pi3>
-In-Reply-To: <20201130122245.GB22590@pi3>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=leica-geosystems.com;
-x-originating-ip: [193.8.40.112]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 776ad4df-c689-40a0-fc1f-08d8952caffd
-x-ms-traffictypediagnostic: AM6PR0602MB3701:
-x-microsoft-antispam-prvs: <AM6PR0602MB370158556D54E0D568490FCBA6F50@AM6PR0602MB3701.eurprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: p1LlVmv9EFJOp4+b/rE8/Gg+s96uAjsbw7Mrtu1HCTTVBIbRwkeYmg5HLj5TjhxufScuUzDhzIFXazVdJmufaGvfObBOtNZNuJVmNx8vBczqgZsqnj/tVhc0+QpuVu+8YRIC1BqPsoA3ggT1iA6gp1xLBaATqMnldhm7bGh3nVvOqGzdaJyp4bc/KAeRxaddl/BxUuKM68JkFmNtQYEp1X0t+HDIwbHmUYvKRbPNVyO0qnfSuBXmAZNBZUbW/ZFyAas4v/0+f6CYp8R9p1zACA8XK961bpXw6/CBOJ+m3e79rc/DeSYxzCPHm/TwJjSS
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR06MB4691.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(376002)(396003)(39860400002)(76116006)(66446008)(316002)(66476007)(2906002)(33656002)(66556008)(64756008)(66946007)(5660300002)(6506007)(71200400001)(26005)(54906003)(53546011)(7416002)(52536014)(55016002)(478600001)(86362001)(45080400002)(6916009)(7696005)(9686003)(8936002)(4326008)(83380400001)(186003)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?M1VHWk1mdmovVnFrekdrM21ZYTJ2Wkp2OEdONlJzNmt6aWdtbjBwTmh5dXFa?=
- =?utf-8?B?UDV1ekxoRktlOFdPSnFpTDd3UC9TUHBlQk9TSlZEcWNzM1c4d0hnZFMveDFD?=
- =?utf-8?B?S2F6a0tCUHlGbHBEdkFxTDU0Y1Rvd0wweTQvbEVRTHphMisrN3YwS1QvLy90?=
- =?utf-8?B?ZGVjMkpGTlkrZzRxaHB4NW9qcmp3ek94RmY3WVFsc0NRLzRSbk10WXBlUFVs?=
- =?utf-8?B?dUx3aTNMUXBwVUdTbnRueFpYTUlldDF1T3dpTWFtaW5TOWhvc2h4bE0vL2VW?=
- =?utf-8?B?SFJ6aUJpMndEVVg5MXZteVFyZ2xUNjlNQlY2VmxQdVA0SkZLOFloUXdxVDRv?=
- =?utf-8?B?eFl6dWhZdEpNOG80R09nMjJiNXU2M2hqRENjbFIxM0QyMHpmQTEyS1hmc2Zu?=
- =?utf-8?B?MGhoVkRNWjZLUGp3SCsrQkpXdFcxT1FHdm5aSU9BbWUwWTNSanRyZmtIZWNK?=
- =?utf-8?B?a3lQSEtHcjFyQVhTL2tDWVREQkFLYURCbzhpa2NNa3gwR2xJWmdiN1JpMnlm?=
- =?utf-8?B?Szk1UW1xN3JIays2Mmt2S0NWTGE5MHUxR1hhTTJYZk9tVHlScG10UXMzNlJJ?=
- =?utf-8?B?S0Z0dU1zK1VUeDZyWEJ6aHphcFI5T0IwQlA3ZzB0L1EyckVlWmxGaUZlMGV3?=
- =?utf-8?B?eHVldTBUM0hZcG1hK0RqeTVSZ1lkbEd4bnAvanJ0STIvaDlsRjY4OHRvTDkz?=
- =?utf-8?B?a2ZZUzMwdWtoeTBEVE1XRDZra1V1cW5Ed01ZM1hJNUtNbnk0MTd0VVhYRU9z?=
- =?utf-8?B?SzBqbng3Z3VKZ0RvRWFXVk53NjY1QWo4Y0pUcUtDVHhhNjNkUmFNMGtZMWZy?=
- =?utf-8?B?MWNwNjZ1NGFNQm10YVA0blNPa3lDWmJpbnRDZmdnOFVZZFdab2dNc3Q2YU5D?=
- =?utf-8?B?SG9vYTk5WVR2ak1KeHgvQjJaL25RV0x4cU5OQzV2Z2dKZE5QVW9YOVhKRmg5?=
- =?utf-8?B?SGhkQXpmM1JtdEhqdDFPeUtoL0dZTFFkTDMwRWhyY2N1dnk5MXNQdE1BT25C?=
- =?utf-8?B?MlpxOXhvd1RaNWZHRG1xcHBFaEM4RXR1c1JMNzJRNDJWeHNwSWpxd1RDUkwz?=
- =?utf-8?B?ZktrUk9wQnhyVTJMb1pzOGNIRkUza0R4cGxuR3cySGM4dE55UkZYNW1BMFBl?=
- =?utf-8?B?c3EvYTVtblVEdk5BL21CMkpFc3NVQmV2dUcwZW9DYmZXWUx1Sng2Rk9CbTRQ?=
- =?utf-8?B?ek5OYXpZa1hodGVLaGx3bFg0ZjY2N0pkNW8wVVlVYko3eVJEekc2ekJ2aU44?=
- =?utf-8?B?OE1zRjhjd3U3QlZTTWpzTFhZU2RqQnhsekVlU1FhT3pDOVdWQ2FKRHE2NVZB?=
- =?utf-8?Q?74Um3T9CKKwYc=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726063AbgK3MkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 07:40:00 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:53142 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726006AbgK3Mj7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 07:39:59 -0500
+Received: by mail-il1-f198.google.com with SMTP id o18so9992818ilg.19
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 04:39:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=l4vzLQoTJISEw/VQBw676Qsln9b4IoMJSYC6XK5FxSk=;
+        b=GDTjANoCQgXdpkr5M9hZpD9sMBzmk2JAJ2tKb9jpb1g996AzTpQBww51CwFewIPQeH
+         au2+CuiF18L60sdoMdRg9QEzM6Ds+9edLvTmM0UhYYUvWot7Dxa08QRuVvfU5AF1FEfL
+         CxtdfOW/PvINiA0tzXZUXKfVBhRl4cgZBx6Vr2MBADfs6qVhEhTY9revMX1O52gWKVx0
+         DGVavUXEzItm5I9wt4P+IiYK2ryu5AOofGMB07ZGn/c3jHuDlQ4NBzRpABQuPOtABkHH
+         oLNiy8NzzJBIdiPnkbr/zpXLims9jA61H+NYu321uaoa7H9VLenPIgmB4EWPghrJOjbL
+         ZjqQ==
+X-Gm-Message-State: AOAM533VOlKwVp+8nKrSmCepsLj7UW70hgsZUu54ddreNoXQxcxFgSst
+        Uwu5sS/1lYJjEhsD1vq5cnc/Eh9q73IB7X7cTZ0G6brv2brF
+X-Google-Smtp-Source: ABdhPJzPxIAuJQeVihgEVuOYcRFCQN4GGp1k3EfWK+v9VKiPAeJHuvPMTBCGGUY7cCOGZ+FZqurSw44m/USQ16jLMSQO24TObub1
 MIME-Version: 1.0
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR06MB4691.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 776ad4df-c689-40a0-fc1f-08d8952caffd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2020 12:37:23.5833
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 042EHSIgoEjd8Dlu8tjCI0Ecrvms+lTIG3Z0RTKtAig/lz61WK+RLEwA7dcbNJ2uyBjK4mlQ9eCUqtnWvoNNXoVSyOJGEAyDHMV3SgEfelfV6tMO5UFYqmeVEuth06Zq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0602MB3701
+X-Received: by 2002:a92:c708:: with SMTP id a8mr19871028ilp.199.1606739957125;
+ Mon, 30 Nov 2020 04:39:17 -0800 (PST)
+Date:   Mon, 30 Nov 2020 04:39:17 -0800
+In-Reply-To: <000000000000bf710a05b05ae3f6@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000064191605b5524c8f@google.com>
+Subject: Re: possible deadlock in f_getown
+From:   syzbot <syzbot+8073030e235a5a84dd31@syzkaller.appspotmail.com>
+To:     bfields@fieldses.org, jlayton@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gS3J6eXN6dG9mLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206
-IEtyenlzenRvZiBLb3psb3dza2kgPGtyemtAa2VybmVsLm9yZz4NCj4gU2VudDogTW9uZGF5LCBO
-b3ZlbWJlciAzMCwgMjAyMCAxOjIzIFBNDQo+IFRvOiBaSElaSElLSU4gQW5kcmV5IDxhbmRyZXku
-emhpemhpa2luQGxlaWNhLWdlb3N5c3RlbXMuY29tPg0KPiBDYzogY2F0YWxpbi5tYXJpbmFzQGFy
-bS5jb207IHdpbGxAa2VybmVsLm9yZzsgYmpvcm4uYW5kZXJzc29uQGxpbmFyby5vcmc7DQo+IHNo
-YXduZ3VvQGtlcm5lbC5vcmc7IGxlb3lhbmcubGlAbnhwLmNvbTsgdmtvdWxAa2VybmVsLm9yZzsN
-Cj4gZ2VlcnQrcmVuZXNhc0BnbGlkZXIuYmU7IEFuc29uLkh1YW5nQG54cC5jb207IG1pY2hhZWxA
-d2FsbGUuY2M7DQo+IG9sb2ZAbGl4b20ubmV0OyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJh
-ZGVhZC5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBOaXNoYW50aCBNZW5v
-biA8bm1AdGkuY29tPjsgVWxmIEhhbnNzb24NCj4gPHVsZi5oYW5zc29uQGxpbmFyby5vcmc+DQo+
-IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMi8yXSBBUk06IG11bHRpX3Y3X2RlZmNvbmZpZzogZHJvcCB1
-bnVzZWQNCj4gUE9XRVJfQVZTIG9wdGlvbg0KPiANCj4gVGhpcyBlbWFpbCBpcyBub3QgZnJvbSBI
-ZXhhZ29u4oCZcyBPZmZpY2UgMzY1IGluc3RhbmNlLiBQbGVhc2UgYmUgY2FyZWZ1bCB3aGlsZQ0K
-PiBjbGlja2luZyBsaW5rcywgb3BlbmluZyBhdHRhY2htZW50cywgb3IgcmVwbHlpbmcgdG8gdGhp
-cyBlbWFpbC4NCj4gDQo+IA0KPiBPbiBNb24sIE5vdiAzMCwgMjAyMCBhdCAxMToyNzozMUFNICsw
-MDAwLCBBbmRyZXkgWmhpemhpa2luIHdyb3RlOg0KPiA+IENvbW1pdCA3ODViNWJiNDFiMGEgKCJQ
-TTogQVZTOiBEcm9wIHRoZSBhdnMgZGlyZWN0b3J5IGFuZCB0aGUNCj4gPiBjb3JyZXNwb25kaW5n
-IEtjb25maWciKSBtb3ZlZCBBVlMgY29kZSB0byBTT0Mtc3BlY2lmaWMgZm9sZGVycywgYW5kDQo+
-ID4gcmVtb3ZlZCBjb3JyZXNwb25kaW5nIEtjb25maWcgZnJvbSBkcml2ZXJzL3Bvd2VyLCBsZWF2
-aW5nIG9yaWdpbmFsDQo+ID4gUE9XRVJfQVZTIGNvbmZpZyBvcHRpb24gZW5hYmxlZCBpbiBtdWx0
-aV92N19kZWZjb25maWcgZmlsZS4NCj4gPg0KPiA+IFJlbW92ZSB0aGUgb3B0aW9uLCB3aGljaCBo
-YXMgbm8gcmVmZXJlbmNlcyBpbiB0aGUgdHJlZSBhbnltb3JlLg0KPiA+DQo+ID4gRml4ZXM6IDc4
-NWI1YmI0MWIwYSAoIlBNOiBBVlM6IERyb3AgdGhlIGF2cyBkaXJlY3RvcnkgYW5kIHRoZQ0KPiA+
-IGNvcnJlc3BvbmRpbmcgS2NvbmZpZyIpDQo+ID4gQ2M6IE5pc2hhbnRoIE1lbm9uIDxubUB0aS5j
-b20+DQo+ID4gQ2M6IFVsZiBIYW5zc29uIDx1bGYuaGFuc3NvbkBsaW5hcm8ub3JnPg0KPiA+IFNp
-Z25lZC1vZmYtYnk6IEFuZHJleSBaaGl6aGlraW4NCj4gPiA8YW5kcmV5LnpoaXpoaWtpbkBsZWlj
-YS1nZW9zeXN0ZW1zLmNvbT4NCj4gDQo+IFRoYW5rcyBmb3IgdGhlIHBhdGNoLiBZb3Ugc2hvdWxk
-IGFsc28gcmVtb3ZlIGl0IGZyb20gdGhlIG9tYXAycGx1cyBjb25maWcuDQoNClRydWUsIGp1c3Qg
-cmVhbGl6ZWQgdGhpcyBjb25maWcgb3B0aW9uIGlzIHByZXNlbnQgaW4gYXJjaC9hcm0vY29uZmln
-cy9vbWFwMnBsdXNfZGVmY29uZmlnLiBUaGFua3MgZm9yIHBvaW50aW5nIHRoaXMgb3V0LCB3b3Vs
-ZCBzdWJtaXQgYSBzZXBhcmF0ZSBwYXRjaCB0byB0YWtlIGNhcmUgb2YgaXQgbm93Lg0KDQo+IA0K
-PiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlzenRvZg0KDQpSZWdhcmRzLA0KQW5kcmV5DQo=
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    b6505459 Linux 5.10-rc6
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1537a379500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b3a044ccf5b03ac4
+dashboard link: https://syzkaller.appspot.com/bug?extid=8073030e235a5a84dd31
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11b43d79500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f2ed79500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8073030e235a5a84dd31@syzkaller.appspotmail.com
+
+========================================================
+WARNING: possible irq lock inversion dependency detected
+5.10.0-rc6-syzkaller #0 Not tainted
+--------------------------------------------------------
+syz-executor049/8472 just changed the state of lock:
+ffff88801188edb8 (&f->f_owner.lock){.+..}-{2:2}, at: f_getown+0x1b/0xb0 fs/fcntl.c:152
+but this lock was taken by another, HARDIRQ-safe lock in the past:
+ (&dev->event_lock){-...}-{2:2}
+
+
+and interrupts could create inverse lock ordering between them.
+
+
+other info that might help us debug this:
+Chain exists of:
+  &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
+
+ Possible interrupt unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&f->f_owner.lock);
+                               local_irq_disable();
+                               lock(&dev->event_lock);
+                               lock(&new->fa_lock);
+  <Interrupt>
+    lock(&dev->event_lock);
+
+ *** DEADLOCK ***
+
+no locks held by syz-executor049/8472.
+
+the shortest dependencies between 2nd lock and 1st lock:
+   -> (&dev->event_lock){-...}-{2:2} {
+      IN-HARDIRQ-W at:
+                          lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                          lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                          __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                          _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+                          input_event drivers/input/input.c:440 [inline]
+                          input_event+0x7b/0xb0 drivers/input/input.c:433
+                          input_report_key include/linux/input.h:417 [inline]
+                          psmouse_report_standard_buttons+0x2c/0x80 drivers/input/mouse/psmouse-base.c:123
+                          psmouse_report_standard_packet drivers/input/mouse/psmouse-base.c:141 [inline]
+                          psmouse_process_byte+0x1e1/0x890 drivers/input/mouse/psmouse-base.c:232
+                          psmouse_handle_byte+0x41/0x1b0 drivers/input/mouse/psmouse-base.c:274
+                          psmouse_interrupt+0x304/0xf00 drivers/input/mouse/psmouse-base.c:426
+                          serio_interrupt+0x88/0x150 drivers/input/serio/serio.c:1002
+                          i8042_interrupt+0x27a/0x520 drivers/input/serio/i8042.c:602
+                          __handle_irq_event_percpu+0x303/0x8f0 kernel/irq/handle.c:156
+                          handle_irq_event_percpu kernel/irq/handle.c:196 [inline]
+                          handle_irq_event+0x102/0x290 kernel/irq/handle.c:213
+                          handle_edge_irq+0x25f/0xd00 kernel/irq/chip.c:819
+                          asm_call_irq_on_stack+0xf/0x20
+                          __run_irq_on_irqstack arch/x86/include/asm/irq_stack.h:48 [inline]
+                          run_irq_on_irqstack_cond arch/x86/include/asm/irq_stack.h:101 [inline]
+                          handle_irq arch/x86/kernel/irq.c:230 [inline]
+                          __common_interrupt arch/x86/kernel/irq.c:249 [inline]
+                          common_interrupt+0x120/0x200 arch/x86/kernel/irq.c:239
+                          asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:622
+                          native_restore_fl arch/x86/include/asm/irqflags.h:41 [inline]
+                          arch_local_irq_restore arch/x86/include/asm/irqflags.h:84 [inline]
+                          __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+                          _raw_spin_unlock_irqrestore+0x25/0x50 kernel/locking/spinlock.c:191
+                          spin_unlock_irqrestore include/linux/spinlock.h:409 [inline]
+                          i8042_command+0x12e/0x150 drivers/input/serio/i8042.c:352
+                          i8042_aux_write+0xd7/0x120 drivers/input/serio/i8042.c:387
+                          serio_write include/linux/serio.h:125 [inline]
+                          ps2_do_sendbyte+0x2ca/0x710 drivers/input/serio/libps2.c:40
+                          ps2_sendbyte+0x58/0x150 drivers/input/serio/libps2.c:92
+                          cypress_ps2_sendbyte+0x2e/0x160 drivers/input/mouse/cypress_ps2.c:42
+                          cypress_ps2_read_cmd_status drivers/input/mouse/cypress_ps2.c:116 [inline]
+                          cypress_send_ext_cmd+0x1d0/0x8d0 drivers/input/mouse/cypress_ps2.c:189
+                          cypress_detect+0x75/0x190 drivers/input/mouse/cypress_ps2.c:205
+                          psmouse_do_detect drivers/input/mouse/psmouse-base.c:1009 [inline]
+                          psmouse_try_protocol+0x211/0x370 drivers/input/mouse/psmouse-base.c:1023
+                          psmouse_extensions+0x557/0x930 drivers/input/mouse/psmouse-base.c:1146
+                          psmouse_switch_protocol+0x52a/0x740 drivers/input/mouse/psmouse-base.c:1542
+                          psmouse_connect+0x5e6/0xfc0 drivers/input/mouse/psmouse-base.c:1632
+                          serio_connect_driver drivers/input/serio/serio.c:47 [inline]
+                          serio_driver_probe+0x72/0xa0 drivers/input/serio/serio.c:778
+                          really_probe+0x291/0xde0 drivers/base/dd.c:554
+                          driver_probe_device+0x26b/0x3d0 drivers/base/dd.c:738
+                          device_driver_attach+0x228/0x290 drivers/base/dd.c:1013
+                          __driver_attach+0x15b/0x2f0 drivers/base/dd.c:1090
+                          bus_for_each_dev+0x147/0x1d0 drivers/base/bus.c:305
+                          serio_attach_driver drivers/input/serio/serio.c:808 [inline]
+                          serio_handle_event+0x5f6/0xa30 drivers/input/serio/serio.c:227
+                          process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+                          worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+                          kthread+0x3b1/0x4a0 kernel/kthread.c:292
+                          ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+      INITIAL USE at:
+                         lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                         lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                         __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                         _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+                         input_inject_event+0xa6/0x310 drivers/input/input.c:466
+                         __led_set_brightness drivers/leds/led-core.c:48 [inline]
+                         led_set_brightness_nopm drivers/leds/led-core.c:275 [inline]
+                         led_set_brightness_nosleep+0xe6/0x1a0 drivers/leds/led-core.c:292
+                         led_set_brightness+0x134/0x170 drivers/leds/led-core.c:267
+                         led_trigger_event drivers/leds/led-triggers.c:387 [inline]
+                         led_trigger_event+0x70/0xd0 drivers/leds/led-triggers.c:377
+                         kbd_led_trigger_activate+0xfa/0x130 drivers/tty/vt/keyboard.c:1010
+                         led_trigger_set+0x61e/0xbd0 drivers/leds/led-triggers.c:195
+                         led_trigger_set_default drivers/leds/led-triggers.c:259 [inline]
+                         led_trigger_set_default+0x1a6/0x230 drivers/leds/led-triggers.c:246
+                         led_classdev_register_ext+0x5b1/0x7c0 drivers/leds/led-class.c:417
+                         led_classdev_register include/linux/leds.h:190 [inline]
+                         input_leds_connect+0x3fb/0x740 drivers/input/input-leds.c:139
+                         input_attach_handler+0x180/0x1f0 drivers/input/input.c:1031
+                         input_register_device.cold+0xf0/0x307 drivers/input/input.c:2229
+                         atkbd_connect+0x736/0xa00 drivers/input/keyboard/atkbd.c:1293
+                         serio_connect_driver drivers/input/serio/serio.c:47 [inline]
+                         serio_driver_probe+0x72/0xa0 drivers/input/serio/serio.c:778
+                         really_probe+0x291/0xde0 drivers/base/dd.c:554
+                         driver_probe_device+0x26b/0x3d0 drivers/base/dd.c:738
+                         device_driver_attach+0x228/0x290 drivers/base/dd.c:1013
+                         __driver_attach+0x15b/0x2f0 drivers/base/dd.c:1090
+                         bus_for_each_dev+0x147/0x1d0 drivers/base/bus.c:305
+                         serio_attach_driver drivers/input/serio/serio.c:808 [inline]
+                         serio_handle_event+0x5f6/0xa30 drivers/input/serio/serio.c:227
+                         process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+                         worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+                         kthread+0x3b1/0x4a0 kernel/kthread.c:292
+                         ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+    }
+    ... key      at: [<ffffffff8fa3ac60>] __key.8+0x0/0x40
+    ... acquired at:
+   __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+   _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+   spin_lock include/linux/spinlock.h:354 [inline]
+   evdev_pass_values.part.0+0xf6/0x970 drivers/input/evdev.c:261
+   evdev_pass_values drivers/input/evdev.c:253 [inline]
+   evdev_events+0x28b/0x3f0 drivers/input/evdev.c:306
+   input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
+   input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
+   input_pass_values drivers/input/input.c:134 [inline]
+   input_handle_event+0x324/0x1400 drivers/input/input.c:399
+   input_inject_event+0x2f5/0x310 drivers/input/input.c:471
+   evdev_write+0x430/0x760 drivers/input/evdev.c:530
+   vfs_write+0x28e/0xa30 fs/read_write.c:603
+   ksys_write+0x1ee/0x250 fs/read_write.c:658
+   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> (&client->buffer_lock){....}-{2:2} {
+     INITIAL USE at:
+                       lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                       lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                       __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+                       _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+                       spin_lock include/linux/spinlock.h:354 [inline]
+                       evdev_pass_values.part.0+0xf6/0x970 drivers/input/evdev.c:261
+                       evdev_pass_values drivers/input/evdev.c:253 [inline]
+                       evdev_events+0x28b/0x3f0 drivers/input/evdev.c:306
+                       input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
+                       input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
+                       input_pass_values drivers/input/input.c:134 [inline]
+                       input_handle_event+0x324/0x1400 drivers/input/input.c:399
+                       input_inject_event+0x2f5/0x310 drivers/input/input.c:471
+                       evdev_write+0x430/0x760 drivers/input/evdev.c:530
+                       vfs_write+0x28e/0xa30 fs/read_write.c:603
+                       ksys_write+0x1ee/0x250 fs/read_write.c:658
+                       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   }
+   ... key      at: [<ffffffff8fa3b160>] __key.4+0x0/0x40
+   ... acquired at:
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+   kill_fasync_rcu fs/fcntl.c:1002 [inline]
+   kill_fasync fs/fcntl.c:1023 [inline]
+   kill_fasync+0x14b/0x460 fs/fcntl.c:1016
+   __pass_event drivers/input/evdev.c:240 [inline]
+   evdev_pass_values.part.0+0x64e/0x970 drivers/input/evdev.c:278
+   evdev_pass_values drivers/input/evdev.c:253 [inline]
+   evdev_events+0x28b/0x3f0 drivers/input/evdev.c:306
+   input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
+   input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
+   input_pass_values drivers/input/input.c:134 [inline]
+   input_handle_event+0x324/0x1400 drivers/input/input.c:399
+   input_inject_event+0x2f5/0x310 drivers/input/input.c:471
+   evdev_write+0x430/0x760 drivers/input/evdev.c:530
+   vfs_write+0x28e/0xa30 fs/read_write.c:603
+   ksys_write+0x1ee/0x250 fs/read_write.c:658
+   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+ -> (&new->fa_lock){....}-{2:2} {
+    INITIAL READ USE at:
+                          lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                          lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                          __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                          _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                          kill_fasync_rcu fs/fcntl.c:1002 [inline]
+                          kill_fasync fs/fcntl.c:1023 [inline]
+                          kill_fasync+0x14b/0x460 fs/fcntl.c:1016
+                          __pass_event drivers/input/evdev.c:240 [inline]
+                          evdev_pass_values.part.0+0x64e/0x970 drivers/input/evdev.c:278
+                          evdev_pass_values drivers/input/evdev.c:253 [inline]
+                          evdev_events+0x28b/0x3f0 drivers/input/evdev.c:306
+                          input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
+                          input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
+                          input_pass_values drivers/input/input.c:134 [inline]
+                          input_handle_event+0x324/0x1400 drivers/input/input.c:399
+                          input_inject_event+0x2f5/0x310 drivers/input/input.c:471
+                          evdev_write+0x430/0x760 drivers/input/evdev.c:530
+                          vfs_write+0x28e/0xa30 fs/read_write.c:603
+                          ksys_write+0x1ee/0x250 fs/read_write.c:658
+                          do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                          entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  }
+  ... key      at: [<ffffffff8ef67820>] __key.0+0x0/0x40
+  ... acquired at:
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+   send_sigio+0x24/0x350 fs/fcntl.c:786
+   kill_fasync_rcu fs/fcntl.c:1009 [inline]
+   kill_fasync fs/fcntl.c:1023 [inline]
+   kill_fasync+0x205/0x460 fs/fcntl.c:1016
+   __pass_event drivers/input/evdev.c:240 [inline]
+   evdev_pass_values.part.0+0x64e/0x970 drivers/input/evdev.c:278
+   evdev_pass_values drivers/input/evdev.c:253 [inline]
+   evdev_events+0x28b/0x3f0 drivers/input/evdev.c:306
+   input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
+   input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
+   input_pass_values drivers/input/input.c:134 [inline]
+   input_handle_event+0x324/0x1400 drivers/input/input.c:399
+   input_inject_event+0x2f5/0x310 drivers/input/input.c:471
+   evdev_write+0x430/0x760 drivers/input/evdev.c:530
+   vfs_write+0x28e/0xa30 fs/read_write.c:603
+   ksys_write+0x1ee/0x250 fs/read_write.c:658
+   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> (&f->f_owner.lock){.+..}-{2:2} {
+   HARDIRQ-ON-R at:
+                    lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                    lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                    __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                    _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                    f_getown+0x1b/0xb0 fs/fcntl.c:152
+                    sock_ioctl+0x528/0x730 net/socket.c:1132
+                    vfs_ioctl fs/ioctl.c:48 [inline]
+                    __do_sys_ioctl fs/ioctl.c:753 [inline]
+                    __se_sys_ioctl fs/ioctl.c:739 [inline]
+                    __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+                    do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   INITIAL READ USE at:
+                        lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                        lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                        __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                        _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+                        send_sigio+0x24/0x350 fs/fcntl.c:786
+                        kill_fasync_rcu fs/fcntl.c:1009 [inline]
+                        kill_fasync fs/fcntl.c:1023 [inline]
+                        kill_fasync+0x205/0x460 fs/fcntl.c:1016
+                        __pass_event drivers/input/evdev.c:240 [inline]
+                        evdev_pass_values.part.0+0x64e/0x970 drivers/input/evdev.c:278
+                        evdev_pass_values drivers/input/evdev.c:253 [inline]
+                        evdev_events+0x28b/0x3f0 drivers/input/evdev.c:306
+                        input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
+                        input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
+                        input_pass_values drivers/input/input.c:134 [inline]
+                        input_handle_event+0x324/0x1400 drivers/input/input.c:399
+                        input_inject_event+0x2f5/0x310 drivers/input/input.c:471
+                        evdev_write+0x430/0x760 drivers/input/evdev.c:530
+                        vfs_write+0x28e/0xa30 fs/read_write.c:603
+                        ksys_write+0x1ee/0x250 fs/read_write.c:658
+                        do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ }
+ ... key      at: [<ffffffff8ef66a40>] __key.5+0x0/0x40
+ ... acquired at:
+   mark_usage kernel/locking/lockdep.c:4312 [inline]
+   __lock_acquire+0x120a/0x5500 kernel/locking/lockdep.c:4786
+   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+   lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+   f_getown+0x1b/0xb0 fs/fcntl.c:152
+   sock_ioctl+0x528/0x730 net/socket.c:1132
+   vfs_ioctl fs/ioctl.c:48 [inline]
+   __do_sys_ioctl fs/ioctl.c:753 [inline]
+   __se_sys_ioctl fs/ioctl.c:739 [inline]
+   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+stack backtrace:
+CPU: 0 PID: 8472 Comm: syz-executor049 Not tainted 5.10.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_irq_inversion_bug kernel/locking/lockdep.c:3740 [inline]
+ check_usage_backwards kernel/locking/lockdep.c:3884 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3974 [inline]
+ mark_lock.cold+0x1a/0x73 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4312 [inline]
+ __lock_acquire+0x120a/0x5500 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+ __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+ _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
+ f_getown+0x1b/0xb0 fs/fcntl.c:152
+ sock_ioctl+0x528/0x730 net/socket.c:1132
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x444129
+Code: 23 02 00 85 c0 b8 00 00 00 00 48 0f 44 c3 5b c3 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b d7 fb ff 
+
