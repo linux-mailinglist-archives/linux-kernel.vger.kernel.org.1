@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB112C81AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5E12C81AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727320AbgK3KFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:05:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35969 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725965AbgK3KFt (ORCPT
+        id S1728765AbgK3KF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbgK3KF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:05:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606730663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2HTRFOjw+TomkdVoKhsPrdh28bt5QNRrLXAeIOSfBdY=;
-        b=GYYUTumLplVNmG4MYvwAsua3cLbAbHSLx8DRz0+XP60paCyU6JcMAxQT0AdeyOnhdytK7L
-        8mHTYZ8A6Wri2M8C01HIxS1UvY4etIxj0UuIsrr4T0zRFv2YsTM62l3gnMv2BBiPstFHPz
-        dWVlZQj7VZTxNPXi9s6GQ0kqA4qQ1oE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-ZeSccZCNPKqUNquGz1m8ow-1; Mon, 30 Nov 2020 05:04:21 -0500
-X-MC-Unique: ZeSccZCNPKqUNquGz1m8ow-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BC7F1009466;
-        Mon, 30 Nov 2020 10:04:20 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5195C5D9D2;
-        Mon, 30 Nov 2020 10:04:19 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <1604673513-29088-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1604673513-29088-1-git-send-email-alex.shi@linux.alibaba.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] certs/blacklist: fix kernel doc interface issue
+        Mon, 30 Nov 2020 05:05:27 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6C6C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:04:46 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id x4so4477626pln.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:04:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=chUEKP3lAkDvoo08xOfrjX9mj/4TfY5yLETdKR/DXWs=;
+        b=CvJBvMLu3wwI+8egJ2dfdsC7XoOYIUnSLC917QUmTm5epGfc8fP/XrvewYWBO+SWln
+         POnwwHsbmd7lX84MSwjxEL0udar/yfYuluCPr1euoETVo/hlKOXE6SSikUc32VUOBtH7
+         jD7pJ4b8N3nH3PqTBu2hhGZchuJb0NQcaAGfSqS4s7AOlHs6Abt4WYuEwNtPAxADaDPx
+         MfEsDMBP3z+HHG5Yl8upLOYTL1cZIxN2vPXVsEKjYaRROUi1XmnFQg3C95YbxedV2v3b
+         8PuRYon6HGURU+EhlPnfQmUVVnLhizlAXJOk8mMZ3nQUyUfXIX6SGO2fh1mu7GJnWo+Q
+         S7Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=chUEKP3lAkDvoo08xOfrjX9mj/4TfY5yLETdKR/DXWs=;
+        b=LfzwZ9iQfvPRGpMcSA6Ud0ixGQCsKcdGAC3Gijabki+PVR7AePctynkkUBdvGxN+E5
+         NuKjCt3kH/YgQKYzqE1QrJPXlLMtvAXdEa5ubXE3Zyt+DKKUM2+exy7O7FKSB7mmVuUa
+         Tthw0PsfqrO6bT0EqDyns0EVSrPJWE8geCXrSD1aWYif0ZIQppSHTHdmlwBWU71Zo7Zr
+         lGEtroXGf2EP62VLkV5L0SB0R5ojPVPxJIS2+fDlWqTifL6hpZ9eEWE43DK1gCsZxBjI
+         auex60QyWhSrSAv6mvtKxm1atkF4nA7JAWuwU5PiSKCxLeq1DDkY+gKrr9iISbUwCDMg
+         bsQQ==
+X-Gm-Message-State: AOAM532k4to6LBruXNR56+mPvmO2lXcem0Bfq+wAT/JzsimjKtQTANu7
+        YWFAp3HVJeB7emuSAIvjNcfzrUa+NEhMr+RXnt3lIQ==
+X-Google-Smtp-Source: ABdhPJwjT3KLZ8MjqpX6jkrc+yfsk2K1yyK/3d49Lx4KIkvCECZ5JOnGdyG2K5g5JoyR86IHf8u0pObP/PV1bjLVsLs=
+X-Received: by 2002:a17:902:9a8e:b029:d8:d989:4f80 with SMTP id
+ w14-20020a1709029a8eb02900d8d9894f80mr18231450plp.32.1606730686412; Mon, 30
+ Nov 2020 02:04:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3096974.1606730658.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 30 Nov 2020 10:04:18 +0000
-Message-ID: <3096975.1606730658@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20201127133937.93208-1-robert.foss@linaro.org> <20201127160602.GA3096@thinkpad>
+In-Reply-To: <20201127160602.GA3096@thinkpad>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Mon, 30 Nov 2020 11:04:35 +0100
+Message-ID: <CAG3jFytoB36hpx4pOf-kn+RNfyQRJosQVeDfLsKqU+u5mr0j_Q@mail.gmail.com>
+Subject: Re: [PATCH v2] i2c: qcom: Fix IRQ error misassignement
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>, wsa@kernel.org,
+        Todor Tomov <todor.too@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Shi <alex.shi@linux.alibaba.com> wrote:
+On Fri, 27 Nov 2020 at 17:06, Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
+>
+> On Fri, Nov 27, 2020 at 02:39:37PM +0100, Robert Foss wrote:
+> > During cci_isr() errors read from register fields belonging to
+> > i2c master1 are currently assigned to the status field belonging to
+> > i2c master0. This patch corrects this error, and always assigns
+> > master1 errors to the status field of master1.
+> >
+> > Fixes: e517526195de ("i2c: Add Qualcomm CCI I2C driver")
+> >
+>
+> You don't need a new line here.
 
->  /**
->   * mark_hash_blacklisted - Add a hash to the system blacklist
-> - * @hash - The hash as a hex string with a type prefix (eg. "tbs:23aa42=
-9783")
-> + * @hash: - The hash as a hex string with a type prefix (eg. "tbs:23aa4=
-29783")
+Ack
 
-You should remove the dash when making this change.  I'll do that for you.
+>
+> > Reported-by: Loic Poulain <loic.poulain@linaro.org>
+> > Suggested-by: Loic Poulain <loic.poulain@linaro.org>
+> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-David
-
+Thanks for the review!
