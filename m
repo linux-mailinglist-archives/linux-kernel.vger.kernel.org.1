@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B072C8112
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C95E52C8118
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728355AbgK3JbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:31:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:50946 "EHLO foss.arm.com"
+        id S1727767AbgK3JdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:33:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727460AbgK3JbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:31:17 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 055A4101E;
-        Mon, 30 Nov 2020 01:30:32 -0800 (PST)
-Received: from [10.57.56.151] (unknown [10.57.56.151])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73A6D3F23F;
-        Mon, 30 Nov 2020 01:30:30 -0800 (PST)
-Subject: Re: [PATCH v4 17/25] coresight: etm4x: Use TRCDEVARCH for component
- discovery
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
-        jonathan.zhouwen@huawei.com, coresight@lists.linaro.org
-References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
- <20201119164547.2982871-18-suzuki.poulose@arm.com>
- <20201127182837.GA1092947@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <8021ab00-3d10-d38a-6a13-dff9a726031b@arm.com>
-Date:   Mon, 30 Nov 2020 09:30:25 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726756AbgK3JdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 04:33:25 -0500
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F0E62076E;
+        Mon, 30 Nov 2020 09:32:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606728764;
+        bh=qpt/omNfokXd4Bg6icgGXINwG61fMEflfl5dg8+HUM8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wPG5J7kWWr3HvZ3duEoSEyllmcXyvG2Ep0josjchXYuE3nmPQSaYKNQtkCWmj2MFv
+         gHqahlE8bDoDsu8Zs24IU7585Lcv95CqgtClRxcL+3vPcFzEO9MhtuAToWlyrs4vzv
+         re2QeZuG867MJge1PD90MLnGfz0UXlfCCElHHDiM=
+Date:   Mon, 30 Nov 2020 17:32:39 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Evgeny Boger <boger@wirenboard.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ARM: mxs: Add serial number support for i.MX23,
+ i.MX28 SoCs
+Message-ID: <20201130093238.GE4072@dragon>
+References: <20201116165826.51570-1-ivan.zaentsev@wirenboard.ru>
 MIME-Version: 1.0
-In-Reply-To: <20201127182837.GA1092947@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116165826.51570-1-ivan.zaentsev@wirenboard.ru>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/20 6:28 PM, Mathieu Poirier wrote:
-> On Thu, Nov 19, 2020 at 04:45:39PM +0000, Suzuki K Poulose wrote:
->> We have been using TRCIDR1 for detecting the ETM version. This
->> is in preparation for the future IP support.
->>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+On Mon, Nov 16, 2020 at 07:58:26PM +0300, Ivan Zaentsev wrote:
+> i.MX23 and i.MX28 SoCs unique identifiers are factory-programmed
+> in On-Chip OTP memory. i.MX28's 64-bit unique id is in
+> HW_OCOTP_OPS2:HW_OCOTP_OPS3 (see MCIMX28 Ref. Man., sec. 20.4.22-23).
 > 
-> You have reviewed your own code - that's great!
+> i.MX23 provides 32-bit long unique id in HW_OCOTP_OPS3.
+> Though not clearly documented, there is a clue in sec. 35.9.3.
 > 
-> I had a good giggle on that one.  I have started reviewing this set...
+> The unique id is reported in /sys/devices/soc0/serial_number
+> and in /proc/cpuinfo
+> 
+> Signed-off-by: Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
+> Suggested-by: Evgeny Boger <boger@wirenboard.com>
 
-Yikes, sorry. It must have been a copy/paste error. It was supposed to be yours
-
-https://lore.kernel.org/linux-arm-kernel/20201106214228.GE3299843@xps15/
-
-Cheers
-Suzuki
+Applied, thanks.
