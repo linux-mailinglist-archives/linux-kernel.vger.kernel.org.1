@@ -2,190 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA7C2C8CDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7552C8CDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728678AbgK3ScZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:32:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34714 "EHLO mail.kernel.org"
+        id S1729656AbgK3Scs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:32:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727009AbgK3ScZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:32:25 -0500
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        id S1727009AbgK3Scs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 13:32:48 -0500
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B16F2074A
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:31:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9425921973
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:32:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606761104;
-        bh=gwsL+0EwlkMhjy0Ll0CqSrl4s0yHH5VqLRU4u4UBbzs=;
+        s=default; t=1606761126;
+        bh=1+dkmgdZJ7A0XGOrHZ54DD0H5z4iBA9FoEkfBleyJuY=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pyhKMQne49aewdzx28w9mbVCGogTjmUPe3tODU3l3pJIx/7i8gUnQec1Yh92og8tj
-         RfZudpYWC/wLU21SpFCf0UjnfTCSFSbP47EgwZcaQfO+vb+wDyrQLnOfLBye11TgxY
-         STvdZ2aEbTRsqzNH4sVUQ2Q/KqcrdfUllIh33QwY=
-Received: by mail-oi1-f179.google.com with SMTP id d9so15261402oib.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:31:44 -0800 (PST)
-X-Gm-Message-State: AOAM531fNNnScJplq/+CMs0VTfRcXMMKy448EPCfz+J2MJFFknL+i+Re
-        Fz+IGZxoui+pHnYdYL9vdK7YAVlGKs7SXQeq95Y=
-X-Google-Smtp-Source: ABdhPJx2PmV4wLNq8NxfSnZDPDD3E4eQh/Sl7HJ2oCEuxm0xuX1VDV7sOhkQscKFDW//1m3kHJpK+F38uKGQvG+Y+9A=
-X-Received: by 2002:aca:c657:: with SMTP id w84mr111043oif.47.1606761103398;
- Mon, 30 Nov 2020 10:31:43 -0800 (PST)
+        b=E+N75pAfswxeCzlmUfdYFaAfJdyhCr88GdgNA+vYDu+vRp/DMAd3A1tTDLo8eOe3l
+         jq1Q25CW+GhROdJlSMw44bGNpCfAk3NZSjtqSvcVqfYt2bwNgIyKHg8LwAdjgroeU1
+         Of/Ltl09+ycHVRyBE7iH8o3f/rVW310krhjO43ns=
+Received: by mail-wm1-f52.google.com with SMTP id x22so213329wmc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:32:06 -0800 (PST)
+X-Gm-Message-State: AOAM533ABCk4kK0/r35yhd7HJZ3vsT/x5AB2iHTIVGVi0Az910ob2pUv
+        xfx+klbFE+2TbVn25bZyHdM4xnpQSUGX54WriTgixA==
+X-Google-Smtp-Source: ABdhPJw56yUaWzacL4hoCkQBOBa3nkJxkwwfEXbkRg72FmSGtd4KgK5OT4oDDcgUyJ0h6IZ4izTuF89S8vIfMMUXW10=
+X-Received: by 2002:a7b:c303:: with SMTP id k3mr134104wmj.21.1606761125012;
+ Mon, 30 Nov 2020 10:32:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
- <f8a97f360073fa495cae75acc11ecf4f@kernel.org> <85bb389a75f347d29ab3f75e4cfae060@huawei.com>
- <846387e4168f1a22638ad07ae670c531@kernel.org> <e93770e46c73413882584ebc3fe732e3@huawei.com>
-In-Reply-To: <e93770e46c73413882584ebc3fe732e3@huawei.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 30 Nov 2020 19:31:32 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGdEbDzFN2cCNpCx_QJk3++v3zrWZ7Yw08Exrzyy_Q97w@mail.gmail.com>
-Message-ID: <CAMj1kXGdEbDzFN2cCNpCx_QJk3++v3zrWZ7Yw08Exrzyy_Q97w@mail.gmail.com>
-Subject: Re: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>
+References: <20201128160141.1003903-1-npiggin@gmail.com> <20201128160141.1003903-7-npiggin@gmail.com>
+ <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com> <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
+In-Reply-To: <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 30 Nov 2020 10:31:51 -0800
+X-Gmail-Original-Message-ID: <CALCETrXAR_9EGaOF8ymVkZycxgZkYk0dR+NjEpTfVzdcS3sOVw@mail.gmail.com>
+Message-ID: <CALCETrXAR_9EGaOF8ymVkZycxgZkYk0dR+NjEpTfVzdcS3sOVw@mail.gmail.com>
+Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb option
+To:     Andy Lutomirski <luto@kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020 at 17:22, Shameerali Kolothum Thodi
-<shameerali.kolothum.thodi@huawei.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Marc Zyngier [mailto:maz@kernel.org]
-> > Sent: 30 November 2020 14:57
-> > To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> > Cc: linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
-> > eric.auger@redhat.com; Linuxarm <linuxarm@huawei.com>
-> > Subject: Re: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy sup=
-port
-> >
-> > Hi Shameer,
-> >
-> > On 2020-11-30 13:55, Shameerali Kolothum Thodi wrote:
-> > > Hi Marc,
-> > >
-> > >> -----Original Message-----
-> > >> From: Marc Zyngier [mailto:maz@kernel.org]
-> > >> Sent: 30 November 2020 12:28
-> > >> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> > >> Cc: linux-kernel@vger.kernel.org;
-> > >> linux-arm-kernel@lists.infradead.org;
-> > >> eric.auger@redhat.com; Linuxarm <linuxarm@huawei.com>
-> > >> Subject: Re: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy
-> > >> support
-> > >>
-> > >> Hi Shameer,
-> > >>
-> > >> On 2020-11-30 10:26, Shameer Kolothum wrote:
-> > >> > At present, the support for GICv2 backward compatibility on GICv3/=
-v4
-> > >> > hardware is determined based on whether DT/ACPI provides a memory
-> > >> > mapped phys base address for GIC virtual CPU interface register(GI=
-CV).
-> > >> > This creates a problem that a Qemu guest boot with default GIC(GIC=
-v2)
-> > >>
-> > >> That'd be true of *any* guest using GICv2, not just when using QEMU =
-as
-> > >> the VMM, right?
-> > >
-> > > Yes, I would think so.
-> > >
-> > >> > hangs when firmware falsely reports this address on systems that d=
-on't
-> > >> > have support for legacy mode.
-> > >>
-> > >> And I guess it isn't just the guest that hangs, but the whole system
-> > >> can
-> > >> go south (it would be totally legitimate for the HW to deliver a
-> > >> SError).
-> > >
-> > > So far I haven=E2=80=99t seen that happening. I was able to kill the =
-Guest and
-> > > recover.
-> > > But the annoying thing is Guest boot hangs at random places without a=
-ny
-> > > error reported and people end up spending lot of time only to be told
-> > > later
-> > > that gic-version=3D3 is missing from their scripts.
-> >
-> > That's pretty lucky. The guest has been reading/writing to random
-> > places,
-> > and depending on where this maps in the physical space, anything can
-> > happen. Out  of (morbid) curiosity, what is at the address pointed to b=
-y
-> > GICC in MADT?
->
-> This is what it reports,
->
-> [02Ch 0044   1]                Subtable Type : 0B [Generic Interrupt Cont=
-roller]
-> [02Dh 0045   1]                       Length : 50
-> ...
-> [04Ch 0076   8]                 Base Address : 000000009B000000
-> [054h 0084   8]     Virtual GIC Base Address : 000000009B020000
-> [05Ch 0092   8]  Hypervisor GIC Base Address : 000000009B010000
-> [064h 0100   4]        Virtual GIC Interrupt : 00000019
-> [068h 0104   8]   Redistributor Base Address : 00000000AE100000
-> [070h 0112   8]                    ARM MPIDR : 0000000000080000
-> [078h 0120   1]             Efficiency Class : 15
-> [079h 0121   3]                     Reserved : 001500
->
-> > >
-> > >> > As per GICv3/v4 spec, in an implementation that does not support l=
-egacy
-> > >> > operation, affinity routing and system register access are permane=
-ntly
-> > >> > enabled. This means that the associated control bits are RAO/WI. H=
-ence
-> > >> > use the ICC_SRE_EL1.SRE bit to decide whether hardware supports
-> > GICv2
-> > >> > mode in addition to the above firmware based check.
-> > >> >
-> > >> > Signed-off-by: Shameer Kolothum
-> > <shameerali.kolothum.thodi@huawei.com>
-> > >> > ---
-> > >> > On Hisilicon D06, UEFI sets the GIC MADT GICC gicv_base_address bu=
-t
-> > the
-> > >> > GIC implementation on these boards doesn't have the GICv2 legacy
-> > >> > support.
-> > >> > This results in, Guest boot hang when Qemu uses the default GIC op=
-tion.
-> > >>
-> > >> What a bore. Is this glorious firmware really out in the wild?
-> > >
-> > > :(. I am afraid it is.
-> >
-> > Meh. We'll have to paper over it then. How urgent is that?
->
-> It is not that urgent urgent but 5.10 support would be nice :)
->
-> >
-> > [...]
-> >
-> > >> How about this instead? Completely untested, of course.
-> > >
-> > > Thanks for that. I just tested and it works.
-> >
-> > OK. I'll rework it a bit and post it as a complete patch. Is there an
-> > erratum number on your side?
->
-> Sure. I am not sure on erratum, but will check internally and get back to=
- you
-> if there is one.
->
+other arch folk: there's some background here:
 
-Any clue why production D06 firmware deviates from the D06 port that
-exists in Tianocore's edk2-platforms repository? Because that version
-does not have this bug, and I wonder why that code was upstreamed at
-all if a substantially different version gets shipped with production
-hardware.
+https://lkml.kernel.org/r/CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com
+
+On Sun, Nov 29, 2020 at 12:16 PM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> On Sat, Nov 28, 2020 at 7:54 PM Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+> > >
+> > > On big systems, the mm refcount can become highly contented when doing
+> > > a lot of context switching with threaded applications (particularly
+> > > switching between the idle thread and an application thread).
+> > >
+> > > Abandoning lazy tlb slows switching down quite a bit in the important
+> > > user->idle->user cases, so so instead implement a non-refcounted scheme
+> > > that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
+> > > any remaining lazy ones.
+> > >
+> > > Shootdown IPIs are some concern, but they have not been observed to be
+> > > a big problem with this scheme (the powerpc implementation generated
+> > > 314 additional interrupts on a 144 CPU system during a kernel compile).
+> > > There are a number of strategies that could be employed to reduce IPIs
+> > > if they turn out to be a problem for some workload.
+> >
+> > I'm still wondering whether we can do even better.
+> >
+>
+> Hold on a sec.. __mmput() unmaps VMAs, frees pagetables, and flushes
+> the TLB.  On x86, this will shoot down all lazies as long as even a
+> single pagetable was freed.  (Or at least it will if we don't have a
+> serious bug, but the code seems okay.  We'll hit pmd_free_tlb, which
+> sets tlb->freed_tables, which will trigger the IPI.)  So, on
+> architectures like x86, the shootdown approach should be free.  The
+> only way it ought to have any excess IPIs is if we have CPUs in
+> mm_cpumask() that don't need IPI to free pagetables, which could
+> happen on paravirt.
+
+Indeed, on x86, we do this:
+
+[   11.558844]  flush_tlb_mm_range.cold+0x18/0x1d
+[   11.559905]  tlb_finish_mmu+0x10e/0x1a0
+[   11.561068]  exit_mmap+0xc8/0x1a0
+[   11.561932]  mmput+0x29/0xd0
+[   11.562688]  do_exit+0x316/0xa90
+[   11.563588]  do_group_exit+0x34/0xb0
+[   11.564476]  __x64_sys_exit_group+0xf/0x10
+[   11.565512]  do_syscall_64+0x34/0x50
+
+and we have info->freed_tables set.
+
+What are the architectures that have large systems like?
+
+x86: we already zap lazies, so it should cost basically nothing to do
+a little loop at the end of __mmput() to make sure that no lazies are
+left.  If we care about paravirt performance, we could implement one
+of the optimizations I mentioned above to fix up the refcounts instead
+of sending an IPI to any remaining lazies.
+
+arm64: AFAICT arm64's flush uses magic arm64 hardware support for
+remote flushes, so any lazy mm references will still exist after
+exit_mmap().  (arm64 uses lazy TLB, right?)  So this is kind of like
+the x86 paravirt case.  Are there large enough arm64 systems that any
+of this matters?
+
+s390x: The code has too many acronyms for me to understand it fully,
+but I think it's more or less the same situation as arm64.  How big do
+s390x systems come?
+
+power: Ridiculously complicated, seems to vary by system and kernel config.
+
+So, Nick, your unconditional IPI scheme is apparently a big
+improvement for power, and it should be an improvement and have low
+cost for x86.  On arm64 and s390x it will add more IPIs on process
+exit but reduce contention on context switching depending on how lazy
+TLB works.  I suppose we could try it for all architectures without
+any further optimizations.  Or we could try one of the perhaps
+excessively clever improvements I linked above.  arm64, s390x people,
+what do you think?
