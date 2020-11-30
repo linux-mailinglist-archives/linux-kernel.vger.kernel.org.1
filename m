@@ -2,165 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AB72C8E22
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEE32C8E25
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729791AbgK3Te3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38836 "EHLO
+        id S1729868AbgK3Tfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:35:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729608AbgK3Te2 (ORCPT
+        with ESMTP id S1728901AbgK3Tfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:34:28 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6847EC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:33:48 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id t21so219004pjw.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:33:48 -0800 (PST)
+        Mon, 30 Nov 2020 14:35:40 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CE2C061A4A
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:35:24 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id bj5so7058928plb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:35:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CGCfzwd93ASiBjoTcqNrGvupvrJe2uwFFi+sFJL4Neg=;
-        b=FwlZLBwiN8Sg8B7444O9gOcY1fHCOJED3NpGs1VcPdPhljPrz6RY2/s0Jb01A7jvO7
-         5AqL4U9eVSBuLONDA2ThiEAWDZd3PseV2mM3DCm48Q+jnUHy3Nu4QuCYx01HjZ/QERTq
-         a4PqfJiDvCHLbfWuuWt0WFXxpFXO8i4SWAXj4MYcPM9JQwgtRS1Uyc228CD2nH9NESi1
-         0BfxHn3WnvBkF5Qt109xUH5xJsd9g0WXc7MpV05D1+zVc0aaJl/w7G5d6iWZBtSVk7JA
-         3Qmu1ShBDMLjQgIb0PoBF88Jv6KZqcxmKBnHrXwEJu9BvZUr7EK0Ohwt1TLbxZLlqyfw
-         Hzgg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P2JAtkf1gp7Yf1H5qMpHVhFTHg5rB+CUXS9hxTq7SNI=;
+        b=NxXmrbpDRHsldZTSsy0qE8vgOBTXLxOjMsnknxQQmDK3ngRn9DeklqrZntmKGe336V
+         PYcy6x37/WGVPR99++qUet3IX2DSV8yQ86gipBOngnu8ogVhs/PZvb1tzSl1JLMcmOJy
+         n9kvgQA9gderMszFPhEFdt2zyJfwiWDeQKqKdqhsj/QSn6lEN7lZ0v/WsMizgrFAO7L1
+         TYV+W7i+T+NkctnB/0dahbFAciISfVT99LNI/DJ+/cfVPJ5jDKhDSNljWuY92DEkSo5Z
+         j6bE8j0zHFoVIQPX5U+UjzNuozZGfsAO5PK5BN/If6+oLq2Vb8sUQ1jDl+HpxbgczSqp
+         JvKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CGCfzwd93ASiBjoTcqNrGvupvrJe2uwFFi+sFJL4Neg=;
-        b=r4pG1QuWN7MSEBNfdpYkroxLIsec9K8z8Q6L7mhS9d1AFRAfR32fwnzAsXM74+vyAk
-         N3nfb+oVtpT2kUWcrHRkkN5vqJux7Nxpdoh+76tlPk6Pd3O8rMQX0UoeD6UjAz5hBbfR
-         /DDatW2tlCRQQ7Vk/v0cj1PJTiAnGbA5mMlBe5T5jsO5fw6RK0rlDTXYBV+nlbBIOChs
-         jXCHi88hyrx664PKUbukjzLQHJ/A856wntiDI1ACwMM7pol5SXbAGljiVWBgH/+3kJLt
-         4Tk+UzlY9P7DXsgEgdIXUNkV3Jv81PxJeTn9J+acUy6kO5JTVFMQxtoKzkm7p69ZryH4
-         q66Q==
-X-Gm-Message-State: AOAM532CGnVuGD0QI8t5/zuYKjAteu4WQh0TiEyJD08tEkdgBUc0OAc7
-        ZruW2EkkcAt99SDtjaTNA3Xpo+q9ZkXJuOUx+S07eg==
-X-Google-Smtp-Source: ABdhPJz5ZJRIByZgoQucavhN1VJHt7aslzVAW3llEM1XaEqac5pWlh2+8ODWmDRBrN6WX6ZncFKvxSlQH3/oUiu0hTM=
-X-Received: by 2002:a17:902:b18c:b029:d9:f:15fc with SMTP id
- s12-20020a170902b18cb02900d9000f15fcmr19983326plr.29.1606764827740; Mon, 30
- Nov 2020 11:33:47 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P2JAtkf1gp7Yf1H5qMpHVhFTHg5rB+CUXS9hxTq7SNI=;
+        b=EiJv+1PF1mEncudvmfuIIrZEz4UcMTKg3RbbUpEIiKFYqU2tXVUdetaIMuVvKiaXTP
+         0VE88GdPQzb1I4zIlEb86VdBIZZy3afEpMLX0p/dvk+xTpP1xBTrN9hChspZ/QvJ6ygr
+         vq1HefyNddXSRD9pvkV28Zv4J5yKDVKGCt3l0DO99KthEdJaGlS11X4TQlPFUdBO5TRx
+         d/TnkKaUtgL7Ua0tIaDulp+5Zi9/BDTJ5eF2YvcmEqhZEza0ol3h+biJdided3BBVG/u
+         P2wcav6YltI1WxFdbLuGbeJ6/CWCzuYyrLrM8coFskX+A1c6+0A2M0FYrZxd2I4PiEZm
+         wymA==
+X-Gm-Message-State: AOAM530qVheQmE9Mb5Fe6+Jkb9VzCHlXFqoERHhdMDiNuWgEHVxL5oqO
+        XRo7NPtclrsP22TxLUTpxjZBgkURToDQJg==
+X-Google-Smtp-Source: ABdhPJxxgSW5IU4tyt7wcB4qR3mvypBTZvljWcm/e4RwZlg8aeE/2iKg/BjLuMZ5v1EETtQ9aGzK7A==
+X-Received: by 2002:a17:902:8b89:b029:d6:df6e:54df with SMTP id ay9-20020a1709028b89b02900d6df6e54dfmr20239687plb.0.1606764924152;
+        Mon, 30 Nov 2020 11:35:24 -0800 (PST)
+Received: from google.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
+        by smtp.gmail.com with ESMTPSA id q19sm17552238pff.101.2020.11.30.11.35.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 11:35:23 -0800 (PST)
+Date:   Mon, 30 Nov 2020 19:35:19 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>
+Subject: Re: [RFC PATCH 00/35] SEV-ES hypervisor support
+Message-ID: <X8VJdxTKKkC7uEMh@google.com>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <20200914225951.GM7192@sjchrist-ice>
+ <bee6fdda-d548-8af5-f029-25c22165bf84@amd.com>
+ <20200916001925.GL8420@sjchrist-ice>
+ <60cbddaf-50f3-72ca-f673-ff0b421db3ad@redhat.com>
+ <X8U2gyj7F2wFU3JI@google.com>
+ <8759948d-aa0b-3929-bda6-488b6788489a@redhat.com>
 MIME-Version: 1.0
-References: <pr6q9q72-6n62-236q-s59n-7osq71o285r9@syhkavp.arg>
-In-Reply-To: <pr6q9q72-6n62-236q-s59n-7osq71o285r9@syhkavp.arg>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 30 Nov 2020 11:33:36 -0800
-Message-ID: <CAKwvOdn1nCx354hkb15wBDH12aJgbObqPxa_neX5m71axaKRUw@mail.gmail.com>
-Subject: Re: [PATCH] __div64_32(): straighten up inline asm constraints
-To:     Nicolas Pitre <nico@fluxnic.net>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Antony Yu <swpenim@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8759948d-aa0b-3929-bda6-488b6788489a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 11:05 AM Nicolas Pitre <nico@fluxnic.net> wrote:
->
-> The ARM version of __div64_32() encapsulates a call to __do_div64 with
-> non-standard argument passing. In particular, __n is a 64-bit input
-> argument assigned to r0-r1 and __rem is an output argument sharing half
-> of that 40-r1 register pair.
++Isaku and Xiaoyao
 
-Should `40` be `r0`?
+On Mon, Nov 30, 2020, Paolo Bonzini wrote:
+> On 30/11/20 19:14, Sean Christopherson wrote:
+> > > > TDX also selectively blocks/skips portions of other ioctl()s so that the
+> > > > TDX code itself can yell loudly if e.g. .get_cpl() is invoked.  The event
+> > > > injection restrictions are due to direct injection not being allowed (except
+> > > > for NMIs); all IRQs have to be routed through APICv (posted interrupts) and
+> > > > exception injection is completely disallowed.
+> > > > 
+> > > >     kvm_vcpu_ioctl_x86_get_vcpu_events:
+> > > > 	if (!vcpu->kvm->arch.guest_state_protected)
+> > > >           	events->interrupt.shadow = kvm_x86_ops.get_interrupt_shadow(vcpu);
+> > > Perhaps an alternative implementation can enter the vCPU with immediate exit
+> > > until no events are pending, and then return all zeroes?
+> > 
+> > This can't work.  If the guest has STI blocking, e.g. it did STI->TDVMCALL with
+> > a valid vIRQ in GUEST_RVI, then events->interrupt.shadow should technically be
+> > non-zero to reflect the STI blocking.  But, the immediate exit (a hardware IRQ
+> > for TDX guests) will cause VM-Exit before the guest can execute any instructions
+> > and thus the guest will never clear STI blocking and never consume the pending
+> > event.  Or there could be a valid vIRQ, but GUEST_RFLAGS.IF=0, in which case KVM
+> > would need to run the guest for an indeterminate amount of time to wait for the
+> > vIRQ to be consumed.
+> 
+> Delayed interrupts are fine, since they are injected according to RVI and
+> the posted interrupt descriptor.  I'm thinking more of events (exceptions
+> and interrupts) that caused an EPT violation exit and were recorded in the
+> IDT-vectored info field.
 
->
-> With __n being an input argument, the compiler is in its right to
-> presume that r0-r1 would still hold the value of __n past the inline
-> assembly statement. Normally, the compiler would have assigned non
-> overlapping registers to __n and __rem if the value for __n is needed
-> again.
->
-> However, here we enforce our own register assignment and gcc fails to
-> notice the conflict. In practice this doesn't cause any problem as __n
-> is considered dead after the asm statement and *n is overwritten.
-> However this is not always guaranteed and clang rightfully complains.
->
-> Let's fix it properly by making __n into an input-output variable. This
-> makes it clear that those registers representing __n have been modified.
-> Then we can extract __rem as the high part of __n with plain C code.
->
-> This asm constraint "abuse" was likely relied upon back when gcc didn't
-> handle 64-bit values optimally Turns out that gcc is now able to
+Ah.  As is, I don't believe KVM has access to this information.  TDX-Module
+handles the actual EPT violation, as well as event reinjection.  The EPT
+violation reported by SEAMRET is synthesized, and IIRC the IDT-vectoring field
+is not readable.
 
-^ Missing punctuation (period after `optimally`).
-
-> optimize things and produces the same code with this patch applied.
->
-> Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
-> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-> Tested-by: Ard Biesheuvel <ardb@kernel.org>
-
-Reported-by: Antony Yu <swpenim@gmail.com>
-
-
-> ---
->
-> This is related to the thread titled "[RESEND,PATCH] ARM: fix
-> __div64_32() error when compiling with clang". My limited compile test
-> with clang appears to make it happy. If no more comments I'll push this
-> to RMK's patch system.
->
-> diff --git a/arch/arm/include/asm/div64.h b/arch/arm/include/asm/div64.h
-> index 898e9c78a7..595e538f5b 100644
-> --- a/arch/arm/include/asm/div64.h
-> +++ b/arch/arm/include/asm/div64.h
-> @@ -21,29 +21,20 @@
->   * assembly implementation with completely non standard calling convention
->   * for arguments and results (beware).
->   */
-> -
-> -#ifdef __ARMEB__
-> -#define __xh "r0"
-> -#define __xl "r1"
-> -#else
-> -#define __xl "r0"
-> -#define __xh "r1"
-> -#endif
-> -
->  static inline uint32_t __div64_32(uint64_t *n, uint32_t base)
->  {
->         register unsigned int __base      asm("r4") = base;
->         register unsigned long long __n   asm("r0") = *n;
->         register unsigned long long __res asm("r2");
-> -       register unsigned int __rem       asm(__xh);
-> -       asm(    __asmeq("%0", __xh)
-> +       unsigned int __rem;
-> +       asm(    __asmeq("%0", "r0")
->                 __asmeq("%1", "r2")
-> -               __asmeq("%2", "r0")
-> -               __asmeq("%3", "r4")
-> +               __asmeq("%2", "r4")
->                 "bl     __do_div64"
-> -               : "=r" (__rem), "=r" (__res)
-> -               : "r" (__n), "r" (__base)
-> +               : "+r" (__n), "=r" (__res)
-> +               : "r" (__base)
->                 : "ip", "lr", "cc");
-> +       __rem = __n >> 32;
->         *n = __res;
->         return __rem;
-
-The above 3 statement could be:
-
-```
-*n = __res;
-return __n >> 32;
-```
-
->  }
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Regardless, is there an actual a problem with having a "pending" exception that
+isn't reported to userspace?  Obviously the info needs to be migrated, but that
+will be taken care of by virtue of migrating the VMCS.
