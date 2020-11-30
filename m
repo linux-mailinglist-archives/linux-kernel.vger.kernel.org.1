@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DB32C8C85
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2A32C8C8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388096AbgK3SR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:17:56 -0500
-Received: from mga18.intel.com ([134.134.136.126]:6957 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388071AbgK3SRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:17:52 -0500
-IronPort-SDR: wj5Dzt4t1e8jeh6eHiiSFfBl4zWQ1rUJUit/MrUwRmJ0ORHcy0BUGxMbDJANiHtZ+QI+DQ4HOl
- C9xh77ZZrfQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="160457112"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="160457112"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 10:17:11 -0800
-IronPort-SDR: Po7ha/fJ6IXwregsxpli6VTfXr+znPuolwEztJizbK2473bykZTG02oYFxl670BEDxM3PIUpwE
- f6imrB/W1kIA==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="434379152"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.122.22]) ([10.212.122.22])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 10:17:09 -0800
-Subject: Re: [NEEDS-REVIEW] [PATCH v15 03/26] x86/fpu/xstate: Introduce CET
- MSR XSAVES supervisor states
-To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        id S2388085AbgK3SSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:18:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387955AbgK3SSy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 13:18:54 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B78C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:18:14 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id l4so4497134pgu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:18:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=xdIedazEfXXnCAeqOGlzEefkWkg8iQVFK6VAg0y1HPI=;
+        b=QjpMwFKn9uAxSDuzuHZbkrtI966789Di/w6FPRS/lVvvqi73Bnf4hrsK0prfQyAdgt
+         U4y0g3xJm0ujAOltTSk1oqdb27zs86c2DDsr977N1potUxpXnBUU6/pbB8eM+RQHprrE
+         16u8gaF22DzW6tCfq6tnfKnykjGquX3jtCTXvPSpV+Wv6V1b0ImqhGCiTl+CSpzzd10/
+         fJ1bSov9m+J6shoi7BuHiqRRmbK/5BNHqoHGVrsEkO//su9hpZ237sy+CsHkf1JeSl0R
+         kVTvI6Jnn1gStqqFqZE8MznO5MGxhtU94lD5ZQXpbUzeCVVIZ5A2aU3AYcBZSykqnsUY
+         hubQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=xdIedazEfXXnCAeqOGlzEefkWkg8iQVFK6VAg0y1HPI=;
+        b=gBL4KYb7xzb52+ZpYp+3NjMfDdPAvYL8jeVI1aD179swmspxmRXBn3X5Kdf7jp8bh9
+         6JXf/U8oBDqZAgg9vz08wqww828H6lsceTPnQMnWHGdj1ERJrd6nurQmGcaQK6plDZeX
+         CRdVQNRJJhJ8hcX1Wk2v7OpF15F0qFqVtAZT8YzWMsyRfKL64apWLi1BQy9oQ91lLs/B
+         umCKEjraQF1+YJesceIZojdRrS+Nv3tN8N0j3Z8TNEoSrwjQnpUREGScWaU9EfqnWvix
+         u0vIerJ04xC80GSwZUsSBt3jAZQeFWxwDpHCBejeTwXzbCCq6UpDFxW1BeDR6yiCgClh
+         2Clw==
+X-Gm-Message-State: AOAM532co76aMX+SYWny5fL4omwLjfTtlY6xa7tbHWDbB3ulc9+VnX4Z
+        EbCSrsb3z/zzKlIZi3fRw4IhWg==
+X-Google-Smtp-Source: ABdhPJwOM4/nwZd+OBDC/6sXShLheOMgPtxBR2yspsPjbxNYytV6YvKpviVNw+fOKCM53vWE1L4wsQ==
+X-Received: by 2002:a63:b1c:: with SMTP id 28mr19320876pgl.206.1606760293693;
+        Mon, 30 Nov 2020 10:18:13 -0800 (PST)
+Received: from google.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
+        by smtp.gmail.com with ESMTPSA id s145sm17286194pfs.187.2020.11.30.10.18.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 10:18:13 -0800 (PST)
+Date:   Mon, 30 Nov 2020 18:18:09 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-4-yu-cheng.yu@intel.com>
- <cfbd90a8-6996-fa7b-a41a-54ff540f419c@intel.com>
- <f7033860-f322-fe13-fdc1-552e8777f003@intel.com>
- <31c8dabc-185d-be7b-c800-30a7ff29b34e@intel.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <0110eba0-09cd-ace8-57d3-859475610b42@intel.com>
-Date:   Mon, 30 Nov 2020 10:17:09 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC PATCH 00/35] SEV-ES hypervisor support
+Message-ID: <X8U3YeoIg1m2NW9x@google.com>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <20200914225951.GM7192@sjchrist-ice>
+ <bee6fdda-d548-8af5-f029-25c22165bf84@amd.com>
+ <20200916001925.GL8420@sjchrist-ice>
+ <60cbddaf-50f3-72ca-f673-ff0b421db3ad@redhat.com>
+ <38e89899-cf58-3a39-1d09-3ce963140a57@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <31c8dabc-185d-be7b-c800-30a7ff29b34e@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <38e89899-cf58-3a39-1d09-3ce963140a57@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/2020 10:12 AM, Dave Hansen wrote:
-> On 11/30/20 10:06 AM, Yu, Yu-cheng wrote:
->>>> +            if (!boot_cpu_has(X86_FEATURE_SHSTK) &&
->>>> +                !boot_cpu_has(X86_FEATURE_IBT))
->>>> +                xfeatures_mask_all &= ~BIT_ULL(i);
->>>> +        } else {
->>>> +            if ((xsave_cpuid_features[i] == -1) ||
->>>
->>> Where did the -1 come from?  Was that introduced earlier in this series?
->>>    I don't see any way a xsave_cpuid_features[] can be -1 in the
->>> current tree.
->>
->> Yes, we used to have a hole in xsave_cpuid_features[] and put -1 there.
->> Do we want to keep this in case we again have holes in the future?
+On Mon, Nov 30, 2020, Tom Lendacky wrote:
+> On 11/30/20 9:31 AM, Paolo Bonzini wrote:
+> > On 16/09/20 02:19, Sean Christopherson wrote:
+> >>
+> >> TDX also selectively blocks/skips portions of other ioctl()s so that the
+> >> TDX code itself can yell loudly if e.g. .get_cpl() is invoked.� The event
+> >> injection restrictions are due to direct injection not being allowed
+> >> (except
+> >> for NMIs); all IRQs have to be routed through APICv (posted interrupts) and
+> >> exception injection is completely disallowed.
+> >>
+> >> �� kvm_vcpu_ioctl_x86_get_vcpu_events:
+> >> ����if (!vcpu->kvm->arch.guest_state_protected)
+> >> ������������ events->interrupt.shadow =
+> >> kvm_x86_ops.get_interrupt_shadow(vcpu);
+> > 
+> > Perhaps an alternative implementation can enter the vCPU with immediate
+> > exit until no events are pending, and then return all zeroes?
 > 
-> So, it's dead code for the moment and it's impossible to tell what -1
-> means without looking at git history?  That seems, um, suboptimal.
-> 
-> Shouldn't we have:
-> 
-> #define XFEATURE_NO_DEP -1
-> 
-> ?
-> 
-> And then this code becomes:
-> 
-> 	if ((xsave_cpuid_features[i] == XFEATURE_NO_DEP))
-> 		// skip it...
-> 
-> We can even put a comment in xsave_cpuid_features[] to tell folks to use
-> it.
-> 
+> SEV-SNP has support for restricting injections, but SEV-ES does not.
+> Perhaps a new boolean, guest_restricted_injection, can be used instead of
+> basing it on guest_state_protected.
 
-Yes, I will work on that.
-
-Yu-cheng
+Ya, that probably makes sense.  I suspect the easiest way to resolve these
+conflicts will be to land the SEV-ES series and then tweak things as needed for
+TDX.  Easiest in the sense that it should be fairly obvious what can be covered
+by guest_state_protected and what needs a dedicated flag.
