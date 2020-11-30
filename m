@@ -2,159 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DB12C8E1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85AB72C8E22
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:35:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgK3Tcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:32:52 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18804 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725987AbgK3Tcw (ORCPT
+        id S1729791AbgK3Te3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729608AbgK3Te2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:32:52 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AUJVw6t161547;
-        Mon, 30 Nov 2020 14:32:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=/+cFMQeSfYg4ZvEvs3fk4BNFd+iDHP8uRlJGhoKYdKQ=;
- b=f8p4Wy+HctXSLgbmusLjKY04Oz+Rxu+lzL4o6XuS4GW4apbkCcS2qSI4BWg8R7OpfNah
- XcQWym8Ek9n4cYvYEXhxnk/ZXkOdG5Jn8YX16mzGqnU7GXrDgZE/kBBMDC6Brw1U61J5
- B1ihQ0+GIP/5ERWAf2hqliNji/+jZXgOsEsLCrTokpo5udBtcCsJCZouRxRG3QHQ+Brp
- i1FI2H07oX/UGBcBsxFbJfMcoc8vC9rf+6Pt1MTMDn20Qaj7Ly+PiJqav534l1xWQ7oj
- 08GSuh/9VU5QhTuVf7vcrXNfFBvvROvpL56ZbluHkoVk/1Wwu79OD38sgB6NMo4i3rOB jw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3552dca4jj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 14:32:01 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AUJM4T9008399;
-        Mon, 30 Nov 2020 19:31:35 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 353e682brd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 19:31:35 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AUJVXu847841718
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 19:31:33 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 527184C044;
-        Mon, 30 Nov 2020 19:31:33 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F295B4C04A;
-        Mon, 30 Nov 2020 19:31:32 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.84.77])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 30 Nov 2020 19:31:32 +0000 (GMT)
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-References: <160665707945.2808.5384034634184489471.tglx@nanos>
- <160665708065.2808.15317906761841446715.tglx@nanos>
- <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
- <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
- <yt9dh7p78d8l.fsf@linux.ibm.com> <yt9dpn3v3u1m.fsf@linux.ibm.com>
- <20201130125211.GN2414@hirez.programming.kicks-ass.net>
- <20201130130315.GJ3092@hirez.programming.kicks-ass.net>
- <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <dcdb13e3-36a0-031d-6ec3-3ab5ee4a69cb@de.ibm.com>
-Date:   Mon, 30 Nov 2020 20:31:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 30 Nov 2020 14:34:28 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6847EC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:33:48 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id t21so219004pjw.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:33:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CGCfzwd93ASiBjoTcqNrGvupvrJe2uwFFi+sFJL4Neg=;
+        b=FwlZLBwiN8Sg8B7444O9gOcY1fHCOJED3NpGs1VcPdPhljPrz6RY2/s0Jb01A7jvO7
+         5AqL4U9eVSBuLONDA2ThiEAWDZd3PseV2mM3DCm48Q+jnUHy3Nu4QuCYx01HjZ/QERTq
+         a4PqfJiDvCHLbfWuuWt0WFXxpFXO8i4SWAXj4MYcPM9JQwgtRS1Uyc228CD2nH9NESi1
+         0BfxHn3WnvBkF5Qt109xUH5xJsd9g0WXc7MpV05D1+zVc0aaJl/w7G5d6iWZBtSVk7JA
+         3Qmu1ShBDMLjQgIb0PoBF88Jv6KZqcxmKBnHrXwEJu9BvZUr7EK0Ohwt1TLbxZLlqyfw
+         Hzgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CGCfzwd93ASiBjoTcqNrGvupvrJe2uwFFi+sFJL4Neg=;
+        b=r4pG1QuWN7MSEBNfdpYkroxLIsec9K8z8Q6L7mhS9d1AFRAfR32fwnzAsXM74+vyAk
+         N3nfb+oVtpT2kUWcrHRkkN5vqJux7Nxpdoh+76tlPk6Pd3O8rMQX0UoeD6UjAz5hBbfR
+         /DDatW2tlCRQQ7Vk/v0cj1PJTiAnGbA5mMlBe5T5jsO5fw6RK0rlDTXYBV+nlbBIOChs
+         jXCHi88hyrx664PKUbukjzLQHJ/A856wntiDI1ACwMM7pol5SXbAGljiVWBgH/+3kJLt
+         4Tk+UzlY9P7DXsgEgdIXUNkV3Jv81PxJeTn9J+acUy6kO5JTVFMQxtoKzkm7p69ZryH4
+         q66Q==
+X-Gm-Message-State: AOAM532CGnVuGD0QI8t5/zuYKjAteu4WQh0TiEyJD08tEkdgBUc0OAc7
+        ZruW2EkkcAt99SDtjaTNA3Xpo+q9ZkXJuOUx+S07eg==
+X-Google-Smtp-Source: ABdhPJz5ZJRIByZgoQucavhN1VJHt7aslzVAW3llEM1XaEqac5pWlh2+8ODWmDRBrN6WX6ZncFKvxSlQH3/oUiu0hTM=
+X-Received: by 2002:a17:902:b18c:b029:d9:f:15fc with SMTP id
+ s12-20020a170902b18cb02900d9000f15fcmr19983326plr.29.1606764827740; Mon, 30
+ Nov 2020 11:33:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-30_08:2020-11-30,2020-11-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- phishscore=0 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1011
- priorityscore=1501 bulkscore=0 suspectscore=0 mlxlogscore=838
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011300122
+References: <pr6q9q72-6n62-236q-s59n-7osq71o285r9@syhkavp.arg>
+In-Reply-To: <pr6q9q72-6n62-236q-s59n-7osq71o285r9@syhkavp.arg>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 30 Nov 2020 11:33:36 -0800
+Message-ID: <CAKwvOdn1nCx354hkb15wBDH12aJgbObqPxa_neX5m71axaKRUw@mail.gmail.com>
+Subject: Re: [PATCH] __div64_32(): straighten up inline asm constraints
+To:     Nicolas Pitre <nico@fluxnic.net>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Antony Yu <swpenim@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 30, 2020 at 11:05 AM Nicolas Pitre <nico@fluxnic.net> wrote:
+>
+> The ARM version of __div64_32() encapsulates a call to __do_div64 with
+> non-standard argument passing. In particular, __n is a 64-bit input
+> argument assigned to r0-r1 and __rem is an output argument sharing half
+> of that 40-r1 register pair.
+
+Should `40` be `r0`?
+
+>
+> With __n being an input argument, the compiler is in its right to
+> presume that r0-r1 would still hold the value of __n past the inline
+> assembly statement. Normally, the compiler would have assigned non
+> overlapping registers to __n and __rem if the value for __n is needed
+> again.
+>
+> However, here we enforce our own register assignment and gcc fails to
+> notice the conflict. In practice this doesn't cause any problem as __n
+> is considered dead after the asm statement and *n is overwritten.
+> However this is not always guaranteed and clang rightfully complains.
+>
+> Let's fix it properly by making __n into an input-output variable. This
+> makes it clear that those registers representing __n have been modified.
+> Then we can extract __rem as the high part of __n with plain C code.
+>
+> This asm constraint "abuse" was likely relied upon back when gcc didn't
+> handle 64-bit values optimally Turns out that gcc is now able to
+
+^ Missing punctuation (period after `optimally`).
+
+> optimize things and produces the same code with this patch applied.
+>
+> Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
+> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> Tested-by: Ard Biesheuvel <ardb@kernel.org>
+
+Reported-by: Antony Yu <swpenim@gmail.com>
 
 
-On 30.11.20 19:04, Linus Torvalds wrote:
-> On Mon, Nov 30, 2020 at 5:03 AM Peter Zijlstra <peterz@infradead.org> wrote:
->>
->>> But but but...
->>>
->>>   do_idle()                   # IRQs on
->>>     local_irq_disable();      # IRQs off
->>>     defaul_idle_call()        # IRQs off
->>         lockdep_hardirqs_on();  # IRQs off, but lockdep things they're on
->>>       arch_cpu_idle()         # IRQs off
->>>         enabled_wait()        # IRQs off
->>>         raw_local_save()      # still off
->>>         psw_idle()            # very much off
->>>           ext_int_handler     # get an interrupt ?!?!
->>               rcu_irq_enter()   # lockdep thinks IRQs are on <- FAIL
->>
->> I can't much read s390 assembler, but ext_int_handler() has a
->> TRACE_IRQS_OFF, which would be sufficient to re-align the lockdep state
->> with the actual state, but there's some condition before it, what's that
->> test and is that right?
-> 
-> I think that "psw_idle()" enables interrupts, exactly like x86 does.
+> ---
+>
+> This is related to the thread titled "[RESEND,PATCH] ARM: fix
+> __div64_32() error when compiling with clang". My limited compile test
+> with clang appears to make it happy. If no more comments I'll push this
+> to RMK's patch system.
+>
+> diff --git a/arch/arm/include/asm/div64.h b/arch/arm/include/asm/div64.h
+> index 898e9c78a7..595e538f5b 100644
+> --- a/arch/arm/include/asm/div64.h
+> +++ b/arch/arm/include/asm/div64.h
+> @@ -21,29 +21,20 @@
+>   * assembly implementation with completely non standard calling convention
+>   * for arguments and results (beware).
+>   */
+> -
+> -#ifdef __ARMEB__
+> -#define __xh "r0"
+> -#define __xl "r1"
+> -#else
+> -#define __xl "r0"
+> -#define __xh "r1"
+> -#endif
+> -
+>  static inline uint32_t __div64_32(uint64_t *n, uint32_t base)
+>  {
+>         register unsigned int __base      asm("r4") = base;
+>         register unsigned long long __n   asm("r0") = *n;
+>         register unsigned long long __res asm("r2");
+> -       register unsigned int __rem       asm(__xh);
+> -       asm(    __asmeq("%0", __xh)
+> +       unsigned int __rem;
+> +       asm(    __asmeq("%0", "r0")
+>                 __asmeq("%1", "r2")
+> -               __asmeq("%2", "r0")
+> -               __asmeq("%3", "r4")
+> +               __asmeq("%2", "r4")
+>                 "bl     __do_div64"
+> -               : "=r" (__rem), "=r" (__res)
+> -               : "r" (__n), "r" (__base)
+> +               : "+r" (__n), "=r" (__res)
+> +               : "r" (__base)
+>                 : "ip", "lr", "cc");
+> +       __rem = __n >> 32;
+>         *n = __res;
+>         return __rem;
 
-Yes, by definition.  Otherwise it would be an software error state.
-The interesting part is the lpswe instruction at the end (load PSW) 
-which loads the full PSW, which contains interrupt enablement, wait bit,
-condition code, paging enablement, machine check enablement the address
-and others. The idle psw is enabled for interrupts and has the wait bit
-set. If the wait bit is set and interrupts are off this is called "disabled
-wait" and is used for panic, shutdown etc. 
+The above 3 statement could be:
 
-> See my previous email.
-> 
-> But no, I can't read s390 asm either. IBM is notorious for making up
-> odd IBM-only incomprehensible names. When "oi" means "or immediate", I
-> personally start suspecting that there were some "happy drugs"
-> involved
-> 
-> To make matters worse, some of the assembly code in psw_idle isn't
-> even assembly code, it's machine code, with "BPON" being an
-> alternative instruction definition with just the hex encoding for the
-> machine code instruction rather than any actual human-legible
-> instruction encoding.
-> 
-> Of course, when the "human-legible" instructions are "oi", I guess hex
-> codes aren't all that much less legible..
-> 
-> s390 programmers must be some super-human breed. Or, alternatively,
-> they are munching happy pills by the truck-load to get over the pain
-> ;)
+```
+*n = __res;
+return __n >> 32;
+```
+
+>  }
 
 
-For something that was defined in 1964 it is certainly not too bad.
-And for the oddities, you simply get used to it.
 
-In the end the scheme is actually relatively straightforward. 
-The first character defines what it is:
-o: or
-a: add
-n: and
-l: load	
-i: insert (kind of a load to parts, e.g. only one byte)
-st: store
-b: branch
-j: jump
-and some more but those should cover 80% of what you need.
-and the following characters then tell if 32 or 64 bit (g), 
-immediate (i) value or memory, type of register (float, general purpose).
-so lg for a 64 bit load, l for a 32bit load. 
-ld for a load into a floating point register (double)
+-- 
+Thanks,
+~Nick Desaulniers
