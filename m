@@ -2,214 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCCD2C913A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1263C2C913D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730834AbgK3WfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:35:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730753AbgK3We7 (ORCPT
+        id S1730846AbgK3Wfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:35:55 -0500
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:40607 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730753AbgK3Wfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:34:59 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D64C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:34:13 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id qw4so15056133ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:34:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fKEdC66hJ5JGLsiLl3hBV9f87nrLsLENnZJ383Beve8=;
-        b=Hl4XxdMkJ2RDEu06Xnz1qMbOpFWfnI/RbbLjZwWSXyPJJAyRVk39Q8D+aioSqvMEY3
-         dMaprc0g8So5ez4Hj/80hfeEQLeZq9/9t+tGeitb43B2yb7SW3JpgNu/nrkMzRWfTIcK
-         nobNVsyfNL/QcUlDv/+SD+93thS85zPFRkf+c6608NjfRq8Iu1IxwyxoBMDKASBy/pe3
-         HR/5Y2p7ImfAQoikKXEBwUrLXycWd5nCUBKYbrfFf+1hTHwrnj7zOQza/VV9Ryh+Cdf1
-         kf8i57L8gAMsMWdMwaWbKGTPe5XlK4hkiv01xgepkCQzMOuyxQ6TuUFdC03+dIKKY1vp
-         epyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fKEdC66hJ5JGLsiLl3hBV9f87nrLsLENnZJ383Beve8=;
-        b=pkJqRQwN3IjzHjdWt8HRRUtHVH1MOzz4Qt8jSy/jkWVJ5+GvkzGF0Hii/R7Ihe+xyQ
-         Xba7c+u2XXEyXeaC0JX8i7W5MOfin9tKohEUQRWcpNj08OiTbeJbf10il9vx2pZKk6QF
-         w5PrGHxfcSYUQGBSV0wtGhO6U+FttM2c6sZulMz2b/QqOuebPPVUD+h3L7+9mTlJxPQ7
-         tSaYYEevfL2YIicKZ/fo3ObbzF3WzE5ULz5r3+mm/UjsjQ5F/VAwlP0EDWP5hP+chQev
-         Arur6YuA4gSG7shWgV/PHF1KuDSSnQmTRQAW7vtDj2Z3VSmqMq/n9edtG4HTOViJFFqX
-         UjjQ==
-X-Gm-Message-State: AOAM532dEyzD9GrLHt/jJa6bBiQ2iu2uFV8FiCa5eD9cXdtUnNh/F9z0
-        pUFliiQlt8D6VwBd+A/fIOl3v9LlTPVTxUydPvOnGA==
-X-Google-Smtp-Source: ABdhPJy4mx9bz7eZi5E2l30s9A9eHdahnGhj0teAoOlrytTn7Qa2iVKl14LEOUHYXZY+466a9ZU6/pKEl8bMCpCk9Jc=
-X-Received: by 2002:a17:906:1c8e:: with SMTP id g14mr9809987ejh.5.1606775651902;
- Mon, 30 Nov 2020 14:34:11 -0800 (PST)
+        Mon, 30 Nov 2020 17:35:54 -0500
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 670C9806A8;
+        Tue,  1 Dec 2020 11:35:11 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1606775711;
+        bh=j1o8Z1G2dtitXOlimluovlxKc4vbfO3wabNM431FbrM=;
+        h=From:To:Cc:Subject:Date;
+        b=wLXCzGzaVF+m+7uOhnKjEUuCAJSY8f7EPU/Rdic74LgnxVcodBaWDPTE6bVU2cslh
+         zW6GvmD4GTwHw4UEHgbYYW25piBtB8BAmAwIa+fhlSZlXH42r7843eNi0RtA1Y+rWS
+         bqNEGoSarWEkpXlTI4ozs3mlcuzf4X630i3DwBgJcAreGUF+35CWonLXBkp8Br+XYV
+         gSjFPlX5RrXv8txTTEZudYwLktjbIyY3+QWqWi4ZhrJRuwEO1ExwCyif1kBkgKEncU
+         rcbdX5qdNTLJ4Yfz9vhSu6D9yDikUtaZ5qCW/PPNNzU0UbCG556dqDTvKMbAN/JFWe
+         jyj90r7pV2Z4g==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5fc5739e0000>; Tue, 01 Dec 2020 11:35:10 +1300
+Received: from aryans-dl.ws.atlnz.lc (aryans-dl.ws.atlnz.lc [10.33.21.30])
+        by smtp (Postfix) with ESMTP id E6A5213EEBB;
+        Tue,  1 Dec 2020 11:35:09 +1300 (NZDT)
+Received: by aryans-dl.ws.atlnz.lc (Postfix, from userid 1844)
+        id 1B41014C2F7F; Tue,  1 Dec 2020 11:35:11 +1300 (NZDT)
+From:   Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+To:     robh+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        chris.packham@alliedtelesis.co.nz,
+        Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+Subject: [PATCH v2] ARM: dts: mvebu: Add device tree for ATL-x530 Board
+Date:   Tue,  1 Dec 2020 11:35:07 +1300
+Message-Id: <20201130223507.23571-1-aryan.srivastava@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20200820162738.33053904@oasis.local.home> <20201022173434.910879-1-lpy@google.com>
- <CA+0soA=JR45Tad6+0jCDoiXPk_ctDmmFhg9NtPRrMFb9fM3V0Q@mail.gmail.com>
-In-Reply-To: <CA+0soA=JR45Tad6+0jCDoiXPk_ctDmmFhg9NtPRrMFb9fM3V0Q@mail.gmail.com>
-From:   Peiyong Lin <lpy@google.com>
-Date:   Mon, 30 Nov 2020 14:33:59 -0800
-Message-ID: <CA+0soAkd3nq0ys1TQ3m8DxMAT4-EGfo7obQ9OrGQ15bipT=wTA@mail.gmail.com>
-Subject: Re: [PATCH v4] Add power/gpu_frequency tracepoint.
-To:     Steven Rostedt <rostedt@goodmis.org>, alexdeucher@gmail.com
-Cc:     android-kernel@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Prahlad Kilambi <prahladk@google.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        zzyiwei@android.com, Sidath Senanayake <sidaths@google.com>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 1:31 PM Peiyong Lin <lpy@google.com> wrote:
->
-> On Thu, Oct 22, 2020 at 10:34 AM Peiyong Lin <lpy@google.com> wrote:
-> >
-> > Historically there is no common trace event for GPU frequency, in
-> > downstream Android each different hardware vendor implements their own
-> > way to expose GPU frequency, for example as a debugfs node.  This patch
-> > standardize it as a common trace event in upstream linux kernel to help
-> > the ecosystem have a common implementation across hardware vendors.
-> > Toolings in the Linux ecosystem will benefit from this especially in the
-> > downstream Android, where this information is critical to graphics
-> > developers.
-> >
-> > Signed-off-by: Peiyong Lin <lpy@google.com>
-> > ---
-> >
-> > Changelog since v3:
-> >  - Correct copyright title.
-> >
-> > Changelog since v2:
-> >  - Add more comments to indicate when the event should be emitted.
-> >  - Change state to frequency.
-> >
-> > Changelog since v1:
-> >  - Use %u in TP_printk
-> >
-> >  drivers/gpu/Makefile                    |  1 +
-> >  drivers/gpu/trace/Kconfig               |  3 +++
-> >  drivers/gpu/trace/Makefile              |  1 +
-> >  drivers/gpu/trace/trace_gpu_frequency.c | 13 ++++++++++
-> >  include/trace/events/power.h            | 33 +++++++++++++++++++++++++
-> >  5 files changed, 51 insertions(+)
-> >  create mode 100644 drivers/gpu/trace/trace_gpu_frequency.c
-> >
-> > diff --git a/drivers/gpu/Makefile b/drivers/gpu/Makefile
-> > index 835c88318cec..f289a47eb031 100644
-> > --- a/drivers/gpu/Makefile
-> > +++ b/drivers/gpu/Makefile
-> > @@ -6,3 +6,4 @@ obj-$(CONFIG_TEGRA_HOST1X)      += host1x/
-> >  obj-y                  += drm/ vga/
-> >  obj-$(CONFIG_IMX_IPUV3_CORE)   += ipu-v3/
-> >  obj-$(CONFIG_TRACE_GPU_MEM)            += trace/
-> > +obj-$(CONFIG_TRACE_GPU_FREQUENCY)              += trace/
-> > diff --git a/drivers/gpu/trace/Kconfig b/drivers/gpu/trace/Kconfig
-> > index c24e9edd022e..ac4aec8d5845 100644
-> > --- a/drivers/gpu/trace/Kconfig
-> > +++ b/drivers/gpu/trace/Kconfig
-> > @@ -2,3 +2,6 @@
-> >
-> >  config TRACE_GPU_MEM
-> >         bool
-> > +
-> > +config TRACE_GPU_FREQUENCY
-> > +       bool
-> > diff --git a/drivers/gpu/trace/Makefile b/drivers/gpu/trace/Makefile
-> > index b70fbdc5847f..2b7ae69327d6 100644
-> > --- a/drivers/gpu/trace/Makefile
-> > +++ b/drivers/gpu/trace/Makefile
-> > @@ -1,3 +1,4 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> >
-> >  obj-$(CONFIG_TRACE_GPU_MEM) += trace_gpu_mem.o
-> > +obj-$(CONFIG_TRACE_GPU_FREQUENCY) += trace_gpu_frequency.o
-> > diff --git a/drivers/gpu/trace/trace_gpu_frequency.c b/drivers/gpu/trace/trace_gpu_frequency.c
-> > new file mode 100644
-> > index 000000000000..668fabd6b77a
-> > --- /dev/null
-> > +++ b/drivers/gpu/trace/trace_gpu_frequency.c
-> > @@ -0,0 +1,13 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * GPU frequency trace points
-> > + *
-> > + * Copyright (C) 2020 Google LLC
-> > + */
-> > +
-> > +#include <linux/module.h>
-> > +
-> > +#define CREATE_TRACE_POINTS
-> > +#include <trace/events/power.h>
-> > +
-> > +EXPORT_TRACEPOINT_SYMBOL(gpu_frequency);
-> > diff --git a/include/trace/events/power.h b/include/trace/events/power.h
-> > index af5018aa9517..343825a76953 100644
-> > --- a/include/trace/events/power.h
-> > +++ b/include/trace/events/power.h
-> > @@ -500,6 +500,39 @@ DEFINE_EVENT(dev_pm_qos_request, dev_pm_qos_remove_request,
-> >
-> >         TP_ARGS(name, type, new_value)
-> >  );
-> > +
-> > +/**
-> > + * gpu_frequency - Reports the GPU frequency in GPU clock domains.
-> > + *
-> > + * This event should be emitted whenever there's a GPU frequency change happens,
-> > + * or a GPU goes from idle state to active state, or vice versa.
-> > + *
-> > + * When the GPU goes from idle state to active state, this event should report
-> > + * the GPU frequency of the active state. When the GPU goes from active state to
-> > + * idle state, this event should report a zero frequency value.
-> > + *
-> > + * @frequency:  New frequency (in KHz)
-> > + * @gpu_id: Id for each GPU clock domain
-> > + */
-> > +TRACE_EVENT(gpu_frequency,
-> > +
-> > +       TP_PROTO(unsigned int frequency, unsigned int gpu_id),
-> > +
-> > +       TP_ARGS(frequency, gpu_id),
-> > +
-> > +       TP_STRUCT__entry(
-> > +               __field(unsigned int, frequency)
-> > +               __field(unsigned int, gpu_id)
-> > +       ),
-> > +
-> > +       TP_fast_assign(
-> > +               __entry->frequency = frequency;
-> > +               __entry->gpu_id = gpu_id;
-> > +       ),
-> > +
-> > +       TP_printk("frequency=%u gpu_id=%u",
-> > +               __entry->frequency, __entry->gpu_id)
-> > +);
-> >  #endif /* _TRACE_POWER_H */
-> >
-> >  /* This part must be outside protection */
-> > --
-> > 2.29.0.rc1.297.gfa9743e501-goog
-> >
->
->
-> Hi there,
->
-> Per request, re-send this patch with dri-devel@ list CCed.
->
-> Thanks,
-> Peiyong
+Add device tree file for x530 board. This has an Armada 385 SoC. Has
+NAND-flash for user storage and SPI for booting. Covers majority of x530
+and GS980MX variants.
 
-Hi there,
+Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
+Notes:
+	Changes in v2:
+	-Adding to Makefile
 
-For GPU drivers folks in dri-devel@ list, any input?
+ arch/arm/boot/dts/Makefile                |   1 +
+ arch/arm/boot/dts/armada-385-atl-x530.dts | 235 ++++++++++++++++++++++
+ 2 files changed, 236 insertions(+)
+ create mode 100644 arch/arm/boot/dts/armada-385-atl-x530.dts
 
-Thanks,
-Peiyong
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index a60407ad7347..d65d84e9bf9c 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1320,6 +1320,7 @@ dtb-$(CONFIG_MACH_ARMADA_375) +=3D \
+ 	armada-375-db.dtb
+ dtb-$(CONFIG_MACH_ARMADA_38X) +=3D \
+ 	armada-382-rd-ac3x-48g4x2xl.dtb \
++	armada-385-atl-x530.dtb\
+ 	armada-385-clearfog-gtr-s4.dtb \
+ 	armada-385-clearfog-gtr-l8.dtb \
+ 	armada-385-db-88f6820-amc.dtb \
+diff --git a/arch/arm/boot/dts/armada-385-atl-x530.dts b/arch/arm/boot/dt=
+s/armada-385-atl-x530.dts
+new file mode 100644
+index 000000000000..2041bf09c578
+--- /dev/null
++++ b/arch/arm/boot/dts/armada-385-atl-x530.dts
+@@ -0,0 +1,235 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Device Tree file for Armada 385 Allied Telesis x530/GS980MX Board.
++ (x530/AT-GS980MX)
++ *
++ Copyright (C) 2020 Allied Telesis Labs
++ */
++
++/dts-v1/;
++#include "armada-385.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++
++/ {
++	model =3D "x530/AT-GS980MX";
++	compatible =3D "alliedtelesis,gs980mx", "alliedtelesis,x530", "marvell,=
+armada385", "marvell,armada380";
++
++	chosen {
++		stdout-path =3D "serial1:115200n8";
++	};
++
++	memory {
++		device_type =3D "memory";
++		reg =3D <0x00000000 0x40000000>; /* 1GB */
++	};
++
++	soc {
++		ranges =3D <MBUS_ID(0xf0, 0x01) 0 0xf1000000 0x100000
++			  MBUS_ID(0x01, 0x3d) 0 0xf4800000 0x80000
++			  MBUS_ID(0x01, 0x1d) 0 0xfff00000 0x100000>;
++
++		internal-regs {
++			i2c0: i2c@11000 {
++				pinctrl-names =3D "default";
++				pinctrl-0 =3D <&i2c0_pins>;
++				status =3D "okay";
++			};
++
++			uart0: serial@12000 {
++				pinctrl-names =3D "default";
++				pinctrl-0 =3D <&uart0_pins>;
++				status =3D "okay";
++			};
++		};
++	};
++};
++
++&pciec {
++	status =3D "okay";
++};
++
++&pcie1 {
++	status =3D "okay";
++	reset-gpios =3D <&gpio1 23 GPIO_ACTIVE_LOW>;
++	reset-delay-us =3D <400000>;
++};
++
++&pcie2 {
++	status =3D "okay";
++};
++
++&devbus_cs1 {
++	compatible =3D "marvell,mvebu-devbus";
++	status =3D "okay";
++
++	devbus,bus-width    =3D <8>;
++	devbus,turn-off-ps  =3D <60000>;
++	devbus,badr-skew-ps =3D <0>;
++	devbus,acc-first-ps =3D <124000>;
++	devbus,acc-next-ps  =3D <248000>;
++	devbus,rd-setup-ps  =3D <0>;
++	devbus,rd-hold-ps   =3D <0>;
++
++	/* Write parameters */
++	devbus,sync-enable =3D <0>;
++	devbus,wr-high-ps  =3D <60000>;
++	devbus,wr-low-ps   =3D <60000>;
++	devbus,ale-wr-ps   =3D <60000>;
++
++	nvs@0 {
++		status =3D "okay";
++
++		compatible =3D "mtd-ram";
++		reg =3D <0 0x00080000>;
++		bank-width =3D <1>;
++		label =3D "nvs";
++	};
++};
++
++&pinctrl {
++	i2c0_gpio_pins: i2c-gpio-pins-0 {
++		marvell,pins =3D "mpp2", "mpp3";
++		marvell,function =3D "gpio";
++	};
++};
++
++&i2c0 {
++	clock-frequency =3D <100000>;
++	status =3D "okay";
++
++	pinctrl-names =3D "default", "gpio";
++	pinctrl-0 =3D <&i2c0_pins>;
++	pinctrl-1 =3D <&i2c0_gpio_pins>;
++	scl-gpio =3D <&gpio0 2 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
++	sda-gpio =3D <&gpio0 3 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
++
++	i2c0mux: mux@71 {
++		#address-cells =3D <1>;
++		#size-cells =3D <0>;
++		compatible =3D "nxp,pca9544";
++		reg =3D <0x71>;
++		i2c-mux-idle-disconnect;
++
++		i2c@0 { /* POE devices MUX */
++			#address-cells =3D <1>;
++			#size-cells =3D <0>;
++			reg =3D <0>;
++		};
++
++		i2c@1 {
++			#address-cells =3D <1>;
++			#size-cells =3D <0>;
++			reg =3D <1>;
++
++			adt7476_2e: hwmon@2e {
++				compatible =3D "adi,adt7476";
++				reg =3D <0x2e>;
++			};
++
++			adt7476_2d: hwmon@2d {
++				compatible =3D "adi,adt7476";
++				reg =3D <0x2d>;
++			};
++		};
++
++		i2c@2 {
++			#address-cells =3D <1>;
++			#size-cells =3D <0>;
++			reg =3D <2>;
++
++			rtc@68 {
++				compatible =3D "dallas,ds1340";
++				reg =3D <0x68>;
++			};
++		};
++
++		i2c@3 {
++			#address-cells =3D <1>;
++			#size-cells =3D <0>;
++			reg =3D <3>;
++
++			gpio@20 {
++				compatible =3D "nxp,pca9554";
++				gpio-controller;
++				#gpio-cells =3D <2>;
++				reg =3D <0x20>;
++			};
++		};
++	};
++};
++
++&usb0 {
++	status =3D "okay";
++};
++
++&spi1 {
++	pinctrl-names =3D "default";
++	pinctrl-0 =3D <&spi1_pins>;
++	status =3D "okay";
++
++	spi-flash@0 {
++		#address-cells =3D <1>;
++		#size-cells =3D <1>;
++		compatible =3D "jedec,spi-nor";
++		reg =3D <1>; /* Chip select 1 */
++		spi-max-frequency =3D <54000000>;
++
++		partitions {
++			compatible =3D "fixed-partitions";
++			#address-cells =3D <1>;
++			#size-cells =3D <1>;
++			partition@u-boot {
++				reg =3D <0x00000000 0x00100000>;
++				label =3D "u-boot";
++			};
++			partition@u-boot-env {
++				reg =3D <0x00100000 0x00040000>;
++				label =3D "u-boot-env";
++			};
++			partition@unused {
++				reg =3D <0x00140000 0x00e80000>;
++				label =3D "unused";
++			};
++			partition@idprom {
++				reg =3D <0x00fc0000 0x00040000>;
++				label =3D "idprom";
++			};
++		};
++	};
++};
++
++&nand_controller {
++	status =3D "okay";
++
++	nand@0 {
++		reg =3D <0>;
++		label =3D "pxa3xx_nand-0";
++		nand-rb =3D <0>;
++		nand-on-flash-bbt;
++		nand-ecc-strength =3D <4>;
++		nand-ecc-step-size =3D <512>;
++
++		marvell,nand-enable-arbiter;
++
++		partitions {
++			compatible =3D "fixed-partitions";
++			#address-cells =3D <1>;
++			#size-cells =3D <1>;
++			partition@user {
++				reg =3D <0x00000000 0x0f000000>;
++				label =3D "user";
++			};
++			partition@errlog {
++				/* Maximum mtdoops size is 8MB, so set to that. */
++				reg =3D <0x0f000000 0x00800000>;
++				label =3D "errlog";
++			};
++			partition@nand-bbt {
++				reg =3D <0x0f800000 0x00800000>;
++				label =3D "nand-bbt";
++			};
++		};
++	};
++};
++
+--=20
+2.29.2
+
