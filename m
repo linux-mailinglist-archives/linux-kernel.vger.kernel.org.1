@@ -2,214 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A522C8F8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D08FE2C8F8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730231AbgK3U7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:59:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45660 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726716AbgK3U7D (ORCPT
+        id S1730192AbgK3U6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:58:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726716AbgK3U6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:59:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606769856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cq1No4dPtLmGbI2mqBJ+VtaVWU0d8csbHMbJytzQmX0=;
-        b=U4qTdxW9R2WIenKyHG3fA3rQwjgHR9DhF/lj6hdKGvqtiTrUYpjJSjDhgWKAiKD2yXwTis
-        I2cMsuax1/gxZFQCpxcPp0YfB+RHI+YB6l6DvQVp2SucOoMYwFCIWbxXLbfKgYlOjoW2su
-        mNfb1Cfz4hpNnkVBZ+eOMK/LM3VRnd8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-Y7lpk6YDNsqnK6zdensHaA-1; Mon, 30 Nov 2020 15:57:29 -0500
-X-MC-Unique: Y7lpk6YDNsqnK6zdensHaA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71B6E1005D59;
-        Mon, 30 Nov 2020 20:57:27 +0000 (UTC)
-Received: from w520.home (ovpn-112-10.phx2.redhat.com [10.3.112.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 656B219C71;
-        Mon, 30 Nov 2020 20:57:26 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 13:57:25 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] vfio/type1: Add vfio_group_domain()
-Message-ID: <20201130135725.70fdf17f@w520.home>
-In-Reply-To: <20201126012726.1185171-1-baolu.lu@linux.intel.com>
-References: <20201126012726.1185171-1-baolu.lu@linux.intel.com>
+        Mon, 30 Nov 2020 15:58:46 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6BCC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:58:00 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id n24so16091688edb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:58:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hci+1ob7MZgwxgVIAVmLhMzaUPYPk+RYx+il0umiDZo=;
+        b=Y7uUCGOG6GCkOMr5Jskg6pX9gPQ4Ewe3wXh9NqicaSTboQHEKT4h7YfsCVLDq1uqGp
+         meMiaF16Ogn2WPziMCYFdt1nMCrdgjvCPA1WICsC4bzigG9Ul4wGBTkwl1GImyY5O6Ih
+         1QdoALHMRGrPty02v3Ub3DZ82XB8ngnaIomVYDSHaxG23ktdU/3re18sScaauWlECztU
+         5PMrM/oWRozrmMs1w4oU6DJSwbI1EVKoLAxhh8uZ+aYWM7Qfj5AUuo2CyODtbCJmhGXz
+         g9ylKuh/iMfgya8NrRVLKSW1OKnP5zD72SUS1TOtyG0Co3izad2f/XpaawQqxmdLj48j
+         JRGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hci+1ob7MZgwxgVIAVmLhMzaUPYPk+RYx+il0umiDZo=;
+        b=YV40lgNjFbWqOQBB69/sPmWhZFp/hQp5D7UiYCLYAPkjmGve6yivcYil80bb75kTEK
+         3OXVEceZ4+PftNgvVgCdxHUldW8tRKxyNnfIMXqi9+X2zB8ihCOaIXLcbGmaAhDrLUxO
+         crxpYuTJQ6vcMpRZo9cdCbZJFJRNPzkbDv04Sds0QcuzSkOv4f8neOZoFbMU+PmwjmLL
+         ummj4TVaNrRdkFNl0a6eAsMRXt1V3nqFQP/S3mw4JmMGYPYev7dO6SHMPkCEFwss7NR+
+         WkXZ9X2soU7fO/UGNHDNndLHoHNL5liI3wq3/+9oUmq7Y6ZWb5+sD/q1BENOwl7+jdiT
+         Xwxw==
+X-Gm-Message-State: AOAM532WOdHyqv5CZ5WVOi6taj0FbOWfFhC547I2lqfvm9wMxAUE9psF
+        hk2Cy25kj6BSG35JHNo1dAY0tm7NIYu+sr3H7qQ=
+X-Google-Smtp-Source: ABdhPJxu6r42VfA8JSawKiN8UCCbg+8gcCXoGwYi0EWRnD9tomOaejnjVvhO3vFGnozxnfbjl4Q9Cew8w/c4s3PcllY=
+X-Received: by 2002:a05:6402:c9b:: with SMTP id cm27mr2686572edb.294.1606769879287;
+ Mon, 30 Nov 2020 12:57:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201130184514.551950-1-shy828301@gmail.com> <20201130200936.GA1354703@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20201130200936.GA1354703@carbon.DHCP.thefacebook.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 30 Nov 2020 12:57:47 -0800
+Message-ID: <CAHbLzkoHqZ0=jFXBt8ByvU2-9wkYe+DfwxD_6ym0gfh4tefZPw@mail.gmail.com>
+Subject: Re: [PATCH] mm: list_lru: hold nlru lock to avoid reading transient
+ negative nr_items
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 09:27:26 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+On Mon, Nov 30, 2020 at 12:09 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Mon, Nov 30, 2020 at 10:45:14AM -0800, Yang Shi wrote:
+> > When investigating a slab cache bloat problem, significant amount of
+> > negative dentry cache was seen, but confusingly they neither got shrunk
+> > by reclaimer (the host has very tight memory) nor be shrunk by dropping
+> > cache.  The vmcore shows there are over 14M negative dentry objects on lru,
+> > but tracing result shows they were even not scanned at all.  The further
+> > investigation shows the memcg's vfs shrinker_map bit is not set.  So the
+> > reclaimer or dropping cache just skip calling vfs shrinker.  So we have
+> > to reboot the hosts to get the memory back.
+> >
+> > I didn't manage to come up with a reproducer in test environment, and the
+> > problem can't be reproduced after rebooting.  But it seems there is race
+> > between shrinker map bit clear and reparenting by code inspection.  The
+> > hypothesis is elaborated as below.
+> >
+> > The memcg hierarchy on our production environment looks like:
+> >                 root
+> >                /    \
+> >           system   user
+> >
+> > The main workloads are running under user slice's children, and it creates
+> > and removes memcg frequently.  So reparenting happens very often under user
+> > slice, but no task is under user slice directly.
+> >
+> > So with the frequent reparenting and tight memory pressure, the below
+> > hypothetical race condition may happen:
+> >
+> >     CPU A                            CPU B                         CPU C
+> > reparent
+> >     dst->nr_items == 0
+> >                                  shrinker:
+> >                                      total_objects == 0
+> >     add src->nr_items to dst
+> >     set_bit
+> >                                      retrun SHRINK_EMPTY
+> >                                      clear_bit
+> >                                                                   list_lru_del()
+> > reparent again
+> >     dst->nr_items may go negative
+> >     due to current list_lru_del()
+> >     on CPU C
+> >                                  The second run of shrinker:
+> >                                      read nr_items without any
+> >                                      synchronization, so it may
+> >                                      see intermediate negative
+> >                                      nr_items then total_objects
+> >                                      may return 0 conincidently
+> >
+> >                                      keep the bit cleared
+> >     dst->nr_items != 0
+> >     skip set_bit
+> >     add scr->nr_item to dst
+> >
+> > After this point dst->nr_item may never go zero, so reparenting will not
+> > set shrinker_map bit anymore.  And since there is no task under user
+> > slice directly, so no new object will be added to its lru to set the
+> > shrinker map bit either.  That bit is kept cleared forever.
+> >
+> > How does list_lru_del() race with reparenting?  It is because
+> > reparenting replaces childen's kmemcg_id to parent's without protecting
+> > from nlru->lock, so list_lru_del() may see parent's kmemcg_id but
+> > actually deleting items from child's lru, but dec'ing parent's nr_items,
+> > so the parent's nr_items may go negative as commit
+> > 2788cf0c401c268b4819c5407493a8769b7007aa ("memcg: reparent list_lrus and
+> > free kmemcg_id on css offline") says.
+> >
+> > Can we move kmemcg_id replacement after reparenting?  No, because the
+> > race with list_lru_del() may result in negative src->nr_items, but it
+> > will never be fixed.  So the shrinker may never return SHRINK_EMPTY then
+> > keep the shrinker map bit set always.  The shrinker will be always
+> > called for nonsense.
+> >
+> > Can we synchronize list_lru_del() and reparenting?  Yes, it could be
+> > done.  But it seems we need introduce a new lock or use nlru->lock.  But
+> > it sounds complicated to move kmemcg_id replacement code under nlru->lock.
+> > And list_lru_del() may be called quite often to exacerbate some hot
+> > path, i.e. dentry kill.
+> >
+> > So, it sounds acceptable to synchronize reading nr_items to avoid seeing
+> > intermediate negative nr_items given the simplicity and it is typically
+> > just called by shrinkers when counting the freeable objects.
+> >
+> > The patch is tested with some shrinker intensive workloads, no
+> > noticeable regression is soptted.
+>
+> Hi Yang!
+>
+> It's really tricky, thank you for digging in! It's a perfect analysis!
+>
+> I wonder though, if it's better to just always set the shrinker bit on reparenting
+> if we do reparent some items? Then we'll avoid adding new synchronization
+> to the hot path. What do you think?
 
-> Add the API for getting the domain from a vfio group. This could be used
-> by the physical device drivers which rely on the vfio/mdev framework for
-> mediated device user level access. The typical use case like below:
-> 
-> 	unsigned int pasid;
-> 	struct vfio_group *vfio_group;
-> 	struct iommu_domain *iommu_domain;
-> 	struct device *dev = mdev_dev(mdev);
-> 	struct device *iommu_device = mdev_get_iommu_device(dev);
-> 
-> 	if (!iommu_device ||
-> 	    !iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX))
-> 		return -EINVAL;
-> 
-> 	vfio_group = vfio_group_get_external_user_from_dev(dev);(dev);
-> 	if (IS_ERR_OR_NULL(vfio_group))
-> 		return -EFAULT;
-> 
-> 	iommu_domain = vfio_group_domain(vfio_group);
-> 	if (IS_ERR_OR_NULL(iommu_domain)) {
-> 		vfio_group_put_external_user(vfio_group);
-> 		return -EFAULT;
-> 	}
-> 
-> 	pasid = iommu_aux_get_pasid(iommu_domain, iommu_device);
-> 	if (pasid < 0) {
-> 		vfio_group_put_external_user(vfio_group);
-> 		return -EFAULT;
-> 	}
-> 
-> 	/* Program device context with pasid value. */
-> 	...
-> 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/vfio/vfio.c             | 18 ++++++++++++++++++
->  drivers/vfio/vfio_iommu_type1.c | 23 +++++++++++++++++++++++
->  include/linux/vfio.h            |  3 +++
->  3 files changed, 44 insertions(+)
-> 
-> Change log:
->  - v1: https://lore.kernel.org/linux-iommu/20201112022407.2063896-1-baolu.lu@linux.intel.com/
->  - Changed according to comments @ https://lore.kernel.org/linux-iommu/20201116125631.2d043fcd@w520.home/
-> 
-> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> index 2151bc7f87ab..62c652111c88 100644
-> --- a/drivers/vfio/vfio.c
-> +++ b/drivers/vfio/vfio.c
-> @@ -2331,6 +2331,24 @@ int vfio_unregister_notifier(struct device *dev, enum vfio_notify_type type,
->  }
->  EXPORT_SYMBOL(vfio_unregister_notifier);
->  
-> +struct iommu_domain *vfio_group_domain(struct vfio_group *group)
-> +{
-> +	struct vfio_container *container;
-> +	struct vfio_iommu_driver *driver;
-> +
-> +	if (!group)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	container = group->container;
-> +	driver = container->iommu_driver;
-> +	if (likely(driver && driver->ops->group_domain))
-> +		return driver->ops->group_domain(container->iommu_data,
-> +						 group->iommu_group);
-> +	else
-> +		return ERR_PTR(-ENOTTY);
-> +}
-> +EXPORT_SYMBOL(vfio_group_domain);
+Thanks a lot for the suggestion. I was thinking about the same
+approach too, but I thought src->nr_items may go zero due to
+concurrent list_lru_del() at the first place. But I just rethought the
+whole thing, it seems impossible that dst->nr_items goes negative and
+src->nr_items goes zero at the same time. list_lru_del() should just
+see either dst or src, it can't manipulate both lists simultaneously.
+So I think your suggestion should work. I will incarnate your
+suggestion in v2.
 
+>
+> --
+>
+> @@ -534,7 +534,6 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
+>         struct list_lru_node *nlru = &lru->node[nid];
+>         int dst_idx = dst_memcg->kmemcg_id;
+>         struct list_lru_one *src, *dst;
+> -       bool set;
+>
+>         /*
+>          * Since list_lru_{add,del} may be called under an IRQ-safe lock,
+> @@ -546,9 +545,8 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
+>         dst = list_lru_from_memcg_idx(nlru, dst_idx);
+>
+>         list_splice_init(&src->list, &dst->list);
+> -       set = (!dst->nr_items && src->nr_items);
+>         dst->nr_items += src->nr_items;
+> -       if (set)
+> +       if (src->nr_items)
+>                 memcg_set_shrinker_bit(dst_memcg, nid, lru_shrinker_id(lru));
+>         src->nr_items = 0;
+>
+>
+> --
+>
+> Btw, it seems that the bug is quite old. I wonder why we haven't seen it before?
+> Any ideas?
 
-_GPL?  I don't see that there's a way for a driver to get the
-vfio_group pointer that's not already _GPL.
+It is not new, but not that old from my point of view. The
+shrinker_map thing was introduced since v4.19, I bet pre-v4.19 kernel
+may still dominate in production environment. And, it needs some
+conditions (i.e. nr_inode + nr_dentry == 0 coincidently, and there is
+not task under dst memcg directly, etc) to trigger, so it seems
+unlikely to hit.
 
+And the consequence may be not noticeable to the most people at all.
+We happened to see frequent OOMs on a couple of small machines (32G
+memory w/o swap, but most memory was consumed by anonymous pages)
+recently and they were already up for long time (almost 300 days),
+then the investigation leads to this race condition.
 
-> +
->  /**
->   * Module/class support
->   */
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 67e827638995..783f18f21b95 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -2980,6 +2980,28 @@ static int vfio_iommu_type1_dma_rw(void *iommu_data, dma_addr_t user_iova,
->  	return ret;
->  }
->  
-> +static void *vfio_iommu_type1_group_domain(void *iommu_data,
-> +					   struct iommu_group *iommu_group)
-> +{
-> +	struct vfio_iommu *iommu = iommu_data;
-> +	struct iommu_domain *domain = NULL;
-> +	struct vfio_domain *d;
-> +
-> +	if (!iommu || !iommu_group)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	mutex_lock(&iommu->lock);
-> +	list_for_each_entry(d, &iommu->domain_list, next) {
-> +		if (find_iommu_group(d, iommu_group)) {
-> +			domain = d->domain;
-> +			break;
-> +		}
-> +	}
-> +	mutex_unlock(&iommu->lock);
-> +
-> +	return domain;
-> +}
-
-
-Why does this return void* rather than struct iommu_domain*, and why
-does the error case return an ERR_PTR but the not-found case returns
-NULL?  Thanks,
-
-Alex
-
-
-> +
->  static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
->  	.name			= "vfio-iommu-type1",
->  	.owner			= THIS_MODULE,
-> @@ -2993,6 +3015,7 @@ static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
->  	.register_notifier	= vfio_iommu_type1_register_notifier,
->  	.unregister_notifier	= vfio_iommu_type1_unregister_notifier,
->  	.dma_rw			= vfio_iommu_type1_dma_rw,
-> +	.group_domain		= vfio_iommu_type1_group_domain,
->  };
->  
->  static int __init vfio_iommu_type1_init(void)
-> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-> index 38d3c6a8dc7e..a0613a6f21cc 100644
-> --- a/include/linux/vfio.h
-> +++ b/include/linux/vfio.h
-> @@ -90,6 +90,7 @@ struct vfio_iommu_driver_ops {
->  					       struct notifier_block *nb);
->  	int		(*dma_rw)(void *iommu_data, dma_addr_t user_iova,
->  				  void *data, size_t count, bool write);
-> +	void		*(*group_domain)(void *iommu_data, struct iommu_group *group);
->  };
->  
->  extern int vfio_register_iommu_driver(const struct vfio_iommu_driver_ops *ops);
-> @@ -126,6 +127,8 @@ extern int vfio_group_unpin_pages(struct vfio_group *group,
->  extern int vfio_dma_rw(struct vfio_group *group, dma_addr_t user_iova,
->  		       void *data, size_t len, bool write);
->  
-> +extern struct iommu_domain *vfio_group_domain(struct vfio_group *group);
-> +
->  /* each type has independent events */
->  enum vfio_notify_type {
->  	VFIO_IOMMU_NOTIFY = 0,
-
+>
+>
+> Thanks!
+>
+>
+> >
+> > Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> > Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
+> > Cc: Roman Gushchin <guro@fb.com>
+> > Cc: Shakeel Butt <shakeelb@google.com>
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  mm/list_lru.c | 11 +++++++++--
+> >  1 file changed, 9 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/list_lru.c b/mm/list_lru.c
+> > index 5aa6e44bc2ae..5c128a7710ff 100644
+> > --- a/mm/list_lru.c
+> > +++ b/mm/list_lru.c
+> > @@ -178,10 +178,17 @@ unsigned long list_lru_count_one(struct list_lru *lru,
+> >       struct list_lru_one *l;
+> >       unsigned long count;
+> >
+> > -     rcu_read_lock();
+> > +     /*
+> > +      * Since list_lru_{add,del} may be called under an IRQ-safe lock,
+> > +      * we have to use IRQ-safe primitives here to avoid deadlock.
+> > +      *
+> > +      * Hold the lock to prevent from seeing transient negative
+> > +      * nr_items value.
+> > +      */
+> > +     spin_lock_irq(&nlru->lock);
+> >       l = list_lru_from_memcg_idx(nlru, memcg_cache_id(memcg));
+> >       count = READ_ONCE(l->nr_items);
+> > -     rcu_read_unlock();
+> > +     spin_unlock_irq(&nlru->lock);
+> >
+> >       return count;
+> >  }
+> > --
+> > 2.26.2
+> >
