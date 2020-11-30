@@ -2,107 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685992C910C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125512C9111
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:29:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730681AbgK3W1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
+        id S1730690AbgK3W2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:28:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730640AbgK3W1k (ORCPT
+        with ESMTP id S1730640AbgK3W2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:27:40 -0500
-Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5CCC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:26:59 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id 94F93121C;
-        Mon, 30 Nov 2020 23:26:58 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4FMPf0BgI5ce; Mon, 30 Nov 2020 23:26:58 +0100 (CET)
-Received: from function.youpi.perso.aquilenet.fr (unknown [IPv6:2a01:cb19:956:1b00:9eb6:d0ff:fe88:c3c7])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id 0175F1218;
-        Mon, 30 Nov 2020 23:26:58 +0100 (CET)
-Received: from samy by function.youpi.perso.aquilenet.fr with local (Exim 4.94)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1kjrdJ-00FmXv-Cw; Mon, 30 Nov 2020 23:26:57 +0100
-Date:   Mon, 30 Nov 2020 23:26:57 +0100
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, speakup@linux-speakup.org,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>
-Subject: [patch 3/3] speakup: Simplify spk_ttyio_out error handling.
-Message-ID: <20201130220719.298054871@ens-lyon.org>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        speakup@linux-speakup.org
-References: <20201130220626.854574234@ens-lyon.org>
+        Mon, 30 Nov 2020 17:28:41 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1EAC0613D4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:28:00 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id f48so4434528otf.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:28:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xuRtX6/QiaNBrOSJvmHFpdILv2m6h3ItAI8etLSug9U=;
+        b=Mo2J2scHtsnoTZFWYGhE2uXgYqBTvm9E3lZMPEU0ZVHhNVT0CrkmVWj66h4usWZ0Nc
+         z1npRNGi4I4TtXoo1vAwFLj5NUCOI0EW9T+g/RtOlH3pzFj1E4e+E6O+sjvcmljF7uXf
+         JFhPMsOWUFvVdWG3DYYS2ocMiS7uuWNjcYmsgyDU2AEyay6wtOze/XdTymR9YxfIi//8
+         gCFAADaQlvpmzXHAn+m5WaLE4Bd0LIbVWFBxa66vgWtfO3AfDqKYgvHhDYTdOI/w9IEL
+         Ej666kK4WSD7J1XxYBLgryYUnc5nQYRkZjB54xTbTrlvaYU+njufh77czUen2hiW7EPH
+         S2JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xuRtX6/QiaNBrOSJvmHFpdILv2m6h3ItAI8etLSug9U=;
+        b=cUEkKZpBY8/FaNxWV30Bo2P43pFVKDhGWOlEt/pxeCovPE347sfDIQ/fII8Sm+9kBH
+         55ZI1vPyRbzVnh9I+jprXnognO+CB6XgTs1pQdJm2/H90AHI4eqvNUjAuQP2we3pqG79
+         ocgQjHA7WBE79JwrLxr3CkUrcyIurkvkvYGSAso9X6unXYVFMTrWba4gh+cwQZiW87oP
+         OkgAni9eywFwgz9ZOBSuyCOkiEixH1PUCOafzlz1Zb/F/srnyBy4Usx84yP42BNMbQrE
+         z8J075ACnV7YJaZNPNMo+B/vHBcUtgsiGBRlE/FP+60uIJnfUSt9BIpZIL8BAyiHQlTv
+         MZ6Q==
+X-Gm-Message-State: AOAM5312QKMXGbMwGki9QkgMc36W8eg8vIbokgB2HFWo1HluUkUEfAlm
+        EMj4dfdV8ZkjgeX5Z4j/6oCYZqe8xfQwOJb7dKS8w5yv
+X-Google-Smtp-Source: ABdhPJy0KwDsxXP6JRVNfDVpAEFaTtaZkp9jq6qZhHXUijRsOTzPSOs6EA+yOy2zvn/Vm7oqTG3k8RZxDzhYX2QgcHg=
+X-Received: by 2002:a9d:5388:: with SMTP id w8mr18762365otg.311.1606775278931;
+ Mon, 30 Nov 2020 14:27:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline; filename=spk_ttyio_clean
-User-Agent: quilt/0.65
-Organization: I am not organized
+References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-21-lee.jones@linaro.org>
+In-Reply-To: <20201124193824.1118741-21-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 30 Nov 2020 17:27:47 -0500
+Message-ID: <CADnq5_PFn-H0qEp60sBA2mUQufGnhn5awYrLRi7hfT58sJdE0w@mail.gmail.com>
+Subject: Re: [PATCH 20/40] drm/amd/amdgpu/uvd_v5_0: Fix a bunch of kernel-doc
+ function documentation issues
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This avoids most code indentation
+On Tue, Nov 24, 2020 at 2:44 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:153: warning: Function parameter o=
+r member 'handle' not described in 'uvd_v5_0_hw_init'
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:153: warning: Excess function para=
+meter 'adev' description in 'uvd_v5_0_hw_init'
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:210: warning: Function parameter o=
+r member 'handle' not described in 'uvd_v5_0_hw_fini'
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:210: warning: Excess function para=
+meter 'adev' description in 'uvd_v5_0_hw_fini'
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:463: warning: Function parameter o=
+r member 'addr' not described in 'uvd_v5_0_ring_emit_fence'
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:463: warning: Function parameter o=
+r member 'seq' not described in 'uvd_v5_0_ring_emit_fence'
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:463: warning: Function parameter o=
+r member 'flags' not described in 'uvd_v5_0_ring_emit_fence'
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:463: warning: Excess function para=
+meter 'fence' description in 'uvd_v5_0_ring_emit_fence'
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:529: warning: Function parameter o=
+r member 'job' not described in 'uvd_v5_0_ring_emit_ib'
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c:529: warning: Function parameter o=
+r member 'flags' not described in 'uvd_v5_0_ring_emit_ib'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Nirmoy Das <nirmoy.das@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Applied with minor fixes.  Thanks!
 
-Index: linux-5.9/drivers/accessibility/speakup/spk_ttyio.c
-===================================================================
---- linux-5.9.orig/drivers/accessibility/speakup/spk_ttyio.c
-+++ linux-5.9/drivers/accessibility/speakup/spk_ttyio.c
-@@ -225,27 +225,29 @@ void spk_ttyio_unregister_ldisc(void)
- static int spk_ttyio_out(struct spk_synth *in_synth, const char ch)
- {
- 	struct tty_struct *tty = in_synth->dev;
-+	int ret;
- 
--	if (in_synth->alive && tty->ops->write) {
--		int ret = tty->ops->write(tty, &ch, 1);
-+	if (!in_synth->alive || !tty->ops->write)
-+		return 0;
- 
--		if (ret == 0)
--			/* No room */
--			return 0;
--		if (ret < 0) {
--			pr_warn("%s: I/O error, deactivating speakup\n",
--				in_synth->long_name);
--			/* No synth any more, so nobody will restart TTYs,
--			 * and we thus need to do it ourselves.  Now that there
--			 * is no synth we can let application flood anyway
--			 */
--			in_synth->alive = 0;
--			speakup_start_ttys();
--			return 0;
--		}
-+	ret = tty->ops->write(tty, &ch, 1);
-+
-+	if (ret == 0)
-+		/* No room */
-+		return 0;
-+
-+	if (ret > 0)
-+		/* Success */
- 		return 1;
--	}
- 
-+	pr_warn("%s: I/O error, deactivating speakup\n",
-+		in_synth->long_name);
-+	/* No synth any more, so nobody will restart TTYs,
-+	 * and we thus need to do it ourselves.  Now that there
-+	 * is no synth we can let application flood anyway
-+	 */
-+	in_synth->alive = 0;
-+	speakup_start_ttys();
- 	return 0;
- }
- 
+Alex
 
-
-
+> ---
+>  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c b/drivers/gpu/drm/amd/=
+amdgpu/uvd_v5_0.c
+> index 6e57001f6d0ac..3a748ec58bec5 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c
+> @@ -145,7 +145,7 @@ static int uvd_v5_0_sw_fini(void *handle)
+>  /**
+>   * uvd_v5_0_hw_init - start and test UVD block
+>   *
+> - * @adev: amdgpu_device pointer
+> + * @handle: handle used to pass amdgpu_device pointer
+>   *
+>   * Initialize the hardware, boot up the VCPU and do some testing
+>   */
+> @@ -202,7 +202,7 @@ static int uvd_v5_0_hw_init(void *handle)
+>  /**
+>   * uvd_v5_0_hw_fini - stop the hardware block
+>   *
+> - * @adev: amdgpu_device pointer
+> + * @handle: handle used to pass amdgpu_device pointer
+>   *
+>   * Stop the UVD block, mark ring as not ready any more
+>   */
+> @@ -454,7 +454,9 @@ static void uvd_v5_0_stop(struct amdgpu_device *adev)
+>   * uvd_v5_0_ring_emit_fence - emit an fence & trap command
+>   *
+>   * @ring: amdgpu_ring pointer
+> - * @fence: fence to emit
+> + * @addr: address
+> + * @seq: sequence number
+> + * @flags: fence related flags
+>   *
+>   * Write a fence and a trap command to the ring.
+>   */
+> @@ -518,7 +520,9 @@ static int uvd_v5_0_ring_test_ring(struct amdgpu_ring=
+ *ring)
+>   * uvd_v5_0_ring_emit_ib - execute indirect buffer
+>   *
+>   * @ring: amdgpu_ring pointer
+> + * @job: job to retrive vmid from
+>   * @ib: indirect buffer to execute
+> + * @flags: unused
+>   *
+>   * Write ring commands to execute the indirect buffer
+>   */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
