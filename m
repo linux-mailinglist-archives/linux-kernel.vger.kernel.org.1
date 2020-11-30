@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F7E2C8D1E
+	by mail.lfdr.de (Postfix) with ESMTP id 7097B2C8D1F
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729791AbgK3SnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59070 "EHLO
+        id S1729801AbgK3SnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:43:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727626AbgK3SnJ (ORCPT
+        with ESMTP id S1727626AbgK3SnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:43:09 -0500
-Received: from mail-oi1-x264.google.com (mail-oi1-x264.google.com [IPv6:2607:f8b0:4864:20::264])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BACAC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:42:29 -0800 (PST)
-Received: by mail-oi1-x264.google.com with SMTP id h3so15257228oie.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:42:29 -0800 (PST)
+        Mon, 30 Nov 2020 13:43:14 -0500
+Received: from mail-ot1-x364.google.com (mail-ot1-x364.google.com [IPv6:2607:f8b0:4864:20::364])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2659CC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:42:34 -0800 (PST)
+Received: by mail-ot1-x364.google.com with SMTP id f16so12274008otl.11
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:42:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=5ttrytKrDltyetQ23KnDSb5EbKfcjrjhXOBSWCLEssE=;
-        b=h0d2a4vnL57sKltgwLEIhN11kVn+kxXcJcQsv94ULhdDI+823fDasug9NPl0sJIvLz
-         awB8KRqnnEcc9sfLjuTIEfGHXjo/7oKI1C4cDlb9fMEdlK+YcULIt99vl1BLtm1uK8jK
-         9dl71Jf793BRwUtdtsfh5U7zgoZitca79Z/Is=
+        bh=UoEvE99kxCsiXkImE8FiXeqwecxbK0zNWGtjzeP8wfc=;
+        b=EYqR8wln92h6bndOBGZrMEO3UFe9Bi3KgzxrLJ8iX3j+QYLML+SQGwC9XU0NhmRNae
+         +Xr9CBc0nVmjI0QxPmvHMeX6FbEUZdk0zIRMLDdthkAdjxzxkEzPZ2+gjhjB3l4sFyif
+         wj7EZMdoBwGv5opFIUqH4ivMvqNOYg/vQQKCc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=5ttrytKrDltyetQ23KnDSb5EbKfcjrjhXOBSWCLEssE=;
-        b=P/aZUz6aJUDwiS1CBmAFR3CCO2ZPkjZRJUlB0nB6RNN72srRuwrc65u8OimYh4pRjv
-         GxLpTlYWqnS9w7t7AnXYvbIHh9ynUrFOY7aQ3tanvbG8cQxjf1x84mZg/6YXNJmGKKcM
-         jo9VcIXVQfyd/MX/kwBZbujoVDU0bfWESLrxZqIirvNCC3NRH2COTg98OAJ8If5fkcD9
-         ArbtJjcUehSJX2f0EqgsYT9yF6si2rKOBnwdH0VekojfRHG8/HGadxpIdp7IDFN03NiU
-         WcTwY1bJC4CHypqQEihvaaUeYLpqduXrA5Q4qOSYwv1dHRkfXmEgEb8Udi7Q7jvreoNQ
-         3ZqA==
-X-Gm-Message-State: AOAM532qhzCS8AopOsXuJIUxaKWuumaXpDVGf2fDsL6AtGznCiCocliT
-        wbofx9WDMAD3OCCPDAHlYATs5cmquCUot2jqDGpGRuKR9JET
-X-Google-Smtp-Source: ABdhPJwkujaoIe9YyoW+VRvGbWRE4zYaeQizRY54lYaHEGxlzPMEhbQeYmhLyj6fg/xWFiPpUtg59hdDnCqw
-X-Received: by 2002:aca:2311:: with SMTP id e17mr192366oie.50.1606761748371;
-        Mon, 30 Nov 2020 10:42:28 -0800 (PST)
+        bh=UoEvE99kxCsiXkImE8FiXeqwecxbK0zNWGtjzeP8wfc=;
+        b=VvLkbv8WmiNib/mMRoldMxRASYP1gfM3ekmGYslu+l+8EUf60QD6SGVEKA/dvV/0AN
+         B47pXyfmfW1xGVOUifK8DgY8p8Qe1NRRpr5ao16Q0K993NMuX9HG0oW0BA/EKJkEh4MW
+         hprjKhFCvJwkbhkU3qIYdN3wGJfh4/XfCnKdJz1BtybFSL7WLAf3UXSyyUs7nW4ROF2W
+         o8ZJKZfeCuaOyL2idL8omay+3qzmhN9gySUuQTVCo6J+8atGL0BpEozfJdxe9+7Q5JHF
+         +SC4z9eDJ5GDB3c1LV13Z4x8L6AymPG7emZsi0DBGzkebZDTyIHIuoU3Y8nkDal7IAwg
+         M0RQ==
+X-Gm-Message-State: AOAM533q0IbwX9cbHT3dALbhgxPcpCniBvBiQoZtZ3zGepzXqCGMgfTg
+        Qfn1toUgleXAX2HHXvJicZAWZeSnThvDCUPRF8PXvZNP+IIR
+X-Google-Smtp-Source: ABdhPJxyTdxbhGobrrMh7FycXPyzR+BtyQcOcacLi8KLRGUrU57ABK6FF0txU5xwKrjCHjO6SJyq2eC+FDDJ
+X-Received: by 2002:a9d:62c1:: with SMTP id z1mr18172043otk.108.1606761753506;
+        Mon, 30 Nov 2020 10:42:33 -0800 (PST)
 Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp-relay.gmail.com with ESMTPS id z21sm1909069ooe.19.2020.11.30.10.42.23
+        by smtp-relay.gmail.com with ESMTPS id z21sm1909069ooe.19.2020.11.30.10.42.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 10:42:28 -0800 (PST)
+        Mon, 30 Nov 2020 10:42:33 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 From:   Scott Branden <scott.branden@broadcom.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
@@ -53,9 +53,9 @@ To:     Arnd Bergmann <arnd@arndb.de>,
 Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com,
         Olof Johansson <olof@lixom.net>
-Subject: [PATCH v8 01/13] bcm-vk: add bcm_vk UAPI
-Date:   Mon, 30 Nov 2020 10:41:48 -0800
-Message-Id: <20201130184200.5095-2-scott.branden@broadcom.com>
+Subject: [PATCH v8 02/13] misc: bcm-vk: add Broadcom VK driver
+Date:   Mon, 30 Nov 2020 10:41:49 -0800
+Message-Id: <20201130184200.5095-3-scott.branden@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201130184200.5095-1-scott.branden@broadcom.com>
 References: <20201130184200.5095-1-scott.branden@broadcom.com>
@@ -63,109 +63,273 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add user space api for bcm-vk driver.
+Add initial version of Broadcom VK driver to enumerate PCI device IDs
+of Valkyrie and Viper device IDs.
 
-Provide ioctl api to load images and issue reset command to card.
-FW status registers in PCI BAR space also defined as part
-of API so that user space is able to interpret these memory locations
-as needed via direct PCIe access.
+VK based cards provide real-time high performance, high throughput,
+low latency offload compute engine operations.
+They are used for multiple parallel offload tasks as:
+audio, video and image processing and crypto operations.
+
+Further commits add additional features to driver beyond probe/remove.
 
 Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 ---
- include/uapi/linux/misc/bcm_vk.h | 84 ++++++++++++++++++++++++++++++++
- 1 file changed, 84 insertions(+)
- create mode 100644 include/uapi/linux/misc/bcm_vk.h
+ drivers/misc/Kconfig             |   1 +
+ drivers/misc/Makefile            |   1 +
+ drivers/misc/bcm-vk/Kconfig      |  17 ++++
+ drivers/misc/bcm-vk/Makefile     |   8 ++
+ drivers/misc/bcm-vk/bcm_vk.h     |  29 +++++++
+ drivers/misc/bcm-vk/bcm_vk_dev.c | 141 +++++++++++++++++++++++++++++++
+ 6 files changed, 197 insertions(+)
+ create mode 100644 drivers/misc/bcm-vk/Kconfig
+ create mode 100644 drivers/misc/bcm-vk/Makefile
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk.h
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_dev.c
 
-diff --git a/include/uapi/linux/misc/bcm_vk.h b/include/uapi/linux/misc/bcm_vk.h
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index fafa8b0d8099..591903773a6d 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -478,6 +478,7 @@ source "drivers/misc/genwqe/Kconfig"
+ source "drivers/misc/echo/Kconfig"
+ source "drivers/misc/cxl/Kconfig"
+ source "drivers/misc/ocxl/Kconfig"
++source "drivers/misc/bcm-vk/Kconfig"
+ source "drivers/misc/cardreader/Kconfig"
+ source "drivers/misc/habanalabs/Kconfig"
+ source "drivers/misc/uacce/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index d23231e73330..54f2fe2d9448 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -51,6 +51,7 @@ obj-$(CONFIG_ECHO)		+= echo/
+ obj-$(CONFIG_CXL_BASE)		+= cxl/
+ obj-$(CONFIG_PCI_ENDPOINT_TEST)	+= pci_endpoint_test.o
+ obj-$(CONFIG_OCXL)		+= ocxl/
++obj-$(CONFIG_BCM_VK)		+= bcm-vk/
+ obj-y				+= cardreader/
+ obj-$(CONFIG_PVPANIC)   	+= pvpanic.o
+ obj-$(CONFIG_HABANA_AI)		+= habanalabs/
+diff --git a/drivers/misc/bcm-vk/Kconfig b/drivers/misc/bcm-vk/Kconfig
 new file mode 100644
-index 000000000000..ec28e0bd46a9
+index 000000000000..052f6f28b540
 --- /dev/null
-+++ b/include/uapi/linux/misc/bcm_vk.h
-@@ -0,0 +1,84 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++++ b/drivers/misc/bcm-vk/Kconfig
+@@ -0,0 +1,17 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Broadcom VK device
++#
++config BCM_VK
++	tristate "Support for Broadcom VK Accelerators"
++	depends on PCI_MSI
++	help
++	  Select this option to enable support for Broadcom
++	  VK Accelerators.  VK is used for performing
++	  multiple specific offload processing tasks in parallel.
++	  Such offload tasks assist in such operations as video
++	  transcoding, compression, and crypto tasks.
++	  This driver enables userspace programs to access these
++	  accelerators via /dev/bcm-vk.N devices.
++
++	  If unsure, say N.
+diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
+new file mode 100644
+index 000000000000..f8a7ac4c242f
+--- /dev/null
++++ b/drivers/misc/bcm-vk/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Makefile for Broadcom VK driver
++#
++
++obj-$(CONFIG_BCM_VK) += bcm_vk.o
++bcm_vk-objs := \
++	bcm_vk_dev.o
+diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
+new file mode 100644
+index 000000000000..9152785199ab
+--- /dev/null
++++ b/drivers/misc/bcm-vk/bcm_vk.h
+@@ -0,0 +1,29 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
 + * Copyright 2018-2020 Broadcom.
 + */
 +
-+#ifndef __UAPI_LINUX_MISC_BCM_VK_H
-+#define __UAPI_LINUX_MISC_BCM_VK_H
++#ifndef BCM_VK_H
++#define BCM_VK_H
 +
-+#include <linux/ioctl.h>
-+#include <linux/types.h>
++#include <linux/pci.h>
 +
-+#define BCM_VK_MAX_FILENAME 64
++#define DRV_MODULE_NAME		"bcm-vk"
 +
-+struct vk_image {
-+	__u32 type; /* Type of image */
-+#define VK_IMAGE_TYPE_BOOT1 1 /* 1st stage (load to SRAM) */
-+#define VK_IMAGE_TYPE_BOOT2 2 /* 2nd stage (load to DDR) */
-+	__u8 filename[BCM_VK_MAX_FILENAME]; /* Filename of image */
++/* VK device supports a maximum of 3 bars */
++#define MAX_BAR	3
++
++enum pci_barno {
++	BAR_0 = 0,
++	BAR_1,
++	BAR_2
 +};
 +
-+struct vk_reset {
-+	__u32 arg1;
-+	__u32 arg2;
++#define BCM_VK_NUM_TTY 2
++
++struct bcm_vk {
++	struct pci_dev *pdev;
++	void __iomem *bar[MAX_BAR];
 +};
 +
-+#define VK_MAGIC		0x5e
-+
-+/* Load image to Valkyrie */
-+#define VK_IOCTL_LOAD_IMAGE	_IOW(VK_MAGIC, 0x2, struct vk_image)
-+
-+/* Send Reset to Valkyrie */
-+#define VK_IOCTL_RESET		_IOW(VK_MAGIC, 0x4, struct vk_reset)
-+
++#endif
+diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
+new file mode 100644
+index 000000000000..14afe2477b97
+--- /dev/null
++++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
+@@ -0,0 +1,141 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Firmware Status accessed directly via BAR space
++ * Copyright 2018-2020 Broadcom.
 + */
-+#define VK_BAR_FWSTS			0x41c
-+#define VK_BAR_COP_FWSTS		0x428
-+/* VK_FWSTS definitions */
-+#define VK_FWSTS_RELOCATION_ENTRY	(1UL << 0)
-+#define VK_FWSTS_RELOCATION_EXIT	(1UL << 1)
-+#define VK_FWSTS_INIT_START		(1UL << 2)
-+#define VK_FWSTS_ARCH_INIT_DONE		(1UL << 3)
-+#define VK_FWSTS_PRE_KNL1_INIT_DONE	(1UL << 4)
-+#define VK_FWSTS_PRE_KNL2_INIT_DONE	(1UL << 5)
-+#define VK_FWSTS_POST_KNL_INIT_DONE	(1UL << 6)
-+#define VK_FWSTS_INIT_DONE		(1UL << 7)
-+#define VK_FWSTS_APP_INIT_START		(1UL << 8)
-+#define VK_FWSTS_APP_INIT_DONE		(1UL << 9)
-+#define VK_FWSTS_MASK			0xffffffff
-+#define VK_FWSTS_READY			(VK_FWSTS_INIT_START | \
-+					 VK_FWSTS_ARCH_INIT_DONE | \
-+					 VK_FWSTS_PRE_KNL1_INIT_DONE | \
-+					 VK_FWSTS_PRE_KNL2_INIT_DONE | \
-+					 VK_FWSTS_POST_KNL_INIT_DONE | \
-+					 VK_FWSTS_INIT_DONE | \
-+					 VK_FWSTS_APP_INIT_START | \
-+					 VK_FWSTS_APP_INIT_DONE)
-+/* Deinit */
-+#define VK_FWSTS_APP_DEINIT_START	(1UL << 23)
-+#define VK_FWSTS_APP_DEINIT_DONE	(1UL << 24)
-+#define VK_FWSTS_DRV_DEINIT_START	(1UL << 25)
-+#define VK_FWSTS_DRV_DEINIT_DONE	(1UL << 26)
-+#define VK_FWSTS_RESET_DONE		(1UL << 27)
-+#define VK_FWSTS_DEINIT_TRIGGERED	(VK_FWSTS_APP_DEINIT_START | \
-+					 VK_FWSTS_APP_DEINIT_DONE  | \
-+					 VK_FWSTS_DRV_DEINIT_START | \
-+					 VK_FWSTS_DRV_DEINIT_DONE)
-+/* Last nibble for reboot reason */
-+#define VK_FWSTS_RESET_REASON_SHIFT	28
-+#define VK_FWSTS_RESET_REASON_MASK	(0xf << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_SYS_PWRUP	(0x0 << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_MBOX_DB		(0x1 << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_M7_WDOG		(0x2 << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_TEMP		(0x3 << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_PCI_FLR		(0x4 << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_PCI_HOT		(0x5 << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_PCI_WARM		(0x6 << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_PCI_COLD		(0x7 << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_L1		(0x8 << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_L0		(0x9 << VK_FWSTS_RESET_REASON_SHIFT)
-+#define VK_FWSTS_RESET_UNKNOWN		(0xf << VK_FWSTS_RESET_REASON_SHIFT)
 +
-+#endif /* __UAPI_LINUX_MISC_BCM_VK_H */
++#include <linux/dma-mapping.h>
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/pci_regs.h>
++
++#include "bcm_vk.h"
++
++#define PCI_DEVICE_ID_VALKYRIE	0x5e87
++#define PCI_DEVICE_ID_VIPER	0x5e88
++
++/* MSIX usages */
++#define VK_MSIX_MSGQ_MAX		3
++#define VK_MSIX_NOTF_MAX		1
++#define VK_MSIX_TTY_MAX			BCM_VK_NUM_TTY
++#define VK_MSIX_IRQ_MAX			(VK_MSIX_MSGQ_MAX + VK_MSIX_NOTF_MAX + \
++					 VK_MSIX_TTY_MAX)
++#define VK_MSIX_IRQ_MIN_REQ             (VK_MSIX_MSGQ_MAX + VK_MSIX_NOTF_MAX)
++
++/* Number of bits set in DMA mask*/
++#define BCM_VK_DMA_BITS			64
++
++static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
++{
++	int err;
++	int i;
++	int irq;
++	struct bcm_vk *vk;
++	struct device *dev = &pdev->dev;
++
++	vk = kzalloc(sizeof(*vk), GFP_KERNEL);
++	if (!vk)
++		return -ENOMEM;
++
++	err = pci_enable_device(pdev);
++	if (err) {
++		dev_err(dev, "Cannot enable PCI device\n");
++		goto err_free_exit;
++	}
++	vk->pdev = pci_dev_get(pdev);
++
++	err = pci_request_regions(pdev, DRV_MODULE_NAME);
++	if (err) {
++		dev_err(dev, "Cannot obtain PCI resources\n");
++		goto err_disable_pdev;
++	}
++
++	/* make sure DMA is good */
++	err = dma_set_mask_and_coherent(&pdev->dev,
++					DMA_BIT_MASK(BCM_VK_DMA_BITS));
++	if (err) {
++		dev_err(dev, "failed to set DMA mask\n");
++		goto err_disable_pdev;
++	}
++
++	pci_set_master(pdev);
++	pci_set_drvdata(pdev, vk);
++
++	irq = pci_alloc_irq_vectors(pdev,
++				    1,
++				    VK_MSIX_IRQ_MAX,
++				    PCI_IRQ_MSI | PCI_IRQ_MSIX);
++
++	if (irq < VK_MSIX_IRQ_MIN_REQ) {
++		dev_err(dev, "failed to get min %d MSIX interrupts, irq(%d)\n",
++			VK_MSIX_IRQ_MIN_REQ, irq);
++		err = (irq >= 0) ? -EINVAL : irq;
++		goto err_disable_pdev;
++	}
++
++	if (irq != VK_MSIX_IRQ_MAX)
++		dev_warn(dev, "Number of IRQs %d allocated - requested(%d).\n",
++			 irq, VK_MSIX_IRQ_MAX);
++
++	for (i = 0; i < MAX_BAR; i++) {
++		/* multiple by 2 for 64 bit BAR mapping */
++		vk->bar[i] = pci_ioremap_bar(pdev, i * 2);
++		if (!vk->bar[i]) {
++			dev_err(dev, "failed to remap BAR%d\n", i);
++			goto err_iounmap;
++		}
++	}
++
++	return 0;
++
++err_iounmap:
++	for (i = 0; i < MAX_BAR; i++) {
++		if (vk->bar[i])
++			pci_iounmap(pdev, vk->bar[i]);
++	}
++	pci_release_regions(pdev);
++
++err_disable_pdev:
++	pci_free_irq_vectors(pdev);
++	pci_disable_device(pdev);
++	pci_dev_put(pdev);
++
++err_free_exit:
++	kfree(vk);
++
++	return err;
++}
++
++static void bcm_vk_remove(struct pci_dev *pdev)
++{
++	int i;
++	struct bcm_vk *vk = pci_get_drvdata(pdev);
++
++	for (i = 0; i < MAX_BAR; i++) {
++		if (vk->bar[i])
++			pci_iounmap(pdev, vk->bar[i]);
++	}
++
++	pci_release_regions(pdev);
++	pci_free_irq_vectors(pdev);
++	pci_disable_device(pdev);
++}
++
++static const struct pci_device_id bcm_vk_ids[] = {
++	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, PCI_DEVICE_ID_VALKYRIE), },
++	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, PCI_DEVICE_ID_VIPER), },
++	{ }
++};
++MODULE_DEVICE_TABLE(pci, bcm_vk_ids);
++
++static struct pci_driver pci_driver = {
++	.name     = DRV_MODULE_NAME,
++	.id_table = bcm_vk_ids,
++	.probe    = bcm_vk_probe,
++	.remove   = bcm_vk_remove,
++};
++module_pci_driver(pci_driver);
++
++MODULE_DESCRIPTION("Broadcom VK Host Driver");
++MODULE_AUTHOR("Scott Branden <scott.branden@broadcom.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_VERSION("1.0");
 -- 
 2.17.1
 
