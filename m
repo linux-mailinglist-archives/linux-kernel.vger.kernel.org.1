@@ -2,135 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814E52C876F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 478522C8770
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgK3PJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:09:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgK3PJ0 (ORCPT
+        id S1727874AbgK3PJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:09:57 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:60052 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726802AbgK3PJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:09:26 -0500
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C014C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 07:08:40 -0800 (PST)
-Received: by mail-ua1-x92f.google.com with SMTP id x13so3842562uar.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 07:08:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oo/FBQBueWDd00EzjjP1iPUFL/XECO3UlBEDhq2h/3c=;
-        b=kgTvw0bDMX5tcHNMAbwnTcEPGamvZGqYkvCeVd8u60O2P4buPHWUZD4hjpCCpKCls7
-         00o8gJ5pKt3jEDcHfV9i0iRWRvzRBrjyZOn9oiZQOj5CMpOPZE61PK53fncZMRvCaPoX
-         ytuJ9picx0e/7B8oXjvQLuckNUcw8KQmNgmq/hqSuxKREnPCQQzgJtlkD9IuZpd0oRzh
-         vJF9AWahNpBcuQlabAiHJsLinPjtxgio3ZJfrTHINS32/uw5YVX32Ddsw83QF1tEUszD
-         QddNCSxSuTTL24p9OWPJFDOQunYV0KNp4r3H1mVIk6Bav4sGoBFaKoeeDL356pyRA19i
-         GaxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oo/FBQBueWDd00EzjjP1iPUFL/XECO3UlBEDhq2h/3c=;
-        b=Qqmln50QXW1odCV/yAy0ShBzcIH5V/X243PU4os4A5M37pmhyl6k6NdrPzmxcaMyg4
-         zBuYacaIHnLBdSMun22T1I5UTcVJVLqxc3ZhYDHSrZoUZlZrmkKSt7SSS/bt69UNeV9h
-         Tpk8l7lfdaXBwICHHS6SmVoCsUKrBHSzRWdO0Act+duOd3P9ITlxarsXWdrOBc1Ol36O
-         lxhi+BTfyu9U4dmYjZMebfAnTqkcZmFhAr4Xr32rEuKgD/96hMtZLnERbBwVqgoH7EY1
-         nDQV19TnO83qBWwVdDlEh5Z/U9FTv2Th3iZc+L67C1JAtgPsm1fF5af+ekylOC+dQj3N
-         Iwxg==
-X-Gm-Message-State: AOAM533XnwnU/1ebc78fUxKq9jEaq9XU4Su3Djxdyk+Z1w//iMO32uLL
-        8XDrtemVTlX07QZDX4uqeneI9wKL+iY1UwgZePrCOQ==
-X-Google-Smtp-Source: ABdhPJynFyHLFSQk/2ETJCHFnFPRt9+XPRb+zfMCwiW6pYdfHXa2NU3q1LYOLykRB9GSIcDA2uguoee+ryFCujWcdOY=
-X-Received: by 2002:ab0:60b1:: with SMTP id f17mr13575257uam.104.1606748919488;
- Mon, 30 Nov 2020 07:08:39 -0800 (PST)
+        Mon, 30 Nov 2020 10:09:56 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUExHsb079081;
+        Mon, 30 Nov 2020 15:08:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=E4TL13lsS3BmUyz+NpG0/cvxf17YJNKT5OVumb4dVpU=;
+ b=CWEMg9yenWGv4X8JuWhIqjJUgfAV5uvZnVQBgNrYCumnqwNSo/JRTH+EgR/Xq0W8a3za
+ JLiTVFXk5wMXVnWAEVF6vqbQXmU3T3NHq5okvyN8dgaP8YRetzepMW/W/UmR0hsnSOXe
+ UmjR4FZmv3iaxltC4xpe8zZD21GN3Xq2+WhM3RW/ZPMphXp4dshjouLB+HokdP+raNcK
+ JbanKnl9Tp6pupv5gldJ/ONwI2zPoqq0YJB5M+wcQCxx9jIJGY91QqEkjKn5W5RFCGX4
+ MxlAOr1fLOon4TbR/YbgjOUzUW1kSljO76+iB/atF58aGiKEe2r7ID2ff+ki6V1wxTQ0 7g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 353c2annep-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 30 Nov 2020 15:08:42 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUF1Gg4139772;
+        Mon, 30 Nov 2020 15:08:41 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3540fv7yud-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Nov 2020 15:08:41 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AUF8bwX030657;
+        Mon, 30 Nov 2020 15:08:37 GMT
+Received: from [10.175.212.254] (/10.175.212.254)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 07:08:36 -0800
+Subject: Re: [PATCH RFC 11/39] KVM: x86/xen: evtchn signaling via eventfd
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+ <20190220201609.28290-12-joao.m.martins@oracle.com>
+ <874d1fa922cb56238676b90bbeeba930d0706500.camel@infradead.org>
+ <e83f6438-7256-1dc8-3b13-5498fd5bbed1@oracle.com>
+ <18e854e2a84750c2de2d32384710132b83d84286.camel@infradead.org>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <0b9d3901-c10b-effd-6278-6afd1e95b09e@oracle.com>
+Date:   Mon, 30 Nov 2020 15:08:32 +0000
 MIME-Version: 1.0
-References: <c5252887-e4f9-953d-88df-d8cc62ecd136@eaxlabs.cz>
-In-Reply-To: <c5252887-e4f9-953d-88df-d8cc62ecd136@eaxlabs.cz>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 30 Nov 2020 16:08:03 +0100
-Message-ID: <CAPDyKFr8t-u_4YkuCzQ3Xd3VgxkTq_Anu+NzBo4Pfj8SLBnsvg@mail.gmail.com>
-Subject: Re: armmmci rmmod causes hung tasks
-To:     Martin DEVERA <devik@eaxlabs.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <18e854e2a84750c2de2d32384710132b83d84286.camel@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9820 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
+ phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011300098
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9820 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011300098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Nov 2020 at 19:20, Martin DEVERA <devik@eaxlabs.cz> wrote:
->
-> Hello,
->
-> on STM32MP1 with almost vanilla 5.7.7 in single CPU mode. Pair of
-> modprobe armmmci ; rmmod armmmci
->
-> causes rmmod and kworker to hang. I should note that no MMC is detected
-> on the board (SDIO device on MMC bus is not responding).
-> On another board (where SDIO is responding) rmmod works.
->
-> It seems as another manifestation of https://lkml.org/lkml/2019/8/27/945
->
-> Thanks.
->
-> INFO: task kworker/0:1:12 blocked for more than 368 seconds.
->        Not tainted 5.7.7kdb-00003-g10397828596c-dirty #224
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> kworker/0:1     D    0    12      2 0x00000000
-> Workqueue: events_freezable mmc_rescan
-> (__schedule) from (schedule+0x5b/0x90)
-> (schedule) from (schedule_timeout+0x1b/0xa0)
-> (schedule_timeout) from (__wait_for_common+0x7d/0xdc)
-> (__wait_for_common) from (mmc_wait_for_req_done+0x1b/0x8c)
-> (mmc_wait_for_req_done) from (mmc_wait_for_cmd+0x4d/0x68)
-> (mmc_wait_for_cmd) from (mmc_io_rw_direct_host+0x87/0xc8)
-> (mmc_io_rw_direct_host) from (sdio_reset+0x3b/0x58)
-> (sdio_reset) from (mmc_rescan+0x15d/0x1d4)
-> (mmc_rescan) from (process_one_work+0xdd/0x168)
-> (process_one_work) from (worker_thread+0x17d/0x1ec)
-> (worker_thread) from (kthread+0x9b/0xa4)
-> (kthread) from (ret_from_fork+0x11/0x28)
+On 11/30/20 12:55 PM, David Woodhouse wrote:
+> On Mon, 2020-11-30 at 12:17 +0000, Joao Martins wrote:
+>> On 11/30/20 9:41 AM, David Woodhouse wrote:
+>>> On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
+>>>> EVTCHNOP_send short-circuiting happens by marking the event as pending
+>>>> in the shared info and vcpu info pages and doing the upcall. For IPIs
+>>>> and interdomain event channels, we do the upcall on the assigned vcpu.
+>>>
+>>> This part I understand, 'peeking' at the EVTCHNOP_send hypercall so
+>>> that we can short-circuit IPI delivery without it having to bounce
+>>> through userspace.
+>>>
+>>> But why would I then want then short-circuit the short-circuit,
+>>> providing an eventfd for it to signal... so that I can then just
+>>> receive the event in userspace in a *different* form to the original
+>>> hypercall exit I would have got?
+>>>
+>>
+>> One thing I didn't quite do at the time, is the whitelisting of unregistered
+>> ports to userspace. Right now, it's a blacklist i.e. if it's not handled in
+>> the kernel (IPIs, timer vIRQ, etc) it goes back to userspace. When the only
+>> ones which go to userspace should be explicitly requested as such
+>> and otherwise return -ENOENT in the hypercall.
+> 
+> Hm, why would -ENOENT be a fast path which needs to be handled in the
+> kernel?
+> 
+It's not that it's a fast path.
 
-It looks like the worker thread, which runs mmc_rescan() to try to
-detect the SDIO card is hanging. Exactly why, I don't know.
+Like sending an event channel to an unbound vector, now becomes an possible vector to
+worry about in userspace VMM e.g. should that port lookup logic be fragile.
 
-Could be a misconfigured clock, pinctrl or a power domain being
-suddenly gated...
+So it's more along the lines of Nack-ing the invalid port earlier to rather go
+to go userspace to invalidate it, provided we do the lookup anyway in the kernel.
 
->
-> INFO: task rmmod:308 blocked for more than 368 seconds.
->        Not tainted 5.7.7kdb-00003-g10397828596c-dirty #224
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> rmmod           D    0   308    222 0x00000000
-> (__schedule) from (schedule+0x5b/0x90)
-> (schedule) from (schedule_timeout+0x1b/0xa0)
-> (schedule_timeout) from (__wait_for_common+0x7d/0xdc)
-> (__wait_for_common) from (__flush_work+0xb3/0x110)
-> (__flush_work) from (__cancel_work_timer+0x97/0xf0)
-> (__cancel_work_timer) from (mmc_stop_host+0x29/0x88)
-> (mmc_stop_host) from (mmc_remove_host+0x9/0x22)
-> (mmc_remove_host) from (mmci_remove+0x19/0x92 [armmmci])
-> (mmci_remove [armmmci]) from (amba_remove+0x13/0x42)
-> (amba_remove) from (device_release_driver_internal+0x89/0xe4)
-> (device_release_driver_internal) from (driver_detach+0x57/0x60)
-> (driver_detach) from (bus_remove_driver+0x53/0x84)
-> (bus_remove_driver) from (mmci_driver_exit+0x9/0x11dc [armmmci])
-> (mmci_driver_exit [armmmci]) from (sys_delete_module+0x115/0x154)
-> (sys_delete_module) from (ret_fast_syscall+0x1/0x5a)
->
+>> Perhaps eventfd could be a way to express this? Like if you register
+>> without an eventfd it's offloaded, otherwise it's assigned to userspace,
+>> or if neither it's then returned an error without bothering the VMM.
+> 
+> I much prefer the simple model where the *only* event channels that the
+> kernel knows about are the ones it's expected to handle.
+> 
+> For any others, the bypass doesn't kick in, and userspace gets the
+> KVM_EXIT_HYPERCALL exit.
+> 
+/me nods
 
-When unbinding the mmc host, mmc_stop_host() needs to make sure that
-mmc_rescan() becomes disabled. This is to prevent a card from being
-detected/removed at same time as when the host is being removed.
+I should comment on your other patch but: if we're going to make it generic for
+the userspace hypercall handling, might as well move hyper-v there too. In this series,
+I added KVM_EXIT_XEN, much like it exists KVM_EXIT_HYPERV -- but with a generic version
+I wonder if a capability could gate KVM_EXIT_HYPERCALL to handle both guest types, while
+disabling KVM_EXIT_HYPERV. But this is probably subject of its own separate patch :)
 
-In any case, when we call...
+>> But still, eventfd is probably unnecessary complexity when another @type
+>> (XEN_EVTCHN_TYPE_USER) would serve, and then just exiting to userspace
+>> and let it route its evtchn port handling to the its own I/O handling thread.
+> 
+> Hmm... so the benefit of the eventfd is that we can wake the I/O thread
+> directly instead of bouncing out to userspace on the vCPU thread only
+> for it to send a signal and return to the guest? Did you ever use that,
+> and it is worth the additional in-kernel code?
+> 
+This was my own preemptive optimization to the interface -- it's not worth
+the added code for vIRQ and IPI at this point which is what *for sure* the
+kernel will handle.
 
-cancel_delayed_work_sync(&host->detect);
+> Is there any reason we'd want that for IPI or VIRQ event channels, or
+> can it be only for INTERDOM/UNBOUND event channels which come later?
+> 
+/me nods.
 
-...it seems like we end up waiting for the currently running
-mmc_rescan() work to be completed.
+No reason to keep that for IPI/vIRQ.
 
-Kind regards
-Uffe
+> I'm tempted to leave it out of the first patch, and *maybe* add it back
+> in a later patch, putting it in the union alongside .virq.type.
+> 
+> 
+>                 struct kvm_xen_eventfd {
+>  
+>  #define XEN_EVTCHN_TYPE_VIRQ 0
+>  #define XEN_EVTCHN_TYPE_IPI  1
+>                         __u32 type;
+>                         __u32 port;
+>                         __u32 vcpu;
+> -                       __s32 fd;
+>  
+>  #define KVM_XEN_EVENTFD_DEASSIGN       (1 << 0)
+>  #define KVM_XEN_EVENTFD_UPDATE         (1 << 1)
+>                         __u32 flags;
+>                         union {
+>                                 struct {
+>                                         __u8 type;
+>                                 } virq;
+> +                              struct {
+> +                                      __s32 eventfd;
+> +                              } interdom; /* including unbound */
+>                                 __u32 padding[2];
+>                         };
+>                } evtchn;
+> 
+> Does that make sense to you?
+> 
+Yeap! :)
+
+	Joao
