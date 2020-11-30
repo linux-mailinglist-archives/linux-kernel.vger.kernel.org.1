@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33BC2C80C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB742C80C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgK3JRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:17:03 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:54887 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726032AbgK3JRD (ORCPT
+        id S1728004AbgK3JRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:17:23 -0500
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:43736 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726634AbgK3JRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:17:03 -0500
-X-UUID: 911facf2d65d4e0ca5166da42b989b84-20201130
-X-UUID: 911facf2d65d4e0ca5166da42b989b84-20201130
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 510319689; Mon, 30 Nov 2020 17:16:18 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 30 Nov 2020 17:16:10 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 30 Nov 2020 17:16:10 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <nguyenb@codeaurora.org>,
-        <bjorn.andersson@linaro.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage values
-Date:   Mon, 30 Nov 2020 17:16:10 +0800
-Message-ID: <20201130091610.2752-1-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 30 Nov 2020 04:17:23 -0500
+Received: by mail-oi1-f170.google.com with SMTP id t143so13420398oif.10;
+        Mon, 30 Nov 2020 01:17:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UpFsmKHMxP9g9q5APyn1icsD+ymXQt4NPSq031N1NNI=;
+        b=WSrp/PyOB4L9ORnsszYo+I4K2SIz1/wJvFA1s/5m8MZVPiZ4melDWHVnxfqKIw2xpr
+         odlBczevnikx2AgQZ1mI7OYLuNLOjWgC1tRw6v/4Ao0F1BNkOiHDJC/CCx9SJcDJkSKe
+         AR3tMA03ly/5yXdFmrpsLpm2YkGri6N//vKec1SUY/cr5BMMhLSMmGW++odDT/5zhkRV
+         K8hr+9l8ZlOvPy5uHrYd1LHLZxUhrIM7tUuj0wHUNvRCCf+Zzgux1zBSYIQCvMvFrKAE
+         NxL20bAFqecuTclGBHLRh+1n1/zyYDOU9a15jM+Sjf00z+lc2+0zImHcQSmbNN1Z9JHL
+         MTgw==
+X-Gm-Message-State: AOAM533FVcx4kDXJ/Uipq+k8tnq0t5cBRUEE6lXYKQ67TIpihDEWgRSh
+        FF7Go04FXiObu+WLc0fDYodrtbTUudvEYl2XjQeoZ1+DRvE=
+X-Google-Smtp-Source: ABdhPJzeINpx9GMKwjhKFTAHXMl7bD1gJfOA2/3YLUwKSuBIptgaIj//KON2S18pSW1vwn1PxT6uD5Ljvsv/bbYS8tk=
+X-Received: by 2002:aca:1c0f:: with SMTP id c15mr13811815oic.54.1606727802158;
+ Mon, 30 Nov 2020 01:16:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20201126115927.4089838-1-geert@linux-m68k.org>
+In-Reply-To: <20201126115927.4089838-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 30 Nov 2020 10:16:31 +0100
+Message-ID: <CAMuHMdXPrfEvFUDEU72odcS6S8e0GS_XRcrcDsQMvSHxMcxwYg@mail.gmail.com>
+Subject: Re: [PATCH/RFC] dt-bindings: pci: rcar-pci-ep: Document missing
+ interrupts property
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UFS specficication allows different VCC configurations for UFS devices,
-for example,
-	(1). 2.70V - 3.60V (By default)
-	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
-                          device tree)
-	(3). 2.40V - 2.70V (Supported since UFS 3.x)
+On Thu, Nov 26, 2020 at 3:20 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> The R-Car PCIe controller does not use interrupts when configured
+> for endpoint mode, hence the bindings do not document the interrupt
+> property.  However, all DTS files provide interrupts properties, and
+> thus fail to validate.
+>
+> Fix this by documenting the interrupts property.
+>
+> Fixes: 5be478f9c24fbdf8 ("dt-bindings: Another round of adding missing 'additionalProperties'")
+> Fixes: 4c0f80920923f103 ("dt-bindings: PCI: rcar: Add bindings for R-Car PCIe endpoint controller")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-With the introduction of UFS 3.x products, an issue is happening that
-UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
-regulator on UFU 3.x products with VCC configuration (3) used.
+Oops, this should have been geert+renesas@glider.be.
 
-To solve this issue, we simply remove pre-defined initial VCC voltage
-values in UFS driver with below reasons,
+> ---
+> Alternatively, the interrupts properties should be removed from the
+> corresponding device nodes in the DTS files.  Obviously they should be
+> retained in the device nodes representing PCIe controllers configured in
+> host mode, which describe the same hardware...
 
-1. UFS specifications do not define how to detect the VCC configuration
-   supported by attached device.
+Anyway, waiting for your comments ;-)
 
-2. Device tree already supports standard regulator properties.
+Gr{oetje,eeting}s,
 
-Therefore VCC voltage shall be defined correctly in device tree, and
-shall not be changed by UFS driver. What UFS driver needs to do is simply
-enabling or disabling the VCC regulator only.
+                        Geert
 
-This is a RFC conceptional patch. Please help review this and feel
-free to feedback any ideas. Once this concept is accepted, and then
-I would post a more completed patch series to fix this issue.
-
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
----
- drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-index a6f76399b3ae..3965be03c136 100644
---- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-+++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-@@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
- 		vreg->max_uA = 0;
- 	}
- 
--	if (!strcmp(name, "vcc")) {
--		if (of_property_read_bool(np, "vcc-supply-1p8")) {
--			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
--			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
--		} else {
--			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
--			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
--		}
--	} else if (!strcmp(name, "vccq")) {
-+	if (!strcmp(name, "vccq")) {
- 		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
- 		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
- 	} else if (!strcmp(name, "vccq2")) {
 -- 
-2.18.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
