@@ -2,120 +2,379 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA702C9105
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2547B2C9107
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730633AbgK3W1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:27:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730612AbgK3W1J (ORCPT
+        id S1730648AbgK3W1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:27:25 -0500
+Received: from hera.aquilenet.fr ([185.233.100.1]:33488 "EHLO
+        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730636AbgK3W1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:27:09 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203B2C0613D2;
-        Mon, 30 Nov 2020 14:26:29 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id n12so12963082otk.0;
-        Mon, 30 Nov 2020 14:26:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ELyTcX08LymPeenJIXXi/ZPMDQRwxk9oNbn6BfJ/r5o=;
-        b=dSrhy5UQczAxydBaxnIin48cdsjDak8wLPUXxDuBp+tcQ9Ta/HCWMAkuMygGhCqhMz
-         Uwu7K92Ep3Hf+sXE+e8XLMMEwLynUO6Ge3suxhvWnyWM2PmoiAQwOPwd1tNEp1tT/ssH
-         4KycpbzWX/ywYQuc4tmkp+JrjizgTXDdv0Zg7l8NG7+hBVje1wj/ngV4UuutQpzSxhgY
-         SZTwuBXRzPT01VI+otVFMKBymSPQsh9F356ghr1ICD6ZikvE3N9hSW9eLQo1XGBEr+CP
-         KXDYo30Qf+vtU+Jvmftd9jXf8M32LP02OUUdjBKGG6ZIvso0fRBqAar9OYEXhIqrDg0i
-         8Vmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ELyTcX08LymPeenJIXXi/ZPMDQRwxk9oNbn6BfJ/r5o=;
-        b=oexPZ2JFf33Jdv2C2EPh3sdK6yP3LaY6ETmPkFqal3MMOJgDQzEmtamRvg7kYj5CIT
-         YLHtyjGSIqSUW7k+5Ye74fqEMwu4qygG+addSIAIHxJ9s1zqAvNHLNMrKp+9Tu78vCNE
-         OL6+xEz8dz2bceHkgzb+sNaeKhYm138i003VJD136+0VgPJDLAtA1/iN2DlZNk0I5VHW
-         4sJ+VAnJmFeidvkujH6DPqKoWBrNBN/qvJ8ZAiU3EgkDVwlHLxoOoZULCvHB8hxu+U/8
-         ii07NA6Vv+9+Rvjy6ce4EPQBK57GIcofCuZhGXbfdGu6XOt0w/Cs0ZIMU3+RIGrkmKrQ
-         cJJQ==
-X-Gm-Message-State: AOAM530mTtjRhgjq9Q4SIDVzp39V455PmJ10lhkiwxtrI0cMOhBgmXen
-        hdUDdFhfKuww7KpeWVR3aO5K0ZAgRcgCeaQ6uuc=
-X-Google-Smtp-Source: ABdhPJyhogOwk85GqUih/K8lKuyluajJarfEg+XxKqk24TSWNaiPT1bDAc6sGbBpjoUmaGnLLEPc6a+mDBG/pq5B2Vw=
-X-Received: by 2002:a9d:4713:: with SMTP id a19mr19192784otf.132.1606775188591;
- Mon, 30 Nov 2020 14:26:28 -0800 (PST)
+        Mon, 30 Nov 2020 17:27:25 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id B0FFA121B;
+        Mon, 30 Nov 2020 23:26:43 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id voVgiLAFaf23; Mon, 30 Nov 2020 23:26:42 +0100 (CET)
+Received: from function.youpi.perso.aquilenet.fr (unknown [IPv6:2a01:cb19:956:1b00:9eb6:d0ff:fe88:c3c7])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 832771218;
+        Mon, 30 Nov 2020 23:26:42 +0100 (CET)
+Received: from samy by function.youpi.perso.aquilenet.fr with local (Exim 4.94)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1kjrd3-00Fm11-Pr; Mon, 30 Nov 2020 23:26:41 +0100
+Date:   Mon, 30 Nov 2020 23:26:41 +0100
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, speakup@linux-speakup.org,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>
+Subject: [patch 1/3] speakup: Add synth parameter to io functions
+Message-ID: <20201130220719.168900798@ens-lyon.org>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        speakup@linux-speakup.org
+References: <20201130220626.854574234@ens-lyon.org>
 MIME-Version: 1.0
-References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-20-lee.jones@linaro.org>
-In-Reply-To: <20201124193824.1118741-20-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 17:26:17 -0500
-Message-ID: <CADnq5_MY9MF2V9VG15F=cMtrn_aH1hcLGL5QidPz6b04gD-uEw@mail.gmail.com>
-Subject: Re: [PATCH 19/40] drm/amd/amdgpu/sdma_v3_0: Fix incorrect param
- doc-rot issue
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline; filename=io_synth
+User-Agent: quilt/0.65
+Organization: I am not organized
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 2:45 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c:1651: warning: Function parameter=
- or member 'ib' not described in 'sdma_v3_0_emit_copy_buffer'
->  drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c:1651: warning: Excess function pa=
-rameter 'ring' description in 'sdma_v3_0_emit_copy_buffer'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+This merely adds the missing synth parameter to all io functions.
 
-Applied.  Thanks!
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-Alex
+Index: linux-5.9/drivers/accessibility/speakup/spk_ttyio.c
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/spk_ttyio.c
++++ linux-5.9/drivers/accessibility/speakup/spk_ttyio.c
+@@ -114,11 +114,11 @@ static struct tty_ldisc_ops spk_ttyio_ld
+ 
+ static int spk_ttyio_out(struct spk_synth *in_synth, const char ch);
+ static int spk_ttyio_out_unicode(struct spk_synth *in_synth, u16 ch);
+-static void spk_ttyio_send_xchar(char ch);
+-static void spk_ttyio_tiocmset(unsigned int set, unsigned int clear);
+-static unsigned char spk_ttyio_in(void);
+-static unsigned char spk_ttyio_in_nowait(void);
+-static void spk_ttyio_flush_buffer(void);
++static void spk_ttyio_send_xchar(struct spk_synth *in_synth, char ch);
++static void spk_ttyio_tiocmset(struct spk_synth *in_synth, unsigned int set, unsigned int clear);
++static unsigned char spk_ttyio_in(struct spk_synth *in_synth);
++static unsigned char spk_ttyio_in_nowait(struct spk_synth *in_synth);
++static void spk_ttyio_flush_buffer(struct spk_synth *in_synth);
+ static int spk_ttyio_wait_for_xmitr(struct spk_synth *in_synth);
+ 
+ struct spk_io_ops spk_ttyio_ops = {
+@@ -281,7 +281,7 @@ static int check_tty(struct tty_struct *
+ 	return 0;
+ }
+ 
+-static void spk_ttyio_send_xchar(char ch)
++static void spk_ttyio_send_xchar(struct spk_synth *in_synth, char ch)
+ {
+ 	mutex_lock(&speakup_tty_mutex);
+ 	if (check_tty(speakup_tty)) {
+@@ -294,7 +294,7 @@ static void spk_ttyio_send_xchar(char ch
+ 	mutex_unlock(&speakup_tty_mutex);
+ }
+ 
+-static void spk_ttyio_tiocmset(unsigned int set, unsigned int clear)
++static void spk_ttyio_tiocmset(struct spk_synth *in_synth, unsigned int set, unsigned int clear)
+ {
+ 	mutex_lock(&speakup_tty_mutex);
+ 	if (check_tty(speakup_tty)) {
+@@ -312,7 +312,7 @@ static int spk_ttyio_wait_for_xmitr(stru
+ 	return 1;
+ }
+ 
+-static unsigned char ttyio_in(int timeout)
++static unsigned char ttyio_in(struct spk_synth *in_synth, int timeout)
+ {
+ 	struct spk_ldisc_data *ldisc_data = speakup_tty->disc_data;
+ 	char rv;
+@@ -337,19 +337,19 @@ static unsigned char ttyio_in(int timeou
+ 	return rv;
+ }
+ 
+-static unsigned char spk_ttyio_in(void)
++static unsigned char spk_ttyio_in(struct spk_synth *in_synth)
+ {
+ 	return ttyio_in(SPK_SYNTH_TIMEOUT);
+ }
+ 
+-static unsigned char spk_ttyio_in_nowait(void)
++static unsigned char spk_ttyio_in_nowait(struct spk_synth *in_synth)
+ {
+ 	u8 rv = ttyio_in(0);
+ 
+ 	return (rv == 0xff) ? 0 : rv;
+ }
+ 
+-static void spk_ttyio_flush_buffer(void)
++static void spk_ttyio_flush_buffer(struct spk_synth *in_synth)
+ {
+ 	mutex_lock(&speakup_tty_mutex);
+ 	if (check_tty(speakup_tty)) {
+@@ -377,7 +377,7 @@ int spk_ttyio_synth_probe(struct spk_syn
+ }
+ EXPORT_SYMBOL_GPL(spk_ttyio_synth_probe);
+ 
+-void spk_ttyio_release(void)
++void spk_ttyio_release(struct spk_synth *in_synth)
+ {
+ 	if (!speakup_tty)
+ 		return;
+@@ -393,15 +393,15 @@ void spk_ttyio_release(void)
+ }
+ EXPORT_SYMBOL_GPL(spk_ttyio_release);
+ 
+-const char *spk_ttyio_synth_immediate(struct spk_synth *synth, const char *buff)
++const char *spk_ttyio_synth_immediate(struct spk_synth *in_synth, const char *buff)
+ {
+ 	u_char ch;
+ 
+ 	while ((ch = *buff)) {
+ 		if (ch == '\n')
+-			ch = synth->procspeech;
++			ch = in_synth->procspeech;
+ 		if (tty_write_room(speakup_tty) < 1 ||
+-		    !synth->io_ops->synth_out(synth, ch))
++		    !in_synth->io_ops->synth_out(in_synth, ch))
+ 			return buff;
+ 		buff++;
+ 	}
+Index: linux-5.9/drivers/accessibility/speakup/serialio.c
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/serialio.c
++++ linux-5.9/drivers/accessibility/speakup/serialio.c
+@@ -27,11 +27,11 @@ static const struct old_serial_port *ser
+ static int timeouts;
+ 
+ static int spk_serial_out(struct spk_synth *in_synth, const char ch);
+-static void spk_serial_send_xchar(char ch);
+-static void spk_serial_tiocmset(unsigned int set, unsigned int clear);
+-static unsigned char spk_serial_in(void);
+-static unsigned char spk_serial_in_nowait(void);
+-static void spk_serial_flush_buffer(void);
++static void spk_serial_send_xchar(struct spk_synth *in_synth, char ch);
++static void spk_serial_tiocmset(struct spk_synth *in_synth, unsigned int set, unsigned int clear);
++static unsigned char spk_serial_in(struct spk_synth *in_synth);
++static unsigned char spk_serial_in_nowait(struct spk_synth *in_synth);
++static void spk_serial_flush_buffer(struct spk_synth *in_synth);
+ static int spk_serial_wait_for_xmitr(struct spk_synth *in_synth);
+ 
+ struct spk_io_ops spk_serial_io_ops = {
+@@ -150,7 +150,7 @@ static void start_serial_interrupt(int i
+ 	outb(1, speakup_info.port_tts + UART_FCR);	/* Turn FIFO On */
+ }
+ 
+-static void spk_serial_send_xchar(char ch)
++static void spk_serial_send_xchar(struct spk_synth *synth, char ch)
+ {
+ 	int timeout = SPK_XMITR_TIMEOUT;
+ 
+@@ -162,7 +162,7 @@ static void spk_serial_send_xchar(char c
+ 	outb(ch, speakup_info.port_tts);
+ }
+ 
+-static void spk_serial_tiocmset(unsigned int set, unsigned int clear)
++static void spk_serial_tiocmset(struct spk_synth *in_synth, unsigned int set, unsigned int clear)
+ {
+ 	int old = inb(speakup_info.port_tts + UART_MCR);
+ 
+@@ -275,7 +275,7 @@ static unsigned char spk_serial_in_nowai
+ 	return inb_p(speakup_info.port_tts + UART_RX);
+ }
+ 
+-static void spk_serial_flush_buffer(void)
++static void spk_serial_flush_buffer(struct spk_synth *in_synth)
+ {
+ 	/* TODO: flush the UART 16550 buffer */
+ }
+Index: linux-5.9/drivers/accessibility/speakup/speakup_apollo.c
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/speakup_apollo.c
++++ linux-5.9/drivers/accessibility/speakup/speakup_apollo.c
+@@ -163,8 +163,8 @@ static void do_catch_up(struct spk_synth
+ 		full_time_val = full_time->u.n.value;
+ 		spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+ 		if (!synth->io_ops->synth_out(synth, ch)) {
+-			synth->io_ops->tiocmset(0, UART_MCR_RTS);
+-			synth->io_ops->tiocmset(UART_MCR_RTS, 0);
++			synth->io_ops->tiocmset(synth, 0, UART_MCR_RTS);
++			synth->io_ops->tiocmset(synth, UART_MCR_RTS, 0);
+ 			schedule_timeout(msecs_to_jiffies(full_time_val));
+ 			continue;
+ 		}
+Index: linux-5.9/drivers/accessibility/speakup/speakup_audptr.c
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/speakup_audptr.c
++++ linux-5.9/drivers/accessibility/speakup/speakup_audptr.c
+@@ -119,8 +119,8 @@ static struct spk_synth synth_audptr = {
+ 
+ static void synth_flush(struct spk_synth *synth)
+ {
+-	synth->io_ops->flush_buffer();
+-	synth->io_ops->send_xchar(SYNTH_CLEAR);
++	synth->io_ops->flush_buffer(synth);
++	synth->io_ops->send_xchar(synth, SYNTH_CLEAR);
+ 	synth->io_ops->synth_out(synth, PROCSPEECH);
+ }
+ 
+@@ -130,11 +130,11 @@ static void synth_version(struct spk_syn
+ 	char synth_id[40] = "";
+ 
+ 	synth->synth_immediate(synth, "\x05[Q]");
+-	synth_id[test] = synth->io_ops->synth_in();
++	synth_id[test] = synth->io_ops->synth_in(synth);
+ 	if (synth_id[test] == 'A') {
+ 		do {
+ 			/* read version string from synth */
+-			synth_id[++test] = synth->io_ops->synth_in();
++			synth_id[++test] = synth->io_ops->synth_in(synth);
+ 		} while (synth_id[test] != '\n' && test < 32);
+ 		synth_id[++test] = 0x00;
+ 	}
+Index: linux-5.9/drivers/accessibility/speakup/speakup_spkout.c
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/speakup_spkout.c
++++ linux-5.9/drivers/accessibility/speakup/speakup_spkout.c
+@@ -117,8 +117,8 @@ static struct spk_synth synth_spkout = {
+ 
+ static void synth_flush(struct spk_synth *synth)
+ {
+-	synth->io_ops->flush_buffer();
+-	synth->io_ops->send_xchar(SYNTH_CLEAR);
++	synth->io_ops->flush_buffer(synth);
++	synth->io_ops->send_xchar(synth, SYNTH_CLEAR);
+ }
+ 
+ module_param_named(ser, synth_spkout.ser, int, 0444);
+Index: linux-5.9/drivers/accessibility/speakup/spk_types.h
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/spk_types.h
++++ linux-5.9/drivers/accessibility/speakup/spk_types.h
+@@ -155,11 +155,11 @@ struct spk_synth;
+ struct spk_io_ops {
+ 	int (*synth_out)(struct spk_synth *synth, const char ch);
+ 	int (*synth_out_unicode)(struct spk_synth *synth, u16 ch);
+-	void (*send_xchar)(char ch);
+-	void (*tiocmset)(unsigned int set, unsigned int clear);
+-	unsigned char (*synth_in)(void);
+-	unsigned char (*synth_in_nowait)(void);
+-	void (*flush_buffer)(void);
++	void (*send_xchar)(struct spk_synth *synth, char ch);
++	void (*tiocmset)(struct spk_synth *synth, unsigned int set, unsigned int clear);
++	unsigned char (*synth_in)(struct spk_synth *synth);
++	unsigned char (*synth_in_nowait)(struct spk_synth *synth);
++	void (*flush_buffer)(struct spk_synth *synth);
+ 	int (*wait_for_xmitr)(struct spk_synth *synth);
+ };
+ 
+@@ -186,7 +186,7 @@ struct spk_synth {
+ 	int *default_vol;
+ 	struct spk_io_ops *io_ops;
+ 	int (*probe)(struct spk_synth *synth);
+-	void (*release)(void);
++	void (*release)(struct spk_synth *synth);
+ 	const char *(*synth_immediate)(struct spk_synth *synth,
+ 				       const char *buff);
+ 	void (*catch_up)(struct spk_synth *synth);
+Index: linux-5.9/drivers/accessibility/speakup/speakup_decext.c
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/speakup_decext.c
++++ linux-5.9/drivers/accessibility/speakup/speakup_decext.c
+@@ -218,7 +218,7 @@ static void do_catch_up(struct spk_synth
+ static void synth_flush(struct spk_synth *synth)
+ {
+ 	in_escape = 0;
+-	synth->io_ops->flush_buffer();
++	synth->io_ops->flush_buffer(synth);
+ 	synth->synth_immediate(synth, "\033P;10z\033\\");
+ }
+ 
+Index: linux-5.9/drivers/accessibility/speakup/speakup_dectlk.c
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/speakup_dectlk.c
++++ linux-5.9/drivers/accessibility/speakup/speakup_dectlk.c
+@@ -289,7 +289,7 @@ static void synth_flush(struct spk_synth
+ 		synth->io_ops->synth_out(synth, ']');
+ 	in_escape = 0;
+ 	is_flushing = 1;
+-	synth->io_ops->flush_buffer();
++	synth->io_ops->flush_buffer(synth);
+ 	synth->io_ops->synth_out(synth, SYNTH_CLEAR);
+ }
+ 
+Index: linux-5.9/drivers/accessibility/speakup/speakup_dtlk.c
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/speakup_dtlk.c
++++ linux-5.9/drivers/accessibility/speakup/speakup_dtlk.c
+@@ -24,7 +24,7 @@
+ #define PROCSPEECH 0x00
+ 
+ static int synth_probe(struct spk_synth *synth);
+-static void dtlk_release(void);
++static void dtlk_release(struct spk_synth *synth);
+ static const char *synth_immediate(struct spk_synth *synth, const char *buf);
+ static void do_catch_up(struct spk_synth *synth);
+ static void synth_flush(struct spk_synth *synth);
+@@ -365,7 +365,7 @@ static int synth_probe(struct spk_synth
+ 	return 0;
+ }
+ 
+-static void dtlk_release(void)
++static void dtlk_release(struct spk_synth *synth)
+ {
+ 	spk_stop_serial_interrupt();
+ 	if (speakup_info.port_tts)
+Index: linux-5.9/drivers/accessibility/speakup/speakup_ltlk.c
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/speakup_ltlk.c
++++ linux-5.9/drivers/accessibility/speakup/speakup_ltlk.c
+@@ -132,7 +132,7 @@ static void synth_interrogate(struct spk
+ 
+ 	synth->synth_immediate(synth, "\x18\x01?");
+ 	for (i = 0; i < 50; i++) {
+-		buf[i] = synth->io_ops->synth_in();
++		buf[i] = synth->io_ops->synth_in(synth);
+ 		if (i > 2 && buf[i] == 0x7f)
+ 			break;
+ 	}
+Index: linux-5.9/drivers/accessibility/speakup/synth.c
+===================================================================
+--- linux-5.9.orig/drivers/accessibility/speakup/synth.c
++++ linux-5.9/drivers/accessibility/speakup/synth.c
+@@ -137,14 +137,14 @@ EXPORT_SYMBOL_GPL(spk_do_catch_up_unicod
+ 
+ void spk_synth_flush(struct spk_synth *synth)
+ {
+-	synth->io_ops->flush_buffer();
++	synth->io_ops->flush_buffer(synth);
+ 	synth->io_ops->synth_out(synth, synth->clear);
+ }
+ EXPORT_SYMBOL_GPL(spk_synth_flush);
+ 
+ unsigned char spk_synth_get_index(struct spk_synth *synth)
+ {
+-	return synth->io_ops->synth_in_nowait();
++	return synth->io_ops->synth_in_nowait(synth);
+ }
+ EXPORT_SYMBOL_GPL(spk_synth_get_index);
+ 
+@@ -440,7 +440,7 @@ void synth_release(void)
+ 		sysfs_remove_group(speakup_kobj, &synth->attributes);
+ 	for (var = synth->vars; var->var_id != MAXVARS; var++)
+ 		speakup_unregister_var(var->var_id);
+-	synth->release();
++	synth->release(synth);
+ 	synth = NULL;
+ }
+ 
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c b/drivers/gpu/drm/amd=
-/amdgpu/sdma_v3_0.c
-> index 43410a7bccc25..8ca7fba9c035f 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
-> @@ -1633,7 +1633,7 @@ static void sdma_v3_0_set_irq_funcs(struct amdgpu_d=
-evice *adev)
->  /**
->   * sdma_v3_0_emit_copy_buffer - copy buffer using the sDMA engine
->   *
-> - * @ring: amdgpu_ring structure holding ring information
-> + * @ib: indirect buffer to copy to
->   * @src_offset: src GPU address
->   * @dst_offset: dst GPU address
->   * @byte_count: number of bytes to xfer
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
