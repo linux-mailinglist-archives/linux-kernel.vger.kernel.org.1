@@ -2,254 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC392C8734
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4F92C8737
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbgK3OzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:55:24 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2178 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726514AbgK3OzY (ORCPT
+        id S1727813AbgK3Ozj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:55:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726026AbgK3Ozi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:55:24 -0500
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cl7VD4LYpz67KcS;
-        Mon, 30 Nov 2020 22:51:48 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 30 Nov 2020 15:54:40 +0100
-Received: from [10.47.3.199] (10.47.3.199) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 30 Nov
- 2020 14:54:38 +0000
-Subject: Re: [PATCH V1] block: Fix use-after-free while iterating over
- requests
-To:     Hannes Reinecke <hare@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Pradeep P V K <ppvk@codeaurora.org>, <axboe@kernel.dk>,
-        <linux-block@vger.kernel.org>
-CC:     <stummala@codeaurora.org>, <linux-kernel@vger.kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>
-References: <1606402925-24420-1-git-send-email-ppvk@codeaurora.org>
- <c94fcada-7f6d-a1e3-4c88-d225af1a676e@acm.org>
- <693ea723-aa9e-1166-8a19-a7787f724969@huawei.com>
- <0c925db8-e481-5f21-b0fe-f691142b0437@suse.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <de707ecc-b34c-93d4-522e-79632eaa9d8a@huawei.com>
-Date:   Mon, 30 Nov 2020 14:54:13 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Mon, 30 Nov 2020 09:55:38 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27D0C0613CF;
+        Mon, 30 Nov 2020 06:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=hMBlS3B+/eehM23/OZy1pKBYA5RK8NwojMiRZ1UI/gQ=; b=E3TskXCiYizso8F+PQmfTp124
+        nmRqpKtaB7D3eNgaSb55H0YiRJPB6KXl2F9K1dLedYsGrzyYxs2fpHFlQ8nd/BoXLM+wiFZBg7sR9
+        CZ0B8IGAVCobXgQr/JSrgB5fN6kmueAqhugMvoIi6L7+yyELOZNlzROs9hGhSIAjQQI6BIHErYzDp
+        JAqershTPCbtZ9UaaPdrgMc3/B00yPaKoWiJTL65Bq9Veq3LbmKIHKu0z2JG2lSGQ7Zz4KBl5PsYB
+        G5AQcLGzG/8I0BtOYOPE7K0PNDLkCMM/Gl/CJG1fTTKg649H0hQUJlSwiIWIvcUSMIg+HG1ScqEdS
+        ipMJVFqww==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38034)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kjkZY-0006wo-2O; Mon, 30 Nov 2020 14:54:36 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kjkZX-00056G-Q6; Mon, 30 Nov 2020 14:54:35 +0000
+Date:   Mon, 30 Nov 2020 14:54:35 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
+Message-ID: <20201130145435.GY1551@shell.armlinux.org.uk>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-3-steen.hegelund@microchip.com>
+ <20201128190616.GF2191767@lunn.ch>
+ <20201128222828.GQ1551@shell.armlinux.org.uk>
+ <20201129105245.GG1605@shell.armlinux.org.uk>
+ <20201129112814.GH1605@shell.armlinux.org.uk>
+ <20201130143908.yodoocifsek55bb7@mchp-dev-shegelun>
 MIME-Version: 1.0
-In-Reply-To: <0c925db8-e481-5f21-b0fe-f691142b0437@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.3.199]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130143908.yodoocifsek55bb7@mchp-dev-shegelun>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/2020 07:04, Hannes Reinecke wrote:
-> On 11/26/20 5:49 PM, John Garry wrote:
->> On 26/11/2020 16:27, Bart Van Assche wrote:
->>> On 11/26/20 7:02 AM, Pradeep P V K wrote:
->>>> Observes below crash while accessing (use-after-free) request queue
->>>> member of struct request.
->>>>
->>>> 191.784789:   <2> Unable to handle kernel paging request at virtual
->>>> address ffffff81429a4440
->>>> ...
->>>> 191.786174:   <2> CPU: 3 PID: 213 Comm: kworker/3:1H Tainted: G S
->>>> O      5.4.61-qgki-debug-ge45de39 #1
->>>> ...
->>>> 191.786226:   <2> Workqueue: kblockd blk_mq_timeout_work
->>>> 191.786242:   <2> pstate: 20c00005 (nzCv daif +PAN +UAO)
->>>> 191.786261:   <2> pc : bt_for_each+0x114/0x1a4
->>>> 191.786274:   <2> lr : bt_for_each+0xe0/0x1a4
->>>> ...
->>>> 191.786494:   <2> Call trace:
->>>> 191.786507:   <2>  bt_for_each+0x114/0x1a4
->>>> 191.786519:   <2>  blk_mq_queue_tag_busy_iter+0x60/0xd4
->>>> 191.786532:   <2>  blk_mq_timeout_work+0x54/0xe8
->>>> 191.786549:   <2>  process_one_work+0x2cc/0x568
->>>> 191.786562:   <2>  worker_thread+0x28c/0x518
->>>> 191.786577:   <2>  kthread+0x160/0x170
->>>> 191.786594:   <2>  ret_from_fork+0x10/0x18
->>>> 191.786615:   <2> Code: 0b080148 f9404929 f8685921 b4fffe01 (f9400028)
->>>> 191.786630:   <2> ---[ end trace 0f1f51d79ab3f955 ]---
->>>> 191.786643:   <2> Kernel panic - not syncing: Fatal exception
->>>>
->>>> Fix this by updating the freed request with NULL.
->>>> This could avoid accessing the already free request from other
->>>> contexts while iterating over the requests.
->>>>
->>>> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
->>>> ---
->>>>   block/blk-mq.c | 1 +
->>>>   block/blk-mq.h | 1 +
->>>>   2 files changed, 2 insertions(+)
->>>>
->>>> diff --git a/block/blk-mq.c b/block/blk-mq.c
->>>> index 55bcee5..9996cb1 100644
->>>> --- a/block/blk-mq.c
->>>> +++ b/block/blk-mq.c
->>>> @@ -492,6 +492,7 @@ static void __blk_mq_free_request(struct request 
->>>> *rq)
->>>>       blk_crypto_free_request(rq);
->>>>       blk_pm_mark_last_busy(rq);
->>>> +    hctx->tags->rqs[rq->tag] = NULL;
->>>>       rq->mq_hctx = NULL;
->>>>       if (rq->tag != BLK_MQ_NO_TAG)
->>>>           blk_mq_put_tag(hctx->tags, ctx, rq->tag);
->>>> diff --git a/block/blk-mq.h b/block/blk-mq.h
->>>> index a52703c..8747bf1 100644
->>>> --- a/block/blk-mq.h
->>>> +++ b/block/blk-mq.h
->>>> @@ -224,6 +224,7 @@ static inline int 
->>>> __blk_mq_active_requests(struct blk_mq_hw_ctx *hctx)
->>>>   static inline void __blk_mq_put_driver_tag(struct blk_mq_hw_ctx 
->>>> *hctx,
->>>>                          struct request *rq)
->>>>   {
->>>> +    hctx->tags->rqs[rq->tag] = NULL;
->>>>       blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
->>>>       rq->tag = BLK_MQ_NO_TAG;
->>>
->>> Is this perhaps a block driver bug instead of a block layer core bug? If
->>> this would be a block layer core bug, it would have been reported 
->>> before.
->>
->> Isn't this the same issue which as been reported many times:
->>
->> https://lore.kernel.org/linux-block/20200820180335.3109216-1-ming.lei@redhat.com/ 
->>
->>
->> https://lore.kernel.org/linux-block/8376443a-ec1b-0cef-8244-ed584b96fa96@huawei.com/ 
->>
->>
->> But I never saw a crash, just kasan report.
->>
-> And if that above were a concern, I would have thought one would need to 
-> use a WRITE_ONCE() here; otherwise we might have a race condition where 
-> other CPUs still see the old value, no?
- From further looking at the history here, Kashyap tried the same 
-approach and preference was to not add anything to the fast path:
+On Mon, Nov 30, 2020 at 03:39:08PM +0100, Steen Hegelund wrote:
+> On 29.11.2020 11:28, Russell King - ARM Linux admin wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On Sun, Nov 29, 2020 at 10:52:45AM +0000, Russell King - ARM Linux admin wrote:
+> > > On Sat, Nov 28, 2020 at 10:28:28PM +0000, Russell King - ARM Linux admin wrote:
+> > > > On Sat, Nov 28, 2020 at 08:06:16PM +0100, Andrew Lunn wrote:
+> > > > > > +static void sparx5_phylink_mac_config(struct phylink_config *config,
+> > > > > > +                                     unsigned int mode,
+> > > > > > +                                     const struct phylink_link_state *state)
+> > > > > > +{
+> > > > > > +       struct sparx5_port *port = netdev_priv(to_net_dev(config->dev));
+> > > > > > +       struct sparx5_port_config conf;
+> > > > > > +       int err = 0;
+> > > > > > +
+> > > > > > +       conf = port->conf;
+> > > > > > +       conf.autoneg = state->an_enabled;
+> > > > > > +       conf.pause = state->pause;
+> > > > > > +       conf.duplex = state->duplex;
+> > > > > > +       conf.power_down = false;
+> > > > > > +       conf.portmode = state->interface;
+> > > > > > +
+> > > > > > +       if (state->speed == SPEED_UNKNOWN) {
+> > > > > > +               /* When a SFP is plugged in we use capabilities to
+> > > > > > +                * default to the highest supported speed
+> > > > > > +                */
+> > > > >
+> > > > > This looks suspicious.
+> > > >
+> > > > Yes, it looks highly suspicious. The fact that
+> > > > sparx5_phylink_mac_link_up() is empty, and sparx5_phylink_mac_config()
+> > > > does all the work suggests that this was developed before the phylink
+> > > > re-organisation, and this code hasn't been updated for it.
+> > > >
+> > > > Any new code for the kernel really ought to be updated for the new
+> > > > phylink methodology before it is accepted.
+> > > >
+> > > > Looking at sparx5_port_config(), it also seems to use
+> > > > PHY_INTERFACE_MODE_1000BASEX for both 1000BASE-X and 2500BASE-X. All
+> > > > very well for the driver to do that internally, but it's confusing
+> > > > when it comes to reviewing this stuff, especially when people outside
+> > > > of the driver (such as myself) reviewing it need to understand what's
+> > > > going on with the configuration.
+> > > 
+> > > There are other issues too.
+> > > 
+> > > Looking at sparx5_get_1000basex_status(), we have:
+> > > 
+> > >  +       status->link = DEV2G5_PCS1G_LINK_STATUS_LINK_STATUS_GET(value) |
+> > >  +                      DEV2G5_PCS1G_LINK_STATUS_SYNC_STATUS_GET(value);
+> > > 
+> > > Why is the link status the logical OR of these?
+> > > 
+> > >  +                       if ((lp_abil >> 8) & 1) /* symmetric pause */
+> > >  +                               status->pause = MLO_PAUSE_RX | MLO_PAUSE_TX;
+> > >  +                       if (lp_abil & (1 << 7)) /* asymmetric pause */
+> > >  +                               status->pause |= MLO_PAUSE_RX;
+> > > 
+> > > is actually wrong, and I see I need to improve the documentation for
+> > > mac_pcs_get_state(). The intention in the documentation was concerning
+> > > hardware that indicated the _resolved_ status of pause modes. It was
+> > > not intended that drivers resolve the pause modes themselves.
+> > > 
+> > > Even so, the above is still wrong; it takes no account of what is being
+> > > advertised at the local end. If one looks at the implementation in
+> > > phylink_decode_c37_word(), one will notice there is code to deal with
+> > > this.
+> > > 
+> > > I think we ought to make phylink_decode_c37_word() and
+> > > phylink_decode_sgmii_word() public functions, and then this driver can
+> > > use these helpers to decode the link partner advertisement to the
+> > > phylink state.
+> > > 
+> > > Does the driver need to provide an ethtool .get_link function? That
+> > > seems to bypass phylink. Why can't ethtool_op_get_link() be used?
+> > > 
+> > > I think if ethtool_op_get_link() is used, we then have just one caller
+> > > for sparx5_get_port_status(), which means "struct sparx5_port_status"
+> > > can be eliminated and the code cleaned up to use the phylink decoding
+> > > helpers.
+> > 
+> > (Sorry, I keep spotting bits in the code - it's really not an easy
+> > chunk of code to review.)
+> > 
+> > I'm also not sure that this is really correct:
+> > 
+> > +       status->serdes_link = !phy_validate(port->serdes, PHY_MODE_ETHERNET,
+> > +                                           port->conf.portmode, NULL);
+> > 
+> > The documentation for phy_validate() says:
+> > 
+> > * Used to check that the current set of parameters can be handled by
+> > * the phy. Implementations are free to tune the parameters passed as
+> > * arguments if needed by some implementation detail or
+> > * constraints. It will not change any actual configuration of the
+> > * PHY, so calling it as many times as deemed fit will have no side
+> > * effect.
+> > 
+> > and clearly, passing NULL for opts, gives the function no opportunity
+> > to do what it's intended, so phy_validate() is being used for some
+> > other purpose than that which the drivers/phy subsystem intends it to
+> > be used for.
+> 
+> Hi Russell,
+> 
+> Yes this is a bit of an overload of the phy_validate().
+> 
+> The Serdes driver validates the portmode, and if OK, it returns the
+> current state of the link (bool), so that the client (SwitchDev) can know if the
+> link parameters so far results in a operational link. It does not change
+> any configuration.
 
-https://lore.kernel.org/linux-block/04e2f9e8-79fa-f1cb-ab23-4a15bf3f64cc@kernel.dk/
+This seems very strange. What is the point of asking for a portmode
+which could be different from the current mode, and returning the
+link state for the current mode?
 
-I had another solution for this which clears any references when we free 
-the sched tags, but never posted as it looked a bit crazy and I was 
-busy, below.
+I don't think that there is an alternative interface - maybe it
+would be a better idea to propose a new interface to the drivers/phy
+maintainers, rather than bodging an existing interface for your
+needs?
 
----->8------
+Thanks.
 
-
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index a19cdf159b75..240804617683 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -608,7 +608,7 @@ static void blk_mq_sched_free_tags(struct 
-blk_mq_tag_set *set,
-  				   unsigned int hctx_idx)
-  {
-  	if (hctx->sched_tags) {
--		blk_mq_free_rqs(set, hctx->sched_tags, hctx_idx);
-+		blk_mq_free_rqs(set, hctx->sched_tags, hctx_idx, NULL);
-  		blk_mq_free_rq_map(hctx->sched_tags);
-  		hctx->sched_tags = NULL;
-  	}
-@@ -711,10 +711,9 @@ void blk_mq_sched_free_requests(struct 
-request_queue *q)
-  {
-  	struct blk_mq_hw_ctx *hctx;
-  	int i;
-
-  	queue_for_each_hw_ctx(q, hctx, i) {
--		if (hctx->sched_tags)
--			blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i);
-+			blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i, hctx->tags);
-  	}
-  }
-
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 32d82e23b095..9622cef0c38d 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -515,7 +515,7 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
-  			return -ENOMEM;
-  		}
-
--		blk_mq_free_rqs(set, *tagsptr, hctx->queue_num);
-+		blk_mq_free_rqs(set, *tagsptr, hctx->queue_num, NULL);
-  		blk_mq_free_rq_map(*tagsptr);
-  		*tagsptr = new;
-  	} else {
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 0015a1892153..6ff815ceae34 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2256,12 +2256,12 @@ blk_qc_t blk_mq_submit_bio(struct bio *bio)
-  EXPORT_SYMBOL_GPL(blk_mq_submit_bio); /* only for request based dm */
-
-  void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
--		     unsigned int hctx_idx)
-+		     unsigned int hctx_idx, struct blk_mq_tags *references)
-  {
-  	struct page *page;
-
-  	if (tags->rqs && set->ops->exit_request) {
--		int i;
-+		int i, j;
-
-  		for (i = 0; i < tags->nr_tags; i++) {
-  			struct request *rq = tags->static_rqs[i];
-@@ -2269,6 +2269,12 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, 
-struct blk_mq_tags *tags,
-  			if (!rq)
-  				continue;
-  			set->ops->exit_request(set, rq, hctx_idx);
-+			for (j = 0; references && j < references->nr_tags; j++) {
-+				struct request *old = cmpxchg(&references->rqs[j], rq, 0);
-+			}
-  			tags->static_rqs[i] = NULL;
-  		}
-  	}
-@@ -2425,7 +2431,7 @@ int blk_mq_alloc_rqs(struct blk_mq_tag_set *set, 
-struct blk_mq_tags *tags,
-  	return 0;
-
-  fail:
--	blk_mq_free_rqs(set, tags, hctx_idx);
-+	blk_mq_free_rqs(set, tags, hctx_idx, NULL);
-  	return -ENOMEM;
-  }
-
-@@ -2755,7 +2761,7 @@ static void blk_mq_free_map_and_requests(struct 
-blk_mq_tag_set *set,
-  					 unsigned int hctx_idx)
-  {
-  	if (set->tags && set->tags[hctx_idx]) {
--		blk_mq_free_rqs(set, set->tags[hctx_idx], hctx_idx);
-+		blk_mq_free_rqs(set, set->tags[hctx_idx], hctx_idx, NULL);
-  		blk_mq_free_rq_map(set->tags[hctx_idx]);
-  		set->tags[hctx_idx] = NULL;
-  	}
-diff --git a/block/blk-mq.h b/block/blk-mq.h
-index 863a2f3346d4..bee8c5de600b 100644
---- a/block/blk-mq.h
-+++ b/block/blk-mq.h
-@@ -52,7 +52,7 @@ struct request *blk_mq_dequeue_from_ctx(struct 
-blk_mq_hw_ctx *hctx,
-   * Internal helpers for allocating/freeing the request map
-   */
-  void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
--		     unsigned int hctx_idx);
-+		     unsigned int hctx_idx, struct blk_mq_tags *references);
-  void blk_mq_free_rq_map(struct blk_mq_tags *tags);
-  struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
-  					unsigned int hctx_idx,
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
