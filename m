@@ -2,156 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506542C82C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 596402C82C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387432AbgK3LCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:02:49 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:48637 "EHLO m42-4.mailgun.net"
+        id S1728898AbgK3LCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:02:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727534AbgK3LCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:02:48 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606734147; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=OLXWNZc5h5uKDqDgsopyTd97mNlNgbDqil9da9/CCf8=; b=E8IJRwUEzDNBs9k4rTnGhoUtRfAQhjynaiIi+148M/nSDznizd0q/ueeCv9Ptxl2Sjqd3exU
- 7VkI/P0hLqXJmhngbj2T24PCDtKIxtTi7nfxlbT9eBnORct1P1V6u5WdqPaJwiSMyJ/m91kP
- BlepNp5RX9UeYT/lt9QkzEg42oA=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
- 5fc4d12a22377520ee814211 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Nov 2020 11:02:02
- GMT
-Sender: kathirav=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1D495C43466; Mon, 30 Nov 2020 11:02:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1726345AbgK3LCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 06:02:44 -0500
+Received: from gaia (unknown [95.146.230.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kathirav)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6D996C43460;
-        Mon, 30 Nov 2020 11:01:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6D996C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kathirav@codeaurora.org
-From:   Kathiravan T <kathirav@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kathirav@codeaurora.org,
-        Anusha Canchi Ramachandra Rao <anusharao@codeaurora.org>
-Subject: [PATCH V3 1/1] arm64: dts: ipq6018: Add the QPIC peripheral nodes
-Date:   Mon, 30 Nov 2020 16:31:45 +0530
-Message-Id: <1606734105-12414-2-git-send-email-kathirav@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606734105-12414-1-git-send-email-kathirav@codeaurora.org>
-References: <1606734105-12414-1-git-send-email-kathirav@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 730F02087C;
+        Mon, 30 Nov 2020 11:02:02 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 11:01:59 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>, linux-mm@kvack.org,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        steven.price@arm.com, gerald.schaefer@linux.ibm.com,
+        vgupta@synopsys.com, paul.walmsley@sifive.com
+Subject: Re: [PATCH 1/2] mm/debug_vm_pgtable/basic: Add validation for
+ dirtiness after write protect
+Message-ID: <20201130110159.GB3902@gaia>
+References: <1606453584-15399-1-git-send-email-anshuman.khandual@arm.com>
+ <1606453584-15399-2-git-send-email-anshuman.khandual@arm.com>
+ <a6f79aba-9f9f-326f-5d73-6e0175f554ab@csgroup.eu>
+ <20201127094421.GA25070@gaia>
+ <9d9e5c8b-08f6-9ed4-074c-3dafc8fa3717@arm.com>
+ <20201130093841.GA3902@gaia>
+ <171a4e71-b1ab-3ff5-7088-54781d960b2a@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <171a4e71-b1ab-3ff5-7088-54781d960b2a@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the QPIC BAM and QPIC NAND controller support and
-enable the same in board DTS file.
+On Mon, Nov 30, 2020 at 04:28:20PM +0530, Anshuman Khandual wrote:
+> On 11/30/20 3:08 PM, Catalin Marinas wrote:
+> > On Mon, Nov 30, 2020 at 09:55:00AM +0530, Anshuman Khandual wrote:
+> >> On 11/27/20 3:14 PM, Catalin Marinas wrote:
+> >>> On Fri, Nov 27, 2020 at 09:22:24AM +0100, Christophe Leroy wrote:
+> >>>> Le 27/11/2020 à 06:06, Anshuman Khandual a écrit :
+> >>>>> This adds validation tests for dirtiness after write protect conversion for
+> >>>>> each page table level. This is important for platforms such as arm64 that
+> >>>>> removes the hardware dirty bit while making it an write protected one. This
+> >>>>> also fixes pxx_wrprotect() related typos in the documentation file.
+> >>>>
+> >>>>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> >>>>> index c05d9dcf7891..a5be11210597 100644
+> >>>>> --- a/mm/debug_vm_pgtable.c
+> >>>>> +++ b/mm/debug_vm_pgtable.c
+> >>>>> @@ -70,6 +70,7 @@ static void __init pte_basic_tests(unsigned long pfn, pgprot_t prot)
+> >>>>>   	WARN_ON(pte_young(pte_mkold(pte_mkyoung(pte))));
+> >>>>>   	WARN_ON(pte_dirty(pte_mkclean(pte_mkdirty(pte))));
+> >>>>>   	WARN_ON(pte_write(pte_wrprotect(pte_mkwrite(pte))));
+> >>>>> +	WARN_ON(pte_dirty(pte_wrprotect(pte)));
+> >>>>
+> >>>> Wondering what you are testing here exactly.
+> >>>>
+> >>>> Do you expect that if PTE has the dirty bit, it gets cleared by
+> >>>> pte_wrprotect() ?
+> >>>>
+> >>>> Powerpc doesn't do that, it only clears the RW bit but the dirty
+> >>>> bit remains if it is set, until you call pte_mkclean() explicitely.
+> >>>
+> >>> Arm64 has an unusual way of setting a hardware dirty "bit", it actually
+> >>> clears the PTE_RDONLY bit. The pte_wrprotect() sets the PTE_RDONLY bit
+> >>> back and we can lose the dirty information. Will found this and posted
+> >>> patches to fix the arm64 pte_wprotect() to set a software PTE_DIRTY if
+> >>> !PTE_RDONLY (we do this for ptep_set_wrprotect() already). My concern
+> >>> was that we may inadvertently make a fresh/clean pte dirty with such
+> >>> change, hence the suggestion for the test.
+> >>>
+> >>> That said, I think we also need a test in the other direction,
+> >>> pte_wrprotect() should preserve any dirty information:
+> >>>
+> >>> 	WARN_ON(!pte_dirty(pte_wrprotect(pte_mkdirty(pte))));
+> >>
+> >> This seems like a generic enough principle which all platforms should
+> >> adhere to. But the proposed test WARN_ON(pte_dirty(pte_wrprotect(pte)))
+> >> might fail on some platforms if the page table entry came in as a dirty
+> >> one and pte_wrprotect() is not expected to alter the dirty state.
+> > 
+> > Ah, so do we have architectures where entries in protection_map[] are
+> > already dirty? If those are valid, maybe the check should be:
+> 
+> Okay, I did not imply that actually. The current position for these new
+> tests in respective pxx_basic_tests() functions is right at the end and
+> hence the pxx might have already gone through some changes from the time
+> it was originally created with pfn_pxx(). The entry here is not starting
+> from the beginning. It is not expected as well, per design. So dirty bit
+> might or might not be there depending on all the previous test sequences
+> leading upto these new ones.
+> 
+> IIUC, Christophe mentioned the fact that on platforms like powerpc, dirty
+> bit just remains unchanged during pte_wprotect(). So the current test
+> WARN_ON(pte_dirty(pte_wrprotect(pte))) will not work on powerpc if the
+> previous tests leading upto that point has got the dirty bit set. This is
+> irrespective of how it was created with pfn_pte() from protection_map[]
+> originally at the beginning.
+[...]
+> To achieve this, we could move the test right at the beginning just after
+> the pxx gets created from protection_map[], with a comment explaining the
+> rationale. 
 
-Co-developed-by: Anusha Canchi Ramachandra Rao <anusharao@codeaurora.org>
-Signed-off-by: Anusha Canchi Ramachandra Rao <anusharao@codeaurora.org>
-Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts | 16 ++++++++
- arch/arm64/boot/dts/qcom/ipq6018.dtsi        | 41 ++++++++++++++++++++
- 2 files changed, 57 insertions(+)
+OK, this makes sense. Thanks for the clarification.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts b/arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts
-index e8eaa958c199..99cefe88f6f2 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts
-+++ b/arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts
-@@ -62,3 +62,19 @@ spi_0_pins: spi-0-pins {
- 		bias-pull-down;
- 	};
- };
-+
-+&qpic_bam {
-+	status = "okay";
-+};
-+
-+&qpic_nand {
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+		nand-bus-width = <8>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-index cdc1e3d60c58..5372ec12cdad 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-@@ -231,6 +231,17 @@ serial_3_pins: serial3-pinmux {
- 				drive-strength = <8>;
- 				bias-pull-down;
- 			};
-+
-+			qpic_pins: qpic-pins {
-+				pins = "gpio1", "gpio3", "gpio4",
-+					"gpio5", "gpio6", "gpio7",
-+					"gpio8", "gpio10", "gpio11",
-+					"gpio12", "gpio13", "gpio14",
-+					"gpio15", "gpio17";
-+				function = "qpic_pad";
-+				drive-strength = <8>;
-+				bias-disable;
-+			};
- 		};
- 
- 		gcc: gcc@1800000 {
-@@ -332,6 +343,36 @@ i2c_1: i2c@78b7000 { /* BLSP1 QUP2 */
- 			status = "disabled";
- 		};
- 
-+		qpic_bam: dma-controller@7984000 {
-+			compatible = "qcom,bam-v1.7.0";
-+			reg = <0x0 0x07984000 0x0 0x1a000>;
-+			interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&gcc GCC_QPIC_CLK>,
-+				 <&gcc GCC_QPIC_AHB_CLK>;
-+			clock-names = "iface_clk", "bam_clk";
-+			#dma-cells = <1>;
-+			qcom,ee = <0>;
-+			status = "disabled";
-+		};
-+
-+		qpic_nand: nand@79b0000 {
-+			compatible = "qcom,ipq6018-nand";
-+			reg = <0x0 0x079b0000 0x0 0x10000>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			clocks = <&gcc GCC_QPIC_CLK>,
-+				 <&gcc GCC_QPIC_AHB_CLK>;
-+			clock-names = "core", "aon";
-+
-+			dmas = <&qpic_bam 0>,
-+				<&qpic_bam 1>,
-+				<&qpic_bam 2>;
-+			dma-names = "tx", "rx", "cmd";
-+			pinctrl-0 = <&qpic_pins>;
-+			pinctrl-names = "default";
-+			status = "disabled";
-+		};
-+
- 		intc: interrupt-controller@b000000 {
- 			compatible = "qcom,msm-qgic2";
- 			interrupt-controller;
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-
+Catalin
