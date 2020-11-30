@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9FB2C89BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B71C2C89C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728910AbgK3QjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:39:24 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:40489 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728841AbgK3QjW (ORCPT
+        id S1728913AbgK3QkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:40:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727924AbgK3QkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:39:22 -0500
-Received: by mail-io1-f65.google.com with SMTP id r9so12408947ioo.7;
-        Mon, 30 Nov 2020 08:39:06 -0800 (PST)
+        Mon, 30 Nov 2020 11:40:13 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AE8C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:39:27 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id qw4so12909479ejb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:39:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6tD9ZVZ6gEgHyopRLPxX9gjuGEYfwDbo2GR5pg3Ufw4=;
+        b=glbcz3v23KpKTyAKnx1I60vsVXUyi8fdbsPAkgkSO82ICb8g57m1qTTu7ZzCVZ9Ihc
+         FH5rZ8Ht8MBFuLyHSylml3QywhK9XbmEWYDbOuDsdABb8RFkUldZ1HCYLrPNDdNlxyTp
+         DQYHeaUIJz/6bgu/RYhL7KePVkD+5V03rg+b3NxI3uOc4hXeJ80fHWG9QameyeLyAr5Q
+         qXmCwF85bIyrjijUS9NSSilY3kjYs8ViX4Q9fH9appyTrlusTidi4l8tmBTPvrt932qZ
+         8P27uJXoiWSFSIXKvkt4+prrOLmDRHI73pPWHz5bshntvLIQbbIQ3XZRAPzCk3a61Cs4
+         m6qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6I9VGJWSiiniPwoytIW7/IWLQ2Yesh4ZxepFqF8IfbQ=;
-        b=t6n3NXnSZDQi5B1jUIYMtxDfc889f3/JBY4RvBeFNcyJPT7RjCu5zSkGEjKOCwQpM5
-         fsVM2pAMjfDQ4vkT4iTBE+jm8fmR20P/HFIPx7UJzWVLJfSMd4VSnB3GTC81ri0HA/cP
-         z6E+1g60OojXmbvItHDG8boJByp5y+ziRzrkhoKmn8h2uB23QDM06uKMSWuxOaBNKSqC
-         pX/xf9aWjNEzLJ7K/3mIohzKsTHH/E4h0dAIO2YwBOZ6UHXKkVoUXRRaPpjxXm8rUM4m
-         u4sQeGdl/pnl99FZD9sgcevE+s/bmM/FYr8nkjHvRf4IcfGmpUOiqRPy+zVVL/ZTLHIz
-         EvVw==
-X-Gm-Message-State: AOAM531vR0R57JsYkUpXfqlSyFKYLhXfYaE5HWXFkLvV9t3NEsTD7LqX
-        +/L1MnLBk7xQvA2mN8O3Xw==
-X-Google-Smtp-Source: ABdhPJz3Y8funAZBlLqf8d+aAk9THXhAiQ3D80fWbYx3siUEKY6mKSIlfIFxbQhgs8zsrdXxZhLAmg==
-X-Received: by 2002:a6b:8d58:: with SMTP id p85mr16907880iod.74.1606754320872;
-        Mon, 30 Nov 2020 08:38:40 -0800 (PST)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id 10sm10999380ill.75.2020.11.30.08.38.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 08:38:40 -0800 (PST)
-Received: (nullmailer pid 2592489 invoked by uid 1000);
-        Mon, 30 Nov 2020 16:38:38 -0000
-Date:   Mon, 30 Nov 2020 09:38:38 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Cristian Pop <cristian.pop@analog.com>
-Cc:     linux-iio@vger.kernel.org, jic23@kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: iio: dac: AD5766 yaml documentation
-Message-ID: <20201130163838.GB2590579@robh.at.kernel.org>
-References: <20201123145042.18930-1-cristian.pop@analog.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6tD9ZVZ6gEgHyopRLPxX9gjuGEYfwDbo2GR5pg3Ufw4=;
+        b=db3CzfX1AnEWL6fTug8M7gsrsoIUPK32a7C9FDFVt0qrvzYcTG+ftWramA4a9SyXEi
+         sSgOOTs1nzTsKrUGU0hkrk5s+j7x7Rw27cOOYJu84k4k7GmeWadUKVFG4R6eTze6oTYm
+         RkULViotv8R1/O50ZSSuC4inXmeG2jHp/oOn37PJAw+XSf3EudVqacFxq0FENQszAMhr
+         LU8+ldrN8HlDr1ZEh/n+D1PNJshTRK4jrLxxaqwj5sw9873PCpaAXpTIhUhbFzv7MYxf
+         bdcj+t2L5nXhmdZrS3c1q9xk7UWc4Sa7VaXrII77GGHEtscIox5OIEtAsR5GDs82AOmr
+         itHQ==
+X-Gm-Message-State: AOAM533ad1UsbjzYGM+4TXiOVf+vHABIGyo/3h1yFCWNG1JZRAFKNt7j
+        D2nq7J+ZELxwpTbfouIbn8XvnPpR6jFjmvhglyh1eQ==
+X-Google-Smtp-Source: ABdhPJzoCYimjzh4bEQ9MTo+GD5OKm/5MTWjv3mRz8F3tY/eucztztKkMgUZGD/9LslE8VvXK+DJg6C7YKs8OF0nQ58=
+X-Received: by 2002:a17:907:b09:: with SMTP id h9mr7163881ejl.155.1606754365951;
+ Mon, 30 Nov 2020 08:39:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123145042.18930-1-cristian.pop@analog.com>
+References: <20201118143149.26067-1-grygorii.strashko@ti.com>
+In-Reply-To: <20201118143149.26067-1-grygorii.strashko@ti.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 30 Nov 2020 17:39:15 +0100
+Message-ID: <CAMpxmJVm7euifTBKx06mzUw6zD5s2KJHYniGviV=H8Yo6YJMdg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: omap: handle deferred probe with dev_err_probe()
+ for gpiochip_add_data()
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 16:50:41 +0200, Cristian Pop wrote:
-> This adds device tree bindings for the AD5766 DAC.
-> 
-> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+On Wed, Nov 18, 2020 at 3:31 PM Grygorii Strashko
+<grygorii.strashko@ti.com> wrote:
+>
+> The gpiochip_add_data() may return -EPROBE_DEFER which is not handled
+> properly by TI GPIO driver and causes unnecessary boot log messages.
+>
+> Hence, add proper deferred probe handling with new dev_err_probe() API.
+>
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 > ---
->  .../bindings/iio/dac/adi,ad5766.yaml          | 52 +++++++++++++++++++
->  1 file changed, 52 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> 
+>  drivers/gpio/gpio-omap.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
+> index f7ceb2b11afc..41952bb818ad 100644
+> --- a/drivers/gpio/gpio-omap.c
+> +++ b/drivers/gpio/gpio-omap.c
+> @@ -1049,11 +1049,8 @@ static int omap_gpio_chip_init(struct gpio_bank *bank, struct irq_chip *irqc)
+>         irq->first = irq_base;
+>
+>         ret = gpiochip_add_data(&bank->chip, bank);
+> -       if (ret) {
+> -               dev_err(bank->chip.parent,
+> -                       "Could not register gpio chip %d\n", ret);
+> -               return ret;
+> -       }
+> +       if (ret)
+> +               return dev_err_probe(bank->chip.parent, ret, "Could not register gpio chip\n");
+>
+>         ret = devm_request_irq(bank->chip.parent, bank->irq,
+>                                omap_gpio_irq_handler,
+> --
+> 2.17.1
+>
 
+Now applied. Thanks!
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml: 'additionalProperties' is a required property
-./Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/iio/dac/adi,ad5766.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-Documentation/devicetree/bindings/iio/dac/adi,ad5766.example.dts:21.13-23: Warning (reg_format): /example-0/ad5766@0:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
-Documentation/devicetree/bindings/iio/dac/adi,ad5766.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/iio/dac/adi,ad5766.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/iio/dac/adi,ad5766.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/iio/dac/adi,ad5766.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/iio/dac/adi,ad5766.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/dac/adi,ad5766.example.dt.yaml: example-0: ad5766@0:reg:0: [0] is too short
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1404863
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Bartosz
