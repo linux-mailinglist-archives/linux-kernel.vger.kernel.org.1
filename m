@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320E82C8522
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CD82C8524
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgK3N2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:28:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgK3N2r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:28:47 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD13AC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:28:06 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id x4so4742940pln.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:28:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tBT7i6z15AksCajz/wH/sGCs7nhPwPYnnS6VEGnjqwc=;
-        b=Pq4W7wieVh9/9VBzkgb3rAk5lf5CKX7zOP+rb4tkV88PXU86gf55qRklf2ypKpH9Pb
-         cOcYNnDuhIEPL9JCGHhc4U1Y1WiA1kUrhOFv6xkN0iF2ze4kSgzg/2z2VrWGclE5k2bI
-         jB6tZjcYreCS8cq2BHsHYXBtjJwN3Qvycjs9F2aqdQf3FNtBgreDgHetPAQ7YmCKjEoU
-         ygBeH6/gdR3Ee5dvEjyyLBMye8kQgvfuZ786CNTSL49FwcydwIBH9+9xskLdMA2H81Wh
-         vUP3LgpiReWPOc3p0trL9Rk0/BpB5NwTyimr9TKHK9jZCnbtlPlZefONM81L4xe6hrV8
-         WjVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tBT7i6z15AksCajz/wH/sGCs7nhPwPYnnS6VEGnjqwc=;
-        b=PasFoKn6uDnOt97Olt7zu0M6XlgFwKChVEjj667DbYYZ10r9kwQFdsT3+bmuOiKVVd
-         0YOEIjd4ZKPql3unj7zksDHK7WmvaEDyghS3QDQ+jkrDo22wVVM6fVgT/4wCw9XG0OeA
-         7PCpalUuXoIBkaFHdrNeZx8Y+uKqkz7MwL2Sb/FGQdJ54rU0P9MGF32gLiv7Pd8zVCLq
-         l/1ZWxCUPTNDA02UJHuJVgqQKocd8/QgICFMtezcWbcw99mbe8yW56/XXWbLLKDIhic6
-         TFB5UkMaAV/LtAEnfSUBsvbhnjsL8M0pW/jn7qI+tGIdvVgELL77+/SHNnOJB5JpDXcg
-         69CQ==
-X-Gm-Message-State: AOAM530ERRp6u+m/oiJFWx9lPIFPKHZMe/A7I0E3cBBSZTgosFuPb6YR
-        o6qpHdOPMphAUiIeAMGnPGw=
-X-Google-Smtp-Source: ABdhPJxr0bLuN51EKpIjkqUsyjjJVyH1G+JyGv6gsDiNq3zqjt8bzQ7Xxy/2FT/n/VY0mIK7gR/dqw==
-X-Received: by 2002:a17:90a:3902:: with SMTP id y2mr26433534pjb.126.1606742886368;
-        Mon, 30 Nov 2020 05:28:06 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id l8sm21939768pjq.22.2020.11.30.05.28.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 05:28:05 -0800 (PST)
-Date:   Mon, 30 Nov 2020 22:28:03 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] posix_acl.h: define missing ACL functions on
- non-posix-acl build
-Message-ID: <X8TzY0rotaSZ2FYv@jagdpanzerIV.localdomain>
-References: <20201130014404.36904-1-sergey.senozhatsky@gmail.com>
- <5b015b83-f183-526a-94e7-029f4c98b30b@infradead.org>
- <X8Rj0s/Emv9Qmv3d@jagdpanzerIV.localdomain>
- <X8RkVIxou1D1YfEb@jagdpanzerIV.localdomain>
- <X8RpFo+5m1i4L5Gn@jagdpanzerIV.localdomain>
- <c96f60f4-f525-2957-6a8a-ae9e3288b04a@infradead.org>
- <CAHc6FU59uNEq4Xz8W7boG6y3+u3F1tz93RKSW+odM38rx37_9A@mail.gmail.com>
+        id S1726713AbgK3N3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:29:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725859AbgK3N3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:29:11 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0B8120643;
+        Mon, 30 Nov 2020 13:28:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606742910;
+        bh=DQ+wSsfzzJvTpM5c/TAOzAqu4JhPI6Qw2CdCl7s9bnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iy6VsNPZIpqRMHbzHaZf4KAofuWIQmOzOyJdKPIJ3nmFXEOjDhBNETct6pTPa7KZa
+         349/iqZtmBD+ozP3DeMiZdmAICZq9sXO/WuEaHhDd3HI4GtlOgDKPZQmN7vCK/BjbU
+         GAUTn3NWGsgfMFU5RRd+CLK8/UccbsHngseKQN3M=
+Date:   Mon, 30 Nov 2020 14:28:26 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
+Message-ID: <X8TzeoIlR3G5awC6@kroah.com>
+References: <20201125153550.810101-1-sashal@kernel.org>
+ <20201125153550.810101-22-sashal@kernel.org>
+ <25cd0d64-bffc-9506-c148-11583fed897c@redhat.com>
+ <20201125180102.GL643756@sasha-vm>
+ <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
+ <20201129041314.GO643756@sasha-vm>
+ <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
+ <20201129210650.GP643756@sasha-vm>
+ <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAHc6FU59uNEq4Xz8W7boG6y3+u3F1tz93RKSW+odM38rx37_9A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On (20/11/30 14:09), Andreas Gruenbacher wrote:
+On Mon, Nov 30, 2020 at 09:33:46AM +0100, Paolo Bonzini wrote:
+> On 29/11/20 22:06, Sasha Levin wrote:
+> > On Sun, Nov 29, 2020 at 06:34:01PM +0100, Paolo Bonzini wrote:
+> > > On 29/11/20 05:13, Sasha Levin wrote:
+> > > > > Which doesn't seem to be suitable for stable either...  Patch 3/5 in
+> > > > 
+> > > > Why not? It was sent as a fix to Linus.
+> > > 
+> > > Dunno, 120 lines of new code?  Even if it's okay for an rc, I don't
+> > > see why it is would be backported to stable releases and release it
+> > > without any kind of testing.  Maybe for 5.9 the chances of breaking
+> > 
+> > Lines of code is not everything. If you think that this needs additional
+> > testing then that's fine and we can drop it, but not picking up a fix
+> > just because it's 120 lines is not something we'd do.
 > 
-> Sergey, what actual problem is your patch trying to solve? It sounds
-> like this is either theoretical and pointless, or you're trying to
-> build an external module that uses POSIX ACL functions that shouldn't
-> be needed when CONFIG_FS_POSIX_ACL is disabled.
+> Starting with the first two steps in stable-kernel-rules.rst:
+> 
+> Rules on what kind of patches are accepted, and which ones are not, into the
+> "-stable" tree:
+> 
+>  - It must be obviously correct and tested.
+>  - It cannot be bigger than 100 lines, with context.
 
-It's an external module, that OpenWRT folks build with !FS_POSIX_ACL.
-It compiles just fine, but modprobe fails because there are several
-exported ACL symbols that don't provide dummy definitions (which the
-module in question didn't guard with ifdef-s).
+We do obviously take patches that are bigger than 100 lines, as there
+are always exceptions to the rules here.  Look at all of the
+spectre/meltdown patches as one such example.  Should we refuse a patch
+just because it fixes a real issue yet is 101 lines long?
 
-> In the latter case, the external module will just end up including dead
-> code, so the module should be fixed instead.
+thanks,
 
-ifdef-s work. But since posix_acl.h already provides some dummy
-definitions for exported symbols, I thought that that list can
-be extended (become complete).
-
-	-ss
+greg k-h
