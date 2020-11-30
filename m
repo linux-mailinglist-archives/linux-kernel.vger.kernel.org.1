@@ -2,210 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF3E2C8BD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2552C8BD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729401AbgK3Rzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:55:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727722AbgK3Rzn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:55:43 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D14C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:55:03 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id v3so2300658plz.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:55:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=Zyv+HydinueQ2v/3M6uXPwaSZnkH7aLHYFOTdz2Si0Q=;
-        b=h6/C6CWnYsMwhZWZzbKthrFMVXnaz8+LnLxmIFcQFeQ7bhWzvqoMEgmnnPZcctyL7v
-         v4Z7++WGrNYwDy3UsgvwFe4FMDzI3fAvCbnyaAfKAuUsoib4CLPzsBYKgkSQ4g4fvZWr
-         X0jncGWKwve50tr5KkOmzXn2CP8zF4mG4qhV4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=Zyv+HydinueQ2v/3M6uXPwaSZnkH7aLHYFOTdz2Si0Q=;
-        b=rROzCRq7aEPXqFLLchr0XancuNk3GaSAXFWxAO+o/hFbTDXU2tIzmehCjP+7rYl3ve
-         fbHH6ibOzuF80VwY2ZFQnjX7uNQikQZ5c1F+/KkPsAX6n6N0IPGsPtskm99ipqInzXfa
-         q6hu/Ze5K82U3sO6mkm9/8EX7lu4Uy7UJ/sHGi+UZMsPEce/r5aCEhEq/ZECaxMrLeXq
-         Mjhli9AdoGb1Rug8nts4qgVW3ruNdEAFK87rHEXnKH5J0c3VUlfvyLm2Z30Ux3Usqq85
-         v7H1rmrKQ+uuFnzMbRtCIhuS8dUbyWyJrOVKs+hG8G6ZpraTLkNQxdTq+e9ff84S20AY
-         DQ5w==
-X-Gm-Message-State: AOAM530AoCIElxRo51gtTvl+Y+Ity6k2wjxcAa/ZMgRYsrVEX7X956Jz
-        ubPwMk2TR9KWZAFmjqPllYGBs9V7hOVbodz8cXlmms0EiaY1ne3gB2niC313anNehR4AOsVAoHR
-        BtjS0BEnIj9QcX9DINrD07rIrUbu0l9C0zxB9MGUmqJGL30VuNECUSg4iWaefFXIhWGsCx/2kll
-        nnUyY=
-X-Google-Smtp-Source: ABdhPJyPh1KO8PK7DOHk6GZl96mzdqldqA9dZ71w4G53Ozpj6SgT2UiREiVvX7A6MvDEU3SJVK+HTA==
-X-Received: by 2002:a17:90a:e64a:: with SMTP id ep10mr9237212pjb.60.1606758902249;
-        Mon, 30 Nov 2020 09:55:02 -0800 (PST)
-Received: from [10.230.182.181] ([192.19.224.250])
-        by smtp.gmail.com with ESMTPSA id w11sm17176940pfj.212.2020.11.30.09.54.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 09:55:00 -0800 (PST)
-Subject: Re: [PATCH v3 0/3] PCI: iproc: Add fixes to pcie iproc
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Srinath Mannam <srinath.mannam@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20201001060054.6616-1-srinath.mannam@broadcom.com>
- <20201130121947.GD16758@e121166-lin.cambridge.arm.com>
- <de561113-7df5-2424-3920-1627b7ec9e24@broadcom.com>
-From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <afcc9e9d-a73c-620d-c6a1-df63937fcc57@broadcom.com>
-Date:   Mon, 30 Nov 2020 09:54:57 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S2387879AbgK3R4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:56:22 -0500
+Received: from mga18.intel.com ([134.134.136.126]:4068 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387731AbgK3R4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:56:21 -0500
+IronPort-SDR: N7+Dm7JSmuyVeX0zRzFCSFe3J1JdrNn8FZEXycPig+pASsFR0/1dciSfDTY63k+xBGwIbkdTGp
+ aRQemdKbLybA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="160451431"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="160451431"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:54:40 -0800
+IronPort-SDR: jhPTcdou80j2byhwDbFMIgXZ/vrILyt4BNmwBxBjF7vB4h1l3IIcsAMmv9BHlfOUYJOGaFD1sn
+ VZdqup0WTk5g==
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="372581191"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:54:34 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kjnOg-00B6F3-Uy; Mon, 30 Nov 2020 19:55:34 +0200
+Date:   Mon, 30 Nov 2020 19:55:34 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+Subject: Re: [PATCH 11/18] media: v4l2-core: v4l2-async: Check possible match
+ in match_fwnode based on sd->fwnode->secondary
+Message-ID: <20201130175534.GT4077@smile.fi.intel.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-12-djrscally@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <de561113-7df5-2424-3920-1627b7ec9e24@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000a4dfb205b556b530"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130133129.1024662-12-djrscally@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000a4dfb205b556b530
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+On Mon, Nov 30, 2020 at 01:31:22PM +0000, Daniel Scally wrote:
+> Where the fwnode graph is comprised of software_nodes, these will be
+> assigned as the secondary to dev->fwnode. Check the v4l2_subdev's fwnode
+> for a secondary and attempt to match against it during match_fwnode() to
+> accommodate that possibility.
 
+One nit below.
 
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-On 11/30/2020 9:39 AM, Scott Branden wrote:
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes since RFC v3:
 > 
+> 	- None
 > 
-> On 2020-11-30 4:19 a.m., Lorenzo Pieralisi wrote:
->> On Thu, Oct 01, 2020 at 11:30:51AM +0530, Srinath Mannam wrote:
->>> This patch series contains fixes and improvements to pcie iproc driver.
->>>
->>> This patch set is based on Linux-5.9.0-rc2.
->>>
->>> Changes from v2:
->>>   - Addressed Bjorn's review comments
->>>      - Corrected subject line and commit message of Patches 1 and 2.
->>>      
->>> Changes from v1:
->>>   - Addressed Bjorn's review comments
->>>      - pcie_print_link_status is used to print Link information.
->>>      - Added IARR1/IMAP1 window map definition.
->>>
->>> Bharat Gooty (1):
->>>   PCI: iproc: Fix out-of-bound array accesses
->>>
->>> Roman Bacik (1):
->>>   PCI: iproc: Invalidate correct PAXB inbound windows
->>>
->>> Srinath Mannam (1):
->>>   PCI: iproc: Display PCIe Link information
->>>
->>>  drivers/pci/controller/pcie-iproc.c | 29 ++++++++++++++++++++++-------
->>>  1 file changed, 22 insertions(+), 7 deletions(-)
->> I need Ray a/o Scott ACK to proceed.
-> Let's see if Ray has anything to add.
+>  drivers/media/v4l2-core/v4l2-async.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> Acked-by: Scott Branden <scott.branden@broadcom.com>
+> diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
+> index e3ab003a6c85..6486dbde784f 100644
+> --- a/drivers/media/v4l2-core/v4l2-async.c
+> +++ b/drivers/media/v4l2-core/v4l2-async.c
+> @@ -87,6 +87,14 @@ static bool match_fwnode(struct v4l2_async_notifier *notifier,
+>  	if (sd->fwnode == asd->match.fwnode)
+>  		return true;
+>  
+> +	/*
+> +	 * Check the same situation for any possible secondary assigned to the
+> +	 * subdev's fwnode
+> +	 */
 
-I reviewed them internally before they were sent out. I just reviewed
-them again and yes they look fine to me.
+> +	if ((!IS_ERR_OR_NULL(sd->fwnode->secondary)) &&
 
-1/3 and 2/3 are critical fixes for kernel crash and boot up issue in
-corner cases (Fixes tag already applied and should be picked up by LTS
-once merged).
+Too many parentheses.
 
-Thanks.
-
-Acked-by: Ray Jui <ray.jui@broadcom.com>
-
->>
->> Thanks,
->> Lorenzo
+> +	    sd->fwnode->secondary == asd->match.fwnode)
+> +		return true;
+> +
+>  	/*
+>  	 * Otherwise, check if the sd fwnode and the asd fwnode refer to an
+>  	 * endpoint or a device. If they're of the same type, there's no match.
+> -- 
+> 2.25.1
 > 
 
---000000000000a4dfb205b556b530
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+-- 
+With Best Regards,
+Andy Shevchenko
 
-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
-Gp3tsmw0Vz7IMJs6DQIm7T8CfIzeId1IIHcH02MbpO7m1Btzyz625FoBWF8CAwEAAaOCAcswggHH
-MA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9z
-ZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29jc3AuY3J0
-MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24y
-c2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
-dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWG
-M2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNybDAfBgNV
-HREEGDAWgRRyYXkuanVpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
-GDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUvUTLkCwFvnpejW/KGvdaDA31b+sw
-DQYJKoZIhvcNAQELBQADggEBACMny/9Y1OPK7qwiBKBMt478eBgXnTlJ0J0HNebYcxN/l7fKIKMb
-/eX/AQKIDsHeshmV2ekPU4yY/04veXx3QTgmE1bb4ksKEFEbU0LXlVPrnlgNn8M75cPymegn/2yU
-r1+htd2eve3obmKc5Lrl0GP+4m72XxAOL687Aw5vRa4Lf294s+x4d+VRwUjoFTj9zyLhexWQuJv/
-yX1HjSkrlIsRwi6DN0/ieL04O9aD1UNPlCC6akGnv4tgwlESh51M564qhonlfSW6La+L/aTIuQc0
-88lq8s/VMBBGdc7176/v5TbNwEC/c5QYbp2n76rAmKKjhjwWmBk64yLT7CoIxk0xggJvMIICawIB
-ATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypH
-bG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCUMagLNLily51ao1jAN
-BglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg2ejyfRGCHsNAvoiHvKsdTuTWqD+OBrgj
-5NodeOXzUqQwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMTMw
-MTc1NTAyWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZI
-AWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIB
-MA0GCSqGSIb3DQEBAQUABIIBABHT4EemOcvVlaXt6sWcliSX73tfmmUCxPy+4G3xuodOOO3JyMuF
-SnMC2MycR4Rxw958jXUP1kOblasa2iEyZEfnYqzJOMa+QTVcM+o4V563wXJVE9ZnOHk9L1OVplHD
-duM5LxN/GCR6yXI8qxGkv2FE4XSXjLyV1jWa0cPzP0GS6o9lCUUacM1tDso70QTukEPE+jm4E4jD
-MHa4q7/No+n9xVHMa47tnGZT48w6jzigBBIxfMBCy3rrALyzWb9QmtFTh2vKoNbKDcnj6rJD6PjA
-QXb9GAYLM4zuRyAHMAtolEYT1mSm0sGWelW87NH2HusjHBMvKo2NnQhyzktkNr4=
---000000000000a4dfb205b556b530--
+
