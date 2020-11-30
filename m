@@ -2,156 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4D12C8743
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D3C2C8753
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgK3O6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:58:45 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:34653 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727771AbgK3O6o (ORCPT
+        id S1727886AbgK3O75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:59:57 -0500
+Received: from gproxy4-pub.mail.unifiedlayer.com ([69.89.23.142]:53283 "EHLO
+        gproxy4-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726885AbgK3O74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:58:44 -0500
-Received: by mail-pl1-f193.google.com with SMTP id l11so6628296plt.1;
-        Mon, 30 Nov 2020 06:58:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bmLCPYbeyHv0cOZ0Whz0ZC7+nNqmDxPfNcgMvcMFqAA=;
-        b=TiYi2Bafr9m8pMsuMYYurmvSt+IB+fm/aopyi/VpTiW6IMdJAnq0P+4CliMT9fnbTK
-         bjNlWEt7yL5ornoYiWTg1GLoVHSRt9zxR1csXhdU4hbe4V/lfNxH3k86fK1V3M7ufKsm
-         y3230kYhFOg0452TKec23SjZxcjar5E56BCHsNlg4IHVsXQK5667yN+VVnFb5Rs2u0u4
-         GeDdv/de+QS29dLEH/09JzZ8SYy1Qj74m9yvLELTiRkj+W8dxYBtTu/ejMWoNBnOsN6J
-         /FYArAOTtxlKNiagE2DepRbOVLNVYj7fepjQ5O64Q2nJZEPXAVl6HnXlFoF/MARUmkFe
-         dOoQ==
-X-Gm-Message-State: AOAM530i/xE3dYjcGMEGrI4ZTcg4TUSvBr5rVS6iOWxx19tYpAueBgGs
-        KbHkyn2eK6x6CfJObQVxPLo=
-X-Google-Smtp-Source: ABdhPJziBW/dCj4uXjRbNOAMWAoeSDGX96uG0HDLwLe3Azqbe82/ZeOMXkbbZTBn8QdJLI83LQIJcg==
-X-Received: by 2002:a17:90a:7087:: with SMTP id g7mr20485177pjk.200.1606748283435;
-        Mon, 30 Nov 2020 06:58:03 -0800 (PST)
-Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id x21sm14195050pfc.151.2020.11.30.06.58.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 06:58:02 -0800 (PST)
-Subject: Re: [PATCH V1] block: Fix use-after-free while iterating over
- requests
-To:     Hannes Reinecke <hare@suse.de>, John Garry <john.garry@huawei.com>,
-        Pradeep P V K <ppvk@codeaurora.org>, axboe@kernel.dk,
-        linux-block@vger.kernel.org
-Cc:     stummala@codeaurora.org, linux-kernel@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>
-References: <1606402925-24420-1-git-send-email-ppvk@codeaurora.org>
- <c94fcada-7f6d-a1e3-4c88-d225af1a676e@acm.org>
- <693ea723-aa9e-1166-8a19-a7787f724969@huawei.com>
- <0c925db8-e481-5f21-b0fe-f691142b0437@suse.de>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <5c3ac5af-ed81-11e4-fee3-f92175f14daf@acm.org>
-Date:   Mon, 30 Nov 2020 06:58:00 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 30 Nov 2020 09:59:56 -0500
+Received: from cmgw10.unifiedlayer.com (unknown [10.9.0.10])
+        by gproxy4.mail.unifiedlayer.com (Postfix) with ESMTP id B37B0175A37
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 07:59:13 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id jke1kjcR7Dlydjke1kXQmS; Mon, 30 Nov 2020 07:59:13 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=CakmGojl c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10:nop_charset_1
+ a=nNwsprhYR40A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=pGLkceISAAAA:8
+ a=VwQbUJbxAAAA:8 a=8b9GpE9nAAAA:8 a=gXLdhW2jAAAA:8 a=YfHuQ6WfqXg4DGKjl5kA:9
+ a=QEXdDO2ut3YA:10:nop_charset_2 a=AjGcO6oz07-iQ99wixmX:22
+ a=T3LWEMljR5ZiDmsYVIUa:22 a=Dn9eIPSr_RzuO0KTJioD:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=PhxDst6bxvMrZJlbqwjEwlHuP3jCoB2Pdz3+Y0YB6RM=; b=liZ32ShVXOHVTGVczaXGId4W7/
+        T3VVC9AoHCm3eYIlMk91os4YjU2uHpPSK6wLAJj7R+NU4e+JeS0iWHbttOKFNOpMlzILudIBTXJ3N
+        xEteaLC9ZhYiU+h+Z7djCn66dWjE85BGYr6K9kO5Pc0dZwS95SsoJQ7ZALn00HgjH5/rPrt9lHq1H
+        JsT+GUdXFUW147kth5F6mL26hKhZWzUAD3BdO/UOD1gJruwkXaHYXEAEzOMhxGJlBmLnz8IwirVl6
+        ApGAUHaBGNkA4LEMuWfzrgIcUVDxMzti+QAHW6Vx0wKvT2vhVNwRhUqAtSKmWsXD+ApOZfzljrEAP
+        KFwqFZSw==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:55722 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kjke0-0034uB-PF; Mon, 30 Nov 2020 14:59:12 +0000
+Date:   Mon, 30 Nov 2020 06:59:12 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Charles <hsu.yungteng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        alan@redhat.com
+Subject: Re: [PATCH v5] hwmon: Add driver for STMicroelectronics PM6764
+ Voltage Regulator
+Message-ID: <20201130145912.GA17093@roeck-us.net>
+References: <f8766ea1-b4ee-f298-a5a4-dc83f9a54617@gmail.com>
+ <20201127161051.GA9881@roeck-us.net>
+ <5c78a15e-4c4a-992c-ff5b-7bb709057871@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <0c925db8-e481-5f21-b0fe-f691142b0437@suse.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5c78a15e-4c4a-992c-ff5b-7bb709057871@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kjke0-0034uB-PF
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:55722
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 13
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/29/20 11:04 PM, Hannes Reinecke wrote:
-> On 11/26/20 5:49 PM, John Garry wrote:
->> On 26/11/2020 16:27, Bart Van Assche wrote:
->>> On 11/26/20 7:02 AM, Pradeep P V K wrote:
->>>> Observes below crash while accessing (use-after-free) request queue
->>>> member of struct request.
->>>>
->>>> 191.784789:   <2> Unable to handle kernel paging request at virtual
->>>> address ffffff81429a4440
->>>> ...
->>>> 191.786174:   <2> CPU: 3 PID: 213 Comm: kworker/3:1H Tainted: G S
->>>> O      5.4.61-qgki-debug-ge45de39 #1
->>>> ...
->>>> 191.786226:   <2> Workqueue: kblockd blk_mq_timeout_work
->>>> 191.786242:   <2> pstate: 20c00005 (nzCv daif +PAN +UAO)
->>>> 191.786261:   <2> pc : bt_for_each+0x114/0x1a4
->>>> 191.786274:   <2> lr : bt_for_each+0xe0/0x1a4
->>>> ...
->>>> 191.786494:   <2> Call trace:
->>>> 191.786507:   <2>  bt_for_each+0x114/0x1a4
->>>> 191.786519:   <2>  blk_mq_queue_tag_busy_iter+0x60/0xd4
->>>> 191.786532:   <2>  blk_mq_timeout_work+0x54/0xe8
->>>> 191.786549:   <2>  process_one_work+0x2cc/0x568
->>>> 191.786562:   <2>  worker_thread+0x28c/0x518
->>>> 191.786577:   <2>  kthread+0x160/0x170
->>>> 191.786594:   <2>  ret_from_fork+0x10/0x18
->>>> 191.786615:   <2> Code: 0b080148 f9404929 f8685921 b4fffe01 (f9400028)
->>>> 191.786630:   <2> ---[ end trace 0f1f51d79ab3f955 ]---
->>>> 191.786643:   <2> Kernel panic - not syncing: Fatal exception
->>>>
->>>> Fix this by updating the freed request with NULL.
->>>> This could avoid accessing the already free request from other
->>>> contexts while iterating over the requests.
->>>>
->>>> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
->>>> ---
->>>>   block/blk-mq.c | 1 +
->>>>   block/blk-mq.h | 1 +
->>>>   2 files changed, 2 insertions(+)
->>>>
->>>> diff --git a/block/blk-mq.c b/block/blk-mq.c
->>>> index 55bcee5..9996cb1 100644
->>>> --- a/block/blk-mq.c
->>>> +++ b/block/blk-mq.c
->>>> @@ -492,6 +492,7 @@ static void __blk_mq_free_request(struct request
->>>> *rq)
->>>>       blk_crypto_free_request(rq);
->>>>       blk_pm_mark_last_busy(rq);
->>>> +    hctx->tags->rqs[rq->tag] = NULL;
->>>>       rq->mq_hctx = NULL;
->>>>       if (rq->tag != BLK_MQ_NO_TAG)
->>>>           blk_mq_put_tag(hctx->tags, ctx, rq->tag);
->>>> diff --git a/block/blk-mq.h b/block/blk-mq.h
->>>> index a52703c..8747bf1 100644
->>>> --- a/block/blk-mq.h
->>>> +++ b/block/blk-mq.h
->>>> @@ -224,6 +224,7 @@ static inline int
->>>> __blk_mq_active_requests(struct blk_mq_hw_ctx *hctx)
->>>>   static inline void __blk_mq_put_driver_tag(struct blk_mq_hw_ctx
->>>> *hctx,
->>>>                          struct request *rq)
->>>>   {
->>>> +    hctx->tags->rqs[rq->tag] = NULL;
->>>>       blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
->>>>       rq->tag = BLK_MQ_NO_TAG;
->>>
->>> Is this perhaps a block driver bug instead of a block layer core bug? If
->>> this would be a block layer core bug, it would have been reported
->>> before.
->>
->> Isn't this the same issue which as been reported many times:
->>
->> https://lore.kernel.org/linux-block/20200820180335.3109216-1-ming.lei@redhat.com/
->>
->>
->> https://lore.kernel.org/linux-block/8376443a-ec1b-0cef-8244-ed584b96fa96@huawei.com/
->>
->>
->> But I never saw a crash, just kasan report.
->>
-> And if that above were a concern, I would have thought one would need to
-> use a WRITE_ONCE() here; otherwise we might have a race condition where
-> other CPUs still see the old value, no?
-
-Hi Hannes,
-
-Freeing tag->rqs and tags->static_rqs with kfree_rcu() is probably a
-better solution than clearing request pointers. Even when using
-WRITE_ONCE() to clear tag pointers, it is still possible that another
-thread read the tag pointer before the WRITE_ONCE() and uses it after
-the WRITE_ONCE() has finished.
+On Mon, Nov 30, 2020 at 03:46:19PM +0800, Charles wrote:
+> On 28/11/2020 上午12:10, Guenter Roeck wrote:
+> > On Fri, Nov 27, 2020 at 09:59:01AM +0800, Charles wrote:
+> > > Add the pmbus driver for the STMicroelectronics pm6764 voltage regulator.
+> > > 
+> > > the output voltage use the MFR_READ_VOUT 0xD4
+> > > vout value returned is linear11
+> > > 
+> > > Signed-off-by: Charles Hsu <hsu.yungteng@gmail.com>
+> > This patch (again) didn't make it to any of the mailing lists.
+> > Please try to find out why this is the case. I usually pick up
+> > patches from https://patchwork.kernel.org/project/linux-hwmon/list/,
+> > and may easily miss a patch if I can't find it there.
+> > 
+> > > ---
+> > > 
+> > > v5:
+> > >   - Add MAINTAINERS
+> > >   - Add a reference into trivial-devices.yaml
+> > > v4:
+> > >   - Add pm6764tr to Documentation/hwmon/index.rst.
+> > > v3:
+> > >   - Add Documentation(Documentation/hwmon/pm6764tr.rst).
+> > >   - Fix include order.
+> > > v2:
+> > >   - Fix formatting.
+> > >   - Remove pmbus_do_remove.
+> > >   - Change from .probe to .probe_new.
+> > > v1:
+> > >   - Initial patchset.
+> > > 
+> > > ---
+> > > 
+> > >   .../devicetree/bindings/trivial-devices.yaml  |  2 +
+> > >   Documentation/hwmon/index.rst                 |  1 +
+> > >   Documentation/hwmon/pm6764tr.rst              | 33 ++++++++
+> > >   MAINTAINERS                                   |  7 ++
+> > >   drivers/hwmon/pmbus/Kconfig                   |  9 +++
+> > >   drivers/hwmon/pmbus/Makefile                  |  1 +
+> > >   drivers/hwmon/pmbus/pm6764tr.c                | 76 +++++++++++++++++++
+> > >   7 files changed, 129 insertions(+)
+> > >   create mode 100644 Documentation/hwmon/pm6764tr.rst
+> > >   create mode 100644 drivers/hwmon/pmbus/pm6764tr.c
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+> > > index ab623ba930d5..cdd7bdb6abbb 100644
+> > > --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> > > +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> > > @@ -348,6 +348,8 @@ properties:
+> > >             - socionext,synquacer-tpm-mmio
+> > >               # i2c serial eeprom  (24cxx)
+> > >             - st,24c256
+> > > +            # SMBus/I2C Voltage Regulator
+> > > +          - st,pm6764tr
+> > >               # Ambient Light Sensor with SMBUS/Two Wire Serial Interface
+> > >             - taos,tsl2550
+> > >               # 8-Channels, 12-bit ADC
+> > This, like all devicetre changes, needs to be a separate patch.
+> > Also, please make sure to copy dt maintainers and the dt mailing list
+> > when you send that patch.
+> 
+> 
+> Thank you for your suggestions.
+> 
+> I will send that patch as soon as possible.
+> 
+> 
+> > > diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> > > index b797db738225..1bbd05e41de4 100644
+> > > --- a/Documentation/hwmon/index.rst
+> > > +++ b/Documentation/hwmon/index.rst
+> > > @@ -144,6 +144,7 @@ Hardware Monitoring Kernel Drivers
+> > >      pc87360
+> > >      pc87427
+> > >      pcf8591
+> > > +   pm6764tr
+> > >      pmbus
+> > >      powr1220
+> > >      pxe1610
+> > > diff --git a/Documentation/hwmon/pm6764tr.rst b/Documentation/hwmon/pm6764tr.rst
+> > > new file mode 100644
+> > > index 000000000000..5e8092e39297
+> > > --- /dev/null
+> > > +++ b/Documentation/hwmon/pm6764tr.rst
+> > > @@ -0,0 +1,33 @@
+> > > +.. SPDX-License-Identifier: GPL-2.0-only
+> > > +
+> > > +Kernel driver pm6764tr
+> > > +======================
+> > > +
+> > > +Supported chips:
+> > > +
+> > > +  * ST PM6764TR
+> > > +
+> > > +    Prefix: 'pm6764tr'
+> > > +
+> > > +    Addresses scanned: -
+> > > +
+> > > +    Datasheet: http://www.st.com/resource/en/data_brief/pm6764.pdf
+> > > +
+> > > +Authors:
+> > > +	<hsu.yungteng@gmail.com>
+> > > +
+> > > +Description:
+> > > +------------
+> > > +
+> > > +This driver supports the STMicroelectronics PM6764TR chip. The PM6764TR is a high
+> > > +performance digital controller designed to power Intel’s VR12.5 processors and memories.
+> > > +
+> > Unrelated side note: I understand this means that you are forced to keep the
+> > datasheet under wraps, which in turn means I can not suggest functionality
+> > improvements since I don't have access to it. If the chip happens to support
+> > per-rail telemetry, you might want to consider adding support for that in a
+> > follow-up patch.
+> > 
+> > > +The device utilizes digital technology to implement all control and power management
+> > > +functions to provide maximum flexibility and performance. The NVM is embedded to store
+> > > +custom configurations. The PM6764TR device features up to 4-phase programmable operation.
+> > > +
+> > > +The PM6764TR supports power state transitions featuring VFDE, and programmable DPM
+> > > +maintaining the best efficiency over all loading conditions without compromising transient
+> > > +response. The device assures fast and independent protectionagainstload overcurrent,
+> > "protectionagainstload" -> "protection against load"
+> > 
+> > > +under/overvoltage and feedback disconnections.
+> > > +
+> > Drop empty line at end.
+> > 
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index 94ac10a153c7..a3fea132c4ed 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -13904,6 +13904,13 @@ M:	Logan Gunthorpe <logang@deltatee.com>
+> > >   S:	Maintained
+> > >   F:	drivers/dma/plx_dma.c
+> > Add empty line.
+> 
+> 
+> There is an empty line here,
+> 
+> Should I add one more empty line?
+> 
+One empty line is needed. Maybe I missed it. I am looking forward to the
+next version of your patch; then we'll see.
 
 Thanks,
-
-Bart.
+Guenter
