@@ -2,128 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43D92C8E08
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 922EC2C8E17
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388357AbgK3T0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:26:24 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:44756 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgK3T0P (ORCPT
+        id S1728840AbgK3TbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728899AbgK3TbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:26:15 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUJFAHh010116;
-        Mon, 30 Nov 2020 19:25:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=k2IvULPGlTPSH2d5C04hBupxMPjNibGgDLwGP6qaVSg=;
- b=U9WnAmFr6xUeNUib3qlI8r8HeYq+XBE8tnUXq5w8nMtk8MUIDeipfNjM0IDnTHT7iuyd
- ygeZL7sE5U27BdFU2aLXbg4yZSjfLB8Wuu+fyfxlInYg8bSYjUZkuyoorWHCo7WJ3YIm
- 1YYRum+JTP8jZF16aGFba9g5Vr58daT0bXgV+lU7R+d6pnGZpYmtuTw6xFZYujZHA5mr
- yITZZ2Jc/L6oC0NX1G8BWLiEo1UwFb+mszriKMVJlFXDT3ra6eeyeQd9V+uQo27vYMZb
- gEFeWtgpeGH8Z2tsmbPWUZJRnOiuJoUv5jNHHNqk7iRfqLI0FvV+wqzSnUrEmo5x2pLF NQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 353dyqewmc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 30 Nov 2020 19:25:18 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUJGLrS109167;
-        Mon, 30 Nov 2020 19:25:18 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 35404kybrb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 19:25:18 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AUJPHFD029341;
-        Mon, 30 Nov 2020 19:25:17 GMT
-Received: from [192.168.1.67] (/94.61.1.144)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 30 Nov 2020 11:25:17 -0800
-Subject: Re: [PATCH RFC 11/39] KVM: x86/xen: evtchn signaling via eventfd
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
- <20190220201609.28290-12-joao.m.martins@oracle.com>
- <874d1fa922cb56238676b90bbeeba930d0706500.camel@infradead.org>
- <e83f6438-7256-1dc8-3b13-5498fd5bbed1@oracle.com>
- <18e854e2a84750c2de2d32384710132b83d84286.camel@infradead.org>
- <0b9d3901-c10b-effd-6278-6afd1e95b09e@oracle.com>
- <315ea414c2bf938978f7f2c0598e80fa05b4c07b.camel@infradead.org>
- <05661003-64f0-a32a-5659-6463d4806ef9@oracle.com>
- <13bc2ca60ca4e6d74c619e65502889961a08c3ff.camel@infradead.org>
- <35e45689-8225-7e5d-44ef-23479b563444@oracle.com>
- <fbeb5b70f4c6b036b71a58d4a2a13c534ed360a1.camel@infradead.org>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <106892fc-83a8-d397-fd96-b5fdeda442d2@oracle.com>
-Date:   Mon, 30 Nov 2020 19:25:12 +0000
+        Mon, 30 Nov 2020 14:31:02 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CE4C0613CF;
+        Mon, 30 Nov 2020 11:30:21 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id b2so5650893edy.13;
+        Mon, 30 Nov 2020 11:30:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6xoXFQV4BbsJg4GJL1tP5zyqti0Izs4JfnX3eGx9ZII=;
+        b=Zq/11mTsid9DPdmqdQG1vEPB/JR5gwKhrJ7fFDHNFQwgBcFxbAW6WYdibvzYydHwO8
+         MfEUk11ihrmuCgdTH/dZC5mVM0ZsGyO+pzFT/b7NUvsDugim216B9tOs7QLuYswp5PL6
+         b9sLzcQhxgIffQf2RuqUeCvVaSOWPdvnSpNqnOgzj1zidcZ7ed7uAEJ+96TK1F6onaRF
+         yqgcKrKTgbsP1X0ZStUhe8jWdKAIbunVarBap9X3FlS1q7sGccn1JUGGUIcv4d4qTruK
+         vwO98mSkLeHHT076RRRRovst7MnzBkgSy8tpGt9SdHnp0pPLW6SEX2yx098Wlz5rPWVp
+         FqZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6xoXFQV4BbsJg4GJL1tP5zyqti0Izs4JfnX3eGx9ZII=;
+        b=QY8c97rHO/7sTpS2IuLBNM1Pd7xxZdXjz2vX8FSoNuVxA5ZFqCtGts4wiUCpcpZLcX
+         0hbl66JLlY4WZ4tDRsd/vNSftMsyXbuW3aUmNZgexUpMLa9P20jEYyBNVoC0TSqqFr3B
+         WZlhytX7CA7PB5PBRQ7uIlgOUl/l1oOaTfMthtyVef8ZczlxHLnNq6TZAHnYSegKaPkt
+         bvTybXCKbzLqDLh6jG09csSYcHZsKfDRxiu58pq0uGCea8Oo4Nh0PjDNwze4VXiVxIn+
+         gdWXCG7PmaRiivD2TWNK/s/+N/T3eOKUwQLaOTuknb1vt7pxl0P8i5pHfcKW9A/faW4u
+         DOXg==
+X-Gm-Message-State: AOAM532VswOklm5Oe1XvuzSwzpjX1i+WTfUYPBZWCmAG/e5CmHjkVs1h
+        QEdGPrwJIF8ZtwBTAnbbrfp7o5LE8Z4QVV7O09k=
+X-Google-Smtp-Source: ABdhPJzezmVM/nS96Muqp5B7lDWviRp/y1V8xtOI7nar908PFGFkWpkcuNGt9jlx4Ufw4MPV5xQZpSFfBP0jcrTEzi4=
+X-Received: by 2002:aa7:c713:: with SMTP id i19mr23481998edq.296.1606764619981;
+ Mon, 30 Nov 2020 11:30:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <fbeb5b70f4c6b036b71a58d4a2a13c534ed360a1.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011300124
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- clxscore=1015 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011300124
+References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
+ <20201128154849.3193-1-tom.ty89@gmail.com> <62e0d5ea-e665-b913-5482-a75db0ac1368@redhat.com>
+In-Reply-To: <62e0d5ea-e665-b913-5482-a75db0ac1368@redhat.com>
+From:   Tom Yan <tom.ty89@gmail.com>
+Date:   Tue, 1 Dec 2020 03:30:07 +0800
+Message-ID: <CAGnHSE=sS7tvttuTwE_s+QbCUVCfhmHnuXQp1g1AkZ=JEoxmQA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] uas: revert from scsi_add_host_with_dma() to scsi_add_host()
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hmm, I wonder if I/we wrongly assumed that the dma_dev used for the
+hw_max_sectors clamping in __scsi_init_queue() is wrong.
 
+So instead of adding a fallback else-clause here or using "sysdev" as
+dma_dev like in the current upstream code, maybe we should actually do
+a three-way min: the "changed" hw_max_sectors, dma_max_mapping_size of
+dma_dev("dev") and dma_max_mapping_size of sysdev...?
 
-On 11/30/20 7:04 PM, David Woodhouse wrote:
-> On Mon, 2020-11-30 at 18:41 +0000, Joao Martins wrote:
->> int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->> {
->> ...
->>         if (kvm_hv_hypercall_enabled(vcpu->kvm))
->>                 return kvm_hv_hypercall(...);
->>
->>         if (kvm_xen_hypercall_enabled(vcpu->kvm))
->>                 return kvm_xen_hypercall(...);
->> ...
->> }
->>
->> And on kvm_xen_hypercall() for the cases VMM offloads to demarshal what the registers mean
->> e.g. for event channel send 64-bit guest: RAX for opcode and RDI/RSI for cmd and port.
-> 
-> Right, although it's a little more abstract than that: "RDI/RSI for
-> arg#0, arg#1 respectively".
-> 
-> And those are RDI/RSI for 64-bit Xen, EBX/ECX for 32-bit Xen, and
-> RBX/RDI for Hyper-V. (And Hyper-V seems to use only the two, while Xen
-> theoretically has up to 6).
-> 
-Indeed, almost reminds my other patch for xen hypercalls -- it was handling 32-bit and
-64-bit that way:
-
-https://lore.kernel.org/kvm/20190220201609.28290-3-joao.m.martins@oracle.com/
-
->> The kernel logic wouldn't be much different at the core, so thought of tihs consolidation.
->> But the added complexity would have come from having to deal with two userspace exit types
->> -- indeed probably not worth the trouble as you pointed out.
-> 
-> Yeah, I think I'm just going to move the 'kvm_userspace_hypercall()'
-> from my patch to be 'kvm_xen_hypercall()' in a new xen.c but still
-> using KVM_EXIT_HYPERCALL. Then I can rebase your other patches on top
-> of that, with the evtchn bypass.
-> 
-Yeap, makes sense.
-
-	Joao
+On Mon, 30 Nov 2020 at 17:48, Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 11/28/20 4:48 PM, Tom Yan wrote:
+> > Apparently the former (with the chosen dma_dev) may cause problem in certain
+> > case (e.g. where thunderbolt dock and intel iommu are involved). The error
+> > observed was:
+> >
+> > XHCI swiotlb buffer is full / DMAR: Device bounce map failed
+> >
+> > For now we retain the clamp for hw_max_sectors against the dma_max_mapping_size.
+> > Since the device/size for the clamp that is applied when the scsi request queue
+> > is initialized/allocated is different than the one used here, we invalidate the
+> > early clamping by making a fallback blk_queue_max_hw_sectors() call.
+> >
+> > Signed-off-by: Tom Yan <tom.ty89@gmail.com>
+>
+> I can confirm that this fixes the network performance on a Lenovo Thunderbolt
+> dock generation 2, which uses an USB attach NIC.
+>
+> With this patch added on top of 5.10-rc5 scp performance to another machine
+> on the local gbit LAN goes back from the regressed 1 MB/s to its original 100MB/s
+> as it should be:
+>
+> Tested-by: Hans de Goede <hdegoede@redhat.com>
+>
+> Regards,
+>
+> Hans
+>
+>
+> > ---
+> >  drivers/usb/storage/uas.c | 11 +++++++----
+> >  1 file changed, 7 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/usb/storage/uas.c b/drivers/usb/storage/uas.c
+> > index c8a577309e8f..5db1325cea20 100644
+> > --- a/drivers/usb/storage/uas.c
+> > +++ b/drivers/usb/storage/uas.c
+> > @@ -843,18 +843,21 @@ static int uas_slave_alloc(struct scsi_device *sdev)
+> >  static int uas_slave_configure(struct scsi_device *sdev)
+> >  {
+> >       struct uas_dev_info *devinfo = sdev->hostdata;
+> > -     struct device *dev = sdev->host->dma_dev;
+> > +     struct usb_device *udev = devinfo->udev;
+> >
+> >       if (devinfo->flags & US_FL_MAX_SECTORS_64)
+> >               blk_queue_max_hw_sectors(sdev->request_queue, 64);
+> >       else if (devinfo->flags & US_FL_MAX_SECTORS_240)
+> >               blk_queue_max_hw_sectors(sdev->request_queue, 240);
+> > -     else if (devinfo->udev->speed >= USB_SPEED_SUPER)
+> > +     else if (udev->speed >= USB_SPEED_SUPER)
+> >               blk_queue_max_hw_sectors(sdev->request_queue, 2048);
+> > +     else
+> > +             blk_queue_max_hw_sectors(sdev->request_queue,
+> > +                                      SCSI_DEFAULT_MAX_SECTORS);
+> >
+> >       blk_queue_max_hw_sectors(sdev->request_queue,
+> >               min_t(size_t, queue_max_hw_sectors(sdev->request_queue),
+> > -                   dma_max_mapping_size(dev) >> SECTOR_SHIFT));
+> > +                   dma_max_mapping_size(udev->bus->sysdev) >> SECTOR_SHIFT));
+> >
+> >       if (devinfo->flags & US_FL_NO_REPORT_OPCODES)
+> >               sdev->no_report_opcodes = 1;
+> > @@ -1040,7 +1043,7 @@ static int uas_probe(struct usb_interface *intf, const struct usb_device_id *id)
+> >       shost->can_queue = devinfo->qdepth - 2;
+> >
+> >       usb_set_intfdata(intf, shost);
+> > -     result = scsi_add_host_with_dma(shost, &intf->dev, udev->bus->sysdev);
+> > +     result = scsi_add_host(shost, &intf->dev);
+> >       if (result)
+> >               goto free_streams;
+> >
+> >
+>
