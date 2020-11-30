@@ -2,115 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9367A2C7FCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7A72C7FBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727656AbgK3IZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:25:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727571AbgK3IZI (ORCPT
+        id S1727209AbgK3IYs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Nov 2020 03:24:48 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:35853 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbgK3IYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:25:08 -0500
-Received: from smtp-8faa.mail.infomaniak.ch (smtp-8faa.mail.infomaniak.ch [IPv6:2001:1600:4:17::8faa])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9887CC0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:24:22 -0800 (PST)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Ckyv71SkPzlhCHK;
-        Mon, 30 Nov 2020 09:24:19 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Ckyv42C21zlh8TB;
-        Mon, 30 Nov 2020 09:24:16 +0100 (CET)
-Subject: Re: [PATCH v1 0/9] Enable root to update the blacklist keyring
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-References: <20201120180426.922572-1-mic@digikod.net>
- <20201130024011.GA24870@kernel.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <80fb0eae-8321-5ae2-8d50-eabbe86981da@digikod.net>
-Date:   Mon, 30 Nov 2020 09:23:59 +0100
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <20201130024011.GA24870@kernel.org>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Mon, 30 Nov 2020 03:24:48 -0500
+Received: from mail-pj1-f71.google.com ([209.85.216.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kjeTd-0006fb-Rx
+        for linux-kernel@vger.kernel.org; Mon, 30 Nov 2020 08:24:06 +0000
+Received: by mail-pj1-f71.google.com with SMTP id x9so1074862pjr.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:24:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=WC2KrYmZEQhS4bYbMRHeasgDxnYze36syp9Jw0G7Zl0=;
+        b=ldK7rQJ5U6yN+Tn1qQbVY6P45yNDZHUtVF1BF1sFasvWufHtpxfUWKfGr458L6RlhK
+         QooioyuQfzFGZZmObWPQ2/OIzNQtK25eIvZSHFTJ38izOIWxEg+D3adacDVZOG+/jwum
+         jUZiw2wPo1m4MMzpWE21zDwCjIm2uS4G6SFg2JwVQbwTf/GiD3mIYvTwxO4sG2QklUIm
+         0vbm7UE/TGkCQDTAWyocZluO6nhpNIITjf+D19Qi9NjR/bzefw2stWGYxOJ0aqxsJWuu
+         QfQhfPloS2wf4gYcoSjzBwS6LSSrYOczdHYqiP35TRl4PiZxFoL/HZCubHjJwWDqY+fv
+         4Lsg==
+X-Gm-Message-State: AOAM531ZJIsHTMDxj7DG2TcwjuN+fJysy3LuBpadAQyEvhXxxPs+TicW
+        O2Oo5JShaDn93UNYy47oZNaXuzcGomkiQW9j9WvIsIkHPeJD1ZcJHsGdS60SVYb1Gl9ROOS423N
+        KlagICCLTzjLq78CENo5ljg2/Hay83KbE7aDa3J+3Sw==
+X-Received: by 2002:a17:90a:14e5:: with SMTP id k92mr24400244pja.169.1606724644260;
+        Mon, 30 Nov 2020 00:24:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzzpiB/Npvx890VnGQHhXB2QM0Ikm4RSl0RFlxwAF94yhlBPWrtFx1sj/qbXacJqNEkN4/TDw==
+X-Received: by 2002:a17:90a:14e5:: with SMTP id k92mr24400219pja.169.1606724643869;
+        Mon, 30 Nov 2020 00:24:03 -0800 (PST)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id y188sm15679637pfy.98.2020.11.30.00.24.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 00:24:03 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH 1/3] thermal: core: Add indication for userspace usage
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
+Date:   Mon, 30 Nov 2020 16:23:59 +0800
+Cc:     Zhang Rui <rui.zhang@intel.com>, amitk@kernel.org,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <860126B8-1152-4EE3-B15E-B4E45EFE879F@canonical.com>
+References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
+ <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 30/11/2020 03:40, Jarkko Sakkinen wrote:
-> On Fri, Nov 20, 2020 at 07:04:17PM +0100, Mickaël Salaün wrote:
->> Hi,
->>
->> This patch series mainly add a new configuration option to enable the
->> root user to load signed keys in the blacklist keyring.  This keyring is
->> useful to "untrust" certificates or files.  Enabling to safely update
->> this keyring without recompiling the kernel makes it more usable.
-> 
-> I apologize for latency. This cycle has been difficult because of
-> final cuts with the huge SGX patch set.
-> 
-> I did skim through this and did not see anything striking (but it
-> was a quick look).
-> 
-> What would be easiest way to smoke test the changes?
 
-An easy way to test it is to enable the second trusted keyring to
-dynamically load certificates in the kernel. Then we can create a hash
-of a valid certificate (but not loaded yet) and sign it as explained in
-tools/certs/print-cert-tbs-hash.sh (patch 9/9). Once this hash is loaded
-in the kernel, loading the blacklisted certificate will be denied. We
-can also test it with a PKCS#7 signature chain, either with the
-blacklist keyring itself, or with a signed dm-verity image.
+> On Nov 30, 2020, at 15:57, Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> 
+> 
+> [Added Srinivas]
+> 
+> On 28/11/2020 18:54, Kai-Heng Feng wrote:
+>> We are seeing thermal shutdown on Intel based mobile workstations, the
+>> shutdown happens during the first trip handle in
+>> thermal_zone_device_register():
+>> kernel: thermal thermal_zone15: critical temperature reached (101 C), shutting down
+>> 
+>> However, we shouldn't do a thermal shutdown here, since
+>> 1) We may want to use a dedicated daemon, Intel's thermald in this case,
+>> to handle thermal shutdown.
+>> 
+>> 2) For ACPI based system, _CRT doesn't mean shutdown unless it's inside
+>> ThermalZone. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
+>> "... If this object it present under a device, the deviceâ€™s driver
+>> evaluates this object to determine the deviceâ€™s critical cooling
+>> temperature trip point. This value may then be used by the deviceâ€™s
+>> driver to program an internal device temperature sensor trip point."
+>> 
+>> So a "critical trip" here merely means we should take a more aggressive
+>> cooling method.
+> 
+> Well, actually it is stated before:
+> 
+> "This object, when defined under a thermal zone, returns the critical
+> temperature at which OSPM must shutdown the system".
+
+This means specifically for the ACPI ThermalZone in AML, e.g.:
+
+ThermalZone (TZ0) {
+....
+    Method(_CRT) { ... }
+ } // end of TZ0
+
+However the device is not under any ACPI ThermalZone.
 
 > 
->> Regards,
->>
->> Mickaël Salaün (9):
->>   certs: Fix blacklisted hexadecimal hash string check
->>   certs: Make blacklist_vet_description() more strict
->>   certs: Factor out the blacklist hash creation
->>   certs: Check that builtin blacklist hashes are valid
->>   PKCS#7: Fix missing include
->>   certs: Fix blacklist flag type confusion
->>   certs: Allow root user to append signed hashes to the blacklist
->>     keyring
->>   certs: Replace K{U,G}IDT_INIT() with GLOBAL_ROOT_{U,G}ID
->>   tools/certs: Add print-cert-tbs-hash.sh
->>
->>  MAINTAINERS                                   |   2 +
->>  certs/.gitignore                              |   1 +
->>  certs/Kconfig                                 |  10 +
->>  certs/Makefile                                |  15 +-
->>  certs/blacklist.c                             | 210 +++++++++++++-----
->>  certs/system_keyring.c                        |   5 +-
->>  crypto/asymmetric_keys/x509_public_key.c      |   3 +-
->>  include/keys/system_keyring.h                 |  14 +-
->>  include/linux/verification.h                  |   2 +
->>  scripts/check-blacklist-hashes.awk            |  37 +++
->>  .../platform_certs/keyring_handler.c          |  26 +--
->>  tools/certs/print-cert-tbs-hash.sh            |  91 ++++++++
->>  12 files changed, 335 insertions(+), 81 deletions(-)
->>  create mode 100755 scripts/check-blacklist-hashes.awk
->>  create mode 100755 tools/certs/print-cert-tbs-hash.sh
->>
->>
->> base-commit: 09162bc32c880a791c6c0668ce0745cf7958f576
->> -- 
->> 2.29.2
->>
->>
+> That is what does the thermal subsystem, no ?
 > 
-> /Jarkko
+>> So add an indication to let thermal core know it should leave thermal
+>> device to userspace to handle.
 > 
+> You may want to check the 'HOT' trip point and then use the notification
+> mechanism to get notified in userspace and take action from there (eg.
+> offline some CPUs).
+
+For this particular issue we are facing, the thermal shutdown happens in thermal_zone_device_register() and userspace isn't up yet.
+
+Kai-Heng
+
+> 
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> ---
+>> drivers/thermal/thermal_core.c | 3 +++
+>> include/linux/thermal.h        | 2 ++
+>> 2 files changed, 5 insertions(+)
+>> 
+>> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+>> index c6d74bc1c90b..6561e3767529 100644
+>> --- a/drivers/thermal/thermal_core.c
+>> +++ b/drivers/thermal/thermal_core.c
+>> @@ -1477,6 +1477,9 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+>> 			goto unregister;
+>> 	}
+>> 
+>> +	if (tz->tzp && tz->tzp->userspace)
+>> +		thermal_zone_device_disable(tz);
+>> +
+>> 	mutex_lock(&thermal_list_lock);
+>> 	list_add_tail(&tz->node, &thermal_tz_list);
+>> 	mutex_unlock(&thermal_list_lock);
+>> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+>> index d07ea27e72a9..e8e8fac78fc8 100644
+>> --- a/include/linux/thermal.h
+>> +++ b/include/linux/thermal.h
+>> @@ -247,6 +247,8 @@ struct thermal_zone_params {
+>> 	 */
+>> 	bool no_hwmon;
+>> 
+>> +	bool userspace;
+>> +
+>> 	int num_tbps;	/* Number of tbp entries */
+>> 	struct thermal_bind_params *tbp;
+>> 
+>> 
+> 
+> 
+> -- 
+> <http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
+> 
+> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> <http://twitter.com/#!/linaroorg> Twitter |
+> <http://www.linaro.org/linaro-blog/> Blog
+
