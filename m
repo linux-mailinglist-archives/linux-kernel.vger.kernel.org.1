@@ -2,124 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578DB2C7F68
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8AA2C7F6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727529AbgK3H5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:57:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
+        id S1727685AbgK3H6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 02:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgK3H5n (ORCPT
+        with ESMTP id S1727007AbgK3H6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:57:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F53C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 23:57:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8bZkvwy3CFq9HwUxMeKMBaZFd0BWaHfOhGOX+0uRRCM=; b=NZPsNqlwvQUBjI4w2ECBxEef8U
-        6sv3uPKoxMeORZjb4/ab0zds+sZcx1EDLsAXX18q9fRmY9tVyZntPIxgjt3xEmlKSiYn+o7IOo7Nu
-        ZOMkiJeaUeAUmKEuG9hJDlr2FhN/8btubYewT7Ap4zNzSYEzPH1bsiKABGOsrDcqSy/pfqC6llEuu
-        UDikT1DcoHapgONCFHR19Nu+6fYnNKwtNnzgJNxceU2lppmsHm+n/dMlQK8af5CG793PoD5SpHo9b
-        /bFDEDlqauE1gvmklqQtQIwuc3J89JB/uk364++iRqLGemnCwTQE7KztUByRAHylTAaF0H4CZQF4i
-        6MjEi9fQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kje3L-00024v-RG; Mon, 30 Nov 2020 07:56:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C082A301179;
-        Mon, 30 Nov 2020 08:56:51 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2AD242018E5B6; Mon, 30 Nov 2020 08:56:51 +0100 (CET)
-Date:   Mon, 30 Nov 2020 08:56:51 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-Message-ID: <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
-References: <160665707945.2808.5384034634184489471.tglx@nanos>
- <160665708065.2808.15317906761841446715.tglx@nanos>
- <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
+        Mon, 30 Nov 2020 02:58:38 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B2BC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 23:57:58 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id k10so10754407wmi.3
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 23:57:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V0CDXKuLozXjhXcBQBmMbRd7ZZ/O71fg8ffP+P4Shm4=;
+        b=LJJsVkD4/qL3CwL+0yuRVvBg2cAb8AkbAIXghbYWrbazovXABi5ROy6IA+QjqmSmen
+         WyrgQMABKv0loc8sz90wxLE3WFRaZ+M+Bxt+TrecekfYFsXGYE+fLNCGWvsV6vO/Rfn7
+         CB1iS0xR98BBOLCkgw+MGUzoB4Ii9bfhZpsUnKfSL08sPtMQlOswQxGjR+jAkykyf61Q
+         w91Fx1Qe7KBoeYkpXQ+e7Fz2XyDuT3Df/6ri4uZ+rhngSkQ2mon6ULnw0EsZ1LdFOYSe
+         Yia8bWpN1Ay/oe9v6fjIi2FplY3aJSMqRr4OpXJCgod4ika8/tIewOhu9Z6J5CT3uOp9
+         7qDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V0CDXKuLozXjhXcBQBmMbRd7ZZ/O71fg8ffP+P4Shm4=;
+        b=PvRr5R0czn3OHl5bEf4nuMw1nN/mwhdPAX9UdDdd58fbMGzpcMZI8bnW/xaTa/XL6W
+         EQ7UNcAH7OA5oSVJCow0+1kr8nJPZbfn/ST6t/0KHu+B0H+O3hvyMM0awy92iAgDHTI+
+         hyDKX3XoIDwTC2a9LnVQyT+VpM4JM8Sof4wfT9XuQibgxM9Gta+KGZGirwsA8Wli16ko
+         Zy8Lq/pgOh49+jEJgR5I6W0jDbReZ/OETYjHYh4+GzF1wFXndgtdk4nGyrThR49gFY6p
+         kZplFE4UV8lXirUT2GZmi3lQgGXzZTGejJnbxT9LF2/Os1fKtyVNjWXzE/oyvtJrep6l
+         3OfA==
+X-Gm-Message-State: AOAM530lDyIbbSzzNS6TwjWYoXjvZzz4ohNsZqwmBW1kufzLtHkdbZSK
+        gIeCyA4v9T3jB65cbgUTx+if6qitc4eu3A==
+X-Google-Smtp-Source: ABdhPJysnaWKPrsGc5wrxoxN1GbeW452RPruvjezGfpM4trTqIm1yehTdfcSSlrI19JZE0KBGKJsGw==
+X-Received: by 2002:a1c:1dd4:: with SMTP id d203mr3904405wmd.118.1606723076938;
+        Sun, 29 Nov 2020 23:57:56 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:a9e1:bc04:469:f21b? ([2a01:e34:ed2f:f020:a9e1:bc04:469:f21b])
+        by smtp.googlemail.com with ESMTPSA id w15sm26834820wrp.52.2020.11.29.23.57.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Nov 2020 23:57:56 -0800 (PST)
+Subject: Re: [PATCH 1/3] thermal: core: Add indication for userspace usage
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, rui.zhang@intel.com,
+        amitk@kernel.org
+Cc:     "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
+Date:   Mon, 30 Nov 2020 08:57:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
+In-Reply-To: <20201128175450.12456-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 11:31:41AM -0800, Linus Torvalds wrote:
-> On Sun, Nov 29, 2020 at 5:38 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > Yet two more places which invoke tracing from RCU disabled regions in the
-> > idle path. Similar to the entry path the low level idle functions have to
-> > be non-instrumentable.
+
+[Added Srinivas]
+
+On 28/11/2020 18:54, Kai-Heng Feng wrote:
+> We are seeing thermal shutdown on Intel based mobile workstations, the
+> shutdown happens during the first trip handle in
+> thermal_zone_device_register():
+> kernel: thermal thermal_zone15: critical temperature reached (101 C), shutting down
 > 
-> This really seems less than optimal.
+> However, we shouldn't do a thermal shutdown here, since
+> 1) We may want to use a dedicated daemon, Intel's thermald in this case,
+> to handle thermal shutdown.
 > 
-> In particular, lookie here:
+> 2) For ACPI based system, _CRT doesn't mean shutdown unless it's inside
+> ThermalZone. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
+> "... If this object it present under a device, the device’s driver
+> evaluates this object to determine the device’s critical cooling
+> temperature trip point. This value may then be used by the device’s
+> driver to program an internal device temperature sensor trip point."
 > 
-> > @@ -94,9 +94,35 @@ void __cpuidle default_idle_call(void)
-> >
-> >                 trace_cpu_idle(1, smp_processor_id());
-> >                 stop_critical_timings();
-> > +
-> > +               /*
-> > +                * arch_cpu_idle() is supposed to enable IRQs, however
-> > +                * we can't do that because of RCU and tracing.
-> > +                *
-> > +                * Trace IRQs enable here, then switch off RCU, and have
-> > +                * arch_cpu_idle() use raw_local_irq_enable(). Note that
-> > +                * rcu_idle_enter() relies on lockdep IRQ state, so switch that
-> > +                * last -- this is very similar to the entry code.
-> > +                */
-> > +               trace_hardirqs_on_prepare();
-> > +               lockdep_hardirqs_on_prepare(_THIS_IP_);
-> >                 rcu_idle_enter();
-> > +               lockdep_hardirqs_on(_THIS_IP_);
-> > +
-> >                 arch_cpu_idle();
-> > +
-> > +               /*
-> > +                * OK, so IRQs are enabled here, but RCU needs them disabled to
-> > +                * turn itself back on.. funny thing is that disabling IRQs
-> > +                * will cause tracing, which needs RCU. Jump through hoops to
-> > +                * make it 'work'.
-> > +                */
-> > +               raw_local_irq_disable();
-> > +               lockdep_hardirqs_off(_THIS_IP_);
-> >                 rcu_idle_exit();
-> > +               lockdep_hardirqs_on(_THIS_IP_);
-> > +               raw_local_irq_enable();
-> > +
-> >                 start_critical_timings();
-> >                 trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
-> >         }
+> So a "critical trip" here merely means we should take a more aggressive
+> cooling method.
+
+Well, actually it is stated before:
+
+"This object, when defined under a thermal zone, returns the critical
+temperature at which OSPM must shutdown the system".
+
+That is what does the thermal subsystem, no ?
+
+> So add an indication to let thermal core know it should leave thermal
+> device to userspace to handle.
+
+You may want to check the 'HOT' trip point and then use the notification
+mechanism to get notified in userspace and take action from there (eg.
+offline some CPUs).
+
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/thermal/thermal_core.c | 3 +++
+>  include/linux/thermal.h        | 2 ++
+>  2 files changed, 5 insertions(+)
 > 
-> And look at what the code generation for the idle exit path is when
-> lockdep isn't even on.
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index c6d74bc1c90b..6561e3767529 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -1477,6 +1477,9 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+>  			goto unregister;
+>  	}
+>  
+> +	if (tz->tzp && tz->tzp->userspace)
+> +		thermal_zone_device_disable(tz);
+> +
+>  	mutex_lock(&thermal_list_lock);
+>  	list_add_tail(&tz->node, &thermal_tz_list);
+>  	mutex_unlock(&thermal_list_lock);
+> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+> index d07ea27e72a9..e8e8fac78fc8 100644
+> --- a/include/linux/thermal.h
+> +++ b/include/linux/thermal.h
+> @@ -247,6 +247,8 @@ struct thermal_zone_params {
+>  	 */
+>  	bool no_hwmon;
+>  
+> +	bool userspace;
+> +
+>  	int num_tbps;	/* Number of tbp entries */
+>  	struct thermal_bind_params *tbp;
+>  
+> 
 
-Agreed.
 
-The idea was to flip all of arch_cpu_idle() to not enable interrupts.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-This is suboptimal for things like x86 where arch_cpu_idle() is
-basically STI;HLT, but x86 isn't likely to actually use this code path
-anyway, given all the various cpuidle drivers it has.
-
-Many of the other archs are now doing things like arm's:
-wfi();raw_local_irq_enable().
-
-Doing that tree-wide interrupt-state flip was something I didn't want to
-do at this late a stage, the chanse of messing that up is just too high.
-
-After that I need to go look at flipping cpuidle, which is even more
-'interesting'. cpuidle_enter() has the exact same semantics, and this is
-the code path that x86 actually uses, and here it's inconsitent at best.
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
