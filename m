@@ -2,153 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665EE2C8167
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6572C816A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgK3JwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:52:05 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6906 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726325AbgK3JwE (ORCPT
+        id S1728166AbgK3JwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:52:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24659 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727272AbgK3JwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:52:04 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AU9WPaL050805;
-        Mon, 30 Nov 2020 04:51:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ycxEx1i1IRZUpVbXkfam4zlw10HsuI7crQWaxouBRTo=;
- b=KORbiVe+XpLWjSnAkih0eD9hmeyuN/3sZz0uUf1/KQ6EDhmMLxdJXqXl3GTfgukBnb+V
- DMRuQgLiP8PKNISPhZKjvn8hqRs07tYzd6dfUn9YbJg8SDX7yl2d9iK6rk2913RTLbqd
- pg85zaHxXnQgx7CNrNdKOwwDLNPyUpLrmMzU4x7bAJDcUdPHc310TUQ4dZqd3I9Mz/l1
- G3A0gYe07tKGfa8JMQTHG6ZSTovS7nbCCzVBxSEDsiydZFrKYmzoHgE9ZSLzwEw2p9HV
- rN/TtrvJe+tA+T1UT+5y0/YNHKcgVTiJYuIjCUtjqVqs8XG8mK+iqa4EUM1RhSVbU09P sQ== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 354x45gk5a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 04:51:23 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AU9Wg13020332;
-        Mon, 30 Nov 2020 09:51:21 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 353e682t23-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 09:51:21 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AU9o2PM27394496
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 09:50:03 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D368752054;
-        Mon, 30 Nov 2020 09:50:02 +0000 (GMT)
-Received: from [9.171.29.181] (unknown [9.171.29.181])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A165352052;
-        Mon, 30 Nov 2020 09:50:02 +0000 (GMT)
-Subject: Re: [PATCH v3] s390/pci: fix CPU address in MSI for directed IRQ
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1606410037-11436-1-git-send-email-agordeev@linux.ibm.com>
- <20201127095633.60f8a544.pasic@linux.ibm.com>
- <16fe9017-407f-1bb0-1599-fb46d93009fc@linux.ibm.com>
- <20201127163936.38a51c15.pasic@linux.ibm.com>
- <2400bc6a-ff0a-f0b8-66fc-25e11032dacb@linux.ibm.com>
- <20201130095549.27da927f.pasic@linux.ibm.com>
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Message-ID: <bc52205b-9ae8-98c6-0eb0-9fff551c7868@linux.ibm.com>
-Date:   Mon, 30 Nov 2020 10:50:02 +0100
+        Mon, 30 Nov 2020 04:52:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606729853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hDeO7EwYb3PJHalWL3SGE459q+xe/amBDuL37VCHP+Q=;
+        b=XTtxXH/2YgbrBQmAruywqC0JBkX31+W4TCjvHRUJ9ftN9hoGa3JQwPLg+gSANX8bNSS7JU
+        dpHDRvHN2AQvF80k+Uhx6DpiICogRoVNtRi3BC11uuACcVirQhfUxPdCZ8cq97YHMLE1ta
+        jco7k3m++Fo/9iPBcAuepC/ujazSUYo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-469-w_QJXRzMOAyW2qsb1IJ87w-1; Mon, 30 Nov 2020 04:50:51 -0500
+X-MC-Unique: w_QJXRzMOAyW2qsb1IJ87w-1
+Received: by mail-ed1-f69.google.com with SMTP id w24so2864053edt.11
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:50:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hDeO7EwYb3PJHalWL3SGE459q+xe/amBDuL37VCHP+Q=;
+        b=nKDTUpcjbAxGlrCiN/G1vX7cCEizZ3YlOqDIXmIiL8vlmn+8QUuyyvAqjpFu8+ZMAM
+         4pncuAINy2BBuGQ7TfJm4V0L2QO8Bfsqt27byLSkbJyfUnMKvxZeGa5m7rjkCi/WwlRH
+         Ok41UG2Z8EUabNIzEyAmY1COEFcLOkpxq8eH+ZYX3W4K/UzHKtE3iGX2jNK732Jl3ri9
+         BvTfmNuyj9eXNbK424fYBKV3eYbTKBbJgJyoDkIO+8593RCeMtZxj+JrqWvrI1AU6dH/
+         tZP6BBqNjGUy4qaTUJ/qJ3kIS7rH4+z4BUaKEiTssxYIpslrJpx3Ys9H5zHhUhtVZ3Aj
+         iIlg==
+X-Gm-Message-State: AOAM531NtAIgWEGGdxaUNJHkEzmuS4kNIGulRtex2ROqPEE9J7juFkI8
+        2arPf25bmauEEZBrBS7e068tA5qvEDZ2+AoDbmY042wJXhrOvCE7IicEWKbaZ12/jiqx4r0CNAj
+        D2fOuKExsKO2i4YKanZEa972r
+X-Received: by 2002:a17:906:7118:: with SMTP id x24mr9059516ejj.333.1606729849833;
+        Mon, 30 Nov 2020 01:50:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyU7f50bf7hh4kVqA+tq/hHC/I+4wSdL+dbmYg+8g9FdkE3mttqY43LKwJ8xA9bSgPjMoQPHA==
+X-Received: by 2002:a17:906:7118:: with SMTP id x24mr9059506ejj.333.1606729849647;
+        Mon, 30 Nov 2020 01:50:49 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id b15sm8816140edv.85.2020.11.30.01.50.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 01:50:48 -0800 (PST)
+Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to
+ scsi_add_host()
+To:     Tom Yan <tom.ty89@gmail.com>, hch@lst.de,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
+Cc:     mathias.nyman@intel.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, baolu.lu@linux.intel.com
+References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
+ <20201128154849.3193-1-tom.ty89@gmail.com>
+ <20201128154849.3193-2-tom.ty89@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com>
+Date:   Mon, 30 Nov 2020 10:50:48 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201130095549.27da927f.pasic@linux.ibm.com>
+In-Reply-To: <20201128154849.3193-2-tom.ty89@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-30_02:2020-11-30,2020-11-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 adultscore=0
- spamscore=0 malwarescore=0 mlxscore=0 phishscore=0 suspectscore=0
- bulkscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011300059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 11/30/20 9:55 AM, Halil Pasic wrote:
-> On Mon, 30 Nov 2020 09:30:33 +0100
-> Niklas Schnelle <schnelle@linux.ibm.com> wrote:
+On 11/28/20 4:48 PM, Tom Yan wrote:
+> While the change only seemed to have caused issue on uas drives, we
+> probably want to avoid it in the usb-storage driver as well, until
+> we are sure it is the right thing to do.
 > 
->> I'm not really familiar, with it but I think this is closely related
->> to what I asked Bernd Nerz. I fear that if CPUs go away we might already
->> be in trouble at the firmware/hardware/platform level because the CPU Address is
->> "programmed into the device" so to speak. Thus a directed interrupt from
->> a device may race with anything reordering/removing CPUs even if
->> CPU addresses of dead CPUs are not reused and the mapping is stable.
+> Signed-off-by: Tom Yan <tom.ty89@gmail.com>
+
+This seems to do a whole lot more then just dropping back from
+ scsi_add_host_with_dma() to scsi_add_host(). This has way more
+lines then the orginal commit.
+
+IMHO it would be best to just revert commit 0154012f8018bba4d9971d1007c12ffd48539ddb
+and then submit these changes as a separate patch (which would be
+5.11 material then).
+
+That separate patch could then also have a proper commit message
+explaining the other changes you are making, which is also not
+unimportant.
+
+Regards,
+
+Hans
+
+
+
+
+> ---
+>  drivers/usb/storage/scsiglue.c | 40 +++++++++++++++++-----------------
+>  drivers/usb/storage/usb.c      |  3 +--
+>  2 files changed, 21 insertions(+), 22 deletions(-)
 > 
-> From your answer, I read that CPU hot-unplug is supported for LPAR. 
-
-I'm not sure about hot hot-unplug and firmware
-telling us about removed CPUs but at the very least there is:
-
-echo 0 > /sys/devices/system/cpu/cpu6/online
-
->>
->> Furthermore our floating fallback path will try to send a SIGP
->> to the target CPU which clearly doesn't work when that is permanently
->> gone. Either way I think these issues are out of scope for this fix
->> so I will go ahead and merge this.
+> diff --git a/drivers/usb/storage/scsiglue.c b/drivers/usb/storage/scsiglue.c
+> index 560efd1479ba..6539bae1c188 100644
+> --- a/drivers/usb/storage/scsiglue.c
+> +++ b/drivers/usb/storage/scsiglue.c
+> @@ -92,7 +92,7 @@ static int slave_alloc (struct scsi_device *sdev)
+>  static int slave_configure(struct scsi_device *sdev)
+>  {
+>  	struct us_data *us = host_to_us(sdev->host);
+> -	struct device *dev = sdev->host->dma_dev;
+> +	struct device *dev = us->pusb_dev->bus->sysdev;
+>  
+>  	/*
+>  	 * Many devices have trouble transferring more than 32KB at a time,
+> @@ -120,6 +120,25 @@ static int slave_configure(struct scsi_device *sdev)
+>  		 * better throughput on most devices.
+>  		 */
+>  		blk_queue_max_hw_sectors(sdev->request_queue, 2048);
+> +	} else {
+> +		/*
+> +		 * Limit the total size of a transfer to 120 KB.
+> +		 *
+> +		 * Some devices are known to choke with anything larger. It seems like
+> +		 * the problem stems from the fact that original IDE controllers had
+> +		 * only an 8-bit register to hold the number of sectors in one transfer
+> +		 * and even those couldn't handle a full 256 sectors.
+> +		 *
+> +		 * Because we want to make sure we interoperate with as many devices as
+> +		 * possible, we will maintain a 240 sector transfer size limit for USB
+> +		 * Mass Storage devices.
+> +		 *
+> +		 * Tests show that other operating have similar limits with Microsoft
+> +		 * Windows 7 limiting transfers to 128 sectors for both USB2 and USB3
+> +		 * and Apple Mac OS X 10.11 limiting transfers to 256 sectors for USB2
+> +		 * and 2048 for USB3 devices.
+> +		 */
+> +		blk_queue_max_hw_sectors(sdev->request_queue, 240);
+>  	}
+>  
+>  	/*
+> @@ -627,25 +646,6 @@ static const struct scsi_host_template usb_stor_host_template = {
+>  	.sg_tablesize =			SG_MAX_SEGMENTS,
+>  
+>  
+> -	/*
+> -	 * Limit the total size of a transfer to 120 KB.
+> -	 *
+> -	 * Some devices are known to choke with anything larger. It seems like
+> -	 * the problem stems from the fact that original IDE controllers had
+> -	 * only an 8-bit register to hold the number of sectors in one transfer
+> -	 * and even those couldn't handle a full 256 sectors.
+> -	 *
+> -	 * Because we want to make sure we interoperate with as many devices as
+> -	 * possible, we will maintain a 240 sector transfer size limit for USB
+> -	 * Mass Storage devices.
+> -	 *
+> -	 * Tests show that other operating have similar limits with Microsoft
+> -	 * Windows 7 limiting transfers to 128 sectors for both USB2 and USB3
+> -	 * and Apple Mac OS X 10.11 limiting transfers to 256 sectors for USB2
+> -	 * and 2048 for USB3 devices.
+> -	 */
+> -	.max_sectors =                  240,
+> -
+>  	/* emulated HBA */
+>  	.emulated =			1,
+>  
+> diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
+> index c2ef367cf257..f177da4ff1bc 100644
+> --- a/drivers/usb/storage/usb.c
+> +++ b/drivers/usb/storage/usb.c
+> @@ -1050,8 +1050,7 @@ int usb_stor_probe2(struct us_data *us)
+>  	usb_autopm_get_interface_no_resume(us->pusb_intf);
+>  	snprintf(us->scsi_name, sizeof(us->scsi_name), "usb-storage %s",
+>  					dev_name(dev));
+> -	result = scsi_add_host_with_dma(us_to_host(us), dev,
+> -					us->pusb_dev->bus->sysdev);
+> +	result = scsi_add_host(us_to_host(us), dev);
+>  	if (result) {
+>  		dev_warn(dev,
+>  				"Unable to add the scsi host\n");
 > 
-> I agree, it makes on sense to delay this fix.
-> 
-> But if CPU hot-unplug is supported, I believe we should react when
-> a CPU is unplugged, that is a target of directed interrupts. My guess
-> is, that in this scenario transient hiccups are unavoidable, and thus
-> should be accepted, but we should make sure that we recover.
 
-I agree, I just tested the above command on a firmware test system and
-deactivated 4 of 8 CPUs.
-This is in /proc/interrupts after that:
-
-...
-  3:       9392          0          0          0   PCI-MSI  mlx5_async@pci:0001:00:00.0
-  4:     282741          0          0          0   PCI-MSI  mlx5_comp0@pci:0001:00:00.0
-  5:          0          2          0          0   PCI-MSI  mlx5_comp1@pci:0001:00:00.0
-  6:          0          0        104          0   PCI-MSI  mlx5_comp2@pci:0001:00:00.0
-  7:          0          0          0          2   PCI-MSI  mlx5_comp3@pci:0001:00:00.0
-  8:          0          0          0          0   PCI-MSI  mlx5_comp4@pci:0001:00:00.0
-  9:          0          0          0          0   PCI-MSI  mlx5_comp5@pci:0001:00:00.0
- 10:          0          0          0          0   PCI-MSI  mlx5_comp6@pci:0001:00:00.0
- 11:          0          0          0          0   PCI-MSI  mlx5_comp7@pci:0001:00:00.0
-...
-
-So it looks like we are left with registered interrupts
-for CPUs which are offline. However I'm not sure how to
-trigger a problem with that. I think the drivers would
-usually only do a directed interrupt to a CPU that
-is currently running the process that triggered the
-I/O (I tested this assumption with "taskset -c 2 ping ...").
-Now with the CPU offline there cannot be such a
-process. So I think for the most part the queue would
-just remain unused. Still, if we do get a directed
-interrupt for it's my understanding that currently
-we will lose that.
-
-I think this could be fixed with
-something I tried in a prototype code a while back that
-is in zpci_handle_fallback_irq() I handled the IRQ locally.
-Back then it looked like Directed IRQs would make it to z15 GA 1.5 and
-this was done to help Bernd to debug a Millicode issue (Jup 905371).
-I also had a version of that code meant as a possible performance
-improvement that would check if the target CPU is
-available and only then send the SIGP and otherwise handle it
-locally.
-
-> 
-> Regards,
-> Halil
-> 
