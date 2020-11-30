@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2282C884C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F262C885F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728311AbgK3PiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:38:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47458 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726928AbgK3PiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:38:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606750654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KtPZdWr+m2QwCVPUCkiJTsHf3OlVY3Ly9fgprsglCU4=;
-        b=eUXvSWAPyjvCrAeAgYzVyVd+FonqqypwesPOQe0sC6Z683Njv52cpm5d2tWLj4mSVEguSG
-        HgzxczKhxfq/SjhoxDmzFIV6mDa+etZ507CQYynKGDFlY95N8RA2WIIxeGTwjyd8Z/83pQ
-        Q7eoOo+V9ROvc8W8QmiVrkMnnePtQBE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4CC7EADC5;
-        Mon, 30 Nov 2020 15:37:34 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 16:37:33 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
-Subject: Re: [PATCH] printk: remove obsolete dead assignment
-Message-ID: <X8URvRhAB2AE4DZT@alley>
-References: <20201130124915.7573-1-lukas.bulwahn@gmail.com>
+        id S1728457AbgK3Piv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:38:51 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:45403 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727556AbgK3Pim (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 10:38:42 -0500
+Received: by mail-lj1-f193.google.com with SMTP id q8so9565166ljc.12;
+        Mon, 30 Nov 2020 07:38:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V16D1mpe9Pf31hyLO9sCMtyG6TpO+ajBviUQ5xQbPLg=;
+        b=J3fkyRpSAyuhBCjMif3COhPDQMyhTCxvq9HWegCywYRYeQb/Ri3ohqrz0iFEkxKIzS
+         fCwthLtRbQG6q6V09OW32aCDOeftr91/vTW5mXBk50bJX9MCbZg3qHZl57yZ8LraQfaI
+         6SacZp4rkRQsfjAllM9vuZ4Hrs+jizx5AwIexqSKLbA+ObY0p0L8rFLP8/S+/DdcnJ42
+         WCoPXELLxHUDUhSCCH1nFWQTQuBBkuOx3VeElEF9TUG6bBYY7hcckpusyHU7SIBDCFIh
+         G014p5KJuoLiYcx5T85XCu3l9ymT+b6+GvzydGCb3HABZH5Sye864331G5UY83/mdsnc
+         mSNw==
+X-Gm-Message-State: AOAM530Uqw+FIOBXXfcgeLSw+xNGbCvchKD20GJiVvqNaXIbIKKxc1v1
+        WVdwkPTTUa44IfwpF25kXZg=
+X-Google-Smtp-Source: ABdhPJyHImnAjRzrMtjyzG2xYG1wRgEDp1Rp8P0C6gvLtSPb+CJ1350IW4Ys5W+BKMLvdVVnKi5gpg==
+X-Received: by 2002:a2e:3608:: with SMTP id d8mr10503778lja.68.1606750673684;
+        Mon, 30 Nov 2020 07:37:53 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id u18sm2491666lfq.145.2020.11.30.07.37.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 07:37:52 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1kjlFt-0002Od-Re; Mon, 30 Nov 2020 16:38:22 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 0/5] tty: add flag to suppress ready signalling on open
+Date:   Mon, 30 Nov 2020 16:37:37 +0100
+Message-Id: <20201130153742.9163-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130124915.7573-1-lukas.bulwahn@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-11-30 13:49:15, Lukas Bulwahn wrote:
-> Commit 849f3127bb46 ("switch /dev/kmsg to ->write_iter()") refactored
-> devkmsg_write() and left over a dead assignment on the variable 'len'.
-> 
-> Hence, make clang-analyzer warns:
-> 
->   kernel/printk/printk.c:744:4: warning: Value stored to 'len' is never read
->     [clang-analyzer-deadcode.DeadStores]
->                           len -= endp - line;
->                           ^
-> 
-> Simply remove this obsolete dead assignment here.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on current master and next-20201130
-> 
-> Petr, please pick this minor non-urgent clean-up patch.
-> 
->  kernel/printk/printk.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index f279d4fbd9dd..6e4e38b7cd91 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -741,7 +741,6 @@ static ssize_t devkmsg_write(struct kiocb *iocb, struct iov_iter *from)
->  			if (LOG_FACILITY(u) != 0)
->  				facility = LOG_FACILITY(u);
->  			endp++;
-> -			len -= endp - line;
->  			line = endp;
->  		}
->  	}
+This series adds a new NORDY port flag to suppress raising the
+modem-control lines on open to signal DTE readiness.
+    
+This can be used to implement a NORDY termios control flag to complement
+HUPCL, which controls lowering of the modem-control lines on final
+close.
 
-Yup, it was used to write the trailing '\0'. But it is done earlier
-now. So, it is not longer needed.
+Initially drivers can export the flag through sysfs, which also allows
+control over the lines on first open. Such an interface is implemented
+for serial core and USB serial.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+The motivation for this is to allow for applications where the DTR and
+RTS lines are used for non-standard purposes (e.g. generating power-on
+and reset pulses) to open the port without undesirable side effects.
 
-Best Regards,
-Petr
+The final patches enables this flag by default for such a USB serial
+device.
 
-PS: I'll give it few days just in case anyone else would want to
-review it. I'll push it then unless anyone complains.
+Greg, are you ok we me taking this through my tree? I'm planning on some
+follow ups to the ftdi driver and the tty/serial changes are fairly
+self-contained.
+
+Johan
+
+
+Johan Hovold (3):
+  tty: add port flag to suppress ready signalling on open
+  serial: core: add sysfs attribute to suppress ready signalling on open
+  USB: serial: add sysfs attribute to suppress ready signalling on open
+
+Mychaela N. Falconia (2):
+  USB: serial: ftdi_sio: pass port to quirk port_probe functions
+  USB: serial: ftdi_sio: add support for FreeCalypso DUART28C adapter
+
+ Documentation/ABI/testing/sysfs-tty |  7 +++++
+ drivers/tty/serial/serial_core.c    | 29 ++++++++++++++++++++
+ drivers/tty/tty_port.c              |  2 +-
+ drivers/usb/serial/bus.c            | 38 ++++++++++++++++++++++++--
+ drivers/usb/serial/ftdi_sio.c       | 42 +++++++++++++++++++++++------
+ drivers/usb/serial/ftdi_sio_ids.h   |  1 +
+ include/linux/tty.h                 | 14 ++++++++++
+ 7 files changed, 122 insertions(+), 11 deletions(-)
+
+-- 
+2.26.2
+
