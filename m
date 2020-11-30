@@ -2,145 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F762C9066
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 664532C9068
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730285AbgK3V6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 16:58:12 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:47030 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgK3V6L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 16:58:11 -0500
-Received: by mail-il1-f194.google.com with SMTP id b8so12827342ila.13;
-        Mon, 30 Nov 2020 13:57:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q/HzlOoNpMld/PKw4A/VNclXjAqEao2yRcGSeU0Y00A=;
-        b=JyvVjg6sNbFlEBK+yPsNj16BvjvSzA5USv5ZrZwzUkZWF2FWud/mRj7sQuxM2GPVuI
-         a0Hh3IUrsi6kRBOlpexk2P24Pj0df9rUGbG45okdVTsmx4jWJfiAUEYcEHNZaN5GWokW
-         ARF/O55uEaONXQ+7gr25AsIuyKk0QhH7cFVHtcmyE4zeSshiMIv//2S8HM5wyQR19iWU
-         WfKD/f/cbRyYmd18o/WkQZvIJGkI23vMJRajC/qdvU3KghaNI5xGHwAini2QNVE/Bde2
-         IzmVTD+KIUZkoKPXG7RMckKuoPaZgUGv41lW2I3itbw8xeebEz4SLNygrgufjGEfzNfY
-         8ldg==
-X-Gm-Message-State: AOAM5332+cbEhRTkIxTN5j5wR33gwYb2Gzv0LmtQvmG83EyBOWIewRwv
-        +xDqoHWF93eyPeNMdrVpuA==
-X-Google-Smtp-Source: ABdhPJz63mwCftctBFHW1rb/euu8T+n1MpOhxShPnfXCX61MPx0puzzfFTGGCozE9bo4dgq1Q6HtMw==
-X-Received: by 2002:a05:6e02:168c:: with SMTP id f12mr10637919ila.105.1606773444789;
-        Mon, 30 Nov 2020 13:57:24 -0800 (PST)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id m19sm11143329ila.81.2020.11.30.13.57.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 13:57:23 -0800 (PST)
-Received: (nullmailer pid 3101256 invoked by uid 1000);
-        Mon, 30 Nov 2020 21:57:21 -0000
-Date:   Mon, 30 Nov 2020 14:57:21 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Alice Guo <alice.guo@nxp.com>
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, krzk@kernel.org,
-        linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
- soc unique ID
-Message-ID: <20201130215721.GA3090303@robh.at.kernel.org>
-References: <20201124015949.29262-1-alice.guo@nxp.com>
+        id S1730341AbgK3V61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 16:58:27 -0500
+Received: from ozlabs.org ([203.11.71.1]:34005 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725893AbgK3V60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 16:58:26 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ClJxg2YMkz9sRK;
+        Tue,  1 Dec 2020 08:57:42 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606773465;
+        bh=nqVDwgyOEZiLm2s85MNpU0RJnN+/CWkXa1ePB8H74O0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eMjMdoHg1nj3aaR/ihevGuljfQKC+8k6BgWcY1goCbVsxBU0fJLF6W28Yyw2Miqnx
+         rE1s2cl00rCqtgbN0YwiOyZspQBteiX7ySTPs1JXQBndGt6HzXMEoTdgyQtSmOyqFJ
+         56Y/AshGjcuPsexS1vUPumZj6YvOjdB6mOqqXF9/0WDPfWDU3peL+IJ8P3gN5dro/9
+         x4luHkQy3MSzkcfysb/+XYsKgSuz8wEUhwpNmuCesaRULVrwxkEmQsiIP5v6AxlD4E
+         2RP4pweF2PjCnzlK/c4P0EbyhCzGxlb/6eCi4YpSHqdmviDAJPj0OUPXHHnFMGUYj5
+         XgG2n1VE9BzaA==
+Date:   Tue, 1 Dec 2020 08:57:41 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] clk: renesas: r9a06g032: Drop __packed for
+ portability
+Message-ID: <20201201085741.670f30d4@canb.auug.org.au>
+In-Reply-To: <20201130085743.1656317-1-geert+renesas@glider.be>
+References: <20201130085743.1656317-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124015949.29262-1-alice.guo@nxp.com>
+Content-Type: multipart/signed; boundary="Sig_/8CcZFUCd6vvSy81ZVtgxF0K";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 09:59:46AM +0800, Alice Guo wrote:
-> Add DT Binding doc for the Unique ID of i.MX 8M series.
-> 
-> Signed-off-by: Alice Guo <alice.guo@nxp.com>
+--Sig_/8CcZFUCd6vvSy81ZVtgxF0K
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Geert,
+
+On Mon, 30 Nov 2020 09:57:43 +0100 Geert Uytterhoeven <geert+renesas@glider=
+.be> wrote:
+>
+> The R9A06G032 clock driver uses an array of packed structures to reduce
+> kernel size.  However, this array contains pointers, which are no longer
+> aligned naturally, and cannot be relocated on PPC64.  Hence when
+> compile-testing this driver on PPC64 with CONFIG_RELOCATABLE=3Dy (e.g.
+> PowerPC allyesconfig), the following warnings are produced:
+>=20
+>     WARNING: 136 bad relocations
+>     c000000000616be3 R_PPC64_UADDR64   .rodata+0x00000000000cf338
+>     c000000000616bfe R_PPC64_UADDR64   .rodata+0x00000000000cf370
+>     ...
+>=20
+> Fix this by dropping the __packed attribute from the r9a06g032_clkdesc
+> definition, trading a small size increase for portability.
+>=20
+> This increases the 156-entry clock table by 1 byte per entry, but due to
+> the compiler generating more efficient code for unpacked accesses, the
+> net size increase is only 76 bytes (gcc 9.3.0 on arm32).
+>=20
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Fixes: 4c3d88526eba2143 ("clk: renesas: Renesas R9A06G032 clock driver")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
-> 
-> v2: remove the subject prefix "LF-2571-1"
-> v3: put it into Documentation/devicetree/bindings/arm/fsl.yaml
+> v2:
+>   - Fix authorship.
+> ---
+>  drivers/clk/renesas/r9a06g032-clocks.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-No, I prefer this be a separate schema file and not clutter board/soc 
-schemas with child nodes.
+Thanks.
 
->     modify the description of nvmem-cells
->     use "make ARCH=arm64 dtbs_check" to test it and fix errors
-> v4: use allOf to limit new version DTS files for i.MX8M to include
->     "fsl,imx8mm/n/p/q-soc", nvmem-cells and nvmem-cells-names
-> v5: correct the error of using allOf
-> v6: none
-> 
->  .../devicetree/bindings/arm/fsl.yaml          | 47 +++++++++++++++++++
->  1 file changed, 47 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index 67980dcef66d..7132ffd41abb 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -918,6 +918,53 @@ properties:
->                - fsl,s32v234-evb           # S32V234-EVB2 Customer Evaluation Board
->            - const: fsl,s32v234
-> 
-> +  soc:
-> +    type: object
-> +    properties:
-> +      compatible:
-> +        oneOf:
-> +          - description: new version compatible for i.MX8M SoCs
-> +            items:
-> +              - enum:
-> +                  - fsl,imx8mm-soc
-> +                  - fsl,imx8mn-soc
-> +                  - fsl,imx8mp-soc
-> +                  - fsl,imx8mq-soc
-> +              - const: simple-bus
-> +
-> +          - description: old version compatible for i.MX8M SoCs
-> +            items:
-> +              - const: simple-bus
+I have added that to my fixes tree until it gets picked up elsewhere.
 
-Fix your dts files and drop this.
+--=20
+Cheers,
+Stephen Rothwell
 
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - fsl,imx8mm
-> +              - fsl,imx8mn
-> +              - fsl,imx8mp
-> +              - fsl,imx8mq
-> +
-> +    then:
-> +      patternProperties:
-> +        "^soc@[0-9a-f]+$":
+--Sig_/8CcZFUCd6vvSy81ZVtgxF0K
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-And this is just wrong. First you say the node is 'soc' and then here it 
-has a unit address.
+-----BEGIN PGP SIGNATURE-----
 
-> +          properties:
-> +            compatible:
-> +              items:
-> +                - enum:
-> +                    - fsl,imx8mm-soc
-> +                    - fsl,imx8mn-soc
-> +                    - fsl,imx8mp-soc
-> +                    - fsl,imx8mq-soc
-> +                - const: simple-bus
-> +
-> +          required:
-> +            - compatible
-> +            - nvmem-cells
-> +            - nvmem-cell-names
-> +
->  additionalProperties: true
-> 
->  ...
-> --
-> 2.17.1
-> 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/FatUACgkQAVBC80lX
+0Gwj4Qf7Bge2IGl5zmxh8L/d6Cxz8V2fApcuHXyQ2TF3PeQMWrF/07x4CKb6Ulka
+/l8LefVGxKMNJePlyDad7ZI2j893BnUiNbZIf78vbYdCvYMze/dZy7DJHPEjnYQI
+x90IS+NUTSWXI6HHZ2qDCZoCh+wrAXnKV29Gbi2tywb+F4eV9M7eu1s/XJHm80P1
+zHjiAClpipnbzl4O7LhOeKEkLfDFkv+6JX788FM5oYOoXXl7JKa2Cxw0DoUVSskN
+aXldweVNdjdlJWfQoDZ59So/HhcfS++W+6rrunrS+8nSCLQuK6rpop+hZzOvaaEB
+rxTngm9SqYXsCwnO0hq4Slv7Y4IkbQ==
+=/Pyh
+-----END PGP SIGNATURE-----
+
+--Sig_/8CcZFUCd6vvSy81ZVtgxF0K--
