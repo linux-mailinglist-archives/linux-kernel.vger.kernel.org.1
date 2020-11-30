@@ -2,286 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2786A2C8320
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1AE2C8323
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgK3LXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:23:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgK3LXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:23:40 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D591A206C0;
-        Mon, 30 Nov 2020 11:22:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606735379;
-        bh=C/tX+/xIQfu/l2jRe/mauR07nHMptQk9G3sfbmqUn8c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SWqt3vc/2cb79JBviuv/tQctBHNF+l8ewM82n7RLPlThwl4d1/P1CH+bo0ypQO+82
-         8CvtbVDyF2V2NQ72uub1BXGMk/PzVqrXve5FTO2drRb6hisUQHAiDvpWVjcT3js/0s
-         ThB8ZxfOC/I+RCflReXiFXtp4lF8G8Q7p/rI5O7g=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kjhGi-00EfQ1-Jk; Mon, 30 Nov 2020 11:22:56 +0000
+        id S1728851AbgK3LYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:24:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728544AbgK3LYb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 06:24:31 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3A2C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:23:50 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id b12so1176299pjl.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:23:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5KQEYcp6l6dBFn1raevTr29TeoPJz8nJ6f6yY9EnMeE=;
+        b=c3Y5DGTqRSegKH/Wo4ABWzvfq7RxsnyYIx8B7v8xobbvKb66SB8rBO0w8hXYuKkItB
+         muDZA+nshAnhkHJmWg44802W6iE8REMKvEIC4SzIquVSP6nR+9jMPm+iRMuP2hAiXIEe
+         uPD/iILXOc3Ey5btuRWXZr9WjbVrhisMoUp3g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5KQEYcp6l6dBFn1raevTr29TeoPJz8nJ6f6yY9EnMeE=;
+        b=UUyirCpNV/lcuYUG3bKuTS5Fa45QlP4uJLHccGxLFRYE+ajqSrzKsjR1g6/mJJHqWA
+         pX7jWHXZaBiLXD8slkFuIOReyxQNqD7hbgg7JyK+S9Z+tggG+i57vv0H+hFS7s9Onzsy
+         KdMqi22lUHAU8xWf66N36ScSzkcyOu2L2ij60EF/6YI/FSDrHUureq6d2tQU+5xjubny
+         xVFM2LeUp8K3RdPoj1I41aD5L+WsZ/g8fq6Udo77SW3Qs6e4zXZwFhKGkp6Zy4UERGUn
+         QfnDXQeOUQuCndisT9B19Cdm8lOcHb/1VlRRtXr5v8DCfWOa6hVQnGkTz4V83R2Pc0LD
+         W0MA==
+X-Gm-Message-State: AOAM533IYUTRB31PNgVG7WQY/9a/klAaXTbrHsqWCDBkDIV9I8gTGf7G
+        2JIacRwek9ywF1M5aj22z+86PWcskZj11BOk
+X-Google-Smtp-Source: ABdhPJzgaq+7GVK8vXDvTehlFsfhsh/zRT+j1VOIpCOeuDHv3wSCATz00rLvomKzjQP3aybSXjjEBA==
+X-Received: by 2002:a17:902:a5c1:b029:d8:d387:3c23 with SMTP id t1-20020a170902a5c1b02900d8d3873c23mr18245054plq.22.1606735430157;
+        Mon, 30 Nov 2020 03:23:50 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:c00a:a884:741b:45e2:5211:48e3])
+        by smtp.gmail.com with ESMTPSA id d19sm22438326pjs.0.2020.11.30.03.23.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 03:23:49 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Troy Kisky <troy.kisky@boundarydevices.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH 1/2] dt-bindings: regulator: Add pf8x00 regulator bindings
+Date:   Mon, 30 Nov 2020 16:53:28 +0530
+Message-Id: <20201130112329.104614-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 30 Nov 2020 11:22:56 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [PATCH v2 2/2] KVM: arm64: Delay the execution of the polling on
- the GICR_VPENDBASER.Dirty bit
-In-Reply-To: <20201128141857.983-3-lushenming@huawei.com>
-References: <20201128141857.983-1-lushenming@huawei.com>
- <20201128141857.983-3-lushenming@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <b2387410a28f9c5d9ece45e12feead94@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lushenming@huawei.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, eric.auger@redhat.com, christoffer.dall@arm.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-28 14:18, Shenming Lu wrote:
-> In order to further reduce the impact of the wait delay of the
-> VPT analysis, we can delay the execution of the polling on the
-> GICR_VPENDBASER.Dirty bit (call it from kvm_vgic_flush_hwstate()
-> corresponding to vPE resident), let the GIC and the CPU work in
-> parallel on the entry path.
-> 
-> Signed-off-by: Shenming Lu <lushenming@huawei.com>
-> ---
->  arch/arm64/kvm/vgic/vgic-v4.c      | 16 ++++++++++++++++
->  arch/arm64/kvm/vgic/vgic.c         |  3 +++
->  drivers/irqchip/irq-gic-v3-its.c   | 16 ++++++++++++----
->  drivers/irqchip/irq-gic-v4.c       | 11 +++++++++++
->  include/kvm/arm_vgic.h             |  3 +++
->  include/linux/irqchip/arm-gic-v4.h |  4 ++++
->  6 files changed, 49 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c 
-> b/arch/arm64/kvm/vgic/vgic-v4.c
-> index b5fa73c9fd35..b0da74809187 100644
-> --- a/arch/arm64/kvm/vgic/vgic-v4.c
-> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
-> @@ -353,6 +353,22 @@ int vgic_v4_load(struct kvm_vcpu *vcpu)
->  	return err;
->  }
-> 
-> +void vgic_v4_commit(struct kvm_vcpu *vcpu)
-> +{
-> +	struct its_vpe *vpe = &vcpu->arch.vgic_cpu.vgic_v3.its_vpe;
-> +
-> +	/*
-> +	 * No need to wait for the vPE to be ready across a shallow guest
-> +	 * exit, as only a vcpu_put will invalidate it.
-> +	 */
-> +	if (vpe->vpe_ready)
-> +		return;
-> +
-> +	its_commit_vpe(vpe);
-> +
-> +	vpe->vpe_ready = true;
+Add NXP PF8100/PF8121A/PF8200 regulators bindings.
 
-This should be written as:
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
+ .../regulator/nxp,pf8x00-regulator.yaml       | 211 ++++++++++++++++++
+ 1 file changed, 211 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
 
-if (!ready)
-      commit();
-
-and ready being driven by the commit() call itself.
-
-> +}
-> +
->  static struct vgic_its *vgic_get_its(struct kvm *kvm,
->  				     struct kvm_kernel_irq_routing_entry *irq_entry)
->  {
-> diff --git a/arch/arm64/kvm/vgic/vgic.c b/arch/arm64/kvm/vgic/vgic.c
-> index c3643b7f101b..1c597c9885fa 100644
-> --- a/arch/arm64/kvm/vgic/vgic.c
-> +++ b/arch/arm64/kvm/vgic/vgic.c
-> @@ -915,6 +915,9 @@ void kvm_vgic_flush_hwstate(struct kvm_vcpu *vcpu)
-> 
->  	if (can_access_vgic_from_kernel())
->  		vgic_restore_state(vcpu);
-> +
-> +	if (vgic_supports_direct_msis(vcpu->kvm))
-> +		vgic_v4_commit(vcpu);
->  }
-> 
->  void kvm_vgic_load(struct kvm_vcpu *vcpu)
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
-> b/drivers/irqchip/irq-gic-v3-its.c
-> index 22f427135c6b..f30aba14933e 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -3842,8 +3842,6 @@ static void its_vpe_schedule(struct its_vpe *vpe)
->  	val |= vpe->idai ? GICR_VPENDBASER_IDAI : 0;
->  	val |= GICR_VPENDBASER_Valid;
->  	gicr_write_vpendbaser(val, vlpi_base + GICR_VPENDBASER);
-> -
-> -	its_wait_vpt_parse_complete();
->  }
-> 
->  static void its_vpe_deschedule(struct its_vpe *vpe)
-> @@ -3855,6 +3853,8 @@ static void its_vpe_deschedule(struct its_vpe 
-> *vpe)
-> 
->  	vpe->idai = !!(val & GICR_VPENDBASER_IDAI);
->  	vpe->pending_last = !!(val & GICR_VPENDBASER_PendingLast);
-> +
-> +	vpe->vpe_ready = false;
-
-This should be set from the its_make_vpe_non_resident() call.
-
->  }
-> 
->  static void its_vpe_invall(struct its_vpe *vpe)
-> @@ -3891,6 +3891,10 @@ static int its_vpe_set_vcpu_affinity(struct
-> irq_data *d, void *vcpu_info)
->  		its_vpe_deschedule(vpe);
->  		return 0;
-> 
-> +	case COMMIT_VPE:
-> +		its_wait_vpt_parse_complete();
-> +		return 0;
-> +
->  	case INVALL_VPE:
->  		its_vpe_invall(vpe);
->  		return 0;
-> @@ -4052,8 +4056,6 @@ static void its_vpe_4_1_schedule(struct its_vpe 
-> *vpe,
->  	val |= FIELD_PREP(GICR_VPENDBASER_4_1_VPEID, vpe->vpe_id);
-> 
->  	gicr_write_vpendbaser(val, vlpi_base + GICR_VPENDBASER);
-> -
-> -	its_wait_vpt_parse_complete();
->  }
-> 
->  static void its_vpe_4_1_deschedule(struct its_vpe *vpe,
-> @@ -4091,6 +4093,8 @@ static void its_vpe_4_1_deschedule(struct its_vpe 
-> *vpe,
->  					    GICR_VPENDBASER_PendingLast);
->  		vpe->pending_last = true;
->  	}
-> +
-> +	vpe->vpe_ready = false;
->  }
-> 
->  static void its_vpe_4_1_invall(struct its_vpe *vpe)
-> @@ -4128,6 +4132,10 @@ static int its_vpe_4_1_set_vcpu_affinity(struct
-> irq_data *d, void *vcpu_info)
->  		its_vpe_4_1_deschedule(vpe, info);
->  		return 0;
-> 
-> +	case COMMIT_VPE:
-> +		its_wait_vpt_parse_complete();
-> +		return 0;
-> +
->  	case INVALL_VPE:
->  		its_vpe_4_1_invall(vpe);
->  		return 0;
-> diff --git a/drivers/irqchip/irq-gic-v4.c 
-> b/drivers/irqchip/irq-gic-v4.c
-> index 0c18714ae13e..6cea71a4e68b 100644
-> --- a/drivers/irqchip/irq-gic-v4.c
-> +++ b/drivers/irqchip/irq-gic-v4.c
-> @@ -258,6 +258,17 @@ int its_make_vpe_resident(struct its_vpe *vpe,
-> bool g0en, bool g1en)
->  	return ret;
->  }
-> 
-> +int its_commit_vpe(struct its_vpe *vpe)
-> +{
-> +	struct its_cmd_info info = {
-> +		.cmd_type = COMMIT_VPE,
-> +	};
-> +
-> +	WARN_ON(preemptible());
-> +
-> +	return its_send_vpe_cmd(vpe, &info);
-> +}
-> +
->  int its_invall_vpe(struct its_vpe *vpe)
->  {
->  	struct its_cmd_info info = {
-> diff --git a/include/kvm/arm_vgic.h b/include/kvm/arm_vgic.h
-> index a8d8fdcd3723..f2170df6cf7c 100644
-> --- a/include/kvm/arm_vgic.h
-> +++ b/include/kvm/arm_vgic.h
-> @@ -401,7 +401,10 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, 
-> int irq,
->  int kvm_vgic_v4_unset_forwarding(struct kvm *kvm, int irq,
->  				 struct kvm_kernel_irq_routing_entry *irq_entry);
-> 
-> +void vgic_v4_commit(struct kvm_vcpu *vcpu);
-> +
->  int vgic_v4_load(struct kvm_vcpu *vcpu);
-> +
-
-Spurious new lines.
-
->  int vgic_v4_put(struct kvm_vcpu *vcpu, bool need_db);
-> 
->  #endif /* __KVM_ARM_VGIC_H */
-> diff --git a/include/linux/irqchip/arm-gic-v4.h
-> b/include/linux/irqchip/arm-gic-v4.h
-> index 6976b8331b60..936d88e482a9 100644
-> --- a/include/linux/irqchip/arm-gic-v4.h
-> +++ b/include/linux/irqchip/arm-gic-v4.h
-> @@ -75,6 +75,8 @@ struct its_vpe {
->  	u16			vpe_id;
->  	/* Pending VLPIs on schedule out? */
->  	bool			pending_last;
-> +	/* VPT parse complete */
-> +	bool			vpe_ready;
->  };
-> 
->  /*
-> @@ -104,6 +106,7 @@ enum its_vcpu_info_cmd_type {
->  	PROP_UPDATE_AND_INV_VLPI,
->  	SCHEDULE_VPE,
->  	DESCHEDULE_VPE,
-> +	COMMIT_VPE,
->  	INVALL_VPE,
->  	PROP_UPDATE_VSGI,
->  };
-> @@ -129,6 +132,7 @@ int its_alloc_vcpu_irqs(struct its_vm *vm);
->  void its_free_vcpu_irqs(struct its_vm *vm);
->  int its_make_vpe_resident(struct its_vpe *vpe, bool g0en, bool g1en);
->  int its_make_vpe_non_resident(struct its_vpe *vpe, bool db);
-> +int its_commit_vpe(struct its_vpe *vpe);
->  int its_invall_vpe(struct its_vpe *vpe);
->  int its_map_vlpi(int irq, struct its_vlpi_map *map);
->  int its_get_vlpi(int irq, struct its_vlpi_map *map);
-
-In order to speed up the respin round-trip, I've taken the liberty
-to refactor this patch myself. Please have a look at [1] and let
-me know if you're OK with it.
-
-Thanks,
-
-         M.
-
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/commit/?h=kvm-arm64/misc-5.11&id=57e3cebd022fbc035dcf190ac789fd2ffc747f5b
+diff --git a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+new file mode 100644
+index 000000000000..a6c259ce9785
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+@@ -0,0 +1,211 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/nxp,pf8x00-regulator.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP PF8100/PF8121A/PF8200 PMIC regulators
++
++maintainers:
++  - Jagan Teki <jagan@amarulasolutions.com>
++  - Troy Kisky <troy.kisky@boundarydevices.com>
++
++description: |
++  PF8100/PF8121A/PF8200 is a PMIC designed for highperformance consumer
++  applications. It features seven high efficiency buck converters, four
++  linear and one vsnvs regulators. It has built-in one time programmable
++  fuse bank for device configurations.
++
++properties:
++  compatible:
++    enum:
++      - nxp,pf8x00
++
++  reg:
++    maxItems: 1
++
++  regulators:
++    type: object
++    description: |
++      list of regulators provided by this controller
++
++    patternProperties:
++      "^ldo[1-4]$":
++        type: object
++        $ref: regulator.yaml#
++        description:
++          Properties for single LDO regulator.
++
++        properties:
++          regulator-name:
++            pattern: "^ldo[1-4]$"
++            description:
++              should be "ldo1", ..., "ldo4"
++
++        unevaluatedProperties: false
++
++      "^buck[1-7]$":
++        type: object
++        $ref: regulator.yaml#
++        description:
++          Properties for single BUCK regulator.
++
++        properties:
++          regulator-name:
++            pattern: "^buck[1-7]$"
++            description:
++              should be "buck1", ..., "buck7"
++
++          nxp,ilim-ma:
++            $ref: "/schemas/types.yaml#/definitions/uint32"
++            minimum: 2100
++            maximum: 4500
++            description:
++              BUCK regulators current limit in mA.
++
++              Listed current limits in mA are,
++              2100 (default)
++              2600
++              3000
++              4500
++
++          nxp,phase-shift:
++            $ref: "/schemas/types.yaml#/definitions/uint32"
++            minimum: 45
++            maximum: 0
++            description:
++              BUCK regulators phase shift control in degrees.
++
++              Listed phase shift control values in degrees are,
++              45
++              90
++              135
++              180
++              225
++              270
++              315
++              0 (default)
++
++        unevaluatedProperties: false
++
++      "^vsnvs$":
++        type: object
++        $ref: regulator.yaml#
++        description:
++          Properties for single VSNVS regulator.
++
++        properties:
++          regulator-name:
++            pattern: "^vsnvs$"
++            description:
++              should be "vsnvs"
++
++        unevaluatedProperties: false
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - regulators
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c1 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pmic@8 {
++            compatible = "nxp,pf8x00";
++            reg = <0x08>;
++
++            regulators {
++                reg_ldo1: ldo1 {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <5000000>;
++                    regulator-min-microvolt = <1500000>;
++                };
++
++                reg_ldo2: ldo2 {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <5000000>;
++                    regulator-min-microvolt = <1500000>;
++                };
++
++                reg_ldo3: ldo3 {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <5000000>;
++                    regulator-min-microvolt = <1500000>;
++                };
++
++                reg_ldo4: ldo4 {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <5000000>;
++                    regulator-min-microvolt = <1500000>;
++                };
++
++                reg_buck1: buck1 {
++                    nxp,ilim-ma = <4500>;
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <1800000>;
++                    regulator-min-microvolt =  <400000>;
++                };
++
++                reg_buck2: buck2 {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <1800000>;
++                    regulator-min-microvolt =  <400000>;
++                };
++
++                reg_buck3: buck3 {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <1800000>;
++                    regulator-min-microvolt =  <400000>;
++                };
++
++                reg_buck4: buck4 {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <1800000>;
++                    regulator-min-microvolt =  <400000>;
++                };
++
++                reg_buck5: buck5 {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <1800000>;
++                    regulator-min-microvolt =  <400000>;
++                };
++
++                reg_buck6: buck6 {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <1800000>;
++                    regulator-min-microvolt =  <400000>;
++                };
++
++                reg_buck7: buck7 {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-min-microvolt = <3300000>;
++                };
++
++                reg_vsnvs: vsnvs {
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-min-microvolt = <1800000>;
++                };
++            };
++        };
++    };
 -- 
-Jazz is not dead. It just smells funny...
+2.25.1
+
