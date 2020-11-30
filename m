@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3802C8FC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8182C8FC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388510AbgK3VOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 16:14:45 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:33473 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388496AbgK3VOo (ORCPT
+        id S2388515AbgK3VQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 16:16:00 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:36000 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726265AbgK3VQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 16:14:44 -0500
-Received: by mail-io1-f68.google.com with SMTP id o8so13376191ioh.0;
-        Mon, 30 Nov 2020 13:14:28 -0800 (PST)
+        Mon, 30 Nov 2020 16:16:00 -0500
+Received: by mail-io1-f65.google.com with SMTP id z136so13364259iof.3;
+        Mon, 30 Nov 2020 13:15:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K5QWl5ei9jV340XmIr+pmfuIbJrWkKit899MIYPp7AQ=;
-        b=M+ZyNfRbZcd4mo4LBJXzMtynpGNimQztfXJHZVHqijjjtkOFV6Mp/His6hm/+aS9cM
-         QhsORov5rOlCoQSdWj1yPNQpjYkcomr8Gva0dlEKY/aBs0CuC9YpY5f7OJqiMdHKkwAp
-         GSQD1i6xGDALuQCGTN+0v5ZqSY5cQ6z3R4EUi2YCD6ITFIkRmMFgX2IgHL9ZdnEI9Qj8
-         /kVrNdf4i7AFQDKctzLn2UrphQqV4DhGIYv8so5PM6nUT7Q1Gzm82R7xSyyvVI7yrl5M
-         FIt7LYxNlesdFpcHYcV+GHPqo26ErYUXz0426gCb9HU5DLZuqUuE3AtyIBdI79FIHz0r
-         HycA==
-X-Gm-Message-State: AOAM5332wnSr8GMz7OmOOILssVN185X+MTzo6kuRNqzlD7nP9c+HBwLd
-        GSTMk5tQnR35idOyc573/g==
-X-Google-Smtp-Source: ABdhPJwBTvy1PvPrfL4c8jdviKMqeXkkN8UP70aRUeHPx0vOFpZKGah2bqoIkQwF0Nj7tYtd1l33JA==
-X-Received: by 2002:a02:90ca:: with SMTP id c10mr21877924jag.115.1606770842954;
-        Mon, 30 Nov 2020 13:14:02 -0800 (PST)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Jwht71OxD5GRnfrTVHlZAHOwqpu6pUHtWSfdxPAhhe4=;
+        b=BNg4/OGGnTrwL1nW5Wtgce8tl4ZzC/gC3xbK2iJaM/lOGDOe+dFxPEr8lHXIZrLIQy
+         ULRl8bxMGxOXIjgtE8VTG5CCFaMjH0H4R8kukYI6RS8vyQE9mzlShJcOHtcQ6pxyykUv
+         oJvXdzYbKqCSxWWNqK12EpUI8L2SWKYxtTIz7gD2VJyGB0rE3VJUrmFl6VV9lG4Y7kM1
+         +oQmIePUScvudfqJniWnrHF5HUbU2qi6YaRLwuhWwODmg8Hc6wrM0Ru5RAv1IFvyr/WO
+         tfiV8tGFIWuemHoVEsVHZeIj4xTNZKs4oq4FzeyRIOSwrLedbWpxaMg2E1OSAQyKXr/i
+         c/qg==
+X-Gm-Message-State: AOAM533cmS8QUMUaDlZ/Qglx07BYxXNu2dCaEIUV6bllSfYxK8KLY2je
+        xbJVanSEG2ErgZiWNH//Rg==
+X-Google-Smtp-Source: ABdhPJxBxVUopJfyw4u+TG/AMxEzVixJJSObpTwD2wlDLL8a3YdNWFt17IuDYm5BToKWs/WtjrQ0/A==
+X-Received: by 2002:a5d:8042:: with SMTP id b2mr17558393ior.4.1606770919062;
+        Mon, 30 Nov 2020 13:15:19 -0800 (PST)
 Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v22sm11951854ila.84.2020.11.30.13.13.59
+        by smtp.gmail.com with ESMTPSA id v23sm2272237iol.21.2020.11.30.13.15.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 13:14:01 -0800 (PST)
-Received: (nullmailer pid 3033265 invoked by uid 1000);
-        Mon, 30 Nov 2020 21:13:58 -0000
-Date:   Mon, 30 Nov 2020 14:13:58 -0700
+        Mon, 30 Nov 2020 13:15:18 -0800 (PST)
+Received: (nullmailer pid 3035408 invoked by uid 1000);
+        Mon, 30 Nov 2020 21:15:16 -0000
+Date:   Mon, 30 Nov 2020 14:15:16 -0700
 From:   Rob Herring <robh@kernel.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     jacek.anaszewski@gmail.com, pavel@ucw.cz, matthias.bgg@gmail.com,
-        dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v10 4/6] dt-bindings: leds: common: Increase
- LED_COLOR_ID_* maximum size
-Message-ID: <20201130211358.GA3030232@robh.at.kernel.org>
-References: <1606447736-7944-1-git-send-email-gene.chen.richtek@gmail.com>
- <1606447736-7944-5-git-send-email-gene.chen.richtek@gmail.com>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     vkoul@kernel.org, kishon@ti.com, mturquette@baylibre.com,
+        robh+dt@kernel.org, rick.tyliu@ingenic.com, zhenwenjin@gmail.com,
+        paul@crapouillou.net, aric.pzqi@ingenic.com,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        dongsheng.qiu@ingenic.com, yanfei.li@ingenic.com,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        sboyd@kernel.org, linux-usb@vger.kernel.org,
+        sernia.zhou@foxmail.com, balbi@kernel.org
+Subject: Re: [PATCH v9 2/3] dt-bindings: USB: Add bindings for Ingenic JZ4775
+ and X2000.
+Message-ID: <20201130211516.GA3035356@robh.at.kernel.org>
+References: <20201116141906.11758-1-zhouyanjie@wanyeetech.com>
+ <20201116141906.11758-3-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1606447736-7944-5-git-send-email-gene.chen.richtek@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201116141906.11758-3-zhouyanjie@wanyeetech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 11:28:54AM +0800, Gene Chen wrote:
-> From: Gene Chen <gene_chen@richtek.com>
+On Mon, 16 Nov 2020 22:19:05 +0800, 周琰杰 (Zhou Yanjie) wrote:
+> Move Ingenic USB PHY bindings from Documentation/devicetree/bindings/usb
+> to Documentation/devicetree/bindings/phy, and add bindings for JZ4775 SoC
+> and X2000 SoC.
 > 
-> Increase LED_COLOR_ID maximum size for LED_COLOR_ID_RGB
-> 
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 > ---
->  Documentation/devicetree/bindings/leds/common.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
-> index a2a541b..0c9f912 100644
-> --- a/Documentation/devicetree/bindings/leds/common.yaml
-> +++ b/Documentation/devicetree/bindings/leds/common.yaml
-> @@ -43,7 +43,7 @@ properties:
->        LED_COLOR_ID available, add a new one.
->      $ref: /schemas/types.yaml#definitions/uint32
->      minimum: 0
-> -    maximum: 8
-> +    maximum: 9
-
-Already in linux-next.
-
->  
->    function-enumerator:
->      description:
-> -- 
-> 2.7.4
+> Notes:
+>     v8:
+>     New patch.
 > 
+>     v8->v9:
+>     Correct the path errors in "ingenic,phy-usb.yaml" and "ingenic,cgu.yaml".
+> 
+>  Documentation/devicetree/bindings/clock/ingenic,cgu.yaml              | 2 +-
+>  .../{usb/ingenic,jz4770-phy.yaml => phy/ingenic,phy-usb.yaml}         | 4 +++-
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+>  rename Documentation/devicetree/bindings/{usb/ingenic,jz4770-phy.yaml => phy/ingenic,phy-usb.yaml} (89%)
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
