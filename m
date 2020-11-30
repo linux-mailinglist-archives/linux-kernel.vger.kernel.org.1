@@ -2,143 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B71F2C928C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BF52C9290
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388674AbgK3Xas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:30:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388590AbgK3Xar (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:30:47 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696AEC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:30:07 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id t18so4629555otk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:30:07 -0800 (PST)
+        id S2388134AbgK3Xb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:31:57 -0500
+Received: from mail-bn8nam11on2043.outbound.protection.outlook.com ([40.107.236.43]:57696
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725933AbgK3Xb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 18:31:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cWkyfufRgKy85e16iQR6BDNP1thiMcF8uUOaEfhNzPBQb8M1V/tj+VPGmIrULB1LF+FfiNxnr7m+IIHPTvLm4LkKuTPRB8PN6rLss9BNLdrQrNkuQDD3Affmq9zbbqVmONlaV3dDTf8oHogZnzSHvVxlE+OY88HpjnmP0u17HWxjVFlIVQSzjzjMb3VKyf1bX0sW1kmg/VZQIQyztmi3t3TKQrYJA/EqCzsQvQPQ9IeP7QU7tZzHAId9dJizLO65Tt85oHLdfRn0cjBATsPTbjLybC3L7Ddz8zj4pH+1fkDx0tD6tR/Z+h28g+gwFHXbMpVwAxniDh6eWdRyKevIYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GPs10stIlZDQFkdrdo7I/cuF4hbgyuOhSYX1t/LOwxE=;
+ b=jF37PxbTrUVkQhF3d2eWeFct7g8MKlbC7lBw4dk1hAAzdIDxu98RcA0MU1oL77l3OTDC7WdDrJigmOdncCVrA/Um2cYzq6nxFmPajucvru7p2f8s6jHo6w86yBbV5wwLS3fideOv9JEf4lgiT7/3SfetnNVz1y/DG45MrnLVQ/wSxctqSjYVXUXpNA++Kz56OxLFxrHfHm/dUfzbzoo9RJtjqyYabBXu/fiEv4dkjF6x1G61Nynr0GrO1UmjMlPTb8jSTAht9dTrCFCfgZe7oXMcW1a5PhSgNhvWtM1dpFF7gq9g9/Ip0rXUrR+xoesLk6FM8KEyk5yBWH3dD2VmNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+uMOErT0cr65Ou3LFaf1alFJAddt+nc1yJ4P5ZkXSgw=;
-        b=LMadV/9nvicO3vvuQxDXRrBC3owXn1KVMb0n/9FSUeUSXXxAFqgyrzU+op51wl1Vdi
-         tuiuZrBC3sYtPAjhwQfYRmBxmfa+KjeI8DzNShbDtwD4Lh1Y9GtYXCX/3CQShqsMikpQ
-         XyW0OvZjiPIo15Vjcwbh/xvdxlVarywtmfqN93pwMwUdq9eJO+I85tdt6yMUYcyI8mUi
-         ezti7BgLs+TNquwGZblzt4NR6ryiipnvp8Q+2KnYDFOUN8ZoVvRjrCh5v8R2SWQW4zxz
-         NczWkjyxN6sd7jx9Ub/1lp12yiX6NfpBDETw3Dlp4ac/Qv3v3hTV+uyhc5OBwf3m2Lp5
-         d+sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+uMOErT0cr65Ou3LFaf1alFJAddt+nc1yJ4P5ZkXSgw=;
-        b=q6Vf5EdL3Tr/GFJQaUUK5ycU3fnIg85tFnaorDuHenPf6v8v+BWHdsGCzfAZY0uRml
-         /ejbWQyRpNH73MAXns5cISXv6kjtFErJeMa3zZDs5LkrF2/FWtRDccU6GIPIQ/GASKET
-         8oEYclzjUk+h6KvPds4YJSvHLpGcxWKsXvQlnsu9TS26foBgakve7hdba7ugb4aw6HLF
-         b7lLKM/kUoVpRjrwYPc3g1ROW68tf3ORcuDOUwF8rMeY9SzXaJRryP6NHvbcfc9XAf5z
-         PIRBF5Xm4NfGAfR+xfFFjWSKDTURrVUZZYsjJC+wvqU2JrT30YeLMkMkFVir/jg+VXXx
-         VTcg==
-X-Gm-Message-State: AOAM533/nmaU2K3fag4H3eFYBXDR/tmaB6Spdc+qMrxPRpYgsRKPQK7B
-        jimOUXV/WyBom8Ylyzf4wPls1RHCWWJP81rNCaY=
-X-Google-Smtp-Source: ABdhPJw5LXpVxlLKZYxswd9WOJd3cPpw3dpLYTRdEcrta+gSNUaFyxsqW4utb6G0ceYh4Wue0dZAs4TwjozVvV3CW54=
-X-Received: by 2002:a9d:4713:: with SMTP id a19mr19386387otf.132.1606779006892;
- Mon, 30 Nov 2020 15:30:06 -0800 (PST)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GPs10stIlZDQFkdrdo7I/cuF4hbgyuOhSYX1t/LOwxE=;
+ b=UUcRMSruS6IsSTseeWHA5YBMZEet14AK+XZzoyInAhndIC/GtfP1Uuxr5NA/Vu7W5S8Me6DJ2jBHTYVKIgcx7MdhgnLL+1tQSCEDqNx9SdU8f/eOJeqPFFs31u8r2u4ldjb/gC5aq3kjxNXlp7GAIu0tHexOAFtGQ3otj1kAUp0=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SA0PR12MB4509.namprd12.prod.outlook.com (2603:10b6:806:9e::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Mon, 30 Nov
+ 2020 23:31:00 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3611.025; Mon, 30 Nov 2020
+ 23:31:00 +0000
+From:   Ashish Kalra <Ashish.Kalra@amd.com>
+To:     pbonzini@redhat.com
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        rkrcmar@redhat.com, joro@8bytes.org, bp@suse.de,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, srutherford@google.com,
+        brijesh.singh@amd.com, dovmurik@linux.vnet.ibm.com, tobin@ibm.com,
+        jejb@linux.ibm.com, frankeh@us.ibm.com, dgilbert@redhat.com
+Subject: [PATCH 0/9] Add AMD SEV page encryption bitmap support.
+Date:   Mon, 30 Nov 2020 23:30:50 +0000
+Message-Id: <cover.1606633738.git.ashish.kalra@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SA9PR13CA0188.namprd13.prod.outlook.com
+ (2603:10b6:806:26::13) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-11-lee.jones@linaro.org>
-In-Reply-To: <20201126134240.3214176-11-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 18:29:55 -0500
-Message-ID: <CADnq5_Mt7gT6cYkvJLiZRr73p_C06qhJH7iCAnYyZ6pP8yYGvw@mail.gmail.com>
-Subject: Re: [PATCH 10/40] drm/amd/pm/inc/pp_thermal: Mark 'SMU7Thermal{WithDelay}Policy'
- as __maybe_unused
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by SA9PR13CA0188.namprd13.prod.outlook.com (2603:10b6:806:26::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.9 via Frontend Transport; Mon, 30 Nov 2020 23:30:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d23fd190-8b85-413f-5716-08d89587fec2
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4509:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4509865E460EF15EB35AA2038EF50@SA0PR12MB4509.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SmIaleHRq16X80Rd8tDeN64/TQXhHogN0c03Alw9orD5ug4g23AKdOpqerroabGclpc8//DxrXjhr3/YuHHvtf5dCJWkQn0NdTr2aIFBNWEFGbUOHWfnlcX4bnLfKxEPKpY69B7RAWhkV6dBYMaxpl1bB2hn1qkxUXsJhB0pNSmlswO8rDbEys52ADRMNW2boUNEuwfGifnRFWF+5tOLiB1eyTQGf4jib0QRBNkEhVTbuCdEP0RXVt+cHaFiHSWq+ftG+B8AZ4+QaQ86JV3jY8qGwu71zehEU9pcj8n9SS0i4ooEx9KXwXlMFJfefFhbO3F5KlGA6ghOshQ4ou+toGjgnRqPZKFSLUaVY3jMANAh+6wcNnDSdDfseYRt5sZZizMOgPQmQepqy4duOjKWpw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(366004)(376002)(26005)(83380400001)(956004)(5660300002)(16526019)(7416002)(4326008)(86362001)(2616005)(186003)(316002)(966005)(7696005)(6916009)(2906002)(8936002)(6486002)(52116002)(8676002)(66946007)(478600001)(6666004)(66476007)(66556008)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ic9Dy2lxaktl5cUl+BAkm4N9Uyu7r/1Y8sutVc7TaCEu7brTl5JO7tm7ZSLNkjOwcsgE+BAW4MpXFhaLJo8duuxuvRZyP5f76xfutIriCY2v3ePc8wo+IWTXXvIxO0aO9oyFqhEBbKa/OAbu462fnEaUp1J+crQK/YXFn6r6exrFeGMadifx03PdgIvBRcPdkCtlFCJ1QpwAUvV3P2d78cOuGQExVc0jIBKQ9fgCXJlkVi7x+tfSuUovJvDLsq2VnJGRraW1k8A01q56JCeZQJCEBuDVVAiPaGijlzVI8kZBlvg51LxTRB/AsiK6I13Y7Wgz+GNht9fapflOigiTxU1aCKJewcu4PVu8L/MyEUaS4fENNOoY/4k6E4ikSDDa0V75Yr9+RaSOntUf3rqc5+tRvBg6zShB8HBSlfzhbUoHFFXzlaxpyKiKzJEbNTuV8pjLOUxMhgLQzE4w7DUyjcDNtiglU384DVl7dlqQUHQcqS7Zd0H4U4ILT/S5lAKuNfWAaofzwa9nO6ieh0acBnfH7oZ6kRTTqjN2+QlDNrrnmaeiNK2+TDD/V0n3klJhXCVzIOQg/gpp9sCxF9oSUQ93DNHQdn826ADP5QolF93RxAYjWBechEQitdUSADPzwMYtPwElFTLyKT3mlWC3faKyxEBYDskHx9A3mRdEs54/2KCcQ46eDN+JyA6SFqkJ0h9Kqibeg3NGhAZL6RNT6AJts0HZaQY0I9VB86LL3iCCF47DvslYfKwmSAPjpRtH
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d23fd190-8b85-413f-5716-08d89587fec2
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 23:31:00.2376
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: o7j3TcUnr0rqmnPewEXIw0V17isJIWj9kxY/5AseSnkMcZtFGU6yOfYakVtY0JS0sV2NId4GglnCsi3rq7T6Cw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4509
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 8:43 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> They are used by some source files which include pp_thermal.h, but not al=
-l.
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../pm/inc/pp_thermal.h:28:41: warning: =E2=80=
-=98SMU7ThermalWithDelayPolicy=E2=80=99 defined but not used [-Wunused-const=
--variable=3D]
->  drivers/gpu/drm/amd/amdgpu/../pm/inc/pp_thermal.h:28:41: warning: =E2=80=
-=98SMU7ThermalWithDelayPolicy=E2=80=99 defined but not used [-Wunused-const=
--variable=3D]
->  drivers/gpu/drm/amd/amdgpu/../pm/inc/pp_thermal.h:34:41: warning: =E2=80=
-=98SMU7ThermalPolicy=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../pm/inc/pp_thermal.h:34:41: warning: =E2=80=
-=98SMU7ThermalPolicy=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->  drivers/gpu/drm/amd/amdgpu/../pm/inc/pp_thermal.h:34:41: warning: =E2=80=
-=98SMU7ThermalPolicy=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Evan Quan <evan.quan@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-Applied.  Thanks!
+The series add support for AMD SEV page encryption bitmap.
 
-Alex
+SEV guest VMs have the concept of private and shared memory. Private memory
+is encrypted with the guest-specific key, while shared memory may be encrypted
+with hypervisor key. The patch series introduces a new hypercall.
+The guest OS can use this hypercall to notify the page encryption status.
 
+The patch adds new ioctls KVM_{SET,GET}_PAGE_ENC_BITMAP. The ioctl can be used
+by qemu to get the page encryption bitmap. Qemu can consult this bitmap
+during guest live migration / page migration and/or guest debugging to know
+whether the page is encrypted.
 
-> ---
->  drivers/gpu/drm/amd/pm/inc/pp_thermal.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/inc/pp_thermal.h b/drivers/gpu/drm/am=
-d/pm/inc/pp_thermal.h
-> index 3e30768f9e1cc..f7c41185097e4 100644
-> --- a/drivers/gpu/drm/amd/pm/inc/pp_thermal.h
-> +++ b/drivers/gpu/drm/amd/pm/inc/pp_thermal.h
-> @@ -25,13 +25,13 @@
->
->  #include "power_state.h"
->
-> -static const struct PP_TemperatureRange SMU7ThermalWithDelayPolicy[] =3D
-> +static const struct PP_TemperatureRange __maybe_unused SMU7ThermalWithDe=
-layPolicy[] =3D
->  {
->         {-273150,  99000, 99000, -273150, 99000, 99000, -273150, 99000, 9=
-9000},
->         { 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000,=
- 120000},
->  };
->
-> -static const struct PP_TemperatureRange SMU7ThermalPolicy[] =3D
-> +static const struct PP_TemperatureRange __maybe_unused SMU7ThermalPolicy=
-[] =3D
->  {
->         {-273150,  99000, 99000, -273150, 99000, 99000, -273150, 99000, 9=
-9000},
->         { 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000,=
- 120000},
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+The page encryption bitmap support is required for SEV guest live migration,
+guest page migration and guest debugging.
+
+The patch-set also adds support for bypassing unencrypted guest memory
+regions for DBG_DECRYPT API calls, guest memory region encryption status
+in sev_dbg_decrypt() is now referenced using the page encryption bitmap.
+
+A branch containing these patches is available here:
+https://github.com/AMDESE/linux/tree/sev-page-encryption-bitmap-v1
+
+Ashish Kalra (4):
+  KVM: SVM: Add support for static allocation of unified Page Encryption
+    Bitmap.
+  KVM: x86: Mark _bss_decrypted section variables as decrypted in page
+    encryption bitmap.
+  KVM: x86: Add kexec support for SEV page encryption bitmap.
+  KVM: SVM: Bypass DBG_DECRYPT API calls for unecrypted guest memory.
+
+Brijesh Singh (5):
+  KVM: x86: Add AMD SEV specific Hypercall3
+  KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
+  KVM: x86: Introduce KVM_GET_PAGE_ENC_BITMAP ioctl
+  mm: x86: Invoke hypercall when page encryption status is changed.
+  KVM: x86: Introduce KVM_SET_PAGE_ENC_BITMAP ioctl
+
+ Documentation/virt/kvm/api.rst        |  71 ++++++
+ Documentation/virt/kvm/hypercalls.rst |  15 ++
+ arch/x86/include/asm/kvm_host.h       |   7 +
+ arch/x86/include/asm/kvm_para.h       |  12 +
+ arch/x86/include/asm/mem_encrypt.h    |   4 +
+ arch/x86/include/asm/paravirt.h       |  10 +
+ arch/x86/include/asm/paravirt_types.h |   2 +
+ arch/x86/kernel/kvm.c                 |  28 +++
+ arch/x86/kernel/kvmclock.c            |  12 +
+ arch/x86/kernel/paravirt.c            |   1 +
+ arch/x86/kvm/svm/sev.c                | 319 ++++++++++++++++++++++++++
+ arch/x86/kvm/svm/svm.c                |   5 +
+ arch/x86/kvm/svm/svm.h                |   7 +
+ arch/x86/kvm/vmx/vmx.c                |   1 +
+ arch/x86/kvm/x86.c                    |  35 +++
+ arch/x86/mm/mem_encrypt.c             |  63 ++++-
+ arch/x86/mm/pat/set_memory.c          |   7 +
+ include/uapi/linux/kvm.h              |  13 ++
+ include/uapi/linux/kvm_para.h         |   1 +
+ 19 files changed, 612 insertions(+), 1 deletion(-)
+
+-- 
+2.17.1
+
