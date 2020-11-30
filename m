@@ -2,624 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFEB2C8F4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC502C8F4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730177AbgK3Uhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:37:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726716AbgK3Uhh (ORCPT
+        id S2387462AbgK3UhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:37:00 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:60489 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726716AbgK3Ug7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:37:37 -0500
-Received: from hillosipuli.retiisi.eu (unknown [IPv6:2a01:4f9:c010:4572::e8:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA666C0613D2;
-        Mon, 30 Nov 2020 12:36:56 -0800 (PST)
-Received: from valkosipuli.localdomain (unknown [IPv6:fd35:1bc8:1a6:d3d5::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 8DEA3634C24;
-        Mon, 30 Nov 2020 22:35:51 +0200 (EET)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1kjpto-0002hN-05; Mon, 30 Nov 2020 22:35:52 +0200
-Date:   Mon, 30 Nov 2020 22:35:51 +0200
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 13/18] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-Message-ID: <20201130203551.GP4351@valkosipuli.retiisi.org.uk>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-14-djrscally@gmail.com>
+        Mon, 30 Nov 2020 15:36:59 -0500
+Received: (qmail 977332 invoked by uid 1000); 30 Nov 2020 15:36:18 -0500
+Date:   Mon, 30 Nov 2020 15:36:18 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Tom Yan <tom.ty89@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
+        SCSI development list <linux-scsi@vger.kernel.org>
+Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to
+ scsi_add_host()
+Message-ID: <20201130203618.GB975529@rowland.harvard.edu>
+References: <20201128154849.3193-2-tom.ty89@gmail.com>
+ <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com>
+ <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com>
+ <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com>
+ <X8T0E2qvF2cgADl+@kroah.com>
+ <dd557c38-a919-5e5e-ab3b-17a235f17139@redhat.com>
+ <20201130172004.GA966032@rowland.harvard.edu>
+ <abb0a79d-63a0-6f3d-4812-f828283cd47c@redhat.com>
+ <CAGnHSEk1GixNK71CJMymwLE=MyedjCkiG5Ubq1=O_wFxBBM0GQ@mail.gmail.com>
+ <CAGnHSEmPpbDokAfGkeCkvo3JuYfnosVt8H+TK7ZWFNsdyWAfYQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201130133129.1024662-14-djrscally@gmail.com>
+In-Reply-To: <CAGnHSEmPpbDokAfGkeCkvo3JuYfnosVt8H+TK7ZWFNsdyWAfYQ@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+[Added linux-scsi to CC: list.  When discussing code in a particular 
+subsystem, it's a good idea to include that subsystem's mailing list in 
+the CC:.]
 
-Thanks for the update! This is starting to look really nice!
-
-Please still see my comments below.
-
-On Mon, Nov 30, 2020 at 01:31:24PM +0000, Daniel Scally wrote:
-> Currently on platforms designed for Windows, connections between CIO2 and
-> sensors are not properly defined in DSDT. This patch extends the ipu3-cio2
-> driver to compensate by building software_node connections, parsing the
-> connection properties from the sensor's SSDB buffer.
+On Tue, Dec 01, 2020 at 03:01:56AM +0800, Tom Yan wrote:
+> For the record,
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/scsi/scsi_host.h?h=v5.10-rc6#n753
 > 
-> Suggested-by: Jordan Hand <jorhand@linux.microsoft.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes since RFC v3:
-> 
-> 	- Removed almost all global variables, dynamically allocated
-> 	the cio2_bridge structure, plus a bunch of associated changes
-> 	like 
-> 	- Added a new function to ipu3-cio2-main.c to check for an 
-> 	existing fwnode_graph before calling cio2_bridge_init()
-> 	- Prefixed cio2_bridge_ to any variables and functions that
-> 	lacked it
-> 	- Assigned the new fwnode directly to the sensor's ACPI device
-> 	fwnode as secondary. This removes the requirement to delay until
-> 	the I2C devices are instantiated before ipu3-cio2 can probe, but
-> 	it has a side effect, which is that those devices then grab a ref
-> 	to the new software_node. This effectively prevents us from
-> 	unloading the driver, because we can't free the memory that they
-> 	live in whilst the device holds a reference to them. The work
-> 	around at the moment is to _not_ unregister the software_nodes
-> 	when ipu3-cio2 is unloaded; this becomes a one-time 'patch', that
-> 	is simply skipped if the module is reloaded.
-> 	- Moved the sensor's SSDB struct to be a member of cio2_sensor
-> 	- Replaced ints with unsigned ints where appropriate
-> 	- Iterated over all ACPI devices of a matching _HID rather than
-> 	just the first to ensure we handle a device with multiple sensors
-> 	of the same model.
-> 
->  MAINTAINERS                                   |   1 +
->  drivers/media/pci/intel/ipu3/Kconfig          |  18 ++
->  drivers/media/pci/intel/ipu3/Makefile         |   1 +
->  drivers/media/pci/intel/ipu3/cio2-bridge.c    | 260 ++++++++++++++++++
->  drivers/media/pci/intel/ipu3/cio2-bridge.h    | 108 ++++++++
->  drivers/media/pci/intel/ipu3/ipu3-cio2-main.c |  27 ++
->  drivers/media/pci/intel/ipu3/ipu3-cio2.h      |   6 +
->  7 files changed, 421 insertions(+)
->  create mode 100644 drivers/media/pci/intel/ipu3/cio2-bridge.c
->  create mode 100644 drivers/media/pci/intel/ipu3/cio2-bridge.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9702b886d6a4..188559a0a610 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8927,6 +8927,7 @@ INTEL IPU3 CSI-2 CIO2 DRIVER
->  M:	Yong Zhi <yong.zhi@intel.com>
->  M:	Sakari Ailus <sakari.ailus@linux.intel.com>
->  M:	Bingbu Cao <bingbu.cao@intel.com>
-> +M:	Dan Scally <djrscally@gmail.com>
->  R:	Tianshu Qiu <tian.shu.qiu@intel.com>
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
-> diff --git a/drivers/media/pci/intel/ipu3/Kconfig b/drivers/media/pci/intel/ipu3/Kconfig
-> index 82d7f17e6a02..2b3350d042be 100644
-> --- a/drivers/media/pci/intel/ipu3/Kconfig
-> +++ b/drivers/media/pci/intel/ipu3/Kconfig
-> @@ -16,3 +16,21 @@ config VIDEO_IPU3_CIO2
->  	  Say Y or M here if you have a Skylake/Kaby Lake SoC with MIPI CSI-2
->  	  connected camera.
->  	  The module will be called ipu3-cio2.
-> +
-> +config CIO2_BRIDGE
-> +	bool "IPU3 CIO2 Sensors Bridge"
-> +	depends on VIDEO_IPU3_CIO2
-> +	help
-> +	  This extension provides an API for the ipu3-cio2 driver to create
-> +	  connections to cameras that are hidden in SSDB buffer in ACPI. It
-> +	  can be used to enable support for cameras in detachable / hybrid
-> +	  devices that ship with Windows.
-> +
-> +	  Say Y here if your device is a detachable / hybrid laptop that comes
-> +	  with Windows installed by the OEM, for example:
-> +
-> +	  	- Microsoft Surface models (except Surface Pro 3)
-> +		- The Lenovo Miix line (for example the 510, 520, 710 and 720)
-> +		- Dell 7285
-> +
-> +	  If in doubt, say N here.
-> diff --git a/drivers/media/pci/intel/ipu3/Makefile b/drivers/media/pci/intel/ipu3/Makefile
-> index 429d516452e4..933777e6ea8a 100644
-> --- a/drivers/media/pci/intel/ipu3/Makefile
-> +++ b/drivers/media/pci/intel/ipu3/Makefile
-> @@ -2,3 +2,4 @@
->  obj-$(CONFIG_VIDEO_IPU3_CIO2) += ipu3-cio2.o
->  
->  ipu3-cio2-y += ipu3-cio2-main.o
-> +ipu3-cio2-$(CONFIG_CIO2_BRIDGE) += cio2-bridge.o
-> diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-> new file mode 100644
-> index 000000000000..fd3f8ba07274
-> --- /dev/null
-> +++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-> @@ -0,0 +1,260 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Author: Dan Scally <djrscally@gmail.com> */
-> +#include <linux/acpi.h>
-> +#include <linux/device.h>
-> +#include <linux/i2c.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/property.h>
-> +#include <media/v4l2-subdev.h>
-> +
-> +#include "cio2-bridge.h"
-> +
-> +/*
-> + * Extend this array with ACPI Hardware ID's of devices known to be working.
-> + * Do not add a HID for a sensor that is not actually supported.
-> + */
-> +static const char * const cio2_supported_devices[] = {
-> +	"INT33BE",
-> +	"OVTI2680",
+> On Tue, 1 Dec 2020 at 02:57, Tom Yan <tom.ty89@gmail.com> wrote:
+> >
+> > This maybe? https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/scsi/scsi_lib.c?h=v5.10-rc6#n1816
+> >
+> > UAS:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/usb/storage/uas.c?h=v5.10-rc6#n918
+> > BOT (AFAICT):
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/scsi/hosts.c?h=v5.10-rc6#n466
+> >
+> > It would explain why the issue is only triggered with UAS drives.
 
-I guess we don't have the known-good frequencies for the CSI-2 bus in
-firmware?
+In brief, a recent change -- calling scsi_add_host_with_dma rather than 
+scsi_add_host -- in the USB uas driver has caused a regression in 
+performance.  (Note that the shost->dma_dev value is set differently as 
+a result of this change.)  Hans has determined that the problem seems 
+to be related to permanent changes in the dma_dev's settings caused by 
+scsi_add_host_with_dma.
 
-One option would be to put there what the drivers currently use. This
-assumes the support for these devices is, well, somewhat opportunistic but
-I guess there's no way around that right now at least.
+Tom pointed out that __scsi_init_queue contains a couple of questionable 
+assignments:
 
-As the systems are laptops, they're likely somewhat less prone to EMI
-issues to begin with than mobile phones anyway.
+	dma_set_seg_boundary(dev, shost->dma_boundary);
 
-> +};
-> +
-> +static int cio2_bridge_read_acpi_buffer(struct acpi_device *adev, char *id,
-> +					void *data, u32 size)
-> +{
-> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> +	union acpi_object *obj;
-> +	acpi_status status;
-> +	int ret;
-> +
-> +	status = acpi_evaluate_object(adev->handle, id, NULL, &buffer);
-> +	if (ACPI_FAILURE(status))
-> +		return -ENODEV;
-> +
-> +	obj = buffer.pointer;
-> +	if (!obj) {
-> +		dev_err(&adev->dev, "Couldn't locate ACPI buffer\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	if (obj->type != ACPI_TYPE_BUFFER) {
-> +		dev_err(&adev->dev, "Not an ACPI buffer\n");
-> +		ret = -ENODEV;
-> +		goto out_free_buff;
-> +	}
-> +
-> +	if (obj->buffer.length > size) {
-> +		dev_err(&adev->dev, "Given buffer is too small\n");
-> +		ret = -EINVAL;
-> +		goto out_free_buff;
-> +	}
-> +
-> +	memcpy(data, obj->buffer.pointer, obj->buffer.length);
-> +	ret = obj->buffer.length;
-> +
-> +out_free_buff:
-> +	kfree(buffer.pointer);
-> +	return ret;
-> +}
-> +
-> +static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
-> +{
-> +	strcpy(sensor->prop_names.clock_frequency, "clock-frequency");
-> +	strcpy(sensor->prop_names.rotation, "rotation");
-> +	strcpy(sensor->prop_names.bus_type, "bus-type");
-> +	strcpy(sensor->prop_names.data_lanes, "data-lanes");
-> +	strcpy(sensor->prop_names.remote_endpoint, "remote-endpoint");
+and
 
-Please use the actual field size instead with strncpy / strscpy.
+	dma_set_max_seg_size(dev, queue_max_segment_size(q));
 
-> +}
-> +
-> +static void cio2_bridge_create_fwnode_properties(struct cio2_sensor *sensor)
-> +{
-> +	unsigned int i;
-> +
-> +	cio2_bridge_init_property_names(sensor);
-> +
-> +	for (i = 0; i < 4; i++)
-> +		sensor->data_lanes[i] = i + 1;
-> +
-> +	/*
-> +	 * Can't use PROPERTY_ENTRY_REF because it creates a new variable to
-> +	 * point to, which doesn't survive the function.
-> +	 */
-> +	sensor->local_ref[0] = (struct software_node_ref_args){
-> +		.node = &sensor->swnodes[SWNODE_CIO2_ENDPOINT]
-> +		};
+where dev = shost->dma_dev -- in this case, a USB host controller.
 
-I guess this line should be unindented by one tab stop. Same for the
-similar case below.
+So an important question is why decisions related to a particular SCSI 
+host should affect the DMA settings of a device somewhere else in the 
+heirarchy?  Sure, the properties of the USB controller should constrain 
+the settings available to the SCSI host, but there doesn't seem to be 
+any good reason for restrictions to go in the other direction.
 
-> +	sensor->remote_ref[0] = (struct software_node_ref_args){
-> +		.node = &sensor->swnodes[SWNODE_SENSOR_ENDPOINT]
-> +		};
-> +
-> +	sensor->dev_properties[0] = PROPERTY_ENTRY_U32(sensor->prop_names.clock_frequency,
-> +						       sensor->ssdb.mclkspeed);
-> +	sensor->dev_properties[1] = PROPERTY_ENTRY_U8(sensor->prop_names.rotation,
-> +						      sensor->ssdb.degree);
-> +
-> +	sensor->ep_properties[0] = PROPERTY_ENTRY_U32(sensor->prop_names.bus_type, 5);
-> +	sensor->ep_properties[1] = PROPERTY_ENTRY_U32_ARRAY_LEN(sensor->prop_names.data_lanes,
-> +								sensor->data_lanes,
-> +								sensor->ssdb.lanes);
-> +	sensor->ep_properties[2] = PROPERTY_ENTRY_REF_ARRAY(sensor->prop_names.remote_endpoint,
-> +							    sensor->local_ref);
-> +
-> +	sensor->cio2_properties[0] = PROPERTY_ENTRY_U32_ARRAY_LEN(sensor->prop_names.data_lanes,
-> +								  sensor->data_lanes,
-> +								  sensor->ssdb.lanes);
-> +	sensor->cio2_properties[1] = PROPERTY_ENTRY_REF_ARRAY(sensor->prop_names.remote_endpoint,
-> +							      sensor->remote_ref);
-> +}
-> +
-> +static void cio2_bridge_init_swnode_names(struct cio2_sensor *sensor)
-> +{
-> +	snprintf(sensor->node_names.remote_port, 6, "port%u", sensor->ssdb.link);
-> +	strcpy(sensor->node_names.port, "port0");
-> +	strcpy(sensor->node_names.endpoint, "endpoint0");
+Doesn't the way we handle DMA permit a child device to impose additional 
+restrictions (such as a smaller max segment size) beyond those of the 
+parent device which actually performs the DMA transfer?
 
-Please use the actual size of the field, and strncpy / strscpy.
+> > The questions (from me) are:
+> > 1. From the scsi layer POV (as per what __scsi_init_queue() does),
+> > what/which should we use as dma_dev?
 
-> +}
-> +
-> +static void cio2_bridge_create_connection_swnodes(struct cio2_bridge *bridge,
-> +						  struct cio2_sensor *sensor)
-> +{
-> +	struct software_node *nodes = sensor->swnodes;
-> +
-> +	cio2_bridge_init_swnode_names(sensor);
-> +
-> +	nodes[SWNODE_SENSOR_HID] = NODE_SENSOR(sensor->name,
-> +					       sensor->dev_properties);
-> +	nodes[SWNODE_SENSOR_PORT] = NODE_PORT(sensor->node_names.port,
-> +					      &nodes[SWNODE_SENSOR_HID]);
-> +	nodes[SWNODE_SENSOR_ENDPOINT] = NODE_ENDPOINT(sensor->node_names.endpoint,
-> +						      &nodes[SWNODE_SENSOR_PORT],
-> +						      sensor->ep_properties);
-> +	nodes[SWNODE_CIO2_PORT] = NODE_PORT(sensor->node_names.remote_port,
-> +					    &bridge->cio2_hid_node);
-> +	nodes[SWNODE_CIO2_ENDPOINT] = NODE_ENDPOINT(sensor->node_names.endpoint,
-> +						    &nodes[SWNODE_CIO2_PORT],
-> +						    sensor->cio2_properties);
-> +}
-> +
-> +static void cio2_bridge_unregister_sensors(struct cio2_bridge *bridge)
-> +{
-> +	struct cio2_sensor *sensor;
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < bridge->n_sensors; i++) {
-> +		sensor = &bridge->sensors[i];
-> +		software_node_unregister_nodes(sensor->swnodes);
-> +		acpi_dev_put(sensor->adev);
-> +	}
-> +}
-> +
-> +static int cio2_bridge_connect_sensors(struct cio2_bridge *bridge)
-> +{
-> +	struct fwnode_handle *fwnode;
-> +	struct cio2_sensor *sensor;
-> +	struct acpi_device *adev;
-> +	unsigned int i;
-> +	int ret = 0;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(cio2_supported_devices); i++) {
-> +		const char *this_device = cio2_supported_devices[i];
-> +
-> +		for_each_acpi_dev_match(adev, this_device, NULL, -1) {
-> +			if (!adev || !(adev->status.present && adev->status.enabled))
-> +				continue;
-> +
-> +			sensor = &bridge->sensors[bridge->n_sensors];
-> +			sensor->adev = adev;
-> +			strscpy(sensor->name, this_device, sizeof(sensor->name));
-> +
-> +			ret = cio2_bridge_read_acpi_buffer(adev, "SSDB",
-> +							   &sensor->ssdb,
-> +							   sizeof(sensor->ssdb));
-> +			if (ret < 0)
-> +				goto err_put_adev;
-> +
-> +			if (sensor->ssdb.lanes > 4) {
-> +				dev_err(&adev->dev,
-> +					"Number of lanes in SSDB is invalid\n");
-> +				goto err_put_adev;
-> +			}
-> +
-> +			cio2_bridge_create_fwnode_properties(sensor);
-> +			cio2_bridge_create_connection_swnodes(bridge, sensor);
-> +
-> +			ret = software_node_register_nodes(sensor->swnodes);
-> +			if (ret)
-> +				goto err_put_adev;
-> +
-> +			fwnode = software_node_fwnode(&sensor->swnodes[SWNODE_SENSOR_HID]);
-> +			if (!fwnode) {
-> +				ret = -ENODEV;
-> +				goto err_free_swnodes;
-> +			}
-> +
-> +			adev->fwnode.secondary = fwnode;
-> +
-> +			dev_info(&bridge->cio2->dev,
-> +				 "Found supported sensor %s\n",
-> +				 acpi_dev_name(adev));
-> +
-> +			bridge->n_sensors++;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +
-> +err_free_swnodes:
-> +	software_node_unregister_nodes(sensor->swnodes);
-> +err_put_adev:
-> +	acpi_dev_put(sensor->adev);
-> +
-> +	return ret;
-> +}
-> +
-> +int cio2_bridge_init(struct pci_dev *cio2)
-> +{
-> +	struct device *dev = &cio2->dev;
-> +	struct fwnode_handle *fwnode;
-> +	struct cio2_bridge *bridge;
-> +	int ret;
-> +
-> +	bridge = kzalloc(sizeof(*bridge), GFP_KERNEL);
-> +	if (!bridge)
-> +		return -ENOMEM;
-> +
-> +	strscpy(bridge->cio2_node_name, CIO2_HID, sizeof(bridge->cio2_node_name));
-> +	bridge->cio2_hid_node = (const struct software_node){ bridge->cio2_node_name };
-> +	bridge->cio2 = pci_dev_get(cio2);
-> +
-> +	ret = software_node_register(&bridge->cio2_hid_node);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to register the CIO2 HID node\n");
-> +		goto err_put_cio2;
-> +	}
-> +
-> +	ret = cio2_bridge_connect_sensors(bridge);
-> +	if (ret || bridge->n_sensors == 0)
-> +		goto err_unregister_cio2;
-> +
-> +	dev_info(dev, "Connected %d cameras\n", bridge->n_sensors);
-> +
-> +	fwnode = software_node_fwnode(&bridge->cio2_hid_node);
-> +	if (!fwnode) {
-> +		dev_err(dev, "Error getting fwnode from cio2 software_node\n");
-> +		ret = -ENODEV;
-> +		goto err_unregister_sensors;
-> +	}
-> +
-> +	set_secondary_fwnode(dev, fwnode);
-> +
-> +	return 0;
-> +
-> +err_unregister_sensors:
-> +	cio2_bridge_unregister_sensors(bridge);
-> +err_unregister_cio2:
-> +	software_node_unregister(&bridge->cio2_hid_node);
-> +err_put_cio2:
-> +	pci_dev_put(bridge->cio2);
-> +
-> +	kfree(bridge);
-> +	return ret;
-> +}
-> diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.h b/drivers/media/pci/intel/ipu3/cio2-bridge.h
-> new file mode 100644
-> index 000000000000..96f5c8a12be0
-> --- /dev/null
-> +++ b/drivers/media/pci/intel/ipu3/cio2-bridge.h
-> @@ -0,0 +1,108 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Author: Dan Scally <djrscally@gmail.com> */
-> +#ifndef __CIO2_BRIDGE_H
-> +#define __CIO2_BRIDGE_H
-> +
-> +#include <linux/property.h>
-> +
-> +#define CIO2_HID				"INT343E"
-> +#define CIO2_NUM_PORTS			  4
-> +
-> +#define NODE_SENSOR(_HID, _PROPS)		\
-> +	((const struct software_node) {		\
-> +		.name = _HID,			\
-> +		.properties = _PROPS,		\
-> +	})
-> +
-> +#define NODE_PORT(_PORT, _SENSOR_NODE)		\
-> +	((const struct software_node) {		\
-> +		_PORT,				\
-> +		_SENSOR_NODE,			\
-> +	})
-> +
-> +#define NODE_ENDPOINT(_EP, _PORT, _PROPS)	\
-> +	((const struct software_node) {		\
-> +		_EP,				\
-> +		_PORT,				\
-> +		_PROPS,				\
-> +	})
-> +
-> +enum cio2_sensor_swnodes {
-> +	SWNODE_SENSOR_HID,
-> +	SWNODE_SENSOR_PORT,
-> +	SWNODE_SENSOR_ENDPOINT,
-> +	SWNODE_CIO2_PORT,
-> +	SWNODE_CIO2_ENDPOINT,
-> +	NR_OF_SENSOR_SWNODES
-> +};
-> +
-> +/* Data representation as it is in ACPI SSDB buffer */
-> +struct cio2_sensor_ssdb {
-> +	u8 version;
-> +	u8 sku;
-> +	u8 guid_csi2[16];
-> +	u8 devfunction;
-> +	u8 bus;
-> +	u32 dphylinkenfuses;
-> +	u32 clockdiv;
-> +	u8 link;
-> +	u8 lanes;
-> +	u32 csiparams[10];
-> +	u32 maxlanespeed;
-> +	u8 sensorcalibfileidx;
-> +	u8 sensorcalibfileidxInMBZ[3];
-> +	u8 romtype;
-> +	u8 vcmtype;
-> +	u8 platforminfo;
-> +	u8 platformsubinfo;
-> +	u8 flash;
-> +	u8 privacyled;
-> +	u8 degree;
-> +	u8 mipilinkdefined;
-> +	u32 mclkspeed;
-> +	u8 controllogicid;
-> +	u8 reserved1[3];
-> +	u8 mclkport;
-> +	u8 reserved2[13];
-> +} __packed__;
+We should be using the USB host controller, because it is the device 
+which actually performs the DMA transfers.
 
-This should be "__packed".
+> > 2. Do we really need to set dma_boundary in the UAS host template (to
+> > PAGE_SIZE - 1)?
 
-> +
-> +struct cio2_property_names {
-> +	char clock_frequency[16];
-> +	char rotation[9];
-> +	char bus_type[9];
-> +	char data_lanes[11];
-> +	char remote_endpoint[16];
-> +};
-> +
-> +struct cio2_node_names {
-> +	char port[6];
-> +	char endpoint[10];
-> +	char remote_port[6];
-> +};
-> +
-> +struct cio2_sensor {
-> +	char name[ACPI_ID_LEN];
-> +	struct acpi_device *adev;
-> +
-> +	struct software_node swnodes[6];
-> +	struct cio2_node_names node_names;
-> +
-> +	u32 data_lanes[4];
-> +	struct cio2_sensor_ssdb ssdb;
-> +	struct cio2_property_names prop_names;
-> +	struct property_entry ep_properties[4];
-> +	struct property_entry dev_properties[3];
-> +	struct property_entry cio2_properties[3];
-> +	struct software_node_ref_args local_ref[1];
-> +	struct software_node_ref_args remote_ref[1];
-> +};
-> +
-> +struct cio2_bridge {
-> +	struct pci_dev *cio2;
-> +	char cio2_node_name[ACPI_ID_LEN];
-> +	struct software_node cio2_hid_node;
-> +	unsigned int n_sensors;
-> +	struct cio2_sensor sensors[CIO2_NUM_PORTS];
-> +};
-> +
-> +#endif
-> diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c b/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-> index 36e354ecf71e..0d69b593e9f0 100644
-> --- a/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-> +++ b/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-> @@ -1702,6 +1702,22 @@ static void cio2_queues_exit(struct cio2_device *cio2)
->  		cio2_queue_exit(cio2, &cio2->queue[i]);
->  }
->  
-> +static bool cio2_check_fwnode_graph(struct fwnode_handle *fwnode)
-> +{
-> +	struct fwnode_handle *endpoint;
-> +
-> +	if (IS_ERR_OR_NULL(fwnode))
-> +		return false;
-> +
-> +	endpoint = fwnode_graph_get_next_endpoint(fwnode, NULL);
-> +	if (endpoint) {
-> +		fwnode_handle_put(endpoint);
-> +		return true;
-> +	}
-> +
-> +	return cio2_check_fwnode_graph(fwnode->secondary);
-> +}
-> +
->  /**************** PCI interface ****************/
->  
->  static int cio2_pci_probe(struct pci_dev *pci_dev,
-> @@ -1715,6 +1731,17 @@ static int cio2_pci_probe(struct pci_dev *pci_dev,
->  		return -ENOMEM;
->  	cio2->pci_dev = pci_dev;
->  
-> +	/*
-> +	 * On some platforms no connections to sensors are defined in firmware,
-> +	 * if the device has no endpoints then we can try to build those as
-> +	 * software_nodes parsed from SSDB.
-> +	 */
-> +	if (!cio2_check_fwnode_graph(dev_fwnode(&pci_dev->dev))) {
-> +		r = cio2_bridge_init(pci_dev);
-> +		if (r)
-> +			return r;
-> +	}
-> +
->  	r = pcim_enable_device(pci_dev);
->  	if (r) {
->  		dev_err(&pci_dev->dev, "failed to enable device (%d)\n", r);
-> diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.h b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-> index ccf0b85ae36f..520a27c9cdad 100644
-> --- a/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-> +++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-> @@ -437,4 +437,10 @@ static inline struct cio2_queue *vb2q_to_cio2_queue(struct vb2_queue *vq)
->  	return container_of(vq, struct cio2_queue, vbq);
->  }
->  
-> +#if IS_ENABLED(CONFIG_CIO2_BRIDGE)
-> +int cio2_bridge_init(struct pci_dev *cio2);
-> +#else
-> +int cio2_bridge_init(struct pci_dev *cio2) { return 0; }
-> +#endif
-> +
->  #endif
+I don't know.  But in theory it should be possible to have settings 
+(like this one) which affect only the transfers carried out by the SCSI 
+host, not the transfers carred out by other drivers which might use the 
+same USB controller.
 
--- 
-Kind regards,
+> > 3. Kind of the same question as #1: when we clamp hw_max_sectors to
+> > dma max mapping size, should the size actually be "the smaller one
+> > among dev and sysdev"? Or is one of the two sizes *always* the smaller
+> > one?
 
-Sakari Ailus
+I assume you're referring to code in the uas driver.  There the value of 
+dev is meaningless as far as DMA is concerned.  Only sysdev matters.
+
+Alan Stern
+
+> > On Tue, 1 Dec 2020 at 02:19, Hans de Goede <hdegoede@redhat.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On 11/30/20 6:20 PM, Alan Stern wrote:
+> > > > On Mon, Nov 30, 2020 at 02:36:38PM +0100, Hans de Goede wrote:
+> > > >> Hi,
+> > > >>
+> > > >> On 11/30/20 2:30 PM, Greg KH wrote:
+> > > >>> On Mon, Nov 30, 2020 at 02:23:48PM +0100, Hans de Goede wrote:
+> > > >>>> Hi,
+> > > >>>>
+> > > >>>> On 11/30/20 1:58 PM, Tom Yan wrote:
+> > > >>>>> It's merely a moving of comment moving for/and a no-behavioral-change
+> > > >>>>> adaptation for the reversion.>
+> > > >>>>
+> > > >>>> IMHO the revert of the troublesome commit and the other/new changes really
+> > > >>>> should be 2 separate commits. But I will let Alan and Greg have the final
+> > > >>>> verdict on this.
+> > > >>>
+> > > >>> I would prefer to just revert the commits and not do anything
+> > > >>> different/special here so late in the release cycle.
+> > > >>>
+> > > >>> So, if Alan agrees, I'll be glad to do them on my end, I just need the
+> > > >>> commit ids for them.
+> > > >>
+> > > >> The troublesome commit are (in reverse, so revert, order):
+> > > >>
+> > > >> 5df7ef7d32fe ("uas: bump hw_max_sectors to 2048 blocks for SS or faster drives")
+> > > >> 558033c2828f ("uas: fix sdev->host->dma_dev")
+> > > >> 0154012f8018 ("usb-storage: fix sdev->host->dma_dev")
+> > > >>
+> > > >> Alan, the reason for reverting these is that using scsi_add_host_with_dma() as the
+> > > >> last 2 patches do, with the dmadev argument of that call pointing to the device
+> > > >> for the XHCI controller is causing changes to the DMA settings of the XHCI controller
+> > > >> itself which is causing regressions in 5.10, see this email thread:
+> > > >>
+> > > >> https://lore.kernel.org/linux-usb/fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com/T/#t
+> > > >
+> > > > It's hard to go wrong with reverting, so it's okay with me.
+> > > >
+> > > > Still, Hans, have you checked out the difference between the
+> > > > scsi_add_host() and scsi_add_host_with_dma() calls?  It's just a matter
+> > > > of using dev vs. sysdev.  In particular, have you checked to see what
+> > > > those two devices are on your system?
+> > >
+> > > Its not just dev vs sysdev, its iface->dev vs bus->sysdev, and I assume
+> > > that the latter is actually the XHCI controller.
+> > >
+> > > my vote goes to reverting to avoid the regression for 5.10, esp. since
+> > > this is a clean revert of 3 patches with nothing depending / building
+> > > on top of the reverted commits.
+> > >
+> > > Then for 5.11 we can retry to introduce similar changes. I would be happy
+> > > to try a new patch-set for 5.11.
+> > >
+> > > > It seems likely that if one of those calls messes up some DMA settings,
+> > > > the other one does too -- just maybe not settings that matter much.
+> > >
+> > > I'm not very familiar with all the DMA mapping / mask code, but AFAIK making
+> > > changes to the DMA settings of a child will not influence the parent.
+> > >
+> > > Where as when passing bus->sysdev, then changes are made to a device
+> > > which is shared with other devices on the bus, which is why we see
+> > > a regression in an USB NIC driver being triggered by the UAS driver
+> > > binding to a device (on the same bus).
+> > >
+> > > At least that is my interpretation of this. I bisected the regression
+> > > and that pointed at the UAS DMA change and reverting it fixes things,
+> > > confirming that I did not make any mistakes during the bisect.
+> > >
+> > > Regards,
+> > >
+> > > Hans
+> > >
