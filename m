@@ -2,89 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18272C8264
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E53CD2C824F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbgK3Kln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:41:43 -0500
-Received: from ns.mm-sol.com ([37.157.136.199]:60963 "EHLO extserv.mm-sol.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728505AbgK3Kln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:41:43 -0500
-X-Greylist: delayed 403 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Nov 2020 05:41:40 EST
-Received: from [192.168.0.3] (hst-221-92.medicom.bg [84.238.221.92])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: svarbanov@mm-sol.com)
-        by extserv.mm-sol.com (Postfix) with ESMTPSA id 05962D0A7;
-        Mon, 30 Nov 2020 12:34:16 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mm-sol.com; s=201706;
-        t=1606732456; bh=Y3kmBtJDunBAQtrIx3VvhZQtHBPVVJ1VC870yw0gzyE=;
-        h=Subject:To:Cc:From:Date:From;
-        b=cuSv8Ya70Tpk3tbAbiFda22GPoPTeR8sypm/zU/svTAex4ypO6zqO9pOsVo7oZQ9C
-         gkbpvE5WeoiNX5u/qDHssPE+hPerCkr7TCBjaDJIscN8m1RXCNxvzEqUFJteCTL22y
-         9OKScUyiQvMSmbT4VGdU9Kt8sba2KU5NCWdvVgr2PGjuU1gIM7GIZyKRL0XoTTy4DK
-         0twQ6PtjYiwNnY/07Chf/Yk+AR2weYBVjq3Z//rJ+y20ll2Lq04DStw/o8PcxTn5Bv
-         cOcZoNVCY6ytbJ8Ahfzu9GvDDqg+VN1jG/az9teP8mpkm2MAxnV3jVgOI5YKqJ6/5o
-         mddJSbHamstqQ==
-Subject: Re: [PATCH 15/17] arm64: dts: sdm845: Add interconnect properties for
- Venus
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org
-References: <20201102113529.16152-1-stanimir.varbanov@linaro.org>
- <04afbbe2-0e31-1ca1-8215-504e64186969@linaro.org>
-From:   Stanimir Varbanov <svarbanov@mm-sol.com>
-Message-ID: <cf5470a8-d810-6b08-9490-a9036eeef938@mm-sol.com>
-Date:   Mon, 30 Nov 2020 12:34:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728766AbgK3Kf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:35:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728748AbgK3Kf4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 05:35:56 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB9FC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:35:10 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id l23so173849pjg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:35:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JhpB/t5kCjjYRTw+xINHPebhKoCjmMuMSHZrMIpoK54=;
+        b=ZurS9jYa+SkfPr8aONBeaAoWbwdGYcdP319Zi7pFHcGkGWQD6suhIhZiM6hdXlNYJX
+         NLWoXceltubUgVj5mFTsaGcWP+mqyNizBlqC3MjekPidqQ16FKtKMupb5yuJhRnsJcCc
+         HgqlZGwdWIfHqbGt8E0uja48kJ+L7QIVOuj5o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JhpB/t5kCjjYRTw+xINHPebhKoCjmMuMSHZrMIpoK54=;
+        b=qD3jkfgOlacBenGHHkTQWfuCApOQwKXzQm1Lq8or0XMwcUqb/em7BUw9UMdBxFM7Th
+         5vRe3ANLSFt+815Z2nmMp5hU/pJlJ8fAnxPd3Fd3gNjNsDkgH5m/1mIpkDrWkqYW3CbF
+         FvqNzFls0Pag/Pz2WuoVZy51BHIyMCs2qFUiH/U8WNXO4CoxhzkCnNfzxRFpcm2+nFFN
+         wsEQ43gD/jJ8KOyWKqfU8Usg3SiJMwhZO2G197v718qog0+xv3S/W3F8TxrfWn37V4bv
+         kkQX6xDr/OZUMT6G1DpA54+LDraBD9fAW0c5N2WbVHC2iF4jZjYk94yFERRE3EhMgMRH
+         5wkA==
+X-Gm-Message-State: AOAM532OkTaWvowVNcKGflgZymKr4GRuY7Pq6o4k3p9F//Iiss02pRW1
+        hZUtJ7DqKd6r0yrHzUQc2GmAqQ==
+X-Google-Smtp-Source: ABdhPJyV9225G6GhzTbG4x8q6OQiHe5mbw2XjxdHxilInipa53F7zqsr/KwXrSFQ1pK695aHz1Bf/Q==
+X-Received: by 2002:a17:90a:3d0c:: with SMTP id h12mr26010674pjc.177.1606732510116;
+        Mon, 30 Nov 2020 02:35:10 -0800 (PST)
+Received: from chromium.org ([2401:fa00:1:b:f693:9fff:fef4:a8fc])
+        by smtp.gmail.com with ESMTPSA id m18sm21844330pjl.41.2020.11.30.02.35.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 02:35:09 -0800 (PST)
+Date:   Mon, 30 Nov 2020 18:35:05 +0800
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     Crystal Guo <crystal.guo@mediatek.com>
+Cc:     p.zabel@pengutronix.de, robh+dt@kernel.org, matthias.bgg@gmail.com,
+        devicetree@vger.kernel.org, yong.liang@mediatek.com,
+        stanley.chu@mediatek.com, srv_heupstream@mediatek.com,
+        seiya.wang@mediatek.com, linux-kernel@vger.kernel.org,
+        fan.chen@mediatek.com, linux-mediatek@lists.infradead.org,
+        yingjoe.chen@mediatek.com, s-anna@ti.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [v6,2/3] reset-controller: ti: introduce a new reset handler
+Message-ID: <20201130103505.GA3019533@chromium.org>
+References: <20200930022159.5559-1-crystal.guo@mediatek.com>
+ <20200930022159.5559-3-crystal.guo@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <04afbbe2-0e31-1ca1-8215-504e64186969@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930022159.5559-3-crystal.guo@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn, could you take this for v5.11.
+On Wed, Sep 30, 2020 at 10:21:58AM +0800, Crystal Guo wrote:
+> Introduce ti_syscon_reset() to integrate assert and deassert together.
+> If some modules need do serialized assert and deassert operations
+> to reset itself, reset_control_reset can be called for convenience.
+> 
+> Such as reset-qcom-aoss.c, it integrates assert and deassert together
+> by 'reset' method. MTK Socs also need this method to perform reset.
+> 
+> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
 
-On 11/2/20 2:07 PM, Georgi Djakov wrote:
-> Hi Stan,
-> 
-> On 11/2/20 13:35, Stanimir Varbanov wrote:
->> Populate Venus DT node with interconnect properties.
->>
->> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> 
-> Reviewed-by: Georgi Djakov <georgi.djakov@linaro.org>
-> 
-> Thanks!
-> Georgi
-> 
->> ---
->>  arch/arm64/boot/dts/qcom/sdm845.dtsi | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
->> index 40e8c11f23ab..aca7e9c954e0 100644
->> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
->> @@ -3661,6 +3661,9 @@
->>  			iommus = <&apps_smmu 0x10a0 0x8>,
->>  				 <&apps_smmu 0x10b0 0x0>;
->>  			memory-region = <&venus_mem>;
->> +			interconnects = <&mmss_noc MASTER_VIDEO_P0 0 &mem_noc SLAVE_EBI1 0>,
->> +					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_VENUS_CFG 0>;
->> +			interconnect-names = "video-mem", "cpu-cfg";
->>  
->>  			video-core0 {
->>  				compatible = "venus-decoder";
->>
+Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
 
--- 
-regards,
-Stan
+> ---
+>  drivers/reset/reset-ti-syscon.c | 40 ++++++++++++++++++++++++++++++++-
+>  1 file changed, 39 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/reset/reset-ti-syscon.c b/drivers/reset/reset-ti-syscon.c
+> index a2635c21db7f..5d1f8306cd4f 100644
+> --- a/drivers/reset/reset-ti-syscon.c
+> +++ b/drivers/reset/reset-ti-syscon.c
+> @@ -15,15 +15,22 @@
+>   * GNU General Public License for more details.
+>   */
+>  
+> +#include <linux/delay.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+>  #include <linux/reset-controller.h>
+>  
+>  #include <dt-bindings/reset/ti-syscon.h>
+>  
+> +struct mediatek_reset_data {
+> +	unsigned char *reset_bits;
+> +	unsigned int reset_duration_us;
+> +};
+> +
+>  /**
+>   * struct ti_syscon_reset_control - reset control structure
+>   * @assert_offset: reset assert control register offset from syscon base
+> @@ -56,6 +63,7 @@ struct ti_syscon_reset_data {
+>  	struct regmap *regmap;
+>  	struct ti_syscon_reset_control *controls;
+>  	unsigned int nr_controls;
+> +	const struct mediatek_reset_data *reset_data;
+>  };
+>  
+>  #define to_ti_syscon_reset_data(rcdev)	\
+> @@ -158,9 +166,29 @@ static int ti_syscon_reset_status(struct reset_controller_dev *rcdev,
+>  		!(control->flags & STATUS_SET);
+>  }
+>  
+> +static int ti_syscon_reset(struct reset_controller_dev *rcdev,
+> +				  unsigned long id)
+> +{
+> +	struct ti_syscon_reset_data *data = to_ti_syscon_reset_data(rcdev);
+> +	int ret;
+> +
+> +	if (data->reset_data) {
+> +		ret = ti_syscon_reset_assert(rcdev, id);
+> +		if (ret)
+> +			return ret;
+> +		usleep_range(data->reset_data->reset_duration_us,
+> +			data->reset_data->reset_duration_us * 2);
+> +
+
+There are many users using assert() and deassert() seperately
+without any delay between them.
+
+If there's a timing requirement between assertion and deassertion,
+shouldn't there be a same amount of delay in assert?
+
+> +		return ti_syscon_reset_deassert(rcdev, id);
+> +	} else {
+> +		return -ENOTSUPP;
+> +	}
+> +}
+> +
+>  static const struct reset_control_ops ti_syscon_reset_ops = {
+>  	.assert		= ti_syscon_reset_assert,
+>  	.deassert	= ti_syscon_reset_deassert,
+> +	.reset		= ti_syscon_reset,
+>  	.status		= ti_syscon_reset_status,
+>  };
+>  
+> @@ -182,7 +210,11 @@ static int ti_syscon_reset_probe(struct platform_device *pdev)
+>  	if (IS_ERR(regmap))
+>  		return PTR_ERR(regmap);
+>  
+> -	list = of_get_property(np, "ti,reset-bits", &size);
+> +	data->reset_data = of_device_get_match_data(&pdev->dev);
+> +	if (data->reset_data)
+> +		list = of_get_property(np, data->reset_data->reset_bits, &size);
+> +	else
+> +		list = of_get_property(np, "ti,reset-bits", &size);
+>  	if (!list || (size / sizeof(*list)) % 7 != 0) {
+>  		dev_err(dev, "invalid DT reset description\n");
+>  		return -EINVAL;
+> @@ -217,8 +249,14 @@ static int ti_syscon_reset_probe(struct platform_device *pdev)
+>  	return devm_reset_controller_register(dev, &data->rcdev);
+>  }
+>  
+> +static const struct mediatek_reset_data mtk_reset_data = {
+> +	.reset_bits = "mediatek,reset-bits",
+> +	.reset_duration_us = 10,
+> +};
+> +
+>  static const struct of_device_id ti_syscon_reset_of_match[] = {
+>  	{ .compatible = "ti,syscon-reset", },
+> +	{ .compatible = "mediatek,syscon-reset", .data = &mtk_reset_data},
+>  	{ /* sentinel */ },
+>  };
+>  MODULE_DEVICE_TABLE(of, ti_syscon_reset_of_match);
