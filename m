@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EF02C8D78
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD56D2C8D7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388316AbgK3Syp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:54:45 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:39148 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387844AbgK3Syo (ORCPT
+        id S1729837AbgK3S4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:56:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24907 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729822AbgK3S4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:54:44 -0500
-Received: by mail-wr1-f65.google.com with SMTP id e7so17625396wrv.6;
-        Mon, 30 Nov 2020 10:54:27 -0800 (PST)
+        Mon, 30 Nov 2020 13:56:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606762513;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UJa4+nJnAblt3hEvp+SYFJg8d4mfG8f2+fFVNZQWsaA=;
+        b=A2x2n5xACs4P3anGbM3r9qO8JY8Ni+I6km71IKLZvFfA8DlOI17Ziqmo7ifiXlVh+3Em46
+        MfkBJCh1rOICEkK7J57Z8eAiVG2glOS1alG0nhgXthxqxmPFU1TfE+WUrmtBe3Y7bmU67y
+        wnmL6Mz+tiYjW4yfu8ppLdR0E/ZT3+Q=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-BVu9cTPyNsWNmx_6xmQU-w-1; Mon, 30 Nov 2020 13:55:09 -0500
+X-MC-Unique: BVu9cTPyNsWNmx_6xmQU-w-1
+Received: by mail-pf1-f198.google.com with SMTP id x26so9684788pfo.23
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:55:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J0Y4dG+GSInC75horYKTdpMJ72uEPkG0rsUqEhklRfs=;
-        b=JuDjKMplGvK1DbOaNdKf6Xr7lr3u8PEY/yJg4ce/TYevvM1Cl1hE3UW7Si3wee6VKa
-         xn7aAkCkq+NSTy9k411R297qq0sXSX3CbJx89hDDH7UwZzks6u0TqDhOBAKErsMY3WqJ
-         tzrQNdc3aID2b3T8VFEBAxb/lutAewEftjXdvD0WGe9tO91lvAYUG5lxS/lwLHsWr79P
-         YV1eDWfTACHfGD0HEDuir7d70p1muggLnNgFn8RSpHsfEmPIcdZd2ZqSygYV9luO/Cgg
-         MxeFRm2mxrbnhuqT+VQ8AHBqPWOVnJRb0H8ayIWQaD4CLwjUcmjJjJc8EYvsM9CqAzvQ
-         fgYA==
-X-Gm-Message-State: AOAM533RaJJ7ekDlFJGbKJ43IKC38ZUlrMwB8tX/rOo66tcOVJPu22Co
-        EIILSYCtdw7Px9btF9ot5H4=
-X-Google-Smtp-Source: ABdhPJzaY6oSMK9XtE7h+p3mGfqluRRVSwB1Bil1Ye28LiLYVgIzYdnlv4x47IHxrw1EjuGuSJVlFg==
-X-Received: by 2002:a5d:688b:: with SMTP id h11mr29587757wru.417.1606762442112;
-        Mon, 30 Nov 2020 10:54:02 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id w5sm24515754wrm.29.2020.11.30.10.54.00
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UJa4+nJnAblt3hEvp+SYFJg8d4mfG8f2+fFVNZQWsaA=;
+        b=C34S1wmYnqrJoKQdfpB7AXz10IZTHU9suiMRibBXtaWus9XGhX0c9oLRouNLB5jVBq
+         zanFDPdIAaq0HsY04CW/+OJOEP6YfroSZg7O7GlkLdnOK3Un8k4TfoVN48Zdovqth35C
+         Voon5u45l/sWo7rAhR/1oxM1hLPX3h/P8orkwoK/ItbA4saUIFNCGJKv5varg9lfmGi5
+         /0Udv0PCa09c+1ywCCge2NFajwiXRS0D2acTz4/lfUEIFWrR0MixDuWXnf7jKZ6To0SW
+         9jPmJ8OyqYwrX7SQ3E49YxvyYDfQ0TQrHedpqAnQlQPe+EUscyVZBEDwS0AbhhEptTM6
+         73Qg==
+X-Gm-Message-State: AOAM530iw+p3qV/wjsn2pZMspDRUxvzMQ08ZUcRTUpLQPZEiD1BMZThc
+        U+oIaYMFET0lRzbH7e7cNA/2+6YJSjshtexj1oI2Z3OuQg2r6epdCKo4O/iFLKP6UbrsjK93eXx
+        rQAc53NCv+Pq1lf2g+S8z9I8W
+X-Received: by 2002:a17:90a:9e5:: with SMTP id 92mr266215pjo.176.1606762508414;
+        Mon, 30 Nov 2020 10:55:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy5XFm0e2WR2j2Oq/bqCs2+nYMpHE7WhzMfpV9dzDeIzdQJd1QvcKUNaxxdTuILeH2k+sDZ1w==
+X-Received: by 2002:a17:90a:9e5:: with SMTP id 92mr266195pjo.176.1606762508227;
+        Mon, 30 Nov 2020 10:55:08 -0800 (PST)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id z11sm187039pjn.5.2020.11.30.10.55.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 10:54:00 -0800 (PST)
-Date:   Mon, 30 Nov 2020 20:53:59 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-Cc:     linux@armlinux.org.uk, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
-        tony@atomide.com, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@siol.net, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
-        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
-        deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, lee.jones@linaro.org, sam@ravnborg.org,
-        emil.l.velikov@gmail.com, daniel.thompson@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 5/5] powerpc/configs: drop unused BACKLIGHT_GENERIC option
-Message-ID: <20201130185359.GE29434@kozik-lap>
-References: <20201130152137.24909-1-andrey.zhizhikin@leica-geosystems.com>
- <20201130152137.24909-6-andrey.zhizhikin@leica-geosystems.com>
+        Mon, 30 Nov 2020 10:55:07 -0800 (PST)
+Date:   Tue, 1 Dec 2020 02:54:55 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Nick Terrell <terrelln@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
+        Yann Collet <yann.collet.73@gmail.com>,
+        Miao Xie <miaoxie@huawei.com>, Chao Yu <yuchao0@huawei.com>,
+        Li Guifu <bluce.liguifu@huawei.com>,
+        Guo Xuenan <guoxuenan@huawei.com>
+Subject: Re: [PATCH v2] lib/lz4: explicitly support in-place decompression
+Message-ID: <20201130185455.GA1181636@xiangao.remote.csb>
+References: <20201121191024.2631523-1-hsiangkao@redhat.com>
+ <20201122030749.2698994-1-hsiangkao@redhat.com>
+ <73E0BBBC-434D-4877-8E43-F995F8F4FE25@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201130152137.24909-6-andrey.zhizhikin@leica-geosystems.com>
+In-Reply-To: <73E0BBBC-434D-4877-8E43-F995F8F4FE25@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 03:21:37PM +0000, Andrey Zhizhikin wrote:
-> Commit 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
-> unused") removed geenric_bl driver from the tree, together with
-> corresponding config option.
-> 
-> Remove BACKLIGHT_GENERIC config item from generic-64bit_defconfig.
-> 
-> Fixes: 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is unused")
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-> ---
->  arch/powerpc/configs/powernv_defconfig | 1 -
->  1 file changed, 1 deletion(-)
+On Mon, Nov 30, 2020 at 06:19:34PM +0000, Nick Terrell wrote:
 > 
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+<too long snip>
 
-Best regards,
-Krzysztof
+> 
+> Looks good to me! You can add:
+> 
+> Reviewed-by: Nick Terrell <terrelln@fb.com>
+
+Thanks for reviewing this!
+
+Thanks,
+Gao Xiang
+
+> 
+
