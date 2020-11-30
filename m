@@ -2,75 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0A42C8B95
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C292C8BA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387417AbgK3Rpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:45:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgK3Rpp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:45:45 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F43FC0613CF;
-        Mon, 30 Nov 2020 09:45:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=hRlE8DF/ZubZzMQwEJPth9qcfK7FAspGEHghdXZxGCs=; b=j4c2SoVXehKHxeI01LLeQ7z0L/
-        N2yFZ9GsmRGzxYdH3I2RchZyLMOhi+8J59OdcJxlFB2nvPbn4KgU9LPKAcbodB5zYkjbUdZQQgz86
-        W0ppLcXX65vbNyMNW+vRXuVSwOvmSTfEbGgzciwqZaepSJS2uB6iPBvTUxwgjzR3nnbt0N6B4qhHj
-        EPBMdY+sT5BzXe7nYJjv8YS7zwS98yAJDijD37bKG6o79JmBgS7fULh3mSh/oCNH3SbuWIBI6AHCk
-        DqVhYyCz5mfK7lg4Yi1MFurO7XL4qlaLkvPxWFk85IS4GB8TXfKdMfIuSvDmVoNtDYOeXshOkhHl9
-        RT5ose+g==;
-Received: from [2601:1c0:6280:3f0::cc1f] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kjnER-0005NY-Qt; Mon, 30 Nov 2020 17:45:00 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org
-Subject: [PATCH] ia64: remove duplicate entries in generic_defconfig
-Date:   Mon, 30 Nov 2020 09:44:56 -0800
-Message-Id: <20201130174456.25104-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S2387544AbgK3Rqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:46:39 -0500
+Received: from mga14.intel.com ([192.55.52.115]:28016 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728531AbgK3Rqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:46:38 -0500
+IronPort-SDR: SvOJASuBD6pJ+/ZVnpb8mefeHSAfc3nmKINsNMdzASxcLzs/v/7fqlue9TQCNTEUlE8w4v6ns2
+ kBPSNYb7ZNbw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="171893094"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="171893094"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:44:47 -0800
+IronPort-SDR: K4Lv8VYpHyuLxAvAG2Xpm2yVewTVRu28dNF0l6nBMlELHaKVXu14CV1XJ8Gqp3iWWE7ypM9g8H
+ vTP4T4Saasgw==
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="372578999"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:44:41 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kjnF8-00B69B-48; Mon, 30 Nov 2020 19:45:42 +0200
+Date:   Mon, 30 Nov 2020 19:45:42 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+Subject: Re: [PATCH 05/18] software_node: Alter
+ software_node_unregister_nodes() to unregister the array in reverse order
+Message-ID: <20201130174542.GQ4077@smile.fi.intel.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-6-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130133129.1024662-6-djrscally@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix ia64 generic_defconfig duplicate entries, as warned by:
+On Mon, Nov 30, 2020 at 01:31:16PM +0000, Daniel Scally wrote:
+> Software nodes that are children of another software node should be
+> unregistered before their parent. To allow easy unregistering of an array
+> of software_nodes ordered parent to child, reverse the order in which
+> this function unregisters software_nodes.
 
-  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA:  => 58
-  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA_PIIX:  => 59
+Should be folded in the previous patch. Otherwise we will have a history point
+where register() behaves differently to unregister().
 
-These 2 symbols still have the same value as in the removed lines.
+...
 
-Fixes: c331649e6371 ("ia64: Use libata instead of the legacy ide driver in defconfigs")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: linux-ia64@vger.kernel.org
----
- arch/ia64/configs/generic_defconfig |    2 --
- 1 file changed, 2 deletions(-)
+> + * @nodes: Zero terminated array of software nodes to be unregistered. If
+> + * parent pointers are set up in any of the software nodes then the array
+> + * MUST be ordered such that parents come before their children.
 
---- linux-next-20201130.orig/arch/ia64/configs/generic_defconfig
-+++ linux-next-20201130/arch/ia64/configs/generic_defconfig
-@@ -55,8 +55,6 @@ CONFIG_CHR_DEV_SG=m
- CONFIG_SCSI_FC_ATTRS=y
- CONFIG_SCSI_SYM53C8XX_2=y
- CONFIG_SCSI_QLOGIC_1280=y
--CONFIG_ATA=y
--CONFIG_ATA_PIIX=y
- CONFIG_SATA_VITESSE=y
- CONFIG_MD=y
- CONFIG_BLK_DEV_MD=m
+Please, leave field description short. Rather add another note to the
+Description below.
+
+>   *
+>   * Unregister multiple software nodes at once.
+>   *
+> - * NOTE: Be careful using this call if the nodes had parent pointers set up in
+> - * them before registering.  If so, it is wiser to remove the nodes
+> - * individually, in the correct order (child before parent) instead of relying
+> - * on the sequential order of the list of nodes in the array.
+> + * NOTE: If you are uncertain whether the array is ordered such that
+> + * parents will be unregistered before their children, it is wiser to
+> + * remove the nodes individually, in the correct order (child before
+> + * parent).
+>   */
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
