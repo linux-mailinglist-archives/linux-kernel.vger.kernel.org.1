@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E86A2C8DAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0742C8DA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:04:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729791AbgK3TGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:06:25 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:33010 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728840AbgK3TGZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:06:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606763012;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:Message-Id:Cc:Date:From:Subject:X-RZG-CLASS-ID:X-RZG-AUTH:From:
-        Subject:Sender;
-        bh=y20xJFPXm8Gb2N864xUBrhI95XSZqquGZTefxAuTL0k=;
-        b=UCG/WS/nKw0B5Wh20zImSLJDmsU+tIsvhuFZ57al6wBdjxpgssOBuBrjyqMqckyNym
-        x+UixQBIdPtAhm/10g3J/+jZ+LrQPZEMlcqsS5ddz/UfgNhSzGSbQjIogYth2coy/iAZ
-        OEdKRQJoaGh8KOOdMXOHRCgl98iUWMQPOdDY0iVusRwhElgoPn1P5PiTtpX7oJDsMhH4
-        zfDHZfxcOzRVqYz5dObtYDJu25xCiV6ZZ+1FE40LVv0jsRrnVAmctn3DbNwBQWGH62FN
-        0JHxifA1YeHZy28HW7ENhye1RosMRu80s0wyLNbq4dWcg8Fd/8Y7KSt/VxZp5sXXsK2W
-        AELQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/vgwDCqtd0="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
-        with ESMTPSA id N02faawAUJ3OQl6
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Mon, 30 Nov 2020 20:03:24 +0100 (CET)
-Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Subject: [BUG] SPI broken for SPI based panel drivers
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-Date:   Mon, 30 Nov 2020 20:03:23 +0100
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-X-Mailer: Apple Mail (2.3124)
+        id S2388237AbgK3TEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:04:16 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:41966 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387684AbgK3TEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 14:04:15 -0500
+Received: from zn.tnic (p200300ec2f0c0400247ce5eea000f6a3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:400:247c:e5ee:a000:f6a3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 61A701EC04A9;
+        Mon, 30 Nov 2020 20:03:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606763014;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=rOUJuYK9wa/A/SuFfQYy/ZZkyjuXFeT8MrvwplFTrug=;
+        b=jrCIk71InAWgGv6MbKCP/PFkK+mFlCMD6mvNGDXGXBjva/yHKnrkiSrGICWiapeoO0tSSp
+        boZw16x4ifvlxt7leKkJr6pVUlJlOa3knq3QcEFk9Kh0RdTWee4gd76h/IgS11F7RWPW3w
+        8cJNDcBF2o3fMatncsMx1sRdnvBwnx4=
+Date:   Mon, 30 Nov 2020 20:03:31 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        bjorn.andersson@linaro.org, shawnguo@kernel.org, vkoul@kernel.org,
+        geert+renesas@glider.be, Anson.Huang@nxp.com, michael@walle.cc,
+        krzk@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com,
+        ardb@kernel.org, masahiroy@kernel.org, gshan@redhat.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
+Message-ID: <20201130190331.GI6019@zn.tnic>
+References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-starting from v5.10-rc5 the SPI based panel of the GTA04 device is =
-broken. It uses
-compatible =3D "spi-gpio"; [1] i.e. gpio descriptors very indirectly.
+On Tue, Dec 01, 2020 at 01:48:30AM +0800, Rongwei Wang wrote:
+> MSR ARM driver aims to provide interfacs for user to read or write
+> data to all system registers.
 
-Bisect shows that it is commit
+Just a warranty from x86 land: if I were an ARM arch maintainer, I would
+never never *ever* take such driver exposing naked hw registers to
+userspace.
 
-766c6b63aa04 ("spi: fix client driver breakages when using GPIO =
-descriptors")
+We have been fighting with this on x86 for years:
 
-The commit description tells about a problematic pattern and indeed the =
-driver is
-using it - like ca. 15 other spi based panel drivers in =
-drivers/gpu/drm/panel/
+a7e1f67ed29f ("x86/msr: Filter MSR writes")
 
-I understood that it wants to fix the spi system to handle that =
-correctly again.
-But reverting your patch brings back the display. So it appears as if it =
-does not
-fix a breakage, rather breaks a previously working setup.
+with userspace tools poking at random MSRs. Read the commit message
+for what can happen. And taking that thing is like opening a huge
+can'o'worms that can't be closed anymore.
 
-What should we do?
+Currently, we're trying to move userspace tools to proper sysfs
+interfaces but it is a huuuge pain. It is a lot easier to have people
+define proper interfaces from the get-go where the kernel can control
+and synchronize access.
 
-BR and thanks,
-Nikolaus
+HTH.
 
-[1]: =
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/ar=
-ch/arm/boot/dts/omap3-gta04.dtsi?h=3Dv5.10-rc6#n107
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
