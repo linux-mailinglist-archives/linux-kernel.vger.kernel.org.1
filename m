@@ -2,72 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4293D2C83B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE162C83C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729215AbgK3MCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 07:02:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727656AbgK3MCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:02:18 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89B91206CB;
-        Mon, 30 Nov 2020 12:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606737697;
-        bh=A/tQpaRCdVBxIrK5CVrihAXJGL1D0YMcA4iympcoTzk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EwVQLNwsXH/bdnWP/eU1At5WBpjCSdAR6JTRNITU+0kyAYmyC7vfvCGB5aglCFG6x
-         MgF+azWjp5V9E9RCzfCIxmq6AyuSMIhVSOBmKKJ8jGetiIbmZ9+phj0IYAntF8L2n+
-         Jz+cOfBAzUsJpOu6/EZ4Jj48GG8LJpvvDpy7mI9s=
-Date:   Mon, 30 Nov 2020 12:01:31 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
-Message-ID: <20201130120130.GF24563@willie-the-truck>
-References: <20201118220731.925424-1-samitolvanen@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118220731.925424-1-samitolvanen@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729258AbgK3MDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 07:03:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727376AbgK3MDO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 07:03:14 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2B1C0613CF;
+        Mon, 30 Nov 2020 04:02:49 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id w6so10277096pfu.1;
+        Mon, 30 Nov 2020 04:02:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Hlu3v+ZFJOSkIPaRs/ikcCBt9YqRCc7L3x2QFe+kevY=;
+        b=X7TJxOUVStq0aYMXo56iVGChzK97jthX3WKRB3TJEdnWe0UNNbhFbeT33zeCXSk/5K
+         QWYRc2h5MLuNjshDlRCIxrEKTlENF6/G8VMY4Zfz5hP/fRankxzbhx/12Mg4JC9x6OD3
+         svg8AbojYWU4jRU5Xer63Y3qn7HKnvfkS49m3jrkR04qyqDC6alAwvp6YzzWuOMXI0FN
+         7PqG0+xIYasvWXJrVFVm0DXqu1L4W1UudEshpSeJGgApVmnpyO7Vlodk6f3nlPHMpANZ
+         0fnbncL/Nt/U8AEhie6X1lVx6ECQfRUeRpgTdBk6HBFzXxpXBXjt/TxVtTgxJMnmgHJW
+         ClNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Hlu3v+ZFJOSkIPaRs/ikcCBt9YqRCc7L3x2QFe+kevY=;
+        b=ueRXIi4hsRLTa8yzju/I+oijBIB4S+Umm3Rq1vJy7Nuhg0CJ5Vcj1ZVgBTa7hO42sq
+         mdfSiO6YbifWtZPeKPUSkZ4dpYvkZ2MycNdK3ki2s45gSv5W3V5dhw911LKC1LywE+7Z
+         ak9bl+lghz1x5u27J6ycSkal1cH3/a/tsmNrURUvVCUSrx26NlmJCxo0D3L7/dCopZaQ
+         Ix66Wau4ZVNKViU2a0dB+DdyWX+5pYBKYI8cUHAr3TYmnOzaVxSpH5RLJSVdDq6hhav5
+         srqgS2XY8WTkg2h7KSQ/HWDidl3bTDDtHdC7wbaGfnrnjWAOEE7esT+8vmFmamG4jygL
+         fOuw==
+X-Gm-Message-State: AOAM532gTDzor5In63EL6boWwGMyTglZsh6CsMAn9FJrq3FvATfb4FkE
+        MNwcRWnDm9v+Ex05uDca6p3vRhWBJLU=
+X-Google-Smtp-Source: ABdhPJxVjfr4ZJSerSeBSzVuIwupCdXcbfDHqqe8dbotpgNpJvQ1sHZycjiWgr+fPbQ6LYTGoiDCFQ==
+X-Received: by 2002:a62:2cc3:0:b029:197:dda8:476a with SMTP id s186-20020a622cc30000b0290197dda8476amr17836923pfs.37.1606737768884;
+        Mon, 30 Nov 2020 04:02:48 -0800 (PST)
+Received: from localhost.localdomain ([182.226.226.37])
+        by smtp.googlemail.com with ESMTPSA id cu4sm2938023pjb.18.2020.11.30.04.02.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 04:02:47 -0800 (PST)
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+X-Google-Original-From: Bongsu Jeon
+To:     krzk@kernel.org
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: [PATCH net-next 2/4] nfc: s3fwrn5: reduce the EN_WAIT_TIME
+Date:   Mon, 30 Nov 2020 21:02:30 +0900
+Message-Id: <1606737750-29537-1-git-send-email-bongsu.jeon@samsung.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sami,
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
-On Wed, Nov 18, 2020 at 02:07:14PM -0800, Sami Tolvanen wrote:
-> This patch series adds support for building the kernel with Clang's
-> Link Time Optimization (LTO). In addition to performance, the primary
-> motivation for LTO is to allow Clang's Control-Flow Integrity (CFI) to
-> be used in the kernel. Google has shipped millions of Pixel devices
-> running three major kernel versions with LTO+CFI since 2018.
-> 
-> Most of the patches are build system changes for handling LLVM bitcode,
-> which Clang produces with LTO instead of ELF object files, postponing
-> ELF processing until a later stage, and ensuring initcall ordering.
-> 
-> Note that v7 brings back arm64 support as Will has now staged the
-> prerequisite memory ordering patches [1], and drops x86_64 while we work
-> on fixing the remaining objtool warnings [2].
+The delay of 20ms is enough to enable and
+wake up the Samsung's nfc chip.
 
-Sounds like you're going to post a v8, but that's the plan for merging
-that? The arm64 parts look pretty good to me now.
+Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+---
+ drivers/nfc/s3fwrn5/i2c.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Will
+diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
+index ae26594..9a64eea 100644
+--- a/drivers/nfc/s3fwrn5/i2c.c
++++ b/drivers/nfc/s3fwrn5/i2c.c
+@@ -19,7 +19,7 @@
+ 
+ #define S3FWRN5_I2C_DRIVER_NAME "s3fwrn5_i2c"
+ 
+-#define S3FWRN5_EN_WAIT_TIME 150
++#define S3FWRN5_EN_WAIT_TIME 20
+ 
+ struct s3fwrn5_i2c_phy {
+ 	struct i2c_client *i2c_dev;
+@@ -40,7 +40,7 @@ static void s3fwrn5_i2c_set_wake(void *phy_id, bool wake)
+ 
+ 	mutex_lock(&phy->mutex);
+ 	gpio_set_value(phy->gpio_fw_wake, wake);
+-	msleep(S3FWRN5_EN_WAIT_TIME/2);
++	msleep(S3FWRN5_EN_WAIT_TIME);
+ 	mutex_unlock(&phy->mutex);
+ }
+ 
+@@ -63,7 +63,7 @@ static void s3fwrn5_i2c_set_mode(void *phy_id, enum s3fwrn5_mode mode)
+ 	if (mode != S3FWRN5_MODE_COLD) {
+ 		msleep(S3FWRN5_EN_WAIT_TIME);
+ 		gpio_set_value(phy->gpio_en, 0);
+-		msleep(S3FWRN5_EN_WAIT_TIME/2);
++		msleep(S3FWRN5_EN_WAIT_TIME);
+ 	}
+ 
+ 	phy->irq_skip = true;
+-- 
+1.9.1
+
