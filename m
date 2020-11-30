@@ -2,176 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00BA12C9364
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508C72C936B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730688AbgK3XzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:55:23 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:40523 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729078AbgK3XzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:55:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606780502; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Anjw9xAl+I8GM2JabR+FePP4NW00fcO2jMQF31wcAEE=; b=WcTh0j3InSWAItSEX/gAnUYAxegxtm/8yJU4x+BjmjrwIwqoKfz03xCjwwSNTODd7e/uIofW
- jmvWbRBQO7h/94WDB9rx2I5wXIUjTxKYLmZfG4tE0SR5w1zgsSgtrnzAa8jMbm/AqWtot9vn
- qU1EvH4Tyc/b+QFWe9RpuSbEbhQ=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fc5863007535c81bae3cd13 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Nov 2020 23:54:24
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AF7FEC43464; Mon, 30 Nov 2020 23:54:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 29D16C43460;
-        Mon, 30 Nov 2020 23:54:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 29D16C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage
- values
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com, beanhuo@micron.com,
-        cang@codeaurora.org, matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nguyenb@codeaurora.org, kuohong.wang@mediatek.com,
-        peter.wang@mediatek.com, chun-hung.wu@mediatek.com,
-        andy.teng@mediatek.com, chaotian.jing@mediatek.com,
-        cc.chou@mediatek.com, jiajie.hao@mediatek.com,
-        alice.chao@mediatek.com
-References: <20201130091610.2752-1-stanley.chu@mediatek.com>
- <568660cd-80e6-1b8f-d426-4614c9159ff4@codeaurora.org>
- <X8V83T+Tx6teNLOR@builder.lan>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <4335d590-0506-d920-8e7f-f0f0372780f9@codeaurora.org>
-Date:   Mon, 30 Nov 2020 15:54:20 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S2389055AbgK3Xzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:55:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730700AbgK3Xze (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 18:55:34 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A512C0613D2;
+        Mon, 30 Nov 2020 15:54:48 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id g185so547241wmf.3;
+        Mon, 30 Nov 2020 15:54:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=XBVRd2hhngL7guRqxXoC+QmFNH1wDfQZ2r1tO/S1i2A=;
+        b=hX7kS0puFUA4k++ZIgBDD+63kiOTSWzMy/Tz8ax7odizmx2YYGNq4JMCofNndfd0Ue
+         m7TuxVLJAHElznp5dlpzyk1ss5m0Iv8uEtXlemyafAj5FPRXgWDSnVK1kZffbXo4ktgq
+         EyYiw/pHEys6cy7MY2DZYMEO7YxXsSPGHZJibuVWxlAtx948IOY2supb1tIHVg6Q+fQy
+         KsQjw4ZlkPym7aZFQ4LSOJmyaGFKMVmL7cRHjIZ2xh0UpXhxoJ50nOuoFHIsj5RgnGtx
+         tOjDAJ8r0aCS5BEKjeGDHkA8XJFTdSMI0HoRAeW7VEuET9qAyFKgXQXBLgz/u2FlJbtb
+         xojw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=XBVRd2hhngL7guRqxXoC+QmFNH1wDfQZ2r1tO/S1i2A=;
+        b=NZNMXPxeCYBOwfyUHkUNWBcaMPonAjJ0ksapR/g7L8P38L/hGzZk1EGsMkntduQb3g
+         zJKuJvkNDxfkNcgxhBEWzpPHRY8mrmzLbjLkQbbNtkoOZFF0FsBG2SHWIjZ2ue0bhnwm
+         piSROj0j7s8B4Qfa71MNalMMJM/a5nFqu/MqUQq5+bMXNiOs81pVw+Ff1sxbLlfIRqXm
+         D+PucpCp30hifpQ6eVe5PKwGxCBL/8TTSA8CeGPjL4IsgVDss48r3cZAcJL62Nqhj8D5
+         fnZR9D85uk4CTQju1vFhRBJbIkPw6jh4hzNTEfD/gbUmuRQebcxBwnTFPZJLVCO+RBGa
+         nUOw==
+X-Gm-Message-State: AOAM533G0xChQEma1AfbKac+lvnF4tZaxfudZGrIOjjJva8wX0gAgNqB
+        4+ol3KtatFLirq+e1stcfEY=
+X-Google-Smtp-Source: ABdhPJxfNT0ptDh8zvsMLBjWl4plsBQOlWBrJWvdYxLVXpb3GxHK+GR+xrYL/ad3X322z4IcAJOa9A==
+X-Received: by 2002:a7b:c849:: with SMTP id c9mr272766wml.101.1606780486874;
+        Mon, 30 Nov 2020 15:54:46 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.80])
+        by smtp.gmail.com with ESMTPSA id g11sm30902199wrq.7.2020.11.30.15.54.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 15:54:46 -0800 (PST)
+Subject: Re: [PATCH 14/18] acpi: utils: Add function to fetch dependent
+ acpi_devices
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-15-djrscally@gmail.com>
+ <20201130182354.GW4077@smile.fi.intel.com>
+From:   Dan Scally <djrscally@gmail.com>
+Message-ID: <26d7fa3f-3552-90e0-1f64-5c39449dcdd7@gmail.com>
+Date:   Mon, 30 Nov 2020 23:54:44 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <X8V83T+Tx6teNLOR@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20201130182354.GW4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/2020 3:14 PM, Bjorn Andersson wrote:
-> On Mon 30 Nov 16:51 CST 2020, Asutosh Das (asd) wrote:
-> 
->> On 11/30/2020 1:16 AM, Stanley Chu wrote:
->>> UFS specficication allows different VCC configurations for UFS devices,
->>> for example,
->>> 	(1). 2.70V - 3.60V (By default)
->>> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
->>>                             device tree)
->>> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
->>>
->>> With the introduction of UFS 3.x products, an issue is happening that
->>> UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
->>> regulator on UFU 3.x products with VCC configuration (3) used.
->>>
->>> To solve this issue, we simply remove pre-defined initial VCC voltage
->>> values in UFS driver with below reasons,
->>>
->>> 1. UFS specifications do not define how to detect the VCC configuration
->>>      supported by attached device.
->>>
->>> 2. Device tree already supports standard regulator properties.
->>>
->>> Therefore VCC voltage shall be defined correctly in device tree, and
->>> shall not be changed by UFS driver. What UFS driver needs to do is simply
->>> enabling or disabling the VCC regulator only.
->>>
->>> This is a RFC conceptional patch. Please help review this and feel
->>> free to feedback any ideas. Once this concept is accepted, and then
->>> I would post a more completed patch series to fix this issue.
->>>
->>> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
->>> ---
->>>    drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
->>>    1 file changed, 1 insertion(+), 9 deletions(-)
->>>
->>> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
->>> index a6f76399b3ae..3965be03c136 100644
->>> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
->>> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
->>> @@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
->>>    		vreg->max_uA = 0;
->>>    	}
->>> -	if (!strcmp(name, "vcc")) {
->>> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
->>> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
->>> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
->>> -		} else {
->>> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
->>> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
->>> -		}
->>> -	} else if (!strcmp(name, "vccq")) {
->>> +	if (!strcmp(name, "vccq")) {
->>>    		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
->>>    		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
->>>    	} else if (!strcmp(name, "vccq2")) {
->>>
->>
->> Hi Stanley
->>
->> Thanks for the patch. Bao (nguyenb) was also working towards something
->> similar.
->> Would it be possible for you to take into account the scenario in which the
->> same platform supports both 2.x and 3.x UFS devices?
->>
->> These've different voltage requirements, 2.4v-3.6v.
->> I'm not sure if standard dts regulator properties can support this.
->>
-> 
-> What is the actual voltage requirement for these devices and how does
-> the software know what voltage to pick in this range?
-> 
-> Regards,
-> Bjorn
-> 
->> -asd
->>
->>
->> -- 
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->> Linux Foundation Collaborative Project
+Hi Andy
 
-For platforms that support both 2.x (2.7v-3.6v) and 3.x (2.4v-2.7v), the 
-voltage requirements (Vcc) are 2.4v-3.6v. The software initializes the 
-ufs device at 2.95v & reads the version and if the device is 3.x, it may 
-do the following:
-- Set the device power mode to SLEEP
-- Disable the Vcc
-- Enable the Vcc and set it to 2.5v
-- Set the device power mode to ACTIVE
+On 30/11/2020 18:23, Andy Shevchenko wrote:
+> On Mon, Nov 30, 2020 at 01:31:25PM +0000, Daniel Scally wrote:
+>> ACPI devices declare themselves dependent on other devices via the _DEP
+>> buffer. Fetching the dependee from dependent is a matter of parsing
+>> _DEP, but currently there's no method to fetch dependent from dependee.
+>> Add one, so we can parse sensors dependent on a PMIC from the PMIC's
+>> acpi_driver.
+> Do I understand correctly that it's an existing table provided by firmware that
+> (ab)uses _DEP in such way? Note, the specification doesn't tell we may use it
+> in this way, OTOH I don't remember if it strictly forbids such use.
+>
+> So, please elaborate in the commit message why you need this and pint out to
+> the 6.5.8 "_DEP (Operation Region Dependencies)" which clearly says about
+> OpRegions and that part already supported by ACPI in the Linux, if I'm not
+> mistaken, need to refresh my memory.
 
-All of the above may be done at HS-G1 & moved to max supported gear 
-based on the device version, perhaps?
 
-Am open to other ideas though.
+Laurent's reply is good explanation, but for example see my Lenovo Miix
+510's DSDT:
 
--asd
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+https://gist.githubusercontent.com/djrscally/e64d112180517352fa3392878b0f4a7d/raw/88b90b3ea4204fd7845257b6666fdade47cc2981/dsdt.dsl
+
+
+Search OVTI2680 and OVTI5648 for the cameras. Both are dependent on
+IN3472 devices (PMI0 and PMI1) which are the discrete type that we're
+attempting to handle here.
+
+>
+> ...
+>
+>> +	handle = adev->handle;
+>> +
+>> +	if (!acpi_has_method(handle, "_DEP"))
+>> +		return 0;
+>> +
+>> +	status = acpi_evaluate_reference(handle, "_DEP", NULL, &dep_handles);
+>> +	if (ACPI_FAILURE(status))
+>> +		return 0;
+>> +
+>> +	for (i = 0; i < dep_handles.count; i++) {
+>> +		struct acpi_device_info *info;
+>> +
+>> +		status = acpi_get_object_info(dep_handles.handles[i], &info);
+>> +		if (ACPI_FAILURE(status))
+>> +			continue;
+>> +
+>> +		if (info->valid & ACPI_VALID_HID) {
+>> +			ret = acpi_bus_get_device(dep_handles.handles[i], &candidate);
+>> +			if (ret || !candidate) {
+>> +				kfree(info);
+>> +				continue;
+>> +			}
+>> +
+>> +			if (candidate == dependee) {
+>> +				acpi_dev_put(candidate);
+>> +				kfree(info);
+>> +				return 1;
+>> +			}
+>> +
+>> +			kfree(info);
+>> +		}
+>> +	}
+> Can you utilize (by moving to here and export for ACPI layer the
+> acpi_lpss_dep()?
+oooh, yes, I think I can. Thank you!
