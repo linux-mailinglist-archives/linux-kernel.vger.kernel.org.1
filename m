@@ -2,113 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6AD2C89CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DEC2C89CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728496AbgK3Qng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:43:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgK3Qng (ORCPT
+        id S1728617AbgK3QoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:44:02 -0500
+Received: from smtprelay0224.hostedemail.com ([216.40.44.224]:56998 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725859AbgK3QoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:43:36 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBA9C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:42:55 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id lt17so23064320ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:42:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6Aj9qTViVOHCGvhmmXfPUv/vIUXbZzuXKzMiwCVk9dA=;
-        b=vAenNzbhnM5r2BYN76rB5ZO5qCzDR5XUkM+SwTBret68X09UIwXSokyZdy5TT/qU8a
-         nk15qM4d6gkNPcoDaaBEfMLXoN0PXLe4IzfL+q66F9gQCtbrWUdacULDr1SjgHCzY8Kk
-         ukeK69U8Z0kAEu/0EpOTgAY6f0yne+BC/C4rTjkzxEYN+OVjR8NjdSiaGqhbUeY60ghI
-         BY+QJmqrIdNJLpS+fye+x3FM6edHQJcxnM6YVy4IaGEAH19R55p0ZV4gj+B1jpDKkVuP
-         oWT5mojQBy3I3WUtW+tO+T2FfHC4yiF/0jkIJL71SpCpN+Y9uWR+Z6Npv3L8XiY/Yzfe
-         bhog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6Aj9qTViVOHCGvhmmXfPUv/vIUXbZzuXKzMiwCVk9dA=;
-        b=Rw/3VauEX+C1fw5gpXTL7A2/52vIgNOrWDcA6K50MT7HN509gKwtlqnT/RO2pcsjO3
-         3MxxMB2o7XflqEnFq8J5mHp05SxCXwqvADJB4DpEhYvSjDV1Ltf6ksO35DoeV6Pemxp/
-         QtgBvmNR3kpOQI+7daPAHFup9wjJw+tr0KifChtQpX32aDXMfyd2zexoIsHWb0TVMwYU
-         ekinl7i6qz9xufNeWGwfDBFCSFREy2tydJ0FiMRHhfEuoQGxtJvJotaPl8hbV8PQA8h8
-         39/YFyEjGY+TQHu562+N9qVxRc2Sv7hqlMGVFSoLr5sVAjCBlxQFhus/WA1++CInY3U9
-         KPOw==
-X-Gm-Message-State: AOAM530lAsDc+RecI8ojPPTLxiU29lLrB1KplUUHfSJ4eX0UPUDj6uKT
-        HAOvqSRqIUlTAhFVKPVy40GfDeOcSu4HVZtNpe7LpQ==
-X-Google-Smtp-Source: ABdhPJwDumtW5xKzKhkng318LHjQls09wlu9rVlgAa9sbGVNCtYOKWz71P3Kn9y3bRhGXKpF6sOvRz3IVGSuUM5RmUA=
-X-Received: by 2002:a17:906:15cc:: with SMTP id l12mr20845359ejd.363.1606754574134;
- Mon, 30 Nov 2020 08:42:54 -0800 (PST)
+        Mon, 30 Nov 2020 11:44:02 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id CC309837F24C;
+        Mon, 30 Nov 2020 16:43:19 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3871:3872:3874:4321:5007:7875:7903:8531:9545:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: lip88_3b10053273a3
+X-Filterd-Recvd-Size: 1906
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 30 Nov 2020 16:43:18 +0000 (UTC)
+Message-ID: <c8eeab847fc09368ce270ea3e06ea0bbbd7d1b7f.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: fix TYPO_SPELLING check for words with
+ apostrophe
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Date:   Mon, 30 Nov 2020 08:43:17 -0800
+In-Reply-To: <20201130144515.8320-1-dwaipayanray1@gmail.com>
+References: <20201130144515.8320-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-References: <1606467002-62964-1-git-send-email-luojiaxing@huawei.com>
-In-Reply-To: <1606467002-62964-1-git-send-email-luojiaxing@huawei.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 30 Nov 2020 17:42:43 +0100
-Message-ID: <CAMpxmJUnao=KXTRORF5z2X4BHojDW2UCosHjZi_K9jCtVVtGMQ@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: dwapb: fix NULL pointer dereference at dwapb_gpio_suspend()
-To:     Luo Jiaxing <luojiaxing@huawei.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Sergey.Semin@baikalelectronics.ru,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 9:50 AM Luo Jiaxing <luojiaxing@huawei.com> wrote:
->
-> Following Calltrace is found when running echo freeze > /sys/power/state.
->
-> [  272.755506] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000010
-> [  272.755585] Call trace:
-> [  272.755587]  dwapb_gpio_suspend+0x18/0x318
-> [  272.755588]  pm_generic_suspend+0x2c/0x48
-> [  272.755595]  acpi_subsys_suspend+0x60/0x70
-> [  272.755599]  dpm_run_callback.isra.18+0x40/0xe0
-> [  272.755601]  __device_suspend+0xf4/0x360
->
-> The reason is platform_set_drvdata() is deleted, and dwapb_gpio_suspend()
-> get *gpio by dev_get_drvdata().
->
-> Fixes: feeaefd378ca ("gpio: dwapb: Use resource managed GPIO-chip add data method")
-> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-> Acked-by: Serge Semin <fancer.lancer@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->
-> ---
->    v1->v2:
->           1. reduce calltrace log
->           2. delete blank line in tag block
-> ---
-> ---
->  drivers/gpio/gpio-dwapb.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-> index 2a9046c..4275c18 100644
-> --- a/drivers/gpio/gpio-dwapb.c
-> +++ b/drivers/gpio/gpio-dwapb.c
-> @@ -724,6 +724,8 @@ static int dwapb_gpio_probe(struct platform_device *pdev)
->                         return err;
->         }
->
-> +       platform_set_drvdata(pdev, gpio);
-> +
->         return 0;
->  }
->
-> --
-> 2.7.4
->
+On Mon, 2020-11-30 at 20:15 +0530, Dwaipayan Ray wrote:
+> checkpatch reports a false TYPO_SPELLING warning for some words
+> containing an apostrophe.
+> 
+> A false positive is "doesn't". Occurrence of the word causes
+> checkpatch to emit the following warning:
+> 
+> "WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?"
+> 
+> Check the word boundary for such cases so that words like
+> "doesn't", "zig-zag", etc. aren't misinterpreted due to wrong
+> splitting of the word by the \b regex metacharacter.
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3106,7 +3106,7 @@ sub process {
+>  # Check for various typo / spelling mistakes
+>  		if (defined($misspellings) &&
+>  		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
+> -			while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
+> +			while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b(?![^\w]?[a-z@]+)|$|[^a-z@])/gi) {
 
-Applied, thanks!
+Wouldn't it be simpler to change the existing [^a-z@] blocks to [^a-z@'-] ?
 
-Bartosz
+
