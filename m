@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95662C8E3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658E02C8E3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729999AbgK3TkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:40:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39786 "EHLO
+        id S1729972AbgK3TkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:40:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729976AbgK3TkU (ORCPT
+        with ESMTP id S1729963AbgK3TkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:40:20 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C992FC061A49
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:39:11 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id y10so19814262ljc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:39:11 -0800 (PST)
+        Mon, 30 Nov 2020 14:40:13 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAFCC0617A7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:39:04 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id c137so17283015ybf.21
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:39:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0+kKX0kuteZmVrkELKmO38aHUCQfmtksSV+RNnpLrBU=;
-        b=J/bqOdKxRj6v313iPonX/IikdbWpTlowHmo/2YfKookREQFK4kMLQ8QiA2iHZ6s6hl
-         1iD9XEmJitK7+FqMZe21RtqW2tbK64eSNxhNMJQC5Nt/DZyxLElOjrWUqcfp7AU1xxl9
-         xPPPszWhrBash8DYZBc4GgMPxNcNzsz9Yn0MdTTqGdJKpEOXkv4+g61plZbdJ7IfXQ3e
-         AtuxK9Ap3PCYyiaf7JVuSka96p0kGVmafDZo4hhLAdFXTIQ7T6sSY6gQZg9dEe/QLoPB
-         VVuXdQsI9RjgoRMIqT31lf35pKiKvRTnZpHOT7SqIOU7yBIuYLjepszfGWRpOfHvJgga
-         hTqQ==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=/CpViICP2Szh7uDfZ361U32LEVMsvMr0WgLoxDL9EOU=;
+        b=WaQ0nLe4l5R1+ZJ+jKc0q+gH2uNKGH7jZ/WUXON4xrUEL1LnQ8/YJNvc6QEbJlZvie
+         PyVbnU/rziUjTmusczx+4wQShTqKL7hZ2fVY38ePtCq2awcAUAceXb6b1myBqfHTjF+M
+         s2efrxlGINdwTJGLYqB9dt5F14b9uUDnVythVDs3rONqP8ALD5pyj5CpGd4l/l4CLeHx
+         In0GsUtGgTi3St9ViyCfaBIMAwwhYF/pAUhCRmnZznNuXYeztIrHuSjDFvGLYJBg9v9Y
+         4T4tKdy16zNWoO76leVqTo84KyLk6cuvEA4W88EDKim2AH8IRUG/k5XJriAIXKaJf70h
+         h+KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0+kKX0kuteZmVrkELKmO38aHUCQfmtksSV+RNnpLrBU=;
-        b=qghYl1nDOX6qI8/M+sg8RSBv5+qdJEU247Fi1B9lya6fo2NjzCS7ltLWQ+jtClqQEH
-         oiGv9t/NdpM0ISmtQolq2dPkbjsbRknLhMUjdn2El9oE/DZvGpQf9eDi2J0pfSLUd26H
-         RclvtHRH+JE/VYEOO4mluSUxJJvwm8vtct88UUpKSfpYq0ewwAOhF4EPouZ2v3m54trQ
-         osWJmNlDjXD38SiykA0+oTvXKzVOS+RuU0MbqPMuWuT5aolWbtBx8kMwX26ItAs4m5aO
-         Xh/KqTigZ2nonOm3A5w94/aOHvQFCJQSY9Fe/+0hqWuz9r6hq8VQld4fCvAp05JIXQmh
-         XzPw==
-X-Gm-Message-State: AOAM530siPXYS5wspSNQ9JxWjn85+r85N+bVepkye4MJF+r0pX2iJn9C
-        w9fDDLj/hUXjcaqHn8CHUj38eDovRdIuz/Rb7lAwkQ==
-X-Google-Smtp-Source: ABdhPJzl5GtwHh8u58PsVhPmQyulqAyzFwl6ovo793j64B4rhBzRkF7NsGtFUrbp/zwQ0qfPVs4EW+p+yUBEmTmH7QY=
-X-Received: by 2002:a05:651c:1292:: with SMTP id 18mr10179147ljc.334.1606765149900;
- Mon, 30 Nov 2020 11:39:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20201110162211.9207-2-yu-cheng.yu@intel.com> <20201130182641.29812-1-ndesaulniers@google.com>
- <4fad528b-e467-f96d-b7fb-9484fd975886@intel.com>
-In-Reply-To: <4fad528b-e467-f96d-b7fb-9484fd975886@intel.com>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Mon, 30 Nov 2020 11:38:58 -0800
-Message-ID: <CAFP8O3LjdP69_T1Ve-zZjvg7+v8xV1mh9Wk8zm4LpAsE2PG58Q@mail.gmail.com>
-Subject: Re: [PATCH v15 01/26] Documentation/x86: Add CET description
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Dave P Martin <Dave.Martin@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        bsingharora@gmail.com, Jonathan Corbet <corbet@lwn.net>,
-        dave.hansen@linux.intel.com, esyr@redhat.com,
-        Florian Weimer <fweimer@redhat.com>, gorcunov@gmail.com,
-        "H.J. Lu" <hjl.tools@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>,
-        jannh@google.com, Kees Cook <keescook@chromium.org>,
-        linux-api@vger.kernel.org, linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        luto@kernel.org, mike.kravetz@oracle.com,
-        Ingo Molnar <mingo@redhat.com>, nadav.amit@gmail.com,
-        oleg@redhat.com, pavel@ucw.cz, pengfei.xu@intel.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        ravi.v.shankar@intel.com, Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        vedvyas.shanbhogue@intel.com, weijiang.yang@intel.com,
-        X86 ML <x86@kernel.org>, Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        erich.keane@intel.com
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=/CpViICP2Szh7uDfZ361U32LEVMsvMr0WgLoxDL9EOU=;
+        b=R2dUQMW/Hsok5yR+YJu+EKIAAIXTMJvrePn3BAjasK5ayeS3ewK3R058phSMum96D/
+         n7F/sZR2ao/x5VFjGv0cBhaqGSROEKom/ChNT94SCd0wl3pnyHgutJyPT4EEpDImoiXR
+         wcDCkzZJk7CPzhNZ8pENtVj8H2KjpbHn287kF2mZK+tDh7ULUwv0IHQQHfaPD5/ohV/E
+         rhwSJqC5AeMaes21PzKnPqRlzf0uvBSGw8gH+zXXqtMHll2/0YAiZA0ducAqDgD3Xpxm
+         Gzpj3zoErzQyw3kx1oVtTLaM/YZFJvaPkO99ls5WraHSxa7L+j2Ymv8MO8AD+KaPgpcl
+         FgEg==
+X-Gm-Message-State: AOAM533AJcudSVG9TXEQF+VPKfDQanVuACf/06gGSR1H+suBNiACnp7D
+        pDxUZu8C1X7J88WKS2MX7C2TlcNzpAQyF3NykmQ=
+X-Google-Smtp-Source: ABdhPJz2hhvnmoRCgKkg0UhNf2Kdu/uVBtu4oW/KGg3ws9CcyTxKbcIbnR46JAGwbxlxp5Imkq8AU4k1cYtAvf635lQ=
+Sender: "samitolvanen via sendgmr" 
+        <samitolvanen@samitolvanen1.mtv.corp.google.com>
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+ (user=samitolvanen job=sendgmr) by 2002:a25:428b:: with SMTP id
+ p133mr38276555yba.261.1606765143451; Mon, 30 Nov 2020 11:39:03 -0800 (PST)
+Date:   Mon, 30 Nov 2020 11:39:00 -0800
+Message-Id: <20201130193900.456726-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH v3] x86/pci: fix the function type for check_reserved_t
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 10:34 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote=
-:
->
-> On 11/30/2020 10:26 AM, Nick Desaulniers wrote:
-> > (In response to https://lore.kernel.org/lkml/20201110162211.9207-2-yu-c=
-heng.yu@intel.com/)
-> >
-> >> These need to be enabled to build a CET-enabled kernel, and Binutils v=
-2.31
-> >> and GCC v8.1 or later are required to build a CET kernel.
-> >
-> > What about LLVM? Surely CrOS might be of interest to ship this on (we s=
-hip the
-> > equivalent for aarch64 on Android).
-> >
->
-> I have not built with LLVM, but think it probably will work as well.  I
-> will test it.
->
-> >> An application's CET capability is marked in its ELF header and can be
-> >> verified from the following command output, in the NT_GNU_PROPERTY_TYP=
-E_0
-> >> field:
-> >>
-> >>      readelf -n <application> | grep SHSTK
-> >>          properties: x86 feature: IBT, SHSTK
-> >
-> > Same for llvm-readelf.
-> >
->
-> I will add that to the document.
->
-> Thanks,
-> Yu-cheng
+e820__mapped_all is passed as a callback to is_mmconf_reserved,
+which expects a function of type:
 
-The baseline LLVM version is 10.0.1, which is good enough for  clang
--fcf-protection=3Dfull, llvm-readelf -n, LLD's .note.gnu.property
-handling (the LLD option is `-z force-ibt`, though)
+typedef bool (*check_reserved_t)(u64 start, u64 end, unsigned type);
 
+However, e820__mapped_all accepts enum e820_type as the last
+argument and this type mismatch trips indirect call checking with
+Clang's Control-Flow Integrity (CFI).
 
---=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
+As is_mmconf_reserved only passes enum e820_type values for the
+type argument, change the typedef and the unused type argument in
+is_acpi_reserved to enum e820_type to fix the type mismatch.
+
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Suggested-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+---
+ arch/x86/pci/mmconfig-shared.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+index 6fa42e9c4e6f..234998f196d4 100644
+--- a/arch/x86/pci/mmconfig-shared.c
++++ b/arch/x86/pci/mmconfig-shared.c
+@@ -425,7 +425,7 @@ static acpi_status find_mboard_resource(acpi_handle handle, u32 lvl,
+ 	return AE_OK;
+ }
+ 
+-static bool is_acpi_reserved(u64 start, u64 end, unsigned not_used)
++static bool is_acpi_reserved(u64 start, u64 end, enum e820_type not_used)
+ {
+ 	struct resource mcfg_res;
+ 
+@@ -442,7 +442,7 @@ static bool is_acpi_reserved(u64 start, u64 end, unsigned not_used)
+ 	return mcfg_res.flags;
+ }
+ 
+-typedef bool (*check_reserved_t)(u64 start, u64 end, unsigned type);
++typedef bool (*check_reserved_t)(u64 start, u64 end, enum e820_type type);
+ 
+ static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
+ 				     struct pci_mmcfg_region *cfg,
+
+base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
+-- 
+2.29.2.454.gaff20da3a2-goog
+
