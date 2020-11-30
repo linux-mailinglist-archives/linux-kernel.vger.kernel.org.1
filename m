@@ -2,68 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DEC2C89CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9932C89D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgK3QoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:44:02 -0500
-Received: from smtprelay0224.hostedemail.com ([216.40.44.224]:56998 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725859AbgK3QoC (ORCPT
+        id S1728726AbgK3Qpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:45:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728443AbgK3Qpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:44:02 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id CC309837F24C;
-        Mon, 30 Nov 2020 16:43:19 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3871:3872:3874:4321:5007:7875:7903:8531:9545:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: lip88_3b10053273a3
-X-Filterd-Recvd-Size: 1906
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 30 Nov 2020 16:43:18 +0000 (UTC)
-Message-ID: <c8eeab847fc09368ce270ea3e06ea0bbbd7d1b7f.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: fix TYPO_SPELLING check for words with
- apostrophe
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Date:   Mon, 30 Nov 2020 08:43:17 -0800
-In-Reply-To: <20201130144515.8320-1-dwaipayanray1@gmail.com>
-References: <20201130144515.8320-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 30 Nov 2020 11:45:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B444BC0613CF;
+        Mon, 30 Nov 2020 08:45:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=GFqvAPo7D6KlbvsNo07Q/7Bk8z8TPhjSBF/80g1vgTw=; b=RWTVM2RmyOuc4swcxfe6XdEK+7
+        PeB1sSKEtNQDiVvmGbx4UaIwdsvNVW+5gddcDS8zbKoJ0j26o9Jp5TyhowIZZggyEYyhtk608ydpS
+        dOIp6kEWgsh//BDG/wtc1Vh++wfYbdtV53cib9BktXLWkcQanRgyRREdn9pB6huDAFR0X2lm9d849
+        xqIEmA6cSaVyFtbxqpNhbLEHAJeJcLOD14ysE1Fm22tDHG3Bcyl9LoaYUmD7qow+1OJT9rs49kU0H
+        pPfpoUfVtEDpfSnsgx3Mh1SbX5RYdCTtxGa492ZDoa3jJb9zKyK/dzCH4DyG6ErrUWzYLSGrpzWbx
+        7tKxaQeg==;
+Received: from [2601:1c0:6280:3f0::cc1f]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kjmIN-0001K1-Bo; Mon, 30 Nov 2020 16:45:00 +0000
+Subject: Re: linux-next: Tree for Nov 27 (drivers/idle/intel_idle.c)
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+References: <20201127200457.1ffb6aaf@canb.auug.org.au>
+ <0a6cc4c9-c48d-dbc4-6044-3b22cd133b76@infradead.org>
+ <20201128083617.50021fff@canb.auug.org.au>
+ <20201130115402.GO3040@hirez.programming.kicks-ass.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7170bbdb-1603-8aa6-144a-91ad99e6d579@infradead.org>
+Date:   Mon, 30 Nov 2020 08:44:54 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <20201130115402.GO3040@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-30 at 20:15 +0530, Dwaipayan Ray wrote:
-> checkpatch reports a false TYPO_SPELLING warning for some words
-> containing an apostrophe.
+On 11/30/20 3:54 AM, Peter Zijlstra wrote:
+> On Sat, Nov 28, 2020 at 08:36:17AM +1100, Stephen Rothwell wrote:
+>> Hi Randy,
+>>
+>> On Fri, 27 Nov 2020 07:57:32 -0800 Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>
+>>> On 11/27/20 1:04 AM, Stephen Rothwell wrote:
+>>>> Hi all,
+>>>>
+>>>> Changes since 20201126:
+>>>>   
+>>>
+>>> (This looks strange to me.)
+>>>
+>>>
+>>> on i386 or x86_64:
+>>>
+>>> # CONFIG_ACPI is not set
+>>>
+>>> ../drivers/idle/intel_idle.c: In function ‘intel_idle_init_cstates_icpu’:
+>>> ../drivers/idle/intel_idle.c:1510:7: error: implicit declaration of function ‘intel_idle_state_needs_timer_stop’; did you mean ‘intel_idle_init_cstates_icpu’? [-Werror=implicit-function-declaration]
+>>>    if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
+>>>        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>
+>> intel_idle_state_needs_timer_stop() is only defined when
+>> CONFIG_ACPI_PROCESSOR_CSTATE is set, but is used once where that is not
+>> necessarily set.  I assume CONFIG_ACPI_PROCESSOR_CSTATE is not set in
+>> your config?
 > 
-> A false positive is "doesn't". Occurrence of the word causes
-> checkpatch to emit the following warning:
+> Bah... :/
+
+Yep, thanks.
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index 7ee7ffe22ae3..d79335506ecd 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -1140,6 +1140,20 @@ static bool __init intel_idle_max_cstate_reached(int cstate)
+>  	return false;
+>  }
+>  
+> +static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
+> +{
+> +	unsigned long eax = flg2MWAIT(state->flags);
+> +
+> +	if (boot_cpu_has(X86_FEATURE_ARAT))
+> +		return false;
+> +
+> +	/*
+> +	 * Switch over to one-shot tick broadcast if the target C-state
+> +	 * is deeper than C1.
+> +	 */
+> +	return !!((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK);
+> +}
+> +
+>  #ifdef CONFIG_ACPI_PROCESSOR_CSTATE
+>  #include <acpi/processor.h>
+>  
+> @@ -1210,20 +1224,6 @@ static bool __init intel_idle_acpi_cst_extract(void)
+>  	return false;
+>  }
+>  
+> -static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
+> -{
+> -	unsigned long eax = flg2MWAIT(state->flags);
+> -
+> -	if (boot_cpu_has(X86_FEATURE_ARAT))
+> -		return false;
+> -
+> -	/*
+> -	 * Switch over to one-shot tick broadcast if the target C-state
+> -	 * is deeper than C1.
+> -	 */
+> -	return !!((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK);
+> -}
+> -
+>  static void __init intel_idle_init_cstates_acpi(struct cpuidle_driver *drv)
+>  {
+>  	int cstate, limit = min_t(int, CPUIDLE_STATE_MAX, acpi_state_table.count);
 > 
-> "WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?"
-> 
-> Check the word boundary for such cases so that words like
-> "doesn't", "zig-zag", etc. aren't misinterpreted due to wrong
-> splitting of the word by the \b regex metacharacter.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3106,7 +3106,7 @@ sub process {
-> �# Check for various typo / spelling mistakes
-> �		if (defined($misspellings) &&
-> �		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
-> -			while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
-> +			while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b(?![^\w]?[a-z@]+)|$|[^a-z@])/gi) {
-
-Wouldn't it be simpler to change the existing [^a-z@] blocks to [^a-z@'-] ?
 
 
+-- 
+~Randy
