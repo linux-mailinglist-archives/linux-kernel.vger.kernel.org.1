@@ -2,106 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3602C8DBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2182C8DC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387932AbgK3TMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:12:33 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:39988 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbgK3TMd (ORCPT
+        id S2388282AbgK3TNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:13:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388007AbgK3TNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:12:33 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id D0E7B2001F;
-        Mon, 30 Nov 2020 20:11:34 +0100 (CET)
-Date:   Mon, 30 Nov 2020 20:11:33 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-Cc:     linux@armlinux.org.uk, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
-        tony@atomide.com, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@siol.net, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
-        tsbogend@alpha.franken.de, James.Bottomley@hansenpartnership.com,
-        deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, lee.jones@linaro.org, emil.l.velikov@gmail.com,
-        daniel.thompson@linaro.org, krzk@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH 0/5] drop unused BACKLIGHT_GENERIC option
-Message-ID: <20201130191133.GA1565464@ravnborg.org>
-References: <20201130152137.24909-1-andrey.zhizhikin@leica-geosystems.com>
+        Mon, 30 Nov 2020 14:13:01 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C54C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:12:20 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id y10so19677637ljc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:12:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qhoqT/m6QP2iHAwluk/LX+wOo/cBuZcFuXiuawLlKL0=;
+        b=lEOyaHhbG/Czm59pk368rryL3Wzn2gIYx7RaGWiZZJydaUZV+2BQZx5e5TKeZIyTga
+         XuAdZVX9BHGl/7+ZBXy331Ec/0IBawT6MIt7L83HDIT1/94lx19nMmlJZN1eGb5eKd8+
+         3UdmkmeD4Ivb/XLxm8E0ruLAMjMqIgdVPhTYQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qhoqT/m6QP2iHAwluk/LX+wOo/cBuZcFuXiuawLlKL0=;
+        b=XbVVjVlnfPdKvLtKTqRIbej8gNDI3pPgvgQ08kGnuSVyKSYINzZIMtakt0sonGtwxR
+         yp6Pe7Xu/IUau9OAtdxczbiZgeqrWrRsOGFWbHvZ43ar6U72+9bMnwYK5bgEPwYUPHNT
+         ys41CpAPDIH/K2F4zH9D24IJ5C4cnwAmwAIlwULK03m4hsUxVXNuQAFLqU0tFaM4HiRu
+         l2RCbZHClbbX5SFWZxpCoS0yOKiw9vQDq+ciR5fkJpQHAI93rCuRjWMYd3VvFZyXOoRi
+         WIx+qsV38ffXf5ZZKEftffGJGjn1n5BkZnBBi+8beOcmxKyrKZUomksxd9Tg6J/urhV8
+         F2KA==
+X-Gm-Message-State: AOAM532vwyNBG7MPd9vVeFiJ6Ccvj6FxjZNNX3sWjGUWrUqQxy79xK0y
+        mfKJQoJ8m7Bb2K3V2JMk9+TSK0xbSh5niA==
+X-Google-Smtp-Source: ABdhPJwUIHgqXCB9l7lIxrqgnt9glYZp5eDUkCT5Q7i2qShQYHgs0vy1cWRwBED1qpqnaewPqVtrOw==
+X-Received: by 2002:a2e:a312:: with SMTP id l18mr11154566lje.231.1606763538801;
+        Mon, 30 Nov 2020 11:12:18 -0800 (PST)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id o20sm1289289lfl.157.2020.11.30.11.12.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 11:12:17 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id j205so23784014lfj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:12:17 -0800 (PST)
+X-Received: by 2002:a19:ca0a:: with SMTP id a10mr9856079lfg.121.1606763536477;
+ Mon, 30 Nov 2020 11:12:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130152137.24909-1-andrey.zhizhikin@leica-geosystems.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=Ibmpp1ia c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=RN8nFXG3PNPgSL11oioA:9
-        a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22
+References: <20201118234025.376412-1-evgreen@chromium.org> <20201118153951.RESEND.v3.2.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
+ <CAHp75VdtwyCj7emc7Bk87q7kMQA0sSX81-aK-fMq4qTfTF-c_g@mail.gmail.com> <CAE=gft4OW7_pWfco4+kY65tbUGUDzXXDfsVMCP8MN93inVem4A@mail.gmail.com>
+In-Reply-To: <CAE=gft4OW7_pWfco4+kY65tbUGUDzXXDfsVMCP8MN93inVem4A@mail.gmail.com>
+From:   Evan Green <evgreen@chromium.org>
+Date:   Mon, 30 Nov 2020 11:11:39 -0800
+X-Gmail-Original-Message-ID: <CAE=gft4LDh7TmvMgL4_eov5=1Nh0PYVRDxn4eCLsDd5JJyCwAw@mail.gmail.com>
+Message-ID: <CAE=gft4LDh7TmvMgL4_eov5=1Nh0PYVRDxn4eCLsDd5JJyCwAw@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3 2/2] i2c: i2c-mux-gpio: Enable this driver in
+ ACPI land
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 03:21:32PM +0000, Andrey Zhizhikin wrote:
-> Since the removal of generic_bl driver from the source tree in commit
-> 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
-> unused") BACKLIGHT_GENERIC config option became obsolete as well and
-> therefore subject to clean-up from all configuration files.
-> 
-> This series introduces patches to address this removal, separated by
-> architectures in the kernel tree.
-> 
-> Andrey Zhizhikin (5):
->   ARM: configs: drop unused BACKLIGHT_GENERIC option
->   arm64: defconfig: drop unused BACKLIGHT_GENERIC option
->   MIPS: configs: drop unused BACKLIGHT_GENERIC option
->   parisc: configs: drop unused BACKLIGHT_GENERIC option
->   powerpc/configs: drop unused BACKLIGHT_GENERIC option
+Hi Andy, Peter,
 
-For defconfigs I expect arch maintainers to do a make xxxdefconfig / make
-savedefconfig / cp defconfig ... run now and then - this will remove
-all such symbols.
+On Fri, Nov 20, 2020 at 10:59 AM Evan Green <evgreen@chromium.org> wrote:
+>
+> On Thu, Nov 19, 2020 at 7:24 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Thu, Nov 19, 2020 at 1:40 AM Evan Green <evgreen@chromium.org> wrote:
+> > >
+> > > Enable i2c-mux-gpio devices to be defined via ACPI. The idle-state
+> > > property translates directly to a fwnode_property_*() call. The child
+> > > reg property translates naturally into _ADR in ACPI.
+> > >
+> > > The i2c-parent binding is a relic from the days when the bindings
+> > > dictated that all direct children of an I2C controller had to be I2C
+> > > devices. These days that's no longer required. The i2c-mux can sit as a
+> > > direct child of its parent controller, which is where it makes the most
+> > > sense from a hardware description perspective. For the ACPI
+> > > implementation we'll assume that's always how the i2c-mux-gpio is
+> > > instantiated.
+> >
+> > ...
+> >
+> > > +#ifdef CONFIG_ACPI
+> > > +
+> > > +static int i2c_mux_gpio_get_acpi_adr(struct device *dev,
+> > > +                                    struct fwnode_handle *fwdev,
+> > > +                                    unsigned int *adr)
+> > > +
+> > > +{
+> > > +       unsigned long long adr64;
+> > > +       acpi_status status;
+> > > +
+> > > +       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwdev),
+> > > +                                      METHOD_NAME__ADR,
+> > > +                                      NULL, &adr64);
+> > > +
+> > > +       if (!ACPI_SUCCESS(status)) {
+> > > +               dev_err(dev, "Cannot get address\n");
+> > > +               return -EINVAL;
+> > > +       }
+> > > +
+> > > +       *adr = adr64;
+> > > +       if (*adr != adr64) {
+> > > +               dev_err(dev, "Address out of range\n");
+> > > +               return -ERANGE;
+> > > +       }
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +#else
+> > > +
+> > > +static int i2c_mux_gpio_get_acpi_adr(struct device *dev,
+> > > +                                    struct fwnode_handle *fwdev,
+> > > +                                    unsigned int *adr)
+> > > +{
+> > > +       return -EINVAL;
+> > > +}
+> > > +
+> > > +#endif
+> >
+> > I'm wondering if you may use acpi_find_child_device() here.
+> > Or is it a complementary function?
+>
+> I think it's complementary. The code above is "I have a device, I want
+> its _ADR". whereas acpi_find_child_device() is "I have an _ADR, I want
+> its device". I could flip things around to use this, but it would turn
+> the code from linear into quadratic. I'd have to scan each possible
+> address and call acpi_find_child_device() with that _ADR to see if
+> there's a child device there.
+>
+> >
+> > ...
+> >
+> > > +       device_for_each_child_node(dev, child) {
+> > > +               if (is_of_node(child)) {
+> > > +                       fwnode_property_read_u32(child, "reg", values + i);
+> > > +
+> > > +               } else if (is_acpi_node(child)) {
+> > > +                       rc = i2c_mux_gpio_get_acpi_adr(dev, child, values + i);
+> > > +                       if (rc)
+> > > +                               return rc;
+> > > +               }
+> > > +
+> > >                 i++;
+> > >         }
+> >
+> > And for this I already told in two different threads with similar code
+> > that perhaps we need common helper that will check reg followed by
+> > _ADR.
+>
+> Oh, I'm not aware of those threads. I'd need some advice: I guess a
+> new fwnode_* API would make sense for this, but I had trouble coming
+> up with a generic interface. _ADR is just a blobbo 64 bit int, but
+> DT's "reg" is a little more flexible, having a length, and potentially
+> being an array. I suppose it would have to be something like:
+>
+> int fwnode_property_read_reg(const struct fwnode_handle *fwnode,
+>                                  size_t index, uint64_t *addr, uint64_t *len);
+>
+> But then ACPI would always return 0 for length, and only index 0 would
+> ever work? I'm worried I'm designing an API that's only useful to me.
+>
+> I tried to look around for other examples of this specific pattern of
+> _ADR then "reg", but struggled to turn up much.
 
-If the patches goes in like they are submitted then:
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Any thoughts on this?
 
-> 
->  arch/arm/configs/at91_dt_defconfig          | 1 -
->  arch/arm/configs/cm_x300_defconfig          | 1 -
->  arch/arm/configs/colibri_pxa300_defconfig   | 1 -
->  arch/arm/configs/jornada720_defconfig       | 1 -
->  arch/arm/configs/magician_defconfig         | 1 -
->  arch/arm/configs/mini2440_defconfig         | 1 -
->  arch/arm/configs/omap2plus_defconfig        | 1 -
->  arch/arm/configs/pxa3xx_defconfig           | 1 -
->  arch/arm/configs/qcom_defconfig             | 1 -
->  arch/arm/configs/sama5_defconfig            | 1 -
->  arch/arm/configs/sunxi_defconfig            | 1 -
->  arch/arm/configs/tegra_defconfig            | 1 -
->  arch/arm/configs/u8500_defconfig            | 1 -
->  arch/arm64/configs/defconfig                | 1 -
->  arch/mips/configs/gcw0_defconfig            | 1 -
->  arch/mips/configs/gpr_defconfig             | 1 -
->  arch/mips/configs/lemote2f_defconfig        | 1 -
->  arch/mips/configs/loongson3_defconfig       | 1 -
->  arch/mips/configs/mtx1_defconfig            | 1 -
->  arch/mips/configs/rs90_defconfig            | 1 -
->  arch/parisc/configs/generic-64bit_defconfig | 1 -
->  arch/powerpc/configs/powernv_defconfig      | 1 -
->  22 files changed, 22 deletions(-)
-> 
-> 
-> base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
-> prerequisite-patch-id: bfd382cf1dc021d20204f10ea9403319c1c32b12
-> prerequisite-patch-id: 5397c0c8648bb3e0b830207ea867138c11c6e644
-> prerequisite-patch-id: a3c284dff5fe6d02828918a886db6a8ed3197e20
-> -- 
-> 2.17.1
+> -Evan
+>
+> >
+> > --
+> > With Best Regards,
+> > Andy Shevchenko
