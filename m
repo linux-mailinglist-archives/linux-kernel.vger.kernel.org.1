@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C9E2C85FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5F02C85F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727175AbgK3NzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:55:20 -0500
-Received: from mga17.intel.com ([192.55.52.151]:29006 "EHLO mga17.intel.com"
+        id S1726560AbgK3Nyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:54:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726737AbgK3NzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:55:19 -0500
-IronPort-SDR: ZcpUTZ7YSJhmyl1ZRw3msG66XeVayhVjlcyXoA9WeWYrRUA435n6kRFoS+IeyJxVEB00VrqFLX
- Ach4TbMIIxTg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9820"; a="152469864"
-X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
-   d="scan'208";a="152469864"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 05:53:38 -0800
-IronPort-SDR: Ao8RXvPmDEAz0Ds/itDE6rFJeK3ffp0ww976qNBmYThfMVH9nOR0jPRlWneQX1FQMxXiWm79uV
- B4d8NxJ8kEEQ==
-X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
-   d="scan'208";a="549105746"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 05:53:35 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 58269208FD; Mon, 30 Nov 2020 15:53:31 +0200 (EET)
-Date:   Mon, 30 Nov 2020 15:53:31 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v4 2/2] media: i2c: Add support for the OV5648 image
- sensor
-Message-ID: <20201130135331.GW3940@paasikivi.fi.intel.com>
-References: <20201128143350.531460-1-paul.kocialkowski@bootlin.com>
- <20201128143350.531460-3-paul.kocialkowski@bootlin.com>
- <20201130092802.GU3940@paasikivi.fi.intel.com>
- <X8T4FH/QjRdLu0hS@aptenodytes>
+        id S1726669AbgK3Nyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:54:36 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C92012067D;
+        Mon, 30 Nov 2020 13:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606744435;
+        bh=mzcrewT5KlblZ1Fel9HIaLOCygpQZ1nOoc+X07P1R/s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oHbrHjTqyVRo/UtZ4G7ShB8078NjIHt7qo2G7L9N0CE1cPVzqtK7+DNdY6rHG1OSL
+         itPTLRltXPQB1hTi90KuFQezqUKQVCWc+xbFAuhFyezH55938bJ/+3theBRcRp68GT
+         +ImsW9IwuXTeWQPv0YOYWIo0eoIDEijEPViXWqWM=
+Date:   Mon, 30 Nov 2020 14:53:50 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Tom Yan <tom.ty89@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to
+ scsi_add_host()
+Message-ID: <X8T5bimon2oaUUqI@kroah.com>
+References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
+ <20201128154849.3193-1-tom.ty89@gmail.com>
+ <20201128154849.3193-2-tom.ty89@gmail.com>
+ <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com>
+ <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com>
+ <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com>
+ <X8T0E2qvF2cgADl+@kroah.com>
+ <dd557c38-a919-5e5e-ab3b-17a235f17139@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X8T4FH/QjRdLu0hS@aptenodytes>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <dd557c38-a919-5e5e-ab3b-17a235f17139@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-On Mon, Nov 30, 2020 at 02:48:04PM +0100, Paul Kocialkowski wrote:
-> Hi Sakari,
+On Mon, Nov 30, 2020 at 02:36:38PM +0100, Hans de Goede wrote:
+> Hi,
 > 
-> On Mon 30 Nov 20, 11:28, Sakari Ailus wrote:
-> > Hi Paul,
+> On 11/30/20 2:30 PM, Greg KH wrote:
+> > On Mon, Nov 30, 2020 at 02:23:48PM +0100, Hans de Goede wrote:
+> >> Hi,
+> >>
+> >> On 11/30/20 1:58 PM, Tom Yan wrote:
+> >>> It's merely a moving of comment moving for/and a no-behavioral-change
+> >>> adaptation for the reversion.>
+> >>
+> >> IMHO the revert of the troublesome commit and the other/new changes really
+> >> should be 2 separate commits. But I will let Alan and Greg have the final
+> >> verdict on this.
 > > 
-> > Thanks for the update. I have a few comments on the driver, too.
-> 
-> Thanks for the review!
-> 
-> [...]
-> 
-> > > +	ret = ov5648_write(sensor, OV5648_GAIN_BLUE_MAN_L_REG,
-> > > +			   OV5648_GAIN_BLUE_MAN_L(blue_balance));
+> > I would prefer to just revert the commits and not do anything
+> > different/special here so late in the release cycle.
 > > 
-> > return ...
-> > 
-> > Same below (and above).
+> > So, if Alan agrees, I'll be glad to do them on my end, I just need the
+> > commit ids for them.
 > 
-> Well I don't think that makes any functional difference, right?
-> My personal preference is to have explicit checks even at the end of functions
-> for symetry and alignment with other blocks.
+> The troublesome commit are (in reverse, so revert, order):
 > 
-> If it's okay, it'd like to keep it as-is. But if that's against kernel coding
-> style guidelines, I won't argue more.
+> 5df7ef7d32fe ("uas: bump hw_max_sectors to 2048 blocks for SS or faster drives")
+> 558033c2828f ("uas: fix sdev->host->dma_dev")
+> 0154012f8018 ("usb-storage: fix sdev->host->dma_dev")
+> 
+> Alan, the reason for reverting these is that using scsi_add_host_with_dma() as the
+> last 2 patches do, with the dmadev argument of that call pointing to the device
+> for the XHCI controller is causing changes to the DMA settings of the XHCI controller
+> itself which is causing regressions in 5.10, see this email thread:
+> 
+> https://lore.kernel.org/linux-usb/fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com/T/#t
 
-Please do change them.
+Thanks, I'll wait for Alan to respond, but I think just reverting these
+is the best solution at this point in time.  You have tested those
+reverts, solve this, right?  If so, can I get a "Tested-by:"? 
 
-It's useless code, repeated at the end of a number of functions in this
-driver. I wouldn't mind otherwise, but people do take examples from
-existing drivers so such patterns tend to repeat in other places.
+thanks,
 
--- 
-Regards,
-
-Sakari Ailus
+greg k-h
