@@ -2,146 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28E42C9249
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2D72C924A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730727AbgK3XO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:14:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
+        id S1730746AbgK3XPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:15:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726737AbgK3XO0 (ORCPT
+        with ESMTP id S1726737AbgK3XPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:14:26 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7A1C0613D2;
-        Mon, 30 Nov 2020 15:13:45 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606778024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DcIojZeNBXirIxPuzck5gKL+B2GaAAVvbLMSbnv7A4o=;
-        b=TErIi0LRzrxWtp2w0jaDbQs3wM0sxhxyGGuNXb8yCoSc19jwyWuTOLBKnvHCQCuVB92XB7
-        U8bleVUuBzWgRMnH9UGQbNX9UJU1aATJ3/YACH9xpT2TQ28H7n6zBeosQVWyUDwLhsclsu
-        iBmtG3PLr6EVBA9vzkJ2dN2nxSoEl77RRKFyUPL1iJRoLiXoQE/hvD7OuotKPcwa+Lvy9V
-        GkYyESZNsVaNTsQHjBmTN/OSf4JuKlnUIPkFLAl5f1dQHxjSPXt8xoGGv0afpOS0RoEDrL
-        vkEM6fM2/ruRi/txjDpqSV9joZSgnJFSMw6uQvHtLX2JLfic/ZSKE2dJ5uRKuQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606778024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DcIojZeNBXirIxPuzck5gKL+B2GaAAVvbLMSbnv7A4o=;
-        b=OBqVQNWAecaT77Y/D1j/uIFIdsyYMUuCsILx3O7iOBPONrreeEGV9ZZIdUy8tDebOhwOw5
-        JTAGOz1sV1hhrSCQ==
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>, linux-kernel@vger.kernel.org
-Cc:     =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH kernel v4 6/8] genirq/irqdomain: Move hierarchical IRQ cleanup to kobject_release
-In-Reply-To: <20201124061720.86766-7-aik@ozlabs.ru>
-References: <20201124061720.86766-1-aik@ozlabs.ru> <20201124061720.86766-7-aik@ozlabs.ru>
-Date:   Tue, 01 Dec 2020 00:13:44 +0100
-Message-ID: <871rgaigk7.fsf@nanos.tec.linutronix.de>
+        Mon, 30 Nov 2020 18:15:06 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF731C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:14:25 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id w15so16086075oie.13
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:14:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fiqCo1/lI2q1mRSdvAPLuR7qN8UC6kpdlJNW9jLd1So=;
+        b=D/a9sT7QnDRknAcb/kqsN0U4b8shUkIGmqCsSQqBos1WqsXEgHYeUKUGdxEtN69qSi
+         sFj7Hv+Ll2zQJCmcJAIGfIeL9E2kBLEfkrdnZNc52OuWC7dQJcVQAOChniIeEEhCT9Ia
+         MnZEUHrQ91aemrIQKi47ZFvbtnMqwkH6g+8pAV71pqO3wtS/8MUfoybkcCiRa84IxDbI
+         ONPlgY/pyJ7It74yoTQzkMx96X1beweGtCyxkgQGeQjYY+dZtD6+njFquPAJh/qcGN81
+         dHFY0nd5VCyuJoNICJMc9O3ffP5ukZT4FTDEZrmWLrBI8BLAOVxyQQ/grdSpQiWq7wX4
+         Cu7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fiqCo1/lI2q1mRSdvAPLuR7qN8UC6kpdlJNW9jLd1So=;
+        b=LC7TK65cQQOUnANJik5wOIqePk8zYaa0twfPXZmvGgeXcK+jEtNuZTmx7HF5bhfBy1
+         slP3csLOOPTpBAT7LYciig35937z7pSel6t4zaY86YG7GSR7s8kc8JrOOQWX2W8yZkpE
+         mONz7HbZdVV/2/WTizitVSH7oA/RhWZOerbqVk+7bdNpfzwGGw0V1xJhPXgfJiHUZtyh
+         c1iBAOzRj2CeCONSYEiKIdzNA5yTneUs1CDe6kJEITZMEomFqpp3LIo6ouNjn5iXE9br
+         cbbGaoSutJ32Lucl1gROET5qfNuCOZ68YcFf/tBWoqUYuQWnV6C9q0qLMLnNREqTae6P
+         UBcQ==
+X-Gm-Message-State: AOAM531Eji3wbEMs/o27qA0DmrTwS1FUCEHA+Oa/Ek4/+QqnfyUax54y
+        D+ISymh/D7c9SnREAczZCv5VHLDSqIYf0TWOTO/8KGz+
+X-Google-Smtp-Source: ABdhPJxEaLWXFtxL3ijIBaGXZ22vZflmOE1jRdmPndYRMxiIVD5eI+WbIfWWBpqaHZENtarBXBDtoIDzoitjeT6W6xc=
+X-Received: by 2002:aca:4f53:: with SMTP id d80mr109224oib.120.1606778065481;
+ Mon, 30 Nov 2020 15:14:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-4-lee.jones@linaro.org>
+In-Reply-To: <20201126134240.3214176-4-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 30 Nov 2020 18:14:14 -0500
+Message-ID: <CADnq5_MQUuOWoKboqUEu-xazNF2MoCke5dLqRfzX_c6d=cavgA@mail.gmail.com>
+Subject: Re: [PATCH 03/40] drm/amd/pm/powerplay/smumgr/ci_smumgr: Remove set
+ but unused variable 'res'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey,
+On Thu, Nov 26, 2020 at 8:42 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/ci_smumgr.c: In functi=
+on =E2=80=98ci_thermal_setup_fan_table=E2=80=99:
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/ci_smumgr.c:2132:6: wa=
+rning: variable =E2=80=98res=E2=80=99 set but not used [-Wunused-but-set-va=
+riable]
+>
+> Cc: Evan Quan <evan.quan@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/amd/pm/powerplay/smumgr/ci_smumgr.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/ci_smumgr.c b/driver=
+s/gpu/drm/amd/pm/powerplay/smumgr/ci_smumgr.c
+> index 329bf4d44bbce..c1d869b4c7a42 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/ci_smumgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/ci_smumgr.c
+> @@ -2129,7 +2129,6 @@ static int ci_thermal_setup_fan_table(struct pp_hwm=
+gr *hwmgr)
+>         uint32_t t_diff1, t_diff2, pwm_diff1, pwm_diff2;
+>         uint16_t fdo_min, slope1, slope2;
+>         uint32_t reference_clock;
+> -       int res;
+>         uint64_t tmp64;
+>
+>         if (!phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM=
+_PlatformCaps_MicrocodeFanControl))
+> @@ -2191,7 +2190,7 @@ static int ci_thermal_setup_fan_table(struct pp_hwm=
+gr *hwmgr)
+>
+>         fan_table.TempSrc =3D (uint8_t)PHM_READ_VFPF_INDIRECT_FIELD(hwmgr=
+->device, CGS_IND_REG__SMC, CG_MULT_THERMAL_CTRL, TEMP_SEL);
+>
+> -       res =3D ci_copy_bytes_to_smc(hwmgr, ci_data->fan_table_start, (ui=
+nt8_t *)&fan_table, (uint32_t)sizeof(fan_table), SMC_RAM_END);
+> +       ci_copy_bytes_to_smc(hwmgr, ci_data->fan_table_start, (uint8_t *)=
+&fan_table, (uint32_t)sizeof(fan_table), SMC_RAM_END);
+>
 
-On Tue, Nov 24 2020 at 17:17, Alexey Kardashevskiy wrote:
-> This moves hierarchical domain's irqs cleanup into the kobject release
-> hook to make irq_domain_free_irqs() as simple as kobject_put.
+Should probably just return the error here.  I'll fix it up.  Thanks!
 
-Truly simple: Simply broken in multiple ways.
+Alex
 
-CONFIG_SPARSE_IRQ=n is now completely buggered. It does not even compile
-anymore. Running core code changes through a larger set of cross
-compilers is neither rocket science nor optional.
-
-For CONFIG_SPARSE_IRQ=y, see below.
-
-> @@ -1675,14 +1679,11 @@ void irq_domain_free_irqs(unsigned int virq, unsigned int nr_irqs)
->  		 "NULL pointer, cannot free irq\n"))
->  		return;
->  
-> -	mutex_lock(&irq_domain_mutex);
-> -	for (i = 0; i < nr_irqs; i++)
-> -		irq_domain_remove_irq(virq + i);
-> -	irq_domain_free_irqs_hierarchy(data->domain, virq, nr_irqs);
-> -	mutex_unlock(&irq_domain_mutex);
-> +	for (i = 0; i < nr_irqs; i++) {
-> +		struct irq_desc *desc = irq_to_desc(virq + i);
->  
-> -	irq_domain_free_irq_data(virq, nr_irqs);
-> -	irq_free_descs(virq, nr_irqs);
-> +		kobject_put(&desc->kobj);
-
-So up to this point both irq_dispose_mapping() _and_
-irq_domain_free_irqs() invoked irq_free_descs().
-
-Let's look at the call chains:
-
-   irq_domain_free_irqs()
-     irq_free_descs()
-       mutex_lock(&sparse_irq_lock);
-         for (i...)
-           free_desc(from + i)
-             irq_remove_debugfs_entry();
-             unregister_irq_proc();
-             irq_sysfs_del();
-             delete_irq_desc();
-             call_rcu();
-       bitmap_clear(allocated_irqs, ...);
-       mutex_unlock(&sparse_irq_lock);
-
-with your modifications it does:
-
-   irq_domain_free_irqs()
-     for (i...)
-          kobject_put(&desc->kobj)
-            irq_kobj_release()
-              if (desc->free_irq)
-                desc->free_irq(desc);
-              irq_remove_debugfs_entry();
-              unregister_irq_proc();
-              delete_irq_desc();
-              call_rcu();
-
-Can you spot the wreckage? It's not even subtle, it's more than obvious.
-
-    1) None of the operations in irq_kobj_release() is protected by
-       sparse_irq_lock anymore. There was a comment in free_desc() which
-       explained what is protected. You removed parts of that comment
-       and just left the sysfs portion of it above delete_irq_desc()
-       which is completely bogus because you removed the irq_sysfs_del()
-       call.
-
-    2) Nothing removes the freed interrupts from the allocation
-       bitmap. Run this often enough and you exhausted the interrupt
-       space.
-
-And no, you cannot just go and invoke irq_free_descs() instead of
-kobject_put(), simply because you'd create lock order inversion vs. the
-free_irq() callback.
-
-So no, it's not that simple and I'm not at all interested in another
-respin of this with some more duct tape applied.
-
-It can be done, but that needs way more thought, a proper design which
-preserves the existing semantics completely and wants to be a fine
-grained series where each patch does exactly ONE small thing which is
-reviewable and testable on _ALL_ users of this code, i.e. _ALL_
-architectures and irq chip implementations.  
-
-Thanks,
-
-        tglx
+>         return 0;
+>  }
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
