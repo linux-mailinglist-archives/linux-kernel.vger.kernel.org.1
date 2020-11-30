@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED36C2C7E3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65F92C7E48
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgK3Ga7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 01:30:59 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:37163 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbgK3Ga6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 01:30:58 -0500
-Received: by mail-il1-f200.google.com with SMTP id u17so9324947ilb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 22:30:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=SsdBbZBVHy6xJ9WVayx5nina7iNWnHndy2OV1R2nZ5U=;
-        b=uG6ApPYnMTEY49KfzB/puPu+FjnjqHMXLAuuYUpQ2ksRKtQLRKzSGa9Q4boRSfyUhG
-         1oYMRr5nB0lnjIhYEmipzkORJtOwutod9FhyWwaKogMjQH7nHcChpzSTW5vmifnNJk1C
-         oVe3D+OK3EZoAlkyuPMkJmlJesy9VlJ3vIehUvobfQT5RyNQtVOeu+gkVPaohnWzGVUV
-         pxC9QZ6+bLnasDJmIGimKv6Oou5MpWITWK6zBrt4DyrbPDIRvarrzm1FxnNkUq7B1ngn
-         t5D6xWhcV7qKuojBZfznKm5f/9fw0U/MVXo1JazVC5BslXLgxZ35CMc/9LfpVt+rekSF
-         d+6w==
-X-Gm-Message-State: AOAM533f50nyezB+L8dRL1e48YfsRZ03mUjd7iIo7sMIdKyTHHl7BH4u
-        8iV4FlAVtnnf+c4hwqetjDdhBwIuXRhjNycWcQ0ixkd21BvY
-X-Google-Smtp-Source: ABdhPJwcn4tsvmDvq8LHtAHc1nbF04dn839mNQU6ZCzx3edV8QoxeguzHEyKM5IGA6WpXY+LQj4Eh0jzxhovR9FMTVIq+VYFnsq8
+        id S1726011AbgK3GlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 01:41:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725860AbgK3GlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 01:41:25 -0500
+Received: from localhost.localdomain (unknown [122.171.214.243])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CADC920706;
+        Mon, 30 Nov 2020 06:40:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606718444;
+        bh=J1UF39D+chbn29LO6iNyuiTYT+j76GHB5xvKmN3e6K0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=k2g1A/Spr0hKI8mR45iRCmLhU3kOHxafpBgJ2+mMx3WFrQCi089F561BlaSbn5bU0
+         dlWYECyFfsAY4vdSeyeEGVYJT2FPDtui0DnQcfayNStA3lPGeql5LgbOdQsBQUpLty
+         LHQXx3a8CGRFpGHJ7C1pwKm+FA3+48kTFc/O9dmg=
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sdm845: Add gpi dma node
+Date:   Mon, 30 Nov 2020 12:09:46 +0530
+Message-Id: <20201130063946.2060317-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1207:: with SMTP id a7mr17560369ilq.29.1606717817336;
- Sun, 29 Nov 2020 22:30:17 -0800 (PST)
-Date:   Sun, 29 Nov 2020 22:30:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c1b9d105b54d2429@google.com>
-Subject: general protection fault in l2cap_chan_timeout
-From:   syzbot <syzbot+e7edf1d784c283324076@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This add the device node for gpi_dma0 and gpi_dma1 instances found in
+sdm845.
 
-syzbot found the following issue on:
-
-HEAD commit:    fa02fcd9 Merge tag 'media/v5.10-2' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14a36fa5500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7be70951fca93701
-dashboard link: https://syzkaller.appspot.com/bug?extid=e7edf1d784c283324076
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e7edf1d784c283324076@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc000000005a: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000002d0-0x00000000000002d7]
-CPU: 1 PID: 16756 Comm: kworker/1:8 Not tainted 5.10.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events l2cap_chan_timeout
-RIP: 0010:__mutex_lock_common+0x9b/0x2f20 kernel/locking/mutex.c:938
-Code: 8a bc 24 28 01 00 00 83 3d 01 69 0f 06 00 75 34 48 8b 44 24 08 48 8d 78 60 48 89 f8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 05 e8 ba 7f 77 f8 48 8b 44 24 08 48 39 40 60 0f 85
-RSP: 0018:ffffc9000245fb78 EFLAGS: 00010206
-RAX: 000000000000005a RBX: ffff8880708d8110 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000002d0
-RBP: 0000000000000000 R08: ffffffff8876a063 R09: 0000000000000000
-R10: fffffbfff1a1c3ee R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff8880b9d33c00
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffde459fd3c CR3: 00000000186a5000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __mutex_lock kernel/locking/mutex.c:1103 [inline]
- mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1118
- l2cap_chan_timeout+0x53/0x280 net/bluetooth/l2cap_core.c:422
- process_one_work+0x789/0xfc0 kernel/workqueue.c:2272
- worker_thread+0xaa4/0x1460 kernel/workqueue.c:2418
- kthread+0x39a/0x3c0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Modules linked in:
----[ end trace c01f537d4b85904a ]---
-RIP: 0010:__mutex_lock_common+0x9b/0x2f20 kernel/locking/mutex.c:938
-Code: 8a bc 24 28 01 00 00 83 3d 01 69 0f 06 00 75 34 48 8b 44 24 08 48 8d 78 60 48 89 f8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 05 e8 ba 7f 77 f8 48 8b 44 24 08 48 39 40 60 0f 85
-RSP: 0018:ffffc9000245fb78 EFLAGS: 00010206
-RAX: 000000000000005a RBX: ffff8880708d8110 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000002d0
-RBP: 0000000000000000 R08: ffffffff8876a063 R09: 0000000000000000
-R10: fffffbfff1a1c3ee R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff8880b9d33c00
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fbbcfa32740 CR3: 000000006d47f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 45 ++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 6465a6653ad9..a6f41678794c 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -1114,6 +1114,28 @@ opp-128000000 {
+ 			};
+ 		};
+ 
++		gpi_dma0: dma-controller@800000 {
++			#dma-cells = <3>;
++			compatible = "qcom,sdm845-gpi-dma";
++			reg = <0 0x00800000 0 0x60000>;
++			interrupts = <GIC_SPI 244 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 251 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 252 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 253 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>;
++			dma-channels = <13>;
++			dma-channel-mask = <0xfa>;
++			iommus = <&apps_smmu 0x0016 0x0>;
++		};
++
+ 		qupv3_id_0: geniqup@8c0000 {
+ 			compatible = "qcom,geni-se-qup";
+ 			reg = <0 0x008c0000 0 0x6000>;
+@@ -1454,6 +1476,29 @@ uart7: serial@89c000 {
+ 			};
+ 		};
+ 
++		gpi_dma1: dma-controller@0xa00000 {
++			#dma-cells = <3>;
++			compatible = "qcom,sdm845-gpi-dma";
++			reg = <0 0x00a00000 0 0x60000>;
++			interrupts = <GIC_SPI 279 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 280 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 281 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 293 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 294 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 295 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 296 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 297 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 298 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 299 IRQ_TYPE_LEVEL_HIGH>;
++			dma-channels = <13>;
++			dma-channel-mask = <0xfa>;
++			iommus = <&apps_smmu 0x06d6 0x0>;
++			status = "disabled";
++		};
++
+ 		qupv3_id_1: geniqup@ac0000 {
+ 			compatible = "qcom,geni-se-qup";
+ 			reg = <0 0x00ac0000 0 0x6000>;
+-- 
+2.26.2
+
