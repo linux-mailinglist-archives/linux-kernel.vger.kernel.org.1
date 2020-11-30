@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8612C89FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C2D2C8A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728955AbgK3Qym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:54:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgK3Qym (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:54:42 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2A8C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:54:01 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id y74so14839684oia.11
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:54:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sv1SKckcJv3B5DgQbB2Tk+aXvCrbP4vplhN5EODrXhM=;
-        b=yM6DQbA70Db5lqgpT159je8vwpOeW0EPWeFsMm7rAsjq5N9TMjcCqHNnI7KKlaV0tG
-         lDD7vZXARA6h53tBdq3/ipCe2w7PnsM7ss97YWxeQ66wUVD7NqqdN37SOkQdmbmvJ+/J
-         57r9lxvgYwhreOqoeSps6lVrX3Ov8FTxIyzbOckz/b7cve8ajKjuiPL9sFkOMjkndo75
-         Ih5GxrJbfwdWFJ4k/SuG5UjnshwYkBXoyO3RB7FqGJDMcqsgRhyX8KDthphVPs3sbRcB
-         o+cN3kpv/WqrXJ0USmnSVLh7/aCbn19ef9/fzmXcXTsmefUsp64mWURpdNkCQcBJL8TJ
-         rhmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sv1SKckcJv3B5DgQbB2Tk+aXvCrbP4vplhN5EODrXhM=;
-        b=oUbu4LEo6TzFUhQDMJ6ZO4iVh/brCdYu/fV5JBsqGEcV+ik1Z8cHi8m3OwRPnEFKf4
-         sAAa1jQw+4w/3VxzjLkWaxO70WqE/96plb8vaZm8Pg9ltx4DsnQY9RXndNermtGmdD50
-         U4DqO0li0fccGBWCSGwG5Pbv9c0dhHtpJkjJLB3LsAzr9fwF2x5Af76+uDdzN/P9Xpcj
-         wj9mOH/vYayt4jgFeFAG84VCoG8pWv2eGLeg3AmrpOu/72MolN0Mk7JqVdBkeuj2MlJo
-         n/8dPqlj155Nmc1+eTGndfXLX3srro13z4MxXWAcYO1N0yX17aSRPbuCOh34V+NV0qv2
-         pZIw==
-X-Gm-Message-State: AOAM5321lYHnqH2j95dsErdcAZUVE2WqyefMkl2+5lrLSIxvcrkv5ll8
-        59xlglLtnOLtXtQM1LM4Oj8wKw==
-X-Google-Smtp-Source: ABdhPJx21PdPq1O4ig7ZXTyS8AkkQsMLXFyHSEPENeZFPBU9H6PQsRWWBeRtgJiMT+Xzo8HToEr1MQ==
-X-Received: by 2002:aca:4fc7:: with SMTP id d190mr15717264oib.13.1606755241025;
-        Mon, 30 Nov 2020 08:54:01 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h8sm9809119oom.41.2020.11.30.08.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 08:54:00 -0800 (PST)
-Date:   Mon, 30 Nov 2020 10:53:58 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org
-Subject: Re: [PATCH v3 0/2] Qualcomm's lpass device tree changes
-Message-ID: <X8UjpqeolZpVeg8J@builder.lan>
-References: <1601448168-18396-1-git-send-email-srivasam@codeaurora.org>
+        id S1728981AbgK3QzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:55:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728454AbgK3QzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 11:55:16 -0500
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C824E20C56
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:54:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606755275;
+        bh=xKjPWiR+gY9KXoWm0aX1KhLNswrvDKRDlo9bp5YXtCk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ndxg+hCQk/Sj/KPi4tI4cXPYaxWHRfFwCYYNoYYOB6hxuSmCMEP2NOpNxW1ZEzLKf
+         gzcrmfHMBHUpnErnTsSP54i292jiBs6L4M/k3GaaCqbLvszpgDr7ZKNX24FniqI+Hg
+         JgJy2iB0YA53q7hKOptl5/Qk1vCK0tmSLbfQp94o=
+Received: by mail-wm1-f44.google.com with SMTP id k10so12768107wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:54:34 -0800 (PST)
+X-Gm-Message-State: AOAM531DC52aa3brFU66SWGYfuin2+x9dvxxV3BCdoit8UUaCSySydPL
+        e2IIIJ+LiALc8FceaeI9yuX5XaH1sjMzTsa1qKpICQ==
+X-Google-Smtp-Source: ABdhPJxvQRXAXTceQEJTk6eeenanqlUfupxFXmGtTKuBJRp7BePCnRp4Qgf0q/CJ2FQvEGbVK5BGZlC2FWzoi5XyQb0=
+X-Received: by 2002:a1c:1d85:: with SMTP id d127mr6905343wmd.49.1606755272947;
+ Mon, 30 Nov 2020 08:54:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1601448168-18396-1-git-send-email-srivasam@codeaurora.org>
+References: <20201130133559.233242-1-mlevitsk@redhat.com>
+In-Reply-To: <20201130133559.233242-1-mlevitsk@redhat.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 30 Nov 2020 08:54:19 -0800
+X-Gmail-Original-Message-ID: <CALCETrVr2bM4yJTVpQULN+EYVQJuWGCvjX0SMFsCRy6BwqZc0w@mail.gmail.com>
+Message-ID: <CALCETrVr2bM4yJTVpQULN+EYVQJuWGCvjX0SMFsCRy6BwqZc0w@mail.gmail.com>
+Subject: Re: [PATCH 0/2] RFC: Precise TSC migration
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30 Sep 01:42 CDT 2020, Srinivasa Rao Mandadapu wrote:
+On Mon, Nov 30, 2020 at 5:36 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+>
+> Hi!
+>
+> This is the first version of the work to make TSC migration more accurate,
+> as was defined by Paulo at:
+> https://www.spinics.net/lists/kvm/msg225525.html
+>
+> I have a few thoughts about the kvm masterclock synchronization,
+> which relate to the Paulo's proposal that I implemented.
+>
+> The idea of masterclock is that when the host TSC is synchronized
+> (or as kernel call it, stable), and the guest TSC is synchronized as well,
+> then we can base the kvmclock, on the same pair of
+> (host time in nsec, host tsc value), for all vCPUs.
+>
+> This makes the random error in calculation of this value invariant
+> across vCPUS, and allows the guest to do kvmclock calculation in userspace
+> (vDSO) since kvmclock parameters are vCPU invariant.
+>
+> To ensure that the guest tsc is synchronized we currently track host/guest tsc
+> writes, and enable the master clock only when roughly the same guest's TSC value
+> was written across all vCPUs.
+>
+> Recently this was disabled by Paulo and I agree with this, because I think
+> that we indeed should only make the guest TSC synchronized by default
+> (including new hotplugged vCPUs) and not do any tsc synchronization beyond that.
+> (Trying to guess when the guest syncs the TSC can cause more harm that good).
+>
+> Besides, Linux guests don't sync the TSC via IA32_TSC write,
+> but rather use IA32_TSC_ADJUST which currently doesn't participate
+> in the tsc sync heruistics.
+> And as far as I know, Linux guest is the primary (only?) user of the kvmclock.
+>
+> I *do think* however that we should redefine KVM_CLOCK_TSC_STABLE
+> in the documentation to state that it only guarantees invariance if the guest
+> doesn't mess with its own TSC.
+>
+> Also I think we should consider enabling the X86_FEATURE_TSC_RELIABLE
+> in the guest kernel, when kvm is detected to avoid the guest even from trying
+> to sync TSC on newly hotplugged vCPUs.
+>
+> (The guest doesn't end up touching TSC_ADJUST usually, but it still might
+> in some cases due to scheduling of guest vCPUs)
+>
+> (X86_FEATURE_TSC_RELIABLE short circuits tsc synchronization on CPU hotplug,
+> and TSC clocksource watchdog, and the later we might want to keep).
 
-> These patches are device tree changes to support audio over DP.
-> It includes changes of HDMI reg, interrupt and iommu and 
-> hdmi dai link.
-> These patches depends on the lpass I2S patch series
-> and DP dts node patch series:
->   -- https://patchwork.kernel.org/patch/11785073/
-
-I've merged this one.
-
->   -- https://patchwork.kernel.org/patch/11785235/
->   -- https://patchwork.kernel.org/patch/11719511/
-
-But please advice on what I should do with these two.
-
-Regards,
-Bjorn
-
-> 
-> Changes Since v2:
->   -- Removed obsolete hdmi-jack property.
->   -- Updated sound dai cells property
-> Changes Since v1:
->   -- hdmi dai is added in lpass-cpu node.
-> 
-> V Sujith Kumar Reddy (2):
->   arm64: dts: qcom: sc7180: Update lpass cpu node for audio over dp
->   arm64: dts: qcom: sc7180-trogdor: Add lpass dai link for HDMI
-> 
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 15 +++++++++++++++
->  arch/arm64/boot/dts/qcom/sc7180.dtsi         | 17 ++++++++++-------
->  2 files changed, 25 insertions(+), 7 deletions(-)
-> 
-> -- 
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-> 
+If you're going to change the guest behavior to be more trusting of
+the host, I think
+the host should probably signal this to the guest using a new bit.
