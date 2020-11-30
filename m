@@ -2,182 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9872C2C7CA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 03:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72092C7CB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 03:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgK3CHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 21:07:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgK3CHM (ORCPT
+        id S1726883AbgK3CNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 21:13:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22981 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726370AbgK3CNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 21:07:12 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED9BC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 18:06:31 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id x16so11182393ejj.7
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 18:06:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=yUFTrmBcTv6s2WlseBa7/fojjPpOwHHi239KldjwbCQ=;
-        b=jCVFjKrlsOTWqDGb4O0NCvhBceF/Nu6W7EHItFnfB4It963FJCon2qmaCVn7odK21B
-         UTbRTW1Wmqqb3ZS1yVFyoUqGLAfo3cvs/17z9Ckdy8YrCEvyBUg6RY/3MIsjJXkVKn3I
-         YnlO/MsiAftCiiInM8RVtRD6O00mNaNvpH/av53qMZLQCL8BOvsKHB2bvWD+Yj0OVVWr
-         0Ev+HjjkHqOq/kJg1mwJK7tba88El97A1cE3F1OaZEOeoPIO7DfOhxZgNb5K2nYfr8cc
-         lXsgO8YMGWdK8HsJR5oP9GlTNNakyEVx2FkyABYnBs2sMqki0BnZ11B0fVf404ll8mWD
-         1T1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yUFTrmBcTv6s2WlseBa7/fojjPpOwHHi239KldjwbCQ=;
-        b=FGSGi6KYGV004uu6jqDnOETyYwcL8n+UHmmtJnYn+zlzhu7arPP79J+ft6O9JU+cDc
-         +a8I78W6gaUgXiyWy/cPA2/iiHneAuV3Cair0kHkFJXXEbVhNdFKQ2pyyr2GypyVfkxw
-         gFzQdtCyFXS0tvIyU7AFkFZT4mh3joUrxgDlEY9qErHkPaJiz10z1Up1DPhyJFAEXTD9
-         wqb5o9DHnfsYcjeOIEl20jE/BTW8aXu+gLlB9mOE5TEaA4fk6KRxNRFjdQeJrqb2hEWE
-         lWA4FUh5QO4KeuFfKGmy3/5zQCoaNkBqQxMLoRECuDdQsBmqIPb7GLHBo7BLO+IPuQ6M
-         kFxg==
-X-Gm-Message-State: AOAM5326mzp9Md7WrzJZjBsYuVlgxpEeL4fvKJXYiLUFsjDZlUhT3N2v
-        z0MJSelYfP2xc+RsBBoTFVPGig==
-X-Google-Smtp-Source: ABdhPJzwld2qWB0JvY0wVJqs9rtlmG3dUpTNk8zZ4y5WOAiV03tAlEcun196GwC7kmfo7ZrmIXuncQ==
-X-Received: by 2002:a17:906:7191:: with SMTP id h17mr2975447ejk.421.1606701990627;
-        Sun, 29 Nov 2020 18:06:30 -0800 (PST)
-Received: from ?IPv6:240e:82:0:92f3:e12d:4673:cbec:1111? ([240e:82:0:92f3:e12d:4673:cbec:1111])
-        by smtp.gmail.com with ESMTPSA id m7sm5905343eds.73.2020.11.29.18.06.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Nov 2020 18:06:30 -0800 (PST)
-Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
- transition
-To:     Donald Buczek <buczek@molgen.mpg.de>, Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+raid@molgen.mpg.de
-References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Message-ID: <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
-Date:   Mon, 30 Nov 2020 03:06:19 +0100
+        Sun, 29 Nov 2020 21:13:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606702333;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8sjd/83plcp606/47bcrLZsq1LEBw7/fWpUkizclFBY=;
+        b=U1Ot0F0suk9vjrVFQNPfMbioY69S10ceK7vL/m2Z1XrfMWsJg/Jb5s1usuoUyZIi+v2Rb8
+        YN2VazMjWKXZnAWrp0HuOAu54q0JkiOxzItnVypwlI2uE4lo3AgDceBJYLxuV0KYav/zSU
+        2cZMFrtSXQJAN81vnAGk66izPxXL1ck=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-Uhpc5TRBME2471aFym3k7Q-1; Sun, 29 Nov 2020 21:12:09 -0500
+X-MC-Unique: Uhpc5TRBME2471aFym3k7Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D928D1074641;
+        Mon, 30 Nov 2020 02:12:07 +0000 (UTC)
+Received: from [10.72.13.173] (ovpn-13-173.pek2.redhat.com [10.72.13.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D03CA272DF;
+        Mon, 30 Nov 2020 02:12:01 +0000 (UTC)
+Subject: Re: [PATCH v4] vdpa: mlx5: fix vdpa/vhost dependencies
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>, Eli Cohen <eli@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org
+References: <20201128213905.27409-1-rdunlap@infradead.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <b6a1231c-8b81-6c69-3c63-74bf438da866@redhat.com>
+Date:   Mon, 30 Nov 2020 10:12:00 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
+In-Reply-To: <20201128213905.27409-1-rdunlap@infradead.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 2020/11/29 上午5:39, Randy Dunlap wrote:
+> drivers/vdpa/mlx5/ uses vhost_iotlb*() interfaces, so select
+> VHOST_IOTLB to make them be built.
+>
+> However, if VHOST_IOTLB is the only VHOST symbol that is
+> set/enabled, the object file still won't be built because
+> drivers/Makefile won't descend into drivers/vhost/ to build it,
+> so make drivers/Makefile build the needed binary whenever
+> VHOST_IOTLB is set, like it does for VHOST_RING.
+>
+> Fixes these build errors:
+> ERROR: modpost: "vhost_iotlb_itree_next" [drivers/vdpa/mlx5/mlx5_vdpa.ko] undefined!
+> ERROR: modpost: "vhost_iotlb_itree_first" [drivers/vdpa/mlx5/mlx5_vdpa.ko] undefined!
+>
+> Fixes: 29064bfdabd5 ("vdpa/mlx5: Add support library for mlx5 VDPA implementation")
+> Fixes: aff90770e54c ("vdpa/mlx5: Fix dependency on MLX5_CORE")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Eli Cohen <eli@mellanox.com>
+> Cc: Parav Pandit <parav@mellanox.com>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: virtualization@lists.linux-foundation.org
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> Cc: Leon Romanovsky <leonro@nvidia.com>
+> Cc: netdev@vger.kernel.org
+> ---
+> v2: change from select to depends on VHOST (Saeed)
+> v3: change to depends on VHOST_IOTLB (Jason)
+> v4: use select VHOST_IOTLB (Michael); also add to drivers/Makefile
+>
+>   drivers/Makefile     |    1 +
+>   drivers/vdpa/Kconfig |    1 +
+>   2 files changed, 2 insertions(+)
+>
+> --- linux-next-20201127.orig/drivers/vdpa/Kconfig
+> +++ linux-next-20201127/drivers/vdpa/Kconfig
+> @@ -32,6 +32,7 @@ config IFCVF
+>   
+>   config MLX5_VDPA
+>   	bool
+> +	select VHOST_IOTLB
+>   	help
+>   	  Support library for Mellanox VDPA drivers. Provides code that is
+>   	  common for all types of VDPA drivers. The following drivers are planned:
+> --- linux-next-20201127.orig/drivers/Makefile
+> +++ linux-next-20201127/drivers/Makefile
+> @@ -143,6 +143,7 @@ obj-$(CONFIG_OF)		+= of/
+>   obj-$(CONFIG_SSB)		+= ssb/
+>   obj-$(CONFIG_BCMA)		+= bcma/
+>   obj-$(CONFIG_VHOST_RING)	+= vhost/
+> +obj-$(CONFIG_VHOST_IOTLB)	+= vhost/
+>   obj-$(CONFIG_VHOST)		+= vhost/
+>   obj-$(CONFIG_VLYNQ)		+= vlynq/
+>   obj-$(CONFIG_GREYBUS)		+= greybus/
+>
 
-On 11/28/20 13:25, Donald Buczek wrote:
-> Dear Linux mdraid people,
-> 
-> we are using raid6 on several servers. Occasionally we had failures, 
-> where a mdX_raid6 process seems to go into a busy loop and all I/O to 
-> the md device blocks. We've seen this on various kernel versions.
-> 
-> The last time this happened (in this case with Linux 5.10.0-rc4), I took 
-> some data.
-> 
-> The triggering event seems to be the md_check cron job trying to pause 
-> the ongoing check operation in the morning with
-> 
->      echo idle > /sys/devices/virtual/block/md1/md/sync_action
-> 
-> This doesn't complete. Here's /proc/stack of this process:
-> 
->      root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# ps -fp 23333
->      UID        PID  PPID  C STIME TTY          TIME CMD
->      root     23333 23331  0 02:00 ?        00:00:00 /bin/bash 
-> /usr/bin/mdcheck --continue --duration 06:00
->      root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# cat 
-> /proc/23333/stack
->      [<0>] kthread_stop+0x6e/0x150
->      [<0>] md_unregister_thread+0x3e/0x70
->      [<0>] md_reap_sync_thread+0x1f/0x1e0
->      [<0>] action_store+0x141/0x2b0
->      [<0>] md_attr_store+0x71/0xb0
->      [<0>] kernfs_fop_write+0x113/0x1a0
->      [<0>] vfs_write+0xbc/0x250
->      [<0>] ksys_write+0xa1/0xe0
->      [<0>] do_syscall_64+0x33/0x40
->      [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Note, that md0 has been paused successfully just before.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-What is the personality of md0? Is it also raid6?
+Thanks
 
-> 
->      2020-11-27T02:00:01+01:00 done CROND[23333]: (root) CMD 
-> (/usr/bin/mdcheck --continue --duration "06:00")
->      2020-11-27T02:00:01+01:00 done root: mdcheck continue checking 
-> /dev/md0 from 10623180920
->      2020-11-27T02:00:01.382994+01:00 done kernel: [378596.606381] md: 
-> data-check of RAID array md0
->      2020-11-27T02:00:01+01:00 done root: mdcheck continue checking 
-> /dev/md1 from 11582849320
->      2020-11-27T02:00:01.437999+01:00 done kernel: [378596.661559] md: 
-> data-check of RAID array md1
->      2020-11-27T06:00:01.842003+01:00 done kernel: [392996.625147] md: 
-> md0: data-check interrupted.
->      2020-11-27T06:00:02+01:00 done root: pause checking /dev/md0 at 
-> 13351127680
->      2020-11-27T06:00:02.338989+01:00 done kernel: [392997.122520] md: 
-> md1: data-check interrupted.
->      [ nothing related following.... ]
-> 
-> After that, we see md1_raid6 in a busy loop:
-> 
->      PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ 
-> COMMAND
->      2376 root     20   0       0      0      0 R 100.0  0.0   1387:38 
-> md1_raid6
-
-Seems the reap sync thread was trying to stop md1_raid6 while md1_raid6 
-was triggered again and again.
-
-> 
-> Also, all processes doing I/O do the md device block.
-> 
-> This is /proc/mdstat:
-> 
->      Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4] 
-> [multipath]
->      md1 : active raid6 sdk[0] sdj[15] sdi[14] sdh[13] sdg[12] sdf[11] 
-> sde[10] sdd[9] sdc[8] sdr[7] sdq[6] sdp[5] sdo[4] sdn[3] sdm[2] sdl[1]
->            109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 
-> 2 [16/16] [UUUUUUUUUUUUUUUU]
->            [==================>..]  check = 94.0% 
-> (7350290348/7813894144) finish=57189.3min speed=135K/sec
->            bitmap: 0/59 pages [0KB], 65536KB chunk
->      md0 : active raid6 sds[0] sdah[15] sdag[16] sdaf[13] sdae[12] 
-> sdad[11] sdac[10] sdab[9] sdaa[8] sdz[7] sdy[6] sdx[17] sdw[4] sdv[3] 
-> sdu[2] sdt[1]
->            109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 
-> 2 [16/16] [UUUUUUUUUUUUUUUU]
->            bitmap: 0/59 pages [0KB], 65536KB chunk
-> 
-
-So the RECOVERY_CHECK flag should be set, not sure if the simple changes
-helps, but you may give it a try.
-
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 98bac4f..e2697d0 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -9300,7 +9300,8 @@ void md_check_recovery(struct mddev *mddev)
-                         md_update_sb(mddev, 0);
-
-                 if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) &&
--                   !test_bit(MD_RECOVERY_DONE, &mddev->recovery)) {
-+                   (!test_bit(MD_RECOVERY_DONE, &mddev->recovery) ||
-+                    test_bit(MD_RECOVERY_CHECK, &mddev->recovery))) {
-                         /* resync/recovery still happening */
-                         clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
-                         goto unlock;
-
-Thanks,
-Guoqing
