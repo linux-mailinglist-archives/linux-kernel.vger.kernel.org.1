@@ -2,98 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C26C2C8BA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D48B2C8BB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729135AbgK3RsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:48:18 -0500
-Received: from mga09.intel.com ([134.134.136.24]:15591 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728094AbgK3RsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:48:17 -0500
-IronPort-SDR: QrOPhAa/Xcw62STWpapgt3Lzz2JIxf/8WW5mx025VqyU1F6H9bqQgNNeUP4003egqTgmqxegQd
- XkmVvR0nZO/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="172835844"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="172835844"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:46:36 -0800
-IronPort-SDR: 0gWEOAtT3hCJ/igFKg3kPsUTCbjLPEsM/hI0bt7n3+UZ5GDi3eJcjp79JHB3LwQppjdF50yPkK
- mEz/H3IzhhlQ==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="372579354"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:46:27 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kjnGq-00B6AE-OF; Mon, 30 Nov 2020 19:47:28 +0200
-Date:   Mon, 30 Nov 2020 19:47:28 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 06/18] software_node: amend
- software_node_unregister_node_group() to perform unregistration of array in
- reverse order to be consistent with software_node_unregister_nodes()
-Message-ID: <20201130174728.GR4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-7-djrscally@gmail.com>
- <20201130161716.GJ14465@pendragon.ideasonboard.com>
+        id S2387785AbgK3Rtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:49:40 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:38056 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729216AbgK3Rt3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:49:29 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UH3N1OB_1606758525;
+Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UH3N1OB_1606758525)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 01 Dec 2020 01:48:46 +0800
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+To:     catalin.marinas@arm.com, will@kernel.org,
+        bjorn.andersson@linaro.org, shawnguo@kernel.org
+Cc:     vkoul@kernel.org, geert+renesas@glider.be, Anson.Huang@nxp.com,
+        michael@walle.cc, krzk@kernel.org, olof@lixom.net,
+        vincenzo.frascino@arm.com, ardb@kernel.org, masahiroy@kernel.org,
+        gshan@redhat.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] arm64:msr: Add MSR driver
+Date:   Tue,  1 Dec 2020 01:48:30 +0800
+Message-Id: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201130161716.GJ14465@pendragon.ideasonboard.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 06:17:16PM +0200, Laurent Pinchart wrote:
-> Hi Daniel,
-> 
-> Thank you for the patch.
-> 
-> The subject line is very long. We try to keep it within a 72 characters
-> limit in the kernel. That can be a challenge sometimes, and expections
-> can be accepted, but this one is reaaaally long.
-> 
-> (The same comment holds for other patches in the series)
+Hi
 
-+1.
+MSR ARM driver aims to provide interfacs for user to read or write data to all
+system registers. Its functions is same as MSR driver (x86 platform). It mainly
+depends on kprobe and undef exception to read or write system registers
+dynamicly.
 
-> On Mon, Nov 30, 2020 at 01:31:17PM +0000, Daniel Scally wrote:
-> > To maintain consistency with software_node_unregister_nodes(), reverse
-> > the order in which the software_node_unregister_node_group() function
-> > unregisters nodes.
-> > 
-> > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> 
-> I"d squash this with the previous patch to avoid introducing an
-> inconsistency.
+In addition, this module create interfaces for each core. We have tested in the
+virtual machine using tree command:
 
-It's different to previous. It touches not complementary API, but different
-one. However, I would follow your comment about documenting the behaviour of
-these two APIs as well…
+$ tree /dev/cpu
+/dev/cpu
+|-- 0
+|   `-- msr
+|-- 1
+|   `-- msr
+|-- 2
+|   `-- msr
+|-- 3
+|   `-- msr
+|-- 4
+|   `-- msr
+|-- 5
+|   `-- msr
+|-- 6
+|   `-- msr
+`-- 7
+    `-- msr
+
+8 directories, 8 files
+
+The interfaces of this module is same as MSR module in user space, and to solve
+the problem that ARM platform has no similar MSR module. Using this interface,
+we did some pressure tests to test the stability and security of MSR driver. The
+test results show that the driver will not cause system panic if various
+illegal values and multithreading concurrent access are passed through the
+interface.
+
+We also designed a user space tool: system-register-tools. We have open
+sourced this tool, which link as follows:
+	https://github.com/alibaba/system-register-tools
+In this tools, we provide two command: rdasr and wrasr, the aboving MSR driver
+has been tested by:
+
+$ rdasr -t
+  0: OSDTRRX_EL1         : UNDEFINED or unreadable!
+  1: DBGBVR0_EL1         : 0x0
+  2: DBGBCR0_EL1         : 0x1e0
+  3: DBGWVR0_EL1         : 0x0
+  4: DBGWCR0_EL1         : 0x0
+  5: DBGBVR1_EL1         : 0x0
+  6: DBGBCR1_EL1         : 0x1e0
+  7: DBGWVR1_EL1         : 0x0
+  8: DBGWCR1_EL1         : 0x0
+  9: MDCCINT_EL1         : 0x0
+ 10: MDSCR_EL1           : 0x1000
+ 11: DBGBVR2_EL1         : 0x0
+...
+...
+598: ICC_IGRPEN1_EL3     : UNDEFINED or unreadable!
+599: TPIDR_EL3           : UNDEFINED or unreadable!
+600: SCXTNUM_EL3         : UNDEFINED or unreadable!
+601: CNTPS_TVAL_EL1      : UNDEFINED or unreadable!
+602: CNTPS_CTL_EL1       : UNDEFINED or unreadable!
+603: CNTPS_CVAL_EL1      : UNDEFINED or unreadable!
+604: CNTPS_CVAL_EL1      : UNDEFINED or unreadable!
+
+The test ended and no system exception occurred!
+Undefined or unreadable registers: 409
+Readable registers: 196
+
+The above is a test of more than 600 system registers, and no system exception
+occurred
+
+Rongwei Wang (3):
+  arm64:insn: Export the symbol to modify code text
+  arm64:msr: Introduce MSR ARM driver
+  arm64:msr: Enable MSR ARM driver
+
+ arch/arm64/Kconfig               |   9 +
+ arch/arm64/configs/defconfig     |   1 +
+ arch/arm64/include/asm/msr_arm.h |  80 ++++++++
+ arch/arm64/kernel/Makefile       |   3 +-
+ arch/arm64/kernel/insn.c         |   1 +
+ arch/arm64/kernel/msr_arm.c      | 406 +++++++++++++++++++++++++++++++++++++++
+ arch/arm64/kernel/msr_smp.c      | 297 ++++++++++++++++++++++++++++
+ 7 files changed, 796 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/include/asm/msr_arm.h
+ create mode 100644 arch/arm64/kernel/msr_arm.c
+ create mode 100644 arch/arm64/kernel/msr_smp.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+1.8.3.1
 
