@@ -2,119 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29672C8AF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 325EB2C8AF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729101AbgK3R2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:28:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728321AbgK3R2W (ORCPT
+        id S1729274AbgK3R2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:28:38 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8874 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728321AbgK3R2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:28:22 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17864C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:27:42 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id v3so12067494ilo.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:27:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c1Vd/fR6g8wKCZaURanPYDdeMR44y3LFyKTjW1Typqg=;
-        b=HPx1RZXZNsy8M//eK/7kOCaSUaWAAX7fONUWyezM24Q2XUD0+BKVnoisJ0C4vGJAHb
-         dpSYTjfScL0RG8De+OgMc4aBzQgOeaAScILDnBnSbZ6IYY5M5FdoGUJO9AhN24u8PqJ2
-         //nIYs1U1gwGRjsRz8mWlNYQSuv+a0JUT/FUlar/szHwD5pMn525jAyIj0Lh4ISmrrnR
-         yV+YjJNmM3Vg+8AiOLhZ3h3eX2eq+JKwdkaeElXR4FgkS57ZidtEVyXXTgRDDGKbX1wk
-         +T6CJB8C4eCz6+7TxiF5ht0jijdg+yTIDFYbBsjIrOGSgLf2cGFPDFQHc7JpIp4QUdsQ
-         7MlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c1Vd/fR6g8wKCZaURanPYDdeMR44y3LFyKTjW1Typqg=;
-        b=m8vetBomDno+i0Y6oHyyrO5o7xAKIm6lL13qrk5Aw9wl4SrOUyuQjEi0ErKHAIN6Sa
-         oklKrtq6fYOP0Ed1WD22Tuycsv8vaTrxyT+oq/IwQXLKSyywreHA0zl0oXCoHqNWFM6s
-         bnmsLOptWXraxmsQFt9b9sVcuhi0tFS65d6F8hgMdMjD8vR0oPgRKxHp76Mk1vz0M+ST
-         YUjRJKDmkF9vAtZQm3iYXopkPeciHzwyPbkt9PYWBeBZZ7CtuG4199tTCQCzz1tj58Qa
-         nvQqKqVQTyBZ6FcX/CD55o0kxeMhX/yUJjWjvyPu8G0WEuehNzIwJ2izwbo5AVVI0zIH
-         zMVQ==
-X-Gm-Message-State: AOAM532ehTy4CHFwaX86RQ6ucGDP838CeZCdP/K7nkGSOyET/jQDrDT4
-        EzuvHiXi6nlvFXZvWsDP6UebuQZVbUhTc4Um3qs=
-X-Google-Smtp-Source: ABdhPJzc1TmhusDdrQNhIh4x01OuKc5+8edgdoreT8fMqA8YQZsrXmqQSAslZWMfzsvzZ3iuByUoOGEhdE/6dOkpDm4=
-X-Received: by 2002:a92:d203:: with SMTP id y3mr19643539ily.206.1606757261315;
- Mon, 30 Nov 2020 09:27:41 -0800 (PST)
+        Mon, 30 Nov 2020 12:28:37 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AUH2Rri118560;
+        Mon, 30 Nov 2020 12:27:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=SOb54gOUrXdaoshbmRHGoBHrf3L6hsCVBJGLbwhOI5I=;
+ b=ft3qdr5K4TYSFfiAO33vzEVoyweJfdW45POl7ZCpg61jVVRcA+egPLOIWXP+95cjDTfs
+ /2bGaCnztpcXiSBsP2RbLMGtDgtwUTlNfoVJe+JVvVK+D0VqYgudd3/dyy0yZMdR0+B4
+ tY5avFMTjN6kPlN8TqGyxwFnPGbtPVbl1rskXChNBKVamRnbC5Hb3YuPmabWG8ZAIMmH
+ V52OPjalJtu18YRXMxfAjl+XYioqU3uIbMJ33wlHu51gnY3Kqb7tUM9ch34OH9rYEnIn
+ o67u9BaPJiISJSCcYuAm1oyxkUPn9tBVvxkZC2Z39ibCXp8cVnbGvKT5CxmqMiGOKavv KA== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3552dc6jey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 12:27:51 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHM3ix012951;
+        Mon, 30 Nov 2020 17:27:50 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma01dal.us.ibm.com with ESMTP id 353e68wnd9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 17:27:50 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AUHRnZo16646542
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Nov 2020 17:27:49 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8815211207A;
+        Mon, 30 Nov 2020 17:27:49 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D021112087;
+        Mon, 30 Nov 2020 17:27:46 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 30 Nov 2020 17:27:46 +0000 (GMT)
+Subject: Re: [PATCH 06/13] ibmvfc: add handlers to drain and complete Sub-CRQ
+ responses
+To:     Brian King <brking@linux.vnet.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201126014824.123831-1-tyreld@linux.ibm.com>
+ <20201126014824.123831-7-tyreld@linux.ibm.com>
+ <b3737660-4e13-8675-b4be-71283e2dcf99@linux.vnet.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <1a9ae9b7-819e-4fd2-e31f-64c4d3bd7882@linux.ibm.com>
+Date:   Mon, 30 Nov 2020 09:27:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <CAK8P3a2Habmz95y+J+-4NiT5SGYhO_Fia-SHhapX-3NYRbEMmw@mail.gmail.com>
- <CAHk-=wjA2Der39e_SWZ6S-DoVCJTu-Zwf6jn2wxmGTKzNPV1Dw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjA2Der39e_SWZ6S-DoVCJTu-Zwf6jn2wxmGTKzNPV1Dw@mail.gmail.com>
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Date:   Mon, 30 Nov 2020 09:27:30 -0800
-Message-ID: <CAKdAkRRq=GK7N1PDJ4zLfJVSsrd1BB=u69aXtJHh=sW4vn5LOg@mail.gmail.com>
-Subject: Re: [GIT PULL] ARM: SoC fixes for v5.10, part 3
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b3737660-4e13-8675-b4be-71283e2dcf99@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-30_06:2020-11-30,2020-11-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ phishscore=0 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 suspectscore=2 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011300106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 11/27/20 9:47 AM, Brian King wrote:
+> On 11/25/20 7:48 PM, Tyrel Datwyler wrote:
+>> The logic for iterating over the Sub-CRQ responses is similiar to that
+>> of the primary CRQ. Add the necessary handlers for processing those
+>> responses.
+>>
+>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+>> ---
+>>  drivers/scsi/ibmvscsi/ibmvfc.c | 72 ++++++++++++++++++++++++++++++++++
+>>  1 file changed, 72 insertions(+)
+>>
+>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+>> index 6eaedda4917a..a8730522920e 100644
+>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+>> @@ -3371,6 +3371,78 @@ static int ibmvfc_toggle_scrq_irq(struct ibmvfc_sub_queue *scrq, int enable)
+>>  	return rc;
+>>  }
+>>  
+>> +static void ibmvfc_handle_scrq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
+>> +{
+>> +	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
+>> +
+>> +	switch (crq->valid) {
+>> +	case IBMVFC_CRQ_CMD_RSP:
+>> +		break;
+>> +	default:
+>> +		dev_err(vhost->dev, "Got and invalid message type 0x%02x\n", crq->valid);
+> 
+> Is this correct? Can't we get transport events here as well?
 
-On Fri, Nov 27, 2020 at 3:02 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Fri, Nov 27, 2020 at 12:51 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> >  - Some DT patches for the Rockchip RK3399 platform,
-> >    in particular fixing the MMC device ordering that
-> >    recently became nondeterministic with async probe.
->
-> Uhhuh.
->
-> I didn't realize this MMC breakage happened.
->
-> That's just an MMC bug. Other subsystems have been able to do async
-> probing without making device ordering be random.
->
-> So this really smells wrong, and I just never realized.
->
-> Added Douglas Anderson to the cc - the whole PROBE_PREFER_ASYNCHRONOUS
-> behavior appears broken.
->
-> You basically should do the device numbering synchronously (or better
-> yet - asynchronously, but single-threaded for the subsystem), and then
-> asynchronously probe the actual device details after you've numbered
-> them reliably.
+Yes we can. We still handle them in the primary CRQ so at least for the time
+being we can ignore them, but yeah we shouldn't log scary messages about them.
 
-Generally speaking it is either unnecessary for a lot of devices where
-we do not care what number they get, harmful (why do I need to probe
-i2c touchscreen and touchpad sequentially if I do not care which one
-comes first but my boot will take 0.5 seconds longer if I serialize),
-or impossible (if device is hit-pluggable). For many years userspace
-has been moving away from static device assignments and we should not
-be going back.
+-Tyrel
 
-There are some devices that are special because it is hard to deal
-with devices shifting during early boot, and for them maintaining
-static ordering might be beneficial for now, but they are exceptions.
+> 
+>> +		return;
+>> +	}
+>> +
+>> +	/* The only kind of payload CRQs we should get are responses to
+>> +	 * things we send. Make sure this response is to something we
+>> +	 * actually sent
+>> +	 */
+>> +	if (unlikely(!ibmvfc_valid_event(&vhost->pool, evt))) {
+>> +		dev_err(vhost->dev, "Returned correlation_token 0x%08llx is invalid!\n",
+>> +			crq->ioba);
+>> +		return;
+>> +	}
+>> +
+>> +	if (unlikely(atomic_read(&evt->free))) {
+>> +		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
+>> +			crq->ioba);
+>> +		return;
+>> +	}
+>> +
+>> +	del_timer(&evt->timer);
+>> +	list_del(&evt->queue);
+>> +	ibmvfc_trc_end(evt);
+>> +	evt->done(evt);
+>> +}
+>> +
+> 
+> 
+> 
 
->
-> This is not something new - we do this for pretty much all the other
-> block devices, and MMC is just doing things wrong.
->
-> See SCSI probing for the traditional horrible cases (where just
-> spinning up a disk could take tens of seconds).  "Slow probing" is not
-> an excuse of "random ordering".
-
-And still my external USB disk will get a "random" /dev/sdX depending
-on when I plug it in relative to all other USB sticks.
-
-Thanks.
-
--- 
-Dmitry
