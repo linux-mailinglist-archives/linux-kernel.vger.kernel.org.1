@@ -2,231 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EA32C9203
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB8C2C9218
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730910AbgK3XGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:06:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730281AbgK3XGr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:06:47 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46F3C0613D3;
-        Mon, 30 Nov 2020 15:06:06 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a3so193792wmb.5;
-        Mon, 30 Nov 2020 15:06:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=1sW9Rpn/V21UbkeGJjDG9J0ZTZAoN/Dn4DS7jD5FIKI=;
-        b=AbMPY2HU4q1oPGIOLnUjUPNpUCL9SETuecsYvxYtBd+FrFr0ksZ5vi337QLbTu4/U5
-         Dds+FPZQxHvt1ME/mUfXrrLwddxqOwAyf9Ly15PO090ZTE9caA8yGZvE+kcxgNieqS7O
-         6jqgSiaaqYwhpTNUKR9WHFkjjP1A7qSGN4UNavW/NH6WfUaLbohnWEb0u3yUGWlBZP5H
-         buieHWLjoU8ypW4Pu4OOyJTnx9PYhbHv7cFOo8gzeAPrGfKWv52eoHUWGtPZFJbONigg
-         gmC41XhAtq3Lvn/3UqMhtATW4pa5FRLWqLdefb2MUj4rNAAD60RsYa1PbAQe1F1aLno8
-         INpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=1sW9Rpn/V21UbkeGJjDG9J0ZTZAoN/Dn4DS7jD5FIKI=;
-        b=IsZd+3HwkSpM4kcorg7l0+THhzLctc93uWdg5BzDuAoqOCauU+6pUfpo4zCwQ0Xzwj
-         AkIUL7L8Lal8yYfvnbWsO8VNSrE0Ot0q6KGQSkKaEUz+0APce3w1wukrxEKJ4obGSAiL
-         HSxhFDNus+oCmyguaAbdvsTcuHH5ey5hp8swY6q3roL4UJBVsRMmvkioe2VRs4vHrtQe
-         yRooT0v6UuY2ifP6hCm32Y7wJvZ6S/vVOAG6KqJlTqvptWgYm6jLlThtvbntC2zNZ5b/
-         z6pgoKURhAoWoqxXYRg60rWpFu/+OVC4Kg38odW7DrWJESe0+4hlXh6iU59YI5AtvC/I
-         Q/ww==
-X-Gm-Message-State: AOAM532KMcmVTaM2xRH+xyqqUxpP0+lbeUdD2BiS5p4LiqieEGTDHmXp
-        tJxMFsBdR+QOWNr6g1CgdIg=
-X-Google-Smtp-Source: ABdhPJzWuKDd21RQOV4Azsoy7Qa7V5mHRxZoAdvE3dK1j0wPd/K0J6QiyIK4PMCMIDl/HELzRZzaTQ==
-X-Received: by 2002:a05:600c:21c7:: with SMTP id x7mr86189wmj.75.1606777565464;
-        Mon, 30 Nov 2020 15:06:05 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.80])
-        by smtp.gmail.com with ESMTPSA id a1sm30274553wrv.61.2020.11.30.15.06.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 15:06:04 -0800 (PST)
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130205203.GQ4351@valkosipuli.retiisi.org.uk>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <3e8494a0-a2c0-59e7-46bb-9635c3c239dd@gmail.com>
-Date:   Mon, 30 Nov 2020 23:06:03 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201130205203.GQ4351@valkosipuli.retiisi.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S1731020AbgK3XIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:08:54 -0500
+Received: from mga06.intel.com ([134.134.136.31]:42873 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730506AbgK3XIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 18:08:53 -0500
+IronPort-SDR: FSEZLnqS+C6V1ru3RVycm8blwpfp7gZG+gRY4eyQWlKfFbcfzm2kedZL0WG9M3+3vxW3h7/7tM
+ 6BybzAQV0fdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="234331874"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="234331874"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 15:07:09 -0800
+IronPort-SDR: 3YDQuDGtH8ihxHXsWRwzXQ0NDjg8YIxCKqg59FVYAPF3TIjfj9zduBtq6CCUaGM1c9y3ZgORao
+ CaItZ04afx/w==
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="434447354"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 15:07:09 -0800
+Received: from mtg-dev (mtg-dev.jf.intel.com [10.54.74.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp.ostc.intel.com (Postfix) with ESMTPS id 7BF276363;
+        Mon, 30 Nov 2020 15:07:09 -0800 (PST)
+Received: from mgross by mtg-dev with local (Exim 4.90_1)
+        (envelope-from <mgross@linux.intel.com>)
+        id 1kjsGD-000C4g-BE; Mon, 30 Nov 2020 15:07:09 -0800
+From:   mgross@linux.intel.com
+To:     linux-kernel@vger.kernel.org
+Cc:     markgross@kernel.org, mgross@linux.intel.com,
+        adam.r.gretzinger@intel.com
+Subject: [PATCH 00/22] Intel Vision Processing Unit base enabling part 1
+Date:   Mon, 30 Nov 2020 15:06:45 -0800
+Message-Id: <20201130230707.46351-1-mgross@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari
+From: mark gross <mgross@linux.intel.com>
 
-On 30/11/2020 20:52, Sakari Ailus wrote:
->> +static const struct acpi_device_id int3472_device_id[] = {
->> +	{ "INT3472", 0 },
-> The INT3472 _HID is really allocated for the tps68470 PMIC chip. It may not
-> be used by other drivers; people will want to build kernels where both of
-> these ACPI table layouts are functional.
->
-> Instead, I propose, that you add this as an option to the tps68470 driver
-> that figures out whether the ACPI device for the tps68470 device actually
-> describes something else, in a similar fashion you do with the cio2-bridge
-> driver. I think it may need a separate Kconfig option albeit this and
-> cio2-bridge cannot be used separately.
+The Intel Vision Processing Unit (VPU) is an IP block that is showing up for
+the first time as part of the Keem Bay SOC.  Keem Bay is a quad core A53 Arm
+SOC.  It is designed to be used as a stand alone SOC as well as in an PCIe
+Vision Processing accelerator add in card.
 
-It actually occurs to me that that may not work (I know I called that
-out as an option we considered, but that was a while ago actually). The
-reason I wasn't worried about the existing tps68470 driver binding to
-these devices is that it's an i2c driver, and these dummy devices don't
-have an I2cSerialBusV2, so no I2C device is created by them the kernel.
+This part 1 of the patches make up the base or core of the stack needed to
+enable both use cases for the VPU.
+
+Part 2 includes 11 more patches that depend on part 1.  Those should be ready
+in a couple of weeks or less.
+
+I am trying something a bit new with this sequence where I've been working with
+the driver developers as a "pre-maintainer" reviewing and enforcing the kernel
+expectations as I understand them.  Its taken a couple of months to get this
+code to the point I feel its ready for public posting.  My goal is to make sure
+it meets expectations for quality and compliance with kernel expectations and
+there will be mostly technical / design issues to talk about.
+
+Thanks for looking at these and providing feedback.
+
+--mark
+p.s. I have had a problem my MTA configuration between mutt and git send-email
+where I was using msmpt to send from mutt (because 15+ years ago its the first
+way I got to work and never changed) while my worstation MTA that git
+send-email uses was un-configured resulting in my return-path naming my
+workstion withing the firewall.  I suck at email administration.
+
+I appologies for the multiple copies.
 
 
-Won't that mean the tps68470 driver won't ever be probed for these devices?
+Daniele Alessandrelli (2):
+  dt-bindings: Add bindings for Keem Bay IPC driver
+  keembay-ipc: Add Keem Bay IPC module
 
->
->> +	{ },
->> +};
->> +MODULE_DEVICE_TABLE(acpi, int3472_device_id);
->> +
->> +static struct acpi_driver int3472_driver = {
->> +	.name = "int3472",
->> +	.ids = int3472_device_id,
->> +	.ops = {
->> +		.add = int3472_add,
->> +		.remove = int3472_remove,
->> +	},
->> +	.owner = THIS_MODULE,
->> +};
->> +
->> +module_acpi_driver(int3472_driver);
->> +
->> +MODULE_LICENSE("GPL v2");
->> +MODULE_AUTHOR("Dan Scally <djrscally@gmail.com>");
->> +MODULE_DESCRIPTION("ACPI Driver for Discrete type INT3472 ACPI Devices");
->> diff --git a/drivers/media/pci/intel/ipu3/int3472.h b/drivers/media/pci/intel/ipu3/int3472.h
->> new file mode 100644
->> index 000000000000..6964726e8e1f
->> --- /dev/null
->> +++ b/drivers/media/pci/intel/ipu3/int3472.h
->> @@ -0,0 +1,96 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/* Author: Dan Scally <djrscally@gmail.com> */
->> +#include <linux/regulator/machine.h>
->> +
->> +#define INT3472_MAX_SENSOR_GPIOS			3
->> +#define GPIO_REGULATOR_NAME_LENGTH			17
->> +#define GPIO_REGULATOR_SUPPLY_NAME_LENGTH		9
->> +
->> +#define INT3472_REGULATOR(_NAME, _SUPPLY, _ID, _OPS)	\
->> +	((const struct regulator_desc) {		\
->> +		.name = _NAME,				\
->> +		.supply_name = _SUPPLY,			\
->> +		.id = _ID,				\
->> +		.type = REGULATOR_VOLTAGE,		\
->> +		.ops = _OPS,				\
->> +		.owner = THIS_MODULE,			\
->> +	})
->> +
->> +const guid_t int3472_gpio_guid = GUID_INIT(0x79234640, 0x9e10, 0x4fea,
->> +					     0xa5, 0xc1, 0xb5, 0xaa, 0x8b,
->> +					     0x19, 0x75, 0x6f);
->> +
->> +const guid_t cio2_sensor_module_guid = GUID_INIT(0x822ace8f, 0x2814, 0x4174,
->> +						 0xa5, 0x6b, 0x5f, 0x02, 0x9f,
->> +						 0xe0, 0x79, 0xee);
->> +
->> +struct int3472_cldb {
->> +	u8 version;
->> +	/*
->> +	 * control logic type
->> +	 * 0: UNKNOWN
->> +	 * 1: DISCRETE(CRD-D)
->> +	 * 2: PMIC TPS68470
->> +	 * 3: PMIC uP6641
->> +	 */
->> +	u8 control_logic_type;
->> +	u8 control_logic_id;
->> +	u8 sensor_card_sku;
->> +	u8 reserved[28];
->> +};
->> +
->> +struct int3472_device {
->> +	struct acpi_device *adev;
->> +	struct acpi_device *sensor;
->> +
->> +	unsigned int n_gpios; /* how many GPIOs have we seen */
->> +
->> +	unsigned int n_regulators;
->> +	struct list_head regulators;
->> +
->> +	unsigned int n_sensor_gpios; /* how many have we mapped to sensor */
->> +	struct gpiod_lookup_table gpios;
->> +};
->> +
->> +struct int3472_gpio_regulator {
->> +	char regulator_name[GPIO_REGULATOR_NAME_LENGTH];
->> +	char supply_name[GPIO_REGULATOR_SUPPLY_NAME_LENGTH];
->> +	struct gpio_desc *gpio;
->> +	struct regulator_dev *rdev;
->> +	struct regulator_desc rdesc;
->> +	struct list_head list;
->> +};
->> +
->> +struct int3472_sensor_regulator_map {
->> +	char *sensor_module_name;
->> +	unsigned int n_supplies;
->> +	struct regulator_consumer_supply *supplies;
->> +};
->> +
->> +/*
->> + * Here follows platform specific mapping information that we can pass to
->> + * regulator_init_data when we register our regulators. They're just mapped
->> + * via index, I.E. the first regulator pin that the code finds for the
->> + * i2c-OVTI2680:00 device is avdd, the second is dovdd and so on.
->> + */
->> +
->> +static struct regulator_consumer_supply miix_510_ov2680[] = {
->> +	{ "i2c-OVTI2680:00", "avdd" },
->> +	{ "i2c-OVTI2680:00", "dovdd" },
->> +};
->> +
->> +static struct regulator_consumer_supply surface_go2_ov5693[] = {
->> +	{ "i2c-INT33BE:00", "avdd" },
->> +	{ "i2c-INT33BE:00", "dovdd" },
->> +};
->> +
->> +static struct regulator_consumer_supply surface_book_ov5693[] = {
->> +	{ "i2c-INT33BE:00", "avdd" },
->> +	{ "i2c-INT33BE:00", "dovdd" },
->> +};
->> +
->> +static struct int3472_sensor_regulator_map int3472_sensor_regulator_maps[] = {
->> +	{ "GNDF140809R", 2, miix_510_ov2680 },
->> +	{ "YHCU", 2, surface_go2_ov5693 },
->> +	{ "MSHW0070", 2, surface_book_ov5693 },
->> +};
+Paul Murphy (2):
+  dt-bindings: Add bindings for Keem Bay VPU IPC driver
+  keembay-vpu-ipc: Add Keem Bay VPU IPC module
+
+Seamus Kelly (8):
+  xlink-ipc: Add xlink ipc device tree bindings
+  xlink-ipc: Add xlink ipc driver
+  xlink-core: Add xlink core device tree bindings
+  xlink-core: Add xlink core driver xLink
+  xlink-core: Enable xlink protocol over pcie
+  xlink-core: Enable VPU IP management and runtime control
+  xlink-core: add async channel and events
+  xlink-core: factorize xlink_ioctl function by creating sub-functions
+    for each ioctl command
+
+Srikanth Thokala (9):
+  misc: xlink-pcie: Add documentation for XLink PCIe driver
+  misc: xlink-pcie: lh: Add PCIe EPF driver for Local Host
+  misc: xlink-pcie: lh: Add PCIe EP DMA functionality
+  misc: xlink-pcie: lh: Add core communication logic
+  misc: xlink-pcie: lh: Prepare changes for adding remote host driver
+  misc: xlink-pcie: rh: Add PCIe EP driver for Remote Host
+  misc: xlink-pcie: rh: Add core communication logic
+  misc: xlink-pcie: Add XLink API interface
+  misc: xlink-pcie: Add asynchronous event notification support for
+    XLink
+
+mark gross (1):
+  Add Vision Processing Unit (VPU) documentation.
+
+ .../misc/intel,keembay-xlink-ipc.yaml         |   49 +
+ .../bindings/misc/intel,keembay-xlink.yaml    |   27 +
+ .../bindings/soc/intel/intel,keembay-ipc.yaml |   63 +
+ .../soc/intel/intel,keembay-vpu-ipc.yaml      |  151 ++
+ Documentation/index.rst                       |    3 +-
+ Documentation/vpu/index.rst                   |   19 +
+ Documentation/vpu/vpu-stack-overview.rst      |  267 +++
+ Documentation/vpu/xlink-core.rst              |   80 +
+ Documentation/vpu/xlink-ipc.rst               |   50 +
+ Documentation/vpu/xlink-pcie.rst              |   91 +
+ MAINTAINERS                                   |   41 +
+ drivers/misc/Kconfig                          |    3 +
+ drivers/misc/Makefile                         |    3 +
+ drivers/misc/xlink-core/Kconfig               |   33 +
+ drivers/misc/xlink-core/Makefile              |    5 +
+ drivers/misc/xlink-core/xlink-core.c          | 1335 +++++++++++
+ drivers/misc/xlink-core/xlink-core.h          |   24 +
+ drivers/misc/xlink-core/xlink-defs.h          |  181 ++
+ drivers/misc/xlink-core/xlink-dispatcher.c    |  436 ++++
+ drivers/misc/xlink-core/xlink-dispatcher.h    |   26 +
+ drivers/misc/xlink-core/xlink-ioctl.c         |  584 +++++
+ drivers/misc/xlink-core/xlink-ioctl.h         |   36 +
+ drivers/misc/xlink-core/xlink-multiplexer.c   | 1164 ++++++++++
+ drivers/misc/xlink-core/xlink-multiplexer.h   |   35 +
+ drivers/misc/xlink-core/xlink-platform.c      |  273 +++
+ drivers/misc/xlink-core/xlink-platform.h      |   65 +
+ drivers/misc/xlink-ipc/Kconfig                |    7 +
+ drivers/misc/xlink-ipc/Makefile               |    4 +
+ drivers/misc/xlink-ipc/xlink-ipc.c            |  879 +++++++
+ drivers/misc/xlink-pcie/Kconfig               |   20 +
+ drivers/misc/xlink-pcie/Makefile              |    2 +
+ drivers/misc/xlink-pcie/common/core.h         |  247 ++
+ drivers/misc/xlink-pcie/common/interface.c    |  126 +
+ drivers/misc/xlink-pcie/common/util.c         |  375 +++
+ drivers/misc/xlink-pcie/common/util.h         |   70 +
+ drivers/misc/xlink-pcie/common/xpcie.h        |  120 +
+ drivers/misc/xlink-pcie/local_host/Makefile   |    6 +
+ drivers/misc/xlink-pcie/local_host/core.c     |  905 ++++++++
+ drivers/misc/xlink-pcie/local_host/dma.c      |  577 +++++
+ drivers/misc/xlink-pcie/local_host/epf.c      |  523 +++++
+ drivers/misc/xlink-pcie/local_host/epf.h      |  106 +
+ drivers/misc/xlink-pcie/remote_host/Makefile  |    6 +
+ drivers/misc/xlink-pcie/remote_host/core.c    |  647 ++++++
+ drivers/misc/xlink-pcie/remote_host/main.c    |   96 +
+ drivers/misc/xlink-pcie/remote_host/pci.c     |  525 +++++
+ drivers/misc/xlink-pcie/remote_host/pci.h     |   67 +
+ drivers/soc/Kconfig                           |    1 +
+ drivers/soc/Makefile                          |    1 +
+ drivers/soc/intel/Kconfig                     |   32 +
+ drivers/soc/intel/Makefile                    |    5 +
+ drivers/soc/intel/keembay-ipc.c               | 1669 ++++++++++++++
+ drivers/soc/intel/keembay-vpu-ipc.c           | 2036 +++++++++++++++++
+ include/linux/soc/intel/keembay-ipc.h         |   30 +
+ include/linux/soc/intel/keembay-vpu-ipc.h     |   62 +
+ include/linux/xlink-ipc.h                     |   48 +
+ include/linux/xlink.h                         |  146 ++
+ include/linux/xlink_drv_inf.h                 |   72 +
+ include/uapi/misc/xlink_uapi.h                |  145 ++
+ 58 files changed, 14598 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
+ create mode 100644 Documentation/vpu/index.rst
+ create mode 100644 Documentation/vpu/vpu-stack-overview.rst
+ create mode 100644 Documentation/vpu/xlink-core.rst
+ create mode 100644 Documentation/vpu/xlink-ipc.rst
+ create mode 100644 Documentation/vpu/xlink-pcie.rst
+ create mode 100644 drivers/misc/xlink-core/Kconfig
+ create mode 100644 drivers/misc/xlink-core/Makefile
+ create mode 100644 drivers/misc/xlink-core/xlink-core.c
+ create mode 100644 drivers/misc/xlink-core/xlink-core.h
+ create mode 100644 drivers/misc/xlink-core/xlink-defs.h
+ create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.c
+ create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.h
+ create mode 100644 drivers/misc/xlink-core/xlink-ioctl.c
+ create mode 100644 drivers/misc/xlink-core/xlink-ioctl.h
+ create mode 100644 drivers/misc/xlink-core/xlink-multiplexer.c
+ create mode 100644 drivers/misc/xlink-core/xlink-multiplexer.h
+ create mode 100644 drivers/misc/xlink-core/xlink-platform.c
+ create mode 100644 drivers/misc/xlink-core/xlink-platform.h
+ create mode 100644 drivers/misc/xlink-ipc/Kconfig
+ create mode 100644 drivers/misc/xlink-ipc/Makefile
+ create mode 100644 drivers/misc/xlink-ipc/xlink-ipc.c
+ create mode 100644 drivers/misc/xlink-pcie/Kconfig
+ create mode 100644 drivers/misc/xlink-pcie/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/common/core.h
+ create mode 100644 drivers/misc/xlink-pcie/common/interface.c
+ create mode 100644 drivers/misc/xlink-pcie/common/util.c
+ create mode 100644 drivers/misc/xlink-pcie/common/util.h
+ create mode 100644 drivers/misc/xlink-pcie/common/xpcie.h
+ create mode 100644 drivers/misc/xlink-pcie/local_host/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/local_host/core.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/dma.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/epf.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/epf.h
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/core.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/main.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.h
+ create mode 100644 drivers/soc/intel/Kconfig
+ create mode 100644 drivers/soc/intel/Makefile
+ create mode 100644 drivers/soc/intel/keembay-ipc.c
+ create mode 100644 drivers/soc/intel/keembay-vpu-ipc.c
+ create mode 100644 include/linux/soc/intel/keembay-ipc.h
+ create mode 100644 include/linux/soc/intel/keembay-vpu-ipc.h
+ create mode 100644 include/linux/xlink-ipc.h
+ create mode 100644 include/linux/xlink.h
+ create mode 100644 include/linux/xlink_drv_inf.h
+ create mode 100644 include/uapi/misc/xlink_uapi.h
+
+-- 
+2.17.1
+
