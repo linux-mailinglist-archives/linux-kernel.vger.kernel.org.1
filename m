@@ -2,300 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206C82C88B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DDB2C88BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbgK3P4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:56:33 -0500
-Received: from mail.v3.sk ([167.172.186.51]:47294 "EHLO shell.v3.sk"
+        id S1728496AbgK3P6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:58:10 -0500
+Received: from mail-eopbgr10070.outbound.protection.outlook.com ([40.107.1.70]:30852
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727767AbgK3P4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:56:30 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id BC50FE06E1;
-        Mon, 30 Nov 2020 15:52:52 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id KeiXWeDLxPcx; Mon, 30 Nov 2020 15:52:52 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 1020EE06C5;
-        Mon, 30 Nov 2020 15:52:52 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id aEQF7agQduk1; Mon, 30 Nov 2020 15:52:51 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id C246AE0701;
-        Mon, 30 Nov 2020 15:52:51 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v3 2/2] Input: add driver for power button on Dell Wyse 3020
-Date:   Mon, 30 Nov 2020 16:55:37 +0100
-Message-Id: <20201130155537.1665091-3-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201130155537.1665091-1-lkundrak@v3.sk>
-References: <20201130155537.1665091-1-lkundrak@v3.sk>
+        id S1727373AbgK3P6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 10:58:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/AO1AfwOH/ROY3iZYfMnYkp0a82SNwE5AqLGz0iZHDM=;
+ b=fDni5yy6HtW0oX8iO+qiMhGHidPVJJS1zlHH1RcxZIF/DZIzuVdkE73f8UeKq1O43+lLOfA22J0C2+fwAxy3Aox/lWR9zMW0P/YZ9blcW2KpmZi4W+6BY3klDbcazS1NMxbPjTa5CGgEq/IsTcFJzTd10xS6GAmBr1ZgY18qmB8=
+Received: from AS8PR04CA0008.eurprd04.prod.outlook.com (2603:10a6:20b:310::13)
+ by VI1PR08MB3328.eurprd08.prod.outlook.com (2603:10a6:803:3f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Mon, 30 Nov
+ 2020 15:57:18 +0000
+Received: from AM5EUR03FT054.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:20b:310:cafe::b1) by AS8PR04CA0008.outlook.office365.com
+ (2603:10a6:20b:310::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend
+ Transport; Mon, 30 Nov 2020 15:57:17 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
+ header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ AM5EUR03FT054.mail.protection.outlook.com (10.152.16.212) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3611.26 via Frontend Transport; Mon, 30 Nov 2020 15:57:16 +0000
+Received: ("Tessian outbound 39167997cde8:v71"); Mon, 30 Nov 2020 15:57:16 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: f9b9b9ab4eae0b3d
+X-CR-MTA-TID: 64aa7808
+Received: from 6838e2f01cd7.2
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 5757BF13-0AB3-448C-B5C4-16E2E7C31034.1;
+        Mon, 30 Nov 2020 15:57:00 +0000
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 6838e2f01cd7.2
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Mon, 30 Nov 2020 15:57:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n19gdnsFADDsqAnKUSi2elhks6B8ZrkMEUTcHC/YLfRYGmU+UnXAWajUR+1Nqx/HTq7Reeaa6ko2v7zT1bekCIkMC9lw35JUiRXBRP3U+TKI8kOF/t47EYdXffUOmpwc8WhIdOzP8+1pdp4QTEHdDrXIrOSaUx6mfrQeulGTePR/pLACbnfESvwiJwvTQPcdIGqm6MeWXZ4NtwPgSRWpHnsiDh3l5fZidAz3HZghK2vjsop/c8mPbUi6MDGH+F5YHHqDf/gwfhsNFFOtbf8NC/f7fzVahx0naaZXJXvv2Zm4uasaS2dttwPVDlP6wSxkELoO/0jhkJKBFUN/j7At7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/AO1AfwOH/ROY3iZYfMnYkp0a82SNwE5AqLGz0iZHDM=;
+ b=lXiTJHV583DAEPVypk9AHp6XtQINxil1tKSPWzACuY9+QwHgLj45Tr0eKv+nedOLsv4AgcgaYrNR+pS/NXxnsXsfpsV0rhnJpdkA5OtPl8yDMTN/YHS9+91sGvs39KCxhIlG6S252BCMRDssIRvB6IUjO9oZq7nm5J/VYRQ4lSwa/vBdXteVfJk6nBcY8MG+uC47D07zjV7dg5dsqa1lT1qo8vQbgBYGZCD27TeOd7scATrEHUyfQQfisEeJRUKJkamCz/Jmw4XjCF1YC+izRSAxJBPFW3akzkL0x3nyhfP0uuuuG3NmTFU9wW1dfxHQQvSQ5UkJ3iLyxO/+LPuCDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/AO1AfwOH/ROY3iZYfMnYkp0a82SNwE5AqLGz0iZHDM=;
+ b=fDni5yy6HtW0oX8iO+qiMhGHidPVJJS1zlHH1RcxZIF/DZIzuVdkE73f8UeKq1O43+lLOfA22J0C2+fwAxy3Aox/lWR9zMW0P/YZ9blcW2KpmZi4W+6BY3klDbcazS1NMxbPjTa5CGgEq/IsTcFJzTd10xS6GAmBr1ZgY18qmB8=
+Authentication-Results-Original: sourceware.org; dkim=none (message not
+ signed) header.d=none;sourceware.org; dmarc=none action=none
+ header.from=arm.com;
+Received: from PR3PR08MB5564.eurprd08.prod.outlook.com (2603:10a6:102:87::18)
+ by PR2PR08MB4730.eurprd08.prod.outlook.com (2603:10a6:101:19::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.21; Mon, 30 Nov
+ 2020 15:56:58 +0000
+Received: from PR3PR08MB5564.eurprd08.prod.outlook.com
+ ([fe80::ac13:db5:ef4:2dd2]) by PR3PR08MB5564.eurprd08.prod.outlook.com
+ ([fe80::ac13:db5:ef4:2dd2%4]) with mapi id 15.20.3611.025; Mon, 30 Nov 2020
+ 15:56:58 +0000
+Date:   Mon, 30 Nov 2020 15:56:56 +0000
+From:   Szabolcs Nagy <szabolcs.nagy@arm.com>
+To:     libc-alpha@sourceware.org, Mark Rutland <mark.rutland@arm.com>,
+        kernel-hardening@lists.openwall.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Topi Miettinen <toiwoton@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/6] aarch64: avoid mprotect(PROT_BTI|PROT_EXEC) [BZ
+ #26831]
+Message-ID: <20201130155655.GA16045@arm.com>
+References: <cover.1606319495.git.szabolcs.nagy@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cover.1606319495.git.szabolcs.nagy@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [217.140.106.54]
+X-ClientProxiedBy: LNXP123CA0013.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:d2::25) To PR3PR08MB5564.eurprd08.prod.outlook.com
+ (2603:10a6:102:87::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from arm.com (217.140.106.54) by LNXP123CA0013.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:d2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Mon, 30 Nov 2020 15:56:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 16461aeb-af7b-4dad-9d70-08d895489d08
+X-MS-TrafficTypeDiagnostic: PR2PR08MB4730:|VI1PR08MB3328:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR08MB3328D620385B841D33A52E35EDF50@VI1PR08MB3328.eurprd08.prod.outlook.com>
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: eNjdAxos8CSjmex+5RvaopMlIve+UcKaXnHwYbHzhcLK1Nnl5Vl6ljxCv4+eojs2wB+9EWV89pahbfE4NU/1GAggrDUrhINeWQmpkSa4U5YXWptS9M/kh7Zgr6KAmBak30z6e9Sn1PlsaoX0F8jSY8hYy7Z3x4XkNjRDghJDyRvluJq3Pr/jw6QsBLFv4vG2euxVv8tKYGzsepsiwWf/bX0kyt3NZhIQ/7xXjzi0Eh73+baHHUUWOkB86KAwaAfI6lfmm6T5tFKfUuLanFK0BQVhcaIyJJGzlU+0+72w3atCP+TI6OX3cyXHAe1TwK7OqF7/V6l//SiBvEZN5G3BZjyYhbph+KOGYY9SFoaZgUN51taJYKB5vOhECnarOuqMljbMt/wEzJaftcQU8dh4lWqccTBN22DBOK+k0/XdNuAHSBoCdjrbM+YABiwq54jJf2rpgdASKfR/9bvl/EAb3g==
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3PR08MB5564.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(39860400002)(366004)(110136005)(8886007)(36756003)(2906002)(8936002)(921005)(26005)(478600001)(83380400001)(52116002)(7696005)(5660300002)(16526019)(186003)(1076003)(66946007)(86362001)(66556008)(66476007)(55016002)(33656002)(316002)(44832011)(8676002)(956004)(966005)(2616005)(83133001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YWdYK240Snc2bGV4bENCUUttd3JMcktnR3lNWnZURFROZGxiVEMxMzJNNnVF?=
+ =?utf-8?B?WkZ1QXJralhCbm92cWczUUpFczdJTUpxazA5SEtZY0g2a0NBTlhPZkk4Ylpy?=
+ =?utf-8?B?QkVZQXhaSGlpcnFCQlkzT0t0ODg3eVRzVmtzWG5IQ0Z1Ykd0WUtzTlJnaTI1?=
+ =?utf-8?B?Sjlia1BVcWJ5dTJPMXBqdUFtdFlhSWMwREIwU1BlZ05JY3FBZ09GV3FiaHFX?=
+ =?utf-8?B?d01SNU1oZ2FwTGQzL3ROakFiWTg4NitETDlYTXVBT3V0eTRhYThzaEdqYmg0?=
+ =?utf-8?B?V1FUcXF1QmdaK0h6VGlpQmhITW5KODg3UWZoQ2lOSU5HZEUzK3k2Z1gzRXhX?=
+ =?utf-8?B?Q1Y5OVRITHMrb3BzYWRLVGVrZnl5ckdCclFxcFQ2TW5mSFB2WDVKWVZvVHlH?=
+ =?utf-8?B?NjMxUlBBd1hkOGZDeGpBaHZzRjZtaXJzandjcnZIQWRxbERncG84a05jTmQw?=
+ =?utf-8?B?RFdZMEJzMGxxZjZWY1NtM2t0QXd0M0ZCMEE5b3R3cE0rR3E0akpCdFkvOG9k?=
+ =?utf-8?B?YUpIRjd1YWJvODhjQ0dZa2ZJbitRMzRsRzVEOTFoc3QvUDVNTmZ2R1VWQjB6?=
+ =?utf-8?B?cEtVdnZVN3I1VXFsa2x0aTMwNUVsUlUrRVpZNjVRWWhVNTVVNWlQa3NxdFNs?=
+ =?utf-8?B?QzEyMW9FajlUMDhKV1gzSHlNb2pualdweEJ6b1ZvQW8wY3hONmZYZ3hpcy9y?=
+ =?utf-8?B?T01VRnBvTCswaDB6VHhuS1B0d3NySUxaajl3a0d2SXhLWHBHaWI0cklBWThO?=
+ =?utf-8?B?S25RV2RxVktDNHVSY2ZKZ256akh0RE5XRjUwTmNnejZzNDdzZ2s5MVNkcVA1?=
+ =?utf-8?B?K0tlMnBvdlRsUHRJelRXcy8rTU04NlIvWTJLTjNObGhVMndwSEdRRDVDVEw4?=
+ =?utf-8?B?RjBvdytVUVcwenJlQVJyVWEwTXhmTkFYdThpbStiMENYcG01TENsSDNkMGpx?=
+ =?utf-8?B?V2w3c2RmNFhXSGt3eGwwU28yVXNxSkFiMmlUZDJNY1RlM3ZGcllBeGZnek9F?=
+ =?utf-8?B?b3ZXSFJncE0rTjJGckNjUkZpR2psL1JvcjFoMjRQWFg3VWpiaVZyTllBQ0FY?=
+ =?utf-8?B?NWJpVWtMSFlIQVcwSjZoVE45QUxrYy9RcjducFJNeFRiSE1kc3ZNMDBmSWNE?=
+ =?utf-8?B?NU1NN3huS2J5V09qTU9LbXMrTFRjb2hucElYUCtKeVc4NklWZVJrZHRXK3Va?=
+ =?utf-8?B?c1lVM1VJcU9UTHhDVHU4K1g5eXdURTdmdkt5QlBMOGxEOXkyQ2cwQ29wRUJX?=
+ =?utf-8?B?SEVyV3dRRzk0YThscGF1bG00SVVhQ096cUdzS3E4azU4R0djelhXTTJsSjRo?=
+ =?utf-8?Q?1D2ORoxnEvnaQZqJjXKgAdhUw4Tma6Z2mY?=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR2PR08MB4730
+Original-Authentication-Results: sourceware.org; dkim=none (message not signed)
+ header.d=none;sourceware.org; dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT054.eop-EUR03.prod.protection.outlook.com
+X-MS-Office365-Filtering-Correlation-Id-Prvs: 1bf431ee-c3e6-401a-98b2-08d895489127
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2STB+nDirEC+EJEAMJPoZuoAo6tTr3+9+2oPjHPRVY64QGJIsUrqYNV6MbSg7rMIKExV7KIAdD89yiRnaVoppdxcqX1RApZm3IDj6nIMDpbEokhimLnsH1eTYHuWk3dNQfBxO72amIEqjdLZH2lME5sENXDtIo2knOOx2cRxCdwDxgDC6A490yK7670UwturjDPGXSWFJrvUFKXk4JIlpM3xy8CD/jZYoWRilRLfhQvRVLKYB94MEi0wS1Q4L/MvyTCozww0Pf8BfV0cDyX+Aloc1sEXxaOcaBh9JhyT64qoSHqtxw+52mraC+PUbUoSckFsd4vGdAvZH0oUSpeX4YUI9YXSzHx0d52Yt1UhX9/R6uW7nHtc3HOgzWx3R7oDhQbcBolc7PDWk6As6P93LzdzHk0Kec2YvtQ+DykLO828/a8erYGBaUadEVwDC1ndH7JHLGUvMrsaoh6JKw70eCjkeLmdtU/bFyBW+jQd7vsNych++Gvwki7j+4wHRF6KgOFMOj96Su8GPJ49iXEYIA==
+X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39860400002)(396003)(46966005)(83380400001)(921005)(8676002)(2616005)(8936002)(7696005)(36906005)(956004)(966005)(316002)(8886007)(55016002)(2906002)(110136005)(86362001)(44832011)(336012)(47076004)(26005)(70586007)(82740400003)(478600001)(5660300002)(356005)(81166007)(70206006)(186003)(16526019)(33656002)(82310400003)(1076003)(36756003)(83133001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 15:57:16.5982
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16461aeb-af7b-4dad-9d70-08d895489d08
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT054.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR08MB3328
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for the power button attached to the Embedded Controlle=
-r
-on a Dell Wyse 3020 "Ariel" board.
+The 11/27/2020 13:19, Szabolcs Nagy via Libc-alpha wrote:
+> This is v2 of
+> https://sourceware.org/pipermail/libc-alpha/2020-November/119305.html
+> 
+> To enable BTI support, re-mmap executable segments instead of
+> mprotecting them in case mprotect is seccomp filtered.
+> 
+> I would like linux to change to map the main exe with PROT_BTI when
+> that is marked as BTI compatible. From the linux side i heard the
+> following concerns about this:
+> - it's an ABI change so requires some ABI bump. (this is fine with
+>   me, i think glibc does not care about backward compat as nothing
+>   can reasonably rely on the current behaviour, but if we have a
+>   new bit in auxv or similar then we can save one mprotect call.)
+> - in case we discover compatibility issues with user binaries it's
+>   better if userspace can easily disable BTI (e.g. removing the
+>   mprotect based on some env var, but if kernel adds PROT_BTI and
+>   mprotect is filtered then we have no reliable way to remove that
+>   from executables. this problem already exists for static linked
+>   exes, although admittedly those are less of a compat concern.)
+> - ideally PROT_BTI would be added via a new syscall that does not
+>   interfere with PROT_EXEC filtering. (this does not conflict with
+>   the current patches: even with a new syscall we need a fallback.)
+> - solve it in systemd (e.g. turn off the filter, use better filter):
+>   i would prefer not to have aarch64 (or BTI) specific policy in
+>   user code. and there was no satisfying way to do this portably.
+> 
+> Other concerns about the approach:
+> - mmap is more expensive than mprotect: in my measurements using
+>   mmap instead of mprotect is 3-8x slower (and after mmap pages
+>   have to be faulted in again), but e.g. the exec time of a program
+>   with 4 deps only increases by < 8% due to the 4 new mmaps. (the
+>   kernel side resource usage may increase too, i didnt look at that.)
 
-The Embedded Controller's SPI interface is actually capable sending and
-receiving the PS/2 keyboard and mouse protocol data, which looks like
-a good fit for a serio driver. Howerver, I don't know of any machines whe=
-re
-this is actually used.
+i tested glibc build time with mprotect vs mmap
+which should be exec heavy.
 
-My board only has a single power button and no way to connect an actual
-keyboard or a mouse. Using the atkbd driver with serio would be an overki=
-ll
-and would be inconvenient for the userspace. Therefore this driver
-registers an input device that is only capable of reporting the power
-button presses and releases.
+the real time overhead was < 0.2% on a particular
+4 core system with linux 5.3 ubuntu kernel, which
+i consider to be small.
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+(used PROT_EXEC without PROT_BTI for the measurement).
 
----
-Changes since v2:
-(All by the suggestions of Dmitry Torokhov. Thank you Dmitry!)
-- Add more includes
-- Make ariel_pwrbutton.msg_counter not a bitfield
-- Include an error code in error message when ec_input_read() fails in
-  the interrupt handler.
-- Return from the interrupt handler from a single point.
-- Remove a forgotten debug statement.
-- s/ret/error/
-- Return -EINVAL instead of -ENXIO when the IRQ line is not specified.
-- Don't hardcode rising edge trigger, rely on DT instead
-- Remove a banner print at the end of probe().
 
-Changes since v1:
-- Do away bitfields in order to be endian independent
-
- drivers/input/misc/Kconfig           |  11 ++
- drivers/input/misc/Makefile          |   1 +
- drivers/input/misc/ariel-pwrbutton.c | 169 +++++++++++++++++++++++++++
- 3 files changed, 181 insertions(+)
- create mode 100644 drivers/input/misc/ariel-pwrbutton.c
-
-diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-index 362e8a01980cd..e7bb572e15182 100644
---- a/drivers/input/misc/Kconfig
-+++ b/drivers/input/misc/Kconfig
-@@ -73,6 +73,17 @@ config INPUT_AD714X_SPI
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called ad714x-spi.
-=20
-+config INPUT_ARIEL_PWRBUTTON
-+	tristate "Dell Wyse 3020 Power Button Driver"
-+	depends on SPI
-+	depends on MACH_MMP3_DT || COMPILE_TEST
-+	help
-+	  Say Y to enable support for reporting power button status on
-+	  on Dell Wyse 3020 ("Ariel") thin client.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called ariel-pwrbutton.
-+
- config INPUT_ARIZONA_HAPTICS
- 	tristate "Arizona haptics support"
- 	depends on MFD_ARIZONA && SND_SOC
-diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
-index a48e5f2d859d4..062cea9f181c9 100644
---- a/drivers/input/misc/Makefile
-+++ b/drivers/input/misc/Makefile
-@@ -15,6 +15,7 @@ obj-$(CONFIG_INPUT_ADXL34X)		+=3D adxl34x.o
- obj-$(CONFIG_INPUT_ADXL34X_I2C)		+=3D adxl34x-i2c.o
- obj-$(CONFIG_INPUT_ADXL34X_SPI)		+=3D adxl34x-spi.o
- obj-$(CONFIG_INPUT_APANEL)		+=3D apanel.o
-+obj-$(CONFIG_INPUT_ARIEL_PWRBUTTON)	+=3D ariel-pwrbutton.o
- obj-$(CONFIG_INPUT_ARIZONA_HAPTICS)	+=3D arizona-haptics.o
- obj-$(CONFIG_INPUT_ATI_REMOTE2)		+=3D ati_remote2.o
- obj-$(CONFIG_INPUT_ATLAS_BTNS)		+=3D atlas_btns.o
-diff --git a/drivers/input/misc/ariel-pwrbutton.c b/drivers/input/misc/ar=
-iel-pwrbutton.c
-new file mode 100644
-index 0000000000000..eda86ab552b9c
---- /dev/null
-+++ b/drivers/input/misc/ariel-pwrbutton.c
-@@ -0,0 +1,169 @@
-+// SPDX-License-Identifier: BSD-2-Clause OR GPL-2.0-or-later
-+/*
-+ * Dell Wyse 3020 a.k.a. "Ariel" Power Button Driver
-+ *
-+ * Copyright (C) 2020 Lubomir Rintel
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/gfp.h>
-+#include <linux/input.h>
-+#include <linux/interrupt.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/spi/spi.h>
-+
-+#define RESP_COUNTER(response)	(response.header & 0x3)
-+#define RESP_SIZE(response)	((response.header >> 2) & 0x3)
-+#define RESP_TYPE(response)	((response.header >> 4) & 0xf)
-+
-+struct ec_input_response {
-+	u8 reserved;
-+	u8 header;
-+	u8 data[3];
-+} __packed;
-+
-+struct ariel_pwrbutton {
-+	struct spi_device *client;
-+	struct input_dev *input;
-+	u8 msg_counter;
-+};
-+
-+static int ec_input_read(struct ariel_pwrbutton *priv,
-+			 struct ec_input_response *response)
-+{
-+	u8 read_request[] =3D { 0x00, 0x5a, 0xa5, 0x00, 0x00 };
-+	struct spi_device *spi =3D priv->client;
-+	struct spi_transfer t =3D {
-+		.tx_buf =3D read_request,
-+		.rx_buf =3D response,
-+		.len =3D sizeof(read_request),
-+	};
-+
-+	compiletime_assert(sizeof(read_request) =3D=3D sizeof(*response),
-+			   "SPI xfer request/response size mismatch");
-+
-+	return spi_sync_transfer(spi, &t, 1);
-+}
-+
-+static irqreturn_t ec_input_interrupt(int irq, void *dev_id)
-+{
-+	struct ariel_pwrbutton *priv =3D dev_id;
-+	struct spi_device *spi =3D priv->client;
-+	struct ec_input_response response;
-+	int error;
-+	int i;
-+
-+	error =3D ec_input_read(priv, &response);
-+	if (error < 0) {
-+		dev_err(&spi->dev, "EC read failed: %d\n", error);
-+		goto out;
-+	}
-+
-+	if (priv->msg_counter =3D=3D RESP_COUNTER(response)) {
-+		dev_warn(&spi->dev, "No new data to read?\n");
-+		goto out;
-+	}
-+
-+	priv->msg_counter =3D RESP_COUNTER(response);
-+
-+	if (RESP_TYPE(response) !=3D 0x3 && RESP_TYPE(response) !=3D 0xc) {
-+		dev_dbg(&spi->dev, "Ignoring message that's not kbd data\n");
-+		goto out;
-+	}
-+
-+	for (i =3D 0; i < RESP_SIZE(response); i++) {
-+		switch (response.data[i]) {
-+		case 0x74:
-+			input_report_key(priv->input, KEY_POWER, 1);
-+			input_sync(priv->input);
-+			break;
-+		case 0xf4:
-+			input_report_key(priv->input, KEY_POWER, 0);
-+			input_sync(priv->input);
-+			break;
-+		default:
-+			dev_dbg(&spi->dev, "Unknown scan code: %02x\n",
-+				response.data[i]);
-+		}
-+	}
-+
-+out:
-+	return IRQ_HANDLED;
-+}
-+
-+static int ariel_pwrbutton_probe(struct spi_device *spi)
-+{
-+	struct ec_input_response response;
-+	struct ariel_pwrbutton *priv;
-+	int error;
-+
-+	if (!spi->irq) {
-+		dev_err(&spi->dev, "Missing IRQ.\n");
-+		return -EINVAL;
-+	}
-+
-+	priv =3D devm_kzalloc(&spi->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->client =3D spi;
-+	spi_set_drvdata(spi, priv);
-+
-+	priv->input =3D devm_input_allocate_device(&spi->dev);
-+	if (!priv->input)
-+		return -ENOMEM;
-+	priv->input->name =3D "Power Button";
-+	priv->input->dev.parent =3D &spi->dev;
-+	input_set_capability(priv->input, EV_KEY, KEY_POWER);
-+	error =3D input_register_device(priv->input);
-+	if (error) {
-+		dev_err(&spi->dev, "error registering input device: %d\n", error);
-+		return error;
-+	}
-+
-+	error =3D ec_input_read(priv, &response);
-+	if (error < 0) {
-+		dev_err(&spi->dev, "EC read failed: %d\n", error);
-+		return error;
-+	}
-+	priv->msg_counter =3D RESP_COUNTER(response);
-+
-+	error =3D devm_request_threaded_irq(&spi->dev, spi->irq, NULL,
-+					  ec_input_interrupt,
-+					  IRQF_ONESHOT,
-+					  "Ariel EC Input", priv);
-+
-+	if (error) {
-+		dev_err(&spi->dev, "Failed to request IRQ %d: %d\n",
-+			spi->irq, error);
-+		return error;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id ariel_pwrbutton_of_match[] =3D {
-+	{ .compatible =3D "dell,wyse-ariel-ec-input" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ariel_pwrbutton_of_match);
-+
-+static const struct spi_device_id ariel_pwrbutton_id_table[] =3D {
-+	{ "wyse-ariel-ec-input", 0 },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(spi, ariel_pwrbutton_id_table);
-+
-+static struct spi_driver ariel_pwrbutton_driver =3D {
-+	.driver =3D {
-+		.name =3D "dell-wyse-ariel-ec-input",
-+		.of_match_table =3D ariel_pwrbutton_of_match,
-+	},
-+	.probe =3D ariel_pwrbutton_probe,
-+};
-+module_spi_driver(ariel_pwrbutton_driver);
-+
-+MODULE_AUTHOR("Lubomir Rintel <lkundrak@v3.sk>");
-+MODULE_DESCRIPTION("Dell Wyse 3020 Power Button Input Driver");
-+MODULE_LICENSE("Dual BSD/GPL");
---=20
-2.28.0
-
+> - _dl_signal_error is not valid from the _dl_process_gnu_property
+>   hook. The v2 set addresses this problem: i could either propagate
+>   the errors up until they can be handled or solve it in the aarch64
+>   backend by first recording failures and then dealing with them in
+>   _dl_open_check. I choose the latter, but did some refactorings in
+>   _dl_map_object_from_fd that makes the former possible too.
+> 
+> v2:
+> - [1/6]: New patch that fixes a missed BTI bug found during v2.
+> - [2-3/6]: New, _dl_map_object_from_fd failure handling improvements,
+>   these are independent of the rest of the series.
+> - [4/6]: Move the note handling to a different place (after l_phdr
+>   setup, but before fd is closed).
+> - [5/6]: Rebased.
+> - [6/6]: First record errors and only report them later. (this fixes
+>   various failure handling issues.)
+> 
+> Szabolcs Nagy (6):
+>   aarch64: Fix missing BTI protection from dependencies [BZ #26926]
+>   elf: lose is closely tied to _dl_map_object_from_fd
+>   elf: Fix failure handling in _dl_map_object_from_fd
+>   elf: Move note processing after l_phdr is updated
+>   elf: Pass the fd to note processing
+>   aarch64: Use mmap to add PROT_BTI instead of mprotect [BZ #26831]
+> 
+>  elf/dl-load.c              | 110 ++++++++++++++++++++-----------------
+>  elf/rtld.c                 |   4 +-
+>  sysdeps/aarch64/dl-bti.c   |  74 ++++++++++++++++++-------
+>  sysdeps/aarch64/dl-prop.h  |  14 +++--
+>  sysdeps/aarch64/linkmap.h  |   2 +-
+>  sysdeps/generic/dl-prop.h  |   6 +-
+>  sysdeps/generic/ldsodefs.h |   5 +-
+>  sysdeps/x86/dl-prop.h      |   6 +-
+>  8 files changed, 135 insertions(+), 86 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
