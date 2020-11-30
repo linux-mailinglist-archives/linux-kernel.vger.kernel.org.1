@@ -2,187 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106402C8892
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DD72C8895
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgK3Ps3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:48:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46053 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725933AbgK3Ps3 (ORCPT
+        id S1726812AbgK3Psu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:48:50 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46220 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgK3Pst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:48:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606751221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/2cfl5p+/dsT1o38syXwn2awNxPJz7kQnbcKay1wI6o=;
-        b=ezcKuyae/O/bpyXxbBNPVkapjkf50Maf+dLwIZukIRjFPjI7R+Kem5EV5lda9d3fgrhvM8
-        ma+PRzRLDK+/f8QXsMISF9tzfjnnwqwSPAwmtW9kyGNvPNZ6guVb2roaC2e/MXhH/gSrA9
-        p41djxq/Y3MUeKd40M7B7iQ3XIbLP+4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-UvQ6Pl1bOp2HNYlzvAMwmw-1; Mon, 30 Nov 2020 10:46:59 -0500
-X-MC-Unique: UvQ6Pl1bOp2HNYlzvAMwmw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A230E803658;
-        Mon, 30 Nov 2020 15:46:23 +0000 (UTC)
-Received: from w520.home (ovpn-112-10.phx2.redhat.com [10.3.112.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C58960C93;
-        Mon, 30 Nov 2020 15:46:22 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 08:46:22 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Chiqijun <chiqijun@huawei.com>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yin.yinshi@huawei.com, cloud.wangxiaoyun@huawei.com,
-        zengweiliang.zengweiliang@huawei.com, chenlizhong@huawei.com
-Subject: Re: [PATCH] PCI: Add pci reset quirk for Huawei Intelligent NIC
- virtual function
-Message-ID: <20201130084622.0b71d526@w520.home>
-In-Reply-To: <20201128232919.GA929748@bjorn-Precision-5520>
-References: <20201128061825.2629-1-chiqijun@huawei.com>
-        <20201128232919.GA929748@bjorn-Precision-5520>
+        Mon, 30 Nov 2020 10:48:49 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AUFlqWu040544;
+        Mon, 30 Nov 2020 09:47:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606751272;
+        bh=jaqodItvDJOrrUHC+0GGevIUvHl4mGUiSAaqLWeN99E=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Lw8sSrNZxm1B9CEG8+KK0/gk/CsHMzvg233vymtiyROqDaTzwim/j3SuzbP6lF2Yj
+         w2JkmXY4yUO9OcCYOCVJ44U/UNcQlIbmHDICvtZ69SeTQ328rthyEndQoIyPIbijNW
+         Cvgsx1px7m325DRIT3cTHtUeyYRw7ojMHWlxMCeU=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AUFlqlN035480
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 30 Nov 2020 09:47:52 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 30
+ Nov 2020 09:47:52 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 30 Nov 2020 09:47:52 -0600
+Received: from [10.250.38.244] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AUFlqlL071712;
+        Mon, 30 Nov 2020 09:47:52 -0600
+Subject: Re: [PATCH 3/3] remoteproc: k3-r5: Adjust TCM sizes in Split-mode on
+ J7200 SoCs
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201119010531.21083-1-s-anna@ti.com>
+ <20201119010531.21083-4-s-anna@ti.com> <20201123235129.GA529235@xps15>
+ <CANLsYkwztm1hwXMGO-7025YdaEk=ttLMVmM2A8hRYyyrWpR7fQ@mail.gmail.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <823f82d5-f100-23ed-8f29-73ec8b19ffd7@ti.com>
+Date:   Mon, 30 Nov 2020 09:47:46 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CANLsYkwztm1hwXMGO-7025YdaEk=ttLMVmM2A8hRYyyrWpR7fQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 28 Nov 2020 17:29:19 -0600
-Bjorn Helgaas <helgaas@kernel.org> wrote:
-
-> [+cc Alex]
+On 11/23/20 6:55 PM, Mathieu Poirier wrote:
+> On Mon, 23 Nov 2020 at 16:51, Mathieu Poirier
+> <mathieu.poirier@linaro.org> wrote:
+>>
+>> Good afternoon Suman,
+>>
+>> On Wed, Nov 18, 2020 at 07:05:31PM -0600, Suman Anna wrote:
+>>> The J7200 SoCs have a revised R5FSS IP that adds a unique feature w.r.t
+>>> TCM sizing. Each R5F core in a cluster typically has 32 KB each of ATCM
+>>> and BTCM, with only the Core0 TCMs usable in LockStep mode. This revised
+>>> IP however doubles the total available TCM in LockStep mode by making the
+>>> Core1 TCM visible immediately after the corresponding Core0 TCM.
+>>>
+>>> The R5F DT nodes on the J7200 SoCs define double (64 KB) the normal TCM
+>>> size (32 KB) for R5F Core0 for each of ATCM and BTCM to represent the
+>>> above. This increased TCM memory is only usable in LockStep-mode, and
+>>> has to be adjusted to the normal 32 KB size in Split mode. Enhance the
+>>> TI K3 R5F remoteproc for this logic through a new function. The adjustment
+>>> is a no-op on prior SoCs and relies on the correct DTS node sizes in
+>>> LockStep-mode on applicable SoCs.
+>>>
+>>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>>> ---
+>>>  drivers/remoteproc/ti_k3_r5_remoteproc.c | 43 ++++++++++++++++++++++++
+>>>  1 file changed, 43 insertions(+)
+>>>
+>>> diff --git a/drivers/remoteproc/ti_k3_r5_remoteproc.c b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+>>> index 66a32dcdd7d0..62b5a4c29456 100644
+>>> --- a/drivers/remoteproc/ti_k3_r5_remoteproc.c
+>>> +++ b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+>>> @@ -71,9 +71,11 @@ enum cluster_mode {
+>>>
+>>>  /**
+>>>   * struct k3_r5_soc_data - match data to handle SoC variations
+>>> + * @tcm_is_double: flag to denote the larger unified TCMs in certain modes
+>>>   * @tcm_ecc_autoinit: flag to denote the auto-initialization of TCMs for ECC
+>>>   */
+>>>  struct k3_r5_soc_data {
+>>> +     bool tcm_is_double;
+>>>       bool tcm_ecc_autoinit;
+>>>  };
+>>>
+>>> @@ -886,6 +888,43 @@ static void k3_r5_reserved_mem_exit(struct k3_r5_rproc *kproc)
+>>>       of_reserved_mem_device_release(kproc->dev);
+>>>  }
+>>>
+>>> +/*
+>>> + * Each R5F core within a typical R5FSS instance has a total of 64 KB of TCMs,
+>>> + * split equally into two 32 KB banks between ATCM and BTCM. The TCMs from both
+>>> + * cores are usable in Split-mode, but only the Core0 TCMs can be used in
+>>> + * LockStep-mode. The newer revisions of the R5FSS IP maximizes these TCMs by
+>>> + * leveraging the Core1 TCMs as well in certain modes where they would have
+>>> + * otherwise been unusable (Eg: LockStep-mode on J7200 SoCs). This is done by
+>>> + * making a Core1 TCM visible immediately after the corresponding Core0 TCM.
+>>> + * The SoC memory map uses the larger 64 KB sizes for the Core0 TCMs, and the
+>>> + * dts representation reflects this increased size on supported SoCs. The Core0
+>>> + * TCM sizes therefore have to be adjusted to only half the original size in
+>>> + * Split mode.
+>>> + */
+>>> +static void k3_r5_adjust_tcm_sizes(struct k3_r5_rproc *kproc)
+>>> +{
+>>> +     struct k3_r5_cluster *cluster = kproc->cluster;
+>>> +     struct k3_r5_core *core = kproc->core;
+>>> +     struct device *cdev = core->dev;
+>>> +     struct k3_r5_core *core0;
+>>> +
+>>> +     if (cluster->mode == CLUSTER_MODE_LOCKSTEP ||
+>>> +         !cluster->soc_data->tcm_is_double)
+>>> +             return;
+>>
+>> Shouldn't this be:
+>>
+>>         if (cluster->mode == CLUSTER_MODE_SPLIT ||
+>>             !cluster->soc_data->tcm_is_double)
+>>                 return;
+>>
+>> If am wrong then I'm pretty sure other people will be confused and a comment is
+>> warranted.
+>>
 > 
-> On Sat, Nov 28, 2020 at 02:18:25PM +0800, Chiqijun wrote:
-> > When multiple VFs do FLR at the same time, the firmware is
-> > processed serially, resulting in some VF FLRs being delayed more
-> > than 100ms, when the virtual machine restarts and the device
-> > driver is loaded, the firmware is doing the corresponding VF
-> > FLR, causing the driver to fail to load.
-> > 
-> > To solve this problem, add host and firmware status synchronization
-> > during FLR.  
+> Forget the above, I misread the context.  The memories are already set
+> to 64KB so there is nothing to do if in lockstep mode.
+
+Yep, thanks for the review. The comments above the function has all the details.
+
+regards
+Suman
+
 > 
-> Is this because the Huawei Intelligent NIC isn't following the spec,
-> or is it because Linux isn't correctly waiting for the FLR to
-> complete?
-
-Seems like a spec compliance issue, I don't recall anything in the spec
-about coordinating FLR between VFs.
- 
-> If this is a Huawei Intelligent NIC defect, is there documentation
-> somewhere (errata) that you can reference?  Will it be fixed in future
-> designs, so we don't have to add future Device IDs to the quirk?
-> 
-> > Signed-off-by: Chiqijun <chiqijun@huawei.com>
-> > ---
-> >  drivers/pci/quirks.c | 67 ++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 67 insertions(+)
-> > 
-> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> > index f70692ac79c5..bd6236ea9064 100644
-> > --- a/drivers/pci/quirks.c
-> > +++ b/drivers/pci/quirks.c
-> > @@ -3912,6 +3912,71 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
-> >  	return 0;
-> >  }
-> >  
-> > +#define PCI_DEVICE_ID_HINIC_VF  0x375E
-> > +#define HINIC_VF_FLR_TYPE       0x1000
-> > +#define HINIC_VF_OP             0xE80
-> > +#define HINIC_OPERATION_TIMEOUT 15000
-> > +
-> > +/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
-> > +static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
-> > +{
-> > +	unsigned long timeout;
-> > +	void __iomem *bar;
-> > +	u16 old_command;
-> > +	u32 val;
-> > +
-> > +	if (probe)
-> > +		return 0;
-> > +
-> > +	bar = pci_iomap(pdev, 0, 0);
-> > +	if (!bar)
-> > +		return -ENOTTY;
-> > +
-> > +	pci_read_config_word(pdev, PCI_COMMAND, &old_command);
-> > +
-> > +	/*
-> > +	 * FLR cap bit bit30, FLR ACK bit: bit18, to avoid big-endian conversion
-> > +	 * the big-endian bit6, bit10 is directly operated here
-> > +	 */
-> > +	val = readl(bar + HINIC_VF_FLR_TYPE);
-> > +	if (!(val & (1UL << 6))) {
-> > +		pci_iounmap(pdev, bar);
-> > +		return -ENOTTY;
-> > +	}
-
-
-I don't know exactly what this is testing, but it seems like a
-feature/capability test that can fail, why is it not done as part of
-the probe?  Can we define bit 6 with a macro?  Same for bit 10 in the
-VF op register below.
-
-> > +
-> > +	val = readl(bar + HINIC_VF_OP);
-> > +	val = val | (1UL << 10);
-> > +	writel(val, bar + HINIC_VF_OP);
-> > +
-> > +	/* Perform the actual device function reset */
-> > +	pcie_flr(pdev);
-> > +
-> > +	pci_write_config_word(pdev, PCI_COMMAND,
-> > +			      old_command | PCI_COMMAND_MEMORY);
-> > +
-> > +	/* Waiting for device reset complete */
-> > +	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);
-
-Yikes, 15s timeout!
-
-> > +	do {
-> > +		val = readl(bar + HINIC_VF_OP);
-> > +		if (!(val & (1UL << 10)))
-> > +			goto reset_complete;
-> > +		msleep(20);
-> > +	} while (time_before(jiffies, timeout));
-> > +
-> > +	val = readl(bar + HINIC_VF_OP);
-> > +	if (!(val & (1UL << 10)))
-> > +		goto reset_complete;
-> > +
-> > +	pci_warn(pdev, "Reset dev timeout, flr ack reg: %x\n",
-> > +		 be32_to_cpu(val));
-> > +
-> > +reset_complete:
-> > +	pci_write_config_word(pdev, PCI_COMMAND, old_command);
-> > +	pci_iounmap(pdev, bar);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
-> >  	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
-> >  		 reset_intel_82599_sfp_virtfn },
-> > @@ -3923,6 +3988,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
-> >  	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
-> >  	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
-> >  		reset_chelsio_generic_dev },
-> > +	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
-> > +		reset_hinic_vf_dev },
-> >  	{ 0 }
-> >  };
-> >  
-> > -- 
-> > 2.17.1
-> >   
-> 
+>>> +
+>>> +     core0 = list_first_entry(&cluster->cores, struct k3_r5_core, elem);
+>>> +     if (core == core0) {
+>>> +             WARN_ON(core->mem[0].size != SZ_64K);
+>>> +             WARN_ON(core->mem[1].size != SZ_64K);
+>>> +
+>>> +             core->mem[0].size /= 2;
+>>> +             core->mem[1].size /= 2;
+>>> +
+>>> +             dev_dbg(cdev, "adjusted TCM sizes, ATCM = 0x%zx BTCM = 0x%zx\n",
+>>> +                     core->mem[0].size, core->mem[1].size);
+>>> +     }
+>>> +}
+>>> +
+>>>  static int k3_r5_cluster_rproc_init(struct platform_device *pdev)
+>>>  {
+>>>       struct k3_r5_cluster *cluster = platform_get_drvdata(pdev);
+>>> @@ -933,6 +972,8 @@ static int k3_r5_cluster_rproc_init(struct platform_device *pdev)
+>>>                       goto err_config;
+>>>               }
+>>>
+>>> +             k3_r5_adjust_tcm_sizes(kproc);
+>>> +
+>>>               ret = k3_r5_reserved_mem_init(kproc);
+>>>               if (ret) {
+>>>                       dev_err(dev, "reserved memory init failed, ret = %d\n",
+>>> @@ -1407,10 +1448,12 @@ static int k3_r5_probe(struct platform_device *pdev)
+>>>  }
+>>>
+>>>  static const struct k3_r5_soc_data am65_j721e_soc_data = {
+>>> +     .tcm_is_double = false,
+>>>       .tcm_ecc_autoinit = false,
+>>>  };
+>>>
+>>>  static const struct k3_r5_soc_data j7200_soc_data = {
+>>> +     .tcm_is_double = true,
+>>>       .tcm_ecc_autoinit = true,
+>>
+>> With the above and for the set:
+>>
+>> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>
+>>>  };
+>>>
+>>> --
+>>> 2.28.0
+>>>
 
