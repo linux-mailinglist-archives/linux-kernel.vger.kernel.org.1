@@ -2,142 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EFD2C9278
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBE42C927B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388358AbgK3XYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:24:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730551AbgK3XYK (ORCPT
+        id S1730563AbgK3XZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:25:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35097 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726158AbgK3XZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:24:10 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD85C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:23:24 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id w15so16109977oie.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:23:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rfUvf+rulCtui//LVYbddkRCxkkehBqPZfURfP/eFrU=;
-        b=PLlgDqjlIOXdd/Vh6ZyHIldiZt4b9P6ZhswLdwihql1BqN7yFeP1lNtxsAVT1rs6bL
-         dPkQYsA2Is4Bz2IgCmjfIEu8Mq4MKHBjZXyiqaUng2qWixeMPRFCVYqdarz9g1iERotE
-         2L4uLbzKUilmsVLLHLS3XzQTjFOQ/y+VyWXZ3cVBJ0e1zUxDxdyeTXl31KAfnWcNfy1K
-         5MAKiaq4WryagQ722zzEIN6FuYOF8gYFjIWv6iyRN67OZanAAyNt1I/UOaS6dFwKiGIj
-         sShpOM7uj0txKhHPyJNMbjDU3uE5Wwf8f8OAm+fZBKWQRMA5tPJwhTpTwyUhgPeLNaiL
-         LL7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rfUvf+rulCtui//LVYbddkRCxkkehBqPZfURfP/eFrU=;
-        b=TtUMiIkjaaZdYVTuHCAvKMjMdwbv2E69ETJ+6mwwY+f3SJzYvajAgIKpWQB2UTi/6d
-         QgnWBwTVj6VooCfvN8+2HEZ9UTrwnehTTAyp0LJWHGtalYyq7LFn02hym+jYAWujMXp+
-         UHJj/rRZ/46tSniF5whNwn5PvZVxGDfd0KMe94Ea96xjmjnmTfIVQZ53LByOqy+tev+j
-         O0YQs1ygosj8m0u76WZMbRf/B1okaD/euftH/MDZeD4LX0OWr0Mc9ZAwhlXtEczbWp5T
-         bh9+bwW+NMe+seSj95FvPPu2eZ+G1Ln+w6woyqFt1Ia1fhixHjyp0j9bX3pc4/5mxVnw
-         UHNQ==
-X-Gm-Message-State: AOAM533zmmO81OaNohTKbypPVfyEaq7S82NAYpGOVf/KgJG6je82xnat
-        38Tn+F+CBI9q9ZqmWJJY3rTtNQ==
-X-Google-Smtp-Source: ABdhPJzGX1RWNM92e0MhKFBt9MTPM9po/BVR8gIfY+k+Xx/iYnr1iktm9hSHta+ZFKAF398T7h6JLA==
-X-Received: by 2002:a05:6808:b38:: with SMTP id t24mr114114oij.153.1606778604124;
-        Mon, 30 Nov 2020 15:23:24 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 19sm9422012oth.63.2020.11.30.15.23.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 15:23:16 -0800 (PST)
-Date:   Mon, 30 Nov 2020 17:23:15 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     agross@kernel.org, wim@linux-watchdog.org, linux@roeck-us.net,
-        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>
-Subject: Re: [PATCH v4] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when
- appropriate
-Message-ID: <X8V+442lvcTpNmth@builder.lan>
-References: <20201031121115.542752-1-robert.marko@sartura.hr>
+        Mon, 30 Nov 2020 18:25:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606778625;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2tm0ts6hF/lDJ0xq+K4NQnQ/+pAecSXKtAVp+dAxXA0=;
+        b=arUrcqmwrPDxONfqERcrXaW21IHtyVzMQJOnUag0mu+uk+fMX2Fhy3ZJ/qDw2P2N3awH7V
+        Fv1irsve5KA1IiFytCfb+mMJbn0c9xOvNT4RxP6efD9R01cyP3Kp2CZp+L0MVFwS6wq9sZ
+        PUAsXXF9Y1aD5QDhfebRAxQSqrj2gaE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-213-sckWWLILP0yqObZECNOSjQ-1; Mon, 30 Nov 2020 18:23:43 -0500
+X-MC-Unique: sckWWLILP0yqObZECNOSjQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8861E1842146;
+        Mon, 30 Nov 2020 23:23:41 +0000 (UTC)
+Received: from cantor.redhat.com (ovpn-115-84.phx2.redhat.com [10.3.115.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 134AC5D9C0;
+        Mon, 30 Nov 2020 23:23:41 +0000 (UTC)
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] tpm_tis: Disable interrupts if interrupt storm detected
+Date:   Mon, 30 Nov 2020 16:23:38 -0700
+Message-Id: <20201130232338.106892-1-jsnitsel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201031121115.542752-1-robert.marko@sartura.hr>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 31 Oct 07:11 CDT 2020, Robert Marko wrote:
+When enabling the interrupt code for the tpm_tis driver we have
+noticed some systems have a bios issue causing an interrupt storm to
+occur. The issue isn't limited to a single tpm or system vendor
+so keeping a denylist of systems with the issue isn't optimal. Instead
+try to detect the problem occurring, disable interrupts, and revert to
+polling when it happens.
 
-> If the watchdog hardware is enabled/running during boot, e.g.
-> due to a boot loader configuring it, we must tell the
-> watchdog framework about this fact so that it can ping the
-> watchdog until userspace opens the device and takes over
-> control.
-> 
-> Do so using the WDOG_HW_RUNNING flag that exists for exactly
-> that use-case.
-> 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Cc: Luka Perkov <luka.perkov@sartura.hr>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Peter Huewe <peterhuewe@gmx.de>
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Matthew Garrett <mjg59@google.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
+---
+ drivers/char/tpm/tpm_tis_core.c | 34 +++++++++++++++++++++++++++++++++
+ drivers/char/tpm/tpm_tis_core.h |  2 ++
+ 2 files changed, 36 insertions(+)
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+index 92c51c6cfd1b..19115a628f25 100644
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -24,6 +24,8 @@
+ #include <linux/wait.h>
+ #include <linux/acpi.h>
+ #include <linux/freezer.h>
++#include <linux/workqueue.h>
++#include <linux/kernel_stat.h>
+ #include "tpm.h"
+ #include "tpm_tis_core.h"
+ 
+@@ -711,13 +713,30 @@ static bool tpm_tis_req_canceled(struct tpm_chip *chip, u8 status)
+ 	}
+ }
+ 
++static struct workqueue_struct *tpm_tis_wq;
++static DEFINE_MUTEX(tpm_tis_wq_lock);
++
+ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
+ {
+ 	struct tpm_chip *chip = dev_id;
+ 	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
++	static bool check_storm = true;
++	static unsigned int check_start;
+ 	u32 interrupt;
+ 	int i, rc;
+ 
++	if (unlikely(check_storm)) {
++		if (!check_start) {
++			check_start = jiffies_to_msecs(jiffies);
++		} else if ((kstat_irqs(priv->irq) > 1000) &&
++			   (jiffies_to_msecs(jiffies) - check_start < 500)) {
++			check_storm = false;
++			queue_work(tpm_tis_wq, &priv->storm_work);
++		} else if (jiffies_to_msecs(jiffies) - check_start >= 500) {
++			check_storm = false;
++		}
++	}
++
+ 	rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &interrupt);
+ 	if (rc < 0)
+ 		return IRQ_NONE;
+@@ -943,6 +962,14 @@ static const struct tpm_class_ops tpm_tis = {
+ 	.clk_enable = tpm_tis_clkrun_enable,
+ };
+ 
++static void tpm_tis_storm_work(struct work_struct *work)
++{
++	struct tpm_tis_data *priv = container_of(work, struct tpm_tis_data, storm_work);
++
++	disable_interrupts(priv->chip);
++	dev_warn(&priv->chip->dev, "Interrupt storm detected, using polling.\n");
++}
++
+ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+ 		      const struct tpm_tis_phy_ops *phy_ops,
+ 		      acpi_handle acpi_dev_handle)
+@@ -959,6 +986,13 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+ 	if (IS_ERR(chip))
+ 		return PTR_ERR(chip);
+ 
++	priv->chip = chip;
++	tpm_tis_wq = alloc_workqueue("tpm_tis_wq", WQ_MEM_RECLAIM, 0);
++	if (!tpm_tis_wq)
++		return -ENOMEM;
++
++	INIT_WORK(&priv->storm_work, tpm_tis_storm_work);
++
+ #ifdef CONFIG_ACPI
+ 	chip->acpi_dev_handle = acpi_dev_handle;
+ #endif
+diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
+index 9b2d32a59f67..973297ee2e16 100644
+--- a/drivers/char/tpm/tpm_tis_core.h
++++ b/drivers/char/tpm/tpm_tis_core.h
+@@ -95,6 +95,8 @@ struct tpm_tis_data {
+ 	u16 clkrun_enabled;
+ 	wait_queue_head_t int_queue;
+ 	wait_queue_head_t read_queue;
++	struct work_struct storm_work;
++	struct tpm_chip *chip;
+ 	const struct tpm_tis_phy_ops *phy_ops;
+ 	unsigned short rng_quality;
+ };
+-- 
+2.27.0
 
-> ---
-> Changes in v4:
-> * Use QCOM_WDT_ENABLE macro
-> 
-> Changes in v3:
-> * Drop call to stop as start already does it
-> * Update commit message
-> 
-> Changes in v2:
-> * Correct authorship
-> 
->  drivers/watchdog/qcom-wdt.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-> index ab7465d186fd..07d399c4edc4 100644
-> --- a/drivers/watchdog/qcom-wdt.c
-> +++ b/drivers/watchdog/qcom-wdt.c
-> @@ -152,6 +152,13 @@ static int qcom_wdt_restart(struct watchdog_device *wdd, unsigned long action,
->  	return 0;
->  }
->  
-> +static int qcom_wdt_is_running(struct watchdog_device *wdd)
-> +{
-> +	struct qcom_wdt *wdt = to_qcom_wdt(wdd);
-> +
-> +	return (readl(wdt_addr(wdt, WDT_EN)) & QCOM_WDT_ENABLE);
-
-Although, you don't need the outer () here.
-
-Regards,
-Bjorn
-
-> +}
-> +
->  static const struct watchdog_ops qcom_wdt_ops = {
->  	.start		= qcom_wdt_start,
->  	.stop		= qcom_wdt_stop,
-> @@ -294,6 +301,17 @@ static int qcom_wdt_probe(struct platform_device *pdev)
->  	wdt->wdd.timeout = min(wdt->wdd.max_timeout, 30U);
->  	watchdog_init_timeout(&wdt->wdd, 0, dev);
->  
-> +	/*
-> +	 * If WDT is already running, call WDT start which
-> +	 * will stop the WDT, set timeouts as bootloader
-> +	 * might use different ones and set running bit
-> +	 * to inform the WDT subsystem to ping the WDT
-> +	 */
-> +	if (qcom_wdt_is_running(&wdt->wdd)) {
-> +		qcom_wdt_start(&wdt->wdd);
-> +		set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
-> +	}
-> +
->  	ret = devm_watchdog_register_device(dev, &wdt->wdd);
->  	if (ret)
->  		return ret;
-> -- 
-> 2.28.0
-> 
