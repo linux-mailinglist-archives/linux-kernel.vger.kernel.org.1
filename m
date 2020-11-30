@@ -2,109 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34242C894F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2EB2C8950
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728808AbgK3QVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:21:06 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:41157 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728777AbgK3QVF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:21:05 -0500
-Received: by mail-io1-f70.google.com with SMTP id w28so7713607iox.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:20:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=C33L09Ngl8k3zC17DaXXjH/m/uESLHGh+7cRNci9HLE=;
-        b=POsbN7yrFh8sJsJj/rk92GzxERCI5DF8KvxFycVnmUVAC5Lu8BRQnJnXi/rwTFGMEW
-         20l3wb2awQkUzEZvXgHJvM8hHQfIeZ8Zp15pnMNpuQEMS5YZ9OH2myXbvyQkXof/k0Re
-         APOwxZkBpzLqjrcU9yHVeyQPiFt136aVyTtO/jS7rphKodIgqp9vuDL1NiKT+KZ2er9j
-         k8qh23OL3lt9z7PAD/qP7rROwH2H6mWrIzKPfIkSN3ON2AxYkElSoU/hqWN/hBH0rZ02
-         x5CjSQiaqnzEXKPxfJC6xPpnhPgJsbU7CsWjmFeqvVJNlszy5w4H4la6gMQ/MdCajQy+
-         vuLw==
-X-Gm-Message-State: AOAM531ZISbuVx8DPO6+3/bLF5Uw/7kx5lYVy4H++J5Guk6hrUKZmCBY
-        H5u3v14XwJXCiVVjIhpOQep0YFP2HjxwGu6tucBk+PgT1IJx
-X-Google-Smtp-Source: ABdhPJxzPxDTZp8ujfJttvjLHOZwW6U4zPHCbQi/fsE21qpMm6s6oTHMhcx2tsrsxUoVADxfENSzCf9PlyX8cpnVGAJFj6GX85DS
+        id S1728817AbgK3QVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:21:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728777AbgK3QVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 11:21:07 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 699C72073C;
+        Mon, 30 Nov 2020 16:20:26 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 11:20:24 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH 2/3] clear_warn_once: bind a timer to written reset
+ value
+Message-ID: <20201130112024.34bcbbd1@gandalf.local.home>
+In-Reply-To: <20201126063029.2030-3-paul.gortmaker@windriver.com>
+References: <20201126063029.2030-1-paul.gortmaker@windriver.com>
+        <20201126063029.2030-3-paul.gortmaker@windriver.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a92:8707:: with SMTP id m7mr18457408ild.217.1606753218317;
- Mon, 30 Nov 2020 08:20:18 -0800 (PST)
-Date:   Mon, 30 Nov 2020 08:20:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d1d6c605b55562ee@google.com>
-Subject: UBSAN: array-index-out-of-bounds in ieee80211_del_key (2)
-From:   syzbot <syzbot+49d4cab497c2142ee170@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, 26 Nov 2020 01:30:28 -0500
+Paul Gortmaker <paul.gortmaker@windriver.com> wrote:
 
-syzbot found the following issue on:
+> +++ b/Documentation/admin-guide/clearing-warn-once.rst
+> @@ -7,3 +7,12 @@ echo 1 > /sys/kernel/debug/clear_warn_once
+>  
+>  clears the state and allows the warnings to print once again.
+>  This can be useful after test suite runs to reproduce problems.
+> +
+> +Values greater than one set a timer for a periodic state reset; e.g.
+> +
+> +echo 3600 > /sys/kernel/debug/clear_warn_once
 
-HEAD commit:    aae5ab85 Merge tag 'riscv-for-linus-5.10-rc6' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1496d353500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cb8d1a3819ba4356
-dashboard link: https://syzkaller.appspot.com/bug?extid=49d4cab497c2142ee170
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1440c58d500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1743351d500000
+I wonder if the value should be in minutes and not seconds, otherwise, a
+wrong value could possibly DoS the machine, if you were to write 2 into it.
+If there were a lot of warnings in high frequency events.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+49d4cab497c2142ee170@syzkaller.appspotmail.com
+Or is dumping out a bunch of warnings every 2 seconds not be a problem?
 
-================================================================================
-UBSAN: array-index-out-of-bounds in net/mac80211/cfg.c:520:10
-index 5 is out of range for type 'ieee80211_key *[4]'
-CPU: 0 PID: 8535 Comm: syz-executor933 Not tainted 5.10.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:356
- ieee80211_del_key+0x3f6/0x440 net/mac80211/cfg.c:520
- rdev_del_key net/wireless/rdev-ops.h:107 [inline]
- nl80211_del_key+0x4b0/0x910 net/wireless/nl80211.c:4292
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x441ff9
-Code: e8 ac 00 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffdb026c968 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000441ff9
-RDX: 0000000000000000 RSI: 0000000020000300 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000002100000000 R09: 0000002100000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000032
-R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
-================================================================================
+Anyway, would there ever be a need to have it cleared in less than 1 minute
+intervals?
+
+-- Steve
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> +
+> +will establish an hourly state reset, effectively turning WARN_ONCE
+> +into a long period rate-limited warning.
