@@ -2,164 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7A72C7FBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCEB2C7FCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727209AbgK3IYs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Nov 2020 03:24:48 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:35853 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbgK3IYs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:24:48 -0500
-Received: from mail-pj1-f71.google.com ([209.85.216.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kjeTd-0006fb-Rx
-        for linux-kernel@vger.kernel.org; Mon, 30 Nov 2020 08:24:06 +0000
-Received: by mail-pj1-f71.google.com with SMTP id x9so1074862pjr.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:24:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=WC2KrYmZEQhS4bYbMRHeasgDxnYze36syp9Jw0G7Zl0=;
-        b=ldK7rQJ5U6yN+Tn1qQbVY6P45yNDZHUtVF1BF1sFasvWufHtpxfUWKfGr458L6RlhK
-         QooioyuQfzFGZZmObWPQ2/OIzNQtK25eIvZSHFTJ38izOIWxEg+D3adacDVZOG+/jwum
-         jUZiw2wPo1m4MMzpWE21zDwCjIm2uS4G6SFg2JwVQbwTf/GiD3mIYvTwxO4sG2QklUIm
-         0vbm7UE/TGkCQDTAWyocZluO6nhpNIITjf+D19Qi9NjR/bzefw2stWGYxOJ0aqxsJWuu
-         QfQhfPloS2wf4gYcoSjzBwS6LSSrYOczdHYqiP35TRl4PiZxFoL/HZCubHjJwWDqY+fv
-         4Lsg==
-X-Gm-Message-State: AOAM531ZJIsHTMDxj7DG2TcwjuN+fJysy3LuBpadAQyEvhXxxPs+TicW
-        O2Oo5JShaDn93UNYy47oZNaXuzcGomkiQW9j9WvIsIkHPeJD1ZcJHsGdS60SVYb1Gl9ROOS423N
-        KlagICCLTzjLq78CENo5ljg2/Hay83KbE7aDa3J+3Sw==
-X-Received: by 2002:a17:90a:14e5:: with SMTP id k92mr24400244pja.169.1606724644260;
-        Mon, 30 Nov 2020 00:24:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzzpiB/Npvx890VnGQHhXB2QM0Ikm4RSl0RFlxwAF94yhlBPWrtFx1sj/qbXacJqNEkN4/TDw==
-X-Received: by 2002:a17:90a:14e5:: with SMTP id k92mr24400219pja.169.1606724643869;
-        Mon, 30 Nov 2020 00:24:03 -0800 (PST)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id y188sm15679637pfy.98.2020.11.30.00.24.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Nov 2020 00:24:03 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH 1/3] thermal: core: Add indication for userspace usage
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
-Date:   Mon, 30 Nov 2020 16:23:59 +0800
-Cc:     Zhang Rui <rui.zhang@intel.com>, amitk@kernel.org,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <860126B8-1152-4EE3-B15E-B4E45EFE879F@canonical.com>
-References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
- <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+        id S1727714AbgK3IZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:25:12 -0500
+Received: from mail-eopbgr30054.outbound.protection.outlook.com ([40.107.3.54]:31839
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727233AbgK3IZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 03:25:09 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P8zH9gqvFZ9YAI15ZF6hZG3HZfRo65nYOx2RHmyt8Oz06qF+D/Tkm1sHIWVl8ZckGAl0zxIjLBR3DYDUuPZ6MJxJuk7xCIOL3pE/EDBeNNn+SC8TOAurwQKwhK+qFt9bFCGgo8hlR0zJPo6FCNH1ICX84KnnI/vgNpwHb4bxfiP7PXGSanqpAcS9t1vTJ5RN2DliFI+y6tMmDzCZBIaKj73+GH75krzKQcAPB7nr8XMSWl4GVWmZk2aZCoBUW6rdwE/2GgNJ7nP/nzBYEsul3502WToKZCUyle++Yssqxybrk/9nzY2uybNSMKHU5OMWX04lfc2+Id8jOqNbltP4DA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S1AilLtKi0jl7PxgV5/ir1LM+8oFHaOH3BUaws+yNrw=;
+ b=hG5imwJW7q/DNnnY/6ZfgKfKzHujT/It17u31s43LD0r5PLZMP/q52zvQnaBh7t7dDphH5IKTGIaK0zvsxOkMM+55kBx5W4hsry6TJyIlW+4PelFem+NbZVOHlYdK6fH9QKUMSm4Abr6wufBQBz4TqhxzYoBQXCNgZZw4sg325Yb+Unu0L/wNxwVFS9hD85vRIZRxTI+8oZEGBZ1wyobx0R+8S/MRx9Q0waheAZ6PQlvuPRGj5F+0u5ys/WlQsh/rHyMVn5rN22kW8qTOrVJOEigW3mmM65yujvMDkNYT7Jfi694q85+jrQTV3Mx/85g90wiNKE5eLg9f5yMzadeeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S1AilLtKi0jl7PxgV5/ir1LM+8oFHaOH3BUaws+yNrw=;
+ b=qSnbhkv3hc3ncmQVu1+H3aUfE54BwN7AB/xmrCIgh5qt1Q4yxw6hT/ktBna/Es0sLNXfPOYbdSS+uD4Z4U3R2X5mJOCAmgedQ08BnWn9FufbWUsrLGwX18Q62TRM/bo8rgSyBLtiPtmNfv+lqIfgrF113xIFMHRMsKrl2iieQak=
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com (2603:10a6:4:33::14)
+ by DB7PR04MB4444.eurprd04.prod.outlook.com (2603:10a6:5:34::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 30 Nov
+ 2020 08:24:17 +0000
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::f0c9:fd48:c8d1:5c22]) by DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::f0c9:fd48:c8d1:5c22%11]) with mapi id 15.20.3611.025; Mon, 30 Nov
+ 2020 08:24:17 +0000
+From:   Biwen Li <biwen.li@nxp.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
+CC:     "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        Leo Li <leoyang.li@nxp.com>, "Z.q. Hou" <zhiqiang.hou@nxp.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiafei Pan <jiafei.pan@nxp.com>,
+        Xiaobo Xie <xiaobo.xie@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [EXT] Re: [v3 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A
+ external interrupt
+Thread-Topic: [EXT] Re: [v3 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A
+ external interrupt
+Thread-Index: AQHWxsgYpP6sSSK1iEmWgP/gNfOyMqngVbYAgAAAcXA=
+Date:   Mon, 30 Nov 2020 08:24:17 +0000
+Message-ID: <DB6PR0401MB2438A99130A339416F2BC9038FF50@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+References: <20201130033055.38462-1-biwen.li@oss.nxp.com>
+ <1271261ba2ad021041e0ba331c96a2d7@kernel.org>
+In-Reply-To: <1271261ba2ad021041e0ba331c96a2d7@kernel.org>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 688ec9a3-8e54-4856-611a-08d895095466
+x-ms-traffictypediagnostic: DB7PR04MB4444:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB4444C4AA1C1BAED961DDA1628FF50@DB7PR04MB4444.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:64;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EdZwPLWIsr2/e7M/xWLAV5zfTjoWwXfjJoQeHn8KTY5HeT0VreCSKopogHkH75ed1GZlD0Z9GHAiCON9f4zeAOR7y84qXq0vJDKBsCf6tY5B73l4yB6OXku9TDVm/gDWsaFXd8jyCO0ShukFfhaFfIOC4b4mLRRrmucL8I3DOwsgf+0KKR4tRz233wI3DPpszKwK4ISmuMu7zqCvklyuQsO8ebVdsPezqfX+CUgdtQiHmtzdDjd35NYDK92Q7HuxVruDpq5BUz5xo4ufe8BsrLiemp6upgkhMACP36ewc35pJYvz7WUHPsxfgjlzcF0NoaMS7hheJH/ual6WrI7t/w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0401MB2438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(39860400002)(346002)(376002)(64756008)(316002)(7696005)(44832011)(33656002)(2906002)(110136005)(83380400001)(5660300002)(54906003)(53546011)(4001150100001)(8676002)(52536014)(71200400001)(8936002)(55016002)(6506007)(26005)(9686003)(76116006)(478600001)(66946007)(66556008)(86362001)(186003)(66476007)(4326008)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?I/kFgCtfkCuhBdOahHjs7/JN7IbZCCS0h1IiHOV0GICXrjv5YeH8+aRIFQe/?=
+ =?us-ascii?Q?1FsJTtWs0Ayww+f8KTaSQjc37SuRYkg2cl6BcuOtOg2o6ihcoVaa2JFeRuwv?=
+ =?us-ascii?Q?FlUQZpxzA4psJ6ISwAUA0XZ8m7Cdrh7DIXpLWGPQYOotYQ09eiX0RkgiUsOk?=
+ =?us-ascii?Q?9RxhfFcPjOVTKU5vxqX/NHqm8ThKxN+C9sF5ms+BCt3lhXAi6iWcE2FeTt7b?=
+ =?us-ascii?Q?lWlajA4jJwW+2cBuUlKW2WWED5gPw01AJ0HiwnttYVBlqiL4aBy1/NcnamOt?=
+ =?us-ascii?Q?IvDCF5qr9kol82bZK/i4Nt+f6g30FbssQxEhG9nZxgDdB/bE1Fqo5DBpv8gu?=
+ =?us-ascii?Q?oARU8r3fWlEECA+QrUjmRYCbTm8kNmeN4QDWnmCAuLHLElrlYLvJaT23RoDe?=
+ =?us-ascii?Q?J83qOwhbFaX2MAG5qtgFqHJOX2OD7iydtxMFBzVlTsz66BampQIlFoH+mO3s?=
+ =?us-ascii?Q?iPyhFL/vke/ap7a/b62MoekUzWymdcDNawiGEB7g9HkAYwI0D7L/L7vKxRri?=
+ =?us-ascii?Q?7jqH8tBo9NTpBCFvXVPvvZCmQah/PkSpQG3PwAD4ayzrBP71Jg6eeqFFcjth?=
+ =?us-ascii?Q?o0M3CICFFBViZjOlgQ+iPo/YdVb0C4EIqUrhhqQ32vvLlUCcfOOrzclGJLpy?=
+ =?us-ascii?Q?0U5a3X96NlX/uCdMc1Oyt2B/E9s5DiZDU5dv5wvCjRZuB0gGHwHY8FgfSxTa?=
+ =?us-ascii?Q?EQATL86O6ZLukBxlWSwCGPqgKP/C4mOgy3TRypgYD4Unbbf569ns/sKfChCJ?=
+ =?us-ascii?Q?D2CrkJ59Z69rcXbhfSjhyoUeObijgvJ7UnAFnL3pE6EopbFsThN1HDyDsmxP?=
+ =?us-ascii?Q?c/0V6N7oducsxF9KHEGCf1Em/oeEOQicN2wzv2W2SL+dG94Ac/5uRf6Cf7YL?=
+ =?us-ascii?Q?dbKo6txZ/aubzuEQMj+72EgtKV5QT6+U2dUJmhvvRYeFwV+Fs0XHV/oRAU0C?=
+ =?us-ascii?Q?syhsShu6Mq4bYb0KHoLebLSmtGUQ7ltHeObF+RU9/6w=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0401MB2438.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 688ec9a3-8e54-4856-611a-08d895095466
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2020 08:24:17.3706
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Hmj1rd7m7zwpdxoR/LkvKTIuNcr4ZQKArSRc7q3dAQDU5CjcQ/WJp4Ne7g+KGxZiTSEab6SfZgoZVHBqZMOu3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4444
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Nov 30, 2020, at 15:57, Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
-> 
-> 
-> [Added Srinivas]
-> 
-> On 28/11/2020 18:54, Kai-Heng Feng wrote:
->> We are seeing thermal shutdown on Intel based mobile workstations, the
->> shutdown happens during the first trip handle in
->> thermal_zone_device_register():
->> kernel: thermal thermal_zone15: critical temperature reached (101 C), shutting down
->> 
->> However, we shouldn't do a thermal shutdown here, since
->> 1) We may want to use a dedicated daemon, Intel's thermald in this case,
->> to handle thermal shutdown.
->> 
->> 2) For ACPI based system, _CRT doesn't mean shutdown unless it's inside
->> ThermalZone. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
->> "... If this object it present under a device, the device’s driver
->> evaluates this object to determine the device’s critical cooling
->> temperature trip point. This value may then be used by the device’s
->> driver to program an internal device temperature sensor trip point."
->> 
->> So a "critical trip" here merely means we should take a more aggressive
->> cooling method.
-> 
-> Well, actually it is stated before:
-> 
-> "This object, when defined under a thermal zone, returns the critical
-> temperature at which OSPM must shutdown the system".
-
-This means specifically for the ACPI ThermalZone in AML, e.g.:
-
-ThermalZone (TZ0) {
-....
-    Method(_CRT) { ... }
- } // end of TZ0
-
-However the device is not under any ACPI ThermalZone.
-
-> 
-> That is what does the thermal subsystem, no ?
-> 
->> So add an indication to let thermal core know it should leave thermal
->> device to userspace to handle.
-> 
-> You may want to check the 'HOT' trip point and then use the notification
-> mechanism to get notified in userspace and take action from there (eg.
-> offline some CPUs).
-
-For this particular issue we are facing, the thermal shutdown happens in thermal_zone_device_register() and userspace isn't up yet.
-
-Kai-Heng
-
-> 
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->> ---
->> drivers/thermal/thermal_core.c | 3 +++
->> include/linux/thermal.h        | 2 ++
->> 2 files changed, 5 insertions(+)
->> 
->> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
->> index c6d74bc1c90b..6561e3767529 100644
->> --- a/drivers/thermal/thermal_core.c
->> +++ b/drivers/thermal/thermal_core.c
->> @@ -1477,6 +1477,9 @@ thermal_zone_device_register(const char *type, int trips, int mask,
->> 			goto unregister;
->> 	}
->> 
->> +	if (tz->tzp && tz->tzp->userspace)
->> +		thermal_zone_device_disable(tz);
->> +
->> 	mutex_lock(&thermal_list_lock);
->> 	list_add_tail(&tz->node, &thermal_tz_list);
->> 	mutex_unlock(&thermal_list_lock);
->> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
->> index d07ea27e72a9..e8e8fac78fc8 100644
->> --- a/include/linux/thermal.h
->> +++ b/include/linux/thermal.h
->> @@ -247,6 +247,8 @@ struct thermal_zone_params {
->> 	 */
->> 	bool no_hwmon;
->> 
->> +	bool userspace;
->> +
->> 	int num_tbps;	/* Number of tbp entries */
->> 	struct thermal_bind_params *tbp;
->> 
->> 
-> 
-> 
-> -- 
-> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-> 
-> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-> <http://twitter.com/#!/linaroorg> Twitter |
-> <http://www.linaro.org/linaro-blog/> Blog
-
+>=20
+> On 2020-11-30 03:30, Biwen Li wrote:
+> > From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> >
+> > Add an new IRQ chip declaration for LS1043A and LS1088A
+> > - compatible "fsl,ls1043a-extirq" for LS1043A, LS1046A.
+> > - compatible "fsl,ls1088a-extirq" for LS1088A, LS208xA, LX216xA
+> >
+> > Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> > Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> > ---
+> > Change in v3:
+> >       - cleanup code
+> >       - remove robust copyright
+> >
+> > Change in v2:
+> >       - add despcription of bit reverse
+> >       - update copyright
+> >
+> >  drivers/irqchip/irq-ls-extirq.c | 17 +++++++----------
+> >  1 file changed, 7 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/irqchip/irq-ls-extirq.c
+> > b/drivers/irqchip/irq-ls-extirq.c index 4d1179fed77c..47804ce78b21
+> > 100644
+> > --- a/drivers/irqchip/irq-ls-extirq.c
+> > +++ b/drivers/irqchip/irq-ls-extirq.c
+> > @@ -18,7 +18,7 @@
+> >  struct ls_extirq_data {
+> >       struct regmap           *syscon;
+> >       u32                     intpcr;
+> > -     bool                    bit_reverse;
+> > +     bool                    is_ls1021a_or_ls1043a;
+> >       u32                     nirq;
+> >       struct irq_fwspec       map[MAXIRQ];
+> >  };
+> > @@ -30,7 +30,7 @@ ls_extirq_set_type(struct irq_data *data, unsigned
+> > int type)
+> >       irq_hw_number_t hwirq =3D data->hwirq;
+> >       u32 value, mask;
+> >
+> > -     if (priv->bit_reverse)
+> > +     if (priv->is_ls1021a_or_ls1043a)
+> >               mask =3D 1U << (31 - hwirq);
+> >       else
+> >               mask =3D 1U << hwirq;
+> > @@ -174,14 +174,9 @@ ls_extirq_of_init(struct device_node *node,
+> > struct device_node *parent)
+> >       if (ret)
+> >               goto out;
+> >
+> > -     if (of_device_is_compatible(node, "fsl,ls1021a-extirq")) {
+> > -             u32 revcr;
+> > -
+> > -             ret =3D regmap_read(priv->syscon, LS1021A_SCFGREVCR,
+> &revcr);
+> > -             if (ret)
+> > -                     goto out;
+> > -             priv->bit_reverse =3D (revcr !=3D 0);
+> > -     }
+>=20
+> This isn't explained in the commit message. You are changing the way you =
+infer
+> some properties, and that's not innocent. Please describe all important c=
+hanges
+> in the commit message.
+Sure, will update commit message for this.
+>=20
+> > +     if (of_device_is_compatible(node, "fsl,ls1021a-extirq") || \
+>=20
+> Spurious trailing \?
+Don't need it, will remove it in v4.
+>=20
+> > +         of_device_is_compatible(node, "fsl,ls1043a-extirq"))
+> > +             priv->is_ls1021a_or_ls1043a =3D true;
+>=20
+> Which is better written as:
+>=20
+>          priv->is_ls1021a_or_ls1043a =3D (of_device_is_compatible(node,
+> "fsl,ls1021a-extirq") ||
+>=20
+> of_device_is_compatible(node, "fsl,ls1043a-extirq"));
+Sure, np. Will update it in v4.
+> >
+> >       domain =3D irq_domain_add_hierarchy(parent_domain, 0, priv->nirq,
+> node,
+> >                                         &extirq_domain_ops, priv);
+> @@
+> > -195,3 +190,5 @@ ls_extirq_of_init(struct device_node *node, struct
+> > device_node *parent)  }
+> >
+> >  IRQCHIP_DECLARE(ls1021a_extirq, "fsl,ls1021a-extirq",
+> > ls_extirq_of_init);
+> > +IRQCHIP_DECLARE(ls1043a_extirq, "fsl,ls1043a-extirq",
+> > ls_extirq_of_init);
+> > +IRQCHIP_DECLARE(ls1088a_extirq, "fsl,ls1088a-extirq",
+> > ls_extirq_of_init);
+>=20
+> Thanks,
+>=20
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
