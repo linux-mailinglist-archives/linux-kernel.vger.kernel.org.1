@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FD32C8B54
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BDAF2C8B60
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729374AbgK3RiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:38:07 -0500
-Received: from mga11.intel.com ([192.55.52.93]:41459 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729024AbgK3RiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:38:06 -0500
-IronPort-SDR: 3N4Qei0+GVdttbD0qsAwD9sdqU8JUMD/lbpF7cPm5fkjtEIdpuICTJL2szpibwzrr5yGdhqBzn
- 0HsgFB7NBSig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="169178662"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="169178662"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:36:25 -0800
-IronPort-SDR: S5RgzSOMvj9lyrQk4xZKqFlumiDi74YvoddutW32Dw2orZsbyJH1/OwL7wgjxINs7HXrlfp5wL
- W5MJwW1Mw6EQ==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="334738822"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:36:18 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kjn70-00B63R-Bw; Mon, 30 Nov 2020 19:37:18 +0200
-Date:   Mon, 30 Nov 2020 19:37:18 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 04/18] software_node: Enforce parent before child
- ordering of nodes array for software_node_register_nodes()
-Message-ID: <20201130173718.GP4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-5-djrscally@gmail.com>
- <20201130173530.GO4077@smile.fi.intel.com>
+        id S1729405AbgK3Ri3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:38:29 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:39596 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbgK3Ri2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:38:28 -0500
+Received: by mail-io1-f67.google.com with SMTP id j23so12624409iog.6;
+        Mon, 30 Nov 2020 09:38:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EbxO5evUKiSM0aVpZ7264LVzqvIYud6EcfSFwKJe+00=;
+        b=S5F/COts7B7BEtmUHgwCJxIt4a+c3mtXDVfKybVnRE9Xl+YQP5Fm3f5+nZB38/p0AK
+         QFOVkUPAU0A9ZwTnKDUS7JC8RjtyC/c86mIQngS3E1xpQ5k0Pp2Low9A8MQ+CKPgb6mm
+         euEE9tq34oMu9dFPBvxaQ35siXN+ikS+J8h6N2Ft1C+3rHmz0CQcn0itbcHRuTQuwx1X
+         yRr9tG1Di6VqarfHApYbgkYvaPq1NycRqLOO0wbA+5GsBV04snjnpnGgm3NXokZYxl39
+         UBCcZk6PeJtgo0QsAkM+lkDwvqUqaHjmMvxfH5jp6u26lOL+bvyo1vAN1lG5tH8qNvn8
+         PLow==
+X-Gm-Message-State: AOAM533jQ091vd9LX5ntXVC7o44WM69S/i3r0dGsocjOhhPneeF6oizS
+        8S5qt5zSLTwKQO1N8xcgAg==
+X-Google-Smtp-Source: ABdhPJxvNJsc+yBF/qkTCdkG0iTv3fy8ib/WXMjqHGbHr52Gef3w5tVyMdoRREpVDkBtg7GqqxpG4A==
+X-Received: by 2002:a5e:d80f:: with SMTP id l15mr17359037iok.21.1606757867424;
+        Mon, 30 Nov 2020 09:37:47 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id r4sm4953747iop.24.2020.11.30.09.37.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 09:37:46 -0800 (PST)
+Received: (nullmailer pid 2685741 invoked by uid 1000);
+        Mon, 30 Nov 2020 17:37:44 -0000
+Date:   Mon, 30 Nov 2020 10:37:44 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     devicetree@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: input: Add Dell Wyse 3020 Power
+ Button binding
+Message-ID: <20201130173744.GA2684526@robh.at.kernel.org>
+References: <20201129142145.1526022-1-lkundrak@v3.sk>
+ <20201129142145.1526022-2-lkundrak@v3.sk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201130173530.GO4077@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201129142145.1526022-2-lkundrak@v3.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 07:35:30PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 30, 2020 at 01:31:15PM +0000, Daniel Scally wrote:
-
-...
-
-> >  	for (i = 0; nodes[i].name; i++) {
-> > +		if (nodes[i].parent)
-> > +			if (!software_node_to_swnode(nodes[i].parent)) {
-> > +				ret = -EINVAL;
-> > +				goto err_unregister_nodes;
-> > +			}
-> > +
+On Sun, 29 Nov 2020 15:21:44 +0100, Lubomir Rintel wrote:
+> Add binding document for the Dell Wyse 3020 a.k.a. "Ariel" Power Button.
 > 
-> Besides that can we pack these conditionals together?
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > 
-> 		if (nodes[i].parent && !software_node_to_swnode(nodes[i].parent)) {
+> ---
+> Changes since v1:
+> - Collect Rob's R-b
+> 
+>  .../bindings/input/ariel-pwrbutton.yaml       | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/ariel-pwrbutton.yaml
+> 
 
-For being it shorter you may use temporary variable:
 
-		software_node *parent;
+My bot found errors running 'make dt_binding_check' on your patch:
 
-		parent = nodes[i].parent;
-		if (parent && !software_node_to_swnode(parent)) {
+yamllint warnings/errors:
 
--- 
-With Best Regards,
-Andy Shevchenko
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/ariel-pwrbutton.yaml: 'oneOf' conditional failed, one must be fixed:
+	'unevaluatedProperties' is a required property
+	'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/ariel-pwrbutton.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/input/ariel-pwrbutton.yaml
 
+
+See https://patchwork.ozlabs.org/patch/1407831
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
