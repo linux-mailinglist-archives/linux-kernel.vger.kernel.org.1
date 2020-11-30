@@ -2,76 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC51C2C80E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4B82C80E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgK3JXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:23:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        id S1728039AbgK3JXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:23:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726412AbgK3JXf (ORCPT
+        with ESMTP id S1727714AbgK3JXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:23:35 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F01C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:22:55 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id t18so6171856plo.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:22:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fTOXN4nxw5TCY//Kufrm2+0NCBKye5gOZMTx2MWbE3Q=;
-        b=kPDmDSvmOe1LUwMD057KVz880ZgDeHJqCPM+G3bTMa8feuuA3nShhW6zQkYUBhYeZX
-         JuWHwxsm2Bwrn065rczlppAgg4Oms3tqEz/6al/htP+AFGlnbkjqbJhX4rjWDUeyxhcp
-         HXaaNBKNpPKAcbYU0rIXRX3aRS4DsoXuyUnHtPUyE3CfhSebYId3GOqTYMEJ+CT2e4M2
-         2vrDM0NLwchQ+fz4BlrlSqCTwCW/mhTPqn0SpViKwj8E+PkRNiI9QRUAW11KeUITR6dU
-         rIEH79WOr+gZhEv/KUGH82XYJ3yz1s6zf/Nk8y1B7srfv6On72ePR0Qn4zpQJKECuY+l
-         ly0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fTOXN4nxw5TCY//Kufrm2+0NCBKye5gOZMTx2MWbE3Q=;
-        b=NDRE5jTarjD+q1qjCeCcrOxqNxRdRb5qEW0R5+1lln6Q22SbkecJlUYdE3IVOljQMz
-         YAHwaw9ATH88Q8JHGdwmvK2/aEPbS6JAfq9p6Hey4njH9NZZwL0bXf/owin4KTXkvePW
-         LPYpgmOUzHzn/NUfbe8FngyHSxLCaIbV5vRMyQuy6XDO+0hLC0xTifyvN/yAEZocGV2R
-         cHX2uDYnA87if7dR5g1BPH7qhA6/MwfmbB31/hLOK+z51HM0akqnCmodniOxcWI8luo3
-         L11ijCcK4yiNtWM5Kz53YpzW1lpHQLedZXnuCJDSNc6ChhdUrl6Q7yUAAQ8HZPzcllPP
-         fh5Q==
-X-Gm-Message-State: AOAM5335jOTnHMsWa8LR8jxUZokZlCpo9XBLDpho84HgV6uHybZanyYl
-        HpUCLt1/EMkNof2nL+ebunH8Pg==
-X-Google-Smtp-Source: ABdhPJxy4D6dNwwXsBZTU0pXZ8cZvZC5SlymPK1fx4G/w4qYP/g6IOG4OO5q+O+OSYXBpLuJN6n7fg==
-X-Received: by 2002:a17:90b:a17:: with SMTP id gg23mr7649257pjb.129.1606728175106;
-        Mon, 30 Nov 2020 01:22:55 -0800 (PST)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id t9sm16046133pfq.39.2020.11.30.01.22.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 30 Nov 2020 01:22:54 -0800 (PST)
-Date:   Mon, 30 Nov 2020 17:22:48 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Mon, 30 Nov 2020 04:23:41 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A940EC0613D4;
+        Mon, 30 Nov 2020 01:23:01 -0800 (PST)
+Date:   Mon, 30 Nov 2020 09:22:57 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606728178;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVySK87KiEC5eQir1K/CIAWTPMBHfuQx2J3VlxQ5xpo=;
+        b=N7V0ynWLF1lpzs48TBA1jZIcAO6UxL+uCYvNm3SCfhNRh+d4vFgh1ml8PLvucoy1SuvDBJ
+        NCguiAQhXL2LjxyHBwxeL7YoIr1iE5utW/QC45HkS8esWw2QoAEsthP62NpC06HV4mNgne
+        Wh1+cQVLWEsoOpIGbK+govfNICfEJPTU2FynqXrmbA86JFxbNshm7kIIpSee5p8bsrUiKf
+        qEHzcwZoc6vIVa7V5MsIKkKVbT3XFeVAaKEGo9Jg41OX5AVAvNGLnuDjFGOM2q1ehD/wKr
+        QgtvUVha/W6EyMWFtBD+M4haacv5w8tvMS7gEgJX343Lju2jpOzVslE79n0wfg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606728178;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVySK87KiEC5eQir1K/CIAWTPMBHfuQx2J3VlxQ5xpo=;
+        b=saencdVHn1dhaLsV1VBtkYI8zux4S3XF5VATK4f/fT6tn4se9n6rptN+t0nfxq/ohibUIb
+        oqztkq9TSEG4NjDQ==
+From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] MAINTAINERS: Move Jason Cooper to CREDITS
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: c630: Define eDP bridge and panel
-Message-ID: <20201130092247.GA4245@dragon>
-References: <20201128034231.89750-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20201128103707.332874-1-maz@kernel.org>
+References: <20201128103707.332874-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201128034231.89750-1-bjorn.andersson@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-ID: <160672817751.3364.7459472481507223428.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 09:42:31PM -0600, Bjorn Andersson wrote:
-> The Lenovo Yoga C630 drives the Boe NV133FHM-N61 eDP display from DSI
-> using a TI SN65DSI86 bridge chip on I2C 10. Define the bridge and eDP
-> panel and enable the display blocks.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+The following commit has been merged into the irq/urgent branch of tip:
 
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Commit-ID:     509920aee72ae23235615a009c5148cdb38794c3
+Gitweb:        https://git.kernel.org/tip/509920aee72ae23235615a009c5148cdb38794c3
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Sat, 28 Nov 2020 10:37:07 
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 30 Nov 2020 10:20:34 +01:00
+
+MAINTAINERS: Move Jason Cooper to CREDITS
+
+Jason's email address has now been bouncing for weeks, and no
+reply was received when trying to reach out on other addresses.
+
+We really hope he is OK. But until we hear of his whereabouts,
+let's move him to the CREDITS file so that people stop Cc-ing
+him.
+
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Acked-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20201128103707.332874-1-maz@kernel.org
+
+---
+ CREDITS     | 5 +++++
+ MAINTAINERS | 4 ----
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/CREDITS b/CREDITS
+index 7483019..e88d1a7 100644
+--- a/CREDITS
++++ b/CREDITS
+@@ -740,6 +740,11 @@ S: (ask for current address)
+ S: Portland, Oregon
+ S: USA
+ 
++N: Jason Cooper
++D: ARM/Marvell SOC co-maintainer
++D: irqchip co-maintainer
++D: MVEBU PCI DRIVER co-maintainer
++
+ N: Robin Cornelius
+ E: robincornelius@users.sourceforge.net
+ D: Ralink rt2x00 WLAN driver
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2daa6ee..4f27f43 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2014,7 +2014,6 @@ M:	Philipp Zabel <philipp.zabel@gmail.com>
+ S:	Maintained
+ 
+ ARM/Marvell Dove/MV78xx0/Orion SOC support
+-M:	Jason Cooper <jason@lakedaemon.net>
+ M:	Andrew Lunn <andrew@lunn.ch>
+ M:	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+ M:	Gregory Clement <gregory.clement@bootlin.com>
+@@ -2031,7 +2030,6 @@ F:	arch/arm/plat-orion/
+ F:	drivers/soc/dove/
+ 
+ ARM/Marvell Kirkwood and Armada 370, 375, 38x, 39x, XP, 3700, 7K/8K, CN9130 SOC support
+-M:	Jason Cooper <jason@lakedaemon.net>
+ M:	Andrew Lunn <andrew@lunn.ch>
+ M:	Gregory Clement <gregory.clement@bootlin.com>
+ M:	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+@@ -9248,7 +9246,6 @@ F:	kernel/irq/
+ 
+ IRQCHIP DRIVERS
+ M:	Thomas Gleixner <tglx@linutronix.de>
+-M:	Jason Cooper <jason@lakedaemon.net>
+ M:	Marc Zyngier <maz@kernel.org>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+@@ -13394,7 +13391,6 @@ F:	drivers/pci/controller/mobiveil/pcie-mobiveil*
+ 
+ PCI DRIVER FOR MVEBU (Marvell Armada 370 and Armada XP SOC support)
+ M:	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+-M:	Jason Cooper <jason@lakedaemon.net>
+ L:	linux-pci@vger.kernel.org
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
