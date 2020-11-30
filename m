@@ -2,74 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434232C80FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A996E2C80FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgK3J10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgK3J10 (ORCPT
+        id S1727998AbgK3J2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:28:09 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:47478 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgK3J2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:27:26 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0EAC0613D2;
-        Mon, 30 Nov 2020 01:26:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aCfkGM0vlzXViK81UTEMgfauupgXmRJw3cav7RA9s0E=; b=gPDAemu81O47vOcuWY7I29THXg
-        nt+YeRVZDtqqPty2L/qNFCh1BXnXk3Dv7qDJwyEEgVb4dK0GxUXPgcAl8NI/6mp9emA9xbKp47l9S
-        Z7Ta23ItKhhlkoOviUnMz2mSEMonmx4Oqc4mal+jvAyXLWU0+aVTvGDOmelPJgvI+OD1anH7/HsfL
-        DJWmoiB7pzkyBM45X1RNHYTOPY0QzuSQ2cnM37FR83FpEC9FGwdnNBjiK+sYJ2YlUd9Y5wulyKbiZ
-        tXMZ4bNYyY91+m9jhDQwd8fysDaCrorLLb/VGndWhaXGf6ND5jk9XmBHpvJkAGSbmr7ow1twPDl/m
-        ypseg8Sw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kjfS3-00085i-54; Mon, 30 Nov 2020 09:26:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 78D48301179;
-        Mon, 30 Nov 2020 10:26:28 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5AE9B2B2690EC; Mon, 30 Nov 2020 10:26:28 +0100 (CET)
-Date:   Mon, 30 Nov 2020 10:26:28 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
-Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb
- option
-Message-ID: <20201130092628.GL2414@hirez.programming.kicks-ass.net>
-References: <20201128160141.1003903-1-npiggin@gmail.com>
- <20201128160141.1003903-7-npiggin@gmail.com>
- <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com>
+        Mon, 30 Nov 2020 04:28:08 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606728446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UflFX9lPkyfMGeR8pF9iqkI1gz6FB4j+LgH3VAqeSec=;
+        b=WDu9AhUGqZPleSmSCRFzGGDAWQJnWvY15MbmZCkO7uPYYMDqSizArnb5oT7DEYP472UeMG
+        lmE9yNI79k0V0pXXYNSK3IXSVv4O3U78IYCitcsG5p1C9UiHlr+ncj/cGRL05qwCGkwlmS
+        9Vnp92XDcIveIsSzLAoV/DGWSilf+hR5V7f/gKx49x1MchH7coLG9+/DT4Fm25qHRliyFG
+        o1GY2Ti/SP0cjbU8gYrzAFza8p/zV2LwR/+xU5FGkVrmoFrmTcVNspEUjaCuUBlfW9bM6x
+        m7uI/gEdmqoN4dMhbsNp0xwoU/L9/bfXpadfImczN2FsRr3r2VdOjC4Y65oe9Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606728446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UflFX9lPkyfMGeR8pF9iqkI1gz6FB4j+LgH3VAqeSec=;
+        b=t5zceugKengLO3VIRmaEu658R8cBf+gUGJ4OYVcpIUzJWATRIOMwo4vub6PU3/j/QNcuSF
+        Xql48eve/hpHZLAA==
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the tip tree
+In-Reply-To: <20201127115411.GF4077@smile.fi.intel.com>
+References: <20201127183924.36696fb0@canb.auug.org.au> <20201127115411.GF4077@smile.fi.intel.com>
+Date:   Mon, 30 Nov 2020 10:27:26 +0100
+Message-ID: <87v9dni48x.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 07:54:57PM -0800, Andy Lutomirski wrote:
-> Version (b) seems fairly straightforward to implement -- add RCU
-> protection and a atomic_t special_ref_cleared (initially 0) to struct
-> mm_struct itself.  After anyone clears a bit to mm_cpumask (which is
-> already a barrier),
+On Fri, Nov 27 2020 at 13:54, Andy Shevchenko wrote:
+>> I fixed it up (see below) and can carry the fix as necessary. This
+>> is now fixed as far as linux-next is concerned, but any non trivial
+>> conflicts should be mentioned to your upstream maintainer when your tree
+>> is submitted for merging.  You may also want to consider cooperating
+>> with the maintainer of the conflicting tree to minimise any particularly
+>> complex conflicts.
+>
+> Thanks, from my perspective looks good, dunno if scheduler part is okay.
 
-No it isn't. clear_bit() implies no barrier what so ever. That's x86
-you're thinking about.
+The final outcome in -next looks correct.
 
-> they read mm_users.  If it's zero, then they scan
-> mm_cpumask and see if it's empty.  If it is, they atomically swap
-> special_ref_cleared to 1.  If it was zero before the swap, they do
-> mmdrop().  I can imagine some tweaks that could make this a big
-> faster, at least in the limit of a huge number of CPUs.
+Thanks,
+
+        tglx
