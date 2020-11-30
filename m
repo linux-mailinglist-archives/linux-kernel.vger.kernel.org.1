@@ -2,97 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58F42C7C29
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 01:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9501C2C7C2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 01:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgK3Az2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 19:55:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48594 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726304AbgK3Az2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 19:55:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 73200AC75;
-        Mon, 30 Nov 2020 00:54:46 +0000 (UTC)
-Subject: Re: [PATCH v2 18/18] MAINTAINERS: Add linux-actions ML for Actions
- Semi Arch
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <5845b7a323c65adaa1566c3bee68b5ca1f1bb17e.1605823502.git.cristian.ciocaltea@gmail.com>
- <20201128074350.GE3077@thinkpad> <20201129194824.GC748744@BV030612LT>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Message-ID: <fed29816-561a-7187-302f-09ab37beddca@suse.de>
-Date:   Mon, 30 Nov 2020 01:54:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1727158AbgK3A4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 19:56:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726755AbgK3A4t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 19:56:49 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD280C0613CF;
+        Sun, 29 Nov 2020 16:56:08 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ckmxx258Wz9s0b;
+        Mon, 30 Nov 2020 11:56:05 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606697765;
+        bh=36ET3LSHNwDNcj7GEXWe+H5SbuHJV6aJ/T7X7PISdg8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jok88u3nl97PK1qaTom9+Tr7uuexfA06qJrGKleZzj8IdiO00pyjGBb2vyc3n8Yci
+         /FOSrtL6IlQe4D0OFoPEf102yyqh9s6Y4EXIJMI2bxltsxVt7/XuYfzC0e6YHfgZSn
+         irHNO7r3bs1T0/cOnXc9ZmiRdPC7XNYbXUm8Njt2NzDECCAPDkfXMZ0z+yVZqlxOm/
+         7y0mDt3HYcXdBXioc7sPlCBWpOEF2ufW898HGYYS34BebsNggKyt+FcF/nJnbuY5FU
+         BleEmELthuAXpkytNHC59/dEXFi9a4KvftXfOZExJ/UNHbLNS40/4EWXzQpyE/jy+d
+         36PYvIPqd4y7Q==
+Date:   Mon, 30 Nov 2020 11:56:03 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Paul Barker <pbarker@konsulko.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the hwmon-staging tree
+Message-ID: <20201130115603.48e91a19@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201129194824.GC748744@BV030612LT>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/ASlRxEQNmSMbvpUsBEAbTvS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.11.20 20:48, Cristian Ciocaltea wrote:
-> On Sat, Nov 28, 2020 at 01:13:50PM +0530, Manivannan Sadhasivam wrote:
->> On Fri, Nov 20, 2020 at 01:56:12AM +0200, Cristian Ciocaltea wrote:
->>> Add the linux-actions mailing list for the Actions Semi architecture.
->>>
->>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
->>
->> There was a patch from me for this change but I don't mind taking yours
->> as long as we keep the list updated :)
-> 
-> Sorry about that, I often forget to manually append this mailing list
-> before submitting related patches and therefore I considered this is
-> a good opportunity to have this issue fixed once and for all.. :)
-> 
->> I have just one comment below, with that fixed:
->>
->> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->>
->>> ---
->>>  MAINTAINERS | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index a85c1881cf07..8428aba52581 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -1497,6 +1497,7 @@ ARM/ACTIONS SEMI ARCHITECTURE
->>>  M:	Andreas Färber <afaerber@suse.de>
->>>  M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->>>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>
->> No need to keep the generic list, please remove.
+--Sig_/ASlRxEQNmSMbvpUsBEAbTvS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Why? They're not mutually exclusive.
+Hi all,
 
-Regards,
-Andreas
+After merging the hwmon-staging tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
-> 
-> Done, thanks!
-> 
->> Thanks,
->> Mani
->>
->>> +L:	linux-actions@lists.infradead.org (moderated for non-subscribers)
->>>  S:	Maintained
->>>  F:	Documentation/devicetree/bindings/arm/actions.yaml
->>>  F:	Documentation/devicetree/bindings/clock/actions,owl-cmu.txt
->>> -- 
->>> 2.29.2
->>>
+drivers/hwmon/pwm-fan.c: In function 'pwm_fan_is_visible':
+drivers/hwmon/pwm-fan.c:167:22: warning: unused variable 'ctx' [-Wunused-va=
+riable]
+  167 |  struct pwm_fan_ctx *ctx =3D (struct pwm_fan_ctx *)data;
+      |                      ^~~
 
+Introduced by commit
 
--- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+  439ed83acc19 ("hwmon: (pwm-fan) Convert to hwmon_device_register_with_inf=
+o API")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ASlRxEQNmSMbvpUsBEAbTvS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/EQyMACgkQAVBC80lX
+0GyzTwf/dizWLUoSMPAOiU1rousOP2XzIQzybegIrFncWJk+DLZ+evvokYf/F/dB
+DeBLtfcazNS4Fd1IOT32QMMjT6wAVPtFdvBcLNRIX22NF8Kqh7DuTos8XhWh6Vho
+NH0pxWJMCMpI1NxM8F5X8mHvJabPOAnWtx6nygsy/5h/XvfjhbxXatExQqiNpEFb
+stCGRJogaejetcoeOBk9vX/fApRihC8rHL2vVrP4frvUtyfpBH6plDChUno0//ll
+1HCmOEW1wPyjnHQI242k0lMSpZezVPG89hR+KAuQ8tLsnXJXSnLdhPZ4a9hVOfK+
+5dcmtT63GiyPonyLSYnXEjZqlQtrug==
+=FyTa
+-----END PGP SIGNATURE-----
+
+--Sig_/ASlRxEQNmSMbvpUsBEAbTvS--
