@@ -2,116 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04912C82A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 429082C82A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:53:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728980AbgK3Kwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:52:55 -0500
-Received: from foss.arm.com ([217.140.110.172]:52356 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728843AbgK3Kwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:52:55 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D50230E;
-        Mon, 30 Nov 2020 02:52:09 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 479DA3F66B;
-        Mon, 30 Nov 2020 02:52:08 -0800 (PST)
-Date:   Mon, 30 Nov 2020 10:52:00 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: aardvark: Update comment about disabling link
- training
-Message-ID: <20201130105200.GA16758@e121166-lin.cambridge.arm.com>
-References: <20200924084618.12442-1-pali@kernel.org>
- <20200924151106.GA2319992@bjorn-Precision-5520>
- <20200924152232.ecoxpmxdc5iyrz76@pali>
- <20201011172149.x7crspugv2xne6ui@pali>
- <20201129231741.yfhf3y42mfnbp4xb@pali>
+        id S1728801AbgK3Kwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:52:47 -0500
+Received: from smtprelay0005.hostedemail.com ([216.40.44.5]:59166 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728504AbgK3Kwq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 05:52:46 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 529B912F8;
+        Mon, 30 Nov 2020 10:52:05 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:541:800:960:973:981:988:989:1260:1311:1314:1345:1437:1515:1535:1544:1605:1711:1730:1747:1777:1792:2393:2553:2559:2562:2914:3138:3139:3140:3141:3142:3653:3865:3867:3868:3870:3871:3874:4321:4605:5007:6117:6119:6261:7903:8603:8660:10004:10848:11026:11473:11658:11914:12043:12291:12296:12297:12438:12555:12679:12683:12895:12986:13148:13230:13870:13894:14181:14394:14721:21080:21212:21433:21451:21627:21939:21987:21990:30029:30030:30054:30090,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: heat91_4d04a91273a1
+X-Filterd-Recvd-Size: 5632
+Received: from joe-laptop.perches.com (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 30 Nov 2020 10:52:04 +0000 (UTC)
+From:   Joe Perches <joe@perches.com>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: Reduce object size of sdev_prefix_printk and scmd_printk calls
+Date:   Mon, 30 Nov 2020 02:52:01 -0800
+Message-Id: <4eb11d377c75bb057c9a12e310706360505ff586.1606733466.git.joe@perches.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201129231741.yfhf3y42mfnbp4xb@pali>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 12:17:41AM +0100, Pali Rohár wrote:
-> On Sunday 11 October 2020 19:21:49 Pali Rohár wrote:
-> > On Thursday 24 September 2020 17:22:32 Pali Rohár wrote:
-> > > On Thursday 24 September 2020 10:11:06 Bjorn Helgaas wrote:
-> > > > On Thu, Sep 24, 2020 at 10:46:18AM +0200, Pali Rohár wrote:
-> > > > > It is not HW bug or workaround for some cards but it is requirement by PCI
-> > > > > Express spec. After fundamental reset is needed 100ms delay prior enabling
-> > > > > link training. So update comment in code to reflect this requirement.
-> > > > > 
-> > > > > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > > > > ---
-> > > > >  drivers/pci/controller/pci-aardvark.c | 7 ++++++-
-> > > > >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> > > > > index 50ab6d7519ae..19b9b79226e5 100644
-> > > > > --- a/drivers/pci/controller/pci-aardvark.c
-> > > > > +++ b/drivers/pci/controller/pci-aardvark.c
-> > > > > @@ -259,7 +259,12 @@ static void advk_pcie_issue_perst(struct advk_pcie *pcie)
-> > > > >  	if (!pcie->reset_gpio)
-> > > > >  		return;
-> > > > >  
-> > > > > -	/* PERST does not work for some cards when link training is enabled */
-> > > > > +	/*
-> > > > > +	 * As required by PCI Express spec a delay for at least 100ms after
-> > > > > +	 * de-asserting PERST# signal is needed before link training is enabled.
-> > > > > +	 * So ensure that link training is disabled prior de-asserting PERST#
-> > > > > +	 * signal to fulfill that PCI Express spec requirement.
-> > > > 
-> > > > Can you please include the spec citation here?  In the PCIe base spec,
-> > > > PERST# is only mentioned in PCIe r5.0, sec 6.6.1, and I don't see the
-> > > > connection there to 100ms between de-assert of PERST# and enabling
-> > > > link training.
-> > > 
-> > > Hello! I copied this "comment" from other place in pci-aardvark.c where
-> > > that timeout 100ms is already applied. Timeout with explanation comment
-> > > was introduced in following commit:
-> > > 
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f4c7d053d7f7
-> > > 
-> > > Here are links to discussions about that patch:
-> > > 
-> > > https://lore.kernel.org/linux-pci/20190313213752.1246-1-repk@triplefau.lt/T/#u
-> > > https://lore.kernel.org/linux-pci/20190522213351.21366-2-repk@triplefau.lt/T/#u
-> > 
-> > Bjorn or Lorenzo, do you need something else for this patch? It just
-> > updates comment and basically clarify why PERST does not work for some
-> > cards when link training is enabled.
-> 
-> PING?
+Avoid an extra char pointer per call for sdev_prefix_printk and scmd_printk
+by integrating the KERN_LEVEL and format.
 
-Apologies, I marked it as "changes requested" following Bjorn's reply.
-Would you mind please adding a link to the relevant PCI specs in the
-comment ?
+Preface the original function names with an underscore.
 
-I understood you copied the comment, it is worth adding that link to all
-of them if you don't mind, it can be a preparation patch if you wish.
+Create new macros that call the _ prefixed functions and coalesce the
+KERN_<LEVEL> and format and split them inside the renamed functions.
 
-Thanks,
-Lorenzo
+Use printk_skip_level and a memcpy to a temporary inside these functions
+to save the KERN_<LEVEL> for calls to dev_printk.
 
-> > > > Sec 6.1.1 does talk about 100ms before sending config requests (for
-> > > > ports that support <= 5 GT/s), and 100ms after link training completes
-> > > > (for ports that support > 5 GT/s).
-> > > > 
-> > > > Maybe there's more language in a form-factor spec or something?
-> > > > 
-> > > > > +	 */
-> > > > >  	reg = advk_readl(pcie, PCIE_CORE_CTRL0_REG);
-> > > > >  	reg &= ~LINK_TRAINING_EN;
-> > > > >  	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
-> > > > > -- 
-> > > > > 2.20.1
-> > > > > 
+$ size drivers/scsi/built-in.a (defconfig x86-64)
+        text       data     bss     dec
+new:  262236      28965     782  291983
+old:  263129      28965     782  292876
+
+$ size drivers/scsi/built-in.a (allyesconfig x86-64)
+         text      data     bss      dec
+new: 14968308   2718234  165792 17852334
+old: 14976884   2723130  165792 17865806
+
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/scsi/scsi_logging.c | 30 ++++++++++++++++++++++--------
+ include/scsi/scsi_device.h  | 18 +++++++++++-------
+ 2 files changed, 33 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/scsi/scsi_logging.c b/drivers/scsi/scsi_logging.c
+index 8ea44c6595ef..171c9183b0d4 100644
+--- a/drivers/scsi/scsi_logging.c
++++ b/drivers/scsi/scsi_logging.c
+@@ -50,12 +50,14 @@ static size_t sdev_format_header(char *logbuf, size_t logbuf_len,
+ 	return off;
+ }
+ 
+-void sdev_prefix_printk(const char *level, const struct scsi_device *sdev,
+-			const char *name, const char *fmt, ...)
++void _sdev_prefix_printk(const struct scsi_device *sdev, const char *prefix,
++			 const char *fmt, ...)
+ {
+ 	va_list args;
+ 	char *logbuf;
+ 	size_t off = 0, logbuf_len;
++	char level[PRINTK_MAX_SINGLE_HEADER_LEN + 1] = "\0";
++	size_t size;
+ 
+ 	if (!sdev)
+ 		return;
+@@ -64,9 +66,14 @@ void sdev_prefix_printk(const char *level, const struct scsi_device *sdev,
+ 	if (!logbuf)
+ 		return;
+ 
+-	if (name)
++	size = printk_skip_level(fmt) - fmt;
++	memcpy(level, fmt, size);
++	level[size] = '\0';
++	fmt += size;
++
++	if (prefix)
+ 		off += scnprintf(logbuf + off, logbuf_len - off,
+-				 "[%s] ", name);
++				 "[%s] ", prefix);
+ 	if (!WARN_ON(off >= logbuf_len)) {
+ 		va_start(args, fmt);
+ 		off += vscnprintf(logbuf + off, logbuf_len - off, fmt, args);
+@@ -75,14 +82,15 @@ void sdev_prefix_printk(const char *level, const struct scsi_device *sdev,
+ 	dev_printk(level, &sdev->sdev_gendev, "%s", logbuf);
+ 	scsi_log_release_buffer(logbuf);
+ }
+-EXPORT_SYMBOL(sdev_prefix_printk);
++EXPORT_SYMBOL(_sdev_prefix_printk);
+ 
+-void scmd_printk(const char *level, const struct scsi_cmnd *scmd,
+-		const char *fmt, ...)
++void _scmd_printk(const struct scsi_cmnd *scmd, const char *fmt, ...)
+ {
+ 	va_list args;
+ 	char *logbuf;
+ 	size_t off = 0, logbuf_len;
++	char level[PRINTK_MAX_SINGLE_HEADER_LEN + 1] = "\0";
++	size_t size;
+ 
+ 	if (!scmd || !scmd->cmnd)
+ 		return;
+@@ -90,6 +98,12 @@ void scmd_printk(const char *level, const struct scsi_cmnd *scmd,
+ 	logbuf = scsi_log_reserve_buffer(&logbuf_len);
+ 	if (!logbuf)
+ 		return;
++
++	size = printk_skip_level(fmt) - fmt;
++	memcpy(level, fmt, size);
++	level[size] = '\0';
++	fmt += size;
++
+ 	off = sdev_format_header(logbuf, logbuf_len, scmd_name(scmd),
+ 				 scmd->request->tag);
+ 	if (off < logbuf_len) {
+@@ -100,7 +114,7 @@ void scmd_printk(const char *level, const struct scsi_cmnd *scmd,
+ 	dev_printk(level, &scmd->device->sdev_gendev, "%s", logbuf);
+ 	scsi_log_release_buffer(logbuf);
+ }
+-EXPORT_SYMBOL(scmd_printk);
++EXPORT_SYMBOL(_scmd_printk);
+ 
+ static size_t scsi_format_opcode_name(char *buffer, size_t buf_len,
+ 				      const unsigned char *cdbp)
+diff --git a/include/scsi/scsi_device.h b/include/scsi/scsi_device.h
+index 1a5c9a3df6d6..002c723b65fa 100644
+--- a/include/scsi/scsi_device.h
++++ b/include/scsi/scsi_device.h
+@@ -252,19 +252,23 @@ struct scsi_device {
+ 
+ /*
+  * like scmd_printk, but the device name is passed in
+- * as a string pointer
++ * as a string pointer in prefix
+  */
+-__printf(4, 5) void
+-sdev_prefix_printk(const char *, const struct scsi_device *, const char *,
+-		const char *, ...);
++__printf(3, 4)
++void _sdev_prefix_printk(const struct scsi_device *sdev,
++			 const char *prefix, const char *fmt, ...);
++#define sdev_prefix_printk(level, sdev, prefix, fmt, ...)		\
++	_sdev_prefix_printk(sdev, prefix, level fmt, ##__VA_ARGS__)
+ 
+ #define sdev_printk(l, sdev, fmt, a...)				\
+ 	sdev_prefix_printk(l, sdev, NULL, fmt, ##a)
+ 
+-__printf(3, 4) void
+-scmd_printk(const char *, const struct scsi_cmnd *, const char *, ...);
++__printf(2, 3)
++void _scmd_printk(const struct scsi_cmnd *scmd, const char *fmt, ...);
++#define scmd_printk(level, scmd, fmt, ...)				\
++	_scmd_printk(scmd, level fmt, ##__VA_ARGS__)
+ 
+-#define scmd_dbg(scmd, fmt, a...)					   \
++#define scmd_dbg(scmd, fmt, a...)					\
+ 	do {								   \
+ 		if ((scmd)->request->rq_disk)				   \
+ 			sdev_dbg((scmd)->device, "[%s] " fmt,		   \
+-- 
+2.26.0
+
