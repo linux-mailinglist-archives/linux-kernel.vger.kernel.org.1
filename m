@@ -2,224 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD242C91D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 683FC2C91C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388808AbgK3W7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:59:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
+        id S2388321AbgK3W6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388779AbgK3W7D (ORCPT
+        with ESMTP id S1728021AbgK3W6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:59:03 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8F4C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:58:01 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id v9so9490638qtw.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:58:01 -0800 (PST)
+        Mon, 30 Nov 2020 17:58:41 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75007C0617A6;
+        Mon, 30 Nov 2020 14:57:47 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id l11so25188260lfg.0;
+        Mon, 30 Nov 2020 14:57:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=6y1kkcd2BJbVhGVlB5bCJsKpT2ezQC3RZbiSpbF+1Qw=;
-        b=GGPFU8d7ZSrOHEgiqLRK4ul8/n0Vy4GcDqTUwpdWrZF1Cy6ZJwvTzWmj9SFZRJrEiB
-         6e4C/OcH2sMqJ30AGojMJwopZ0EVJUByG+fvUFJYqqYcZwnWFE47agFZA3PN7PxzAjtG
-         aX3r0Pw0fRpqwILMzRBy5yAqmuJRndBGNC57ZAXi3jFyF7K5hPlj8jICC0unPNYjkVtZ
-         hC/M6/2m9cTDMq0GeVXGxraXDwFkax7fAHfJswjXXIsAXK1gc5LyPdcLkKkMrxBFS0ud
-         qkkpfuufzFYjXhGle33FxdiR+pVlE94pAtovbg8NimyrZ6HfgXEnpiLwO1Tq2EDoefwG
-         fLnw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CF4VCvT4y1MxLEN3CJpvUBs6aS1caFV9qr8mvMQWWkQ=;
+        b=d2cpPCDwNOjwJ6zcyEH2OArFryPnDeS1v1mqLxiZ+cT8m5CMXk396ihiK1Z+IbhVGH
+         1tDI2bfUXmCLyz0+wmsNpiZ8XBXhA1tumhbrUIKZiRJlzSGihfizD+UFCJu63/yAb4+K
+         rV3Zm1PIcTZyuCXFy1FHWMOmSyc7jFxs5KUvk5p4diMvitODg1SqQZUkVjyquBm3BdPC
+         N8Q2rwDqqHMfQsUGPskU3kXBiQdkLyCsLBgyldzxov3xNZ+QZpIqAjdOyAGQbGL41qm9
+         BL787np2iHPKbnFaf48ATS0ymrwLyBukH6pVmXsxfCrhm5VPqbwaZOEPhxRq3gN3bZqt
+         Bogg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=6y1kkcd2BJbVhGVlB5bCJsKpT2ezQC3RZbiSpbF+1Qw=;
-        b=ZIeZcGP9f1unGHyDGdKQSe/nB7kEZSGkKODOm2NwQeo1LN2+vQWhvhWd4z/jvoIL02
-         aoeIpX0dHA1ybskIvnfIHBD3NtWs9pwFgadSYrEBoqNQ62bG2x3o2BAs4cnN4qiF3ATv
-         UR5GJYSKk1RWnCNW27X06FEF/sJag23VXp4fBKMdmCL3qEorCtw50TF48VOfR1wGD1ot
-         3glLGZm+g9nV0+h6oFJBi9DIY3SIVJ+dalbniNKllBWOCQtP4tWAdpZv1PchrtLojYkW
-         tFS+keQGu1xaHrp89CEESSoS3LoZ8HxbkZzbbaErnwZz8H4N5ONFlVt3RSGK1wv6aTll
-         4SuQ==
-X-Gm-Message-State: AOAM531YyRKYC5k4BQnGbb5zTBQe6F7kA4Wdp0q5IFJblHCvR+g1Mfe9
-        5uoHO9BFSDn554UIH09HkSBm71vIun/QpDwFlaE7
-X-Google-Smtp-Source: ABdhPJxYEWUPBVcLx2uzTdRQMykfKhPLII9fP/xjuXEBtrHhFJzTwhSizR1FKoj07q9bR5EVZ5qWDbQsGT6ewHVczZSb
-Sender: "danielwinkler via sendgmr" 
-        <danielwinkler@danielwinkler-linux.mtv.corp.google.com>
-X-Received: from danielwinkler-linux.mtv.corp.google.com ([2620:15c:202:201:f693:9fff:fef4:4e59])
- (user=danielwinkler job=sendgmr) by 2002:a0c:cb8f:: with SMTP id
- p15mr24377601qvk.43.1606777080629; Mon, 30 Nov 2020 14:58:00 -0800 (PST)
-Date:   Mon, 30 Nov 2020 14:57:44 -0800
-In-Reply-To: <20201130225744.3793244-1-danielwinkler@google.com>
-Message-Id: <20201130145609.v6.5.I5068c01cae3cea674a96e103a0cf4d8c81425a4f@changeid>
-Mime-Version: 1.0
-References: <20201130225744.3793244-1-danielwinkler@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v6 5/5] Bluetooth: Change MGMT security info CMD to be more generic
-From:   Daniel Winkler <danielwinkler@google.com>
-To:     marcel@holtmann.org
-Cc:     linux-bluetooth@vger.kernel.org,
-        chromeos-bluetooth-upstreaming@chromium.org,
-        Daniel Winkler <danielwinkler@google.com>,
-        Sonny Sasaka <sonnysasaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CF4VCvT4y1MxLEN3CJpvUBs6aS1caFV9qr8mvMQWWkQ=;
+        b=G02Xoof0jGFFeOb5nZ8yakOyyoq2XjbDrSGtljTUTSOYrilbPvvO16JMXhKFonOjOz
+         gdF6ZT8hdRi0h2mligV8lxZEyLIPqYlP3uX6UHWjVrCHYRNvTYOhYf0UcafcCayYkJXM
+         PV4s9Cyx5VgOFLFqhmL/IJTSJe56UAUlglCpcbY0D/z7BZHSQtAqnXml4PeOvuTIbPBT
+         K50URO8BrpOg1YcL9Hv4tM+eIggEKoewwEMxZh+TNM+XE+R+Kxz2Dcm18+UBVL1SGws6
+         9/Ilb7ZI0mW2Ffve3ZA2HQTIVP1urwR5EhjM5k5LVdQDFZqWc12r5xs9nwTETFY897I/
+         6q/w==
+X-Gm-Message-State: AOAM532FHrbBcckH9/IFc+lVkxSrLRRDkLFgR/PPqvPzm1XAh9Ry4Hls
+        RurGTC+vyP4YYMliHtoEx/E=
+X-Google-Smtp-Source: ABdhPJxPQ5c3K0b2ozPSWkF7iFJ7NCtYycGijm2HoLwZV/SOV1v33DiiclIeLz/+U3dd6zS5vKhPhQ==
+X-Received: by 2002:ac2:4890:: with SMTP id x16mr10210588lfc.4.1606777066004;
+        Mon, 30 Nov 2020 14:57:46 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id p16sm2616059lfe.255.2020.11.30.14.57.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 14:57:45 -0800 (PST)
+Subject: Re: [PATCH v10 17/19] ARM: tegra: Add EMC OPP properties to Tegra20
+ device-trees
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20201123002723.28463-1-digetx@gmail.com>
+ <20201123002723.28463-18-digetx@gmail.com>
+ <60657f5e-bd30-094e-f8df-6ba69e0d6a3e@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <1ed05baf-3a01-3a2b-cd79-98b356c846cf@gmail.com>
+Date:   Tue, 1 Dec 2020 01:57:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
+MIME-Version: 1.0
+In-Reply-To: <60657f5e-bd30-094e-f8df-6ba69e0d6a3e@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For advertising, we wish to know the LE tx power capabilities of the
-controller in userspace, so this patch edits the Security Info MGMT
-command to be more generic, such that other various controller
-capabilities can be included in the EIR data. This change also includes
-the LE min and max tx power into this newly-named command.
+01.12.2020 00:17, Jon Hunter пишет:
+> Hi Dmitry,
+> 
+> On 23/11/2020 00:27, Dmitry Osipenko wrote:
+>> Add EMC OPP DVFS tables and update board device-trees by removing
+>> unsupported OPPs.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> This change is generating the following warning on Tegra20 Ventana
+> and prevents the EMC from probing ...
+> 
+> [    2.485711] tegra20-emc 7000f400.memory-controller: device-tree doesn't have memory timings
+> [    2.499386] tegra20-emc 7000f400.memory-controller: 32bit DRAM bus
+> [    2.505810] ------------[ cut here ]------------
+> [    2.510511] WARNING: CPU: 0 PID: 1 at /local/workdir/tegra/mlt-linux_next/kernel/drivers/opp/of.c:875 _of_add_opp_table_v2+0x598/0x61c
+> [    2.529746] Modules linked in:
+> [    2.540140] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc5-next-20201130 #1
+> [    2.554606] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+> [    2.560892] [<c011136c>] (unwind_backtrace) from [<c010bb60>] (show_stack+0x10/0x14)
+> [    2.568640] [<c010bb60>] (show_stack) from [<c0bcee54>] (dump_stack+0xc8/0xdc)
+> [    2.575866] [<c0bcee54>] (dump_stack) from [<c01235dc>] (__warn+0x104/0x108)
+> [    2.582912] [<c01235dc>] (__warn) from [<c0123690>] (warn_slowpath_fmt+0xb0/0xb8)
+> [    2.590397] [<c0123690>] (warn_slowpath_fmt) from [<c0825ad0>] (_of_add_opp_table_v2+0x598/0x61c)
+> [    2.599269] [<c0825ad0>] (_of_add_opp_table_v2) from [<c0825b90>] (dev_pm_opp_of_add_table+0x3c/0x1a0)
+> [    2.608582] [<c0825b90>] (dev_pm_opp_of_add_table) from [<c087b774>] (tegra_emc_probe+0x478/0x940)
+> [    2.617548] [<c087b774>] (tegra_emc_probe) from [<c0654398>] (platform_drv_probe+0x48/0x98)
+> [    2.625899] [<c0654398>] (platform_drv_probe) from [<c0652238>] (really_probe+0x218/0x3b8)
+> [    2.634162] [<c0652238>] (really_probe) from [<c0652540>] (driver_probe_device+0x5c/0xb4)
+> [    2.642338] [<c0652540>] (driver_probe_device) from [<c0652740>] (device_driver_attach+0x58/0x60)
+> [    2.651208] [<c0652740>] (device_driver_attach) from [<c06527c8>] (__driver_attach+0x80/0xbc)
+> [    2.659730] [<c06527c8>] (__driver_attach) from [<c0650610>] (bus_for_each_dev+0x74/0xb4)
+> [    2.667905] [<c0650610>] (bus_for_each_dev) from [<c06515f8>] (bus_add_driver+0x164/0x1e8)
+> [    2.676168] [<c06515f8>] (bus_add_driver) from [<c06532a8>] (driver_register+0x7c/0x114)
+> [    2.684259] [<c06532a8>] (driver_register) from [<c0102208>] (do_one_initcall+0x54/0x2b0)
+> [    2.692441] [<c0102208>] (do_one_initcall) from [<c10010cc>] (kernel_init_freeable+0x1a4/0x1f4)
+> [    2.701145] [<c10010cc>] (kernel_init_freeable) from [<c0bd4510>] (kernel_init+0x8/0x118)
+> [    2.709321] [<c0bd4510>] (kernel_init) from [<c01001b0>] (ret_from_fork+0x14/0x24)
+> [    2.716885] Exception stack(0xc1501fb0 to 0xc1501ff8)
+> [    2.721933] 1fa0:                                     00000000 00000000 00000000 00000000
+> [    2.730106] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> [    2.738278] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> [    2.751940] ---[ end trace 61e3b76deca27ef3 ]---
+> 
+> 
+> Cheers
+> Jon
+> 
 
-The change was tested by manually verifying that the MGMT command
-returns the tx power range as expected in userspace.
+Hello Jon,
 
-Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
-Signed-off-by: Daniel Winkler <danielwinkler@google.com>
----
-
-Changes in v6:
-- Only populate LE tx power range if controller reports it
-
-Changes in v5: None
-Changes in v4:
-- Combine LE tx range into a single EIR field for MGMT capabilities cmd
-
-Changes in v3:
-- Re-using security info MGMT command to carry controller capabilities
-
-Changes in v2:
-- Fixed sparse error in Capabilities MGMT command
-
- include/net/bluetooth/mgmt.h | 15 ++++++++-----
- net/bluetooth/mgmt.c         | 43 ++++++++++++++++++++++++------------
- 2 files changed, 39 insertions(+), 19 deletions(-)
-
-diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
-index 2e18e4173e2fa5..f9a6638e20b3c6 100644
---- a/include/net/bluetooth/mgmt.h
-+++ b/include/net/bluetooth/mgmt.h
-@@ -686,11 +686,16 @@ struct mgmt_cp_set_blocked_keys {
- 
- #define MGMT_OP_SET_WIDEBAND_SPEECH	0x0047
- 
--#define MGMT_OP_READ_SECURITY_INFO	0x0048
--#define MGMT_READ_SECURITY_INFO_SIZE	0
--struct mgmt_rp_read_security_info {
--	__le16   sec_len;
--	__u8     sec[];
-+#define MGMT_CAP_SEC_FLAGS		0x01
-+#define MGMT_CAP_MAX_ENC_KEY_SIZE	0x02
-+#define MGMT_CAP_SMP_MAX_ENC_KEY_SIZE	0x03
-+#define MGMT_CAP_LE_TX_PWR		0x04
-+
-+#define MGMT_OP_READ_CONTROLLER_CAP	0x0048
-+#define MGMT_READ_CONTROLLER_CAP_SIZE	0
-+struct mgmt_rp_read_controller_cap {
-+	__le16   cap_len;
-+	__u8     cap[0];
- } __packed;
- 
- #define MGMT_OP_READ_EXP_FEATURES_INFO	0x0049
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 668a62c8181eb1..754489e4e0655c 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -110,7 +110,7 @@ static const u16 mgmt_commands[] = {
- 	MGMT_OP_SET_APPEARANCE,
- 	MGMT_OP_SET_BLOCKED_KEYS,
- 	MGMT_OP_SET_WIDEBAND_SPEECH,
--	MGMT_OP_READ_SECURITY_INFO,
-+	MGMT_OP_READ_CONTROLLER_CAP,
- 	MGMT_OP_READ_EXP_FEATURES_INFO,
- 	MGMT_OP_SET_EXP_FEATURE,
- 	MGMT_OP_READ_DEF_SYSTEM_CONFIG,
-@@ -176,7 +176,7 @@ static const u16 mgmt_untrusted_commands[] = {
- 	MGMT_OP_READ_CONFIG_INFO,
- 	MGMT_OP_READ_EXT_INDEX_LIST,
- 	MGMT_OP_READ_EXT_INFO,
--	MGMT_OP_READ_SECURITY_INFO,
-+	MGMT_OP_READ_CONTROLLER_CAP,
- 	MGMT_OP_READ_EXP_FEATURES_INFO,
- 	MGMT_OP_READ_DEF_SYSTEM_CONFIG,
- 	MGMT_OP_READ_DEF_RUNTIME_CONFIG,
-@@ -3710,13 +3710,14 @@ static int set_wideband_speech(struct sock *sk, struct hci_dev *hdev,
- 	return err;
- }
- 
--static int read_security_info(struct sock *sk, struct hci_dev *hdev,
--			      void *data, u16 data_len)
-+static int read_controller_cap(struct sock *sk, struct hci_dev *hdev,
-+			       void *data, u16 data_len)
- {
--	char buf[16];
--	struct mgmt_rp_read_security_info *rp = (void *)buf;
--	u16 sec_len = 0;
-+	char buf[20];
-+	struct mgmt_rp_read_controller_cap *rp = (void *)buf;
-+	u16 cap_len = 0;
- 	u8 flags = 0;
-+	u8 tx_power_range[2];
- 
- 	bt_dev_dbg(hdev, "sock %p", sk);
- 
-@@ -3740,23 +3741,37 @@ static int read_security_info(struct sock *sk, struct hci_dev *hdev,
- 
- 	flags |= 0x08;		/* Encryption key size enforcement (LE) */
- 
--	sec_len = eir_append_data(rp->sec, sec_len, 0x01, &flags, 1);
-+	cap_len = eir_append_data(rp->cap, cap_len, MGMT_CAP_SEC_FLAGS,
-+				  &flags, 1);
- 
- 	/* When the Read Simple Pairing Options command is supported, then
- 	 * also max encryption key size information is provided.
- 	 */
- 	if (hdev->commands[41] & 0x08)
--		sec_len = eir_append_le16(rp->sec, sec_len, 0x02,
-+		cap_len = eir_append_le16(rp->cap, cap_len,
-+					  MGMT_CAP_MAX_ENC_KEY_SIZE,
- 					  hdev->max_enc_key_size);
- 
--	sec_len = eir_append_le16(rp->sec, sec_len, 0x03, SMP_MAX_ENC_KEY_SIZE);
-+	cap_len = eir_append_le16(rp->cap, cap_len,
-+				  MGMT_CAP_SMP_MAX_ENC_KEY_SIZE,
-+				  SMP_MAX_ENC_KEY_SIZE);
-+
-+	/* Append the min/max LE tx power parameters if we were able to fetch
-+	 * it from the controller
-+	 */
-+	if (hdev->commands[38] & 0x80) {
-+		memcpy(&tx_power_range[0], &hdev->min_le_tx_power, 1);
-+		memcpy(&tx_power_range[1], &hdev->max_le_tx_power, 1);
-+		cap_len = eir_append_data(rp->cap, cap_len, MGMT_CAP_LE_TX_PWR,
-+					  tx_power_range, 2);
-+	}
- 
--	rp->sec_len = cpu_to_le16(sec_len);
-+	rp->cap_len = cpu_to_le16(cap_len);
- 
- 	hci_dev_unlock(hdev);
- 
--	return mgmt_cmd_complete(sk, hdev->id, MGMT_OP_READ_SECURITY_INFO, 0,
--				 rp, sizeof(*rp) + sec_len);
-+	return mgmt_cmd_complete(sk, hdev->id, MGMT_OP_READ_CONTROLLER_CAP, 0,
-+				 rp, sizeof(*rp) + cap_len);
- }
- 
- #ifdef CONFIG_BT_FEATURE_DEBUG
-@@ -8193,7 +8208,7 @@ static const struct hci_mgmt_handler mgmt_handlers[] = {
- 	{ set_blocked_keys,	   MGMT_OP_SET_BLOCKED_KEYS_SIZE,
- 						HCI_MGMT_VAR_LEN },
- 	{ set_wideband_speech,	   MGMT_SETTING_SIZE },
--	{ read_security_info,      MGMT_READ_SECURITY_INFO_SIZE,
-+	{ read_controller_cap,     MGMT_READ_CONTROLLER_CAP_SIZE,
- 						HCI_MGMT_UNTRUSTED },
- 	{ read_exp_features_info,  MGMT_READ_EXP_FEATURES_INFO_SIZE,
- 						HCI_MGMT_UNTRUSTED |
--- 
-2.29.2.454.gaff20da3a2-goog
-
+That is harmless and expected to happen because the patch "memory:
+tegra20: Support hardware versioning and clean up OPP table
+initialization" isn't applied yet, while Thierry already applied the DT
+patches from this v10.
