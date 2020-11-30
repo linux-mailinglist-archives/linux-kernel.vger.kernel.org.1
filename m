@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055452C7C8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 02:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48B32C7C92
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 02:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbgK3Bw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 20:52:27 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33813 "EHLO ozlabs.org"
+        id S1727900AbgK3Bwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 20:52:51 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:40856 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726299AbgK3Bw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 20:52:27 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CkpB92ch4z9sVD;
-        Mon, 30 Nov 2020 12:51:45 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1606701105;
-        bh=xlIwgzjEPzyGOCP0bGlo84nJNsiFMwgliSsNWMJmGPY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=oGYp8psM5s7iCfh0zl1U86fugKwvbASdl8DteUCKa2vvvMf2Cj005dkMUX5VcDclt
-         qnDlMQRu+2n1LKZD37QeFsmkVkHQeTaqSRF/K5vW3Fpm1GLzm+pIdfbBFXakuRT6+7
-         7IrTzA03pca6fSkBoqdTzgicOKZ2O9ALaB19NAU9dTlN1NvqLgxloYM/fSAKJ3rXli
-         ur4KdHEQQvMMIRbPIg64Or3epMyKM2Pgb4fGOs5JOaeiwt7GEduSJHujY8uKpL96c+
-         9W/a6l9V6IG5Njgn7JQBHhq8rnCSG03PMgdi52yVgGSRhNP/D7ZDCutp8vAUJvaky6
-         HNKYpkrKdHMSQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: Re: [PATCH 2/3] powerpc/pseries/hotplug-cpu: fix memleak in dlpar_cpu_add_by_count
-In-Reply-To: <20201128102001.95323-1-miaoqinglang@huawei.com>
-References: <20201128102001.95323-1-miaoqinglang@huawei.com>
-Date:   Mon, 30 Nov 2020 12:51:44 +1100
-Message-ID: <871rgby5lb.fsf@mpe.ellerman.id.au>
+        id S1727543AbgK3Bwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 20:52:51 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kjYME-0007OY-4p; Mon, 30 Nov 2020 02:52:02 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Will Deacon <will@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Suniel Mahesh <sunil@amarulasolutions.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-rockchip@lists.infradead.org,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 0/9] arm64: dts: rockchip: Engicam PX30.Core changes
+Date:   Mon, 30 Nov 2020 02:51:56 +0100
+Message-Id: <160670107989.1055391.7542778986080357647.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201109181017.206834-1-jagan@amarulasolutions.com>
+References: <20201109181017.206834-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qinglang Miao <miaoqinglang@huawei.com> writes:
-> kfree(cpu_drcs) should be called when it fails to perform
-> of_find_node_by_path("/cpus") in dlpar_cpu_add_by_count,
-> otherwise there would be a memleak.
->
-> In fact, the patch a0ff72f9f5a7 ought to remove kfree in
-> find_dlpar_cpus_to_add rather than dlpar_cpu_add_by_count.
-> I guess there might be a mistake when apply that one.
->
-> Fixes: a0ff72f9f5a7 ("powerpc/pseries/hotplug-cpu: Remove double free in error path")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  arch/powerpc/platforms/pseries/hotplug-cpu.c | 1 +
->  1 file changed, 1 insertion(+)
+On Mon, 9 Nov 2020 23:40:08 +0530, Jagan Teki wrote:
+> Series support Engicam PX30.Core SOM changes along with C.TOUCH
+> Open Frame 10.1" board.
+> 
+> All respetive LCD panels are in Mainline already.
+> 
+> thanks,
+> Jagan.
+> 
+> [...]
 
-This is already fixed in my next by:
+Applied, thanks!
 
-  a40fdaf1420d ("Revert "powerpc/pseries/hotplug-cpu: Remove double free in error path"")
+[1/9] arm64: dts: rockchip: px30-enagicam: Enable USB Host, OTG
+      commit: 4548ea027c900f1e0f07a292b8e10dc3d2725f44
+[2/9] arm64: dts: rockchip: px30-engicam-edimm2.2: Enable LVDS panel
+      commit: 87761edeb2cd90b8251f269eb52c4b48152aace8
+[3/9] dt-bindings: arm: rockchip: Add Engicam PX30.Core C.TOUCH 2.0 10.1" OF
+      commit: 23708d46101b5d5538c88b84b764d0ed9d8957ca
+[4/9] arm64: dts: rockchip: Add Engicam PX30.Core C.TOUCH 2.0 10.1" OF
+      commit: 0e418423be1c824b2cda37fd00528f62231cd219
+[5/9] arm64: dts: rockchip: px30-engicam: Add WiFi support
+      commit: 93a4e7d12468b0ab46796f3ed8dc5838dc7f63bc
+[6/9] arm64: dts: rockchip: px30-engicam: Add BT support
+      commit: 1cc1e851d15b4ebd4c6c5f741cfdb58b988a4445
+[7/9] arm64: defconfig: Enable ROCKCHIP_LVDS
+      commit: dbb378a59cb2bdb01454098513d9b61355fbe377
+[8/9] arm64: defconfig: Enable PHY_ROCKCHIP_INNO_DSIDPHY
+      commit: ec68a66395d9ccedc9b2b2f6452edfd7cb0fdfd5
+[9/9] arm64: defconfig: Enable USB_SERIAL_CP210X
+      commit: cf35bff64f79b4ca8785766d67b608b76404d43f
 
-cheers
-
-> diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
-> index f2837e33b..4bb1c9f2b 100644
-> --- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
-> +++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
-> @@ -743,6 +743,7 @@ static int dlpar_cpu_add_by_count(u32 cpus_to_add)
->  	parent = of_find_node_by_path("/cpus");
->  	if (!parent) {
->  		pr_warn("Could not find CPU root node in device tree\n");
-> +		kfree(cpu_drcs);
->  		return -1;
->  	}
->  
-> -- 
-> 2.23.0
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
