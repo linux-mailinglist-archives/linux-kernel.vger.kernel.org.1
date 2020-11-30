@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688842C8806
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3B32C8814
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgK3PcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:32:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726781AbgK3PcI (ORCPT
+        id S1727195AbgK3Pd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:33:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36536 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726265AbgK3Pd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:32:08 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF68C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 07:31:22 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id x25so11139570qkj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 07:31:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U8nOrVaPuX5bihpcc78kkshqsob3zo9wigFFV5UIQ8s=;
-        b=n1NlO+k6OaI0DsbSSo80XTYnquXpXq+Qn/eDOdnfypY/RctUmGTuxRJLMO2+pYHOqt
-         EZ/VfMBnOLT47dZ+eawBc4SPmjIeqy89Spq3vxxtlltx7S9uzuNX5CZHAX6vK3XIgO+r
-         +aVAQqgmmKb2kZss9gTtgE2W6TaNuqYE3WjQ9PqIeeTHEDiiJNFOdMyEgSTYp+dRVVyx
-         JA6VM//OLDbFxtaO3KFl0x8rxkFMjSExRoINNLq1gvyL2YfF9k8MdxhANw7++aOQAhEe
-         ke30+uwtL4TcSwfqQV9DMwfiZnwtPM7SrGjQykbAIa0J8e7aKSkcFGNEqRueWkuTWO2M
-         UH+w==
+        Mon, 30 Nov 2020 10:33:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606750322;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KsipwzBDzb60ARfCi+QI1m4LWf3wJygQ0AAsNDCG40s=;
+        b=A42DJ4bRoLoIqI0wXbmsnNkLBIDiuYD6WjjZJljLe2c6I6+tkwDwkGJsIpSrulphQ4STdN
+        jkCn5m0eXyD16DITSENY0d6jiebdEfoiuFRxVobZ0lOTwSSx3IE59R/Mk08EsZK0wg1F43
+        xNZIv/GzP5db6n+BXgi2w0Vakiop09Y=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-417-NR4_KuzoPbSBN4a7ceQqOg-1; Mon, 30 Nov 2020 10:31:58 -0500
+X-MC-Unique: NR4_KuzoPbSBN4a7ceQqOg-1
+Received: by mail-ed1-f71.google.com with SMTP id g1so6918709edk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 07:31:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U8nOrVaPuX5bihpcc78kkshqsob3zo9wigFFV5UIQ8s=;
-        b=nrmxr9sFinNaY447DmnhC+KE5VRy4JjOyzxYt3qbU7LpHoKqN/SNO1yJ5Sv2LikVM5
-         681U8os7wLr0SdcG4qonWdQ9uXwN9HBIhT0ukOWfTpsrneZSliSnfCJjH/90mGUgt9+3
-         Jfil8E4bqx4uD8XC+/0uCaaKsEWZBG9AH2d6Eu4ucXsmc1M12vJZVkw8TRhrfZ3PE3KF
-         xyD/JCGCmBAhpDX/0fRml8JTqJm18RQin57D5mUnzrCDld2Ealy1d5yVr0XcTwoU3q3J
-         ouLIAriGRUcXxzQ9WMjb5uoEr49uUUbp+Xx7jgGD7YrJFxYY0GlJQvrfg5mEpl+5G1HI
-         +66w==
-X-Gm-Message-State: AOAM531IYbCOfXkTYeLGnUlw1KBmyHU7snW92ILHKvB1zxcDOLD5NvdU
-        S+EkNJgWk2R1mbcNKUFBOt3mkw==
-X-Google-Smtp-Source: ABdhPJx7gKRSYCvH2HyMkfzeCX3aFgKsSb6376UCt6J34b5E3+q/1dALMhmOskD6A8yu12/U4Pr00A==
-X-Received: by 2002:a37:4658:: with SMTP id t85mr20664892qka.210.1606750281813;
-        Mon, 30 Nov 2020 07:31:21 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id n21sm15860261qke.32.2020.11.30.07.31.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 07:31:20 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kjl96-0044kf-5M; Mon, 30 Nov 2020 11:31:20 -0400
-Date:   Mon, 30 Nov 2020 11:31:20 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, willy@infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, aarcange@redhat.com,
-        kirill.shutemov@linux.intel.com, jroedel@suse.de
-Subject: Re: [RFC][PATCH 5/9] mm: Rename pmd_read_atomic()
-Message-ID: <20201130153120.GZ5487@ziepe.ca>
-References: <20201130112705.900705277@infradead.org>
- <20201130113603.079835817@infradead.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KsipwzBDzb60ARfCi+QI1m4LWf3wJygQ0AAsNDCG40s=;
+        b=YUfifw0UhUnq6abHhZdmgKdfwVU5TQoogqjZGcpK+y5FSSEvdEKUP2xXpJN8Cl79Kk
+         +CfyUiFp34/odWvqHXtDWCAul6vNycUrzEhVaCXRp1giJTuNfEteGhrVqWKGiIigIfH6
+         gpb0e+7wRO7x1A6cMwPldmUhO9q8btD/2syO/p7G6lWGVOpfqjeDrsgKn3mp/o5FAt5h
+         2cxDhjPJcUqxghSamZkNZ8fpB4F4Bppodu4hCC+j5+9YZQVwR+mWpj8sCze3Wgo/qs0M
+         6U1+EcQCJnAYFOJC10e17ILhzVYPLIJcE6wMSdN4CgJyzY2Ks+L2b12fO1K7s+GzrPwm
+         ci6w==
+X-Gm-Message-State: AOAM533gaYS/DkuXrTWt2z9s3ZShupWnJ40w39n9dZ6jf/Nh7PIvs0Mg
+        H8PPbZku02JKxgsPgh0tjUDf1xtw9AHPKFSXR2S827gXjGmC5rEc8up2pTdvVt7DTkxOe/ujUDd
+        C+o86FYV6iz6Y0VJ5noMaeul3
+X-Received: by 2002:a17:906:4d8d:: with SMTP id s13mr13795686eju.305.1606750317522;
+        Mon, 30 Nov 2020 07:31:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzJAmnB5boOvr5IKy7hOk2umHPy16BXprPN19ur+qcGYoWH+aEvjXuHby4AMDAYp+vPRqAQxw==
+X-Received: by 2002:a17:906:4d8d:: with SMTP id s13mr13795389eju.305.1606750313897;
+        Mon, 30 Nov 2020 07:31:53 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id s5sm6581838eju.98.2020.11.30.07.31.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 07:31:53 -0800 (PST)
+Subject: Re: [RFC PATCH 00/35] SEV-ES hypervisor support
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <20200914225951.GM7192@sjchrist-ice>
+ <bee6fdda-d548-8af5-f029-25c22165bf84@amd.com>
+ <20200916001925.GL8420@sjchrist-ice>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <60cbddaf-50f3-72ca-f673-ff0b421db3ad@redhat.com>
+Date:   Mon, 30 Nov 2020 16:31:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130113603.079835817@infradead.org>
+In-Reply-To: <20200916001925.GL8420@sjchrist-ice>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 12:27:10PM +0100, Peter Zijlstra wrote:
-> There's no point in having the identical routines for PTE/PMD have
-> different names.
+On 16/09/20 02:19, Sean Christopherson wrote:
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->  include/linux/pgtable.h    |    7 +------
->  mm/hmm.c                   |    2 +-
->  mm/mapping_dirty_helpers.c |    2 +-
->  mm/mprotect.c              |    2 +-
->  mm/userfaultfd.c           |    2 +-
->  5 files changed, 5 insertions(+), 10 deletions(-)
+> TDX also selectively blocks/skips portions of other ioctl()s so that the
+> TDX code itself can yell loudly if e.g. .get_cpl() is invoked.  The event
+> injection restrictions are due to direct injection not being allowed (except
+> for NMIs); all IRQs have to be routed through APICv (posted interrupts) and
+> exception injection is completely disallowed.
 > 
-> +++ b/include/linux/pgtable.h
-> @@ -1244,11 +1244,6 @@ static inline int pud_trans_unstable(pud
->  #endif
->  }
->  
-> -static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
-> -{
-> -	return pmdp_get_lockless(pmdp);
-> -}
-> -
->  #ifndef arch_needs_pgtable_deposit
->  #define arch_needs_pgtable_deposit() (false)
->  #endif
-> @@ -1275,7 +1270,7 @@ static inline pmd_t pmd_read_atomic(pmd_
->   */
->  static inline int pmd_none_or_trans_huge_or_clear_bad(pmd_t *pmd)
->  {
-> -	pmd_t pmdval = pmd_read_atomic(pmd);
-> +	pmd_t pmdval = pmdp_get_lockless(pmd);
->  	/*
->  	 * The barrier will stabilize the pmdval in a register or on
->  	 * the stack so that it will stop changing under the code.
-> +++ b/mm/hmm.c
-> @@ -356,7 +356,7 @@ static int hmm_vma_walk_pmd(pmd_t *pmdp,
->  		 * huge or device mapping one and compute corresponding pfn
->  		 * values.
->  		 */
-> -		pmd = pmd_read_atomic(pmdp);
-> +		pmd = pmdp_get_lockless(pmdp);
->  		barrier();
->  		if (!pmd_devmap(pmd) && !pmd_trans_huge(pmd))
->  			goto again;
+>    kvm_vcpu_ioctl_x86_get_vcpu_events:
+> 	if (!vcpu->kvm->arch.guest_state_protected)
+>          	events->interrupt.shadow = kvm_x86_ops.get_interrupt_shadow(vcpu);
 
-The pagewalk API doesn't call the functions with interrupts disabled,
-doesn't this mean we hit this assertion?
+Perhaps an alternative implementation can enter the vCPU with immediate 
+exit until no events are pending, and then return all zeroes?
 
-+#if CONFIG_PGTABLE_LEVELS > 2
-+static inline pmd_t pmdp_get_lockless(pmd_t *pmdp)
-+{
-+       pmd_t pmd;
-+
-+       lockdep_assert_irqs_disabled();
-+
+Paolo
 
-It is only holding the read side of the mmap_sem here
-
-Jason
